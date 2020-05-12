@@ -1,0 +1,9 @@
+nav.navbar.navbar-expand-lg.navbar-light.bg-light.flex-shrink-0
+  a.navbar-brand(href="/") Hexlet basics
+  #navbarSupportedContent.collapse.navbar-collapse
+    ul.navbar-nav
+      = nav_menu_item t('.about'), '#', target: '_blank'
+      = nav_menu_item t('.community'), 'http://slack-ru.hexlet.io/', target: '_blank'
+    ul.navbar-nav.ml-auto
+        = nav_menu_item t('.sign_in'), "#"
+        = nav_menu_item t('.register'), "#"
