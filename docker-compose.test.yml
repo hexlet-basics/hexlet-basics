@@ -1,0 +1,10 @@
+---
+
+version: '2'
+
+services:
+  ci-test:
+    build: .
+    environment:
+      - RAILS_ENV
+    command: make ci-test
