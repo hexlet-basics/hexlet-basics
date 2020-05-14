@@ -9,7 +9,7 @@
     - @languages.each do |language|
       .col.mb-5
         .card.h-100
-          .card-body.text-center.bg-blue
+          .card-body.text-center.bg-primary
             .card-title.text-white = language
             img.img-fluid.mt-3.mb-4(src="https://via.placeholder.com/390x320")
             = link_to t('.start'), language_path(language), class: 'btn btn-light btn-block stretched-link'
