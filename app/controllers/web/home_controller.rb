@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
-class Web::HomeController < ApplicationController
-  def index; end
+class Web::HomeController < Web::ApplicationController
+  def index
+    @languages = Language.all
+  end
 end

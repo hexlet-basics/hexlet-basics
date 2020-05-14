@@ -81,6 +81,8 @@ GEM
       activesupport (>= 4.2.0)
     i18n (1.8.2)
       concurrent-ruby (~> 1.0)
+    i18n-debug (1.2.0)
+      i18n (< 2)
     jbuilder (2.10.0)
       activesupport (>= 5.0.0)
     listen (3.1.5)
@@ -229,6 +231,7 @@ DEPENDENCIES
   bootsnap (>= 1.4.2)
   byebug
   capybara (>= 2.15)
+  i18n-debug
   jbuilder (~> 2.7)
   listen (>= 3.0.5, < 3.2)
   puma (~> 4.1)

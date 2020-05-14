@@ -1,0 +1,8 @@
+en:
+  layouts:
+    shared:
+      nav:
+        about: "About"
+        community: "Community"
+        sign_in: "Sign in"
+        sign_up: "Sign up"
