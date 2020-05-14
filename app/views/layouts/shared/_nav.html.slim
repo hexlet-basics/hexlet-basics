@@ -1,9 +1,10 @@
-nav.navbar.navbar-expand-lg.navbar-light.bg-light.flex-shrink-0
-  a.navbar-brand(href="/") Hexlet basics
+nav.px-3.navbar.navbar-light.navbar-expand-md
+  a.navbar-brand(href="/")
+    = image_tag 'logo', width: 30, alt: 'Code Basics logo'
   #navbarSupportedContent.collapse.navbar-collapse
-    ul.navbar-nav
+    ul.navbar-nav.mr-auto.px-3
       = nav_menu_item t('.about'), '#', target: '_blank'
       = nav_menu_item t('.community'), 'http://slack-ru.hexlet.io/', target: '_blank'
-    ul.navbar-nav.ml-auto
+    ul.navbar-nav
         = nav_menu_item t('.sign_in'), "#"
-        = nav_menu_item t('.register'), "#"
+        = nav_menu_item t('.sign_up'), "#"
