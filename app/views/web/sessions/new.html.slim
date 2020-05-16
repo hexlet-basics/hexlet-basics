@@ -1,0 +1,14 @@
+.row.justify-content-center.pb-5.mt-5
+  .col-12.col-sm-8.col-md-7.col-lg-4
+    .card.border-top
+      .card-body
+        h1.mb-4.text-center = t('.sign_in')
+        = simple_form_for @user, url: sessions_path do |f|
+          = f.input :email, label: false, input_html: { class: 'mb-3' }
+          = f.input :password, label: false, input_html: { class: 'mb-3' }
+          .form-group
+            = f.button :submit, t('.sign_in'), class: 'btn-primary mb-2 w-100'
+      .card-footer.text-center
+        span.mr-1 = t('.dont_have_account')
+        = link_to t('.register'), new_registrations_path
+

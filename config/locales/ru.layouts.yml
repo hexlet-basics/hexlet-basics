@@ -2,7 +2,7 @@ ru:
   layouts:
     shared:
       nav:
-        about: "О проекте"
-        community: "Сообщество"
-        sign_in: "Войти"
-        registration: "Регистрация"
+        about: О проекте
+        community: Сообщество
+        sign_in: Войти
+        registration: Регистрация

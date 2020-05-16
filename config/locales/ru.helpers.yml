@@ -3,5 +3,3 @@ ru:
     submit:
       create: Создать
       update: Изменить
-      user:
-        create: Зарегистрироваться

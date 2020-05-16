@@ -8,6 +8,13 @@ ru:
         hexlet: Хекслета
     users:
       new:
-        register: Регистрация
+        sign_up: Регистрация
         have_account: Есть аккаунт?
         sign_in: Войти
+        register: Зарегистрироваться
+    sessions:
+      new:
+        sign_in: Войти
+        dont_have_account: Нет аккаунта?
+        register: Регистрация
+
