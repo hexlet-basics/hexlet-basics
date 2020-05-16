@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Web::UsersController < Web::ApplicationController
   def new
     @user = User.new
@@ -5,8 +7,10 @@ class Web::UsersController < Web::ApplicationController
 
   def create
     @user = User.new(user_params)
+    @user.email.downcase!
 
     if @user.save
+      sign_in @user
       redirect_to root_path
     else
       render :new
@@ -19,4 +23,3 @@ class Web::UsersController < Web::ApplicationController
     params.require(:user).permit(:email, :password)
   end
 end
-

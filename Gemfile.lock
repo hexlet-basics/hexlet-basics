@@ -102,6 +102,9 @@ GEM
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
     minitest (5.14.0)
+    minitest-power_assert (0.3.1)
+      minitest
+      power_assert (>= 1.1)
     msgpack (1.3.3)
     nio4r (2.5.2)
     nokogiri (1.10.9)
@@ -109,6 +112,7 @@ GEM
     parallel (1.19.1)
     parser (2.7.1.2)
       ast (~> 2.4.0)
+    power_assert (1.2.0)
     public_suffix (4.0.5)
     puma (4.3.3)
       nio4r (~> 2.0)
@@ -239,6 +243,7 @@ DEPENDENCIES
   i18n-debug
   jbuilder (~> 2.7)
   listen (>= 3.0.5, < 3.2)
+  minitest-power_assert
   puma (~> 4.1)
   rails (~> 6.0.2, >= 6.0.2.2)
   rubocop

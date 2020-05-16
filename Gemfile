@@ -31,9 +31,10 @@ group :test do
   gem 'capybara', '>= 2.15'
   gem 'selenium-webdriver'
   gem 'webdrivers'
+  gem 'minitest-power_assert'
 end
 
-gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
-gem 'slim-rails'
-gem 'simple_form'
 gem 'bcrypt'
+gem 'simple_form'
+gem 'slim-rails'
+gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
