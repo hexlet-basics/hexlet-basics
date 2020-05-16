@@ -16,4 +16,13 @@ end
 
 class ActionDispatch::IntegrationTest
   include AuthManagment
+
+  def sign_in_as(name)
+    user = users(name)
+    password = 'password'
+    user.update(password: password)
+
+    post sessions_path, params: { user: { email: user.email, password: password } }
+    user
+  end
 end
