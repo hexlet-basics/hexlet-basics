@@ -20,7 +20,7 @@ class Web::SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'destroy' do
-    user = sign_in_as(:one)
+    sign_in_as(:one)
 
     delete sessions_path
     assert_response :redirect

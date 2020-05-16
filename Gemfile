@@ -29,9 +29,9 @@ end
 
 group :test do
   gem 'capybara', '>= 2.15'
+  gem 'minitest-power_assert'
   gem 'selenium-webdriver'
   gem 'webdrivers'
-  gem 'minitest-power_assert'
 end
 
 gem 'bcrypt'
