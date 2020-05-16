@@ -37,6 +37,7 @@ heroku-logs:
 
 ci-test:
 	make setup
+	bundle exec rails assets:precompile
 	make lint
 	make test
 
