@@ -12,7 +12,7 @@ class Web::SessionsController < Web::ApplicationController
       sign_in @user
       redirect_to root_path
     else
-      redirect_to new_sessions_path
+      redirect_to new_session_path
     end
   end
 

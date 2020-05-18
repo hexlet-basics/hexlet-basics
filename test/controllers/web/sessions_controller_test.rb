@@ -4,7 +4,7 @@ require 'test_helper'
 
 class Web::SessionsControllerTest < ActionDispatch::IntegrationTest
   test 'new' do
-    get new_sessions_path
+    get new_session_path
     assert_response :success
   end
 
@@ -13,7 +13,7 @@ class Web::SessionsControllerTest < ActionDispatch::IntegrationTest
     password = '123123'
     user.update(password: password)
 
-    post sessions_path, params: { user: { email: user.email, password: user.password } }
+    post session_path, params: { user: { email: user.email, password: user.password } }
     assert_response :redirect
 
     assert { signed_in? }
@@ -22,7 +22,7 @@ class Web::SessionsControllerTest < ActionDispatch::IntegrationTest
   test 'destroy' do
     sign_in_as(:one)
 
-    delete sessions_path
+    delete session_path
     assert_response :redirect
 
     assert { !signed_in? }
