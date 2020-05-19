@@ -9,9 +9,9 @@ class Web::SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'create' do
-    user = FactoryBot.create(:user)
+    user = users(:one)
 
-    post session_path, params: { user: { email: user.email, password: user.password } }
+    post session_path, params: { user: { email: user.email, password: 'password' } }
     assert_response :redirect
 
     assert { signed_in? }
