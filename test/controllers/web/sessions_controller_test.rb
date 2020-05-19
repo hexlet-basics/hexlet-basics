@@ -9,9 +9,7 @@ class Web::SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'create' do
-    user = users(:one)
-    password = '123123'
-    user.update(password: password)
+    user = FactoryBot.create(:user)
 
     post session_path, params: { user: { email: user.email, password: user.password } }
     assert_response :redirect
