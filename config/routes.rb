@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     root 'home#index'
 
     resource :session, only: %i[new create destroy]
-    resources :registrations, only: %i[new create], controller: :users
+    resources :users, only: %i[new create]
 
     resources :languages, only: [:show] do
       scope module: :languages do

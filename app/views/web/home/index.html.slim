@@ -1,8 +1,8 @@
 .row.justify-content-center.mb-6
   .col-12.col-md-10.col-lg-9.col-xl-8.text-center
-    h1 = t('.h1')
+    h1 = t('.header')
     div.h2.font-weight-light
-      = t('.h2')
+      = t('.subheader')
       = link_to t('.hexlet'), 'https://hexlet.io/?utm_campaign=general&utm_medium=referral&utm_source=code-basics', class: 'text-muted'
 .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4
   - @languages.each do |language|
