@@ -3,11 +3,11 @@
     .card.border-top
       .card-body
         h1.mb-4.text-center = t('.sign_up')
-        = simple_form_for @user do |f|
-          = f.input :email, label: false
-          = f.input :password, label: false
+        = simple_form_for @user, wrapper: :no_labels_form do |f|
+          = f.input :email
+          = f.input :password
           .form-group
-            = f.button :submit, t('.register'), class: 'btn-primary mb-2 w-100'
+            = f.submit class: 'btn btn-primary mb-2 w-100'
       .card-footer.text-center
         span.mr-1 = t('.have_account')
         = link_to t('.sign_in'), new_session_path
