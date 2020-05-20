@@ -8,8 +8,7 @@
     "@rails/webpacker": "4.2.2",
     "bootstrap": "^4.5.0",
     "jquery": "^3.5.1",
-    "popper.js": "^1.16.1",
-    "tabler": "^1.0.0-alpha.7"
+    "popper.js": "^1.16.1"
   },
   "version": "0.1.0",
   "devDependencies": {
