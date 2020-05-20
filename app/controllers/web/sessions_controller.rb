@@ -2,17 +2,17 @@
 
 class Web::SessionsController < Web::ApplicationController
   def new
-    @user = User.new
+    @sign_in_form = SignInForm.new(User.new)
   end
 
   def create
-    @user = User.find_by(email: user_params[:email])
+    @sign_in_form = SignInForm.new(User.new)
 
-    if @user&.authenticate(user_params[:password])
-      sign_in @user
+    if @sign_in_form.validate(sign_in_params)
+      sign_in @sign_in_form.user
       redirect_to root_path
     else
-      redirect_to new_session_path
+      render :new
     end
   end
 
@@ -23,7 +23,7 @@ class Web::SessionsController < Web::ApplicationController
 
   private
 
-  def user_params
-    params.require(:user).permit(:email, :password)
+  def sign_in_params
+    params.require(:sign_in).permit(:email, :password)
   end
 end
