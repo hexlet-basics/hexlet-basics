@@ -2,15 +2,16 @@
 
 class Web::UsersController < Web::ApplicationController
   def new
-    @user = User.new
+    @user_form = UserForm.new(User.new)
   end
 
   def create
-    @user = User.new(user_params)
-    @user.email.downcase!
+    @user_form = UserForm.new(User.new)
 
-    if @user.save
-      sign_in @user
+    if @user_form.validate(user_params)
+      @user_form.save
+      sign_in @user_form.model
+
       redirect_to root_path
     else
       render :new
