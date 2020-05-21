@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SignInForm < Reform::Form
+class SignInForm < ApplicationForm
   property :email
   property :password
 

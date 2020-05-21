@@ -3,7 +3,7 @@
     .card.border-top
       .card-body
         h1.mb-4.text-center = t('.sign_up')
-        = simple_form_for @user_form, wrapper: :no_labels_form do |f|
+        = simple_form_for @user, wrapper: :no_labels_form do |f|
           = f.input :email
           = f.input :password
           .form-group
