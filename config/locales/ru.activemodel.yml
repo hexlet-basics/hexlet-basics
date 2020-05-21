@@ -1,0 +1,8 @@
+ru:
+  activemodel:
+    errors:
+      models:
+        sign_in:
+          attributes:
+            password:
+              cannot_sign_in: Неправильные email/пароль

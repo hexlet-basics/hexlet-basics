@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
+  include AuthManagment
+
   def nav_menu_item(name, path = '#', options = {})
     assembled_options = options.merge(class: "nav-link #{active?(path)}")
     content_tag :li, class: 'nav-item' do

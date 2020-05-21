@@ -20,6 +20,10 @@ db-reset:
 start:
 	bundle exec heroku local
 
+precompile-assets:
+	bundle exec rails assets:precompile
+
+
 lint:
 	bundle exec rubocop
 
@@ -37,6 +41,7 @@ heroku-logs:
 
 ci-test:
 	make setup
+	make precompile-assets
 	make lint
 	make test
 

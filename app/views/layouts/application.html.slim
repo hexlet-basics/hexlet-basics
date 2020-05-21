@@ -6,7 +6,8 @@ html.h-100 lang="#{I18n.locale}"
     = render 'layouts/shared/nav'
     main.flex-fill
       .container-xl.mt-1
-        = yield
+        .mt-6
+          = yield
 
   = content_for :js
 

@@ -1,0 +1,10 @@
+ru:
+  helpers:
+    submit:
+      create: Создать
+      update: Изменить
+      sign_in:
+        create: Войти
+      user:
+        create: Зарегистрироваться
+

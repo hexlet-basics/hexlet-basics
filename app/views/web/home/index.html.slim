@@ -1,16 +1,15 @@
-.mt-6
-  .row.justify-content-center.mb-6
-    .col-12.col-md-10.col-lg-9.col-xl-8.text-center
-      h1 = t('.h1')
-      div.h2.font-weight-light
-        = t('.h2')
-        = link_to t('.hexlet'), 'https://hexlet.io/?utm_campaign=general&utm_medium=referral&utm_source=code-basics', class: 'text-muted'
-  .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4
-    - @languages.each do |language|
-      .col.mb-5
-        .card.h-100
-          .card-body.text-center.bg-blue
-            h2.card-title.text-white = language
-            = image_tag "https://via.placeholder.com/390x320", class: 'img-fluid mt-3 mb-4'
-            = link_to t('.start'), language_path(language), class: 'btn btn-light btn-block stretched-link'
+.row.justify-content-center.mb-6
+  .col-12.col-md-10.col-lg-9.col-xl-8.text-center
+    h1 = t('.header')
+    div.h2.font-weight-light
+      = t('.subheader')
+      = link_to t('.hexlet'), 'https://hexlet.io/?utm_campaign=general&utm_medium=referral&utm_source=code-basics', class: 'text-muted'
+.row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4
+  - @languages.each do |language|
+    .col.mb-5
+      .card.h-100
+        .card-body.text-center.bg-blue
+          h2.card-title.text-white = language
+          = image_tag "https://via.placeholder.com/390x320", class: 'img-fluid mt-3 mb-4'
+          = link_to t('.start'), language_path(language), class: 'btn btn-light btn-block stretched-link'
 

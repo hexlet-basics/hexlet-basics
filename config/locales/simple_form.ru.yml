@@ -1,0 +1,6 @@
+ru:
+  simple_form:
+    placeholders:
+      defaults:
+          email: E-mail
+          password: Пароль
