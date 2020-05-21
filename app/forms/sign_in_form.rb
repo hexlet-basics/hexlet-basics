@@ -15,4 +15,8 @@ class SignInForm < ApplicationForm
   def user
     @user ||= User.find_by(email: email)
   end
+
+  def email=(value)
+    super(value.downcase)
+  end
 end
