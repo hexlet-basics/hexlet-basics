@@ -2,11 +2,11 @@
 
 class Web::UsersController < Web::ApplicationController
   def new
-    @user = User::CreateType.new
+    @user = User::SignUpType.new
   end
 
   def create
-    @user = User::CreateType.new(user_params)
+    @user = User::SignUpType.new(user_params)
 
     if @user.save
       sign_in @user
