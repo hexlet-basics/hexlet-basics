@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_16_051127) do
+ActiveRecord::Schema.define(version: 2020_05_23_224300) do
 
   create_table "language_modules", force: :cascade do |t|
     t.string "slug"
     t.integer "language_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "order"
     t.index ["language_id"], name: "index_language_modules_on_language_id"
   end
 
