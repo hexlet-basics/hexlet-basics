@@ -1,0 +1,4 @@
+_fixture:
+  model_class: Language
+language:
+  extension: js
