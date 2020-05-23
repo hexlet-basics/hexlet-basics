@@ -39,11 +39,13 @@ class ExercisesJob < ApplicationJob
   end
 
   def upsert_lesson(lesson_name, module_id, language_id)
-    Language::Module::Lesson.find_or_create_by(slug: lesson_name, language_module_id: module_id, language_id: language_id)
+    order, slug = lesson_name.split('-', 2)
+    Language::Module::Lesson.find_or_create_by(slug: slug, language_module_id: module_id, language_id: language_id, order: order)
   end
 
   def upsert_module(module_name, language_id)
-    Language::Module.find_or_create_by(slug: module_name, language_id: language_id)
+    order, slug = module_name.split('-', 2)
+    Language::Module.find_or_create_by(slug: slug, language_id: language_id, order: order)
   end
 
   def upsert_language(dest, lang_name)
