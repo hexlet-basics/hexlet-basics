@@ -29,9 +29,7 @@ class ExercisesJob < ApplicationJob
   end
 
   def get_lessons(dest, module_name)
-    modules_path = File.join(dest, 'modules')
-    lessons_path = File.join(modules_path, module_name)
-
+    lessons_path = File.join(dest, 'modules', module_name)
     Dir.open(lessons_path) do |dir|
       children = dir.children
       children.select { |child| File.directory?(File.join(lessons_path, child)) }
