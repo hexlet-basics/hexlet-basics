@@ -4,7 +4,7 @@ class ExercisesJob < ApplicationJob
   queue_as :default
 
   def perform(lang_name)
-    exercises_path = File.join(Rails.root, 'tmp', 'hexletbasics')
+    exercises_path = File.join(Rails.root, 'tmp', 'hexletbasics') # rubocop:disable Rails/FilePath
     language_exercises_path = File.join(exercises_path, "exercises-#{lang_name}")
     language = upsert_language(language_exercises_path, lang_name)
     language_id = language.id
@@ -50,7 +50,6 @@ class ExercisesJob < ApplicationJob
     data_path = File.join(dest, 'spec.yml')
     data = File.new(data_path, 'r').read
     language_data = YAML.safe_load(data)['language']
-
 
     Language.find_or_create_by(
       name: lang_name,
