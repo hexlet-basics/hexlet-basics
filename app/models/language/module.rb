@@ -5,5 +5,5 @@ class Language::Module < ApplicationRecord
   belongs_to :language
 
   validates :slug, uniqueness: { scope: :language, message: 'slug should be uniqueness on language' },
-    presence: true
+                   presence: true
 end

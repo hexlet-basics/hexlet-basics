@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ExercisesJob < ApplicationJob
   queue_as :default
 
@@ -22,7 +24,7 @@ class ExercisesJob < ApplicationJob
     modules_path = File.join(dest, 'modules')
     Dir.open(modules_path) do |dir|
       children = dir.children
-      modules_names = children.select { |child| File.directory?(File.join(modules_path, child)) }
+      children.select { |child| File.directory?(File.join(modules_path, child)) }
     end
   end
 
@@ -32,7 +34,7 @@ class ExercisesJob < ApplicationJob
 
     Dir.open(lessons_path) do |dir|
       children = dir.children
-      lessons_names = children.select { |child| File.directory?(File.join(lessons_path, child)) }
+      children.select { |child| File.directory?(File.join(lessons_path, child)) }
     end
   end
 
