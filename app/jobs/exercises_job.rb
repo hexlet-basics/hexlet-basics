@@ -8,43 +8,53 @@ class ExercisesJob < ApplicationJob
     language_exercises_path = File.join(exercises_path, "exercises-#{lang_name}")
     language = upsert_language(language_exercises_path, lang_name)
 
-    modules_names = get_modules(language_exercises_path)
+    modules_dest = File.join(language_exercises_path, 'modules')
+    modules_data = get_modules(modules_dest)
 
-    modules_names.each do |module_name|
-      modul = upsert_module(module_name, language)
-      module_lessons_names = get_lessons(language_exercises_path, module_name)
-      module_lessons_names.each do |module_lesson_name|
-        upsert_lesson(module_lesson_name, modul, language)
-      end
+    modules = modules_data.map do |module_data|
+      upsert_module(language, module_data)
     end
+
+    modules
+      .flat_map { |language_module| get_lessons(modules_dest, language_module, language) }
+      .each { |lesson_data| upsert_lesson(lesson_data) }
   end
 
   def get_modules(dest)
-    modules_path = File.join(dest, 'modules')
-    Dir.open(modules_path) do |dir|
+    Dir.open(dest) do |dir|
       children = dir.children
-      children.select { |child| File.directory?(File.join(modules_path, child)) }
+      children
+        .select { |child| File.directory?(File.join(dest, child)) }
+        .map do |module_name|
+          order, slug = module_name.split('-', 2)
+          { order: order, slug: slug }
+        end
     end
   end
 
-  def get_lessons(dest, module_name)
-    lessons_path = File.join(dest, 'modules', module_name)
-    Dir.open(lessons_path) do |dir|
+  def get_lessons(dest, language_module, language)
+    module_directory = Language::Module.get_directory(language_module)
+    module_path = File.join(dest, module_directory)
+
+    Dir.open(module_path) do |dir|
       children = dir.children
-      children.select { |child| File.directory?(File.join(lessons_path, child)) }
+      children
+        .select { |child| File.directory?(File.join(module_path, child)) }
+        .map do |lesson_name|
+          order, slug = lesson_name.split('-', 2)
+          path_to_code = File.join("/exercises-#{language.slug}/modules", module_directory, lesson_name)
+
+          { order: order, slug: slug, path_to_code: path_to_code, language: language, language_module: language_module }
+        end
     end
   end
 
-  def upsert_lesson(lesson_name, language_module, language)
-    order, slug = lesson_name.split('-', 2)
-    module_directory_path = Language::Module.get_directory(language_module)
-    path_to_code = File.join(module_directory_path, lesson_name)
-    Language::Module::Lesson.find_or_create_by(slug: slug, language_module_id: language_module.id, language_id: language.id, order: order, path_to_code: path_to_code)
+  def upsert_lesson(data)
+    Language::Module::Lesson.find_or_create_by(slug: data[:slug], language_module_id: data[:language_module].id, language_id: data[:language].id, order: data[:order], path_to_code: data[:path_to_code])
   end
 
-  def upsert_module(module_name, language)
-    order, slug = module_name.split('-', 2)
-    Language::Module.find_or_create_by(slug: slug, language_id: language.id, order: order)
+  def upsert_module(language, data)
+    Language::Module.find_or_create_by(slug: data[:slug], language_id: language.id, order: data[:order])
   end
 
   def upsert_language(dest, lang_name)
