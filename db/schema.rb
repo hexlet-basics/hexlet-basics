@@ -38,6 +38,9 @@ ActiveRecord::Schema.define(version: 2020_05_23_195244) do
     t.string "extension"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "docker_image"
+    t.string "exercise_filename"
+    t.string "exercise_test_filename"
   end
 
   create_table "users", force: :cascade do |t|

@@ -6,7 +6,8 @@ class ExercisesJobTest < ActiveJob::TestCase
   test 'should create entities' do
     Rails.class_eval do
       def self.root
-        File.join(Dir.pwd, 'test', 'fixtures', 'files')
+        pathname = File.join(Dir.pwd, 'test', 'fixtures', 'files')
+        Pathname.new(pathname)
       end
     end
 

@@ -4,7 +4,7 @@ class ExercisesJob < ApplicationJob
   queue_as :default
 
   def perform(lang_name)
-    exercises_path = File.join(Rails.root, 'tmp', 'hexletbasics') # rubocop:disable Rails/FilePath
+    exercises_path = Rails.root.join('tmp/hexletbasics')
     language_exercises_path = File.join(exercises_path, "exercises-#{lang_name}")
     language = upsert_language(language_exercises_path, lang_name)
     language_id = language.id
@@ -54,7 +54,10 @@ class ExercisesJob < ApplicationJob
     Language.find_or_create_by(
       name: lang_name,
       slug: lang_name,
-      extension: language_data['extension']
+      extension: language_data['extension'],
+      docker_image: language_data['docker_image'],
+      exercise_filename: language_data['exercise_filename'],
+      exercise_test_filename: language_data['exercise_test_filename']
     )
   end
 end
