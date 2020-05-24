@@ -7,15 +7,14 @@ class ExercisesJob < ApplicationJob
     exercises_path = Rails.root.join('tmp/hexletbasics')
     language_exercises_path = File.join(exercises_path, "exercises-#{lang_name}")
     language = upsert_language(language_exercises_path, lang_name)
-    language_id = language.id
 
     modules_names = get_modules(language_exercises_path)
 
     modules_names.each do |module_name|
-      modul = upsert_module(module_name, language_id)
+      modul = upsert_module(module_name, language)
       module_lessons_names = get_lessons(language_exercises_path, module_name)
       module_lessons_names.each do |module_lesson_name|
-        upsert_lesson(module_lesson_name, modul.id, language_id)
+        upsert_lesson(module_lesson_name, modul, language)
       end
     end
   end
@@ -36,14 +35,16 @@ class ExercisesJob < ApplicationJob
     end
   end
 
-  def upsert_lesson(lesson_name, module_id, language_id)
+  def upsert_lesson(lesson_name, language_module, language)
     order, slug = lesson_name.split('-', 2)
-    Language::Module::Lesson.find_or_create_by(slug: slug, language_module_id: module_id, language_id: language_id, order: order)
+    module_directory_path = Language::Module.get_directory(language_module)
+    path_to_code = File.join(module_directory_path, lesson_name)
+    Language::Module::Lesson.find_or_create_by(slug: slug, language_module_id: language_module.id, language_id: language.id, order: order, path_to_code: path_to_code)
   end
 
-  def upsert_module(module_name, language_id)
+  def upsert_module(module_name, language)
     order, slug = module_name.split('-', 2)
-    Language::Module.find_or_create_by(slug: slug, language_id: language_id, order: order)
+    Language::Module.find_or_create_by(slug: slug, language_id: language.id, order: order)
   end
 
   def upsert_language(dest, lang_name)
