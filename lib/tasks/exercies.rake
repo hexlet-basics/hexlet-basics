@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 namespace :exercies do
-  desc "Pull exercies"
-  task :pull, [:lang] => :environment do |task, args|
+  desc 'Pull exercies'
+  task :pull, [:lang] => :environment do |_task, args|
     lang_name = args.lang
     Exercies.new(lang_name).run
   end
@@ -44,7 +46,7 @@ class Exercies
 
     files.map do |file|
       filename = File.basename(file)
-      _, locale, _ = filename.split('.')
+      _, locale, = filename.split('.')
       logger.debug file
 
       data = YAML.load_file(file)
@@ -53,7 +55,7 @@ class Exercies
   end
 
   def upsert_language(repo_dest)
-    spec_filepath = File.join(repo_dest, "spec.yml")
+    spec_filepath = File.join(repo_dest, 'spec.yml')
 
     language_info = YAML.load_file(spec_filepath)['language']
 
@@ -81,7 +83,5 @@ class Exercies
     raise "Module: #{language.module} does not have descriptions" if descriptions.empty?
   end
 
-  def upsert_module_description(language_module, description)
-
-  end
+  def upsert_module_description(language_module, description); end
 end

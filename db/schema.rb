@@ -10,7 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_23_224300) do
+ActiveRecord::Schema.define(version: 2020_05_23_231550) do
+
+  create_table "language_module_descriptions", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.string "locale"
+    t.integer "module_id", null: false
+    t.integer "language_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["language_id"], name: "index_language_module_descriptions_on_language_id"
+    t.index ["module_id"], name: "index_language_module_descriptions_on_module_id"
+  end
 
   create_table "language_modules", force: :cascade do |t|
     t.string "slug"
@@ -37,5 +49,7 @@ ActiveRecord::Schema.define(version: 2020_05_23_224300) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  add_foreign_key "language_module_descriptions", "language_modules", column: "module_id"
+  add_foreign_key "language_module_descriptions", "languages"
   add_foreign_key "language_modules", "languages"
 end
