@@ -14,11 +14,12 @@ ActiveRecord::Schema.define(version: 2020_05_23_195244) do
 
   create_table "language_module_lessons", force: :cascade do |t|
     t.string "slug"
+    t.integer "order", null: false
+    t.string "path_to_code", null: false
     t.integer "language_id", null: false
     t.integer "language_module_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "order"
     t.index ["language_id"], name: "index_language_module_lessons_on_language_id"
     t.index ["language_module_id"], name: "index_language_module_lessons_on_language_module_id"
   end
