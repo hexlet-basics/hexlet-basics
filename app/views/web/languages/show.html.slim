@@ -1,1 +1,18 @@
-h1 = @language
+h1.text-center.display-4 = @language
+.text-center
+  = link_to 'Начать обучение', '#', class: 'btn btn-lg btn-primary px-4 mb-3 mt-2'
+.
+  - @modules.each do |language_module|
+    .row.mt-5
+      .col-12
+        h2= language_module
+    .row
+      .col-12.col-md-6.mt-4
+        ul.list-group
+          - language_module.lessons.each do |lesson|
+            li.list-group-item.d-flex
+              = link_to lesson, class: 'stretched-link text-decoration-none'
+      .col-12.col-md-6.mt-4
+        = language_module
+
+

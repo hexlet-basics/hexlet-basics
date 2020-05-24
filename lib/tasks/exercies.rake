@@ -8,6 +8,7 @@ namespace :exercies do
   end
 end
 
+# rubocop:disable Metrics/ClassLength
 class Exercies
   attr_reader :lang_name, :logger
 
@@ -36,7 +37,7 @@ class Exercies
     dirs.map do |dir|
       filename = File.basename(dir)
       # TODO: add logger
-      order, slug = filename.split('-')
+      order, slug = filename.split('-', 2)
       descriptions = get_descriptions(File.join(dest, filename))
       { order: order, slug: slug, descriptions: descriptions }
     end
@@ -51,19 +52,19 @@ class Exercies
       logger.debug file
 
       data = YAML.load_file(file)
-      [ locale, data ]
+      [locale, data]
     end
   end
 
   def get_lessons(dest, language_module, language)
     module_path = File.join(dest, language_module.directory)
-    wildcard_path = File.join(module_path, "*")
+    wildcard_path = File.join(module_path, '*')
     files = Dir.glob(wildcard_path)
 
     directories = files.filter { |file| File.directory?(file) }
     directories.map do |directory|
       filename = File.basename(directory)
-      order, slug = filename.split('-')
+      order, slug = filename.split('-', 2)
       descriptions = get_descriptions(directory)
       test_file_path = File.join(directory, language.exercise_test_filename)
       logger.debug test_file_path
@@ -81,7 +82,8 @@ class Exercies
         original_code: original_code,
         test_code: test_code,
         descriptions: descriptions,
-        path_to_code: path_to_code
+        path_to_code: path_to_code,
+        prepared_code: prepared_code
       }
     end
   end
@@ -127,6 +129,7 @@ class Exercies
 
     description = Language::Module::Description.find_or_create_by!(
       module: language_module,
+      language: language_module.language,
       locale: locale
     )
 
@@ -137,7 +140,6 @@ class Exercies
   end
 
   def upsert_lesson_with_descriptions(data, index)
-    logger.debug data
     language = data[:language]
     language_module = data[:module]
     slug = data[:slug]
@@ -177,7 +179,6 @@ class Exercies
     )
 
     new_data = { lesson: lesson }.merge(data)
-    logger.debug new_data
 
     description.update!(new_data)
     description
@@ -188,6 +189,7 @@ class Exercies
 
     result = code.gsub(reg, "\\1\n\\3")
 
-    result != code ? result : ""
+    result != code ? result : ''
   end
 end
+# rubocop:enable Metrics/ClassLength
