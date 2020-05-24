@@ -16,4 +16,7 @@ ru:
         sign_in: Войти
         dont_have_account: Нет аккаунта?
         register: Регистрация
+    languages:
+      show:
+        start: Начать
 
