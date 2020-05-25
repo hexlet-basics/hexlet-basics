@@ -56,7 +56,7 @@ class ExercisesLoadJob < ApplicationJob
         test_file_path = File.join(directory, language.exercise_test_filename)
         logger.debug test_file_path
         test_code = File.read(test_file_path)
-        original_code = File.read(File.join(directory, language.exercise_test_filename))
+        original_code = File.read(File.join(directory, language.exercise_filename))
         prepared_code = prepare_code(original_code)
 
         path_to_code = File.join("/exercises-#{language.slug}/modules", language_module.directory, directory)
