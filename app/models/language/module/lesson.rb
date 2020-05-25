@@ -5,5 +5,5 @@ class Language::Module::Lesson < ApplicationRecord
 
   belongs_to :language
   belongs_to :module
-  has_many :descriptions, dependent: :destroy
+  has_many :descriptions, dependent: :destroy, class_name: 'Language::Module::Lesson::Description'
 end
