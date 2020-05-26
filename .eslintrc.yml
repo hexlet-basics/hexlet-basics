@@ -15,4 +15,5 @@ plugins:
 rules:
   max-len: ["error", { "code": 120 }]
   import/no-unresolved: 0
+  import/extensions: 0
 
