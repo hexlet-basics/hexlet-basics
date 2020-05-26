@@ -8,18 +8,8 @@ two:
   order: 10
   language: two
 
-strings_one:
-  slug: strings
-  order: 20
-  language: one
-
 variables_one:
   slug: variables
   order: 30
   language: one
-
-strings_two:
-  slug: strings
-  order: 20
-  language: two
 

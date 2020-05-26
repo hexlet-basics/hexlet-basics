@@ -24,39 +24,11 @@ tags_one:
   lesson: tags_one
   locale: ru
 
-tags_two:
-  <<: *DEFAULTS
-  name: Теги
-  language: two
-  lesson: tags_two
-  locale: ru
-
 comments_one:
   <<: *DEFAULTS
   name: Коментарии
   language: one
   lesson: comments_one
-  locale: ru
-
-comments_two:
-  <<: *DEFAULTS
-  name: Коментарии
-  language: two
-  lesson: comments_two
-  locale: ru
-
-quotes_string_one:
-  <<: *DEFAULTS
-  name: <%= Faker::Lorem.word %>
-  language: one
-  lesson: quotes_string_one
-  locale: ru
-
-quotes_string_two:
-  <<: *DEFAULTS
-  name: Кавычки
-  language: two
-  lesson: quotes_string_two
   locale: ru
 
 naming_variables_one:
