@@ -1,0 +1,18 @@
+env:
+  browser: true
+  es6: true
+
+extends:
+  - 'plugin:react/recommended'
+  - airbnb
+
+parser: babel-eslint
+
+plugins:
+  - react
+  - filenames
+
+rules:
+  max-len: ["error", { "code": 120 }]
+  import/no-unresolved: 0
+
