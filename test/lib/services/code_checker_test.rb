@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require_relative '../../../lib/services/code_checker'
+require 'services/code_checker'
 
 class Service::CodeCheckerTest < ActionDispatch::IntegrationTest
   test 'should check a code' do
