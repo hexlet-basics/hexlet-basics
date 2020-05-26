@@ -1,4 +1,3 @@
-
 DEFAULTS: &DEFAULTS
   password_digest: <%= BCrypt::Password.create('password') %>
 

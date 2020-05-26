@@ -1,0 +1,24 @@
+DEFAULTS: &DEFAULTS
+  description: <%= Faker::Lorem.paragraph %>
+  name: $LABEL
+
+one:
+  <<: *DEFAULTS
+  locale: ru
+  language: one
+  module: one
+
+two:
+  <<: *DEFAULTS
+  locale: ru
+  language: two
+  module: two
+
+variables_ru_one:
+  name: Переменные
+  description: Информацию можно помещать в специальные «хранилища», а потом использовать сколько угодно раз. Эти хранилища называются переменными, и они помогают упростить код и сократить лишние повторения.
+  locale: ru
+  language: one
+  module: variables_one
+
+
