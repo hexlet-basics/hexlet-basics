@@ -1,11 +1,16 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+DEFAULTS: &DEFAULTS
+  docker_image: docker_image
+  slug: slug_$LABEL
+  extension: extension_$LABEL
+  exercise_filename: filename_$LABEL
+  exercise_test_filename: test_filename_$LABEL
 
 one:
-  name: MyString
-  slug: MyString
-  extension: MyString
+  <<: *DEFAULTS
+  name: <%= Faker::ProgrammingLanguage.name %>
+
 
 two:
-  name: MyString
-  slug: MyString
-  extension: MyString
+  <<: *DEFAULTS
+  name: <%= Faker::ProgrammingLanguage.name %>
+
