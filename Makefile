@@ -30,6 +30,9 @@ lint:
 linter-fix:
 	bundle exec rubocop --auto-correct
 
+eslint:
+	npx eslint app/javascript
+
 deploy:
 	git push heroku master
 
@@ -44,5 +47,6 @@ ci-test:
 	make precompile-assets
 	make lint
 	make test
+	make eslint
 
 .PHONY: test
