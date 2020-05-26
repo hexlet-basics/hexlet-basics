@@ -4,7 +4,6 @@ class Web::LanguagesController < Web::ApplicationController
   def show
     @language = Language.find(params[:id])
     @modules = @language.modules.web
-                        .order(:order)
                         .preload(:lessons)
                         .where(lessons: Language::Module::Lesson.web)
     @descriptions_by_module = @language.module_descriptions
