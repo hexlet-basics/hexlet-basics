@@ -6,4 +6,8 @@ class Language::Module < ApplicationRecord
   belongs_to :language
   has_many :descriptions, dependent: :destroy, class_name: 'Language::Module::Description'
   has_many :lessons, dependent: :destroy
+
+  def directory
+    "#{order}-#{slug}"
+  end
 end

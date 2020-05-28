@@ -2,17 +2,24 @@
 
 # rubocop:disable Metrics/ClassLength
 class Exercises::Loader
-  def run(lang_name)
+  attr_reader :lang_name, :logger
+
+  def initialize(lang_name, logger = Logger.new(STDOUT))
+    @lang_name = lang_name
+    @logger = logger
+  end
+
+  def run
     repo_dest = "tmp/hexletbasics/exercises-#{lang_name}"
     module_dest = "#{repo_dest}/modules"
 
-    language = upsert_language(repo_dest, lang_name)
+    language = upsert_language(repo_dest)
 
     modules_with_meta = get_modules(module_dest)
     language_modules = modules_with_meta.map { |data| upsert_module_with_descriptions(language, data) }
 
     lessons = language_modules.flat_map { |language_module| get_lessons(module_dest, language_module, language) }
-    lessons.each { |lesson| upsert_lesson_with_descriptions(lesson) }
+    lessons.each { |lesson| upsert_lesson_with_descriptions_and_version(lesson) }
   end
 
   def get_modules(dest)
@@ -21,12 +28,12 @@ class Exercises::Loader
     files
       .filter { |file| File.directory?(file) }
       .map do |directory|
-      filename = File.basename(directory)
-      logger.debug filename
-      order, slug = filename.split('-', 2)
-      descriptions = get_descriptions(File.join(dest, filename))
-      { order: order, slug: slug, descriptions: descriptions }
-    end
+        filename = File.basename(directory)
+        logger.debug filename
+        order, slug = filename.split('-', 2)
+        descriptions = get_descriptions(File.join(dest, filename))
+        { order: order, slug: slug, descriptions: descriptions }
+      end
   end
 
   def get_descriptions(path)
@@ -50,20 +57,20 @@ class Exercises::Loader
     files
       .filter { |file| File.directory?(file) }
       .map do |directory|
-      filename = File.basename(directory)
-      order, slug = filename.split('-', 2)
-      descriptions = get_descriptions(directory)
-      lesson_version = get_lesson_version(directory, language, language_module)
+        filename = File.basename(directory)
+        order, slug = filename.split('-', 2)
+        descriptions = get_descriptions(directory)
+        lesson_version = get_lesson_version(directory, language, language_module)
 
-      {
-        order: order,
-        module: language_module,
-        language: language,
-        slug: slug,
-        lesson_version: lesson_version,
-        descriptions: descriptions
-      }
-    end
+        {
+          order: order,
+          module: language_module,
+          language: language,
+          slug: slug,
+          lesson_version: lesson_version,
+          descriptions: descriptions
+        }
+      end
   end
 
   def get_lesson_version(directory, language, language_module)
@@ -74,15 +81,14 @@ class Exercises::Loader
     path_to_code = File.join("/exercises-#{language.slug}/modules", language_module.directory, directory)
 
     {
-      test_file_path: test_file_path,
-      test_code:  test_code,
+      test_code: test_code,
       original_code: original_code,
       prepared_code: prepared_code,
       path_to_code: path_to_code
     }
   end
 
-  def upsert_language(repo_dest, lang_name)
+  def upsert_language(repo_dest)
     spec_filepath = File.join(repo_dest, 'spec.yml')
 
     language_info = YAML.load_file(spec_filepath)['language']
@@ -133,10 +139,11 @@ class Exercises::Loader
     description
   end
 
-  def upsert_lesson_with_descriptions(data)
+  def upsert_lesson_with_descriptions_and_version(data)
     language = data[:language]
     language_module = data[:module]
     slug = data[:slug]
+    order = data[:order]
     descriptions = data[:descriptions]
     lesson_version = data[:lesson_version]
 
@@ -151,6 +158,8 @@ class Exercises::Loader
 
     descriptions.each { |description| upsert_lesson_description(lesson, description) }
 
+    version = create_lesson_version(lesson, lesson_version)
+    lesson.update!(current_version: version)
 
     lesson
   end
@@ -168,6 +177,19 @@ class Exercises::Loader
 
     description.update!(new_data)
     description
+  end
+
+  def create_lesson_version(lesson, version_data)
+    logger.debug version_data
+
+    Language::Module::Lesson::Version.create!(
+      test_code: version_data[:test_code],
+      original_code: version_data[:original_code],
+      prepared_code: version_data[:prepared_code],
+      path_to_code: version_data[:path_to_code],
+      lesson: lesson,
+      language: lesson.language
+    )
   end
 
   def prepare_code(code)

@@ -60,8 +60,6 @@ ActiveRecord::Schema.define(version: 2020_05_28_021236) do
     t.integer "language_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "current_version_id"
-    t.index ["current_version_id"], name: "index_language_module_lesson_versions_on_current_version_id"
     t.index ["language_id"], name: "index_language_module_lesson_versions_on_language_id"
     t.index ["lesson_id"], name: "index_language_module_lesson_version_on_lesson_id"
   end
@@ -74,6 +72,8 @@ ActiveRecord::Schema.define(version: 2020_05_28_021236) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "state"
+    t.integer "current_version_id"
+    t.index ["current_version_id"], name: "index_language_module_lessons_on_current_version_id"
     t.index ["language_id"], name: "index_language_module_lessons_on_language_id"
     t.index ["module_id"], name: "index_language_module_lessons_on_module_id"
   end
