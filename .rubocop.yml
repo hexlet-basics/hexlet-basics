@@ -11,6 +11,7 @@ AllCops:
     - 'db/migrate/**'
     - 'vendor/**/*'
     - 'node_modules/**/*'
+    - 'tmp/**/*'
 
 Style/ClassAndModuleChildren:
   Enabled: false
