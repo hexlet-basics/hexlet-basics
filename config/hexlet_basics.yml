@@ -1,11 +1,6 @@
-development:
+default: &default
   docker_command_template: 'docker run --rm --net none %s %s timeout 4 make --silent -C %s test'
   code_directory: '/tmp/hexlet-basics/code'
 
-production:
-  docker_command_template: 'docker run --rm --net none %s %s timeout 4 make --silent -C %s test'
-  code_directory: '/tmp/hexlet-basics/code'
-
-test:
-  docker_command_template: 'docker run --rm --net none %s %s timeout 4 make --silent -C %s test'
-  code_directory: 'test/fixtures/hexlet-basics/code'
+common:
+  <<: *default

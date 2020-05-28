@@ -9,16 +9,4 @@ class User < ApplicationRecord
   def guest?
     false
   end
-
-  def directory_for_code
-    chunked = id
-              .to_s
-              .rjust(6, '0')
-              .reverse
-              .split('')
-              .each_slice(3)
-              .to_a
-              .map(&:join)
-    File.join(chunked)
-  end
 end
