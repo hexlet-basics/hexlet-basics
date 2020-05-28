@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-# frozen_string_litera: true
-
-namespace :exercies do
-  desc 'Loader exercies'
+namespace :exercises do
+  desc 'Load exercies'
   task :load, [:lang] => :environment do |_task, args|
     Exercises::Loader.new(args.lang).run
   end

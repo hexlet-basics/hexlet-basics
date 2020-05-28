@@ -107,9 +107,7 @@ class Exercises::Loader
   end
 
   def upsert_module_with_descriptions(language, data)
-    order = data[:order]
-    slug = data[:slug]
-    descriptions = data[:descriptions]
+    order, slug, descriptions = data.values_at(:order, :slug, :descriptions)
 
     language_module = Language::Module.find_or_create_by!(slug: slug, language: language)
 
