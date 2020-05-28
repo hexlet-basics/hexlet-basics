@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_28_011257) do
+ActiveRecord::Schema.define(version: 2020_05_28_021236) do
 
   create_table "language_module_descriptions", force: :cascade do |t|
     t.string "name"
@@ -60,13 +60,14 @@ ActiveRecord::Schema.define(version: 2020_05_28_011257) do
     t.integer "language_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "current_version_id"
+    t.index ["current_version_id"], name: "index_language_module_lesson_versions_on_current_version_id"
     t.index ["language_id"], name: "index_language_module_lesson_versions_on_language_id"
     t.index ["lesson_id"], name: "index_language_module_lesson_version_on_lesson_id"
   end
 
   create_table "language_module_lessons", force: :cascade do |t|
     t.integer "order"
-    t.integer "natural_order"
     t.string "slug"
     t.integer "language_id", null: false
     t.integer "module_id", null: false
