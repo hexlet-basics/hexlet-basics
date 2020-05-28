@@ -25,12 +25,16 @@ precompile-assets:
 
 
 lint:
-	bundle exec rubocop
+	make lint-eslint
+	make lint-rubocop
 
 linter-fix:
 	bundle exec rubocop --auto-correct
 
-eslint:
+lint-rubocop:
+	bundle exec rubocop
+
+lint-eslint:
 	npx eslint app/javascript
 
 deploy:
@@ -47,6 +51,5 @@ ci-test:
 	make precompile-assets
 	make lint
 	make test
-	make eslint
 
 .PHONY: test
