@@ -6,6 +6,8 @@ class CreateLanguageModuleLessonVersions < ActiveRecord::Migration[6.0]
       t.string :test_code
       t.string :path_to_code
       t.references :language_module_lesson, null: false, foreign_key: true, index: { name: :index_language_module_lesson_version_on_lesson_id }
+      t.references :language, null: false, foreign_key: true
+
 
       t.timestamps
     end
