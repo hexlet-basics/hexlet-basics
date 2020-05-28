@@ -24,9 +24,7 @@ precompile-assets:
 	bundle exec rails assets:precompile
 
 
-lint:
-	make lint-eslint
-	make lint-rubocop
+lint: lint-eslint lint-rubocop
 
 linter-fix:
 	bundle exec rubocop --auto-correct
