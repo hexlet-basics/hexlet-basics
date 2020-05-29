@@ -20,6 +20,9 @@ class Exercises::Loader
 
     lessons = language_modules.flat_map { |language_module| get_lessons(module_dest, language_module, language) }
     lessons.each { |lesson| upsert_lesson_with_descriptions_and_version(lesson) }
+
+    version = upsert_language_repository_version(language)
+    language.update!(current_version: version)
   end
 
   def get_modules(dest)
@@ -188,6 +191,15 @@ class Exercises::Loader
       lesson: lesson,
       language: lesson.language
     )
+  end
+
+  def upsert_language_repository_version(language)
+    version = Language::RepositoryVersion.create!(
+      language: language,
+      language_name: language.name
+    )
+
+    version
   end
 
   def prepare_code(code)

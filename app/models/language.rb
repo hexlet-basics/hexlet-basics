@@ -6,6 +6,8 @@ class Language < ApplicationRecord
   has_many :module_descriptions, through: :modules, source: :descriptions
   has_many :lesson_descriptions, through: :lessons, source: :descriptions
 
+  belongs_to :current_version, class_name: 'Language::RepositoryVersion', optional: true
+
   def to_s
     name
   end
