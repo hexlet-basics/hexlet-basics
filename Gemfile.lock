@@ -282,12 +282,8 @@ DEPENDENCIES
   jbuilder (~> 2.7)
   listen (>= 3.0.5, < 3.2)
   minitest-power_assert
-<<<<<<< HEAD
   paper_trail
-  puma (~> 4.1)
-=======
   puma (~> 4.3)
->>>>>>> 00c48668e260b6b36d99cfeda5ad652c3c48c8f1
   rails (~> 6.0.2, >= 6.0.2.2)
   reform-rails
   rubocop
