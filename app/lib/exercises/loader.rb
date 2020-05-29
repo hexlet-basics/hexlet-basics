@@ -28,7 +28,7 @@ class Exercises::Loader
       lessons.each { |lesson| upsert_lesson_with_descriptions_and_version(lesson, upload) }
       upload.success!
     end
-  rescue ActiveRecord::RecordInvalid, LessonDescriptionDoesNotExist, ModuleDescriptionDoesNotExist
+  rescue ActiveRecord::RecordInvalid, StandardError
     upload.fail!
     raise
   end
@@ -162,19 +162,15 @@ class Exercises::Loader
 
     lesson = Language::Module::Lesson.find_or_initialize_by(language: language, module: language_module, slug: slug)
 
-    if lesson.persisted?
-      lesson.upload = upload
-      lesson.save
-    end
-
-    version = create_lesson_version(lesson, lesson_version)
-
     lesson.update!(
       order: order,
       module: language_module,
-      upload: upload,
-      current_version: version
+      upload: upload
     )
+
+    version = create_lesson_version(lesson, lesson_version)
+
+    lesson.update!(current_version: version)
 
     raise LessonDescriptionDoesNotExist, "Lesson '#{language_module.slug}.#{lesson.slug}' does not have descriptions" if descriptions.empty?
 
