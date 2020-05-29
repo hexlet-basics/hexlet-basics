@@ -2,14 +2,17 @@ one:
   slug: basic
   order: 10
   language: one
+  upload: one
 
 two:
   slug: basic
   order: 10
   language: two
+  upload: two
 
 variables_one:
   slug: variables
   order: 30
   language: one
+  upload: one
 

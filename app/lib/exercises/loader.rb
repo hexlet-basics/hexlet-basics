@@ -2,6 +2,9 @@
 
 # rubocop:disable Metrics/ClassLength
 class Exercises::Loader
+  class LessonDescriptionDoesNotExist < StandardError; end
+  class ModuleDescriptionDoesNotExist < StandardError; end
+
   attr_reader :lang_name, :logger
 
   def initialize(lang_name, logger = Logger.new(STDOUT))
@@ -13,16 +16,21 @@ class Exercises::Loader
     repo_dest = "tmp/hexletbasics/exercises-#{lang_name}"
     module_dest = "#{repo_dest}/modules"
 
-    language = upsert_language(repo_dest)
+    upload = Upload.create!(language_name: lang_name)
 
-    modules_with_meta = get_modules(module_dest)
-    language_modules = modules_with_meta.map { |data| upsert_module_with_descriptions(language, data) }
+    Upload.transaction do
+      language = upsert_language(repo_dest, upload)
 
-    lessons = language_modules.flat_map { |language_module| get_lessons(module_dest, language_module, language) }
-    lessons.each { |lesson| upsert_lesson_with_descriptions_and_version(lesson) }
+      modules_with_meta = get_modules(module_dest)
+      language_modules = modules_with_meta.map { |data| upsert_module_with_descriptions(language, data, upload) }
 
-    version = upsert_language_repository_version(language)
-    language.update!(current_version: version)
+      lessons = language_modules.flat_map { |language_module| get_lessons(module_dest, language_module, language) }
+      lessons.each { |lesson| upsert_lesson_with_descriptions_and_version(lesson, upload) }
+      upload.success!
+    end
+  rescue ActiveRecord::RecordInvalid, LessonDescriptionDoesNotExist, ModuleDescriptionDoesNotExist
+    upload.fail!
+    raise
   end
 
   def get_modules(dest)
@@ -53,7 +61,8 @@ class Exercises::Loader
   end
 
   def get_lessons(dest, language_module, language)
-    module_path = File.join(dest, language_module.directory)
+    module_dir = "#{language_module.order}-#{language_module.slug}"
+    module_path = File.join(dest, module_dir)
     wildcard_path = File.join(module_path, '*')
     files = Dir.glob(wildcard_path)
 
@@ -77,11 +86,12 @@ class Exercises::Loader
   end
 
   def get_lesson_version(directory, language, language_module)
+    module_dir = "#{language_module.order}-#{language_module.slug}"
     test_file_path = File.join(directory, language.exercise_test_filename)
     test_code = File.read(test_file_path)
     original_code = File.read(File.join(directory, language.exercise_filename))
     prepared_code = prepare_code(original_code)
-    path_to_code = File.join("/exercises-#{language.slug}/modules", language_module.directory, directory)
+    path_to_code = File.join("/exercises-#{language.slug}/modules", module_dir, directory)
 
     {
       test_code: test_code,
@@ -91,34 +101,36 @@ class Exercises::Loader
     }
   end
 
-  def upsert_language(repo_dest)
+  def upsert_language(repo_dest, upload)
     spec_filepath = File.join(repo_dest, 'spec.yml')
 
     language_info = YAML.load_file(spec_filepath)['language']
 
-    language = Language.find_or_create_by!(slug: lang_name)
+    language = Language.find_or_initialize_by(slug: lang_name)
 
     language.update!(
       name: lang_name,
       extension: language_info['extension'],
       docker_image: language_info['docker_image'],
       exercise_filename: language_info['exercise_filename'],
-      exercise_test_filename: language_info['exercise_test_filename']
+      exercise_test_filename: language_info['exercise_test_filename'],
+      upload: upload
     )
 
     language
   end
 
-  def upsert_module_with_descriptions(language, data)
+  def upsert_module_with_descriptions(language, data, upload)
     order, slug, descriptions = data.values_at(:order, :slug, :descriptions)
 
-    language_module = Language::Module.find_or_create_by!(slug: slug, language: language)
+    language_module = Language::Module.find_or_initialize_by(slug: slug, language: language)
 
     language_module.update!(
-      order: order
+      order: order,
+      upload: upload
     )
 
-    raise "Module: #{language.module} does not have descriptions" if descriptions.empty?
+    raise ModuleDescriptionDoesNotExist, "Module: #{language.module} does not have descriptions" if descriptions.empty?
 
     descriptions.each { |description| upsert_module_description(language_module, description) }
 
@@ -128,7 +140,7 @@ class Exercises::Loader
   def upsert_module_description(language_module, description_data)
     locale, data = description_data
 
-    description = Language::Module::Description.find_or_create_by!(
+    description = Language::Module::Description.find_or_initialize_by(
       module: language_module,
       language: language_module.language,
       locale: locale
@@ -140,7 +152,7 @@ class Exercises::Loader
     description
   end
 
-  def upsert_lesson_with_descriptions_and_version(data)
+  def upsert_lesson_with_descriptions_and_version(data, upload)
     language = data[:language]
     language_module = data[:module]
     slug = data[:slug]
@@ -148,19 +160,25 @@ class Exercises::Loader
     descriptions = data[:descriptions]
     lesson_version = data[:lesson_version]
 
-    lesson = Language::Module::Lesson.find_or_create_by!(language: language, module: language_module, slug: slug)
+    lesson = Language::Module::Lesson.find_or_initialize_by(language: language, module: language_module, slug: slug)
+
+    if lesson.persisted?
+      lesson.upload = upload
+      lesson.save
+    end
+
+    version = create_lesson_version(lesson, lesson_version)
 
     lesson.update!(
       order: order,
-      module: language_module
+      module: language_module,
+      upload: upload,
+      current_version: version
     )
 
-    raise "Lesson '#{language_module.slug}.#{lesson.slug}' does not have descriptions" if descriptions.empty?
+    raise LessonDescriptionDoesNotExist, "Lesson '#{language_module.slug}.#{lesson.slug}' does not have descriptions" if descriptions.empty?
 
     descriptions.each { |description| upsert_lesson_description(lesson, description) }
-
-    version = create_lesson_version(lesson, lesson_version)
-    lesson.update!(current_version: version)
 
     lesson
   end
@@ -168,7 +186,7 @@ class Exercises::Loader
   def upsert_lesson_description(lesson, description_data)
     locale, data = description_data
 
-    description = Language::Module::Lesson::Description.find_or_create_by!(
+    description = Language::Module::Lesson::Description.find_or_initialize_by(
       lesson: lesson,
       language: lesson.language,
       locale: locale
@@ -191,15 +209,6 @@ class Exercises::Loader
       lesson: lesson,
       language: lesson.language
     )
-  end
-
-  def upsert_language_repository_version(language)
-    version = Language::RepositoryVersion.create!(
-      language: language,
-      language_name: language.name
-    )
-
-    version
   end
 
   def prepare_code(code)

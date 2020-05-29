@@ -3,30 +3,39 @@ one:
   order: 10
   language: one
   module: one
+  upload: one
 
 two:
   slug: hello_world
   order: 10
   language: two
   module: two
+  upload: two
+
 
 tags_one:
   slug: tags
   order: 20
   language: one
   module: one
+  upload: one
+
 
 comments_one:
   slug: comments
   order: 20
   language: one
   module: one
+  upload: one
+
 
 naming_variables_one:
   slug: quotes
   order: 10
   language: one
   module: variables_one
+  upload: one
+
 
 
 

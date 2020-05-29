@@ -3,6 +3,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
+gem 'aasm'
 gem 'puma', '~> 4.1'
 gem 'rails', '~> 6.0.2', '>= 6.0.2.2'
 gem 'sass-rails', '>= 6'
@@ -37,6 +38,7 @@ group :test do
 end
 
 gem 'bcrypt'
+gem 'paper_trail'
 gem 'reform-rails'
 gem 'simple_form'
 gem 'slim-rails'

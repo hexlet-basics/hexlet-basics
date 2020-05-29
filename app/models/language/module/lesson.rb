@@ -3,6 +3,9 @@
 class Language::Module::Lesson < ApplicationRecord
   include Language::Module::LessonRepository
 
+  has_paper_trail
+
+  belongs_to :upload
   belongs_to :language
   belongs_to :module
   belongs_to :current_version, class_name: 'Language::Module::Lesson::Version', optional: true

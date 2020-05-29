@@ -1,0 +1,5 @@
+one:
+  language_name: <%= Faker::ProgrammingLanguage.name %>
+
+two:
+  language_name: <%= Faker::ProgrammingLanguage.name %>
