@@ -2,9 +2,6 @@
 
 # rubocop:disable Metrics/ClassLength
 class Exercises::Loader
-  class LessonDescriptionDoesNotExist < StandardError; end
-  class ModuleDescriptionDoesNotExist < StandardError; end
-
   attr_reader :lang_name, :logger
 
   def initialize(lang_name, logger = Logger.new(STDOUT))
@@ -16,9 +13,8 @@ class Exercises::Loader
     repo_dest = "tmp/hexletbasics/exercises-#{lang_name}"
     module_dest = "#{repo_dest}/modules"
 
-    upload = Upload.create!(language_name: lang_name)
-
     Upload.transaction do
+      upload = Upload.create!(language_name: lang_name)
       language = upsert_language(repo_dest, upload)
 
       modules_with_meta = get_modules(module_dest)
@@ -26,11 +22,7 @@ class Exercises::Loader
 
       lessons = language_modules.flat_map { |language_module| get_lessons(module_dest, language_module, language) }
       lessons.each { |lesson| upsert_lesson_with_descriptions_and_version(lesson, upload) }
-      upload.success!
     end
-  rescue ActiveRecord::RecordInvalid, StandardError
-    upload.fail!
-    raise
   end
 
   def get_modules(dest)
@@ -130,7 +122,7 @@ class Exercises::Loader
       upload: upload
     )
 
-    raise ModuleDescriptionDoesNotExist, "Module: #{language.module} does not have descriptions" if descriptions.empty?
+    raise "Module: #{language.module} does not have descriptions" if descriptions.empty?
 
     descriptions.each { |description| upsert_module_description(language_module, description) }
 
@@ -172,7 +164,7 @@ class Exercises::Loader
 
     lesson.update!(current_version: version)
 
-    raise LessonDescriptionDoesNotExist, "Lesson '#{language_module.slug}.#{lesson.slug}' does not have descriptions" if descriptions.empty?
+    raise "Lesson '#{language_module.slug}.#{lesson.slug}' does not have descriptions" if descriptions.empty?
 
     descriptions.each { |description| upsert_lesson_description(lesson, description) }
 

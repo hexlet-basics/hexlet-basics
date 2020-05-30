@@ -106,7 +106,6 @@ ActiveRecord::Schema.define(version: 2020_05_29_172059) do
 
   create_table "uploads", force: :cascade do |t|
     t.string "language_name"
-    t.string "state"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
