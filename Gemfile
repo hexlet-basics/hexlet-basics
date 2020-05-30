@@ -38,6 +38,7 @@ end
 
 gem 'bcrypt'
 gem 'paper_trail'
+gem 'paper_trail-association_tracking'
 gem 'reform-rails'
 gem 'simple_form'
 gem 'slim-rails'

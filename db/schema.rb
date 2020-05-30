@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_29_172059) do
+ActiveRecord::Schema.define(version: 2020_05_30_225230) do
 
   create_table "language_module_descriptions", force: :cascade do |t|
     t.string "name"
@@ -39,6 +39,19 @@ ActiveRecord::Schema.define(version: 2020_05_29_172059) do
     t.index ["lesson_id"], name: "index_language_module_lesson_descriptions_on_lesson_id"
   end
 
+  create_table "language_module_lesson_exercises", force: :cascade do |t|
+    t.string "original_code"
+    t.string "prepared_code"
+    t.string "test_code"
+    t.string "path_to_code"
+    t.integer "lesson_id", null: false
+    t.integer "language_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["language_id"], name: "index_language_module_lesson_exercises_on_language_id"
+    t.index ["lesson_id"], name: "index_language_module_lesson_exercise_on_lesson_id"
+  end
+
   create_table "language_module_lesson_members", force: :cascade do |t|
     t.string "state"
     t.integer "user_id", null: false
@@ -51,19 +64,6 @@ ActiveRecord::Schema.define(version: 2020_05_29_172059) do
     t.index ["user_id"], name: "index_language_module_lesson_members_on_user_id"
   end
 
-  create_table "language_module_lesson_versions", force: :cascade do |t|
-    t.string "original_code"
-    t.string "prepared_code"
-    t.string "test_code"
-    t.string "path_to_code"
-    t.integer "lesson_id", null: false
-    t.integer "language_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["language_id"], name: "index_language_module_lesson_versions_on_language_id"
-    t.index ["lesson_id"], name: "index_language_module_lesson_version_on_lesson_id"
-  end
-
   create_table "language_module_lessons", force: :cascade do |t|
     t.integer "order"
     t.string "slug"
@@ -74,6 +74,8 @@ ActiveRecord::Schema.define(version: 2020_05_29_172059) do
     t.string "state"
     t.integer "current_version_id"
     t.integer "upload_id", null: false
+    t.integer "current_exercise_id"
+    t.index ["current_exercise_id"], name: "index_language_module_lessons_on_current_exercise_id"
     t.index ["current_version_id"], name: "index_language_module_lessons_on_current_version_id"
     t.index ["language_id"], name: "index_language_module_lessons_on_language_id"
     t.index ["module_id"], name: "index_language_module_lessons_on_module_id"
@@ -118,6 +120,15 @@ ActiveRecord::Schema.define(version: 2020_05_29_172059) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  create_table "version_associations", force: :cascade do |t|
+    t.integer "version_id"
+    t.string "foreign_key_name", null: false
+    t.integer "foreign_key_id"
+    t.string "foreign_type"
+    t.index ["foreign_key_name", "foreign_key_id", "foreign_type"], name: "index_version_associations_on_foreign_key"
+    t.index ["version_id"], name: "index_version_associations_on_version_id"
+  end
+
   create_table "versions", force: :cascade do |t|
     t.string "item_type", null: false
     t.integer "item_id", limit: 8, null: false
@@ -125,18 +136,20 @@ ActiveRecord::Schema.define(version: 2020_05_29_172059) do
     t.string "whodunnit"
     t.text "object", limit: 1073741823
     t.datetime "created_at"
+    t.integer "transaction_id"
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
+    t.index ["transaction_id"], name: "index_versions_on_transaction_id"
   end
 
   add_foreign_key "language_module_descriptions", "language_modules", column: "module_id"
   add_foreign_key "language_module_descriptions", "languages"
   add_foreign_key "language_module_lesson_descriptions", "language_module_lessons", column: "lesson_id"
   add_foreign_key "language_module_lesson_descriptions", "languages"
+  add_foreign_key "language_module_lesson_exercises", "language_module_lessons", column: "lesson_id"
+  add_foreign_key "language_module_lesson_exercises", "languages"
   add_foreign_key "language_module_lesson_members", "language_module_lessons", column: "lesson_id"
   add_foreign_key "language_module_lesson_members", "languages"
   add_foreign_key "language_module_lesson_members", "users"
-  add_foreign_key "language_module_lesson_versions", "language_module_lessons", column: "lesson_id"
-  add_foreign_key "language_module_lesson_versions", "languages"
   add_foreign_key "language_module_lessons", "language_modules", column: "module_id"
   add_foreign_key "language_module_lessons", "languages"
   add_foreign_key "language_module_lessons", "uploads"

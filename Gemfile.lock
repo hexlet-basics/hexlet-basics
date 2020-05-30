@@ -129,6 +129,7 @@ GEM
     paper_trail (10.3.1)
       activerecord (>= 4.2)
       request_store (~> 1.1)
+    paper_trail-association_tracking (2.0.0)
     parallel (1.19.1)
     parser (2.7.1.2)
       ast (~> 2.4.0)
@@ -280,6 +281,7 @@ DEPENDENCIES
   listen (>= 3.0.5, < 3.2)
   minitest-power_assert
   paper_trail
+  paper_trail-association_tracking
   puma (~> 4.3)
   rails (~> 6.0.2, >= 6.0.2.2)
   reform-rails

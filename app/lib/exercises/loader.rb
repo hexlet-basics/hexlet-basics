@@ -21,7 +21,7 @@ class Exercises::Loader
       language_modules = modules_with_meta.map { |data| upsert_module_with_descriptions(language, data, upload) }
 
       lessons = language_modules.flat_map { |language_module| get_lessons(module_dest, language_module, language) }
-      lessons.each { |lesson| upsert_lesson_with_descriptions_and_version(lesson, upload) }
+      lessons.each { |lesson| upsert_lesson_with_descriptions_and_exercise(lesson, upload) }
     end
   end
 
@@ -64,20 +64,20 @@ class Exercises::Loader
         filename = File.basename(directory)
         order, slug = filename.split('-', 2)
         descriptions = get_descriptions(directory)
-        lesson_version = get_lesson_version(directory, language, language_module)
+        lesson_exercise = get_lesson_exercise(directory, language, language_module)
 
         {
           order: order,
           module: language_module,
           language: language,
           slug: slug,
-          lesson_version: lesson_version,
+          lesson_exercise: lesson_exercise,
           descriptions: descriptions
         }
       end
   end
 
-  def get_lesson_version(directory, language, language_module)
+  def get_lesson_exercise(directory, language, language_module)
     module_dir = "#{language_module.order}-#{language_module.slug}"
     test_file_path = File.join(directory, language.exercise_test_filename)
     test_code = File.read(test_file_path)
@@ -144,25 +144,29 @@ class Exercises::Loader
     description
   end
 
-  def upsert_lesson_with_descriptions_and_version(data, upload)
+  def upsert_lesson_with_descriptions_and_exercise(data, upload)
     language = data[:language]
     language_module = data[:module]
     slug = data[:slug]
     order = data[:order]
     descriptions = data[:descriptions]
-    lesson_version = data[:lesson_version]
+    lesson_exercise = data[:lesson_exercise]
 
     lesson = Language::Module::Lesson.find_or_initialize_by(language: language, module: language_module, slug: slug)
+
+    if !lesson.persisted?
+      lesson.upload = upload
+      lesson.save
+    end
+
+    exercise = create_lesson_exercise(lesson, lesson_exercise)
 
     lesson.update!(
       order: order,
       module: language_module,
-      upload: upload
+      upload: upload,
+      current_exercise: exercise
     )
-
-    version = create_lesson_version(lesson, lesson_version)
-
-    lesson.update!(current_version: version)
 
     raise "Lesson '#{language_module.slug}.#{lesson.slug}' does not have descriptions" if descriptions.empty?
 
@@ -186,14 +190,14 @@ class Exercises::Loader
     description
   end
 
-  def create_lesson_version(lesson, version_data)
-    logger.debug version_data
+  def create_lesson_exercise(lesson, exercise_data)
+    logger.debug exercise_data
 
-    Language::Module::Lesson::Version.create!(
-      test_code: version_data[:test_code],
-      original_code: version_data[:original_code],
-      prepared_code: version_data[:prepared_code],
-      path_to_code: version_data[:path_to_code],
+    Language::Module::Lesson::Exercise.create!(
+      test_code: exercise_data[:test_code],
+      original_code: exercise_data[:original_code],
+      prepared_code: exercise_data[:prepared_code],
+      path_to_code: exercise_data[:path_to_code],
       lesson: lesson,
       language: lesson.language
     )
