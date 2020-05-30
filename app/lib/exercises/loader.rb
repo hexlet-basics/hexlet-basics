@@ -154,7 +154,7 @@ class Exercises::Loader
 
     lesson = Language::Module::Lesson.find_or_initialize_by(language: language, module: language_module, slug: slug)
 
-    if !lesson.persisted?
+    unless lesson.persisted?
       lesson.upload = upload
       lesson.save
     end
