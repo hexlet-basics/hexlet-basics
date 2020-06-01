@@ -12,19 +12,19 @@
           .card-body.pt-2
             .hexlet-basics-theory-card.markdown.mt-3
               h1= @description.name
-              = markdown_to_html(@description.theory)
+              = markdown_to_html(@description.theory).html_safe
               - if @description.instructions
                 h2 = t('.instructions')
-                = markdown_to_html(@description.instructions)
+                = markdown_to_html(@description.instructions).html_safe
                 hr.my-4
               - if @description.tips
                 h3.mt-4 = t('.tips')
                 ul.pl-4
-                  = markdown_to_html(@description.tips)
+                  = markdown_to_html(@description.tips).html_safe
               - if @description.definitions
                 h3 = t('.definitions')
                 ul.pl-4
-                  = markdown_to_html(@description.definitions)
+                  = markdown_to_html(@description.definitions).html_safe
               hr.my-4
               .small.text-muted
                 = t('.issues')
