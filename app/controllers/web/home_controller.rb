@@ -2,6 +2,6 @@
 
 class Web::HomeController < Web::ApplicationController
   def index
-    @languages = Language.joins(:current_version).all
+    @languages = Language.includes(:current_version).all
   end
 end
