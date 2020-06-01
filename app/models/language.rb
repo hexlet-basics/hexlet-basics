@@ -7,16 +7,8 @@ class Language < ApplicationRecord
   has_many :lesson_descriptions, through: :lessons, source: :descriptions
 
   belongs_to :current_version, optional: true, class_name: 'Language::Version'
+  has_many :current_lessons, through: :current_version, source: :lesson_versions
+  has_many :current_modules, through: :current_version, source: :module_versions
 
-  def to_s
-    current_version.name
-  end
-
-  def current_lessons
-    current_version.lesson_versions
-  end
-
-  def current_modules
-    current_version.module_versions
-  end
+  delegate :to_s, to: :current_version
 end

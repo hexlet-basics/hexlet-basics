@@ -2,203 +2,196 @@
 
 # rubocop:disable Metrics/ClassLength
 class Exercises::Loader
-  attr_reader :lang_name, :logger
+  class << self
+    def run(lang_name)
+      repo_dest = "tmp/hexletbasics/exercises-#{lang_name}"
+      module_dest = "#{repo_dest}/modules"
 
-  def initialize(lang_name, logger = Logger.new(STDOUT))
-    @lang_name = lang_name
-    @logger = logger
-  end
+      Language::Version.transaction do
+        language = find_or_create_language_with_version(repo_dest, lang_name)
 
-  def run
-    repo_dest = "tmp/hexletbasics/exercises-#{lang_name}"
-    module_dest = "#{repo_dest}/modules"
+        modules_with_meta = get_modules(module_dest)
+        language_modules = modules_with_meta.map { |data| find_or_create_module_with_descriptions(language, data) }
 
-    Language::Version.transaction do
-      language = find_or_create_language_with_version(repo_dest)
-
-      modules_with_meta = get_modules(module_dest)
-      language_modules = modules_with_meta.map { |data| find_or_create_module_with_descriptions(language, data) }
-
-      lessons = language_modules.flat_map { |language_module| get_lessons(module_dest, language_module, language) }
-      lessons.each { |lesson| find_or_create_lesson_with_descriptions_and_exercise(lesson) }
-    end
-  end
-
-  def get_modules(dest)
-    files = Dir.glob("#{dest}/*")
-
-    files
-      .filter { |file| File.directory?(file) }
-      .map do |directory|
-        filename = File.basename(directory)
-        logger.debug filename
-        order, slug = filename.split('-', 2)
-        descriptions = get_descriptions(File.join(dest, filename))
-        { order: order, slug: slug, descriptions: descriptions }
+        lessons = language_modules.flat_map { |language_module| get_lessons(module_dest, language_module, language) }
+        lessons.each { |lesson| find_or_create_lesson_with_descriptions_and_exercise(lesson) }
       end
-  end
-
-  def get_descriptions(path)
-    files = Dir.glob("#{path}/description.*.yml")
-
-    files.map do |file|
-      filename = File.basename(file)
-      _, locale, = filename.split('.')
-      logger.debug file
-
-      data = YAML.load_file(file)
-      [locale, data]
     end
-  end
 
-  def get_lessons(dest, language_module, language)
-    module_dir = "#{language_module.current_version.order}-#{language_module.slug}"
-    module_path = File.join(dest, module_dir)
-    wildcard_path = File.join(module_path, '*')
-    files = Dir.glob(wildcard_path)
+    def get_modules(dest)
+      files = Dir.glob("#{dest}/*")
 
-    files
-      .filter { |file| File.directory?(file) }
-      .map do |directory|
-        filename = File.basename(directory)
-        order, slug = filename.split('-', 2)
-        descriptions = get_descriptions(directory)
-        lesson_version = get_lesson_version(directory, language, language_module)
+      files
+        .filter { |file| File.directory?(file) }
+        .map do |directory|
+          filename = File.basename(directory)
+          order, slug = filename.split('-', 2)
+          descriptions = get_descriptions(File.join(dest, filename))
+          { order: order, slug: slug, descriptions: descriptions }
+        end
+    end
 
-        {
-          order: order,
-          module: language_module,
-          language: language,
-          slug: slug,
-          lesson_version: lesson_version,
-          descriptions: descriptions
-        }
+    def get_descriptions(path)
+      files = Dir.glob("#{path}/description.*.yml")
+
+      files.map do |file|
+        filename = File.basename(file)
+        _, locale, = filename.split('.')
+
+        data = YAML.load_file(file)
+        [locale, data]
       end
-  end
+    end
 
-  def get_lesson_version(directory, language, language_module)
-    module_dir = "#{language_module.current_version.order}-#{language_module.slug}"
-    test_file_path = File.join(directory, language.current_version.exercise_test_filename)
-    test_code = File.read(test_file_path)
-    original_code = File.read(File.join(directory, language.current_version.exercise_filename))
-    prepared_code = prepare_code(original_code)
-    path_to_code = File.join("/exercises-#{language.slug}/modules", module_dir, directory)
+    def get_lessons(dest, language_module, language)
+      module_dir = "#{language_module.current_version.order}-#{language_module.slug}"
+      module_path = File.join(dest, module_dir)
+      wildcard_path = File.join(module_path, '*')
+      files = Dir.glob(wildcard_path)
 
-    {
-      test_code: test_code,
-      original_code: original_code,
-      prepared_code: prepared_code,
-      path_to_code: path_to_code
-    }
-  end
+      files
+        .filter { |file| File.directory?(file) }
+        .map do |directory|
+          filename = File.basename(directory)
+          order, slug = filename.split('-', 2)
+          descriptions = get_descriptions(directory)
+          lesson_version = get_lesson_version(directory, language, language_module)
 
-  def find_or_create_language_with_version(repo_dest)
-    spec_filepath = File.join(repo_dest, 'spec.yml')
+          {
+            order: order,
+            module: language_module,
+            language: language,
+            slug: slug,
+            lesson_version: lesson_version,
+            descriptions: descriptions
+          }
+        end
+    end
 
-    language_info = YAML.load_file(spec_filepath)['language']
+    def get_lesson_version(directory, language, language_module)
+      module_dir = "#{language_module.current_version.order}-#{language_module.slug}"
+      test_file_path = File.join(directory, language.current_version.exercise_test_filename)
+      test_code = File.read(test_file_path)
+      original_code = File.read(File.join(directory, language.current_version.exercise_filename))
+      prepared_code = prepare_code(original_code)
+      path_to_code = File.join("/exercises-#{language.slug}/modules", module_dir, directory)
 
-    language = Language.find_or_create_by!(slug: lang_name)
+      {
+        test_code: test_code,
+        original_code: original_code,
+        prepared_code: prepared_code,
+        path_to_code: path_to_code
+      }
+    end
 
-    version = Language::Version.create!(
-      name: lang_name,
-      extension: language_info['extension'],
-      docker_image: language_info['docker_image'],
-      exercise_filename: language_info['exercise_filename'],
-      exercise_test_filename: language_info['exercise_test_filename'],
-      language: language
-    )
+    def find_or_create_language_with_version(repo_dest, lang_name)
+      spec_filepath = File.join(repo_dest, 'spec.yml')
 
-    language.update!(current_version: version)
+      language_info = YAML.load_file(spec_filepath)['language']
 
-    language
-  end
+      language = Language.find_or_create_by!(slug: lang_name)
 
-  def find_or_create_module_with_descriptions(language, data)
-    order, slug, descriptions = data.values_at(:order, :slug, :descriptions)
+      version = Language::Version.create!(
+        name: lang_name,
+        extension: language_info['extension'],
+        docker_image: language_info['docker_image'],
+        exercise_filename: language_info['exercise_filename'],
+        exercise_test_filename: language_info['exercise_test_filename'],
+        language: language
+      )
 
-    language_module = Language::Module.find_or_create_by!(slug: slug, language: language)
+      language.update!(current_version: version)
 
-    version = Language::Module::Version.create!(
-      order: order,
-      language_version: language.current_version,
-      module: language_module
-    )
+      language
+    end
 
-    language_module.update!(current_version: version)
+    def find_or_create_module_with_descriptions(language, data)
+      order, slug, descriptions = data.values_at(:order, :slug, :descriptions)
 
-    raise "Module: #{language.module} does not have descriptions" if descriptions.empty?
+      language_module = Language::Module.find_or_create_by!(slug: slug, language: language)
 
-    descriptions.each { |description| upsert_module_description(language_module, description) }
+      version = Language::Module::Version.create!(
+        order: order,
+        language_version: language.current_version,
+        module: language_module
+      )
 
-    language_module
-  end
+      language_module.update!(current_version: version)
 
-  def upsert_module_description(language_module, description_data)
-    locale, data = description_data
+      raise "Module: #{language.module} does not have descriptions" if descriptions.empty?
 
-    description = Language::Module::Description.find_or_initialize_by(
-      module: language_module,
-      language: language_module.language,
-      locale: locale
-    )
+      descriptions.each { |description| upsert_module_description(language_module, description) }
 
-    new_data = { language: language_module.language }.merge(data)
-    description.update!(new_data)
+      language_module
+    end
 
-    description
-  end
+    def upsert_module_description(language_module, description_data)
+      locale, data = description_data
 
-  def find_or_create_lesson_with_descriptions_and_exercise(data)
-    language = data[:language]
-    language_module = data[:module]
-    slug = data[:slug]
-    order = data[:order]
-    descriptions = data[:descriptions]
-    lesson_version = data[:lesson_version]
+      description = Language::Module::Description.find_or_initialize_by(
+        module: language_module,
+        language: language_module.language,
+        locale: locale
+      )
 
-    lesson = Language::Module::Lesson.find_or_create_by!(language: language, module: language_module, slug: slug)
+      new_data = { language: language_module.language }.merge(data)
+      description.update!(new_data)
 
-    version = Language::Module::Lesson::Version.create!(
-      test_code: lesson_version[:test_code],
-      order: order,
-      original_code: lesson_version[:original_code],
-      prepared_code: lesson_version[:prepared_code],
-      path_to_code: lesson_version[:path_to_code],
-      lesson: lesson,
-      language_version: language.current_version,
-      module_version: language_module.current_version
-    )
+      description
+    end
 
-    lesson.update!(current_version: version)
+    def find_or_create_lesson_with_descriptions_and_exercise(data)
+      language = data[:language]
+      language_module = data[:module]
+      slug = data[:slug]
+      order = data[:order]
+      descriptions = data[:descriptions]
+      lesson_version = data[:lesson_version]
 
-    raise "Lesson '#{language_module.slug}.#{lesson.slug}' does not have descriptions" if descriptions.empty?
+      lesson = Language::Module::Lesson.find_or_create_by!(language: language, module: language_module, slug: slug)
 
-    descriptions.each { |description| upsert_lesson_description(lesson, description) }
+      version = Language::Module::Lesson::Version.create!(
+        test_code: lesson_version[:test_code],
+        order: order,
+        original_code: lesson_version[:original_code],
+        prepared_code: lesson_version[:prepared_code],
+        path_to_code: lesson_version[:path_to_code],
+        lesson: lesson,
+        language_version: language.current_version,
+        module_version: language_module.current_version
+      )
 
-    lesson
-  end
+      lesson.update!(current_version: version)
 
-  def upsert_lesson_description(lesson, description_data)
-    locale, data = description_data
+      raise "Lesson '#{language_module.slug}.#{lesson.slug}' does not have descriptions" if descriptions.empty?
 
-    description = Language::Module::Lesson::Description.find_or_initialize_by(
-      lesson: lesson,
-      language: lesson.language,
-      locale: locale
-    )
+      descriptions.each { |description| upsert_lesson_description(lesson, description) }
 
-    new_data = { lesson: lesson }.merge(data)
+      lesson
+    end
 
-    description.update!(new_data)
-    description
-  end
+    def upsert_lesson_description(lesson, description_data)
+      locale, data = description_data
 
-  def prepare_code(code)
-    reg = /(?<begin>^[^\n]*?BEGIN.*?$\s*)(?<content>.+?)(?<end>^[^\n]*?END.*?$)/msu
+      description = Language::Module::Lesson::Description.find_or_initialize_by(
+        lesson: lesson,
+        language: lesson.language,
+        locale: locale
+      )
 
-    result = code.gsub(reg, "\\1\n\\3")
+      new_data = { lesson: lesson }.merge(data)
 
-    result != code ? result : ''
+      description.update!(new_data)
+      description
+    end
+
+    def prepare_code(code)
+      reg = /(?<begin>^[^\n]*?BEGIN.*?$\s*)(?<content>.+?)(?<end>^[^\n]*?END.*?$)/msu
+
+      result = code.gsub(reg, "\\1\n\\3")
+
+      result != code ? result : ''
+    end
   end
 end
 # rubocop:enable Metrics/ClassLength
