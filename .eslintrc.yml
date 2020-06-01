@@ -10,7 +10,6 @@ parser: babel-eslint
 
 plugins:
   - react
-  - filenames
 
 rules:
   max-len: ["error", { "code": 120 }]
