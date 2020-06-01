@@ -9,6 +9,14 @@ class Language < ApplicationRecord
   belongs_to :current_version, optional: true, class_name: 'Language::Version'
 
   def to_s
-    name
+    current_version.name
+  end
+
+  def current_lessons
+    current_version.lesson_versions
+  end
+
+  def current_modules
+    current_version.module_versions
   end
 end

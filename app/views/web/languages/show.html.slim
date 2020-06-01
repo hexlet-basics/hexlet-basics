@@ -9,7 +9,7 @@ h1.text-center.display-4 = @language
     .row
       .col-12.col-md-6.mt-4
         ul.list-group
-          - language_module.lessons.each do |lesson|
+          - language_module.lesson_versions.each do |lesson|
             li.list-group-item.d-flex
               = link_to @descriptions_by_lesson[lesson.id], "#", class: 'stretched-link text-decoration-none'
       .col-12.col-md-6.mt-4
