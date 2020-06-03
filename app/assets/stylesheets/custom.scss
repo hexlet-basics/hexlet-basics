@@ -1,0 +1,23 @@
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/mixins';
+
+$breadcrumb-divider: quote("→");
+$font-size-base: 1rem;
+$code-font-size: 0.8rem;
+$white-blue: #f5f7fb;
+
+@each $breakpoint in map-keys($grid-breakpoints) {
+  @include media-breakpoint-up($breakpoint) {
+    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+    @each $prop, $abbrev in (width: w, height: h) {
+      @each $size, $length in $sizes {
+        .x-#{$abbrev}#{$infix}-#{$size} { #{$prop}: $length !important; }
+      }
+    }
+  }
+}
+
+body {
+  background-color: $white-blue;
+}

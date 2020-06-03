@@ -1,40 +1,39 @@
-.row.pt-2.h-100
-  .col-12.col-md-6.col-lg-5.h-100
-    .card.h-100
+.row.pt-2.x-h-md-100
+  .col-12.col-md-6.col-lg-5.x-h-md-100
+    .card.x-h-md-100
       ul.nav.nav-tabs.justify-content-center.flex-shrink-0 data-toggle="tabs"
         li.nav-item
           a.nav-link.active href="#lesson-tab" data-toggle="tab" role="tab" = t('.lesson')
         li.nav-item
           a.nav-link href="#discuss-tab" data-toggle="tab" role="tab" = t('.discuss')
 
-      .tab-content.h-100.overflow-hidden
-        .tab-pane.fade.overflow-auto.h-100.active.show#lesson-tab(role="tabpanel")
+      .tab-content.x-h-md-100.overflow-hidden
+        .tab-pane.fade.overflow-auto.x-h-md-100.active.show#lesson-tab(role="tabpanel")
           .card-body.pt-2
-            .hexlet-basics-theory-card.markdown.mt-3
-              h1= @description.name
-              = markdown_to_html(@description.theory).html_safe
-              - if @description.instructions
-                h2 = t('.instructions')
-                = markdown_to_html(@description.instructions).html_safe
-                hr.my-4
-              - if @description.tips
-                h3.mt-4 = t('.tips')
-                ul.pl-4
-                  = markdown_to_html(@description.tips).html_safe
-              - if @description.definitions
-                h3 = t('.definitions')
-                ul.pl-4
-                  = markdown_to_html(@description.definitions).html_safe
+            h1= @description.name
+            = markdown_to_html(@description.theory).html_safe
+            - if @description.instructions
+              h2 = t('.instructions')
+              = markdown_to_html(@description.instructions).html_safe
               hr.my-4
-              .small.text-muted
-                = t('.issues')
-                a(target="_blank" href="https://github.com/hexlet-basics") &nbsp;https://github.com/hexlet-basics
-        .tab-pane.fade.overflow-auto.h-100#discuss-tab(role="tabpanel")
+            - if @description.tips
+              h3.mt-4 = t('.tips')
+              .pl-3
+                = markdown_to_html(@description.tips).html_safe
+            - if @description.definitions
+              h3 = t('.definitions')
+              .pl-3
+                = markdown_to_html(@description.definitions).html_safe
+            hr.my-4
+            .small.text-muted
+              = t('.issues')
+              a(target="_blank" href="https://github.com/hexlet-basics") &nbsp;https://github.com/hexlet-basics
+        .tab-pane.fade.overflow-auto.x-h-md-100#discuss-tab(role="tabpanel")
           #disqus_thread
 
   .col-12.col-md-6.col-lg-7.pl-0
     - if current_user.guest?
-      .card.h-100
+      .card.x-h-md-100
         .card-header
           .card-title = t('.only_for_signed_in_users')
         .card-body
