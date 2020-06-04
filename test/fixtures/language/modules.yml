@@ -1,15 +1,12 @@
 one:
   slug: basic
-  order: 10
   language: one
 
 two:
   slug: basic
-  order: 10
   language: two
 
 variables_one:
   slug: variables
-  order: 30
   language: one
 

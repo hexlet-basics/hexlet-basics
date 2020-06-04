@@ -1,16 +1,10 @@
 DEFAULTS: &DEFAULTS
-  docker_image: docker_image
   slug: slug_$LABEL
-  extension: extension_$LABEL
-  exercise_filename: filename_$LABEL
-  exercise_test_filename: test_filename_$LABEL
 
 one:
   <<: *DEFAULTS
-  name: <%= Faker::ProgrammingLanguage.name %>
 
 
 two:
   <<: *DEFAULTS
-  name: <%= Faker::ProgrammingLanguage.name %>
 

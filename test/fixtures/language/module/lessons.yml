@@ -1,46 +1,33 @@
 DEFAULTS: &DEFAULTS
-  test_code: ''
-  prepared_code: ''
-  path_to_code: ''
-  original_code: ''
+  current_version_id: 1
 
 one:
   <<: *DEFAULTS
   slug: hello_world
-  order: 10
-  natural_order: 1
   language: one
   module: one
 
 two:
   <<: *DEFAULTS
   slug: hello_world
-  order: 10
-  natural_order: 1
   language: two
   module: two
 
 tags_one:
   <<: *DEFAULTS
   slug: tags
-  order: 20
-  natural_order: 2
   language: one
   module: one
 
 comments_one:
   <<: *DEFAULTS
   slug: comments
-  order: 20
-  natural_order: 2
   language: one
   module: one
 
 naming_variables_one:
   <<: *DEFAULTS
   slug: quotes
-  order: 10
-  natural_order: 4
   language: one
   module: variables_one
 
