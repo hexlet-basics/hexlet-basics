@@ -36,6 +36,10 @@ group :test do
   gem 'webdrivers'
 end
 
+group :production do
+  gem 'pg'
+end
+
 gem 'bcrypt'
 gem 'reform-rails'
 gem 'simple_form'
