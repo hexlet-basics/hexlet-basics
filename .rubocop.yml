@@ -32,3 +32,10 @@ Style/Documentation:
 
 Metrics/BlockLength:
   Enabled: false
+
+Rails/InverseOf:
+  Enabled: true
+  Exclude:
+    - app/models/language/version.rb
+    - app/models/language/module/version.rb
+    - app/models/language/version.rb
