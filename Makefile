@@ -1,3 +1,5 @@
+include make-services-web.mk
+
 test:
 	bin/rails test
 
