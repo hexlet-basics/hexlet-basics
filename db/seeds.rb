@@ -1,11 +1,5 @@
 # frozen_string_literal: true
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
+
 language = Language.create!(slug: Faker::ProgrammingLanguage.name)
 language_version = Language::Version.create!(
   docker_image: 'docker_image',
@@ -13,27 +7,25 @@ language_version = Language::Version.create!(
   exercise_test_filename: 'test.js',
   extension: '.js',
   name: Faker::ProgrammingLanguage.name,
-  language_id: language.id,
+  language_id: language.id
 )
 language.update(current_version_id: language_version.id)
 
-
 language_module = Language::Module.create!(
   slug: 'Basic',
-  language_id: language.id,
+  language_id: language.id
 )
 language_module_version = Language::Module::Version.create!(
   language_version_id: language_version.id,
   module_id: language_module.id,
-  order: 1,
+  order: 1
 )
 language_module.update(current_version_id: language_module_version.id)
-
 
 language_module_lesson = Language::Module::Lesson.create!(
   slug: 'variables',
   language_id: language.id,
-  module_id: language_module.id,
+  module_id: language_module.id
 )
 language_module_lesson_version = Language::Module::Lesson::Version.create!(
   language_version_id: language_version.id,
@@ -47,15 +39,14 @@ language_module_lesson_version = Language::Module::Lesson::Version.create!(
 )
 language_module_lesson.update(current_version_id: language_module_lesson_version.id)
 
-
-language_module_description = Language::Module::Description.create!(
+Language::Module::Description.create!(
   name: Faker::Lorem.word,
   description: Faker::Lorem.paragraph,
   locale: 'ru',
   module_id: language_module.id,
-  language_id: language.id,
+  language_id: language.id
 )
-language_module_lesson_description = Language::Module::Lesson::Description.create!(
+Language::Module::Lesson::Description.create!(
   instructions: Faker::Lorem.paragraph_by_chars(number: 400),
   locale: 'ru',
   name: Faker::Lorem.word,
@@ -63,5 +54,5 @@ language_module_lesson_description = Language::Module::Lesson::Description.creat
   tips: Faker::Lorem.word,
   definitions: Faker::Lorem.paragraph,
   lesson_id: language_module_lesson.id,
-  language_id: language.id,
+  language_id: language.id
 )
