@@ -6,13 +6,13 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
-language = Language.create!(slug: 'JavaScript')
+language = Language.create!(slug: Faker::ProgrammingLanguage.name)
 language_version = Language::Version.create!(
   docker_image: 'docker_image',
   exercise_filename: 'index.js',
   exercise_test_filename: 'test.js',
   extension: '.js',
-  name: 'JavaScript',
+  name: Faker::ProgrammingLanguage.name,
   language_id: language.id,
 )
 language.update(current_version_id: language_version.id)
@@ -49,19 +49,19 @@ language_module_lesson.update(current_version_id: language_module_lesson_version
 
 
 language_module_description = Language::Module::Description.create!(
-  name: 'Very loong Desctiprion name',
-  description: 'Here is description on RU --- Faker.<>',
+  name: Faker::Lorem.word,
+  description: Faker::Lorem.paragraph,
   locale: 'ru',
   module_id: language_module.id,
   language_id: language.id,
 )
 language_module_lesson_description = Language::Module::Lesson::Description.create!(
-  instructions: 'Here is instructions',
+  instructions: Faker::Lorem.paragraph_by_chars(number: 400),
   locale: 'ru',
-  name: 'It is name, ',
-  theory: 'Theory olo',
-  tips: 'Tips, Tips, Tips',
-  definitions: '- dedinition 1 -- definition 2',
+  name: Faker::Lorem.word,
+  theory: Faker::Lorem.paragraph_by_chars(number: 400),
+  tips: Faker::Lorem.word,
+  definitions: Faker::Lorem.paragraph,
   lesson_id: language_module_lesson.id,
   language_id: language.id,
 )
