@@ -1,0 +1,11 @@
+doctype html
+html.x-h-md-100 lang="#{I18n.locale}"
+  head
+    = render 'layouts/shared/head'
+  body.d-flex.flex-column.x-h-md-100
+    = render 'layouts/shared/nav'
+    main.container-fluid.overflow-hidden.mb-1.x-h-md-100
+      = yield
+
+  = content_for :js
+

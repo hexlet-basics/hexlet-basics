@@ -1,0 +1,46 @@
+.row.pt-2.x-h-md-100
+  .col-12.col-md-6.col-lg-5.x-h-md-100
+    .card.x-h-md-100
+      ul.nav.nav-tabs.justify-content-center.flex-shrink-0 data-toggle="tabs"
+        li.nav-item
+          a.nav-link.active href="#lesson-tab" data-toggle="tab" role="tab" = t('.lesson')
+        li.nav-item
+          a.nav-link href="#discuss-tab" data-toggle="tab" role="tab" = t('.discuss')
+
+      .tab-content.x-h-md-100.overflow-hidden
+        /! TODO WAIT TABLER
+        .tab-pane.fade.overflow-auto.x-h-md-100.active.show#lesson-tab(role="tabpanel")
+          .card-body.pt-2
+            h1= @description.name
+            = markdown_to_html(@description.theory).html_safe
+            - if @description.instructions
+              h2 = t('.instructions')
+              = markdown_to_html(@description.instructions).html_safe
+              hr.my-4
+            - if @description.tips
+              h3.mt-4 = t('.tips')
+              .pl-3
+                = markdown_to_html(@description.tips).html_safe
+            - if @description.definitions
+              h3 = t('.definitions')
+              .pl-3
+                = markdown_to_html(@description.definitions).html_safe
+            hr.my-4
+            .small.text-muted
+              = t('.issues')
+              a(target="_blank" href="https://github.com/hexlet-basics") &nbsp;https://github.com/hexlet-basics
+        .tab-pane.fade.overflow-auto.x-h-md-100#discuss-tab(role="tabpanel")
+          #disqus_thread
+
+  .col-12.col-md-6.col-lg-7.pl-md-0.mt-2.mt-md-0
+    - if current_user.guest?
+      .card.x-h-md-100
+        .card-header
+          .card-title = t('.only_for_signed_in_users')
+        .card-body
+          p = t('.please_sign_in')
+          .text-center
+            = link_to t('.sign_in'), new_session_path, class: "btn btn-primary"
+    - else
+      .d-flex.flex-column.vh-100#basics-lesson-container
+

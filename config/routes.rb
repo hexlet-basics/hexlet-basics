@@ -9,7 +9,11 @@ Rails.application.routes.draw do
 
     resources :languages, only: [:show] do
       scope module: :languages do
-        resources :modules, only: []
+        resources :modules, only: [] do
+          scope module: :modules do
+            resources :lessons, only: [:show]
+          end
+        end
       end
     end
   end
