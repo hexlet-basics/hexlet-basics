@@ -2,8 +2,9 @@
 
 class Web::Languages::Modules::LessonsController < Web::Languages::Modules::ApplicationController
   def show
-    @lesson = Language::Module::Lesson.find_by(id: params[:id])
-    @description = @lesson.descriptions.where(locale: I18n.locale).first
+    @lesson = resource_module.lessons.find_by!(slug: params[:id])
+    @description = @lesson.descriptions.find_by!(locale: I18n.locale)
+
     render :show, layout: 'lesson'
   end
 end

@@ -10,7 +10,7 @@ class Web::Languages::Modules::LessonsControllerTest < ActionDispatch::Integrati
   end
 
   test 'show' do
-    get language_module_lesson_path(@language, @module, @lesson)
+    get language_module_lesson_path(@language.slug, @module.slug, @lesson.slug)
     assert_response :success
   end
 end
