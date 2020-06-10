@@ -3,8 +3,8 @@ DEFAULTS: &DEFAULTS
 
 one:
   <<: *DEFAULTS
-
+  current_version: one
 
 two:
   <<: *DEFAULTS
-
+  current_version: two

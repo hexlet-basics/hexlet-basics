@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module FileSystemHelper
+module FileSystemUtils
   def self.file_name_for_exercise(lesson, language)
     "#{lesson.id}.#{language.extension}"
   end

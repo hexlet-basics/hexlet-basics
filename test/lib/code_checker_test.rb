@@ -14,15 +14,16 @@ class CodeCheckerTest < ActionDispatch::IntegrationTest
       end
     end
 
-    language = Language.first
-    lesson = language.lessons.first
+    lesson_version = language_module_lesson_versions(:one)
+    language_version = lesson_version.language_version
+
     user = users(:one)
     code_data = 'code'
 
-    dest_path = File.join(Dir.tmpdir, FileSystemHelper.directory_for_code(user))
-    file_path = File.join(dest_path, FileSystemHelper.file_name_for_exercise(lesson, language))
+    dest_path = File.join(Dir.tmpdir, FileSystemUtils.directory_for_code(user))
+    file_path = File.join(dest_path, FileSystemUtils.file_name_for_exercise(lesson_version, language_version))
 
-    result = CodeChecker.check(code_data, user, lesson)
+    result = CodeChecker.check(code_data, user, lesson_version, language_version)
 
     File.open(file_path) do |file|
       assert { file.read == code_data }
