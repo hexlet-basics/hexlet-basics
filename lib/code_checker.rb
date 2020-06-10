@@ -3,10 +3,10 @@
 class CodeChecker
   def self.check(code, user, lesson_version, language_version)
     code_directory = Rails.configuration.hexlet_basics[:code_directory]
-    full_directory_path = File.join(code_directory, FileSystemHelper.directory_for_code(user))
+    full_directory_path = File.join(code_directory, FileSystemUtils.directory_for_code(user))
     FileUtils.mkdir_p(full_directory_path)
 
-    full_exercise_file_path = File.join(full_directory_path, FileSystemHelper.file_name_for_exercise(lesson_version, language_version))
+    full_exercise_file_path = File.join(full_directory_path, FileSystemUtils.file_name_for_exercise(lesson_version, language_version))
     File.open(full_exercise_file_path, 'w') { |f| f.write(code) }
 
     path_to_exersice_file = File.join(lesson_version.path_to_code, language_version.exercise_filename)

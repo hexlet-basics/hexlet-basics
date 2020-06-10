@@ -20,8 +20,8 @@ class CodeCheckerTest < ActionDispatch::IntegrationTest
     user = users(:one)
     code_data = 'code'
 
-    dest_path = File.join(Dir.tmpdir, FileSystemHelper.directory_for_code(user))
-    file_path = File.join(dest_path, FileSystemHelper.file_name_for_exercise(lesson_version, language_version))
+    dest_path = File.join(Dir.tmpdir, FileSystemUtils.directory_for_code(user))
+    file_path = File.join(dest_path, FileSystemUtils.file_name_for_exercise(lesson_version, language_version))
 
     result = CodeChecker.check(code_data, user, lesson_version, language_version)
 
