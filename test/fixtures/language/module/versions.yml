@@ -1,0 +1,14 @@
+one:
+  order: 10
+  language_version: one
+  module: one
+
+two:
+  order: 20
+  language_version: two
+  module: two
+
+variables_one:
+  order: 30
+  language_version: two
+  module: variables_one

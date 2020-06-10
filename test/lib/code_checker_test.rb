@@ -14,8 +14,8 @@ class CodeCheckerTest < ActionDispatch::IntegrationTest
       end
     end
 
-    lesson_version = FactoryBot.create(:language_module_lesson_version)
-    language_version = lesson_version.lesson.language.current_version
+    lesson_version = language_module_lesson_versions(:one)
+    language_version = lesson_version.language_version
 
     user = users(:one)
     code_data = 'code'

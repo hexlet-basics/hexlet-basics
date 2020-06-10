@@ -1,12 +1,18 @@
+DEFAULTS: &DEFAULTS
+  slug: slug_$LABEL
+
 one:
-  slug: basic
+  <<: *DEFAULTS
   language: one
+  current_version: one
 
 two:
-  slug: basic
+  <<: *DEFAULTS
   language: two
+  current_version: two
 
 variables_one:
   slug: variables
-  language: one
+  language: two
+  current_version: variables_one
 

@@ -1,35 +1,29 @@
-DEFAULTS: &DEFAULTS
-  current_version_id: 1
-
 one:
-  <<: *DEFAULTS
   slug: hello_world
   language: one
   module: one
+  current_version: one
 
 two:
-  <<: *DEFAULTS
   slug: hello_world
   language: two
   module: two
+  current_version: two
 
 tags_one:
-  <<: *DEFAULTS
   slug: tags
   language: one
   module: one
+  current_version: tags_one
 
 comments_one:
-  <<: *DEFAULTS
   slug: comments
   language: one
   module: one
+  current_version: comments_one
 
 naming_variables_one:
-  <<: *DEFAULTS
   slug: quotes
   language: one
   module: variables_one
-
-
-
+  current_version: naming_variables_one

@@ -14,11 +14,11 @@ two:
   language: two
   module: two
 
-variables_ru_one:
+variables_one:
   name: Переменные
   description: Информацию можно помещать в специальные «хранилища», а потом использовать сколько угодно раз. Эти хранилища называются переменными, и они помогают упростить код и сократить лишние повторения.
   locale: ru
-  language: one
+  language: two
   module: variables_one
 
 
