@@ -16,5 +16,10 @@ Rails.application.routes.draw do
         end
       end
     end
+
+    namespace :admin do
+      root 'home#index'
+      resource :download, only: [:create]
+    end
   end
 end
