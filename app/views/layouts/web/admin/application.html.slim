@@ -10,6 +10,7 @@ html.h-100 lang="#{I18n.locale}"
           .col-md-2
             ul.nav.flex-column.nav-pills
               = nav_menu_item t('.admin'), admin_root_path
+              = nav_menu_item t('.uploads'), admin_uploads_path
           .col-md-10
             = yield
   = content_for :js

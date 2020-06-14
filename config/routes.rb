@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
+
   scope module: :web do
     root 'home#index'
 
@@ -19,7 +22,8 @@ Rails.application.routes.draw do
 
     namespace :admin do
       root 'home#index'
-      resource :download, only: [:create]
+
+      resources :uploads, only: %i[index new create]
     end
   end
 end

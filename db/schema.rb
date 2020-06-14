@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_11_005444) do
+ActiveRecord::Schema.define(version: 2020_06_16_152021) do
 
   create_table "language_module_descriptions", force: :cascade do |t|
     t.string "name"
@@ -50,9 +50,11 @@ ActiveRecord::Schema.define(version: 2020_06_11_005444) do
     t.string "path_to_code"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "upload_id"
     t.index ["language_version_id"], name: "index_language_module_lesson_versions_on_language_version_id"
     t.index ["lesson_id"], name: "index_language_module_lesson_version_on_lesson_id"
     t.index ["module_version_id"], name: "index_language_module_lesson_version_on_module_version_id"
+    t.index ["upload_id"], name: "index_language_module_lesson_versions_on_upload_id"
   end
 
   create_table "language_module_lessons", force: :cascade do |t|
@@ -73,8 +75,10 @@ ActiveRecord::Schema.define(version: 2020_06_11_005444) do
     t.string "order"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "upload_id"
     t.index ["language_version_id"], name: "index_language_module_versions_on_language_version_id"
     t.index ["module_id"], name: "index_language_module_versions_on_module_id"
+    t.index ["upload_id"], name: "index_language_module_versions_on_upload_id"
   end
 
   create_table "language_modules", force: :cascade do |t|
@@ -96,7 +100,9 @@ ActiveRecord::Schema.define(version: 2020_06_11_005444) do
     t.integer "language_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "upload_id"
     t.index ["language_id"], name: "index_language_versions_on_language_id"
+    t.index ["upload_id"], name: "index_language_versions_on_upload_id"
   end
 
   create_table "languages", force: :cascade do |t|
@@ -105,6 +111,13 @@ ActiveRecord::Schema.define(version: 2020_06_11_005444) do
     t.datetime "updated_at", precision: 6, null: false
     t.integer "current_version_id"
     t.index ["current_version_id"], name: "index_languages_on_current_version_id"
+  end
+
+  create_table "uploads", force: :cascade do |t|
+    t.string "language_name"
+    t.string "state"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -123,10 +136,13 @@ ActiveRecord::Schema.define(version: 2020_06_11_005444) do
   add_foreign_key "language_module_lesson_versions", "language_module_lessons", column: "lesson_id"
   add_foreign_key "language_module_lesson_versions", "language_module_versions", column: "module_version_id"
   add_foreign_key "language_module_lesson_versions", "language_versions"
+  add_foreign_key "language_module_lesson_versions", "uploads"
   add_foreign_key "language_module_lessons", "language_modules", column: "module_id"
   add_foreign_key "language_module_lessons", "languages"
   add_foreign_key "language_module_versions", "language_modules", column: "module_id"
   add_foreign_key "language_module_versions", "language_versions"
+  add_foreign_key "language_module_versions", "uploads"
   add_foreign_key "language_modules", "languages"
   add_foreign_key "language_versions", "languages"
+  add_foreign_key "language_versions", "uploads"
 end

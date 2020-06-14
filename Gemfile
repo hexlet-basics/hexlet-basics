@@ -42,9 +42,12 @@ group :production do
   gem 'pg'
 end
 
+gem 'aasm'
 gem 'bcrypt'
 gem 'gon'
+gem 'enumerize'
 gem 'reform-rails'
+gem 'sidekiq'
 gem 'simple_form'
 gem 'slim-rails'
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]

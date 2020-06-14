@@ -1,0 +1,13 @@
+table.table
+  thead
+    tr
+      th id
+      th Language
+      th State
+  tbody
+    - @uploads.each do |upload|
+      tr
+        td= upload.id
+        td= upload.language_name
+        td= upload.state
+= link_to "Upload lesson", new_admin_upload_path, class: 'btn btn-primary'

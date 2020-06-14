@@ -1,6 +1,8 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    aasm (5.0.8)
+      concurrent-ruby (~> 1.0)
     actioncable (6.0.3)
       actionpack (= 6.0.3)
       nio4r (~> 2.0)
@@ -75,6 +77,7 @@ GEM
       xpath (~> 3.2)
     childprocess (3.0.0)
     concurrent-ruby (1.1.6)
+    connection_pool (2.2.3)
     crass (1.0.6)
     declarative (0.0.10)
     declarative-builder (0.1.0)
@@ -86,6 +89,8 @@ GEM
       declarative-option (< 0.2.0)
       representable (>= 2.4.0, <= 3.1.0)
       uber (< 0.2.0)
+    enumerize (2.3.1)
+      activesupport (>= 3.2)
     erubi (1.9.0)
     factory_bot (5.2.0)
       activesupport (>= 4.2.0)
@@ -143,6 +148,8 @@ GEM
     puma (4.3.5)
       nio4r (~> 2.0)
     rack (2.2.2)
+    rack-protection (2.0.8.1)
+      rack
     rack-proxy (0.6.5)
       rack
     rack-test (1.1.0)
@@ -178,6 +185,7 @@ GEM
     rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
+    redis (4.2.1)
     reform (2.2.4)
       disposable (>= 0.4.1)
       representable (>= 2.4.0, < 3.1.0)
@@ -221,6 +229,11 @@ GEM
     selenium-webdriver (3.142.7)
       childprocess (>= 0.5, < 4.0)
       rubyzip (>= 1.2.2)
+    sidekiq (6.0.7)
+      connection_pool (>= 2.2.2)
+      rack (~> 2.0)
+      rack-protection (>= 2.0.0)
+      redis (>= 4.1.0)
     simple_form (5.0.2)
       actionpack (>= 5.0)
       activemodel (>= 5.0)
@@ -275,10 +288,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  aasm
   bcrypt
   bootsnap (>= 1.4.2)
   byebug
   capybara (>= 2.15)
+  enumerize
   factory_bot_rails
   faker
   gon
@@ -296,6 +311,7 @@ DEPENDENCIES
   rubocop-rails
   sass-rails (>= 6)
   selenium-webdriver
+  sidekiq
   simple_form
   slim-rails
   spring
