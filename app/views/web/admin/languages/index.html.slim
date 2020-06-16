@@ -1,0 +1,13 @@
+table.table
+  thead
+    tr
+      th Id
+      th Slug
+      th
+  tbody
+    - @languages.each do |language|
+      tr
+        td= language.id
+        td= language.slug
+        td= link_to "Upload new version", admin_language_uploads_path(language), method: :post
+= link_to "Create new language", new_admin_language_path

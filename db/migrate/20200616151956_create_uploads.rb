@@ -1,8 +1,9 @@
 class CreateUploads < ActiveRecord::Migration[6.0]
   def change
-    create_table :uploads do |t|
-      t.string :language_name
+    create_table :language_uploads do |t|
       t.string :state
+      t.string :uploader
+      t.references :language, null: false, foreign_key: true
 
       t.timestamps
     end

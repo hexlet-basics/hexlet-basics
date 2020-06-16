@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :upload do
-    language_name { 'ruby' }
+  factory :language_upload do
+    uploader { 'website' }
   end
 end

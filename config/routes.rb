@@ -24,6 +24,11 @@ Rails.application.routes.draw do
       root 'home#index'
 
       resources :uploads, only: %i[index new create]
+      resources :languages, only: %i[index new create] do
+        scope module: :languages do
+          resources :uploads, only: [:create]
+        end
+      end
     end
   end
 end

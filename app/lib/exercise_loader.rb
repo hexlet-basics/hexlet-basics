@@ -1,19 +1,17 @@
 # frozen_string_literal: true
 
 # rubocop:disable Metrics/ClassLength
-class Exercises::Loader
+class ExerciseLoader
   class << self
-    def run_with_upload(upload)
-      lang_name = upload.language_name
-      upload.run!
-      system("docker pull hexletbasics/exercises-#{lang_name}")
-      system("rm -rf tmp/hexletbasics/exercises-#{lang_name}")
-      system("docker run --rm -v #{Dir.pwd}/tmp/hexletbasics/exercises-#{lang_name}:/out hexletbasics/exercises-#{lang_name} bash -c 'cp -r /exercises-#{lang_name}/* /out'")
-
+    def from_website(language, upload)
+      lang_name = language.slug
       repo_dest = "tmp/hexletbasics/exercises-#{lang_name}"
       module_dest = "#{repo_dest}/modules"
 
-      Upload.transaction do
+      upload.run!
+      DockerImageExerciseLoader.run(lang_name)
+
+      Language::Upload.transaction do
         language = find_or_create_language_with_version(repo_dest, lang_name, upload)
 
         modules_with_meta = get_modules(module_dest)
@@ -28,12 +26,12 @@ class Exercises::Loader
       raise
     end
 
-    def run(lang_name)
+    def from_cli(lang_name)
       repo_dest = "tmp/hexletbasics/exercises-#{lang_name}"
       module_dest = "#{repo_dest}/modules"
 
-      Upload.transaction do
-        upload = Upload.create!(language_name: lang_name)
+      Language::Upload.transaction do
+        upload = Language::Upload.create(uploader: 'cli')
         language = find_or_create_language_with_version(repo_dest, lang_name, upload)
 
         modules_with_meta = get_modules(module_dest)
