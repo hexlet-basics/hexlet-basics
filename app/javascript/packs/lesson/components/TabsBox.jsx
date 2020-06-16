@@ -1,14 +1,17 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tab, Nav } from 'react-bootstrap';
-import { tabsHooks } from 'packs/slices';
-import currentTabStates from 'packs/utils/currentTabStates.js';
+import { useSelector, useDispatch } from 'react-redux';
+import { actions, tabsBoxSliceName } from '../slices/index.js';
+import currentTabStates from '../utils/currentTabStates.js';
 
-const Tabs = () => {
+const TabsBox = () => {
   const { t } = useTranslation();
-  const { changeTab } = tabsHooks.useAction();
-  const { getData } = tabsHooks.showSelectors();
-  const { currentTab } = getData();
+  const dispatch = useDispatch();
+  const { currentTab } = useSelector((state) => state[tabsBoxSliceName]);
+  const changeTab = (newTabState) => {
+    dispatch(actions.changeTab({ newTabState }));
+  };
 
   const { editor, console, solution } = currentTabStates;
 
@@ -43,4 +46,4 @@ const Tabs = () => {
   return vdom;
 };
 
-export default Tabs;
+export default TabsBox;

@@ -1,9 +1,9 @@
 import React from 'react';
-import Tabs from './Tabs';
+import TabsBox from './TabsBox.jsx';
 
 const App = () => {
   const vdom = (
-    <Tabs />
+    <TabsBox />
   );
   return vdom;
 };
