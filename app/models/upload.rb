@@ -14,7 +14,7 @@ class Upload < ApplicationRecord
     state :queued, initial: true
     state :running
     state :success
-    state :fail
+    state :failed
 
     event :run do
       transitions from: :queued, to: :running
@@ -24,8 +24,8 @@ class Upload < ApplicationRecord
       transitions from: :running, to: :success
     end
 
-    event :failed do
-      transitions from: :running, to: :fail
+    event :fail do
+      transitions from: :running, to: :failed
     end
   end
 end

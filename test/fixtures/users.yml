@@ -4,6 +4,7 @@ DEFAULTS: &DEFAULTS
 one:
   <<: *DEFAULTS
   email: one@email.com
+  admin: true
 
 two:
   <<: *DEFAULTS

@@ -23,8 +23,8 @@ class Exercises::Loader
         lessons.each { |lesson| find_or_create_lesson_with_descriptions_and_exercise(lesson, upload) }
         upload.succeed!
       end
-    rescue StandartError
-      upload.failed!
+    rescue StandardError
+      upload.fail!
       raise
     end
 

@@ -11,7 +11,7 @@ module UploadHelper
       content_tag(:span, capitalized_state, class: 'badge badge-warning')
     when 'success'
       content_tag(:span, capitalized_state, class: 'badge badge-success')
-    when 'fail'
+    when 'failed'
       content_tag(:span, capitalized_state, class: 'badge badge-danger')
     end
   end
