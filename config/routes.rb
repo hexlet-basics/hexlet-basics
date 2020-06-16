@@ -2,7 +2,7 @@
 
 Rails.application.routes.draw do
   require 'sidekiq/web'
-  mount Sidekiq::Web => '/sidekiq'
+  mount Sidekiq::Web => '/sidekiq', constraints: AdminConstraint.new
 
   scope module: :web do
     root 'home#index'
