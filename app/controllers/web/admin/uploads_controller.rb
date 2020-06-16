@@ -2,7 +2,7 @@
 
 class Web::Admin::UploadsController < Web::Admin::ApplicationController
   def index
-    @uploads = Upload.all
+    @uploads = Upload.order(created_at: :desc)
   end
 
   def new

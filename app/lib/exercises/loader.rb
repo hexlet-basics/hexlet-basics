@@ -5,6 +5,7 @@ class Exercises::Loader
   class << self
     def run_with_upload(upload)
       lang_name = upload.language_name
+      upload.run!
       system("docker pull hexletbasics/exercises-#{lang_name}")
       system("rm -rf tmp/hexletbasics/exercises-#{lang_name}")
       system("docker run --rm -v #{Dir.pwd}/tmp/hexletbasics/exercises-#{lang_name}:/out hexletbasics/exercises-#{lang_name} bash -c 'cp -r /exercises-#{lang_name}/* /out'")
@@ -20,7 +21,11 @@ class Exercises::Loader
 
         lessons = language_modules.flat_map { |language_module| get_lessons(module_dest, language_module, language) }
         lessons.each { |lesson| find_or_create_lesson_with_descriptions_and_exercise(lesson, upload) }
+        upload.succeed!
       end
+    rescue StandartError
+      upload.failed!
+      raise
     end
 
     def run(lang_name)
@@ -215,7 +220,7 @@ class Exercises::Loader
       result = code.gsub(reg, "\\1\n\\3")
 
       result != code ? result : ''
+    end
   end
-end
 end
 # rubocop:enable Metrics/ClassLength

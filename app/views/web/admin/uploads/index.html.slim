@@ -9,5 +9,5 @@ table.table
       tr
         td= upload.id
         td= upload.language_name
-        td= upload.state
+        td= state_span_generator_for_upload(upload.state)
 = link_to "Upload lesson", new_admin_upload_path, class: 'btn btn-primary'
