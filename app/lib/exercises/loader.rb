@@ -50,11 +50,11 @@ class Exercises::Loader
       files
         .filter { |file| File.directory?(file) }
         .map do |directory|
-        filename = File.basename(directory)
-        order, slug = filename.split('-', 2)
-        descriptions = get_descriptions(File.join(dest, filename))
-        { order: order, slug: slug, descriptions: descriptions }
-      end
+          filename = File.basename(directory)
+          order, slug = filename.split('-', 2)
+          descriptions = get_descriptions(File.join(dest, filename))
+          { order: order, slug: slug, descriptions: descriptions }
+        end
     end
 
     def get_descriptions(path)
@@ -78,20 +78,20 @@ class Exercises::Loader
       files
         .filter { |file| File.directory?(file) }
         .map do |directory|
-        filename = File.basename(directory)
-        order, slug = filename.split('-', 2)
-        descriptions = get_descriptions(directory)
-        lesson_version = get_lesson_version(directory, language, language_module)
+          filename = File.basename(directory)
+          order, slug = filename.split('-', 2)
+          descriptions = get_descriptions(directory)
+          lesson_version = get_lesson_version(directory, language, language_module)
 
-        {
-          order: order,
-          module: language_module,
-          language: language,
-          slug: slug,
-          lesson_version: lesson_version,
-          descriptions: descriptions
-        }
-      end
+          {
+            order: order,
+            module: language_module,
+            language: language,
+            slug: slug,
+            lesson_version: lesson_version,
+            descriptions: descriptions
+          }
+        end
     end
 
     def get_lesson_version(directory, language, language_module)

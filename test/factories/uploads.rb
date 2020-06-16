@@ -2,7 +2,6 @@
 
 FactoryBot.define do
   factory :upload do
-    language_name { 'MyString' }
-    status { 'MyString' }
+    language_name { 'ruby' }
   end
 end
