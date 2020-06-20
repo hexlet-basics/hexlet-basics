@@ -3,8 +3,6 @@
 require 'application_system_test_case'
 
 class LessonsTest < ApplicationSystemTestCase
-  include AuthManagment
-
   test 'visiting the lesson show' do
     sign_in_as(:one)
 

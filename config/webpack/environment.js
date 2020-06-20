@@ -10,7 +10,7 @@ environment.plugins.prepend('Provide',
   }));
 
 environment.plugins.prepend('Provide', new MonacoWebpackPlugin({
-  languages: ['javascript', 'css', 'html', 'php', 'python', 'java', 'scheme', 'ruby', 'go'],
+  languages: ['javascript', 'html', 'php', 'python', 'java', 'scheme', 'ruby', 'go'],
 }));
 
 environment.config.merge({
