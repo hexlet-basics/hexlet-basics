@@ -9,8 +9,8 @@ const langToTabSizeMapping = {
   javascript: 2,
   ruby: 2,
   yml: 2,
-  py: 2,
-  rkt: 2,
+  python: 2,
+  racket: 2,
   erlang: 2,
   elixir: 2,
 };
