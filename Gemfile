@@ -43,6 +43,7 @@ group :production do
 end
 
 gem 'bcrypt'
+gem 'gon'
 gem 'reform-rails'
 gem 'simple_form'
 gem 'slim-rails'
