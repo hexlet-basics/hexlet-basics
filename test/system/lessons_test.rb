@@ -12,7 +12,6 @@ class LessonsTest < ApplicationSystemTestCase
 
     visit language_module_lesson_url(language.slug, language_module.slug, language_module_lesson.slug)
 
-    assert { page.has_selector?('#basics-lesson-container') }
-    assert { page.driver.browser.manage.logs.get(:browser).empty? }
+    assert { page.has_selector?('[data-testid="basics-lesson-container"]') }
   end
 end

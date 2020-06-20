@@ -9,9 +9,9 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     user = users(name)
 
     visit new_session_url
-    email_element = find('[type="email"]')
-    password_element = find('[type="password"]')
-    log_in_element = find('[type="submit"]')
+    email_element = find('[data-testid="email"]')
+    password_element = find('[data-testid="password"]')
+    log_in_element = find('[data-testid="submit"]')
 
     email_element.fill_in with: user.email
     password_element.fill_in with: 'password'
