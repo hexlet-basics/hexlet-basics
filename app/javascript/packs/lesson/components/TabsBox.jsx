@@ -5,6 +5,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { actions, tabsBoxSliceName } from '../slices/index.js';
 import currentTabStates from '../utils/currentTabStates.js';
 
+import Editor from './Editor.jsx';
+
 const TabsBox = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -32,7 +34,7 @@ const TabsBox = () => {
       </div>
       <Tab.Content bsPrefix="d-flex h-100 tab-content overflow-auto">
         <Tab.Pane eventKey={editor} bsPrefix="tab-pane h-100 w-100 overflow-hidden">
-          Editor!
+          <Editor />
         </Tab.Pane>
         <Tab.Pane eventKey={console} bsPrefix="tab-pane h-100 w-100">
           Console!
