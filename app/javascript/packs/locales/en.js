@@ -6,6 +6,8 @@ export default {
       server: 'Error on server. Maybe it’ll let go soon, but maybe not. Try to find out what happened in https://slack-ru.hexlet.io/',
     },
     run: 'Run',
+    resetCode: 'Reset code',
+    confirm: 'ATTENTION! Your code will be deleted. Are you sure you want to reset the current progress and return the exercise to its initial state?',
     editor: 'Editor',
     console: 'Console',
     solution: 'Solution',

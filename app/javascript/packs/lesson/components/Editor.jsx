@@ -25,6 +25,7 @@ const Editor = () => {
 
   const onMount = (editor) => {
     editor.focus();
+    // TODO: add hot key for check code on ctrl+Enter
   };
 
   const vdom = (

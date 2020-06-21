@@ -68,6 +68,8 @@ const ControlBox = () => {
           className="btn btn-outline-secondary mr-3 d-inline-flex align-items-center"
           href={window.location.href}
           title={t('resetCode')}
+          // TODO: Add modal window instead browser confirmation
+          data-confirm={t('confirm')}
         >
           <span className="fas fa-sync-alt" />
           <span className="d-none d-sm-block d-md-none d-lg-block">&nbsp;</span>
