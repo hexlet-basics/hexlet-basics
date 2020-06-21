@@ -3,6 +3,6 @@
 namespace :exercises do
   desc 'Load exercies'
   task :load, [:lang] => :environment do |_task, args|
-    ExerciseLoader.run(args.lang)
+    ExerciseLoader.from_cli(args.lang)
   end
 end
