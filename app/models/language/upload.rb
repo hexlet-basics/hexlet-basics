@@ -5,7 +5,7 @@ class Language::Upload < ApplicationRecord
 
   belongs_to :language
 
-  has_one  :language_version, dependent: :destroy
+  has_one  :language_version, dependent: :destroy, class_name: 'Language::Version'
   has_many :language_module_versions, dependent: :destroy, class_name: 'Language::Module::Version'
   has_many :language_module_lesson_versions, dependent: :destroy, class_name: 'Language::Module::Lesson::Version'
 
