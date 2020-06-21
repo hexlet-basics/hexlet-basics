@@ -3,9 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { Tab, Nav } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { actions, tabsBoxSliceName } from '../slices/index.js';
-import currentTabStates from '../utils/currentTabStates.js';
+import { currentTabStates } from '../utils/stateMachines.js';
 
 import Editor from './Editor.jsx';
+import Console from './Console.jsx';
+import Solution from './Solution.jsx';
 
 const TabsBox = () => {
   const { t } = useTranslation();
@@ -37,10 +39,10 @@ const TabsBox = () => {
           <Editor />
         </Tab.Pane>
         <Tab.Pane eventKey={console} bsPrefix="tab-pane h-100 w-100">
-          Console!
+          <Console />
         </Tab.Pane>
         <Tab.Pane eventKey={solution} bsPrefix="tab-pane h-100 w-100">
-          Solution!
+          <Solution />
         </Tab.Pane>
       </Tab.Content>
     </Tab.Container>
