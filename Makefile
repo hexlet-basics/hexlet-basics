@@ -47,7 +47,6 @@ heroku-logs:
 	heroku logs --tail
 
 ci-test:
-	echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p
 	make setup
 	make precompile-assets
 	make lint
