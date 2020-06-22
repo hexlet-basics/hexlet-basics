@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Tab, Nav } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { actions, tabsBoxSliceName } from '../slices/index.js';
-import { currentTabStates } from '../utils/stateMachines.js';
+import { currentTabValues } from '../utils/stateMachines.js';
 
 import Editor from './Editor.jsx';
 import Console from './Console.jsx';
@@ -17,7 +17,7 @@ const TabsBox = () => {
     dispatch(actions.changeTab({ newTabState }));
   };
 
-  const { editor, console, solution } = currentTabStates;
+  const { editor, console, solution } = currentTabValues;
 
   const vdom = (
     <Tab.Container id="tabs" activeKey={currentTab} onSelect={changeTab}>

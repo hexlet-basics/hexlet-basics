@@ -31,6 +31,6 @@ export {
 
 export const setupState = (gon) => (dispatch) => {
   const { lesson } = gon;
-  dispatch(editorActions.changeContent({ content: lesson.preparedCode }));
+  dispatch(editorActions.changeContent({ content: lesson.prepared_code }));
   dispatch(solutionActions.setStartTime({ startTime: Date.now() }));
 };

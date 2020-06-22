@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
+import { actions as checkInfoActions } from './checkInfoSlice.js';
 import { solutionStates } from '../utils/stateMachines.js';
 
 export const sliceName = 'solutionSlice';
@@ -10,7 +11,7 @@ const slice = createSlice({
   name: sliceName,
   initialState: {
     startTime: null,
-    processState: solutionStates.pending,
+    processState: solutionStates.notAllowedToShown,
     waitingTime,
   },
   reducers: {
@@ -19,6 +20,13 @@ const slice = createSlice({
     },
     changeSolutionProcessState(state, { payload }) {
       state.processState = payload.processState;
+    },
+  },
+  extraReducers: {
+    [checkInfoActions.runCheck.fulfilled](state, { payload }) {
+      if (payload.passed) {
+        state.processState = solutionStates.shown;
+      }
     },
   },
 });

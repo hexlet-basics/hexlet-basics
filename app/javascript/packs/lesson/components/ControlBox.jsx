@@ -6,6 +6,11 @@ import cn from 'classnames';
 import Hotkeys from 'react-hot-keys';
 import { Button, Spinner } from 'react-bootstrap';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faArrowRight, faSyncAlt, faArrowLeft, faPlayCircle,
+} from '@fortawesome/free-solid-svg-icons';
+
 import {
   actions, lessonSliceName,
   checkInfoSliceName, editorSliceName,
@@ -27,11 +32,11 @@ const ControlBox = () => {
     dispatch(actions.runCheck({ lesson, editor }));
   };
 
-  const isCheckInfoChecking = checkInfo.processState === checkInfoStates.checking;
+  const isCodeChecking = checkInfo.processState === checkInfoStates.checking;
 
   const renderRunButtonContent = () => {
     const text = t('run');
-    if (isCheckInfoChecking) {
+    if (isCodeChecking) {
       return (
         <>
           <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
@@ -43,7 +48,7 @@ const ControlBox = () => {
 
     return (
       <>
-        <span className="fas fa-play-circle" />
+        <FontAwesomeIcon icon={faPlayCircle} />
         <span className="d-none d-sm-block d-md-none d-lg-block ml-1">{text}</span>
       </>
     );
@@ -71,23 +76,23 @@ const ControlBox = () => {
           // TODO: Add modal window instead browser confirmation
           data-confirm={t('confirm')}
         >
-          <span className="fas fa-sync-alt" />
+          <FontAwesomeIcon icon={faSyncAlt} />
           <span className="d-none d-sm-block d-md-none d-lg-block">&nbsp;</span>
         </a>
         <a className={prevButtonClasses} href={prevLessonPath}>
-          <span className="d-sm-none d-md-block d-lg-none fas fa-arrow-left" />
+          <FontAwesomeIcon className="d-sm-none d-md-block d-lg-none" icon={faArrowLeft} />
           <span className="d-none d-sm-block d-md-none d-lg-block">{t('prevLesson')}</span>
         </a>
         <Button
           variant="primary"
           className="mr-3 d-inline-flex align-items-center"
           onClick={handleRunCheck}
-          disabled={isCheckInfoChecking}
+          disabled={isCodeChecking}
         >
           {renderRunButtonContent()}
         </Button>
         <a className={nextButtonClasses} href={nextLessonPath}>
-          <span className="d-sm-none d-md-block d-lg-none fas fa-arrow-right" />
+          <FontAwesomeIcon className="d-sm-none d-md-block d-lg-none" icon={faArrowRight} />
           <span className="d-none d-sm-block d-md-none d-lg-block">{t('nextLesson')}</span>
         </a>
       </div>

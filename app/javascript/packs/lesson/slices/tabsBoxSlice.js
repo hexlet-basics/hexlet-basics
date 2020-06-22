@@ -1,14 +1,14 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 import { actions as checkInfoActions } from './checkInfoSlice.js';
-import { currentTabStates } from '../utils/stateMachines.js';
+import { currentTabValues } from '../utils/stateMachines.js';
 
 export const sliceName = 'tabsBoxSlice';
 
 const slice = createSlice({
   name: sliceName,
   initialState: {
-    currentTab: currentTabStates.editor,
+    currentTab: currentTabValues.editor,
   },
   reducers: {
     changeTab(state, { payload }) {
@@ -17,7 +17,7 @@ const slice = createSlice({
   },
   extraReducers: {
     [checkInfoActions.runCheck.pending](state) {
-      state.currentTab = currentTabStates.console;
+      state.currentTab = currentTabValues.console;
     },
   },
 });

@@ -4,17 +4,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import uncamelizedGon from 'gon';
-import '@fortawesome/react-fontawesome';
+import gon from 'gon';
 
 import App from './components/App.jsx';
 import reducer, { setupState } from './slices/index.js';
 import resources from '../locales/index.js';
-import { camelize } from './utils/keysConverter.js';
 import EntityContext from './EntityContext.js';
 
 export default async () => {
-  const gon = camelize(uncamelizedGon);
   await i18n
     .use(initReactI18next)
     .init({

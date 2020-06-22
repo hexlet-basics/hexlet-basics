@@ -2,7 +2,8 @@ import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import { Highlight } from 'react-fast-highlight';
-import Countdown, { zeroPad } from 'react-countdown';
+import Countdown from 'react-countdown';
+import { format } from 'date-fns';
 
 import { actions, editorSliceName, solutionSliceName } from '../slices/index.js';
 import { getLanguage } from '../utils/editorUtils.js';
@@ -33,12 +34,11 @@ const Solution = () => {
     );
   };
 
-
   const renderSolution = () => (
     <div className="p-lg-3" id="basics-solution">
       <p className="mb-0">{t('teacherSolution')}</p>
       <Highlight languages={[getLanguage(language)]}>
-        {lesson.originalCode}
+        {lesson.original_code}
       </Highlight>
       {renderUserCode()}
     </div>
@@ -63,22 +63,20 @@ const Solution = () => {
     </>
   );
 
-
   const renderContent = () => (countdownData) => {
-    const { minutes, seconds, completed } = countdownData;
+    const { completed } = countdownData;
 
     if (solutionStates.shown === solution.processState) {
       return renderSolution();
     }
-    if (completed) {
+    if (completed || solutionStates.canBeShown === solution.processState) {
       return renderShowButton();
     }
 
-    const remainingTime = `${zeroPad(minutes)}:${zeroPad(seconds)}`;
+    const remainingTime = format(new Date(countdownData.total), 'mm:ss');
 
     return <p>{t('solutionInstructions', { remainingTime })}</p>;
   };
-
 
   return (
     <div className="p-3">
