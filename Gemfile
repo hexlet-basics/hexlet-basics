@@ -9,7 +9,9 @@ gem 'sass-rails', '>= 6'
 gem 'webpacker', '~> 4.0'
 
 gem 'bootsnap', '>= 1.4.2', require: false
+gem 'flash_rails_messages', '~> 2.1'
 gem 'jbuilder', '~> 2.7'
+gem 'paint', '~> 2.1'
 
 gem 'kramdown'
 

@@ -2,4 +2,5 @@
 
 class Web::ApplicationController < ApplicationController
   include AuthManagment
+  include Flash
 end

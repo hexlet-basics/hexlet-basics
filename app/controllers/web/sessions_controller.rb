@@ -10,6 +10,7 @@ class Web::SessionsController < Web::ApplicationController
 
     if @sign_in_form.validate(sign_in_params)
       sign_in @sign_in_form.user
+      f(:success)
       redirect_to root_path
     else
       render :new
@@ -18,6 +19,7 @@ class Web::SessionsController < Web::ApplicationController
 
   def destroy
     sign_out
+    f(:success)
     redirect_to root_path
   end
 
