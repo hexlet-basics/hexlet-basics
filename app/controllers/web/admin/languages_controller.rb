@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Web::Admin::LanguagesController < Web::Admin::ApplicationController
+
   def index
     @languages = Language.all
   end
