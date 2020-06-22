@@ -20,13 +20,13 @@ class ExerciseLoader
 
       lessons = language_modules.flat_map { |language_module| get_lessons(module_dest, language_module, language) }
       lessons.each { |lesson| find_or_create_lesson_with_descriptions_and_exercise(lesson, upload) }
-      upload.update(result: "Success")
+
+      upload.update(result: 'Success')
       upload.done!
     end
   rescue StandardError => e
     upload.update(result: "Error class: #{e.class} message: #{e.message}")
     upload.done!
-    raise
   end
 
   def from_cli(lang_name)
@@ -35,6 +35,7 @@ class ExerciseLoader
 
     Language::Upload.transaction do
       upload = Language::Upload.create(uploader: 'cli')
+      upload.build!
       language = find_or_create_language_with_version(repo_dest, lang_name, upload)
 
       modules_with_meta = get_modules(module_dest)
@@ -42,7 +43,13 @@ class ExerciseLoader
 
       lessons = language_modules.flat_map { |language_module| get_lessons(module_dest, language_module, language) }
       lessons.each { |lesson| find_or_create_lesson_with_descriptions_and_exercise(lesson, upload) }
+
+      upload.update(result: 'Success')
+      upload.done!
     end
+  rescue StandardError => e
+    upload.update(result: "Error class: #{e.class} message: #{e.message}")
+    upload.done!
   end
 
   def get_modules(dest)
@@ -90,8 +97,8 @@ class ExerciseLoader
           language: language,
           slug: slug,
           lesson_version: lesson_version,
-            descriptions: descriptions
-          }
+          descriptions: descriptions
+        }
       end
   end
 

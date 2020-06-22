@@ -21,5 +21,5 @@ class Language::Upload < ApplicationRecord
     event :done do
       transitions from: :building, to: :built
     end
- end
+  end
 end

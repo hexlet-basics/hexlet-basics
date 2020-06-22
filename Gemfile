@@ -44,11 +44,11 @@ end
 
 gem 'aasm'
 gem 'bcrypt'
-gem 'gon'
+gem 'dry-system'
 gem 'enumerize'
+gem 'gon'
 gem 'reform-rails'
 gem 'sidekiq'
 gem 'simple_form'
 gem 'slim-rails'
-gem 'dry-system'
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]

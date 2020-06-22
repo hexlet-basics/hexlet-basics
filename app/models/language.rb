@@ -5,7 +5,7 @@ class Language < ApplicationRecord
 
   enumerize :slug, in: %i[php javascript python java html css racket elixir ruby go]
 
-  validates :slug, presence: true, uniqueness: { case_sensitive: false }
+  validates :slug, presence: true
 
   belongs_to :current_version, optional: true, class_name: 'Language::Version'
 

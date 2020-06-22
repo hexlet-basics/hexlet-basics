@@ -9,6 +9,7 @@ class Web::Admin::Languages::UploadsControllerTest < ActionDispatch::Integration
 
   test 'create' do
     language = languages(:one)
+    AppContainer.stub(:docker_image_exercise_loader, :success)
 
     post admin_language_uploads_path(language.id)
     assert_response :redirect
