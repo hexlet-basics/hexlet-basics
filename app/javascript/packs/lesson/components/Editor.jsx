@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import MonacoEditor from 'react-monaco-editor';
 import { actions, editorSliceName } from '../slices/index.js';
 import { getLanguage, getTabSize } from '../utils/editorUtils.js';
+import EntityContext from '../EntityContext.js';
 
 const Editor = () => {
-  const { language, content } = useSelector((state) => state[editorSliceName]);
+  const { language } = useContext(EntityContext);
+  const { content } = useSelector((state) => state[editorSliceName]);
   const dispatch = useDispatch();
 
   const options = {
@@ -23,6 +25,7 @@ const Editor = () => {
 
   const onMount = (editor) => {
     editor.focus();
+    // TODO: add hot key for check code on ctrl+Enter
   };
 
   const vdom = (

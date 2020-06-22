@@ -1,23 +1,22 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 import { actions as checkInfoActions } from './checkInfoSlice.js';
-import { currentTabValues } from '../utils/stateMachines.js';
 
-export const sliceName = 'tabsBoxSlice';
+export const sliceName = 'lessonSlice';
 
 const slice = createSlice({
   name: sliceName,
   initialState: {
-    currentTab: currentTabValues.editor,
+    finished: false,
   },
   reducers: {
-    changeTab(state, { payload }) {
-      state.currentTab = payload.newTabState;
-    },
   },
   extraReducers: {
-    [checkInfoActions.runCheck.pending](state) {
-      state.currentTab = currentTabValues.console;
+    [checkInfoActions.runCheck.fulfilled](state, { payload }) {
+      if (state.finished) {
+        return;
+      }
+      state.finished = payload.passed;
     },
   },
 });

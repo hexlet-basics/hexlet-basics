@@ -9,7 +9,7 @@ import gon from 'gon';
 import App from './components/App.jsx';
 import reducer, { setupState } from './slices/index.js';
 import resources from '../locales/index.js';
-
+import EntityContext from './EntityContext.js';
 
 export default async () => {
   await i18n
@@ -18,21 +18,27 @@ export default async () => {
       resources,
       load: 'languageOnly',
       fallbackLng: false,
-      lng: 'ru',
+      lng: gon.locale,
       debug: process.env.NODE_ENV !== 'production',
       react: {
         wait: true,
       },
     });
-
   const store = configureStore({
     reducer,
   });
   store.dispatch(setupState(gon));
 
+  const entities = {
+    lesson: gon.lesson,
+    language: gon.language,
+  };
+
   ReactDOM.render(
     <Provider store={store}>
-      <App />
+      <EntityContext.Provider value={entities}>
+        <App />
+      </EntityContext.Provider>
     </Provider>,
     document.querySelector('#basics-lesson-container'),
   );
