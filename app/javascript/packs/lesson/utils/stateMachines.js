@@ -4,13 +4,14 @@ export const checkInfoStates = {
   checked: 'checked',
 };
 
-export const currentTabStates = {
+export const currentTabValues = {
   console: 'console',
   editor: 'editor',
   solution: 'solution',
 };
 
 export const solutionStates = {
-  pending: 'pending',
+  notAllowedToShown: 'notAllowedToShown',
+  canBeShown: 'canBeShown',
   shown: 'shown',
 };
