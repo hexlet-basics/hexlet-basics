@@ -3,14 +3,12 @@
 module UploadHelper
   def uploaded_state_class(state)
     case state
-    when 'not_run'
+    when 'created'
       'badge badge-secondary'
-    when 'running'
+    when 'building'
       'badge badge-warning'
-    when 'success'
+    when 'built'
       'badge badge-success'
-    when 'failed'
-      'badge badge-danger'
     end
   end
 end

@@ -10,21 +10,16 @@ class Language::Upload < ApplicationRecord
   has_many :language_module_lesson_versions, dependent: :destroy, class_name: 'Language::Module::Lesson::Version'
 
   aasm :state do
-    state :not_run, initial: true
-    state :running
-    state :success
-    state :failed
+    state :created, initial: true
+    state :building
+    state :built
 
-    event :run do
-      transitions from: :not_run, to: :running
+    event :build do
+      transitions from: :created, to: :building
     end
 
-    event :succeed do
-      transitions from: :running, to: :success
+    event :done do
+      transitions from: :building, to: :built
     end
-
-    event :fail do
-      transitions from: :running, to: :failed
-    end
-  end
+ end
 end

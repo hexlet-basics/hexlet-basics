@@ -4,12 +4,12 @@
 class ExerciseLoader
   include Import['docker_image_exercise_loader']
 
-  def from_website(language, upload)
-    lang_name = language.slug
+  def from_website(upload)
+    lang_name = upload.language.slug
     repo_dest = "tmp/hexletbasics/exercises-#{lang_name}"
     module_dest = "#{repo_dest}/modules"
 
-    upload.run!
+    upload.build!
     docker_image_exercise_loader.run(lang_name)
 
     Language::Upload.transaction do
@@ -20,10 +20,12 @@ class ExerciseLoader
 
       lessons = language_modules.flat_map { |language_module| get_lessons(module_dest, language_module, language) }
       lessons.each { |lesson| find_or_create_lesson_with_descriptions_and_exercise(lesson, upload) }
-      upload.succeed!
+      upload.update(result: "Success")
+      upload.done!
     end
-  rescue StandardError
-    upload.fail!
+  rescue StandardError => e
+    upload.update(result: "Error class: #{e.class} message: #{e.message}")
+    upload.done!
     raise
   end
 
@@ -88,8 +90,8 @@ class ExerciseLoader
           language: language,
           slug: slug,
           lesson_version: lesson_version,
-          descriptions: descriptions
-        }
+            descriptions: descriptions
+          }
       end
   end
 

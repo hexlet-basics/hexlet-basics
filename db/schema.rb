@@ -94,6 +94,7 @@ ActiveRecord::Schema.define(version: 2020_06_20_214520) do
   create_table "language_uploads", force: :cascade do |t|
     t.string "state"
     t.string "uploader"
+    t.string "result"
     t.integer "language_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
