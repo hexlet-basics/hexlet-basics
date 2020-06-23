@@ -1,10 +1,7 @@
-DEFAULTS: &DEFAULTS
-  slug: slug_$LABEL
-
 one:
-  <<: *DEFAULTS
+  slug: elixir
   current_version: one
 
 two:
-  <<: *DEFAULTS
+  slug: java
   current_version: two

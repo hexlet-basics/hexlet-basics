@@ -1,0 +1,19 @@
+table.table
+  thead
+    tr
+      th id
+      th Language
+      th Uploader
+      th Result
+      th State
+  tbody
+    - @uploads.each do |upload|
+      tr
+        td= upload.id
+        td= upload.language.slug
+        td= upload.uploader
+        td= upload.result
+        td
+          span class=(uploaded_state_class(upload.state))
+            = upload.state.capitalize
+
