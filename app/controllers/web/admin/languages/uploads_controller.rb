@@ -5,7 +5,7 @@ class Web::Admin::Languages::UploadsController < Web::Admin::Languages::Applicat
     @upload = resource_language.uploads.build(uploader: 'website')
 
     if @upload.save
-      ExerciseLoaderWorker.perform_async(@upload.id)
+      ExerciseLoaderJob.perform_later(@upload.id)
 
       redirect_to admin_uploads_path
     else

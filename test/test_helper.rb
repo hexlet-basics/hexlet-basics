@@ -9,8 +9,6 @@ require 'dry/system/stubs'
 AppContainer.enable_stubs!
 AppContainer.finalize!
 
-Sidekiq::Testing.inline!
-
 class ActiveSupport::TestCase
   # Run tests in parallel with specified workers
   parallelize(workers: :number_of_processors)
