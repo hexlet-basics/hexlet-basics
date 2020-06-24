@@ -18,6 +18,7 @@ module HexletBasics
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
+    config.active_job.queue_adapter = :sidekiq
 
     config.i18n.default_locale = :ru
     config.generators do |g|

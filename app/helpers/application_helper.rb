@@ -5,9 +5,9 @@ module ApplicationHelper
 
   def nav_menu_item(name, path = '#', options = {})
     assembled_options = options.merge(class: "nav-link #{active?(path)}")
-    content_tag :li, class: 'nav-item' do
+    tag.li class: 'nav-item' do
       link_to path, assembled_options do
-        content_tag(:div, name)
+        tag.div(name)
       end
     end
   end
