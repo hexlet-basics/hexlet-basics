@@ -44,7 +44,8 @@ end
 
 gem 'aasm'
 gem 'bcrypt'
-gem 'dry-system'
+gem 'dry-auto_inject'
+gem 'dry-container'
 gem 'enumerize'
 gem 'gon'
 gem 'reform-rails'

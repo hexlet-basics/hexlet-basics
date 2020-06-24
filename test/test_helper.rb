@@ -4,10 +4,6 @@ ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 require 'rails/test_help'
 require 'sidekiq/testing'
-require 'dry/system/stubs'
-
-AppContainer.enable_stubs!
-AppContainer.finalize!
 
 class ActiveSupport::TestCase
   # Run tests in parallel with specified workers

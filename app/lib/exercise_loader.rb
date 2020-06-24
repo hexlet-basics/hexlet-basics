@@ -2,7 +2,7 @@
 
 # rubocop:disable Metrics/ClassLength
 class ExerciseLoader
-  include Import['docker_image_exercise_loader']
+  include Import['download_exercise_klass']
 
   def from_website(upload)
     lang_name = upload.language.slug
@@ -10,7 +10,7 @@ class ExerciseLoader
     module_dest = "#{repo_dest}/modules"
 
     upload.build!
-    docker_image_exercise_loader.run(lang_name)
+    download_exercise_klass.run(lang_name)
 
     Language::Upload.transaction do
       language = find_or_create_language_with_version(repo_dest, lang_name, upload)
