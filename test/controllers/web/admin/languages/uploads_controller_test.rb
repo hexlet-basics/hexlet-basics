@@ -3,8 +3,6 @@
 require 'test_helper'
 
 class Web::Admin::Languages::UploadsControllerTest < ActionDispatch::IntegrationTest
-  include ActiveJob::TestHelper
-
   setup do
     sign_in_as(:admin)
   end
@@ -15,7 +13,6 @@ class Web::Admin::Languages::UploadsControllerTest < ActionDispatch::Integration
     post admin_language_uploads_path(language.id)
     assert_response :redirect
 
-    perform_enqueued_jobs
     lesson_module = language.modules.find_by(slug: 'basics')
     lesson = language.lessons.find_by(slug: 'hello-world')
 
