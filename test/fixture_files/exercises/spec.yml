@@ -1,0 +1,7 @@
+---
+
+language:
+  docker_image: "hexletbasics/exercises-javascript"
+  extension: js
+  exercise_filename: index.js
+  exercise_test_filename: test.js

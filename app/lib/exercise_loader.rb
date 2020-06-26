@@ -6,11 +6,10 @@ class ExerciseLoader
 
   def from_website(upload)
     lang_name = upload.language.slug
-    repo_dest = "tmp/hexletbasics/exercises-#{lang_name}"
-    module_dest = "#{repo_dest}/modules"
 
     upload.build!
-    download_exercise_klass.run(lang_name)
+    repo_dest = download_exercise_klass.run(lang_name)
+    module_dest = "#{repo_dest}/modules"
 
     Language::Upload.transaction do
       language = find_or_create_language_with_version(repo_dest, lang_name, upload)
@@ -88,6 +87,7 @@ class ExerciseLoader
       .map do |directory|
         filename = File.basename(directory)
         order, slug = filename.split('-', 2)
+
         descriptions = get_descriptions(directory)
         lesson_version = get_lesson_version(directory, language, language_module)
 
