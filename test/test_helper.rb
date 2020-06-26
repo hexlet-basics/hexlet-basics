@@ -3,7 +3,8 @@
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 require 'rails/test_help'
-require 'sidekiq/testing'
+
+Dir[Rails.root.join('test/stubs/*.rb')].sort.each { |f| require f }
 
 class ActiveSupport::TestCase
   # Run tests in parallel with specified workers
