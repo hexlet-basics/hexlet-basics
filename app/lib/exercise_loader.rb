@@ -6,13 +6,14 @@ class ExerciseLoader
 
   def from_website(upload)
     lang_name = upload.language.slug
+    language = upload.language
 
     upload.build!
     repo_dest = download_exercise_klass.run(lang_name)
     module_dest = "#{repo_dest}/modules"
 
     Language::Upload.transaction do
-      language = find_or_create_language_with_version(repo_dest, lang_name, upload)
+      create_language_version(repo_dest, language, upload)
 
       modules_with_meta = get_modules(module_dest)
       language_modules = modules_with_meta.map { |data| find_or_create_module_with_descriptions(language, data, upload) }
@@ -32,10 +33,12 @@ class ExerciseLoader
     repo_dest = "tmp/hexletbasics/exercises-#{lang_name}"
     module_dest = "#{repo_dest}/modules"
 
+    language = find_or_create_language(lang_name)
+    upload = create_upload(language, 'cli')
+    upload.build!
+
     Language::Upload.transaction do
-      upload = Language::Upload.create(uploader: 'cli')
-      upload.build!
-      language = find_or_create_language_with_version(repo_dest, lang_name, upload)
+      create_language_version(repo_dest, language, upload)
 
       modules_with_meta = get_modules(module_dest)
       language_modules = modules_with_meta.map { |data| find_or_create_module_with_descriptions(language, data, upload) }
@@ -118,15 +121,17 @@ class ExerciseLoader
     }
   end
 
-  def find_or_create_language_with_version(repo_dest, lang_name, upload)
+  def find_or_create_language(lang_name)
+    Language.find_or_create_by!(slug: lang_name)
+  end
+
+  def create_language_version(repo_dest, language, upload)
     spec_filepath = File.join(repo_dest, 'spec.yml')
 
     language_info = YAML.load_file(spec_filepath)['language']
 
-    language = Language.find_or_create_by!(slug: lang_name)
-
     version = Language::Version.create!(
-      name: lang_name,
+      name: language.slug,
       extension: language_info['extension'],
       docker_image: language_info['docker_image'],
       exercise_filename: language_info['exercise_filename'],
@@ -137,7 +142,11 @@ class ExerciseLoader
 
     language.update!(current_version: version)
 
-    language
+    version
+  end
+
+  def create_upload(language, uploader)
+    Language::Upload.create!(language: language, uploader: uploader)
   end
 
   def find_or_create_module_with_descriptions(language, data, upload)
