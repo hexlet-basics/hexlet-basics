@@ -43,6 +43,7 @@ group :production do
 end
 
 gem 'aasm'
+gem 'active_form_model'
 gem 'bcrypt'
 gem 'dry-auto_inject'
 gem 'dry-container'
