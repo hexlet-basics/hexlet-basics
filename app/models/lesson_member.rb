@@ -9,10 +9,10 @@ class LessonMember < ApplicationRecord
 
   aasm :state do
     state :started, initial: true
-    state :finished
+    state :completed
 
     event :complete do
-      transitions from: :started, to: :finished
+      transitions from: :started, to: :completed
     end
   end
 end
