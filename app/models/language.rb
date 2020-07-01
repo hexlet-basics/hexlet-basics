@@ -7,7 +7,7 @@ class Language < ApplicationRecord
 
   validates :slug, presence: true
 
-  belongs_to :current_version, optional: true, class_name: 'Language::Version'
+  belongs_to :version, optional: true, class_name: 'Language::Version'
 
   has_many :uploads, dependent: :destroy
   has_many :modules, dependent: :destroy
@@ -15,8 +15,8 @@ class Language < ApplicationRecord
   has_many :module_descriptions, through: :modules, source: :descriptions
   has_many :lesson_descriptions, through: :lessons, source: :descriptions
 
-  has_many :current_lessons, through: :current_version, source: :lesson_versions
-  has_many :current_modules, through: :current_version, source: :module_versions
+  has_many :current_lessons, through: :version, source: :lesson_versions
+  has_many :current_modules, through: :version, source: :module_versions
 
-  delegate :to_s, to: :current_version
+  delegate :to_s, to: :version
 end
