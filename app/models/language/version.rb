@@ -4,7 +4,9 @@ class Language::Version < ApplicationRecord
   include AASM
 
   has_many :module_versions, dependent: :destroy, foreign_key: :language_version_id, class_name: 'Language::Module::Version'
-  has_many :lesson_versions, dependent: :destroy, foreign_key: :language_version_id, class_name: 'Language::Module::Lesson::Version'
+  has_many :lesson_versions, dependent: :destroy, foreign_key: :language_version_id, class_name: 'Language::Lesson::Version'
+  has_many :lesson_data, dependent: :destroy, foreign_key: :language_version_id, class_name: 'Language::Lesson::Version::Datum'
+  has_many :module_data, dependent: :destroy, foreign_key: :language_version_id, class_name: 'Language::Module::Version::Datum'
 
   belongs_to :language
 
