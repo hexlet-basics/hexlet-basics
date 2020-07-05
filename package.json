@@ -34,6 +34,7 @@
     "react-i18next": "^11.5.1",
     "react-monaco-editor": "^0.36.0",
     "react-redux": "^7.2.0",
+    "tabler": "github:tabler/tabler#dev",
     "webpack": "^4.43.0"
   },
   "version": "0.1.0",
