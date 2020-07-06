@@ -40,11 +40,13 @@ ActiveRecord::Schema.define(version: 2020_07_01_164510) do
     t.integer "language_version_id", null: false
     t.integer "language_id", null: false
     t.integer "lesson_id", null: false
+    t.integer "module_version_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["language_id"], name: "index_language_lesson_versions_on_language_id"
     t.index ["language_version_id"], name: "index_language_lesson_versions_on_language_version_id"
     t.index ["lesson_id"], name: "index_language_lesson_versions_on_lesson_id"
+    t.index ["module_version_id"], name: "index_language_lesson_versions_on_module_version_id"
   end
 
   create_table "language_lessons", force: :cascade do |t|
@@ -132,6 +134,7 @@ ActiveRecord::Schema.define(version: 2020_07_01_164510) do
   add_foreign_key "language_lesson_version_data", "language_versions"
   add_foreign_key "language_lesson_version_data", "languages"
   add_foreign_key "language_lesson_versions", "language_lessons", column: "lesson_id"
+  add_foreign_key "language_lesson_versions", "language_module_versions", column: "module_version_id"
   add_foreign_key "language_lesson_versions", "language_versions"
   add_foreign_key "language_lesson_versions", "languages"
   add_foreign_key "language_lessons", "language_modules", column: "module_id"

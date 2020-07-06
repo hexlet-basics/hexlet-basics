@@ -5,5 +5,5 @@ class Language::Module::Version < ApplicationRecord
   belongs_to :module
   belongs_to :language
 
-  has_many :lesson_versions, dependent: :destroy, foreign_key: :module_version_id, class_name: 'Language::Module::Lesson::Version'
+  has_many :lesson_versions, dependent: :destroy, foreign_key: :module_version_id, class_name: 'Language::Lesson::Version'
 end

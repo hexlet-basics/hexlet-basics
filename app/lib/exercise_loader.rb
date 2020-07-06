@@ -192,7 +192,8 @@ class ExerciseLoader
       path_to_code: lesson_version[:path_to_code],
       lesson: lesson,
       language_version: language_version,
-      language: language
+      language: language,
+      module_version: language_module.version
     )
 
     lesson.update!(version: version)
