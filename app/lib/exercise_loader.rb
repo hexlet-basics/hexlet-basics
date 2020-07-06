@@ -8,25 +8,27 @@ class ExerciseLoader
     language = language_version.language
     lang_name = language.slug
 
-    upload.build!
+    language_version.build!
     repo_dest = download_exercise_klass.run(lang_name)
     module_dest = "#{repo_dest}/modules"
 
     Language::Version.transaction do
       language.update!(version: language_version)
 
+      update_language_version(repo_dest, language, language_version)
+
       modules_with_meta = get_modules(module_dest)
-      language_modules = modules_with_meta.map { |data| find_or_create_module_with_descriptions(language, data, language_version) }
+      language_modules = modules_with_meta.map { |data| find_or_create_module_with_data(language, data, language_version) }
 
       lessons = language_modules.flat_map { |language_module| get_lessons(module_dest, language_module, language) }
-      lessons.each { |lesson| find_or_create_lesson_with_descriptions_and_exercise(lesson, language_version) }
+      lessons.each { |lesson| find_or_create_lesson_with_data_and_exercise(lesson, language_version) }
 
-      upload.update(result: 'Success')
-      upload.done!
+      language_version.update(result: 'Success')
+      language_version.done!
     end
-  rescue StandardError => e
-    upload.update(result: "Error class: #{e.class} message: #{e.message}")
-    upload.done!
+    rescue StandardError => e
+      language_version.update(result: "Error class: #{e.class} message: #{e.message}")
+      language_version.done!
   end
 
   def from_cli(lang_name)
@@ -44,7 +46,7 @@ class ExerciseLoader
       language_modules = modules_with_meta.map { |data| find_or_create_module_with_data(language, data, language_version) }
 
       lessons = language_modules.flat_map { |language_module| get_lessons(module_dest, language_module, language) }
-      lessons.each { |lesson| find_or_create_lesson_with_descriptions_and_exercise(lesson, language_version) }
+      lessons.each { |lesson| find_or_create_lesson_with_data_and_exercise(lesson, language_version) }
 
       language_version.update(result: 'Success')
       language_version.done!
@@ -125,6 +127,19 @@ class ExerciseLoader
     Language.find_or_create_by!(slug: lang_name)
   end
 
+  def update_language_version(repo_dest, language, language_version)
+    spec_filepath = File.join(repo_dest, 'spec.yml')
+    language_info = YAML.load_file(spec_filepath)['language']
+
+    language_version.update!(
+      name: language.slug,
+      extension: language_info['extension'],
+      docker_image: language_info['docker_image'],
+      exercise_filename: language_info['exercise_filename'],
+      exercise_test_filename: language_info['exercise_test_filename']
+    )
+  end
+
   def create_language_version(repo_dest, language)
     spec_filepath = File.join(repo_dest, 'spec.yml')
     language_info = YAML.load_file(spec_filepath)['language']
@@ -148,7 +163,7 @@ class ExerciseLoader
       order: order,
       language: language,
       language_version: language_version,
-      module: language_module,
+      module: language_module
     )
 
     language_module.update!(version: version)
@@ -174,7 +189,7 @@ class ExerciseLoader
     Language::Module::Version::Datum.create!(new_datum_attr)
   end
 
-  def find_or_create_lesson_with_descriptions_and_exercise(data, language_version)
+  def find_or_create_lesson_with_data_and_exercise(data, language_version)
     language = data[:language]
     language_module = data[:module]
     slug = data[:slug]
@@ -197,7 +212,6 @@ class ExerciseLoader
     )
 
     lesson.update!(version: version)
-
     raise "Lesson '#{language_module.slug}.#{lesson.slug}' does not have descriptions" if descriptions.empty?
 
     descriptions.each { |description| create_lesson_datum(language, language_version, version, lesson, description) }

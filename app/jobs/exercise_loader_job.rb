@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class ExerciseLoaderJob < ApplicationJob
-  def perform(upload_id)
-    upload = Language::Upload.find(upload_id)
+  def perform(version_id)
+    version = Language::Version.find(version_id)
 
-    ExerciseLoader.new.from_website(upload)
+    ExerciseLoader.new.from_website(version)
   end
 end

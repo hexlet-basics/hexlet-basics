@@ -1,7 +1,7 @@
 one:
   slug: elixir
-  current_version: one
+  version: one
 
 two:
   slug: java
-  current_version: two
+  version: two

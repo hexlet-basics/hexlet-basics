@@ -1,0 +1,20 @@
+table.table
+  thead
+    tr
+      th id
+      th Language
+      th Result
+      th State
+  tbody
+    - @versions.each do |version|
+      tr
+        td= version.id
+        td= version.language.slug
+        td= version.result
+        td
+          span class=(language_version_state_class(version.state))
+            = version.state.capitalize
+
+= link_to "Create new version", admin_language_versions_path(resource_language), method: :post
+
+

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module UploadHelper
-  def uploaded_state_class(state)
+module Web::Admin::Languages::VersionsHelper
+  def language_version_state_class(state)
     case state
     when 'created'
       'badge badge-secondary'

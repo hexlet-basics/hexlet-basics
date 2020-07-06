@@ -4,15 +4,15 @@ DEFAULTS: &DEFAULTS
 one:
   <<: *DEFAULTS
   language: one
-  current_version: one
+  version: one
 
 two:
   <<: *DEFAULTS
   language: two
-  current_version: two
+  version: two
 
 variables_one:
   slug: variables
   language: two
-  current_version: variables_one
+  version: variables_one
 

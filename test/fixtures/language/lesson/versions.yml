@@ -10,7 +10,7 @@ one:
   language_version: one
   module_version: one
   lesson: one
-  upload: one
+  language: one
 
 two:
   <<: *DEFAULTS
@@ -18,7 +18,7 @@ two:
   language_version: two
   module_version: two
   lesson: two
-  upload: two
+  language: two
 
 tags_one:
   <<: *DEFAULTS
@@ -26,7 +26,7 @@ tags_one:
   language_version: one
   module_version: one
   lesson: tags_one
-  upload: one
+  language: one
 
 comments_one:
   <<: *DEFAULTS
@@ -34,7 +34,7 @@ comments_one:
   language_version: one
   module_version: one
   lesson: comments_one
-  upload: one
+  language: one
 
 naming_variables_one:
   <<: *DEFAULTS
@@ -42,4 +42,4 @@ naming_variables_one:
   language_version: one
   module_version: variables_one
   lesson: naming_variables_one
-  upload: one
+  language: one

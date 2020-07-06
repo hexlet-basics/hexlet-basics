@@ -11,7 +11,6 @@ html.h-100 lang="#{I18n.locale}"
             ul.nav.flex-column.nav-pills
               = nav_menu_item 'Admin', admin_root_path
               = nav_menu_item 'Languages', admin_languages_path
-              = nav_menu_item 'Uploads', admin_uploads_path
           .col-md-10
             = yield
   = content_for :js

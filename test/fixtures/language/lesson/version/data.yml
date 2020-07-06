@@ -10,6 +10,8 @@ one:
   language: one
   lesson: one
   locale: ru
+  language_version: one
+  version: one
 
 two:
   <<: *DEFAULTS
@@ -17,6 +19,8 @@ two:
   language: two
   lesson: two
   locale: ru
+  language_version: two
+  version: two
 
 tags_one:
   <<: *DEFAULTS
@@ -24,6 +28,8 @@ tags_one:
   language: one
   lesson: tags_one
   locale: ru
+  language_version: one
+  version: one
 
 comments_one:
   <<: *DEFAULTS
@@ -31,6 +37,8 @@ comments_one:
   language: one
   lesson: comments_one
   locale: ru
+  language_version: one
+  version: one
 
 naming_variables_one:
   <<: *DEFAULTS
@@ -38,3 +46,5 @@ naming_variables_one:
   language: one
   lesson: naming_variables_one
   locale: ru
+  language_version: one
+  version: one

@@ -19,10 +19,9 @@ Rails.application.routes.draw do
     namespace :admin do
       root 'home#index'
 
-      resources :uploads, only: %i[index new create]
       resources :languages, only: %i[index new create] do
         scope module: :languages do
-          resources :uploads, only: [:create]
+          resources :versions, only: %i[index create]
         end
       end
     end

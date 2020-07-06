@@ -8,10 +8,8 @@ one:
   <<: *DEFAULTS
   name: <%= Faker::ProgrammingLanguage.name %>
   language: one
-  upload: one
 
 two:
   <<: *DEFAULTS
   name: <%= Faker::ProgrammingLanguage.name %>
   language: two
-  upload: two
