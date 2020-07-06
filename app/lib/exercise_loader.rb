@@ -5,8 +5,8 @@ class ExerciseLoader
   include Import['download_exercise_klass']
 
   def from_website(language_version)
+    lang_name = language_version.language.slug
     language = language_version.language
-    lang_name = language.slug
 
     language_version.build!
     repo_dest = download_exercise_klass.run(lang_name)
@@ -26,9 +26,9 @@ class ExerciseLoader
       language_version.update(result: 'Success')
       language_version.done!
     end
-    rescue StandardError => e
-      language_version.update(result: "Error class: #{e.class} message: #{e.message}")
-      language_version.done!
+  rescue StandardError => e
+    language_version.update(result: "Error class: #{e.class} message: #{e.message}")
+    language_version.done!
   end
 
   def from_cli(lang_name)
