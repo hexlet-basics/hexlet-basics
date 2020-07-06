@@ -6,7 +6,6 @@ one:
   <<: *DEFAULTS
   locale: ru
   language: one
-  module: one
   version: one
   language_version: one
 
@@ -14,7 +13,6 @@ two:
   <<: *DEFAULTS
   locale: ru
   language: two
-  module: two
   version: two
   language_version: two
 
@@ -23,7 +21,6 @@ variables_one:
   description: Информацию можно помещать в специальные «хранилища», а потом использовать сколько угодно раз. Эти хранилища называются переменными, и они помогают упростить код и сократить лишние повторения.
   locale: ru
   language: two
-  module: variables_one
   version: one
   language_version: two
 

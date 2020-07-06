@@ -22,13 +22,11 @@ ActiveRecord::Schema.define(version: 2020_07_01_164510) do
     t.string "instructions"
     t.integer "language_id", null: false
     t.integer "language_version_id", null: false
-    t.integer "lesson_id", null: false
     t.integer "version_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["language_id"], name: "index_language_lesson_version_data_on_language_id"
     t.index ["language_version_id"], name: "index_language_lesson_version_data_on_language_version_id"
-    t.index ["lesson_id"], name: "index_language_lesson_version_data_on_lesson_id"
   end
 
   create_table "language_lesson_versions", force: :cascade do |t|
@@ -68,12 +66,10 @@ ActiveRecord::Schema.define(version: 2020_07_01_164510) do
     t.integer "language_id", null: false
     t.integer "version_id", null: false
     t.integer "language_version_id", null: false
-    t.integer "module_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["language_id"], name: "index_language_module_version_data_on_language_id"
     t.index ["language_version_id"], name: "index_language_module_version_data_on_language_version_id"
-    t.index ["module_id"], name: "index_language_module_version_data_on_module_id"
   end
 
   create_table "language_module_versions", force: :cascade do |t|
@@ -130,7 +126,6 @@ ActiveRecord::Schema.define(version: 2020_07_01_164510) do
   end
 
   add_foreign_key "language_lesson_version_data", "language_lesson_versions", column: "version_id"
-  add_foreign_key "language_lesson_version_data", "language_lessons", column: "lesson_id"
   add_foreign_key "language_lesson_version_data", "language_versions"
   add_foreign_key "language_lesson_version_data", "languages"
   add_foreign_key "language_lesson_versions", "language_lessons", column: "lesson_id"
@@ -140,7 +135,6 @@ ActiveRecord::Schema.define(version: 2020_07_01_164510) do
   add_foreign_key "language_lessons", "language_modules", column: "module_id"
   add_foreign_key "language_lessons", "languages"
   add_foreign_key "language_module_version_data", "language_module_versions", column: "version_id"
-  add_foreign_key "language_module_version_data", "language_modules", column: "module_id"
   add_foreign_key "language_module_version_data", "language_versions"
   add_foreign_key "language_module_version_data", "languages"
   add_foreign_key "language_module_versions", "language_modules", column: "module_id"

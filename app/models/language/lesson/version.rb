@@ -6,5 +6,5 @@ class Language::Lesson::Version < ApplicationRecord
   belongs_to :language
   belongs_to :module_version, class_name: 'Language::Module::Version'
 
-  has_many :datum, dependent: :destroy
+  has_many :data, dependent: :destroy
 end

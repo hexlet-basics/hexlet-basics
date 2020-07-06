@@ -10,7 +10,6 @@ class CreateLanguageLessonVersionData < ActiveRecord::Migration[6.0]
       t.string :instructions
       t.references :language, null: false, foreign_key: true
       t.references :language_version, null: false, foreign_key: true
-      t.references :language_lesson, null: false, foreign_key: true
       t.references :language_lesson_version, null: false, foreign_key: true, index: false
 
 

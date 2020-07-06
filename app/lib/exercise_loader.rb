@@ -179,7 +179,6 @@ class ExerciseLoader
     locale, info = description_data
 
     new_datum_attr = {
-      module: language_module,
       language: language,
       language_version: language_version,
       locale: locale,
@@ -214,17 +213,16 @@ class ExerciseLoader
     lesson.update!(version: version)
     raise "Lesson '#{language_module.slug}.#{lesson.slug}' does not have descriptions" if descriptions.empty?
 
-    descriptions.each { |description| create_lesson_datum(language, language_version, version, lesson, description) }
+    descriptions.each { |description| create_lesson_datum(language, language_version, version, description) }
 
     lesson
   end
 
-  def create_lesson_datum(language, language_version, lesson_version, lesson, description_data)
+  def create_lesson_datum(language, language_version, lesson_version, description_data)
     locale, info = description_data
 
     new_datum_attr = {
       locale: locale,
-      lesson: lesson,
       language: language,
       language_version: language_version,
       version: lesson_version

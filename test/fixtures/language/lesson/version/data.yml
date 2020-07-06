@@ -8,7 +8,6 @@ one:
   <<: *DEFAULTS
   name: <%= Faker::Lorem.word %>
   language: one
-  lesson: one
   locale: ru
   language_version: one
   version: one
@@ -17,7 +16,6 @@ two:
   <<: *DEFAULTS
   name: <%= Faker::Lorem.word %>
   language: two
-  lesson: two
   locale: ru
   language_version: two
   version: two
@@ -26,7 +24,6 @@ tags_one:
   <<: *DEFAULTS
   name: Теги
   language: one
-  lesson: tags_one
   locale: ru
   language_version: one
   version: one
@@ -35,7 +32,6 @@ comments_one:
   <<: *DEFAULTS
   name: Коментарии
   language: one
-  lesson: comments_one
   locale: ru
   language_version: one
   version: one
@@ -44,7 +40,6 @@ naming_variables_one:
   <<: *DEFAULTS
   name: Именования переменной
   language: one
-  lesson: naming_variables_one
   locale: ru
   language_version: one
   version: one
