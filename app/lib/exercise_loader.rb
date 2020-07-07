@@ -4,57 +4,33 @@
 class ExerciseLoader
   include Import['download_exercise_klass']
 
-  def from_website(language_version)
+  def run(language_version)
     lang_name = language_version.language.slug
     language = language_version.language
 
     language_version.build!
+
     repo_dest = download_exercise_klass.run(lang_name)
     module_dest = "#{repo_dest}/modules"
 
-    Language::Version.transaction do
-      language.update!(version: language_version)
+    language.update!(current_version: language_version)
+    update_language_version(repo_dest, language, language_version)
 
-      update_language_version(repo_dest, language, language_version)
+    modules_with_meta = get_modules(module_dest)
+    language_modules = modules_with_meta.map { |data| find_or_create_module_with_info(language, data, language_version) }
 
-      modules_with_meta = get_modules(module_dest)
-      language_modules = modules_with_meta.map { |data| find_or_create_module_with_data(language, data, language_version) }
+    lessons = language_modules.flat_map { |language_module| get_lessons(module_dest, language_module, language) }
+    lessons.each { |lesson| find_or_create_lesson_with_info_and_exercise(lesson, language_version) }
 
-      lessons = language_modules.flat_map { |language_module| get_lessons(module_dest, language_module, language) }
-      lessons.each { |lesson| find_or_create_lesson_with_data_and_exercise(lesson, language_version) }
-
-      language_version.update(result: 'Success')
-      language_version.done!
-    end
+    language_version.update(result: 'Success')
+    language_version.done!
   rescue StandardError => e
     language_version.update(result: "Error class: #{e.class} message: #{e.message}")
     language_version.done!
+    raise
   end
 
-  def from_cli(lang_name)
-    repo_dest = "tmp/hexletbasics/exercises-#{lang_name}"
-    module_dest = "#{repo_dest}/modules"
-
-    language = find_or_create_language(lang_name)
-    language_version = create_language_version(repo_dest, language)
-    language.update!(version: language_version)
-
-    language_version.build!
-
-    Language::Version.transaction do
-      modules_with_meta = get_modules(module_dest)
-      language_modules = modules_with_meta.map { |data| find_or_create_module_with_data(language, data, language_version) }
-
-      lessons = language_modules.flat_map { |language_module| get_lessons(module_dest, language_module, language) }
-      lessons.each { |lesson| find_or_create_lesson_with_data_and_exercise(lesson, language_version) }
-
-      language_version.update(result: 'Success')
-      language_version.done!
-    end
-  rescue StandardError => e
-    language_version.update(result: "Error class: #{e.class} message: #{e.message}")
-    language_version.done!
-  end
+  private
 
   def get_modules(dest)
     files = Dir.glob("#{dest}/*")
@@ -64,12 +40,12 @@ class ExerciseLoader
       .map do |directory|
         filename = File.basename(directory)
         order, slug = filename.split('-', 2)
-        descriptions = get_descriptions(File.join(dest, filename))
-        { order: order, slug: slug, descriptions: descriptions }
+        infos = get_infos(File.join(dest, filename))
+        { order: order, slug: slug, infos: infos }
       end
   end
 
-  def get_descriptions(path)
+  def get_infos(path)
     files = Dir.glob("#{path}/description.*.yml")
 
     files.map do |file|
@@ -82,7 +58,7 @@ class ExerciseLoader
   end
 
   def get_lessons(dest, language_module, language)
-    module_dir = "#{language_module.version.order}-#{language_module.slug}"
+    module_dir = "#{language_module.current_version.order}-#{language_module.slug}"
     module_path = File.join(dest, module_dir)
     wildcard_path = File.join(module_path, '*')
     files = Dir.glob(wildcard_path)
@@ -93,7 +69,7 @@ class ExerciseLoader
         filename = File.basename(directory)
         order, slug = filename.split('-', 2)
 
-        descriptions = get_descriptions(directory)
+        infos = get_infos(directory)
         lesson_version = get_lesson_version(directory, language, language_module)
 
         {
@@ -102,16 +78,16 @@ class ExerciseLoader
           language: language,
           slug: slug,
           lesson_version: lesson_version,
-          descriptions: descriptions
+          infos: infos
         }
       end
   end
 
   def get_lesson_version(directory, language, language_module)
-    module_dir = "#{language_module.version.order}-#{language_module.slug}"
-    test_file_path = File.join(directory, language.version.exercise_test_filename)
+    module_dir = "#{language_module.current_version.order}-#{language_module.slug}"
+    test_file_path = File.join(directory, language.current_version.exercise_test_filename)
     test_code = File.read(test_file_path)
-    original_code = File.read(File.join(directory, language.version.exercise_filename))
+    original_code = File.read(File.join(directory, language.current_version.exercise_filename))
     prepared_code = prepare_code(original_code)
     path_to_code = File.join("/exercises-#{language.slug}/modules", module_dir, directory)
 
@@ -121,10 +97,6 @@ class ExerciseLoader
       prepared_code: prepared_code,
       path_to_code: path_to_code
     }
-  end
-
-  def find_or_create_language(lang_name)
-    Language.find_or_create_by!(slug: lang_name)
   end
 
   def update_language_version(repo_dest, language, language_version)
@@ -140,22 +112,8 @@ class ExerciseLoader
     )
   end
 
-  def create_language_version(repo_dest, language)
-    spec_filepath = File.join(repo_dest, 'spec.yml')
-    language_info = YAML.load_file(spec_filepath)['language']
-
-    Language::Version.create!(
-      name: language.slug,
-      extension: language_info['extension'],
-      docker_image: language_info['docker_image'],
-      exercise_filename: language_info['exercise_filename'],
-      exercise_test_filename: language_info['exercise_test_filename'],
-      language: language
-    )
-  end
-
-  def find_or_create_module_with_data(language, data, language_version)
-    order, slug, descriptions = data.values_at(:order, :slug, :descriptions)
+  def find_or_create_module_with_info(language, data, language_version)
+    order, slug, infos = data.values_at(:order, :slug, :infos)
 
     language_module = Language::Module.find_or_create_by!(slug: slug, language: language)
 
@@ -166,34 +124,37 @@ class ExerciseLoader
       module: language_module
     )
 
-    language_module.update!(version: version)
+    language_module.update!(current_version: version)
 
-    raise "Module: #{language.module} does not have data" if descriptions.empty?
+    raise "Module: #{language.module} does not have info" if infos.empty?
 
-    descriptions.each { |description| create_module_datum(language, language_version, language_module, description) }
+    infos.each { |info| create_module_info(language, language_version, language_module, info) }
 
     language_module
   end
 
-  def create_module_datum(language, language_version, language_module, description_data)
-    locale, info = description_data
+  def create_module_info(language, language_version, language_module, info_data)
+    locale, data = info_data
 
     new_datum_attr = {
       language: language,
       language_version: language_version,
       locale: locale,
-      version: language_module.version
-    }.merge(info)
+      version: language_module.current_version
+    }.merge(data)
 
-    Language::Module::Version::Datum.create!(new_datum_attr)
+    info = Language::Module::Version::Info.new(new_datum_attr)
+    info.save!
+
+    info
   end
 
-  def find_or_create_lesson_with_data_and_exercise(data, language_version)
+  def find_or_create_lesson_with_info_and_exercise(data, language_version)
     language = data[:language]
     language_module = data[:module]
     slug = data[:slug]
     order = data[:order]
-    descriptions = data[:descriptions]
+    infos = data[:infos]
     lesson_version = data[:lesson_version]
 
     lesson = Language::Lesson.find_or_create_by!(language: language, slug: slug, module: language_module)
@@ -207,28 +168,31 @@ class ExerciseLoader
       lesson: lesson,
       language_version: language_version,
       language: language,
-      module_version: language_module.version
+      module_version: language_module.current_version
     )
 
-    lesson.update!(version: version)
-    raise "Lesson '#{language_module.slug}.#{lesson.slug}' does not have descriptions" if descriptions.empty?
+    lesson.update!(current_version: version)
+    raise "Lesson '#{language_module.slug}.#{lesson.slug}' does not have info" if infos.empty?
 
-    descriptions.each { |description| create_lesson_datum(language, language_version, version, description) }
+    infos.each { |info| create_lesson_info(language, language_version, version, info) }
 
     lesson
   end
 
-  def create_lesson_datum(language, language_version, lesson_version, description_data)
-    locale, info = description_data
+  def create_lesson_info(language, language_version, lesson_version, info_data)
+    locale, data = info_data
 
     new_datum_attr = {
       locale: locale,
       language: language,
       language_version: language_version,
       version: lesson_version
-    }.merge(info)
+    }.merge(data)
 
-    Language::Lesson::Version::Datum.create!(new_datum_attr)
+    info = Language::Lesson::Version::Info.new(new_datum_attr)
+    info.save!
+
+    info
   end
 
   def prepare_code(code)

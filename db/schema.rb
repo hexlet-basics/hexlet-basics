@@ -51,12 +51,12 @@ ActiveRecord::Schema.define(version: 2020_07_01_164510) do
     t.string "slug"
     t.integer "language_id", null: false
     t.integer "module_id", null: false
-    t.integer "version_id"
+    t.integer "current_version_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["current_version_id"], name: "index_language_lessons_on_current_version_id"
     t.index ["language_id"], name: "index_language_lessons_on_language_id"
     t.index ["module_id"], name: "index_language_lessons_on_module_id"
-    t.index ["version_id"], name: "index_language_lessons_on_version_id"
   end
 
   create_table "language_module_version_infos", force: :cascade do |t|
@@ -109,7 +109,7 @@ ActiveRecord::Schema.define(version: 2020_07_01_164510) do
   end
 
   create_table "languages", force: :cascade do |t|
-    t.string "name"
+    t.string "slug"
     t.integer "current_version_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
