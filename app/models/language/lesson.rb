@@ -7,6 +7,6 @@ class Language::Lesson < ApplicationRecord
 
   has_many :versions, dependent: :destroy
 
-  has_many :data, through: :versions, class_name: 'Language::Lesson::Version::Datum'
-  has_many :current_data, through: :current_version, class_name: 'Language::Lesson::Version::Datum', source: :data
+  has_many :infos, through: :versions, class_name: 'Language::Lesson::Version::Info'
+  has_many :current_infos, through: :current_version, class_name: 'Language::Lesson::Version::Info', source: :infos
 end

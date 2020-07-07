@@ -14,8 +14,8 @@ class Language < ApplicationRecord
   has_many :lessons, dependent: :destroy
   has_many :versions, dependent: :destroy
 
-  has_many :current_module_info, through: :current_version, source: :module_info
-  has_many :current_lesson_info, through: :current_version, source: :lesson_info
+  has_many :current_module_infos, through: :current_version, source: :module_infos
+  has_many :current_lesson_infos, through: :current_version, source: :lesson_infos
   has_many :current_lessons, through: :current_version, source: :lesson_versions
   has_many :current_modules, through: :current_version, source: :module_versions
 
