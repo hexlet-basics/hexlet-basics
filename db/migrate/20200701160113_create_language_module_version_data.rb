@@ -1,6 +1,6 @@
 class CreateLanguageModuleVersionData < ActiveRecord::Migration[6.0]
   def change
-    create_table :language_module_version_data do |t|
+    create_table :language_module_version_infos do |t|
       t.string :name
       t.string :description
       t.string :locale

@@ -6,6 +6,8 @@ class CreateLanguageVersions < ActiveRecord::Migration[6.0]
       t.string :exercise_test_filename
       t.string :extension
       t.string :name
+      t.string :state
+      t.string :result
       t.references :language, null: false, foreign_key: true
 
       t.timestamps

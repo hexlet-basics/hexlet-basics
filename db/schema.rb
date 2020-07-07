@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2020_07_01_164510) do
 
-  create_table "language_lesson_version_data", force: :cascade do |t|
+  create_table "language_lesson_version_infos", force: :cascade do |t|
     t.string "name"
     t.string "description"
     t.string "locale"
@@ -25,8 +25,8 @@ ActiveRecord::Schema.define(version: 2020_07_01_164510) do
     t.integer "version_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["language_id"], name: "index_language_lesson_version_data_on_language_id"
-    t.index ["language_version_id"], name: "index_language_lesson_version_data_on_language_version_id"
+    t.index ["language_id"], name: "index_language_lesson_version_infos_on_language_id"
+    t.index ["language_version_id"], name: "index_language_lesson_version_infos_on_language_version_id"
   end
 
   create_table "language_lesson_versions", force: :cascade do |t|
@@ -59,7 +59,7 @@ ActiveRecord::Schema.define(version: 2020_07_01_164510) do
     t.index ["version_id"], name: "index_language_lessons_on_version_id"
   end
 
-  create_table "language_module_version_data", force: :cascade do |t|
+  create_table "language_module_version_infos", force: :cascade do |t|
     t.string "name"
     t.string "description"
     t.string "locale"
@@ -68,17 +68,17 @@ ActiveRecord::Schema.define(version: 2020_07_01_164510) do
     t.integer "language_version_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["language_id"], name: "index_language_module_version_data_on_language_id"
-    t.index ["language_version_id"], name: "index_language_module_version_data_on_language_version_id"
+    t.index ["language_id"], name: "index_language_module_version_infos_on_language_id"
+    t.index ["language_version_id"], name: "index_language_module_version_infos_on_language_version_id"
   end
 
   create_table "language_module_versions", force: :cascade do |t|
+    t.integer "language_id", null: false
     t.integer "language_version_id", null: false
     t.integer "module_id", null: false
     t.string "order"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "language_id", null: false
     t.index ["language_id"], name: "index_language_module_versions_on_language_id"
     t.index ["language_version_id"], name: "index_language_module_versions_on_language_version_id"
     t.index ["module_id"], name: "index_language_module_versions_on_module_id"
@@ -87,11 +87,11 @@ ActiveRecord::Schema.define(version: 2020_07_01_164510) do
   create_table "language_modules", force: :cascade do |t|
     t.string "slug"
     t.integer "language_id", null: false
+    t.integer "current_version_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "version_id"
+    t.index ["current_version_id"], name: "index_language_modules_on_current_version_id"
     t.index ["language_id"], name: "index_language_modules_on_language_id"
-    t.index ["version_id"], name: "index_language_modules_on_version_id"
   end
 
   create_table "language_versions", force: :cascade do |t|
@@ -100,43 +100,43 @@ ActiveRecord::Schema.define(version: 2020_07_01_164510) do
     t.string "exercise_test_filename"
     t.string "extension"
     t.string "name"
+    t.string "state"
+    t.string "result"
     t.integer "language_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "state"
-    t.string "result"
     t.index ["language_id"], name: "index_language_versions_on_language_id"
   end
 
   create_table "languages", force: :cascade do |t|
-    t.string "slug"
+    t.string "name"
+    t.integer "current_version_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "version_id"
-    t.index ["version_id"], name: "index_languages_on_version_id"
+    t.index ["current_version_id"], name: "index_languages_on_current_version_id"
   end
 
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
     t.string "password_digest", null: false
+    t.boolean "admin", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.boolean "admin", default: false
-    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["email"], name: "index_users_on_email"
   end
 
-  add_foreign_key "language_lesson_version_data", "language_lesson_versions", column: "version_id"
-  add_foreign_key "language_lesson_version_data", "language_versions"
-  add_foreign_key "language_lesson_version_data", "languages"
+  add_foreign_key "language_lesson_version_infos", "language_lesson_versions", column: "version_id"
+  add_foreign_key "language_lesson_version_infos", "language_versions"
+  add_foreign_key "language_lesson_version_infos", "languages"
   add_foreign_key "language_lesson_versions", "language_lessons", column: "lesson_id"
   add_foreign_key "language_lesson_versions", "language_module_versions", column: "module_version_id"
   add_foreign_key "language_lesson_versions", "language_versions"
   add_foreign_key "language_lesson_versions", "languages"
   add_foreign_key "language_lessons", "language_modules", column: "module_id"
   add_foreign_key "language_lessons", "languages"
-  add_foreign_key "language_module_version_data", "language_module_versions", column: "version_id"
-  add_foreign_key "language_module_version_data", "language_versions"
-  add_foreign_key "language_module_version_data", "languages"
+  add_foreign_key "language_module_version_infos", "language_module_versions", column: "version_id"
+  add_foreign_key "language_module_version_infos", "language_versions"
+  add_foreign_key "language_module_version_infos", "languages"
   add_foreign_key "language_module_versions", "language_modules", column: "module_id"
   add_foreign_key "language_module_versions", "language_versions"
   add_foreign_key "language_module_versions", "languages"
