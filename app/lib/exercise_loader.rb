@@ -18,8 +18,8 @@ class ExerciseLoader
     modules_with_meta = get_modules(module_dest)
     language_modules = modules_with_meta.map { |data| find_or_create_module_with_info(language, data, language_version) }
 
-    lessons = language_modules.flat_map { |language_module| get_lessons(module_dest, language_module, language) }
-    lessons.each { |lesson| find_or_create_lesson_with_info_and_exercise(lesson, language_version) }
+    lessons = language_modules.flat_map { |language_module| get_lessons(module_dest, language_module, language_version) }
+    lessons.each { |lesson| find_or_create_lesson_with_info_and_exercise(lesson) }
 
     language_version.update(result: 'Success')
     language_version.done!
@@ -57,7 +57,7 @@ class ExerciseLoader
     end
   end
 
-  def get_lessons(dest, language_module, language)
+  def get_lessons(dest, language_module, language_version)
     module_dir = "#{language_module.current_version.order}-#{language_module.slug}"
     module_path = File.join(dest, module_dir)
     wildcard_path = File.join(module_path, '*')
@@ -70,12 +70,13 @@ class ExerciseLoader
         order, slug = filename.split('-', 2)
 
         infos = get_infos(directory)
-        lesson_version = get_lesson_version(directory, language, language_module)
+        lesson_version = get_lesson_version(directory, language_version, language_module)
 
         {
           order: order,
           module: language_module,
-          language: language,
+          language: language_version.language,
+          language_version: language_version,
           slug: slug,
           lesson_version: lesson_version,
           infos: infos
@@ -83,13 +84,13 @@ class ExerciseLoader
       end
   end
 
-  def get_lesson_version(directory, language, language_module)
+  def get_lesson_version(directory, language_version, language_module)
     module_dir = "#{language_module.current_version.order}-#{language_module.slug}"
-    test_file_path = File.join(directory, language.current_version.exercise_test_filename)
+    test_file_path = File.join(directory, language_version.exercise_test_filename)
     test_code = File.read(test_file_path)
-    original_code = File.read(File.join(directory, language.current_version.exercise_filename))
+    original_code = File.read(File.join(directory, language_version.exercise_filename))
     prepared_code = prepare_code(original_code)
-    path_to_code = File.join("/exercises-#{language.slug}/modules", module_dir, directory)
+    path_to_code = File.join("/exercises-#{language_version.language.slug}/modules", module_dir, directory)
 
     {
       test_code: test_code,
@@ -154,13 +155,14 @@ class ExerciseLoader
     info
   end
 
-  def find_or_create_lesson_with_info_and_exercise(data, language_version)
+  def find_or_create_lesson_with_info_and_exercise(data)
     language = data[:language]
     language_module = data[:module]
     slug = data[:slug]
     order = data[:order]
     infos = data[:infos]
     lesson_version = data[:lesson_version]
+    language_version = data[:language_version]
 
     lesson = Language::Lesson.find_or_create_by!(language: language, slug: slug, module: language_module)
 
