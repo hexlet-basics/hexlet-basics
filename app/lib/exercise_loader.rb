@@ -101,7 +101,7 @@ class ExerciseLoader
 
   def update_language_version(repo_dest, language, language_version)
     spec_filepath = File.join(repo_dest, 'spec.yml')
-    language_info = YAML.load_file(spec_filepath)['language']
+    language_info = YAML.load_file(spec_filepath).fetch('language')
 
     language_version.update!(
       name: language.slug,

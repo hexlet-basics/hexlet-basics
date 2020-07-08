@@ -3,6 +3,10 @@
 module ApplicationHelper
   include AuthManagment
 
+  def let(value)
+    yield value
+  end
+
   def nav_menu_item(name, path = '#', options = {})
     assembled_options = options.merge(class: "nav-link #{active?(path)}")
     tag.li class: 'nav-item' do
