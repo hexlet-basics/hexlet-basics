@@ -122,7 +122,7 @@ ActiveRecord::Schema.define(version: 2020_07_01_164510) do
     t.boolean "admin", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["email"], name: "index_users_on_email"
+    t.index ["email"], name: "index_users_on_email", unique: true
   end
 
   add_foreign_key "language_lesson_version_infos", "language_lesson_versions", column: "version_id"
