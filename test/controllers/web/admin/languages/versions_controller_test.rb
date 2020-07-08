@@ -26,12 +26,12 @@ class Web::Admin::Languages::VersionsControllerTest < ActionDispatch::Integratio
 
     assert { Language::Version.find_by(language: language.id) }
     assert { lesson_module }
-    assert { lesson_module.version }
-    assert { lesson_module.version.data.find_by(locale: :ru) }
-    assert { lesson_module.version.data.find_by(locale: :en) }
+    assert { lesson_module.current_version }
+    assert { lesson_module.current_infos.find_by(locale: :ru) }
+    assert { lesson_module.current_infos.find_by(locale: :en) }
     assert { lesson }
-    assert { lesson.version }
-    assert { lesson.version.data.find_by(locale: :ru) }
-    assert { lesson.version.data.find_by(locale: :en) }
+    assert { lesson.current_version }
+    assert { lesson.current_infos.find_by(locale: :ru) }
+    assert { lesson.current_infos.find_by(locale: :en) }
   end
 end

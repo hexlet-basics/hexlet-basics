@@ -2,28 +2,28 @@ one:
   slug: hello_world
   language: one
   module: one
-  version: one
+  current_version: one
 
 two:
   slug: hello_world
   language: two
   module: two
-  version: two
+  current_version: two
 
 tags_one:
   slug: tags
   language: one
   module: one
-  version: tags_one
+  current_version: tags_one
 
 comments_one:
   slug: comments
   language: one
   module: one
-  version: comments_one
+  current_version: comments_one
 
 naming_variables_one:
   slug: quotes
   language: one
   module: variables_one
-  version: naming_variables_one
+  current_version: naming_variables_one
