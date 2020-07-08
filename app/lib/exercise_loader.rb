@@ -13,7 +13,6 @@ class ExerciseLoader
     repo_dest = download_exercise_klass.run(lang_name)
     module_dest = "#{repo_dest}/modules"
 
-    language.update!(current_version: language_version)
     update_language_version(repo_dest, language, language_version)
 
     modules_with_meta = get_modules(module_dest)
@@ -24,6 +23,7 @@ class ExerciseLoader
 
     language_version.update(result: 'Success')
     language_version.done!
+    language.update!(current_version: language_version)
   rescue StandardError => e
     language_version.update(result: "Error class: #{e.class} message: #{e.message}")
     language_version.done!
