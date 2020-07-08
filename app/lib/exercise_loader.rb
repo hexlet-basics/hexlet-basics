@@ -103,13 +103,17 @@ class ExerciseLoader
     spec_filepath = File.join(repo_dest, 'spec.yml')
     language_info = YAML.load_file(spec_filepath).fetch('language')
 
-    language_version.update!(
+    language_version.assign_attributes(
       name: language.slug,
       extension: language_info['extension'],
       docker_image: language_info['docker_image'],
       exercise_filename: language_info['exercise_filename'],
       exercise_test_filename: language_info['exercise_test_filename']
     )
+
+    language.save!
+
+    language
   end
 
   def find_or_create_module_with_info(language, data, language_version)
@@ -117,13 +121,14 @@ class ExerciseLoader
 
     language_module = Language::Module.find_or_create_by!(slug: slug, language: language)
 
-    version = Language::Module::Version.create!(
+    version = Language::Module::Version.new(
       order: order,
       language: language,
       language_version: language_version,
       module: language_module
     )
 
+    version.save!
     language_module.update!(current_version: version)
 
     raise "Module: #{language.module} does not have info" if infos.empty?
@@ -159,7 +164,7 @@ class ExerciseLoader
 
     lesson = Language::Lesson.find_or_create_by!(language: language, slug: slug, module: language_module)
 
-    version = Language::Lesson::Version.create!(
+    version = Language::Lesson::Version.new(
       test_code: lesson_version[:test_code],
       order: order,
       original_code: lesson_version[:original_code],
@@ -171,6 +176,7 @@ class ExerciseLoader
       module_version: language_module.current_version
     )
 
+    version.save!
     lesson.update!(current_version: version)
     raise "Lesson '#{language_module.slug}.#{lesson.slug}' does not have info" if infos.empty?
 
