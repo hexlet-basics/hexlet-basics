@@ -1,0 +1,45 @@
+DEFAULTS: &DEFAULTS
+  theory: <%= Faker::Lorem.paragraph_by_chars(number: 400) %>
+  instructions: <%= Faker::Lorem.paragraph %>
+  definitions: <%= Faker::Lorem.paragraph %>
+  tips: <%= Faker::Lorem.paragraph %>
+
+one:
+  <<: *DEFAULTS
+  name: <%= Faker::Lorem.word %>
+  language: one
+  locale: ru
+  language_version: one
+  version: one
+
+two:
+  <<: *DEFAULTS
+  name: <%= Faker::Lorem.word %>
+  language: two
+  locale: ru
+  language_version: two
+  version: two
+
+tags_one:
+  <<: *DEFAULTS
+  name: Теги
+  language: one
+  locale: ru
+  language_version: one
+  version: one
+
+comments_one:
+  <<: *DEFAULTS
+  name: Коментарии
+  language: one
+  locale: ru
+  language_version: one
+  version: one
+
+naming_variables_one:
+  <<: *DEFAULTS
+  name: Именования переменной
+  language: one
+  locale: ru
+  language_version: one
+  version: one

@@ -12,21 +12,16 @@ Rails.application.routes.draw do
 
     resources :languages, only: [:show] do
       scope module: :languages do
-        resources :modules, only: [] do
-          scope module: :modules do
-            resources :lessons, only: [:show]
-          end
-        end
+        resources :lessons, only: [:show]
       end
     end
 
     namespace :admin do
       root 'home#index'
 
-      resources :uploads, only: %i[index new create]
       resources :languages, only: %i[index new create] do
         scope module: :languages do
-          resources :uploads, only: [:create]
+          resources :versions, only: %i[index create]
         end
       end
     end

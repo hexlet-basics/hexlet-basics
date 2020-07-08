@@ -14,7 +14,7 @@ class CodeCheckerTest < ActionDispatch::IntegrationTest
       end
     end
 
-    lesson_version = language_module_lesson_versions(:one)
+    lesson_version = language_lesson_versions(:one)
     language_version = lesson_version.language_version
 
     user = users(:one)

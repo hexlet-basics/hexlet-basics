@@ -1,0 +1,45 @@
+DEFAULTS: &DEFAULTS
+  test_code: ''
+  prepared_code: ''
+  path_to_code: ''
+  original_code: ''
+
+one:
+  <<: *DEFAULTS
+  order: 10
+  language_version: one
+  module_version: one
+  lesson: one
+  language: one
+
+two:
+  <<: *DEFAULTS
+  order: 20
+  language_version: two
+  module_version: two
+  lesson: two
+  language: two
+
+tags_one:
+  <<: *DEFAULTS
+  order: 30
+  language_version: one
+  module_version: one
+  lesson: tags_one
+  language: one
+
+comments_one:
+  <<: *DEFAULTS
+  order: 40
+  language_version: one
+  module_version: one
+  lesson: comments_one
+  language: one
+
+naming_variables_one:
+  <<: *DEFAULTS
+  order: 50
+  language_version: one
+  module_version: variables_one
+  lesson: naming_variables_one
+  language: one
