@@ -13,7 +13,7 @@ table.table
         td= version.result
         td
           span class=(language_version_state_class(version.state))
-            = version.state.capitalize
+            = version.state.humanize
 
 = link_to "Create new version", admin_language_versions_path(resource_language), method: :post
 
