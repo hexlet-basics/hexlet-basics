@@ -8,7 +8,5 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     gon.language = resource_language.to_s
     gon.locale = I18n.locale
     gon.lesson = @lesson.current_version
-
-    render :show, layout: 'lesson'
   end
 end
