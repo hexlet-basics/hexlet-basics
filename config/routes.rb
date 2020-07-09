@@ -15,6 +15,11 @@ Rails.application.routes.draw do
         resources :lessons, only: [:show]
       end
     end
+    resources :pages, only: [] do
+      get :about, on: :collection
+      get :tos, on: :collection
+      get :privacy, on: :collection
+    end
 
     namespace :admin do
       root 'home#index'

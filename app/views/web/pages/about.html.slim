@@ -1,0 +1,11 @@
+.mt-5
+  .row.justify-content-center.mt-3.mb-5
+    .col
+      h1 = t('.title')
+      .row.justify-content-center.mt-3.mb-5
+        p.lead = t('.projects_goal')
+        p.lead = t('.extended_credits')
+        p.lead = t('.contributions')
+      a.btn.btn-black.d-inline-flex.align-items-center target="_blank" href=ExternalLinks.source_code
+        i.fab.mr-2.fa-github.fa-2x
+        span = t('.source_code')
