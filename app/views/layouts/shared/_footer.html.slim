@@ -8,8 +8,7 @@ footer
         a.text-muted(href="mailto:#{ExternalLinks.hexlet_support_mail}") = ExternalLinks.hexlet_support_mail
         .
           - I18n.available_locales.each do |locale|
-            = link_to "/?locale=#{locale}", class: 'mr-2'
-              = image_tag "flag-#{locale}.svg", width: 25, alt: "switch language to #{locale}"
+            = image_tag "flag-#{locale}.svg", width: 25, alt: "switch language to #{locale}"
       .col.mb-4.mb-lg-0.order-2.order-md-2
         h3.h2 = t('.information')
         ul.list-unstyled

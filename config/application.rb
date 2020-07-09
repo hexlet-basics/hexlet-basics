@@ -20,7 +20,7 @@ module HexletBasics
     # the framework and any gems in your application.
     config.active_job.queue_adapter = :sidekiq
 
-    config.i18n.available_locales = [:en, :ru]
+    config.i18n.available_locales = %i[en ru]
     config.i18n.default_locale = :ru
     config.generators do |g|
       g.assets false

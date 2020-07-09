@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ExternalLinks
   LINKS = {
     hexlet_support_mail: 'support@hexlet.io',
@@ -9,10 +11,16 @@ class ExternalLinks
     hexlet_blog: 'https://ru.hexlet.io/blog',
     hexlet_recommended_books: 'https://ru.hexlet.io/pages/recommended-books',
     hexlet_matrix: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSr58Xg4DVX2WdmAkv3hE2ITJ3fPeNUmRFe0Ekro53U-ACFrhcUkV8PlUm4ddcn53Uh-5UIezZtZZgc/pubhtml',
-    source_code: 'https://github.com/hexlet-basics',
-  }
+    source_code: 'https://github.com/hexlet-basics'
+  }.freeze
 
-  def self.method_missing(method_name, *args, &block)
-    LINKS[method_name]
+  def self.method_missing(method_name)
+    return LINKS[method_name] if LINKS.key?(method_name)
+
+    super
+  end
+
+  def self.respond_to_missing?(method_name)
+    LINKS.key?(method_name)
   end
 end

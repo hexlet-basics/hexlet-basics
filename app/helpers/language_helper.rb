@@ -12,8 +12,8 @@ module LanguageHelper
       'racket' => 'bg-red',
       'ruby' => 'bg-red',
       'elixir' => 'bg-indigo',
-      'go' => 'bg-cyan',
-    };
+      'go' => 'bg-cyan'
+    }
     mapping[slug]
   end
 end
