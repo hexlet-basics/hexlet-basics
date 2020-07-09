@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LessonMemberMutator
   def self.find_or_create_member!(lesson:, lesson_version:, language:, user:)
     member = Language::Lesson::Member.find_by(language: language, user: user, lesson: lesson)

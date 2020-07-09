@@ -11,20 +11,20 @@
         /! TODO WAIT TABLER
         .tab-pane.fade.overflow-auto.x-h-md-100.active.show#lesson-tab(role="tabpanel")
           .card-body.pt-2
-            h1= @description.name
-            = markdown_to_html(@description.theory).html_safe
-            - if @description.instructions
+            h1= @info.name
+            = markdown_to_html(@info.theory).html_safe
+            - if @info.instructions
               h2 = t('.instructions')
-              = markdown_to_html(@description.instructions).html_safe
+              = markdown_to_html(@info.instructions).html_safe
               hr.my-4
-            - if @description.tips
+            - if @info.tips
               h3.mt-4 = t('.tips')
               .pl-3
-                = markdown_to_html(@description.tips).html_safe
-            - if @description.definitions
+                = markdown_to_html(@info.tips).html_safe
+            - if @info.definitions
               h3 = t('.definitions')
               .pl-3
-                = markdown_to_html(@description.definitions).html_safe
+                = markdown_to_html(@info.definitions).html_safe
             hr.my-4
             .small.text-muted
               = t('.issues')
