@@ -25,3 +25,13 @@ $body-bg: #f5f7fb;
     }
   }
 }
+
+$azure: #45aaf2;
+
+@include bg-variant(".bg-azure", $azure);
+@include bg-variant(".bg-cyan", $cyan);
+@include bg-variant(".bg-orange", $orange);
+@include bg-variant(".bg-indigo", $indigo);
+@include bg-variant(".bg-blue", $blue);
+@include bg-variant(".bg-yellow", $yellow);
+@include bg-variant(".bg-red", $red);
