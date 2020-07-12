@@ -4,12 +4,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
   def show
     @lesson = resource_language.lessons.find_by!(slug: params[:id])
     @info = @lesson.infos.find_by!(locale: I18n.locale)
-    lesson_member = Lesson::MemberService.ensure_member!(
-      lesson: @lesson,
-      lesson_version: @lesson.current_version,
-      language: resource_language,
-      user: current_user
-    )
+    lesson_member = Lesson::MemberService.ensure_member!(@lesson, current_user)
 
     gon.language = resource_language.to_s
     gon.locale = I18n.locale
