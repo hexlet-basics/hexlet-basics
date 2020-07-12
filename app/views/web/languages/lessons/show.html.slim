@@ -17,14 +17,17 @@
               h2 = t('.instructions')
               == markdown_to_html(@info.instructions)
               hr.my-4
-            - if @info.tips
+            - if !@info.tips.empty?
               h3.mt-4 = t('.tips')
-              .pl-3
-                == markdown_to_html(@info.tips)
-            - if @info.definitions
+              ul.pl-4
+                - @info.tips.each do |tip|
+                  li == markdown_to_html(tip)
+            - if !@info.definitions.empty?
               h3 = t('.definitions')
-              .pl-3
-                == markdown_to_html(@info.definitions)
+              ul.pl-4
+                - @info.definitions.each do |definition|
+                  li
+                    p = "#{definition['name']} - #{definition['description']}"
             hr.my-4
             .small.text-muted
               = t('.issues')

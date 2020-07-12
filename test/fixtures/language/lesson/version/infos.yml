@@ -1,8 +1,8 @@
 DEFAULTS: &DEFAULTS
   theory: <%= Faker::Lorem.paragraph_by_chars(number: 400) %>
   instructions: <%= Faker::Lorem.paragraph %>
-  definitions: <%= Faker::Lorem.paragraph %>
-  tips: <%= Faker::Lorem.paragraph %>
+  definitions: []
+  tips: <%= [Faker::Lorem.paragraph] %>
 
 one:
   <<: *DEFAULTS
