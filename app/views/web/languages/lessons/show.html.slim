@@ -17,12 +17,12 @@
               h2 = t('.instructions')
               == markdown_to_html(@info.instructions)
               hr.my-4
-            - if !@info.tips.empty?
+            - if @info.tips.any?
               h3.mt-4 = t('.tips')
               ul.pl-4
                 - @info.tips.each do |tip|
                   li == markdown_to_html(tip)
-            - if !@info.definitions.empty?
+            - if @info.definitions.any?
               h3 = t('.definitions')
               ul.pl-4
                 - @info.definitions.each do |definition|
