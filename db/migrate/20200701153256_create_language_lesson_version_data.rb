@@ -5,8 +5,8 @@ class CreateLanguageLessonVersionData < ActiveRecord::Migration[6.0]
       t.string :description
       t.string :locale
       t.string :theory
-      t.string :tips, array: true, default: []
-      t.jsonb :definitions, array: true, default: []
+      t.string :tips
+      t.string :definitions
       t.string :instructions
       t.references :language, null: false, foreign_key: true
       t.references :language_version, null: false, foreign_key: true

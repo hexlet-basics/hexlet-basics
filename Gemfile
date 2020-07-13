@@ -19,6 +19,7 @@ group :development, :test do
   gem 'faker'
   gem 'rubocop-performance'
   gem 'rubocop-rails'
+  gem 'sqlite3', '~> 1.4'
 end
 
 group :development do
@@ -37,7 +38,9 @@ group :test do
   gem 'webdrivers'
 end
 
-gem 'pg'
+group :production do
+  gem 'pg'
+end
 
 gem 'aasm'
 gem 'active_form_model'

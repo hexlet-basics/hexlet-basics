@@ -12,14 +12,11 @@
 
 ActiveRecord::Schema.define(version: 2020_07_09_171856) do
 
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-
   create_table "language_lesson_members", force: :cascade do |t|
-    t.bigint "language_id", null: false
-    t.bigint "lesson_id", null: false
-    t.bigint "lesson_version_id", null: false
-    t.bigint "user_id", null: false
+    t.integer "language_id", null: false
+    t.integer "lesson_id", null: false
+    t.integer "lesson_version_id", null: false
+    t.integer "user_id", null: false
     t.string "state"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -34,12 +31,12 @@ ActiveRecord::Schema.define(version: 2020_07_09_171856) do
     t.string "description"
     t.string "locale"
     t.string "theory"
-    t.string "tips", default: [], array: true
-    t.jsonb "definitions", default: [], array: true
+    t.string "tips"
+    t.string "definitions"
     t.string "instructions"
-    t.bigint "language_id", null: false
-    t.bigint "language_version_id", null: false
-    t.bigint "version_id", null: false
+    t.integer "language_id", null: false
+    t.integer "language_version_id", null: false
+    t.integer "version_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["language_id"], name: "index_language_lesson_version_infos_on_language_id"
@@ -52,10 +49,10 @@ ActiveRecord::Schema.define(version: 2020_07_09_171856) do
     t.string "prepared_code"
     t.string "test_code"
     t.string "path_to_code"
-    t.bigint "language_version_id", null: false
-    t.bigint "language_id", null: false
-    t.bigint "lesson_id", null: false
-    t.bigint "module_version_id", null: false
+    t.integer "language_version_id", null: false
+    t.integer "language_id", null: false
+    t.integer "lesson_id", null: false
+    t.integer "module_version_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["language_id"], name: "index_language_lesson_versions_on_language_id"
@@ -66,9 +63,9 @@ ActiveRecord::Schema.define(version: 2020_07_09_171856) do
 
   create_table "language_lessons", force: :cascade do |t|
     t.string "slug"
-    t.bigint "language_id", null: false
-    t.bigint "module_id", null: false
-    t.bigint "current_version_id"
+    t.integer "language_id", null: false
+    t.integer "module_id", null: false
+    t.integer "current_version_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["current_version_id"], name: "index_language_lessons_on_current_version_id"
@@ -80,9 +77,9 @@ ActiveRecord::Schema.define(version: 2020_07_09_171856) do
     t.string "name"
     t.string "description"
     t.string "locale"
-    t.bigint "language_id", null: false
-    t.bigint "version_id", null: false
-    t.bigint "language_version_id", null: false
+    t.integer "language_id", null: false
+    t.integer "version_id", null: false
+    t.integer "language_version_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["language_id"], name: "index_language_module_version_infos_on_language_id"
@@ -90,9 +87,9 @@ ActiveRecord::Schema.define(version: 2020_07_09_171856) do
   end
 
   create_table "language_module_versions", force: :cascade do |t|
-    t.bigint "language_id", null: false
-    t.bigint "language_version_id", null: false
-    t.bigint "module_id", null: false
+    t.integer "language_id", null: false
+    t.integer "language_version_id", null: false
+    t.integer "module_id", null: false
     t.string "order"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -103,8 +100,8 @@ ActiveRecord::Schema.define(version: 2020_07_09_171856) do
 
   create_table "language_modules", force: :cascade do |t|
     t.string "slug"
-    t.bigint "language_id", null: false
-    t.bigint "current_version_id"
+    t.integer "language_id", null: false
+    t.integer "current_version_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["current_version_id"], name: "index_language_modules_on_current_version_id"
@@ -119,7 +116,7 @@ ActiveRecord::Schema.define(version: 2020_07_09_171856) do
     t.string "name"
     t.string "state"
     t.string "result"
-    t.bigint "language_id", null: false
+    t.integer "language_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["language_id"], name: "index_language_versions_on_language_id"
@@ -127,7 +124,7 @@ ActiveRecord::Schema.define(version: 2020_07_09_171856) do
 
   create_table "languages", force: :cascade do |t|
     t.string "slug"
-    t.bigint "current_version_id"
+    t.integer "current_version_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["current_version_id"], name: "index_languages_on_current_version_id"
