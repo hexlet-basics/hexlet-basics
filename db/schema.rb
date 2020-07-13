@@ -10,7 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_01_164510) do
+ActiveRecord::Schema.define(version: 2020_07_09_171856) do
+
+  create_table "language_lesson_members", force: :cascade do |t|
+    t.integer "language_id", null: false
+    t.integer "lesson_id", null: false
+    t.integer "lesson_version_id", null: false
+    t.integer "user_id", null: false
+    t.string "state"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["language_id"], name: "index_language_lesson_members_on_language_id"
+    t.index ["lesson_id"], name: "index_language_lesson_members_on_lesson_id"
+    t.index ["lesson_version_id"], name: "index_language_lesson_members_on_lesson_version_id"
+    t.index ["user_id"], name: "index_language_lesson_members_on_user_id"
+  end
 
   create_table "language_lesson_version_infos", force: :cascade do |t|
     t.string "name"
@@ -125,6 +139,10 @@ ActiveRecord::Schema.define(version: 2020_07_01_164510) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  add_foreign_key "language_lesson_members", "language_lesson_versions", column: "lesson_version_id"
+  add_foreign_key "language_lesson_members", "language_lessons", column: "lesson_id"
+  add_foreign_key "language_lesson_members", "languages"
+  add_foreign_key "language_lesson_members", "users"
   add_foreign_key "language_lesson_version_infos", "language_lesson_versions", column: "version_id"
   add_foreign_key "language_lesson_version_infos", "language_versions"
   add_foreign_key "language_lesson_version_infos", "languages"
