@@ -25,6 +25,7 @@ const ControlBox = () => {
     checkInfo: state[checkInfoSliceName],
     lessonInfo: state[lessonSliceName],
   }));
+
   const dispatch = useDispatch();
   const { lesson } = useContext(EntityContext);
 
@@ -56,8 +57,8 @@ const ControlBox = () => {
 
   const prevButtonClasses = cn(`btn btn-outline-secondary
     font-weight-normal mr-3 order-first order-sm-0 order-md-first order-lg-0`, {
-    disabled: false,
-  });
+      disabled: false,
+    });
 
   const nextButtonClasses = cn('btn btn-outline-primary font-weight-normal', {
     disabled: !lessonInfo.finished,

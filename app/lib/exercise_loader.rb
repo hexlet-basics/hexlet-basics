@@ -90,7 +90,7 @@ class ExerciseLoader
     test_code = File.read(test_file_path)
     original_code = File.read(File.join(directory, language_version.exercise_filename))
     prepared_code = prepare_code(original_code)
-    path_to_code = File.join("/exercises-#{language_version.language.slug}/modules", module_dir, directory)
+    path_to_code = File.join("/exercises-#{language_version.language.slug}/modules", File.basename(module_dir), File.basename(directory))
 
     {
       test_code: test_code,

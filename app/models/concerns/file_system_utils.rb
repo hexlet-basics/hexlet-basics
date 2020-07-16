@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module FileSystemUtils
-  def self.file_name_for_exercise(lesson, language)
-    "#{lesson.id}.#{language.extension}"
+  def self.file_name_for_exercise(version, language)
+    "#{version.id}.#{language.extension}"
   end
 
   def self.directory_for_code(user)
