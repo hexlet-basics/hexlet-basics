@@ -9,7 +9,7 @@ class Api::Languages::Lessons::Versions::ChecksController < Api::Languages::Less
 
     if check_data[:passed]
       lesson_member = resource_lesson.members.find_by(user: current_user, lesson_version: lesson_version)
-      lesson_member.finish! if lesson_member.started?
+      lesson_member.finish!
     end
 
     render json: {

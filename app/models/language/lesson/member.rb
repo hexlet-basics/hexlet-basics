@@ -13,7 +13,7 @@ class Language::Lesson::Member < ApplicationRecord
     state :finished
 
     event :finish do
-      transitions from: :started, to: :finished
+      transitions from: [:started, :finished], to: :finished
     end
   end
 end
