@@ -14,8 +14,9 @@ class CheckLesson
     command = "docker run --rm --net none #{volume} #{language_version.docker_image} timeout 4 make --silent -C #{lesson_version.path_to_code} test"
 
     output, process_status = Open3.capture2(command)
+    exitstatus = process_status.exitstatus
 
-    result = case process_status.exitstatus
+    result = case exitstatus
              when 0
                'passed'
              when 124
@@ -26,6 +27,6 @@ class CheckLesson
 
     passed = result == 'passed'
 
-    { passed: passed, output: Base64.encode64(output), result: result, status: process_status.exitstatus }
+    { passed: passed, output: Base64.encode64(output), result: result, status: exitstatus }
   end
 end
