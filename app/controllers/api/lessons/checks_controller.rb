@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
-class Api::Languages::Lessons::Versions::ChecksController < Api::Languages::Lessons::Versions::ApplicationController
+class Api::Lessons::ChecksController < Api::Lessons::ApplicationController
   def create
-    lesson_version = Language::Lesson::Version.find(params[:version_id])
+    lesson_version = resource_lesson.versions.find(params[:version_id])
     code = params[:data][:attributes][:code]
+
     language_version = lesson_version.language_version
     check_data = CheckLesson.run(lesson_version, language_version, code, current_user)
 

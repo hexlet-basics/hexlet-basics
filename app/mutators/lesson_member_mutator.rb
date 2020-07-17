@@ -1,9 +1,15 @@
 # frozen_string_literal: true
 
 class LessonMemberMutator
-  def self.find_or_create_member!(lesson, user)
+  def self.upsert_member!(lesson, user)
     member = lesson.members.find_by(language: lesson.language, user: user)
-    return member unless member.nil?
+
+    if member
+      member.lesson_version = lesson.current_version
+      member.save!
+
+      return member
+    end
 
     member = lesson.members.build(
       lesson_version: lesson.current_version,

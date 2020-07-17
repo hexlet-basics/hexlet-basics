@@ -7,7 +7,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     lesson_version = if current_user.guest?
                        nil
                      else
-                       member = LessonMemberMutator.find_or_create_member!(@lesson, current_user)
+                       member = LessonMemberMutator.upsert_member!(@lesson, current_user)
                        member.lesson_version
                      end
 
