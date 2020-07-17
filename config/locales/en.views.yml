@@ -7,15 +7,21 @@ en:
         start: "Start"
         hexlet: "Hexlet"
     languages:
-      modules:
-        lessons:
-          show:
-            instructions: Instructions
-            definitions: Definitions
-            tips: Tips
-            issues: Issues
-            discuss: Discuss
-            lesson: Lesson
-            only_for_signed_in_users: Exercise available only for signed users.
-            please_sign_in: Please sign in with your GitHub account, this is necessary to track the progress of the lessons. If you do not have an account yet, now is the time to create an account on GitHub.
-            sign_in: Sign In
+      lessons:
+        show:
+          instructions: Instructions
+          definitions: Definitions
+          tips: Tips
+          issues: Issues
+          discuss: Discuss
+          lesson: Lesson
+          only_for_signed_in_users: Exercise available only for signed users.
+          please_sign_in: Please sign in with your GitHub account, this is necessary to track the progress of the lessons. If you do not have an account yet, now is the time to create an account on GitHub.
+          sign_in: Sign In
+    pages:
+      about:
+        title: About
+        projects_goal: The goal of Code Basics is to provide quality interactive lessons on the basics of programming, free of charge, available to everybody.
+        extended_credits: "Idea, syllabus, platform: Kirill Mokevnin. Core lessons: Rakhim Davletkaliyev, Natalia Bass. Extensions and adaptation: Kirill Mokevnin, Ulugbek Tuychiev, Aleksey Pyltsyn and other Hexlet community members."
+        contributions: Source code of Code Basics platform, all lessons and exercisees is available on GitHub. You can contribute by improving lessons, fixing mistakes and extending the content to cover more programming languages.
+        source_code: Source code

@@ -7,3 +7,17 @@ ru:
         sign_in: Войти
         registration: Регистрация
         sign_out: Выйти
+      footer:
+        hexlet_title: © Hexlet, 2020
+        hexlet_address: Hexlet Ltd. Puolikkotie 8, 02230 Espoo, Finland.
+        hexlet_number: +44 20 3514 2938
+        information: Информация
+        about: О проекте
+        tos: Условия использования
+        privacy: Политика конфиденциальности
+        social_networks: Социальные сети
+        resources: Ресурсы
+        hexlet_blog: Блог
+        recommended_books: Рекомендуемые книги
+        matrix: Матрица компетентности
+        source_code: Исходный код
