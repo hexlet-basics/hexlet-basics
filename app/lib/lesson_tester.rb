@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CheckLesson
+class LessonTester
   def self.run(lesson_version, language_version, code, user)
     code_directory = '/tmp/hexlet-basics/code'
     full_directory_path = File.join(code_directory, FileSystemUtils.directory_for_code(user))

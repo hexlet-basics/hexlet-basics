@@ -1,22 +1,21 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { checkInfoStates } from '../utils/stateMachines.js';
-import hexletAxios from '../../hexlet-axios';
-import routes from '../../routes';
+import hexletAxios from '../../../lib/hexlet-axios.js';
+import routes from '../../routes.js';
 
 export const sliceName = 'checkInfoSlice';
 
 const runCheck = createAsyncThunk('runCheck', async ({ lesson, editor }) => {
-  const response = await hexletAxios.post(
-    routes.checkLessonVersionPath(lesson.language_id, lesson.lesson_id, lesson.id),
-    {
-      data: {
-        attributes: {
-          code: editor.content,
-        },
+  const lessonCheckPath = routes.lessonCheckPath(lesson.lesson_id)
+  const response = await hexletAxios.post(lessonCheckPath, {
+    data: {
+      attributes: {
+        code: editor.content,
+        version_id: lesson.id
       },
     },
-  );
+  });
 
   const result = { ...response.data.attributes, output: atob(response.data.attributes.output) };
   return result;
