@@ -9,8 +9,8 @@ class Api::LessonsController < Api::ApplicationController
     # FIXME: add jsonapi
     # if lesson.outdated?(lesson_version)
     #   return render json: {
-    #     message: t('.outdated_or_deleted_lesson')
-    #   }, status: :gone
+    #     errors: [t('.outdated_or_deleted_lesson')]
+    #   }, status: :forbidden
     # end
 
     language_version = lesson_version.language_version
@@ -22,6 +22,7 @@ class Api::LessonsController < Api::ApplicationController
     end
 
     render json: {
+      type: 'check',
       attributes: lesson_exercise_data
     }, status: :ok
   end
