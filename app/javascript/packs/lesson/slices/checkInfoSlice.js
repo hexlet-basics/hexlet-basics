@@ -9,10 +9,10 @@ export const sliceName = 'checkInfoSlice';
 const runCheck = createAsyncThunk('runCheck', async ({ lesson, editor }) => {
   const checkLessonPath = routes.checkLessonPath(lesson.lesson_id);
   const response = await hexletAxios.post(checkLessonPath, {
+    version_id: lesson.id,
     data: {
       attributes: {
         code: editor.content,
-        version_id: lesson.id,
       },
     },
   });
