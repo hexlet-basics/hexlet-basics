@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-class Api::Lessons::ChecksController < Api::Lessons::ApplicationController
-  def create
+class Api::LessonsController < Api::ApplicationController
+  def check
     lesson_version = resource_lesson.versions.find(params[:data][:attributes][:version_id])
     code = params[:data][:attributes][:code]
 
     if resource_lesson.outdated?(lesson_version)
       return render json: {
-        message: 'lesson version is outdated or deleted'
+        message: t('outdated_or_deleted')
       }, status: :gone
     end
 

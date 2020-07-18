@@ -6,8 +6,8 @@ Rails.application.routes.draw do
 
   namespace :api do
     resources :lessons, only: [] do
-      scope module: :lessons do
-        resource :check, only: [:create]
+      member do
+        post :check
       end
     end
   end
