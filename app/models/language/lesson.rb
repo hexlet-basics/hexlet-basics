@@ -10,4 +10,8 @@ class Language::Lesson < ApplicationRecord
 
   has_many :infos, through: :versions, class_name: 'Language::Lesson::Version::Info'
   has_many :current_infos, through: :current_version, class_name: 'Language::Lesson::Version::Info', source: :infos
+
+  def outdated?(version)
+    current_version != version
+  end
 end

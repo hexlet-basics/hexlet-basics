@@ -9,7 +9,6 @@ class Language < ApplicationRecord
 
   belongs_to :current_version, optional: true, class_name: 'Language::Version'
 
-  has_many :uploads, dependent: :destroy
   has_many :modules, dependent: :destroy
   has_many :lessons, dependent: :destroy
   has_many :versions, dependent: :destroy

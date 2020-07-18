@@ -4,6 +4,14 @@ Rails.application.routes.draw do
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq', constraints: AdminConstraint.new
 
+  namespace :api do
+    resources :lessons, only: [] do
+      member do
+        post :check
+      end
+    end
+  end
+
   scope module: :web do
     root 'home#index'
 
