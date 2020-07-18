@@ -7,7 +7,7 @@ class Api::Lessons::ChecksController < Api::Lessons::ApplicationController
 
     if resource_lesson.outdated?(lesson_version)
       return render json: {
-        message: 'lesson is outdated or deleted'
+        message: 'lesson version is outdated or deleted'
       }, status: :gone
     end
 

@@ -7,12 +7,12 @@ import routes from '../../routes.js';
 export const sliceName = 'checkInfoSlice';
 
 const runCheck = createAsyncThunk('runCheck', async ({ lesson, editor }) => {
-  const lessonCheckPath = routes.lessonCheckPath(lesson.lesson_id)
+  const lessonCheckPath = routes.lessonCheckPath(lesson.lesson_id);
   const response = await hexletAxios.post(lessonCheckPath, {
     data: {
       attributes: {
         code: editor.content,
-        version_id: lesson.id
+        version_id: lesson.id,
       },
     },
   });
