@@ -2,7 +2,7 @@
 
 class Api::Lessons::ChecksController < Api::Lessons::ApplicationController
   def create
-    lesson_version = resource_lesson.versions.find(params[:version_id])
+    lesson_version = resource_lesson.versions.find(params[:data][:attributes][:version_id])
     code = params[:data][:attributes][:code]
 
     language_version = lesson_version.language_version
