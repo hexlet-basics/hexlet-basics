@@ -2,12 +2,13 @@
 
 class Api::LessonsController < Api::ApplicationController
   def check
-    lesson_version = resource_lesson.versions.find(params[:data][:attributes][:version_id])
+    lesson = Language::Lesson.find(params[:id])
+    lesson_version = lesson.versions.find(params[:data][:attributes][:version_id])
     code = params[:data][:attributes][:code]
 
-    if resource_lesson.outdated?(lesson_version)
+    if lesson.outdated?(lesson_version)
       return render json: {
-        message: t('outdated_or_deleted')
+        message: t('.outdated_or_deleted_lesson')
       }, status: :gone
     end
 
@@ -15,7 +16,7 @@ class Api::LessonsController < Api::ApplicationController
     lesson_exercise_data = LessonTester.run(lesson_version, language_version, code, current_user)
 
     if lesson_exercise_data[:passed]
-      lesson_member = resource_lesson.members.find_by!(user: current_user)
+      lesson_member = lesson.members.find_by!(user: current_user)
       lesson_member.finish!
     end
 
