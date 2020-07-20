@@ -15,3 +15,8 @@ export const solutionStates = {
   canBeShown: 'canBeShown',
   shown: 'shown',
 };
+
+export const lessonMemberStates = {
+  started: 'started',
+  finished: 'finished',
+};

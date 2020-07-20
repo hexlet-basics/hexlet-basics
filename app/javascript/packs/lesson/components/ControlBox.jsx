@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
@@ -16,7 +17,8 @@ import {
   checkInfoSliceName, editorSliceName,
 } from '../slices/index.js';
 import { checkInfoStates } from '../utils/stateMachines.js';
-import EntityContext from '../EntityContext';
+import EntityContext from '../EntityContext.js';
+import routes from '../../routes.js';
 
 const ControlBox = () => {
   const { t } = useTranslation();
@@ -27,7 +29,9 @@ const ControlBox = () => {
   }));
 
   const dispatch = useDispatch();
-  const { lesson } = useContext(EntityContext);
+  const {
+    lesson, language, next_lesson, prev_lesson,
+  } = useContext(EntityContext);
 
   const handleRunCheck = () => {
     dispatch(actions.runCheck({ lesson, editor }));
@@ -57,15 +61,22 @@ const ControlBox = () => {
 
   const prevButtonClasses = cn(`btn btn-outline-secondary
     font-weight-normal mr-3 order-first order-sm-0 order-md-first order-lg-0`, {
-      disabled: false,
-    });
+    disabled: !prev_lesson,
+  });
 
   const nextButtonClasses = cn('btn btn-outline-primary font-weight-normal', {
     disabled: !lessonInfo.finished,
   });
 
-  const nextLessonPath = '#';
-  const prevLessonPath = '#';
+  const getLanguageLessonPath = (lessonObj) => {
+    if (!lessonObj) {
+      return routes.languagePath(language);
+    }
+    return routes.languageLessonPath(language, lessonObj.slug);
+  };
+
+  const nextLessonPath = getLanguageLessonPath(next_lesson);
+  const prevLessonPath = getLanguageLessonPath(prev_lesson);
 
   return (
     <Hotkeys keyName="ctrl+Enter" onKeyUp={handleRunCheck}>

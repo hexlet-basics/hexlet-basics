@@ -10,6 +10,9 @@ const slice = createSlice({
     finished: false,
   },
   reducers: {
+    changeFinished(state, { payload }) {
+      state.finished = payload.finished;
+    },
   },
   extraReducers: {
     [checkInfoActions.runCheck.fulfilled](state, { payload }) {
