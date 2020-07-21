@@ -19,14 +19,12 @@ class Language::Lesson < ApplicationRecord
 
     current_lesson_natural_order = current_version.natural_order
 
-    next_lesson_version = current_version
+    current_version
       .language_version
       .lesson_versions.order(:natural_order)
       .where('natural_order > ?', current_lesson_natural_order)
       .limit(1)
-      .first
-
-    next_lesson_version && next_lesson_version.lesson
+      .first&.lesson
   end
 
   def prev_lesson
@@ -34,13 +32,11 @@ class Language::Lesson < ApplicationRecord
 
     current_lesson_natural_order = current_version.natural_order
 
-    prev_lesson_version = current_version
+    current_version
       .language_version
       .lesson_versions.order(natural_order: :desc)
       .where('natural_order < ?', current_lesson_natural_order)
       .limit(1)
-      .first
-
-    prev_lesson_version && prev_lesson_version.lesson
+      .first&.lesson
   end
 end
