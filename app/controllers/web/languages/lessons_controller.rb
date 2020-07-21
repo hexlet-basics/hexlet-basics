@@ -6,15 +6,15 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     lesson_version = resource_language.current_lesson_versions.find_by!(lesson: @lesson)
     @info = @lesson.infos.find_by!(locale: I18n.locale)
 
-    unless current_user.guest?
-      lesson_member = @lesson.members.find_or_create_by!(language: @lesson.language, user: current_user)
+    return if current_user.guest?
 
-      gon.next_lesson = @lesson.next_lesson
-      gon.prev_lesson = @lesson.prev_lesson
-      gon.lesson_member = lesson_member
-      gon.language = resource_language.to_s
-      gon.locale = I18n.locale
-      gon.lesson = @lesson.current_version
-    end
+    lesson_member = @lesson.members.find_or_create_by!(language: @lesson.language, user: current_user)
+
+    gon.next_lesson = @lesson.next_lesson
+    gon.prev_lesson = @lesson.prev_lesson
+    gon.lesson_member = lesson_member
+    gon.language = resource_language.to_s
+    gon.locale = I18n.locale
+    gon.lesson = @lesson.current_version
   end
 end
