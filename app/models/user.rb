@@ -5,6 +5,8 @@ class User < ApplicationRecord
 
   validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
 
+  has_many :lesson_members, class_name: 'Language::Lesson::Member', dependent: :destroy
+
   def guest?
     false
   end

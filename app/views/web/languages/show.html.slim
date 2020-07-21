@@ -1,18 +1,25 @@
 h1.text-center.display-4 = @language
 .text-center
-  = link_to t('.start'), '#', class: 'btn btn-lg btn-primary px-4 mb-3 mt-2'
+  - if @first_lesson == @next_lesson
+    = link_to t('.start'), language_lesson_path(@language.slug, @first_lesson.lesson.slug), class: 'btn btn-lg btn-primary px-4 mb-3 mt-2'
+  - else
+    = link_to t('.continue'), language_lesson_path(@language.slug, @next_lesson.lesson.slug), class: 'btn btn-lg btn-success px-4 mb-3 mt-2'
 .
   - @current_modules.each do |language_module_version|
-    - let @infos_by_module[language_module_version.id] do |module_info|
-      .row.mt-5
-        .col-12
-          h2= module_info
-      .row
-        .col-12.col-md-6.mt-4
-          ul.list-group
-            - language_module_version.lesson_versions.each do |lesson_version|
-              li.list-group-item.d-flex
-                = link_to @infos_by_lesson[lesson_version.id], language_lesson_path(@language.slug, lesson_version.lesson.slug), class: 'stretched-link text-decoration-none'
-        .col-12.col-md-6.mt-4
-          = module_info.description
+    - module_info = @infos_by_module[language_module_version.id]
+    .row.mt-5
+      .col-12
+        h2= module_info
+    .row
+      .col-12.col-md-6.mt-4
+        ul.list-group
+          - language_module_version.lesson_versions.each do |lesson_version|
+            - finished_lesson = @finished_members_by_lesson[lesson_version.lesson_id]
+            li.list-group-item.d-flex
+              = link_to "#{lesson_version.natural_order}. #{@infos_by_lesson[lesson_version.id]}", language_lesson_path(@language.slug, lesson_version.lesson.slug), class: 'stretched-link text-decoration-none'
+              - if finished_lesson
+                .ml-auto
+                  i.text-primary.fas.fa-check
+      .col-12.col-md-6.mt-4
+        = module_info.description
 

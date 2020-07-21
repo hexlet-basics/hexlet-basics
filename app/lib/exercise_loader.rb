@@ -15,11 +15,14 @@ class ExerciseLoader
 
     update_language_version(repo_dest, language, language_version)
 
-    modules_with_meta = get_modules(module_dest)
+    modules_with_meta = get_modules(module_dest).sort_by { |language_module| language_module[:order] }
     language_modules = modules_with_meta.map { |data| find_or_create_module_with_info(language, data, language_version) }
 
-    lessons = language_modules.flat_map { |language_module| get_lessons(module_dest, language_module, language_version) }
-    lessons.each { |lesson| find_or_create_lesson_with_info_and_exercise(lesson) }
+    lessons = language_modules.flat_map do |language_module|
+      unordered_lessons = get_lessons(module_dest, language_module, language_version)
+      unordered_lessons.sort_by { |lesson| lesson[:order] }
+    end
+    lessons.each_with_index { |lesson, index| find_or_create_lesson_with_info_and_exercise(lesson, index) }
 
     language_version.update(result: 'Success')
     language_version.done!
@@ -155,7 +158,7 @@ class ExerciseLoader
     info
   end
 
-  def find_or_create_lesson_with_info_and_exercise(data)
+  def find_or_create_lesson_with_info_and_exercise(data, index)
     language = data[:language]
     language_module = data[:module]
     slug = data[:slug]
@@ -175,7 +178,8 @@ class ExerciseLoader
       lesson: lesson,
       language_version: language_version,
       language: language,
-      module_version: language_module.current_version
+      module_version: language_module.current_version,
+      natural_order: index + 1
     )
 
     version.save!
