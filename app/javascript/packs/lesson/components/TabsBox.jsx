@@ -23,9 +23,9 @@ const TabsBox = () => {
 
   const { editor, console, solution } = currentTabValues;
 
-  const badgeClassName = cn('badge badge-outline mb-2 mb-sm-0 p-2', {
-    'bg-green-lt': checkInfo.passed,
-    'bg-red-lt': !checkInfo.passed,
+  const badgeClassName = cn('badge mb-2 mb-sm-0 p-2', {
+    'badge-success': checkInfo.passed,
+    'badge-danger': !checkInfo.passed,
   });
   const headline = checkInfo.result ? t(`check.${checkInfo.result}.headline`) : null;
 
