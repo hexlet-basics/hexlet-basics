@@ -8,4 +8,39 @@ class Language::Lesson < ApplicationRecord
   has_many :members, dependent: :destroy
 
   has_many :infos, through: :versions, class_name: 'Language::Lesson::Version::Info'
+  has_many :current_infos, through: :current_version, class_name: 'Language::Lesson::Version::Info', source: :infos
+
+  def outdated?(version)
+    current_version != version
+  end
+
+  def next_lesson
+    return nil unless current_version
+
+    current_lesson_natural_order = current_version.natural_order
+
+    next_lesson_version = current_version
+      .language_version
+      .lesson_versions.order(:natural_order)
+      .where('natural_order > ?', current_lesson_natural_order)
+      .limit(1)
+      .first
+
+    next_lesson_version && next_lesson_version.lesson
+  end
+
+  def prev_lesson
+    return nil unless current_version
+
+    current_lesson_natural_order = current_version.natural_order
+
+    prev_lesson_version = current_version
+      .language_version
+      .lesson_versions.order(natural_order: :desc)
+      .where('natural_order < ?', current_lesson_natural_order)
+      .limit(1)
+      .first
+
+    prev_lesson_version && prev_lesson_version.lesson
+  end
 end
