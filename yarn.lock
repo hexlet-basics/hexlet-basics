@@ -6821,6 +6821,11 @@ react-fast-highlight@^4.0.0:
     classnames "^2.2.3"
     prop-types "^15.5.6"
 
+react-frame-component@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/react-frame-component/-/react-frame-component-4.1.2.tgz#c88fcc1e73fbe83eea6c82d95d66eefe44cd1ea4"
+  integrity sha512-gWTtpOoi8Mgxayj0iWLL3SXRu2jW4eW4oim6B/FycaOH9HHIsCTPulC9u7CZ2BwY0CtqA+v8FsINp6qPuaN6qQ==
+
 react-hot-keys@^2.6.0:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/react-hot-keys/-/react-hot-keys-2.6.0.tgz#9c360d45d4d45a0cde35c59eb05335230f8e9f37"
