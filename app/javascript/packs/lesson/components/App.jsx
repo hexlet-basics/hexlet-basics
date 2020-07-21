@@ -3,13 +3,12 @@ import { useSelector } from 'react-redux';
 import TabsBox from './TabsBox.jsx';
 import ControlBox from './ControlBox.jsx';
 import HTMLPreview from './HTMLPreview';
-import { tabsBoxSliceName, editorSliceName } from '../slices/index.js';
 import { currentTabValues } from '../utils/stateMachines.js';
 import { neededPreview } from '../utils/languagesUtils.js';
 import EntityContext from '../EntityContext.js';
 
 const App = () => {
-  const { currentTab, content } = useSelector((state) => ({ ...state[tabsBoxSliceName], ...state[editorSliceName] }));
+  const { currentTab, content } = useSelector((state) => ({ ...state.tabsBoxSlice, ...state.editorSlice }));
   const { language } = React.useContext(EntityContext);
 
   const renderHtmlPreview = () => {

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import cn from 'classnames';
 import { Tab, Nav } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { actions, tabsBoxSliceName, checkInfoSliceName } from '../slices/index.js';
+import { actions } from '../slices/index.js';
 import { currentTabValues } from '../utils/stateMachines.js';
 
 import Editor from './Editor.jsx';
@@ -14,8 +14,8 @@ const TabsBox = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { currentTab, checkInfo } = useSelector((state) => ({
-    ...state[tabsBoxSliceName],
-    checkInfo: state[checkInfoSliceName],
+    ...state.tabsBoxSlice,
+    checkInfo: state.checkInfoSlice,
   }));
   const changeTab = (newTabState) => {
     dispatch(actions.changeTab({ newTabState }));

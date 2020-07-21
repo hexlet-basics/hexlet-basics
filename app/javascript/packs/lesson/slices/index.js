@@ -1,18 +1,18 @@
 /* eslint-disable camelcase */
 import { combineReducers } from '@reduxjs/toolkit';
-import tabsBoxReducers, { actions as tabsBoxActions, sliceName as tabsBoxSliceName } from './tabsBoxSlice.js';
-import editorReducers, { actions as editorActions, sliceName as editorSliceName } from './editorSlice.js';
-import soltionReducers, { actions as solutionActions, sliceName as solutionSliceName } from './solutionSlice.js';
-import lessonReducers, { actions as lessonActions, sliceName as lessonSliceName } from './lessonSlice.js';
-import checkInfoReducers, { actions as checkInfoActions, sliceName as checkInfoSliceName } from './checkInfoSlice.js';
+import tabsBoxSlice, { actions as tabsBoxActions } from './tabsBoxSlice.js';
+import editorSlice, { actions as editorActions } from './editorSlice.js';
+import solutionSlice, { actions as solutionActions } from './solutionSlice.js';
+import lessonSlice, { actions as lessonActions } from './lessonSlice.js';
+import checkInfoSlice, { actions as checkInfoActions } from './checkInfoSlice.js';
 import { solutionStates, lessonMemberStates } from '../utils/stateMachines.js';
 
 export default combineReducers({
-  [tabsBoxSliceName]: tabsBoxReducers,
-  [editorSliceName]: editorReducers,
-  [lessonSliceName]: lessonReducers,
-  [solutionSliceName]: soltionReducers,
-  [checkInfoSliceName]: checkInfoReducers,
+  tabsBoxSlice,
+  editorSlice,
+  solutionSlice,
+  lessonSlice,
+  checkInfoSlice,
 });
 
 export const actions = {
@@ -21,14 +21,6 @@ export const actions = {
   ...lessonActions,
   ...solutionActions,
   ...checkInfoActions,
-};
-
-export {
-  tabsBoxSliceName,
-  editorSliceName,
-  lessonSliceName,
-  solutionSliceName,
-  checkInfoSliceName,
 };
 
 export const setupState = (gon) => (dispatch) => {

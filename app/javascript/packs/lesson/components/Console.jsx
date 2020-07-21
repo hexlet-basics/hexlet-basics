@@ -3,11 +3,10 @@ import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import cn from 'classnames';
 
-import { checkInfoSliceName } from '../slices/index.js';
 import { checkInfoStates } from '../utils/stateMachines.js';
 
 const Console = () => {
-  const checkInfo = useSelector((state) => state[checkInfoSliceName]);
+  const checkInfo = useSelector((state) => state.checkInfoSlice);
   const { t } = useTranslation();
 
   if (checkInfoStates.checked !== checkInfo.processState) {

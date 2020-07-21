@@ -3,10 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 import { actions as checkInfoActions } from './checkInfoSlice.js';
 import { currentTabValues } from '../utils/stateMachines.js';
 
-export const sliceName = 'tabsBoxSlice';
-
 const slice = createSlice({
-  name: sliceName,
+  name: 'tabsBoxSlice',
   initialState: {
     currentTab: currentTabValues.editor,
   },

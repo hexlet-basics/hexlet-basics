@@ -2,10 +2,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { actions as checkInfoActions } from './checkInfoSlice.js';
 
-export const sliceName = 'lessonSlice';
-
 const slice = createSlice({
-  name: sliceName,
+  name: 'lessonSlice',
   initialState: {
     finished: false,
   },
