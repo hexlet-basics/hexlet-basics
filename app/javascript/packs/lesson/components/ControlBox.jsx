@@ -20,6 +20,13 @@ import { checkInfoStates } from '../utils/stateMachines.js';
 import EntityContext from '../EntityContext.js';
 import routes from '../../routes.js';
 
+const getLanguageLessonPath = (language, lesson) => {
+  if (!lesson) {
+    return routes.languagePath(language);
+  }
+  return routes.languageLessonPath(language, lesson.slug);
+};
+
 const ControlBox = () => {
   const { t } = useTranslation();
   const { checkInfo, lessonInfo, editor } = useSelector((state) => ({
@@ -68,15 +75,8 @@ const ControlBox = () => {
     disabled: !lessonInfo.finished,
   });
 
-  const getLanguageLessonPath = (lessonObj) => {
-    if (!lessonObj) {
-      return routes.languagePath(language);
-    }
-    return routes.languageLessonPath(language, lessonObj.slug);
-  };
-
-  const nextLessonPath = getLanguageLessonPath(next_lesson);
-  const prevLessonPath = getLanguageLessonPath(prev_lesson);
+  const nextLessonPath = getLanguageLessonPath(language, next_lesson);
+  const prevLessonPath = getLanguageLessonPath(language, prev_lesson);
 
   return (
     <Hotkeys keyName="ctrl+Enter" onKeyUp={handleRunCheck}>
