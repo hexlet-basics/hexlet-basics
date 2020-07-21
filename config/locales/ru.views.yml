@@ -17,6 +17,9 @@ ru:
         dont_have_account: Нет аккаунта?
         register: Регистрация
     languages:
+      show:
+        start: Начать обучение
+        continue: Продолжить обучение
       lessons:
         show:
           instructions: Задание

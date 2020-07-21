@@ -3,7 +3,7 @@ h1.text-center.display-4 = @language
   - if @first_lesson == @next_lesson
     = link_to t('.start'), language_lesson_path(@language.slug, @first_lesson.lesson.slug), class: 'btn btn-lg btn-primary px-4 mb-3 mt-2'
   - else
-    = link_to t('.continue'), language_lesson_path(@language.slug, @next_lesson.lesson.slug), class: 'btn btn-lg btn-primary px-4 mb-3 mt-2'
+    = link_to t('.continue'), language_lesson_path(@language.slug, @next_lesson.lesson.slug), class: 'btn btn-lg btn-success px-4 mb-3 mt-2'
 .
   - @current_modules.each do |language_module_version|
     - module_info = @infos_by_module[language_module_version.id]
