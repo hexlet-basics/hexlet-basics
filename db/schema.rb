@@ -42,10 +42,11 @@ ActiveRecord::Schema.define(version: 2020_07_09_171856) do
   end
 
   create_table "language_lesson_versions", force: :cascade do |t|
-    t.string "order"
+    t.integer "order"
     t.string "original_code"
     t.string "prepared_code"
     t.string "test_code"
+    t.integer "natural_order"
     t.string "path_to_code"
     t.integer "language_version_id", null: false
     t.integer "language_id", null: false
