@@ -4,7 +4,7 @@ class CreateLanguageModuleVersions < ActiveRecord::Migration[6.0]
       t.references :language, null: false, foreign_key: true
       t.references :language_version, null: false, foreign_key: true
       t.references :language_module, null: false, foreign_key: true
-      t.string :order
+      t.integer :order
 
       t.timestamps
     end

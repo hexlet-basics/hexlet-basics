@@ -20,18 +20,20 @@ class Web::Admin::Languages::VersionsControllerTest < ActionDispatch::Integratio
 
     post admin_language_versions_path(language)
     assert_response :redirect
+    language.reload
 
-    lesson_module = language.modules.find_by(slug: 'basics')
+    language_module = language.modules.find_by(slug: 'basics')
+    module_version = language.current_module_versions.find_by(module: language_module)
     lesson = language.lessons.find_by(slug: 'hello-world')
+    lesson_version = language.current_lesson_versions.find_by(lesson: lesson)
 
-    assert { Language::Version.find_by(language: language.id) }
-    assert { lesson_module }
-    assert { lesson_module.current_version }
-    assert { lesson_module.current_infos.find_by(locale: :ru) }
-    assert { lesson_module.current_infos.find_by(locale: :en) }
+    assert { language_module }
+    assert { module_version }
+    assert { module_version.infos.find_by(locale: :ru) }
+    assert { module_version.infos.find_by(locale: :en) }
     assert { lesson }
-    assert { lesson.current_version }
-    assert { lesson.current_infos.find_by(locale: :ru) }
-    assert { lesson.current_infos.find_by(locale: :en) }
+    assert { lesson_version }
+    assert { lesson_version.infos.find_by(locale: :ru) }
+    assert { lesson_version.infos.find_by(locale: :en) }
   end
 end
