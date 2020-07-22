@@ -2,14 +2,15 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { actions as checkInfoActions } from './checkInfoSlice.js';
 
-export const sliceName = 'lessonSlice';
-
 const slice = createSlice({
-  name: sliceName,
+  name: 'lessonSlice',
   initialState: {
     finished: false,
   },
   reducers: {
+    changeFinished(state, { payload }) {
+      state.finished = payload.finished;
+    },
   },
   extraReducers: {
     [checkInfoActions.runCheck.fulfilled](state, { payload }) {

@@ -11,26 +11,33 @@ import {
   faArrowRight, faSyncAlt, faArrowLeft, faPlayCircle,
 } from '@fortawesome/free-solid-svg-icons';
 
-import {
-  actions, lessonSliceName,
-  checkInfoSliceName, editorSliceName,
-} from '../slices/index.js';
+import { actions } from '../slices/index.js';
 import { checkInfoStates } from '../utils/stateMachines.js';
-import EntityContext from '../EntityContext';
+import EntityContext from '../EntityContext.js';
+import routes from '../../routes.js';
+
+const getLanguageLessonPath = (language, lesson) => {
+  if (!lesson) {
+    return routes.languagePath(language);
+  }
+  return routes.languageLessonPath(language, lesson.slug);
+};
 
 const ControlBox = () => {
   const { t } = useTranslation();
   const { checkInfo, lessonInfo, editor } = useSelector((state) => ({
-    editor: state[editorSliceName],
-    checkInfo: state[checkInfoSliceName],
-    lessonInfo: state[lessonSliceName],
+    editor: state.editorSlice,
+    checkInfo: state.checkInfoSlice,
+    lessonInfo: state.lessonSlice,
   }));
 
   const dispatch = useDispatch();
-  const { lesson } = useContext(EntityContext);
+  const {
+    lessonVersion, language, nextLesson, prevLesson,
+  } = useContext(EntityContext);
 
   const handleRunCheck = () => {
-    dispatch(actions.runCheck({ lesson, editor }));
+    dispatch(actions.runCheck({ lessonVersion, editor }));
   };
 
   const isCodeChecking = checkInfo.processState === checkInfoStates.checking;
@@ -57,15 +64,15 @@ const ControlBox = () => {
 
   const prevButtonClasses = cn(`btn btn-outline-secondary
     font-weight-normal mr-3 order-first order-sm-0 order-md-first order-lg-0`, {
-      disabled: false,
-    });
+    disabled: !prevLesson,
+  });
 
   const nextButtonClasses = cn('btn btn-outline-primary font-weight-normal', {
     disabled: !lessonInfo.finished,
   });
 
-  const nextLessonPath = '#';
-  const prevLessonPath = '#';
+  const nextLessonPath = getLanguageLessonPath(language, nextLesson);
+  const prevLessonPath = getLanguageLessonPath(language, prevLesson);
 
   return (
     <Hotkeys keyName="ctrl+Enter" onKeyUp={handleRunCheck}>

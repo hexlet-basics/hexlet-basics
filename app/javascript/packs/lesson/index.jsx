@@ -30,8 +30,10 @@ export default async () => {
   store.dispatch(setupState(gon));
 
   const entities = {
-    lesson: gon.lesson,
+    lessonVersion: gon.lesson_version,
     language: gon.language,
+    nextLesson: gon.next_lesson,
+    prevLesson: gon.prev_lesson,
   };
 
   ReactDOM.render(

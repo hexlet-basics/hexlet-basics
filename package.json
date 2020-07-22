@@ -31,6 +31,7 @@
     "react-countdown": "^2.2.1",
     "react-dom": "^16.13.1",
     "react-fast-highlight": "^4.0.0",
+    "react-frame-component": "^4.1.2",
     "react-hot-keys": "^2.6.0",
     "react-i18next": "^11.5.1",
     "react-monaco-editor": "^0.36.0",

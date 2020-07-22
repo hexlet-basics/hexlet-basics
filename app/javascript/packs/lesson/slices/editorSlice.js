@@ -1,10 +1,8 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 
-export const sliceName = 'editorSlice';
-
 const slice = createSlice({
-  name: sliceName,
+  name: 'editorSlice',
   initialState: {
     content: '',
   },

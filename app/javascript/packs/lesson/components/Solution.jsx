@@ -5,16 +5,16 @@ import { Highlight } from 'react-fast-highlight';
 import Countdown from 'react-countdown';
 import { format } from 'date-fns';
 
-import { actions, editorSliceName, solutionSliceName } from '../slices/index.js';
+import { actions } from '../slices/index.js';
 import { getLanguage } from '../utils/editorUtils.js';
 import { solutionStates } from '../utils/stateMachines.js';
 import EntityContext from '../EntityContext.js';
 
 const Solution = () => {
-  const { language, lesson } = useContext(EntityContext);
+  const { language, lessonVersion } = useContext(EntityContext);
   const { editor, solution } = useSelector((state) => ({
-    editor: state[editorSliceName],
-    solution: state[solutionSliceName],
+    editor: state.editorSlice,
+    solution: state.solutionSlice,
   }));
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -38,7 +38,7 @@ const Solution = () => {
     <div className="p-lg-3" id="basics-solution">
       <p className="mb-0">{t('teacherSolution')}</p>
       <Highlight languages={[getLanguage(language)]}>
-        {lesson.original_code}
+        {lessonVersion.original_code}
       </Highlight>
       {renderUserCode()}
     </div>

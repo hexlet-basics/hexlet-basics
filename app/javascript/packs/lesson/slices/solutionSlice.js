@@ -3,12 +3,10 @@ import { createSlice } from '@reduxjs/toolkit';
 import { actions as checkInfoActions } from './checkInfoSlice.js';
 import { solutionStates } from '../utils/stateMachines.js';
 
-export const sliceName = 'solutionSlice';
-
 const waitingTime = 20 * 60 * 1000;
 
 const slice = createSlice({
-  name: sliceName,
+  name: 'solutionSlice',
   initialState: {
     startTime: null,
     processState: solutionStates.notAllowedToShown,
