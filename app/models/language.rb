@@ -15,8 +15,8 @@ class Language < ApplicationRecord
 
   has_many :current_module_infos, through: :current_version, source: :module_infos
   has_many :current_lesson_infos, through: :current_version, source: :lesson_infos
-  has_many :current_lessons, through: :current_version, source: :lesson_versions
-  has_many :current_modules, through: :current_version, source: :module_versions
+  has_many :current_lesson_versions, through: :current_version, source: :lesson_versions
+  has_many :current_module_versions, through: :current_version, source: :module_versions
 
   delegate :to_s, to: :current_version
 end

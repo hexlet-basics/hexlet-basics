@@ -16,13 +16,13 @@ class ExerciseLoader
     update_language_version(repo_dest, language, language_version)
 
     modules_with_meta = get_modules(module_dest).sort_by { |language_module| language_module[:order] }
-    language_modules = modules_with_meta.map { |data| find_or_create_module_with_info(language, data, language_version) }
+    language_modules_data = modules_with_meta.map { |module_meta| create_module_hierachy(language_version, module_meta) }
 
-    lessons = language_modules.flat_map do |language_module|
-      unordered_lessons = get_lessons(module_dest, language_module, language_version)
+    lessons = language_modules_data.flat_map do |module_data|
+      unordered_lessons = get_lessons(module_dest, module_data[:module_version], language_version)
       unordered_lessons.sort_by { |lesson| lesson[:order] }
     end
-    lessons.each_with_index { |lesson, index| find_or_create_lesson_with_info_and_exercise(lesson, index) }
+    lessons.each_with_index { |lesson, index| create_lesson_hierarchy(lesson, index) }
 
     language_version.update(result: 'Success')
     language_version.done!
@@ -60,8 +60,9 @@ class ExerciseLoader
     end
   end
 
-  def get_lessons(dest, language_module, language_version)
-    module_dir = "#{language_module.current_version.order}-#{language_module.slug}"
+  def get_lessons(dest, module_version, language_version)
+    language_module = module_version.module
+    module_dir = "#{module_version.order}-#{language_module.slug}"
     module_path = File.join(dest, module_dir)
     wildcard_path = File.join(module_path, '*')
     files = Dir.glob(wildcard_path)
@@ -73,7 +74,7 @@ class ExerciseLoader
         order, slug = filename.split('-', 2)
 
         infos = get_infos(directory)
-        lesson_version = get_lesson_version(directory, language_version, language_module)
+        lesson_version = get_lesson_version(directory, language_version, module_version)
 
         {
           order: order,
@@ -82,13 +83,16 @@ class ExerciseLoader
           language_version: language_version,
           slug: slug,
           lesson_version: lesson_version,
-          infos: infos
+          infos: infos,
+          module_version: module_version
         }
       end
   end
 
-  def get_lesson_version(directory, language_version, language_module)
-    module_dir = "#{language_module.current_version.order}-#{language_module.slug}"
+  def get_lesson_version(directory, language_version, module_version)
+    language_module = module_version.module
+    module_dir = "#{module_version.order}-#{language_module.slug}"
+
     test_file_path = File.join(directory, language_version.exercise_test_filename)
     test_code = File.read(test_file_path)
     original_code = File.read(File.join(directory, language_version.exercise_filename))
@@ -120,8 +124,9 @@ class ExerciseLoader
     language
   end
 
-  def find_or_create_module_with_info(language, data, language_version)
+  def create_module_hierachy(language_version, data)
     order, slug, infos = data.values_at(:order, :slug, :infos)
+    language = language_version.language
 
     language_module = Language::Module.find_or_create_by!(slug: slug, language: language)
 
@@ -133,23 +138,23 @@ class ExerciseLoader
     )
 
     version.save!
-    language_module.update!(current_version: version)
 
     raise "Module: #{language.module} does not have info" if infos.empty?
 
-    infos.each { |info| create_module_info(language, language_version, language_module, info) }
+    module_infos = infos.map { |info| create_module_info(language_version, version, info) }
 
-    language_module
+    { language_module: language_module, module_version: version, module_infos: module_infos }
   end
 
-  def create_module_info(language, language_version, language_module, info_data)
+  def create_module_info(language_version, module_version, info_data)
     locale, data = info_data
+    language = language_version.language
 
     new_datum_attr = {
       language: language,
       language_version: language_version,
       locale: locale,
-      version: language_module.current_version
+      version: module_version
     }.merge(data)
 
     info = Language::Module::Version::Info.new(new_datum_attr)
@@ -158,9 +163,10 @@ class ExerciseLoader
     info
   end
 
-  def find_or_create_lesson_with_info_and_exercise(data, index)
+  def create_lesson_hierarchy(data, index)
     language = data[:language]
     language_module = data[:module]
+    module_version = data[:module_version]
     slug = data[:slug]
     order = data[:order]
     infos = data[:infos]
@@ -178,25 +184,25 @@ class ExerciseLoader
       lesson: lesson,
       language_version: language_version,
       language: language,
-      module_version: language_module.current_version,
+      module_version: module_version,
       natural_order: index + 1
     )
 
     version.save!
-    lesson.update!(current_version: version)
+
     raise "Lesson '#{language_module.slug}.#{lesson.slug}' does not have info" if infos.empty?
 
-    infos.each { |info| create_lesson_info(language, language_version, version, info) }
+    lesson_infos = infos.map { |info| create_lesson_info(language_version, version, info) }
 
-    lesson
+    { lesson: lesson, lesson_version: version, lesson_infos: lesson_infos }
   end
 
-  def create_lesson_info(language, language_version, lesson_version, info_data)
+  def create_lesson_info(language_version, lesson_version, info_data)
     locale, data = info_data
 
     new_datum_attr = {
       locale: locale,
-      language: language,
+      language: language_version.language,
       language_version: language_version,
       version: lesson_version
     }.merge(data)
