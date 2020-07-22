@@ -11,7 +11,7 @@ import { solutionStates } from '../utils/stateMachines.js';
 import EntityContext from '../EntityContext.js';
 
 const Solution = () => {
-  const { language, lesson } = useContext(EntityContext);
+  const { language, lessonVersion } = useContext(EntityContext);
   const { editor, solution } = useSelector((state) => ({
     editor: state.editorSlice,
     solution: state.solutionSlice,
@@ -38,7 +38,7 @@ const Solution = () => {
     <div className="p-lg-3" id="basics-solution">
       <p className="mb-0">{t('teacherSolution')}</p>
       <Highlight languages={[getLanguage(language)]}>
-        {lesson.original_code}
+        {lessonVersion.original_code}
       </Highlight>
       {renderUserCode()}
     </div>

@@ -33,11 +33,11 @@ const ControlBox = () => {
 
   const dispatch = useDispatch();
   const {
-    lesson, language, nextLesson, prevLesson,
+    lessonVersion, language, nextLesson, prevLesson,
   } = useContext(EntityContext);
 
   const handleRunCheck = () => {
-    dispatch(actions.runCheck({ lesson, editor }));
+    dispatch(actions.runCheck({ lessonVersion, editor }));
   };
 
   const isCodeChecking = checkInfo.processState === checkInfoStates.checking;

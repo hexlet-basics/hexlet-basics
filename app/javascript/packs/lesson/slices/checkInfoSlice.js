@@ -4,10 +4,10 @@ import { checkInfoStates } from '../utils/stateMachines.js';
 import hexletAxios from '../../../lib/hexlet-axios.js';
 import routes from '../../routes.js';
 
-const runCheck = createAsyncThunk('runCheck', async ({ lesson, editor }) => {
-  const checkLessonPath = routes.checkLessonPath(lesson.lesson_id);
+const runCheck = createAsyncThunk('runCheck', async ({ lessonVersion, editor }) => {
+  const checkLessonPath = routes.checkLessonPath(lessonVersion.lesson_id);
   const response = await hexletAxios.post(checkLessonPath, {
-    version_id: lesson.id,
+    version_id: lessonVersion.id,
     data: {
       attributes: {
         code: editor.content,
@@ -41,6 +41,7 @@ const slice = createSlice({
     },
     [runCheck.rejected](state) {
       state.passed = false;
+      state.result = 'error';
       state.processState = checkInfoStates.checked;
     },
   },

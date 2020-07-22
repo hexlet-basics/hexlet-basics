@@ -24,8 +24,8 @@ export const actions = {
 };
 
 export const setupState = (gon) => (dispatch) => {
-  const { lesson, lesson_member } = gon;
-  dispatch(editorActions.changeContent({ content: lesson.prepared_code }));
+  const { lesson_version, lesson_member } = gon;
+  dispatch(editorActions.changeContent({ content: lesson_version.prepared_code }));
   dispatch(solutionActions.setStartTime({ startTime: Date.now() }));
   const isFinished = lesson_member.state === lessonMemberStates.finished;
   if (isFinished) {
