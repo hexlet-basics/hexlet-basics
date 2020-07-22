@@ -15,6 +15,6 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     gon.lesson_member = lesson_member
     gon.language = resource_language.to_s
     gon.locale = I18n.locale
-    gon.lesson_version = @lesson.current_version
+    gon.lesson_version = lesson_version
   end
 end
