@@ -7,4 +7,20 @@ class Language::Lesson::Version < ApplicationRecord
   belongs_to :module_version, class_name: 'Language::Module::Version'
 
   has_many :infos, dependent: :destroy
+
+  def next_lesson
+    language_version
+      .lesson_versions.order(:natural_order)
+      .where('natural_order > ?', natural_order)
+      .limit(1)
+      .first&.lesson
+  end
+
+  def prev_lesson
+    language_version
+      .lesson_versions.order(natural_order: :desc)
+      .where('natural_order < ?', natural_order)
+      .limit(1)
+      .first&.lesson
+  end
 end

@@ -8,30 +8,4 @@ class Language::Lesson < ApplicationRecord
   has_many :members, dependent: :destroy
 
   has_many :infos, through: :versions, class_name: 'Language::Lesson::Version::Info'
-
-  def next_lesson
-    return nil unless current_version
-
-    current_lesson_natural_order = current_version.natural_order
-
-    current_version
-      .language_version
-      .lesson_versions.order(:natural_order)
-      .where('natural_order > ?', current_lesson_natural_order)
-      .limit(1)
-      .first&.lesson
-  end
-
-  def prev_lesson
-    return nil unless current_version
-
-    current_lesson_natural_order = current_version.natural_order
-
-    current_version
-      .language_version
-      .lesson_versions.order(natural_order: :desc)
-      .where('natural_order < ?', current_lesson_natural_order)
-      .limit(1)
-      .first&.lesson
-  end
 end
