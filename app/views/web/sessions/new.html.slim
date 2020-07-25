@@ -8,6 +8,10 @@
           = f.input :password, input_html: { 'data-testid' => 'password' }
           .form-group
             = f.submit class: 'btn btn-primary mb-2 w-100', 'data-testid' => 'submit'
+            = link_to '/auth/github', class: 'btn btn-secondary btn-block' do
+              i.fab.mr-2.fa-github
+              = t('.sign_in_with_github')
+
       .card-footer.text-center
         span.mr-1 = t('.dont_have_account')
         = link_to t('.register'), new_user_path

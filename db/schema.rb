@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_09_171856) do
+ActiveRecord::Schema.define(version: 2020_07_26_225728) do
 
   create_table "language_lesson_members", force: :cascade do |t|
     t.integer "language_id", null: false
@@ -129,9 +129,19 @@ ActiveRecord::Schema.define(version: 2020_07_09_171856) do
     t.index ["current_version_id"], name: "index_languages_on_current_version_id"
   end
 
+  create_table "user_accounts", force: :cascade do |t|
+    t.string "uid"
+    t.string "provider"
+    t.integer "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_user_accounts_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
-    t.string "password_digest", null: false
+    t.string "password_digest"
+    t.string "github_uid"
     t.boolean "admin", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -158,4 +168,5 @@ ActiveRecord::Schema.define(version: 2020_07_09_171856) do
   add_foreign_key "language_module_versions", "languages"
   add_foreign_key "language_modules", "languages"
   add_foreign_key "language_versions", "languages"
+  add_foreign_key "user_accounts", "users"
 end
