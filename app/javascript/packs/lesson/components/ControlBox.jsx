@@ -14,14 +14,7 @@ import {
 import { actions } from '../slices/index.js';
 import { checkInfoStates } from '../utils/stateMachines.js';
 import EntityContext from '../EntityContext.js';
-import routes from '../../routes.js';
-
-const getLanguageLessonPath = (language, lesson) => {
-  if (!lesson) {
-    return routes.languagePath(language);
-  }
-  return routes.languageLessonPath(language, lesson.slug);
-};
+import routes from '../../../appRoutes.js';
 
 const ControlBox = () => {
   const { t } = useTranslation();
@@ -33,7 +26,7 @@ const ControlBox = () => {
 
   const dispatch = useDispatch();
   const {
-    lessonVersion, language, nextLesson, prevLesson,
+    lessonVersion, language, lesson,
   } = useContext(EntityContext);
 
   const handleRunCheck = () => {
@@ -63,16 +56,14 @@ const ControlBox = () => {
   };
 
   const prevButtonClasses = cn(`btn btn-outline-secondary
-    font-weight-normal mr-3 order-first order-sm-0 order-md-first order-lg-0`, {
-    disabled: !prevLesson,
-  });
+    font-weight-normal mr-3 order-first order-sm-0 order-md-first order-lg-0`);
 
   const nextButtonClasses = cn('btn btn-outline-primary font-weight-normal', {
     disabled: !lessonInfo.finished,
   });
 
-  const nextLessonPath = getLanguageLessonPath(language, nextLesson);
-  const prevLessonPath = getLanguageLessonPath(language, prevLesson);
+  const nextLessonPath = routes.nextLessonLanguageLessonPath(language, lesson.slug);
+  const prevLessonPath = routes.prevLessonLanguageLessonPath(language, lesson.slug);
 
   return (
     <Hotkeys keyName="ctrl+Enter" onKeyUp={handleRunCheck}>

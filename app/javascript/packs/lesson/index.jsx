@@ -31,9 +31,8 @@ export default async () => {
 
   const entities = {
     lessonVersion: gon.lesson_version,
+    lesson: gon.lesson,
     language: gon.language,
-    nextLesson: gon.next_lesson,
-    prevLesson: gon.prev_lesson,
   };
 
   ReactDOM.render(

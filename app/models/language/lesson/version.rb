@@ -12,7 +12,6 @@ class Language::Lesson::Version < ApplicationRecord
     language_version
       .lesson_versions.order(:natural_order)
       .where('natural_order > ?', natural_order)
-      .limit(1)
       .first&.lesson
   end
 
@@ -20,7 +19,6 @@ class Language::Lesson::Version < ApplicationRecord
     language_version
       .lesson_versions.order(natural_order: :desc)
       .where('natural_order < ?', natural_order)
-      .limit(1)
       .first&.lesson
   end
 end
