@@ -2,10 +2,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { checkInfoStates } from '../utils/stateMachines.js';
 import hexletAxios from '../../../lib/hexlet-axios.js';
-import routes from '../../routes.js';
+import routes from '../../../appRoutes.js';
 
 const runCheck = createAsyncThunk('runCheck', async ({ lessonVersion, editor }) => {
-  const checkLessonPath = routes.checkLessonPath(lessonVersion.lesson_id);
+  const checkLessonPath = routes.checkApiLessonPath(lessonVersion.lesson_id);
   const response = await hexletAxios.post(checkLessonPath, {
     version_id: lessonVersion.id,
     data: {

@@ -52,4 +52,7 @@ ci-test:
 	make lint
 	make test
 
+js-routes:
+	bundle exec rails js_routes:generate
+
 .PHONY: test

@@ -11,16 +11,12 @@ class Language::Lesson::Version < ApplicationRecord
   def next_lesson
     language_version
       .lesson_versions.order(:natural_order)
-      .where('natural_order > ?', natural_order)
-      .limit(1)
-      .first&.lesson
+      .find_by('natural_order > ?', natural_order)&.lesson
   end
 
   def prev_lesson
     language_version
       .lesson_versions.order(natural_order: :desc)
-      .where('natural_order < ?', natural_order)
-      .limit(1)
-      .first&.lesson
+      .find_by('natural_order < ?', natural_order)&.lesson
   end
 end

@@ -20,7 +20,10 @@ Rails.application.routes.draw do
 
     resources :languages, only: [:show] do
       scope module: :languages do
-        resources :lessons, only: [:show]
+        resources :lessons, only: [:show] do
+          get :next_lesson, on: :member
+          get :prev_lesson, on: :member
+        end
       end
     end
     resources :pages, only: [] do
