@@ -11,19 +11,19 @@
         /! TODO WAIT TABLER
         .tab-pane.fade.overflow-auto.x-h-md-100.active.show#lesson-tab(role="tabpanel")
           .card-body.pt-2
-            h1= @info.name
+            h1.h3.font-weight-bold= @info.name
             == markdown_to_html(@info.theory)
             - if @info.instructions
-              h2 = t('.instructions')
+              h2.h4.font-weight-bold = t('.instructions')
               == markdown_to_html(@info.instructions)
               hr.my-4
             - if @info.tips.any?
-              h3.mt-4 = t('.tips')
+              h3.h5.font-weight-bold.mt-4 = t('.tips')
               ul.pl-4
                 - @info.tips.each do |tip|
                   li == markdown_to_html(tip)
             - if @info.definitions.any?
-              h3 = t('.definitions')
+              h3.h5.font-weight-bold = t('.definitions')
               ul.pl-4
                 - @info.definitions.each do |definition|
                   li
