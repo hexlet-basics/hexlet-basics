@@ -7,6 +7,9 @@ en:
         start: "Start"
         hexlet: "Hexlet"
     languages:
+      show:
+        start: Start Learning
+        continue: Continue Learning
       lessons:
         show:
           instructions: Instructions
@@ -18,7 +21,7 @@ en:
           only_for_signed_in_users: Exercise available only for signed users.
           please_sign_in: Please sign in with your GitHub account, this is necessary to track the progress of the lessons. If you do not have an account yet, now is the time to create an account on GitHub.
           sign_in: Sign In
-      complete_course:
+      complete_language:
         continue: Continue Learning
         grats: Congratulations
         title: You have successfully completed the basic course on Code Basics.

@@ -1,5 +1,5 @@
 h1.text-center.display-4.mt-4 = @language
-- if !@complete_language
+- if @complete_language
   = render 'complete_course'
 - elsif @first_lesson == @next_lesson
   .text-center
