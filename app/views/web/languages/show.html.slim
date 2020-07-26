@@ -1,8 +1,11 @@
 h1.text-center.display-4.mt-4 = @language
-.text-center
-  - if @first_lesson == @next_lesson
+- if !@complete_language
+  = render 'complete_course'
+- elsif @first_lesson == @next_lesson
+  .text-center
     = link_to t('.start'), language_lesson_path(@language.slug, @first_lesson.slug), class: 'btn btn-lg btn-primary px-4 mb-3 mt-2'
-  - else
+- else
+  .text-center
     = link_to t('.continue'), language_lesson_path(@language.slug, @next_lesson.slug), class: 'btn btn-lg btn-success px-4 mb-3 mt-2'
 .
   - @current_module_versions.each do |module_version|

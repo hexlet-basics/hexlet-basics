@@ -16,4 +16,28 @@ module LanguageHelper
     }
     mapping[slug]
   end
+
+  def get_complete_icon_name(slug)
+    mapping = {
+      'php' => 'php.svg',
+      'javascript' => 'frontend.svg',
+      'java' => 'java.svg',
+      'python' => 'python.svg',
+      'html' => 'layout-designer.svg',
+      'css' => 'layout-designer.svg'
+    }
+    mapping.fetch(slug, 'hexlet_logo.png')
+  end
+
+  def get_continue_study_path(slug)
+    mapping = {
+      'php' => ExternalLinks.hexlet_php,
+      'javascript' => ExternalLinks.hexlet_frontend,
+      'java' => ExternalLinks.hexlet_java,
+      'python' => ExternalLinks.hexlet_python,
+      'html' => ExternalLinks.hexlet_layout_designer,
+      'css' => ExternalLinks.hexlet_layout_designer
+    }
+    mapping.fetch(slug, ExternalLinks.hexlet_profession)
+  end
 end
