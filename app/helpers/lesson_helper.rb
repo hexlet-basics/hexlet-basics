@@ -1,7 +1,21 @@
 # frozen_string_literal: true
 
 module LessonHelper
-  def markdown_to_html(text)
-    Kramdown::Document.new(text).to_html
+  def markdown2html(text)
+    extensions = {
+      autolink: true,
+      filter_html: false,
+      safe_links_only: true
+    }
+
+    options = {
+      escape_html: false,
+      hard_wrap: true,
+      link_attributes: { target: '_blank' }
+    }
+
+    renderer = Redcarpet::Render::HTML.new(options)
+    markdown = Redcarpet::Markdown.new(renderer, extensions)
+    markdown.render(text)
   end
 end

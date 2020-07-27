@@ -245,6 +245,7 @@ GEM
     rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
+    redcarpet (3.5.0)
     redis (4.2.1)
     reform (2.2.4)
       disposable (>= 0.4.1)
@@ -375,13 +376,13 @@ DEPENDENCIES
   i18n-debug
   jbuilder (~> 2.7)
   js-routes
-  kramdown
   listen (>= 3.0.5, < 3.2)
   minitest-power_assert
   omniauth-github
   pg
   puma (~> 4.3)
   rails (~> 6.0.2, >= 6.0.2.2)
+  redcarpet (~> 3.5)
   reform-rails
   rubocop
   rubocop-performance
