@@ -64,10 +64,8 @@ ActiveRecord::Schema.define(version: 2020_07_26_225728) do
     t.string "slug"
     t.integer "language_id", null: false
     t.integer "module_id", null: false
-    t.integer "current_version_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["current_version_id"], name: "index_language_lessons_on_current_version_id"
     t.index ["language_id"], name: "index_language_lessons_on_language_id"
     t.index ["module_id"], name: "index_language_lessons_on_module_id"
   end
@@ -89,7 +87,7 @@ ActiveRecord::Schema.define(version: 2020_07_26_225728) do
     t.integer "language_id", null: false
     t.integer "language_version_id", null: false
     t.integer "module_id", null: false
-    t.string "order"
+    t.integer "order"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["language_id"], name: "index_language_module_versions_on_language_id"
@@ -100,10 +98,8 @@ ActiveRecord::Schema.define(version: 2020_07_26_225728) do
   create_table "language_modules", force: :cascade do |t|
     t.string "slug"
     t.integer "language_id", null: false
-    t.integer "current_version_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["current_version_id"], name: "index_language_modules_on_current_version_id"
     t.index ["language_id"], name: "index_language_modules_on_language_id"
   end
 
@@ -141,7 +137,6 @@ ActiveRecord::Schema.define(version: 2020_07_26_225728) do
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
     t.string "password_digest"
-    t.string "github_uid"
     t.boolean "admin", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

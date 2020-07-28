@@ -2,7 +2,7 @@
 
 class Web::AuthController < Web::ApplicationController
   def callback
-    user = UserManager.authenticate_user_by_social_network(auth)
+    user = SocialNetworkService.authenticate_user(auth)
 
     if user.persisted?
       sign_in user

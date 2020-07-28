@@ -8,7 +8,7 @@
           = f.input :password, input_html: { 'data-testid' => 'password' }
           .form-group
             = f.submit class: 'btn btn-primary mb-2 w-100', 'data-testid' => 'submit'
-            = link_to '/auth/github', class: 'btn btn-secondary btn-block' do
+            = link_to auth_request_path('github'), class: 'btn btn-secondary btn-block' do
               i.fab.mr-2.fa-github
               = t('.sign_in_with_github')
 

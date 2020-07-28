@@ -9,15 +9,11 @@ class SignInForm < ApplicationForm
   validate :user_exists, :user_can_sign_in
 
   def user_can_sign_in
-    if password.present? && !user&.valid_password?(password)
-      errors.add(:password, :cannot_sign_in)
-    end
+    errors.add(:password, :cannot_sign_in) if password.present? && !user&.valid_password?(password)
   end
 
   def user_exists
-    if email.present? && !user
-      errors.add(:email, :user_does_not_exist)
-    end
+    errors.add(:email, :user_does_not_exist) if email.present? && !user
   end
 
   def user
