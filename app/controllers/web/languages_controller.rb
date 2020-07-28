@@ -16,7 +16,7 @@ class Web::LanguagesController < Web::ApplicationController
     finished_members = current_user.finished_members
     @finished_members_by_lesson = finished_members.index_by(&:lesson_id)
 
-    @first_lesson_version = @language.current_lesson_versions.order(:natural_order).first
-    @next_lesson_version = @language.next_lesson_for_user(current_user)
+    @first_lesson = @language.current_lesson_versions.order(:natural_order).first.lesson
+    @next_lesson = @language.next_lesson_for_user(current_user)
   end
 end
