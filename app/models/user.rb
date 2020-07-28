@@ -10,4 +10,8 @@ class User < ApplicationRecord
   def guest?
     false
   end
+
+  def finished_members
+    lesson_members.finished
+  end
 end

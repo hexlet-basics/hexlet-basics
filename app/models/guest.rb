@@ -8,4 +8,8 @@ class Guest
   def admin?
     false
   end
+
+  def finished_members
+    []
+  end
 end
