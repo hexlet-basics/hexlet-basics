@@ -10,4 +10,8 @@ class User < ApplicationRecord
   def guest?
     false
   end
+
+  def finished_members_for_language(language)
+    lesson_members.where(language: language).finished
+  end
 end

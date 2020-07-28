@@ -12,19 +12,11 @@ class Web::LanguagesController < Web::ApplicationController
                                         )
     @infos_by_module = @language.current_module_infos.with_locale.index_by(&:version_id)
     @infos_by_lesson = @language.current_lesson_infos.with_locale.index_by(&:version_id)
-    finished_members = if current_user.guest?
-                         []
-                       else
-                         current_user.lesson_members.finished
-                       end
+
+    finished_members = current_user.finished_members_for_language(@language)
     @finished_members_by_lesson = finished_members.index_by(&:lesson_id)
 
-    @first_lesson_version = @language.current_lesson_versions.order(:natural_order).limit(1).first
-    @next_lesson_version = if current_user.guest?
-                             @first_lesson_version
-                           else
-                             not_finished_lesson_versions = @language.current_lesson_versions.where.not(lesson_id: finished_members.map(&:lesson_id)).order(:natural_order).limit(1)
-                             not_finished_lesson_versions.first
-                           end
+    @first_lesson = @language.current_lesson_versions.order(:natural_order).first.lesson
+    @next_lesson = @language.next_lesson_for_user(current_user)
   end
 end

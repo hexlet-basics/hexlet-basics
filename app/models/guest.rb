@@ -8,4 +8,8 @@ class Guest
   def admin?
     false
   end
+
+  def finished_members_for_language(_)
+    []
+  end
 end
