@@ -11,7 +11,7 @@ class User < ApplicationRecord
     false
   end
 
-  def finished_members
-    lesson_members.finished
+  def finished_members_for_language(language)
+    lesson_members.where(language: language).finished
   end
 end

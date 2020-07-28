@@ -21,7 +21,7 @@ class Language < ApplicationRecord
   delegate :to_s, to: :current_version
 
   def next_lesson_for_user(user)
-    finished_members = user.finished_members
+    finished_members = user.finished_members_for_language(self)
 
     lesson_version = current_lesson_versions.where.not(lesson_id: finished_members.map(&:lesson_id)).order(:natural_order).first
     lesson_version.lesson
