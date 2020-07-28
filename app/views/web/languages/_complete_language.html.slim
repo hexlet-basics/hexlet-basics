@@ -1,8 +1,7 @@
 .my-4.d-flex.flex-column.justify-content-center.align-items-center
   = image_tag 'party_emoj.png', class: 'mb-3', width: 72
   h2.h4.font-weight-bolder.text-center
-    = t('.grats')
-    br
+    span.d-block = t('.grats')
     = t('.title')
   p.text-center = t('.first_step')
   .card.my-3.col-md-9.col-lg-7.px-0

@@ -1,6 +1,6 @@
 h1.text-center.display-4.mt-4 = @language
 - if @complete_language
-  = render 'complete_course'
+  = render 'complete_language'
 - elsif @first_lesson == @next_lesson
   .text-center
     = link_to t('.start'), language_lesson_path(@language.slug, @first_lesson.slug), class: 'btn btn-lg btn-primary px-4 mb-3 mt-2'
@@ -25,4 +25,3 @@ h1.text-center.display-4.mt-4 = @language
                   i.text-primary.fas.fa-check
       .col-12.col-md-6.mt-4
         = module_info.description
-
