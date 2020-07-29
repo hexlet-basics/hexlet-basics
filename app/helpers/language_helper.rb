@@ -3,16 +3,16 @@
 module LanguageHelper
   def get_language_background(slug)
     mapping = {
-      'php' => 'bg-blue',
-      'javascript' => 'bg-yellow',
-      'java' => 'bg-azure',
-      'python' => 'bg-orange',
-      'html' => 'bg-orange',
-      'css' => 'bg-azure',
-      'racket' => 'bg-red',
-      'ruby' => 'bg-red',
-      'elixir' => 'bg-indigo',
-      'go' => 'bg-cyan'
+      'php' => 'x-bg-blue',
+      'javascript' => 'x-bg-yellow',
+      'java' => 'x-bg-azure',
+      'python' => 'x-bg-orange',
+      'html' => 'x-bg-orange',
+      'css' => 'x-bg-azure',
+      'racket' => 'x-bg-red',
+      'ruby' => 'x-bg-red',
+      'elixir' => 'x-bg-indigo',
+      'go' => 'x-bg-cyan'
     }
     mapping[slug]
   end
