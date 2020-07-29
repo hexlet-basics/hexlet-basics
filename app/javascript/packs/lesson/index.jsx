@@ -13,6 +13,7 @@ import resources from '../locales/index.js';
 import EntityContext from './EntityContext.js';
 
 export default async () => {
+  hljs.initHighlightingOnLoad();
   await i18n
     .use(initReactI18next)
     .init({
@@ -29,7 +30,6 @@ export default async () => {
     reducer,
   });
   store.dispatch(setupState(gon));
-  hljs.initHighlightingOnLoad();
 
   const entities = {
     lessonVersion: gon.lesson_version,
