@@ -5,12 +5,14 @@ module LessonHelper
     extensions = {
       autolink: true,
       filter_html: false,
-      safe_links_only: true
+      safe_links_only: false,
+      fenced_code_blocks: true
     }
 
     options = {
       escape_html: false,
       hard_wrap: true,
+      prettify: true,
       link_attributes: { target: '_blank' }
     }
 
