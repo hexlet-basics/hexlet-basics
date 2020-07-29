@@ -8,6 +8,10 @@
           = f.input :password
           .form-group
             = f.submit class: 'btn btn-primary mb-2 w-100'
+            = link_to auth_request_path('github'), class: 'btn btn-secondary btn-block' do
+              i.fab.mr-2.fa-github
+              = t('.sign_up_with_github')
+
       .card-footer.text-center
         span.mr-1 = t('.have_account')
         = link_to t('.sign_in'), new_session_path

@@ -6,10 +6,14 @@ class SignInForm < ApplicationForm
 
   validates :email, presence: true
   validates :password, presence: true
-  validate :user_can_sign_in
+  validate :user_exists, :user_can_sign_in
 
   def user_can_sign_in
-    errors.add(:password, :cannot_sign_in) unless user&.authenticate(password)
+    errors.add(:password, :cannot_sign_in) if password.present? && !user&.valid_password?(password)
+  end
+
+  def user_exists
+    errors.add(:email, :user_does_not_exist) if email.present? && !user
   end
 
   def user

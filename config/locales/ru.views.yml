@@ -11,11 +11,13 @@ ru:
         sign_up: Регистрация
         have_account: Есть аккаунт?
         sign_in: Войти
+        sign_up_with_github: Войти через GitHub
     sessions:
       new:
         sign_in: Войти
         dont_have_account: Нет аккаунта?
         register: Регистрация
+        sign_in_with_github: Войти через GitHub
     languages:
       show:
         start: Начать обучение
