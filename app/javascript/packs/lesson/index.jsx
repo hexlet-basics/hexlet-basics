@@ -4,6 +4,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import hljs from 'highlight.js';
 import gon from 'gon';
 
 import App from './components/App.jsx';
@@ -28,6 +29,7 @@ export default async () => {
     reducer,
   });
   store.dispatch(setupState(gon));
+  hljs.initHighlightingOnLoad();
 
   const entities = {
     lessonVersion: gon.lesson_version,
