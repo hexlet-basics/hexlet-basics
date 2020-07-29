@@ -136,7 +136,7 @@ ActiveRecord::Schema.define(version: 2020_07_26_225728) do
 
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
-    t.string "password_digest"
+    t.string "password_digest", null: false
     t.boolean "admin", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
