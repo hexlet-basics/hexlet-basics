@@ -13,7 +13,7 @@ class Guest
     []
   end
 
-  def complete_language?(*)
+  def complete_language?(_)
     false
   end
 end

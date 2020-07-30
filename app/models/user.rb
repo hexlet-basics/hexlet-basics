@@ -23,8 +23,8 @@ class User < ApplicationRecord
   end
 
   def complete_language?(language)
-    language_lesson_count = language.lessons.count
-    finised_by_user_count = lesson_members.where(language: language).finished.count
+    language_lesson_count = language.current_lesson_versions.count
+    finised_by_user_count = finished_members_for_language(language).count
     language_lesson_count == finised_by_user_count
   end
 end
