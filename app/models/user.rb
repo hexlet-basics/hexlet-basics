@@ -24,6 +24,6 @@ class User < ApplicationRecord
   end
 
   def complete_language?(language)
-    language_members.where(language: language).first&.finished?
+    language_members.find_by(language: language)&.finished?
   end
 end
