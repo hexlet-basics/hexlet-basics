@@ -1,6 +1,6 @@
 .my-4.d-flex.flex-column.justify-content-center.align-items-center
   = image_tag 'party_emoj.png', class: 'mb-3', width: 72
-  h2.h4.font-weight-bold.text-center
+  h2.h4.text-center
     span.d-block = t('.grats')
     = t('.title')
   p.text-center = t('.first_step')
@@ -8,7 +8,7 @@
     .card-body.p-sm-4
       .d-flex.flex-md-row.flex-column.mt-md-3
         = image_tag get_complete_icon_name(@language.slug), class: 'mb-3 mr-sm-3 align-self-center align-self-md-start', width: 102, height: 102
-        .
+        div
           p = t('.enter_profession')
           ul
             li = t('.knowledge')

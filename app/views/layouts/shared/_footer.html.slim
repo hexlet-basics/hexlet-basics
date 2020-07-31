@@ -6,11 +6,11 @@ footer
         p = t('.hexlet_address')
         p = t('.hexlet_number')
         a.text-muted(href="mailto:#{ExternalLinks.hexlet_support_mail}") = ExternalLinks.hexlet_support_mail
-        .
-          - I18n.available_locales.each do |locale|
+        div
+          - I18n.available_locales.without(I18n.locale).each do |locale|
             = image_tag "flag-#{locale}.svg", width: 25, alt: "switch language to #{locale}"
       .col.mb-4.mb-lg-0.order-2.order-md-2
-        h3.h4 = t('.information')
+        h2.h4 = t('.information')
         ul.list-unstyled
           li
             = link_to t('.about'), about_pages_path, class: 'text-muted'
@@ -19,7 +19,7 @@ footer
           li
             = link_to t('.privacy'), privacy_pages_path, class: 'text-muted'
       .col.mb-4.mb-lg-0.order-0.order-md-3
-        h3.h4 = t('.social_networks')
+        h2.h4 = t('.social_networks')
         span.mr-3
           a.rounded-cirlce target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_facebook
             span.fab.fa-lg.fa-facebook.text-muted
@@ -36,7 +36,7 @@ footer
           a.rounded-cirlce target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_slack
             span.fab.fa-lg.fa-slack.text-muted
       .col.mb-4.mb-lg-0.order-1.order-md-4
-        h3.h4 = t('.resources')
+        h2.h4 = t('.resources')
         ul.list-unstyled
           li
             a.text-muted target="_blank" href=ExternalLinks.hexlet_blog = t('.hexlet_blog')

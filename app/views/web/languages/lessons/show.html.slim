@@ -17,17 +17,18 @@
               == markdown2html(@info.instructions)
               hr.my-4
             - if @info.tips.any?
-              h3.h5.font-weight-bold.mt-4 = t('.tips')
+              h2.h5.font-weight-bold.mt-4 = t('.tips')
               ul.pl-4
                 - @info.tips.each do |tip|
                   li == markdown2html(tip)
             - if @info.definitions.any?
-              h3.h5.font-weight-bold = t('.definitions')
+              h2.h5.font-weight-bold = t('.definitions')
               ul.pl-4
                 - @info.definitions.each do |definition|
                   li
                     p = "#{definition['name']} - #{definition['description']}"
-            hr.my-4
+            - if @info.definitions.any? || @info.tips.any?
+              hr.my-4
             .small.text-muted
               = t('.issues')
               a(target="_blank" href="https://github.com/hexlet-basics") &nbsp;https://github.com/hexlet-basics
