@@ -12,6 +12,7 @@ class Language < ApplicationRecord
   has_many :modules, dependent: :destroy
   has_many :lessons, dependent: :destroy
   has_many :versions, dependent: :destroy
+  has_many :members, dependent: :destroy
 
   has_many :current_module_infos, through: :current_version, source: :module_infos
   has_many :current_lesson_infos, through: :current_version, source: :lesson_infos
@@ -24,6 +25,6 @@ class Language < ApplicationRecord
     finished_members = user.finished_members_for_language(self)
 
     lesson_version = current_lesson_versions.where.not(lesson_id: finished_members.map(&:lesson_id)).order(:natural_order).first
-    lesson_version.lesson
+    lesson_version&.lesson
   end
 end
