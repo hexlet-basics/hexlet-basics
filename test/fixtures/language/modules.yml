@@ -13,3 +13,6 @@ variables_one:
   slug: variables
   language: two
 
+javascript:
+  slug: alone_module
+  language: javascript

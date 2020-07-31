@@ -5,3 +5,7 @@ one:
 two:
   slug: java
   current_version: two
+
+javascript:
+  slug: javascript
+  current_version: javascript

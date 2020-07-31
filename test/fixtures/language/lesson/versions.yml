@@ -7,22 +7,34 @@ DEFAULTS: &DEFAULTS
 one:
   <<: *DEFAULTS
   order: 10
-  language_version: one
+  natural_order: 10
+  language_version: two
   module_version: one
   lesson: one
-  language: one
+  language: two
 
 two:
   <<: *DEFAULTS
   order: 20
+  natural_order: 20
   language_version: two
   module_version: two
   lesson: two
   language: two
 
+three:
+  <<: *DEFAULTS
+  order: 25
+  natural_order: 25
+  language_version: two
+  module_version: two
+  lesson: three
+  language: two
+
 tags_one:
   <<: *DEFAULTS
   order: 30
+  natural_order: 30
   language_version: one
   module_version: one
   lesson: tags_one
@@ -31,6 +43,7 @@ tags_one:
 comments_one:
   <<: *DEFAULTS
   order: 40
+  natural_order: 40
   language_version: one
   module_version: one
   lesson: comments_one
@@ -39,7 +52,17 @@ comments_one:
 naming_variables_one:
   <<: *DEFAULTS
   order: 50
+  natural_order: 50
   language_version: one
   module_version: variables_one
   lesson: naming_variables_one
   language: one
+
+javascript:
+  <<: *DEFAULTS
+  order: 1
+  natural_order: 1
+  language_version: javascript
+  module_version: javascript
+  lesson: javascript
+  language: javascript

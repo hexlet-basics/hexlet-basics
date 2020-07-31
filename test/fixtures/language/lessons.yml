@@ -8,6 +8,11 @@ two:
   language: two
   module: two
 
+three:
+  slug: functions
+  language: two
+  module: two
+
 tags_one:
   slug: tags
   language: one
@@ -22,3 +27,8 @@ naming_variables_one:
   slug: quotes
   language: one
   module: variables_one
+
+javascript:
+  slug: alone_lesson
+  language: javascript
+  module: javascript
