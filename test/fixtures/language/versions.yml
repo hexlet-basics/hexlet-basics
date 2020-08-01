@@ -13,3 +13,8 @@ two:
   <<: *DEFAULTS
   name: <%= Faker::ProgrammingLanguage.name %>
   language: two
+
+javascript:
+  <<: *DEFAULTS
+  name: javascript
+  language: javascript

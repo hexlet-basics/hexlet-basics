@@ -6,6 +6,7 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
 
   has_many :lesson_members, class_name: 'Language::Lesson::Member', dependent: :destroy
+  has_many :language_members, class_name: 'Language::Member', dependent: :destroy
   has_many :accounts, dependent: :destroy
 
   def guest?
@@ -20,5 +21,9 @@ class User < ApplicationRecord
     return false if password_digest.nil?
 
     authenticate(password)
+  end
+
+  def complete_language?(language)
+    language_members.find_by(language: language)&.finished?
   end
 end

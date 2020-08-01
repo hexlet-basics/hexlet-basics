@@ -1,15 +1,18 @@
-h1.text-center.display-4 = @language
-.text-center
-  - if @first_lesson == @next_lesson
+h1.text-center.display-4.mt-4 = @language
+- if @complete_language
+  = render 'complete_language'
+- elsif @first_lesson == @next_lesson
+  .text-center
     = link_to t('.start'), language_lesson_path(@language.slug, @first_lesson.slug), class: 'btn btn-lg btn-primary px-4 mb-3 mt-2'
-  - else
+- else
+  .text-center
     = link_to t('.continue'), language_lesson_path(@language.slug, @next_lesson.slug), class: 'btn btn-lg btn-success px-4 mb-3 mt-2'
 .
   - @current_module_versions.each do |module_version|
     - module_info = @infos_by_module[module_version.id]
     .row.mt-5
       .col-12
-        h2= module_info
+        h2.h4= module_info
     .row
       .col-12.col-md-6.mt-4
         ul.list-group
@@ -22,4 +25,3 @@ h1.text-center.display-4 = @language
                   i.text-primary.fas.fa-check
       .col-12.col-md-6.mt-4
         = module_info.description
-

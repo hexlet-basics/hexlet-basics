@@ -11,7 +11,13 @@ class ExternalLinks
     hexlet_blog: 'https://ru.hexlet.io/blog',
     hexlet_recommended_books: 'https://ru.hexlet.io/pages/recommended-books',
     hexlet_matrix: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSr58Xg4DVX2WdmAkv3hE2ITJ3fPeNUmRFe0Ekro53U-ACFrhcUkV8PlUm4ddcn53Uh-5UIezZtZZgc/pubhtml',
-    source_code: 'https://github.com/hexlet-basics'
+    source_code: 'https://github.com/hexlet-basics',
+    hexlet_profession: 'https://ru.hexlet.io/professions?utm_campaign=general&utm_medium=referral&utm_source=code-basics',
+    hexlet_layout_designer: 'https://ru.hexlet.io/professions/layout-designer?utm_campaign=general&utm_medium=referral&utm_source=code-basics',
+    hexlet_frontend: 'https://ru.hexlet.io/professions/frontend?utm_campaign=general&utm_medium=referral&utm_source=code-basics',
+    hexlet_java: 'https://ru.hexlet.io/professions/java?utm_campaign=general&utm_medium=referral&utm_source=code-basics',
+    hexlet_python: 'https://ru.hexlet.io/professions/python?utm_campaign=general&utm_medium=referral&utm_source=code-basics',
+    hexlet_php: 'https://ru.hexlet.io/professions/php?utm_campaign=general&utm_medium=referral&utm_source=code-basics'
   }.freeze
 
   def self.method_missing(method_name)

@@ -7,6 +7,9 @@ en:
         start: "Start"
         hexlet: "Hexlet"
     languages:
+      show:
+        start: Start Learning
+        continue: Continue Learning
       lessons:
         show:
           instructions: Instructions
@@ -18,6 +21,19 @@ en:
           only_for_signed_in_users: Exercise available only for signed users.
           please_sign_in: Please sign in with your GitHub account, this is necessary to track the progress of the lessons. If you do not have an account yet, now is the time to create an account on GitHub.
           sign_in: Sign In
+      complete_language:
+        continue: Continue Learning
+        grats: Congratulations
+        title: You have successfully completed the basic course on Code Basics.
+        first_step: This is the first step into the world of professional development. What’s next?
+        enter_profession: "Join the profession on Hexlet. You will:"
+        knowledge: Get the fundamental programming knowledge
+        tasks: Learn how to solve practical problems
+        apps: Write the first complete applications that will be part of your developer portfolio
+        sertificat: Get the Hexlet Certificate and employment assistance at the end of your study
+        first_courses_free: First courses in the profession are available for free. All you need to start learning is register and join the profession.
+        hexlet_profs: Other professions on Hexlet
+
     pages:
       about:
         title: About

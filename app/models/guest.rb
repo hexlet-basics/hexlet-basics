@@ -12,4 +12,8 @@ class Guest
   def finished_members_for_language(_)
     []
   end
+
+  def complete_language?(_)
+    false
+  end
 end

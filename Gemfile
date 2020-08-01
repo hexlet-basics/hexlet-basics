@@ -12,8 +12,6 @@ gem 'bootsnap', '>= 1.4.2', require: false
 gem 'jbuilder', '~> 2.7'
 gem 'omniauth-github'
 
-gem 'kramdown'
-
 group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'dotenv-rails'
@@ -52,6 +50,7 @@ gem 'dry-container'
 gem 'enumerize'
 gem 'gon'
 gem 'js-routes'
+gem 'redcarpet', '~> 3.5'
 gem 'reform-rails'
 gem 'sidekiq'
 gem 'simple_form'

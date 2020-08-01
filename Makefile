@@ -5,6 +5,7 @@ test:
 
 setup:
 	cp -n .env.example .env || true
+	yarn install
 	bin/setup
 	bin/rails db:fixtures:load
 

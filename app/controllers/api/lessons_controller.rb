@@ -13,6 +13,8 @@ class Api::LessonsController < Api::ApplicationController
     if lesson_exercise_data[:passed]
       lesson_member = lesson.members.find_by!(user: current_user)
       lesson_member.finish!
+
+      language.members.find_or_create_by!(user: current_user).check_for_finish!
     end
 
     render json: {
