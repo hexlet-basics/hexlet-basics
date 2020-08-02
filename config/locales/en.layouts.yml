@@ -6,6 +6,7 @@ en:
         community: "Community"
         sign_in: "Sign in"
         registration: "Sign up"
+        change_course: Change course
       footer:
         hexlet_title: © Hexlet, 2020
         hexlet_address: Hexlet Ltd. Puolikkotie 8, 02230 Espoo, Finland.

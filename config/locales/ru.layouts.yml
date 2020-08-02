@@ -7,6 +7,7 @@ ru:
         sign_in: Войти
         registration: Регистрация
         sign_out: Выйти
+        change_course: Выберите курс
       footer:
         hexlet_title: © Hexlet, 2020
         hexlet_address: Hexlet Ltd. Puolikkotie 8, 02230 Espoo, Finland.
