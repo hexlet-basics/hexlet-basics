@@ -13,7 +13,7 @@
             nav aria-label="breadcrumb"
               ol.breadcrumb.bg-transparent.p-0
                 li.breadcrumb-item
-                  a(href=root_path() title="#{t('.to_home_title')}")
+                  = link_to root_path, title: t('.to_home_title')
                     i.fas.fa-home
                 li.breadcrumb-item
                   = link_to t("human_languages.#{@language}"), language_path(@language.slug)
