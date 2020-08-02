@@ -1,4 +1,7 @@
-h1.text-center.display-4.mt-4 = @language
+h1.text-center.display-4.mt-4
+  = t("human_languages.#{@language}")
+  '
+  = t('.for_beginners')
 - if @language_member.finished?
   = render 'complete_language'
 - elsif @first_lesson == @next_lesson
