@@ -10,6 +10,15 @@
       .tab-content.x-h-md-100.overflow-hidden
         .tab-pane.fade.overflow-auto.x-h-md-100.active.show#lesson-tab(role="tabpanel")
           .card-body.pt-2
+            nav aria-label="breadcrumb"
+              ol.breadcrumb.bg-transparent.p-0
+                li.breadcrumb-item
+                  a(href=root_path() title="#{t('.to_home_title')}")
+                    i.fas.fa-home
+                li.breadcrumb-item
+                  = link_to t("human_languages.#{@language}"), language_path(@language.slug)
+                li.breadcrumb-item.active aria-current="page"
+                  = current_breadcrumb(@lesson_version, @info, @language_lessons_count)
             h1.h3.font-weight-bold= @info.name
             == markdown2html(@info.theory)
             - if @info.instructions
@@ -33,7 +42,12 @@
               = t('.issues')
               a(target="_blank" href="https://github.com/hexlet-basics") &nbsp;https://github.com/hexlet-basics
         .tab-pane.fade.overflow-auto.x-h-md-100#discuss-tab(role="tabpanel")
-          #disqus_thread
+          .card-body.pt-2.pb-0
+            .alert.alert-info.small.my-2
+              span.align-baseline = t('.if_stuck')
+              '
+              = link_to t('.community'), ExternalLinks.hexlet_slack, target: '_blank', class: 'align-baseline'
+            #disqus_thread
 
   .col-12.col-md-6.col-lg-7.pl-md-0.mt-2.mt-md-0
     - if current_user.guest?
