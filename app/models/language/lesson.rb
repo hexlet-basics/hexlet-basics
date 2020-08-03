@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Language::Lesson < ApplicationRecord
+  include Language::LessonRepository
+
   belongs_to :language
   belongs_to :module
 

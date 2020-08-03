@@ -13,8 +13,15 @@ class User < ApplicationRecord
     false
   end
 
-  def finished_members_for_language(language)
-    lesson_members.where(language: language).finished
+  def not_finished_lessons_for_language(language)
+    language.current_lessons.left_join_lesson_member_and_user(self)
+            .merge(Language::Lesson::Member.started_or_nil)
+  end
+
+  def finished_lessons_for_language(language)
+    language.current_lessons.includes(:members)
+            .merge(Language::Lesson::Member.finished)
+            .where(language_lesson_members: { user_id: id })
   end
 
   def valid_password?(password)

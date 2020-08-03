@@ -2,6 +2,7 @@
 
 class Language::Lesson::Member < ApplicationRecord
   include AASM
+  include Language::Lesson::MemberRepository
 
   belongs_to :user
   belongs_to :language

@@ -15,19 +15,10 @@ class Language::Member < ApplicationRecord
     end
   end
 
-  def check_for_finish!
-    return if finished?
+  def check_for_finish?
+    return true if finished?
 
-    language_lesson_versions = language.current_lesson_versions
-
-    finished_lessons_in_language =
-      language_lesson_versions
-      .joins('INNER JOIN language_lesson_members ON language_lesson_members.lesson_id = language_lesson_versions.lesson_id')
-      .where('language_lesson_members.user_id = ?', user.id)
-      .where(language_lesson_members: { state: :finished })
-
-    return unless language_lesson_versions.count == finished_lessons_in_language.count
-
-    finish!
+    not_finished_lessons = user.not_finished_lessons_for_language(language)
+    not_finished_lessons.empty?
   end
 end
