@@ -16,8 +16,8 @@ class Language::Member < ApplicationRecord
   end
 
   def allowed_to_finish?
-    last_lesson = user.not_finished_lessons_for_language(language).last
+    not_finished_lessons = user.not_finished_lessons_for_language(language)
 
-    last_lesson.nil?
+    not_finished_lessons.empty?
   end
 end
