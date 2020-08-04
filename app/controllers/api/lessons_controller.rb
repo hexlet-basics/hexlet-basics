@@ -15,7 +15,7 @@ class Api::LessonsController < Api::ApplicationController
       lesson_member.finish!
 
       language_member = language.members.find_or_create_by!(user: current_user)
-      language_member.finish! if language_member.check_for_finish?
+      language_member.finish! if language_member.may_finish?
     end
 
     render json: {
