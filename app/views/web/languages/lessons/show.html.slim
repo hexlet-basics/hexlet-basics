@@ -19,7 +19,7 @@
                   = link_to t("human_languages.#{@language}"), language_path(@language.slug)
                 li.breadcrumb-item.active aria-current="page"
                   = current_breadcrumb(@lesson_version, @info, @language_lessons_count)
-            .hexlet-basics-theory-card.markdown.mt-3
+            .hexlet-basics-theory-card
               h1.h3.font-weight-bold= @info.name
               == markdown2html(@info.theory)
               - if @info.instructions
