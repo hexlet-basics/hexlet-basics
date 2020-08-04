@@ -5,8 +5,8 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     @lesson = resource_language.lessons.find_by!(slug: params[:id])
     @lesson_version = resource_language.current_lesson_versions.find_by!(lesson: @lesson)
     @info = @lesson.infos.find_by!(locale: I18n.locale)
-    @language = @lesson.language
-    @language_lessons_count = @language.lessons.count
+    @language = resource_language
+    @language_lessons_count = @language.current_lessons.count
 
     return if current_user.guest?
 
