@@ -6,6 +6,7 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
 
   has_many :lesson_members, class_name: 'Language::Lesson::Member', dependent: :destroy
+  has_many :lessons, through: :lesson_members, class_name: 'Language::Lesson'
   has_many :language_members, class_name: 'Language::Member', dependent: :destroy
   has_many :accounts, dependent: :destroy
 
@@ -13,8 +14,13 @@ class User < ApplicationRecord
     false
   end
 
-  def finished_members_for_language(language)
-    lesson_members.where(language: language).finished
+  def not_finished_lessons_for_language(language)
+    language.current_lessons.left_join_lesson_member_and_user(self)
+            .merge(Language::Lesson::Member.started_or_nil)
+  end
+
+  def finished_lessons_for_language(language)
+    lessons.merge(Language::Lesson::Member.finished).where(id: language.current_lessons)
   end
 
   def valid_password?(password)

@@ -11,23 +11,13 @@ class Language::Member < ApplicationRecord
     state :finished
 
     event :finish do
-      transitions from: %i[started finished], to: :finished
+      transitions from: %i[started finished], to: :finished, guard: :allowed_to_finish?
     end
   end
 
-  def check_for_finish!
-    return if finished?
+  def allowed_to_finish?
+    not_finished_lessons = user.not_finished_lessons_for_language(language)
 
-    language_lesson_versions = language.current_lesson_versions
-
-    finished_lessons_in_language =
-      language_lesson_versions
-      .joins('INNER JOIN language_lesson_members ON language_lesson_members.lesson_id = language_lesson_versions.lesson_id')
-      .where('language_lesson_members.user_id = ?', user.id)
-      .where(language_lesson_members: { state: :finished })
-
-    return unless language_lesson_versions.count == finished_lessons_in_language.count
-
-    finish!
+    not_finished_lessons.empty?
   end
 end
