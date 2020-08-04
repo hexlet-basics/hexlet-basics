@@ -50,3 +50,58 @@ $azure: #45aaf2;
 .x-bg-red {
   background-color: $red;
 }
+
+
+%hexlet-output {
+  border: 1px dashed $indigo;
+  padding: 8px;
+}
+
+/* the only light, non-standard block, has to be customized directly */
+.hexlet-basics-theory-card {
+
+  img {
+    max-width: 100%;
+  }
+
+  table {
+    width: auto;
+  }
+
+  pre {
+    @extend %hexlet-output;
+
+    code {
+      @extend .pb-2;
+    }
+  }
+
+  .hexlet-basics-example {
+    @extend %hexlet-output;
+  }
+
+  pre.hexlet-basics-output {
+    display: inline-block;
+    background-color: $black;
+    color: white;
+    min-width: 220px;
+    max-width: 100%;
+    padding: 0 10px 12px 15px;
+    margin-bottom: 0;
+    border: none;
+  }
+
+  pre.hexlet-basics-output:before {
+    content: '';
+    background:url('fake_output_topbar.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 210px;
+    height: 27px;
+    display: block;
+    margin-bottom: 10px;
+    background-color: #353d46;
+    width: calc(100% + 15px);
+    margin-left: -15px;
+  }
+}
