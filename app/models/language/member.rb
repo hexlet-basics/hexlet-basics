@@ -11,11 +11,11 @@ class Language::Member < ApplicationRecord
     state :finished
 
     event :finish do
-      transitions from: %i[started finished], to: :finished, guard: :allowed_to_finish?
+      transitions from: %i[started finished], to: :finished, guard: :all_lessons_finished?
     end
   end
 
-  def allowed_to_finish?
+  def all_lessons_finished?
     not_finished_lessons = user.not_finished_lessons_for_language(language)
 
     not_finished_lessons.empty?
