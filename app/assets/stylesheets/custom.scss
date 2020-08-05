@@ -60,7 +60,7 @@ $azure: #45aaf2;
 .hexlet-basics-theory-card {
 
   img {
-    max-width: 100%;
+    @include img-fluid();
   }
 
   table {
