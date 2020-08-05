@@ -36,6 +36,7 @@ en:
           to_home_title: Home
           community: community
           if_stuck: If you got stuck and don't know what to do, you can ask a question in our huge and friendly
+          breadcrumb: breadcrumb
       complete_language:
         continue: Continue Learning
         grats: Congratulations
