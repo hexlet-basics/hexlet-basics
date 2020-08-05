@@ -9,6 +9,10 @@ class Guest
     false
   end
 
+  def language_members
+    []
+  end
+
   def finished_lessons_for_language(_)
     []
   end

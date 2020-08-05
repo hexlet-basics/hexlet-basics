@@ -14,8 +14,7 @@ class Web::LanguagesController < Web::ApplicationController
     @infos_by_lesson = @language.current_lesson_infos.with_locale.index_by(&:version_id)
 
     @finished_lessons_by_id = current_user.finished_lessons_for_language(@language).index_by(&:id)
-    language_member = @language.members.find_by(user: current_user)
-    @completed_language = language_member&.finished?
+    @language_member = @language.members.find_by(user: current_user) || Language::MemberFake.new
 
     @first_lesson = @language.current_lessons.ordered.first
     @next_lesson = current_user.not_finished_lessons_for_language(@language).ordered.first
