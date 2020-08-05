@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
+  include UserRepository
+
   has_secure_password validations: false
 
-  validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :email, presence: true, uniqueness: { case_sensitive: false }, 'valid_email_2/email': true
 
   has_many :lesson_members, class_name: 'Language::Lesson::Member', dependent: :destroy
   has_many :lessons, through: :lesson_members, class_name: 'Language::Lesson'
@@ -14,22 +16,9 @@ class User < ApplicationRecord
     false
   end
 
-  def not_finished_lessons_for_language(language)
-    language.current_lessons.left_join_lesson_member_and_user(self)
-            .merge(Language::Lesson::Member.started_or_nil)
-  end
-
-  def finished_lessons_for_language(language)
-    lessons.merge(Language::Lesson::Member.finished).where(id: language.current_lessons)
-  end
-
   def valid_password?(password)
     return false if password_digest.nil?
 
     authenticate(password)
-  end
-
-  def complete_language?(language)
-    language_members.find_by(language: language)&.finished?
   end
 end
