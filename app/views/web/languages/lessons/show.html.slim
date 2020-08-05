@@ -10,11 +10,11 @@
       .tab-content.x-h-md-100.overflow-hidden
         .tab-pane.fade.overflow-auto.x-h-md-100.active.show#lesson-tab(role="tabpanel")
           .card-body.pt-2
-            nav aria-label="breadcrumb"
+            nav aria-label=t('.breadcrumb')
               ol.breadcrumb.bg-transparent.p-0
                 li.breadcrumb-item
                   = link_to root_path, title: t('.to_home_title')
-                    i.fas.fa-home
+                    span.fas.fa-home
                 li.breadcrumb-item
                   = link_to t("human_languages.#{@language}"), language_path(@language.slug)
                 li.breadcrumb-item.active aria-current="page"
@@ -41,7 +41,8 @@
                 hr.my-4
               .small.text-muted
                 = t('.issues')
-                a(target="_blank" href="https://github.com/hexlet-basics") &nbsp;https://github.com/hexlet-basics
+                '
+                = link_to ExternalLinks.source_code, get_lesson_source_code(@lesson_version, @info), target: '_blank'
         .tab-pane.fade.overflow-auto.x-h-md-100#discuss-tab(role="tabpanel")
           .card-body.pt-2.pb-0
             .alert.alert-info.small.my-2
