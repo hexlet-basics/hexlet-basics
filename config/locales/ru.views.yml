@@ -18,6 +18,8 @@ ru:
         start: Начать
         continue: Продолжить
         hexlet: Хекслета
+        in_development: Курсы в разработке
+        in_development_description: Данные курсы находятся в разработке и не являются финальной версией. Вы можете помочь в разработке, прислав Pull Request в репозиторий GitHub
     users:
       new:
         sign_up: Регистрация
