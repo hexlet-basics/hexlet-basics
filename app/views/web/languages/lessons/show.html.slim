@@ -10,30 +10,46 @@
       .tab-content.x-h-md-100.overflow-hidden
         .tab-pane.fade.overflow-auto.x-h-md-100.active.show#lesson-tab(role="tabpanel")
           .card-body.pt-2
-            h1.h3.font-weight-bold= @info.name
-            == markdown2html(@info.theory)
-            - if @info.instructions
-              h2.h4.font-weight-bold = t('.instructions')
-              == markdown2html(@info.instructions)
-              hr.my-4
-            - if @info.tips.any?
-              h2.h5.font-weight-bold.mt-4 = t('.tips')
-              ul.pl-4
-                - @info.tips.each do |tip|
-                  li == markdown2html(tip)
-            - if @info.definitions.any?
-              h2.h5.font-weight-bold = t('.definitions')
-              ul.pl-4
-                - @info.definitions.each do |definition|
-                  li
-                    p = "#{definition['name']} - #{definition['description']}"
-            - if @info.definitions.any? || @info.tips.any?
-              hr.my-4
-            .small.text-muted
-              = t('.issues')
-              a(target="_blank" href="https://github.com/hexlet-basics") &nbsp;https://github.com/hexlet-basics
+            nav aria-label=t('.breadcrumb')
+              ol.breadcrumb.bg-transparent.p-0
+                li.breadcrumb-item
+                  = link_to root_path, title: t('.to_home_title')
+                    span.fas.fa-home
+                li.breadcrumb-item
+                  = link_to t("human_languages.#{@resource_language}"), language_path(@resource_language.slug)
+                li.breadcrumb-item.active aria-current="page"
+                  = current_breadcrumb(@lesson_version, @info, @language_lessons_count)
+            .hexlet-basics-theory-card
+              h1.h3.font-weight-bold= @info.name
+              == markdown2html(@info.theory)
+              - if @info.instructions
+                h2.h4.font-weight-bold = t('.instructions')
+                == markdown2html(@info.instructions)
+                hr.my-4
+              - if @info.tips.any?
+                h2.h5.font-weight-bold.mt-4 = t('.tips')
+                ul.pl-4
+                  - @info.tips.each do |tip|
+                    li == markdown2html(tip)
+              - if @info.definitions.any?
+                h2.h5.font-weight-bold = t('.definitions')
+                ul.pl-4
+                  - @info.definitions.each do |definition|
+                    li
+                      p = "#{definition['name']} - #{definition['description']}"
+              - if @info.definitions.any? || @info.tips.any?
+                hr.my-4
+              .small.text-muted
+                = t('.issues')
+                '
+                = link_to ExternalLinks.source_code, get_lesson_source_code(@lesson_version, @info), target: '_blank'
         .tab-pane.fade.overflow-auto.x-h-md-100#discuss-tab(role="tabpanel")
-          #disqus_thread
+          .card-body.pt-2.pb-0
+            .alert.alert-info.small.my-2
+              span.align-baseline = t('.if_stuck')
+              '
+              = link_to t('.community'), ExternalLinks.hexlet_slack, target: '_blank', class: 'align-baseline'
+            #disqus_thread
 
   .col-12.col-md-6.col-lg-7.pl-md-0.mt-2.mt-md-0
     - if current_user.guest?

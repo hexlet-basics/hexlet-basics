@@ -20,7 +20,7 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
   test 'check lesson finished' do
     post check_api_lesson_path(@lesson), params: { version_id: @lesson.versions.first.id, data: { attributes: { code: 'code' } } }
 
-    assert { response.successful? }
+    assert_response :success
     @lesson_member.reload
     assert { @lesson_member.finished? }
   end
@@ -29,7 +29,7 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     language_member = @language.members.create!(user: @user)
     post check_api_lesson_path(@lesson), params: { version_id: @lesson.versions.first.id, data: { attributes: { code: 'code' } } }
 
-    assert { response.successful? }
+    assert_response :success
     language_member.reload
     assert { language_member.finished? }
   end
