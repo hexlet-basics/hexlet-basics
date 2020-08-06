@@ -37,7 +37,7 @@ Rails.application.routes.draw do
     namespace :admin do
       root 'home#index'
 
-      resources :languages, only: %i[index new create] do
+      resources :languages, only: %i[index new edit update create] do
         scope module: :languages do
           resources :versions, only: %i[index create]
         end
