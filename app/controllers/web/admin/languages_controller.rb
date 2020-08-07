@@ -2,7 +2,8 @@
 
 class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   def index
-    @languages = Language.all
+    @q = Language.ransack(params[:q])
+    @languages = @q.result
   end
 
   def new
