@@ -11,8 +11,8 @@ gem 'webpacker', '~> 4.0'
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'jbuilder', '~> 2.7'
 gem 'omniauth-github'
-gem 'valid_email2'
 gem 'ransack'
+gem 'valid_email2'
 
 group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
