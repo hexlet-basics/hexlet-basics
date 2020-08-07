@@ -4,5 +4,5 @@
       .card-body.text-center(class="#{get_language_background(language.slug)}")
         h2.h5.card-title.text-white = language
         = image_tag "#{language.slug}.png", class: 'img-fluid mt-3 mb-4'
-        - let language_members_by_language[language.id] ? t('.continue') : t('.start') do |text|
-          = link_to text, language_path(language.slug), class: 'btn btn-light btn-block stretched-link h6'
+        - let language_members_by_language[language.id] do |language_member|
+          = link_to language_member ? t('.continue') : t('.start'), language_path(language.slug), class: 'btn btn-light btn-block stretched-link h6'
