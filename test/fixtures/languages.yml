@@ -9,8 +9,3 @@ two:
 javascript:
   slug: javascript
   current_version: javascript
-
-published:
-  slug: php
-  current_version: one
-  state: published

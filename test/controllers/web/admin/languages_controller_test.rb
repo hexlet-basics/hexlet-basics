@@ -34,12 +34,12 @@ class Web::Admin::LanguagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'update' do
-    language = languages(:published)
+    language = languages(:one)
 
-    patch admin_language_path(language), params: { language: { state_event: 'hide' } }
+    patch admin_language_path(language), params: { language: { progress: 'in_development' } }
     assert_response :redirect
 
     language.reload
-    assert { language.hidden? }
+    assert { language.in_development? }
   end
 end

@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class Language < ApplicationRecord
-  include StateConcern
   extend Enumerize
 
   enumerize :slug, in: %i[php javascript python java html css racket elixir ruby go]
+  enumerize :progress, in: %i[completed in_development draft], default: :draft, scope: true, predicates: true
 
   validates :slug, presence: true
 
@@ -22,22 +22,4 @@ class Language < ApplicationRecord
   has_many :current_lessons, through: :current_version, source: :lessons
 
   delegate :to_s, to: :current_version
-
-  aasm :state, column: :state do
-    state :hidden, initial: true
-    state :in_development
-    state :published
-
-    event :publish do
-      transitions from: %i[hidden in_development], to: :published
-    end
-
-    event :develop do
-      transitions from: [:hidden], to: :in_development
-    end
-
-    event :hide do
-      transitions from: %i[developing published], to: :hidden
-    end
-  end
 end

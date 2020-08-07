@@ -36,6 +36,6 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   private
 
   def language_params
-    params.require(:language).permit(:slug, :state_event)
+    params.require(:language).permit(:slug, :progress)
   end
 end

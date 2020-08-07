@@ -1,4 +1,4 @@
 h1 Edit language
 = simple_form_for @language, url: admin_language_path do |f|
-    = f.input :state_event, as: :state_event, collection: @language.aasm(:state).events(permitted: true)
-    .mb-3= f.submit class: 'btn btn-primary'
+  = f.input :progress, include_blank: false
+  = f.submit class: 'btn btn-primary'

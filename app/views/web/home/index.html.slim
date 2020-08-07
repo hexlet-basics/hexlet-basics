@@ -5,12 +5,12 @@
       = t('.subheader')
       = link_to t('.hexlet'), 'https://hexlet.io/?utm_campaign=general&utm_medium=referral&utm_source=code-basics', class: 'text-muted'
 .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4
-  = render 'languages', languages: @languges_published, language_members_by_language: @language_members_by_language
+  = render partial: 'languages', locals: { languages: @languages_completed, language_members_by_language: @language_members_by_language }
 - if @languages_in_development.any?
   .row.justify-content-center.mb-5.mt-5
     .col-12.col-md-9.text-center
       h3.h1.font-weight-light = t('.in_development')
       p = t('.in_development_description')
   .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4
-    = render 'languages', languages: @languages_in_development, language_members_by_language: @language_members_by_language
+    = render partial: 'languages', locals: { languages: @languages_in_development, language_members_by_language: @language_members_by_language }
 

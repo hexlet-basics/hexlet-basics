@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_06_133517) do
+ActiveRecord::Schema.define(version: 2020_08_07_031951) do
 
   create_table "language_lesson_members", force: :cascade do |t|
     t.integer "language_id", null: false
@@ -132,7 +132,7 @@ ActiveRecord::Schema.define(version: 2020_08_06_133517) do
     t.integer "current_version_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "state"
+    t.string "progress"
     t.index ["current_version_id"], name: "index_languages_on_current_version_id"
   end
 
