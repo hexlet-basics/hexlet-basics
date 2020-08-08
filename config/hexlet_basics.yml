@@ -1,6 +1,11 @@
-default: &default
-  docker_command_template: 'docker run --rm --net none %s %s timeout 4 make --silent -C %s test'
-  code_directory: '/tmp/hexlet-basics/code'
+development:
+  app_url_en: 'http://en.code-basics.test'
+  app_url_ru: 'http://ru.code-basics.test'
 
-common:
-  <<: *default
+production:
+  app_url_en: 'https://code-basics.com'
+  app_url_ru: 'https://ru.code-basics.com'
+
+test:
+  app_url_en: 'http://en.code-basics.test'
+  app_url_ru: 'http://ru.code-basics.test'
