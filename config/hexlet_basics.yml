@@ -1,6 +1,6 @@
 development:
-  app_url_en: 'http://en.code-basics.test'
-  app_url_ru: 'http://ru.code-basics.test'
+  app_url_en: 'http://en.code-basics.test:5000'
+  app_url_ru: 'http://ru.code-basics.test:5000'
 
 production:
   app_url_en: 'https://code-basics.com'
