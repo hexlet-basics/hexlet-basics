@@ -4,7 +4,7 @@ class Language < ApplicationRecord
   extend Enumerize
 
   enumerize :slug, in: %i[php javascript python java html css racket elixir ruby go]
-  enumerize :progress, in: %i[completed in_development draft], default: :draft, scope: true, predicates: true
+  enumerize :progress, in: %i[completed in_development draft], default: :draft, scope: true
 
   validates :slug, presence: true
 

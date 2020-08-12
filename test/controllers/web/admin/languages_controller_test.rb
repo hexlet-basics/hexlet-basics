@@ -40,6 +40,6 @@ class Web::Admin::LanguagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :redirect
 
     language.reload
-    assert { language.in_development? }
+    assert { language.progress.in_development? }
   end
 end
