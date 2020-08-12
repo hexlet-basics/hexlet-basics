@@ -2,12 +2,16 @@ table.table
   thead
     tr
       th Id
-      th Slug
+      th= sort_link(@q, :slug)
+      th= sort_link(@q, :progress)
+      th
       th
   tbody
     - @languages.each do |language|
       tr
         td= language.id
         td= language.slug
+        td= language.progress
+        td= link_to "Edit", edit_admin_language_path(language)
         td= link_to "Versions", admin_language_versions_path(language)
-= link_to "Create new language", new_admin_language_path
+= link_to "Create new language", new_admin_language_path, class: 'btn btn-primary'

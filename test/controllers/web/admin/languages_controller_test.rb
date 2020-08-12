@@ -25,4 +25,21 @@ class Web::Admin::LanguagesControllerTest < ActionDispatch::IntegrationTest
 
     assert { Language.find_by(slug: slug) }
   end
+
+  test 'edit' do
+    language = languages(:one)
+
+    get edit_admin_language_path(language)
+    assert_response :success
+  end
+
+  test 'update' do
+    language = languages(:one)
+
+    patch admin_language_path(language), params: { language: { progress: 'in_development' } }
+    assert_response :redirect
+
+    language.reload
+    assert { language.progress.in_development? }
+  end
 end

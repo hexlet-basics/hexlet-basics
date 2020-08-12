@@ -2,11 +2,26 @@
 
 class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   def index
-    @languages = Language.all
+    @q = Language.ransack(params[:q])
+    @languages = @q.result
   end
 
   def new
     @language = Language.new
+  end
+
+  def edit
+    @language = Language.find(params[:id])
+  end
+
+  def update
+    @language = Language.find(params[:id])
+
+    if @language.update(language_params)
+      redirect_to admin_languages_path
+    else
+      render :edit
+    end
   end
 
   def create
@@ -22,6 +37,6 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   private
 
   def language_params
-    params.require(:language).permit(:slug)
+    params.require(:language).permit(:slug, :progress)
   end
 end

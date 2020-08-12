@@ -36,7 +36,7 @@
                 ul.pl-4
                   - @info.definitions.each do |definition|
                     li
-                      p = "#{definition['name']} - #{definition['description']}"
+                      p == markdown2html("#{definition['name']} - #{definition['description']}")
               - if @info.definitions.any? || @info.tips.any?
                 hr.my-4
               .small.text-muted
