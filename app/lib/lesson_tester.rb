@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 class LessonTester
-  def self.run(lesson_version, language_version, code, user)
+  include Import['open3_klass']
+
+  def run(lesson_version, language_version, code, user)
     code_directory = '/tmp/hexlet-basics/code'
     full_directory_path = File.join(code_directory, FileSystemUtils.directory_for_code(user))
     FileUtils.mkdir_p(full_directory_path)
@@ -13,7 +15,7 @@ class LessonTester
     volume = "-v #{full_exercise_file_path}:#{path_to_exersice_file}"
     command = "docker run --rm --net none #{volume} #{language_version.docker_image} timeout 4 make --silent -C #{lesson_version.path_to_code} test"
 
-    output, process_status = Open3.capture2(command)
+    output, process_status = open3_klass.capture2(command)
     exitstatus = process_status.exitstatus
 
     result = case exitstatus
@@ -24,7 +26,6 @@ class LessonTester
              else
                'failed'
              end
-
     passed = result == 'passed'
 
     { passed: passed, output: Base64.encode64(output), result: result, status: exitstatus }
