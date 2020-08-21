@@ -2,12 +2,6 @@
 
 require 'test_helper'
 
-class LessonTester
-  def self.run(*)
-    { passed: true }
-  end
-end
-
 class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @language = languages(:javascript)
@@ -28,8 +22,8 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
   test 'check language finished' do
     language_member = @language.members.create!(user: @user)
     post check_api_lesson_path(@lesson), params: { version_id: @lesson.versions.first.id, data: { attributes: { code: 'code' } } }
-
     assert_response :success
+
     language_member.reload
     assert { language_member.finished? }
   end

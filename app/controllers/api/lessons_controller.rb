@@ -8,7 +8,7 @@ class Api::LessonsController < Api::ApplicationController
     code = params[:data][:attributes][:code]
 
     language_version = lesson_version.language_version
-    lesson_exercise_data = LessonTester.run(lesson_version, language_version, code, current_user)
+    lesson_exercise_data = LessonTester.new.run(lesson_version, language_version, code, current_user)
 
     if lesson_exercise_data[:passed]
       lesson_member = lesson.members.find_by!(user: current_user)
