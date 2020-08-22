@@ -1,9 +1,4 @@
-FROM ruby:2.6
-
-ENV PROJECT_ROOT /app
-
-RUN mkdir $PROJECT_ROOT
-WORKDIR $PROJECT_ROOT
+FROM ruby:2.7.1
 
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
@@ -17,11 +12,11 @@ RUN apt-get update -qq \
   nodejs \
   yarn
 
-COPY Gemfile Gemfile
-COPY Gemfile.lock Gemfile.lock
+ENV DOCKER_CHANNEL edge
+ENV DOCKER_VERSION 19.03.8
+RUN curl -fsSL "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/x86_64/docker-${DOCKER_VERSION}.tgz" \
+  | tar -xzC /usr/local/bin --strip=1 docker/docker
 
-RUN gem install bundler
-RUN bundle config path vendor/bundle
-RUN bundle install --jobs 4 --retry 3
+ENV BUNDLE_PATH /app/vendor/bundle
 
-ADD . $PROJECT_ROOT
+WORKDIR /app

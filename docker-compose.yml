@@ -1,0 +1,39 @@
+---
+
+version: '3'
+
+services:
+  redis:
+    image: redis
+    volumes:
+      - redis:/data
+  sidekiq:
+    build:
+      context: .
+    command: bundle exec sidekiq
+    volumes:
+      - .:/app:cached
+      - '/tmp:/tmp'
+      - '/var/tmp/hexletbasics:/var/tmp/hexletbasics'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+    env_file: '.env'
+    depends_on:
+      - redis
+      - web
+  web:
+    build:
+      context: .
+    command: make start
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/app:cached
+      - '/tmp:/tmp'
+      - '/var/tmp/hexletbasics:/var/tmp/hexletbasics'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+    env_file: '.env'
+    depends_on:
+      - redis
+
+volumes:
+  redis:
