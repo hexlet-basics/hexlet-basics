@@ -27,6 +27,7 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
+
 /public/packs
 /public/packs-test
 /vendor
@@ -36,4 +37,7 @@ yarn-debug.log*
 .yarn-integrity
 .yardoc
 
+.terraform
 .env
+google.key.json
+
