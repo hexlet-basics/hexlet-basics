@@ -1,32 +1,30 @@
 include make-services-web.mk
+include make-compose.mk
 
 test:
 	bin/rails test
 
-setup:
-	cp -n .env.example .env || true
-	yarn install
-	bin/setup
-	bin/rails db:fixtures:load
-
 fixtures-load:
 	bin/rails db:fixtures:load
 
-clean:
-	bin/rails db:drop
+setup:
+	cp -n .env.example .env || true
+	bin/setup
+	yarn install
 
 db-reset:
 	bin/rails db:drop
 	bin/rails db:create
 	bin/rails db:migrate
-	bin/rails db:fixtures:load
 
 start:
-	bundle exec heroku local
+	bundle exec rails s -p 3000 -b '0.0.0.0'
+
+clean:
+	bin/rails db:drop
 
 precompile-assets:
 	bundle exec rails assets:precompile
-
 
 lint: lint-eslint lint-rubocop
 
@@ -38,21 +36,6 @@ lint-rubocop:
 
 lint-eslint:
 	npx eslint app/javascript
-
-deploy:
-	git push heroku master
-
-heroku-console:
-	heroku run rails console
-
-heroku-logs:
-	heroku logs --tail
-
-ci-test:
-	make setup
-	make precompile-assets
-	make lint
-	make test
 
 js-routes:
 	bundle exec rails js_routes:generate
