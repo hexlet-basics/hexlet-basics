@@ -1,0 +1,16 @@
+code-basics.com:8080, ru.code-basics.com:8080 {
+    tls off
+    gzip
+    proxy / {$CADDY_SERVER_ADDRESS}:4000 {
+        transparent
+        websocket
+        header_upstream X-Forwarded-Host {host}
+    }
+}
+
+code-basics.ru:8080 {
+  tls off
+  redir https://ru.code-basics.com{uri}
+}
+
+:8080
