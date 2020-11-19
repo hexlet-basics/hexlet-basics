@@ -22,7 +22,8 @@ services:
       - web
   web:
     build:
-      context: .
+      context: services/caddy
+      dockerfile: Dockerfile.development
     command: make start
     ports:
       - '3000:3000'
@@ -34,6 +35,18 @@ services:
     env_file: '.env'
     depends_on:
       - redis
+
+  caddy:
+    build:
+      context: services/caddy
+      dockerfile: Dockerfile.development
+    ports:
+      - "443:2015"
+      - "80:80"
+    volumes:
+      - "./services/caddy/files/development/Caddyfile:/etc/Caddyfile"
+    depends_on:
+      - web
 
 volumes:
   redis:

@@ -2,7 +2,7 @@ compose-build:
 	docker-compose build
 
 compose:
-	docker-compose up
+	docker-compose up -d
 
 compose-down:
 	docker-compose down -v || true
