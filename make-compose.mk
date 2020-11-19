@@ -7,6 +7,9 @@ compose:
 compose-down:
 	docker-compose down -v || true
 
+compose-restart:
+	docker-compose restart
+
 compose-console:
 	docker-compose run web /bin/bash
 

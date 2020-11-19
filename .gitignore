@@ -5,15 +5,15 @@
 #   git config --global core.excludesfile '~/.gitignore_global'
 
 # Ignore bundler config.
-/.bundle
+/services/app/.bundle
 
 # Ignore the default SQLite database.
-/db/*.sqlite3*
-/db/*.sqlite3-journal
+/services/app/db/*.sqlite3*
+/services/app/db/*.sqlite3-journal
 
 # Ignore all logfiles and tempfiles.
-/log/*
-/tmp/*
+/services/app/log/*
+/services/app/tmp/*
 !/log/.keep
 !/tmp/.keep
 
@@ -21,21 +21,21 @@
 /storage/*
 !/storage/.keep
 
-/public/assets
+/services/app/public/assets
 .byebug_history
 
 # Ignore master key for decrypting credentials and more.
-/config/master.key
+/services/app/config/master.key
 
 
-/public/packs
-/public/packs-test
-/vendor
-/node_modules
-/yarn-error.log
-yarn-debug.log*
-.yarn-integrity
-.yardoc
+/services/app/public/packs
+/services/app/public/packs-test
+/services/app/vendor
+/services/app/node_modules
+/services/app/yarn-error.log
+/services/app/yarn-debug.log*
+/services/app/.yarn-integrity
+/services/app/.yardoc
 
 .terraform
 .env

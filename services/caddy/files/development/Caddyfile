@@ -1,7 +1,7 @@
 localhost, ru.code-basics.test, en.code-basics.test, code-basics.test {
     gzip
     tls self_signed
-    proxy / web:4000 {
+    proxy / web:3000 {
         insecure_skip_verify
         transparent
         websocket
@@ -12,7 +12,7 @@ localhost, ru.code-basics.test, en.code-basics.test, code-basics.test {
 hexletdev.com:80 {
     gzip
     tls self_signed
-    proxy / web:4000 {
+    proxy / web:3000 {
         insecure_skip_verify
         transparent
         websocket

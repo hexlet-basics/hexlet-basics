@@ -9,10 +9,11 @@ services:
       - redis:/data
   sidekiq:
     build:
-      context: .
+      context: services/app
+      dockerfile: Dockerfile.development
     command: bundle exec sidekiq
     volumes:
-      - .:/app:cached
+      - ./services/app:/app:cached
       - '/tmp:/tmp'
       - '/var/tmp/hexletbasics:/var/tmp/hexletbasics'
       - '/var/run/docker.sock:/var/run/docker.sock'
@@ -22,13 +23,13 @@ services:
       - web
   web:
     build:
-      context: services/caddy
+      context: services/app
       dockerfile: Dockerfile.development
     command: make start
     ports:
       - '3000:3000'
     volumes:
-      - .:/app:cached
+      - ./services/app:/app:cached
       - '/tmp:/tmp'
       - '/var/tmp/hexletbasics:/var/tmp/hexletbasics'
       - '/var/run/docker.sock:/var/run/docker.sock'
