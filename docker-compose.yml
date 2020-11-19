@@ -3,10 +3,19 @@
 version: '3'
 
 services:
+  # postgres:
+  #   image: postgres:12.2-alpine
+  #   environment:
+  #     POSTGRES_HOST_AUTH_METHOD: trust
+  #   volumes:
+  #     - /var/tmp:/var/lib/postgresql/data
+
+
   redis:
     image: redis
     volumes:
       - redis:/data
+
   sidekiq:
     build:
       context: services/app
@@ -34,8 +43,12 @@ services:
       - '/var/tmp/hexletbasics:/var/tmp/hexletbasics'
       - '/var/run/docker.sock:/var/run/docker.sock'
     env_file: '.env'
+    networks:
+      - default
+      - hexlet-basics
     depends_on:
       - redis
+      # - postgres
 
   caddy:
     build:
@@ -51,3 +64,7 @@ services:
 
 volumes:
   redis:
+  pgdata:
+
+networks:
+  hexlet-basics:
