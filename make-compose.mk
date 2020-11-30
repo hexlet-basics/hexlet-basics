@@ -20,7 +20,11 @@ web-install:
 ci-test:
 	cp -n .env.example .env || true
 	make compose-setup
+	docker-compose run web make test-db-prepare
 	docker-compose run web make lint
 	docker-compose run web make test
 
 compose-setup: compose-down compose-build web-install
+
+app-bash:
+	docker-compose run web /bin/bash
