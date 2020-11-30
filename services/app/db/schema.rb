@@ -12,10 +12,13 @@
 
 ActiveRecord::Schema.define(version: 2020_08_07_031951) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "language_lesson_members", force: :cascade do |t|
-    t.integer "language_id", null: false
-    t.integer "lesson_id", null: false
-    t.integer "user_id", null: false
+    t.bigint "language_id", null: false
+    t.bigint "lesson_id", null: false
+    t.bigint "user_id", null: false
     t.string "state"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -32,9 +35,9 @@ ActiveRecord::Schema.define(version: 2020_08_07_031951) do
     t.string "tips"
     t.string "definitions"
     t.string "instructions"
-    t.integer "language_id", null: false
-    t.integer "language_version_id", null: false
-    t.integer "version_id", null: false
+    t.bigint "language_id", null: false
+    t.bigint "language_version_id", null: false
+    t.bigint "version_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["language_id"], name: "index_language_lesson_version_infos_on_language_id"
@@ -48,10 +51,10 @@ ActiveRecord::Schema.define(version: 2020_08_07_031951) do
     t.string "test_code"
     t.integer "natural_order"
     t.string "path_to_code"
-    t.integer "language_version_id", null: false
-    t.integer "language_id", null: false
-    t.integer "lesson_id", null: false
-    t.integer "module_version_id", null: false
+    t.bigint "language_version_id", null: false
+    t.bigint "language_id", null: false
+    t.bigint "lesson_id", null: false
+    t.bigint "module_version_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["language_id"], name: "index_language_lesson_versions_on_language_id"
@@ -62,8 +65,8 @@ ActiveRecord::Schema.define(version: 2020_08_07_031951) do
 
   create_table "language_lessons", force: :cascade do |t|
     t.string "slug"
-    t.integer "language_id", null: false
-    t.integer "module_id", null: false
+    t.bigint "language_id", null: false
+    t.bigint "module_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["language_id"], name: "index_language_lessons_on_language_id"
@@ -71,8 +74,8 @@ ActiveRecord::Schema.define(version: 2020_08_07_031951) do
   end
 
   create_table "language_members", force: :cascade do |t|
-    t.integer "language_id", null: false
-    t.integer "user_id", null: false
+    t.bigint "language_id", null: false
+    t.bigint "user_id", null: false
     t.string "state"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -80,13 +83,57 @@ ActiveRecord::Schema.define(version: 2020_08_07_031951) do
     t.index ["user_id"], name: "index_language_members_on_user_id"
   end
 
+  create_table "language_module_descriptions", force: :cascade do |t|
+    t.string "name", limit: 255
+    t.text "description"
+    t.string "locale", limit: 255
+    t.bigint "module_id"
+    t.datetime "inserted_at", precision: 0, null: false
+    t.datetime "updated_at", precision: 0, null: false
+    t.bigint "language_id"
+    t.index ["module_id"], name: "language_module_descriptions_module_id_index"
+  end
+
+  create_table "language_module_lesson_descriptions", force: :cascade do |t|
+    t.string "name", limit: 255
+    t.text "theory"
+    t.text "instructions"
+    t.string "locale", limit: 255
+    t.string "tips", limit: 255, null: false, array: true
+    t.bigint "lesson_id"
+    t.datetime "inserted_at", precision: 0, null: false
+    t.datetime "updated_at", precision: 0, null: false
+    t.bigint "language_id"
+    t.jsonb "definitions", null: false, array: true
+    t.index ["lesson_id"], name: "language_module_lesson_descriptions_lesson_id_index"
+  end
+
+  create_table "language_module_lessons", force: :cascade do |t|
+    t.string "slug", limit: 255
+    t.string "state", limit: 255
+    t.integer "order"
+    t.text "original_code"
+    t.text "prepared_code"
+    t.text "test_code"
+    t.string "path_to_code", limit: 255
+    t.bigint "module_id"
+    t.bigint "language_id"
+    t.bigint "upload_id"
+    t.datetime "inserted_at", precision: 0, null: false
+    t.datetime "updated_at", precision: 0, null: false
+    t.integer "natural_order"
+    t.index ["language_id"], name: "language_module_lessons_language_id_index"
+    t.index ["module_id"], name: "language_module_lessons_module_id_index"
+    t.index ["upload_id"], name: "language_module_lessons_upload_id_index"
+  end
+
   create_table "language_module_version_infos", force: :cascade do |t|
     t.string "name"
     t.string "description"
     t.string "locale"
-    t.integer "language_id", null: false
-    t.integer "version_id", null: false
-    t.integer "language_version_id", null: false
+    t.bigint "language_id", null: false
+    t.bigint "version_id", null: false
+    t.bigint "language_version_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["language_id"], name: "index_language_module_version_infos_on_language_id"
@@ -94,9 +141,9 @@ ActiveRecord::Schema.define(version: 2020_08_07_031951) do
   end
 
   create_table "language_module_versions", force: :cascade do |t|
-    t.integer "language_id", null: false
-    t.integer "language_version_id", null: false
-    t.integer "module_id", null: false
+    t.bigint "language_id", null: false
+    t.bigint "language_version_id", null: false
+    t.bigint "module_id", null: false
     t.integer "order"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -106,11 +153,15 @@ ActiveRecord::Schema.define(version: 2020_08_07_031951) do
   end
 
   create_table "language_modules", force: :cascade do |t|
-    t.string "slug"
-    t.integer "language_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["language_id"], name: "index_language_modules_on_language_id"
+    t.string "slug", limit: 255
+    t.string "state", limit: 255
+    t.integer "order"
+    t.bigint "language_id"
+    t.bigint "upload_id"
+    t.datetime "inserted_at", precision: 0, null: false
+    t.datetime "updated_at", precision: 0, null: false
+    t.index ["language_id"], name: "language_modules_language_id_index"
+    t.index ["upload_id"], name: "language_modules_upload_id_index"
   end
 
   create_table "language_versions", force: :cascade do |t|
@@ -121,37 +172,68 @@ ActiveRecord::Schema.define(version: 2020_08_07_031951) do
     t.string "name"
     t.string "state"
     t.string "result"
-    t.integer "language_id", null: false
+    t.bigint "language_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["language_id"], name: "index_language_versions_on_language_id"
   end
 
   create_table "languages", force: :cascade do |t|
-    t.string "slug"
-    t.integer "current_version_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.string "name", limit: 255
+    t.string "slug", limit: 255
+    t.string "extension", limit: 255
+    t.string "docker_image", limit: 255
+    t.string "exercise_filename", limit: 255
+    t.string "exercise_test_filename", limit: 255
+    t.string "state", limit: 255
+    t.bigint "upload_id"
+    t.datetime "inserted_at", precision: 0, null: false
+    t.datetime "updated_at", precision: 0, null: false
     t.string "progress"
-    t.index ["current_version_id"], name: "index_languages_on_current_version_id"
+    t.index ["slug"], name: "languages_slug_index", unique: true
+    t.index ["upload_id"], name: "languages_upload_id_index"
+  end
+
+  create_table "uploads", force: :cascade do |t|
+    t.string "language_name", limit: 255
+    t.datetime "inserted_at", precision: 0, null: false
+    t.datetime "updated_at", precision: 0, null: false
   end
 
   create_table "user_accounts", force: :cascade do |t|
-    t.string "uid"
-    t.string "provider"
-    t.integer "user_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["user_id"], name: "index_user_accounts_on_user_id"
+    t.bigint "user_id", null: false
+    t.string "provider", limit: 255, null: false
+    t.string "uid", limit: 255, null: false
+    t.datetime "inserted_at", precision: 0, null: false
+    t.datetime "updated_at", precision: 0, null: false
+  end
+
+  create_table "user_finished_lessons", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "language_module_lesson_id", null: false
+    t.datetime "inserted_at", precision: 0, null: false
+    t.datetime "updated_at", precision: 0, null: false
+    t.index ["language_module_lesson_id"], name: "user_finished_lessons_language_module_lesson_id_index"
+    t.index ["user_id", "language_module_lesson_id"], name: "user_finished_lessons_user_id_language_module_lesson_id_index", unique: true
+    t.index ["user_id"], name: "user_finished_lessons_user_id_index"
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "email", null: false
-    t.string "password_digest"
-    t.boolean "admin", default: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["email"], name: "index_users_on_email", unique: true
+    t.string "first_name", limit: 255
+    t.string "last_name", limit: 255
+    t.string "email", limit: 255
+    t.string "nickname", limit: 255
+    t.integer "github_uid"
+    t.datetime "inserted_at", precision: 0, null: false
+    t.datetime "updated_at", precision: 0, null: false
+    t.string "facebook_uid", limit: 255
+    t.string "encrypted_password", limit: 255
+    t.string "confirmation_token", limit: 255
+    t.string "reset_password_token", limit: 255
+    t.string "state", limit: 255
+    t.string "locale", limit: 255
+    t.string "email_delivery_state", limit: 255
+    t.index ["email"], name: "users_email_index", unique: true
   end
 
   add_foreign_key "language_lesson_members", "language_lessons", column: "lesson_id"
@@ -168,13 +250,24 @@ ActiveRecord::Schema.define(version: 2020_08_07_031951) do
   add_foreign_key "language_lessons", "languages"
   add_foreign_key "language_members", "languages"
   add_foreign_key "language_members", "users"
+  add_foreign_key "language_module_descriptions", "language_modules", column: "module_id", name: "language_module_descriptions_module_id_fkey"
+  add_foreign_key "language_module_descriptions", "languages", name: "language_module_descriptions_language_id_fkey"
+  add_foreign_key "language_module_lesson_descriptions", "language_module_lessons", column: "lesson_id", name: "language_module_lesson_descriptions_lesson_id_fkey"
+  add_foreign_key "language_module_lesson_descriptions", "languages", name: "language_module_lesson_descriptions_language_id_fkey"
+  add_foreign_key "language_module_lessons", "language_modules", column: "module_id", name: "language_module_lessons_module_id_fkey"
+  add_foreign_key "language_module_lessons", "languages", name: "language_module_lessons_language_id_fkey"
+  add_foreign_key "language_module_lessons", "uploads", name: "language_module_lessons_upload_id_fkey"
   add_foreign_key "language_module_version_infos", "language_module_versions", column: "version_id"
   add_foreign_key "language_module_version_infos", "language_versions"
   add_foreign_key "language_module_version_infos", "languages"
   add_foreign_key "language_module_versions", "language_modules", column: "module_id"
   add_foreign_key "language_module_versions", "language_versions"
   add_foreign_key "language_module_versions", "languages"
-  add_foreign_key "language_modules", "languages"
+  add_foreign_key "language_modules", "languages", name: "language_modules_language_id_fkey"
+  add_foreign_key "language_modules", "uploads", name: "language_modules_upload_id_fkey"
   add_foreign_key "language_versions", "languages"
-  add_foreign_key "user_accounts", "users"
+  add_foreign_key "languages", "uploads", name: "languages_upload_id_fkey"
+  add_foreign_key "user_accounts", "users", name: "user_accounts_user_id_fkey"
+  add_foreign_key "user_finished_lessons", "language_module_lessons", name: "user_finished_lessons_language_module_lesson_id_fkey"
+  add_foreign_key "user_finished_lessons", "users", name: "user_finished_lessons_user_id_fkey"
 end
