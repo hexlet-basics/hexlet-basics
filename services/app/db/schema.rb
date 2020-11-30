@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_30_121407) do
+ActiveRecord::Schema.define(version: 2020_11_30_122424) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -158,8 +158,8 @@ ActiveRecord::Schema.define(version: 2020_11_30_121407) do
     t.integer "order"
     t.bigint "language_id"
     t.bigint "upload_id"
-    t.datetime "inserted_at", precision: 0, null: false
     t.datetime "updated_at", precision: 0, null: false
+    t.datetime "created_at", precision: 6, null: false
     t.index ["language_id"], name: "language_modules_language_id_index"
     t.index ["upload_id"], name: "language_modules_upload_id_index"
   end
@@ -187,10 +187,10 @@ ActiveRecord::Schema.define(version: 2020_11_30_121407) do
     t.string "exercise_test_filename", limit: 255
     t.string "state", limit: 255
     t.bigint "upload_id"
-    t.datetime "inserted_at", precision: 0, null: false
     t.datetime "updated_at", precision: 0, null: false
     t.string "progress"
     t.bigint "current_version_id", null: false
+    t.datetime "created_at", precision: 6, null: false
     t.index ["current_version_id"], name: "index_languages_on_current_version_id"
     t.index ["slug"], name: "languages_slug_index", unique: true
     t.index ["upload_id"], name: "languages_upload_id_index"
@@ -226,7 +226,6 @@ ActiveRecord::Schema.define(version: 2020_11_30_121407) do
     t.string "email", limit: 255
     t.string "nickname", limit: 255
     t.integer "github_uid"
-    t.datetime "inserted_at", precision: 0, null: false
     t.datetime "updated_at", precision: 0, null: false
     t.string "facebook_uid", limit: 255
     t.string "password_digest", limit: 255
@@ -236,6 +235,7 @@ ActiveRecord::Schema.define(version: 2020_11_30_121407) do
     t.string "locale", limit: 255
     t.string "email_delivery_state", limit: 255
     t.boolean "admin"
+    t.datetime "created_at", precision: 6, null: false
     t.index ["email"], name: "users_email_index", unique: true
   end
 
