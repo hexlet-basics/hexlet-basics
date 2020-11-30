@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_07_031951) do
+ActiveRecord::Schema.define(version: 2020_11_30_115718) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -227,12 +227,13 @@ ActiveRecord::Schema.define(version: 2020_08_07_031951) do
     t.datetime "inserted_at", precision: 0, null: false
     t.datetime "updated_at", precision: 0, null: false
     t.string "facebook_uid", limit: 255
-    t.string "encrypted_password", limit: 255
+    t.string "password_digest", limit: 255
     t.string "confirmation_token", limit: 255
     t.string "reset_password_token", limit: 255
     t.string "state", limit: 255
     t.string "locale", limit: 255
     t.string "email_delivery_state", limit: 255
+    t.boolean "admin"
     t.index ["email"], name: "users_email_index", unique: true
   end
 
