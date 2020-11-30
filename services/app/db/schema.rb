@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_30_115718) do
+ActiveRecord::Schema.define(version: 2020_11_30_121407) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -190,6 +190,8 @@ ActiveRecord::Schema.define(version: 2020_11_30_115718) do
     t.datetime "inserted_at", precision: 0, null: false
     t.datetime "updated_at", precision: 0, null: false
     t.string "progress"
+    t.bigint "current_version_id", null: false
+    t.index ["current_version_id"], name: "index_languages_on_current_version_id"
     t.index ["slug"], name: "languages_slug_index", unique: true
     t.index ["upload_id"], name: "languages_upload_id_index"
   end
@@ -267,6 +269,7 @@ ActiveRecord::Schema.define(version: 2020_11_30_115718) do
   add_foreign_key "language_modules", "languages", name: "language_modules_language_id_fkey"
   add_foreign_key "language_modules", "uploads", name: "language_modules_upload_id_fkey"
   add_foreign_key "language_versions", "languages"
+  add_foreign_key "languages", "language_versions", column: "current_version_id"
   add_foreign_key "languages", "uploads", name: "languages_upload_id_fkey"
   add_foreign_key "user_accounts", "users", name: "user_accounts_user_id_fkey"
   add_foreign_key "user_finished_lessons", "language_module_lessons", name: "user_finished_lessons_language_module_lesson_id_fkey"
