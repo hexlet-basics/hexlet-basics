@@ -9,9 +9,9 @@ en:
         change_course: Change course
         toggle_navigation: Toggle navigation
       footer:
-        hexlet_title: © Hexlet, 2020
-        hexlet_address: Hexlet Ltd. Puolikkotie 8, 02230 Espoo, Finland.
-        hexlet_number: +7 (499) 609-12-31
+        hexlet_title: © Hexlet ltd, %{year}
+        hexlet_address: UMA Esplanadi, Pohjoisesplanadi 39, 00100 Helsinki, Finland
+        hexlet_number: VAT ID: FI26641607
         information: Information
         about: About
         tos: Terms of Service
