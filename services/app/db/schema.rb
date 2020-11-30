@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_30_122424) do
+ActiveRecord::Schema.define(version: 2020_11_30_124805) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -189,7 +189,7 @@ ActiveRecord::Schema.define(version: 2020_11_30_122424) do
     t.bigint "upload_id"
     t.datetime "updated_at", precision: 0, null: false
     t.string "progress"
-    t.bigint "current_version_id", null: false
+    t.bigint "current_version_id"
     t.datetime "created_at", precision: 6, null: false
     t.index ["current_version_id"], name: "index_languages_on_current_version_id"
     t.index ["slug"], name: "languages_slug_index", unique: true
