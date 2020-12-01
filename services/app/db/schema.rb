@@ -206,8 +206,8 @@ ActiveRecord::Schema.define(version: 2020_11_30_124805) do
     t.bigint "user_id", null: false
     t.string "provider", limit: 255, null: false
     t.string "uid", limit: 255, null: false
-    t.datetime "inserted_at", precision: 0, null: false
     t.datetime "updated_at", precision: 0, null: false
+    t.datetime "created_at", precision: 6, null: false
   end
 
   create_table "user_finished_lessons", force: :cascade do |t|
