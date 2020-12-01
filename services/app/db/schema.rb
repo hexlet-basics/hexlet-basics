@@ -16,15 +16,15 @@ ActiveRecord::Schema.define(version: 2020_11_30_124805) do
   enable_extension "plpgsql"
 
   create_table "language_lesson_members", force: :cascade do |t|
-    t.bigint "language_id", null: false
-    t.bigint "lesson_id", null: false
     t.bigint "user_id", null: false
+    t.bigint "lesson_id", null: false
+    t.datetime "inserted_at", precision: 0, null: false
+    t.datetime "updated_at", precision: 0, null: false
     t.string "state"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["language_id"], name: "index_language_lesson_members_on_language_id"
-    t.index ["lesson_id"], name: "index_language_lesson_members_on_lesson_id"
-    t.index ["user_id"], name: "index_language_lesson_members_on_user_id"
+    t.bigint "language_id", null: false
+    t.index ["lesson_id"], name: "user_finished_lessons_language_module_lesson_id_index"
+    t.index ["user_id", "lesson_id"], name: "user_finished_lessons_user_id_language_module_lesson_id_index", unique: true
+    t.index ["user_id"], name: "user_finished_lessons_user_id_index"
   end
 
   create_table "language_lesson_version_infos", force: :cascade do |t|
@@ -200,16 +200,6 @@ ActiveRecord::Schema.define(version: 2020_11_30_124805) do
     t.datetime "created_at", precision: 6, null: false
   end
 
-  create_table "user_finished_lessons", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "language_module_lesson_id", null: false
-    t.datetime "inserted_at", precision: 0, null: false
-    t.datetime "updated_at", precision: 0, null: false
-    t.index ["language_module_lesson_id"], name: "user_finished_lessons_language_module_lesson_id_index"
-    t.index ["user_id", "language_module_lesson_id"], name: "user_finished_lessons_user_id_language_module_lesson_id_index", unique: true
-    t.index ["user_id"], name: "user_finished_lessons_user_id_index"
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "first_name", limit: 255
     t.string "last_name", limit: 255
@@ -229,9 +219,8 @@ ActiveRecord::Schema.define(version: 2020_11_30_124805) do
     t.index ["email"], name: "users_email_index", unique: true
   end
 
-  add_foreign_key "language_lesson_members", "language_lessons", column: "lesson_id"
-  add_foreign_key "language_lesson_members", "languages"
-  add_foreign_key "language_lesson_members", "users"
+  add_foreign_key "language_lesson_members", "language_lessons", column: "lesson_id", name: "user_finished_lessons_language_module_lesson_id_fkey"
+  add_foreign_key "language_lesson_members", "users", name: "user_finished_lessons_user_id_fkey"
   add_foreign_key "language_lesson_version_infos", "language_lesson_versions", column: "version_id"
   add_foreign_key "language_lesson_version_infos", "language_versions"
   add_foreign_key "language_lesson_version_infos", "languages"
@@ -260,6 +249,4 @@ ActiveRecord::Schema.define(version: 2020_11_30_124805) do
   add_foreign_key "languages", "language_versions", column: "current_version_id"
   add_foreign_key "languages", "uploads", name: "languages_upload_id_fkey"
   add_foreign_key "user_accounts", "users", name: "user_accounts_user_id_fkey"
-  add_foreign_key "user_finished_lessons", "language_lessons", column: "language_module_lesson_id", name: "user_finished_lessons_language_module_lesson_id_fkey"
-  add_foreign_key "user_finished_lessons", "users", name: "user_finished_lessons_user_id_fkey"
 end
