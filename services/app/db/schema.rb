@@ -64,13 +64,22 @@ ActiveRecord::Schema.define(version: 2020_11_30_124805) do
   end
 
   create_table "language_lessons", force: :cascade do |t|
-    t.string "slug"
-    t.bigint "language_id", null: false
-    t.bigint "module_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["language_id"], name: "index_language_lessons_on_language_id"
-    t.index ["module_id"], name: "index_language_lessons_on_module_id"
+    t.string "slug", limit: 255
+    t.string "state", limit: 255
+    t.integer "order"
+    t.text "original_code"
+    t.text "prepared_code"
+    t.text "test_code"
+    t.string "path_to_code", limit: 255
+    t.bigint "module_id"
+    t.bigint "language_id"
+    t.bigint "upload_id"
+    t.datetime "inserted_at", precision: 0, null: false
+    t.datetime "updated_at", precision: 0, null: false
+    t.integer "natural_order"
+    t.index ["language_id"], name: "language_module_lessons_language_id_index"
+    t.index ["module_id"], name: "language_module_lessons_module_id_index"
+    t.index ["upload_id"], name: "language_module_lessons_upload_id_index"
   end
 
   create_table "language_members", force: :cascade do |t|
@@ -106,25 +115,6 @@ ActiveRecord::Schema.define(version: 2020_11_30_124805) do
     t.bigint "language_id"
     t.jsonb "definitions", null: false, array: true
     t.index ["lesson_id"], name: "language_module_lesson_descriptions_lesson_id_index"
-  end
-
-  create_table "language_module_lessons", force: :cascade do |t|
-    t.string "slug", limit: 255
-    t.string "state", limit: 255
-    t.integer "order"
-    t.text "original_code"
-    t.text "prepared_code"
-    t.text "test_code"
-    t.string "path_to_code", limit: 255
-    t.bigint "module_id"
-    t.bigint "language_id"
-    t.bigint "upload_id"
-    t.datetime "inserted_at", precision: 0, null: false
-    t.datetime "updated_at", precision: 0, null: false
-    t.integer "natural_order"
-    t.index ["language_id"], name: "language_module_lessons_language_id_index"
-    t.index ["module_id"], name: "language_module_lessons_module_id_index"
-    t.index ["upload_id"], name: "language_module_lessons_upload_id_index"
   end
 
   create_table "language_module_version_infos", force: :cascade do |t|
@@ -249,17 +239,15 @@ ActiveRecord::Schema.define(version: 2020_11_30_124805) do
   add_foreign_key "language_lesson_versions", "language_module_versions", column: "module_version_id"
   add_foreign_key "language_lesson_versions", "language_versions"
   add_foreign_key "language_lesson_versions", "languages"
-  add_foreign_key "language_lessons", "language_modules", column: "module_id"
-  add_foreign_key "language_lessons", "languages"
+  add_foreign_key "language_lessons", "language_modules", column: "module_id", name: "language_module_lessons_module_id_fkey"
+  add_foreign_key "language_lessons", "languages", name: "language_module_lessons_language_id_fkey"
+  add_foreign_key "language_lessons", "uploads", name: "language_module_lessons_upload_id_fkey"
   add_foreign_key "language_members", "languages"
   add_foreign_key "language_members", "users"
   add_foreign_key "language_module_descriptions", "language_modules", column: "module_id", name: "language_module_descriptions_module_id_fkey"
   add_foreign_key "language_module_descriptions", "languages", name: "language_module_descriptions_language_id_fkey"
-  add_foreign_key "language_module_lesson_descriptions", "language_module_lessons", column: "lesson_id", name: "language_module_lesson_descriptions_lesson_id_fkey"
+  add_foreign_key "language_module_lesson_descriptions", "language_lessons", column: "lesson_id", name: "language_module_lesson_descriptions_lesson_id_fkey"
   add_foreign_key "language_module_lesson_descriptions", "languages", name: "language_module_lesson_descriptions_language_id_fkey"
-  add_foreign_key "language_module_lessons", "language_modules", column: "module_id", name: "language_module_lessons_module_id_fkey"
-  add_foreign_key "language_module_lessons", "languages", name: "language_module_lessons_language_id_fkey"
-  add_foreign_key "language_module_lessons", "uploads", name: "language_module_lessons_upload_id_fkey"
   add_foreign_key "language_module_version_infos", "language_module_versions", column: "version_id"
   add_foreign_key "language_module_version_infos", "language_versions"
   add_foreign_key "language_module_version_infos", "languages"
@@ -272,6 +260,6 @@ ActiveRecord::Schema.define(version: 2020_11_30_124805) do
   add_foreign_key "languages", "language_versions", column: "current_version_id"
   add_foreign_key "languages", "uploads", name: "languages_upload_id_fkey"
   add_foreign_key "user_accounts", "users", name: "user_accounts_user_id_fkey"
-  add_foreign_key "user_finished_lessons", "language_module_lessons", name: "user_finished_lessons_language_module_lesson_id_fkey"
+  add_foreign_key "user_finished_lessons", "language_lessons", column: "language_module_lesson_id", name: "user_finished_lessons_language_module_lesson_id_fkey"
   add_foreign_key "user_finished_lessons", "users", name: "user_finished_lessons_user_id_fkey"
 end
