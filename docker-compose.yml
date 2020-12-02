@@ -27,6 +27,9 @@ services:
       - '/var/tmp/hexletbasics:/var/tmp/hexletbasics'
       - '/var/run/docker.sock:/var/run/docker.sock'
     env_file: '.env'
+    networks:
+      - default
+      - hexlet-basics
     depends_on:
       - redis
       - web
