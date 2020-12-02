@@ -18,10 +18,10 @@ ActiveRecord::Schema.define(version: 2020_11_30_124805) do
   create_table "language_lesson_members", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "lesson_id", null: false
-    t.datetime "inserted_at", precision: 0, null: false
     t.datetime "updated_at", precision: 0, null: false
     t.string "state"
     t.bigint "language_id", null: false
+    t.datetime "created_at", precision: 6, null: false
     t.index ["lesson_id"], name: "user_finished_lessons_language_module_lesson_id_index"
     t.index ["user_id", "lesson_id"], name: "user_finished_lessons_user_id_language_module_lesson_id_index", unique: true
     t.index ["user_id"], name: "user_finished_lessons_user_id_index"

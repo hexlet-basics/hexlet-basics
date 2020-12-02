@@ -11,6 +11,13 @@ class CreateLessonMembers < ActiveRecord::Migration[6.0]
     end
 
     change_column_null :language_lesson_members, :language_id, false
+
+    add_column :language_lesson_members, :created_at, :datetime, precision: 6, null: true
+
+    Language::Lesson::Member.update_all('created_at = inserted_at')
+    change_column_null :language_lesson_members, :created_at, false
+    remove_column :language_lesson_members, :inserted_at
+
     # create_table :language_lesson_members do |t|
     #   t.references :language, null: false, foreign_key: true
     #   t.references :language_lesson, null: false, foreign_key: true
