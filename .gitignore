@@ -39,5 +39,7 @@
 
 .terraform
 .env
+.autoenv
+.kube/*
 google.key.json
 
