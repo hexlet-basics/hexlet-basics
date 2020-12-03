@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 2020_11_30_124805) do
   create_table "language_lesson_members", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "lesson_id", null: false
-    t.datetime "updated_at", precision: 0, null: false
+    t.datetime "updated_at", null: false
     t.string "state"
     t.bigint "language_id", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -74,8 +74,8 @@ ActiveRecord::Schema.define(version: 2020_11_30_124805) do
     t.bigint "module_id"
     t.bigint "language_id"
     t.bigint "upload_id"
-    t.datetime "inserted_at", precision: 0, null: false
-    t.datetime "updated_at", precision: 0, null: false
+    t.datetime "inserted_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "natural_order"
     t.index ["language_id"], name: "language_module_lessons_language_id_index"
     t.index ["module_id"], name: "language_module_lessons_module_id_index"
@@ -97,8 +97,8 @@ ActiveRecord::Schema.define(version: 2020_11_30_124805) do
     t.text "description"
     t.string "locale", limit: 255
     t.bigint "module_id"
-    t.datetime "inserted_at", precision: 0, null: false
-    t.datetime "updated_at", precision: 0, null: false
+    t.datetime "inserted_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "language_id"
     t.index ["module_id"], name: "language_module_descriptions_module_id_index"
   end
@@ -110,8 +110,8 @@ ActiveRecord::Schema.define(version: 2020_11_30_124805) do
     t.string "locale", limit: 255
     t.string "tips", limit: 255, null: false, array: true
     t.bigint "lesson_id"
-    t.datetime "inserted_at", precision: 0, null: false
-    t.datetime "updated_at", precision: 0, null: false
+    t.datetime "inserted_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "language_id"
     t.jsonb "definitions", null: false, array: true
     t.index ["lesson_id"], name: "language_module_lesson_descriptions_lesson_id_index"
@@ -148,7 +148,7 @@ ActiveRecord::Schema.define(version: 2020_11_30_124805) do
     t.integer "order"
     t.bigint "language_id"
     t.bigint "upload_id"
-    t.datetime "updated_at", precision: 0, null: false
+    t.datetime "updated_at", null: false
     t.datetime "created_at", precision: 6, null: false
     t.index ["language_id"], name: "language_modules_language_id_index"
     t.index ["upload_id"], name: "language_modules_upload_id_index"
@@ -177,7 +177,7 @@ ActiveRecord::Schema.define(version: 2020_11_30_124805) do
     t.string "exercise_test_filename", limit: 255
     t.string "state", limit: 255
     t.bigint "upload_id"
-    t.datetime "updated_at", precision: 0, null: false
+    t.datetime "updated_at", null: false
     t.string "progress"
     t.bigint "current_version_id"
     t.datetime "created_at", precision: 6, null: false
@@ -188,8 +188,8 @@ ActiveRecord::Schema.define(version: 2020_11_30_124805) do
 
   create_table "uploads", force: :cascade do |t|
     t.string "language_name", limit: 255
-    t.datetime "inserted_at", precision: 0, null: false
-    t.datetime "updated_at", precision: 0, null: false
+    t.datetime "inserted_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "user_accounts", force: :cascade do |t|
@@ -206,7 +206,7 @@ ActiveRecord::Schema.define(version: 2020_11_30_124805) do
     t.string "email", limit: 255
     t.string "nickname", limit: 255
     t.integer "github_uid"
-    t.datetime "updated_at", precision: 0, null: false
+    t.datetime "updated_at", null: false
     t.string "facebook_uid", limit: 255
     t.string "password_digest", limit: 255
     t.string "confirmation_token", limit: 255
