@@ -1,0 +1,52 @@
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: exercises-html-job
+spec:
+
+  template:
+    spec:
+      restartPolicy: Never
+
+      volumes:
+        - name: pod-data
+          emptyDir: {}
+
+      initContainers:
+        - name: exercises-html
+          image: hexletbasics/exercises-html
+          command:
+            - cp
+            - "-r"
+            - "/exercises-html/."
+            - "/out"
+          volumeMounts:
+            - mountPath: /out
+              name: pod-data
+
+      containers:
+
+        - name: app
+          imagePullPolicy: Always
+          image: hexletbasics/services-web:v271
+          command:
+            - mix
+            - x.exercises.load
+            - html
+          volumeMounts:
+            - mountPath: /hexletbasics/exercises-html
+              name: pod-data
+          resources:
+            requests:
+              cpu: 10m
+          envFrom:
+            - secretRef:
+                name: hexlet-basics-secrets
+            - secretRef:
+                name: sparkpost-credentials
+            - secretRef:
+                name: github-credentials
+            - configMapRef:
+                name: hexlet-basics-config-map
