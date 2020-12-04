@@ -3,13 +3,13 @@
 version: '3'
 
 services:
-  # postgres:
-  #   image: postgres:12.2-alpine
-  #   environment:
-  #     POSTGRES_HOST_AUTH_METHOD: trust
-  #   volumes:
-  #     - /var/tmp:/var/lib/postgresql/data
-
+  postgres:
+    image: postgres:11-alpine
+    container_name: postgres
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - /var/tmp:/var/lib/postgresql/data
 
   redis:
     image: redis
@@ -51,7 +51,7 @@ services:
       - hexlet-basics
     depends_on:
       - redis
-      # - postgres
+      - postgres
 
   caddy:
     build:
