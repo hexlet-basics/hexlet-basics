@@ -8,6 +8,8 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+load File.expand_path('../app/lib/configus.rb', __dir__)
+
 module HexletBasics
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
