@@ -10,6 +10,9 @@ services:
       POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
       - /var/tmp:/var/lib/postgresql/data
+    networks:
+      - default
+      - hexlet-basics
 
   redis:
     image: redis
