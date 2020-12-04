@@ -38,7 +38,6 @@ js-routes:
 	bundle exec rails js_routes:generate
 
 test-db-prepare:
-	bin/rails db:environment:set
 	bin/rails db:drop db:create db:schema:load db:migrate
 	bin/rails db:fixtures:load
 
