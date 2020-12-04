@@ -22,7 +22,7 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: hexlet_test
+  database: hexlet_basics_test
 
 production:
   <<: *default
