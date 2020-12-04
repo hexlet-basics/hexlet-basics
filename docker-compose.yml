@@ -5,14 +5,10 @@ version: '3'
 services:
   postgres:
     image: postgres:11-alpine
-    container_name: postgres
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
-      - /var/tmp:/var/lib/postgresql/data
-    networks:
-      - default
-      - hexlet-basics
+      - /var/tmp/db:/var/lib/postgresql/data
 
   redis:
     image: redis
@@ -30,9 +26,6 @@ services:
       - '/var/tmp/hexletbasics:/var/tmp/hexletbasics'
       - '/var/run/docker.sock:/var/run/docker.sock'
     env_file: '.env'
-    networks:
-      - default
-      - hexlet-basics
     depends_on:
       - redis
       - web
@@ -49,9 +42,6 @@ services:
       - '/var/tmp/hexletbasics:/var/tmp/hexletbasics'
       - '/var/run/docker.sock:/var/run/docker.sock'
     env_file: '.env'
-    networks:
-      - default
-      - hexlet-basics
     depends_on:
       - redis
       - postgres
@@ -71,6 +61,3 @@ services:
 volumes:
   redis:
   pgdata:
-
-networks:
-  hexlet-basics:
