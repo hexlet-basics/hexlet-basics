@@ -35,4 +35,4 @@ RUN bundle install --jobs $(nproc)
 
 COPY . .
 
-RUN NODE_ENV=production RAILS_ENV=production bin/rails assets:precompile --trace
+RUN NODE_ENV=production RAILS_ENV=production SECRET_KEY_BASE=jopa bin/rails assets:precompile --trace
