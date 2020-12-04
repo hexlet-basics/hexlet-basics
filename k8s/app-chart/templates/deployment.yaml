@@ -68,7 +68,7 @@ spec:
           env:
             - name: CADDY_SERVER_ADDRESS
               value: 127.0.0.1
-        - name: phoenix
+        - name: web
           securityContext:
             privileged: true
           imagePullPolicy: "{{ .Values.web.image.imagePullPolicy }}"
