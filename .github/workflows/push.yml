@@ -8,7 +8,7 @@ on:
 jobs:
 
   build:
-    if: github.repository == 'hexlet-basics/hexlet_basics'
+    if: github.repository == 'hexlet-basics/hexlet-basics'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
