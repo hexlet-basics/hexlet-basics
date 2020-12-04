@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_03_111047) do
+ActiveRecord::Schema.define(version: 2020_12_04_114542) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,9 +74,9 @@ ActiveRecord::Schema.define(version: 2020_12_03_111047) do
     t.bigint "module_id"
     t.bigint "language_id"
     t.bigint "upload_id"
-    t.datetime "inserted_at", null: false
     t.datetime "updated_at", null: false
     t.integer "natural_order"
+    t.datetime "created_at", precision: 6, null: false
     t.index ["language_id"], name: "language_module_lessons_language_id_index"
     t.index ["module_id"], name: "language_module_lessons_module_id_index"
     t.index ["upload_id"], name: "language_module_lessons_upload_id_index"
