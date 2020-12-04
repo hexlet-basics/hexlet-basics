@@ -3,18 +3,25 @@ name: On Push
 on:
   push:
     branches:
-      - 'master'
+      - master
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
 
+  build:
+    if: github.repository == 'hexlet-basics/hexlet_basics'
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
-      - name: Run tests
-        env:
-          RAILS_ENV: test
+      - name: Run web tests
         run: |
-            echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-            make ci-test
+          make web-ci-test
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+      - name: Build Web
+        run: make web-docker-build-production
+      - name: Push Web
+        run: make web-docker-push
+      - name: Build Caddy
+        run: make caddy-docker-build-production
+      - name: Push Caddy
+        run: make caddy-docker-push

@@ -3,18 +3,16 @@ name: On Pull Request
 on:
   pull_request:
     branches:
-      - 'master'
+      - master
 
 jobs:
+
   build:
+
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
-
-      - name: Run tests
-        env:
-          RAILS_ENV: test
+      - name: Run web tests
         run: |
-            echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-            make ci-test
+          make web-ci-test
