@@ -11,7 +11,7 @@ caddy:
 
 web:
   image:
-    repository: hexletbasics/services-web
+    repository: hexletbasics/services-app
     imagePullPolicy: Always
 
 slack_notification: ['/app/deploy-notify.sh']
