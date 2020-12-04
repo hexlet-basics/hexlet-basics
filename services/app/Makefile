@@ -1,5 +1,5 @@
 test:
-	bin/rails test
+	RAILS_ENV=test bin/rails test
 
 fixtures-load:
 	bin/rails db:fixtures:load
