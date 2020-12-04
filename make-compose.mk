@@ -14,7 +14,7 @@ web-install:
 	docker-compose run web bundle install
 	docker-compose run web yarn install --check-files
 
-ci-test:
+web-ci-test:
 	cp -n .env.example .env || true
 	make compose-setup
 	make app-test
