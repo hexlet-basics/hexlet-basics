@@ -26,8 +26,8 @@ app-bash:
 
 app-test:
 	docker-compose run web make test-db-prepare
-	docker-compose run web /bin/bash -c "make lint && echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p
- &&  make test"
+	docker-compose run web make lint
+	docker-compose run web make test
 
 app-rails-console:
 	docker-compose run web bin/rails c

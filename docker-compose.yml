@@ -42,6 +42,8 @@ services:
       - '/var/tmp/hexletbasics:/var/tmp/hexletbasics'
       - '/var/run/docker.sock:/var/run/docker.sock'
     env_file: '.env'
+    environment:
+      DISABLE_SPRING: 'true'
     depends_on:
       - redis
       - postgres
