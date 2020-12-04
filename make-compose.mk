@@ -26,8 +26,7 @@ app-bash:
 
 app-test:
 	docker-compose run web make test-db-prepare
-	docker-compose run web make lint
-	docker-compose run web make test
+	docker-compose run web /bin/bash -c "make lint && make test"
 
 app-rails-console:
 	docker-compose run web bin/rails c
