@@ -34,3 +34,8 @@ jobs:
           image_tag: master
           context: services/caddy
           dockerfile: Dockerfile.production
+
+      - uses: rtCamp/action-slack-notify@v2.0.0
+        env:
+          SLACK_CHANNEL: '#basics-code-auto'
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
