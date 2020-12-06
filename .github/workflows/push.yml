@@ -12,20 +12,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: whoan/docker-build-with-cache-action@v5
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          image_name: hexletbasics/services-app
-          image_tag: master
-          context: services/app
-          dockerfile: Dockerfile.production
+      # - uses: whoan/docker-build-with-cache-action@v5
+      #   with:
+      #     username: ${{ secrets.DOCKER_USERNAME }}
+      #     password: ${{ secrets.DOCKER_PASSWORD }}
+      #     image_name: hexletbasics/services-app
+      #     image_tag: master
+      #     context: services/app
+      #     dockerfile: Dockerfile.production
 
-      - name: Run web tests
-        run: |
-          make web-ci-test
+      # - name: Run web tests
+      #   run: |
+      #     make web-ci-test
       - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
+        run: echo '${{ secrets.DOCKER_PASSWORD }}' | docker login --username '${{ secrets.DOCKER_USERNAME }}' --password-stdin
       - name: Build Web
         run: make web-docker-build-production
       - name: Push Web
