@@ -34,9 +34,9 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          image_name: hexletbasics/services-caddy
+          image_name: hexletbasics/services-nginx
           image_tag: ${{ env.RELEASE_VERSION }}
-          context: services/caddy
+          context: services/web-nginx
           dockerfile: Dockerfile.production
 
       - uses: rtCamp/action-slack-notify@v2.0.0
