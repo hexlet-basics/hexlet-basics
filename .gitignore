@@ -41,5 +41,6 @@
 .env
 .autoenv
 .kube/*
+tmp/ansible-vault-password
 google.key.json
 
