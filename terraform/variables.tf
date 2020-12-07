@@ -35,6 +35,7 @@ variable "db_username" {}
 variable "db_password" {}
 variable "db_hostname" {}
 variable "db_port" {}
+variable "database_url" {}
 variable "github_oauth_token" {}
 variable "cloudflare_api_key" {}
 variable "cloudflare_email" {}

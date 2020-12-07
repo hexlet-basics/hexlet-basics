@@ -4,8 +4,8 @@ resource "kubernetes_secret" "cloudflare_credentials" {
   }
 
   data = {
-    CF_API_KEY   = "${var.cloudflare_api_key}"
-    CF_API_EMAIL = "${var.cloudflare_email}"
+    CF_API_KEY   = var.cloudflare_api_key
+    CF_API_EMAIL = var.cloudflare_email
   }
 }
 
@@ -16,8 +16,8 @@ resource "kubernetes_secret" "cloudflare_credentials_kube_system" {
   }
 
   data = {
-    CF_API_KEY   = "${var.cloudflare_api_key}"
-    CF_API_EMAIL = "${var.cloudflare_email}"
+    CF_API_KEY   = var.cloudflare_api_key
+    CF_API_EMAIL = var.cloudflare_email
   }
 }
 
@@ -27,9 +27,9 @@ resource "kubernetes_secret" "sparkpost_credentials" {
   }
 
   data = {
-    SPARKPOST_SMTP_USERNAME = "${var.sparkpost_smtp_username}"
-    SPARKPOST_SMTP_PASSWORD = "${var.sparkpost_smtp_password}"
-    GUARDIAN_SECRET_KEY = "${var.guardian_secret_key}"
+    SPARKPOST_SMTP_USERNAME = var.sparkpost_smtp_username
+    SPARKPOST_SMTP_PASSWORD = var.sparkpost_smtp_password
+    GUARDIAN_SECRET_KEY = var.guardian_secret_key
   }
 }
 
@@ -39,8 +39,8 @@ resource "kubernetes_secret" "github_credentials" {
   }
 
   data = {
-    GITHUB_CLIENT_ID     = "${var.github_client_id}"
-    GITHUB_CLIENT_SECRET = "${var.github_client_secret}"
+    GITHUB_CLIENT_ID     = var.github_client_id
+    GITHUB_CLIENT_SECRET = var.github_client_secret
   }
 }
 
@@ -50,8 +50,8 @@ resource "kubernetes_secret" "facebook_credentials" {
   }
 
   data = {
-    FACEBOOK_CLIENT_ID     = "${var.facebook_client_id}"
-    FACEBOOK_CLIENT_SECRET = "${var.facebook_client_secret}"
+    FACEBOOK_CLIENT_ID     = var.facebook_client_id
+    FACEBOOK_CLIENT_SECRET = var.facebook_client_secret
   }
 }
 
@@ -61,8 +61,8 @@ resource "kubernetes_secret" "hexlet_basics_secrets" {
   }
 
   data = {
-    SECRET_KEY_BASE      = "${var.secret_key_base}"
-    ROLLBAR_ACCESS_TOKEN = "${var.rollbar_access_token}"
+    SECRET_KEY_BASE      = var.secret_key_base
+    ROLLBAR_ACCESS_TOKEN = var.rollbar_access_token
   }
 }
 
@@ -75,17 +75,18 @@ resource "kubernetes_config_map" "hexlet_basics_config_map" {
     MIX_ENV      = "prod"
     PORT         = "4000"
     NODE_ENV     = "production"
-    DB_HOSTNAME  = "${var.db_hostname}"
-    DB_PORT  = "${var.db_port}"
-    DB_PASSWORD  = "${var.db_password}"
-    DB_USERNAME  = "${var.db_username}"
+    DB_HOSTNAME  = var.db_hostname
+    DB_PORT  = var.db_port
+    DB_PASSWORD  = var.db_password
+    DB_USERNAME  = var.db_username
     DB_POOL_SIZE = "10"
     DB_NAME      = "hexlet_basics_prod"
+    DATABASE_URL  = var.database_url
     DB_SSL_MODE  = "TRUE"
     FORCE        = "11"
-    APP_SCHEME   = "${var.app_scheme}"
-    APP_HOST     = "${var.app_host}"
-    APP_RU_HOST  = "${var.app_ru_host}"
+    APP_SCHEME   = var.app_scheme
+    APP_HOST     = var.app_host
+    APP_RU_HOST  = var.app_ru_host
   }
 }
 
