@@ -41,6 +41,7 @@
 .env
 .autoenv
 .kube/*
+*.pgsql
 tmp/ansible-vault-password
 terraform/secrets.auto.tfvars
 google.key.json
