@@ -11,3 +11,6 @@ ansible-vaults-edit:
 	docker run -it --rm \
 		-v $(CURDIR):/runner/project \
 		ansible/ansible-runner ansible-vault edit --vault-password-file project/tmp/ansible-vault-password project/ansible/production/group_vars/all/vault.yml
+
+tag:
+	git tag $(TAG) && git push --tags
