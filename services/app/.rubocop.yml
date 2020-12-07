@@ -18,6 +18,9 @@ Style/ClassAndModuleChildren:
 Style/IfUnlessModifier:
   Enabled: false
 
+Style/HashLikeCase:
+  Enabled: false
+
 Metrics/LineLength:
   Enabled: false
 
