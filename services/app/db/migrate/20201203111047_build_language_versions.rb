@@ -4,7 +4,7 @@ class BuildLanguageVersions < ActiveRecord::Migration[6.0]
     languages.each do |language|
       @version = language.versions.build
       @version.save!
-      ExerciseLoaderJob.perform_later(@version.id)
+      ExerciseLoaderJob.perform_now(@version.id)
     end
   end
 end
