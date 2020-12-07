@@ -14,7 +14,7 @@ Rollbar.configure do |config|
     payload: {
       client: {
         # source_map_enabled: true,
-        # code_version: configus.hexlet_version, # FIXME: add tag
+        code_version: ENV["CODE_BASICS_VERSION"],
         guess_uncaught_frames: true
       },
       environment: Rails.env
