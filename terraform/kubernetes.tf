@@ -81,7 +81,8 @@ resource "kubernetes_config_map" "hexlet_basics_config_map" {
     DB_USERNAME  = var.db_username
     DB_POOL_SIZE = "10"
     DB_NAME      = "hexlet_basics_prod"
-    DATABASE_URL  = var.database_url
+    DATABASE_URL = var.database_url
+    REDIS_URL    = var.redis_url
     DB_SSL_MODE  = "TRUE"
     FORCE        = "11"
     APP_SCHEME   = var.app_scheme

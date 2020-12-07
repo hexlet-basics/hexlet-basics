@@ -30,6 +30,7 @@ variable "additional_zones" {
   default = ["europe-west3-a", "europe-west3-c"]
 }
 
+variable "redis_url" {}
 variable "db_name" {}
 variable "db_username" {}
 variable "db_password" {}
