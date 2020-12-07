@@ -36,7 +36,7 @@
     "react-i18next": "^11.8.0",
     "react-monaco-editor": "^0.40.0",
     "react-redux": "^7.2.2",
-    "webpack": "^5.10.0",
+    "webpack": "4.44.1",
     "webpack-cli": "^4.2.0"
   },
   "version": "0.1.0",
