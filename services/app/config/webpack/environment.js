@@ -9,7 +9,7 @@ environment.plugins.prepend('Provide',
     Popper: ['popper.js', 'default'],
   }));
 
-environment.plugins.prepend('Provide', new MonacoWebpackPlugin({
+environment.plugins.append('Monaco', new MonacoWebpackPlugin({
   languages: ['javascript', 'html', 'php', 'python', 'java', 'scheme', 'ruby', 'go'],
 }));
 
