@@ -33,3 +33,13 @@ resource "digitalocean_database_firewall" "k8s" {
     value = digitalocean_kubernetes_cluster.hexlet_basics_2.id
   }
 }
+
+resource "digitalocean_database_cluster" "hexlet-basics-redis" {
+  name       = "hexlet-basics-redis"
+  engine     = "redis"
+  version    = "6"
+  size       = "db-s-1vcpu-1gb"
+  region     = "fra1"
+  node_count = 1
+}
+
