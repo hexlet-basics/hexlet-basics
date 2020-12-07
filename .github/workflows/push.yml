@@ -13,6 +13,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Set Tag To The Env
+        run: echo "RELEASE_VERSION=$(echo ${GITHUB_REF:10})" >> $GITHUB_ENV
+
+      - name: test
+        run: echo ${{ env.RELEASE_VERSION }}
+
       - name: Run web tests
         run: |
           make web-ci-test
