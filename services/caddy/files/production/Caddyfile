@@ -1,5 +1,5 @@
 code-basics.com:8080, ru.code-basics.com:8080 {
-     tlsoff
+    tls off
     gzip
     proxy / {$CADDY_SERVER_ADDRESS}:3000 {
         transparent
