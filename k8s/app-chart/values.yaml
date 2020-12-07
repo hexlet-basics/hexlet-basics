@@ -1,8 +1,8 @@
 ---
 
-version: v283
+version: v288
 
-replicaCount: 3
+replicaCount: 1
 
 caddy:
   image:
