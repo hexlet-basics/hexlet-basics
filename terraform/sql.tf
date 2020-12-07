@@ -43,3 +43,13 @@ resource "digitalocean_database_cluster" "hexlet-basics-redis" {
   node_count = 1
 }
 
+# FIXME return with new k8s cluster
+# resource "digitalocean_database_firewall" "redis-k8s" {
+#   depends_on = [digitalocean_kubernetes_cluster.hexlet_basics_2]
+
+#   cluster_id = digitalocean_database_cluster.hexlet-basics-redis.id
+#   rule {
+#     type  = "k8s"
+#     value = digitalocean_kubernetes_cluster.hexlet_basics_2.id
+#   }
+# }
