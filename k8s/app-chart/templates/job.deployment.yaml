@@ -2,9 +2,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ .Release.Name }}-deployment"
+  name: "{{ .Release.Name }}-job-deployment"
   labels:
-    app.kubernetes.io/name: "{{ .Release.Name }}-web-pod"
+    app.kubernetes.io/name: "{{ .Release.Name }}-job-pod"
     app.kubernetes.io/instance: "{{ .Release.Name }}"
     app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
     app.kubernetes.io/managed-by: "{{ .Release.Service }}"
@@ -13,7 +13,7 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: "{{ .Release.Name }}-web-pod"
+      app.kubernetes.io/name: "{{ .Release.Name }}-job-pod"
       app.kubernetes.io/instance: "{{ .Release.Name }}"
   strategy:
     # type: RollingUpdate
@@ -23,23 +23,11 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: "{{ .Release.Name }}-web-pod"
+        app.kubernetes.io/name: "{{ .Release.Name }}-job-pod"
         app.kubernetes.io/instance: "{{ .Release.Name }}"
-        code-basics/web-pod: "{{ .Release.Name }}-{{ .Values.version }}-web-pod"
+        code-basics/web-pod: "{{ .Release.Name }}-{{ .Values.version }}-job-pod"
 
     spec:
-
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: "code-basics/web-pod"
-                    operator: In
-                    values:
-                      - "{{ .Release.Name }}-{{ .Values.version }}-web-pod"
-              topologyKey: "kubernetes.io/hostname"
-
       volumes:
         - name: users-code-path
           hostPath:
@@ -48,55 +36,22 @@ spec:
           hostPath:
             path: /var/run/docker.sock
       containers:
-        # - name: caddy
-        #   imagePullPolicy: "{{ .Values.caddy.image.imagePullPolicy }}"
-        #   image: "{{ .Values.caddy.image.repository }}:{{ .Values.version }}"
-        #   readinessProbe:
-        #     httpGet:
-        #       path: /
-        #       port: 8080
-        #     initialDelaySeconds: 5
-        #     periodSeconds: 5
-        #     successThreshold: 1
-        #   ports:
-        #     - containerPort: 8080
-        #   resources:
-        #     limits:
-        #       cpu: 500m
-        #     requests:
-        #       cpu: 10m
-        #   env:
-        #     - name: CADDY_SERVER_ADDRESS
-        #       value: 127.0.0.1
-        - name: web
+        - name: sidekiq
           securityContext:
             privileged: true
           imagePullPolicy: "{{ .Values.web.image.imagePullPolicy }}"
           image: "{{ .Values.web.image.repository }}:{{ .Values.version }}"
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 3000
-            initialDelaySeconds: 5
-            periodSeconds: 5
-            successThreshold: 1
           resources:
             limits:
               cpu: 500m
             requests:
               cpu: 20m
-          command:
-            - make
-            - start-production
-          ports:
-            - containerPort: 3000
+          command: ["bundle", "exec", "sidekiq"]
           volumeMounts:
             - mountPath: /tmp/hexlet-basics
               name: users-code-path
             - mountPath: /var/run/docker.sock
               name: docker-sock
-            # - mountPath: /opt
-            #   name: users-code
           envFrom:
             - secretRef:
                 name: hexlet-basics-secrets
