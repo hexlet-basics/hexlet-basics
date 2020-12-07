@@ -13,6 +13,8 @@ environment.plugins.append('Monaco', new MonacoWebpackPlugin({
   languages: ['javascript', 'html', 'php', 'python', 'java', 'scheme', 'ruby', 'go'],
 }));
 
+console.log("Plugins: ", environment.plugins)
+
 environment.config.merge({
   externals: {
     gon: 'gon',
