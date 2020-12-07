@@ -3,6 +3,9 @@
 class Language::Lesson < ApplicationRecord
   include Language::LessonRepository
 
+  # FIXME: add unique index
+  validates :slug, presence: true, uniqueness: { scope: :language }
+
   belongs_to :language
   belongs_to :module
 

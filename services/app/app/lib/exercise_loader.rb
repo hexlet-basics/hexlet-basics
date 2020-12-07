@@ -173,7 +173,12 @@ class ExerciseLoader
     lesson_version = data[:lesson_version]
     language_version = data[:language_version]
 
-    lesson = Language::Lesson.find_or_create_by!(language: language, slug: slug, module: language_module)
+    lesson = Language::Lesson.find_or_initialize_by(language: language, slug: slug)
+    lesson.module = language_module
+
+    raise "Lesson Validation error #{lesson.errors.inspect}" unless lesson.valid?
+
+    lesson.save!
 
     version = Language::Lesson::Version.new(
       test_code: lesson_version[:test_code],
