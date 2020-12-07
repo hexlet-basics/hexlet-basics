@@ -17,6 +17,10 @@ db-reset:
 start:
 	bundle exec rails s -p 3000 -b '0.0.0.0'
 
+start-production:
+	bin/rails db:migrate
+	bin/rails server -e production
+
 clean:
 	bin/rails db:drop
 
