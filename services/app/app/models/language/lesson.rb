@@ -3,6 +3,8 @@
 class Language::Lesson < ApplicationRecord
   include Language::LessonRepository
 
+  validates :slug, presence: true, uniqueness: { scope: :language }
+
   belongs_to :language
   belongs_to :module
 
