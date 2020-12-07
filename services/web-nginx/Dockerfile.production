@@ -1,5 +1,5 @@
 FROM nginx:1.19
 
-COPY files/production/nginx.hexlet-basics.conf /etc/nginx/conf.d/hexlet-basics.conf
+COPY files/production/nginx.hexlet.basics.conf /etc/nginx/conf.d/hexlet-basics.conf
 COPY files/production/gzip.conf /etc/nginx/gzip.conf
 RUN rm -rf /etc/nginx/conf.d/default.conf

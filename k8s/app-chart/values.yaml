@@ -9,6 +9,11 @@ caddy:
     repository: hexletbasics/services-caddy
     imagePullPolicy: Always
 
+nginx:
+  image:
+    repository: hexletbasics/services-nginx
+    imagePullPolicy: Always
+
 web:
   image:
     repository: hexletbasics/services-app
