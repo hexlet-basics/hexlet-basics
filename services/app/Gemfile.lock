@@ -248,6 +248,7 @@ GEM
     request_store (1.5.0)
       rack (>= 1.4)
     rexml (3.2.4)
+    rollbar (3.1.1)
     rubocop (0.83.0)
       parallel (~> 1.10)
       parser (>= 2.7.0.1)
@@ -365,6 +366,7 @@ DEPENDENCIES
   ransack
   redcarpet (~> 3.5)
   reform-rails
+  rollbar
   rubocop
   rubocop-performance
   rubocop-rails
