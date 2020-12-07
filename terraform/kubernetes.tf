@@ -73,8 +73,9 @@ resource "kubernetes_config_map" "hexlet_basics_config_map" {
 
   data = {
     MIX_ENV      = "prod"
-    PORT         = "4000"
+    PORT         = "3000"
     NODE_ENV     = "production"
+    RAILS_ENV    = var.rails_env
     DB_HOSTNAME  = var.db_hostname
     DB_PORT  = var.db_port
     DB_PASSWORD  = var.db_password
