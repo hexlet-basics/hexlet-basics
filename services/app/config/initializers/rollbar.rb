@@ -14,7 +14,7 @@ Rollbar.configure do |config|
     payload: {
       client: {
         # source_map_enabled: true,
-        code_version: ENV["CODE_BASICS_VERSION"],
+        code_version: ENV['CODE_BASICS_VERSION'],
         guess_uncaught_frames: true
       },
       environment: Rails.env
