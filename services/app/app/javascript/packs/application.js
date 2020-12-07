@@ -4,6 +4,8 @@
 // that code so it'll be compiled.
 import '@fortawesome/fontawesome-free/js/all.js';
 import hljs from 'highlight.js';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 
 require('jquery');
 require('@rails/ujs').start();
