@@ -8,3 +8,5 @@ hexlet_basics_node_env: production
 hexlet_basics_app_host: "code-basics.com"
 hexlet_basics_app_ru_host: "ru.code-basics.com"
 hexlet_basics_app_scheme: "https"
+
+hexlet_basics_database_url: 'postgres://{{ hexlet_basics_vault_db_username }}:{{ hexlet_basics_vault_db_password }}@{{ hexlet_basics_vault_db_host }}:{{ hexlet_basics_vault_db_port }}/{{ hexlet_basics_vault_db_name }}'
