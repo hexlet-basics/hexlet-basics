@@ -1,0 +1,10 @@
+---
+
+hexlet_basics_mix_env: prod
+hexlet_basics_run_user: ubuntu
+hexlet_basics_run_user_home: /home/ubuntu
+hexlet_basics_env_file: "{{ hexlet_basics_run_user_home }}/.env"
+hexlet_basics_node_env: production
+hexlet_basics_app_host: "code-basics.com"
+hexlet_basics_app_ru_host: "ru.code-basics.com"
+hexlet_basics_app_scheme: "https"

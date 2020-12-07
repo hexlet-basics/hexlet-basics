@@ -1,0 +1,21 @@
+# -*- mode: yaml; vault: true; -*-
+---
+
+hexlet_basics_vault_github_client_id: "4c8040727fface68d59a"
+hexlet_basics_vault_github_client_secret: "3bd561a6859ba09b4427d6960a89e4a9060cf605"
+hexlet_basics_vault_facebook_client_id: "421592815347082"
+hexlet_basics_vault_facebook_client_secret: "05e0272e68a45aac9e96129a3f89ebc1"
+hexlet_basics_vault_db_hostname: "db"
+hexlet_basics_vault_db_username: "postgres"
+hexlet_basics_vault_db_pool_size: 2
+hexlet_basics_vault_db_password: ""
+hexlet_basics_vault_db_name: "hexlet_basics_dev"
+hexlet_basics_vault_db_port: "5432"
+hexlet_basics_vault_db_ssl_mode: "false"
+hexlet_basics_vault_secret_key_base: "as df;lkajsdf ;alkjsdf ;alksdjf ;alksdjf ;alskdjf ;alskdjf a;lsdjkf ;alsdkjfa ;lskdjf a;lskdj f;alksdjf ;alksjdfal;sdjfqwerty"
+hexlet_basics:
+  vault_rollbar_access_token: "token"
+
+hexlet_basics_vault_sparkpost_smtp_username: "sparkpost"
+hexlet_basics_vault_sparkpost_smtp_password: "password"
+hexlet_basics_vault_guardian_secret_key: "asdfasdfasdfasdf"
