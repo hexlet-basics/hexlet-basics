@@ -1,5 +1,5 @@
 resource "digitalocean_kubernetes_cluster" "hexlet_basics_2" {
-  version = "1.16.6-do.2"
+  version = "1.18.8-do.0"
 
   name = "hexlet-basics-2"
   region = "fra1"
