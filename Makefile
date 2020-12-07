@@ -1,5 +1,6 @@
 include make-services-web.mk
 include make-compose.mk
+include k8s/Makefile
 
 ansible-terraform-vars-generate:
 	docker run --rm -e RUNNER_PLAYBOOK=ansible/terraform.yml \
