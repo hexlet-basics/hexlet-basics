@@ -3,6 +3,7 @@
 class Language::Lesson < ApplicationRecord
   include Language::LessonRepository
 
+  # TODO: add unique index
   validates :slug, presence: true, uniqueness: { scope: :language }
 
   belongs_to :language
