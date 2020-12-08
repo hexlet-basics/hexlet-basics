@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-
   sequence :github_auth_hash do
     {
       provider: 'github',
@@ -14,5 +13,4 @@ FactoryBot.define do
       }
     }
   end
-
 end
