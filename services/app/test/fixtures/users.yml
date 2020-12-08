@@ -1,15 +1,17 @@
 DEFAULTS: &DEFAULTS
   password_digest: <%= BCrypt::Password.create('password') %>
+  email: $LABEL@test.io
+
+full:
+  <<: *DEFAULTS
+  admin: true
 
 one:
   <<: *DEFAULTS
-  email: one@email.com
 
 two:
   <<: *DEFAULTS
-  email: two@email.com
 
 admin:
   <<: *DEFAULTS
-  email: admin@email.com
   admin: true

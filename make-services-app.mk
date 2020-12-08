@@ -20,3 +20,5 @@ app-db-prepare:
 	docker-compose run web bin/rails db:create || true
 	docker-compose run web bin/rails db:schema:load || true
 	docker-compose run web bin/rails db:migrate || true
+	docker-compose run web bin/rails db:migrate || true
+	docker-compose run web bin/rails db:fixtures:load || true
