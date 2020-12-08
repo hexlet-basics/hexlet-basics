@@ -17,11 +17,11 @@
 ### Setup
 
 ```sh
-$ make setup
-$ make test # run tests
-$ make start # run server
+$ make compose-setup
+$ make app-test # run tests
+$ make compose # run server
 
-$ make fixtures-load # sometimes, when fixtures were changed
+$ make app-db-prepare # sometimes, when fixtures were changed
 ```
 
 Add to _/etc/hosts_:
