@@ -2,7 +2,7 @@
 
 class Web::Admin::Languages::VersionsController < Web::Admin::Languages::ApplicationController
   def index
-    @versions = resource_language.versions.order(created_at: :desc)
+    @versions = resource_language.versions.order(created_at: :desc).page(params[:page])
   end
 
   def create

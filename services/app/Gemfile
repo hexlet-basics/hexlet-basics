@@ -15,6 +15,7 @@ gem 'omniauth-github'
 gem 'ransack'
 gem 'rollbar'
 gem 'valid_email2'
+gem 'kaminari'
 
 group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
