@@ -1,4 +1,5 @@
 include make-services-web.mk
+include make-services-app.mk
 include make-compose.mk
 include k8s/Makefile
 
