@@ -2,7 +2,8 @@
 
 class SocialNetworkService
   def self.authenticate_user(auth)
-    user = User.find_or_initialize_by(email: auth.info.email)
+    user = User::SocialSignupForm.find_or_initialize_by(email: auth.info.email)
+    user.valid?
     user.save!
 
     account = user.accounts.find_or_initialize_by(provider: auth.provider)

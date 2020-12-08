@@ -15,7 +15,7 @@ Rails.application.routes.draw do
   scope module: :web do
     root 'home#index'
     get 'auth/:provider', to: 'auth#request', as: :auth_request
-    get 'auth/:provider/callback', to: 'auth#callback', as: :auth_callback
+    get 'auth/:provider/callback', to: 'auth#callback', as: :callback_auth
 
     resource :session, only: %i[new create destroy]
     resources :users, only: %i[new create]

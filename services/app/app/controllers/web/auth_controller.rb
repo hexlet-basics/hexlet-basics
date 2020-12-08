@@ -15,6 +15,7 @@ class Web::AuthController < Web::ApplicationController
   private
 
   def auth
+    # raise request[env.inspect
     request.env['omniauth.auth']
   end
 end
