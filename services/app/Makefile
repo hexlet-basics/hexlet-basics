@@ -41,8 +41,11 @@ lint-eslint:
 js-routes:
 	bundle exec rails js_routes:generate
 
-test-db-prepare:
-	bin/rails db:drop db:create db:schema:load db:migrate
-	bin/rails db:fixtures:load
+db-prepare:
+	bin/rails db:drop || true
+	bin/rails db:create || true
+	bin/rails db:schema:load || true
+	bin/rails db:migrate || true
+	bin/rails db:fixtures:load || true
 
 .PHONY: test
