@@ -8,10 +8,15 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     @lesson = @language.lessons.first
     @user = users(:one)
     @lesson_member = @lesson.members.find_or_create_by!(language: @lesson.language, user: @user)
-    sign_in_as(:one)
+  end
+
+  test 'check if user logged in' do
+    post check_api_lesson_path(@lesson), params: { version_id: @lesson.versions.first.id, data: { attributes: { code: 'code' } } }
+    assert_response :redirect
   end
 
   test 'check lesson finished' do
+    sign_in_as(:one)
     post check_api_lesson_path(@lesson), params: { version_id: @lesson.versions.first.id, data: { attributes: { code: 'code' } } }
 
     assert_response :success
@@ -20,6 +25,7 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'check language finished' do
+    sign_in_as(:one)
     language_member = @language.members.create!(user: @user)
     post check_api_lesson_path(@lesson), params: { version_id: @lesson.versions.first.id, data: { attributes: { code: 'code' } } }
     assert_response :success

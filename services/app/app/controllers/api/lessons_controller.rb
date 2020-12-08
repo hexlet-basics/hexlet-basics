@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Api::LessonsController < Api::ApplicationController
+  before_action :authenticate_user!
+
   def check
     lesson = Language::Lesson.find(params[:id])
     language = lesson.language
