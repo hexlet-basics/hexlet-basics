@@ -48,6 +48,17 @@ services:
       - redis
       - postgres
 
+  webpacker:
+    build:
+      context: services/app
+      dockerfile: Dockerfile.development
+    command: make webpacker
+    ports:
+      - "0.0.0.0:3035:3035"
+    env_file:
+      - .env
+    volumes:
+        - ./services/app:/app
   caddy:
     build:
       context: services/caddy
