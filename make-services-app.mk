@@ -8,7 +8,7 @@ app-test: app-db-prepare
 app-rails-console:
 	docker-compose run web bin/rails c
 
-app-setup: app-install app-db-prepare
+app-setup: app-install app-db-prepare app-load-php app-load-javascript
 
 app-install:
 	docker-compose run web bundle install
@@ -16,3 +16,9 @@ app-install:
 
 app-db-prepare:
 	docker-compose run web make db-prepare
+
+app-load-php:
+	docker-compose run web bin/rails "exercises:load[php]"
+
+app-load-javascript:
+	docker-compose run web bin/rails "exercises:load[php]"
