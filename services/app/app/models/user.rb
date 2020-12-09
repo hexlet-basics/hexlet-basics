@@ -38,8 +38,4 @@ class User < ApplicationRecord
 
     authenticate(password)
   end
-
-  def generate_token
-    SecureRandom.hex(10)
-  end
 end
