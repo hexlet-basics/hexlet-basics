@@ -35,6 +35,9 @@ ru:
         sign_in_with_github: Войти через GitHub
         forgot_password: Забыли пароль?
     passwords:
+      edit:
+        new_password: Новый пароль
+    remind_passwords:
       new:
         forgot_password: Забыли пароль
         trying_to_login: Пытаетесь войти?

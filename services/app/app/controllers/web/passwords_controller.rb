@@ -1,24 +1,17 @@
+# frozen_string_literal: true
+
 class Web::PasswordsController < Web::ApplicationController
-  def new
-    @password_form = PasswordForm.new(User.new)
+  def edit
+    @user = User::PasswordForm.find_by!(reset_password_token: params[:reset_password_token])
   end
 
-  def create
-    @password_form = PasswordForm.new(User.new)
+  def update
+    @user = User::PasswordForm.find_by!(reset_password_token: params[:reset_password_token])
 
-    if @password_form.validate(password_params)
-      user = @password_form.user
-      UserService.reset_password(user)
-
+    if @user.update(params[:user_password_form])
       redirect_to root_path
     else
-      render :new
+      render :edit
     end
-  end
-
-  private
-
-  def password_params
-    params.require(:password).permit(:email)
   end
 end

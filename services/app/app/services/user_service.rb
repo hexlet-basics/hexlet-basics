@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserService
   def self.reset_password(user)
     token = user.generate_token

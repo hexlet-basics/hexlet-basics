@@ -1,4 +1,6 @@
-class PasswordForm < ApplicationForm
+# frozen_string_literal: true
+
+class RemindPasswordForm < ApplicationForm
   property :email
 
   validates :email, presence: true

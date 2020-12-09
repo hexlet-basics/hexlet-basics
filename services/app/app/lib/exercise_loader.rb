@@ -8,7 +8,7 @@ class ExerciseLoader
     lang_name = language_version.language.slug
     language = language_version.language
 
-    # language_version.build!
+    language_version.build!
 
     repo_dest = download_exercise_klass.download(lang_name)
     module_dest = "#{repo_dest}/modules"
@@ -37,6 +37,7 @@ class ExerciseLoader
     language_version.mark_as_failed!
    raise
   end
+
 
   private
 
