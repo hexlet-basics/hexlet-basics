@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SecureHelper
   class << self
     def generate_token
