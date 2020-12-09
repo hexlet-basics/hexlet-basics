@@ -15,6 +15,7 @@ gem 'kaminari'
 gem 'omniauth-github'
 gem 'ransack'
 gem 'rollbar'
+gem 'term-ansicolor'
 gem 'valid_email2'
 
 group :development, :test do

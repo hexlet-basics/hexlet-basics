@@ -317,10 +317,15 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     sqlite3 (1.4.2)
+    sync (0.5.0)
     temple (0.8.2)
+    term-ansicolor (1.7.1)
+      tins (~> 1.0)
     thor (1.0.1)
     thread_safe (0.3.6)
     tilt (2.0.10)
+    tins (1.26.0)
+      sync
     tzinfo (1.2.7)
       thread_safe (~> 0.1)
     uber (0.1.0)
@@ -391,6 +396,7 @@ DEPENDENCIES
   spring
   spring-watcher-listen (~> 2.0.0)
   sqlite3 (~> 1.4)
+  term-ansicolor
   tzinfo-data
   valid_email2
   web-console (>= 3.3.0)
