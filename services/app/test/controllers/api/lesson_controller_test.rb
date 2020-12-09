@@ -26,7 +26,7 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
 
   test 'check language finished' do
     sign_in_as(:one)
-    language_member = @language.members.create!(user: @user)
+    language_member = @language.members.find_or_create_by!(user: @user)
     post check_api_lesson_path(@lesson), params: { version_id: @lesson.versions.first.id, data: { attributes: { code: 'code' } } }
     assert_response :success
 
