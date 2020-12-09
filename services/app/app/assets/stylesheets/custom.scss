@@ -104,3 +104,8 @@ $azure: #45aaf2;
     margin-left: -15px;
   }
 }
+
+.CodeMirror {
+  min-height: 100%;
+  font-family: var(--font-family-monospace) !important;
+}
