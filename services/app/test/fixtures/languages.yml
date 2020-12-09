@@ -1,6 +1,7 @@
 DEFAULTS: &DEFAULTS
   slug: $LABEL
   current_version: $LABEL
+  progress: completed
 
 php:
   <<: *DEFAULTS
