@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+
 import TabsBox from './TabsBox.jsx';
 import ControlBox from './ControlBox.jsx';
 import HTMLPreview from './HTMLPreview';
@@ -22,14 +23,13 @@ const App = () => {
     return <HTMLPreview html={content} />;
   };
 
-  const vdom = (
-    <>
+  return (
+    <div className="card x-h-md-100">
       <TabsBox />
       {renderHtmlPreview()}
       <ControlBox />
-    </>
+    </div>
   );
-  return vdom;
 };
 
 export default App;

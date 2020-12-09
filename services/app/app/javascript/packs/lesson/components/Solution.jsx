@@ -79,7 +79,7 @@ const Solution = () => {
   };
 
   return (
-    <div className="p-3">
+    <div>
       <Countdown date={solution.startTime + solution.waitingTime} renderer={renderContent()} />
     </div>
   );
