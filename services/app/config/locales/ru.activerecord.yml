@@ -1,2 +1,8 @@
 ru:
   activerecord:
+    errors:
+      models:
+        user/sign_up_form:
+          attributes:
+            password:
+              too_short: Пароль должен быть не меньше 6 символов.
