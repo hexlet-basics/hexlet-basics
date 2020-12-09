@@ -8,7 +8,7 @@ module FlashConcern
 
     msg = translate(key, options[:scope], controller, params[:action], values, errors)
 
-    # NOTE цветное логирование
+    # NOTE color logging
     Rails.logger.debug(Term::ANSIColor.green("flash: #{msg}"))
     type = options[:type] || key
     if options[:now]
