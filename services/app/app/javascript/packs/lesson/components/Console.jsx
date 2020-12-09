@@ -2,8 +2,11 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import cn from 'classnames';
+import AnsiUp from 'ansi_up';
 
 import { checkInfoStates } from '../utils/stateMachines.js';
+
+const ansi = new AnsiUp();
 
 const Console = () => {
   const checkInfo = useSelector((state) => state.checkInfoSlice);
@@ -21,7 +24,7 @@ const Console = () => {
   return (
     <div className="d-flex flex-column h-100">
       <pre>
-        <code className="nohighlight" dangerouslySetInnerHTML={{ __html: checkInfo.output }} />
+        <code className="nohighlight" dangerouslySetInnerHTML={{ __html: ansi.ansi_to_html(checkInfo.output) }} />
       </pre>
       <div className={alertClassName}>{message}</div>
     </div>
