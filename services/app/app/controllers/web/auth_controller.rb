@@ -6,6 +6,7 @@ class Web::AuthController < Web::ApplicationController
 
     if user.persisted?
       sign_in user
+      f(:success)
       redirect_to root_path
     else
       redirect_to new_user_path

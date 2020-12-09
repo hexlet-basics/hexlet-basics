@@ -11,6 +11,7 @@ class Web::UsersController < Web::ApplicationController
     if @user.save
       sign_in @user
 
+      f(:success)
       redirect_to root_path
     else
       render :new
