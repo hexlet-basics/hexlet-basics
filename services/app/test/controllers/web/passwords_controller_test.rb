@@ -4,7 +4,7 @@ require 'test_helper'
 
 class Web::PasswordsControllerTest < ActionDispatch::IntegrationTest
   test 'edit' do
-    user = users(:one)
+    user = users(:full)
 
     get edit_password_path(reset_password_token: user.reset_password_token)
     assert_response :success
