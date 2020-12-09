@@ -8,7 +8,7 @@ class Web::Admin::Languages::VersionsControllerTest < ActionDispatch::Integratio
   end
 
   test 'index' do
-    language = languages(:one)
+    language = languages(:php)
 
     get admin_language_versions_path(language)
 
@@ -16,7 +16,7 @@ class Web::Admin::Languages::VersionsControllerTest < ActionDispatch::Integratio
   end
 
   test 'create' do
-    language = languages(:one)
+    language = languages(:php)
 
     post admin_language_versions_path(language)
     assert_response :redirect

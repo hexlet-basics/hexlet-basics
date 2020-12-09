@@ -8,55 +8,55 @@ one:
   <<: *DEFAULTS
   order: 10
   natural_order: 10
-  language_version: two
+  language_version: javascript
   module_version: one
   lesson: one
-  language: two
+  language: javascript
 
 two:
   <<: *DEFAULTS
   order: 20
   natural_order: 20
-  language_version: two
+  language_version: javascript
   module_version: two
   lesson: two
-  language: two
+  language: javascript
 
 three:
   <<: *DEFAULTS
   order: 25
   natural_order: 25
-  language_version: two
+  language_version: javascript
   module_version: two
   lesson: three
-  language: two
+  language: javascript
 
 tags_one:
   <<: *DEFAULTS
   order: 30
   natural_order: 30
-  language_version: one
+  language_version: php
   module_version: one
   lesson: tags_one
-  language: one
+  language: php
 
 comments_one:
   <<: *DEFAULTS
   order: 40
   natural_order: 40
-  language_version: one
+  language_version: php
   module_version: one
   lesson: comments_one
-  language: one
+  language: php
 
 naming_variables_one:
   <<: *DEFAULTS
   order: 50
   natural_order: 50
-  language_version: one
+  language_version: php
   module_version: variables_one
   lesson: naming_variables_one
-  language: one
+  language: php
 
 javascript:
   <<: *DEFAULTS

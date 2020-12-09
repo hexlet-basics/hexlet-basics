@@ -27,7 +27,7 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   def create
     @language = Language.new(language_params)
 
-    if @language.save
+    if @language.save!
       redirect_to admin_languages_path
     else
       render :new

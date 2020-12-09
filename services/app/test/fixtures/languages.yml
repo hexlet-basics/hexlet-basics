@@ -1,11 +1,15 @@
-one:
-  slug: elixir
-  current_version: one
+DEFAULTS: &DEFAULTS
+  slug: $LABEL
+  current_version: $LABEL
 
-two:
-  slug: java
-  current_version: two
+php:
+  <<: *DEFAULTS
+
+elixir:
+  <<: *DEFAULTS
 
 javascript:
-  slug: javascript
-  current_version: javascript
+  <<: *DEFAULTS
+
+css:
+  <<: *DEFAULTS

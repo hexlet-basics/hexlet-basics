@@ -4,7 +4,7 @@ require 'test_helper'
 
 class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @language = languages(:javascript)
+    @language = languages(:php)
     @lesson = @language.lessons.first
     @user = users(:one)
     @lesson_member = @lesson.members.find_or_create_by!(language: @lesson.language, user: @user)

@@ -1,17 +1,17 @@
 one:
   order: 10
-  language_version: one
+  language_version: php
   module: one
-  language: one
+  language: php
 
 two:
   order: 20
   language_version: two
   module: two
-  language: one
+  language: php
 
 variables_one:
   order: 30
   language_version: two
   module: variables_one
-  language: one
+  language: php

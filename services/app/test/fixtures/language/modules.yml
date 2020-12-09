@@ -3,15 +3,15 @@ DEFAULTS: &DEFAULTS
 
 one:
   <<: *DEFAULTS
-  language: one
+  language: php
 
 two:
   <<: *DEFAULTS
-  language: two
+  language: javascript
 
 variables_one:
   slug: variables
-  language: two
+  language: javascript
 
 javascript:
   slug: alone_module

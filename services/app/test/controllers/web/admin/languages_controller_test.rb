@@ -18,7 +18,7 @@ class Web::Admin::LanguagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'create' do
-    slug = 'php'
+    slug = 'racket'
 
     post admin_languages_path, params: { language: { slug: slug } }
     assert_response :redirect
@@ -27,14 +27,14 @@ class Web::Admin::LanguagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'edit' do
-    language = languages(:one)
+    language = languages(:php)
 
     get edit_admin_language_path(language)
     assert_response :success
   end
 
   test 'update' do
-    language = languages(:one)
+    language = languages(:php)
 
     patch admin_language_path(language), params: { language: { progress: 'in_development' } }
     assert_response :redirect

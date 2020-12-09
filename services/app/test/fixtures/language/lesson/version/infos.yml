@@ -7,39 +7,39 @@ DEFAULTS: &DEFAULTS
 one:
   <<: *DEFAULTS
   name: <%= Faker::Lorem.word %>
-  language: one
+  language: php
   locale: ru
-  language_version: one
+  language_version: php
   version: one
 
 two:
   <<: *DEFAULTS
   name: <%= Faker::Lorem.word %>
-  language: two
+  language: javascript
   locale: ru
-  language_version: two
+  language_version: javascript
   version: two
 
 tags_one:
   <<: *DEFAULTS
   name: Теги
-  language: one
+  language: php
   locale: ru
-  language_version: one
+  language_version: php
   version: one
 
 comments_one:
   <<: *DEFAULTS
   name: Коментарии
-  language: one
+  language: php
   locale: ru
-  language_version: one
+  language_version: php
   version: one
 
 naming_variables_one:
   <<: *DEFAULTS
   name: Именования переменной
-  language: one
+  language: php
   locale: ru
-  language_version: one
+  language_version: php
   version: one

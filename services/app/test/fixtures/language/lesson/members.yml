@@ -1,4 +1,16 @@
 one:
   user: one
-  language: one
+  language: php
   lesson: one
+
+tags_one:
+  user: one
+  language: php
+  lesson: tags_one
+  state: finished
+
+naming_variables_one:
+  user: one
+  language: php
+  lesson: naming_variables_one
+  state: finished

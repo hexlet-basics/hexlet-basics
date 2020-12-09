@@ -1,31 +1,31 @@
 one:
   slug: hello_world
-  language: one
+  language: php
   module: one
 
 two:
   slug: hello_world
-  language: two
+  language: javascript
   module: two
 
 three:
   slug: functions
-  language: two
+  language: javascript
   module: two
 
 tags_one:
   slug: tags
-  language: one
+  language: php
   module: one
 
 comments_one:
   slug: comments
-  language: one
+  language: php
   module: one
 
 naming_variables_one:
   slug: quotes
-  language: one
+  language: php
   module: variables_one
 
 javascript:

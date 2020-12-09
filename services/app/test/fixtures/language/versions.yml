@@ -3,18 +3,17 @@ DEFAULTS: &DEFAULTS
   extension: extension_$LABEL
   exercise_filename: filename_$LABEL
   exercise_test_filename: test_filename_$LABEL
+  language: $LABEL
+  name: $LABEL
 
-one:
+php:
   <<: *DEFAULTS
-  name: <%= Faker::ProgrammingLanguage.name %>
-  language: one
 
-two:
+elixir:
   <<: *DEFAULTS
-  name: <%= Faker::ProgrammingLanguage.name %>
-  language: two
 
 javascript:
   <<: *DEFAULTS
-  name: javascript
-  language: javascript
+
+css:
+  <<: *DEFAULTS
