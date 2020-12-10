@@ -2,6 +2,9 @@ CURRENT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 # kubectl exec app-deployment-5b566d5fb5-q9kdr -c phoenix -- docker pull hexletbasics/exercises-php
 
+production-console:
+	    kubectl exec -it $(shell kubectl get pod -lapp.kubernetes.io/name=app-console-pod -o=custom-columns=NAME:metadata.name | sed -n 2p) -- bin/rails c -s
+
 init:
 	brew install kubernetes-helm
 
