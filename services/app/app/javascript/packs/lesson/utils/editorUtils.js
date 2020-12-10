@@ -16,7 +16,6 @@ const langToTabSizeMapping = {
 
 const defaultTabSize = 4;
 
-
 export const getLanguage = (language) => _.get(languageMapping, language, language);
 
 export const getTabSize = (language) => _.get(langToTabSizeMapping, language, defaultTabSize);

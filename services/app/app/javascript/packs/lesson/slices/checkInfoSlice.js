@@ -52,5 +52,4 @@ export const actions = {
   runCheck,
 };
 
-
 export default slice.reducer;
