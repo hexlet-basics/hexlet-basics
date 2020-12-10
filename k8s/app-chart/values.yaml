@@ -2,7 +2,7 @@
 
 version: v323
 
-replicaCount: 1
+replicaCount: 3
 
 caddy:
   image:
