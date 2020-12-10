@@ -8,7 +8,7 @@ app-test: app-db-prepare
 app-rails-console:
 	docker-compose run web bin/rails c
 
-app-setup: app-install app-db-prepare app-load-php app-load-javascript app-load-css app-load-elixir
+app-setup: app-install app-db-prepare app-load-php app-load-javascript app-load-css app-load-elixir app-load-python
 
 app-install:
 	docker-compose run web bundle install
@@ -28,3 +28,6 @@ app-load-css:
 
 app-load-elixir:
 	docker-compose run web bin/rails "exercises:load[elixir]"
+
+app-load-python:
+	docker-compose run web bin/rails "exercises:load[python]"
