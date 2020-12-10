@@ -1,4 +1,5 @@
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -8,18 +9,19 @@ metadata:
     app.kubernetes.io/instance: "{{ .Release.Name }}"
     app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
     app.kubernetes.io/managed-by: "{{ .Release.Service }}"
-    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+
 spec:
   replicas: {{ .Values.replicaCount }}
+
   selector:
     matchLabels:
       app.kubernetes.io/name: "{{ .Release.Name }}-web-pod"
       app.kubernetes.io/instance: "{{ .Release.Name }}"
   strategy:
-    # type: RollingUpdate
+    type: RollingUpdate
     rollingUpdate:
-      maxUnavailable: 0
       maxSurge: 1
+      maxUnavailable: 1
   template:
     metadata:
       labels:
@@ -111,7 +113,7 @@ spec:
           env:
             - name: CODE_BASICS_VERSION
               value: {{ .Values.version }}
-          # lifecycle:
-          #   postStart:
-          #     exec:
-          #       command: {{ .Values.slack_notification }}
+          lifecycle:
+            postStart:
+              exec:
+                command: {{ .Values.slack_notification }}
