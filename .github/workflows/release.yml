@@ -16,10 +16,9 @@ jobs:
       - name: Set Tag To The Env
         run: echo "RELEASE_VERSION=$(echo ${GITHUB_REF:10})" >> $GITHUB_ENV
 
-      # FIXME return after first deploy
-      # - name: Run web tests
-      #   run: |
-      #     make web-ci-test
+      - name: Run web tests
+        run: |
+          make web-ci-test
 
       - uses: whoan/docker-build-with-cache-action@v5
         with:
