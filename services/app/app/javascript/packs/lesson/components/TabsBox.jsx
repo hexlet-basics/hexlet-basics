@@ -35,14 +35,14 @@ const TabsBox = () => {
           <Nav.Link eventKey={solution} title={t(solution)}>{t(solution)}</Nav.Link>
         </Nav.Item>
       </Nav>
-      <Tab.Content bsPrefix="d-flex h-100 tab-content p-3 overflow-auto">
-        <Tab.Pane eventKey={editor} bsPrefix="tab-pane h-100 w-100 overflow-hidden">
+      <Tab.Content bsPrefix="d-flex h-100 tab-content overflow-auto">
+        <Tab.Pane eventKey={editor} bsPrefix="tab-pane h-100 pr-3 border-bottom w-100 overflow-hidden">
           <Editor />
         </Tab.Pane>
-        <Tab.Pane eventKey={console} bsPrefix="tab-pane h-100 w-100">
+        <Tab.Pane eventKey={console} bsPrefix="tab-pane h-100 p-3 w-100">
           <Console />
         </Tab.Pane>
-        <Tab.Pane eventKey={solution} bsPrefix="tab-pane h-100 w-100">
+        <Tab.Pane eventKey={solution} bsPrefix="tab-pane h-100 p-3 w-100">
           <Solution />
         </Tab.Pane>
       </Tab.Content>

@@ -37,7 +37,6 @@ import 'codemirror/addon/search/searchcursor.js';
 import 'codemirror/addon/search/search.js';
 import 'codemirror/addon/search/jump-to-line.js';
 import 'codemirror/addon/dialog/dialog.js';
-import 'codemirror/addon/selection/active-line.js';
 
 const commonOptions = {
   autoCloseBrackets: true,
@@ -47,7 +46,7 @@ const commonOptions = {
   matchBrackets: true,
   matchTags: true,
   scrollbarStyle: 'overlay',
-  styleActiveLine: true,
+  lineNumbers: true,
 };
 
 const Editor = () => {
@@ -55,8 +54,8 @@ const Editor = () => {
   const { content } = useSelector((state) => state.editorSlice);
   const dispatch = useDispatch();
 
-  const onContentChange = (_editor, _data, content) => {
-    dispatch(actions.changeContent({ content }));
+  const onContentChange = (_editor, _data, newContent) => {
+    dispatch(actions.changeContent({ content: newContent }));
   };
 
   const onMount = (editor) => {
