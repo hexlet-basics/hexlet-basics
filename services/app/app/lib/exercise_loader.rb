@@ -35,7 +35,7 @@ class ExerciseLoader
   rescue StandardError => e
     language_version.update(result: "Error class: #{e.class} message: #{e.message}")
     language_version.mark_as_failed!
-   raise
+    raise
   end
 
 

@@ -20,8 +20,8 @@ class Web::PasswordsController < Web::ApplicationController
   private
 
   def assert_reset_token_passed
-    if params[:reset_password_token].blank?
-      redirect_to root_path
-    end
+    return if params[:reset_password_token].present?
+
+    redirect_to root_path
   end
 end
