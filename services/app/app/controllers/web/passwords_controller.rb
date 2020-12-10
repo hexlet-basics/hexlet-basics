@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Web::PasswordsController < Web::ApplicationController
+  before_action :assert_reset_token_passed
+
   def edit
     @user = User::PasswordForm.find_by!(reset_password_token: params[:reset_password_token])
   end
@@ -12,6 +14,14 @@ class Web::PasswordsController < Web::ApplicationController
       redirect_to root_path
     else
       render :edit
+    end
+  end
+
+  private
+
+  def assert_reset_token_passed
+    if params[:reset_password_token].blank?
+      redirect_to root_path
     end
   end
 end

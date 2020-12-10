@@ -150,10 +150,6 @@ GEM
       activerecord
       kaminari-core (= 1.2.1)
     kaminari-core (1.2.1)
-    launchy (2.5.0)
-      addressable (~> 2.7)
-    letter_opener (1.7.0)
-      launchy (~> 2.2)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -379,7 +375,6 @@ DEPENDENCIES
   jbuilder (~> 2.7)
   js-routes
   kaminari
-  letter_opener
   listen (>= 3.0.5, < 3.2)
   minitest-power_assert
   omniauth-github
