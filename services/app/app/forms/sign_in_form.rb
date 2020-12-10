@@ -17,7 +17,7 @@ class SignInForm < ApplicationForm
   end
 
   def user
-    @user ||= User.find_by(email: email)
+    @user ||= User.active.find_by(email: email)
   end
 
   def email=(value)
