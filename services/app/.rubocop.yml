@@ -33,6 +33,9 @@ Metrics/ParameterLists:
 Style/Documentation:
   Enabled: false
 
+Style/CommentAnnotation:
+  Enabled: false
+
 Metrics/BlockLength:
   Enabled: false
 
