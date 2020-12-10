@@ -16,14 +16,16 @@ class User < ApplicationRecord
 
   aasm :state do
     state :active, initial: true
+    state :initail
+    state :waiting_confirmation
     state :removed
 
     event :activate do
-      transitions from: %i[created, archived], to: :active
+      transitions from: %i[created archived], to: :active
     end
 
     event :mark_as_archived do
-      transitions from: %i[created, arcive], to: :archived
+      transitions from: %i[created archived], to: :archived
     end
   end
 
