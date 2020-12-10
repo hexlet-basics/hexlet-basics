@@ -21,11 +21,11 @@ class User < ApplicationRecord
     state :removed
 
     event :activate do
-      transitions from: %i[created archived], to: :active
+      transitions to: :active
     end
 
-    event :mark_as_archived do
-      transitions from: %i[created archived], to: :archived
+    event :mark_as_removed do
+      transitions to: :removed
     end
   end
 
