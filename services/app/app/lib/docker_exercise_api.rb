@@ -14,7 +14,7 @@ class DockerExerciseApi
   end
 
   def self.tag_image_version(lang_name, tag)
-    return if Rails.env.production?
+    return unless Rails.env.production?
 
     tag_command = "docker tag hexletbasics/exercises-#{lang_name}:latest hexletbasics/exercises-#{lang_name}:#{tag}"
     BashRunner.start(tag_command)
