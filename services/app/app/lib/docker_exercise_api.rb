@@ -23,6 +23,6 @@ class DockerExerciseApi
     ok = BashRunner.start(push_command)
 
     # FIXME better error handling
-    raise "Docker tag error: #{ok}" unless ok
+    # raise "Docker tag error: #{ok}" unless ok
   end
 end
