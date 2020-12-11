@@ -11,8 +11,10 @@ compose-restart:
 	docker-compose restart
 
 web-ci-test:
-	cp -n .env.example .env || true
 	make compose-setup
 	make app-test
 
-compose-setup: compose-down compose-build app-setup
+compose-setup: env-prepare compose-down compose-build app-setup
+
+env-prepare:
+	cp -n .env.example .env || true
