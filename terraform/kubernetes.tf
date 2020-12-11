@@ -92,6 +92,19 @@ resource "kubernetes_config_map" "hexlet_basics_config_map" {
   }
 }
 
+resource "kubernetes_secret" "docker-registry-auth" {
+  metadata {
+    name = "docker-config"
+  }
+
+  data = {
+    ".dockerconfigjson" = file("${path.module}/docker-config.json")
+  }
+
+  type = "kubernetes.io/dockerconfigjson"
+
+}
+
 resource "kubernetes_cluster_role_binding" "cluster-admin" {
   metadata {
     name = "users-cluster-admin"

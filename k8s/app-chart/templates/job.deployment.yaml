@@ -28,6 +28,9 @@ spec:
         code-basics/web-pod: "{{ .Release.Name }}-{{ .Values.version }}-job-pod"
 
     spec:
+      imagePullSecrets:
+        - name: docker-config
+
       volumes:
         - name: users-code-path
           hostPath:

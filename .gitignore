@@ -44,5 +44,6 @@
 *.pgsql
 tmp/ansible-vault-password
 terraform/secrets.auto.tfvars
+terraform/docker-config.json
 google.key.json
 

@@ -25,6 +25,9 @@ spec:
         code-basics/web-pod: "{{ .Release.Name }}-{{ .Values.version }}-console-pod"
 
     spec:
+      imagePullSecrets:
+        - name: docker-config
+
       containers:
         - name: console
           securityContext:

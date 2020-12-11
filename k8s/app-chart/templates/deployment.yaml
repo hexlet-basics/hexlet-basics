@@ -31,6 +31,9 @@ spec:
 
     spec:
 
+      imagePullSecrets:
+        - name: docker-config
+
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
