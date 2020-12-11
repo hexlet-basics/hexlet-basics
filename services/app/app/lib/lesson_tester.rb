@@ -13,7 +13,7 @@ class LessonTester
     path_to_exersice_file = File.join(lesson_version.path_to_code, language_version.exercise_filename)
 
     volume = "-v #{full_exercise_file_path}:#{path_to_exersice_file}"
-    command = "docker run --rm --net none #{volume} #{language_version.docker_image} timeout 4 make --silent -C #{lesson_version.path_to_code} test"
+    command = "docker run --rm --net none #{volume} #{language_version.docker_image}:#{language_version.image_tag} timeout 4 make --silent -C #{lesson_version.path_to_code} test"
 
     output, process_status = open3_klass.capture2(command)
     exitstatus = process_status.exitstatus
