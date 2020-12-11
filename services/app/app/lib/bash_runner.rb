@@ -8,7 +8,8 @@ class BashRunner
       PTY.spawn(command, STDERR => STDOUT) do |r, _w, pid|
         begin
           r.each { |line| yield line if block_given? }
-        rescue Errno::EIO
+        rescue Errno::EIO => e
+          Raisl.logger.warn e
         end
         Process.wait(pid)
       end
@@ -19,7 +20,7 @@ class BashRunner
     end
 
     def success?(child_status)
-      child_status.exitstatus == 0
+      child_status.exitstatus.zero?
     end
   end
 end

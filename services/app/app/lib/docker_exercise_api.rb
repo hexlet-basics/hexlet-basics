@@ -17,12 +17,12 @@ class DockerExerciseApi
     return if Rails.env.production?
 
     tag_command = "docker tag hexletbasics/exercises-#{lang_name}:latest hexletbasics/exercises-#{lang_name}:#{tag}"
-    ok = BashRunner.start(tag_command)
+    BashRunner.start(tag_command)
 
     push_command = "docker push hexletbasics/exercises-#{lang_name}:#{tag}"
     ok = BashRunner.start(push_command)
 
     # FIXME better error handling
-    raise "Docker tag error" unless ok
+    raise "Docker tag error: #{ok}" unless ok
   end
 end

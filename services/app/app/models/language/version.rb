@@ -28,7 +28,6 @@ class Language::Version < ApplicationRecord
     event :mark_as_failed do
       transitions to: :failed
     end
-
   end
 
   def to_s
