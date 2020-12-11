@@ -24,6 +24,7 @@ class ExerciseLoader
     end
     lessons.each_with_index { |lesson, index| create_lesson_hierarchy(lesson, index) }
 
+    # FIXME we should brake build if docker answers non 200 code
     download_exercise_klass.tag_image_version(lang_name, language_version.image_tag)
 
     language_version.update(result: 'Success')
