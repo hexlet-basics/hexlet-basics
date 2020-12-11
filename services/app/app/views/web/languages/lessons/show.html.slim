@@ -51,14 +51,14 @@
               = link_to t('.community'), ExternalLinks.hexlet_slack, target: '_blank', class: 'align-baseline'
             #disqus_thread
             / disqus script
-            javascript:      
-              var disqus_config = function () {                  
+            javascript:
+              var disqus_config = function () {
                 this.page.url = window.location.href;
-                this.page.identifier = `lesson-${window.gon.lesson.id}`;
-              };  
+                this.page.identifier = "lesson-#{@lesson.id}";
+              };
               (function() {
                 var d = document, s = d.createElement('script');
-                s.src = 'https://hexlet-basics.disqus.com/embed.js';
+                s.src = "https://#{configus.disqus_id}.disqus.com/embed.js";
                 s.setAttribute('data-timestamp', +new Date());
                 (d.head || d.body).appendChild(s);
               })();
