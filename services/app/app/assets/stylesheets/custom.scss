@@ -109,3 +109,8 @@ $azure: #45aaf2;
   min-height: 100%;
   font-family: var(--font-family-monospace) !important;
 }
+
+// для инициализации дискаса на закрытом табе
+#disqus_thread iframe {
+  min-height: 300px;
+}
