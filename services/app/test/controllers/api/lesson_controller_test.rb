@@ -12,7 +12,7 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
 
   test 'check if user logged in' do
     post check_api_lesson_path(@lesson), params: { version_id: @lesson.versions.first.id, data: { attributes: { code: 'code' } } }
-    assert_response :redirect
+    assert_response :forbidden
   end
 
   test 'check lesson finished' do
