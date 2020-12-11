@@ -36,6 +36,8 @@ class Language::Version < ApplicationRecord
   end
 
   def image_tag
-    "lv#{id}"
+    return "lv#{id}" if Rails.env.production?
+
+    :latest
   end
 end

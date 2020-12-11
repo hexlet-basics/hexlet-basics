@@ -28,7 +28,7 @@ class ExerciseLoader
     download_exercise_klass.tag_image_version(lang_name, language_version.image_tag)
 
     language_version.result = 'Success'
-    ActiveRecord::Base.trasaction do
+    ActiveRecord::Base.transaction do
       language_version.mark_as_built!
       language.update!(current_version: language_version)
     end
