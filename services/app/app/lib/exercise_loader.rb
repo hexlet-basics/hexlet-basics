@@ -29,7 +29,7 @@ class ExerciseLoader
 
     language_version.result = 'Success'
     ActiveRecord::Base.trasaction do
-      language_version.mark_as_done!
+      language_version.mark_as_built!
       language.update!(current_version: language_version)
     end
   rescue StandardError => e

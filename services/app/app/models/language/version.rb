@@ -21,7 +21,7 @@ class Language::Version < ApplicationRecord
       transitions from: :created, to: :building
     end
 
-    event :mark_as_done do
+    event :mark_as_built do
       transitions from: :building, to: :built
     end
 
