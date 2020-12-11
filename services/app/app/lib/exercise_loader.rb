@@ -10,7 +10,7 @@ class ExerciseLoader
 
     language_version.build!
 
-    repo_dest = download_exercise_klass.run(lang_name)
+    repo_dest = download_exercise_klass.download(lang_name)
     module_dest = "#{repo_dest}/modules"
 
     update_language_version(repo_dest, language, language_version)
@@ -23,6 +23,8 @@ class ExerciseLoader
       unordered_lessons.sort_by { |lesson| lesson[:order] }
     end
     lessons.each_with_index { |lesson, index| create_lesson_hierarchy(lesson, index) }
+
+    download_exercise_klass.tag_image_version(lang_name, language_version.image_tag)
 
     language_version.update(result: 'Success')
     language_version.done!

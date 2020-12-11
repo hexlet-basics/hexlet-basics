@@ -28,4 +28,8 @@ class Language::Version < ApplicationRecord
   def to_s
     name
   end
+
+  def image_tag
+    "lv#{id}"
+  end
 end
