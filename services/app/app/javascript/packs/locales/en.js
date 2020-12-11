@@ -9,7 +9,7 @@ export default {
     resetCode: 'Reset code',
     confirm: 'ATTENTION! Your code will be deleted. Are you sure you want to reset the current progress and return the exercise to its initial state?',
     editor: 'Editor',
-    console: 'Console',
+    output: 'Output',
     solution: 'Solution',
     teacherSolution: "Teacher's soltuion:",
     userCode: 'Your solution:',

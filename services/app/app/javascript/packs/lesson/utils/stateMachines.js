@@ -5,8 +5,8 @@ export const checkInfoStates = {
 };
 
 export const currentTabValues = {
-  console: 'console',
   editor: 'editor',
+  output: 'output',
   solution: 'solution',
 };
 

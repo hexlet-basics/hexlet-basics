@@ -15,7 +15,7 @@ const slice = createSlice({
   },
   extraReducers: {
     [checkInfoActions.runCheck.pending](state) {
-      state.currentTab = currentTabValues.console;
+      state.currentTab = currentTabValues.output;
     },
   },
 });
