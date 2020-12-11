@@ -20,7 +20,7 @@ class DockerExerciseApi
     BashRunner.start(tag_command)
 
     push_command = "docker push hexletbasics/exercises-#{lang_name}:#{tag}"
-    ok = BashRunner.start(push_command)
+    _ok = BashRunner.start(push_command)
 
     # FIXME better error handling
     # raise "Docker tag error: #{ok}" unless ok
