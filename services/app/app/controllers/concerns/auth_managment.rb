@@ -27,4 +27,8 @@ module AuthManagment
   def authenticate_admin!
     return redirect_to root_path unless current_user.admin?
   end
+
+  def require_api_auth!
+    head :forbidden unless signed_in?
+  end
 end
