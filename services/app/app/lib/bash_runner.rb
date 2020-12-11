@@ -9,7 +9,7 @@ class BashRunner
         begin
           r.each { |line| yield line if block_given? }
         rescue Errno::EIO => e
-          Raisl.logger.warn e
+          Rails.logger.warn e
         end
         Process.wait(pid)
       end
