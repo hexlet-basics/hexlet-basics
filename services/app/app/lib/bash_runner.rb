@@ -20,7 +20,7 @@ class BashRunner
     end
 
     def success?(child_status)
-      child_status.exitstatus.zero?
+      child_status&.exitstatus&.zero?
     end
   end
 end
