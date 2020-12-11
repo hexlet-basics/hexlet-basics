@@ -216,7 +216,7 @@ ActiveRecord::Schema.define(version: 2020_12_10_125010) do
     t.string "email_delivery_state", limit: 255
     t.boolean "admin"
     t.datetime "created_at", precision: 6, null: false
-    t.index ["email"], name: "users_email_index", unique: true
+    t.index ["email"], name: "index_users_on_email", unique: true, where: "((state)::text <> 'removed'::text)"
   end
 
   add_foreign_key "language_lesson_members", "language_lessons", column: "lesson_id", name: "user_finished_lessons_language_module_lesson_id_fkey"
