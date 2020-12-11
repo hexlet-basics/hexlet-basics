@@ -27,12 +27,14 @@ class ExerciseLoader
     # FIXME we should brake build if docker answers non 200 code
     download_exercise_klass.tag_image_version(lang_name, language_version.image_tag)
 
-    language_version.update(result: 'Success')
-    language_version.done!
-    language.update!(current_version: language_version)
+    language_version.result = 'Success'
+    ActiveRecord::Base.trasaction do
+      language_version.mark_as_done!
+      language.update!(current_version: language_version)
+    end
   rescue StandardError => e
     language_version.update(result: "Error class: #{e.class} message: #{e.message}")
-    language_version.done!
+    language_version.mark_as_failed!
     raise
   end
 

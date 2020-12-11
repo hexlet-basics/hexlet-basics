@@ -15,14 +15,20 @@ class Language::Version < ApplicationRecord
     state :created, initial: true
     state :building
     state :built
+    state :failed
 
     event :build do
       transitions from: :created, to: :building
     end
 
-    event :done do
+    event :mark_as_done do
       transitions from: :building, to: :built
     end
+
+    event :mark_as_failed do
+      transitions to: :failed
+    end
+
   end
 
   def to_s

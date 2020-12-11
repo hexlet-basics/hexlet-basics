@@ -14,7 +14,13 @@ class DockerExerciseApi
   end
 
   def self.tag_image_version(lang_name, tag)
-    system("docker tag hexletbasics/exercises-#{lang_name}:latest hexletbasics/exercises-#{lang_name}:#{tag}")
-    system("docker push hexletbasics/exercises-#{lang_name}:#{tag}")
+    tag_command = "docker tag hexletbasics/exercises-#{lang_name}:latest hexletbasics/exercises-#{lang_name}:#{tag}"
+    ok = BashRunner.start(tag_command)
+
+    push_command = "docker push hexletbasics/exercises-#{lang_name}:#{tag}"
+    ok = BashRunner.start(push_command)
+
+    # FIXME better error handling
+    raise "Docker tag error" unless ok
   end
 end
