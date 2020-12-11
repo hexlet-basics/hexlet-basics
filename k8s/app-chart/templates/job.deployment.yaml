@@ -38,6 +38,12 @@ spec:
         - name: docker-sock
           hostPath:
             path: /var/run/docker.sock
+        - name: docker-secret
+          secret:
+            secretName: docker-config
+            items:
+              - key: .dockerconfigjson
+                path: config.json
       containers:
         - name: sidekiq
           securityContext:
@@ -55,6 +61,8 @@ spec:
               name: users-code-path
             - mountPath: /var/run/docker.sock
               name: docker-sock
+            - name: docker-secret
+              mountPath: /root/.docker
           envFrom:
             - secretRef:
                 name: hexlet-basics-secrets
