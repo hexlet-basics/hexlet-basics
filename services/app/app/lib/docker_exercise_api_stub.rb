@@ -5,5 +5,5 @@ class DockerExerciseApiStub
     'test/fixture_files/exercises'
   end
 
-  def self.tag_image_version(_lang_version, _tag) ; end
+  def self.tag_image_version(_lang_version, _tag); end
 end
