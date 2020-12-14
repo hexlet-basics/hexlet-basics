@@ -5,26 +5,19 @@ class ExerciseLoader
   include Import['download_exercise_klass']
 
   def run(language_version)
-    lang_name = language_version.language.slug
-    language = language_version.language
-
     return unless language_version.may_build?
 
     language_version.build!
 
-    repo_dest = download_exercise_klass.download(lang_name)
-    module_dest = "#{repo_dest}/modules"
+    lang_name = language_version.language.slug
 
-    update_language_version(repo_dest, language, language_version)
+    download_exercise_klass.download(lang_name)
 
-    modules_with_meta = get_modules(module_dest).sort_by { |language_module| language_module[:order] }
-    language_modules_data = modules_with_meta.map { |module_meta| create_module_hierachy(language_version, module_meta) }
+    update_language_version(language_version)
 
-    lessons = language_modules_data.flat_map do |module_data|
-      unordered_lessons = get_lessons(module_dest, module_data[:module_version], language_version)
-      unordered_lessons.sort_by { |lesson| lesson[:order] }
-    end
-    lessons.each_with_index { |lesson, index| create_lesson_hierarchy(lesson, index) }
+    language_modules_data = create_modules(language_version)
+
+    create_lessons(language_version, language_modules_data)
 
     # FIXME we should brake build if docker answers non 200 code
     download_exercise_klass.tag_image_version(lang_name, language_version.image_tag)
@@ -32,7 +25,7 @@ class ExerciseLoader
     language_version.result = 'Success'
     ActiveRecord::Base.transaction do
       language_version.mark_as_built!
-      language.update!(current_version: language_version)
+      language_version.language.update!(current_version: language_version)
     end
   rescue StandardError => e
     language_version.update(result: "Error class: #{e.class} message: #{e.message}")
@@ -41,6 +34,23 @@ class ExerciseLoader
   end
 
   private
+
+  def create_modules(language_version)
+    module_dest = "#{download_exercise_klass.repo_dest(language_version.language.slug)}/modules"
+
+    modules_with_meta = get_modules(module_dest).sort_by { |language_module| language_module[:order] }
+    modules_with_meta.map { |module_meta| create_module_hierachy(language_version, module_meta) }
+  end
+
+  def create_lessons(language_version, language_modules_data)
+    module_dest = "#{download_exercise_klass.repo_dest(language_version.language.slug)}/modules"
+
+    lessons = language_modules_data.flat_map do |module_data|
+      unordered_lessons = get_lessons(module_dest, module_data[:module_version], language_version)
+      unordered_lessons.sort_by { |lesson| lesson[:order] }
+    end
+    lessons.each_with_index { |lesson, index| create_lesson_hierarchy(lesson, index) }
+  end
 
   def get_modules(dest)
     files = Dir.glob("#{dest}/*")
@@ -114,21 +124,18 @@ class ExerciseLoader
     }
   end
 
-  def update_language_version(repo_dest, language, language_version)
+  def update_language_version(language_version)
+    repo_dest = download_exercise_klass.repo_dest(language_version.language.slug)
     spec_filepath = File.join(repo_dest, 'spec.yml')
     language_info = YAML.load_file(spec_filepath).fetch('language')
 
     language_version.assign_attributes(
-      name: language.slug,
+      name: language_version.language.slug,
       extension: language_info['extension'],
       docker_image: language_info['docker_image'],
       exercise_filename: language_info['exercise_filename'],
       exercise_test_filename: language_info['exercise_test_filename']
     )
-
-    language.save!
-
-    language
   end
 
   def create_module_hierachy(language_version, data)
