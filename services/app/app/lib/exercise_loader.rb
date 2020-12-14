@@ -8,6 +8,8 @@ class ExerciseLoader
     lang_name = language_version.language.slug
     language = language_version.language
 
+    return unless language_version.may_build?
+
     language_version.build!
 
     repo_dest = download_exercise_klass.download(lang_name)
