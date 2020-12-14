@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Guest
+  def id; end
+
   def guest?
     true
   end

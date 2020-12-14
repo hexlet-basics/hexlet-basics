@@ -16,4 +16,12 @@ class Web::ApplicationController < ApplicationController
     parsed_locale = request.subdomains.first
     I18n.available_locales.map(&:to_s).include?(parsed_locale) ? parsed_locale : nil
   end
+
+  before_action do
+    gon.current_user = {
+      id: current_user.id,
+      email: current_user.email,
+      isGuest: current_user.guest?
+    }
+  end
 end
