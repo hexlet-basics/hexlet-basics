@@ -16,3 +16,4 @@ ansible-vaults-edit:
 
 tag:
 	git tag $(TAG) && git push --tags
+	make app-test
