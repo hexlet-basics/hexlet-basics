@@ -28,6 +28,6 @@ class LessonTester
              end
     passed = result == 'passed'
 
-    { passed: passed, output: output, result: result, status: exitstatus }
+    { passed: passed, output: Base64.strict_encode64(output), result: result, status: exitstatus }
   end
 end
