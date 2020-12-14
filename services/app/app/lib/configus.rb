@@ -14,6 +14,7 @@ Configus.build Rails.env do
 
   env :development, parent: :production do
     disqus_id 'code-basics-test'
+    gtm_id 'test-id'
   end
 
   env :test, parent: :development do
