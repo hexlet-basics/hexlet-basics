@@ -6,3 +6,5 @@
   = csp_meta_tag
   = stylesheet_link_tag "application", media: "all"
   = javascript_pack_tag "application"
+  - if Rails.env.production?
+    = render 'layouts/deps/gtm_head'
