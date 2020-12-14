@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_10_125010) do
+ActiveRecord::Schema.define(version: 2020_12_14_132412) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -77,6 +77,7 @@ ActiveRecord::Schema.define(version: 2020_12_10_125010) do
     t.datetime "updated_at", null: false
     t.integer "natural_order"
     t.datetime "created_at", precision: 6, null: false
+    t.index ["language_id", "slug"], name: "index_language_lessons_on_language_id_and_slug", unique: true
     t.index ["language_id"], name: "language_module_lessons_language_id_index"
     t.index ["module_id"], name: "language_module_lessons_module_id_index"
     t.index ["upload_id"], name: "language_module_lessons_upload_id_index"
