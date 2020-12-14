@@ -22,7 +22,7 @@ class Web::ApplicationController < ApplicationController
       id: current_user.id,
       email: current_user.email,
       created_at: current_user.created_at,
-      isGuest: current_user.guest?
+      is_guest: current_user.guest?
     }
   end
 end
