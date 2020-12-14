@@ -8,6 +8,8 @@ Configus.build Rails.env do
     end
 
     disqus_id 'hexlet-basics'
+
+    gtm_id ENV['GOOGLE_TAG_MANAGER_KEY']
   end
 
   env :development, parent: :production do
