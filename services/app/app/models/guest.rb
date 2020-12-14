@@ -5,6 +5,8 @@ class Guest
 
   def created_at; end
 
+  def email; end
+
   def guest?
     true
   end
