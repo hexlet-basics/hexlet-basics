@@ -6,7 +6,7 @@ import { actions } from '../slices/index.js';
 import { currentTabValues } from '../utils/stateMachines.js';
 
 import Editor from './Editor.jsx';
-import Console from './Console.jsx';
+import Output from './Output.jsx';
 import Solution from './Solution.jsx';
 
 const TabsBox = () => {
@@ -38,7 +38,7 @@ const TabsBox = () => {
           <Editor />
         </Tab.Pane>
         <Tab.Pane eventKey={output} bsPrefix="tab-pane h-100 p-3 w-100">
-          <Console />
+          <Output />
         </Tab.Pane>
         <Tab.Pane eventKey={solution} bsPrefix="tab-pane h-100 p-3 w-100">
           <Solution />

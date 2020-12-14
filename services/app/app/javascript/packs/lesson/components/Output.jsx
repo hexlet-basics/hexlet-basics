@@ -8,7 +8,7 @@ import { checkInfoStates } from '../utils/stateMachines.js';
 
 const ansi = new AnsiUp();
 
-const Console = () => {
+const Output = () => {
   const checkInfo = useSelector((state) => state.checkInfoSlice);
   const { t } = useTranslation();
 
@@ -31,4 +31,4 @@ const Console = () => {
   );
 };
 
-export default Console;
+export default Output;
