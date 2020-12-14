@@ -4,6 +4,7 @@ module LessonHelper
   def markdown2html(text)
     extensions = {
       autolink: true,
+      tables: true,
       filter_html: false,
       safe_links_only: false,
       fenced_code_blocks: true
