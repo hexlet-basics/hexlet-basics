@@ -30,6 +30,7 @@ variable "additional_zones" {
   default = ["europe-west3-a", "europe-west3-c"]
 }
 
+variable "google_tag_manager_key" {}
 variable "rails_env" {}
 variable "redis_url" {}
 variable "db_name" {}

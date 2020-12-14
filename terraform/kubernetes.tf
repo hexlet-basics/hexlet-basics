@@ -89,6 +89,7 @@ resource "kubernetes_config_map" "hexlet_basics_config_map" {
     APP_SCHEME   = var.app_scheme
     APP_HOST     = var.app_host
     APP_RU_HOST  = var.app_ru_host
+    GOOGLE_TAG_MANAGER_KEY = var.google_tag_manager_key
   }
 }
 
