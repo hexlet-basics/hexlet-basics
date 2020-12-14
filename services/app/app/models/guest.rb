@@ -3,6 +3,8 @@
 class Guest
   def id; end
 
+  def created_at; end
+
   def guest?
     true
   end
