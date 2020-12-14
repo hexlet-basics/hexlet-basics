@@ -24,5 +24,7 @@ class Web::ApplicationController < ApplicationController
       created_at: current_user.created_at,
       is_guest: current_user.guest?
     }
+
+    gon.locale = I18n.locale
   end
 end
