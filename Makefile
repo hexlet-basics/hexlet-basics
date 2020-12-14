@@ -14,6 +14,5 @@ ansible-vaults-edit:
 		-v $(CURDIR):/runner/project \
 		ansible/ansible-runner ansible-vault edit --vault-password-file project/tmp/ansible-vault-password project/ansible/production/group_vars/all/vault.yml
 
-tag:
+tag: app-test
 	git tag $(TAG) && git push --tags
-	make app-test
