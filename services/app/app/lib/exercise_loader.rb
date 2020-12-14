@@ -38,7 +38,6 @@ class ExerciseLoader
     raise
   end
 
-
   private
 
   def get_modules(dest)
