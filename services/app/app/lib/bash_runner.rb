@@ -5,7 +5,7 @@ require 'pty'
 class BashRunner
   class << self
     def start(command, force_fail: false)
-      PTY.spawn(command, STDERR => STDOUT) do |r, _w, pid|
+      PTY.spawn(command, $stderr => $stdout) do |r, _w, pid|
         begin
           r.each { |line| yield line if block_given? }
         rescue Errno::EIO => e

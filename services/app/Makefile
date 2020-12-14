@@ -30,7 +30,7 @@ precompile-assets:
 lint: lint-eslint lint-rubocop
 
 linter-fix:
-	bundle exec rubocop --auto-correct
+	bundle exec rubocop -A
 
 lint-rubocop:
 	bundle exec rubocop

@@ -36,6 +36,9 @@ Style/Documentation:
 Style/CommentAnnotation:
   Enabled: false
 
+Style/HashLikeCase:
+  Enabled: false
+
 Metrics/BlockLength:
   Enabled: false
 
