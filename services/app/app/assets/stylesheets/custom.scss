@@ -51,11 +51,6 @@ $azure: #45aaf2;
   background-color: $red;
 }
 
-%hexlet-output {
-  border: 1px dashed $indigo;
-  padding: 8px;
-}
-
 /* the only light, non-standard block, has to be customized directly */
 .hexlet-basics-theory-card {
 
@@ -68,15 +63,11 @@ $azure: #45aaf2;
   }
 
   pre {
-    @extend %hexlet-output;
-
+    @extend .border;
+    @extend .rounded;
     code {
-      @extend .pb-2;
+      @extend .p-3;
     }
-  }
-
-  .hexlet-basics-example {
-    @extend %hexlet-output;
   }
 
   pre.hexlet-basics-output {
