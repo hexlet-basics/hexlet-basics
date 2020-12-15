@@ -59,7 +59,8 @@ $azure: #45aaf2;
   }
 
   table {
-    width: auto;
+    @extend .table;
+    @extend .w-auto;
   }
 
   pre {
