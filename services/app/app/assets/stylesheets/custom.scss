@@ -70,6 +70,12 @@ $azure: #45aaf2;
     }
   }
 
+  .hexlet-basics-example {
+    @extend .border;
+    @extend .rounded;
+    @extend .p-3;
+  }
+
   pre.hexlet-basics-output {
     display: inline-block;
     background-color: $black;
