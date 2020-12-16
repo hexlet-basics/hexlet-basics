@@ -153,7 +153,7 @@ class ExerciseLoader
 
     version.save!
 
-    raise "Module: #{language.module} does not have info" if infos.empty?
+    raise "Module: #{language_module.slug} does not have info" if infos.empty?
 
     module_infos = infos.map { |info| create_module_info(language_version, version, info) }
 
