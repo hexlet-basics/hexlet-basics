@@ -67,7 +67,7 @@ const ControlBox = () => {
 
   return (
     <Hotkeys keyName="ctrl+Enter" onKeyUp={handleRunCheck}>
-      <div className="mx-auto d-flex align-items-center text-center my-3">
+      <div className="mx-auto d-flex text-center my-3">
         <a
           className="btn btn-outline-secondary mr-3 d-inline-flex align-items-center"
           href={window.location.href}
