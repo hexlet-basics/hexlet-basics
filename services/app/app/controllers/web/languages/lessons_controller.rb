@@ -15,6 +15,9 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     gon.language = resource_language.to_s
     gon.lesson_version = @lesson_version
     gon.lesson = @lesson
+
+    title @resource_language
+    title @info
   end
 
   def next_lesson

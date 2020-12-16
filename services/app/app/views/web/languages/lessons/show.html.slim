@@ -1,3 +1,13 @@
+= content_for :meta do
+  meta content='article' property='og:type'
+  meta content=title property='og:title'
+  meta content="#{language_lesson_url(@lesson.language.slug, @lesson.slug)}" property='og:url'
+  meta content="#{image_url("#{@lesson.language.slug}.png")}" property='og:image'
+  link rel='canonical' href="#{language_lesson_url(@lesson.language.slug, @lesson.slug)}"
+  meta content="#{@info} / #{@lesson.language}" property='og:description'
+  meta content="#{@info} / #{@lesson.language}" name='description'
+  meta content="#{I18n.locale}" property='og:locale'
+
 .row.pt-2.x-h-md-100
   .col-12.col-md-6.col-lg-5.x-h-md-100.mb-3.mb-md-0
     .card.x-h-md-100

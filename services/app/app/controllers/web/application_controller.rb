@@ -4,6 +4,7 @@ class Web::ApplicationController < ApplicationController
   around_action :switch_locale
   include AuthManagment
   include FlashConcern
+  include TitleConcern
 
   def switch_locale(&action)
     locale = extract_locale_from_subdomain || I18n.default_locale
