@@ -76,7 +76,6 @@ const ControlBox = () => {
           data-confirm={t('confirm')}
         >
           <FontAwesomeIcon icon={faSyncAlt} />
-          <span className="d-none d-sm-block d-md-none d-lg-block">&nbsp;</span>
         </a>
         <a className={prevButtonClasses} href={prevLessonPath}>
           <FontAwesomeIcon className="d-sm-none d-md-block d-lg-none" icon={faArrowLeft} />
