@@ -8,15 +8,12 @@
 
 ### Required
 
-* Ruby
-* Node
-* Yarn
-* sqlite3
-* [heroku cli](https://devcenter.heroku.com/articles/heroku-cli#download-and-install)
+* docker
+* docker compose
 
 ### Setup
 
-```sh
+```
 $ make compose-setup
 $ make app-test # run tests
 $ make compose # run server
@@ -24,7 +21,7 @@ $ make compose # run server
 $ make app-db-prepare # sometimes, when fixtures were changed
 ```
 
-Add to _/etc/hosts_:
+**Add to _/etc/hosts_:**
   127.0.0.1 code-basics.test ru.code-basics.test en.code-basics.test
 
 ##
