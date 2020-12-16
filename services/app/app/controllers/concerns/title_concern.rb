@@ -40,7 +40,7 @@ module TitleConcern
     # values = options[:values] || {}
 
     # msg = I18n.t(key, scope: scope, **values)
-    # #NOTE цветное логирование
+    # #NOTE color logging
     # Rails.logger.debug(Term::ANSIColor.green("title: #{msg}"))
 
     I18n.t(key, scope: scope)
