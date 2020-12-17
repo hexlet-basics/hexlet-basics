@@ -10,7 +10,7 @@ class Web::RemindPasswordsController < Web::ApplicationController
 
     if @remind_password_form.validate(remind_password_params)
       user = @remind_password_form.user
-      UserService.reset_password(user)
+      UserService.reset_password!(user)
 
       f(:success)
       redirect_to root_path
