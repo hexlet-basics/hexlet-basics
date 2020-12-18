@@ -24,7 +24,7 @@ const App = () => {
   };
 
   return (
-    <div className="card x-h-md-100">
+    <div className="card vh-100 x-h-md-100">
       <TabsBox />
       {renderHtmlPreview()}
       <ControlBox />
