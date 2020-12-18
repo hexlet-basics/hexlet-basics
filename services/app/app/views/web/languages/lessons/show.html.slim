@@ -30,7 +30,8 @@
                 li.breadcrumb-item.active aria-current="page"
                   = current_breadcrumb(@lesson_version, @info, @language_lessons_count)
             .hexlet-basics-theory-card
-              h1.h3.font-weight-bold= @info.name
+              h1.h3.font-weight-bold
+                = "#{t("human_languages.#{@resource_language}")}: #{@info.name}"
               == markdown2html(@info.theory)
               - if @info.instructions
                 h2.h4.font-weight-bold = t('.instructions')
