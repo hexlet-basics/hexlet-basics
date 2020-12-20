@@ -3,10 +3,10 @@
 version: '3'
 
 services:
-  image-app-base:
-    image: hexletbasics/services-app:cached-base
-    build:
-      context: services/app
+  # image-app-base:
+  #   image: hexletbasics/services-app:cached-base
+  #   build:
+  #     context: services/app
 
   postgres:
     image: postgres:12-alpine
@@ -16,12 +16,13 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   app:
-    build:
-      context: services/app
-      dockerfile: Dockerfile.production
+    image: hexletbasics/services-app:cached
+    # build:
+    #   context: services/app
+    #   dockerfile: Dockerfile.production
     command: "make check"
     depends_on:
-      - image-app-base
+      # - image-app-base
       - postgres
 
 volumes:
