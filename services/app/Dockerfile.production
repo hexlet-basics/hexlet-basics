@@ -1,4 +1,4 @@
-FROM hexletbasics/hexlet-basics:cached-base
+FROM hexletbasics/services-app:cached-base
 
 COPY package.json .
 COPY yarn.lock .

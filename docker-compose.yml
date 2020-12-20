@@ -4,7 +4,7 @@ version: '3'
 
 services:
   image-app-base:
-    image: hexletbasics/hexlet-basics:cached-base
+    image: hexletbasics/services-app:cached-base
     build:
       context: services/app
 
