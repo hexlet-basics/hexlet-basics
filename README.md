@@ -25,6 +25,9 @@ $ make compose # run server
 
 $ make app-test # run tests
 
+# load language
+# make app-language-load L=php
+
 $ make app-db-prepare # sometimes, when fixtures were changed
 ```
 
