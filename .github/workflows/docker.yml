@@ -36,11 +36,11 @@ jobs:
         with:
           context: services/app
           file: services/app/Dockerfile
-          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:development
+          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:cached-base
           cache-to: type=inline
           push: true
           tags: |
-            ${{ env.IMAGE_NAME }}:development
+            ${{ env.IMAGE_NAME }}:cached-base
 
       - name: Build App
         uses: docker/build-push-action@v2

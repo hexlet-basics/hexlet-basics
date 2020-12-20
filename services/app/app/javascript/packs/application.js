@@ -10,8 +10,8 @@ import hljs from 'highlight.js';
 
 require('jquery');
 require('@rails/ujs').start();
-require('@rails/activestorage').start();
-require('channels');
+// require('@rails/activestorage').start();
+// require('channels');
 require('popper.js');
 require('bootstrap');
 
