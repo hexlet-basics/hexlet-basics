@@ -1,6 +1,9 @@
 test:
 	RAILS_ENV=test bin/rails test
 
+language-load:
+	bin/rails exercises:load[${L}]
+
 fixtures-load:
 	bin/rails db:fixtures:load
 
