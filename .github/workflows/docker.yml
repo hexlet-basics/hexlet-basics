@@ -38,7 +38,7 @@ jobs:
           file: services/app/Dockerfile
           cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:cached
           cache-to: type=inline
-          tags: hexlet-basics-app-base:latest
+          tags: hexlet-basics-app-base
 
       - name: Build App
         uses: docker/build-push-action@v2
@@ -48,9 +48,8 @@ jobs:
           cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:cached
           cache-to: type=inline
           push: true
+          pull: false
           tags: ${{ env.IMAGE_NAME }}:latest
-
-      - uses: actions/checkout@v2
 
       - name: Check
         run: |
