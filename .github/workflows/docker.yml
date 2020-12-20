@@ -31,6 +31,15 @@ jobs:
 
       - uses: actions/checkout@v2
 
+      - name: Build App Base
+        uses: docker/build-push-action@v2
+        with:
+          context: services/app
+          file: services/app/Dockerfile
+          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:cached
+          cache-to: type=inline
+          tags: hexlet-basics-app-base:latest
+
       - name: Build App
         uses: docker/build-push-action@v2
         with:
@@ -38,7 +47,7 @@ jobs:
           file: services/app/Dockerfile.production
           cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:cached
           cache-to: type=inline
-          # push: true
+          push: true
           tags: ${{ env.IMAGE_NAME }}:latest
 
       - uses: actions/checkout@v2
