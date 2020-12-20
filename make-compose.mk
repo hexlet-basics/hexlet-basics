@@ -10,11 +10,11 @@ compose-down:
 compose-restart:
 	docker-compose restart
 
-web-ci-test:
-	make compose-setup
-	make app-test
-
 compose-setup: compose-down compose-build app-setup
+
+compose-ci:
+	docker-compose -f docker-compose.yml up
+
 
 # env-prepare:
 # 	cp -n .env.example .env || true

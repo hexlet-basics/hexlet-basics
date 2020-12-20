@@ -1,5 +1,7 @@
 test:
-	RAILS_ENV=test bin/rails test
+	bin/rails test
+
+check: test lint
 
 language-load:
 	bin/rails exercises:load[${L}]
@@ -8,9 +10,9 @@ fixtures-load:
 	bin/rails db:fixtures:load
 
 setup:
-	cp -n .env.example .env || true
+	# cp -n .env.example .env || true
 	bin/setup
-	yarn install
+	# yarn install
 
 db-reset:
 	bin/rails db:drop

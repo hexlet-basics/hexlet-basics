@@ -3,6 +3,11 @@
 version: '3'
 
 services:
+  image-app-base:
+    image: hexlet-basics-app-base
+    build:
+      context: services/app
+
   postgres:
     image: postgres:12-alpine
     environment:
@@ -10,79 +15,14 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-  redis:
-    image: redis
-    volumes:
-      - redis:/data
-
-  spring:
+  app:
     build:
       context: services/app
-    command: bin/spring server
-    pid: host
-    volumes:
-      - ./services/app:/app:cached
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /tmp:/tmp
-
-  sidekiq:
-    build:
-      context: services/app
-    command: bundle exec sidekiq
-    volumes:
-      - ./services/app:/app:cached
-      - /tmp:/tmp
-      - /var/tmp/hexletbasics:/var/tmp/hexletbasics
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      REDIS_URL: redis://redis:6379
+      dockerfile: Dockerfile.production
+    command: "make check"
     depends_on:
-      - spring
-      - redis
-      - web
-  web:
-    build:
-      context: services/app
-    command: "make start"
-    ports:
-      - '3000:3000'
-    volumes:
-      - ./services/app:/app:cached
-      - /tmp:/tmp:cached
-      - /var/tmp/hexletbasics:/var/tmp/hexletbasics:cached
-      - /var/run/docker.sock:/var/run/docker.sock
-    # env_file: '.env'
-    depends_on:
-      - redis
+      - image-app-base
       - postgres
-      - spring
-
-  webpacker:
-    build:
-      context: services/app
-    command: make webpacker
-    environment:
-      WEBPACKER_DEV_SERVER_HOST: '0.0.0.0'
-    ports:
-      - "0.0.0.0:3035:3035"
-    # env_file:
-    #   - .env
-    volumes:
-      - ./services/app:/app:cached
-  caddy:
-    image: caddy:2.2.1
-    ports:
-      - "443:443"
-      - "80:80"
-    volumes:
-      - "./services/caddy/Caddyfile:/etc/caddy/Caddyfile"
-      - caddy_data:/data
-      - caddy_config:/config
-    depends_on:
-      - web
 
 volumes:
-  redis:
   pgdata:
-  caddy_data:
-  caddy_config:

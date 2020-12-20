@@ -1,0 +1,72 @@
+---
+
+version: '3'
+
+services:
+
+  redis:
+    image: redis
+    volumes:
+      - redis:/data
+
+  app:
+    build:
+      context: services/app
+    command: "make start"
+
+  spring:
+    build:
+      context: services/app
+    command: bin/spring server
+    pid: host
+    volumes:
+      - ./services/app:/app:cached
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp:/tmp
+
+  sidekiq:
+    build:
+      context: services/app
+    command: bundle exec sidekiq
+    volumes:
+      - ./services/app:/app:cached
+      - /tmp:/tmp
+      - /var/tmp/hexletbasics:/var/tmp/hexletbasics
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      - spring
+      - redis
+      - app
+
+  webpacker:
+    build:
+      context: services/app
+    command: make webpacker
+    environment:
+      WEBPACKER_DEV_SERVER_HOST: '0.0.0.0'
+    ports:
+      - "0.0.0.0:3035:3035"
+    # env_file:
+    #   - .env
+    volumes:
+      - ./services/app:/app:cached
+
+  caddy:
+    image: caddy:2.2.1
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - "./services/caddy/Caddyfile:/etc/caddy/Caddyfile"
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+
+volumes:
+  redis:
+  caddy_data:
+  caddy_config:
+

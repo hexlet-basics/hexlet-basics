@@ -1,21 +1,20 @@
 app-bash:
-	docker-compose run web /bin/bash
+	docker-compose run app /bin/bash
 
 app-language-load:
-	docker-compose run web make language-load L=${L}
+	docker-compose run app make language-load L=${L}
 
 app-test: app-db-prepare
-	docker-compose run web make test
-	docker-compose run web make lint
+	docker-compose run app make test
+	docker-compose run app make lint
 
 app-rails-console:
-	docker-compose run web bin/rails c
+	docker-compose run app bin/rails c
 
 app-setup: app-install app-db-prepare
 
 app-install:
-	docker-compose run web bundle install
-	docker-compose run web yarn install --check-files
+	docker-compose run app make setup
 
 app-db-prepare:
-	docker-compose run web make db-prepare
+	docker-compose run app make db-prepare
