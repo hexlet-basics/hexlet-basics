@@ -39,7 +39,7 @@ jobs:
           cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:development
           cache-to: type=inline
           push: true
-          tags: hexletbasics/hexlet-basics:development
+          tags: ${{ env.IMAGE_NAME }}:development
 
       - name: Build App
         uses: docker/build-push-action@v2
