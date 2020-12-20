@@ -1,4 +1,4 @@
-FROM hexlet-basics-app-base
+FROM hexletbasics/hexlet-basics:development
 
 COPY package.json .
 COPY yarn.lock .

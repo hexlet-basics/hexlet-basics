@@ -23,5 +23,5 @@ rules:
   max-len: ["error", { "code": 120 }]
   no-console: 0
   # import/no-unresolved: 0
-  # import/extensions: 0 # FIXME: remove when rule will be adjusted for new nodejs version
+  import/extensions: 0 # FIXME: remove when rule will be adjusted for new nodejs version
   no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }]
