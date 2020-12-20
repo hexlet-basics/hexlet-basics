@@ -1,3 +1,0 @@
-FROM caddy:2
-
-COPY files/development/Caddyfile /etc/Caddyfile

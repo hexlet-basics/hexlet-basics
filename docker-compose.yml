@@ -42,7 +42,7 @@ services:
   web:
     build:
       context: services/app
-    command: make start
+    command: "make start"
     ports:
       - '3000:3000'
     volumes:
@@ -69,17 +69,19 @@ services:
     volumes:
         - ./services/app:/app
   caddy:
-    build:
-      context: services/caddy
-      dockerfile: Dockerfile.development
+    image: caddy:2.2.1
     ports:
-      - "443:2015"
+      - "443:443"
       - "80:80"
     volumes:
-      - "./services/caddy/files/development/Caddyfile:/etc/Caddyfile"
+      - "./services/caddy/Caddyfile:/etc/caddy/Caddyfile"
+      - caddy_data:/data
+      - caddy_config:/config
     depends_on:
       - web
 
 volumes:
   redis:
   pgdata:
+  caddy_data:
+  caddy_config:
