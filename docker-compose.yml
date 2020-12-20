@@ -4,59 +4,68 @@ version: '3'
 
 services:
   postgres:
-    image: postgres:11-alpine
+    image: postgres:12-alpine
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
-      - /var/tmp/db:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
 
   redis:
     image: redis
     volumes:
       - redis:/data
 
+  spring:
+    build:
+      context: services/app
+    command: bin/spring server
+    pid: host
+    volumes:
+      - ./services/app:/app
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp:/tmp
+
   sidekiq:
     build:
       context: services/app
-      dockerfile: Dockerfile.development
     command: bundle exec sidekiq
     volumes:
-      - ./services/app:/app:cached
-      - '/tmp:/tmp'
-      - '/var/tmp/hexletbasics:/var/tmp/hexletbasics'
-      - '/var/run/docker.sock:/var/run/docker.sock'
-    env_file: '.env'
+      - ./services/app:/app
+      - /tmp:/tmp
+      - /var/tmp/hexletbasics:/var/tmp/hexletbasics
+      - /var/run/docker.sock:/var/run/docker.sock
+    # env_file: '.env'
     depends_on:
+      - spring
       - redis
       - web
   web:
     build:
       context: services/app
-      dockerfile: Dockerfile.development
     command: make start
     ports:
       - '3000:3000'
     volumes:
-      - ./services/app:/app:cached
+      - ./services/app:/app
       - '/tmp:/tmp'
       - '/var/tmp/hexletbasics:/var/tmp/hexletbasics'
       - '/var/run/docker.sock:/var/run/docker.sock'
-    env_file: '.env'
-    environment:
-      DISABLE_SPRING: 'true'
+    # env_file: '.env'
     depends_on:
       - redis
       - postgres
+      - spring
 
   webpacker:
     build:
       context: services/app
-      dockerfile: Dockerfile.development
     command: make webpacker
+    environment:
+      WEBPACKER_DEV_SERVER_HOST: '0.0.0.0'
     ports:
       - "0.0.0.0:3035:3035"
-    env_file:
-      - .env
+    # env_file:
+    #   - .env
     volumes:
         - ./services/app:/app
   caddy:

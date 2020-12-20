@@ -2,27 +2,31 @@
 
 # hexlet-basics
 
-### Участие
+## Участие
 
 * Обсуждение в канале #hexlet-volunteers слака http://slack-ru.hexlet.io
+
+## Setup
 
 ### Required
 
 * docker
 * docker compose
 
-### Setup
-
-```
-$ make compose-setup
-$ make app-test # run tests
-$ make compose # run server
-
-$ make app-db-prepare # sometimes, when fixtures were changed
-```
+### Steps
 
 **Add to _/etc/hosts_:**
   127.0.0.1 code-basics.test ru.code-basics.test en.code-basics.test
+
+```sh
+$ make compose-setup
+$ make compose # run server
+# open code-basics.test
+
+$ make app-test # run tests
+
+$ make app-db-prepare # sometimes, when fixtures were changed
+```
 
 ##
 [![Hexlet Ltd. logo](https://raw.githubusercontent.com/Hexlet/hexletguides.github.io/master/images/hexlet_logo128.png)](https://ru.hexlet.io/pages/about?utm_source=github&utm_medium=link&utm_campaign=exercises-javascript)

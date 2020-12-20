@@ -1,8 +1,8 @@
+compose:
+	docker-compose up
+
 compose-build:
 	docker-compose build
-
-compose:
-	docker-compose up -d
 
 compose-down:
 	docker-compose down -v || true
@@ -14,7 +14,7 @@ web-ci-test:
 	make compose-setup
 	make app-test
 
-compose-setup: env-prepare compose-down compose-build app-setup
+compose-setup: compose-down compose-build app-setup
 
-env-prepare:
-	cp -n .env.example .env || true
+# env-prepare:
+# 	cp -n .env.example .env || true

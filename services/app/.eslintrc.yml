@@ -1,18 +1,27 @@
-env:
-  browser: true
-  es6: true
-
-extends:
-  - 'plugin:react/recommended'
-  - airbnb
-
-parser: babel-eslint
+---
 
 plugins:
+  # https://github.com/jest-community/eslint-plugin-jest
+  - jest
   - react
+
+# https://eslint.org/docs/user-guide/configuring#specifying-environments
+env:
+  node: true
+  es2020: true
+
+extends:
+  - 'airbnb-base'
+  - 'plugin:jest/recommended'
+  - 'plugin:react/recommended'
+
+parserOptions:
+  ecmaVersion: 11
+  sourceType: module
 
 rules:
   max-len: ["error", { "code": 120 }]
-  import/no-unresolved: 0
-  import/extensions: 0
-
+  no-console: 0
+  # import/no-unresolved: 0
+  # import/extensions: 0 # FIXME: remove when rule will be adjusted for new nodejs version
+  no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }]
