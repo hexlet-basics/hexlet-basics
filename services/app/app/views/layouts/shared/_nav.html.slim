@@ -49,10 +49,10 @@ nav.px-3.navbar.navbar-light.navbar-expand-md.bg-white.shadow-sm.flex-shrink-0
             = link_to t('human_languages.elixir'), language_path("elixir"), class: "dropdown-item"
           li
             = link_to t('human_languages.go'), language_path("go"), class: "dropdown-item"
-      li.nav-item.ml-2
+      li.nav-item.ml-md-2
         = link_to about_pages_path, class: "nav-link"
           div = t('.about')
-      li.nav-item.mr-auto
+      li.nav-item.mr-md-auto
         = link_to ExternalLinks.hexlet_slack, target: '_blank', class: "nav-link"
           div = t('.community')
       - if current_user.guest?
