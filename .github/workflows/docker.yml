@@ -51,7 +51,7 @@ jobs:
           cache-to: type=inline
           push: true
           tags: |
-            ${{ env.IMAGE_NAME }}:latest
+            ${{ env.IMAGE_NAME }}:cached
 
       - name: Check
         run: |
