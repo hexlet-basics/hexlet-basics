@@ -34,7 +34,8 @@ services:
       - /tmp:/tmp
       - /var/tmp/hexletbasics:/var/tmp/hexletbasics
       - /var/run/docker.sock:/var/run/docker.sock
-    # env_file: '.env'
+    environment:
+      REDIS_URL: redis://redis:6379
     depends_on:
       - spring
       - redis
