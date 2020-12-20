@@ -9,7 +9,7 @@ on:
       - master
 
 env:
-  IMAGE_NAME: hexletbasics/hexlet-basics
+  IMAGE_NAME: hexletbasics/services-app
 
 jobs:
   main:
