@@ -21,7 +21,7 @@ services:
     command: bin/spring server
     pid: host
     volumes:
-      - ./services/app:/app
+      - ./services/app:/app:cached
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp:/tmp
 
@@ -30,7 +30,7 @@ services:
       context: services/app
     command: bundle exec sidekiq
     volumes:
-      - ./services/app:/app
+      - ./services/app:/app:cached
       - /tmp:/tmp
       - /var/tmp/hexletbasics:/var/tmp/hexletbasics
       - /var/run/docker.sock:/var/run/docker.sock
@@ -46,10 +46,10 @@ services:
     ports:
       - '3000:3000'
     volumes:
-      - ./services/app:/app
-      - '/tmp:/tmp'
-      - '/var/tmp/hexletbasics:/var/tmp/hexletbasics'
-      - '/var/run/docker.sock:/var/run/docker.sock'
+      - ./services/app:/app:cached
+      - /tmp:/tmp:cached
+      - /var/tmp/hexletbasics:/var/tmp/hexletbasics:cached
+      - /var/run/docker.sock:/var/run/docker.sock
     # env_file: '.env'
     depends_on:
       - redis
@@ -67,7 +67,7 @@ services:
     # env_file:
     #   - .env
     volumes:
-        - ./services/app:/app
+      - ./services/app:/app:cached
   caddy:
     image: caddy:2.2.1
     ports:
