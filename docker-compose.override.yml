@@ -13,6 +13,9 @@ services:
     build:
       context: services/app
     command: "make start"
+    volumes:
+      - ./services/app:/app:cached
+      - /tmp:/tmp
 
   spring:
     build:

@@ -39,7 +39,8 @@ jobs:
           cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:development
           cache-to: type=inline
           push: true
-          tags: ${{ env.IMAGE_NAME }}:development
+          tags: |
+            ${{ env.IMAGE_NAME }}:development
 
       - name: Build App
         uses: docker/build-push-action@v2
@@ -49,8 +50,8 @@ jobs:
           cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:cached
           cache-to: type=inline
           push: true
-          pull: false
-          tags: ${{ env.IMAGE_NAME }}:latest
+          tags: |
+            ${{ env.IMAGE_NAME }}:latest
 
       - name: Check
         run: |
