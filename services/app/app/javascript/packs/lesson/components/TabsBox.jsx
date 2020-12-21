@@ -34,7 +34,7 @@ const TabsBox = () => {
         ))}
       </Nav>
       <Tab.Content bsPrefix="d-flex h-100 tab-content overflow-auto">
-        <Tab.Pane eventKey={editor} bsPrefix="tab-pane h-100 pr-3 border-bottom w-100 overflow-hidden">
+        <Tab.Pane unmountOnExit eventKey={editor} bsPrefix="tab-pane h-100 pr-3 border-bottom w-100 overflow-hidden">
           <Editor />
         </Tab.Pane>
         <Tab.Pane eventKey={output} bsPrefix="tab-pane h-100 p-3 w-100">

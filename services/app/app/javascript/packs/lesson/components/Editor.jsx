@@ -51,7 +51,7 @@ const commonOptions = {
 
 const Editor = () => {
   const { language } = useContext(EntityContext);
-  const { content } = useSelector((state) => state.editorSlice);
+  const { content, cursorPosition } = useSelector((state) => state.editorSlice);
   const dispatch = useDispatch();
 
   const onContentChange = (_editor, _data, newContent) => {
@@ -61,7 +61,16 @@ const Editor = () => {
   const onMount = (editor) => {
     editor.focus();
     editor.refresh();
+    if (cursorPosition) {
+      editor.setCursor(cursorPosition);
+    }
     // TODO: add hot key for check code on ctrl+Enter
+  };
+
+  const onBlur = (editor) => {
+    const { line, ch } = editor.getCursor();
+    const lastCursorPosition = { line, ch };
+    dispatch(actions.saveCursorPosition({ cursorPosition: lastCursorPosition }));
   };
 
   const options = {
@@ -78,6 +87,7 @@ const Editor = () => {
       onChange={onContentChange}
       editorDidMount={onMount}
       className="w-100 h-100"
+      onBlur={onBlur}
     />
   );
 };

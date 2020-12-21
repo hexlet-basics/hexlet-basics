@@ -5,10 +5,14 @@ const slice = createSlice({
   name: 'editorSlice',
   initialState: {
     content: '',
+    cursorPosition: null,
   },
   reducers: {
     changeContent(state, { payload }) {
       state.content = payload.content;
+    },
+    saveCursorPosition(state, { payload }) {
+      state.cursorPosition = payload.cursorPosition;
     },
   },
 });
