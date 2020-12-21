@@ -17,3 +17,6 @@ javascript:
 
 css:
   <<: *DEFAULTS
+
+python:
+  <<: *DEFAULTS
