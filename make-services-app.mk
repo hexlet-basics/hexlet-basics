@@ -12,6 +12,11 @@ app-rails-console:
 	docker-compose run app bin/rails c
 
 app-setup: app-install app-db-prepare
+	make app-language-load L='javascript'
+	make app-language-load L='php'
+	make app-language-load L='python'
+	make app-language-load L='ruby'
+	make app-language-load L='css'
 
 app-install:
 	docker-compose run app make setup
