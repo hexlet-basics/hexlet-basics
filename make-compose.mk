@@ -5,7 +5,7 @@ compose-build:
 	docker-compose build
 
 compose-down:
-	docker-compose down -v || true
+	docker-compose down || true
 
 compose-restart:
 	docker-compose restart

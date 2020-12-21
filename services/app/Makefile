@@ -16,7 +16,7 @@ fixtures-load:
 setup:
 	# cp -n .env.example .env || true
 	bin/setup
-	# yarn install
+	yarn install
 
 db-reset:
 	bin/rails db:drop
