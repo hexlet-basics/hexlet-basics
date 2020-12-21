@@ -16,6 +16,7 @@ services:
     volumes:
       - ./services/app:/app:cached
       - /var/run/docker.sock:/var/run/docker.sock
+      - /var/tmp/hexletbasics:/var/tmp/hexletbasics
       - /tmp:/tmp
 
   spring:
