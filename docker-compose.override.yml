@@ -15,6 +15,7 @@ services:
     command: "make start"
     volumes:
       - ./services/app:/app:cached
+      - /var/run/docker.sock:/var/run/docker.sock
       - /tmp:/tmp
 
   spring:
