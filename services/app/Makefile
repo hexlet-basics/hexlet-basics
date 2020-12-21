@@ -46,7 +46,7 @@ lint-rubocop:
 	bundle exec rubocop
 
 lint-eslint:
-	npx eslint app/javascript
+	npx eslint app/javascript --ext .js,.jsx
 
 js-routes:
 	bundle exec rails js_routes:generate

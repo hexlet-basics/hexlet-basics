@@ -9,15 +9,25 @@ plugins:
 env:
   node: true
   es2020: true
+  browser: true
 
 extends:
   - 'airbnb'
-  - 'plugin:jest/recommended'
+  - 'airbnb/hooks'
   - 'plugin:react/recommended'
+  - 'plugin:jest/recommended'
+
+parser: 'babel-eslint'
 
 parserOptions:
   ecmaVersion: 11
   sourceType: module
+  ecmaFeatures:
+    jsx: true
+
+settings:
+  jest:
+    version: 26
 
 rules:
   max-len: ["error", { "code": 120 }]
