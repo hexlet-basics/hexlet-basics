@@ -16,7 +16,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     gon.lesson_version = @lesson_version
     gon.lesson = @lesson
 
-    title @resource_language
+    title t("human_languages.#{@resource_language}")
     title @info
   end
 
