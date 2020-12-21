@@ -6,6 +6,8 @@
         = simple_form_for @sign_in_form, url: session_path, wrapper: :no_labels_form do |f|
           = f.input :email, input_html: { 'data-testid' => 'email' }
           = f.input :password, input_html: { 'data-testid' => 'password' }
+          .text-right.mb-3
+            = link_to t('.forgot_password'), new_remind_password_path
           .form-group
             = f.submit class: 'btn btn-primary mb-2 w-100', 'data-testid' => 'submit'
             = link_to auth_request_path('github'), class: 'btn btn-secondary btn-block' do

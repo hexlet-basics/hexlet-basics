@@ -6,6 +6,7 @@ DEFAULTS: &DEFAULTS
 full:
   <<: *DEFAULTS
   admin: true
+  reset_password_token: <%= SecureHelper.generate_token %>
 
 one:
   <<: *DEFAULTS

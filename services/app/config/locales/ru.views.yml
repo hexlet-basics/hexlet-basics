@@ -33,6 +33,17 @@ ru:
         dont_have_account: Нет аккаунта?
         register: Регистрация
         sign_in_with_github: Войти через GitHub
+        forgot_password: Забыли пароль?
+    passwords:
+      edit:
+        new_password: Новый пароль
+    remind_passwords:
+      new:
+        forgot_password: Забыли пароль
+        trying_to_login: Пытаетесь войти?
+        login: Войти
+        dont_have_account: Нет аккаунта?
+        register: Регистрация
     languages:
       show:
         start: Начать обучение
