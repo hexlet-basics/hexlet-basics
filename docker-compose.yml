@@ -3,11 +3,6 @@
 version: '3'
 
 services:
-  # image-app-base:
-  #   image: hexletbasics/services-app:cached-base
-  #   build:
-  #     context: services/app
-
   postgres:
     image: postgres:12-alpine
     environment:
@@ -17,12 +12,8 @@ services:
 
   app:
     image: hexletbasics/services-app:cached
-    # build:
-    #   context: services/app
-    #   dockerfile: Dockerfile.production
     command: "make ci-check"
     depends_on:
-      # - image-app-base
       - postgres
 
 volumes:
