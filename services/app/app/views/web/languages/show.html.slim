@@ -4,8 +4,8 @@
   meta content="#{language_url(@language.slug)}" property='og:url'
   meta content="#{image_url("#{@language.slug}.png")}" property='og:image'
   link rel='canonical' href="#{language_url(@language.slug)}"
-  meta content="#{@language}" property='og:description'
-  meta content="#{@language}" name='description'
+  meta content=t(".#{@language}_description") property='og:description'
+  meta content=t(".#{@language}_description") name='description'
   meta content="#{I18n.locale}" property='og:locale'
 
 h1.text-center.display-4.mt-4
