@@ -8,7 +8,7 @@ RUN yarn install
 COPY Gemfile .
 COPY Gemfile.lock .
 
-RUN bundle config set without 'development'
+# RUN bundle config set without 'development'
 
 RUN bundle install --jobs $(nproc)
 
