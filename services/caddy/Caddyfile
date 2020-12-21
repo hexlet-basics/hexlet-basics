@@ -17,7 +17,7 @@ localhost, ru.code-basics.test, en.code-basics.test, code-basics.test {
     # header_upstream X-Forwarded-Host {host}
   }
 
-  reverse_proxy /* web:3000 {
+  reverse_proxy /* app:3000 {
     # insecure_skip_verify
     # transparent
     # websocket
