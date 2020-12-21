@@ -1,0 +1,10 @@
+ru:
+  titles:
+    web:
+      base: Code Basics
+      home:
+        base: 'Code Basics: basics of programming'
+      pages:
+        about: About
+        tos: Terms of Service
+        privacy: Privacy
