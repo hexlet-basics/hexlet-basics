@@ -14,11 +14,11 @@ footer
         h2.h4 = t('.information')
         ul.list-unstyled
           li
-            = link_to t('.about'), about_pages_path, class: 'text-muted'
+            = link_to t('.about'), page_path(:about), class: 'text-muted'
           li
-            = link_to t('.tos'), tos_pages_path, class: 'text-muted'
+            = link_to t('.tos'), page_path(:tos), class: 'text-muted'
           li
-            = link_to t('.privacy'), privacy_pages_path, class: 'text-muted'
+            = link_to t('.privacy'), page_path(:privacy), class: 'text-muted'
       .col.mb-4.mb-lg-0.order-0.order-md-3
         h2.h4 = t('.social_networks')
         span.mr-3

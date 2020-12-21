@@ -4,6 +4,10 @@ ru:
       base: Code Basics
       home:
         base: 'Code Basics: основы программирования'
+      pages:
+        about: О проекте
+        tos: Условия использования
+        privacy: Политика конфиденциальности
       languages:
         lessons:
           base: Уроки

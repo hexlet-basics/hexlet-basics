@@ -39,7 +39,7 @@ nav.px-3.navbar.navbar-light.navbar-expand-md.bg-white.shadow-sm.flex-shrink-0
           = link_to t('human_languages.ruby'), language_path("ruby"), class: "dropdown-item"
           = link_to t('human_languages.elixir'), language_path("elixir"), class: "dropdown-item"
           = link_to t('human_languages.go'), language_path("go"), class: "dropdown-item"
-      = nav_menu_item t('.about'), about_pages_path
+      = nav_menu_item t('.about'), page_path(:about)
       = nav_menu_item t('.community'), ExternalLinks.hexlet_slack, target: '_blank'
       li.mr-md-auto
       - if current_user.guest?

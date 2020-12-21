@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     get 'auth/:provider', to: 'auth#request', as: :auth_request
     get 'auth/:provider/callback', to: 'auth#callback', as: :callback_auth
 
+    resources :pages, only: [:show]
     resource :session, only: %i[new create destroy]
     resources :users, only: %i[new create]
 
@@ -27,11 +28,6 @@ Rails.application.routes.draw do
           get :prev_lesson, on: :member
         end
       end
-    end
-    resources :pages, only: [] do
-      get :about, on: :collection
-      get :tos, on: :collection
-      get :privacy, on: :collection
     end
 
     namespace :admin do
