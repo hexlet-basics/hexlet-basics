@@ -2,6 +2,8 @@ ru:
   titles:
     web:
       base: Code Basics
+      home:
+        base: 'Code Basics: основы программирования'
       languages:
         lessons:
           base: Уроки
