@@ -3,6 +3,10 @@ test:
 
 check: test lint
 
+ci-check:
+	bin/rails db:create
+	DISABLE_SPRING=1 bin/rails test
+
 language-load:
 	bin/rails exercises:load[${L}]
 

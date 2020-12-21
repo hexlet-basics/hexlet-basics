@@ -20,7 +20,7 @@ services:
     # build:
     #   context: services/app
     #   dockerfile: Dockerfile.production
-    command: "make db-reset check"
+    command: "make ci-check"
     depends_on:
       # - image-app-base
       - postgres
