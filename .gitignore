@@ -15,6 +15,7 @@
 /services/app/log/*
 /services/app/tmp/*
 !/log/.keep
+/tmp/*
 !/tmp/.keep
 
 # Ignore uploaded files in development.

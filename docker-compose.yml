@@ -8,13 +8,12 @@ services:
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - ./tmp/database-data:/var/lib/postgresql/data/
 
   app:
     image: hexletbasics/services-app:cached
     command: "make ci-check"
+    env_file:
+      - .env
     depends_on:
       - postgres
-
-volumes:
-  pgdata:
