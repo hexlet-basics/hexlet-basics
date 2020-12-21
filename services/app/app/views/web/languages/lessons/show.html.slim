@@ -4,8 +4,8 @@
   meta content="#{language_lesson_url(@lesson.language.slug, @lesson.slug)}" property='og:url'
   meta content="#{image_url("#{@lesson.language.slug}.png")}" property='og:image'
   link rel='canonical' href="#{language_lesson_url(@lesson.language.slug, @lesson.slug)}"
-  meta content="#{@info} / #{@lesson.language}" property='og:description'
-  meta content="#{@info} / #{@lesson.language}" name='description'
+  meta content="#{truncate(@info.theory, length: 150)}" property='og:description'
+  meta content="#{truncate(@info.theory, length: 150)}" property='description'
   meta content="#{I18n.locale}" property='og:locale'
 
 .row.pt-2.x-h-md-100
