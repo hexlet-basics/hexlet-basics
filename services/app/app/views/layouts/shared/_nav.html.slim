@@ -9,52 +9,39 @@ nav.px-3.navbar.navbar-light.navbar-expand-md.bg-white.shadow-sm.flex-shrink-0
   )
     span.navbar-toggler-icon
   #navbarToggler.collapse.navbar-collapse
-    ul.d-flex.w-100.navbar-nav
-      li.nav-item.dropdown
+    ul.flex-grow-1.navbar-nav
+      li.nav-item.dropdown.mr-md-2
         a.nav-link.dropdown-toggle href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"
           = t('.change_course')
-        ul.dropdown-menu.dropdown-menu-columns.dropdown-menu-arrow aria-labelledby="dropdownMenuLink"
-          li
-            = link_to language_path("php"), class: "dropdown-item d-flex align-items-center"
-              span.dropdown-item-icon.fab.fa-php.d-flex.justify-content-center.align-items-center
-              span.dropdown-item-text = t('human_languages.php')
-          li
-            = link_to language_path("javascript"), class: "dropdown-item d-flex align-items-center"
-              span.dropdown-item-icon.fab.fa-js-square.d-flex.justify-content-center.align-items-center
-              span.dropdown-item-text = t('human_languages.javascript')
-          li
-            = link_to language_path("python"), class: "dropdown-item d-flex align-items-center"
-              span.dropdown-item-icon.fab.fa-python.d-flex.justify-content-center.align-items-center
-              span.dropdown-item-text = t('human_languages.python')
-          li
-            = link_to language_path("java"), class: "dropdown-item d-flex align-items-center"
-              span.dropdown-item-icon.fab.fa-java.d-flex.justify-content-center.align-items-center
-              span.dropdown-item-text = t('human_languages.java')
-          li
-            = link_to language_path("html"), class: "dropdown-item d-flex align-items-center"
-              span.dropdown-item-icon.fab.fa-html5.d-flex.justify-content-center.align-items-center
-              span.dropdown-item-text = t('human_languages.html')
-          li
-            = link_to language_path("css"), class: "dropdown-item d-flex align-items-center"
-              span.dropdown-item-icon.fab.fa-css3-alt.d-flex.justify-content-center.align-items-center
-              span.dropdown-item-text = t('human_languages.css')
-          li
-            = link_to language_path("racket"), class: "dropdown-item d-flex align-items-center"
-              span.dropdown-item-icon.fas.fa-rocket.d-flex.justify-content-center.align-items-center
-              span.dropdown-item-text = t('human_languages.racket')
-          li.dropdown-divider
-          li
-            = link_to t('human_languages.ruby'), language_path("ruby"), class: "dropdown-item"
-          li
-            = link_to t('human_languages.elixir'), language_path("elixir"), class: "dropdown-item"
-          li
-            = link_to t('human_languages.go'), language_path("go"), class: "dropdown-item"
-      li.nav-item.ml-md-2
-        = link_to about_pages_path, class: "nav-link"
-          div = t('.about')
-      li.nav-item.mr-md-auto
-        = link_to ExternalLinks.hexlet_slack, target: '_blank', class: "nav-link"
-          div = t('.community')
+        .dropdown-menu.dropdown-menu-columns.dropdown-menu-arrow aria-labelledby="dropdownMenuLink"
+          = link_to language_path("php"), class: "dropdown-item d-flex align-items-center"
+            span.dropdown-item-icon.fab.fa-php.d-flex.justify-content-center.align-items-center
+            span.dropdown-item-text = t('human_languages.php')
+          = link_to language_path("javascript"), class: "dropdown-item d-flex align-items-center"
+            span.dropdown-item-icon.fab.fa-js-square.d-flex.justify-content-center.align-items-center
+            span.dropdown-item-text = t('human_languages.javascript')
+          = link_to language_path("python"), class: "dropdown-item d-flex align-items-center"
+            span.dropdown-item-icon.fab.fa-python.d-flex.justify-content-center.align-items-center
+            span.dropdown-item-text = t('human_languages.python')
+          = link_to language_path("java"), class: "dropdown-item d-flex align-items-center"
+            span.dropdown-item-icon.fab.fa-java.d-flex.justify-content-center.align-items-center
+            span.dropdown-item-text = t('human_languages.java')
+          = link_to language_path("html"), class: "dropdown-item d-flex align-items-center"
+            span.dropdown-item-icon.fab.fa-html5.d-flex.justify-content-center.align-items-center
+            span.dropdown-item-text = t('human_languages.html')
+          = link_to language_path("css"), class: "dropdown-item d-flex align-items-center"
+            span.dropdown-item-icon.fab.fa-css3-alt.d-flex.justify-content-center.align-items-center
+            span.dropdown-item-text = t('human_languages.css')
+          = link_to language_path("racket"), class: "dropdown-item d-flex align-items-center"
+            span.dropdown-item-icon.fas.fa-rocket.d-flex.justify-content-center.align-items-center
+            span.dropdown-item-text = t('human_languages.racket')
+          .dropdown-divider
+          = link_to t('human_languages.ruby'), language_path("ruby"), class: "dropdown-item"
+          = link_to t('human_languages.elixir'), language_path("elixir"), class: "dropdown-item"
+          = link_to t('human_languages.go'), language_path("go"), class: "dropdown-item"
+      = nav_menu_item t('.about'), about_pages_path
+      = nav_menu_item t('.community'), ExternalLinks.hexlet_slack, target: '_blank'
+      li.mr-md-auto
       - if current_user.guest?
         = nav_menu_item t('.sign_in'), new_session_path
         = nav_menu_item t('.registration'), new_user_path
