@@ -11,7 +11,7 @@ module ApplicationHelper
     assembled_options = options.merge(class: "nav-link #{active?(path)}")
     tag.li class: 'nav-item' do
       link_to path, assembled_options do
-        tag.div(name)
+        name
       end
     end
   end
