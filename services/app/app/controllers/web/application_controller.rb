@@ -1,21 +1,20 @@
 # frozen_string_literal: true
 
 class Web::ApplicationController < ApplicationController
-  around_action :switch_locale
   include AuthManagment
   include FlashConcern
   include TitleConcern
 
-  def switch_locale(&action)
-    locale = extract_locale_from_subdomain || I18n.default_locale
-    I18n.with_locale(locale, &action)
-  end
+  before_action do
+    locale = request.subdomains.first || current_user.locale || :en
 
-  private
+    if locale == :ru && request.subdomains.empty?
+      redirect_to url_for(params.merge(subdomain: locale, only_path: false).permit!)
+    end
 
-  def extract_locale_from_subdomain
-    parsed_locale = request.subdomains.first
-    I18n.available_locales.map(&:to_s).include?(parsed_locale) ? parsed_locale : nil
+    locale = request.subdomains.first || :en
+
+    I18n.locale = locale
   end
 
   before_action do

@@ -24,9 +24,4 @@ module ApplicationHelper
       'active'
     end
   end
-
-  def get_url_for_locale(locale)
-    config_key = "app_url_#{locale}"
-    Rails.configuration.hexlet_basics[config_key]
-  end
 end

@@ -7,8 +7,9 @@ footer.mt-5
         p = t('.hexlet_number')
         a.text-muted(href="mailto:#{ExternalLinks.hexlet_support_mail}") = ExternalLinks.hexlet_support_mail
         div
+          - # FIXME
           - I18n.available_locales.without(I18n.locale).each do |locale|
-            = link_to get_url_for_locale(locale) do
+            = link_to 'https://ru.code-basics.com' do
               = image_tag "flag-#{locale}.svg", width: 25, alt: "switch language to #{locale}"
       .col.mb-4.mb-lg-0.order-2.order-md-2
         h2.h4 = t('.information')
