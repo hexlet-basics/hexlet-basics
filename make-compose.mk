@@ -18,6 +18,5 @@ compose-ci-build:
 compose-ci:
 	docker-compose -f docker-compose.yml up
 
-
-# env-prepare:
-# 	cp -n .env.example .env || true
+env-prepare:
+	cp -n .env.populate .env || true

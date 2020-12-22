@@ -14,7 +14,6 @@ fixtures-load:
 	bin/rails db:fixtures:load
 
 setup:
-	# cp -n .env.example .env || true
 	bin/setup
 	yarn install
 

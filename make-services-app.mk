@@ -11,7 +11,7 @@ app-test: app-db-prepare
 app-rails-console:
 	docker-compose run app bin/rails c
 
-app-setup: app-install app-db-prepare
+app-setup: env-prepare app-install app-db-prepare
 	make app-language-load L='javascript'
 	make app-language-load L='php'
 	make app-language-load L='python'
