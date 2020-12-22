@@ -39,7 +39,7 @@ jobs:
           docker build \
             --pull \
             --cache-from ${{ env.IMAGE_NAME }}:cached \
-            --file Dockerfile.production \
+            --file services/app/Dockerfile.production \
             --tag ${{ env.IMAGE_NAME }}:cached services/app
           docker push ${{ env.IMAGE_NAME }}:cached
 
