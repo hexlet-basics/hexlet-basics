@@ -2,7 +2,7 @@
   .col-sm-8.col-md-7.col-lg-6
     .card
       .card-body.p-4.p-lg-5
-        h1.h3.mb-4.mt-3.text-center = t('.forgot_password')
+        h1.h3.mb-4.text-center = t('.forgot_password')
         = simple_form_for @remind_password_form, url: remind_password_path, wrapper: :no_labels_form do |f|
           = f.input :email
           = f.submit class: 'btn btn-primary btn-block'
