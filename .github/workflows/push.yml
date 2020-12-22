@@ -7,6 +7,7 @@ on:
 
 env:
   IMAGE_NAME: hexletbasics/services-app
+  CADDY_IMAGE_NAME: hexletbasics/services-caddy
   COLOR_MAP: '{ success: "#008000", failure: "#800000" }'
 
 jobs:
@@ -55,6 +56,24 @@ jobs:
           cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:cached
           push: true
           tags: ${{ env.IMAGE_NAME }}:latest
+
+      - name: Build Caddy
+        run: |
+          docker build \
+            --pull \
+            --cache-from ${{ env.CADDY_IMAGE_NAME }}:cached \
+            --file services/caddy/Dockerfile.production \
+            --tag ${{ env.CADDY_IMAGE_NAME }}:cached services/caddy
+          docker push ${{ env.CADDY_IMAGE_NAME }}:cached
+
+      - name: Push
+        uses: docker/build-push-action@v2
+        with:
+          context: services/caddy
+          file: services/caddy/Dockerfile.production
+          cache-from: type=registry,ref=${{ env.CADDY_IMAGE_NAME }}:cached
+          push: true
+          tags: ${{ env.CADDY_IMAGE_NAME }}:latest
 
       - name: Send notification into Slack
         if: ${{ always() }}

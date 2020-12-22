@@ -7,6 +7,7 @@ on:
 
 env:
   IMAGE_NAME: hexletbasics/services-app
+  CADDY_IMAGE_NAME: hexletbasics/services-caddy
 
 jobs:
   build:
@@ -22,14 +23,23 @@ jobs:
       - name: Set Tag To The Env
         run: echo "RELEASE_VERSION=$(echo ${GITHUB_REF:10})" >> $GITHUB_ENV
 
-      - name: Pull
+      - name: Pull App
         run: docker pull ${{ env.IMAGE_NAME }}
 
-      - name: Tag
+      - name: Tag App
         run: docker tag ${{ env.IMAGE_NAME }} ${{ env.IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
 
-      - name: Push
+      - name: Push App
         run: docker push ${{ env.IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
+
+      - name: Pull Caddy
+        run: docker pull ${{ env.CADDY_IMAGE_NAME }}
+
+      - name: Tag Caddy
+        run: docker tag ${{ env.CADDY_IMAGE_NAME }} ${{ env.CADDY_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
+
+      - name: Push Caddy
+        run: docker push ${{ env.CADDY_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
 
       - name: Send notification into Slack
         if: ${{ always() }}
