@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 class Web::RemindPasswordsController < Web::ApplicationController
+
+  before_action do
+    title :base
+  end
+
   def new
     @remind_password_form = RemindPasswordForm.new(User.new)
   end

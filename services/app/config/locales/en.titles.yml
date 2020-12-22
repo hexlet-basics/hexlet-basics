@@ -12,3 +12,5 @@ en:
         base: Registration
       sessions:
         base: Sign In
+      remind_passwords:
+        base: Remind password

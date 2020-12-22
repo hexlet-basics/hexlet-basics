@@ -12,3 +12,5 @@ ru:
         base: Регистрация
       sessions:
         base: Вход
+      remind_passwords:
+        base: Восстановление пароля
