@@ -71,12 +71,12 @@ jobs:
           push: true
           tags: ${{ env.NGINX_IMAGE_NAME }}:latest
 
-      - name: Set Tag To The Env
-        run: echo "RELEASE_VERSION=$(echo ${GITHUB_REF:10})" >> $GITHUB_ENV
+      # - name: Set Tag To The Env
+      #   run: echo "RELEASE_VERSION=$(echo ${GITHUB_REF:10})" >> $GITHUB_ENV
 
-      - name: Release
-        if: contains(github.ref, '/tags/')
-        run:
+      # - name: Release
+      #   if: contains(github.ref, '/tags/')
+      #   run:
 
       - name: Send notification into Slack
         if: ${{ always() }}
