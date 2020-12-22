@@ -32,7 +32,7 @@ jobs:
           context: services/app
           file: services/app/Dockerfile
           cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:cached-base
-          cache-to: type=registry,ref=${{ env.IMAGE_NAME }}:cached-base
+          cache-to: type=inline
           # push: true
           tags: |
             ${{ env.IMAGE_NAME }}:latest
@@ -44,7 +44,7 @@ jobs:
           context: services/app
           file: services/app/Dockerfile.production
           cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:cached
-          cache-to: type=registry,ref=${{ env.IMAGE_NAME }}:cached
+          cache-to: type=inline
           # push: true
           tags: |
             ${{ env.IMAGE_NAME }}:latest
