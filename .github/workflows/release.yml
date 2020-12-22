@@ -22,7 +22,7 @@ jobs:
         run: docker tag ${{ env.IMAGE_NAME }} ${{ env.IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
 
       - name: Push
-        run: docker push ${{ env.RELEASE_IMAGE_NAME }}
+        run: docker push ${{ env.IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
 
       - name: Send notification into Slack
         if: ${{ always() }}
