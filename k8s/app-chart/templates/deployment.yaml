@@ -59,9 +59,9 @@ spec:
               - key: .dockerconfigjson
                 path: config.json
       containers:
-        - name: caddy
+        - name: nginx
           imagePullPolicy: "{{ .Values.nginx.image.imagePullPolicy }}"
-          image: "{{ .Values.nginx.caddy.repository }}:{{ .Values.version }}"
+          image: "{{ .Values.nginx.image.repository }}:{{ .Values.version }}"
           readinessProbe:
             httpGet:
               path: /
