@@ -36,7 +36,7 @@ jobs:
           file: services/app/Dockerfile.production
           # platforms: linux/amd64
           cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}:cached
-          # cache-to: type=registry,ref=${{ env.APP_IMAGE_NAME }}:cached
+          cache-to: type=inline
           push: true
           tags: ${{ env.APP_IMAGE_NAME }}:cached
 
