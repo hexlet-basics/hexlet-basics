@@ -14,3 +14,5 @@ en:
         base: Sign In
       remind_passwords:
         base: Remind password
+      passwords:
+        base: Change password

@@ -14,3 +14,5 @@ ru:
         base: Вход
       remind_passwords:
         base: Восстановление пароля
+      passwords:
+        base: Изменение пароля
