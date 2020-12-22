@@ -43,7 +43,7 @@ jobs:
       - name: Build App
         run:
           docker pull ${{ env.IMAGE_NAME }}:cached || true
-          docker build -t ${{ env.IMAGE_NAME }}:cached services/app
+          docker build -f Dockerfile.production -t ${{ env.IMAGE_NAME }}:cached services/app
           docker push ${{ env.IMAGE_NAME }}:cached
         # uses: docker/build-push-action@v2
         # with:
