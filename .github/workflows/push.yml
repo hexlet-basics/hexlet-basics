@@ -32,8 +32,8 @@ jobs:
           context: services/app
           file: services/app/Dockerfile
           cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:cached-base2
-          cache-to: type=inline
-          # push: true
+          # cache-to: type=inline
+          push: true
           tags: ${{ env.IMAGE_NAME }}:cached-base2
 
       - name: Build App
@@ -42,11 +42,9 @@ jobs:
           context: services/app
           file: services/app/Dockerfile.production
           cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:cached
-          cache-to: type=inline
-          # push: true
-          tags: |
-            ${{ env.IMAGE_NAME }}:latest
-            ${{ env.IMAGE_NAME }}:cached
+          # cache-to: type=inline
+          push: true
+          tags: ${{ env.IMAGE_NAME }}:cached
 
       - name: Check
         run: |
@@ -57,8 +55,7 @@ jobs:
         with:
           context: services/app
           file: services/app/Dockerfile.production
-          # cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:cached
-          # cache-to: type=registry,ref=${{ env.IMAGE_NAME }}:cached
+          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:cached
           push: true
           tags: ${{ env.IMAGE_NAME }}:latest
 
