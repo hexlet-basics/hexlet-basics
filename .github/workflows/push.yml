@@ -20,8 +20,8 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+      # - name: Set up QEMU
+      #   uses: docker/setup-qemu-action@v1
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -37,12 +37,11 @@ jobs:
         with:
           context: services/app
           file: services/app/Dockerfile.production
-          platforms: linux/amd64
+          # platforms: linux/amd64
           cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}:cached
-          cache-to: type=registry,ref=${{ env.APP_IMAGE_NAME }}:cached
-          tags: |
-            ${{ env.APP_IMAGE_NAME }}:cached
-            ${{ env.APP_IMAGE_NAME }}:latest
+          # cache-to: type=registry,ref=${{ env.APP_IMAGE_NAME }}:cached
+          push: true
+          tags: ${{ env.APP_IMAGE_NAME }}:cached
 
       - name: Check
         run: |
@@ -71,6 +70,13 @@ jobs:
           file: services/web-nginx/Dockerfile.production
           push: true
           tags: ${{ env.NGINX_IMAGE_NAME }}:latest
+
+      - name: Set Tag To The Env
+        run: echo "RELEASE_VERSION=$(echo ${GITHUB_REF:10})" >> $GITHUB_ENV
+
+      - name: Release
+        if: contains(github.ref, '/tags/')
+        run:
 
       - name: Send notification into Slack
         if: ${{ always() }}
