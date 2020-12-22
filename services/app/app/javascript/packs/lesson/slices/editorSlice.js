@@ -1,18 +1,25 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 
+import { actions as tabActions } from './tabsBoxSlice.js';
+
 const slice = createSlice({
   name: 'editorSlice',
   initialState: {
     content: '',
-    cursorPosition: null,
+    focusesCount: 1,
   },
   reducers: {
     changeContent(state, { payload }) {
       state.content = payload.content;
     },
-    saveCursorPosition(state, { payload }) {
-      state.cursorPosition = payload.cursorPosition;
+  },
+  extraReducers: {
+    [tabActions.changeTab](state, { payload }) {
+      const { newTabState } = payload;
+      if (newTabState === 'editor') {
+        state.focusesCount += 1;
+      }
     },
   },
 });

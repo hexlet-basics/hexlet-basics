@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { UnControlled as CodeMirrorEditor } from 'react-codemirror2';
 import { actions } from '../slices/index.js';
@@ -51,26 +51,23 @@ const commonOptions = {
 
 const Editor = () => {
   const { language } = useContext(EntityContext);
-  const { content, cursorPosition } = useSelector((state) => state.editorSlice);
+  const { content, focusesCount } = useSelector((state) => state.editorSlice);
   const dispatch = useDispatch();
+  const [editor, setEditor] = useState(null);
 
   const onContentChange = (_editor, _data, newContent) => {
     dispatch(actions.changeContent({ content: newContent }));
   };
 
-  const onMount = (editor) => {
-    editor.focus();
-    editor.refresh();
-    if (cursorPosition) {
-      editor.setCursor(cursorPosition);
-    }
-    // TODO: add hot key for check code on ctrl+Enter
-  };
+  useEffect(() => {
+    editor?.focus();
+  }, [editor, focusesCount]);
 
-  const onBlur = (editor) => {
-    const { line, ch } = editor.getCursor();
-    const lastCursorPosition = { line, ch };
-    dispatch(actions.saveCursorPosition({ cursorPosition: lastCursorPosition }));
+  const onMount = (self) => {
+    setEditor(self);
+    self.focus();
+    self.refresh();
+    // TODO: add hot key for check code on ctrl+Enter
   };
 
   const options = {
@@ -87,7 +84,6 @@ const Editor = () => {
       onChange={onContentChange}
       editorDidMount={onMount}
       className="w-100 h-100"
-      onBlur={onBlur}
     />
   );
 };
