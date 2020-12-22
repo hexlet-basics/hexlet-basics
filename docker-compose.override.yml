@@ -13,6 +13,9 @@ services:
     build:
       context: services/app
     command: "make start"
+    env_file:
+      - .env.development
+      - .env
     volumes:
       - ./services/app:/app:cached
       - /var/run/docker.sock:/var/run/docker.sock
@@ -38,8 +41,8 @@ services:
       - /tmp:/tmp
       - /var/tmp/hexletbasics:/var/tmp/hexletbasics
       - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      REDIS_URL: redis://redis:6379
+    env_file:
+      - .env.development
     depends_on:
       - spring
       - redis
