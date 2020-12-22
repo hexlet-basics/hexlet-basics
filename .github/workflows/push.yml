@@ -44,7 +44,7 @@ jobs:
 
       - name: Check
         run: |
-          docker-compose pull
+          docker-compose pull --file docker-compose.yml
           docker-compose --file docker-compose.yml up --abort-on-container-exit
 
       - name: Push
