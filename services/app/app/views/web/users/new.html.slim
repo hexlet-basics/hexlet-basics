@@ -1,18 +1,17 @@
 .row.justify-content-center.pb-5.mt-5
-  .col-12.col-sm-8.col-md-7.col-lg-4
-    .card.border-top
-      .card-body
-        h1.mb-4.text-center = t('.sign_up')
+  .col-sm-8.col-md-7.col-lg-6
+    .card
+      .card-body.p-4.p-lg-5
+        h1.mb-4.mb-lg-5.text-center = t('.sign_up')
         = simple_form_for @user, url: users_path, wrapper: :no_labels_form do |f|
           = f.input :email
           = f.input :password
-          .form-group
-            = f.submit class: 'btn btn-primary mb-2 w-100'
+          .form-group.mt-5
+            = f.submit class: 'btn btn-primary mb-2 btn-block'
             = link_to auth_request_path('github'), class: 'btn btn-secondary btn-block' do
-              i.fab.mr-2.fa-github
+              span.fab.mr-2.fa-github
               = t('.sign_up_with_github')
 
-      .card-footer.text-center
+      .card-footer.text-center.p-3.p-md-4
         span.mr-1 = t('.have_account')
         = link_to t('.sign_in'), new_session_path
-
