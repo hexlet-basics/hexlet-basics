@@ -44,7 +44,7 @@ jobs:
 
       - name: Check
         run: |
-          docker-compose --file docker-compose.yml pull
+          # TODO Какая-то херня. Выше делается образ, который используется в этом композе, но он его не использует и качает вроде бы этот же образ из реестра.
           docker-compose --file docker-compose.yml up --abort-on-container-exit
 
       - name: Push
