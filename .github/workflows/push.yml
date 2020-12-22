@@ -55,7 +55,6 @@ jobs:
           cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}:cached
           push: true
           tags: ${{ env.APP_IMAGE_NAME }}:latest
-      - run: docker push ${{ env.APP_IMAGE_NAME }}:latest
 
       - name: Build&Push Caddy
         uses: docker/build-push-action@v2
@@ -64,7 +63,6 @@ jobs:
           file: services/caddy/Dockerfile.production
           push: true
           tags: ${{ env.CADDY_IMAGE_NAME }}:latest
-      - run: docker push ${{ env.APP_IMAGE_NAME }}:latest
 
       - name: Build&Push Nginx
         uses: docker/build-push-action@v2
@@ -73,7 +71,6 @@ jobs:
           file: services/web-nginx/Dockerfile.production
           push: true
           tags: ${{ env.NGINX_IMAGE_NAME }}:latest
-      - run: docker push ${{ env.APP_IMAGE_NAME }}:latest
 
       - name: Send notification into Slack
         if: ${{ always() }}
@@ -104,6 +101,7 @@ jobs:
           cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}:latest
           load: true
           tags: ${{ env.APP_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
+      - run: docker push ${{ env.APP_IMAGE_NAME }}:latest
 
       - name: Tag Nginx
         uses: docker/build-push-action@v2
@@ -113,6 +111,7 @@ jobs:
           cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}:latest
           load: true
           tags: ${{ env.NGINX_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
+      - run: docker push ${{ env.NGINX_IMAGE_NAME }}:latest
 
       - name: Tag Caddy
         uses: docker/build-push-action@v2
@@ -122,6 +121,7 @@ jobs:
           cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}:latest
           load: true
           tags: ${{ env.CADDY_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
+      - run: docker push ${{ env.CADDY_IMAGE_NAME }}:latest
 
       - name: Send notification into Slack
         if: ${{ always() }}
