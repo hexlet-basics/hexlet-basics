@@ -1,3 +1,13 @@
+= content_for :meta do
+  meta content='webiste' property='og:type'
+  meta content=title property='og:title'
+  meta content=root_url property='og:url'
+  meta content=image_url('logo.png') property='og:image'
+  link rel='canonical' href=root_url
+  meta content=t('.meta_description') property='og:description'
+  meta content=t('.meta_description') name='description'
+  meta content="#{I18n.locale}" property='og:locale'
+
 .row.justify-content-center.mb-5
   .col-12.col-md-10.col-lg-9.col-xl-8.text-center.mt-5
     h1.h4 = t('.header')
