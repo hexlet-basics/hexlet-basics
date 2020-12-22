@@ -3,7 +3,7 @@ test:
 
 check: test lint
 
-ci-check: # FIXME: lint
+ci-check: lint
 	bin/rails db:create
 	DISABLE_SPRING=1 bin/rails test
 

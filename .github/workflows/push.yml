@@ -52,6 +52,7 @@ jobs:
         with:
           context: services/app
           file: services/app/Dockerfile.production
+          cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}:cached
           push: true
           tags: ${{ env.APP_IMAGE_NAME }}:latest
 
