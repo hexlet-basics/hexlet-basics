@@ -53,24 +53,27 @@ jobs:
           context: services/app
           file: services/app/Dockerfile.production
           cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}:cached
-          push: true
+          load: true
           tags: ${{ env.APP_IMAGE_NAME }}:latest
+      - run: docker push ${{ env.APP_IMAGE_NAME }}:latest
 
       - name: Build&Push Caddy
         uses: docker/build-push-action@v2
         with:
           context: services/caddy
           file: services/caddy/Dockerfile.production
-          push: true
+          load: true
           tags: ${{ env.CADDY_IMAGE_NAME }}:latest
+      - run: docker push ${{ env.APP_IMAGE_NAME }}:latest
 
       - name: Build&Push Nginx
         uses: docker/build-push-action@v2
         with:
           context: services/web-nginx
           file: services/web-nginx/Dockerfile.production
-          push: true
+          load: true
           tags: ${{ env.NGINX_IMAGE_NAME }}:latest
+      - run: docker push ${{ env.APP_IMAGE_NAME }}:latest
 
       - name: Send notification into Slack
         if: ${{ always() }}
@@ -84,6 +87,9 @@ jobs:
 
     runs-on: ubuntu-latest
     if: ${{ contains(github.ref, '/tags/') }}
+
+    needs:
+      - build
 
     steps:
 
