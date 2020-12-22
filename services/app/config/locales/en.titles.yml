@@ -8,3 +8,7 @@ en:
         about: About
         tos: Terms of Service
         privacy: Privacy
+      users:
+        base: Registration
+      sessions:
+        base: Sign In

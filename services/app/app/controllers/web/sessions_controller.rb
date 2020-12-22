@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 class Web::SessionsController < Web::ApplicationController
+
+  before_action do
+    title :base
+  end
+
   def new
     @sign_in_form = SignInForm.new(User.new)
   end
