@@ -63,7 +63,7 @@ const Solution = () => {
     </>
   );
 
-  const renderContent = () => (countdownData) => {
+  const renderContent = (countdownData) => {
     const { completed } = countdownData;
 
     if (solutionStates.shown === solution.processState) {
@@ -80,7 +80,7 @@ const Solution = () => {
 
   return (
     <div>
-      <Countdown date={solution.startTime + solution.waitingTime} renderer={renderContent()} />
+      <Countdown date={solution.startTime + solution.waitingTime} renderer={renderContent} />
     </div>
   );
 };
