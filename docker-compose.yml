@@ -13,7 +13,7 @@ services:
   app:
     build:
       context: services/app
-      dockerfile: services/app/Dockerfile.production
+      dockerfile: Dockerfile.production
     command: "make ci-check"
     depends_on:
       - postgres
