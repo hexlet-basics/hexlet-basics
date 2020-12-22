@@ -1,8 +1,8 @@
-.container-fluid
-  .row.justify-content-center.pb-5.mt-5
-    .col-12.col-sm-8.col-md-7.col-lg-4
-      h1.h3.mb-4.mt-3.text-center = t('.new_password')
-      = simple_form_for @user, url: password_path(reset_password_token: params[:reset_password_token]), wrapper: :no_labels_form do |f|
-        = f.input :password
-        = f.submit class: 'btn btn-primary w-100'
-
+.row.justify-content-center.pb-5.mt-5
+  .col-sm-8.col-md-7.col-lg-6
+    .card
+      .card-body.p-4.p-lg-5
+        h1.h3.mb-4.text-center = t('.new_password')
+        = simple_form_for @user, url: password_path(reset_password_token: params[:reset_password_token]), wrapper: :no_labels_form do |f|
+          = f.input :password
+          = f.submit class: 'btn btn-primary btn-block'
