@@ -1,16 +1,13 @@
-name: docker
+name: push
 
 on:
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
 
 env:
   IMAGE_NAME: hexletbasics/services-app
-  IS_PUSH: ${{ github.event_name == 'push' }}
+  COLOR_MAP: '{ success: "#800000", failure: "#008000" }'
 
 jobs:
   main:
@@ -18,15 +15,11 @@ jobs:
     steps:
 
       -
-        name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       -
         name: Login to DockerHub
         uses: docker/login-action@v1
-        if: ${{ env.IS_PUSH }}
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -39,7 +32,7 @@ jobs:
           context: services/app
           file: services/app/Dockerfile
           cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:cached-base
-          cache-to: type=inline
+          cache-to: type=registry,ref=${{ env.IMAGE_NAME }}:cached-base
           # push: true
           tags: |
             ${{ env.IMAGE_NAME }}:latest
@@ -51,7 +44,7 @@ jobs:
           context: services/app
           file: services/app/Dockerfile.production
           cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:cached
-          cache-to: type=inline
+          cache-to: type=registry,ref=${{ env.IMAGE_NAME }}:cached
           # push: true
           tags: |
             ${{ env.IMAGE_NAME }}:latest
@@ -60,23 +53,21 @@ jobs:
       - name: Check
         run: |
           docker-compose --file docker-compose.yml up --abort-on-container-exit
-        env:
-          COMPOSE_DOCKER_CLI_BUILD: 1
-          DOCKER_BUILDKIT: 1
-          BUILDKIT_INLINE_CACHE: 1
 
       - name: Push
         uses: docker/build-push-action@v2
         with:
           context: services/app
           file: services/app/Dockerfile.production
-          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:cached
-          cache-to: type=inline
-          push: ${{ env.IS_PUSH }}
+          # cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:cached
+          # cache-to: type=registry,ref=${{ env.IMAGE_NAME }}:cached
+          push: true
           tags: ${{ env.IMAGE_NAME }}:latest
 
       - name: Send notification into Slack
-        if: ${{ env.IS_PUSH }}
+        if: ${{ always() }}
         uses: rtCamp/action-slack-notify@v2
         env:
+          SLACK_COLOR: ${{ fromJson(env.COLOR_MAP)[job.status] }}
+          SLACK_TITLE: ${{ job.status }}
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
