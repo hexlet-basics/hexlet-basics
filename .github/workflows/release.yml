@@ -7,17 +7,19 @@ on:
 
 env:
   IMAGE_NAME: hexletbasics/services-app
-  RELEASE_IMAGE_NAME: hexletbasics/services-app:${{ github.event.release.tag_name }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Set Tag To The Env
+        run: echo "RELEASE_VERSION=$(echo ${GITHUB_REF:10})" >> $GITHUB_ENV
+
       - name: Pull
         run: docker pull ${{ env.IMAGE_NAME }}
 
       - name: Tag
-        run: docker tag ${{ env.IMAGE_NAME }} ${{ env.RELEASE_IMAGE_NAME }}
+        run: docker tag ${{ env.IMAGE_NAME }} ${{ env.IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
 
       - name: Push
         run: docker push ${{ env.RELEASE_IMAGE_NAME }}

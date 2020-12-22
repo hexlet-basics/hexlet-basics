@@ -7,7 +7,7 @@ on:
 
 env:
   IMAGE_NAME: hexletbasics/services-app
-  COLOR_MAP: '{ success: "#800000", failure: "#008000" }'
+  COLOR_MAP: '{ success: "#008000", failure: "#800000" }'
 
 jobs:
   main:
