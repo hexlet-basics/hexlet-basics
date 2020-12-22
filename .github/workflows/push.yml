@@ -20,9 +20,6 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      # - name: Set up QEMU
-      #   uses: docker/setup-qemu-action@v1
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
@@ -72,13 +69,6 @@ jobs:
           push: true
           tags: ${{ env.NGINX_IMAGE_NAME }}:latest
 
-      # - name: Set Tag To The Env
-      #   run: echo "RELEASE_VERSION=$(echo ${GITHUB_REF:10})" >> $GITHUB_ENV
-
-      # - name: Release
-      #   if: contains(github.ref, '/tags/')
-      #   run:
-
       - name: Send notification into Slack
         if: ${{ always() }}
         uses: rtCamp/action-slack-notify@v2
@@ -87,5 +77,47 @@ jobs:
           SLACK_TITLE: ${{ job.status }}
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
-  # release:
+  release:
 
+    runs-on: ubuntu-latest
+    if: ${{ contains(github.ref, '/tags/') }}
+
+    steps:
+
+      - name: Set Tag To The Env
+        run: echo "RELEASE_VERSION=$(echo ${GITHUB_REF:10})" >> $GITHUB_ENV
+
+      - name: Tag App
+        uses: docker/build-push-action@v2
+        with:
+          context: services/app
+          file: services/app/Dockerfile.production
+          cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}:latest
+          push: true
+          tags: ${{ env.APP_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
+
+      - name: Tag Nginx
+        uses: docker/build-push-action@v2
+        with:
+          context: services/web-nginx
+          file: services/web-nginx/Dockerfile.production
+          cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}:latest
+          push: true
+          tags: ${{ env.NGINX_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
+
+      - name: Tag Caddy
+        uses: docker/build-push-action@v2
+        with:
+          context: services/caddy
+          file: services/caddy/Dockerfile.production
+          cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}:latest
+          push: true
+          tags: ${{ env.CADDY_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
+
+      - name: Send notification into Slack
+        if: ${{ always() }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_COLOR: ${{ fromJson(env.COLOR_MAP)[job.status] }}
+          SLACK_TITLE: ${{ job.status }}
