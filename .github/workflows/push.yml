@@ -61,7 +61,6 @@ jobs:
         run: |
           docker build \
             --pull \
-            --cache-from ${{ env.CADDY_IMAGE_NAME }}:cached \
             --file services/caddy/Dockerfile.production \
             --tag ${{ env.CADDY_IMAGE_NAME }}:cached services/caddy
           docker push ${{ env.CADDY_IMAGE_NAME }}:cached
@@ -71,7 +70,6 @@ jobs:
         with:
           context: services/caddy
           file: services/caddy/Dockerfile.production
-          cache-from: type=registry,ref=${{ env.CADDY_IMAGE_NAME }}:cached
           push: true
           tags: ${{ env.CADDY_IMAGE_NAME }}:latest
 
