@@ -31,6 +31,7 @@ import 'codemirror/addon/edit/closebrackets.js';
 import 'codemirror/addon/edit/matchtags.js';
 import 'codemirror/addon/edit/matchbrackets.js';
 import 'codemirror/addon/edit/closetag.js';
+import 'codemirror/addon/fold/xml-fold.js';
 import 'codemirror/addon/comment/comment.js';
 import 'codemirror/addon/scroll/simplescrollbars.js';
 import 'codemirror/addon/search/searchcursor.js';
