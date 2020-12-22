@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Web::SessionsController < Web::ApplicationController
-
   before_action do
     title :base
   end
