@@ -11,7 +11,9 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   app:
-    image: hexletbasics/services-app:cached
+    build:
+      context: services/app
+      dockerfile: services/app/Dockerfile.production
     command: "make ci-check"
     depends_on:
       - postgres
