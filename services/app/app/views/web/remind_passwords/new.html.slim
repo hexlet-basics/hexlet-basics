@@ -1,13 +1,14 @@
-.container-fluid
-  .row.justify-content-center.pb-5.mt-5
-    .col-12.col-sm-8.col-md-7.col-lg-4
-      h1.h3.mb-4.mt-3.text-center = t('.forgot_password')
-      = simple_form_for @remind_password_form, url: remind_password_path, wrapper: :no_labels_form do |f|
-        = f.input :email
-        = f.submit class: 'btn btn-primary w-100'
-      .text-center.mt-2
-        = t('.trying_to_login')
-        = link_to t('.login'), new_session_path, class: 'ml-1'
-      .text-center.mt-2
-        = t('.dont_have_account')
-        = link_to t('.register'), new_user_path, class: 'ml-1'
+.row.justify-content-center.pb-5.mt-5
+  .col-sm-8.col-md-7.col-lg-6
+    .card
+      .card-body.p-4.p-lg-5
+        h1.h3.mb-4.mt-3.text-center = t('.forgot_password')
+        = simple_form_for @remind_password_form, url: remind_password_path, wrapper: :no_labels_form do |f|
+          = f.input :email
+          = f.submit class: 'btn btn-primary btn-block'
+        .text-center.mt-3
+          = t('.trying_to_login')
+          = link_to t('.login'), new_session_path, class: 'ml-1'
+      .card-footer.text-center.p-3.p-md-4
+          = t('.dont_have_account')
+          = link_to t('.register'), new_user_path, class: 'ml-1'
