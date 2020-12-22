@@ -8,6 +8,7 @@ on:
 env:
   IMAGE_NAME: hexletbasics/services-app
   CADDY_IMAGE_NAME: hexletbasics/services-caddy
+  NGINX_IMAGE_NAME: hexletbasics/services-nginx
 
 jobs:
   build:
@@ -40,6 +41,15 @@ jobs:
 
       - name: Push Caddy
         run: docker push ${{ env.CADDY_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
+
+      - name: Pull Nginx
+        run: docker pull ${{ env.NGINX_IMAGE_NAME }}
+
+      - name: Tag Nginx
+        run: docker tag ${{ env.NGINX_IMAGE_NAME }} ${{ env.NGINX_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
+
+      - name: Push Nginx
+        run: docker push ${{ env.NGINX_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
 
       - name: Send notification into Slack
         if: ${{ always() }}
