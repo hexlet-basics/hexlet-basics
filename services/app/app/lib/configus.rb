@@ -10,6 +10,10 @@ Configus.build Rails.env do
     disqus_id 'hexlet-basics'
 
     gtm_id ENV['GOOGLE_TAG_MANAGER_KEY']
+
+    mailer do
+      from 'code-basics@hexlet.io'
+    end
   end
 
   env :development, parent: :production do

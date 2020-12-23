@@ -74,7 +74,7 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = {
     address: 'smtp.sparkpostmail.com',
     port: 587,
-    domain: 'code-basics@hexlet.io',
+    domain: configus.mailer.from,
     authentication: :login,
     enable_starttls_auto: true,
     user_name: ENV['SPARKPOST_SMTP_USERNAME'],
