@@ -11,5 +11,12 @@ class SocialNetworkService
     account.save!
 
     user
+  # NOTE Added to catch an invalid record error during auth via github
+  rescue ActiveRecord::RecordInvalid => e
+    e.rollbar_context = {
+      auth_response: auth,
+      info: auth.info
+    }
+    raise
   end
 end
