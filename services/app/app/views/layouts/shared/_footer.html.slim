@@ -9,7 +9,7 @@ footer.mt-5
         div
           - # FIXME
           - I18n.available_locales.without(I18n.locale).each do |locale|
-            = link_to 'https://ru.code-basics.com' do
+            = link_to switch_locale_path(locale: locale) do
               = image_tag "flag-#{locale}.svg", width: 25, alt: "switch language to #{locale}"
       .col.mb-4.mb-lg-0.order-2.order-md-2
         h2.h4 = t('.information')

@@ -6,13 +6,16 @@ class Web::ApplicationController < ApplicationController
   include TitleConcern
 
   before_action do
-    locale = request.subdomains.first || current_user.locale || :en
+    locale = (current_user.locale || session[:locale] ||
+              request.subdomains.first || http_accept_language.compatible_language_from(I18n.available_locales) || :en).to_sym
 
     if locale == :ru && request.subdomains.empty?
       redirect_to url_for(params.merge(subdomain: locale, only_path: false).permit!)
     end
 
-    locale = request.subdomains.first || :en
+    if locale == :en && request.subdomains.any?
+      redirect_to url_for(params.merge(subdomain: nil, only_path: false).permit!)
+    end
 
     I18n.locale = locale
   end
