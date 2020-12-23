@@ -3,6 +3,7 @@ import _ from 'lodash';
 const languageMapping = {
   racket: 'scheme',
   css: 'html',
+  html: 'text/html',
 };
 
 const langToTabSizeMapping = {
@@ -12,6 +13,7 @@ const langToTabSizeMapping = {
   racket: 2,
   erlang: 2,
   elixir: 2,
+  html: 2,
 };
 
 const defaultTabSize = 4;
