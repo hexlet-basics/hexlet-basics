@@ -27,5 +27,7 @@ module HexletBasics
     config.generators do |g|
       g.assets false
     end
+
+    routes.default_url_options[:host] = "#{configus.protocol}://#{configus.host}"
   end
 end

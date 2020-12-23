@@ -2,6 +2,9 @@
 
 Configus.build Rails.env do
   env :production do
+    protocol :https
+    host 'code-basics.com'
+
     github do
       app_id ENV['GITHUB_CLIENT_ID']
       app_secret ENV['GITHUB_CLIENT_SECRET']
@@ -17,6 +20,8 @@ Configus.build Rails.env do
   end
 
   env :development, parent: :production do
+    protocol :https
+    host 'code-basics.test'
     disqus_id 'code-basics-test'
     gtm_id 'test-id'
   end

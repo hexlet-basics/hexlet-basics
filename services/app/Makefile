@@ -1,5 +1,5 @@
 test:
-	bin/rails test
+	bin/rails test -d
 
 check: test lint
 
