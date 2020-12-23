@@ -10,6 +10,7 @@ en:
     ruby: Ruby
     elixir: Elixir
     go: Go
+    language_for_beginners: "%{language} for beginners"
   web:
     home:
       index:
@@ -22,7 +23,6 @@ en:
       show:
         start: Start Learning
         continue: Continue Learning
-        for_beginners: for beginners
         javascript_description: The study of programming is a difficult and lengthy process. Learning the syntax of the language - it is impossible to start without it. This The course is devoted to the basics of writing programs for a Javascript. He is preparing a springboard for writing meaningful programs.
         php_description: The study of programming is a difficult and lengthy process. Learning the syntax of the language - it is impossible to start without it. This The course is devoted to the basics of writing programs for a PHP. He is preparing a springboard for writing meaningful programs.
         python_description: The study of programming is a difficult and lengthy process. Learning the syntax of the language - it is impossible to start without it. This The course is devoted to the basics of writing programs for a racket. He is preparing a springboard for writing meaningful programs.
