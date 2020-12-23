@@ -125,7 +125,6 @@ Rails.application.configure do
   # config.active_record.database_resolver = ActiveRecord::Middleware::DatabaseSelector::Resolver
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
   #
-  routes.default_url_options[:host] = 'https://code-basics.com'
-  config.hosts << '.code-basics.com'
+  config.hosts << ".#{configus.host}"
   config.hosts << IPAddr.new('10.0.0.0/8')
 end

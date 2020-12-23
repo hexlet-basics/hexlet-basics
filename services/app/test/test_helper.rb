@@ -18,13 +18,23 @@ class ActiveSupport::TestCase
   end
 end
 
+class ActionController::TestCase
+  setup do
+    request.host = "#{I18n.locale}.#{configus.host}"
+  end
+
+  teardown do
+    request.host = "#{I18n.locale}.#{configus.host}"
+  end
+end
+
 class ActionDispatch::IntegrationTest
   include AuthManagment
 
   def sign_in_as(name)
     user = users(name)
 
-    post session_path, params: { sign_in: { email: user.email, password: 'password' } }
+    post session_url, params: { sign_in: { email: user.email, password: 'password' } }
     user
   end
 end

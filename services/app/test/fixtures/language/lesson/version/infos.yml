@@ -3,12 +3,12 @@ DEFAULTS: &DEFAULTS
   instructions: <%= Faker::Lorem.paragraph %>
   definitions: []
   tips: <%= [Faker::Lorem.paragraph] %>
+  locale: <%= I18n.locale %>
 
 one:
   <<: *DEFAULTS
   name: <%= Faker::Lorem.word %>
   language: php
-  locale: ru
   language_version: php
   version: one
 
@@ -16,7 +16,6 @@ two:
   <<: *DEFAULTS
   name: <%= Faker::Lorem.word %>
   language: javascript
-  locale: ru
   language_version: javascript
   version: two
 
@@ -24,7 +23,6 @@ tags_one:
   <<: *DEFAULTS
   name: Теги
   language: php
-  locale: ru
   language_version: php
   version: one
 
@@ -32,7 +30,6 @@ comments_one:
   <<: *DEFAULTS
   name: Коментарии
   language: php
-  locale: ru
   language_version: php
   version: one
 
@@ -40,6 +37,5 @@ naming_variables_one:
   <<: *DEFAULTS
   name: Именования переменной
   language: php
-  locale: ru
   language_version: php
   version: one

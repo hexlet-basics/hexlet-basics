@@ -8,6 +8,9 @@ app-test: app-db-prepare
 	docker-compose run app make test
 	docker-compose run app make lint
 
+app-test-file:
+	docker-compose run app make test ${T}
+
 app-rails-console:
 	docker-compose run app bin/rails c
 

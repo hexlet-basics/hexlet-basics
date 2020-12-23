@@ -7,9 +7,10 @@ class Web::LanguagesController < Web::ApplicationController
                                         .includes(:module)
                                         .order(:order)
                                         .eager_load(:lesson_versions)
-                                        .merge(
-                                          Language::Lesson::Version.includes(:lesson).order(:order)
-                                        )
+                                        .joins(:infos)
+                                        .merge(Language::Module::Version::Info.with_locale)
+                                        .merge(Language::Lesson::Version.includes(:lesson).order(:order))
+
     @infos_by_module = @language.current_module_infos.with_locale.index_by(&:version_id)
     @infos_by_lesson = @language.current_lesson_infos.with_locale.index_by(&:version_id)
 

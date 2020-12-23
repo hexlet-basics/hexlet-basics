@@ -8,7 +8,7 @@ class Web::Admin::HomeControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'index' do
-    get admin_root_path
+    get admin_root_url
     assert_response :success
   end
 end
