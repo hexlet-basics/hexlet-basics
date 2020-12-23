@@ -19,6 +19,11 @@ Rails.application.routes.draw do
 
     resources :pages, only: [:show]
     resource :session, only: %i[new create destroy]
+    resource :locale, only: [] do
+      member do
+        get :switch
+      end
+    end
     resources :users, only: %i[new create]
     resource :remind_password, only: %i[new create]
     resource :password, only: %i[edit update]

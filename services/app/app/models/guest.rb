@@ -15,6 +15,8 @@ class Guest
     false
   end
 
+  def locale; end
+
   def language_members
     []
   end
