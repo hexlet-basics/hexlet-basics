@@ -1,4 +1,4 @@
-name: push
+name: release
 
 on:
   push:
@@ -10,9 +10,6 @@ env:
   CADDY_IMAGE_NAME: hexletbasics/services-caddy
   NGINX_IMAGE_NAME: hexletbasics/services-nginx
   COLOR_MAP: '{ success: "#008000", failure: "#800000" }'
-  # BUILDKIT_INLINE_CACHE: 1
-  # COMPOSE_DOCKER_CLI_BUILD: 1
-  # DOCKER_BUILDKIT: 1
 
 jobs:
   build:
@@ -20,6 +17,9 @@ jobs:
     steps:
 
       - uses: actions/checkout@v2
+
+      - name: Set Tag To The Env
+        run: echo "RELEASE_VERSION=$(echo ${GITHUB_REF:10})" >> $GITHUB_ENV
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -42,7 +42,6 @@ jobs:
 
       - name: Check
         run: |
-          # TODO Какая-то херня. Выше делается образ, который используется в этом композе, но он его не использует и качает вроде бы этот же образ из реестра.
           docker-compose --file docker-compose.yml up --abort-on-container-exit
 
       - name: Push
@@ -52,7 +51,7 @@ jobs:
           file: services/app/Dockerfile.production
           cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}:cached
           push: true
-          tags: ${{ env.APP_IMAGE_NAME }}:latest
+          tags: ${{ env.APP_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
 
       - name: Build&Push Caddy
         uses: docker/build-push-action@v2
@@ -60,7 +59,7 @@ jobs:
           context: services/caddy
           file: services/caddy/Dockerfile.production
           push: true
-          tags: ${{ env.CADDY_IMAGE_NAME }}:latest
+          tags: ${{ env.CADDY_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
 
       - name: Build&Push Nginx
         uses: docker/build-push-action@v2
@@ -68,7 +67,7 @@ jobs:
           context: services/web-nginx
           file: services/web-nginx/Dockerfile.production
           push: true
-          tags: ${{ env.NGINX_IMAGE_NAME }}:latest
+          tags: ${{ env.NGINX_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
 
       - name: Send notification into Slack
         if: ${{ always() }}
@@ -76,4 +75,5 @@ jobs:
         env:
           SLACK_COLOR: ${{ fromJson(env.COLOR_MAP)[job.status] }}
           SLACK_TITLE: ${{ job.status }}
+          SLACK_MESSAGE: RELEASE
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
