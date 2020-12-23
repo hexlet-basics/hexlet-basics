@@ -11,6 +11,7 @@ class Web::UsersController < Web::ApplicationController
 
   def create
     @user = User::SignUpForm.new(params[:user_sign_up_form])
+    @user.locale = I18n.locale
 
     if @user.save
       sign_in @user
