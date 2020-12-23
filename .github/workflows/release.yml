@@ -2,8 +2,8 @@ name: release
 
 on:
   push:
-    branches:
-      - master
+    tags:
+        - 'v*'
 
 env:
   APP_IMAGE_NAME: hexletbasics/services-app
