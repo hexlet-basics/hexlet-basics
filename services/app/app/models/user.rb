@@ -29,6 +29,14 @@ class User < ApplicationRecord
     end
   end
 
+  def initialize(attrs = nil)
+    defaults = {
+      locale: I18n.locale
+    }
+    attrs_with_defaults = attrs ? defaults.merge(attrs) : defaults
+    super(attrs_with_defaults)
+  end
+
   def guest?
     false
   end
