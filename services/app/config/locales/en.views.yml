@@ -25,6 +25,7 @@ en:
         icon: "%{language} icon"
     users:
       new:
+        meta_description: Sign up on Code Basics
         sign_up: Sign up
         have_account: Already registered?
         sign_in: Sign in
