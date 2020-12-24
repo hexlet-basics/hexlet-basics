@@ -44,6 +44,7 @@ ru:
         new_password: Новый пароль
     remind_passwords:
       new:
+        meta_description: Восстановить пароль на Code Basics
         forgot_password: Забыли пароль
         trying_to_login: Пытаетесь войти?
         login: Войти

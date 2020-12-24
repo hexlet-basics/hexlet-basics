@@ -42,6 +42,7 @@ en:
         new_password: New password
     remind_passwords:
       new:
+        meta_description: Restore Code Basics password
         forgot_password: Forgot your password?
         trying_to_login: Trying to login?
         login: Sign in
