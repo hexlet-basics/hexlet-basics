@@ -19,6 +19,13 @@ en:
         subheader: "For those who start from scratch. From the creators of "
         start: "Start"
         hexlet: "Hexlet"
+    sessions:
+      new:
+        sign_in: Sign in
+        dont_have_account: New to Code-Basics?
+        register: Sign up
+        sign_in_with_github: Log in with GitHub
+        forgot_password: Forgot your password?
     languages:
       show:
         start: Start Learning
