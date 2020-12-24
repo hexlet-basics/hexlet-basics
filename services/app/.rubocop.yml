@@ -5,6 +5,7 @@ require:
   - rubocop-rails
 
 AllCops:
+  NewCops: enable
   Exclude:
     - 'bin/**'
     - 'db/schema.rb'
@@ -18,7 +19,7 @@ Style/ClassAndModuleChildren:
 Style/IfUnlessModifier:
   Enabled: false
 
-Metrics/LineLength:
+Layout/LineLength:
   Enabled: false
 
 Metrics/AbcSize:
