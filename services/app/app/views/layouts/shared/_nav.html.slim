@@ -11,7 +11,7 @@ nav.px-3.navbar.navbar-light.navbar-expand-md.bg-white.shadow-sm.flex-shrink-0
   #navbarToggler.collapse.navbar-collapse
     ul.flex-grow-1.navbar-nav
       li.nav-item.dropdown.mr-md-2
-        a.nav-link.dropdown-toggle href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"
+        a#dropdownMenuButton.nav-link.dropdown-toggle href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"
           = t('.change_course')
         .dropdown-menu.dropdown-menu-columns.dropdown-menu-arrow aria-labelledby="dropdownMenuLink"
           = link_to language_path("php"), class: "dropdown-item d-flex align-items-center"
