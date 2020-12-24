@@ -19,6 +19,10 @@ en:
         subheader: "For those who start from scratch. From the creators of "
         start: "Start"
         hexlet: "Hexlet"
+      languages:
+        start: Start
+        continue: Continue
+        icon: "%{language} icon"
     users:
       new:
         sign_up: Sign up
