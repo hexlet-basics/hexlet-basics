@@ -31,6 +31,9 @@ en:
         register: Sign up
         sign_in_with_github: Log in with GitHub
         forgot_password: Forgot your password?
+    passwords:
+      edit:
+        new_password: New password
     remind_passwords:
       new:
         forgot_password: Forgot your password?
