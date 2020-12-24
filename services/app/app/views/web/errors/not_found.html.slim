@@ -1,0 +1,19 @@
+= content_for :meta do
+  meta content='webiste' property='og:type'
+  meta content=title property='og:title'
+  meta content=root_url property='og:url'
+  meta content=image_url('logo.png') property='og:image'
+  link rel='canonical' href=root_url
+  meta content=t('.meta_description') property='og:description'
+  meta content=t('.meta_description') name='description'
+  meta content="#{I18n.locale}" property='og:locale'
+
+
+.container
+  .row.justify-content-center
+    .col-12.col-md-7.col-lg-6.mb-5
+      = image_tag(asset_url("error-pages/404.png"), class: 'img-fluid')
+      .h4.text-center.text-muted
+        = t('.not_found')
+      p.text-center.text-muted
+        = t('.not_found_link_my_html', link: root_url)

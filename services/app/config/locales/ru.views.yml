@@ -104,3 +104,15 @@ ru:
         meta_description: Политика конфиденциальности Code Basics
       tos:
         meta_description: Условия использования образовательной платформы Code Basics
+
+    errors:
+      not_found:
+        meta_description: Запрашиваемая страница не найдена
+        not_found: Ой, мы не нашли нужную вам страницу
+        not_found_link_my_html: Но вы можете вернуться на <a href="%{link}">«Code Basics»</a>
+      forbidden:
+        meta_description: У вас нет прав для доступа к этой страницe
+        forbidden: У вас нет прав для доступа к этой страницe
+      server_error:
+        meta_description: Что-то пошло не так
+        server_error: Упс, что-то пошло не так, наши программисты уже решают эту проблему

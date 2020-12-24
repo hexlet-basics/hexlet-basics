@@ -17,6 +17,10 @@ Rails.application.routes.draw do
     get 'auth/:provider', to: 'auth#request', as: :auth_request
     get 'auth/:provider/callback', to: 'auth#callback', as: :callback_auth
 
+    get '/403', to: 'errors#forbidden', as: :not_forbidden_errors
+    get '/404', to: 'errors#not_found', as: :not_found_errors
+    match '/500', to: 'errors#server_error', via: :all
+
     resources :pages, only: [:show]
     resource :session, only: %i[new create destroy]
     resource :locale, only: [] do

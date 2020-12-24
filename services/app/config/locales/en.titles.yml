@@ -16,3 +16,5 @@ en:
         base: Remind password
       passwords:
         base: Change password
+      errors:
+        base: Ыomething went wrong
