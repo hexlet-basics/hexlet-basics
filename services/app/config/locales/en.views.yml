@@ -31,6 +31,13 @@ en:
         register: Sign up
         sign_in_with_github: Log in with GitHub
         forgot_password: Forgot your password?
+    remind_passwords:
+      new:
+        forgot_password: Forgot your password?
+        trying_to_login: Trying to login?
+        login: Sign in
+        dont_have_account: New to Code-Basics?
+        register: Sign up
     languages:
       show:
         start: Start Learning
