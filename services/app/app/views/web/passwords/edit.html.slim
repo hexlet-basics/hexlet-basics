@@ -1,3 +1,13 @@
+= content_for :meta do
+  meta content='webiste' property='og:type'
+  meta content=title property='og:title'
+  meta content=edit_password_url property='og:url'
+  meta content=image_url('logo.png') property='og:image'
+  link rel='canonical' href=edit_password_url
+  meta content=t('.meta_description') property='og:description'
+  meta content=t('.meta_description') name='description'
+  meta content="#{I18n.locale}" property='og:locale'
+
 .row.justify-content-center
   .col-sm-8.col-md-7.col-lg-6
     .card

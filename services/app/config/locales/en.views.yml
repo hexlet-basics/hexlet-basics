@@ -39,6 +39,7 @@ en:
         forgot_password: Forgot your password?
     passwords:
       edit:
+        meta_description: Set a new password on Code Basics
         new_password: New password
     remind_passwords:
       new:

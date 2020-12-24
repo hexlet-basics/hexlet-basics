@@ -41,6 +41,7 @@ ru:
         forgot_password: Забыли пароль?
     passwords:
       edit:
+        meta_description: Установить новый пароль на Code Basics
         new_password: Новый пароль
     remind_passwords:
       new:
