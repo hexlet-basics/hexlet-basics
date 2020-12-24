@@ -32,6 +32,7 @@ ru:
         sign_up_with_github: Войти через GitHub
     sessions:
       new:
+        meta_description: Войти на Code Basics
         sign_in: Войти
         dont_have_account: Нет аккаунта?
         register: Регистрация

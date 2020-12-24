@@ -30,6 +30,7 @@ en:
         sign_in: Sign in
     sessions:
       new:
+        meta_description: Sign in to Code Basics
         sign_in: Sign in
         dont_have_account: New to Code-Basics?
         register: Sign up
