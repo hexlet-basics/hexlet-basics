@@ -2,7 +2,7 @@
 
 class SocialNetworkService
   def self.authenticate_user(auth)
-    user = User::SocialSignupForm.find_or_initialize_by(email: auth.info.email)
+    user = User::SocialSignupForm.find_or_initialize_by(email: auth.info.email.downcase)
     user.save!
 
     account = user.accounts.find_or_initialize_by(provider: auth.provider)
@@ -10,12 +10,5 @@ class SocialNetworkService
     account.save!
 
     user
-  # NOTE Added to catch an invalid record error during auth via github
-  rescue ActiveRecord::RecordInvalid => e
-    e.rollbar_context = {
-      auth_response: auth,
-      info: auth.info
-    }
-    raise
   end
 end
