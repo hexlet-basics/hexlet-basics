@@ -95,3 +95,5 @@ en:
         extended_credits: "Idea, syllabus, platform: Kirill Mokevnin. Core lessons: Rakhim Davletkaliyev, Natalia Bass. Extensions and adaptation: Kirill Mokevnin, Ulugbek Tuychiev, Aleksey Pyltsyn and other Hexlet community members."
         contributions: Source code of Code Basics platform, all lessons and exercisees is available on GitHub. You can contribute by improving lessons, fixing mistakes and extending the content to cover more programming languages.
         source_code: Source code
+      privacy:
+        meta_description: Code Basics Privacy Policy

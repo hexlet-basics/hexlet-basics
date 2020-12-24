@@ -1,3 +1,13 @@
+= content_for :meta do
+  meta content='article' property='og:type'
+  meta content=title property='og:title'
+  meta content=page_url(:privacy) property='og:url'
+  meta content=image_url('logo.png') property='og:image'
+  link rel='canonical' href=page_url(:privacy)
+  meta content=t('.meta_description') property='og:description'
+  meta content=t('.meta_description') name='description'
+  meta content="#{I18n.locale}" property='og:locale'
+
 h1 Политика конфиденциальности
 
 p Эта Политика конфиденциальности описывает, как ваша личная информация собирается, используется и передается при посещении https://code-basics.com («Сайт»).
