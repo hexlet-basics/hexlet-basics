@@ -1,3 +1,13 @@
+= content_for :meta do
+  meta content='article' property='og:type'
+  meta content=title property='og:title'
+  meta content=page_url(:tos) property='og:url'
+  meta content=image_url('logo.png') property='og:image'
+  link rel='canonical' href=page_url(:tos)
+  meta content=t('.meta_description') property='og:description'
+  meta content=t('.meta_description') name='description'
+  meta content="#{I18n.locale}" property='og:locale'
+
 h1 Условия использования образовательной платформы
 
 p Получая доступ и используя наши продукты и услуги, вы соглашаетесь соблюдать условия, перечисленные на этой странице.
