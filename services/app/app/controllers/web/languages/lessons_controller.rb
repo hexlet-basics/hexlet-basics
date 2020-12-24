@@ -7,6 +7,9 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     @info = @lesson_version.infos.find_by!(locale: I18n.locale)
     @language_lessons_count = resource_language.current_lessons.count
 
+    title t("human_languages.#{@resource_language}")
+    title @info
+
     return if current_user.guest?
 
     lesson_member = @lesson.members.find_or_create_by!(language: resource_language, user: current_user)
@@ -15,9 +18,6 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     gon.language = resource_language.to_s
     gon.lesson_version = @lesson_version
     gon.lesson = @lesson
-
-    title t("human_languages.#{@resource_language}")
-    title @info
   end
 
   def next_lesson
