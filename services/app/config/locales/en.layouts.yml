@@ -5,6 +5,7 @@ en:
         about: "About"
         community: "Community"
         sign_in: "Sign in"
+        sign_out: "Sign out"
         registration: "Sign up"
         change_course: Change course
         toggle_navigation: Toggle navigation
