@@ -108,7 +108,7 @@ en:
       not_found:
         meta_description: Page not found
         not_found: Sorry, seems to be the hardest search
-        not_found_link_my_html: But you can return to <a href="%{link}">Code Basics</a>
+        not_found_link_my_html: But you can back to <a href="%{link}">homepage</a>
       forbidden:
         meta_description: We're sorry, but you don't have access to this page.
         forbidden: We're sorry, but you don't have access to this page.
