@@ -2,5 +2,6 @@
 
 FactoryBot.define do
   factory :lesson_member do
+    # TODO: implement later
   end
 end

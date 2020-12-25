@@ -238,7 +238,7 @@ class ExerciseLoader
     result = code.gsub(reg, "\\k<begin>\n\\k<end>")
     template_code = result.gsub('BEGIN', 'BEGIN (write your solution here)')
 
-    template_code != code ? result : ''
+    result == code ? '' : template_code
   end
 end
 # rubocop:enable Metrics/ClassLength
