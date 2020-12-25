@@ -1,0 +1,4 @@
+- # FIXME
+- I18n.available_locales.without(I18n.locale).each do |locale|
+  = link_to switch_locale_path(locale: locale) do
+    = image_tag "flag-#{locale}.svg", width: 25, alt: "switch language to #{locale}"

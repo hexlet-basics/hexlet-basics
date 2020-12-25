@@ -7,10 +7,8 @@ footer.mt-5
         p = t('.hexlet_number')
         a.text-muted(href="mailto:#{ExternalLinks.hexlet_support_mail}") = ExternalLinks.hexlet_support_mail
         div
-          - # FIXME
-          - I18n.available_locales.without(I18n.locale).each do |locale|
-            = link_to switch_locale_path(locale: locale) do
-              = image_tag "flag-#{locale}.svg", width: 25, alt: "switch language to #{locale}"
+          = render  'layouts/shared/language_switcher'
+
       .col.mb-4.mb-lg-0.order-2.order-md-2
         h2.h4 = t('.information')
         ul.list-unstyled
