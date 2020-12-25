@@ -17,4 +17,4 @@ en:
       passwords:
         base: Change password
       errors:
-        base: Ыomething went wrong
+        base: Something went wrong
