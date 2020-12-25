@@ -112,3 +112,8 @@ $azure: #45aaf2;
 #disqus_thread iframe {
   min-height: 300px;
 }
+
+// hides the disqus block, which breaks the layout and blinks.
+.adsbox {
+  @extend .position-absolute;
+}
