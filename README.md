@@ -19,7 +19,7 @@
   127.0.0.1 code-basics.test ru.code-basics.test en.code-basics.test
 
 ```sh
-$ make compose-setup
+$ make project-setup
 $ make compose # run server
 # open code-basics.test
 

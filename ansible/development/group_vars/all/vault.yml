@@ -1,8 +1,8 @@
 # -*- mode: yaml; vault: true; -*-
 ---
 
-hexlet_basics_vault_github_client_id: "4c8040727fface68d59a"
-hexlet_basics_vault_github_client_secret: "3bd561a6859ba09b4427d6960a89e4a9060cf605"
+hexlet_basics_vault_github_client_id: "a810ed692c0f84251d52"
+hexlet_basics_vault_github_client_secret: "e0e8ee70767b0f4d36f88d483ee80b6e9a370dd1"
 hexlet_basics_vault_facebook_client_id: "421592815347082"
 hexlet_basics_vault_facebook_client_secret: "05e0272e68a45aac9e96129a3f89ebc1"
 hexlet_basics_vault_db_hostname: "db"
