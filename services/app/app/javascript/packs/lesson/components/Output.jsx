@@ -17,7 +17,7 @@ const Output = () => {
   }
 
   const message = t(`check.${checkInfo.result}.message`);
-  const alertClassName = cn('mt-auto text-center alert', {
+  const alertClassName = cn('mt-auto text-center alert mb-0', {
     'alert-success': checkInfo.passed,
     'alert-warning': !checkInfo.passed,
   });
