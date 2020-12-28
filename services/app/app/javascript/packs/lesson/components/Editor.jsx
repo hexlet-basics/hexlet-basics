@@ -51,7 +51,7 @@ const commonOptions = {
 };
 
 const Editor = () => {
-  const { language } = useContext(EntityContext);
+  const { language, lessonVersion } = useContext(EntityContext);
   const { content, focusesCount } = useSelector((state) => state.editorSlice);
   const dispatch = useDispatch();
   const [editor, setEditor] = useState(null);
@@ -68,9 +68,12 @@ const Editor = () => {
     setEditor(self);
     self.focus();
     self.refresh();
-    // TODO: add hot key for check code on ctrl+Enter
+    self.setOption('extraKeys', {
+      'Ctrl-Enter': () => {
+        dispatch(actions.runCheck({ lessonVersion, editor: { content: self.getValue() } }));
+      },
+    });
   };
-
   const options = {
     ...commonOptions,
     mode: getLanguage(language),
