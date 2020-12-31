@@ -1,6 +1,10 @@
 ru:
   flash:
     web:
+      languages:
+        lessons:
+          show:
+            lesson_not_found: Урок не найден, но вы можете начать другие!
       users:
         create:
           success: Вы успешно вошли. Теперь можно начать обучение.

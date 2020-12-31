@@ -2,7 +2,12 @@
 
 class Web::Languages::LessonsController < Web::Languages::ApplicationController
   def show
-    @lesson = resource_language.lessons.find_by!(slug: params[:id])
+    @lesson = resource_language.lessons.find_by(slug: params[:id])
+    unless @lesson
+      f(:lesson_not_found, type: :info)
+      redirect_to language_path(resource_language.slug)
+      return
+    end
     @lesson_version = resource_language.current_lesson_versions.find_by!(lesson: @lesson)
     @info = @lesson_version.infos.find_by!(locale: I18n.locale)
     @language_lessons_count = resource_language.current_lessons.count
