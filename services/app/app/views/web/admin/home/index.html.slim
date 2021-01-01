@@ -1,0 +1,12 @@
+table.table
+  thead
+    tr
+      th Id
+      th= sort_link(@q, :email)
+      th= sort_link(@q, :created_at)
+  tbody
+    - @users.each do |user|
+      tr
+        td= user.id
+        td= user.email
+        td= l user.created_at
