@@ -7,6 +7,7 @@ table.table.table-striped.my-2
       th Language
       th Result
       th State
+      th Created at
   tbody
     - @versions.each do |version|
       tr
@@ -16,4 +17,5 @@ table.table.table-striped.my-2
         td
           span class=(language_version_state_class(version.state))
             = version.state.humanize
+        td= l version.created_at
 = paginate @versions
