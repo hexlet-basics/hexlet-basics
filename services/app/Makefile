@@ -4,7 +4,7 @@ test:
 check: test lint vulnerability-check
 
 vulnerability-check:
-	brakeman
+	bundle exec brakeman
 
 ci-check: lint
 	bin/rails db:create
