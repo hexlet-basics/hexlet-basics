@@ -48,11 +48,11 @@
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "babel-eslint": "^10.1.0",
     "webpack": "^4.44.2"
   },
   "version": "0.1.0",
   "devDependencies": {
-    "babel-eslint": "^10.1.0",
     "jest": "^26.6.3",
     "webpack-dev-server": "^3.11.0"
   }
