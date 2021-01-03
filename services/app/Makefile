@@ -1,9 +1,12 @@
 test:
 	bin/rails test -d
 
-check: test lint
+check: test lint vulnerability-check
 
-ci-check: # FIXME: lint
+vulnerability-check:
+	brakeman
+
+ci-check: lint
 	bin/rails db:create
 	DISABLE_SPRING=1 bin/rails test
 
