@@ -38,14 +38,11 @@ precompile-assets:
 
 lint: lint-eslint lint-rubocop
 
-linter-fix:
+lint-rubocop:
 	bundle exec rubocop -A
 
-lint-rubocop:
-	bundle exec rubocop
-
 lint-eslint:
-	npx eslint app/javascript --ext .js,.jsx
+	npx eslint --fix app/javascript --ext .js,.jsx
 
 js-routes:
 	bundle exec rails js_routes:generate
