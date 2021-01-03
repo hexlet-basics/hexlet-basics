@@ -11,6 +11,7 @@ AllCops:
     - 'db/schema.rb'
     - 'db/migrate/**'
     - 'vendor/**/*'
+    - 'sorbet/**/*'
     - 'node_modules/**/*'
 
 Style/ClassAndModuleChildren:
