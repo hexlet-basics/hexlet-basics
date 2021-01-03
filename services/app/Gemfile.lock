@@ -313,6 +313,10 @@ GEM
       actionpack (>= 3.1)
       railties (>= 3.1)
       slim (>= 3.0, < 5.0)
+    sorbet (0.5.6189)
+      sorbet-static (= 0.5.6189)
+    sorbet-runtime (0.5.6189)
+    sorbet-static (0.5.6189-universal-darwin-14)
     spring (2.1.1)
     sprockets (4.0.2)
       concurrent-ruby (~> 1.0)
@@ -400,6 +404,8 @@ DEPENDENCIES
   sidekiq
   simple_form
   slim-rails
+  sorbet
+  sorbet-runtime
   spring
   sqlite3 (~> 1.4)
   term-ansicolor
