@@ -15,7 +15,7 @@
     "@rails/webpacker": "5.2.1",
     "@reduxjs/toolkit": "^1.5.0",
     "ansi_up": "^4.0.4",
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "bootstrap": "^4.5.3",
     "caniuse-lite": "^1.0.30001170",
