@@ -90,7 +90,7 @@ $azure: #45aaf2;
 
   pre.hexlet-basics-output:before {
     content: '';
-    background:url(asset_path('fake_output_topbar.png'));
+    background:url(('~media/images/fake_output_topbar.png'));
     background-repeat: no-repeat;
     background-size: contain;
     width: 210px;
