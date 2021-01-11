@@ -18,7 +18,6 @@ app-setup: env-prepare app-install app-db-prepare
 	make app-language-load L='javascript'
 	make app-language-load L='php'
 	make app-language-load L='python'
-	make app-language-load L='ruby'
 	make app-language-load L='css'
 
 app-install:
