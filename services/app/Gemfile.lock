@@ -422,7 +422,6 @@ DEPENDENCIES
   rubocop
   rubocop-performance
   rubocop-rails
-  sass-rails (>= 6)
   selenium-webdriver
   sidekiq
   simple_form
