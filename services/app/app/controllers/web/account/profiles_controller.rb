@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class Web::Account::ProfilesController < Web::Account::ApplicationController
-  # TODO add require signed in
+  before_action :authenticate_user!
+
   before_action do
     title :base
   end
