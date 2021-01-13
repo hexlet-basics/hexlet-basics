@@ -50,5 +50,9 @@ Rails.application.routes.draw do
         end
       end
     end
+
+    namespace :account do
+      resource :profile, only: %i[edit update destroy]
+    end
   end
 end

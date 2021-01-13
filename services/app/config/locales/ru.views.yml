@@ -105,6 +105,11 @@ ru:
       tos:
         meta_description: Условия использования образовательной платформы Code Basics
 
+    account:
+      profiles:
+        edit:
+          meta_description: Профиль
+          title: Профиль %{email}
     errors:
       not_found:
         meta_description: Запрашиваемая страница не найдена
