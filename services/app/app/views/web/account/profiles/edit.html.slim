@@ -14,5 +14,6 @@
     = simple_form_for @form, url: edit_account_profile_path do |f|
       = f.input :first_name, input_html: { 'data-testid' => 'first_name' }
       = f.input :last_name, input_html: { 'data-testid' => 'last_name' }
+      = f.input :nickname, input_html: { 'data-testid' => 'nickname' }
 
       = f.submit class: 'btn btn-primary mt-4 btn-block', 'data-testid' => 'submit'
