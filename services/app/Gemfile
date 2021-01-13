@@ -27,6 +27,7 @@ group :development, :test do
   gem 'faker'
   gem 'rubocop-performance'
   gem 'rubocop-rails'
+  gem 'slim_lint', require: false
   gem 'sorbet'
   gem 'sqlite3', '~> 1.4'
 end
