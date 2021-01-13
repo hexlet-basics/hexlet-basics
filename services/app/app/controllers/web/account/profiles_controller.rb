@@ -11,6 +11,20 @@ class Web::Account::ProfilesController < Web::Account::ApplicationController
     @form = current_user.becomes(User::ProfileForm)
   end
 
+  def update
+    @form = current_user.becomes(User::ProfileForm)
+
+    if @form.update(params[:user_profile_form])
+      f(:success)
+
+      redirect_to edit_account_profile_path
+    else
+      f(:error)
+
+      render 'edit'
+    end
+  end
+
   def destroy
     current_user.mark_as_removed!
     sign_out

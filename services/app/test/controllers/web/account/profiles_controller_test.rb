@@ -13,6 +13,21 @@ class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test 'update' do
+    user = users :full
+    new_name = 'new first name'
+
+    patch account_profile_url(user), params: {
+      user_profile_form: {
+        first_name: new_name
+      }
+    }
+
+    user.reload
+
+    assert { user.first_name = new_name }
+  end
+
   test 'destroy' do
     user = users :full
     delete account_profile_url

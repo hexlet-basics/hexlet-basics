@@ -20,5 +20,10 @@ ru:
       passwords:
         update:
           success: Пароль изменен. Можете входить с вашим новым паролем.
+      account:
+        profiles:
+          update:
+            success: Данные успешно обновлены
+            error: Ошибка обновления
 
 
