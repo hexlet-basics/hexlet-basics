@@ -1,0 +1,10 @@
+---
+
+exclude:
+  - vendor/*
+  - node_modules/*
+
+linters:
+
+  LineLength:
+    max: 180
