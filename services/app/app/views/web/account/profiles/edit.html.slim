@@ -17,3 +17,7 @@
       = f.input :nickname, input_html: { 'data-testid' => 'nickname' }
 
       = f.submit class: 'btn btn-primary mt-4 btn-block', 'data-testid' => 'submit'
+
+.row
+  .col-sm-8.col-md-7.col-lg-6.mt-5
+    = button_to t('.delete'), account_profile_path, class: 'btn btn-danger', method: :delete, data: { confirm: t('.confirm_delete') }

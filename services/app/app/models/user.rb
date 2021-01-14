@@ -26,6 +26,11 @@ class User < ApplicationRecord
 
     event :mark_as_removed do
       transitions to: :removed
+
+      after do
+        clean_fields
+        remove_accounts
+      end
     end
   end
 
@@ -45,5 +50,27 @@ class User < ApplicationRecord
     return false if password_digest.nil?
 
     authenticate(password)
+  end
+
+  private
+
+  def clean_fields
+    fields = %w[
+      first_name
+      last_name
+      nickname
+      password_digest
+      reset_password_token
+      confirmation_token
+      email
+    ]
+
+    fields.each do |field|
+      send :"#{field}=", nil
+    end
+  end
+
+  def remove_accounts
+    accounts.clear
   end
 end

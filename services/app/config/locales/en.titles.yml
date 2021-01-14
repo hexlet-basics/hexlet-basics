@@ -8,6 +8,9 @@ en:
         about: About
         tos: Terms of Service
         privacy: Privacy
+      account:
+        profiles:
+          base: User profile
       users:
         base: Registration
       sessions:

@@ -110,6 +110,10 @@ ru:
         edit:
           meta_description: Профиль
           title: Профиль %{email}
+          delete: Удалить аккаунт
+          confirm_delete: Вы уверены, что хотите удалить свой аккаунт?
+        destroy:
+          success: Аккаунт успешно удален
     errors:
       not_found:
         meta_description: Запрашиваемая страница не найдена

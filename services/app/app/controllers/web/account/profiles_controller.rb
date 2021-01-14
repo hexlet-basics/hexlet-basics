@@ -10,4 +10,13 @@ class Web::Account::ProfilesController < Web::Account::ApplicationController
   def edit
     @form = current_user.becomes(User::ProfileForm)
   end
+
+  def destroy
+    current_user.mark_as_removed!
+    sign_out
+
+    f(:success)
+
+    redirect_to root_path
+  end
 end
