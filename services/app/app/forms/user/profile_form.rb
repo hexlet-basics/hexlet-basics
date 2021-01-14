@@ -7,14 +7,14 @@ class User::ProfileForm < User
 
   # TODO Move to custom validator
   validates :first_name, length: { maximum: 40 },
-                         format: { with: UsefullRegexp.alphanumeric_for_all_langs },
+                         format: { with: UsefulRegexp.without_spec_chars },
                          allow_blank: true
 
   validates :last_name, length: { maximum: 40 },
-                        format: { with: UsefullRegexp.alphanumeric_for_all_langs },
+                        format: { with: UsefulRegexp.without_spec_chars },
                         allow_blank: true
 
   validates :nickname, length: { maximum: 40 },
-                       format: { with: UsefullRegexp.alphanumeric_for_all_langs },
+                       format: { with: UsefulRegexp.without_spec_chars },
                        allow_blank: true
 end
