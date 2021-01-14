@@ -7,6 +7,7 @@ en:
         sign_in: "Sign in"
         sign_out: "Sign out"
         registration: "Sign up"
+        profile: Profile
         change_course: Choose course
         toggle_navigation: Toggle navigation
       footer:
