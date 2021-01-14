@@ -104,6 +104,16 @@ en:
       tos:
         meta_description: Terms of Service of the Code Basics Platform
 
+    account:
+      profiles:
+        edit:
+          meta_description: Profile
+          title: Profile %{email}
+          delete: Delete account
+          confirm_delete: Are you sure you want to delete your account?
+        destroy:
+          success: Account successfully deleted
+
     errors:
       not_found:
         meta_description: Page not found

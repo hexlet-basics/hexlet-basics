@@ -12,4 +12,16 @@ class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
   end
+
+  test 'destroy' do
+    user = users :full
+    delete account_profile_url
+
+    assert_response :redirect
+
+    user.reload
+
+    assert { user.removed? }
+    assert { !signed_in? }
+  end
 end
