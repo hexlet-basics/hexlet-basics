@@ -8,6 +8,9 @@ ru:
         about: О проекте
         tos: Условия использования
         privacy: Политика конфиденциальности
+      account:
+        profiles:
+          base: Профиль пользователя
       users:
         base: Регистрация
       sessions:

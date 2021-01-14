@@ -1,5 +1,10 @@
 ru:
   activerecord:
+    attributes:
+      user:
+        first_name: Имя
+        last_name: Фамилия
+        nickname: Никнейм
     errors:
       models:
         user/sign_up_form:
