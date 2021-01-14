@@ -11,7 +11,7 @@
 .row
   .col-sm-8.col-md-7.col-lg-6.mt-3.mb-5
     h1.mb-4.mb-lg-5 = t('.title', email: @form.email)
-    = simple_form_for @form, url: edit_account_profile_path do |f|
+    = simple_form_for @form, url: account_profile_path do |f|
       = f.input :first_name, input_html: { 'data-testid' => 'first_name' }
       = f.input :last_name, input_html: { 'data-testid' => 'last_name' }
       = f.input :nickname, input_html: { 'data-testid' => 'nickname' }
