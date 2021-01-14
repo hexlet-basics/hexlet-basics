@@ -4,7 +4,7 @@ app-bash:
 app-language-load:
 	docker-compose run app make language-load L=${L}
 
-app-test: app-db-prepare
+app-test:
 	docker-compose run app make test
 	docker-compose run app make lint
 
