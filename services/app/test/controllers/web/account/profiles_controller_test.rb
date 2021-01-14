@@ -4,6 +4,7 @@ require 'test_helper'
 
 class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
   def setup
+    @user = users :full
     sign_in_as(:full)
   end
 
@@ -14,29 +15,27 @@ class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'update' do
-    user = users :full
     new_name = 'new first name'
 
-    patch account_profile_url(user), params: {
+    patch account_profile_url(@user), params: {
       user_profile_form: {
         first_name: new_name
       }
     }
 
-    user.reload
+    @user.reload
 
-    assert { user.first_name = new_name }
+    assert { @user.first_name = new_name }
   end
 
   test 'destroy' do
-    user = users :full
     delete account_profile_url
 
     assert_response :redirect
 
-    user.reload
+    @user.reload
 
-    assert { user.removed? }
+    assert { @user.removed? }
     assert { !signed_in? }
   end
 end
