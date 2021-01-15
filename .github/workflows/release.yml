@@ -53,14 +53,6 @@ jobs:
           push: true
           tags: ${{ env.APP_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
 
-      - name: Build&Push Caddy
-        uses: docker/build-push-action@v2
-        with:
-          context: services/caddy
-          file: services/caddy/Dockerfile.production
-          push: true
-          tags: ${{ env.CADDY_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
-
       - name: Build&Push Nginx
         uses: docker/build-push-action@v2
         with:

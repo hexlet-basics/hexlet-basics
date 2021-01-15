@@ -7,7 +7,6 @@ on:
 
 env:
   APP_IMAGE_NAME: hexletbasics/services-app
-  CADDY_IMAGE_NAME: hexletbasics/services-caddy
   NGINX_IMAGE_NAME: hexletbasics/services-nginx
   COLOR_MAP: '{ success: "#008000", failure: "#800000" }'
   BUILDKIT_INLINE_CACHE: 1
@@ -53,14 +52,6 @@ jobs:
           cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}:cached
           push: true
           tags: ${{ env.APP_IMAGE_NAME }}:latest
-
-      - name: Build&Push Caddy
-        uses: docker/build-push-action@v2
-        with:
-          context: services/caddy
-          file: services/caddy/Dockerfile.production
-          push: true
-          tags: ${{ env.CADDY_IMAGE_NAME }}:latest
 
       - name: Build&Push Nginx
         uses: docker/build-push-action@v2

@@ -59,7 +59,7 @@ services:
       - ./services/app:/app:cached
 
   caddy:
-    image: caddy:2.2.1
+    image: caddy:2.3.0
     ports:
       - "443:443"
       - "80:80"
