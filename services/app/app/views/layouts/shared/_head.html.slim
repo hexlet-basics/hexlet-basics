@@ -1,12 +1,12 @@
-  meta charset="utf-8"
-  meta http-equiv="X-UA-Compatible" content="IE=Edge"
-  meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-  = yield :meta
-  title= title
-  = csrf_meta_tags
-  = csp_meta_tag
-  = include_gon(init: true)
-  = javascript_pack_tag "application"
-  = stylesheet_pack_tag "application", media: 'all'
-  - if Rails.env.production?
-    = render 'layouts/deps/gtm_head'
+meta charset='utf-8'
+meta http-equiv='X-UA-Compatible' content='IE=Edge'
+meta name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no'
+= yield :meta
+title = title
+= csrf_meta_tags
+= csp_meta_tag
+= include_gon(init: true)
+= javascript_pack_tag 'application'
+= stylesheet_pack_tag 'application', media: 'all'
+- if Rails.env.production?
+  = render 'layouts/deps/gtm_head'
