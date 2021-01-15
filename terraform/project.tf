@@ -1,9 +1,3 @@
-provider "google" {
-  version     = "~> 2.7"
-  region      = var.region
-  credentials = file("google.key.json")
-}
-
 provider "cloudflare" {
   version = "~> 1.15.0"
   email    = var.cloudflare_email
@@ -25,7 +19,7 @@ resource "google_project" "hexlet_basics" {
 
 provider "digitalocean" {
   version = "~> 1.16.0"
-  token   =  var.digitalocean_token
+  token   =  "60e6ec66e21557fce9f7033856abc30a54d148099d5f0f8a3ecdbf0f5927d6ed"
 }
 
 output "project_id" {
