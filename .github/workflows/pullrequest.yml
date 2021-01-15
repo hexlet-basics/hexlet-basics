@@ -7,6 +7,9 @@ on:
 
 env:
   APP_IMAGE_NAME: hexletbasics/services-app
+  BUILDKIT_INLINE_CACHE: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+  DOCKER_BUILDKIT: 1
 
 jobs:
   main:

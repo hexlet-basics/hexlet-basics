@@ -10,8 +10,6 @@ services:
       - redis:/data
 
   app:
-    build:
-      context: services/app
     command: "make start"
     env_file:
       - .env
