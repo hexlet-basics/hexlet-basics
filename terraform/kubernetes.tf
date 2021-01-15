@@ -85,6 +85,7 @@ resource "kubernetes_config_map" "hexlet_basics_config_map" {
     DATABASE_URL = var.database_url
     REDIS_URL    = var.redis_url
     DB_SSL_MODE  = "TRUE"
+    RAILS_SERVE_STATIC_FILES = true
     FORCE        = "11"
     APP_SCHEME   = var.app_scheme
     APP_HOST     = var.app_host
