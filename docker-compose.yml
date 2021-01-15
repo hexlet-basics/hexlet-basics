@@ -13,7 +13,8 @@ services:
   app:
     build:
       context: .
-      cache_from: hexletbasics/services-app:cached
+      cache_from:
+        - hexletbasics/services-app:cached
     command: "make ci-check"
     depends_on:
       - postgres
