@@ -11,7 +11,9 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   app:
-    image: hexletbasics/services-app:cached
+    build:
+      context: .
+      cache_from: hexletbasics/services-app:cached
     command: "make ci-check"
     depends_on:
       - postgres

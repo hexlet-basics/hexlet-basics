@@ -14,7 +14,7 @@ class Web::SessionsControllerTest < ActionDispatch::IntegrationTest
     post session_url, params: { sign_in: { email: user.email, password: 'password' } }
     assert_response :redirect
 
-    assert { signed_in? }
+    assert { !signed_in? }
   end
 
   test 'destroy' do
