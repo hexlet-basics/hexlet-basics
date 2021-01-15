@@ -38,6 +38,8 @@
 /services/app/.yardoc
 
 .terraform
+.vscode
+.tool-versions
 .env
 .autoenv
 .kube/*
