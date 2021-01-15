@@ -31,6 +31,13 @@ $ make app-test # run tests
 $ make app-db-prepare # sometimes, when fixtures were changed
 ```
 
+### Production
+Kube access
+
+```
+make local-cluster-setup
+```
+
 
 ##
 [![Hexlet Ltd. logo](https://raw.githubusercontent.com/Hexlet/hexletguides.github.io/master/images/hexlet_logo128.png)](https://ru.hexlet.io/pages/about?utm_source=github&utm_medium=link&utm_campaign=exercises-javascript)

@@ -8,6 +8,11 @@ production-console:
 init:
 	brew install kubernetes-helm
 
+local-cluster-setup:
+	sudo snap install doctl
+	doctl auth init
+	doctl kubernetes cluster kubeconfig save hexlet-basics-3
+
 apply-exercises: apply-exercises-go apply-exercises-ruby apply-exercises-elixir apply-exercises-html apply-exercises-css apply-exercises-js apply-exercises-java apply-exercises-racket apply-exercises-php apply-exercises-python
 
 pull-exercise-image:
