@@ -1,5 +1,11 @@
+const { merge } = require('@rails/webpacker');
+
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-const environment = require('./environment');
+const webpackConfig = require('./base');
 
-module.exports = environment.toWebpackConfig();
+const devConfig = {
+  target: 'web',
+};
+
+module.exports = merge(webpackConfig, devConfig);
