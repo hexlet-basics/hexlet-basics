@@ -1,0 +1,22 @@
+en:
+  flash:
+    web:
+      languages:
+        lessons:
+          show:
+            lesson_not_found: Lesson not found. Please, start other lessons.
+      users:
+        create:
+          success: You have successfully signed in. You can start learning now.
+      sessions:
+        create:
+          success: You have successfully signed in. You can start learning now.
+      auth:
+        callback:
+          success: You have successfully signed in. You can start learning now.
+      remind_passwords:
+        create:
+          success: We have sent you password recovery instructions to your mailbox.
+      passwords:
+        update:
+          success: Password has been changed. Please login with a new password.
