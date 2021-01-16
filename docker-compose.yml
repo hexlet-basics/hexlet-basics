@@ -12,7 +12,7 @@ services:
 
   app:
     build:
-      context: services/app
+      context: .
     command: "make ci-check"
     depends_on:
       - postgres
