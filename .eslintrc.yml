@@ -14,7 +14,7 @@ env:
 extends:
   - 'airbnb'
   - 'airbnb/hooks'
-  - 'plugin:react/recommended'
+  # - 'plugin:react/recommended'
   - 'plugin:jest/recommended'
 
 parser: 'babel-eslint'

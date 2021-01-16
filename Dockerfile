@@ -19,5 +19,3 @@ RUN npm install -g npm-check-updates
 ENV BUNDLE_PATH /app/vendor/bundle
 
 WORKDIR /app
-
-RUN bundle config build.nokogiri --use-system-libraries
