@@ -33,8 +33,8 @@ jobs:
       - name: Build App
         uses: docker/build-push-action@v2
         with:
-          context: .
-          file: Dockerfile.production
+          context: services/app
+          file: services/app/Dockerfile.production
           cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}:cached
           cache-to: type=inline
           push: true
@@ -47,8 +47,8 @@ jobs:
       - name: Push
         uses: docker/build-push-action@v2
         with:
-          context: .
-          file: Dockerfile.production
+          context: services/app
+          file: services/app/Dockerfile.production
           cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}:cached
           push: true
           tags: ${{ env.APP_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}

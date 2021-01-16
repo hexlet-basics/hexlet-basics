@@ -14,25 +14,27 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/app:cached
+      - ./services/app:/app:cached
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/tmp/hexletbasics:/var/tmp/hexletbasics
       - /tmp:/tmp
 
   spring:
-    build: .
+    build:
+      context: services/app
     command: bin/spring server
     pid: host
     volumes:
-      - .:/app:cached
+      - ./services/app:/app:cached
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp:/tmp
 
   sidekiq:
-    build: .
+    build:
+      context: services/app
     command: bundle exec sidekiq
     volumes:
-      - .:/app:cached
+      - ./services/app:/app:cached
       - /tmp:/tmp
       - /var/tmp/hexletbasics:/var/tmp/hexletbasics
       - /var/run/docker.sock:/var/run/docker.sock
@@ -44,7 +46,8 @@ services:
       - app
 
   webpacker:
-    build: .
+    build:
+      context: services/app
     command: make webpacker
     environment:
       WEBPACKER_DEV_SERVER_HOST: '0.0.0.0'
@@ -53,7 +56,7 @@ services:
     # env_file:
     #   - .env
     volumes:
-      - .:/app:cached
+      - ./services/app:/app:cached
 
   caddy:
     image: caddy:2.3.0
