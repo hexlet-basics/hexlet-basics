@@ -20,6 +20,7 @@ services:
       - /tmp:/tmp
 
   spring:
+    build: .
     command: bin/spring server
     pid: host
     volumes:
@@ -28,6 +29,7 @@ services:
       - /tmp:/tmp
 
   sidekiq:
+    build: .
     command: bundle exec sidekiq
     volumes:
       - .:/app:cached
@@ -42,6 +44,7 @@ services:
       - app
 
   webpacker:
+    build: .
     command: make webpacker
     environment:
       WEBPACKER_DEV_SERVER_HOST: '0.0.0.0'
