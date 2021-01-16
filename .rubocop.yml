@@ -1,0 +1,52 @@
+---
+
+require:
+  - rubocop-performance
+  - rubocop-rails
+
+AllCops:
+  NewCops: enable
+  Exclude:
+    - 'bin/**'
+    - 'db/schema.rb'
+    - 'db/migrate/**'
+    - 'vendor/**/*'
+    - 'sorbet/**/*'
+    - 'node_modules/**/*'
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Layout/LineLength:
+  Enabled: false
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/ParameterLists:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/CommentAnnotation:
+  Enabled: false
+
+Style/HashLikeCase:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+# Rails/InverseOf:
+#   Enabled: true
+#   Exclude:
+#     - app/models/language/version.rb
+#     - app/models/language/module/version.rb
+#     - app/models/language/version.rb
