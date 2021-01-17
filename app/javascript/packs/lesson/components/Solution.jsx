@@ -75,7 +75,14 @@ const Solution = () => {
 
     const remainingTime = format(new Date(countdownData.total), 'mm:ss');
 
-    return <p>{t('solutionInstructions', { remainingTime })}</p>;
+    return (
+      <>
+        <div className="text-center">
+          <p className="lead">{t('solutionInstructions')}</p>
+          <div className="display-4">{ remainingTime }</div>
+        </div>
+      </>
+    );
   };
 
   return (
