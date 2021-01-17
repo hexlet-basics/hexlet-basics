@@ -11,10 +11,10 @@ import {
   faArrowRight, faSyncAlt, faArrowLeft, faPlayCircle,
 } from '@fortawesome/free-solid-svg-icons';
 
+import routes from '@/appRoutes.js';
 import { actions } from '../slices/index.js';
 import { checkInfoStates } from '../utils/stateMachines.js';
 import EntityContext from '../EntityContext.js';
-import routes from '../../../appRoutes.js';
 
 const ControlBox = () => {
   const { t } = useTranslation();

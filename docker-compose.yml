@@ -10,7 +10,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-  app:
+  web:
     build:
       context: .
     command: "make ci-check"

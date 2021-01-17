@@ -9,12 +9,12 @@ services:
     volumes:
       - redis:/data
 
-  app:
+  web:
     command: "make start"
     env_file:
       - .env
     volumes:
-      - .:/app:cached
+      - .:/app
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/tmp/hexletbasics:/var/tmp/hexletbasics
       - /tmp:/tmp
@@ -24,7 +24,7 @@ services:
     command: bin/spring server
     pid: host
     volumes:
-      - .:/app:cached
+      - .:/app
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp:/tmp
 
@@ -32,7 +32,7 @@ services:
     build: .
     command: bundle exec sidekiq
     volumes:
-      - .:/app:cached
+      - .:/app
       - /tmp:/tmp
       - /var/tmp/hexletbasics:/var/tmp/hexletbasics
       - /var/run/docker.sock:/var/run/docker.sock
@@ -41,19 +41,17 @@ services:
     depends_on:
       - spring
       - redis
-      - app
+      - web
 
   webpacker:
     build: .
     command: make webpacker
-    environment:
-      WEBPACKER_DEV_SERVER_HOST: '0.0.0.0'
     ports:
       - "0.0.0.0:3035:3035"
-    # env_file:
-    #   - .env
+    env_file:
+      - .env
     volumes:
-      - .:/app:cached
+      - .:/app
 
   caddy:
     image: caddy:2.3.0
@@ -65,7 +63,7 @@ services:
       - caddy_data:/data
       - caddy_config:/config
     depends_on:
-      - app
+      - web
 
 volumes:
   redis:

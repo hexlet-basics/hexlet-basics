@@ -13,6 +13,7 @@ const langToTabSizeMapping = {
   erlang: 2,
   elixir: 2,
   html: 2,
+  python: 4,
 };
 
 const defaultTabSize = 4;

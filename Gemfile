@@ -6,7 +6,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 gem 'configus'
 gem 'puma', '~> 5.1'
 gem 'rails', '~> 6.1'
-gem 'webpacker', '~> 5.2'
+gem 'webpacker', github: 'rails/webpacker'
 
 gem 'bootsnap', '>= 1.5', require: false
 gem 'http_accept_language'

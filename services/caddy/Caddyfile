@@ -1,33 +1,13 @@
 localhost, ru.code-basics.test, en.code-basics.test, code-basics.test {
-  log
+  log {
+    format single_field common_log
+  }
+
+  encode zstd
   tls internal
-  encode gzip
 
-  reverse_proxy /packs/* webpacker:3035 {
-    # insecure_skip_verify
-    # transparent
-    # websocket
-    # header_upstream X-Forwarded-Host {host}
-  }
-
-  reverse_proxy /sockjs-node/* webpacker:3035 {
-    # insecure_skip_verify
-    # transparent
-    # websocket
-    # header_upstream X-Forwarded-Host {host}
-  }
-
-  reverse_proxy /* app:3000 {
-    # insecure_skip_verify
-    # transparent
-    # websocket
-    # header_upstream X-Forwarded-Host {host}
-  }
-
+  reverse_proxy /* web:3000
+  reverse_proxy /packs/* webpacker:3035
+  reverse_proxy /sockjs-node/* webpacker:3035
+  reverse_proxy /__webpack_dev_server__/* webpacker:3035
 }
-
-# Redir example
-# ru.code-basics.test {
-#  tls self_signed
-#  redir https://code-basics.ru{uri}
-#}

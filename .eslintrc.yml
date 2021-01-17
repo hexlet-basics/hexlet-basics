@@ -28,6 +28,13 @@ parserOptions:
 settings:
   jest:
     version: 26
+  import/resolver:
+    # node:
+    # typescript:
+    #   project: '.'
+    webpack:
+      config: 'config/webpack/environment.js'
+
 
 rules:
   max-len: ["error", { "code": 120 }]

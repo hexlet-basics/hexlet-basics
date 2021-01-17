@@ -1,0 +1,12 @@
+{
+  "include": ["app/javascript/**/*.*"],
+  "exclude": ["vendor", "tmp"],
+  "compilerOptions": {
+    "baseUrl": "./app/javascript",
+    "moduleResolution": "node",
+    "jsx": "react",
+    "paths": {
+      "@/*": ["./*"]
+    }
+  }
+}
