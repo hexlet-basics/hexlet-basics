@@ -5,6 +5,7 @@ require_relative '../config/environment'
 require 'rails/test_help'
 
 OmniAuth.config.test_mode = true
+
 class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods
 
@@ -29,7 +30,7 @@ class ActionController::TestCase
 end
 
 class ActionDispatch::IntegrationTest
-  include AuthManagment
+  include AuthConcern
 
   def sign_in_as(name)
     user = users(name)

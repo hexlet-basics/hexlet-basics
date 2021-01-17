@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-module AuthManagment
+module AuthConcern
   def sign_in(user)
     session[:user_id] = user.id
   end
 
   def sign_out
-    session[:user_id] = nil
+    session.delete(:user_id)
     session.clear
   end
 

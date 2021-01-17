@@ -1,5 +1,4 @@
 test:
-	RAILS_ENV=test make db-prepare
 	bin/rails test -d
 
 check: test lint vulnerability-check

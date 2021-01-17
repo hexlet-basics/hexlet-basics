@@ -7,9 +7,16 @@ class Web::Languages::LessonsControllerTest < ActionDispatch::IntegrationTest
     @lesson = language_lessons(:two)
     @language = @lesson.language
     @info = @lesson.infos.last
+    @user = users(:full)
   end
 
   test 'show' do
+    get language_lesson_url(@language.slug, @lesson.slug, subdomain: @info.locale)
+    assert_response :success
+  end
+
+  test 'show (signed in)' do
+    sign_in_as(:full)
     get language_lesson_url(@language.slug, @lesson.slug, subdomain: @info.locale)
     assert_response :success
   end

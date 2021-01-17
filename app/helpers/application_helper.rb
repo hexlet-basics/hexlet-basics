@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
-  include AuthManagment
+  include AuthConcern
 
   def let(value)
     yield value
