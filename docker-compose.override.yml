@@ -23,6 +23,8 @@ services:
     build: .
     command: bin/spring server
     pid: host
+    env_file:
+      - .env
     volumes:
       - .:/app
       - /var/run/docker.sock:/var/run/docker.sock

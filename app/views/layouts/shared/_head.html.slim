@@ -6,7 +6,7 @@ title = title
 = csrf_meta_tags
 = csp_meta_tag
 = include_gon(init: true)
-= javascript_pack_tag 'application'
-= stylesheet_pack_tag 'application', media: 'all'
+- append_javascript_packs 'application'
+= stylesheet_packs_with_chunks_tag 'application', media: 'all'
 - if Rails.env.production?
   = render 'layouts/deps/gtm_head'

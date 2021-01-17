@@ -11,6 +11,8 @@
 db/*.sqlite3*
 db/*.sqlite3-journal
 
+.bash_history
+
 # Ignore all logfiles and tempfiles.
 log/*
 tmp/*
@@ -49,3 +51,10 @@ terraform/secrets.auto.tfvars
 terraform/docker-config.json
 google.key.json
 
+
+/public/packs
+/public/packs-test
+/node_modules
+/yarn-error.log
+yarn-debug.log*
+.yarn-integrity
