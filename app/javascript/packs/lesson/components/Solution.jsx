@@ -26,7 +26,7 @@ const Solution = () => {
 
     return (
       <div>
-        <p className="mt-3 mb-0">{t('userCode')}</p>
+        <h2 className="h3">{t('userCode')}</h2>
         <Highlight languages={[getLanguage(language)]}>
           {editor.content}
         </Highlight>
@@ -35,8 +35,8 @@ const Solution = () => {
   };
 
   const renderSolution = () => (
-    <div className="p-lg-3" id="basics-solution">
-      <p className="mb-0">{t('teacherSolution')}</p>
+    <div className="p-lg-3 hexlet-basics-content" id="basics-solution">
+      <h2 className="h3">{t('teacherSolution')}</h2>
       <Highlight languages={[getLanguage(language)]}>
         {lessonVersion.original_code}
       </Highlight>
