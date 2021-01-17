@@ -5,6 +5,7 @@ require_relative '../config/environment'
 require 'rails/test_help'
 
 OmniAuth.config.test_mode = true
+OmniAuth.config.request_validation_phase = OmniAuth::AuthenticityTokenProtection.new(allow_if: ->(_env) { true })
 
 class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods
