@@ -5,6 +5,7 @@ class Language < ApplicationRecord
 
   enumerize :slug, in: %i[php javascript python java html css racket elixir ruby go]
   enumerize :progress, in: %i[completed in_development draft], default: :draft, scope: true
+  enumerize :difficulty, in: %i[novice advanced], default: :novice
 
   validates :slug, presence: true
 

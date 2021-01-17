@@ -1,5 +1,5 @@
 .d-flex.justify-content-between
-  h2= "#{resource_language} versions"
+  h2= "#{resource_language.slug} versions"
   = button_to "Create new version", admin_language_versions_path(resource_language), class: 'btn btn-primary'
 
 table.table.table-striped.my-2
