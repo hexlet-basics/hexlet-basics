@@ -1,5 +1,9 @@
 ---
 
+# inherit_mode:
+#   merge:
+#     - Exclude
+
 AllCops:
   NewCops: enable
   TargetRubyVersion: 2.7
@@ -8,7 +12,7 @@ AllCops:
   Exclude:
     - 'bin/**/*'
     - 'vendor/**/*'
-    - 'db/migrate/**/*'
+    - 'db/**/*'
     - 'node_modules/**/*'
 
 # RSpec:
@@ -79,13 +83,16 @@ Rails/SkipsModelValidations:
 Style/GuardClause:
   Enabled: false
 
+Style/HashLikeCase:
+  Enabled: false
+
 Metrics/ParameterLists:
   Enabled: false
 
 # Выключил временно, потому что для нормального фикса
 # нужно уходить с сериалайзеров на jbuilder
-Naming/PredicateName:
-  Enabled: false
+# Naming/PredicateName:
+#   Enabled: false
 
 # why?
 Layout/EmptyLinesAroundClassBody:

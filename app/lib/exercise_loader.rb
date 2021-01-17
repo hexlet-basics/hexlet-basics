@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/ClassLength
 class ExerciseLoader
   include Import['download_exercise_klass']
 
@@ -241,4 +240,3 @@ class ExerciseLoader
     result == code ? '' : template_code
   end
 end
-# rubocop:enable Metrics/ClassLength

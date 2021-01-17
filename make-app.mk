@@ -43,10 +43,10 @@ precompile-assets:
 lint: lint-eslint lint-rubocop
 
 lint-rubocop:
-	bundle exec rubocop -A
+	bundle exec rubocop
 
 lint-eslint:
-	npx eslint --fix app/javascript --ext .js,.jsx
+	npx eslint app/javascript --ext .js,.jsx
 
 lint-slim:
 	bundle exec slim-lint
