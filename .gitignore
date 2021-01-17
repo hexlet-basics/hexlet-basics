@@ -11,8 +11,6 @@
 db/*.sqlite3*
 db/*.sqlite3-journal
 
-.bash_history
-
 # Ignore all logfiles and tempfiles.
 log/*
 tmp/*

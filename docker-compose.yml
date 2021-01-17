@@ -13,9 +13,10 @@ services:
   web:
     build:
       context: .
+      dockerfile: Dockerfile.production
     command: "make ci-check"
     volumes:
-      - '~/.bash_history:/app/.bash_history'
+      - '~/.bash_history:/root/.bash_history'
     depends_on:
       - postgres
 
