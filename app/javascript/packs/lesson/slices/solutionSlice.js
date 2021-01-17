@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 import { actions as checkInfoActions } from './checkInfoSlice.js';
-import { solutionStates } from '../utils/stateMachines.js';
+import { solutionStates } from '../utils/maps.js';
 
 const waitingTime = 20 * 60 * 1000;
 

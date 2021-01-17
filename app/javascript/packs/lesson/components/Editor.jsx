@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { UnControlled as CodeMirrorEditor } from 'react-codemirror2';
+import { useLocalStorage } from '@rehooks/local-storage';
 import { actions } from '../slices/index.js';
 import { getLanguage, getTabSize } from '../utils/editorUtils.js';
 import EntityContext from '../EntityContext.js';
@@ -51,12 +52,16 @@ const commonOptions = {
 };
 
 const Editor = () => {
-  const { language, lessonVersion } = useContext(EntityContext);
+  const { language, lessonVersion, lessonMember } = useContext(EntityContext);
   const { content, focusesCount } = useSelector((state) => state.editorSlice);
   const dispatch = useDispatch();
   const [editor, setEditor] = useState(null);
 
+  const localStorageKey = `lesson-version-${lessonVersion.id}`;
+  const [localStorageContent, setContent] = useLocalStorage(localStorageKey);
+
   const onContentChange = (_editor, _data, newContent) => {
+    setContent(newContent);
     dispatch(actions.changeContent({ content: newContent }));
   };
 
@@ -68,11 +73,16 @@ const Editor = () => {
     setEditor(self);
     self.focus();
     self.refresh();
-    self.setOption('extraKeys', {
-      'Ctrl-Enter': () => {
-        dispatch(actions.runCheck({ lessonVersion, editor: { content: self.getValue() } }));
-      },
-    });
+    // self.setOption('extraKeys', {
+    //   'Ctrl-Enter': () => {
+    //     if (lessonMember.id) {
+    //       dispatch(actions.runCheck({ lessonVersion, editor: { content: self.getValue() } }));
+    //     }
+    //   },
+    // });
+    if (localStorageContent) {
+      self.getDoc().setValue(localStorageContent);
+    }
   };
   const options = {
     ...commonOptions,

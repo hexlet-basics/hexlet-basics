@@ -75,15 +75,15 @@
               })();
 
   .col-12.col-md-6.col-lg-7.pl-md-0.x-h-md-100
-    - if current_user.guest?
-      .card.x-h-md-100
-        .card-header
-          .card-title = t('.only_for_signed_in_users')
-        .card-body
-          p = t('.please_sign_in')
-          .text-center
-            = link_to t('.sign_in'), new_session_path, class: "btn btn-primary"
-    - else
-      .d-flex.flex-column.x-h-md-100#basics-lesson-container data-testid="basics-lesson-container"
-      - append_javascript_packs 'lesson'
-      = stylesheet_packs_with_chunks_tag 'lesson', media: 'all'
+    / - if current_user.guest?
+    /   .card.x-h-md-100
+    /     .card-header
+    /       .card-title = t('.only_for_signed_in_users')
+    /     .card-body
+    /       p = t('.please_sign_in')
+    /       .text-center
+    /         = link_to t('.sign_in'), new_session_path, class: "btn btn-primary"
+    / - else
+    .d-flex.flex-column.x-h-md-100#basics-lesson-container data-testid="basics-lesson-container"
+    - append_javascript_packs 'lesson'
+    = stylesheet_packs_with_chunks_tag 'lesson', media: 'all'

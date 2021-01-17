@@ -5,7 +5,7 @@ import editorSlice, { actions as editorActions } from './editorSlice.js';
 import solutionSlice, { actions as solutionActions } from './solutionSlice.js';
 import lessonSlice, { actions as lessonActions } from './lessonSlice.js';
 import checkInfoSlice, { actions as checkInfoActions } from './checkInfoSlice.js';
-import { solutionStates, lessonMemberStates } from '../utils/stateMachines.js';
+import { solutionStates, lessonMemberStates } from '../utils/maps.js';
 
 export default combineReducers({
   tabsBoxSlice,

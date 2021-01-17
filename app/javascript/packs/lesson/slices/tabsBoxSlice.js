@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 import { actions as checkInfoActions } from './checkInfoSlice.js';
-import { currentTabValues } from '../utils/stateMachines.js';
+import { currentTabValues } from '../utils/maps.js';
 
 const slice = createSlice({
   name: 'tabsBoxSlice',

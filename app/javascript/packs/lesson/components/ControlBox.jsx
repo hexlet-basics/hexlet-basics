@@ -13,7 +13,7 @@ import {
 
 import routes from '@/appRoutes.js';
 import { actions } from '../slices/index.js';
-import { checkInfoStates } from '../utils/stateMachines.js';
+import { checkInfoStates } from '../utils/maps.js';
 import EntityContext from '../EntityContext.js';
 
 const ControlBox = () => {

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Api::LessonsController < Api::ApplicationController
-  before_action :require_api_auth!
+  # before_action :require_api_auth!
 
   def check
     lesson = Language::Lesson.find(params[:id])
@@ -12,7 +12,7 @@ class Api::LessonsController < Api::ApplicationController
     language_version = lesson_version.language_version
     lesson_exercise_data = LessonTester.new.run(lesson_version, language_version, code, current_user)
 
-    if lesson_exercise_data[:passed]
+    if lesson_exercise_data[:passed] && !current_user.guest?
       lesson_member = lesson.members.find_by!(user: current_user)
       lesson_member.finish!
 

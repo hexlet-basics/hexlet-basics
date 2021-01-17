@@ -15,11 +15,13 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     title t("human_languages.#{@resource_language}")
     title @info
 
-    return if current_user.guest?
+    if current_user.guest?
+      gon.lesson_member = Language::Lesson::MemberFake.new
+    else
+      lesson_member = @lesson.members.find_or_create_by!(language: resource_language, user: current_user)
+      gon.lesson_member = lesson_member
+    end
 
-    lesson_member = @lesson.members.find_or_create_by!(language: resource_language, user: current_user)
-
-    gon.lesson_member = lesson_member
     gon.language = resource_language.to_s
     gon.lesson_version = @lesson_version
     gon.lesson = @lesson

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Tab, Nav } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { actions } from '../slices/index.js';
-import { currentTabValues } from '../utils/stateMachines.js';
+import { currentTabValues } from '../utils/maps.js';
 
 import Editor from './Editor.jsx';
 import Output from './Output.jsx';

@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 
 import { actions } from '../slices/index.js';
 import { getLanguage } from '../utils/editorUtils.js';
-import { solutionStates } from '../utils/stateMachines.js';
+import { solutionStates } from '../utils/maps.js';
 import EntityContext from '../EntityContext.js';
 
 const Solution = () => {

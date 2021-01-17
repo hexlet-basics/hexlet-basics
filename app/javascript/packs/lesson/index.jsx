@@ -34,6 +34,7 @@ export default async () => {
     lessonVersion: gon.lesson_version,
     lesson: gon.lesson,
     language: gon.language,
+    lessonMember: gon.lesson_member,
   };
 
   ReactDOM.render(
