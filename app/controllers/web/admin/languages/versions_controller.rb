@@ -2,7 +2,9 @@
 
 class Web::Admin::Languages::VersionsController < Web::Admin::Languages::ApplicationController
   def index
-    @versions = resource_language.versions.order(created_at: :desc).page(params[:page])
+    @q = resource_language.versions.ransack(params[:q])
+    @q.sorts = 'created_at desc' if @q.sorts.empty?
+    @versions = @q.result.page(params[:page])
   end
 
   def create
