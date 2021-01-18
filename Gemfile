@@ -31,7 +31,6 @@ group :development, :test do
 end
 
 group :development do
-  gem 'solargraph', github: 'castwide/solargraph'
   gem 'i18n-debug'
   gem 'listen', '~> 3.3'
   gem 'rubocop'
@@ -39,6 +38,7 @@ group :development do
   gem 'rubocop-rails'
   gem 'rubocop-rake'
   gem 'rubocop-rspec'
+  gem 'solargraph', github: 'castwide/solargraph'
   gem 'spring'
   gem 'web-console', '>= 4.1.0'
 end
