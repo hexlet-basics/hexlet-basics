@@ -3,8 +3,8 @@ table.table.table-striped.my-2
   thead
     tr
       th Id
-      th = sort_link(@q, :email)
-      th = sort_link(@q, :created_at)
+      th = sort_link(@search, :email)
+      th = sort_link(@search, :created_at)
   tbody
     - @users.each do |user|
       tr

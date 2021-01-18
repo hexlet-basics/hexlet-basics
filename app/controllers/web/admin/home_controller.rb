@@ -2,8 +2,8 @@
 
 class Web::Admin::HomeController < Web::Admin::ApplicationController
   def index
-    @q = User.admin.ransack(params[:q])
-    @q.sorts = 'created_at desc' if @q.sorts.empty?
-    @users = @q.result
+    q = params.fetch(:q, {}).with_defaults('s' => 'created_at desc')
+    @search = User.admin.ransack(q)
+    @users = @search.result
   end
 end

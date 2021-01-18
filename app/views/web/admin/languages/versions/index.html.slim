@@ -9,7 +9,7 @@ table.table.table-striped.my-2
       th Language
       th Result
       th State
-      th= sort_link(@q, :created_at)
+      th= sort_link(@search, :created_at)
   tbody
     - @versions.each do |version|
       tr
