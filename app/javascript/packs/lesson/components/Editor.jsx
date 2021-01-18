@@ -52,7 +52,7 @@ const commonOptions = {
 };
 
 const Editor = () => {
-  const { language, lessonVersion, lessonMember } = useContext(EntityContext);
+  const { language, lessonVersion } = useContext(EntityContext);
   const { content, focusesCount } = useSelector((state) => state.editorSlice);
   const dispatch = useDispatch();
   const [editor, setEditor] = useState(null);
