@@ -20,6 +20,6 @@ class Web::LanguagesController < Web::ApplicationController
     @first_lesson = @language.current_lessons.ordered.first
     @next_lesson = current_user.not_finished_lessons_for_language(@language).ordered.first
 
-    title t('human_languages.language_for_beginners', language: t("human_languages.#{@language}"))
+    title [t("human_languages.#{@language}"), @language.learn_as.text].join(' ')
   end
 end

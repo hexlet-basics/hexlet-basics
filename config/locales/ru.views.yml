@@ -10,7 +10,6 @@ ru:
     ruby: Ruby
     elixir: Elixir
     go: Go
-    language_for_beginners: "%{language} для начинающих"
   web:
     home:
       languages:

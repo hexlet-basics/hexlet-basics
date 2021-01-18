@@ -4,5 +4,5 @@
   title Admin Hexlet basics
   = csrf_meta_tags
   = csp_meta_tag
-  = javascript_pack_tag "application"
-  = stylesheet_pack_tag "application", media: 'all'
+  - append_javascript_packs 'application'
+  = stylesheet_packs_with_chunks_tag 'application', media: 'all'
