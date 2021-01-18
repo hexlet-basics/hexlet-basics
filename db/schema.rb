@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_17_202921) do
+ActiveRecord::Schema.define(version: 2021_01_18_040006) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -182,7 +182,7 @@ ActiveRecord::Schema.define(version: 2021_01_17_202921) do
     t.string "progress"
     t.bigint "current_version_id"
     t.datetime "created_at", precision: 6, null: false
-    t.string "difficulty"
+    t.string "learn_as"
     t.index ["current_version_id"], name: "index_languages_on_current_version_id"
     t.index ["slug"], name: "languages_slug_index", unique: true
     t.index ["upload_id"], name: "languages_upload_id_index"

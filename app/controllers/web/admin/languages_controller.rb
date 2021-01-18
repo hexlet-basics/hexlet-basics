@@ -38,6 +38,6 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   private
 
   def language_params
-    params.require(:language).permit(:slug, :progress, :difficulty)
+    params.require(:language).permit(:slug, :progress, :learn_as)
   end
 end

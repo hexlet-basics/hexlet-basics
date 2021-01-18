@@ -9,7 +9,7 @@
   meta content="#{I18n.locale}" property='og:locale'
 
 h1.text-center.display-4
-  = t(".language_for_#{@language.difficulty}", language: t("human_languages.#{@language}"))
+  = [t("human_languages.#{@language}"), @language.learn_as.text].join(' ')
 - if @language_member.finished?
   = render 'complete_language'
 - elsif @first_lesson == @next_lesson
