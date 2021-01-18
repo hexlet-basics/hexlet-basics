@@ -16,6 +16,6 @@ RUN curl -fsSL "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/x86_6
 
 RUN npm install -g npm-check-updates
 
-ENV BUNDLE_PATH /app/vendor/bundle
+ENV BUNDLE_PATH /root/hexlet-basics/vendor/bundle
 
-WORKDIR /app
+WORKDIR /root/hexlet-basics

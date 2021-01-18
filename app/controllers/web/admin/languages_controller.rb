@@ -2,8 +2,9 @@
 
 class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   def index
-    @q = Language.ransack(params[:q])
-    @languages = @q.result
+    q = params.fetch(:q, {}).with_defaults('s' => 'created_at desc')
+    @search = Language.ransack(q)
+    @languages = @search.result
   end
 
   def new

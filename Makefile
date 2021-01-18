@@ -25,3 +25,6 @@ ansible-vaults-edit:
 
 tag: app-test
 	git tag $(TAG) && git push --tags
+
+editor-setup:
+	bundle exec solargraph bundle

@@ -1,0 +1,5 @@
+{
+  "solargraph.transport": "external",
+  "solargraph.logLevel": "info",
+  "solargraph.diagnostics": true
+}

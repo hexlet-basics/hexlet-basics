@@ -10,15 +10,32 @@ services:
       - redis:/data
 
   web:
+    build:
+      context: .
+      dockerfile: Dockerfile
     command: "make start"
     env_file:
       - .env
     volumes:
       - ~/.bash_history:/root/.bash_history
-      - .:/app
+      - .:/root/hexlet-basics
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/tmp/hexletbasics:/var/tmp/hexletbasics
       - /tmp:/tmp
+    depends_on:
+      - solargraph
+
+  # https://github.com/neoclide/coc-solargraph#configuration-options
+  # external server
+  solargraph:
+    build: .
+    command: "bundle exec solargraph socket --host=0.0.0.0 --port=7658"
+    ports:
+      - "7658:7658"
+    env_file:
+      - .env
+    volumes:
+      - ./:/root/hexlet-basics
 
   spring:
     build: .
@@ -27,7 +44,7 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/app
+      - .:/root/hexlet-basics
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp:/tmp
 
@@ -35,7 +52,7 @@ services:
     build: .
     command: bundle exec sidekiq
     volumes:
-      - .:/app
+      - .:/root/hexlet-basics
       - /tmp:/tmp
       - /var/tmp/hexletbasics:/var/tmp/hexletbasics
       - /var/run/docker.sock:/var/run/docker.sock
@@ -54,7 +71,7 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/app
+      - .:/root/hexlet-basics
 
   caddy:
     image: caddy:2.3.0
