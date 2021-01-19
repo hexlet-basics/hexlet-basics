@@ -19,7 +19,7 @@ web:
     repository: hexletbasics/services-app
     imagePullPolicy: Always
 
-slack_notification: ['/app/deploy-notify.sh']
+slack_notification: ['/root/hexlet-basics/deploy-notify.sh']
 
 resources: {}
 # We usually recommend not to specify default resources and to leave this as a conscious
