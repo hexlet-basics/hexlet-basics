@@ -14,7 +14,7 @@ Rails.application.routes.draw do
 
   scope module: :web do
     root 'home#index'
-    get 'auth/:provider', to: 'auth#request', as: :auth_request
+    post 'auth/:provider', to: 'auth#request', as: :auth_request
     get 'auth/:provider/callback', to: 'auth#callback', as: :callback_auth
 
     get '/403', to: 'errors#forbidden', as: :not_forbidden_errors
