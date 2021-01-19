@@ -8,7 +8,7 @@ gem 'puma', '~> 5.1'
 gem 'rails', '~> 6.1'
 gem 'webpacker', github: 'rails/webpacker'
 
-gem 'bootsnap', '>= 1.5', require: false
+gem 'bootsnap', require: false
 gem 'http_accept_language'
 gem 'jbuilder', '~> 2.10'
 gem 'kaminari'
