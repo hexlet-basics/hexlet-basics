@@ -18,7 +18,7 @@
           = f.input :password
           .form-group.mt-5
             = f.submit class: 'btn btn-primary mb-2 btn-block'
-            = link_to auth_request_path('github'), class: 'btn btn-secondary btn-block' do
+            = link_to auth_request_path('github'), method: :post, class: 'btn btn-secondary btn-block' do
               span.fab.mr-2.fa-github
               = t('.sign_up_with_github')
 
