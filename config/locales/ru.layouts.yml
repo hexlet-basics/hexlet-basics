@@ -6,11 +6,11 @@ ru:
         community: Сообщество
         sign_in: Войти
         registration: Регистрация
-        profile: Профиль
+        profile: Настройки
         sign_out: Выйти
         change_course: Выберите курс
         toggle_navigation: Переключить навигацию
-        toggle_user_info: Переключить отображение информации о пользователе
+        toggle_user_menu: Показать/скрыть меню пользователя
       footer:
         hexlet_title: © Hexlet Ltd, %{year}
         hexlet_address: UMA Esplanadi, Pohjoisesplanadi 39, 00100 Helsinki, Finland
