@@ -8,6 +8,7 @@ export const languages = {
   scheme: 'scheme',
   ruby: 'ruby',
   go: 'go',
+  elixir: 'elixir',
 };
 
 export const neededPreview = (language) => {
