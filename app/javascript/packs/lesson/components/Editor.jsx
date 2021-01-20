@@ -21,6 +21,7 @@ import 'codemirror/mode/php/php.js';
 import 'codemirror/mode/sass/sass.js';
 import 'codemirror/mode/pug/pug.js';
 import 'codemirror/mode/clike/clike.js';
+import 'codemirror/mode/go/go';
 
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/addon/scroll/simplescrollbars.css';
