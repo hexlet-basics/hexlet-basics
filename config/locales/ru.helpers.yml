@@ -5,6 +5,6 @@ ru:
       update: Изменить
       sign_in:
         create: Войти
-      user:
-        create: Зарегистрироваться
+      user_sign_up_form:
+        create: Регистрация
 
