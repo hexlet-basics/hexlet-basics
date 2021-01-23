@@ -5,5 +5,5 @@ en:
       update: Update
       sign_in:
         create: Sign in
-      user:
+      user_sign_up_form:
         create: Sign up
