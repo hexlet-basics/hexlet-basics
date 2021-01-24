@@ -7,4 +7,6 @@ ru:
         create: Войти
       user_sign_up_form:
         create: Регистрация
+      remind_password:
+        create: Восстановить пароль
 
