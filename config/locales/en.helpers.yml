@@ -7,3 +7,5 @@ en:
         create: Sign in
       user_sign_up_form:
         create: Sign up
+      remind_password:
+        create: Reset password
