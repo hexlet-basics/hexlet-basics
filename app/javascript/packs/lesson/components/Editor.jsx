@@ -86,10 +86,20 @@ const Editor = () => {
       self.getDoc().setValue(localStorageContent);
     }
   };
+
+  const replaceTab = (cm) => {
+    const space = ' ';
+    const spaces = space.repeat(cm.getOption('indentUnit'));
+    cm.replaceSelection(spaces);
+  };
+
   const options = {
     ...commonOptions,
     mode: getLanguage(language),
     indentUnit: getTabSize(language),
+    extraKeys: {
+      Tab: replaceTab,
+    },
   };
 
   return (
