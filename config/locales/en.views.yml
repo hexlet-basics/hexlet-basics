@@ -19,6 +19,8 @@ en:
         subheader: "For those who start from scratch. From the creators of "
         start: "Start"
         hexlet: "Hexlet"
+        in_development: Coming soon
+        in_development_description: Courses below are not in production at the moment. However, you can contribute by sending a pull request to Github repository.
       languages:
         start: Start
         continue: Continue
