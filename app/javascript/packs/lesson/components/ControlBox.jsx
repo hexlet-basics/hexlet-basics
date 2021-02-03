@@ -78,7 +78,7 @@ const ControlBox = () => {
 
   return (
     <Hotkeys keyName="ctrl+Enter" onKeyUp={handleRunCheck}>
-      <div className="d-flex justify-content-center p-3 border-top">
+      <div className="d-flex justify-content-center p-3 border-top flex-shrink-0">
         <Button
           variant="secondary"
           className="mr-3 d-inline-flex align-items-center"
