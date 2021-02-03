@@ -32,7 +32,7 @@ const TabsBox = () => {
 
   return (
     <Tab.Container id="tabs" activeKey={currentTab} onSelect={changeTab}>
-      <Nav variant="tabs" className="justify-content-center">
+      <Nav variant="tabs" className="justify-content-center flex-shrink-0">
         {Object.values(currentTabValues).map((tabName) => (
           <Nav.Item key={tabName}>
             <Nav.Link href={`#${tabName}`} className="rounded-0" eventKey={tabName}>{t(tabName)}</Nav.Link>
