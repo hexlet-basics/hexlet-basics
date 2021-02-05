@@ -8,6 +8,7 @@ import { currentTabValues } from '../utils/maps.js';
 import Editor from './Editor.jsx';
 import Output from './Output.jsx';
 import Solution from './Solution.jsx';
+import TestForExercise from './TestForExercise.jsx';
 
 const TabsBox = () => {
   const { t } = useTranslation();
@@ -22,7 +23,9 @@ const TabsBox = () => {
     dispatch(actions.changeTab({ newTabState }));
   };
 
-  const { editor, output, solution } = currentTabValues;
+  const {
+    editor, output, solution, testForExercise,
+  } = currentTabValues;
 
   // TODO: use anchor on load for choosing previuosly selected tab
   // useEffect(() => {
@@ -42,6 +45,9 @@ const TabsBox = () => {
       <Tab.Content bsPrefix="d-flex h-100 tab-content overflow-auto">
         <Tab.Pane eventKey={editor} bsPrefix="tab-pane h-100 pr-3 w-100 overflow-hidden">
           <Editor />
+        </Tab.Pane>
+        <Tab.Pane eventKey={testForExercise} bsPrefix="tab-pane h-100 p-3 w-100">
+          <TestForExercise />
         </Tab.Pane>
         <Tab.Pane eventKey={output} bsPrefix="tab-pane h-100 p-3 w-100">
           <Output />
