@@ -3,7 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { UnControlled as CodeMirrorEditor } from 'react-codemirror2';
 import { useLocalStorage } from '@rehooks/local-storage';
 import { actions } from '../slices/index.js';
-import { getLanguage, getTabSize } from '../utils/editorUtils.js';
+import { getLanguageForEditor, getTabSize } from '../utils/editorUtils.js';
+
 import EntityContext from '../EntityContext.js';
 
 import 'codemirror/mode/htmlmixed/htmlmixed.js';
@@ -95,7 +96,7 @@ const Editor = () => {
 
   const options = {
     ...commonOptions,
-    mode: getLanguage(language),
+    mode: getLanguageForEditor(language),
     indentUnit: getTabSize(language),
     extraKeys: {
       Tab: replaceTab,
