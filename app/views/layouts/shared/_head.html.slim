@@ -3,6 +3,8 @@ meta http-equiv='X-UA-Compatible' content='IE=Edge'
 meta name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-fit=no'
 = yield :meta
 title = title
+link rel='alternate' hreflang='ru' href="https://ru.#{request.domain}#{request.fullpath}"
+link rel='alternate' hreflang='en' href="https://#{request.domain}#{request.fullpath}"
 = csrf_meta_tags
 = csp_meta_tag
 = include_gon(init: true)
