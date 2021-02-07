@@ -15,6 +15,7 @@ ru:
       languages:
         start: Начать
         continue: Продолжить
+        repeat: Повторить
         icon: "Иконка %{language}"
       index:
         meta_description: Бесплатные практические уроки по программированию для тех, кто начинает с нуля

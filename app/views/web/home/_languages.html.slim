@@ -5,4 +5,4 @@
         h2.h5.card-title.text-white = t("human_languages.#{language}")
         = image_tag "#{language.slug}.png", class: 'img-fluid mt-3 mb-4', alt: t('.icon', language: t("human_languages.#{language}"))
         - let language_members_by_language[language.id] do |language_member|
-          = link_to language_member ? t('.continue') : t('.start'), language_path(language.slug), class: 'btn btn-light btn-block stretched-link h6'
+          = link_to language_status_for_user(language_member), language_path(language.slug), class: 'btn btn-light btn-block stretched-link h6'
