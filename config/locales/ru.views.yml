@@ -13,9 +13,9 @@ ru:
   web:
     home:
       languages:
-        start: Начать
-        continue: Продолжить
-        repeat: Повторить
+        ready_to_start: Начать
+        started: Продолжить
+        finished: Повторить
         icon: "Иконка %{language}"
       index:
         meta_description: Бесплатные практические уроки по программированию для тех, кто начинает с нуля
