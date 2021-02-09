@@ -24,10 +24,4 @@ module ApplicationHelper
       'active'
     end
   end
-
-  def language_status_for_user(language_member)
-    return t('.start') if language_member.nil?
-
-    language_member.finished? ? t('.repeat') : t('.continue')
-  end
 end
