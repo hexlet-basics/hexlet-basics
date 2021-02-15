@@ -1,3 +1,5 @@
+// @ts-check
+
 /* eslint-disable camelcase */
 import { combineReducers } from '@reduxjs/toolkit';
 import tabsBoxSlice, { actions as tabsBoxActions } from './tabsBoxSlice.js';

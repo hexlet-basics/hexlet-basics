@@ -1,3 +1,5 @@
+// @ts-check
+
 import React, { useContext, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { UnControlled as CodeMirrorEditor } from 'react-codemirror2';

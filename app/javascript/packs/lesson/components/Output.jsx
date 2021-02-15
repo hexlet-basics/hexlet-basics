@@ -1,3 +1,5 @@
+// @ts-check
+
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';

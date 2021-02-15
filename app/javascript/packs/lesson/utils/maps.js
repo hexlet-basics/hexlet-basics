@@ -1,3 +1,5 @@
+// @ts-check
+
 export const checkInfoStates = {
   unchecked: 'unchecked',
   checking: 'checking',

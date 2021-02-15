@@ -1,3 +1,5 @@
+// @ts-check
+
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tab, Nav } from 'react-bootstrap';

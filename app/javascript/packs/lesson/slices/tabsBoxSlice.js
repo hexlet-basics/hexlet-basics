@@ -1,3 +1,5 @@
+// @ts-check
+
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 import { actions as checkInfoActions } from './checkInfoSlice.js';

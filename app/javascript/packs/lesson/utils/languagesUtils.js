@@ -1,3 +1,5 @@
+// @ts-check
+
 export const languages = {
   css: 'css',
   html: 'html',
