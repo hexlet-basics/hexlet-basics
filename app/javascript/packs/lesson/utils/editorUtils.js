@@ -8,8 +8,6 @@ const languageMapping = {
 
 const editorMapping = {
   racket: 'scheme',
-  html: 'text/html',
-  css: 'text/html',
   java: 'text/x-java',
 };
 
