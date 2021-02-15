@@ -14,13 +14,14 @@ const slice = createSlice({
       state.finished = payload.finished;
     },
   },
-  extraReducers: {
-    [checkInfoActions.runCheck.fulfilled](state, { payload }) {
-      if (state.finished) {
-        return;
-      }
-      state.finished = payload.passed;
-    },
+  extraReducers: (builder) => {
+    builder
+      .addCase(checkInfoActions.runCheck.fulfilled, (state, { payload }) => {
+        if (state.finished) {
+          return;
+        }
+        state.finished = payload.passed;
+      });
   },
 });
 

@@ -34,21 +34,22 @@ const slice = createSlice({
   },
   reducers: {
   },
-  extraReducers: {
-    [runCheck.pending](state) {
-      state.processState = checkInfoStates.checking;
-    },
-    [runCheck.fulfilled](state, { payload }) {
-      state.result = payload.result;
-      state.output = payload.output;
-      state.passed = payload.passed;
-      state.processState = checkInfoStates.checked;
-    },
-    [runCheck.rejected](state) {
-      state.passed = false;
-      state.result = 'error';
-      state.processState = checkInfoStates.checked;
-    },
+  extraReducers: (builder) => {
+    builder
+      .addCase(runCheck.pending, (state) => {
+        state.processState = checkInfoStates.checking;
+      })
+      .addCase(runCheck.fulfilled, (state, { payload }) => {
+        state.result = payload.result;
+        state.output = payload.output;
+        state.passed = payload.passed;
+        state.processState = checkInfoStates.checked;
+      })
+      .addCase(runCheck.rejected, (state) => {
+        state.passed = false;
+        state.result = 'error';
+        state.processState = checkInfoStates.checked;
+      });
   },
 });
 

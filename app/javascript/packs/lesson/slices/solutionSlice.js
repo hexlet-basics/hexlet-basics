@@ -22,12 +22,13 @@ const slice = createSlice({
       state.processState = payload.processState;
     },
   },
-  extraReducers: {
-    [checkInfoActions.runCheck.fulfilled](state, { payload }) {
-      if (payload.passed) {
-        state.processState = solutionStates.shown;
-      }
-    },
+  extraReducers: (builder) => {
+    builder
+      .addCase(checkInfoActions.runCheck.fulfilled, (state, { payload }) => {
+        if (payload.passed) {
+          state.processState = solutionStates.shown;
+        }
+      });
   },
 });
 

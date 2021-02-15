@@ -16,13 +16,14 @@ const slice = createSlice({
       state.content = payload.content;
     },
   },
-  extraReducers: {
-    [tabActions.changeTab](state, { payload }) {
-      const { newTabState } = payload;
-      if (newTabState === 'editor') {
-        state.focusesCount += 1;
-      }
-    },
+  extraReducers: (builder) => {
+    builder
+      .addCase(tabActions.changeTab, (state, { payload }) => {
+        const { newTabState } = payload;
+        if (newTabState === 'editor') {
+          state.focusesCount += 1;
+        }
+      });
   },
 });
 

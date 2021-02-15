@@ -15,10 +15,11 @@ const slice = createSlice({
       state.currentTab = payload.newTabState;
     },
   },
-  extraReducers: {
-    [checkInfoActions.runCheck.pending](state) {
-      state.currentTab = currentTabValues.output;
-    },
+  extraReducers: (builder) => {
+    builder
+      .addCase(checkInfoActions.runCheck.pending, (state) => {
+        state.currentTab = currentTabValues.output;
+      });
   },
 });
 
