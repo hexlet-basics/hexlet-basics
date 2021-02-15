@@ -15,7 +15,7 @@ export default {
     testForExercise: 'Tests',
     userCode: 'Your solution:',
     userCodeInstructions: "(start writing in Editor, your code will appear here and you'll be able to compare it to the teacher's solution)",
-    solutionInstructions: "Teacher's solution will be available in {{remainingTime}} or after you finish the task yourself.",
+    solutionInstructions: "Teacher's solution will be available in:",
     testInstructions: 'Your exercise will be checked with these tests:',
     solutionNotice: "It's best to solve the problem yourself, but if you're stuck for a long time, feel free to check out the solution. But make sure to study it thoroughly to truly understand it.",
     showSolution: 'Show solution',
