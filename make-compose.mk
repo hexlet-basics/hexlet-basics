@@ -22,6 +22,7 @@ compose-ci-build:
 	docker-compose -f docker-compose.yml build
 
 compose-ci:
+	docker-compose --file docker-compose.yml build
 	docker-compose --file docker-compose.yml up --abort-on-container-exit
 
 env-prepare:
