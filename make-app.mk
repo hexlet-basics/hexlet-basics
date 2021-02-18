@@ -45,7 +45,7 @@ lint-rubocop:
 	bundle exec rubocop
 
 lint-eslint:
-	npx eslint app/javascript --ext .js,.jsx
+	npx eslint app/packs --ext .js,.jsx
 
 lint-slim:
 	bundle exec slim-lint
