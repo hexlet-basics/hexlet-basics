@@ -78,9 +78,7 @@
     "webpack-dev-server": "^3.11.2"
   },
   "babel": {
-    "presets": [
-      "./node_modules/@rails/webpacker/package/babel/preset.js"
-    ]
+    "presets": ["./node_modules/@rails/webpacker/package/babel/preset.js"]
   },
   "browserslist": [
     "defaults"

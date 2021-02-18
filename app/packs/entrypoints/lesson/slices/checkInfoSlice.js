@@ -5,8 +5,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { decode } from 'js-base64';
 
-import hexletAxios from '@/lib/hexlet-axios.js';
-import routes from '@/appRoutes.js';
+import hexletAxios from 'lib/hexlet-axios.js';
+import routes from 'vendor/appRoutes.js';
 import { checkInfoStates } from '../utils/maps.js';
 
 const runCheck = createAsyncThunk('runCheck', async ({ lessonVersion, editor }) => {

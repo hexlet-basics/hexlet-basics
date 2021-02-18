@@ -15,7 +15,8 @@ module.exports = {
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, '../../app/javascript'),
+      vendor: path.resolve(__dirname, '../../app/packs/vendor'),
+      lib: path.resolve(__dirname, '../../app/packs/lib'),
     },
   },
   module: {

@@ -1,8 +1,8 @@
 # Note: You must restart bin/webpack-dev-server for changes to take effect
 
 default: &default
-  source_path: app/javascript
-  source_entry_path: packs
+  source_path: app/packs
+  source_entry_path: entrypoints
   public_root_path: public
   public_output_path: packs
   cache_path: tmp/cache/webpacker
@@ -17,16 +17,18 @@ default: &default
 
 development:
   <<: *default
-  compile: false
+  compile: true
 
   # Reference: https://webpack.js.org/configuration/dev-server/
   dev_server:
     https: false
     host: 0.0.0.0
     port: 3035
-    <%# public: localhost:3035 %>
+    public: 0.0.0.0:3035
+    # Inject browserside javascript that required by both HMR and Live(full) reload
+    inject_client: true
     # Hot Module Replacement updates modules while the application is running without a full reload
-    hmr: true
+    hmr: false
     # Inline should be set to true if using HMR; it inserts a script to take care of live reloading
     inline: true
     # Should we show a full-screen overlay in the browser when there are compiler errors or warnings?

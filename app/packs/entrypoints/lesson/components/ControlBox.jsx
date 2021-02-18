@@ -14,7 +14,7 @@ import {
   faArrowRight, faSyncAlt, faArrowLeft, faPlayCircle,
 } from '@fortawesome/free-solid-svg-icons';
 
-import routes from '@/appRoutes.js';
+import routes from 'vendor/appRoutes.js';
 import { actions } from '../slices/index.js';
 import { checkInfoStates } from '../utils/maps.js';
 import EntityContext from '../EntityContext.js';
