@@ -17,6 +17,15 @@ services:
     command: "make ci-check"
     depends_on:
       - postgres
+  production:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+    env_file:
+      - .env
+
+    depends_on:
+      - postgres
 
 volumes:
   pgdata:

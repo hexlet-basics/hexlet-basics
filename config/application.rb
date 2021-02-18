@@ -13,7 +13,7 @@ load File.expand_path('../app/lib/configus.rb', __dir__)
 module HexletBasics
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 6.0
+    config.load_defaults '6.1'
     config.hexlet_basics = config_for(:hexlet_basics)
     config.autoload_paths << Rails.root.join('lib')
     # Settings in config/environments/* take precedence over those specified here.

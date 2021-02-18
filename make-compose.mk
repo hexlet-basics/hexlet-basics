@@ -1,6 +1,9 @@
 compose:
 	docker-compose up -d
 
+compose-production:
+	docker-compose --file docker-compose.yml run production
+
 compose-build:
 	docker-compose build
 
