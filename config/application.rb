@@ -31,5 +31,7 @@ module HexletBasics
     end
 
     routes.default_url_options[:host] = "#{configus.protocol}://#{configus.host}"
+
+    Rails.autoloaders.main.ignore(Rails.root.join('app/packs/*'))
   end
 end
