@@ -4,8 +4,6 @@ import _ from 'lodash';
 
 const languageMapping = {
   racket: 'scheme',
-  css: 'html',
-  html: 'text/html',
 };
 
 const editorMapping = {
@@ -20,6 +18,7 @@ const langToTabSizeMapping = {
   erlang: 2,
   elixir: 2,
   html: 2,
+  css: 2,
   python: 4,
   java: 4,
 };
