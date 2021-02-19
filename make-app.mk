@@ -9,6 +9,7 @@ vulnerability-check:
 ci-check: lint
 	bin/rails db:create
 	DISABLE_SPRING=1 bin/rails test
+	bin/rails zeitwerk:check
 
 language-load:
 	bin/rails exercises:load[${L}]
