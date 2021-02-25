@@ -1,13 +1,9 @@
 provider "cloudflare" {
-  version = "~> 1.15.0"
   email    = var.cloudflare_email
   token  = var.cloudflare_api_key
 }
 
 provider "kubernetes" {
-  version = "~> 1.7"
-
-  # region = var.region
 }
 
 resource "google_project" "hexlet_basics" {
@@ -18,7 +14,6 @@ resource "google_project" "hexlet_basics" {
 }
 
 provider "digitalocean" {
-  version = "~> 1.16.0"
   token   =  ""
 }
 

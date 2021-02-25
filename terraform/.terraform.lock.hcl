@@ -19,8 +19,7 @@ provider "registry.terraform.io/hashicorp/google" {
 }
 
 provider "registry.terraform.io/hashicorp/kubernetes" {
-  version     = "1.13.3"
-  constraints = "~> 1.7"
+  version = "1.13.3"
   hashes = [
     "h1:whoGs/NeucMF8U/urPaeXdQUb+ppaO1Ae4r5aJRhfrU=",
     "zh:11fd58df9c297a4f3cab82ce8eb2f54f1be27f78fa23be2273ecd545ab254b91",
@@ -37,8 +36,7 @@ provider "registry.terraform.io/hashicorp/kubernetes" {
 }
 
 provider "registry.terraform.io/terraform-providers/cloudflare" {
-  version     = "1.15.0"
-  constraints = "~> 1.15.0"
+  version = "1.15.0"
   hashes = [
     "h1:AHYyvcPIxfo5nRY9p4jYX8erecLe9xGzfI0FVTE9fRo=",
     "zh:1ad2f4542509e4871ae8aa93ad442e6ed6775c006ed8e0ee7a7015530dcea315",
@@ -57,8 +55,7 @@ provider "registry.terraform.io/terraform-providers/cloudflare" {
 }
 
 provider "registry.terraform.io/terraform-providers/digitalocean" {
-  version     = "1.16.0"
-  constraints = "~> 1.16.0"
+  version = "1.16.0"
   hashes = [
     "h1:9/w5qaL6lX6NFvoovxADlr0PiB6mfRoG+B33XESC9HE=",
     "zh:18426a60361d6143fa380babf9c5328cfc7f8ad0d3f8b3bdd324b5c304abc18c",
