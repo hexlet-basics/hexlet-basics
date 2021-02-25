@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 # https://github.com/trailblazer/reform-rails/issues/86
 # Temporary fix to show errors in form
+# rubocop:disable all
+
 module Reform
   class Contract < Disposable::Twin
     class Result
@@ -21,3 +25,4 @@ module Reform
     end
   end
 end
+# rubocop:enable all
