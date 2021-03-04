@@ -4,7 +4,7 @@ terraform {
       source = "terraform-providers/cloudflare"
     }
     digitalocean = {
-      source = "terraform-providers/digitalocean"
+      source = "digitalocean/digitalocean"
     }
     google = {
       source = "hashicorp/google"

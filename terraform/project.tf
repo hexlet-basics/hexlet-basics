@@ -14,7 +14,7 @@ resource "google_project" "hexlet_basics" {
 }
 
 provider "digitalocean" {
-  token   =  ""
+  token   =  var.digitalocean_token
 }
 
 output "project_id" {
