@@ -11,9 +11,8 @@ local-cluster-setup:
 	doctl auth init
 	doctl kubernetes cluster kubeconfig save hexlet-basics-4
 
-helm-install: helm-install-ingress-nginx helm-install-metrics
+helm-install: helm-install-ingress-nginx
 	helm install app ./app-chart
-	# helm install -f ./values-external-dns.yml external-dns stable/external-dns
 
 helm-install-ingress-nginx:
 	helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
