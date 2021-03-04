@@ -3,25 +3,32 @@ variable "domain" {
 }
 
 variable "ip" {
-  default = "165.227.244.247"
+  default = "157.245.24.95"
 }
 
-# NOTE added by hands.
-# resource "cloudflare_record" "main" {
-#   domain  = var.domain
-#   name    = var.domain
-#   value   = var.ip
-#   type    = "A"
-#   proxied = true
-# }
+resource "cloudflare_record" "main" {
+  domain  = var.domain
+  name    = var.domain
+  value   = var.ip
+  type    = "A"
+  proxied = true
+}
 
-# resource "cloudflare_record" "ru" {
-#   domain  = var.domain
-#   name    = "ru.${var.domain}"
-#   value   = var.ip
-#   type    = "A"
-#   proxied = true
-# }
+resource "cloudflare_record" "main-ru" {
+  domain  = "code-basics.ru"
+  name    = "code-basics.ru"
+  value   = var.ip
+  type    = "A"
+  proxied = true
+}
+
+resource "cloudflare_record" "ru" {
+  domain  = var.domain
+  name    = "ru.${var.domain}"
+  value   = var.ip
+  type    = "A"
+  proxied = true
+}
 
 resource "cloudflare_record" "www" {
   domain  = var.domain

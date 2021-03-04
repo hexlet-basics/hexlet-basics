@@ -1,6 +1,6 @@
 ---
 
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: nginx-ingress
@@ -14,18 +14,30 @@ spec:
     - host: "*.code-basics.com"
       http:
         paths:
-          - backend:
-              serviceName: "{{.Release.Name }}-frontend-service"
-              servicePort: 8080
+        - pathType: Prefix
+          path: "/"
+          backend:
+            service:
+              name: "{{.Release.Name }}-frontend-service"
+              port:
+                number: 8080
     - host: "code-basics.com"
       http:
         paths:
-          - backend:
-              serviceName: "{{.Release.Name }}-frontend-service"
-              servicePort: 8080
+        - pathType: Prefix
+          path: "/"
+          backend:
+            service:
+              name: "{{.Release.Name }}-frontend-service"
+              port:
+                number: 8080
     - host: "code-basics.ru"
       http:
         paths:
-          - backend:
-              serviceName: "{{.Release.Name }}-frontend-service"
-              servicePort: 8080
+        - pathType: Prefix
+          path: "/"
+          backend:
+            service:
+              name: "{{.Release.Name }}-frontend-service"
+              port:
+                number: 8080
