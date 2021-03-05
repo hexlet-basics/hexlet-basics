@@ -19,6 +19,7 @@ app-setup: app-install app-db-prepare
 	make app-language-load L='php'
 	make app-language-load L='python'
 	make app-language-load L='css'
+	make app-language-load L='html'
 
 app-install:
 	docker-compose run web make setup

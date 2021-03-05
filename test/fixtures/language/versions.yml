@@ -20,3 +20,6 @@ css:
 
 python:
   <<: *DEFAULTS
+
+html:
+  <<: *DEFAULTS
