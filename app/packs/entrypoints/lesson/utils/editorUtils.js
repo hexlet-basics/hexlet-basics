@@ -9,6 +9,7 @@ const languageMapping = {
 const editorMapping = {
   racket: 'scheme',
   java: 'text/x-java',
+  html: 'text/html',
 };
 
 const langToTabSizeMapping = {
