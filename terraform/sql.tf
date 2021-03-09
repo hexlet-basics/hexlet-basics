@@ -25,12 +25,12 @@ resource "digitalocean_database_db" "postgres" {
 }
 
 resource "digitalocean_database_firewall" "k8s" {
-  depends_on = [digitalocean_kubernetes_cluster.hexlet_basics_2]
+  depends_on = [digitalocean_kubernetes_cluster.hexlet-basics-4]
 
   cluster_id = digitalocean_database_cluster.hexlet_basics.id
   rule {
     type  = "k8s"
-    value = digitalocean_kubernetes_cluster.hexlet_basics_2.id
+    value = digitalocean_kubernetes_cluster.hexlet-basics-4.id
   }
 }
 
@@ -43,13 +43,12 @@ resource "digitalocean_database_cluster" "hexlet-basics-redis" {
   node_count = 1
 }
 
-# FIXME return with new k8s cluster
-# resource "digitalocean_database_firewall" "redis-k8s" {
-#   depends_on = [digitalocean_kubernetes_cluster.hexlet_basics_2]
+resource "digitalocean_database_firewall" "redis-k8s" {
+  depends_on = [digitalocean_kubernetes_cluster.hexlet-basics-4]
 
-#   cluster_id = digitalocean_database_cluster.hexlet-basics-redis.id
-#   rule {
-#     type  = "k8s"
-#     value = digitalocean_kubernetes_cluster.hexlet_basics_2.id
-#   }
-# }
+  cluster_id = digitalocean_database_cluster.hexlet-basics-redis.id
+  rule {
+    type  = "k8s"
+    value = digitalocean_kubernetes_cluster.hexlet-basics-4.id
+  }
+}
