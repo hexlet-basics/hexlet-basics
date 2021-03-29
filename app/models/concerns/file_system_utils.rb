@@ -10,7 +10,7 @@ module FileSystemUtils
                   .to_s
                   .rjust(6, '0')
                   .reverse
-                  .split('')
+                  .chars
                   .each_slice(3)
                   .to_a
                   .map(&:join)
