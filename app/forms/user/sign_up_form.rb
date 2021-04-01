@@ -7,7 +7,7 @@ class User::SignUpForm < User
 
   validates :password, presence: true, length: { minimum: 6 }
 
-  def email=(value)
+  def email=(email)
     if email.present?
       write_attribute(:email, email.downcase)
     else
