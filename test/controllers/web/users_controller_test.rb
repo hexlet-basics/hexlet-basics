@@ -8,6 +8,9 @@ class Web::UsersControllerTest < ActionDispatch::IntegrationTest
     post users_url, params: { user_sign_up_form: user_params }
     assert_response :redirect
 
+    user = User.find_by email: user_params[:email].downcase
+
+    assert { user.present? }
     assert { signed_in? }
   end
 end
