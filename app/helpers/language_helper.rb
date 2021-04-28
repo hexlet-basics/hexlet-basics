@@ -23,8 +23,8 @@ module LanguageHelper
       'javascript' => 'frontend.svg',
       'java' => 'java.svg',
       'python' => 'python.svg',
-      'html' => 'layout-designer.svg',
-      'css' => 'layout-designer.svg'
+      'html' => 'layout-designer-html.svg',
+      'css' => 'layout-designer-css.svg'
     }
     mapping.fetch(slug, 'hexlet_logo.png')
   end
