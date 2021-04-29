@@ -16,7 +16,7 @@ class User < ApplicationRecord
 
   aasm :state do
     state :active, initial: true
-    state :initail
+    state :initial
     state :waiting_confirmation
     state :removed
 
