@@ -1,5 +1,5 @@
 // @ts-check
 
-import run from './lesson/index.jsx';
+import run from '../src/lesson/index.jsx';
 
 run();
