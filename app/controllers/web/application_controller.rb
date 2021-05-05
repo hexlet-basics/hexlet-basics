@@ -29,5 +29,6 @@ class Web::ApplicationController < ApplicationController
     }
 
     gon.locale = I18n.locale
+    gon.events = EventsMapping.events
   end
 end

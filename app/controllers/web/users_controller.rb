@@ -14,6 +14,7 @@ class Web::UsersController < Web::ApplicationController
 
     if @user.save
       sign_in @user
+      js_event :signed_up
 
       f(:success)
       redirect_to root_path
