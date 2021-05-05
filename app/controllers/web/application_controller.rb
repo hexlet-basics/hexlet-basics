@@ -3,6 +3,7 @@
 class Web::ApplicationController < ApplicationController
   include FlashConcern
   include TitleConcern
+  include EventConcern
 
   before_action do
     locale = (current_user.locale || session[:locale] ||
