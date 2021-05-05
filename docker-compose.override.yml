@@ -89,4 +89,3 @@ volumes:
   redis:
   caddy_data:
   caddy_config:
-
