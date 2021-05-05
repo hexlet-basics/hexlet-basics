@@ -3,7 +3,7 @@
 class EventsMapping
   # all events should goes here
   @mapping = {
-    signed_up: '',
+    signed_up: ''
   }
 
   def self.events
