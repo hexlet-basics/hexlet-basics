@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FinishLanguageMembersJob < ApplicationJob
   sidekiq_options retry: 0
 
