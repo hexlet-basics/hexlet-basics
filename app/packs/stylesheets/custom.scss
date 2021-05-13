@@ -116,3 +116,8 @@ $azure: #45aaf2;
 .adsbox {
   @extend .position-absolute;
 }
+
+// NOTE for invalidate production cache css url. should be deleted later
+.dummy{
+  display: none;
+}
