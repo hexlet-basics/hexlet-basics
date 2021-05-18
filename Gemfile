@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 gem 'configus'
-gem 'puma', '~> 5.1'
+gem 'puma', '~> 5.3'
 gem 'rails', '~> 6.1'
 gem 'webpacker', github: 'rails/webpacker'
 
