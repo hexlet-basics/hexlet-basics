@@ -15,8 +15,7 @@ class User < ApplicationRecord
   has_many :accounts, dependent: :destroy
 
   aasm :state do
-    state :active, initial: true
-    state :waiting_confirmation
+    state :waiting_confirmation, initial: true
     state :removed
 
     event :activate do
