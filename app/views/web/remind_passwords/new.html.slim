@@ -13,12 +13,12 @@
     .card
       .card-body.p-4.p-lg-5
         h1.h3.mb-4.text-center = t('.forgot_password')
-        = simple_form_for @remind_password_form, url: remind_password_path, wrapper: :no_labels_form do |f|
+        = simple_form_for @remind_password_form, url: remind_password_path, wrapper: :floating_labels_form do |f|
           = f.input :email
-          = f.submit class: 'btn btn-primary btn-block'
+          = f.submit class: 'btn btn-lg btn-primary w-100'
         .text-center.mt-3
           = t('.trying_to_login')
-          = link_to t('.login'), new_session_path, class: 'ml-1'
+          = link_to t('.login'), new_session_path, class: 'ms-1'
       .card-footer.text-center.p-3.p-md-4
           = t('.dont_have_account')
-          = link_to t('.register'), new_user_path, class: 'ml-1'
+          = link_to t('.register'), new_user_path, class: 'ms-1'

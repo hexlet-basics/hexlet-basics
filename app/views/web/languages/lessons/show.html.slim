@@ -11,24 +11,24 @@
 .row.pt-2.x-h-md-100
   .col-12.col-md-6.col-lg-5.x-h-md-100.mb-3.mb-md-0
     .card.x-h-md-100
-      ul.nav.nav-tabs.justify-content-center.flex-shrink-0 data-toggle="tabs"
+      ul.nav.nav-tabs.justify-content-center.flex-shrink-0 data-bs-toggle="tabs"
         li.nav-item
-          a.nav-link.active.rounded-0 href="#lesson-tab" data-toggle="tab" role="tab" = t('.lesson')
+          a.nav-link.active.rounded-0 href="#lesson-tab" data-bs-toggle="tab" role="tab" = t('.lesson')
         li.nav-item
-          a.nav-link.rounded-0 href="#discuss-tab" data-toggle="tab" role="tab" = t('.discuss')
+          a.nav-link.rounded-0 href="#discuss-tab" data-bs-toggle="tab" role="tab" = t('.discuss')
 
       .tab-content.x-h-md-100.overflow-hidden
         .tab-pane.fade.overflow-auto.x-h-md-100.active.show#lesson-tab(role="tabpanel")
-          .card-body.pt-2
-            nav aria-label=t('.breadcrumb')
-              ol.breadcrumb.bg-transparent.p-0
-                li.breadcrumb-item
-                  = link_to root_path, title: t('.to_home_title')
-                    span.fas.fa-home
-                li.breadcrumb-item
-                  = link_to t("human_languages.#{@resource_language}"), language_path(@resource_language.slug)
-                li.breadcrumb-item.active aria-current="page"
-                  = current_breadcrumb(@lesson_version, @info, @language_lessons_count)
+          .card-body
+            / nav.my-3 aria-label=t('.breadcrumb')
+            /   ol.breadcrumb
+            /     li.breadcrumb-item
+            /       = link_to root_path, title: t('.to_home_title')
+            /         span.fas.fa-home.text-muted
+            /     li.breadcrumb-item
+            /       = link_to t("human_languages.#{@resource_language}"), language_path(@resource_language.slug), class: 'text-decoration-none text-muted'
+            /     li.breadcrumb-item.active aria-current="page"
+            /       = current_breadcrumb(@lesson_version, @info, @language_lessons_count)
             .hexlet-basics-content
               h1.h3.font-weight-bold
                 = "#{t("human_languages.#{@resource_language}")}: #{@info.name}"

@@ -29,10 +29,10 @@ h1.text-center.display-4
           ul.list-group
             - module_version.lesson_versions.each do |lesson_version|
               - let @finished_lessons_by_id[lesson_version.lesson_id] do |finished_lesson|
-                li.list-group-item.d-flex
+                li.list-group-item.d-flex.p-3
                   = link_to "#{lesson_version.natural_order}. #{@infos_by_lesson[lesson_version.id]}", language_lesson_path(@language.slug, lesson_version.lesson.slug), class: 'stretched-link text-decoration-none'
                   - if finished_lesson
-                    .ml-auto
+                    .me-auto
                       i.text-primary.fas.fa-check
         .col-12.col-md-6.mt-4
           = module_info.description

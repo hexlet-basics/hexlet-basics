@@ -2,6 +2,7 @@
 
 class ExternalLinks
   LINKS = {
+    hexlet: 'https://hexlet.io/?utm_campaign=general&utm_medium=referral&utm_source=code-basics',
     hexlet_support_mail: 'support@hexlet.io',
     hexlet_facebook: 'https://www.facebook.com/codebasicsru',
     hexlet_telegram: 'https://t.me/hexlet_ru',

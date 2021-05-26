@@ -55,7 +55,7 @@ const ControlBox = () => {
         <>
           <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
           <span className="sr-only">{t('loading')}</span>
-          <span className="d-none d-sm-block d-md-none d-lg-block ml-1">{text}</span>
+          <span className="d-none d-sm-block d-md-none d-lg-block ms-1">{text}</span>
         </>
       );
     }
@@ -63,13 +63,13 @@ const ControlBox = () => {
     return (
       <>
         <FontAwesomeIcon icon={faPlayCircle} />
-        <span className="d-none d-sm-block d-md-none d-lg-block ml-1">{text}</span>
+        <span className="d-none d-sm-block d-md-none d-lg-block ms-1">{text}</span>
       </>
     );
   };
 
   const prevButtonClasses = cn(`btn btn-outline-secondary
-    font-weight-normal mr-3 order-first order-sm-0 order-md-first order-lg-0`);
+    font-weight-normal me-3 order-first order-sm-0 order-md-first order-lg-0`);
 
   const nextButtonClasses = cn('btn btn-outline-primary font-weight-normal', {
     disabled: !lessonInfo.finished,
@@ -83,7 +83,7 @@ const ControlBox = () => {
       <div className="d-flex justify-content-center p-3 border-top flex-shrink-0">
         <Button
           variant="secondary"
-          className="mr-3 d-inline-flex align-items-center"
+          className="me-3 d-inline-flex align-items-center"
           onClick={handleReset}
           title={t('resetCode')}
         >
@@ -95,7 +95,7 @@ const ControlBox = () => {
         </a>
         <Button
           variant="primary"
-          className="mr-3 d-inline-flex align-items-center"
+          className="me-3 d-inline-flex align-items-center"
           onClick={handleRunCheck}
           disabled={isCodeChecking}
         >

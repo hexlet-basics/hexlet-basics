@@ -4,28 +4,28 @@ $breadcrumb-divider: quote("→");
 @import 'bootstrap/scss/bootstrap';
 
 // generage x-vh-{breakpoint}-{size} class (x-vh-md-50, etc)
-@each $breakpoint in map-keys($grid-breakpoints) {
-  @include media-breakpoint-up($breakpoint) {
-    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
-    @each $prop, $unit in (height: vh) {
-      @each $size in (25, 50, 75, 100) {
-        .x-#{$unit}#{$infix}-#{$size} { #{$prop}: #{$size}#{$unit} !important; }
-      }
-    }
-  }
-}
+// @each $breakpoint in map-keys($grid-breakpoints) {
+//   @include media-breakpoint-up($breakpoint) {
+//     $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+//     @each $prop, $unit in (height: vh) {
+//       @each $size in (25, 50, 75, 100) {
+//         .x-#{$unit}#{$infix}-#{$size} { #{$prop}: #{$size}#{$unit} !important; }
+//       }
+//     }
+//   }
+// }
 
 // generage x-(w|h)-{breakpoint}-{size} class (x-w-md-25, x-h-md-100, etc)
-@each $breakpoint in map-keys($grid-breakpoints) {
-  @include media-breakpoint-up($breakpoint) {
-    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
-    @each $prop, $abbrev in (width: w, height: h) {
-      @each $size, $length in $sizes {
-        .x-#{$abbrev}#{$infix}-#{$size} { #{$prop}: $length !important; }
-      }
-    }
-  }
-}
+// @each $breakpoint in map-keys($grid-breakpoints) {
+//   @include media-breakpoint-up($breakpoint) {
+//     $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+//     @each $prop, $abbrev in (width: w, height: h) {
+//       @each $size, $length in $sizes {
+//         .x-#{$abbrev}#{$infix}-#{$size} { #{$prop}: $length !important; }
+//       }
+//     }
+//   }
+// }
 
 $azure: #45aaf2;
 
@@ -118,6 +118,6 @@ $azure: #45aaf2;
 }
 
 // NOTE for invalidate production cache css url. should be deleted later
-.dummy{
+.dummy {
   display: none;
 }

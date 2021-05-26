@@ -11,9 +11,9 @@
 .row.justify-content-center.mb-5
   .col-12.col-md-10.col-lg-9.col-xl-8.text-center
     h1.h4 = t('.header')
-    p.h5.font-weight-light
+    p.lead
       = t('.subheader')
-      = link_to t('.hexlet'), 'https://hexlet.io/?utm_campaign=general&utm_medium=referral&utm_source=code-basics', class: 'text-muted'
+      = link_to t('.hexlet'), ExternalLinks.hexlet, class: 'text-muted text-decoration-none', target: '_blank'
 .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4
   = render partial: 'languages', locals: { languages: @languages_completed, language_members_by_language: @language_members_by_language, language_member_fake: @language_member_fake }
 - if @languages_in_development.any?
