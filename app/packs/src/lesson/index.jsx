@@ -24,7 +24,7 @@ export default async () => {
       lng: gon.locale,
       debug: process.env.NODE_ENV !== 'production',
       react: {
-        wait: true,
+        useSuspense: true,
       },
     });
   const store = configureStore({
