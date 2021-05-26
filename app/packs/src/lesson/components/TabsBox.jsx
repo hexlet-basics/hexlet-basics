@@ -48,11 +48,11 @@ const TabsBox = () => {
         <Tab.Pane eventKey={editor} bsPrefix="tab-pane h-100 pr-3 w-100 overflow-hidden">
           <Editor />
         </Tab.Pane>
-        <Tab.Pane eventKey={testForExercise} bsPrefix="tab-pane h-100 p-3 w-100">
-          <TestForExercise />
-        </Tab.Pane>
         <Tab.Pane eventKey={output} bsPrefix="tab-pane h-100 p-3 w-100">
           <Output />
+        </Tab.Pane>
+        <Tab.Pane eventKey={testForExercise} bsPrefix="tab-pane h-100 p-3 w-100">
+          <TestForExercise />
         </Tab.Pane>
         <Tab.Pane eventKey={solution} bsPrefix="tab-pane h-100 p-3 w-100">
           <Solution />

@@ -79,13 +79,11 @@ const Solution = () => {
     const remainingTime = format(new Date(countdownData.total), 'mm:ss');
 
     return (
-      <>
-        <div className="text-center">
-          <p className="lead">{t('solutionInstructions')}</p>
-          <div className="display-4">{ remainingTime }</div>
-          <img className="img-fluid px-5" src={WaitingClock} alt="waiting_clock" />
-        </div>
-      </>
+      <div className="text-center">
+        <p className="lead">{t('solutionInstructions')}</p>
+        <div className="display-4">{ remainingTime }</div>
+        <img className="img-fluid px-5" src={WaitingClock} alt="waiting_clock" />
+      </div>
     );
   };
 

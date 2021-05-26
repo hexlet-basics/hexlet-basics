@@ -12,14 +12,14 @@ const Test = () => {
   const { t } = useTranslation();
 
   return (
-    <>
-      <div className="p-lg-3 hexlet-basics-content">
-        <h2 className="h3">{t('testInstructions')}</h2>
+    <div>
+      <p className="text-center lead">{t('testInstructions')}</p>
+      <div className="hexlet-basics-content">
         <Highlight languages={[getLanguage(language)]}>
           {lessonVersion.test_code}
         </Highlight>
       </div>
-    </>
+    </div>
   );
 };
 

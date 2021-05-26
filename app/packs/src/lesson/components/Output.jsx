@@ -34,10 +34,8 @@ const Output = () => {
       <div className={alertClassName}>
         {message}
       </div>
-      {!lessonMember.id && (
-        <div className="alert alert-warning">
-          {messageForGuest}
-        </div>
+      {!lessonMember.id && checkInfo.passed && (
+        <div className="alert alert-warning" dangerouslySetInnerHTML={{ __html: messageForGuest }} />
       )}
     </div>
   );
