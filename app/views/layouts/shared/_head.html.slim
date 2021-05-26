@@ -5,6 +5,7 @@ meta name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-f
 title = title
 link rel='alternate' hreflang='ru' href="https://ru.#{request.domain}#{request.fullpath}"
 link rel='alternate' hreflang='en' href="https://#{request.domain}#{request.fullpath}"
+= favicon_link_tag
 = csrf_meta_tags
 = csp_meta_tag
 = include_gon(init: true)
