@@ -1,48 +1,24 @@
-// $body-bg: #f5f7fb;
-$breadcrumb-divider: quote("→");
+$body-bg: #f5f7fb;
+$breadcrumb-divider: quote('→');
 
-@import 'bootstrap/scss/bootstrap';
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/utilities';
+@import 'bootstrap/scss/mixins';
 
-$sizes: (25, 50, 75, 100);
-// https://github.com/twbs/bootstrap/blob/v4.6.0/scss/_variables.scss#L150
-// Разобраться как делать это в пятом бутстрапе
-// https://github.com/twbs/bootstrap/blob/main/scss/_utilities.scss
-// https://github.com/twbs/bootstrap/blob/main/scss/utilities/_api.scss
-$sizes-with-percent: () !default;
-$sizes-with-percent: map-merge(
+$utilities: map-merge(
+  $utilities,
   (
-    25: 25%,
-    50: 50%,
-    75: 75%,
-    100: 100%,
-    auto: auto
-  ),
-  $sizes-with-percent
+    "responsive-height": (
+      property: height,
+      class: 'x-h',
+      responsive: true,
+      values: (
+        100: 100%,
+      )
+    )
+  )
 );
-
-// generage x-vh-{breakpoint}-{size} class (x-vh-md-50, etc)
-@each $breakpoint in map-keys($grid-breakpoints) {
-  @include media-breakpoint-up($breakpoint) {
-    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
-    @each $prop, $unit in (height: vh) {
-      @each $size in $sizes {
-        .x-#{$unit}#{$infix}-#{$size} { #{$prop}: #{$size}#{$unit} !important; }
-      }
-    }
-  }
-}
-
-// generage x-(w|h)-{breakpoint}-{size} class (x-w-md-25, x-h-md-100, etc)
-@each $breakpoint in map-keys($grid-breakpoints) {
-  @include media-breakpoint-up($breakpoint) {
-    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
-    @each $prop, $abbrev in (width: w, height: h) {
-      @each $size, $length in $sizes-with-percent {
-        .x-#{$abbrev}#{$infix}-#{$size} { #{$prop}: $length !important; }
-      }
-    }
-  }
-}
 
 $azure: #45aaf2;
 
