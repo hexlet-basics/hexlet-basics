@@ -218,6 +218,7 @@ ActiveRecord::Schema.define(version: 2021_04_01_131744) do
     t.string "email_delivery_state", limit: 255
     t.boolean "admin"
     t.datetime "created_at", precision: 6, null: false
+    t.boolean "help"
     t.index ["email"], name: "index_users_on_email", unique: true, where: "((state)::text <> 'removed'::text)"
   end
 
