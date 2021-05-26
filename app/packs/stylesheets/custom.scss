@@ -6,6 +6,8 @@ $breadcrumb-divider: quote("→");
 $sizes: (25, 50, 75, 100);
 // https://github.com/twbs/bootstrap/blob/v4.6.0/scss/_variables.scss#L150
 // Разобраться как делать это в пятом бутстрапе
+// https://github.com/twbs/bootstrap/blob/main/scss/_utilities.scss
+// https://github.com/twbs/bootstrap/blob/main/scss/utilities/_api.scss
 $sizes-with-percent: () !default;
 $sizes-with-percent: map-merge(
   (
