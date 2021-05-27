@@ -64,7 +64,7 @@ const ControlBox = () => {
     // <FontAwesomeIcon icon={faPlayCircle} />
     return (
       <>
-        <span className="bi bi-play-circle"></span>
+        <span className="bi bi-play-circle" />
         <span className="d-none d-sm-block d-md-none d-lg-block ms-1">{text}</span>
       </>
     );
@@ -91,24 +91,24 @@ const ControlBox = () => {
         onClick={handleReset}
         title={t('resetCode')}
       >
-        <span className="bi bi-arrow-repeat"></span>
+        <span className="bi bi-arrow-repeat" />
       </Button>
-          <a className={prevButtonClasses} href={prevLessonPath}>
-            <span className="bi bi-arrow-left-short d-sm-none d-md-block d-lg-none"></span>
-            <span className="d-none d-sm-block d-md-none d-lg-block">{t('prevLesson')}</span>
-          </a>
-        <Button
-          variant="primary"
-          className="me-3 d-inline-flex align-items-center"
-          onClick={handleRunCheck}
-          disabled={isCodeChecking}
-        >
-          {renderRunButtonContent()}
-        </Button>
-        <a className={nextButtonClasses} href={nextLessonPath}>
-          <span className="bi bi-arrow-right-short d-sm-none d-md-block d-lg-none"></span>
-          <span className="d-none d-sm-block d-md-none d-lg-block">{t('nextLesson')}</span>
-        </a>
+      <a className={prevButtonClasses} href={prevLessonPath}>
+        <span className="bi bi-arrow-left-short d-sm-none d-md-block d-lg-none" />
+        <span className="d-none d-sm-block d-md-none d-lg-block">{t('prevLesson')}</span>
+      </a>
+      <Button
+        variant="primary"
+        className="me-3 d-inline-flex align-items-center"
+        onClick={handleRunCheck}
+        disabled={isCodeChecking}
+      >
+        {renderRunButtonContent()}
+      </Button>
+      <a className={nextButtonClasses} href={nextLessonPath}>
+        <span className="bi bi-arrow-right-short d-sm-none d-md-block d-lg-none" />
+        <span className="d-none d-sm-block d-md-none d-lg-block">{t('nextLesson')}</span>
+      </a>
     </div>
   );
 };

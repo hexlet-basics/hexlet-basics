@@ -40,7 +40,14 @@ const TabsBox = () => {
       <Nav variant="tabs" className="justify-content-center small">
         {Object.values(currentTabValues).map((tabName) => (
           <Nav.Item key={tabName}>
-            <Nav.Link href={`#${tabName}`} className="border-top-0 text-muted rounded-0" eventKey={tabName}>{t(tabName)}</Nav.Link>
+            <Nav.Link
+              href={`#${tabName}`}
+              className="border-top-0 text-muted rounded-0"
+              eventKey={tabName}
+            >
+              {t(tabName)}
+
+            </Nav.Link>
           </Nav.Item>
         ))}
       </Nav>
