@@ -1,21 +1,22 @@
-.mb-5
-  h2 Курсы
-  hr
-a#courses
-.row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4
-  - languages.each do |language|
-    .col.mb-5
-      .card.h-100
-        .card-body.text-center(class="#{get_language_background(language.slug)}")
-          h2.h5.card-title.text-white = t("human_languages.#{language}")
-          = image_tag "#{language.slug}.png", class: 'img-fluid mt-3 mb-4', alt: t('.icon', language: t("human_languages.#{language}"))
-          - let language_members_by_language.fetch(language.id, language_member_fake) do |language_member|
-            = link_to t(".#{language_member.state}"), language_path(language.slug), class: 'btn d-grid btn-light btn-block stretched-link h6'
-
-- if @languages_in_development.any?
-  .row.justify-content-center.mt-5
-    .col-12.col-md-9.text-center
-      h4.font-weight-light = t('.in_development')
-      p = t('.in_development_description')
+.container
+  .mb-5
+    h2 Курсы
+    hr
+  a#courses
   .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4
-    = render partial: 'languages', locals: { languages: @languages_in_development, language_members_by_language: @language_members_by_language, language_member_fake: @language_member_fake }
+    - languages.each do |language|
+      .col.mb-5
+        .card.h-100
+          .card-body.text-center(class="#{get_language_background(language.slug)}")
+            h2.h5.card-title.text-white = t("human_languages.#{language}")
+            = image_tag "#{language.slug}.png", class: 'img-fluid mt-3 mb-4', alt: t('.icon', language: t("human_languages.#{language}"))
+            - let language_members_by_language.fetch(language.id, language_member_fake) do |language_member|
+              = link_to t(".#{language_member.state}"), language_path(language.slug), class: 'btn d-grid btn-light btn-block stretched-link h6'
+
+  - if @languages_in_development.any?
+    .row.justify-content-center.mt-5
+      .col-12.col-md-9.text-center
+        h4.font-weight-light = t('.in_development')
+        p = t('.in_development_description')
+    .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4
+      = render partial: 'languages', locals: { languages: @languages_in_development, language_members_by_language: @language_members_by_language, language_member_fake: @language_member_fake }
