@@ -16,7 +16,7 @@ RUN npm install -g npm-check-updates
 RUN npm install -g yarn
 
 RUN yarn set version berry
-RUN yarn config set --home enableTelemetry 0
+# RUN yarn config set --home enableTelemetry 0
 
 ENV BUNDLE_PATH /root/hexlet-basics/vendor/bundle
 
