@@ -165,6 +165,7 @@ GEM
     faraday-net_http (1.0.1)
     faraday-net_http_persistent (1.1.0)
     ffi (1.15.1)
+    geocoder (1.6.7)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
     gon (6.4.0)
@@ -424,6 +425,7 @@ DEPENDENCIES
   enumerize
   factory_bot_rails
   faker
+  geocoder
   gon
   http_accept_language
   i18n-debug
@@ -463,4 +465,4 @@ DEPENDENCIES
   webpacker!
 
 BUNDLED WITH
-   2.1.4
+   2.2.15
