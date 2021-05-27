@@ -7,7 +7,7 @@ on:
 
 env:
   APP_IMAGE_NAME: hexletbasics/services-app
-  CADDY_IMAGE_NAME: hexletbasics/services-caddy
+  # CADDY_IMAGE_NAME: hexletbasics/services-caddy
   NGINX_IMAGE_NAME: hexletbasics/services-nginx
   COLOR_MAP: '{ success: "#008000", failure: "#800000" }'
 

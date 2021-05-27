@@ -8,11 +8,8 @@
   meta content=t('.meta_description') name='description'
   meta content="#{I18n.locale}" property='og:locale'
 
-h1 = t('.title')
-.mt-3.mb-5
-  p.lead = t('.projects_goal')
-  p.lead = t('.extended_credits')
-  p.lead = t('.contributions')
-
-  i.me-2.bi.bi-github
-  span = t('.source_code')
+.container-lg
+  .row.justify-content-center
+    .col-lg-8.lh-lg
+      h1.mb-5 = t('.title')
+      = render 'about'
