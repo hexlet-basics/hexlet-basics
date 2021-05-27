@@ -49,7 +49,7 @@ const Editor = () => {
   const [, setContent] = useLocalStorage(localStorageKey);
 
   const editorRef = useRef();
-
+  // NOTE https://github.com/uiwjs/react-codemirror/blob/280f4586f3a01f7a416a04cf54ab9bec551f0462/website/App.js#L190
   const getInstance = (instance) => {
     if (instance?.editor) {
       editorRef.current = instance.editor;
