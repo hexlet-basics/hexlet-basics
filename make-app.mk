@@ -8,6 +8,7 @@ vulnerability-check:
 
 ci-check: lint
 	bin/rails db:create
+	ls -la public/packs-test
 	DISABLE_SPRING=1 bin/rails test
 	bin/rails zeitwerk:check
 
