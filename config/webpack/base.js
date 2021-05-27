@@ -1,6 +1,8 @@
-const { webpackConfig, merge } = require('@rails/webpacker')
+const { webpackConfig, merge } = require('@rails/webpacker');
+const CompressionPlugin = require('compression-webpack-plugin');
 const customConfig = require('./environment.js');
 
+webpackConfig.plugins = webpackConfig.plugins.filter((p) => !(p instanceof CompressionPlugin));
 // https://github.com/rails/webpacker/issues/2844
 // needed for bootstrap-icons
 webpackConfig.module.rules.forEach((module) => { // lets iterate Rules...
