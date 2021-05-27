@@ -55,16 +55,13 @@ nav.navbar.navbar-light.navbar-expand-md.bg-white.shadow-sm
           = nav_menu_item t('.registration'), new_user_path
         - else
           li.nav-item.dropdown
-            button.btn.nav-link.dropdown-toggle data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false'
+            a.nav-link.dropdown-toggle data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false'
               span.far.fa-user aria-hidden='true'
-            span.sr-only
-              = t('.toggle_user_menu')
-            .dropdown-menu.dropdown-menu-right
-              .dropdown-item
-                = current_user.email
+              = current_user.email
+            ul.dropdown-menu.dropdown-menu-right
               .dropdown-divider
-              = link_to t('.profile'), edit_account_profile_path, class: 'dropdown-item'
+              li= link_to t('.profile'), edit_account_profile_path, class: 'dropdown-item'
               .dropdown-divider
-              = link_to t('.sign_out'), session_path, method: :delete, class: 'dropdown-item'
+              li= link_to t('.sign_out'), session_path, method: :delete, class: 'dropdown-item'
         li.nav-item.d-flex.align-items-center
           = render 'layouts/shared/language_switcher'
