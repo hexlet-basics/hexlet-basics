@@ -27,10 +27,6 @@ export default async () => {
         useSuspense: true,
       },
     });
-  const store = configureStore({
-    reducer,
-  });
-  store.dispatch(setupState(gon));
 
   const entities = {
     lessonVersion: gon.lesson_version,
@@ -38,6 +34,21 @@ export default async () => {
     language: gon.language,
     lessonMember: gon.lesson_member,
   };
+
+  const localStorageKey = `lesson-version-${gon.lesson_version.id}`;
+
+  const preloadedState = {
+    editorSlice: {
+      content: localStorage.getItem(localStorageKey) ?? gon.lesson_version.prepared_code ?? '',
+      focusesCount: 1,
+    },
+  };
+
+  const store = configureStore({
+    preloadedState,
+    reducer,
+  });
+  store.dispatch(setupState(gon));
 
   ReactDOM.render(
     <Provider store={store}>

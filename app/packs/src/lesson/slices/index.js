@@ -25,9 +25,9 @@ export const actions = {
   ...checkInfoActions,
 };
 
+// TODO move to preloadedState
 export const setupState = (gon) => (dispatch) => {
-  const { lesson_version, lesson_member } = gon;
-  dispatch(editorActions.changeContent({ content: lesson_version.prepared_code }));
+  const { lesson_member } = gon;
   dispatch(solutionActions.setStartTime({ startTime: Date.now() }));
   const isFinished = lesson_member.state === lessonMemberStates.finished;
   if (isFinished) {
