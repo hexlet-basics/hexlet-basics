@@ -4,14 +4,14 @@ require 'test_helper'
 
 class Web::SessionsControllerTest < ActionDispatch::IntegrationTest
   test 'new' do
-    get new_session_url
+    get new_session_url(subdomain: I18n.locale)
     assert_response :success
   end
 
   test 'create' do
     user = users(:one)
 
-    post session_url, params: { sign_in: { email: user.email, password: 'password' } }
+    post session_url(subdomain: I18n.locale), params: { sign_in: { email: user.email, password: 'password' } }
     assert_response :redirect
 
     assert { signed_in? }
