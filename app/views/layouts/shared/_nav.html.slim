@@ -17,34 +17,34 @@ nav.navbar.navbar-light.navbar-expand-md.bg-white.shadow-sm
             = t('.change_course')
           .dropdown-menu.dropdown-menu-columns.dropdown-menu-arrow aria-labelledby='dropdownMenuLink'
             = link_to language_path('php'), class: 'dropdown-item d-flex align-items-center'
-              span.dropdown-item-icon.fab.fa-php.d-flex.justify-content-center.align-items-center
+              span.dropdown-item-icon.bi.bi-code
               span.dropdown-item-text = t('human_languages.php')
             = link_to language_path('javascript'), class: 'dropdown-item d-flex align-items-center'
-              span.dropdown-item-icon.fab.fa-js-square.d-flex.justify-content-center.align-items-center
+              span.dropdown-item-icon.bi.bi-code
               span.dropdown-item-text = t('human_languages.javascript')
             = link_to language_path('python'), class: 'dropdown-item d-flex align-items-center'
-              span.dropdown-item-icon.fab.fa-python.d-flex.justify-content-center.align-items-center
+              span.dropdown-item-icon.bi.bi-code
               span.dropdown-item-text = t('human_languages.python')
             = link_to language_path('java'), class: 'dropdown-item d-flex align-items-center'
-              span.dropdown-item-icon.fab.fa-java.d-flex.justify-content-center.align-items-center
+              span.dropdown-item-icon.bi.bi-code
               span.dropdown-item-text = t('human_languages.java')
             = link_to language_path('html'), class: 'dropdown-item d-flex align-items-center'
-              span.dropdown-item-icon.fab.fa-html5.d-flex.justify-content-center.align-items-center
+              span.dropdown-item-icon.bi.bi-code
               span.dropdown-item-text = t('human_languages.html')
             = link_to language_path('css'), class: 'dropdown-item d-flex align-items-center'
-              span.dropdown-item-icon.fab.fa-css3-alt.d-flex.justify-content-center.align-items-center
+              span.dropdown-item-icon.bi.bi-code
               span.dropdown-item-text = t('human_languages.css')
             = link_to language_path('racket'), class: 'dropdown-item d-flex align-items-center'
-              span.dropdown-item-icon.fas.fa-rocket.d-flex.justify-content-center.align-items-center
+              span.dropdown-item-icon.bi.bi-code
               span.dropdown-item-text = t('human_languages.racket')
             = link_to language_path('ruby'), class: 'dropdown-item d-flex align-items-center'
-              span.dropdown-item-icon.fas.fa-gem.d-flex.justify-content-center.align-items-center
+              span.dropdown-item-icon.bi.bi-gem
               span.dropdown-item-text = t('human_languages.ruby')
             = link_to language_path('elixir'), class: 'dropdown-item d-flex align-items-center'
-              span.dropdown-item-icon.fas.fa-code.d-flex.justify-content-center.align-items-center
+              span.dropdown-item-icon.bi.bi-code
               span.dropdown-item-text = t('human_languages.elixir')
             = link_to language_path('go'), class: 'dropdown-item d-flex align-items-center'
-              span.dropdown-item-icon.fas.fa-code.d-flex.justify-content-center.align-items-center
+              span.dropdown-item-icon.bi.bi-code
               span.dropdown-item-text = t('human_languages.go')
         = nav_menu_item t('.about'), page_path(:about)
         = nav_menu_item t('.community'), ExternalLinks.hexlet_slack, target: '_blank'

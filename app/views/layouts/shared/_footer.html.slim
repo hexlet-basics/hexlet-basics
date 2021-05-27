@@ -1,51 +1,55 @@
-footer.mt-5
+footer.bg-dark.text-muted.mt-5
   .container-xl.pt-5.pb-3.border-top
     .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4
-      .col.mb-4.mb-lg-0.order-4.order-md-0
-        p.mb-2 = t('.hexlet_title', year: Date.today.year)
+      .col.mb-4.mb-lg-0
         p = t('.hexlet_address')
         p = t('.hexlet_number')
         a.text-muted(href="mailto:#{ExternalLinks.hexlet_support_mail}") = ExternalLinks.hexlet_support_mail
+
+      .col.mb-4.mb-lg-0
+        ul.list-unstyled.lh-lg
+          li
+            = link_to t('.about'), page_path(:about), class: 'text-decoration-none text-muted'
+          li
+            = link_to t('.tos'), page_path(:tos), class: 'text-decoration-none text-muted'
+          li
+            = link_to t('.privacy'), page_path(:privacy), class: 'text-decoration-none text-muted'
+
+      .col.mb-4.mb-lg-0
+        ul.list-unstyled.lh-lg
+          li
+            a.text-muted.text-decoration-none target="_blank" href=ExternalLinks.hexlet_blog = t('.hexlet_blog')
+          li
+            a.text-muted.text-decoration-none target="_blank" href=ExternalLinks.hexlet_recommended_books = t('.recommended_books')
+          li
+            a.text-muted.text-decoration-none target="_blank" href=ExternalLinks.hexlet_matrix = t('.matrix')
+          li
+            a.text-muted.text-decoration-none target="_blank" href=ExternalLinks.source_code
+              = t('.source_code')
+              span.bi.bi-github.ms-2
+
+      .col.mb-4.mb-lg-0
         div
           = render  'layouts/shared/language_switcher'
 
-      .col.mb-4.mb-lg-0.order-2.order-md-2
-        h2.h4 = t('.information')
-        ul.list-unstyled
-          li
-            = link_to t('.about'), page_path(:about), class: 'text-muted'
-          li
-            = link_to t('.tos'), page_path(:tos), class: 'text-muted'
-          li
-            = link_to t('.privacy'), page_path(:privacy), class: 'text-muted'
-      .col.mb-4.mb-lg-0.order-0.order-md-3
-        h2.h4 = t('.social_networks')
-        span.me-3
+    hr
+    .d-flex
+      p.mb-2 = t('.hexlet_title', year: Date.today.year)
+      .ms-auto.fs-3
+        span.me-5
           a.rounded-cirlce target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_facebook
-            span.fab.fa-lg.fa-facebook.text-muted
-        span.me-3
+            span.bi.bi-facebook.text-muted
+        span.me-5
           a.rounded-cirlce target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_telegram
-            span.fab.fa-lg.fa-telegram.text-muted
-        span.me-3
+            span.bi.bi-telegram.text-muted
+        span.me-5
           a.rounded-cirlce target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_twitter
-            span.fab.fa-lg.fa-twitter.text-muted
-        span.me-3
+            span.bi.bi-twitter.text-muted
+        span.me-5
           a.rounded-cirlce target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_youtube
-            span.fab.fa-lg.fa-youtube.text-muted
-        span.me-3
+            span.bi.bi-youtube.text-muted
+        span
           a.rounded-cirlce target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_slack
-            span.fab.fa-lg.fa-slack.text-muted
-      .col.mb-4.mb-lg-0.order-1.order-md-4
-        h2.h4 = t('.resources')
-        ul.list-unstyled
-          li
-            a.text-muted target="_blank" href=ExternalLinks.hexlet_blog = t('.hexlet_blog')
-          li
-            a.text-muted target="_blank" href=ExternalLinks.hexlet_recommended_books = t('.recommended_books')
-          li
-            a.text-muted target="_blank" href=ExternalLinks.hexlet_matrix = t('.matrix')
-          li
-            a.text-muted target="_blank" href=ExternalLinks.source_code
-              = t('.source_code')
-              span.fas.fa-link.ms-2
+            span.bi.bi-slack.text-muted
+
 = render_javascript_stored_packs
