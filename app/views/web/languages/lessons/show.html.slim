@@ -8,14 +8,14 @@
   meta content="#{truncate(@info.theory, length: 150)}" name='description'
   meta content="#{I18n.locale}" property='og:locale'
 
-.row.pt-2.x-h-md-100
+.row.pt-2.x-h-md-100.g-2
   .col-12.col-md-6.col-lg-5.x-h-md-100.mb-3.mb-md-0.position-relative
     .card.x-h-md-100
-      ul.nav.nav-tabs.justify-content-center. data-bs-toggle="tabs"
+      ul.nav.nav-tabs.justify-content-center.small data-bs-toggle="tabs"
         li.nav-item
-          a.nav-link.active.border-top-0.rounded-0 href="#lesson-tab" data-bs-toggle="tab" role="tab" = t('.lesson')
+          a.nav-link.active.border-top-0.rounded-0.text-muted href="#lesson-tab" data-bs-toggle="tab" role="tab" = t('.lesson')
         li.nav-item
-          a.nav-link.border-top-0.rounded-0 href="#discuss-tab" data-bs-toggle="tab" role="tab" = t('.discuss')
+          a.nav-link.border-top-0.rounded-0.text-muted href="#discuss-tab" data-bs-toggle="tab" role="tab" = t('.discuss')
 
       .tab-content.overflow-hidden
         .tab-pane.fade.overflow-auto.x-h-md-100.active.show#lesson-tab(role="tabpanel")
