@@ -4983,7 +4983,6 @@ __metadata:
     highlight.js: ^10.7.2
     i18next: ^20.3.0
     jest: ^27.0.1
-    jquery: ^3.6.0
     js-base64: ^3.6.1
     lodash: ^4.17.21
     mini-css-extract-plugin: ^1.6.0
@@ -6244,13 +6243,6 @@ __metadata:
   bin:
     jest: bin/jest.js
   checksum: dde998f5f410a47c3c3a7fb7a83046b1a5d50134794981849aa6969722faf59f93dae1be24086cf3a79eb7f128480eac1a9a25d7c68d673f712d7ed7d32c00b7
-  languageName: node
-  linkType: hard
-
-"jquery@npm:^3.6.0":
-  version: 3.6.0
-  resolution: "jquery@npm:3.6.0"
-  checksum: a0a819022a1bdff5efa79bbd9d4d7352de5bd32dabe42108e6ec0797238dba36c09c108e0eea2724f5d03acc1b30ee87d76bec80e15b9510106532292ebe6ba4
   languageName: node
   linkType: hard
 

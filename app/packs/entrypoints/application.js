@@ -13,7 +13,6 @@ import 'regenerator-runtime/runtime';
 // import '@fortawesome/fontawesome-free/js/all.js';
 import hljs from 'highlight.js';
 
-// require('jquery');
 require('@rails/ujs').start();
 // require('@rails/activestorage').start();
 // require('channels');
