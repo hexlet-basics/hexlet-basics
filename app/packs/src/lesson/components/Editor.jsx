@@ -79,6 +79,9 @@ const Editor = () => {
     indentUnit: getTabSize(language),
     extraKeys: {
       Tab: replaceTab,
+      'Ctrl-Enter': () => {
+        dispatch(actions.runCheck({ lessonVersion, editor: content }));
+      },
     },
   };
 
