@@ -54,11 +54,12 @@ nav.navbar.navbar-light.navbar-expand-md.bg-white.shadow-sm
           = nav_menu_item t('.sign_in'), new_session_path
           = nav_menu_item t('.registration'), new_user_path
         - else
-          li.nav-item.dropdown
-            a.nav-link.dropdown-toggle data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false'
-              span.far.fa-user aria-hidden='true'
-              = current_user.email
-            ul.dropdown-menu.dropdown-menu-right
+          li.nav-item.dropdown.me-2
+            a.nav-link.dropdown-toggle href='#' data-bs-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='false'
+              i.bi.bi-person-circle
+              / = current_user.email
+            ul.dropdown-menu.dropdown-menu-end
+              li.dropdown-item= current_user.email
               .dropdown-divider
               li= link_to t('.profile'), edit_account_profile_path, class: 'dropdown-item'
               .dropdown-divider
