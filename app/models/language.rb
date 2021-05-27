@@ -23,4 +23,8 @@ class Language < ApplicationRecord
   has_many :current_lessons, through: :current_version, source: :lessons
 
   delegate :to_s, to: :current_version
+
+  def duration
+    lessons.size * 15 / 60
+  end
 end

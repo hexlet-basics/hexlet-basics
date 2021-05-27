@@ -8,31 +8,32 @@
   meta content=t("languages.#{@language}.description") name='description'
   meta content="#{I18n.locale}" property='og:locale'
 
-h1.text-center.display-4
-  = [t("human_languages.#{@language}"), @language.learn_as.text].join(' ')
-- if @language_member.finished?
-  = render 'complete_language'
-- elsif @first_lesson == @next_lesson
-  .text-center
-    = link_to t('.start'), language_lesson_path(@language.slug, @first_lesson.slug), class: 'btn btn-lg btn-primary px-4 mb-3 mt-2'
-- else
-  .text-center
-    = link_to t('.continue'), language_lesson_path(@language.slug, @next_lesson.slug), class: 'btn btn-lg btn-success px-4 mb-3 mt-2'
-.
-  - @current_module_versions.each do |module_version|
-    - let @infos_by_module[module_version.id] do |module_info|
-      .row.mt-5
-        .col-12
-          h2.h4 = module_info
-      .row
-        .col-12.col-md-6.mt-4
-          ul.list-group
-            - module_version.lesson_versions.each do |lesson_version|
-              - let @finished_lessons_by_id[lesson_version.lesson_id] do |finished_lesson|
-                li.list-group-item.d-flex.p-3
-                  = link_to "#{lesson_version.natural_order}. #{@infos_by_lesson[lesson_version.id]}", language_lesson_path(@language.slug, lesson_version.lesson.slug), class: 'stretched-link text-decoration-none'
-                  - if finished_lesson
-                    .ms-auto
-                      span.text-primary.bi.bi-check-lg
-        .col-12.col-md-6.mt-4
-          = module_info.description
+.container
+  h1.text-center.display-4.mt-5
+    = [t("human_languages.#{@language}"), @language.learn_as.text].join(' ')
+  - if @language_member.finished?
+    = render 'complete_language'
+  - elsif @first_lesson == @next_lesson
+    .text-center
+      = link_to t('.start'), language_lesson_path(@language.slug, @first_lesson.slug), class: 'btn btn-lg btn-primary px-4 mb-3 mt-2'
+  - else
+    .text-center
+      = link_to t('.continue'), language_lesson_path(@language.slug, @next_lesson.slug), class: 'btn btn-lg btn-success px-4 mb-3 mt-2'
+  .
+    - @current_module_versions.each do |module_version|
+      - let @infos_by_module[module_version.id] do |module_info|
+        .row.mt-5
+          .col-12
+            h2.h4 = module_info
+        .row
+          .col-12.col-md-6.mt-4
+            ul.list-group
+              - module_version.lesson_versions.each do |lesson_version|
+                - let @finished_lessons_by_id[lesson_version.lesson_id] do |finished_lesson|
+                  li.list-group-item.d-flex.p-3
+                    = link_to "#{lesson_version.natural_order}. #{@infos_by_lesson[lesson_version.id]}", language_lesson_path(@language.slug, lesson_version.lesson.slug), class: 'stretched-link text-decoration-none'
+                    - if finished_lesson
+                      .ms-auto
+                        span.text-primary.bi.bi-check-lg
+          .col-12.col-md-6.mt-4
+            = module_info.description

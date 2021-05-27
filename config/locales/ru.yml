@@ -1,2 +1,6 @@
 ru:
   hello: "Привет мир"
+  hours:
+    one: "%{count} час"
+    two: "%{count} часа"
+    many: "%{count} часов"
