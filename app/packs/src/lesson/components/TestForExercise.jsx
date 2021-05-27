@@ -2,7 +2,7 @@
 
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Highlight } from 'react-fast-highlight';
+import Highlight from 'react-highlight';
 
 import EntityContext from '../EntityContext.js';
 import { getLanguage } from '../utils/editorUtils.js';
@@ -15,7 +15,7 @@ const Test = () => {
     <div>
       <p className="text-center lead">{t('testInstructions')}</p>
       <div className="hexlet-basics-content">
-        <Highlight languages={[getLanguage(language)]}>
+        <Highlight className={getLanguage(language)}>
           {lessonVersion.test_code}
         </Highlight>
       </div>

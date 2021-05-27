@@ -5,10 +5,10 @@ default: &default
   source_entry_path: entrypoints
   public_root_path: public
   public_output_path: packs
-  cache_path: tmp/cache/webpacker
+  cache_path: tmp/webpacker
   webpack_compile_output: true
 
-  # Additional paths webpack should lookup modules
+  # Additional paths webpack should look up modules
   # ['app/assets', 'engine/foo/app/assets']
   additional_paths: []
 
@@ -24,29 +24,30 @@ development:
     https: false
     host: 0.0.0.0
     port: 3035
-    public: 0.0.0.0:3035
-    # Inject browserside javascript that required by both HMR and Live(full) reload
-    inject_client: true
+    # client:
+    #  port: 80
+    # Inject browserside javascript that is required by both HMR and Live (full) reload
+    # inject_client: true
     # Hot Module Replacement updates modules while the application is running without a full reload
-    hmr: false
+    hmr: true
     # Inline should be set to true if using HMR; it inserts a script to take care of live reloading
     inline: true
     # Should we show a full-screen overlay in the browser when there are compiler errors or warnings?
-    overlay: true
+    # overlay: true
     # Should we use gzip compression?
     compress: true
     # Note that apps that do not check the host are vulnerable to DNS rebinding attacks
-    disable_host_check: true
+    # disable_host_check: true
     # This option lets the browser open with your local IP
-    use_local_ip: false
+    # use_local_ip: false
     # When enabled, nothing except the initial startup information will be written to the console.
     # This also means that errors or warnings from webpack are not visible.
-    quiet: false
+    # quiet: false
     pretty: false
     headers:
       'Access-Control-Allow-Origin': '*'
-    watch_options:
-      ignored: '**/node_modules/**'
+    # watch_options:
+    #  ignored: '**/node_modules/**'
 
 test:
   <<: *default

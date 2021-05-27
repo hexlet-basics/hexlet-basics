@@ -1,4 +1,6 @@
 localhost, ru.code-basics.test, en.code-basics.test, code-basics.test {
+  # root /packs/* /etc/caddy/public/packs
+
   log {
     format single_field common_log
   }
@@ -8,6 +10,5 @@ localhost, ru.code-basics.test, en.code-basics.test, code-basics.test {
 
   reverse_proxy /* web:3000
   reverse_proxy /packs/* webpacker:3035
-  reverse_proxy /sockjs-node/* webpacker:3035
-  reverse_proxy /__webpack_dev_server__/* webpacker:3035
+  reverse_proxy /ws webpacker:3035
 }

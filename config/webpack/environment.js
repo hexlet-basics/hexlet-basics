@@ -19,15 +19,15 @@ module.exports = {
       lib: path.resolve(__dirname, '../../app/packs/lib'),
     },
   },
-  module: {
-    rules: [
-      {
-        test: require.resolve('jquery'),
-        loader: 'expose-loader',
-        options: {
-          exposes: 'jQuery',
-        },
-      },
-    ],
-  },
+  // module: {
+  //   rules: [
+  //     {
+  //       test: require.resolve('jquery'),
+  //       loader: 'expose-loader',
+  //       options: {
+  //         exposes: 'jQuery',
+  //       },
+  //     },
+  //   ],
+  // },
 };

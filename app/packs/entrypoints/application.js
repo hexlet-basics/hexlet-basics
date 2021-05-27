@@ -6,17 +6,18 @@
 // that code so it'll be compiled.
 
 import '../stylesheets/application.scss';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
-import '@fortawesome/fontawesome-free/js/all.js';
+// import '@fortawesome/fontawesome-free/js/all.js';
 import hljs from 'highlight.js';
 
-require('jquery');
+// require('jquery');
 require('@rails/ujs').start();
 // require('@rails/activestorage').start();
 // require('channels');
-require('popper.js');
+require('@popperjs/core');
 require('bootstrap');
 
 hljs.highlightAll();

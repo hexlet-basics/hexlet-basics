@@ -1,16 +1,5 @@
 ru:
   activemodel:
-    errors:
-      messages:
-        blank: не может быть пустым
-      models:
-        sign_in:
-          attributes:
-            password:
-              cannot_sign_in: не подходит
-            email:
-              user_does_not_exist: не существует
-        remind_password:
-          attributes:
-            email:
-              user_does_not_exist: не существует
+    attributes:
+      sign_in:
+        password: Пароль

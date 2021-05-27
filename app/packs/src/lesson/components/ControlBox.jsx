@@ -6,13 +6,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { deleteFromStorage } from '@rehooks/local-storage';
 
 import cn from 'classnames';
-import Hotkeys from 'react-hot-keys';
+// import Hotkeys from 'react-hot-keys';
+import { useHotkeys } from 'react-hotkeys-hook';
 import { Button, Spinner } from 'react-bootstrap';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faArrowRight, faSyncAlt, faArrowLeft, faPlayCircle,
-} from '@fortawesome/free-solid-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import {
+//   faArrowRight, faSyncAlt, faArrowLeft, faPlayCircle,
+// } from '@fortawesome/free-solid-svg-icons';
 
 import routes from 'vendor/appRoutes.js';
 import { actions } from '../slices/index.js';
@@ -60,9 +61,9 @@ const ControlBox = () => {
       );
     }
 
+    // <FontAwesomeIcon icon={faPlayCircle} />
     return (
       <>
-        <FontAwesomeIcon icon={faPlayCircle} />
         <span className="d-none d-sm-block d-md-none d-lg-block ms-1">{text}</span>
       </>
     );
@@ -78,21 +79,22 @@ const ControlBox = () => {
   const nextLessonPath = routes.nextLessonLanguageLessonPath(language, lesson.slug);
   const prevLessonPath = routes.prevLessonLanguageLessonPath(language, lesson.slug);
 
+  useHotkeys('ctrl+enter', handleRunCheck);
+
+  // <FontAwesomeIcon icon={faSyncAlt} />
   return (
-    <Hotkeys keyName="ctrl+Enter" onKeyUp={handleRunCheck}>
-      <div className="d-flex justify-content-center p-3 border-top flex-shrink-0">
-        <Button
-          variant="secondary"
-          className="me-3 d-inline-flex align-items-center"
-          onClick={handleReset}
-          title={t('resetCode')}
-        >
-          <FontAwesomeIcon icon={faSyncAlt} />
-        </Button>
-        <a className={prevButtonClasses} href={prevLessonPath}>
-          <FontAwesomeIcon className="d-sm-none d-md-block d-lg-none" icon={faArrowLeft} />
-          <span className="d-none d-sm-block d-md-none d-lg-block">{t('prevLesson')}</span>
-        </a>
+    <div className="d-flex justify-content-center p-3 border-top flex-shrink-0">
+      <Button
+        variant="secondary"
+        className="me-3 d-inline-flex align-items-center"
+        onClick={handleReset}
+        title={t('resetCode')}
+      >
+      </Button>
+          <a className={prevButtonClasses} href={prevLessonPath}>
+            <i className="arrow-left-short"></i>
+            <span className="d-none d-sm-block d-md-none d-lg-block">{t('prevLesson')}</span>
+          </a>
         <Button
           variant="primary"
           className="me-3 d-inline-flex align-items-center"
@@ -102,11 +104,10 @@ const ControlBox = () => {
           {renderRunButtonContent()}
         </Button>
         <a className={nextButtonClasses} href={nextLessonPath}>
-          <FontAwesomeIcon className="d-sm-none d-md-block d-lg-none" icon={faArrowRight} />
+          <i className="arrow-right-short"></i>
           <span className="d-none d-sm-block d-md-none d-lg-block">{t('nextLesson')}</span>
         </a>
-      </div>
-    </Hotkeys>
+    </div>
   );
 };
 

@@ -4,6 +4,3 @@ ru:
       text: 'required'
       mark: ''
     placeholders:
-      defaults:
-          email: E-mail
-          password: Пароль
