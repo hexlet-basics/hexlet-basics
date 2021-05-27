@@ -64,6 +64,7 @@ const ControlBox = () => {
     // <FontAwesomeIcon icon={faPlayCircle} />
     return (
       <>
+        <span className="bi bi-play-circle"></span>
         <span className="d-none d-sm-block d-md-none d-lg-block ms-1">{text}</span>
       </>
     );
@@ -90,9 +91,10 @@ const ControlBox = () => {
         onClick={handleReset}
         title={t('resetCode')}
       >
+        <span className="bi bi-arrow-repeat"></span>
       </Button>
           <a className={prevButtonClasses} href={prevLessonPath}>
-            <i className="arrow-left-short"></i>
+            <span className="bi bi-arrow-left-short d-sm-none d-md-block d-lg-none"></span>
             <span className="d-none d-sm-block d-md-none d-lg-block">{t('prevLesson')}</span>
           </a>
         <Button
@@ -104,7 +106,7 @@ const ControlBox = () => {
           {renderRunButtonContent()}
         </Button>
         <a className={nextButtonClasses} href={nextLessonPath}>
-          <i className="arrow-right-short"></i>
+          <span className="bi bi-arrow-right-short d-sm-none d-md-block d-lg-none"></span>
           <span className="d-none d-sm-block d-md-none d-lg-block">{t('nextLesson')}</span>
         </a>
     </div>
