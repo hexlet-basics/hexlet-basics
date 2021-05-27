@@ -1780,11 +1780,11 @@ __metadata:
   linkType: hard
 
 "@sinonjs/fake-timers@npm:^7.0.2":
-  version: 7.1.0
-  resolution: "@sinonjs/fake-timers@npm:7.1.0"
+  version: 7.1.1
+  resolution: "@sinonjs/fake-timers@npm:7.1.1"
   dependencies:
     "@sinonjs/commons": ^1.7.0
-  checksum: a16fdefd9c420cef70b710ac21bb498deeec68d6dfc614aeea590632b89faed274d9e282f8be612386f9c33c7c652c4e5128b43ca484c5477d17a8453d37a580
+  checksum: 46980c93a2b4b0b26ecb1f81676dc6dd3652838ffd0bde10a72606120ff2d833d57097545cdd5d8c783b534bccd27764edaf33e388648dfe86de39f40a6ea1b4
   languageName: node
   linkType: hard
 
@@ -1856,12 +1856,12 @@ __metadata:
   linkType: hard
 
 "@types/eslint@npm:*":
-  version: 7.2.11
-  resolution: "@types/eslint@npm:7.2.11"
+  version: 7.2.12
+  resolution: "@types/eslint@npm:7.2.12"
   dependencies:
     "@types/estree": "*"
     "@types/json-schema": "*"
-  checksum: d7614357ba6d8d8af9b81d7a23e752482e6e8c88145aeb62b6d871a7b3eee519e47b9e27950bba0ff0f770631a2f985fc5dbc03cad6ac6f798e52a38c75c5e53
+  checksum: 476bf25bc8e0a5c13bc85dc09968be9176e5cd34d79be253a481ee3891fed8aa71ed0cd5d255b4d00fac81e2116337c99490fbcc0bdbb130070062fb1b901784
   languageName: node
   linkType: hard
 
@@ -3858,9 +3858,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.3.723":
-  version: 1.3.739
-  resolution: "electron-to-chromium@npm:1.3.739"
-  checksum: 1885766bd050c56eb5371d4dad6b28597d24a2a10c57047261bb965786cd85795e57ce29ed28029c6044717c37af15dc19519a475addaa57810be469b28e4c3e
+  version: 1.3.740
+  resolution: "electron-to-chromium@npm:1.3.740"
+  checksum: 075ff47eda3bd1baf29ebb6b06bb9fbb974e070ce92891ba1e2016ef8e32c09364cc61080a979fd1132afcfecd05e4a9e0ebfea24aa4511fce6c1c15af0e11e3
   languageName: node
   linkType: hard
 
@@ -4247,7 +4247,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-scope@npm:^5.0.0, eslint-scope@npm:^5.1.0, eslint-scope@npm:^5.1.1":
+"eslint-scope@npm:5.1.1, eslint-scope@npm:^5.0.0, eslint-scope@npm:^5.1.0, eslint-scope@npm:^5.1.1":
   version: 5.1.1
   resolution: "eslint-scope@npm:5.1.1"
   dependencies:
@@ -4859,11 +4859,11 @@ __metadata:
   linkType: hard
 
 "globals@npm:^13.6.0":
-  version: 13.8.0
-  resolution: "globals@npm:13.8.0"
+  version: 13.9.0
+  resolution: "globals@npm:13.9.0"
   dependencies:
     type-fest: ^0.20.2
-  checksum: de85e5dc899ebd77414cc026e806d0bfd2c102ba23d08a2516c960a5e324433d3f1c124465a35b5b1d948448a7008bad85f823a9bcd8d54664d8a0cbcaab0091
+  checksum: 26d71f2c286c80d806faad49c801bfb2ac5144497b5c844c5a718b2c3fad51e0d507d9069474e89f110f16a38bf212ec56e6e40936a4f24b1a645e7f21001d1d
   languageName: node
   linkType: hard
 
@@ -4991,6 +4991,7 @@ __metadata:
     postcss-import: ^14.0.2
     postcss-loader: ^5.3.0
     postcss-preset-env: ^6.7.0
+    prop-types: ^15.7.2
     react: ^17.0.2
     react-bootstrap: ^1.6.0
     react-countdown: ^2.3.2
@@ -5006,7 +5007,8 @@ __metadata:
     sass-loader: ^11.1.1
     sockjs-client: ^1.5.1
     style-loader: ^2.0.0
-    webpack: ^5.37.1
+    typed.js: ^2.0.12
+    webpack: ^5.38.0
     webpack-assets-manifest: ^5.0.6
     webpack-cli: ^4.7.0
     webpack-dev-server: webpack/webpack-dev-server
@@ -7160,14 +7162,13 @@ __metadata:
   linkType: hard
 
 "object.entries@npm:^1.1.2, object.entries@npm:^1.1.3":
-  version: 1.1.3
-  resolution: "object.entries@npm:1.1.3"
+  version: 1.1.4
+  resolution: "object.entries@npm:1.1.4"
   dependencies:
-    call-bind: ^1.0.0
+    call-bind: ^1.0.2
     define-properties: ^1.1.3
-    es-abstract: ^1.18.0-next.1
-    has: ^1.0.3
-  checksum: 89eec6d43bf8440dfd800ad76486d76a900ff7e3e20b560abb4cba8494bdc8524af8cf49a897739da776fe434f8091569b2422333075378f9fd5a50d599601eb
+    es-abstract: ^1.18.2
+  checksum: d9da930f56b8689183cc5d88c8940ec965742423066641c3e9fb62fe98a2bb890880c239aa331f6ced28edf5e084f50491a85c839c8ada0604d45a9c6f9d8f45
   languageName: node
   linkType: hard
 
@@ -7184,14 +7185,13 @@ __metadata:
   linkType: hard
 
 "object.values@npm:^1.1.3":
-  version: 1.1.3
-  resolution: "object.values@npm:1.1.3"
+  version: 1.1.4
+  resolution: "object.values@npm:1.1.4"
   dependencies:
     call-bind: ^1.0.2
     define-properties: ^1.1.3
-    es-abstract: ^1.18.0-next.2
-    has: ^1.0.3
-  checksum: 31111fe8b8dfe7c3326ae8729eae542dc32d5705339b9b63d89d4a2f766641bfe8989744bd4771c65a7ca0dff281800e99640262c2e82daa97079143a86b3e0b
+    es-abstract: ^1.18.2
+  checksum: c7d8435611d566616e2dd4b85a71072715b7b049c637b9253313517754baef3d9fd1d0df0a8bd7980f2800efbdcb89832ca4af8aa4b949ca0fe369d0d773d48c
   languageName: node
   linkType: hard
 
@@ -9712,6 +9712,13 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
+"typed.js@npm:^2.0.12":
+  version: 2.0.12
+  resolution: "typed.js@npm:2.0.12"
+  checksum: b17ed74438fc525877252e156c6a5471b352e7a74ff72be51c73a7b223159d5d0f38ef8f83ac5913fce16cbb66193f67ae6dc29b2609a655a92b042cb9d12342
+  languageName: node
+  linkType: hard
+
 "typedarray-to-buffer@npm:^3.1.5":
   version: 3.1.5
   resolution: "typedarray-to-buffer@npm:3.1.5"
@@ -9947,7 +9954,7 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"watchpack@npm:^2.0.0":
+"watchpack@npm:^2.2.0":
   version: 2.2.0
   resolution: "watchpack@npm:2.2.0"
   dependencies:
@@ -10049,7 +10056,7 @@ resolve@^2.0.0-next.3:
 
 webpack-dev-server@webpack/webpack-dev-server:
   version: 4.0.0-beta.3
-  resolution: "webpack-dev-server@https://github.com/webpack/webpack-dev-server.git#commit=b042e083bf7d0eb6b1b4e1fa3d308d1baec21440"
+  resolution: "webpack-dev-server@https://github.com/webpack/webpack-dev-server.git#commit=a84ecd22dfdb521972e7aaed4079ef04828c623b"
   dependencies:
     ansi-html: ^0.0.7
     bonjour: ^3.5.0
@@ -10109,19 +10116,19 @@ webpack-dev-server@webpack/webpack-dev-server:
   languageName: node
   linkType: hard
 
-"webpack-sources@npm:^2.1.1, webpack-sources@npm:^2.2.0":
-  version: 2.2.0
-  resolution: "webpack-sources@npm:2.2.0"
+"webpack-sources@npm:^2.2.0, webpack-sources@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "webpack-sources@npm:2.3.0"
   dependencies:
     source-list-map: ^2.0.1
     source-map: ^0.6.1
-  checksum: 7c4b797fa90d310872b70469dc04254e35571fb34530280a47b93edbe9cd6b0ffb79cf2b7565f4a18ff5b70315ff245d465ad35f952366cfd93c55d6445e2378
+  checksum: b929133f8b86fa91a42d2e557f2b2cd6136f62a50c10e32db9f37a63609cd4d1b3475772503c814baa2e25c02d3206110ec2add7a3aaf2794217fbf48664e72a
   languageName: node
   linkType: hard
 
-"webpack@npm:^5.11.0, webpack@npm:^5.37.1":
-  version: 5.37.1
-  resolution: "webpack@npm:5.37.1"
+"webpack@npm:^5.11.0, webpack@npm:^5.38.0":
+  version: 5.38.0
+  resolution: "webpack@npm:5.38.0"
   dependencies:
     "@types/eslint-scope": ^3.7.0
     "@types/estree": ^0.0.47
@@ -10133,7 +10140,7 @@ webpack-dev-server@webpack/webpack-dev-server:
     chrome-trace-event: ^1.0.2
     enhanced-resolve: ^5.8.0
     es-module-lexer: ^0.4.0
-    eslint-scope: ^5.1.1
+    eslint-scope: 5.1.1
     events: ^3.2.0
     glob-to-regexp: ^0.4.1
     graceful-fs: ^4.2.4
@@ -10144,14 +10151,14 @@ webpack-dev-server@webpack/webpack-dev-server:
     schema-utils: ^3.0.0
     tapable: ^2.1.1
     terser-webpack-plugin: ^5.1.1
-    watchpack: ^2.0.0
-    webpack-sources: ^2.1.1
+    watchpack: ^2.2.0
+    webpack-sources: ^2.3.0
   peerDependenciesMeta:
     webpack-cli:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 5fe030ea3f3852d2a2d20157ec51c6fd1ee98039ff0cf3b5176bde9c5ffcf3183fafdf132b89ad9490c9abe996aff33db6448a24d9f683edd2a8e0f80bcdd95b
+  checksum: 13964239401b3a39ac7e7c3c4b29f21fd75bcce7c2631a90646fb16b278b78b48f285675ca56962547b55d0e8d44f04d3988c0c8d5197f93512a6a2fb67ba10f
   languageName: node
   linkType: hard
 

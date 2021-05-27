@@ -36,7 +36,7 @@ export default {
         headline: 'Тесты пройдены',
       },
       failed: {
-        message: 'Поправьте ошибки и запустите код на проверку снова',
+        message: 'Поправьте ошибки и запустите код на проверку снова. Если не получается, то <a href="http://help.hexlet.io/ru/articles/111500-kak-nayti-oshibki-v-kode" target="_blank">изучите</a> наши рекомендации или воспользуйтесь помощью <a href="https://premium.hexlet.io/" target="_blank">наставника</a>',
         headline: 'Тесты не прошли',
       },
       'failed-infinity': {

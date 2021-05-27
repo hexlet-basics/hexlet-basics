@@ -31,9 +31,7 @@ const Output = () => {
       <pre>
         <code className="nohighlight" dangerouslySetInnerHTML={{ __html: ansi.ansi_to_html(checkInfo.output) }} />
       </pre>
-      <div className={alertClassName}>
-        {message}
-      </div>
+      <div className={alertClassName} dangerouslySetInnerHTML={{ __html: message }} />
       {!lessonMember.id && checkInfo.passed && (
         <div className="alert alert-warning" dangerouslySetInnerHTML={{ __html: messageForGuest }} />
       )}

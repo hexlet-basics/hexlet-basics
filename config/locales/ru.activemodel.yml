@@ -3,3 +3,9 @@ ru:
     attributes:
       sign_in:
         password: Пароль
+    errors:
+      models:
+        sign_in:
+          attributes:
+            password:
+              cannot_sign_in: Пароль не подходит. Проверьте раскладку

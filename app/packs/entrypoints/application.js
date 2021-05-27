@@ -10,7 +10,6 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
-// import '@fortawesome/fontawesome-free/js/all.js';
 import hljs from 'highlight.js';
 
 require('@rails/ujs').start();

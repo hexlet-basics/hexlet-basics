@@ -26,6 +26,7 @@
     "i18next": "^20.3.0",
     "js-base64": "^3.6.1",
     "lodash": "^4.17.21",
+    "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-bootstrap": "^1.6.0",
     "react-countdown": "^2.3.2",
@@ -35,7 +36,8 @@
     "react-hotkeys-hook": "^3.3.1",
     "react-i18next": "^11.9.0",
     "react-redux": "^7.2.4",
-    "regenerator-runtime": "^0.13.7"
+    "regenerator-runtime": "^0.13.7",
+    "typed.js": "^2.0.12"
   },
   "version": "0.1.0",
   "devDependencies": {
@@ -68,7 +70,7 @@
     "sass-loader": "^11.1.1",
     "sockjs-client": "^1.5.1",
     "style-loader": "^2.0.0",
-    "webpack": "^5.37.1",
+    "webpack": "^5.38.0",
     "webpack-assets-manifest": "^5.0.6",
     "webpack-cli": "^4.7.0",
     "webpack-dev-server": "webpack/webpack-dev-server"
