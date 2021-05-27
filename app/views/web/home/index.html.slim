@@ -8,11 +8,21 @@
   meta content=t('.meta_description') name='description'
   meta content="#{I18n.locale}" property='og:locale'
 
+.container.mt-2.mb-5
+  .row.p-4.pb-0.pe-lg-0.pt-lg-5.align-items-center.rounded-3.border.shadow-lg
+    .col-lg-7.p-3.p-lg-5.pt-lg-3
+      h1.display-4.fw-bold.lh-1.mb-3 Уроки по программированию
+      p.lead Самый быстрый способ попробовать программирование прямо в браузере. Тренажер по HTML, CSS, JavaScript, PHP, Python, Java и другим языкам. <b>Бесплатно</b>
+      .d-grid.gap-2.d-md-flex.justify-content-md-start.mb-4.mb-lg-3
+        button.btn.btn-primary.btn-lg.px-4.me-md-2.fw-bold type="button" Попробовать
+    .col-lg-4.offset-lg-1.p-0.overflow-hidden.shadow-lg
+      img.rounded-lg-3 alt="" src=image_url('code-basics-coding') width="720"
+
 .row.justify-content-center.mb-5
   .col-12.col-md-10.col-lg-9.col-xl-8.text-center
-    h1.h4 = t('.header')
-    p.lead
-      = t('.subheader')
+    / h1.h4 = t('.header')
+    / p.lead
+    /   = t('.subheader')
       = link_to t('.hexlet'), ExternalLinks.hexlet, class: 'text-muted text-decoration-none', target: '_blank'
 .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4
   = render partial: 'languages', locals: { languages: @languages_completed, language_members_by_language: @language_members_by_language, language_member_fake: @language_member_fake }
