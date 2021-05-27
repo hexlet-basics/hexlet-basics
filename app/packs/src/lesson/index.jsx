@@ -10,9 +10,12 @@ import { initReactI18next } from 'react-i18next';
 import gon from 'gon';
 
 import App from './components/App.jsx';
-import reducer, { setupState } from './slices/index.js';
+import reducer from './slices/index.js';
 import resources from '../locales/index.js';
 import EntityContext from './EntityContext.js';
+import { lessonMemberStates, solutionStates } from './utils/maps.js';
+
+const waitingTime = 20 * 60 * 1000; // 20 min
 
 export default async () => {
   await i18n
@@ -36,11 +39,23 @@ export default async () => {
   };
 
   const localStorageKey = `lesson-version-${gon.lesson_version.id}`;
+  const isFinished = gon.lesson_member.state === lessonMemberStates.finished;
 
   const preloadedState = {
     editorSlice: {
       content: localStorage.getItem(localStorageKey) ?? gon.lesson_version.prepared_code ?? '',
       focusesCount: 1,
+    },
+    solutionSlice: {
+      // TODO move counter to server
+      startTime: Date.now(),
+      processState: isFinished
+        ? solutionStates.shown
+        : solutionStates.notAllowedToShown,
+      waitingTime,
+    },
+    lessonSlice: {
+      finished: isFinished,
     },
   };
 
@@ -48,7 +63,6 @@ export default async () => {
     preloadedState,
     reducer,
   });
-  store.dispatch(setupState(gon));
 
   ReactDOM.render(
     <Provider store={store}>

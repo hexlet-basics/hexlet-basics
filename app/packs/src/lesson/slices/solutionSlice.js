@@ -5,14 +5,12 @@ import { createSlice } from '@reduxjs/toolkit';
 import { actions as checkInfoActions } from './checkInfoSlice.js';
 import { solutionStates } from '../utils/maps.js';
 
-const waitingTime = 20 * 60 * 1000;
-
 const slice = createSlice({
   name: 'solutionSlice',
   initialState: {
-    startTime: null,
+    startTime: 0,
     processState: solutionStates.notAllowedToShown,
-    waitingTime,
+    waitingTime: 0,
   },
   reducers: {
     setStartTime(state, { payload }) {
