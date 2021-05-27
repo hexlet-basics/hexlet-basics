@@ -32,7 +32,7 @@ h1.text-center.display-4
                 li.list-group-item.d-flex.p-3
                   = link_to "#{lesson_version.natural_order}. #{@infos_by_lesson[lesson_version.id]}", language_lesson_path(@language.slug, lesson_version.lesson.slug), class: 'stretched-link text-decoration-none'
                   - if finished_lesson
-                    .me-auto
-                      i.text-primary.fas.fa-check
+                    .ms-auto
+                      span.text-primary.bi.bi-check-lg
         .col-12.col-md-6.mt-4
           = module_info.description
