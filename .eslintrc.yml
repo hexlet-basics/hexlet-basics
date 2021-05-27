@@ -17,7 +17,7 @@ extends:
   # - 'plugin:react/recommended'
   - 'plugin:jest/recommended'
 
-parser: 'babel-eslint'
+parser: '@babel/eslint-parser'
 
 parserOptions:
   ecmaVersion: 11
