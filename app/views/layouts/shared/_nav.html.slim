@@ -46,13 +46,13 @@ nav.navbar.navbar-light.navbar-expand-md.bg-white.shadow-sm
             = link_to language_path('go'), class: 'dropdown-item d-flex align-items-center'
               span.dropdown-item-icon.bi.bi-code
               span.dropdown-item-text = t('human_languages.go')
-        = nav_menu_item t('.about'), page_path(:about)
         = nav_menu_item t('.community'), ExternalLinks.hexlet_slack, target: '_blank'
 
       ul.navbar-nav
         - if current_user.guest?
           = nav_menu_item t('.sign_in'), new_session_path
-          = nav_menu_item t('.registration'), new_user_path
+          .me-3
+            = nav_menu_item t('.registration'), new_user_path
         - else
           li.nav-item.dropdown.me-2
             a.nav-link.dropdown-toggle href='#' data-bs-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='false'
