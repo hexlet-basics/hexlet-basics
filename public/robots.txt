@@ -13,4 +13,4 @@ Disallow: */next_lesson
 Disallow: *.php
 Disallow: */edit
 
-# Sitemap: https://ru.code-basics.com/sitemap.xml
+Sitemap: https://ru.code-basics.com/sitemap.xml
