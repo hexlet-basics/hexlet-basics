@@ -3,9 +3,9 @@
     h2
       a#courses.text-decoration-none.text-dark href="#courses" Курсы
     hr
-  .row.row-cols-2.row-cols-md-3.row-cols-lg-4
+  .row.row-cols-2.row-cols-md-3.row-cols-lg-4.gy-3.gx-2.g-sm-4.gy-lg-5
     - languages.each do |language|
-      .col.mb-5
+      .col
         .card.h-100.shadow-sm.border-0
           - let get_language_background(language.slug) do |bg_class|
             = image_tag "#{language.slug}.png", class: "card-img-top #{bg_class} p-4", alt: t('.icon', language: t("human_languages.#{language}"))
