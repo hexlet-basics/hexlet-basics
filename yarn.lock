@@ -1317,15 +1317,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:7.13.10":
-  version: 7.13.10
-  resolution: "@babel/runtime@npm:7.13.10"
-  dependencies:
-    regenerator-runtime: ^0.13.4
-  checksum: 22014226b96a8c8e8d4e8bcdb011f317d1b32881aef424a669dc6ceaee14993d3609172967853cbf9c25c724c25145d45885b6c9df56ba241c12820776607f1f
-  languageName: node
-  linkType: hard
-
 "@babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.6, @babel/runtime@npm:^7.13.8, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
   version: 7.14.0
   resolution: "@babel/runtime@npm:7.14.0"
@@ -2108,21 +2099,6 @@ __metadata:
     "@typescript-eslint/types": 4.25.0
     eslint-visitor-keys: ^2.0.0
   checksum: 53369ad5faa8f9f597ef1cdbe87cdaf078065ff0c488c2f31324605cce952aa4ef54cd643ed76c78502964ac84b8e910191924bde5bf7273a12ec67437de69c9
-  languageName: node
-  linkType: hard
-
-"@uiw/react-codemirror@npm:^3.0.9":
-  version: 3.0.9
-  resolution: "@uiw/react-codemirror@npm:3.0.9"
-  dependencies:
-    "@babel/runtime": 7.13.10
-    codemirror: 5.61.1
-  peerDependencies:
-    "@babel/runtime": ">=7.11.0"
-    codemirror: ">=5.49.2"
-    react: ">=16.8.0"
-    react-dom: ">=16.8.0"
-  checksum: 4ea003ee18ce0f9765701905258c42c360e92559a39b23e0c79057eaba30d85f44a852bda34d637f8aa1e0966292a78630744c5a6da4b65fef867d208da5385c
   languageName: node
   linkType: hard
 
@@ -3229,7 +3205,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"codemirror@npm:5.61.1, codemirror@npm:^5.61.1":
+"codemirror@npm:^5.61.1":
   version: 5.61.1
   resolution: "codemirror@npm:5.61.1"
   checksum: 4303451a8230742af2e4993e1606652d6056bd0b67d071d8d161fd5a5de42db9e893577854e1e2addf8ba8e1c1144be7b5b7e6c8f15e6a6e518930197d4c4812
@@ -4954,7 +4930,6 @@ __metadata:
     "@rails/webpacker": "rails/webpacker#master"
     "@reduxjs/toolkit": ^1.5.1
     "@rehooks/local-storage": 2.4.0
-    "@uiw/react-codemirror": ^3.0.9
     "@webpack-cli/serve": ^1.4.0
     ansi_up: ^5.0.1
     axios: ^0.21.1
@@ -4994,6 +4969,7 @@ __metadata:
     prop-types: ^15.7.2
     react: ^17.0.2
     react-bootstrap: ^1.6.0
+    react-codemirror2: ^7.2.1
     react-countdown: ^2.3.2
     react-dom: ^17.0.2
     react-frame-component: ^5.0.0
@@ -8258,6 +8234,16 @@ __metadata:
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
   checksum: 0e0ed77fc068061717e0b2aacca7c84306e66585c84e538edcdea9caad8c4e920efbc5ee9a0a8254f4c2746d458092896bb5023f394f16d18914acbd2d41c943
+  languageName: node
+  linkType: hard
+
+"react-codemirror2@npm:^7.2.1":
+  version: 7.2.1
+  resolution: "react-codemirror2@npm:7.2.1"
+  peerDependencies:
+    codemirror: 5.x
+    react: ">=15.5 <=16.x"
+  checksum: 84dee661fd692b1ab4a79c02d1d296c15d2ecf0eb1745a7425c92ea534d45fe67079292c120d998649d60d449ea2e907210963baaba4e830482da715d7094fd4
   languageName: node
   linkType: hard
 

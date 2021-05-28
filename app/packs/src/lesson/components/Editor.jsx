@@ -1,15 +1,31 @@
 // @ts-check
 
-import React, {
-  useContext, useEffect, useRef,
-} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import CodeMirror from '@uiw/react-codemirror';
+import { UnControlled as CodeMirror } from 'react-codemirror2';
 import { useLocalStorage } from '@rehooks/local-storage';
 import { actions } from '../slices/index.js';
 import { getLanguageForEditor, getTabSize } from '../utils/editorUtils.js';
 
 import EntityContext from '../EntityContext.js';
+
+import 'codemirror/mode/htmlmixed/htmlmixed.js';
+import 'codemirror/mode/javascript/javascript.js';
+import 'codemirror/mode/css/css.js';
+import 'codemirror/mode/yaml/yaml.js';
+import 'codemirror/mode/shell/shell.js';
+import 'codemirror/mode/jsx/jsx.js';
+import 'codemirror/mode/markdown/markdown.js';
+import 'codemirror/mode/ruby/ruby.js';
+import 'codemirror/mode/erlang/erlang.js';
+import 'codemirror/mode/python/python.js';
+import 'codemirror/mode/scheme/scheme.js';
+import 'codemirror/mode/php/php.js';
+import 'codemirror/mode/sass/sass.js';
+import 'codemirror/mode/pug/pug.js';
+import 'codemirror/mode/clike/clike.js';
+import 'codemirror/mode/go/go.js';
+import 'codemirror-mode-elixir';
 
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/addon/scroll/simplescrollbars.css';
@@ -44,26 +60,27 @@ const Editor = () => {
   const { language, lessonVersion } = useContext(EntityContext);
   const { content, focusesCount } = useSelector((state) => state.editorSlice);
   const dispatch = useDispatch();
+  const [editor, setEditor] = useState(null);
 
   const localStorageKey = `lesson-version-${lessonVersion.id}`;
-  const [, setContent] = useLocalStorage(localStorageKey);
+  const [localStorageContent, setContent] = useLocalStorage(localStorageKey);
 
-  const editorRef = useRef();
-  // NOTE https://github.com/uiwjs/react-codemirror/blob/280f4586f3a01f7a416a04cf54ab9bec551f0462/website/App.js#L190
-  const getInstance = (instance) => {
-    if (instance?.editor) {
-      editorRef.current = instance.editor;
+  useEffect(() => {
+    editor?.focus();
+  }, [editor, focusesCount]);
+
+  const onMount = (self) => {
+    setEditor(self);
+    self.focus();
+    self.refresh();
+    if (localStorageContent) {
+      self.getDoc().setValue(localStorageContent);
     }
   };
 
-  useEffect(() => {
-    editorRef.current?.focus?.();
-  }, [editorRef, focusesCount]);
-
-  const onContentChange = (editor) => {
-    const value = editor.getValue();
-    setContent(value);
-    dispatch(actions.changeContent({ content: value }));
+  const onContentChange = (_editor, _data, newContent) => {
+    setContent(newContent);
+    dispatch(actions.changeContent({ content: newContent }));
   };
 
   const replaceTab = (cm) => {
@@ -90,7 +107,9 @@ const Editor = () => {
       value={content}
       options={options}
       onChange={onContentChange}
-      ref={getInstance}
+      detach
+      editorDidMount={onMount}
+      className="w-100 h-100"
     />
   );
 };

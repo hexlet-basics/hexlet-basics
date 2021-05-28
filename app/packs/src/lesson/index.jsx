@@ -38,14 +38,9 @@ export default async () => {
     lessonMember: gon.lesson_member,
   };
 
-  const localStorageKey = `lesson-version-${gon.lesson_version.id}`;
   const isFinished = gon.lesson_member.state === lessonMemberStates.finished;
 
   const preloadedState = {
-    editorSlice: {
-      content: localStorage.getItem(localStorageKey) ?? gon.lesson_version.prepared_code ?? '',
-      focusesCount: 1,
-    },
     solutionSlice: {
       // TODO move counter to server
       startTime: Date.now(),
