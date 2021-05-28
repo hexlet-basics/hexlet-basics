@@ -8,18 +8,19 @@
   meta content=t('.meta_description') name='description'
   meta content="#{I18n.locale}" property='og:locale'
 
-.text-center
-  i.display-6.bi.bi-box-arrow-in-right
-  h1.mb-4.text-center = t('.sign_in')
-.row.justify-content-center
-  .col-sm-8.col-md-7.col-lg-5
-    .card.shadow-sm.border-0
-      .card-body.m-4
-        = simple_form_for @sign_in_form, url: session_path do |f|
-          = f.input :email, input_html: { 'data-testid' => 'email' }
-          = f.input :password, input_html: { 'data-testid' => 'password' }
-          .text-end.small.my-4
-            = link_to t('.forgot_password'), new_remind_password_path, class: 'text-decoration-none'
-          .form-group
-            = f.submit class: 'btn btn-primary w-100', 'data-testid' => 'submit'
-          = render 'web/shared/via_social_networks'
+.container.mt-5
+  .text-center
+    i.display-6.bi.bi-box-arrow-in-right
+    h1.mb-4.text-center = t('.sign_in')
+  .row.justify-content-center
+    .col-sm-8.col-md-7.col-lg-5
+      .card.shadow-sm.border-0
+        .card-body.m-4
+          = simple_form_for @sign_in_form, url: session_path do |f|
+            = f.input :email, input_html: { 'data-testid' => 'email' }
+            = f.input :password, input_html: { 'data-testid' => 'password' }
+            .text-end.small.my-4
+              = link_to t('.forgot_password'), new_remind_password_path, class: 'text-decoration-none'
+            .form-group
+              = f.submit class: 'btn btn-primary w-100', 'data-testid' => 'submit'
+            = render 'web/shared/via_social_networks'
