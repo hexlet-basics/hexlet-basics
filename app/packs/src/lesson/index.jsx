@@ -41,6 +41,10 @@ export default async () => {
   const isFinished = gon.lesson_member.state === lessonMemberStates.finished;
 
   const preloadedState = {
+    editorSlice: {
+      content: gon.lesson.prepared_code || '',
+      focusesCount: 1,
+    },
     solutionSlice: {
       // TODO move counter to server
       startTime: Date.now(),
