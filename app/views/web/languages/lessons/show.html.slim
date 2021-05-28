@@ -39,12 +39,12 @@
                 hr.my-4
               - if @info.tips.any?
                 h2.h5.font-weight-bold.mt-4 = t('.tips')
-                ul.pl-4
+                ul.ps-4
                   - @info.tips.each do |tip|
                     li == markdown2html(tip)
               - if @info.definitions.any?
                 h2.h5.font-weight-bold = t('.definitions')
-                ul.pl-4
+                ul.ps-4
                   - @info.definitions.each do |definition|
                     li
                       p == markdown2html("#{definition['name']} - #{definition['description']}")

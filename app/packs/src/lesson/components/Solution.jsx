@@ -57,7 +57,7 @@ const Solution = () => {
       <div className="text-center">
         <button
           type="button"
-          className="btn btn-secondary px-4 mr-3"
+          className="btn btn-secondary px-4"
           onClick={handleShowSolution}
         >
           {t('showSolution')}
