@@ -30,11 +30,11 @@ footer.bg-dark.text-light.mt-5
 
       .col.mb-4.mb-lg-0
         div
-          = render  'layouts/shared/language_switcher'
+          = render 'layouts/shared/language_switcher'
 
     hr
     .d-flex
-      p.mb-2 = t('.hexlet_title', year: Date.today.year)
+      p.mb-2 = t('.hexlet_title', year: Time.zone.today.year)
       .ms-auto.fs-3
         span.me-5
           a.rounded-cirlce target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_facebook
