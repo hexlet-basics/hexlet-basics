@@ -7,10 +7,10 @@ Rollbar.configure do |config|
   config.js_enabled = Rails.env.production?
 
   config.js_options = {
-    # accessToken: configus.rollbar.frontend_access_token,
+    accessToken: ENV['ROLLBAR_ACCESS_TOKEN'],
     captureUncaught: true,
     captureUnhandledRejections: true,
-    # hostWhiteList: [configus.cdn_host],
+    hostWhiteList: [configus.host],
     payload: {
       client: {
         # source_map_enabled: true,
