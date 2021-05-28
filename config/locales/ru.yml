@@ -2,5 +2,5 @@ ru:
   hello: "Привет мир"
   hours:
     one: "%{count} час"
-    two: "%{count} часа"
+    few: "%{count} часа"
     many: "%{count} часов"
