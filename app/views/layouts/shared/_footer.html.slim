@@ -1,30 +1,30 @@
-footer.bg-dark.text-muted.mt-5
+footer.bg-dark.text-light.mt-5
   .container-xl.pt-5.pb-3
     .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4
       .col.mb-4.mb-lg-0
         p = t('.hexlet_address')
         p = t('.hexlet_number')
-        a.text-muted(href="mailto:#{ExternalLinks.hexlet_support_mail}") = ExternalLinks.hexlet_support_mail
+        a.text-light(href="mailto:#{ExternalLinks.hexlet_support_mail}") = ExternalLinks.hexlet_support_mail
 
       .col.mb-4.mb-lg-0
         ul.list-unstyled.lh-lg
           li
-            = link_to t('.about'), page_path(:about), class: 'text-decoration-none text-muted'
+            = link_to t('.about'), page_path(:about), class: 'text-decoration-none text-light'
           li
-            = link_to t('.tos'), page_path(:tos), class: 'text-decoration-none text-muted'
+            = link_to t('.tos'), page_path(:tos), class: 'text-decoration-none text-light'
           li
-            = link_to t('.privacy'), page_path(:privacy), class: 'text-decoration-none text-muted'
+            = link_to t('.privacy'), page_path(:privacy), class: 'text-decoration-none text-light'
 
       .col.mb-4.mb-lg-0
         ul.list-unstyled.lh-lg
           li
-            a.text-muted.text-decoration-none target="_blank" href=ExternalLinks.hexlet_blog = t('.hexlet_blog')
+            a.text-light.text-decoration-none target="_blank" href=ExternalLinks.hexlet_blog = t('.hexlet_blog')
           li
-            a.text-muted.text-decoration-none target="_blank" href=ExternalLinks.hexlet_recommended_books = t('.recommended_books')
+            a.text-light.text-decoration-none target="_blank" href=ExternalLinks.hexlet_recommended_books = t('.recommended_books')
           li
-            a.text-muted.text-decoration-none target="_blank" href=ExternalLinks.hexlet_matrix = t('.matrix')
+            a.text-light.text-decoration-none target="_blank" href=ExternalLinks.hexlet_matrix = t('.matrix')
           li
-            a.text-muted.text-decoration-none target="_blank" href=ExternalLinks.source_code
+            a.text-light.text-decoration-none target="_blank" href=ExternalLinks.source_code
               = t('.source_code')
               span.bi.bi-github.ms-2
 
@@ -38,18 +38,18 @@ footer.bg-dark.text-muted.mt-5
       .ms-auto.fs-3
         span.me-5
           a.rounded-cirlce target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_facebook
-            span.bi.bi-facebook.text-muted
+            span.bi.bi-facebook.text-light
         span.me-5
           a.rounded-cirlce target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_telegram
-            span.bi.bi-telegram.text-muted
+            span.bi.bi-telegram.text-light
         span.me-5
           a.rounded-cirlce target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_twitter
-            span.bi.bi-twitter.text-muted
+            span.bi.bi-twitter.text-light
         span.me-5
           a.rounded-cirlce target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_youtube
-            span.bi.bi-youtube.text-muted
+            span.bi.bi-youtube.text-light
         span
           a.rounded-cirlce target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_slack
-            span.bi.bi-slack.text-muted
+            span.bi.bi-slack.text-light
 
 = render_javascript_stored_packs
