@@ -1,8 +1,8 @@
 .container
   .mb-5
-    h2 Курсы
+    h2
+      a#courses.text-decoration-none.text-dark href="#courses" Курсы
     hr
-  a#courses
   .row.row-cols-2.row-cols-md-3.row-cols-lg-4
     - languages.each do |language|
       .col.mb-5
