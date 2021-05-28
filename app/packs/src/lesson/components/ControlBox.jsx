@@ -55,7 +55,7 @@ const ControlBox = () => {
       return (
         <>
           <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-          <span className="sr-only">{t('loading')}</span>
+          <span className="visually-hidden">{t('loading')}</span>
           <span className="d-none d-sm-block d-md-none d-lg-block ms-1">{text}</span>
         </>
       );
