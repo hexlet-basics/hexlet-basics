@@ -9,7 +9,7 @@
   meta content="#{I18n.locale}" property='og:locale'
 
 .container.mt-5
-  .px-3.px-sm-5.py-3.py-sm-5.mb-4.bg-white.rounded-3.shadow-sm
+  .px-3.px-sm-5.py-4.py-sm-5.mb-4.bg-white.rounded-3.shadow-sm
     .row
       .col
         h1.display-5.fw-bold = [t("human_languages.#{@language}"), @language.learn_as.text].join(' ')
@@ -56,10 +56,10 @@
             = module_info.description
 
     - if !signed_in?
-      .card.shadow-sm.border-0.mt-5.p-5
-        .card-body.d-flex
-          .me-auto
+      .card.shadow-sm.border-0.mt-5.py-3.py-md-5.px-3
+       .card-body.row
+          .col-sm-12.col-md-auto.mb-3
             .display-6.fw-bold = t('.ready')
             .fs-4.fw-bold.text-primary = t('.no_registration')
-          .my-auto
+          .col.my-auto.text-md-end
             = link_to t('.start_demo_lesson'), language_lesson_path(@language.slug, @first_lesson.slug), class: 'btn btn-outline-primary btn-lg'
