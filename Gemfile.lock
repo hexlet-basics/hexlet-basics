@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/castwide/solargraph.git
-  revision: a8480db84db5f8ab3f617d1aae8a70dd0bf4552e
+  revision: 4977304de12d18f038c4178d068a277df9fe984b
   specs:
     solargraph (0.40.5)
       backport (~> 1.1)
@@ -118,6 +118,7 @@ GEM
     configus (0.0.5)
     connection_pool (2.2.5)
     crass (1.0.6)
+    date (3.1.0)
     declarative (0.0.20)
     declarative-builder (0.2.0)
       trailblazer-option (~> 0.1.0)
@@ -179,10 +180,11 @@ GEM
       concurrent-ruby (~> 1.0)
     i18n-debug (1.2.0)
       i18n (< 2)
+    io-wait (0.1.0)
     jaro_winkler (1.5.4)
     jbuilder (2.11.2)
       activesupport (>= 5.0.0)
-    js-routes (2.0.1)
+    js-routes (2.0.3)
       railties (>= 4)
     jwt (2.2.3)
     kaminari (1.2.1)
@@ -212,7 +214,8 @@ GEM
     marcel (1.0.1)
     method_source (1.0.0)
     mini_mime (1.0.3)
-    mini_portile2 (2.5.1)
+    mini_portile2 (2.5.2)
+      net-ftp (~> 0.1)
     minitest (5.14.4)
     minitest-power_assert (0.3.1)
       minitest
@@ -221,8 +224,14 @@ GEM
     multi_json (1.15.0)
     multi_xml (0.6.0)
     multipart-post (2.1.1)
+    net-ftp (0.1.2)
+      net-protocol
+      time
+    net-protocol (0.1.1)
+      io-wait
+      timeout
     nio4r (2.5.7)
-    nokogiri (1.11.5)
+    nokogiri (1.11.6)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
     oauth2 (1.4.7)
@@ -256,7 +265,7 @@ GEM
     rack (2.2.3)
     rack-protection (2.1.0)
       rack
-    rack-proxy (0.6.5)
+    rack-proxy (0.7.0)
       rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
@@ -317,7 +326,7 @@ GEM
     reverse_markdown (2.0.0)
       nokogiri
     rexml (3.2.5)
-    rollbar (3.1.2)
+    rollbar (3.2.0)
     rubocop (1.15.0)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
@@ -327,7 +336,7 @@ GEM
       rubocop-ast (>= 1.5.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.6.0)
+    rubocop-ast (1.7.0)
       parser (>= 3.0.1.1)
     rubocop-performance (1.11.3)
       rubocop (>= 1.7.0, < 2.0)
@@ -362,7 +371,7 @@ GEM
       actionpack (>= 3.1)
       railties (>= 3.1)
       slim (>= 3.0, < 5.0)
-    slim_lint (0.21.0)
+    slim_lint (0.21.1)
       rubocop (>= 0.78.0)
       slim (>= 3.0, < 5.0)
     spring (2.1.1)
@@ -380,6 +389,9 @@ GEM
       tins (~> 1.0)
     thor (1.1.0)
     tilt (2.0.10)
+    time (0.1.0)
+      date
+    timeout (0.1.1)
     tins (1.29.1)
       sync
     trailblazer-option (0.1.1)
