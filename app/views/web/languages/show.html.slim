@@ -13,7 +13,7 @@
     .row
       .col
         h1.display-5.fw-bold = [t("human_languages.#{@language}"), @language.learn_as.text].join(' ')
-        p.col-md-10.fs-5 = t("#{@language}.description", scope: 'languages')
+        p.col-md-10.fs-5 = t(".#{@language}_description")
         .text-muted.lead.mb-5
           span.text-nowrap.me-4
             i.bi.bi-clock.me-2
