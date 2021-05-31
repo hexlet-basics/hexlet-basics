@@ -69,9 +69,6 @@ const Solution = () => {
   const renderContent = (countdownData) => {
     const { completed } = countdownData;
 
-    if (solutionStates.shown === solution.processState) {
-      return renderSolution();
-    }
     if (completed || solutionStates.canBeShown === solution.processState) {
       return renderShowButton();
     }
@@ -89,7 +86,9 @@ const Solution = () => {
 
   return (
     <div>
-      <Countdown date={solution.startTime + solution.waitingTime} renderer={renderContent} />
+      {solutionStates.shown === solution.processState
+        ? renderSolution()
+        : <Countdown date={solution.startTime + solution.waitingTime} renderer={renderContent} />}
     </div>
   );
 };
