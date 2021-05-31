@@ -51,7 +51,7 @@ class User < ApplicationRecord
     authenticate(password)
   end
 
-  def to_json
+  def to_json(*_args)
     attrs = attributes.extract! 'id', 'state', 'email', 'locale', 'created_at', 'nickname', 'first_name', 'last_name'
     attrs.to_json
   end
