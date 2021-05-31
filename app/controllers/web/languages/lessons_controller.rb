@@ -36,6 +36,9 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     next_lesson = lesson_version.next_lesson
 
     js_event_options = {
+      user: current_user,
+      language: resource_language,
+      lesson: next_lesson,
       lessons_started: current_user.lesson_members.where(language: resource_language).count,
       lessons_finished: current_user.lesson_members.where(language: resource_language).finished.count
     }

@@ -11,7 +11,7 @@ class Web::AuthController < Web::ApplicationController
       sign_in user
       f(:success)
       js_event_options = {
-        email: user.email
+        user: user
       }
       js_event(:signed_up, js_event_options) unless existing_user
       redirect_to root_path
