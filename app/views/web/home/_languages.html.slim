@@ -8,7 +8,8 @@
       .col
         .card.h-100.shadow-sm.border-0
           - let get_language_background(language.slug) do |bg_class|
-            = image_tag "#{language.slug}.png", class: "card-img-top #{bg_class} p-4", alt: t('.icon', language: t("human_languages.#{language}"))
+            .p-4 class=bg_class
+              = image_tag "#{language.slug}.png", class: 'card-img-top', alt: t('.icon', language: t("human_languages.#{language}"))
           .card-body
             h2.card-title
               = link_to t("human_languages.#{language}"), language_path(language.slug), class: 'stretched-link text-dark text-decoration-none text-nowrap'
