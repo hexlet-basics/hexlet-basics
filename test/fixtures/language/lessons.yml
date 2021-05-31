@@ -1,3 +1,6 @@
+DEFAULTS: &DEFAULTS
+  slug: $LABEL
+
 one:
   slug: hello_world
   language: php
@@ -32,3 +35,8 @@ javascript:
   slug: alone_lesson
   language: javascript
   module: javascript
+
+elixir-hello-world:
+  <<: *DEFAULTS
+  language: elixir
+  module: elixir-basics

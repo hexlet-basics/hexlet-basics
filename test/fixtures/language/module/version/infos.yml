@@ -24,4 +24,9 @@ variables_one:
   version: one
   language_version: two
 
-
+elixir-basics-ru:
+  <<: *DEFAULTS
+  locale: ru
+  language: elixir
+  version: elixir-basics
+  language_version: elixir

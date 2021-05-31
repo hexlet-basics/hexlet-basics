@@ -66,3 +66,12 @@ javascript:
   module_version: javascript
   lesson: javascript
   language: javascript
+
+elixir-hello-world:
+  <<: *DEFAULTS
+  order: 1
+  natural_order: 1
+  language_version: elixir
+  module_version: elixir-basics
+  lesson: elixir-hello-world
+  language: elixir

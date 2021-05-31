@@ -1,5 +1,5 @@
 DEFAULTS: &DEFAULTS
-  slug: slug_$LABEL
+  slug: $LABEL
 
 one:
   <<: *DEFAULTS
@@ -16,3 +16,7 @@ variables_one:
 javascript:
   slug: alone_module
   language: javascript
+
+elixir-basics:
+  <<: *DEFAULTS
+  language: elixir
