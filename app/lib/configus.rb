@@ -11,6 +11,11 @@ Configus.build Rails.env do
       app_secret ENV['GITHUB_CLIENT_SECRET']
     end
 
+    facebook do
+      app_id ENV['FACEBOOK_CLIENT_ID']
+      app_secret ENV['FACEBOOK_CLIENT_SECRET']
+    end
+
     disqus_id 'hexlet-basics'
 
     gtm_id ENV['GOOGLE_TAG_MANAGER_KEY']

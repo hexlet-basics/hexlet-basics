@@ -244,6 +244,8 @@ GEM
       hashie (>= 3.4.6)
       rack (>= 1.6.2, < 3)
       rack-protection
+    omniauth-facebook (8.0.0)
+      omniauth-oauth2 (~> 1.2)
     omniauth-github (2.0.0)
       omniauth (~> 2.0)
       omniauth-oauth2 (~> 1.7.1)
@@ -446,6 +448,7 @@ DEPENDENCIES
   kaminari
   listen (~> 3.3)
   minitest-power_assert
+  omniauth-facebook
   omniauth-github
   omniauth-rails_csrf_protection
   pg
