@@ -42,12 +42,19 @@ precompile-assets:
 	bundle exec rails assets:precompile
 
 lint: lint-eslint lint-rubocop
+lint-fix: lint-eslint-fix lint-rubocop-fix
 
 lint-rubocop:
 	bundle exec rubocop
 
+lint-rubocop-fix:
+	bundle exec rubocop -A
+
 lint-eslint:
 	npx eslint app/packs --ext .js,.jsx
+
+lint-eslint-fix:
+	npx eslint app/packs --ext .js,.jsx --fix
 
 lint-slim:
 	bundle exec slim-lint
