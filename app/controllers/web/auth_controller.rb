@@ -10,7 +10,10 @@ class Web::AuthController < Web::ApplicationController
     if user.persisted?
       sign_in user
       f(:success)
-      js_event(:signed_up) unless existing_user
+      js_event_options = {
+        email: user.email
+      }
+      js_event(:signed_up, js_event_options) unless existing_user
       redirect_to root_path
     else
       redirect_to new_user_path
