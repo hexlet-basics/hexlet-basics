@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Web::Languages::LessonsController < Web::Languages::ApplicationController
+  before_action :authenticate_user!, only: [:next_lesson]
   def show
     @lesson = resource_language.lessons.find_by(slug: params[:id])
     unless @lesson

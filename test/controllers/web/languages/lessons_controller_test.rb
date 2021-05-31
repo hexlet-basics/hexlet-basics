@@ -22,6 +22,7 @@ class Web::Languages::LessonsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'next_lesson' do
+    sign_in_as(:full)
     third_language_lesson = language_lessons(:three)
 
     get next_lesson_language_lesson_url(@language.slug, @lesson.slug, subdomain: I18n.locale)
