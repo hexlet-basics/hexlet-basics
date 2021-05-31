@@ -8,10 +8,6 @@ class Language::Lesson::Version < ApplicationRecord
 
   has_many :infos, dependent: :destroy
 
-  def to_s
-    slug
-  end
-
   def next_lesson
     language_version
       .lesson_versions.order(:natural_order)

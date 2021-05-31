@@ -28,4 +28,8 @@ class Language::Lesson < ApplicationRecord
       transitions from: %i[created archived], to: :archived
     end
   end
+
+  def to_s
+    slug
+  end
 end
