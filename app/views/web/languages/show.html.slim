@@ -55,10 +55,11 @@
           .col-12.col-md-6.mt-4
             = module_info.description
 
-    .card.shadow-sm.border-0.mt-5.p-5
-      .card-body.d-flex
-        .me-auto
-          .display-6.fw-bold = t('.ready')
-          .fs-4.fw-bold.text-primary = t('.no_registration')
-        .my-auto
-          = link_to t('.start_demo_lesson'), language_lesson_path(@language.slug, @first_lesson.slug), class: 'btn btn-outline-primary btn-lg'
+    - if !signed_in?
+      .card.shadow-sm.border-0.mt-5.p-5
+        .card-body.d-flex
+          .me-auto
+            .display-6.fw-bold = t('.ready')
+            .fs-4.fw-bold.text-primary = t('.no_registration')
+          .my-auto
+            = link_to t('.start_demo_lesson'), language_lesson_path(@language.slug, @first_lesson.slug), class: 'btn btn-outline-primary btn-lg'
