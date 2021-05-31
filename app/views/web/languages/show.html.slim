@@ -29,9 +29,9 @@
           = link_to t('.start'), language_lesson_path(@language.slug, @first_lesson.slug), class: 'btn btn-lg btn-primary px-4 mb-3 mt-2'
         - else
           = link_to t('.continue'), language_lesson_path(@language.slug, @next_lesson.slug), class: 'btn btn-lg btn-success px-4 mb-3 mt-2'
-      .d-none.d-md-block.col-4.mb-auto.text-center
+      .d-none.d-md-block.col-4
         -# FIXME нужно добыть картинки
-        = image_pack_tag("#{@language.slug}.svg", class: "img-fluid", alt: @language) rescue nil
+        = image_pack_tag("#{@language.slug}_512x512.png", class: "img-fluid", alt: @language) rescue nil
 
   .
     - if @language_member.finished?

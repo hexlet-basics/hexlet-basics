@@ -9,19 +9,19 @@ import '../stylesheets/application.scss';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-import 'programming-languages-logos/src/javascript/javascript.svg';
+import 'programming-languages-logos/src/javascript/javascript_512x512.png';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import 'programming-languages-logos/src/java/java.svg';
+import 'programming-languages-logos/src/java/java_512x512.png';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import 'programming-languages-logos/src/php/php.svg';
+import 'programming-languages-logos/src/php/php_512x512.png';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import 'programming-languages-logos/src/python/python.svg';
+import 'programming-languages-logos/src/python/python_512x512.png';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import 'programming-languages-logos/src/ruby/ruby.svg';
+import 'programming-languages-logos/src/ruby/ruby_512x512.png';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import 'programming-languages-logos/src/html/html.svg';
+import 'programming-languages-logos/src/html/html_512x512.png';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import 'programming-languages-logos/src/css/css.svg';
+import 'programming-languages-logos/src/css/css_512x512.png';
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
