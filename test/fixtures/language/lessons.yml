@@ -40,3 +40,13 @@ elixir-hello-world:
   <<: *DEFAULTS
   language: elixir
   module: elixir-basics
+
+elixir-variables:
+  <<: *DEFAULTS
+  language: elixir
+  module: elixir-basics
+
+elixir-strings:
+  <<: *DEFAULTS
+  language: elixir
+  module: elixir-basics

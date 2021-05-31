@@ -75,3 +75,21 @@ elixir-hello-world:
   module_version: elixir-basics
   lesson: elixir-hello-world
   language: elixir
+
+elixir-variables:
+  <<: *DEFAULTS
+  order: 2
+  natural_order: 2
+  language_version: elixir
+  module_version: elixir-basics
+  lesson: elixir-variables
+  language: elixir
+
+elixir-strings:
+  <<: *DEFAULTS
+  order: 3
+  natural_order: 3
+  language_version: elixir
+  module_version: elixir-basics
+  lesson: elixir-strings
+  language: elixir

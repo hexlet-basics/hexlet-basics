@@ -20,3 +20,15 @@ full-elixir-hello-world:
   language: elixir
   lesson: elixir-hello-world
   state: finished
+
+full-elixir-variables:
+  user: full
+  language: elixir
+  lesson: elixir-variables
+  state: finished
+
+full-elixir-strings:
+  user: full
+  language: elixir
+  lesson: elixir-strings
+  state: finished

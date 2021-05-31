@@ -46,3 +46,17 @@ elixir-hello-world-ru:
   language: elixir
   language_version: elixir
   version: elixir-hello-world
+
+elixir-variables-ru:
+  <<: *DEFAULTS
+  name: Переменные
+  language: elixir
+  language_version: elixir
+  version: elixir-variables
+
+elixir-strings-ru:
+  <<: *DEFAULTS
+  name: Строки
+  language: elixir
+  language_version: elixir
+  version: elixir-strings
