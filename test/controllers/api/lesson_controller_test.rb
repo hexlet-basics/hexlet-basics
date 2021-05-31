@@ -10,6 +10,9 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     @lesson_member = @lesson.members.find_or_create_by!(language: @lesson.language, user: @user)
   end
 
+  test 'exercise is correct' do
+  end
+
   test 'check lesson finished' do
     sign_in_as(:one)
     post check_api_lesson_url(@lesson), params: { version_id: @lesson.versions.first.id, data: { attributes: { code: 'code' } } }

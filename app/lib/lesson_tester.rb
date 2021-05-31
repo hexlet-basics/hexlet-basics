@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class LessonTester
-  include Import['open3_klass']
+  include Import['docker_exercise_api']
 
   def run(lesson_version, language_version, code, user)
     code_directory = '/tmp/hexlet-basics/code'
@@ -15,7 +15,12 @@ class LessonTester
     volume = "-v #{full_exercise_file_path}:#{path_to_exersice_file}"
     command = "docker run --rm --net none #{volume} #{language_version.docker_image}:#{language_version.image_tag} timeout 4 make --silent -C #{lesson_version.path_to_code} test"
 
-    output, process_status = open3_klass.capture2(command)
+    output, process_status = docker_exercise_api.run_exercise(
+      volume: volume,
+      docker_image: language_version.docker_image,
+      image_tag: language_version.image_tag,
+      path_to_code: lesson_version.path_to_code
+    )
     exitstatus = process_status.exitstatus
 
     result = case exitstatus
