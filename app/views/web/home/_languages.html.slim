@@ -14,12 +14,12 @@
             h2.card-title
               = link_to t("human_languages.#{language}"), language_path(language.slug), class: 'stretched-link text-dark text-decoration-none text-nowrap'
             .text-muted
-              span.text-nowrap.me-4
-                i.bi.bi-clock.me-2
+              span.text-nowrap.d-inline-block.me-4
+                span.bi.bi-clock.me-2
                 = t('hours', count: language.duration)
                 / i.bi.bi-bar-chart jopa
-              span.text-nowrap
-                i.bi.bi-people.me-2
+              span.text-nowrap.d-inline-block
+                span.bi.bi-people.me-2
                 = language.members.size
 
             / .text-right
