@@ -54,6 +54,9 @@ ru:
       show:
         start: Начать обучение
         continue: Продолжить обучение
+        start_demo_lesson: Демо урок
+        ready: Готовы попробовать?
+        no_registration: Регистрация не требуется
       complete_language:
         continue: Продолжить обучение
         grats: Поздравляем!
