@@ -3,7 +3,7 @@
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
-import Highlight from 'react-highlight';
+import { Highlight } from 'react-fast-highlight';
 import Countdown from 'react-countdown';
 import { format } from 'date-fns';
 
@@ -30,7 +30,7 @@ const Solution = () => {
     return (
       <div>
         <h2 className="h3">{t('userCode')}</h2>
-        <Highlight className={getLanguage(language)}>
+        <Highlight languages={[getLanguage(language)]}>
           {editor.content}
         </Highlight>
       </div>
