@@ -63,11 +63,11 @@ nav.navbar.navbar-light.navbar-expand-md.bg-white.shadow-sm
                 .flex-shrink-0.me-2
                   = image_tag 'user-avatar.png', width: 50, height: 50, alt: 'User Avatar', class: 'rounded-circle'
                 .
-                  .fw-bold= current_user.nickname
-                  .= current_user.email
+                  .fw-bold = current_user.nickname
+                  . = current_user.email
               .dropdown-divider
-              li= link_to t('.profile'), edit_account_profile_path, class: 'dropdown-item'
+              li = link_to t('.profile'), edit_account_profile_path, class: 'dropdown-item'
               .dropdown-divider
-              li= link_to t('.sign_out'), session_path, method: :delete, class: 'dropdown-item'
+              li = link_to t('.sign_out'), session_path, method: :delete, class: 'dropdown-item'
         li.nav-item.d-flex.align-items-center
           = render 'layouts/shared/language_switcher'
