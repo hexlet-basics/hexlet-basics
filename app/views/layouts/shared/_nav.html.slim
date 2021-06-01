@@ -59,10 +59,10 @@ nav.navbar.navbar-light.navbar-expand-md.bg-white.shadow-sm
               i.bi.bi-person-circle
               / = current_user.email
             ul.dropdown-menu.dropdown-menu-end
-              li.dropdown-item.d-flex.align-items-center.disabled
+              li.dropdown-item-text.d-flex.align-items-center
                 .flex-shrink-0.me-2
                   = image_tag 'user-avatar.png', width: 50, height: 50, alt: 'User Avatar', class: 'rounded-circle'
-                .text-dark
+                .
                   .fw-bold= current_user.nickname
                   .= current_user.email
               .dropdown-divider
