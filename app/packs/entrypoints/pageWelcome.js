@@ -7,4 +7,3 @@ const typed = new Typed('.hero-header', {
   loop: true,
   smartBackspace: true, // Default value
 });
-console.log(typed);
