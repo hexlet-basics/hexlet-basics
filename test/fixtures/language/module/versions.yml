@@ -21,3 +21,9 @@ elixir-basics:
   language_version: elixir
   module: exliri-basics
   language: elixir
+
+ruby-basics:
+  order: 10
+  language_version: ruby
+  module: ruby-basics
+  language: ruby

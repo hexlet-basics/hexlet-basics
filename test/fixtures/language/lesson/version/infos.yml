@@ -60,3 +60,10 @@ elixir-strings-ru:
   language: elixir
   language_version: elixir
   version: elixir-strings
+
+ruby-hello-world-ru:
+  <<: *DEFAULTS
+  name: Привет Мир
+  language: ruby
+  language_version: ruby
+  version: ruby-hello-world

@@ -8,15 +8,13 @@ class LessonTester
     full_directory_path = File.join(code_directory, FileSystemUtils.directory_for_code(user))
     FileUtils.mkdir_p(full_directory_path)
 
-    full_exercise_file_path = File.join(full_directory_path, FileSystemUtils.file_name_for_exercise(language_version, language_version))
-    File.write(full_exercise_file_path, code || '')
+    created_code_file_path = File.join(full_directory_path, FileSystemUtils.file_name_for_exercise(language_version, language_version))
+    File.write(created_code_file_path, code || '')
     path_to_exersice_file = File.join(lesson_version.path_to_code, language_version.exercise_filename)
 
-    volume = "-v #{full_exercise_file_path}:#{path_to_exersice_file}"
-    command = "docker run --rm --net none #{volume} #{language_version.docker_image}:#{language_version.image_tag} timeout 4 make --silent -C #{lesson_version.path_to_code} test"
-
     output, process_status = docker_exercise_api.run_exercise(
-      volume: volume,
+      created_code_file_path: created_code_file_path,
+      path_to_exersice_file: path_to_exersice_file,
       docker_image: language_version.docker_image,
       image_tag: language_version.image_tag,
       path_to_code: lesson_version.path_to_code

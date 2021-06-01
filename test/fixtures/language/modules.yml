@@ -20,3 +20,7 @@ javascript:
 elixir-basics:
   <<: *DEFAULTS
   language: elixir
+
+ruby-basics:
+  <<: *DEFAULTS
+  language: ruby

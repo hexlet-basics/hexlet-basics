@@ -50,3 +50,8 @@ elixir-strings:
   <<: *DEFAULTS
   language: elixir
   module: elixir-basics
+
+ruby-hello-world:
+  <<: *DEFAULTS
+  language: ruby
+  module: ruby-basics

@@ -20,3 +20,6 @@ python:
 
 html:
   <<: *DEFAULTS
+
+ruby:
+  <<: *DEFAULTS
