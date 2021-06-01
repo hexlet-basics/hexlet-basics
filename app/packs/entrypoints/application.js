@@ -8,20 +8,24 @@
 import '../stylesheets/application.scss';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-// eslint-disable-next-line import/no-extraneous-dependencies
+/* eslint-disable import/no-extraneous-dependencies */
 import 'programming-languages-logos/src/javascript/javascript_512x512.png';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import 'programming-languages-logos/src/java/java_512x512.png';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import 'programming-languages-logos/src/php/php_512x512.png';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import 'programming-languages-logos/src/python/python_512x512.png';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import 'programming-languages-logos/src/ruby/ruby_512x512.png';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import 'programming-languages-logos/src/html/html_512x512.png';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import 'programming-languages-logos/src/css/css_512x512.png';
+import 'programming-languages-logos/src/go/go_512x512.png';
+import 'programming-languages-logos/src/javascript/javascript_32x32.png';
+import 'programming-languages-logos/src/java/java_32x32.png';
+import 'programming-languages-logos/src/php/php_32x32.png';
+import 'programming-languages-logos/src/python/python_32x32.png';
+import 'programming-languages-logos/src/ruby/ruby_32x32.png';
+import 'programming-languages-logos/src/html/html_32x32.png';
+import 'programming-languages-logos/src/css/css_32x32.png';
+import 'programming-languages-logos/src/go/go_32x32.png';
+/* eslint-enable import/no-extraneous-dependencies */
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
