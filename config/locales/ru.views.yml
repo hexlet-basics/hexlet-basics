@@ -10,13 +10,13 @@ ru:
     ruby: Ruby
     elixir: Elixir
     go: Go
+  language_icon: "Иконка %{language}"
   web:
     home:
       languages:
         ready_to_start: Начать
         started: Продолжить
         finished: Повторить
-        icon: "Иконка %{language}"
       stats:
         trusted_by: |
           Присоединись к %{count} изующих программирование с помощью Code Basics

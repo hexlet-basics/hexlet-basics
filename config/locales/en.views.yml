@@ -11,6 +11,7 @@ en:
     elixir: Elixir
     go: Go
     language_for_beginners: "%{language} for beginners"
+  language_icon: "%{language} icon"
   web:
     home:
       index:
@@ -25,7 +26,6 @@ en:
         ready_to_start: Start
         started: Continue
         finished: Revisit
-        icon: "%{language} icon"
     users:
       new:
         meta_description: Sign up on Code Basics
