@@ -10,7 +10,7 @@ Rollbar.configure do |config|
     accessToken: ENV['ROLLBAR_ACCESS_TOKEN'],
     captureUncaught: true,
     captureUnhandledRejections: true,
-    hostWhiteList: [configus.host],
+    hostSafeList: [configus.host],
     payload: {
       client: {
         # source_map_enabled: true,
