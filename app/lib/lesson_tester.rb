@@ -10,11 +10,11 @@ class LessonTester
 
     created_code_file_path = File.join(full_directory_path, FileSystemUtils.file_name_for_exercise(language_version, language_version))
     File.write(created_code_file_path, code || '')
-    path_to_exersice_file = File.join(lesson_version.path_to_code, language_version.exercise_filename)
+    exercise_file_path = File.join(lesson_version.path_to_code, language_version.exercise_filename)
 
     output, process_status = docker_exercise_api.run_exercise(
       created_code_file_path: created_code_file_path,
-      path_to_exersice_file: path_to_exersice_file,
+      exercise_file_path: exercise_file_path,
       docker_image: language_version.docker_image,
       image_tag: language_version.image_tag,
       path_to_code: lesson_version.path_to_code
