@@ -30,3 +30,10 @@ elixir-basics-ru:
   language: elixir
   version: elixir-basics
   language_version: elixir
+
+ruby-basics-ru:
+  <<: *DEFAULTS
+  locale: ru
+  language: ruby
+  version: ruby-basics
+  language_version: ruby

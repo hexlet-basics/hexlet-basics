@@ -16,7 +16,7 @@ class BashRunner
 
       yield $CHILD_STATUS.inspect if block_given? && !success?($CHILD_STATUS)
 
-      force_fail ? false : success?($CHILD_STATUS)
+      force_fail ? false : $CHILD_STATUS
     end
 
     def success?(child_status)

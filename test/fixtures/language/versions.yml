@@ -23,3 +23,8 @@ python:
 
 html:
   <<: *DEFAULTS
+
+ruby:
+  <<: *DEFAULTS
+  exercise_test_filename: 'test.rb'
+  extension: 'rb'
