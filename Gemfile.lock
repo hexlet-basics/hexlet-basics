@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/castwide/solargraph.git
-  revision: 4977304de12d18f038c4178d068a277df9fe984b
+  revision: 1bb8f6b2accedec85bb5e727ecb64aa5aa9713ec
   specs:
-    solargraph (0.40.5)
+    solargraph (0.41.1)
       backport (~> 1.1)
       benchmark
       bundler (>= 1.17.2)
@@ -118,7 +118,6 @@ GEM
     configus (0.0.5)
     connection_pool (2.2.5)
     crass (1.0.6)
-    date (3.1.0)
     declarative (0.0.20)
     declarative-builder (0.2.0)
       trailblazer-option (~> 0.1.0)
@@ -180,11 +179,10 @@ GEM
       concurrent-ruby (~> 1.0)
     i18n-debug (1.2.0)
       i18n (< 2)
-    io-wait (0.1.0)
     jaro_winkler (1.5.4)
     jbuilder (2.11.2)
       activesupport (>= 5.0.0)
-    js-routes (2.0.3)
+    js-routes (2.0.4)
       railties (>= 4)
     jwt (2.2.3)
     kaminari (1.2.1)
@@ -214,8 +212,7 @@ GEM
     marcel (1.0.1)
     method_source (1.0.0)
     mini_mime (1.0.3)
-    mini_portile2 (2.5.2)
-      net-ftp (~> 0.1)
+    mini_portile2 (2.5.3)
     minitest (5.14.4)
     minitest-power_assert (0.3.1)
       minitest
@@ -224,12 +221,6 @@ GEM
     multi_json (1.15.0)
     multi_xml (0.6.0)
     multipart-post (2.1.1)
-    net-ftp (0.1.2)
-      net-protocol
-      time
-    net-protocol (0.1.1)
-      io-wait
-      timeout
     nio4r (2.5.7)
     nokogiri (1.11.6)
       mini_portile2 (~> 2.5.0)
@@ -329,13 +320,13 @@ GEM
       nokogiri
     rexml (3.2.5)
     rollbar (3.2.0)
-    rubocop (1.15.0)
+    rubocop (1.16.0)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml
-      rubocop-ast (>= 1.5.0, < 2.0)
+      rubocop-ast (>= 1.7.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
     rubocop-ast (1.7.0)
@@ -391,9 +382,6 @@ GEM
       tins (~> 1.0)
     thor (1.1.0)
     tilt (2.0.10)
-    time (0.1.0)
-      date
-    timeout (0.1.1)
     tins (1.29.1)
       sync
     trailblazer-option (0.1.1)
