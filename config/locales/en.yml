@@ -31,3 +31,16 @@
 
 en:
   hello: "Hello world"
+  human_languages:
+    javascript: JavaScript
+    java: Java
+    php: PHP
+    python: Python
+    html: HTML
+    css: CSS
+    racket: Racket
+    ruby: Ruby
+    elixir: Elixir
+    go: Go
+    language_for_beginners: "%{language} for beginners"
+  language_icon: "%{language} icon"

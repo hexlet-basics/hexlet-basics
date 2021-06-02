@@ -1,22 +1,18 @@
 ru:
-  human_languages:
-    javascript: JavaScript
-    java: Java
-    php: PHP
-    python: Python
-    html: HTML
-    css: CSS
-    racket: Racket
-    ruby: Ruby
-    elixir: Elixir
-    go: Go
-  language_icon: "Иконка %{language}"
   web:
     home:
+      reviews:
+        reviews: Отзывы
+      hero:
+        learn_html: Изучи&nbsp;
+        free_programming_courses: Бесплатные курсы программирования
+        fastest_way_to_start_coding: Самый быстрый способ попробовать программирование прямо в браузере. Бесплатные курсы с тренажером. Практика после каждого урока
+        try: Попробовать
       languages:
         ready_to_start: Начать
         started: Продолжить
         finished: Повторить
+        courses: Курсы
       stats:
         trusted_by: |
           Присоединись к %{count} изующих программирование с помощью Code Basics
