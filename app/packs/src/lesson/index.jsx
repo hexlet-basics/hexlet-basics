@@ -42,7 +42,7 @@ export default async () => {
 
   const preloadedState = {
     editorSlice: {
-      content: gon.lesson.prepared_code || '',
+      content: gon.lesson_version.prepared_code || '',
       focusesCount: 1,
     },
     solutionSlice: {
