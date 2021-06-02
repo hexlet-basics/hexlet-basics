@@ -1,4 +1,5 @@
 = content_for :meta do
+  = structured_data_tag 'course', language: @language
   meta content='article' property='og:type'
   meta content=title property='og:title'
   meta content="#{language_url(@language.slug)}" property='og:url'
