@@ -32,6 +32,12 @@ module HexletBasics
 
     routes.default_url_options[:host] = "#{configus.protocol}://#{configus.host}"
 
+    # https://edgeguides.rubyonrails.org/configuring.html#configuring-action-dispatch
+    config.action_dispatch.default_headers = config.action_dispatch.default_headers.merge(
+      # https://yandex.ru/support/metrica/behavior/click-map.html#iframe
+      'X-FRAME-OPTIONS' => 'ALLOW-FROM http://webvisor.com'
+    )
+
     Rails.autoloaders.main.ignore(Rails.root.join('app/packs/*'))
   end
 end
