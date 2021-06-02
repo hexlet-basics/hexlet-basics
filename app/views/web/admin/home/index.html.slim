@@ -1,5 +1,5 @@
-h2 Dashboard
-table.table.table-striped.my-2
+h1 Dashboard
+table.table.my-2
   thead
     tr
       th Id
@@ -10,4 +10,4 @@ table.table.table-striped.my-2
       tr
         td = user.id
         td = user.email
-        td = l user.created_at
+        td = l user.created_at, format: :short
