@@ -21,6 +21,7 @@ export default {
     showSolution: 'Show solution',
     lesson: 'Lesson',
     discuss: 'Discussion',
+    guide: 'Guide',
     instructions: 'Instructions',
     nextLesson: 'Next Lesson',
     prevLesson: 'Previous Lesson',

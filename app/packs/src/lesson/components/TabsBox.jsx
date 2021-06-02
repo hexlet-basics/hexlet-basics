@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Tab, Nav } from 'react-bootstrap';
+import { Tab, Nav, Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { actions } from '../slices/index.js';
 import { currentTabValues } from '../utils/maps.js';
@@ -12,7 +12,7 @@ import Output from './Output.jsx';
 import Solution from './Solution.jsx';
 import TestForExercise from './TestForExercise.jsx';
 
-const TabsBox = () => {
+const TabsBox = ({ handleClickStart }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -36,6 +36,7 @@ const TabsBox = () => {
   // console.log(activeTab)
 
   return (
+    <>
     <Tab.Container id="tabs" activeKey={currentTab} onSelect={changeTab}>
       <Nav variant="tabs" className="justify-content-center flex-shrink-0">
         {Object.values(currentTabValues).map((tabName) => (
@@ -59,6 +60,8 @@ const TabsBox = () => {
         </Tab.Pane>
       </Tab.Content>
     </Tab.Container>
+    <Button onClick={handleClickStart} className="mr-3 d-inline-flex align-items-center btn btn-primary">Guide</Button>
+    </>
   );
 };
 

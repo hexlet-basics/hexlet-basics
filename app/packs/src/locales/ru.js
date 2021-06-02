@@ -22,6 +22,7 @@ export default {
     showSolution: 'Показать решение',
     lesson: 'Урок',
     discuss: 'Обсуждение',
+    guide: 'Инструкция',
     instructions: 'Инструкции',
     nextLesson: 'Следующий',
     prevLesson: 'Предыдущий',
