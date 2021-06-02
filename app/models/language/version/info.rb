@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Language::Version::Info < ApplicationRecord
   validates :description, presence: true
 

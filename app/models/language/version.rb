@@ -21,7 +21,7 @@ class Language::Version < ApplicationRecord
                           inverse_of: :language_version
 
   has_many :lessons, through: :lesson_versions
-  has_many :infos
+  has_many :infos, dependent: :destroy
 
   belongs_to :language
 
