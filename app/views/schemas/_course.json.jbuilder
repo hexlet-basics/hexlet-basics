@@ -3,7 +3,7 @@
 json.set! :@context, 'https://schema.org'
 json.set! :@type, 'Course'
 json.name language.name
-json.description t(".#{language}_description")
+json.description t("#{language}.description", scope: 'languages')
 json.accessMode 'textOnVisual'
 # json.commentCount messages_count
 json.url language_url(language.slug)
