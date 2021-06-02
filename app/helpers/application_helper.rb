@@ -24,4 +24,9 @@ module ApplicationHelper
       'active'
     end
   end
+
+  def structured_data_tag(path, args = {})
+    content = render partial: "schemas/#{path}", formats: [:json], locals: args
+    tag.script(content.html_safe)
+  end
 end

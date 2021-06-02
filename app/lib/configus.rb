@@ -5,6 +5,8 @@ Configus.build Rails.env do
   env :production do
     protocol :https
     host 'code-basics.com'
+    https_host 'https://ru.code-basics.com'
+    phone '+7 (495) 147-73-79'
 
     github do
       app_id ENV['GITHUB_CLIENT_ID']
