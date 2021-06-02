@@ -13,8 +13,10 @@ json.provider do
   json.partial! 'schemas/organization', format: [:json]
 end
 
-json.aggregateRating do
-  json.set! :@type, 'AggregateRating'
-  json.ratingValue "4.#{((language.members.finished.count / language.members.count) * 99).round}"
-  json.reviewCount language.members.finished.count
+if language.members.many?
+  json.aggregateRating do
+    json.set! :@type, 'AggregateRating'
+    json.ratingValue "4.#{((language.members.finished.count / language.members.count) * 99).round}"
+    json.reviewCount language.members.finished.count
+  end
 end
