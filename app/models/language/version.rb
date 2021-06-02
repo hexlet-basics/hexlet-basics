@@ -46,6 +46,11 @@ class Language::Version < ApplicationRecord
     name
   end
 
+  def to_json(*_args)
+    attrs = attributes.extract! 'id', 'name', 'created_at'
+    attrs.to_json
+  end
+
   def image_tag
     return "lv#{id}" if Rails.env.production?
 
