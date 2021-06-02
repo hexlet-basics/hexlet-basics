@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'pty'
-
+# rubocop:disable Style/SpecialGlobalVars
 class BashRunner
   class << self
     def start(command, force_fail: false)
@@ -14,9 +14,12 @@ class BashRunner
         Process.wait(pid)
       end
 
-      yield $CHILD_STATUS.inspect if block_given? && !success?($CHILD_STATUS)
+      # NOTE Test child status
+      status = $?
 
-      force_fail ? false : $CHILD_STATUS
+      yield status.inspect if block_given? && !success?(status)
+
+      force_fail ? false : status
     end
 
     def success?(child_status)
@@ -24,3 +27,4 @@ class BashRunner
     end
   end
 end
+# rubocop:enable Style/SpecialGlobalVars
