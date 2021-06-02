@@ -51,6 +51,7 @@ ru:
         register: Регистрация
     languages:
       show:
+        free_course: Бесплатный курс
         start: Начать обучение
         continue: Продолжить обучение
         start_demo_lesson: Демо урок

@@ -13,6 +13,7 @@
   .px-3.px-sm-5.py-4.py-sm-5.mb-4.bg-white.rounded-3.shadow-sm
     .row
       .col
+        .badge.border.text-dark.small = t('.free_course')
         h1.display-5.fw-bold = [t("human_languages.#{@language}"), @language.learn_as.text].join(' ')
         p.col-md-10.fs-5 = t(".#{@language}_description")
         .text-muted.lead.mb-5
