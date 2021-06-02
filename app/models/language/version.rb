@@ -19,7 +19,9 @@ class Language::Version < ApplicationRecord
                           foreign_key: :language_version_id,
                           class_name: 'Language::Module::Version::Info',
                           inverse_of: :language_version
+
   has_many :lessons, through: :lesson_versions
+  has_many :infos
 
   belongs_to :language
 
