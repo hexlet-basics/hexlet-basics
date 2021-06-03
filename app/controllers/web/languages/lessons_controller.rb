@@ -3,6 +3,7 @@
 class Web::Languages::LessonsController < Web::Languages::ApplicationController
   before_action :authenticate_user!, only: [:next_lesson]
   def show
+    # raise params[:controller].inspect
     @lesson = resource_language.lessons.find_by(slug: params[:id])
     unless @lesson
       f(:lesson_not_found, type: :info)
@@ -35,13 +36,13 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
 
     next_lesson = lesson_version.next_lesson
 
-    # NOTE Проверка в чем причина ошибка ActionDispatch::Cookies::CookieOverflow
+    # FIXME Проверка в чем причина ошибка ActionDispatch::Cookies::CookieOverflow
     js_event_options = {
-      user: current_user
+      user: current_user,
       # language: resource_language,
       # lesson: next_lesson,
-      # lessons_started: current_user.lesson_members.where(language: resource_language).count,
-      # lessons_finished: current_user.lesson_members.where(language: resource_language).finished.count
+      lessons_started: current_user.lesson_members.where(language: resource_language).count,
+      lessons_finished: current_user.lesson_members.where(language: resource_language).finished.count
     }
     js_event :next_lesson, js_event_options
 

@@ -4,8 +4,8 @@
   meta content="#{language_lesson_url(@lesson.language.slug, @lesson.slug)}" property='og:url'
   meta content="#{image_url("#{@lesson.language.slug}.png")}" property='og:image'
   link rel='canonical' href="#{language_lesson_url(@lesson.language.slug, @lesson.slug)}"
-  meta content= truncate("[#{t("human_languages.#{@resource_language}")}] — #{@info.name} — #{@info.theory}", length: 220) property='og:description'
-  meta content= truncate("[#{t("human_languages.#{@resource_language}")}] — #{@info.name} — #{@info.theory}", length: 200) name='description'
+  meta content= truncate("[#{t("human_languages.#{resource_language}")}] — #{@info.name} — #{@info.theory}", length: 220) property='og:description'
+  meta content= truncate("[#{t("human_languages.#{resource_language}")}] — #{@info.name} — #{@info.theory}", length: 200) name='description'
   meta content="#{I18n.locale}" property='og:locale'
 
 .row.pt-2.x-h-md-100.g-2
@@ -20,18 +20,24 @@
       .tab-content.overflow-hidden
         .tab-pane.fade.overflow-auto.x-h-md-100.active.show#lesson-tab(role="tabpanel")
           .card-body
-            / nav.my-3 aria-label=t('.breadcrumb')
-            /   ol.breadcrumb
-            /     li.breadcrumb-item
-            /       = link_to root_path, title: t('.to_home_title')
-            /         span.fas.fa-home.text-muted
-            /     li.breadcrumb-item
-            /       = link_to t("human_languages.#{@resource_language}"), language_path(@resource_language.slug), class: 'text-decoration-none text-muted'
-            /     li.breadcrumb-item.active aria-current="page"
-            /       = current_breadcrumb(@lesson_version, @info, @language_lessons_count)
+            nav.my-3 aria-label=t('.breadcrumb')
+              ol.breadcrumb itemscope="itemscope" itemtype="https://schema.org/BreadcrumbList"
+                li.breadcrumb-item itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem"
+                  = link_to root_path, title: t('.to_home_title'), itemprop: 'item' do
+                    span.bi.bi-house.text-muted itemprop="name"
+                    meta itemprop="position" content="1"
+                li.breadcrumb-item itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem"
+                  = link_to language_path(resource_language.slug), class: 'text-decoration-none text-muted' do
+                    span itemprop="name" = t("human_languages.#{resource_language}")
+                    meta itemprop="position" content="2"
+                li.breadcrumb-item.active itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem" aria-current="page"
+                  span itemprop="name"
+                    = current_breadcrumb(@lesson_version, @info, @language_lessons_count)
+                  meta itemprop="position" content="3"
+
             .hexlet-basics-content
               h1.h3.font-weight-bold
-                = "#{t("human_languages.#{@resource_language}")}: #{@info.name}"
+                = "#{t("human_languages.#{resource_language}")}: #{@info.name}"
               == markdown2html(@info.theory)
               - if @info.instructions
                 h2.h4.font-weight-bold = t('.instructions')

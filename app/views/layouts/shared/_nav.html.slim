@@ -1,73 +1,72 @@
-nav.navbar.navbar-light.navbar-expand-md.bg-white.shadow-sm
-  .container-fluid
-    a.navbar-brand(href='/')
+.container
+  .d-flex.flex-wrap.justify-content-center.py-3.mb-4.border-bottom
+    a.navbar-brand.me-auto(href='/')
       = image_tag 'logo.png', width: 30, alt: 'Code Basics logo'
 
-    button.navbar-toggler(
-      type='button' data-bs-toggle='collapse'
-      data-bs-target='#navbarToggler' aria-controls='navbarToggler'
-      aria-expanded='false' aria-label=t('.toggle_navigation')
-    )
-      span.navbar-togglerlanguage_icon
+    / button.navbar-toggler(
+    /   type='button' data-bs-toggle='collapse'
+    /   data-bs-target='#navbarToggler' aria-controls='navbarToggler'
+    /   aria-expanded='false' aria-label=t('.toggle_navigation')
+    / )
+    /   span.navbar-togglerlanguage_icon
 
-    #navbarToggler.collapse.navbar-collapse
-      ul.navbar-nav.me-auto
-        li.nav-item.dropdown
-          a#dropdownMenuLink.nav-link.dropdown-toggle href='#' data-bs-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='false'
-            = t('.change_course')
-          ul.dropdown-menu.dropdown-menu-columns.dropdown-menu-arrow aria-labelledby='dropdownMenuLink'
-            = link_to language_path('php'), class: 'dropdown-item d-flex align-items-center py-2'
-              = image_pack_tag('php_32x32.png', alt: t('language_icon', language: t('human_languages.php')), width: 16, height: 16, class: 'me-3')
-              span = t('human_languages.php')
-            = link_to language_path('javascript'), class: 'dropdown-item d-flex align-items-center py-2'
-              = image_pack_tag('javascript_32x32.png', alt: t('language_icon', language: t('human_languages.javascript')), width: 16, height: 16, class: 'me-3')
-              span = t('human_languages.javascript')
-            = link_to language_path('python'), class: 'dropdown-item d-flex align-items-center py-2'
-              = image_pack_tag('python_32x32.png', alt: t('language_icon', language: t('human_languages.python')), width: 16, height: 16, class: 'me-3')
-              span = t('human_languages.python')
-            = link_to language_path('java'), class: 'dropdown-item d-flex align-items-center py-2'
-              = image_pack_tag('java_32x32.png', alt: t('language_icon', language: t('human_languages.java')), width: 16, height: 16, class: 'me-3')
-              span = t('human_languages.java')
-            = link_to language_path('html'), class: 'dropdown-item d-flex align-items-center py-2'
-              = image_pack_tag('html_32x32.png', alt: t('language_icon', language: t('human_languages.html')), width: 16, height: 16, class: 'me-3')
-              span = t('human_languages.html')
-            = link_to language_path('css'), class: 'dropdown-item d-flex align-items-center py-2'
-              = image_pack_tag('css_32x32.png', alt: t('language_icon', language: t('human_languages.css')), width: 16, height: 16, class: 'me-3')
-              span = t('human_languages.css')
-            = link_to language_path('racket'), class: 'dropdown-item d-flex align-items-center py-2'
-              span.bi.bi-code.me-3
-              span = t('human_languages.racket')
-            = link_to language_path('ruby'), class: 'dropdown-item d-flex align-items-center py-2'
-              = image_pack_tag('ruby_32x32.png', alt: t('language_icon', language: t('human_languages.ruby')), width: 16, height: 16, class: 'me-3')
-              span = t('human_languages.ruby')
-            = link_to language_path('elixir'), class: 'dropdown-item d-flex align-items-center py-2'
-              span.bi.bi-code.me-3
-              span = t('human_languages.elixir')
-            = link_to language_path('go'), class: 'dropdown-item d-flex align-items-center py-2'
-              = image_pack_tag('go_32x32.png', alt: t('language_icon', language: t('human_languages.go')), width: 16, height: 16, class: 'me-3')
-              span = t('human_languages.go')
-        = nav_menu_item t('.community'), ExternalLinks.hexlet_slack, target: '_blank'
+    / #navbarToggler.collapse.navbar-collapse
+    ul.nav.nav-pills
+      / li.nav-item.dropdown
+        / a#dropdownMenuLink.nav-link.text-dark.dropdown-toggle href='#' data-bs-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='false'
+      = nav_menu_item t('.change_course'), '#', class: 'dropdown-toggle', role: 'button', 'data-bs-toggle' => 'dropdown' do
+        ul.dropdown-menu.dropdown-menu-columns.dropdown-menu-arrow
+          = link_to language_path('php'), class: 'dropdown-item d-flex align-items-center py-2'
+            = image_pack_tag('php_32x32.png', alt: t('language_icon', language: t('human_languages.php')), width: 16, height: 16, class: 'me-3')
+            span = t('human_languages.php')
+          = link_to language_path('javascript'), class: 'dropdown-item d-flex align-items-center py-2'
+            = image_pack_tag('javascript_32x32.png', alt: t('language_icon', language: t('human_languages.javascript')), width: 16, height: 16, class: 'me-3')
+            span = t('human_languages.javascript')
+          = link_to language_path('python'), class: 'dropdown-item d-flex align-items-center py-2'
+            = image_pack_tag('python_32x32.png', alt: t('language_icon', language: t('human_languages.python')), width: 16, height: 16, class: 'me-3')
+            span = t('human_languages.python')
+          = link_to language_path('java'), class: 'dropdown-item d-flex align-items-center py-2'
+            = image_pack_tag('java_32x32.png', alt: t('language_icon', language: t('human_languages.java')), width: 16, height: 16, class: 'me-3')
+            span = t('human_languages.java')
+          = link_to language_path('html'), class: 'dropdown-item d-flex align-items-center py-2'
+            = image_pack_tag('html_32x32.png', alt: t('language_icon', language: t('human_languages.html')), width: 16, height: 16, class: 'me-3')
+            span = t('human_languages.html')
+          = link_to language_path('css'), class: 'dropdown-item d-flex align-items-center py-2'
+            = image_pack_tag('css_32x32.png', alt: t('language_icon', language: t('human_languages.css')), width: 16, height: 16, class: 'me-3')
+            span = t('human_languages.css')
+          = link_to language_path('racket'), class: 'dropdown-item d-flex align-items-center py-2'
+            span.bi.bi-code.me-3
+            span = t('human_languages.racket')
+          = link_to language_path('ruby'), class: 'dropdown-item d-flex align-items-center py-2'
+            = image_pack_tag('ruby_32x32.png', alt: t('language_icon', language: t('human_languages.ruby')), width: 16, height: 16, class: 'me-3')
+            span = t('human_languages.ruby')
+          = link_to language_path('elixir'), class: 'dropdown-item d-flex align-items-center py-2'
+            span.bi.bi-code.me-3
+            span = t('human_languages.elixir')
+          = link_to language_path('go'), class: 'dropdown-item d-flex align-items-center py-2'
+            = image_pack_tag('go_32x32.png', alt: t('language_icon', language: t('human_languages.go')), width: 16, height: 16, class: 'me-3')
+            span = t('human_languages.go')
+      / = nav_menu_item t('.community'), ExternalLinks.hexlet_slack, target: '_blank'
 
-      ul.navbar-nav
-        - if current_user.guest?
-          = nav_menu_item t('.sign_in'), new_session_path
-          .me-3
-            = nav_menu_item t('.registration'), new_user_path
-        - else
-          li.nav-item.dropdown.me-2
-            a.nav-link.dropdown-toggle href='#' data-bs-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='false'
-              i.bi.bi-person-circle
-              / = current_user.email
-            ul.dropdown-menu.dropdown-menu-end
-              li.dropdown-item-text.d-flex.align-items-center
-                .flex-shrink-0.me-2
-                  = image_tag 'user-avatar.png', width: 50, height: 50, alt: 'User Avatar', class: 'rounded-circle'
-                .
-                  .fw-bold = current_user.nickname
-                  . = current_user.email
-              .dropdown-divider
-              li = link_to t('.profile'), edit_account_profile_path, class: 'dropdown-item'
-              .dropdown-divider
-              li = link_to t('.sign_out'), session_path, method: :delete, class: 'dropdown-item'
-        li.nav-item.d-flex.align-items-center
-          = render 'layouts/shared/language_switcher'
+      - if current_user.guest?
+        = nav_menu_item t('.sign_in'), new_session_path
+        .me-3
+          = nav_menu_item t('.registration'), new_user_path
+      - else
+        li.nav-item.dropdown.me-2
+          a.nav-link.dropdown-toggle href='#' data-bs-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='false'
+            i.bi.bi-person-circle
+            / = current_user.email
+          ul.dropdown-menu.dropdown-menu-end
+            li.dropdown-item-text.d-flex.align-items-center
+              .flex-shrink-0.me-2
+                = image_tag 'user-avatar.png', width: 50, height: 50, alt: 'User Avatar', class: 'rounded-circle'
+              .
+                .fw-bold = current_user.nickname
+                . = current_user.email
+            .dropdown-divider
+            li = link_to t('.profile'), edit_account_profile_path, class: 'dropdown-item'
+            .dropdown-divider
+            li = link_to t('.sign_out'), session_path, method: :delete, class: 'dropdown-item'
+      li.nav-item.d-flex.align-items-center
+        = render 'layouts/shared/language_switcher'
