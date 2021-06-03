@@ -5,7 +5,7 @@ footer.bg-dark.text-light.mt-5
         p = t('.hexlet_address')
         = phone_to configus.phone, nil, class: 'text-light text-decoration-none'
         p = t('.hexlet_number')
-        a.text-light(href="mailto:#{ExternalLinks.hexlet_support_mail}") = ExternalLinks.hexlet_support_mail
+        = mail_to ExternalLinks.hexlet_support_mail, nil, class: 'text-light'
 
       .col.mb-4.mb-lg-0
         ul.list-unstyled.lh-lg
