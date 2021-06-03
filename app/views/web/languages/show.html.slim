@@ -9,59 +9,60 @@
   meta content=t("languages.#{@language}.description") name='description'
   meta content="#{I18n.locale}" property='og:locale'
 
-.container.mt-5
-  .px-3.px-sm-5.py-4.py-sm-5.mb-4.bg-white.rounded-3.shadow-sm
-    .row
-      .col
-        .badge.border.text-dark.small = t('.free_course')
-        h1.display-5.fw-bold = [t("human_languages.#{@language}"), @language.learn_as.text].join(' ')
-        p.col-md-10.fs-5 = t(".#{@language}_description")
-        .text-muted.lead.mb-5
-          span.text-nowrap.me-4
-            i.bi.bi-clock.me-2
-            = t('hours', count: @language.duration)
-            / i.bi.bi-bar-chart jopa
-          span.text-nowrap
-            i.bi.bi-people.me-2
-            = @language.members.size
+.mt-sm-5.mb-5.pb-5
+  .container
+    .px-3.px-sm-5.py-4.py-sm-5.mb-4.bg-white.rounded-3.shadow-sm.border
+      .row
+        .col
+          .badge.border.text-dark.small = t('.free_course')
+          h1.display-5.fw-bold = [t("human_languages.#{@language}"), @language.learn_as.text].join(' ')
+          p.col-md-10.fs-5 = t(".#{@language}_description")
+          .text-muted.lead.mb-5
+            span.text-nowrap.me-4
+              i.bi.bi-clock.me-2
+              = t('hours', count: @language.duration)
+              / i.bi.bi-bar-chart jopa
+            span.text-nowrap
+              i.bi.bi-people.me-2
+              = @language.members.size
 
-        - if @language_member.finished?
-          -# чето сказать
-        - elsif @first_lesson == @next_lesson
-          = link_to t('.start'), language_lesson_path(@language.slug, @first_lesson.slug), class: 'btn btn-lg btn-primary px-4 mb-3 mt-2'
-        - else
-          = link_to t('.continue'), language_lesson_path(@language.slug, @next_lesson.slug), class: 'btn btn-lg btn-success px-4 mb-3 mt-2'
-      .d-none.d-md-block.col-4
-        -# FIXME нужно добыть картинки
-        = image_pack_tag("#{@language.slug}_512x512.png", class: "img-fluid", alt: @language) rescue nil
+          - if @language_member.finished?
+            -# чето сказать
+          - elsif @first_lesson == @next_lesson
+            = link_to t('.start'), language_lesson_path(@language.slug, @first_lesson.slug), class: 'btn btn-lg btn-primary px-4 mb-3 mt-2'
+          - else
+            = link_to t('.continue'), language_lesson_path(@language.slug, @next_lesson.slug), class: 'btn btn-lg btn-success px-4 mb-3 mt-2'
+        .d-none.d-md-block.col-4
+          -# FIXME нужно добыть картинки
+          = image_pack_tag("#{@language.slug}_512x512.png", class: "img-fluid", alt: @language) rescue nil
 
-  .
-    - if @language_member.finished?
-      .mt-5
-        = render 'complete_language'
-    - @current_module_versions.each do |module_version|
-      - let @infos_by_module[module_version.id] do |module_info|
-        .row.mt-5
-          .col-12
-            h2.h4 = module_info
-        .row
-          .col-12.col-md-6.mt-4
-            ul.list-group
-              - module_version.lesson_versions.each do |lesson_version|
-                - let @finished_lessons_by_id[lesson_version.lesson_id] do |finished_lesson|
-                  li.list-group-item.d-flex.p-3
-                    = link_to "#{lesson_version.natural_order}. #{@infos_by_lesson[lesson_version.id]}", language_lesson_path(@language.slug, lesson_version.lesson.slug), class: 'stretched-link text-decoration-none'
-                    - if finished_lesson
-                      .ms-auto
-                        span.text-primary.bi.bi-check-lg
-          .col-12.col-md-6.mt-4
-            = module_info.description
+    .
+      - if @language_member.finished?
+        .mt-5
+          = render 'complete_language'
+      - @current_module_versions.each do |module_version|
+        - let @infos_by_module[module_version.id] do |module_info|
+          .row.mt-5
+            .col-12
+              h2.h4 = module_info
+          .row
+            .col-12.col-md-6.mt-4
+              ul.list-group
+                - module_version.lesson_versions.each do |lesson_version|
+                  - let @finished_lessons_by_id[lesson_version.lesson_id] do |finished_lesson|
+                    li.list-group-item.d-flex.p-3
+                      = link_to "#{lesson_version.natural_order}. #{@infos_by_lesson[lesson_version.id]}", language_lesson_path(@language.slug, lesson_version.lesson.slug), class: 'stretched-link text-decoration-none'
+                      - if finished_lesson
+                        .ms-auto
+                          span.text-primary.bi.bi-check-lg
+            .col-12.col-md-6.mt-4
+              = module_info.description
 
-    - if !signed_in?
-      .card.shadow-sm.border-0.mt-5.py-3.py-md-5.px-3
-       .card-body.row
-          .col-sm-12.col-md-auto.mb-3
-            .display-6.fw-bold = t('.ready')
-            .fs-4.fw-bold.text-primary = t('.no_registration')
-          .col.my-auto.text-md-end
-            = link_to t('.start_demo_lesson'), language_lesson_path(@language.slug, @first_lesson.slug), class: 'btn btn-outline-primary btn-lg'
+      - if !signed_in?
+        .card.shadow-sm.border-0.mt-5.py-3.py-md-5.px-3
+         .card-body.row
+            .col-sm-12.col-md-auto.mb-3
+              .display-6.fw-bold = t('.ready')
+              .fs-4.fw-bold.text-primary = t('.no_registration')
+            .col.my-auto.text-md-end
+              = link_to t('.start_demo_lesson'), language_lesson_path(@language.slug, @first_lesson.slug), class: 'btn btn-outline-primary btn-lg'
