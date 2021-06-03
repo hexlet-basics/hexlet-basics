@@ -11,11 +11,14 @@
 .mt-sm-5.mb-5.pb-5
   = render 'hero'
 
-.mb-5
+.mb-5.pb-5
   = render partial: 'languages', locals: { languages: @languages_completed, language_members_by_language: @language_members_by_language, language_member_fake: @language_member_fake }
 
-.mb-5
+.mb-5.pb-5
   = render 'reviews'
+
+.mb-5
+  = render partial: 'web/shared/faq', object: t('faq.main')
 
 / .mb-5
 /   = render 'stats'
