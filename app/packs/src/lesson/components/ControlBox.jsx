@@ -19,6 +19,25 @@ import { actions } from '../slices/index.js';
 import { checkInfoStates } from '../utils/maps.js';
 import EntityContext from '../EntityContext.js';
 
+const ShowGuideButton = () => {
+  const dispatch = useDispatch();
+  const guideShow = () => {
+    dispatch(actions.showGuide({ isShowGuide: true }));
+  };
+  return (
+    <button
+      type="button"
+      className="btn btn-outline-secondary btn-sm text-nowrap"
+      onClick={guideShow}
+      data-toggle="tooltip"
+      data-placement="top"
+      title="Show guide"
+    >
+      Show guide
+    </button>
+  );
+};
+
 const ControlBox = () => {
   const { t } = useTranslation();
   const { checkInfo, lessonInfo, editor } = useSelector((state) => ({
@@ -71,7 +90,7 @@ const ControlBox = () => {
   const prevButtonClasses = cn(`btn btn-outline-secondary
     font-weight-normal mr-3 order-first order-sm-0 order-md-first order-lg-0`);
 
-  const nextButtonClasses = cn('btn btn-outline-primary font-weight-normal', {
+  const nextButtonClasses = cn('btn btn-outline-primary font-weight-normal mr-3', {
     disabled: !lessonInfo.finished,
   });
 
@@ -86,10 +105,11 @@ const ControlBox = () => {
           className="mr-3 d-inline-flex align-items-center"
           onClick={handleReset}
           title={t('resetCode')}
+          data-guide-id="resetCode"
         >
           <FontAwesomeIcon icon={faSyncAlt} />
         </Button>
-        <a className={prevButtonClasses} href={prevLessonPath}>
+        <a className={prevButtonClasses} href={prevLessonPath} data-guide-id="prevButton">
           <FontAwesomeIcon className="d-sm-none d-md-block d-lg-none" icon={faArrowLeft} />
           <span className="d-none d-sm-block d-md-none d-lg-block">{t('prevLesson')}</span>
         </a>
@@ -98,13 +118,15 @@ const ControlBox = () => {
           className="mr-3 d-inline-flex align-items-center"
           onClick={handleRunCheck}
           disabled={isCodeChecking}
+          data-guide-id="checkCode"
         >
           {renderRunButtonContent()}
         </Button>
-        <a className={nextButtonClasses} href={nextLessonPath}>
+        <a className={nextButtonClasses} href={nextLessonPath} data-guide-id="nextButton">
           <FontAwesomeIcon className="d-sm-none d-md-block d-lg-none" icon={faArrowRight} />
           <span className="d-none d-sm-block d-md-none d-lg-block">{t('nextLesson')}</span>
         </a>
+        <ShowGuideButton />
       </div>
     </Hotkeys>
   );

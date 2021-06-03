@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Tab, Nav, Button } from 'react-bootstrap';
+import { Tab, Nav } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { actions } from '../slices/index.js';
 import { currentTabValues } from '../utils/maps.js';
@@ -12,7 +12,7 @@ import Output from './Output.jsx';
 import Solution from './Solution.jsx';
 import TestForExercise from './TestForExercise.jsx';
 
-const TabsBox = ({ handleClickStart }) => {
+const TabsBox = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -36,12 +36,18 @@ const TabsBox = ({ handleClickStart }) => {
   // console.log(activeTab)
 
   return (
-    <>
     <Tab.Container id="tabs" activeKey={currentTab} onSelect={changeTab}>
       <Nav variant="tabs" className="justify-content-center flex-shrink-0">
         {Object.values(currentTabValues).map((tabName) => (
           <Nav.Item key={tabName}>
-            <Nav.Link href={`#${tabName}`} className="rounded-0" eventKey={tabName}>{t(tabName)}</Nav.Link>
+            <Nav.Link
+              href={`#${tabName}`}
+              className="rounded-0"
+              data-guide-id={tabName}
+              eventKey={tabName}
+            >
+              {t(tabName)}
+            </Nav.Link>
           </Nav.Item>
         ))}
       </Nav>
@@ -60,8 +66,6 @@ const TabsBox = ({ handleClickStart }) => {
         </Tab.Pane>
       </Tab.Content>
     </Tab.Container>
-    <Button onClick={handleClickStart} className="mr-3 d-inline-flex align-items-center btn btn-primary">Guide</Button>
-    </>
   );
 };
 
