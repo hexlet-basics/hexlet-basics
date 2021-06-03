@@ -24,10 +24,11 @@
               ol.breadcrumb itemscope="itemscope" itemtype="https://schema.org/BreadcrumbList"
                 li.breadcrumb-item itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem"
                   = link_to root_path, title: t('.to_home_title'), itemprop: 'item' do
-                    span.bi.bi-house.text-muted itemprop="name"
+                    span.bi.bi-house.text-muted
                     meta itemprop="position" content="1"
+                    meta itemprop="name" content="CodeBasics"
                 li.breadcrumb-item itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem"
-                  = link_to language_path(resource_language.slug), class: 'text-decoration-none text-muted' do
+                  = link_to language_path(resource_language.slug), itemprop: 'item', class: 'text-decoration-none text-muted' do
                     span itemprop="name" = t("human_languages.#{resource_language}")
                     meta itemprop="position" content="2"
                 li.breadcrumb-item.active itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem" aria-current="page"
