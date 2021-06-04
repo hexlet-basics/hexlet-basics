@@ -35,6 +35,7 @@
     "react-fast-highlight": "^4.1.0",
     "react-frame-component": "^5.0.0",
     "react-hotkeys-hook": "^3.3.1",
+    "react-joyride": "^2.3.0",
     "react-i18next": "^11.9.0",
     "react-redux": "^7.2.4",
     "regenerator-runtime": "^0.13.7",
