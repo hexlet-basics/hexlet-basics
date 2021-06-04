@@ -18,6 +18,9 @@ en:
         ready_to_start: Start
         started: Continue
         finished: Revisit
+        courses: Courses
+      reviews:
+        reviews: Reviews
     users:
       new:
         meta_description: Sign up on Code Basics
