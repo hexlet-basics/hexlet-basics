@@ -1,0 +1,25 @@
+.container
+  .mb-5
+    h2 = t('.reviews')
+    hr.mb-5
+  .row.g-4.row-cols-1.row-cols-sm-2.row-cols-lg-3
+    .col
+      .d-flex.mb-3
+        = image_tag asset_url('avdoshkin.jpg'), class: 'rounded-circle flex-shrink-0', width: 50, height: 50, alt: 'avatar of Aleksandr Avdoshkin'
+        .ms-3
+          .fw-bold Aleksandr Avdoshkin
+          | Tech Support Engineer
+      .fst-italic "If it wasn't for Coronavirus, I would have learned everything quicker (meaning that I would have done several lessons a day). I am learning from scratch and, as a newbie, I can say that your platform is really newbie-oriented. Many thanks to you!"
+    .col
+      .d-flex.mb-3
+        = image_tag asset_url('tyrin.jpg'), class: 'rounded-circle flex-shrink-0', width: 50, height: 50, alt: 'avatar of  Sergei Tyurin'
+        .ms-3
+          .fw-bold Sergei Tyurin
+          | System Administrator, MES of Russia
+      .fst-italic "Everything is apprehensible even for a neophyte like myself. Basic JS course fit into my stiff mind just like a piece of a puzzle. Now I give a link to this page to everyone."
+    .col
+      .d-flex.mb-3
+        = image_tag asset_url('user-avatar.png'), class: 'rounded-circle flex-shrink-0', width: 50, height: 50, alt: 'avatar of Eliyah Kleyman'
+        .ms-3
+          .fw-bold Eliyah Kleyman
+      .fst-italic "This is my first entry level course. I like how all the information is structured and is given incrementally in an hierarchical manner. This is really helpful and motivates me to learn."
