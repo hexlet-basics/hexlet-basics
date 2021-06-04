@@ -63,6 +63,7 @@ resource "kubernetes_secret" "hexlet_basics_secrets" {
   data = {
     SECRET_KEY_BASE      = var.secret_key_base
     ROLLBAR_ACCESS_TOKEN = var.rollbar_access_token
+    ROLLBAR_CLIENT_ACCESS_TOKEN = var.rollbar_client_access_token
   }
 }
 
