@@ -22,6 +22,6 @@ module EventConcern
 
   def fire_js_events
     session[:fired_events] ||= {}
-    gon.fired_events = session[:fired_events]
+    gon.push({ fired_events: session[:fired_events] })
   end
 end
