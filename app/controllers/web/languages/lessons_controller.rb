@@ -34,13 +34,15 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     lesson = resource_language.lessons.find_by!(slug: params[:id])
     lesson_version = resource_language.current_lesson_versions.find_by!(lesson: lesson)
 
+    language_member = current_user.language_members.find_by! language: resource_language
+
     next_lesson = lesson_version.next_lesson
 
-    # FIXME Проверка в чем причина ошибка ActionDispatch::Cookies::CookieOverflow
     js_event_options = {
       user: current_user,
-      language: resource_language,
-      # lesson: next_lesson,
+      language: resource_language.to_hash,
+      lesson: next_lesson.to_hash,
+      language_member: language_member.to_hash,
       lessons_started: current_user.lesson_members.where(language: resource_language).count,
       lessons_finished: current_user.lesson_members.where(language: resource_language).finished.count
     }

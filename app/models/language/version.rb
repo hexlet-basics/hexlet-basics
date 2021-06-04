@@ -48,9 +48,9 @@ class Language::Version < ApplicationRecord
     name
   end
 
-  def to_json(*_args)
+  def to_hash(*_args)
     attrs = attributes.extract! 'id', 'name', 'created_at'
-    attrs.to_json
+    attrs.to_hash
   end
 
   def image_tag

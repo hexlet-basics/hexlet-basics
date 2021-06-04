@@ -6,3 +6,7 @@ full_elixir:
   language: elixir
   user: full
   state: :finished
+
+full_javascript:
+  language: javascript
+  user: full

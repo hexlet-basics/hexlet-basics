@@ -33,8 +33,8 @@ class Language::Lesson < ApplicationRecord
     slug
   end
 
-  def to_json(*_args)
+  def to_hash(*_args)
     attrs = attributes.extract! 'id', 'slug', 'created_at'
-    attrs.to_json
+    attrs.to_hash
   end
 end
