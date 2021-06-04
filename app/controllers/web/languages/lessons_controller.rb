@@ -38,6 +38,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
 
     next_lesson = lesson_version.next_lesson
 
+    # TODO Добавить сериализацию language, lesson, language_member
     js_event_options = {
       user: current_user,
       language: resource_language.to_hash,
