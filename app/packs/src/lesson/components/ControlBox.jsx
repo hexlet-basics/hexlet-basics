@@ -20,6 +20,25 @@ import { actions } from '../slices/index.js';
 import { checkInfoStates } from '../utils/maps.js';
 import EntityContext from '../EntityContext.js';
 
+const ShowGuideButton = () => {
+  const dispatch = useDispatch();
+  const guideShow = () => {
+    dispatch(actions.showGuide({ isShowGuide: true }));
+  };
+  return (
+    <button
+      type="button"
+      className="btn btn-outline-secondary btn-sm text-nowrap"
+      onClick={guideShow}
+      data-toggle="tooltip"
+      data-placement="top"
+      title="Show guide"
+    >
+      Show guide
+    </button>
+  );
+};
+
 const ControlBox = () => {
   const { t } = useTranslation();
   const { checkInfo, lessonInfo, editor } = useSelector((state) => ({
@@ -73,7 +92,7 @@ const ControlBox = () => {
   const prevButtonClasses = cn(`btn btn-outline-secondary
     font-weight-normal me-3 order-first order-sm-0 order-md-first order-lg-0`);
 
-  const nextButtonClasses = cn('btn btn-outline-primary font-weight-normal', {
+  const nextButtonClasses = cn('btn btn-outline-primary font-weight-normal mr-3', {
     disabled: !lessonInfo.finished,
   });
 
@@ -109,6 +128,7 @@ const ControlBox = () => {
         <span className="bi bi-arrow-right-short d-sm-none d-md-block d-lg-none" />
         <span className="d-none d-sm-block d-md-none d-lg-block">{t('nextLesson')}</span>
       </a>
+      <ShowGuideButton />
     </div>
   );
 };

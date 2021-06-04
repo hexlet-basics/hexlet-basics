@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 
 import TabsBox from './TabsBox.jsx';
 import ControlBox from './ControlBox.jsx';
+import GuideWidget from './GuideWidget.jsx';
 import HTMLPreview from './HTMLPreview.jsx';
 import { currentTabValues } from '../utils/maps.js';
 import { neededPreview } from '../utils/languagesUtils.js';
@@ -30,6 +31,7 @@ const App = () => {
       <TabsBox />
       {renderHtmlPreview()}
       <ControlBox />
+      <GuideWidget />
     </div>
   );
 };

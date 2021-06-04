@@ -10,10 +10,14 @@ const slice = createSlice({
   initialState: {
     content: '',
     focusesCount: 1,
+    isShowGuide: false,
   },
   reducers: {
     changeContent(state, { payload }) {
       state.content = payload.content;
+    },
+    showGuide: (state, { payload }) => {
+      Object.assign(state, payload);
     },
   },
   extraReducers: (builder) => {

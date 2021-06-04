@@ -43,6 +43,7 @@ const TabsBox = () => {
             <Nav.Link
               href={`#${tabName}`}
               className="border-top-0 text-muted rounded-0"
+              data-guide-id={tabName}
               eventKey={tabName}
             >
               {t(tabName)}
