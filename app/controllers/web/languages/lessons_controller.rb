@@ -42,7 +42,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     js_event_options = {
       user: current_user,
       language: resource_language.to_hash,
-      lesson: next_lesson.to_hash,
+      lesson: next_lesson&.to_hash,
       language_member: language_member.to_hash,
       lessons_started: current_user.lesson_members.where(language: resource_language).count,
       lessons_finished: current_user.lesson_members.where(language: resource_language).finished.count
