@@ -13,7 +13,7 @@ class SignInForm < ApplicationForm
   end
 
   def user_exists
-    errors.add(:email, :user_does_not_exist) if email.present? && !user
+    errors.add(:email, :user_does_not_exist_html) if email.present? && !user
   end
 
   def user

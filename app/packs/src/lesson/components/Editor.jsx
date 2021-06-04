@@ -2,7 +2,7 @@
 
 import React, { useContext, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { UnControlled as CodeMirrorEditor } from 'react-codemirror2';
+import { UnControlled as CodeMirror } from 'react-codemirror2';
 import { useLocalStorage } from '@rehooks/local-storage';
 import { actions } from '../slices/index.js';
 import { getLanguageForEditor, getTabSize } from '../utils/editorUtils.js';
@@ -24,7 +24,7 @@ import 'codemirror/mode/php/php.js';
 import 'codemirror/mode/sass/sass.js';
 import 'codemirror/mode/pug/pug.js';
 import 'codemirror/mode/clike/clike.js';
-import 'codemirror/mode/go/go';
+import 'codemirror/mode/go/go.js';
 import 'codemirror-mode-elixir';
 
 import 'codemirror/lib/codemirror.css';
@@ -65,11 +65,6 @@ const Editor = () => {
   const localStorageKey = `lesson-version-${lessonVersion.id}`;
   const [localStorageContent, setContent] = useLocalStorage(localStorageKey);
 
-  const onContentChange = (_editor, _data, newContent) => {
-    setContent(newContent);
-    dispatch(actions.changeContent({ content: newContent }));
-  };
-
   useEffect(() => {
     editor?.focus();
   }, [editor, focusesCount]);
@@ -78,16 +73,14 @@ const Editor = () => {
     setEditor(self);
     self.focus();
     self.refresh();
-    // self.setOption('extraKeys', {
-    //   'Ctrl-Enter': () => {
-    //     if (lessonMember.id) {
-    //       dispatch(actions.runCheck({ lessonVersion, editor: { content: self.getValue() } }));
-    //     }
-    //   },
-    // });
     if (localStorageContent) {
       self.getDoc().setValue(localStorageContent);
     }
+  };
+
+  const onContentChange = (_editor, _data, newContent) => {
+    setContent(newContent);
+    dispatch(actions.changeContent({ content: newContent }));
   };
 
   const replaceTab = (cm) => {
@@ -97,20 +90,24 @@ const Editor = () => {
   };
 
   const options = {
+    autofocus: true,
     ...commonOptions,
     mode: getLanguageForEditor(language),
     indentUnit: getTabSize(language),
     extraKeys: {
       Tab: replaceTab,
+      'Ctrl-Enter': () => {
+        dispatch(actions.runCheck({ lessonVersion, editor: content }));
+      },
     },
   };
 
   return (
-    <CodeMirrorEditor
+    <CodeMirror
       value={content}
       options={options}
-      detach
       onChange={onContentChange}
+      detach
       editorDidMount={onMount}
       className="w-100 h-100"
     />

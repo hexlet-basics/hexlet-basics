@@ -15,6 +15,11 @@ class Language::Member < ApplicationRecord
     end
   end
 
+  def to_hash(*_args)
+    attrs = attributes.extract! 'id', 'state', 'created_at'
+    attrs.to_hash
+  end
+
   def all_lessons_finished?
     not_finished_lessons = user.not_finished_lessons_for_language(language)
 

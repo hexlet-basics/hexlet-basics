@@ -1,18 +1,11 @@
 en:
-  human_languages:
-    javascript: JavaScript
-    java: Java
-    php: PHP
-    python: Python
-    html: HTML
-    css: CSS
-    racket: Racket
-    ruby: Ruby
-    elixir: Elixir
-    go: Go
-    language_for_beginners: "%{language} for beginners"
   web:
     home:
+      hero:
+        learn_html: Learn&nbsp;
+        try: Try on
+        free_programming_courses: Free programming courses
+        fastest_way_to_start_coding: The fastest way to try programming right in the browser. Free courses with a simulator. Practice after each lesson
       index:
         meta_description: Learn the basics of programming for free with interactive exercises. No prior experience required!
         header: "Learn to code. Online. For free."
@@ -25,7 +18,6 @@ en:
         ready_to_start: Start
         started: Continue
         finished: Revisit
-        icon: "%{language} icon"
     users:
       new:
         meta_description: Sign up on Code Basics
@@ -54,6 +46,7 @@ en:
         register: Sign up
     languages:
       show:
+        free_course: Free course
         start: Start Learning
         continue: Continue Learning
         javascript_description: The study of programming is a difficult and lengthy process. Learning the syntax of the language - it is impossible to start without it. This The course is devoted to the basics of writing programs for a Javascript. He is preparing a springboard for writing meaningful programs.
@@ -104,7 +97,9 @@ en:
         source_code: Source code
       privacy:
         meta_description: Code Basics Privacy Policy
+        title: Privacy Policy
       tos:
+        title: Terms of Service
         meta_description: Terms of Service of the Code Basics Platform
 
     account:

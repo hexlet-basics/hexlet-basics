@@ -57,7 +57,7 @@ const Solution = () => {
       <div className="text-center">
         <button
           type="button"
-          className="btn btn-secondary px-4 mr-3"
+          className="btn btn-secondary px-4"
           onClick={handleShowSolution}
         >
           {t('showSolution')}
@@ -69,9 +69,6 @@ const Solution = () => {
   const renderContent = (countdownData) => {
     const { completed } = countdownData;
 
-    if (solutionStates.shown === solution.processState) {
-      return renderSolution();
-    }
     if (completed || solutionStates.canBeShown === solution.processState) {
       return renderShowButton();
     }
@@ -79,19 +76,19 @@ const Solution = () => {
     const remainingTime = format(new Date(countdownData.total), 'mm:ss');
 
     return (
-      <>
-        <div className="text-center">
-          <p className="lead">{t('solutionInstructions')}</p>
-          <div className="display-4">{ remainingTime }</div>
-          <img className="img-fluid px-5" src={WaitingClock} alt="waiting_clock" />
-        </div>
-      </>
+      <div className="text-center">
+        <p className="lead">{t('solutionInstructions')}</p>
+        <div className="display-4">{ remainingTime }</div>
+        <img className="img-fluid px-5" src={WaitingClock} alt="waiting_clock" />
+      </div>
     );
   };
 
   return (
     <div>
-      <Countdown date={solution.startTime + solution.waitingTime} renderer={renderContent} />
+      {solutionStates.shown === solution.processState
+        ? renderSolution()
+        : <Countdown date={solution.startTime + solution.waitingTime} renderer={renderContent} />}
     </div>
   );
 };

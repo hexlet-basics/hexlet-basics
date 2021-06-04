@@ -3,7 +3,7 @@ ru:
     web:
       base: Code Basics
       home:
-        base: 'Code Basics: основы программирования'
+        base: 'Code Basics: бесплатные курсы программирования'
       pages:
         about: О проекте
         tos: Условия использования

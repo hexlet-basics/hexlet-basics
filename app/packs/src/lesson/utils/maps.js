@@ -8,8 +8,8 @@ export const checkInfoStates = {
 
 export const currentTabValues = {
   editor: 'editor',
-  testForExercise: 'testForExercise',
   output: 'output',
+  testForExercise: 'testForExercise',
   solution: 'solution',
 };
 

@@ -12,7 +12,7 @@ class Web::AuthControllerTest < ActionDispatch::IntegrationTest
     auth_hash = generate(:github_auth_hash)
     OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash::InfoHash.new(auth_hash)
 
-    get callback_auth_url(:github)
+    get callback_auth_url(:github, subdomain: I18n.locale)
     assert_response :redirect
 
     user = User.find_by!(email: auth_hash[:info][:email].downcase)

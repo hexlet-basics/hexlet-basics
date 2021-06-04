@@ -1,6 +1,6 @@
 .d-flex.justify-content-between
   h2= "#{resource_language.slug} versions"
-  = button_to "Create new version", admin_language_versions_path(resource_language), class: 'btn btn-primary'
+  = button_to 'Create new version', admin_language_versions_path(resource_language), class: 'btn btn-primary'
 
 table.table.table-striped.my-2
   thead
@@ -16,8 +16,6 @@ table.table.table-striped.my-2
         td= version.id
         td= version.language.slug
         td= version.result
-        td
-          span class=(language_version_state_class(version.state))
-            = version.state.humanize
-        td= l version.created_at
+        td= version.state.humanize
+        td= l version.created_at, format: :short
 = paginate @versions

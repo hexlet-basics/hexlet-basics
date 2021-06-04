@@ -1,0 +1,16 @@
+.container
+  .mb-5
+    h2
+      a#faq.text-decoration-none.text-dark href="#faq" = t('faq.header')
+    hr.mb-5
+    .row
+      - faq.in_groups(2) do |group|
+        .col-md-6
+          - group.each do |item|
+            - if item
+              .mb-4
+                .h3.mb-3= item.fetch(:question)
+                = item.fetch(:answer)
+
+= content_for :meta do
+  = structured_data_tag 'faq', faq: faq

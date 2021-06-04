@@ -16,7 +16,6 @@ class User < ApplicationRecord
 
   aasm :state do
     state :active, initial: true
-    state :initail
     state :waiting_confirmation
     state :removed
 
@@ -50,6 +49,11 @@ class User < ApplicationRecord
     return false if password_digest.nil?
 
     authenticate(password)
+  end
+
+  def to_json(*_args)
+    attrs = attributes.extract! 'id', 'state', 'email', 'locale', 'created_at', 'nickname', 'first_name', 'last_name'
+    attrs.to_json
   end
 
   private

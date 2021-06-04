@@ -14,7 +14,10 @@ class Web::UsersController < Web::ApplicationController
 
     if @user.save
       sign_in @user
-      js_event :signed_up
+      js_event_options = {
+        user: @user
+      }
+      js_event :signed_up, js_event_options
 
       f(:success)
       redirect_to root_path

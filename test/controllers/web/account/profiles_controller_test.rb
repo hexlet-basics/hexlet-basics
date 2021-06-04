@@ -9,7 +9,7 @@ class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'edit' do
-    get edit_account_profile_url
+    get edit_account_profile_url(subdomain: I18n.locale)
 
     assert_response :success
   end
@@ -17,7 +17,7 @@ class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
   test 'update' do
     new_name = 'new first name'
 
-    patch account_profile_url(@user), params: {
+    patch account_profile_url(@user, subdomain: I18n.locale), params: {
       user_profile_form: {
         first_name: new_name
       }

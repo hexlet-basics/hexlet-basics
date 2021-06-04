@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/castwide/solargraph.git
-  revision: 18854d7577737cf9929063d96dd99b3d0a77f703
+  revision: 1bb8f6b2accedec85bb5e727ecb64aa5aa9713ec
   specs:
-    solargraph (0.40.4)
+    solargraph (0.41.1)
       backport (~> 1.1)
       benchmark
       bundler (>= 1.17.2)
@@ -19,7 +19,7 @@ GIT
 
 GIT
   remote: https://github.com/rails/webpacker.git
-  revision: fd8cbf2b5a24cea3c20b034b8166b40849b1d839
+  revision: ad8010fbeb20a767fb1a0dc2a0dea5890f41e4a7
   specs:
     webpacker (6.0.0.beta.7)
       activesupport (>= 5.2)
@@ -144,23 +144,28 @@ GEM
     enumerize (2.4.0)
       activesupport (>= 3.2)
     erubi (1.10.0)
-    factory_bot (6.1.0)
+    factory_bot (6.2.0)
       activesupport (>= 5.0.0)
-    factory_bot_rails (6.1.0)
-      factory_bot (~> 6.1.0)
+    factory_bot_rails (6.2.0)
+      factory_bot (~> 6.2.0)
       railties (>= 5.0.0)
-    faker (2.17.0)
+    faker (2.18.0)
       i18n (>= 1.6, < 2)
-    faraday (1.4.1)
+    faraday (1.4.2)
+      faraday-em_http (~> 1.0)
+      faraday-em_synchrony (~> 1.0)
       faraday-excon (~> 1.1)
       faraday-net_http (~> 1.0)
       faraday-net_http_persistent (~> 1.1)
       multipart-post (>= 1.2, < 3)
       ruby2_keywords (>= 0.0.4)
+    faraday-em_http (1.0.0)
+    faraday-em_synchrony (1.0.0)
     faraday-excon (1.1.0)
     faraday-net_http (1.0.1)
     faraday-net_http_persistent (1.1.0)
-    ffi (1.15.0)
+    ffi (1.15.1)
+    geocoder (1.6.7)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
     gon (6.4.0)
@@ -177,7 +182,7 @@ GEM
     jaro_winkler (1.5.4)
     jbuilder (2.11.2)
       activesupport (>= 5.0.0)
-    js-routes (1.4.14)
+    js-routes (2.0.4)
       railties (>= 4)
     jwt (2.2.3)
     kaminari (1.2.1)
@@ -207,7 +212,7 @@ GEM
     marcel (1.0.1)
     method_source (1.0.0)
     mini_mime (1.0.3)
-    mini_portile2 (2.5.1)
+    mini_portile2 (2.5.3)
     minitest (5.14.4)
     minitest-power_assert (0.3.1)
       minitest
@@ -217,7 +222,7 @@ GEM
     multi_xml (0.6.0)
     multipart-post (2.1.1)
     nio4r (2.5.7)
-    nokogiri (1.11.3)
+    nokogiri (1.11.6)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
     oauth2 (1.4.7)
@@ -230,6 +235,8 @@ GEM
       hashie (>= 3.4.6)
       rack (>= 1.6.2, < 3)
       rack-protection
+    omniauth-facebook (8.0.0)
+      omniauth-oauth2 (~> 1.2)
     omniauth-github (2.0.0)
       omniauth (~> 2.0)
       omniauth-oauth2 (~> 1.7.1)
@@ -245,13 +252,13 @@ GEM
     pg (1.2.3)
     power_assert (2.0.0)
     public_suffix (4.0.6)
-    puma (5.3.1)
+    puma (5.3.2)
       nio4r (~> 2.0)
     racc (1.5.2)
     rack (2.2.3)
     rack-protection (2.1.0)
       rack
-    rack-proxy (0.6.5)
+    rack-proxy (0.7.0)
       rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
@@ -290,7 +297,7 @@ GEM
       activerecord (>= 5.2.4)
       activesupport (>= 5.2.4)
       i18n
-    rb-fsevent (0.10.4)
+    rb-fsevent (0.11.0)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     redcarpet (3.5.1)
@@ -312,17 +319,17 @@ GEM
     reverse_markdown (2.0.0)
       nokogiri
     rexml (3.2.5)
-    rollbar (3.1.2)
-    rubocop (1.14.0)
+    rollbar (3.2.0)
+    rubocop (1.16.0)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml
-      rubocop-ast (>= 1.5.0, < 2.0)
+      rubocop-ast (>= 1.7.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.5.0)
+    rubocop-ast (1.7.0)
       parser (>= 3.0.1.1)
     rubocop-performance (1.11.3)
       rubocop (>= 1.7.0, < 2.0)
@@ -357,7 +364,7 @@ GEM
       actionpack (>= 3.1)
       railties (>= 3.1)
       slim (>= 3.0, < 5.0)
-    slim_lint (0.20.2)
+    slim_lint (0.21.1)
       rubocop (>= 0.78.0)
       slim (>= 3.0, < 5.0)
     spring (2.1.1)
@@ -375,7 +382,7 @@ GEM
       tins (~> 1.0)
     thor (1.1.0)
     tilt (2.0.10)
-    tins (1.29.0)
+    tins (1.29.1)
       sync
     trailblazer-option (0.1.1)
     tzinfo (2.0.4)
@@ -394,7 +401,7 @@ GEM
       nokogiri (~> 1.6)
       rubyzip (>= 1.3.0)
       selenium-webdriver (>= 3.0, < 4.0)
-    websocket-driver (0.7.3)
+    websocket-driver (0.7.4)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
     xpath (3.2.0)
@@ -420,6 +427,7 @@ DEPENDENCIES
   enumerize
   factory_bot_rails
   faker
+  geocoder
   gon
   http_accept_language
   i18n-debug
@@ -428,6 +436,7 @@ DEPENDENCIES
   kaminari
   listen (~> 3.3)
   minitest-power_assert
+  omniauth-facebook
   omniauth-github
   omniauth-rails_csrf_protection
   pg
@@ -459,4 +468,4 @@ DEPENDENCIES
   webpacker!
 
 BUNDLED WITH
-   2.1.4
+   2.2.15

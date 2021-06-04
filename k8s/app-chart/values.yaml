@@ -1,13 +1,13 @@
 ---
 
-version: v443
+version: v515
 
 replicaCount: 3
 
-caddy:
-  image:
-    repository: hexletbasics/services-caddy
-    imagePullPolicy: Always
+# caddy:
+#   image:
+#     repository: hexletbasics/services-caddy
+#     imagePullPolicy: Always
 
 nginx:
   image:

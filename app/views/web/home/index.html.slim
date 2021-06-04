@@ -8,18 +8,20 @@
   meta content=t('.meta_description') name='description'
   meta content="#{I18n.locale}" property='og:locale'
 
-.row.justify-content-center.mb-5
-  .col-12.col-md-10.col-lg-9.col-xl-8.text-center
-    h1.h4 = t('.header')
-    p.h5.font-weight-light
-      = t('.subheader')
-      = link_to t('.hexlet'), 'https://hexlet.io/?utm_campaign=general&utm_medium=referral&utm_source=code-basics', class: 'text-muted'
-.row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4
+.mt-sm-5.mb-5.pb-5
+  = render 'hero'
+
+.mb-5.pb-5
   = render partial: 'languages', locals: { languages: @languages_completed, language_members_by_language: @language_members_by_language, language_member_fake: @language_member_fake }
-- if @languages_in_development.any?
-  .row.justify-content-center.mt-5
-    .col-12.col-md-9.text-center
-      h4.font-weight-light = t('.in_development')
-      p = t('.in_development_description')
-  .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4
-    = render partial: 'languages', locals: { languages: @languages_in_development, language_members_by_language: @language_members_by_language, language_member_fake: @language_member_fake }
+
+.mb-5.pb-5
+  = render 'reviews'
+
+- if I18n.locale == :ru
+  .mb-5
+    = render partial: 'web/shared/faq', object: t('faq.main')
+
+/ .mb-5
+/   = render 'stats'
+
+- append_javascript_packs 'pageWelcome'

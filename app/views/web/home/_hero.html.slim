@@ -1,0 +1,15 @@
+.container
+  .p-4.pb-0.pt-lg-5.align-items-center.border.shadow.bg-white.rounded-3
+    .row
+      .col-lg-7.p-3.p-lg-5.pt-lg-3
+        h1.visually-hidden = t('.free_programming_courses')
+        .display-4.fw-bold.lh-1.mb-3
+          = t('.learn_html')
+          span.text-primary
+            span.hero-header
+        p.lead = t('.fastest_way_to_start_coding')
+        .d-grid.gap-2.d-md-flex.justify-content-md-start.mb-4.mb-lg-3
+          a.btn.btn-primary.btn-lg.px-4.me-md-2.fw-bold href="#courses" = t('.try')
+      .col-lg-4.offset-lg-1.p-0.overflow-hidden.shadow-lg.text-center
+        img.rounded-lg-3 alt="Как работает обучение на code-basics" src=image_url('code-basics-coding.png') width="720" height="356"
+

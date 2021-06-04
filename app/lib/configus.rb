@@ -5,10 +5,17 @@ Configus.build Rails.env do
   env :production do
     protocol :https
     host 'code-basics.com'
+    https_host 'https://ru.code-basics.com'
+    phone '+7 (495) 147-73-79'
 
     github do
       app_id ENV['GITHUB_CLIENT_ID']
       app_secret ENV['GITHUB_CLIENT_SECRET']
+    end
+
+    facebook do
+      app_id ENV['FACEBOOK_CLIENT_ID']
+      app_secret ENV['FACEBOOK_CLIENT_SECRET']
     end
 
     disqus_id 'hexlet-basics'

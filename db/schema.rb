@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_01_131744) do
+ActiveRecord::Schema.define(version: 2021_06_02_134723) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -155,6 +155,17 @@ ActiveRecord::Schema.define(version: 2021_04_01_131744) do
     t.index ["upload_id"], name: "language_modules_upload_id_index"
   end
 
+  create_table "language_version_infos", force: :cascade do |t|
+    t.bigint "language_id", null: false
+    t.bigint "language_version_id", null: false
+    t.string "locale"
+    t.string "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["language_id"], name: "index_language_version_infos_on_language_id"
+    t.index ["language_version_id"], name: "index_language_version_infos_on_language_version_id"
+  end
+
   create_table "language_versions", force: :cascade do |t|
     t.string "docker_image"
     t.string "exercise_filename"
@@ -218,6 +229,7 @@ ActiveRecord::Schema.define(version: 2021_04_01_131744) do
     t.string "email_delivery_state", limit: 255
     t.boolean "admin"
     t.datetime "created_at", precision: 6, null: false
+    t.boolean "help"
     t.index ["email"], name: "index_users_on_email", unique: true, where: "((state)::text <> 'removed'::text)"
   end
 
@@ -247,6 +259,8 @@ ActiveRecord::Schema.define(version: 2021_04_01_131744) do
   add_foreign_key "language_module_versions", "languages"
   add_foreign_key "language_modules", "languages", name: "language_modules_language_id_fkey"
   add_foreign_key "language_modules", "uploads", name: "language_modules_upload_id_fkey"
+  add_foreign_key "language_version_infos", "language_versions"
+  add_foreign_key "language_version_infos", "languages"
   add_foreign_key "language_versions", "languages"
   add_foreign_key "languages", "language_versions", column: "current_version_id"
   add_foreign_key "languages", "uploads", name: "languages_upload_id_fkey"

@@ -9,11 +9,7 @@ const slice = createSlice({
   initialState: {
     finished: false,
   },
-  reducers: {
-    changeFinished(state, { payload }) {
-      state.finished = payload.finished;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(checkInfoActions.runCheck.fulfilled, (state, { payload }) => {

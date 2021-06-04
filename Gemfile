@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 gem 'configus'
+gem 'geocoder'
 gem 'puma', '~> 5.3'
 gem 'rails', '~> 6.1'
 gem 'webpacker', github: 'rails/webpacker'
@@ -12,6 +13,7 @@ gem 'bootsnap', require: false
 gem 'http_accept_language'
 gem 'jbuilder', '~> 2.10'
 gem 'kaminari'
+gem 'omniauth-facebook'
 gem 'omniauth-github'
 gem 'omniauth-rails_csrf_protection'
 gem 'ransack'

@@ -4,7 +4,7 @@ require 'test_helper'
 
 class Web::RemindPasswordsControllerTest < ActionDispatch::IntegrationTest
   test 'new' do
-    get new_remind_password_url
+    get new_remind_password_url(subdomain: I18n.locale)
     assert_response :success
   end
 
@@ -12,7 +12,7 @@ class Web::RemindPasswordsControllerTest < ActionDispatch::IntegrationTest
     user = users(:full)
     before_token = user.reset_password_token
 
-    post remind_password_url, params: { remind_password: { email: user.email } }
+    post remind_password_url(subdomain: I18n.locale), params: { remind_password: { email: user.email } }
     assert_response :redirect
 
     user.reload

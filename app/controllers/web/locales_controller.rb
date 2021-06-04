@@ -3,7 +3,7 @@
 class Web::LocalesController < Web::ApplicationController
   def switch
     locale = params[:locale]
-    redirect_path = request.referer || root_path
+    # redirect_path = request.referer || root_path
 
     unless I18n.available_locales.include?(locale&.to_sym)
       redirect_back fallback_location: redirect_path
@@ -17,6 +17,7 @@ class Web::LocalesController < Web::ApplicationController
 
     session[:locale] = locale
 
-    redirect_to redirect_path
+    sd = locale == 'en' ? nil : locale
+    redirect_to root_url(subdomain: sd)
   end
 end

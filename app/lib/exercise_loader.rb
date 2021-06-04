@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ExerciseLoader
-  include Import['download_exercise_klass']
+  include Import['docker_exercise_api']
 
   def run(language_version)
     return unless language_version.may_build?
@@ -10,7 +10,7 @@ class ExerciseLoader
 
     lang_name = language_version.language.slug
 
-    download_exercise_klass.download(lang_name)
+    docker_exercise_api.download(lang_name)
 
     update_language_version(language_version)
 
@@ -19,7 +19,7 @@ class ExerciseLoader
     create_lessons(language_version, language_modules_data)
 
     # FIXME we should brake build if docker answers non 200 code
-    download_exercise_klass.tag_image_version(lang_name, language_version.image_tag)
+    docker_exercise_api.tag_image_version(lang_name, language_version.image_tag)
 
     language_version.result = 'Success'
     ActiveRecord::Base.transaction do
@@ -34,14 +34,14 @@ class ExerciseLoader
   private
 
   def create_modules(language_version)
-    module_dest = "#{download_exercise_klass.repo_dest(language_version.language.slug)}/modules"
+    module_dest = "#{docker_exercise_api.repo_dest(language_version.language.slug)}/modules"
 
     modules_with_meta = get_modules(module_dest).sort_by { |language_module| language_module[:order] }
     modules_with_meta.map { |module_meta| create_module_hierachy(language_version, module_meta) }
   end
 
   def create_lessons(language_version, language_modules_data)
-    module_dest = "#{download_exercise_klass.repo_dest(language_version.language.slug)}/modules"
+    module_dest = "#{docker_exercise_api.repo_dest(language_version.language.slug)}/modules"
 
     lessons = language_modules_data.flat_map do |module_data|
       unordered_lessons = get_lessons(module_dest, module_data[:module_version], language_version)
@@ -123,7 +123,7 @@ class ExerciseLoader
   end
 
   def update_language_version(language_version)
-    repo_dest = download_exercise_klass.repo_dest(language_version.language.slug)
+    repo_dest = docker_exercise_api.repo_dest(language_version.language.slug)
     spec_filepath = File.join(repo_dest, 'spec.yml')
     language_info = YAML.load_file(spec_filepath).fetch('language')
 
@@ -134,6 +134,8 @@ class ExerciseLoader
       exercise_filename: language_info['exercise_filename'],
       exercise_test_filename: language_info['exercise_test_filename']
     )
+
+    # import info
   end
 
   def create_module_hierachy(language_version, data)

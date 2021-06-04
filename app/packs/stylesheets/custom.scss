@@ -1,31 +1,24 @@
 $body-bg: #f5f7fb;
-$breadcrumb-divider: quote("→");
+$breadcrumb-divider: quote('→');
 
-@import 'bootstrap/scss/bootstrap';
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/utilities';
+@import 'bootstrap/scss/mixins';
 
-// generage x-vh-{breakpoint}-{size} class (x-vh-md-50, etc)
-@each $breakpoint in map-keys($grid-breakpoints) {
-  @include media-breakpoint-up($breakpoint) {
-    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
-    @each $prop, $unit in (height: vh) {
-      @each $size in (25, 50, 75, 100) {
-        .x-#{$unit}#{$infix}-#{$size} { #{$prop}: #{$size}#{$unit} !important; }
-      }
-    }
-  }
-}
-
-// generage x-(w|h)-{breakpoint}-{size} class (x-w-md-25, x-h-md-100, etc)
-@each $breakpoint in map-keys($grid-breakpoints) {
-  @include media-breakpoint-up($breakpoint) {
-    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
-    @each $prop, $abbrev in (width: w, height: h) {
-      @each $size, $length in $sizes {
-        .x-#{$abbrev}#{$infix}-#{$size} { #{$prop}: $length !important; }
-      }
-    }
-  }
-}
+$utilities: map-merge(
+  $utilities,
+  (
+    "responsive-height": (
+      property: height,
+      class: 'x-h',
+      responsive: true,
+      values: (
+        100: 100%,
+      )
+    )
+  )
+);
 
 $azure: #45aaf2;
 
@@ -115,9 +108,4 @@ $azure: #45aaf2;
 // hides the disqus block, which breaks the layout and blinks.
 .adsbox {
   @extend .position-absolute;
-}
-
-// NOTE for invalidate production cache css url. should be deleted later
-.dummy{
-  display: none;
 }

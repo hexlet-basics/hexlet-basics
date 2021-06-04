@@ -4,34 +4,41 @@
   meta content="#{language_lesson_url(@lesson.language.slug, @lesson.slug)}" property='og:url'
   meta content="#{image_url("#{@lesson.language.slug}.png")}" property='og:image'
   link rel='canonical' href="#{language_lesson_url(@lesson.language.slug, @lesson.slug)}"
-  meta content="#{truncate(@info.theory, length: 150)}" property='og:description'
-  meta content="#{truncate(@info.theory, length: 150)}" name='description'
+  meta content= truncate("[#{t("human_languages.#{resource_language}")}] — #{@info.name} — #{@info.theory}", length: 220) property='og:description'
+  meta content= truncate("[#{t("human_languages.#{resource_language}")}] — #{@info.name} — #{@info.theory}", length: 200) name='description'
   meta content="#{I18n.locale}" property='og:locale'
 
-.row.pt-2.x-h-md-100
-  .col-12.col-md-6.col-lg-5.x-h-md-100.mb-3.mb-md-0
+.row.pt-2.x-h-md-100.g-2
+  .col-12.col-md-6.col-lg-5.x-h-md-100.mb-3.mb-md-0.position-relative
     .card.x-h-md-100
-      ul.nav.nav-tabs.justify-content-center.flex-shrink-0 data-toggle="tabs"
+      ul.nav.nav-tabs.justify-content-center.small data-bs-toggle="tabs" role="tablist"
         li.nav-item
           a.nav-link.active.rounded-0 href="#lesson-tab" data-guide-id="Lesson" data-toggle="tab" role="tab" = t('.lesson')
         li.nav-item
           a.nav-link.rounded-0 href="#discuss-tab" data-guide-id="Discuss" data-toggle="tab" role="tab" = t('.discuss')
 
-      .tab-content.x-h-md-100.overflow-hidden
+      .tab-content.overflow-hidden
         .tab-pane.fade.overflow-auto.x-h-md-100.active.show#lesson-tab(role="tabpanel")
-          .card-body.pt-2
-            nav aria-label=t('.breadcrumb')
-              ol.breadcrumb.bg-transparent.p-0
-                li.breadcrumb-item
-                  = link_to root_path, title: t('.to_home_title')
-                    span.fas.fa-home
-                li.breadcrumb-item
-                  = link_to t("human_languages.#{@resource_language}"), language_path(@resource_language.slug)
-                li.breadcrumb-item.active aria-current="page"
-                  = current_breadcrumb(@lesson_version, @info, @language_lessons_count)
+          .card-body
+            nav.my-3 aria-label=t('.breadcrumb')
+              ol.breadcrumb itemscope="itemscope" itemtype="https://schema.org/BreadcrumbList"
+                li.breadcrumb-item itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem"
+                  = link_to root_path, title: t('.to_home_title'), itemprop: 'item' do
+                    span.bi.bi-house.text-muted
+                    meta itemprop="position" content="1"
+                    meta itemprop="name" content="CodeBasics"
+                li.breadcrumb-item itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem"
+                  = link_to language_path(resource_language.slug), itemprop: 'item', class: 'text-decoration-none text-muted' do
+                    span itemprop="name" = t("human_languages.#{resource_language}")
+                    meta itemprop="position" content="2"
+                li.breadcrumb-item.active itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem" aria-current="page"
+                  span itemprop="name"
+                    = current_breadcrumb(@lesson_version, @info, @language_lessons_count)
+                  meta itemprop="position" content="3"
+
             .hexlet-basics-content
               h1.h3.font-weight-bold
-                = "#{t("human_languages.#{@resource_language}")}: #{@info.name}"
+                = "#{t("human_languages.#{resource_language}")}: #{@info.name}"
               == markdown2html(@info.theory)
               - if @info.instructions
                 h2.h4.font-weight-bold = t('.instructions')
@@ -39,12 +46,12 @@
                 hr.my-4
               - if @info.tips.any?
                 h2.h5.font-weight-bold.mt-4 = t('.tips')
-                ul.pl-4
+                ul.ps-4
                   - @info.tips.each do |tip|
                     li == markdown2html(tip)
               - if @info.definitions.any?
                 h2.h5.font-weight-bold = t('.definitions')
-                ul.pl-4
+                ul.ps-4
                   - @info.definitions.each do |definition|
                     li
                       p == markdown2html("#{definition['name']} - #{definition['description']}")
@@ -53,13 +60,13 @@
               .small.text-muted
                 = t('.issues')
                 '
-                = link_to ExternalLinks.source_code, get_lesson_source_code(@lesson_version, @info), target: '_blank'
+                = link_to ExternalLinks.source_code, get_lesson_source_code(@lesson_version, @info), target: '_blank', rel: :noopener
         .tab-pane.fade.overflow-auto.x-h-md-100#discuss-tab(role="tabpanel")
           .card-body.pt-2.pb-0
             .alert.alert-info.small.my-2
               span.align-baseline = t('.if_stuck')
               '
-              = link_to t('.community'), ExternalLinks.hexlet_slack, target: '_blank', class: 'align-baseline'
+              = link_to t('.community'), ExternalLinks.hexlet_slack, target: '_blank', class: 'align-baseline', rel: :noopener
             #disqus_thread
             / disqus script
             javascript:

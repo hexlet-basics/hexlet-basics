@@ -1,16 +1,13 @@
 ru:
   activemodel:
+    attributes:
+      sign_in:
+        password: Пароль
     errors:
-      messages:
-        blank: не может быть пустым
       models:
         sign_in:
           attributes:
             password:
-              cannot_sign_in: не подходит
+              cannot_sign_in: Пароль не подходит. Проверьте раскладку
             email:
-              user_does_not_exist: не существует
-        remind_password:
-          attributes:
-            email:
-              user_does_not_exist: не существует
+              user_does_not_exist_html: Пользователь не найден. Попробуйте зарегистрироваться

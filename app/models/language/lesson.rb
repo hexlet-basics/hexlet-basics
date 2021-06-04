@@ -28,4 +28,13 @@ class Language::Lesson < ApplicationRecord
       transitions from: %i[created archived], to: :archived
     end
   end
+
+  def to_s
+    slug
+  end
+
+  def to_hash(*_args)
+    attrs = attributes.extract! 'id', 'slug', 'created_at'
+    attrs.to_hash
+  end
 end

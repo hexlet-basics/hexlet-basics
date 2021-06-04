@@ -6,13 +6,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { deleteFromStorage } from '@rehooks/local-storage';
 
 import cn from 'classnames';
-import Hotkeys from 'react-hot-keys';
+// import Hotkeys from 'react-hot-keys';
+import { useHotkeys } from 'react-hotkeys-hook';
 import { Button, Spinner } from 'react-bootstrap';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faArrowRight, faSyncAlt, faArrowLeft, faPlayCircle,
-} from '@fortawesome/free-solid-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import {
+//   faArrowRight, faSyncAlt, faArrowLeft, faPlayCircle,
+// } from '@fortawesome/free-solid-svg-icons';
 
 import routes from 'vendor/appRoutes.js';
 import { actions } from '../slices/index.js';
@@ -73,22 +74,23 @@ const ControlBox = () => {
       return (
         <>
           <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-          <span className="sr-only">{t('loading')}</span>
-          <span className="d-none d-sm-block d-md-none d-lg-block ml-1">{text}</span>
+          <span className="visually-hidden">{t('loading')}</span>
+          <span className="d-none d-sm-block d-md-none d-lg-block ms-1">{text}</span>
         </>
       );
     }
 
+    // <FontAwesomeIcon icon={faPlayCircle} />
     return (
       <>
-        <FontAwesomeIcon icon={faPlayCircle} />
-        <span className="d-none d-sm-block d-md-none d-lg-block ml-1">{text}</span>
+        <span className="bi bi-play-circle" />
+        <span className="d-none d-sm-block d-md-none d-lg-block ms-1">{text}</span>
       </>
     );
   };
 
   const prevButtonClasses = cn(`btn btn-outline-secondary
-    font-weight-normal mr-3 order-first order-sm-0 order-md-first order-lg-0`);
+    font-weight-normal me-3 order-first order-sm-0 order-md-first order-lg-0`);
 
   const nextButtonClasses = cn('btn btn-outline-primary font-weight-normal mr-3', {
     disabled: !lessonInfo.finished,
@@ -97,6 +99,9 @@ const ControlBox = () => {
   const nextLessonPath = routes.nextLessonLanguageLessonPath(language, lesson.slug);
   const prevLessonPath = routes.prevLessonLanguageLessonPath(language, lesson.slug);
 
+  useHotkeys('ctrl+enter', handleRunCheck);
+
+  // <FontAwesomeIcon icon={faSyncAlt} />
   return (
     <Hotkeys keyName="ctrl+Enter" onKeyUp={handleRunCheck}>
       <div className="d-flex justify-content-center p-3 border-top flex-shrink-0">

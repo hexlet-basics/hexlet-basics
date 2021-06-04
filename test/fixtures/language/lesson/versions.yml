@@ -66,3 +66,40 @@ javascript:
   module_version: javascript
   lesson: javascript
   language: javascript
+
+elixir-hello-world:
+  <<: *DEFAULTS
+  order: 1
+  natural_order: 1
+  language_version: elixir
+  module_version: elixir-basics
+  lesson: elixir-hello-world
+  language: elixir
+
+elixir-variables:
+  <<: *DEFAULTS
+  order: 2
+  natural_order: 2
+  language_version: elixir
+  module_version: elixir-basics
+  lesson: elixir-variables
+  language: elixir
+
+elixir-strings:
+  <<: *DEFAULTS
+  order: 3
+  natural_order: 3
+  language_version: elixir
+  module_version: elixir-basics
+  lesson: elixir-strings
+  language: elixir
+
+ruby-hello-world:
+  <<: *DEFAULTS
+  order: 1
+  natural_order: 1
+  language_version: ruby
+  module_version: ruby-basics
+  lesson: ruby-hello-world
+  language: ruby
+  path_to_code: <%= File.join(Rails.root, 'test', 'fixtures', 'files', 'exercise') %>

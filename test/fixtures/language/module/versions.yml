@@ -15,3 +15,15 @@ variables_one:
   language_version: two
   module: variables_one
   language: php
+
+elixir-basics:
+  # order: 10
+  language_version: elixir
+  module: exliri-basics
+  language: elixir
+
+ruby-basics:
+  order: 10
+  language_version: ruby
+  module: ruby-basics
+  language: ruby

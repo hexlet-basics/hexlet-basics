@@ -6,8 +6,11 @@ class Web::ApplicationController < ApplicationController
   include EventConcern
 
   before_action do
+    # TODO: завести определение локали на базе ip
+    # results = Geocoder.search(request.remote_ip)
+
     locale = (current_user.locale || session[:locale] ||
-              request.subdomains.first || http_accept_language.compatible_language_from(I18n.available_locales) || :en).to_sym
+              request.subdomains.first || :ru).to_sym
 
     if locale == :ru && request.subdomains.empty?
       redirect_to url_for(params.merge(subdomain: locale, only_path: false).permit!)

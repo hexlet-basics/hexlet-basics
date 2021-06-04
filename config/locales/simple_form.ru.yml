@@ -1,6 +1,6 @@
 ru:
   simple_form:
+    required:
+      text: 'required'
+      mark: ''
     placeholders:
-      defaults:
-          email: E-mail
-          password: Пароль

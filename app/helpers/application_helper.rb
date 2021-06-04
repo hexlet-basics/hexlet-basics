@@ -7,12 +7,12 @@ module ApplicationHelper
     yield value
   end
 
-  def nav_menu_item(name, path = '#', options = {})
-    assembled_options = options.merge(class: "nav-link #{active?(path)}")
+  def nav_menu_item(name, path = '#', options = {}, &block)
+    assembled_options = options.merge(class: "nav-link text-dark #{options[:class]} #{active?(path)}".chomp)
+    block_content = block ? capture(&block) : ''
+    link = link_to name, path, assembled_options
     tag.li class: 'nav-item' do
-      link_to path, assembled_options do
-        name
-      end
+      "#{link}#{block_content}".html_safe
     end
   end
 
@@ -21,7 +21,12 @@ module ApplicationHelper
     if options.key? :active_if
       'active' if options[:active_if]
     elsif current_page?(path)
-      'active'
+      'active text-white'
     end
+  end
+
+  def structured_data_tag(path, args = {})
+    content = render partial: "schemas/#{path}", formats: [:json], locals: args
+    tag.script(content.html_safe, type: 'application/ld+json')
   end
 end

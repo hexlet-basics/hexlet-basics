@@ -14,3 +14,21 @@ naming_variables_one:
   language: php
   lesson: naming_variables_one
   state: finished
+
+full-elixir-hello-world:
+  user: full
+  language: elixir
+  lesson: elixir-hello-world
+  state: finished
+
+full-elixir-variables:
+  user: full
+  language: elixir
+  lesson: elixir-variables
+  state: finished
+
+full-elixir-strings:
+  user: full
+  language: elixir
+  lesson: elixir-strings
+  state: finished

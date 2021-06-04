@@ -19,7 +19,9 @@ class Language::Version < ApplicationRecord
                           foreign_key: :language_version_id,
                           class_name: 'Language::Module::Version::Info',
                           inverse_of: :language_version
+
   has_many :lessons, through: :lesson_versions
+  has_many :infos, dependent: :destroy
 
   belongs_to :language
 
@@ -44,6 +46,11 @@ class Language::Version < ApplicationRecord
 
   def to_s
     name
+  end
+
+  def to_hash(*_args)
+    attrs = attributes.extract! 'id', 'name', 'created_at'
+    attrs.to_hash
   end
 
   def image_tag

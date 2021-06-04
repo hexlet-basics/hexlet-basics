@@ -15,6 +15,16 @@ class DockerExerciseApi
     system("docker rm exercises-#{lang_name}")
   end
 
+  def self.run_exercise(created_code_file_path:, exercise_file_path:, docker_image:, image_tag:, path_to_code:)
+    volume = "-v #{created_code_file_path}:#{exercise_file_path}"
+    command = "docker run --rm --net none #{volume} #{docker_image}:#{image_tag} timeout 4 make --silent -C #{path_to_code} test"
+
+    output = []
+    status = BashRunner.start(command) { |line| output << line }
+
+    [output.join, status]
+  end
+
   def self.tag_image_version(lang_name, tag)
     return unless Rails.env.production?
 

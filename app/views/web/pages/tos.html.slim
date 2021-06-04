@@ -1,0 +1,15 @@
+= content_for :meta do
+  meta content='article' property='og:type'
+  meta content=title property='og:title'
+  meta content=page_url(:tos) property='og:url'
+  meta content=image_url('logo.png') property='og:image'
+  link rel='canonical' href=page_url(:tos)
+  meta content=t('.meta_description') property='og:description'
+  meta content=t('.meta_description') name='description'
+  meta content="#{I18n.locale}" property='og:locale'
+
+.container.mt-sm-5.mb-5
+  .row.justify-content-center
+    .col-lg-8.lh-lg
+      h1.mb-5 = t('.title')
+      = render 'tos'

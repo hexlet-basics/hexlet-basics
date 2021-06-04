@@ -88,6 +88,9 @@ spec:
             httpGet:
               path: /
               port: 3000
+              httpHeaders:
+              - name: X-Forwarded-Host
+                value: ru.code-basics.com
             initialDelaySeconds: 5
             periodSeconds: 5
             successThreshold: 1
