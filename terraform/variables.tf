@@ -49,6 +49,7 @@ variable "facebook_client_secret" {}
 variable "secret_key_base" {}
 variable "slack_codebuild_webhook" {}
 variable "rollbar_access_token" {}
+variable "rollbar_client_access_token" {}
 variable "sparkpost_smtp_username" {}
 variable "sparkpost_smtp_password" {}
 variable "guardian_secret_key" {}
