@@ -15,6 +15,7 @@ hexlet_basics_vault_db_ssl_mode: "false"
 hexlet_basics_vault_secret_key_base: "as df;lkajsdf ;alkjsdf ;alksdjf ;alksdjf ;alskdjf ;alskdjf a;lsdjkf ;alsdkjfa ;lskdjf a;lskdj f;alksdjf ;alksjdfal;sdjfqwerty"
 hexlet_basics:
   vault_rollbar_access_token: "token"
+  vault_rollbar_client_access_token: "abca"
 
 hexlet_basics_vault_sparkpost_smtp_username: "sparkpost"
 hexlet_basics_vault_sparkpost_smtp_password: "password"
