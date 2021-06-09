@@ -11,9 +11,9 @@
 
   / #navbarToggler.collapse.navbar-collapse
   ul.nav.nav-pills
-    / li.nav-item.dropdown
-      / a#dropdownMenuLink.nav-link.text-dark.dropdown-toggle href='#' data-bs-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='false'
-    = nav_menu_item t('.change_course'), '#', class: 'dropdown-toggle', role: 'button', 'data-bs-toggle' => 'dropdown' do
+    li.nav-item.dropdown
+      button.nav-link.text-dark.dropdown-toggle href='#' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false'
+        = t('.change_course')
       ul.dropdown-menu.dropdown-menu-columns.dropdown-menu-arrow
         li
           = link_to language_path('php'), class: 'dropdown-item d-flex align-items-center py-2'
