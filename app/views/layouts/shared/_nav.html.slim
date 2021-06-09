@@ -62,7 +62,7 @@
       = nav_menu_item t('.registration'), new_user_path, class: 'me-3'
     - else
       li.nav-item.dropdown.me-2
-        a.nav-link.dropdown-toggle href='#' data-bs-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='false'
+        button.nav-link.text-dark.dropdown-toggle href='#' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false'
           i.bi.bi-person-circle
           / = current_user.email
         ul.dropdown-menu.dropdown-menu-end
