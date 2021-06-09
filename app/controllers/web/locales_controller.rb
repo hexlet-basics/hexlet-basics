@@ -6,7 +6,7 @@ class Web::LocalesController < Web::ApplicationController
     # redirect_path = request.referer || root_path
 
     unless I18n.available_locales.include?(locale&.to_sym)
-      redirect_back fallback_location: redirect_path
+      redirect_back fallback_location: root_path
       return
     end
 
