@@ -85,12 +85,13 @@ const ControlBox = () => {
   useHotkeys('ctrl+enter', handleRunCheck);
 
   const isFirstSoluton = !localStorageContent && editor.content;
+  const isCheckDone = checkInfo.processState === 'checked';
 
   useEffect(() => {
-    if (checkInfo.passed || isFirstSoluton) {
+    if (isCheckDone && checkInfo.passed || isFirstSoluton) {
       setContent(editor.content);
     }
-  }, [checkInfo.result]);
+  }, [checkInfo.processState]);
 
   // <FontAwesomeIcon icon={faSyncAlt} />
   return (
