@@ -1,9 +1,9 @@
 // @ts-check
 
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteFromStorage } from '@rehooks/local-storage';
+import { useLocalStorage, deleteFromStorage } from '@rehooks/local-storage';
 
 import cn from 'classnames';
 // import Hotkeys from 'react-hot-keys';
@@ -33,6 +33,9 @@ const ControlBox = () => {
     lessonVersion, language, lesson,
   } = useContext(EntityContext);
 
+  const localStorageKey = `lesson-version-${lessonVersion.id}`;
+  const [localStorageContent, setContent] = useLocalStorage(localStorageKey);
+
   const handleRunCheck = () => {
     dispatch(actions.runCheck({ lessonVersion, editor }));
   };
@@ -41,7 +44,6 @@ const ControlBox = () => {
     // NOTE: easier than state manipulating. dont touch, dont blame, be happy.
     // eslint-disable-next-line no-alert
     if (window.confirm(t('confirm'))) {
-      const localStorageKey = `lesson-version-${lessonVersion.id}`;
       deleteFromStorage(localStorageKey);
       window.location.reload();
     }
@@ -81,6 +83,14 @@ const ControlBox = () => {
   const prevLessonPath = routes.prevLessonLanguageLessonPath(language, lesson.slug);
 
   useHotkeys('ctrl+enter', handleRunCheck);
+
+  const isFirstSoluton = !localStorageContent && editor.content;
+
+  useEffect(() => {
+    if (checkInfo.passed || isFirstSoluton) {
+      setContent(editor.content);
+    }
+  }, [checkInfo.result]);
 
   // <FontAwesomeIcon icon={faSyncAlt} />
   return (

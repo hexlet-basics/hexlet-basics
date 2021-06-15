@@ -63,7 +63,7 @@ const Editor = () => {
   const [editor, setEditor] = useState(null);
 
   const localStorageKey = `lesson-version-${lessonVersion.id}`;
-  const [localStorageContent, setContent] = useLocalStorage(localStorageKey);
+  const [localStorageContent] = useLocalStorage(localStorageKey);
 
   useEffect(() => {
     editor?.focus();
@@ -79,7 +79,6 @@ const Editor = () => {
   };
 
   const onContentChange = (_editor, _data, newContent) => {
-    setContent(newContent);
     dispatch(actions.changeContent({ content: newContent }));
   };
 
