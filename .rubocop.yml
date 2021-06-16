@@ -97,3 +97,6 @@ Metrics/ParameterLists:
 # why?
 Layout/EmptyLinesAroundClassBody:
   Enabled: false
+
+RSpec/Rails/AvoidSetupHook:
+  Enabled: false
