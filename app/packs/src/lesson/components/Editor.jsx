@@ -74,7 +74,8 @@ const Editor = () => {
     self.focus();
     self.refresh();
     if (localStorageContent) {
-      self.getDoc().setValue(localStorageContent);
+      const stringifiedContent = JSON.stringify(localStorageContent);
+      self.getDoc().setValue(stringifiedContent);
     }
   };
 
