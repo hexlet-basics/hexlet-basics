@@ -8,7 +8,7 @@ en:
         sign_out: "Sign out"
         registration: "Sign up"
         profile: Settings
-        change_course: Choose course
+        change_course: Choose a course
         toggle_navigation: Toggle navigation
         toggle_user_menu: Toggle the display of user menu
       footer:

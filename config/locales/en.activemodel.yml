@@ -1,0 +1,13 @@
+en:
+  activemodel:
+    attributes:
+      sign_in:
+        password: Password
+    errors:
+      models:
+        sign_in:
+          attributes:
+            password:
+              cannot_sign_in: Wrong password. Check your keyboard layout.
+            email:
+              user_does_not_exist_html: User not found. Try signing up.

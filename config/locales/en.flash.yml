@@ -4,19 +4,19 @@ en:
       languages:
         lessons:
           show:
-            lesson_not_found: Lesson not found. Please, start other lessons.
+            lesson_not_found: Lesson not found. Please, try another lesson.
       users:
         create:
-          success: You have successfully signed in. You can start learning now.
+          success: You have signed in successfully. You can start learning now.
       sessions:
         create:
-          success: You have successfully signed in. You can start learning now.
+          success: You have signed in successfully. You can start learning now.
       auth:
         callback:
-          success: You have successfully signed in. You can start learning now.
+          success: You have signed in successfully. You can start learning now.
       remind_passwords:
         create:
-          success: We have sent you password recovery instructions to your mailbox.
+          success: A password recovery instruction was sent to your email.
       passwords:
         update:
-          success: Password has been changed. Please login with a new password.
+          success: Password has been changed. Please, login with your new password.
