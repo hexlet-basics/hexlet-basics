@@ -10,7 +10,7 @@
             - if item
               .mb-4
                 .h3.mb-3= item.fetch(:question)
-                = item.fetch(:answer)
+                == markdown2html item.fetch(:answer)
 
 = content_for :meta do
   = structured_data_tag 'faq', faq: faq
