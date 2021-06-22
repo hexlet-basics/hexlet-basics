@@ -17,9 +17,9 @@
 .mb-5.pb-5
   = render 'reviews'
 
-/ - if I18n.locale == :ru
-/   .mb-5
-/     = render partial: 'web/shared/faq', object: t('faq.main')
+- if I18n.locale == :ru
+  .mb-5
+    = render partial: 'web/shared/faq', object: t('faq.main')
 
 / .mb-5
 /   = render 'stats'
