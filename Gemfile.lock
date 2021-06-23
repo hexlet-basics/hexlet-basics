@@ -20,7 +20,7 @@ GIT
 
 GIT
   remote: https://github.com/rails/webpacker.git
-  revision: bb9a0d8bd2500862a966dd5ee7a07d5da0a4f8a3
+  revision: beb645ecbf707eb4f3311e61b05abb67fe0ca010
   specs:
     webpacker (6.0.0.beta.7)
       activesupport (>= 5.2)
@@ -166,7 +166,7 @@ GEM
     faraday-excon (1.1.0)
     faraday-net_http (1.0.1)
     faraday-net_http_persistent (1.1.0)
-    ffi (1.15.1)
+    ffi (1.15.3)
     geocoder (1.6.7)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
@@ -336,7 +336,7 @@ GEM
     rubocop-performance (1.11.3)
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
-    rubocop-rails (2.10.1)
+    rubocop-rails (2.11.0)
       activesupport (>= 4.2.0)
       rack (>= 1.1)
       rubocop (>= 1.7.0, < 2.0)

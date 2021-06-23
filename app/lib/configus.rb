@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Rails/EnvironmentVariableAccess
 Configus.build Rails.env do
   env :production do
     protocol :https
@@ -41,4 +40,3 @@ Configus.build Rails.env do
     end
   end
 end
-# rubocop:enable Rails/EnvironmentVariableAccess
