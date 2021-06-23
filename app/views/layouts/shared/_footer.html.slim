@@ -3,9 +3,9 @@ footer.bg-dark.text-light.mt-5
     .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4
       .col.mb-4.mb-lg-0
         p = t('.hexlet_address')
-        = phone_to configus.phone, nil, class: 'text-light text-decoration-none'
-        p = t('.hexlet_number')
-        = mail_to ExternalLinks.hexlet_support_mail, nil, class: 'text-light'
+        p.mt-3 = t('.hexlet_number')
+
+        = render 'layouts/shared/language_switcher'
 
       .col.mb-4.mb-lg-0
         ul.list-unstyled.lh-lg
@@ -30,8 +30,11 @@ footer.bg-dark.text-light.mt-5
               span.bi.bi-github.ms-2
 
       .col.mb-4.mb-lg-0
-        div
-          = render 'layouts/shared/language_switcher'
+        = phone_to configus.free_phone, nil, class: 'text-light text-decoration-none'
+        .small.text-muted.lh-1 Звонок по РФ бесплатный
+        .my-3
+          = phone_to configus.phone, nil, class: 'text-light text-decoration-none'
+        = mail_to ExternalLinks.hexlet_support_mail, nil, class: 'text-light'
 
     hr
     .d-flex
