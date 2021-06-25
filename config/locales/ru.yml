@@ -16,3 +16,7 @@ ru:
     one: "%{count} час"
     few: "%{count} часа"
     many: "%{count} часов"
+  lessons:
+    one: "%{count} урок"
+    few: "%{count} урока"
+    many: "%{count} уроков"

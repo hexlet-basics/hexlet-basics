@@ -19,12 +19,14 @@
           p.col-md-10.fs-5 = t(".#{@language}_description")
           .text-muted.lead.mb-5
             span.text-nowrap.me-4
-              i.bi.bi-clock.me-2
+              span.bi.bi-clock.me-2
               = t('hours', count: @language.duration)
-              / i.bi.bi-bar-chart jopa
-            span.text-nowrap
-              i.bi.bi-people.me-2
+            span.text-nowrap.me-4
+              span.bi.bi-people.me-2
               = @language.members.size
+            span.d-inline-block
+              span.bi.bi-book.me-2
+              = t('.lessons', lessons_count: t('lessons', count: @language.lessons.size))
 
           - if @language_member.finished?
             -# чето сказать
