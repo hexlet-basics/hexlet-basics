@@ -10,6 +10,7 @@ class ExternalLinks
     hexlet_youtube: 'https://www.youtube.com/user/HexletUniversity',
     hexlet_slack: 'https://slack-ru.hexlet.io',
     hexlet_blog: 'https://ru.hexlet.io/blog',
+    hexlet_success_stories: 'https://ru.hexlet.io/blog/categories/success??utm_campaign=general&utm_medium=referral&utm_source=code-basics',
     hexlet_recommended_books: 'https://ru.hexlet.io/pages/recommended-books',
     hexlet_matrix: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSr58Xg4DVX2WdmAkv3hE2ITJ3fPeNUmRFe0Ekro53U-ACFrhcUkV8PlUm4ddcn53Uh-5UIezZtZZgc/pubhtml',
     source_code: 'https://github.com/hexlet-basics',

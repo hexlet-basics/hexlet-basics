@@ -7,6 +7,7 @@ en:
         sign_in: "Sign in"
         sign_out: "Sign out"
         registration: "Sign up"
+        success_stories: Success stories
         profile: Settings
         change_course: Choose a course
         toggle_navigation: Toggle navigation
