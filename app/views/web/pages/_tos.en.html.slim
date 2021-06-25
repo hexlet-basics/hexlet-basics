@@ -36,7 +36,6 @@ h2.h3 Modifications to the Service
 ol
   li Hexlet reserves the right at any time to modify or discontinue, temporarily or permanently, the Service (or any part thereof) with or without notice. For instance, the Service may temporarily be disabled for occasional maintenance.
 
-
   li Hexlet shall not be liable to you or to any third party for any modification, price change, suspension or discontinuance of the Service.
 
 h2.h3 Copyright
@@ -55,7 +54,6 @@ h2.h3 General Conditions
 ol
   li Your use of the Service is at your sole risk. The service is provided on an "as is" and "as available" basis.
 
-
   li Support for Hexlet services is only available in English and Russian, via email.
 
   li You must not modify, adapt or hack the Service or modify another website so as to falsely imply that it is associated with the Service, Hexlet, or any other Hexlet service.
@@ -64,9 +62,7 @@ ol
 
   li You must not upload, post, host, or transmit unsolicited email, SMSs, or "spam" messages.
 
-
   li You must not transmit any worms or viruses or any code of a destructive nature.
-
 
   li You understand that Hexlet uses third party vendors and hosting partners to provide the necessary hardware, software, networking, storage, and related technology required to run the Service.
 
@@ -78,15 +74,14 @@ ol
 
   li You expressly understand and agree that Hexlet shall not be liable for any direct, indirect, incidental, special or consequential damages, including but not limited to, damages for loss of profits, goodwill, use, data or other intangible losses (even if Hexlet has been advised of the possibility of such damages).
 
-
   li
     ' Questions about the Terms of Service or any other matter should be sent to
     '
-    = link_to("info@hexlet.io", "mailto:info@hexlet.io", class: "text-muted")
+    = mail_to 'info@hexlet.io', nil, class: 'text-muted'
     '
     in English or Russian language.
 
 p
   ' Last updated on June 15th, 2019. Based on the
   '
-  = link_to("GitHub Terms of Service.", "https://help.github.com/articles/github-terms-of-service/", class: "text-muted", target: "_blank")
+  = link_to 'GitHub Terms of Service.', 'https://help.github.com/articles/github-terms-of-service/', class: 'text-muted', target: '_blank', rel: :noopener

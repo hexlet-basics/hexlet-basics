@@ -80,10 +80,10 @@ ol
 
   li
     ' Вопросы об Условиях обслуживания или любые другие вопросы следует направлять на
-    = link_to("info@hexlet.io", "mailto:info@hexlet.io", class: "text-muted")
+    = link_to 'info@hexlet.io', nil, class: 'text-muted'
     '
     ' на английском или русском языке.
 p
   'Последнее обновление: 15 июня 2019 года. Основано на Условиях обслуживания
-  = link_to("GitHub", "https://help.github.com/articles/github-terms-of-service/", class: "text-muted", target: "_blank")
+  = link_to 'GitHub', 'https://help.github.com/articles/github-terms-of-service/', class: 'text-muted', target: '_blank', rel: :noopener
   '.

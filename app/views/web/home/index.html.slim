@@ -12,7 +12,8 @@
   = render 'hero'
 
 .mb-5.pb-5
-  = render partial: 'languages', locals: { languages: @languages_completed, language_members_by_language: @language_members_by_language, language_member_fake: @language_member_fake }
+  = render partial: 'languages',
+    locals: { languages: @languages_completed, language_members_by_language: @language_members_by_language, language_member_fake: @language_member_fake }
 
 .mb-5.pb-5
   = render 'reviews'

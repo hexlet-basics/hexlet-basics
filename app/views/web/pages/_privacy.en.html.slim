@@ -9,7 +9,7 @@ p We collect Device Information using the following technologies:
 ol
   li
     ' “Cookies” are data files that are placed on your device or computer and often include an anonymous unique identifier. For more information about cookies, and how to disable cookies, visit
-    = link_to 'http://www.allaboutcookies.org', 'http://www.allaboutcookies.org', class: 'text-break', target: "_blank"
+    = link_to 'http://www.allaboutcookies.org', 'http://www.allaboutcookies.org', class: 'text-break', target: '_blank', rel: :noopener
 
   li
     ' “Log files” track actions occurring on the Site, and collect data including your IP address, browser type, Internet service provider, referring/exit pages, and date/time stamps.
@@ -32,7 +32,7 @@ h2.h3 Sharing your personal information
 
 p
   ' We share your Personal Information with third parties to help us use your Personal Information, as described above. Rollbar to track website availability and errors. You can read more about how Rollbar uses your Personal Information here:
-  = link_to('https://docs.rollbar.com/docs/privacy-policy', 'https://docs.rollbar.com/docs/privacy-policy', class: 'text-break', target: "_blank")
+  = link_to 'https://docs.rollbar.com/docs/privacy-policy', 'https://docs.rollbar.com/docs/privacy-policy', class: 'text-break', target: '_blank', rel: :noopener
 
 p Finally, we may also share your Personal Information to comply with applicable laws and regulations, to respond to a subpoena, search warrant or other lawful request for information we receive, or to otherwise protect our rights.
 
@@ -40,23 +40,23 @@ h2.h3 Behavioural advertising
 
 p
   ' We use your Personal Information to provide you with targeted advertisements or marketing communications we believe may be of interest to you. For more information about how targeted advertising works, you can visit the Network Advertising Initiative’s (“NAI”) educational page at
-  = link_to('http://www.networkadvertising.org/understanding-online-advertising/how-does-it-work', 'http://www.networkadvertising.org/understanding-online-advertising/how-does-it-work', class: 'text-break', target: "_blank")
+  = link_to 'http://www.networkadvertising.org/understanding-online-advertising/how-does-it-work', 'http://www.networkadvertising.org/understanding-online-advertising/how-does-it-work', class: 'text-break', target: '_blank', rel: :noopener
 
 p You can opt out of targeted advertising by:
 
 p
   | FACEBOOK -
-  = link_to('https://www.facebook.com/settings/?tab=ads', 'https://www.facebook.com/settings/?tab=ads', class: 'text-break', target: "_blank")
+  = link_to 'https://www.facebook.com/settings/?tab=ads', 'https://www.facebook.com/settings/?tab=ads', class: 'text-break', target: '_blank', rel: :noopener
 p
   | GOOGLE -
-  = link_to('https://www.google.com/settings/ads/anonymous', 'https://www.google.com/settings/ads/anonymous', class: 'text-break', target: "_blank")
+  = link_to 'https://www.google.com/settings/ads/anonymous', 'https://www.google.com/settings/ads/anonymous', class: 'text-break', target: '_blank', rel: :noopener
 p
   | BING -
-  = link_to('https://advertise.bingads.microsoft.com/en-us/resources/policies/personalized-ads', 'https://advertise.bingads.microsoft.com/en-us/resources/policies/personalized-ads', class: 'text-break', target: "_blank")
+  = link_to 'https://advertise.bingads.microsoft.com/en-us/resources/policies/personalized-ads', 'https://advertise.bingads.microsoft.com/en-us/resources/policies/personalized-ads', class: 'text-break', target: '_blank', rel: :noopener
 
 p
   ' Additionally, you can opt out of some of these services by visiting the Digital Advertising Alliance’s opt-out portal at:
-  = link_to('http://optout.aboutads.info/', 'http://optout.aboutads.info/', class: 'text-break', target: "_blank")
+  = link_to 'http://optout.aboutads.info/', 'http://optout.aboutads.info/', class: 'text-break', target: '_blank', rel: :noopener
 
 h2.h3 Do not track
 
@@ -76,7 +76,7 @@ h2.h3 Contact us
 
 p
   ' For more information about our privacy practices, if you have questions, or if you would like to make a complaint, please contact us by e-mail at
-  = link_to('info@hexlet.io', "mailto:info@hexlet.io", class: "text-break")
+  = mail_to 'info@hexlet.io', nil, class: 'text-break'
   '
   ' or by mail using the details provided below:
 

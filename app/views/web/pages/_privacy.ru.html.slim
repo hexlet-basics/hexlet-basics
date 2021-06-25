@@ -10,7 +10,7 @@ ol
   li
     ' Cookies — это файлы данных, которые размещаются на вашем устройстве или компьютере и часто содержат анонимный уникальный идентификатор. Для получения дополнительной информации о файлах cookie и о том, как отключить файлы cookie, посетите сайт
     '
-    = link_to 'http://www.allaboutcookies.org', 'http://www.allaboutcookies.org', class: 'text-break', target: "_blank"
+    = link_to 'http://www.allaboutcookies.org', 'http://www.allaboutcookies.org', class: 'text-break', target: '_blank', rel: :noopener
 
   li «Файлы журналов» — отслеживают действия, происходящие на Сайте, и собирают данные, включая ваш IP-адрес, тип браузера, интернет-провайдера, страницы перехода/выхода и отметки даты/времени.
 
@@ -32,7 +32,7 @@ h2.h3 Передача вашей информации
 
 p
   ' Мы передаем вашу личную информацию третьим лицам, которые помогают нам использовать эти данные, как это было описано выше. Например, сервис Rollbar отслеживает работоспособность нашего сайта и наличие ошибок. Здесь
-  = link_to('https://docs.rollbar.com/docs/privacy-policy', 'https://docs.rollbar.com/docs/privacy-policy', class: 'text-break', target: "_blank")
+  = link_to 'https://docs.rollbar.com/docs/privacy-policy', 'https://docs.rollbar.com/docs/privacy-policy', class: 'text-break', target: '_blank', rel: :noopener
   '
   ' вы можете узнать о том, как Rollbar использует вашу личную информацию.
 
@@ -43,24 +43,24 @@ h2.h3 Поведенческая реклама
 p
   ' Мы используем вашу личную информацию, чтобы предоставить вам целевую рекламу или маркетинговые сообщения, которые, по нашему мнению, могут вас заинтересовать. Для получения дополнительной информации о том, как работает целевая реклама, вы можете посетить образовательную страницу «Инициативы сетевой рекламы» (NAI) по адресу
   '
-  = link_to('http://www.networkadvertising.org/understanding-online-advertising/how-does-it-work', 'http://www.networkadvertising.org/understanding-online-advertising/how-does-it-work', class: 'text-break', target: "_blank")
+  = link_to 'http://www.networkadvertising.org/understanding-online-advertising/how-does-it-work', 'http://www.networkadvertising.org/understanding-online-advertising/how-does-it-work', class: 'text-break', target: '_blank', rel: :noopener
 
 p Вы можете отказаться от целевой рекламы:
 
 p
   | FACEBOOK -
-  = link_to('https://www.facebook.com/settings/?tab=ads', 'https://www.facebook.com/settings/?tab=ads', class: 'text-break', target: "_blank")
+  = link_to 'https://www.facebook.com/settings/?tab=ads', 'https://www.facebook.com/settings/?tab=ads', class: 'text-break', target: '_blank', rel: :noopener
 p
   | GOOGLE -
-  = link_to('https://www.google.com/settings/ads/anonymous', 'https://www.google.com/settings/ads/anonymous', class: 'text-break', target: "_blank")
+  = link_to 'https://www.google.com/settings/ads/anonymous', 'https://www.google.com/settings/ads/anonymous', class: 'text-break', target: '_blank', rel: :noopener
 p
   | BING -
-  = link_to('https://advertise.bingads.microsoft.com/en-us/resources/policies/personalized-ads', 'https://advertise.bingads.microsoft.com/en-us/resources/policies/personalized-ads', class: 'text-break', target: "_blank")
+  = link_to 'https://advertise.bingads.microsoft.com/en-us/resources/policies/personalized-ads', 'https://advertise.bingads.microsoft.com/en-us/resources/policies/personalized-ads', class: 'text-break', target: '_blank', rel: :noopener
 
 p
   ' Кроме того, вы можете отказаться от некоторых из этих услуг, посетив портал отказа от участия в Digital Advertising Alliance по адресу:
   '
-  = link_to('http://optout.aboutads.info/', 'http://optout.aboutads.info/', class: 'text-break', target: "_blank")
+  = link_to 'http://optout.aboutads.info/', 'http://optout.aboutads.info/', class: 'text-break', target: '_blank', rel: :noopener
 
 h2.h3 Не отслеживать
 
@@ -80,7 +80,7 @@ h2.h3 Связаться с нами
 
 p
   ' Для получения дополнительной информации о нашей политике конфиденциальности, а также если у вас есть вопросы, либо вы хотите подать жалобу, пожалуйста, свяжитесь с нами по электронной почте
-  = link_to('info@hexlet.io', "mailto:info@hexlet.io", class: "text-break")
+  = mail_to 'info@hexlet.io', nil, class: 'text-break'
   '
   ' или по почте, используя эти данные:
 
