@@ -3,9 +3,9 @@ html.h-100 lang="#{I18n.locale}"
   head
     = render 'layouts/shared/admin/head'
   body.d-flex.flex-column.h-100
-    = render 'layouts/shared/nav'
-    .container.my-4
-      main
+    .container
+      = render 'layouts/shared/nav'
+      main.my-4
         .row
           .col-md-2
             ul.nav.nav-pills.flex-column
