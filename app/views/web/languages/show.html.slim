@@ -23,7 +23,7 @@
               = t('hours', count: @language.duration)
             span.text-nowrap.me-4
               span.bi.bi-people.me-2
-              = @language.members.size
+              = t('students', count: @language.members.size)
             span.d-inline-block
               span.bi.bi-book.me-2
               = t('.lessons', lessons_count: t('lessons', count: @language.lessons.size))

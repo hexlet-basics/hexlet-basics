@@ -47,6 +47,9 @@ en:
   hours:
     one: "%{count} hour"
     other: "%{count} hours"
+  students:
+    one: "%{count} student"
+    other: "%{count} students"
   lessons:
     one: "%{count} lesson"
     other: "%{count} lessons"
