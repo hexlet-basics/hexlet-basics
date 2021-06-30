@@ -11,11 +11,11 @@
 
 .mt-sm-5.mb-5.pb-5
   .container
-    .px-3.px-sm-5.py-4.py-sm-5.mb-4.bg-white.rounded-3.shadow-sm.border
+    .px-3.px-sm-5.py-4.py-sm-5.mb-4.bg-white.rounded-3.shadow-sm.border(itemscope itemtype='http://schema.org/ImageObject')
       .row
         .col
           .badge.border.text-dark.small = t('.free_course')
-          h1.display-5.fw-bold = [t("human_languages.#{@language}"), @language.learn_as.text].join(' ')
+          h1.display-5.fw-bold(itemprop='name') = [t("human_languages.#{@language}"), @language.learn_as.text].join(' ')
           p.col-md-10.fs-5 = t(".#{@language}_description")
           .text-muted.lead.mb-5
             span.text-nowrap.me-4
@@ -36,7 +36,7 @@
             = link_to t('.continue'), language_lesson_path(@language.slug, @next_lesson.slug), class: 'btn btn-lg btn-success px-4 mb-3 mt-2'
         .d-none.d-md-block.col-4
           / FIXME нужно добыть картинки
-          = image_pack_tag("#{@language.slug}_512x512.png", class: 'img-fluid', alt: @language) rescue nil
+          = image_pack_tag("#{@language.slug}_512x512.png", class: 'img-fluid', alt: @language, itemprop: 'contentUrl') rescue nil
 
     .
       - if @language_member.finished?
