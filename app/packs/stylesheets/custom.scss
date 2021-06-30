@@ -6,6 +6,8 @@ $breadcrumb-divider: quote('→');
 @import 'bootstrap/scss/utilities';
 @import 'bootstrap/scss/mixins';
 
+$azure: #45aaf2;
+
 $utilities: map-merge(
   $utilities,
   (
@@ -16,33 +18,22 @@ $utilities: map-merge(
       values: (
         100: 100%,
       )
-    )
+    ),
+    "background-color": (
+      property: background-color,
+      class: 'x-bg',
+      values: (
+        azure: $azure,
+        cyan: $cyan,
+        orange: $orange,
+        indigo: $indigo,
+        blue: $blue,
+        yellow: $yellow,
+        red: $red,
+      )
+    ),
   )
 );
-
-$azure: #45aaf2;
-
-.x-bg-azure {
-  background-color: $azure;
-}
-.x-bg-cyan {
-  background-color: $cyan;
-}
-.x-bg-orange {
-  background-color: $orange;
-}
-.x-bg-indigo {
-  background-color: $indigo;
-}
-.x-bg-blue {
-  background-color: $blue;
-}
-.x-bg-yellow {
-  background-color: $yellow;
-}
-.x-bg-red {
-  background-color: $red;
-}
 
 /* the only light, non-standard block, has to be customized directly */
 .hexlet-basics-content {
