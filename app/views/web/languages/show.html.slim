@@ -36,7 +36,7 @@
             = link_to t('.continue'), language_lesson_path(@language.slug, @next_lesson.slug), class: 'btn btn-lg btn-success px-4 mb-3 mt-2'
         .d-none.d-md-block.col-4
           / FIXME нужно добыть картинки
-          = image_pack_tag("#{@language.slug}_512x512.png", class: 'img-fluid', width: '512px', height: '512px', alt: @language, itemprop: 'contentUrl') rescue nil
+          = image_pack_tag("#{@language.slug}_512x512.png", class: 'img-fluid', width: 512, height: 512, alt: @language, itemprop: 'contentUrl') rescue nil
 
     .
       - if @language_member.finished?
