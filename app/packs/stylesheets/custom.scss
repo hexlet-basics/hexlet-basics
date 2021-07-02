@@ -22,14 +22,9 @@ $utilities: map-merge(
     "x-background-color": (
       property: background-color,
       class: 'x-bg',
-      values: (
-        azure: $azure,
-        cyan: $cyan,
-        orange: $orange,
-        indigo: $indigo,
-        blue: $blue,
-        yellow: $yellow,
-        red: $red,
+      values: map-merge(
+        $colors,
+        ( azure: $azure )
       )
     ),
   )
