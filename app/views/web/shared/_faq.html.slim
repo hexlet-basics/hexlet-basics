@@ -9,7 +9,7 @@
           - group.each do |item|
             - if item
               .mb-4
-                .h3.mb-3 = item.fetch(:question)
+                h3.mb-3 = item.fetch(:question)
                 == markdown2html item.fetch(:answer)
 
 = content_for :meta do
