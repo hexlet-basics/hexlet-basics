@@ -11,7 +11,7 @@
             .p-4 class=bg_class
               = image_tag "#{language.slug}.png", class: 'card-img-top', alt: t('language_icon', language: t("human_languages.#{language}"))
           .card-body
-            h2.card-title
+            .card-title.h2
               = link_to t("human_languages.#{language}"), language_path(language.slug), class: 'stretched-link text-dark text-decoration-none text-nowrap'
             .text-muted
               span.text-nowrap.d-inline-block.me-4
