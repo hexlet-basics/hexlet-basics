@@ -26,5 +26,8 @@ ansible-vaults-edit:
 tag:
 	git tag $(TAG) && git push --tags
 
+next-tag:
+	make tag TAG=$(shell bin/generate_next_tag)
+
 editor-setup:
 	bundle exec solargraph bundle
