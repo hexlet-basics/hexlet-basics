@@ -89,6 +89,12 @@ const Editor = () => {
     cm.replaceSelection(spaces);
   };
 
+  const handleRunCheck = (e) => {
+    const value = e.getValue();
+    dispatch(actions.runCheck({ lessonVersion, editor: { content: value } }));
+    debugger;
+  };
+
   const options = {
     autofocus: true,
     ...commonOptions,
@@ -96,9 +102,7 @@ const Editor = () => {
     indentUnit: getTabSize(language),
     extraKeys: {
       Tab: replaceTab,
-      'Ctrl-Enter': () => {
-        dispatch(actions.runCheck({ lessonVersion, editor: content }));
-      },
+      'Ctrl-Enter': handleRunCheck,
     },
   };
 
