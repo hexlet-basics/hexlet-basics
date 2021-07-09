@@ -92,7 +92,6 @@ const Editor = () => {
   const handleRunCheck = (e) => {
     const value = e.getValue();
     dispatch(actions.runCheck({ lessonVersion, editor: { content: value } }));
-    debugger;
   };
 
   const options = {
