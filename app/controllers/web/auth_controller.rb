@@ -18,6 +18,9 @@ class Web::AuthController < Web::ApplicationController
     else
       redirect_to new_user_path
     end
+  rescue ActiveRecord::RecordInvalid => e
+    e.rollbar_context = { auth_hash: auth }
+    raise
   end
 
   private
