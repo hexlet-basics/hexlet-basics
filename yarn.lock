@@ -3761,6 +3761,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"devicon@npm:^2.12.0":
+  version: 2.12.0
+  resolution: "devicon@npm:2.12.0"
+  checksum: b93b3228ce809bff1c518c7ccf4a549ad27cffc22ad6b770e65f8de04fa582b4e940a1065a918c810d40dcd58c8c41853be0c9722fba156064b803e80c97b5bc
+  languageName: node
+  linkType: hard
+
 "diff-sequences@npm:^27.0.1":
   version: 27.0.1
   resolution: "diff-sequences@npm:27.0.1"
@@ -4958,6 +4965,7 @@ __metadata:
     core-js: ^3.13.0
     css-loader: ^5.2.6
     date-fns: ^2.21.3
+    devicon: ^2.12.0
     eslint: ^7.27.0
     eslint-config-airbnb: ^18.2.1
     eslint-import-resolver-node: ^0.3.4
@@ -4980,7 +4988,6 @@ __metadata:
     postcss-import: ^14.0.2
     postcss-loader: ^5.3.0
     postcss-preset-env: ^6.7.0
-    programming-languages-logos: ^0.0.3
     prop-types: ^15.7.2
     react: ^17.0.2
     react-bootstrap: ^1.6.0
@@ -8076,13 +8083,6 @@ __metadata:
   version: 2.0.1
   resolution: "process-nextick-args@npm:2.0.1"
   checksum: ddeb0f07d0d5efa649c2c5e39d1afd0e3668df2b392d036c8a508b0034f7beffbc474b3c2f7fd3fed2dc4113cef8f1f7e00d05690df3c611b36f6c7efd7852d1
-  languageName: node
-  linkType: hard
-
-"programming-languages-logos@npm:^0.0.3":
-  version: 0.0.3
-  resolution: "programming-languages-logos@npm:0.0.3"
-  checksum: 04e7a82d2bd228ae8226b2e415adb0301aa3ed506155f612baa750214ebd5b3cb82c40fac8a1c25d6f534e516a98d96ecb665bf7bb2a7c74180a17b073a3b048
   languageName: node
   linkType: hard
 

@@ -1,5 +1,12 @@
 DEFAULTS: &DEFAULTS
-  theory: "<%= Faker::Lorem.paragraph_by_chars(number: 400) %>"
+  theory: |
+    <%= Faker::Lorem.paragraph_by_chars(number: 400) %>
+
+    ```javascript
+    const x = 5;
+    ```
+
+    wow
   instructions: "<%= Faker::Lorem.paragraph %>"
   definitions: []
   tips: <%= [Faker::Lorem.paragraph] %>

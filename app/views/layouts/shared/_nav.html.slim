@@ -17,27 +17,27 @@
         ul.dropdown-menu.dropdown-menu-columns.dropdown-menu-arrow
           li
             = link_to language_path('php'), class: 'dropdown-item d-flex align-items-center py-2'
-              = image_pack_tag('php_32x32.png', alt: t('language_icon', language: t('human_languages.php')), width: 16, height: 16, class: 'me-3')
+              i.devicon-php-plain.colored.me-2.fs-5
               span = t('human_languages.php')
           li
             = link_to language_path('javascript'), class: 'dropdown-item d-flex align-items-center py-2'
-              = image_pack_tag('javascript_32x32.png', alt: t('language_icon', language: t('human_languages.javascript')), width: 16, height: 16, class: 'me-3')
+              i.devicon-javascript-plain.colored.me-2.fs-5
               span = t('human_languages.javascript')
           li
             = link_to language_path('python'), class: 'dropdown-item d-flex align-items-center py-2'
-              = image_pack_tag('python_32x32.png', alt: t('language_icon', language: t('human_languages.python')), width: 16, height: 16, class: 'me-3')
+              i.devicon-python-plain.colored.me-2.fs-5
               span = t('human_languages.python')
           li
             = link_to language_path('java'), class: 'dropdown-item d-flex align-items-center py-2'
-              = image_pack_tag('java_32x32.png', alt: t('language_icon', language: t('human_languages.java')), width: 16, height: 16, class: 'me-3')
+              i.devicon-java-plain.colored.me-2.fs-5
               span = t('human_languages.java')
           li
             = link_to language_path('html'), class: 'dropdown-item d-flex align-items-center py-2'
-              = image_pack_tag('html_32x32.png', alt: t('language_icon', language: t('human_languages.html')), width: 16, height: 16, class: 'me-3')
+              i.devicon-html5-plain.colored.me-2.fs-5
               span = t('human_languages.html')
           li
             = link_to language_path('css'), class: 'dropdown-item d-flex align-items-center py-2'
-              = image_pack_tag('css_32x32.png', alt: t('language_icon', language: t('human_languages.css')), width: 16, height: 16, class: 'me-3')
+              i.devicon-css3-plain.colored.me-2.fs-5
               span = t('human_languages.css')
           li
             = link_to language_path('racket'), class: 'dropdown-item d-flex align-items-center py-2'
@@ -45,15 +45,15 @@
               span = t('human_languages.racket')
           li
             = link_to language_path('ruby'), class: 'dropdown-item d-flex align-items-center py-2'
-              = image_pack_tag('ruby_32x32.png', alt: t('language_icon', language: t('human_languages.ruby')), width: 16, height: 16, class: 'me-3')
+              i.devicon-ruby-plain.colored.me-2.fs-5
               span = t('human_languages.ruby')
           li
             = link_to language_path('elixir'), class: 'dropdown-item d-flex align-items-center py-2'
-              span.bi.bi-code.me-3
+              i.devicon-elixir-plain.colored.me-2.fs-5
               span = t('human_languages.elixir')
           li
             = link_to language_path('go'), class: 'dropdown-item d-flex align-items-center py-2'
-              = image_pack_tag('go_32x32.png', alt: t('language_icon', language: t('human_languages.go')), width: 16, height: 16, class: 'me-3')
+              i.devicon-go-plain.colored.me-2.fs-5
               span = t('human_languages.go')
       li.nav-item.dropdown.me-2.me-auto
         = link_to t('.success_stories'), ExternalLinks.hexlet_success_stories, class: 'nav-link text-dark', target: '_blank', rel: :nofollow

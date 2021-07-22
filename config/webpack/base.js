@@ -7,9 +7,9 @@ webpackConfig.plugins = webpackConfig.plugins.filter((p) => !(p instanceof Compr
 // needed for bootstrap-icons
 webpackConfig.module.rules.forEach((module) => { // lets iterate Rules...
   const type = module.test.toString();
-  if (module.test && type.includes('scss')) { // scss and sass are in same bag.
+  if (module.test && (type.includes('scss'))) { // scss and sass are in same bag.
     module.use.splice(-1, 0, {
-      loader: require.resolve('resolve-url-loader')
+      loader: require.resolve('resolve-url-loader'),
     });
     module.use.forEach((info) => {
       if (info.loader.includes('sass')) {
