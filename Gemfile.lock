@@ -118,6 +118,12 @@ GEM
     concurrent-ruby (1.1.9)
     configus (0.0.5)
     connection_pool (2.2.5)
+    countries (4.0.1)
+      i18n_data (~> 0.13.0)
+      sixarm_ruby_unaccent (~> 1.1)
+    country_select (6.0.0)
+      countries (~> 4.0)
+      sort_alphabetical (~> 1.1)
     crass (1.0.6)
     declarative (0.0.20)
     declarative-builder (0.2.0)
@@ -185,6 +191,7 @@ GEM
       concurrent-ruby (~> 1.0)
     i18n-debug (1.2.0)
       i18n (< 2)
+    i18n_data (0.13.0)
     jaro_winkler (1.5.4)
     jbuilder (2.11.2)
       activesupport (>= 5.0.0)
@@ -326,13 +333,13 @@ GEM
       nokogiri
     rexml (3.2.5)
     rollbar (3.2.0)
-    rubocop (1.18.3)
+    rubocop (1.18.4)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml
-      rubocop-ast (>= 1.7.0, < 2.0)
+      rubocop-ast (>= 1.8.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
     rubocop-ast (1.8.0)
@@ -363,6 +370,7 @@ GEM
     simple_form (5.1.0)
       actionpack (>= 5.2)
       activemodel (>= 5.2)
+    sixarm_ruby_unaccent (1.2.0)
     slim (4.1.0)
       temple (>= 0.7.6, < 0.9)
       tilt (>= 2.0.6, < 2.1)
@@ -373,6 +381,8 @@ GEM
     slim_lint (0.22.0)
       rubocop (>= 0.78.0)
       slim (>= 3.0, < 5.0)
+    sort_alphabetical (1.1.0)
+      unicode_utils (>= 1.2.2)
     spring (2.1.1)
     sprockets (4.0.2)
       concurrent-ruby (~> 1.0)
@@ -395,6 +405,7 @@ GEM
       concurrent-ruby (~> 1.0)
     uber (0.1.0)
     unicode-display_width (2.0.0)
+    unicode_utils (1.4.0)
     valid_email2 (4.0.0)
       activemodel (>= 3.2)
       mail (~> 2.5)
@@ -427,6 +438,7 @@ DEPENDENCIES
   byebug
   capybara (>= 2.15)
   configus
+  country_select
   dotenv-rails
   dry-auto_inject
   dry-container
@@ -474,4 +486,4 @@ DEPENDENCIES
   webpacker!
 
 BUNDLED WITH
-   2.2.15
+   2.2.22

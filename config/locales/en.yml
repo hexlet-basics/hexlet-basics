@@ -30,7 +30,10 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  languages:
+    ru: Russian
+    en: English
+  # TODO Это должно быть в константах
   human_languages:
     javascript: JavaScript
     java: Java

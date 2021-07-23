@@ -76,5 +76,15 @@
             li = link_to t('.profile'), edit_account_profile_path, class: 'dropdown-item'
             .dropdown-divider
             li = link_to t('.sign_out'), session_path, method: :delete, class: 'dropdown-item'
-      li.nav-item.d-flex.align-items-center
-        = render 'layouts/shared/language_switcher'
+      li.nav-item.dropdown
+        a.nav-link.text-dark.dropdown-toggle href='#' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false'
+          span.me-2= image_tag "flag-#{I18n.locale}.svg", width: 25, alt: "switch language to #{I18n.locale}"
+        ul.dropdown-menu.dropdown-menu-end
+          li.dropdown-item
+          - I18n.available_locales.without(I18n.locale).each do |locale|
+            = link_to switch_locale_path(locale: locale), class: 'text-decoration-none' do
+              li.dropdown-item.d-flex
+                span.me-2.my-auto
+                  = image_tag "flag-#{locale}.svg", width: 25, alt: "switch language to #{locale}"
+                span.my-auto
+                  = t(locale, scope: 'languages')

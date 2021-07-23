@@ -1,4 +1,7 @@
 ru:
+  languages:
+    ru: Русский
+    en: Английский
   language_icon: "Иконка %{language}"
   human_languages:
     javascript: JavaScript
