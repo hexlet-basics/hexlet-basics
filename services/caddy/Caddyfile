@@ -10,5 +10,7 @@ localhost, ru.code-basics.test, en.code-basics.test, code-basics.test {
 
   reverse_proxy /* web:3000
   reverse_proxy /packs/* webpacker:3035
-  reverse_proxy /ws webpacker:3035
+  reverse_proxy /sockjs-node/* webpacker:3035
+
+  # header Access-Control-Allow-Origin "*"
 }

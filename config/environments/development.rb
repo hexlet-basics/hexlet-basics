@@ -54,6 +54,7 @@ Rails.application.configure do
   config.assets.debug = true
 
   # Suppress logger output for asset requests.
+  config.web_console.whiny_requests = false
   # config.assets.quiet = true
 
   # Raises error for missing translations.

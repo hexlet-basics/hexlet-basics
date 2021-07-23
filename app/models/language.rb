@@ -5,9 +5,11 @@ class Language < ApplicationRecord
 
   enumerize :slug, in: %i[php javascript python java html css racket elixir ruby go]
   enumerize :progress, in: %i[completed in_development draft], default: :draft, scope: true
+  # TODO: move to language version and populate inside the job
   enumerize :learn_as, in: %i[first_language second_language], default: :first_language
 
   validates :slug, presence: true
+  # validates :learn_as, presence: true
 
   belongs_to :current_version, optional: true, class_name: 'Language::Version'
 
