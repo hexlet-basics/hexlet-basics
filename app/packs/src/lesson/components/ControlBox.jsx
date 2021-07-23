@@ -8,12 +8,9 @@ import { deleteFromStorage } from '@rehooks/local-storage';
 import cn from 'classnames';
 // import Hotkeys from 'react-hot-keys';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { Button, Spinner } from 'react-bootstrap';
-
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import {
-//   faArrowRight, faSyncAlt, faArrowLeft, faPlayCircle,
-// } from '@fortawesome/free-solid-svg-icons';
+import {
+  Button, Spinner, Popover, OverlayTrigger,
+} from 'react-bootstrap';
 
 import routes from 'vendor/appRoutes.js';
 import { actions } from '../slices/index.js';
@@ -61,7 +58,6 @@ const ControlBox = () => {
       );
     }
 
-    // <FontAwesomeIcon icon={faPlayCircle} />
     return (
       <>
         <span className="bi bi-play-circle" />
@@ -71,9 +67,9 @@ const ControlBox = () => {
   };
 
   const prevButtonClasses = cn(`btn btn-outline-secondary
-    font-weight-normal me-3 order-first order-sm-0 order-md-first order-lg-0`);
+    fw-normal me-3 order-first order-sm-0 order-md-first order-lg-0`);
 
-  const nextButtonClasses = cn('btn btn-outline-primary font-weight-normal', {
+  const nextButtonClasses = cn('btn btn-outline-primary fw-normal', {
     disabled: !lessonInfo.finished,
   });
 
@@ -82,33 +78,44 @@ const ControlBox = () => {
 
   useHotkeys('ctrl+enter', handleRunCheck);
 
-  // <FontAwesomeIcon icon={faSyncAlt} />
+  const popover = (
+    <Popover id="popover-basic">
+      <Popover.Header as="h3">{t('help.controls.header')}</Popover.Header>
+      <Popover.Body>{t('help.controls.body')}</Popover.Body>
+    </Popover>
+  );
+
   return (
-    <div className="d-flex justify-content-center p-3 border-top flex-shrink-0">
-      <Button
-        variant="secondary"
-        className="me-3 d-inline-flex align-items-center"
-        onClick={handleReset}
-        title={t('resetCode')}
-      >
-        <span className="bi bi-arrow-repeat" />
-      </Button>
-      <a className={prevButtonClasses} href={prevLessonPath}>
-        <span className="bi bi-arrow-left-short d-sm-none d-md-block d-lg-none" />
-        <span className="d-none d-sm-block d-md-none d-lg-block">{t('prevLesson')}</span>
-      </a>
-      <Button
-        variant="primary"
-        className="me-3 d-inline-flex align-items-center"
-        onClick={handleRunCheck}
-        disabled={isCodeChecking}
-      >
-        {renderRunButtonContent()}
-      </Button>
-      <a className={nextButtonClasses} href={nextLessonPath}>
-        <span className="bi bi-arrow-right-short d-sm-none d-md-block d-lg-none" />
-        <span className="d-none d-sm-block d-md-none d-lg-block">{t('nextLesson')}</span>
-      </a>
+    <div className="d-flex p-3 border-top">
+      <OverlayTrigger trigger="click" placement="top" overlay={popover}>
+        <i role="button" aria-label="help" className="bi text-muted my-auto fw-light fs-5 bi-question-circle" />
+      </OverlayTrigger>
+      <div className="m-auto">
+        <Button
+          variant="outline-secondary"
+          className="me-3"
+          onClick={handleReset}
+          title={t('resetCode')}
+        >
+          <span className="bi bi-arrow-repeat" />
+        </Button>
+        <a className={prevButtonClasses} href={prevLessonPath}>
+          <span className="bi bi-arrow-left-short d-sm-none d-md-block d-lg-none" />
+          <span className="d-none d-sm-block d-md-none d-lg-block">{t('prevLesson')}</span>
+        </a>
+        <Button
+          variant="primary"
+          className="me-3 d-inline-flex align-items-center"
+          onClick={handleRunCheck}
+          disabled={isCodeChecking}
+        >
+          {renderRunButtonContent()}
+        </Button>
+        <a className={nextButtonClasses} href={nextLessonPath}>
+          <span className="bi bi-arrow-right-short d-sm-none d-md-block d-lg-none" />
+          <span className="d-none d-sm-block d-md-none d-lg-block">{t('nextLesson')}</span>
+        </a>
+      </div>
     </div>
   );
 };

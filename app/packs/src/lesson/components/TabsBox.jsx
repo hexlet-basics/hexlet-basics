@@ -2,7 +2,9 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Tab, Nav, OverlayTrigger, Popover } from 'react-bootstrap';
+import {
+  Tab, Nav,
+} from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { actions } from '../slices/index.js';
 import { currentTabValues } from '../utils/maps.js';
@@ -35,15 +37,6 @@ const TabsBox = () => {
   // }, [null]);
   // console.log(activeTab)
 
-  const popover = (
-    <Popover id="popover-basic">
-      <Popover.Header as="h3">Popover right</Popover.Header>
-      <Popover.Body>
-        right?
-      </Popover.Body>
-    </Popover>
-  );
-
   return (
     <Tab.Container id="tabs" activeKey={currentTab} onSelect={changeTab}>
       <Nav variant="tabs" className="justify-content-center small">
@@ -75,9 +68,6 @@ const TabsBox = () => {
         </Tab.Pane>
       </Tab.Content>
 
-      <OverlayTrigger trigger="click" placement="right" overlay={popover}>
-        <i className="bi bi-question" />
-      </OverlayTrigger>
     </Tab.Container>
   );
 };

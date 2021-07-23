@@ -1286,10 +1286,10 @@
     redux-thunk "^2.3.0"
     reselect "^4.0.0"
 
-"@rehooks/local-storage@2.4.1":
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/@rehooks/local-storage/-/local-storage-2.4.1.tgz#a35bf8ea03d8bf2202029a7b5885ed2806a3594b"
-  integrity sha512-btOCPMDDG5PtNw+qNMTG9HGsgQTUYa3bvZ/ELDSeZ4YA9IGJA97oP6Tcb9EOrN7OqC8zpsiO7qxvpYP01PE+XQ==
+"@rehooks/local-storage@2.4.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@rehooks/local-storage/-/local-storage-2.4.0.tgz#fb884b2b657cad5f77aa6ab60bb3532f0e0725d2"
+  integrity sha512-LoXDbEHsuIckVgBsFAv8SuU/M7memjyfWut9Zf36TQXqqCHBRFv8bweg9PymQCa1aWIMjNrZQflFdo55FDlXYg==
 
 "@restart/context@^2.1.4":
   version "2.1.4"
