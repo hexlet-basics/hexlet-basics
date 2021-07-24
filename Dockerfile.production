@@ -11,7 +11,6 @@ RUN curl -fsSL "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/x86_6
   | tar -xzC /usr/local/bin --strip=1 docker/docker
 
 RUN apt-get update && apt-get install -y nodejs
-RUN npm install -g npm-check-updates
 RUN npm install -g yarn
 
 # RUN yarn set version berry
