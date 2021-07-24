@@ -2,6 +2,8 @@ en:
   flash:
     web:
       languages:
+        show:
+          warning: The Language has lessons only in russian. Switch locale if you can read it :)
         lessons:
           show:
             lesson_not_found: Lesson not found. Please, try another lesson.

@@ -3,6 +3,7 @@
 class Web::LanguagesController < Web::ApplicationController
   def show
     @language = Language.find_by!(slug: params[:id])
+
     @current_module_versions = @language.current_module_versions
                                         .includes(:module)
                                         .order(:order)
@@ -21,5 +22,10 @@ class Web::LanguagesController < Web::ApplicationController
     @next_lesson = current_user.not_finished_lessons_for_language(@language).ordered.first
 
     title t("languages.#{@language}.title")
+
+    if @current_module_versions.empty?
+      f('warning', now: true)
+      return
+    end
   end
 end
