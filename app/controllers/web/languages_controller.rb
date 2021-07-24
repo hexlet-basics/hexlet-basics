@@ -25,7 +25,7 @@ class Web::LanguagesController < Web::ApplicationController
 
     if @current_module_versions.empty?
       f('warning', now: true)
-      return
+      nil
     end
   end
 end
