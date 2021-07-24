@@ -6,6 +6,8 @@ class Web::ApplicationController < ApplicationController
   include EventConcern
 
   before_action do
+    return if browser.bot?
+
     # TODO: завести определение локали на базе ip
     # results = Geocoder.search(request.remote_ip)
 
