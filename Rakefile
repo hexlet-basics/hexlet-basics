@@ -10,7 +10,7 @@ Rails.application.load_tasks
 # https://github.com/rails/webpacker/issues/405
 Rake::Task['yarn:install'].clear
 namespace :yarn do
-  task :install do
+  task install: :environment do
     # Redefine as empty
   end
 end
