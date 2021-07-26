@@ -52,9 +52,6 @@ $utilities: map-merge(
   pre {
     @extend .border;
     @extend .rounded;
-    code {
-      @extend .p-3;
-    }
   }
 
   .hexlet-basics-example {
