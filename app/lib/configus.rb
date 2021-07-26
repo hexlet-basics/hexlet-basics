@@ -7,7 +7,6 @@ Configus.build Rails.env do
     https_host 'https://ru.code-basics.com'
     phone '+7 (495) 147-73-79'
     free_phone '8 800 333 57 04'
-    block_bots false
 
     github do
       app_id ENV['GITHUB_CLIENT_ID']
@@ -40,7 +39,5 @@ Configus.build Rails.env do
       app_id
       app_secret
     end
-
-    block_bots false
   end
 end

@@ -6,8 +6,24 @@ class Web::ApplicationController < ApplicationController
   include TitleConcern
   include EventConcern
 
+  before_action :prepare_locale_settings
+
   before_action do
-    return if configus.block_bots && browser.bot?
+    gon.current_user = {
+      id: current_user.id,
+      email: current_user.email,
+      created_at: current_user.created_at,
+      is_guest: current_user.guest?
+    }
+
+    gon.locale = I18n.locale
+    gon.events = EventsMapping.events
+  end
+
+  private
+
+  def prepare_locale_settings
+    return if browser.bot?
 
     I18n.locale = request.subdomains.first || :en
 
@@ -33,17 +49,5 @@ class Web::ApplicationController < ApplicationController
         # f(:, now: true)
       end
     end
-  end
-
-  before_action do
-    gon.current_user = {
-      id: current_user.id,
-      email: current_user.email,
-      created_at: current_user.created_at,
-      is_guest: current_user.guest?
-    }
-
-    gon.locale = I18n.locale
-    gon.events = EventsMapping.events
   end
 end
