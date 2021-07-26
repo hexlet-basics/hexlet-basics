@@ -7,7 +7,7 @@ class Web::ApplicationController < ApplicationController
   include EventConcern
 
   before_action do
-    return if browser.bot?
+    return if configus.block_bots && browser.bot?
 
     I18n.locale = request.subdomains.first || :en
 
