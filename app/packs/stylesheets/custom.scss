@@ -27,6 +27,13 @@ $utilities: map-merge(
         ( azure: $azure )
       )
     ),
+    "x-font-size": (
+      property: font-size,
+      class: 'x-fs',
+      values: (
+        15: 15rem,
+      )
+    ),
   )
 );
 
