@@ -52,6 +52,11 @@ $utilities: map-merge(
   pre {
     @extend .border;
     @extend .rounded;
+
+    code {
+      @extend .d-block;
+      @extend .p-3;
+    }
   }
 
   .hexlet-basics-example {
