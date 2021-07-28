@@ -78,3 +78,5 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 gem 'country_select'
 
 gem 'browser'
+
+gem 'meta-tags'

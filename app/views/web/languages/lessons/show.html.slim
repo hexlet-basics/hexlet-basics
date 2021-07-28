@@ -3,7 +3,6 @@
   meta content=title property='og:title'
   meta content="#{language_lesson_url(@lesson.language.slug, @lesson.slug)}" property='og:url'
   meta content="#{image_url("#{@lesson.language.slug}.png")}" property='og:image'
-  link rel='canonical' href="#{language_lesson_url(@lesson.language.slug, @lesson.slug)}"
   meta content= truncate("[#{t("human_languages.#{resource_language}")}] — #{@info.name} — #{@info.theory}", length: 220) property='og:description'
   meta content= truncate("[#{t("human_languages.#{resource_language}")}] — #{@info.name} — #{@info.theory}", length: 200) name='description'
   meta content="#{I18n.locale}" property='og:locale'
