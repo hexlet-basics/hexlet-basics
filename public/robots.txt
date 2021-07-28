@@ -1,9 +1,8 @@
-# See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
 User-agent: *
 Disallow: /locale/
 Disallow: /users/
 Disallow: /session/
-Disallow: /remind_password/
+Disallow: /remind_password
 Disallow: /cdn-cgi/
 Disallow: /password/
 Disallow: /confirm
@@ -12,5 +11,7 @@ Disallow: */prev_lesson
 Disallow: */next_lesson
 Disallow: *.php
 Disallow: */edit
+Disallow: */modules/
+Allow: */modules$
 
 Sitemap: https://ru.code-basics.com/sitemap.xml
