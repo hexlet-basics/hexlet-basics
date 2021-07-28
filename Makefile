@@ -3,7 +3,7 @@ include make-compose-app.mk
 include make-compose.mk
 include k8s/Makefile
 
-project-setup: ansible-generate-env compose-setup
+project-setup: ansible-generate-env compose-setup app-setup
 
 ansible-generate-env:
 	docker run --rm -e RUNNER_PLAYBOOK=ansible/development.yml \

@@ -1,6 +1,9 @@
 {
   "name": "hexlet_basics",
   "private": true,
+  "simple-git-hooks": {
+    "pre-push": "make app-lint"
+  },
   "dependencies": {
     "@popperjs/core": "^2.9.2",
     "@rails/actioncable": "^6.1.4",
@@ -69,6 +72,7 @@
     "resolve-url-loader": "^4.0.0",
     "sass": "^1.35.2",
     "sass-loader": "^12.1.0",
+    "simple-git-hooks": "^2.5.1",
     "sockjs-client": "^1.5.1",
     "style-loader": "^3.2.1",
     "webpack": "^5.38.1",
