@@ -1,5 +1,5 @@
 doctype html
-html lang="#{I18n.locale}"
+html[amp lang="#{I18n.locale}"]
   head
     meta[charset="utf-8"]
     script[async src="https://cdn.ampproject.org/v0.js"]
@@ -12,7 +12,6 @@ html lang="#{I18n.locale}"
         | body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}
     = display_meta_tags site: 'Code Basics'
   body
-    = yield
     amp-analytics type="gtag" data-credentials="include"
       javascript:
         var config = {
@@ -25,3 +24,4 @@ html lang="#{I18n.locale}"
             },
           },
         };
+    = yield

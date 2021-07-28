@@ -2,4 +2,4 @@ h1 = "#{t("human_languages.#{resource_language}")}: #{@info.name}"
 
 = link_to t('.read_full_version'), url_for(format: '', only_path: false)
 
-== markdown2html(@info.theory)
+= render 'content'
