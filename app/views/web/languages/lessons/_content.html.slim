@@ -1,5 +1,5 @@
 - unless signed_in?
-  .alert.alert-info.border-0.rounded-0
+  .alert.alert-info.border-0.rounded-0.small
     = t('.sign_up_for_tracking_progress_html', name: resource_language, link: new_user_path)
 nav.my-3 aria-label=t('.breadcrumb')
 ol.breadcrumb itemscope="itemscope" itemtype="https://schema.org/BreadcrumbList"
@@ -42,10 +42,3 @@ h1.h3.font-weight-bold
   = t('.issues')
   '
   = link_to ExternalLinks.source_code, get_lesson_source_code(@lesson_version, @info), target: '_blank', rel: :noopener
-.tab-pane.fade.overflow-auto.x-h-md-100#discuss-tab(role="tabpanel")
-.card-body.pt-2.pb-0
-.alert.alert-info.small.my-2
-span.align-baseline = t('.if_stuck')
-'
-= link_to t('.community'), ExternalLinks.hexlet_slack, target: '_blank', class: 'align-baseline', rel: :noopener
-

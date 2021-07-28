@@ -81,17 +81,17 @@ ru:
         first_courses_free: Первые курсы в профессии доступны бесплатно. Чтобы начать изучение материала, достаточно зарегистрироваться и вступить в профессию.
         hexlet_profs: Другие профессии на Хекслете
       lessons:
+        content:
+          read_full_version: Читать полную версию
+          sign_up_for_tracking_progress_html: |
+            Бесплатный курс по %{name}. <a href="%{link}" class="text-decoration-none" target="_blank">Зарегистрируйтесь</a> для отслеживания прогресса &rarr;
+          instructions: Задание
+          definitions: Определения
+          tips: Советы
+          issues: Нашли ошибку? Есть что добавить? Пулреквесты приветствуются
+          breadcrumb: Хлебные крошки
         show:
-          content:
-            read_full_version: Читать полную версию
-            sign_up_for_tracking_progress_html: |
-              Бесплатный курс по %{name}. <a href="%{link}" class="text-decoration-none" target="_blank">Зарегистрируйтесь</a> для отслеживания прогресса &rarr;
-            instructions: Задание
-            definitions: Определения
-            tips: Советы
-            issues: Нашли ошибку? Есть что добавить? Пулреквесты приветствуются
-            if_stuck: Если вы столкнулись с трудностями и не знаете, что делать, задайте вопрос в нашем большом и дружном
-            breadcrumb: Хлебные крошки
+          if_stuck: Если вы столкнулись с трудностями и не знаете, что делать, задайте вопрос в нашем большом и дружном
           discuss: Обсуждение
           lesson: Урок
           only_for_signed_in_users: Упражнение доступно только авторизованным пользователям.
