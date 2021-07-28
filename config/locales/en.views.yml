@@ -52,6 +52,9 @@ en:
         free_course: Free course
         start: Start Learning
         continue: Continue Learning
+        start_demo_lesson: Demo lesson
+        ready: Are you ready?
+        no_registration: Registration is not required
         lessons: "%{lessons_count} with practice in the browser"
         javascript_description: The study of programming is a difficult and lengthy process. Learning the syntax of the language - it is impossible to start without it. This The course is devoted to the basics of writing programs for a Javascript. He is preparing a springboard for writing meaningful programs.
         php_description: The study of programming is a difficult and lengthy process. Learning the syntax of the language - it is impossible to start without it. This The course is devoted to the basics of writing programs for a PHP. He is preparing a springboard for writing meaningful programs.
