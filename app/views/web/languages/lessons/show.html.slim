@@ -20,6 +20,9 @@
       .tab-content.overflow-hidden.x-h-md-100
         .tab-pane.fade.overflow-auto.x-h-md-100.active.show#lesson-tab(role="tabpanel")
           .card-body
+            - unless signed_in?
+              .alert.alert-info.border-0.rounded-0
+                = t('.sign_up_for_tracking_progress_html', name: resource_language, link: new_user_path)
             nav.my-3 aria-label=t('.breadcrumb')
               ol.breadcrumb itemscope="itemscope" itemtype="https://schema.org/BreadcrumbList"
                 li.breadcrumb-item itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem"

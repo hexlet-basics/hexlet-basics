@@ -82,6 +82,8 @@ ru:
         hexlet_profs: Другие профессии на Хекслете
       lessons:
         show:
+          sign_up_for_tracking_progress_html: |
+            Бесплатный курс по %{name}. <a href="%{link}" class="text-decoration-none" target="_blank">Зарегистрируйтесь</a> для отслеживания прогресса &rarr;
           instructions: Задание
           definitions: Определения
           tips: Советы
