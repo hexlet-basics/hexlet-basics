@@ -32,7 +32,6 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     set_meta_tags canonical: language_lesson_url(@lesson.language.slug, @lesson.slug),
                   amphtml: language_lesson_url(@lesson.language.slug, @lesson.slug, format: 'amp', only_path: false),
                   title: [@info, t("human_languages.#{@resource_language}")].join(' | ')
-
   end
 
   def next_lesson
