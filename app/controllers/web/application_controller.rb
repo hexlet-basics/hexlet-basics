@@ -35,7 +35,7 @@ class Web::ApplicationController < ApplicationController
       result = results.first
       subdomain = request.subdomains.first
       ru_country_codes = ['RU']
-      remembered_locale = session[:locale].to_sym
+      remembered_locale = session[:locale]&.to_sym
 
       if current_page?(root_path)
         if remembered_locale && remembered_locale != I18n.locale
