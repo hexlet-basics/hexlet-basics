@@ -1,5 +1,5 @@
 doctype html
-html[amp lang="#{I18n.locale}"]
+html[amp ⚡ lang="#{I18n.locale}"]
   head
     meta[charset="utf-8"]
     script[async src="https://cdn.ampproject.org/v0.js"]
@@ -13,15 +13,15 @@ html[amp lang="#{I18n.locale}"]
     = display_meta_tags site: 'Code Basics'
   body
     amp-analytics type="gtag" data-credentials="include"
-      javascript:
-        var config = {
-          vars: {
-            gtag_id: 'UA-1360700-51',
-            config: {
-              'UA-1360700-51': {
-                groups: 'default',
-              },
-            },
-          },
-        };
+      javascript[type="application/json"]:
+        {
+          "vars": {
+            "gtag_id": "UA-1360700-51",
+            "config": {
+              "UA-1360700-51": {
+                "groups": "default"
+              }
+            }
+          }
+        }
     = yield

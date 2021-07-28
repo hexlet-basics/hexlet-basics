@@ -82,15 +82,16 @@ ru:
         hexlet_profs: Другие профессии на Хекслете
       lessons:
         content:
-          read_full_version: Читать полную версию
-          sign_up_for_tracking_progress_html: |
-            Бесплатный курс по %{name}. <a href="%{link}" class="text-decoration-none" target="_blank">Зарегистрируйтесь</a> для отслеживания прогресса &rarr;
-          instructions: Задание
-          definitions: Определения
-          tips: Советы
-          issues: Нашли ошибку? Есть что добавить? Пулреквесты приветствуются
-          breadcrumb: Хлебные крошки
+          html:
+            sign_up_for_tracking_progress_html: |
+              Бесплатный курс по %{name}. <a href="%{link}" class="text-decoration-none" target="_blank">Зарегистрируйтесь</a> для отслеживания прогресса &rarr;
+            instructions: Задание
+            definitions: Определения
+            tips: Советы
+            issues: Нашли ошибку? Есть что добавить? Пулреквесты приветствуются
         show:
+          breadcrumb: Хлебные крошки
+          read_full_version: Читать полную версию
           if_stuck: Если вы столкнулись с трудностями и не знаете, что делать, задайте вопрос в нашем большом и дружном
           discuss: Обсуждение
           lesson: Урок

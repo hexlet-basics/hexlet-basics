@@ -15,6 +15,7 @@ Rails.application.config.content_security_policy do |policy|
   #   policy.style_src   :self, :https
   #   # If you are using webpack-dev-server then specify webpack-dev-server host
   policy.connect_src :self, :https, 'https://code-basics.test', 'wss://code-basics.test' if Rails.env.development?
+  policy.connect_src :self, :https, 'https://ru.code-basics.test', 'wss://ru.code-basics.test' if Rails.env.development?
 
   #   # Specify URI for violation reports
   #   # policy.report_uri "/csp-violation-report-endpoint"
