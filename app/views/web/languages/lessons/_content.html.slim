@@ -5,16 +5,16 @@
 .hexlet-basics-content
   h1.h3.font-weight-bold
     = "#{t("human_languages.#{resource_language}")}: #{@info.name}"
-  == markdown2html(@info.theory)
+  == markdown2html(@info.theory, options)
   - if @info.instructions
     h2.h4.font-weight-bold = t('.instructions')
-    == markdown2html(@info.instructions)
+    == markdown2html(@info.instructions, options)
     hr.my-4
   - if @info.tips.any?
     h2.h5.font-weight-bold.mt-4 = t('.tips')
     ul.ps-4
       - @info.tips.each do |tip|
-        li == markdown2html(tip)
+        li == markdown2html(tip, options)
   - if @info.definitions.any?
     h2.h5.font-weight-bold = t('.definitions')
     ul.ps-4

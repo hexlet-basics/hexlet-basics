@@ -25,7 +25,7 @@ app-setup: app-install app-db-prepare app-setup-git-hooks
 	make app-language-load L='javascript'
 	make app-language-load L='php'
 	# make app-language-load L='python'
-	# make app-language-load L='css'
+	make app-language-load L='css'
 	# make app-language-load L='html'
 	# make app-language-load L='ruby'
 

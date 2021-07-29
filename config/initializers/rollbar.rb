@@ -4,7 +4,7 @@ require 'rollbar/rails'
 
 Rollbar.configure do |config|
   config.enabled = Rails.env.production?
-  config.js_enabled = Rails.env.production?
+  config.js_enabled = false # Rails.env.production?
 
   config.js_options = {
     accessToken: ENV['ROLLBAR_CLIENT_ACCESS_TOKEN'],

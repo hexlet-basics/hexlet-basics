@@ -29,4 +29,91 @@ module ApplicationHelper
     content = render partial: "schemas/#{path}", formats: [:json], locals: args
     tag.script(content.html_safe, type: 'application/ld+json')
   end
+
+  def markdown2html(text, options = {}, extensions = {})
+    default_extensions = {
+      autolink: true,
+      tables: true,
+      filter_html: false,
+      safe_links_only: false,
+      fenced_code_blocks: true
+    }
+    combined_extensions = default_extensions.merge(extensions)
+
+    default_options = {
+      no_images: false,
+      escape_html: false,
+      hard_wrap: true,
+      prettify: true,
+      link_attributes: { target: '_blank' }
+    }
+    combined_options = default_options.merge options
+
+    renderer = Redcarpet::Render::HTML.new(combined_options)
+    markdown = Redcarpet::Markdown.new(renderer, combined_extensions)
+    markdown.render(text)
+  end
+
+  def current_breadcrumb(lesson_version, lesson_version_info, langugage_lessons_count)
+    "#{lesson_version_info} #{lesson_version.natural_order}/#{langugage_lessons_count}"
+  end
+
+  def get_lesson_source_code(lesson_version, lesson_version_info)
+    repository_path = ExternalLinks.source_code
+    locale = lesson_version_info.locale
+    path_to_description = File.join(repository_path, lesson_version.path_to_code, "description.#{locale}.yml")
+
+    path_to_description.sub('modules', 'blob/master/modules')
+  end
+
+  def language_version_state_class(state)
+    case state
+    when 'created'
+      'badge badge-secondary'
+    when 'building'
+      'badge badge-warning'
+    when 'built'
+      'badge badge-success'
+    end
+  end
+
+  def get_language_background(slug)
+    mapping = {
+      'php' => 'x-bg-blue',
+      'javascript' => 'x-bg-yellow',
+      'java' => 'x-bg-azure',
+      'python' => 'x-bg-orange',
+      'html' => 'x-bg-orange',
+      'css' => 'x-bg-azure',
+      'racket' => 'x-bg-red',
+      'ruby' => 'x-bg-red',
+      'elixir' => 'x-bg-indigo',
+      'go' => 'x-bg-cyan'
+    }
+    mapping[slug]
+  end
+
+  def get_complete_icon_name(slug)
+    mapping = {
+      'php' => 'php.svg',
+      'javascript' => 'frontend.svg',
+      'java' => 'java.svg',
+      'python' => 'python.svg',
+      'html' => 'layout-designer.svg',
+      'css' => 'layout-designer.svg'
+    }
+    mapping.fetch(slug, 'hexlet_logo.png')
+  end
+
+  def get_continue_study_path(slug)
+    mapping = {
+      'php' => ExternalLinks.hexlet_php,
+      'javascript' => ExternalLinks.hexlet_frontend,
+      'java' => ExternalLinks.hexlet_java,
+      'python' => ExternalLinks.hexlet_python,
+      'html' => ExternalLinks.hexlet_layout_designer,
+      'css' => ExternalLinks.hexlet_layout_designer
+    }
+    mapping.fetch(slug, ExternalLinks.hexlet_profession)
+  end
 end
