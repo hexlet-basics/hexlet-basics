@@ -5,6 +5,6 @@ class Web::HomeController < Web::ApplicationController
     @languages_completed = Language.with_progress(:completed).includes(:current_version)
     @languages_in_development = Language.with_progress(:in_development).includes(:current_version)
     @language_members_by_language = current_user.language_members.index_by(&:language_id)
-    @language_member_fake = Language::MemberFake.new
+    # @language_member_fake = Language::MemberFake.new
   end
 end
