@@ -9,7 +9,7 @@ link rel='alternate' hreflang='en' href="https://#{request.domain}#{request.full
 = favicon_link_tag
 = csrf_meta_tags
 = csp_meta_tag
-= display_meta_tags site: 'Code Basics', reverse: true
+= display_meta_tags
 = include_gon(init: true)
 - append_javascript_packs 'application'
 = stylesheet_pack_tag 'application', media: 'all'
