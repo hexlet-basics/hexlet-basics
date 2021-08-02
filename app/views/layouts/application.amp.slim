@@ -1,3 +1,4 @@
+/ https://elasticteams.io/blog/accelerated-mobile-pages-amp-with-ruby-on-rails-tutorial
 doctype html
 html[amp ⚡ lang="#{I18n.locale}"]
   head
@@ -10,6 +11,8 @@ html[amp ⚡ lang="#{I18n.locale}"]
     noscript
       style[amp-boilerplate]
         | body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}
+    style[amp-custom]
+      == File.read(File.join(Rails.root, 'app', 'assets', 'stylesheets', 'amp.css'))
     = display_meta_tags site: 'Code Basics'
   body
     amp-analytics type="gtag" data-credentials="include"
