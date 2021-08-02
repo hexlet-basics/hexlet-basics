@@ -1,3 +1,5 @@
+= title t("languages.#{@language}.title")
+
 = content_for :meta do
   = structured_data_tag 'course', language: @language
   meta content='article' property='og:type'

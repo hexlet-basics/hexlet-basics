@@ -3,7 +3,7 @@
 class Web::ApplicationController < ApplicationController
   include ActionView::Helpers::UrlHelper
   include FlashConcern
-  include TitleConcern
+  # include TitleConcern
   include EventConcern
 
   before_action :prepare_locale_settings

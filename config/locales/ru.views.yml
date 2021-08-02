@@ -31,6 +31,7 @@ ru:
         sign_in: Войти
     sessions:
       new:
+        title: Вход
         meta_description: Войти на Code Basics
         sign_in: Вход
         dont_have_account: Нет аккаунта?

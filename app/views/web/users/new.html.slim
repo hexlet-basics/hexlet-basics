@@ -1,6 +1,8 @@
+- title t('.title')
+
 = content_for :meta do
   meta content='webiste' property='og:type'
-  meta content=title property='og:title'
+  meta content=t('.title') property='og:title'
   meta content=new_user_url property='og:url'
   meta content=image_url('logo.png') property='og:image'
   link rel='canonical' href=new_user_url

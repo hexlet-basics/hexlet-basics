@@ -15,9 +15,6 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     @info = @lesson_version.infos.find_by!(locale: I18n.locale)
     @language_lessons_count = resource_language.current_lessons.count
 
-    title t("human_languages.#{@resource_language}")
-    title @info
-
     if current_user.guest?
       gon.lesson_member = Language::Lesson::MemberFake.new
     else
@@ -29,9 +26,10 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     gon.lesson_version = @lesson_version
     gon.lesson = @lesson
 
+    @title = [@info, t("human_languages.#{@resource_language}")].join(' | ')
     set_meta_tags canonical: language_lesson_url(@lesson.language.slug, @lesson.slug),
                   amphtml: language_lesson_url(@lesson.language.slug, @lesson.slug, format: 'amp', only_path: false),
-                  title: [@info, t("human_languages.#{@resource_language}")].join(' | ')
+                  title: @title
   end
 
   def next_lesson

@@ -1,6 +1,6 @@
 = content_for :meta do
   meta content='article' property='og:type'
-  meta content=title property='og:title'
+  meta content=@title property='og:title'
   meta content="#{language_lesson_url(@lesson.language.slug, @lesson.slug)}" property='og:url'
   meta content="#{image_url("#{@lesson.language.slug}.png")}" property='og:image'
   meta content= truncate("[#{t("human_languages.#{resource_language}")}] — #{@info.name} — #{@info.theory}", length: 220) property='og:description'

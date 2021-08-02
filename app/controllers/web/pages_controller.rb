@@ -2,7 +2,8 @@
 
 class Web::PagesController < Web::ApplicationController
   def show
-    title params[:id].to_sym
+    set_meta_tags title: t(params[:id], scope: 'pages')
+
     render params[:id]
   end
 end

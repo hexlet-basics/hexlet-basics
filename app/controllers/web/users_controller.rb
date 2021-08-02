@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 class Web::UsersController < Web::ApplicationController
-  before_action do
-    title :base
-  end
-
   def new
     @user = User::SignUpForm.new
   end

@@ -3,10 +3,6 @@
 class Web::PasswordsController < Web::ApplicationController
   before_action :assert_reset_token_passed
 
-  before_action do
-    title :base
-  end
-
   def edit
     @user = User::PasswordForm.find_by!(reset_password_token: params[:reset_password_token])
   end
