@@ -69,11 +69,14 @@ en:
         elixir_description: Elixir is a programming language that runs on top of Erlang. How this happens is a functional language with rigorous computations, unambiguous assignment and dynamic typing, creation to support distributed, fault-tolerant, non-stop, hot-swappable applications.
         go_description: Go is a general-purpose language with rich features and clear syntax. Thanks to its multi-platform, reliable, well-documented standard library and focus on convenient approaches to the development itself, Go is an ideal language for the first steps in programming.
       lessons:
-        show:
+        content:
+          sign_up_for_tracking_progress_html: |
+            Free %{name} course. <a href="%{link}" class="text-decoration-none" target="_blank">Sign Up</a> for tracking progress &rarr;
           instructions: Instructions
           definitions: Definitions
           tips: Tips
           issues: Issues
+        show:
           discuss: Discuss
           lesson: Lesson
           only_for_signed_in_users: Exercise available only for signed users.
