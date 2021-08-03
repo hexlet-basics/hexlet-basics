@@ -25,6 +25,7 @@ en:
         reviews: Reviews
     users:
       new:
+        title: Registration
         meta_description: Sign up on Code Basics
         sign_up: Sign up
         have_account: Already registered?

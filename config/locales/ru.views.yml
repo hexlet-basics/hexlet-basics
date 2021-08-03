@@ -28,6 +28,7 @@ ru:
         in_development_description: Данные курсы находятся в разработке и не являются финальной версией. Вы можете помочь в разработке, прислав Pull Request в репозиторий GitHub
     users:
       new:
+        title: Регистрация
         meta_description: Зарегистрироваться на Code Basics
         sign_up: Регистрация
         have_account: Есть аккаунт?
