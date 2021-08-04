@@ -2,6 +2,8 @@ ru:
   flash:
     web:
       languages:
+        show:
+          warning: Попробуйте переключить язык, возможно там найдется нужный урок! :)
         lessons:
           show:
             lesson_not_found: Урок не найден, но вы можете начать другие!

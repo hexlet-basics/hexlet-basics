@@ -2,7 +2,7 @@
 
 class Web::ErrorsController < Web::ApplicationController
   before_action do
-    title :base
+    set_meta_tags title: t('.base')
   end
 
   def forbidden
