@@ -1,0 +1,35 @@
+# frozen_string_literal: true
+
+namespace :data_utils do
+  task :create_missing_language_members, [:limit] => :environment do |_task, args|
+    limit = args.limit || 1000
+
+    puts 'Processing'
+
+    lang_lesson_members = Language::Lesson::Member.joins('LEFT JOIN language_members ON language_members.user_id = language_lesson_members.user_id AND language_members.language_id = language_lesson_members.language_id')
+                                                  .where(language_members: { id: nil })
+                                                  .select('language_lesson_members.user_id, language_lesson_members.language_id')
+                                                  .group('language_lesson_members.user_id, language_lesson_members.language_id')
+                                                  .limit(limit)
+                                                  .pluck('language_lesson_members.user_id, language_lesson_members.language_id')
+
+    puts "Total processing: #{lang_lesson_members.size}"
+
+    lang_lesson_members.each do |user_id, lang_id|
+      puts "Process: #{user_id}, #{lang_id}"
+
+      user = User.find user_id
+      lang = Language.find lang_id
+
+      language_member = user.language_members.build(language: lang)
+
+      if language_member.may_finish?
+        language_member.finish!
+      else
+        language_member.save!
+      end
+    end
+
+    puts 'Finish'
+  end
+end
