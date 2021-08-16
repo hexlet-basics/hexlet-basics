@@ -36,7 +36,8 @@ module ApplicationHelper
       tables: true,
       filter_html: false,
       safe_links_only: false,
-      fenced_code_blocks: true
+      fenced_code_blocks: true,
+      no_intra_emphasis: true
     }
     combined_extensions = default_extensions.merge(extensions)
 
