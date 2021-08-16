@@ -35,6 +35,11 @@
                     = current_breadcrumb(@lesson_version, @info, @language_lessons_count)
                   meta itemprop="position" content="3"
             = render partial: 'content', locals: { info: @info, lesson_version: @lesson_version, options: {} }, formats: [:html]
+            .small.text-muted
+              = t('.issues')
+              '
+              = link_to ExternalLinks.source_code, get_lesson_source_code(@lesson_version, @info), target: '_blank', rel: :noopener
+
         .tab-pane.fade.overflow-auto.x-h-md-100#discuss-tab(role="tabpanel")
           .card-body.pt-2.pb-0
             .alert.alert-info.small.my-2

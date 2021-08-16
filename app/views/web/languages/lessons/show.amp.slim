@@ -1,3 +1,4 @@
-= render partial: 'content', locals: { info: @info, lesson_version: @lesson_version, options: { no_images: true } }, formats: [:html]
+.markdown.md:markdown-lg.lg:markdown-xl
+  = render partial: 'content', locals: { info: @info, lesson_version: @lesson_version, options: { no_images: true } }, formats: [:html]
 
-= link_to t('.show_full_version'), url_for(format: '', only_path: false)
+  = link_to t('.show_full_version'), url_for(format: '', only_path: false), class: 'show_full_link'

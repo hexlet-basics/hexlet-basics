@@ -76,7 +76,6 @@ en:
           instructions: Instructions
           definitions: Definitions
           tips: Tips
-          issues: Issues
         show:
           discuss: Discuss
           lesson: Lesson
@@ -87,6 +86,7 @@ en:
           community: community
           if_stuck: If you got stuck and don't know what to do, you can ask a question in our huge and friendly
           breadcrumb: breadcrumb
+          issues: Issues
       complete_language:
         continue: Continue Learning
         grats: Congratulations

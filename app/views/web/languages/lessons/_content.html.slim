@@ -23,7 +23,3 @@
           p == markdown2html("#{definition['name']} - #{definition['description']}")
 - if @info.definitions.any? || @info.tips.any?
   hr.my-4
-.small.text-muted
-  = t('.issues')
-  '
-  = link_to ExternalLinks.source_code, get_lesson_source_code(@lesson_version, @info), target: '_blank', rel: :noopener
