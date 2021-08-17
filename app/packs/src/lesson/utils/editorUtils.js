@@ -22,6 +22,7 @@ const langToTabSizeMapping = {
   css: 2,
   python: 4,
   java: 4,
+  go: 4,
 };
 
 const defaultTabSize = 4;
