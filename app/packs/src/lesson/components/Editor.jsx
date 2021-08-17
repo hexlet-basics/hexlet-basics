@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 import { useLocalStorage } from '@rehooks/local-storage';
 import { actions } from '../slices/index.js';
-import { getLanguageForEditor, getTabSize } from '../utils/editorUtils.js';
+import { getLanguageForEditor, getTabSize, shouldReplaceTabsWithSpaces } from '../utils/editorUtils.js';
 
 import EntityContext from '../EntityContext.js';
 
@@ -94,15 +94,24 @@ const Editor = () => {
     dispatch(actions.runCheck({ lessonVersion, editor: { content: value } }));
   };
 
+  const extraKeys = {
+    'Ctrl-Enter': handleRunCheck,
+  };
+
+  const indentWithTabs = !shouldReplaceTabsWithSpaces(language);
+  const indentWithSpaces = !indentWithTabs;
+
+  if (indentWithSpaces) {
+    extraKeys.Tab = replaceTab;
+  }
+
   const options = {
     autofocus: true,
     ...commonOptions,
     mode: getLanguageForEditor(language),
     indentUnit: getTabSize(language),
-    extraKeys: {
-      Tab: replaceTab,
-      'Ctrl-Enter': handleRunCheck,
-    },
+    indentWithTabs,
+    extraKeys,
   };
 
   return (

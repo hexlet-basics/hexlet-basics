@@ -1,6 +1,6 @@
 // @ts-check
 
-import _ from 'lodash';
+import get from 'lodash/get';
 
 const languageMapping = {
   racket: 'scheme',
@@ -25,10 +25,30 @@ const langToTabSizeMapping = {
   go: 4,
 };
 
+export const langToSpacesMapping = {
+  javascript: true,
+  json: true,
+  jsx: true,
+  ruby: true,
+  yaml: true,
+  'text/x-java': true,
+  java: true,
+  scheme: true,
+  erlang: true,
+  python: true,
+  php: true,
+  pug: true,
+  'text/html': true,
+  html: true,
+  css: true,
+};
+
 const defaultTabSize = 4;
 
-export const getLanguage = (language) => _.get(languageMapping, language, language);
+export const getLanguage = (language) => get(languageMapping, language, language);
 
-export const getLanguageForEditor = (language) => _.get(editorMapping, language, language);
+export const getLanguageForEditor = (language) => get(editorMapping, language, language);
 
-export const getTabSize = (language) => _.get(langToTabSizeMapping, language, defaultTabSize);
+export const getTabSize = (language) => get(langToTabSizeMapping, language, defaultTabSize);
+
+export const shouldReplaceTabsWithSpaces = (language) => get(langToSpacesMapping, language, false);
