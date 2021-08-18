@@ -27,4 +27,4 @@ ru:
         matrix: Матрица компетентности
         source_code: Исходный код
       unsupported_browser_warning:
-        error: Вы используете устаревший браузер. Некоторые возможности отключены. 
+        unsupported_browser_warning: Ваш браузер устарел :( Некоторые возможности отключены. 

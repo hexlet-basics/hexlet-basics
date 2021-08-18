@@ -27,4 +27,4 @@ en:
         matrix: Matrix
         source_code: Source code
       unsupported_browser_warning:
-        error: You are using an unsupported browser. Some features may be disabled.
+        unsupported_browser_warning: Browser is not supported. Some features may be disabled.

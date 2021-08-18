@@ -4,7 +4,7 @@ html.x-h-md-100 lang="#{I18n.locale}"
     = render 'layouts/shared/head'
     = Gon::Base.render_data
   body.d-flex.flex-column.x-h-md-100
-    - if !supported_browser?
+    - unless supported_browser?
         = render 'layouts/shared/unsupported_browser_warning'
     .container-fluid
       = render 'layouts/shared/nav'

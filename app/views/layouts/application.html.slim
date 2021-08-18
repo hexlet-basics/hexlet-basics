@@ -5,7 +5,7 @@ html.h-100 lang="#{I18n.locale}"
   body.d-flex.flex-column.h-100
     - if Rails.env.production?
       = render 'layouts/deps/gtm_body'
-    - if !supported_browser?
+    - unless supported_browser?
       = render 'layouts/shared/unsupported_browser_warning'
     .container.mb-4
       .py-2.border-bottom
