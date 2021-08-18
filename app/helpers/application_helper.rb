@@ -119,8 +119,11 @@ module ApplicationHelper
   end
 
   def supported_browser?
+    # NOTE https://github.com/browserslist/browserslist-useragent-ruby#3-add-helper
+    # rubocop:disable Rails/HelperInstanceVariable
     @browsers ||= JSON.parse(File.read('browsers.json'))
     matcher = BrowserslistUseragent::Match.new(@browsers, request.user_agent)
     matcher.browser? && matcher.version?(allow_higher: true)
+    # rubocop:enable Rails/HelperInstanceVariable
   end
 end
