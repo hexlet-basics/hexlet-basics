@@ -117,4 +117,10 @@ module ApplicationHelper
     }
     mapping.fetch(slug, ExternalLinks.hexlet_profession)
   end
+
+  def supported_browser?
+    @browsers ||= JSON.parse(File.read('browsers.json'))
+    matcher = BrowserslistUseragent::Match.new(@browsers, request.user_agent)
+    matcher.browser? && matcher.version?(allow_higher: true)
+  end
 end
