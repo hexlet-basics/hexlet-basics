@@ -13,9 +13,7 @@ module PacksHelper
   end
 
   def render_javascript_stored_packs
-    if supported_browser?
-      javascript_pack_tag(*@javascript_packs, crossorigin: 'anonymous')
-    end
+    javascript_pack_tag(*@javascript_packs, crossorigin: 'anonymous')
   end
 end
 # rubocop:enable Rails/HelperInstanceVariable
