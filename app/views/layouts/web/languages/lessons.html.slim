@@ -11,5 +11,4 @@ html.x-h-md-100 lang="#{I18n.locale}"
     main.container-fluid.overflow-hidden.mb-1.x-h-md-100
       = yield
 
-    - if supported_browser?
-      = render_javascript_stored_packs
+    = render 'layouts/frontend'

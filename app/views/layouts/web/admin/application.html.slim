@@ -14,5 +14,4 @@ html.h-100 lang="#{I18n.locale}"
               = nav_menu_item t('.languages'), admin_languages_path
           .col-md-10
             = yield
-    - if supported_browser?
-      = render_javascript_stored_packs
+    = render 'layouts/frontend'
