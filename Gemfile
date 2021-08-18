@@ -80,3 +80,5 @@ gem 'country_select'
 gem 'browser'
 
 gem 'meta-tags'
+
+gem 'browserslist_useragent'

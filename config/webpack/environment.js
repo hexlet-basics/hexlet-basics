@@ -1,6 +1,10 @@
 // @ts-check
 
 const path = require('path');
+const browserslist = require('browserslist');
+const fs = require('fs');
+
+fs.writeFileSync('./browsers.json', JSON.stringify(browserslist()));
 
 module.exports = {
   externals: {
