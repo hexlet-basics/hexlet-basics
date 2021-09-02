@@ -8,8 +8,8 @@ const languageMapping = {
 
 const editorMapping = {
   racket: 'scheme',
-  java: 'text/x-java',
-  html: 'text/html',
+  // java: 'text/x-java',
+  // html: 'text/html',
 };
 
 const langToTabSizeMapping = {
@@ -41,6 +41,7 @@ export const langToSpacesMapping = {
   'text/html': true,
   html: true,
   css: true,
+  elixir: true,
 };
 
 const defaultTabSize = 4;

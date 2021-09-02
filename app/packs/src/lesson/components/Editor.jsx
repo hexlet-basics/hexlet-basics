@@ -1,126 +1,84 @@
+/* eslint-disable no-bitwise */
 // @ts-check
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { UnControlled as CodeMirror } from 'react-codemirror2';
+import MonacoEditor from '@monaco-editor/react';
 import { useLocalStorage } from '@rehooks/local-storage';
 import { actions } from '../slices/index.js';
-import { getLanguageForEditor, getTabSize, shouldReplaceTabsWithSpaces } from '../utils/editorUtils.js';
+import { getTabSize, shouldReplaceTabsWithSpaces } from '../utils/editorUtils.js';
 
 import EntityContext from '../EntityContext.js';
 
-import 'codemirror/mode/htmlmixed/htmlmixed.js';
-import 'codemirror/mode/javascript/javascript.js';
-import 'codemirror/mode/css/css.js';
-import 'codemirror/mode/yaml/yaml.js';
-import 'codemirror/mode/shell/shell.js';
-import 'codemirror/mode/jsx/jsx.js';
-import 'codemirror/mode/markdown/markdown.js';
-import 'codemirror/mode/ruby/ruby.js';
-import 'codemirror/mode/erlang/erlang.js';
-import 'codemirror/mode/python/python.js';
-import 'codemirror/mode/scheme/scheme.js';
-import 'codemirror/mode/php/php.js';
-import 'codemirror/mode/sass/sass.js';
-import 'codemirror/mode/pug/pug.js';
-import 'codemirror/mode/clike/clike.js';
-import 'codemirror/mode/go/go.js';
-import 'codemirror-mode-elixir';
-
-import 'codemirror/lib/codemirror.css';
-import 'codemirror/addon/scroll/simplescrollbars.css';
-import 'codemirror/addon/dialog/dialog.css';
-
-import 'codemirror/keymap/sublime.js';
-
-import 'codemirror/addon/edit/closebrackets.js';
-import 'codemirror/addon/edit/matchtags.js';
-import 'codemirror/addon/edit/matchbrackets.js';
-import 'codemirror/addon/edit/closetag.js';
-import 'codemirror/addon/fold/xml-fold.js';
-import 'codemirror/addon/comment/comment.js';
-import 'codemirror/addon/scroll/simplescrollbars.js';
-import 'codemirror/addon/search/searchcursor.js';
-import 'codemirror/addon/search/search.js';
-import 'codemirror/addon/search/jump-to-line.js';
-import 'codemirror/addon/dialog/dialog.js';
-
 const commonOptions = {
-  autoCloseBrackets: true,
-  autoCloseTags: true,
-  autofocus: true,
-  keyMap: 'sublime',
-  matchBrackets: true,
-  matchTags: true,
-  scrollbarStyle: 'overlay',
-  lineNumbers: true,
+  fontSize: 14,
+  scrollBeyondLastLine: false,
+  minimap: {
+    enabled: false,
+  },
+  hover: {
+    delay: 1000,
+  },
+  renderWhitespace: 'trailing',
+  formatOnPaste: true,
+  renderLineHighlight: false,
 };
 
 const Editor = () => {
   const { language, lessonVersion } = useContext(EntityContext);
   const { content, focusesCount } = useSelector((state) => state.editorSlice);
   const dispatch = useDispatch();
-  const [editor, setEditor] = useState(null);
+  const editorRef = useRef(null);
 
   const localStorageKey = `lesson-version-${lessonVersion.id}`;
   const [localStorageContent, setContent] = useLocalStorage(localStorageKey);
 
   useEffect(() => {
-    editor?.focus();
-  }, [editor, focusesCount]);
+    editorRef.current?.focus();
+  }, [focusesCount]);
 
-  const onMount = (self) => {
-    setEditor(self);
-    self.focus();
-    self.refresh();
-    if (localStorageContent) {
-      self.getDoc().setValue(localStorageContent);
-    }
+  const handleRunCheck = () => {
+    dispatch(actions.runCheck({ lessonVersion }));
   };
 
-  const onContentChange = (_editor, _data, newContent) => {
+  const editorOptions = {
+    tabSize: getTabSize(language),
+    insertSpaces: shouldReplaceTabsWithSpaces(language),
+  };
+
+  const onMount = (editor, monaco) => {
+    editorRef.current = editor;
+    const model = editor.getModel();
+    model.updateOptions(editorOptions);
+    model.pushEOL(0);
+
+    editorRef.current.focus();
+
+    const extraKeys = [
+      {
+        key: monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
+        action: handleRunCheck,
+      },
+    ];
+
+    extraKeys.forEach(({ key, action }) => {
+      editorRef.current.addCommand(key, action);
+    });
+  };
+
+  const onContentChange = (newContent) => {
     setContent(newContent);
     dispatch(actions.changeContent({ content: newContent }));
   };
 
-  const replaceTab = (cm) => {
-    const space = ' ';
-    const spaces = space.repeat(cm.getOption('indentUnit'));
-    cm.replaceSelection(spaces);
-  };
-
-  const handleRunCheck = (e) => {
-    const value = e.getValue();
-    dispatch(actions.runCheck({ lessonVersion, editor: { content: value } }));
-  };
-
-  const extraKeys = {
-    'Ctrl-Enter': handleRunCheck,
-  };
-
-  const indentWithTabs = !shouldReplaceTabsWithSpaces(language);
-  const indentWithSpaces = !indentWithTabs;
-
-  if (indentWithSpaces) {
-    extraKeys.Tab = replaceTab;
-  }
-
-  const options = {
-    autofocus: true,
-    ...commonOptions,
-    mode: getLanguageForEditor(language),
-    indentUnit: getTabSize(language),
-    indentWithTabs,
-    extraKeys,
-  };
-
   return (
-    <CodeMirror
+    <MonacoEditor
+      defaultValue={localStorageContent || ''}
       value={content}
-      options={options}
+      options={commonOptions}
+      defaultLanguage={language}
       onChange={onContentChange}
-      detach
-      editorDidMount={onMount}
+      onMount={onMount}
       className="w-100 h-100"
     />
   );
