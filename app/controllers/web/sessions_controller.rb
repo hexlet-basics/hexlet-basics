@@ -9,9 +9,9 @@ class Web::SessionsController < Web::ApplicationController
     @sign_in_form = SignInForm.new(User.new)
 
     Rollbar.log('debug', 'Session create', {
-      origin: request.origin,
-      base_url: request.base_url
-    })
+                  origin: request.origin,
+                  base_url: request.base_url
+                })
 
     if @sign_in_form.validate(sign_in_params)
       sign_in @sign_in_form.user
