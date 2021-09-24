@@ -15,6 +15,12 @@ class Web::SessionsController < Web::ApplicationController
     else
       render :new
     end
+  rescue ActionController::InvalidAuthenticityToken => e
+    e.rollbar_context = {
+      origin: request.origin,
+      base_url: request.base_url
+    }
+    raise
   end
 
   def destroy
