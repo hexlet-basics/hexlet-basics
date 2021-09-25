@@ -43,5 +43,9 @@ export default {
         headline: 'Tests Failed (Infinity Loop!)',
       },
     },
+    monacoShort: 'ME',
+    codemirrorShort: 'CM',
+    monaco: 'Monaco editor',
+    codemirror: 'Codemirror editor',
   },
 };

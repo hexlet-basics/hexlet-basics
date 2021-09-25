@@ -50,5 +50,9 @@ export default {
         headline: 'Долгое выполнение',
       },
     },
+    monacoShort: 'ME',
+    codemirrorShort: 'CM',
+    monaco: 'Редактор Monaco',
+    codemirror: 'Редактор Codemirror',
   },
 };

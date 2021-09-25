@@ -3,28 +3,32 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Tab, Nav,
+  Tab, Nav, ToggleButtonGroup, ToggleButton,
 } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
+
 import { actions } from '../slices/index.js';
 import { currentTabValues } from '../utils/maps.js';
 
-import Editor from './Editor.jsx';
+import EditorContainer from './EditorContainer';
 import Output from './Output.jsx';
 import Solution from './Solution.jsx';
 import TestForExercise from './TestForExercise.jsx';
+import { EDITORS } from '../slices/editorSlice.js';
 
 const TabsBox = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  const { currentTab } = useSelector((state) => ({
-    ...state.tabsBoxSlice,
-    checkInfo: state.checkInfoSlice,
-  }));
+  const currentTab = useSelector((state) => state.tabsBoxSlice.currentTab);
+  const editorType = useSelector((state) => state.editorSlice.editorType);
 
   const changeTab = (newTabState) => {
     dispatch(actions.changeTab({ newTabState }));
+  };
+
+  const changeEditor = (editor) => {
+    dispatch(actions.changeEditor({ editor }));
   };
 
   const {
@@ -52,10 +56,27 @@ const TabsBox = () => {
             </Nav.Link>
           </Nav.Item>
         ))}
+        {currentTab === 'editor' && (
+          <ToggleButtonGroup
+            type="radio"
+            name="options"
+            value={editorType}
+            onChange={changeEditor}
+            size="sm"
+            className="align-self-center"
+          >
+            <ToggleButton id="monaco" value={EDITORS.monaco} title={t('monaco')} variant="outline-primary">
+              {t('monacoShort')}
+            </ToggleButton>
+            <ToggleButton id="codemirror" value={EDITORS.codemirror} title={t('codemirror')} variant="outline-primary">
+              {t('codemirrorShort')}
+            </ToggleButton>
+          </ToggleButtonGroup>
+        )}
       </Nav>
       <Tab.Content bsPrefix="d-flex h-100 tab-content overflow-auto">
         <Tab.Pane eventKey={editor} bsPrefix="tab-pane h-100 pe-3 w-100 overflow-hidden">
-          <Editor />
+          <EditorContainer />
         </Tab.Pane>
         <Tab.Pane eventKey={output} bsPrefix="tab-pane h-100 p-3 w-100">
           <Output />

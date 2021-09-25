@@ -14,6 +14,7 @@ import reducer from './slices/index.js';
 import resources from '../locales/index.js';
 import EntityContext from './EntityContext.js';
 import { lessonMemberStates, solutionStates } from './utils/maps.js';
+import { EDITORS } from './slices/editorSlice.js';
 
 const waitingTime = 20 * 60 * 1000; // 20 min
 
@@ -47,6 +48,7 @@ export default async () => {
     editorSlice: {
       content: locallySavedContent || gon.lesson_version.prepared_code || '',
       focusesCount: 1,
+      editorType: EDITORS.monaco,
     },
     solutionSlice: {
       // TODO move counter to server

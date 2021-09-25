@@ -9,6 +9,10 @@ import '../stylesheets/application.scss';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'devicon/devicon.min.css';
 
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/addon/scroll/simplescrollbars.css';
+import 'codemirror/addon/dialog/dialog.css';
+
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
