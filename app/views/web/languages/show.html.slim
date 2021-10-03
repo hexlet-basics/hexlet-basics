@@ -28,7 +28,7 @@
               = t('students', count: @language.members.size)
             span.d-inline-block
               span.bi.bi-book.me-2
-              = t('.lessons', lessons_count: t('lessons', count: @language.lessons.size))
+              = t('.lessons', lessons_count: t('lessons', count: @infos_by_lesson.size))
 
           - if @language_member.finished?
             / чето сказать
