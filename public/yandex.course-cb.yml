@@ -28,7 +28,7 @@
       <category id="119" parentId="1">Elixir</category>
 
       <category id="115" parentId="2">HTML</category>
-      <category id="116" parentId="2">CSS</category>    
+      <category id="116" parentId="2">CSS</category>
 
     </categories>
 
@@ -248,7 +248,7 @@
         <param name="План" unit="Модуль 3">Логика</param>
         <param name="План" unit="Модуль 4">Списки</param>
         <param name="План" unit="Модуль 5">Строки</param>
- 
+
       </offer>
 
 
@@ -297,10 +297,10 @@
         <param name="План" unit="Модуль 2">Коллекции</param>
         <param name="План" unit="Модуль 3">Строки</param>
 
-        
+
       </offer>
 
     </offers>
-    
+
   </shop>
 </yml_catalog>
