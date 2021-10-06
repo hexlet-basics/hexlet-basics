@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <yml_catalog date="2018-07-17 12:10">
   <shop>
-    <name>Сэмпл.Курсы</name>
-    <company>ООО Сэмпл.Курсы</company>
-    <url>courses.sample.s3.yandex.net</url>
-    <email>courses@yandex.ru</email>
+    <name>Code Basics</name>
+    <company>Hexlet Ltd</company>
+    <url>ru.code-basics.com</url>
+    <email>support@hexlet.io</email>
     <currencies>
       <currency id="RUR" rate="1" />
     </currencies>
