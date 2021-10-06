@@ -2,15 +2,15 @@
 <yml_catalog date="2018-07-17 12:10">
   <shop>
     <name>Сэмпл.Курсы</name>
-    <company>ООО Сэмпл.Курсы</company>
-    <url>courses.sample.s3.yandex.net</url>
-    <email>courses@yandex.ru</email>
+    <company>Хекслет</company>
+    <url>https://hexlet.io</url>
+    <email>support@hexlet.io</email>
     <currencies>
       <currency id="RUR" rate="1" />
     </currencies>
     <categories>
       <category id="1">Программирование</category>
-      <category id="2">Вёрстка</category>
+      <category id="2">Верстка</category>
 
       <category id="101" parentId="1">Python</category>
       <category id="103" parentId="1">Java</category>
