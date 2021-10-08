@@ -21,6 +21,8 @@ class Web::LanguagesController < Web::ApplicationController
     @first_lesson = @language.current_lessons.ordered.first
     @next_lesson = current_user.not_finished_lessons_for_language(@language).ordered.first
 
+    @human_language_title = [t("human_languages.#{@language}"), @language.learn_as.text].join(' ')
+
     if @current_module_versions.empty?
       f('warning', now: true)
       nil
