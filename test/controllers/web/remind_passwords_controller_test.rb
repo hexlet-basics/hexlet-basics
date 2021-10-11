@@ -12,7 +12,7 @@ class Web::RemindPasswordsControllerTest < ActionDispatch::IntegrationTest
     user = users(:full)
     before_token = user.reset_password_token
 
-    post remind_password_url(subdomain: I18n.locale), params: { remind_password: { email: user.email } }
+    post remind_password_url(subdomain: I18n.locale), params: { remind_password_form: { email: user.email } }
     assert_response :redirect
 
     user.reload

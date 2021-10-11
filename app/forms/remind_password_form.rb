@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-class RemindPasswordForm < ApplicationForm
-  property :email
+class RemindPasswordForm
+  include ActiveFormModel::Virtual
+
+  fields :email
 
   validates :email, presence: true
   validate :user_exists
@@ -15,6 +17,6 @@ class RemindPasswordForm < ApplicationForm
   end
 
   def email=(value)
-    super(value.downcase)
+    @email = value.downcase
   end
 end
