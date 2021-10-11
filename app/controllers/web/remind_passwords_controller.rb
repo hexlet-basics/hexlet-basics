@@ -2,13 +2,13 @@
 
 class Web::RemindPasswordsController < Web::ApplicationController
   def new
-    @remind_password_form = RemindPasswordForm.new(User.new)
+    @remind_password_form = RemindPasswordForm.new
   end
 
   def create
-    @remind_password_form = RemindPasswordForm.new(User.new)
+    @remind_password_form = RemindPasswordForm.new(params[:remind_password])
 
-    if @remind_password_form.validate(remind_password_params)
+    if @remind_password_form.valid?
       user = @remind_password_form.user
       UserService.reset_password!(user)
 
@@ -17,11 +17,5 @@ class Web::RemindPasswordsController < Web::ApplicationController
     else
       render :new
     end
-  end
-
-  private
-
-  def remind_password_params
-    params.require(:remind_password).permit(:email)
   end
 end

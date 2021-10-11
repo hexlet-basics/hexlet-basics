@@ -3,7 +3,7 @@
 class User::SocialSignupForm < User
   include ActiveFormModel
 
-  permit :email, :uid
+  fields :email, :uid
 
   def email=(email)
     if email.present?
