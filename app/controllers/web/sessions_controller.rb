@@ -6,7 +6,7 @@ class Web::SessionsController < Web::ApplicationController
   end
 
   def create
-    @sign_in_form = SignInForm.new(params[:sign_in])
+    @sign_in_form = SignInForm.new(params[:sign_in_form])
 
     # Rollbar.log('debug', 'Session create', {
     #               origin: request.origin,

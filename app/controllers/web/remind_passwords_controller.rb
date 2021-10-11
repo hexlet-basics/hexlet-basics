@@ -6,7 +6,7 @@ class Web::RemindPasswordsController < Web::ApplicationController
   end
 
   def create
-    @remind_password_form = RemindPasswordForm.new(params[:remind_password])
+    @remind_password_form = RemindPasswordForm.new(params[:remind_password_form])
 
     if @remind_password_form.valid?
       user = @remind_password_form.user
