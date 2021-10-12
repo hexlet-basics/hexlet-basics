@@ -5,7 +5,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 gem 'configus'
 gem 'geocoder'
-gem 'puma', '~> 5.3'
+gem 'puma', '~> 5.5'
 gem 'rails', '~> 6.1'
 gem 'webpacker', github: 'rails/webpacker'
 
