@@ -53,6 +53,7 @@ class Language::Version < ApplicationRecord
     attrs.to_hash
   end
 
+  # TODO: move to presenter
   def image_tag
     return "lv#{id}" if Rails.env.production?
 

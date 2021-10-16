@@ -323,6 +323,9 @@ GEM
     regexp_parser (2.1.1)
     request_store (1.5.0)
       rack (>= 1.4)
+    responders (3.0.1)
+      actionpack (>= 5.0)
+      railties (>= 5.0)
     reverse_markdown (2.0.0)
       nokogiri
     rexml (3.2.5)
@@ -460,6 +463,7 @@ DEPENDENCIES
   rails-i18n
   ransack
   redcarpet (~> 3.5)
+  responders
   rollbar
   rubocop
   rubocop-performance

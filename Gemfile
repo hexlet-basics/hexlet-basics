@@ -9,6 +9,8 @@ gem 'puma', '~> 5.3'
 gem 'rails', '~> 6.1'
 gem 'webpacker', github: 'rails/webpacker'
 
+gem 'responders'
+
 gem 'bootsnap', require: false
 gem 'http_accept_language'
 gem 'jbuilder', '~> 2.10'

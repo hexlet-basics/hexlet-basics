@@ -33,12 +33,21 @@ tags_one:
   language_version: php
   version: one
 
-comments_one:
+comments_one_ru:
   <<: *DEFAULTS
   name: Коментарии
   language: php
   language_version: php
-  version: one
+  version: comments_one
+  locale: ru
+
+comments_one_en:
+  <<: *DEFAULTS
+  name: Comments
+  language: php
+  language_version: php
+  version: comments_one
+  locale: en
 
 naming_variables_one:
   <<: *DEFAULTS
