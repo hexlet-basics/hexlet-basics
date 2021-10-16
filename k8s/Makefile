@@ -7,7 +7,9 @@ init:
 	brew install kubernetes-helm
 
 local-cluster-setup:
-	sudo snap install doctl
+	snap install helm --classic
+	snap install kubectl --classic
+	snap install doctl
 	doctl auth init
 	doctl kubernetes cluster kubeconfig save hexlet-basics-4
 
