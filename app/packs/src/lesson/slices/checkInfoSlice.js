@@ -9,13 +9,14 @@ import hexletAxios from 'lib/hexlet-axios.js';
 import routes from 'vendor/appRoutes.js';
 import { checkInfoStates } from '../utils/maps.js';
 
-const runCheck = createAsyncThunk('runCheck', async ({ lessonVersion, editor }) => {
+const runCheck = createAsyncThunk('runCheck', async ({ lessonVersion }, { getState }) => {
+  const { editorSlice: { content } } = getState();
   const checkLessonPath = routes.checkApiLessonPath(lessonVersion.lesson_id);
   const response = await hexletAxios.post(checkLessonPath, {
     version_id: lessonVersion.id,
     data: {
       attributes: {
-        code: editor.content,
+        code: content,
       },
     },
   });

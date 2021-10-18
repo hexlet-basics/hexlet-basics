@@ -1,0 +1,312 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<yml_catalog date="2018-07-17 12:10">
+  <shop>
+    <name>Code Basics</name>
+    <company>Hexlet Ltd</company>
+    <url>ru.code-basics.com</url>
+    <email>support@hexlet.io</email>
+    <currencies>
+      <currency id="RUR" rate="1" />
+    </currencies>
+    <categories>
+      <category id="1">Программирование</category>
+      <category id="2">Верстка</category>
+
+      <category id="101" parentId="1">Python</category>
+      <category id="103" parentId="1">Java</category>
+      <category id="106" parentId="1">C++</category>
+      <category id="107" parentId="1">JavaScript</category>
+      <category id="108" parentId="1">PHP</category>
+      <category id="109" parentId="1">C#</category>
+      <category id="110" parentId="1">Go</category>
+      <category id="111" parentId="1">SQL</category>
+      <category id="112" parentId="1">Bash</category>
+      <category id="113" parentId="1">R</category>
+      <category id="114" parentId="1">C</category>
+      <category id="117" parentId="1">Ruby</category>
+      <category id="118" parentId="1">Racket</category>
+      <category id="119" parentId="1">Elixir</category>
+
+      <category id="115" parentId="2">HTML</category>
+      <category id="116" parentId="2">CSS</category>
+
+    </categories>
+
+    <offers>
+
+
+      <offer id="1-js">
+        <name>JavaScript для начинающих</name>
+        <url>https://ru.code-basics.com/languages/javascript</url>
+        <price>0</price>
+        <currencyId>RUR</currencyId>
+        <categoryId>107</categoryId>
+        <picture>https://ru.code-basics.com/assets/javascript-9f7da8d98cce6ef05ff811098dd1f0b115a4ec86973f4d8e7e378c05575bab7b.png</picture>
+        <!--Этот набор параметров обязателен-->
+        <param name="Продолжительность" unit="занятия">79</param>
+        <!--Этот набор параметров необязателен-->
+        <param name="Сложность">Для начинающих</param>
+        <param name="Есть практика">true</param>
+        <param name="Гибкие даты">true</param>
+        <param name="Есть учитель">false</param>
+        <description>Изучение программирования — интересный и захватывающий процесс. Синтаксис языка — самая простая и короткая часть пути, но без неё невозможно начать. Этот бесплатный онлайн-курс по JavaScript познакомит с базовыми понятиями языка. Вы выучите основы и напишете свои первые программы на JS</description>
+
+
+        <param name="План" unit="Модуль 1">Основы JavaScript</param>
+        <param name="План" unit="Модуль 2">Арифметика</param>
+        <param name="План" unit="Модуль 3">Строки</param>
+        <param name="План" unit="Модуль 4">Переменные в языке</param>
+        <param name="План" unit="Модуль 5">Типы данных</param>
+        <param name="План" unit="Модуль 6">Вызов функций</param>
+        <param name="План" unit="Модуль 7">Свойства и Методы</param>
+        <param name="План" unit="Модуль 8">Определение функций</param>
+        <param name="План" unit="Модуль 9">Логика</param>
+        <param name="План" unit="Модуль 10">Условные конструкции</param>
+        <param name="План" unit="Модуль 11">Циклы</param>
+      </offer>
+
+
+      <offer id="2-php">
+        <name>PHP для начинающих</name>
+        <url>https://ru.code-basics.com/languages/php</url>
+        <price from="true">0</price>
+        <currencyId>RUR</currencyId>
+        <categoryId>108</categoryId>
+        <picture>https://ru.code-basics.com/assets/php-17a8e0c4821adf48d099c1e487587e4cd3191294b26dff6baa59d02e0c3af569.png</picture>
+        <!--Этот набор параметров обязателен-->
+        <param name="Продолжительность" unit="занчтия">82</param>
+        <!--Этот набор параметров необязателен-->
+        <param name="Гибкие даты">true</param>
+        <param name="Сложность">Для начинающих</param>
+        <param name="Есть практика">true</param>
+        <param name="Есть учитель">false</param>
+        <description>Изучение программирования — непростой и длительный процесс. Изучение синтаксиса языка — самая простая и короткая часть в пути, но без неё невозможно начать. Этот курс посвящен азам написания программ на PHP. Он готовит плацдарм для написания осмысленных программ</description>
+
+        <param name="План" unit="Модуль 1">Основы PHP</param>
+        <param name="План" unit="Модуль 2">Арифметика</param>
+        <param name="План" unit="Модуль 3">Строки</param>
+        <param name="План" unit="Модуль 4">Типы данных</param>
+        <param name="План" unit="Модуль 5">Переменные в языке</param>
+        <param name="План" unit="Модуль 6">Вызов функций</param>
+        <param name="План" unit="Модуль 7">Определение функций</param>
+        <param name="План" unit="Модуль 8">Логика</param>
+        <param name="План" unit="Модуль 9">Условные конструкции</param>
+        <param name="План" unit="Модуль 10">Циклы</param>
+        <param name="План" unit="Модуль 11">Погружаясь в строки</param>
+        <param name="План" unit="Модуль 12">Дата и Время</param>
+      </offer>
+
+      <offer id="3-pyt">
+        <name>Python для начинающих</name>
+        <url>https://ru.code-basics.com/languages/python</url>
+        <price from="true">0</price>
+        <currencyId>RUR</currencyId>
+        <categoryId>101</categoryId>
+        <picture>https://ru.code-basics.com/assets/python-7d756e54a9186a7a38e88f39120dbf17327c34dec2fbfa8505f21e8828308581.png</picture>
+        <!--Этот набор параметров обязателен-->
+        <param name="Продолжительность" unit="занятия">69</param>
+        <!--Этот набор параметров необязателен-->
+        <param name="Гибкие даты">false</param>
+        <param name="Есть учитель">false</param>
+        <param name="Сложность">Для начинающих</param>
+        <param name="Есть практика">true</param>
+        <description>Изучение программирования — непростой и длительный процесс. Изучение синтаксиса языка — самая простая и короткая часть в пути, но без неё невозможно начать. Этот курс посвящен азам написания программ на Python. Он готовит плацдарм для написания осмысленных программ</description>
+
+
+        <param name="План" unit="Модуль 1">Основы языка</param>
+        <param name="План" unit="Модуль 2">Арифметика</param>
+        <param name="План" unit="Модуль 3">Строки</param>
+        <param name="План" unit="Модуль 4">Типы данных</param>
+        <param name="План" unit="Модуль 5">Переменные</param>
+        <param name="План" unit="Модуль 6">Вызов функций</param>
+        <param name="План" unit="Модуль 7">Определение функций</param>
+        <param name="План" unit="Модуль 8">Логика</param>
+        <param name="План" unit="Модуль 9">Условные конструкции</param>
+        <param name="План" unit="Модуль 10">Циклы</param>
+      </offer>
+
+      <offer id="4-css">
+        <name>CSS для начинающих</name>
+        <url>https://ru.code-basics.com/languages/css</url>
+        <price from="true">0</price>
+        <currencyId>RUR</currencyId>
+        <categoryId>116</categoryId>
+        <picture>https://ru.code-basics.com/assets/css-c2aef3254d55c4ee44bc640b3c5015507214305ba9b2e6c36d3c2a41794d1e4c.png</picture>
+        <!--Этот набор параметров обязателен-->
+        <param name="Продолжительность" unit="занятия">33</param>
+        <!--Этот набор параметров необязателен-->
+        <param name="Гибкие даты">true</param>
+        <param name="Есть домашние работы">true</param>
+        <param name="Сложность">Для начинающих</param>
+        <param name="Есть практика">true</param>
+        <param name="Есть учитель">false</param>
+        <description>Cascading Style Sheets (CSS) — каскадные таблицы стилей, которые позволяют оформлять содержимое страницы в соответствии с описанными правилами. Стили текста, расположение блоков на странице, анимация — всё это описывается с помощью каскадных таблиц стилей</description>
+
+        <param name="План" unit="Модуль 1">Введение</param>
+        <param name="План" unit="Модуль 2">Стили текста</param>
+        <param name="План" unit="Модуль 3">Блочные элементы</param>
+        <param name="План" unit="Модуль 4">Разное</param>
+
+      </offer>
+
+      <offer id="5-html">
+        <name>HTML для начинающих</name>
+        <url>https://ru.code-basics.com/languages/html</url>
+        <price from="true">0</price>
+        <currencyId>RUR</currencyId>
+        <categoryId>115</categoryId>
+        <picture>https://ru.code-basics.com/assets/html-8e2a60d44054d97948c6fd729208d87545095c875a130961f483253e3238ea70.png</picture>
+        <!--Этот набор параметров обязателен-->
+        <param name="Продолжительность" unit="занятия">41</param>
+
+        <!--Этот набор параметров необязателен-->
+        <param name="Гибкие даты">true</param>
+        <param name="Сложность">Для начинающих</param>
+        <param name="Есть практика">true</param>
+        <param name="Есть учитель">false</param>
+        <description>Для стандартизации вывода текста внутри браузера был придуман стандарт HTML, описывающий правила оформления текстовых данных для корректного вывода. Этот курс посвящён азам HTML разметки, работы с типографикой, вывода медиа документов и работы с формами</description>
+
+        <param name="План" unit="Модуль 1">Основы разметки</param>
+        <param name="План" unit="Модуль 2">Текст в HTML</param>
+        <param name="План" unit="Модуль 3">Медиаэлементы</param>
+        <param name="План" unit="Модуль 4">Структура HTML документа</param>
+        <param name="План" unit="Модуль 5">Формы</param>
+        <param name="План" unit="Модуль 6">Разное</param>
+        <param name="План" unit="Модуль 7">Семантические элементы HTML5</param>
+
+      </offer>
+
+      <offer id="6-ruby">
+        <name>Ruby как второй язык</name>
+        <url>https://ru.code-basics.com/languages/ruby</url>
+        <price from="true">0</price>
+        <currencyId>RUR</currencyId>
+        <categoryId>117</categoryId>
+        <picture>https://ru.code-basics.com/assets/ruby-e2e37c8b12b71f272263dee1afed4cadc88a6998991d3013f2dc6d5a72383f50.png</picture>
+        <!--Этот набор параметров обязателен-->
+        <param name="Продолжительность" unit="занятия">32</param>
+        <!--Этот набор параметров необязателен-->
+        <param name="Гибкие даты">true</param>
+        <param name="Сложность">Базовый уровень</param>
+        <param name="Есть практика">true</param>
+        <param name="Есть учитель">false</param>
+        <description>Руби — язык, созданный для того, чтобы программисты были счастливы. Он взял из себя лучшее из Lisp, Smalltalk и Perl — он объектно-ориентирован, но в то же время его декларативность позволяет писать в процедурной и функциональной парадигме</description>
+
+        <param name="План" unit="Модуль 1">Основы</param>
+        <param name="План" unit="Модуль 2">Коллекции</param>
+        <param name="План" unit="Модуль 3">Функции</param>
+        <param name="План" unit="Модуль 4">Массивы (дополнение)</param>
+        <param name="План" unit="Модуль 5">Хеши (дополнение)</param>
+
+      </offer>
+
+
+        <offer id="7-java">
+        <name>Java для начинающих</name>
+        <url>https://ru.code-basics.com/languages/java</url>
+        <price from="true">0</price>
+        <currencyId>RUR</currencyId>
+        <categoryId>103</categoryId>
+        <picture>https://ru.code-basics.com/assets/java-f1d8b3772da29363b104a34d601d63ad0638120d35e2871226464e10fc28a802.png</picture>
+        <!--Этот набор параметров обязателен-->
+        <param name="Продолжительность" unit="занятия">59</param>
+        <!--Этот набор параметров необязателен-->
+        <param name="Гибкие даты">true</param>
+        <param name="Сложность">Для начинающих</param>
+        <param name="Есть практика">true</param>
+        <param name="Есть учитель">false</param>
+        <description>Изучение программирования — непростой и длительный процесс. Изучение синтаксиса языка — самая простая и короткая часть в пути, но без неё невозможно начать. Этот курс посвящен азам написания программ на Java. Он готовит плацдарм для написания осмысленных программ</description>
+
+        <param name="План" unit="Модуль 1">Основы</param>
+        <param name="План" unit="Модуль 2">Арифметика</param>
+        <param name="План" unit="Модуль 3">Строки</param>
+        <param name="План" unit="Модуль 4">Типы данных</param>
+        <param name="План" unit="Модуль 5">Переменные</param>
+        <param name="План" unit="Модуль 6">Вызов методов</param>
+        <param name="План" unit="Модуль 7">Определение методов</param>
+        <param name="План" unit="Модуль 8">Логика</param>
+        <param name="План" unit="Модуль 9">Циклы</param>
+        <param name="План" unit="Модуль 10">Погружаясь в строки</param>
+
+      </offer>
+
+
+        <offer id="8-racket">
+        <name>Racket как второй язык</name>
+        <url>https://ru.code-basics.com/languages/racket</url>
+        <price from="true">0</price>
+        <currencyId>RUR</currencyId>
+        <categoryId>118</categoryId>
+        <picture>https://ru.code-basics.com/assets/racket-02c162877fd1b9822b4e2cc9250adea0c074c77c79e5b9c0c661e2d90a460c39.png</picture>
+        <!--Этот набор параметров обязателен-->
+        <param name="Продолжительность" unit="занятия">30</param>
+        <!--Этот набор параметров необязателен-->
+        <param name="Гибкие даты">true</param>
+        <param name="Сложность">Для начинающих</param>
+        <param name="Есть практика">true</param>
+        <param name="Есть учитель">false</param>
+        <description>Racket относится к семейству Lisp-языков. Эти языки настолько не похожи на все остальное, что даже опытным программистам приходится изучать их с самых основ. Этот модуль посвящен знакомству с синтаксисом и концепциями лежащими в основе любого лиспа</description>
+
+        <param name="План" unit="Модуль 1">Основы</param>
+        <param name="План" unit="Модуль 2">Объявления</param>
+        <param name="План" unit="Модуль 3">Логика</param>
+        <param name="План" unit="Модуль 4">Списки</param>
+        <param name="План" unit="Модуль 5">Строки</param>
+
+      </offer>
+
+
+
+        <offer id="9-elixir">
+        <name>Elixir как второй язык</name>
+        <url>https://ru.code-basics.com/languages/elixir</url>
+        <price from="true">0</price>
+        <currencyId>RUR</currencyId>
+        <categoryId>119</categoryId>
+        <picture>https://ru.code-basics.com/assets/elixir-9348a8f1c6f62e26f36cb955a4fbc1df3f1ed73aaa4481647fd6880c4bc826e1.png</picture>
+        <!--Этот набор параметров обязателен-->
+        <param name="Продолжительность" unit="занятия">18</param>
+        <!--Этот набор параметров необязателен-->
+        <param name="Гибкие даты">true</param>
+        <param name="Сложность">Для начинающих</param>
+        <param name="Есть практика">true</param>
+        <param name="Есть учитель">false</param>
+        <description>Эликсир — язык программирования, работающий поверх Erlang. Как Erlang, это — функциональный язык со строгими вычислениями, однократным присвоением и динамической типизацией, созданный, чтобы поддерживать распределенные, отказоустойчивые, безостановочные приложения с горячей заменой кода</description>
+
+        <param name="План" unit="Модуль 1">Основы</param>
+        <param name="План" unit="Модуль 2">Типы данных</param>
+        <param name="План" unit="Модуль 3">Управляющие конструкции</param>
+        <param name="План" unit="Модуль 4">Основы функционального программирования</param>
+        <param name="План" unit="Модуль 5">Работа с коллекциями</param>
+
+      </offer>
+
+
+
+        <offer id="10-go">
+        <name>Go как второй язык</name>
+        <url>https://ru.code-basics.com/languages/go</url>
+        <price from="true">0</price>
+        <currencyId>RUR</currencyId>
+        <categoryId>110</categoryId>
+        <picture>https://ru.code-basics.com/assets/go-e7b0f0bec0322e4853beb426bf22188dfed5485633ab0042832b6c9ffc068ed5.png</picture>
+        <!--Этот набор параметров обязателен-->
+        <param name="Продолжительность" unit="занятия">24</param>
+        <!--Этот набор параметров необязателен-->
+        <param name="Гибкие даты">true</param>
+        <param name="Сложность">Базовый уровень</param>
+        <param name="Есть практика">true</param>
+        <param name="Есть учитель">false</param>
+        <description>Go — язык общего назначения с широкими возможностями и понятным синтаксисом. Благодаря мультиплатформенности, надежной, хорошо документированной стандартной библиотеке и ориентированности на удобные подходы к самой разработке, Go является идеальным языком для первых шагов в программировании</description>
+
+        <param name="План" unit="Модуль 1">Основы</param>
+        <param name="План" unit="Модуль 2">Коллекции</param>
+        <param name="План" unit="Модуль 3">Строки</param>
+
+
+      </offer>
+
+    </offers>
+
+  </shop>
+</yml_catalog>

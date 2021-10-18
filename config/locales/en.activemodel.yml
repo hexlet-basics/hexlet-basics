@@ -1,11 +1,11 @@
 en:
   activemodel:
     attributes:
-      sign_in:
+      sign_in_form:
         password: Password
     errors:
       models:
-        sign_in:
+        sign_in_form:
           attributes:
             password:
               cannot_sign_in: Wrong password. Check your keyboard layout.

@@ -24,7 +24,7 @@ ansible-vaults-edit:
 		ansible/ansible-runner ansible-vault edit --vault-password-file project/tmp/ansible-vault-password project/ansible/production/group_vars/all/vault.yml
 
 tag:
-	git tag $(TAG) && git push --tags
+	git tag $(TAG) && git push --tags --no-verify
 
 next-tag:
 	make tag TAG=$(shell bin/generate_next_tag)

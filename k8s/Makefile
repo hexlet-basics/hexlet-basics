@@ -7,7 +7,9 @@ init:
 	brew install kubernetes-helm
 
 local-cluster-setup:
-	sudo snap install doctl
+	snap install helm --classic
+	snap install kubectl --classic
+	snap install doctl
 	doctl auth init
 	doctl kubernetes cluster kubeconfig save hexlet-basics-4
 
@@ -29,7 +31,7 @@ helm-upgrade-app:
 	git reset HEAD
 	git add $(CURRENT_DIR)/app-chart/values.yaml
 	git commit -m "deploy"
-	git push
+	git push --no-verify
 
 # helm install -f ./values-external-dns.yml --name external-dns stable/external-dns
 helm-upgrade-external-dns:

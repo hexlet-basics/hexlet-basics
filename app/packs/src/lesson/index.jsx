@@ -40,9 +40,12 @@ export default async () => {
 
   const isFinished = gon.lesson_member.state === lessonMemberStates.finished;
 
+  const localStorageKey = `lesson-version-${gon.lesson_version.id}`;
+  const locallySavedContent = localStorage.getItem(localStorageKey);
+
   const preloadedState = {
     editorSlice: {
-      content: gon.lesson_version.prepared_code || '',
+      content: locallySavedContent || gon.lesson_version.prepared_code || '',
       focusesCount: 1,
     },
     solutionSlice: {

@@ -19,8 +19,7 @@ import EntityContext from '../EntityContext.js';
 
 const ControlBox = () => {
   const { t } = useTranslation();
-  const { checkInfo, lessonInfo, editor } = useSelector((state) => ({
-    editor: state.editorSlice,
+  const { checkInfo, lessonInfo } = useSelector((state) => ({
     checkInfo: state.checkInfoSlice,
     lessonInfo: state.lessonSlice,
   }));
@@ -31,7 +30,7 @@ const ControlBox = () => {
   } = useContext(EntityContext);
 
   const handleRunCheck = () => {
-    dispatch(actions.runCheck({ lessonVersion, editor }));
+    dispatch(actions.runCheck({ lessonVersion }));
   };
 
   const handleReset = () => {

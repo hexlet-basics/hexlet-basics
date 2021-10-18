@@ -5,6 +5,11 @@ Rails.application.routes.draw do
   mount Sidekiq::Web => '/sidekiq', constraints: AdminConstraint.new
 
   namespace :api do
+    resources :languages, only: %i[index show] do
+      scope module: :languages do
+        resources :lessons, only: %i[index show]
+      end
+    end
     resources :lessons, only: [] do
       member do
         post :check

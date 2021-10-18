@@ -58,3 +58,5 @@ yarn-debug.log*
 .yarn-integrity
 .yarn
 .pnp.js
+
+/browsers.json

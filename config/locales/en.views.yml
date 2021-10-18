@@ -6,6 +6,7 @@ en:
         try: Try now
         free_programming_courses: Free programming courses
         fastest_way_to_start_coding: The easiest way to experience coding right in your browser, Code Basics is an online platform featuring free programming tutorials and an interactive coding environment. Every lesson comes with an exercise to practice.
+        how_coding_works: How learning works with code-basics
       index:
         title: |
           Code Basics: basics of programming
@@ -76,7 +77,6 @@ en:
           instructions: Instructions
           definitions: Definitions
           tips: Tips
-          issues: Issues
         show:
           discuss: Discuss
           lesson: Lesson
@@ -87,6 +87,7 @@ en:
           community: community
           if_stuck: If you got stuck and don't know what to do, you can ask a question in our huge and friendly
           breadcrumb: breadcrumb
+          issues: Issues
       complete_language:
         continue: Continue Learning
         grats: Congratulations

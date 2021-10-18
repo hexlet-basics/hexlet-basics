@@ -3,7 +3,7 @@ variable "domain" {
 }
 
 variable "ip" {
-  default = "157.245.24.95"
+  default = "157.245.27.205"
 }
 
 resource "cloudflare_record" "main" {

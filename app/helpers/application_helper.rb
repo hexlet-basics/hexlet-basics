@@ -36,7 +36,8 @@ module ApplicationHelper
       tables: true,
       filter_html: false,
       safe_links_only: false,
-      fenced_code_blocks: true
+      fenced_code_blocks: true,
+      no_intra_emphasis: true
     }
     combined_extensions = default_extensions.merge(extensions)
 
@@ -115,5 +116,14 @@ module ApplicationHelper
       'css' => ExternalLinks.hexlet_layout_designer
     }
     mapping.fetch(slug, ExternalLinks.hexlet_profession)
+  end
+
+  def supported_browser?
+    # NOTE https://github.com/browserslist/browserslist-useragent-ruby#3-add-helper
+    # @browsers ||= JSON.parse(File.read('browsers.json'))
+    # matcher = BrowserslistUseragent::Match.new(@browsers, request.user_agent)
+    # matcher.browser? && matcher.version?(allow_higher: true)
+    # TODO replace implementation
+    true
   end
 end

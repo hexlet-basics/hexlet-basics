@@ -9,6 +9,8 @@ gem 'puma', '~> 5.3'
 gem 'rails', '~> 6.1'
 gem 'webpacker', github: 'rails/webpacker'
 
+gem 'responders'
+
 gem 'bootsnap', require: false
 gem 'http_accept_language'
 gem 'jbuilder', '~> 2.10'
@@ -58,7 +60,7 @@ group :production do
 end
 
 gem 'aasm'
-gem 'active_form_model'
+gem 'active_form_model', github: 'Hexlet/active_form_model'
 gem 'bcrypt'
 gem 'dry-auto_inject'
 gem 'dry-container'
@@ -67,7 +69,6 @@ gem 'gon'
 gem 'js-routes'
 gem 'rails-i18n'
 gem 'redcarpet', '~> 3.5'
-gem 'reform-rails'
 gem 'sidekiq'
 gem 'simple_form'
 gem 'slim-rails'
@@ -80,3 +81,5 @@ gem 'country_select'
 gem 'browser'
 
 gem 'meta-tags'
+
+gem 'browserslist_useragent'

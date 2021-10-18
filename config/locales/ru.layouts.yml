@@ -26,3 +26,5 @@ ru:
         recommended_books: Рекомендуемые книги
         matrix: Матрица компетентности
         source_code: Исходный код
+      unsupported_browser_warning:
+        unsupported_browser_warning: Ваш браузер устарел :( Некоторые возможности отключены. 

@@ -25,7 +25,7 @@ class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
 
     @user.reload
 
-    assert { @user.first_name = new_name }
+    assert { @user.first_name == new_name }
   end
 
   test 'destroy' do

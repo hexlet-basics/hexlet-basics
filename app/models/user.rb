@@ -6,10 +6,10 @@ class User < ApplicationRecord
 
   has_secure_password validations: false
 
-  # FIXME AASM has not without_state method. We have to change string comparsion to method that will check state
   validates :email, presence: true,
-                    uniqueness: { case_sensitive: false, conditions: -> { where.not(state: :removed) } },
-                    'valid_email_2/email': { mx: true }
+                    uniqueness: { case_sensitive: false },
+                    'valid_email_2/email': { mx: true },
+                    unless: :removed?
 
   has_many :lesson_members, class_name: 'Language::Lesson::Member', dependent: :destroy
   has_many :lessons, through: :lesson_members, class_name: 'Language::Lesson'
@@ -74,6 +74,8 @@ class User < ApplicationRecord
     fields.each do |field|
       send :"#{field}=", nil
     end
+
+    save!
   end
 
   def remove_accounts

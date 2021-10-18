@@ -28,6 +28,7 @@ app-setup: app-install app-db-prepare app-setup-git-hooks
 	make app-language-load L='css'
 	# make app-language-load L='html'
 	# make app-language-load L='ruby'
+	make app-language-load L='go'
 
 app-install:
 	docker-compose run web make setup

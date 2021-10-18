@@ -3,7 +3,7 @@
 class User::ProfileForm < User
   include ActiveFormModel
 
-  permit :first_name, :last_name, :nickname
+  fields :first_name, :last_name, :nickname
 
   # TODO Move to custom validator
   validates :first_name, length: { maximum: 40 },

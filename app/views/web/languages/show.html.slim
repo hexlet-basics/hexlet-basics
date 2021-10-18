@@ -3,7 +3,7 @@
 = content_for :meta do
   = structured_data_tag 'course', language: @language
   meta content='article' property='og:type'
-  meta content=title property='og:title'
+  meta content=@human_language_title property='og:title'
   meta content="#{language_url(@language.slug)}" property='og:url'
   meta content="#{image_url("#{@language.slug}.png")}" property='og:image'
   link rel='canonical' href="#{language_url(@language.slug)}"
@@ -17,7 +17,7 @@
       .row
         .col
           .badge.border.text-dark.small = t('.free_course')
-          h1.display-5.fw-bold(itemprop='name') = [t("human_languages.#{@language}"), @language.learn_as.text].join(' ')
+          h1.display-5.fw-bold(itemprop='name') = @human_language_title
           p.col-md-10.fs-5 = t(".#{@language}_description")
           .text-muted.lead.mb-5
             span.text-nowrap.me-4
@@ -28,7 +28,7 @@
               = t('students', count: @language.members.size)
             span.d-inline-block
               span.bi.bi-book.me-2
-              = t('.lessons', lessons_count: t('lessons', count: @language.lessons.size))
+              = t('.lessons', lessons_count: t('lessons', count: @infos_by_lesson.size))
 
           - if @language_member.finished?
             / чето сказать
