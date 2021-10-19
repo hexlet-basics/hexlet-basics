@@ -7,6 +7,7 @@ json.data do
     end
     json.links do
       json.self api_language_url(language)
+      json.lessons api_language_lessons_url(language, format: :json)
     end
   end
 end
