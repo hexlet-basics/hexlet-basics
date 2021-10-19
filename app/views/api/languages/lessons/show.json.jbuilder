@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 json.data do
+  json.id @lesson.id
   json.attributes do
-    json.call(@lesson, :id, :slug)
+    json.call(@lesson, :slug)
     json.call(@lesson_info, :name, :theory, :description, :tips, :definitions, :instructions)
   end
   json.links do

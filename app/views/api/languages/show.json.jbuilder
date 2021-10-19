@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 json.data do
+  json.id @language.id
   json.attributes do
-    json.call(@language, :id, :name, :slug, :learn_as)
+    json.call(@language, :name, :slug, :learn_as)
   end
   json.links do
     json.first_lesson api_language_lesson_url(@language, @language.lessons.first, format: :json)
@@ -10,8 +11,9 @@ json.data do
   json.relationships do
     json.lessons do
       json.array! @language.lessons do |lesson|
+        json.id lesson.id
         json.attributes do
-          json.call(lesson, :id, :slug)
+          json.call(lesson, :slug)
         end
         json.links do
           json.self api_language_lesson_url(@language, lesson, format: :json)
