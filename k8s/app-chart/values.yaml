@@ -1,6 +1,6 @@
 ---
 
-version: v601
+version: v600
 
 replicaCount: 3
 
