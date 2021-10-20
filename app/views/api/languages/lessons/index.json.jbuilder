@@ -5,13 +5,6 @@ json.data do
     json.array! module_version.lesson_versions.each do |lesson_version|
       lesson_info = @infos_by_lesson[lesson_version.id]
 
-
-
-      unless lesson_info
-
-        binding.irb
-      end
-
       json.id lesson_info.version.lesson.id
       json.attributes do
         json.call(lesson_info.version.lesson, :slug)
