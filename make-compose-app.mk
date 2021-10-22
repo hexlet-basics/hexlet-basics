@@ -19,9 +19,9 @@ app-rails-console:
 	docker-compose run web bin/rails c
 
 app-setup-git-hooks:
-	docker-compose run web npx simple-git-hooks
+	docker-compose run web yarn run simple-git-hooks
 
-app-setup: app-install app-db-prepare app-setup-git-hooks
+app-languages-load:
 	make app-language-load L='javascript'
 	make app-language-load L='php'
 	# make app-language-load L='python'
@@ -29,6 +29,10 @@ app-setup: app-install app-db-prepare app-setup-git-hooks
 	# make app-language-load L='html'
 	# make app-language-load L='ruby'
 	make app-language-load L='go'
+	make app-langugage-load L='clojure'
+
+
+app-setup: app-install app-db-prepare app-setup-git-hooks app-languages-load
 
 app-install:
 	docker-compose run web make setup

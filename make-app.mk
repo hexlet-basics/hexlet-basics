@@ -51,10 +51,10 @@ lint-rubocop-fix:
 	bundle exec rubocop -A
 
 lint-eslint:
-	npx eslint app/packs --ext .js,.jsx
+	yarn run eslint app/packs --ext .js,.jsx
 
 lint-eslint-fix:
-	npx eslint app/packs --ext .js,.jsx --fix
+	yarn run eslint app/packs --ext .js,.jsx --fix
 
 lint-slim:
 	bundle exec slim-lint
