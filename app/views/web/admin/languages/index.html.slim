@@ -17,6 +17,8 @@ table.table.my-2
         td = language.id
         td = language.slug
         td = language.progress
-        td = l language.current_version.updated_at, format: :short
+        td
+        - if language.current_version
+          = l language.current_version.updated_at, format: :short
         td = link_to 'Edit', edit_admin_language_path(language)
         td = link_to 'Versions', admin_language_versions_path(language)
