@@ -29,6 +29,7 @@ app-languages-load:
 	# make app-language-load L='html'
 	# make app-language-load L='ruby'
 	make app-language-load L='go'
+	make app-langugage-load L='clojure'
 
 
 app-setup: app-install app-db-prepare app-setup-git-hooks app-languages-load
