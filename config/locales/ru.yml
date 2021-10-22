@@ -16,6 +16,7 @@ ru:
     ruby: Ruby
     elixir: Elixir
     go: Go
+    clojure: Clojure
   hello: "Привет мир"
   hours:
     one: "%{count} час"

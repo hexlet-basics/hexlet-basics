@@ -11,6 +11,7 @@ export const languages = {
   ruby: 'ruby',
   go: 'go',
   elixir: 'elixir',
+  clojure: 'clojure',
 };
 
 export const neededPreview = (language) => {
