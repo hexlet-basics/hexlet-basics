@@ -19,7 +19,7 @@ app-rails-console:
 	docker-compose run web bin/rails c
 
 app-setup-git-hooks:
-	docker-compose run web npx simple-git-hooks
+	docker-compose run web yarn run simple-git-hooks
 
 app-setup: app-install app-db-prepare app-setup-git-hooks
 	make app-language-load L='javascript'
