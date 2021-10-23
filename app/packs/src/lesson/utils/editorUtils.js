@@ -38,6 +38,7 @@ export const langToSpacesMapping = {
   css: true,
   elixir: true,
   racket: true,
+  clojure: true,
 };
 
 const defaultTabSize = 4;
