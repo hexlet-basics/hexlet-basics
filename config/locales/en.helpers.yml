@@ -3,9 +3,9 @@ en:
     submit:
       create: Create
       update: Update
-      sign_in:
+      sign_in_form:
         create: Sign in
       user_sign_up_form:
         create: Sign up
-      remind_password:
+      remind_password_form:
         create: Reset password
