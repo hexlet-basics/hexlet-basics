@@ -30,7 +30,9 @@ app-languages-load:
 	make app-language-load L='ruby'
 	make app-language-load L='go'
 	make app-language-load L='clojure'
-
+	make app-language-load L='racket'
+	make app-language-load L='java'
+	make app-language-load L='elixir'
 
 app-setup: app-install app-db-prepare app-setup-git-hooks app-languages-load
 
