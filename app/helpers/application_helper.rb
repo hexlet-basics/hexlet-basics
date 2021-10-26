@@ -106,6 +106,15 @@ module ApplicationHelper
     mapping.fetch(slug, 'hexlet_logo.png')
   end
 
+  def get_language_devicon_name(slug)
+    mapping = {
+      'html' => 'html5',
+      'css' => 'css3'
+    }
+
+    mapping.fetch(slug, slug)
+  end
+
   def get_continue_study_path(slug)
     mapping = {
       'php' => ExternalLinks.hexlet_php,
