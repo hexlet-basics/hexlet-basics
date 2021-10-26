@@ -39,7 +39,7 @@
         .d-none.d-md-block.col-4.align-self-center.text-center
           / FIXME нужно добыть картинки
           / = image_pack_tag("#{@language.slug}_512x512.png", class: 'img-fluid', width: 512, height: 512, alt: @language, itemprop: 'contentUrl') rescue nil
-          span.colored.x-fs-15 class="devicon-#{@language.slug}-plain"
+          span.colored.x-fs-15 class="devicon-#{get_language_devicon_name(@language.slug)}-plain"
 
     .
       - if @language_member.finished?
