@@ -55,6 +55,10 @@
             = link_to language_path('go'), class: 'dropdown-item d-flex align-items-center py-2'
               span.devicon-go-plain.colored.me-2.fs-5
               span = t('human_languages.go')
+          li
+            = link_to language_path('clojure'), class: 'dropdown-item d-flex align-items-center py-2'
+              span.devicon-clojure-plain.colored.me-2.fs-5
+              span = t('human_languages.clojure')
       li.nav-item.dropdown.me-2.me-auto
         = link_to t('.success_stories'), ExternalLinks.hexlet_success_stories, class: 'nav-link text-dark', target: '_blank', rel: :nofollow
       - if current_user.guest?
