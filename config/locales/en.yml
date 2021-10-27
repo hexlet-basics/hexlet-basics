@@ -46,6 +46,7 @@ en:
     elixir: Elixir
     go: Go
     clojure: Clojure
+    clang: C
     language_for_beginners: "%{language} for beginners"
   language_icon: "%{language} icon"
   hours:

@@ -3,7 +3,7 @@
 class Language < ApplicationRecord
   extend Enumerize
 
-  enumerize :slug, in: %i[php javascript python java html css racket elixir ruby go clojure]
+  enumerize :slug, in: %i[php javascript python java html css racket elixir ruby go clojure clang]
   enumerize :progress, in: %i[completed in_development draft], default: :draft, scope: true
   # TODO: move to language version and populate inside the job
   enumerize :learn_as, in: %i[first_language second_language], default: :first_language

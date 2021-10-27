@@ -17,6 +17,7 @@ ru:
     elixir: Elixir
     go: Go
     clojure: Clojure
+    clang: Си
   hello: "Привет мир"
   hours:
     one: "%{count} час"

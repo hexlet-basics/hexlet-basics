@@ -4,10 +4,12 @@ import get from 'lodash/get';
 
 const languageMapping = {
   racket: 'scheme',
+  clang: 'c',
 };
 
 const editorMapping = {
   racket: 'scheme',
+  clang: 'c',
 };
 
 const langToTabSizeMapping = {
@@ -21,6 +23,7 @@ const langToTabSizeMapping = {
   python: 4,
   java: 4,
   go: 4,
+  clang: 2,
 };
 
 export const langToSpacesMapping = {
@@ -39,6 +42,7 @@ export const langToSpacesMapping = {
   elixir: true,
   racket: true,
   clojure: true,
+  clang: true,
 };
 
 const defaultTabSize = 4;
