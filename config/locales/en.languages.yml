@@ -34,3 +34,7 @@ en:
     clojure:
       title: Clojure programming course for beginners
       description: The study of programming is a difficult and lengthy process. Learning the syntax of the language - it is impossible to start without it. This The course is devoted to the basics of writing programs for a Clojure. He is preparing a springboard for writing meaningful programs.
+    # FIXME: поправить текст
+    clang:
+      title: C programming course for beginners
+      description: The study of programming is a difficult and lengthy process. Learning the syntax of the language - it is impossible to start without it. This The course is devoted to the basics of writing programs for a C. He is preparing a springboard for writing meaningful programs.

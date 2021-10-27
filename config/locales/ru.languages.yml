@@ -33,3 +33,6 @@ ru:
     clojure:
       title: 'Clojure: обучение бесплатно на clojure'
       description: Бесплатный курс по Clojure
+    clang:
+      title: 'Си: обучение бесплатно на си'
+      description: Бесплатный курс по Си

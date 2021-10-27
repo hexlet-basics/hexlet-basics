@@ -71,6 +71,7 @@ en:
         ruby_description: Ruby is a language designed to make programmers happy. He took from himself the best of Lisp, Smalltalk and Perl - he is object-oriented, but at the same time his declarative nature allows writing in a procedural and functional paradigm.
         elixir_description: Elixir is a programming language that runs on top of Erlang. How this happens is a functional language with rigorous computations, unambiguous assignment and dynamic typing, creation to support distributed, fault-tolerant, non-stop, hot-swappable applications.
         go_description: Go is a general-purpose language with rich features and clear syntax. Thanks to its multi-platform, reliable, well-documented standard library and focus on convenient approaches to the development itself, Go is an ideal language for the first steps in programming.
+        clang_description: C is a universal programming language with a compact way of writing expressions, modern mechanisms for managing data structures, and a rich set of operators.
       lessons:
         content:
           sign_up_for_tracking_progress_html: |
