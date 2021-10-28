@@ -89,7 +89,8 @@ module ApplicationHelper
       'racket' => 'x-bg-red',
       'ruby' => 'x-bg-red',
       'elixir' => 'x-bg-indigo',
-      'go' => 'x-bg-cyan'
+      'go' => 'x-bg-cyan',
+      'clang' => 'x-bg-blue'
     }
     mapping[slug]
   end
@@ -101,7 +102,8 @@ module ApplicationHelper
       'java' => 'java.svg',
       'python' => 'python.svg',
       'html' => 'layout-designer.svg',
-      'css' => 'layout-designer.svg'
+      'css' => 'layout-designer.svg',
+      'clang' => 'clang.svg'
     }
     mapping.fetch(slug, 'hexlet_logo.png')
   end
