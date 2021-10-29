@@ -88,6 +88,10 @@ $utilities: map-merge(
     width: calc(100% + 25px);
     margin-left: -15px;
   }
+
+  .ratio {
+    @extend .my-4;
+  }
 }
 
 .CodeMirror {
