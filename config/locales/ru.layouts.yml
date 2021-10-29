@@ -12,6 +12,7 @@ ru:
         change_course: Выберите курс
         toggle_navigation: Переключить навигацию
         toggle_user_menu: Показать/скрыть меню пользователя
+        admin: Админство
       footer:
         hexlet_title: © Hexlet Ltd, %{year}
         hexlet_address: UMA Esplanadi, Pohjoisesplanadi 39, 00100 Helsinki, Finland
@@ -27,4 +28,4 @@ ru:
         matrix: Матрица компетентности
         source_code: Исходный код
       unsupported_browser_warning:
-        unsupported_browser_warning: Ваш браузер устарел :( Некоторые возможности отключены. 
+        unsupported_browser_warning: Ваш браузер устарел :( Некоторые возможности отключены.

@@ -82,6 +82,9 @@
                 . = current_user.email
             .dropdown-divider
             li = link_to t('.profile'), edit_account_profile_path, class: 'dropdown-item'
+            - if current_user.admin?
+              .dropdown-divider
+              li = link_to t('.admin'), admin_root_path, class: 'dropdown-item'
             .dropdown-divider
             li = link_to t('.sign_out'), session_path, method: :delete, class: 'dropdown-item'
       li.nav-item.dropdown

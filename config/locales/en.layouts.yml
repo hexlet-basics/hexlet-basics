@@ -12,6 +12,7 @@ en:
         change_course: Choose a course
         toggle_navigation: Toggle navigation
         toggle_user_menu: Toggle the display of user menu
+        admin: Admins
       footer:
         hexlet_title: © Hexlet ltd, %{year}
         hexlet_address: UMA Esplanadi, Pohjoisesplanadi 39, 00100 Helsinki, Finland
