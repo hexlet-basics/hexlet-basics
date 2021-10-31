@@ -63,6 +63,19 @@
             = link_to language_path('clang'), class: 'dropdown-item d-flex align-items-center py-2'
               span.devicon-c-plain.colored.me-2.fs-5
               span = t('human_languages.clang')
+          li
+            = link_to language_path('csharp'), class: 'dropdown-item d-flex align-items-center py-2'
+              span.devicon-c-plain.colored.me-2.fs-5
+              span = t('human_languages.csharp')
+          li
+            = link_to language_path('haskell'), class: 'dropdown-item d-flex align-items-center py-2'
+              span.devicon-c-plain.colored.me-2.fs-5
+              span = t('human_languages.haskell')
+          li
+            = link_to language_path('typescript'), class: 'dropdown-item d-flex align-items-center py-2'
+              span.devicon-c-plain.colored.me-2.fs-5
+              span = t('human_languages.typescript')
+
       li.nav-item.dropdown.me-2.me-auto
         = link_to t('.success_stories'), ExternalLinks.hexlet_success_stories, class: 'nav-link text-dark', target: '_blank', rel: :nofollow
       - if current_user.guest?

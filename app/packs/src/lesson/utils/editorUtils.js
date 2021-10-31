@@ -24,6 +24,9 @@ const langToTabSizeMapping = {
   java: 4,
   go: 4,
   clang: 2,
+  csharp: 4,
+  typescript: 2,
+  haskell: 2
 };
 
 export const langToSpacesMapping = {
@@ -43,6 +46,9 @@ export const langToSpacesMapping = {
   racket: true,
   clojure: true,
   clang: true,
+  csharp: true,
+  typescript: true,
+  haskell: true,
 };
 
 const defaultTabSize = 4;
