@@ -3,7 +3,7 @@ name: push
 on:
   push:
     branches:
-      - master
+      - main
 
 env:
   APP_IMAGE_NAME: hexletbasics/services-app

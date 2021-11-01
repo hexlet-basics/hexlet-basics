@@ -3,7 +3,7 @@ name: pullrequest
 on:
   pull_request:
     branches:
-      - master
+      - main
 
 env:
   APP_IMAGE_NAME: hexletbasics/services-app
