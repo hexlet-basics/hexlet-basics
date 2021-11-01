@@ -64,7 +64,7 @@ module ApplicationHelper
     locale = lesson_version_info.locale
     path_to_description = File.join(repository_path, lesson_version.path_to_code, "description.#{locale}.yml")
 
-    path_to_description.sub('modules', 'blob/master/modules')
+    path_to_description.sub('modules', 'blob/main/modules')
   end
 
   def language_version_state_class(state)
