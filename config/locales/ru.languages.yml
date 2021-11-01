@@ -36,3 +36,12 @@ ru:
     clang:
       title: 'Си: обучение бесплатно на си'
       description: Бесплатный курс по Си
+    csharp:
+      title: 'C#: обучение бесплатно на C#'
+      description: Бесплатный курс по C#
+    haskell:
+      title: 'Haskell: обучение бесплатно на Haskell'
+      description: Бесплатный курс по Haskell
+    typescript:
+      title: 'TypeScript: обучение бесплатно на TypeScript'
+      description: Бесплатный курс по TypeScript

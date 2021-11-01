@@ -72,6 +72,9 @@ en:
         elixir_description: Elixir is a programming language that runs on top of Erlang. How this happens is a functional language with rigorous computations, unambiguous assignment and dynamic typing, creation to support distributed, fault-tolerant, non-stop, hot-swappable applications.
         go_description: Go is a general-purpose language with rich features and clear syntax. Thanks to its multi-platform, reliable, well-documented standard library and focus on convenient approaches to the development itself, Go is an ideal language for the first steps in programming.
         clang_description: C is a universal programming language with a compact way of writing expressions, modern mechanisms for managing data structures, and a rich set of operators.
+        csharp_description: C# is a modern object-oriented and type-safe programming language. Application development language for the Microsoft .NET Framework. It is used in the creation of sites, applications and games
+        haskell_description: Haskell is a standardized pure functional general-purpose programming language. The main control structure is function. A distinctive feature is a serious attitude to typing
+        typescript_description: TypeScript is a JavaScript-based programming language. Includes a typing system
       lessons:
         content:
           sign_up_for_tracking_progress_html: |

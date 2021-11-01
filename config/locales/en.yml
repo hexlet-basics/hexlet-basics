@@ -47,7 +47,9 @@ en:
     go: Go
     clojure: Clojure
     clang: C
-    language_for_beginners: "%{language} for beginners"
+    csharp: C#
+    haskell: Haskell
+    typescript: TypeScript
   language_icon: "%{language} icon"
   hours:
     one: "%{count} hour"

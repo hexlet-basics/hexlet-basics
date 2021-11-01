@@ -18,6 +18,9 @@ ru:
     go: Go
     clojure: Clojure
     clang: Си
+    csharp: C#
+    haskell: Haskell
+    typescript: TypeScript
   hello: "Привет мир"
   hours:
     one: "%{count} час"
