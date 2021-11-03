@@ -19,8 +19,8 @@
       .tab-content.overflow-hidden.x-h-md-100
         .tab-pane.fade.overflow-auto.x-h-md-100.active.show#lesson-tab(role="tabpanel")
           .card-body
-            nav.my-3 aria-label=t('.breadcrumb')
-              ol.breadcrumb itemscope="itemscope" itemtype="https://schema.org/BreadcrumbList"
+            nav aria-label=t('.breadcrumb')
+              ol.breadcrumb.mb-2 itemscope="itemscope" itemtype="https://schema.org/BreadcrumbList"
                 li.breadcrumb-item itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem"
                   = link_to root_path, title: t('.to_home_title'), itemprop: 'item' do
                     span.bi.bi-house.text-muted
