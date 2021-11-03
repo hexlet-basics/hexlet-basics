@@ -5,7 +5,7 @@ app-language-load:
 	docker-compose run --rm web make language-load L=${L}
 
 app-lint:
-	docker-compose run --rm web make lint
+	docker-compose run --rm --no-deps web make lint
 
 app-test:
 	docker-compose run --rm web make test
