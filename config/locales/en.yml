@@ -50,6 +50,7 @@ en:
     csharp: C#
     haskell: Haskell
     typescript: TypeScript
+    lua: Lua
   language_icon: "%{language} icon"
   hours:
     one: "%{count} hour"

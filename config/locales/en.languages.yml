@@ -47,3 +47,6 @@ en:
     typescript:
       title: 'TypeScript programming course'
       description:
+    lua:
+      title: 'Lua programming course'
+      description:

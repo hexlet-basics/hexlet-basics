@@ -75,6 +75,10 @@
             = link_to language_path('typescript'), class: 'dropdown-item d-flex align-items-center py-2'
               span.devicon-typescript-plain.colored.me-2.fs-5
               span = t('human_languages.typescript')
+          li
+            = link_to language_path('lua'), class: 'dropdown-item d-flex align-items-center py-2'
+              span.devicon-lua-plain.colored.me-2.fs-5
+              span = t('human_languages.lua')
 
       li.nav-item.dropdown.me-2.me-auto
         = link_to t('.success_stories'), ExternalLinks.hexlet_success_stories, class: 'nav-link text-dark', target: '_blank', rel: :nofollow

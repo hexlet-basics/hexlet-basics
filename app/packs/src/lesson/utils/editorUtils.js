@@ -49,6 +49,7 @@ export const langToSpacesMapping = {
   csharp: true,
   typescript: true,
   haskell: true,
+  lua: true,
 };
 
 const defaultTabSize = 4;
