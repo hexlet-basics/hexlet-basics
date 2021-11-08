@@ -21,6 +21,7 @@ ru:
     csharp: C#
     haskell: Haskell
     typescript: TypeScript
+    lua: Lua
   hello: "Привет мир"
   hours:
     one: "%{count} час"

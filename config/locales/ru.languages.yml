@@ -45,3 +45,6 @@ ru:
     typescript:
       title: 'TypeScript: обучение бесплатно на TypeScript'
       description: Бесплатный курс по TypeScript
+    lua:
+      title: 'Lua: обучение бесплатно на Lua'
+      description: Бесплатный курс по Lua

@@ -13,6 +13,7 @@ export const languages = {
   elixir: 'elixir',
   clojure: 'clojure',
   clang: 'clang',
+  lua: 'lua',
 };
 
 export const neededPreview = (language) => {

@@ -34,6 +34,7 @@ app-languages-load:
 	make app-language-load L='java'
 	make app-language-load L='elixir'
 	make app-language-load L='clang'
+	make app-language-load L='lua'
 
 app-setup: app-install app-db-prepare app-setup-git-hooks app-languages-load
 
