@@ -90,7 +90,8 @@ module ApplicationHelper
       'ruby' => 'x-bg-red',
       'elixir' => 'x-bg-indigo',
       'go' => 'x-bg-cyan',
-      'clang' => 'x-bg-blue'
+      'clang' => 'x-bg-blue',
+      'clojure' => 'x-bg-green'
     }
     mapping[slug]
   end
