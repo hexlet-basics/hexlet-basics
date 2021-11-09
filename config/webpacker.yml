@@ -41,8 +41,9 @@ development:
     pretty: true
     headers:
       'Access-Control-Allow-Origin': '*'
-    watch_options:
-      ignored: '**/node_modules/**'
+    static:
+      watch:
+        ignored: '**/node_modules/**'
 
 test:
   <<: *default
