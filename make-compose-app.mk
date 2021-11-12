@@ -35,6 +35,8 @@ app-languages-load:
 	make app-language-load L='elixir'
 	make app-language-load L='clang'
 	make app-language-load L='lua'
+	make app-language-load L='csharp'
+	make app-language-load L='typescript'
 
 app-setup: app-install app-db-prepare app-setup-git-hooks app-languages-load
 
