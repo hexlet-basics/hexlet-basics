@@ -6,6 +6,7 @@ ru:
         last_name: Фамилия
         nickname: Никнейм
         password: Пароль
+        email: Email
     errors:
       models:
         user/sign_up_form:

@@ -145,3 +145,7 @@ en:
         base: Server Error
         meta_description: Oops, something wen wrong. Our programmers are already solving this problem
         server_error: Oops, something wen wrong. Our programmers are already solving this problem
+
+    shared:
+      via_social_networks:
+        via_social_networks: With social media
