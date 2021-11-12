@@ -13,13 +13,13 @@ app-test:
 app-check: app-test app-lint
 
 app-test-file:
-	docker-compose run web --rm make test ${T}
+	docker-compose run --rm web make test ${T}
 
 app-rails-console:
-	docker-compose run web --rm bin/rails c
+	docker-compose run --rm web bin/rails c
 
 app-setup-git-hooks:
-	docker-compose run web --rm yarn run simple-git-hooks
+	docker-compose run --rm web yarn run simple-git-hooks
 
 app-languages-load:
 	make app-language-load L='javascript'
