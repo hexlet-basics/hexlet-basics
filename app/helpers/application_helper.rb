@@ -82,7 +82,7 @@ module ApplicationHelper
     mapping = {
       'php' => 'x-bg-blue',
       'javascript' => 'x-bg-yellow',
-      'java' => 'x-bg-azure',
+      'java' => 'x-bg-orange',
       'python' => 'x-bg-orange',
       'html' => 'x-bg-orange',
       'css' => 'x-bg-azure',
@@ -90,8 +90,11 @@ module ApplicationHelper
       'ruby' => 'x-bg-red',
       'elixir' => 'x-bg-indigo',
       'go' => 'x-bg-cyan',
-      'clang' => 'x-bg-blue',
-      'clojure' => 'x-bg-green'
+      'clang' => 'x-bg-azure',
+      'clojure' => 'x-bg-green',
+      'typescript' => 'x-bg-blue',
+      'csharp' => 'x-bg-purple',
+      'lua' => 'x-bg-blue'
     }
     mapping[slug]
   end
