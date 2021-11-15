@@ -12,7 +12,7 @@
     "@rails/ujs": "^6.1.4",
     "@rails/webpacker": "6.0.0-rc.6",
     "@reduxjs/toolkit": "^1.6.2",
-    "@rehooks/local-storage": "2.4.3",
+    "@rehooks/local-storage": "2.4.0",
     "ansi_up": "^5.1.0",
     "axios": "^0.24.0",
     "babel-loader": "^8.2.3",
