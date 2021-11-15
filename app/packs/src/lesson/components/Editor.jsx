@@ -64,6 +64,11 @@ const Editor = () => {
     extraKeys.forEach(({ key, action }) => {
       editorRef.current.addCommand(key, action);
     });
+
+    // NOTE: fix typescript validation error — `'name' is deprecated.(6385)`
+    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+      diagnosticCodesToIgnore: [6385],
+    });
   };
 
   const onContentChange = (newContent) => {
