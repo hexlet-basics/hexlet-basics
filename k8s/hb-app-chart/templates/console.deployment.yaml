@@ -43,6 +43,8 @@ spec:
           args: [ "while true; do sleep 30; done;"  ]
           envFrom:
             - secretRef:
+                name: database-credentials
+            - secretRef:
                 name: hexlet-basics-secrets
             - secretRef:
                 name: github-credentials
@@ -51,7 +53,7 @@ spec:
             - secretRef:
                 name: sparkpost-credentials
             - configMapRef:
-                name: hexlet-basics-config-map
+                name: hexlet-basics-data
           env:
             - name: CODE_BASICS_VERSION
               value: {{ .Values.version }}

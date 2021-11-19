@@ -1,0 +1,26 @@
+# Default values for hb-app.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+version: v629
+
+replicaCount: 3
+
+nginx:
+  image:
+    repository: hexletbasics/services-nginx
+    pullPolicy: Always
+
+web:
+  image:
+    repository: hexletbasics/services-app
+    pullPolicy: Always
+
+slack_notification: ['/root/hexlet-basics/deploy-notify.sh']
+
+# autoscaling:
+#   enabled: false
+#   minReplicas: 1
+#   maxReplicas: 100
+#   targetCPUUtilizationPercentage: 80
+#   targetMemoryUtilizationPercentage: 80

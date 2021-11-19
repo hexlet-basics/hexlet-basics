@@ -10,6 +10,13 @@ hexlet_basics_app_host: "code-basics.com"
 hexlet_basics_app_ru_host: "ru.code-basics.com"
 hexlet_basics_app_scheme: "https"
 
-hexlet_basics_database_url: 'postgres://{{ hexlet_basics_vault_db_username }}:{{ hexlet_basics_vault_db_password }}@{{ hexlet_basics_vault_db_hostname }}:{{ hexlet_basics_vault_db_port }}/{{ hexlet_basics_vault_db_name }}'
-hexlet_basics_redis_url: 'rediss://{{ hexlet_basics_vault_redis_username }}:{{ hexlet_basics_vault_redis_password }}@{{ hexlet_basics_vault_redis_hostname }}:{{ hexlet_basics_vault_redis_port }}'
-
+hexlet_basics_cluster_region: "ams3"
+hexlet_basics_cluster_name: "hexlet-basics-cluster"
+hexlet_basics_cluster_node_name: "hexlet-basics-node"
+hexlet_basics_cluster_node_size: "s-2vcpu-2gb"
+hexlet_basics_postgres_db_node_size: "db-s-1vcpu-1gb"
+hexlet_basics_postgres_version: "13"
+hexlet_basics_postgres_db_cluster_name: "hb-postgres-db-cluster"
+hexlet_basics_redis_version: "6"
+hexlet_basics_redis_db_cluster_name: "hb-redis-db-cluster"
+hexlet_basics_redis_db_node_size: "db-s-1vcpu-1gb"

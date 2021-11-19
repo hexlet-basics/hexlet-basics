@@ -65,6 +65,8 @@ spec:
               mountPath: /root/.docker
           envFrom:
             - secretRef:
+                name: database-credentials
+            - secretRef:
                 name: hexlet-basics-secrets
             - secretRef:
                 name: github-credentials
@@ -73,11 +75,7 @@ spec:
             - secretRef:
                 name: sparkpost-credentials
             - configMapRef:
-                name: hexlet-basics-config-map
+                name: hexlet-basics-data
           env:
             - name: CODE_BASICS_VERSION
               value: {{ .Values.version }}
-          lifecycle:
-            postStart:
-              exec:
-                command: {{ .Values.slack_notification }}

@@ -1,26 +1,3 @@
-resource "kubernetes_secret" "cloudflare_credentials" {
-  metadata {
-    name = "cloudflare-credentials"
-  }
-
-  data = {
-    CF_API_KEY   = var.cloudflare_api_key
-    CF_API_EMAIL = var.cloudflare_email
-  }
-}
-
-resource "kubernetes_secret" "cloudflare_credentials_kube_system" {
-  metadata {
-    name      = "cloudflare-credentials"
-    namespace = "kube-system"
-  }
-
-  data = {
-    CF_API_KEY   = var.cloudflare_api_key
-    CF_API_EMAIL = var.cloudflare_email
-  }
-}
-
 resource "kubernetes_secret" "sparkpost_credentials" {
   metadata {
     name = "sparkpost-credentials"
@@ -55,6 +32,27 @@ resource "kubernetes_secret" "facebook_credentials" {
   }
 }
 
+locals {
+  postgres_db_user_pass = resource.digitalocean_database_user.postgres_db_user.password
+  database_url = "postgres://${var.postgres_db_user}:${local.postgres_db_user_pass}@${data.digitalocean_database_cluster.postgres_db_data.host}:${data.digitalocean_database_cluster.postgres_db_data.port}/${var.postgres_db_name}"
+}
+
+resource "kubernetes_secret" "database_credentials" {
+  metadata {
+    name = "database-credentials"
+  }
+
+  data = {
+    DB_HOSTNAME  = data.digitalocean_database_cluster.postgres_db_data.host
+    DB_NAME      = var.postgres_db_name
+    DB_USERNAME  = var.postgres_db_user
+    DB_PORT  = data.digitalocean_database_cluster.postgres_db_data.port
+    DB_PASSWORD  = data.digitalocean_database_cluster.postgres_db_data.password
+    DATABASE_URL = local.database_url
+    REDIS_URL    = data.digitalocean_database_cluster.redis_db_data.uri
+  }
+}
+
 resource "kubernetes_secret" "hexlet_basics_secrets" {
   metadata {
     name = "hexlet-basics-secrets"
@@ -67,25 +65,19 @@ resource "kubernetes_secret" "hexlet_basics_secrets" {
   }
 }
 
-resource "kubernetes_config_map" "hexlet_basics_config_map" {
+resource "kubernetes_config_map" "hexlet_basics_data" {
   metadata {
-    name = "hexlet-basics-config-map"
+    name = "hexlet-basics-data"
   }
 
   data = {
     MIX_ENV      = "prod"
     PORT         = "3000"
     NODE_ENV     = "production"
-    RAILS_ENV    = var.rails_env
-    DB_HOSTNAME  = var.db_hostname
-    DB_PORT  = var.db_port
-    DB_PASSWORD  = var.db_password
-    DB_USERNAME  = var.db_username
+    RAILS_ENV    = "production"
     DB_POOL_SIZE = "10"
-    DB_NAME      = "hexlet_basics_prod"
-    DATABASE_URL = var.database_url
-    REDIS_URL    = var.redis_url
     DB_SSL_MODE  = "TRUE"
+    RAILS_LOG_TO_STDOUT = true
     RAILS_SERVE_STATIC_FILES = true
     FORCE        = "11"
     APP_SCHEME   = var.app_scheme
@@ -93,6 +85,8 @@ resource "kubernetes_config_map" "hexlet_basics_config_map" {
     APP_RU_HOST  = var.app_ru_host
     GOOGLE_TAG_MANAGER_KEY = var.google_tag_manager_key
   }
+
+  depends_on = [resource.local_file.kubeconfig]
 }
 
 resource "kubernetes_secret" "docker-registry-auth" {
@@ -105,5 +99,4 @@ resource "kubernetes_secret" "docker-registry-auth" {
   }
 
   type = "kubernetes.io/dockerconfigjson"
-
 }
