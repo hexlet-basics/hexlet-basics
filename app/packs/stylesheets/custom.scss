@@ -66,11 +66,10 @@ $utilities: map-merge(
   }
 
   pre.hexlet-basics-output {
-    display: inline-block;
+    display: block;
     background-color: $black;
     color: white;
-    min-width: 220px;
-    max-width: 100%;
+    width: 100%;
     padding: 0 10px 12px 15px;
     border: none;
   }
