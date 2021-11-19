@@ -23,7 +23,8 @@ class Web::ApplicationController < ApplicationController
   private
 
   def prepare_locale_settings
-    I18n.locale = request.subdomains.first || :en
+    subdomain = request.subdomains.first
+    I18n.locale = subdomain || :en
 
     # NOTE: боты не должны попадать на автоматический редирект
     unless browser.bot?
@@ -32,8 +33,7 @@ class Web::ApplicationController < ApplicationController
       }
 
       results = Geocoder.search(request.remote_ip)
-      result = results.first
-      subdomain = request.subdomains.first
+      country_by_ip = results.first&.country || ''
       ru_country_codes = ['RU']
       remembered_locale = session[:locale]&.to_sym
 
@@ -41,10 +41,10 @@ class Web::ApplicationController < ApplicationController
         if remembered_locale && remembered_locale != I18n.locale
           url = root_url(subdomain: subdomains.fetch(remembered_locale, ''))
           redirect_to url
-        elsif !remembered_locale && !subdomain && ru_country_codes.include?(result.country)
+        elsif !remembered_locale && !subdomain && ru_country_codes.include?(country_by_ip)
           url = root_url(subdomain: 'ru')
           redirect_to url
-        elsif !subdomain && ru_country_codes.exclude?(result.country)
+        elsif !subdomain && ru_country_codes.exclude?(country_by_ip)
           # Говорим о том, что в английском пока не очень много контента и возможно вы хотели русский
           # f(:, now: true)
         end
