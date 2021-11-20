@@ -32,8 +32,6 @@ class Web::ApplicationController < ApplicationController
         ru: 'ru'
       }
 
-      results = Geocoder.search(request.remote_ip)
-      country_by_ip = results.first&.country || ''
       ru_country_codes = ['RU']
       remembered_locale = session[:locale]&.to_sym
 
@@ -50,5 +48,9 @@ class Web::ApplicationController < ApplicationController
         end
       end
     end
+  end
+
+  def country_by_ip
+    @country_by_ip ||= Geocoder.search(request.remote_ip).first&.country || 'RU'
   end
 end
