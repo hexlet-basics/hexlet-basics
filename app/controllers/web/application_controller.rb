@@ -27,30 +27,30 @@ class Web::ApplicationController < ApplicationController
     I18n.locale = subdomain || :en
 
     # NOTE: боты не должны попадать на автоматический редирект
-    unless browser.bot?
-      subdomains = {
-        ru: 'ru'
-      }
+    return if browser.bot?
 
-      ru_country_codes = ['RU']
-      remembered_locale = session[:locale]&.to_sym
+    subdomains = {
+      ru: 'ru'
+    }
 
-      if current_page?(root_path)
-        if remembered_locale && remembered_locale != I18n.locale
-          url = root_url(subdomain: subdomains.fetch(remembered_locale, ''))
-          redirect_to url
-        elsif !remembered_locale && !subdomain && ru_country_codes.include?(country_by_ip)
-          url = root_url(subdomain: 'ru')
-          redirect_to url
-        elsif !subdomain && ru_country_codes.exclude?(country_by_ip)
-          # Говорим о том, что в английском пока не очень много контента и возможно вы хотели русский
-          # f(:, now: true)
-        end
+    ru_country_codes = ['RU']
+    remembered_locale = session[:locale]&.to_sym
+
+    if current_page?(root_path)
+      if remembered_locale && remembered_locale != I18n.locale
+        url = root_url(subdomain: subdomains.fetch(remembered_locale, ''))
+        redirect_to url
+      elsif !remembered_locale && !subdomain && ru_country_codes.include?(country_by_ip)
+        url = root_url(subdomain: 'ru')
+        redirect_to url
+      elsif !subdomain && ru_country_codes.exclude?(country_by_ip)
+        # Говорим о том, что в английском пока не очень много контента и возможно вы хотели русский
+        # f(:, now: true)
       end
     end
   end
 
   def country_by_ip
-    @country_by_ip ||= Geocoder.search(request.remote_ip).first&.country || 'RU'
+    @country_by_ip ||= Geocoder.search(request.remote_ip).first&.country_code || 'RU'
   end
 end
