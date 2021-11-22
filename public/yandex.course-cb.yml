@@ -43,7 +43,7 @@
         <categoryId>107</categoryId>
         <picture>https://ru.code-basics.com/assets/javascript-9f7da8d98cce6ef05ff811098dd1f0b115a4ec86973f4d8e7e378c05575bab7b.png</picture>
         <!--Этот набор параметров обязателен-->
-        <param name="Продолжительность" unit="занятия">79</param>
+        <param name="Продолжительность" unit="Занятие">79</param>
         <!--Этот набор параметров необязателен-->
         <param name="Сложность">Для начинающих</param>
         <param name="Есть практика">true</param>
@@ -74,7 +74,7 @@
         <categoryId>108</categoryId>
         <picture>https://ru.code-basics.com/assets/php-17a8e0c4821adf48d099c1e487587e4cd3191294b26dff6baa59d02e0c3af569.png</picture>
         <!--Этот набор параметров обязателен-->
-        <param name="Продолжительность" unit="занчтия">82</param>
+        <param name="Продолжительность" unit="Занятие">82</param>
         <!--Этот набор параметров необязателен-->
         <param name="Гибкие даты">true</param>
         <param name="Сложность">Для начинающих</param>
@@ -104,7 +104,7 @@
         <categoryId>101</categoryId>
         <picture>https://ru.code-basics.com/assets/python-7d756e54a9186a7a38e88f39120dbf17327c34dec2fbfa8505f21e8828308581.png</picture>
         <!--Этот набор параметров обязателен-->
-        <param name="Продолжительность" unit="занятия">69</param>
+        <param name="Продолжительность" unit="Занятие">69</param>
         <!--Этот набор параметров необязателен-->
         <param name="Гибкие даты">false</param>
         <param name="Есть учитель">false</param>
@@ -133,7 +133,7 @@
         <categoryId>116</categoryId>
         <picture>https://ru.code-basics.com/assets/css-c2aef3254d55c4ee44bc640b3c5015507214305ba9b2e6c36d3c2a41794d1e4c.png</picture>
         <!--Этот набор параметров обязателен-->
-        <param name="Продолжительность" unit="занятия">33</param>
+        <param name="Продолжительность" unit="Занятие">33</param>
         <!--Этот набор параметров необязателен-->
         <param name="Гибкие даты">true</param>
         <param name="Есть домашние работы">true</param>
@@ -157,7 +157,7 @@
         <categoryId>115</categoryId>
         <picture>https://ru.code-basics.com/assets/html-8e2a60d44054d97948c6fd729208d87545095c875a130961f483253e3238ea70.png</picture>
         <!--Этот набор параметров обязателен-->
-        <param name="Продолжительность" unit="занятия">41</param>
+        <param name="Продолжительность" unit="Занятие">41</param>
 
         <!--Этот набор параметров необязателен-->
         <param name="Гибкие даты">true</param>
@@ -184,7 +184,7 @@
         <categoryId>117</categoryId>
         <picture>https://ru.code-basics.com/assets/ruby-e2e37c8b12b71f272263dee1afed4cadc88a6998991d3013f2dc6d5a72383f50.png</picture>
         <!--Этот набор параметров обязателен-->
-        <param name="Продолжительность" unit="занятия">32</param>
+        <param name="Продолжительность" unit="Занятие">32</param>
         <!--Этот набор параметров необязателен-->
         <param name="Гибкие даты">true</param>
         <param name="Сложность">Базовый уровень</param>
@@ -209,7 +209,7 @@
         <categoryId>103</categoryId>
         <picture>https://ru.code-basics.com/assets/java-f1d8b3772da29363b104a34d601d63ad0638120d35e2871226464e10fc28a802.png</picture>
         <!--Этот набор параметров обязателен-->
-        <param name="Продолжительность" unit="занятия">59</param>
+        <param name="Продолжительность" unit="Занятие">59</param>
         <!--Этот набор параметров необязателен-->
         <param name="Гибкие даты">true</param>
         <param name="Сложность">Для начинающих</param>
@@ -239,7 +239,7 @@
         <categoryId>118</categoryId>
         <picture>https://ru.code-basics.com/assets/racket-02c162877fd1b9822b4e2cc9250adea0c074c77c79e5b9c0c661e2d90a460c39.png</picture>
         <!--Этот набор параметров обязателен-->
-        <param name="Продолжительность" unit="занятия">30</param>
+        <param name="Продолжительность" unit="Занятие">30</param>
         <!--Этот набор параметров необязателен-->
         <param name="Гибкие даты">true</param>
         <param name="Сложность">Для начинающих</param>
@@ -265,7 +265,7 @@
         <categoryId>119</categoryId>
         <picture>https://ru.code-basics.com/assets/elixir-9348a8f1c6f62e26f36cb955a4fbc1df3f1ed73aaa4481647fd6880c4bc826e1.png</picture>
         <!--Этот набор параметров обязателен-->
-        <param name="Продолжительность" unit="занятия">18</param>
+        <param name="Продолжительность" unit="Занятие">18</param>
         <!--Этот набор параметров необязателен-->
         <param name="Гибкие даты">true</param>
         <param name="Сложность">Для начинающих</param>
@@ -291,7 +291,7 @@
         <categoryId>110</categoryId>
         <picture>https://ru.code-basics.com/assets/go-e7b0f0bec0322e4853beb426bf22188dfed5485633ab0042832b6c9ffc068ed5.png</picture>
         <!--Этот набор параметров обязателен-->
-        <param name="Продолжительность" unit="занятия">24</param>
+        <param name="Продолжительность" unit="Занятие">24</param>
         <!--Этот набор параметров необязателен-->
         <param name="Гибкие даты">true</param>
         <param name="Сложность">Базовый уровень</param>
