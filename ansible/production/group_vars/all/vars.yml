@@ -6,9 +6,8 @@ hexlet_basics_run_user_home: /home/ubuntu
 hexlet_basics_env_file: "{{ hexlet_basics_run_user_home }}/.env"
 hexlet_basics_node_env: production
 hexlet_basics_rails_env: production
-hexlet_basics_app_host: "code-basics.com"
-hexlet_basics_app_ru_host: "ru.code-basics.com"
-hexlet_basics_app_scheme: "https"
+hexlet_basics_domain: "code-basics.com"
+hexlet_basics_domain_ru: "code-basics.ru"
 
 hexlet_basics_cluster_region: "ams3"
 hexlet_basics_cluster_name: "hexlet-basics-cluster"

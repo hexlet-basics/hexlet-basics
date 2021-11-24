@@ -80,9 +80,6 @@ resource "kubernetes_config_map" "hexlet_basics_data" {
     RAILS_LOG_TO_STDOUT = true
     RAILS_SERVE_STATIC_FILES = true
     FORCE        = "11"
-    APP_SCHEME   = var.app_scheme
-    APP_HOST     = var.app_host
-    APP_RU_HOST  = var.app_ru_host
     GOOGLE_TAG_MANAGER_KEY = var.google_tag_manager_key
   }
 

@@ -120,21 +120,6 @@ variable "secret_key_base" {
   description = "Hexlet Basics secret key base"
 }
 
-variable "app_scheme" {
-  type        = string
-  description = "Hexlet Basics app scheme"
-}
-
-variable "app_host" {
-  type        = string
-  description = "Hexlet Basics app host"
-}
-
-variable "app_ru_host" {
-  type        = string
-  description = "Hexlet Basics app ru-host"
-}
-
 variable "google_tag_manager_key" {
   type        = string
   description = "Google Tag Manager key"
