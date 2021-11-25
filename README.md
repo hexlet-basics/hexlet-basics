@@ -36,9 +36,9 @@ $ make app-db-prepare # sometimes, when fixtures were changed
 Kube access
 
 ```
+export DIGITALOCEAN_ACCESS_TOKEN=<your token>
 make local-cluster-setup
 ```
-
 
 ##
 [![Hexlet Ltd. logo](https://raw.githubusercontent.com/Hexlet/assets/master/images/hexlet_logo128.png)](https://ru.hexlet.io/pages/about?utm_source=github&utm_medium=link&utm_campaign=exercises-javascript)
