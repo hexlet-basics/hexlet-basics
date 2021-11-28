@@ -41,8 +41,14 @@ clean:
 precompile-assets:
 	bundle exec rails assets:precompile
 
-lint: lint-eslint lint-rubocop
+lint: lint-eslint lint-rubocop lint-style
 lint-fix: lint-eslint-fix lint-rubocop-fix
+
+lint-style:
+	npx stylelint "**/*.scss"
+
+lint-style-fix:
+	npx stylelint --fix "**/*.scss"
 
 lint-rubocop:
 	bundle exec rubocop
