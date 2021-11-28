@@ -46,6 +46,7 @@ lint-fix: lint-eslint-fix lint-rubocop-fix
 
 lint-rubocop:
 	bundle exec rubocop
+	bundle exec slim-lint app/views/
 
 lint-rubocop-fix:
 	bundle exec rubocop -A
