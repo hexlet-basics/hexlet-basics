@@ -37,6 +37,8 @@ settings:
 
 
 rules:
+  react/function-component-definition: [2, { "namedComponents": "arrow-function" }]
+  react/jsx-no-constructed-context-values: 1
   max-len: ["error", { "code": 120 }]
   react/prop-types: 0
   react/no-danger: 0
