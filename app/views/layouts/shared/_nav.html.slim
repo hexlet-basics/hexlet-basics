@@ -81,29 +81,31 @@
               span = t('human_languages.lua')
 
       li.nav-item.dropdown.me-2.me-auto
-        = link_to t('.success_stories'), ExternalLinks.hexlet_success_stories, class: 'nav-link text-dark', target: '_blank', rel: :nofollow # rubocop:disable Rails/LinkToBlank
-      - if current_user.guest?
-        = nav_menu_item t('.sign_in'), new_session_path
-        = nav_menu_item t('.registration'), new_user_path, class: 'me-3'
-      - else
-        li.nav-item.dropdown.me-2
-          button.nav-link.text-dark.dropdown-toggle href='#' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false'
-            span.bi.bi-person-circle
-            / = current_user.email
-          ul.dropdown-menu.dropdown-menu-end
-            li.dropdown-item-text.d-flex.align-items-center
-              .flex-shrink-0.me-2
-                = image_tag 'user-avatar.png', width: 50, height: 50, alt: 'User Avatar', class: 'rounded-circle'
-              .
-                .fw-bold = current_user.nickname
-                . = current_user.email
-            .dropdown-divider
-            li = link_to t('.profile'), edit_account_profile_path, class: 'dropdown-item'
-            - if current_user.admin?
+        / rubocop:disable Rails/LinkToBlank
+        = link_to t('.success_stories'), ExternalLinks.hexlet_success_stories, class: 'nav-link text-dark', target: '_blank', rel: 'nofollow noopener'
+        / rubocop:enable Rails/LinkToBlank
+        - if current_user.guest?
+          = nav_menu_item t('.sign_in'), new_session_path
+          = nav_menu_item t('.registration'), new_user_path, class: 'me-3'
+        - else
+          li.nav-item.dropdown.me-2
+            button.nav-link.text-dark.dropdown-toggle href='#' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false'
+              span.bi.bi-person-circle
+              / = current_user.email
+            ul.dropdown-menu.dropdown-menu-end
+              li.dropdown-item-text.d-flex.align-items-center
+                .flex-shrink-0.me-2
+                  = image_tag 'user-avatar.png', width: 50, height: 50, alt: 'User Avatar', class: 'rounded-circle'
+                .
+                  .fw-bold = current_user.nickname
+                  . = current_user.email
               .dropdown-divider
-              li = link_to t('.admin'), admin_root_path, class: 'dropdown-item'
-            .dropdown-divider
-            li = link_to t('.sign_out'), session_path, method: :delete, class: 'dropdown-item'
+              li = link_to t('.profile'), edit_account_profile_path, class: 'dropdown-item'
+              - if current_user.admin?
+                .dropdown-divider
+                li = link_to t('.admin'), admin_root_path, class: 'dropdown-item'
+              .dropdown-divider
+              li = link_to t('.sign_out'), session_path, method: :delete, class: 'dropdown-item'
       li.nav-item.dropdown
         a.nav-link.text-dark.dropdown-toggle href='#' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false'
           span.me-2 = image_tag "flag-#{I18n.locale}.svg", width: 25, alt: "switch language to #{I18n.locale}"
