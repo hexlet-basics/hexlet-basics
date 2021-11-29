@@ -4,7 +4,7 @@ version: '3'
 
 services:
   postgres:
-    image: postgres:12-alpine
+    image: postgres:13-alpine
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
@@ -22,9 +22,6 @@ services:
   #     dockerfile: Dockerfile.production
   #   env_file:
   #     - .env
-
-    depends_on:
-      - postgres
 
 volumes:
   pgdata:
