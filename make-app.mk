@@ -41,7 +41,7 @@ clean:
 precompile-assets:
 	bundle exec rails assets:precompile
 
-lint: lint-eslint lint-rubocop lint-style
+lint: lint-eslint lint-rubocop lint-style #lint-slim
 lint-fix: lint-eslint-fix lint-rubocop-fix
 
 lint-style:
@@ -52,7 +52,6 @@ lint-style-fix:
 
 lint-rubocop:
 	bundle exec rubocop
-	bundle exec slim-lint app/views/
 
 lint-rubocop-fix:
 	bundle exec rubocop -A
@@ -64,7 +63,7 @@ lint-eslint-fix:
 	yarn run eslint app/packs --ext .js,.jsx --fix
 
 lint-slim:
-	bundle exec slim-lint
+	bundle exec slim-lint app/views/
 
 js-routes:
 	bundle exec rails js_routes:generate
