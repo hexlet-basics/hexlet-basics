@@ -81,7 +81,7 @@
               span = t('human_languages.lua')
 
       li.nav-item.dropdown.me-2.me-auto
-        = link_to t('.success_stories'), ExternalLinks.hexlet_success_stories, class: 'nav-link text-dark', target: '_blank', rel: :nofollow
+        = link_to t('.success_stories'), ExternalLinks.hexlet_success_stories, class: 'nav-link text-dark', target: '_blank', rel: :nofollow # rubocop:disable Rails/LinkToBlank
       - if current_user.guest?
         = nav_menu_item t('.sign_in'), new_session_path
         = nav_menu_item t('.registration'), new_user_path, class: 'me-3'

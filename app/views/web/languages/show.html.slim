@@ -30,9 +30,9 @@
               span.bi.bi-book.me-2
               = t('.lessons', lessons_count: t('lessons', count: @infos_by_lesson.size))
 
-          - if @language_member.finished?
-            / чето сказать
-          - elsif @first_lesson == @next_lesson
+          / - if @language_member.finished?
+          /   TODO: чето сказать
+          - if @first_lesson == @next_lesson
             = link_to t('.start'), language_lesson_path(@language.slug, @first_lesson.slug), class: 'btn btn-lg btn-primary px-4 mb-3 mt-2'
           - else
             = link_to t('.continue'), language_lesson_path(@language.slug, @next_lesson.slug), class: 'btn btn-lg btn-success px-4 mb-3 mt-2'
