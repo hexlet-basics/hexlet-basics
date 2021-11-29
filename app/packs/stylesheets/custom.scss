@@ -1,3 +1,5 @@
+@use "sass:map";
+
 $body-bg: #f5f7fb;
 $breadcrumb-divider: '→';
 
@@ -8,7 +10,7 @@ $breadcrumb-divider: '→';
 
 $azure: #45aaf2;
 
-$utilities: map-merge(
+$utilities: map.merge(
   $utilities,
   (
     "responsive-height": (
@@ -22,7 +24,7 @@ $utilities: map-merge(
     "x-background-color": (
       property: background-color,
       class: 'x-bg',
-      values: map-merge(
+      values: map.merge(
         $colors,
         ( azure: $azure )
       )
