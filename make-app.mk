@@ -45,10 +45,10 @@ lint: lint-eslint lint-rubocop lint-style
 lint-fix: lint-eslint-fix lint-rubocop-fix
 
 lint-style:
-	npx stylelint "**/*.scss"
+	npx stylelint "app/packs/stylesheets/*.scss"
 
 lint-style-fix:
-	npx stylelint --fix "**/*.scss"
+	npx stylelint --fix "app/packs/stylesheets/*.scss"
 
 lint-rubocop:
 	bundle exec rubocop
