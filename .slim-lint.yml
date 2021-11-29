@@ -6,6 +6,7 @@ exclude:
 
 linters:
 
+  # NOTE: Эти файлы содержат скрипты и сырой текст
   LineLength:
     max: 180
     exclude:
