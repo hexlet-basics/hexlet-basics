@@ -42,10 +42,7 @@ resource "local_file" "kubeconfig" {
   count      = var.write_kubeconfig ? 1 : 0
   content    = resource.digitalocean_kubernetes_cluster.hexlet_basics_cluster.kube_config[0].raw_config
   filename   = local.path_to_kubeconfig
-
-  provisioner "local-exec" {
-    command = "chmod g+r ../.kube/config"
-  }
+  file_permission = "0711"
 }
 
 # --------------------------------------
