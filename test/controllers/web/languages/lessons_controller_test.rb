@@ -15,6 +15,11 @@ class Web::Languages::LessonsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test 'show amp' do
+    get language_lesson_url(@language.slug, @lesson.slug, subdomain: @info.locale, format: :amp)
+    assert_response :success
+  end
+
   test 'show (signed in)' do
     sign_in_as(:full)
     get language_lesson_url(@language.slug, @lesson.slug, subdomain: @info.locale)
