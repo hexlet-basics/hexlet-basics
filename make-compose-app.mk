@@ -37,6 +37,7 @@ app-languages-load:
 	make app-language-load L='lua'
 	make app-language-load L='csharp'
 	make app-language-load L='typescript'
+	make app-language-load L='prolog'
 
 app-setup: app-install app-db-prepare app-setup-git-hooks app-languages-load
 

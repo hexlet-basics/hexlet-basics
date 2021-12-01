@@ -13,6 +13,9 @@ compose-logs:
 compose-down:
 	docker-compose down || true
 
+compose-clear:
+	docker-compose down -v || true
+
 compose-stop:
 	docker-compose stop || true
 

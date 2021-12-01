@@ -22,6 +22,7 @@ ru:
     haskell: Haskell
     typescript: TypeScript
     lua: Lua
+    prolog: Prolog
   hello: "Привет мир"
   hours:
     one: "%{count} час"
