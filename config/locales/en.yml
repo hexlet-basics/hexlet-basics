@@ -51,6 +51,7 @@ en:
     haskell: Haskell
     typescript: TypeScript
     lua: Lua
+    prolog: Prolog
   language_icon: "%{language} icon"
   hours:
     one: "%{count} hour"

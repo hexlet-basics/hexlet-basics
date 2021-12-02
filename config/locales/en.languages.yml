@@ -50,3 +50,6 @@ en:
     lua:
       title: 'Lua programming course'
       description:
+    prolog:
+      title: 'Prolog programming course'
+      description:

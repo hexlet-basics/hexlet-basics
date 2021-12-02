@@ -48,3 +48,6 @@ ru:
     lua:
       title: 'Lua: обучение бесплатно на Lua'
       description: Бесплатный курс по Lua
+    prolog:
+      title: 'Prolog: обучение бесплатно на Prolog'
+      description: Бесплатный курс по Prolog

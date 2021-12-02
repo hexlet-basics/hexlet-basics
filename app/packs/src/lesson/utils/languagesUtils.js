@@ -14,6 +14,7 @@ export const languages = {
   clojure: 'clojure',
   clang: 'clang',
   lua: 'lua',
+  prolog: 'prolog',
 };
 
 export const neededPreview = (language) => {

@@ -27,6 +27,7 @@ const langToTabSizeMapping = {
   csharp: 4,
   typescript: 2,
   haskell: 2,
+  prolog: 1,
 };
 
 export const langToSpacesMapping = {
