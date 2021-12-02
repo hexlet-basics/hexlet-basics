@@ -15,6 +15,7 @@ export const languages = {
   clang: 'clang',
   lua: 'lua',
   prolog: 'prolog',
+  haskell: 'haskell',
 };
 
 export const neededPreview = (language) => {

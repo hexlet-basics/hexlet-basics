@@ -95,7 +95,8 @@ module ApplicationHelper
       'typescript' => 'x-bg-blue',
       'csharp' => 'x-bg-purple',
       'lua' => 'x-bg-blue',
-      'prolog' => 'x-bg-orange'
+      'prolog' => 'x-bg-orange',
+      'haskell' => 'x-bg-gray'
     }
     mapping[slug]
   end
