@@ -52,6 +52,7 @@ en:
     typescript: TypeScript
     lua: Lua
     prolog: Prolog
+    cpp: C++
   language_icon: "%{language} icon"
   hours:
     one: "%{count} hour"
