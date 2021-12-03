@@ -43,6 +43,8 @@ ru:
         register: Регистрация
         sign_in_with_github: Войти через GitHub
         forgot_password: Забыли пароль?
+        password: Пароль
+        email: Email
     passwords:
       edit:
         meta_description: Установить новый пароль на Code Basics

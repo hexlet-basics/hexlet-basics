@@ -19,8 +19,8 @@
       .card.shadow-sm.border-0
         .card-body.m-4
           = simple_form_for @sign_in_form, url: session_path do |f|
-            = f.input :email, input_html: { 'data-testid' => 'email' }
-            = f.input :password, input_html: { 'data-testid' => 'password' }
+            = f.input :email, label: t('.email'), input_html: { 'data-testid' => 'email' }
+            = f.input :password, label: t('.password'), input_html: { 'data-testid' => 'password' }
             .text-end.small.my-4
               = link_to t('.forgot_password'), new_remind_password_path, class: 'text-decoration-none'
             .form-group
