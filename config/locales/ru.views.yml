@@ -82,7 +82,9 @@ ru:
         typescript_description: TypeScript — язык программирования на основе JavaScript. Включает в себя систему типизации
         lua_description: Lua — скриптовый язык программирования
         prolog_description: Prolog — язык логического программирования
-        cpp_description: C++ — компилируемый, статически типизированный язык программирования общего назначения.
+        cpp_description: C++ — компилируемый, статически типизированный язык программирования общего назначения
+        # FIXME: поправить описание Bash
+        bash_description: Bash (от англ. Bourne again shell, каламбур «Born again» shell — «возрождённый» shell) — усовершенствованная и модернизированная вариация командной оболочки Bourne shell
       complete_language:
         continue: Продолжить обучение
         grats: Поздравляем!

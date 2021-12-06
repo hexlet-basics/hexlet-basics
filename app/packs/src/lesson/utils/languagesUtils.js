@@ -17,6 +17,7 @@ export const languages = {
   prolog: 'prolog',
   haskell: 'haskell',
   cpp: 'cpp',
+  bash: 'bash',
 };
 
 export const neededPreview = (language) => {

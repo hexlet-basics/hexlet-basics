@@ -24,6 +24,7 @@ ru:
     lua: Lua
     prolog: Prolog
     cpp: C++
+    bash: Bash
   hello: "Привет мир"
   hours:
     one: "%{count} час"
