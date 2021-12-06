@@ -82,6 +82,7 @@ ru:
         typescript_description: TypeScript — язык программирования на основе JavaScript. Включает в себя систему типизации
         lua_description: Lua — скриптовый язык программирования
         prolog_description: Prolog — язык логического программирования
+        cpp_description: C++ — компилируемый, статически типизированный язык программирования общего назначения.
       complete_language:
         continue: Продолжить обучение
         grats: Поздравляем!

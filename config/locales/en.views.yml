@@ -75,6 +75,8 @@ en:
         csharp_description: C# is a modern object-oriented and type-safe programming language. Application development language for the Microsoft .NET Framework. It is used in the creation of sites, applications and games
         haskell_description: Haskell is a standardized pure functional general-purpose programming language. The main control structure is function. A distinctive feature is a serious attitude to typing
         typescript_description: TypeScript is a JavaScript-based programming language. Includes a typing system
+        prolog_description: Prolog is a logic programming language associated with artificial intelligence and computational linguistics
+        cpp_description: C++ is a general-purpose programming language
       lessons:
         content:
           sign_up_for_tracking_progress_html: |

@@ -28,6 +28,7 @@ const langToTabSizeMapping = {
   typescript: 2,
   haskell: 2,
   prolog: 1,
+  cpp: 2,
 };
 
 export const langToSpacesMapping = {
@@ -51,6 +52,7 @@ export const langToSpacesMapping = {
   typescript: true,
   haskell: true,
   lua: true,
+  cpp: true,
 };
 
 const defaultTabSize = 4;

@@ -85,6 +85,10 @@
               / TODO: change icon https://github.com/devicons/devicon/issues/924
               span.bi.bi-code.colored.me-2.fs-5
               span = t('human_languages.prolog')
+          li
+            = link_to language_path('cpp'), class: 'dropdown-item d-flex align-items-center py-2'
+              span.devicon-cplusplus-plain.colored.me-2.fs-5
+              span = t('human_languages.cpp')
 
       li.nav-item.dropdown.me-2.me-auto
         / rubocop:disable Rails/LinkToBlank

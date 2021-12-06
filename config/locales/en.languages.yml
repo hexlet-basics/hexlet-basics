@@ -53,3 +53,6 @@ en:
     prolog:
       title: 'Prolog programming course'
       description:
+    cpp:
+      title: 'C++ programming course'
+      description:

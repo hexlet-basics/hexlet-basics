@@ -96,7 +96,8 @@ module ApplicationHelper
       'csharp' => 'x-bg-purple',
       'lua' => 'x-bg-blue',
       'prolog' => 'x-bg-orange',
-      'haskell' => 'x-bg-gray'
+      'haskell' => 'x-bg-gray',
+      'cpp' => 'x-bg-blue'
     }
     mapping[slug]
   end
@@ -117,7 +118,8 @@ module ApplicationHelper
   def get_language_devicon_name(slug)
     mapping = {
       'html' => 'html5',
-      'css' => 'css3'
+      'css' => 'css3',
+      'cpp' => 'cplusplus'
     }
 
     mapping.fetch(slug, slug)

@@ -23,6 +23,7 @@ ru:
     typescript: TypeScript
     lua: Lua
     prolog: Prolog
+    cpp: C++
   hello: "Привет мир"
   hours:
     one: "%{count} час"

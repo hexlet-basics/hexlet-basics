@@ -39,6 +39,7 @@ app-languages-load:
 	make app-language-load L='typescript'
 	make app-language-load L='prolog'
 	make app-language-load L='haskell'
+	make app-language-load L='cpp'
 
 app-setup: app-install app-db-prepare app-setup-git-hooks app-languages-load
 

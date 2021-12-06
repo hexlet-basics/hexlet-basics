@@ -51,3 +51,6 @@ ru:
     prolog:
       title: 'Prolog: обучение бесплатно на Prolog'
       description: Бесплатный курс по Prolog
+    cpp:
+      title: 'C++: обучение бесплатно на C++'
+      description: Бесплатный курс по C++
