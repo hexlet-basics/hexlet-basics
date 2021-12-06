@@ -98,7 +98,8 @@ module ApplicationHelper
       'prolog' => 'x-bg-orange',
       'haskell' => 'x-bg-gray',
       'cpp' => 'x-bg-blue',
-      'bash' => 'x-bg-gray'
+      'bash' => 'x-bg-gray',
+      'fortran' => 'x-bg-purple'
     }
     mapping[slug]
   end

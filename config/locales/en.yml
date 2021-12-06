@@ -54,6 +54,7 @@ en:
     prolog: Prolog
     cpp: C++
     bash: Bash
+    fortran: Fortran
   language_icon: "%{language} icon"
   hours:
     one: "%{count} hour"

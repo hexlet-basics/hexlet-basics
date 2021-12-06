@@ -25,6 +25,7 @@ ru:
     prolog: Prolog
     cpp: C++
     bash: Bash
+    fortran: Fortran
   hello: "Привет мир"
   hours:
     one: "%{count} час"

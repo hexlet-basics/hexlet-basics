@@ -93,6 +93,11 @@
             = link_to language_path('bash'), class: 'dropdown-item d-flex align-items-center py-2'
               span.devicon-bash-plain.colored.me-2.fs-5
               span = t('human_languages.bash')
+          li
+            = link_to language_path('fortran'), class: 'dropdown-item d-flex align-items-center py-2'
+              / TODO: https://github.com/devicons/devicon/issues/936
+              span.bi.bi-code.colored.me-2.fs-5
+              span = t('human_languages.fortran')
 
       li.nav-item.dropdown.me-2.me-auto
         / rubocop:disable Rails/LinkToBlank

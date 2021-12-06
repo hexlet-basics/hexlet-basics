@@ -31,6 +31,7 @@ const langToTabSizeMapping = {
   prolog: 1,
   cpp: 2,
   bash: 2,
+  fortran: 2,
 };
 
 export const langToSpacesMapping = {
@@ -56,6 +57,7 @@ export const langToSpacesMapping = {
   lua: true,
   cpp: true,
   bash: true,
+  fortran: true,
 };
 
 const defaultTabSize = 4;

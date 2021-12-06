@@ -41,6 +41,7 @@ app-languages-load:
 	make app-language-load L='haskell'
 	make app-language-load L='cpp'
 	make app-language-load L='bash'
+	make app-language-load L='fortran'
 
 app-setup: app-install app-db-prepare app-setup-git-hooks app-languages-load
 
