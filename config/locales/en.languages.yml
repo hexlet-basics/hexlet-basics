@@ -56,3 +56,6 @@ en:
     cpp:
       title: 'C++ programming course'
       description:
+    bash:
+      title: 'Bash programming course'
+      description:

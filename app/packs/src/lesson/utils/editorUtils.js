@@ -10,6 +10,7 @@ const languageMapping = {
 const editorMapping = {
   racket: 'scheme',
   clang: 'c',
+  bash: 'shell',
 };
 
 const langToTabSizeMapping = {
@@ -29,6 +30,7 @@ const langToTabSizeMapping = {
   haskell: 2,
   prolog: 1,
   cpp: 2,
+  bash: 2,
 };
 
 export const langToSpacesMapping = {
@@ -53,6 +55,7 @@ export const langToSpacesMapping = {
   haskell: true,
   lua: true,
   cpp: true,
+  bash: true,
 };
 
 const defaultTabSize = 4;

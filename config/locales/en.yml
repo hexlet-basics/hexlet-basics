@@ -53,6 +53,7 @@ en:
     lua: Lua
     prolog: Prolog
     cpp: C++
+    bash: Bash
   language_icon: "%{language} icon"
   hours:
     one: "%{count} hour"

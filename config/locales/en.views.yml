@@ -77,6 +77,7 @@ en:
         typescript_description: TypeScript is a JavaScript-based programming language. Includes a typing system
         prolog_description: Prolog is a logic programming language associated with artificial intelligence and computational linguistics
         cpp_description: C++ is a general-purpose programming language
+        bash_description: Bash is command language
       lessons:
         content:
           sign_up_for_tracking_progress_html: |

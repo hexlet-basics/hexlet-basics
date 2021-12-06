@@ -54,3 +54,6 @@ ru:
     cpp:
       title: 'C++: обучение бесплатно на C++'
       description: Бесплатный курс по C++
+    bash:
+      title: 'Bash: обучение бесплатно на Bash'
+      description: Бесплатный курс по Bash

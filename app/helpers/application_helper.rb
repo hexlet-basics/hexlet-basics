@@ -97,7 +97,8 @@ module ApplicationHelper
       'lua' => 'x-bg-blue',
       'prolog' => 'x-bg-orange',
       'haskell' => 'x-bg-gray',
-      'cpp' => 'x-bg-blue'
+      'cpp' => 'x-bg-blue',
+      'bash' => 'x-bg-gray'
     }
     mapping[slug]
   end
