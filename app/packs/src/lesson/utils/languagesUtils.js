@@ -18,6 +18,7 @@ export const languages = {
   haskell: 'haskell',
   cpp: 'cpp',
   bash: 'bash',
+  fortran: 'fortran',
 };
 
 export const neededPreview = (language) => {
