@@ -55,6 +55,7 @@ en:
     cpp: C++
     bash: Bash
     fortran: Fortran
+    kotlin: Kotlin
   language_icon: "%{language} icon"
   hours:
     one: "%{count} hour"
