@@ -135,6 +135,7 @@ module ApplicationHelper
       'javascript' => ExternalLinks.hexlet_frontend,
       'java' => ExternalLinks.hexlet_java,
       'python' => ExternalLinks.hexlet_python,
+      'ruby' => ExternalLinks.hexlet_rails,
       'html' => ExternalLinks.hexlet_layout_designer,
       'css' => ExternalLinks.hexlet_layout_designer
     }

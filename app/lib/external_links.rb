@@ -19,7 +19,8 @@ class ExternalLinks
     hexlet_frontend: 'https://ru.hexlet.io/programs/frontend?utm_campaign=general&utm_medium=referral&utm_source=code-basics',
     hexlet_java: 'https://ru.hexlet.io/programs/java?utm_campaign=general&utm_medium=referral&utm_source=code-basics',
     hexlet_python: 'https://ru.hexlet.io/programs/python?utm_campaign=general&utm_medium=referral&utm_source=code-basics',
-    hexlet_php: 'https://ru.hexlet.io/programs/php?utm_campaign=general&utm_medium=referral&utm_source=code-basics'
+    hexlet_php: 'https://ru.hexlet.io/programs/php?utm_campaign=general&utm_medium=referral&utm_source=code-basics',
+    hexlet_rails: 'https://ru.hexlet.io/programs/rails?utm_campaign=general&utm_medium=referral&utm_source=code-basics'
   }.freeze
 
   def self.method_missing(method_name)
