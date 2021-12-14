@@ -99,7 +99,8 @@ module ApplicationHelper
       'haskell' => 'x-bg-gray',
       'cpp' => 'x-bg-blue',
       'bash' => 'x-bg-gray',
-      'fortran' => 'x-bg-purple'
+      'fortran' => 'x-bg-purple',
+      'kotlin' => 'x-bg-purple'
     }
     mapping[slug]
   end

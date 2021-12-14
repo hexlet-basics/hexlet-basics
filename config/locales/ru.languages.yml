@@ -58,5 +58,8 @@ ru:
       title: 'Bash: обучение бесплатно на Bash'
       description: Бесплатный курс по Bash
     fortran:
-      title: 'Fortran: обучение бесплатно на Bash'
+      title: 'Fortran: обучение бесплатно на Fortran'
       description: Бесплатный курс по Fortran
+    kotlin:
+      title: 'Kotlin: обучение бесплатно на Kotlin'
+      description: Бесплатный курс по Kotlin
