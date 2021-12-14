@@ -63,3 +63,6 @@ ru:
     kotlin:
       title: 'Kotlin: обучение бесплатно на Kotlin'
       description: Бесплатный курс по Kotlin
+    swift:
+      title: 'swift: обучение бесплатно на swift'
+      description: Бесплатный курс по swift

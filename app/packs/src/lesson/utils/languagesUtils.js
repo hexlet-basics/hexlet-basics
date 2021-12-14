@@ -20,6 +20,7 @@ export const languages = {
   bash: 'bash',
   fortran: 'fortran',
   kotlin: 'kotlin',
+  swift: 'swift',
 };
 
 export const neededPreview = (language) => {
