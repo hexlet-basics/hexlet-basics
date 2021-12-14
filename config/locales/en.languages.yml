@@ -65,3 +65,6 @@ en:
     kotlin:
       title: 'Kotlin programming course'
       description:
+    swift:
+      title: 'Swift programming course'
+      description:

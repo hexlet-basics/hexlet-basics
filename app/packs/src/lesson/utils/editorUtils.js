@@ -33,6 +33,7 @@ const langToTabSizeMapping = {
   bash: 2,
   fortran: 2,
   kotlin: 4,
+  swift: 2,
 };
 
 export const langToSpacesMapping = {
@@ -60,6 +61,7 @@ export const langToSpacesMapping = {
   bash: true,
   fortran: true,
   kotlin: true,
+  swift: true,
 };
 
 const defaultTabSize = 4;

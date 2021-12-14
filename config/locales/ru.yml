@@ -26,7 +26,8 @@ ru:
     cpp: C++
     bash: Bash
     fortran: Fortran
-    kotlin: kotlin
+    kotlin: Kotlin
+    swift: Swift
   hello: "Привет мир"
   hours:
     one: "%{count} час"
