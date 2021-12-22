@@ -4,6 +4,13 @@ class Web::LanguagesController < Web::ApplicationController
   def show
     @language = Language.find_by!(slug: params[:id])
 
+    unless @language.current_version
+      f('empty_language_current_version', type: :warning)
+
+      redirect_to root_path
+      return
+    end
+
     @current_module_versions = @language.current_module_versions
                                         .includes(:module)
                                         .order(:order)

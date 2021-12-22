@@ -4,6 +4,7 @@ en:
       languages:
         show:
           warning: The Language has lessons only in russian. Switch locale if you can read it :)
+          empty_language_current_version: Language is under development, please check back later or try any other available language
         lessons:
           show:
             lesson_not_found: Lesson not found. Please, try another lesson.
