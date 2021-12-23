@@ -11,6 +11,10 @@ class Web::LanguagesController < Web::ApplicationController
       return
     end
 
+    if @language.progress_in_development?
+      f('.typescript_description_html', type: :info, values: { language: @language.to_s.humanize, link_to_repo: ExternalLinks.source_code }, now: true)
+    end
+
     @current_module_versions = @language.current_module_versions
                                         .includes(:module)
                                         .order(:order)

@@ -7,7 +7,7 @@ class Language < ApplicationRecord
                           javascript kotlin lua objectivec ocaml perl php prolog python racket rescript rproject ruby
                           rust scala smalltalk swift typescript]
 
-  enumerize :progress, in: %i[completed in_development draft], default: :draft, scope: true
+  enumerize :progress, in: %i[completed in_development draft], default: :draft, scope: true, predicates: { prefix: true }
   # TODO: move to language version and populate inside the job
   enumerize :learn_as, in: %i[first_language second_language], default: :first_language
 
