@@ -2,15 +2,19 @@
 
 class DockerExerciseApi
   def self.repo_dest(lang_name)
-    "/var/tmp/hexletbasics/exercises-#{lang_name}"
+    "/var/tmp/#{image_name(lang_name)}"
+  end
+
+  def self.image_name(lang_name)
+    "hexletbasics/exercises-#{lang_name}"
   end
 
   def self.download(lang_name)
-    system("docker pull hexletbasics/exercises-#{lang_name}")
-    system("rm -rf /var/tmp/hexletbasics/exercises-#{lang_name}")
+    system("docker pull #{image_name(lang_name)}")
+    system("rm -rf #{repo_dest(lang_name)}")
 
     # FIXME docker in docker volume
-    system("docker run --name exercises-#{lang_name} -v #{repo_dest(lang_name)}:/out hexletbasics/exercises-#{lang_name}")
+    system("docker run --name exercises-#{lang_name} -v #{repo_dest(lang_name)}:/out #{image_name(lang_name)}")
     system("docker cp exercises-#{lang_name}:/exercises-#{lang_name} /var/tmp/hexletbasics/")
     system("docker rm exercises-#{lang_name}")
   end
@@ -28,10 +32,10 @@ class DockerExerciseApi
   def self.tag_image_version(lang_name, tag)
     return unless Rails.env.production?
 
-    tag_command = "docker tag hexletbasics/exercises-#{lang_name}:latest hexletbasics/exercises-#{lang_name}:#{tag}"
+    tag_command = "docker tag #{image_name(lang_name)}:latest #{image_name(lang_name)}:#{tag}"
     BashRunner.start(tag_command)
 
-    push_command = "docker push hexletbasics/exercises-#{lang_name}:#{tag}"
+    push_command = "docker push #{image_name(lang_name)}:#{tag}"
     _ok = BashRunner.start(push_command)
 
     # FIXME better error handling
@@ -39,7 +43,7 @@ class DockerExerciseApi
   end
 
   def self.remove_image(lang_name, tag)
-    remove_command = "docker rmi hexletbasics/exercises-#{lang_name}:#{tag}"
+    remove_command = "docker rmi #{image_name(lang_name)}:#{tag}"
     _ok = BashRunner.start(remove_command)
   end
 end
