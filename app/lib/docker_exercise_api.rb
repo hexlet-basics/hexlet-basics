@@ -37,4 +37,9 @@ class DockerExerciseApi
     # FIXME better error handling
     # raise "Docker tag error: #{ok}" unless ok
   end
+
+  def self.remove_image(lang_name, tag)
+    remove_command = "docker rmi hexletbasics/exercises-#{lang_name}:#{tag}"
+    _ok = BashRunner.start(remove_command)
+  end
 end

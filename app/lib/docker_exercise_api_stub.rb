@@ -18,5 +18,7 @@ class DockerExerciseApiStub
 
     [output.join, status]
   end
+
+  def self.remove_image(lang_name, tag); end
   # rubocop:enable Lint/UnusedMethodArgument
 end

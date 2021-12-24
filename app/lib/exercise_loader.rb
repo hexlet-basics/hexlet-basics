@@ -8,7 +8,8 @@ class ExerciseLoader
 
     language_version.build!
 
-    lang_name = language_version.language.slug
+    language = language_version.language
+    lang_name = language.slug
 
     docker_exercise_api.download(lang_name)
 
@@ -20,6 +21,8 @@ class ExerciseLoader
 
     # FIXME we should brake build if docker answers non 200 code
     docker_exercise_api.tag_image_version(lang_name, language_version.image_tag)
+
+    remove_previous_image(language)
 
     language_version.result = 'Success'
     ActiveRecord::Base.transaction do
@@ -239,5 +242,13 @@ class ExerciseLoader
     template_code = result.gsub('BEGIN', 'BEGIN (write your solution here)')
 
     result == code ? '' : template_code
+  end
+
+  def remove_previous_image(language)
+    second_to_last_version = language.versions.second_to_last
+
+    if second_to_last_version
+      docker_exercise_api.remove_image(language.slug, second_to_last_version.image_tag)
+    end
   end
 end
