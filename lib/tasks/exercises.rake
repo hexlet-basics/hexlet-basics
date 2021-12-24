@@ -15,11 +15,11 @@ namespace :exercises do
     languages = Language.all
 
     languages.each do |language|
+      # TODO После перехода на Rails 7 заменить на excluding
       latest_versions = language.versions
                                 .reverse_order
+                                .where.not(id: language.current_version&.id)
                                 .take(10)
-
-      latest_versions.delete(language.current_version)
 
       latest_versions.each do |version|
         docker_exercise_api.remove_image(language.slug, version.image_tag)
