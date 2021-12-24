@@ -5,8 +5,8 @@ en:
         show:
           warning: The Language has lessons only in russian. Switch locale if you can read it :)
           empty_language_current_version: Language is under development, please check back later or try any other available language
-          typescript_description_html: |
-            Language "%{language}" is under development.
+          language_in_development_html: |
+            Language %{language} is under development.
             You can help send a pull request with new lessons or
             supplement those that already exist <a href="%{link_to_repo}" target="_blank" rel="noopener">%{link_to_repo}</a>
         lessons:

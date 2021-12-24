@@ -5,8 +5,8 @@ ru:
         show:
           warning: Попробуйте переключить язык, возможно там найдется нужный урок! :)
           empty_language_current_version: Язык находится в разработке, пожалуйсте, зайдите позже или попробуйте любой другой доступный язык
-          typescript_description_html: |
-            Курс по языку "%{language}" еще в разработке.
+          language_in_development_html: |
+            Курс по языку %{language} еще в разработке.
             Вы можете помочь и отправить пулл-реквест с новыми уроками или дополнить те,
             которые уже есть <a href="%{link_to_repo}" target="_blank" rel="noopener">%{link_to_repo}</a>
 
