@@ -45,6 +45,7 @@ en:
       edit:
         meta_description: Set a new password on Code Basics
         new_password: New password
+        title: Change password
     remind_passwords:
       new:
         title: Remind password

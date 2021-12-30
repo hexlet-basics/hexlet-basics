@@ -49,6 +49,7 @@ ru:
       edit:
         meta_description: Установить новый пароль на Code Basics
         new_password: Новый пароль
+        title: Смена пароля
     remind_passwords:
       new:
         title: Восстановление пароля
