@@ -1,8 +1,8 @@
-data "digitalocean_kubernetes_cluster" "hexlet_basics_cluster_data" {
-  name = var.cluster_name
+data "digitalocean_kubernetes_cluster" "hexlet_basics_cluster_data_2" {
+  name = var.cluster_name_2
 
   depends_on = [
-    digitalocean_kubernetes_cluster.hexlet_basics_cluster
+    digitalocean_kubernetes_cluster.hexlet_basics_cluster_2
   ]
 }
 

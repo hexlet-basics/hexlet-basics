@@ -3,19 +3,20 @@ variable "cluster_region" {
   type = string
   description = "K8s Cluster Region"
 }
-variable "cluster_name" {
+
+variable "cluster_name_2" {
   type = string
-  description = "K8s Cluster Name"
+  description = "K8s Cluster Name 2"
 }
 
-variable "cluster_node_name" {
+variable "cluster_node_2_name" {
   type = string
-  description = "K8s Cluster Node Name"
+  description = "K8s Cluster Node 2 Name"
 }
 
-variable "cluster_node_size" {
+variable "cluster_node_2_size" {
   type = string
-  description = "K8s Node Size"
+  description = "K8s Node 2 Size"
 }
 
 variable "postgres_db_node_size" {

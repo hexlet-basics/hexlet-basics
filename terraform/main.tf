@@ -5,8 +5,9 @@ data "digitalocean_kubernetes_versions" "last_minor_version" {
 # --------------------------------------
 # PRIMARY CLUSTER
 # --------------------------------------
-resource "digitalocean_kubernetes_cluster" "hexlet_basics_cluster" {
-  name         = var.cluster_name
+
+resource "digitalocean_kubernetes_cluster" "hexlet_basics_cluster_2" {
+  name         = var.cluster_name_2
   region       = var.cluster_region
 
   auto_upgrade = true
@@ -18,8 +19,8 @@ resource "digitalocean_kubernetes_cluster" "hexlet_basics_cluster" {
   }
 
   node_pool {
-    name       = var.cluster_node_name
-    size       = var.cluster_node_size
+    name       = var.cluster_node_2_name
+    size       = var.cluster_node_2_size
     auto_scale = true
     min_nodes  = 3
     max_nodes  = 5
@@ -36,11 +37,11 @@ locals {
 
 resource "local_file" "kubeconfig" {
   depends_on = [
-    resource.digitalocean_kubernetes_cluster.hexlet_basics_cluster
+    resource.digitalocean_kubernetes_cluster.hexlet_basics_cluster_2
   ]
 
   count      = var.write_kubeconfig ? 1 : 0
-  content    = resource.digitalocean_kubernetes_cluster.hexlet_basics_cluster.kube_config[0].raw_config
+  content    = resource.digitalocean_kubernetes_cluster.hexlet_basics_cluster_2.kube_config[0].raw_config
   filename   = local.path_to_kubeconfig
   file_permission = "0711"
 }
@@ -68,7 +69,7 @@ resource "digitalocean_database_cluster" "postgres_db_cluster" {
 
    rule {
      type  = "k8s"
-     value = digitalocean_kubernetes_cluster.hexlet_basics_cluster.id
+     value = digitalocean_kubernetes_cluster.hexlet_basics_cluster_2.id
    }
  }
 
@@ -91,7 +92,7 @@ resource "digitalocean_database_cluster" "redis_db_cluster" {
 
    rule {
      type  = "k8s"
-     value = digitalocean_kubernetes_cluster.hexlet_basics_cluster.id
+     value = digitalocean_kubernetes_cluster.hexlet_basics_cluster_2.id
    }
  }
 
@@ -115,7 +116,7 @@ resource "digitalocean_project" "hexlet_basics_project" {
   purpose     = "Web Application"
   environment = "Production"
   resources   = [
-    digitalocean_kubernetes_cluster.hexlet_basics_cluster.urn,
+    digitalocean_kubernetes_cluster.hexlet_basics_cluster_2.urn,
     digitalocean_database_cluster.postgres_db_cluster.urn,
     digitalocean_database_cluster.redis_db_cluster.urn,
   ]
