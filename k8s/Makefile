@@ -11,7 +11,7 @@ local-cluster-setup:
 	snap install kubectl --classic
 	snap install doctl
 	doctl auth init
-	doctl kubernetes cluster kubeconfig save hexlet-basics-cluster
+	doctl kubernetes cluster kubeconfig save hexlet-basics-cluster-2
 
 helm-install:
 	helm install hb-app ./hb-app-chart
