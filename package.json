@@ -10,7 +10,7 @@
     "@rails/actioncable": "^7.0.1",
     "@rails/activestorage": "^7.0.1",
     "@rails/ujs": "^7.0.1",
-    "@rails/webpacker": "6.0.0-rc.6",
+    "@rails/webpacker": "^6.0.0-rc.6",
     "@reduxjs/toolkit": "^1.7.1",
     "@rehooks/local-storage": "2.4.4",
     "ansi_up": "^5.1.0",

@@ -77,6 +77,6 @@ db-prepare:
 	bin/rails db:fixtures:load || true
 
 webpacker:
-	bin/webpack-dev-server
+	bin/webpacker-dev-server
 
 .PHONY: test
