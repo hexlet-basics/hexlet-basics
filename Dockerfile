@@ -1,3 +1,4 @@
+# TODO Switch to ruby 3.1 Rails 7.0
 FROM ruby:3.0.3
 
 # NOTE https://github.com/webpack/webpack/issues/14532
