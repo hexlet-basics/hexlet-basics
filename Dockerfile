@@ -5,6 +5,9 @@ RUN apt-get update \
 
 RUN curl -sL https://deb.nodesource.com/setup_17.x | bash -
 
+# NOTE https://github.com/webpack/webpack/issues/14532
+ENV NODE_OPTIONS --openssl-legacy-provider
+
 ENV DOCKER_CHANNEL stable
 ENV DOCKER_VERSION 20.10.11
 RUN curl -fsSL "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/x86_64/docker-${DOCKER_VERSION}.tgz" \
