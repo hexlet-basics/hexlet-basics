@@ -41,27 +41,7 @@ jobs:
 
       - name: Check
         run: |
-          # TODO Какая-то херня. Выше делается образ, который используется в этом композе, но он его не использует и качает вроде бы этот же образ из реестра.
           docker-compose --file docker-compose.yml up --abort-on-container-exit
-
-      - name: Push
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: Dockerfile.production
-          cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}:cached
-          push: true
-          tags: ${{ env.APP_IMAGE_NAME }}:latest
-
-      - name: Build&Push Nginx
-        uses: docker/build-push-action@v2
-        with:
-          context: services/web-nginx
-          file: services/web-nginx/Dockerfile.production
-          push: true
-          tags: ${{ env.NGINX_IMAGE_NAME }}:latest
-          build-args: |
-            APP_IMAGE_WITH_TAG=${{ env.APP_IMAGE_NAME }}:cached
 
       - name: Send notification into Slack
         if: ${{ always() }}
