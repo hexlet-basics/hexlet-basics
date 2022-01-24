@@ -52,6 +52,8 @@ jobs:
           cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}:cached
           push: true
           tags: ${{ env.APP_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
+          build-args: |
+            APP_IMAGE_WITH_TAG=${{ env.APP_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
 
       - name: Build&Push Nginx
         uses: docker/build-push-action@v2

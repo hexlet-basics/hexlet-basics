@@ -1,4 +1,9 @@
-FROM nginx:1.19
+ARG APP_IMAGE_WITH_TAG=hexletbasics/services-app
+FROM ${APP_IMAGE_WITH_TAG} as rails-app
+
+FROM nginx:1.21.4
+
+COPY --from=rails-app /root/hexlet-basics/public /var/www/hexlet-basics/shared/public
 
 COPY files/production/nginx.hexlet.basics.conf /etc/nginx/conf.d/hexlet-basics.conf
 COPY files/production/gzip.conf /etc/nginx/gzip.conf
