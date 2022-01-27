@@ -349,7 +349,7 @@ GEM
       rubyzip (>= 1.2.2)
     semantic (1.6.1)
     semantic_range (3.0.0)
-    sidekiq (6.3.1)
+    sidekiq (6.4.0)
       connection_pool (>= 2.2.2)
       rack (~> 2.0)
       redis (>= 4.2.0)
