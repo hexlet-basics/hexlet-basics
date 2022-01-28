@@ -8173,19 +8173,6 @@ webpack-assets-manifest@^5.0.6:
     schema-utils "^3.0"
     tapable "^2.0"
 
-webpack-assets-manifest@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/webpack-assets-manifest/-/webpack-assets-manifest-5.1.0.tgz#5af328f6c8fa760cb9a62af631a83da2b478b791"
-  integrity sha512-kPuTMEjBrqZQVJ5M6yXNBCEdFbQQn7p+loNXt8NOeDFaAbsNFWqqwR0YL1mfG5LbwhK5FLXWXpuK3GuIIZ46rg==
-  dependencies:
-    chalk "^4.0"
-    deepmerge "^4.0"
-    lockfile "^1.0"
-    lodash.get "^4.0"
-    lodash.has "^4.0"
-    schema-utils "^3.0"
-    tapable "^2.0"
-
 webpack-cli@^4.8.0:
   version "4.9.1"
   resolved "https://registry.yarnpkg.com/webpack-cli/-/webpack-cli-4.9.1.tgz#b64be825e2d1b130f285c314caa3b1ba9a4632b3"
