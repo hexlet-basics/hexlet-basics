@@ -8,6 +8,7 @@ const languageMapping = {
 };
 
 const editorMapping = {
+  css: 'html',
   racket: 'scheme',
   clang: 'c',
   bash: 'shell',
