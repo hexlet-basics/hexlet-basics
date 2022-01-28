@@ -52,8 +52,6 @@ jobs:
           cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}:cached
           push: true
           tags: ${{ env.APP_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
-          build-args: |
-            APP_IMAGE_WITH_TAG=${{ env.APP_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
 
       - name: Build&Push Nginx
         uses: docker/build-push-action@v2
@@ -62,6 +60,8 @@ jobs:
           file: services/web-nginx/Dockerfile.production
           push: true
           tags: ${{ env.NGINX_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
+          build-args: |
+            APP_IMAGE_WITH_TAG=${{ env.APP_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
 
       - name: Send notification into Slack
         if: ${{ always() }}
