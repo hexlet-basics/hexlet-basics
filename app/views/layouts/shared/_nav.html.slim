@@ -102,11 +102,10 @@
             = link_to language_path('swift'), class: 'dropdown-item d-flex align-items-center py-2'
               span.devicon-swift-plain.colored.me-2.fs-5
               span = t('human_languages.swift')
-          / TODO: add kotlin after fix tests https://github.com/hexlet-basics/exercises-kotlin/issues/7
-          / li
-          /   = link_to language_path('kotlin'), class: 'dropdown-item d-flex align-items-center py-2'
-          /     span.devicon-kotlin-plain.colored.me-2.fs-5
-          /     span = t('human_languages.kotlin')
+          li
+            = link_to language_path('kotlin'), class: 'dropdown-item d-flex align-items-center py-2'
+              span.devicon-kotlin-plain.colored.me-2.fs-5
+              span = t('human_languages.kotlin')
 
       li.nav-item.dropdown.me-2.me-auto
         / rubocop:disable Rails/LinkToBlank
