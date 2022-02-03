@@ -6,7 +6,7 @@ html.x-h-md-100 lang="#{I18n.locale}"
   body.d-flex.flex-column.x-h-md-100
     - unless supported_browser?
         = render 'layouts/shared/unsupported_browser_warning'
-    .container-fluid
+    header.container-fluid
       = render 'layouts/shared/nav'
     main.container-fluid.overflow-hidden.mb-1.x-h-md-100
       = yield

@@ -7,7 +7,7 @@ html.h-100 lang="#{I18n.locale}"
       = render 'layouts/deps/gtm_body'
     - unless supported_browser?
       = render 'layouts/shared/unsupported_browser_warning'
-    .container.mb-4.flex-shrink-0
+    header.container.mb-4.flex-shrink-0
       .py-2.border-bottom
         = render 'layouts/shared/nav'
     = render 'layouts/shared/flash'
