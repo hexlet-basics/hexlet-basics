@@ -104,7 +104,7 @@ spec:
           failureThreshold: 3
         livenessProbe:
           httpGet:
-            path: /health
+            path: /
             port: 3000
             httpHeaders:
               - name: X-Forwarded-Host
