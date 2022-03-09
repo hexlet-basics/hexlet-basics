@@ -87,7 +87,9 @@ spec:
         image: "{{ .Values.web.image.repository }}:{{ .Values.version }}"
         imagePullPolicy: "{{ .Values.web.image.imagePullPolicy }}"
         securityContext:
-            privileged: true
+          privileged: true
+        ports:
+          - containerPort: 3000
         readinessProbe:
           httpGet:
             path: /
@@ -102,12 +104,15 @@ spec:
           failureThreshold: 3
         livenessProbe:
           httpGet:
-            path: /
+            path: /health
             port: 3000
+            httpHeaders:
               - name: X-Forwarded-Host
                 value: ru.code-basics.com
-        ports:
-          - containerPort: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+
         volumeMounts:
           - mountPath: /tmp/hexlet-basics
             name: users-code-path
