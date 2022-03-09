@@ -31,13 +31,14 @@ class Api::LessonsController < Api::ApplicationController
       if language_member.may_finish?
         language_member.finish!
 
-        language_finished_event_options = {
-          user: current_user,
-          language: language.to_hash,
-          language_member: language_member.to_hash
-        }
+        # NOTE Временно событие не используется
+        # language_finished_event_options = {
+        #   user: current_user,
+        #   language: language.to_hash,
+        #   language_member: language_member.to_hash
+        # }
 
-        js_event :language_finished, language_finished_event_options
+        # js_event :language_finished, language_finished_event_options
       end
     end
 

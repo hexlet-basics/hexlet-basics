@@ -41,15 +41,16 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     next_lesson = lesson_version.next_lesson
 
     # TODO Добавить сериализацию language, lesson, language_member
-    js_event_options = {
-      user: current_user,
-      language: resource_language.to_hash,
-      lesson: next_lesson&.to_hash,
-      language_member: language_member.to_hash,
-      lessons_started: current_user.lesson_members.where(language: resource_language).count,
-      lessons_finished: current_user.lesson_members.where(language: resource_language).finished.count
-    }
-    js_event :next_lesson, js_event_options
+    # NOTE Временно отключил и заменил на lesson_finished
+    # js_event_options = {
+    #   user: current_user,
+    #   language: resource_language.to_hash,
+    #   lesson: next_lesson&.to_hash,
+    #   language_member: language_member.to_hash,
+    #   lessons_started: current_user.lesson_members.where(language: resource_language).count,
+    #   lessons_finished: current_user.lesson_members.where(language: resource_language).finished.count
+    # }
+    # js_event :next_lesson, js_event_options
 
     if next_lesson.nil?
       redirect_to language_path(language_slug)
