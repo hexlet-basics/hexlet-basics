@@ -15,7 +15,7 @@ module EventConcern
 
   def clean_js_events
     # NOTE: могут быть двойные редиректы
-    if response.successful?
+    if response.successful? && response.content_type.include?('text/html')
       session[:fired_events] = {}
     end
   end

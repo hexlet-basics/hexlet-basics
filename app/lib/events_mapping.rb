@@ -4,7 +4,9 @@ class EventsMapping
   # all events should goes here
   @mapping = {
     signed_up: '',
-    next_lesson: ''
+    next_lesson: '',
+    lesson_finished: '',
+    language_finished: ''
   }
 
   def self.events

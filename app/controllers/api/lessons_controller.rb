@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Api::LessonsController < Api::ApplicationController
+  include Gon::ControllerHelpers
+  include EventConcern
   # before_action :require_api_auth!
 
   def check
@@ -16,8 +18,14 @@ class Api::LessonsController < Api::ApplicationController
       lesson_member = lesson.members.find_by!(user: current_user)
       lesson_member.finish!
 
+      js_event :lesson_finished
+
       language_member = language.members.find_or_create_by!(user: current_user)
-      language_member.finish! if language_member.may_finish?
+      if language_member.may_finish?
+        language_member.finish!
+
+        js_event :language_finished
+      end
     end
 
     render json: {
