@@ -27,10 +27,10 @@ provider "digitalocean" {}
 
 # NOTE При создании нового кластера данных в data.digitalocean_kubernetes_cluster.hexlet_basics_cluster_data еще не будет
 provider "kubernetes" {
-  host  = data.digitalocean_kubernetes_cluster.hexlet_basics_cluster_data.endpoint
-  token = data.digitalocean_kubernetes_cluster.hexlet_basics_cluster_data.kube_config[0].token
+  host  = data.digitalocean_kubernetes_cluster.hexlet_basics_cluster_data_2.endpoint
+  token = data.digitalocean_kubernetes_cluster.hexlet_basics_cluster_data_2.kube_config[0].token
   cluster_ca_certificate = base64decode(
-    data.digitalocean_kubernetes_cluster.hexlet_basics_cluster_data.kube_config[0].cluster_ca_certificate
+    data.digitalocean_kubernetes_cluster.hexlet_basics_cluster_data_2.kube_config[0].cluster_ca_certificate
   )
 
   # config_path = "../.kube/config"
