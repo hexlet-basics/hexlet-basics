@@ -36,7 +36,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     lesson = resource_language.lessons.find_by!(slug: params[:id])
     lesson_version = resource_language.current_lesson_versions.find_by!(lesson: lesson)
 
-    language_member = current_user.language_members.find_by! language: resource_language
+    # language_member = current_user.language_members.find_by! language: resource_language
 
     next_lesson = lesson_version.next_lesson
 
