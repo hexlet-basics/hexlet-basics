@@ -16,4 +16,9 @@ class Language::Lesson::Member < ApplicationRecord
       transitions from: %i[started finished], to: :finished
     end
   end
+
+  def to_hash(*_args)
+    attrs = attributes.extract! 'id', 'state', 'created_at'
+    attrs.to_hash
+  end
 end
