@@ -36,10 +36,9 @@ class DockerExerciseApi
     BashRunner.start(tag_command)
 
     push_command = "docker push #{image_name(lang_name)}:#{tag}"
-    _ok = BashRunner.start(push_command)
+    ok = BashRunner.start(push_command)
 
-    # FIXME better error handling
-    # raise "Docker tag error: #{ok}" unless ok
+    raise "Docker tag error: #{ok}" unless ok
   end
 
   def self.remove_image(lang_name, tag)
