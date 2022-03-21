@@ -26,6 +26,7 @@
     "devicon": "^2.14.0",
     "highlight.js": "^11.4.0",
     "i18next": "^21.6.10",
+    "ilyabirman-likely": "^2.6.0",
     "js-base64": "^3.7.2",
     "lodash": "^4.17.21",
     "prop-types": "^15.8.1",

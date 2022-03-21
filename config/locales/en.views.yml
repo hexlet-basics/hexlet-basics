@@ -115,6 +115,15 @@ en:
         certificate: Get the Hexlet Certificate and employment assistance at the end of your study
         first_courses_free: First courses in the profession are available for free. All you need to start learning is register and join the profession.
         hexlet_profs: Other professions on Hexlet
+        likely:
+          share_in_fb: Share on Facebook
+          share_in_twitter: Tweet
+          share_in_vk: Share on VK
+          share_in_telegram: Send via Telegram
+          twitter: "Hexlet_IO"
+          share_vk_text: "I've completed this course! #hexlet"
+          share_fb_text: "I've completed this course! #hexlet"
+          share_twitter_text: "I've completed this course! #hexlet"
 
     pages:
       about:
