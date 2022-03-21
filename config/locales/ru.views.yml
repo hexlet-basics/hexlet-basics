@@ -103,6 +103,15 @@ ru:
         certificate: Получить сертификат Хекслета и содействие в трудоустройстве по окончании обучения
         first_courses_free: Первые курсы в профессии доступны бесплатно. Чтобы начать изучение материала, достаточно зарегистрироваться и вступить в профессию.
         hexlet_profs: Другие профессии на Хекслете
+        likely:
+          share_in_fb: Поделиться
+          share_in_twitter: Твитнуть
+          share_in_vk: Поделиться VK
+          share_in_telegram: Отправить
+          twitter: "HexletHQ"
+          share_vk_text: "Этот курс побеждён! Было круто! #hexlet"
+          share_fb_text: "Этот курс побеждён! Было круто! #hexlet"
+          share_twitter_text: "Этот курс побеждён! Было круто!"
       lessons:
         content:
           sign_up_for_tracking_progress_html: |
