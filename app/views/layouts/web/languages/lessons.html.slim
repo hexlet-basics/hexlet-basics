@@ -2,7 +2,6 @@ doctype html
 html.x-h-md-100 lang="#{I18n.locale}"
   head
     = render 'layouts/shared/head'
-    = Gon::Base.render_data
   body.d-flex.flex-column.x-h-md-100
     - unless supported_browser?
         = render 'layouts/shared/unsupported_browser_warning'

@@ -9,15 +9,16 @@ class Web::ApplicationController < ApplicationController
   before_action :prepare_locale_settings
 
   before_action do
-    gon.current_user = {
-      id: current_user.id,
-      email: current_user.email,
-      created_at: current_user.created_at,
-      is_guest: current_user.guest?
-    }
-
-    gon.locale = I18n.locale
-    gon.events = EventsMapping.events
+    gon.push({
+               current_user: {
+                 id: current_user.id,
+                 email: current_user.email,
+                 created_at: current_user.created_at,
+                 is_guest: current_user.guest?
+               },
+               locale: I18n.locale,
+               events: EventsMapping.events
+             })
   end
 
   private
