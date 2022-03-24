@@ -21,7 +21,7 @@ en:
         ready_to_start: Start
         started: Continue
         finished: Revisit
-        courses: Courses
+        courses: Programs
       reviews:
         reviews: Reviews
     users:
@@ -29,7 +29,7 @@ en:
         title: Registration
         meta_description: Sign up on Code Basics
         sign_up: Sign up
-        have_account: Already registered?
+        have_account: Already have an account?
         sign_in: Sign in
     sessions:
       new:
@@ -38,7 +38,7 @@ en:
         dont_have_account: New to Code-Basics?
         register: Sign up
         sign_in_with_github: Log in with GitHub
-        forgot_password: Forgot your password?
+        forgot_password: Forgot password?
         password: Password
         email: Email
     passwords:
@@ -50,7 +50,7 @@ en:
       new:
         title: Remind password
         meta_description: Restore Code Basics password
-        forgot_password: Forgot your password?
+        forgot_password: Forgot password?
         trying_to_login: Trying to login?
         login: Sign in
         dont_have_account: New to Code-Basics?
@@ -167,4 +167,4 @@ en:
 
     shared:
       via_social_networks:
-        via_social_networks: With social media
+        via_social_networks: With GitHub
