@@ -3,7 +3,7 @@
 class SignInForm
   include ActiveFormModel::Virtual
 
-  fields :email, :password
+  permit :email, :password
 
   validates :email, presence: true
   validates :password, presence: true

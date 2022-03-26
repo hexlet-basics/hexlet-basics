@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  require 'sidekiq/web'
-  mount Sidekiq::Web => '/sidekiq', constraints: AdminConstraint.new
+  # require 'sidekiq/web'
+  # mount Sidekiq::Web => '/sidekiq', constraints: AdminConstraint.new
 
   namespace :api do
     resources :languages, only: %i[index show] do

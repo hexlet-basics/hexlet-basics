@@ -1,12 +1,11 @@
-# TODO Switch to ruby 3.1 Rails 7.0
-FROM ruby:3.0.3
+FROM ruby:3.1
 
 # NOTE https://github.com/webpack/webpack/issues/14532
 ENV NODE_OPTIONS --openssl-legacy-provider
 ENV NODE_VERSION 17.x
 
 ENV DOCKER_CHANNEL stable
-ENV DOCKER_VERSION 20.10.11
+ENV DOCKER_VERSION 20.10.14
 
 RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION} | bash -
 
@@ -20,9 +19,13 @@ RUN apt-get update && apt-get install -y     \
   nodejs \
   && rm -rf /var/lib/apt/lists/*
 
-RUN npm install -g \
-  npm-check-updates \
-  yarn
+# ENV BUNDLE_PATH /root/hexlet-basics/vendor/bundle
+ENV PROJECT_ROOT /app
+WORKDIR ${PROJECT_ROOT}
 
-ENV BUNDLE_PATH /root/hexlet-basics/vendor/bundle
-WORKDIR /root/hexlet-basics
+ENV BUNDLE_APP_CONFIG ${PROJECT_ROOT}/.bundle/config
+ENV GEM_HOME ${PROJECT_ROOT}/vendor/bundle
+ENV BUNDLE_PATH ${GEM_HOME}
+
+# RUN bundle config build.nokogiri --use-system-libraries
+# BUNDLE_BUILD__NOKOGIRI: "--use-system-libraries"

@@ -3,7 +3,7 @@
 class User::PasswordForm < User
   include ActiveFormModel
 
-  fields :password
+  permit :password
 
   validates :password, presence: true, length: { minimum: 6 }
 end

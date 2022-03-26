@@ -5,24 +5,24 @@ DEFAULTS: &DEFAULTS
 one:
   <<: *DEFAULTS
   locale: ru
-  language: one
+  language: ruby
   version: one
-  language_version: one
+  language_version: ruby
 
 two:
   <<: *DEFAULTS
   locale: ru
-  language: two
+  language: javascript
   version: two
-  language_version: two
+  language_version: javascript
 
 variables_one:
   name: Переменные
   description: Информацию можно помещать в специальные «хранилища», а потом использовать сколько угодно раз. Эти хранилища называются переменными, и они помогают упростить код и сократить лишние повторения.
   locale: ru
-  language: two
+  language: css
   version: one
-  language_version: two
+  language_version: css
 
 elixir-basics-ru:
   <<: *DEFAULTS

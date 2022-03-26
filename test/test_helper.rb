@@ -20,16 +20,6 @@ class ActiveSupport::TestCase
   end
 end
 
-# class ActionController::TestCase
-#   setup do
-#     request.host = "#{I18n.locale}.#{configus.host}"
-#   end
-
-#   teardown do
-#     request.host = "#{I18n.locale}.#{configus.host}"
-#   end
-# end
-
 class ActionDispatch::IntegrationTest
   include AuthConcern
 

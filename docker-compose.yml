@@ -11,8 +11,8 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   web:
-    image: hexletbasics/services-app:cached
-    command: "make ci-check"
+    image: hexletbasics/services-app
+    command: make ci-check
     depends_on:
       - postgres
 

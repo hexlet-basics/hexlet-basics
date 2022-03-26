@@ -18,6 +18,9 @@ language-load:
 fixtures-load:
 	bin/rails db:fixtures:load
 
+frontend:
+	npm run build -- --watch
+
 setup:
 	bin/setup
 	yarn install

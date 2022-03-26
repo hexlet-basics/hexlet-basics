@@ -41,10 +41,10 @@ class Web::ApplicationController < ApplicationController
 
     if remembered_locale && remembered_locale != I18n.locale
       url = root_url(subdomain: subdomains.fetch(remembered_locale, ''))
-      redirect_to url
+      redirect_to url, allow_other_host: true
     elsif !remembered_locale && !subdomain && ru_country_codes.include?(country_by_ip)
       url = root_url(subdomain: 'ru')
-      redirect_to url
+      redirect_to url, allow_other_host: true
     elsif !subdomain && ru_country_codes.exclude?(country_by_ip)
       # Говорим о том, что в английском пока не очень много контента и возможно вы хотели русский
       # f(:, now: true)

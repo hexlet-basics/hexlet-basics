@@ -1,11 +1,11 @@
-FROM ruby:3.0.3
+FROM ruby:3.1
 
 # NOTE https://github.com/webpack/webpack/issues/14532
 ENV NODE_OPTIONS --openssl-legacy-provider
 ENV NODE_VERSION 17.x
 
 ENV DOCKER_CHANNEL stable
-ENV DOCKER_VERSION 20.10.7
+ENV DOCKER_VERSION 20.10.14
 ENV DISABLE_SPRING 1
 
 RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION} | bash -
@@ -20,12 +20,8 @@ RUN apt-get update && apt-get install -y \
   nodejs \
   && rm -rf /var/lib/apt/lists/*
 
-RUN npm install -g yarn
-
-ENV BUNDLE_PATH /root/hexlet-basics/vendor/bundle
-WORKDIR /root/hexlet-basics
-
-RUN bundle config build.nokogiri --use-system-libraries
+# ENV BUNDLE_PATH /root/hexlet-basics/vendor/bundle
+WORKDIR /app
 
 COPY package.json .
 COPY yarn.lock .

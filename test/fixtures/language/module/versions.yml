@@ -6,20 +6,26 @@ one:
 
 two:
   order: 20
-  language_version: two
+  language_version: php
   module: two
   language: php
 
+javascript:
+  order: 20
+  language_version: javascript
+  module: two
+  language: javascript
+
 variables_one:
   order: 30
-  language_version: two
+  language_version: php
   module: variables_one
   language: php
 
 elixir-basics:
   # order: 10
   language_version: elixir
-  module: exliri-basics
+  module: elixir-basics
   language: elixir
 
 ruby-basics:

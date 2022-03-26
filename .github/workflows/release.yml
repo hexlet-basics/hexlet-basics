@@ -6,6 +6,7 @@ on:
         - 'v*'
 
 env:
+  CI: true
   APP_IMAGE_NAME: hexletbasics/services-app
   # CADDY_IMAGE_NAME: hexletbasics/services-caddy
   NGINX_IMAGE_NAME: hexletbasics/services-nginx

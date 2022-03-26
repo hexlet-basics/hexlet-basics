@@ -18,12 +18,13 @@ services:
       - .env
     volumes:
       - ~/.bash_history:/root/.bash_history
-      - .:/root/hexlet-basics
+      - .:/app
       - /var/run/docker.sock:/var/run/docker.sock
-      - /var/tmp/hexletbasics:/var/tmp/hexletbasics
-      - /tmp:/tmp
+      - code_data:/var/tmp/hexletbasics
+      - app_data:/app/tmp
     depends_on:
       - solargraph
+      - spring
 
   # https://github.com/neoclide/coc-solargraph#configuration-options
   # external server
@@ -35,7 +36,8 @@ services:
     env_file:
       - .env
     volumes:
-      - ./:/root/hexlet-basics
+      - ./:/app
+      - app_data:/app/tmp
 
   spring:
     build: .
@@ -44,17 +46,17 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/root/hexlet-basics
+      - .:/app
       - /var/run/docker.sock:/var/run/docker.sock
-      - /tmp:/tmp
+      - app_data:/app/tmp
 
   sidekiq:
     build: .
     command: bundle exec sidekiq
     volumes:
-      - .:/root/hexlet-basics
-      - /tmp:/tmp
-      - /var/tmp/hexletbasics:/var/tmp/hexletbasics
+      - .:/app
+      - app_data:/app/tmp
+      - app_data:/var/tmp/hexletbasics
       - /var/run/docker.sock:/var/run/docker.sock
     env_file:
       - .env
@@ -63,18 +65,19 @@ services:
       - redis
       - web
 
-  webpacker:
+  frontend:
     build: .
-    command: make webpacker
-    ports:
-      - "0.0.0.0:3035:3035"
+    command: make frontend
+    # ports:
+    #   - "0.0.0.0:3035:3035"
     env_file:
       - .env
     volumes:
-      - .:/root/hexlet-basics
+      - app_data:/app/tmp
+      - .:/app
 
   caddy:
-    image: caddy:2.3.0
+    image: caddy:2.4.6
     ports:
       - "443:443"
       - "80:80"
@@ -90,3 +93,5 @@ volumes:
   redis:
   caddy_data:
   caddy_config:
+  app_data:
+  code_data:
