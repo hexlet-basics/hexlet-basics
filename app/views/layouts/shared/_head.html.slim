@@ -11,6 +11,8 @@ link rel='alternate' hreflang='en' href="https://#{request.domain}#{request.full
 = csp_meta_tag
 = display_meta_tags
 = include_gon(init: true)
+= javascript_include_tag 'application', 'data-turbo-track': 'reload', defer: true
+= stylesheet_link_tag 'application', 'data-turbo-track': 'reload'
 / - append_javascript_packs 'application'
 / = stylesheet_pack_tag 'application', media: 'all'
 - if Rails.env.production?

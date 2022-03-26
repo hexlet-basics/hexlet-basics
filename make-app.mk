@@ -23,7 +23,7 @@ frontend:
 
 setup:
 	bin/setup
-	yarn install
+	npm install
 
 db-reset:
 	bin/rails db:drop
@@ -61,10 +61,10 @@ lint-rubocop-fix:
 	bundle exec rubocop -A
 
 lint-eslint:
-	yarn run eslint app/packs --ext .js,.jsx
+	npx eslint app/packs --ext .js,.jsx
 
 lint-eslint-fix:
-	yarn run eslint app/packs --ext .js,.jsx --fix
+	npx eslint app/packs --ext .js,.jsx --fix
 
 lint-slim:
 	bundle exec slim-lint app/views/

@@ -5,6 +5,8 @@
     "pre-push": "make app-lint"
   },
   "dependencies": {
+    "@hotwired/stimulus": "^3.0.1",
+    "@hotwired/turbo-rails": "^7.1.1",
     "@monaco-editor/react": "^4.3.1",
     "@popperjs/core": "^2.11.4",
     "@rails/actioncable": "^7.0.1",
@@ -68,6 +70,7 @@
     "defaults"
   ],
   "scripts": {
-    "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds"
+    "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds",
+    "build:css": "sass ./app/assets/stylesheets/application.bootstrap.scss ./app/assets/builds/application.css --no-source-map --load-path=node_modules"
   }
 }

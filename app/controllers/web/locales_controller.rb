@@ -18,6 +18,6 @@ class Web::LocalesController < Web::ApplicationController
     session[:locale] = locale
 
     sd = locale == 'en' ? nil : locale
-    redirect_to root_url(subdomain: sd)
+    redirect_to root_url(subdomain: sd), allow_other_host: true
   end
 end

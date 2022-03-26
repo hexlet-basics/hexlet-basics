@@ -22,10 +22,17 @@ gem 'ransack'
 gem 'term-ansicolor'
 gem 'valid_email2'
 
+gem 'cssbundling-rails'
 gem 'jsbundling-rails'
+
+gem 'sprockets-rails'
+
+gem 'turbo-rails'
+gem 'stimulus-rails'
 
 group :development, :test do
   gem 'brakeman'
+  gem 'bundler-audit'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
@@ -38,7 +45,7 @@ end
 
 group :development do
   gem 'i18n-debug'
-  gem 'listen'
+  # gem 'listen'
   gem 'rubocop'
   gem 'rubocop-performance'
   gem 'rubocop-rails'
