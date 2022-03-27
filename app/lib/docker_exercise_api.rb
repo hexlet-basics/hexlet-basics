@@ -2,7 +2,7 @@
 
 class DockerExerciseApi
   def self.repo_dest(lang_name)
-    "/var/tmp/#{image_name(lang_name)}"
+    "/tmp/#{image_name(lang_name)}"
   end
 
   def self.image_name(lang_name)
@@ -15,13 +15,14 @@ class DockerExerciseApi
 
     # FIXME docker in docker volume
     system("docker run --name exercises-#{lang_name} -v #{repo_dest(lang_name)}:/out #{image_name(lang_name)}")
-    system("docker cp exercises-#{lang_name}:/exercises-#{lang_name} /var/tmp/hexletbasics/")
+    system("docker cp exercises-#{lang_name}:/exercises-#{lang_name} /tmp/hexletbasics/")
     system("docker rm exercises-#{lang_name}")
   end
 
   def self.run_exercise(created_code_file_path:, exercise_file_path:, docker_image:, image_tag:, path_to_code:)
     volume = "-v #{created_code_file_path}:#{exercise_file_path}"
     command = "docker run --rm --net none #{volume} #{docker_image}:#{image_tag} timeout 5 make --silent -C #{path_to_code} test"
+    Rails.logger.debug(command)
 
     output = []
     status = BashRunner.start(command) { |line| output << line }

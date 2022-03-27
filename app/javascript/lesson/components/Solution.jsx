@@ -11,7 +11,7 @@ import { actions } from '../slices/index.js';
 import { getLanguage } from '../utils/editorUtils.js';
 import { solutionStates } from '../utils/maps.js';
 import EntityContext from '../EntityContext.js';
-// import WaitingClock from '../../../images/waiting_clock.png';
+import waitingClock from '../../../assets/images/waiting_clock.png';
 
 function Solution() {
   const { language, lessonVersion } = useContext(EntityContext);
@@ -79,7 +79,7 @@ function Solution() {
       <div className="text-center">
         <p className="lead">{t('solutionInstructions')}</p>
         <div className="display-4">{ remainingTime }</div>
-        <img className="img-fluid px-5" src="/images/waiting_clock.png" alt="waiting_clock" />
+        <img className="img-fluid px-5" src={waitingClock} alt="waiting_clock" />
       </div>
     );
   };

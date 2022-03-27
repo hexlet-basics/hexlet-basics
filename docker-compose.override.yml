@@ -20,8 +20,8 @@ services:
       - ~/.bash_history:/root/.bash_history
       - .:/app
       - /var/run/docker.sock:/var/run/docker.sock
-      - code_data:/var/tmp/hexletbasics
-      - app_data:/app/tmp
+      - global_tmp:/tmp
+      - app_tmp:/app/tmp
     depends_on:
       - solargraph
       - spring
@@ -36,8 +36,8 @@ services:
     env_file:
       - .env
     volumes:
-      - ./:/app
-      - app_data:/app/tmp
+      - .:/app
+      - app_tmp:/app/tmp
 
   spring:
     build: .
@@ -48,16 +48,17 @@ services:
     volumes:
       - .:/app
       - /var/run/docker.sock:/var/run/docker.sock
-      - app_data:/app/tmp
+      - app_tmp:/app/tmp
+      - global_tmp:/tmp
 
   sidekiq:
     build: .
     command: bundle exec sidekiq
     volumes:
       - .:/app
-      - app_data:/app/tmp
-      - app_data:/var/tmp/hexletbasics
+      - app_tmp:/app/tmp
       - /var/run/docker.sock:/var/run/docker.sock
+      - global_tmp:/tmp
     env_file:
       - .env
     depends_on:
@@ -73,7 +74,7 @@ services:
     env_file:
       - .env
     volumes:
-      - app_data:/app/tmp
+      - app_tmp:/app/tmp
       - .:/app
 
   caddy:
@@ -93,5 +94,5 @@ volumes:
   redis:
   caddy_data:
   caddy_config:
-  app_data:
-  code_data:
+  app_tmp:
+  global_tmp:

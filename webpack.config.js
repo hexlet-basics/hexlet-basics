@@ -15,7 +15,9 @@ export default {
     application: [getPath('application.js'), getPath('application.scss', 'assets/stylesheets')],
     welcomePage: getPath('welcome-page.js'),
     lessonPage: getPath('lesson-page.js'),
+    amp: getPath('amp.css', 'assets/stylesheets'),
   },
+  devtool: 'source-map',
   externals: {
     jquery: 'jQuery',
     gon: 'gon',
@@ -32,7 +34,7 @@ export default {
   output: {
     filename: '[name].js',
     // chunkFilename: '[name].chunk.js',
-    sourceMapFilename: '[name].js.map',
+    // sourceMapFilename: '[name].js.map',
     path: path.resolve(__dirname, 'app/assets/builds'),
   },
   optimization: {
@@ -54,6 +56,23 @@ export default {
   },
   module: {
     rules: [
+      {
+        test: /\.css$/i,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: [
+                  ['postcss-preset-env', { }],
+                ],
+              },
+            },
+          },
+        ],
+      },
       {
         test: /\.s[ac]ss$/i,
         use: [

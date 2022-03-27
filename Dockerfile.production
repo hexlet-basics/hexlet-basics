@@ -40,6 +40,4 @@ COPY . .
 
 RUN NODE_ENV=production HEXLET_DOCKER_BUILD=1 RAILS_ENV=production SECRET_KEY_BASE=jopa bin/rails assets:precompile
 
-VOLUME /var/tmp/hexletbasics
-
 CMD ["make", "start-production"]

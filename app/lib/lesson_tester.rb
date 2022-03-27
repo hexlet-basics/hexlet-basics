@@ -6,11 +6,13 @@ class LessonTester
   def run(lesson_version, language_version, code, user)
     code_directory = '/tmp/hexlet-basics/code'
     full_directory_path = File.join(code_directory, FileSystemUtils.directory_for_code(user))
-    FileUtils.mkdir_p(full_directory_path)
+    FileUtils.mkdir_p(full_directory_path, verbose: true)
 
-    created_code_file_path = File.join(full_directory_path, FileSystemUtils.file_name_for_exercise(language_version, language_version))
+    created_code_file_path = File.join(full_directory_path, FileSystemUtils.file_name_for_exercise(user, lesson_version, language_version))
     File.write(created_code_file_path, code || '')
+    Rails.logger.debug(created_code_file_path)
     exercise_file_path = File.join(lesson_version.path_to_code, language_version.exercise_filename)
+    Rails.logger.debug(exercise_file_path)
 
     output, process_status = docker_exercise_api.run_exercise(
       created_code_file_path: created_code_file_path,

@@ -1,19 +1,16 @@
 # frozen_string_literal: true
 
 module FileSystemUtils
-  def self.file_name_for_exercise(version, language)
-    "#{version.id}.#{language.extension}"
+  def self.file_name_for_exercise(user, lesson_version, language)
+    "#{user.id}.#{lesson_version.id}.#{language.extension}"
   end
 
   def self.directory_for_code(user)
     chunked = user.id
                   .to_s
-                  .rjust(6, '0')
-                  .reverse
+                  .rjust(3, '0')
+                  .reverse[0...3]
                   .chars
-                  .each_slice(3)
-                  .to_a
-                  .map(&:join)
     File.join(chunked)
   end
 end

@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
+require 'securerandom'
+
 class Guest
-  def id; end
+  def id
+    SecureRandom.uuid
+  end
 
   def created_at; end
 
