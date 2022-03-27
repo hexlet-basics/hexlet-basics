@@ -11,7 +11,7 @@ import EntityContext from '../EntityContext.js';
 
 const ansi = new AnsiUp();
 
-const Output = () => {
+function Output() {
   const { lessonMember } = useContext(EntityContext);
   const checkInfo = useSelector((state) => state.checkInfoSlice);
   const { t } = useTranslation();
@@ -37,6 +37,6 @@ const Output = () => {
       )}
     </div>
   );
-};
+}
 
 export default Output;

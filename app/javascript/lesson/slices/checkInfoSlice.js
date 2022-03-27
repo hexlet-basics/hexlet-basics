@@ -19,7 +19,7 @@ const runCheck = createAsyncThunk('runCheck', async ({ lessonVersion }, { getSta
     },
   });
 
-  const result = { ...response.data.attributes, output: decode(response.data.attributes.output) };
+  const result = { ...response.data.attributes, output: atob(response.data.attributes.output) };
   return result;
 });
 

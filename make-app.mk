@@ -10,7 +10,6 @@ ci-check: lint
 	bin/rails db:create
 	#ls -la public/packs-test
 	DISABLE_SPRING=1 bin/rails test
-	bin/rails zeitwerk:check
 
 language-load:
 	bin/rails exercises:load[${L}]
@@ -49,10 +48,10 @@ lint: lint-eslint lint-rubocop lint-slim
 lint-fix: lint-eslint-fix lint-rubocop-fix
 
 lint-style:
-	npx stylelint "app/packs/stylesheets/*.scss"
+	npx stylelint "app/assets/stylesheets/*.scss"
 
 lint-style-fix:
-	npx stylelint --fix "app/packs/stylesheets/*.scss"
+	npx stylelint --fix "app/assets/stylesheets/*.scss"
 
 lint-rubocop:
 	bundle exec rubocop
@@ -61,10 +60,10 @@ lint-rubocop-fix:
 	bundle exec rubocop -A
 
 lint-eslint:
-	npx eslint app/packs --ext .js,.jsx
+	npx eslint app/javascript --ext .js,.jsx
 
 lint-eslint-fix:
-	npx eslint app/packs --ext .js,.jsx --fix
+	npx eslint app/javascript --ext .js,.jsx --fix
 
 lint-slim:
 	bundle exec slim-lint app/views/

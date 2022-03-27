@@ -10,7 +10,7 @@ import { currentTabValues } from '../utils/maps.js';
 import { neededPreview } from '../utils/languagesUtils.js';
 import EntityContext from '../EntityContext.js';
 
-const App = () => {
+function App() {
   const { currentTab, content } = useSelector((state) => ({ ...state.tabsBoxSlice, ...state.editorSlice }));
   const { language } = React.useContext(EntityContext);
 
@@ -32,6 +32,6 @@ const App = () => {
       <ControlBox />
     </div>
   );
-};
+}
 
 export default App;

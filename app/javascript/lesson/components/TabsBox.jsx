@@ -14,7 +14,7 @@ import Output from './Output.jsx';
 import Solution from './Solution.jsx';
 import TestForExercise from './TestForExercise.jsx';
 
-const TabsBox = () => {
+function TabsBox() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -70,6 +70,6 @@ const TabsBox = () => {
 
     </Tab.Container>
   );
-};
+}
 
 export default TabsBox;

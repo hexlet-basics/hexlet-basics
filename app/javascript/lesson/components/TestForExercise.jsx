@@ -7,7 +7,7 @@ import { Highlight } from 'react-fast-highlight';
 import EntityContext from '../EntityContext.js';
 import { getLanguage } from '../utils/editorUtils.js';
 
-const Test = () => {
+function Test() {
   const { language, lessonVersion } = useContext(EntityContext);
   const { t } = useTranslation();
 
@@ -21,6 +21,6 @@ const Test = () => {
       </div>
     </div>
   );
-};
+}
 
 export default Test;

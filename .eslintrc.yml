@@ -24,8 +24,13 @@ parserOptions:
     jsx: true
 
 # settings:
-#   jest:
-#     version: 26
+# #   jest:
+# #     version: 26
+#   import/resolver:
+#     node:
+#     typescript:
+#       project: '.'
+#     webpack:
 
 rules:
   # react/function-component-definition: [2, { "namedComponents": "arrow-function" }]

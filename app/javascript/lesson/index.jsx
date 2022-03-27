@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 // eslint-disable-next-line import/no-unresolved
-// import gon from 'gon';
+import gon from 'gon';
 
 import App from './components/App.jsx';
 import reducer from './slices/index.js';
@@ -31,6 +31,7 @@ export default async () => {
       },
     });
 
+  // eslint-disable-next-line react/jsx-no-constructed-context-values
   const entities = {
     lessonVersion: gon.lesson_version,
     lesson: gon.lesson,

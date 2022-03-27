@@ -24,7 +24,7 @@ const commonOptions = {
   renderLineHighlight: false,
 };
 
-const Editor = () => {
+function Editor() {
   const { language, lessonVersion } = useContext(EntityContext);
   const { content, focusesCount } = useSelector((state) => state.editorSlice);
   const dispatch = useDispatch();
@@ -87,6 +87,6 @@ const Editor = () => {
       className="w-100 h-100"
     />
   );
-};
+}
 
 export default Editor;

@@ -13,7 +13,7 @@ import { solutionStates } from '../utils/maps.js';
 import EntityContext from '../EntityContext.js';
 // import WaitingClock from '../../../images/waiting_clock.png';
 
-const Solution = () => {
+function Solution() {
   const { language, lessonVersion } = useContext(EntityContext);
   const { editor, solution } = useSelector((state) => ({
     editor: state.editorSlice,
@@ -79,7 +79,7 @@ const Solution = () => {
       <div className="text-center">
         <p className="lead">{t('solutionInstructions')}</p>
         <div className="display-4">{ remainingTime }</div>
-        <img className="img-fluid px-5" src='/images/waiting_clock.png' alt="waiting_clock" />
+        <img className="img-fluid px-5" src="/images/waiting_clock.png" alt="waiting_clock" />
       </div>
     );
   };
@@ -91,6 +91,6 @@ const Solution = () => {
         : <Countdown date={solution.startTime + solution.waitingTime} renderer={renderContent} />}
     </div>
   );
-};
+}
 
 export default Solution;
