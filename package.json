@@ -13,6 +13,7 @@
     "@rails/ujs": "^7.0.1",
     "@reduxjs/toolkit": "^1.8.0",
     "@rehooks/local-storage": "2.4.4",
+    "@sentry/browser": "^6.19.2",
     "ansi_up": "^5.1.0",
     "axios": "^0.26.1",
     "bootstrap": "^5.1.3",

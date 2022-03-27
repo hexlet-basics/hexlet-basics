@@ -346,6 +346,14 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2)
     semantic (1.6.1)
+    sentry-rails (5.2.1)
+      railties (>= 5.0)
+      sentry-ruby-core (~> 5.2.1)
+    sentry-ruby-core (5.2.1)
+      concurrent-ruby
+    sentry-sidekiq (5.2.1)
+      sentry-ruby-core (~> 5.2.1)
+      sidekiq (>= 3.0)
     sidekiq (6.4.1)
       connection_pool (>= 2.2.2)
       rack (~> 2.0)
@@ -488,6 +496,8 @@ DEPENDENCIES
   rubocop-rake
   rubocop-rspec
   selenium-webdriver
+  sentry-rails
+  sentry-sidekiq
   sidekiq
   simple_form
   slim-rails

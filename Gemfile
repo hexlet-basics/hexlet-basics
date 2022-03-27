@@ -27,6 +27,10 @@ gem 'jsbundling-rails'
 
 gem 'sprockets-rails'
 
+gem 'sentry-ruby'
+gem 'sentry-rails'
+gem 'sentry-sidekiq'
+
 # gem 'stimulus-rails'
 # gem 'turbo-rails'
 
