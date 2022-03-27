@@ -10,11 +10,22 @@ link rel='alternate' hreflang='en' href="https://#{request.domain}#{request.full
 = csrf_meta_tags
 = csp_meta_tag
 = display_meta_tags
-= include_gon(init: true)
-= javascript_include_tag 'application', 'data-turbo-track': 'reload', defer: true
-= stylesheet_link_tag 'application', 'data-turbo-track': 'reload'
-/ - append_javascript_packs 'application'
-/ = stylesheet_pack_tag 'application', media: 'all'
+= Gon::Base.render_data
+/ = vite_client_tag
+
+= stylesheet_link_tag 'vendor'
+= stylesheet_link_tag 'application'
+
 - if Rails.env.production?
   = render 'layouts/deps/gtm_head'
-  = render 'layouts/deps/rollbar'
+
+= javascript_include_tag 'application', async: true
+
+- if supported_browser?
+  = javascript_include_tag 'vendor', defer: true
+  = yield :frontend
+
+/ = stylesheet_link_tag 'application', 'data-turbo-track': 'reload'
+/ - append_javascript_packs 'application'
+/ = stylesheet_pack_tag 'application', media: 'all'
+  / = render 'layouts/deps/rollbar'

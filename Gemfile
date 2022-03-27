@@ -30,6 +30,8 @@ gem 'sprockets-rails'
 gem 'turbo-rails'
 gem 'stimulus-rails'
 
+gem 'js-routes'
+
 group :development, :test do
   gem 'brakeman'
   gem 'bundler-audit'
@@ -73,7 +75,6 @@ gem 'dry-auto_inject'
 gem 'dry-container'
 gem 'enumerize'
 gem 'gon'
-gem 'js-routes'
 gem 'rails-i18n'
 gem 'redcarpet'
 gem 'sidekiq'

@@ -4,6 +4,7 @@
   "simple-git-hooks": {
     "pre-push": "make app-lint"
   },
+  "type": "module",
   "dependencies": {
     "@hotwired/stimulus": "^3.0.1",
     "@hotwired/turbo-rails": "^7.1.1",
@@ -44,8 +45,9 @@
   },
   "version": "0.1.0",
   "devDependencies": {
-    "@babel/eslint-parser": "^7.17",
     "browserslist": "^4.20.2",
+    "css-loader": "^6.7.1",
+    "esbuild-loader": "^2.18.0",
     "eslint": "^8.12.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-import-resolver-node": "^0.3.6",
@@ -56,21 +58,30 @@
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.3.0",
     "jest": "^27.5.1",
+    "mini-css-extract-plugin": "^2.6.0",
+    "nodemon": "^2.0.15",
     "npm-check-updates": "^12.5.4",
     "postcss": "^8.4.12",
     "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-import": "^14.1.0",
+    "postcss-loader": "^6.2.1",
     "postcss-preset-env": "^7.4.3",
+    "resolve-url-loader": "^5.0.0",
     "sass": "^1.49.9",
+    "sass-loader": "^12.6.0",
     "simple-git-hooks": "^2.7.0",
+    "style-loader": "^3.3.1",
     "stylelint": "^14.6.1",
-    "stylelint-config-recommended-scss": "^6.0.0"
+    "stylelint-config-recommended-scss": "^6.0.0",
+    "webpack": "^5.70.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-manifest-plugin": "^5.0.0"
   },
   "browserslist": [
     "defaults"
   ],
   "scripts": {
-    "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds",
-    "build:css": "sass ./app/assets/stylesheets/application.bootstrap.scss ./app/assets/builds/application.css --no-source-map --load-path=node_modules"
+    "build": "webpack -p",
+    "build:watch": "webpack --watch --mode development --color"
   }
 }

@@ -27,4 +27,5 @@
 / .mb-5
 /   = render 'stats'
 
-- append_javascript_packs 'pageWelcome'
+- content_for :frontend do
+  = javascript_include_tag 'welcomePage', defer: true

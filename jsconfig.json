@@ -1,13 +1,16 @@
 {
-  "include": ["app/packs/**/*.*"],
+  "include": [
+    "app/javascript/**/*.*",
+    "webpack.config.js"
+  ],
   "exclude": ["vendor", "tmp"],
   "compilerOptions": {
-    "baseUrl": "./app/packs",
+    "module": "esnext",
+    "baseUrl": "./app/javascript",
     "moduleResolution": "node",
     "jsx": "react",
     "paths": {
-      "lib/*": ["./lib"],
-      "vendor/*": ["./vendor"]
+      "lib/*": ["./lib"]
     }
   }
 }

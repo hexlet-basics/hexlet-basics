@@ -1,2 +1,3 @@
 / - if supported_browser?
-/   = render_javascript_stored_packs
+/   = javascript_include_tag 'vendor'
+/   = yield :frontend

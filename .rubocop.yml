@@ -7,7 +7,7 @@
 AllCops:
   NewCops: enable
   TargetRubyVersion: 3
-  TargetRailsVersion: 6
+  TargetRailsVersion: 7
   DisplayCopNames: true
   Exclude:
     - 'bin/**/*'

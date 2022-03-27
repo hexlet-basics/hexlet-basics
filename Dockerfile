@@ -12,12 +12,17 @@ RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION} | bash -
 RUN curl -fsSL "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/x86_64/docker-${DOCKER_VERSION}.tgz" \
 | tar -xzC /usr/local/bin --strip=1 docker/docker
 
-RUN apt-get update && apt-get install -y     \
+RUN apt-get update && apt-get install -y \
   build-essential \
+  bash-completion \
   libpq-dev \
   libsqlite3-dev \
   nodejs \
   && rm -rf /var/lib/apt/lists/*
+
+RUN corepack enable
+RUN yarn set version stable
+# RUN npm install -g yarn
 
 # ENV BUNDLE_PATH /root/hexlet-basics/vendor/bundle
 ENV PROJECT_ROOT /app

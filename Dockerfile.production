@@ -20,6 +20,9 @@ RUN apt-get update && apt-get install -y \
   nodejs \
   && rm -rf /var/lib/apt/lists/*
 
+RUN corepack enable
+RUN yarn set version stable
+
 # ENV BUNDLE_PATH /root/hexlet-basics/vendor/bundle
 WORKDIR /app
 

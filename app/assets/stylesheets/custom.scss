@@ -1,0 +1,105 @@
+@use "sass:map";
+
+$body-bg: #f5f7fb;
+$breadcrumb-divider: '→';
+
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/utilities';
+@import 'bootstrap/scss/mixins';
+
+$azure: #45aaf2;
+
+$utilities: map.merge(
+  $utilities,
+  (
+    "responsive-height": (
+      property: height,
+      class: 'x-h',
+      responsive: true,
+      values: (
+        100: 100%,
+      )
+    ),
+    "x-background-color": (
+      property: background-color,
+      class: 'x-bg',
+      values: map.merge(
+        $colors,
+        ( azure: $azure )
+      )
+    ),
+    "x-font-size": (
+      property: font-size,
+      class: 'x-fs',
+      values: (
+        15: 15rem,
+      )
+    ),
+  )
+);
+
+/* the only light, non-standard block, has to be customized directly */
+.hexlet-basics-content {
+
+  img {
+    @include img-fluid();
+  }
+
+  table {
+    @extend .table;
+    @extend .w-auto;
+  }
+
+  pre {
+    @extend .border;
+    @extend .rounded;
+
+    code {
+      @extend .d-block;
+      @extend .p-3;
+    }
+  }
+
+  .hexlet-basics-example {
+    @extend .border;
+    @extend .rounded;
+    @extend .p-3;
+  }
+
+  pre.hexlet-basics-output {
+    display: block;
+    background-color: $black;
+    color: white;
+    width: 100%;
+    padding: 0 10px 12px 15px;
+    border: none;
+  }
+
+  pre.hexlet-basics-output:before {
+    content: '';
+    background: url('../images/fake_output_topbar.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 27px;
+    display: block;
+    margin-bottom: 10px;
+    background-color: #353d46;
+    width: calc(100% + 25px);
+    margin-left: -15px;
+  }
+
+  .ratio {
+    @extend .my-4;
+  }
+}
+
+// для инициализации дискаса на закрытом табе
+#disqus_thread iframe {
+  min-height: 300px;
+}
+
+// hides the disqus block, which breaks the layout and blinks.
+.adsbox {
+  @extend .position-absolute;
+}

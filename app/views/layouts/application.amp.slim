@@ -14,7 +14,7 @@ html[amp ⚡ lang="#{I18n.locale}"]
       style[amp-boilerplate]
         | body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}
     style[amp-custom]
-      == File.read(Rails.root.join('app/assets/stylesheets/amp.css'))
+      == stylesheet_link_tag 'amp.css'
     = display_meta_tags site: 'Code Basics'
   body
     amp-analytics type="gtag" data-credentials="include"

@@ -19,11 +19,11 @@ fixtures-load:
 	bin/rails db:fixtures:load
 
 frontend:
-	npm run build -- --watch
+	npx nodemon -L --watch webpack.config.js --exec npm run build:watch
 
 setup:
 	bin/setup
-	npm install
+	yarn install
 
 db-reset:
 	bin/rails db:drop

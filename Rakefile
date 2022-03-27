@@ -7,10 +7,6 @@ require_relative 'config/application'
 
 Rails.application.load_tasks
 
-# https://github.com/rails/webpacker/issues/405
-Rake::Task['yarn:install'].clear
-namespace :yarn do
-  task install: :environment do
-    # Redefine as empty
-  end
+namespace :assets do
+  task :precompile => "js:routes:typescript"
 end

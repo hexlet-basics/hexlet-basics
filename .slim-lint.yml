@@ -12,4 +12,3 @@ linters:
     exclude:
       - app/views/web/pages/*.slim
       - app/views/web/home/_reviews.*.html.slim
-      - app/views/layouts/deps/_rollbar.html.slim

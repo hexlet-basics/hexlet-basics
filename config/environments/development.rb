@@ -66,6 +66,10 @@ Rails.application.configure do
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
 
+   config.middleware.use(JsRoutes::Middleware)
+
+  config.web_console.whiny_requests = false
+
   config.hosts << "code-basics.test"
   config.hosts << "ru.code-basics.test"
 end

@@ -69,7 +69,7 @@ services:
     build: .
     command: make frontend
     # ports:
-    #   - "0.0.0.0:3035:3035"
+    #   - "3036:3036"
     env_file:
       - .env
     volumes:

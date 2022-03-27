@@ -10,18 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[6.1].define(version: 2022_03_24_144540) do
-
+ActiveRecord::Schema[7.0].define(version: 2022_03_24_144540) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "language_lesson_members", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "lesson_id", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "state"
     t.bigint "language_id", null: false
-    t.datetime "created_at", precision: 6, null: false
+    t.datetime "created_at", null: false
     t.index ["lesson_id"], name: "user_finished_lessons_language_module_lesson_id_index"
     t.index ["user_id", "lesson_id"], name: "user_finished_lessons_user_id_language_module_lesson_id_index", unique: true
     t.index ["user_id"], name: "user_finished_lessons_user_id_index"
@@ -38,8 +37,8 @@ ActiveRecord::Schema[6.1].define(version: 2022_03_24_144540) do
     t.bigint "language_id", null: false
     t.bigint "language_version_id", null: false
     t.bigint "version_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["language_id"], name: "index_language_lesson_version_infos_on_language_id"
     t.index ["language_version_id"], name: "index_language_lesson_version_infos_on_language_version_id"
   end
@@ -55,8 +54,8 @@ ActiveRecord::Schema[6.1].define(version: 2022_03_24_144540) do
     t.bigint "language_id", null: false
     t.bigint "lesson_id", null: false
     t.bigint "module_version_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["language_id"], name: "index_language_lesson_versions_on_language_id"
     t.index ["language_version_id"], name: "index_language_lesson_versions_on_language_version_id"
     t.index ["lesson_id"], name: "index_language_lesson_versions_on_lesson_id"
@@ -74,9 +73,9 @@ ActiveRecord::Schema[6.1].define(version: 2022_03_24_144540) do
     t.bigint "module_id"
     t.bigint "language_id"
     t.bigint "upload_id"
-    t.datetime "updated_at", null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "natural_order"
-    t.datetime "created_at", precision: 6, null: false
+    t.datetime "created_at", null: false
     t.index ["language_id", "slug"], name: "index_language_lessons_on_language_id_and_slug", unique: true
     t.index ["language_id"], name: "language_module_lessons_language_id_index"
     t.index ["module_id"], name: "language_module_lessons_module_id_index"
@@ -87,8 +86,8 @@ ActiveRecord::Schema[6.1].define(version: 2022_03_24_144540) do
     t.bigint "language_id", null: false
     t.bigint "user_id", null: false
     t.string "state"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["language_id"], name: "index_language_members_on_language_id"
     t.index ["user_id"], name: "index_language_members_on_user_id"
   end
@@ -98,8 +97,8 @@ ActiveRecord::Schema[6.1].define(version: 2022_03_24_144540) do
     t.text "description"
     t.string "locale", limit: 255
     t.bigint "module_id"
-    t.datetime "inserted_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "inserted_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.bigint "language_id"
     t.index ["module_id"], name: "language_module_descriptions_module_id_index"
   end
@@ -111,8 +110,8 @@ ActiveRecord::Schema[6.1].define(version: 2022_03_24_144540) do
     t.string "locale", limit: 255
     t.string "tips", limit: 255, null: false, array: true
     t.bigint "lesson_id"
-    t.datetime "inserted_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "inserted_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.bigint "language_id"
     t.jsonb "definitions", null: false, array: true
     t.index ["lesson_id"], name: "language_module_lesson_descriptions_lesson_id_index"
@@ -125,8 +124,8 @@ ActiveRecord::Schema[6.1].define(version: 2022_03_24_144540) do
     t.bigint "language_id", null: false
     t.bigint "version_id", null: false
     t.bigint "language_version_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["language_id"], name: "index_language_module_version_infos_on_language_id"
     t.index ["language_version_id"], name: "index_language_module_version_infos_on_language_version_id"
   end
@@ -136,8 +135,8 @@ ActiveRecord::Schema[6.1].define(version: 2022_03_24_144540) do
     t.bigint "language_version_id", null: false
     t.bigint "module_id", null: false
     t.integer "order"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["language_id"], name: "index_language_module_versions_on_language_id"
     t.index ["language_version_id"], name: "index_language_module_versions_on_language_version_id"
     t.index ["module_id"], name: "index_language_module_versions_on_module_id"
@@ -149,8 +148,8 @@ ActiveRecord::Schema[6.1].define(version: 2022_03_24_144540) do
     t.integer "order"
     t.bigint "language_id"
     t.bigint "upload_id"
-    t.datetime "updated_at", null: false
-    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "created_at", null: false
     t.index ["language_id"], name: "language_modules_language_id_index"
     t.index ["upload_id"], name: "language_modules_upload_id_index"
   end
@@ -160,8 +159,8 @@ ActiveRecord::Schema[6.1].define(version: 2022_03_24_144540) do
     t.bigint "language_version_id", null: false
     t.string "locale"
     t.string "description"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["language_id"], name: "index_language_version_infos_on_language_id"
     t.index ["language_version_id"], name: "index_language_version_infos_on_language_version_id"
   end
@@ -175,8 +174,8 @@ ActiveRecord::Schema[6.1].define(version: 2022_03_24_144540) do
     t.string "state"
     t.string "result"
     t.bigint "language_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["language_id"], name: "index_language_versions_on_language_id"
   end
 
@@ -189,10 +188,10 @@ ActiveRecord::Schema[6.1].define(version: 2022_03_24_144540) do
     t.string "exercise_test_filename", limit: 255
     t.string "state", limit: 255
     t.bigint "upload_id"
-    t.datetime "updated_at", null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "progress"
     t.bigint "current_version_id"
-    t.datetime "created_at", precision: 6, null: false
+    t.datetime "created_at", null: false
     t.string "learn_as"
     t.index ["current_version_id"], name: "index_languages_on_current_version_id"
     t.index ["slug"], name: "languages_slug_index", unique: true
@@ -201,8 +200,8 @@ ActiveRecord::Schema[6.1].define(version: 2022_03_24_144540) do
 
   create_table "uploads", force: :cascade do |t|
     t.string "language_name", limit: 255
-    t.datetime "inserted_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "inserted_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "user_accounts", force: :cascade do |t|
@@ -210,7 +209,7 @@ ActiveRecord::Schema[6.1].define(version: 2022_03_24_144540) do
     t.string "provider", limit: 255, null: false
     t.string "uid", limit: 255, null: false
     t.datetime "updated_at", precision: 0, null: false
-    t.datetime "created_at", precision: 6, null: false
+    t.datetime "created_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -219,7 +218,7 @@ ActiveRecord::Schema[6.1].define(version: 2022_03_24_144540) do
     t.string "email", limit: 255
     t.string "nickname", limit: 255
     t.integer "github_uid"
-    t.datetime "updated_at", null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "facebook_uid", limit: 255
     t.string "password_digest", limit: 255
     t.string "confirmation_token", limit: 255
@@ -228,7 +227,7 @@ ActiveRecord::Schema[6.1].define(version: 2022_03_24_144540) do
     t.string "locale", limit: 255
     t.string "email_delivery_state", limit: 255
     t.boolean "admin"
-    t.datetime "created_at", precision: 6, null: false
+    t.datetime "created_at", null: false
     t.boolean "help"
     t.index ["email"], name: "index_users_on_email", unique: true, where: "((state)::text <> 'removed'::text)"
   end
