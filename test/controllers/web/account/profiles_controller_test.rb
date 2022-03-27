@@ -9,19 +9,19 @@ class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'edit' do
-    get edit_account_profile_url(subdomain: I18n.locale)
-
+    get edit_account_profile_url(subdomain: subdomain)
     assert_response :success
   end
 
   test 'update' do
     new_name = 'new first name'
 
-    patch account_profile_url(@user, subdomain: I18n.locale), params: {
+    patch account_profile_url(@user, subdomain: subdomain), params: {
       user_profile_form: {
         first_name: new_name
       }
     }
+    assert_response :redirect
 
     @user.reload
 
@@ -29,8 +29,7 @@ class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'destroy' do
-    delete account_profile_url
-
+    delete account_profile_url(subdomain: subdomain)
     assert_response :redirect
 
     @user.reload

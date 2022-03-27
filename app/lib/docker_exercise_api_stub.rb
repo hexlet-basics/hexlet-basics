@@ -2,7 +2,7 @@
 
 class DockerExerciseApiStub
   def self.repo_dest(_)
-    'test/fixture_files/exercises'
+    'test/fixtures/files/exercises'
   end
 
   def self.download(_); end

@@ -2,17 +2,10 @@
 
 class Api::Languages::LessonsController < Api::Languages::ApplicationController
   def index
-    @current_module_versions = resource_language.current_module_versions
-                                                .eager_load(:lesson_versions)
-                                                .joins(:infos)
-                                                .merge(Language::Module::Version::Info.with_locale)
-                                                .merge(Language::Lesson::Version.includes(:lesson).order(:order))
-                                                .order(:order)
-
-    @infos_by_lesson = resource_language.current_lesson_infos
-                                        .includes(version: :lesson)
+    @lesson_infos = resource_language.current_lesson_infos
+                                        .joins(version: :lesson)
                                         .with_locale
-                                        .index_by(&:version_id)
+                                        .order('language_lesson_versions.natural_order')
   end
 
   def show

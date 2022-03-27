@@ -8,7 +8,7 @@ class Web::Admin::HomeControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'index' do
-    get admin_root_url
+    get admin_root_url(subdomain: subdomain)
     assert_response :success
   end
 end

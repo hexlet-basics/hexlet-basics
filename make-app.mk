@@ -1,5 +1,6 @@
 test:
 	bin/rails test -d
+	RAILS_LOCALE=ru bin/rails test -d
 
 check: test lint vulnerability-check
 

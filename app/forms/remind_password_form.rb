@@ -3,7 +3,7 @@
 class RemindPasswordForm
   include ActiveFormModel::Virtual
 
-  permit :email
+  fields :email
 
   validates :email, presence: true
   validate :user_exists
