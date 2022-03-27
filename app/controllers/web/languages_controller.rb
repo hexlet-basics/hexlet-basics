@@ -3,13 +3,7 @@
 class Web::LanguagesController < Web::ApplicationController
   def show
     @language = Language.find_by!(slug: params[:id])
-
-    unless @language.current_version
-      f('empty_language_current_version', type: :warning)
-
-      redirect_to root_path
-      return
-    end
+    @version = @language.current_version.infos.where(locale: I18n.locale).first!
 
     if @language.progress_in_development?
       f('.language_in_development_html', type: :info, values: { language: @language.to_s.humanize, link_to_repo: ExternalLinks.source_code }, now: true)
@@ -33,10 +27,5 @@ class Web::LanguagesController < Web::ApplicationController
     @next_lesson = current_user.not_finished_lessons_for_language(@language).ordered.first
 
     @human_language_title = [t("human_languages.#{@language}"), @language.learn_as.text].join(' ')
-
-    if @current_module_versions.empty?
-      f('warning', now: true)
-      nil
-    end
   end
 end

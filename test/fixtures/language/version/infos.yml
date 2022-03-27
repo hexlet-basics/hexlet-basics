@@ -1,0 +1,12 @@
+javascript-ru:
+  language: javascript
+  language_version: javascript
+  description: Описание
+  locale: ru
+
+
+javascript-en:
+  language: javascript
+  language_version: javascript
+  description: Description
+  locale: en
