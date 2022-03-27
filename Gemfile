@@ -27,8 +27,8 @@ gem 'jsbundling-rails'
 
 gem 'sprockets-rails'
 
-gem 'stimulus-rails'
-gem 'turbo-rails'
+# gem 'stimulus-rails'
+# gem 'turbo-rails'
 
 gem 'js-routes'
 

@@ -3,9 +3,9 @@
 class Api::Languages::LessonsController < Api::Languages::ApplicationController
   def index
     @lesson_infos = resource_language.current_lesson_infos
-                                        .joins(version: :lesson)
-                                        .with_locale
-                                        .order('language_lesson_versions.natural_order')
+                                     .joins(version: :lesson)
+                                     .with_locale
+                                     .order('language_lesson_versions.natural_order')
   end
 
   def show

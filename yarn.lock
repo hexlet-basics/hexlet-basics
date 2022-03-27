@@ -541,30 +541,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hotwired/stimulus@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "@hotwired/stimulus@npm:3.0.1"
-  checksum: 5f2dbfeb3dfff8472e1d0ef7db59a18d71540651861c0c5839fa32c56fcd5cae3fc6183a94746303c5adfbd66a9b552a3167e7e193c04dfaa6f51a8e5bea8e5e
-  languageName: node
-  linkType: hard
-
-"@hotwired/turbo-rails@npm:^7.1.1":
-  version: 7.1.1
-  resolution: "@hotwired/turbo-rails@npm:7.1.1"
-  dependencies:
-    "@hotwired/turbo": ^7.1.0
-    "@rails/actioncable": ^7.0
-  checksum: 606c0595659a4027e8f555acf5391031a5a6ebfe2ee57710d3b4de76bca3b75c3b79c2558d76cedc02ef8f90c04906aa505f365b675c305ca69e7ca8c7f1d22a
-  languageName: node
-  linkType: hard
-
-"@hotwired/turbo@npm:^7.1.0":
-  version: 7.1.0
-  resolution: "@hotwired/turbo@npm:7.1.0"
-  checksum: 4f71ebf2ff6a396d4031d048fa4d4dba6039aed9ad68436e6df4527e975acd8427c7d2f9b3e7f61f3e9c1af987193adf4e2b640c4033d4afd3e1f914ed05ba9f
-  languageName: node
-  linkType: hard
-
 "@humanwhocodes/config-array@npm:^0.9.2":
   version: 0.9.5
   resolution: "@humanwhocodes/config-array@npm:0.9.5"
@@ -964,7 +940,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rails/actioncable@npm:^7.0, @rails/actioncable@npm:^7.0.1":
+"@rails/actioncable@npm:^7.0.1":
   version: 7.0.2
   resolution: "@rails/actioncable@npm:7.0.2"
   checksum: 0064aa1b43c4099c62b0ec57534f756b22283a751571449e9b2285cef6593cefdd8f3edd692dc7840047ceba8f39e269f5a3e4a083f761ff87f686a6c366c7e8
@@ -4332,8 +4308,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "hexlet_basics@workspace:."
   dependencies:
-    "@hotwired/stimulus": ^3.0.1
-    "@hotwired/turbo-rails": ^7.1.1
     "@monaco-editor/react": ^4.3.1
     "@popperjs/core": ^2.11.4
     "@rails/actioncable": ^7.0.1

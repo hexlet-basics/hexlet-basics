@@ -1,6 +1,6 @@
 // @ts-check
 
-import '@hotwired/turbo-rails';
+import railsUjs from '@rails/ujs';
 
 // import 'core-js/stable';
 // import 'regenerator-runtime/runtime';
@@ -9,4 +9,5 @@ import '@hotwired/turbo-rails';
 import 'bootstrap';
 import hljs from 'highlight.js';
 
+railsUjs.start();
 hljs.highlightAll();

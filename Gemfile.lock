@@ -402,8 +402,6 @@ GEM
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
     sqlite3 (1.4.2)
-    stimulus-rails (1.0.4)
-      railties (>= 6.0.0)
     strscan (3.0.1)
     sync (0.5.0)
     temple (0.8.2)
@@ -414,9 +412,6 @@ GEM
     timeout (0.2.0)
     tins (1.31.0)
       sync
-    turbo-rails (1.0.1)
-      actionpack (>= 6.0.0)
-      railties (>= 6.0.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.1.0)
@@ -502,9 +497,7 @@ DEPENDENCIES
   spring
   sprockets-rails
   sqlite3
-  stimulus-rails
   term-ansicolor
-  turbo-rails
   tzinfo-data
   valid_email2
   web-console
