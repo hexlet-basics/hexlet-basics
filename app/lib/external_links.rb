@@ -29,7 +29,7 @@ class ExternalLinks
     super
   end
 
-  def self.respond_to_missing?(method_name, include_all)
+  def self.respond_to_missing?(method_name, _include_all)
     LINKS.key?(method_name)
   end
 end

@@ -27,8 +27,8 @@ gem 'jsbundling-rails'
 
 gem 'sprockets-rails'
 
-gem 'turbo-rails'
 gem 'stimulus-rails'
+gem 'turbo-rails'
 
 gem 'js-routes'
 
@@ -41,8 +41,8 @@ group :development, :test do
   gem 'faker'
   gem 'slim_lint', require: false
   # gem 'sorbet'
-  gem 'sqlite3'
   gem 'spring'
+  gem 'sqlite3'
 end
 
 group :development do
@@ -82,9 +82,8 @@ gem 'simple_form'
 gem 'slim-rails'
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
-gem 'sorbet-rails'
-#
 gem 'country_select'
+gem 'sorbet-rails'
 
 gem 'browser'
 

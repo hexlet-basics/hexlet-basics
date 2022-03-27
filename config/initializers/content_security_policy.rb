@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Be sure to restart your server when you modify this file.
 
 # Define an application-wide content security policy
@@ -11,14 +12,14 @@
 #     policy.img_src     :self, :https, :data
 #     policy.object_src  :none
 #     policy.script_src  :self, :https
-    # Allow @vite/client to hot reload javascript changes in development
+# Allow @vite/client to hot reload javascript changes in development
 #    policy.script_src *policy.script_src, :unsafe_eval, "http://#{ ViteRuby.config.host_with_port }" if Rails.env.development?
 
-    # You may need to enable this in production as well depending on your setup.
+# You may need to enable this in production as well depending on your setup.
 #    policy.script_src *policy.script_src, :blob if Rails.env.test?
 
 #     policy.style_src   :self, :https
-    # Allow @vite/client to hot reload style changes in development
+# Allow @vite/client to hot reload style changes in development
 #    policy.style_src *policy.style_src, :unsafe_inline if Rails.env.development?
 
 #     # Specify URI for violation reports
