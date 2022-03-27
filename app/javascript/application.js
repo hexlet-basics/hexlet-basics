@@ -1,6 +1,6 @@
 // @ts-check
 
-import { init } from '@sentry/browser';
+import * as Sentry from '@sentry/browser';
 import railsUjs from '@rails/ujs';
 
 // import 'core-js/stable';
@@ -11,10 +11,10 @@ import 'bootstrap';
 import hljs from 'highlight.js';
 
 // TODO: https://github.com/getsentry/sentry-javascript/tree/master/packages/react
-init({
-  dsn: '__DSN__',
-  // ...
-});
+// Sentry.init({
+//   dsn: '__DSN__',
+//   // ...
+// });
 
 railsUjs.start();
 hljs.highlightAll();
