@@ -21,6 +21,12 @@ class Web::ApplicationController < ApplicationController
              })
   end
 
+  before_action do
+    @language_version_infos = Language::Version::Info
+      .where({ locale: I18n.locale })
+      .joins(language_version: :current_language)
+  end
+
   private
 
   def prepare_locale_settings

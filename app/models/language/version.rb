@@ -24,6 +24,7 @@ class Language::Version < ApplicationRecord
   has_many :infos, dependent: :destroy, foreign_key: 'language_version_id'
 
   belongs_to :language
+  has_one :current_language, class_name: 'Language', foreign_key: 'current_version_id'
 
   aasm :state do
     state :created, initial: true

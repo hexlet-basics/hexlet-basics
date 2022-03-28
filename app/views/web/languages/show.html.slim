@@ -7,8 +7,8 @@
   meta content="#{language_url(@language.slug)}" property='og:url'
   meta content="#{image_url("#{@language.slug}.png")}" property='og:image'
   link rel='canonical' href="#{language_url(@language.slug)}"
-  meta content=t("languages.#{@language}.description") property='og:description'
-  meta content=t("languages.#{@language}.description") name='description'
+  meta content= @language_version_info.description property='og:description'
+  meta content= @language_version_info.description name='description'
   meta content="#{I18n.locale}" property='og:locale'
 
 .mt-sm-5.mb-5.pb-5
@@ -18,7 +18,7 @@
         .col
           .badge.border.text-dark.small = t('.free_course')
           h1.display-5.fw-bold(itemprop='name') = @human_language_title
-          p.col-md-10.fs-5 = t(".#{@language}_description")
+          p.col-md-10.fs-5 = @language_version_info.description
           .text-muted.lead.mb-5
             span.text-nowrap.me-4
               span.bi.bi-clock.me-2

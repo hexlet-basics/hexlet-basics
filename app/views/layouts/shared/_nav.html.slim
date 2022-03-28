@@ -15,98 +15,11 @@
         button.nav-link.text-dark.dropdown-toggle href='#' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false'
           = t('.change_course')
         ul.dropdown-menu.dropdown-menu-columns.dropdown-menu-arrow
-          li
-            = link_to language_path('php'), class: 'dropdown-item d-flex align-items-center py-2'
-              span.devicon-php-plain.colored.me-2.fs-5
-              span = t('human_languages.php')
-          li
-            = link_to language_path('javascript'), class: 'dropdown-item d-flex align-items-center py-2'
-              span.devicon-javascript-plain.colored.me-2.fs-5
-              span = t('human_languages.javascript')
-          li
-            = link_to language_path('python'), class: 'dropdown-item d-flex align-items-center py-2'
-              span.devicon-python-plain.colored.me-2.fs-5
-              span = t('human_languages.python')
-          li
-            = link_to language_path('java'), class: 'dropdown-item d-flex align-items-center py-2'
-              span.devicon-java-plain.colored.me-2.fs-5
-              span = t('human_languages.java')
-          li
-            = link_to language_path('html'), class: 'dropdown-item d-flex align-items-center py-2'
-              span.devicon-html5-plain.colored.me-2.fs-5
-              span = t('human_languages.html')
-          li
-            = link_to language_path('css'), class: 'dropdown-item d-flex align-items-center py-2'
-              span.devicon-css3-plain.colored.me-2.fs-5
-              span = t('human_languages.css')
-          li
-            = link_to language_path('racket'), class: 'dropdown-item d-flex align-items-center py-2'
-              / TODO: change icon https://github.com/devicons/devicon/issues/894
-              span.bi.bi-code.me-3
-              span = t('human_languages.racket')
-          li
-            = link_to language_path('ruby'), class: 'dropdown-item d-flex align-items-center py-2'
-              span.devicon-ruby-plain.colored.me-2.fs-5
-              span = t('human_languages.ruby')
-          li
-            = link_to language_path('elixir'), class: 'dropdown-item d-flex align-items-center py-2'
-              span.devicon-elixir-plain.colored.me-2.fs-5
-              span = t('human_languages.elixir')
-          li
-            = link_to language_path('go'), class: 'dropdown-item d-flex align-items-center py-2'
-              span.devicon-go-plain.colored.me-2.fs-5
-              span = t('human_languages.go')
-          li
-            = link_to language_path('clojure'), class: 'dropdown-item d-flex align-items-center py-2'
-              span.devicon-clojure-plain.colored.me-2.fs-5
-              span = t('human_languages.clojure')
-          li
-            = link_to language_path('clang'), class: 'dropdown-item d-flex align-items-center py-2'
-              span.devicon-c-plain.colored.me-2.fs-5
-              span = t('human_languages.clang')
-          li
-            = link_to language_path('csharp'), class: 'dropdown-item d-flex align-items-center py-2'
-              span.devicon-csharp-plain.colored.me-2.fs-5
-              span = t('human_languages.csharp')
-          li
-            = link_to language_path('haskell'), class: 'dropdown-item d-flex align-items-center py-2'
-              span.devicon-haskell-plain.colored.me-2.fs-5
-              span = t('human_languages.haskell')
-          li
-            = link_to language_path('typescript'), class: 'dropdown-item d-flex align-items-center py-2'
-              span.devicon-typescript-plain.colored.me-2.fs-5
-              span = t('human_languages.typescript')
-          li
-            = link_to language_path('lua'), class: 'dropdown-item d-flex align-items-center py-2'
-              span.devicon-lua-plain.colored.me-2.fs-5
-              span = t('human_languages.lua')
-          li
-            = link_to language_path('prolog'), class: 'dropdown-item d-flex align-items-center py-2'
-              / TODO: change icon https://github.com/devicons/devicon/issues/924
-              span.bi.bi-code.colored.me-2.fs-5
-              span = t('human_languages.prolog')
-          li
-            = link_to language_path('cpp'), class: 'dropdown-item d-flex align-items-center py-2'
-              span.devicon-cplusplus-plain.colored.me-2.fs-5
-              span = t('human_languages.cpp')
-          li
-            = link_to language_path('bash'), class: 'dropdown-item d-flex align-items-center py-2'
-              span.devicon-bash-plain.colored.me-2.fs-5
-              span = t('human_languages.bash')
-          li
-            = link_to language_path('fortran'), class: 'dropdown-item d-flex align-items-center py-2'
-              / TODO: https://github.com/devicons/devicon/issues/936
-              span.bi.bi-code.colored.me-2.fs-5
-              span = t('human_languages.fortran')
-          li
-            = link_to language_path('swift'), class: 'dropdown-item d-flex align-items-center py-2'
-              span.devicon-swift-plain.colored.me-2.fs-5
-              span = t('human_languages.swift')
-          / TODO: add kotlin after fix tests https://github.com/hexlet-basics/exercises-kotlin/issues/7
-          / li
-          /   = link_to language_path('kotlin'), class: 'dropdown-item d-flex align-items-center py-2'
-          /     span.devicon-kotlin-plain.colored.me-2.fs-5
-          /     span = t('human_languages.kotlin')
+          - @language_version_infos.each do |info|
+            li
+              = link_to language_path(info.language.slug), class: 'dropdown-item d-flex align-items-center py-2'
+                span.colored.me-2.fs-5 class="devicon-#{info.language.slug}-plain"
+                span = t(info.language.slug, scope: 'human_languages')
 
       li.nav-item.dropdown.me-2.me-auto
         / rubocop:disable Rails/LinkToBlank

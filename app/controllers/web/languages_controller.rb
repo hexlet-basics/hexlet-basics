@@ -3,7 +3,7 @@
 class Web::LanguagesController < Web::ApplicationController
   def show
     @language = Language.find_by!(slug: params[:id])
-    @version = @language.current_version.infos.where(locale: I18n.locale).first!
+    @language_version_info = @language.current_version.infos.where(locale: I18n.locale).first!
 
     if @language.progress_in_development?
       f('.language_in_development_html', type: :info, values: { language: @language.to_s.humanize, link_to_repo: ExternalLinks.source_code }, now: true)

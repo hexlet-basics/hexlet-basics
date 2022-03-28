@@ -13,15 +13,16 @@ class ExerciseLoader
 
     docker_exercise_api.download(lang_name)
 
-    update_language_version(language_version)
+    update_language(language_version)
 
     language_modules_data = create_modules(language_version)
 
     create_lessons(language_version, language_modules_data)
 
-    # FIXME we should brake build if docker answers non 200 code
+    # FIXME we should stop building image if docker answer code is not 200
     docker_exercise_api.tag_image_version(lang_name, language_version.image_tag)
 
+    # TODO: rename to building_error_descriptoin and use only for error messages
     language_version.result = 'Success'
     ActiveRecord::Base.transaction do
       language_version.mark_as_built!
@@ -123,20 +124,27 @@ class ExerciseLoader
     }
   end
 
-  def update_language_version(language_version)
+  def update_language(language_version)
     repo_dest = docker_exercise_api.repo_dest(language_version.language.slug)
     spec_filepath = File.join(repo_dest, 'spec.yml')
-    language_info = YAML.load_file(spec_filepath).fetch('language')
+    language_spec = YAML.load_file(spec_filepath).fetch('language')
 
     language_version.assign_attributes(
       name: language_version.language.slug,
-      extension: language_info['extension'],
-      docker_image: language_info['docker_image'],
-      exercise_filename: language_info['exercise_filename'],
-      exercise_test_filename: language_info['exercise_test_filename']
+      extension: language_spec['extension'],
+      docker_image: language_spec['docker_image'],
+      exercise_filename: language_spec['exercise_filename'],
+      exercise_test_filename: language_spec['exercise_test_filename']
     )
 
-    # import info
+    language_version.save!
+
+    infos = get_infos(repo_dest)
+    infos.each do |locale, info_spec|
+      language_version_info = language_version.infos.build(language: language_version.language)
+      language_version_info.description = info_spec.fetch('description')
+      language_version_info.save!
+    end
   end
 
   def create_module_hierachy(language_version, data)
