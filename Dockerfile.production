@@ -38,6 +38,7 @@ RUN bundle install --jobs $(nproc)
 
 COPY . .
 
-RUN NODE_ENV=production HEXLET_DOCKER_BUILD=1 RAILS_ENV=production SECRET_KEY_BASE=jopa bin/rails assets:precompile
+RUN npm run build
+RUN APP_HOST=example.test NODE_ENV=production HEXLET_DOCKER_BUILD=1 RAILS_ENV=production SECRET_KEY_BASE=jopa bin/rails assets:precompile
 
 CMD ["make", "start-production"]

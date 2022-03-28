@@ -78,7 +78,7 @@
     "defaults"
   ],
   "scripts": {
-    "build": "webpack -p",
+    "build": "webpack --mode production",
     "build:watch": "webpack --watch --mode development --color"
   }
 }

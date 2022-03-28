@@ -116,8 +116,6 @@ GEM
       countries (~> 4.2)
       sort_alphabetical (~> 1.1)
     crass (1.0.6)
-    cssbundling-rails (1.1.0)
-      railties (>= 6.0.0)
     diff-lcs (1.5.0)
     digest (3.1.0)
     dotenv (2.7.6)
@@ -173,8 +171,6 @@ GEM
       activesupport (>= 5.0.0)
     js-routes (2.2.3)
       railties (>= 4)
-    jsbundling-rails (1.0.2)
-      railties (>= 6.0.0)
     jwt (2.3.0)
     kaminari (1.2.2)
       activesupport (>= 4.1.0)
@@ -466,7 +462,6 @@ DEPENDENCIES
   capybara
   configus
   country_select
-  cssbundling-rails
   dotenv-rails
   dry-auto_inject
   dry-container
@@ -479,7 +474,6 @@ DEPENDENCIES
   i18n-debug
   jbuilder
   js-routes
-  jsbundling-rails
   kaminari
   meta-tags
   minitest-power_assert

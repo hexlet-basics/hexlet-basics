@@ -22,8 +22,7 @@ gem 'ransack'
 gem 'term-ansicolor'
 gem 'valid_email2'
 
-gem 'cssbundling-rails'
-gem 'jsbundling-rails'
+# gem 'jsbundling-rails'
 
 gem 'sprockets-rails'
 
