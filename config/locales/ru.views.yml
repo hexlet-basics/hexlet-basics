@@ -1,5 +1,10 @@
 ru:
   web:
+    admin:
+      languages:
+        index:
+          languages: Языки
+          add_new_language: Добавить новый язык
     home:
       reviews:
         reviews: Отзывы

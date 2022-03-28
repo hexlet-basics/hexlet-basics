@@ -1,5 +1,10 @@
 ru:
   layouts:
+    web:
+      admin:
+        application:
+          dashboard: Кабинет
+          languages: Языки
     shared:
       nav:
         about: О проекте
