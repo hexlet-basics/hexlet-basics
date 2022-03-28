@@ -11,7 +11,7 @@ json.url configus.https_host
 json.legalName 'Hexlet Ltd.'
 json.address 'UMA Esplanadi, Pohjoisesplanadi 39, 00100 Helsinki, Finland'
 json.vatID 'VAT ID: FI26641607'
-json.telephone configus.phone
+json.telephone t('phones')
 # json.logo do
 #   json.set! :@type, 'ImageObject'
 #   json.url image_url('hexlet_logo.png')
