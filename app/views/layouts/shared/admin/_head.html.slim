@@ -1,15 +1,15 @@
-  meta charset="utf-8"
-  meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"
-  meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-  title Admin Hexlet basics
-  = csrf_meta_tags
-  = csp_meta_tag
+meta charset="utf-8"
+meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"
+meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+title Admin Hexlet basics
+= csrf_meta_tags
+= csp_meta_tag
 
-  = stylesheet_link_tag 'vendor'
-  = stylesheet_link_tag 'application'
+= stylesheet_link_tag 'vendor'
+= stylesheet_link_tag 'application'
 
-  = javascript_include_tag 'application', async: true
+= javascript_include_tag 'application', async: true
 
-  - if supported_browser?
-    = javascript_include_tag 'vendor', defer: true
-    = yield :frontend
+- if supported_browser?
+  = javascript_include_tag 'vendor', defer: true
+  = yield :frontend
