@@ -23,8 +23,8 @@ class Web::ApplicationController < ApplicationController
 
   before_action do
     @language_version_infos = Language::Version::Info
-      .where({ locale: I18n.locale })
-      .joins(language_version: :current_language)
+                              .where({ locale: I18n.locale })
+                              .joins(language_version: :current_language)
   end
 
   private

@@ -140,7 +140,7 @@ class ExerciseLoader
     language_version.save!
 
     infos = get_infos(repo_dest)
-    infos.each do |locale, info_spec|
+    infos.each do |_locale, info_spec|
       language_version_info = language_version.infos.build(language: language_version.language)
       language_version_info.description = info_spec.fetch('description')
       language_version_info.save!

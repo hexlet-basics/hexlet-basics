@@ -21,10 +21,10 @@ class Language::Version < ApplicationRecord
                           inverse_of: :language_version
 
   has_many :lessons, through: :lesson_versions
-  has_many :infos, dependent: :destroy, foreign_key: 'language_version_id'
+  has_many :infos, dependent: :destroy, foreign_key: 'language_version_id', inverse_of: :language_version
 
   belongs_to :language
-  has_one :current_language, class_name: 'Language', foreign_key: 'current_version_id'
+  has_one :current_language, class_name: 'Language', foreign_key: 'current_version_id', dependent: :raise_with_exception, inverse_of: :current_version
 
   aasm :state do
     state :created, initial: true
