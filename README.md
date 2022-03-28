@@ -2,13 +2,9 @@
 
 # hexlet-basics
 
-## Участие
-
-* Обсуждение в канале #hexlet-volunteers слака http://slack-ru.hexlet.io
-
 ## Setup
 
-### Required
+### Requirements
 
 * docker
 * docker compose
@@ -17,33 +13,34 @@
 ### Steps
 
 **Add to _/etc/hosts_:**
-  127.0.0.1 code-basics.test ru.code-basics.test en.code-basics.test
+  127.0.0.1 code-basics.test ru.code-basics.test code-basics.test
 
-```sh
-$ make project-setup
-$ make compose # run server
+```bash
+make project-setup
+make compose # run server
 # open code-basics.test
 
-$ make app-test # run tests
+make app-test # run tests
 
 # load language
 # make app-language-load L=php
 
-$ make app-db-prepare # sometimes, when fixtures were changed
+make app-db-prepare # sometimes, when fixtures were changed
 ```
 
 ### Production
+
 Kube access
 
-```
+```bash
 export DIGITALOCEAN_ACCESS_TOKEN=<your token>
 make local-cluster-setup
 ```
 
 ##
-[![Hexlet Ltd. logo](https://raw.githubusercontent.com/Hexlet/assets/master/images/hexlet_logo128.png)](https://ru.hexlet.io/pages/about?utm_source=github&utm_medium=link&utm_campaign=exercises-javascript)
+[![Hexlet Ltd. logo](https://raw.githubusercontent.com/Hexlet/assets/master/images/hexlet_logo128.png)](https://hexlet.io/pages/about?utm_source=github&utm_medium=link&utm_campaign=hexlet-basics)
 
-This repository is created and maintained by the team and the community of Hexlet, an educational project. [Read more about Hexlet (in Russian)](https://ru.hexlet.io/pages/about?utm_source=github&utm_medium=link&utm_campaign=exercises-javascript).
+This repository is created and maintained by the team and the community of Hexlet, an educational project. [Read more about Hexlet](https://hexlet.io/pages/about?utm_source=github&utm_medium=link&utm_campaign=hexlet-basics).
 ##
 
 See most active contributers on [hexlet-friends](https://friends.hexlet.io/).

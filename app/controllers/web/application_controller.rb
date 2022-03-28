@@ -35,6 +35,7 @@ class Web::ApplicationController < ApplicationController
 
     # NOTE: боты не должны попадать на автоматический редирект
     return if browser.bot?
+    return unless current_page?(root_path)
 
     subdomains = {
       ru: 'ru'
@@ -42,8 +43,6 @@ class Web::ApplicationController < ApplicationController
 
     ru_country_codes = ['RU']
     remembered_locale = session[:locale]&.to_sym
-
-    return unless current_page?(root_path)
 
     if remembered_locale && remembered_locale != I18n.locale
       url = root_url(subdomain: subdomains.fetch(remembered_locale, ''))
