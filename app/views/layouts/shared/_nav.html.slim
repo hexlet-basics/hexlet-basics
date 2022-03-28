@@ -19,11 +19,11 @@
             li
               = link_to language_path(info.language.slug), class: 'dropdown-item d-flex align-items-center py-2'
                 span.colored.me-2.fs-5 class="devicon-#{info.language.slug}-plain"
-                span = t(info.language.slug, scope: 'human_languages')
+                span = info.language_version.name
 
       li.nav-item.dropdown.me-2.me-auto
         / rubocop:disable Rails/LinkToBlank
-        = link_to t('.success_stories'), ExternalLinks.hexlet_success_stories, class: 'nav-link text-dark', target: '_blank', rel: 'nofollow noopener'
+        = link_to t('.success_stories'), ExternalLinks.hexlet_success_stories_curl, class: 'nav-link text-dark', target: '_blank', rel: 'nofollow noopener'
         / rubocop:enable Rails/LinkToBlank
         - if current_user.guest?
           = nav_menu_item t('.sign_in'), new_session_path

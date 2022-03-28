@@ -38,14 +38,14 @@
             .small.text-muted
               = t('.issues')
               '
-              = link_to ExternalLinks.source_code, get_lesson_source_code(@lesson_version, @info), target: '_blank', rel: :noopener
+              = link_to ExternalLinks.source_code_curl, get_lesson_source_code(@lesson_version, @info), target: '_blank', rel: :noopener
 
         .tab-pane.fade.overflow-auto.x-h-md-100#discuss-tab(role="tabpanel")
           .card-body.pt-2.pb-0
             .alert.alert-info.small.my-2
               span.align-baseline = t('.if_stuck')
               '
-              = link_to t('.community'), ExternalLinks.hexlet_slack, target: '_blank', class: 'align-baseline', rel: :noopener
+              = link_to t('.community'), ExternalLinks.hexlet_slack_curl, target: '_blank', class: 'align-baseline', rel: :noopener
 
             #disqus_thread
             / disqus script

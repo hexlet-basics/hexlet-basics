@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_03_24_144540) do
+ActiveRecord::Schema[7.0].define(version: 2022_03_28_030913) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -161,6 +161,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_03_24_144540) do
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title"
     t.index ["language_id"], name: "index_language_version_infos_on_language_id"
     t.index ["language_version_id"], name: "index_language_version_infos_on_language_version_id"
   end
@@ -176,6 +177,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_03_24_144540) do
     t.bigint "language_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "learn_as"
+    t.string "progress"
     t.index ["language_id"], name: "index_language_versions_on_language_id"
   end
 

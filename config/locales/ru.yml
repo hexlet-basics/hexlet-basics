@@ -1,33 +1,13 @@
 ru:
+  phones:
+    - '+7 (495) 085-28-38'
+    - '8 800 100 22 47'
   pages:
     about: О проекте
   languages:
     ru: Русский
     en: Английский
   language_icon: "Иконка %{language}"
-  human_languages:
-    javascript: JavaScript
-    java: Java
-    php: PHP
-    python: Python
-    html: HTML
-    css: CSS
-    racket: Racket
-    ruby: Ruby
-    elixir: Elixir
-    go: Go
-    clojure: Clojure
-    clang: Си
-    csharp: C#
-    haskell: Haskell
-    typescript: TypeScript
-    lua: Lua
-    prolog: Prolog
-    cpp: C++
-    bash: Bash
-    fortran: Fortran
-    kotlin: Kotlin
-    swift: Swift
   hello: "Привет мир"
   hours:
     one: "%{count} час"

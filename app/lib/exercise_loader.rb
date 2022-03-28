@@ -130,19 +130,23 @@ class ExerciseLoader
     language_spec = YAML.load_file(spec_filepath).fetch('language')
 
     language_version.assign_attributes(
-      name: language_version.language.slug,
-      extension: language_spec['extension'],
-      docker_image: language_spec['docker_image'],
-      exercise_filename: language_spec['exercise_filename'],
-      exercise_test_filename: language_spec['exercise_test_filename']
+      name: language_spec.fetch('name'),
+      progress: language_spec.fetch('progress'),
+      learn_as: language_spec.fetch('learn_as'),
+      extension: language_spec.fetch('extension'),
+      docker_image: language_spec.fetch('docker_image'),
+      exercise_filename: language_spec.fetch('exercise_filename'),
+      exercise_test_filename: language_spec.fetch('exercise_test_filename')
     )
 
     language_version.save!
 
     infos = get_infos(repo_dest)
-    infos.each do |_locale, info_spec|
+    infos.each do |locale, info_spec|
       language_version_info = language_version.infos.build(language: language_version.language)
       language_version_info.description = info_spec.fetch('description')
+      language_version_info.title = info_spec.fetch('title')
+      language_version_info.locale = locale
       language_version_info.save!
     end
   end

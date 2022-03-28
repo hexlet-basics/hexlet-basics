@@ -17,39 +17,38 @@ footer.bg-dark.text-light.mt-5.flex-shrink-0
       .col.mb-4.mb-lg-0
         ul.list-unstyled.lh-lg
           li
-            a.text-light.text-decoration-none target="_blank" href=ExternalLinks.hexlet_blog = t('.hexlet_blog')
+            a.text-light.text-decoration-none target="_blank" href=ExternalLinks.hexlet_blog_curl = t('.hexlet_blog')
           li
-            a.text-light.text-decoration-none target="_blank" href=ExternalLinks.hexlet_recommended_books = t('.recommended_books')
+            a.text-light.text-decoration-none target="_blank" href=ExternalLinks.hexlet_recommended_books_curl = t('.recommended_books')
           li
-            a.text-light.text-decoration-none target="_blank" href=ExternalLinks.hexlet_matrix = t('.matrix')
+            a.text-light.text-decoration-none target="_blank" href=ExternalLinks.hexlet_matrix_curl = t('.matrix')
           li
-            a.text-light.text-decoration-none target="_blank" href=ExternalLinks.source_code
+            a.text-light.text-decoration-none target="_blank" href=ExternalLinks.source_code_curl
               = t('.source_code')
               span.bi.bi-github.ms-2
 
       .col.mb-4.mb-lg-0
-        = phone_to configus.free_phone, nil, class: 'text-light text-decoration-none'
-        .small.text-muted.lh-1 = t('.free_call')
-        .my-3
-          = phone_to configus.phone, nil, class: 'text-light text-decoration-none'
-        = mail_to ExternalLinks.hexlet_support_mail, nil, class: 'text-light'
+        - t('phones').each do |phone|
+          .mb-2
+            = phone_to phone, class: 'text-light text-decoration-none'
+        = mail_to ExternalLinks.hexlet_support_email, nil, class: 'text-light'
 
     hr
     .d-flex
       p.mb-2.me-4.flex-shrink-0 = t('.hexlet_title', year: Time.zone.today.year)
       .ms-auto.fs-3.text-end
         span
-          a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_facebook
+          a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_facebook_curl
             span.bi.bi-facebook.text-white-50
         span.ms-3.ms-sm-5
-          a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_telegram
+          a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_telegram_curl
             span.bi.bi-telegram.text-white-50
         span.ms-3.ms-sm-5
-          a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_twitter
+          a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_twitter_curl
             span.bi.bi-twitter.text-white-50
         span.ms-3.ms-sm-5
-          a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_youtube
+          a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_youtube_curl
             span.bi.bi-youtube.text-white-50
         span.ms-3.ms-sm-5
-          a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_slack
+          a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_slack_curl
             span.bi.bi-slack.text-white-50

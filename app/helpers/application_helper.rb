@@ -60,7 +60,7 @@ module ApplicationHelper
   end
 
   def get_lesson_source_code(lesson_version, lesson_version_info)
-    repository_path = ExternalLinks.source_code
+    repository_path = ExternalLinks.source_code_curl
     locale = lesson_version_info.locale
     path_to_description = File.join(repository_path, lesson_version.path_to_code, "description.#{locale}.yml")
 
@@ -131,15 +131,15 @@ module ApplicationHelper
 
   def get_continue_study_path(slug)
     mapping = {
-      'php' => ExternalLinks.hexlet_php,
-      'javascript' => ExternalLinks.hexlet_frontend,
-      'java' => ExternalLinks.hexlet_java,
-      'python' => ExternalLinks.hexlet_python,
-      'ruby' => ExternalLinks.hexlet_rails,
-      'html' => ExternalLinks.hexlet_layout_designer,
-      'css' => ExternalLinks.hexlet_layout_designer
+      'php' => ExternalLinks.hexlet_php_curl,
+      'javascript' => ExternalLinks.hexlet_frontend_curl,
+      'java' => ExternalLinks.hexlet_java_curl,
+      'python' => ExternalLinks.hexlet_python_curl,
+      'ruby' => ExternalLinks.hexlet_rails_curl,
+      'html' => ExternalLinks.hexlet_layout_designer_curl,
+      'css' => ExternalLinks.hexlet_layout_designer_curl
     }
-    mapping.fetch(slug, ExternalLinks.hexlet_profession)
+    mapping.fetch(slug, ExternalLinks.hexlet_profession_curl)
   end
 
   def supported_browser?

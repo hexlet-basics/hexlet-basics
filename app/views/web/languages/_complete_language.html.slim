@@ -29,6 +29,6 @@
       .text-center.mt-sm-5.mb-sm-2.mt-md-3
         = link_to t('.continue'), get_continue_study_path(@language.slug), class: 'btn btn-lg btn-success px-4 mb-3 mt-2'
   .text-center.pt-2
-    = link_to t('.hexlet_profs'), ExternalLinks.hexlet_profession, target: '_blank', rel: :noopener
+    = link_to t('.hexlet_profs'), ExternalLinks.hexlet_profession_curl, target: '_blank', rel: :noopener
 
 - append_javascript_packs 'likely'

@@ -1,7 +1,8 @@
-- title t("languages.#{@language}.title")
+- title @language_version_info.title
 
+- # TODO switch to meta-tags
 = content_for :meta do
-  = structured_data_tag 'course', language: @language
+  = structured_data_tag 'course', language: @language, language_version_info: @language_version_info
   meta content='article' property='og:type'
   meta content=@human_language_title property='og:title'
   meta content="#{language_url(@language.slug)}" property='og:url'
