@@ -4,5 +4,12 @@
   title Admin Hexlet basics
   = csrf_meta_tags
   = csp_meta_tag
-  - javascript_include_tag 'application'
+
+  = stylesheet_link_tag 'vendor'
   = stylesheet_link_tag 'application'
+
+  = javascript_include_tag 'application', async: true
+
+  - if supported_browser?
+    = javascript_include_tag 'vendor', defer: true
+    = yield :frontend
