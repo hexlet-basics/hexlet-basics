@@ -3,8 +3,8 @@
   meta content=@title property='og:title'
   meta content="#{language_lesson_url(@lesson.language.slug, @lesson.slug)}" property='og:url'
   meta content="#{image_url("#{@lesson.language.slug}.png")}" property='og:image'
-  meta content= truncate("[#{t("human_languages.#{resource_language}")}] — #{@info.name} — #{@info.theory}", length: 220) property='og:description'
-  meta content= truncate("[#{t("human_languages.#{resource_language}")}] — #{@info.name} — #{@info.theory}", length: 200) name='description'
+  meta content= truncate("[#{resource_language.current_version}] — #{@info.name} — #{@info.theory}", length: 220) property='og:description'
+  meta content= truncate("[#{resource_language.current_version}] — #{@info.name} — #{@info.theory}", length: 200) name='description'
   meta content="#{I18n.locale}" property='og:locale'
 
 .row.x-h-md-100.g-2
@@ -28,7 +28,7 @@
                     meta itemprop="name" content="CodeBasics"
                 li.breadcrumb-item itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem"
                   = link_to language_path(resource_language.slug), itemprop: 'item', class: 'text-decoration-none text-muted' do
-                    span itemprop="name" = t("human_languages.#{resource_language}")
+                    span itemprop="name" = resource_language.current_version
                     meta itemprop="position" content="2"
                 li.breadcrumb-item.active itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem" aria-current="page"
                   span itemprop="name"

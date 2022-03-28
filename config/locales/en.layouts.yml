@@ -1,5 +1,10 @@
 en:
   layouts:
+    web:
+      admin:
+        application:
+          dashboard: Dashboard
+          languages: Languages
     shared:
       nav:
         about: "About"

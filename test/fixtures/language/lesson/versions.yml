@@ -103,3 +103,13 @@ ruby-hello-world:
   lesson: ruby-hello-world
   language: ruby
   path_to_code: <%= File.join(Rails.root, 'test', 'fixtures', 'files', 'exercise') %>
+
+php-hello-world:
+  <<: *DEFAULTS
+  order: 1
+  natural_order: 1
+  language_version: php
+  module_version: two
+  lesson: php-hello-world
+  language: php
+  path_to_code: <%= File.join(Rails.root, 'test', 'fixtures', 'files', 'exercise') %>

@@ -7,7 +7,7 @@ one:
 two:
   order: 20
   language_version: php
-  module: two
+  module: php-basics
   language: php
 
 javascript:

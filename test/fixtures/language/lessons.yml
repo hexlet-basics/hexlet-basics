@@ -55,3 +55,8 @@ ruby-hello-world:
   <<: *DEFAULTS
   language: ruby
   module: ruby-basics
+
+php-hello-world:
+  <<: *DEFAULTS
+  language: php
+  module: php-basics

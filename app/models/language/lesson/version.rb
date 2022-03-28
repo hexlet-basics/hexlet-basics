@@ -19,4 +19,8 @@ class Language::Lesson::Version < ApplicationRecord
       .lesson_versions.order(natural_order: :desc)
       .find_by('natural_order < ?', natural_order)&.lesson
   end
+
+  def to_s
+    name
+  end
 end

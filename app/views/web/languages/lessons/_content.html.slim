@@ -4,7 +4,7 @@
 
 .hexlet-basics-content
   h1.h3.font-weight-bold
-    = "#{t("human_languages.#{resource_language}")}: #{@info.name}"
+    = "#{resource_language.current_version}: #{@info.name}"
   == markdown2html(@info.theory, options)
   - if @info.instructions
     h2.h4.font-weight-bold = t('.instructions')

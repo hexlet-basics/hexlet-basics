@@ -5,6 +5,10 @@ one:
   <<: *DEFAULTS
   language: php
 
+php-basics:
+  <<: *DEFAULTS
+  language: php
+
 two:
   <<: *DEFAULTS
   language: javascript

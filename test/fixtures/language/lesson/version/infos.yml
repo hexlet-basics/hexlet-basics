@@ -83,3 +83,19 @@ ruby-hello-world-ru:
   language: ruby
   language_version: ruby
   version: ruby-hello-world
+
+php-hello-world-ru:
+  <<: *DEFAULTS
+  locale: ru
+  name: Привет Мир
+  language: php
+  language_version: php
+  version: php-hello-world
+
+php-hello-world-en:
+  <<: *DEFAULTS
+  locale: en
+  name: Hello World
+  language: php
+  language_version: php
+  version: php-hello-world

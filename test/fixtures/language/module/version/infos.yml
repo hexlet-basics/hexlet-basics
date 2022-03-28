@@ -37,3 +37,17 @@ ruby-basics-ru:
   language: ruby
   version: ruby-basics
   language_version: ruby
+
+php-basics-ru:
+  <<: *DEFAULTS
+  locale: ru
+  language: php
+  version: two
+  language_version: php
+
+php-basics-en:
+  <<: *DEFAULTS
+  locale: en
+  language: php
+  version: two
+  language_version: php

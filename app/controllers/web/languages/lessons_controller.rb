@@ -25,7 +25,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     gon.lesson_version = @lesson_version
     gon.lesson = @lesson
 
-    @title = [@info, t("human_languages.#{@resource_language}")].join(' | ').squish
+    @title = [@info, resource_language.current_version.name].join(' | ').squish
     set_meta_tags canonical: language_lesson_url(@lesson.language.slug, @lesson.slug),
                   amphtml: language_lesson_url(@lesson.language.slug, @lesson.slug, format: 'amp', only_path: false),
                   title: @title

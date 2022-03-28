@@ -1,5 +1,10 @@
 en:
   web:
+    admin:
+      languages:
+        index:
+          languages: Languages
+          add_new_language: Add new language
     home:
       hero:
         learn_html: Learn&nbsp;
@@ -33,6 +38,7 @@ en:
         sign_in: Sign in
     sessions:
       new:
+        title: Sign In
         meta_description: Sign in to Code Basics
         sign_in: Sign in
         dont_have_account: New to Code-Basics?
