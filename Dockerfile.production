@@ -26,6 +26,7 @@ RUN yarn set version stable
 # ENV BUNDLE_PATH /root/hexlet-basics/vendor/bundle
 WORKDIR /app
 
+COPY .yarnrc.yml .
 COPY package.json .
 COPY yarn.lock .
 

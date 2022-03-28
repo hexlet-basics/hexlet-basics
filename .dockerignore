@@ -1,7 +1,6 @@
 .git
-/public/packs
-/public/packs-test
-/vendor
+vendor
 node_modules
 log
 tmp
+.yarn
