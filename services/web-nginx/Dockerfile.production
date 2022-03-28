@@ -1,11 +1,8 @@
-ARG APP_IMAGE_WITH_TAG=hexletbasics/services-app:cached
-FROM ${APP_IMAGE_WITH_TAG} as rails-app
+FROM nginx:1.21.6
 
-FROM nginx:1.21.4
+COPY /public /var/www/hexlet-basics/shared/public
 
-COPY --from=rails-app /app/public /var/www/hexlet-basics/shared/public
-
-COPY files/production/nginx.hexlet.basics.conf /etc/nginx/conf.d/hexlet-basics.conf
-COPY files/production/gzip.conf /etc/nginx/gzip.conf
-COPY files/.htpasswd /etc/nginx/.htpasswd
+COPY services/web-nginx/files/production/nginx.hexlet.basics.conf /etc/nginx/conf.d/hexlet-basics.conf
+COPY services/web-nginx/files/production/gzip.conf /etc/nginx/gzip.conf
+COPY services/web-nginx/files/.htpasswd /etc/nginx/.htpasswd
 RUN rm -rf /etc/nginx/conf.d/default.conf

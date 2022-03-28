@@ -41,6 +41,16 @@ jobs:
         run: |
           docker-compose --file docker-compose.yml up --abort-on-container-exit
 
+      - name: Build Nginx
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: services/web-nginx/Dockerfile.production
+          tags: ${{ env.NGINX_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
+          build-args: |
+            APP_IMAGE_WITH_TAG=${{ env.APP_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
+
+
       - name: Send notification into Slack
         if: ${{ always() }}
         uses: rtCamp/action-slack-notify@v2
