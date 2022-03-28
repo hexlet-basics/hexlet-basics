@@ -1,6 +1,6 @@
 // @ts-check
 
-import * as Sentry from '@sentry/browser';
+// import * as Sentry from '@sentry/browser';
 import railsUjs from '@rails/ujs';
 
 // import 'core-js/stable';
