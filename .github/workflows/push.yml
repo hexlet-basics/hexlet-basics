@@ -45,10 +45,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          load: true
+          push: true
           file: services/web-nginx/Dockerfile.production
-          tags: ${{ env.NGINX_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
-
+          tags: ${{ env.NGINX_IMAGE_NAME }}:latest
 
       - name: Send notification into Slack
         if: ${{ always() }}
