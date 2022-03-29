@@ -123,7 +123,8 @@ module ApplicationHelper
     mapping = {
       'html' => 'html5',
       'css' => 'css3',
-      'cpp' => 'cplusplus'
+      'cpp' => 'cplusplus',
+      'clang' => 'c'
     }
 
     mapping.fetch(slug, slug)
