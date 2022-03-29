@@ -18,7 +18,7 @@
           - @language_version_infos.each do |info|
             li
               = link_to language_path(info.language.slug), class: 'dropdown-item d-flex align-items-center py-2'
-                span.colored.me-2.fs-5 class="devicon-#{info.language.slug}-plain"
+                span.colored.me-2.fs-5 class="devicon-#{get_language_devicon_name(info.language.slug)}-plain"
                 span = info.language_version.name
 
       li.nav-item.dropdown.me-2.me-auto
