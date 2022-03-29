@@ -9,7 +9,12 @@
   - if @info.instructions
     h2.h4.font-weight-bold = t('.instructions')
     == markdown2html(@info.instructions, options)
-    hr.my-4
+    .my-4
+      - t('.common_questions').each do |data|
+        details.mt-1.border.rounded
+          summary.p-2 = data[:question]
+          .px-2.pt-2 == markdown2html data[:answer]
+
   - if @info.tips.any?
     h2.h5.font-weight-bold.mt-4 = t('.tips')
     ul.ps-4
@@ -21,5 +26,11 @@
       - @info.definitions.each do |definition|
         li
           p == markdown2html("#{definition['name']} - #{definition['description']}")
+
 - if @info.definitions.any? || @info.tips.any?
   hr.my-4
+
+.small.text-muted
+  = t('.issues')
+  '
+  = link_to ExternalLinks.source_code_curl, get_lesson_source_code(@lesson_version, @info), target: '_blank', rel: :noopener

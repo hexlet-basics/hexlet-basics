@@ -93,6 +93,8 @@ en:
 
       lessons:
         content:
+          common_questions: []
+          issues: Issues
           sign_up_for_tracking_progress_html: |
             Free %{name} course. <a href="%{link}" class="text-decoration-none" target="_blank">Sign Up</a> for tracking progress &rarr;
           instructions: Instructions
@@ -108,7 +110,6 @@ en:
           community: community
           if_stuck: If you got stuck and don't know what to do, you can ask a question in our huge and friendly
           breadcrumb: breadcrumb
-          issues: Issues
       complete_language:
         continue: Continue Learning
         grats: Congratulations
