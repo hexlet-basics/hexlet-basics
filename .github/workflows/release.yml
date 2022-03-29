@@ -57,7 +57,7 @@ jobs:
       - name: Build&Push Nginx
         uses: docker/build-push-action@v2
         with:
-          context: services/web-nginx
+          context: .
           file: services/web-nginx/Dockerfile.production
           push: true
           tags: ${{ env.NGINX_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
