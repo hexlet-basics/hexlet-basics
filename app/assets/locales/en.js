@@ -1,6 +1,12 @@
 /* eslint-disable max-len */
 export default {
   translation: {
+    help: {
+      controls: {
+        header: 'Help',
+        body: "Квадратная кнопка справа нужна для сброса прогресса, с её помощью можно восстановить начальное состояние упражнения. Это полезно, если во время экспериментов что-то сломалось и не чинится. Не забудьте, что сброс удалит ваш код, поэтому сохраните его куда-нибудь перед сбросом",
+      },
+    },
     errors: {
       network: 'There was a network problem. Please try again. If it doesn’t work, make sure you have good internet and no blockers.',
       server: 'Error on server. Maybe it’ll let go soon, but maybe not. Try to find out what happened in https://slack-ru.hexlet.io/',
