@@ -2,7 +2,8 @@
 
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Highlight } from 'react-fast-highlight';
+// import { Highlight } from 'react-fast-highlight';
+import SyntaxHighlighter from 'react-syntax-highlighter';
 
 import EntityContext from '../EntityContext.js';
 import { getLanguage } from '../utils/editorUtils.js';
@@ -15,9 +16,9 @@ function Test() {
     <div>
       <p className="text-center lead">{t('testInstructions')}</p>
       <div className="hexlet-basics-content">
-        <Highlight languages={[getLanguage(language)]}>
+        <SyntaxHighlighter showLineNumbers language={[getLanguage(language)]}>
           {lessonVersion.test_code}
-        </Highlight>
+        </SyntaxHighlighter>
       </div>
     </div>
   );
