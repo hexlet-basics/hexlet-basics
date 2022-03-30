@@ -73,4 +73,5 @@ Rails.application.configure do
 
   config.hosts << 'code-basics.test'
   config.hosts << 'ru.code-basics.test'
+  config.hosts << 'en.code-basics.test'
 end
