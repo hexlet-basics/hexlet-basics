@@ -1291,13 +1291,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/highlight.js@npm:^9.12.3":
-  version: 9.12.4
-  resolution: "@types/highlight.js@npm:9.12.4"
-  checksum: 1a491cc59b58c906b4e1c7263c839b8741f4ef3af395f7e0c90350792d89a832f4c4c39010df577f9c9dd447544c854a45a7c999a7901dc16dc20faedf73e7b5
-  languageName: node
-  linkType: hard
-
 "@types/hoist-non-react-statics@npm:^3.3.0":
   version: 3.3.1
   resolution: "@types/hoist-non-react-statics@npm:3.3.1"
@@ -2612,13 +2605,6 @@ __metadata:
   dependencies:
     mimic-response: ^1.0.0
   checksum: 2d0e61547fc66276e0903be9654ada422515f5a15741691352000d47e8c00c226061221074ce2c0064d12e975e84a8687cfd35d8b405750cb4e772f87b256eda
-  languageName: node
-  linkType: hard
-
-"clsx@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "clsx@npm:1.1.1"
-  checksum: ff052650329773b9b245177305fc4c4dc3129f7b2be84af4f58dc5defa99538c61d4207be7419405a5f8f3d92007c954f4daba5a7b74e563d5de71c28c830063
   languageName: node
   linkType: hard
 
@@ -4533,8 +4519,6 @@ __metadata:
     eslint-plugin-jsx-a11y: ^6.5.1
     eslint-plugin-react: ^7.29.4
     eslint-plugin-react-hooks: ^4.3.0
-    highlight.js: ^11.5.0
-    highlightjs-line-numbers.js: ^2.8.0
     i18next: ^21.6.14
     ilyabirman-likely: ^2.6.0
     jest: ^27.5.1
@@ -4553,7 +4537,6 @@ __metadata:
     react-bootstrap: ^2.2.2
     react-countdown: ^2.3.2
     react-dom: ^17.0.2
-    react-fast-highlight: ^4.1.0
     react-frame-component: ^5.2.1
     react-hotkeys-hook: ^3.4.4
     react-i18next: ^11.16.2
@@ -4578,20 +4561,6 @@ __metadata:
   version: 10.7.3
   resolution: "highlight.js@npm:10.7.3"
   checksum: defeafcd546b535d710d8efb8e650af9e3b369ef53e28c3dc7893eacfe263200bba4c5fcf43524ae66d5c0c296b1af0870523ceae3e3104d24b7abf6374a4fea
-  languageName: node
-  linkType: hard
-
-"highlight.js@npm:^11.5.0":
-  version: 11.5.0
-  resolution: "highlight.js@npm:11.5.0"
-  checksum: a4339278d5be464fa29047fd00bc91f3d3966f5acbbb861ec51a09f3eea7c79ca63c2e0a2ba0c7b3d3663ee56b11c6470ab2759c7278e0d11af5cb0efa26e6eb
-  languageName: node
-  linkType: hard
-
-"highlightjs-line-numbers.js@npm:^2.8.0":
-  version: 2.8.0
-  resolution: "highlightjs-line-numbers.js@npm:2.8.0"
-  checksum: 88a65badca8acca956c56548df92334b8a7282eb0387aa49b088f708798c15212af28374e80d433c762a9b54c3098a26733b9fd5c407d9209383c356fc86d47d
   languageName: node
   linkType: hard
 
@@ -7782,7 +7751,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.5.6, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -7940,20 +7909,6 @@ __metadata:
   peerDependencies:
     react: 17.0.2
   checksum: 1c1eaa3bca7c7228d24b70932e3d7c99e70d1d04e13bb0843bbf321582bc25d7961d6b8a6978a58a598af2af496d1cedcfb1bf65f6b0960a0a8161cb8dab743c
-  languageName: node
-  linkType: hard
-
-"react-fast-highlight@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "react-fast-highlight@npm:4.1.0"
-  dependencies:
-    "@types/highlight.js": ^9.12.3
-    clsx: ^1.1.1
-    prop-types: ^15.5.6
-  peerDependencies:
-    highlight.js: ^9.0.0 || ^10.0.0
-    react: ^16.0.0
-  checksum: 407805fc8d536ab025b03b2418bd7245d302b3be66881460ef424be82df5c4f26c75cb94b3ac55f22bef66006145fd06d604412e043d37ae70e6c0260232ed60
   languageName: node
   linkType: hard
 
