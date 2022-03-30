@@ -6,7 +6,7 @@ class Web::LanguagesController < Web::ApplicationController
     @language_version_info = @language.current_version.infos.where(locale: I18n.locale).first!
 
     if @language.progress_in_development?
-      f('.language_in_development_html', type: :info, values: { language: @language.to_s.humanize, link_to_repo: ExternalLinks.source_code_curl }, now: true)
+      f('.language_in_development_html', type: :info, values: { language: @language.to_s, link_to_repo: ExternalLinks.source_code_curl }, now: true)
     end
 
     @current_module_versions = @language.current_module_versions
