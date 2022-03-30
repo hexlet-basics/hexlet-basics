@@ -13,16 +13,16 @@ link rel='alternate' hreflang='en' href="https://#{request.domain}#{request.full
 = Gon::Base.render_data
 / = vite_client_tag
 
-= stylesheet_link_tag 'vendor'
+= stylesheet_link_tag 'vendors'
 = stylesheet_link_tag 'application'
 
 - if Rails.env.production?
   = render 'layouts/deps/gtm_head'
 
+= javascript_include_tag 'vendors', defer: true
 = javascript_include_tag 'application', async: true
 
 - if supported_browser?
-  = javascript_include_tag 'vendor', defer: true
   = yield :frontend
 
 / = stylesheet_link_tag 'application', 'data-turbo-track': 'reload'

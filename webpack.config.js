@@ -2,6 +2,7 @@
 
 import path from 'path';
 import { fileURLToPath } from 'url';
+import webpack from 'webpack';
 import { ESBuildMinifyPlugin } from 'esbuild-loader';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 // import { WebpackManifestPlugin } from 'webpack-manifest-plugin';
@@ -17,7 +18,7 @@ export default {
     lessonPage: getPath('lesson-page.js'),
     amp: getPath('amp.css', 'assets/stylesheets'),
   },
-  devtool: 'source-map',
+  devtool: false,
   externals: {
     jquery: 'jQuery',
     gon: 'gon',
@@ -27,6 +28,10 @@ export default {
     //   useEntryKeys: true,
     //   writeToFileEmit: true,
     // }),
+    new webpack.SourceMapDevToolPlugin({
+      filename: '[file].map[query]',
+      exclude: 'vendors',
+    }),
     new MiniCssExtractPlugin({
       filename: '[name].css',
     }),
@@ -42,8 +47,9 @@ export default {
       cacheGroups: {
         commons: {
           test: /[\\/]node_modules[\\/]/,
-          name: 'vendor',
+          name: 'vendors',
           chunks: 'initial',
+          enforce: true,
         },
       },
     },

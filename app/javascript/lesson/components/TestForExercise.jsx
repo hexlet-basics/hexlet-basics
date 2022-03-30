@@ -15,7 +15,7 @@ function Test() {
     <div>
       <p className="text-center lead">{t('testInstructions')}</p>
       <div className="hexlet-basics-content">
-        <SyntaxHighlighter showLineNumbers language={[getLanguage(language)]}>
+        <SyntaxHighlighter showLineNumbers useInlineStyles={false} language={[getLanguage(language)]}>
           {lessonVersion.test_code}
         </SyntaxHighlighter>
       </div>
