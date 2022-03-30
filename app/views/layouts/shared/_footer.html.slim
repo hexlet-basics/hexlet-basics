@@ -20,8 +20,9 @@ footer.bg-dark.text-light.mt-5.flex-shrink-0
             a.text-light.text-decoration-none target="_blank" href=ExternalLinks.hexlet_blog_curl = t('.hexlet_blog')
           li
             a.text-light.text-decoration-none target="_blank" href=ExternalLinks.hexlet_recommended_books_curl = t('.recommended_books')
-          li
-            a.text-light.text-decoration-none target="_blank" href=ExternalLinks.hexlet_matrix_curl = t('.matrix')
+          - if I18n.locale == :ru
+            li
+              a.text-light.text-decoration-none target="_blank" href=ExternalLinks.hexlet_matrix_curl = t('.matrix')
           li
             a.text-light.text-decoration-none target="_blank" href=ExternalLinks.source_code_curl
               = t('.source_code')
@@ -40,15 +41,19 @@ footer.bg-dark.text-light.mt-5.flex-shrink-0
         span
           a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_facebook_curl
             span.bi.bi-facebook.text-white-50
-        span.ms-3.ms-sm-5
-          a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_telegram_curl
-            span.bi.bi-telegram.text-white-50
+          span.ms-3.ms-sm-5
+            a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_instagram_curl
+              span.bi.bi-instagram.text-white-50
         span.ms-3.ms-sm-5
           a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_twitter_curl
             span.bi.bi-twitter.text-white-50
         span.ms-3.ms-sm-5
           a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_youtube_curl
             span.bi.bi-youtube.text-white-50
+        - if I18n.locale == :ru
+          span.ms-3.ms-sm-5
+            a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_telegram_curl
+              span.bi.bi-telegram.text-white-50
         span.ms-3.ms-sm-5
           a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_slack_curl
             span.bi.bi-slack.text-white-50

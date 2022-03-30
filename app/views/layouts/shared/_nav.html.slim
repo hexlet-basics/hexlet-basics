@@ -22,9 +22,10 @@
                 span = info.language_version.name
 
       li.nav-item.dropdown.me-2.me-auto
-        / rubocop:disable Rails/LinkToBlank
-        = link_to t('.success_stories'), ExternalLinks.hexlet_success_stories_curl, class: 'nav-link text-dark', target: '_blank', rel: 'nofollow noopener'
-        / rubocop:enable Rails/LinkToBlank
+        - if I18n.locale == :ru
+          / rubocop:disable Rails/LinkToBlank
+          = link_to t('.success_stories'), ExternalLinks.hexlet_success_stories_curl, class: 'nav-link text-dark', target: '_blank', rel: 'nofollow noopener'
+          / rubocop:enable Rails/LinkToBlank
         - if current_user.guest?
           = nav_menu_item t('.sign_in'), new_session_path
           = nav_menu_item t('.registration'), new_user_path, class: 'me-3'
