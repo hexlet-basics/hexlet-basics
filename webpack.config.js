@@ -49,7 +49,6 @@ export default {
           test: /[\\/]node_modules[\\/]/,
           name: 'vendors',
           chunks: 'initial',
-          enforce: true,
         },
       },
     },
