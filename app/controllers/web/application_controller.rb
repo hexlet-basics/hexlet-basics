@@ -45,7 +45,7 @@ class Web::ApplicationController < ApplicationController
         # root page, never changed locale
         ru_country_codes = ['RU']
         if ru_country_codes.include?(country_by_ip)
-          redirect_to root_url(subdomain: remembered_locale), allow_other_host: true
+          redirect_to root_url(subdomain: 'ru'), allow_other_host: true
         else
           I18n.locale = :en
         end
