@@ -3,7 +3,7 @@
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
-import { Highlight } from 'react-fast-highlight';
+import SyntaxHighlighter from 'react-syntax-highlighter';
 import Countdown from 'react-countdown';
 import { format } from 'date-fns';
 
@@ -30,9 +30,9 @@ function Solution() {
     return (
       <div>
         <h2 className="h3">{t('userCode')}</h2>
-        <Highlight languages={[getLanguage(language)]}>
+        <SyntaxHighlighter showLineNumbers language={[getLanguage(language)]}>
           {editor.content}
-        </Highlight>
+        </SyntaxHighlighter>
       </div>
     );
   };
@@ -40,9 +40,9 @@ function Solution() {
   const renderSolution = () => (
     <div className="p-lg-3 hexlet-basics-content" id="basics-solution">
       <h2 className="h3">{t('teacherSolution')}</h2>
-      <Highlight languages={[getLanguage(language)]}>
+      <SyntaxHighlighter language={[getLanguage(language)]}>
         {lessonVersion.original_code}
-      </Highlight>
+      </SyntaxHighlighter>
       {renderUserCode()}
     </div>
   );

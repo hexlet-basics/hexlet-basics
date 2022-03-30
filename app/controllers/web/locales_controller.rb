@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Web::LocalesController < Web::ApplicationController
+  skip_before_action :prepare_locale_settings, only: [:switch]
+
   def switch
     locale = params[:locale]
     # redirect_path = request.referer || root_path

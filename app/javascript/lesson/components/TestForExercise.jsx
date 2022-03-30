@@ -2,7 +2,6 @@
 
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-// import { Highlight } from 'react-fast-highlight';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 
 import EntityContext from '../EntityContext.js';
