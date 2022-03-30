@@ -71,6 +71,7 @@ resource "kubernetes_config_map" "hexlet_basics_data" {
   }
 
   data = {
+    APP_HOST     = "code-basics.com"
     MIX_ENV      = "prod"
     PORT         = "3000"
     NODE_ENV     = "production"
