@@ -8,5 +8,8 @@ class Web::HomeController < Web::ApplicationController
     @languages_in_development = Language.with_progress(:in_development).includes(:current_version)
     @language_members_by_language = current_user.language_members.index_by(&:language_id)
     # @language_member_fake = Language::MemberFake.new
+
+    languages_for_widget = @languages_completed.map(&:current_version).pluck(:name)
+    gon.languages_for_widget = languages_for_widget
   end
 end
