@@ -16,7 +16,7 @@ web:
     repository: hexletbasics/services-app
     pullPolicy: Always
 
-slack_notification: ['/root/hexlet-basics/deploy-notify.sh']
+slack_notification: ['/app/deploy-notify.sh']
 
 # autoscaling:
 #   enabled: false
