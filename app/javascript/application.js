@@ -9,6 +9,7 @@ import railsUjs from '@rails/ujs';
 // require('@popperjs/core');
 
 import 'bootstrap';
+import hljs from 'highlight.js';
 
 // https://docs.sentry.io/platforms/javascript/
 Sentry.init({
@@ -19,3 +20,4 @@ Sentry.init({
 });
 
 railsUjs.start();
+hljs.highlightAll();

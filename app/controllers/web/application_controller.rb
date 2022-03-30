@@ -38,11 +38,15 @@ class Web::ApplicationController < ApplicationController
     # TODO: write tests
     if current_page?(root_path) && !subdomain
       remembered_locale = session[:locale].presence
-      # root page, changed locale
-      if remembered_locale && remembered_locale != 'en'
-        redirect_to root_url(subdomain: remembered_locale), allow_other_host: true
+      if remembered_locale
+        # root page, no subdomain, changed locale
+        if remembered_locale == 'en'
+          I18n.locale = :en
+        else
+          redirect_to root_url(subdomain: remembered_locale), allow_other_host: true
+        end
       else
-        # root page, never changed locale
+        # root page, no subdomain, never changed locale
         ru_country_codes = ['RU']
         if ru_country_codes.include?(country_by_ip)
           redirect_to root_url(subdomain: 'ru'), allow_other_host: true
@@ -51,7 +55,7 @@ class Web::ApplicationController < ApplicationController
         end
       end
     else
-      # not root page or subdomain
+      # not root page or root with subdomain
       I18n.locale = subdomain || :en
       session[:locale] = I18n.locale
     end
