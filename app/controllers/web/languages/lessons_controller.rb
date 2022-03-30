@@ -21,7 +21,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
       gon.lesson_member = lesson_member
     end
 
-    gon.language = resource_language.to_s
+    gon.language = resource_language.slug
     gon.lesson_version = @lesson_version
     gon.lesson = @lesson
 
