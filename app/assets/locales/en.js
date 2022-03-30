@@ -4,7 +4,7 @@ export default {
     help: {
       controls: {
         header: 'Help',
-        body: "Квадратная кнопка справа нужна для сброса прогресса, с её помощью можно восстановить начальное состояние упражнения. Это полезно, если во время экспериментов что-то сломалось и не чинится. Не забудьте, что сброс удалит ваш код, поэтому сохраните его куда-нибудь перед сбросом",
+        body: "The square button on the right is needed to reset the progress, with which you can restore the initial state of the exercise. This is useful if something broke during the experimentation and is not repaired. Don't forget that resetting will delete your code, so save it somewhere before resetting",
       },
     },
     errors: {
