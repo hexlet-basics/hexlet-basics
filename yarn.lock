@@ -1070,6 +1070,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sentry/hub@npm:6.19.3":
+  version: 6.19.3
+  resolution: "@sentry/hub@npm:6.19.3"
+  dependencies:
+    "@sentry/types": 6.19.3
+    "@sentry/utils": 6.19.3
+    tslib: ^1.9.3
+  checksum: c11435dabe6d53e741539dfb88267de152bfb37170425ee91354b17cf1fd1f23a57d87e5a7468c6c9e5e7bc3a7a63f0e5023ea35421fb562910f0efc7248ff84
+  languageName: node
+  linkType: hard
+
 "@sentry/minimal@npm:6.19.2":
   version: 6.19.2
   resolution: "@sentry/minimal@npm:6.19.2"
@@ -1081,10 +1092,41 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sentry/minimal@npm:6.19.3":
+  version: 6.19.3
+  resolution: "@sentry/minimal@npm:6.19.3"
+  dependencies:
+    "@sentry/hub": 6.19.3
+    "@sentry/types": 6.19.3
+    tslib: ^1.9.3
+  checksum: 6cde9b7a3fe3e6121e237681340d137a5725554ba01558d8b44e32e3f4604e833fb7c835ab5c26fe19b7bce318a57efe8eb2b44454e763a947d9ee6abf21926b
+  languageName: node
+  linkType: hard
+
+"@sentry/tracing@npm:^6.19.3":
+  version: 6.19.3
+  resolution: "@sentry/tracing@npm:6.19.3"
+  dependencies:
+    "@sentry/hub": 6.19.3
+    "@sentry/minimal": 6.19.3
+    "@sentry/types": 6.19.3
+    "@sentry/utils": 6.19.3
+    tslib: ^1.9.3
+  checksum: 3fdd4b2c441fb5c9509bfb5a9b6e257e92db97ad8629b955466217d5c34f727e97b03f477eadb4b52fdd17b774cf0a19823f3ef3ec43ff6b008a4c363394a5f2
+  languageName: node
+  linkType: hard
+
 "@sentry/types@npm:6.19.2":
   version: 6.19.2
   resolution: "@sentry/types@npm:6.19.2"
   checksum: 4a22891c1549ad345abbe873b093898e4b9310ec0a53a0aa68055dc21e52bd2d4014e7b5c9da4106bccded29ae1a3f0ac04ba119eaf3371fe469de4f87e56e39
+  languageName: node
+  linkType: hard
+
+"@sentry/types@npm:6.19.3":
+  version: 6.19.3
+  resolution: "@sentry/types@npm:6.19.3"
+  checksum: 8a2705eed16fb7fa660c36417a41ca4106829821024be534f74b40a00b6c96b27a84343b101c7478e0b4458f71c280d4fa508d10928a3eccdb30baff49f5827e
   languageName: node
   linkType: hard
 
@@ -1095,6 +1137,16 @@ __metadata:
     "@sentry/types": 6.19.2
     tslib: ^1.9.3
   checksum: 9e1c95bb50e874f4d2e1b650dd1d8e3a19ba25789158756e7d296da41ddf44619adcfe027b7af0e7354bdf60953bffa157a69765c15c63345f0a2841646b5205
+  languageName: node
+  linkType: hard
+
+"@sentry/utils@npm:6.19.3":
+  version: 6.19.3
+  resolution: "@sentry/utils@npm:6.19.3"
+  dependencies:
+    "@sentry/types": 6.19.3
+    tslib: ^1.9.3
+  checksum: 6c0dd60a24554e9dbe11d5acd18d808f5a0f4c648c45b74818fbf009c9404c6e0d943cfbe62dea6a94c70fec9e1a0aedbd5579b8981f85fcfe0103527c9c5c5a
   languageName: node
   linkType: hard
 
@@ -4380,6 +4432,7 @@ __metadata:
     "@reduxjs/toolkit": ^1.8.0
     "@rehooks/local-storage": 2.4.4
     "@sentry/browser": ^6.19.2
+    "@sentry/tracing": ^6.19.3
     ansi_up: ^5.1.0
     axios: ^0.26.1
     bootstrap: ^5.1.3

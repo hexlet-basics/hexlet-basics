@@ -33,6 +33,7 @@ make app-db-prepare # sometimes, when fixtures were changed
 Kube access
 
 ```bash
+# make k8s-macos-setup or make k8s-ubuntu-setup
 export DIGITALOCEAN_ACCESS_TOKEN=<your token>
 make local-cluster-setup
 ```
