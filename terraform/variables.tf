@@ -111,6 +111,11 @@ variable "secret_key_base" {
   description = "Hexlet Basics secret key base"
 }
 
+variable "sentry_dsn" {
+  type        = string
+  description = "Sentry DSN"
+}
+
 variable "google_tag_manager_key" {
   type        = string
   description = "Google Tag Manager key"
