@@ -65,13 +65,13 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
+    user_name: configus.mailer.smtp.username,
+    password: configus.mailer.smtp.password,
     address: 'smtp.sparkpostmail.com',
     port: 587,
     domain: configus.mailer.from,
-    authentication: :login,
-    enable_starttls_auto: true,
-    user_name: ENV['SPARKPOST_SMTP_USERNAME'],
-    password: ENV['SPARKPOST_SMTP_PASSWORD']
+    format: :html,
+    enable_starttls_auto: true
   }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to

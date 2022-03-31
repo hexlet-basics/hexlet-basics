@@ -22,6 +22,11 @@ Configus.build Rails.env do
 
     mailer do
       from 'code-basics@hexlet.io'
+
+      smtp do
+        username ENV['SPARKPOST_SMTP_USERNAME']
+        password ENV['SPARKPOST_SMTP_PASSWORD']
+      end
     end
   end
 
