@@ -1,9 +1,7 @@
 ru:
   web:
     admin:
-      home:
-        index:
-          base: Админка
+      title: Админка Code-Basics
       languages:
         index:
           languages: Языки
