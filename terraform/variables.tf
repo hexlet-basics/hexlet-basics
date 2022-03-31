@@ -106,16 +106,6 @@ variable "facebook_client_secret" {
   description = "Facebook client secret"
 }
 
-variable "rollbar_access_token" {
-  type        = string
-  description = "Rollbar access token"
-}
-
-variable "rollbar_client_access_token" {
-  type        = string
-  description = "Rollbar client access token"
-}
-
 variable "secret_key_base" {
   type        = string
   description = "Hexlet Basics secret key base"
