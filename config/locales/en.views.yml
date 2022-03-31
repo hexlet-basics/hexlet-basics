@@ -1,6 +1,7 @@
 en:
   web:
     admin:
+      title: Admin Code-Basics
       languages:
         index:
           languages: Languages

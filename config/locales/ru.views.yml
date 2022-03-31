@@ -1,6 +1,9 @@
 ru:
   web:
     admin:
+      home:
+        index:
+          base: Админка
       languages:
         index:
           languages: Языки
