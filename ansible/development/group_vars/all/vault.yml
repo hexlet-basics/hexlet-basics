@@ -17,3 +17,4 @@ hexlet_basics_vault_secret_key_base: "as df;lkajsdf ;alkjsdf ;alksdjf ;alksdjf ;
 hexlet_basics_vault_sparkpost_smtp_username: "sparkpost"
 hexlet_basics_vault_sparkpost_smtp_password: "password"
 hexlet_basics_vault_guardian_secret_key: "asdfasdfasdfasdf"
+hexlet_basics_vault_sentry_dsn: "lalajopa"
