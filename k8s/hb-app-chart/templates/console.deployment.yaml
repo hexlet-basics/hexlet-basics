@@ -55,5 +55,5 @@ spec:
             - configMapRef:
                 name: hexlet-basics-data
           env:
-            - name: CODE_BASICS_VERSION
+            - name: HEXLET_BASICS_RELEASE_VERSION
               value: {{ .Values.version }}

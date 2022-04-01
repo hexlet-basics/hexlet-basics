@@ -2,6 +2,8 @@
 
 Configus.build Rails.env do
   env :production do
+    hexlet_basics_release_version ENV['HEXLET_BASICS_RELEASE_VERSION']
+
     protocol :https
     host 'code-basics.com'
     https_host 'https://ru.code-basics.com'
