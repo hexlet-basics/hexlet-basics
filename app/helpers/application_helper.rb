@@ -124,7 +124,10 @@ module ApplicationHelper
       'html' => 'html5',
       'css' => 'css3',
       'cpp' => 'cplusplus',
-      'clang' => 'c'
+      'clang' => 'c',
+      'racket' => 'devicon',
+      'prolog' => 'devicon',
+      'fortran' => 'devicon'
     }
 
     mapping.fetch(slug, slug)
