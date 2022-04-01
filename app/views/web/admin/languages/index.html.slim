@@ -8,6 +8,7 @@ table.table.my-2
       th Id
       th = sort_link(@search, :slug)
       th = sort_link(@search, :progress)
+      th = sort_link(@search, :learn_as)
       th Imported At
       th
       th
@@ -15,8 +16,10 @@ table.table.my-2
     - @languages.each do |language|
       tr
         td = language.id
-        td = language.slug
+        td
+          = link_to language.slug, language_path(language.slug)
         td = language.progress
+        td = language.learn_as
         td
           - if language.current_version
             = l language.current_version.updated_at, format: :short
