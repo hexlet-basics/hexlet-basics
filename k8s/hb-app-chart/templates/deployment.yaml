@@ -120,12 +120,6 @@ spec:
             name: docker-sock
           - name: docker-secret
             mountPath: /root/.docker
-        # resources:
-        #   limits:
-        #     memory: 100Mi
-        #     cpu: 500m
-        #   requests:
-        #     cpu: 20m
         envFrom:
           - secretRef:
               name: database-credentials
