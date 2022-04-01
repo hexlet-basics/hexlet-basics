@@ -116,6 +116,11 @@ variable "sentry_dsn" {
   description = "Sentry DSN"
 }
 
+variable "sentry_api_token" {
+  type        = string
+  description = "Sentry Api Token"
+}
+
 variable "google_tag_manager_key" {
   type        = string
   description = "Google Tag Manager key"

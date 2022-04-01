@@ -59,8 +59,9 @@ resource "kubernetes_secret" "hexlet_basics_secrets" {
   }
 
   data = {
-    SECRET_KEY_BASE = var.secret_key_base
-    SENTRY_DSN      = var.sentry_dsn
+    SECRET_KEY_BASE  = var.secret_key_base
+    SENTRY_DSN       = var.sentry_dsn
+    SENTRY_API_TOKEN = var.sentry_api_token
   }
 }
 

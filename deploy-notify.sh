@@ -1,6 +1,10 @@
 #!/bin/bash
-# https://sentry.io/settings/hexlet-sq/projects/hexlet-basics/release-tracking/
-curl https://sentry.io/api/hooks/release/builtin/6298540/5214185412a3b448f1afde83bed4e5965fa199755a50cd5a074dab276bf63d1c/ \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -d '{"version": "abcdefg"}'
+curl -X POST https://sentry.io/api/0/organizations/hexlet-sq/releases/ \
+     -H "Authorization: Bearer ${SENTRY_API_TOKEN}" \
+     -H 'Content-Type: application/json' \
+     -d "{\"environment\":\"${RAILS_ENV}\", \"version\":\"${HEXLET_BASICS_RELEASE_VERSION}\", \"projects\":[\"hexlet-sq\"]}"
+
+curl -v -X POST https://sentry.io/api/0/organizations/hexlet-sq/releases/$HEXLET_BASICS_RELEASE_VERSION/deploys/ \
+     -H "Authorization: Bearer ${SENTRY_API_TOKEN}" \
+     -H 'Content-Type: application/json' \
+     -d "{\"environment\":\"${RAILS_ENV}\"}"
