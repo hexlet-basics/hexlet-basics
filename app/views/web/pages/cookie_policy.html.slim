@@ -10,4 +10,10 @@
   meta content=t('.meta_description') name='description'
   meta content="#{I18n.locale}" property='og:locale'
 
-= render 'privacy'
+.container
+  .row.justify-content-center
+    .col-lg-9.lh-lg
+      div data-id="2f4744af-2e85-4e24-a0c8-68e09a7945f4" data-type="iframe" name="termly-embed"
+
+- content_for :frontend do
+  = javascript_include_tag 'legalDocs', defer: true

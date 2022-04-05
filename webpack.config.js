@@ -16,6 +16,7 @@ export default {
     application: [getPath('application.js'), getPath('application.scss', 'assets/stylesheets')],
     welcomePage: getPath('welcome-page.js'),
     lessonPage: getPath('lesson-page.js'),
+    legalDocs: getPath('legal-docs.js'),
     amp: getPath('amp.css', 'assets/stylesheets'),
   },
   devtool: false,

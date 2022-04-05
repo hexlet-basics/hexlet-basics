@@ -147,6 +147,9 @@ en:
       tos:
         title: Terms of Service
         meta_description: Terms of Service of the Code Basics Platform
+      cookie_policy:
+        title: Cookie Policy
+        meta_description: Политика в отношении файлов cookie
 
     account:
       profiles:

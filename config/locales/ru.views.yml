@@ -170,6 +170,10 @@ ru:
       tos:
         title: Условия использования образовательной платформы
         meta_description: Условия использования образовательной платформы Code Basics
+      cookie_policy:
+        title: Cookie Policy
+        meta_description: Cookies Policy
+
 
     account:
       profiles:
