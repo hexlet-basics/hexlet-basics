@@ -17,6 +17,7 @@ export default {
     welcomePage: getPath('welcome-page.js'),
     lessonPage: getPath('lesson-page.js'),
     legalDocs: getPath('legal-docs.js'),
+    likely: getPath('likely.js'),
     amp: getPath('amp.css', 'assets/stylesheets'),
   },
   devtool: false,
