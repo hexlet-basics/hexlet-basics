@@ -13,6 +13,9 @@ footer.bg-dark.text-light.mt-5.flex-shrink-0
             = link_to t('.tos'), page_path(:tos), class: 'text-decoration-none text-light'
           li
             = link_to t('.privacy'), page_path(:privacy), class: 'text-decoration-none text-light'
+          - if I18n.locale == :en
+            li
+              = link_to t('.cookie_policy'), page_path(:cookie_policy), class: 'text-decoration-none text-light'
 
       .col.mb-4.mb-lg-0
         ul.list-unstyled.lh-lg
