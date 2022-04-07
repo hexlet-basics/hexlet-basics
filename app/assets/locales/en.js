@@ -4,7 +4,7 @@ export default {
     help: {
       controls: {
         header: 'Help',
-        body: "The square button on the right is needed to reset the progress, with which you can restore the initial state of the exercise. This is useful if something broke during the experimentation and is not repaired. Don't forget that resetting will delete your code, so save it somewhere before resetting",
+        body: "Reset progress. If something breaks and cannot be fixed click this button to return to the beginning of the exercises. The current code won’t be saved. If you'll need it, copy it before resetting. For example, to the notepads",
       },
     },
     errors: {
@@ -13,7 +13,7 @@ export default {
     },
     run: 'Run',
     resetCode: 'Reset code',
-    confirm: 'ATTENTION! Your code will be deleted. Are you sure you want to reset the current progress and return the exercise to its initial state?',
+    confirm: 'You want to reset the exercise progress. The current code version will not be saved. We hope you’ve already copied it. Continue resetting?',
     editor: 'Editor',
     output: 'Output',
     solution: 'Solution',
@@ -37,15 +37,15 @@ export default {
         headline: 'Oops!',
       },
       passed: {
-        message: 'Whoa! You did it! Proceed.',
+        message: 'Yippee! Well done! Compare your answer with the teacher’s one and move to the next lesson',
         headline: 'Tests passed',
       },
       failed: {
-        message: 'Fix errros and run again',
+        message: '<p>Your code contains errors. Read carefully tests output and try to find errors yourself.</p> <p>Ask a question in the “Discussions” section of this lesson if you cannot find an error. Describe your problem, copy the “Output” tab content and attach it to your question<p>',
         headline: 'Tests Failed',
       },
       'failed-infinity': {
-        message: 'Code was running too long. Check it for infinity loops.',
+        message: 'Maybe the test ran too long or you have an infinite loop in your solution. Make sure your loop has the correct breaking condition and you consider edge cases. If your loop works correctly, send it for checking again in 5 minutes. ',
         headline: 'Tests Failed (Infinity Loop!)',
       },
     },
