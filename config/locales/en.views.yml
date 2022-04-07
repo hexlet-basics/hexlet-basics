@@ -94,7 +94,25 @@ en:
 
       lessons:
         content:
-          common_questions: []
+          common_questions:
+            - question: The exercise doesn’t pass checking. What to do? 😶
+              answer: |
+                If you’ve reached a deadlock it’s time to ask your question in the “Discussions”. [How ask a question correctly](https://help.hexlet.io/ru/articles/111495-kak-pravilno-zadavat-voprosy):
+
+                * Be sure to attach the test output, without it it's almost impossible to figure out what went wrong, even if you show your code. It’s complicated for developers to execute code in their heads, but having a mistake before their eyes most probably will be helpful.
+            - question: In my environment the code works, but not here 🤨
+              answer: |
+                Tests are designed in such a way that they test the solution in different ways and on different data.
+            - question: My code is different from the teacher’s one 🤔
+              answer: |
+                It’s fine. 🙆 One task in programming can be solved in many different ways. If your code passed all tests, it complies with the task conditions.
+
+                In some rare cases, the solution may be adjusted to the tests, but this can be seen immediately.
+            - question: I’ve read the lessons but nothing is clear 🙄
+              answer: |
+                It's hard to make educational materials that will suit everyone. We do our best but there is always something to improve. If you see a material that is not clear to you, describe the problem in “Discussions”. It will be great if you'll write unclear points in the question form. Usually, we need a few days for corrections.
+
+                By the way, you can participate in courses improvement. There is a link below to the lessons course code which you can edit right in your browser.
           issues: Issues
           sign_up_for_tracking_progress_html: |
             Free %{name} course. <a href="%{link}" class="text-decoration-none" target="_blank">Sign Up</a> for tracking progress &rarr;

@@ -86,20 +86,22 @@ function ControlBox() {
 
   return (
     <div className="d-flex p-3 border-top">
-      <OverlayTrigger trigger="click" placement="top" overlay={popover}>
+      {/* <OverlayTrigger trigger="click" placement="top" overlay={popover}>
         <Button variant="link" className="text-muted my-auto me-3 p-1">
           <span aria-label="help" className="bi bi-question-circle fs-5" />
         </Button>
-      </OverlayTrigger>
+      </OverlayTrigger> */}
       <div className="m-auto">
-        <Button
-          variant="outline-secondary"
-          className="me-3"
-          onClick={handleReset}
-          title={t('resetCode')}
-        >
-          <span className="bi bi-arrow-repeat" />
-        </Button>
+        <OverlayTrigger trigger="hover" placement="top" overlay={popover}>
+          <Button
+            variant="outline-secondary"
+            className="me-3"
+            onClick={handleReset}
+            // title={t('resetCode')}
+          >
+            <span className="bi bi-arrow-repeat" />
+          </Button>
+        </OverlayTrigger>
         <a className={prevButtonClasses} href={prevLessonPath}>
           <span className="bi bi-arrow-left-short d-sm-none d-md-block d-lg-none" />
           <span className="d-none d-sm-block d-md-none d-lg-block">{t('prevLesson')}</span>
