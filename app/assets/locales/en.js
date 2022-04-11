@@ -41,7 +41,7 @@ export default {
         headline: 'Tests passed',
       },
       failed: {
-        message: '<p>Your code contains errors. Read carefully tests output and try to find errors yourself.</p> <p>Ask a question in the “Discussions” section of this lesson if you cannot find an error. Describe your problem, copy the “Output” tab content and attach it to your question<p>',
+        message: '<p>Your code contains errors. Read carefully tests output and try to find errors yourself.</p><p class="mb-0">Ask a question in the “Discussions” section of this lesson if you cannot find an error. Describe your problem, copy the “Output” tab content and attach it to your question<p>',
         headline: 'Tests Failed',
       },
       'failed-infinity': {
