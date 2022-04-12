@@ -28,8 +28,8 @@ export default {
     lesson: 'Lesson',
     discuss: 'Discussion',
     instructions: 'Instructions',
-    nextLesson: 'Next Lesson',
-    prevLesson: 'Previous Lesson',
+    nextLesson: 'Next',
+    prevLesson: 'Previous',
     loading: 'Loading...',
     check: {
       error: {
