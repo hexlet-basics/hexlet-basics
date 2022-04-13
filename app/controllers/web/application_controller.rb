@@ -33,7 +33,8 @@ class Web::ApplicationController < ApplicationController
     subdomain = request.subdomains.first
 
     # NOTE: never redirect bots
-    return if browser.bot?
+    # NOTE: Temporary test of OG markup
+    return I18n.locale = (subdomain || :en) if browser.bot?
 
     # TODO: write tests
     if current_page?(root_path) && !subdomain
