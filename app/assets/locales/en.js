@@ -17,7 +17,7 @@ export default {
     editor: 'Editor',
     output: 'Output',
     solution: 'Solution',
-    teacherSolution: "Teacher's soltuion:",
+    teacherSolution: "Teacher's solution:",
     testForExercise: 'Tests',
     userCode: 'Your solution:',
     userCodeInstructions: "(start writing in Editor, your code will appear here and you'll be able to compare it to the teacher's solution)",
