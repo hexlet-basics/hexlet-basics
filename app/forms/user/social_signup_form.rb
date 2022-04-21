@@ -7,7 +7,7 @@ class User::SocialSignupForm < User
 
   def email=(email)
     if email.present?
-      write_attribute(:email, email.downcase)
+      write_attribute(:email, email.downcase.strip)
     else
       super
     end
