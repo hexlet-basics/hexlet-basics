@@ -34,18 +34,15 @@ class Web::ApplicationController < ApplicationController
 
     # NOTE: never redirect bots
     if browser.bot?
-      I18n.locale = subdomain || :en
+      I18n.locale = subdomain || I18n.default_locale
       return
     end
 
-    # TODO: write tests
     if current_page?(root_path) && !subdomain
       remembered_locale = session[:locale].presence
       if remembered_locale
-        # root page, no subdomain, changed locale
-        if remembered_locale == 'en'
-          I18n.locale = :en
-        else
+        # root page, no subdomain and no default locale -> redirect
+        if remembered_locale.to_sym != I18n.default_locale
           redirect_to root_url(subdomain: remembered_locale), allow_other_host: true
         end
       else
@@ -53,13 +50,10 @@ class Web::ApplicationController < ApplicationController
         ru_country_codes = ['RU']
         if ru_country_codes.include?(country_by_ip)
           redirect_to root_url(subdomain: 'ru'), allow_other_host: true
-        else
-          I18n.locale = :en
         end
       end
     else
       # not root page or root with subdomain
-      I18n.locale = subdomain || :en
       session[:locale] = I18n.locale
     end
   end
