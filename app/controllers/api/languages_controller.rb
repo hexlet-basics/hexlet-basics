@@ -4,7 +4,7 @@ class Api::LanguagesController < Api::ApplicationController
   def index
     @languages = Language.with_progress(:completed)
                          .joins(current_version: :infos)
-                         .where(current_version: { language_version_infos: { locale: I18n.locale } })
+                         .merge(Language::Version::Info.with_locale)
 
     @infos_by_language = Language::Version::Info.where(language_version: @languages.pluck(:current_version_id))
                                                 .with_locale
@@ -16,6 +16,6 @@ class Api::LanguagesController < Api::ApplicationController
                         .with_progress(:completed)
                         .find(params[:id])
 
-    @language_info = @language.current_version.infos.with_locale.first
+    @language_info = @language.current_version.infos.find_by!(locale: I18n.locale)
   end
 end
