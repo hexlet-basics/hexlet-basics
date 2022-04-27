@@ -3,7 +3,9 @@
 json.data do
   json.id @language.id
   json.attributes do
-    json.call(@language, :name, :slug, :learn_as)
+    json.name @language.current_version.name
+    json.call(@language, :slug, :learn_as)
+    json.description @language_info.description
   end
   json.links do
     json.first_lesson api_language_lesson_url(@language, @language.lessons.first, format: :json)

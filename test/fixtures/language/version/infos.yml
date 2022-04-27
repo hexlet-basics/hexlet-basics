@@ -10,3 +10,16 @@ javascript-en:
   language_version: javascript
   description: Description
   locale: en
+
+php-ru:
+  language: php
+  language_version: php
+  description: Описание
+  locale: ru
+
+
+php-en:
+  language: php
+  language_version: php
+  description: Description
+  locale: en
