@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Language::Version::Info < ApplicationRecord
+  include Language::Version::InfoRepository
+
   validates :description, presence: true
 
   belongs_to :language

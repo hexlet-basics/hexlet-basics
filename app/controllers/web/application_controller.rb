@@ -5,6 +5,7 @@ class Web::ApplicationController < ApplicationController
   include FlashConcern
   # include TitleConcern
   include EventConcern
+  include LocaleConcern
 
   before_action :prepare_locale_settings
 
