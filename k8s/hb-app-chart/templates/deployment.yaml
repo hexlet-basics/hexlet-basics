@@ -59,6 +59,12 @@ spec:
       - name: nginx
         image: "{{ .Values.nginx.image.repository }}:{{ .Values.version }}"
         imagePullPolicy: "{{ .Values.nginx.image.imagePullPolicy }}"
+        startupProbe:
+          httpGet:
+            path: /
+            port: 8080
+          failureThreshold: 12
+          periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /
@@ -90,6 +96,15 @@ spec:
           privileged: true
         ports:
           - containerPort: 3000
+        startupProbe:
+          httpGet:
+            path: /
+            port: 3000
+            httpHeaders:
+              - name: X-Forwarded-Host
+                value: ru.code-basics.com
+          failureThreshold: 12
+          periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /
@@ -97,7 +112,6 @@ spec:
             httpHeaders:
               - name: X-Forwarded-Host
                 value: ru.code-basics.com
-          initialDelaySeconds: 5
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 5
