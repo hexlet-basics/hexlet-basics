@@ -73,6 +73,7 @@ spec:
           periodSeconds: 10
           successThreshold: 1
           failureThreshold: 3
+          timeoutSeconds: 5
         livenessProbe:
           httpGet:
             path: /
@@ -80,6 +81,7 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 10
           failureThreshold: 3
+          timeoutSeconds: 5
         ports:
           - containerPort: 8080
         # resources:
