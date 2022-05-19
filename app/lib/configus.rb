@@ -2,32 +2,32 @@
 
 Configus.build Rails.env do
   env :production do
-    hexlet_basics_release_version ENV['HEXLET_BASICS_RELEASE_VERSION']
+    hexlet_basics_release_version ENV.fetch('HEXLET_BASICS_RELEASE_VERSION', nil)
 
     protocol :https
     host 'code-basics.com'
     https_host 'https://ru.code-basics.com'
 
     github do
-      app_id ENV['GITHUB_CLIENT_ID']
-      app_secret ENV['GITHUB_CLIENT_SECRET']
+      app_id ENV.fetch('GITHUB_CLIENT_ID', nil)
+      app_secret ENV.fetch('GITHUB_CLIENT_SECRET', nil)
     end
 
     facebook do
-      app_id ENV['FACEBOOK_CLIENT_ID']
-      app_secret ENV['FACEBOOK_CLIENT_SECRET']
+      app_id ENV.fetch('FACEBOOK_CLIENT_ID', nil)
+      app_secret ENV.fetch('FACEBOOK_CLIENT_SECRET', nil)
     end
 
     disqus_id 'hexlet-basics'
 
-    gtm_id ENV['GOOGLE_TAG_MANAGER_KEY']
+    gtm_id ENV.fetch('GOOGLE_TAG_MANAGER_KEY', nil)
 
     mailer do
       from 'code-basics@hexlet.io'
 
       smtp do
-        username ENV['SPARKPOST_SMTP_USERNAME']
-        password ENV['SPARKPOST_SMTP_PASSWORD']
+        username ENV.fetch('SPARKPOST_SMTP_USERNAME', nil)
+        password ENV.fetch('SPARKPOST_SMTP_PASSWORD', nil)
       end
     end
   end

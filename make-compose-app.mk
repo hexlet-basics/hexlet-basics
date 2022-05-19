@@ -7,6 +7,9 @@ app-language-load:
 app-lint:
 	docker-compose run --rm --no-deps web make lint
 
+app-lint-fix:
+	docker-compose run --rm --no-deps web make lint-fix
+
 app-test:
 	docker-compose run --rm web make test
 
