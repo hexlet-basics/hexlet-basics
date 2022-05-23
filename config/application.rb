@@ -25,5 +25,7 @@ module HexletBasics
     # config.eager_load_paths << Rails.root.join('lib')
 
     # config.action_mailer.default_url_options = { host: Host.canonical }
+
+    config.action_view.image_loading = 'lazy'
   end
 end
