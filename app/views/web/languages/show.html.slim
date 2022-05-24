@@ -9,7 +9,7 @@
   meta content="#{image_url("#{@language.slug}.png")}" property='og:image'
   link rel='canonical' href="#{language_url(@language.slug)}"
   meta content= @language_version_info.description property='og:description'
-  meta content= @language_version_info.description name='description'
+  meta content= @language_version_info.seo_description || @language_version_info.description name='description'
   meta content="#{I18n.locale}" property='og:locale'
 
 .mt-sm-5.mb-5.pb-5
