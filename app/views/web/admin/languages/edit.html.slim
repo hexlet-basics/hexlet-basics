@@ -1,4 +1,7 @@
-h1 = "Edit #{@language}"
+div
+  h1.d-inline-block.me-2 = "Edit #{@language}"
+  = link_to language_path(@language.slug), class: 'align-top', target: :_blank, rel: :noopener do
+    span.bi.bi-arrow-up-right-square.fs-2
 = simple_form_for @language, url: admin_language_path do |f|
   = f.input :progress, include_blank: false
   = f.input :learn_as, include_blank: false
