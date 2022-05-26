@@ -151,3 +151,8 @@ variable "ip" {
   type        = string
   description = "App IP"
 }
+
+variable "slack_notification_webhook" {
+  type = string
+  description = "Slack notification webhook url"
+}
