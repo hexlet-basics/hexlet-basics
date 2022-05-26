@@ -108,6 +108,54 @@ resource "digitalocean_database_user" "postgres_db_user" {
 }
 
 # --------------------------------------
+# MONITORING
+# --------------------------------------
+resource "digitalocean_monitor_alert" "disk_alert" {
+  alerts {
+    slack {
+      url     = var.slack_notification_webhook
+      channel = "#sideprojects-operation-auto"
+    }
+  }
+  window      = "5m"
+  type        = "v1/insights/droplet/disk_utilization_percent"
+  compare     = "GreaterThan"
+  value       = 80
+  enabled     = true
+  description = "Disk Utilization is running high"
+}
+
+resource "digitalocean_monitor_alert" "cpu_alert" {
+  alerts {
+    slack {
+      url     = var.slack_notification_webhook
+      channel = "#sideprojects-operation-auto"
+    }
+  }
+  window      = "5m"
+  type        = "v1/insights/droplet/cpu"
+  compare     = "GreaterThan"
+  value       = 70
+  enabled     = true
+  description = "CPU is running high"
+}
+
+resource "digitalocean_monitor_alert" "memory_alert" {
+  alerts {
+    slack {
+      url     = var.slack_notification_webhook
+      channel = "#sideprojects-operation-auto"
+    }
+  }
+  window      = "5m"
+  type        = "v1/insights/droplet/memory_utilization_percent"
+  compare     = "GreaterThan"
+  value       = 90
+  enabled     = true
+  description = "Memory utilization is running high"
+}
+
+# --------------------------------------
 # PROJECT
 # --------------------------------------
 
