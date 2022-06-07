@@ -1,7 +1,7 @@
 // @ts-check
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import i18n from 'i18next';
@@ -67,12 +67,15 @@ export default async () => {
     reducer,
   });
 
-  ReactDOM.render(
+  const container = document.querySelector('#basics-lesson-container');
+
+  const root = createRoot(container);
+
+  root.render(
     <Provider store={store}>
       <EntityContext.Provider value={entities}>
         <App />
       </EntityContext.Provider>
     </Provider>,
-    document.querySelector('#basics-lesson-container'),
   );
 };
