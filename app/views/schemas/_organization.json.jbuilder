@@ -9,7 +9,7 @@ json.url configus.https_host
 #              twitter_curl,
 #              soundcloud_curl]
 json.legalName 'Hexlet Ltd.'
-json.address 'UMA Esplanadi, Pohjoisesplanadi 39, 00100 Helsinki, Finland'
+json.address 'Itälahdenkatu 22 A, 00210 Helsinki, Finland'
 json.vatID 'VAT ID: FI26641607'
 json.telephone t('phones')
 # json.logo do

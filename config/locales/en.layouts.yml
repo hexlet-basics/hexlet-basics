@@ -20,7 +20,7 @@ en:
         admin: Admins
       footer:
         hexlet_title: © Hexlet ltd, %{year}
-        hexlet_address: UMA Esplanadi, Pohjoisesplanadi 39, 00100 Helsinki, Finland
+        hexlet_address: Itälahdenkatu 22 A, 00210 Helsinki, Finland
         hexlet_number: VAT ID: FI26641607
         information: Information
         about: About
