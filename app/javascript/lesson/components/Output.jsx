@@ -22,7 +22,7 @@ function Output() {
 
   const message = t(`check.${checkInfo.result}.message`);
   const messageForGuest = t('signInSuggestion');
-  const alertClassName = cn('mt-auto alert', {
+  const alertClassName = cn('mt-auto alert mb-0', {
     'alert-success': checkInfo.passed,
     'alert-warning': !checkInfo.passed,
   });
