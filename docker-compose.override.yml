@@ -20,7 +20,8 @@ services:
       - ~/.bash_history:/root/.bash_history
       - .:/app
       - /var/run/docker.sock:/var/run/docker.sock
-      - global_tmp:/tmp
+      # NOTE: контейнер с тестами моунтит /tmp с хоста, а не из локального волюма global_tmp
+      - /tmp:/tmp
       - app_tmp:/app/tmp
     depends_on:
       - solargraph
