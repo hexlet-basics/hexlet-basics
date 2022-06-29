@@ -92,7 +92,7 @@ function ControlBox() {
         </Button>
       </OverlayTrigger> */}
       <div className="m-auto">
-        <OverlayTrigger trigger="hover" placement="top" overlay={popover}>
+        <OverlayTrigger trigger={['hover', 'focus']} placement="top" overlay={popover}>
           <Button
             variant="outline-secondary"
             className="me-3"
