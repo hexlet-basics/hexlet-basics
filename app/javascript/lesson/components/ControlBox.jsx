@@ -72,7 +72,7 @@ function ControlBox() {
     disabled: !lessonInfo.finished,
   });
 
-  const nextLessonPath = routes.nextLessonLanguageLessonPath(language, lesson.slug);
+  const nextLessonPath = lessonInfo.finished ? routes.nextLessonLanguageLessonPath(language, lesson.slug) : null;
   const prevLessonPath = routes.prevLessonLanguageLessonPath(language, lesson.slug);
 
   useHotkeys('ctrl+enter', handleRunCheck);
