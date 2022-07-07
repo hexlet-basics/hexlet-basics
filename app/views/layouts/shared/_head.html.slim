@@ -18,6 +18,7 @@ link rel='alternate' hreflang='en' href="https://#{request.domain}#{request.full
 
 - if Rails.env.production?
   = render 'layouts/deps/gtm_head'
+  = render 'layouts/deps/renta_head'
 
 = javascript_include_tag 'vendors', defer: true
 = javascript_include_tag 'application', async: true
