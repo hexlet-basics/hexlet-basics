@@ -21,7 +21,8 @@ class Api::LessonsController < Api::ApplicationController
       lesson_finished_event_options = {
         user: current_user,
         language: language.to_hash,
-        lesson: lesson.to_hash
+        lesson: lesson.to_hash,
+        finished_at: lesson_member.updated_at
       }
 
       js_event :lesson_finished, lesson_finished_event_options
@@ -33,7 +34,8 @@ class Api::LessonsController < Api::ApplicationController
         language_finished_event_options = {
           user: current_user,
           language: language.to_hash,
-          language_member: language_member.to_hash
+          language_member: language_member.to_hash,
+          finished_at: lesson_member.updated_at
         }
 
         js_event :language_finished, language_finished_event_options
