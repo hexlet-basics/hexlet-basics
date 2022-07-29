@@ -18,14 +18,13 @@ class Api::LessonsController < Api::ApplicationController
       lesson_member = lesson.members.find_by!(user: current_user)
       lesson_member.finish!
 
-      # lesson_finished_event_options = {
-      #   user: current_user,
-      #   language: language.to_hash,
-      #   lesson: lesson.to_hash,
-      #   lesson_member: lesson_member.to_hash
-      # }
+      lesson_finished_event_options = {
+        user: current_user,
+        language: language.to_hash,
+        lesson: lesson.to_hash
+      }
 
-      # js_event :lesson_finished, lesson_finished_event_options
+      js_event :lesson_finished, lesson_finished_event_options
 
       language_member = language.members.find_or_create_by!(user: current_user)
       if language_member.may_finish?

@@ -24,3 +24,16 @@ php-en:
   language_version: php
   description: Description
   locale: en
+
+ruby-ru:
+  language: ruby
+  language_version: ruby
+  description: Описание
+  locale: ru
+
+
+ruby-en:
+  language: ruby
+  language_version: ruby
+  description: Description
+  locale: en

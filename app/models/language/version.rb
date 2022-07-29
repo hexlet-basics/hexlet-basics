@@ -51,7 +51,12 @@ class Language::Version < ApplicationRecord
 
   def to_hash(*_args)
     attrs = attributes.extract! 'id', 'name', 'created_at'
-    attrs.to_hash
+
+    language_info = infos.find_by!(locale: I18n.locale)
+
+    attrs.merge({
+                  locale: language_info.locale
+                })
   end
 
   # TODO: move to presenter
