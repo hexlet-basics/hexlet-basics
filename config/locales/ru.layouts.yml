@@ -20,8 +20,8 @@ ru:
         admin: Админство
       footer:
         hexlet_title: © Hexlet Ltd, %{year}
-        hexlet_address: Itälahdenkatu 22 A, 00210 Helsinki, Finland
-        hexlet_number: VAT ID: FI26641607
+        hexlet_address: ООО «Хекслет Рус», 432071, г. Ульяновск, пр-т Нариманова, дом 1Г, оф. 23
+        hexlet_number: ОГРН 1217300010476
         information: Информация
         about: О проекте
         tos: Условия использования
