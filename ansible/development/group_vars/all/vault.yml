@@ -12,7 +12,7 @@ hexlet_basics_vault_db_password: ""
 hexlet_basics_vault_db_name: "hexlet_basics_dev"
 hexlet_basics_vault_db_port: "5432"
 hexlet_basics_vault_db_ssl_mode: "false"
-hexlet_basics_vault_secret_key_base: "as df;lkajsdf ;alkjsdf ;alksdjf ;alksdjf ;alskdjf ;alskdjf a;lsdjkf ;alsdkjfa ;lskdjf a;lskdj f;alksdjf ;alksjdfal;sdjfqwerty"
+hexlet_basics_vault_secret_key_base: "NevergonnagiveyouupNevergonnaletyoudownNevergonnarunaroundanddesertyouNevergonnamakeyoucryNevergonnasaygoodbyeNevergonnatellalieandhurtyou"
 
 hexlet_basics_vault_sparkpost_smtp_username: "sparkpost"
 hexlet_basics_vault_sparkpost_smtp_password: "password"
