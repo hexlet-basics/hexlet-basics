@@ -6,6 +6,10 @@
   meta content= truncate("[#{resource_language.current_version}] — #{@info.name} — #{@info.theory}", length: 220) property='og:description'
   meta content= truncate("[#{resource_language.current_version}] — #{@info.name} — #{@info.theory}", length: 200) name='description'
   meta content="#{I18n.locale}" property='og:locale'
+  - I18n.available_locales.each do |locale|
+    - if locale == I18n.locale || @lesson_version.infos.exists?(locale: locale)
+      link rel='alternate' hreflang=locale href=language_lesson_url(resource_language.slug, @lesson.slug, subdomain: AppHost.subdomain_for(locale))
+  link rel='alternate' hreflang='x-default' href=url_for(only_path: false, subdomain: :ru)
 
 .row.x-h-md-100.g-2
   .col-12.col-md-6.col-lg-5.x-h-md-100.mb-3.mb-md-0.position-relative
