@@ -2,7 +2,11 @@
 
 module AppHost
   def self.subdomain
-    I18n.locale == :ru ? 'ru' : ''
+    subdomain_for(I18n.locale)
+  end
+
+  def self.subdomain_for(locale)
+    locale == :ru ? 'ru' : ''
   end
 
   def self.canonical
