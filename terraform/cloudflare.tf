@@ -64,14 +64,14 @@ resource "cloudflare_record" "txt" {
 resource "cloudflare_record" "yandex-verification" {
   zone_id = resource.cloudflare_zone.hexlet_basics_zone.id
   name  = var.domain
-  value   = "yandex-verification=a1675c88bd4b0ade"
+  value   = "yandex-verification=ab7bd61d467a0773"
   type    = "TXT"
 }
 
 resource "cloudflare_record" "yandex-verification-ru" {
   zone_id = resource.cloudflare_zone.hexlet_basics_zone.id
   name  = "ru.${var.domain}"
-  value   = "yandex-verification=a1675c88bd4b0ade"
+  value   = "yandex-verification=1f24f9aeb0526152"
   type    = "TXT"
 }
 
