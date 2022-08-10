@@ -26,6 +26,7 @@ services:
     depends_on:
       - solargraph
       - spring
+      - frontend
 
   # https://github.com/neoclide/coc-solargraph#configuration-options
   # external server

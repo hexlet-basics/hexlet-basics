@@ -18,7 +18,7 @@ language-load:
 fixtures-load:
 	bin/rails db:fixtures:load
 
-frontend:
+frontend: js-routes
 	npx nodemon -L --watch webpack.config.js --exec npm run build:watch
 
 setup:
