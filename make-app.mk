@@ -70,7 +70,7 @@ lint-slim:
 	bundle exec slim-lint app/views/
 
 js-routes:
-	bundle exec rails js_routes:generate
+	bundle exec rails js:routes
 
 db-prepare:
 	bin/rails db:drop || true
