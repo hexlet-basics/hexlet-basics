@@ -28,7 +28,7 @@ helm-upgrade-app:
 	helm upgrade hb-app $(CURRENT_DIR)/hb-app-chart
 	git reset HEAD
 	git add $(CURRENT_DIR)/hb-app-chart/values.yaml
-	git commit -m "deploy"
+	git commit -m ":rocket: deploy"
 	git push --no-verify
 
 get-pods:
