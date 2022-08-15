@@ -51,10 +51,11 @@ spec:
           imagePullPolicy: "{{ .Values.web.image.imagePullPolicy }}"
           image: "{{ .Values.web.image.repository }}:{{ .Values.version }}"
           resources:
-            limits:
-              cpu: 500m
             requests:
-              cpu: 20m
+              memory: 300Mi
+              cpu: 10m
+            limits:
+              memory: 400Mi
           command: ["bundle", "exec", "sidekiq"]
           volumeMounts:
             - mountPath: /tmp/hexlet-basics
