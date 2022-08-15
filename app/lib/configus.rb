@@ -18,7 +18,10 @@ Configus.build Rails.env do
       app_secret ENV.fetch('FACEBOOK_CLIENT_SECRET', nil)
     end
 
-    disqus_id 'hexlet-basics'
+    disqus do
+      ru 'hexlet-basics'
+      en 'hexlet-basics-en'
+    end
 
     gtm_id ENV.fetch('GOOGLE_TAG_MANAGER_KEY', nil)
 
@@ -35,8 +38,11 @@ Configus.build Rails.env do
   env :development, parent: :production do
     protocol :https
     host 'code-basics.test'
-    disqus_id 'code-basics-test'
     gtm_id 'test-id'
+    disqus do
+      ru 'code-basics-test'
+      en 'code-basics-test'
+    end
   end
 
   env :test, parent: :development do
