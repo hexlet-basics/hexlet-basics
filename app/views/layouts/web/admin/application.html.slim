@@ -12,5 +12,6 @@ html.h-100 lang="#{I18n.locale}"
             ul.nav.nav-pills.flex-column
               = nav_menu_item t('.dashboard'), admin_root_path
               = nav_menu_item t('.languages'), admin_languages_path
+              = nav_menu_item t('.users'), admin_management_users_path
           .col-md-10
             = yield

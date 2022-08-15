@@ -6,6 +6,11 @@ ru:
         index:
           languages: Языки
           add_new_language: Добавить новый язык
+      management:
+        title: Пользователи
+        users:
+          index:
+            users: Пользователи
     home:
       reviews:
         reviews: Отзывы

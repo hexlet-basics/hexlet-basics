@@ -57,6 +57,10 @@ Rails.application.routes.draw do
           resources :versions, only: %i[index create]
         end
       end
+
+      namespace :management do
+        resources :users, only: :index
+      end
     end
 
     namespace :account do

@@ -5,6 +5,7 @@ ru:
         application:
           dashboard: Кабинет
           languages: Языки
+          users: Пользователи
     shared:
       nav:
         about: О проекте

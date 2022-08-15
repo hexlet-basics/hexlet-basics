@@ -1,0 +1,21 @@
+.d-flex
+  h2 = t('.users')
+  = link_to url_for(params.permit!.merge(format: 'csv')) do
+    span.bi.bi-file-earmark-arrow-down.fs-2
+
+= render 'filter'
+
+= paginate @users
+
+table.table.my-2
+  thead
+    tr
+      th Id
+      th = sort_link(@search, :email)
+  tbody
+    - @users.each do |user|
+      tr
+        td = user.id
+        td = user.email
+
+= paginate @users

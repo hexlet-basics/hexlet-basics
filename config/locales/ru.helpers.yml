@@ -9,4 +9,5 @@ ru:
         create: Создать аккаунт
       remind_password_form:
         create: Восстановить
-
+      q:
+        create: Поиск

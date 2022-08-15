@@ -1,0 +1,14 @@
+/ Link showing page number
+  - available local variables
+    page         : a page object for "this" page
+    url          : url to this page
+    current_page : a page object for the currently displayed page
+    total_pages  : total number of pages
+    per_page     : number of items to fetch per page
+    remote       : data-remote
+- if page.current?
+  li.page-item.active
+    = content_tag :a, page, remote: remote, rel: page.rel, class: 'page-link'
+- else
+  li.page-item
+    = link_to page, url, remote: remote, rel: page.rel, class: 'page-link'

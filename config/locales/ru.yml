@@ -21,3 +21,14 @@ ru:
     one: "%{count} урок"
     few: "%{count} урока"
     many: "%{count} уроков"
+  reset: Сброс
+  export: Экспорт
+  views:
+    pagination:
+      first: "&laquo;"
+      last: "&raquo;"
+      previous: "&lsaquo;"
+      next: "&rsaquo;"
+      previous_text: "&lsaquo; Назад"
+      next_text: "Дальше &rsaquo;"
+      truncate: "&hellip;"

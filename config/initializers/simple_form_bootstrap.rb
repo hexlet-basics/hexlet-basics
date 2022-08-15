@@ -364,4 +364,19 @@ SimpleForm.setup do |config|
     time: :vertical_multi_select,
     select: :vertical_select
   }
+
+  # Default filter input component
+  config.wrappers :filter_input, class: 'col mb-2' do |b|
+    b.use :html5
+    b.use :placeholder
+    b.optional :maxlength
+    b.optional :minlength
+    b.optional :pattern
+    b.optional :min_max
+    b.optional :readonly
+    b.use :label, class: 'form-label'
+    b.use :input, class: 'form-control', error_class: 'is-invalid', valid_class: 'is-valid'
+    b.use :full_error, wrap_with: { class: 'invalid-feedback' }
+    b.use :hint, wrap_with: { class: 'form-text' }
+  end
 end
