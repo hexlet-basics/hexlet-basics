@@ -49,8 +49,6 @@
 
             #disqus_thread
             / disqus script
-            / NOTE: Substitute a locale in the disqus to separate users' messages
-            / for :ru locale we will make migration and fix it
             javascript:
               var disqus_config = function () {
                 this.page.url = '#{url_for(only_path: false, overwrite_params: nil)}';
