@@ -22,4 +22,9 @@ class Web::HomeControllerTest < ActionDispatch::IntegrationTest
       s.assert_response :redirect
     end
   end
+
+  test '#robots' do
+    get robots_url(format: :txt, subdomain: I18n.locale)
+    assert_response :success
+  end
 end

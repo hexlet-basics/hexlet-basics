@@ -13,4 +13,8 @@ class Web::HomeController < Web::ApplicationController
 
     gon.languages_for_widget = language_versions.pluck(:name)
   end
+
+  def robots
+    respond_to :text
+  end
 end
