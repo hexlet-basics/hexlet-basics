@@ -126,6 +126,16 @@ variable "google_tag_manager_key" {
   description = "Google Tag Manager key"
 }
 
+variable "do_spaces_access_id" {
+  type = string
+  description = "Digital Ocean Spaces access id"
+}
+
+variable "do_spaces_secret_key" {
+  type = string
+  description = "Digital Ocean Spaces secret key"
+}
+
 # Cloudflare
 variable "cloudflare_email" {
   type        = string

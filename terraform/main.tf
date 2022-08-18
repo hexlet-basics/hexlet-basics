@@ -156,6 +156,21 @@ resource "digitalocean_monitor_alert" "memory_alert" {
 }
 
 # --------------------------------------
+# SPACES
+# --------------------------------------
+resource "digitalocean_spaces_bucket" "sitemap_bucket" {
+  name   = "sitemap-hb"
+  region = "fra1"
+  acl    = "private"
+  lifecycle_rule {
+    enabled = true
+    expiration {
+      days = 30
+    }
+  }
+}
+
+# --------------------------------------
 # PROJECT
 # --------------------------------------
 

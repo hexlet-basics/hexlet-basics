@@ -23,7 +23,10 @@ terraform {
   }
 }
 
-provider "digitalocean" {}
+provider "digitalocean" {
+  spaces_access_id  = var.do_spaces_access_id
+  spaces_secret_key = var.do_spaces_secret_key
+}
 
 # NOTE При создании нового кластера данных в data.digitalocean_kubernetes_cluster.hexlet_basics_cluster_data еще не будет
 provider "kubernetes" {
