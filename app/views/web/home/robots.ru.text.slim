@@ -32,4 +32,4 @@
   Allow: */modules$
   Disallow: *.amp
 
-  Sitemap: https://#{request.host}/sitemaps/#{I18n.locale}/sitemap.xml
+  Sitemap: https://#{request.host}/sitemaps/#{I18n.locale}/sitemap.xml#{ Rails.env.production? ? '.gz' : '' }
