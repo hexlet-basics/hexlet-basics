@@ -48,6 +48,8 @@ spec:
             - secretRef:
                 name: hexlet-basics-secrets
             - secretRef:
+                name: hexlet-basics-do-spaces-secrets
+            - secretRef:
                 name: github-credentials
             - secretRef:
                 name: facebook-credentials

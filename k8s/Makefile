@@ -1,7 +1,7 @@
 CURRENT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 production-console:
-	    kubectl exec -it $(shell kubectl get pod -lapp.kubernetes.io/name=hb-app-console-pod -o=custom-columns=NAME:metadata.name | sed -n 2p) -- bin/rails c -s
+	kubectl exec -it $(shell kubectl get pod -lapp.kubernetes.io/name=hb-app-console-pod -o=custom-columns=NAME:metadata.name | sed -n 2p) -- bin/rails c -s
 
 k8s-ubuntu-setup:
 	snap install helm --classic

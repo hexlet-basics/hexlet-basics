@@ -3,6 +3,8 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
+gem 'aws-sdk-s3'
+
 gem 'configus'
 gem 'geocoder'
 gem 'puma'
@@ -82,6 +84,7 @@ gem 'rails-i18n'
 gem 'redcarpet'
 gem 'sidekiq'
 gem 'simple_form'
+gem 'sitemap_generator'
 gem 'slim-rails'
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 

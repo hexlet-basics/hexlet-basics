@@ -136,6 +136,16 @@ variable "do_spaces_secret_key" {
   description = "Digital Ocean Spaces secret key"
 }
 
+variable "do_spaces_region" {
+  type = string
+  description = "Digital Ocean Spaces region"
+}
+
+variable "do_spaces_sitemap_bucket" {
+  type = string
+  description = "Digital Ocean Spaces bucket name for sitemap"
+}
+
 # Cloudflare
 variable "cloudflare_email" {
   type        = string

@@ -33,6 +33,18 @@ Configus.build Rails.env do
         password ENV.fetch('SPARKPOST_SMTP_PASSWORD', nil)
       end
     end
+
+    sitemap do
+      bucket do
+        name ENV.fetch('DO_SPACES_SITEMAP_BUCKET', nil)
+        credentials do
+          access_key_id ENV.fetch('DO_SPACES_ACCESS_ID', nil)
+          secret_access_key ENV.fetch('DO_SPACES_SECRET_KEY', nil)
+          region 'us-east-1'
+          endpoint "https://#{ENV.fetch('DO_SPACES_REGION', 'nyc3')}.digitaloceanspaces.com"
+        end
+      end
+    end
   end
 
   env :development, parent: :production do

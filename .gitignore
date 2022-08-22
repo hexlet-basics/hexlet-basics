@@ -70,3 +70,5 @@ dist
 
 routes.js
 routes.d.ts
+
+public/sitemaps/*

@@ -65,6 +65,19 @@ resource "kubernetes_secret" "hexlet_basics_secrets" {
   }
 }
 
+resource "kubernetes_secret" "hexlet_basics_do_spaces_secrets" {
+  metadata {
+    name = "hexlet-basics-do-spaces-secrets"
+  }
+
+  data = {
+    DO_SPACES_ACCESS_ID = var.do_spaces_access_id
+    DO_SPACES_SECRET_KEY = var.do_spaces_secret_key
+    DO_SPACES_REGION = var.do_spaces_region
+    DO_SPACES_SITEMAP_BUCKET = var.do_spaces_sitemap_bucket
+  }
+}
+
 resource "kubernetes_config_map" "hexlet_basics_data" {
   metadata {
     name = "hexlet-basics-data"

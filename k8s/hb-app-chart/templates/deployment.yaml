@@ -90,6 +90,9 @@ spec:
             cpu: 500m
           requests:
             cpu: 10m
+        envFrom:
+          - secretRef:
+              name: hexlet-basics-do-spaces-secrets
 
       - name: web
         image: "{{ .Values.web.image.repository }}:{{ .Values.version }}"
@@ -147,6 +150,8 @@ spec:
               name: database-credentials
           - secretRef:
               name: hexlet-basics-secrets
+          - secretRef:
+              name: hexlet-basics-do-spaces-secrets
           - secretRef:
               name: github-credentials
           - secretRef:
