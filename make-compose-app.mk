@@ -47,6 +47,7 @@ app-languages-load:
 	make app-language-load L='fortran'
 	make app-language-load L='kotlin'
 	make app-language-load L='swift'
+	make app-language-load L='rust'
 
 app-setup: app-install app-db-prepare app-setup-git-hooks app-languages-load
 
