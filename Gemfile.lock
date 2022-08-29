@@ -364,7 +364,7 @@ GEM
     sentry-sidekiq (5.4.2)
       sentry-ruby (~> 5.4.2)
       sidekiq (>= 3.0)
-    sidekiq (6.5.5)
+    sidekiq (6.5.4)
       connection_pool (>= 2.2.2)
       rack (~> 2.0)
       redis (>= 4.5.0)
