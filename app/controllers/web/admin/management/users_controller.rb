@@ -14,28 +14,39 @@ class Web::Admin::Management::UsersController < Web::Admin::Management::Applicat
       end
 
       format.csv do
-        fields = %w[id email stack finished_lessons]
+        headers.delete('Content-Length')
+        headers['Cache-Control'] = 'no-cache'
+        headers['Content-Type'] = 'text/csv'
+        headers['Content-Disposition'] = "attachment; filename=users-#{Time.zone.today}.csv"
+        headers['X-Accel-Buffering'] = 'no'
+        headers['Last-Modified'] = Time.current.httpdate
 
-        csv_string = CSV.generate do |csv|
-          csv << fields
+        response.status = 200
 
-          users.find_each do |user|
-            language_members = user.language_members
+        self.response_body = csv_enumerator(users)
+      end
+    end
+  end
 
-            language_members.each do |language_member|
-              language = language_member.language
+  private
 
-              csv << [
-                user.id,
-                user.email,
-                language.name,
-                user.finished_lessons_for_language(language).size
-              ]
-            end
-          end
+  def csv_enumerator(users)
+    @csv_enumerator ||= Enumerator.new do |yielder|
+      yielder << %w[id email stack finished_lessons]
+
+      users.find_each do |user|
+        language_members = user.language_members
+
+        language_members.each do |language_member|
+          language = language_member.language
+
+          yielder << CSV.generate_line([
+                                         user.id,
+                                         user.email,
+                                         language.name,
+                                         user.finished_lessons_for_language(language).size
+                                       ])
         end
-
-        send_data csv_string, filename: "users-#{Time.zone.today}.csv"
       end
     end
   end
