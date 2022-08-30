@@ -89,6 +89,7 @@ gem 'slim-rails'
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 gem 'country_select'
+gem 'counter_culture'
 gem 'sorbet-rails'
 
 gem 'browser'
