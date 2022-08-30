@@ -9,6 +9,9 @@ class Language::Lesson::Member < ApplicationRecord
   belongs_to :language_member, class_name: 'Language::Member'
   belongs_to :lesson
 
+  counter_culture :language_member,
+                  column_name: ->(model) { model.finished? ? 'finished_lessons_count' : nil }
+
   aasm :state do
     state :started, initial: true
     state :finished

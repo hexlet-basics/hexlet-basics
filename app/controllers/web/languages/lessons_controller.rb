@@ -17,8 +17,9 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     if current_user.guest?
       gon.lesson_member = Language::Lesson::MemberFake.new
     else
+      # TODO создавать\искать сразу с мембером
       language_member = resource_language.members.find_or_create_by!(user: current_user)
-      lesson_member = @lesson.members.find_or_create_by!(language: resource_language, user: current_user)
+      lesson_member = @lesson.members.find_or_create_by(language: resource_language, user: current_user)
 
       lesson_member.language_member = language_member
       lesson_member.save!

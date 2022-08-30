@@ -32,4 +32,28 @@ namespace :data_utils do
 
     puts 'Finish'
   end
+
+  task :populate_language_members, [:limit] => :environment do |_task, args|
+    limit = args.limit || 1000
+
+    puts 'Processing'
+
+    lang_lesson_members = Language::Lesson::Member.left_joins(:language_member)
+                                                  .where(language_members: { id: nil })
+                                                  .limit(limit)
+
+    lang_lesson_members.find_each do |lesson_member|
+      puts "Process: #{lesson_member.id}"
+
+      user = lesson_member.user
+      lang = lesson_member.language
+
+      language_member = user.language_members.find_by!(language: lang)
+
+      lesson_member.language_member = language_member
+      lesson_member.save!
+    end
+
+    puts 'Finish'
+  end
 end
