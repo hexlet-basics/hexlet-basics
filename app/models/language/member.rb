@@ -5,6 +5,7 @@ class Language::Member < ApplicationRecord
 
   belongs_to :user
   belongs_to :language
+  has_many :lesson_members, class_name: 'Language::Lesson::Member', foreign_key: :language_member_id, inverse_of: :language_member, dependent: :destroy
 
   aasm :state do
     state :started, initial: true

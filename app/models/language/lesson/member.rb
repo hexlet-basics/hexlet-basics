@@ -6,6 +6,7 @@ class Language::Lesson::Member < ApplicationRecord
 
   belongs_to :user
   belongs_to :language
+  belongs_to :language_member, class_name: 'Language::Member'
   belongs_to :lesson
 
   aasm :state do
