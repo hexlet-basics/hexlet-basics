@@ -11,6 +11,8 @@ ru:
         users:
           index:
             users: Пользователи
+          filter:
+            from: Начал прохождение с
     home:
       reviews:
         reviews: Отзывы
