@@ -34,7 +34,7 @@ namespace :data_utils do
   end
 
   task :populate_language_members, [:limit] => :environment do |_task, args|
-    limit = args.limit || 1000
+    limit = args.limit.to_i || 1000
 
     puts 'Processing'
 
