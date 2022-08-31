@@ -13,7 +13,7 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
 
     user = users(:one)
     language_member = @language.members.find_or_create_by!(user: user)
-    lesson_member = @lesson.members.find_or_create_by!(language: @lesson.language, user: user)
+    lesson_member = @lesson.members.find_or_create_by!(language: @lesson.language, user: user, language_member: language_member)
     code = file_fixture('exercise/correct.rb').read
     expected = {
       'attributes' => {
