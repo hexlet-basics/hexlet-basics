@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_30_152823) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_31_102248) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -21,7 +21,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_30_152823) do
     t.string "state"
     t.bigint "language_id", null: false
     t.datetime "created_at", null: false
-    t.bigint "language_member_id"
+    t.integer "language_member_id", null: false
     t.index ["language_member_id"], name: "index_language_lesson_members_on_language_member_id"
     t.index ["lesson_id"], name: "user_finished_lessons_language_module_lesson_id_index"
     t.index ["user_id", "lesson_id"], name: "user_finished_lessons_user_id_language_module_lesson_id_index", unique: true

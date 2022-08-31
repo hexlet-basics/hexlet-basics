@@ -2,33 +2,39 @@ one:
   user: one
   language: php
   lesson: one
+  language_member: one
 
 tags_one:
   user: one
   language: php
   lesson: tags_one
   state: finished
+  language_member: one
 
 naming_variables_one:
   user: one
   language: php
   lesson: naming_variables_one
   state: finished
+  language_member: one
 
 full-elixir-hello-world:
   user: full
   language: elixir
   lesson: elixir-hello-world
   state: finished
+  language_member: full_elixir
 
 full-elixir-variables:
   user: full
   language: elixir
   lesson: elixir-variables
   state: finished
+  language_member: full_elixir
 
 full-elixir-strings:
   user: full
   language: elixir
   lesson: elixir-strings
   state: finished
+  language_member: full_elixir
