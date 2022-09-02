@@ -48,7 +48,7 @@ namespace :data_utils do
       user = lesson_member.user
       lang = lesson_member.language
 
-      language_member = user.language_members.find_by!(language: lang)
+      language_member = user.language_members.find_or_create_by!(language: lang)
 
       lesson_member.language_member = language_member
       lesson_member.save!
