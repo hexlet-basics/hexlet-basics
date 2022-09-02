@@ -24,6 +24,8 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
       lesson_member.language_member = language_member
       lesson_member.save!
 
+      # lesson_member = language_member.lesson_members.find_or_create_by!(language: resource_language, user: current_user, lesson: @lesson)
+
       gon.lesson_member = lesson_member
     end
 
