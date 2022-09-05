@@ -6,6 +6,8 @@ data "digitalocean_kubernetes_cluster" "hexlet_basics_cluster_data_2" {
   ]
 }
 
+data "digitalocean_kubernetes_versions" "hexlet_basics_cluster_2" {}
+
 data "digitalocean_database_cluster" "postgres_db_data" {
   name = var.postgres_db_cluster_name
 

@@ -12,7 +12,7 @@ resource "digitalocean_kubernetes_cluster" "hexlet_basics_cluster_2" {
   region       = var.cluster_region
 
   auto_upgrade = true
-  version      = data.digitalocean_kubernetes_versions.last_minor_version.latest_version
+  version      = data.digitalocean_kubernetes_versions.hexlet_basics_cluster_2.latest_version
 
   maintenance_policy {
     start_time  = "02:00"
