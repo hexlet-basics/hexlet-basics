@@ -21,7 +21,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_05_132713) do
     t.string "state"
     t.bigint "language_id", null: false
     t.datetime "created_at", null: false
-    t.integer "language_member_id", null: false
+    t.integer "language_member_id"
     t.index ["language_member_id"], name: "index_language_lesson_members_on_language_member_id"
     t.index ["lesson_id"], name: "user_finished_lessons_language_module_lesson_id_index"
     t.index ["user_id", "lesson_id"], name: "user_finished_lessons_user_id_language_module_lesson_id_index", unique: true
