@@ -17,7 +17,7 @@ const commonOptions = {
     enabled: false,
   },
   hover: {
-    delay: 1000,
+    delay: 500,
   },
   renderWhitespace: 'trailing',
   formatOnPaste: true,
