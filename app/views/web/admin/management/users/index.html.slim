@@ -12,10 +12,15 @@ table.table.my-2
     tr
       th Id
       th = sort_link(@search, :email)
+      th = t('.finished_lessons')
   tbody
     - @users.each do |user|
       tr
         td = user.id
         td = user.email
-
+        td
+          - let user.language_members.each do |members|
+            - members.each do |member|
+              = "#{member.language} - #{member.finished_lessons_count}"
+              br
 = paginate @users

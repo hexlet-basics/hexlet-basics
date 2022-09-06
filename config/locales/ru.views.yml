@@ -10,6 +10,7 @@ ru:
         title: Пользователи
         users:
           index:
+            finished_lessons: Завершенные уроки
             users: Пользователи
           filter:
             from: Начал прохождение с
