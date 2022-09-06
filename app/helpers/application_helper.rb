@@ -157,6 +157,6 @@ module ApplicationHelper
   end
 
   def default_filter_form_options(options = {})
-    { method: 'get', wrapper: :filter_input, html: { class: 'row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 gx-2 align-items-center' }, url: url_for, defaults: { required: false, label: false } }.merge(options)
+    { method: 'get', wrapper: :filter_input, html: { class: 'row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 gx-2 align-items-end' }, url: url_for, defaults: { required: false, label: false } }.merge(options)
   end
 end

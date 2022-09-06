@@ -366,7 +366,7 @@ SimpleForm.setup do |config|
   }
 
   # Default filter input component
-  config.wrappers :filter_input, class: 'col mb-2' do |b|
+  config.wrappers :filter_input, class: 'col mb-3' do |b|
     b.use :html5
     b.use :placeholder
     b.optional :maxlength
