@@ -59,7 +59,7 @@ Rails.application.routes.draw do
       end
 
       namespace :management do
-        resources :users, only: :index
+        resources :users, only: %i[index edit update]
       end
     end
 

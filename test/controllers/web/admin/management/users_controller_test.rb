@@ -12,4 +12,24 @@ class Web::Admin::Management::UsersControllerTest < ActionDispatch::IntegrationT
 
     assert_response :success
   end
+
+  test 'edit' do
+    user = users(:one)
+
+    get edit_admin_management_user_url(user, subdomain: subdomain)
+
+    assert_response :success
+  end
+
+  test 'update' do
+    user = users(:one)
+
+    attrs = {
+      admin: true
+    }
+
+    patch admin_management_user_url(user, subdomain: subdomain), params: { user: attrs }
+
+    assert_response :redirect
+  end
 end

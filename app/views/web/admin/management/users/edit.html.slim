@@ -1,0 +1,6 @@
+div
+  h1.d-inline-block.me-2 = "Edit #{@user.email}"
+
+= simple_form_for @user, url: admin_management_user_path do |f|
+  = f.input :admin
+  = f.submit class: 'btn btn-primary'

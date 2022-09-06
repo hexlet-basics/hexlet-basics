@@ -12,15 +12,19 @@ table.table.my-2
     tr
       th Id
       th = sort_link(@search, :email)
+      th = sort_link(@search, :admin)
       th = t('.finished_lessons')
+      th
   tbody
     - @users.each do |user|
       tr
         td = user.id
         td = user.email
+        td = user.admin?
         td
           - let user.language_members.each do |members|
             - members.each do |member|
               = "#{member.language} - #{member.finished_lessons_count}"
               br
+        td = link_to 'Edit', edit_admin_management_user_path(user)
 = paginate @users
