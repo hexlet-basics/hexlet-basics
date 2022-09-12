@@ -38,8 +38,7 @@ namespace :data_utils do
 
     puts 'Processing'
 
-    lang_lesson_members = Language::Lesson::Member.left_joins(:language_member)
-                                                  .where(language_members: { id: nil })
+    lang_lesson_members = Language::Lesson::Member.where.missing(:language_member)
                                                   .limit(limit)
 
     lang_lesson_members.find_each do |lesson_member|
