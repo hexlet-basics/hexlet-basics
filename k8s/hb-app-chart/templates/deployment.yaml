@@ -103,10 +103,10 @@ spec:
           - containerPort: 3000
         resources:
           requests:
-            memory: 300Mi
+            memory: 400Mi
             cpu: 10m
           limits:
-            memory: 400Mi
+            memory: 500Mi
         startupProbe:
           httpGet:
             path: /
