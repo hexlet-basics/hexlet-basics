@@ -55,7 +55,7 @@ spec:
               memory: 300Mi
               cpu: 10m
             limits:
-              memory: 400Mi
+              memory: 600Mi
           command: ["bundle", "exec", "sidekiq"]
           volumeMounts:
             - mountPath: /tmp/hexlet-basics

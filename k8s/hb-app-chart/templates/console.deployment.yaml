@@ -36,10 +36,11 @@ spec:
           image: "{{ .Values.web.image.repository }}:{{ .Values.version }}"
           resources:
             requests:
-              memory: 300Mi
+              memory: 100Mi
               cpu: 10m
             limits:
               memory: 400Mi
+              cpu: 100m
           command: [ "/bin/bash", "-c", "--"  ]
           args: [ "while true; do sleep 30; done;"  ]
           envFrom:

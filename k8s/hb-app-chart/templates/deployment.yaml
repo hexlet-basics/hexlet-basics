@@ -89,6 +89,7 @@ spec:
             memory: 100Mi
             cpu: 500m
           requests:
+            memory: 50Mi
             cpu: 10m
         envFrom:
           - secretRef:
@@ -104,9 +105,10 @@ spec:
         resources:
           requests:
             memory: 400Mi
-            cpu: 10m
+            cpu: 100m
           limits:
-            memory: 500Mi
+            memory: 1000Mi
+            cpu: 300m
         startupProbe:
           httpGet:
             path: /
