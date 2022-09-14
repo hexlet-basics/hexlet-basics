@@ -1,12 +1,7 @@
-data "digitalocean_kubernetes_versions" "last_minor_version" {
-  version_prefix = "1.21."
-}
-
 # --------------------------------------
 # PRIMARY CLUSTER
 # --------------------------------------
 
-# TODO Добавить мониторы https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/monitor_alert
 resource "digitalocean_kubernetes_cluster" "hexlet_basics_cluster_2" {
   name         = var.cluster_name_2
   region       = var.cluster_region
