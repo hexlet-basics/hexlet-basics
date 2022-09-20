@@ -45,7 +45,6 @@
           / = image_pack_tag("#{@language.slug}_512x512.png", class: 'img-fluid', width: 512, height: 512, alt: @language, itemprop: 'contentUrl') rescue nil
           span.colored.x-fs-15 class="devicon-#{get_language_devicon_name(@language.slug)}-plain"
 
-    .
       - if @language_member.finished?
         .mt-5
           = render 'complete_language'
@@ -71,9 +70,10 @@
 
       - unless signed_in?
         .card.shadow-sm.border-0.mt-5.py-3.py-md-5.px-3
-         .card-body.row
+          .card-body.row
             .col-sm-12.col-md-auto.mb-3
               .display-6.fw-bold = t('.ready')
               .fs-4.fw-bold.text-primary = t('.no_registration')
             .col.my-auto.text-md-end
               = link_to t('.start_demo_lesson'), language_lesson_path(@language.slug, @first_lesson.slug), class: 'btn btn-outline-primary btn-lg'
+

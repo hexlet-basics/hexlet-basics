@@ -7,6 +7,8 @@ class Language::Lesson < ApplicationRecord
   # FIXME: add unique index
   validates :slug, presence: true, uniqueness: { scope: :language }
 
+  counter_culture :language
+
   belongs_to :language
   belongs_to :module
 
