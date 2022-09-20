@@ -26,6 +26,7 @@ class Web::ApplicationController < ApplicationController
     @language_version_infos = Language::Version::Info
                               .with_locale
                               .joins(language_version: :current_language)
+                              .includes(:language, :language_version)
   end
 
   private

@@ -4,6 +4,7 @@ class Web::HomeController < Web::ApplicationController
   def index
     @languages_completed = Language.with_progress(:completed)
                                    .joins(current_version: :infos)
+                                   .includes(:current_version)
                                    .merge(Language::Version::Info.with_locale)
 
     @languages_in_development = Language.with_progress(:in_development).includes(:current_version)
