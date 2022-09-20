@@ -20,6 +20,7 @@ helm-install:
 
 helm-install-metrics:
 	helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+	helm repo add datadog https://helm.datadoghq.com
 	helm repo update
 	helm install metrics-server stable/metrics-server --set args={--kubelet-preferred-address-types=InternalIP}
 
