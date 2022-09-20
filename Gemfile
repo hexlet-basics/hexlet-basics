@@ -39,7 +39,6 @@ gem 'js-routes'
 
 group :development, :test do
   gem 'brakeman'
-  gem 'bullet'
   gem 'bundler-audit'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'dotenv-rails'
@@ -61,6 +60,8 @@ group :development do
   gem 'rubocop-rspec'
   gem 'solargraph'
   gem 'web-console'
+  gem 'bullet'
+  gem 'derailed_benchmarks'
 end
 
 group :test do
