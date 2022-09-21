@@ -17,6 +17,30 @@ Sentry.init({
   // release: "my-project-name@2.3.12",
   integrations: [new BrowserTracing()],
   tracesSampleRate: 0.02,
+  ignoreErrors: [
+    'top.GLOBALS', // Random plugins/extensions
+    'VK is',
+    'VK.Retargeting is ',
+    "Can't find variable: VK",
+    'pktAnnotationHighlighter',
+    'Unexpected keyword',
+    'illegal character',
+    'Unexpected identifier',
+    'Illegal invocation',
+    'missing = in const declaration',
+  ],
+  allowUrls: [/https?:\/\/((cdn|cdn2|ru)\.)?#{configus.host}/],
+  beforeSend(event, hint) {
+    const stack = hint?.originalException?.stack || '';
+    const errorInitiator = stack
+      .split('\n')
+      .map((line) => line.trim())
+      .find((line) => line.startsWith('at'));
+    const causedByConsole = errorInitiator
+      ? errorInitiator.includes('<anonymous>:')
+      : false;
+    return causedByConsole ? null : event;
+  },
 });
 
 railsUjs.start();
