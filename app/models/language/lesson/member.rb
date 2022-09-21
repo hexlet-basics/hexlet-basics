@@ -4,8 +4,6 @@ class Language::Lesson::Member < ApplicationRecord
   include AASM
   include Language::Lesson::MemberRepository
 
-  counter_culture :language
-
   belongs_to :user
   belongs_to :language
   belongs_to :language_member, class_name: 'Language::Member'

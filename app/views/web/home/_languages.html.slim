@@ -23,7 +23,7 @@
                 = t('hours', count: language.duration)
               span.text-nowrap.d-inline-block
                 span.bi.bi-people.me-2
-                = language.members.size
+                = language.members_count
 
             / .text-right
                 = link_to t(".#{language_member.state}"), language_path(language.slug), class: 'stretched-link text-decoration-none'

@@ -16,7 +16,7 @@ end
 if language.members.finished.any?
   json.aggregateRating do
     json.set! :@type, 'AggregateRating'
-    json.ratingValue "4.#{((language.members.finished.size / language.members.size) * 99).round}"
+    json.ratingValue "4.#{((language.members.finished.size / language.members_count) * 99).round}"
     json.reviewCount language.members.finished.size
   end
 end
