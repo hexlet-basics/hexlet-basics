@@ -92,7 +92,7 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 gem 'counter_culture'
 gem 'country_select'
-gem 'sorbet-rails'
+# gem 'sorbet-rails' # Temp disable sorbet for memory optimization
 
 gem 'browser'
 
