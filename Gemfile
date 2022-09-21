@@ -53,6 +53,8 @@ end
 group :development do
   gem 'i18n-debug'
   # gem 'listen'
+  gem 'bullet'
+  gem 'derailed_benchmarks'
   gem 'rubocop'
   gem 'rubocop-performance'
   gem 'rubocop-rails'
@@ -60,8 +62,6 @@ group :development do
   gem 'rubocop-rspec'
   gem 'solargraph'
   gem 'web-console'
-  gem 'bullet'
-  gem 'derailed_benchmarks'
 end
 
 group :test do
