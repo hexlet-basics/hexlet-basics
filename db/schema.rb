@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_21_102938) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_03_170816) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -202,6 +202,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_21_102938) do
     t.string "learn_as"
     t.integer "lessons_count", default: 0, null: false
     t.integer "members_count", default: 0, null: false
+    t.integer "order"
     t.index ["current_version_id"], name: "index_languages_on_current_version_id"
     t.index ["slug"], name: "languages_slug_index", unique: true
     t.index ["upload_id"], name: "languages_upload_id_index"

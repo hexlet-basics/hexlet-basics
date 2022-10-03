@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Language < ApplicationRecord
+  include LanguageRepository
   extend Enumerize
 
   enumerize :slug, in: %i[ada bash clang clojure cobol cpp csharp css dart elixir elm fortran go groovy haskell html java
