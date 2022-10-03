@@ -30,6 +30,7 @@
     "ilyabirman-likely": "^2.7.1",
     "js-base64": "^3.7.2",
     "lodash": "^4.17.21",
+    "monaco-editor": "^0.34.0",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.5.0",
