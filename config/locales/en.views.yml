@@ -98,7 +98,7 @@ en:
           common_questions:
             - question: The exercise doesn't pass checking. What to do? 😶
               answer: |
-                If you've reached a deadlock it's time to ask your question in the «Discussions». [How ask a question correctly](https://help.hexlet.io/ru/articles/111495-kak-pravilno-zadavat-voprosy):
+                If you've reached a deadlock it's time to ask your question in the «Discussions». [How ask a question correctly](https://help.hexlet.io/en/articles/111495):
 
                 * Be sure to attach the test output, without it it's almost impossible to figure out what went wrong, even if you show your code. It's complicated for developers to execute code in their heads, but having a mistake before their eyes most probably will be helpful.
             - question: In my environment the code works, but not here 🤨
