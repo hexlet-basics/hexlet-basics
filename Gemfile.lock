@@ -8,7 +8,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    aasm (5.3.1)
+    aasm (5.4.0)
       concurrent-ruby (~> 1.0)
     actioncable (7.0.4)
       actionpack (= 7.0.4)
@@ -79,8 +79,8 @@ GEM
       public_suffix (>= 2.0.2, < 6.0)
     ast (2.4.2)
     aws-eventstream (1.2.0)
-    aws-partitions (1.640.0)
-    aws-sdk-core (3.158.0)
+    aws-partitions (1.644.0)
+    aws-sdk-core (3.159.0)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.525.0)
       aws-sigv4 (~> 1.1)
@@ -168,10 +168,10 @@ GEM
       railties (>= 5.0.0)
     faker (2.23.0)
       i18n (>= 1.8.11, < 2)
-    faraday (2.5.2)
+    faraday (2.6.0)
       faraday-net_http (>= 2.0, < 3.1)
       ruby2_keywords (>= 0.0.4)
-    faraday-net_http (3.0.0)
+    faraday-net_http (3.0.1)
     ffi (1.15.5)
     geocoder (1.8.1)
     get_process_mem (0.2.7)
@@ -321,7 +321,7 @@ GEM
     redcarpet (3.5.1)
     redis (5.0.5)
       redis-client (>= 0.9.0)
-    redis-client (0.9.0)
+    redis-client (0.10.0)
       connection_pool
     regexp_parser (2.6.0)
     request_store (1.5.1)
