@@ -1,8 +1,10 @@
 .d-flex.justify-content-between
   div
     h1.d-inline-block.me-2 = "#{resource_language.slug} versions"
-    = link_to language_path(resource_language.slug), class: 'align-top', target: :_blank, rel: :noopener do
+    = link_to language_path(resource_language.slug), class: 'align-top me-2', target: :_blank, rel: :noopener do
       span.bi.bi-arrow-up-right-square.fs-2
+    = link_to ExternalLinks.language_source_code_curl(resource_language.slug), class: 'align-top', target: :_blank, rel: :noopener do
+      span.bi.bi-github.fs-2
   = button_to 'Create new version', admin_language_versions_path(resource_language), class: 'btn btn-primary'
 
 table.table.table-striped.my-2

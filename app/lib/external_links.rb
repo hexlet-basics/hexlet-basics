@@ -9,6 +9,10 @@ class ExternalLinks
     'https://github.com/hexlet-basics'
   end
 
+  def self.language_source_code_curl(language)
+    "#{source_code_curl}/exercises-#{language}"
+  end
+
   def self.method_missing(name)
     method_name = name.to_s.delete_suffix('_curl').to_sym
     links = I18n.t('links')
