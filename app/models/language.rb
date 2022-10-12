@@ -2,6 +2,8 @@
 
 class Language < ApplicationRecord
   include LanguageRepository
+  include LanguagePresenter
+
   extend Enumerize
 
   enumerize :slug, in: %i[ada bash clang clojure cobol cpp csharp css dart elixir elm fortran go groovy haskell html java
