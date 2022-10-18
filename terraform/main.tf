@@ -27,6 +27,13 @@ resource "digitalocean_kubernetes_cluster" "hexlet_basics_cluster_2" {
   }
 }
 
+resource "digitalocean_kubernetes_node_pool" "hexlet_basics_nodes" {
+  cluster_id = digitalocean_kubernetes_cluster.hexlet_basics_cluster_2.id
+  name       = var.cluster_node_3_name
+  size       = var.cluster_node_3_size
+  node_count  = 3
+}
+
 locals {
   path_to_kubeconfig = "${path.root}/${var.rel_path_to_kubeconfig}"
 }

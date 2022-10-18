@@ -14,9 +14,18 @@ variable "cluster_node_2_name" {
   description = "K8s Cluster Node 2 Name"
 }
 
+variable "cluster_node_3_name" {
+  type = string
+  description = "K8s Cluster Node 3 Name"
+}
+
 variable "cluster_node_2_size" {
   type = string
   description = "K8s Node 2 Size"
+}
+variable "cluster_node_3_size" {
+  type = string
+  description = "K8s Node 3 Size"
 }
 
 variable "postgres_db_node_size" {
