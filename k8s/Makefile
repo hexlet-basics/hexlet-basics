@@ -19,10 +19,11 @@ helm-install:
 	helm install hb-app ./hb-app-chart
 
 helm-install-metrics:
-	helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+	helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
+	helm repo update
+	helm upgrade --install metrics-server metrics-server/metrics-server
 	helm repo add datadog https://helm.datadoghq.com
 	helm repo update
-	helm install metrics-server stable/metrics-server --set args={--kubelet-preferred-address-types=InternalIP}
 
 # helm install --name app ./app-chart
 helm-upgrade-app:

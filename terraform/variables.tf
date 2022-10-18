@@ -9,6 +9,11 @@ variable "cluster_name_2" {
   description = "K8s Cluster Name 2"
 }
 
+variable "cluster_name_3" {
+  type = string
+  description = "K8s Cluster Name 3"
+}
+
 variable "cluster_node_2_name" {
   type = string
   description = "K8s Cluster Node 2 Name"

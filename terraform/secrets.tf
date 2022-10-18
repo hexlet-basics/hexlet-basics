@@ -97,7 +97,7 @@ resource "kubernetes_config_map" "hexlet_basics_data" {
     GOOGLE_TAG_MANAGER_KEY   = var.google_tag_manager_key
   }
 
-  depends_on = [resource.local_file.kubeconfig]
+  depends_on = [resource.local_file.kubeconfig_2]
 }
 
 resource "kubernetes_secret" "docker-registry-auth" {

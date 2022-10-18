@@ -17,9 +17,29 @@ resource "digitalocean_kubernetes_cluster" "hexlet_basics_cluster_2" {
   node_pool {
     name       = var.cluster_node_2_name
     size       = var.cluster_node_2_size
-    auto_scale = true
-    min_nodes  = 3
-    max_nodes  = 5
+    node_count = 1
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+resource "digitalocean_kubernetes_cluster" "hexlet_basics_cluster_3" {
+  name         = var.cluster_name_3
+  region       = var.cluster_region
+
+  auto_upgrade = true
+  version      = data.digitalocean_kubernetes_versions.hexlet_basics_cluster_2.latest_version
+
+  maintenance_policy {
+    start_time  = "02:00"
+    day         = "wednesday"
+  }
+
+  node_pool {
+    name       = var.cluster_node_3_name
+    size       = var.cluster_node_3_size
+    node_count = 3
   }
 
   lifecycle {
@@ -38,13 +58,24 @@ locals {
   path_to_kubeconfig = "${path.root}/${var.rel_path_to_kubeconfig}"
 }
 
-resource "local_file" "kubeconfig" {
+# resource "local_file" "kubeconfig" {
+#   depends_on = [
+#     resource.digitalocean_kubernetes_cluster.hexlet_basics_cluster_2
+#   ]
+
+#   count      = var.write_kubeconfig ? 1 : 0
+#   content    = resource.digitalocean_kubernetes_cluster.hexlet_basics_cluster_2.kube_config[0].raw_config
+#   filename   = local.path_to_kubeconfig
+#   file_permission = "0600"
+# }
+
+resource "local_file" "kubeconfig_2" {
   depends_on = [
-    resource.digitalocean_kubernetes_cluster.hexlet_basics_cluster_2
+    resource.digitalocean_kubernetes_cluster.hexlet_basics_cluster_3
   ]
 
   count      = var.write_kubeconfig ? 1 : 0
-  content    = resource.digitalocean_kubernetes_cluster.hexlet_basics_cluster_2.kube_config[0].raw_config
+  content    = resource.digitalocean_kubernetes_cluster.hexlet_basics_cluster_3.kube_config[0].raw_config
   filename   = local.path_to_kubeconfig
   file_permission = "0600"
 }
@@ -74,6 +105,10 @@ resource "digitalocean_database_cluster" "postgres_db_cluster" {
      type  = "k8s"
      value = digitalocean_kubernetes_cluster.hexlet_basics_cluster_2.id
    }
+   rule {
+     type  = "k8s"
+     value = digitalocean_kubernetes_cluster.hexlet_basics_cluster_3.id
+   }
  }
 
 # K8s Redis database
@@ -96,6 +131,10 @@ resource "digitalocean_database_cluster" "redis_db_cluster" {
    rule {
      type  = "k8s"
      value = digitalocean_kubernetes_cluster.hexlet_basics_cluster_2.id
+   }
+   rule {
+     type  = "k8s"
+     value = digitalocean_kubernetes_cluster.hexlet_basics_cluster_3.id
    }
  }
 

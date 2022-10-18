@@ -11,6 +11,7 @@ hexlet_basics_domain_ru: "code-basics.ru"
 
 hexlet_basics_cluster_region: "ams3"
 hexlet_basics_cluster_name_2: "hexlet-basics-cluster-2"
+hexlet_basics_cluster_name_3: "hexlet-basics-cluster-3"
 hexlet_basics_cluster_node_2_name: "hexlet-basics-node-2"
 hexlet_basics_cluster_node_2_size: "s-2vcpu-2gb-amd"
 hexlet_basics_cluster_node_3_name: "hexlet-basics-node-3"
