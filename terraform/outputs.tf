@@ -1,5 +1,5 @@
 output "cluster_name" {
-  value = resource.digitalocean_kubernetes_cluster.hexlet_basics_cluster_2.name
+  value = resource.digitalocean_kubernetes_cluster.hexlet_basics_cluster_3.name
 }
 
 output "postgres_db_host" {
