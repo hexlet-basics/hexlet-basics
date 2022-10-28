@@ -5,7 +5,7 @@ version: '3'
 services:
 
   redis:
-    image: redis
+    image: redis:6.2.7
     volumes:
       - redis:/data
 
