@@ -15,16 +15,6 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
     @language = Language.find(params[:id])
   end
 
-  def update
-    @language = Language.find(params[:id])
-
-    if @language.update(language_params)
-      redirect_to admin_languages_path
-    else
-      render :edit
-    end
-  end
-
   def create
     @language = Language.new(language_params)
 
@@ -32,6 +22,16 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
       redirect_to admin_languages_path
     else
       render :new
+    end
+  end
+
+  def update
+    @language = Language.find(params[:id])
+
+    if @language.update(language_params)
+      redirect_to admin_languages_path
+    else
+      render :edit
     end
   end
 
