@@ -11,7 +11,7 @@ json.data do
       json.description info.description
     end
     json.links do
-      json.self api_language_url(language, format: :json)
+      json.self api_language_url(language, format: :json, locale: AppHost.locale_for_url)
     end
   end
 end

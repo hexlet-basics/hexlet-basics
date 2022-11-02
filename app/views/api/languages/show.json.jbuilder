@@ -8,7 +8,7 @@ json.data do
     json.description @language_info.description
   end
   json.links do
-    json.first_lesson api_language_lesson_url(@language, @language.lessons.first, format: :json)
+    json.first_lesson api_language_lesson_url(@language, @language.lessons.first, format: :json, locale: AppHost.locale_for_url)
   end
   json.relationships do
     json.lessons do
@@ -18,7 +18,7 @@ json.data do
           json.call(lesson, :slug)
         end
         json.links do
-          json.self api_language_lesson_url(@language, lesson, format: :json)
+          json.self api_language_lesson_url(@language, lesson, format: :json, locale: AppHost.locale_for_url)
         end
       end
     end

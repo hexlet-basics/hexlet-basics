@@ -4,7 +4,7 @@ require 'test_helper'
 
 class Web::AuthControllerTest < ActionDispatch::IntegrationTest
   test 'check github auth' do
-    post auth_request_url('github', subdomain: subdomain)
+    post auth_request_url(:github)
     assert_response :redirect
   end
 
@@ -12,7 +12,7 @@ class Web::AuthControllerTest < ActionDispatch::IntegrationTest
     auth_hash = generate(:github_auth_hash)
     OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash::InfoHash.new(auth_hash)
 
-    get callback_auth_url(:github, subdomain: subdomain)
+    get callback_auth_url(:github)
     assert_response :redirect
 
     user = User.find_by!(email: auth_hash[:info][:email].downcase)

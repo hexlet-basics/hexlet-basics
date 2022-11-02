@@ -16,7 +16,7 @@ app-test:
 app-check: app-test app-lint
 
 app-test-file:
-	docker-compose run --rm web make test ${T}
+	docker-compose run --rm web make test-file T=${T}
 
 app-rails-console:
 	docker-compose run --rm web bin/rails c

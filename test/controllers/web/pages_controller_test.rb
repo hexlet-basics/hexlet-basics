@@ -5,7 +5,7 @@ require 'test_helper'
 class Web::PagesControllerTest < ActionDispatch::IntegrationTest
   %w[tos about privacy].each do |slug|
     test slug do
-      get page_url(slug, subdomain: subdomain)
+      get page_url(slug)
       assert_response :success
     end
   end

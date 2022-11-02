@@ -9,7 +9,7 @@ json.data do
       json.natural_order lesson_info.version.natural_order
     end
     json.links do
-      json.self api_language_lesson_url(resource_language, lesson_info.version.lesson, format: :json)
+      json.self api_language_lesson_url(resource_language, lesson_info.version.lesson, format: :json, locale: AppHost.locale_for_url)
     end
   end
 end

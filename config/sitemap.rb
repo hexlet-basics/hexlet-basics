@@ -22,11 +22,11 @@ module SitemapGeneratorHelper
     end
 
     alternates = existed_in_locales.map do |locale|
-      { href: options[:url].call(locale), lang: locale }
+      { href: options[:url].call(AppHost.locale_for_url(locale)), lang: locale }
     end
 
     if alternates.size == 1
-      alternates << { href: options[:url].call(options[:current]), lang: :'x-default' }
+      alternates << { href: options[:url].call(AppHost.locale_for_url(options[:current])), lang: :'x-default' }
     elsif alternates.size > 1
       alternates << { href: options[:url].call(:ru), lang: :'x-default' }
     end
@@ -40,7 +40,7 @@ SitemapGenerator::Interpreter.include SitemapGeneratorHelper
 I18n.available_locales.each do |current_locale|
   I18n.with_locale(current_locale) do
     SitemapGenerator::Sitemap.sitemaps_path = "sitemaps/#{current_locale}/"
-    SitemapGenerator::Sitemap.default_host = root_url(subdomain: AppHost.subdomain_for(current_locale))
+    SitemapGenerator::Sitemap.default_host = root_url
 
     SitemapGenerator::Sitemap.create do
       group(filename: :languages) do
@@ -48,14 +48,14 @@ I18n.available_locales.each do |current_locale|
         scope.merge(Language::Version::Info.with_locale).find_each do |language|
           alternates = build_alternates(current: current_locale,
                                         check_exists: ->(locale) { scope.merge(Language::Version::Info.with_locale(locale)).exists?(slug: language.slug) },
-                                        url: ->(locale) { language_url(language.slug, subdomain: AppHost.subdomain_for(locale)) })
-          add language_path(language.slug), changefreq: :weekly, lastmod: nil, alternates: alternates, priority: 0.9
+                                        url: ->(locale) { language_url(id: language.slug, locale: locale) })
+          add language_path(language.slug, locale: AppHost.locale_for_url(current_locale)), changefreq: :weekly, lastmod: nil, alternates: alternates, priority: 0.9
 
           language.lessons.find_each do |lesson|
             alternates = build_alternates(current: current_locale,
                                           check_exists: ->(locale) { scope.merge(Language::Version::Info.with_locale(locale)).find_by(slug: language.slug)&.lessons&.exists?(slug: lesson.slug) },
-                                          url: ->(locale) { language_lesson_url(language.slug, lesson.slug, subdomain: AppHost.subdomain_for(locale)) })
-            add language_lesson_path(language.slug, lesson.slug), changefreq: :weekly, lastmod: nil, priority: 0.8, alternates: alternates
+                                          url: ->(locale) { language_lesson_url(language.slug, lesson.slug, locale: locale) })
+            add language_lesson_path(language.slug, lesson.slug, locale: AppHost.locale_for_url(current_locale)), changefreq: :weekly, lastmod: nil, priority: 0.8, alternates: alternates
           end
         end
       end

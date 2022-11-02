@@ -11,18 +11,18 @@ class Web::Languages::LessonsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'show' do
-    get language_lesson_url(@language.slug, @lesson.slug, subdomain: subdomain)
+    get language_lesson_url(@language.slug, @lesson.slug)
     assert_response :success
   end
 
   test 'show amp' do
-    get language_lesson_url(@language.slug, @lesson.slug, subdomain: subdomain, format: :amp)
+    get language_lesson_url(@language.slug, @lesson.slug, format: :amp)
     assert_response :success
   end
 
   test 'show (signed in)' do
     sign_in_as(:full)
-    get language_lesson_url(@language.slug, @lesson.slug, subdomain: subdomain)
+    get language_lesson_url(@language.slug, @lesson.slug)
     assert_response :success
   end
 
@@ -30,18 +30,18 @@ class Web::Languages::LessonsControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(:full)
     third_language_lesson = language_lessons(:three)
 
-    get next_lesson_language_lesson_url(@language.slug, @lesson.slug, subdomain: subdomain)
+    get next_lesson_language_lesson_url(@language.slug, @lesson.slug)
     assert_response :redirect
 
-    assert_redirected_to language_lesson_url(@language.slug, third_language_lesson.slug, subdomain: subdomain)
+    assert_redirected_to language_lesson_url(@language.slug, third_language_lesson.slug)
   end
 
   test 'prev_lesson' do
     first_language_lesson = language_lessons(:one)
 
-    get prev_lesson_language_lesson_url(@language.slug, @lesson.slug, subdomain: subdomain)
+    get prev_lesson_language_lesson_url(@language.slug, @lesson.slug)
     assert_response :redirect
 
-    assert_redirected_to language_lesson_url(@language.slug, first_language_lesson.slug, subdomain: subdomain)
+    assert_redirected_to language_lesson_url(@language.slug, first_language_lesson.slug)
   end
 end

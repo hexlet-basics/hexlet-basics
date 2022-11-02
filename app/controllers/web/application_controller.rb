@@ -32,26 +32,24 @@ class Web::ApplicationController < ApplicationController
   private
 
   def prepare_locale_settings
-    subdomain = request.subdomains.first
-
     # NOTE: never redirect bots
     if browser.bot?
-      I18n.locale = subdomain || I18n.default_locale
+      I18n.locale = params[:locale] || I18n.default_locale
       return
     end
 
-    if current_page?(root_path) && !subdomain
+    if current_page?(root_path) && !params[:locale]
       remembered_locale = session[:locale].presence
       if remembered_locale
         # root page, no subdomain and no default locale -> redirect
         if remembered_locale.to_sym != I18n.default_locale
-          redirect_to root_url(subdomain: remembered_locale), allow_other_host: true
+          redirect_to root_url(locale: remembered_locale), allow_other_host: true
         end
       else
         # root page, no subdomain, never changed locale
         ru_country_codes = ['RU']
         if ru_country_codes.include?(country_by_ip)
-          redirect_to root_url(subdomain: 'ru'), allow_other_host: true
+          redirect_to root_url(locale: :ru), allow_other_host: true
         end
       end
     else

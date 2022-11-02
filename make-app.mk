@@ -2,6 +2,9 @@ test:
 	bin/rails test -d
 	RAILS_LOCALE=ru bin/rails test -d
 
+test-file:
+	DISABLE_SPRING=1 bin/rails test $(T)
+
 check: test lint vulnerability-check
 
 vulnerability-check:

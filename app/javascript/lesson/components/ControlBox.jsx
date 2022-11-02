@@ -12,7 +12,7 @@ import {
   Button, Spinner, Popover, OverlayTrigger,
 } from 'react-bootstrap';
 
-import * as routes from '../../routes.js';
+import Routes from '../utils/configured_routes.js';
 import { actions } from '../slices/index.js';
 import { checkInfoStates } from '../utils/maps.js';
 import EntityContext from '../EntityContext.js';
@@ -72,8 +72,8 @@ function ControlBox() {
     disabled: !lessonInfo.finished,
   });
 
-  const nextLessonPath = lessonInfo.finished ? routes.nextLessonLanguageLessonPath(language, lesson.slug) : null;
-  const prevLessonPath = routes.prevLessonLanguageLessonPath(language, lesson.slug);
+  const nextLessonPath = lessonInfo.finished ? Routes.nextLessonLanguageLessonPath(language, lesson.slug) : null;
+  const prevLessonPath = Routes.prevLessonLanguageLessonPath(language, lesson.slug);
 
   useHotkeys('ctrl+enter', handleRunCheck);
 
