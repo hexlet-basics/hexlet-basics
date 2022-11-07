@@ -4,24 +4,22 @@ require 'test_helper'
 
 class Web::LocalesControllerTest < ActionDispatch::IntegrationTest
   test 'switch to ru' do
-    get switch_locale_url(subdomain: subdomain), params: {
-      locale: 'ru'
+    get switch_locale_url(locale: nil), params: {
+      new_locale: :ru
     }
-    # assert_response :redirect
-    assert_redirected_to root_url(subdomain: :ru)
+    assert_redirected_to root_url(locale: :ru)
   end
 
   test 'switch to en' do
-    get switch_locale_url(subdomain: subdomain), params: {
-      locale: 'en'
+    get switch_locale_url(locale: :ru), params: {
+      new_locale: :en
     }
-    # assert_response :redirect
-    assert_redirected_to root_url(subdomain: nil)
+    assert_redirected_to root_url(locale: nil)
   end
 
   test 'switch to unavailable locale' do
-    get switch_locale_url(subdomain: subdomain), params: {
-      locale: 'wrong'
+    get switch_locale_url, params: {
+      new_locale: 'wrong'
     }
     assert_response :redirect
   end

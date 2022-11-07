@@ -5,18 +5,18 @@ require 'test_helper'
 class Web::HomeControllerTest < ActionDispatch::IntegrationTest
 
   test 'index' do
-    get root_url(subdomain: subdomain)
+    get root_url
     assert_response :success
   end
 
   test '#index with stored locale' do
     open_session do |s|
-      s.get s.root_url(subdomain: :ru), headers: {
+      s.get s.root_url(locale: :ru), headers: {
         'User-Agent': 'Mozilla'
       }
       s.assert_response :success
 
-      s.get s.root_url(subdomain: nil), headers: {
+      s.get s.root_url(locale: nil), headers: {
         'User-Agent': 'Mozilla'
       }
       s.assert_response :redirect
@@ -24,7 +24,7 @@ class Web::HomeControllerTest < ActionDispatch::IntegrationTest
   end
 
   test '#robots' do
-    get robots_url(format: :txt, subdomain: I18n.locale)
+    get robots_url(format: :txt)
     assert_response :success
   end
 end

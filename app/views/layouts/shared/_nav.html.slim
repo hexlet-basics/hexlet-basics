@@ -1,5 +1,5 @@
 .navbar.navbar-expand-md.navbar-light
-  a.navbar-brand.me-md-4(href='/')
+  = link_to root_path, class: 'navbar-brand me-md-4' do
     = image_tag 'logo.png', width: 30, alt: 'Code Basics logo'
 
   button.navbar-toggler(
@@ -55,7 +55,7 @@
         ul.dropdown-menu.dropdown-menu-end
           li
             - I18n.available_locales.without(I18n.locale).each do |locale|
-              = link_to switch_locale_path(locale: locale), class: 'dropdown-item d-flex' do
+              = link_to switch_locale_path(new_locale: locale), class: 'dropdown-item d-flex' do
                 = image_tag "flag-#{locale}.svg", width: 25, alt: "switch language to #{locale}", class: 'my-auto me-2'
                 span.my-auto
                   = t(locale, scope: 'languages')

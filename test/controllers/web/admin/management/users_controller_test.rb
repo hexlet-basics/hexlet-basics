@@ -8,7 +8,7 @@ class Web::Admin::Management::UsersControllerTest < ActionDispatch::IntegrationT
   end
 
   test 'index' do
-    get admin_management_users_url(subdomain: subdomain)
+    get admin_management_users_url
 
     assert_response :success
   end
@@ -16,7 +16,7 @@ class Web::Admin::Management::UsersControllerTest < ActionDispatch::IntegrationT
   test 'edit' do
     user = users(:one)
 
-    get edit_admin_management_user_url(user, subdomain: subdomain)
+    get edit_admin_management_user_url(user)
 
     assert_response :success
   end
@@ -28,7 +28,7 @@ class Web::Admin::Management::UsersControllerTest < ActionDispatch::IntegrationT
       admin: true
     }
 
-    patch admin_management_user_url(user, subdomain: subdomain), params: { user: attrs }
+    patch admin_management_user_url(user), params: { user: attrs }
 
     assert_response :redirect
   end

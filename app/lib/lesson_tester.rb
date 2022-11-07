@@ -6,7 +6,7 @@ class LessonTester
   def run(lesson_version, language_version, code, user)
     code_directory = '/tmp/hexlet-basics/code'
     full_directory_path = File.join(code_directory, FileSystemUtils.directory_for_code(user))
-    FileUtils.mkdir_p(full_directory_path, verbose: true)
+    FileUtils.mkdir_p(full_directory_path, verbose: false)
 
     created_code_file_path = File.join(full_directory_path, FileSystemUtils.file_name_for_exercise(user, lesson_version, language_version))
     File.write(created_code_file_path, code || '')

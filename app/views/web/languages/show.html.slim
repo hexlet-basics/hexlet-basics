@@ -13,8 +13,8 @@
   meta content="#{I18n.locale}" property='og:locale'
   - I18n.available_locales.each do |locale|
     - if locale == I18n.locale || @language.current_version.infos.exists?(locale: locale)
-      link rel='alternate' hreflang=locale href=language_url(@language.slug, subdomain: AppHost.subdomain_for(locale))
-  link rel='alternate' hreflang='x-default' href=language_url(@language.slug, subdomain: :ru)
+      link rel='alternate' hreflang=locale href=language_url(@language.slug, locale: AppHost.locale_for_url(locale))
+  link rel='alternate' hreflang='x-default' href=language_url(@language.slug, locale: AppHost.locale_for_url(:ru))
 
 .mt-sm-5.mb-5.pb-5
   .container
