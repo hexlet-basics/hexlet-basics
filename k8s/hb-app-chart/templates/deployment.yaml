@@ -63,13 +63,13 @@ spec:
           httpGet:
             path: /
             port: 8080
-          failureThreshold: 12
           periodSeconds: 10
+          failureThreshold: 30
         readinessProbe:
           httpGet:
             path: /
             port: 8080
-          initialDelaySeconds: 5
+          initialDelaySeconds: 8
           periodSeconds: 10
           successThreshold: 1
           failureThreshold: 3
@@ -111,34 +111,41 @@ spec:
             cpu: 300m
         startupProbe:
           httpGet:
-            path: /
+            path: /health
             port: 3000
             httpHeaders:
               - name: X-Forwarded-Host
-                value: ru.code-basics.com
-          failureThreshold: 12
+                value: code-basics.com
+              - name: X-Forwarded-Proto
+                value: https
+          failureThreshold: 30
           periodSeconds: 10
         readinessProbe:
           httpGet:
-            path: /
+            path: /health
             port: 3000
             httpHeaders:
               - name: X-Forwarded-Host
-                value: ru.code-basics.com
+                value: code-basics.com
+              - name: X-Forwarded-Proto
+                value: https
+          initialDelaySeconds: 5
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 5
           failureThreshold: 3
         livenessProbe:
           httpGet:
-            path: /
+            path: /health
             port: 3000
             httpHeaders:
               - name: X-Forwarded-Host
-                value: ru.code-basics.com
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          timeoutSeconds: 5
+                value: code-basics.com
+              - name: X-Forwarded-Proto
+                value: https
+          initialDelaySeconds: 20
+          periodSeconds: 20
+          timeoutSeconds: 3
 
         volumeMounts:
           - mountPath: /tmp/hexlet-basics
