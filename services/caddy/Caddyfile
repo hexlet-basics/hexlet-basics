@@ -1,9 +1,9 @@
-localhost, ru.code-basics.test, en.code-basics.test, code-basics.test {
+localhost, code-basics.test {
   # root /packs/* /etc/caddy/public/packs
 
-  log {
-    format single_field common_log
-  }
+  # log {
+  #   format single_field common_log
+  # }
 
   encode zstd
   tls internal

@@ -26,7 +26,7 @@ frontend: js-routes
 
 setup:
 	bin/setup
-	yarn install
+	npm install
 
 db-reset:
 	bin/rails db:drop
