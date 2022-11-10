@@ -65,4 +65,8 @@ class Language::Version < ApplicationRecord
 
     :latest
   end
+
+  def locales
+    infos.pluck(:locale).uniq
+  end
 end

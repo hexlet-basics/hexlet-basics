@@ -34,6 +34,7 @@ class Language < ApplicationRecord
   delegate :to_s, to: :current_version
   delegate :to_hash, to: :current_version
   delegate :name, to: :current_version
+  delegate :locales, to: :current_version
 
   def duration
     lessons_count * 15 / 60

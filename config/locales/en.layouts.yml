@@ -5,6 +5,7 @@ en:
         application:
           dashboard: Dashboard
           languages: Languages
+          users: Users
     shared:
       nav:
         about: "About"
