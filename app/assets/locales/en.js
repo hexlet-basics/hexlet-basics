@@ -11,6 +11,7 @@ export default {
       network: 'There was a network problem. Please try again. If it doesn’t work, make sure you have good internet and no blockers.',
       server: 'Error on server. Maybe it’ll let go soon, but maybe not. Try to find out what happened in https://slack.hexlet.io/',
     },
+    signInSuggestion: '<a href="/users/new">Create an account</a> to save your progress',
     run: 'Run',
     resetCode: 'Reset code',
     confirm: 'You want to reset the exercise progress. The current code version will not be saved. We hope you’ve already copied it. Continue resetting?',
