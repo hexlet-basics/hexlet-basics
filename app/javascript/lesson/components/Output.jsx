@@ -33,7 +33,10 @@ function Output() {
       </pre>
       <div className={alertClassName} dangerouslySetInnerHTML={{ __html: message }} />
       {!lessonMember.id && checkInfo.passed && (
-        <div className="alert alert-warning" dangerouslySetInnerHTML={{ __html: messageForGuest }} />
+        <div
+          className="alert alert-warning mt-1 mb-0 small p-2"
+          dangerouslySetInnerHTML={{ __html: messageForGuest }}
+        />
       )}
     </div>
   );
