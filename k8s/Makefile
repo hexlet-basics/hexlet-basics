@@ -13,7 +13,7 @@ k8s-macos-setup:
 
 local-cluster-setup:
 	doctl auth init
-	doctl kubernetes cluster kubeconfig save hexlet-basics-cluster-2
+	doctl kubernetes cluster kubeconfig save hexlet-basics-cluster-3
 
 helm-install:
 	helm install hb-app ./hb-app-chart
