@@ -12,12 +12,12 @@ module LocaleConcern
     extracted_locale = extract_locale_from_subdomain
     if extracted_locale
       locale = AppHost.locale_for_url(extracted_locale)
-      redirect_to full_url_for(locale: locale, subdomain: nil), allow_other_host: true
+      redirect_to full_url_for(locale: locale, subdomain: nil), allow_other_host: true, status: :moved_permanently
       return
     end
 
     if params[:locale]&.to_sym == I18n.default_locale
-      redirect_to full_url_for(locale: nil)
+      redirect_to full_url_for(locale: nil), status: :moved_permanently
       return
     end
 
