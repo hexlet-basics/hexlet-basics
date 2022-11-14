@@ -9,6 +9,8 @@ ru:
           reviews: Отзывы
           blog_posts: Посты в блоге
     shared:
+      language_menu:
+        in_development: В разработке
       nav:
         blog: Блог
         about_platform: О платформе
