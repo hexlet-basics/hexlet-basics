@@ -14,6 +14,7 @@ html[amp ⚡ lang="#{I18n.locale}"]
       style[amp-boilerplate]
         | body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}
     style[amp-custom]
+      / NOTE: inlining css because amp has no support of external styles file
       == Rails.root.join('app/assets/stylesheets/amp.css').read
     = display_meta_tags site: 'Code Basics'
   body
