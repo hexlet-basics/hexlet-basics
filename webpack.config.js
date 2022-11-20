@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { ESBuildMinifyPlugin } from 'esbuild-loader';
 import { WebpackSweetEntry } from '@sect/webpack-sweet-entry';
-import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+// import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const sourcePath = path.join(__dirname, 'app/javascript');
@@ -45,7 +45,7 @@ export default {
   },
   plugins: [
     new MiniCssExtractPlugin({}),
-    new BundleAnalyzerPlugin({ analyzerHost: '0.0.0.0' }),
+    // new BundleAnalyzerPlugin({ analyzerHost: '0.0.0.0' }),
   ],
   optimization: {
     minimizer: [
