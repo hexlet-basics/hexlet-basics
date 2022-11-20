@@ -21,6 +21,7 @@ ru:
         toggle_user_menu: Показать/скрыть меню пользователя
         admin: Админство
       footer:
+        all_courses: Все курсы
         hexlet_title: © Hexlet Ltd, %{year}
         hexlet_address: ООО «Хекслет Рус», 432071, г. Ульяновск, пр-т Нариманова, дом 1Г, оф. 23
         hexlet_number: ОГРН 1217300010476

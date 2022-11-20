@@ -5,7 +5,6 @@ footer.bg-dark.text-light.flex-shrink-0
         p = t('.hexlet_address')
         p.mt-3 = t('.hexlet_number')
 
-      .col.mb-4.mb-lg-0
         ul.list-unstyled.lh-lg
           li
             = link_to t('.about'), page_path(:about), class: 'text-decoration-none text-light'
@@ -16,6 +15,13 @@ footer.bg-dark.text-light.flex-shrink-0
           - if I18n.locale == :en
             li
               = link_to t('.cookie_policy'), page_path(:cookie_policy), class: 'text-decoration-none text-light'
+
+      .col.mb-4.mb-lg-0
+        = t('.all_courses')
+        ul.list-unstyled.lh-lg
+          - Language.ordered.each do |lang|
+            li
+              = link_to lang.name, language_path(lang.slug), class: 'text-decoration-none text-light'
 
       .col.mb-4.mb-lg-0
         ul.list-unstyled.lh-lg
