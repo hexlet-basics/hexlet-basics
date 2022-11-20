@@ -5,15 +5,18 @@ DEFAULTS: &DEFAULTS
 
 php:
   <<: *DEFAULTS
+  category: programming
 
 elixir:
   <<: *DEFAULTS
 
 javascript:
   <<: *DEFAULTS
+  category: programming
 
 java:
   <<: *DEFAULTS
+  category: programming
 
 go:
   <<: *DEFAULTS
@@ -23,12 +26,14 @@ csharp:
 
 css:
   <<: *DEFAULTS
+  category: layouting
 
 python:
   <<: *DEFAULTS
 
 html:
   <<: *DEFAULTS
+  category: layouting
 
 ruby:
   <<: *DEFAULTS

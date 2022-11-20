@@ -27,6 +27,7 @@ class Web::ApplicationController < ApplicationController
                               .with_locale
                               .joins(language_version: :current_language)
                               .includes(:language, :language_version)
+    @language_categories = Language::Category.all
   end
 
   private

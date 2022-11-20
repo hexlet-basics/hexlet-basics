@@ -8,7 +8,8 @@ ru:
           users: Пользователи
     shared:
       nav:
-        about: О проекте
+        about_platform: О платформе
+        about_code_basics: О CodeBasics
         community: Сообщество
         sign_in: Вход
         registration: Регистрация
@@ -16,10 +17,12 @@ ru:
         profile: Настройки
         sign_out: Выйти
         courses: Курсы
+        categories: Категории
         about: О проекте
         toggle_navigation: Переключить навигацию
         toggle_user_menu: Показать/скрыть меню пользователя
         admin: Админство
+        reviews: Отзывы
       footer:
         all_courses: Все курсы
         hexlet_title: © Hexlet Ltd, %{year}

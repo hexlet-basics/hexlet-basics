@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  get 'reviews/index'
-  get 'reviews/show'
   # require 'sidekiq/web'
   # mount Sidekiq::Web => '/sidekiq', constraints: AdminConstraint.new
 
@@ -37,7 +35,9 @@ Rails.application.routes.draw do
 
       get '/robots.:format' => 'home#robots', as: :robots
 
-      resources :pages, only: [:show]
+      resources :pages, only: %i[show]
+      resources :reviews, only: %i[index show]
+      resources :language_categories, only: %i[index show]
       resource :session, only: %i[new create destroy]
       resource :locale, only: [] do
         member do

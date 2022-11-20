@@ -12,7 +12,8 @@
 
     #navbarToggler.collapse.navbar-collapse
       ul.navbar-nav.me-auto
-        li.nav-item.dropdown
+
+        li.nav-item.dropdown.me-2
           a.nav-link.text-dark.dropdown-toggle href='#' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false'
             = t('.courses')
           ul.dropdown-menu.dropdown-menu-columns.dropdown-menu-arrow
@@ -21,13 +22,29 @@
                 = link_to language_path(info.language.slug), class: 'dropdown-item d-flex align-items-center py-2'
                   span.colored.me-2.fs-5 class="devicon-#{get_language_devicon_name(info.language.slug)}-plain"
                   span = info.language_version.name
-        - if I18n.locale == :ru
-          li.nav-item.dropdown
-            / rubocop:disable Rails/LinkToBlank
-            = link_to t('.success_stories'), ExternalLinks.hexlet_success_stories_curl, class: 'nav-link text-dark', target: '_blank', rel: 'nofollow noopener'
-            / rubocop:enable Rails/LinkToBlank
-        li.nav-item
-          = link_to t('.about'), page_path(:about), class: 'nav-link text-dark'
+
+        li.nav-item.dropdown.me-2
+          a.nav-link.text-dark.dropdown-toggle href='#' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false'
+            = t('.categories')
+          ul.dropdown-menu.dropdown-menu-columns.dropdown-menu-arrow
+            - @language_categories.each do |category|
+              li
+                = link_to language_category_path(category.slug), class: 'dropdown-item d-flex align-items-center py-2'
+                  span = category
+
+        li.nav-item.dropdown.me-2
+            a.nav-link.text-dark.dropdown-toggle href='#' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false'
+              = t('.about_code_basics')
+            ul.dropdown-menu
+              li.dropdown-item
+                = link_to t('.reviews'), reviews_path, class: 'dropdown-item'
+              li.dropdown-item
+                = link_to t('.about_platform'), page_path(:about), class: 'dropdown-item'
+              - if I18n.locale == :ru
+                li.nav-item.dropdown-item.me-2
+                  / rubocop:disable Rails/LinkToBlank
+                  = link_to t('.success_stories'), ExternalLinks.hexlet_success_stories_curl, class: 'dropdown-item text-dark', target: '_blank', rel: 'nofollow noopener'
+                  / rubocop:enable Rails/LinkToBlank
 
       ul.navbar-nav
         - if current_user.guest?

@@ -16,10 +16,14 @@ en:
         success_stories: Why CodeBasics?
         profile: Settings
         courses: Courses
+        categories: Categories
         about: About
         toggle_navigation: Toggle navigation
         toggle_user_menu: Toggle the display of user menu
         admin: Admins
+        about_platform: About Platform
+        about_code_basics: About CodeBasics
+        reviews: Reviews
       footer:
         all_courses: All Courses
         hexlet_title: © Hexlet ltd, %{year}
