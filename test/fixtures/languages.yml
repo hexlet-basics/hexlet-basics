@@ -12,6 +12,15 @@ elixir:
 javascript:
   <<: *DEFAULTS
 
+java:
+  <<: *DEFAULTS
+
+go:
+  <<: *DEFAULTS
+
+csharp:
+  <<: *DEFAULTS
+
 css:
   <<: *DEFAULTS
 

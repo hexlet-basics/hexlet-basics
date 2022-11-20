@@ -19,6 +19,10 @@ class Web::HomeController < Web::ApplicationController
     @user = User.new
     @users_count = User.count
 
+    @languages_links_by_slug = Language.all.each_with_object({}) do |item, acc|
+      acc[item.slug.to_sym] = view_context.link_to(item, language_path(item.slug))
+    end
+
     gon.languages_for_widget = language_versions.pluck(:name)
   end
 

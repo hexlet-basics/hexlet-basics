@@ -9,6 +9,15 @@ DEFAULTS: &DEFAULTS
 php:
   <<: *DEFAULTS
 
+go:
+  <<: *DEFAULTS
+
+java:
+  <<: *DEFAULTS
+
+csharp:
+  <<: *DEFAULTS
+
 elixir:
   <<: *DEFAULTS
 
