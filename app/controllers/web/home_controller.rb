@@ -16,6 +16,9 @@ class Web::HomeController < Web::ApplicationController
     @js_course = Language.find_by slug: 'javascript'
     @html_course = Language.find_by slug: 'html'
 
+    @user = User.new
+    @users_count = User.count
+
     gon.languages_for_widget = language_versions.pluck(:name)
   end
 

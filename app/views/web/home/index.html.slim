@@ -24,6 +24,24 @@
   .mb-5
     = render partial: 'web/shared/faq', object: t('faq.main')
 
+.bg-white
+  .container
+    .row.align-items-center.g-lg-5.py-5
+      .col-lg-7.text-center.text-lg-start
+        .h1.display-4.fw-bold.lh-1.mb-3= t('.join', count: @users_count)
+        / p.col-lg-10.fs-4
+        /   | Forever free.
+      .col-md-10.mx-auto.col-lg-5
+        .card.p-4
+          .card-body
+            = simple_form_for @user, url: users_path do |f|
+              = f.input :first_name
+              = f.input :email
+              = f.input :password
+              .form-group
+                = f.submit class: 'btn btn-primary w-100'
+              = render 'web/shared/via_social_networks'
+
 / .mb-5
 /   = render 'stats'
 

@@ -16,6 +16,7 @@ en:
       index:
         title: |
           Code Basics: basics of programming
+        join: Join the %{count} learners for free. Forever.
         meta_description: Learn the basics of programming for free with interactive exercises. No prior experience required!
         header: "Learn to code. Online. For free."
         subheader: "For those who start from scratch. From the creators of "
