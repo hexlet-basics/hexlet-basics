@@ -10,9 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_03_170816) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_20_155455) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "course_categories", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "language_categories", force: :cascade do |t|
+    t.string "name_ru"
+    t.string "name_en"
+    t.string "slug"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "language_lesson_members", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -203,6 +217,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_170816) do
     t.integer "lessons_count", default: 0, null: false
     t.integer "members_count", default: 0, null: false
     t.integer "order"
+    t.bigint "category_id"
+    t.index ["category_id"], name: "index_languages_on_category_id"
     t.index ["current_version_id"], name: "index_languages_on_current_version_id"
     t.index ["slug"], name: "languages_slug_index", unique: true
     t.index ["upload_id"], name: "languages_upload_id_index"
@@ -272,6 +288,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_170816) do
   add_foreign_key "language_version_infos", "language_versions"
   add_foreign_key "language_version_infos", "languages"
   add_foreign_key "language_versions", "languages"
+  add_foreign_key "languages", "language_categories", column: "category_id"
   add_foreign_key "languages", "language_versions", column: "current_version_id"
   add_foreign_key "languages", "uploads", name: "languages_upload_id_fkey"
   add_foreign_key "user_accounts", "users", name: "user_accounts_user_id_fkey"

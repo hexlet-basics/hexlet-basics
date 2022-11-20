@@ -1,0 +1,10 @@
+DEFAULTS: &DEFAULTS
+  slug: $LABEL
+
+programming:
+  name_ru: Программирование
+  name_en: Programming
+
+layouting:
+  name_en: Layouting
+  name_ru: Верстка

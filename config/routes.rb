@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  get 'reviews/index'
+  get 'reviews/show'
   # require 'sidekiq/web'
   # mount Sidekiq::Web => '/sidekiq', constraints: AdminConstraint.new
 
