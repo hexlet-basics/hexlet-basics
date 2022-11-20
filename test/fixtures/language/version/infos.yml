@@ -37,3 +37,42 @@ ruby-en:
   language_version: ruby
   description: Description
   locale: en
+
+go-ru:
+  language: go
+  language_version: go
+  description: Описание
+  locale: ru
+
+
+go-en:
+  language: go
+  language_version: go
+  description: Description
+  locale: en
+
+java-ru:
+  language: java
+  language_version: java
+  description: Описание
+  locale: ru
+
+
+java-en:
+  language: java
+  language_version: java
+  description: Description
+  locale: en
+
+csharp-ru:
+  language: csharp
+  language_version: csharp
+  description: Описание
+  locale: ru
+
+
+csharp-en:
+  language: csharp
+  language_version: csharp
+  description: Description
+  locale: en

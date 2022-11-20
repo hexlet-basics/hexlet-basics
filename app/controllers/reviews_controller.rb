@@ -1,4 +1,4 @@
-class ReviewsController < ApplicationController
+class ReviewsController < Web::ApplicationController
   def index
   end
 
