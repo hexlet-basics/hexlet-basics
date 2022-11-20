@@ -27,13 +27,17 @@ function Solution() {
       return <p className="mt-3">{t('userCodeInstructions')}</p>;
     }
 
+    const code = hljs.highlight(editor.content, { language: getLanguage(language) }).value;
+
     return (
-      <div>
+      <>
         <h2 className="h3">{t('userCode')}</h2>
-        <SyntaxHighlighter showLineNumbers language={[getLanguage(language)]}>
-          {editor.content}
-        </SyntaxHighlighter>
-      </div>
+        <pre>
+          <code>
+            <div dangerouslySetInnerHTML={{ __html: code }} />
+          </code>
+        </pre>
+      </>
     );
   };
 
@@ -48,6 +52,7 @@ function Solution() {
             <div dangerouslySetInnerHTML={{ __html: code }} />
           </code>
         </pre>
+        {renderUserCode()}
       </div>
     );
   };
