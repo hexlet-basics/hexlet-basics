@@ -37,7 +37,8 @@
 
           - unless @language_member.finished?
             - if @first_lesson == @next_lesson
-              = link_to t('.start'), language_lesson_path(@language.slug, @first_lesson.slug), class: 'btn btn-lg btn-primary px-4 mb-3 mt-2'
+              = link_to t('.start'), language_lesson_path(@language.slug, @first_lesson.slug), class: 'btn btn-lg btn-primary px-4 mb-3 mt-2 me-4'
+              = link_to t('.sign_up'), new_user_path(), class: 'btn btn-lg btn-outline-secondary px-4 mb-3 mt-2'
             - else
               = link_to t('.continue'), language_lesson_path(@language.slug, @next_lesson.slug), class: 'btn btn-lg btn-success px-4 mb-3 mt-2'
         .d-none.d-md-block.col-4.align-self-center.text-center

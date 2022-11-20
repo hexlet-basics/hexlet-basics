@@ -77,6 +77,7 @@ ru:
         register: Регистрация
     languages:
       show:
+        sign_up: Зарегистрироваться
         free_course: Бесплатный курс
         start: Начать обучение
         continue: Продолжить обучение
