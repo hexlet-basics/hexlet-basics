@@ -1,0 +1,19 @@
+.card.border-0
+  .card-body
+    nav aria-label=t('.breadcrumb')
+      ol.breadcrumb.mb-2 itemscope="itemscope" itemtype="https://schema.org/BreadcrumbList"
+        li.breadcrumb-item itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem"
+          = link_to root_path, title: t('.to_home_title'), itemprop: 'item' do
+            span.bi.bi-house.text-muted
+            meta itemprop="position" content="1"
+            meta itemprop="name" content="CodeBasics"
+        li.breadcrumb-item itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem"
+          = link_to language_path(resource_language.slug), itemprop: 'item', class: 'text-decoration-none text-muted' do
+            span itemprop="name" = resource_language.current_version
+            meta itemprop="position" content="2"
+        li.breadcrumb-item.active itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem" aria-current="page"
+          span itemprop="name"
+            = current_breadcrumb(@lesson_version, @info, @language_lessons_count)
+          meta itemprop="position" content="3"
+    = render partial: 'content', locals: { info: @info, lesson_version: @lesson_version, options: {} }, formats: [:html]
+

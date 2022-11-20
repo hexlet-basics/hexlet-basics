@@ -35,6 +35,7 @@ class Language::Lesson < ApplicationRecord
     slug
   end
 
+  # TODO: dont change defaults
   def to_hash(*_args)
     attrs = attributes.extract! 'id', 'slug', 'created_at'
     attrs.to_hash

@@ -1,0 +1,6 @@
+.card.border-0
+  .card-body
+    ul
+      - @lessons_info.each do |info|
+        li.unstyled
+          = link_to info, language_lesson_path(resource_language.slug, info.version.lesson.slug)

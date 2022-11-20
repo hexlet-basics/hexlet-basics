@@ -13,6 +13,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     @lesson_version = resource_language.current_lesson_versions.find_by!(lesson: @lesson)
     @info = @lesson_version.infos.find_by!(locale: I18n.locale)
     @language_lessons_count = resource_language.current_lessons.count
+    @lessons_info = resource_language.current_lesson_infos.with_locale
 
     if current_user.guest?
       gon.lesson_member = Language::Lesson::MemberFake.new

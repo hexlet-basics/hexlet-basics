@@ -19,52 +19,26 @@
           a.nav-link.active.border-top-0.rounded-0.text-muted href="#lesson-tab" data-bs-toggle="tab" role="tab" = t('.lesson')
         li.nav-item
           a.nav-link.border-top-0.rounded-0.text-muted href="#discuss-tab" data-bs-toggle="tab" role="tab" = t('.discuss')
+        li.nav-item
+          a.nav-link.border-top-0.rounded-0.text-muted href="#navigation-tab" data-bs-toggle="tab" role="tab" = t('.navigation')
 
       .tab-content.overflow-hidden.x-h-md-100
         .tab-pane.fade.overflow-auto.x-h-md-100.active.show#lesson-tab(role="tabpanel")
-          .card-body
-            nav aria-label=t('.breadcrumb')
-              ol.breadcrumb.mb-2 itemscope="itemscope" itemtype="https://schema.org/BreadcrumbList"
-                li.breadcrumb-item itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem"
-                  = link_to root_path, title: t('.to_home_title'), itemprop: 'item' do
-                    span.bi.bi-house.text-muted
-                    meta itemprop="position" content="1"
-                    meta itemprop="name" content="CodeBasics"
-                li.breadcrumb-item itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem"
-                  = link_to language_path(resource_language.slug), itemprop: 'item', class: 'text-decoration-none text-muted' do
-                    span itemprop="name" = resource_language.current_version
-                    meta itemprop="position" content="2"
-                li.breadcrumb-item.active itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem" aria-current="page"
-                  span itemprop="name"
-                    = current_breadcrumb(@lesson_version, @info, @language_lessons_count)
-                  meta itemprop="position" content="3"
-            = render partial: 'content', locals: { info: @info, lesson_version: @lesson_version, options: {} }, formats: [:html]
+          = render 'lesson_tab'
 
         .tab-pane.fade.overflow-auto.x-h-md-100#discuss-tab(role="tabpanel")
-          .card-body.pt-2.pb-0
-            .alert.alert-info.small.my-2
-              span.align-baseline = t('.if_stuck')
-              '
-              = link_to t('.community'), ExternalLinks.hexlet_slack_curl, target: '_blank', class: 'align-baseline', rel: :noopener
+          .card.border-0
+            .card-body.pt-2.pb-0
+              .alert.alert-info.small.my-2
+                span.align-baseline = t('.if_stuck')
+                '
+                = link_to t('.community'), ExternalLinks.hexlet_slack_curl, target: '_blank', class: 'align-baseline', rel: :noopener
+              = render 'web/deps/disqus', lesson: @lesson, title: @title
 
-            #disqus_thread
-            / disqus script
-            javascript:
-              var disqus_config = function () {
-                this.page.url = '#{url_for(only_path: false, overwrite_params: nil)}';
-                this.page.identifier = 'lesson-#{@lesson.id}';
-                this.page.title = '#{@title}';
-                this.language = '#{I18n.locale}';
-              };
-
-              (function() {
-                var d = document, s = d.createElement('script');
-
-                s.src = 'https://#{configus.disqus[I18n.locale]}.disqus.com/embed.js';
-
-                s.setAttribute('data-timestamp', +new Date());
-                (d.head || d.body).appendChild(s);
-              })();
+        .tab-pane.fade.overflow-auto.x-h-md-100#navigation-tab(role="tabpanel")
+          .card.border-0
+            .card-body.pt-2.pb-0
+          = render 'navigation_tab'
 
   .col-12.col-md-6.col-lg-7.pl-md-0.x-h-md-100
     / - if current_user.guest?

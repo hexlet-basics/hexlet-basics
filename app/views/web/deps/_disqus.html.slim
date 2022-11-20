@@ -1,0 +1,19 @@
+#disqus_thread
+
+- content_for :scripts do
+  javascript:
+    var disqus_config = function () {
+      this.page.url = '#{url_for(only_path: false, overwrite_params: nil)}';
+      this.page.identifier = 'lesson-#{lesson.id}';
+      this.page.title = '#{title}';
+      this.language = '#{I18n.locale}';
+    };
+
+    (function() {
+      var d = document, s = d.createElement('script');
+
+      s.src = 'https://#{configus.disqus[I18n.locale]}.disqus.com/embed.js';
+
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
