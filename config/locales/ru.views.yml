@@ -78,6 +78,8 @@ ru:
         register: Регистрация
     languages:
       show:
+        registration: Регистрация
+        registration_description: Начните прямо сейчас
         similar_courses: Похожие курсы
         sign_up: Зарегистрироваться
         free_course: Бесплатный курс

@@ -50,7 +50,14 @@
       - if @language_member.finished?
         .mt-5
           = render 'complete_language'
-      - @current_module_versions.each do |module_version|
+      - @current_module_versions.each.with_index do |module_version, i|
+        - if @current_module_versions.size / 2.floor == i
+          .my-5
+            .card.p-3.border-0
+              .card-body.d-flex
+                .me-auto.fs-3= t('.registration_description')
+                div
+                  = link_to t('.registration'), new_user_path, class: 'btn btn-primary btn-lg'
         - let @infos_by_module[module_version.id] do |module_info|
           .row.mt-5
             .col-12
