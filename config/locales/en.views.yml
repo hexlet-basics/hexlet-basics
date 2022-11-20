@@ -34,6 +34,7 @@ en:
         course_html: Course %{link}
     users:
       new:
+        confirmation_html: By clicking Sign up, you agree to the terms of use
         title: Registration
         meta_description: Sign up on Code Basics
         sign_up: Sign up
