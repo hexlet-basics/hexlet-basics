@@ -27,9 +27,10 @@ en:
         ready_to_start: Start
         started: Continue
         finished: Revisit
-        courses: Programs
+        courses: Courses
       reviews:
         reviews: Reviews
+        course_html: Course %{link}
     users:
       new:
         title: Registration

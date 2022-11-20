@@ -15,7 +15,8 @@ en:
         registration: "Sign up"
         success_stories: Why CodeBasics?
         profile: Settings
-        change_course: Programs
+        courses: Courses
+        about: About
         toggle_navigation: Toggle navigation
         toggle_user_menu: Toggle the display of user menu
         admin: Admins

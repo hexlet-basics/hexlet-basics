@@ -13,6 +13,9 @@ class Web::HomeController < Web::ApplicationController
 
     language_versions = Language::Version.where(current_language: @languages_completed)
 
+    @js_course = Language.find_by slug: 'javascript'
+    @html_course = Language.find_by slug: 'html'
+
     gon.languages_for_widget = language_versions.pluck(:name)
   end
 

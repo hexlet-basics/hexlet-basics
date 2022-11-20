@@ -15,7 +15,8 @@ ru:
         success_stories: Истории успеха
         profile: Настройки
         sign_out: Выйти
-        change_course: Выберите курс
+        courses: Курсы
+        about: О проекте
         toggle_navigation: Переключить навигацию
         toggle_user_menu: Показать/скрыть меню пользователя
         admin: Админство

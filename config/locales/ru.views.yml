@@ -17,6 +17,7 @@ ru:
     home:
       reviews:
         reviews: Отзывы
+        course_html: Курс %{link}
       hero:
         learn_html: Изучи&nbsp;
         free_programming_courses: Бесплатные курсы программирования
