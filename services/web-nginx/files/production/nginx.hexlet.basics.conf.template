@@ -34,6 +34,10 @@ server {
 
   server_name code-basics.com ru.code-basics.com;
 
+  log_not_found on;
+  log_subrequest on;
+  rewrite_log on;
+
   client_max_body_size 10M;
   keepalive_timeout   620s;
   charset UTF-8;
@@ -44,46 +48,18 @@ server {
 
   # include /etc/nginx/gzip.conf;
 
-#   auth_basic "Restricted Content";
-#   auth_basic_user_file /etc/nginx/.htpasswd;
+  #   auth_basic "Restricted Content";
+  #   auth_basic_user_file /etc/nginx/.htpasswd;
 
   rewrite ^\/languages\/(?<language_slug>.+)\/modules\/(?<module_slug>.+)\/lessons\/(?<lesson_slug>.+) /languages/$language_slug/lessons/$lesson_slug permanent;
 
-  # location ^~ /assets/ {
-  #   gzip_static on;
-  #   expires max;
-  #   add_header Cache-Control public;
-  # }
-
-  # location ^~ /assets/ {
-  #   gzip_static on;
-  #
-  #   # NOTE: add text/css to default list for set utf-8 in css
-  #   charset_types text/css text/xml text/plain text/vnd.wap.wml application/javascript application/rss+xml;
-  #   expires 1y;
-  #   add_header Cache-Control public;
-  #   add_header Access-Control-Allow-Origin *;
-  #
-  #   try_files $uri =404;
-  #   error_page 404 /404.html;
-  # }
-  #
-  # location ~ ^/(assets)/ {
-  #   expires 1y;
-  #   add_header Cache-Control public;
-  #
-  #   try_files $uri =404;
-  #   error_page 404 /404.html;
-  # }
-
-  location ~ ^/(assets|packs)/ {
+  location ~ ^/(assets)/ {
     expires max;
 
     # NOTE: add text/css to default list for set utf-8 in css
     charset_types text/css text/xml text/plain text/vnd.wap.wml application/javascript application/rss+xml;
 
     add_header Cache-Control public;
-
     add_header 'Access-Control-Allow-Origin' $http_origin;
 
     proxy_redirect off;

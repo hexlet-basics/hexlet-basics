@@ -1,15 +1,5 @@
-// @ts-check
-
 import * as Sentry from '@sentry/browser';
 import { BrowserTracing } from '@sentry/tracing';
-import railsUjs from '@rails/ujs';
-
-// import 'core-js/stable';
-// import 'regenerator-runtime/runtime';
-// require('@popperjs/core');
-
-import 'bootstrap';
-import hljs from 'highlight.js';
 
 // https://docs.sentry.io/platforms/javascript/
 Sentry.init({
@@ -42,6 +32,3 @@ Sentry.init({
     return causedByConsole ? null : event;
   },
 });
-
-railsUjs.start();
-hljs.highlightAll();

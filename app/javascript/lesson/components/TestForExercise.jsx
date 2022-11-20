@@ -2,7 +2,7 @@
 
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import SyntaxHighlighter from 'react-syntax-highlighter';
+import hljs from '../../lib/hljs.js';
 
 import EntityContext from '../EntityContext.js';
 import { getLanguage } from '../utils/editorUtils.js';
@@ -11,14 +11,16 @@ function Test() {
   const { language, lessonVersion } = useContext(EntityContext);
   const { t } = useTranslation();
 
+  const code = hljs.highlight(lessonVersion.test_code, { language: getLanguage(language) }).value
+
   return (
     <div>
       <p className="text-center lead">{t('testInstructions')}</p>
-      <div className="hexlet-basics-content">
-        <SyntaxHighlighter showLineNumbers useInlineStyles={false} language={[getLanguage(language)]}>
-          {lessonVersion.test_code}
-        </SyntaxHighlighter>
-      </div>
+      <pre>
+        <code>
+          <div className="hexlet-basics-content" dangerouslySetInnerHTML={{ __html: code }} />
+        </code>
+      </pre>
     </div>
   );
 }

@@ -5,12 +5,8 @@ localhost, code-basics.test {
   #   format single_field common_log
   # }
 
-  encode zstd
+  encode gzip
   tls internal
 
   reverse_proxy /* web:3000
-  # reverse_proxy /assets/* frontend:3036
-  # reverse_proxy /sockjs-node/* webpacker:3035
-
-  # header Access-Control-Allow-Origin "*"
 }

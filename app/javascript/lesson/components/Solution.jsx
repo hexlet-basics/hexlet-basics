@@ -3,7 +3,6 @@
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
-import SyntaxHighlighter from 'react-syntax-highlighter';
 import Countdown from 'react-countdown';
 import { format } from 'date-fns';
 
@@ -12,6 +11,7 @@ import { getLanguage } from '../utils/editorUtils.js';
 import { solutionStates } from '../utils/maps.js';
 import EntityContext from '../EntityContext.js';
 import waitingClock from '../../../assets/images/waiting_clock.png';
+import hljs from '../../lib/hljs.js';
 
 function Solution() {
   const { language, lessonVersion } = useContext(EntityContext);
@@ -37,15 +37,20 @@ function Solution() {
     );
   };
 
-  const renderSolution = () => (
-    <div className="p-lg-3 hexlet-basics-content" id="basics-solution">
-      <h2 className="h3">{t('teacherSolution')}</h2>
-      <SyntaxHighlighter language={[getLanguage(language)]}>
-        {lessonVersion.original_code}
-      </SyntaxHighlighter>
-      {renderUserCode()}
-    </div>
-  );
+  const renderSolution = () => {
+    const code = hljs.highlight(lessonVersion.original_code, { language: getLanguage(language) }).value;
+
+    return (
+      <div className="p-lg-3 hexlet-basics-content" id="basics-solution">
+        <h2 className="h3">{t('teacherSolution')}</h2>
+        <pre>
+          <code>
+            <div dangerouslySetInnerHTML={{ __html: code }} />
+          </code>
+        </pre>
+      </div>
+    );
+  };
 
   const handleShowSolution = () => {
     dispatch(actions.changeSolutionProcessState({ processState: solutionStates.shown }));

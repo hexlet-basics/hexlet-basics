@@ -13,21 +13,15 @@ meta name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-f
 = csp_meta_tag
 = display_meta_tags
 = Gon::Base.render_data
-/ = vite_client_tag
 
-= stylesheet_link_tag 'vendors'
+/ = stylesheet_link_tag 'vendors'
 = stylesheet_link_tag 'application'
 
 - if Rails.env.production?
   = render 'layouts/deps/gtm_head'
   = render 'layouts/deps/renta_head'
 
-= javascript_include_tag 'vendors', defer: true
-= javascript_include_tag 'application', async: true
+= javascript_include_tag 'sentry', 'sprockets', 'routes', 'vendors', 'reactEssentials', 'application'
 
 - if supported_browser?
   = yield :frontend
-
-/ = stylesheet_link_tag 'application', 'data-turbo-track': 'reload'
-/ - append_javascript_packs 'application'
-/ = stylesheet_pack_tag 'application', media: 'all'

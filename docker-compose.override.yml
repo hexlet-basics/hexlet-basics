@@ -75,6 +75,8 @@ services:
     #   - "3036:3036"
     env_file:
       - .env
+    ports:
+      - "8888:8888"
     volumes:
       - app_tmp:/app/tmp
       - .:/app

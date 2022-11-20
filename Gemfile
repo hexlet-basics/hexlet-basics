@@ -25,6 +25,9 @@ gem 'redis'
 gem 'term-ansicolor'
 gem 'valid_email2'
 
+gem 'bootstrap'
+gem 'jquery-rails'
+
 # gem 'jsbundling-rails'
 
 gem 'sprockets-rails'

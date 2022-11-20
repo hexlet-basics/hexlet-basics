@@ -2,64 +2,78 @@
 
 import path from 'path';
 import { fileURLToPath } from 'url';
-import webpack from 'webpack';
-import { ESBuildMinifyPlugin } from 'esbuild-loader';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-// import { WebpackManifestPlugin } from 'webpack-manifest-plugin';
+import { ESBuildMinifyPlugin } from 'esbuild-loader';
+import { WebpackSweetEntry } from '@sect/webpack-sweet-entry';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-const getPath = (filename, type = 'javascript') => path.resolve(__dirname, `app/${type}/${filename}`);
+const sourcePath = path.join(__dirname, 'app/javascript');
 
 export default {
-  entry: {
-    application: [getPath('application.js'), getPath('application.scss', 'assets/stylesheets')],
-    welcomePage: getPath('welcome-page.js'),
-    lessonPage: getPath('lesson-page.js'),
-    legalDocs: getPath('legal-docs.js'),
-    likely: getPath('likely.js'),
-    amp: getPath('amp.css', 'assets/stylesheets'),
-  },
-  devtool: false,
+  entry: WebpackSweetEntry(path.resolve(sourcePath, 'entrypoints/**/*.js'), 'js', 'entrypoints'),
+  // stats: {
+  //   // errorDetails: false,
+  //   colors: true,
+  //   errorStack: false,
+  //   loggingTrace: false,
+  // },
+  devtool: 'cheap-source-map',
   externals: {
     jquery: 'jQuery',
     gon: 'gon',
+    bootstrap: 'bootstrap',
+  },
+  resolve: {
+    modules: ['node_modules', 'node_modules/devicon'],
+    alias: {
+      images: path.resolve(sourcePath, 'images'),
+    },
+  },
+  output: {
+    clean: {
+      keep: /.keep/,
+    },
+    // https://srivishnu.totakura.in/2022/01/19/overcoming-challenges-with-jsbundling-rails-with-webpack-5-on-production.html#chunks-sourcemaps-and-asset-pipeline-sprockets
+    filename: '[name].js',
+    chunkFilename: '[name]-[contenthash:8].digested.js',
+    sourceMapFilename: '[file]-[fullhash].digested.map',
+    assetModuleFilename: 'images/[name]-[contenthash].digested[ext]',
+    path: path.resolve(__dirname, 'app/assets/builds'),
+    hashFunction: 'sha256',
+    hashDigestLength: 64,
   },
   plugins: [
-    // new WebpackManifestPlugin({
-    //   useEntryKeys: true,
-    //   writeToFileEmit: true,
-    // }),
-    new webpack.SourceMapDevToolPlugin({
-      filename: '[file].map[query]',
-      exclude: 'vendors',
-    }),
-    new MiniCssExtractPlugin({
-      filename: '[name].css',
-    }),
+    new MiniCssExtractPlugin({}),
+    new BundleAnalyzerPlugin({ analyzerHost: '0.0.0.0' }),
   ],
-  output: {
-    filename: '[name].js',
-    // chunkFilename: '[name].chunk.js',
-    // sourceMapFilename: '[name].js.map',
-    path: path.resolve(__dirname, 'app/assets/builds'),
-  },
   optimization: {
-    splitChunks: {
-      cacheGroups: {
-        commons: {
-          test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          chunks: 'initial',
-        },
-      },
-    },
     minimizer: [
       new ESBuildMinifyPlugin({
         target: 'es2015',
         css: true,
       }),
     ],
+    splitChunks: {
+      // https://nozzlegear.com/blog/webpack-app-breaks-when-entrypoints-share-functions-or-components
+      cacheGroups: {
+        vendors: {
+          test: /node_modules[\\/](highlight.js|axios|i18next|ansi_up|date-fns)[\\/]/,
+          chunks: 'all',
+          name: 'vendors',
+        },
+        routes: {
+          test: /[\\/]routes.js/,
+          name: 'routes',
+          chunks: 'all',
+        },
+        reactEssentials: {
+          test: /node_modules[\\/](react-dom|react)[\\/]/,
+          name: 'reactEssentials',
+          chunks: 'all',
+        },
+      },
+    },
   },
   module: {
     rules: [
@@ -68,11 +82,13 @@ export default {
         use: [
           MiniCssExtractPlugin.loader,
           'css-loader',
+          'resolve-url-loader',
           {
             loader: 'postcss-loader',
             options: {
               postcssOptions: {
                 plugins: [
+                  'postcss-import', // NOTE: т.к. не работают нативные импорты
                   ['postcss-preset-env', { }],
                 ],
               },
@@ -90,6 +106,7 @@ export default {
             options: {
               postcssOptions: {
                 plugins: [
+                  'postcss-import', // NOTE: т.к. не работают нативные импорты
                   ['postcss-preset-env', { }],
                 ],
               },
