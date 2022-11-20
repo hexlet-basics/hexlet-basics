@@ -10,9 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_20_155455) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_20_163839) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "blog_posts", force: :cascade do |t|
+    t.bigint "language_id"
+    t.string "locale"
+    t.string "state"
+    t.string "slug"
+    t.string "name"
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["language_id"], name: "index_blog_posts_on_language_id"
+    t.index ["slug"], name: "index_blog_posts_on_slug", unique: true
+  end
 
   create_table "course_categories", force: :cascade do |t|
     t.string "name"
@@ -258,6 +271,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_20_155455) do
     t.index ["email"], name: "index_users_on_email", unique: true, where: "((state)::text <> 'removed'::text)"
   end
 
+  add_foreign_key "blog_posts", "languages"
   add_foreign_key "language_lesson_members", "language_lessons", column: "lesson_id", name: "user_finished_lessons_language_module_lesson_id_fkey"
   add_foreign_key "language_lesson_members", "language_members"
   add_foreign_key "language_lesson_members", "users", name: "user_finished_lessons_user_id_fkey"

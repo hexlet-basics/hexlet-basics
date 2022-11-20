@@ -1,2 +1,5 @@
-h1 LanguageCategories#show
-p Find me in app/views/language_categories/show.html.slim
+- title @category.name
+
+.container.mt-sm-5.mb-5
+  h1.mb-5 = @category
+  = render 'web/shared/languages', languages: @languages, language_members_by_language: @language_members_by_language

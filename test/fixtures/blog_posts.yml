@@ -1,0 +1,8 @@
+DEFAULTS: &DEFAULTS
+  slug: $LABEL
+  name: $LABEL
+  body: $LABEL
+  state: published
+
+js:
+  <<: *DEFAULTS

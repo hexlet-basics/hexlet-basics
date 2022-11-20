@@ -7,7 +7,8 @@ class LanguageCategoriesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should get show' do
-    get language_categories_url
+    category = language_categories(:programming)
+    get language_category_url(id: category.slug)
     assert_response :success
   end
 end
