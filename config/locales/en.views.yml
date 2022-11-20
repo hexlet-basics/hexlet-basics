@@ -67,6 +67,7 @@ en:
         register: Sign up
     languages:
       show:
+        similar_courses: Similar courses
         sign_up: Sign Up
         free_course: Free course
         start: Start Learning

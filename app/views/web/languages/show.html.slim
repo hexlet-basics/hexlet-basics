@@ -78,3 +78,7 @@
               .fs-4.fw-bold.text-primary = t('.no_registration')
             .col.my-auto.text-md-end
               = link_to t('.start_demo_lesson'), language_lesson_path(@language.slug, @first_lesson.slug), class: 'btn btn-outline-primary btn-lg'
+
+      .mt-5
+        h2.mb-4= t('.similar_courses')
+        = render 'web/shared/languages', languages: @similar_languages, language_members_by_language: {}
