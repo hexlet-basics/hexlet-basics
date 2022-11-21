@@ -127,6 +127,8 @@ en:
           instructions: Instructions
           definitions: Definitions
           tips: Tips
+          prev: Previous
+          next: Next
         show:
           navigation: Navigation
           discuss: Discuss
@@ -139,6 +141,7 @@ en:
         lesson_tab:
           breadcrumb: breadcrumb
           to_home_title: Home
+        navigation_tab:
       complete_language:
         continue: Continue Learning
         grats: Congratulations

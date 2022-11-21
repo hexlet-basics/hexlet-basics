@@ -27,6 +27,13 @@
         li
           p == markdown2html("#{definition['name']} - #{definition['description']}")
 
+  .mb-3.d-flex.justify-content-center
+    .me-4
+      | ←&nbsp;
+      = link_to_if @lesson_version.next_lesson, t('.prev'), language_lesson_path(resource_language, @lesson_version.next_lesson.slug), class: 'text-black text-decoration-none'
+    = link_to_if @lesson_version.prev_lesson, t('.next'), language_lesson_path(resource_language, @lesson_version.prev_lesson.slug), class: 'text-black text-decoration-none'
+    | &nbsp;→
+
 - if @info.definitions.any? || @info.tips.any?
   hr.my-4
 

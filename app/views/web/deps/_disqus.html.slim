@@ -1,6 +1,6 @@
 #disqus_thread
 
-- content_for :scripts do
+- content_for :frontend do
   javascript:
     var disqus_config = function () {
       this.page.url = '#{url_for(only_path: false, overwrite_params: nil)}';
