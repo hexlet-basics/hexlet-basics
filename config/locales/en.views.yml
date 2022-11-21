@@ -65,6 +65,9 @@ en:
         login: Sign in
         dont_have_account: New to Code-Basics?
         register: Sign up
+    blog_posts:
+      index:
+        header: Blog
     languages:
       show:
         registration: Sign Up

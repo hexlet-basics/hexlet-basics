@@ -40,6 +40,8 @@
                 = link_to t('.reviews'), reviews_path, class: 'dropdown-item'
               li.dropdown-item
                 = link_to t('.about_platform'), page_path(:about), class: 'dropdown-item'
+              li.dropdown-item
+                = link_to t('.blog'), blog_posts_path, class: 'dropdown-item'
               - if I18n.locale == :ru
                 li.nav-item.dropdown-item.me-2
                   / rubocop:disable Rails/LinkToBlank

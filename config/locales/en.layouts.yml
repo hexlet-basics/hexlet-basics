@@ -8,11 +8,12 @@ en:
           users: Users
     shared:
       nav:
-        about: "About"
-        community: "Community"
-        sign_in: "Sign in"
-        sign_out: "Sign out"
-        registration: "Sign up"
+        blog: Blog
+        about: About
+        community: Community
+        sign_in: Sign in
+        sign_out: Sign out
+        registration: Sign up
         success_stories: Why CodeBasics?
         profile: Settings
         courses: Courses

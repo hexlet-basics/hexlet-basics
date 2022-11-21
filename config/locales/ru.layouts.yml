@@ -8,6 +8,7 @@ ru:
           users: Пользователи
     shared:
       nav:
+        blog: Блог
         about_platform: О платформе
         about_code_basics: О CodeBasics
         community: Сообщество

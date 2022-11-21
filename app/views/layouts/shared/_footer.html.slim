@@ -2,12 +2,14 @@ footer.bg-dark.text-light.flex-shrink-0
   .container-xl.pt-5.pb-3
     .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4
       .col.mb-4.mb-lg-0
-        p = t('.hexlet_address')
-        p.mt-3 = t('.hexlet_number')
+        - t('phones').each do |phone|
+          .mb-2
+            .lead= phone_to phone, class: 'text-light text-decoration-none'
+        = t('.hexlet_address')
+        .mt-2 = t('.hexlet_number')
 
         ul.list-unstyled.lh-lg
-          li
-            = link_to t('.about'), page_path(:about), class: 'text-decoration-none text-light'
+        = mail_to ExternalLinks.hexlet_support_email, nil, class: 'text-light'
           li
             = link_to t('.tos'), page_path(:tos), class: 'text-decoration-none text-light'
           li
@@ -38,10 +40,9 @@ footer.bg-dark.text-light.flex-shrink-0
               span.bi.bi-github.ms-2
 
       .col.mb-4.mb-lg-0
-        - t('phones').each do |phone|
-          .mb-2
-            = phone_to phone, class: 'text-light text-decoration-none'
-        = mail_to ExternalLinks.hexlet_support_email, nil, class: 'text-light'
+        ul
+          li
+            = link_to t('.about'), page_path(:about), class: 'text-decoration-none text-light'
 
     hr
     .d-flex

@@ -76,6 +76,9 @@ ru:
         login: Войти
         dont_have_account: Нет аккаунта?
         register: Регистрация
+    blog_posts:
+      index:
+        header: Блог
     languages:
       show:
         registration: Регистрация
