@@ -1,29 +1,24 @@
-.container
-  .mb-5
-    h2 = t('.reviews')
-    hr.mb-5
-  .row.g-4.row-cols-1.row-cols-sm-2.row-cols-lg-3
-    .col
-      .d-flex.mb-3
-        = image_tag 'user-avatar.png', class: 'rounded-circle flex-shrink-0', width: 50, height: 50, alt: 'avatar of Eliyah Kleyman'
-        .ms-3
-          .fw-bold Eliyah Kleyman
-          - let link_to @js_course, language_path(@js_course.slug), class: 'text-dark' do |link|
-            .small = t('.course_html', link: link)
-      .fst-italic "For me, it was my very first programming course. I liked it because all the information is very well structured and given in a clear hierarchical order. It motivated me a lot to move forward in my studies."
-    .col
-      .d-flex.mb-3
-        = image_tag 'avdoshkin.jpg', class: 'rounded-circle flex-shrink-0', width: 50, height: 50, alt: 'avatar of Aleksandr Avdoshkin'
-        .ms-3
-          .fw-bold Aleksandr Avdoshkin
-          - let link_to @html_course, language_path(@html_course.slug), class: 'text-dark' do |link|
-            .small = t('.course_html', link: link)
-      .fst-italic "As someone with zero coding skills, I'd say that CodeBasics is focused on newcomers. Thank you very much!"
-    .col
-      .d-flex.mb-3
-        = image_tag 'tyrin.jpg', class: 'rounded-circle flex-shrink-0', width: 50, height: 50, alt: 'avatar of  Sergei Tyurin'
-        .ms-3
-          .fw-bold Sergei Tyurin
-          - let link_to @js_course, language_path(@js_course.slug), class: 'text-dark' do |link|
-            .small = t('.course_html', link: link)
-      .fst-italic "This is all very approachable even for a dummy like me. Now I show people this platform when I get the chance."
+.col
+  .d-flex.mb-3
+    = image_tag 'user-avatar.png', class: 'rounded-circle flex-shrink-0', width: 50, height: 50, alt: 'avatar of Eliyah Kleyman'
+    .ms-3
+      .fw-bold Eliyah Kleyman
+      - let link_to @js_course, language_path(@js_course.slug), class: 'text-dark' do |link|
+        .small = t('.course_html', link: link)
+  .fst-italic "For me, it was my very first programming course. I liked it because all the information is very well structured and given in a clear hierarchical order. It motivated me a lot to move forward in my studies."
+.col
+  .d-flex.mb-3
+    = image_tag 'avdoshkin.jpg', class: 'rounded-circle flex-shrink-0', width: 50, height: 50, alt: 'avatar of Aleksandr Avdoshkin'
+    .ms-3
+      .fw-bold Aleksandr Avdoshkin
+      - let link_to @html_course, language_path(@html_course.slug), class: 'text-dark' do |link|
+        .small = t('.course_html', link: link)
+  .fst-italic "As someone with zero coding skills, I'd say that CodeBasics is focused on newcomers. Thank you very much!"
+.col
+  .d-flex.mb-3
+    = image_tag 'tyrin.jpg', class: 'rounded-circle flex-shrink-0', width: 50, height: 50, alt: 'avatar of  Sergei Tyurin'
+    .ms-3
+      .fw-bold Sergei Tyurin
+      - let link_to @js_course, language_path(@js_course.slug), class: 'text-dark' do |link|
+        .small = t('.course_html', link: link)
+  .fst-italic "This is all very approachable even for a dummy like me. Now I show people this platform when I get the chance."

@@ -17,10 +17,16 @@
   = render 'languages', languages: @languages_completed, language_members_by_language: @language_members_by_language, language_member_fake: @language_member_fake
 
 .mb-5.pb-5
-  = render 'reviews'
+  .container
+    .d-flex
+      h2.me-auto.mt-auto = t('.reviews')
+      .mt-auto = link_to t('.all_reviews'), reviews_path, class: 'text-decoration-none text-muted small'
+    hr.mb-5.mt-1
+    .row.g-4.row-cols-1.row-cols-sm-2.row-cols-lg-3
+      = render 'reviews'
 
 - if I18n.locale == :ru
-  .mb-5
+  .mb-5.pb-2
     = render partial: 'web/shared/faq', object: t('faq.main')
 
 .bg-white

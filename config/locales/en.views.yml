@@ -14,6 +14,8 @@ en:
         fastest_way_to_start_coding: The easiest way to experience coding right in your browser, Code Basics is an online platform featuring free programming tutorials and an interactive coding environment. Every lesson comes with an exercise to practice.
         how_coding_works: How learning works with code-basics
       index:
+        reviews: Reviews
+        all_reviews: All Reviews
         categories: Categories
         title: |
           Code Basics: basics of programming
