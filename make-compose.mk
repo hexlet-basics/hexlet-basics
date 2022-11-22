@@ -26,7 +26,7 @@ compose-setup: compose-down compose-build app-setup
 
 compose-ci-build:
 	docker build -f Dockerfile.production -t hexletbasics/services-app:cached .
-	docker build -f services/web-nginx/Dockerfile.production -t hexletbasics/services-web:cached .
+	docker build -f services/web-nginx/Dockerfile -t hexletbasics/services-web:cached .
 	docker-compose -f docker-compose.yml build
 
 compose-ci: compose-ci-build

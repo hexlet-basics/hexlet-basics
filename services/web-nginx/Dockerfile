@@ -1,4 +1,4 @@
-FROM ruby:3.1.2
+FROM ruby:3.1.2 as rails
 
 ENV PROJECT_ROOT /app
 WORKDIR ${PROJECT_ROOT}
@@ -25,17 +25,17 @@ RUN APP_HOST=example.test bin/rails js:routes:typescript
 RUN npm run build
 RUN APP_HOST=example.test NODE_ENV=production RAILS_ENV=production SECRET_KEY_BASE=jopa bin/rails assets:precompile
 
-ENV DOCKER_CHANNEL stable
-ENV DOCKER_VERSION 20.10.20
-ENV DISABLE_SPRING 1
+FROM nginx:1.23.1
 
-RUN curl -fsSL "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/x86_64/docker-${DOCKER_VERSION}.tgz" \
-  | tar -xzC /usr/local/bin --strip=1 docker/docker
+COPY --from=rails /app/public /var/www/hexlet-basics/shared/public
 
-RUN apt-get update && apt-get install -y \
-  build-essential \
-  libpq-dev \
-  libsqlite3-dev \
-  && rm -rf /var/lib/apt/lists/*
+COPY services/web-nginx/files/nginx.hexlet.basics.conf.template /etc/nginx/conf.d/hexlet-basics.conf.template
 
-CMD ["make", "start-production"]
+# for security reason
+RUN rm -rf /etc/nginx/conf.d/default.conf
+
+COPY services/web-nginx/files/docker-entrypoint.sh /
+RUN chmod +x /docker-entrypoint.sh
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]
