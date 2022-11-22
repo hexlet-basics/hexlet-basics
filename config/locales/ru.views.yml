@@ -84,6 +84,8 @@ ru:
         header: Блог
     languages:
       show:
+        breadcrumbs: Хлебные крошки
+        to_home_title: Главная
         registration: Регистрация
         registration_description: Начните прямо сейчас
         similar_courses: Похожие курсы

@@ -16,8 +16,25 @@
       link rel='alternate' hreflang=locale href=language_url(@language.slug, locale: AppHost.locale_for_url(locale))
   link rel='alternate' hreflang='x-default' href=language_url(@language.slug, locale: AppHost.locale_for_url(:ru))
 
-.mt-sm-5.mb-5.pb-5
+.mt-sm-4
   .container
+
+    nav aria-label=t('.breadcrumbs')
+      ol.breadcrumb.mb-2 itemscope="itemscope" itemtype="https://schema.org/BreadcrumbList"
+        li.breadcrumb-item itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem"
+          = link_to root_path, title: t('.to_home_title'), itemprop: 'item' do
+            span.bi.bi-house.text-muted
+            meta itemprop="position" content="1"
+            meta itemprop="name" content="CodeBasics"
+        li.breadcrumb-item itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem"
+          = link_to language_category_path(@language.category.slug), itemprop: 'item', class: 'text-decoration-none text-muted' do
+            span itemprop="name" = @language.category
+            meta itemprop="position" content="2"
+        li.breadcrumb-item itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem"
+          = link_to language_path(@language.slug), itemprop: 'item', class: 'text-decoration-none text-muted' do
+            span itemprop="name" = @language.current_version
+            meta itemprop="position" content="2"
+
     .px-3.px-sm-5.py-4.py-sm-5.mb-4.bg-white.rounded-3.shadow-sm.border(itemscope itemtype='http://schema.org/ImageObject')
       .row
         .col
@@ -78,7 +95,7 @@
               = module_info.description
 
       - unless signed_in?
-        .card.shadow-sm.border-0.mt-5.py-3.py-md-5.px-3
+        .card.shadow-sm.border-0.mt-5.py-3.py-md-3.px-3
           .card-body.row
             .col-sm-12.col-md-auto.mb-3
               .display-6.fw-bold = t('.ready')
@@ -86,6 +103,6 @@
             .col.my-auto.text-md-end
               = link_to t('.start_demo_lesson'), language_lesson_path(@language.slug, @first_lesson.slug), class: 'btn btn-outline-primary btn-lg'
 
-      .mt-5
+      .my-5
         h2.mb-4 = t('.similar_courses')
         = render 'web/shared/languages', languages: @similar_languages, language_members_by_language: {}
