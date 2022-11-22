@@ -28,6 +28,8 @@ gem 'valid_email2'
 gem 'bootstrap'
 gem 'jquery-rails'
 
+gem 'terser'
+
 # gem 'jsbundling-rails'
 
 gem 'sprockets-rails'

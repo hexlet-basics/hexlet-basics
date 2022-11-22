@@ -360,7 +360,7 @@ GEM
     rubocop-performance (1.15.1)
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
-    rubocop-rails (2.17.2)
+    rubocop-rails (2.17.3)
       activesupport (>= 4.2.0)
       rack (>= 1.1)
       rubocop (>= 1.33.0, < 2.0)
@@ -444,10 +444,12 @@ GEM
     temple (0.8.2)
     term-ansicolor (1.7.1)
       tins (~> 1.0)
+    terser (1.1.12)
+      execjs (>= 0.3.0, < 3)
     thor (1.2.1)
     tilt (2.0.11)
     timeout (0.3.0)
-    tins (1.32.0)
+    tins (1.32.1)
       sync
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
@@ -546,6 +548,7 @@ DEPENDENCIES
   sprockets-rails
   sqlite3
   term-ansicolor
+  terser
   tzinfo-data
   valid_email2
   web-console

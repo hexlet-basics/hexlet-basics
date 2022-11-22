@@ -13,18 +13,18 @@
     "@rails/ujs": "^7.0.4",
     "@reduxjs/toolkit": "^1.9.0",
     "@rehooks/local-storage": "2.4.4",
-    "@sentry/browser": "^7.20.0",
-    "@sentry/tracing": "^7.20.0",
+    "@sentry/browser": "^7.20.1",
+    "@sentry/tracing": "^7.20.1",
     "ansi_up": "^5.1.0",
     "axios": "^1.1.3",
     "bootstrap": "^5.2.2",
     "bootstrap-icons": "^1.10.2",
-    "caniuse-lite": "^1.0.30001431",
+    "caniuse-lite": "^1.0.30001434",
     "classnames": "^2.3.2",
     "core-js": "^3.26.1",
     "date-fns": "^2.29.3",
     "devicon": "^2.15.1",
-    "esbuild": "^0.15.14",
+    "esbuild": "^0.15.15",
     "highlight.js": "^11.6.0",
     "i18next": "^22.0.6",
     "ilyabirman-likely": "^2.7.2",
@@ -81,8 +81,8 @@
     "defaults"
   ],
   "scripts": {
-    "build": "webpack --mode production",
-    "build:watch": "webpack --watch --mode development"
+    "build": "webpack --mode production --color",
+    "build:watch": "webpack --watch --mode development --color"
   },
   "resolutions": {
     "autoprefixer": "10.4.5"
