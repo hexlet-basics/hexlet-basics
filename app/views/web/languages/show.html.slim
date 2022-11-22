@@ -38,7 +38,7 @@
           - unless @language_member.finished?
             - if @first_lesson == @next_lesson
               = link_to t('.start'), language_lesson_path(@language.slug, @first_lesson.slug), class: 'btn btn-lg btn-primary px-4 mb-3 mt-2 me-4'
-              = link_to t('.sign_up'), new_user_path(), class: 'btn btn-lg btn-outline-secondary px-4 mb-3 mt-2'
+              = link_to t('.sign_up'), new_user_path, class: 'btn btn-lg btn-outline-secondary px-4 mb-3 mt-2'
             - else
               = link_to t('.continue'), language_lesson_path(@language.slug, @next_lesson.slug), class: 'btn btn-lg btn-success px-4 mb-3 mt-2'
         .d-none.d-md-block.col-4.align-self-center.text-center
@@ -55,7 +55,7 @@
           .my-5
             .card.p-3.border-0
               .card-body.d-flex
-                .me-auto.fs-3= t('.registration_description')
+                .me-auto.fs-3 = t('.registration_description')
                 div
                   = link_to t('.registration'), new_user_path, class: 'btn btn-primary btn-lg'
         - let @infos_by_module[module_version.id] do |module_info|
@@ -87,5 +87,5 @@
               = link_to t('.start_demo_lesson'), language_lesson_path(@language.slug, @first_lesson.slug), class: 'btn btn-outline-primary btn-lg'
 
       .mt-5
-        h2.mb-4= t('.similar_courses')
+        h2.mb-4 = t('.similar_courses')
         = render 'web/shared/languages', languages: @similar_languages, language_members_by_language: {}
