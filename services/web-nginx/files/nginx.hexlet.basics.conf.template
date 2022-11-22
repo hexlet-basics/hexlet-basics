@@ -55,10 +55,14 @@ server {
     add_header Last-Modified "";
     add_header ETag "";
 
+    # https://docs.nginx.com/nginx/admin-guide/web-server/serving-static-content/#enabling-sendfile
+    sendfile           on;
+    tcp_nopush on;
+    sendfile_max_chunk 1m;
+    access_log off;
+
     gzip_static on;
     gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript application/vnd.ms-fontobject application/x-font-ttf font/opentype image/svg+xml image/x-icon;
-
-    access_log off;
 
     try_files $uri =404;
 
@@ -113,6 +117,8 @@ server {
   location @app {
     # help with SEO
     rewrite ^/(.*)/$ /$1 permanent;
+
+    gzip on;
 
     # TODO What is this for?
     if ($request_method = 'OPTIONS') {
