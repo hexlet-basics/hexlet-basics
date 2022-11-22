@@ -28,10 +28,24 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     gon.lesson_version = @lesson_version
     gon.lesson = @lesson
 
-    @title = [@info, resource_language.current_version.name].join(' | ').squish
-    set_meta_tags canonical: language_lesson_url(@lesson.language.slug, @lesson.slug),
-                  amphtml: language_lesson_url(@lesson.language.slug, @lesson.slug, format: 'amp', only_path: false),
-                  title: @title
+    title = [@info, resource_language.current_version.name].join(' | ').squish
+    description = view_context.truncate("[#{resource_language.current_version}] — #{@info.name} — #{@info.theory}", length: 220)
+
+    seo_tags = {
+      title: title,
+      canonical: language_lesson_url(@lesson.language.slug, @lesson.slug),
+      amphtml: language_lesson_url(@lesson.language.slug, @lesson.slug, format: 'amp', only_path: false),
+      image_src: view_context.image_url("#{@lesson.language.slug}.png"),
+      description: description,
+      og: {
+        type: 'article',
+        locale: I18n.locale,
+        title: title,
+        url: language_lesson_url(@lesson.language.slug, @lesson.slug),
+        image: view_context.image_url("#{@lesson.language.slug}.png")
+      }
+    }
+    set_meta_tags seo_tags
   end
 
   def next_lesson

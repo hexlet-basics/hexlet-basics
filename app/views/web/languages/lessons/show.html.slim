@@ -1,11 +1,4 @@
 = content_for :meta do
-  meta content='article' property='og:type'
-  meta content=@title property='og:title'
-  meta content="#{language_lesson_url(@lesson.language.slug, @lesson.slug)}" property='og:url'
-  meta content="#{image_url("#{@lesson.language.slug}.png")}" property='og:image'
-  meta content= truncate("[#{resource_language.current_version}] — #{@info.name} — #{@info.theory}", length: 220) property='og:description'
-  meta content= truncate("[#{resource_language.current_version}] — #{@info.name} — #{@info.theory}", length: 200) name='description'
-  meta content="#{I18n.locale}" property='og:locale'
   - I18n.available_locales.each do |locale|
     - if locale == I18n.locale || @lesson_version.infos.exists?(locale: locale)
       link rel='alternate' hreflang=locale href=language_lesson_url(resource_language.slug, @lesson.slug, locale: AppHost.locale_for_url(locale))
