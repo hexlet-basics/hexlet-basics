@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BlogPost < ApplicationRecord
   validates :name, presence: true
   validates :slug, presence: true, uniqueness: true

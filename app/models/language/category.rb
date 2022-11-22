@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Language::Category < ApplicationRecord
   validates :name, presence: true
 

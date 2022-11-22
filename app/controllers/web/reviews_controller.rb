@@ -1,7 +1,7 @@
-class Web::ReviewsController < Web::ApplicationController
-  def index
-  end
+# frozen_string_literal: true
 
-  def show
-  end
+class Web::ReviewsController < Web::ApplicationController
+  def index; end
+
+  def show; end
 end

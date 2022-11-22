@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 class Web::LanguageCategoriesController < Web::ApplicationController
-  def index
-  end
+  def index; end
 
   def show
     @category = Language::Category.find_by! slug: params[:id]
