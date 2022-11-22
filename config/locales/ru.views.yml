@@ -85,6 +85,7 @@ ru:
     languages:
       show:
         breadcrumbs: Хлебные крошки
+        see_all_courses_in_category: Посмотреть все курсы категории %{name}
         to_home_title: Главная
         registration: Регистрация
         registration_description: Начните прямо сейчас

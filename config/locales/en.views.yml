@@ -73,6 +73,9 @@ en:
         header: Blog
     languages:
       show:
+        breadcrumbs: Breadcrumbs
+        to_home_title: Home
+        see_all_courses_in_category: See all courses in %{name}
         registration: Sign Up
         registration_description: Let's get started
         similar_courses: Similar courses
