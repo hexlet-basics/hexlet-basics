@@ -23,6 +23,8 @@ class Web::HomeController < Web::ApplicationController
       acc[item.slug.to_sym] = view_context.link_to(item, language_path(item.slug))
     end
 
+    @categories = Language::Category.all
+
     gon.languages_for_widget = language_versions.pluck(:name)
   end
 

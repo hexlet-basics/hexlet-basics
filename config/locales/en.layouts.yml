@@ -26,12 +26,15 @@ en:
         about_code_basics: About CodeBasics
         reviews: Reviews
       footer:
+        blog: Blog
+        reviews: Reviews
+        language_categories: Categories
         all_courses: All Courses
         hexlet_title: © Hexlet ltd, %{year}
         hexlet_address: Itälahdenkatu 22 A, 00210 Helsinki, Finland
         hexlet_number: VAT ID: FI26641607
         information: Information
-        about: About
+        about: About Platform
         tos: Terms of Service
         privacy: Privacy
         cookie_policy: Cookie Policy

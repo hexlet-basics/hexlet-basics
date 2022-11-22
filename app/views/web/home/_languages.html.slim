@@ -1,8 +1,12 @@
 .container
   .mb-5
-    h2
-      a#courses.text-decoration-none.text-dark href="#courses" = t('.courses')
-    hr
+    .d-flex.mb-4
+      h2.me-auto
+        a#courses.text-decoration-none.text-dark href="#courses" = t('.courses')
+
+      - @categories.each do |category|
+          = link_to category, language_category_path(category.slug), class: 'me-2 fw-light text-decoration-none fs-5 badge text-bg-light p-3 rounded-pill border'
+
     = render 'web/shared/languages', languages: languages, language_members_by_language: language_members_by_language
             / .text-right
                 = link_to t(".#{language_member.state}"), language_path(language.slug), class: 'stretched-link text-decoration-none'

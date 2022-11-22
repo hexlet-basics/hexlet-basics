@@ -25,6 +25,9 @@ ru:
         admin: Админство
         reviews: Отзывы
       footer:
+        blog: Блог
+        reviews: Отзывы
+        language_categories: Направления обучения
         all_courses: Все курсы
         hexlet_title: © Hexlet Ltd, %{year}
         hexlet_address: ООО «Хекслет Рус», 432071, г. Ульяновск, пр-т Нариманова, дом 1Г, оф. 23
