@@ -26,8 +26,24 @@ class Web::LanguagesController < Web::ApplicationController
     @first_lesson = @language.current_lessons.ordered.first
     @next_lesson = current_user.not_finished_lessons_for_language(@language).ordered.first
 
+    @similar_languages = Language.order('RANDOM()').except(@language).limit(4)
+
+
     @human_language_title = [@language.current_version.name, @language.learn_as.text].join(' ')
 
-    @similar_languages = Language.order('RANDOM()').except(@language).limit(4)
+    seo_tags = {
+      title: @language_version_info.title,
+      description: @language_version_info.seo_description || @language_version_info.description,
+      canonical: language_url(@language.slug),
+      image_src: view_context.asset_url("#{@language.slug}.png"),
+      og: {
+        title: @human_language_title,
+        type: 'website',
+        url: language_url(@language.slug),
+        image: view_context.asset_url("#{@language.slug}.png"),
+        locale: I18n.locale,
+      }
+    }
+    set_meta_tags seo_tags
   end
 end

@@ -14,14 +14,14 @@ en:
         fastest_way_to_start_coding: The easiest way to experience coding right in your browser, Code Basics is an online platform featuring free programming tutorials and an interactive coding environment. Every lesson comes with an exercise to practice.
         how_coding_works: How learning works with code-basics
       index:
+        title: |
+          Free Code Basics Learning — HTML, CSS, JavaScript Online Courses
+        meta_description: |
+          Learn the Code Basics of HTML, CSS and JavaScript with Interactive Coding Environment right in your Browser! Perfect for Beginners & 100% for Free | Join our Online Programming Courses
         reviews: Reviews
         all_reviews: All Reviews
         categories: Categories
-        title: |
-          Free Code Basics Learning — HTML, CSS, JavaScript Online Courses | CodeBasics
         join: Join the %{count} learners for free. Forever.
-        meta_description: |
-          Learn the Code Basics of HTML, CSS & JavaScript with Interactive Coding Environment right in your Browser! Perfect for Beginners & 100% for Free | Join our Online Programming Courses
         header: Learn to code. Online. For free.
         subheader: "For those who start from scratch. From the creators of "
         start: "Start"

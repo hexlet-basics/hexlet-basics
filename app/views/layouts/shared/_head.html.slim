@@ -11,7 +11,7 @@ meta name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-f
 = favicon_link_tag
 = csrf_meta_tags
 = csp_meta_tag
-= display_meta_tags
+= display_meta_tags reverse: true, site: 'CodeBasics'
 = Gon::Base.render_data
 
 / = stylesheet_link_tag 'vendors'

@@ -26,6 +26,24 @@ class Web::HomeController < Web::ApplicationController
     @categories = Language::Category.all
 
     gon.languages_for_widget = language_versions.pluck(:name)
+
+    seo_tags = {
+      title: t('.title'),
+      description: t('.meta_description'),
+      canonical: root_url,
+      image_src: view_context.asset_url('logo.png'),
+      twitter: {
+        card: 'summary',
+        site: '@hexlet_io'
+      },
+      og: {
+        title: t('.title'),
+        type: 'website',
+        url: root_url,
+        image: view_context.asset_url('logo.png')
+      }
+    }
+    set_meta_tags seo_tags
   end
 
   def robots
