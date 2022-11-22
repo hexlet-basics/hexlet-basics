@@ -82,7 +82,4 @@ db-prepare:
 	bin/rails db:migrate || true
 	bin/rails db:fixtures:load || true
 
-webpacker:
-	bin/webpacker-dev-server
-
 .PHONY: test
