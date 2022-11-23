@@ -6,6 +6,13 @@ en:
         index:
           languages: Languages
           add_new_language: Add new language
+      management:
+        users:
+          filter:
+            from: From
+          index:
+            users: Users
+            finished_lessons: Finished Lessons
     home:
       hero:
         learn_html: Learn&nbsp;

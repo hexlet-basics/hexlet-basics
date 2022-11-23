@@ -146,6 +146,7 @@ class ExerciseLoader
       language_version_info = language_version.infos.build(language: language_version.language)
       language_version_info.description = info_spec.fetch('description')
       language_version_info.title = info_spec.fetch('title')
+      language_version_info.header = info_spec.fetch('header')
       language_version_info.seo_description = info_spec['seo_description']
       language_version_info.locale = locale
       language_version_info.save!

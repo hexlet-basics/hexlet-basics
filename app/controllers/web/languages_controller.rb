@@ -29,7 +29,8 @@ class Web::LanguagesController < Web::ApplicationController
     @similar_languages = Language.order('RANDOM()').except(@language).limit(4)
 
 
-    @human_language_title = [@language.current_version.name, @language.learn_as.text].join(' ')
+    human_language_header = [@language.current_version.name, @language.learn_as.text].join(' ')
+    @header = @language_version_info.header || human_language_header
 
     seo_tags = {
       title: @language_version_info.title,
