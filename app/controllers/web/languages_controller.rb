@@ -36,6 +36,7 @@ class Web::LanguagesController < Web::ApplicationController
 
     seo_tags = {
       title: title,
+      keywords: @language_version_info.keywords.join(', ')
       description: description,
       canonical: language_url(@language.slug),
       image_src: view_context.asset_url("#{@language.slug}.png"),
