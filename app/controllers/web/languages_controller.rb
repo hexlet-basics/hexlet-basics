@@ -31,15 +31,18 @@ class Web::LanguagesController < Web::ApplicationController
 
     human_language_header = [@language.current_version.name, @language.learn_as.text].join(' ')
     @header = @language_version_info.header || human_language_header
+    title = @language_version_info.title || @header
+    description = @language_version_info.seo_description || @language_version_info.description
 
     seo_tags = {
-      title: @language_version_info.title,
-      description: @language_version_info.seo_description || @language_version_info.description,
+      title: title,
+      description: description,
       canonical: language_url(@language.slug),
       image_src: view_context.asset_url("#{@language.slug}.png"),
       og: {
-        title: @human_language_title,
+        title: title,
         type: 'website',
+        title: description
         url: language_url(@language.slug),
         image: view_context.asset_url("#{@language.slug}.png"),
         locale: I18n.locale,

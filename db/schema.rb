@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_23_034957) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_23_210951) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -194,6 +194,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_23_034957) do
     t.string "title"
     t.text "seo_description"
     t.string "header"
+    t.string "keywords"
     t.index ["language_id"], name: "index_language_version_infos_on_language_id"
     t.index ["language_version_id"], name: "index_language_version_infos_on_language_version_id"
   end
