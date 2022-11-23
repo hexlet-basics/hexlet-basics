@@ -28,7 +28,6 @@ class Web::LanguagesController < Web::ApplicationController
 
     @similar_languages = Language.order('RANDOM()').except(@language).limit(4)
 
-
     human_language_header = [@language.current_version.name, @language.learn_as.text].join(' ')
     @header = @language_version_info.header || human_language_header
     title = @language_version_info.title || @header
@@ -36,14 +35,14 @@ class Web::LanguagesController < Web::ApplicationController
 
     seo_tags = {
       title: title,
-      keywords: @language_version_info.keywords.join(', ')
+      keywords: @language_version_info.keywords.join(', '),
       description: description,
       canonical: language_url(@language.slug),
       image_src: view_context.asset_url("#{@language.slug}.png"),
       og: {
         title: title,
         type: 'website',
-        title: description
+        description: description,
         url: language_url(@language.slug),
         image: view_context.asset_url("#{@language.slug}.png"),
         locale: I18n.locale,
