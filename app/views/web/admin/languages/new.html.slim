@@ -1,7 +1,4 @@
 h1 New language
+
 = simple_form_for @language, url: admin_languages_path do |f|
-    = f.input :slug
-    = f.input :progress
-    = f.input :learn_as
-    = f.input :order
-    = f.submit class: 'btn btn-primary'
+  = render 'form', f: f

@@ -4,8 +4,6 @@ div
     span.bi.bi-arrow-up-right-square.fs-2
   = link_to @language.source_code_curl, class: 'align-top', target: :_blank, rel: :noopener do
     span.bi.bi-github.fs-2
+
 = simple_form_for @language, url: admin_language_path do |f|
-  = f.input :progress, include_blank: false
-  = f.input :learn_as, include_blank: false
-  = f.input :order, include_blank: false
-  = f.submit class: 'btn btn-primary'
+  = render 'form', f: f
