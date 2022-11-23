@@ -45,7 +45,7 @@ class Web::LanguagesController < Web::ApplicationController
         description: description,
         url: language_url(@language.slug),
         image: view_context.asset_url("#{@language.slug}.png"),
-        locale: I18n.locale,
+        locale: I18n.locale
       }
     }
     set_meta_tags seo_tags
