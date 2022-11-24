@@ -27,5 +27,7 @@ ENV BUNDLE_APP_CONFIG ${PROJECT_ROOT}/.bundle/config
 ENV GEM_HOME ${PROJECT_ROOT}/vendor/bundle
 ENV BUNDLE_PATH ${GEM_HOME}
 
+RUN mkdir -p /app/public
+
 # RUN bundle config build.nokogiri --use-system-libraries
 # BUNDLE_BUILD__NOKOGIRI: "--use-system-libraries"
