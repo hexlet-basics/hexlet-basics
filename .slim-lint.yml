@@ -4,6 +4,6 @@
 #   - vendor/*
 #   - node_modules/*
 
-# linters:
-#   LineLength:
-#     max: 300
+linters:
+  LineLength:
+    enabled: false
