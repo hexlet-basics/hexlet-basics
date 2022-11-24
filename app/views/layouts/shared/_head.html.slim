@@ -16,6 +16,11 @@ meta name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-f
 
 / = stylesheet_link_tag 'vendors'
 = stylesheet_link_tag 'application'
+javascript:
+    var partytown = {
+      forward: ['dataLayer.push', 'fbq'],
+    };
+script src='~partytown/partytown.js'
 
 - if Rails.env.production?
   = render 'layouts/deps/gtm_head'

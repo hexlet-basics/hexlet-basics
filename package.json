@@ -6,6 +6,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@builder.io/partytown": "^0.7.2",
     "@monaco-editor/react": "^4.4.6",
     "@popperjs/core": "^2.11.6",
     "@rails/actioncable": "^7.0.4",
@@ -81,8 +82,9 @@
     "defaults"
   ],
   "scripts": {
-    "build": "webpack --mode production --color",
-    "build:watch": "webpack --watch --mode development --color"
+    "build": "npm run partytown && webpack --mode production --color",
+    "build:watch": "npm run partytown && webpack --watch --mode development --color",
+    "partytown": "partytown copylib public/~partytown"
   },
   "resolutions": {
     "autoprefixer": "10.4.5"

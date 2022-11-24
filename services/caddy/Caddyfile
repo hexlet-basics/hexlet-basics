@@ -22,10 +22,15 @@ http://hexletdev4.com {
 
   encode gzip
 
+  header {
+    Access-Control-Allow-Origin *
+    # Referrer-Policy unsafe-url
+  }
+
   # automatic_https {
   #   disable true
   #   disable_redirects true
   # }
 
-  reverse_proxy /* web:3000
+  reverse_proxy web:3000
 }
