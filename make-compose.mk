@@ -31,6 +31,3 @@ compose-ci-build:
 
 compose-ci: compose-ci-build
 	docker-compose --file docker-compose.yml up --abort-on-container-exit
-
-env-prepare:
-	cp -n .env.populate .env || true

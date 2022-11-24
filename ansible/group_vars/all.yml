@@ -7,3 +7,4 @@ hexlet_basics_docker_network: "hexlet-basics"
 
 docker_install_compose: false
 docker_package_state: latest
+hexlet_basics_app_host: code-basics.test
