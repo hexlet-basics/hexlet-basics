@@ -83,5 +83,5 @@ Rails.application.configure do
   config.web_console.whiny_requests = false
 
   config.hosts << 'code-basics.test'
-  config.hosts << 'ru.code-basics.test'
+  config.hosts << /hexletdev\d{1}\.com/
 end

@@ -91,8 +91,8 @@ services:
       - "./public:/etc/caddy/public"
       - caddy_data:/data
       - caddy_config:/config
-    depends_on:
-      - web
+    # depends_on:
+    #   - web
 
 volumes:
   redis:
