@@ -20,6 +20,7 @@ AllCops:
 #     - 'test/factories'
 
 require:
+  # https://github.com/Shopify/rubocop-sorbet
   - rubocop-rspec
   - rubocop-rails
   - rubocop-performance

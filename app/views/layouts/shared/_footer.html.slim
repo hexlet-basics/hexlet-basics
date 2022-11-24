@@ -23,7 +23,7 @@ footer.bg-dark.text-light.flex-shrink-0
               span.bi.bi-github.ms-2
 
       .col.mb-4.mb-lg-0
-        b= t('.all_courses')
+        b = t('.all_courses')
         - let Language.ordered do |languages|
             ul.list-unstyled.lh-lg
               - languages.each do |lang|
@@ -40,7 +40,7 @@ footer.bg-dark.text-light.flex-shrink-0
             = link_to t('.reviews'), reviews_path, class: 'text-decoration-none text-light'
 
       .col.mb-4.mb-lg-0
-        b= t('.language_categories')
+        b = t('.language_categories')
         ul.list-unstyled.lh-lg
           - let Language::Category.all do |categories|
             - categories.each do |category|

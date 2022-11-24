@@ -98,6 +98,7 @@
         .d-flex
           h2.me-auto.mt-auto = t('.similar_courses')
           - if @language.category
-            .mt-auto= link_to t('.see_all_courses_in_category', name: @language.category), language_category_path(@language.category.slug), class: 'text-muted text-decoration-none small'
+            - let t('.see_all_courses_in_category', name: @language.category) do |anchor|
+              .mt-auto = link_to anchor, language_category_path(@language.category.slug), class: 'text-muted text-decoration-none small'
         hr.mt-1.mb-4
         = render 'web/shared/languages', languages: @similar_languages, language_members_by_language: {}
