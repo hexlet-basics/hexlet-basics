@@ -9,7 +9,8 @@ footer.bg-dark.text-light.flex-shrink-0
         .mt-2 = t('.hexlet_number')
 
         ul.list-unstyled.lh-lg
-        = mail_to ExternalLinks.hexlet_support_email, nil, class: 'text-light'
+          li
+            = mail_to ExternalLinks.hexlet_support_email, nil, class: 'text-light'
           li
             = link_to t('.tos'), page_path(:tos), class: 'text-decoration-none text-light'
           li
