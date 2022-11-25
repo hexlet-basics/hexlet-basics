@@ -18,15 +18,15 @@ services:
     depends_on:
       - postgres
 
-  webserver:
-    build:
-      context: .
-      dockerfile: services/web-nginx/Dockerfile
-    ports:
-      - "443:443"
-      - "80:80"
-    depends_on:
-      - web
+  # webserver:
+  #   build:
+  #     context: .
+  #     dockerfile: services/web-nginx/Dockerfile
+  #   ports:
+  #     - "443:443"
+  #     - "80:80"
+  #   depends_on:
+  #     - web
 
   # production:
   #   build:

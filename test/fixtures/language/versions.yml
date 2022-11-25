@@ -1,3 +1,5 @@
+---
+
 DEFAULTS: &DEFAULTS
   docker_image: docker_image
   extension: extension_$LABEL
@@ -14,6 +16,7 @@ go:
 
 java:
   <<: *DEFAULTS
+
 
 csharp:
   <<: *DEFAULTS

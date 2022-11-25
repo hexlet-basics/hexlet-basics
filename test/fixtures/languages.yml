@@ -20,9 +20,11 @@ java:
 
 go:
   <<: *DEFAULTS
+  category: programming
 
 csharp:
   <<: *DEFAULTS
+  category: programming
 
 css:
   <<: *DEFAULTS
@@ -30,6 +32,7 @@ css:
 
 python:
   <<: *DEFAULTS
+  category: programming
 
 html:
   <<: *DEFAULTS
@@ -37,3 +40,4 @@ html:
 
 ruby:
   <<: *DEFAULTS
+  category: programming

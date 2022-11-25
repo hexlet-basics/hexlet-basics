@@ -14,7 +14,7 @@ localhost, code-basics.test {
   encode gzip
   tls internal
 
-  reverse_proxy /* web:3000
+  reverse_proxy web:3000
 }
 
 http://hexletdev4.com {

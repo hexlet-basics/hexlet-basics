@@ -38,11 +38,25 @@ ruby-basics-ru:
   version: ruby-basics
   language_version: ruby
 
+one-ru:
+  <<: *DEFAULTS
+  locale: ru
+  language: php
+  version: one
+  language_version: php
+
 php-basics-ru:
   <<: *DEFAULTS
   locale: ru
   language: php
   version: two
+  language_version: php
+
+variables-one-ru:
+  <<: *DEFAULTS
+  locale: ru
+  language: php
+  version: variables_one
   language_version: php
 
 php-basics-en:
