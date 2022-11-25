@@ -46,9 +46,11 @@
           - unless @language_member.finished?
             - if @first_lesson == @next_lesson
               = link_to t('.start'), language_lesson_path(@language.slug, @first_lesson.slug), class: 'btn btn-lg btn-primary px-4 mb-3 mt-2 me-4'
-              = link_to t('.sign_up'), new_user_path, class: 'btn btn-lg btn-outline-secondary px-4 mb-3 mt-2'
             - else
               = link_to t('.continue'), language_lesson_path(@language.slug, @next_lesson.slug), class: 'btn btn-lg btn-success px-4 mb-3 mt-2'
+
+            - if current_user.guest?
+              = link_to t('.sign_up'), new_user_path, class: 'btn btn-lg btn-outline-secondary px-4 mb-3 mt-2'
         .d-none.d-md-block.col-4.align-self-center.text-center
           / FIXME нужно добыть картинки
           / = image_pack_tag("#{@language.slug}_512x512.png", class: 'img-fluid', width: 512, height: 512, alt: @language, itemprop: 'contentUrl') rescue nil
@@ -59,7 +61,7 @@
         .mt-5
           = render 'complete_language'
       - @current_module_versions.each.with_index do |module_version, i|
-        - if @current_module_versions.size / 2.floor == i
+        - if @current_module_versions.size / 2.floor == i && current_user.guest?
           .my-5
             .card.p-3.border-0
               .card-body.d-flex
