@@ -30,10 +30,10 @@
   .mb-3.d-flex.justify-content-center
     .me-4
       | ←&nbsp;
-      - if @lesson_version.next_lesson
-        = link_to t('.prev'), language_lesson_path(resource_language, @lesson_version.next_lesson.slug), class: 'text-black text-decoration-none'
-    - if @lesson_version.prev_lesson
-      = link_to t('.next'), language_lesson_path(resource_language, @lesson_version.prev_lesson.slug), class: 'text-black text-decoration-none'
+      - if @lesson_version.prev_lesson
+        = link_to t('.prev'), language_lesson_path(resource_language, @lesson_version.prev_lesson.slug), class: 'text-black text-decoration-none'
+    - if @lesson_version.next_lesson
+      = link_to t('.next'), language_lesson_path(resource_language, @lesson_version.next_lesson.slug), class: 'text-black text-decoration-none'
     | &nbsp;→
 
 - if @info.definitions.any? || @info.tips.any?
