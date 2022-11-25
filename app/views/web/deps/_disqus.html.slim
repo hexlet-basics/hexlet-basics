@@ -12,6 +12,7 @@
     (function() {
       var d = document, s = d.createElement('script');
 
+      s.defer = true;
       s.src = 'https://#{configus.disqus[I18n.locale]}.disqus.com/embed.js';
 
       s.setAttribute('data-timestamp', +new Date());
