@@ -21,6 +21,10 @@ RUN apt-get update && apt-get install -y \
 
 # ENV BUNDLE_PATH /root/hexlet-basics/vendor/bundle
 ENV PROJECT_ROOT /app
+
+# NOTE: for initial make project-setup
+RUN mkdir -p /app/public
+
 WORKDIR ${PROJECT_ROOT}
 
 ENV BUNDLE_APP_CONFIG ${PROJECT_ROOT}/.bundle/config

@@ -26,7 +26,7 @@ frontend: js-routes
 
 setup:
 	bin/setup
-	npm install
+	npm ci
 
 db-reset:
 	bin/rails db:drop
