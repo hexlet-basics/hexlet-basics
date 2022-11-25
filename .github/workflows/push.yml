@@ -50,10 +50,15 @@ jobs:
           file: services/web-nginx/Dockerfile
           tags: ${{ env.NGINX_IMAGE_NAME }}:latest
 
-      - name: Send notification into Slack
-        if: ${{ always() }}
-        uses: rtCamp/action-slack-notify@v2
+      - name: Send GitHub trigger payload to Slack Workflow Builder
+        id: slack
+        uses: slackapi/slack-github-action@v1.23.0
         env:
-          SLACK_COLOR: ${{ fromJson(env.COLOR_MAP)[job.status] }}
-          SLACK_TITLE: ${{ job.status }}
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+      # - name: Send notification into Slack
+      #   if: ${{ always() }}
+      #   uses: rtCamp/action-slack-notify@v2
+      #   env:
+      #     SLACK_COLOR: ${{ fromJson(env.COLOR_MAP)[job.status] }}
+      #     SLACK_TITLE: ${{ job.status }}
+      #     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}

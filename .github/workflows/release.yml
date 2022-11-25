@@ -63,11 +63,11 @@ jobs:
           push: true
           tags: ${{ env.NGINX_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
 
-      - name: Send notification into Slack
-        if: ${{ always() }}
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_COLOR: ${{ fromJson(env.COLOR_MAP)[job.status] }}
-          SLACK_TITLE: ${{ job.status }}
-          SLACK_MESSAGE: RELEASE
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      # - name: Send notification into Slack
+      #   if: ${{ always() }}
+      #   uses: rtCamp/action-slack-notify@v2
+      #   env:
+      #     SLACK_COLOR: ${{ fromJson(env.COLOR_MAP)[job.status] }}
+      #     SLACK_TITLE: ${{ job.status }}
+      #     SLACK_MESSAGE: RELEASE
+      #     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
