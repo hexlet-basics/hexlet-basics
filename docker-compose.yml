@@ -13,6 +13,8 @@ services:
   web:
     image: hexletbasics/services-app
     command: make ci-check
+    env_file:
+      - .env
     depends_on:
       - postgres
 
