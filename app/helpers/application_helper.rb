@@ -156,6 +156,14 @@ module ApplicationHelper
     true
   end
 
+  def completed_languages
+    @completed_languages ||= Language.with_progress(:completed)
+                                     .joins(current_version: :infos)
+                                     .includes(:current_version)
+                                     .merge(Language::Version::Info.with_locale)
+                                     .ordered
+  end
+
   def default_filter_form_options(options = {})
     { method: 'get', wrapper: :filter_input, html: { class: 'row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 gx-2 align-items-end' }, url: url_for, defaults: { required: false, label: false } }.merge(options)
   end
