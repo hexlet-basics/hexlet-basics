@@ -10,7 +10,7 @@ class Web::HomeController < Web::ApplicationController
     @js_course = Language.find_by slug: 'javascript'
     @html_course = Language.find_by slug: 'html'
 
-    @user = User.new
+    @user = User::SignUpForm.new
     @users_count = User.count
 
     @languages_links_by_slug = Language.all.each_with_object({}) do |item, acc|
