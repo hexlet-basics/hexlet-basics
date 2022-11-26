@@ -1,5 +1,8 @@
 ru:
   web:
+    reviews:
+      index:
+        header: Отзывы
     admin:
       title: Админка Code-Basics
       languages:

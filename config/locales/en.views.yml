@@ -1,5 +1,8 @@
 en:
   web:
+    reviews:
+      index:
+        header: Reviews
     admin:
       title: Admin Code-Basics
       languages:

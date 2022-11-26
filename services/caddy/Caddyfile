@@ -22,15 +22,13 @@ http://hexletdev4.com {
 
   encode gzip
 
-  header {
-    Access-Control-Allow-Origin *
-    # Referrer-Policy unsafe-url
-  }
-
-  # automatic_https {
-  #   disable true
-  #   disable_redirects true
+  # header {
+  #   Access-Control-Allow-Origin *
+  #  # Referrer-Policy unsafe-url
   # }
+  # https://github.com/caddyserver/caddy/issues/2550
 
-  reverse_proxy web:3000
+  reverse_proxy web:3000 {
+    header_up X-Forwarded-Proto https
+  }
 }

@@ -5,6 +5,8 @@ en:
         application:
           dashboard: Dashboard
           languages: Languages
+          reviews: Reviews
+          blog_posts: Blog Posts
           users: Users
     shared:
       nav:
