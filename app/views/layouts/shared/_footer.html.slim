@@ -25,13 +25,17 @@ footer.bg-dark.text-light.flex-shrink-0
 
       .col.mb-4.mb-lg-0
         b = t('.all_courses')
-        - let completed_languages do |languages|
-            ul.list-unstyled.lh-lg
-              - languages.each do |lang|
-                li
-                  = link_to lang.name, language_path(lang.slug), class: 'text-decoration-none text-light'
+        .row.row-cols-2
+          - let completed_languages.in_groups(2) do |groups|
+            - groups.each do |group|
+              .col
+                ul.list-unstyled.lh-lg
+                  - group.each do |lang|
+                    li
+                      = link_to lang.name, language_path(lang.slug), class: 'text-decoration-none text-light'
 
       .col.mb-4.mb-lg-0
+        b = t('.useful')
         ul.list-unstyled.lh-lg
           li
             = link_to t('.blog'), blog_posts_path, class: 'text-decoration-none text-light'
