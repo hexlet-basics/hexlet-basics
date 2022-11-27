@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 class Web::Admin::ReviewsController < Web::Admin::ApplicationController
-  def index; end
+  def index
+    @reviews = Language.page(params[:page])
+  end
 
   def new; end
 

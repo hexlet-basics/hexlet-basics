@@ -24,22 +24,22 @@ services:
       - /tmp:/tmp
       - app_tmp:/app/tmp
     depends_on:
-      - solargraph
+      # - solargraph
       - spring
       - frontend
 
-  # https://github.com/neoclide/coc-solargraph#configuration-options
-  # external server
-  solargraph:
-    build: .
-    command: "bundle exec solargraph socket --host=0.0.0.0 --port=7658"
-    ports:
-      - "7658:7658"
-    env_file:
-      - .env
-    volumes:
-      - .:/app
-      - app_tmp:/app/tmp
+  # # https://github.com/neoclide/coc-solargraph#configuration-options
+  # # external server
+  # solargraph:
+  #   build: .
+  #   command: "bundle exec solargraph socket --host=0.0.0.0 --port=7658"
+  #   ports:
+  #     - "7658:7658"
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - .:/app
+  #     - app_tmp:/app/tmp
 
   spring:
     build: .
