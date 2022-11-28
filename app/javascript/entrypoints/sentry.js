@@ -19,7 +19,7 @@ Sentry.init({
     'Illegal invocation',
     'missing = in const declaration',
   ],
-  allowUrls: [/https?:\/\/((cdn|cdn2|ru)\.)?#{configus.host}/],
+  allowUrls: [/https?:\/\/((cdn|cdn2|ru)\.)?code-basics.com/],
   beforeSend(event, hint) {
     const stack = hint?.originalException?.stack || '';
     const errorInitiator = stack
