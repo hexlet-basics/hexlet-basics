@@ -5,8 +5,6 @@ class Web::HomeController < Web::ApplicationController
     @languages_in_development = Language.with_progress(:in_development).includes(:current_version)
     @language_members_by_language = current_user.language_members.index_by(&:language_id)
 
-    language_versions = Language::Version.where(current_language: @languages_completed)
-
     @js_course = Language.find_by slug: 'javascript'
     @html_course = Language.find_by slug: 'html'
 
@@ -19,7 +17,7 @@ class Web::HomeController < Web::ApplicationController
 
     @categories = Language::Category.all
 
-    gon.languages_for_widget = language_versions.pluck(:name)
+    gon.languages_for_widget = helpers.completed_languages.map(&:name)
 
     seo_tags = {
       title: t('.title'),
