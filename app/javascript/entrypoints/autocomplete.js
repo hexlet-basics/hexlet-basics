@@ -1,4 +1,6 @@
 import 'select2';
+// TODO: use setup webpack loader for eslint
+// eslint-disable-next-line import/no-unresolved
 import $ from 'jquery';
 
 // eslint-disable-next-line func-names
