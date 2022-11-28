@@ -6,6 +6,8 @@ ru:
           dashboard: Кабинет
           languages: Языки
           users: Пользователи
+          reviews: Отзывы
+          blog_posts: Посты в блоге
     shared:
       nav:
         blog: Блог

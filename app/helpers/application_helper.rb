@@ -157,11 +157,7 @@ module ApplicationHelper
   end
 
   def completed_languages
-    @completed_languages ||= Language.with_progress(:completed)
-                                     .joins(current_version: :infos)
-                                     .includes(:current_version)
-                                     .merge(Language::Version::Info.with_locale)
-                                     .ordered
+    @completed_languages ||= Language.with_progress(:completed).with_locale.ordered
   end
 
   def default_filter_form_options(options = {})

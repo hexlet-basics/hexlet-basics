@@ -70,9 +70,20 @@ csharp-ru:
   description: Описание
   locale: ru
 
-
 csharp-en:
   language: csharp
   language_version: csharp
   description: Description
   locale: en
+
+css-en:
+  language: css
+  language_version: css
+  description: Description
+  locale: en
+
+css-ru:
+  language: css
+  language_version: css
+  description: Описание
+  locale: ru
