@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_25_203900) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_28_022100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -23,6 +23,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_25_203900) do
     t.text "body"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "creator_id", null: false
+    t.index ["creator_id"], name: "index_blog_posts_on_creator_id"
     t.index ["language_id"], name: "index_blog_posts_on_language_id"
     t.index ["slug"], name: "index_blog_posts_on_slug", unique: true
   end
@@ -239,6 +241,18 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_25_203900) do
     t.index ["upload_id"], name: "languages_upload_id_index"
   end
 
+  create_table "reviews", force: :cascade do |t|
+    t.bigint "language_id", null: false
+    t.bigint "user_id", null: false
+    t.string "state"
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "locale"
+    t.index ["language_id"], name: "index_reviews_on_language_id"
+    t.index ["user_id"], name: "index_reviews_on_user_id"
+  end
+
   create_table "uploads", force: :cascade do |t|
     t.string "language_name", limit: 255
     t.datetime "inserted_at", precision: nil, null: false
@@ -274,6 +288,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_25_203900) do
   end
 
   add_foreign_key "blog_posts", "languages"
+  add_foreign_key "blog_posts", "users", column: "creator_id"
   add_foreign_key "language_lesson_members", "language_lessons", column: "lesson_id", name: "user_finished_lessons_language_module_lesson_id_fkey"
   add_foreign_key "language_lesson_members", "language_members"
   add_foreign_key "language_lesson_members", "users", name: "user_finished_lessons_user_id_fkey"
@@ -307,5 +322,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_25_203900) do
   add_foreign_key "languages", "language_categories", column: "category_id"
   add_foreign_key "languages", "language_versions", column: "current_version_id"
   add_foreign_key "languages", "uploads", name: "languages_upload_id_fkey"
+  add_foreign_key "reviews", "languages"
+  add_foreign_key "reviews", "users"
   add_foreign_key "user_accounts", "users", name: "user_accounts_user_id_fkey"
 end

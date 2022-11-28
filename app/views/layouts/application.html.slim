@@ -12,10 +12,9 @@ html.h-100 lang="#{I18n.locale}"
     header.container.mb-4.flex-shrink-0
       .py-2.border-bottom
         = render 'layouts/shared/nav'
-    = render 'layouts/shared/flash'
+    .container.flex-shrink-0
+      = render 'layouts/shared/flash'
     main.flex-grow-1
       = yield
     = render 'layouts/shared/footer'
-
-    - if supported_browser?
-      = yield :frontend
+    = render 'layouts/shared/frontend'

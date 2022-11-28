@@ -16,4 +16,6 @@ html.h-100 lang="#{I18n.locale}"
               = nav_menu_item t('.blog_posts'), admin_blog_posts_path
               = nav_menu_item t('.users'), admin_management_users_path
           .col-md-10
+            = render 'layouts/shared/flash'
             = yield
+    = render 'layouts/shared/frontend'

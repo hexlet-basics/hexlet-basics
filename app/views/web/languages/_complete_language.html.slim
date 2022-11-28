@@ -31,5 +31,4 @@
   .text-center.pt-2
     = link_to t('.hexlet_profs'), ExternalLinks.hexlet_profession_curl, target: '_blank', rel: :noopener
 
-- content_for :frontend do
-  = javascript_include_tag 'likely', defer: true
+= append_javascript_packs 'likely'

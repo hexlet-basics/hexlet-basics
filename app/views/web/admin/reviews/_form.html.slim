@@ -1,0 +1,4 @@
+= f.input :locale
+= f.association :user, collection: [], as: :autocomplete, source: search_admin_api_users_url(format: 'json')
+= f.input :body, input_html: { rows: 20 }
+= f.submit class: 'btn btn-primary'

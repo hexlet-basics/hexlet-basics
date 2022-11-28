@@ -4,7 +4,14 @@ en:
       index:
         header: Reviews
     admin:
-      title: Admin Code-Basics
+      blog_posts:
+        index:
+          header: Blog Posts
+          add_new_blog_post: Add New Blog Post
+      reviews:
+        index:
+          header: Reviews
+          add_new_review: Add New Review
       languages:
         index:
           languages: Languages

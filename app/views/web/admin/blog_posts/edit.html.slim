@@ -1,2 +1,4 @@
-h1 Web::Admin::BlogPosts#edit
-p Find me in app/views/web/admin/blog_posts/edit.html.slim
+h1= @blog_post
+
+= simple_form_for @blog_post, url: admin_blog_post_path(@blog_post) do |f|
+  = render 'form', f: f

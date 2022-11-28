@@ -9,7 +9,7 @@ class Web::BlogPostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should get show' do
-    post = blog_posts(:js)
+    post = blog_posts('from-full')
     get blog_post_url(id: post.slug)
     assert_response :success
   end

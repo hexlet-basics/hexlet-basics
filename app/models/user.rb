@@ -15,6 +15,8 @@ class User < ApplicationRecord
   has_many :lessons, through: :lesson_members, class_name: 'Language::Lesson'
   has_many :language_members, class_name: 'Language::Member', dependent: :destroy
   has_many :accounts, dependent: :destroy
+  has_many :reviews, dependent: :destroy
+  has_many :blog_posts, dependent: :destroy
 
   aasm :state do
     state :active, initial: true
@@ -53,9 +55,12 @@ class User < ApplicationRecord
     authenticate(password)
   end
 
-  def to_json(*_args)
-    attrs = attributes.extract! 'id', 'state', 'email', 'locale', 'created_at', 'nickname', 'first_name', 'last_name'
-    attrs.to_json
+  def to_s
+    if first_name? || last_name?
+      return "#{first_name} #{last_name}"
+    end
+
+    email
   end
 
   private

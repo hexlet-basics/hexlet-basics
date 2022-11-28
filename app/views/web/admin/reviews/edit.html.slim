@@ -1,2 +1,4 @@
-h1 Web::Admin::Reviews#edit
-p Find me in app/views/web/admin/reviews/edit.html.slim
+h1= @review
+
+= simple_form_for @review, url: admin_review_path(@review) do |f|
+  = render 'form', f: f

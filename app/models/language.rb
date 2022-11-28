@@ -25,6 +25,8 @@ class Language < ApplicationRecord
   has_many :versions, dependent: :destroy, class_name: '::Language::Version'
   has_many :infos, class_name: '::Language::Version::Info', dependent: :restrict_with_exception
   has_many :members, dependent: :destroy
+  has_many :reviews, dependent: :restrict_with_exception
+  has_many :blog_posts, dependent: :restrict_with_exception
 
   has_many :current_module_infos, through: :current_version, source: :module_infos
   has_many :current_lesson_infos, through: :current_version, source: :lesson_infos

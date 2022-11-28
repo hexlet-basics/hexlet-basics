@@ -1,2 +1,4 @@
-h1 Web::Admin::BlogPosts#new
-p Find me in app/views/web/admin/blog_posts/new.html.slim
+h1 New Blog Post
+
+= simple_form_for @blog_post, url: admin_blog_posts_path do |f|
+  = render 'form', f: f

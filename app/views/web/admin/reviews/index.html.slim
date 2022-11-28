@@ -1,2 +1,22 @@
-h1 Web::Admin::Reviews#index
-p Find me in app/views/web/admin/reviews/index.html.slim
+.d-flex.justify-content-between.align-items-center.mb-3
+  h1 = t('.header')
+  = link_to t('.add_new_review'), new_admin_language_path, class: 'btn btn-primary'
+
+table.table.my-2
+  thead
+    tr
+      th Id
+      th = sort_link(@search, :language)
+      th = sort_link(@search, :locale)
+      th = sort_link(@search, :user)
+      th = sort_link(@search, :state)
+      th
+  tbody
+    - @reviews.each do |review|
+      tr
+        td = review.id
+        td = review.locale
+        td = review.language
+        td = review.user
+        td = review.state
+        td = link_to 'Edit', edit_admin_review_path(review)

@@ -16,6 +16,9 @@ meta name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-f
 
 / = stylesheet_link_tag 'vendors'
 = stylesheet_link_tag 'application'
+= render_stylesheet_stored_packs
+= javascript_include_tag 'sentry', 'sprockets'
+
 javascript:
     var partytown = {
       forward: ['analytics'],
@@ -26,4 +29,4 @@ script src='/~partytown/partytown.js'
   = render 'layouts/deps/gtm_head'
   = render 'layouts/deps/renta_head'
 
-= javascript_include_tag 'sentry', 'sprockets', 'application', defer: true
+- prepend_javascript_packs 'application'

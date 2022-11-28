@@ -20,7 +20,8 @@ class Web::Admin::LanguagesControllerTest < ActionDispatch::IntegrationTest
   test 'create' do
     slug = 'racket'
 
-    post admin_languages_url, params: { language: { slug: slug } }
+    params = { language: { slug: slug } }
+    post admin_languages_url, params: params
     assert_response :redirect
 
     assert { Language.find_by(slug: slug) }

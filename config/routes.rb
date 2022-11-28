@@ -61,6 +61,14 @@ Rails.application.routes.draw do
       namespace :admin do
         root 'home#index'
 
+        namespace :api do
+          resources :users do
+            collection do
+              get :search
+            end
+          end
+        end
+
         resources :reviews
         resources :blog_posts
         resources :languages, only: %i[index new edit update create] do

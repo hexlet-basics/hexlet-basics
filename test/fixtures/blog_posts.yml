@@ -3,6 +3,16 @@ DEFAULTS: &DEFAULTS
   name: $LABEL
   body: $LABEL
   state: published
+  creator: full
 
-js:
+from-full:
   <<: *DEFAULTS
+  locale: ru
+
+from-full-ru:
+  <<: *DEFAULTS
+  locale: ru
+
+from-full-en:
+  <<: *DEFAULTS
+  locale: en

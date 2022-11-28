@@ -1,0 +1,17 @@
+DEFAULTS: &DEFAULTS
+  body: $LABEL
+  state: published
+  user: full
+  language: javascript
+  locale: <%= I18n.locale %>
+
+full-javascript:
+  <<: *DEFAULTS
+
+full-javascript-ru:
+  <<: *DEFAULTS
+  locale: ne
+
+full-javascript-en:
+  <<: *DEFAULTS
+  locale: ne
