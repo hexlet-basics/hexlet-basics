@@ -1,2 +1,4 @@
-h1 Web::BlogPosts#show
-p Find me in app/views/web/blog_posts/show.html.slim
+.container.mb-5
+  h1 = @blog_post
+
+  = markdown2html @blog_post.body

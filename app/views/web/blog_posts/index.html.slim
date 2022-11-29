@@ -1,3 +1,6 @@
-.container
+.container.mb-5
   h1 = t('.header')
-  | Under development
+
+  - @blog_posts.each do |post|
+    h2 = link_to post, blog_post_path(post.slug)
+    .lead = truncate post.body

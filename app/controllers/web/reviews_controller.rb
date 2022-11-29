@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 class Web::ReviewsController < Web::ApplicationController
-  def index; end
+  def index
+    @reviews = Review.published.page(params[:page])
+  end
 
-  def show; end
+  def show
+    @review = Review.published.find params[:id]
+  end
 end

@@ -10,7 +10,7 @@ class Web::BlogPostsControllerTest < ActionDispatch::IntegrationTest
 
   test 'should get show' do
     post = blog_posts('from-full')
-    get blog_post_url(id: post.slug)
+    get blog_post_url(post.slug)
     assert_response :success
   end
 end

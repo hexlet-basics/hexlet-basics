@@ -75,6 +75,7 @@ group :test do
   gem 'minitest-power_assert'
   gem 'selenium-webdriver'
   gem 'webdrivers'
+  gem 'whiny_validation'
 end
 
 group :production do

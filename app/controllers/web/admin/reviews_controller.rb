@@ -42,6 +42,6 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
   private
 
   def review_params
-    params.require(:review).permit(:user_id, :language_id, :locale, :body)
+    params.require(:review).permit(:user_id, :state_event, :language_id, :locale, :body)
   end
 end

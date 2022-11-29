@@ -1,2 +1,9 @@
-h1 Reviews#show
-p Find me in app/views/reviews/show.html.slim
+.container.mb-5
+  .mb-4
+    h1 = @review
+    .small
+      = @review.user
+      | &nbsp;
+      = link_to @review.language, language_path(@review.language.slug)
+
+  = simple_format @review.body

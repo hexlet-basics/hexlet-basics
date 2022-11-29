@@ -478,6 +478,9 @@ GEM
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    whiny_validation (1.0)
+      activemodel
+      activesupport
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yard (0.9.28)
@@ -556,6 +559,7 @@ DEPENDENCIES
   valid_email2
   web-console
   webdrivers
+  whiny_validation
 
 BUNDLED WITH
    2.3.7

@@ -1,5 +1,4 @@
 DEFAULTS: &DEFAULTS
-  body: $LABEL
   state: published
   user: full
   language: javascript
@@ -7,11 +6,14 @@ DEFAULTS: &DEFAULTS
 
 full-javascript:
   <<: *DEFAULTS
+  body: <%= Faker::Lorem.paragraph_by_chars %>
 
 full-javascript-ru:
   <<: *DEFAULTS
-  locale: ne
+  body: <%= Faker::Lorem.paragraph_by_chars %>
+  locale: en
 
 full-javascript-en:
   <<: *DEFAULTS
-  locale: ne
+  body: <%= Faker::Lorem.paragraph_by_chars %>
+  locale: en

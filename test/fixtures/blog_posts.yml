@@ -1,18 +1,20 @@
 DEFAULTS: &DEFAULTS
   slug: $LABEL
   name: $LABEL
-  body: $LABEL
   state: published
   creator: full
 
 from-full:
   <<: *DEFAULTS
+  body: <%= Faker::Lorem.paragraph_by_chars %>
   locale: ru
 
 from-full-ru:
   <<: *DEFAULTS
+  body: <%= Faker::Lorem.paragraph_by_chars %>
   locale: ru
 
 from-full-en:
   <<: *DEFAULTS
+  body: <%= Faker::Lorem.paragraph_by_chars %>
   locale: en

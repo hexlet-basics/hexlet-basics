@@ -15,6 +15,7 @@ table.table.my-2
     - @blog_posts.each do |blog_post|
       tr
         td = blog_post.id
+        td = blog_post.creator
         td = blog_post.locale
         td = blog_post.state
         td = blog_post.name
