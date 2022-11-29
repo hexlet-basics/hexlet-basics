@@ -29,6 +29,7 @@ class ExerciseLoader
       language_version.language.update!(current_version: language_version)
     end
   rescue StandardError => e
+    language_version.infos.map(&:destroy) # NOTE: may be invalid and don't allow to save version model, anyway not needed in this state
     language_version.result = "Error class: #{e.class} message: #{e.message}"
     language_version.mark_as_failed
     language_version.save(validate: false)
