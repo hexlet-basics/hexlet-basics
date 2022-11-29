@@ -6,6 +6,6 @@ class Web::BlogPostsController < Web::ApplicationController
   end
 
   def show
-    @blog_post = BlogPost.published.find_by! slug: (params[:id])
+    @blog_post = BlogPost.published.find_by!(slug: params[:id])
   end
 end

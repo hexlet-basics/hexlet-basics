@@ -8,7 +8,7 @@ module LocaleConcern
   end
 
   # NOTE: for en locale dont use path /en but /
-  def switch_locale(&action)
+  def switch_locale(&)
     extracted_locale = extract_locale_from_subdomain
     if extracted_locale
       locale = AppHost.locale_for_url(extracted_locale)
@@ -22,9 +22,9 @@ module LocaleConcern
     end
 
     if params[:locale].present?
-      I18n.with_locale(params[:locale], &action)
+      I18n.with_locale(params[:locale], &)
     else
-      I18n.with_locale(I18n.default_locale, &action)
+      I18n.with_locale(I18n.default_locale, &)
     end
   end
 
