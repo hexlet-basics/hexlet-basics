@@ -20,9 +20,11 @@ class Web::Admin::BlogPostsControllerTest < ActionDispatch::IntegrationTest
   test 'create' do
     lang = languages(:php)
 
-    params = { blog_post: {
-      name: 'name', language_id: lang.id, slug: 'ehu', locale: I18n.locale, body: 'body'
-    } }
+    params = {
+      blog_post: {
+        name: 'name', language_id: lang.id, slug: 'ehu', locale: I18n.locale, body: 'body'
+      }
+    }
     post admin_blog_posts_url, params: params
     assert_response :redirect
 

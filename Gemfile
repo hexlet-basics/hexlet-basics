@@ -7,6 +7,7 @@ gem 'aws-sdk-s3'
 
 gem 'configus'
 gem 'geocoder'
+gem 'image_processing'
 gem 'puma'
 gem 'rails'
 
