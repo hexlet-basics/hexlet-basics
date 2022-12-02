@@ -46,9 +46,6 @@ en:
         in_development: Coming soon
         in_development_description: Courses below are not in production at the moment. However, you can contribute by sending a pull request to Github repository.
       languages:
-        ready_to_start: Start
-        started: Continue
-        finished: Revisit
         courses: Courses
       reviews:
         reviews: Reviews
@@ -237,3 +234,5 @@ en:
     shared:
       via_social_networks:
         via_social_networks: With GitHub
+      languages:
+        course_finished: Course finished!
