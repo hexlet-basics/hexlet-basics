@@ -28,10 +28,6 @@ ru:
         try: Попробовать
         how_coding_works: Как работает обучение на code-basics
       languages:
-        course_finished: Курс пройден!
-        ready_to_start: Начать
-        started: Продолжить
-        finished: Повторить
         courses: Курсы
       stats:
         trusted_by: |
@@ -210,3 +206,5 @@ ru:
     shared:
       via_social_networks:
         via_social_networks: С помощью социальных сетей
+      languages:
+        course_finished: Курс пройден!
