@@ -1,0 +1,6 @@
+{
+  "**/*.{rb,rake,axlsx}": "bundle exec rubocop",
+  "**/*.scss": "npx stylelint",
+  "**/*.js?(x)": "npx eslint",
+  "**/*.html.slim": "bundle exec slim-lint"
+}

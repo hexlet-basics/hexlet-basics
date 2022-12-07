@@ -24,6 +24,9 @@ app-rails-console:
 app-setup-git-hooks:
 	docker-compose run --rm web npx simple-git-hooks
 
+app-lint-staged:
+	docker-compose run --rm web npx lint-staged --relative
+
 app-languages-load:
 	make app-language-load L='javascript'
 	make app-language-load L='php'
