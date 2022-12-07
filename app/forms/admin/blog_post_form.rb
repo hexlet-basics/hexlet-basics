@@ -5,4 +5,3 @@ class Admin::BlogPostForm < BlogPost
 
   permit :creator_id, :language_id, :body, :slug, :locale, :name, :cover
 end
-
