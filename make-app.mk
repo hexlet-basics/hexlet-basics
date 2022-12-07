@@ -19,6 +19,8 @@ language-load:
 	bin/rails exercises:load[${L}]
 
 fixtures-load:
+	# mkdir -p tmp/storage
+	# cp -rn test/files/* tmp/storage
 	bin/rails db:fixtures:load
 
 frontend: js-routes

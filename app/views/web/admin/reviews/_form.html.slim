@@ -1,5 +1,5 @@
 = f.input :locale
 = f.input :state_event, as: :aasm_state_event
-= f.association :user, collection: [], as: :autocomplete, source: search_admin_api_users_url(format: 'json')
+= f.association :user, as: :autocomplete, source: search_admin_api_users_url(format: 'json')
 = f.input :body, input_html: { rows: 20 }
 = f.submit class: 'btn btn-primary'

@@ -7,7 +7,7 @@ RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION} | bash -
 RUN apt-get install -y nodejs
 
 ENV DOCKER_CHANNEL stable
-ENV DOCKER_VERSION 20.10.20
+ENV DOCKER_VERSION 20.10.21
 
 RUN curl -fsSL "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/x86_64/docker-${DOCKER_VERSION}.tgz" \
 | tar -xzC /usr/local/bin --strip=1 docker/docker
@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y \
   bash-completion \
   libpq-dev \
   libsqlite3-dev \
+  libvips42 \
   && rm -rf /var/lib/apt/lists/*
 
 # ENV BUNDLE_PATH /root/hexlet-basics/vendor/bundle

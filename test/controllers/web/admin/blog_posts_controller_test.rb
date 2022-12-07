@@ -20,15 +20,11 @@ class Web::Admin::BlogPostsControllerTest < ActionDispatch::IntegrationTest
   test 'create' do
     lang = languages(:php)
 
-    params = {
-      blog_post: {
-        name: 'name', language_id: lang.id, slug: 'ehu', locale: I18n.locale, body: 'body'
-      }
-    }
-    post admin_blog_posts_url, params: params
+    attrs = attributes_for :blog_post, language_id: lang.id
+    post admin_blog_posts_url, params: { admin_blog_post_form: attrs }
     assert_response :redirect
 
-    assert { lang.blog_posts.find_by slug: params[:blog_post][:slug] }
+    assert { lang.blog_posts.find_by slug: attrs[:slug] }
   end
 
   test 'edit' do
@@ -41,7 +37,7 @@ class Web::Admin::BlogPostsControllerTest < ActionDispatch::IntegrationTest
   test 'update' do
     blog_post = blog_posts('from-full')
 
-    patch admin_blog_post_url(blog_post), params: { blog_post: { slug: 'mumu' } }
+    patch admin_blog_post_url(blog_post), params: { admin_blog_post_form: { slug: 'mumu' } }
     assert_response :redirect
 
     blog_post.reload

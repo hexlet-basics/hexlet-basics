@@ -8,15 +8,16 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
   end
 
   def new
-    @blog_post = BlogPost.new
+    @blog_post = Admin::BlogPostForm.new
+    @blog_post.creator = current_user
   end
 
   def edit
-    @blog_post = BlogPost.find(params[:id])
+    @blog_post = Admin::BlogPostForm.find(params[:id])
   end
 
   def create
-    @blog_post = BlogPost.new(blog_post_params)
+    @blog_post = Admin::BlogPostForm.new(params[:admin_blog_post_form])
     @blog_post.creator = current_user
 
     if @blog_post.save
@@ -29,20 +30,14 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
   end
 
   def update
-    @blog_post = BlogPost.find(params[:id])
+    @blog_post = Admin::BlogPostForm.find(params[:id])
 
-    if @blog_post.update(blog_post_params)
+    if @blog_post.update(params[:admin_blog_post_form])
       f(:success)
       redirect_to admin_blog_posts_path
     else
       f(:error)
       render :edit
     end
-  end
-
-  private
-
-  def blog_post_params
-    params.require(:blog_post).permit(:creator_id, :language_id, :body, :slug, :locale, :name)
   end
 end

@@ -1,0 +1,4 @@
+blog_post_from_full_cover:
+  name: cover
+  record: from-full (BlogPost)
+  blob: blog_post

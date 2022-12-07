@@ -2,11 +2,9 @@
 
 FactoryBot.define do
   factory :blog_post do
-    course { nil }
-    locale { 'MyString' }
-    state { 'MyString' }
-    slug { 'MyString' }
-    name { 'MyString' }
-    body { 'MyText' }
+    locale { I18n.locale }
+    slug { Faker::Internet.slug }
+    name { Faker::Name.first_name }
+    body { Faker::Lorem.paragraph_by_chars }
   end
 end

@@ -2,6 +2,8 @@
 
 class AutocompleteInput < SimpleForm::Inputs::CollectionSelectInput
   def input(wrapper_options = {})
+    # raise self.reflection.name.inspect
+    options[:collection] = [object.send(:"#{reflection.name}")]
     template.append_javascript_packs('autocomplete')
     # template.append_stylesheet_packs('autocomplete')
     # https://select2.org/configuration/defaults

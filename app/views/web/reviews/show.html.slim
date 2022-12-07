@@ -1,9 +1,11 @@
 .container.mb-5
-  .mb-4
-    h1 = @review
-    .small
-      = @review.user
-      | &nbsp;
-      = link_to @review.language, language_path(@review.language.slug)
+  .row.justify-content-center
+    .col-12.col-md-10.col-lg-8
+      .mb-5
+        h1 = @review
+        .small
+          = @review.user
+          | &nbsp;
+          = link_to @review.language, language_path(@review.language.slug)
 
-  = simple_format @review.body
+      = simple_format @review.body

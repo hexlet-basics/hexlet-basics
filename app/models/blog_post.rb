@@ -3,11 +3,15 @@
 class BlogPost < ApplicationRecord
   extend Enumerize
   include AASM
+  has_one_attached :cover do |attachable|
+    attachable.variant :thumb, resize_to_limit: [100, 100]
+    attachable.variant :list, resize_to_limit: [456, 215]
+  end
 
   enumerize :locale, in: I18n.available_locales
 
   validates :name, presence: true
-  validates :slug, presence: true, uniqueness: true, format: { with: /\A\w+\z/ }
+  validates :slug, presence: true, uniqueness: true, format: { with: /\A[\w-]+\z/ }
   validates :locale, presence: true
   validates :body, presence: true
 

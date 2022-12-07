@@ -1,0 +1,1 @@
+blog_post: <%= ActiveStorage::FixtureSet.blob filename: 'blog_post.webp', service_name: 'test' %>
