@@ -11,6 +11,8 @@ class Web::HomeController < Web::ApplicationController
     @user = User::SignUpForm.new
     @users_count = User.count
 
+    @blog_posts = BlogPost.published.last(2)
+
     @languages_links_by_slug = Language.all.each_with_object({}) do |item, acc|
       acc[item.slug.to_sym] = view_context.link_to(item, language_path(item.slug))
     end

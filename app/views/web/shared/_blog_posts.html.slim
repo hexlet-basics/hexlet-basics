@@ -1,0 +1,10 @@
+.row.row-cols-1.row-cols-sm-2.row-cols-md-3
+  - @blog_posts.each do |post|
+    .col
+      .card.border-0.mb-3
+        - if post.cover.attached?
+          = link_to blog_post_path(post.slug) do
+            = image_tag post.cover.variant(:list), class: 'card-img-top image-fluid'
+        .card-body
+          h2.card-title.fs-6 = link_to post, blog_post_path(post.slug), class: 'text-decoration-none'
+          .card-text = truncate post.body

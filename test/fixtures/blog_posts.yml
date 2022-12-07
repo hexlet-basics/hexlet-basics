@@ -11,10 +11,56 @@ from-full:
 
 from-full-ru:
   <<: *DEFAULTS
-  body: <%= Faker::Lorem.paragraph_by_chars %>
+  body: DRAFT
+  state: draft
   locale: ru
 
 from-full-en:
   <<: *DEFAULTS
+  body: DRAFT
+  state: draft
+  locale: en
+
+from-full-js:
+  <<: *DEFAULTS
   body: <%= Faker::Lorem.paragraph_by_chars %>
+  language: javascript
+  locale: ru
+
+from-full-ru-js:
+  <<: *DEFAULTS
+  body: <%= Faker::Lorem.paragraph_by_chars %>
+  language: javascript
+  locale: ru
+
+from-full-en-js:
+  <<: *DEFAULTS
+  body: |
+    ## Header 2
+    <%= Faker::Lorem.paragraph_by_chars %>
+    ## Header 3
+    <%= Faker::Lorem.paragraph_by_chars %>
+    ## Header 4
+    <%= Faker::Lorem.paragraph_by_chars %>
+    ## Header 5
+    <%= Faker::Lorem.paragraph_by_chars %>
+  language: javascript
+  locale: en
+
+from-full-php:
+  <<: *DEFAULTS
+  body: <%= Faker::Lorem.paragraph_by_chars %>
+  language: php
+  locale: ru
+
+from-full-ru-php:
+  <<: *DEFAULTS
+  body: <%= Faker::Lorem.paragraph_by_chars %>
+  language: php
+  locale: ru
+
+from-full-en-php:
+  <<: *DEFAULTS
+  body: <%= Faker::Lorem.paragraph_by_chars %>
+  language: php
   locale: en

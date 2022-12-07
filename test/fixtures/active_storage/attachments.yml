@@ -2,3 +2,13 @@ blog_post_from_full_cover:
   name: cover
   record: from-full (BlogPost)
   blob: blog_post
+
+blog_post_from_full_ru_cover:
+  name: cover
+  record: from-full-ru (BlogPost)
+  blob: blog_post
+
+blog_post_from_full_en_cover:
+  name: cover
+  record: from-full-en (BlogPost)
+  blob: blog_post

@@ -37,6 +37,8 @@ en:
           Learn the Code Basics of HTML, CSS and JavaScript with Interactive Coding Environment right in your Browser! Perfect for Beginners & 100% for Free | Join our Online Programming Courses
         reviews: Reviews
         all_reviews: All Reviews
+        blog_posts: Posts
+        all_blog_posts: All Blog Posts
         categories: Categories
         join: Join the %{count} learners for free. Forever.
         header: Learn to code. Online. For free.
@@ -88,6 +90,7 @@ en:
         header: Blog
     languages:
       show:
+        blog_posts: Blog Posts
         breadcrumbs: Breadcrumbs
         to_home_title: Home
         see_all_courses_in_category: See all courses in %{name}

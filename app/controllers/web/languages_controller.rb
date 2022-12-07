@@ -27,6 +27,7 @@ class Web::LanguagesController < Web::ApplicationController
     @next_lesson = current_user.not_finished_lessons_for_language(@language).ordered.first
 
     @similar_languages = Language.order('RANDOM()').except(@language).limit(4)
+    @blog_posts = @language.blog_posts.published
 
     human_language_header = [@language.current_version.name, @language.learn_as.text].join(' ')
     @header = @language_version_info.header || human_language_header
