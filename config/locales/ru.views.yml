@@ -45,6 +45,8 @@ ru:
         hexlet: Хекслета
         in_development: Курсы в разработке
         in_development_description: Данные курсы находятся в разработке и не являются финальной версией. Вы можете помочь в разработке, прислав Pull Request в репозиторий GitHub
+        blog_posts: Блог
+        all_blog_posts: Все статьи
     users:
       new:
         confirmation_html: Регистрируясь, вы соглашаетесь с условиями использования
