@@ -50,7 +50,7 @@ module ApplicationHelper
     }
     combined_options = default_options.merge options
 
-    # TODO: use HTMLWithHoc
+    # TODO: use HtmlWithHoc
     renderer = Redcarpet::Render::HTML.new(combined_options)
     markdown = Redcarpet::Markdown.new(renderer, combined_extensions)
     markdown.render(text)
