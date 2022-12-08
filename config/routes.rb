@@ -11,8 +11,8 @@ Rails.application.routes.draw do
     post '/auth/:provider', to: 'auth#request', as: :auth_request
     get '/auth/:provider/callback', to: 'auth#callback', as: :callback_auth
 
-    get '/403', to: 'errors#forbidden', as: :not_forbidden_errors
-    get '/404', to: 'errors#not_found', as: :not_found_errors
+    match '/403', to: 'errors#forbidden', via: :all
+    match '/404', to: 'errors#not_found', via: :all
     match '/500', to: 'errors#server_error', via: :all
   end
 
@@ -34,7 +34,6 @@ Rails.application.routes.draw do
       root 'home#index'
 
       get '/robots.:format' => 'home#robots', as: :robots
-
       resources :pages, only: %i[show]
       resources :blog_posts, only: %i[index show]
       resources :reviews, only: %i[index show]
