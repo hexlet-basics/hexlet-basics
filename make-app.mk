@@ -10,7 +10,7 @@ check: test lint vulnerability-check
 vulnerability-check:
 	bundle exec brakeman
 
-ci-check: lint
+ci-check: lint zeitwerk-check
 	bin/rails db:create
 	#ls -la public/packs-test
 	DISABLE_SPRING=1 bin/rails test
@@ -83,5 +83,8 @@ db-prepare:
 	bin/rails db:schema:load || true
 	bin/rails db:migrate || true
 	bin/rails db:fixtures:load || true
+
+zeitwerk-check:
+	RAILS_ENV=test bin/rails zeitwerk:check
 
 .PHONY: test
