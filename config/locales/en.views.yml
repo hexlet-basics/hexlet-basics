@@ -103,13 +103,13 @@ en:
         no_registration: Registration is not required
         lessons: "%{lessons_count} with practice in the browser"
         javascript_description: Programming learning is an interesting and exciting process. The syntax of the language is the simplest and shortest path, without which it is impossible to start. This free online JavaScript course will introduce you to the basic concepts of the language. Learn the basics and write your first JS programs.
-        php_description: The study of programming is a difficult and lengthy process. Learning the syntax of the language - it is impossible to start without it. This The course is devoted to the basics of writing programs for a PHP. He is preparing a springboard for writing meaningful programs.
-        python_description: The study of programming is a difficult and lengthy process. Learning the syntax of the language - it is impossible to start without it. This The course is devoted to the basics of writing programs for a racket. He is preparing a springboard for writing meaningful programs.
-        racket_description: The racket belongs to the Lisp-language family. These programmers should learn them from the very beginning. This module is about introducing the syntax and concepts underlying any lisp.
-        java_description: The study of programming is a difficult and lengthy process. Learning the syntax of the language - it is impossible to start without it. This The course is devoted to the basics of writing programs for a Java. He is preparing a springboard for writing meaningful programs.
+        php_description: The study of programming is a difficult and lengthy process. Learning the syntax of the language it is impossible to start without it. This The course is devoted to the basics of writing programs for a PHP. He is preparing a springboard for writing meaningful programs.
+        python_description: The study of programming is a difficult and lengthy process. Learning the syntax of the language it is impossible to start without it. This The course is devoted to the basics of writing programs for a racket. He is preparing a springboard for writing meaningful programs.
+        racket_description: The racket belongs to the Lisp language family. These programmers should learn them from the very beginning. This module is about introducing the syntax and concepts underlying any lisp.
+        java_description: The study of programming is a difficult and lengthy process. Learning the syntax of the language it is impossible to start without it. This The course is devoted to the basics of writing programs for a Java. He is preparing a springboard for writing meaningful programs.
         html_description: To standardize the output of text inside the browser, an HTML standard was created that describes the rules for formatting text data for correct output. This course is devoted to the basics of HTML markup, working with typography, outputting media documents and working with forms.
-        css_description: Cascading Style Sheets (CSS) - cascading style sheets that allow you to design the content of the page in accordance with the described rules. Text styles, block layout on a page, animation - everything is described using cascading style sheets.
-        ruby_description: Ruby is a language designed to make programmers happy. He took from himself the best of Lisp, Smalltalk and Perl - he is object-oriented, but at the same time his declarative nature allows writing in a procedural and functional paradigm.
+        css_description: Cascading Style Sheets (CSS) cascading style sheets that allow you to design the content of the page in accordance with the described rules. Text styles, block layout on a page, animation - everything is described using cascading style sheets.
+        ruby_description: Ruby is a language designed to make programmers happy. He took from himself the best of Lisp, Smalltalk and Perl he is object-oriented, but at the same time his declarative nature allows writing in a procedural and functional paradigm.
         elixir_description: Elixir is a programming language that runs on top of Erlang. How this happens is a functional language with rigorous computations, unambiguous assignment and dynamic typing, creation to support distributed, fault-tolerant, non-stop, hot-swappable applications.
         go_description: Go is a general-purpose language with rich features and clear syntax. Thanks to its multi-platform, reliable, well-documented standard library and focus on convenient approaches to the development itself, Go is an ideal language for the first steps in programming.
         clang_description: C is a universal programming language with a compact way of writing expressions, modern mechanisms for managing data structures, and a rich set of operators.
@@ -191,7 +191,7 @@ en:
     pages:
       about:
         title: About
-        meta_description: Code Basics - quality interactive lessons on programming basics for free, for everyone.
+        meta_description: Code Basics quality interactive lessons on programming basics for free, for everyone.
         projects_goal: The goal of Code Basics is to provide quality interactive lessons on the basics of programming, free of charge, available to everybody.
         extended_credits: "Idea, syllabus, platform: Kirill Mokevnin. Core lessons: Rakhim Davletkaliyev, Natalia Bass. Extensions and adaptation: Kirill Mokevnin, Ulugbek Tuychiev, Aleksey Pyltsyn and other Hexlet community members."
         contributions: Source code of Code Basics platform, all lessons and exercisees is available on GitHub. You can contribute by improving lessons, fixing mistakes and extending the content to cover more programming languages.
