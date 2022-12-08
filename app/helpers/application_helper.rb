@@ -21,7 +21,7 @@ module ApplicationHelper
     if options.key? :active_if
       'active' if options[:active_if]
     elsif current_page?(path)
-      'active text-white'
+      'active text-muted'
     end
   end
 
