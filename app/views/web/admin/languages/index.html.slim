@@ -19,8 +19,9 @@ table.table.my-2
         td = language.id
         td
           b = language.slug
-          - language.locales.each do |locale|
-            = link_to locale, language_path(language.slug, locale: locale), class: 'mx-1 text-decoration-none badge bg-secondary float-end'
+          - if language.current_version.present?
+            - language.current_version.locales.each do |locale|
+              = link_to locale, language_path(language.slug, locale: locale), class: 'mx-1 text-decoration-none badge bg-secondary float-end'
         td = language.progress
         td = language.learn_as
         td = language.order
