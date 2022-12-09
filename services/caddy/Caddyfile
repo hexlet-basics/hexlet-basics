@@ -17,6 +17,8 @@ localhost, code-basics.test {
   reverse_proxy web:3000
 }
 
+# TODO: try it with regular expressions
+
 http://hexletdev.com,
 http://hexletdev2.com,
 http://hexletdev3.com,
