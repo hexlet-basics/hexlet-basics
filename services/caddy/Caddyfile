@@ -17,7 +17,13 @@ localhost, code-basics.test {
   reverse_proxy web:3000
 }
 
-http://hexletdev4.com {
+http://hexletdev.com,
+http://hexletdev2.com,
+http://hexletdev3.com,
+http://hexletdev4.com,
+http://hexletdev5.com,
+http://hexletdev6.com,
+http://hexletdev7.com {
   # root /packs/* /etc/caddy/public/packs
 
   encode gzip
