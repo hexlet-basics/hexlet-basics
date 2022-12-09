@@ -3,6 +3,7 @@ ru:
     reviews:
       index:
         header: Отзывы
+        empty: Похоже, что тут пока ничего нет
     admin:
       title: Админка Code-Basics
       languages:
@@ -83,6 +84,7 @@ ru:
     blog_posts:
       index:
         header: Блог
+        empty: Похоже, что тут пока ничего нет
     languages:
       show:
         breadcrumbs: Хлебные крошки
