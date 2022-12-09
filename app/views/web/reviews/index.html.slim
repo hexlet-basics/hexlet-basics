@@ -2,8 +2,10 @@
   .row.justify-content-center
     .col-12.col-md-10.col-lg-8
       h1.mb-5 = t('.header')
-
-      - @reviews.each do |review|
-        .mb-5
-          h2 = link_to review, review_path(review)
-          .lead = truncate review.body, length: 180
+      - if @reviews.any?
+        - @reviews.each do |review|
+          .mb-5
+            h2 = link_to review, review_path(review)
+            .lead = truncate review.body, length: 180
+      - else
+        p = t('.empty')

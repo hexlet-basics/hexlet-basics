@@ -3,6 +3,7 @@ en:
     reviews:
       index:
         header: Reviews
+        empty: Looks like there is noting yet
     admin:
       blog_posts:
         index:
@@ -88,6 +89,7 @@ en:
     blog_posts:
       index:
         header: Blog
+        empty: Looks like there is noting yet
     languages:
       show:
         blog_posts: Blog Posts
