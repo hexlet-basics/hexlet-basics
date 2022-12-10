@@ -13,6 +13,6 @@
                 = image_tag post.cover.variant(:list), class: 'card-img-top image-fluid'
             .card-body
               h2.card-title = link_to post, blog_post_path(post.slug)
-              .card-text.lead = truncate post.body
+              .card-text.lead = post.description
       - else
         p = t('.empty')

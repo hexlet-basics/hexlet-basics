@@ -46,15 +46,22 @@ module ApplicationHelper
       escape_html: false,
       hard_wrap: true,
       prettify: true,
+      with_toc_data: true,
       link_attributes: { target: '_blank' }
     }
     combined_options = default_options.merge options
 
     # TODO: use HtmlWithHoc
-    # renderer = HTMLWithHoc.new(combined_options)
-    renderer = Redcarpet::Render::HTML.new(combined_options)
-    markdown = Redcarpet::Markdown.new(renderer, combined_extensions)
-    markdown.render(text)
+    # renderer = ::HtmlWithHoc.new(combined_options)
+    # # renderer = Redcarpet::Render::HTML.new(combined_options)
+    # markdown = Redcarpet::Markdown.new(renderer, combined_extensions)
+    # markdown.render(text)
+
+    html_toc = Redcarpet::Markdown.new(Redcarpet::Render::HTML_TOC)
+    markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(combined_options), combined_extensions)
+    toc  = html_toc.render(text)
+    html = markdown.render(text)
+    "#{toc}#{html}"
   end
 
   def current_breadcrumb(lesson_version, lesson_version_info, langugage_lessons_count)
