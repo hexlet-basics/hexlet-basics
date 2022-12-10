@@ -1,5 +1,8 @@
 ru:
   web:
+    language_categories:
+      show:
+        blog_posts: Посты в блоге
     reviews:
       index:
         header: Отзывы
@@ -82,6 +85,11 @@ ru:
         dont_have_account: Нет аккаунта?
         register: Регистрация
     blog_posts:
+      show:
+        to_home_title: Домой
+        breadcrumbs: Хлебные крошки
+        blog_posts: Рекомендованные статьи
+        courses: Рекомендованные курсы
       index:
         header: Блог
         empty: Похоже, что тут пока ничего нет

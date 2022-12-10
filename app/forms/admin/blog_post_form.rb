@@ -3,5 +3,5 @@
 class Admin::BlogPostForm < BlogPost
   include ActiveFormModel
 
-  permit :creator_id, :language_id, :body, :slug, :locale, :name, :cover
+  permit :creator_id, :language_id, :body, :slug, :locale, :name, :cover, :description
 end

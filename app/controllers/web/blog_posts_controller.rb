@@ -8,7 +8,7 @@ class Web::BlogPostsController < Web::ApplicationController
   def show
     @blog_post = BlogPost.published.find_by!(slug: params[:id])
 
-    @category = @blog_post.language&.category
+    @category = @blog_post.category
     @blog_posts = []
     @languages = []
     if @category

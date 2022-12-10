@@ -1,5 +1,8 @@
 en:
   web:
+    language_categories:
+      show:
+        blog_posts: Blog Posts
     reviews:
       index:
         header: Reviews
@@ -87,6 +90,11 @@ en:
         dont_have_account: New to Code-Basics?
         register: Sign up
     blog_posts:
+      show:
+        to_home_title: To home
+        breadcrumbs: Breadcrumbs
+        blog_posts: Recommended Posts
+        courses: Recommended Courses
       index:
         header: Blog
         empty: Looks like there is noting yet

@@ -14,8 +14,10 @@ class BlogPost < ApplicationRecord
   validates :slug, presence: true, uniqueness: true, format: { with: /\A[\w-]+\z/ }
   validates :locale, presence: true
   validates :body, presence: true
+  validates :description, presence: true
 
   belongs_to :language, optional: true
+  has_one :category, through: :language, class_name: 'Language::Category'
   belongs_to :creator, class_name: 'User'
 
   aasm column: :state do

@@ -7,29 +7,34 @@ DEFAULTS: &DEFAULTS
 from-full:
   <<: *DEFAULTS
   body: <%= Faker::Lorem.paragraph_by_chars %>
+  description: <%= Faker::Lorem.paragraph %>
   locale: ru
 
 from-full-ru:
   <<: *DEFAULTS
   body: DRAFT
+  description: <%= Faker::Lorem.paragraph %>
   state: draft
   locale: ru
 
 from-full-en:
   <<: *DEFAULTS
   body: DRAFT
+  description: <%= Faker::Lorem.paragraph %>
   state: draft
   locale: en
 
 from-full-js:
   <<: *DEFAULTS
   body: <%= Faker::Lorem.paragraph_by_chars %>
+  description: <%= Faker::Lorem.paragraph %>
   language: javascript
   locale: ru
 
 from-full-ru-js:
   <<: *DEFAULTS
   body: <%= Faker::Lorem.paragraph_by_chars %>
+  description: <%= Faker::Lorem.paragraph %>
   language: javascript
   locale: ru
 
@@ -50,17 +55,20 @@ from-full-en-js:
 from-full-php:
   <<: *DEFAULTS
   body: <%= Faker::Lorem.paragraph_by_chars %>
+  description: <%= Faker::Lorem.paragraph %>
   language: php
   locale: ru
 
 from-full-ru-php:
   <<: *DEFAULTS
   body: <%= Faker::Lorem.paragraph_by_chars %>
+  description: <%= Faker::Lorem.paragraph %>
   language: php
   locale: ru
 
 from-full-en-php:
   <<: *DEFAULTS
   body: <%= Faker::Lorem.paragraph_by_chars %>
+  description: <%= Faker::Lorem.paragraph %>
   language: php
   locale: en

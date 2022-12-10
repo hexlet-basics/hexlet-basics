@@ -13,14 +13,15 @@
     .row.g-4.row-cols-1.row-cols-sm-2.row-cols-lg-3
       = render 'reviews'
 
-.mb-5.pb-5
-  .container
-    .d-flex
-      h2.me-auto.mt-auto = t('.blog_posts')
-      .mt-auto = link_to t('.all_blog_posts'), reviews_path, class: 'text-decoration-none text-muted small'
-    hr.mb-5.mt-1
-    .row.row-cols-sm-2.row-cols-1
-      = render 'blog_posts'
+- if @blog_posts.any?
+  .mb-5.pb-5
+    .container
+      .d-flex
+        h2.me-auto.mt-auto = t('.blog_posts')
+        .mt-auto = link_to t('.all_blog_posts'), blog_posts_path, class: 'text-decoration-none text-muted small'
+      hr.mb-5.mt-1
+      .row.row-cols-sm-2.row-cols-md-3.row-cols-1
+        = render 'blog_posts'
 
 - if I18n.locale == :ru
   .mb-5.pb-2

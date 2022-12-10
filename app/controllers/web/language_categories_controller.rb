@@ -7,5 +7,7 @@ class Web::LanguageCategoriesController < Web::ApplicationController
     @category = Language::Category.find_by! slug: params[:id]
     @language_members_by_language = current_user.language_members.index_by(&:language_id)
     @languages = @category.languages.with_locale.ordered
+
+    @blog_posts = @category.blog_posts.published.limit(3)
   end
 end

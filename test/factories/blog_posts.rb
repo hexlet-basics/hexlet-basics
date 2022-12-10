@@ -6,5 +6,6 @@ FactoryBot.define do
     slug { Faker::Internet.slug }
     name { Faker::Name.first_name }
     body { Faker::Lorem.paragraph_by_chars }
+    description { Faker::Lorem.paragraph }
   end
 end
