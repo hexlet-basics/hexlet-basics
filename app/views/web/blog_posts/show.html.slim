@@ -2,7 +2,7 @@
   .row.justify-content-center
     .col-12.col-md-10.col-lg-8
 
-      - # TODO: extract schema to ld+json
+      / TODO: extract schema to ld+json
       nav aria-label=t('.breadcrumbs')
         ol.breadcrumb.mb-2 itemscope="itemscope" itemtype="https://schema.org/BreadcrumbList"
           li.breadcrumb-item itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem"
@@ -19,7 +19,7 @@
       h1.mb-5 = @blog_post
 
       == markdown2html @blog_post.body
-      - # add info about author
+      / add info about author
 
       - if @blog_posts.any?
         .my-5
@@ -28,9 +28,9 @@
           hr.mt-1.mb-4
           = render 'web/shared/blog_posts', blog_posts: @blog_posts
 
-      - if @category
-      .my-5
-        .d-flex
-          h2.me-auto.mt-auto = t('.courses')
-        hr.mt-1.mb-4
-        = render 'web/shared/languages', languages: @languages, rows_class: 'row-cols-2 row-cols-md-3'
+      - if @languages.any?
+        .my-5
+          .d-flex
+            h2.me-auto.mt-auto = t('.courses')
+          hr.mt-1.mb-4
+          = render 'web/shared/languages', languages: @languages, rows_class: 'row-cols-2 row-cols-md-3'

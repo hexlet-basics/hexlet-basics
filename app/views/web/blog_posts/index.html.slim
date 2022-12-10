@@ -2,9 +2,9 @@
   .row.justify-content-center
     .col-12.col-md-10.col-lg-8
       h1.mb-5 = t('.header')
-      - # https://blog.udemy.com/
-      - # Add block with popular articles
-      - # block with articles divided by categories
+      / https://blog.udemy.com/
+      / Add block with popular articles
+      / block with articles divided by categories
       - if @blog_posts.any?
         - @blog_posts.each do |post|
           .card.border-0.mb-5
