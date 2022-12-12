@@ -9,7 +9,6 @@ class Web::HomeController < Web::ApplicationController
     @html_course = Language.find_by slug: 'html'
 
     @user = User::SignUpForm.new
-    @users_count = User.count
 
     @blog_posts = BlogPost.published.last(3)
 
