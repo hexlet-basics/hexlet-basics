@@ -5,22 +5,26 @@
 # Table name: users
 #
 #  id                   :bigint           not null, primary key
-#  first_name           :string(255)
-#  last_name            :string(255)
-#  email                :string(255)
-#  nickname             :string(255)
-#  github_uid           :integer
-#  updated_at           :datetime         not null
-#  facebook_uid         :string(255)
-#  password_digest      :string(255)
+#  admin                :boolean
 #  confirmation_token   :string(255)
+#  email                :string(255)
+#  email_delivery_state :string(255)
+#  facebook_uid         :string(255)
+#  first_name           :string(255)
+#  github_uid           :integer
+#  help                 :boolean
+#  last_name            :string(255)
+#  locale               :string(255)
+#  nickname             :string(255)
+#  password_digest      :string(255)
 #  reset_password_token :string(255)
 #  state                :string(255)
-#  locale               :string(255)
-#  email_delivery_state :string(255)
-#  admin                :boolean
 #  created_at           :datetime         not null
-#  help                 :boolean
+#  updated_at           :datetime         not null
+#
+# Indexes
+#
+#  index_users_on_email  (email) UNIQUE WHERE ((state)::text <> 'removed'::text)
 #
 FactoryBot.define do
   factory :user do

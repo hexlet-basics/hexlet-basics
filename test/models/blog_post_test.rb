@@ -5,16 +5,27 @@
 # Table name: blog_posts
 #
 #  id          :bigint           not null, primary key
-#  language_id :bigint
-#  locale      :string
-#  state       :string
-#  slug        :string
-#  name        :string
 #  body        :text
+#  description :string
+#  locale      :string
+#  name        :string
+#  slug        :string
+#  state       :string
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  creator_id  :bigint           not null
-#  description :string
+#  language_id :bigint
+#
+# Indexes
+#
+#  index_blog_posts_on_creator_id   (creator_id)
+#  index_blog_posts_on_language_id  (language_id)
+#  index_blog_posts_on_slug         (slug) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (creator_id => users.id)
+#  fk_rails_...  (language_id => languages.id)
 #
 require 'test_helper'
 

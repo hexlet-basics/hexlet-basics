@@ -5,13 +5,23 @@
 # Table name: language_modules
 #
 #  id          :bigint           not null, primary key
+#  order       :integer
 #  slug        :string(255)
 #  state       :string(255)
-#  order       :integer
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
 #  language_id :bigint
 #  upload_id   :bigint
-#  updated_at  :datetime         not null
-#  created_at  :datetime         not null
+#
+# Indexes
+#
+#  language_modules_language_id_index  (language_id)
+#  language_modules_upload_id_index    (upload_id)
+#
+# Foreign Keys
+#
+#  language_modules_language_id_fkey  (language_id => languages.id)
+#  language_modules_upload_id_fkey    (upload_id => uploads.id)
 #
 class Language::Module < ApplicationRecord
   belongs_to :language

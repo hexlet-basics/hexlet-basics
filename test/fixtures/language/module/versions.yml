@@ -3,12 +3,24 @@
 # Table name: language_module_versions
 #
 #  id                  :bigint           not null, primary key
-#  language_id         :bigint           not null
-#  language_version_id :bigint           not null
-#  module_id           :bigint           not null
 #  order               :integer
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
+#  language_id         :bigint           not null
+#  language_version_id :bigint           not null
+#  module_id           :bigint           not null
+#
+# Indexes
+#
+#  index_language_module_versions_on_language_id          (language_id)
+#  index_language_module_versions_on_language_version_id  (language_version_id)
+#  index_language_module_versions_on_module_id            (module_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (language_id => languages.id)
+#  fk_rails_...  (language_version_id => language_versions.id)
+#  fk_rails_...  (module_id => language_modules.id)
 #
 ---
 

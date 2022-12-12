@@ -7,14 +7,22 @@
 #  exercise_filename      :string
 #  exercise_test_filename :string
 #  extension              :string
+#  learn_as               :string
 #  name                   :string
-#  state                  :string
+#  progress               :string
 #  result                 :string
-#  language_id            :bigint           not null
+#  state                  :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  learn_as               :string
-#  progress               :string
+#  language_id            :bigint           not null
+#
+# Indexes
+#
+#  index_language_versions_on_language_id  (language_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (language_id => languages.id)
 #
 ---
 

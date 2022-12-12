@@ -5,12 +5,22 @@
 # Table name: language_members
 #
 #  id                     :bigint           not null, primary key
-#  language_id            :bigint           not null
-#  user_id                :bigint           not null
+#  finished_lessons_count :integer          default(0), not null
 #  state                  :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  finished_lessons_count :integer          default(0), not null
+#  language_id            :bigint           not null
+#  user_id                :bigint           not null
+#
+# Indexes
+#
+#  index_language_members_on_language_id  (language_id)
+#  index_language_members_on_user_id      (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (language_id => languages.id)
+#  fk_rails_...  (user_id => users.id)
 #
 class Language::Member < ApplicationRecord
   include AASM

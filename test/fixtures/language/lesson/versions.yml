@@ -3,18 +3,32 @@
 # Table name: language_lesson_versions
 #
 #  id                  :bigint           not null, primary key
+#  natural_order       :integer
 #  order               :integer
 #  original_code       :string
+#  path_to_code        :string
 #  prepared_code       :string
 #  test_code           :string
-#  natural_order       :integer
-#  path_to_code        :string
-#  language_version_id :bigint           not null
-#  language_id         :bigint           not null
-#  lesson_id           :bigint           not null
-#  module_version_id   :bigint           not null
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
+#  language_id         :bigint           not null
+#  language_version_id :bigint           not null
+#  lesson_id           :bigint           not null
+#  module_version_id   :bigint           not null
+#
+# Indexes
+#
+#  index_language_lesson_versions_on_language_id          (language_id)
+#  index_language_lesson_versions_on_language_version_id  (language_version_id)
+#  index_language_lesson_versions_on_lesson_id            (lesson_id)
+#  index_language_lesson_versions_on_module_version_id    (module_version_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (language_id => languages.id)
+#  fk_rails_...  (language_version_id => language_versions.id)
+#  fk_rails_...  (lesson_id => language_lessons.id)
+#  fk_rails_...  (module_version_id => language_module_versions.id)
 #
 ---
 
