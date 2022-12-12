@@ -14,7 +14,13 @@
 ### Steps
 
 **Add to _/etc/hosts_:**
-  127.0.0.1 code-basics.test ru.code-basics.test
+  127.0.0.1 code-basics.test
+
+**Clone project**
+
+Some lsp servers are fully workable only when the root dir is the same inside and outside the container. That is why we set WORKDIR to `/opt/projects/hexlet-basics`. So, if it is possible, clone this project to that directory.
+
+**Run**
 
 ```bash
 make project-setup

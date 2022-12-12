@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# == Route Map
+#
+
 Rails.application.routes.draw do
   # require 'sidekiq/web'
   # mount Sidekiq::Web => '/sidekiq', constraints: AdminConstraint.new

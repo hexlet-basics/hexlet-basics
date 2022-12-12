@@ -1,5 +1,17 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: language_members
+#
+#  id                     :bigint           not null, primary key
+#  language_id            :bigint           not null
+#  user_id                :bigint           not null
+#  state                  :string
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  finished_lessons_count :integer          default(0), not null
+#
 class Language::Member < ApplicationRecord
   include AASM
 

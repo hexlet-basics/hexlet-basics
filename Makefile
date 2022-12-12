@@ -30,4 +30,9 @@ next-tag:
 	make tag TAG=$(shell bin/generate_next_tag)
 
 editor-setup:
+	bundle
+	bundle exec annotate --models
+	# bundle exec annotate --routes
+	# bundle exec solargraph bundle
+	bundle exec yard gems
 	bundle exec solargraph bundle

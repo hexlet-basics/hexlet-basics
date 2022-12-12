@@ -9,6 +9,27 @@ services:
     volumes:
       - redis:/data
 
+  solargraph:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: bundle exec solargraph stdio
+    env_file:
+      - .env
+    volumes:
+      - .:/opt/projects/hexlet-basics
+
+  sorbet:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: bundle exec srb tc --lsp
+    env_file:
+      - .env
+    volumes:
+      - .:/opt/projects/hexlet-basics
+
+
   web:
     build:
       context: .
@@ -18,11 +39,11 @@ services:
       - .env
     volumes:
       - ~/.bash_history:/root/.bash_history
-      - .:/app
+      - .:/opt/projects/hexlet-basics
       - /var/run/docker.sock:/var/run/docker.sock
       # NOTE: контейнер с тестами моунтит /tmp с хоста, а не из локального волюма global_tmp
       - /tmp:/tmp
-      - app_tmp:/app/tmp
+      - app_tmp:/opt/projects/hexlet-basics/tmp
     depends_on:
       # - solargraph
       - spring
@@ -48,17 +69,17 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/app
+      - .:/opt/projects/hexlet-basics
       - /var/run/docker.sock:/var/run/docker.sock
-      - app_tmp:/app/tmp
+      - app_tmp:/opt/projects/hexlet-basics/tmp
       - global_tmp:/tmp
 
   sidekiq:
     build: .
     command: bundle exec sidekiq
     volumes:
-      - .:/app
-      - app_tmp:/app/tmp
+      - .:/opt/projects/hexlet-basics
+      - app_tmp:/opt/hexlet-basics/tmp
       - /var/run/docker.sock:/var/run/docker.sock
       - global_tmp:/tmp
     env_file:
@@ -78,8 +99,8 @@ services:
     ports:
       - "8888:8888"
     volumes:
-      - app_tmp:/app/tmp
-      - .:/app
+      - app_tmp:/opt/projects/hexlet-basics/tmp
+      - .:/opt/projects/hexlet-basics
 
   webserver:
     image: caddy:2.6

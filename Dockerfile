@@ -1,4 +1,6 @@
-FROM ruby:3.1.2
+FROM ruby:3.1.3
+
+# RUN bundle config --global frozen 1
 
 ENV NODE_VERSION 19.x
 
@@ -21,7 +23,8 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 # ENV BUNDLE_PATH /root/hexlet-basics/vendor/bundle
-ENV PROJECT_ROOT /app
+ENV PROJECT_ROOT /opt/projects/hexlet-basics
+RUN mkdir -p ${PROJECT_ROOT}
 
 # NOTE: for initial make project-setup
 RUN mkdir -p /app/public

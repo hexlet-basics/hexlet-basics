@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if [ -z "$(docker-compose ps -q solargraph --filter="status=running")" ]; then
+  docker compose run -i solargraph 2>/dev/null
+else
+  echo 'Already started. Skip...'
+fi

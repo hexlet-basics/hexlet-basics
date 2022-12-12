@@ -58,16 +58,19 @@ group :development, :test do
 end
 
 group :development do
+  gem 'annotate'
   gem 'i18n-debug'
   # gem 'listen'
   gem 'bullet'
   gem 'derailed_benchmarks'
-  gem 'rubocop'
-  gem 'rubocop-performance'
-  gem 'rubocop-rails'
-  gem 'rubocop-rake'
-  gem 'rubocop-rspec'
-  gem 'solargraph-rails'
+  gem 'rubocop', require: false
+  gem 'rubocop-performance', require: false
+  gem 'rubocop-rails', require: false
+  gem 'rubocop-rake', require: false
+  gem 'rubocop-rspec', require: false
+  gem 'solargraph', require: false
+  gem 'solargraph-rails', require: false
+  gem 'sorbet', require: false
   gem 'web-console'
 end
 
