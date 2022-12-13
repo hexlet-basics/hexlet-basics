@@ -47,18 +47,13 @@ make local-cluster-setup
 
 ### Deploy
 
-сделать новый тег
-дождаться его, когда придет оповещение в #projects-disqus-auto что тег готов
-поменять версию values
-потом helm upgrade app
-
 * Create new tag via command:
 
   ```bash
   make next-tag
   ```
 
-* Wait notification about ready tag in Slack channel `#projects-disqus-auto`
+* Wait notification about ready tag in Slack channel `#sideprojects-code-auto` or wait [Github Actions](https://github.com/hexlet-basics/hexlet-basics/actions/workflows/release.yml)
 * Change version in [k8s/hb-app-chart/values.yaml](/k8s/hb-app-chart/values.yaml) and then:
 
   ```bash
