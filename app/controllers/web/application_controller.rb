@@ -23,14 +23,34 @@ class Web::ApplicationController < ApplicationController
   end
 
   before_action do
-    @language_version_infos = Language::Version::Info
-                              .with_locale
-                              .joins(language_version: :current_language)
-                              .includes(:language, :language_version)
     @language_categories = Language::Category.all
+    @language_menu_data = build_language_menu_data
   end
 
   private
+
+  def build_language_menu_data
+    languages_multicolumns_treshold = 10
+
+    scope = Language::Version::Info
+            .with_locale
+            .ordered
+            .includes(:language, :language_version)
+            .joins(language_version: :current_language)
+
+    completed_language_version_infos = scope.completed
+    incompleted_language_version_infos = scope.incompleted
+    languages_count = scope.size
+
+    # NOTE: Если мало языков нет смысла разбивать на несколько колонок
+    columns_count = languages_count < languages_multicolumns_treshold ? 1 : 2
+
+    {
+      completed: completed_language_version_infos,
+      incompleted: incompleted_language_version_infos,
+      columns_count: columns_count
+    }
+  end
 
   def prepare_locale_settings
     # NOTE: never redirect bots

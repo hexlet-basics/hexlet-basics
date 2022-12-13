@@ -38,6 +38,14 @@ $utilities: map.merge(
         15: 15rem,
       )
     ),
+    "x-min-width": (
+      property: min-width,
+      class: 'x-mw',
+      values: (
+        320: 320px,
+        160: 160px,
+      )
+    ),
   )
 );
 

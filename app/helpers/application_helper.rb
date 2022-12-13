@@ -172,4 +172,15 @@ module ApplicationHelper
   def default_filter_form_options(options = {})
     { method: 'get', wrapper: :filter_input, html: { class: 'row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 gx-2 align-items-end' }, url: url_for, defaults: { required: false, label: false } }.merge(options)
   end
+
+  def language_menu_min_width_class(columns_count)
+    case columns_count
+    when 1
+      'x-mw-160'
+    when 2
+      'x-mw-320'
+    else
+      raise "Invalid languages menu columns count: #{columns_count}"
+    end
+  end
 end

@@ -9,6 +9,8 @@ en:
           blog_posts: Blog Posts
           users: Users
     shared:
+      language_menu:
+        in_development: In development
       nav:
         blog: Blog
         about: About
