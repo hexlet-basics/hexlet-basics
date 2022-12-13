@@ -6,6 +6,5 @@ hexlet_basics_run_user_home: "{{ lookup('env','HOME') }}"
 hexlet_basics_env_file: "{{ lookup('env','PWD') }}/.env"
 hexlet_basics_node_env: development
 hexlet_basics_app_host: "code-basics.test"
-hexlet_basics_app_ru_host: "ru.code-basics.test"
 hexlet_basics_app_scheme: "https"
 hexlet_basics_redis_url: redis://redis:6379
