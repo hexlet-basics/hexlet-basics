@@ -30,11 +30,13 @@
   .mb-3.d-flex.justify-content-center
     .me-4
       - if @lesson_version.prev_lesson
-        | ←&nbsp;
-        = link_to t('.prev'), language_lesson_path(resource_language.slug, @lesson_version.prev_lesson.slug), class: 'text-black text-decoration-none'
+        = link_to language_lesson_path(resource_language.slug, @lesson_version.prev_lesson.slug), class: 'd-inline-block text-black text-decoration-none' do
+          span.me-2 ←
+          span = t('.prev')
     - if @lesson_version.next_lesson
-      = link_to t('.next'), language_lesson_path(resource_language.slug, @lesson_version.next_lesson.slug), class: 'text-black text-decoration-none'
-      | &nbsp;→
+      = link_to language_lesson_path(resource_language.slug, @lesson_version.next_lesson.slug), class: 'd-inline-block text-black text-decoration-none' do
+        span.me-2 = t('.next')
+        span →
 
 - if @info.definitions.any? || @info.tips.any?
   hr.my-4
