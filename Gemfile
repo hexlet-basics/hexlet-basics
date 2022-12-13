@@ -97,6 +97,10 @@ gem 'rails-i18n'
 gem 'redcarpet'
 gem 'sidekiq', '6.5.8'
 gem 'simple_form'
+
+# NOTE: to fix domain: :all in cookie_store settings https://github.com/rails/rails/pull/46595
+gem 'cgi', '~>0.3.6'
+
 gem 'sitemap_generator'
 gem 'slim-rails'
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
