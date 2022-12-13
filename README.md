@@ -45,6 +45,26 @@ export DIGITALOCEAN_ACCESS_TOKEN=<your token>
 make local-cluster-setup
 ```
 
+### Deploy
+
+сделать новый тег
+дождаться его, когда придет оповещение в #projects-disqus-auto что тег готов
+поменять версию values
+потом helm upgrade app
+
+* Create new tag via command:
+
+  ```bash
+  make next-tag
+  ```
+
+* Wait notification about ready tag in Slack channel `#projects-disqus-auto`
+* Change version in [k8s/hb-app-chart/values.yaml](/k8s/hb-app-chart/values.yaml) and then:
+
+  ```bash
+  make -C k8s helm-upgrade-app
+  ```
+
 ---
 
 [![Hexlet Ltd. logo](https://raw.githubusercontent.com/Hexlet/assets/master/images/hexlet_logo128.png)](https://hexlet.io/?utm_source=github&utm_medium=referral&utm_campaign=hexlet&utm_content=hexlet-basics)
