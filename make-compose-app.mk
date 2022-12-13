@@ -25,7 +25,7 @@ app-setup-git-hooks:
 	docker-compose run --rm web npx simple-git-hooks
 
 app-lint-staged:
-	docker-compose run --rm -t web npx lint-staged --relative
+	docker compose run -T --rm web npx lint-staged --relative
 
 app-languages-load:
 	make app-language-load L='javascript'
