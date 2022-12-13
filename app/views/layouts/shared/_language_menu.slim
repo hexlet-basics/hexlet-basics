@@ -1,5 +1,5 @@
-div class=class_names('dropdown-menu', language_menu_min_width_class(@language_menu_data[:columns_count]))
-  .row
+.dropdown-menu class=language_menu_min_width_class(@language_menu_data[:columns_count])
+  .row class="row-cols-#{@language_menu_data[:columns_count]}"
     - @language_menu_data[:completed].each do |info|
       .col
         = link_to language_path(info.language.slug), class: 'dropdown-item py-2 d-flex align-items-center'
@@ -7,8 +7,8 @@ div class=class_names('dropdown-menu', language_menu_min_width_class(@language_m
           span = info.language_version.name
 
   - if @language_menu_data[:incompleted].any?
-    h4.dropdown-header.col-sm-12 = t('.in_development')
-    .row
+    h4.dropdown-header.col-12 = t('.in_development')
+    .row class="row-cols-#{@language_menu_data[:columns_count]}"
       - @language_menu_data[:incompleted].each do |info|
         .col
           = link_to language_path(info.language.slug), class: 'dropdown-item py-2 d-flex align-items-center'
