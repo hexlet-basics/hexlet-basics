@@ -25,7 +25,8 @@
     ul.ps-4
       - @info.definitions.each do |definition|
         li
-          p == markdown2html("#{definition['name']} - #{definition['description']}")
+          / NOTE: add different separators for different locales
+          p == markdown2html("#{definition['name']}#{t('.separator')}#{definition['description']}")
 
   .mb-3.d-flex.justify-content-center
     .me-4
