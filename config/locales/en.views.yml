@@ -166,6 +166,7 @@ en:
           tips: Tips
           prev: Previous
           next: Next
+          separator: ' '
         show:
           navigation: Navigation
           discuss: Discuss
