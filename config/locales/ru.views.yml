@@ -109,6 +109,7 @@ ru:
         ready: Готовы попробовать?
         no_registration: Регистрация не требуется
         lessons: "%{lessons_count} с практикой в браузере"
+        blog_posts: Посты в блоге
       complete_language:
         continue: Продолжить обучение
         grats: Поздравляем!
