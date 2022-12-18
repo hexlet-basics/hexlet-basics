@@ -17,7 +17,7 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/opt/projects/hexlet-basics
+      - .:${WORKING_DIRECTORY}
 
   sorbet:
     build:
@@ -27,7 +27,7 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/opt/projects/hexlet-basics
+      - .:${WORKING_DIRECTORY}
 
 
   web:
@@ -39,11 +39,11 @@ services:
       - .env
     volumes:
       - ~/.bash_history:/root/.bash_history
-      - .:/opt/projects/hexlet-basics
+      - .:${WORKING_DIRECTORY}
       - /var/run/docker.sock:/var/run/docker.sock
       # NOTE: контейнер с тестами моунтит /tmp с хоста, а не из локального волюма global_tmp
       - /tmp:/tmp
-      - app_tmp:/opt/projects/hexlet-basics/tmp
+      - app_tmp:${WORKING_DIRECTORY}/tmp
     depends_on:
       # - solargraph
       - spring
@@ -69,17 +69,17 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/opt/projects/hexlet-basics
+      - .:${WORKING_DIRECTORY}
       - /var/run/docker.sock:/var/run/docker.sock
-      - app_tmp:/opt/projects/hexlet-basics/tmp
+      - app_tmp:${WORKING_DIRECTORY}/tmp
       - global_tmp:/tmp
 
   sidekiq:
     build: .
     command: bundle exec sidekiq
     volumes:
-      - .:/opt/projects/hexlet-basics
-      - app_tmp:/opt/hexlet-basics/tmp
+      - .:${WORKING_DIRECTORY}
+      - app_tmp:${WORKING_DIRECTORY}/tmp
       - /var/run/docker.sock:/var/run/docker.sock
       - global_tmp:/tmp
     env_file:
@@ -99,8 +99,8 @@ services:
     ports:
       - "8888:8888"
     volumes:
-      - app_tmp:/opt/projects/hexlet-basics/tmp
-      - .:/opt/projects/hexlet-basics
+      - app_tmp:${WORKING_DIRECTORY}/tmp
+      - .:${WORKING_DIRECTORY}
 
   webserver:
     image: caddy:2.6
