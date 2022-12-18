@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ProviderSchema
+class FaqSchema
   class << self
     def to_builder
       Jbuilder.new do |json|
