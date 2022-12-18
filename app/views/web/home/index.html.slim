@@ -51,3 +51,6 @@
 /   = render 'stats'
 
 - append_javascript_packs 'welcome-page'
+
+- content_for :meta do
+  = structured_data_tag @builder

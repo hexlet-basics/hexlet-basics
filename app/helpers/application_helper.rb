@@ -7,6 +7,13 @@ module ApplicationHelper
     yield value
   end
 
+  def structured_data_tag(builder)
+    content = builder.attributes!
+    content['@context'] = 'https://schema.org'
+    json = content.to_json
+    tag.script(json.html_safe, type: 'application/ld+json')
+  end
+
   def nav_menu_item(name, path = '#', options = {}, &block)
     assembled_options = options.merge(class: "nav-link text-dark #{options[:class]} #{active?(path)}".chomp)
     block_content = block ? capture(&block) : ''
@@ -23,11 +30,6 @@ module ApplicationHelper
     elsif current_page?(path)
       'active text-muted'
     end
-  end
-
-  def structured_data_tag(path, args = {})
-    content = render partial: "schemas/#{path}", formats: [:json], locals: args
-    tag.script(content.html_safe, type: 'application/ld+json')
   end
 
   def markdown2html(text, options = {}, extensions = {})

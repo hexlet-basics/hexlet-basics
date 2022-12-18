@@ -18,6 +18,8 @@ class Web::HomeController < Web::ApplicationController
 
     @categories = Language::Category.all
 
+    @builder = ProviderSchema.to_builder
+
     gon.languages_for_widget = helpers.completed_languages.map(&:name)
 
     seo_tags = {
