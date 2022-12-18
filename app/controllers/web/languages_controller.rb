@@ -5,6 +5,8 @@ class Web::LanguagesController < Web::ApplicationController
     @language = Language.find_by!(slug: params[:id])
     @language_version_info = @language.current_version.infos.find_by!(locale: I18n.locale)
 
+    @builder = CourseSchema.to_builder(@language, @language_version_info)
+
     if @language.progress_in_development?
       f('.language_in_development_html', type: :info, values: { language: @language.to_s, link_to_repo: ExternalLinks.source_code_curl }, now: true)
     end

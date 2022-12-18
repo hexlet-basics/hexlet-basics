@@ -9,3 +9,6 @@
           = link_to @review.language, language_path(@review.language.slug)
 
       = simple_format @review.body
+
+/ - content_for :meta do
+/   = structured_data_tag @builder

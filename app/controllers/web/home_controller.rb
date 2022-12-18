@@ -18,7 +18,12 @@ class Web::HomeController < Web::ApplicationController
 
     @categories = Language::Category.all
 
-    @builder = ProviderSchema.to_builder
+    completed_languages = Language.with_progress(:completed).with_locale.ordered
+    infos = Language::Version::Info.where(locale: I18n.locale, language: completed_languages)
+    infos_by_language = infos.index_by { |item| item.language.id }
+    item_builders = completed_languages.map { |l| CourseSchema.to_builder(l, infos_by_language.fetch(l.id)) }
+
+    @builder = ItemListSchema.to_builder(item_builders)
 
     gon.languages_for_widget = helpers.completed_languages.map(&:name)
 

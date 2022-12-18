@@ -7,5 +7,6 @@ class Web::ReviewsController < Web::ApplicationController
 
   def show
     @review = Review.published.find params[:id]
+    # @builder = ReviewSchema.to_builder(@review)
   end
 end

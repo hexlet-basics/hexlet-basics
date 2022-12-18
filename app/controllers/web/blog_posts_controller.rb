@@ -15,5 +15,7 @@ class Web::BlogPostsController < Web::ApplicationController
       @blog_posts = @category.blog_posts.except(@blog_post).limit(3)
       @languages = @category.languages.limit(3)
     end
+
+    # TODO: add https://developers.google.com/search/docs/appearance/structured-data/article
   end
 end

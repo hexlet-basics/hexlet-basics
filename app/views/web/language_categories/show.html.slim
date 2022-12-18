@@ -10,3 +10,6 @@
         h2.me-auto.mt-auto = t('.blog_posts')
       hr.mt-1.mb-4
       = render 'web/shared/blog_posts', blog_posts: @blog_posts
+
+- content_for :meta do
+  = structured_data_tag @builder

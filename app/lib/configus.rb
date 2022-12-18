@@ -6,7 +6,7 @@ Configus.build Rails.env do
 
     protocol :https
     host 'code-basics.com'
-    https_host 'https://ru.code-basics.com'
+    https_host 'https://code-basics.com'
 
     github do
       app_id ENV.fetch('GITHUB_CLIENT_ID', nil)

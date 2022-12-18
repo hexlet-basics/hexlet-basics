@@ -28,5 +28,5 @@
           h3.mb-3 = t('possibilities.question', scope: 'faq.main')
           == markdown2html t('possibilities.answer', scope: 'faq.main')
 
-= content_for :meta do
-  = structured_data_tag 'faq', faq: faq
+/ = content_for :meta do
+/   = structured_data_tag 'faq', faq: faq
