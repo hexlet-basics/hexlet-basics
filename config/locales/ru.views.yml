@@ -21,6 +21,10 @@ ru:
             users: Пользователи
           filter:
             from: Начал прохождение с
+      reviews:
+        index:
+          header: Отзывы
+          add_new_review: Добавить новый отзыв
     home:
       reviews:
         reviews: Отзывы
