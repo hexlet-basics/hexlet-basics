@@ -2,7 +2,7 @@
 
 class Web::BlogPostsController < Web::ApplicationController
   def index
-    @blog_posts = BlogPost.published.page(params[:page])
+    @blog_posts = BlogPost.published.with_locale.page(params[:page])
   end
 
   def show

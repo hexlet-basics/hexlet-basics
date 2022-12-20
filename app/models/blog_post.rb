@@ -30,6 +30,8 @@
 class BlogPost < ApplicationRecord
   extend Enumerize
   include AASM
+  include BlogPostRepository
+
   has_one_attached :cover do |attachable|
     attachable.variant :thumb, resize_to_limit: [100, 100]
     attachable.variant :list, resize_to_limit: [456, 215]
