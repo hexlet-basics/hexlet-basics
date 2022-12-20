@@ -6,6 +6,8 @@
 #
 #  id          :bigint           not null, primary key
 #  body        :text
+#  first_name  :string
+#  last_name   :string
 #  locale      :string
 #  state       :string
 #  created_at  :datetime         not null

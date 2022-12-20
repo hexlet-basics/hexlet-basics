@@ -20,13 +20,11 @@ class Web::Admin::ReviewsControllerTest < ActionDispatch::IntegrationTest
   test 'create' do
     lang = languages(:php)
 
-    params = { review: {
-      user_id: @user.id, language_id: lang.id, body: 'ehu', locale: I18n.locale
-    } }
-    post admin_reviews_url, params: params
+    attrs = attributes_for :review, language_id: lang.id, user_id: @user.id, locale: I18n.locale
+    post admin_reviews_url, params: { admin_review_form: attrs }
     assert_response :redirect
 
-    assert { lang.reviews.find_by body: params[:review][:body] }
+    assert { lang.reviews.find_by body: attrs[:body] }
   end
 
   test 'edit' do
@@ -39,7 +37,7 @@ class Web::Admin::ReviewsControllerTest < ActionDispatch::IntegrationTest
   test 'update' do
     review = reviews('full-javascript')
 
-    patch admin_review_url(review), params: { review: { body: 'mumu' } }
+    patch admin_review_url(review), params: { admin_review_form: { body: 'mumu' } }
     assert_response :redirect
 
     review.reload

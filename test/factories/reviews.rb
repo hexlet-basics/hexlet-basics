@@ -6,6 +6,8 @@
 #
 #  id          :bigint           not null, primary key
 #  body        :text
+#  first_name  :string
+#  last_name   :string
 #  locale      :string
 #  state       :string
 #  created_at  :datetime         not null
@@ -25,9 +27,9 @@
 #
 FactoryBot.define do
   factory :review do
-    language { nil }
-    user { nil }
-    state { 'MyString' }
-    body { 'MyText' }
+    first_name { Faker::Name.first_name }
+    last_name { Faker::Name.last_name }
+    state { 'published' }
+    body { Faker::Lorem.paragraph_by_chars }
   end
 end

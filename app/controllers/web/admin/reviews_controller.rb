@@ -8,15 +8,15 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
   end
 
   def new
-    @review = Review.new
+    @review = Admin::ReviewForm.new
   end
 
   def edit
-    @review = Review.find(params[:id])
+    @review = Admin::ReviewForm.find(params[:id])
   end
 
   def create
-    @review = Review.new(review_params)
+    @review = Admin::ReviewForm.new(params[:admin_review_form])
 
     if @review.save
       f(:success)
@@ -28,20 +28,14 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
   end
 
   def update
-    @review = Review.find(params[:id])
+    @review = Admin::ReviewForm.find(params[:id])
 
-    if @review.update(review_params)
+    if @review.update(params[:admin_review_form])
       f(:success)
       redirect_to admin_reviews_path
     else
       f(:error)
       render :edit
     end
-  end
-
-  private
-
-  def review_params
-    params.require(:review).permit(:user_id, :state_event, :language_id, :locale, :body)
   end
 end

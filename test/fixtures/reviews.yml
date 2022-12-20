@@ -4,6 +4,8 @@
 #
 #  id          :bigint           not null, primary key
 #  body        :text
+#  first_name  :string
+#  last_name   :string
 #  locale      :string
 #  state       :string
 #  created_at  :datetime         not null
@@ -20,10 +22,14 @@
 #
 #  fk_rails_...  (language_id => languages.id)
 #  fk_rails_...  (user_id => users.id)
-#
+
+---
+
 DEFAULTS: &DEFAULTS
   state: published
   user: full
+  first_name: First Name
+  last_name: First Name
   language: javascript
   locale: <%= I18n.locale %>
 

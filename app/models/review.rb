@@ -6,6 +6,8 @@
 #
 #  id          :bigint           not null, primary key
 #  body        :text
+#  first_name  :string
+#  last_name   :string
 #  locale      :string
 #  state       :string
 #  created_at  :datetime         not null
@@ -31,6 +33,8 @@ class Review < ApplicationRecord
 
   validates :locale, presence: true
   validates :body, presence: true
+  validates :first_name, presence: true
+  validates :last_name, presence: true
 
   belongs_to :language
   belongs_to :user
@@ -50,6 +54,6 @@ class Review < ApplicationRecord
   end
 
   def to_s
-    "#{user} (#{locale})"
+    "#{first_name} #{last_name}"
   end
 end
