@@ -2,7 +2,7 @@
 
 class Web::ReviewsController < Web::ApplicationController
   def index
-    @reviews = Review.published.page(params[:page])
+    @reviews = Review.published.with_locale.page(params[:page])
   end
 
   def show

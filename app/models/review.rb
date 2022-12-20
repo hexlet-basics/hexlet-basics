@@ -28,6 +28,7 @@
 class Review < ApplicationRecord
   extend Enumerize
   include AASM
+  include ReviewRepository
 
   enumerize :locale, in: I18n.available_locales
 

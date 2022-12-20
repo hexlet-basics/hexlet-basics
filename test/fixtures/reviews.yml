@@ -40,7 +40,7 @@ full-javascript:
 full-javascript-ru:
   <<: *DEFAULTS
   body: <%= Faker::Lorem.paragraph_by_chars %>
-  locale: en
+  locale: ru
 
 full-javascript-en:
   <<: *DEFAULTS
