@@ -69,7 +69,7 @@ class Web::ApplicationController < ApplicationController
       else
         # root page, no subdomain, never changed locale
         ru_country_codes = ['RU']
-        if ru_country_codes.include?(country_by_ip)
+        if locale_from_accept_language_header == :ru || ru_country_codes.include?(country_by_ip)
           redirect_to root_url(locale: :ru), allow_other_host: true
         end
       end
@@ -81,5 +81,9 @@ class Web::ApplicationController < ApplicationController
 
   def country_by_ip
     @country_by_ip ||= Geocoder.search(request.remote_ip).first&.country_code || 'EN'
+  end
+
+  def locale_from_accept_language_header
+    request.env['HTTP_ACCEPT_LANGUAGE']&.scan(/^[a-z]{2}/)&.first&.downcase&.to_sym
   end
 end
