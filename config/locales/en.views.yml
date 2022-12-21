@@ -134,7 +134,8 @@ en:
         bash_description: Bash is command language
         fortran_description: Fortran is a general-purpose, compiled imperative programming language that is especially suited to numeric computation and scientific computing
         kotlin_description: Kotlin is a cross-platform, statically typed, general-purpose programming language with type inference
-        rust_description: Rust is a multi-paradigm, general-purpose programming language. Rust emphasizes performance, type safety, and concurrency.
+        rust_description: Rust is a multi-paradigm, general-purpose programming language. Rust emphasizes performance, type safety, and concurrency
+        perl_description: Perl is a highly capable, feature-rich programming language with over 30 years of development
 
 
       lessons:

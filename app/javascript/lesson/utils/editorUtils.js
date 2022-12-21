@@ -34,6 +34,7 @@ const langToTabSizeMapping = {
   kotlin: 4,
   swift: 2,
   rust: 4,
+  perl: 4,
 };
 
 export const langToSpacesMapping = {
@@ -63,6 +64,7 @@ export const langToSpacesMapping = {
   kotlin: true,
   swift: true,
   rust: true,
+  perl: true,
 };
 
 const defaultTabSize = 4;
