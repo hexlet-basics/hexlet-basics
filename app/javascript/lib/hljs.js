@@ -25,8 +25,10 @@ import bash from 'highlight.js/lib/languages/bash';
 import fortran from 'highlight.js/lib/languages/fortran';
 import haskell from 'highlight.js/lib/languages/haskell';
 import rust from 'highlight.js/lib/languages/rust';
+import perl from 'highlight.js/lib/languages/perl';
 
 const langs = {
+  perl,
   rust,
   haskell,
   fortran,

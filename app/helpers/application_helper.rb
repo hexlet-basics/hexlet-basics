@@ -113,7 +113,8 @@ module ApplicationHelper
       'fortran' => 'x-bg-purple',
       'kotlin' => 'x-bg-purple',
       'swift' => 'x-bg-orange',
-      'rust' => 'x-bg-blue'
+      'rust' => 'x-bg-blue',
+      'perl' => 'x-bg-gray'
     }
     mapping[slug]
   end
