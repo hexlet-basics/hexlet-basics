@@ -26,8 +26,10 @@ import fortran from 'highlight.js/lib/languages/fortran';
 import haskell from 'highlight.js/lib/languages/haskell';
 import rust from 'highlight.js/lib/languages/rust';
 import perl from 'highlight.js/lib/languages/perl';
+import ocaml from 'highlight.js/lib/languages/ocaml';
 
 const langs = {
+  ocaml,
   perl,
   rust,
   haskell,

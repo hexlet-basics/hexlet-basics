@@ -114,7 +114,8 @@ module ApplicationHelper
       'kotlin' => 'x-bg-purple',
       'swift' => 'x-bg-orange',
       'rust' => 'x-bg-blue',
-      'perl' => 'x-bg-gray'
+      'perl' => 'x-bg-gray',
+      'ocaml' => 'x-bg-blue'
     }
     mapping[slug]
   end
