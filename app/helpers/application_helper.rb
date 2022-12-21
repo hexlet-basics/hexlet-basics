@@ -15,7 +15,7 @@ module ApplicationHelper
   end
 
   def nav_menu_item(name, path = '#', options = {}, &block)
-    assembled_options = options.merge(class: "nav-link text-dark #{options[:class]} #{active?(path)}".chomp)
+    assembled_options = options.merge(class: "nav-link #{options[:class]} #{active?(path)}".chomp)
     block_content = block ? capture(&block) : ''
     link = link_to name, path, assembled_options
     tag.li class: 'nav-item' do
@@ -28,7 +28,7 @@ module ApplicationHelper
     if options.key? :active_if
       'active' if options[:active_if]
     elsif current_page?(path)
-      'active text-muted'
+      'active text-light'
     end
   end
 
