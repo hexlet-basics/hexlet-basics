@@ -9,3 +9,5 @@ ru:
         new:
           email: Email
           password: Пароль
+  inputs:
+    current_state: ''
