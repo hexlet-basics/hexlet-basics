@@ -29,7 +29,7 @@ DEFAULTS: &DEFAULTS
   state: published
   user: full
   first_name: First Name
-  last_name: First Name
+  last_name: Last Name
   language: javascript
   locale: <%= I18n.locale %>
 
