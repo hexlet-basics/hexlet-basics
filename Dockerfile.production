@@ -17,7 +17,7 @@ RUN npm ci
 COPY Gemfile .
 COPY Gemfile.lock .
 
-RUN bundle install --jobs 2
+RUN bundle install --jobs $(nproc)
 
 COPY . .
 
