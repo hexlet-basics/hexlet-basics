@@ -1,4 +1,5 @@
-FROM ruby:3.1.3
+ARG RUBY_VERSION=3.1.3-jemalloc
+FROM quay.io/evl.ms/fullstaq-ruby:${RUBY_VERSION}-slim
 
 # RUN bundle config --global frozen 1
 
@@ -6,7 +7,7 @@ ENV NODE_VERSION 19.x
 
 RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION} | bash -
 
-RUN apt-get install -y nodejs
+RUN apt-get install -y nodejs git
 
 ENV DOCKER_CHANNEL stable
 ENV DOCKER_VERSION 20.10.21
