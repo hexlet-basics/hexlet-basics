@@ -34,8 +34,8 @@ export default {
     clean: {
       keep: /.keep/,
     },
-    // https://srivishnu.totakura.in/2022/01/19/overcoming-challenges-with-jsbundling-rails-with-webpack-5-on-production
-    // .html#chunks-sourcemaps-and-asset-pipeline-sprockets
+    // eslint-disable-next-line max-len
+    // https://srivishnu.totakura.in/2022/01/19/overcoming-challenges-with-jsbundling-rails-with-webpack-5-on-production.html#chunks-sourcemaps-and-asset-pipeline-sprockets
     filename: '[name].js',
     chunkFilename: '[name]-[contenthash].digested.js',
     sourceMapFilename: '[file]-[fullhash].digested.map',

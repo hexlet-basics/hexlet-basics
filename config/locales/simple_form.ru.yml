@@ -10,4 +10,4 @@ ru:
           email: Email
           password: Пароль
   inputs:
-    current_state: ''
+    current_state: 'Текущий стейт:'

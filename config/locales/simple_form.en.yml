@@ -15,8 +15,6 @@ en:
         new:
           email: Email
           password: Password
-  inputs:
-    current_state: ''
     # Examples
     # labels:
     #   defaults:
@@ -36,3 +34,5 @@ en:
     # prompts:
     #   defaults:
     #     age: 'Select your age'
+  inputs:
+    current_state: 'Current state:'
