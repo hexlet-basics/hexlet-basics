@@ -14,6 +14,11 @@ ru:
         index:
           languages: Языки
           add_new_language: Добавить новый язык
+        new:
+          new_language: Новый язык
+      home:
+        index:
+          dashboard: Кабинет
       management:
         title: Пользователи
         users:
@@ -26,10 +31,14 @@ ru:
         index:
           header: Отзывы
           add_new_review: Добавить новый отзыв
+        new:
+          new_review: Новый отзыв
       blog_posts:
         index:
           header: Посты в блоге
           add_new_blog_post: Добавить новый пост
+        new:
+          new_blog_post: Новый пост
     home:
       reviews:
         reviews: Отзывы

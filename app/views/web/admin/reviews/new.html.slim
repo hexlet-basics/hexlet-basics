@@ -1,4 +1,5 @@
-h1 New Review
+h1
+  = t('.new_review')
 
 = simple_form_for @review, url: admin_reviews_path do |f|
   = render 'form', f: f

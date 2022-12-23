@@ -13,14 +13,23 @@ en:
         index:
           header: Blog Posts
           add_new_blog_post: Add New Blog Post
+        new:
+          new_blog_post: New Blog Post
       reviews:
         index:
           header: Reviews
           add_new_review: Add New Review
+        new:
+          new_review: New Review
       languages:
         index:
           languages: Languages
           add_new_language: Add new language
+        new:
+          new_language: New Language
+      home:
+        index:
+          dashboard: Dashboard
       management:
         users:
           filter:

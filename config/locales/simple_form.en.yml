@@ -34,3 +34,5 @@ en:
     # prompts:
     #   defaults:
     #     age: 'Select your age'
+  inputs:
+    current_state: 'Current state:'
