@@ -1,9 +1,7 @@
 ---
-
-version: '3'
+version: "3"
 
 services:
-
   redis:
     image: redis:6.2.7
     volumes:
@@ -28,7 +26,6 @@ services:
       - .env
     volumes:
       - .:${WORKING_DIRECTORY}
-
 
   web:
     build:
