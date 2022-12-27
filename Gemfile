@@ -39,6 +39,8 @@ gem 'sentry-rails'
 gem 'sentry-ruby'
 gem 'sentry-sidekiq'
 
+gem 'sorbet-rails'
+
 # gem 'stimulus-rails'
 # gem 'turbo-rails'
 
