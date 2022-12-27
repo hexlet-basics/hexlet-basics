@@ -137,6 +137,8 @@ en:
         rust_description: Rust is a multi-paradigm, general-purpose programming language. Rust emphasizes performance, type safety, and concurrency
         perl_description: Perl is a highly capable, feature-rich programming language with over 30 years of development
         ocaml_description: OCaml is a general-purpose, industrial-strength programming language with an emphasis on expressiveness and safety
+        dart_description: Dart is a general purpose, strongly typed compiled language. Used to develop mobile and web applications.
+        crystal_description: Crystal is a general-purpose object-oriented programming language designed and developed by Arie Borenzweig, Juan Weinerman, and Brian Cardiff.
 
 
       lessons:
