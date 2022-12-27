@@ -1,6 +1,10 @@
 en:
   flash:
     web:
+      google_auth:
+        one_tap:
+          success: You have signed in successfully. You can start learning now.
+          failure: We couldn't get data from Google! Requires setting up your Google account!
       languages:
         show:
           warning: The Language has lessons only in russian. Switch locale if you can read it :)
