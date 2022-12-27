@@ -21,7 +21,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: bundle exec srb tc --lsp
+    command: bundle exec srb tc --lsp --disable-watchman
     env_file:
       - .env
     volumes:

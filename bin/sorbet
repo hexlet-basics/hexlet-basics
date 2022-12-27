@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [ -z "$(docker-compose ps -q sorbet --filter="status=running")" ]; then
+if [ -z "$(docker compose ps -q sorbet --filter="status=running")" ]; then
   docker compose run -i sorbet 2>/dev/null
 else
   echo 'Already started. Skip...'

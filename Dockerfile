@@ -23,13 +23,17 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 # NOTE: for sorbet
+WORKDIR /var/tmp
+
 RUN wget -O watchman.zip https://github.com/facebook/watchman/releases/download/v2022.12.26.00/watchman-v2022.12.26.00-linux.zip && unzip watchman.zip
-RUN cd watchman-v2022.12.26.00-linux \
-  mkdir -p /usr/local/{bin,lib} /usr/local/var/run/watchman \
-  cp bin/* /usr/local/bin \
-  cp lib/* /usr/local/lib \
-  chmod 755 /usr/local/bin/watchman \
-  chmod 2777 /usr/local/var/run/watchman
+
+WORKDIR /var/tmp/watchman-v2022.12.26.00-linux
+
+RUN mkdir -p /usr/local/{bin,lib} /usr/local/var/run/watchman
+RUN cp bin/* /usr/local/bin
+RUN cp lib/* /usr/local/lib
+RUN chmod 755 /usr/local/bin/watchman
+RUN chmod 2777 /usr/local/var/run/watchman
 
 # ENV BUNDLE_PATH /root/hexlet-basics/vendor/bundle
 ENV PROJECT_ROOT /opt/projects/hexlet-basics

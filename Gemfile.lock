@@ -144,6 +144,7 @@ GEM
     country_select (8.0.0)
       countries (~> 5.0)
     crass (1.0.6)
+    dalli (3.2.3)
     date (3.3.3)
     dead_end (4.0.0)
     derailed_benchmarks (2.1.2)
@@ -248,8 +249,6 @@ GEM
       net-smtp
     marcel (1.0.2)
     matrix (0.4.2)
-    mechanize (1.0.0)
-      nokogiri (>= 1.2.1)
     memory_profiler (1.0.1)
     meta-tags (2.18.0)
       actionpack (>= 3.2.0, < 7.1)
@@ -512,8 +511,6 @@ GEM
       activemodel (>= 3.2)
       mail (~> 2.5)
     version_gem (1.1.1)
-    watchman (0.1.1)
-      mechanize (= 1.0.0)
     web-console (4.2.0)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
@@ -563,6 +560,7 @@ DEPENDENCIES
   configus
   counter_culture
   country_select
+  dalli
   derailed_benchmarks
   dotenv-rails
   dry-auto_inject
@@ -617,7 +615,6 @@ DEPENDENCIES
   terser
   tzinfo-data
   valid_email2
-  watchman
   web-console
   webdrivers
   whiny_validation
