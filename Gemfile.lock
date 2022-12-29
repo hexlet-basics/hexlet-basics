@@ -256,6 +256,7 @@ GEM
     mini_histogram (0.3.1)
     mini_magick (4.12.0)
     mini_mime (1.1.2)
+    mini_portile2 (2.8.1)
     minitest (5.16.3)
     minitest-power_assert (0.3.1)
       minitest
@@ -274,9 +275,8 @@ GEM
       net-protocol
     netrc (0.11.0)
     nio4r (2.5.8)
-    nokogiri (1.13.10-x86_64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.13.10-x86_64-linux)
+    nokogiri (1.13.10)
+      mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     oauth2 (2.0.9)
       faraday (>= 0.17.3, < 3.0)
@@ -476,8 +476,8 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
-    sqlite3 (1.5.4-x86_64-darwin)
-    sqlite3 (1.5.4-x86_64-linux)
+    sqlite3 (1.5.4)
+      mini_portile2 (~> 2.8.0)
     sync (0.5.0)
     tapioca (0.10.4)
       bundler (>= 1.17.3)
@@ -620,4 +620,4 @@ DEPENDENCIES
   whiny_validation
 
 BUNDLED WITH
-   2.3.7
+   2.4.1

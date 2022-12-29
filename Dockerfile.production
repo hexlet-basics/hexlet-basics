@@ -1,5 +1,4 @@
-ARG RUBY_VERSION=3.1.3-jemalloc
-FROM quay.io/evl.ms/fullstaq-ruby:${RUBY_VERSION}-slim
+FROM ruby:3.2.0
 
 ENV PROJECT_ROOT /opt/projects/hexlet-basics
 WORKDIR ${PROJECT_ROOT}
