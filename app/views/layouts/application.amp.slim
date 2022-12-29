@@ -17,6 +17,7 @@ html[amp ⚡ lang="#{I18n.locale}"]
       / NOTE: inlining css because amp has no support of external styles file
       == Rails.root.join('app/assets/stylesheets/amp.css').read
     = display_meta_tags site: 'Code Basics'
+    = yield :meta
   body
     amp-analytics type="gtag" data-credentials="include"
       javascript[type="application/json"]:
