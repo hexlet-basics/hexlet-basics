@@ -10,16 +10,17 @@ class Web::HomeController < Web::ApplicationController
 
     @user = User::SignUpForm.new
 
-    @blog_posts = BlogPost.published.last(3)
+    @blog_posts = BlogPost.published.includes(:cover_attachment).last(3)
 
-    @languages_links_by_slug = Language.all.each_with_object({}) do |item, acc|
+    scope = Language.all.includes(:current_version)
+    @languages_links_by_slug = scope.each_with_object({}) do |item, acc|
       acc[item.slug.to_sym] = view_context.link_to(item, language_path(item.slug))
     end
 
     @categories = Language::Category.all
 
     completed_languages = Language.with_progress(:completed).with_locale.ordered
-    infos = Language::Version::Info.where(locale: I18n.locale, language: completed_languages)
+    infos = Language::Version::Info.with_locale.where(language: completed_languages).includes(:language)
     infos_by_language = infos.index_by { |item| item.language.id }
     item_builders = completed_languages.map { |l| CourseSchema.to_builder(l, infos_by_language.fetch(l.id)) }
 
