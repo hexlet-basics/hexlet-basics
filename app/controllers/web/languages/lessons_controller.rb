@@ -14,7 +14,10 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     @lesson_version = resource_language.current_lesson_versions.find_by!(lesson: @lesson)
     @info = @lesson_version.infos.with_locale.sole
     @language_lessons_count = resource_language.current_lessons.count
-    @lessons_info = resource_language.current_lesson_infos.with_locale
+    @lessons_info = resource_language.current_lesson_infos
+                                     .joins(version: :lesson)
+                                     .with_locale
+                                     .order('language_lesson_versions.natural_order')
 
     if current_user.guest?
       gon.lesson_member = Language::Lesson::MemberFake.new
