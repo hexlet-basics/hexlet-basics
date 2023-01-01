@@ -4,7 +4,7 @@ class Web::GoogleAuthController < Web::ApplicationController
   before_action :validate_google_csrf
 
   def one_tap
-    payload = Google::Auth::IDTokens.verify_oidc(params[:credential], aud: ENV.fetch('GOOGLE_CLIENT_ID', nil))
+    payload = ApplicationContainer[:google_one_tap].verify_oidc(params[:credential], aud: configus.google.client_id)
     email = payload['email']
     existing_user = User.find_by(email: email)
     user = GoogleAuthService.authenticate_user(payload)
