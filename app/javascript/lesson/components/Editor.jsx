@@ -22,6 +22,7 @@ const commonOptions = {
   renderWhitespace: 'trailing',
   formatOnPaste: true,
   renderLineHighlight: false,
+  fixedOverflowWidgets: true,
 };
 
 function Editor() {

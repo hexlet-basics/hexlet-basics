@@ -34,6 +34,7 @@ export default {
     clean: {
       keep: /.keep/,
     },
+    // eslint-disable-next-line max-len
     // https://srivishnu.totakura.in/2022/01/19/overcoming-challenges-with-jsbundling-rails-with-webpack-5-on-production.html#chunks-sourcemaps-and-asset-pipeline-sprockets
     filename: '[name].js',
     chunkFilename: '[name]-[contenthash].digested.js',
@@ -89,7 +90,12 @@ export default {
               postcssOptions: {
                 plugins: [
                   'postcss-import', // NOTE: т.к. не работают нативные импорты
-                  ['postcss-preset-env', { }],
+                  ['postcss-preset-env', {
+                    features: {
+                      'logical-properties-and-values': false, // NOTE: мы пока не используем rtl/ltr,
+                      // а эта штука ломает вёрстку
+                    },
+                  }],
                 ],
               },
             },
@@ -107,7 +113,12 @@ export default {
               postcssOptions: {
                 plugins: [
                   'postcss-import', // NOTE: т.к. не работают нативные импорты
-                  ['postcss-preset-env', { }],
+                  ['postcss-preset-env', {
+                    features: {
+                      'logical-properties-and-values': false, // NOTE: мы пока не используем rtl/ltr,
+                      // а эта штука ломает вёрстку
+                    },
+                  }],
                 ],
               },
             },

@@ -7,19 +7,29 @@ en:
       index:
         header: Reviews
         empty: Looks like there is noting yet
+        read_more: Read more
     admin:
       blog_posts:
         index:
           header: Blog Posts
           add_new_blog_post: Add New Blog Post
+        new:
+          new_blog_post: New Blog Post
       reviews:
         index:
           header: Reviews
           add_new_review: Add New Review
+        new:
+          new_review: New Review
       languages:
         index:
           languages: Languages
           add_new_language: Add new language
+        new:
+          new_language: New Language
+      home:
+        index:
+          dashboard: Dashboard
       management:
         users:
           filter:
@@ -36,7 +46,7 @@ en:
         how_coding_works: How learning works with code-basics
       index:
         title: |
-          Free Code Basics Learning — HTML, CSS, JavaScript Online Courses
+          Free Online Programming Courses: HTML, CSS, JavaScript | CodeBasics
         meta_description: |
           Learn the Code Basics of HTML, CSS and JavaScript with Interactive Coding Environment right in your Browser! Perfect for Beginners & 100% for Free | Join our Online Programming Courses
         reviews: Reviews

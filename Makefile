@@ -36,3 +36,7 @@ editor-setup:
 	# bundle exec solargraph bundle
 	bundle exec yard gems
 	bundle exec solargraph bundle
+	bin/tapioca annotations
+	bin/tapioca gems --all
+	bin/tapioca dsl
+

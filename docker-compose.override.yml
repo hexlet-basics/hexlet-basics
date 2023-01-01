@@ -1,9 +1,7 @@
 ---
-
-version: '3'
+version: "3"
 
 services:
-
   redis:
     image: redis:6.2.7
     volumes:
@@ -23,12 +21,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: bundle exec srb tc --lsp
+    command: bundle exec srb tc --lsp --disable-watchman
     env_file:
       - .env
     volumes:
       - .:${WORKING_DIRECTORY}
-
 
   web:
     build:

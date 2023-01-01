@@ -35,8 +35,9 @@ class Web::ApplicationController < ApplicationController
     scope = Language::Version::Info
             .with_locale
             .ordered
-            .includes(:language, :language_version)
-            .joins(language_version: :current_language)
+            .includes(:language_version)
+            .joins(:language, language_version: :current_language)
+            .preload(:language)
 
     completed_language_version_infos = scope.completed
     incompleted_language_version_infos = scope.incompleted

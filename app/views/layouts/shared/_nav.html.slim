@@ -72,7 +72,7 @@
           ul.dropdown-menu.dropdown-menu-end
             li
               - I18n.available_locales.without(I18n.locale).each do |locale|
-                = link_to switch_locale_path(new_locale: locale), class: 'dropdown-item d-flex' do
+                = link_to switch_locale_path(new_locale: locale), class: 'dropdown-item d-flex', rel: :nofollow do
                   = image_tag "flag-#{locale}.svg", width: 25, alt: "switch language to #{locale}", class: 'my-auto me-2'
                   span.my-auto
                     = t(locale, scope: 'languages')

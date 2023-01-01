@@ -22,7 +22,6 @@ gem 'omniauth-github'
 gem 'omniauth-rails_csrf_protection'
 gem 'ransack'
 gem 'redis'
-# gem 'sorbet-runtime'
 gem 'term-ansicolor'
 gem 'valid_email2'
 
@@ -48,6 +47,7 @@ group :development, :test do
   gem 'brakeman'
   gem 'bundler-audit'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
+  gem 'dalli'
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
   gem 'faker'
@@ -55,6 +55,7 @@ group :development, :test do
   # gem 'sorbet'
   gem 'spring'
   gem 'sqlite3'
+  gem 'tapioca', require: false
 end
 
 group :development do
