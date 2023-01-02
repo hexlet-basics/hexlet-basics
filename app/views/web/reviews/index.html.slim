@@ -7,7 +7,6 @@
           .card.border-0.mb-4
             .card-body
               .h4.card-title = review
-              p.card-text.lead = truncate review.body, length: 180
-              = link_to t('.read_more'), review_path(review), class: 'card-link text-decoration-none'
+              p.card-text.lead = review.body
       - else
         p = t('.empty')

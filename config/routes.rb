@@ -39,7 +39,7 @@ Rails.application.routes.draw do
       get '/robots.:format' => 'home#robots', as: :robots
       resources :pages, only: %i[show]
       resources :blog_posts, only: %i[index show]
-      resources :reviews, only: %i[index show]
+      resources :reviews, only: %i[index]
       resources :language_categories, only: %i[index show]
       resource :session, only: %i[new create destroy]
       resource :locale, only: [] do
