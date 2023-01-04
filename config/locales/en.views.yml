@@ -147,6 +147,7 @@ en:
         rust_description: Rust is a multi-paradigm, general-purpose programming language. Rust emphasizes performance, type safety, and concurrency
         perl_description: Perl is a highly capable, feature-rich programming language with over 30 years of development
         ocaml_description: OCaml is a general-purpose, industrial-strength programming language with an emphasis on expressiveness and safety
+        powershell_description: PowerShell is a cross-platform task automation solution that includes a command line shell, a scripting language, and a configuration management platform.
 
 
       lessons:

@@ -36,6 +36,7 @@ const langToTabSizeMapping = {
   rust: 4,
   perl: 4,
   ocaml: 2,
+  powershell: 2,
 };
 
 export const langToSpacesMapping = {

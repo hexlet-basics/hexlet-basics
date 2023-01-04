@@ -53,6 +53,7 @@ app-languages-load:
 	make app-language-load L='rust'
 	make app-language-load L='perl'
 	make app-language-load L='ocaml'
+	make app-language-load L='powershell'
 
 app-setup: app-install app-db-prepare app-setup-git-hooks app-languages-load
 

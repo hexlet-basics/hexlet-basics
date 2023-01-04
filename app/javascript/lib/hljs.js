@@ -27,6 +27,7 @@ import haskell from 'highlight.js/lib/languages/haskell';
 import rust from 'highlight.js/lib/languages/rust';
 import perl from 'highlight.js/lib/languages/perl';
 import ocaml from 'highlight.js/lib/languages/ocaml';
+import powershell from 'highlight.js/lib/languages/powershell';
 
 const langs = {
   ocaml,
@@ -46,6 +47,7 @@ const langs = {
   php,
   java,
   sql,
+  powershell,
   python,
   scss,
   css,
