@@ -1,3 +1,5 @@
+---
+
 en:
   web:
     language_categories:
@@ -231,6 +233,10 @@ en:
       cookie_policy:
         title: Cookie Policy
         meta_description: Политика в отношении файлов cookie
+      authors:
+        title: How to become an author?
+        meta_description: |
+          Code Basics is open source. Everyone can be an author. Here is some simple steps to start.
 
     account:
       profiles:
