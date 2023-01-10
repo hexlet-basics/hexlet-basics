@@ -31,6 +31,8 @@ class Web::LanguagesController < Web::ApplicationController
     @similar_languages = Language.order('RANDOM()').with_locale.excluding(@language).limit(4)
     @blog_posts = @language.blog_posts.published
 
+    gon.language = @language.slug
+
     human_language_header = [@language.current_version.name, @language.learn_as.text].join(' ')
     @header = @language_version_info.header || human_language_header
     title = @language_version_info.title || @header
