@@ -1,6 +1,9 @@
 .mt-sm-5.mb-5.pb-5
   = render 'hero'
 
+- unless signed_in?
+  = render partial: 'web/shared/google_one_tap'
+
 .mb-5.pb-5
   = render 'languages', language_members_by_language: @language_members_by_language, language_member_fake: @language_member_fake
 
