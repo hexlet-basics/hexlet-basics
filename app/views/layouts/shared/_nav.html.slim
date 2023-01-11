@@ -41,6 +41,8 @@
                   / rubocop:disable Rails/LinkToBlank
                   = link_to t('.success_stories'), ExternalLinks.hexlet_success_stories_curl, class: 'dropdown-item text-dark', target: '_blank', rel: 'nofollow noopener'
                   / rubocop:enable Rails/LinkToBlank
+              li.dropdown-item
+                = link_to t('.for_authors'), page_path(:authors), class: 'dropdown-item'
 
       ul.navbar-nav
         - if current_user.guest?
