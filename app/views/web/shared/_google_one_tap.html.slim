@@ -1,10 +1,12 @@
 - if Rails.env.development?
   meta[name="referrer" content="no-referrer-when-downgrade"]
 
-script[src="https://accounts.google.com/gsi/client" async defer]
 div[id="g_id_onload" data-client_id="#{configus.google.client.id}"
 data-prompt_parent_id="g_id_onload"
 style="position: absolute; top: 60px; right: 30px;"
 data-login_uri="#{google_onetap_callback_url}"
 data-auto_prompt="true" data-type="standard"
 data-authenticity_token="#{form_authenticity_token}"]
+
+- content_for :inline do
+  script[src="https://accounts.google.com/gsi/client" async defer]
