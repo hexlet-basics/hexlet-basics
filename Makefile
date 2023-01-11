@@ -39,4 +39,3 @@ editor-setup:
 	bin/tapioca annotations
 	bin/tapioca gems --all
 	bin/tapioca dsl
-

@@ -55,6 +55,8 @@ spec:
             - secretRef:
                 name: facebook-credentials
             - secretRef:
+                name: google-credentials
+            - secretRef:
                 name: sparkpost-credentials
             - configMapRef:
                 name: hexlet-basics-data
