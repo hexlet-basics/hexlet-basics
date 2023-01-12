@@ -29,6 +29,7 @@ import perl from 'highlight.js/lib/languages/perl';
 import ocaml from 'highlight.js/lib/languages/ocaml';
 import crystal from 'highlight.js/lib/languages/crystal';
 import dart from 'highlight.js/lib/languages/dart';
+import powershell from 'highlight.js/lib/languages/powershell';
 
 const langs = {
   ocaml,
@@ -48,6 +49,7 @@ const langs = {
   php,
   java,
   sql,
+  powershell,
   python,
   scss,
   css,

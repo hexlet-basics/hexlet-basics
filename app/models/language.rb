@@ -44,7 +44,7 @@ class Language < ApplicationRecord
 
   enumerize :slug, in: %i[ada bash clang clojure cobol cpp csharp css crystal dart elixir elm fortran go groovy haskell html java
                           javascript kotlin lua objectivec ocaml perl php prolog python racket rescript rproject ruby
-                          rust scala smalltalk swift typescript perl ocaml]
+                          rust scala smalltalk swift typescript perl powershell ocaml]
 
   enumerize :progress, in: %i[completed in_development draft], default: :draft, scope: true, predicates: { prefix: true }
   # TODO: move to language version and populate inside the job
