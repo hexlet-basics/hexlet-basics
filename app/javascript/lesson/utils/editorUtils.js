@@ -38,6 +38,7 @@ const langToTabSizeMapping = {
   ocaml: 2,
   crystal: 2,
   dart: 2,
+  powershell: 2,
   dlang: 2,
 };
 

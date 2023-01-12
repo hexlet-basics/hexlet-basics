@@ -55,7 +55,9 @@ app-languages-load:
 	make app-language-load L='ocaml'
 	make app-language-load L='dart'
 	make app-language-load L='crystal'
+	make app-language-load L='powershell'
 	make app-language-load L='dlang'
+
 
 app-setup: app-install app-db-prepare app-setup-git-hooks app-languages-load
 
