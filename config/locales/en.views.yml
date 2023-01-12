@@ -1,3 +1,5 @@
+---
+
 en:
   web:
     language_categories:
@@ -147,6 +149,8 @@ en:
         rust_description: Rust is a multi-paradigm, general-purpose programming language. Rust emphasizes performance, type safety, and concurrency
         perl_description: Perl is a highly capable, feature-rich programming language with over 30 years of development
         ocaml_description: OCaml is a general-purpose, industrial-strength programming language with an emphasis on expressiveness and safety
+        dart_description: Dart is a general purpose, strongly typed compiled language. Used to develop mobile and web applications.
+        crystal_description: Crystal is a general-purpose object-oriented programming language designed and developed by Arie Borenzweig, Juan Weinerman, and Brian Cardiff.
         powershell_description: PowerShell is a cross-platform task automation solution that includes a command line shell, a scripting language, and a configuration management platform.
 
 
@@ -232,6 +236,10 @@ en:
       cookie_policy:
         title: Cookie Policy
         meta_description: Политика в отношении файлов cookie
+      authors:
+        title: How to become an author?
+        meta_description: |
+          Code Basics is open source. Everyone can be an author. Here is some simple steps to start.
 
     account:
       profiles:

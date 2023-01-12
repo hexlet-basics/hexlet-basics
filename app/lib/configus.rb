@@ -25,6 +25,10 @@ Configus.build Rails.env do
 
     gtm_id ENV.fetch('GOOGLE_TAG_MANAGER_KEY', nil)
 
+    google do
+      client_id ENV.fetch('GOOGLE_CLIENT_ID', nil)
+    end
+
     mailer do
       from 'code-basics@hexlet.io'
 

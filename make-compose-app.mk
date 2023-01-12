@@ -25,7 +25,7 @@ app-setup-git-hooks:
 	docker-compose run --rm web npx simple-git-hooks
 
 app-lint-staged:
-	docker compose run -T --rm web npx lint-staged --relative
+	docker-compose run -T --rm web npx lint-staged --relative
 
 app-languages-load:
 	make app-language-load L='javascript'
@@ -53,6 +53,8 @@ app-languages-load:
 	make app-language-load L='rust'
 	make app-language-load L='perl'
 	make app-language-load L='ocaml'
+	make app-language-load L='dart'
+	make app-language-load L='crystal'
 	make app-language-load L='powershell'
 
 app-setup: app-install app-db-prepare app-setup-git-hooks app-languages-load
