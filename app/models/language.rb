@@ -42,7 +42,7 @@ class Language < ApplicationRecord
 
   extend Enumerize
 
-  enumerize :slug, in: %i[ada bash clang clojure cobol cpp csharp css dart elixir elm fortran go groovy haskell html java
+  enumerize :slug, in: %i[ada bash clang clojure cobol cpp csharp css crystal dart elixir elm fortran go groovy haskell html java
                           javascript kotlin lua objectivec ocaml perl php prolog python racket rescript rproject ruby
                           rust scala smalltalk swift typescript perl ocaml]
 
