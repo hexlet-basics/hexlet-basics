@@ -33,6 +33,7 @@ en:
         useful: Useful
         blog: Blog
         reviews: Reviews
+        authors: For the author
         language_categories: Categories
         all_courses: All Courses
         hexlet_title: © Hexlet ltd, %{year}
