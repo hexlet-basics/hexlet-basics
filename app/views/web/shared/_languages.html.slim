@@ -3,7 +3,7 @@
     .col
       .card.h-100.shadow-sm.border-0
         - let get_language_background(language.slug) do |bg_class|
-          .p-4 class=bg_class
+          . class=bg_class
             = image_tag "#{language.slug}.png", class: 'card-img-top', alt: t('language_icon', language: language.current_version.name)
         - if local_assigns[:language_members_by_language]
           - let language_members_by_language[language.id] do |m|
