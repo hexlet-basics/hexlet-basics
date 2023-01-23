@@ -32,6 +32,17 @@ resource "kubernetes_secret" "facebook_credentials" {
   }
 }
 
+resource "kubernetes_secret" "google_credentials" {
+  metadata {
+    name = "google-credentials"
+  }
+
+  data = {
+    GOOGLE_CLIENT_ID     = var.google_client_id
+    GOOGLE_CLIENT_SECRET = var.google_client_secret
+  }
+}
+
 locals {
   postgres_db_user_pass = resource.digitalocean_database_user.postgres_db_user.password
   database_url          = "postgres://${var.postgres_db_user}:${local.postgres_db_user_pass}@${data.digitalocean_database_cluster.postgres_db_data.host}:${data.digitalocean_database_cluster.postgres_db_data.port}/${var.postgres_db_name}"

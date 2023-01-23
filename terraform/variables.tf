@@ -120,6 +120,16 @@ variable "facebook_client_secret" {
   description = "Facebook client secret"
 }
 
+variable "google_client_id" {
+  type        = string
+  description = "Google client ID"
+}
+
+variable "google_client_secret" {
+  type        = string
+  description = "Google client secret"
+}
+
 variable "secret_key_base" {
   type        = string
   description = "Hexlet Basics secret key base"

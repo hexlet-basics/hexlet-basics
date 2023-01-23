@@ -89,37 +89,6 @@ module ApplicationHelper
     end
   end
 
-  def get_language_background(slug)
-    mapping = {
-      'php' => 'x-bg-blue',
-      'javascript' => 'x-bg-yellow',
-      'java' => 'x-bg-orange',
-      'python' => 'x-bg-orange',
-      'html' => 'x-bg-orange',
-      'css' => 'x-bg-azure',
-      'racket' => 'x-bg-red',
-      'ruby' => 'x-bg-red',
-      'elixir' => 'x-bg-indigo',
-      'go' => 'x-bg-cyan',
-      'clang' => 'x-bg-azure',
-      'clojure' => 'x-bg-green',
-      'typescript' => 'x-bg-blue',
-      'csharp' => 'x-bg-purple',
-      'lua' => 'x-bg-blue',
-      'prolog' => 'x-bg-orange',
-      'haskell' => 'x-bg-gray',
-      'cpp' => 'x-bg-blue',
-      'bash' => 'x-bg-gray',
-      'fortran' => 'x-bg-purple',
-      'kotlin' => 'x-bg-purple',
-      'swift' => 'x-bg-orange',
-      'rust' => 'x-bg-blue',
-      'perl' => 'x-bg-gray',
-      'ocaml' => 'x-bg-blue'
-    }
-    mapping[slug]
-  end
-
   def get_complete_icon_name(slug)
     mapping = {
       'php' => 'php.svg',
