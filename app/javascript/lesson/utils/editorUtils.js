@@ -39,6 +39,7 @@ const langToTabSizeMapping = {
   crystal: 2,
   dart: 2,
   powershell: 2,
+  dlang: 2,
 };
 
 export const langToSpacesMapping = {

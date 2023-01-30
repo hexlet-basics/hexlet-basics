@@ -152,7 +152,7 @@ en:
         dart_description: Dart is a general purpose, strongly typed compiled language. Used to develop mobile and web applications.
         crystal_description: Crystal is a general-purpose object-oriented programming language designed and developed by Arie Borenzweig, Juan Weinerman, and Brian Cardiff.
         powershell_description: PowerShell is a cross-platform task automation solution that includes a command line shell, a scripting language, and a configuration management platform.
-
+        dlang_description: D is a multi-paradigm, statically typed, compiled language. Has built-in error prevention - contracts and unittests
 
       lessons:
         content:

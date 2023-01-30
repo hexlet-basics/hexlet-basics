@@ -30,6 +30,7 @@ import ocaml from 'highlight.js/lib/languages/ocaml';
 import crystal from 'highlight.js/lib/languages/crystal';
 import dart from 'highlight.js/lib/languages/dart';
 import powershell from 'highlight.js/lib/languages/powershell';
+import d from 'highlight.js/lib/languages/d';
 
 const langs = {
   ocaml,
@@ -64,6 +65,7 @@ const langs = {
   go,
   crystal,
   dart,
+  d,
 };
 
 Object.keys(langs).forEach((key) => hljs.registerLanguage(key, langs[key]));
