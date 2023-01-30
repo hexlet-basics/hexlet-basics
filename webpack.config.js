@@ -51,7 +51,7 @@ export default {
     new FontminPlugin({
       autodetect: true, // automatically pull unicode characters from CSS
       // note: these settings are mutually exclusive and allowedFilesRegex has priority over skippedFilesRegex
-      allowedFilesRegex: null, // RegExp to only target specific fonts by their names
+      allowedFilesRegex: /icon/, // RegExp to only target specific fonts by their names
       skippedFilesRegex: null, // RegExp to skip specific fonts by their names
       textRegex: /\.css$/,  // RegExp for searching text reference
     }),
