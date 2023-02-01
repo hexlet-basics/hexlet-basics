@@ -12,6 +12,7 @@ module LanguageRepository
                             .select('1')
                             .limit(1))
     }
+    scope :web, -> { with_locale.with_progress(:completed, :in_development) }
     scope :ordered, -> { order(order: :asc) }
   end
 end

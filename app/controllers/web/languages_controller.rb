@@ -28,7 +28,7 @@ class Web::LanguagesController < Web::ApplicationController
     @first_lesson = @language.current_lessons.ordered.first
     @next_lesson = current_user.not_finished_lessons_for_language(@language).ordered.first
 
-    @similar_languages = Language.order('RANDOM()').with_locale.excluding(@language).limit(4)
+    @similar_languages = Language.web.order('RANDOM()').excluding(@language).limit(4)
     @blog_posts = @language.blog_posts.published
 
     gon.language = @language.slug
