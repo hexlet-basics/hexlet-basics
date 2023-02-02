@@ -3,6 +3,7 @@
 const languageMapping = {
   racket: 'scheme',
   clang: 'c',
+  'layout-designer': 'html',
 };
 
 const editorMapping = {
