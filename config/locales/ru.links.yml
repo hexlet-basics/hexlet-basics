@@ -20,3 +20,8 @@ ru:
     hexlet_python: 'https://ru.hexlet.io/programs/python?utm_source=code-basics&utm_campaign=prof-python&utm_medium=referral'
     hexlet_php: 'https://ru.hexlet.io/programs/php?utm_source=code-basics&utm_campaign=prof-php&utm_medium=referral'
     hexlet_rails: 'https://ru.hexlet.io/programs/rails?utm_source=code-basics&utm_campaign=prof-rails&utm_medium=referral'
+    hexlet_author_school_course: 'https://ru.hexlet.io/courses/author-school-hexlet'
+    hexlet_awesome_course: 'https://ru.hexlet.io/courses/awesome-course'
+    hexlet_awesome_text: 'https://ru.hexlet.io/courses/awesome-text'
+    hexlet_awesome_text_structure: 'https://ru.hexlet.io/courses/awesome-text-structure'
+    hexlet_authors_school: 'https://making.hexlet.io/authors'

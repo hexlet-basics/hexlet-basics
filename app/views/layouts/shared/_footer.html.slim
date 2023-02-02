@@ -46,6 +46,8 @@ footer.bg-dark.text-light.flex-shrink-0
             = link_to t('.about'), page_path(:about), class: 'text-decoration-none text-light'
           li
             = link_to t('.reviews'), reviews_path, class: 'text-decoration-none text-light'
+          li
+            = link_to t('.authors'), page_path(:authors), class: 'text-decoration-none text-light'
 
       .col.mb-4.mb-lg-0
         b = t('.language_categories')
