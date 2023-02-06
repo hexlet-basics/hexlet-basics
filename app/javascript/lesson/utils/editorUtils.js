@@ -11,6 +11,7 @@ const editorMapping = {
   racket: 'scheme',
   clang: 'c',
   bash: 'shell',
+  'layout-designer': 'html',
 };
 
 const langToTabSizeMapping = {
