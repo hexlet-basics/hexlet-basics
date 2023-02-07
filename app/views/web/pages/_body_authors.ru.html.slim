@@ -31,8 +31,10 @@ ul.mb-4
     p.mb-2 Оформлять, редактировать и корректировать текст
 
 .alert.alert-info.mb-5
-  | Если вам интересно глубже погрузиться в авторство, то приходите в нашу бесплатную
-  = link_to 'Школу авторов', t('links.hexlet_authors_school'), class: 'alert-link ms-1', target: '_blank', rel: 'nofollow noopener'
+  ' Если вам интересно глубже погрузиться в авторство, то приходите в нашу бесплатную
+  span.fw-bold «
+  = link_to 'Школу авторов', t('links.hexlet_authors_school'), class: 'alert-link text-nowrap', target: '_blank', rel: 'nofollow noopener'
+  span.fw-bold »
 
 h2.mb-4 Список рекомендаций
 
@@ -41,16 +43,18 @@ h5.h5.mb-3 Перед началом работы над текстом
 ol.mb-4
   li
     p.mb-2
-      | Мы ориентируемся на инфостиль, о котором можно почитать
-      = link_to 'здесь', ExternalLinks.maxim_ilyahov_curl, class: 'ms-1', target: '_blank', rel: 'nofollow noopener'
+      ' Мы ориентируемся на инфостиль, о котором можно почитать
+      = link_to 'здесь', ExternalLinks.maxim_ilyahov_curl, target: '_blank', rel: 'nofollow noopener'
   li
     p.mb-2
-      | Пройти текстовый курс
-      = link_to '«Как писать классные тексты»', t('links.hexlet_awesome_text'), class: 'ms-1', target: '_blank', rel: 'nofollow noopener'
+      | Пройти текстовый курс «
+      = link_to 'Как писать классные тексты', t('links.hexlet_awesome_text'), target: '_blank', rel: 'nofollow noopener'
+      | »
   li
     p.mb-0
-      | Пройти текстовый курс
-      = link_to '«Как проектировать классные уроки»', t('links.hexlet_awesome_text_structure'), class: 'ms-1', target: '_blank', rel: 'nofollow noopener'
+      | Пройти текстовый курс «
+      = link_to 'Как проектировать классные уроки', t('links.hexlet_awesome_text_structure'), target: '_blank', rel: 'nofollow noopener'
+      | »
 
 h5.h5.mb-3 Как проверить готовый текст
 
@@ -76,9 +80,9 @@ ol.mb-5
     p.mb-2
       .fw-bold.mb-1 Соответствие информационному стилю
 
-      | Воспользоваться сервисом
-      = link_to '«Главред»', ExternalLinks.glavred_curl, class: 'mx-1', target: '_blank', rel: 'nofollow noopener'
-      | и довести свой текст до 8 — 8.5 баллов
+      | Воспользоваться сервисом «
+      = link_to 'Главред', ExternalLinks.glavred_curl, target: '_blank', rel: 'nofollow noopener'
+      | » и довести свой текст до 8 — 8.5 баллов
 
   li
     p.mb-2
@@ -129,6 +133,6 @@ ol.mb-5
             p.mb-2 Нет предложений со скрытым подлежащим (пассивные, модальные и возвратные глаголы)
 
 .alert.alert-info
-  | Обсудить любые вопросы, связанные с опенсорс-проектами Хекслета, можно в канале
-  span.d-inline-block.ms-1 #hexlet-volunteers
-  = link_to 'в слак-сообществе', t('links.hexlet_slack'), class: 'alert-link ms-1', target: '_blank', rel: 'nofollow noopener'
+  ' Обсудить любые вопросы, связанные с опенсорс-проектами Хекслета, можно в канале
+  span.d-inline-block> #hexlet-volunteers
+  = link_to 'в слак-сообществе', t('links.hexlet_slack'), class: 'alert-link', target: '_blank', rel: 'nofollow noopener'
