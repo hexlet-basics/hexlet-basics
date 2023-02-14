@@ -1,6 +1,7 @@
 // @ts-check
 
 export const languages = {
+  'layout-designer': 'layout-designer',
   css: 'css',
   html: 'html',
   javascript: 'javascript',
@@ -27,6 +28,7 @@ export const neededPreview = (language) => {
   switch (language) {
     case languages.css:
     case languages.html:
+    case languages['layout-designer']:
       return true;
     default:
       return false;

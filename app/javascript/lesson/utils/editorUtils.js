@@ -3,6 +3,7 @@
 const languageMapping = {
   racket: 'scheme',
   clang: 'c',
+  'layout-designer': 'html',
 };
 
 const editorMapping = {
@@ -10,6 +11,7 @@ const editorMapping = {
   racket: 'scheme',
   clang: 'c',
   bash: 'shell',
+  'layout-designer': 'html',
 };
 
 const langToTabSizeMapping = {
@@ -39,6 +41,7 @@ const langToTabSizeMapping = {
   crystal: 2,
   dart: 2,
   powershell: 2,
+  dlang: 2,
 };
 
 export const langToSpacesMapping = {

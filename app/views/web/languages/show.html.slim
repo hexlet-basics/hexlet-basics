@@ -20,7 +20,10 @@
     .px-3.px-sm-5.py-4.py-sm-5.mb-4.bg-white.rounded-3.shadow-sm.border(itemscope itemtype='http://schema.org/ImageObject')
       .row
         .col
-          .badge.border.text-dark.small = t('.free_course')
+          / TODO: remove after end preparatory course
+          / NOTE: for a preparatory course in layout-designer
+          - if @language.progress_completed?
+            .badge.border.text-dark.small = t('.free_course')
           h1.fw-bold(itemprop='name') = @header
           p.col-md-10.fs-5 = @language_version_info.description
           .text-muted.lead.mb-5

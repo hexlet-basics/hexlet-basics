@@ -33,6 +33,7 @@ ru:
         useful: Полезное
         blog: Блог
         reviews: Отзывы
+        authors: Автору
         language_categories: Направления обучения
         all_courses: Все курсы
         hexlet_title: © Hexlet Ltd, %{year}

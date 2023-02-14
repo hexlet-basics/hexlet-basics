@@ -1,0 +1,122 @@
+/* NOTE: adapted source https://github.com/devicons/devicon/blob/master/devicon-base.css for use with webpack plugin fontmin  */
+@font-face {
+  font-family: 'devicon';
+  src: url('devicon/fonts/devicon.woff?biu5f3') format('woff'),
+       url('devicon/fonts/devicon.ttf?biu5f3') format('truetype');
+
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+
+[class^="devicon-"], [class*=" devicon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'devicon' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.devicon-bash-plain:before {
+  content: "\e979";
+  color: #293138;
+}
+.devicon-csharp-plain:before {
+  content: "\e637";
+  color: #68217a;
+}
+.devicon-c-plain:before {
+  content: "\e639";
+  color: #03599c;
+}
+.devicon-clojure-plain:before {
+  content: "\e962";
+  color: #5881d8;
+}
+.devicon-css3-plain:before {
+  content: "\e679";
+  color: #3d8fc6;
+}
+.devicon-cplusplus-plain:before {
+  content: "\e635";
+  color: #9c033a;
+}
+.devicon-devicon-plain:before {
+  content: "\ea3c";
+  color: #60be86;
+}
+.devicon-elixir-plain:before {
+  content: "\e997";
+  color: #380a4d;
+}
+.devicon-go-plain:before {
+  content: "\e909";
+  color: #00acd7;
+}
+.devicon-haskell-plain:before {
+  content: "\e95f";
+  color: #5e5185;
+}
+.devicon-html5-plain:before {
+  content: "\e7f7";
+  color: #e54d26;
+}
+.devicon-java-plain:before {
+  content: "\e842";
+  color: #ea2d2e;
+}
+.devicon-javascript-plain:before {
+  content: "\e845";
+  color: #f0db4f;
+}
+.devicon-kotlin-plain:before {
+  content: "\e96f";
+  color: #7c6db2;
+}
+.devicon-lua-plain:before {
+  content: "\e9a7";
+  color: navy;
+}
+.devicon-ocaml-plain:before {
+  content: "\e991";
+  color: #f18803;
+}
+.devicon-perl-plain:before {
+  content: "\e9b3";
+  color: #212177;
+}
+.devicon-php-plain:before {
+  content: "\eb71";
+  color: #6181b6;
+}
+.devicon-python-plain:before {
+  content: "\eb89";
+  color: #ffd845;
+}
+.devicon-ruby-plain:before {
+  content: "\ebca";
+  color: #d91404;
+}
+.devicon-rust-plain:before {
+  content: "\e959";
+  color: #000;
+}
+.devicon-swift-plain:before {
+  content: "\e9f4";
+  color: #f05138;
+}
+.devicon-typescript-plain:before {
+  content: "\e9fb";
+  color: #007acc;
+}
+
+
+/* NOTE: colors from file https://github.com/devicons/devicon/blob/main/devicon.json */
