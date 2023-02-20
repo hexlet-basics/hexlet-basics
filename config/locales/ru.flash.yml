@@ -12,7 +12,8 @@ ru:
           language_in_development_html: |
             Курс по языку %{language} еще в разработке.
             Вы можете помочь и отправить пулл-реквест с новыми уроками или дополнить те,
-            которые уже есть <a href="%{link_to_repo}" target="_blank" rel="noopener">%{link_to_repo}</a>
+            которые уже есть <a href="%{link_to_repo}" target="_blank" rel="noopener">%{link_to_repo}</a>.
+            Мы подготовили рекомендации по написанию текстов <a href="%{link_to_recommendations}" target="_blank" rel="noopener">по ссылке</a>
 
         lessons:
           show:

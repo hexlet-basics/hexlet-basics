@@ -8,7 +8,7 @@ class Web::LanguagesController < Web::ApplicationController
     @builder = CourseSchema.to_builder(@language, @language_version_info)
 
     if @language.progress_in_development?
-      f('.language_in_development_html', type: :info, values: { language: @language.to_s, link_to_repo: ExternalLinks.source_code_curl }, now: true)
+      f('.language_in_development_html', type: :info, values: { language: @language.to_s, link_to_repo: ExternalLinks.source_code_curl, link_to_recommendations: page_path(:authors) }, now: true)
     end
 
     @current_module_versions = @language.current_module_versions
