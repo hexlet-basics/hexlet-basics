@@ -1,4 +1,4 @@
-FROM ruby:3.2.0
+FROM ruby:3.2.1
 
 ENV PROJECT_ROOT /opt/projects/hexlet-basics
 WORKDIR ${PROJECT_ROOT}
