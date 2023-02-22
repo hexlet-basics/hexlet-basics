@@ -16,6 +16,8 @@ class Web::Admin::Management::UsersController < Web::Admin::Management::Applicat
       end
 
       format.csv do
+        response.headers['Last-Modified'] = Time.now.httpdate.to_s
+
         send_stream(filename: "users-#{params[:q][:language_members_created_at_gteq]}.csv") do |stream|
           stream.write "id, email, stack, finished_lessons\n"
 
