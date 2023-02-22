@@ -4,7 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import FontminPlugin from 'fontmin-webpack';
-import { ESBuildMinifyPlugin } from 'esbuild-loader';
+import { EsbuildPlugin } from 'esbuild-loader';
 import { WebpackSweetEntry } from '@sect/webpack-sweet-entry';
 // import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
@@ -53,12 +53,12 @@ export default {
       // note: these settings are mutually exclusive and allowedFilesRegex has priority over skippedFilesRegex
       allowedFilesRegex: /icon/, // RegExp to only target specific fonts by their names
       skippedFilesRegex: null, // RegExp to skip specific fonts by their names
-      textRegex: /\.css$/,  // RegExp for searching text reference
+      textRegex: /\.css$/, // RegExp for searching text reference
     }),
   ],
   optimization: {
     minimizer: [
-      new ESBuildMinifyPlugin({
+      new EsbuildPlugin({
         target: 'es2015',
         css: true,
       }),

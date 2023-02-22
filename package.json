@@ -91,7 +91,6 @@
     "partytown": "partytown copylib public/~partytown"
   },
   "resolutions": {
-    "autoprefixer": "10.4.5",
-    "esbuild-loader": "2.16.0"
+    "autoprefixer": "10.4.5"
   }
 }
