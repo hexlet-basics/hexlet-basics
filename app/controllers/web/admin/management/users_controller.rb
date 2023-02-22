@@ -6,7 +6,7 @@ class Web::Admin::Management::UsersController < Web::Admin::Management::Applicat
   def index
     query = params.fetch(:q, {}).with_defaults('s' => 'created_at desc')
 
-    @search = User.includes(language_members: :language).ransack(query)
+    @search = User.includes(language_members: [language: :current_version]).ransack(query)
 
     users = @search.result
 
@@ -16,7 +16,7 @@ class Web::Admin::Management::UsersController < Web::Admin::Management::Applicat
       end
 
       format.csv do
-        send_stream(filename: "users-#{Time.zone.today}.csv") do |stream|
+        send_stream(filename: "users-#{params[:q][:language_members_created_at_gteq]}.csv") do |stream|
           stream.write "id, email, stack, finished_lessons\n"
 
           users.find_each do |user|
@@ -24,10 +24,10 @@ class Web::Admin::Management::UsersController < Web::Admin::Management::Applicat
 
             if language_members.any?
               language_members.each do |language_member|
-                stream.write "#{user.id},#{user.email},#{language_member.language.name},#{language_member.finished_lessons_coun}\n"
+                stream.write "#{user.id}, #{user.email}, #{language_member.language.name}, #{language_member.finished_lessons_count}\n"
               end
             else
-              stream.write "#{user.id},#{user.email}\n"
+              stream.write "#{user.id}, #{user.email}\n"
             end
           end
         end
