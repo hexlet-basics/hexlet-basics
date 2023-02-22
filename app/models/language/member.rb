@@ -25,6 +25,10 @@
 class Language::Member < ApplicationRecord
   include AASM
 
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[created_at language_id]
+  end
+
   belongs_to :user
   belongs_to :language
   has_many :lesson_members, class_name: 'Language::Lesson::Member', foreign_key: :language_member_id, inverse_of: :language_member, dependent: :destroy

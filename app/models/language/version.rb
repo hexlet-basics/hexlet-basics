@@ -29,6 +29,10 @@
 class Language::Version < ApplicationRecord
   include AASM
 
+  def self.ransackable_attributes(_auth_object = nil)
+    ['created_at']
+  end
+
   has_many :module_versions, dependent: :destroy,
                              foreign_key: :language_version_id,
                              class_name: 'Language::Module::Version',

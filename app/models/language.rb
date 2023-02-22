@@ -42,6 +42,10 @@ class Language < ApplicationRecord
 
   extend Enumerize
 
+  def self.ransackable_attributes(_auth_object = nil)
+    ['created_at']
+  end
+
   enumerize :slug, in: %i[ada bash clang clojure cobol cpp csharp css crystal dart dlang elixir elm fortran go groovy haskell html java
                           javascript kotlin lua objectivec ocaml perl php prolog python racket rescript rproject ruby
                           rust scala smalltalk swift typescript perl powershell ocaml layout-designer]

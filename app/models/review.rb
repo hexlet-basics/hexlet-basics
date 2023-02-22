@@ -32,6 +32,14 @@ class Review < ApplicationRecord
 
   enumerize :locale, in: I18n.available_locales
 
+  def self.ransackable_attributes(_auth_object = nil)
+    ['created_at']
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    []
+  end
+
   validates :locale, presence: true
   validates :body, presence: true
   validates :first_name, presence: true

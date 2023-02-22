@@ -37,6 +37,14 @@ class BlogPost < ApplicationRecord
     attachable.variant :list, resize_to_limit: [456, 215]
   end
 
+  def self.ransackable_attributes(_auth_object = nil)
+    ['created_at']
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    []
+  end
+
   enumerize :locale, in: I18n.available_locales
 
   validates :name, presence: true

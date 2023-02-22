@@ -32,6 +32,14 @@ class User < ApplicationRecord
 
   has_secure_password validations: false
 
+  def self.ransackable_attributes(_auth_object = nil)
+    ['email']
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    ['language_members']
+  end
+
   validates :email, presence: true,
                     uniqueness: { case_sensitive: false },
                     'valid_email_2/email': { mx: true },
