@@ -44,8 +44,8 @@
             .card-body
               = simple_form_for @user, url: users_path do |f|
                 = f.input :first_name
-                = f.input :email
-                = f.input :password
+                = f.input :email, input_html: { autocomplete: 'email' }
+                = f.input :password, input_html: { autocomplete: 'new-password' }
                 .form-group
                   = f.submit class: 'btn btn-primary w-100'
                 = render 'web/shared/via_social_networks'
