@@ -31,6 +31,9 @@ Rails.application.configure do
 
   config.assets.js_compressor = :terser
 
+  # NOTE: cжимаем вебпаком
+  config.assets.css_compressor = Class.new { def self.compress(str) str end } # rubocop:disable Style/SingleLineMethods
+
   # Specifies the header that your server uses for sending files.
   # config.action_dispatch.x_sendfile_header = "X-Sendfile" # for Apache
   config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for NGINX
