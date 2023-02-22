@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Web::Admin::Management::UsersController < Web::Admin::Management::ApplicationController
+  include ActionController::Live
+
   def index
     query = params.fetch(:q, {}).with_defaults('s' => 'created_at desc')
 
@@ -14,33 +16,21 @@ class Web::Admin::Management::UsersController < Web::Admin::Management::Applicat
       end
 
       format.csv do
-        fields = %w[id email stack finished_lessons]
-
-        csv_string = CSV.generate do |csv|
-          csv << fields
+        send_stream(filename: "users-#{Time.zone.today}.csv") do |stream|
+          stream.write "id, email, stack, finished_lessons\n"
 
           users.find_each do |user|
             language_members = user.language_members
 
             if language_members.any?
               language_members.each do |language_member|
-                csv << [
-                  user.id,
-                  user.email,
-                  language_member.language.name,
-                  language_member.finished_lessons_count
-                ]
+                stream.write "#{user.id},#{user.email},#{language_member.language.name},#{language_member.finished_lessons_coun}\n"
               end
             else
-              csv << [
-                user.id,
-                user.email
-              ]
+              stream.write "#{user.id},#{user.email}\n"
             end
           end
         end
-
-        send_data csv_string, filename: "users-#{Time.zone.today}.csv"
       end
     end
   end
