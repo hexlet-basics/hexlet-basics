@@ -17,5 +17,5 @@
         .card-body.p-4.p-lg-5
           h1.h3.mb-4.text-center = t('.new_password')
           = simple_form_for @user, url: password_path(reset_password_token: params[:reset_password_token]), wrapper: :floating_labels_form do |f|
-            = f.input :password
+            = f.input :password, input_html: { autocomplete: 'new-password' }
             = f.submit class: 'btn btn-lg btn-primary w-100'
