@@ -1,6 +1,11 @@
 ru:
   flash:
     web:
+      admin:
+        languages:
+          update:
+            success: Язык успешно сохранен
+            error: Что-то пошло не так
       google_auth:
         one_tap:
           success: Добро пожаловать! Пора немного поучиться -)

@@ -1,6 +1,11 @@
 en:
   flash:
     web:
+      admin:
+        languages:
+          update:
+            success: Language updated successfully
+            error: Something went wrong
       google_auth:
         one_tap:
           success: You have signed in successfully. You can start learning now.
