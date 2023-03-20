@@ -40,6 +40,9 @@ footer.bg-dark.text-light.flex-shrink-0
       .col.mb-4.mb-lg-0
         b = t('.useful')
         ul.list-unstyled.lh-lg
+          - if I18n.locale == :ru
+            li
+              = link_to t('.community'), ExternalLinks.telegram_community_curl, class: 'text-decoration-none text-light'
           li
             = link_to t('.blog'), blog_posts_path, class: 'text-decoration-none text-light'
           li
@@ -66,18 +69,18 @@ footer.bg-dark.text-light.flex-shrink-0
               a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_telegram_curl
                 span.bi.bi-telegram.text-white-50
         - else
-          span
+          span.ms-3.ms-sm-5
             a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_facebook_curl
               span.bi.bi-facebook.text-white-50
-            span.ms-3.ms-sm-5
-              a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_instagram_curl
-                span.bi.bi-instagram.text-white-50
+          span.ms-3.ms-sm-5
+            a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_instagram_curl
+              span.bi.bi-instagram.text-white-50
+          span.ms-3.ms-sm-5
+            a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_slack_curl
+              span.bi.bi-slack.text-white-50
         span.ms-3.ms-sm-5
           a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_twitter_curl
             span.bi.bi-twitter.text-white-50
         span.ms-3.ms-sm-5
           a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_youtube_curl
             span.bi.bi-youtube.text-white-50
-        span.ms-3.ms-sm-5
-          a.rounded-circle target="_blank" rel="noopener noreferrer" href=ExternalLinks.hexlet_slack_curl
-            span.bi.bi-slack.text-white-50

@@ -25,6 +25,10 @@ class ExternalLinks
     'https://glvrd.ru/'
   end
 
+  def self.telegram_community_curl
+    'https://t.me/hexletcommunity'
+  end
+
   def self.method_missing(name)
     method_name = name.to_s.delete_suffix('_curl').to_sym
     links = I18n.t('links')
