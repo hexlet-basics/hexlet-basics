@@ -32,4 +32,5 @@
   Allow: */modules$
   Disallow: *.amp
 
-  Sitemap: https://#{request.host}/sitemaps/#{I18n.locale}/sitemap.xml#{ Rails.env.production? ? '.gz' : '' }
+- I18n.available_locales.each do |locale|
+  = "\nSitemap: https://#{request.host}/sitemaps/#{locale}/sitemap.xml#{Rails.env.production? ? '.gz' : ''}"
