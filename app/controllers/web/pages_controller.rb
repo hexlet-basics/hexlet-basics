@@ -1,7 +1,18 @@
 # frozen_string_literal: true
 
 class Web::PagesController < Web::ApplicationController
+  PAGES = %w[about
+             cookie_policy
+             privacy
+             authors
+             tos].freeze
+
   def show
-    set_meta_tags title: t(params[:id], scope: 'web.pages')
+    @page = params[:id]
+    unless PAGES.include? @page
+      raise ActionController::RoutingError, 'Page not found'
+    end
+
+    set_meta_tags title: t(@page, scope: 'web.pages')
   end
 end
