@@ -25,7 +25,7 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     post check_api_lesson_url(@lesson), params: { version_id: @lesson.versions.first.id, data: { attributes: { code: code } } }
     assert_response :success
 
-    body = JSON.parse(response.body)
+    body = response.parsed_body
     language_member.reload
     lesson_member.reload
 
@@ -47,7 +47,7 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     post check_api_lesson_url(@lesson), params: { version_id: @lesson.versions.first.id, data: { attributes: { code: code } } }
     assert_response :success
 
-    body = JSON.parse(response.body)
+    body = response.parsed_body
     assert { body['attributes']['passed'] == expected['attributes']['passed'] }
     assert { body['attributes']['result'] == expected['attributes']['result'] }
   end
