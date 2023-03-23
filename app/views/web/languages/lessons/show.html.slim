@@ -25,7 +25,7 @@
               .alert.alert-info.small.my-2
                 span.align-baseline = t('.if_stuck')
                 '
-                = link_to t('.community'), ExternalLinks.hexlet_slack_curl, target: '_blank', class: 'align-baseline', rel: :noopener
+                = link_to t('.community'), ExternalLinks.telegram_community_curl, target: '_blank', class: 'align-baseline', rel: :noopener
               = render 'web/deps/disqus', lesson: @lesson, title: @title
 
         .tab-pane.fade.overflow-auto.x-h-md-100#navigation-tab(role="tabpanel")
