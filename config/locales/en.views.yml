@@ -10,6 +10,7 @@ en:
         header: Reviews
         empty: Looks like there is noting yet
         read_more: Read more
+        course_html: Course %{link}
     admin:
       blog_posts:
         index:
