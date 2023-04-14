@@ -6,6 +6,10 @@ en:
           update:
             success: Language updated successfully
             error: Something went wrong
+        reviews:
+          create:
+            success: Testimonial successfully published
+            error: Something went wrong
       google_auth:
         one_tap:
           success: You have signed in successfully. You can start learning now.
