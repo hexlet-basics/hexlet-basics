@@ -43,7 +43,6 @@ class Review < ApplicationRecord
   validates :locale, presence: true
   validates :body, presence: true
   validates :first_name, presence: true
-  validates :last_name, presence: true
 
   belongs_to :language
   belongs_to :user
