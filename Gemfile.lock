@@ -135,7 +135,7 @@ GEM
     cgi (0.3.6)
     concurrent-ruby (1.2.2)
     configus (0.0.5)
-    connection_pool (2.3.0)
+    connection_pool (2.4.0)
     counter_culture (3.3.0)
       activerecord (>= 4.2)
       activesupport (>= 4.2)
@@ -366,6 +366,8 @@ GEM
       unparser
     redcarpet (3.6.0)
     redis (4.8.1)
+    redis-client (0.14.1)
+      connection_pool
     regexp_parser (2.7.0)
     request_store (1.5.1)
       rack (>= 1.4)
@@ -428,10 +430,11 @@ GEM
     sentry-sidekiq (5.8.0)
       sentry-ruby (~> 5.8.0)
       sidekiq (>= 3.0)
-    sidekiq (6.5.8)
-      connection_pool (>= 2.2.5, < 3)
-      rack (~> 2.0)
-      redis (>= 4.5.0, < 5)
+    sidekiq (7.0.8)
+      concurrent-ruby (< 2)
+      connection_pool (>= 2.3.0)
+      rack (>= 2.2.4)
+      redis-client (>= 0.11.0)
     signet (0.17.0)
       addressable (~> 2.8)
       faraday (>= 0.17.5, < 3.a)
@@ -617,7 +620,7 @@ DEPENDENCIES
   sentry-rails
   sentry-ruby
   sentry-sidekiq
-  sidekiq (= 6.5.8)
+  sidekiq (= 7.0.8)
   simple_form
   sitemap_generator
   slim-rails
