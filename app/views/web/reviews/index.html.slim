@@ -7,8 +7,9 @@
           .card.border-0.mb-4
             .card-body
               .h4.card-title = review
-              - let link_to review.language, language_path(review.language.slug), class: 'text-body' do |link|
-                .small.mb-2 = t('.course_html', link: link)
+              .small.mb-2
+                = link_to t('.course', language: review.language), language_path(review.language.slug), class: 'text-body'
               p.card-text.lead = review.body
+              .small.text-end = l review.created_at, format: :long
       - else
         p = t('.empty')
