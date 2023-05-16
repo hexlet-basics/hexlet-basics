@@ -1,31 +1,31 @@
 app-bash:
-	docker-compose run --rm web /bin/bash
+	docker compose run --rm web /bin/bash
 
 app-language-load:
-	docker-compose run --rm web make language-load L=${L}
+	docker compose run --rm web make language-load L=${L}
 
 app-lint:
-	docker-compose run --rm --no-deps web make lint
+	docker compose run --rm --no-deps web make lint
 
 app-lint-fix:
-	docker-compose run --rm --no-deps web make lint-fix
+	docker compose run --rm --no-deps web make lint-fix
 
 app-test:
-	docker-compose run --rm web make test
+	docker compose run --rm web make test
 
 app-check: app-test app-lint
 
 app-test-file:
-	docker-compose run --rm web make test-file T=${T}
+	docker compose run --rm web make test-file T=${T}
 
 app-rails-console:
-	docker-compose run --rm web bin/rails c
+	docker compose run --rm web bin/rails c
 
 app-setup-git-hooks:
-	docker-compose run --rm web npx simple-git-hooks
+	docker compose run --rm web npx simple-git-hooks
 
 app-lint-staged:
-	docker-compose run -T --rm web npx lint-staged --relative
+	docker compose run -T --rm web npx lint-staged --relative
 
 app-languages-load:
 	make app-language-load L='javascript'
@@ -62,7 +62,7 @@ app-languages-load:
 app-setup: app-install app-db-prepare app-setup-git-hooks app-languages-load
 
 app-install:
-	docker-compose run --rm web make setup
+	docker compose run --rm web make setup
 
 app-db-prepare:
-	docker-compose run --rm web make db-prepare
+	docker compose run --rm web make db-prepare
