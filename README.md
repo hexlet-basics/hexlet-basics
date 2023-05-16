@@ -7,7 +7,7 @@
 ### Requirements
 
 * docker
-* docker compose
+* docker compose V2
 * ruby >= 3.0.0
 * make
 
