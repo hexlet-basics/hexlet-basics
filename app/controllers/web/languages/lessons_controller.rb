@@ -16,6 +16,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     @language_lessons_count = resource_language.current_lessons.count
     @lessons_info = resource_language.current_lesson_infos
                                      .joins(version: :lesson)
+                                     .includes(version: :lesson)
                                      .with_locale
                                      .order('language_lesson_versions.natural_order')
 
