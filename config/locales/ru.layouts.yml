@@ -52,5 +52,6 @@ ru:
         matrix: Матрица компетентности
         source_code: Исходный код
         free_call: Звонок по РФ бесплатный
+        additionally: Дополнительно
       unsupported_browser_warning:
         unsupported_browser_warning: Ваш браузер устарел :( Некоторые возможности отключены.

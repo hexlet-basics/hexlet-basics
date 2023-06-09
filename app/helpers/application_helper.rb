@@ -139,8 +139,8 @@ module ApplicationHelper
     true
   end
 
-  def completed_languages
-    @completed_languages ||= Language.with_progress(:completed).with_locale.ordered
+  def completed_languages(locale = I18n.locale)
+    Language.with_progress(:completed).with_locale(locale).ordered
   end
 
   def default_filter_form_options(options = {})
