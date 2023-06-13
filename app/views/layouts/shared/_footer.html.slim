@@ -72,37 +72,39 @@ footer.bg-dark.text-light.flex-shrink-0
               b = t('.additionally')
 
     - I18n.with_locale(:en)
-      #footerToggler.collapse.row.row-cols-1.row-cols-sm-2.row-cols-md-3
-        .col.mb-4.mb-lg-0
-          b = t('.all_courses')
-          .row.row-cols-2
-            - let completed_languages(:en).in_groups(2, false) do |groups|
-              - groups.each do |group|
-                .col
-                  ul.list-unstyled.lh-lg
-                    - group.each do |lang|
-                      li
-                        = link_to lang.name, language_path(lang.slug, locale: :en), class: 'text-decoration-none text-light'
+      #footerToggler.collapse
+        .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4
+          .col
+          .col.mb-4.mb-lg-0
+            b = t('.all_courses')
+            .row.row-cols-2
+              - let completed_languages(:en).in_groups(2, false) do |groups|
+                - groups.each do |group|
+                  .col
+                    ul.list-unstyled.lh-lg
+                      - group.each do |lang|
+                        li
+                          = link_to lang.name, language_path(lang.slug, locale: :en), class: 'text-decoration-none text-light'
 
-        .col.mb-4.mb-lg-0
-          b = t('.useful')
-          ul.list-unstyled.lh-lg
-            li
-              = link_to t('.blog'), blog_posts_path(locale: :en), class: 'text-decoration-none text-light'
-            li
-              = link_to t('.about'), page_path(:about, locale: :en), class: 'text-decoration-none text-light'
-            li
-              = link_to t('.reviews'), reviews_path(locale: :en), class: 'text-decoration-none text-light'
-            li
-              = link_to t('.authors'), page_path(:authors, locale: :en), class: 'text-decoration-none text-light'
+          .col.mb-4.mb-lg-0
+            b = t('.useful')
+            ul.list-unstyled.lh-lg
+              li
+                = link_to t('.blog'), blog_posts_path(locale: :en), class: 'text-decoration-none text-light'
+              li
+                = link_to t('.about'), page_path(:about, locale: :en), class: 'text-decoration-none text-light'
+              li
+                = link_to t('.reviews'), reviews_path(locale: :en), class: 'text-decoration-none text-light'
+              li
+                = link_to t('.authors'), page_path(:authors, locale: :en), class: 'text-decoration-none text-light'
 
-        .col.mb-4.mb-lg-0
-          b = t('.language_categories')
-          ul.list-unstyled.lh-lg
-            - let Language::Category.all do |categories|
-              - categories.each do |category|
-                li
-                  = link_to category, language_category_path(category.slug, locale: :en), class: 'text-decoration-none text-light'
+          .col.mb-4.mb-lg-0
+            b = t('.language_categories')
+            ul.list-unstyled.lh-lg
+              - let Language::Category.all do |categories|
+                - categories.each do |category|
+                  li
+                    = link_to category, language_category_path(category.slug, locale: :en), class: 'text-decoration-none text-light'
 
     hr
     .d-flex
