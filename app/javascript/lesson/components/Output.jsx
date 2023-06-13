@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import cn from 'classnames';
 import AnsiUp from 'ansi_up';
 
+import escape from 'core-js/actual/escape.js';
 import { checkInfoStates } from '../utils/maps.js';
 import EntityContext from '../EntityContext.js';
 
@@ -26,10 +27,14 @@ function Output() {
     'alert-success': checkInfo.passed,
     'alert-warning': !checkInfo.passed,
   });
+  // NOTE: исправление неверной кодировки для кириллицы
+  // https://developer.mozilla.org/en-US/docs/Glossary/Base64
+  const output = ansi.ansi_to_html(decodeURIComponent(escape(checkInfo.output)));
+
   return (
     <div className="d-flex flex-column h-100">
       <pre>
-        <code className="nohighlight" dangerouslySetInnerHTML={{ __html: ansi.ansi_to_html(checkInfo.output) }} />
+        <code className="nohighlight" dangerouslySetInnerHTML={{ __html: output }} />
       </pre>
       <div className={alertClassName} dangerouslySetInnerHTML={{ __html: message }} />
       {!lessonMember.id && checkInfo.passed && (
