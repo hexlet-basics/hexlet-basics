@@ -27,6 +27,8 @@ function Output() {
     'alert-success': checkInfo.passed,
     'alert-warning': !checkInfo.passed,
   });
+  // NOTE: исправление неверной кодировки для кириллицы
+  // https://developer.mozilla.org/en-US/docs/Glossary/Base64
   const output = ansi.ansi_to_html(decodeURIComponent(escape(checkInfo.output)));
 
   return (
