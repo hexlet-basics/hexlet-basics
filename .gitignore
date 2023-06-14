@@ -43,6 +43,7 @@ yarn-debug.log*
 .idea
 .tool-versions
 .env
+.envrc
 .autoenv
 .kube/*
 *.pgsql
