@@ -1,11 +1,12 @@
 .container
   .mb-5
-    .d-flex.mb-4
-      h2.me-auto
+    .d-flex.flex-column.flex-sm-row.align-items-sm-center.mb-4
+      h2.me-auto.mb-3.mb-sm-0
         a#courses.text-decoration-none.text-dark href="#courses" = t('.courses')
 
-      - @categories.each do |category|
-          = link_to category, language_category_path(category.slug), class: 'me-2 fw-light text-decoration-none fs-5 badge text-bg-light p-3 rounded-pill border'
+      .d-flex.flex-wrap
+        - @categories.each do |category|
+            = link_to category, language_category_path(category.slug), class: 'mb-2 mb-sm-0 me-2 me-sm-0 ms-sm-2 fw-light text-decoration-none fs-5 badge text-bg-light p-2 p-sm-3 rounded-pill border'
 
     = render 'web/shared/languages', languages: completed_languages, language_members_by_language: language_members_by_language
             / .text-right
