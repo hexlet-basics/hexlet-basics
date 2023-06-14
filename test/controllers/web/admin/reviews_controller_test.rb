@@ -20,7 +20,7 @@ class Web::Admin::ReviewsControllerTest < ActionDispatch::IntegrationTest
   test 'create' do
     lang = languages(:php)
 
-    attrs = attributes_for :review, language_id: lang.id, user_id: @user.id, locale: I18n.locale
+    attrs = attributes_for(:review, language_id: lang.id, user_id: @user.id, locale: I18n.locale)
     post admin_reviews_url, params: { admin_review_form: attrs }
     assert_response :redirect
 

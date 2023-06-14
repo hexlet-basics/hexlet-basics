@@ -20,7 +20,7 @@ class Web::Admin::BlogPostsControllerTest < ActionDispatch::IntegrationTest
   test 'create' do
     lang = languages(:php)
 
-    attrs = attributes_for :blog_post, language_id: lang.id
+    attrs = attributes_for(:blog_post, language_id: lang.id)
     post admin_blog_posts_url, params: { admin_blog_post_form: attrs }
     assert_response :redirect
 
