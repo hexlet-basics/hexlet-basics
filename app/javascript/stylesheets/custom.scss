@@ -3,12 +3,16 @@
 $body-bg: #f5f7fb;
 $breadcrumb-divider: '→';
 
-@import 'bootstrap/scss/functions';
-@import 'bootstrap/scss/variables';
+@import "bootstrap/scss/functions";
+
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
+
 @import "bootstrap/scss/maps";
-@import 'bootstrap/scss/mixins';
+@import "bootstrap/scss/mixins";
 @import "bootstrap/scss/root";
-@import 'bootstrap/scss/utilities';
+
+@import "bootstrap/scss/utilities";
 
 $azure: #45aaf2;
 

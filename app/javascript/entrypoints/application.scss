@@ -9,4 +9,7 @@
 @import 'ilyabirman-likely/release/likely.min.css';
 
 @import 'node_modules/select2/src/scss/core';
+
+// NOTE https://github.com/apalfrey/select2-bootstrap-5-theme/issues/75
+$s2bs5-border-color: $border-color;
 @import 'select2-bootstrap-5-theme/src/include-all';
