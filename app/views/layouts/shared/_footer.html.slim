@@ -84,19 +84,19 @@ footer.bg-dark.text-light.flex-shrink-0
                     ul.list-unstyled.lh-lg
                       - group.each do |lang|
                         li
-                          = link_to lang.name, language_path(lang.slug, locale: :en), class: 'text-decoration-none text-light'
+                          = link_to lang.name, language_path(lang.slug, locale: ''), class: 'text-decoration-none text-light'
 
           .col.mb-4.mb-lg-0
             b = t('.useful')
             ul.list-unstyled.lh-lg
               li
-                = link_to t('.blog'), blog_posts_path(locale: :en), class: 'text-decoration-none text-light'
+                = link_to t('.blog'), blog_posts_path(locale: ''), class: 'text-decoration-none text-light'
               li
-                = link_to t('.about'), page_path(:about, locale: :en), class: 'text-decoration-none text-light'
+                = link_to t('.about'), page_path(:about, locale: ''), class: 'text-decoration-none text-light'
               li
-                = link_to t('.reviews'), reviews_path(locale: :en), class: 'text-decoration-none text-light'
+                = link_to t('.reviews'), reviews_path(locale: ''), class: 'text-decoration-none text-light'
               li
-                = link_to t('.authors'), page_path(:authors, locale: :en), class: 'text-decoration-none text-light'
+                = link_to t('.authors'), page_path(:authors, locale: ''), class: 'text-decoration-none text-light'
 
           .col.mb-4.mb-lg-0
             b = t('.language_categories')
@@ -104,7 +104,7 @@ footer.bg-dark.text-light.flex-shrink-0
               - let Language::Category.all do |categories|
                 - categories.each do |category|
                   li
-                    = link_to category, language_category_path(category.slug, locale: :en), class: 'text-decoration-none text-light'
+                    = link_to category, language_category_path(category.slug, locale: ''), class: 'text-decoration-none text-light'
 
     hr
     .d-flex
