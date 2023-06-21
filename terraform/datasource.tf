@@ -1,12 +1,12 @@
-data "digitalocean_kubernetes_cluster" "hexlet_basics_cluster_data_3" {
-  name = var.cluster_name_3
+data "digitalocean_kubernetes_cluster" "hexlet_basics_cluster_data_4" {
+  name = var.cluster_name_4
 
   depends_on = [
-    digitalocean_kubernetes_cluster.hexlet_basics_cluster_3
+    digitalocean_kubernetes_cluster.hexlet_basics_cluster_4
   ]
 }
 
-data "digitalocean_kubernetes_versions" "hexlet_basics_cluster_3" {}
+data "digitalocean_kubernetes_versions" "hexlet_basics_cluster_4" {}
 
 data "digitalocean_database_cluster" "postgres_db_data" {
   name = var.postgres_db_cluster_name

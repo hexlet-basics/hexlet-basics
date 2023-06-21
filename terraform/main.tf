@@ -2,12 +2,13 @@
 # PRIMARY CLUSTER
 # --------------------------------------
 
-resource "digitalocean_kubernetes_cluster" "hexlet_basics_cluster_3" {
-  name         = var.cluster_name_3
+resource "digitalocean_kubernetes_cluster" "hexlet_basics_cluster_4" {
+  name         = var.cluster_name_4
   region       = var.cluster_region
 
   auto_upgrade = true
-  version      = data.digitalocean_kubernetes_versions.hexlet_basics_cluster_3.latest_version
+  # version      = data.digitalocean_kubernetes_versions.hexlet_basics_cluster_4.latest_version
+  version      = "1.24.13-do.0"
 
   maintenance_policy {
     start_time  = "02:00"
@@ -31,11 +32,11 @@ locals {
 
 resource "local_file" "kubeconfig" {
   depends_on = [
-    resource.digitalocean_kubernetes_cluster.hexlet_basics_cluster_3
+    resource.digitalocean_kubernetes_cluster.hexlet_basics_cluster_4
   ]
 
   count      = var.write_kubeconfig ? 1 : 0
-  content    = resource.digitalocean_kubernetes_cluster.hexlet_basics_cluster_3.kube_config[0].raw_config
+  content    = resource.digitalocean_kubernetes_cluster.hexlet_basics_cluster_4.kube_config[0].raw_config
   filename   = local.path_to_kubeconfig
   file_permission = "0600"
 }
@@ -62,7 +63,7 @@ resource "digitalocean_database_cluster" "postgres_db_cluster" {
    cluster_id = digitalocean_database_cluster.postgres_db_cluster.id
    rule {
      type  = "k8s"
-     value = digitalocean_kubernetes_cluster.hexlet_basics_cluster_3.id
+     value = digitalocean_kubernetes_cluster.hexlet_basics_cluster_4.id
    }
  }
 
@@ -84,7 +85,7 @@ resource "digitalocean_database_cluster" "redis_db_cluster" {
    cluster_id = digitalocean_database_cluster.redis_db_cluster.id
    rule {
      type  = "k8s"
-     value = digitalocean_kubernetes_cluster.hexlet_basics_cluster_3.id
+     value = digitalocean_kubernetes_cluster.hexlet_basics_cluster_4.id
    }
  }
 
@@ -171,7 +172,7 @@ resource "digitalocean_project" "hexlet_basics_project" {
   purpose     = "Web Application"
   environment = "Production"
   resources   = [
-    digitalocean_kubernetes_cluster.hexlet_basics_cluster_3.urn,
+    digitalocean_kubernetes_cluster.hexlet_basics_cluster_4.urn,
     digitalocean_database_cluster.postgres_db_cluster.urn,
     digitalocean_database_cluster.redis_db_cluster.urn,
   ]
