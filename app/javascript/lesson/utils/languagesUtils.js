@@ -2,6 +2,7 @@
 
 export const languages = {
   'layout-designer': 'layout-designer',
+  'pre-course-java': 'pre-course-java',
   css: 'css',
   html: 'html',
   javascript: 'javascript',
