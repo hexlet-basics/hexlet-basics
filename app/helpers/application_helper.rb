@@ -98,7 +98,8 @@ module ApplicationHelper
       'html' => 'layout-designer.svg',
       'css' => 'layout-designer.svg',
       'clang' => 'clang.svg',
-      'layout-designer' => 'layout-designer.svg'
+      'layout-designer' => 'layout-designer.svg',
+      'pre-course-java' => 'pre-course-java.svg'
     }
     mapping.fetch(slug, 'hexlet_logo.png')
   end

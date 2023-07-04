@@ -4,6 +4,7 @@ const languageMapping = {
   racket: 'scheme',
   clang: 'c',
   'layout-designer': 'html',
+  'pre-course-java': 'java',
 };
 
 const editorMapping = {
@@ -12,6 +13,7 @@ const editorMapping = {
   clang: 'c',
   bash: 'shell',
   'layout-designer': 'html',
+  'pre-course-java': 'java',
 };
 
 const langToTabSizeMapping = {
