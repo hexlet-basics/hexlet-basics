@@ -3,6 +3,7 @@
 export const languages = {
   'layout-designer': 'layout-designer',
   'pre-course-java': 'pre-course-java',
+  'pre-course-python': 'pre-course-python',
   css: 'css',
   html: 'html',
   javascript: 'javascript',

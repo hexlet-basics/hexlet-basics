@@ -5,6 +5,7 @@ const languageMapping = {
   clang: 'c',
   'layout-designer': 'html',
   'pre-course-java': 'java',
+  'pre-course-python': 'python',
 };
 
 const editorMapping = {
@@ -14,6 +15,7 @@ const editorMapping = {
   bash: 'shell',
   'layout-designer': 'html',
   'pre-course-java': 'java',
+  'pre-course-python': 'python',
 };
 
 const langToTabSizeMapping = {
