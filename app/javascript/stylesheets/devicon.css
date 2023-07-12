@@ -81,6 +81,10 @@
   content: "\e845";
   color: #f0db4f;
 }
+.devicon-pre-course-javascript-plain::before {
+  content: "\e845";
+  color: #f0db4f;
+}
 .devicon-kotlin-plain:before {
   content: "\e96f";
   color: #7c6db2;

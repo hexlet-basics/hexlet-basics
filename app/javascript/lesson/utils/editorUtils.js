@@ -16,6 +16,7 @@ const editorMapping = {
   'layout-designer': 'html',
   'pre-course-java': 'java',
   'pre-course-python': 'python',
+  'pre-course-javascript': 'javascript',
 };
 
 const langToTabSizeMapping = {
