@@ -27,6 +27,11 @@ class Web::ApplicationController < ApplicationController
     @language_menu_data = build_language_menu_data
   end
 
+  before_action do
+    @switching_locales ||= I18n.available_locales.without(I18n.locale)
+                               .index_with { |locale| switch_locale_path(new_locale: locale) }
+  end
+
   private
 
   def build_language_menu_data
