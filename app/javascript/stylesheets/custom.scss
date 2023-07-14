@@ -14,6 +14,13 @@ $breadcrumb-divider: '→';
 
 @import "bootstrap/scss/utilities";
 
+.card,
+.dropdown-menu,
+.list-group-item,
+.form-control {
+  background-color: $white!important;
+}
+
 $azure: #45aaf2;
 
 $utilities: map.merge(

@@ -16,7 +16,7 @@
     h1.mb-4 = t('.sign_up')
   .row.justify-content-center
     .col-sm-8.col-md-7.col-lg-5
-      .card.bg-white.shadow-sm.border-0
+      .card.shadow-sm.border-0
         .card-body.m-4
           = simple_form_for @user, url: users_path do |f|
             = f.input :first_name
