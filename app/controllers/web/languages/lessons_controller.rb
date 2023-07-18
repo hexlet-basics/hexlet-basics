@@ -51,6 +51,12 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
       }
     }
     set_meta_tags seo_tags
+
+    @switching_locales.each do |locale,|
+      if @lesson_version.infos.exists?(locale: locale)
+        @switching_locales[locale] = language_lesson_url(resource_language.slug, @lesson.slug, locale: AppHost.locale_for_url(locale))
+      end
+    end
   end
 
   def next_lesson

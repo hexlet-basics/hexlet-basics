@@ -54,5 +54,11 @@ class Web::LanguagesController < Web::ApplicationController
       }
     }
     set_meta_tags seo_tags
+
+    @switching_locales.each do |locale,|
+      if @language.current_version.infos.exists?(locale: locale)
+        @switching_locales[locale] = language_path(@language.slug, locale: AppHost.locale_for_url(locale))
+      end
+    end
   end
 end

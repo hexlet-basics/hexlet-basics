@@ -73,8 +73,8 @@
             / image_tag "flag-#{I18n.locale}.svg", width: 25, alt: "switch language to #{I18n.locale}"
           ul.dropdown-menu.dropdown-menu-end
             li
-              - I18n.available_locales.without(I18n.locale).each do |locale|
-                = link_to switch_locale_path(new_locale: locale), class: 'dropdown-item d-flex', rel: :nofollow do
+              - @switching_locales.each do |locale, url|
+                = link_to url, class: 'dropdown-item d-flex', rel: :nofollow do
                   = image_tag "flag-#{locale}.svg", width: 25, alt: "switch language to #{locale}", class: 'my-auto me-2'
                   span.my-auto
                     = t(locale, scope: 'languages')

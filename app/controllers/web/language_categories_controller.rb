@@ -15,5 +15,9 @@ class Web::LanguageCategoriesController < Web::ApplicationController
     @builder = ItemListSchema.to_builder(item_builders)
 
     @blog_posts = @category.blog_posts.published.limit(3)
+
+    @switching_locales.each do |locale,|
+      @switching_locales[locale] = full_url_for(locale: AppHost.locale_for_url(locale))
+    end
   end
 end
