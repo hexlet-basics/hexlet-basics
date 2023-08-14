@@ -36,6 +36,6 @@ class LessonTester
     # NOTE: scrub нужен для удаления недопустимых символов в UTF-8, которые могут быть в выводе упражнения 
     sanitize_output = result == 'failed-infinity' ?  '' : Base64.strict_encode64(output.scrub)
 
-    { passed: passed, output: sanitaze_output , result: result, status: exitstatus }
+    { passed: passed, output: sanitize_output , result: result, status: exitstatus }
   end
 end
