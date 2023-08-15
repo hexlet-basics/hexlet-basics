@@ -10,8 +10,9 @@ class DockerExerciseApi
   end
 
   def self.download(lang_name)
-    system("docker pull #{image_name(lang_name)}")
-    system("rm -rf #{repo_dest(lang_name)}")
+    ok = system("docker pull #{image_name(lang_name)}")
+
+    raise 'Docker servise not available' unless ok
 
     # FIXME docker in docker volume
     system("docker run --name exercises-#{lang_name} -v #{repo_dest(lang_name)}:/out #{image_name(lang_name)}")
