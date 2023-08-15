@@ -14,6 +14,8 @@ class DockerExerciseApi
 
     raise 'Docker servise not available' unless ok
 
+    system("rm -rf #{repo_dest(lang_name)}")
+
     # FIXME docker in docker volume
     system("docker run --name exercises-#{lang_name} -v #{repo_dest(lang_name)}:/out #{image_name(lang_name)}")
     system("docker cp exercises-#{lang_name}:/exercises-#{lang_name} /tmp/hexletbasics/")
