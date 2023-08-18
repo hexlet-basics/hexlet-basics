@@ -317,7 +317,7 @@ GEM
     popper_js (2.11.7)
     power_assert (2.0.3)
     public_suffix (5.0.1)
-    puma (6.3.0)
+    puma (6.3.1)
       nio4r (~> 2.0)
     racc (1.7.0)
     rack (2.2.7)
