@@ -1,0 +1,37 @@
+---
+
+es:
+  phones:
+    - '+7 (495) 085 28 38'
+    - '8 800 100 22 47'
+  pages:
+    about: Acerca de
+  languages:
+    ru: Ruso
+    en: Inglés
+    es: Español
+  language_icon: "Ícono %{language}"
+  hello: "Hola mundo"
+  hours:
+    one: "%{count} hora"
+    few: "%{count} horas"
+    many: "%{count} horas"
+  students:
+    one: "%{count} estudiante"
+    few: "%{count} estudiantes"
+    many: "%{count} estudiantes"
+  lessons:
+    one: "%{count} lección"
+    few: "%{count} lecciones"
+    many: "%{count} lecciones"
+  reset: Reiniciar
+  export: Exportar
+  views:
+    pagination:
+      first: "&laquo;"
+      last: "&raquo;"
+      previous: "&lsaquo;"
+      next: "&rsaquo;"
+      previous_text: "&lsaquo; Anterior"
+      next_text: "Siguiente &rsaquo;"
+      truncate: "&hellip;"

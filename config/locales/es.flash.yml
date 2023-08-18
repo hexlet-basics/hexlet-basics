@@ -1,0 +1,50 @@
+es:
+  flash:
+    web:
+      admin:
+        languages:
+          update:
+            success: Idioma guardado exitosamente
+            error: Algo salió mal
+        reviews:
+          create:
+            success: Reseña publicada exitosamente
+            error: Algo salió mal
+      google_auth:
+        one_tap:
+          success: ¡Bienvenido! Es hora de aprender un poco -)
+          error: No pudimos obtener los datos de Google. ¡Verifica la configuración de tu cuenta de Google!
+      languages:
+        show:
+          warning: ¡Intenta cambiar de idioma, tal vez encuentres una lección que necesitas! :)
+          empty_language_current_version: El idioma está en desarrollo. Por favor, vuelve más tarde o prueba con otro idioma disponible.
+          language_in_development_html: |
+            El curso de %{language} aún está en desarrollo.
+            Puedes ayudar enviando una solicitud de extracción con nuevas lecciones o complementando las que ya existen <a href="%{link_to_repo}" target="_blank" rel="noopener">%{link_to_repo}</a>.
+            Hemos preparado recomendaciones para escribir textos <a href="%{link_to_recommendations}" target="_blank" rel="noopener">en este enlace</a>.
+        lessons:
+          show:
+            lesson_not_found: ¡No se encontró la lección, pero puedes comenzar otras!
+      users:
+        create:
+          success: ¡Bienvenido! Elige un curso y sumérgete en el mundo del desarrollo
+      sessions:
+        create:
+          success: El interior es mejor que el exterior. Guardamos tu progreso y te guiamos hacia la luz
+      auth:
+        callback:
+          success: ¡Bienvenido! Es hora de aprender un poco -)
+      remind_passwords:
+        create:
+          success: Hemos enviado un correo electrónico con instrucciones para restablecer tu contraseña
+      passwords:
+        update:
+          success: Contraseña actualizada. Puedes iniciar sesión con tu nueva contraseña.
+      account:
+        profiles:
+          update:
+            success: Datos actualizados exitosamente
+            error: Error al actualizar
+          destroy:
+            success: Cuenta eliminada exitosamente
+            error: Se produjo un error al eliminar la cuenta

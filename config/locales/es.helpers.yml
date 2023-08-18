@@ -1,0 +1,13 @@
+es:
+  helpers:
+    submit:
+      create: Crear
+      update: Actualizar
+      sign_in_form:
+        create: Iniciar sesión
+      user_sign_up_form:
+        create: Crear cuenta
+      remind_password_form:
+        create: Recuperar
+      q:
+        create: Buscar

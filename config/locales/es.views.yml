@@ -1,0 +1,52 @@
+---
+
+es:
+  web:
+    language_categories:
+      show:
+        blog_posts: Publicaciones del blog
+    reviews:
+      index:
+        header: Reseñas
+        empty: Parece que aquí no hay nada todavía
+        read_more: Leer más
+        course: 'Curso %{language}'
+    admin:
+      title: Panel de administración de Code-Basics
+      languages:
+        index:
+          languages: Idiomas
+          add_new_language: Agregar nuevo idioma
+        new:
+          new_language: Nuevo idioma
+      home:
+        index:
+          dashboard: Tablero
+      management:
+        title: Usuarios
+        users:
+          index:
+            finished_lessons: Lecciones completadas
+            users: Usuarios
+          filter:
+            from: Comenzó a tomar desde
+      reviews:
+        index:
+          header: Reseñas
+          add_new_review: Agregar nueva reseña
+        new:
+          new_review: Nueva reseña
+      blog_posts:
+        index:
+          header: Publicaciones del blog
+          add_new_blog_post: Agregar nueva publicación
+        new:
+          new_blog_post: Nueva publicación
+    home:
+      reviews:
+        reviews: Reseñas
+        course_html: Curso %{link}
+      hero:
+        learn_html: Aprende&nbsp;
+        free_programming_courses: Cursos gratuitos de programación
+       
