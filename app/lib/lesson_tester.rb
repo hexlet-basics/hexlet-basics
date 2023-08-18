@@ -34,6 +34,8 @@ class LessonTester
     passed = result == 'passed'
 
     # NOTE: scrub нужен для удаления недопустимых символов в UTF-8, которые могут быть в выводе упражнения
-    { passed: passed, output: Base64.strict_encode64(output.scrub), result: result, status: exitstatus }
+    sanitized_output = result == 'failed-infinity' ? '' : Base64.strict_encode64(output.scrub)
+
+    { passed: passed, output: sanitized_output, result: result, status: exitstatus }
   end
 end

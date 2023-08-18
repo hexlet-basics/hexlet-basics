@@ -17,6 +17,7 @@ export const languages = {
   elixir: 'elixir',
   clojure: 'clojure',
   clang: 'clang',
+  dlang: 'dlang',
   lua: 'lua',
   prolog: 'prolog',
   haskell: 'haskell',

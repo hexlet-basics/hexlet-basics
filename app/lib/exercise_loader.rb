@@ -19,7 +19,6 @@ class ExerciseLoader
 
     create_lessons(language_version, language_modules_data)
 
-    # FIXME: we should stop building image if docker answer code is not 200
     docker_exercise_api.tag_image_version(lang_name, language_version.image_tag)
 
     # TODO: rename to building_error_descriptoin and use only for error messages

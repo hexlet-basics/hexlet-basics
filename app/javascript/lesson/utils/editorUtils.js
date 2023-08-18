@@ -3,6 +3,7 @@
 const languageMapping = {
   racket: 'scheme',
   clang: 'c',
+  dlang: 'd',
   'layout-designer': 'html',
   'pre-course-java': 'java',
   'pre-course-python': 'python',
@@ -13,6 +14,7 @@ const editorMapping = {
   css: 'html',
   racket: 'scheme',
   clang: 'c',
+  dlang: 'd',
   bash: 'shell',
   'layout-designer': 'html',
   'pre-course-java': 'java',
