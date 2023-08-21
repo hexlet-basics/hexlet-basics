@@ -101,7 +101,7 @@ module ApplicationHelper
       'layout-designer' => 'layout-designer.svg',
       'pre-course-java' => 'pre-course-java.svg',
       'pre-course-python' => 'pre-course-python.svg',
-      'pre-course-javascript' => 'pre-course-javascript.svg'
+      'pre-course-javascript' => 'frontend.svg'
     }
     mapping.fetch(slug, 'hexlet_logo.png')
   end
