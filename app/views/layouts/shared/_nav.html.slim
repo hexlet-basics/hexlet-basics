@@ -48,14 +48,3 @@
                 li = link_to t('.admin'), admin_root_path, class: 'dropdown-item'
               .dropdown-divider
               li = link_to t('.sign_out'), session_path, method: :delete, class: 'dropdown-item'
-        li.nav-item.dropdown
-          a.nav-link.text-dark.dropdown-toggle href='#' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false'
-            span.me-2 = I18n.locale.upcase
-            / image_tag "flag-#{I18n.locale}.svg", width: 25, alt: "switch language to #{I18n.locale}"
-          ul.dropdown-menu.dropdown-menu-end
-            li
-              - @switching_locales.each do |locale, url|
-                = link_to url, class: 'dropdown-item d-flex', rel: :nofollow do
-                  = image_tag "flag-#{locale}.svg", width: 25, alt: "switch language to #{locale}", class: 'my-auto me-2'
-                  span.my-auto
-                    = t(locale, scope: 'languages')
