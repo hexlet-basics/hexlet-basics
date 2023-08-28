@@ -4,6 +4,7 @@ class EventsMapping
   # all events should goes here
   @mapping = {
     signed_up: '',
+    signed_in: '',
     next_lesson: '',
     lesson_finished: '',
     language_finished: ''
