@@ -16,14 +16,17 @@ es:
     one: "%{count} hora"
     few: "%{count} horas"
     many: "%{count} horas"
+    other: "%{count} horas"
   students:
     one: "%{count} estudiante"
     few: "%{count} estudiantes"
     many: "%{count} estudiantes"
+    other: "%{count} estudiantes"
   lessons:
     one: "%{count} lección"
     few: "%{count} lecciones"
     many: "%{count} lecciones"
+    other: "%{count} lecciones"
   reset: Reiniciar
   export: Exportar
   views:

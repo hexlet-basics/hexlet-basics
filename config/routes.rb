@@ -20,7 +20,7 @@ Rails.application.routes.draw do
     match '/500', to: 'errors#server_error', via: :all
   end
 
-  scope '(:locale)', locale: /en|ru/ do
+  scope '(:locale)', locale: /en|ru|es/ do
     namespace :api do
       resources :languages, only: %i[index show] do
         scope module: :languages do
