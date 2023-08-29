@@ -18,7 +18,7 @@ class Language::Category < ApplicationRecord
   has_many :blog_posts, through: :languages, dependent: :restrict_with_exception
 
   def name
-    send :"name_#{I18n.locale}"
+    respond_to?("name_#{I18n.locale}") ? send("name_#{I18n.locale}") : name_en
   end
 
   def to_s

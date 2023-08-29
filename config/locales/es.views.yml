@@ -131,29 +131,9 @@ es:
         no_registration: No se requiere registro
         lessons: "%{lessons_count} con práctica en el navegador"
         blog_posts: Entradas del blog
-      complete_language:
-        continue: Continuar el aprendizaje
-        grats: ¡Felicidades!
-        title: Has completado con éxito el curso básico en Code Basics.
-        first_step: Este es el primer paso en el mundo del desarrollo profesional. ¿Qué sigue?
-        enter_profession: "Únete a la profesión en Hexlet. Esto te permitirá:"
-        knowledge: Obtener conocimientos fundamentales de programación
-        tasks: Aprender a resolver problemas prácticos
-        apps: Escribir tus primeras aplicaciones completas, que formarán parte de tu portafolio de desarrollador
-        certificate: Obtener el certificado de Hexlet y recibir ayuda en la búsqueda de empleo al finalizar el curso.
-        first_courses_free: Los primeros cursos en la profesión están disponibles de forma gratuita. Para empezar a aprender el material, simplemente regístrate y únete a la profesión.
-        hexlet_profs: Otras profesiones en Hexlet
-        likely:
-          share_in_fb: Compartir
-          share_in_twitter: Twittear
-          share_in_vk: Compartir en VK
-          share_in_telegram: Enviar
-          twitter: "HexletHQ"
-          share_vk_text: "¡Este curso ha sido conquistado! ¡Fue genial! #hexlet"
-          share_fb_text: "¡Este curso ha sido conquistado! ¡Fue genial! #hexlet"
-          share_twitter_text: "¡Este curso ha sido conquistado! ¡Fue genial!"
-        lessons:
+      lessons:
           content:
+            next: "&rsaquo;"
             issues: ¿Encontraste un error? ¿Quieres añadir algo? Las solicitudes de extracción son bienvenidas.
             sign_up_for_tracking_progress_html: |
               Curso gratuito de %{name}. <a href="%{link}" class="text-decoration-none" target="_blank">Regístrate</a> para hacer un seguimiento de tu progreso &rarr;
@@ -189,60 +169,82 @@ es:
             please_sign_in: Por favor, inicia sesión. Esto es necesario para hacer un seguimiento del progreso en las lecciones. Si aún no tienes una cuenta, este es el momento perfecto para crear una.
             sign_in: Iniciar sesión
             community: comunidad
-        lesson_tab:
-          to_home_title: Inicio
-          breadcrumb: Migas de pan
-        navigation_tab:
-        pages:
-          about:
-            title: Acerca del proyecto
+          lesson_tab:
+            to_home_title: Inicio
+            breadcrumb: Migas de pan
+          navigation_tab:
+          pages:
+            about:
+              title: Acerca del proyecto
+              meta_description: |
+                Code Basics: lecciones interactivas de alta calidad sobre fundamentos de programación de forma gratuita, para todos.
+          projects_goal: |
+            El objetivo de Code Basics es proporcionar lecciones interactivas de alta calidad sobre fundamentos de programación de forma gratuita, para todos.
+          extended_credits: |
+            Idea, plan de estudios, plataforma: Kirill Mokevnin. Lecciones (9 módulos básicos): Rahim Davletkaliyev y Natalia Bass. Extensiones y adaptación: Kirill Mokevnin, Ulugbek Tuichiev, Alexey Pyltin y otros miembros de la comunidad Hexlet.
+          contributions: |
+            El código fuente de la plataforma Code Basics, todas las lecciones y ejercicios están disponibles en GitHub. Puedes contribuir al proceso de mejora de las lecciones, corregir imprecisiones y expandir los cursos a otros lenguajes de programación.
+          source_code: Código fuente
+          privacy:
+            meta_description: Política de privacidad de Code Basics
+            title: Política de privacidad
+          tos:
+            title: Términos de uso de la plataforma educativa
+            meta_description: Términos de uso de la plataforma educativa Code Basics
+          authors:
+            title: Para los autores
             meta_description: |
-              Code Basics: lecciones interactivas de alta calidad sobre fundamentos de programación de forma gratuita, para todos.
-        projects_goal: |
-          El objetivo de Code Basics es proporcionar lecciones interactivas de alta calidad sobre fundamentos de programación de forma gratuita, para todos.
-        extended_credits: |
-          Idea, plan de estudios, plataforma: Kirill Mokevnin. Lecciones (9 módulos básicos): Rahim Davletkaliyev y Natalia Bass. Extensiones y adaptación: Kirill Mokevnin, Ulugbek Tuichiev, Alexey Pyltin y otros miembros de la comunidad Hexlet.
-        contributions: |
-          El código fuente de la plataforma Code Basics, todas las lecciones y ejercicios están disponibles en GitHub. Puedes contribuir al proceso de mejora de las lecciones, corregir imprecisiones y expandir los cursos a otros lenguajes de programación.
-        source_code: Código fuente
-        privacy:
-          meta_description: Política de privacidad de Code Basics
-          title: Política de privacidad
-        tos:
-          title: Términos de uso de la plataforma educativa
-          meta_description: Términos de uso de la plataforma educativa Code Basics
-        authors:
-          title: Para los autores
-          meta_description: |
-            Code Basics es un proyecto abierto en el que cualquier persona puede convertirse en autor de cursos. Aquí hay una lista de pasos que debes seguir para hacerlo.
-        cookie_policy:
-          title: Política de cookies
-          meta_description: Política de cookies
-        account:
-          profiles:
-            edit:
-              meta_description: Perfil
-              title: Perfil de %{email}
-              delete: Eliminar cuenta
-              confirm_delete: ¿Estás seguro de que quieres eliminar tu cuenta?
-            destroy:
-              success: Cuenta eliminada exitosamente
-        errors:
-          not_found:
-            base: No encontrado
-            meta_description: La página solicitada no fue encontrada
-            not_found: ¡Oops, no pudimos encontrar la página que buscas!
-            not_found_link_my_html: Pero puedes volver a la <a href="%{link}">página principal</a>
-          forbidden:
-            base: Prohibido
-            meta_description: No tienes permisos para acceder a esta página
-            forbidden: No tienes permisos para acceder a esta página
-          server_error:
-            base: Error del servidor
-            meta_description: Algo salió mal
-            server_error: Oops, algo salió mal. Nuestros programadores ya están resolviendo este problema.
-        shared:
-          via_social_networks:
-            via_social_networks: A través de redes sociales
-          languages:
-            course_finished: ¡Curso completado!
+              Code Basics es un proyecto abierto en el que cualquier persona puede convertirse en autor de cursos. Aquí hay una lista de pasos que debes seguir para hacerlo.
+          cookie_policy:
+            title: Política de cookies
+            meta_description: Política de cookies
+          account:
+            profiles:
+              edit:
+                meta_description: Perfil
+                title: Perfil de %{email}
+                delete: Eliminar cuenta
+                confirm_delete: ¿Estás seguro de que quieres eliminar tu cuenta?
+              destroy:
+                success: Cuenta eliminada exitosamente
+          errors:
+            not_found:
+              base: No encontrado
+              meta_description: La página solicitada no fue encontrada
+              not_found: ¡Oops, no pudimos encontrar la página que buscas!
+              not_found_link_my_html: Pero puedes volver a la <a href="%{link}">página principal</a>
+            forbidden:
+              base: Prohibido
+              meta_description: No tienes permisos para acceder a esta página
+              forbidden: No tienes permisos para acceder a esta página
+            server_error:
+              base: Error del servidor
+              meta_description: Algo salió mal
+              server_error: Oops, algo salió mal. Nuestros programadores ya están resolviendo este problema.
+      complete_language:
+        continue: Continuar el aprendizaje
+        grats: ¡Felicidades!
+        title: Has completado con éxito el curso básico en Code Basics.
+        first_step: Este es el primer paso en el mundo del desarrollo profesional. ¿Qué sigue?
+        enter_profession: "Únete a la profesión en Hexlet. Esto te permitirá:"
+        knowledge: Obtener conocimientos fundamentales de programación
+        tasks: Aprender a resolver problemas prácticos
+        apps: Escribir tus primeras aplicaciones completas, que formarán parte de tu portafolio de desarrollador
+        certificate: Obtener el certificado de Hexlet y recibir ayuda en la búsqueda de empleo al finalizar el curso.
+        first_courses_free: Los primeros cursos en la profesión están disponibles de forma gratuita. Para empezar a aprender el material, simplemente regístrate y únete a la profesión.
+        hexlet_profs: Otras profesiones en Hexlet
+        likely:
+          share_in_fb: Compartir
+          share_in_twitter: Twittear
+          share_in_vk: Compartir en VK
+          share_in_telegram: Enviar
+          twitter: "HexletHQ"
+          share_vk_text: "¡Este curso ha sido conquistado! ¡Fue genial! #hexlet"
+          share_fb_text: "¡Este curso ha sido conquistado! ¡Fue genial! #hexlet"
+          share_twitter_text: "¡Este curso ha sido conquistado! ¡Fue genial!"
+
+    shared:
+      via_social_networks:
+        via_social_networks: A través de redes sociales
+      languages:
+        course_finished: ¡Curso completado!
