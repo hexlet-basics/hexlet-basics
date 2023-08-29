@@ -7,8 +7,6 @@ class Web::ApplicationController < ApplicationController
   include EventConcern
   include LocaleConcern
 
-  before_action :prepare_locale_settings
-
   before_action do
     gon.push({
                current_user: {
@@ -67,6 +65,7 @@ class Web::ApplicationController < ApplicationController
 
     if current_page?(root_path) && !params[:locale]
       remembered_locale = session[:locale].presence
+
       if remembered_locale
         # root page, no subdomain and no default locale -> redirect
         if remembered_locale.to_sym != I18n.default_locale
