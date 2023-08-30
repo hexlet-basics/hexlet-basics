@@ -4,17 +4,13 @@ class Web::AuthController < Web::ApplicationController
   def callback
     result = SocialNetworkService.authenticate_user(auth)
 
-    if result[:user].persisted?
-      sign_in result[:user]
-      f(:success)
-      js_event_options = {
-        user: result[:user]
-      }
-      js_event(result[:is_new] ? :signed_up : :signed_in, js_event_options)
-      redirect_to root_path
-    else
-      redirect_to new_user_path
-    end
+    sign_in result.user
+    f(:success)
+    js_event_options = {
+      user: result.user
+    }
+    js_event(result.is_new ? :signed_up : :signed_in, js_event_options)
+    redirect_to root_path
     # TODO Посылать расширенный контекст в sentry
     # rescue ActiveRecord::RecordInvalid => e
     # e.rollbar_context = { auth_hash: auth }
