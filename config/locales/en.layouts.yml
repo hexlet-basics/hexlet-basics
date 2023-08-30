@@ -36,7 +36,7 @@ en:
         authors: For the author
         language_categories: Categories
         all_courses: All Courses
-        hexlet_title: © Hexlet ltd, %{year}
+        hexlet_title_html: © <a href="%{link}" class="text-decoration-none text-light" target="_blank" rel="noopener">Hexlet ltd</a>, %{year}
         hexlet_address: Itälahdenkatu 22 A, 00210 Helsinki, Finland
         hexlet_number: VAT ID: FI26641607
         information: Information

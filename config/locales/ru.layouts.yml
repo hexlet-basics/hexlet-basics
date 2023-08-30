@@ -37,7 +37,7 @@ ru:
         authors: Автору
         language_categories: Направления обучения
         all_courses: Все курсы
-        hexlet_title: © Hexlet Ltd, %{year}
+        hexlet_title_html: © <a href="%{link}" class="text-decoration-none text-light" target="_blank" rel="noopener">Hexlet Ltd</a>, %{year}
         hexlet_address: ООО «Хекслет Рус», 432071, г. Ульяновск, пр-т Нариманова, дом 1Г, оф. 23
         hexlet_number: ОГРН 1217300010476
         information: Информация
