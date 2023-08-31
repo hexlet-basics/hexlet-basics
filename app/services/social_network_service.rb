@@ -2,13 +2,29 @@
 
 class SocialNetworkService
   def self.authenticate_user(auth)
-    user = User::SocialSignupForm.find_or_initialize_by(email: auth.info.email.downcase)
-    user.save!
+    existing_account = User::Account.find_by(uid: auth[:uid])
+    email = auth[:info][:email].downcase
+    user = if existing_account
+             existing_account.user
+           else
+             User.find_or_initialize_by(email: email)
+           end
 
-    account = user.accounts.find_or_initialize_by(provider: auth.provider)
-    account.uid = auth.uid
-    account.save!
+    is_new = false
 
-    user
+    ActiveRecord::Base.transaction do
+      if user.new_record?
+        is_new = true
+      else
+        user.email = email
+      end
+
+      user.save!
+
+      account = user.accounts.find_or_initialize_by(provider: auth[:provider])
+      account.uid = auth[:uid]
+      account.save!
+    end
+    ServiceResult.success user: user, is_new: is_new
   end
 end
