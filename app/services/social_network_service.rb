@@ -12,16 +12,17 @@ class SocialNetworkService
 
     is_new = false
 
-    if user.new_record?
-      is_new = true
-    else
-      user.email = email
-    end
-
-    account = user.accounts.find_or_initialize_by(provider: auth[:provider])
-    account.uid = auth[:uid]
     ActiveRecord::Base.transaction do
+      if user.new_record?
+        is_new = true
+      else
+        user.email = email
+      end
+
       user.save!
+
+      account = user.accounts.find_or_initialize_by(provider: auth[:provider])
+      account.uid = auth[:uid]
       account.save!
     end
     ServiceResult.success user: user, is_new: is_new
