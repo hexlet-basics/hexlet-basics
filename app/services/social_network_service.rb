@@ -15,11 +15,8 @@ class SocialNetworkService
     ActiveRecord::Base.transaction do
       if user.new_record?
         is_new = true
-      else
-        user.email = email
+        user.save!
       end
-
-      user.save!
 
       account = user.accounts.find_or_initialize_by(provider: auth[:provider])
       account.uid = auth[:uid]
