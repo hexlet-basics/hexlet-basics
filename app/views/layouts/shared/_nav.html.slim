@@ -25,6 +25,16 @@
               li
                 = link_to language_category_path(category.slug), class: 'dropdown-item'
                   span = category
+
+        li.nav-item.me-2
+          = link_to t('.bootcamps'), "#{ENV.fetch("BASE_DOMAIN")}/bootcamps", class: "nav-link text-dark"
+
+        li.nav-item.me-2
+          = link_to t('.career'), "#{ENV.fetch("BASE_DOMAIN")}/carreras", class: "nav-link text-dark"
+
+        li.nav-item.me-2
+          = link_to t('.about_us'), "#{ENV.fetch("BASE_DOMAIN")}/nosotros", class: "nav-link text-dark"
+
       ul.navbar-nav
         - if current_user.guest?
           = nav_menu_item t('.sign_in'), new_session_path

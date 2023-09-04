@@ -24,6 +24,9 @@ es:
         sign_out: Cerrar sesión
         courses: Cursos
         categories: Categorías
+        bootcamps: Bootcamps
+        career: Carreras
+        about_us: Nosotros
         about: Acerca de
         toggle_navigation: Alternar navegación
         toggle_user_menu: Mostrar/ocultar menú de usuario
