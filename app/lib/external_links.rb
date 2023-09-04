@@ -1,6 +1,22 @@
 # frozen_string_literal: true
 
 class ExternalLinks
+  HEXLET_CURLS = %w[
+    hexlet_rails
+    hexlet_java
+    hexlet_php
+    hexlet_python
+    hexlet_frontend
+    hexlet_layout_designer
+    hexlet_profession
+  ]
+
+  HEXLET_CURLS.each do |method_name|
+    define_singleton_method("#{method_name}_curl") do
+      ENV.fetch('BASE_DOMAIN', 'https://ru.hexlet.io') + I18n.t("links.#{method_name}")
+    end
+  end
+
   def self.hexlet_support_email
     'support@hexlet.io'
   end
