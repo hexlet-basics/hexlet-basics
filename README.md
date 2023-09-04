@@ -35,6 +35,8 @@ make app-test # run tests
 make app-db-prepare # sometimes, when fixtures were changed
 ```
 
+To manage loaded languages and set other settings, you need to sign in (login: `full@test.io`, password: `password`)
+
 ### Production
 
 Kube access
