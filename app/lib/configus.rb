@@ -21,6 +21,7 @@ Configus.build Rails.env do
     disqus do
       ru 'hexlet-basics'
       en 'hexlet-basics-en'
+      es 'hexlet-basics-es'
     end
 
     gtm_id ENV.fetch('GOOGLE_TAG_MANAGER_KEY', nil)
@@ -61,6 +62,7 @@ Configus.build Rails.env do
     disqus do
       ru 'code-basics-test'
       en 'code-basics-test'
+      es 'code-basics-test'
     end
   end
 

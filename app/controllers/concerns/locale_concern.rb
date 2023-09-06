@@ -4,7 +4,8 @@ module LocaleConcern
   extend ActiveSupport::Concern
 
   included do
-    around_action :switch_locale
+    # Turned off due to single locale instance
+    # around_action :switch_locale
   end
 
   # NOTE: for en locale dont use path /en but /
