@@ -132,95 +132,97 @@ es:
         lessons: "%{lessons_count} con práctica en el navegador"
         blog_posts: Entradas del blog
       lessons:
-          content:
-            next: "&rsaquo;"
-            issues: ¿Encontraste un error? ¿Quieres añadir algo? Las solicitudes de extracción son bienvenidas.
-            sign_up_for_tracking_progress_html: |
-              Curso gratuito de %{name}. <a href="%{link}" class="text-decoration-none" target="_blank">Regístrate</a> para hacer un seguimiento de tu progreso &rarr;
-            instructions: Tarea
-            definitions: Definiciones
-            tips: Consejos útiles
-            common_questions:
-              - question: ¿El ejercicio no pasa la prueba, qué debo hacer? 😶
-                answer: |
-                  Si te quedaste atascado, es el momento perfecto para hacer una pregunta en las "Discusiones". [Cómo hacer una pregunta correctamente](https://help.hexlet.io/ru/articles/111495-kak-pravilno-zadavat-voprosy):
+        content:
+          prev: Previous
+          next: "&rsaquo;"
+          separator: ' '
+          issues: ¿Encontraste un error? ¿Quieres añadir algo? Las solicitudes de extracción son bienvenidas.
+          sign_up_for_tracking_progress_html: |
+            Curso gratuito de %{name}. <a href="%{link}" class="text-decoration-none" target="_blank">Regístrate</a> para hacer un seguimiento de tu progreso &rarr;
+          instructions: Tarea
+          definitions: Definiciones
+          tips: Consejos útiles
+          common_questions:
+            - question: ¿El ejercicio no pasa la prueba, qué debo hacer? 😶
+              answer: |
+                Si te quedaste atascado, es el momento perfecto para hacer una pregunta en las "Discusiones". [Cómo hacer una pregunta correctamente](https://help.hexlet.io/ru/articles/111495-kak-pravilno-zadavat-voprosy):
 
-                  * Asegúrate de incluir la salida de las pruebas. Sin ella, es casi imposible entender qué está mal, incluso si muestras tu código. Los programadores tienen dificultades para ejecutar el código en su mente, pero casi siempre es posible entender a dónde mirar a partir del error que recibiste.
-              - question: Mi código funciona en mi entorno, pero no aquí 🤨
-                answer: |
-                  Las pruebas están diseñadas de manera que verifican la solución de diferentes maneras y con diferentes datos. A menudo, una solución funciona con ciertos datos de entrada pero no con otros. Para entender este punto, revisa la pestaña "Pruebas" y presta atención a los mensajes de error, que suelen contener pistas.
-              - question: Mi código es diferente a la solución del profesor 🤔
-                answer: |
-                  Esto es normal 🙆. En programación, una tarea puede tener muchas soluciones diferentes. Si tu código pasa la prueba, cumple con los requisitos de la tarea.
+                * Asegúrate de incluir la salida de las pruebas. Sin ella, es casi imposible entender qué está mal, incluso si muestras tu código. Los programadores tienen dificultades para ejecutar el código en su mente, pero casi siempre es posible entender a dónde mirar a partir del error que recibiste.
+            - question: Mi código funciona en mi entorno, pero no aquí 🤨
+              answer: |
+                Las pruebas están diseñadas de manera que verifican la solución de diferentes maneras y con diferentes datos. A menudo, una solución funciona con ciertos datos de entrada pero no con otros. Para entender este punto, revisa la pestaña "Pruebas" y presta atención a los mensajes de error, que suelen contener pistas.
+            - question: Mi código es diferente a la solución del profesor 🤔
+              answer: |
+                Esto es normal 🙆. En programación, una tarea puede tener muchas soluciones diferentes. Si tu código pasa la prueba, cumple con los requisitos de la tarea.
 
-                  En raras ocasiones, la solución puede estar ajustada para pasar las pruebas, pero esto suele ser evidente.
-              - question: Leí la lección, pero no entendí nada 🙄
-                answer: |
-                  Crear materiales de aprendizaje comprensibles para todos es bastante difícil. Hacemos nuestro mejor esfuerzo, pero siempre hay margen para mejorar. Si encuentras material que no entiendes, describe el problema en las "Discusiones". Es ideal si puedes formular los aspectos que no entiendes en forma de preguntas. Por lo general, necesitamos unos días para hacer mejoras.
+                En raras ocasiones, la solución puede estar ajustada para pasar las pruebas, pero esto suele ser evidente.
+            - question: Leí la lección, pero no entendí nada 🙄
+              answer: |
+                Crear materiales de aprendizaje comprensibles para todos es bastante difícil. Hacemos nuestro mejor esfuerzo, pero siempre hay margen para mejorar. Si encuentras material que no entiendes, describe el problema en las "Discusiones". Es ideal si puedes formular los aspectos que no entiendes en forma de preguntas. Por lo general, necesitamos unos días para hacer mejoras.
 
-                  Por cierto, tú también puedes contribuir a mejorar los cursos: en la parte inferior hay un enlace al código fuente de las lecciones, que se puede modificar directamente en el navegador.
-          show:
-            navigation: Navegación
-            show_full_version: El reactor de código está disponible en la versión principal →
-            if_stuck: Si te encuentras con dificultades y no sabes qué hacer, pregunta en nuestra gran y amigable
-            discuss: Discusión
-            lesson: Lección
-            only_for_signed_in_users: Este ejercicio solo está disponible para usuarios autenticados.
-            please_sign_in: Por favor, inicia sesión. Esto es necesario para hacer un seguimiento del progreso en las lecciones. Si aún no tienes una cuenta, este es el momento perfecto para crear una.
-            sign_in: Iniciar sesión
-            community: comunidad
-          lesson_tab:
-            to_home_title: Inicio
-            breadcrumb: Migas de pan
-          navigation_tab:
-          pages:
-            about:
-              title: Acerca del proyecto
-              meta_description: |
-                Code Basics: lecciones interactivas de alta calidad sobre fundamentos de programación de forma gratuita, para todos.
-          projects_goal: |
-            El objetivo de Code Basics es proporcionar lecciones interactivas de alta calidad sobre fundamentos de programación de forma gratuita, para todos.
-          extended_credits: |
-            Idea, plan de estudios, plataforma: Kirill Mokevnin. Lecciones (9 módulos básicos): Rahim Davletkaliyev y Natalia Bass. Extensiones y adaptación: Kirill Mokevnin, Ulugbek Tuichiev, Alexey Pyltin y otros miembros de la comunidad Hexlet.
-          contributions: |
-            El código fuente de la plataforma Code Basics, todas las lecciones y ejercicios están disponibles en GitHub. Puedes contribuir al proceso de mejora de las lecciones, corregir imprecisiones y expandir los cursos a otros lenguajes de programación.
-          source_code: Código fuente
-          privacy:
-            meta_description: Política de privacidad de Code Basics
-            title: Política de privacidad
-          tos:
-            title: Términos de uso de la plataforma educativa
-            meta_description: Términos de uso de la plataforma educativa Code Basics
-          authors:
-            title: Para los autores
+                Por cierto, tú también puedes contribuir a mejorar los cursos: en la parte inferior hay un enlace al código fuente de las lecciones, que se puede modificar directamente en el navegador.
+        show:
+          navigation: Navegación
+          show_full_version: El reactor de código está disponible en la versión principal →
+          if_stuck: Si te encuentras con dificultades y no sabes qué hacer, pregunta en nuestra gran y amigable
+          discuss: Discusión
+          lesson: Lección
+          only_for_signed_in_users: Este ejercicio solo está disponible para usuarios autenticados.
+          please_sign_in: Por favor, inicia sesión. Esto es necesario para hacer un seguimiento del progreso en las lecciones. Si aún no tienes una cuenta, este es el momento perfecto para crear una.
+          sign_in: Iniciar sesión
+          community: comunidad
+        lesson_tab:
+          to_home_title: Inicio
+          breadcrumb: Migas de pan
+        navigation_tab:
+        pages:
+          about:
+            title: Acerca del proyecto
             meta_description: |
-              Code Basics es un proyecto abierto en el que cualquier persona puede convertirse en autor de cursos. Aquí hay una lista de pasos que debes seguir para hacerlo.
-          cookie_policy:
-            title: Política de cookies
-            meta_description: Política de cookies
-          account:
-            profiles:
-              edit:
-                meta_description: Perfil
-                title: Perfil de %{email}
-                delete: Eliminar cuenta
-                confirm_delete: ¿Estás seguro de que quieres eliminar tu cuenta?
-              destroy:
-                success: Cuenta eliminada exitosamente
-          errors:
-            not_found:
-              base: No encontrado
-              meta_description: La página solicitada no fue encontrada
-              not_found: ¡Oops, no pudimos encontrar la página que buscas!
-              not_found_link_my_html: Pero puedes volver a la <a href="%{link}">página principal</a>
-            forbidden:
-              base: Prohibido
-              meta_description: No tienes permisos para acceder a esta página
-              forbidden: No tienes permisos para acceder a esta página
-            server_error:
-              base: Error del servidor
-              meta_description: Algo salió mal
-              server_error: Oops, algo salió mal. Nuestros programadores ya están resolviendo este problema.
+              Code Basics: lecciones interactivas de alta calidad sobre fundamentos de programación de forma gratuita, para todos.
+        projects_goal: |
+          El objetivo de Code Basics es proporcionar lecciones interactivas de alta calidad sobre fundamentos de programación de forma gratuita, para todos.
+        extended_credits: |
+          Idea, plan de estudios, plataforma: Kirill Mokevnin. Lecciones (9 módulos básicos): Rahim Davletkaliyev y Natalia Bass. Extensiones y adaptación: Kirill Mokevnin, Ulugbek Tuichiev, Alexey Pyltin y otros miembros de la comunidad Hexlet.
+        contributions: |
+          El código fuente de la plataforma Code Basics, todas las lecciones y ejercicios están disponibles en GitHub. Puedes contribuir al proceso de mejora de las lecciones, corregir imprecisiones y expandir los cursos a otros lenguajes de programación.
+        source_code: Código fuente
+        privacy:
+          meta_description: Política de privacidad de Code Basics
+          title: Política de privacidad
+        tos:
+          title: Términos de uso de la plataforma educativa
+          meta_description: Términos de uso de la plataforma educativa Code Basics
+        authors:
+          title: Para los autores
+          meta_description: |
+            Code Basics es un proyecto abierto en el que cualquier persona puede convertirse en autor de cursos. Aquí hay una lista de pasos que debes seguir para hacerlo.
+        cookie_policy:
+          title: Política de cookies
+          meta_description: Política de cookies
+        account:
+          profiles:
+            edit:
+              meta_description: Perfil
+              title: Perfil de %{email}
+              delete: Eliminar cuenta
+              confirm_delete: ¿Estás seguro de que quieres eliminar tu cuenta?
+            destroy:
+              success: Cuenta eliminada exitosamente
+        errors:
+          not_found:
+            base: No encontrado
+            meta_description: La página solicitada no fue encontrada
+            not_found: ¡Oops, no pudimos encontrar la página que buscas!
+            not_found_link_my_html: Pero puedes volver a la <a href="%{link}">página principal</a>
+          forbidden:
+            base: Prohibido
+            meta_description: No tienes permisos para acceder a esta página
+            forbidden: No tienes permisos para acceder a esta página
+          server_error:
+            base: Error del servidor
+            meta_description: Algo salió mal
+            server_error: Oops, algo salió mal. Nuestros programadores ya están resolviendo este problema.
       complete_language:
         continue: Continuar el aprendizaje
         grats: ¡Felicidades!
