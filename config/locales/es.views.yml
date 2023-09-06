@@ -133,9 +133,9 @@ es:
         blog_posts: Entradas del blog
       lessons:
         content:
-          prev: Previous
-          next: "&rsaquo;"
-          separator: ' '
+          prev: Anterior
+          next: Siguiente
+          separator: ' — '
           issues: ¿Encontraste un error? ¿Quieres añadir algo? Las solicitudes de extracción son bienvenidas.
           sign_up_for_tracking_progress_html: |
             Curso gratuito de %{name}. <a href="%{link}" class="text-decoration-none" target="_blank">Regístrate</a> para hacer un seguimiento de tu progreso &rarr;
