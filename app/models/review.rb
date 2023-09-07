@@ -57,7 +57,7 @@ class Review < ApplicationRecord
     end
 
     event :archive do
-      transitions to: :archive
+      transitions to: :archived
     end
   end
 
