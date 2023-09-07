@@ -67,7 +67,7 @@ class BlogPost < ApplicationRecord
     end
 
     event :archive do
-      transitions from: :running, to: :cleaning
+      transitions to: :archived
     end
   end
 
