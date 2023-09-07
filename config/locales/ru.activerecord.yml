@@ -7,6 +7,17 @@ ru:
         nickname: Никнейм
         password: Пароль
         email: Email
+      blog_post:
+        body: Контент
+        description: Описание
+        name: Название
+        locale: Язык
+        state: Состояние
+        state/archived: Архив
+        state/published: Опубликован
+        cover: Изображение
+        state_event: Смена состояния
+        creator: Автор
     errors:
       models:
         user/sign_up_form:
