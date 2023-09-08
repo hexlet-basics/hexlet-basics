@@ -10,6 +10,16 @@ ru:
           create:
             success: Отзыв успешно опубликован
             error: Что-то пошло не так
+          update:
+            success: Отзыв успешно обновлен!
+            error: Что-то пошло не так
+        blog_posts:
+          update:
+            success: Пост успешно обновлен!
+            error: Что-то пошло не так
+          create:
+            success: Пост успешно созданн
+            error: Что-то пошло не так
       google_auth:
         one_tap:
           success: Добро пожаловать! Пора немного поучиться -)

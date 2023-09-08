@@ -10,6 +10,16 @@ en:
           create:
             success: Testimonial successfully published
             error: Something went wrong
+          update:
+            success: Review successfully updated!
+            error: Something went wrong
+        blog_posts:
+          update:
+            success: Post successfully updated!
+            error: Something went wrong
+          create:
+            success: Post successfully created
+            error: Something went wrong
       google_auth:
         one_tap:
           success: You have signed in successfully. You can start learning now.
