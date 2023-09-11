@@ -62,6 +62,15 @@ make local-cluster-setup
   make -C k8s helm-upgrade-app
   ```
 
+## FAQ
+
+#### I can't make commits with my changes
+
+- try to reinitialize your fork repository.
+[Read more](https://www.airplane.dev/blog/fixing-fatal-not-a-git-repository-error)
+- try to execute `git commit` command with flag `--no-verify`.
+_Example_: `git commit --no-verify -m '[#254] rename variable' `
+
 ---
 
 [![Hexlet Ltd. logo](https://raw.githubusercontent.com/Hexlet/assets/master/images/hexlet_logo128.png)](https://hexlet.io/?utm_source=github&utm_medium=referral&utm_campaign=hexlet&utm_content=hexlet-basics)
