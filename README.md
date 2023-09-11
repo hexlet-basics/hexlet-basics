@@ -20,6 +20,12 @@
 
 Some lsp servers are fully workable only when the root dir is the same inside and outside the container. That is why we set WORKDIR to `/opt/projects/hexlet-basics`. So, if it is possible, clone this project to that directory.
 
+**Prepare pulling image locally**
+1. Open `./app/lib/docker_exercise_api.rb`
+2. Find `def self.download(lang_name)` line
+3. Comment or remove `ok = system("docker pull #{image_name(lang_name)}")` line
+4. Add new line `ok = true` below
+
 **Run**
 
 ```bash
