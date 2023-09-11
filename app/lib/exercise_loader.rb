@@ -253,7 +253,7 @@ class ExerciseLoader
     reg = /(?<begin>^[^\n]*?BEGIN.*?$\s*)(?<content>.+?)(?<end>^[^\n]*?END.*?$)/msu
 
     result = code.gsub(reg, "\\k<begin>\n\\k<end>")
-    template_code = result.gsub('BEGIN', 'BEGIN (write your solution here)')
+    template_code = result.gsub('BEGIN', 'BEGIN (escriba aquí su solución)')
 
     result == code ? '' : template_code
   end
