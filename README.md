@@ -68,6 +68,15 @@ make local-cluster-setup
   make -C k8s helm-upgrade-app
   ```
 
+## Troubleshooting
+
+#### I couldn't commit my changes
+
+- try to reinitialize your fork repository
+[Read more](https://www.airplane.dev/blog/fixing-fatal-not-a-git-repository-error)
+- try to add `RUN git config --global --add safe.directory ${PROJECT_ROOT}` line after `WORKDIR ${PROJECT_ROOT}` in Dockerfile
+[Read more](https://github.com/hexlet-basics/hexlet-basics/pull/415)
+
 ---
 
 [![Hexlet Ltd. logo](https://raw.githubusercontent.com/Hexlet/assets/master/images/hexlet_logo128.png)](https://hexlet.io/?utm_source=github&utm_medium=referral&utm_campaign=hexlet&utm_content=hexlet-basics)
