@@ -62,7 +62,7 @@ make local-cluster-setup
   make -C k8s helm-upgrade-app
   ```
 
-## FAQ
+## Troubleshooting
 
 #### I couldn't commit my changes
 
