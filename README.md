@@ -64,12 +64,12 @@ make local-cluster-setup
 
 ## FAQ
 
-#### I can't make commits with my changes
+#### I couldn't commit my changes
 
-- try to reinitialize your fork repository.
+- try to reinitialize your fork repository
 [Read more](https://www.airplane.dev/blog/fixing-fatal-not-a-git-repository-error)
-- try to execute `git commit` command with flag `--no-verify`.
-_Example_: `git commit --no-verify -m '[#254] rename variable' `
+- try to add `RUN git config --global --add safe.directory ${PROJECT_ROOT}` line after `WORKDIR ${PROJECT_ROOT}` in Dockerfile
+[Read more](https://github.com/hexlet-basics/hexlet-basics/pull/415)
 
 ---
 
