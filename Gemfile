@@ -97,7 +97,7 @@ gem 'gon'
 gem 'googleauth'
 gem 'rails-i18n'
 gem 'redcarpet'
-gem 'sidekiq', '7.0.8'
+gem 'sidekiq', '7.1.3'
 gem 'simple_form'
 
 # NOTE: to fix domain: :all in cookie_store settings https://github.com/rails/rails/pull/46595
