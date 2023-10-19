@@ -42,8 +42,8 @@ export default {
         headline: 'Pruebas superadas',
       },
       failed: {
-        /*message: 'Tu código tiene errores. Lee detenidamente la salida de las pruebas, encuentra los errores y corrígelos. <a href="http://help.hexlet.io/ru/articles/111500-kak-nayti-oshibki-v-kode" target="_blank">Cómo encontrar errores en el código</a>. Si te resulta difícil aprender por ti mismo, considera <a href="https://hexlet.la/" target="_blank">aprender con un tutor</a>',*/
-		message: 'Tu código tiene errores. Lee detenidamente la salida de las pruebas, encuentra los errores y corrígelos. Si te resulta difícil aprender por ti mismo, considera <a href="https://hexlet.la/" target="_blank">aprender con un tutor</a>',
+        /*message: 'Tu código tiene errores. Lee detenidamente la salida de las pruebas, encuentra los errores y corrígelos. <a href="http://help.hexlet.io/ru/articles/111500-kak-nayti-oshibki-v-kode" target="_blank">Cómo encontrar errores en el código</a>. Si te resulta difícil aprender por ti mismo, considera <a href="https://codica.la/" target="_blank">aprender con un tutor</a>',*/
+		message: 'Tu código tiene errores. Lee detenidamente la salida de las pruebas, encuentra los errores y corrígelos. Si te resulta difícil aprender por ti mismo, considera <a href="https://codica.la/" target="_blank">aprender con un tutor</a>',
         headline: 'Pruebas no superadas',
       },
       'failed-infinity': {

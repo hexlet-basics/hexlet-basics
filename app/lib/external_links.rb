@@ -18,7 +18,7 @@ class ExternalLinks
   end
 
   def self.hexlet_support_email
-    'support@hexlet.io'
+    'hola@codica.la'
   end
 
   def self.source_code_curl
