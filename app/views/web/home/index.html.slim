@@ -7,7 +7,6 @@
 .mb-5.pb-5
   = render 'languages', language_members_by_language: @language_members_by_language, language_member_fake: @language_member_fake
 
-<%
 =begin 
 #Comment out blog and reviews sections 
 .mb-5.pb-5
@@ -29,7 +28,6 @@
       .row.row-cols-sm-2.row-cols-md-3.row-cols-1
         = render 'blog_posts'
 =end
-%>
 
 - if I18n.locale == :ru
   .mb-5.pb-2
