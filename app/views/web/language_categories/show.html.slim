@@ -4,11 +4,11 @@
   h1.mb-5 = @category
   = render 'web/shared/languages', languages: @languages, language_members_by_language: @language_members_by_language
 
-  - if @blog_posts.any?
-    .my-5
-      .d-flex
-        h2.me-auto.mt-auto = t('.blog_posts')
-      hr.mt-1.mb-4
+/  - if @blog_posts.any?
+/    .my-5
+/      .d-flex
+/        h2.me-auto.mt-auto = t('.blog_posts')
+/      hr.mt-1.mb-4
 /      = render 'web/shared/blog_posts', blog_posts: @blog_posts
 
 - content_for :meta do
