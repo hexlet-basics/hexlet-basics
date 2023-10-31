@@ -200,15 +200,15 @@ es:
         cookie_policy:
           title: Política de cookies
           meta_description: Política de cookies
-        account:
-          profiles:
-            edit:
-              meta_description: Perfil
-              title: Perfil de %{email}
-              delete: Eliminar cuenta
-              confirm_delete: ¿Estás seguro de que quieres eliminar tu cuenta?
-            destroy:
-              success: Cuenta eliminada exitosamente
+    account:
+      profiles:
+        edit:
+          meta_description: Perfil
+          title: Perfil de %{email}
+          delete: Eliminar cuenta
+          confirm_delete: ¿Estás seguro de que quieres eliminar tu cuenta?
+        destroy:
+          success: Cuenta eliminada exitosamente
         errors:
           not_found:
             base: No encontrado
