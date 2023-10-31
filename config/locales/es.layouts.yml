@@ -40,7 +40,7 @@ es:
         authors: Autor
         language_categories: Categorías de idioma
         all_courses: Todos los cursos
-        hexlet_title: © Codica.la, %{year}
+        hexlet_title: © Codica, Academia de programación, %{year}
         hexlet_address: 
         hexlet_number: 
         information: Información
