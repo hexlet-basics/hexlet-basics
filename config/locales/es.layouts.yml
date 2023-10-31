@@ -40,9 +40,9 @@ es:
         authors: Autor
         language_categories: Categorías de idioma
         all_courses: Todos los cursos
-        hexlet_title: © Hexlet Ltd, %{year}
-        hexlet_address: OOO "Hexlet Rus", 432071, Ulyanovsk, Prospekt Narimanova, Building 1G, Office 23
-        hexlet_number: OGRN 1217300010476
+        hexlet_title: © Codica.la, %{year}
+        hexlet_address: 
+        hexlet_number: 
         information: Información
         about: Acerca de
         tos: Términos de servicio
@@ -50,7 +50,7 @@ es:
         cookie_policy: Política de cookies
         social_networks: Redes sociales
         resources: Recursos
-        hexlet_blog: Blog de Hexlet
+        hexlet_blog: Blog de Codica
         recommended_books: Libros recomendados
         matrix: Matriz de competencia
         source_code: Código fuente

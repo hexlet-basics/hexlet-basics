@@ -6,7 +6,8 @@ footer.bg-dark.text-light.flex-shrink-0
     .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4
     hr
     .d-flex
-      p.mb-2.me-4.flex-shrink-0 = t('.hexlet_title', year: Time.zone.today.year)
+	  a href="https://codica.la"
+        p.mb-2.me-4.flex-shrink-0 = t('.hexlet_title', year: Time.zone.today.year)
       .ms-auto.fs-3.text-end
         - if I18n.locale == :ru
           span.ms-3.ms-sm-5
