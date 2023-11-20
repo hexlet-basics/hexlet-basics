@@ -84,4 +84,5 @@ Rails.application.configure do
 
   config.hosts << 'code-basics.test'
   config.hosts << /hexletdev\d{0,1}\.com/
+  config.hosts << 'basicos.codica.la'
 end
