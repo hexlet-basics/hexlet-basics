@@ -62,12 +62,12 @@ es:
         all_reviews: Todas las reseñas
         categories: Categorías
         join: Regístrate y comienza a aprender ahora mismo
-        meta_description: Cursos prácticos gratuitos de programación para principiantes de la comunidad Hexlet. Aprende lenguajes de programación desde cero de manera gratuita, lecciones interactivas en línea en ruso.
+        meta_description: Cursos prácticos gratuitos de programación para principiantes de la comunidad Códica. Aprende lenguajes de programación desde cero de manera gratuita, lecciones interactivas en línea en ruso.
         title: |
           Code Basics: cursos gratuitos de programación, aprendizaje en línea
         header: Aprender programación. En línea. Gratis.
         subheader: 'Para aquellos que comienzan desde cero. De los creadores de '
-        hexlet: Hexlet
+        hexlet: Códica
         in_development: Cursos en desarrollo
         in_development_description: Estos cursos están en desarrollo y no son la versión final. Puedes ayudar en el desarrollo enviando una solicitud de extracción (Pull Request) en el repositorio de GitHub.
         blog_posts: Blog
@@ -131,6 +131,27 @@ es:
         no_registration: No se requiere registro
         lessons: "%{lessons_count} con práctica en el navegador"
         blog_posts: Entradas del blog
+      complete_language:
+        continue: Continuar el aprendizaje
+        grats: ¡Felicidades!
+        title: Has completado con éxito el curso básico en Code Basics.
+        first_step: Este es el primer paso en el mundo del desarrollo profesional. ¿Qué sigue?
+        enter_profession: "Únete a la profesión en Códica. Esto te permitirá:"
+        knowledge: Obtener conocimientos fundamentales de programación
+        tasks: Aprender a resolver problemas prácticos
+        apps: Escribir tus primeras aplicaciones completas, que formarán parte de tu portafolio de desarrollador
+        certificate: Obtener el certificado de Códica y recibir ayuda en la búsqueda de empleo al finalizar el curso.
+        first_courses_free: Los primeros cursos en la profesión están disponibles de forma gratuita. Para empezar a aprender el material, simplemente regístrate y únete a la profesión.
+        hexlet_profs: Otras profesiones en Códica
+        likely:
+          share_in_fb: Compartir
+          share_in_twitter: Twittear
+          share_in_vk: Compartir en VK
+          share_in_telegram: Enviar
+          twitter: "HexletHQ"
+          share_vk_text: "¡Este curso ha sido conquistado! ¡Fue genial! #codica"
+          share_fb_text: "¡Este curso ha sido conquistado! ¡Fue genial! #codica"
+          share_twitter_text: "¡Este curso ha sido conquistado! ¡Fue genial!"
       lessons:
         content:
           prev: Anterior
@@ -145,8 +166,7 @@ es:
           common_questions:
             - question: ¿El ejercicio no pasa la prueba, qué debo hacer? 😶
               answer: |
-                Si te quedaste atascado, es el momento perfecto para hacer una pregunta en las "Discusiones". [Cómo hacer una pregunta correctamente](https://help.hexlet.io/ru/articles/111495-kak-pravilno-zadavat-voprosy):
-
+                Si te quedaste atascado, es el momento perfecto para hacer una pregunta en las "Discusiones". 
                 * Asegúrate de incluir la salida de las pruebas. Sin ella, es casi imposible entender qué está mal, incluso si muestras tu código. Los programadores tienen dificultades para ejecutar el código en su mente, pero casi siempre es posible entender a dónde mirar a partir del error que recibiste.
             - question: Mi código funciona en mi entorno, pero no aquí 🤨
               answer: |
@@ -223,28 +243,6 @@ es:
             base: Error del servidor
             meta_description: Algo salió mal
             server_error: Oops, algo salió mal. Nuestros programadores ya están resolviendo este problema.
-      complete_language:
-        continue: Continuar el aprendizaje
-        grats: ¡Felicidades!
-        title: Has completado con éxito el curso básico en Code Basics.
-        first_step: Este es el primer paso en el mundo del desarrollo profesional. ¿Qué sigue?
-        enter_profession: "Únete a la profesión en Hexlet. Esto te permitirá:"
-        knowledge: Obtener conocimientos fundamentales de programación
-        tasks: Aprender a resolver problemas prácticos
-        apps: Escribir tus primeras aplicaciones completas, que formarán parte de tu portafolio de desarrollador
-        certificate: Obtener el certificado de Hexlet y recibir ayuda en la búsqueda de empleo al finalizar el curso.
-        first_courses_free: Los primeros cursos en la profesión están disponibles de forma gratuita. Para empezar a aprender el material, simplemente regístrate y únete a la profesión.
-        hexlet_profs: Otras profesiones en Hexlet
-        likely:
-          share_in_fb: Compartir
-          share_in_twitter: Twittear
-          share_in_vk: Compartir en VK
-          share_in_telegram: Enviar
-          twitter: "HexletHQ"
-          share_vk_text: "¡Este curso ha sido conquistado! ¡Fue genial! #hexlet"
-          share_fb_text: "¡Este curso ha sido conquistado! ¡Fue genial! #hexlet"
-          share_twitter_text: "¡Este curso ha sido conquistado! ¡Fue genial!"
-
     shared:
       via_social_networks:
         via_social_networks: A través de redes sociales
