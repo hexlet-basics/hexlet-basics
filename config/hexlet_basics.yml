@@ -1,11 +1,11 @@
 development:
-  app_url_en: 'http://en.code-basics.test:5000'
-  app_url_ru: 'http://ru.code-basics.test:5000'
+  app_url_en: 'https://bacicos.codica.la'
+  app_url_ru: 'https://bacicos.codica.la'
 
 production:
-  app_url_en: 'https://code-basics.com'
-  app_url_ru: 'https://ru.code-basics.com'
+  app_url_en: 'https://bacicos.codica.la'
+  app_url_ru: 'https://bacicos.codica.la'
 
 test:
-  app_url_en: 'http://en.code-basics.test'
-  app_url_ru: 'http://ru.code-basics.test'
+  app_url_en: 'https://bacicos.codica.la'
+  app_url_ru: 'https://bacicos.codica.la'

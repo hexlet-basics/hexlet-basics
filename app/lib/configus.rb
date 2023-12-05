@@ -34,7 +34,7 @@ Configus.build Rails.env do
     end
 
     mailer do
-      from 'code-basics@hexlet.io'
+      from 'no-contestar@codica.la'
 
       smtp do
         username ENV.fetch('SPARKPOST_SMTP_USERNAME', nil)
@@ -57,12 +57,12 @@ Configus.build Rails.env do
 
   env :development, parent: :production do
     protocol :https
-    host 'code-basics.test'
+    host 'basicos.codica.la'
     gtm_id 'test-id'
     disqus do
-      ru 'code-basics-test'
-      en 'code-basics-test'
-      es 'code-basics-test'
+      ru 'basicos.codica.la'
+      en 'basicos.codica.la'
+      es 'basicos.codica.la'
     end
   end
 

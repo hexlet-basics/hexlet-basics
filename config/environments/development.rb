@@ -81,8 +81,24 @@ Rails.application.configure do
   config.middleware.use(JsRoutes::Middleware)
 
   config.web_console.whiny_requests = false
+  
+    
+  config.action_mailer.perform_caching = false
+  # Ignore bad email addresses and do not raise email delivery errors.
+  # Set this to true and configure the email server for immediate delivery to raise delivery errors.
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    user_name: 'codica.latam.services@gmail.com',
+    password: 'tPGZbjZGaFbPf2d',
+    address: 'smtp-pulse.com',
+    port: 2525,
+    domain: 'codica.la',
+    format: :html,
+    enable_starttls_auto: true
+  }
 
-  config.hosts << 'code-basics.test'
-  config.hosts << /hexletdev\d{0,1}\.com/
+  #config.hosts << 'code-basics.test'
+  #config.hosts << /hexletdev\d{0,1}\.com/
   config.hosts << 'basicos.codica.la'
 end
