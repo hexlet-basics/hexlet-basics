@@ -1,5 +1,5 @@
 basicos.codica.la {
-        tls /etc/caddy/cert/pem /etc/caddy/privkey.pem
+        tls /etc/caddy/cert.pem /etc/caddy/privkey.pem
         encode gzip
         reverse_proxy web:3000
 }
