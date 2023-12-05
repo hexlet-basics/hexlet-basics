@@ -55,6 +55,7 @@ Configus.build Rails.env do
     end
   end
 
+
   env :development, parent: :production do
     protocol :https
     host 'basicos.codica.la'
@@ -65,6 +66,7 @@ Configus.build Rails.env do
       es 'basicos.codica.la'
     end
   end
+
 
   env :test, parent: :development do
     github do

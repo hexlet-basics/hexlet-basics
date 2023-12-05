@@ -9,3 +9,4 @@ production:
 test:
   app_url_en: 'https://bacicos.codica.la'
   app_url_ru: 'https://bacicos.codica.la'
+

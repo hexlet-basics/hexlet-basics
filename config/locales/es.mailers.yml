@@ -3,6 +3,6 @@ es:
     reset_password:
       subject: Cambio de contraseña
       change_password: Cambiar contraseña
-      requested_to_change_password: Has solicitado un enlace para cambiar tu contraseña en code-basics.com. Para cambiar tu contraseña, haz clic en este enlace o presiona el botón de abajo.
+      requested_to_change_password: Has solicitado un enlace para cambiar tu contraseña en basicos.codica.la. Para cambiar tu contraseña, haz clic en este enlace o presiona el botón de abajo.
       you_dont_want_to_change: Si no has solicitado cambiar tu contraseña, simplemente ignora este correo electrónico. Tu contraseña no cambiará a menos que sigas el enlace y establezcas una nueva contraseña.
       link: Enlace para cambiar la contraseña en basicos.codica.la

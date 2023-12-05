@@ -26,8 +26,8 @@ javascript:
     };
 script src='/~partytown/partytown.js'
 
-- if Rails.env.production?
-  = render 'layouts/deps/gtm_head'
-  = render 'layouts/deps/renta_head'
+/ - if Rails.env.production?
+= render 'layouts/deps/gtm_head'
+/ = render 'layouts/deps/renta_head'
 
 - prepend_javascript_packs 'application'
