@@ -1,3 +1,7 @@
+data "cloudflare_accounts" "hexlet" {
+  name = "Hexlet Production"
+}
+
 data "digitalocean_kubernetes_cluster" "hexlet_basics_cluster_data_4" {
   name = var.cluster_name_4
 

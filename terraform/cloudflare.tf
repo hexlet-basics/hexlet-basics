@@ -1,8 +1,10 @@
 resource "cloudflare_zone" "hexlet_basics_zone" {
+  account_id = data.cloudflare_accounts.hexlet.accounts[0].id
   zone = var.domain
 }
 
 resource "cloudflare_zone" "hexlet_basics_zone_ru" {
+  account_id = data.cloudflare_accounts.hexlet.accounts[0].id
   zone = var.domain_ru
 }
 
@@ -14,9 +16,9 @@ resource "cloudflare_record" "main" {
   proxied = true
 }
 
-resource "cloudflare_record" "main-ru" {
+resource "cloudflare_record" "main_ru" {
   zone_id = resource.cloudflare_zone.hexlet_basics_zone_ru.id
-  name    = "code-basics.ru"
+  name    = var.domain_ru
   value   = var.ip
   type    = "A"
   proxied = true
