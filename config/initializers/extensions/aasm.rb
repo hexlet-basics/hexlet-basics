@@ -42,7 +42,7 @@ module AASM
         event = send(attribute_name)&.to_sym
         if event.present?
           aasm(aasm_name).fire(event)
-          send("#{attribute_name}=", nil)
+          send(:"#{attribute_name}=", nil)
         end
       end
     end

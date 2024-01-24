@@ -32,6 +32,7 @@ gem 'terser'
 
 # gem 'jsbundling-rails'
 
+gem 'sassc-rails'
 gem 'sprockets-rails'
 
 gem 'sentry-rails'
