@@ -13,7 +13,7 @@ class Web::HomeController < Web::ApplicationController
     @blog_posts = BlogPost.published.includes(:cover_attachment).last(3)
 
     # TODO: need refactor it
-    scope = Language.all.includes(:current_version)
+    scope = Language.includes(:current_version)
     @languages_links_by_slug = scope.each_with_object({}) do |item, acc|
       acc[item.slug.to_sym] = view_context.link_to(item, language_path(item.slug))
     end

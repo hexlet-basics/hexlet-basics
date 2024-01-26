@@ -33,7 +33,7 @@ class Web::ErrorsController < Web::ApplicationController
 
   def use_locale(&)
     locale = URI.parse(request.original_url).path.split('/').second || ''
-    locale = I18n.available_locales.include?(locale.to_sym) ? locale : I18n.default_locale
+    locale = I18n.default_locale unless I18n.available_locales.include?(locale.to_sym)
 
     I18n.with_locale(locale, &)
   end
