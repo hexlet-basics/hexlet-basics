@@ -45,6 +45,8 @@ services:
       # - solargraph
       - spring
       - frontend
+    stdin_open: true
+    tty: true
 
   # # https://github.com/neoclide/coc-solargraph#configuration-options
   # # external server
