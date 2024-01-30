@@ -78,6 +78,21 @@ class ExerciseLoader
     end
   end
 
+  def get_lesson_infos(path)
+    entries = Dir.glob("#{path}/*")
+
+    entries
+      .filter { |file| File.directory?(file) }
+      .map do |directory|
+        locale = File.basename(directory)
+
+        data = YAML.load_file("#{path}/#{locale}/data.yml")
+        data['theory']       = File.read("#{path}/#{locale}/README.md")
+        data['instructions'] = File.read("#{path}/#{locale}/EXERCISE.md")
+        [locale, data]
+      end
+  end
+
   def get_lessons(dest, module_version, language_version)
     language_module = module_version.module
     module_dir = "#{module_version.order}-#{language_module.slug}"
@@ -91,7 +106,7 @@ class ExerciseLoader
         filename = File.basename(directory)
         order, slug = filename.split('-', 2)
 
-        infos = get_infos(directory)
+        infos = get_lesson_infos(directory)
         lesson_version = get_lesson_version(directory, language_version, module_version)
 
         {
