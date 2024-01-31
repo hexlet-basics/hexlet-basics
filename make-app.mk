@@ -87,4 +87,7 @@ db-prepare:
 zeitwerk-check:
 	RAILS_ENV=test bin/rails zeitwerk:check
 
+web-debug:
+	docker attach --sig-proxy=false --detach-keys="ctrl-c" hexlet-basics-web-1
+
 .PHONY: test
