@@ -37,8 +37,8 @@ en:
         language_categories: Categories
         all_courses: All Courses
         hexlet_title_html: © <a href="%{link}" class="text-decoration-none text-light" target="_blank" rel="noopener">Hexlet ltd</a>, %{year}
-        hexlet_address: Itälahdenkatu 22 A, 00210 Helsinki, Finland
-        hexlet_number: VAT ID: FI26641607
+        hexlet_address: TOO "Hexlet", The Republic of Kazakhstan, Almaty, Auezova St., 14A
+        hexlet_number: BIN 230340043714
         information: Information
         about: About Platform
         tos: Terms of Service
