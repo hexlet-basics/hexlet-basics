@@ -80,6 +80,6 @@ class Language < ApplicationRecord
   delegate :name, to: :current_version
 
   def duration
-    lessons_count * 15 / 60
+    current_lessons.count * 15 / 60
   end
 end
