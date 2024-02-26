@@ -80,6 +80,7 @@ class Language < ApplicationRecord
   delegate :name, to: :current_version
 
   def duration
-    lessons_count * 15 / 60
+    # TODO Пересадить на counter_culture от Language::Version
+    current_lessons.size * 15 / 60
   end
 end
