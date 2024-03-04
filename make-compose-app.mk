@@ -1,6 +1,14 @@
 app-bash:
 	docker compose run --rm web /bin/bash
 
+app-update: app-update-bundle app-update-npm
+
+app-update-bundle:
+	docker-compose run --rm web bundle update --jobs $(shell nproc)
+
+app-update-npm:
+	docker-compose run --rm web npm upgrade
+
 app-language-load:
 	docker compose run --rm web make language-load L=${L}
 
