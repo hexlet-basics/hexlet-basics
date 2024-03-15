@@ -23,8 +23,31 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     if current_user.guest?
       gon.lesson_member = Language::Lesson::MemberFake.new
     else
-      language_member = resource_language.members.find_or_create_by!(user: current_user)
-      lesson_member = language_member.lesson_members.find_or_create_by!(language: resource_language, user: current_user, lesson: @lesson)
+      language_member = resource_language.members.find_or_initialize_by(user: current_user)
+
+      if language_member.new_record?
+        language_member.save!
+        js_event_options = {
+          user: current_user.serializable_data,
+          language: resource_language.serializable_data,
+          language_member: language_member.serializable_data
+        }
+        js_event :language_started, js_event_options
+      end
+
+      lesson_member = language_member.lesson_members.find_or_initialize_by(language: resource_language, user: current_user, lesson: @lesson)
+
+      if lesson_member.new_record?
+        lesson_member.save!
+        js_event_options = {
+          user: current_user.serializable_data,
+          language: resource_language.serializable_data,
+          language_member: language_member.serializable_data,
+          lesson_member: lesson_member.serializable_data,
+          lesson: @lesson.serializable_data
+        }
+        js_event :lesson_started, js_event_options
+      end
 
       gon.lesson_member = lesson_member
     end
@@ -72,9 +95,9 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     # NOTE Временно отключил и заменил на language_finished
     # js_event_options = {
     #   user: current_user,
-    #   language: resource_language.to_hash,
-    #   lesson: next_lesson&.to_hash,
-    #   language_member: language_member.to_hash,
+    #   language: resource_language.serializable_data,
+    #   lesson: next_lesson&.serializable_data,
+    #   language_member: language_member.serializable_data,
     #   lessons_started: current_user.lesson_members.where(language: resource_language).count,
     #   lessons_finished: current_user.lesson_members.where(language: resource_language).finished.count
     # }

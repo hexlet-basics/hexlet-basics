@@ -19,9 +19,9 @@ class Api::LessonsController < Api::ApplicationController
       lesson_member.finish!
 
       lesson_finished_event_options = {
-        user: current_user,
-        language: language.to_hash,
-        lesson: lesson.to_hash,
+        user: current_user.serializable_data,
+        language: language.serializable_data,
+        lesson: lesson.serializable_data,
         finished_at: lesson_member.updated_at
       }
 
@@ -32,9 +32,9 @@ class Api::LessonsController < Api::ApplicationController
         language_member.finish!
 
         language_finished_event_options = {
-          user: current_user,
-          language: language.to_hash,
-          language_member: language_member.to_hash,
+          user: current_user.serializable_data,
+          language: language.serializable_data,
+          language_member: language_member.serializable_data,
           finished_at: lesson_member.updated_at
         }
 

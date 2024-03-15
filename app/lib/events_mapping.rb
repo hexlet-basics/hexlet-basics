@@ -7,7 +7,9 @@ class EventsMapping
     signed_in: '',
     next_lesson: '',
     lesson_finished: '',
-    language_finished: ''
+    lesson_started: '',
+    language_finished: '',
+    language_started: ''
   }
 
   def self.events

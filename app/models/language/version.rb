@@ -79,7 +79,7 @@ class Language::Version < ApplicationRecord
     name
   end
 
-  def to_hash(*_args)
+  def serializable_data
     attrs = attributes.extract! 'id', 'name', 'created_at'
 
     language_info = infos.find_by!(locale: I18n.locale)

@@ -44,9 +44,8 @@ class Language::Member < ApplicationRecord
     end
   end
 
-  def to_hash(*_args)
-    attrs = attributes.extract! 'id', 'state', 'created_at'
-    attrs.to_hash
+  def serializable_data
+    attributes.extract! 'id', 'state', 'created_at'
   end
 
   def all_lessons_finished?
