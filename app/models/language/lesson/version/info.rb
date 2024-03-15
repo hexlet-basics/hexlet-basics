@@ -32,8 +32,8 @@
 class Language::Lesson::Version::Info < ApplicationRecord
   include Language::Lesson::Version::InfoRepository
 
-  serialize :tips, Array
-  serialize :definitions, Array
+  serialize :tips, type: Array
+  serialize :definitions, type: Array
 
   belongs_to :language
   belongs_to :version

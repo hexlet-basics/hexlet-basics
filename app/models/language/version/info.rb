@@ -29,7 +29,7 @@
 class Language::Version::Info < ApplicationRecord
   include Language::Version::InfoRepository
 
-  serialize :keywords, Array
+  serialize :keywords, type: Array
 
   validates :description, presence: true
   validates :header, presence: true
