@@ -59,7 +59,7 @@ class Language::Lesson < ApplicationRecord
     end
 
     event :mark_as_archived do
-      transitions from: %i[created archived], to: :archived
+      transitions from: %i[created active], to: :archived
     end
   end
 
