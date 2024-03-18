@@ -1,0 +1,13 @@
+es:
+  simple_form:
+    required:
+      text: 'requerido'
+      mark: ''
+    placeholders:
+    labels:
+      sign_in_form:
+        new:
+          email: Email
+          password: Contraseña
+  inputs:
+    current_state: 'Estado actual:'

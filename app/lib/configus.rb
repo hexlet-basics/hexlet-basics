@@ -21,6 +21,7 @@ Configus.build Rails.env do
     disqus do
       ru 'hexlet-basics'
       en 'hexlet-basics-en'
+      es 'hexlet-basics-es'
     end
 
     gtm_id ENV.fetch('GOOGLE_TAG_MANAGER_KEY', nil)
@@ -33,7 +34,7 @@ Configus.build Rails.env do
     end
 
     mailer do
-      from 'code-basics@hexlet.io'
+      from 'no-contestar@codica.la'
 
       smtp do
         username ENV.fetch('SPARKPOST_SMTP_USERNAME', nil)
@@ -54,15 +55,18 @@ Configus.build Rails.env do
     end
   end
 
+
   env :development, parent: :production do
     protocol :https
-    host 'code-basics.test'
+    host 'basicos.codica.la'
     gtm_id 'test-id'
     disqus do
-      ru 'code-basics-test'
-      en 'code-basics-test'
+      ru 'basicos.codica.la'
+      en 'basicos.codica.la'
+      es 'basicos.codica.la'
     end
   end
+
 
   env :test, parent: :development do
     github do

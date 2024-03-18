@@ -1,0 +1,15 @@
+es:
+  activerecord:
+    attributes:
+      user:
+        first_name: Nombre
+        last_name: Apellido
+        nickname: Apodo
+        password: Contraseña
+        email: Email
+    errors:
+      models:
+        user/sign_up_form:
+          attributes:
+            password:
+              too_short: debe tener al menos 6 caracteres

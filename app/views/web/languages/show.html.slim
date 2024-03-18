@@ -9,10 +9,6 @@
             meta itemprop="position" content="1"
             meta itemprop="name" content="CodeBasics"
         li.breadcrumb-item itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem"
-          = link_to language_category_path(@language.category.slug), itemprop: 'item', class: 'text-decoration-none text-muted' do
-            span itemprop="name" = @language.category
-            meta itemprop="position" content="2"
-        li.breadcrumb-item itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem"
           = link_to language_path(@language.slug), itemprop: 'item', class: 'text-decoration-none text-muted' do
             span itemprop="name" = @language.current_version
             meta itemprop="position" content="2"

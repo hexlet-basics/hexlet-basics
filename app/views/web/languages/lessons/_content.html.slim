@@ -44,4 +44,4 @@ hr.my-4
 .small.text-muted
   = t('.issues')
   '
-  = link_to ExternalLinks.source_code_curl, get_lesson_source_code(@lesson_version, @info), target: '_blank', rel: 'nofollow noopener'
+  = link_to "#{ENV.fetch("BASE_DOMAIN")}/errores", "#{ENV.fetch("BASE_DOMAIN")}/errores" ,target: '_blank', rel: 'nofollow noopener'

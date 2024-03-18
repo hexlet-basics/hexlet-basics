@@ -1,0 +1,42 @@
+es:
+  faq:
+    header: Preguntas y Respuestas
+    main:
+      about-project:
+        question: ¿Qué es Code Basics?
+        answer: |
+          Es una plataforma completamente gratuita para aprender los fundamentos de la programación desde cero. Code Basics fue creado por desarrolladores y la comunidad de Hexlet para que cualquier persona interesada pueda probar la programación y establecer una base sólida para una nueva profesión, basada en la comprensión del sistema en su conjunto y no en la memorización de detalles específicos.
+
+      about-courses:
+        question: ¿Qué se puede aprender aquí?
+        answer: |
+          Puedes aprender los fundamentos de los lenguajes %{javascript}, %{php}, %{java}, %{python}, %{ruby}, %{go}, %{csharp} y otros. También hay cursos disponibles en Code Basics sobre %{html} y %{css}.
+
+      for-whom:
+        question: ¿Para quién son los cursos?
+        answer: |
+          Los cursos de Code Basics son adecuados para cualquier persona que esté comenzando a aprender programación desde cero. La edad y la profesión no importan. En Code Basics, personas adultas y adolescentes, técnicos y humanistas, todos pueden aprender.
+
+      how-to-start:
+        question: ¿Cómo empezar a aprender?
+        answer: |
+          Es tan simple como registrarse. El registro en la plataforma es gratuito y, una vez registrado, tendrás acceso a todos los cursos de Code Basics. Elige cualquier curso y comienza a aprender.
+
+      how-it-works:
+        question: ¿Cómo funciona el proceso de aprendizaje?
+        answer: |
+          Code Basics es una plataforma en línea completamente automatizada. Por lo tanto, puedes estudiar en cualquier momento conveniente para ti.
+
+          Los cursos de programación están compuestos por bloques temáticos, cada uno con varias lecciones. Sigue las lecciones en orden: primero estudia la teoría y luego realiza ejercicios prácticos directamente en el navegador; el sistema los evaluará automáticamente.
+
+      if-something-goes-wrong:
+        question: ¿Y si algo no funciona?
+        answer: |
+          ¡Pregunta! En cada lección hay una sección de "Discusión". Aquí puedes hacer preguntas, aclarar las condiciones de una tarea si no las entiendes. Nuestro equipo de soporte o otros usuarios te responderán. Las discusiones están disponibles para todos, tú también puedes responder preguntas y ayudar a otros estudiantes a aprender esta nueva profesión.
+
+          También te recomendamos leer atentamente los resultados de las pruebas cuando realices ejercicios prácticos, ya que te proporcionarán información sobre por qué tu solución no pasa. Además, puedes comparar tus resultados con una solución ya hecha. Sin embargo, no te recomendamos consultarla hasta que hayas completado exitosamente la tarea. Recuerda, estás aquí para aprender, no solo para repetir.
+
+      possibilities:
+        question: ¿Qué oportunidades hay para desarrolladores en ejercicio?
+        answer: |
+          Code Basics es un proyecto de código abierto. Cualquier desarrollador en ejercicio puede participar en su desarrollo. El código fuente está disponible en [GitHub](https://github.com/hexlet-basics). Puedes ayudar a crear nuevos cursos y lecciones, mejorar los existentes, corregir imprecisiones y errores tipográficos, y traducir los cursos al inglés.
