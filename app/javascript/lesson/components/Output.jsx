@@ -4,7 +4,7 @@ import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import cn from 'classnames';
-import AnsiUp from 'ansi_up';
+import { AnsiUp } from 'ansi_up';
 
 import escape from 'core-js/actual/escape.js';
 import { checkInfoStates } from '../utils/maps.js';
