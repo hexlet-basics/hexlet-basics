@@ -25,6 +25,8 @@ require:
   - rubocop-rails
   - rubocop-performance
   - rubocop-rake
+  - rubocop-capybara
+  - rubocop-factory_bot
 
 Rails:
   Enabled: true
@@ -101,5 +103,5 @@ Metrics/ParameterLists:
 Layout/EmptyLinesAroundClassBody:
   Enabled: false
 
-RSpec/Rails/AvoidSetupHook:
+RSpecRails/AvoidSetupHook:
   Enabled: false
