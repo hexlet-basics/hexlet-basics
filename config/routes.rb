@@ -32,6 +32,12 @@ Rails.application.routes.draw do
           post :check
         end
       end
+
+      namespace :partners do
+        namespace :yandex_market do
+          resources :languages, only: [:index]
+        end
+      end
     end
 
     scope module: :web do

@@ -272,3 +272,12 @@ en:
         via_social_networks: With GitHub
       languages:
         course_finished: Course finished!
+
+  api:
+    partners:
+      yandex_market:
+        languages:
+          index:
+            company: Hexlet
+            title: Education programs
+            category: Freemium

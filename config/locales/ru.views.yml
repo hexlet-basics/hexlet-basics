@@ -251,3 +251,12 @@ ru:
         via_social_networks: С помощью социальных сетей
       languages:
         course_finished: Курс пройден!
+
+  api:
+    partners:
+      yandex_market:
+        languages:
+          index:
+            company: ООО "Хекслет Рус"
+            title: Образовательные программы
+            category: Фримиум
