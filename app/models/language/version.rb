@@ -85,6 +85,7 @@ class Language::Version < ApplicationRecord
     language_info = infos.find_by!(locale: I18n.locale)
 
     attrs.merge({
+                  slug: language.slug,
                   locale: language_info.locale
                 })
   end
