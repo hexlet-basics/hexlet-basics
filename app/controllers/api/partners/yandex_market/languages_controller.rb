@@ -2,8 +2,7 @@
 
 class Api::Partners::YandexMarket::LanguagesController < Api::Partners::YandexMarket::ApplicationController
   def index
-    @languages = Language.with_progress(:completed)
-                         .joins(current_version: :infos)
+    @languages = Language.joins(current_version: :infos)
                          .includes([:current_version])
                          .merge(Language::Version::Info.with_locale)
 
