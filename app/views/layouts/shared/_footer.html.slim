@@ -6,10 +6,8 @@ footer.bg-dark.text-light.flex-shrink-0
     .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4
       .col.mb-4.mb-lg-0
         - t('phones').each do |phone|
-          .mb-3
+          .mb-2
             .lead = phone_to phone, class: 'text-light text-decoration-none'
-        = t('.hexlet_address')
-        .mt-3 = t('.hexlet_number')
 
         ul.list-unstyled.lh-lg
           li
@@ -25,6 +23,10 @@ footer.bg-dark.text-light.flex-shrink-0
             a.text-light.text-decoration-none target="_blank" href=ExternalLinks.source_code_curl
               = t('.source_code')
               span.bi.bi-github.ms-2
+
+        .small
+          = t('.hexlet_address')
+          .mt-1 = t('.hexlet_number')
 
       .col.mb-4.mb-lg-0
         b = t('.all_courses')
