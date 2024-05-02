@@ -6,10 +6,10 @@ footer.bg-dark.text-light.flex-shrink-0
     .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4
       .col.mb-4.mb-lg-0
         - t('phones').each do |phone|
-          .mb-2
+          .mb-3
             .lead = phone_to phone, class: 'text-light text-decoration-none'
         = t('.hexlet_address')
-        .mt-2 = t('.hexlet_number')
+        .mt-3 = t('.hexlet_number')
 
         ul.list-unstyled.lh-lg
           li
