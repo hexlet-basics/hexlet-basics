@@ -4,6 +4,8 @@ en:
   reset: Reset
   phones:
     - '+7 717 272 76 70'
+  address: The Republic of Kazakhstan, Almaty, Auezova St., 14A
+  legal_name: TOO "Hexlet"
   languages:
     ru: Russian
     en: English

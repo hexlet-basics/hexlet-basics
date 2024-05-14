@@ -13,9 +13,8 @@ class OrganizationSchema
         #              youtube_curl,
         #              twitter_curl,
         #              soundcloud_curl]
-        json.legalName 'Hexlet Ltd'
-        json.address 'Itälahdenkatu 22 A, 00210 Helsinki, Finland'
-        json.vatID 'FI26641607'
+        json.legalName I18n.t('legal_name')
+        json.address I18n.t('address')
         json.telephone I18n.t('phones')
         json.logo do
           json.set! :@type, 'ImageObject'
