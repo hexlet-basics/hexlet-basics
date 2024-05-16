@@ -6,6 +6,8 @@ meta name='viewport' content='width=device-width, initial-scale=1.0, shrink-to-f
 - unless request.path_parameters.size > 2
   = render 'layouts/shared/current_page_alternate_lang'
 
+= render 'layouts/shared/scheme_data'
+
 = yield :meta
 
 = favicon_link_tag
