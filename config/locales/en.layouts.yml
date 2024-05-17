@@ -36,7 +36,7 @@ en:
         authors: For the author
         language_categories: Categories
         all_courses: All Courses
-        hexlet_title_html: © <a href="%{link}" class="text-decoration-none text-light" target="_blank" rel="noopener">Hexlet ltd</a>, %{year}
+        hexlet_title_html: © <a href="%{link}" class="text-decoration-none text-light" target="_blank" rel="noopener">Hexlet</a>, %{year}
         hexlet_address: TOO "Hexlet", The Republic of Kazakhstan, Almaty, Auezova St., 14A
         hexlet_number: BIN 230340043714
         information: Information
