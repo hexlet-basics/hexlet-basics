@@ -62,6 +62,7 @@ export default {
   optimization: {
     minimizer: [
       new EsbuildPlugin({
+        minify: false, // NOTE: minify with terser through rails pipeline
         target: 'es2015',
         css: true,
       }),
