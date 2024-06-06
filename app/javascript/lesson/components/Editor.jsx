@@ -3,7 +3,7 @@
 
 import React, { useContext, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import MonacoEditor from 'react-monaco-editor';
+import MonacoEditor from '@monaco-editor/react';
 import { useLocalStorage } from '@rehooks/local-storage';
 import { actions } from '../slices/index.js';
 import { getLanguageForEditor, getTabSize, shouldReplaceTabsWithSpaces } from '../utils/editorUtils.js';
@@ -82,9 +82,9 @@ function Editor() {
       defaultValue={localStorageContent || ''}
       value={content}
       options={commonOptions}
-      language={getLanguageForEditor(language)}
+      defaultLanguage={getLanguageForEditor(language)}
       onChange={onContentChange}
-      editorDidMount={onMount}
+      onMount={onMount}
       className="w-100 h-100"
     />
   );
