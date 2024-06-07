@@ -8,6 +8,7 @@ import { EsbuildPlugin } from 'esbuild-loader';
 import { WebpackSweetEntry } from '@sect/webpack-sweet-entry';
 // import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
+import CopyPlugin from 'copy-webpack-plugin';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const sourcePath = path.join(__dirname, 'app/javascript');
@@ -58,6 +59,17 @@ export default {
       textRegex: /\.css$/, // RegExp for searching text reference
     }),
     new MonacoWebpackPlugin({}),
+    // NOTE: needed for monaco workers
+    new CopyPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, 'app/assets/builds/*.worker.js'),
+          to({ absoluteFilename }) {
+            return path.resolve(__dirname, 'public/assets/', path.basename(absoluteFilename));
+          },
+        },
+      ],
+    }),
   ],
   optimization: {
     minimizer: [
