@@ -7,9 +7,11 @@ import FontminPlugin from 'fontmin-webpack';
 import { EsbuildPlugin } from 'esbuild-loader';
 import { WebpackSweetEntry } from '@sect/webpack-sweet-entry';
 // import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const sourcePath = path.join(__dirname, 'app/javascript');
+const monacoPath = path.join(__dirname, 'node_modules/monaco-editor');
 
 export default {
   entry: WebpackSweetEntry(path.resolve(sourcePath, 'entrypoints/**/*.js'), 'js', 'entrypoints'),
@@ -55,10 +57,12 @@ export default {
       skippedFilesRegex: null, // RegExp to skip specific fonts by their names
       textRegex: /\.css$/, // RegExp for searching text reference
     }),
+    new MonacoWebpackPlugin({}),
   ],
   optimization: {
     minimizer: [
       new EsbuildPlugin({
+        minify: false, // NOTE: minify with terser through rails pipeline
         target: 'es2015',
         css: true,
       }),
@@ -88,6 +92,7 @@ export default {
     rules: [
       {
         test: /\.css$/i,
+        exclude: monacoPath,
         use: [
           MiniCssExtractPlugin.loader,
           'css-loader',
@@ -108,6 +113,14 @@ export default {
               },
             },
           },
+        ],
+      },
+      {
+        test: /\.css$/i,
+        include: monacoPath,
+        use: [
+          'style-loader',
+          'css-loader',
         ],
       },
       {

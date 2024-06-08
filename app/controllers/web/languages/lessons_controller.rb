@@ -3,6 +3,12 @@
 class Web::Languages::LessonsController < Web::Languages::ApplicationController
   before_action :authenticate_user!, only: [:next_lesson]
 
+  # NOTE: нужно для определения правильный путей к воркерам monaco-editor
+  before_action only: :show do
+    gon.assets_prefix = Rails.application.config.assets.prefix
+    gon.monaco_worker_assets = Rails.application.assets_manifest.assets.select { |asset| asset.end_with?('.worker.js') }
+  end
+
   def show
     @lesson = resource_language.lessons.find_by(slug: params[:id])
     unless @lesson
