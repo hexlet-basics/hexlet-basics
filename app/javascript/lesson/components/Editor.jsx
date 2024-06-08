@@ -1,6 +1,8 @@
 /* eslint-disable no-bitwise */
 // @ts-check
 
+import '../utils/monacoWorkers.js';
+
 import React, { useContext, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import MonacoEditor from 'react-monaco-editor';
