@@ -8,12 +8,13 @@ import { AnsiUp } from 'ansi_up';
 
 import escape from 'core-js/actual/escape.js';
 import { checkInfoStates } from '../utils/maps.js';
+import { getHelpByTutorUrl } from '../utils/languagesUtils.js';
 import EntityContext from '../EntityContext.js';
 
 const ansi = new AnsiUp();
 
 function Output() {
-  const { lessonMember } = useContext(EntityContext);
+  const { lessonMember, language } = useContext(EntityContext);
   const checkInfo = useSelector((state) => state.checkInfoSlice);
   const { t } = useTranslation();
 
@@ -21,7 +22,7 @@ function Output() {
     return null;
   }
 
-  const message = t(`check.${checkInfo.result}.message`);
+  const message = t(`check.${checkInfo.result}.message`, { url: getHelpByTutorUrl(language) });
   const messageForGuest = t('signInSuggestion');
   const alertClassName = cn('mt-auto alert mb-0 small p-2', {
     'alert-success': checkInfo.passed,

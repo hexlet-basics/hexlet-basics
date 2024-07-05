@@ -42,7 +42,7 @@ export default {
         headline: 'Тесты пройдены',
       },
       failed: {
-        message: 'В вашем коде есть ошибки. Прочитайте внимательно вывод тестов, найдите и исправьте их. <a href="http://help.hexlet.io/ru/articles/111500-kak-nayti-oshibki-v-kode" target="_blank">Как искать ошибки в коде</a>. Если самостоятельно учиться сложно, попробуйте <a href="https://premium.hexlet.io/?promo_name=premium&promo_position=body&promo_type=link&promo_creative=test-failed-link" target="_blank">обучение с наставником</a>',
+        message: 'В вашем коде есть ошибки. Прочитайте внимательно вывод тестов, найдите и исправьте их. <a href="https://help.hexlet.ru/article/65315" target="_blank">Как искать ошибки в коде</a>. Если самостоятельно учиться сложно, попробуйте <a href="{{ url }}" target="_blank">обучение с наставником</a>',
         headline: 'Тесты не прошли',
       },
       'failed-infinity': {

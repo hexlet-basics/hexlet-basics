@@ -38,3 +38,20 @@ export const neededPreview = (language) => {
       return false;
   }
 };
+
+/* eslint-disable max-len */
+const languagesToHelpByTutorUrls = {
+  java: 'https://pre.hexlet.io/java?promo_name=base-java&promo_position=article-body&promo_type=link&promo_creative=test-failed-link',
+  python: 'https://pre.hexlet.io/python?promo_name=base-python&promo_position=article-body&promo_type=link&promo_creative=test-failed-link',
+  javascript: 'https://pre.hexlet.io/frontend?promo_name=base-frontend&promo_position=article-body&promo_type=link&promo_creative=test-failed-link',
+  php: 'https://ru.hexlet.io/programs/php?promo_name=prof-php&promo_position=article-body&promo_type=link&promo_creative=test-failed-link',
+  css: 'https://ru.hexlet.io/programs/frontend?promo_name=prof-frontend&promo_position=article-body&promo_type=link&promo_creative=test-failed-link',
+  html: 'https://ru.hexlet.io/programs/frontend?promo_name=prof-frontend&promo_position=article-body&promo_type=link&promo_creative=test-failed-link',
+};
+
+export const getHelpByTutorUrl = (language) => {
+  const defaultUrl = 'https://premium.hexlet.io/?promo_name=premium&promo_position=body&promo_type=link&promo_creative=test-failed-link';
+
+  return languagesToHelpByTutorUrls[language] || defaultUrl;
+};
+/* eslint-enable max-len */
