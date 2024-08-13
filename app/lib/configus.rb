@@ -59,7 +59,7 @@ Configus.build Rails.env do
   env :development, parent: :production do
     protocol :https
     host 'basicos.codica.la'
-    gtm_id 'test-id'
+    gtm_id 'GTM-KT3SQJ25'
     disqus do
       ru 'basicos.codica.la'
       en 'basicos.codica.la'
