@@ -73,7 +73,7 @@ module ApplicationHelper
   def get_lesson_source_code(lesson_version, lesson_version_info)
     repository_path = ExternalLinks.source_code_curl
     locale = lesson_version_info.locale
-    path_to_description = File.join(repository_path, lesson_version.path_to_code, "description.#{locale}.yml")
+    path_to_description = File.join(repository_path, lesson_version.path_to_code, locale, 'README.md')
 
     path_to_description.sub('modules', 'blob/main/modules')
   end
