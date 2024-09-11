@@ -38,6 +38,15 @@ resource "twc_database_cluster" "postgresql" {
   }
 }
 
+resource "twc_database_backup_schedule" "postgresql" {
+  cluster_id = twc_database_cluster.postgresql.id
+
+  copy_count = 7
+  creation_start_at = "2024-09-11"
+  interval = "day"
+  enabled = true
+}
+
 resource "twc_database_instance" "hexlet_basics" {
   cluster_id = twc_database_cluster.postgresql.id
 
