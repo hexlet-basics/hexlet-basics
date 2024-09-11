@@ -48,7 +48,7 @@ yarn-debug.log*
 .kube/*
 *.pgsql
 tmp/ansible-vault-password
-terraform/secrets.auto.tfvars
+*secrets.auto.tfvars
 terraform/docker-config.json
 terraform/.terraform.lock.hcl
 google.key.json
