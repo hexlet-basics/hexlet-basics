@@ -8,6 +8,10 @@
         dest: "../terraform/timeweb/backend.secrets.auto.tfvars"
 
     - template:
+        src: timeweb.secrets.auto.tfvars.j2
+        dest: "../terraform/timeweb/secrets.auto.tfvars"
+
+    - template:
         src: secrets.auto.tfvars.j2
         dest: "../terraform/secrets.auto.tfvars"
 
