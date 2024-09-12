@@ -42,7 +42,7 @@ resource "twc_database_backup_schedule" "postgresql" {
   cluster_id = twc_database_cluster.postgresql.id
 
   copy_count = 7
-  creation_start_at = "2024-09-11"
+  creation_start_at = "2024-09-11T00:00:00.000Z"
   interval = "day"
   enabled = true
 }
@@ -63,4 +63,44 @@ resource "twc_database_user" "haxlet_basics_user" {
     instance_id = twc_database_instance.hexlet_basics.id
     privileges  = ["SELECT", "INSERT", "UPDATE", "DELETE", "ALTER", "REFERENCES", "CREATE", "DROP", "INDEX"]
   }
+}
+
+data "twc_database_preset" "redis" {
+  location = var.location
+
+  type = "redis"
+  cpu = 1
+  ram = 2048
+
+  price_filter {
+    from = 400
+    to   = 600
+  }
+}
+
+resource "twc_database_cluster" "redis" {
+  name = "Hexlet basics Redis cluster"
+
+  project_id = twc_project.hexlet_basics.id
+  preset_id = data.twc_database_preset.redis.id
+
+  availability_zone = var.zone
+
+  network {
+    id = twc_vpc.hexlet_basics.id
+  }
+
+  # TODO: убрать после переноса и удалить IP
+  is_external_ip = true
+
+  type = "redis"
+}
+
+resource "twc_database_backup_schedule" "redis" {
+  cluster_id = twc_database_cluster.redis.id
+
+  copy_count = 7
+  creation_start_at = "2024-09-12T00:00:00.000Z"
+  interval = "day"
+  enabled = true
 }
