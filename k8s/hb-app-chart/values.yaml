@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-version: v953
+version: v954
 
 replicaCount: 3
 
