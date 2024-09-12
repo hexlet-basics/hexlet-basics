@@ -9,10 +9,16 @@ RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION} | bash -
 
 RUN apt-get install -y nodejs
 
+RUN curl -sS https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
+RUN echo \
+  "deb [signed-by=/etc/apt/trusted.gpg.d/postgresql.gpg] https://apt.postgresql.org/pub/repos/apt \
+  `. /etc/os-release && echo "$VERSION_CODENAME"`-pgdg main" | \
+  tee /etc/apt/sources.list.d/pgdg.list
+
 RUN apt-get update && apt-get install -y \
   build-essential \
   git \
-  libpq-dev \
+  postgresql-client-16 \
   libsqlite3-dev \
   && rm -rf /var/lib/apt/lists/*
 

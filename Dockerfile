@@ -14,10 +14,16 @@ ENV DOCKER_VERSION 20.10.21
 RUN curl -fsSL "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/x86_64/docker-${DOCKER_VERSION}.tgz" \
 | tar -xzC /usr/local/bin --strip=1 docker/docker
 
+RUN curl -sS https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
+RUN echo \
+  "deb [signed-by=/etc/apt/trusted.gpg.d/postgresql.gpg] https://apt.postgresql.org/pub/repos/apt \
+  `. /etc/os-release && echo "$VERSION_CODENAME"`-pgdg main" | \
+  tee /etc/apt/sources.list.d/pgdg.list
+
 RUN apt-get update && apt-get install -y \
   build-essential \
   bash-completion \
-  libpq-dev \
+  postgresql-client-16 \
   libsqlite3-dev \
   libvips42 \
   && rm -rf /var/lib/apt/lists/*

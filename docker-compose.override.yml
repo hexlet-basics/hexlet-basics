@@ -3,7 +3,7 @@ version: "3"
 
 services:
   redis:
-    image: redis:6.2.7
+    image: redis:6.2.14
     volumes:
       - redis:/data
 
