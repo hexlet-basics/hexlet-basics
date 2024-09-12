@@ -70,11 +70,11 @@ data "twc_database_preset" "redis" {
 
   type = "redis"
   cpu = 1
-  ram = 2048
+  ram = 1024
 
   price_filter {
-    from = 400
-    to   = 600
+    from = 200
+    to   = 450
   }
 }
 
