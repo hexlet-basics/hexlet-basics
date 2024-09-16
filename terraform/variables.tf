@@ -200,3 +200,11 @@ variable "slack_notification_webhook" {
   type = string
   description = "Slack notification webhook url"
 }
+
+variable "k8s_data" {
+  type = object({
+    ip1 = string
+    ip2 = string
+    ip3 = string
+  })
+}

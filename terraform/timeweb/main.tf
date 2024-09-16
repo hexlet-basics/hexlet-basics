@@ -22,3 +22,7 @@ resource "twc_project" "hexlet_basics" {
   name        = "Hexlet Basics"
   description = "Hexlet Basics infrastructure"
 }
+
+provider "kubernetes" {
+  config_path = "../../.kube/config_twc"
+}

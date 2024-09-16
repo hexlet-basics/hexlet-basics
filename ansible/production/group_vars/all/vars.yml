@@ -9,6 +9,16 @@ hexlet_basics_rails_env: production
 hexlet_basics_domain: "code-basics.com"
 hexlet_basics_domain_ru: "code-basics.ru"
 
+app_config:
+  host: "code-basics.com"
+  port: "3000"
+  rails:
+    env: "production"
+    log_to_stdout: "true"
+    serve_static_files: "true"
+  node:
+    env: "production"
+
 hexlet_basics_cluster_region: "ams3"
 hexlet_basics_cluster_name_2: "hexlet-basics-cluster-2"
 hexlet_basics_cluster_name_4: "hexlet-basics-cluster-3"

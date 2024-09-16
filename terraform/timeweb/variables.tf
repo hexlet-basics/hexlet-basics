@@ -19,3 +19,11 @@ variable "zone" {
 variable "postgres_db" {
   type = map(any)
 }
+
+variable "environment_file" {
+  type    = map(any)
+}
+
+variable "datadog_api_key" {
+  type = string
+}
