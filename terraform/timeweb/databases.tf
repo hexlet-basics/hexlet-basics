@@ -53,7 +53,7 @@ resource "twc_database_instance" "hexlet_basics" {
   name = var.postgres_db.name
 }
 
-resource "twc_database_user" "haxlet_basics_user" {
+resource "twc_database_user" "hexlet_basics_user" {
   cluster_id = twc_database_cluster.postgresql.id
 
   login = var.postgres_db.username
@@ -65,7 +65,7 @@ resource "twc_database_user" "haxlet_basics_user" {
   }
 }
 
-resource "twc_database_user" "haxlet_basics_user_readonly" {
+resource "twc_database_user" "hexlet_basics_user_readonly" {
   cluster_id = twc_database_cluster.postgresql.id
 
   login = var.postgres_db.username_readonly
