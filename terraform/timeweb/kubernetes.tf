@@ -28,5 +28,5 @@ resource "twc_k8s_node_group" "hexlet_basics" {
 
   preset_id = data.twc_k8s_preset.hexlet_basics_worker.id
 
-  node_count = 1
+  node_count = 3
 }
