@@ -44,5 +44,13 @@
     /         = link_to t('.sign_in'), new_session_path, class: "btn btn-primary"
     / - else
     .d-flex.flex-column.x-h-md-100#basics-lesson-container data-testid="basics-lesson-container"
+      .container
+        .row
+          .alert.alert-info
+            div
+              | Сейчас наши разработчики заботливо переносят базу данных на новый сервер, поэтому запись временно отключена...
+            div
+              | минут через 20 будем готовы, если все пойдет нормально :)
 
-- append_javascript_packs 'routes', 'vendors', 'reactEssentials', 'lesson-page'
+/ - append_javascript_packs 'routes', 'vendors', 'reactEssentials', 'lesson-page'
+- append_javascript_packs 'routes', 'vendors', 'reactEssentials'
