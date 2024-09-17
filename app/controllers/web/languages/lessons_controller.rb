@@ -31,29 +31,29 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     else
       language_member = resource_language.members.find_or_initialize_by(user: current_user)
 
-      # if language_member.new_record?
-      #   language_member.save!
-      #   js_event_options = {
-      #     user: current_user.serializable_data,
-      #     language: resource_language.serializable_data,
-      #     language_member: language_member.serializable_data
-      #   }
-      #   js_event :language_started, js_event_options
-      # end
+      if language_member.new_record?
+        language_member.save!
+        js_event_options = {
+          user: current_user.serializable_data,
+          language: resource_language.serializable_data,
+          language_member: language_member.serializable_data
+        }
+        js_event :language_started, js_event_options
+      end
 
       lesson_member = language_member.lesson_members.find_or_initialize_by(language: resource_language, user: current_user, lesson: @lesson)
 
-      # if lesson_member.new_record?
-      #   lesson_member.save!
-      #   js_event_options = {
-      #     user: current_user.serializable_data,
-      #     language: resource_language.serializable_data,
-      #     language_member: language_member.serializable_data,
-      #     lesson_member: lesson_member.serializable_data,
-      #     lesson: @lesson.serializable_data
-      #   }
-      #   js_event :lesson_started, js_event_options
-      # end
+      if lesson_member.new_record?
+        lesson_member.save!
+        js_event_options = {
+          user: current_user.serializable_data,
+          language: resource_language.serializable_data,
+          language_member: language_member.serializable_data,
+          lesson_member: lesson_member.serializable_data,
+          lesson: @lesson.serializable_data
+        }
+        js_event :lesson_started, js_event_options
+      end
 
       gon.lesson_member = lesson_member
     end
