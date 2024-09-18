@@ -8,7 +8,7 @@ resource "digitalocean_kubernetes_cluster" "hexlet_basics_cluster_4" {
 
   auto_upgrade = true
   # version      = data.digitalocean_kubernetes_versions.hexlet_basics_cluster_4.latest_version
-  version      = "1.24.16-do.0"
+  version      = "1.28.13-do.0"
 
   maintenance_policy {
     start_time  = "02:00"

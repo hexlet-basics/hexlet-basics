@@ -8,10 +8,26 @@ resource "cloudflare_zone" "hexlet_basics_zone_ru" {
   zone = var.domain_ru
 }
 
-resource "cloudflare_record" "main" {
+resource "cloudflare_record" "main_1" {
   zone_id = resource.cloudflare_zone.hexlet_basics_zone.id
   name    = var.domain
-  value   = var.ip
+  value   = var.k8s_data.ip1
+  type    = "A"
+  proxied = true
+}
+
+resource "cloudflare_record" "main_2" {
+  zone_id = resource.cloudflare_zone.hexlet_basics_zone.id
+  name    = var.domain
+  value   = var.k8s_data.ip2
+  type    = "A"
+  proxied = true
+}
+
+resource "cloudflare_record" "main_3" {
+  zone_id = resource.cloudflare_zone.hexlet_basics_zone.id
+  name    = var.domain
+  value   = var.k8s_data.ip3
   type    = "A"
   proxied = true
 }

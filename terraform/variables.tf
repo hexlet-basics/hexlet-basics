@@ -84,7 +84,6 @@ variable "rel_path_to_kubeconfig" {
   description = "Path to kubeconfig file"
 }
 
-
 # Credentials
 variable "sparkpost_smtp_username" {
   type        = string
