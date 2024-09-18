@@ -1,0 +1,52 @@
+---
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: docker-installer
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      app: docker-installer
+  template:
+    metadata:
+      labels:
+        app: docker-installer
+    spec:
+      volumes:
+        - name: host-root
+          hostPath:
+            path: /
+
+      initContainers:
+        - name: docker-installer
+          image: ubuntu:22.04
+          command:
+            - /bin/bash
+            - -c
+            - |
+              chroot /host /bin/bash -c 'which docker' && echo "Docker is already installed" && exit 0
+              chroot /host /bin/bash <<'EOF'
+              curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+              echo \
+                "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+                $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+                tee /etc/apt/sources.list.d/docker.list > /dev/null
+              apt-get update
+              apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+              EOF
+              echo "Docker environment has been installed successfully"
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: host-root
+              mountPath: /host
+
+      containers:
+        - name: pause
+          image: gcr.io/google_containers/pause:3.2
+
+      hostNetwork: true
+      hostPID: true
+      hostIPC: true

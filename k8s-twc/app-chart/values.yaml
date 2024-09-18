@@ -1,0 +1,13 @@
+---
+
+version: v956
+
+nginx:
+  image:
+    repository: hexletbasics/services-nginx
+
+web:
+  image:
+    repository: hexletbasics/services-app
+
+slack_notification: ['/opt/projects/hexlet-basics/deploy-notify.sh']
