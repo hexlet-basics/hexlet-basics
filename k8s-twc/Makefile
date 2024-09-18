@@ -16,10 +16,10 @@ helm-install-app:
 
 helm-upgrade-app:
 	helm upgrade app $(CURRENT_DIR)/app-chart
-	# git reset HEAD
-	# git add $(CURRENT_DIR)/app-chart/values.yaml
-	# git commit --no-verify -m ":rocket: deploy"
-	# git push --no-verify
+	git reset HEAD
+	git add $(CURRENT_DIR)/app-chart/values.yaml
+	git commit --no-verify -m ":rocket: deploy"
+	git push --no-verify
 
 helm-install-datadog:
 	helm repo add datadog https://helm.datadoghq.com
