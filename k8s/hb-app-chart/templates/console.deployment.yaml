@@ -1,65 +1,65 @@
----
+# ---
 
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: "{{ .Release.Name }}-console-deployment"
-  labels:
-    app.kubernetes.io/name: "{{ .Release.Name }}-console-pod"
-    app.kubernetes.io/instance: "{{ .Release.Name }}"
-    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
-    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: "{{ .Release.Name }}-console-deployment"
+#   labels:
+#     app.kubernetes.io/name: "{{ .Release.Name }}-console-pod"
+#     app.kubernetes.io/instance: "{{ .Release.Name }}"
+#     app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+#     app.kubernetes.io/managed-by: "{{ .Release.Service }}"
 
-spec:
-  replicas: 1
+# spec:
+#   replicas: 1
 
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: "{{ .Release.Name }}-console-pod"
-      app.kubernetes.io/instance: "{{ .Release.Name }}"
-  template:
-    metadata:
-      labels:
-        app.kubernetes.io/name: "{{ .Release.Name }}-console-pod"
-        app.kubernetes.io/instance: "{{ .Release.Name }}"
-        code-basics/web-pod: "{{ .Release.Name }}-{{ .Values.version }}-console-pod"
+#   selector:
+#     matchLabels:
+#       app.kubernetes.io/name: "{{ .Release.Name }}-console-pod"
+#       app.kubernetes.io/instance: "{{ .Release.Name }}"
+#   template:
+#     metadata:
+#       labels:
+#         app.kubernetes.io/name: "{{ .Release.Name }}-console-pod"
+#         app.kubernetes.io/instance: "{{ .Release.Name }}"
+#         code-basics/web-pod: "{{ .Release.Name }}-{{ .Values.version }}-console-pod"
 
-    spec:
-      imagePullSecrets:
-        - name: docker-config
+#     spec:
+#       imagePullSecrets:
+#         - name: docker-config
 
-      containers:
-        - name: console
-          securityContext:
-            privileged: true
-          imagePullPolicy: "{{ .Values.web.image.imagePullPolicy }}"
-          image: "{{ .Values.web.image.repository }}:{{ .Values.version }}"
-          resources:
-            requests:
-              memory: 100Mi
-              cpu: 10m
-            limits:
-              memory: 400Mi
-              cpu: 100m
-          command: [ "/bin/bash", "-c", "--"  ]
-          args: [ "while true; do sleep 30; done;"  ]
-          envFrom:
-            - secretRef:
-                name: database-credentials
-            - secretRef:
-                name: hexlet-basics-secrets
-            - secretRef:
-                name: hexlet-basics-do-spaces-secrets
-            - secretRef:
-                name: github-credentials
-            - secretRef:
-                name: facebook-credentials
-            - secretRef:
-                name: google-credentials
-            - secretRef:
-                name: sparkpost-credentials
-            - configMapRef:
-                name: hexlet-basics-data
-          env:
-            - name: HEXLET_BASICS_RELEASE_VERSION
-              value: {{ .Values.version }}
+#       containers:
+#         - name: console
+#           securityContext:
+#             privileged: true
+#           imagePullPolicy: "{{ .Values.web.image.imagePullPolicy }}"
+#           image: "{{ .Values.web.image.repository }}:{{ .Values.version }}"
+#           resources:
+#             requests:
+#               memory: 100Mi
+#               cpu: 10m
+#             limits:
+#               memory: 400Mi
+#               cpu: 100m
+#           command: [ "/bin/bash", "-c", "--"  ]
+#           args: [ "while true; do sleep 30; done;"  ]
+#           envFrom:
+#             - secretRef:
+#                 name: database-credentials
+#             - secretRef:
+#                 name: hexlet-basics-secrets
+#             - secretRef:
+#                 name: hexlet-basics-do-spaces-secrets
+#             - secretRef:
+#                 name: github-credentials
+#             - secretRef:
+#                 name: facebook-credentials
+#             - secretRef:
+#                 name: google-credentials
+#             - secretRef:
+#                 name: sparkpost-credentials
+#             - configMapRef:
+#                 name: hexlet-basics-data
+#           env:
+#             - name: HEXLET_BASICS_RELEASE_VERSION
+#               value: {{ .Values.version }}

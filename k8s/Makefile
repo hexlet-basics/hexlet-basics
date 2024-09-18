@@ -28,10 +28,10 @@ helm-install-metrics:
 # helm install --name app ./app-chart
 helm-upgrade-app:
 	helm upgrade hb-app $(CURRENT_DIR)/hb-app-chart
-	git reset HEAD
-	git add $(CURRENT_DIR)/hb-app-chart/values.yaml
-	git commit -m ":rocket: deploy" --no-verify
-	git push --no-verify
+	# git reset HEAD
+	# git add $(CURRENT_DIR)/hb-app-chart/values.yaml
+	# git commit -m ":rocket: deploy" --no-verify
+	# git push --no-verify
 
 get-pods:
 	kubectl get pod -w -o wide
