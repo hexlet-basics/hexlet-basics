@@ -1,3 +1,13 @@
+# --------------------------------------
+# ACCOUNTS
+# --------------------------------------
+data "cloudflare_accounts" "hexlet" {
+  name = "Hexlet Production"
+}
+
+# --------------------------------------
+# code-basics.ru
+# --------------------------------------
 resource "cloudflare_zone" "hexlet_basics_zone_ru" {
   account_id = data.cloudflare_accounts.hexlet.accounts[0].id
   zone = var.domain_ru
@@ -43,8 +53,9 @@ resource "cloudflare_ruleset" "http_request_dynamic_redirect_main_ru" {
   }
 }
 
-# --------------------------------------------------
-
+# --------------------------------------
+# code-basics.com
+# --------------------------------------
 resource "cloudflare_zone" "hexlet_basics_zone" {
   account_id = data.cloudflare_accounts.hexlet.accounts[0].id
   zone = var.domain
@@ -114,35 +125,35 @@ resource "cloudflare_record" "txt" {
   type    = "TXT"
 }
 
-resource "cloudflare_record" "yandex-verification" {
+resource "cloudflare_record" "yandex_verification" {
   zone_id = resource.cloudflare_zone.hexlet_basics_zone.id
   name  = var.domain
   value   = "yandex-verification=ab7bd61d467a0773"
   type    = "TXT"
 }
 
-resource "cloudflare_record" "yandex-verification-ru" {
+resource "cloudflare_record" "yandex_verification_ru" {
   zone_id = resource.cloudflare_zone.hexlet_basics_zone.id
   name  = "ru.${var.domain}"
   value   = "yandex-verification=1f24f9aeb0526152"
   type    = "TXT"
 }
 
-resource "cloudflare_record" "google-verification-ru" {
+resource "cloudflare_record" "google_verification_ru" {
   zone_id = resource.cloudflare_zone.hexlet_basics_zone.id
   name  = "ru.${var.domain}"
   value   = "google-site-verification=AdJxboarIC6NOwJ9CEkIeZXdNE7DqamnPo0P7J4DJDw"
   type    = "TXT"
 }
 
-resource "cloudflare_record" "google-verification-com" {
+resource "cloudflare_record" "google_verification_com" {
   zone_id = resource.cloudflare_zone.hexlet_basics_zone.id
   name  = var.domain
   value   = "google-site-verification=0kk3DdOciLvoog-nVFcbRzmZH65FWmNW-_aYElP0gJk"
   type    = "TXT"
 }
 
-resource "cloudflare_record" "facebook-domain-verification" {
+resource "cloudflare_record" "facebook_domain_verification" {
   zone_id = resource.cloudflare_zone.hexlet_basics_zone.id
   name  = var.domain
   value   = "facebook-domain-verification=d7d3em3a29yebcswwq8aa57shrc1m6"

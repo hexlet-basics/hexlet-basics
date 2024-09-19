@@ -5,16 +5,8 @@
   tasks:
     - template:
         src: backend_secrets.auto.tfvars.j2
-        dest: "../terraform/timeweb/backend.secrets.auto.tfvars"
-
-    - template:
-        src: timeweb.secrets.auto.tfvars.j2
-        dest: "../terraform/timeweb/secrets.auto.tfvars"
+        dest: "../terraform/backend.secrets.auto.tfvars"
 
     - template:
         src: secrets.auto.tfvars.j2
         dest: "../terraform/secrets.auto.tfvars"
-
-    - template:
-        src: docker.config.json.j2
-        dest: "../terraform/docker-config.json"

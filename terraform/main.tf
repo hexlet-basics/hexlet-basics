@@ -1,27 +1,42 @@
-# --------------------------------------
-# SPACES
-# --------------------------------------
-resource "digitalocean_spaces_bucket" "sitemap_bucket" {
-  name   = var.do_spaces_sitemap_bucket
-  region = var.do_spaces_region
-  acl    = "private"
-  lifecycle_rule {
-    enabled = true
-    expiration {
-      days = 30
+terraform {
+  backend "s3" {
+    endpoints = {
+      s3 = "https://storage.yandexcloud.net"
     }
+
+    bucket = "hexlet-basics-terraform-state"
+    region = "ru-central1"
+    key    = "production_hexlet_basics.tfstate"
+
+    skip_region_validation      = true
+    skip_credentials_validation = true
+    skip_requesting_account_id  = true
+    skip_s3_checksum            = true
   }
+
+  # backend "local" {
+  #   path = "yandex.tfstate"
+  # }
 }
 
-# --------------------------------------
-# PROJECT
-# --------------------------------------
+# NOTE: needed TWC_TOKEN env variable
+provider "twc" {}
 
-resource "digitalocean_project" "hexlet_basics_project" {
+resource "twc_project" "hexlet_basics" {
   name        = "Hexlet Basics"
-  description = "A project to represent Hexlet Basics resources."
-  purpose     = "Web Application"
-  environment = "Production"
-  resources   = [
-  ]
+  description = "Hexlet Basics infrastructure"
+}
+
+provider "kubernetes" {
+  config_path = "../.kube/config"
+}
+
+provider "digitalocean" {
+  spaces_access_id  = var.do_spaces_access_id
+  spaces_secret_key = var.do_spaces_secret_key
+}
+
+provider "cloudflare" {
+  email   = var.cloudflare_email
+  api_key = var.cloudflare_api_key
 }
