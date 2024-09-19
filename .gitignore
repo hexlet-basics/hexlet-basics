@@ -50,7 +50,6 @@ yarn-debug.log*
 tmp/ansible-vault-password
 *secrets.auto.tfvars
 terraform/docker-config.json
-terraform/.terraform.lock.hcl
 google.key.json
 
 
