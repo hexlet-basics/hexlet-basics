@@ -24,5 +24,5 @@ resource "twc_project" "hexlet_basics" {
 }
 
 provider "kubernetes" {
-  config_path = "../../.kube/config_twc"
+  config_path = "../../.kube/config"
 }

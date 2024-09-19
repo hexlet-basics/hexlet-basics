@@ -1,7 +1,7 @@
 include make-app.mk
 include make-compose-app.mk
 include make-compose.mk
-include k8s-twc/Makefile
+include k8s/Makefile
 
 project-setup: ansible-generate-env compose-setup
 
