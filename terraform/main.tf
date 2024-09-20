@@ -27,11 +27,6 @@ provider "kubernetes" {
   config_path = "../.kube/config"
 }
 
-provider "digitalocean" {
-  spaces_access_id  = var.do_spaces_access_id
-  spaces_secret_key = var.do_spaces_secret_key
-}
-
 provider "cloudflare" {
   email   = var.cloudflare_email
   api_key = var.cloudflare_api_key

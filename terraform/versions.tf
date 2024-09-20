@@ -6,10 +6,6 @@ terraform {
       source = "tf.timeweb.cloud/timeweb-cloud/timeweb-cloud"
     }
 
-    digitalocean = {
-      source = "digitalocean/digitalocean"
-    }
-
     cloudflare = {
       source = "cloudflare/cloudflare"
     }
