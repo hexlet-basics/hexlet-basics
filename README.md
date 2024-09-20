@@ -49,8 +49,7 @@ Kube access
 
 ```bash
 # make k8s-macos-setup or make k8s-ubuntu-setup
-export DIGITALOCEAN_ACCESS_TOKEN=<your token>
-make local-cluster-setup
+export TWC_TOKEN=<your token>
 ```
 
 ### Deploy
