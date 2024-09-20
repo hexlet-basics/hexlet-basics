@@ -76,3 +76,12 @@ variable "k8s_data" {
     ip3 = string
   })
 }
+
+variable "yc" {
+  type = object({
+    cloud_id = string
+    folder_id = string
+    zone = string
+    sitemaps_storage = map(any)
+  })
+}

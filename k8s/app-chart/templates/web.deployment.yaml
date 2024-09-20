@@ -86,16 +86,11 @@ spec:
             limits:
               memory: 100Mi
           env:
-            - name: DO_SPACES_REGION
+            - name: SITEMAPS_S3_HOST
               valueFrom:
                 secretKeyRef:
                   name: hexlet-basics-environment-secrets
-                  key: DO_SPACES_REGION
-            - name: DO_SPACES_SITEMAP_BUCKET
-              valueFrom:
-                secretKeyRef:
-                  name: hexlet-basics-environment-secrets
-                  key: DO_SPACES_SITEMAP_BUCKET
+                  key: SITEMAPS_S3_HOST
           lifecycle:
             preStop:
               exec:

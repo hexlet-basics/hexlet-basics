@@ -10,3 +10,7 @@
     - template:
         src: secrets.auto.tfvars.j2
         dest: "../terraform/secrets.auto.tfvars"
+
+    - copy:
+        content: "{{ vault_yc.service_key_data | to_nice_json }}"
+        dest: "../terraform/yc_config.json"

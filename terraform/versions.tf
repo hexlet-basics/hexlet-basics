@@ -13,5 +13,9 @@ terraform {
     cloudflare = {
       source = "cloudflare/cloudflare"
     }
+
+    yandex = {
+      source = "yandex-cloud/yandex"
+    }
   }
 }

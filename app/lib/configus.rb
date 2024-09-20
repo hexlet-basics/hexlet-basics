@@ -43,12 +43,12 @@ Configus.build Rails.env do
 
     sitemap do
       bucket do
-        name ENV.fetch('DO_SPACES_SITEMAP_BUCKET', nil)
+        name ENV.fetch('SITEMAPS_S3_BUCKET', nil)
         credentials do
-          access_key_id ENV.fetch('DO_SPACES_ACCESS_ID', nil)
-          secret_access_key ENV.fetch('DO_SPACES_SECRET_KEY', nil)
-          region 'us-east-1'
-          endpoint "https://#{ENV.fetch('DO_SPACES_REGION', 'nyc3')}.digitaloceanspaces.com"
+          access_key_id ENV.fetch('SITEMAPS_S3_ACCESS_KEY_ID', nil)
+          secret_access_key ENV.fetch('SITEMAPS_S3_ACCESS_SECRET_KEY', nil)
+          region ENV.fetch('SITEMAPS_S3_REGION', nil)
+          endpoint ENV.fetch('SITEMAPS_S3_ENDPOINT', nil)
         end
       end
     end

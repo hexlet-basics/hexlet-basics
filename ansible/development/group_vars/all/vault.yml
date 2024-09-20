@@ -19,7 +19,9 @@ hexlet_basics_vault_sparkpost_smtp_password: "password"
 hexlet_basics_vault_guardian_secret_key: "asdfasdfasdfasdf"
 hexlet_basics_vault_sentry_dsn: "lalajopa"
 
-hexlet_basics_vault_do_spaces_access_id: "lala"
-hexlet_basics_vault_do_spaces_secret_key: "xxxx"
-hexlet_basics_vault_do_spaces_region: "ams1"
-hexlet_basics_vault_do_spaces_sitemap_bucket: "sitemap-bucket-name"
+vault_sitemaps_s3:
+  bucket: "sitemap-bucket-name"
+  access_key_id: "lala"
+  secret_key_id: "xxxx"
+  region: "ams1"
+  endpoint: "https://eu.examplebuckets.com"

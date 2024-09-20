@@ -70,7 +70,7 @@ server {
     # charset_types text/css text/xml text/plain text/vnd.wap.wml application/javascript application/rss+xml;
   }
 
-  set $s3_sitemap_bucket "${DO_SPACES_SITEMAP_BUCKET}.${DO_SPACES_REGION}.digitaloceanspaces.com";
+  set $s3_sitemap_bucket "${SITEMAPS_S3_HOST}";
   location /sitemaps/ {
     sendfile on;
     resolver 8.8.8.8;

@@ -52,6 +52,7 @@ tmp/ansible-vault-password
 terraform/docker-config.json
 google.key.json
 *.tfstate*
+yc_config.json
 
 
 /public/packs

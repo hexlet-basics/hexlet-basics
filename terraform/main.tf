@@ -13,10 +13,6 @@ terraform {
     skip_requesting_account_id  = true
     skip_s3_checksum            = true
   }
-
-  # backend "local" {
-  #   path = "yandex.tfstate"
-  # }
 }
 
 # NOTE: needed TWC_TOKEN env variable
@@ -39,4 +35,11 @@ provider "digitalocean" {
 provider "cloudflare" {
   email   = var.cloudflare_email
   api_key = var.cloudflare_api_key
+}
+
+provider "yandex" {
+  cloud_id                 = var.yc.cloud_id
+  folder_id                = var.yc.folder_id
+  zone                     = var.yc.zone
+  service_account_key_file = "yc_config.json"
 }
