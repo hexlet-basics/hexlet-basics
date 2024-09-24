@@ -16,7 +16,7 @@ resource "cloudflare_zone" "hexlet_basics_zone_ru" {
 resource "cloudflare_record" "main_ru_1" {
   zone_id = resource.cloudflare_zone.hexlet_basics_zone_ru.id
   name    = var.domain_ru
-  content = var.k8s_data.ip1
+  content = var.k8s_data.ip3
   type    = "A"
   proxied = true
 }
@@ -64,7 +64,7 @@ resource "cloudflare_zone" "hexlet_basics_zone" {
 resource "cloudflare_record" "main_1" {
   zone_id = resource.cloudflare_zone.hexlet_basics_zone.id
   name    = var.domain
-  content = var.k8s_data.ip1
+  content = var.k8s_data.ip3
   type    = "A"
   proxied = true
 }
@@ -80,7 +80,7 @@ resource "cloudflare_record" "main_2" {
 resource "cloudflare_record" "main_3" {
   zone_id = resource.cloudflare_zone.hexlet_basics_zone.id
   name    = var.domain
-  content = var.k8s_data.ip3
+  content = var.k8s_data.ip1
   type    = "A"
   proxied = true
 }
