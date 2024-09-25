@@ -14,6 +14,12 @@ resource "twc_k8s_cluster" "hexlet_basics" {
   ingress = true
 
   preset_id = data.twc_k8s_preset.hexlet_basics_master.id
+
+  lifecycle {
+    ignore_changes = [
+      preset_id,
+    ]
+  }
 }
 
 data "twc_k8s_preset" "hexlet_basics_worker" {
@@ -29,4 +35,10 @@ resource "twc_k8s_node_group" "hexlet_basics" {
   preset_id = data.twc_k8s_preset.hexlet_basics_worker.id
 
   node_count = 3
+
+  lifecycle {
+    ignore_changes = [
+      preset_id,
+    ]
+  }
 }

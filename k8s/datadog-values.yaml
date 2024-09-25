@@ -2,3 +2,21 @@ datadog:
   apiKeyExistingSecret: datadog-secret
   site: datadoghq.com
   clusterName: hb-twc
+  confd:
+    postgres.yaml: |-
+      init_config:
+      instances:
+        - host: "ENC[k8s_secret@default/datadog-secret/db_host]"
+          reported_hostname: "hb-postgresql"
+          port: ENC[k8s_secret@default/datadog-secret/db_port]
+          username: "ENC[k8s_secret@default/datadog-secret/db_user]"
+          password: "ENC[k8s_secret@default/datadog-secret/db_password]"
+          dbname: "ENC[k8s_secret@default/datadog-secret/db_name]"
+          custom_queries:
+            - metric_prefix: "postgresql"
+              query: "SELECT pg_database_size(current_database()) AS db_size"
+              columns:
+                - name: db_size
+                  type: gauge
+  secretBackend:
+    command: "/readsecret_multiple_providers.sh"

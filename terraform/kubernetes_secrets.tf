@@ -7,6 +7,11 @@ resource "kubernetes_secret" "datadog_secrets" {
 
   data = {
     api-key = var.datadog_api_key
+    db_host = var.postgres_db.host
+    db_port = var.postgres_db.port
+    db_name = var.postgres_db.name
+    db_user = var.postgres_db.datadog_username
+    db_password = var.postgres_db.datadog_password
   }
 }
 
