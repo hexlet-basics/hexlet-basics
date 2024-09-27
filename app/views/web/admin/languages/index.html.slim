@@ -10,7 +10,8 @@ table.table.my-2
       th = sort_link(@search, :progress)
       th = sort_link(@search, :learn_as)
       th = sort_link(@search, :order)
-      th Imported At
+      th = sort_link(@search, :current_version_updated_at)
+      th Last version
       th
       th
   tbody
@@ -28,5 +29,8 @@ table.table.my-2
         td
           - if language.current_version
             = l language.current_version.updated_at, format: :short
+        td
+          - if language.versions.last
+            = language.versions.last.state.humanize
         td = link_to 'Edit', edit_admin_language_path(language)
         td = link_to 'Versions', admin_language_versions_path(language)
