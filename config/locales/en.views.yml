@@ -71,7 +71,7 @@ en:
         course_html: Course %{link}
     users:
       new:
-        confirmation_html: By clicking Sign up, you agree to the terms of use
+        confirmation_html: By clicking Sign up, you agree to our <a href="%{link}" class="text-decoration-none" target="_blank">service conditions</a>
         title: Registration
         meta_description: Sign up on Code Basics
         sign_up: Sign up
