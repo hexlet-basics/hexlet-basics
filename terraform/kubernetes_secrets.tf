@@ -24,3 +24,15 @@ resource "kubernetes_secret" "environment_secrets" {
 
   data = var.environment_file
 }
+
+resource "kubernetes_secret" "docker_registry_auth" {
+  metadata {
+    name = "docker-config"
+  }
+
+  data = {
+    ".dockerconfigjson" = file("${path.module}/docker-config.json")
+  }
+
+  type = "kubernetes.io/dockerconfigjson"
+}
