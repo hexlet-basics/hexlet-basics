@@ -20,12 +20,12 @@
           = render 'lesson_tab'
 
         .tab-pane.fade.overflow-auto.x-h-md-100#discuss-tab(role="tabpanel")
-          .card.border-0
-            .card-body.pt-2.pb-0
-              .alert.alert-info.small.my-2
-                span.align-baseline = t('.if_stuck')
-                '
-                = link_to t('.community'), ExternalLinks.telegram_community_curl, target: '_blank', class: 'align-baseline', rel: :noopener
+          .p-3
+            - if I18n.locale == :ru
+              span = t('.if_stuck_html', link: ExternalLinks.telegram_community_curl)
+            - else
+              / .alert.alert-info.small.my-2
+              /   span = t('.if_stuck_html', link: ExternalLinks.telegram_community_curl)
               = render 'web/deps/disqus', lesson: @lesson, title: @title
 
         .tab-pane.fade.overflow-auto.x-h-md-100#navigation-tab(role="tabpanel")
