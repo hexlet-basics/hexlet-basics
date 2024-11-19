@@ -192,8 +192,6 @@ en:
           only_for_signed_in_users: Exercise available only for signed users.
           please_sign_in: Please sign in with your GitHub account, this is necessary to track the progress of the lessons. If you do not have an account yet, now is the time to create an account on GitHub.
           sign_in: Sign In
-          if_stuck_html: |
-            If you got stuck and don't know what to do, you can ask a question in our <a href="%{link}" target="_blank" rel="noopener">community</a>
         lesson_tab:
           breadcrumb: breadcrumb
           to_home_title: Home

@@ -24,8 +24,6 @@
             - if I18n.locale == :ru
               span = t('.if_stuck_html', link: ExternalLinks.telegram_community_curl)
             - else
-              / .alert.alert-info.small.my-2
-              /   span = t('.if_stuck_html', link: ExternalLinks.telegram_community_curl)
               = render 'web/deps/disqus', lesson: @lesson, title: @title
 
         .tab-pane.fade.overflow-auto.x-h-md-100#navigation-tab(role="tabpanel")
