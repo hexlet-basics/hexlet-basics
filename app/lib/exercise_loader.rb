@@ -74,7 +74,7 @@ class ExerciseLoader
       _, locale, = filename.split('.')
 
       data = YAML.load_file(file)
-      [locale, data]
+      [ locale, data ]
     end
   end
 
@@ -87,7 +87,7 @@ class ExerciseLoader
         locale = File.basename(directory)
         data = get_lesson_info_data(directory)
 
-        [locale, data]
+        [ locale, data ]
       end
   end
 

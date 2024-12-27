@@ -16,7 +16,7 @@ class DockerExerciseApiStub
     output = []
     status = BashRunner.start(command) { |line| output << line }
 
-    [output.join, status]
+    [ output.join, status ]
   end
 
   def self.remove_image(lang_name, tag); end

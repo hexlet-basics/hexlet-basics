@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Web::ApplicationController < ApplicationController
+  allow_browser versions: :modern
+
   include ActionView::Helpers::UrlHelper
   include FlashConcern
   # include TitleConcern
@@ -9,18 +11,18 @@ class Web::ApplicationController < ApplicationController
 
   before_action :prepare_locale_settings
 
-  before_action do
-    gon.push({
-               current_user: {
-                 id: current_user.id,
-                 email: current_user.email,
-                 created_at: current_user.created_at,
-                 is_guest: current_user.guest?
-               },
-               locale: I18n.locale,
-               events: EventsMapping.events
-             })
-  end
+  # before_action do
+  #   gon.push({
+  #              current_user: {
+  #                id: current_user.id,
+  #                email: current_user.email,
+  #                created_at: current_user.created_at,
+  #                is_guest: current_user.guest?
+  #              },
+  #              locale: I18n.locale,
+  #              events: EventsMapping.events
+  #            })
+  # end
 
   before_action do
     @language_categories = Language::Category.all
@@ -60,10 +62,10 @@ class Web::ApplicationController < ApplicationController
 
   def prepare_locale_settings
     # NOTE: never redirect bots
-    if browser.bot?
-      I18n.locale = params[:locale] || I18n.default_locale
-      return
-    end
+    # if browser.bot?
+    #   I18n.locale = params[:locale] || I18n.default_locale
+    #   return
+    # end
 
     if current_page?(root_path) && !params[:locale]
       remembered_locale = session[:locale].presence
@@ -74,7 +76,7 @@ class Web::ApplicationController < ApplicationController
         end
       else
         # root page, no subdomain, never changed locale
-        ru_country_codes = ['RU']
+        ru_country_codes = [ "RU" ]
         if locale_from_accept_language_header == :ru || ru_country_codes.include?(country_by_ip)
           redirect_to root_url(locale: :ru), allow_other_host: true
         end
@@ -86,10 +88,10 @@ class Web::ApplicationController < ApplicationController
   end
 
   def country_by_ip
-    @country_by_ip ||= Geocoder.search(request.remote_ip).first&.country_code || 'EN'
+    # @country_by_ip ||= Geocoder.search(request.remote_ip).first&.country_code || 'EN'
   end
 
   def locale_from_accept_language_header
-    request.env['HTTP_ACCEPT_LANGUAGE']&.scan(/^[a-z]{2}/)&.first&.downcase&.to_sym
+    request.env["HTTP_ACCEPT_LANGUAGE"]&.scan(/^[a-z]{2}/)&.first&.downcase&.to_sym
   end
 end

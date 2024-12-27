@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Web::LocalesController < Web::ApplicationController
-  skip_before_action :prepare_locale_settings, only: [:switch]
+  skip_before_action :prepare_locale_settings, only: [ :switch ]
 
   def switch
     locale = params[:new_locale]

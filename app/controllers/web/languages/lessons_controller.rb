@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Web::Languages::LessonsController < Web::Languages::ApplicationController
-  before_action :authenticate_user!, only: [:next_lesson]
+  before_action :authenticate_user!, only: [ :next_lesson ]
 
   # NOTE: нужно для определения правильный путей к воркерам monaco-editor
   before_action only: :show do
@@ -62,7 +62,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     gon.lesson_version = @lesson_version
     gon.lesson = @lesson
 
-    title = [@info, resource_language.current_version.name].join(' | ').squish
+    title = [ @info, resource_language.current_version.name ].join(' | ').squish
     description = view_context.truncate("[#{resource_language.current_version}] — #{@info.name} — #{@info.theory}", length: 220)
 
     seo_tags = {

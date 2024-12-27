@@ -1,5 +1,3 @@
-# frozen_string_literal: true
+# require 'app_host'
 
-require 'app_host'
-
-Rails.application.routes.default_url_options[:host] = AppHost.canonical
+# Rails.application.routes.default_url_options[:host] = AppHost.canonical

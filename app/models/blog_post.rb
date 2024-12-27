@@ -33,12 +33,12 @@ class BlogPost < ApplicationRecord
   include BlogPostRepository
 
   has_one_attached :cover do |attachable|
-    attachable.variant :thumb, resize_to_limit: [100, 100]
-    attachable.variant :list, resize_to_limit: [456, 215]
+    attachable.variant :thumb, resize_to_limit: [ 100, 100 ]
+    attachable.variant :list, resize_to_limit: [ 456, 215 ]
   end
 
   def self.ransackable_attributes(_auth_object = nil)
-    ['created_at']
+    [ 'created_at' ]
   end
 
   def self.ransackable_associations(_auth_object = nil)

@@ -24,13 +24,13 @@ class LessonTester
     exitstatus = process_status.exitstatus
 
     result = case exitstatus
-             when 0
+    when 0
                'passed'
-             when 124
+    when 124
                'failed-infinity'
-             else
+    else
                'failed'
-             end
+    end
     passed = result == 'passed'
 
     # NOTE: scrub нужен для удаления недопустимых символов в UTF-8, которые могут быть в выводе упражнения

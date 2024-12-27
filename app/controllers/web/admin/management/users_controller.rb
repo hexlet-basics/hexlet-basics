@@ -6,7 +6,7 @@ class Web::Admin::Management::UsersController < Web::Admin::Management::Applicat
   def index
     query = params.fetch(:q, {}).with_defaults('s' => 'created_at desc')
 
-    @search = User.includes(language_members: [language: :current_version]).ransack(query)
+    @search = User.includes(language_members: [ language: :current_version ]).ransack(query)
 
     users = @search.result
 

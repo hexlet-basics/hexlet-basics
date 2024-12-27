@@ -6,9 +6,9 @@ class SocialNetworkService
     email = auth[:info][:email].downcase
     user = if existing_account
              existing_account.user
-           else
+    else
              User.find_or_initialize_by(email: email)
-           end
+    end
 
     is_new = false
 

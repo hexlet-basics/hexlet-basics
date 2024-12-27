@@ -1,7 +1,7 @@
 // @ts-check
 
-import React from 'react';
-import Frame from 'react-frame-component';
+import React from 'react'
+import Frame from 'react-frame-component'
 
 function HTMLPreview({ html }) {
   return (
@@ -10,7 +10,7 @@ function HTMLPreview({ html }) {
         <div className="text-black" dangerouslySetInnerHTML={{ __html: html }} />
       </Frame>
     </div>
-  );
+  )
 }
 
-export default HTMLPreview;
+export default HTMLPreview

@@ -1,7 +1,0 @@
-#!/bin/sh
-
-git describe --abbrev=0 --tags |
-( grep -o -E '^v[0-9]{3}$' || "version not found" ) |
-grep -o -E '[0-9]+' |
-( read old_version && echo $((old_version+1)) ) |
-( read new_version && echo v$new_version )

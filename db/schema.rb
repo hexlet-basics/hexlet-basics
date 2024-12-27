@@ -153,30 +153,30 @@ ActiveRecord::Schema[7.1].define(version: 2022_12_20_005735) do
     t.index ["user_id"], name: "index_language_members_on_user_id"
   end
 
-  create_table "language_module_descriptions", force: :cascade do |t|
-    t.string "name", limit: 255
-    t.text "description"
-    t.string "locale", limit: 255
-    t.bigint "module_id"
-    t.datetime "inserted_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.bigint "language_id"
-    t.index ["module_id"], name: "language_module_descriptions_module_id_index"
-  end
+  # create_table "language_module_descriptions", force: :cascade do |t|
+  #   t.string "name", limit: 255
+  #   t.text "description"
+  #   t.string "locale", limit: 255
+  #   t.bigint "module_id"
+  #   t.datetime "inserted_at", precision: nil, null: false
+  #   t.datetime "updated_at", precision: nil, null: false
+  #   t.bigint "language_id"
+  #   t.index ["module_id"], name: "language_module_descriptions_module_id_index"
+  # end
 
-  create_table "language_module_lesson_descriptions", force: :cascade do |t|
-    t.string "name", limit: 255
-    t.text "theory"
-    t.text "instructions"
-    t.string "locale", limit: 255
-    t.string "tips", limit: 255, null: false, array: true
-    t.bigint "lesson_id"
-    t.datetime "inserted_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.bigint "language_id"
-    t.jsonb "definitions", null: false, array: true
-    t.index ["lesson_id"], name: "language_module_lesson_descriptions_lesson_id_index"
-  end
+  # create_table "language_module_lesson_descriptions", force: :cascade do |t|
+  #   t.string "name", limit: 255
+  #   t.text "theory"
+  #   t.text "instructions"
+  #   t.string "locale", limit: 255
+  #   t.string "tips", limit: 255, null: false, array: true
+  #   t.bigint "lesson_id"
+  #   t.datetime "inserted_at", precision: nil, null: false
+  #   t.datetime "updated_at", precision: nil, null: false
+  #   t.bigint "language_id"
+  #   t.jsonb "definitions", null: false, array: true
+  #   t.index ["lesson_id"], name: "language_module_lesson_descriptions_lesson_id_index"
+  # end
 
   create_table "language_module_version_infos", force: :cascade do |t|
     t.string "name"
@@ -315,7 +315,7 @@ ActiveRecord::Schema[7.1].define(version: 2022_12_20_005735) do
     t.boolean "admin"
     t.datetime "created_at", null: false
     t.boolean "help"
-    t.index ["email"], name: "index_users_on_email", unique: true, where: "((state)::text <> 'removed'::text)"
+    t.index ["email"], name: "index_users_on_email", unique: true # , where: "((state)::text <> 'removed'::text)"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
@@ -337,10 +337,10 @@ ActiveRecord::Schema[7.1].define(version: 2022_12_20_005735) do
   add_foreign_key "language_lessons", "uploads", name: "language_module_lessons_upload_id_fkey"
   add_foreign_key "language_members", "languages"
   add_foreign_key "language_members", "users"
-  add_foreign_key "language_module_descriptions", "language_modules", column: "module_id", name: "language_module_descriptions_module_id_fkey"
-  add_foreign_key "language_module_descriptions", "languages", name: "language_module_descriptions_language_id_fkey"
-  add_foreign_key "language_module_lesson_descriptions", "language_lessons", column: "lesson_id", name: "language_module_lesson_descriptions_lesson_id_fkey"
-  add_foreign_key "language_module_lesson_descriptions", "languages", name: "language_module_lesson_descriptions_language_id_fkey"
+  # add_foreign_key "language_module_descriptions", "language_modules", column: "module_id", name: "language_module_descriptions_module_id_fkey"
+  # add_foreign_key "language_module_descriptions", "languages", name: "language_module_descriptions_language_id_fkey"
+  # add_foreign_key "language_module_lesson_descriptions", "language_lessons", column: "lesson_id", name: "language_module_lesson_descriptions_lesson_id_fkey"
+  # add_foreign_key "language_module_lesson_descriptions", "languages", name: "language_module_lesson_descriptions_language_id_fkey"
   add_foreign_key "language_module_version_infos", "language_module_versions", column: "version_id"
   add_foreign_key "language_module_version_infos", "language_versions"
   add_foreign_key "language_module_version_infos", "languages"

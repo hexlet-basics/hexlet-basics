@@ -1,17 +1,17 @@
 // @ts-check
 
-import React, { useContext } from 'react';
-import { useTranslation } from 'react-i18next';
-import hljs from '../../lib/hljs.js';
+import React, { useContext } from 'react'
+import { useTranslation } from 'react-i18next'
+import hljs from '../../lib/hljs.js'
 
-import EntityContext from '../EntityContext.js';
-import { getLanguage } from '../utils/editorUtils.js';
+import EntityContext from '../EntityContext.js'
+import { getLanguage } from '../utils/editorUtils.js'
 
 function Test() {
-  const { language, lessonVersion } = useContext(EntityContext);
-  const { t } = useTranslation();
+  const { language, lessonVersion } = useContext(EntityContext)
+  const { t } = useTranslation()
 
-  const code = hljs.highlight(lessonVersion.test_code, { language: getLanguage(language) }).value;
+  const code = hljs.highlight(lessonVersion.test_code, { language: getLanguage(language) }).value
 
   return (
     <div>
@@ -22,7 +22,7 @@ function Test() {
         </code>
       </pre>
     </div>
-  );
+  )
 }
 
-export default Test;
+export default Test

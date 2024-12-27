@@ -37,7 +37,7 @@ class Language::Lesson::Version::Info < ApplicationRecord
 
   belongs_to :language
   belongs_to :version
-  belongs_to :language_version, class_name: 'Language::Version'
+  belongs_to :language_version, class_name: "Language::Version"
 
   def to_s
     name

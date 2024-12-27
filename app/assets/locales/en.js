@@ -1,10 +1,9 @@
-/* eslint-disable max-len */
 export default {
   translation: {
     help: {
       controls: {
         header: 'Help',
-        body: "Reset progress. If something breaks and cannot be fixed click this button to return to the beginning of the exercises. The current code won’t be saved. If you'll need it, copy it before resetting. For example, to the notepads",
+        body: 'Reset progress. If something breaks and cannot be fixed click this button to return to the beginning of the exercises. The current code won’t be saved. If you\'ll need it, copy it before resetting. For example, to the notepads',
       },
     },
     errors: {
@@ -18,13 +17,13 @@ export default {
     editor: 'Editor',
     output: 'Output',
     solution: 'Solution',
-    teacherSolution: "Teacher's solution:",
+    teacherSolution: 'Teacher\'s solution:',
     testForExercise: 'Tests',
     userCode: 'Your solution:',
-    userCodeInstructions: "(start writing in Editor, your code will appear here and you'll be able to compare it to the teacher's solution)",
-    solutionInstructions: "Teacher's solution will be available in:",
+    userCodeInstructions: '(start writing in Editor, your code will appear here and you\'ll be able to compare it to the teacher\'s solution)',
+    solutionInstructions: 'Teacher\'s solution will be available in:',
     testInstructions: 'Your exercise will be checked with these tests:',
-    solutionNotice: "It's best to solve the problem yourself, but if you're stuck for a long time, feel free to check out the solution. But make sure to study it thoroughly to truly understand it.",
+    solutionNotice: 'It\'s best to solve the problem yourself, but if you\'re stuck for a long time, feel free to check out the solution. But make sure to study it thoroughly to truly understand it.',
     showSolution: 'Show solution',
     lesson: 'Lesson',
     discuss: 'Discussion',
@@ -33,15 +32,15 @@ export default {
     prevLesson: 'Previous',
     loading: 'Loading...',
     check: {
-      error: {
+      'error': {
         message: 'Something went wrong, try one more time, please',
         headline: 'Oops!',
       },
-      passed: {
+      'passed': {
         message: 'Yippee! Well done! Compare your answer with the teacher’s one and move to the next lesson',
         headline: 'Tests passed',
       },
-      failed: {
+      'failed': {
         message: 'Your code contains errors. Read carefully tests output and try to find errors yourself',
         headline: 'Tests Failed',
       },
@@ -51,4 +50,4 @@ export default {
       },
     },
   },
-};
+}

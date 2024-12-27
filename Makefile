@@ -1,9 +1,18 @@
-include make-app.mk
-include make-compose-app.mk
-include make-compose.mk
 include k8s/Makefile
 
-project-setup: ansible-generate-env compose-setup
+setup:
+	bundle install
+	bin/rails db:prepare
+
+dev:
+	bin/dev
+
+app-lint-staged:
+	echo 'disabled'
+
+lint:
+	bin/rubocop -x
+	npx eslint . --fix
 
 ansible-generate-env:
 	docker run --rm -e RUNNER_PLAYBOOK=ansible/development.yml \
@@ -23,19 +32,19 @@ ansible-vaults-edit:
 		-v $(CURDIR):/runner/project \
 		quay.io/ansible/ansible-runner ansible-vault edit --vault-password-file project/tmp/ansible-vault-password project/ansible/production/group_vars/all/vault.yml
 
-tag:
-	git tag $(TAG) && git push --tags --no-verify
+# tag:
+# 	git tag $(TAG) && git push --tags --no-verify
+#
+# next-tag:
+# 	make tag TAG=$(shell bin/generate_next_tag)
 
-next-tag:
-	make tag TAG=$(shell bin/generate_next_tag)
-
-editor-setup:
-	bundle
-	bundle exec annotate --models
-	# bundle exec annotate --routes
-	# bundle exec solargraph bundle
-	bundle exec yard gems
-	bundle exec solargraph bundle
-	bin/tapioca annotations
-	bin/tapioca gems --all
-	bin/tapioca dsl
+# editor-setup:
+# 	bundle
+# 	bundle exec annotate --models
+# 	# bundle exec annotate --routes
+# 	# bundle exec solargraph bundle
+# 	bundle exec yard gems
+# 	bundle exec solargraph bundle
+# 	bin/tapioca annotations
+# 	bin/tapioca gems --all
+# 	bin/tapioca dsl

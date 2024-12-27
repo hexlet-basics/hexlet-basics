@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 export default {
   translation: {
     help: {
@@ -33,15 +32,15 @@ export default {
     prevLesson: 'Предыдущий',
     loading: 'Загрузка...',
     check: {
-      error: {
+      'error': {
         message: 'Что-то пошло не так. Попробуйте ещё раз',
         headline: 'Упс!',
       },
-      passed: {
+      'passed': {
         message: 'Ура! Всё получилось! Сравните своё решение с решением учителя и переходите к следующему уроку',
         headline: 'Тесты пройдены',
       },
-      failed: {
+      'failed': {
         message: 'В вашем коде есть ошибки. Прочитайте внимательно вывод тестов, найдите и исправьте их. <a href="https://help.hexlet.ru/article/65315" target="_blank">Как искать ошибки в коде</a>. Если самостоятельно учиться сложно, попробуйте <a href="{{ url }}" target="_blank">обучение с наставником</a>',
         headline: 'Тесты не прошли',
       },
@@ -51,4 +50,4 @@ export default {
       },
     },
   },
-};
+}

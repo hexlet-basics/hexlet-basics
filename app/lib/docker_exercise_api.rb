@@ -30,7 +30,7 @@ class DockerExerciseApi
     output = []
     status = BashRunner.start(command) { |line| output << line }
 
-    [output.join, status]
+    [ output.join, status ]
   end
 
   def self.tag_image_version(lang_name, tag)

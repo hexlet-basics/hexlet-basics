@@ -37,12 +37,12 @@ class User < ApplicationRecord
   end
 
   def self.ransackable_associations(_auth_object = nil)
-    ['language_members']
+    [ 'language_members' ]
   end
 
   validates :email, presence: true,
                     uniqueness: { case_sensitive: false },
-                    'valid_email_2/email': { mx: true },
+                    # 'valid_email_2/email': { mx: true },
                     unless: :removed?
 
   has_many :lesson_members, class_name: 'Language::Lesson::Member', dependent: :destroy

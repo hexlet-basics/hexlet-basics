@@ -1,15 +1,10 @@
-# frozen_string_literal: true
-
-require 'application_responder'
-
 class ApplicationController < ActionController::Base
-  self.responder = ApplicationResponder
-  respond_to :html
+  # respond_to :html
 
   include AuthConcern
-  content_security_policy Rails.env.production?
+  # content_security_policy Rails.env.production?
 
-  def default_url_options
-    { locale: AppHost.locale_for_url(I18n.locale) }
-  end
+  # def default_url_options
+  #   { locale: AppHost.locale_for_url(I18n.locale) }
+  # end
 end

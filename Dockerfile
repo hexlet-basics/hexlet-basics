@@ -1,58 +1,73 @@
-FROM ruby:3.2.1
-
-# RUN bundle config --global frozen 1
-
-ENV NODE_VERSION 19.x
-
-RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION} | bash -
-
-RUN apt-get install -y nodejs git
-
-ENV DOCKER_CHANNEL stable
-ENV DOCKER_VERSION 20.10.21
-
-RUN curl -fsSL "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/x86_64/docker-${DOCKER_VERSION}.tgz" \
-| tar -xzC /usr/local/bin --strip=1 docker/docker
-
-RUN curl -sS https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
-RUN echo \
-  "deb [signed-by=/etc/apt/trusted.gpg.d/postgresql.gpg] https://apt.postgresql.org/pub/repos/apt \
-  `. /etc/os-release && echo "$VERSION_CODENAME"`-pgdg main" | \
-  tee /etc/apt/sources.list.d/pgdg.list
-
-RUN apt-get update && apt-get install -y \
-  build-essential \
-  bash-completion \
-  postgresql-client-16 \
-  libsqlite3-dev \
-  libvips42 \
-  && rm -rf /var/lib/apt/lists/*
-
-# NOTE: for sorbet
-WORKDIR /var/tmp
-
-RUN wget -O watchman.zip https://github.com/facebook/watchman/releases/download/v2022.12.26.00/watchman-v2022.12.26.00-linux.zip && unzip watchman.zip
-
-WORKDIR /var/tmp/watchman-v2022.12.26.00-linux
-
-RUN mkdir -p /usr/local/{bin,lib} /usr/local/var/run/watchman
-RUN cp bin/* /usr/local/bin
-RUN cp lib/* /usr/local/lib
-RUN chmod 755 /usr/local/bin/watchman
-RUN chmod 2777 /usr/local/var/run/watchman
-
-# ENV BUNDLE_PATH /root/hexlet-basics/vendor/bundle
-ENV PROJECT_ROOT /opt/projects/hexlet-basics
-RUN mkdir -p ${PROJECT_ROOT}
-
-# NOTE: for initial make project-setup
-RUN mkdir -p ${PROJECT_ROOT}/public
-
-WORKDIR ${PROJECT_ROOT}
-
-ENV BUNDLE_APP_CONFIG ${PROJECT_ROOT}/.bundle/config
-ENV GEM_HOME ${PROJECT_ROOT}/vendor/bundle
-ENV BUNDLE_PATH ${GEM_HOME}
-
-# RUN bundle config build.nokogiri --use-system-libraries
 # BUNDLE_BUILD__NOKOGIRI: "--use-system-libraries"
+# syntax=docker/dockerfile:1
+# check=error=true
+
+# This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
+# docker build -t store .
+# docker run -d -p 80:80 -e RAILS_MASTER_KEY=<value from config/master.key> --name store store
+
+# For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
+
+# Make sure RUBY_VERSION matches the Ruby version in .ruby-version
+ARG RUBY_VERSION=3.4.1
+FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
+
+# Rails app lives here
+WORKDIR /rails
+
+# Install base packages
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y curl libjemalloc2 libvips sqlite3 && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+# Set production environment
+ENV RAILS_ENV="production" \
+    BUNDLE_DEPLOYMENT="1" \
+    BUNDLE_PATH="/usr/local/bundle" \
+    BUNDLE_WITHOUT="development"
+
+# Throw-away build stage to reduce size of final image
+FROM base AS build
+
+# Install packages needed to build gems
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y build-essential git pkg-config && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+# Install application gems
+COPY Gemfile Gemfile.lock ./
+RUN bundle install && \
+    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
+    bundle exec bootsnap precompile --gemfile
+
+# Copy application code
+COPY . .
+
+# Precompile bootsnap code for faster boot times
+RUN bundle exec bootsnap precompile app/ lib/
+
+# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+
+
+
+
+# Final stage for app image
+FROM base
+
+# Copy built artifacts: gems, application
+COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
+COPY --from=build /rails /rails
+
+# Run and own only the runtime files as a non-root user for security
+RUN groupadd --system --gid 1000 rails && \
+    useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
+    chown -R rails:rails db log storage tmp
+USER 1000:1000
+
+# Entrypoint prepares the database.
+ENTRYPOINT ["/rails/bin/docker-entrypoint"]
+
+# Start server via Thruster by default, this can be overwritten at runtime
+EXPOSE 80
+CMD ["./bin/thrust", "./bin/rails", "server"]

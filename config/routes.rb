@@ -1,14 +1,9 @@
-# frozen_string_literal: true
-
-# == Route Map
-#
-
 Rails.application.routes.draw do
   # require 'sidekiq/web'
   # mount Sidekiq::Web => '/sidekiq', constraints: AdminConstraint.new
 
   # for kubernets probe
-  get '/health', to: proc { |_env| [200, {}, ['it works!']] }
+  get '/health', to: proc { |_env| [ 200, {}, [ 'it works!' ] ] }
 
   scope module: :web do
     post '/auth/:provider', to: 'auth#request', as: :auth_request
@@ -35,7 +30,7 @@ Rails.application.routes.draw do
 
       namespace :partners do
         namespace :yandex_market do
-          resources :languages, only: [:index]
+          resources :languages, only: [ :index ]
         end
       end
     end
@@ -58,9 +53,9 @@ Rails.application.routes.draw do
       resource :remind_password, only: %i[new create]
       resource :password, only: %i[edit update]
 
-      resources :languages, only: [:show] do
+      resources :languages, only: [ :show ] do
         scope module: :languages do
-          resources :lessons, only: [:show] do
+          resources :lessons, only: [ :show ] do
             get :next_lesson, on: :member
             get :prev_lesson, on: :member
           end

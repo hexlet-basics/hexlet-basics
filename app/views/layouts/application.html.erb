@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html class="h-full bg-gray-100">
+  <head>
+    <title inertia>Inertia Rails Template</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%#= inertia_ssr_head %>
+    
+    <%= vite_client_tag %>
+    <%= vite_react_refresh_tag %>
+    <%= vite_typescript_tag "inertia" %>
+    <!--
+      If using a TypeScript entrypoint file:
+        vite_typescript_tag 'application'
+
+      If using a .jsx or .tsx entrypoint, add the extension:
+        vite_javascript_tag 'application.jsx'
+
+      Visit the guide for more information: https://vite-ruby.netlify.app/guide/rails
+    -->
+
+  </head>
+
+  <body class="h-full">
+    <%= yield %>
+  </body>
+</html>

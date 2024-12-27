@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
 namespace :exercises do
-  desc 'Load exercies'
-  task :load, [:lang] => :environment do |_task, args|
+  desc "Load exercies"
+  task :load, [ :lang ] => :environment do |_task, args|
     language_version = LanguageVersionManager.new.find_or_create_language_with_version(args.lang)
 
     ExerciseLoader.new.run(language_version)
   end
 
-  desc 'Remove exercies'
+  desc "Remove exercies"
   task remove: :environment do
-    docker_exercise_api = ApplicationContainer['docker_exercise_api']
+    docker_exercise_api = ApplicationContainer["docker_exercise_api"]
 
     languages = Language.all
 

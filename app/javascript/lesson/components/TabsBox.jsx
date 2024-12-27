@@ -1,35 +1,35 @@
 // @ts-check
 
-import React from 'react';
-import { useTranslation } from 'react-i18next';
+import React from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Tab, Nav,
-} from 'react-bootstrap';
-import { useSelector, useDispatch } from 'react-redux';
-import { actions } from '../slices/index.js';
-import { currentTabValues } from '../utils/maps.js';
+} from 'react-bootstrap'
+import { useSelector, useDispatch } from 'react-redux'
+import { actions } from '../slices/index.js'
+import { currentTabValues } from '../utils/maps.js'
 
-import Editor from './Editor.jsx';
-import Output from './Output.jsx';
-import Solution from './Solution.jsx';
-import TestForExercise from './TestForExercise.jsx';
+import Editor from './Editor.jsx'
+import Output from './Output.jsx'
+import Solution from './Solution.jsx'
+import TestForExercise from './TestForExercise.jsx'
 
 function TabsBox() {
-  const { t } = useTranslation();
-  const dispatch = useDispatch();
+  const { t } = useTranslation()
+  const dispatch = useDispatch()
 
-  const { currentTab } = useSelector((state) => ({
+  const { currentTab } = useSelector(state => ({
     ...state.tabsBoxSlice,
     checkInfo: state.checkInfoSlice,
-  }));
+  }))
 
   const changeTab = (newTabState) => {
-    dispatch(actions.changeTab({ newTabState }));
-  };
+    dispatch(actions.changeTab({ newTabState }))
+  }
 
   const {
     editor, output, solution, testForExercise,
-  } = currentTabValues;
+  } = currentTabValues
 
   // TODO: use anchor on load for choosing previuosly selected tab
   // useEffect(() => {
@@ -40,7 +40,7 @@ function TabsBox() {
   return (
     <Tab.Container id="tabs" activeKey={currentTab} onSelect={changeTab}>
       <Nav variant="tabs" className="justify-content-center small">
-        {Object.values(currentTabValues).map((tabName) => (
+        {Object.values(currentTabValues).map(tabName => (
           <Nav.Item key={tabName}>
             <Nav.Link
               href={`#${tabName}`}
@@ -69,7 +69,7 @@ function TabsBox() {
       </Tab.Content>
 
     </Tab.Container>
-  );
+  )
 }
 
-export default TabsBox;
+export default TabsBox

@@ -33,7 +33,7 @@ class Web::LanguagesController < Web::ApplicationController
 
     gon.language = @language.slug
 
-    human_language_header = [@language.current_version.name, @language.learn_as.text].join(' ')
+    human_language_header = [ @language.current_version.name, @language.learn_as.text ].join(' ')
     @header = @language_version_info.header || human_language_header
     title = @language_version_info.title || @header
     description = @language_version_info.seo_description || @language_version_info.description
