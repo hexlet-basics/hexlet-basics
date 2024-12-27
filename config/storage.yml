@@ -6,6 +6,14 @@ local:
   service: Disk
   root: <%= Rails.root.join("storage") %>
 
+production:
+  service: S3
+  access_key_id: <%= configus.storage.access_key_id %>
+  secret_access_key: <%= configus.storage.secret_access_key %>
+  region: <%= configus.storage.region %>
+  bucket: <%= configus.storage.bucket %>
+  endpoint: <%= configus.storage.endpoint %>
+
 # Use rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
 # amazon:
 #   service: S3

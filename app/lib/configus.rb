@@ -52,6 +52,14 @@ Configus.build Rails.env do
         end
       end
     end
+
+    storage do
+      region ENV.fetch('STORAGE_S3_REGION', nil)
+      endpoint ENV.fetch('STORAGE_S3_ENDPOINT', nil)
+      access_key_id ENV.fetch('STORAGE_S3_ACCESS_KEY_ID', nil)
+      secret_access_key ENV.fetch('STORAGE_S3_ACCESS_SECRET_KEY', nil)
+      bucket ENV.fetch('STORAGE_S3_BUCKET', nil)
+    end
   end
 
   env :development, parent: :production do
