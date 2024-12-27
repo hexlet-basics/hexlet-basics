@@ -63,5 +63,6 @@ variable "yc" {
     folder_id = string
     zone = string
     sitemaps_storage = map(any)
+    storage = map(any)
   })
 }
