@@ -18,7 +18,8 @@
 
       h1.mb-5 = @blog_post
 
-      == markdown2html @blog_post.body
+      .blog-post
+        == markdown2html @blog_post.body
       / add info about author
 
       - if @blog_posts.any?
@@ -34,3 +35,5 @@
             h2.me-auto.mt-auto = t('.courses')
           hr.mt-1.mb-4
           = render 'web/shared/languages', languages: @languages, rows_class: 'row-cols-2 row-cols-md-3'
+
+- append_javascript_packs 'routes', 'vendors', 'reactEssentials', 'lesson-page'
