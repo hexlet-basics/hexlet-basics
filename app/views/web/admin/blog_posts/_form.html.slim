@@ -1,6 +1,6 @@
 = f.association :creator, as: :autocomplete, source: search_admin_api_users_url(format: 'json')
 = f.input :cover
-- if f.object.cover.attached?
+- if !f.object.new_record? && f.object.cover.attached?
   = image_tag f.object.cover.variant(:thumb)
 = f.input :state_event, as: :aasm_state_event
 = f.input :locale
