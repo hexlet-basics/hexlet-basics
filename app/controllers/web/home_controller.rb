@@ -16,7 +16,8 @@ class Web::HomeController < Web::ApplicationController
     #   acc[item.slug.to_sym] = view_context.link_to(item, language_path(item.slug))
     # end
     #
-    # @categories = Language::Category.all
+
+    categories = Language::Category.all
     #
     # completed_languages = Language.with_progress(:completed).with_locale.ordered
     # infos = Language::Version::Info.with_locale.where(language: completed_languages).includes(:language)
@@ -44,7 +45,9 @@ class Web::HomeController < Web::ApplicationController
     #     }
     #   }
     #   # set_meta_tags seo_tags
-    render inertia: true, props: { one: "two2" }
+    render inertia: true, props: {
+      categories: Language::CategoryResource.new(categories)
+    }
   end
 
   def robots

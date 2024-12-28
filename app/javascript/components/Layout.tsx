@@ -1,12 +1,210 @@
-import { PropsWithChildren } from 'react'
-import { Link } from '@inertiajs/react'
+import React from "react";
+import type { PropsWithChildren } from "react";
 
-export default function Layout({ children }: PropsWithChildren) {
-  return (
-    <main>
-      <header className="container mb-4 flex-shrink-0 py-2 border-bottom">
-      </header>
-      <div>{children}</div>
-    </main>
-  )
+import logoImg from "../images/logo.png";
+import * as Routes from "../routes.js";
+import type { LanguageCategory } from "../types/serializers/index.js";
+
+type Props = PropsWithChildren & {
+	categories: LanguageCategory[];
+};
+
+export default function Layout({ children, categories }: Props) {
+	return (
+		<main>
+			<div className="navbar bg-base-100">
+				<div className="flex-1">
+					<a href="/" className="btn btn-ghost text-xl">
+						daisyUI
+					</a>
+				</div>
+				<div className="flex-none">
+					<ul className="menu menu-horizontal px-1">
+						<li>
+							<a>Link</a>
+						</li>
+						<li>
+							<details>
+								<summary>Parent</summary>
+								<ul className="bg-base-100 rounded-t-none p-2">
+									<li>
+										<a>Link 1</a>
+									</li>
+									<li>
+										<a>Link 2</a>
+									</li>
+								</ul>
+							</details>
+						</li>
+					</ul>
+				</div>
+			</div>
+			{/* <header className="container mb-4 flex-shrink-0"> */}
+			{/* 	<div className="py-2 border-bottom"> */}
+			{/* 		<div className="navbar navbar-expand-md navbar-light"> */}
+			{/* 			<div className="container-fluid"> */}
+			{/* 				<a className="navbar-brand me-md-4" href="/ru"> */}
+			{/* 					<img */}
+			{/* 						width="30" */}
+			{/* 						alt="Code Basics logo" */}
+			{/* 						src={logoImg} */}
+			{/* 						loading="lazy" */}
+			{/* 					/> */}
+			{/* 				</a> */}
+			{/* 				<button */}
+			{/* 					aria-controls="navbarToggler" */}
+			{/* 					aria-expanded="false" */}
+			{/* 					aria-label="Переключить навигацию" */}
+			{/* 					className="navbar-toggler" */}
+			{/* 					data-bs-target="#navbarToggler" */}
+			{/* 					data-bs-toggle="collapse" */}
+			{/* 					type="button" */}
+			{/* 				> */}
+			{/* 					<span className="navbar-toggler-icon" /> */}
+			{/* 				</button> */}
+			{/* 				<div className="collapse navbar-collapse" id="navbarToggler"> */}
+			{/* 					<ul className="navbar-nav me-auto"> */}
+			{/* 						<li className="nav-item dropdown me-2"> */}
+			{/* 							<a */}
+			{/* 								aria-expanded="false" */}
+			{/* 								aria-haspopup="true" */}
+			{/* 								className="nav-link text-dark dropdown-toggle" */}
+			{/* 								data-bs-toggle="dropdown" */}
+			{/* 								href="#" */}
+			{/* 							> */}
+			{/* 								Курсы */}
+			{/* 							</a> */}
+			{/* 							<div className="dropdown-menu x-mw-320"></div> */}
+			{/* 						</li> */}
+			{/* 						<li className="nav-item dropdown me-2"> */}
+			{/* 							<a */}
+			{/* 								aria-expanded="false" */}
+			{/* 								aria-haspopup="true" */}
+			{/* 								className="nav-link text-dark dropdown-toggle" */}
+			{/* 								data-bs-toggle="dropdown" */}
+			{/* 								href="#" */}
+			{/* 							> */}
+			{/* 								Категории */}
+			{/* 							</a> */}
+			{/* 							<ul className="dropdown-menu dropdown-menu-columns dropdown-menu-arrow"> */}
+			{/* 								<li> */}
+			{/* 									<a */}
+			{/* 										className="dropdown-item" */}
+			{/* 										href="/ru/language_categories/programming" */}
+			{/* 									> */}
+			{/* 										<span>Программирование</span> */}
+			{/* 									</a> */}
+			{/* 								</li> */}
+			{/* 								<li> */}
+			{/* 									<a */}
+			{/* 										className="dropdown-item" */}
+			{/* 										href="/ru/language_categories/layouting" */}
+			{/* 									> */}
+			{/* 										<span>Верстка</span> */}
+			{/* 									</a> */}
+			{/* 								</li> */}
+			{/* 							</ul> */}
+			{/* 						</li> */}
+			{/* 						<li className="nav-item dropdown me-2"> */}
+			{/* 							<a */}
+			{/* 								aria-expanded="false" */}
+			{/* 								aria-haspopup="true" */}
+			{/* 								className="nav-link text-dark dropdown-toggle" */}
+			{/* 								data-bs-toggle="dropdown" */}
+			{/* 								href="#" */}
+			{/* 							> */}
+			{/* 								О Code Basics */}
+			{/* 							</a> */}
+			{/* 							<ul className="dropdown-menu"> */}
+			{/* 								<li> */}
+			{/* 									<a */}
+			{/* 										className="dropdown-item" */}
+			{/* 										href={Routes.reviews_path()} */}
+			{/* 									> */}
+			{/* 										Отзывы */}
+			{/* 									</a> */}
+			{/* 								</li> */}
+			{/* 								<li> */}
+			{/* 									<a */}
+			{/* 										className="dropdown-item" */}
+			{/* 										href={Routes.page_path("about")} */}
+			{/* 									> */}
+			{/* 										О платформе */}
+			{/* 									</a> */}
+			{/* 								</li> */}
+			{/* 								<li> */}
+			{/* 									<a */}
+			{/* 										className="dropdown-item" */}
+			{/* 										href={Routes.blog_posts_path()} */}
+			{/* 									> */}
+			{/* 										Блог */}
+			{/* 									</a> */}
+			{/* 								</li> */}
+			{/* 								<li> */}
+			{/* 									<a */}
+			{/* 										className="dropdown-item" */}
+			{/* 										target="_blank" */}
+			{/* 										rel="nofollow noopener noreferrer" */}
+			{/* 										href="https://ru.hexlet.io/blog/categories/success?promo_name=blog-success&amp;promo_position=body&amp;promo_type=link" */}
+			{/* 									> */}
+			{/* 										Истории успеха */}
+			{/* 									</a> */}
+			{/* 								</li> */}
+			{/* 								<li> */}
+			{/* 									<a className="dropdown-item" href="/ru/pages/authors"> */}
+			{/* 										Авторам */}
+			{/* 									</a> */}
+			{/* 								</li> */}
+			{/* 							</ul> */}
+			{/* 						</li> */}
+			{/* 					</ul> */}
+			{/* 					<ul className="navbar-nav"> */}
+			{/* 						<li className="nav-item"> */}
+			{/* 							<a className="nav-link  " href="/ru/session/new"> */}
+			{/* 								Вход */}
+			{/* 							</a> */}
+			{/* 						</li> */}
+			{/* 						<li className="nav-item"> */}
+			{/* 							<a className="nav-link me-3 " href="/ru/users/new"> */}
+			{/* 								Регистрация */}
+			{/* 							</a> */}
+			{/* 						</li> */}
+			{/* 						<li className="nav-item dropdown"> */}
+			{/* 							<a */}
+			{/* 								aria-expanded="false" */}
+			{/* 								aria-haspopup="true" */}
+			{/* 								className="nav-link text-dark dropdown-toggle" */}
+			{/* 								data-bs-toggle="dropdown" */}
+			{/* 								href="#" */}
+			{/* 							> */}
+			{/* 								<span className="me-2">RU</span> */}
+			{/* 							</a> */}
+			{/* 							<ul className="dropdown-menu dropdown-menu-end"> */}
+			{/* 								<li> */}
+			{/* 									<a */}
+			{/* 										className="dropdown-item d-flex" */}
+			{/* 										rel="nofollow" */}
+			{/* 										href="/ru/locale/switch?new_locale=en" */}
+			{/* 									> */}
+			{/* 										<img */}
+			{/* 											width="25" */}
+			{/* 											alt="switch language to en" */}
+			{/* 											className="my-auto me-2" */}
+			{/* 											src="" */}
+			{/* 											loading="lazy" */}
+			{/* 										/> */}
+			{/* 										<span className="my-auto">Английский</span> */}
+			{/* 									</a> */}
+			{/* 								</li> */}
+			{/* 							</ul> */}
+			{/* 						</li> */}
+			{/* 					</ul> */}
+			{/* 				</div> */}
+			{/* 			</div> */}
+			{/* 		</div> */}
+			{/* 	</div> */}
+			{/* </header> */}
+			<div>{children}</div>
+		</main>
+	);
 }

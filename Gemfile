@@ -11,6 +11,8 @@ gem "jbuilder"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
+gem "alba"
+gem "typelizer"
 
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
 gem "solid_cache"
@@ -61,6 +63,7 @@ gem "foreman"
 # gem 'turbo-rails'
 
 gem "js-routes"
+gem "i18n-js"
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
@@ -86,6 +89,7 @@ group :development do
   # gem 'derailed_benchmarks'
   gem "web-console"
   gem "ruby-lsp", require: false
+  gem "ruby-lsp-rails", require: false
 end
 
 group :test do

@@ -3,16 +3,21 @@ include k8s/Makefile
 setup:
 	bundle install
 	bin/rails db:prepare
+	bin/rails db:fixtures:load
 
 dev:
 	bin/dev
+
+i18n-export:
+	bundle exec i18n export
+
+sync: i18n-export
 
 app-lint-staged:
 	echo 'disabled'
 
 lint:
 	bin/rubocop -x
-	npx eslint . --fix
 
 ansible-generate-env:
 	docker run --rm -e RUNNER_PLAYBOOK=ansible/development.yml \
