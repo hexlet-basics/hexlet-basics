@@ -25,8 +25,17 @@ class Web::ApplicationController < ApplicationController
   # end
 
   before_action do
-    @language_categories = Language::Category.all
-    @language_menu_data = build_language_menu_data
+    # @language_menu_data = build_language_menu_data
+  end
+
+  inertia_share do
+    language_categories = Language::Category.all
+    languages = Language.web
+
+    {
+      language_categories: Language::CategoryResource.new(language_categories),
+      languages: LanguageResource.new(languages)
+    }
   end
 
   before_action do

@@ -1,2 +1,9 @@
 {
+	"linter": {
+		"rules": {
+			"style": {
+				"noNonNullAssertion": "off"
+			}
+		}
+	}
 }

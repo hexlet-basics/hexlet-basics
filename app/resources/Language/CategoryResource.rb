@@ -6,6 +6,7 @@ class Language::CategoryResource
 
   attributes :id, :slug
 
+  typelize :string, nullable: true
   attribute :name do |category|
     category.name_ru
   end

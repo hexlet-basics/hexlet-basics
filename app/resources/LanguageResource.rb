@@ -5,5 +5,9 @@ class LanguageResource
   # root_key :user
 
   attributes :id, :slug
-end
 
+  typelize :string, nullable: true
+  attribute :name do |language|
+    language.name
+  end
+end

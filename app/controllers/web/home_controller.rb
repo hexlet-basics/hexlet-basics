@@ -17,7 +17,7 @@ class Web::HomeController < Web::ApplicationController
     # end
     #
 
-    categories = Language::Category.all
+    # categories = Language::Category.all
     #
     # completed_languages = Language.with_progress(:completed).with_locale.ordered
     # infos = Language::Version::Info.with_locale.where(language: completed_languages).includes(:language)
@@ -45,9 +45,7 @@ class Web::HomeController < Web::ApplicationController
     #     }
     #   }
     #   # set_meta_tags seo_tags
-    render inertia: true, props: {
-      categories: Language::CategoryResource.new(categories)
-    }
+    render inertia: true, props: {}
   end
 
   def robots

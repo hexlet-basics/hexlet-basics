@@ -12,6 +12,7 @@ i18n-export:
 	bundle exec i18n export
 
 sync: i18n-export
+	bin/rails typelizer:generate:refresh
 
 app-lint-staged:
 	echo 'disabled'

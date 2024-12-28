@@ -1,16 +1,19 @@
-import React from "react";
 import type { PropsWithChildren } from "react";
 
-import logoImg from "../images/logo.png";
-import * as Routes from "../routes.js";
-import type { LanguageCategory } from "../types/serializers/index.js";
 import { useTranslation } from "react-i18next";
+import * as Routes from "../routes.js";
+import type { Language, LanguageCategory } from "../types/serializers";
 
 type Props = PropsWithChildren & {
-	categories: LanguageCategory[];
+	languageCategories: LanguageCategory[];
+	languages: Language[];
 };
 
-export default function Layout({ children, categories }: Props) {
+export default function Layout({
+  children,
+  languageCategories,
+  languages,
+}: Props) {
 	const { t } = useTranslation("layouts");
 
 	return (
@@ -24,20 +27,26 @@ export default function Layout({ children, categories }: Props) {
 				<div className="flex-none">
 					<ul className="menu menu-horizontal px-1">
 						<li>
-							<a>Link</a>
+							<details>
+								<summary>{t("shared.nav.courses")}</summary>
+								<ul className="bg-base-100 rounded-t-none p-2">
+									{languages.map((c) => (
+										<li key={c.id}>
+											<a href={Routes.language_path(c.slug!)}>{c.name}</a>
+										</li>
+									))}
+								</ul>
+							</details>
 						</li>
 						<li>
 							<details>
-								<summary>
-                  {t('shared.nav.categories')}
-                </summary>
+								<summary>{t("shared.nav.categories")}</summary>
 								<ul className="bg-base-100 rounded-t-none p-2">
-									<li>
-										<a>Link 1</a>
-									</li>
-									<li>
-										<a>Link 2</a>
-									</li>
+									{languageCategories.map((c) => (
+										<li key={c.id}>
+											<a href={Routes.language_category_path(c.slug!)}>{c.name}</a>
+										</li>
+									))}
 								</ul>
 							</details>
 						</li>

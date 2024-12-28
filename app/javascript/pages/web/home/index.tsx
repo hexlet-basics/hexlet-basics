@@ -1,13 +1,21 @@
-import { useState } from 'react'
+import type { PropsWithChildren } from 'react'
 
 import Layout from '../../../components/Layout'
+import type { Language, LanguageCategory } from '../../../types/serializers';
 
-export default function InertiaExample({ one }: { one: string }) {
-  const [count, setCount] = useState(0)
+type Props = PropsWithChildren & {
+	language_categories: LanguageCategory[];
+	languages: Language[];
+};
+
+export default function Index({
+  language_categories,
+  languages,
+}: Props) {
 
   return (
-    <Layout>
-      <p>{one}</p>
+    <Layout languageCategories={language_categories} languages={languages} >
+      <p>jopa</p>
     </Layout>
   )
 }
