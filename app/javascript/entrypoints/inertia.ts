@@ -1,9 +1,8 @@
-import "../stylesheets/application.scss";
-import "../init";
-
 import { createInertiaApp } from "@inertiajs/react";
 import { createElement, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
+
+import "../init";
 
 // Temporary type definition, until @inertiajs/react provides one
 type ResolvedComponent = {
@@ -23,10 +22,8 @@ createInertiaApp({
 	// progress: false,
 
 	resolve: (name) => {
-		const pages = import.meta.glob<ResolvedComponent>("../pages/**/*.tsx", {
-			eager: true,
-		});
-		const page = pages[`../pages/${name}.tsx`];
+		const pages = import.meta.glob<ResolvedComponent>("../pages/**/*.tsx");
+		const page = pages[`../pages/${name}.tsx`]();
 		if (!page) {
 			console.error(`Missing Inertia page component: '${name}.tsx'`);
 		}

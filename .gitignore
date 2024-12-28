@@ -28,7 +28,9 @@
 !/tmp/storage/
 !/tmp/storage/.keep
 
-/public/assets
+public/assets
+public/vite-ssr
+.byebug_history
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key

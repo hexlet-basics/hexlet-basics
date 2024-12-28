@@ -3,7 +3,7 @@ import { initReactI18next } from "react-i18next";
 import locales from "./locales.json";
 
 export const resources = locales;
-export const defaultNS = "views";
+export const defaultNS = "web";
 
 i18n
 	.use(initReactI18next) // passes i18n down to react-i18next

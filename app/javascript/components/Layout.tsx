@@ -4,12 +4,15 @@ import type { PropsWithChildren } from "react";
 import logoImg from "../images/logo.png";
 import * as Routes from "../routes.js";
 import type { LanguageCategory } from "../types/serializers/index.js";
+import { useTranslation } from "react-i18next";
 
 type Props = PropsWithChildren & {
 	categories: LanguageCategory[];
 };
 
 export default function Layout({ children, categories }: Props) {
+	const { t } = useTranslation("layouts");
+
 	return (
 		<main>
 			<div className="navbar bg-base-100">
@@ -25,7 +28,9 @@ export default function Layout({ children, categories }: Props) {
 						</li>
 						<li>
 							<details>
-								<summary>Parent</summary>
+								<summary>
+                  {t('shared.nav.categories')}
+                </summary>
 								<ul className="bg-base-100 rounded-t-none p-2">
 									<li>
 										<a>Link 1</a>
