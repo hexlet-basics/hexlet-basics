@@ -53,7 +53,6 @@
         }
       }
     },
-    "address": "The Republic of Kazakhstan, Almaty, Auezova St., 14A",
     "api": {
       "partners": {
         "yandex_market": {
@@ -65,6 +64,31 @@
             }
           }
         }
+      }
+    },
+    "common": {
+      "address": "The Republic of Kazakhstan, Almaty, Auezova St., 14A",
+      "hours": {
+        "one": "%{count} hour",
+        "other": "%{count} hours"
+      },
+      "language_icon": "%{language} icon",
+      "languages": {
+        "en": "English",
+        "ru": "Russian"
+      },
+      "legal_name": "TOO \"Hexlet\"",
+      "lessons": {
+        "one": "%{count} lesson",
+        "other": "%{count} lessons"
+      },
+      "phones": [
+        "+7 717 272 76 70"
+      ],
+      "reset": "Reset",
+      "students": {
+        "one": "%{count} student",
+        "other": "%{count} students"
       }
     },
     "date": {
@@ -77495,10 +77519,6 @@
         }
       }
     },
-    "hours": {
-      "one": "%{count} hour",
-      "other": "%{count} hours"
-    },
     "i18n": {
       "plural": {
         "keys": [
@@ -77509,11 +77529,6 @@
     },
     "inputs": {
       "current_state": "Current state:"
-    },
-    "language_icon": "%{language} icon",
-    "languages": {
-      "en": "English",
-      "ru": "Russian"
     },
     "layouts": {
       "shared": {
@@ -77577,11 +77592,6 @@
           }
         }
       }
-    },
-    "legal_name": "TOO \"Hexlet\"",
-    "lessons": {
-      "one": "%{count} lesson",
-      "other": "%{count} lessons"
     },
     "links": {
       "hexlet": "https://hexlet.io/?promo_name=main&promo_position=body&promo_type=link",
@@ -77674,10 +77684,6 @@
         }
       }
     },
-    "phones": [
-      "+7 717 272 76 70"
-    ],
-    "reset": "Reset",
     "simple_form": {
       "error_notification": {
         "default_message": "Please review the problems below:"
@@ -77696,10 +77702,6 @@
         "text": "required"
       },
       "yes": "Yes"
-    },
-    "students": {
-      "one": "%{count} student",
-      "other": "%{count} students"
     },
     "support": {
       "array": {
@@ -80690,7 +80692,6 @@
         }
       }
     },
-    "address": "108813, г. Москва, вн.тер.г. поселение Московский, г. Московский, ул. Солнечная, д. 3А, стр. 1, помещ. 10/3",
     "api": {
       "partners": {
         "yandex_market": {
@@ -80701,6 +80702,51 @@
               "title": "Образовательные программы"
             }
           }
+        }
+      }
+    },
+    "common": {
+      "address": "108813, г. Москва, вн.тер.г. поселение Московский, г. Московский, ул. Солнечная, д. 3А, стр. 1, помещ. 10/3",
+      "export": "Экспорт",
+      "hello": "Привет мир",
+      "hours": {
+        "few": "%{count} часа",
+        "many": "%{count} часов",
+        "one": "%{count} час"
+      },
+      "language_icon": "Иконка %{language}",
+      "languages": {
+        "en": "Английский",
+        "ru": "Русский"
+      },
+      "legal_name": "ООО «Хекслет Рус»",
+      "lessons": {
+        "few": "%{count} урока",
+        "many": "%{count} уроков",
+        "one": "%{count} урок"
+      },
+      "pages": {
+        "about": "О проекте"
+      },
+      "phones": [
+        "+7 (495) 085 21 62",
+        "8 800 100 22 47"
+      ],
+      "reset": "Сброс",
+      "students": {
+        "few": "%{count} студента",
+        "many": "%{count} студентов",
+        "one": "%{count} студент"
+      },
+      "views": {
+        "pagination": {
+          "first": "&laquo;",
+          "last": "&raquo;",
+          "next": "&rsaquo;",
+          "next_text": "Дальше &rsaquo;",
+          "previous": "&lsaquo;",
+          "previous_text": "&lsaquo; Назад",
+          "truncate": "&hellip;"
         }
       }
     },
@@ -80911,7 +80957,6 @@
         }
       }
     },
-    "export": "Экспорт",
     "faker": {
       "address": {
         "building_number": [
@@ -82477,7 +82522,6 @@
         }
       }
     },
-    "hello": "Привет мир",
     "helpers": {
       "select": {
         "prompt": "Выберите: "
@@ -82500,11 +82544,6 @@
         }
       }
     },
-    "hours": {
-      "few": "%{count} часа",
-      "many": "%{count} часов",
-      "one": "%{count} час"
-    },
     "i18n": {
       "plural": {
         "keys": [
@@ -82518,11 +82557,6 @@
     },
     "inputs": {
       "current_state": "Текущий стейт:"
-    },
-    "language_icon": "Иконка %{language}",
-    "languages": {
-      "en": "Английский",
-      "ru": "Русский"
     },
     "layouts": {
       "shared": {
@@ -82588,12 +82622,6 @@
           }
         }
       }
-    },
-    "legal_name": "ООО «Хекслет Рус»",
-    "lessons": {
-      "few": "%{count} урока",
-      "many": "%{count} уроков",
-      "one": "%{count} урок"
     },
     "links": {
       "hexlet": "https://ru.hexlet.io/?promo_name=main&promo_position=body&promo_type=link",
@@ -82712,14 +82740,6 @@
         }
       }
     },
-    "pages": {
-      "about": "О проекте"
-    },
-    "phones": [
-      "+7 (495) 085 21 62",
-      "8 800 100 22 47"
-    ],
-    "reset": "Сброс",
     "simple_form": {
       "labels": {
         "sign_in_form": {
@@ -82734,11 +82754,6 @@
         "mark": "",
         "text": "required"
       }
-    },
-    "students": {
-      "few": "%{count} студента",
-      "many": "%{count} студентов",
-      "one": "%{count} студент"
     },
     "support": {
       "array": {
@@ -82764,17 +82779,6 @@
         "requested_to_change_password": "Вы запросили ссылку для изменения вашего пароля на code-basics.com. Чтобы изменить пароль – перейдите по этой ссылке или нажмите на кнопку ниже.",
         "subject": "Смена пароля",
         "you_dont_want_to_change": "Если вы не запрашивали изменения пароля, просто проигнорируйте это письмо. Ваш пароль не изменится пока вы не перейдете по ссылке и не введете новый пароль."
-      }
-    },
-    "views": {
-      "pagination": {
-        "first": "&laquo;",
-        "last": "&raquo;",
-        "next": "&rsaquo;",
-        "next_text": "Дальше &rsaquo;",
-        "previous": "&lsaquo;",
-        "previous_text": "&lsaquo; Назад",
-        "truncate": "&hellip;"
       }
     },
     "web": {
@@ -82873,7 +82877,7 @@
           "fastest_way_to_start_coding": "Самый быстрый способ попробовать программирование прямо в браузере. Бесплатные курсы с тренажером. Практика после каждого урока",
           "free_programming_courses": "Бесплатные курсы программирования",
           "how_coding_works": "Как работает обучение на code-basics",
-          "learn_html": "Изучи&nbsp;",
+          "learn_html": "Изучи",
           "try": "Попробовать"
         },
         "index": {

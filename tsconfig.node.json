@@ -1,8 +1,6 @@
 {
   "compilerOptions": {
     "composite": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
     "skipLibCheck": true,
     "module": "ESNext",

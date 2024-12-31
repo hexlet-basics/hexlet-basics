@@ -1,8 +1,11 @@
 import { createInertiaApp } from "@inertiajs/react";
-import { createElement, type ReactNode } from "react";
+import { type ReactNode, createElement } from "react";
 import { createRoot } from "react-dom/client";
 
-import "../init";
+// import "bootstrap";
+import "react-bootstrap";
+import "../i18n";
+import Base from "../base.tsx";
 
 // Temporary type definition, until @inertiajs/react provides one
 type ResolvedComponent = {
@@ -39,7 +42,9 @@ createInertiaApp({
 
 	setup({ el, App, props }) {
 		if (el) {
-			createRoot(el).render(createElement(App, props));
+			createRoot(el).render(
+				createElement(Base, { Component: App, pageProps: props }),
+			);
 		} else {
 			console.error(
 				"Missing root element.\n\n" +

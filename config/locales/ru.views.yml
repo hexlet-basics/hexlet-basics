@@ -47,7 +47,7 @@ ru:
         reviews: Отзывы
         course_html: Курс %{link}
       hero:
-        learn_html: Изучи&nbsp;
+        learn_html: Изучи
         free_programming_courses: Бесплатные курсы программирования
         fastest_way_to_start_coding: Самый быстрый способ попробовать программирование прямо в браузере. Бесплатные курсы с тренажером. Практика после каждого урока
         try: Попробовать

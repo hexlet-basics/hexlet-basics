@@ -1,8 +1,9 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import locales from "./locales.json";
+import jsLocales from "./locales/ru.js.json";
 
-export const resources = locales;
+export const resources = Object.assign(locales, jsLocales);
 export const defaultNS = "web";
 
 i18n

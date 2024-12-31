@@ -1,6 +1,6 @@
 // import the original type declarations
 import "i18next";
-import type { defaultNS, resources } from '../init.ts'
+import type { defaultNS, resources } from '../i18n.ts'
 
 declare module "i18next" {
 	// Extend CustomTypeOptions
