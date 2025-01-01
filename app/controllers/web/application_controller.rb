@@ -33,8 +33,9 @@ class Web::ApplicationController < ApplicationController
     languages = Language.web
 
     {
-      language_categories: Language::CategoryResource.new(language_categories),
-      languages: LanguageResource.new(languages)
+      languageCategories: Language::CategoryResource.new(language_categories),
+      languages: LanguageResource.new(languages),
+      currentUser: UserResource.new(current_user)
     }
   end
 

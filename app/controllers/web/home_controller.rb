@@ -8,7 +8,8 @@ class Web::HomeController < Web::ApplicationController
     #
     # @user = User::SignUpForm.new
     #
-    # @blog_posts = BlogPost.published.includes(:cover_attachment).last(3)
+    blog_posts = BlogPost.published.includes(:cover_attachment).last(3)
+    # reviews = Review.random
     #
     # # TODO: need refactor it
     # scope = Language.includes(:current_version)
@@ -45,7 +46,9 @@ class Web::HomeController < Web::ApplicationController
     #     }
     #   }
     #   # set_meta_tags seo_tags
-    render inertia: true, props: {}
+    render inertia: true, props: {
+      blogPosts: blog_posts
+    }
   end
 
   def robots

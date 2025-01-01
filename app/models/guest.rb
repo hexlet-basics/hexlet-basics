@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'securerandom'
+require "securerandom"
 
 class Guest
   def id
@@ -10,6 +10,10 @@ class Guest
   def created_at; end
 
   def email; end
+
+  def first_name
+    ""
+  end
 
   def guest?
     true

@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./app/javascript/*"]
+		},
     "composite": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
     "skipLibCheck": true,

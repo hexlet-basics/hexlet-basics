@@ -37,6 +37,7 @@
     "react-frame-component": "^5.2.7",
     "react-hotkeys-hook": "^4.6.1",
     "react-i18next": "^15.2.0",
+    "react-markdown": "^9.0.1",
     "react-monaco-editor": "^0.56.2",
     "react-redux": "^9.2.0",
     "react-type-animation": "^3.2.0",
@@ -46,6 +47,7 @@
   "devDependencies": {
     "@4c/tsconfig": "^0.4.1",
     "@biomejs/biome": "1.9.4",
+    "@types/lodash": "^4.17.13",
     "@types/node": "^22.10.2",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
