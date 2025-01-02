@@ -1,6 +1,5 @@
 import type { Language } from "@/types/serializers";
 import * as Routes from "@/routes.js";
-import type { BreadcrumbItem } from "@/types/types";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import { assetPath } from "@/lib/utils";
@@ -10,7 +9,7 @@ type Props = PropsWithChildren & {
 	course: Language;
 };
 
-export function CourseBlock({ course }: Props) {
+export default function CourseBlock({ course }: Props) {
 	const { t } = useTranslation();
 	const { t: tJS } = useTranslation("js");
 	return (

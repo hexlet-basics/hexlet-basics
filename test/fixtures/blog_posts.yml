@@ -56,10 +56,13 @@ from-full-en:
 
 from-full-js:
   <<: *DEFAULTS
-  body: <%= Faker::Lorem.paragraph_by_chars %>
   description: |
     <%= Faker::Lorem.paragraph(sentence_count: 4) %>
   language: javascript
+  body: |
+    <%= Faker::Markdown.headers %>
+    <%= Faker::Markdown.emphasis %>
+    <%= Faker::Markdown.headers %>
   locale: ru
 
 from-full-ru-js:

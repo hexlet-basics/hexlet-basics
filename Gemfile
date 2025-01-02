@@ -35,7 +35,7 @@ gem "foreman"
 # gem 'aws-sdk-s3'
 
 # gem "configus"
-# gem "geocoder"
+gem "geocoder"
 gem "image_processing"
 # gem 'responders'
 

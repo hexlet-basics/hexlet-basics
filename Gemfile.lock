@@ -117,6 +117,7 @@ GEM
     country_select (10.0.0)
       countries (> 5.0, < 8.0)
     crass (1.0.6)
+    csv (3.3.2)
     date (3.4.1)
     debug (1.10.0)
       irb (~> 1.10)
@@ -152,6 +153,9 @@ GEM
     fugit (1.11.1)
       et-orbi (~> 1, >= 1.2.11)
       raabro (~> 1.4)
+    geocoder (1.8.5)
+      base64 (>= 0.1.0)
+      csv (>= 3.0.0)
     glob (0.4.1)
     globalid (1.2.1)
       activesupport (>= 6.1)
@@ -472,6 +476,7 @@ DEPENDENCIES
   enumerize
   faker
   foreman
+  geocoder
   gon
   googleauth
   i18n-js

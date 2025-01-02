@@ -12,6 +12,8 @@ import type {
 
 import * as Routes from "@/routes.js";
 import { Link } from "@inertiajs/react";
+import BlogPostBlock from "@/components/BlogPostBlock";
+import { useTranslation } from "react-i18next";
 
 type Props = PropsWithChildren & {
   languageCategories: LanguageCategory[];
@@ -26,23 +28,16 @@ export default function New({
   blogPosts,
   pagy,
 }: Props) {
+  const { t } = useTranslation()
+
   return (
     <Application languageCategories={languageCategories} languages={languages}>
       <Container>
+        <h1>{t('blog_posts.index.header')}</h1>
         <Row className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-          {blogPosts.map((blogPost) => (
-            <Col key={blogPost.id}>
-              <Card key={blogPost.id} className="card shadow-sm mb-3">
-                <Card.Img variant="top" src={blogPost.cover_list_variant!} />
-                <Card.Body>
-                  <Card.Title>
-                    <Link href={Routes.blog_post_path(blogPost.slug!)}>
-                      {blogPost.name}
-                    </Link>
-                  </Card.Title>
-                  <Card.Text>{blogPost.description}</Card.Text>
-                </Card.Body>
-              </Card>
+          {blogPosts.map((post) => (
+            <Col key={post.id}>
+              <BlogPostBlock post={post} />
             </Col>
           ))}
         </Row>
