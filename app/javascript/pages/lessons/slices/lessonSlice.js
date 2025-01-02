@@ -1,25 +1,27 @@
 // @ts-check
 
-import { createSlice } from '@reduxjs/toolkit'
-import { actions as checkInfoActions } from './checkInfoSlice.js'
+import { createSlice } from "@reduxjs/toolkit";
+import { actions as checkInfoActions } from "./checkInfoSlice.js";
 
 const slice = createSlice({
-  name: 'lessonSlice',
+  name: "lessonSlice",
   initialState: {
     finished: false,
   },
   reducers: {},
   extraReducers: (builder) => {
-    builder
-      .addCase(checkInfoActions.runCheck.fulfilled, (state, { payload }) => {
+    builder.addCase(
+      checkInfoActions.runCheck.fulfilled,
+      (state, { payload }) => {
         if (state.finished) {
-          return
+          return;
         }
-        state.finished = payload.passed
-      })
+        state.finished = payload.passed;
+      },
+    );
   },
-})
+});
 
-export const { actions } = slice
+export const { actions } = slice;
 
-export default slice.reducer
+export default slice.reducer;

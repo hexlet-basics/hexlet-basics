@@ -2,7 +2,9 @@ class ReviewResource
   include Alba::Resource
   include Typelizer::DSL
 
-  attributes :id, :body
+  attributes :id, :body, :created_at
+
+  one :language, resource: LanguageResource
 
   typelize :string, nullable: true
   attribute :full_name do |review|

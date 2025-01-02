@@ -26,10 +26,7 @@ type Props = PropsWithChildren & {
   recommendedBlogPosts: BlogPost[];
 };
 
-const plugins = [
-  () => remarkToc({ heading: "Содержание" }),
-  remarkSlug,
-];
+const plugins = [() => remarkToc({ heading: "Содержание" }), remarkSlug];
 
 export default function New({
   languageCategories,

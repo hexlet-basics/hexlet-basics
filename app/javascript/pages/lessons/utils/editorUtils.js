@@ -1,26 +1,26 @@
 // @ts-check
 
 const languageMapping = {
-  'racket': 'scheme',
-  'clang': 'c',
-  'dlang': 'd',
-  'layout-designer': 'html',
-  'pre-course-java': 'java',
-  'pre-course-python': 'python',
-  'pre-course-javascript': 'javascript',
-}
+  racket: "scheme",
+  clang: "c",
+  dlang: "d",
+  "layout-designer": "html",
+  "pre-course-java": "java",
+  "pre-course-python": "python",
+  "pre-course-javascript": "javascript",
+};
 
 const editorMapping = {
-  'css': 'html',
-  'racket': 'scheme',
-  'clang': 'c',
-  'dlang': 'd',
-  'bash': 'shell',
-  'layout-designer': 'html',
-  'pre-course-java': 'java',
-  'pre-course-python': 'python',
-  'pre-course-javascript': 'javascript',
-}
+  css: "html",
+  racket: "scheme",
+  clang: "c",
+  dlang: "d",
+  bash: "shell",
+  "layout-designer": "html",
+  "pre-course-java": "java",
+  "pre-course-python": "python",
+  "pre-course-javascript": "javascript",
+};
 
 const langToTabSizeMapping = {
   javascript: 2,
@@ -50,7 +50,7 @@ const langToTabSizeMapping = {
   dart: 2,
   powershell: 2,
   dlang: 2,
-}
+};
 
 export const langToSpacesMapping = {
   javascript: true,
@@ -80,14 +80,17 @@ export const langToSpacesMapping = {
   swift: true,
   rust: true,
   perl: true,
-}
+};
 
-const defaultTabSize = 4
+const defaultTabSize = 4;
 
-export const getLanguage = language => languageMapping[language] ?? language
+export const getLanguage = (language) => languageMapping[language] ?? language;
 
-export const getLanguageForEditor = language => editorMapping[language] ?? language
+export const getLanguageForEditor = (language) =>
+  editorMapping[language] ?? language;
 
-export const getTabSize = language => langToTabSizeMapping[language] ?? defaultTabSize
+export const getTabSize = (language) =>
+  langToTabSizeMapping[language] ?? defaultTabSize;
 
-export const shouldReplaceTabsWithSpaces = language => langToSpacesMapping[language] ?? false
+export const shouldReplaceTabsWithSpaces = (language) =>
+  langToSpacesMapping[language] ?? false;

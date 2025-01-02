@@ -4,12 +4,12 @@ import { defineConfig } from "vite";
 import ViteRails from "vite-plugin-rails";
 
 export default defineConfig({
-	base: "/",
-	plugins: [react(), ViteRails()],
-	resolve: {
-		alias: {
-			// "~bootstrap": path.resolve(__dirname, "node_modules/bootstrap"),
-			"@": path.resolve(__dirname, "./app/javascript"),
-		},
-	},
+  base: "/",
+  plugins: [react(), ViteRails()],
+  resolve: {
+    alias: {
+      // "~bootstrap": path.resolve(__dirname, "node_modules/bootstrap"),
+      "@": path.resolve(__dirname, "./app/javascript"),
+    },
+  },
 });

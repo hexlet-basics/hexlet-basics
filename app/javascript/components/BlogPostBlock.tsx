@@ -1,10 +1,10 @@
-import type { BlogPost } from '@/types/serializers';
-import type { PropsWithChildren } from 'react';
+import type { BlogPost } from "@/types/serializers";
+import type { PropsWithChildren } from "react";
 
-import { Breadcrumb, Card } from 'react-bootstrap';
-import { useTranslation } from 'react-i18next';
+import { Breadcrumb, Card } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 
-import * as Routes from '@/routes.js';
+import * as Routes from "@/routes.js";
 
 type Props = PropsWithChildren & {
   post: BlogPost;

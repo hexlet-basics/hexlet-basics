@@ -7,19 +7,19 @@ import Application from "@/pages/layouts/Application";
 import type { Language, LanguageCategory, User } from "@/types/serializers";
 
 type Props = PropsWithChildren & {
-	languageCategories: LanguageCategory[];
-	languages: Language[];
-	user: User;
+  languageCategories: LanguageCategory[];
+  languages: Language[];
+  user: User;
 };
 
 export default function New({ languageCategories, languages, user }: Props) {
-	const { t } = useTranslation();
-	const { t: tHelpers } = useTranslation("helpers");
-	const { t: tAr } = useTranslation("activerecord");
+  const { t } = useTranslation();
+  const { t: tHelpers } = useTranslation("helpers");
+  const { t: tAr } = useTranslation("activerecord");
 
-	return (
-		<Application languageCategories={languageCategories} languages={languages}>
-			<Container>heu</Container>
-		</Application>
-	);
+  return (
+    <Application languageCategories={languageCategories} languages={languages}>
+      <Container>heu</Container>
+    </Application>
+  );
 }

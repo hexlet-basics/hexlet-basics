@@ -1,8 +1,8 @@
 export type BaseModel = {
-	type: "user" | "review" | "language";
+  type: "user" | "review" | "language";
 };
 
 export type BreadcrumbItem = {
-	name: string;
-	url: string;
+  name: string;
+  url: string;
 };

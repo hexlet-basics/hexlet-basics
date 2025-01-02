@@ -1,51 +1,49 @@
 // @ts-check
 
-import React from 'react'
-import { createRoot } from 'react-dom/client'
-import { configureStore } from '@reduxjs/toolkit'
-import { Provider } from 'react-redux'
-import i18n from 'i18next'
-import { initReactI18next } from 'react-i18next'
+import { configureStore } from "@reduxjs/toolkit";
 // eslint-disable-next-line import/no-unresolved
-import gon from 'gon'
+import gon from "gon";
+import i18n from "i18next";
+import React from "react";
+import { createRoot } from "react-dom/client";
+import { initReactI18next } from "react-i18next";
+import { Provider } from "react-redux";
 
-import App from './components/App.jsx'
-import reducer from './slices/index.js'
-import resources from '../../assets/locales/index.js'
-import EntityContext from './EntityContext.js'
-import { lessonMemberStates, solutionStates } from './utils/maps.js'
+import resources from "../../assets/locales/index.js";
+import EntityContext from "./EntityContext.js";
+import App from "./components/App.jsx";
+import reducer from "./slices/index.js";
+import { lessonMemberStates, solutionStates } from "./utils/maps.js";
 
-const waitingTime = 20 * 60 * 1000 // 20 min
+const waitingTime = 20 * 60 * 1000; // 20 min
 
 export default async () => {
-  await i18n
-    .use(initReactI18next)
-    .init({
-      resources,
-      load: 'languageOnly',
-      fallbackLng: false,
-      lng: gon.locale,
-      debug: process.env.NODE_ENV !== 'production',
-      react: {
-        useSuspense: true,
-      },
-    })
+  await i18n.use(initReactI18next).init({
+    resources,
+    load: "languageOnly",
+    fallbackLng: false,
+    lng: gon.locale,
+    debug: process.env.NODE_ENV !== "production",
+    react: {
+      useSuspense: true,
+    },
+  });
 
   const entities = {
     lessonVersion: gon.lesson_version,
     lesson: gon.lesson,
     language: gon.language,
     lessonMember: gon.lesson_member,
-  }
+  };
 
-  const isFinished = gon.lesson_member.state === lessonMemberStates.finished
+  const isFinished = gon.lesson_member.state === lessonMemberStates.finished;
 
-  const localStorageKey = `lesson-version-${gon.lesson_version.id}`
-  const locallySavedContent = localStorage.getItem(localStorageKey)
+  const localStorageKey = `lesson-version-${gon.lesson_version.id}`;
+  const locallySavedContent = localStorage.getItem(localStorageKey);
 
   const preloadedState = {
     editorSlice: {
-      content: locallySavedContent || gon.lesson_version.prepared_code || '',
+      content: locallySavedContent || gon.lesson_version.prepared_code || "",
       focusesCount: 1,
     },
     solutionSlice: {
@@ -59,16 +57,16 @@ export default async () => {
     lessonSlice: {
       finished: isFinished,
     },
-  }
+  };
 
   const store = configureStore({
     preloadedState,
     reducer,
-  })
+  });
 
-  const container = document.querySelector('#basics-lesson-container')
+  const container = document.querySelector("#basics-lesson-container");
 
-  const root = createRoot(container)
+  const root = createRoot(container);
 
   root.render(
     <Provider store={store}>
@@ -76,5 +74,5 @@ export default async () => {
         <App />
       </EntityContext.Provider>
     </Provider>,
-  )
-}
+  );
+};

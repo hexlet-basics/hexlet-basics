@@ -1,23 +1,24 @@
-import type { PropsWithChildren } from 'react';
-import { useTranslation } from 'react-i18next';
-import Markdown from 'react-markdown';
-import { TypeAnimation } from 'react-type-animation';
+import type { PropsWithChildren } from "react";
+import { useTranslation } from "react-i18next";
+import Markdown from "react-markdown";
+import { TypeAnimation } from "react-type-animation";
 
-import Layout from '@/pages/layouts/Application';
-import * as Routes from '@/routes.js';
+import Layout from "@/pages/layouts/Application";
+import * as Routes from "@/routes.js";
 import type {
   BlogPost,
   Language,
   LanguageCategory,
   Review,
   User,
-} from '@/types/serializers';
+} from "@/types/serializers";
 
-import CourseBlock from '@/components/CourseBlock';
-import { XInput } from '@/components/forms';
-import codeImagePath from '@/images/code-basics-coding-ru.png';
-import { assetPath } from '@/lib/utils.js';
-import { Link } from '@inertiajs/react';
+import BlogPostBlock from "@/components/BlogPostBlock";
+import CourseBlock from "@/components/CourseBlock";
+import { XInput } from "@/components/forms";
+import codeImagePath from "@/images/code-basics-coding-ru.png";
+import { assetPath } from "@/lib/utils.js";
+import { Link } from "@inertiajs/react";
 import {
   Accordion,
   Button,
@@ -26,8 +27,7 @@ import {
   Container,
   Form,
   Row,
-} from 'react-bootstrap';
-import BlogPostBlock from '@/components/BlogPostBlock';
+} from "react-bootstrap";
 
 type Props = PropsWithChildren & {
   languageCategories: LanguageCategory[];
@@ -39,40 +39,40 @@ type Props = PropsWithChildren & {
 };
 
 const sequence = [
-  'TypeScript',
+  "TypeScript",
   1000,
-  'Java',
+  "Java",
   1000,
-  'Python',
+  "Python",
   1000,
-  'PHP',
+  "PHP",
   1000,
-  'Ruby',
+  "Ruby",
   1000,
-  'HTML',
+  "HTML",
   1000,
-  'CSS',
+  "CSS",
   1000,
-  'Go',
+  "Go",
   1000,
 ];
 
 const reviews = [
   {
-    name: 'Александр Авдошкин',
-    avatar: assetPath('avdoshkin.jpg'),
+    name: "Александр Авдошкин",
+    avatar: assetPath("avdoshkin.jpg"),
     body: `Если бы не коронавирус, выполнил бы всё в заход (в смысле каждый день по несколько пунктов в теме).
             Изучаю с нуля, ваш портал очень ориентирован на новичков. Спасибо вам большое!`,
   },
   {
-    name: 'Сергей Тюрин',
-    avatar: assetPath('tyrin.jpg'),
+    name: "Сергей Тюрин",
+    avatar: assetPath("tyrin.jpg"),
     body: `Очень всё доступно даже для полного профана вроде меня. Эта вводная по JS вошла в мой туговатый ум,
             складно как недостающий пазл. Всем кидаю линк на эту страничку.`,
   },
   {
-    name: 'Элиях Клейман',
-    avatar: assetPath('user-avatar.png'),
+    name: "Элиях Клейман",
+    avatar: assetPath("user-avatar.png"),
     body: `Для меня это первый курс для новичка. Понравилось тем, что вся информация структурирована
             и дана по мере изучения материала в иерархичном порядке, что значительно повышает и желание к обучению`,
   },
@@ -86,11 +86,11 @@ export default function Index({
   user,
 }: Props) {
   const { t } = useTranslation();
-  const { t: tFaq } = useTranslation('faq');
-  const { t: tJS } = useTranslation('js');
-  const { t: tHelpers } = useTranslation('helpers');
+  const { t: tFaq } = useTranslation("faq");
+  const { t: tJS } = useTranslation("js");
+  const { t: tHelpers } = useTranslation("helpers");
 
-  const faq = tFaq('main', { returnObjects: true });
+  const faq = tFaq("main", { returnObjects: true });
   console.log(faq);
 
   return (
@@ -100,10 +100,10 @@ export default function Index({
           <div className="row">
             <div className="col-lg-7 p-3 p-lg-5 pt-lg-3">
               <h1 className="h6 text-muted">
-                {t('home.hero.free_programming_courses')}
+                {t("home.hero.free_programming_courses")}
               </h1>
               <div className="display-4 fw-bold lh-1 mb-3">
-                {t('home.hero.learn_html')}{' '}
+                {t("home.hero.learn_html")}{" "}
                 <TypeAnimation
                   className="text-primary"
                   sequence={sequence}
@@ -113,7 +113,7 @@ export default function Index({
                 />
               </div>
               <p className="lead">
-                {t('home.hero.fastest_way_to_start_coding')}
+                {t("home.hero.fastest_way_to_start_coding")}
               </p>
               <div className="d-grid gap-2 d-md-flex justify-content-md-start mb-4 mb-lg-3">
                 <a
@@ -146,7 +146,7 @@ export default function Index({
                 className="text-decoration-none link-body-emphasis"
                 href="#courses"
               >
-                {t('home.languages.courses')}
+                {t("home.languages.courses")}
               </a>
             </h2>
 
@@ -175,13 +175,13 @@ export default function Index({
 
       <Container className="mb-5 py-5">
         <div className="d-flex">
-          <h2 className="me-auto mt-auto">{t('home.index.reviews')}</h2>
+          <h2 className="me-auto mt-auto">{t("home.index.reviews")}</h2>
           <div className="mt-auto">
             <a
               href={Routes.reviews_path()}
               className="text-decoration-none text-muted small"
             >
-              {t('home.index.all_reviews')}
+              {t("home.index.all_reviews")}
             </a>
           </div>
         </div>
@@ -224,13 +224,13 @@ export default function Index({
         {blogPosts.length > 0 && (
           <>
             <div className="d-flex">
-              <h2 className="me-auto mt-auto">{t('home.index.blog_posts')}</h2>
+              <h2 className="me-auto mt-auto">{t("home.index.blog_posts")}</h2>
               <div className="mt-auto">
                 <a
                   href={Routes.blog_posts_path()}
                   className="text-decoration-none text-muted small"
                 >
-                  {t('home.index.all_blog_posts')}
+                  {t("home.index.all_blog_posts")}
                 </a>
               </div>
             </div>
@@ -253,7 +253,7 @@ export default function Index({
             className="text-decoration-none link-body-emphasis"
             href="#faq"
           >
-            {tFaq('header')}
+            {tFaq("header")}
           </a>
         </h2>
         <hr className="mb-5" />
@@ -274,7 +274,7 @@ export default function Index({
           <div className="container">
             <div className="row align-items-center g-lg-5 py-5">
               <div className="col-lg-7 fw-bold display-4">
-                {t('home.index.join')}
+                {t("home.index.join")}
                 {/* {cache([I18n.locale], { expiresIn: "1d" }, () => ( */}
                 {/*   <> */}
                 {/*     <h1 className="display-4 fw-bold lh-1 mb-3"> */}
@@ -293,23 +293,23 @@ export default function Index({
                   <XInput model={user} attribute="first_name" />
                   <XInput model={user} attribute="email" />
                   <div className="text-end text-muted small mb-4">
-                    {t('users.new.have_account')}{' '}
+                    {t("users.new.have_account")}{" "}
                     <Link
                       href={Routes.new_session_path()}
                       className="text-decoration-none"
                     >
-                      {t('users.new.sign_in')}
+                      {t("users.new.sign_in")}
                     </Link>
                   </div>
                   <Button size="lg" className="mb-2" type="submit">
-                    {tHelpers('submit.user_sign_up_form.create')}
+                    {tHelpers("submit.user_sign_up_form.create")}
                   </Button>
                   <hr />
                   <div
                     className="small text-muted"
                     // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
                     dangerouslySetInnerHTML={{
-                      __html: t('users.new.confirmation_html'),
+                      __html: t("users.new.confirmation_html"),
                     }}
                   />
                 </Form>

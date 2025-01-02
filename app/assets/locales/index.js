@@ -1,8 +1,9 @@
-import en from './en.js'
-import ru from './ru.js'
+import en from "./en.js";
+import ru from "./ru.js";
 
 const resources = {
-  en, ru,
-}
+  en,
+  ru,
+};
 
-export default resources
+export default resources;

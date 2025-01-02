@@ -45,6 +45,21 @@ full-javascript-ru:
   body: <%= Faker::Lorem.paragraph_by_chars %>
   locale: ru
 
+full-javascript-ru2:
+  <<: *DEFAULTS
+  body: <%= Faker::Lorem.paragraph_by_chars %>
+  locale: ru
+
+full-javascript-ru3:
+  <<: *DEFAULTS
+  body: <%= Faker::Lorem.paragraph_by_chars %>
+  locale: ru
+
+full-javascript-ru4:
+  <<: *DEFAULTS
+  body: <%= Faker::Lorem.paragraph_by_chars %>
+  locale: ru
+
 full-javascript-en:
   <<: *DEFAULTS
   body: <%= Faker::Lorem.paragraph_by_chars %>

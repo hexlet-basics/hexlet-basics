@@ -1,15 +1,19 @@
 // @ts-check
 
-import '../utils/monacoWorkers.js'
+import "../utils/monacoWorkers.js";
 
-import React, { useContext, useEffect, useRef } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import MonacoEditor from 'react-monaco-editor'
-import { useLocalStorage } from '@rehooks/local-storage'
-import { actions } from '../slices/index.js'
-import { getLanguageForEditor, getTabSize, shouldReplaceTabsWithSpaces } from '../utils/editorUtils.js'
+import { useLocalStorage } from "@rehooks/local-storage";
+import React, { useContext, useEffect, useRef } from "react";
+import MonacoEditor from "react-monaco-editor";
+import { useDispatch, useSelector } from "react-redux";
+import { actions } from "../slices/index.js";
+import {
+  getLanguageForEditor,
+  getTabSize,
+  shouldReplaceTabsWithSpaces,
+} from "../utils/editorUtils.js";
 
-import EntityContext from '../EntityContext.js'
+import EntityContext from "../EntityContext.js";
 
 const commonOptions = {
   fontSize: 14,
@@ -20,67 +24,67 @@ const commonOptions = {
   hover: {
     delay: 500,
   },
-  renderWhitespace: 'trailing',
+  renderWhitespace: "trailing",
   formatOnPaste: true,
   renderLineHighlight: false,
   fixedOverflowWidgets: true,
-}
+};
 
 function Editor() {
-  const { language, lessonVersion } = useContext(EntityContext)
-  const { content, focusesCount } = useSelector(state => state.editorSlice)
-  const dispatch = useDispatch()
-  const editorRef = useRef(null)
+  const { language, lessonVersion } = useContext(EntityContext);
+  const { content, focusesCount } = useSelector((state) => state.editorSlice);
+  const dispatch = useDispatch();
+  const editorRef = useRef(null);
 
-  const localStorageKey = `lesson-version-${lessonVersion.id}`
-  const [localStorageContent, setContent] = useLocalStorage(localStorageKey)
+  const localStorageKey = `lesson-version-${lessonVersion.id}`;
+  const [localStorageContent, setContent] = useLocalStorage(localStorageKey);
 
   useEffect(() => {
-    editorRef.current?.focus()
-  }, [focusesCount])
+    editorRef.current?.focus();
+  }, [focusesCount]);
 
   const handleRunCheck = () => {
-    dispatch(actions.runCheck({ lessonVersion }))
-  }
+    dispatch(actions.runCheck({ lessonVersion }));
+  };
 
   const editorOptions = {
     tabSize: getTabSize(language),
     insertSpaces: shouldReplaceTabsWithSpaces(language),
-  }
+  };
 
   const onMount = (editor, monaco) => {
-    editorRef.current = editor
-    const model = editor.getModel()
-    model.updateOptions(editorOptions)
-    model.pushEOL(0)
+    editorRef.current = editor;
+    const model = editor.getModel();
+    model.updateOptions(editorOptions);
+    model.pushEOL(0);
 
-    editorRef.current.focus()
+    editorRef.current.focus();
 
     const extraKeys = [
       {
         key: monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
         action: handleRunCheck,
       },
-    ]
+    ];
 
     extraKeys.forEach(({ key, action }) => {
-      editorRef.current.addCommand(key, action)
-    })
+      editorRef.current.addCommand(key, action);
+    });
 
     // NOTE: fix typescript validation error — `'name' is deprecated.(6385)`
     monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
       diagnosticCodesToIgnore: [6385],
-    })
-  }
+    });
+  };
 
   const onContentChange = (newContent) => {
-    setContent(newContent)
-    dispatch(actions.changeContent({ content: newContent }))
-  }
+    setContent(newContent);
+    dispatch(actions.changeContent({ content: newContent }));
+  };
 
   return (
     <MonacoEditor
-      defaultValue={localStorageContent || ''}
+      defaultValue={localStorageContent || ""}
       value={content}
       options={commonOptions}
       language={getLanguageForEditor(language)}
@@ -88,7 +92,7 @@ function Editor() {
       editorDidMount={onMount}
       className="w-100 h-100"
     />
-  )
+  );
 }
 
-export default Editor
+export default Editor;

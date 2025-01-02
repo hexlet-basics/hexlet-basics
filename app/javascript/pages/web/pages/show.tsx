@@ -9,36 +9,36 @@ import type { Language, LanguageCategory, User } from "@/types/serializers";
 import i18next from "i18next";
 
 type Props = PropsWithChildren & {
-	languageCategories: LanguageCategory[];
-	languages: Language[];
-	page: "about" | "tos";
-	user: User;
+  languageCategories: LanguageCategory[];
+  languages: Language[];
+  page: "about" | "tos";
+  user: User;
 };
 
 const mapping = {
-	ru: {
-		about: RuAbout,
-		tos: RuAbout,
-		privacy: RuAbout,
-		cookie_policy: RuAbout,
-		authors: RuAbout,
-	},
-	en: {
-		about: RuAbout,
-		tos: RuAbout,
-		privacy: RuAbout,
-		cookie_policy: RuAbout,
-		authors: RuAbout,
-	},
+  ru: {
+    about: RuAbout,
+    tos: RuAbout,
+    privacy: RuAbout,
+    cookie_policy: RuAbout,
+    authors: RuAbout,
+  },
+  en: {
+    about: RuAbout,
+    tos: RuAbout,
+    privacy: RuAbout,
+    cookie_policy: RuAbout,
+    authors: RuAbout,
+  },
 };
 
 export default function New({ languageCategories, languages, page }: Props) {
-	const Component = mapping[i18next.language][page];
-	return (
-		<Application languageCategories={languageCategories} languages={languages}>
-			<Container>
-				<Component />
-			</Container>
-		</Application>
-	);
+  const Component = mapping[i18next.language][page];
+  return (
+    <Application languageCategories={languageCategories} languages={languages}>
+      <Container>
+        <Component />
+      </Container>
+    </Application>
+  );
 }

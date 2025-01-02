@@ -31,6 +31,7 @@ app-lint-staged:
 
 lint:
 	bin/rubocop -x
+	npx @biomejs/biome check --write
 
 ansible-generate-env:
 	docker run --rm -e RUNNER_PLAYBOOK=ansible/development.yml \

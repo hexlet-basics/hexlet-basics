@@ -1,31 +1,30 @@
 // @ts-check
 
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from "@reduxjs/toolkit";
 
-import { actions as tabActions } from './tabsBoxSlice.js'
+import { actions as tabActions } from "./tabsBoxSlice.js";
 
 const slice = createSlice({
-  name: 'editorSlice',
+  name: "editorSlice",
   initialState: {
-    content: '',
+    content: "",
     focusesCount: 1,
   },
   reducers: {
     changeContent(state, { payload }) {
-      state.content = payload.content
+      state.content = payload.content;
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(tabActions.changeTab, (state, { payload }) => {
-        const { newTabState } = payload
-        if (newTabState === 'editor') {
-          state.focusesCount += 1
-        }
-      })
+    builder.addCase(tabActions.changeTab, (state, { payload }) => {
+      const { newTabState } = payload;
+      if (newTabState === "editor") {
+        state.focusesCount += 1;
+      }
+    });
   },
-})
+});
 
-export const { actions } = slice
+export const { actions } = slice;
 
-export default slice.reducer
+export default slice.reducer;
