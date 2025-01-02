@@ -34,7 +34,7 @@ class Web::ApplicationController < ApplicationController
 
     {
       languageCategories: Language::CategoryResource.new(language_categories),
-      languages: LanguageResource.new(languages),
+      courses: LanguageResource.new(languages),
       currentUser: UserResource.new(current_user)
     }
   end

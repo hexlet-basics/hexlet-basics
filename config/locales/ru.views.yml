@@ -89,6 +89,7 @@ ru:
         register: Регистрация
         sign_in_with_github: Войти через GitHub
         forgot_password: Забыли пароль?
+        reset_password: Восстановить
         password: Пароль
         email: Email
     passwords:

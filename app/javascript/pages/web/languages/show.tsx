@@ -13,13 +13,13 @@ type Props = PropsWithChildren & {
   languageCategories: LanguageCategory[];
   languageCategory: LanguageCategory;
   language: Language;
-  languages: Language[];
+  courses: Language[];
   user: User;
 };
 
 export default function New({
   languageCategories,
-  languages,
+  courses,
   user,
   language,
   languageCategory,
@@ -38,7 +38,7 @@ export default function New({
   ];
 
   return (
-    <Application languageCategories={languageCategories} languages={languages}>
+    <Application languageCategories={languageCategories} courses={courses}>
       <Container>
         <XBreadcrumb items={breadcrumbItems} />
       </Container>

@@ -2,8 +2,8 @@ ru:
   activemodel:
     attributes:
       sign_in_form:
-        password: ''
-        email: ''
+        password: Пароль
+        email: Email
     errors:
       models:
         sign_in_form:

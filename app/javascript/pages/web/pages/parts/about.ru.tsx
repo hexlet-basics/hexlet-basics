@@ -1,7 +1,7 @@
 export default () => {
   return (
     <>
-      <h1>О проекте</h1>
+      <h1 className="mb-5">О проекте</h1>
 
       <h2>Что такое Code Basics</h2>
 

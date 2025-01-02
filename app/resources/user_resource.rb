@@ -2,6 +2,8 @@ class UserResource
   include Alba::Resource
   include Typelizer::DSL
 
+  typelize_from User
+
   attributes :id, :first_name, :email
 
   typelize :boolean, nullable: true

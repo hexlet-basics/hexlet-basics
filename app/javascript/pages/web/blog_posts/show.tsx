@@ -21,7 +21,7 @@ import { useTranslation } from "react-i18next";
 
 type Props = PropsWithChildren & {
   languageCategories: LanguageCategory[];
-  languages: Language[];
+  courses: Language[];
   blogPost: BlogPost;
   recommendedBlogPosts: BlogPost[];
 };
@@ -30,7 +30,7 @@ const plugins = [() => remarkToc({ heading: "Содержание" }), remarkSlu
 
 export default function New({
   languageCategories,
-  languages,
+  courses,
   blogPost,
   recommendedBlogPosts,
 }: Props) {
@@ -48,7 +48,7 @@ export default function New({
   ];
 
   return (
-    <Application languageCategories={languageCategories} languages={languages}>
+    <Application languageCategories={languageCategories} courses={courses}>
       <Container>
         <Row className="justify-content-center mb-5">
           <Col className="col-12 col-md-10 col-lg-8">

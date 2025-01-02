@@ -16,21 +16,21 @@ import * as Routes from "@/routes.js";
 
 type Props = PropsWithChildren & {
   languageCategories: LanguageCategory[];
-  languages: Language[];
+  courses: Language[];
   reviews: Review[];
   pagy: Pagy;
 };
 
 export default function New({
   languageCategories,
-  languages,
+  courses,
   reviews,
   pagy,
 }: Props) {
   const { t } = useTranslation();
 
   return (
-    <Application languageCategories={languageCategories} languages={languages}>
+    <Application languageCategories={languageCategories} courses={courses}>
       <Container>
         <h1 className="mb-5">{t("reviews.index.header")}</h1>
         <Row className="mb-5 row-cols-1 row-cols-lg-2">

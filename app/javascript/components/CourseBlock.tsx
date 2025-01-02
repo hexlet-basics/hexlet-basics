@@ -13,7 +13,7 @@ export default function CourseBlock({ course }: Props) {
   const { t } = useTranslation();
   const { t: tJS } = useTranslation("js");
   return (
-    <Card className="h-100 shadow-sm">
+    <Card className="h-100 shadow-sm bg-body-tertiary">
       <Card.Img
         variant="top"
         src={assetPath(course.cover!)}

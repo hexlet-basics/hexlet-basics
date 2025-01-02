@@ -80626,8 +80626,8 @@
     "activemodel": {
       "attributes": {
         "sign_in_form": {
-          "email": "",
-          "password": ""
+          "email": "Email",
+          "password": "Пароль"
         }
       },
       "errors": {
@@ -83061,6 +83061,7 @@
           "meta_description": "Войти на Code Basics",
           "password": "Пароль",
           "register": "Регистрация",
+          "reset_password": "Восстановить",
           "sign_in": "Вход",
           "sign_in_with_github": "Войти через GitHub",
           "title": "Вход"

@@ -2,10 +2,10 @@
 
 class Web::SessionsController < Web::ApplicationController
   def new
-    @sign_in_form = SignInForm.new
+    sign_in_form = SignInForm.new
 
     render inertia: true, props: {
-      # user: UserResource.new(user)
+      signInForm: SignInFormResource.new(sign_in_form)
     }
   end
 

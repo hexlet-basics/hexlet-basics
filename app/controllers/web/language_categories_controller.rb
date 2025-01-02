@@ -4,9 +4,9 @@ class Web::LanguageCategoriesController < Web::ApplicationController
   def index; end
 
   def show
-    # @category = Language::Category.find_by! slug: params[:id]
+    category = Language::Category.find_by! slug: params[:id]
     # @language_members_by_language = current_user.language_members.index_by(&:language_id)
-    # @languages = @category.languages.web.ordered
+    courses = category.languages.web.ordered
     #
     # infos = Language::Version::Info.where(locale: I18n.locale, language: @languages)
     # infos_by_language = infos.index_by { |item| item.language.id }
@@ -21,7 +21,8 @@ class Web::LanguageCategoriesController < Web::ApplicationController
     # end
 
     render inertia: true, props: {
-      # blogPosts: blog_posts
+      courseCategory: Language::CategoryResource.new(category),
+      categoryCourses: LanguageResource.new(courses)
     }
   end
 end

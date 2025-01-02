@@ -10,8 +10,12 @@ type Props<T> = PropsWithChildren & {
 
 export function XInput<T extends BaseModel>({ model, attribute }: Props<T>) {
   const { t: tAr } = useTranslation("activerecord");
+  const { t: tAm } = useTranslation("activemodel");
+
   const modelName = model.type;
-  const label = tAr(`attributes.${modelName}.${attribute}`) as string;
+  const path = `attributes.${modelName}.${String(attribute)}`;
+
+  const label = tAr(path, tAm(path));
 
   return (
     <Form.Group className="mb-4">

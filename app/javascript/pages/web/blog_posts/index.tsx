@@ -15,21 +15,21 @@ import { useTranslation } from "react-i18next";
 
 type Props = PropsWithChildren & {
   languageCategories: LanguageCategory[];
-  languages: Language[];
+  courses: Language[];
   blogPosts: BlogPost[];
   pagy: Pagy;
 };
 
 export default function New({
   languageCategories,
-  languages,
+  courses,
   blogPosts,
   pagy,
 }: Props) {
   const { t } = useTranslation();
 
   return (
-    <Application languageCategories={languageCategories} languages={languages}>
+    <Application languageCategories={languageCategories} courses={courses}>
       <Container>
         <h1>{t("blog_posts.index.header")}</h1>
         <Row className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">

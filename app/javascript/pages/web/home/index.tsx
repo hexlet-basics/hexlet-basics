@@ -31,7 +31,7 @@ import {
 
 type Props = PropsWithChildren & {
   languageCategories: LanguageCategory[];
-  languages: Language[];
+  courses: Language[];
   blogPosts: BlogPost[];
   reviews: Review[];
   currentUser: User;
@@ -80,7 +80,7 @@ const reviews = [
 
 export default function Index({
   languageCategories,
-  languages,
+  courses,
   blogPosts,
   currentUser,
   user,
@@ -94,7 +94,7 @@ export default function Index({
   console.log(faq);
 
   return (
-    <Layout languageCategories={languageCategories} languages={languages}>
+    <Layout languageCategories={languageCategories} courses={courses}>
       <Container className="mb-5 py-5">
         <div className="bg-body-tertiary p-4 pb-0 pt-lg-5 align-items-center border shadow-sm rounded-3">
           <div className="row">
@@ -137,7 +137,7 @@ export default function Index({
         </div>
       </Container>
 
-      <div className="bg-body-tertiary py-5 mb-5">
+      <div className="py-5 mb-5">
         <Container className="py-4">
           <div className="d-flex flex-column flex-sm-row align-items-sm-center mb-4">
             <h2 className="me-auto mb-3 mb-sm-0">
@@ -164,61 +164,63 @@ export default function Index({
           </div>
 
           <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4">
-            {languages.map((language) => (
-              <div className="col mb-3" key={language.id}>
-                <CourseBlock course={language} />
+            {courses.map((course) => (
+              <div className="col mb-3" key={course.id}>
+                <CourseBlock course={course} />
               </div>
             ))}
           </div>
         </Container>
       </div>
 
-      <Container className="mb-5 py-5">
-        <div className="d-flex">
-          <h2 className="me-auto mt-auto">{t("home.index.reviews")}</h2>
-          <div className="mt-auto">
-            <a
-              href={Routes.reviews_path()}
-              className="text-decoration-none text-muted small"
-            >
-              {t("home.index.all_reviews")}
-            </a>
+      <div className="bg-body-tertiary py-5 mb-5">
+        <Container className="mb-5">
+          <div className="d-flex">
+            <h2 className="me-auto mt-auto">{t("home.index.reviews")}</h2>
+            <div className="mt-auto">
+              <a
+                href={Routes.reviews_path()}
+                className="text-decoration-none text-muted small"
+              >
+                {t("home.index.all_reviews")}
+              </a>
+            </div>
           </div>
-        </div>
-        <hr className="mb-5 mt-1" />
+          <hr className="mb-5 mt-1" />
 
-        <div className="row g-4 row-cols-1 row-cols-sm-2 row-cols-lg-3">
-          {reviews.map((review) => (
-            <div key={review.avatar} className="col">
-              <div className="d-flex mb-3">
-                <img
-                  src={review.avatar}
-                  className="rounded-circle flex-shrink-0"
-                  width={50}
-                  height={50}
-                  alt={`Аватар пользователя ${review.name}`}
-                />
-                <div className="ms-3">
-                  <div className="fw-bold">{review.name}</div>
-                  <div className="small">
-                    {/* {t(".course_html", { */}
-                    {/*   link: ( */}
-                    {/*     <a */}
-                    {/*       href={language_path(jsCourse.slug)} */}
-                    {/*       className="text-dark" */}
-                    {/*     > */}
-                    {/*       {jsCourse} */}
-                    {/*     </a> */}
-                    {/*   ), */}
-                    {/* })} */}
+          <div className="row g-4 row-cols-1 row-cols-sm-2 row-cols-lg-3">
+            {reviews.map((review) => (
+              <div key={review.avatar} className="col">
+                <div className="d-flex mb-3">
+                  <img
+                    src={review.avatar}
+                    className="rounded-circle flex-shrink-0"
+                    width={50}
+                    height={50}
+                    alt={`Аватар пользователя ${review.name}`}
+                  />
+                  <div className="ms-3">
+                    <div className="fw-bold">{review.name}</div>
+                    <div className="small">
+                      {/* {t(".course_html", { */}
+                      {/*   link: ( */}
+                      {/*     <a */}
+                      {/*       href={language_path(jsCourse.slug)} */}
+                      {/*       className="text-dark" */}
+                      {/*     > */}
+                      {/*       {jsCourse} */}
+                      {/*     </a> */}
+                      {/*   ), */}
+                      {/* })} */}
+                    </div>
                   </div>
                 </div>
+                <div className="fst-italic">{review.body}</div>
               </div>
-              <div className="fst-italic">{review.body}</div>
-            </div>
-          ))}
-        </div>
-      </Container>
+            ))}
+          </div>
+        </Container>
+      </div>
 
       <Container className="mb-5">
         {blogPosts.length > 0 && (
@@ -246,28 +248,30 @@ export default function Index({
         )}
       </Container>
 
-      <Container className="mb-5 pb-5">
-        <h2>
-          <a
-            id="faq"
-            className="text-decoration-none link-body-emphasis"
-            href="#faq"
-          >
-            {tFaq("header")}
-          </a>
-        </h2>
-        <hr className="mb-5" />
-        <Accordion defaultActiveKey="0">
-          {Object.entries(faq).map(([key, value], index) => (
-            <Accordion.Item eventKey={String(index)} key={key}>
-              <Accordion.Header>{value.question}</Accordion.Header>
-              <Accordion.Body>
-                <Markdown>{value.answer}</Markdown>
-              </Accordion.Body>
-            </Accordion.Item>
-          ))}
-        </Accordion>
-      </Container>
+      <div className="bg-body-tertiary mb-5 py-5">
+        <Container className="mb-5">
+          <h2>
+            <a
+              id="faq"
+              className="text-decoration-none link-body-emphasis"
+              href="#faq"
+            >
+              {tFaq("header")}
+            </a>
+          </h2>
+          <hr className="mb-5" />
+          <Accordion defaultActiveKey="0">
+            {Object.entries(faq).map(([key, value], index) => (
+              <Accordion.Item eventKey={String(index)} key={key}>
+                <Accordion.Header>{value.question}</Accordion.Header>
+                <Accordion.Body>
+                  <Markdown>{value.answer}</Markdown>
+                </Accordion.Body>
+              </Accordion.Item>
+            ))}
+          </Accordion>
+        </Container>
+      </div>
 
       {currentUser.guest && (
         <div className="">

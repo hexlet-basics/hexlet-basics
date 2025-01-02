@@ -1,22 +1,15 @@
-import cn from "classnames";
-import { type PropsWithChildren, useState } from "react";
+import { type PropsWithChildren } from "react";
 import {
   Button,
   Card,
-  Col,
   Container,
   Form,
-  FormControl,
-  Nav,
-  NavDropdown,
-  Navbar,
   Row,
 } from "react-bootstrap";
 
 import { useTranslation } from "react-i18next";
 
 import * as Routes from "@/routes.js";
-import logoImg from "../../images/logo.png";
 
 import { XInput } from "@/components/forms";
 import Application from "@/pages/layouts/Application";
@@ -25,17 +18,17 @@ import { Link } from "@inertiajs/react";
 
 type Props = PropsWithChildren & {
   languageCategories: LanguageCategory[];
-  languages: Language[];
+  courses: Language[];
   user: User;
 };
 
-export default function New({ languageCategories, languages, user }: Props) {
+export default function New({ languageCategories, courses, user }: Props) {
   const { t } = useTranslation();
   const { t: tHelpers } = useTranslation("helpers");
   const { t: tAr } = useTranslation("activerecord");
 
   return (
-    <Application languageCategories={languageCategories} languages={languages}>
+    <Application languageCategories={languageCategories} courses={courses}>
       <Container>
         <Row className="justify-content-center">
           <div className="col-sm-8 col-md-7 col-lg-5">
@@ -54,7 +47,7 @@ export default function New({ languageCategories, languages, user }: Props) {
                       {t("users.new.sign_in")}
                     </Link>
                   </div>
-                  <Button className="mb-3" type="submit">
+                  <Button size="lg" className="mb-3" type="submit">
                     {tHelpers("submit.user_sign_up_form.create")}
                   </Button>
                   <div

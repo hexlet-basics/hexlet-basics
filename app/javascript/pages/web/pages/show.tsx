@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { Container } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import RuAbout from "./parts/about.ru.tsx";
 
 import { useTranslation } from "react-i18next";
@@ -10,7 +10,7 @@ import i18next from "i18next";
 
 type Props = PropsWithChildren & {
   languageCategories: LanguageCategory[];
-  languages: Language[];
+  courses: Language[];
   page: "about" | "tos";
   user: User;
 };
@@ -32,12 +32,16 @@ const mapping = {
   },
 };
 
-export default function New({ languageCategories, languages, page }: Props) {
+export default function New({ languageCategories, courses, page }: Props) {
   const Component = mapping[i18next.language][page];
   return (
-    <Application languageCategories={languageCategories} languages={languages}>
+    <Application languageCategories={languageCategories} courses={courses}>
       <Container>
-        <Component />
+        <Row className="justify-content-center mb-5">
+          <Col className="col-12 col-md-10 col-lg-8">
+            <Component />
+          </Col>
+        </Row>
       </Container>
     </Application>
   );

@@ -13,13 +13,13 @@ import type { Language, LanguageCategory } from "../../types/serializers";
 
 type Props = PropsWithChildren & {
   languageCategories: LanguageCategory[];
-  languages: Language[];
+  courses: Language[];
 };
 
 export default function Application({
   children,
   languageCategories,
-  languages,
+  courses,
 }: Props) {
   const { t: tLayouts } = useTranslation("layouts");
   const [collapsed, setCollapsed] = useState(false);
@@ -47,7 +47,7 @@ export default function Application({
                 title={tLayouts("shared.nav.courses")}
                 id="basic-nav-dropdown"
               >
-                {languages.map((c) => (
+                {courses.map((c) => (
                   <NavDropdown.Item
                     className="d-flex align-items-center"
                     key={c.id}
