@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   # respond_to :html
+  include Pagy::Backend
 
   include AuthConcern
   # content_security_policy Rails.env.production?

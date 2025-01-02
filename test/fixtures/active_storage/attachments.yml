@@ -1,14 +1,39 @@
 blog_post_from_full_cover:
   name: cover
   record: from-full (BlogPost)
-  blob: blog_post
+  blob: blog_post_blob
 
 blog_post_from_full_ru_cover:
   name: cover
   record: from-full-ru (BlogPost)
-  blob: blog_post
+  blob: blog_post_blob
 
 blog_post_from_full_en_cover:
   name: cover
   record: from-full-en (BlogPost)
-  blob: blog_post
+  blob: blog_post_blob
+
+blog_post_from_full_js_cover:
+  name: cover
+  record: from-full-js (BlogPost)
+  blob: blog_post_blob
+
+blog_post_from_full_en_js_cover:
+  name: cover
+  record: from-full-en-js (BlogPost)
+  blob: blog_post_blob
+
+blog_post_from_full_php_cover:
+  name: cover
+  record: from-full-php (BlogPost)
+  blob: blog_post_blob
+
+blog_post_from_full_ru_php_cover:
+  name: cover
+  record: from-full-ru-php (BlogPost)
+  blob: blog_post_blob
+
+blog_post_from_full_ru_js_cover:
+  name: cover
+  record: from-full-ru-js (BlogPost)
+  blob: blog_post_blob

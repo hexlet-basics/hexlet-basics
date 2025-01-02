@@ -1,8 +1,16 @@
 include k8s/Makefile
 
 setup:
+	# brew install vips
 	bundle install
 	bin/rails db:prepare
+	bin/rails db:fixtures:load
+
+test:
+	bin/rails test
+
+db-reset:
+	bin/rails db:reset
 	bin/rails db:fixtures:load
 
 dev:
@@ -11,7 +19,11 @@ dev:
 i18n-export:
 	bundle exec i18n export
 
-sync: i18n-export
+sync-fixtures:
+	bin/rails db:fixtures:load
+
+
+sync: i18n-export sync-fixtures
 	bin/rails typelizer:generate:refresh
 
 app-lint-staged:
@@ -54,3 +66,5 @@ ansible-vaults-edit:
 # 	bin/tapioca annotations
 # 	bin/tapioca gems --all
 # 	bin/tapioca dsl
+
+.PHONY: test

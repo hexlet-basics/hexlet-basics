@@ -4,7 +4,7 @@
 #
 # Table name: reviews
 #
-#  id          :bigint           not null, primary key
+#  id          :integer          not null, primary key
 #  body        :text
 #  first_name  :string
 #  last_name   :string
@@ -22,8 +22,8 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (language_id => languages.id)
-#  fk_rails_...  (user_id => users.id)
+#  language_id  (language_id => languages.id)
+#  user_id      (user_id => users.id)
 #
 require 'test_helper'
 

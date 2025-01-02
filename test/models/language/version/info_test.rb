@@ -4,7 +4,7 @@
 #
 # Table name: language_version_infos
 #
-#  id                  :bigint           not null, primary key
+#  id                  :integer          not null, primary key
 #  description         :string
 #  header              :string
 #  keywords            :string
@@ -23,8 +23,8 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (language_id => languages.id)
-#  fk_rails_...  (language_version_id => language_versions.id)
+#  language_id          (language_id => languages.id)
+#  language_version_id  (language_version_id => language_versions.id)
 #
 require 'test_helper'
 

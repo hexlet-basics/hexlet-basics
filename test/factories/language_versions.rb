@@ -4,7 +4,7 @@
 #
 # Table name: language_versions
 #
-#  id                     :bigint           not null, primary key
+#  id                     :integer          not null, primary key
 #  docker_image           :string
 #  exercise_filename      :string
 #  exercise_test_filename :string
@@ -24,7 +24,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (language_id => languages.id)
+#  language_id  (language_id => languages.id)
 #
 FactoryBot.define do
   factory :language_version do

@@ -8,11 +8,15 @@ class Web::PagesController < Web::ApplicationController
              tos].freeze
 
   def show
-    @page = params[:id]
-    unless PAGES.include? @page
-      raise ActionController::RoutingError, 'Page not found'
+    page = params[:id]
+    unless PAGES.include? page
+      raise ActionController::RoutingError, "Page not found"
     end
 
-    set_meta_tags title: t(@page, scope: 'web.pages')
+    render inertia: true, props: {
+      page:
+    }
+
+    # set_meta_tags title: t(@page, scope: 'web.pages')
   end
 end

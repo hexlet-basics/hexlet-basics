@@ -3,6 +3,10 @@
 class Web::SessionsController < Web::ApplicationController
   def new
     @sign_in_form = SignInForm.new
+
+    render inertia: true, props: {
+      # user: UserResource.new(user)
+    }
   end
 
   def create

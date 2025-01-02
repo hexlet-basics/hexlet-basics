@@ -10,10 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2022_12_20_005735) do
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-
+ActiveRecord::Schema[8.0].define(version: 2022_12_20_005735) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -153,30 +150,16 @@ ActiveRecord::Schema[7.1].define(version: 2022_12_20_005735) do
     t.index ["user_id"], name: "index_language_members_on_user_id"
   end
 
-  # create_table "language_module_descriptions", force: :cascade do |t|
-  #   t.string "name", limit: 255
-  #   t.text "description"
-  #   t.string "locale", limit: 255
-  #   t.bigint "module_id"
-  #   t.datetime "inserted_at", precision: nil, null: false
-  #   t.datetime "updated_at", precision: nil, null: false
-  #   t.bigint "language_id"
-  #   t.index ["module_id"], name: "language_module_descriptions_module_id_index"
-  # end
-
-  # create_table "language_module_lesson_descriptions", force: :cascade do |t|
-  #   t.string "name", limit: 255
-  #   t.text "theory"
-  #   t.text "instructions"
-  #   t.string "locale", limit: 255
-  #   t.string "tips", limit: 255, null: false, array: true
-  #   t.bigint "lesson_id"
-  #   t.datetime "inserted_at", precision: nil, null: false
-  #   t.datetime "updated_at", precision: nil, null: false
-  #   t.bigint "language_id"
-  #   t.jsonb "definitions", null: false, array: true
-  #   t.index ["lesson_id"], name: "language_module_lesson_descriptions_lesson_id_index"
-  # end
+  create_table "language_module_descriptions", force: :cascade do |t|
+    t.string "name", limit: 255
+    t.text "description"
+    t.string "locale", limit: 255
+    t.bigint "module_id"
+    t.datetime "inserted_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.bigint "language_id"
+    t.index ["module_id"], name: "language_module_descriptions_module_id_index"
+  end
 
   create_table "language_module_version_infos", force: :cascade do |t|
     t.string "name"
@@ -315,16 +298,16 @@ ActiveRecord::Schema[7.1].define(version: 2022_12_20_005735) do
     t.boolean "admin"
     t.datetime "created_at", null: false
     t.boolean "help"
-    t.index ["email"], name: "index_users_on_email", unique: true # , where: "((state)::text <> 'removed'::text)"
+    t.index ["email"], name: "index_users_on_email", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "blog_posts", "languages"
   add_foreign_key "blog_posts", "users", column: "creator_id"
-  add_foreign_key "language_lesson_members", "language_lessons", column: "lesson_id", name: "user_finished_lessons_language_module_lesson_id_fkey"
+  add_foreign_key "language_lesson_members", "language_lessons", column: "lesson_id"
   add_foreign_key "language_lesson_members", "language_members"
-  add_foreign_key "language_lesson_members", "users", name: "user_finished_lessons_user_id_fkey"
+  add_foreign_key "language_lesson_members", "users"
   add_foreign_key "language_lesson_version_infos", "language_lesson_versions", column: "version_id"
   add_foreign_key "language_lesson_version_infos", "language_versions"
   add_foreign_key "language_lesson_version_infos", "languages"
@@ -332,30 +315,30 @@ ActiveRecord::Schema[7.1].define(version: 2022_12_20_005735) do
   add_foreign_key "language_lesson_versions", "language_module_versions", column: "module_version_id"
   add_foreign_key "language_lesson_versions", "language_versions"
   add_foreign_key "language_lesson_versions", "languages"
-  add_foreign_key "language_lessons", "language_modules", column: "module_id", name: "language_module_lessons_module_id_fkey"
-  add_foreign_key "language_lessons", "languages", name: "language_module_lessons_language_id_fkey"
-  add_foreign_key "language_lessons", "uploads", name: "language_module_lessons_upload_id_fkey"
+  add_foreign_key "language_lessons", "language_modules", column: "module_id"
+  add_foreign_key "language_lessons", "languages"
+  add_foreign_key "language_lessons", "uploads"
   add_foreign_key "language_members", "languages"
   add_foreign_key "language_members", "users"
-  # add_foreign_key "language_module_descriptions", "language_modules", column: "module_id", name: "language_module_descriptions_module_id_fkey"
-  # add_foreign_key "language_module_descriptions", "languages", name: "language_module_descriptions_language_id_fkey"
-  # add_foreign_key "language_module_lesson_descriptions", "language_lessons", column: "lesson_id", name: "language_module_lesson_descriptions_lesson_id_fkey"
-  # add_foreign_key "language_module_lesson_descriptions", "languages", name: "language_module_lesson_descriptions_language_id_fkey"
+  add_foreign_key "language_module_descriptions", "language_modules", column: "module_id"
+  add_foreign_key "language_module_descriptions", "language_modules", column: "module_id"
+  add_foreign_key "language_module_descriptions", "languages"
+  add_foreign_key "language_module_descriptions", "languages"
   add_foreign_key "language_module_version_infos", "language_module_versions", column: "version_id"
   add_foreign_key "language_module_version_infos", "language_versions"
   add_foreign_key "language_module_version_infos", "languages"
   add_foreign_key "language_module_versions", "language_modules", column: "module_id"
   add_foreign_key "language_module_versions", "language_versions"
   add_foreign_key "language_module_versions", "languages"
-  add_foreign_key "language_modules", "languages", name: "language_modules_language_id_fkey"
-  add_foreign_key "language_modules", "uploads", name: "language_modules_upload_id_fkey"
+  add_foreign_key "language_modules", "languages"
+  add_foreign_key "language_modules", "uploads"
   add_foreign_key "language_version_infos", "language_versions"
   add_foreign_key "language_version_infos", "languages"
   add_foreign_key "language_versions", "languages"
   add_foreign_key "languages", "language_categories", column: "category_id"
   add_foreign_key "languages", "language_versions", column: "current_version_id"
-  add_foreign_key "languages", "uploads", name: "languages_upload_id_fkey"
+  add_foreign_key "languages", "uploads"
   add_foreign_key "reviews", "languages"
   add_foreign_key "reviews", "users"
-  add_foreign_key "user_accounts", "users", name: "user_accounts_user_id_fkey"
+  add_foreign_key "user_accounts", "users"
 end

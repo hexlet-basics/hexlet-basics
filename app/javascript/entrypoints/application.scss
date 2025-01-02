@@ -1,5 +1,16 @@
-$body-bg: #f5f7fb;
+// $body-bg: #f5f7fb;
 
 @import "bootstrap/scss/bootstrap";
 @import "bootstrap-icons/font/bootstrap-icons.css";
 @import 'devicon/devicon.min.css';
+
+// NOTE: https://github.com/react-bootstrap/react-bootstrap/blob/58e632c1a4c605ced6bab88fc8c7adfdd159fa86/src/NavDropdown.tsx#L92
+.dropdown-toggle {
+  @extend .link-body-emphasis;
+}
+
+.breadcrumb a {
+  @extend .text-decoration-none;
+  @extend .link-body-emphasis;
+  @extend .fw-medium;
+}

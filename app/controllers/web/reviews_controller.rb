@@ -2,6 +2,12 @@
 
 class Web::ReviewsController < Web::ApplicationController
   def index
-    @reviews = Review.published.with_locale.order(id: :desc).page(params[:page])
+    scope = Review.published.with_locale.order(id: :desc)
+    pagy, records = pagy(scope)
+
+    render inertia: true, props: {
+      reviews: ReviewResource.new(records),
+      pagy:
+    }
   end
 end

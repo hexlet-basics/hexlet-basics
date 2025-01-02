@@ -7,7 +7,7 @@ gem "sqlite3", ">= 2.1"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
-gem "jbuilder"
+# gem "jbuilder"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
@@ -36,11 +36,11 @@ gem "foreman"
 
 # gem "configus"
 # gem "geocoder"
-# gem 'image_processing'
+gem "image_processing"
 # gem 'responders'
 
 # gem 'http_accept_language'
-# gem 'kaminari'
+gem "pagy"
 # gem 'omniauth-facebook'
 # gem 'omniauth-github'
 # gem 'omniauth-rails_csrf_protection'
@@ -76,13 +76,14 @@ group :development, :test do
 
   # gem 'factory_bot_rails'
   gem "faker"
-  # gem 'sorbet'
-  # gem 'spring'
-  # gem 'tapioca', require: false
+
+  # https://github.com/Shopify/tapioca/pull/2129/files
+  gem "tapioca", require: false
 end
 
 group :development do
   # gem 'annotate'
+  gem "annotaterb"
   # gem 'i18n-debug'
   # gem 'listen'
   # gem 'bullet'

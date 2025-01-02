@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import Markdown from "react-markdown";
 import { TypeAnimation } from "react-type-animation";
 
-import Layout from "@/components/layouts/Application";
+import Layout from "@/pages/layouts/Application";
 import * as Routes from "@/routes.js";
 import type {
 	BlogPost,
@@ -14,8 +14,19 @@ import type {
 } from "@/types/serializers";
 
 import codeImagePath from "@/images/code-basics-coding-ru.png";
-import { Accordion, Container } from "react-bootstrap";
+import {
+	Accordion,
+	Button,
+	Card,
+	Col,
+	Container,
+	Form,
+	Row,
+} from "react-bootstrap";
 import { assetPath } from "@/lib/utils.js";
+import { Link } from "@inertiajs/react";
+import { XInput } from "@/components/forms";
+import { CourseBlock } from "@/components/CourseBlock";
 
 type Props = PropsWithChildren & {
 	languageCategories: LanguageCategory[];
@@ -23,6 +34,7 @@ type Props = PropsWithChildren & {
 	blogPosts: BlogPost[];
 	reviews: Review[];
 	currentUser: User;
+	user: User;
 };
 
 const sequence = [
@@ -70,18 +82,20 @@ export default function Index({
 	languages,
 	blogPosts,
 	currentUser,
+	user,
 }: Props) {
 	const { t } = useTranslation();
 	const { t: tFaq } = useTranslation("faq");
 	const { t: tJS } = useTranslation("js");
+	const { t: tHelpers } = useTranslation("helpers");
 
 	const faq = tFaq("main", { returnObjects: true });
 	console.log(faq);
 
 	return (
 		<Layout languageCategories={languageCategories} languages={languages}>
-			<Container className="mb-5">
-				<div className="p-4 pb-0 pt-lg-5 align-items-center border shadow bg-white rounded-3">
+			<Container className="mb-5 py-5">
+				<div className="bg-body-tertiary p-4 pb-0 pt-lg-5 align-items-center border shadow-sm rounded-3">
 					<div className="row">
 						<div className="col-lg-7 p-3 p-lg-5 pt-lg-3">
 							<h1 className="h6 text-muted">
@@ -122,73 +136,39 @@ export default function Index({
 				</div>
 			</Container>
 
-			<Container className="mb-5">
-				<div className="d-flex flex-column flex-sm-row align-items-sm-center mb-4">
-					<h2 className="me-auto mb-3 mb-sm-0">
-						<a
-							id="courses"
-							className="text-decoration-none text-dark"
-							href="#courses"
-						>
-							{t("home.languages.courses")}
-						</a>
-					</h2>
-
-					<div className="d-flex flex-wrap">
-						{languageCategories.map((c) => (
-							<a
-								key={c.id}
-								href={Routes.language_category_path(c.slug!)}
-								className="mb-2 mb-sm-0 me-2 me-sm-0 ms-sm-2 fw-light text-decoration-none fs-5 badge text-bg-light p-2 p-sm-3 rounded-pill border"
-							>
-								{c.name}
+			<div className="bg-body-tertiary py-5 mb-5">
+				<Container className="py-4">
+					<div className="d-flex flex-column flex-sm-row align-items-sm-center mb-4">
+						<h2 className="me-auto mb-3 mb-sm-0">
+							<a id="courses" className="text-decoration-none link-body-emphasis" href="#courses">
+								{t("home.languages.courses")}
 							</a>
+						</h2>
+
+						<div className="d-flex flex-wrap">
+							{languageCategories.map((c) => (
+								<a
+									key={c.id}
+									href={Routes.language_category_path(c.slug!)}
+									className="mb-2 mb-sm-0 me-2 me-sm-0 ms-sm-2 fw-light text-decoration-none fs-5 badge text-bg-light p-2 p-sm-3 rounded-pill border"
+								>
+									{c.name}
+								</a>
+							))}
+						</div>
+					</div>
+
+					<div className="row row-cols-2 row-cols-md-3 row-cols-lg-4">
+						{languages.map((language) => (
+							<div className="col mb-3" key={language.id}>
+								<CourseBlock course={language} />
+							</div>
 						))}
 					</div>
-				</div>
+				</Container>
+			</div>
 
-				<div className="row row-cols-2 row-cols-md-3 row-cols-lg-4">
-					{languages.map((language) => (
-						<div className="col mb-3" key={language.id}>
-							<div className="card h-100 shadow-sm border-0 bg-white">
-								<img
-									src={assetPath(language.cover!)}
-									className="card-img-top"
-									alt={language.name!}
-								/>
-								{/* {languageMembersByLanguage && */}
-								{/*   languageMembersByLanguage[language.id]?.finished && ( */}
-								{/*     <div className="card-img-overlay m-auto bg-light text-center shadow-sm p-1"> */}
-								{/*       {t(".course_finished")} */}
-								{/*     </div> */}
-								{/*   )} */}
-								<div className="card-body">
-									<h2 className="card-title">
-										<a
-											href={Routes.language_path(language.slug!)}
-											className="stretched-link text-dark text-decoration-none text-nowrap"
-										>
-											{language.name}
-										</a>
-									</h2>
-									<div className="text-muted">
-										<span className="text-nowrap d-inline-block me-4">
-											<span className="bi bi-clock me-2" />
-											{tJS("hours", { count: language.duration })}
-										</span>
-										<span className="text-nowrap d-inline-block">
-											<span className="bi bi-people me-2" />
-											{language.members_count}
-										</span>
-									</div>
-								</div>
-							</div>
-						</div>
-					))}
-				</div>
-			</Container>
-
-			<Container className="mb-5">
+			<Container className="mb-5 py-5">
 				<div className="d-flex">
 					<h2 className="me-auto mt-auto">{t("home.index.reviews")}</h2>
 					<div className="mt-auto">
@@ -239,9 +219,7 @@ export default function Index({
 				{blogPosts.length > 0 && (
 					<>
 						<div className="d-flex">
-							<h2 className="me-auto mt-auto">
-								{t("home.index.blog_posts")}
-							</h2>
+							<h2 className="me-auto mt-auto">{t("home.index.blog_posts")}</h2>
 							<div className="mt-auto">
 								<a
 									href={Routes.blog_posts_path()}
@@ -252,41 +230,43 @@ export default function Index({
 							</div>
 						</div>
 						<hr className="mb-5 mt-1" />
-						<div className="row row-cols-sm-2 row-cols-md-3 row-cols-1">
+						<Row className="row-cols-sm-2 row-cols-md-3 row-cols-1">
 							{blogPosts.map((post) => (
-								<div className="col" key={post.id}>
-									<div className="card border-0 bg-body">
-										{post.cover && (
-											<a href={Routes.blog_post_path(post.slug!)}>
-												{/* <img */}
-												{/*   src={post.cover.variant("list")} */}
-												{/*   className="card-img-top img-fluid" */}
-												{/*   alt={`Cover for ${post.title}`} */}
-												{/* /> */}
-											</a>
+								<Col key={post.id}>
+									<Card className="border-0">
+										{post.cover_thumb_variant && (
+											<Card.Img
+												src={post.cover_list_variant!}
+												// className="img-fluid"
+												alt={`Cover for ${post.name}`}
+											/>
 										)}
-										<div className="card-body">
-											<h2 className="card-title fs-6">
+										<Card.Body className="px-1">
+											<Card.Title>
 												<a
 													href={Routes.blog_post_path(post.slug!)}
-													className="text-decoration-none"
+													className="link-body-emphasis text-decoration-none stretched-link"
 												>
 													{post.name}
 												</a>
-											</h2>
-											<div className="card-text">{post.description}</div>
-										</div>
-									</div>
-								</div>
+											</Card.Title>
+											<Card.Text>{post.description}</Card.Text>
+										</Card.Body>
+									</Card>
+								</Col>
 							))}
-						</div>
+						</Row>
 					</>
 				)}
 			</Container>
 
 			<Container className="mb-5 pb-5">
 				<h2>
-					<a id="faq" className="text-decoration-none text-dark" href="#faq">
+					<a
+						id="faq"
+						className="text-decoration-none link-body-emphasis"
+						href="#faq"
+					>
 						{tFaq("header")}
 					</a>
 				</h2>
@@ -304,10 +284,11 @@ export default function Index({
 			</Container>
 
 			{currentUser.guest && (
-				<div className="bg-white">
+				<div className="">
 					<div className="container">
 						<div className="row align-items-center g-lg-5 py-5">
-							<div className="col-lg-7 text-center text-lg-start">
+							<div className="col-lg-7 fw-bold display-4">
+								{t("home.index.join")}
 								{/* {cache([I18n.locale], { expiresIn: "1d" }, () => ( */}
 								{/*   <> */}
 								{/*     <h1 className="display-4 fw-bold lh-1 mb-3"> */}
@@ -319,50 +300,33 @@ export default function Index({
 								{/* ))} */}
 							</div>
 							<div className="col-md-10 mx-auto col-lg-5">
-								<div className="card p-4">
-									<div className="card-body">
-										<form
-											action={Routes.users_path()}
-											method="POST"
-											className="simple_form"
+								<Form
+									action={Routes.users_path()}
+									className="d-flex flex-column bg-body-tertiary p-4 p-md-5 border rounded-3"
+								>
+									<XInput model={user} attribute="first_name" />
+									<XInput model={user} attribute="email" />
+									<div className="text-end text-muted small mb-4">
+										{t("users.new.have_account")}{" "}
+										<Link
+											href={Routes.new_session_path()}
+											className="text-decoration-none"
 										>
-											<div className="form-group">
-												<label htmlFor="user_first_name">First Name</label>
-												<input
-													type="text"
-													id="user_first_name"
-													name="user[first_name]"
-													className="form-control"
-												/>
-											</div>
-											<div className="form-group">
-												<label htmlFor="user_email">Email</label>
-												<input
-													type="email"
-													id="user_email"
-													name="user[email]"
-													autoComplete="email"
-													className="form-control"
-												/>
-											</div>
-											<div className="form-group">
-												<label htmlFor="user_password">Password</label>
-												<input
-													type="password"
-													id="user_password"
-													name="user[password]"
-													autoComplete="new-password"
-													className="form-control"
-												/>
-											</div>
-											<div className="form-group">
-												<button type="submit" className="btn btn-primary w-100">
-													Submit
-												</button>
-											</div>
-										</form>
+											{t("users.new.sign_in")}
+										</Link>
 									</div>
-								</div>
+									<Button size="lg" className="mb-2" type="submit">
+										{tHelpers("submit.user_sign_up_form.create")}
+									</Button>
+									<hr />
+									<div
+										className="small text-muted"
+										// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+										dangerouslySetInnerHTML={{
+											__html: t("users.new.confirmation_html"),
+										}}
+									/>
+								</Form>
 							</div>
 						</div>
 					</div>

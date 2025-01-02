@@ -4,7 +4,7 @@
 #
 # Table name: users
 #
-#  id                   :bigint           not null, primary key
+#  id                   :integer          not null, primary key
 #  admin                :boolean
 #  confirmation_token   :string(255)
 #  email                :string(255)
@@ -24,7 +24,7 @@
 #
 # Indexes
 #
-#  index_users_on_email  (email) UNIQUE WHERE ((state)::text <> 'removed'::text)
+#  index_users_on_email  (email) UNIQUE
 #
 class User < ApplicationRecord
   include UserRepository

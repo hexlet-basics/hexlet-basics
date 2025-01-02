@@ -8,7 +8,7 @@ class Web::HomeController < Web::ApplicationController
     #
     # @user = User::SignUpForm.new
     #
-    blog_posts = BlogPost.published.includes(:cover_attachment).last(3)
+    blog_posts = BlogPost.published.with_locale.includes(:cover_attachment).last(3)
     # reviews = Review.random
     #
     # # TODO: need refactor it
@@ -46,8 +46,11 @@ class Web::HomeController < Web::ApplicationController
     #     }
     #   }
     #   # set_meta_tags seo_tags
+
+    user = User::SignUpForm.new
     render inertia: true, props: {
-      blogPosts: blog_posts
+      blogPosts: BlogPostResource.new(blog_posts),
+      user: UserResource.new(user)
     }
   end
 

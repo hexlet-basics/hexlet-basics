@@ -2,7 +2,7 @@
 #
 # Table name: blog_posts
 #
-#  id          :bigint           not null, primary key
+#  id          :integer          not null, primary key
 #  body        :text
 #  description :string
 #  locale      :string
@@ -22,51 +22,58 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (creator_id => users.id)
-#  fk_rails_...  (language_id => languages.id)
+#  creator_id   (creator_id => users.id)
+#  language_id  (language_id => languages.id)
 #
 DEFAULTS: &DEFAULTS
   slug: $LABEL
-  name: $LABEL
+  name: Что такое язык программирования $LABEL
   state: published
   creator: full
 
 from-full:
   <<: *DEFAULTS
   body: <%= Faker::Lorem.paragraph_by_chars %>
-  description: <%= Faker::Lorem.paragraph %>
+  description: |
+    <%= Faker::Lorem.paragraph(sentence_count: 4) %>
   locale: ru
 
 from-full-ru:
   <<: *DEFAULTS
   body: DRAFT
-  description: <%= Faker::Lorem.paragraph %>
+  description: |
+    <%= Faker::Lorem.paragraph(sentence_count: 4) %>
   state: draft
   locale: ru
 
 from-full-en:
   <<: *DEFAULTS
   body: DRAFT
-  description: <%= Faker::Lorem.paragraph %>
+  description: |
+    <%= Faker::Lorem.paragraph(sentence_count: 4) %>
   state: draft
   locale: en
 
 from-full-js:
   <<: *DEFAULTS
   body: <%= Faker::Lorem.paragraph_by_chars %>
-  description: <%= Faker::Lorem.paragraph %>
+  description: |
+    <%= Faker::Lorem.paragraph(sentence_count: 4) %>
   language: javascript
   locale: ru
 
 from-full-ru-js:
   <<: *DEFAULTS
   body: <%= Faker::Lorem.paragraph_by_chars %>
-  description: <%= Faker::Lorem.paragraph %>
+  description: |
+    <%= Faker::Lorem.paragraph(sentence_count: 4) %>
   language: javascript
   locale: ru
 
 from-full-en-js:
   <<: *DEFAULTS
+  description: |
+    <%= Faker::Lorem.paragraph(sentence_count: 4) %>
   body: |
     ## Header 2
     <%= Faker::Lorem.paragraph_by_chars %>
@@ -82,20 +89,23 @@ from-full-en-js:
 from-full-php:
   <<: *DEFAULTS
   body: <%= Faker::Lorem.paragraph_by_chars %>
-  description: <%= Faker::Lorem.paragraph %>
+  description: |
+    <%= Faker::Lorem.paragraph(sentence_count: 4) %>
   language: php
   locale: ru
 
 from-full-ru-php:
   <<: *DEFAULTS
   body: <%= Faker::Lorem.paragraph_by_chars %>
-  description: <%= Faker::Lorem.paragraph %>
+  description: |
+    <%= Faker::Lorem.paragraph(sentence_count: 4) %>
   language: php
   locale: ru
 
 from-full-en-php:
   <<: *DEFAULTS
   body: <%= Faker::Lorem.paragraph_by_chars %>
-  description: <%= Faker::Lorem.paragraph %>
+  description: |
+    <%= Faker::Lorem.paragraph(sentence_count: 4) %>
   language: php
   locale: en
