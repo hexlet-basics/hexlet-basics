@@ -24,6 +24,7 @@
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "devicon": "^2.16.0",
+    "flag-icons": "^7.2.3",
     "highlight.js": "^11.11.1",
     "i18next": "^24.2.0",
     "ilyabirman-likely": "^3.2.0",

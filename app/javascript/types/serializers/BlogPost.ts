@@ -10,6 +10,6 @@ type BlogPost = {
   body: string | null;
   cover_thumb_variant: string | null;
   cover_list_variant: string | null;
-}
+};
 
 export default BlogPost;

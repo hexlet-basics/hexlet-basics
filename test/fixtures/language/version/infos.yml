@@ -24,92 +24,96 @@
 #  language_id          (language_id => languages.id)
 #  language_version_id  (language_version_id => language_versions.id)
 #
+
+DEFAULTS: &DEFAULTS
+  description: Бесплатное обучение программированию на javascript от сообщества Хекслет. Онлайн курс посвящен азам написания программ на Javascript с нуля
+
 javascript-ru:
+  <<: *DEFAULTS
   language: javascript
   language_version: javascript
-  description: Бесплатное обучение программированию на javascript от сообщества Хекслет. Онлайн курс посвящен азам написания программ на Javascript с нуля
   seo_description: Изучение программирования — интересный и захватывающий процесс. Синтаксис языка — самая простая и короткая часть пути, но без неё невозможно начать. Этот бесплатный онлайн-курс по JavaScript познакомит с базовыми понятиями языка. Вы выучите основы и напишете свои первые программы на JS
   locale: ru
 
 
 javascript-en:
+  <<: *DEFAULTS
   language: javascript
   language_version: javascript
-  description: Description
   locale: en
 
 php-ru:
+  <<: *DEFAULTS
   language: php
   language_version: php
-  description: Описание
   locale: ru
 
 
 php-en:
+  <<: *DEFAULTS
   language: php
   language_version: php
-  description: Description
   locale: en
 
 ruby-ru:
+  <<: *DEFAULTS
   language: ruby
   language_version: ruby
-  description: Описание
   locale: ru
 
 
 ruby-en:
+  <<: *DEFAULTS
   language: ruby
   language_version: ruby
-  description: Description
   locale: en
 
 go-ru:
+  <<: *DEFAULTS
   language: go
   language_version: go
-  description: Описание
   locale: ru
 
 
 go-en:
+  <<: *DEFAULTS
   language: go
   language_version: go
-  description: Description
   locale: en
 
 java-ru:
+  <<: *DEFAULTS
   language: java
   language_version: java
-  description: Описание
   locale: ru
 
 
 java-en:
+  <<: *DEFAULTS
   language: java
   language_version: java
-  description: Description
   locale: en
 
 csharp-ru:
+  <<: *DEFAULTS
   language: csharp
   language_version: csharp
-  description: Описание
   locale: ru
 
 csharp-en:
+  <<: *DEFAULTS
   language: csharp
   language_version: csharp
-  description: Description
   locale: en
 
 css-en:
+  <<: *DEFAULTS
   language: css
   language_version: css
-  description: Description
   locale: en
 
 css-ru:
+  <<: *DEFAULTS
   language: css
   language_version: css
-  description: Описание
   locale: ru

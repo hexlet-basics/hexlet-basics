@@ -1,11 +1,5 @@
-import { type PropsWithChildren } from "react";
-import {
-  Button,
-  Card,
-  Container,
-  Form,
-  Row,
-} from "react-bootstrap";
+import type { PropsWithChildren } from "react";
+import { Button, Card, Container, Form, Row } from "react-bootstrap";
 
 import { useTranslation } from "react-i18next";
 
@@ -13,22 +7,20 @@ import * as Routes from "@/routes.js";
 
 import { XInput } from "@/components/forms";
 import Application from "@/pages/layouts/Application";
-import type { Language, LanguageCategory, User } from "@/types/serializers";
+import type { User } from "@/types/serializers";
 import { Link } from "@inertiajs/react";
 
 type Props = PropsWithChildren & {
-  languageCategories: LanguageCategory[];
-  courses: Language[];
   user: User;
 };
 
-export default function New({ languageCategories, courses, user }: Props) {
+export default function New({ user }: Props) {
   const { t } = useTranslation();
   const { t: tHelpers } = useTranslation("helpers");
-  const { t: tAr } = useTranslation("activerecord");
+  useTranslation("activerecord");
 
   return (
-    <Application languageCategories={languageCategories} courses={courses}>
+    <Application>
       <Container>
         <Row className="justify-content-center">
           <div className="col-sm-8 col-md-7 col-lg-5">
@@ -52,6 +44,7 @@ export default function New({ languageCategories, courses, user }: Props) {
                   </Button>
                   <div
                     className="small text-muted"
+                    // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
                     dangerouslySetInnerHTML={{
                       __html: t("users.new.confirmation_html"),
                     }}

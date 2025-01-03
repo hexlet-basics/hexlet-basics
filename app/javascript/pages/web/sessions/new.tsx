@@ -1,11 +1,5 @@
 import type { PropsWithChildren } from "react";
-import {
-  Button,
-  Card,
-  Container,
-  Form,
-  Row,
-} from "react-bootstrap";
+import { Button, Card, Container, Form, Row } from "react-bootstrap";
 
 import { useTranslation } from "react-i18next";
 
@@ -13,22 +7,20 @@ import * as Routes from "@/routes.js";
 
 import { XInput } from "@/components/forms";
 import Application from "@/pages/layouts/Application";
-import type { Language, LanguageCategory, SignInForm } from "@/types/serializers";
+import type { SignInForm } from "@/types/serializers";
 import { Link } from "@inertiajs/react";
 
 type Props = PropsWithChildren & {
-  languageCategories: LanguageCategory[];
-  courses: Language[];
   signInForm: SignInForm;
 };
 
-export default function New({ languageCategories, courses, signInForm }: Props) {
+export default function New({ signInForm }: Props) {
   const { t } = useTranslation();
   const { t: tHelpers } = useTranslation("helpers");
-  const { t: tAr } = useTranslation("activerecord");
+  useTranslation("activerecord");
 
   return (
-    <Application languageCategories={languageCategories} courses={courses}>
+    <Application>
       <Container>
         <Row className="justify-content-center">
           <div className="col-sm-8 col-md-7 col-lg-5">

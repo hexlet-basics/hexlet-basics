@@ -3,14 +3,8 @@ import { Col, Container, Row } from "react-bootstrap";
 
 import { XBreadcrumb } from "@/components/breadcrumbs";
 import Application from "@/pages/layouts/Application";
-import type {
-  BlogPost,
-  Language,
-  LanguageCategory,
-  User,
-} from "@/types/serializers";
+import type { BlogPost } from "@/types/serializers";
 import type { BreadcrumbItem } from "@/types/types";
-import i18next from "i18next";
 import Markdown from "react-markdown";
 import remarkSlug from "remark-slug";
 import remarkToc from "remark-toc";
@@ -20,20 +14,13 @@ import * as Routes from "@/routes.js";
 import { useTranslation } from "react-i18next";
 
 type Props = PropsWithChildren & {
-  languageCategories: LanguageCategory[];
-  courses: Language[];
   blogPost: BlogPost;
   recommendedBlogPosts: BlogPost[];
 };
 
 const plugins = [() => remarkToc({ heading: "Содержание" }), remarkSlug];
 
-export default function New({
-  languageCategories,
-  courses,
-  blogPost,
-  recommendedBlogPosts,
-}: Props) {
+export default function New({ blogPost, recommendedBlogPosts }: Props) {
   const { t } = useTranslation();
 
   const items: BreadcrumbItem[] = [
@@ -48,7 +35,7 @@ export default function New({
   ];
 
   return (
-    <Application languageCategories={languageCategories} courses={courses}>
+    <Application>
       <Container>
         <Row className="justify-content-center mb-5">
           <Col className="col-12 col-md-10 col-lg-8">

@@ -3,27 +3,21 @@ import { Container } from "react-bootstrap";
 
 import { useTranslation } from "react-i18next";
 
+import { XBreadcrumb } from "@/components/breadcrumbs";
 import Application from "@/pages/layouts/Application";
 import type { Language, LanguageCategory, User } from "@/types/serializers";
-import { XBreadcrumb } from "@/components/breadcrumbs";
 
-import * as Routes from "@/routes.js";
 import CourseBlock from "@/components/CourseBlock";
+import * as Routes from "@/routes.js";
 
 type Props = PropsWithChildren & {
-  languageCategories: LanguageCategory[];
   categoryCourses: Language[];
   courses: Language[];
   courseCategory: LanguageCategory;
   user: User;
 };
 
-export default function New({
-  languageCategories,
-  courseCategory,
-  courses,
-  categoryCourses
-}: Props) {
+export default function New({ courseCategory, categoryCourses }: Props) {
   const { t } = useTranslation();
   const { t: tHelpers } = useTranslation("helpers");
   const { t: tAr } = useTranslation("activerecord");
@@ -36,7 +30,7 @@ export default function New({
   ];
 
   return (
-    <Application languageCategories={languageCategories} courses={courses}>
+    <Application>
       <Container>
         <XBreadcrumb items={items} />
         <h1 className="mb-5">{courseCategory.name}</h1>

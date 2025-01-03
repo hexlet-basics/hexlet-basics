@@ -3,19 +3,19 @@ Rails.application.routes.draw do
   # mount Sidekiq::Web => '/sidekiq', constraints: AdminConstraint.new
 
   # for kubernets probe
-  get '/health', to: proc { |_env| [ 200, {}, [ 'it works!' ] ] }
+  get "/health", to: proc { |_env| [ 200, {}, [ "it works!" ] ] }
 
   scope module: :web do
-    post '/auth/:provider', to: 'auth#request', as: :auth_request
-    get '/auth/:provider/callback', to: 'auth#callback', as: :callback_auth
-    post '/google/callback', to: 'google_auth#one_tap', as: :google_onetap_callback
+    post "/auth/:provider", to: "auth#request", as: :auth_request
+    get "/auth/:provider/callback", to: "auth#callback", as: :callback_auth
+    post "/google/callback", to: "google_auth#one_tap", as: :google_onetap_callback
 
-    match '/403', to: 'errors#forbidden', via: :all
-    match '/404', to: 'errors#not_found', via: :all
-    match '/500', to: 'errors#server_error', via: :all
+    match "/403", to: "errors#forbidden", via: :all
+    match "/404", to: "errors#not_found", via: :all
+    match "/500", to: "errors#server_error", via: :all
   end
 
-  scope '(:locale)', locale: /en|ru/ do
+  scope "(:locale)", locale: /en|ru/ do
     namespace :api do
       resources :languages, only: %i[index show] do
         scope module: :languages do
@@ -36,9 +36,9 @@ Rails.application.routes.draw do
     end
 
     scope module: :web do
-      root 'home#index'
+      root "home#index"
 
-      get '/robots.:format' => 'home#robots', as: :robots
+      get "/robots.:format" => "home#robots", as: :robots
       resources :pages, only: %i[show]
       resources :blog_posts, only: %i[index show]
       resources :reviews, only: %i[index]
@@ -63,7 +63,7 @@ Rails.application.routes.draw do
       end
 
       namespace :admin do
-        root 'home#index'
+        root "home#index"
 
         namespace :api do
           resources :users do

@@ -11,13 +11,17 @@ class Web::LanguagesController < Web::ApplicationController
     #   f('.language_in_development_html', type: :info, values: { language: @language.to_s, link_to_repo: ExternalLinks.source_code_curl, link_to_recommendations: page_path(:authors) }, now: true)
     # end
     #
-    # @current_module_versions = @language.current_module_versions
-    #                                     .includes(:module)
-    #                                     .order(:order)
-    #                                     .eager_load(:lesson_versions)
-    #                                     .joins(:infos)
-    #                                     .merge(Language::Module::Version::Info.with_locale)
-    #                                     .merge(Language::Lesson::Version.includes(:lesson).order(:order))
+    language_module_versions = language.current_module_versions
+                                        .includes(:module)
+                                        .order(:order)
+                                        .eager_load(:lesson_versions)
+                                        .joins(:infos)
+                                        .merge(Language::Module::Version::Info.with_locale)
+                                        .merge(Language::Lesson::Version.includes(:lesson).order(:order))
+
+    language_module_resources = language_module_versions.map { |version| Language::ModuleResource.new(version) }
+    language_module_resources_by_id = language_module_resources.index_by { |r| r.object.id }
+
     #
     # @infos_by_module = @language.current_module_infos.with_locale.index_by(&:version_id)
     # @infos_by_lesson = @language.current_lesson_infos.with_locale.index_by(&:version_id)
@@ -25,8 +29,8 @@ class Web::LanguagesController < Web::ApplicationController
     # @finished_lessons_by_id = current_user.finished_lessons_for_language(@language).index_by(&:id)
     # @language_member = @language.members.find_by(user: current_user) || Language::MemberFake.new
     #
-    # @first_lesson = @language.current_lessons.ordered.first
-    # @next_lesson = current_user.not_finished_lessons_for_language(@language).ordered.first
+    first_lesson = language.current_lessons.ordered.first
+    next_lesson = current_user.not_finished_lessons_for_language(language).ordered.first
     #
     # @similar_languages = Language.web.order('RANDOM()').excluding(@language).limit(4)
     # @blog_posts = @language.blog_posts.published
@@ -62,8 +66,11 @@ class Web::LanguagesController < Web::ApplicationController
     # end
 
     render inertia: true, props: {
-      language: LanguageResource.new(language),
-      languageCategory: Language::CategoryResource.new(language.category)
+      course: LanguageResource.new(language),
+      languageCategory: Language::CategoryResource.new(language.category),
+      firstLesson: Language::LessonResource.new(first_lesson),
+      nextLesson: Language::LessonResource.new(next_lesson),
+      language_module_resources_by_id:
     }
   end
 end

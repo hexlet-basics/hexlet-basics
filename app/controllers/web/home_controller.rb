@@ -50,7 +50,8 @@ class Web::HomeController < Web::ApplicationController
     user = User::SignUpForm.new
     render inertia: true, props: {
       blogPosts: BlogPostResource.new(blog_posts),
-      user: UserResource.new(user)
+      newUser: UserResource.new(user),
+      courseCategories: Language::Category.all
     }
   end
 

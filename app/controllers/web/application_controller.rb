@@ -2,6 +2,7 @@
 
 class Web::ApplicationController < ApplicationController
   allow_browser versions: :modern
+  inertia_share flash: -> { flash.to_hash }
 
   include ActionView::Helpers::UrlHelper
   include FlashConcern
@@ -35,7 +36,10 @@ class Web::ApplicationController < ApplicationController
     {
       languageCategories: Language::CategoryResource.new(language_categories),
       courses: LanguageResource.new(languages),
-      currentUser: UserResource.new(current_user)
+      locale: I18n.locale,
+      auth: {
+        user: UserResource.new(current_user)
+      }
     }
   end
 

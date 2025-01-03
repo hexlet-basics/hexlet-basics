@@ -20,4 +20,10 @@ class LanguageResource
   attribute :cover do |language|
     "#{language.slug}.png"
   end
+
+  typelize :string, nullable: true
+  attribute :description do |language|
+    language_version_info = language.current_version.infos.find_by!(locale: I18n.locale)
+    language_version_info.description
+  end
 end

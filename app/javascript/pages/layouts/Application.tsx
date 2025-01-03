@@ -1,5 +1,6 @@
 import cn from "classnames";
-import { type PropsWithChildren, useState } from "react";
+import i18n from "i18next";
+import { type PropsWithChildren, useEffect } from "react";
 import { Col, Container, Nav, NavDropdown, Navbar, Row } from "react-bootstrap";
 
 import { useTranslation } from "react-i18next";
@@ -8,23 +9,30 @@ import logoImg from "../../images/logo.png";
 import { deviconClass } from "../../lib/utils.js";
 import * as Routes from "../../routes.js";
 
-import { Link } from "@inertiajs/react";
-import type { Language, LanguageCategory } from "../../types/serializers";
+import type { SharedProps } from "@/types/types.js";
+import { Link, usePage } from "@inertiajs/react";
+import i18next from "i18next";
 
-type Props = PropsWithChildren & {
-  languageCategories: LanguageCategory[];
-  courses: Language[];
+type Props = PropsWithChildren & {};
+
+const locales = {
+  ru: {
+    icon: "fi fi-ru",
+    name: "Русский",
+  },
+  en: {
+    icon: "fi fi-us",
+    name: "English",
+  },
 };
 
-export default function Application({
-  children,
-  languageCategories,
-  courses,
-}: Props) {
+export default function Application({ children }: Props) {
   const { t: tLayouts } = useTranslation("layouts");
-  const [collapsed, setCollapsed] = useState(false);
+  const { courses, locale } = usePage<SharedProps>().props;
 
-  const Logo = <img width="30" alt="Code Basics logo" src={logoImg} />;
+  useEffect(() => {
+    i18next.changeLanguage(locale);
+  }, [locale]);
 
   return (
     <>
@@ -74,6 +82,22 @@ export default function Application({
               >
                 {tLayouts("shared.nav.registration")}
               </Nav.Link>
+              <NavDropdown
+                className="link-body-emphasis"
+                title={<i className={locales[i18n.language].icon} />}
+                id="basic-nav-dropdown"
+              >
+                {Object.entries(locales).map(([k, v]) => (
+                  <NavDropdown.Item
+                    className="d-flex align-items-center"
+                    key={k}
+                    href={Routes.switch_locale_path({ new_locale: k })}
+                  >
+                    <i className={cn(v.icon, "me-2")} />
+                    {v.name}
+                  </NavDropdown.Item>
+                ))}
+              </NavDropdown>
             </Nav>
           </Navbar.Collapse>
         </Navbar>

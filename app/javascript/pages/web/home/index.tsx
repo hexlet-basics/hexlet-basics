@@ -3,39 +3,24 @@ import { useTranslation } from "react-i18next";
 import Markdown from "react-markdown";
 import { TypeAnimation } from "react-type-animation";
 
-import Layout from "@/pages/layouts/Application";
 import * as Routes from "@/routes.js";
-import type {
-  BlogPost,
-  Language,
-  LanguageCategory,
-  Review,
-  User,
-} from "@/types/serializers";
+import type { BlogPost, Review, User } from "@/types/serializers";
 
 import BlogPostBlock from "@/components/BlogPostBlock";
 import CourseBlock from "@/components/CourseBlock";
 import { XInput } from "@/components/forms";
 import codeImagePath from "@/images/code-basics-coding-ru.png";
 import { assetPath } from "@/lib/utils.js";
-import { Link } from "@inertiajs/react";
-import {
-  Accordion,
-  Button,
-  Card,
-  Col,
-  Container,
-  Form,
-  Row,
-} from "react-bootstrap";
+import Application from "@/pages/layouts/Application";
+import type { SharedProps } from "@/types/types";
+import { Link, usePage } from "@inertiajs/react";
+import { Accordion, Button, Col, Container, Form, Row } from "react-bootstrap";
 
 type Props = PropsWithChildren & {
-  languageCategories: LanguageCategory[];
-  courses: Language[];
   blogPosts: BlogPost[];
+  courseCategories: LanguageCategory[];
   reviews: Review[];
-  currentUser: User;
-  user: User;
+  newUser: User;
 };
 
 const sequence = [
@@ -78,23 +63,21 @@ const reviews = [
   },
 ];
 
-export default function Index({
-  languageCategories,
-  courses,
-  blogPosts,
-  currentUser,
-  user,
-}: Props) {
+export default function Index({ blogPosts, newUser, courseCategories }: Props) {
   const { t } = useTranslation();
   const { t: tFaq } = useTranslation("faq");
-  const { t: tJS } = useTranslation("js");
   const { t: tHelpers } = useTranslation("helpers");
+
+  const {
+    courses,
+    auth: { user },
+  } = usePage<SharedProps>().props;
 
   const faq = tFaq("main", { returnObjects: true });
   console.log(faq);
 
   return (
-    <Layout languageCategories={languageCategories} courses={courses}>
+    <Application>
       <Container className="mb-5 py-5">
         <div className="bg-body-tertiary p-4 pb-0 pt-lg-5 align-items-center border shadow-sm rounded-3">
           <div className="row">
@@ -151,7 +134,7 @@ export default function Index({
             </h2>
 
             <div className="d-flex flex-wrap">
-              {languageCategories.map((c) => (
+              {courseCategories.map((c) => (
                 <a
                   key={c.id}
                   href={Routes.language_category_path(c.slug!)}
@@ -273,7 +256,7 @@ export default function Index({
         </Container>
       </div>
 
-      {currentUser.guest && (
+      {user.guest && (
         <div className="">
           <div className="container">
             <div className="row align-items-center g-lg-5 py-5">
@@ -294,8 +277,8 @@ export default function Index({
                   action={Routes.users_path()}
                   className="d-flex flex-column bg-body-tertiary p-4 p-md-5 border rounded-3"
                 >
-                  <XInput model={user} attribute="first_name" />
-                  <XInput model={user} attribute="email" />
+                  <XInput model={newUser} attribute="first_name" />
+                  <XInput model={newUser} attribute="email" />
                   <div className="text-end text-muted small mb-4">
                     {t("users.new.have_account")}{" "}
                     <Link
@@ -322,6 +305,6 @@ export default function Index({
           </div>
         </div>
       )}
-    </Layout>
+    </Application>
   );
 }
