@@ -2,7 +2,7 @@
 
 module AppHost
   def self.canonical
-    # ENV.fetch('APP_HOST')
+    ENV.fetch("APP_HOST")
   end
 
   # NOTE: for en dont use path /en but /

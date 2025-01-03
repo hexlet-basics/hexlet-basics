@@ -37,16 +37,17 @@ class Web::ApplicationController < ApplicationController
       languageCategories: Language::CategoryResource.new(language_categories),
       courses: LanguageResource.new(languages),
       locale: I18n.locale,
+      suffix: I18n.locale == :en ? nil : I18n.locale,
       auth: {
         user: UserResource.new(current_user)
       }
     }
   end
 
-  before_action do
-    @switching_locales ||= I18n.available_locales.without(I18n.locale)
-                               .index_with { |locale| switch_locale_path(new_locale: locale) }
-  end
+  # before_action do
+  #   @switching_locales ||= I18n.available_locales.without(I18n.locale)
+  #                              .index_with { |locale| switch_locale_path(new_locale: locale) }
+  # end
 
   private
 
@@ -76,26 +77,27 @@ class Web::ApplicationController < ApplicationController
 
   def prepare_locale_settings
     # NOTE: never redirect bots
-    # if browser.bot?
-    #   I18n.locale = params[:locale] || I18n.default_locale
-    #   return
-    # end
+    if browser.bot?
+      I18n.locale = params[:suffix] || I18n.default_locale
+      return
+    end
 
-    if current_page?(root_path) && !params[:locale]
+    if current_page?(root_path) && !params[:suffix]
       remembered_locale = session[:locale].presence
       if remembered_locale
         # root page, no subdomain and no default locale -> redirect
         if remembered_locale.to_sym != I18n.default_locale
-          redirect_to root_url(locale: remembered_locale), allow_other_host: true
+          redirect_to root_url(suffix: remembered_locale), allow_other_host: true
         end
       else
         # root page, no subdomain, never changed locale
         ru_country_codes = [ "RU" ]
         if locale_from_header == :ru || ru_country_codes.include?(country_by_ip)
-          redirect_to root_url(locale: :ru), allow_other_host: true
+          redirect_to root_url(suffix: :ru), allow_other_host: true
         end
       end
     else
+      I18n.locale = params[:suffix].presence || I18n.default_locale
       # not root page or root with subdomain
       session[:locale] = I18n.locale
     end

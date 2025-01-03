@@ -15,7 +15,8 @@ interface SharedProps extends PageProps {
   auth: {
     user: User;
   };
-  locale: 'ru' | 'en' // TODO: use i18next.i18n["locale"];
+  suffix: "ru" | null;
+  locale: "ru" | "en"; // TODO: use i18next.i18n["locale"];
   flash: Record<"alert" | "notice", string | null>;
   courses: Language[];
 }

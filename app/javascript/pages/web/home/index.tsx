@@ -238,8 +238,8 @@ export default function Index({ blogPosts, newUser, courseCategories }: Props) {
         </Container>
       </div>
 
-      <Container className="mb-5">
-        {blogPosts.length > 0 && (
+      {blogPosts.length > 0 && (
+        <Container className="mb-5">
           <>
             <div className="d-flex">
               <h2 className="me-auto mt-auto">{t("home.index.blog_posts")}</h2>
@@ -261,8 +261,8 @@ export default function Index({ blogPosts, newUser, courseCategories }: Props) {
               ))}
             </Row>
           </>
-        )}
-      </Container>
+        </Container>
+      )}
 
       {locale === "ru" && (
         <div className="bg-body-tertiary mb-5 py-5">

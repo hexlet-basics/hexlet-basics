@@ -49,6 +49,7 @@ from-full-ru:
 from-full-en:
   <<: *DEFAULTS
   body: DRAFT
+  name: What is $LABEL
   description: |
     <%= Faker::Lorem.paragraph(sentence_count: 4) %>
   state: draft
@@ -75,6 +76,7 @@ from-full-ru-js:
 
 from-full-en-js:
   <<: *DEFAULTS
+  name: What is $LABEL
   description: |
     <%= Faker::Lorem.paragraph(sentence_count: 4) %>
   body: |
@@ -107,6 +109,7 @@ from-full-ru-php:
 
 from-full-en-php:
   <<: *DEFAULTS
+  name: What is $LABEL
   body: <%= Faker::Lorem.paragraph_by_chars %>
   description: |
     <%= Faker::Lorem.paragraph(sentence_count: 4) %>

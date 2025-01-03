@@ -3,8 +3,8 @@
     "activemodel": {
       "attributes": {
         "sign_in_form": {
-          "email": "",
-          "password": ""
+          "email": "Email",
+          "password": "Password"
         }
       },
       "errors": {

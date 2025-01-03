@@ -29,7 +29,7 @@ const locales = {
 export default function Application({ children }: Props) {
   const { t: tLayouts } = useTranslation("layouts");
   const { t: tCommon } = useTranslation("common");
-  const { courses, locale } = usePage<SharedProps>().props;
+  const { courses, locale, suffix } = usePage<SharedProps>().props;
 
   useEffect(() => {
     i18next.changeLanguage(locale);
@@ -60,7 +60,7 @@ export default function Application({ children }: Props) {
                   <NavDropdown.Item
                     className="d-flex align-items-center"
                     key={c.id}
-                    href={Routes.language_path(c.slug!)}
+                    href={Routes.language_path(c.slug!, { suffix })}
                   >
                     <i
                       className={cn(deviconClass(c.slug!), "colored", "me-2")}
@@ -73,13 +73,13 @@ export default function Application({ children }: Props) {
             <Nav>
               <Nav.Link
                 className="link-body-emphasis"
-                href={Routes.new_session_path()}
+                href={Routes.new_session_path({ suffix })}
               >
                 {tLayouts("shared.nav.sign_in")}
               </Nav.Link>
               <Nav.Link
                 className="link-body-emphasis"
-                href={Routes.new_user_path()}
+                href={Routes.new_user_path({ suffix })}
               >
                 {tLayouts("shared.nav.registration")}
               </Nav.Link>
@@ -114,9 +114,7 @@ export default function Application({ children }: Props) {
                 <Nav.Item className="mb-3">
                   <a href="mailto:support@hexlet.io">support@hexlet.io</a>
                 </Nav.Item>
-                <Nav.Item>
-                  {tCommon('address')}
-                </Nav.Item>
+                <Nav.Item>{tCommon("address")}</Nav.Item>
               </Nav>
             </Col>
             <Col>
@@ -124,7 +122,7 @@ export default function Application({ children }: Props) {
                 <Nav.Item>
                   <Link
                     className="link-body-emphasis text-decoration-none"
-                    href={Routes.page_path("about")}
+                    href={Routes.page_path("about", { suffix })}
                   >
                     {tLayouts("shared.footer.about")}
                   </Link>
@@ -132,7 +130,7 @@ export default function Application({ children }: Props) {
                 <Nav.Item>
                   <Link
                     className="link-body-emphasis text-decoration-none"
-                    href={Routes.blog_posts_path()}
+                    href={Routes.blog_posts_path({ suffix })}
                   >
                     {tLayouts("shared.footer.blog")}
                   </Link>
@@ -140,7 +138,7 @@ export default function Application({ children }: Props) {
                 <Nav.Item>
                   <Link
                     className="link-body-emphasis text-decoration-none"
-                    href={Routes.reviews_path()}
+                    href={Routes.reviews_path({ suffix })}
                   >
                     {tLayouts("shared.footer.reviews")}
                   </Link>
@@ -148,7 +146,7 @@ export default function Application({ children }: Props) {
                 <Nav.Item>
                   <Link
                     className="link-body-emphasis text-decoration-none"
-                    href={Routes.page_path("authors")}
+                    href={Routes.page_path("authors", { suffix })}
                   >
                     {tLayouts("shared.footer.authors")}
                   </Link>
@@ -212,7 +210,7 @@ export default function Application({ children }: Props) {
                 <Nav.Item>
                   <Link
                     className="link-body-emphasis text-decoration-none"
-                    href={Routes.page_path("tos")}
+                    href={Routes.page_path("tos", { suffix })}
                   >
                     {tLayouts("shared.footer.tos")}
                   </Link>
@@ -220,7 +218,7 @@ export default function Application({ children }: Props) {
                 <Nav.Item>
                   <Link
                     className="link-body-emphasis text-decoration-none"
-                    href={Routes.page_path("privacy")}
+                    href={Routes.page_path("privacy", { suffix })}
                   >
                     {tLayouts("shared.footer.privacy")}
                   </Link>
@@ -229,7 +227,7 @@ export default function Application({ children }: Props) {
             </Col>
           </Row>
           <div className="d-flex flex-column flex-sm-row justify-content-between pt-4 my-4 border-top">
-            <div>{`© ${new Date().getFullYear()} ${tCommon('legal_name')}`}</div>
+            <div>{`© ${new Date().getFullYear()} ${tCommon("legal_name")}`}</div>
             <ul className="fs-3 d-flex list-unstyled">
               <li className="me-3">
                 <a
@@ -241,16 +239,18 @@ export default function Application({ children }: Props) {
                   <i className="bi bi-github" />
                 </a>
               </li>
-              <li className="me-3">
-                <a
-                  target="_blank"
-                  rel="noreferrer"
-                  className="link-body-emphasis"
-                  href="https://ttttt.me/hexlet_ru"
-                >
-                  <i className="bi bi-telegram" />
-                </a>
-              </li>
+              {locale === "ru" && (
+                <li className="me-3">
+                  <a
+                    target="_blank"
+                    rel="noreferrer"
+                    className="link-body-emphasis"
+                    href="https://ttttt.me/hexlet_ru"
+                  >
+                    <i className="bi bi-telegram" />
+                  </a>
+                </li>
+              )}
               <li>
                 <a
                   target="_blank"
