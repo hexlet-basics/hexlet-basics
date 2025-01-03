@@ -10,6 +10,6 @@ type Language = {
   name: string | null;
   cover: string | null;
   description: string | null;
-};
+}
 
 export default Language;

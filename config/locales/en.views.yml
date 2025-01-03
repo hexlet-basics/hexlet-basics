@@ -42,7 +42,7 @@ en:
             finished_lessons: Finished Lessons
     home:
       hero:
-        learn_html: Learn&nbsp;
+        learn_html: Learn
         try: Try now
         free_programming_courses: Learn to Programming for Free
         fastest_way_to_start_coding: The easiest way to experience coding right in your browser, Code Basics is an online platform featuring free programming tutorials and an interactive coding environment. Every lesson comes with an exercise to practice.
@@ -57,7 +57,7 @@ en:
         blog_posts: Posts
         all_blog_posts: All Blog Posts
         categories: Categories
-        join: Join the %{count} learners for free. Forever.
+        join: Sign up and start learning. For free. Forever
         header: Learn to code. Online. For free.
         subheader: "For those who start from scratch. From the creators of "
         start: "Start"

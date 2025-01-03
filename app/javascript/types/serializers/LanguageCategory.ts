@@ -6,6 +6,6 @@ type LanguageCategory = {
   id: number;
   slug: string | null;
   name: string | null;
-};
+}
 
 export default LanguageCategory;

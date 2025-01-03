@@ -4,12 +4,18 @@ import Markdown from "react-markdown";
 import { TypeAnimation } from "react-type-animation";
 
 import * as Routes from "@/routes.js";
-import type { BlogPost, Review, User } from "@/types/serializers";
+import type {
+  BlogPost,
+  LanguageCategory,
+  Review,
+  User,
+} from "@/types/serializers";
 
 import BlogPostBlock from "@/components/BlogPostBlock";
 import CourseBlock from "@/components/CourseBlock";
 import { XInput } from "@/components/forms";
-import codeImagePath from "@/images/code-basics-coding-ru.png";
+import codeImagePathRu from "@/images/code-basics-coding-ru.png";
+import codeImagePathEn from "@/images/code-basics-coding-en.png";
 import { assetPath } from "@/lib/utils.js";
 import Application from "@/pages/layouts/Application";
 import type { SharedProps } from "@/types/types";
@@ -42,33 +48,60 @@ const sequence = [
   1000,
 ];
 
-const reviews = [
-  {
-    name: "Александр Авдошкин",
-    avatar: assetPath("avdoshkin.jpg"),
-    body: `Если бы не коронавирус, выполнил бы всё в заход (в смысле каждый день по несколько пунктов в теме).
-            Изучаю с нуля, ваш портал очень ориентирован на новичков. Спасибо вам большое!`,
-  },
-  {
-    name: "Сергей Тюрин",
-    avatar: assetPath("tyrin.jpg"),
-    body: `Очень всё доступно даже для полного профана вроде меня. Эта вводная по JS вошла в мой туговатый ум,
-            складно как недостающий пазл. Всем кидаю линк на эту страничку.`,
-  },
-  {
-    name: "Элиях Клейман",
-    avatar: assetPath("user-avatar.png"),
-    body: `Для меня это первый курс для новичка. Понравилось тем, что вся информация структурирована
-            и дана по мере изучения материала в иерархичном порядке, что значительно повышает и желание к обучению`,
-  },
-];
+const codeImagePaths = {
+  ru: codeImagePathRu,
+  en: codeImagePathEn,
+};
+
+const reviews = {
+  ru: [
+    {
+      name: "Александр Авдошкин",
+      avatar: assetPath("avdoshkin.jpg"),
+      body: `Если бы не коронавирус, выполнил бы всё в заход (в смысле каждый день по несколько пунктов в теме).
+              Изучаю с нуля, ваш портал очень ориентирован на новичков. Спасибо вам большое!`,
+    },
+    {
+      name: "Сергей Тюрин",
+      avatar: assetPath("tyrin.jpg"),
+      body: `Очень всё доступно даже для полного профана вроде меня. Эта вводная по JS вошла в мой туговатый ум,
+              складно как недостающий пазл. Всем кидаю линк на эту страничку.`,
+    },
+    {
+      name: "Элиях Клейман",
+      avatar: assetPath("user-avatar.png"),
+      body: `Для меня это первый курс для новичка. Понравилось тем, что вся информация структурирована
+              и дана по мере изучения материала в иерархичном порядке, что значительно повышает и желание к обучению`,
+    },
+  ],
+  en: [
+    {
+      name: "Aleksandr Avdoshkin",
+      avatar: assetPath("avdoshkin.jpg"),
+      body: "As someone with zero coding skills, I'd say that CodeBasics is focused on newcomers. Thank you very much!",
+    },
+    {
+      name: "Sergei Tyurin",
+      avatar: assetPath("tyrin.jpg"),
+      body: "This is all very approachable even for a dummy like me. Now I show people this platform when I get the chance.",
+    },
+    {
+      name: "Eliyah Kleyman",
+      avatar: assetPath("user-avatar.png"),
+      body: `For me, it was my very first programming course. I liked it because all the information is very well 
+        structured and given in a clear hierarchical order. It motivated me a lot to move forward in my studies.`,
+    },
+  ],
+};
 
 export default function Index({ blogPosts, newUser, courseCategories }: Props) {
   const { t } = useTranslation();
+  // FIXME: en version
   const { t: tFaq } = useTranslation("faq");
   const { t: tHelpers } = useTranslation("helpers");
 
   const {
+    locale,
     courses,
     auth: { user },
   } = usePage<SharedProps>().props;
@@ -112,7 +145,7 @@ export default function Index({ blogPosts, newUser, courseCategories }: Props) {
                 alt="Как работает обучение на code-basics"
                 className="rounded-lg-3"
                 height="356"
-                src={codeImagePath}
+                src={codeImagePaths[locale]}
                 width="720"
               />
             </div>
@@ -172,7 +205,7 @@ export default function Index({ blogPosts, newUser, courseCategories }: Props) {
           <hr className="mb-5 mt-1" />
 
           <div className="row g-4 row-cols-1 row-cols-sm-2 row-cols-lg-3">
-            {reviews.map((review) => (
+            {reviews[locale].map((review) => (
               <div key={review.avatar} className="col">
                 <div className="d-flex mb-3">
                   <img
@@ -231,30 +264,32 @@ export default function Index({ blogPosts, newUser, courseCategories }: Props) {
         )}
       </Container>
 
-      <div className="bg-body-tertiary mb-5 py-5">
-        <Container className="mb-5">
-          <h2>
-            <a
-              id="faq"
-              className="text-decoration-none link-body-emphasis"
-              href="#faq"
-            >
-              {tFaq("header")}
-            </a>
-          </h2>
-          <hr className="mb-5" />
-          <Accordion defaultActiveKey="0">
-            {Object.entries(faq).map(([key, value], index) => (
-              <Accordion.Item eventKey={String(index)} key={key}>
-                <Accordion.Header>{value.question}</Accordion.Header>
-                <Accordion.Body>
-                  <Markdown>{value.answer}</Markdown>
-                </Accordion.Body>
-              </Accordion.Item>
-            ))}
-          </Accordion>
-        </Container>
-      </div>
+      {locale === "ru" && (
+        <div className="bg-body-tertiary mb-5 py-5">
+          <Container className="mb-5">
+            <h2>
+              <a
+                id="faq"
+                className="text-decoration-none link-body-emphasis"
+                href="#faq"
+              >
+                {tFaq("header")}
+              </a>
+            </h2>
+            <hr className="mb-5" />
+            <Accordion defaultActiveKey="0">
+              {Object.entries(faq).map(([key, value], index) => (
+                <Accordion.Item eventKey={String(index)} key={key}>
+                  <Accordion.Header>{value.question}</Accordion.Header>
+                  <Accordion.Body>
+                    <Markdown>{value.answer}</Markdown>
+                  </Accordion.Body>
+                </Accordion.Item>
+              ))}
+            </Accordion>
+          </Container>
+        </div>
+      )}
 
       {user.guest && (
         <div className="">

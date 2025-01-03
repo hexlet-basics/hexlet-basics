@@ -6,6 +6,6 @@ type LanguageLesson = {
   id: number;
   slug: string | null;
   module_id: number | null;
-};
+}
 
 export default LanguageLesson;

@@ -30,6 +30,10 @@ en:
         about_code_basics: About Code Basics
         reviews: Reviews
       footer:
+        hexlet: Hexlet
+        hexlet-cv: Hexlet.CV
+        hexlet-sicp: Hexlet.SICP
+        hexlet-friends: Hexlet.Friends
         useful: Useful
         blog: Blog
         reviews: Reviews

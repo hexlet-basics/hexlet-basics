@@ -77542,6 +77542,10 @@
           "blog": "Blog",
           "cookie_policy": "Cookie Policy",
           "free_call": "Calls within Russia are toll free",
+          "hexlet": "Hexlet",
+          "hexlet-cv": "Hexlet.CV",
+          "hexlet-friends": "Hexlet.Friends",
+          "hexlet-sicp": "Hexlet.SICP",
           "hexlet_address": "TOO \"Hexlet\", The Republic of Kazakhstan, Almaty, Auezova St., 14A",
           "hexlet_blog": "Blog",
           "hexlet_number": "BIN 230340043714",
@@ -77818,7 +77822,7 @@
           "fastest_way_to_start_coding": "The easiest way to experience coding right in your browser, Code Basics is an online platform featuring free programming tutorials and an interactive coding environment. Every lesson comes with an exercise to practice.",
           "free_programming_courses": "Learn to Programming for Free",
           "how_coding_works": "How learning works with code-basics",
-          "learn_html": "Learn&nbsp;",
+          "learn_html": "Learn",
           "try": "Try now"
         },
         "index": {
@@ -77830,7 +77834,7 @@
           "hexlet": "Hexlet",
           "in_development": "Coming soon",
           "in_development_description": "Courses below are not in production at the moment. However, you can contribute by sending a pull request to Github repository.",
-          "join": "Join the %{count} learners for free. Forever.",
+          "join": "Sign up and start learning. For free. Forever",
           "meta_description": "Learn the Code Basics of HTML, CSS and JavaScript with Interactive Coding Environment right in your Browser! Perfect for Beginners & 100% for Free | Join our Online Programming Courses\n",
           "reviews": "Reviews",
           "start": "Start",

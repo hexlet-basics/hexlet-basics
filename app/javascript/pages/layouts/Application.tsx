@@ -28,6 +28,7 @@ const locales = {
 
 export default function Application({ children }: Props) {
   const { t: tLayouts } = useTranslation("layouts");
+  const { t: tCommon } = useTranslation("common");
   const { courses, locale } = usePage<SharedProps>().props;
 
   useEffect(() => {
@@ -114,9 +115,7 @@ export default function Application({ children }: Props) {
                   <a href="mailto:support@hexlet.io">support@hexlet.io</a>
                 </Nav.Item>
                 <Nav.Item>
-                  ООО «Хекслет Рус», 108813, г. Москва, вн.тер.г. поселение
-                  Московский, г. Московский, ул. Солнечная, д. 3А, стр. 1,
-                  помещ. 10/3 ОГРН 1217300010476
+                  {tCommon('address')}
                 </Nav.Item>
               </Nav>
             </Col>
@@ -230,7 +229,7 @@ export default function Application({ children }: Props) {
             </Col>
           </Row>
           <div className="d-flex flex-column flex-sm-row justify-content-between pt-4 my-4 border-top">
-            <div>© 2025 Хекслет</div>
+            <div>{`© ${new Date().getFullYear()} ${tCommon('legal_name')}`}</div>
             <ul className="fs-3 d-flex list-unstyled">
               <li className="me-3">
                 <a

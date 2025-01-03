@@ -9,6 +9,6 @@ type User = {
   guest: boolean | null;
   password: string | null;
   type: "user";
-};
+}
 
 export default User;
