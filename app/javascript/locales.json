@@ -82997,7 +82997,7 @@
           "ready": "Готовы попробовать?",
           "registration": "Регистрация",
           "registration_description": "Начните прямо сейчас",
-          "see_all_courses_in_category": "Посмотреть все курсы категории %{name}",
+          "see_all_courses_in_category": "Все курсы \"{{name}}\"",
           "sign_up": "Зарегистрироваться",
           "similar_courses": "Похожие курсы",
           "start": "Начать обучение",

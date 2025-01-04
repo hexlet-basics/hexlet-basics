@@ -83,7 +83,7 @@ class Web::LanguagesController < Web::ApplicationController
       nextLesson: Language::LessonResource.new(next_lesson),
       courseModules: Language::ModuleResource.new(language_modules_infos),
       lessonsByModuleId: lesson_resources_by_module_id,
-      recommendedCourses: recommendedCourses
+      recommendedCourses: LanguageResource.new(recommendedCourses)
     }
   end
 end

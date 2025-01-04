@@ -17,6 +17,7 @@ import type {
 } from "@/types/serializers";
 import type { BreadcrumbItem, SharedProps } from "@/types/types";
 import { Link, usePage } from "@inertiajs/react";
+import CourseBlock from "@/components/CourseBlock";
 
 type Props = PropsWithChildren & {
   courseCategory: LanguageCategory;
@@ -24,6 +25,7 @@ type Props = PropsWithChildren & {
   firstLesson: LanguageLesson;
   user: User;
   courseModules: LanguageModule[];
+  recommendedCourses: Language[];
   lessonsByModuleId: {
     [moduleId: number]: LanguageLesson[];
   };
@@ -34,12 +36,13 @@ export default function New({
   course,
   courseCategory,
   courseModules,
+  recommendedCourses,
   lessonsByModuleId,
 }: Props) {
   const { suffix } = usePage<SharedProps>().props;
   const { t } = useTranslation();
 
-  console.log(courseModules, lessonsByModuleId)
+  console.log(courseModules, lessonsByModuleId);
 
   const breadcrumbItems: BreadcrumbItem[] = [
     {
@@ -91,7 +94,7 @@ export default function New({
             </Link>
           </div>
         </div>
-        <div>
+        <div className="mb-5">
           {courseModules.map((m) => (
             <div key={m.id} className="mb-5">
               <h2 className="mb-4">{m.name!}</h2>
@@ -102,7 +105,11 @@ export default function New({
                       <ListGroup.Item key={l.id}>
                         <Link
                           className="text-decoration-none stretched-link"
-                          href={Routes.language_lesson_path(course.slug!, l.slug!, { suffix })}
+                          href={Routes.language_lesson_path(
+                            course.slug!,
+                            l.slug!,
+                            { suffix },
+                          )}
                         >
                           <span className="me-1">{l.natural_order!}.</span>
                           {l.name}
@@ -115,6 +122,57 @@ export default function New({
               </Row>
             </div>
           ))}
+
+          <div className="p-5 bg-body-tertiary rounded-3 mb-5">
+            <div className="d-flex justify-content-between">
+              <div>
+                <div className="display-6 fw-bold">
+                  {t("languages.show.ready")}
+                </div>
+                <div className="fs-4 fw-bold text-primary">
+                  {t("languages.show.no_registration")}
+                </div>
+              </div>
+              <div className="align-content-around">
+                <Link
+                  className="btn btn-lg btn-outline-primary"
+                  href={Routes.language_lesson_path(
+                    course.slug!,
+                    firstLesson.slug!,
+                    { suffix },
+                  )}
+                >
+                  {t("languages.show.start_demo_lesson")}
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-5">
+            <div className="d-flex justify-content-between border-bottom mb-3">
+              <h2 className="mb-2">{t("languages.show.similar_courses")}</h2>
+              <div className="align-content-around">
+                <Link
+                  className="link-body-emphasis text-muted text-decoration-none"
+                  href={Routes.language_category_path(courseCategory.slug!, {
+                    suffix,
+                  })}
+                >
+                  {t("languages.show.see_all_courses_in_category", {
+                    name: courseCategory.name,
+                  })}
+                </Link>
+              </div>
+            </div>
+
+            <Row className="row row-cols-2 row-cols-md-4 g-3">
+              {recommendedCourses.map((l) => (
+                <Col key={l.id}>
+                  <CourseBlock course={l} />
+                </Col>
+              ))}
+            </Row>
+          </div>
         </div>
       </Container>
     </Application>

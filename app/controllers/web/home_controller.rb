@@ -51,7 +51,7 @@ class Web::HomeController < Web::ApplicationController
     render inertia: true, props: {
       blogPosts: BlogPostResource.new(blog_posts),
       newUser: UserResource.new(user),
-      courseCategories: Language::Category.all
+      courseCategories: Language::CategoryResource.new(Language::Category.all)
     }
   end
 
