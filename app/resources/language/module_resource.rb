@@ -1,12 +1,14 @@
-# Language::Module::Version
+# Language::Module::Version::Info
 class Language::ModuleResource
   include Alba::Resource
   include Typelizer::DSL
 
-  attributes :id
-  #
+  typelize_from Language::Module::Version::Info
+
+  attributes :id, :locale, :description
+ 
   # typelize :string, nullable: true
-  # attribute :name do |category|
-  #   category.name_ru
+  # attribute :description do |info|
+  #   info.description
   # end
 end

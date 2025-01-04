@@ -31,11 +31,11 @@ class Web::ApplicationController < ApplicationController
 
   inertia_share do
     language_categories = Language::Category.all
-    languages = Language.web
+    languages_infos = Language::Version::Info.with_locale
 
     {
       languageCategories: Language::CategoryResource.new(language_categories),
-      courses: LanguageResource.new(languages),
+      courses: LanguageResource.new(languages_infos),
       locale: I18n.locale,
       suffix: I18n.locale == :en ? nil : I18n.locale,
       auth: {

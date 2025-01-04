@@ -38,15 +38,20 @@ one:
   language: php
   module: one
 
-two:
-  slug: hello_world
+javascript-module1-lesson1:
+  slug: $LABEL
   language: javascript
-  module: two
+  module: javascript-module1
 
-three:
+javascript-module1-lesson2:
   slug: functions
   language: javascript
-  module: two
+  module: javascript-module1
+
+javascript-module2-lesson1:
+  slug: $LABEL
+  language: javascript
+  module: javascript-module2
 
 tags_one:
   slug: tags
@@ -62,11 +67,6 @@ naming_variables_one:
   slug: quotes
   language: php
   module: variables_one
-
-javascript:
-  slug: alone_lesson
-  language: javascript
-  module: javascript
 
 elixir-hello-world:
   <<: *DEFAULTS

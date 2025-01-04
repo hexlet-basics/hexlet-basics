@@ -34,6 +34,6 @@ class Guest
   end
 
   def not_finished_lessons_for_language(language)
-    language.current_lessons
+    language.current_lesson_infos
   end
 end

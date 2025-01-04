@@ -50,8 +50,13 @@ csharp:
 elixir:
   <<: *DEFAULTS
 
-javascript:
+javascript1:
   <<: *DEFAULTS
+  language: javascript
+
+javascript2:
+  <<: *DEFAULTS
+  language: javascript
 
 css:
   <<: *DEFAULTS

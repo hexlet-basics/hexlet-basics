@@ -12,29 +12,37 @@ import type {
   Language,
   LanguageCategory,
   LanguageLesson,
+  LanguageModule,
   User,
 } from "@/types/serializers";
-import type { BreadcrumbItem } from "@/types/types";
-import { Link } from "@inertiajs/react";
+import type { BreadcrumbItem, SharedProps } from "@/types/types";
+import { Link, usePage } from "@inertiajs/react";
 
 type Props = PropsWithChildren & {
   languageCategory: LanguageCategory;
   course: Language;
   firstLesson: LanguageLesson;
   user: User;
+  courseModules: LanguageModule[];
 };
 
-export default function New({ firstLesson, course, languageCategory }: Props) {
+export default function New({
+  firstLesson,
+  course,
+  languageCategory,
+  courseModules,
+}: Props) {
+  const { suffix } = usePage<SharedProps>().props;
   const { t } = useTranslation();
 
   const breadcrumbItems: BreadcrumbItem[] = [
     {
       name: languageCategory.name!,
-      url: Routes.language_category_path(languageCategory.slug!),
+      url: Routes.language_category_path(languageCategory.slug!, { suffix }),
     },
     {
       name: course.name!,
-      url: Routes.language_path(course.slug!),
+      url: Routes.language_path(course.slug!, { suffix }),
     },
   ];
 
@@ -63,6 +71,7 @@ export default function New({ firstLesson, course, languageCategory }: Props) {
               href={Routes.language_lesson_path(
                 course.slug!,
                 firstLesson.slug!,
+                { suffix }
               )}
             >
               <span className="me-2">{t("languages.show.start")}</span>
@@ -70,11 +79,16 @@ export default function New({ firstLesson, course, languageCategory }: Props) {
             </Link>
             <Link
               className="btn btn-outline-secondary"
-              href={Routes.new_user_path()}
+              href={Routes.new_user_path({ suffix })}
             >
               {t("languages.show.registration")}
             </Link>
           </div>
+        </div>
+        <div>
+          {courseModules.map((m) => (
+            <div key={m.id}>{m.description}</div>
+          ))}
         </div>
       </Container>
     </Application>

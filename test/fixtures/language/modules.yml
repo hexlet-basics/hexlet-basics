@@ -34,16 +34,15 @@ php-basics:
   <<: *DEFAULTS
   language: php
 
-two:
+javascript-module1:
   <<: *DEFAULTS
+  language: javascript
+
+javascript-module2:
   language: javascript
 
 variables_one:
   slug: variables
-  language: javascript
-
-javascript:
-  slug: alone_module
   language: javascript
 
 elixir-basics:

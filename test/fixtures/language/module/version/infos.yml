@@ -34,12 +34,33 @@ one:
   version: one
   language_version: ruby
 
-two:
+javascript1-module1-version1-ru:
   <<: *DEFAULTS
   locale: ru
   language: javascript
-  version: two
-  language_version: javascript
+  version: javascript1-module1_version1
+  language_version: javascript1
+
+javascript1-module2-version1-ru:
+  <<: *DEFAULTS
+  locale: ru
+  language: javascript
+  version: javascript1-module2_version1
+  language_version: javascript1
+
+javascript1-module1-version2-ru:
+  <<: *DEFAULTS
+  locale: ru
+  language: javascript
+  version: javascript1-module1_version2
+  language_version: javascript1
+
+javascript1-module1-version1-en:
+  <<: *DEFAULTS
+  locale: en
+  language: javascript
+  version: javascript1-module1_version1
+  language_version: javascript1
 
 variables_one:
   name: Переменные

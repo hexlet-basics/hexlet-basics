@@ -13,6 +13,8 @@ class Language::Category < ApplicationRecord
   validates :name, presence: true
 
   has_many :languages, ->(category) { where(category: category) }, dependent: :nullify, inverse_of: :category
+  has_many :language_versions, through: :languages, source: :versions
+  has_many :language_version_infos, through: :language_versions, source: :infos, class_name: "Language::Version::Info"
   has_many :blog_posts, through: :languages, dependent: :restrict_with_exception
 
   def name

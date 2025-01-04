@@ -2,10 +2,12 @@ class Language::LessonResource
   include Alba::Resource
   include Typelizer::DSL
 
-  attributes :id, :slug, :module_id
+  typelize_from Language::Lesson::Version::Info
 
-  # typelize :number, nullable: true
-  # attribute :module_id do |category|
-  #   category.name_ru
-  # end
+  attributes :id
+
+  typelize :number, nullable: true
+  attribute :slug do |info|
+    info.lesson.slug
+  end
 end

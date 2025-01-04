@@ -39,21 +39,43 @@ DEFAULTS: &DEFAULTS
   instructions: "<%= Faker::Lorem.paragraph %>"
   definitions: []
   tips: <%= [Faker::Lorem.paragraph] %>
-  locale: <%= I18n.locale %>
+  locale: ru
+
+javascript1-module1_version1-lesson1_version1-ru:
+  <<: *DEFAULTS
+  name: <%= Faker::Lorem.word %>
+  language: javascript
+  language_version: javascript1
+  version: javascript1-module1_version1-lesson1_version1
+
+javascript1-module1_version1-lesson2_version1-ru:
+  <<: *DEFAULTS
+  name: <%= Faker::Lorem.word %>
+  language: javascript
+  language_version: javascript1
+  version: javascript1-module1_version1-lesson2_version1
+
+javascript1-module2_version1-lesson1_version1-ru:
+  <<: *DEFAULTS
+  name: <%= Faker::Lorem.word %>
+  language: javascript
+  language_version: javascript1
+  version: javascript1-module2_version1-lesson1_version1
+
+javascript1-module1_version1-lesson1_version1-en:
+  <<: *DEFAULTS
+  locale: en
+  name: <%= Faker::Lorem.word %>
+  language: javascript
+  language_version: javascript1
+  version: javascript1-module1_version1-lesson1_version1
 
 one:
   <<: *DEFAULTS
   name: <%= Faker::Lorem.word %>
   language: php
   language_version: php
-  version: one
-
-two:
-  <<: *DEFAULTS
-  name: <%= Faker::Lorem.word %>
-  language: javascript
-  language_version: javascript
-  version: two
+  version: tags_one
 
 tags_one:
   <<: *DEFAULTS
@@ -68,7 +90,6 @@ comments_one_ru:
   language: php
   language_version: php
   version: comments_one
-  locale: ru
 
 comments_one_en:
   <<: *DEFAULTS
@@ -77,13 +98,13 @@ comments_one_en:
   language_version: php
   version: comments_one
   locale: en
-
+ 
 naming_variables_one:
   <<: *DEFAULTS
   name: Именования переменной
   language: php
   language_version: php
-  version: one
+  version: tags_one
 
 elixir-hello-world-ru:
   <<: *DEFAULTS
