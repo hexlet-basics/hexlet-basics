@@ -4,10 +4,20 @@ class Language::LessonResource
 
   typelize_from Language::Lesson::Version::Info
 
-  attributes :id
+  attributes :id, :name, :locale
+
+  typelize :number, nullable: true
+  attribute :id do |info|
+    info.version.lesson.id
+  end
 
   typelize :number, nullable: true
   attribute :slug do |info|
     info.lesson.slug
+  end
+
+  typelize :number, nullable: true
+  attribute :natural_order do |info|
+    info.version.natural_order
   end
 end

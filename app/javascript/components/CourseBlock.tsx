@@ -1,6 +1,8 @@
 import { assetPath } from "@/lib/utils";
 import * as Routes from "@/routes.js";
 import type { Language } from "@/types/serializers";
+import type { SharedProps } from "@/types/types";
+import { usePage } from "@inertiajs/react";
 import type { PropsWithChildren } from "react";
 import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
@@ -12,6 +14,8 @@ type Props = PropsWithChildren & {
 export default function CourseBlock({ course }: Props) {
   const { t } = useTranslation();
   const { t: tJS } = useTranslation("js");
+  const { suffix } = usePage<SharedProps>().props;
+
   return (
     <Card className="h-100 shadow-sm bg-body-tertiary">
       <Card.Img
@@ -28,7 +32,7 @@ export default function CourseBlock({ course }: Props) {
       <Card.Body>
         <Card.Title>
           <a
-            href={Routes.language_path(course.slug!)}
+            href={Routes.language_path(course.slug!, { suffix })}
             className="stretched-link text-decoration-none link-body-emphasis"
           >
             {course.name}

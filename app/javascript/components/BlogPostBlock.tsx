@@ -5,6 +5,8 @@ import { Breadcrumb, Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
 import * as Routes from "@/routes.js";
+import type { SharedProps } from "@/types/types";
+import { usePage } from "@inertiajs/react";
 
 type Props = PropsWithChildren & {
   post: BlogPost;
@@ -12,6 +14,8 @@ type Props = PropsWithChildren & {
 
 export default function BlogPostBlock({ post }: Props) {
   const { t } = useTranslation();
+  const { suffix } = usePage<SharedProps>().props;
+
   return (
     <Card className="border-0">
       {post.cover_thumb_variant && (
@@ -24,7 +28,7 @@ export default function BlogPostBlock({ post }: Props) {
       <Card.Body className="px-1">
         <Card.Title>
           <a
-            href={Routes.blog_post_path(post.slug!)}
+            href={Routes.blog_post_path(post.slug!, { suffix })}
             className="link-body-emphasis text-decoration-none stretched-link"
           >
             {post.name}

@@ -33,23 +33,24 @@
 #  module_version_id    (module_version_id => language_module_versions.id)
 #
 class Language::Lesson::Version < ApplicationRecord
-  belongs_to :language_version, class_name: 'Language::Version'
+  belongs_to :language_version, class_name: "Language::Version"
   belongs_to :lesson
   belongs_to :language
-  belongs_to :module_version, class_name: 'Language::Module::Version'
+  belongs_to :module_version, class_name: "Language::Module::Version"
+  has_one :module, through: :module_version
 
   has_many :infos, dependent: :destroy
 
   def next_lesson
     language_version
       .lesson_versions.order(:natural_order)
-      .find_by('natural_order > ?', natural_order)&.lesson
+      .find_by("natural_order > ?", natural_order)&.lesson
   end
 
   def prev_lesson
     language_version
       .lesson_versions.order(natural_order: :desc)
-      .find_by('natural_order < ?', natural_order)&.lesson
+      .find_by("natural_order < ?", natural_order)&.lesson
   end
 
   def to_s

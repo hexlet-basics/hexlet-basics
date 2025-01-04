@@ -5,10 +5,10 @@ class Language::ModuleResource
 
   typelize_from Language::Module::Version::Info
 
-  attributes :id, :locale, :description
- 
-  # typelize :string, nullable: true
-  # attribute :description do |info|
-  #   info.description
-  # end
+  attributes :locale, :description, :name
+
+  typelize :id, nullable: true
+  attribute :id do |info|
+    info.version.module.id
+  end
 end

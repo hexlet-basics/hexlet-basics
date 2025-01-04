@@ -1,6 +1,6 @@
 import cn from "classnames";
 import type { PropsWithChildren } from "react";
-import { Container } from "react-bootstrap";
+import { Col, Container, ListGroup, Row } from "react-bootstrap";
 
 import { useTranslation } from "react-i18next";
 
@@ -19,26 +19,32 @@ import type { BreadcrumbItem, SharedProps } from "@/types/types";
 import { Link, usePage } from "@inertiajs/react";
 
 type Props = PropsWithChildren & {
-  languageCategory: LanguageCategory;
+  courseCategory: LanguageCategory;
   course: Language;
   firstLesson: LanguageLesson;
   user: User;
   courseModules: LanguageModule[];
+  lessonsByModuleId: {
+    [moduleId: number]: LanguageLesson[];
+  };
 };
 
 export default function New({
   firstLesson,
   course,
-  languageCategory,
+  courseCategory,
   courseModules,
+  lessonsByModuleId,
 }: Props) {
   const { suffix } = usePage<SharedProps>().props;
   const { t } = useTranslation();
 
+  console.log(courseModules, lessonsByModuleId)
+
   const breadcrumbItems: BreadcrumbItem[] = [
     {
-      name: languageCategory.name!,
-      url: Routes.language_category_path(languageCategory.slug!, { suffix }),
+      name: courseCategory.name!,
+      url: Routes.language_category_path(courseCategory.slug!, { suffix }),
     },
     {
       name: course.name!,
@@ -50,7 +56,7 @@ export default function New({
     <Application>
       <Container>
         <XBreadcrumb items={breadcrumbItems} />
-        <div className="p-5 text-center bg-body-tertiary rounded-3">
+        <div className="p-5 text-center bg-body-tertiary rounded-3 mb-5 border">
           <div className="d-flex justify-content-center align-items-center">
             <i
               className={cn(
@@ -71,7 +77,7 @@ export default function New({
               href={Routes.language_lesson_path(
                 course.slug!,
                 firstLesson.slug!,
-                { suffix }
+                { suffix },
               )}
             >
               <span className="me-2">{t("languages.show.start")}</span>
@@ -87,7 +93,27 @@ export default function New({
         </div>
         <div>
           {courseModules.map((m) => (
-            <div key={m.id}>{m.description}</div>
+            <div key={m.id} className="mb-5">
+              <h2 className="mb-4">{m.name!}</h2>
+              <Row className="col-12">
+                <Col>
+                  <ListGroup>
+                    {lessonsByModuleId[m.id].map((l) => (
+                      <ListGroup.Item key={l.id}>
+                        <Link
+                          className="text-decoration-none stretched-link"
+                          href={Routes.language_lesson_path(course.slug!, l.slug!, { suffix })}
+                        >
+                          <span className="me-1">{l.natural_order!}.</span>
+                          {l.name}
+                        </Link>
+                      </ListGroup.Item>
+                    ))}
+                  </ListGroup>
+                </Col>
+                <Col>{m.description}</Col>
+              </Row>
+            </div>
           ))}
         </div>
       </Container>

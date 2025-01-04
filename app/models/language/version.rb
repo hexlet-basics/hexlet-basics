@@ -30,31 +30,31 @@ class Language::Version < ApplicationRecord
   include AASM
 
   def self.ransackable_attributes(_auth_object = nil)
-    [ 'created_at' ]
+    [ "created_at" ]
   end
 
   has_many :module_versions, dependent: :destroy,
                              foreign_key: :language_version_id,
-                             class_name: 'Language::Module::Version',
+                             class_name: "Language::Module::Version",
                              inverse_of: :language_version
   has_many :lesson_versions, dependent: :destroy,
                              foreign_key: :language_version_id,
-                             class_name: 'Language::Lesson::Version',
+                             class_name: "Language::Lesson::Version",
                              inverse_of: :language_version
   has_many :lesson_infos, dependent: :destroy,
                           foreign_key: :language_version_id,
-                          class_name: 'Language::Lesson::Version::Info',
+                          class_name: "Language::Lesson::Version::Info",
                           inverse_of: :language_version
   has_many :module_infos, dependent: :destroy,
                           foreign_key: :language_version_id,
-                          class_name: 'Language::Module::Version::Info',
+                          class_name: "Language::Module::Version::Info",
                           inverse_of: :language_version
 
   has_many :lessons, through: :lesson_versions
-  has_many :infos, dependent: :destroy, foreign_key: 'language_version_id', inverse_of: :language_version
+  has_many :infos, dependent: :destroy, foreign_key: "language_version_id", inverse_of: :language_version
 
   belongs_to :language
-  has_one :current_language, class_name: 'Language', foreign_key: 'current_version_id', dependent: :restrict_with_exception, inverse_of: :current_version
+  has_one :current_language, class_name: "Language", foreign_key: "current_version_id", dependent: :restrict_with_exception, inverse_of: :current_version
 
   aasm :state do
     state :created, initial: true
@@ -80,7 +80,7 @@ class Language::Version < ApplicationRecord
   end
 
   def serializable_data
-    attrs = attributes.extract! 'id', 'name', 'created_at'
+    attrs = attributes.extract! "id", "name", "created_at"
 
     language_info = infos.find_by!(locale: I18n.locale)
 
