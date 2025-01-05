@@ -18,5 +18,37 @@
 }
 
 #app {
-  @extend .h-100
+  @extend .h-100, .d-flex, .flex-column;
+}
+
+:root {
+  --terminal-bg: #f8f9fa;
+  /* Light theme background */
+  --terminal-text: #212529;
+  /* Light theme text color */
+  --terminal-border: #ced4da;
+  /* Light theme border */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --terminal-bg: #2d2d2d;
+    /* Dark theme background */
+    --terminal-text: #f8f8f2;
+    /* Dark theme text color */
+    --terminal-border: #444;
+    /* Dark theme border */
+  }
+}
+
+// TODO: chatgpt recommendation. Fix if needed
+.hexlet-basics-output {
+  background-color: var(--terminal-bg);
+  color: var(--terminal-text);
+  padding: 15px;
+  border-radius: 5px;
+  font-family: monospace;
+  font-size: 0.9rem;
+  overflow: auto;
+  border: 1px solid var(--terminal-border);
 }

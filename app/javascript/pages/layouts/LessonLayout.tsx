@@ -23,7 +23,7 @@ export default function LessonLayout({ children }: Props) {
 
   return (
     <>
-      <Container fluid className="mb-1">
+      <Container fluid className="mb-2">
         <NavbarBlock />
       </Container>
       {children}

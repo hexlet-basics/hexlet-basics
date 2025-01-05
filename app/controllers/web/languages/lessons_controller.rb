@@ -19,6 +19,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
 
     lesson_version = resource_language.current_lesson_versions.find_by!(lesson: lesson)
     lesson_info = lesson_version.infos.find_by!(locale: I18n.locale)
+    language_info = resource_language.current_version.infos.find_by!(locale: I18n.locale)
     # unless @lesson
     #   f(:lesson_not_found, type: :info)
     #   redirect_to language_path(resource_language.slug)
@@ -95,7 +96,8 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     #   end
     # end
     render inertia: true, props: {
-      # course: LanguageResource.new(language_info),
+      course: LanguageResource.new(language_info),
+      courseCategory: Language::CategoryResource.new(resource_language.category),
       lesson: Language::LessonResource.new(lesson_info)
     }
   end

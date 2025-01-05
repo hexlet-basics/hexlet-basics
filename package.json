@@ -44,6 +44,7 @@
     "react-type-animation": "^3.2.0",
     "recharts": "^2.15.0",
     "rehype-highlight": "^7.0.1",
+    "rehype-raw": "^7.0.0",
     "remark-slug": "^7.0.1",
     "remark-toc": "^9.0.0"
   },

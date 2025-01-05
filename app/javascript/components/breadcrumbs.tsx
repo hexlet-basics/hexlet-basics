@@ -1,16 +1,16 @@
 import type { BreadcrumbItem } from "@/types/types";
-import type { PropsWithChildren } from "react";
-import { Breadcrumb } from "react-bootstrap";
+import type { HTMLAttributes, PropsWithChildren } from "react";
+import { Breadcrumb, type BreadcrumbProps } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
-type Props = PropsWithChildren & {
+type Props = PropsWithChildren & HTMLAttributes<BreadcrumbProps> & {
   items: BreadcrumbItem[];
 };
 
-export function XBreadcrumb({ items = [] }: Props) {
+export function XBreadcrumb({ items = [], className }: Props) {
   const { t } = useTranslation();
   return (
-    <Breadcrumb>
+    <Breadcrumb className={className}>
       <Breadcrumb.Item href="/" title={t("languages.show.to_home_title")}>
         <i className="bi bi-house" />
       </Breadcrumb.Item>

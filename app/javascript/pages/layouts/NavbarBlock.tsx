@@ -28,7 +28,7 @@ export default function NavbarBlock({ className }: Props) {
   const { t: tLayouts } = useTranslation("layouts");
 
   return (
-    <Navbar expand="lg" className={className}>
+    <Navbar expand="lg" className={cn(className, "border-bottom")}>
       <Navbar.Brand href="/">
         <img
           src={logoImg}
