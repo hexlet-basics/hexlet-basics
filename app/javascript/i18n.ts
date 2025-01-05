@@ -15,6 +15,8 @@ i18n
     ns: Object.keys(resources.ru),
     lng: "ru",
     interpolation: {
+      prefix: "%{",
+      suffix: "}",
       escapeValue: false, // react already safes from xss => https://www.i18next.com/translation-function/interpolation#unescape
     },
   });

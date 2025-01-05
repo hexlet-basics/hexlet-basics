@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { Col, Container, Nav, Row, Tab } from "react-bootstrap";
+import { Alert, Col, Container, Nav, Row, Tab } from "react-bootstrap";
 
 import { useTranslation } from "react-i18next";
 
@@ -26,8 +26,15 @@ type Props = PropsWithChildren & {
 const rehypePlugins = [rehypeHighlight, rehypeRaw];
 
 export default function Show({ courseCategory, course, lesson }: Props) {
-  const { suffix } = usePage<SharedProps>().props;
+  const {
+    suffix,
+    auth: { user },
+  } = usePage<SharedProps>().props;
   const { t } = useTranslation();
+
+  const commonQuestions = t("languages.lessons.show.common_questions", {
+    returnObjects: true,
+  });
 
   const items: BreadcrumbItem[] = [
     {
@@ -74,16 +81,30 @@ export default function Show({ courseCategory, course, lesson }: Props) {
 
                 <Tab.Content className="h-100 overflow-hidden">
                   <Tab.Pane eventKey="lesson" className="overflow-auto h-100">
+                    {user.guest && (
+                      <Alert variant="info" className="border-0">
+                        <div
+                          // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+                          dangerouslySetInnerHTML={{
+                            __html: t(
+                              "languages.lessons.show.sign_up_for_tracking_progress_html",
+                              {
+                                name: course.name,
+                                link: Routes.new_user_path({ suffix }),
+                              },
+                            ),
+                          }}
+                        />
+                      </Alert>
+                    )}
+
                     <XBreadcrumb className="small" items={items} />
 
-                    {/* - unless signed_in? */}
-                    {/*   .alert.alert-info.border-0.rounded-0.small */}
-                    {/*     = t('.sign_up_for_tracking_progress_html', name: resource_language, link: new_user_path) */}
-
-                    <h1 className="h2">
-                      {`${course.name}: ${lesson.name}`}
-                    </h1>
-                    <Markdown rehypePlugins={rehypePlugins}>
+                    <h1 className="h2">{`${course.name}: ${lesson.name}`}</h1>
+                    <Markdown
+                      className="hexlet-basics-content"
+                      rehypePlugins={rehypePlugins}
+                    >
                       {lesson.theory}
                     </Markdown>
                     <h2 className="h3">
@@ -93,24 +114,31 @@ export default function Show({ courseCategory, course, lesson }: Props) {
                       {lesson.instructions}
                     </Markdown>
 
-                    {/* .my-4 */}
-                    {/*   - t('.common_questions').each do |data| */}
-                    {/*     details.mt-1.border.rounded */}
-                    {/*       summary.p-2 = data[:question] */}
-                    {/*       .px-2.pt-2 == markdown2html data[:answer] */}
+                    {lesson.tips.length > 0 && (
+                      <div>
+                        <h2 className="h3">{t("languages.lessons.show.tips")}</h2>
+                        <ul>
+                          {lesson.tips.map((t) => (
+                            <li key={t}>
+                              <Markdown>{t}</Markdown>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
 
-                    {/* - if @info.tips.any? */}
-                    {/*   h2.h5.font-weight-bold.mt-4 = t('.tips') */}
-                    {/*   ul.ps-4 */}
-                    {/*     - @info.tips.each do |tip| */}
-                    {/*       li == markdown2html(tip, options) */}
-                    {/* - if @info.definitions.any? */}
-                    {/*   h2.h5.font-weight-bold = t('.definitions') */}
-                    {/*   ul.ps-4 */}
-                    {/*     - @info.definitions.each do |definition| */}
-                    {/*       li */}
-                    {/*         / NOTE: add different separators for different locales */}
-                    {/*         p == markdown2html("#{definition['name']}#{t('.separator')}#{definition['description']}") */}
+                    {lesson.definitions.length > 0 && (
+                      <div>
+                        <h2 className="h3">{t("languages.lessons.show.definitions")}</h2>
+                        <ul>
+                          {lesson.definitions.map((d) => (
+                            <li key={d}>
+                              <Markdown>{d}</Markdown>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
 
                     {/*   .mb-3.d-flex.justify-content-center */}
                     {/*     .me-4 */}
@@ -129,6 +157,23 @@ export default function Show({ courseCategory, course, lesson }: Props) {
                     {/*   = t('.issues') */}
                     {/*   ' */}
                     {/*   = link_to ExternalLinks.source_code_curl, get_lesson_source_code(@lesson_version, @info), target: '_blank', rel: 'nofollow noopener' */}
+
+                    <div className="my-4">
+                      {commonQuestions.map((v) => (
+                        <details
+                          key={v.question}
+                          className="mt-1 border rounded"
+                        >
+                          <summary className="p-2">{v.question}</summary>
+                          <Markdown className="px-2 pt-2">{v.answer}</Markdown>
+                        </details>
+                      ))}
+                    </div>
+
+                    <div className="small text-muted py-2">
+                      {t('languages.lessons.show.issues')}
+                    </div>
+
                   </Tab.Pane>
                   <Tab.Pane eventKey="discuss">Second tab content</Tab.Pane>
                   <Tab.Pane eventKey="navigation">Second tab content</Tab.Pane>

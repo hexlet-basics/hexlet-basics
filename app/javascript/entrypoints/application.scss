@@ -52,3 +52,58 @@
   overflow: auto;
   border: 1px solid var(--terminal-border);
 }
+
+/* the only light, non-standard block, has to be customized directly */
+.hexlet-basics-content {
+
+  img {
+    @include img-fluid();
+  }
+
+  table {
+    @extend .table;
+    @extend .w-auto;
+  }
+
+  pre {
+    @extend .border;
+    @extend .rounded;
+
+    code {
+      @extend .d-block;
+      @extend .p-3;
+    }
+  }
+
+  .hexlet-basics-example {
+    @extend .border;
+    @extend .rounded;
+    @extend .p-3;
+  }
+
+  pre.hexlet-basics-output {
+    display: block;
+    background-color: $black;
+    color: white;
+    width: 100%;
+    padding: 0 10px 12px 15px;
+    border: none;
+  }
+
+  pre.hexlet-basics-output:before {
+    content: '';
+    // background: url('../images/fake_output_topbar.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 27px;
+    display: block;
+    margin-bottom: 10px;
+    background-color: #353d46;
+    width: calc(100% + 25px);
+    margin-left: -15px;
+  }
+
+  .ratio {
+    @extend .my-4;
+  }
+}
