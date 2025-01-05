@@ -116,7 +116,9 @@ export default function Show({ courseCategory, course, lesson }: Props) {
 
                     {lesson.tips.length > 0 && (
                       <div>
-                        <h2 className="h3">{t("languages.lessons.show.tips")}</h2>
+                        <h2 className="h3">
+                          {t("languages.lessons.show.tips")}
+                        </h2>
                         <ul>
                           {lesson.tips.map((t) => (
                             <li key={t}>
@@ -129,7 +131,9 @@ export default function Show({ courseCategory, course, lesson }: Props) {
 
                     {lesson.definitions.length > 0 && (
                       <div>
-                        <h2 className="h3">{t("languages.lessons.show.definitions")}</h2>
+                        <h2 className="h3">
+                          {t("languages.lessons.show.definitions")}
+                        </h2>
                         <ul>
                           {lesson.definitions.map((d) => (
                             <li key={d}>
@@ -171,9 +175,16 @@ export default function Show({ courseCategory, course, lesson }: Props) {
                     </div>
 
                     <div className="small text-muted py-2">
-                      {t('languages.lessons.show.issues')}
+                      <span className="me-2">{t("languages.lessons.show.issues")}</span>
+                      <a
+                        href={lesson.source_code_url!}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="link-body-emphasis"
+                      >
+                        <i className="bi bi-github" />
+                      </a>
                     </div>
-
                   </Tab.Pane>
                   <Tab.Pane eventKey="discuss">Second tab content</Tab.Pane>
                   <Tab.Pane eventKey="navigation">Second tab content</Tab.Pane>

@@ -10,15 +10,21 @@ default: &default
   timeout: 5000
 
 development:
-  <<: *default
-  database: storage/development.sqlite3
+  primary:
+    <<: *default
+    database: storage/development.sqlite3
+  # queue:
+  #   <<: *default
+  #   database: storage/development_queue.sqlite3
+  #   migrations_paths: db/queue_migrate
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
-  <<: *default
-  database: storage/test.sqlite3
+  primary:
+    <<: *default
+    database: storage/test.sqlite3
 
 
 # Store production database in the storage/ directory, which by default
@@ -26,16 +32,16 @@ test:
 production:
   primary:
     <<: *default
-    database: storage/production.sqlite3
-  cache:
-    <<: *default
-    database: storage/production_cache.sqlite3
-    migrations_paths: db/cache_migrate
-  queue:
-    <<: *default
-    database: storage/production_queue.sqlite3
-    migrations_paths: db/queue_migrate
-  cable:
-    <<: *default
-    database: storage/production_cable.sqlite3
-    migrations_paths: db/cable_migrate
+    # database: storage/production.sqlite3
+  # cache:
+  #   <<: *default
+  #   # database: storage/production_cache.sqlite3
+  #   migrations_paths: db/cache_migrate
+  # queue:
+  #   <<: *default
+  #   # database: storage/production_queue.sqlite3
+  #   migrations_paths: db/queue_migrate
+  # cable:
+  #   <<: *default
+  #   # database: storage/production_cable.sqlite3
+  #   migrations_paths: db/cable_migrate

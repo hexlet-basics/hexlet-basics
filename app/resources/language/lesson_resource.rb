@@ -22,9 +22,8 @@ class Language::LessonResource
     info.version.natural_order
   end
 
-  typelize :number, nullable: true
-  attribute :natural_order do |info|
-    info.version.natural_order
-    ExternalLinks.source_code_curl, get_lesson_source_code(@lesson_version, @info)
+  typelize :string, nullable: true
+  attribute :source_code_url do |info|
+    ExternalLinks.lesson_source_code_curl(info)
   end
 end
