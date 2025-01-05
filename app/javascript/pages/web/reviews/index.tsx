@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import type { PropsWithChildren } from "react";
 import { Card, Col, Container, Row } from "react-bootstrap";
 
-import Paging from "@/components/Paging";
+import XPaging from "@/components/XPaging";
 import Application from "@/pages/layouts/ApplicationLayout";
 import type { Pagy, Review } from "@/types/serializers";
 import { useTranslation } from "react-i18next";
@@ -44,7 +44,7 @@ export default function New({ reviews, pagy }: Props) {
             </Col>
           ))}
         </Row>
-        <Paging pagy={pagy} />
+        <XPaging pagy={pagy} />
       </Container>
     </Application>
   );

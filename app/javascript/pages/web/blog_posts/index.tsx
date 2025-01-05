@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 
-import Paging from "@/components/Paging";
+import XPaging from "@/components/XPaging";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { BlogPost, Pagy } from "@/types/serializers";
 
@@ -27,7 +27,7 @@ export default function New({ blogPosts, pagy }: Props) {
             </Col>
           ))}
         </Row>
-        <Paging pagy={pagy} />
+        <XPaging pagy={pagy} />
       </Container>
     </ApplicationLayout>
   );

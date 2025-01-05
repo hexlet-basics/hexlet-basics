@@ -24,6 +24,7 @@ type Props = PropsWithChildren & {
   prevLesson?: LanguageLesson;
   nextLesson?: LanguageLesson;
   lesson: LanguageLesson;
+  lessons: LanguageLesson[];
 };
 
 const rehypePlugins = [rehypeHighlight, rehypeRaw];
@@ -31,6 +32,7 @@ const rehypePlugins = [rehypeHighlight, rehypeRaw];
 export default function Show({
   courseCategory,
   course,
+  lessons,
   lesson,
   prevLesson,
   nextLesson,
@@ -211,7 +213,30 @@ export default function Show({
                       {t("languages.lessons.show.if_stuck_html")}
                     </XssContent>
                   </Tab.Pane>
-                  <Tab.Pane eventKey="navigation">Second tab content</Tab.Pane>
+                  <Tab.Pane
+                    eventKey="navigation"
+                    className="overflow-auto h-100"
+                  >
+                    <ul className="list-unstyled">
+                      {lessons.map((l) => (
+                        <li key={l.id} className="mb-1">
+                          {l.natural_order}
+                          {". "}
+                          <Link
+                            as={l.slug === lesson.slug ? "b" : "a"}
+                            className="link-body-emphasis"
+                            href={Routes.language_lesson_path(
+                              course.slug!,
+                              l.slug!,
+                              { suffix },
+                            )}
+                          >
+                            {l.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </Tab.Pane>
                 </Tab.Content>
               </div>
             </Tab.Container>

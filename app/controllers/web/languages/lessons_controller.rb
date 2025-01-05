@@ -100,12 +100,17 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     #     @switching_locales[locale] = language_lesson_url(resource_language.slug, @lesson.slug, locale: AppHost.locale_for_url(locale))
     #   end
     # end
+    lessons = resource_language.current_lesson_infos.with_locale.joins(:lesson).merge(
+      Language::Lesson.order(:natural_order)
+    )
+
     render inertia: true, props: {
       course: LanguageResource.new(language_info),
       courseCategory: Language::CategoryResource.new(resource_language.category),
       lesson: Language::LessonResource.new(lesson_info),
       nextLesson: next_lesson_info && Language::LessonResource.new(next_lesson_info),
-      prevLesson: prev_lesson_info && Language::LessonResource.new(prev_lesson_info)
+      prevLesson: prev_lesson_info && Language::LessonResource.new(prev_lesson_info),
+      lessons: Language::LessonResource.new(lessons)
     }
   end
 
