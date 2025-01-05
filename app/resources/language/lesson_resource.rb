@@ -4,7 +4,7 @@ class Language::LessonResource
 
   typelize_from Language::Lesson::Version::Info
 
-  attributes :id, :name, :locale
+  attributes :id, :name, :locale, :instructions
 
   typelize :number, nullable: true
   attribute :id do |info|

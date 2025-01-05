@@ -3,7 +3,7 @@ import type { PropsWithChildren } from "react";
 import { Card, Col, Container, Row } from "react-bootstrap";
 
 import Paging from "@/components/Paging";
-import Application from "@/pages/layouts/Application";
+import Application from "@/pages/layouts/ApplicationLayout";
 import type { Pagy, Review } from "@/types/serializers";
 import { useTranslation } from "react-i18next";
 

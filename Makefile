@@ -29,6 +29,9 @@ sync: i18n-export sync-fixtures
 app-lint-staged:
 	echo 'disabled'
 
+language-load:
+	bin/rails exercises:load[${L}]
+
 lint:
 	bin/rubocop -x
 	npx @biomejs/biome check --write
@@ -56,16 +59,5 @@ ansible-vaults-edit:
 #
 # next-tag:
 # 	make tag TAG=$(shell bin/generate_next_tag)
-
-# editor-setup:
-# 	bundle
-# 	bundle exec annotate --models
-# 	# bundle exec annotate --routes
-# 	# bundle exec solargraph bundle
-# 	bundle exec yard gems
-# 	bundle exec solargraph bundle
-# 	bin/tapioca annotations
-# 	bin/tapioca gems --all
-# 	bin/tapioca dsl
 
 .PHONY: test

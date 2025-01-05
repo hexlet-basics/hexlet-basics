@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import * as Routes from "@/routes.js";
 
 import { XInput } from "@/components/forms";
-import Application from "@/pages/layouts/Application";
+import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { SignInForm } from "@/types/serializers";
 import { Link } from "@inertiajs/react";
 
@@ -20,7 +20,7 @@ export default function New({ signInForm }: Props) {
   useTranslation("activerecord");
 
   return (
-    <Application>
+    <ApplicationLayout>
       <Container>
         <Row className="justify-content-center">
           <div className="col-sm-8 col-md-7 col-lg-5">
@@ -48,6 +48,6 @@ export default function New({ signInForm }: Props) {
           </div>
         </Row>
       </Container>
-    </Application>
+    </ApplicationLayout>
   );
 }

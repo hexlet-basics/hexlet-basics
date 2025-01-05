@@ -1,3 +1,3 @@
-export default function MyApp({ Component, pageProps }) {
+export default function Base({ Component, pageProps }) {
   return <Component {...pageProps} />;
 }

@@ -1,5 +1,6 @@
 // $body-bg: #f5f7fb;
 
+@import "highlight.js/styles/github.css";
 @import "bootstrap/scss/bootstrap";
 @import "bootstrap-icons/font/bootstrap-icons.css";
 @import "flag-icons/css/flag-icons.min.css";
@@ -14,4 +15,8 @@
   @extend .text-decoration-none;
   @extend .link-body-emphasis;
   @extend .fw-medium;
+}
+
+#app {
+  @extend .h-100
 }

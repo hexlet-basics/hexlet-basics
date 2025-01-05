@@ -17,7 +17,7 @@ import { XInput } from "@/components/forms";
 import codeImagePathRu from "@/images/code-basics-coding-ru.png";
 import codeImagePathEn from "@/images/code-basics-coding-en.png";
 import { assetPath } from "@/lib/utils.js";
-import Application from "@/pages/layouts/Application";
+import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { SharedProps } from "@/types/types";
 import { Link, usePage } from "@inertiajs/react";
 import { Accordion, Button, Col, Container, Form, Row } from "react-bootstrap";
@@ -110,7 +110,7 @@ export default function Index({ blogPosts, newUser, courseCategories }: Props) {
   console.log(faq);
 
   return (
-    <Application>
+    <ApplicationLayout>
       <Container className="mb-5 py-5">
         <div className="bg-body-tertiary p-4 pb-0 pt-lg-5 align-items-center border shadow-sm rounded-3">
           <div className="row">
@@ -340,6 +340,6 @@ export default function Index({ blogPosts, newUser, courseCategories }: Props) {
           </div>
         </div>
       )}
-    </Application>
+    </ApplicationLayout>
   );
 }

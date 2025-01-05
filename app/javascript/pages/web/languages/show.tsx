@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { XBreadcrumb } from "@/components/breadcrumbs";
 import { deviconClass } from "@/lib/utils";
-import Application from "@/pages/layouts/Application";
+import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import * as Routes from "@/routes.js";
 import type {
   Language,
@@ -31,7 +31,7 @@ type Props = PropsWithChildren & {
   };
 };
 
-export default function New({
+export default function Show({
   firstLesson,
   course,
   courseCategory,
@@ -41,8 +41,6 @@ export default function New({
 }: Props) {
   const { suffix } = usePage<SharedProps>().props;
   const { t } = useTranslation();
-
-  console.log(courseModules, lessonsByModuleId);
 
   const breadcrumbItems: BreadcrumbItem[] = [
     {
@@ -56,7 +54,7 @@ export default function New({
   ];
 
   return (
-    <Application>
+    <ApplicationLayout>
       <Container>
         <XBreadcrumb items={breadcrumbItems} />
         <div className="p-5 text-center bg-body-tertiary rounded-3 mb-5 border">
@@ -175,6 +173,6 @@ export default function New({
           </div>
         </div>
       </Container>
-    </Application>
+    </ApplicationLayout>
   );
 }

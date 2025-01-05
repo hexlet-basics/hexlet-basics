@@ -2,7 +2,7 @@ import type { PropsWithChildren } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import RuAbout from "./parts/about.ru.tsx";
 
-import Application from "@/pages/layouts/Application";
+import Application from "@/pages/layouts/ApplicationLayout.tsx";
 import type { User } from "@/types/serializers";
 import i18next from "i18next";
 

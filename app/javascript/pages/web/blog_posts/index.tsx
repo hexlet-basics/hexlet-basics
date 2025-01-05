@@ -2,7 +2,7 @@ import type { PropsWithChildren } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 
 import Paging from "@/components/Paging";
-import Application from "@/pages/layouts/Application";
+import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { BlogPost, Pagy } from "@/types/serializers";
 
 import BlogPostBlock from "@/components/BlogPostBlock";
@@ -17,7 +17,7 @@ export default function New({ blogPosts, pagy }: Props) {
   const { t } = useTranslation();
 
   return (
-    <Application>
+    <ApplicationLayout>
       <Container>
         <h1>{t("blog_posts.index.header")}</h1>
         <Row className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
@@ -29,6 +29,6 @@ export default function New({ blogPosts, pagy }: Props) {
         </Row>
         <Paging pagy={pagy} />
       </Container>
-    </Application>
+    </ApplicationLayout>
   );
 }

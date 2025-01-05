@@ -2,46 +2,53 @@ import type { PropsWithChildren } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 
 import { XBreadcrumb } from "@/components/breadcrumbs";
-import Application from "@/pages/layouts/Application";
+import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { BlogPost } from "@/types/serializers";
-import type { BreadcrumbItem } from "@/types/types";
+import type { BreadcrumbItem, SharedProps } from "@/types/types";
 import Markdown from "react-markdown";
 import remarkSlug from "remark-slug";
 import remarkToc from "remark-toc";
+import rehypeHighlight from "rehype-highlight";
 
 import BlogPostBlock from "@/components/BlogPostBlock";
 import * as Routes from "@/routes.js";
 import { useTranslation } from "react-i18next";
+import { usePage } from "@inertiajs/react";
 
 type Props = PropsWithChildren & {
   blogPost: BlogPost;
   recommendedBlogPosts: BlogPost[];
 };
 
-const plugins = [() => remarkToc({ heading: "Содержание" }), remarkSlug];
+const remarkPlugins = [[remarkToc, { heading: "Содержание" }], [remarkSlug]];
+const rehypePlugins = [rehypeHighlight];
 
 export default function New({ blogPost, recommendedBlogPosts }: Props) {
   const { t } = useTranslation();
+  const { suffix } = usePage<SharedProps>().props;
 
   const items: BreadcrumbItem[] = [
     {
       name: t("blog_posts.index.header"),
-      url: Routes.blog_posts_path(),
+      url: Routes.blog_posts_path({ suffix }),
     },
     {
       name: blogPost.name!,
-      url: Routes.blog_post_path(blogPost.slug!),
+      url: Routes.blog_post_path(blogPost.slug!, { suffix }),
     },
   ];
 
   return (
-    <Application>
+    <ApplicationLayout>
       <Container>
         <Row className="justify-content-center mb-5">
           <Col className="col-12 col-md-10 col-lg-8">
             <XBreadcrumb items={items} />
             <h1 className="mb-5">{blogPost.name}</h1>
-            <Markdown remarkPlugins={plugins}>
+            <Markdown
+              remarkPlugins={remarkPlugins}
+              rehypePlugins={rehypePlugins}
+            >
               {`\n\n## Содержание\n\n ${blogPost.body}`}
             </Markdown>
           </Col>
@@ -54,6 +61,6 @@ export default function New({ blogPost, recommendedBlogPosts }: Props) {
           ))}
         </Row>
       </Container>
-    </Application>
+    </ApplicationLayout>
   );
 }

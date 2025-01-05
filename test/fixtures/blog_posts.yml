@@ -64,6 +64,11 @@ from-full-js:
     <%= Faker::Markdown.headers %>
     <%= Faker::Markdown.emphasis %>
     <%= Faker::Markdown.headers %>
+
+    ```javascript
+    const name = 'kira';
+    const wow = `hello, ${name}`;
+    ```
   locale: ru
 
 from-full-ru-js:

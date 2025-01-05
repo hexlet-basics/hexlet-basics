@@ -4,8 +4,8 @@ import { createRoot } from "react-dom/client";
 
 // import "bootstrap";
 import "react-bootstrap";
-import "../i18n";
-import Base from "../base.tsx";
+import "@/i18n";
+import Base from "@/Base";
 
 // Temporary type definition, until @inertiajs/react provides one
 type ResolvedComponent = {
