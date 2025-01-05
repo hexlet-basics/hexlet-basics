@@ -1,7 +1,7 @@
 import type { SharedProps } from "@/types/types";
 import { usePage } from "@inertiajs/react";
 
-export default function Flash() {
+export default function XFlash() {
   const { flash } = usePage<SharedProps>().props;
 
   return (

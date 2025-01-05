@@ -1,10 +1,27 @@
-// $body-bg: #f5f7fb;
-
 @import "highlight.js/styles/github.css";
-@import "bootstrap/scss/bootstrap";
 @import "bootstrap-icons/font/bootstrap-icons.css";
 @import "flag-icons/css/flag-icons.min.css";
 @import 'devicon/devicon.min.css';
+
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+
+@import "bootstrap/scss/variables-dark";
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/root";
+
+@import "bootstrap/scss/utilities";
+
+$utilities: map-merge($utilities,
+    ("responsive-height": (property: height,
+        class: 'x-h',
+        responsive: true,
+        values: (100: 100%,
+        )),
+    ));
+
+@import "bootstrap/scss/bootstrap";
 
 // NOTE: https://github.com/react-bootstrap/react-bootstrap/blob/58e632c1a4c605ced6bab88fc8c7adfdd159fa86/src/NavDropdown.tsx#L92
 .dropdown-toggle {
@@ -107,3 +124,14 @@
     @extend .my-4;
   }
 }
+
+$utilities: (
+  "height": (property: height,
+    responsive: true,
+    class: x-h,
+    values: (25: 25%,
+      50: 50%,
+      75: 75%,
+      100: 100%,
+      auto: auto)),
+);

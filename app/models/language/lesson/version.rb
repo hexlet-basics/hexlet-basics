@@ -41,13 +41,13 @@ class Language::Lesson::Version < ApplicationRecord
 
   has_many :infos, dependent: :destroy
 
-  def next_lesson
+  def next_lesson_version
     language_version
       .lesson_versions.order(:natural_order)
       .find_by("natural_order > ?", natural_order)&.lesson
   end
 
-  def prev_lesson
+  def prev_lesson_version
     language_version
       .lesson_versions.order(natural_order: :desc)
       .find_by("natural_order < ?", natural_order)&.lesson

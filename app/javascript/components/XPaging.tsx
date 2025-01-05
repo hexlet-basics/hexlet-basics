@@ -6,7 +6,7 @@ type Props = PropsWithChildren & {
   pagy: Pagy;
 };
 
-export default ({ pagy }: Props) => {
+export default function XPaging({ pagy }: Props) {
   return (
     <Pagination>
       <Pagination.First />
@@ -26,4 +26,4 @@ export default ({ pagy }: Props) => {
       <Pagination.Last />
     </Pagination>
   );
-};
+}

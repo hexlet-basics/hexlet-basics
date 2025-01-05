@@ -12,20 +12,29 @@ import type {
   LanguageLesson,
 } from "@/types/serializers";
 import type { BreadcrumbItem, SharedProps } from "@/types/types";
-import { usePage } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import Markdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
+import XssContent from "@/components/XssContent";
 
 type Props = PropsWithChildren & {
   courseCategory: LanguageCategory;
   course: Language;
+  prevLesson?: LanguageLesson;
+  nextLesson?: LanguageLesson;
   lesson: LanguageLesson;
 };
 
 const rehypePlugins = [rehypeHighlight, rehypeRaw];
 
-export default function Show({ courseCategory, course, lesson }: Props) {
+export default function Show({
+  courseCategory,
+  course,
+  lesson,
+  prevLesson,
+  nextLesson,
+}: Props) {
   const {
     suffix,
     auth: { user },
@@ -144,24 +153,6 @@ export default function Show({ courseCategory, course, lesson }: Props) {
                       </div>
                     )}
 
-                    {/*   .mb-3.d-flex.justify-content-center */}
-                    {/*     .me-4 */}
-                    {/*       - if @lesson_version.prev_lesson */}
-                    {/*         = link_to language_lesson_path(resource_language.slug, @lesson_version.prev_lesson.slug), class: 'd-inline-block text-black text-decoration-none' do */}
-                    {/*           span.me-2 ← */}
-                    {/*           span = t('.prev') */}
-                    {/*     - if @lesson_version.next_lesson */}
-                    {/*       = link_to language_lesson_path(resource_language.slug, @lesson_version.next_lesson.slug), class: 'd-inline-block text-black text-decoration-none' do */}
-                    {/*         span.me-2 = t('.next') */}
-                    {/*         span → */}
-                    {/**/}
-                    {/* hr.my-4 */}
-                    {/**/}
-                    {/* .small.text-muted */}
-                    {/*   = t('.issues') */}
-                    {/*   ' */}
-                    {/*   = link_to ExternalLinks.source_code_curl, get_lesson_source_code(@lesson_version, @info), target: '_blank', rel: 'nofollow noopener' */}
-
                     <div className="my-4">
                       {commonQuestions.map((v) => (
                         <details
@@ -174,8 +165,37 @@ export default function Show({ courseCategory, course, lesson }: Props) {
                       ))}
                     </div>
 
+                    <div className="mb-3 d-flex justify-content-center">
+                      {prevLesson && (
+                        <Link
+                          href={Routes.language_lesson_path(
+                            course.slug!,
+                            prevLesson.slug!,
+                            { suffix },
+                          )}
+                          className="text-decoration-none link-body-emphasis me-2"
+                        >
+                          {t("languages.lessons.show.prev")}
+                        </Link>
+                      )}
+                      {nextLesson && (
+                        <Link
+                          className="text-decoration-none link-body-emphasis"
+                          href={Routes.language_lesson_path(
+                            course.slug!,
+                            nextLesson.slug!,
+                            { suffix },
+                          )}
+                        >
+                          {t("languages.lessons.show.next")}
+                        </Link>
+                      )}
+                    </div>
+
                     <div className="small text-muted py-2">
-                      <span className="me-2">{t("languages.lessons.show.issues")}</span>
+                      <span className="me-2">
+                        {t("languages.lessons.show.issues")}
+                      </span>
                       <a
                         href={lesson.source_code_url!}
                         target="_blank"
@@ -186,7 +206,11 @@ export default function Show({ courseCategory, course, lesson }: Props) {
                       </a>
                     </div>
                   </Tab.Pane>
-                  <Tab.Pane eventKey="discuss">Second tab content</Tab.Pane>
+                  <Tab.Pane eventKey="discuss">
+                    <XssContent>
+                      {t("languages.lessons.show.if_stuck_html")}
+                    </XssContent>
+                  </Tab.Pane>
                   <Tab.Pane eventKey="navigation">Second tab content</Tab.Pane>
                 </Tab.Content>
               </div>
@@ -232,7 +256,7 @@ export default function Show({ courseCategory, course, lesson }: Props) {
                       {lesson.theory}
                     </Markdown>
                     <h2 className="h3">
-                      {t("languages.lessons.instructions")}
+                      {t("languages.lessons.show.instructions")}
                     </h2>
                     <Markdown rehypePlugins={rehypePlugins}>
                       {lesson.instructions}
