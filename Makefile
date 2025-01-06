@@ -16,12 +16,25 @@ db-reset:
 dev:
 	bin/dev
 
+staging:
+	bin/vite clobber
+	# VISUAL="code --wait" bin/rails credentials:edit
+	RAILS_ENV=staging bin/rails db:prepare db:fixtures:load
+	# bin/vite build --ssr
+	NODE_ENV=development RAILS_ENV=staging bin/rails assets:precompile
+	DEBUG=vite-plugin-ruby:* NODE_ENV=development RAILS_ENV=staging bundle exec foreman start -f Procfile.staging
+
+dev-ssr:
+	bin/vite ssr
+
 i18n-export:
 	bundle exec i18n export
 
 sync-fixtures:
 	bin/rails db:fixtures:load
 
+editor-setup:
+	bin/tapioca dsl
 
 sync: i18n-export sync-fixtures
 	bin/rails typelizer:generate:refresh

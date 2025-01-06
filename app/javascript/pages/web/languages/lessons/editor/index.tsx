@@ -2,9 +2,9 @@ import { configureStore } from "@reduxjs/toolkit";
 import React from "react";
 import { Provider } from "react-redux";
 
-import EntityContext from "./EntityContext.js";
-import App from "./components/App.jsx";
-import reducer from "./slices/index.js";
+// import EntityContext from "./EntityContext.js";
+// import App from "./components/App.jsx";
+// import reducer from "./slices/index.js";
 // import { lessonMemberStates, solutionStates } from "./utils/maps.js";
 
 import type { LanguageLesson, LanguageLessonMember } from "@/types/serializers";

@@ -2,5 +2,5 @@
 
 class ApplicationMailer < ActionMailer::Base
   default from: configus.mailer.from
-  layout 'mailer'
+  layout "mailer"
 end

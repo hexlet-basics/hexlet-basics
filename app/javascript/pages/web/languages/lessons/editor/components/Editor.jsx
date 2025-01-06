@@ -4,7 +4,7 @@ import "../utils/monacoWorkers.js";
 
 import { useLocalStorage } from "@rehooks/local-storage";
 import React, { useContext, useEffect, useRef } from "react";
-import MonacoEditor from "react-monaco-editor";
+// import MonacoEditor from "react-monaco-editor";
 import { useDispatch, useSelector } from "react-redux";
 import { actions } from "../slices/index.js";
 import {
@@ -82,17 +82,19 @@ function Editor() {
     dispatch(actions.changeContent({ content: newContent }));
   };
 
-  return (
-    <MonacoEditor
-      defaultValue={localStorageContent || ""}
-      value={content}
-      options={commonOptions}
-      language={getLanguageForEditor(language)}
-      onChange={onContentChange}
-      editorDidMount={onMount}
-      className="w-100 h-100"
-    />
-  );
+  return <p>ehu</p>
+
+  // return (
+    // <MonacoEditor
+    //   defaultValue={localStorageContent || ""}
+    //   value={content}
+    //   options={commonOptions}
+    //   language={getLanguageForEditor(language)}
+    //   onChange={onContentChange}
+    //   editorDidMount={onMount}
+    //   className="w-100 h-100"
+    // />
+  // );
 }
 
 export default Editor;

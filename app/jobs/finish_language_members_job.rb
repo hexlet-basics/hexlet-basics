@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class FinishLanguageMembersJob < ApplicationJob
-  sidekiq_options retry: 0
-
   def perform(offset = 0, limit = 10_000)
     started_lesson_members = Language::Member.started
                                              .limit(limit)

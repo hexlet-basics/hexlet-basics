@@ -7,8 +7,8 @@ import * as Routes from "@/routes.js";
 
 import type { SharedProps } from "@/types/types.ts";
 import { Link, usePage } from "@inertiajs/react";
-import i18next from "i18next";
 import NavbarBlock from "./NavbarBlock.tsx";
+import i18next from "i18next";
 
 type Props = PropsWithChildren & {};
 
@@ -19,7 +19,8 @@ export default function ApplicationLayout({ children }: Props) {
 
   useEffect(() => {
     i18next.changeLanguage(locale);
-  }, [locale]);
+    Routes.configure({ default_url_options: { suffix } });
+  }, [suffix, locale]);
 
   return (
     <>

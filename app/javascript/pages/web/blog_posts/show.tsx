@@ -6,7 +6,7 @@ import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { BlogPost } from "@/types/serializers";
 import type { BreadcrumbItem, SharedProps } from "@/types/types";
 import Markdown from "react-markdown";
-import remarkSlug from "remark-slug";
+import rehypeSlug from "rehype-slug";
 import remarkToc from "remark-toc";
 import rehypeHighlight from "rehype-highlight";
 
@@ -20,8 +20,8 @@ type Props = PropsWithChildren & {
   recommendedBlogPosts: BlogPost[];
 };
 
-const remarkPlugins = [[remarkToc, { heading: "Содержание" }], [remarkSlug]];
-const rehypePlugins = [rehypeHighlight];
+const remarkPlugins = [[remarkToc, { heading: "Содержание" }]];
+const rehypePlugins = [rehypeHighlight, rehypeSlug];
 
 export default function New({ blogPost, recommendedBlogPosts }: Props) {
   const { t } = useTranslation();

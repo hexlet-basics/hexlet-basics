@@ -6,8 +6,12 @@
   "production": {
     "ssrBuildEnabled": true
   },
+  "staging": {
+    "ssrBuildEnabled": true
+  },
   "development": {
     "autoBuild": true,
+    "ssrBuildEnabled": true,
     "publicOutputDir": "vite-dev",
     "port": 3036
   },

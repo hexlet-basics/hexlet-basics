@@ -12,7 +12,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 
 import EntityContext from "../EntityContext.js";
 import { actions } from "../slices/index.js";
-import Routes from "../utils/configured_routes.js";
+import * as Routes from "@/routes.js";
 import { checkInfoStates } from "../utils/maps.js";
 
 function ControlBox() {
@@ -78,13 +78,15 @@ function ControlBox() {
     disabled: !lessonInfo.finished,
   });
 
-  const nextLessonPath = lessonInfo.finished
-    ? Routes.nextLessonLanguageLessonPath(language, lesson.slug)
-    : null;
-  const prevLessonPath = Routes.prevLessonLanguageLessonPath(
-    language,
-    lesson.slug,
-  );
+  const nextLessonPath = "https://jopa";
+  // const nextLessonPath = lessonInfo.finished
+  //   ? Routes.nextLessonLanguageLessonPath(language, lesson.slug)
+  //   : null;
+  const prevLessonPath = "https://jopa";
+  // const prevLessonPath = Routes.prevLessonLanguageLessonPath(
+  //   language,
+  //   lesson.slug,
+  // );
 
   useHotkeys("ctrl+enter", handleRunCheck);
 

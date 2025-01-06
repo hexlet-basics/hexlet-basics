@@ -18,7 +18,7 @@ import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
 import XssContent from "@/components/XssContent";
 
-import Editor from "./editor/index.tsx";
+// import Editor from "./editor/index.tsx";
 
 type Props = PropsWithChildren & {
   courseCategory: LanguageCategory;
@@ -247,7 +247,7 @@ export default function Show({
           <Col className="h-100 col-12 col-md-6 col-lg-7 pl-md-0">
             <Tab.Container id="left-tabs-example" defaultActiveKey="editor">
               <div className="h-100">
-                <Editor lesson={lesson} />
+                {/* <Editor lesson={lesson} /> */}
                 {/* <Nav variant="underline" fill justify className="mb-3 small"> */}
                 {/*   <Nav.Item> */}
                 {/*     <Nav.Link className="link-body-emphasis" eventKey="editor"> */}

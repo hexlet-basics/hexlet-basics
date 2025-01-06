@@ -14,13 +14,13 @@ import type {
 import BlogPostBlock from "@/components/BlogPostBlock";
 import CourseBlock from "@/components/CourseBlock";
 import { XInput } from "@/components/forms";
-import codeImagePathRu from "@/images/code-basics-coding-ru.png";
 import codeImagePathEn from "@/images/code-basics-coding-en.png";
-import { assetPath } from "@/lib/utils.js";
+import codeImagePathRu from "@/images/code-basics-coding-ru.png";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { SharedProps } from "@/types/types";
 import { Link, usePage } from "@inertiajs/react";
 import { Accordion, Button, Col, Container, Form, Row } from "react-bootstrap";
+import { getImageUrl } from "@/images";
 
 type Props = PropsWithChildren & {
   blogPosts: BlogPost[];
@@ -57,19 +57,19 @@ const reviews = {
   ru: [
     {
       name: "Александр Авдошкин",
-      avatar: assetPath("avdoshkin.jpg"),
+      avatar: getImageUrl("avdoshkin.jpg"),
       body: `Если бы не коронавирус, выполнил бы всё в заход (в смысле каждый день по несколько пунктов в теме).
               Изучаю с нуля, ваш портал очень ориентирован на новичков. Спасибо вам большое!`,
     },
     {
       name: "Сергей Тюрин",
-      avatar: assetPath("tyrin.jpg"),
+      avatar: getImageUrl("tyrin.jpg"),
       body: `Очень всё доступно даже для полного профана вроде меня. Эта вводная по JS вошла в мой туговатый ум,
               складно как недостающий пазл. Всем кидаю линк на эту страничку.`,
     },
     {
       name: "Элиях Клейман",
-      avatar: assetPath("user-avatar.png"),
+      avatar: getImageUrl("user-avatar.png"),
       body: `Для меня это первый курс для новичка. Понравилось тем, что вся информация структурирована
               и дана по мере изучения материала в иерархичном порядке, что значительно повышает и желание к обучению`,
     },
@@ -77,17 +77,17 @@ const reviews = {
   en: [
     {
       name: "Aleksandr Avdoshkin",
-      avatar: assetPath("avdoshkin.jpg"),
+      avatar: getImageUrl("avdoshkin.jpg"),
       body: "As someone with zero coding skills, I'd say that CodeBasics is focused on newcomers. Thank you very much!",
     },
     {
       name: "Sergei Tyurin",
-      avatar: assetPath("tyrin.jpg"),
+      avatar: getImageUrl("tyrin.jpg"),
       body: "This is all very approachable even for a dummy like me. Now I show people this platform when I get the chance.",
     },
     {
       name: "Eliyah Kleyman",
-      avatar: assetPath("user-avatar.png"),
+      avatar: getImageUrl("user-avatar.png"),
       body: `For me, it was my very first programming course. I liked it because all the information is very well 
         structured and given in a clear hierarchical order. It motivated me a lot to move forward in my studies.`,
     },
@@ -107,7 +107,6 @@ export default function Index({ blogPosts, newUser, courseCategories }: Props) {
   } = usePage<SharedProps>().props;
 
   const faq = tFaq("main", { returnObjects: true });
-  console.log(faq);
 
   return (
     <ApplicationLayout>
@@ -206,7 +205,7 @@ export default function Index({ blogPosts, newUser, courseCategories }: Props) {
 
           <div className="row g-4 row-cols-1 row-cols-sm-2 row-cols-lg-3">
             {reviews[locale].map((review) => (
-              <div key={review.avatar} className="col">
+              <div key={review.name} className="col">
                 <div className="d-flex mb-3">
                   <img
                     src={review.avatar}

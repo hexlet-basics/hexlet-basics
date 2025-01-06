@@ -1,4 +1,4 @@
-import { assetPath } from "@/lib/utils";
+import { getImageUrl } from "@/images";
 import * as Routes from "@/routes.js";
 import type { Language } from "@/types/serializers";
 import type { SharedProps } from "@/types/types";
@@ -20,7 +20,7 @@ export default function CourseBlock({ course }: Props) {
     <Card className="h-100 shadow-sm bg-body-tertiary">
       <Card.Img
         variant="top"
-        src={assetPath(course.cover!)}
+        src={getImageUrl(course.cover!)}
         alt={course.name!}
       />
       {/* {languageMembersByLanguage && */}

@@ -1,8 +1,8 @@
 // @ts-check
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import hexletAxios from "../../lib/hexlet-axios.js";
-import Routes from "../utils/configured_routes.js";
+import hexletAxios from "@/lib/hexlet-axios.js";
+import * as Routes from "@/routes.js";
 import { checkInfoStates } from "../utils/maps.js";
 
 const runCheck = createAsyncThunk(
@@ -11,7 +11,7 @@ const runCheck = createAsyncThunk(
     const {
       editorSlice: { content },
     } = getState();
-    const checkLessonPath = Routes.checkApiLessonPath(lessonVersion.lesson_id);
+    const checkLessonPath = 'https://jopa'; // Routes.checkApiLessonPath(lessonVersion.lesson_id);
     const response = await hexletAxios.post(checkLessonPath, {
       version_id: lessonVersion.id,
       data: {

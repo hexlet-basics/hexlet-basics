@@ -17,7 +17,7 @@ gem "typelizer"
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
 gem "solid_cache"
 gem "solid_queue"
-gem "solid_cable"
+# gem "solid_cable"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
@@ -65,7 +65,7 @@ gem "pagy"
 gem "js-routes"
 gem "i18n-js"
 
-group :development, :test do
+group :development, :test, :staging do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
@@ -81,7 +81,7 @@ group :development, :test do
   gem "tapioca", require: false
 end
 
-group :development do
+group :development, :staging do
   # gem 'annotate'
   gem "bullet"
   gem "annotaterb"
@@ -129,3 +129,7 @@ gem "browser"
 # gem 'meta-tags'
 #
 # gem 'browserslist_useragent'
+
+gem "responders", "~> 3.1"
+
+gem "configus", "~> 0.0.5"

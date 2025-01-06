@@ -4,7 +4,7 @@ import { Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
 import { XBreadcrumb } from "@/components/breadcrumbs";
-import Application from "@/pages/layouts/Application";
+import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { Language, LanguageCategory, User } from "@/types/serializers";
 
 import CourseBlock from "@/components/CourseBlock";
@@ -30,7 +30,7 @@ export default function New({ courseCategory, categoryCourses }: Props) {
   ];
 
   return (
-    <Application>
+    <ApplicationLayout>
       <Container>
         <XBreadcrumb items={items} />
         <h1 className="mb-5">{courseCategory.name}</h1>
@@ -42,6 +42,6 @@ export default function New({ courseCategory, categoryCourses }: Props) {
           ))}
         </div>
       </Container>
-    </Application>
+    </ApplicationLayout>
   );
 }

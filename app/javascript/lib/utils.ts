@@ -12,6 +12,6 @@ export function deviconClass(langName: string): string {
   return `devicon-${normalizedLangName}-plain`;
 }
 
-export function assetPath(filepath: string) {
-  return `/vite-dev/images/${filepath}`;
-}
+// export function assetPath(filepath: string) {
+//   return `${import.meta.env.BASE_URL}images/${filepath}`;
+// }

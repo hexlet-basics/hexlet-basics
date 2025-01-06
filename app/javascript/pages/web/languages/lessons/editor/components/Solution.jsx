@@ -6,8 +6,8 @@ import Countdown from "react-countdown";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 
-import waitingClock from "../../../assets/images/waiting_clock.png";
-import hljs from "../../lib/hljs.js";
+import waitingClock from "@/images/waiting_clock.png";
+// import hljs from "@/lib/hljs.js";
 import EntityContext from "../EntityContext.js";
 import { actions } from "../slices/index.js";
 import { getLanguage } from "../utils/editorUtils.js";
@@ -27,9 +27,10 @@ function Solution() {
       return <p className="mt-3">{t("userCodeInstructions")}</p>;
     }
 
-    const code = hljs.highlight(editor.content, {
-      language: getLanguage(language),
-    }).value;
+    const code = 'jopa';
+    // const code = hljs.highlight(editor.content, {
+    //   language: getLanguage(language),
+    // }).value;
 
     return (
       <>
@@ -44,9 +45,10 @@ function Solution() {
   };
 
   const renderSolution = () => {
-    const code = hljs.highlight(lessonVersion.original_code, {
-      language: getLanguage(language),
-    }).value;
+    const code = 'jopa'
+    // const code = hljs.highlight(lessonVersion.original_code, {
+    //   language: getLanguage(language),
+    // }).value;
 
     return (
       <div className="p-lg-3 hexlet-basics-content" id="basics-solution">
