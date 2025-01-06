@@ -19,7 +19,8 @@ export default function LessonLayout({ children }: Props) {
 
   useEffect(() => {
     i18next.changeLanguage(locale);
-  }, [locale]);
+    Routes.configure({ default_url_options: { suffix } });
+  }, [suffix, locale]);
 
   return (
     <>

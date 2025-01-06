@@ -39,17 +39,16 @@ export default function Show({
   recommendedCourses,
   lessonsByModuleId,
 }: Props) {
-  const { suffix } = usePage<SharedProps>().props;
   const { t } = useTranslation();
 
   const breadcrumbItems: BreadcrumbItem[] = [
     {
       name: courseCategory.name!,
-      url: Routes.language_category_path(courseCategory.slug!, { suffix }),
+      url: Routes.language_category_path(courseCategory.slug!),
     },
     {
       name: course.name!,
-      url: Routes.language_path(course.slug!, { suffix }),
+      url: Routes.language_path(course.slug!),
     },
   ];
 
@@ -78,7 +77,6 @@ export default function Show({
               href={Routes.language_lesson_path(
                 course.slug!,
                 firstLesson.slug!,
-                { suffix },
               )}
             >
               <span className="me-2">{t("languages.show.start")}</span>
@@ -86,7 +84,7 @@ export default function Show({
             </Link>
             <Link
               className="btn btn-outline-secondary"
-              href={Routes.new_user_path({ suffix })}
+              href={Routes.new_user_path()}
             >
               {t("languages.show.registration")}
             </Link>
@@ -106,7 +104,6 @@ export default function Show({
                           href={Routes.language_lesson_path(
                             course.slug!,
                             l.slug!,
-                            { suffix },
                           )}
                         >
                           <span className="me-1">{l.natural_order!}.</span>
@@ -137,7 +134,6 @@ export default function Show({
                   href={Routes.language_lesson_path(
                     course.slug!,
                     firstLesson.slug!,
-                    { suffix },
                   )}
                 >
                   {t("languages.show.start_demo_lesson")}
@@ -153,7 +149,6 @@ export default function Show({
                 <Link
                   className="link-body-emphasis text-muted text-decoration-none"
                   href={Routes.language_category_path(courseCategory.slug!, {
-                    suffix,
                   })}
                 >
                   {t("languages.show.see_all_courses_in_category", {

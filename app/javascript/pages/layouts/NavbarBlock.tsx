@@ -24,7 +24,7 @@ const locales = {
 type Props = PropsWithChildren & HTMLAttributes<NavbarProps>;
 
 export default function NavbarBlock({ className }: Props) {
-  const { courses, suffix } = usePage<SharedProps>().props;
+  const { courses } = usePage<SharedProps>().props;
   const { t: tLayouts } = useTranslation("layouts");
 
   return (
@@ -50,7 +50,7 @@ export default function NavbarBlock({ className }: Props) {
               <NavDropdown.Item
                 className="d-flex align-items-center"
                 key={c.id}
-                href={Routes.language_path(c.slug!, { suffix })}
+                href={Routes.language_path(c.slug!)}
               >
                 <i className={cn(deviconClass(c.slug!), "colored", "me-2")} />
                 {c.name}
@@ -61,13 +61,13 @@ export default function NavbarBlock({ className }: Props) {
         <Nav>
           <Nav.Link
             className="link-body-emphasis"
-            href={Routes.new_session_path({ suffix })}
+            href={Routes.new_session_path()}
           >
             {tLayouts("shared.nav.sign_in")}
           </Nav.Link>
           <Nav.Link
             className="link-body-emphasis"
-            href={Routes.new_user_path({ suffix })}
+            href={Routes.new_user_path()}
           >
             {tLayouts("shared.nav.registration")}
           </Nav.Link>

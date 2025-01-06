@@ -17,6 +17,7 @@ import Markdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
 import XssContent from "@/components/XssContent";
+import React from "react";
 
 // import Editor from "./editor/index.tsx";
 
@@ -40,7 +41,6 @@ export default function Show({
   nextLesson,
 }: Props) {
   const {
-    suffix,
     auth: { user },
   } = usePage<SharedProps>().props;
   const { t } = useTranslation();
@@ -52,15 +52,15 @@ export default function Show({
   const items: BreadcrumbItem[] = [
     {
       name: courseCategory.name!,
-      url: Routes.language_category_path(courseCategory.slug!, { suffix }),
+      url: Routes.language_category_path(courseCategory.slug!),
     },
     {
       name: course.name!,
-      url: Routes.language_path(course.slug!, { suffix }),
+      url: Routes.language_path(course.slug!),
     },
     {
       name: lesson.name!,
-      url: Routes.language_lesson_path(course.slug!, lesson.slug!, { suffix }),
+      url: Routes.language_lesson_path(course.slug!, lesson.slug!),
     },
   ];
 
@@ -105,7 +105,7 @@ export default function Show({
                               "languages.lessons.show.sign_up_for_tracking_progress_html",
                               {
                                 name: course.name,
-                                link: Routes.new_user_path({ suffix }),
+                                link: Routes.new_user_path(),
                               },
                             ),
                           }}
@@ -147,13 +147,14 @@ export default function Show({
                         <h2 className="h3">
                           {t("languages.lessons.show.definitions")}
                         </h2>
-                        <ul>
+                        <dl>
                           {lesson.definitions.map((d) => (
-                            <li key={d}>
-                              <Markdown>{d}</Markdown>
-                            </li>
+                            <React.Fragment key={d.name}>
+                              <dt>{d.name}</dt>
+                              <dd>{d.description}</dd>
+                            </React.Fragment>
                           ))}
-                        </ul>
+                        </dl>
                       </div>
                     )}
 
@@ -175,7 +176,6 @@ export default function Show({
                           href={Routes.language_lesson_path(
                             course.slug!,
                             prevLesson.slug!,
-                            { suffix },
                           )}
                           className="text-decoration-none link-body-emphasis me-2"
                         >
@@ -188,7 +188,6 @@ export default function Show({
                           href={Routes.language_lesson_path(
                             course.slug!,
                             nextLesson.slug!,
-                            { suffix },
                           )}
                         >
                           {t("languages.lessons.show.next")}
@@ -230,7 +229,6 @@ export default function Show({
                             href={Routes.language_lesson_path(
                               course.slug!,
                               l.slug!,
-                              { suffix },
                             )}
                           >
                             {l.name}
