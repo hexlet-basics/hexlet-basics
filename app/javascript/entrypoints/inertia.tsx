@@ -4,6 +4,7 @@ import { createRoot, hydrateRoot } from "react-dom/client";
 
 import "react-bootstrap";
 import "@/i18n";
+import "@/monaco";
 
 // Temporary type definition, until @inertiajs/react provides one
 type ResolvedComponent = {

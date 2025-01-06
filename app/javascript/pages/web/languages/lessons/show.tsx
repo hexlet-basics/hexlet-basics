@@ -3,46 +3,31 @@ import { Alert, Col, Container, Nav, Row, Tab } from "react-bootstrap";
 
 import { useTranslation } from "react-i18next";
 
+import XssContent from "@/components/XssContent";
 import { XBreadcrumb } from "@/components/breadcrumbs";
 import LessonLayout from "@/pages/layouts/LessonLayout";
 import * as Routes from "@/routes.js";
-import type {
-  Language,
-  LanguageCategory,
-  LanguageLesson,
-} from "@/types/serializers";
-import type { BreadcrumbItem, SharedProps } from "@/types/types";
+import type { BreadcrumbItem } from "@/types/types";
 import { Link, usePage } from "@inertiajs/react";
+import React from "react";
 import Markdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
-import XssContent from "@/components/XssContent";
-import React from "react";
-
-// import Editor from "./editor/index.tsx";
-
-type Props = PropsWithChildren & {
-  courseCategory: LanguageCategory;
-  course: Language;
-  prevLesson?: LanguageLesson;
-  nextLesson?: LanguageLesson;
-  lesson: LanguageLesson;
-  lessons: LanguageLesson[];
-};
+import EditorBlock from "./show/index.tsx";
+import type { Props } from "./show/types";
 
 const rehypePlugins = [rehypeHighlight, rehypeRaw];
 
-export default function Show({
-  courseCategory,
-  course,
-  lessons,
-  lesson,
-  prevLesson,
-  nextLesson,
-}: Props) {
+export default function Show() {
   const {
+    courseCategory,
+    course,
+    lessons,
+    lesson,
+    prevLesson,
+    nextLesson,
     auth: { user },
-  } = usePage<SharedProps>().props;
+  } = usePage<Props>().props;
   const { t } = useTranslation();
 
   const commonQuestions = t("languages.lessons.show.common_questions", {
@@ -242,10 +227,10 @@ export default function Show({
             </Tab.Container>
           </Col>
 
-          <Col className="h-100 col-12 col-md-6 col-lg-7 pl-md-0">
+          <Col className="h-100 col-12 col-md-6 col-lg-7 mb-3 mb-md-0 position-relative col">
             <Tab.Container id="left-tabs-example" defaultActiveKey="editor">
-              <div className="h-100">
-                {/* <Editor lesson={lesson} /> */}
+              <div className="h-100 d-flex flex-column">
+                <EditorBlock />
                 {/* <Nav variant="underline" fill justify className="mb-3 small"> */}
                 {/*   <Nav.Item> */}
                 {/*     <Nav.Link className="link-body-emphasis" eventKey="editor"> */}

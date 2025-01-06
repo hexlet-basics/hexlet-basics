@@ -14,13 +14,14 @@ import BlogPostBlock from "@/components/BlogPostBlock";
 import * as Routes from "@/routes.js";
 import { useTranslation } from "react-i18next";
 import { usePage } from "@inertiajs/react";
+import type { PluggableList } from "node_modules/react-markdown/lib";
 
 type Props = PropsWithChildren & {
   blogPost: BlogPost;
   recommendedBlogPosts: BlogPost[];
 };
 
-const remarkPlugins = [[remarkToc, { heading: "Содержание" }]];
+const remarkPlugins: PluggableList = [[remarkToc, { heading: "Содержание" }]];
 const rehypePlugins = [rehypeHighlight, rehypeSlug];
 
 export default function New({ blogPost, recommendedBlogPosts }: Props) {

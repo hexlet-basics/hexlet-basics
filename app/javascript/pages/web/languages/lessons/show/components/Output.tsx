@@ -2,19 +2,16 @@
 
 import { AnsiUp } from "ansi_up";
 import cn from "classnames";
-import React, { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 
 import escape from "core-js/actual/escape.js";
-import EntityContext from "../EntityContext.js";
 import { getHelpByTutorUrl } from "../utils/languagesUtils.js";
 import { checkInfoStates } from "../utils/maps.js";
 
 const ansi = new AnsiUp();
 
 function Output() {
-  const { lessonMember, language } = useContext(EntityContext);
   const checkInfo = useSelector((state) => state.checkInfoSlice);
   const { t } = useTranslation();
 

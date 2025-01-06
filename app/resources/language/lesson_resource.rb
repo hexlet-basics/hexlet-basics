@@ -4,7 +4,7 @@ class Language::LessonResource
 
   typelize_from Language::Lesson::Version::Info
 
-  attributes :id, :name, :locale, :instructions, :theory, :description, :definitions, :tips
+  attributes :id, :name, :locale, :instructions, :theory, :description, :definitions, :tips, :test_code, :prepared_code
   typelize tips: "String[]", definitions: "Array<{ name: string, description: string }>"
 
   typelize :number, nullable: true

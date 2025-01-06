@@ -1,10 +1,7 @@
-// @ts-check
-
-import "../utils/monacoWorkers.js";
-
 import { useLocalStorage } from "@rehooks/local-storage";
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 // import MonacoEditor from "react-monaco-editor";
+import MonacoEditor from "@monaco-editor/react";
 import { useDispatch, useSelector } from "react-redux";
 import { actions } from "../slices/index.js";
 import {
@@ -12,8 +9,8 @@ import {
   getTabSize,
   shouldReplaceTabsWithSpaces,
 } from "../utils/editorUtils.js";
-
-import EntityContext from "../EntityContext.js";
+import { usePage } from "@inertiajs/react";
+import type { Props } from "../types.js";
 
 const commonOptions = {
   fontSize: 14,
@@ -31,12 +28,13 @@ const commonOptions = {
 };
 
 function Editor() {
-  const { language, lessonVersion } = useContext(EntityContext);
+  const { course, lesson } = usePage<Props>().props;
+
   const { content, focusesCount } = useSelector((state) => state.editorSlice);
   const dispatch = useDispatch();
   const editorRef = useRef(null);
 
-  const localStorageKey = `lesson-version-${lessonVersion.id}`;
+  const localStorageKey = `lesson-version-${lesson.id}`;
   const [localStorageContent, setContent] = useLocalStorage(localStorageKey);
 
   useEffect(() => {
@@ -44,12 +42,12 @@ function Editor() {
   }, [focusesCount]);
 
   const handleRunCheck = () => {
-    dispatch(actions.runCheck({ lessonVersion }));
+    dispatch(actions.runCheck({ lesson }));
   };
 
   const editorOptions = {
-    tabSize: getTabSize(language),
-    insertSpaces: shouldReplaceTabsWithSpaces(language),
+    tabSize: getTabSize(course),
+    insertSpaces: shouldReplaceTabsWithSpaces(course),
   };
 
   const onMount = (editor, monaco) => {
@@ -58,7 +56,7 @@ function Editor() {
     model.updateOptions(editorOptions);
     model.pushEOL(0);
 
-    editorRef.current.focus();
+    // editorRef.current.focus();
 
     const extraKeys = [
       {
@@ -67,9 +65,9 @@ function Editor() {
       },
     ];
 
-    extraKeys.forEach(({ key, action }) => {
-      editorRef.current.addCommand(key, action);
-    });
+    // extraKeys.forEach(({ key, action }) => {
+    //   editorRef.current.addCommand(key, action);
+    // });
 
     // NOTE: fix typescript validation error — `'name' is deprecated.(6385)`
     monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
@@ -82,18 +80,24 @@ function Editor() {
     dispatch(actions.changeContent({ content: newContent }));
   };
 
-  return <p>ehu</p>
+  return (
+    <MonacoEditor
+      height="90vh"
+      defaultLanguage="javascript"
+      defaultValue="// some comment"
+    />
+  );
 
   // return (
-    // <MonacoEditor
-    //   defaultValue={localStorageContent || ""}
-    //   value={content}
-    //   options={commonOptions}
-    //   language={getLanguageForEditor(language)}
-    //   onChange={onContentChange}
-    //   editorDidMount={onMount}
-    //   className="w-100 h-100"
-    // />
+  // <MonacoEditor
+  //   defaultValue={localStorageContent || ""}
+  //   value={content}
+  //   options={commonOptions}
+  //   language={getLanguageForEditor(language)}
+  //   onChange={onContentChange}
+  //   editorDidMount={onMount}
+  //   className="w-100 h-100"
+  // />
   // );
 }
 

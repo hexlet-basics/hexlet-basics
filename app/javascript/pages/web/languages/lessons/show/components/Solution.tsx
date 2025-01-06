@@ -1,20 +1,19 @@
 // @ts-check
 
 import { format } from "date-fns";
-import React, { useContext } from "react";
+import React from "react";
 import Countdown from "react-countdown";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 
 import waitingClock from "@/images/waiting_clock.png";
 // import hljs from "@/lib/hljs.js";
-import EntityContext from "../EntityContext.js";
 import { actions } from "../slices/index.js";
 import { getLanguage } from "../utils/editorUtils.js";
 import { solutionStates } from "../utils/maps.js";
 
 function Solution() {
-  const { language, lessonVersion } = useContext(EntityContext);
+
   const { editor, solution } = useSelector((state) => ({
     editor: state.editorSlice,
     solution: state.solutionSlice,

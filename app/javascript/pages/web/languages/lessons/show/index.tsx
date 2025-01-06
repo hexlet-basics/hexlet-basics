@@ -2,22 +2,33 @@ import { configureStore } from "@reduxjs/toolkit";
 import React from "react";
 import { Provider } from "react-redux";
 
-// import EntityContext from "./EntityContext.js";
-// import App from "./components/App.jsx";
-// import reducer from "./slices/index.js";
-// import { lessonMemberStates, solutionStates } from "./utils/maps.js";
+import App from "./components/App.tsx";
+import reducer from "./slices/index.ts";
 
 import type { LanguageLesson, LanguageLessonMember } from "@/types/serializers";
 import type { PropsWithChildren } from "react";
+import { usePage } from "@inertiajs/react";
+import type { Props } from "./types";
 
 const waitingTime = 20 * 60 * 1000; // 20 min
 
-type Props = PropsWithChildren & {
-  lesson: LanguageLesson;
-  lessonMember: LanguageLessonMember;
-};
+// type Props = PropsWithChildren & {
+//   lesson: LanguageLesson;
+//   lessonMember: LanguageLessonMember;
+// };
 
-export default function Editor({ lessonMember, lesson }: Props) {
+export default function Index() {
+  const {
+    // courseCategory,
+    // course,
+    // lessons,
+    lessonMember,
+    lesson,
+    // prevLesson,
+    // nextLesson,
+    // auth: { user },
+  } = usePage<Props>().props;
+
   const entities = {
     lessonVersion: lesson.version,
     // lesson: gon.lesson,
@@ -46,18 +57,14 @@ export default function Editor({ lessonMember, lesson }: Props) {
     },
   };
 
-  // const store = configureStore({
-  //   preloadedState,
-  //   reducer,
-  // });
+  const store = configureStore({
+    preloadedState,
+    reducer,
+  });
 
-  return "JOPA";
-
-  // return (
-  //   <Provider store={store}>
-  //     <EntityContext.Provider value={entities}>
-  //       <App />
-  //     </EntityContext.Provider>
-  //   </Provider>
-  // );
+  return (
+    <Provider store={store}>
+      <App />
+    </Provider>
+  );
 }

@@ -1,7 +1,7 @@
 // @ts-check
 
 import { deleteFromStorage } from "@rehooks/local-storage";
-import React, { useContext } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -10,7 +10,6 @@ import { Button, OverlayTrigger, Popover, Spinner } from "react-bootstrap";
 // import Hotkeys from 'react-hot-keys';
 import { useHotkeys } from "react-hotkeys-hook";
 
-import EntityContext from "../EntityContext.js";
 import { actions } from "../slices/index.js";
 import * as Routes from "@/routes.js";
 import { checkInfoStates } from "../utils/maps.js";
@@ -23,8 +22,6 @@ function ControlBox() {
   }));
 
   const dispatch = useDispatch();
-  const { lessonVersion, language, lesson } = useContext(EntityContext);
-
   const handleRunCheck = () => {
     dispatch(actions.runCheck({ lessonVersion }));
   };

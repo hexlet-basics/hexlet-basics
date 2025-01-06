@@ -3,25 +3,28 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
-import EntityContext from "../EntityContext.js";
 import { neededPreview } from "../utils/languagesUtils.js";
 import { currentTabValues } from "../utils/maps.js";
-import ControlBox from "./ControlBox.jsx";
-import HTMLPreview from "./HTMLPreview.jsx";
-import TabsBox from "./TabsBox.jsx";
+import ControlBox from "./ControlBox.js";
+import HTMLPreview from "./HTMLPreview.js";
+import TabsBox from "./TabsBox.js";
+import { usePage } from "@inertiajs/react";
+import type { Props } from "../types.js";
 
 function App() {
+  const {
+    course,
+  } = usePage<Props>().props;
+
   const { currentTab, content } = useSelector((state) => ({
     ...state.tabsBoxSlice,
     ...state.editorSlice,
   }));
-  const { language } = React.useContext(EntityContext);
-
   const renderHtmlPreview = () => {
     if (currentTab !== currentTabValues.editor) {
       return null;
     }
-    if (!neededPreview(language)) {
+    if (!neededPreview(course)) {
       return null;
     }
 
@@ -29,11 +32,11 @@ function App() {
   };
 
   return (
-    <div className="card vh-100 x-h-md-100">
+    <>
       <TabsBox />
       {renderHtmlPreview()}
       <ControlBox />
-    </div>
+    </>
   );
 }
 
