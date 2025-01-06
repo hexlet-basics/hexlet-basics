@@ -1,6 +1,6 @@
 import { createInertiaApp } from "@inertiajs/react";
 import { type ReactNode, createElement } from "react";
-import { hydrateRoot } from "react-dom/client";
+import { createRoot, hydrateRoot } from "react-dom/client";
 
 import "react-bootstrap";
 import "@/i18n";
@@ -40,7 +40,11 @@ createInertiaApp({
 
   setup({ el, App, props }) {
     if (el) {
-      hydrateRoot(el, <App {...props} />);
+      if (import.meta.env.MODE === "production") {
+        hydrateRoot(el, <App {...props} />);
+      } else {
+        createRoot(el).render(<App {...props} />);
+      }
     } else {
       console.error(
         "Missing root element.\n\n" +

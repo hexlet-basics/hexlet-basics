@@ -19,7 +19,7 @@ class Web::LanguagesController < Web::ApplicationController
     #                                     .merge(Language::Module::Version::Info.with_locale)
     #                                     .merge(Language::Lesson::Version.includes(:lesson).order(:order))
 
-    language_modules_infos = language.current_module_infos.with_locale
+    language_modules_infos = language.current_module_infos.with_locale.includes(:version)
     # .merge(Language::Module::Version::Info.with_locale)
 
     # language_module_resources = language_modules_infos.map { |info| Language::ModuleResource.new(info) }
@@ -27,7 +27,7 @@ class Web::LanguagesController < Web::ApplicationController
 
     #
     # @infos_by_module = @language.current_module_infos.with_locale.index_by(&:version_id)
-    language_lessons_infos = language.current_lesson_infos.with_locale
+    language_lessons_infos = language.current_lesson_infos.with_locale.includes(:lesson, version: [ :module, :module_version ])
     language_lessons_info_resources = language_lessons_infos.map { |info| Language::LessonResource.new(info) }
     lesson_resources_by_module_id = language_lessons_info_resources.group_by do |resource|
       resource.object.version.module.id

@@ -31,7 +31,7 @@ class Web::ApplicationController < ApplicationController
 
   inertia_share do
     language_categories = Language::Category.all
-    languages_infos = Language::Version::Info.with_locale
+    languages_infos = Language::Version::Info.with_locale.includes([ language: :current_version ])
 
     {
       languageCategories: Language::CategoryResource.new(language_categories),
