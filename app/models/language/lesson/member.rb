@@ -32,11 +32,11 @@ class Language::Lesson::Member < ApplicationRecord
 
   belongs_to :user
   belongs_to :language
-  belongs_to :language_member, class_name: 'Language::Member'
+  belongs_to :language_member, class_name: "Language::Member"
   belongs_to :lesson
 
   counter_culture :language_member,
-                  column_name: ->(model) { model.finished? ? 'finished_lessons_count' : nil }
+                  column_name: ->(model) { model.finished? ? "finished_lessons_count" : nil }
 
   aasm :state do
     state :started, initial: true
@@ -48,6 +48,6 @@ class Language::Lesson::Member < ApplicationRecord
   end
 
   def serializable_data
-    attributes.extract! 'id', 'state', 'created_at'
+    attributes.extract! "id", "state", "created_at"
   end
 end

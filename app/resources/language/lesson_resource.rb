@@ -12,6 +12,21 @@ class Language::LessonResource
     info.version.lesson.id
   end
 
+  typelize :string, nullable: true
+  attribute :prepared_code do |info|
+    info.version.prepared_code
+  end
+
+  typelize :string, nullable: true
+  attribute :test_code do |info|
+    info.version.test_code
+  end
+
+  typelize :number, nullable: true
+  attribute :version do |info|
+    info.version.id
+  end
+
   typelize :number, nullable: true
   attribute :slug do |info|
     info.lesson.slug

@@ -72,6 +72,7 @@ export default function NavbarBlock({ className }: Props) {
             {tLayouts("shared.nav.registration")}
           </Nav.Link>
           <NavDropdown
+            drop="start"
             className="link-body-emphasis"
             title={<i className={locales[i18next.language].icon} />}
             id="basic-nav-dropdown"

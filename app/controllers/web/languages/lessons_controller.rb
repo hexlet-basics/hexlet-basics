@@ -11,6 +11,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
 
   def show
     lesson = resource_language.lessons.find_by(slug: params[:id])
+
     unless lesson
       f(:lesson_not_found, type: :info)
       redirect_to language_path(resource_language.slug)
@@ -25,6 +26,11 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     next_lesson_info = next_lesson_version ? next_lesson_version.infos.find_by!(locale: I18n.locale) : nil
     prev_lesson_version = lesson_version.prev_lesson_version
     prev_lesson_info = prev_lesson_version ? prev_lesson_version.infos.find_by!(locale: I18n.locale) : nil
+
+    language_member = resource_language.members.find_by(user: current_user)
+    lesson_member = if language_member
+      language_member.lesson_members.find(user: current_user, lesson: lesson)
+    end
     # unless @lesson
     #   f(:lesson_not_found, type: :info)
     #   redirect_to language_path(resource_language.slug)
@@ -43,7 +49,6 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     # if current_user.guest?
     #   gon.lesson_member = Language::Lesson::MemberFake.new
     # else
-    #   language_member = resource_language.members.find_or_initialize_by(user: current_user)
     #
     #   if language_member.new_record?
     #     language_member.save!
@@ -55,7 +60,6 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     #     js_event :language_started, js_event_options
     #   end
     #
-    #   lesson_member = language_member.lesson_members.find_or_initialize_by(language: resource_language, user: current_user, lesson: @lesson)
     #
     #   if lesson_member.new_record?
     #     lesson_member.save!
@@ -100,7 +104,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     #     @switching_locales[locale] = language_lesson_url(resource_language.slug, @lesson.slug, locale: AppHost.locale_for_url(locale))
     #   end
     # end
-    lessons = resource_language.current_lesson_infos.with_locale.joins(:lesson).merge(
+    lessons_infos = resource_language.current_lesson_infos.with_locale.joins(:lesson).merge(
       Language::Lesson.order(:natural_order)
     )
 
@@ -110,7 +114,8 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
       lesson: Language::LessonResource.new(lesson_info),
       nextLesson: next_lesson_info && Language::LessonResource.new(next_lesson_info),
       prevLesson: prev_lesson_info && Language::LessonResource.new(prev_lesson_info),
-      lessons: Language::LessonResource.new(lessons)
+      lessons: Language::LessonResource.new(lessons_infos),
+      lesson_member: Language::Lesson::Member.new(lesson_member)
     }
   end
 

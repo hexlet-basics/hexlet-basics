@@ -83,10 +83,10 @@ end
 
 group :development do
   # gem 'annotate'
+  gem "bullet"
   gem "annotaterb"
   # gem 'i18n-debug'
   # gem 'listen'
-  # gem 'bullet'
   # gem 'derailed_benchmarks'
   gem "web-console"
   gem "ruby-lsp", require: false
@@ -124,7 +124,7 @@ gem "counter_culture"
 gem "country_select"
 # gem 'sorbet-rails' # Temp disable sorbet for memory optimization
 
-gem 'browser'
+gem "browser"
 #
 # gem 'meta-tags'
 #
