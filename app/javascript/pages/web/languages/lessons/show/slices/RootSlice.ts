@@ -1,46 +1,13 @@
-import axios from "axios";
-import {
-  createAsyncThunk,
-  createSlice,
-  type PayloadAction,
-} from "@reduxjs/toolkit";
 import * as Routes from "@/routes.js";
 import type { LanguageLesson } from "@/types/serializers";
-import type { RootState } from ".";
-
-interface CheckingResponse {
-  result: boolean;
-  output: string;
-  passed: boolean;
-}
-
-export interface GeneralState {
-  processState: "checked" | "unchecked" | "checking";
-  currentTab: "editor" | "output" | "tests" | "solution";
-  finished: boolean;
-  result: unknown;
-  output: string;
-  passed: boolean;
-  content: string;
-  focusesCount: number;
-  startTime: number;
-  solutionState: "shown" | "canBeShown" | "notAllowedToBeShown";
-  waitingTime: 0;
-}
-
-const initialState: GeneralState = {
-  processState: "unchecked",
-  currentTab: "editor",
-  finished: false,
-  result: null,
-  output: "",
-  passed: false,
-  content: "",
-  focusesCount: 1,
-  startTime: 0,
-  solutionState: "notAllowedToBeShown",
-  waitingTime: 0,
-};
+import {
+  type PayloadAction,
+  createAsyncThunk,
+  createSlice,
+} from "@reduxjs/toolkit";
+import axios from "axios";
+import type { CheckingResponse, RootState } from "../types";
+import { initialRootState } from ".";
 
 export const runCheck = createAsyncThunk(
   "runCheck",
@@ -66,12 +33,12 @@ export const runCheck = createAsyncThunk(
 
 const slice = createSlice({
   name: "GeneralSlice",
-  initialState,
+  initialState: initialRootState,
   reducers: {
-    changeContent(state, { payload }) {
-      state.content = payload.content;
+    changeContent(state, action: PayloadAction<RootState["content"]>) {
+      state.content = action.payload;
     },
-    changeTab(state, action: PayloadAction<GeneralState["currentTab"]>) {
+    changeTab(state, action: PayloadAction<RootState["currentTab"]>) {
       state.currentTab = action.payload;
       if (action.payload === "editor") {
         state.focusesCount += 1;
@@ -82,7 +49,7 @@ const slice = createSlice({
     },
     changeSolutionState(
       state,
-      action: PayloadAction<GeneralState["solutionState"]>,
+      action: PayloadAction<RootState["solutionState"]>,
     ) {
       state.solutionState = action.payload;
     },
@@ -91,7 +58,7 @@ const slice = createSlice({
     builder
       .addCase(runCheck.pending, (state) => {
         state.currentTab = "output";
-        state.processState = "checking"
+        state.processState = "checking";
       })
       .addCase(
         runCheck.fulfilled,
@@ -113,7 +80,7 @@ const slice = createSlice({
       .addCase(runCheck.rejected, (state) => {
         state.passed = false;
         state.result = "error";
-        state.processState = "checked"
+        state.processState = "checked";
       });
   },
 });

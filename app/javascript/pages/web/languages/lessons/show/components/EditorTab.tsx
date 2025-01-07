@@ -2,7 +2,7 @@ import { usePage } from "@inertiajs/react";
 import MonacoEditor, { loader } from "@monaco-editor/react";
 import { useLocalStorage } from "@rehooks/local-storage";
 import { useEffect, useState } from "react";
-import slice from "../slices/GeneralSlice.ts";
+import slice from "../slices/RootSlice.ts";
 import type { Props } from "../types.ts";
 import {
   getEditorLanguage,
@@ -44,8 +44,8 @@ export default function EditorTab() {
   const { course, lesson } = usePage<Props>().props;
 
   const editorOptions: editor.IStandaloneEditorConstructionOptions = {
-    tabSize: getTabSize(course.slug),
-    insertSpaces: shouldReplaceTabsWithSpaces(course.slug),
+    tabSize: getTabSize(course.slug!),
+    insertSpaces: shouldReplaceTabsWithSpaces(course.slug!),
     fontSize: 14,
     scrollBeyondLastLine: false,
     minimap: {
@@ -64,7 +64,7 @@ export default function EditorTab() {
   const content = useAppSelector((state) => state.content);
   const dispatch = useAppDispatch();
 
-  const [localStorageContent, setLocalStorageContent] = useLocalStorage<string>(
+  const [_, setLocalStorageContent] = useLocalStorage<string>(
     getKeyForStoringLessonCode(lesson),
     lesson.prepared_code || "",
   );
@@ -96,17 +96,18 @@ export default function EditorTab() {
     // dispatch(slice.actions.runCheck({ lesson }));
   };
 
-  const handleContentChange = (value: string | undefined) => {
-    setLocalStorageContent(value || "");
-    // dispatch(slice.actions.changeContent({ content: newContent }));
+  const handleEditorChange = (value: string | undefined) => {
+    const newContent = value || ""
+    setLocalStorageContent(newContent);
+    dispatch(slice.actions.changeContent(newContent));
   };
 
   return (
     <MonacoEditor
       options={editorOptions}
       onMount={handleEditorDidMount}
-      defaultValue={localStorageContent || ""}
-      onChange={handleContentChange}
+      defaultValue={content}
+      onChange={handleEditorChange}
       language={getEditorLanguage(course.slug!)}
       // defaultLanguage={course.slug!}
       className="w-100 h-100"

@@ -7,7 +7,7 @@ import { Button, OverlayTrigger, Popover, Spinner } from "react-bootstrap";
 // import Hotkeys from 'react-hot-keys';
 import { useHotkeys } from "react-hotkeys-hook";
 
-import slice, { runCheck } from "../slices/GeneralSlice.ts";
+import slice, { runCheck } from "../slices/RootSlice.ts";
 import * as Routes from "@/routes.js";
 import { getKeyForStoringLessonCode } from "@/lib/utils.ts";
 import { Link, usePage } from "@inertiajs/react";

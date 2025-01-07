@@ -204,51 +204,6 @@ export default function Show() {
             <Tab.Container id="left-tabs-example" defaultActiveKey="editor">
               <div className="h-100 d-flex flex-column">
                 <EditorBlock />
-                {/* <Nav variant="underline" fill justify className="mb-3 small"> */}
-                {/*   <Nav.Item> */}
-                {/*     <Nav.Link className="link-body-emphasis" eventKey="editor"> */}
-                {/*       {t("languages.lessons.show.editor")} */}
-                {/*     </Nav.Link> */}
-                {/*   </Nav.Item> */}
-                {/*   <Nav.Item> */}
-                {/*     <Nav.Link className="link-body-emphasis" eventKey="output"> */}
-                {/*       {t("languages.lessons.show.output")} */}
-                {/*     </Nav.Link> */}
-                {/*   </Nav.Item> */}
-                {/*   <Nav.Item> */}
-                {/*     <Nav.Link className="link-body-emphasis" eventKey="Tests"> */}
-                {/*       {t("languages.lessons.show.tests")} */}
-                {/*     </Nav.Link> */}
-                {/*   </Nav.Item> */}
-                {/*   <Nav.Item> */}
-                {/*     <Nav.Link */}
-                {/*       className="link-body-emphasis" */}
-                {/*       eventKey="solution" */}
-                {/*     > */}
-                {/*       {t("languages.lessons.show.solution")} */}
-                {/*     </Nav.Link> */}
-                {/*   </Nav.Item> */}
-                {/* </Nav> */}
-
-                {/* <Tab.Content className="h-100 overflow-hidden p-2"> */}
-                {/*   <Tab.Pane eventKey="lesson" className="overflow-auto h-100"> */}
-                {/*     <h1 className="h2"> */}
-                {/*       {course.name} */}
-                {/*       {lesson.name} */}
-                {/*     </h1> */}
-                {/*     <Markdown rehypePlugins={rehypePlugins}> */}
-                {/*       {lesson.theory} */}
-                {/*     </Markdown> */}
-                {/*     <h2 className="h3"> */}
-                {/*       {t("languages.lessons.show.instructions")} */}
-                {/*     </h2> */}
-                {/*     <Markdown rehypePlugins={rehypePlugins}> */}
-                {/*       {lesson.instructions} */}
-                {/*     </Markdown> */}
-                {/*   </Tab.Pane> */}
-                {/*   <Tab.Pane eventKey="discuss">Second tab content</Tab.Pane> */}
-                {/*   <Tab.Pane eventKey="navigation">Second tab content</Tab.Pane> */}
-                {/* </Tab.Content> */}
               </div>
             </Tab.Container>
           </Col>

@@ -5,30 +5,32 @@ import Countdown, { type CountdownRenderProps } from "react-countdown";
 import { useTranslation } from "react-i18next";
 
 import waitingClock from "@/images/waiting_clock.png";
-import slice from "../slices/GeneralSlice.ts";
+import slice from "../slices/RootSlice.ts";
 import { getEditorLanguage } from "@/lib/utils.ts";
 import { useAppDispatch, useAppSelector } from "../slices/index.ts";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { usePage } from "@inertiajs/react";
 import type { Props } from "../types.ts";
+import { Alert } from "react-bootstrap";
+
+// const waitingTime = 20 * 60 * 1000; // 20 min
+const waitingTime = 3000;
 
 export default function SolutionTab() {
   const { course, lesson } = usePage<Props>().props;
   const content = useAppSelector((state) => state.content);
   const solutionState = useAppSelector((state) => state.solutionState);
   const startTime = useAppSelector((state) => state.startTime);
-  const waitingTime = useAppSelector((state) => state.waitingTime);
   const { t: tCommon } = useTranslation("common");
   const dispatch = useAppDispatch();
 
   const renderUserCode = () => {
     if (content === "") {
-      return <p className="mt-3">{tCommon("userCodeInstructions")}</p>;
+      return <Alert className="mt-3">{tCommon("userCodeInstructions")}</Alert>;
     }
 
     return (
       <>
-        <h2 className="h3">{tCommon("userCode")}</h2>
         <SyntaxHighlighter
           style={github}
           showLineNumbers
@@ -43,15 +45,20 @@ export default function SolutionTab() {
   const renderSolution = () => {
     return (
       <div className="p-lg-3 hexlet-basics-content" id="basics-solution">
-        <h2 className="h3">{tCommon("teacherSolution")}</h2>
-        <SyntaxHighlighter
-          style={github}
-          showLineNumbers
-          language={getEditorLanguage(course.slug!)}
-        >
-          {lesson.original_code!}
-        </SyntaxHighlighter>
-        {renderUserCode()}
+        <div className="mb-5">
+          <h2 className="h3">{tCommon("teacherSolution")}</h2>
+          <SyntaxHighlighter
+            style={github}
+            showLineNumbers
+            language={getEditorLanguage(course.slug!)}
+          >
+            {lesson.original_code!}
+          </SyntaxHighlighter>
+        </div>
+        <div>
+          <h2 className="h3">{tCommon("userCode")}</h2>
+          {renderUserCode()}
+        </div>
       </div>
     );
   };

@@ -12,7 +12,7 @@ export default function TestsBox() {
   const { lesson, course } = usePage<Props>().props;
 
   return (
-    <div>
+    <div className="hexlet-basics-content">
       <p className="text-center lead">{tCommon("testInstructions")}</p>
       <SyntaxHighlighter
         style={github}

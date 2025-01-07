@@ -1,62 +1,30 @@
-import { configureStore } from "@reduxjs/toolkit";
 import React, { StrictMode } from "react";
 import { Provider } from "react-redux";
 
 import App from "./components/App.tsx";
-import store from "./slices/index.ts";
-
-import type { LanguageLesson, LanguageLessonMember } from "@/types/serializers";
-import type { PropsWithChildren } from "react";
 
 import { usePage } from "@inertiajs/react";
 import type { Props } from "./types";
-
-const waitingTime = 20 * 60 * 1000; // 20 min
-
-// type Props = PropsWithChildren & {
-//   lesson: LanguageLesson;
-//   lessonMember: LanguageLessonMember;
-// };
+import getStore, { type AppState } from "./slices/index.ts";
+import useLocalStorage from "@rehooks/local-storage";
+import { getKeyForStoringLessonCode } from "@/lib/utils.ts";
 
 export default function Index() {
-  const {
-    // courseCategory,
-    // course,
-    // lessons,
-    lessonMember,
-    lesson,
-    // prevLesson,
-    // nextLesson,
-    // auth: { user },
-  } = usePage<Props>().props;
+  const { lessonMember, lesson } = usePage<Props>().props;
 
-  const entities = {
-    lessonVersion: lesson.version,
-    // lesson: gon.lesson,
-    // language: gon.language,
-    // lessonMember: gon.lesson_member,
-  };
-  //
   const isFinished = lessonMember && lessonMember.state === "finished";
   //
-  // const localStorageKey = `lesson-version-${lesson.id}`;
-  // const locallySavedContent = localStorage.getItem(localStorageKey);
+  const [content] = useLocalStorage<string>(
+    getKeyForStoringLessonCode(lesson),
+    lesson.prepared_code || "",
+  );
 
-  // const preloadedState = {
-  //   editorSlice: {
-  //     content: lesson.prepared_code || "",
-  //     focusesCount: 1,
-  //   },
-  //   solutionSlice: {
-  //     // TODO move counter to server
-  //     startTime: Date.now(),
-  //     processState: isFinished ? "shown" : "notAllowedToBeShown",
-  //     waitingTime,
-  //   },
-  //   lessonSlice: {
-  //     finished: isFinished,
-  //   },
-  // };
+  const preloadedState: Partial<AppState> = {
+    startTime: Date.now(),
+    content,
+    finished: lessonMember?.state === "finished"
+  };
+  const store = getStore(preloadedState);
 
   return (
     <StrictMode>
