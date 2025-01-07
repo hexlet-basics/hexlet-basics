@@ -9,8 +9,8 @@ import { useDispatch, useSelector } from "react-redux";
 import waitingClock from "@/images/waiting_clock.png";
 // import hljs from "@/lib/hljs.js";
 import { actions } from "../slices/index.js";
-import { getLanguage } from "../utils/editorUtils.js";
-import { solutionStates } from "../utils/maps.js";
+import { getLanguage } from "@/lib/utils.js";
+import { solutionStates } from "@/lib/utils.js";
 
 function Solution() {
 

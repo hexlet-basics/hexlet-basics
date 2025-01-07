@@ -3,8 +3,8 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
-import { neededPreview } from "../utils/languagesUtils.js";
-import { currentTabValues } from "../utils/maps.js";
+import { neededPreview } from "@/lib/utils.js";
+import { currentTabValues } from "@/lib/utils.js";
 import ControlBox from "./ControlBox.js";
 import HTMLPreview from "./HTMLPreview.js";
 import TabsBox from "./TabsBox.js";

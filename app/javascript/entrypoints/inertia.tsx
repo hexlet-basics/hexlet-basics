@@ -2,9 +2,7 @@ import { createInertiaApp } from "@inertiajs/react";
 import { type ReactNode, createElement } from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 
-import "react-bootstrap";
-import "@/i18n";
-import "@/monaco";
+import "@/init";
 
 // Temporary type definition, until @inertiajs/react provides one
 type ResolvedComponent = {

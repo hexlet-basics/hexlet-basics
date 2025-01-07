@@ -1,3 +1,5 @@
+import "react-bootstrap";
+
 import i18next from "i18next";
 import _ from "lodash";
 import { initReactI18next } from "react-i18next";

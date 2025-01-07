@@ -5,7 +5,7 @@ import { Nav, Tab } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { actions } from "../slices/index.js";
-import { currentTabValues } from "../utils/maps.js";
+import { currentTabValues } from "@/lib/utils.js";
 
 import Editor from "./Editor.js";
 import Output from "./Output.js";

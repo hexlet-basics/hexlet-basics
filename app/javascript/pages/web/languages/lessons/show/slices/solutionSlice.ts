@@ -1,7 +1,7 @@
 // @ts-check
 
 import { createSlice } from "@reduxjs/toolkit";
-import { solutionStates } from "../utils/maps.js";
+import { solutionStates } from "@/lib/utils.js";
 import { actions as checkInfoActions } from "./checkInfoSlice.js";
 
 const slice = createSlice({

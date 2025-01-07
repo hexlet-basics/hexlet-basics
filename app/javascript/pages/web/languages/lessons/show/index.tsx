@@ -38,12 +38,12 @@ export default function Index() {
   //
   const isFinished = lessonMember && lessonMember.state === "finished";
   //
-  const localStorageKey = `lesson-version-${lesson.id}`;
-  const locallySavedContent = localStorage.getItem(localStorageKey);
+  // const localStorageKey = `lesson-version-${lesson.id}`;
+  // const locallySavedContent = localStorage.getItem(localStorageKey);
   //
   const preloadedState = {
     editorSlice: {
-      content: locallySavedContent || lesson.prepared_code || "",
+      content: lesson.prepared_code || "",
       focusesCount: 1,
     },
     solutionSlice: {

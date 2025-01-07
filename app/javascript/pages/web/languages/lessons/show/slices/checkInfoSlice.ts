@@ -1,7 +1,7 @@
 import axios from "axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import * as Routes from "@/routes.js";
-import { checkInfoStates } from "../utils/maps.js";
+import { checkInfoStates } from "@/lib/utils.js";
 
 const runCheck = createAsyncThunk(
   "runCheck",

@@ -6,8 +6,8 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 
 import escape from "core-js/actual/escape.js";
-import { getHelpByTutorUrl } from "../utils/languagesUtils.js";
-import { checkInfoStates } from "../utils/maps.js";
+import { getHelpByTutorUrl } from "@/lib/utils.js";
+import { checkInfoStates } from "@/lib/utils.js";
 
 const ansi = new AnsiUp();
 

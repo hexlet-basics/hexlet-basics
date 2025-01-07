@@ -3,8 +3,7 @@ import createServer from "@inertiajs/react/server";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 
-import "react-bootstrap";
-import "@/i18n";
+import "@/init";
 
 createServer((page) =>
   createInertiaApp({

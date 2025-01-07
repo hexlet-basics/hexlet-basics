@@ -12,7 +12,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 
 import { actions } from "../slices/index.js";
 import * as Routes from "@/routes.js";
-import { checkInfoStates } from "../utils/maps.js";
+import { checkInfoStates } from "@/lib/utils.js";
 
 function ControlBox() {
   const { t } = useTranslation();

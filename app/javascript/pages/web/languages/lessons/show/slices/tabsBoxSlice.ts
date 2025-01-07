@@ -1,7 +1,7 @@
 // @ts-check
 
 import { createSlice } from "@reduxjs/toolkit";
-import { currentTabValues } from "../utils/maps.js";
+import { currentTabValues } from "@/lib/utils.js";
 import { actions as checkInfoActions } from "./checkInfoSlice.js";
 
 const slice = createSlice({
