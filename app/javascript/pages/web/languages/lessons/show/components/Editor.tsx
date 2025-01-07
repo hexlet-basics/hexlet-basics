@@ -1,11 +1,12 @@
 import { usePage } from "@inertiajs/react";
-import MonacoEditor, { loader, type Monaco } from "@monaco-editor/react";
+import MonacoEditor, { loader } from "@monaco-editor/react";
 import { useLocalStorage } from "@rehooks/local-storage";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { actions } from "../slices/index.js";
 import type { Props } from "../types.js";
 import {
+  getKeyForStoringLessonCode,
   getLanguageForEditor,
   getTabSize,
   shouldReplaceTabsWithSpaces,
@@ -62,18 +63,15 @@ function Editor() {
   const { content, focusesCount } = useSelector((state) => state.editorSlice);
   const dispatch = useDispatch();
 
-  const localStorageKey = `lesson-${lesson.id}`;
-  const [localStorageContent, setContent] = useLocalStorage<string | undefined>(
-    localStorageKey,
+  const [localStorageContent, setLocalStorageContent] = useLocalStorage<string>(
+    getKeyForStoringLessonCode(lesson),
+    lesson.prepared_code || '',
   );
 
   const [editorInstance, setEditorInstance] =
     useState<editor.IStandaloneCodeEditor>();
 
-  const handleEditorDidMount = (
-    editor: editor.IStandaloneCodeEditor,
-    monaco: Monaco,
-  ) => {
+  const handleEditorDidMount = (editor: editor.IStandaloneCodeEditor) => {
     setEditorInstance(editor);
 
     const extraKeys = [
@@ -98,7 +96,7 @@ function Editor() {
   };
 
   const handleContentChange = (value: string | undefined) => {
-    setContent(value);
+    setLocalStorageContent(value || "");
     // dispatch(actions.changeContent({ content: newContent }));
   };
 
@@ -106,10 +104,10 @@ function Editor() {
     <MonacoEditor
       options={editorOptions}
       onMount={handleEditorDidMount}
-      defaultValue={localStorageContent || content}
+      defaultValue={localStorageContent || ""}
       onChange={handleContentChange}
       language={getLanguageForEditor(course.slug)}
-      height="90vh"
+      // height="90vh"
       defaultLanguage={course.slug!}
       className="w-100 h-100"
     />

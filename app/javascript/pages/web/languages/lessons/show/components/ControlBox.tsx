@@ -12,10 +12,14 @@ import { useHotkeys } from "react-hotkeys-hook";
 
 import { actions } from "../slices/index.js";
 import * as Routes from "@/routes.js";
-import { checkInfoStates } from "@/lib/utils.js";
+import { checkInfoStates, getKeyForStoringLessonCode } from "@/lib/utils.js";
+import { usePage } from "@inertiajs/react";
+import type { Props } from "../types.js";
 
 function ControlBox() {
   const { t } = useTranslation();
+  const { course, lesson } = usePage<Props>().props;
+
   const { checkInfo, lessonInfo } = useSelector((state) => ({
     checkInfo: state.checkInfoSlice,
     lessonInfo: state.lessonSlice,
@@ -30,8 +34,7 @@ function ControlBox() {
     // NOTE: easier than state manipulating. dont touch, dont blame, be happy.
 
     if (window.confirm(t("confirm"))) {
-      const localStorageKey = `lesson-version-${lessonVersion.id}`;
-      deleteFromStorage(localStorageKey);
+      deleteFromStorage(getKeyForStoringLessonCode(lesson));
       window.location.reload();
     }
   };

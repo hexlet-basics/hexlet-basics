@@ -1,3 +1,5 @@
+import { LanguageLesson } from "@/types/serializers";
+
 export function deviconClass(langName: string): string {
   const mapping: Record<string, string> = {
     css: "css3",
@@ -185,4 +187,8 @@ export const solutionStates = {
   notAllowedToShown: "notAllowedToShown",
   canBeShown: "canBeShown",
   shown: "shown",
+};
+
+export const getKeyForStoringLessonCode = (lesson: LanguageLesson): string => {
+  return `lesson-${lesson.id}`;
 };
