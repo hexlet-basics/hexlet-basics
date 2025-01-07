@@ -4,7 +4,16 @@ class Language::LessonResource
 
   typelize_from Language::Lesson::Version::Info
 
-  attributes :id, :name, :locale, :instructions, :theory, :description, :definitions, :tips, :test_code, :prepared_code
+  attributes :id,
+    :name,
+    :locale,
+    :instructions,
+    :theory,
+    :version_id,
+    :description,
+    :definitions,
+    :tips
+
   typelize tips: "String[]", definitions: "Array<{ name: string, description: string }>"
 
   typelize :number, nullable: true
@@ -12,9 +21,16 @@ class Language::LessonResource
     info.version.lesson.id
   end
 
+  typelize :number, nullable: true
+
   typelize :string, nullable: true
   attribute :prepared_code do |info|
     info.version.prepared_code
+  end
+
+  typelize :string, nullable: true
+  attribute :original_code do |info|
+    info.version.original_code
   end
 
   typelize :string, nullable: true

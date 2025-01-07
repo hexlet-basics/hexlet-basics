@@ -1,4 +1,4 @@
-import { LanguageLesson } from "@/types/serializers";
+import type { LanguageLesson } from "@/types/serializers";
 
 export function deviconClass(langName: string): string {
   const mapping: Record<string, string> = {
@@ -18,17 +18,7 @@ export function deviconClass(langName: string): string {
 //   return `${import.meta.env.BASE_URL}images/${filepath}`;
 // }
 
-const languageMapping = {
-  racket: "scheme",
-  clang: "c",
-  dlang: "d",
-  "layout-designer": "html",
-  "pre-course-java": "java",
-  "pre-course-python": "python",
-  "pre-course-javascript": "javascript",
-};
-
-const editorMapping = {
+const editorMapping: Record<string, string> = {
   css: "html",
   racket: "scheme",
   clang: "c",
@@ -40,7 +30,7 @@ const editorMapping = {
   "pre-course-javascript": "javascript",
 };
 
-const langToTabSizeMapping = {
+const langToTabSizeMapping: Record<string, number> = {
   javascript: 2,
   ruby: 2,
   racket: 2,
@@ -70,7 +60,7 @@ const langToTabSizeMapping = {
   dlang: 2,
 };
 
-export const langToSpacesMapping = {
+export const langToSpacesMapping: Record<string, boolean> = {
   javascript: true,
   json: true,
   jsx: true,
@@ -102,22 +92,21 @@ export const langToSpacesMapping = {
 
 const defaultTabSize = 4;
 
-export const getLanguage = (language) => languageMapping[language] ?? language;
-
-export const getLanguageForEditor = (language) =>
+// TODO: move to db
+export const getEditorLanguage = (language: string): string =>
   editorMapping[language] ?? language;
 
-export const getTabSize = (language) =>
+export const getTabSize = (language: string): number =>
   langToTabSizeMapping[language] ?? defaultTabSize;
 
-export const shouldReplaceTabsWithSpaces = (language) =>
+export const shouldReplaceTabsWithSpaces = (language: string): boolean =>
   langToSpacesMapping[language] ?? false;
 
 export const languages = {
   "layout-designer": "layout-designer",
-  "pre-course-java": "pre-course-java",
-  "pre-course-python": "pre-course-python",
-  "pre-course-javascript": "pre-course-javascript",
+  // "pre-course-java": "pre-course-java",
+  // "pre-course-python": "pre-course-python",
+  // "pre-course-javascript": "pre-course-javascript",
   css: "css",
   html: "html",
   javascript: "javascript",
@@ -141,7 +130,8 @@ export const languages = {
   swift: "swift",
 };
 
-export const neededPreview = (language) => {
+// TODO: move to db
+export const neededPreview = (language: string) => {
   switch (language) {
     case languages.css:
     case languages.html:
@@ -152,42 +142,23 @@ export const neededPreview = (language) => {
   }
 };
 
-const languagesToHelpByTutorUrls = {
-  java: "https://pre.hexlet.io/java?promo_name=base-java&promo_position=article-body&promo_type=link&promo_creative=test-failed-link",
-  python:
-    "https://pre.hexlet.io/python?promo_name=base-python&promo_position=article-body&promo_type=link&promo_creative=test-failed-link",
-  javascript:
-    "https://pre.hexlet.io/frontend?promo_name=base-frontend&promo_position=article-body&promo_type=link&promo_creative=test-failed-link",
-  php: "https://ru.hexlet.io/programs/php?promo_name=prof-php&promo_position=article-body&promo_type=link&promo_creative=test-failed-link",
-  css: "https://ru.hexlet.io/programs/frontend?promo_name=prof-frontend&promo_position=article-body&promo_type=link&promo_creative=test-failed-link",
-  html: "https://ru.hexlet.io/programs/frontend?promo_name=prof-frontend&promo_position=article-body&promo_type=link&promo_creative=test-failed-link",
-};
-
-export const getHelpByTutorUrl = (language) => {
-  const defaultUrl =
-    "https://premium.hexlet.io/?promo_name=premium&promo_position=body&promo_type=link&promo_creative=test-failed-link";
-
-  return languagesToHelpByTutorUrls[language] || defaultUrl;
-};
-
-export const checkInfoStates = {
-  unchecked: "unchecked",
-  checking: "checking",
-  checked: "checked",
-};
-
-export const currentTabValues = {
-  editor: "editor",
-  output: "output",
-  testForExercise: "testForExercise",
-  solution: "solution",
-};
-
-export const solutionStates = {
-  notAllowedToShown: "notAllowedToShown",
-  canBeShown: "canBeShown",
-  shown: "shown",
-};
+// const languagesToHelpByTutorUrls = {
+//   java: "https://pre.hexlet.io/java?promo_name=base-java&promo_position=article-body&promo_type=link&promo_creative=test-failed-link",
+//   python:
+//     "https://pre.hexlet.io/python?promo_name=base-python&promo_position=article-body&promo_type=link&promo_creative=test-failed-link",
+//   javascript:
+//     "https://pre.hexlet.io/frontend?promo_name=base-frontend&promo_position=article-body&promo_type=link&promo_creative=test-failed-link",
+//   php: "https://ru.hexlet.io/programs/php?promo_name=prof-php&promo_position=article-body&promo_type=link&promo_creative=test-failed-link",
+//   css: "https://ru.hexlet.io/programs/frontend?promo_name=prof-frontend&promo_position=article-body&promo_type=link&promo_creative=test-failed-link",
+//   html: "https://ru.hexlet.io/programs/frontend?promo_name=prof-frontend&promo_position=article-body&promo_type=link&promo_creative=test-failed-link",
+// };
+//
+// export const getHelpByTutorUrl = (language) => {
+//   const defaultUrl =
+//     "https://premium.hexlet.io/?promo_name=premium&promo_position=body&promo_type=link&promo_creative=test-failed-link";
+//
+//   return languagesToHelpByTutorUrls[language] || defaultUrl;
+// };
 
 export const getKeyForStoringLessonCode = (lesson: LanguageLesson): string => {
   return `lesson-${lesson.id}`;

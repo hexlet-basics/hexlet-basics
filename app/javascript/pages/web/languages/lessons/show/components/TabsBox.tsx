@@ -1,31 +1,25 @@
-// @ts-check
-
 import React from "react";
 import { Nav, Tab } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
-import { actions } from "../slices/index.js";
-import { currentTabValues } from "@/lib/utils.js";
+import slice, { type GeneralState } from "../slices/GeneralSlice.ts";
 
-import Editor from "./Editor.js";
-import Output from "./Output.js";
-import Solution from "./Solution.js";
-import TestForExercise from "./TestForExercise.js";
+import Editor from "./EditorTab.tsx";
+import Output from "./OutputTab.tsx";
+import Solution from "./SolutionTab.tsx";
+import TestsBox from "./TestsBox.tsx";
+import { useAppDispatch, useAppSelector } from "../slices/index.ts";
 
 function TabsBox() {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  // const { currentTab } = useSelector((state) => ({
-  //   ...state.tabsBoxSlice,
-  //   checkInfo: state.checkInfoSlice,
-  // }));
+  const currentTab = useAppSelector((state) => state.currentTab);
 
-  const changeTab = (newTabState) => {
-    dispatch(actions.changeTab({ newTabState }));
+  const changeTab = (newTabState: string | null) => {
+    dispatch(
+      slice.actions.changeTab(newTabState as GeneralState["currentTab"]),
+    );
   };
-
-  const { editor, output, solution, testForExercise } = currentTabValues;
 
   // TODO: use anchor on load for choosing previuosly selected tab
   // useEffect(() => {
@@ -34,7 +28,12 @@ function TabsBox() {
   // console.log(activeTab)
 
   return (
-    <Tab.Container id="tabs" defaultActiveKey="editor" onSelect={changeTab}>
+    <Tab.Container
+      id="tabs"
+      activeKey={currentTab}
+      defaultActiveKey="editor"
+      onSelect={changeTab}
+    >
       <Nav variant="underline" fill justify className="mb-3 small">
         <Nav.Item>
           <Nav.Link className="link-body-emphasis" eventKey="editor">
@@ -47,13 +46,13 @@ function TabsBox() {
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link className="link-body-emphasis" eventKey="solution">
-            {t("languages.lessons.show.solution")}
+          <Nav.Link className="link-body-emphasis" eventKey="tests">
+            {t("languages.lessons.show.tests")}
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link className="link-body-emphasis" eventKey="tests">
-            {t("languages.lessons.show.tests")}
+          <Nav.Link className="link-body-emphasis" eventKey="solution">
+            {t("languages.lessons.show.solution")}
           </Nav.Link>
         </Nav.Item>
       </Nav>
@@ -66,7 +65,7 @@ function TabsBox() {
           <Output />
         </Tab.Pane>
         <Tab.Pane eventKey="tests" className="overflow-auto h-100">
-          <TestForExercise />
+          <TestsBox />
         </Tab.Pane>
         <Tab.Pane eventKey="solution" className="overflow-auto h-100">
           <Solution />

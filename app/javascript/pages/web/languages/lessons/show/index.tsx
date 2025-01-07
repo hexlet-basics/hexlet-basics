@@ -3,10 +3,11 @@ import React, { StrictMode } from "react";
 import { Provider } from "react-redux";
 
 import App from "./components/App.tsx";
-import reducer from "./slices/index.ts";
+import store from "./slices/index.ts";
 
 import type { LanguageLesson, LanguageLessonMember } from "@/types/serializers";
 import type { PropsWithChildren } from "react";
+
 import { usePage } from "@inertiajs/react";
 import type { Props } from "./types";
 
@@ -57,16 +58,11 @@ export default function Index() {
   //   },
   // };
 
-  const store = configureStore({
-    // preloadedState,
-    reducer,
-  });
-
   return (
-    <Provider store={store}>
-      <StrictMode>
-      <App />
-      </StrictMode>
-    </Provider>
+    <StrictMode>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </StrictMode>
   );
 }

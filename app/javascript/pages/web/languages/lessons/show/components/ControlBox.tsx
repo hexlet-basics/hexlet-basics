@@ -1,48 +1,54 @@
-// @ts-check
-
 import { deleteFromStorage } from "@rehooks/local-storage";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
 
 import cn from "classnames";
 import { Button, OverlayTrigger, Popover, Spinner } from "react-bootstrap";
 // import Hotkeys from 'react-hot-keys';
 import { useHotkeys } from "react-hotkeys-hook";
 
-import { actions } from "../slices/index.js";
+import slice, { runCheck } from "../slices/GeneralSlice.ts";
 import * as Routes from "@/routes.js";
-import { checkInfoStates, getKeyForStoringLessonCode } from "@/lib/utils.js";
-import { usePage } from "@inertiajs/react";
-import type { Props } from "../types.js";
+import { getKeyForStoringLessonCode } from "@/lib/utils.ts";
+import { Link, usePage } from "@inertiajs/react";
+import type { Props } from "../types.ts";
+import { useAppDispatch, useAppSelector } from "../slices/index.ts";
 
-function ControlBox() {
+export default function ControlBox() {
+  const {
+    course,
+    prevLesson,
+    nextLesson,
+    auth: { user },
+  } = usePage<Props>().props;
+
   const { t } = useTranslation();
-  const { course, lesson } = usePage<Props>().props;
+  const { t: tCommon } = useTranslation("common");
 
-  const { checkInfo, lessonInfo } = useSelector((state) => ({
-    checkInfo: state.checkInfoSlice,
-    lessonInfo: state.lessonSlice,
-  }));
+  const { lesson } = usePage<Props>().props;
 
-  const dispatch = useDispatch();
+  const processState = useAppSelector((state) => state.processState);
+  const finished = useAppSelector((state) => state.finished);
+
+  const dispatch = useAppDispatch();
   const handleRunCheck = () => {
-    dispatch(actions.runCheck({ lessonVersion }));
+    console.log('jopa')
+    dispatch(runCheck(lesson));
   };
 
   const handleReset = () => {
     // NOTE: easier than state manipulating. dont touch, dont blame, be happy.
 
-    if (window.confirm(t("confirm"))) {
+    if (window.confirm(tCommon("confirm"))) {
       deleteFromStorage(getKeyForStoringLessonCode(lesson));
       window.location.reload();
     }
   };
 
-  const isCodeChecking = checkInfo.processState === checkInfoStates.checking;
+  const isCodeChecking = processState === "checking";
 
   const renderRunButtonContent = () => {
-    const text = t("run");
+    const text = t("languages.lessons.show.controls.run");
     if (isCodeChecking) {
       return (
         <>
@@ -53,7 +59,7 @@ function ControlBox() {
             role="status"
             aria-hidden="true"
           />
-          <span className="visually-hidden">{t("loading")}</span>
+          <span className="visually-hidden">{tCommon("loading")}</span>
           <span className="d-none d-sm-block d-md-none d-lg-block ms-1">
             {text}
           </span>
@@ -71,29 +77,25 @@ function ControlBox() {
     );
   };
 
-  const prevButtonClasses = cn(`btn btn-outline-secondary
-    fw-normal me-3 order-first order-sm-0 order-md-first order-lg-0`);
+  const prevButtonClasses = cn(
+    "text-decoration-none link-body-emphasis btn btn-outline-secondary me-3",
+  );
 
-  const nextButtonClasses = cn("btn btn-outline-primary fw-normal", {
-    disabled: !lessonInfo.finished,
-  });
-
-  const nextLessonPath = "https://jopa";
-  // const nextLessonPath = lessonInfo.finished
-  //   ? Routes.nextLessonLanguageLessonPath(language, lesson.slug)
-  //   : null;
-  const prevLessonPath = "https://jopa";
-  // const prevLessonPath = Routes.prevLessonLanguageLessonPath(
-  //   language,
-  //   lesson.slug,
-  // );
+  const nextButtonClasses = cn(
+    "text-decoration-none link-body-emphasis btn btn-outline-secondary fw-normal",
+    {
+      disabled: !finished || !nextLesson,
+    },
+  );
 
   useHotkeys("ctrl+enter", handleRunCheck);
 
   const popover = (
     <Popover id="popover-basic">
-      <Popover.Header as="h3">{t("help.controls.header")}</Popover.Header>
-      <Popover.Body>{t("help.controls.body")}</Popover.Body>
+      <Popover.Header as="h3">
+        {t("languages.lessons.show.controls.header")}
+      </Popover.Header>
+      <Popover.Body>{t("languages.lessons.show.controls.body")}</Popover.Body>
     </Popover>
   );
 
@@ -119,12 +121,15 @@ function ControlBox() {
             <span className="bi bi-arrow-repeat" />
           </Button>
         </OverlayTrigger>
-        <a className={prevButtonClasses} href={prevLessonPath}>
-          <span className="bi bi-arrow-left-short d-sm-none d-md-block d-lg-none" />
-          <span className="d-none d-sm-block d-md-none d-lg-block">
-            {t("prevLesson")}
-          </span>
-        </a>
+
+        {prevLesson && (
+          <Link
+            href={Routes.language_lesson_path(course.slug!, prevLesson.slug!)}
+            className={prevButtonClasses}
+          >
+            {t("languages.lessons.show.prev")}
+          </Link>
+        )}
         <Button
           variant="primary"
           className="me-3 d-inline-flex align-items-center"
@@ -133,15 +138,15 @@ function ControlBox() {
         >
           {renderRunButtonContent()}
         </Button>
-        <a className={nextButtonClasses} href={nextLessonPath}>
-          <span className="bi bi-arrow-right-short d-sm-none d-md-block d-lg-none" />
-          <span className="d-none d-sm-block d-md-none d-lg-block">
-            {t("nextLesson")}
-          </span>
-        </a>
+        {nextLesson && (
+          <Link
+            className={nextButtonClasses}
+            href={Routes.language_lesson_path(course.slug!, nextLesson.slug!)}
+          >
+            {t("languages.lessons.show.next")}
+          </Link>
+        )}
       </div>
     </div>
   );
 }
-
-export default ControlBox;

@@ -2,15 +2,14 @@ import { usePage } from "@inertiajs/react";
 import MonacoEditor, { loader } from "@monaco-editor/react";
 import { useLocalStorage } from "@rehooks/local-storage";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { actions } from "../slices/index.js";
-import type { Props } from "../types.js";
+import slice from "../slices/GeneralSlice.ts";
+import type { Props } from "../types.ts";
 import {
+  getEditorLanguage,
   getKeyForStoringLessonCode,
-  getLanguageForEditor,
   getTabSize,
   shouldReplaceTabsWithSpaces,
-} from "@/lib/utils.js";
+} from "@/lib/utils.ts";
 
 import * as monaco from "monaco-editor";
 import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
@@ -19,6 +18,7 @@ import htmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
 import jsonWorker from "monaco-editor/esm/vs/language/json/json.worker?worker";
 import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
 import type { editor } from "monaco-editor";
+import { useAppDispatch, useAppSelector } from "../slices/index.ts";
 
 self.MonacoEnvironment = {
   getWorker(_, label) {
@@ -40,7 +40,7 @@ self.MonacoEnvironment = {
 
 loader.config({ monaco });
 
-function Editor() {
+export default function EditorTab() {
   const { course, lesson } = usePage<Props>().props;
 
   const editorOptions: editor.IStandaloneEditorConstructionOptions = {
@@ -60,12 +60,13 @@ function Editor() {
     fixedOverflowWidgets: true,
   };
 
-  const { content, focusesCount } = useSelector((state) => state.editorSlice);
-  const dispatch = useDispatch();
+  const focusesCount = useAppSelector((state) => state.focusesCount);
+  const content = useAppSelector((state) => state.content);
+  const dispatch = useAppDispatch();
 
   const [localStorageContent, setLocalStorageContent] = useLocalStorage<string>(
     getKeyForStoringLessonCode(lesson),
-    lesson.prepared_code || '',
+    lesson.prepared_code || "",
   );
 
   const [editorInstance, setEditorInstance] =
@@ -92,12 +93,12 @@ function Editor() {
   }, [focusesCount, editorInstance]);
 
   const handleRunCheck = () => {
-    dispatch(actions.runCheck({ lesson }));
+    // dispatch(slice.actions.runCheck({ lesson }));
   };
 
   const handleContentChange = (value: string | undefined) => {
     setLocalStorageContent(value || "");
-    // dispatch(actions.changeContent({ content: newContent }));
+    // dispatch(slice.actions.changeContent({ content: newContent }));
   };
 
   return (
@@ -106,23 +107,9 @@ function Editor() {
       onMount={handleEditorDidMount}
       defaultValue={localStorageContent || ""}
       onChange={handleContentChange}
-      language={getLanguageForEditor(course.slug)}
-      // height="90vh"
-      defaultLanguage={course.slug!}
+      language={getEditorLanguage(course.slug!)}
+      // defaultLanguage={course.slug!}
       className="w-100 h-100"
     />
   );
-
-  // return (
-  // <MonacoEditor
-  //   value={content}
-  //   options={commonOptions}
-  //   language={getLanguageForEditor(language)}
-  //   onChange={onContentChange}
-  //   editorDidMount={onMount}
-  //   className="w-100 h-100"
-  // />
-  // );
 }
-
-export default Editor;

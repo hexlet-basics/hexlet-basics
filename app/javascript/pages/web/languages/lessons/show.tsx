@@ -24,8 +24,6 @@ export default function Show() {
     course,
     lessons,
     lesson,
-    prevLesson,
-    nextLesson,
     auth: { user },
   } = usePage<Props>().props;
   const { t } = useTranslation();
@@ -153,31 +151,6 @@ export default function Show() {
                           <Markdown className="px-2 pt-2">{v.answer}</Markdown>
                         </details>
                       ))}
-                    </div>
-
-                    <div className="mb-3 d-flex justify-content-center">
-                      {prevLesson && (
-                        <Link
-                          href={Routes.language_lesson_path(
-                            course.slug!,
-                            prevLesson.slug!,
-                          )}
-                          className="text-decoration-none link-body-emphasis me-2"
-                        >
-                          {t("languages.lessons.show.prev")}
-                        </Link>
-                      )}
-                      {nextLesson && (
-                        <Link
-                          className="text-decoration-none link-body-emphasis"
-                          href={Routes.language_lesson_path(
-                            course.slug!,
-                            nextLesson.slug!,
-                          )}
-                        >
-                          {t("languages.lessons.show.next")}
-                        </Link>
-                      )}
                     </div>
 
                     <div className="small text-muted py-2">

@@ -1,26 +1,14 @@
-// @ts-check
+import { configureStore } from "@reduxjs/toolkit";
+import slice from "./GeneralSlice.ts";
+import { useDispatch, useSelector } from "react-redux";
 
-import { combineReducers } from "@reduxjs/toolkit";
-import checkInfoSlice, {
-  actions as checkInfoActions,
-} from "./checkInfoSlice.js";
-import editorSlice, { actions as editorActions } from "./editorSlice.js";
-import lessonSlice, { actions as lessonActions } from "./lessonSlice.js";
-import solutionSlice, { actions as solutionActions } from "./solutionSlice.js";
-import tabsBoxSlice, { actions as tabsBoxActions } from "./tabsBoxSlice.js";
-
-export default combineReducers({
-  tabsBoxSlice,
-  editorSlice,
-  solutionSlice,
-  lessonSlice,
-  checkInfoSlice,
+const store = configureStore({
+  reducer: slice.reducer,
 });
+export default store;
 
-export const actions = {
-  ...tabsBoxActions,
-  ...editorActions,
-  ...lessonActions,
-  ...solutionActions,
-  ...checkInfoActions,
-};
+export type RootState = ReturnType<typeof store.getState>;
+
+export type AppDispatch = typeof store.dispatch;
+export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
+export const useAppSelector = useSelector.withTypes<RootState>();

@@ -68,28 +68,77 @@
     },
     "common": {
       "address": "The Republic of Kazakhstan, Almaty, Auezova St., 14A",
+      "check": {
+        "error": {
+          "headline": "Oops!",
+          "message": "Something went wrong, try one more time, please"
+        },
+        "failed": {
+          "headline": "Tests Failed",
+          "message": "Your code contains errors. Read carefully tests output and try to find errors yourself"
+        },
+        "failed-infinity": {
+          "headline": "Tests Failed (Infinity Loop!)",
+          "message": "Maybe the test ran too long or you have an infinite loop in your solution. Make sure your loop has the correct breaking condition and you consider edge cases. If your loop works correctly, send it for checking again in 5 minutes. "
+        },
+        "passed": {
+          "headline": "Tests passed",
+          "message": "Yippee! Well done! Compare your answer with the teacher’s one and move to the next lesson"
+        }
+      },
+      "confirm": "You want to reset the exercise progress. The current code version will not be saved. We hope you’ve already copied it. Continue resetting?",
+      "discuss": "Discussion",
+      "editor": "Editor",
+      "errors": {
+        "network": "There was a network problem. Please try again. If it doesn’t work, make sure you have good internet and no blockers.",
+        "server": "Error on server. Maybe it’ll let go soon, but maybe not. Try to find out what happened in https://slack.hexlet.io/"
+      },
+      "help": {
+        "controls": {
+          "body": "Reset progress. If something breaks and cannot be fixed click this button to return to the beginning of the exercises. The current code won’t be saved. If you'll need it, copy it before resetting. For example, to the notepads",
+          "header": "Help"
+        }
+      },
       "hours": {
         "one": "%{count} hour",
         "other": "%{count} hours"
       },
+      "instructions": "Instructions",
       "language_icon": "%{language} icon",
       "languages": {
         "en": "English",
         "ru": "Russian"
       },
       "legal_name": "TOO \"Hexlet\"",
+      "lesson": "Lesson",
       "lessons": {
         "one": "%{count} lesson",
         "other": "%{count} lessons"
       },
+      "loading": "Loading...",
+      "nextLesson": "Next",
+      "output": "Output",
       "phones": [
         "+7 717 272 76 70"
       ],
+      "prevLesson": "Previous",
       "reset": "Reset",
+      "resetCode": "Reset code",
+      "run": "Run",
+      "showSolution": "Show solution",
+      "signInSuggestion": "<a href=\"/users/new\">Create an account</a> to save your progress",
+      "solution": "Solution",
+      "solutionInstructions": "Teacher's solution will be available in:",
+      "solutionNotice": "It's best to solve the problem yourself, but if you're stuck for a long time, feel free to check out the solution. But make sure to study it thoroughly to truly understand it.",
       "students": {
         "one": "%{count} student",
         "other": "%{count} students"
-      }
+      },
+      "teacherSolution": "Teacher's solution:",
+      "testForExercise": "Tests",
+      "testInstructions": "Your exercise will be checked with these tests:",
+      "userCode": "Your solution:",
+      "userCodeInstructions": "(start writing in Editor, your code will appear here and you'll be able to compare it to the teacher's solution)"
     },
     "date": {
       "abbr_day_names": [
@@ -80714,6 +80763,31 @@
     },
     "common": {
       "address": "108813, г. Москва, вн.тер.г. поселение Московский, г. Московский, ул. Солнечная, д. 3А, стр. 1, помещ. 10/3",
+      "check": {
+        "error": {
+          "headline": "Упс!",
+          "message": "Что-то пошло не так. Попробуйте ещё раз"
+        },
+        "failed": {
+          "headline": "Тесты не прошли",
+          "message": "В вашем коде есть ошибки. Прочитайте внимательно вывод тестов, найдите и исправьте их. <a href=\"https://help.hexlet.ru/article/65315\" target=\"_blank\">Как искать ошибки в коде</a>. Если самостоятельно учиться сложно, попробуйте <a href=\"{{ url }}\" target=\"_blank\">обучение с наставником</a>"
+        },
+        "failed-infinity": {
+          "headline": "Долгое выполнение",
+          "message": "Возможно, тесты работали слишком долго или в вашем решении есть бесконечный цикл. Убедитесь, что в цикле верное условие остановки, и вы учитываете пограничные случаи. Если с циклом всё в порядке, попробуйте отправить код на проверку снова через 5 минут"
+        },
+        "passed": {
+          "headline": "Тесты пройдены",
+          "message": "Ура! Всё получилось! Сравните своё решение с решением учителя и переходите к следующему уроку"
+        }
+      },
+      "confirm": "Вы хотите сбросить прогресс упражнения. Текущая версия кода не сохранится — надеемся, вы уже скопировали его. Продолжаем сброс?",
+      "discuss": "Обсуждение",
+      "editor": "Редактор",
+      "errors": {
+        "network": "Возникла сетевая проблема. Попробуйте повторить ещё раз. Если не получилось, убедитесь, что с интернетом всё в порядке, и отключите блокировщики рекламы",
+        "server": "Ошибка на сервере. Возможно, скоро отпустит, а возможно — нет. Попробуйте узнать, что произошло в https://t.me/hexletcommunity/12"
+      },
       "export": "Экспорт",
       "hello": "Привет мир",
       "hours": {
@@ -80721,17 +80795,22 @@
         "many": "%{count} часов",
         "one": "%{count} час"
       },
+      "instructions": "Инструкции",
       "language_icon": "Иконка %{language}",
       "languages": {
         "en": "Английский",
         "ru": "Русский"
       },
       "legal_name": "ООО «Хекслет Рус»",
+      "lesson": "Урок",
       "lessons": {
         "few": "%{count} урока",
         "many": "%{count} уроков",
         "one": "%{count} урок"
       },
+      "loading": "Загрузка...",
+      "nextLesson": "Следующий",
+      "output": "Вывод",
       "pages": {
         "about": "О проекте"
       },
@@ -80739,12 +80818,25 @@
         "+7 (495) 085 21 62",
         "8 800 100 22 47"
       ],
+      "prevLesson": "Предыдущий",
       "reset": "Сброс",
+      "resetCode": "Сбросить код",
+      "run": "Проверить",
+      "showSolution": "Показать решение",
+      "signInSuggestion": "<a href=\"/users/new\">Создайте аккаунт</a> для сохранения прогресса",
+      "solution": "Решение",
+      "solutionInstructions": "Решение учителя откроется через:",
+      "solutionNotice": "Желательно решить задачу самостоятельно, но если вы застряли и долгое время ничего не получается, посмотрите решение учителя. Но обязательно разберитесь в нём и повторите по памяти",
       "students": {
         "few": "%{count} студента",
         "many": "%{count} студентов",
         "one": "%{count} студент"
       },
+      "teacherSolution": "Решение учителя:",
+      "testForExercise": "Тесты",
+      "testInstructions": "Ваше упражнение проверяется по этим тестам",
+      "userCode": "Ваше решение:",
+      "userCodeInstructions": "Когда вы начнёте писать решение в Редакторе, оно появится тут для сравнения с учительским",
       "views": {
         "pagination": {
           "first": "&laquo;",
@@ -82963,6 +83055,11 @@
                 "answer": "Создавать обучающие материалы, понятные для всех без исключения, довольно сложно. Мы очень стараемся, но всегда есть что улучшать. Если вы встретили материал, который вам непонятен, опишите проблему в «Обсуждениях». Идеально, если вы сформулируете непонятные моменты в виде вопросов. Обычно нам нужно несколько дней для внесения правок.\n\nКстати, вы тоже можете участвовать в улучшении курсов: внизу есть ссылка на исходный код уроков, который можно править прямо из браузера.\n"
               }
             ],
+            "controls": {
+              "body": "Сбросить прогресс. По этой кнопке можно вернуться в начало упражнения, если что-то сломалось и не чинится. Текущий код не сохранится. Если он вам еще потребуется, скопируйте его перед сбросом — например, в блокнот",
+              "header": "Справка",
+              "run": "Запустить"
+            },
             "definitions": "Определения",
             "discuss": "Обсуждение",
             "editor": "Редактор",

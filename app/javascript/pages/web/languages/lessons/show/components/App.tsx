@@ -1,30 +1,27 @@
-// @ts-check
-
 import React from "react";
 import { useSelector } from "react-redux";
 
-import { neededPreview } from "@/lib/utils.js";
-import { currentTabValues } from "@/lib/utils.js";
-import ControlBox from "./ControlBox.js";
-import HTMLPreview from "./HTMLPreview.js";
-import TabsBox from "./TabsBox.js";
 import { usePage } from "@inertiajs/react";
-import type { Props } from "../types.js";
+
+import { neededPreview } from "@/lib/utils.ts";
+import ControlBox from "./ControlBox.tsx";
+import HTMLPreview from "./HTMLPreview.tsx";
+import TabsBox from "./TabsBox.tsx";
+import type { Props } from "../types.ts";
+import { useAppSelector } from "../slices/index.ts";
+import _ from "lodash";
 
 function App() {
-  const {
-    course,
-  } = usePage<Props>().props;
+  const { course } = usePage<Props>().props;
 
-  const { currentTab, content } = useSelector((state) => ({
-    ...state.tabsBoxSlice,
-    ...state.editorSlice,
-  }));
+  const content = useAppSelector((state) => state.content);
+  const currentTab = useAppSelector((state) => state.currentTab);
+
   const renderHtmlPreview = () => {
-    if (currentTab !== currentTabValues.editor) {
+    if (currentTab !== "editor") {
       return null;
     }
-    if (!neededPreview(course)) {
+    if (!neededPreview(course.slug!)) {
       return null;
     }
 
