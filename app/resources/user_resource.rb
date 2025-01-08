@@ -11,6 +11,11 @@ class UserResource
     user.guest?
   end
 
+  typelize :boolean, nullable: true
+  attribute :admin do |user|
+    user.admin?
+  end
+
   typelize :string, nullable: true
   attribute :password do |user| end
 

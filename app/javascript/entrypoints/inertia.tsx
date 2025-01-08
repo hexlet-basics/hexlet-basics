@@ -1,6 +1,8 @@
 import { createInertiaApp } from "@inertiajs/react";
+import { PrimeReactProvider, PrimeReactContext } from "primereact/api";
 import { type ReactNode, createElement } from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
+import pt from '../primereact.ts'
 
 import "@/init";
 
@@ -23,7 +25,7 @@ createInertiaApp({
 
   resolve: (name) => {
     const pages = import.meta.glob<ResolvedComponent>("../pages/**/*.tsx");
-    const pageFn = pages[`../pages/${name}.tsx`]
+    const pageFn = pages[`../pages/${name}.tsx`];
     if (!pageFn) {
       console.error(`Missing Inertia page component: '${name}.tsx'`);
     }
@@ -39,11 +41,16 @@ createInertiaApp({
   },
 
   setup({ el, App, props }) {
+    const vdom = (
+      <PrimeReactProvider value={{ pt, unstyled: true }}>
+        <App {...props} />
+      </PrimeReactProvider>
+    );
     if (el) {
       if (import.meta.env.MODE === "production") {
-        hydrateRoot(el, <App {...props} />);
+        hydrateRoot(el, vdom);
       } else {
-        createRoot(el).render(<App {...props} />);
+        createRoot(el).render(vdom);
       }
     } else {
       console.error(

@@ -309,6 +309,10 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.2.1)
+    ransack (4.2.1)
+      activerecord (>= 6.1.5)
+      activesupport (>= 6.1.5)
+      i18n
     rbi (0.2.2)
       prism (~> 1.0)
       sorbet-runtime (>= 0.5.9204)
@@ -498,6 +502,7 @@ DEPENDENCIES
   puma (>= 5.0)
   rails (~> 8.0.1)
   rails-i18n
+  ransack
   redcarpet
   responders (~> 3.1)
   rubocop-rails-omakase
