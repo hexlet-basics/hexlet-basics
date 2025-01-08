@@ -46,7 +46,7 @@ gem "pagy"
 # gem 'omniauth-rails_csrf_protection'
 # gem 'ransack'
 # gem 'redis'
-gem 'term-ansicolor'
+# gem 'term-ansicolor'
 # gem 'valid_email2'
 
 # gem 'bootstrap'
@@ -79,11 +79,11 @@ group :development, :test, :staging do
 
   # https://github.com/Shopify/tapioca/pull/2129/files
   gem "tapioca", require: false
+  gem "bullet"
 end
 
 group :development, :staging do
   # gem 'annotate'
-  gem "bullet"
   gem "annotaterb"
   # gem 'i18n-debug'
   # gem 'listen'

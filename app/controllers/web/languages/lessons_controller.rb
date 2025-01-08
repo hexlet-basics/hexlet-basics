@@ -29,7 +29,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
 
     language_member = resource_language.members.find_by(user: current_user)
     lesson_member = if language_member
-      language_member.lesson_members.find(user: current_user, lesson: lesson)
+      language_member.lesson_members.find_by(user: current_user, lesson: lesson)
     end
     # unless @lesson
     #   f(:lesson_not_found, type: :info)

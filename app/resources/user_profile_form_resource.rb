@@ -4,7 +4,7 @@ class UserProfileFormResource
 
   typelize_from User::ProfileForm
 
-  attributes :first_name
+  attributes :first_name, :last_name
 
   typelize '"user_profile_form"', nullable: false
   attribute :type do |user|

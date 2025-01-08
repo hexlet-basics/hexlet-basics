@@ -40,6 +40,7 @@ export default function Show({
   lessonsByModuleId,
 }: Props) {
   const { t } = useTranslation();
+  const { auth } = usePage<SharedProps>().props;
 
   const breadcrumbItems: BreadcrumbItem[] = [
     {
@@ -82,12 +83,12 @@ export default function Show({
               <span className="me-2">{t("languages.show.start")}</span>
               <i className="bi bi-arrow-right" />
             </Link>
-            <Link
+            {auth.user.guest && <Link
               className="btn btn-outline-secondary"
               href={Routes.new_user_path()}
             >
               {t("languages.show.registration")}
-            </Link>
+            </Link>}
           </div>
         </div>
         <div className="mb-5">

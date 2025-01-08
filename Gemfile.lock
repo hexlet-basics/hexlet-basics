@@ -354,7 +354,7 @@ GEM
       rubocop-minitest
       rubocop-performance
       rubocop-rails
-    ruby-lsp (0.23.1)
+    ruby-lsp (0.23.2)
       language_server-protocol (~> 3.17.0)
       prism (>= 1.2, < 2.0)
       rbs (>= 3, < 4)
@@ -392,13 +392,13 @@ GEM
       fugit (~> 1.11.0)
       railties (>= 7.1)
       thor (~> 1.3.1)
-    sorbet (0.5.11725)
-      sorbet-static (= 0.5.11725)
-    sorbet-runtime (0.5.11725)
-    sorbet-static (0.5.11725-universal-darwin)
-    sorbet-static-and-runtime (0.5.11725)
-      sorbet (= 0.5.11725)
-      sorbet-runtime (= 0.5.11725)
+    sorbet (0.5.11734)
+      sorbet-static (= 0.5.11734)
+    sorbet-runtime (0.5.11734)
+    sorbet-static (0.5.11734-universal-darwin)
+    sorbet-static-and-runtime (0.5.11734)
+      sorbet (= 0.5.11734)
+      sorbet-runtime (= 0.5.11734)
     spoom (1.5.0)
       erubi (>= 1.10.0)
       prism (>= 0.28.0)
@@ -412,7 +412,6 @@ GEM
       net-ssh (>= 2.8.0)
       ostruct
     stringio (3.1.2)
-    sync (0.5.0)
     tapioca (0.16.6)
       bundler (>= 2.2.25)
       netrc (>= 0.11.0)
@@ -422,14 +421,9 @@ GEM
       spoom (>= 1.2.0)
       thor (>= 1.2.0)
       yard-sorbet
-    term-ansicolor (1.11.2)
-      tins (~> 1.0)
     thor (1.3.2)
     thruster (0.1.10-arm64-darwin)
     timeout (0.4.3)
-    tins (1.38.0)
-      bigdecimal
-      sync
     typelizer (0.2.0)
       railties (>= 6.0.0)
     tzinfo (2.0.6)
@@ -515,7 +509,6 @@ DEPENDENCIES
   solid_queue
   sqlite3 (>= 2.1)
   tapioca
-  term-ansicolor
   thruster
   typelizer
   tzinfo-data
