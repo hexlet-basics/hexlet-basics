@@ -10,19 +10,19 @@ class Web::UsersController < Web::ApplicationController
   end
 
   def create
-    @user = User::SignUpForm.new(params[:user_sign_up_form])
+    user = User::SignUpForm.new(params[:user_sign_up_form])
 
-    if @user.save
-      sign_in @user
+    if user.save
+      sign_in user
       # js_event_options = {
       #   user: @user
       # }
       # js_event :signed_up, js_event_options
 
       f(:success)
-      redirect_to root_path
+      redirect_to root_url
     else
-      render :new
+      redirect_to new_user_url, inertia: { errors: user.errors }
     end
   end
 end

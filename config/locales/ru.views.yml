@@ -74,7 +74,7 @@ ru:
         all_blog_posts: Все статьи
     users:
       new:
-        confirmation_html: Регистрируясь, вы соглашаетесь с <a href="%{link}" class="text-decoration-none" target="_blank">условиями использования</a>
+        confirmation_html: Регистрируясь, вы соглашаетесь с <a href="%{url}" class="text-decoration-none" target="_blank">условиями использования</a>
         title: Регистрация
         meta_description: Зарегистрироваться на Code Basics
         sign_up: Регистрация

@@ -80678,8 +80678,13 @@
   "ru": {
     "activemodel": {
       "attributes": {
-        "sign_in_form": {
+        "user_sign_in_form": {
           "email": "Email",
+          "password": "Пароль"
+        },
+        "user_sign_up_form": {
+          "email": "Email",
+          "first_name": "Имя",
           "password": "Пароль"
         }
       },
@@ -80738,7 +80743,7 @@
           }
         },
         "models": {
-          "user/sign_up_form": {
+          "sign_up_form": {
             "attributes": {
               "password": {
                 "too_short": "должен быть не меньше 6 символов"
@@ -82629,11 +82634,11 @@
         "remind_password_form": {
           "create": "Восстановить"
         },
-        "sign_in_form": {
-          "create": "Войти"
-        },
         "submit": "Сохранить %{model}",
         "update": "Изменить",
+        "user_sign_in_form": {
+          "create": "Войти"
+        },
         "user_sign_up_form": {
           "create": "Создать аккаунт"
         }
@@ -83177,7 +83182,7 @@
       },
       "users": {
         "new": {
-          "confirmation_html": "Регистрируясь, вы соглашаетесь с <a href=\"%{link}\" class=\"text-decoration-none\" target=\"_blank\">условиями использования</a>",
+          "confirmation_html": "Регистрируясь, вы соглашаетесь с <a href=\"%{url}\" class=\"text-decoration-none\" target=\"_blank\">условиями использования</a>",
           "have_account": "Есть аккаунт?",
           "meta_description": "Зарегистрироваться на Code Basics",
           "sign_in": "Войти",

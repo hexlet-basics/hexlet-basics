@@ -9,6 +9,7 @@ import type { SharedProps } from "@/types/types.ts";
 import { usePage } from "@inertiajs/react";
 import { useTranslation } from "react-i18next";
 import type { HTMLAttributes, PropsWithChildren } from "react";
+import useLinkClickHandler from "@/hooks/useLinkClickHandler";
 
 const locales = {
   ru: {
@@ -24,8 +25,10 @@ const locales = {
 type Props = PropsWithChildren & HTMLAttributes<NavbarProps>;
 
 export default function NavbarBlock({ className }: Props) {
-  const { courses } = usePage<SharedProps>().props;
+  const { courses, auth } = usePage<SharedProps>().props;
   const { t: tLayouts } = useTranslation("layouts");
+
+  const handleLinkClick = useLinkClickHandler();
 
   return (
     <Navbar expand="lg" className={cn(className, "border-bottom")}>
@@ -59,23 +62,35 @@ export default function NavbarBlock({ className }: Props) {
           </NavDropdown>
         </Nav>
         <Nav>
-          <Nav.Link
-            className="link-body-emphasis"
-            href={Routes.new_session_path()}
-          >
-            {tLayouts("shared.nav.sign_in")}
-          </Nav.Link>
-          <Nav.Link
-            className="link-body-emphasis"
-            href={Routes.new_user_path()}
-          >
-            {tLayouts("shared.nav.registration")}
-          </Nav.Link>
+          {auth.user.guest && (
+            <>
+              <Nav.Link
+                className="link-body-emphasis"
+                href={Routes.new_session_path()}
+              >
+                {tLayouts("shared.nav.sign_in")}
+              </Nav.Link>
+              <Nav.Link
+                className="link-body-emphasis"
+                href={Routes.new_user_path()}
+              >
+                {tLayouts("shared.nav.registration")}
+              </Nav.Link>
+            </>
+          )}
+          {!auth.user.guest && (
+            <NavDropdown
+              className="link-body-emphasis"
+              title={<i className="bi bi-person-circle" />}
+            >
+              <NavDropdown.Item href={Routes.session_path()} onClick={handleLinkClick("delete")}>
+                {tLayouts("shared.nav.sign_out")}
+              </NavDropdown.Item>
+            </NavDropdown>
+          )}
           <NavDropdown
-            drop="start"
             className="link-body-emphasis"
             title={<i className={locales[i18next.language].icon} />}
-            id="basic-nav-dropdown"
           >
             {Object.entries(locales).map(([k, v]) => (
               <NavDropdown.Item

@@ -13,14 +13,16 @@ import type {
 
 import BlogPostBlock from "@/components/BlogPostBlock";
 import CourseBlock from "@/components/CourseBlock";
-import { XInput } from "@/components/forms";
+import { XForm, XInput } from "@/components/forms";
+import { getImageUrl } from "@/images";
 import codeImagePathEn from "@/images/code-basics-coding-en.png";
 import codeImagePathRu from "@/images/code-basics-coding-ru.png";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { SharedProps } from "@/types/types";
 import { Link, usePage } from "@inertiajs/react";
 import { Accordion, Button, Col, Container, Form, Row } from "react-bootstrap";
-import { getImageUrl } from "@/images";
+import { Submit } from "use-inertia-form";
+import XssContent from "@/components/XssContent";
 
 type Props = PropsWithChildren & {
   blogPosts: BlogPost[];
@@ -307,12 +309,15 @@ export default function Index({ blogPosts, newUser, courseCategories }: Props) {
                 {/* ))} */}
               </div>
               <div className="col-md-10 mx-auto col-lg-5">
-                <Form
-                  action={Routes.users_path()}
+                <XForm
+                  model="user_sign_up_form"
+                  data={newUser}
+                  to={Routes.users_path()}
                   className="d-flex flex-column bg-body-tertiary p-4 p-md-5 border rounded-3"
                 >
-                  <XInput model={newUser} attribute="first_name" />
-                  <XInput model={newUser} attribute="email" />
+                  <XInput name="first_name" autoComplete="name" />
+                  <XInput name="email" autoComplete="email" />
+                  <XInput name="password" type="password" autoComplete="current-password" />
                   <div className="text-end text-muted small mb-4">
                     {t("users.new.have_account")}{" "}
                     <Link
@@ -322,18 +327,20 @@ export default function Index({ blogPosts, newUser, courseCategories }: Props) {
                       {t("users.new.sign_in")}
                     </Link>
                   </div>
-                  <Button size="lg" className="mb-2" type="submit">
+                  <Submit
+                    // size="lg"
+                    className="btn w-100 btn-lg btn-primary mb-3"
+                    // type="submit"
+                    // disabled={form.processing}
+                  >
                     {tHelpers("submit.user_sign_up_form.create")}
-                  </Button>
-                  <hr />
-                  <div
-                    className="small text-muted"
-                    // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-                    dangerouslySetInnerHTML={{
-                      __html: t("users.new.confirmation_html"),
-                    }}
-                  />
-                </Form>
+                  </Submit>
+                  <XssContent className="small text-muted">
+                    {t("users.new.confirmation_html", {
+                      url: Routes.page_path("tos"),
+                    })}
+                  </XssContent>
+                </XForm>
               </div>
             </div>
           </div>

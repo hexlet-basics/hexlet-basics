@@ -1,9 +1,13 @@
 ru:
   activemodel:
     attributes:
-      sign_in_form:
+      user_sign_in_form:
         password: Пароль
         email: Email
+      user_sign_up_form:
+        first_name: Имя
+        email: Email
+        password: Пароль
     errors:
       models:
         sign_in_form:

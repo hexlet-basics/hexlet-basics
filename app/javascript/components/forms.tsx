@@ -1,26 +1,74 @@
-import type BaseModel from "@/types/types";
-import type { PropsWithChildren } from "react";
+import cn from "classnames";
+import _ from "lodash";
+import type { InputHTMLAttributes } from "react";
 import { Form } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+import {
+  type FormProps,
+  Form as InertiaForm,
+  type NestedObject,
+  useInertiaInput,
+} from "use-inertia-form";
 
-type Props<T> = PropsWithChildren & {
-  model: T;
-  attribute: keyof T;
+type Props = InputHTMLAttributes<HTMLInputElement> & {
+  model?: string;
+  name: string;
 };
 
-export function XInput<T extends BaseModel>({ model, attribute }: Props<T>) {
+export const XForm = <TForm extends NestedObject>({
+  children,
+  railsAttributes = true,
+  className,
+  ...props
+}: FormProps<TForm>) => {
+  return (
+    <InertiaForm
+      className={`form ${className}`}
+      railsAttributes={railsAttributes}
+      {...props}
+    >
+      {children}
+    </InertiaForm>
+  );
+};
+
+export function XInput({ name, model, ...props }: Props) {
   const { t: tAr } = useTranslation("activerecord");
   const { t: tAm } = useTranslation("activemodel");
 
-  const modelName = model.type;
-  const path = `attributes.${modelName}.${String(attribute)}`;
+  const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
+    name,
+    model,
+  });
 
+  const errors = error ? _.castArray(error) : [];
+
+  const path = `attributes.${form.model}.${name}`;
   const label = tAr(path, tAm(path));
+
+  const controlClasses = cn({
+    "is-invalid": error,
+  });
 
   return (
     <Form.Group className="mb-4">
       <Form.FloatingLabel label={label}>
-        <Form.Control placeholder={attribute as string} />
+        <Form.Control
+          name={inputName}
+          value={value}
+          id={inputId}
+          placeholder={label}
+          className={controlClasses}
+          onChange={(e) => setValue(e.target.value)}
+          {...props}
+        />
+        {error && (
+          <Form.Control.Feedback type="invalid">
+            {errors.map((e) => (
+              <div key={e}>{e}</div>
+            ))}
+          </Form.Control.Feedback>
+        )}
       </Form.FloatingLabel>
     </Form.Group>
   );

@@ -1,11 +1,13 @@
-import type { PropsWithChildren } from "react";
+import type { FormEvent, PropsWithChildren } from "react";
 import { Button, Card, Container, Form, Row } from "react-bootstrap";
+import { useInertiaForm, Submit } from "use-inertia-form";
 
 import { useTranslation } from "react-i18next";
 
 import * as Routes from "@/routes.js";
 
-import { XInput } from "@/components/forms";
+import XssContent from "@/components/XssContent";
+import { XForm, XInput } from "@/components/forms";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { User } from "@/types/serializers";
 import { Link } from "@inertiajs/react";
@@ -17,7 +19,14 @@ type Props = PropsWithChildren & {
 export default function New({ user }: Props) {
   const { t } = useTranslation();
   const { t: tHelpers } = useTranslation("helpers");
-  useTranslation("activerecord");
+
+  // const form = useInertiaForm({ user });
+  // console.log(form);
+
+  // const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   form.post(Routes.users_path());
+  // };
 
   return (
     <ApplicationLayout>
@@ -27,9 +36,10 @@ export default function New({ user }: Props) {
             <h1 className="text-center mb-3">{t("users.new.sign_up")}</h1>
             <Card className="p-4 border-0">
               <Card.Body>
-                <Form className="d-flex flex-column">
-                  <XInput model={user} attribute="first_name" />
-                  <XInput model={user} attribute="email" />
+                <XForm model="user_sign_up_form" data={user} to={Routes.users_path()}>
+                  <XInput name="first_name" autoComplete="name" />
+                  <XInput name="email" autoComplete="email" />
+                  <XInput name="password" type="password" autoComplete="current-password" />
                   <div className="text-end text-muted small mb-4">
                     {t("users.new.have_account")}{" "}
                     <Link
@@ -39,17 +49,17 @@ export default function New({ user }: Props) {
                       {t("users.new.sign_in")}
                     </Link>
                   </div>
-                  <Button size="lg" className="mb-3" type="submit">
+                  <Submit
+                    className="btn w-100 btn-lg btn-primary mb-3"
+                  >
                     {tHelpers("submit.user_sign_up_form.create")}
-                  </Button>
-                  <div
-                    className="small text-muted"
-                    // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-                    dangerouslySetInnerHTML={{
-                      __html: t("users.new.confirmation_html"),
-                    }}
-                  />
-                </Form>
+                  </Submit>
+                  <XssContent className="small text-muted">
+                    {t("users.new.confirmation_html", {
+                      url: Routes.page_path("tos"),
+                    })}
+                  </XssContent>
+                </XForm>
               </Card.Body>
             </Card>
           </div>

@@ -46,7 +46,7 @@ gem "pagy"
 # gem 'omniauth-rails_csrf_protection'
 # gem 'ransack'
 # gem 'redis'
-# gem 'term-ansicolor'
+gem 'term-ansicolor'
 # gem 'valid_email2'
 
 # gem 'bootstrap'
