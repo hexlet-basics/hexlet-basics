@@ -56,8 +56,8 @@ function TabsBox() {
         </Nav.Item>
       </Nav>
 
-      <Tab.Content className="h-100 overflow-hidden">
-        <Tab.Pane className="h-100" eventKey="editor">
+      <Tab.Content className="x-h-md-100 overflow-hidden">
+        <Tab.Pane className="x-h-md-100 vh-100" eventKey="editor">
           <Editor />
         </Tab.Pane>
         <Tab.Pane eventKey="output" className="overflow-auto h-100">

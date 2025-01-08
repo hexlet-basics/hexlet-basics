@@ -49,11 +49,11 @@ export default function Show() {
 
   return (
     <LessonLayout>
-      <Container fluid className="overflow-hidden mb-1 h-100">
-        <Row className="h-100">
-          <Col className="h-100 col-12 col-md-6 col-lg-5 mb-3 mb-md-0 position-relative border-end">
+      <Container fluid className="overflow-hidden mb-1 x-h-md-100">
+        <Row className="x-h-md-100">
+          <Col className="x-h-md-100 col-12 col-md-6 col-lg-5 mb-3 mb-md-0 position-relative border-end">
             <Tab.Container id="left-tabs-example" defaultActiveKey="lesson">
-              <div className="h-100 d-flex flex-column">
+              <div className="x-h-md-100 d-flex flex-column">
                 <Nav variant="underline" fill justify className="mb-3 small">
                   <Nav.Item>
                     <Nav.Link className="link-body-emphasis" eventKey="lesson">
@@ -75,12 +75,12 @@ export default function Show() {
                   </Nav.Item>
                 </Nav>
 
-                <Tab.Content className="h-100 overflow-hidden">
-                  <Tab.Pane eventKey="lesson" className="overflow-auto h-100">
+                <Tab.Content className="x-h-md-100 overflow-hidden">
+                  <Tab.Pane eventKey="lesson" className="overflow-auto x-h-md-100">
                     <XBreadcrumb className="small" items={items} />
 
                     {user.guest && (
-                      <Alert variant="info" className="border-0">
+                      <Alert variant="info" className="border-0 small">
                         <div
                           // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
                           dangerouslySetInnerHTML={{
@@ -174,7 +174,7 @@ export default function Show() {
                   </Tab.Pane>
                   <Tab.Pane
                     eventKey="navigation"
-                    className="overflow-auto h-100"
+                    className="overflow-auto x-h-md-100"
                   >
                     <ul className="list-unstyled">
                       {lessons.map((l) => (
@@ -200,9 +200,9 @@ export default function Show() {
             </Tab.Container>
           </Col>
 
-          <Col className="h-100 col-12 col-md-6 col-lg-7 mb-3 mb-md-0 position-relative col">
+          <Col className="x-h-md-100 col-12 col-md-6 col-lg-7 mb-3 mb-md-0 position-relative col">
             <Tab.Container id="left-tabs-example" defaultActiveKey="editor">
-              <div className="h-100 d-flex flex-column">
+              <div className="x-h-md-100 d-flex flex-column">
                 <EditorBlock />
               </div>
             </Tab.Container>

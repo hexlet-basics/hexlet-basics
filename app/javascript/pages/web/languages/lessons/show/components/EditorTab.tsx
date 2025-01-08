@@ -110,7 +110,7 @@ export default function EditorTab() {
       onChange={handleEditorChange}
       language={getEditorLanguage(course.slug!)}
       // defaultLanguage={course.slug!}
-      className="w-100 h-100"
+      // className="w-100 h-100"
     />
   );
 }

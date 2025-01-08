@@ -13,8 +13,8 @@ import { usePage } from "@inertiajs/react";
 import type { Props } from "../types.ts";
 import { Alert } from "react-bootstrap";
 
-// const waitingTime = 20 * 60 * 1000; // 20 min
-const waitingTime = 3000;
+const waitingTime = 20 * 60 * 1000; // 20 min
+// const waitingTime = 3000;
 
 export default function SolutionTab() {
   const { course, lesson } = usePage<Props>().props;

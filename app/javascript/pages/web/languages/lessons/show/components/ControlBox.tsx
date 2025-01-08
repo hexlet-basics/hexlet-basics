@@ -78,11 +78,11 @@ export default function ControlBox() {
   };
 
   const prevButtonClasses = cn(
-    "text-decoration-none link-body-emphasis btn btn-outline-secondary me-3",
+    "btn btn-sm btn-outline-success me-3",
   );
 
   const nextButtonClasses = cn(
-    "text-decoration-none link-body-emphasis btn btn-outline-secondary fw-normal",
+    "btn btn-sm btn-outline-success fw-normal",
     {
       disabled: !finished || !nextLesson,
     },
@@ -114,6 +114,7 @@ export default function ControlBox() {
         >
           <Button
             variant="outline-secondary"
+            size="sm"
             className="me-3"
             onClick={handleReset}
             // title={t('resetCode')}
@@ -131,7 +132,8 @@ export default function ControlBox() {
           </Link>
         )}
         <Button
-          variant="primary"
+          variant="outline-primary"
+          size="sm"
           className="me-3 d-inline-flex align-items-center"
           onClick={handleRunCheck}
           disabled={isCodeChecking}
