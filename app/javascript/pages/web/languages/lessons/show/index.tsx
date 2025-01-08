@@ -12,7 +12,7 @@ import { getKeyForStoringLessonCode } from "@/lib/utils.ts";
 export default function Index() {
   const { lessonMember, lesson } = usePage<Props>().props;
 
-  const isFinished = lessonMember && lessonMember.state === "finished";
+  const isFinished = lessonMember?.state === "finished";
   //
   const [content] = useLocalStorage<string>(
     getKeyForStoringLessonCode(lesson),
@@ -22,7 +22,7 @@ export default function Index() {
   const preloadedState: Partial<AppState> = {
     startTime: Date.now(),
     content,
-    finished: lessonMember?.state === "finished"
+    finished: isFinished,
   };
   const store = getStore(preloadedState);
 

@@ -104,7 +104,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     #     @switching_locales[locale] = language_lesson_url(resource_language.slug, @lesson.slug, locale: AppHost.locale_for_url(locale))
     #   end
     # end
-    lessons_infos = resource_language.current_lesson_infos.with_locale.joins(:lesson).merge(
+    lessons_infos = resource_language.current_lesson_infos.with_locale.includes(:lesson).joins(:lesson).merge(
       Language::Lesson.order(:natural_order)
     )
 

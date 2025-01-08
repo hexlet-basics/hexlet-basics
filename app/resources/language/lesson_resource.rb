@@ -18,7 +18,7 @@ class Language::LessonResource
 
   typelize :number, nullable: true
   attribute :id do |info|
-    info.version.lesson.id
+    info.language_lesson_id
   end
 
   typelize :number, nullable: true

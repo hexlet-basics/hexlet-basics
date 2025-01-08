@@ -8,6 +8,8 @@ import escape from "core-js/actual/escape.js";
 import { useAppSelector } from "../slices";
 import { usePage } from "@inertiajs/react";
 import type { Props } from "../types";
+import XssContent from "@/components/XssContent";
+import { Alert } from "react-bootstrap";
 
 const ansi = new AnsiUp();
 
@@ -24,15 +26,9 @@ export default function OutputTab() {
     return null;
   }
 
-  const message = t(`check.${result}.message`, {
-    // url: getHelpByTutorUrl(language),
-  });
+  const message = tCommon(`check.${result}.message`);
 
   const messageForGuest = tCommon("signInSuggestion");
-  const alertClassName = cn("mt-auto alert mb-0 small p-2", {
-    "alert-success": passed,
-    "alert-warning": !passed,
-  });
   // NOTE: исправление неверной кодировки для кириллицы
   // https://developer.mozilla.org/en-US/docs/Glossary/Base64
   const outputAsHTML = ansi.ansi_to_html(decodeURIComponent(escape(output)));
@@ -40,20 +36,20 @@ export default function OutputTab() {
   return (
     <div className="d-flex flex-column h-100">
       <pre>
-        <code
-          className="nohighlight"
-          dangerouslySetInnerHTML={{ __html: outputAsHTML }}
-        />
+        <code>
+          <XssContent>{outputAsHTML}</XssContent>
+        </code>
       </pre>
-      <div
-        className={alertClassName}
-        dangerouslySetInnerHTML={{ __html: message }}
-      />
+      <Alert
+        variant={passed ? "success" : "warning"}
+        className="mt-auto small p-2"
+      >
+        <XssContent>{message}</XssContent>
+      </Alert>
       {!lessonMember && passed && (
-        <div
-          className="alert alert-warning mt-1 mb-0 small p-2"
-          dangerouslySetInnerHTML={{ __html: messageForGuest }}
-        />
+        <Alert variant="warning" className="mt-auto small p-2">
+          <XssContent>{messageForGuest}</XssContent>
+        </Alert>
       )}
     </div>
   );

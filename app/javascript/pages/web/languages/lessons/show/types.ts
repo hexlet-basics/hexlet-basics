@@ -15,7 +15,7 @@ export interface RootState {
   processState: "checked" | "unchecked" | "checking";
   currentTab: "editor" | "output" | "tests" | "solution";
   finished: boolean;
-  result: unknown;
+  result: 'error' | 'passed' | 'failed' | 'failed-infinity';
   output: string;
   passed: boolean;
   content: string;
