@@ -233,7 +233,7 @@ ru:
       profiles:
         edit:
           meta_description: Профиль
-          title: Профиль %{email}
+          title: Редактирование профиля
           delete: Удалить аккаунт
           confirm_delete: Вы уверены, что хотите удалить свой аккаунт?
         destroy:

@@ -20,7 +20,7 @@ export default function XFlash() {
       {variants.map(
         (variant) =>
           flash[variant] && (
-            <Alert dismissible key={variant} className="my-3" variant={variant}>
+            <Alert dismissible key={variant} className="my-3 border-0" variant={variant}>
               {flash[variant]}
             </Alert>
           ),

@@ -40,6 +40,7 @@ export function XInput({ name, model, ...props }: Props) {
     name,
     model,
   });
+  // console.log(form, value)
 
   const errors = error ? _.castArray(error) : [];
 

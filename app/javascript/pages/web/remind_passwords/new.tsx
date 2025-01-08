@@ -25,13 +25,11 @@ export default function New({ user }: Props) {
       <Container>
         <Row className="justify-content-center">
           <div className="col-sm-8 col-md-7 col-lg-5">
-            <h1 className="text-center mb-3">{t("users.new.sign_up")}</h1>
+            <h1 className="text-center mb-3">{t("remind_passwords.new.title")}</h1>
             <Card className="p-4 border-0">
               <Card.Body>
-                <XForm model="user_sign_up_form" data={user} to={Routes.users_path()}>
-                  <XInput name="first_name" autoComplete="name" />
+                <XForm model="remind_password_form" data={user} to={Routes.users_path()}>
                   <XInput name="email" autoComplete="email" />
-                  <XInput name="password" type="password" autoComplete="current-password" />
                   <div className="text-end text-muted small mb-4">
                     {t("users.new.have_account")}{" "}
                     <Link
@@ -44,13 +42,8 @@ export default function New({ user }: Props) {
                   <Submit
                     className="btn w-100 btn-lg btn-primary mb-3"
                   >
-                    {tHelpers("submit.user_sign_up_form.create")}
+                    {tHelpers("submit.remind_password_form.create")}
                   </Submit>
-                  <XssContent className="small text-muted">
-                    {t("users.new.confirmation_html", {
-                      url: Routes.page_path("tos"),
-                    })}
-                  </XssContent>
                 </XForm>
               </Card.Body>
             </Card>

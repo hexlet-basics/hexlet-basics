@@ -83,6 +83,9 @@ export default function NavbarBlock({ className }: Props) {
               className="link-body-emphasis"
               title={<i className="bi bi-person-circle" />}
             >
+              <NavDropdown.Item href={Routes.edit_account_profile_path()}>
+                {tLayouts("shared.nav.profile")}
+              </NavDropdown.Item>
               <NavDropdown.Item href={Routes.session_path()} onClick={handleLinkClick("delete")}>
                 {tLayouts("shared.nav.sign_out")}
               </NavDropdown.Item>

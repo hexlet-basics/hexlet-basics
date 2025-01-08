@@ -80678,6 +80678,9 @@
   "ru": {
     "activemodel": {
       "attributes": {
+        "remind_password_form": {
+          "email": "Email"
+        },
         "user_sign_in_form": {
           "email": "Email",
           "password": "Пароль"
@@ -82634,6 +82637,7 @@
         "remind_password_form": {
           "create": "Восстановить"
         },
+        "save": "Сохранить",
         "submit": "Сохранить %{model}",
         "update": "Изменить",
         "user_sign_in_form": {
@@ -82895,7 +82899,7 @@
             "confirm_delete": "Вы уверены, что хотите удалить свой аккаунт?",
             "delete": "Удалить аккаунт",
             "meta_description": "Профиль",
-            "title": "Профиль %{email}"
+            "title": "Редактирование профиля"
           }
         }
       },

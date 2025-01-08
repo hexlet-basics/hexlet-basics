@@ -8,6 +8,8 @@ ru:
         first_name: Имя
         email: Email
         password: Пароль
+      remind_password_form:
+        email: Email
     errors:
       models:
         sign_in_form:

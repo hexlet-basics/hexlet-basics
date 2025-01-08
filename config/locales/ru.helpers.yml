@@ -3,6 +3,7 @@ ru:
     submit:
       create: Создать
       update: Изменить
+      save: Сохранить
       user_sign_in_form:
         create: Войти
       user_sign_up_form:

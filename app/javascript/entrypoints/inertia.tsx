@@ -23,10 +23,11 @@ createInertiaApp({
 
   resolve: (name) => {
     const pages = import.meta.glob<ResolvedComponent>("../pages/**/*.tsx");
-    const page = pages[`../pages/${name}.tsx`]();
-    if (!page) {
+    const pageFn = pages[`../pages/${name}.tsx`]
+    if (!pageFn) {
       console.error(`Missing Inertia page component: '${name}.tsx'`);
     }
+    const page = pageFn();
 
     // To use a default layout, import the Layout component
     // and use the following line.
