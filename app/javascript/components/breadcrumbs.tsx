@@ -1,4 +1,4 @@
-import type { BreadcrumbItem } from "@/types/types";
+import type { BreadcrumbItem } from "@/types";
 import type { HTMLAttributes, PropsWithChildren } from "react";
 import { Breadcrumb, type BreadcrumbProps } from "react-bootstrap";
 import { useTranslation } from "react-i18next";

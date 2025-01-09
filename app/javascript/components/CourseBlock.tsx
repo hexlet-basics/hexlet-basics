@@ -1,7 +1,7 @@
 import { getImageUrl } from "@/images";
 import * as Routes from "@/routes.js";
 import type { Language } from "@/types/serializers";
-import type { SharedProps } from "@/types/types";
+import type { SharedProps } from "@/types";
 import { usePage } from "@inertiajs/react";
 import type { PropsWithChildren } from "react";
 import { Card } from "react-bootstrap";

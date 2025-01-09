@@ -4,7 +4,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import { XBreadcrumb } from "@/components/breadcrumbs";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { BlogPost } from "@/types/serializers";
-import type { BreadcrumbItem, SharedProps } from "@/types/types";
+import type { BreadcrumbItem, SharedProps } from "@/types";
 import Markdown from "react-markdown";
 import rehypeSlug from "rehype-slug";
 import remarkToc from "remark-toc";

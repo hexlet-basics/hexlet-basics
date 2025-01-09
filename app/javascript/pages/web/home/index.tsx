@@ -18,7 +18,7 @@ import { getImageUrl } from "@/images";
 import codeImagePathEn from "@/images/code-basics-coding-en.png";
 import codeImagePathRu from "@/images/code-basics-coding-ru.png";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
-import type { SharedProps } from "@/types/types";
+import type { SharedProps } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
 import { Accordion, Button, Col, Container, Form, Row } from "react-bootstrap";
 import { Submit } from "use-inertia-form";

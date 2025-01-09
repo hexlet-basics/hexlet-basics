@@ -1,4 +1,4 @@
-import type { SharedProps } from "@/types/types";
+import type { SharedProps } from "@/types";
 import { usePage } from "@inertiajs/react";
 import { Alert } from "react-bootstrap";
 

@@ -11,6 +11,11 @@ class UserResource
     user.guest?
   end
 
+  typelize :string, nullable: true
+  attribute :name do |user|
+    [ user.first_name, user.last_name ].join " "
+  end
+
   typelize :boolean, nullable: true
   attribute :admin do |user|
     user.admin?

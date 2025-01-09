@@ -1,5 +1,6 @@
 ru:
   helpers:
+    reset: Сбросить
     submit:
       create: Создать
       update: Изменить

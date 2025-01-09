@@ -103,6 +103,21 @@ class Web::ApplicationController < ApplicationController
     end
   end
 
+  def search_params
+    q = params.fetch(:q, {}).to_unsafe_hash
+    q[:fields] = {} if !q.key?(:fields)
+
+    result = q[:fields].clone
+    if q.dig("sf")
+      result["s"] = "#{q.dig('sf')} #{q.dig('so') == 1 ? 'asc' : 'desc'}"
+    end
+
+    {
+      ransack: result,
+      raw: OpenStruct.new(q)
+    }
+  end
+
   def country_by_ip
     @country_by_ip ||= Geocoder.search(request.remote_ip).first&.country_code || "EN"
   end

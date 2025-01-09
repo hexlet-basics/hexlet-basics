@@ -1,5 +1,5 @@
 import type { Language, LanguageCategory, LanguageLesson, LanguageLessonMember } from "@/types/serializers";
-import type { SharedProps } from "@/types/types";
+import type { SharedProps } from "@/types";
 
 export type Props = SharedProps & {
   courseCategory: LanguageCategory;

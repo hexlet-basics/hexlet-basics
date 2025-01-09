@@ -5,7 +5,7 @@ import { deviconClass } from "@/lib/utils";
 import { Nav, NavDropdown, Navbar, type NavbarProps } from "react-bootstrap";
 
 import * as Routes from "@/routes.js";
-import type { SharedProps } from "@/types/types.ts";
+import type { SharedProps } from "@/types";
 import { usePage } from "@inertiajs/react";
 import { useTranslation } from "react-i18next";
 import type { HTMLAttributes, PropsWithChildren } from "react";

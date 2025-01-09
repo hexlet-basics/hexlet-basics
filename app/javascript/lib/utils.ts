@@ -1,4 +1,8 @@
 import type { LanguageLesson } from "@/types/serializers";
+import { router } from "@inertiajs/react";
+import _ from "lodash";
+import type { DataTableStateEvent } from "primereact/datatable";
+import { ChangeEvent, SyntheticEvent } from "react";
 
 export function deviconClass(langName: string): string {
   const mapping: Record<string, string> = {
@@ -163,3 +167,20 @@ export const neededPreview = (language: string) => {
 export const getKeyForStoringLessonCode = (lesson: LanguageLesson): string => {
   return `lesson-${lesson.id}`;
 };
+
+export function handleOnSort(options: DataTableStateEvent) {
+  const queryString = window.location.search;
+  const params = Object.fromEntries(new URLSearchParams(queryString).entries());
+  const qParams = {
+    q: { sf: options.sortField, so: options.sortOrder },
+  };
+
+  const updatedParams = _.merge(params, qParams);
+  router.get(url(), updatedParams);
+}
+
+export function url(options = { withQuery: false }) {
+  const urlWithoutQuery = window.location.origin + window.location.pathname;
+
+  return options.withQuery ? window.location.href : urlWithoutQuery;
+}

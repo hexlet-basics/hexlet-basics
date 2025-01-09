@@ -15,7 +15,7 @@ import type {
   LanguageModule,
   User,
 } from "@/types/serializers";
-import type { BreadcrumbItem, SharedProps } from "@/types/types";
+import type { BreadcrumbItem, SharedProps } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
 import CourseBlock from "@/components/CourseBlock";
 

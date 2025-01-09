@@ -5,7 +5,7 @@ import { Breadcrumb, Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
 import * as Routes from "@/routes.js";
-import type { SharedProps } from "@/types/types";
+import type { SharedProps } from "@/types";
 import { usePage } from "@inertiajs/react";
 
 type Props = PropsWithChildren & {

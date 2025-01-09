@@ -7,7 +7,7 @@ import XssContent from "@/components/XssContent";
 import { XBreadcrumb } from "@/components/breadcrumbs";
 import LessonLayout from "@/pages/layouts/LessonLayout";
 import * as Routes from "@/routes.js";
-import type { BreadcrumbItem } from "@/types/types";
+import type { BreadcrumbItem } from "@/types/index.js";
 import { Link, usePage } from "@inertiajs/react";
 import React from "react";
 import Markdown from "react-markdown";
