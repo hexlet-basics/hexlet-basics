@@ -5,6 +5,9 @@ class Web::Admin::Languages::VersionsController < Web::Admin::Languages::Applica
     q = params.fetch(:q, {}).with_defaults('s' => 'created_at desc')
     @search = resource_language.versions.ransack(q)
     @versions = @search.result.page(params[:page])
+
+    render inertia: true, props: {
+    }
   end
 
   def create

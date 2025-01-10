@@ -5,14 +5,23 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
     q = params.fetch(:q, {}).with_defaults('s' => 'created_at desc')
     @search = Review.ransack(q)
     @reviews = @search.result
+
+    render inertia: true, props: {
+    }
   end
 
   def new
     @review = Admin::ReviewForm.new
+
+    render inertia: true, props: {
+    }
   end
 
   def edit
     @review = Admin::ReviewForm.find(params[:id])
+
+    render inertia: true, props: {
+    }
   end
 
   def create

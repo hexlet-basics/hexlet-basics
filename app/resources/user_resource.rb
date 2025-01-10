@@ -4,7 +4,7 @@ class UserResource
 
   typelize_from User
 
-  attributes :id, :first_name, :email
+  attributes :id, :first_name, :email, :created_at, :last_name, :admin
 
   typelize :boolean, nullable: true
   attribute :guest do |user|

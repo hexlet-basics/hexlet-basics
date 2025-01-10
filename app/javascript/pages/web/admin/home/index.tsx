@@ -3,7 +3,7 @@ import { Col, Container, Form, Row } from "react-bootstrap";
 
 import { useTranslation } from "react-i18next";
 
-import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
+import AdminLayout from "@/pages/layouts/AdminLayout";
 import type { Q, User } from "@/types/serializers";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -47,21 +47,19 @@ export default function Index({ admins, q }: Props) {
   );
 
   return (
-    <ApplicationLayout>
-      <Container>
-        <DataTable
-          header={header}
-          sortField={q.sf}
-          sortOrder={q.so}
-          value={admins}
-          onSort={handleOnSort}
-          globalFilterFields={["email"]}
-        >
-          <Column field="id" header="id" />
-          <Column field="name" header="name" sortable />
-          <Column sortable field="email" header="email" />
-        </DataTable>
-      </Container>
-    </ApplicationLayout>
+    <AdminLayout header={t("admin.home.index.dashboard")}>
+      <DataTable
+        header={header}
+        sortField={q.sf}
+        sortOrder={q.so}
+        value={admins}
+        onSort={handleOnSort}
+        globalFilterFields={["email"]}
+      >
+        <Column field="id" header="id" />
+        <Column field="name" header="name" sortable />
+        <Column sortable field="email" header="email" />
+      </DataTable>
+    </AdminLayout>
   );
 }

@@ -2,6 +2,7 @@ ru:
   activerecord:
     attributes:
       user:
+        admin: Администратор
         first_name: Имя
         last_name: Фамилия
         nickname: Никнейм

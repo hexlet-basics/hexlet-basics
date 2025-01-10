@@ -80872,6 +80872,7 @@
           "state_event": "Смена состояния"
         },
         "user": {
+          "admin": "Администратор",
           "email": "Email",
           "first_name": "Имя",
           "last_name": "Фамилия",

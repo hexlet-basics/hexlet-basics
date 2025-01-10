@@ -74,3 +74,46 @@ export function XInput({ name, model, ...props }: Props) {
     </Form.Group>
   );
 }
+
+export function XCheck({ name, model, type, ...props }: Props) {
+  const { t: tAr } = useTranslation("activerecord");
+  const { t: tAm } = useTranslation("activemodel");
+
+  const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
+    name,
+    model,
+  });
+  // console.log(form, value)
+
+  const errors = error ? _.castArray(error) : [];
+
+  const path = `attributes.${form.model}.${name}`;
+  const label = tAr(path, tAm(path));
+
+  const controlClasses = cn({
+    "is-invalid": error,
+  });
+
+  return (
+    <Form.Group className="mb-4">
+      <Form.Check
+        label={label}
+        name={inputName}
+        type="checkbox"
+        defaultChecked={value as boolean}
+        id={inputId}
+        placeholder={label}
+        className={controlClasses}
+        onChange={(e) => setValue(e.target.checked)}
+        {...props}
+      />
+      {error && (
+        <Form.Control.Feedback type="invalid">
+          {errors.map((e) => (
+            <div key={e}>{e}</div>
+          ))}
+        </Form.Control.Feedback>
+      )}
+    </Form.Group>
+  );
+}

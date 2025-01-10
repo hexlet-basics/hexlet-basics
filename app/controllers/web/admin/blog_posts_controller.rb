@@ -5,15 +5,24 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
     q = params.fetch(:q, {}).with_defaults('s' => 'created_at desc')
     @search = BlogPost.ransack(q)
     @blog_posts = @search.result
+
+    render inertia: true, props: {
+    }
   end
 
   def new
     @blog_post = Admin::BlogPostForm.new
     @blog_post.creator = current_user
+
+    render inertia: true, props: {
+    }
   end
 
   def edit
     @blog_post = Admin::BlogPostForm.find(params[:id])
+
+    render inertia: true, props: {
+    }
   end
 
   def create

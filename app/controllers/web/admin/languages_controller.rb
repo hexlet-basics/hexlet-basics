@@ -5,14 +5,23 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
     q = params.fetch(:q, {}).with_defaults('s' => 'created_at desc')
     @search = Language.ransack(q)
     @languages = @search.result
+
+    render inertia: true, props: {
+    }
   end
 
   def new
     @language = Language.new
+
+    render inertia: true, props: {
+    }
   end
 
   def edit
     @language = Language.find(params[:id])
+
+    render inertia: true, props: {
+    }
   end
 
   def create

@@ -75,6 +75,10 @@ class Web::ApplicationController < ApplicationController
     }
   end
 
+  def default_url_options
+    { suffix: params[:suffix] }
+  end
+
   def prepare_locale_settings
     # NOTE: never redirect bots
     if browser.bot?
@@ -116,6 +120,10 @@ class Web::ApplicationController < ApplicationController
       ransack: result,
       raw: OpenStruct.new(q)
     }
+  end
+
+  def redirect_to_inertia(url, model)
+      redirect_to url, inertia: { errors: model.errors }
   end
 
   def country_by_ip
