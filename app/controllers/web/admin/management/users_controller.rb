@@ -4,15 +4,14 @@ class Web::Admin::Management::UsersController < Web::Admin::Management::Applicat
   # include ActionController::Live
 
   def index
-    sp = search_params
-    rp = sp[:ransack].with_defaults("s" => "created_at desc")
-    search = User.includes(language_members: [ language: :current_version ]).ransack(rp)
+    q = ransack_params("s" => "created_at desc")
+    search = User.ransack(q)
 
-    users = search.result
+    pagy, users = pagy(search.result, limit: 2)
 
     render inertia: true, props: {
       users: UserResource.new(users),
-      q: QResource.new(sp[:raw])
+      grid: GridResource.new(grid_params(pagy))
     }
 
     # respond_to do |format|

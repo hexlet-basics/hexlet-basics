@@ -3,7 +3,7 @@ import type { PropsWithChildren } from "react";
 import * as Routes from "@/routes.js";
 import { useTranslation } from "react-i18next";
 
-import { handleOnSort } from "@/lib/utils";
+import { handleDataTable } from "@/lib/utils";
 import AdminLayout from "@/pages/layouts/AdminLayout";
 import type { Q, User } from "@/types/serializers";
 import { Column } from "primereact/column";

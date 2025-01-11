@@ -76,7 +76,7 @@ class Web::ApplicationController < ApplicationController
   end
 
   def default_url_options
-    { suffix: params[:suffix] }
+    { suffix: params.permit(:suffix) }
   end
 
   def prepare_locale_settings
@@ -107,19 +107,25 @@ class Web::ApplicationController < ApplicationController
     end
   end
 
-  def search_params
-    q = params.fetch(:q, {}).to_unsafe_hash
-    q[:fields] = {} if !q.key?(:fields)
+  def ransack_params(defaults)
+    raw = params.permit(:sf, :so, fields: {}).with_defaults({ fields: {} }).with_defaults(defaults)
+    ransack = raw["fields"]
 
-    result = q[:fields].clone
-    if q.dig("sf")
-      result["s"] = "#{q.dig('sf')} #{q.dig('so') == 1 ? 'asc' : 'desc'}"
+    if raw.key?("sf")
+      ransack["s"] = "#{raw["sf"]} #{raw["so"] == "1" ? 'asc' : 'desc'}"
     end
 
-    {
-      ransack: result,
-      raw: OpenStruct.new(q)
-    }
+    ransack
+  end
+
+  def grid_params(pagy = nil)
+    result = params.permit(:sf, :so, fields: {}).with_defaults({ page: 1 })
+    if pagy
+      result[:tr] = pagy.count()
+      result[:per] = pagy.limit()
+    end
+
+    OpenStruct.new(result)
   end
 
   def redirect_to_inertia(url, model)

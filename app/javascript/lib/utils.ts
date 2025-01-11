@@ -1,7 +1,10 @@
-import type { LanguageLesson } from "@/types/serializers";
+import type { Grid, LanguageLesson } from "@/types/serializers";
 import { router } from "@inertiajs/react";
 import _ from "lodash";
-import type { DataTableStateEvent } from "primereact/datatable";
+import type {
+  DataTableFilterMeta,
+  DataTableStateEvent,
+} from "primereact/datatable";
 import { ChangeEvent, SyntheticEvent } from "react";
 
 export function deviconClass(langName: string): string {
@@ -168,19 +171,21 @@ export const getKeyForStoringLessonCode = (lesson: LanguageLesson): string => {
   return `lesson-${lesson.id}`;
 };
 
-export function handleOnSort(options: DataTableStateEvent) {
-  const queryString = window.location.search;
-  const params = Object.fromEntries(new URLSearchParams(queryString).entries());
-  const qParams = {
-    q: { sf: options.sortField, so: options.sortOrder },
-  };
-
-  const updatedParams = _.merge(params, qParams);
-  router.get(url(), updatedParams);
-}
-
 export function url(options = { withQuery: false }) {
   const urlWithoutQuery = window.location.origin + window.location.pathname;
 
   return options.withQuery ? window.location.href : urlWithoutQuery;
+}
+
+export function fieldsToFilters(
+  fields: Record<string, string | number | string[] | undefined | null>,
+): DataTableFilterMeta | undefined {
+  if (!fields) {
+    return;
+  }
+  const pairs = Object.entries(fields).map(([fieldWithMatcher, value]) => {
+    return [fieldWithMatcher.split("_")[0], { value, matchMode: "contains" }];
+  });
+  const result = Object.fromEntries(pairs);
+  return result;
 }
