@@ -2,12 +2,7 @@ class ReviewResource
   include Alba::Resource
   include Typelizer::DSL
 
-  attributes :id, :body, :created_at
+  typelize_from Review
 
-  one :language, resource: LanguageResource
-
-  typelize :string, nullable: true
-  attribute :full_name do |review|
-    [ review.first_name, review.last_name ].join(" ")
-  end
+  attributes :id, :body, :state, :first_name, :last_name, :language_id, :user_id, :created_at
 end

@@ -1,11 +1,10 @@
 import { url } from "@/lib/utils";
 import type { Grid } from "@/types/serializers";
 import { router } from "@inertiajs/react";
-import type { DataTableState, DataTableStateEvent } from "primereact/datatable";
+import type { DataTableStateEvent } from "primereact/datatable";
 
-const useDataTable = (grid: Grid) => {
+const useDataTable = () => {
   const handleDataTable = (e: Partial<DataTableStateEvent> & { page?: number }) => {
-    console.log(e);
     const newGrid: Partial<Grid> = {};
     if (e.sortField) {
       newGrid.sf = e.sortField;

@@ -6,11 +6,10 @@ class Web::Admin::Management::UsersController < Web::Admin::Management::Applicat
   def index
     q = ransack_params("s" => "created_at desc")
     search = User.ransack(q)
-
-    pagy, users = pagy(search.result, limit: 2)
+    pagy, records = pagy(search.result)
 
     render inertia: true, props: {
-      users: UserResource.new(users),
+      users: UserResource.new(records),
       grid: GridResource.new(grid_params(pagy))
     }
 

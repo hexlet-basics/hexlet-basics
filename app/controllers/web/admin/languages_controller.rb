@@ -2,11 +2,13 @@
 
 class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   def index
-    q = params.fetch(:q, {}).with_defaults('s' => 'created_at desc')
-    @search = Language.ransack(q)
-    @languages = @search.result
+    q = ransack_params("s" => "created_at desc")
+    search = Language::Version::Info.with_locale.includes([ language: :current_version ]).ransack(q)
+    pagy, records = pagy(search.result)
 
     render inertia: true, props: {
+      languages: LanguageResource.new(records),
+      grid: GridResource.new(grid_params(pagy))
     }
   end
 

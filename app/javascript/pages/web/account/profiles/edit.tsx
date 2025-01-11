@@ -1,15 +1,14 @@
-import type { FormEvent, PropsWithChildren } from "react";
-import { Button, Card, Container, Form, Row } from "react-bootstrap";
-import { useInertiaForm, Submit } from "use-inertia-form";
+import type { PropsWithChildren } from "react";
+import { Card, Container, Row } from "react-bootstrap";
+import { Submit } from "use-inertia-form";
 
 import { useTranslation } from "react-i18next";
 
 import * as Routes from "@/routes.js";
 
-import XssContent from "@/components/XssContent";
 import { XForm, XInput } from "@/components/forms";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
-import type { User, UserProfileForm } from "@/types/serializers";
+import type { UserProfileForm } from "@/types/serializers";
 import { Link } from "@inertiajs/react";
 import useLinkClickHandler from "@/hooks/useLinkClickHandler";
 import useConfirmation from "@/hooks/useConfirmation";

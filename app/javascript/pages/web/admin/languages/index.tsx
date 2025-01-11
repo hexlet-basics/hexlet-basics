@@ -1,24 +1,66 @@
 import type { PropsWithChildren } from "react";
-import { Container } from "react-bootstrap";
 
+import * as Routes from "@/routes.js";
 import { useTranslation } from "react-i18next";
 
-
-import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
-import type { User } from "@/types/serializers";
+import { DTDateTemplate } from "@/components/dtTemplates";
+import AdminLayout from "@/pages/layouts/AdminLayout";
+import type { Grid, Language } from "@/types/serializers";
+import { Link } from "@inertiajs/react";
+import { Column } from "primereact/column";
+import { DataTable } from "primereact/datatable";
+import useDataTable from "@/hooks/useDataTable";
+import { fieldsToFilters } from "@/lib/utils";
 
 type Props = PropsWithChildren & {
+  courses: Language[];
+  grid: Grid;
 };
 
-export default function Index() {
+export default function Index({ grid, courses }: Props) {
   const { t } = useTranslation();
-  const { t: tHelpers } = useTranslation("helpers");
+
+  const handleDataTable = useDataTable();
+
+  const actionBodyTemplate = (data: Language) => {
+    return (
+      <Link
+        className="link-body-emphasis"
+        href={Routes.edit_admin_management_user_path(data.id)}
+      >
+        <i className="bi bi-pencil-fill" />
+      </Link>
+    );
+  };
 
   return (
-    <ApplicationLayout>
-      <Container>
-      </Container>
-    </ApplicationLayout>
+    <AdminLayout header={t("admin.languages.index.languages")}>
+      <DataTable
+        lazy
+        paginator
+        totalRecords={grid.tr}
+        rows={grid.per}
+        sortField={grid.sf}
+        sortOrder={grid.so}
+        onSort={handleDataTable}
+        onFilter={handleDataTable}
+        onPage={handleDataTable}
+        filters={fieldsToFilters(grid.fields)}
+        value={courses}
+      >
+        <Column field="id" header="id" />
+        <Column field="name" header="name" sortable />
+        <Column field="state" header="state" sortable />
+        <Column field="slug" header="slug" />
+        <Column
+          field="created_at"
+          header="created_at"
+          sortable
+          body={DTDateTemplate}
+        />
+        <Column header="actions" body={actionBodyTemplate} />
+      </DataTable>
+    </AdminLayout>
   );
 }
 

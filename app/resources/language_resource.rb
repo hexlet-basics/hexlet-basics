@@ -6,11 +6,21 @@ class LanguageResource
 
   # root_key :user
 
-  attributes :id, :description, :locale
+  attributes :id, :description, :locale, :created_at, :state, :order
 
   typelize :string, nullable: true
   attribute :duration do |info|
     info.language.duration
+  end
+
+  typelize :string, nullable: true
+  attribute :state do |info|
+    info.language.state
+  end
+
+  typelize :number, nullable: true
+  attribute :order do |info|
+    info.language.order
   end
 
   typelize :string, nullable: true
@@ -27,10 +37,4 @@ class LanguageResource
   attribute :cover do |info|
     "#{info.language.slug}.png"
   end
-
-  # typelize :string, nullable: true
-  # attribute :description do |language|
-  #   language_version_info = language.current_version.infos.find_by!(locale: I18n.locale)
-  #   language_version_info.description
-  # end
 end

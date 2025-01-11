@@ -19,9 +19,8 @@ type Props = PropsWithChildren & {
 
 export default function Index({ grid, users }: Props) {
   const { t } = useTranslation();
-  const { t: tHelpers } = useTranslation("helpers");
 
-  const handleDataTable = useDataTable(grid);
+  const handleDataTable = useDataTable();
 
   const actionBodyTemplate = (data: User) => {
     return (
@@ -40,16 +39,14 @@ export default function Index({ grid, users }: Props) {
         lazy
         paginator
         totalRecords={grid.tr}
-        // header={header}
         rows={grid.per}
         sortField={grid.sf}
         sortOrder={grid.so}
         onSort={handleDataTable}
         onFilter={handleDataTable}
         onPage={handleDataTable}
-        filters={fieldsToFilters(grid.filters)}
+        filters={fieldsToFilters(grid.fields)}
         value={users}
-        // globalFilterFields={["email"]}
       >
         <Column field="id" header="id" />
         <Column field="admin" header="isAdmin" />

@@ -2,11 +2,13 @@
 
 class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
   def index
-    q = params.fetch(:q, {}).with_defaults('s' => 'created_at desc')
-    @search = BlogPost.ransack(q)
-    @blog_posts = @search.result
+    q = ransack_params("s" => "created_at desc")
+    search = BlogPost.ransack(q)
+    pagy, records = pagy(search.result)
 
     render inertia: true, props: {
+      blogPosts: BlogPostResource.new(records),
+      grid: GridResource.new(grid_params(pagy))
     }
   end
 

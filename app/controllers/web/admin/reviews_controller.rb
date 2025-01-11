@@ -2,11 +2,13 @@
 
 class Web::Admin::ReviewsController < Web::Admin::ApplicationController
   def index
-    q = params.fetch(:q, {}).with_defaults('s' => 'created_at desc')
-    @search = Review.ransack(q)
-    @reviews = @search.result
+    q = ransack_params("s" => "created_at desc")
+    search = Review.ransack(q)
+    pagy, records = pagy(search.result)
 
     render inertia: true, props: {
+      reviews: ReviewResource.new(records),
+      grid: GridResource.new(grid_params(pagy))
     }
   end
 
