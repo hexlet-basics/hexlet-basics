@@ -8,7 +8,7 @@ module UserRepository
   end
 
   def not_finished_lessons_for_language(language)
-    language.current_lesson_infos.left_join_lesson_member_and_user(self)
+    language.current_lessons.left_join_lesson_member_and_user(self)
             .merge(Language::Lesson::Member.started_or_nil)
   end
 

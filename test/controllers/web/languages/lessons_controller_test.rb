@@ -4,7 +4,7 @@ require "test_helper"
 
 class Web::Languages::LessonsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @lesson = language_lessons(:two)
+    @lesson = language_lessons("javascript-module1-lesson2")
     @language = @lesson.language
     @info = @lesson.infos.last
     @user = users(:full)
@@ -42,7 +42,7 @@ class Web::Languages::LessonsControllerTest < ActionDispatch::IntegrationTest
 
   test "next_lesson" do
     sign_in_as(:full)
-    third_language_lesson = language_lessons(:three)
+    third_language_lesson = language_lessons("javascript-module2-lesson1")
 
     get next_lesson_language_lesson_url(@language.slug, @lesson.slug)
     assert_response :redirect
@@ -51,7 +51,7 @@ class Web::Languages::LessonsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "prev_lesson" do
-    first_language_lesson = language_lessons(:one)
+    first_language_lesson = language_lessons("javascript-module1-lesson1")
 
     get prev_lesson_language_lesson_url(@language.slug, @lesson.slug)
     assert_response :redirect

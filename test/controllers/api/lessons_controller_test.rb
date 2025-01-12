@@ -9,9 +9,8 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "check lesson finished if exercise is correct" do
-    sign_in_as(:one)
+    user = sign_in_as(:one)
 
-    user = users(:one)
     language_member = @language.members.find_or_create_by!(user: user)
     lesson_member = @lesson.members.find_or_create_by!(language: @lesson.language, user: user, language_member: language_member)
     code = file_fixture("exercise/correct.rb").read

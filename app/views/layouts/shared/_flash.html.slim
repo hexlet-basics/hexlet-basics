@@ -1,6 +1,0 @@
-- flash.any?
-  - flash.each do |name, msg|
-    - let 'error' => 'danger', 'warning' => 'warning', 'info' => 'info', 'success' => 'success', 'alert' => 'warning', 'recaptcha_error' => 'danger' do |mapping|
-      .alert.alert-dismissible.fade.show class="alert-#{mapping[name]}"
-        == msg
-        button.btn-close type='button' data-bs-dismiss='alert' aria-hidden='true'

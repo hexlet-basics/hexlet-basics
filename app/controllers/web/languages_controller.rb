@@ -19,7 +19,7 @@ class Web::LanguagesController < Web::ApplicationController
     #                                     .merge(Language::Module::Version::Info.with_locale)
     #                                     .merge(Language::Lesson::Version.includes(:lesson).order(:order))
 
-    language_modules_infos = language.current_module_infos.with_locale
+    language_modules_infos = language.current_module_infos.with_locale.includes([ :version ])
     # .merge(Language::Module::Version::Info.with_locale)
 
     # language_module_resources = language_modules_infos.map { |info| Language::ModuleResource.new(info) }
@@ -40,8 +40,10 @@ class Web::LanguagesController < Web::ApplicationController
 
     first_lesson_info = language.current_lesson_infos
       .joins(:lesson).merge(Language::Lesson.ordered).first
-    next_lesson = current_user.not_finished_lessons_for_language(language)
+    next_lesson_info = language.current_lesson_infos.not_finished_by(current_user)
       .joins(:lesson).merge(Language::Lesson.ordered).first
+    # next_lesson = current_user.not_finished_lessons_for_language(language)
+    #   .joins(:lesson).merge(Language::Lesson.ordered).first
     #
     recommendedCourses = Language::Version::Info.with_locale.order("RANDOM()").excluding(language_info).limit(4)
     # @blog_posts = @language.blog_posts.published
@@ -80,7 +82,7 @@ class Web::LanguagesController < Web::ApplicationController
       course: LanguageResource.new(language_info),
       courseCategory: Language::CategoryResource.new(language.category),
       firstLesson: Language::LessonResource.new(first_lesson_info),
-      nextLesson: Language::LessonResource.new(next_lesson),
+      nextLesson: Language::LessonResource.new(next_lesson_info),
       courseModules: Language::ModuleResource.new(language_modules_infos),
       lessonsByModuleId: lesson_resources_by_module_id,
       recommendedCourses: LanguageResource.new(recommendedCourses)

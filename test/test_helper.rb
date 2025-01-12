@@ -2,10 +2,13 @@ ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
 require "rails/test_help"
 
+I18n.locale = "ru"
 Rails.application.routes.default_url_options[:suffix] = AppHost.locale_for_url(I18n.locale)
 
 module ActiveSupport
   class TestCase
+    include FactoryBot::Syntax::Methods
+
     # Run tests in parallel with specified workers
     parallelize(workers: :number_of_processors)
 

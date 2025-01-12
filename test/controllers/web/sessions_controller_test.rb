@@ -11,7 +11,7 @@ class Web::SessionsControllerTest < ActionDispatch::IntegrationTest
   test "create" do
     user = users(:one)
 
-    post session_url, params: { sign_in_form: { email: user.email, password: "password" } }
+    post session_url, params: { user_sign_in_form: { email: user.email, password: "password" } }
     assert_response :redirect
 
     assert { signed_in? }

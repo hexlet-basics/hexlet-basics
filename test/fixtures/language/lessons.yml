@@ -48,6 +48,11 @@ javascript-module1-lesson2:
   language: javascript
   module: javascript-module1
 
+javascript-module1-lesson3:
+  slug: loops
+  language: javascript
+  module: javascript-module1
+
 javascript-module2-lesson1:
   slug: $LABEL
   language: javascript

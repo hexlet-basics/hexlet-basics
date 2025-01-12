@@ -3,7 +3,7 @@
 class Web::Admin::ReviewsController < Web::Admin::ApplicationController
   def index
     q = ransack_params("s" => "created_at desc")
-    search = Review.ransack(q)
+    search = Review.includes([ :user ]).ransack(q)
     pagy, records = pagy(search.result)
 
     render inertia: true, props: {

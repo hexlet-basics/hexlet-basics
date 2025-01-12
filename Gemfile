@@ -74,7 +74,7 @@ group :development, :test, :staging do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
 
-  # gem 'factory_bot_rails'
+  gem "factory_bot_rails"
   gem "faker"
 
   # https://github.com/Shopify/tapioca/pull/2129/files

@@ -3,12 +3,6 @@
 class Web::Languages::LessonsController < Web::Languages::ApplicationController
   before_action :authenticate_user!, only: [ :next_lesson ]
 
-  # # NOTE: нужно для определения правильный путей к воркерам monaco-editor
-  # before_action only: :show do
-  #   gon.assets_prefix = Rails.application.config.assets.prefix
-  #   gon.monaco_worker_assets = Rails.application.assets_manifest.assets.select { |asset| asset.end_with?('.worker.js') }
-  # end
-
   def show
     lesson = resource_language.lessons.find_by(slug: params[:id])
 
@@ -27,9 +21,18 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     prev_lesson_version = lesson_version.prev_lesson_version
     prev_lesson_info = prev_lesson_version ? prev_lesson_version.infos.find_by!(locale: I18n.locale) : nil
 
-    language_member = resource_language.members.find_by(user: current_user)
-    lesson_member = if language_member
-      language_member.lesson_members.find_by(user: current_user, lesson: lesson)
+    language_member = nil
+    lesson_member = nil
+
+    if !current_user.guest?
+      language_member = resource_language.members.find_or_initialize_by(user: current_user)
+      language_member.save! if language_member.new_record?
+      lesson_member = language_member.lesson_members.find_or_initialize_by(
+        language: resource_language,
+        lesson:,
+        user: current_user,
+      )
+      lesson_member.save! if lesson_member.new_record?
     end
     # unless @lesson
     #   f(:lesson_not_found, type: :info)
@@ -115,7 +118,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
       nextLesson: next_lesson_info && Language::LessonResource.new(next_lesson_info),
       prevLesson: prev_lesson_info && Language::LessonResource.new(prev_lesson_info),
       lessons: Language::LessonResource.new(lessons_infos),
-      lesson_member: Language::Lesson::Member.new(lesson_member)
+      lesson_member: Language::Lesson::MemberResource.new(lesson_member)
     }
   end
 
@@ -126,7 +129,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
 
     # language_member = current_user.language_members.find_by! language: resource_language
 
-    next_lesson = lesson_version.next_lesson
+    next_lesson = lesson_version.next_lesson_version
 
     # TODO Добавить сериализацию language, lesson, language_member
     # NOTE Временно отключил и заменил на language_finished
@@ -152,7 +155,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     lesson = resource_language.lessons.find_by!(slug: params[:id])
     lesson_version = resource_language.current_lesson_versions.find_by!(lesson: lesson)
 
-    prev_lesson = lesson_version.prev_lesson
+    prev_lesson = lesson_version.prev_lesson_version
 
     if prev_lesson.nil?
       redirect_to language_path(language_slug)

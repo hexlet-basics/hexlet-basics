@@ -32,7 +32,6 @@ export default function ControlBox() {
 
   const dispatch = useAppDispatch();
   const handleRunCheck = () => {
-    console.log('jopa')
     dispatch(runCheck(lesson));
   };
 

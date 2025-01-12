@@ -17,7 +17,7 @@ class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
     new_name = "new first name"
 
     patch account_profile_url(id: @user.id), params: {
-      user_profile_form: {
+      user: {
         first_name: new_name
       }
     }

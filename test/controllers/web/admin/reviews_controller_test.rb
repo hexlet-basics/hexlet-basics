@@ -21,7 +21,7 @@ class Web::Admin::ReviewsControllerTest < ActionDispatch::IntegrationTest
     lang = languages(:php)
 
     attrs = attributes_for(:review, language_id: lang.id, user_id: @user.id, locale: I18n.locale)
-    post admin_reviews_url, params: { admin_review_form: attrs }
+    post admin_reviews_url, params: { review: attrs }
     assert_response :redirect
 
     assert { lang.reviews.find_by body: attrs[:body] }
@@ -39,7 +39,7 @@ class Web::Admin::ReviewsControllerTest < ActionDispatch::IntegrationTest
 
     assert { review.published? }
 
-    patch admin_review_url(review), params: { admin_review_form: { body: "mumu", state_event: "archive" } }
+    patch admin_review_url(review), params: { review: { body: "mumu", state_event: "archive" } }
     assert_response :redirect
 
     review.reload

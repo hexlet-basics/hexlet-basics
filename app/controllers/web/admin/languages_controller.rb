@@ -3,11 +3,11 @@
 class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   def index
     q = ransack_params("s" => "created_at desc")
-    search = Language::Version::Info.with_locale.includes([ language: :current_version ]).ransack(q)
+    search = Language.includes([ :current_version ]).ransack(q)
     pagy, records = pagy(search.result)
 
     render inertia: true, props: {
-      languages: LanguageResource.new(records),
+      languages: OriginalLanguageResource.new(records),
       grid: GridResource.new(grid_params(pagy))
     }
   end
@@ -17,10 +17,10 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   end
 
   def edit
-    language_info = Language::Version::Info.find(params[:id])
+    language = Language.find(params[:id])
 
     render inertia: true, props: {
-      language: LanguageResource.new(language_info)
+      language: OriginalLanguageResource.new(language)
     }
   end
 
@@ -37,15 +37,14 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   end
 
   def update
-    language_info = Language::Version::Info.find(params[:id])
+    language = Language.find(params[:id])
 
-    if language_info.update(language_params)
+    if language.update(language_params)
       f(:success)
-      redirect_to admin_languages_path
     else
       f(:error)
-      redirect_to_inertia edit_admin_language_path(language), language
     end
+    redirect_to_inertia edit_admin_language_path(language), language
   end
 
   private
