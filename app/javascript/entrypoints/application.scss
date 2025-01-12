@@ -125,13 +125,13 @@ $utilities: map-merge($utilities,
   }
 }
 
-$utilities: (
-  "height": (property: height,
-    responsive: true,
-    class: x-h,
-    values: (25: 25%,
-      50: 50%,
-      75: 75%,
-      100: 100%,
-      auto: auto)),
-);
+// $utilities: (
+//   "height": (property: height,
+//     responsive: true,
+//     class: x-h,
+//     values: (25: 25%,
+//       50: 50%,
+//       75: 75%,
+//       100: 100%,
+//       auto: auto)),
+// );

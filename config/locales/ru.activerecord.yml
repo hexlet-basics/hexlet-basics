@@ -5,6 +5,7 @@ ru:
         first_name: Имя
         last_name: Фамилия
         body: Отзыв
+        user_id: Пользователь
       user:
         admin: Администратор
         first_name: Имя

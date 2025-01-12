@@ -1,3 +1,4 @@
+import axios from "axios";
 import cn from "classnames";
 import _ from "lodash";
 import {
@@ -130,6 +131,7 @@ type XSelectProps<
   K extends keyof T,
 > = Props & {
   items?: T[];
+  source?: string;
   labelField: K;
   valueField: K;
 };
@@ -138,6 +140,7 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
   name,
   model,
   items = [],
+  source,
   valueField,
   labelField,
   type,
@@ -176,18 +179,22 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
     setSelected(e.value);
   };
 
-  const search = (event: AutoCompleteCompleteEvent) => {
+  const search = async (event: AutoCompleteCompleteEvent) => {
     const query = event.query.trim().toLowerCase();
     console.log("query:", query);
     if (query === "") {
       setFilteredItems([...items]);
     } else {
-      // if url request api and use response instead of items
-      const newFilteredItems = items.filter((item) =>
-        String(item[labelField]).toLowerCase().startsWith(query),
-      );
-      console.log(newFilteredItems);
-      setFilteredItems(newFilteredItems);
+      if (source) {
+        const res = await axios.get<T[]>(source, { params: { query } });
+        console.log(res)
+        setFilteredItems(res.data);
+      } else {
+        const newFilteredItems = items.filter((item) =>
+          String(item[labelField]).toLowerCase().startsWith(query),
+        );
+        setFilteredItems(newFilteredItems);
+      }
     }
   };
 
