@@ -7,7 +7,7 @@ export interface BaseModel extends object {
   type: "user" | "review" | "language";
 }
 
-export { SortOrder }
+export { SortOrder, type User }
 
 export type BreadcrumbItem = {
   name: string;

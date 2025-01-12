@@ -41,6 +41,12 @@ export default function Form({ data, url, method }: Props) {
             valueField="code"
             items={locales}
           />
+          <XSelect
+            name="user_id"
+            labelField="email"
+            valueField="id"
+            items={[data.user]}
+          />
           <XInput name="first_name" autoComplete="name" />
           <XInput name="last_name" autoComplete="name" />
           <XInput name="body" as="textarea" style={{ height: "200px" }} />

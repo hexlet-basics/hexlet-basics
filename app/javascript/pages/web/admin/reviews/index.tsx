@@ -49,6 +49,7 @@ export default function Index({ grid, reviews }: Props) {
         value={reviews}
       >
         <Column field="id" header="id" />
+        <Column field="locale" header="lng" />
         <Column field="first_name" header="First Name" sortable />
         <Column field="last_name" header="Last Name" sortable />
         <Column field="state" header="state" sortable />

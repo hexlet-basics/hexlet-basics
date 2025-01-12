@@ -126,18 +126,18 @@ export function XCheck({ name, model, type, ...props }: Props) {
 }
 
 type XSelectProps<
-  T extends Record<string, string>,
+  T extends Record<string, unknown>,
   K extends keyof T,
 > = Props & {
-  items: T[];
+  items?: T[];
   labelField: K;
   valueField: K;
 };
 
-export function XSelect<T extends Record<string, string>, K extends keyof T>({
+export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
   name,
   model,
-  items,
+  items = [],
   valueField,
   labelField,
   type,
@@ -182,8 +182,9 @@ export function XSelect<T extends Record<string, string>, K extends keyof T>({
     if (query === "") {
       setFilteredItems([...items]);
     } else {
+      // if url request api and use response instead of items
       const newFilteredItems = items.filter((item) =>
-        item[labelField].toLowerCase().startsWith(query),
+        String(item[labelField]).toLowerCase().startsWith(query),
       );
       console.log(newFilteredItems);
       setFilteredItems(newFilteredItems);
