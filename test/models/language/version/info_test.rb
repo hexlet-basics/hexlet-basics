@@ -26,7 +26,7 @@
 #  language_id          (language_id => languages.id)
 #  language_version_id  (language_version_id => language_versions.id)
 #
-require 'test_helper'
+require "test_helper"
 
 class Language::Version::InfoTest < ActiveSupport::TestCase
   # test "the truth" do

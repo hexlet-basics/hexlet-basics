@@ -2,7 +2,7 @@
 
 class Web::ReviewsController < Web::ApplicationController
   def index
-    scope = Review.published.with_locale.order(id: :desc)
+    scope = Review.published.with_locale.includes([ :user ]).order(id: :desc)
     pagy, records = pagy(scope)
 
     render inertia: true, props: {

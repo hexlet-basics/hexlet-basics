@@ -8,11 +8,11 @@ class ReviewSchema
       info = review.language.current_version.infos.find_by!(locale: I18n.locale)
 
       Jbuilder.new do |json|
-        json.set! '@type', 'Review'
+        json.set! "@type", "Review"
         json.itemReviewed CourseSchema.to_builder(review.language, info)
         json.name review.body
         json.author do
-          json.set! '@type', 'Person'
+          json.set! "@type", "Person"
           json.name review.user.to_s
         end
       end

@@ -16,7 +16,7 @@ module EventConcern
   def clean_js_events
     # NOTE: могут быть двойные редиректы и стираем данные только
     # при отрисовке хтмл страницы, а не запросу по апи
-    if response.successful? && response.content_type.include?('text/html')
+    if response.successful? && response.content_type.include?("text/html")
       session[:fired_events] = {}
     end
   end

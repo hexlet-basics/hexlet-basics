@@ -26,18 +26,18 @@ module FlashConcern
     lookup_action = action
 
     if scope
-      lookup_key =  scope.split('/')
+      lookup_key =  scope.split("/")
       lookup_key << key
 
-      keys << lookup_key.join('.').to_sym
+      keys << lookup_key.join(".").to_sym
     else
-      while lookup_controller.superclass.name != 'ActionController::Base'
+      while lookup_controller.superclass.name != "ActionController::Base"
         lookup_key = []
-        lookup_key << lookup_controller.controller_path.tr('/', '.')
+        lookup_key << lookup_controller.controller_path.tr("/", ".")
         lookup_key << lookup_action
         lookup_key << key
 
-        keys << lookup_key.join('.').to_sym
+        keys << lookup_key.join(".").to_sym
 
         lookup_controller = lookup_controller.superclass
         lookup_action = :base

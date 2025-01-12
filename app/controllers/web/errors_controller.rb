@@ -2,7 +2,7 @@
 
 class Web::ErrorsController < Web::ApplicationController
   before_action do
-    set_meta_tags title: t('.base')
+    set_meta_tags title: t(".base")
   end
 
   # NOTE: for 404 page locale from route params is undefined
@@ -32,7 +32,7 @@ class Web::ErrorsController < Web::ApplicationController
   private
 
   def use_locale(&)
-    locale = URI.parse(request.original_url).path.split('/').second || ''
+    locale = URI.parse(request.original_url).path.split("/").second || ""
     locale = I18n.default_locale unless I18n.available_locales.include?(locale.to_sym)
 
     I18n.with_locale(locale, &)

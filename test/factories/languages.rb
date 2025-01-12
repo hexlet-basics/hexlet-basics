@@ -38,6 +38,6 @@
 #
 FactoryBot.define do
   factory :language do
-    slug { 'php' }
+    slug { "php" }
   end
 end

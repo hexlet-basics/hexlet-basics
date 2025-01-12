@@ -19,7 +19,7 @@ import {
 
 type Props = InputHTMLAttributes<HTMLInputElement> &
   AsProp & {
-    model: string;
+    model?: string;
     name: string;
   };
 

@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class Web::RemindPasswordsControllerTest < ActionDispatch::IntegrationTest
-  test 'new' do
+  test "new" do
     get new_remind_password_url
     assert_response :success
   end
 
-  test 'create' do
+  test "create" do
     user = users(:full)
     before_token = user.reset_password_token
 

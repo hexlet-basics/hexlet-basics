@@ -2,6 +2,6 @@
 
 class Language::Lesson::MemberFake
   def state
-    'finished'
+    "finished"
   end
 end

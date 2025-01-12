@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class Web::PagesControllerTest < ActionDispatch::IntegrationTest
   %w[tos about privacy authors].each do |slug|

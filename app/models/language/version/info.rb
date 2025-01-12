@@ -35,5 +35,5 @@ class Language::Version::Info < ApplicationRecord
   validates :header, presence: true
 
   belongs_to :language
-  belongs_to :language_version, class_name: 'Language::Version'
+  belongs_to :language_version, class_name: "Language::Version"
 end

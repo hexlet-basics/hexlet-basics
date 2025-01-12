@@ -11,4 +11,3 @@ class UserProfileFormResource
     "user_profile_form"
   end
 end
-

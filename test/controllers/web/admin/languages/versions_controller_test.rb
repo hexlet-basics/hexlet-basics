@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class Web::Admin::Languages::VersionsControllerTest < ActionDispatch::IntegrationTest
   setup do
     sign_in_as(:admin)
   end
 
-  test 'index' do
+  test "index" do
     language = languages(:php)
 
     get admin_language_versions_url(language)
@@ -15,7 +15,7 @@ class Web::Admin::Languages::VersionsControllerTest < ActionDispatch::Integratio
     assert_response :success
   end
 
-  test 'create' do
+  test "create" do
     language = languages(:php)
 
     post admin_language_versions_url(language)
@@ -23,9 +23,9 @@ class Web::Admin::Languages::VersionsControllerTest < ActionDispatch::Integratio
 
     language.reload
 
-    language_module = language.modules.find_by!(slug: 'php-basics')
+    language_module = language.modules.find_by!(slug: "php-basics")
     module_version = language.current_module_versions.find_by!(module: language_module)
-    lesson = language.lessons.find_by!(slug: 'php-hello-world')
+    lesson = language.lessons.find_by!(slug: "php-hello-world")
     lesson_version = language.current_lesson_versions.find_by!(lesson: lesson)
 
     assert { module_version.infos.find_by(locale: :ru) }

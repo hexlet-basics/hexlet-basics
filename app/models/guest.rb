@@ -15,6 +15,10 @@ class Guest
     ""
   end
 
+  def last_name
+    ""
+  end
+
   def guest?
     true
   end

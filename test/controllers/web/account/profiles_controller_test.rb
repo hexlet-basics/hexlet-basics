@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
   def setup
@@ -8,13 +8,13 @@ class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(:full)
   end
 
-  test 'edit' do
+  test "edit" do
     get edit_account_profile_url
     assert_response :success
   end
 
-  test 'update' do
-    new_name = 'new first name'
+  test "update" do
+    new_name = "new first name"
 
     patch account_profile_url(id: @user.id), params: {
       user_profile_form: {
@@ -28,7 +28,7 @@ class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
     assert { @user.first_name == new_name }
   end
 
-  test 'destroy' do
+  test "destroy" do
     delete account_profile_url
     assert_response :redirect
 

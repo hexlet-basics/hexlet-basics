@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'application_system_test_case'
+require "application_system_test_case"
 
 class LessonsTest < ApplicationSystemTestCase
-  test 'visiting the lesson show' do
+  test "visiting the lesson show" do
     sign_in_as(:one)
 
     language_module_lesson = language_module_lessons(:one)

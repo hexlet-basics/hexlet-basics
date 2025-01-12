@@ -94,9 +94,9 @@ group :development, :staging do
 end
 
 group :test do
-  gem "capybara"
+gem "capybara"
   gem "selenium-webdriver"
-  # gem 'minitest-power_assert'
+  gem "minitest-power_assert"
   # gem 'webdrivers'
   # gem 'whiny_validation'
 end

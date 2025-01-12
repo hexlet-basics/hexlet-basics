@@ -1,23 +1,23 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class Web::SessionsControllerTest < ActionDispatch::IntegrationTest
-  test 'new' do
+  test "new" do
     get new_session_url
     assert_response :success
   end
 
-  test 'create' do
+  test "create" do
     user = users(:one)
 
-    post session_url, params: { sign_in_form: { email: user.email, password: 'password' } }
+    post session_url, params: { sign_in_form: { email: user.email, password: "password" } }
     assert_response :redirect
 
     assert { signed_in? }
   end
 
-  test 'destroy' do
+  test "destroy" do
     sign_in_as(:one)
     assert { signed_in? }
 

@@ -25,7 +25,7 @@
 #  language_id  (language_id => languages.id)
 #  user_id      (user_id => users.id)
 #
-require 'test_helper'
+require "test_helper"
 
 class ReviewTest < ActiveSupport::TestCase
   # test "the truth" do

@@ -47,7 +47,7 @@ class Language::Lesson < ApplicationRecord
   has_many :versions, dependent: :destroy
   has_many :rembers, dependent: :destroy
 
-  has_many :infos, through: :versions, class_name: 'Language::Lesson::Version::Info'
+  has_many :infos, through: :versions, class_name: "Language::Lesson::Version::Info"
 
   aasm :state do
     state :created, initial: true
@@ -68,6 +68,6 @@ class Language::Lesson < ApplicationRecord
   end
 
   def serializable_data
-    attributes.extract! 'id', 'slug', 'created_at'
+    attributes.extract! "id", "slug", "created_at"
   end
 end

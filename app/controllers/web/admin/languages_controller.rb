@@ -13,8 +13,7 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   end
 
   def new
-    render inertia: true, props: {
-    }
+    render inertia: true, props: {}
   end
 
   def edit

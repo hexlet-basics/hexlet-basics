@@ -8,7 +8,7 @@ module FileSystemUtils
   def self.directory_for_code(user)
     chunked = user.id
                   .to_s
-                  .rjust(3, '0')
+                  .rjust(3, "0")
                   .reverse[0...3]
                   .chars
     File.join(chunked)

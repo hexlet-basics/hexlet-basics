@@ -38,7 +38,7 @@ class BlogPost < ApplicationRecord
   end
 
   def self.ransackable_attributes(_auth_object = nil)
-    [ 'created_at' ]
+    [ "created_at" ]
   end
 
   def self.ransackable_associations(_auth_object = nil)
@@ -54,8 +54,8 @@ class BlogPost < ApplicationRecord
   validates :description, presence: true
 
   belongs_to :language, optional: true
-  has_one :category, through: :language, class_name: 'Language::Category'
-  belongs_to :creator, class_name: 'User'
+  has_one :category, through: :language, class_name: "Language::Category"
+  belongs_to :creator, class_name: "User"
 
   aasm column: :state do
     state :draft, initial: true

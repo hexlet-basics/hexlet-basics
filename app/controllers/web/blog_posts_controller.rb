@@ -2,7 +2,7 @@
 
 class Web::BlogPostsController < Web::ApplicationController
   def index
-    scope = BlogPost.published.with_locale
+    scope = BlogPost.published.with_locale.includes([ :cover_attachment ])
     pagy, records = pagy(scope)
 
     render inertia: true, props: {
@@ -19,7 +19,7 @@ class Web::BlogPostsController < Web::ApplicationController
     # blog_posts = []
     # languages = []
 
-    blog_posts = BlogPost.with_locale.except(blog_post).limit(2)
+    blog_posts = BlogPost.with_locale.except(blog_post).includes([ :cover_attachment ]).limit(2)
 
     # if category
     #   blog_posts = category.blog_posts.except(blog_post).limit(3)

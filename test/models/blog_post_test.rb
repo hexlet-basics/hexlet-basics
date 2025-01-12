@@ -27,7 +27,7 @@
 #  creator_id   (creator_id => users.id)
 #  language_id  (language_id => languages.id)
 #
-require 'test_helper'
+require "test_helper"
 
 class BlogPostTest < ActiveSupport::TestCase
   # test "the truth" do

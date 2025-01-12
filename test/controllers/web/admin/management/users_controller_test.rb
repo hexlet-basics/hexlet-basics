@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class Web::Admin::Management::UsersControllerTest < ActionDispatch::IntegrationTest
   setup do
     sign_in_as(:admin)
   end
 
-  test 'index' do
+  test "index" do
     get admin_management_users_url
 
     assert_response :success
   end
 
-  test 'edit' do
+  test "edit" do
     user = users(:one)
 
     get edit_admin_management_user_url(user)
@@ -21,7 +21,7 @@ class Web::Admin::Management::UsersControllerTest < ActionDispatch::IntegrationT
     assert_response :success
   end
 
-  test 'update' do
+  test "update" do
     user = users(:one)
 
     attrs = {

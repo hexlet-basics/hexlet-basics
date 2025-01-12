@@ -16,8 +16,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
     blog_post = Admin::BlogPostForm.new
     blog_post.creator = current_user
 
-    render inertia: true, props: {
-    }
+    render inertia: true, props: {}
   end
 
   def edit
