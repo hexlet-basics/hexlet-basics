@@ -80871,6 +80871,11 @@
           "state/published": "Опубликован",
           "state_event": "Смена состояния"
         },
+        "review": {
+          "body": "Отзыв",
+          "first_name": "Имя",
+          "last_name": "Фамилия"
+        },
         "user": {
           "admin": "Администратор",
           "email": "Email",

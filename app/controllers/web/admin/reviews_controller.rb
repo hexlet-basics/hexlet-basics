@@ -15,8 +15,7 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
   def new
     @review = Admin::ReviewForm.new
 
-    render inertia: true, props: {
-    }
+    render inertia: true, props: {}
   end
 
   def edit
@@ -28,26 +27,26 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
   end
 
   def create
-    @review = Admin::ReviewForm.new(params[:admin_review_form])
+    review = Admin::ReviewForm.new(params[:review])
 
-    if @review.save
+    if review.save
       f(:success)
-      redirect_to admin_reviews_path
+      redirect_to edit_admin_review_url(review)
     else
       f(:error)
-      render :new
+      redirect_to_inertia new_admin_review_url, review
     end
   end
 
   def update
-    @review = Admin::ReviewForm.find(params[:id])
+    review = Admin::ReviewForm.find(params[:id])
 
-    if @review.update(params[:admin_review_form])
+    if review.update(params[:review])
       f(:success)
-      redirect_to admin_reviews_path
     else
       f(:error)
-      render :edit
     end
+
+    redirect_to_inertia edit_admin_review_url(review), review
   end
 end

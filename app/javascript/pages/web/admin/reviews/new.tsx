@@ -18,7 +18,7 @@ export default function Edit({ review }: Props) {
       <Menu />
       <Form
         data={review}
-        url={Routes.new_admin_review_path()}
+        url={Routes.admin_reviews_path()}
       />
     </AdminLayout>
   );

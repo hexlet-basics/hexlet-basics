@@ -201,3 +201,15 @@ export function fieldsToFilters(
   const result = Object.fromEntries(pairs);
   return result;
 }
+
+export const locales = {
+  ru: {
+    icon: "fi fi-ru",
+    name: "Русский",
+  },
+  en: {
+    icon: "fi fi-us",
+    name: "English",
+  },
+};
+

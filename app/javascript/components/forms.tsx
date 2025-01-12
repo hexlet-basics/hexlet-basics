@@ -1,6 +1,11 @@
 import cn from "classnames";
 import _ from "lodash";
-import type { InputHTMLAttributes } from "react";
+import {
+  AutoComplete,
+  type AutoCompleteChangeEvent,
+  type AutoCompleteCompleteEvent,
+} from "primereact/autocomplete";
+import { useEffect, useState, type InputHTMLAttributes } from "react";
 import { Form } from "react-bootstrap";
 import type { AsProp } from "react-bootstrap/esm/helpers";
 import { useTranslation } from "react-i18next";
@@ -11,10 +16,11 @@ import {
   useInertiaInput,
 } from "use-inertia-form";
 
-type Props = InputHTMLAttributes<HTMLInputElement> & AsProp & {
-  model?: string;
-  name: string;
-};
+type Props = InputHTMLAttributes<HTMLInputElement> &
+  AsProp & {
+    model?: string;
+    name: string;
+  };
 
 export const XForm = <TForm extends NestedObject>({
   children,
@@ -41,7 +47,6 @@ export function XInput({ name, model, as, ...props }: Props) {
     name,
     model,
   });
-  // console.log(form, value)
 
   const errors = error ? _.castArray(error) : [];
 
@@ -107,6 +112,97 @@ export function XCheck({ name, model, type, ...props }: Props) {
         placeholder={label}
         className={controlClasses}
         onChange={(e) => setValue(e.target.checked)}
+        {...props}
+      />
+      {error && (
+        <Form.Control.Feedback type="invalid">
+          {errors.map((e) => (
+            <div key={e}>{e}</div>
+          ))}
+        </Form.Control.Feedback>
+      )}
+    </Form.Group>
+  );
+}
+
+type XSelectProps<
+  T extends Record<string, string>,
+  K extends keyof T,
+> = Props & {
+  items: T[];
+  labelField: K;
+  valueField: K;
+};
+
+export function XSelect<T extends Record<string, string>, K extends keyof T>({
+  name,
+  model,
+  items,
+  valueField,
+  labelField,
+  type,
+  ...props
+}: XSelectProps<T, K>) {
+  const { t: tAr } = useTranslation("activerecord");
+  const { t: tAm } = useTranslation("activemodel");
+
+  const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
+    name,
+    model,
+  });
+
+  const errors = error ? _.castArray(error) : [];
+
+  const path = `attributes.${form.model}.${name}`;
+  const label = tAr(path, tAm(path));
+
+  const controlClasses = cn({
+    "is-invalid": error,
+  });
+
+  const [filteredItems, setFilteredItems] = useState(items);
+  const [selected, setSelected] = useState<T | null | undefined>(null);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    const firstSelected = _.first(
+      filteredItems.filter((i) => i[valueField] === value),
+    );
+    setSelected(firstSelected);
+  }, []);
+
+  const handleChange = (e: AutoCompleteChangeEvent) => {
+    setValue(e.value[valueField]);
+    setSelected(e.value);
+  };
+
+  const search = (event: AutoCompleteCompleteEvent) => {
+    const query = event.query.trim().toLowerCase();
+    console.log("query:", query);
+    if (query === "") {
+      setFilteredItems([...items]);
+    } else {
+      const newFilteredItems = items.filter((item) =>
+        item[labelField].toLowerCase().startsWith(query),
+      );
+      console.log(newFilteredItems);
+      setFilteredItems(newFilteredItems);
+    }
+  };
+
+  return (
+    <Form.Group className="mb-4">
+      <AutoComplete
+        id={inputId}
+        placeholder={label}
+        className={controlClasses}
+        name={inputName}
+        field={String(labelField)}
+        value={selected}
+        suggestions={filteredItems}
+        completeMethod={search}
+        onChange={handleChange}
+        dropdown
         {...props}
       />
       {error && (

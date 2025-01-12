@@ -76,7 +76,7 @@ class Web::ApplicationController < ApplicationController
   end
 
   def default_url_options
-    { suffix: params.permit(:suffix) }
+    { suffix: params[:suffix] }
   end
 
   def prepare_locale_settings

@@ -19,7 +19,7 @@ export default function Edit({ review }: Props) {
       <Form
         method="patch"
         data={review}
-        url={Routes.edit_admin_review_path(review.id)}
+        url={Routes.admin_review_path(review.id)}
       />
     </AdminLayout>
   );

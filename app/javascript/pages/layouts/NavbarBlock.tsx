@@ -1,7 +1,7 @@
 import i18next from "i18next";
 import cn from "classnames";
 import logoImg from "@/images/logo.png";
-import { deviconClass } from "@/lib/utils";
+import { deviconClass, locales } from "@/lib/utils";
 import { Nav, NavDropdown, Navbar, type NavbarProps } from "react-bootstrap";
 
 import * as Routes from "@/routes.js";
@@ -10,17 +10,6 @@ import { usePage } from "@inertiajs/react";
 import { useTranslation } from "react-i18next";
 import type { HTMLAttributes, PropsWithChildren } from "react";
 import useLinkClickHandler from "@/hooks/useLinkClickHandler";
-
-const locales = {
-  ru: {
-    icon: "fi fi-ru",
-    name: "Русский",
-  },
-  en: {
-    icon: "fi fi-us",
-    name: "English",
-  },
-};
 
 type Props = PropsWithChildren & HTMLAttributes<NavbarProps>;
 

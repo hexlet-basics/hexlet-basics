@@ -13,40 +13,39 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   end
 
   def new
-    @language = Language.new
-
     render inertia: true, props: {
     }
   end
 
   def edit
-    @language = Language.find(params[:id])
+    language_info = Language::Version::Info.find(params[:id])
 
     render inertia: true, props: {
+      language: LanguageResource.new(language_info)
     }
   end
 
   def create
-    @language = Language.new(language_params)
+    language = Language.new(language_params)
 
-    if @language.save
+    if language.save
       f(:success)
       redirect_to admin_languages_path
     else
       f(:error)
-      render :new
+      redirect_to_inertia new_admin_language_path, language
     end
   end
 
   def update
-    @language = Language.find(params[:id])
+    language_info = Language::Version::Info.find(params[:id])
 
-    if @language.update(language_params)
+    if language_info.update(language_params)
       f(:success)
       redirect_to admin_languages_path
     else
       f(:error)
-      render :edit
+      redirect_to_inertia edit_admin_language_path(language), language
     end
   end
 

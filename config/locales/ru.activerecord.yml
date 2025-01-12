@@ -1,6 +1,10 @@
 ru:
   activerecord:
     attributes:
+      review:
+        first_name: Имя
+        last_name: Фамилия
+        body: Отзыв
       user:
         admin: Администратор
         first_name: Имя

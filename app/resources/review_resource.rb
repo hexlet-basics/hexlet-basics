@@ -4,5 +4,5 @@ class ReviewResource
 
   typelize_from Review
 
-  attributes :id, :body, :state, :first_name, :last_name, :language_id, :user_id, :created_at
+  attributes :id, :body, :state, :first_name, :last_name, :language_id, :user_id, :created_at, :locale
 end
