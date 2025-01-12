@@ -34,10 +34,10 @@ export default function Form({ data, url, method }: Props) {
           />
           <XSelect
             name="user_id"
+            has="user"
             labelField="email"
             valueField="id"
             source={Routes.search_admin_api_users_path()}
-            items={[data.user]}
           />
           <XInput name="first_name" autoComplete="name" />
           <XInput name="last_name" autoComplete="name" />

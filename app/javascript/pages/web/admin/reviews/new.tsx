@@ -10,7 +10,7 @@ type Props = {
   review: Review;
 };
 
-export default function Edit({ review }: Props) {
+export default function New({ review }: Props) {
   const { t } = useTranslation();
 
   return (

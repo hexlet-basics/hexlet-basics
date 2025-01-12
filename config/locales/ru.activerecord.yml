@@ -6,6 +6,8 @@ ru:
         last_name: Фамилия
         body: Отзыв
         user_id: Пользователь
+        locale: Локаль
+        language_id: Курс
       user:
         admin: Администратор
         first_name: Имя

@@ -19,7 +19,7 @@ import {
 
 type Props = InputHTMLAttributes<HTMLInputElement> &
   AsProp & {
-    model?: string;
+    model: string;
     name: string;
   };
 
@@ -131,6 +131,7 @@ type XSelectProps<
   K extends keyof T,
 > = Props & {
   items?: T[];
+  has: K;
   source?: string;
   labelField: K;
   valueField: K;
@@ -140,6 +141,7 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
   name,
   model,
   items = [],
+  has,
   source,
   valueField,
   labelField,
@@ -154,6 +156,19 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
     model,
   });
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    if (has) {
+      const defaultItem = _.get(form.data, [form.model!, has]);
+      setSelected(defaultItem);
+    } else {
+      const defaultItem = _.first(
+        filteredItems.filter((i) => i[valueField] === value),
+      );
+      setSelected(defaultItem);
+    }
+  }, []);
+
   const errors = error ? _.castArray(error) : [];
 
   const path = `attributes.${form.model}.${name}`;
@@ -165,14 +180,6 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
 
   const [filteredItems, setFilteredItems] = useState(items);
   const [selected, setSelected] = useState<T | null | undefined>(null);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    const firstSelected = _.first(
-      filteredItems.filter((i) => i[valueField] === value),
-    );
-    setSelected(firstSelected);
-  }, []);
 
   const handleChange = (e: AutoCompleteChangeEvent) => {
     setValue(e.value[valueField]);
@@ -187,7 +194,7 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
     } else {
       if (source) {
         const res = await axios.get<T[]>(source, { params: { query } });
-        console.log(res)
+        console.log(res);
         setFilteredItems(res.data);
       } else {
         const newFilteredItems = items.filter((item) =>

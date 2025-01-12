@@ -80874,7 +80874,9 @@
         "review": {
           "body": "Отзыв",
           "first_name": "Имя",
+          "language_id": "Курс",
           "last_name": "Фамилия",
+          "locale": "Локаль",
           "user_id": "Пользователь"
         },
         "user": {

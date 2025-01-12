@@ -13,9 +13,11 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
   end
 
   def new
-    @review = Admin::ReviewForm.new
+    review = Admin::ReviewForm.new
 
-    render inertia: true, props: {}
+    render inertia: true, props: {
+      review: ReviewResource.new(review)
+    }
   end
 
   def edit
