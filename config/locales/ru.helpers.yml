@@ -1,6 +1,11 @@
 ru:
   helpers:
     reset: Сбросить
+    crud:
+      list: Список
+      add: Добавить
+      editing: Редактирование
+      adding: Добавление
     submit:
       create: Создать
       update: Изменить

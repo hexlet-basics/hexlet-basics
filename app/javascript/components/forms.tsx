@@ -2,6 +2,7 @@ import cn from "classnames";
 import _ from "lodash";
 import type { InputHTMLAttributes } from "react";
 import { Form } from "react-bootstrap";
+import type { AsProp } from "react-bootstrap/esm/helpers";
 import { useTranslation } from "react-i18next";
 import {
   type FormProps,
@@ -10,7 +11,7 @@ import {
   useInertiaInput,
 } from "use-inertia-form";
 
-type Props = InputHTMLAttributes<HTMLInputElement> & {
+type Props = InputHTMLAttributes<HTMLInputElement> & AsProp & {
   model?: string;
   name: string;
 };
@@ -32,7 +33,7 @@ export const XForm = <TForm extends NestedObject>({
   );
 };
 
-export function XInput({ name, model, ...props }: Props) {
+export function XInput({ name, model, as, ...props }: Props) {
   const { t: tAr } = useTranslation("activerecord");
   const { t: tAm } = useTranslation("activemodel");
 
@@ -55,6 +56,7 @@ export function XInput({ name, model, ...props }: Props) {
     <Form.Group className="mb-4">
       <Form.FloatingLabel label={label}>
         <Form.Control
+          as={as}
           name={inputName}
           value={value}
           id={inputId}

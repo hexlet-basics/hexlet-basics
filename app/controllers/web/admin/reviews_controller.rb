@@ -20,9 +20,10 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
   end
 
   def edit
-    @review = Admin::ReviewForm.find(params[:id])
+    review = Admin::ReviewForm.find(params[:id])
 
     render inertia: true, props: {
+      review: ReviewResource.new(review)
     }
   end
 

@@ -171,10 +171,22 @@ export const getKeyForStoringLessonCode = (lesson: LanguageLesson): string => {
   return `lesson-${lesson.id}`;
 };
 
-export function url(options = { withQuery: false }) {
-  const urlWithoutQuery = window.location.origin + window.location.pathname;
+export function url(
+  options: { withQuery?: boolean; onlyPath?: boolean } = {
+    withQuery: false,
+    onlyPath: false,
+  },
+): string {
+  const parts = [];
+  if (!options.onlyPath) {
+    parts.push(window.location.origin);
+  }
+  parts.push(window.location.pathname);
+  if (options.withQuery) {
+    parts.push(window.location.href);
+  }
 
-  return options.withQuery ? window.location.href : urlWithoutQuery;
+  return parts.join("");
 }
 
 export function fieldsToFilters(

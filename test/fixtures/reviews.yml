@@ -31,22 +31,25 @@
 DEFAULTS: &DEFAULTS
   state: published
   user: full
-  first_name: First Name
-  last_name: Last Name
+  first_name: First $LABEL
+  last_name: Last $LABEL
   language: javascript
   locale: <%= I18n.locale %>
 
 full-javascript:
   <<: *DEFAULTS
+  user: admin
   body: <%= Faker::Lorem.paragraph_by_chars %>
 
 full-javascript-ru:
   <<: *DEFAULTS
+  user: one
   body: <%= Faker::Lorem.paragraph_by_chars %>
   locale: ru
 
 full-javascript-ru2:
   <<: *DEFAULTS
+  user: two
   body: <%= Faker::Lorem.paragraph_by_chars %>
   locale: ru
 

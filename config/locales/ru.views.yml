@@ -34,8 +34,10 @@ ru:
         index:
           header: Отзывы
           add_new_review: Добавить новый отзыв
+        edit:
+          header: Редактирование %{id}
         new:
-          new_review: Новый отзыв
+          header: Новый отзыв
       blog_posts:
         index:
           header: Посты в блоге

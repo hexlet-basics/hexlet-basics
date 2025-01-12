@@ -1,5 +1,3 @@
-import type { PropsWithChildren } from "react";
-
 import * as Routes from "@/routes.js";
 import { useTranslation } from "react-i18next";
 
@@ -11,8 +9,9 @@ import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import useDataTable from "@/hooks/useDataTable";
 import { fieldsToFilters } from "@/lib/utils";
+import { Menu } from "./shared/menu";
 
-type Props = PropsWithChildren & {
+type Props = {
   reviews: Review[];
   grid: Grid;
 };
@@ -26,7 +25,7 @@ export default function Index({ grid, reviews }: Props) {
     return (
       <Link
         className="link-body-emphasis"
-        href={Routes.edit_admin_management_user_path(data.id)}
+        href={Routes.edit_admin_review_path(data.id)}
       >
         <i className="bi bi-pencil-fill" />
       </Link>
@@ -35,6 +34,7 @@ export default function Index({ grid, reviews }: Props) {
 
   return (
     <AdminLayout header={t("admin.reviews.index.header")}>
+      <Menu />
       <DataTable
         lazy
         paginator
