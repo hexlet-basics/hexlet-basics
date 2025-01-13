@@ -83134,12 +83134,15 @@
       },
       "admin": {
         "blog_posts": {
+          "edit": {
+            "header": "Редактирование %{id}"
+          },
           "index": {
             "add_new_blog_post": "Добавить новый пост",
             "header": "Посты в блоге"
           },
           "new": {
-            "new_blog_post": "Новый пост"
+            "header": "Новый пост"
           }
         },
         "home": {
@@ -83148,12 +83151,15 @@
           }
         },
         "languages": {
+          "edit": {
+            "header": "Редактирование %{id}"
+          },
           "index": {
             "add_new_language": "Добавить новый язык",
-            "languages": "Языки"
+            "header": "Языки"
           },
           "new": {
-            "new_language": "Новый язык"
+            "header": "Новый язык"
           }
         },
         "management": {
@@ -83164,7 +83170,7 @@
             },
             "index": {
               "finished_lessons": "Завершенные уроки",
-              "users": "Пользователи"
+              "header": "Пользователи"
             }
           }
         },

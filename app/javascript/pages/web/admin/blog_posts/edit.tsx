@@ -1,24 +1,28 @@
-import type { PropsWithChildren } from "react";
-import { Container } from "react-bootstrap";
-
+import * as Routes from "@/routes.js";
 import { useTranslation } from "react-i18next";
 
+import AdminLayout from "@/pages/layouts/AdminLayout";
+import type { BlogPost } from "@/types/serializers";
+import Form from "./shared/form";
+import { Menu } from "./shared/menu";
 
-import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
-import type { User } from "@/types/serializers";
-
-type Props = PropsWithChildren & {
+type Props = {
+  blog_post: BlogPost;
 };
 
-export default function Index() {
+export default function Edit({ blog_post }: Props) {
   const { t } = useTranslation();
-  const { t: tHelpers } = useTranslation("helpers");
 
   return (
-    <ApplicationLayout>
-      <Container>
-      </Container>
-    </ApplicationLayout>
+    <AdminLayout
+      header={t("admin.blog_posts.edit.header", { id: blog_post.id })}
+    >
+      <Menu data={blog_post} />
+      <Form
+        method="patch"
+        data={blog_post}
+        url={Routes.admin_blog_post_path(blog_post.id)}
+      />
+    </AdminLayout>
   );
 }
-

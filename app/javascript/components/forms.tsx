@@ -131,7 +131,7 @@ type XSelectProps<
   K extends keyof T,
 > = Props & {
   items?: T[];
-  has: K;
+  has?: K;
   source?: string;
   labelField: K;
   valueField: K;

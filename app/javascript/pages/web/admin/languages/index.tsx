@@ -11,6 +11,7 @@ import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import useDataTable from "@/hooks/useDataTable";
 import { fieldsToFilters } from "@/lib/utils";
+import { Menu } from "./shared/menu";
 
 type Props = PropsWithChildren & {
   courses: OriginalLanguage[];
@@ -35,6 +36,7 @@ export default function Index({ grid, courses }: Props) {
 
   return (
     <AdminLayout header={t("admin.languages.index.languages")}>
+      <Menu />
       <DataTable
         lazy
         paginator

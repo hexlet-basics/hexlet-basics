@@ -7,20 +7,23 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
     pagy, records = pagy(search.result)
 
     render inertia: true, props: {
-      languages: OriginalLanguageResource.new(records),
+      originalLanguages: OriginalLanguageResource.new(records),
       grid: GridResource.new(grid_params(pagy))
     }
   end
 
   def new
-    render inertia: true, props: {}
+    language = Language.new
+    render inertia: true, props: {
+      originalLanguage: OriginalLanguageResource.new(language)
+    }
   end
 
   def edit
     language = Language.find(params[:id])
 
     render inertia: true, props: {
-      language: OriginalLanguageResource.new(language)
+      originalLanguage: OriginalLanguageResource.new(language)
     }
   end
 

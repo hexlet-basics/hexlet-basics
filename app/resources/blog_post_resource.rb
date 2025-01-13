@@ -3,7 +3,7 @@ class BlogPostResource
   include Alba::Resource
   include Typelizer::DSL
 
-  attributes :id, :name, :slug, :description, :body, :created_at, :state
+  attributes :id, :name, :slug, :description, :body, :created_at, :state, :locale
 
   typelize :string, nullable: true
   attribute :cover_thumb_variant do |post|

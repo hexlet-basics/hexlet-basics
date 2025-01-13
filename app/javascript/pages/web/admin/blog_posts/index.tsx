@@ -11,6 +11,7 @@ import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import useDataTable from "@/hooks/useDataTable";
 import { fieldsToFilters } from "@/lib/utils";
+import { Menu } from "./shared/menu";
 
 type Props = PropsWithChildren & {
   blogPosts: BlogPost[];
@@ -26,7 +27,7 @@ export default function Index({ grid, blogPosts }: Props) {
     return (
       <Link
         className="link-body-emphasis"
-        href={Routes.edit_admin_management_user_path(data.id)}
+        href={Routes.edit_admin_blog_post_path(data.id)}
       >
         <i className="bi bi-pencil-fill" />
       </Link>
@@ -35,6 +36,7 @@ export default function Index({ grid, blogPosts }: Props) {
 
   return (
     <AdminLayout header={t("admin.blog_posts.index.header")}>
+      <Menu />
       <DataTable
         lazy
         paginator

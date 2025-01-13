@@ -16,8 +16,193 @@ const TRANSITIONS = {
 
 // TODO: Extract to https://github.com/Hexlet/primereact-bootstrap-theme
 const pt: PrimeReactPTOptions = {
+  inputtext: {
+    root: ({ props, context }) => ({
+      className: classNames(
+        "form-control", // Bootstrap's base class for input
+        "m-0",
+        "text-body bg-white border transition-colors rounded",
+        {
+          "focus:outline-none focus:ring-2 focus:ring-primary":
+            !context.disabled,
+          "hover:border-primary": !props.invalid && !context.disabled,
+          "opacity-50 cursor-not-allowed": context.disabled,
+          "border-secondary": !props.invalid,
+          "border-danger": props.invalid && !context.disabled,
+          "border-danger opacity-75": props.invalid && context.disabled,
+        },
+        {
+          "form-control-lg": props.size === "large",
+          "form-control-sm": props.size === "small",
+          "p-2": !props.size || typeof props.size === "number",
+        },
+        {
+          "pl-5": context.iconPosition === "left",
+          "pr-5": context.iconPosition === "right",
+        },
+      ),
+    }),
+  },
   datatable: {
-    table: { className: "table" },
+    root: ({ props }) => ({
+      className: classNames("table-responsive", {
+        "d-flex flex-column h-100":
+          props.scrollable && props.scrollHeight === "flex",
+      }),
+    }),
+    loadingoverlay: {
+      className: classNames(
+        "position-absolute w-100 h-100 top-0 start-0 bg-light bg-opacity-50",
+        "d-flex align-items-center justify-content-center",
+        "transition",
+      ),
+    },
+    loadingicon: "spinner-border text-primary",
+    wrapper: ({ props }) => ({
+      className: classNames({
+        "position-relative": props.scrollable,
+        "d-flex flex-column flex-grow-1 h-100":
+          props.scrollable && props.scrollHeight === "flex",
+      }),
+    }),
+    header: ({ props }) => ({
+      className: classNames(
+        "bg-light text-dark border-bottom font-weight-bold p-3",
+        props.showGridlines ? "border border-top-0" : "",
+      ),
+    }),
+    table: "table table-hover table-striped",
+    thead: ({ context }) => ({
+      className: classNames({
+        "position-sticky top-0 bg-light": context.scrollable,
+      }),
+    }),
+    tbody: ({ props, context }) => ({
+      className: classNames({
+        "position-sticky z-index-1": props.frozenRow && context.scrollable,
+      }),
+    }),
+    tfoot: ({ context }) => ({
+      className: classNames({
+        "position-sticky bottom-0 bg-light z-index-1": context.scrollable,
+      }),
+    }),
+    footer: {
+      className: classNames(
+        "bg-light text-dark border-top p-3 font-weight-bold",
+      ),
+    },
+    column: {
+      headercell: ({ context, props }) => ({
+        className: classNames(
+          "text-start border-bottom font-weight-bold",
+          context.size === "small"
+            ? "p-2"
+            : context.size === "large"
+              ? "p-4"
+              : "p-3",
+          context.sorted ? "bg-primary text-white" : "bg-light text-dark",
+          {
+            "position-sticky": props.frozen,
+            border: context.showGridlines,
+            "overflow-hidden text-nowrap": context.resizable,
+          },
+        ),
+      }),
+      headercontent: "d-flex align-items-center",
+      bodycell: ({ props, context }) => ({
+        className: classNames(
+          "text-start border-bottom",
+          context.size === "small"
+            ? "p-2"
+            : context.size === "large"
+              ? "p-4"
+              : "p-3",
+          { "position-sticky bg-white": props.frozen },
+          { border: context.showGridlines },
+        ),
+      }),
+      footercell: ({ context }) => ({
+        className: classNames(
+          "text-start border-top font-weight-bold bg-light text-dark",
+          context.size === "small"
+            ? "p-2"
+            : context.size === "large"
+              ? "p-4"
+              : "p-3",
+          { border: context.showGridlines },
+        ),
+      }),
+      sorticon: ({ context }) => ({
+        className: classNames(
+          "ms-2",
+          context.sorted ? "text-primary" : "text-muted",
+        ),
+      }),
+      sortbadge: {
+        className: classNames(
+          "badge bg-primary text-white ms-2 rounded-circle",
+        ),
+      },
+    },
+    bodyrow: ({ context }) => ({
+      className: classNames(
+        context.selected ? "table-primary" : "",
+        context.stripedRows && context.index % 2 !== 0 ? "bg-light" : "",
+        { "cursor-pointer": context.selectable },
+      ),
+    }),
+    rowexpansion: "bg-white text-dark",
+    rowgroupheader: {
+      className: classNames("sticky-top bg-white text-dark font-weight-bold"),
+    },
+    rowgroupfooter: {
+      className: classNames(
+        "sticky-bottom bg-white text-dark font-weight-bold",
+      ),
+    },
+    rowgrouptoggler: {
+      className: classNames(
+        "btn btn-link p-0 text-decoration-none",
+        "d-inline-flex align-items-center justify-content-center",
+      ),
+    },
+    rowgrouptogglericon: "bi bi-chevron-down",
+    resizehelper: "position-absolute d-none bg-primary",
+    filteroverlay: {
+      className: classNames(
+        "dropdown-menu p-3 bg-white border rounded",
+        "text-dark",
+      ),
+    },
+    filterrowitems: "list-unstyled mb-0",
+    filterrowitem: ({ context }) => ({
+      className: classNames(
+        "dropdown-item",
+        context.highlighted ? "active" : "",
+      ),
+    }),
+    filteroperator: {
+      className: "dropdown-header text-muted",
+    },
+    filteraddrulebutton: {
+      root: "btn btn-primary btn-sm",
+      label: "text-white",
+      icon: "me-2",
+    },
+    filterremovebutton: {
+      root: "btn btn-outline-danger btn-sm ms-2",
+      label: "text-danger",
+    },
+    filterapplybutton: {
+      root: "btn btn-success btn-sm",
+      label: "text-white",
+    },
+    filterclearbutton: {
+      root: "btn btn-secondary btn-sm",
+      label: "text-white",
+    },
+    transition: TRANSITIONS.overlay,
   },
   button: {
     root: ({ props, context }) => ({

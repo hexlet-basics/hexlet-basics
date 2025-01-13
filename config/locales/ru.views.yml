@@ -15,10 +15,12 @@ ru:
       title: Админка Code-Basics
       languages:
         index:
-          languages: Языки
+          header: Языки
           add_new_language: Добавить новый язык
         new:
-          new_language: Новый язык
+          header: Новый язык
+        edit:
+          header: Редактирование %{id}
       home:
         index:
           dashboard: Кабинет
@@ -27,7 +29,7 @@ ru:
         users:
           index:
             finished_lessons: Завершенные уроки
-            users: Пользователи
+            header: Пользователи
           filter:
             from: Начал прохождение с
       reviews:
@@ -43,7 +45,9 @@ ru:
           header: Посты в блоге
           add_new_blog_post: Добавить новый пост
         new:
-          new_blog_post: Новый пост
+          header: Новый пост
+        edit:
+          header: Редактирование %{id}
     home:
       reviews:
         reviews: Отзывы

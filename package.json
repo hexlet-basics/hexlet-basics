@@ -34,6 +34,7 @@
     "lodash": "^4.17.21",
     "primereact": "^10.9.1",
     "qs": "^6.13.1",
+    "quill": "^2.0.3",
     "react": "^18.0.0",
     "react-bootstrap": "^2.10.7",
     "react-countdown": "^2.3.6",
