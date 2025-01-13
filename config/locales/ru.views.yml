@@ -15,10 +15,10 @@ ru:
       title: Админка Code-Basics
       languages:
         index:
-          header: Языки
-          add_new_language: Добавить новый язык
+          header: Курсы
+          add_new_language: Добавить новый курс
         new:
-          header: Новый язык
+          header: Новый курс
         edit:
           header: Редактирование %{id}
       home:

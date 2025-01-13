@@ -34,7 +34,7 @@ class Web::ApplicationController < ApplicationController
     languages_infos = Language::Version::Info.with_locale.includes([ language: :current_version ])
 
     {
-      languageCategories: Language::CategoryResource.new(language_categories),
+      courseCategories: Language::CategoryResource.new(language_categories),
       courses: LanguageResource.new(languages_infos),
       locale: I18n.locale,
       suffix: I18n.locale == :en ? nil : I18n.locale,
@@ -115,7 +115,7 @@ class Web::ApplicationController < ApplicationController
       ransack["s"] = "#{raw["sf"]} #{raw["so"] == "1" ? 'asc' : 'desc'}"
     end
 
-    ransack
+    ransack.to_unsafe_hash
   end
 
   def grid_params(pagy = nil)

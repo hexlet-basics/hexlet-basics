@@ -7,7 +7,7 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
     pagy, records = pagy(search.result)
 
     render inertia: true, props: {
-      originalLanguages: OriginalLanguageResource.new(records),
+      originalCourses: OriginalLanguageResource.new(records),
       grid: GridResource.new(grid_params(pagy))
     }
   end
@@ -15,7 +15,7 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   def new
     language = Language.new
     render inertia: true, props: {
-      originalLanguage: OriginalLanguageResource.new(language)
+      originalCourse: OriginalLanguageResource.new(language)
     }
   end
 
@@ -23,7 +23,7 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
     language = Language.find(params[:id])
 
     render inertia: true, props: {
-      originalLanguage: OriginalLanguageResource.new(language)
+      originalCourse: OriginalLanguageResource.new(language)
     }
   end
 

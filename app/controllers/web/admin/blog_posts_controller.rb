@@ -38,7 +38,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
       redirect_to_inertia edit_admin_blog_post_path(blog_post), blog_post
     else
       f(:error)
-      redirect_to_inertia new_admin_blog_post_url, review
+      redirect_to_inertia new_admin_blog_post_url, blog_post
     end
   end
 

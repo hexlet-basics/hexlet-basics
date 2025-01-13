@@ -77,7 +77,7 @@ class Language < ApplicationRecord
 
   delegate :to_s, to: :current_version
   delegate :serializable_data, to: :current_version
-  delegate :name, to: :current_version
+  delegate :name, to: :current_version, allow_nil: true
 
   def duration
     # TODO Пересадить на counter_culture от Language::Version

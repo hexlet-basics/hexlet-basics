@@ -2,23 +2,23 @@ import * as Routes from "@/routes.js";
 import { useTranslation } from "react-i18next";
 
 import AdminLayout from "@/pages/layouts/AdminLayout";
-import type { Review } from "@/types/serializers";
+import type { OriginalLanguage } from "@/types/serializers";
 import Form from "./shared/form";
 import { Menu } from "./shared/menu";
 
 type Props = {
-  review: Review;
+  originalCourse: OriginalLanguage;
 };
 
-export default function New({ review }: Props) {
+export default function New({ originalCourse }: Props) {
   const { t } = useTranslation();
 
   return (
-    <AdminLayout header={t("admin.reviews.new.header")}>
+    <AdminLayout header={t("admin.languages.new.header")}>
       <Menu />
       <Form
-        data={review}
-        url={Routes.admin_reviews_path()}
+        data={originalCourse}
+        url={Routes.admin_languages_path()}
       />
     </AdminLayout>
   );

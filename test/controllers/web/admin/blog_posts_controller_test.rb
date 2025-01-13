@@ -21,7 +21,7 @@ class Web::Admin::BlogPostsControllerTest < ActionDispatch::IntegrationTest
     lang = languages(:php)
 
     attrs = attributes_for(:blog_post, language_id: lang.id)
-    post admin_blog_posts_url, params: { admin_blog_post_form: attrs }
+    post admin_blog_posts_url, params: { blog_post: attrs }
     assert_response :redirect
 
     assert { lang.blog_posts.find_by slug: attrs[:slug] }
@@ -37,10 +37,11 @@ class Web::Admin::BlogPostsControllerTest < ActionDispatch::IntegrationTest
   test "update" do
     blog_post = blog_posts("from-full")
 
-    patch admin_blog_post_url(blog_post), params: { admin_blog_post_form: { slug: "mumu" } }
+    patch admin_blog_post_url(blog_post), params: { blog_post: { slug: "mumu" } }
     assert_response :redirect
 
     blog_post.reload
+
     assert { blog_post.slug == "mumu" }
   end
 end
