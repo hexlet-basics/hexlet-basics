@@ -10,7 +10,7 @@
               span.bi.bi-house.text-muted
               meta itemprop="position" content="1"
               meta itemprop="name" content="CodeBasics"
-          - if @ctaegory
+          - if @category
             li.breadcrumb-item itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem"
               = link_to language_category_path(@blog_post.category.slug), itemprop: 'item', class: 'text-decoration-none text-muted' do
                 span itemprop="name" = @category
