@@ -27,6 +27,7 @@ export default function Show() {
     auth: { user },
   } = usePage<Props>().props;
   const { t } = useTranslation();
+  const { t: tCommon } = useTranslation("common");
 
   const commonQuestions = t("languages.lessons.show.common_questions", {
     returnObjects: true,
@@ -76,7 +77,10 @@ export default function Show() {
                 </Nav>
 
                 <Tab.Content className="x-h-md-100 overflow-hidden">
-                  <Tab.Pane eventKey="lesson" className="overflow-auto x-h-md-100">
+                  <Tab.Pane
+                    eventKey="lesson"
+                    className="overflow-auto x-h-md-100"
+                  >
                     <XBreadcrumb className="small" items={items} />
 
                     {user.guest && (
@@ -169,7 +173,9 @@ export default function Show() {
                   </Tab.Pane>
                   <Tab.Pane eventKey="discuss">
                     <XssContent>
-                      {t("languages.lessons.show.if_stuck_html")}
+                      {t("languages.lessons.show.if_stuck_html", {
+                        url: tCommon("community_url"),
+                      })}
                     </XssContent>
                   </Tab.Pane>
                   <Tab.Pane

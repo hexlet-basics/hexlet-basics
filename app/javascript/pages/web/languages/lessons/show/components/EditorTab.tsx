@@ -11,6 +11,7 @@ import {
   shouldReplaceTabsWithSpaces,
 } from "@/lib/utils.ts";
 
+import { useAppDispatch, useAppSelector } from "../slices/index.ts";
 import type { editor } from "monaco-editor";
 
 // FIXME: async load (for ssr)
@@ -20,7 +21,6 @@ import type { editor } from "monaco-editor";
 // import htmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
 // import jsonWorker from "monaco-editor/esm/vs/language/json/json.worker?worker";
 // import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
-// import { useAppDispatch, useAppSelector } from "../slices/index.ts";
 //
 // self.MonacoEnvironment = {
 //   getWorker(_, label) {
@@ -99,7 +99,7 @@ export default function EditorTab() {
   };
 
   const handleEditorChange = (value: string | undefined) => {
-    const newContent = value || ""
+    const newContent = value || "";
     setLocalStorageContent(newContent);
     dispatch(slice.actions.changeContent(newContent));
   };

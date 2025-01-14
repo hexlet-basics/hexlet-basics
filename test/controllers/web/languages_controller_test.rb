@@ -9,4 +9,13 @@ class Web::LanguagesControllerTest < ActionDispatch::IntegrationTest
     get language_url(language.slug)
     assert_response :success
   end
+
+  test "show (signed in)" do
+    language = languages(:javascript)
+
+    sign_in_as(:full)
+
+    get language_url(language.slug)
+    assert_response :success
+  end
 end

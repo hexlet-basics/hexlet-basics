@@ -2,6 +2,8 @@
 
 ru:
   common:
+    community_url: |
+      https://ttttt.me/HexletLearningBot
     confirm: "Убеждаемся, что мы делаем то что действительно хотим. Хотим?"
     phones:
       - "+7 (495) 085 21 62"

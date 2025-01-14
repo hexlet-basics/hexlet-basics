@@ -118,7 +118,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
       nextLesson: next_lesson_info && Language::LessonResource.new(next_lesson_info),
       prevLesson: prev_lesson_info && Language::LessonResource.new(prev_lesson_info),
       lessons: Language::LessonResource.new(lessons_infos),
-      lesson_member: Language::Lesson::MemberResource.new(lesson_member)
+      lesson_member: lesson_member && Language::Lesson::MemberResource.new(lesson_member)
     }
   end
 

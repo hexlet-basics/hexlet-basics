@@ -40,8 +40,11 @@ class Web::LanguagesController < Web::ApplicationController
 
     first_lesson_info = language.current_lesson_infos
       .joins(:lesson).merge(Language::Lesson.ordered).first
-    next_lesson_info = language.current_lesson_infos.not_finished_by(current_user)
+    next_lesson_info = nil
+    if !current_user.guest?
+      next_lesson_info = language.current_lesson_infos.not_finished_by(current_user)
       .joins(:lesson).merge(Language::Lesson.ordered).first
+    end
     # next_lesson = current_user.not_finished_lessons_for_language(language)
     #   .joins(:lesson).merge(Language::Lesson.ordered).first
     #
@@ -82,7 +85,7 @@ class Web::LanguagesController < Web::ApplicationController
       course: LanguageResource.new(language_info),
       courseCategory: Language::CategoryResource.new(language.category),
       firstLesson: Language::LessonResource.new(first_lesson_info),
-      nextLesson: Language::LessonResource.new(next_lesson_info),
+      nextLesson: !current_user.guest? && Language::LessonResource.new(next_lesson_info),
       courseModules: Language::ModuleResource.new(language_modules_infos),
       lessonsByModuleId: lesson_resources_by_module_id,
       recommendedCourses: LanguageResource.new(recommendedCourses)

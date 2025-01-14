@@ -188,7 +188,7 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
 
   const search = async (event: AutoCompleteCompleteEvent) => {
     const query = event.query.trim().toLowerCase();
-    console.log("query:", query);
+    // console.log("query:", query);
     if (query === "") {
       setFilteredItems([...items]);
     } else {
