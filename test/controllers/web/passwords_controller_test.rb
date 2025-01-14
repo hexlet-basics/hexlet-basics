@@ -18,6 +18,7 @@ class Web::PasswordsControllerTest < ActionDispatch::IntegrationTest
     assert_response :redirect
 
     user.reload
+
     assert { before_password_digest != user.password_digest }
   end
 end
