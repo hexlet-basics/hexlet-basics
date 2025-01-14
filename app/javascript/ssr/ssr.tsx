@@ -3,8 +3,6 @@ import createServer from "@inertiajs/react/server";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 
-import "@/init";
-
 createServer((page) =>
   createInertiaApp({
     page,

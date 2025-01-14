@@ -3,16 +3,24 @@ Rails.application.routes.draw do
   # mount Sidekiq::Web => '/sidekiq', constraints: AdminConstraint.new
 
   # for kubernets probe
-  get "/health", to: proc { |_env| [ 200, {}, [ "it works!" ] ] }
+  # get "/health", to: proc { |_env| [ 200, {}, [ "it works!" ] ] }
 
   scope module: :web do
-    post "/auth/:provider", to: "auth#request", as: :auth_request
-    get "/auth/:provider/callback", to: "auth#callback", as: :callback_auth
-    post "/google/callback", to: "google_auth#one_tap", as: :google_onetap_callback
+    # post "/auth/:provider", to: "auth#request", as: :auth_request
+    # get "/auth/:provider/callback", to: "auth#callback", as: :callback_auth
+    # post "/google/callback", to: "google_auth#one_tap", as: :google_onetap_callback
 
-    match "/403", to: "errors#forbidden", via: :all
-    match "/404", to: "errors#not_found", via: :all
-    match "/500", to: "errors#server_error", via: :all
+    # match "/403", to: "errors#forbidden", via: :all
+    # match "/404", to: "errors#not_found", via: :all
+    # match "/500", to: "errors#server_error", via: :all
+    match "/:code",
+      to: "errors#show",
+      via: :all,
+      constraints: {
+        code: Regexp.new(
+          Rack::Utils::HTTP_STATUS_CODES.keys.join("|")
+        )
+      }
   end
 
   scope "(:suffix)", suffix: /es|ru/ do

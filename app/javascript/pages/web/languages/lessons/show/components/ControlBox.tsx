@@ -10,9 +10,10 @@ import { useHotkeys } from "react-hotkeys-hook";
 import slice, { runCheck } from "../slices/RootSlice.ts";
 import * as Routes from "@/routes.js";
 import { getKeyForStoringLessonCode } from "@/lib/utils.ts";
-import { Link, usePage } from "@inertiajs/react";
+import { Link, router, usePage } from "@inertiajs/react";
 import type { Props } from "../types.ts";
 import { useAppDispatch, useAppSelector } from "../slices/index.ts";
+import useConfirmation from "@/hooks/useConfirmation.ts";
 
 export default function ControlBox() {
   const {
@@ -35,14 +36,10 @@ export default function ControlBox() {
     dispatch(runCheck(lesson));
   };
 
-  const handleReset = () => {
-    // NOTE: easier than state manipulating. dont touch, dont blame, be happy.
-
-    if (window.confirm(tCommon("confirm"))) {
+  const confirmResetting = useConfirmation(() => {
       deleteFromStorage(getKeyForStoringLessonCode(lesson));
-      window.location.reload();
-    }
-  };
+      router.reload()
+  });
 
   const isCodeChecking = processState === "checking";
 
@@ -115,7 +112,7 @@ export default function ControlBox() {
             variant="outline-secondary"
             size="sm"
             className="me-3"
-            onClick={handleReset}
+            onClick={confirmResetting}
             // title={t('resetCode')}
           >
             <span className="bi bi-arrow-repeat" />

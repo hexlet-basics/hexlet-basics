@@ -1,33 +1,29 @@
 # frozen_string_literal: true
 
 class Web::ApplicationController < ApplicationController
+  include ActionView::Helpers::UrlHelper
+
   allow_browser versions: :modern
   inertia_share flash: -> { flash.to_hash }
 
-  include ActionView::Helpers::UrlHelper
+  # https://inertia-rails.dev/guide/error-handling
+  rescue_from StandardError, with: :inertia_error_page
+
+  def inertia_error_page(exception)
+    raise exception if Rails.env.local?
+
+    status = ActionDispatch::ExceptionWrapper.new(nil, exception).status_code
+
+    render inertia: "error", props: { status: }, status:
+  end
+
+  # include ActionView::Helpers::UrlHelper
   include FlashConcern
   # include TitleConcern
-  include EventConcern
+  # include EventConcern
   include LocaleConcern
 
   before_action :prepare_locale_settings
-
-  # before_action do
-  #   gon.push({
-  #              current_user: {
-  #                id: current_user.id,
-  #                email: current_user.email,
-  #                created_at: current_user.created_at,
-  #                is_guest: current_user.guest?
-  #              },
-  #              locale: I18n.locale,
-  #              events: EventsMapping.events
-  #            })
-  # end
-
-  before_action do
-    # @language_menu_data = build_language_menu_data
-  end
 
   inertia_share do
     language_categories = Language::Category.all
@@ -50,30 +46,6 @@ class Web::ApplicationController < ApplicationController
   # end
 
   private
-
-  def build_language_menu_data
-    languages_multicolumns_treshold = 10
-
-    scope = Language::Version::Info
-            .with_locale
-            .ordered
-            .includes(:language_version)
-            .joins(:language, language_version: :current_language)
-            .preload(:language)
-
-    completed_language_version_infos = scope.completed
-    incompleted_language_version_infos = scope.incompleted
-    languages_count = scope.size
-
-    # NOTE: Если мало языков нет смысла разбивать на несколько колонок
-    columns_count = languages_count < languages_multicolumns_treshold ? 1 : 2
-
-    {
-      completed: completed_language_version_infos,
-      incompleted: incompleted_language_version_infos,
-      columns_count: columns_count
-    }
-  end
 
   def default_url_options
     { suffix: params[:suffix] }

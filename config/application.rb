@@ -31,6 +31,7 @@ module HexletBasics
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
+    config.exceptions_app = routes
 
     config.active_record.default_column_serializer = YAML
 

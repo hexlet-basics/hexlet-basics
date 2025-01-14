@@ -18,12 +18,13 @@ type Props = PropsWithChildren & {
 export default function AdminLayout({ children, header }: Props) {
   const { t: tLayouts } = useTranslation("layouts");
   const { t: tCommon } = useTranslation("common");
-  const { locale, suffix } = usePage<SharedProps>().props;
 
-  useEffect(() => {
-    i18next.changeLanguage(locale);
-    Routes.configure({ default_url_options: { suffix } });
-  }, [suffix, locale]);
+  // const { locale, suffix } = usePage<SharedProps>().props;
+  //
+  // useEffect(() => {
+  //   i18next.changeLanguage(locale);
+  //   Routes.configure({ default_url_options: { suffix } });
+  // }, [suffix, locale]);
 
   return (
     <>

@@ -16,12 +16,7 @@ type Props = PropsWithChildren & {};
 export default function ApplicationLayout({ children }: Props) {
   const { t: tLayouts } = useTranslation("layouts");
   const { t: tCommon } = useTranslation("common");
-  const { locale, suffix } = usePage<SharedProps>().props;
-
-  useEffect(() => {
-    i18next.changeLanguage(locale);
-    Routes.configure({ default_url_options: { suffix } });
-  }, [suffix, locale]);
+  const { locale } = usePage<SharedProps>().props;
 
   return (
     <>
@@ -48,7 +43,7 @@ export default function ApplicationLayout({ children }: Props) {
                 <Nav.Item>
                   <Link
                     className="link-body-emphasis text-decoration-none"
-                    href={Routes.page_path("about", { suffix })}
+                    href={Routes.page_path("about")}
                   >
                     {tLayouts("shared.footer.about")}
                   </Link>
@@ -56,7 +51,7 @@ export default function ApplicationLayout({ children }: Props) {
                 <Nav.Item>
                   <Link
                     className="link-body-emphasis text-decoration-none"
-                    href={Routes.blog_posts_path({ suffix })}
+                    href={Routes.blog_posts_path()}
                   >
                     {tLayouts("shared.footer.blog")}
                   </Link>
@@ -64,7 +59,7 @@ export default function ApplicationLayout({ children }: Props) {
                 <Nav.Item>
                   <Link
                     className="link-body-emphasis text-decoration-none"
-                    href={Routes.reviews_path({ suffix })}
+                    href={Routes.reviews_path()}
                   >
                     {tLayouts("shared.footer.reviews")}
                   </Link>
@@ -72,7 +67,7 @@ export default function ApplicationLayout({ children }: Props) {
                 <Nav.Item>
                   <Link
                     className="link-body-emphasis text-decoration-none"
-                    href={Routes.page_path("authors", { suffix })}
+                    href={Routes.page_path("authors")}
                   >
                     {tLayouts("shared.footer.authors")}
                   </Link>
@@ -136,7 +131,7 @@ export default function ApplicationLayout({ children }: Props) {
                 <Nav.Item>
                   <Link
                     className="link-body-emphasis text-decoration-none"
-                    href={Routes.page_path("tos", { suffix })}
+                    href={Routes.page_path("tos")}
                   >
                     {tLayouts("shared.footer.tos")}
                   </Link>
@@ -144,7 +139,7 @@ export default function ApplicationLayout({ children }: Props) {
                 <Nav.Item>
                   <Link
                     className="link-body-emphasis text-decoration-none"
-                    href={Routes.page_path("privacy", { suffix })}
+                    href={Routes.page_path("privacy")}
                   >
                     {tLayouts("shared.footer.privacy")}
                   </Link>

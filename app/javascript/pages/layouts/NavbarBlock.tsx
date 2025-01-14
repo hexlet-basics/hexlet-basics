@@ -17,6 +17,7 @@ export default function NavbarBlock({ className }: Props) {
   const { courses, auth } = usePage<SharedProps>().props;
   const { t: tLayouts } = useTranslation("layouts");
 
+  console.log('i18next', i18next.language)
   const handleLinkClick = useLinkClickHandler();
 
   return (
