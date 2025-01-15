@@ -52,6 +52,11 @@ lint:
 	bin/rubocop -x
 	npx @biomejs/biome check --write
 
+docker-build:
+	docker build . -t hexlet-basics/hexlet-basics
+
+docker-staging: docker-build
+
 ansible-generate-env:
 	docker run --rm -e RUNNER_PLAYBOOK=ansible/development.yml \
 		-v $(CURDIR)/ansible/development:/runner/inventory \
