@@ -2,8 +2,19 @@
   "en": {
     "activemodel": {
       "attributes": {
-        "sign_in_form": {
+        "remind_password_form": {
+          "email": "Email"
+        },
+        "user_password_form": {
+          "password": "Password"
+        },
+        "user_sign_in_form": {
           "email": "Email",
+          "password": "Password"
+        },
+        "user_sign_up_form": {
+          "email": "Email",
+          "first_name": "First Name",
           "password": "Password"
         }
       },
@@ -77553,21 +77564,33 @@
       }
     },
     "helpers": {
+      "crud": {
+        "add": "Add",
+        "adding": "Addmin",
+        "editing": "Editing",
+        "list": "List"
+      },
+      "reset": "Reset",
       "select": {
         "prompt": "Please select"
       },
       "submit": {
         "create": "Create",
+        "q": {
+          "create": "Search"
+        },
         "remind_password_form": {
           "create": "Reset password"
         },
-        "sign_in_form": {
-          "create": "Sign in"
-        },
+        "replace": "Change",
+        "save": "Save",
         "submit": "Save %{model}",
         "update": "Update",
+        "user_sign_in_form": {
+          "create": "Sign In"
+        },
         "user_sign_up_form": {
-          "create": "Sign up"
+          "create": "Create an Account"
         }
       }
     },
@@ -78145,6 +78168,7 @@
           "meta_description": "Sign in to Code Basics",
           "password": "Password",
           "register": "Sign up",
+          "reset_password": "Reset Password",
           "sign_in": "Sign in",
           "sign_in_with_github": "Log in with GitHub",
           "title": "Sign In"

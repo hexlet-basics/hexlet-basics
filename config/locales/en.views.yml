@@ -86,6 +86,7 @@ en:
         register: Sign up
         sign_in_with_github: Log in with GitHub
         forgot_password: Forgot password?
+        reset_password: Reset Password
         password: Password
         email: Email
     passwords:

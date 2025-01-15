@@ -1,6 +1,10 @@
 import type { PropsWithChildren } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import RuAbout from "./parts/about.ru.tsx";
+import EnAbout from "./parts/about.en.tsx";
+
+import RuAuthors from "./parts/authors.ru.tsx";
+import EnAuthors from "./parts/authors.en.tsx";
 
 import Application from "@/pages/layouts/ApplicationLayout.tsx";
 import type { User } from "@/types/serializers";
@@ -11,20 +15,25 @@ type Props = PropsWithChildren & {
   user: User;
 };
 
+// https://termly.io/
+function Empty() {
+  return <></>;
+}
+
 const mapping = {
   ru: {
     about: RuAbout,
     tos: RuAbout,
     privacy: RuAbout,
     cookie_policy: RuAbout,
-    authors: RuAbout,
+    authors: RuAuthors,
   },
   en: {
-    about: RuAbout,
-    tos: RuAbout,
-    privacy: RuAbout,
-    cookie_policy: RuAbout,
-    authors: RuAbout,
+    about: EnAbout,
+    tos: Empty,
+    privacy: Empty,
+    cookie_policy: Empty,
+    authors: EnAuthors,
   },
 };
 

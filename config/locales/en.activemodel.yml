@@ -1,8 +1,16 @@
 en:
   activemodel:
     attributes:
-      sign_in_form:
+      user_password_form:
         password: Password
+      user_sign_in_form:
+        password: Password
+        email: Email
+      user_sign_up_form:
+        first_name: First Name
+        email: Email
+        password: Password
+      remind_password_form:
         email: Email
     errors:
       models:

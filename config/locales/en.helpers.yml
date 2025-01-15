@@ -1,11 +1,21 @@
 en:
   helpers:
+    reset: Reset
+    crud:
+      list: List
+      add: Add
+      editing: Editing
+      adding: Addmin
     submit:
+      replace: Change
       create: Create
       update: Update
-      sign_in_form:
-        create: Sign in
+      save: Save
+      user_sign_in_form:
+        create: Sign In
       user_sign_up_form:
-        create: Sign up
+        create: Create an Account
       remind_password_form:
         create: Reset password
+      q:
+        create: Search
