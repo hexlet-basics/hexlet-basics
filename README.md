@@ -7,7 +7,6 @@
 ### Requirements
 
 * docker
-* docker compose V2
 * ruby >= 3.0.0
 * make
 
@@ -29,16 +28,16 @@ Some lsp servers are fully workable only when the root dir is the same inside an
 **Run**
 
 ```bash
-make project-setup
-make compose # run server
+make setup
+make dev # run server
 # open code-basics.test
 
-make app-test # run tests
+make test # run tests
 
 # load language
-# make app-language-load L=php
+# make language-load L=php
 
-make app-db-prepare # sometimes, when fixtures were changed
+make sync # sometimes, when fixtures were changed
 ```
 
 To manage loaded languages and set other settings, you need to sign in (login: `full@test.io`, password: `password`)
@@ -83,3 +82,9 @@ export TWC_TOKEN=<your token>
 This repository is created and maintained by the team and the community of Hexlet, an educational project. [Read more about Hexlet](https://hexlet.io/?utm_source=github&utm_medium=referral&utm_campaign=hexlet&utm_content=hexlet-basics).
 
 See most active contributors on [hexlet-friends](https://friends.hexlet.io/).
+
+## TODO
+
+1. theme switcher
+1. https://github.com/DavidWells/analytics
+1. 

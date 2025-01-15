@@ -31,12 +31,14 @@ export default function New({ reviews, pagy }: Props) {
                     <Card.Text>{review.body}</Card.Text>
                   </div>
                   <div className="d-flex">
-                    <Card.Link
-                      href={Routes.language_path(review.language.slug!)}
-                      className="me-auto link-body-emphasis"
-                    >
-                      {review.language.name}
-                    </Card.Link>
+                    {/* {review.language && ( */}
+                    {/*   <Card.Link */}
+                    {/*     href={Routes.language_path(review.language.slug!)} */}
+                    {/*     className="me-auto link-body-emphasis" */}
+                    {/*   > */}
+                    {/*     {review.language.name} */}
+                    {/*   </Card.Link> */}
+                    {/* )} */}
                     <div>{dayjs(review.created_at).format("YYYY-MM-DD")}</div>
                   </div>
                 </Card.Body>
