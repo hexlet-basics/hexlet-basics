@@ -7,15 +7,15 @@ class Web::ApplicationController < ApplicationController
   inertia_share flash: -> { flash.to_hash }
 
   # https://inertia-rails.dev/guide/error-handling
-  rescue_from StandardError, with: :inertia_error_page
-
-  def inertia_error_page(exception)
-    raise exception if Rails.env.local?
-
-    status = ActionDispatch::ExceptionWrapper.new(nil, exception).status_code
-
-    render inertia: "error", props: { status: }, status:
-  end
+  # rescue_from StandardError, with: :inertia_error_page
+  #
+  # def inertia_error_page(exception)
+  #   raise exception if Rails.env.local?
+  #
+  #   status = ActionDispatch::ExceptionWrapper.new(nil, exception).status_code
+  #
+  #   render inertia: "error", props: { status: }, status:
+  # end
 
   # include ActionView::Helpers::UrlHelper
   include FlashConcern

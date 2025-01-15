@@ -1,22 +1,21 @@
-import type { FormEvent, PropsWithChildren } from "react";
-import { Button, Card, Container, Form, Row } from "react-bootstrap";
-import { useInertiaForm, Submit } from "use-inertia-form";
+import type { PropsWithChildren } from "react";
+import { Card, Container, Row } from "react-bootstrap";
+import { Submit } from "use-inertia-form";
 
 import { useTranslation } from "react-i18next";
 
 import * as Routes from "@/routes.js";
 
-import XssContent from "@/components/XssContent";
 import { XForm, XInput } from "@/components/forms";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
-import type { User } from "@/types/serializers";
+import type { PasswordReminder } from "@/types/serializers";
 import { Link } from "@inertiajs/react";
 
 type Props = PropsWithChildren & {
-  user: User;
+  passwordReminder: PasswordReminder;
 };
 
-export default function New({ user }: Props) {
+export default function New({ passwordReminder }: Props) {
   const { t } = useTranslation();
   const { t: tHelpers } = useTranslation("helpers");
 
@@ -28,7 +27,7 @@ export default function New({ user }: Props) {
             <h1 className="text-center mb-3">{t("remind_passwords.new.title")}</h1>
             <Card className="p-4 border-0">
               <Card.Body>
-                <XForm model="remind_password_form" data={user} to={Routes.users_path()}>
+                <XForm model="remind_password_form" data={{ remind_password_form: passwordReminder }} to={Routes.remind_password_path()}>
                   <XInput name="email" autoComplete="email" />
                   <div className="text-end text-muted small mb-4">
                     {t("users.new.have_account")}{" "}

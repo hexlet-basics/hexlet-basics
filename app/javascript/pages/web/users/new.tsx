@@ -28,10 +28,18 @@ export default function New({ user }: Props) {
             <h1 className="text-center mb-3">{t("users.new.sign_up")}</h1>
             <Card className="p-4 border-0">
               <Card.Body>
-                <XForm model="user_sign_up_form" data={user} to={Routes.users_path()}>
+                <XForm
+                  model="user_sign_up_form"
+                  data={{ user_sign_up_form: user }}
+                  to={Routes.users_path()}
+                >
                   <XInput name="first_name" autoComplete="name" />
                   <XInput name="email" autoComplete="email" />
-                  <XInput name="password" type="password" autoComplete="current-password" />
+                  <XInput
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                  />
                   <div className="text-end text-muted small mb-4">
                     {t("users.new.have_account")}{" "}
                     <Link
@@ -41,9 +49,7 @@ export default function New({ user }: Props) {
                       {t("users.new.sign_in")}
                     </Link>
                   </div>
-                  <Submit
-                    className="btn w-100 btn-lg btn-primary mb-3"
-                  >
+                  <Submit className="btn w-100 btn-lg btn-primary mb-3">
                     {tHelpers("submit.user_sign_up_form.create")}
                   </Submit>
                   <XssContent className="small text-muted">

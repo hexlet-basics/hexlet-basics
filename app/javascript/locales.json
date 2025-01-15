@@ -80823,6 +80823,9 @@
         "remind_password_form": {
           "email": "Email"
         },
+        "user_password_form": {
+          "password": "Пароль"
+        },
         "user_sign_in_form": {
           "email": "Email",
           "password": "Пароль"
@@ -82762,6 +82765,7 @@
         },
         "remind_passwords": {
           "create": {
+            "error": "В форме есть ошибки",
             "success": "Мы отправили вам письмо с инструкциями по восстановлению пароля"
           }
         },
@@ -82796,6 +82800,7 @@
         "remind_password_form": {
           "create": "Восстановить"
         },
+        "replace": "Сменить",
         "save": "Сохранить",
         "submit": "Сохранить %{model}",
         "update": "Изменить",

@@ -1,6 +1,8 @@
 ru:
   activemodel:
     attributes:
+      user_password_form:
+        password: Пароль
       user_sign_in_form:
         password: Пароль
         email: Email

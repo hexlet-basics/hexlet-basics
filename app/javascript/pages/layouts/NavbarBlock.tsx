@@ -17,7 +17,6 @@ export default function NavbarBlock({ className }: Props) {
   const { courses, auth } = usePage<SharedProps>().props;
   const { t: tLayouts } = useTranslation("layouts");
 
-  console.log('i18next', i18next.language)
   const handleLinkClick = useLinkClickHandler();
 
   return (
@@ -86,7 +85,7 @@ export default function NavbarBlock({ className }: Props) {
           )}
           <NavDropdown
             className="link-body-emphasis"
-            title={<i className={locales[i18next.language].icon} />}
+            title={<i className={locales[i18next.language || 'ru'].icon} />}
           >
             {Object.entries(locales).map(([k, v]) => (
               <NavDropdown.Item

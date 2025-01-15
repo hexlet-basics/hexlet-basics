@@ -1,6 +1,6 @@
-import { createInertiaApp, usePage } from "@inertiajs/react";
+import { createInertiaApp } from "@inertiajs/react";
 import { PrimeReactProvider } from "primereact/api";
-import { type ReactNode, useEffect } from "react";
+import type { ReactNode } from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 
 import * as Routes from "@/routes.js";

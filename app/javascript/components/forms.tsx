@@ -49,6 +49,8 @@ export function XInput({ name, model, as, ...props }: Props) {
     model,
   });
 
+  console.log(form)
+
   const errors = error ? _.castArray(error) : [];
 
   const path = `attributes.${form.model}.${name}`;

@@ -22,7 +22,7 @@ class Web::UsersController < Web::ApplicationController
       f(:success)
       redirect_to root_url
     else
-      redirect_to new_user_url, inertia: { errors: user.errors }
+      redirect_to_inertia new_user_url, user
     end
   end
 end

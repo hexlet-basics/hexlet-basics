@@ -16,6 +16,9 @@ db-reset:
 dev:
 	bin/dev
 
+log-mails:
+	 tail -n 30 log/mailer.log | base64 --decode
+
 staging:
 	bin/vite clobber
 	# VISUAL="code --wait" bin/rails credentials:edit

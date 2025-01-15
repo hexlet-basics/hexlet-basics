@@ -29,6 +29,7 @@ export default function New({ signInForm }: Props) {
               <Card.Body>
                 <XForm
                   to={Routes.session_path()}
+                  data={{ user_sign_in_form: signInForm }}
                   model="user_sign_in_form"
                   className="d-flex flex-column"
                 >

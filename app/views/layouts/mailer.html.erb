@@ -1,3 +1,90 @@
-html
-  body
-    = yield
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Action Mailer Email</title>
+    <style>
+      /* General reset for consistent styling */
+      body, table, td, a {
+        margin: 0;
+        padding: 0;
+        text-decoration: none;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f7f7f7;
+        color: #333333;
+        line-height: 1.6;
+        width: 100%;
+        height: 100%;
+      }
+      table {
+        border-spacing: 0;
+        width: 100%;
+      }
+      img {
+        max-width: 100%;
+        height: auto;
+        border: 0;
+        display: block;
+      }
+      .email-container {
+        max-width: 600px;
+        margin: 20px auto;
+        background-color: #ffffff;
+        border: 1px solid #dddddd;
+        border-radius: 5px;
+        overflow: hidden;
+      }
+      .email-header {
+        background-color: #0073e6;
+        color: #ffffff;
+        padding: 20px;
+        text-align: center;
+      }
+      .email-body {
+        padding: 20px;
+        font-size: 16px;
+      }
+      .email-footer {
+        background-color: #f0f0f0;
+        text-align: center;
+        padding: 15px;
+        font-size: 14px;
+        color: #888888;
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        color: #ffffff;
+        background-color: #0073e6;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 16px;
+        margin: 10px 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <table role="presentation" class="email-container">
+      <tr>
+        <td class="email-header">
+          <h1><%= message.subject %></h1>
+        </td>
+      </tr>
+      <tr>
+        <td class="email-body">
+          <%= yield %>
+        </td>
+      </tr>
+      <tr>
+        <td class="email-footer">
+          <p>&copy; Code Basics</p>
+          <%#<p>1234 Example Street, City, State, ZIP</p>%>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

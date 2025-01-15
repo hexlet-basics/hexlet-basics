@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class UserService
-  def self.reset_password!(user)
+  def self.reset_password!(user, suffix)
     token = SecureHelper.generate_token
     user.update!(reset_password_token: token)
 
-    UserMailer.reset_password(user.id).deliver_later
+    UserMailer.with(user:, suffix:).reset_password.deliver_later
   end
 end
