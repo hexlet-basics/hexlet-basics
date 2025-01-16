@@ -56,6 +56,7 @@ docker-build:
 	docker build . -t hexlet-basics/hexlet-basics
 
 docker-staging: docker-build
+	# TODO: implement starting server
 
 ansible-generate-env:
 	docker run --rm -e RUNNER_PLAYBOOK=ansible/development.yml \
