@@ -7,8 +7,6 @@ import Application from "@/pages/layouts/ApplicationLayout";
 import type { Pagy, Review } from "@/types/serializers";
 import { useTranslation } from "react-i18next";
 
-import * as Routes from "@/routes.js";
-
 type Props = PropsWithChildren & {
   reviews: Review[];
   pagy: Pagy;
@@ -20,7 +18,7 @@ export default function New({ reviews, pagy }: Props) {
   return (
     <Application>
       <Container>
-        <h1 className="mb-5">{t("reviews.index.header")}</h1>
+        <h1 className="mb-5">{t("reviews.index.title")}</h1>
         <Row className="mb-5 row-cols-1 row-cols-lg-2">
           {reviews.map((review) => (
             <Col key={review.id} className="mb-5">

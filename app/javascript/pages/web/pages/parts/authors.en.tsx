@@ -1,4 +1,4 @@
-export default () => {
+export default function AuthorsEn() {
   return (
     <>
       <p>
@@ -56,4 +56,4 @@ export default () => {
       </ul>
     </>
   );
-};
+}

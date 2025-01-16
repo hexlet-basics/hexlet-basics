@@ -1,4 +1,4 @@
-export default () => {
+export default function AboutEn() {
   return (
     <>
       <h2>What is Code Basics?</h2>
@@ -35,4 +35,4 @@ export default () => {
       </p>
     </>
   );
-};
+}

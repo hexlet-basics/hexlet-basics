@@ -36,4 +36,8 @@ class Language::Version::Info < ApplicationRecord
 
   belongs_to :language
   belongs_to :language_version, class_name: "Language::Version"
+
+  def to_s
+    header
+  end
 end

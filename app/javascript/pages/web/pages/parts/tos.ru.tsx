@@ -1,4 +1,4 @@
-export default () => {
+export default function TosRu() {
   return (
     <>
       <p>
@@ -127,4 +127,4 @@ export default () => {
       <p>Последнее обновление: 15 июня 2019 года.</p>
     </>
   );
-};
+}

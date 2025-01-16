@@ -11,9 +11,11 @@ import NavbarBlock from "./NavbarBlock.tsx";
 import i18next from "i18next";
 import XFlash from "@/components/XFlash.tsx";
 
-type Props = PropsWithChildren & {};
+type Props = PropsWithChildren & {
+  header?: string;
+};
 
-export default function ApplicationLayout({ children }: Props) {
+export default function ApplicationLayout({ children, header }: Props) {
   const { t: tLayouts } = useTranslation("layouts");
   const { t: tCommon } = useTranslation("common");
   const { locale } = usePage<SharedProps>().props;
@@ -23,6 +25,9 @@ export default function ApplicationLayout({ children }: Props) {
       <Container className="py-2 mb-5">
         <NavbarBlock className="pb-3 border-bottom" />
         <XFlash />
+      </Container>
+      <Container className="mb-4">
+        {header && <h1>{header}</h1>}
       </Container>
       {children}
       <footer className="mt-5 bg-body-tertiary py-5">

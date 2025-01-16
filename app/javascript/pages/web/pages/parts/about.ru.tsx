@@ -1,4 +1,4 @@
-export default () => {
+export default function AboutRu() {
   return (
     <>
       <h2>Что такое Code Basics</h2>
@@ -51,4 +51,4 @@ export default () => {
       </p>
     </>
   );
-};
+}

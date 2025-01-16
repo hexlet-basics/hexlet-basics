@@ -13,13 +13,13 @@ type Props = PropsWithChildren & {
   pagy: Pagy;
 };
 
-export default function New({ blogPosts, pagy }: Props) {
+export default function Index({ blogPosts, pagy }: Props) {
   const { t } = useTranslation();
+  const header = t("blog_posts.index.header")
 
   return (
-    <ApplicationLayout>
+    <ApplicationLayout header={header}>
       <Container>
-        <h1>{t("blog_posts.index.header")}</h1>
         <Row className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
           {blogPosts.map((post) => (
             <Col key={post.id}>
@@ -27,7 +27,7 @@ export default function New({ blogPosts, pagy }: Props) {
             </Col>
           ))}
         </Row>
-        <XPaging pagy={pagy} />
+        {/* <XPaging pagy={pagy} /> */}
       </Container>
     </ApplicationLayout>
   );

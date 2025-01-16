@@ -1,14 +1,15 @@
 import type { PropsWithChildren } from "react";
 import { Col, Container, Row } from "react-bootstrap";
-import RuAbout from "./parts/about.ru.tsx";
-import EnAbout from "./parts/about.en.tsx";
-
-import RuAuthors from "./parts/authors.ru.tsx";
-import EnAuthors from "./parts/authors.en.tsx";
 
 import Application from "@/pages/layouts/ApplicationLayout.tsx";
 import type { User } from "@/types/serializers";
 import i18next from "i18next";
+import TosRu from "./parts/tos.ru";
+import AboutRu from "./parts/about.ru";
+import PrivaryRu from "./parts/privacy.ru";
+import AuthorsRu from "./parts/authors.ru";
+import AboutEn from "./parts/about.en";
+import AuthorsEn from "./parts/authors.en";
 
 type Props = PropsWithChildren & {
   page: "about" | "tos" | "privacy" | "cookie_policy" | "authors";
@@ -23,18 +24,18 @@ function Empty() {
 
 const mapping = {
   ru: {
-    about: RuAbout,
-    tos: RuAbout,
-    privacy: RuAbout,
-    cookie_policy: RuAbout,
-    authors: RuAuthors,
+    about: AboutRu,
+    tos: TosRu,
+    privacy: PrivaryRu,
+    cookie_policy: Empty,
+    authors: AuthorsRu,
   },
   en: {
-    about: EnAbout,
+    about: AboutEn,
     tos: Empty,
     privacy: Empty,
     cookie_policy: Empty,
-    authors: EnAuthors,
+    authors: AuthorsEn,
   },
 };
 

@@ -1,4 +1,4 @@
-export default () => {
+export default function PrivaryRu() {
   return (
     <>
       <p>
@@ -172,5 +172,4 @@ export default () => {
       <p>Последнее обновление: 15.06.2019</p>
     </>
   );
-};
-
+}

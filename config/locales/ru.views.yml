@@ -7,7 +7,7 @@ ru:
         blog_posts: Посты в блоге
     reviews:
       index:
-        header: Отзывы
+        title: Отзывы
         empty: Похоже, что тут пока ничего нет
         read_more: Читать далее
         course: 'Курс %{language}'
@@ -122,7 +122,7 @@ ru:
         blog_posts: Рекомендованные статьи
         courses: Рекомендованные курсы
       index:
-        header: Блог
+        title: Блог
         empty: Похоже, что тут пока ничего нет
     languages:
       show:

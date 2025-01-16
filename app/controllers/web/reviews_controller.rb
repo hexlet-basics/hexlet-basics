@@ -6,7 +6,8 @@ class Web::ReviewsController < Web::ApplicationController
     pagy, records = pagy(scope)
 
     seo_tags = {
-      title: t(".title")
+      title: t(".title"),
+      canonical: reviews_url
     }
     set_meta_tags seo_tags
 

@@ -59,22 +59,22 @@ class Web::LanguagesController < Web::ApplicationController
     # description = @language_version_info.seo_description || @language_version_info.description
 
     seo_tags = {
-      title: title,
-      keywords: @language_version_info.keywords.join(", "),
-      description: description,
-      canonical: language_url(@language.slug),
-      image_src: view_context.asset_url("#{@language.slug}.png"),
+      title: language_info.title,
+      keywords: language_info.keywords.join(", "),
+      description: language_info.seo_description,
+      canonical: language_url(language.slug),
+      image_src: view_context.vite_asset_url("images/#{language.slug}.png"),
       og: {
-        title: title,
+        title: language_info.title,
         type: "website",
-        description: description,
-        url: language_url(@language.slug),
-        image: view_context.asset_url("#{@language.slug}.png"),
+        description: language_info.seo_description,
+        url: language_url(language.slug),
+        image: view_context.vite_asset_url("images/#{language.slug}.png"),
         locale: I18n.locale
       }
     }
     set_meta_tags seo_tags
-    #
+
     # @switching_locales.each do |locale,|
     #   if @language.current_version.infos.exists?(locale: locale)
     #     @switching_locales[locale] = language_path(@language.slug, locale: AppHost.locale_for_url(locale))

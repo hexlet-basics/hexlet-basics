@@ -84,24 +84,24 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     # gon.lesson_version = @lesson_version
     # gon.lesson = @lesson
     #
-    title = [ @info, resource_language.current_version.name ].join(" | ").squish
-    description = view_context.truncate("[#{resource_language.current_version}] — #{@info.name} — #{@info.theory}", length: 220)
+    title = [ lesson_info, language_info ].join(" | ").squish
+    description = view_context.truncate("[#{resource_language.current_version}] — #{lesson_info} — #{lesson_info.theory}", length: 220)
 
-     seo_tags = {
-       title: title,
-       canonical: language_lesson_url(@lesson.language.slug, @lesson.slug),
-       amphtml: language_lesson_url(@lesson.language.slug, @lesson.slug, format: "amp", only_path: false),
-       image_src: view_context.image_url("#{@lesson.language.slug}.png"),
-       description: description,
-       og: {
-         type: "article",
-         locale: I18n.locale,
-         title: title,
-         url: language_lesson_url(@lesson.language.slug, @lesson.slug),
-         image: view_context.image_url("#{@lesson.language.slug}.png")
-       }
-     }
-     set_meta_tags seo_tags
+    seo_tags = {
+      title:,
+      description:,
+      canonical: language_lesson_url(resource_language.slug, lesson.slug),
+      # amphtml: language_lesson_url(@lesson.language.slug, @lesson.slug, format: "amp", only_path: false),
+      image_src: view_context.vite_asset_url("images/#{resource_language.slug}.png"),
+      og: {
+        type: "article",
+        locale: I18n.locale,
+        title: title,
+        url: language_lesson_url(resource_language.slug, lesson.slug),
+        image: view_context.vite_asset_url("images/#{resource_language.slug}.png")
+      }
+    }
+    set_meta_tags seo_tags
 
     # @switching_locales.each do |locale,|
     #   if @lesson_version.infos.exists?(locale: locale)

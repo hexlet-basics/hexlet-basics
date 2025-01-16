@@ -1,12 +1,11 @@
-# frozen_string_literal: true
-
 class Web::BlogPostsController < Web::ApplicationController
   def index
     scope = BlogPost.published.with_locale.includes([ :cover_attachment ])
     pagy, records = pagy(scope)
 
     seo_tags = {
-      title: t(".title")
+      title: t(".title"),
+      canonical: blog_posts_url
     }
     set_meta_tags seo_tags
 
@@ -32,7 +31,7 @@ class Web::BlogPostsController < Web::ApplicationController
     # end
 
     seo_tags = {
-      title: t(".title")
+      title: blog_post.name
     }
     set_meta_tags seo_tags
 
