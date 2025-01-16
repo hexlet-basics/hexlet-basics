@@ -1,7 +1,7 @@
 # Caddyfile for Rails 8 + Vite-Ruby + HTTPS
-{
-  debug
-}
+# {
+#   debug
+# }
 
 # Define the site using HTTPS
 # https://code-basics.test:3036 {

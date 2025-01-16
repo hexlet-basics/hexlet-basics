@@ -5,6 +5,11 @@ import ViteRails from "vite-plugin-rails";
 
 export default defineConfig({
   plugins: [react(), ViteRails()],
+  server: {
+    hmr: {
+      clientPort: 443,
+    },
+  },
   ssr: {
     noExternal: [
       "lowlight",

@@ -7,9 +7,17 @@
 Rails.application.configure do
   config.content_security_policy do |policy|
     # policy.connect_src :self, "ws://localhost:3036" if Rails.env.development?
-    # policy.default_src :self, :https
+    # Allow @vite/client to hot reload changes in development
+
+    # policy.default_src :self, :https, "giscus.app", "cdn.jsdelivr.net"
     # policy.script_src :self, :unsafe_inline, "giscus.app", "https://cdn.jsdelivr.net"
+    # Allow @vite/client to hot reload javascript changes in development
+
+    # You may need to enable this in production as well depending on your setup.
+
     # policy.style_src :self, :unsafe_inline, "giscus.app", "https://cdn.jsdelivr.net"
+    # Allow @vite/client to hot reload style changes in development
+
     # policy.frame_src :self, "giscus.app"
     # policy.worker_src :self, "blob:"
     # policy.img_src     :self, :https, :data

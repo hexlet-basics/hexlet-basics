@@ -100,10 +100,7 @@ export default function Show() {
 
                     <div className="hexlet-basics-content">
                       <h1 className="h2">{`${course.name}: ${lesson.name}`}</h1>
-                      <Markdown
-                        className="hexlet-basics-content"
-                        rehypePlugins={rehypePlugins}
-                      >
+                      <Markdown rehypePlugins={rehypePlugins}>
                         {lesson.theory}
                       </Markdown>
                       <h2 className="h3">
@@ -171,31 +168,34 @@ export default function Show() {
                       </a>
                     </div>
                   </Tab.Pane>
-                  <Tab.Pane eventKey="discuss">
-                    {i18next.language !== "ru" && (
-                      <Giscus
-                        id="comments"
-                        repo="hexlet-basics/exercises-javascript"
-                        repoId="MDEwOlJlcG9zaXRvcnkxMjg5NzMyMzA="
-                        category="General"
-                        categoryId="DIC_kwDOB6_5rs4CmERH"
-                        mapping="specific"
-                        data-mapping="pathname"
-                        reactionsEnabled="1"
-                        emitMetadata="0"
-                        inputPosition="top"
-                        theme="light"
-                        lang={i18next.language}
-                        loading="lazy"
-                      />
-                    )}
+                  <Tab.Pane
+                    eventKey="discuss"
+                    className="overflow-auto x-h-md-100"
+                  >
                     {i18next.language === "ru" && (
-                      <XssContent>
-                        {t("languages.lessons.show.if_stuck_html", {
-                          url: tCommon("community_url"),
-                        })}
-                      </XssContent>
+                      <Alert className="small">
+                        <XssContent>
+                          {t("languages.lessons.show.if_stuck_html", {
+                            url: tCommon("community_url"),
+                          })}
+                        </XssContent>
+                      </Alert>
                     )}
+                    <Giscus
+                      id="comments"
+                      repo="hexlet-basics/hexlet-basics"
+                      repoId="MDEwOlJlcG9zaXRvcnkyNjE1MTMxODc="
+                      category="Comments"
+                      categoryId="DIC_kwDOD5Zf484CmEmm"
+                      strict="0"
+                      mapping="pathname"
+                      reactionsEnabled="0"
+                      emitMetadata="0"
+                      inputPosition="top"
+                      theme="light"
+                      lang={i18next.language}
+                      // loading="lazy"
+                    />
                   </Tab.Pane>
                   <Tab.Pane
                     eventKey="navigation"

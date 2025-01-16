@@ -10,7 +10,7 @@ Rails.application.configure do
     Bullet.add_footer    = true
   end
 
-  config.asset_host = "code-basics.test"
+  # config.asset_host = "code-basics.test"
 
   # Settings specified here will take precedence over those in config/application.rb.
 
