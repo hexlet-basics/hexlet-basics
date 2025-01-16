@@ -78022,7 +78022,8 @@
           "title": "You have successfully completed the basic course on Code Basics."
         },
         "lessons": {
-          "content": {
+          "show": {
+            "breadcrumb": "breadcrumb",
             "common_questions": [
               {
                 "question": "The exercise doesn't pass checking. What to do? 😶",
@@ -78041,27 +78042,30 @@
                 "answer": "It's hard to make educational materials that will suit everyone. We do our best but there is always something to improve. If you see a material that is not clear to you, describe the problem in “Discussions”. It will be great if you'll write unclear points in the question form. Usually, we need a few days for corrections.\n\nBy the way, you can participate in courses improvement. There is a link below to the lessons course code which you can edit right in your browser.\n"
               }
             ],
+            "controls": {
+              "body": "Reset Progress\n",
+              "header": "Help",
+              "run": "Run"
+            },
             "definitions": "Definitions",
-            "instructions": "Instructions",
-            "issues": "Issues",
-            "next": "Next",
-            "prev": "Previous",
-            "separator": " ",
-            "sign_up_for_tracking_progress_html": "Free %{name} course. <a href=\"%{link}\" class=\"text-decoration-none\" target=\"_blank\">Sign Up</a> for tracking progress &rarr;\n",
-            "tips": "Tips"
-          },
-          "lesson_tab": {
-            "breadcrumb": "breadcrumb",
-            "to_home_title": "Home"
-          },
-          "navigation_tab": null,
-          "show": {
             "discuss": "Discuss",
+            "editor": "Editor",
+            "instructions": "Instructions",
+            "issues": "Found a bug? Have something to add? Pull requests are welcome!",
             "lesson": "Lesson",
             "navigation": "Navigation",
+            "next": "Next →",
             "only_for_signed_in_users": "Exercise available only for signed users.",
+            "output": "Output",
             "please_sign_in": "Please sign in with your GitHub account, this is necessary to track the progress of the lessons. If you do not have an account yet, now is the time to create an account on GitHub.",
-            "sign_in": "Sign In"
+            "prev": "← Previous",
+            "separator": " ",
+            "sign_in": "Sign In",
+            "sign_up_for_tracking_progress_html": "Free %{name} course. <a href=\"%{link}\" class=\"text-decoration-none\" target=\"_blank\">Sign Up</a> for tracking progress &rarr;\n",
+            "solution": "Solution",
+            "tests": "Tests",
+            "tips": "Tips",
+            "to_home_title": "Home"
           }
         },
         "show": {
@@ -82800,6 +82804,7 @@
         },
         "users": {
           "create": {
+            "error": "Упс, кажется в форме есть ошибки",
             "success": "Добро пожаловать! Выбирайте курс и погружайтесь в мир разработки"
           }
         }
@@ -83335,7 +83340,7 @@
             ],
             "confirm": "Вы хотите сбросить прогресс упражнения. Текущая версия кода не сохранится — надеемся, вы уже скопировали его. Продолжаем сброс?",
             "controls": {
-              "body": "Сбросить прогресс. По этой кнопке можно вернуться в начало упражнения, если что-то сломалось и не чинится. Текущий код не сохранится. Если он вам еще потребуется, скопируйте его перед сбросом — например, в блокнот",
+              "body": "Сбросить прогресс. По этой кнопке можно вернуться в начало упражнения, если что-то сломалось и не чинится. Текущий код не сохранится. Если он вам еще потребуется, скопируйте его перед сбросом — например, в блокнот\n",
               "header": "Справка",
               "run": "Запустить"
             },
@@ -83344,7 +83349,7 @@
             "editor": "Редактор",
             "if_stuck_html": "Если вы столкнулись с трудностями и не знаете, что делать, задайте вопрос в нашем большом и дружном <a href=\"%{url}\" target=\"_blank\" rel=\"noopener\">сообществе</a>\n",
             "instructions": "Задание",
-            "issues": "Нашли ошибку? Есть что добавить? Пулреквесты приветствуются",
+            "issues": null,
             "lesson": "Урок",
             "navigation": "Навигация",
             "next": "Следующий →",

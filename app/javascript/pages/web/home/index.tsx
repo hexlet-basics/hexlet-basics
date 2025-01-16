@@ -5,24 +5,22 @@ import { TypeAnimation } from "react-type-animation";
 
 import * as Routes from "@/routes.js";
 import type {
-  BlogPost,
-  LanguageCategory,
-  Review,
-  User,
+    BlogPost,
+    LanguageCategory,
+    Review,
+    User,
 } from "@/types/serializers";
 
 import BlogPostBlock from "@/components/BlogPostBlock";
 import CourseBlock from "@/components/CourseBlock";
-import { XForm, XInput } from "@/components/forms";
 import { getImageUrl } from "@/images";
 import codeImagePathEn from "@/images/code-basics-coding-en.png";
 import codeImagePathRu from "@/images/code-basics-coding-ru.png";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { SharedProps } from "@/types";
-import { Link, usePage } from "@inertiajs/react";
-import { Accordion, Button, Col, Container, Form, Row } from "react-bootstrap";
-import { Submit } from "use-inertia-form";
-import XssContent from "@/components/XssContent";
+import { usePage } from "@inertiajs/react";
+import { Accordion, Col, Container, Row } from "react-bootstrap";
+import SignUpFormBlock from "@/components/SignUpFormBlock";
 
 type Props = PropsWithChildren & {
   blogPosts: BlogPost[];
@@ -308,39 +306,8 @@ export default function Index({ blogPosts, newUser, courseCategories }: Props) {
                 {/*   </> */}
                 {/* ))} */}
               </div>
-              <div className="col-md-10 mx-auto col-lg-5">
-                <XForm
-                  model="user_sign_up_form"
-                  data={newUser}
-                  to={Routes.users_path()}
-                  className="d-flex flex-column bg-body-tertiary p-4 p-md-5 border rounded-3"
-                >
-                  <XInput name="first_name" autoComplete="name" />
-                  <XInput name="email" autoComplete="email" />
-                  <XInput name="password" type="password" autoComplete="current-password" />
-                  <div className="text-end text-muted small mb-4">
-                    {t("users.new.have_account")}{" "}
-                    <Link
-                      href={Routes.new_session_path()}
-                      className="text-decoration-none"
-                    >
-                      {t("users.new.sign_in")}
-                    </Link>
-                  </div>
-                  <Submit
-                    // size="lg"
-                    className="btn w-100 btn-lg btn-primary mb-3"
-                    // type="submit"
-                    // disabled={form.processing}
-                  >
-                    {tHelpers("submit.user_sign_up_form.create")}
-                  </Submit>
-                  <XssContent className="small text-muted">
-                    {t("users.new.confirmation_html", {
-                      url: Routes.page_path("tos"),
-                    })}
-                  </XssContent>
-                </XForm>
+              <div className="col-md-10 mx-auto col-lg-5 d-flex flex-column bg-body-tertiary p-4 p-md-5 border rounded-3">
+                <SignUpFormBlock user={newUser} />
               </div>
             </div>
           </div>

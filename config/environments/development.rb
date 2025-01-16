@@ -10,7 +10,14 @@ Rails.application.configure do
     Bullet.add_footer    = true
   end
 
+  config.asset_host = "code-basics.test"
+
   # Settings specified here will take precedence over those in config/application.rb.
+
+  config.assume_ssl = true
+
+  # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
+  config.force_ssl = true
 
   # Make code changes take effect immediately without server restart.
   config.enable_reloading = true

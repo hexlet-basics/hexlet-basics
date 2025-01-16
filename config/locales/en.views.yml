@@ -157,7 +157,7 @@ en:
         dlang_description: D is a multi-paradigm, statically typed, compiled language. Has built-in error prevention - contracts and unittests
 
       lessons:
-        content:
+        show:
           common_questions:
             - question: The exercise doesn't pass checking. What to do? 😶
               answer: |
@@ -177,26 +177,32 @@ en:
                 It's hard to make educational materials that will suit everyone. We do our best but there is always something to improve. If you see a material that is not clear to you, describe the problem in “Discussions”. It will be great if you'll write unclear points in the question form. Usually, we need a few days for corrections.
 
                 By the way, you can participate in courses improvement. There is a link below to the lessons course code which you can edit right in your browser.
-          issues: Issues
+          controls:
+            header: Help
+            body: |
+              Reset Progress
+            run: Run
+          issues: Found a bug? Have something to add? Pull requests are welcome!
           sign_up_for_tracking_progress_html: |
             Free %{name} course. <a href="%{link}" class="text-decoration-none" target="_blank">Sign Up</a> for tracking progress &rarr;
           instructions: Instructions
           definitions: Definitions
           tips: Tips
-          prev: Previous
-          next: Next
+          prev: ← Previous
+          next: Next →
           separator: ' '
-        show:
           navigation: Navigation
           discuss: Discuss
           lesson: Lesson
           only_for_signed_in_users: Exercise available only for signed users.
           please_sign_in: Please sign in with your GitHub account, this is necessary to track the progress of the lessons. If you do not have an account yet, now is the time to create an account on GitHub.
           sign_in: Sign In
-        lesson_tab:
           breadcrumb: breadcrumb
           to_home_title: Home
-        navigation_tab:
+          editor: Editor
+          output: Output
+          solution: Solution
+          tests: Tests
       complete_language:
         continue: Continue Learning
         grats: Congratulations

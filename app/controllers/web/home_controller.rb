@@ -52,9 +52,10 @@ class Web::HomeController < Web::ApplicationController
     set_meta_tags seo_tags
 
     user = User::SignUpForm.new
+
     render inertia: true, props: {
       blogPosts: BlogPostResource.new(blog_posts),
-      newUser: UserResource.new(user),
+      newUser: UserSignUpFormResource.new(user),
       courseCategories: Language::CategoryResource.new(Language::Category.all)
     }
   end

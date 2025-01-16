@@ -6,12 +6,12 @@ class Web::UsersController < Web::ApplicationController
 
     seo_tags = {
       title: t(".title"),
-      description: t(".meta.description"),
+      description: t(".meta.description")
     }
     set_meta_tags seo_tags
 
     render inertia: true, props: {
-      user: UserResource.new(user)
+      user: UserSignUpFormResource.new(user)
     }
   end
 
@@ -28,6 +28,7 @@ class Web::UsersController < Web::ApplicationController
       f(:success)
       redirect_to root_url
     else
+      f(:error)
       redirect_to_inertia new_user_url, user
     end
   end

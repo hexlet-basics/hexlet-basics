@@ -69,6 +69,7 @@ export default function NavbarBlock({ className }: Props) {
           )}
           {!auth.user.guest && (
             <NavDropdown
+              align="end"
               className="link-body-emphasis"
               title={<i className="bi bi-person-circle" />}
             >
@@ -84,6 +85,7 @@ export default function NavbarBlock({ className }: Props) {
             </NavDropdown>
           )}
           <NavDropdown
+            align="end"
             className="link-body-emphasis"
             title={<i className={locales[i18next.language || 'ru'].icon} />}
           >

@@ -22,7 +22,7 @@ export default function ApplicationLayout({ children, header }: Props) {
 
   return (
     <>
-      <Container className="py-2 mb-5">
+      <Container className="py-2">
         <NavbarBlock className="pb-3 border-bottom" />
         <XFlash />
       </Container>

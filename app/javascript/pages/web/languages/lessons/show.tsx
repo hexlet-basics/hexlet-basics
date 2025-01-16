@@ -1,4 +1,4 @@
-import type { PropsWithChildren } from "react";
+import Giscus from "@giscus/react";
 import { Alert, Col, Container, Nav, Row, Tab } from "react-bootstrap";
 
 import { useTranslation } from "react-i18next";
@@ -15,6 +15,7 @@ import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
 import EditorBlock from "./show/index.tsx";
 import type { Props } from "./show/types";
+import i18next from "i18next";
 
 const rehypePlugins = [rehypeHighlight, rehypeRaw];
 
@@ -85,34 +86,33 @@ export default function Show() {
 
                     {user.guest && (
                       <Alert variant="info" className="border-0 small">
-                        <div
-                          // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-                          dangerouslySetInnerHTML={{
-                            __html: t(
-                              "languages.lessons.show.sign_up_for_tracking_progress_html",
-                              {
-                                name: course.name,
-                                link: Routes.new_user_path(),
-                              },
-                            ),
-                          }}
-                        />
+                        <XssContent>
+                          {t(
+                            "languages.lessons.show.sign_up_for_tracking_progress_html",
+                            {
+                              name: course.name,
+                              link: Routes.new_user_path(),
+                            },
+                          )}
+                        </XssContent>
                       </Alert>
                     )}
 
-                    <h1 className="h2">{`${course.name}: ${lesson.name}`}</h1>
-                    <Markdown
-                      className="hexlet-basics-content"
-                      rehypePlugins={rehypePlugins}
-                    >
-                      {lesson.theory}
-                    </Markdown>
-                    <h2 className="h3">
-                      {t("languages.lessons.show.instructions")}
-                    </h2>
-                    <Markdown rehypePlugins={rehypePlugins}>
-                      {lesson.instructions}
-                    </Markdown>
+                    <div className="hexlet-basics-content">
+                      <h1 className="h2">{`${course.name}: ${lesson.name}`}</h1>
+                      <Markdown
+                        className="hexlet-basics-content"
+                        rehypePlugins={rehypePlugins}
+                      >
+                        {lesson.theory}
+                      </Markdown>
+                      <h2 className="h3">
+                        {t("languages.lessons.show.instructions")}
+                      </h2>
+                      <Markdown rehypePlugins={rehypePlugins}>
+                        {lesson.instructions}
+                      </Markdown>
+                    </div>
 
                     {lesson.tips.length > 0 && (
                       <div>
@@ -172,11 +172,30 @@ export default function Show() {
                     </div>
                   </Tab.Pane>
                   <Tab.Pane eventKey="discuss">
-                    <XssContent>
-                      {t("languages.lessons.show.if_stuck_html", {
-                        url: tCommon("community_url"),
-                      })}
-                    </XssContent>
+                    {i18next.language !== "ru" && (
+                      <Giscus
+                        id="comments"
+                        repo="hexlet-basics/exercises-javascript"
+                        repoId="MDEwOlJlcG9zaXRvcnkxMjg5NzMyMzA="
+                        category="General"
+                        categoryId="DIC_kwDOB6_5rs4CmERH"
+                        mapping="specific"
+                        data-mapping="pathname"
+                        reactionsEnabled="1"
+                        emitMetadata="0"
+                        inputPosition="top"
+                        theme="light"
+                        lang={i18next.language}
+                        loading="lazy"
+                      />
+                    )}
+                    {i18next.language === "ru" && (
+                      <XssContent>
+                        {t("languages.lessons.show.if_stuck_html", {
+                          url: tCommon("community_url"),
+                        })}
+                      </XssContent>
+                    )}
                   </Tab.Pane>
                   <Tab.Pane
                     eventKey="navigation"

@@ -23,12 +23,12 @@ type Props = InputHTMLAttributes<HTMLInputElement> &
     name: string;
   };
 
-export const XForm = <TForm extends NestedObject>({
+export function XForm<TForm extends NestedObject>({
   children,
   railsAttributes = true,
   className,
   ...props
-}: FormProps<TForm>) => {
+}: FormProps<TForm>) {
   return (
     <InertiaForm
       className={`form ${className}`}
@@ -38,7 +38,7 @@ export const XForm = <TForm extends NestedObject>({
       {children}
     </InertiaForm>
   );
-};
+}
 
 export function XInput({ name, model, as, ...props }: Props) {
   const { t: tAr } = useTranslation("activerecord");
@@ -48,6 +48,8 @@ export function XInput({ name, model, as, ...props }: Props) {
     name,
     model,
   });
+
+  // console.log(form)
 
   const errors = error ? _.castArray(error) : [];
 

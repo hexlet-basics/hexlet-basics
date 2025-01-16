@@ -27,6 +27,11 @@ make sync # sometimes, when fixtures were changed
 
 To manage loaded languages and set other settings, you need to sign in (login: `full@test.io`, password: `password`)
 
+### Dev Tools
+
+* https://chromewebstore.google.com/detail/inertiajs-devtools/golilfffgehhabacoaoilfgjelagablo?hl=en
+* Redux DevTools
+
 ### Production
 
 Kube access
