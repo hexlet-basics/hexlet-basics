@@ -13,7 +13,7 @@ type Props = PropsWithChildren & {
 
 export default function CourseBlock({ course }: Props) {
   const { t } = useTranslation();
-  const { t: tJS } = useTranslation("js");
+  const { t: tCommon } = useTranslation("js");
   const { suffix } = usePage<SharedProps>().props;
 
   return (
@@ -41,7 +41,7 @@ export default function CourseBlock({ course }: Props) {
         <div className="text-muted">
           <span className="text-nowrap d-inline-block me-4">
             <span className="bi bi-clock me-2" />
-            {tJS("hours", { count: course.duration })}
+            {course.duration}
           </span>
           <span className="text-nowrap d-inline-block">
             <span className="bi bi-people me-2" />

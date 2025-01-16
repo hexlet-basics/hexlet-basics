@@ -1,13 +1,7 @@
 class Web::HomeController < Web::ApplicationController
   def index
-    # @languages_in_development = Language.with_progress(:in_development).includes(:current_version)
-    # @language_members_by_language = current_user.language_members.index_by(&:language_id)
-    #
-    # @js_course = Language.find_by slug: "javascript"
-    # @html_course = Language.find_by slug: "html"
-    #
-    # @user = User::SignUpForm.new
-    #
+    @language_members_by_language = current_user.language_members.index_by(&:language_id)
+
     blog_posts = BlogPost.published.with_locale.includes(:cover_attachment).last(3)
     # reviews = Review.random
     #

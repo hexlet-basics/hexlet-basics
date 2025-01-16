@@ -32,9 +32,9 @@ https://code-basics.test {
 	# file_server /packs/* /path/to/your/rails-app/public/packs
 
 	# Log configuration for debugging (optional)
-	log {
-    level DEBUG
-	}
+	# log {
+	#    level info
+	# }
 
 	# Automatic HTTPS
 	tls internal

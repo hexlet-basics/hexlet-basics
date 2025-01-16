@@ -27,7 +27,12 @@ one:
 full_elixir:
   language: elixir
   user: full
-  state: :finished
+  state: finished
+
+full_java:
+  language: java
+  user: full
+  state: finished
 
 full_javascript:
   language: javascript

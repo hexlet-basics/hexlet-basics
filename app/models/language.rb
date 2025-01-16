@@ -81,6 +81,6 @@ class Language < ApplicationRecord
 
   def duration
     # TODO Пересадить на counter_culture от Language::Version
-    current_lessons.size * 15 / 60
+    lessons_count * 15 / 60
   end
 end
