@@ -5,6 +5,11 @@ class Web::ReviewsController < Web::ApplicationController
     scope = Review.published.with_locale.includes([ :user ]).order(id: :desc)
     pagy, records = pagy(scope)
 
+    seo_tags = {
+      title: t(".title")
+    }
+    set_meta_tags seo_tags
+
     render inertia: true, props: {
       reviews: ReviewResource.new(records),
       pagy:

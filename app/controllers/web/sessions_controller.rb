@@ -4,6 +4,12 @@ class Web::SessionsController < Web::ApplicationController
   def new
     sign_in_form = SignInForm.new
 
+    seo_tags = {
+      title: t(".title"),
+      description: t(".meta.description")
+    }
+    set_meta_tags seo_tags
+
     render inertia: true, props: {
       signInForm: SignInFormResource.new(sign_in_form)
     }

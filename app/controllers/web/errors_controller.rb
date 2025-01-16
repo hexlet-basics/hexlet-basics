@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
 class Web::ErrorsController < Web::ApplicationController
-  # before_action do
-  #   set_meta_tags title: t(".base")
-  # end
-
   # NOTE: for 404 page locale from route params is undefined
   around_action :use_locale # , only: :not_found
 
   def show
+
+    set_meta_tags title: t(".base")
+
     render inertia: true, props: {
       code: params[:code],
       message: Rack::Utils::HTTP_STATUS_CODES[params[:code].to_i]

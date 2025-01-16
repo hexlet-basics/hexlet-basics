@@ -1,6 +1,12 @@
 class Web::RemindPasswordsController < Web::ApplicationController
   def new
     remind_password_form = RemindPasswordForm.new
+
+    seo_tags = {
+      title: t(".title")
+    }
+    set_meta_tags seo_tags
+
     render inertia: true, props: {
       passwordReminder: PasswordReminderResource.new(remind_password_form)
     }

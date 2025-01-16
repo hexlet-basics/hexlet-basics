@@ -5,6 +5,11 @@ class Web::BlogPostsController < Web::ApplicationController
     scope = BlogPost.published.with_locale.includes([ :cover_attachment ])
     pagy, records = pagy(scope)
 
+    seo_tags = {
+      title: t(".title")
+    }
+    set_meta_tags seo_tags
+
     render inertia: true, props: {
       blogPosts: BlogPostResource.new(records),
       pagy:
@@ -25,6 +30,11 @@ class Web::BlogPostsController < Web::ApplicationController
     #   blog_posts = category.blog_posts.except(blog_post).limit(3)
     #   languages = category.languages.limit(3)
     # end
+
+    seo_tags = {
+      title: t(".title")
+    }
+    set_meta_tags seo_tags
 
     # TODO: add https://developers.google.com/search/docs/appearance/structured-data/article
     render inertia: true, props: {

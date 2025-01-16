@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Web::GoogleAuthController < Web::ApplicationController
   before_action :validate_google_csrf
 

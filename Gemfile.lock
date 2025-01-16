@@ -229,6 +229,8 @@ GEM
       net-smtp
     marcel (1.0.4)
     matrix (0.4.2)
+    meta-tags (2.22.1)
+      actionpack (>= 6.0.0, < 8.1)
     mini_magick (4.13.2)
     mini_mime (1.1.5)
     minitest (5.25.4)
@@ -325,7 +327,7 @@ GEM
       activerecord (>= 6.1.5)
       activesupport (>= 6.1.5)
       i18n
-    rbi (0.2.2)
+    rbi (0.2.3)
       prism (~> 1.0)
       sorbet-runtime (>= 0.5.9204)
     rbs (3.8.1)
@@ -416,7 +418,7 @@ GEM
     sorbet-static-and-runtime (0.5.11758)
       sorbet (= 0.5.11758)
       sorbet-runtime (= 0.5.11758)
-    spoom (1.5.0)
+    spoom (1.5.1)
       erubi (>= 1.10.0)
       prism (>= 0.28.0)
       sorbet-static-and-runtime (>= 0.5.10187)
@@ -521,6 +523,7 @@ DEPENDENCIES
   inertia_rails
   js-routes
   kamal
+  meta-tags
   minitest-power_assert
   pagy
   pg

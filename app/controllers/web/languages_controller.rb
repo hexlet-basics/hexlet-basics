@@ -57,23 +57,23 @@ class Web::LanguagesController < Web::ApplicationController
     # @header = @language_version_info.header || human_language_header
     # title = @language_version_info.title || @header
     # description = @language_version_info.seo_description || @language_version_info.description
-    #
-    # seo_tags = {
-    #   title: title,
-    #   keywords: @language_version_info.keywords.join(', '),
-    #   description: description,
-    #   canonical: language_url(@language.slug),
-    #   image_src: view_context.asset_url("#{@language.slug}.png"),
-    #   og: {
-    #     title: title,
-    #     type: 'website',
-    #     description: description,
-    #     url: language_url(@language.slug),
-    #     image: view_context.asset_url("#{@language.slug}.png"),
-    #     locale: I18n.locale
-    #   }
-    # }
-    # set_meta_tags seo_tags
+
+    seo_tags = {
+      title: title,
+      keywords: @language_version_info.keywords.join(", "),
+      description: description,
+      canonical: language_url(@language.slug),
+      image_src: view_context.asset_url("#{@language.slug}.png"),
+      og: {
+        title: title,
+        type: "website",
+        description: description,
+        url: language_url(@language.slug),
+        image: view_context.asset_url("#{@language.slug}.png"),
+        locale: I18n.locale
+      }
+    }
+    set_meta_tags seo_tags
     #
     # @switching_locales.each do |locale,|
     #   if @language.current_version.infos.exists?(locale: locale)

@@ -4,6 +4,11 @@ class Web::PasswordsController < Web::ApplicationController
   def edit
     user_password_form = User::PasswordForm.find_by!(reset_password_token: params[:reset_password_token])
 
+    seo_tags = {
+      title: t(".title")
+    }
+    set_meta_tags seo_tags
+
     render inertia: true, props: {
       userPassword: UserPasswordResource.new(user_password_form)
     }

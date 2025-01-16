@@ -13,10 +13,18 @@ class Web::PagesController < Web::ApplicationController
       raise ActionController::RoutingError, "Page not found"
     end
 
-    render inertia: true, props: {
-      page:
-    }
+    title = t(".parts.#{params[:id]}.title")
 
+    seo_tags = {
+      title:,
+      description: t(".parts.#{params[:id]}.meta.description")
+    }
+    set_meta_tags seo_tags
     # set_meta_tags title: t(@page, scope: 'web.pages')
+
+    render inertia: true, props: {
+      page:,
+      title:
+    }
   end
 end

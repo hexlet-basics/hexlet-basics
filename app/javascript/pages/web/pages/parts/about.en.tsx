@@ -1,7 +1,6 @@
 export default () => {
   return (
     <>
-      <h1 className="mb-5">About</h1>
       <h2>What is Code Basics?</h2>
       <p>
         It's a free open-source platform created to learn beginner-level coding.

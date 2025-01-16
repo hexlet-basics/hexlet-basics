@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Web::ApplicationController < ApplicationController
-  include ActionView::Helpers::UrlHelper
+  # include ActionView::Helpers::UrlHelper
 
   allow_browser versions: :modern
   inertia_share flash: -> { flash.to_hash }
@@ -58,7 +58,7 @@ class Web::ApplicationController < ApplicationController
       return
     end
 
-    if current_page?(root_path) && !params[:suffix]
+    if view_context.current_page?(root_path) && !params[:suffix]
       remembered_locale = session[:locale].presence
       if remembered_locale
         # root page, no subdomain and no default locale -> redirect

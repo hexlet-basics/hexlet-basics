@@ -34,6 +34,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
       )
       lesson_member.save! if lesson_member.new_record?
     end
+
     # unless @lesson
     #   f(:lesson_not_found, type: :info)
     #   redirect_to language_path(resource_language.slug)
@@ -83,30 +84,31 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     # gon.lesson_version = @lesson_version
     # gon.lesson = @lesson
     #
-    # title = [ @info, resource_language.current_version.name ].join(' | ').squish
-    # description = view_context.truncate("[#{resource_language.current_version}] — #{@info.name} — #{@info.theory}", length: 220)
-    #
-    # seo_tags = {
-    #   title: title,
-    #   canonical: language_lesson_url(@lesson.language.slug, @lesson.slug),
-    #   amphtml: language_lesson_url(@lesson.language.slug, @lesson.slug, format: 'amp', only_path: false),
-    #   image_src: view_context.image_url("#{@lesson.language.slug}.png"),
-    #   description: description,
-    #   og: {
-    #     type: 'article',
-    #     locale: I18n.locale,
-    #     title: title,
-    #     url: language_lesson_url(@lesson.language.slug, @lesson.slug),
-    #     image: view_context.image_url("#{@lesson.language.slug}.png")
-    #   }
-    # }
-    # set_meta_tags seo_tags
-    #
+    title = [ @info, resource_language.current_version.name ].join(" | ").squish
+    description = view_context.truncate("[#{resource_language.current_version}] — #{@info.name} — #{@info.theory}", length: 220)
+
+     seo_tags = {
+       title: title,
+       canonical: language_lesson_url(@lesson.language.slug, @lesson.slug),
+       amphtml: language_lesson_url(@lesson.language.slug, @lesson.slug, format: "amp", only_path: false),
+       image_src: view_context.image_url("#{@lesson.language.slug}.png"),
+       description: description,
+       og: {
+         type: "article",
+         locale: I18n.locale,
+         title: title,
+         url: language_lesson_url(@lesson.language.slug, @lesson.slug),
+         image: view_context.image_url("#{@lesson.language.slug}.png")
+       }
+     }
+     set_meta_tags seo_tags
+
     # @switching_locales.each do |locale,|
     #   if @lesson_version.infos.exists?(locale: locale)
     #     @switching_locales[locale] = language_lesson_url(resource_language.slug, @lesson.slug, locale: AppHost.locale_for_url(locale))
     #   end
     # end
+
     lessons_infos = resource_language.current_lesson_infos.with_locale.includes(:lesson).joins(:lesson).merge(
       Language::Lesson.order(:natural_order)
     )

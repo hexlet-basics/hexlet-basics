@@ -28,9 +28,9 @@ export default function AdminLayout({ children, header }: Props) {
 
   return (
     <>
-      <Head>
-        <title>{header}</title>
-      </Head>
+      {/* <Head> */}
+      {/*   <title>{header}</title> */}
+      {/* </Head> */}
       <Container fluid className="mb-2">
         <NavbarBlock />
         <XFlash />

@@ -4,6 +4,12 @@ class Web::UsersController < Web::ApplicationController
   def new
     user = User::SignUpForm.new
 
+    seo_tags = {
+      title: t(".title"),
+      description: t(".meta.description"),
+    }
+    set_meta_tags seo_tags
+
     render inertia: true, props: {
       user: UserResource.new(user)
     }

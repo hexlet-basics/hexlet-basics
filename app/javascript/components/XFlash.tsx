@@ -4,24 +4,24 @@ import { Alert } from "react-bootstrap";
 
 export default function XFlash() {
   const { flash } = usePage<SharedProps>().props;
-  const variants = [
-    "primary",
-    "secondary",
-    "success",
-    "danger",
-    "warning",
-    "info",
-    "light",
-    "dark",
-  ];
+  const variants = {
+    error: "danger",
+    notice: "primary",
+    success: "success",
+  };
 
   return (
     <>
-      {variants.map(
-        (variant) =>
-          flash[variant] && (
-            <Alert dismissible key={variant} className="my-3 border-0" variant={variant}>
-              {flash[variant]}
+      {Object.entries(variants).map(
+        ([key, variant]) =>
+          flash[key] && (
+            <Alert
+              dismissible
+              key={key}
+              className="my-3 border-0"
+              variant={variant}
+            >
+              {flash[key]}
             </Alert>
           ),
       )}

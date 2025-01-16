@@ -1,7 +1,6 @@
 export default () => {
   return (
     <>
-      <h1 className="mb-5">How to Become an Author?</h1>
       <p>
         When developing courses, content goes through certain stages: work with
         the author and methodologists, editors, and designers. Below we have

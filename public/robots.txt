@@ -1,0 +1,18 @@
+User-agent: *
+Disallow: /locale/
+Disallow: /users/
+Disallow: /session/
+Disallow: /remind_password
+Disallow: /password/
+Disallow: */prev_lesson
+Disallow: */next_lesson
+
+User-agent: Yandex
+Disallow: /ru/locale/
+Disallow: /ru/users/
+Disallow: /ru/session/
+Disallow: /ru/remind_password
+Disallow: /ru/password/
+Disallow: /ru/confirm
+Disallow: */prev_lesson
+Disallow: */next_lesson

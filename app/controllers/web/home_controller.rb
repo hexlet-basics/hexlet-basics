@@ -29,23 +29,27 @@ class Web::HomeController < Web::ApplicationController
 
     # gon.languages_for_widget = helpers.completed_languages.map(&:name)
 
-    #   seo_tags = {
-    #     title: t('.title'),
-    #     description: t('.meta_description'),
-    #     canonical: root_url,
-    #     image_src: view_context.asset_url('logo.png'),
-    #     twitter: {
-    #       card: 'summary',
-    #       site: '@hexlet_io'
-    #     },
-    #     og: {
-    #       title: t('.title'),
-    #       type: 'website',
-    #       url: root_url,
-    #       image: view_context.asset_url('logo.png')
-    #     }
-    #   }
-    #   # set_meta_tags seo_tags
+    seo_tags = {
+      title: t(".title"),
+      description: t(".meta.description"),
+      canonical: root_url,
+      image_src: view_context.vite_asset_path("images/logo.png"),
+      alternate: {
+        ru: view_context.root_url(suffix: :ru),
+        en: view_context.root_url(suffix: nil)
+      },
+      twitter: {
+        card: "summary",
+        site: "@hexlet_io"
+      },
+      og: {
+        title: t(".title"),
+        type: "website",
+        url: root_url,
+        image: view_context.vite_asset_path("images/logo.png")
+      }
+    }
+    set_meta_tags seo_tags
 
     user = User::SignUpForm.new
     render inertia: true, props: {

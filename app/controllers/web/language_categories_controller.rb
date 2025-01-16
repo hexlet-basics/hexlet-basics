@@ -20,6 +20,11 @@ class Web::LanguageCategoriesController < Web::ApplicationController
     #   @switching_locales[locale] = full_url_for(locale: AppHost.locale_for_url(locale))
     # end
 
+    seo_tags = {
+      title: t(".title"),
+    }
+    set_meta_tags seo_tags
+
     render inertia: true, props: {
       courseCategory: Language::CategoryResource.new(category),
       categoryCourses: LanguageResource.new(courses)

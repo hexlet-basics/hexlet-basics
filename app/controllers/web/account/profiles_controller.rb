@@ -1,10 +1,15 @@
-# frozen_string_literal: true
-
 class Web::Account::ProfilesController < Web::Account::ApplicationController
   before_action :authenticate_user!
 
   def edit
     form = current_user.becomes(User::ProfileForm)
+
+    seo_tags = {
+      title: t(".title"),
+      description: t(".meta.description")
+    }
+    set_meta_tags seo_tags
+
     render inertia: true, props: {
       form: UserProfileFormResource.new(form)
     }

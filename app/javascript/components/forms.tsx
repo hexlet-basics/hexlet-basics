@@ -49,8 +49,6 @@ export function XInput({ name, model, as, ...props }: Props) {
     model,
   });
 
-  console.log(form)
-
   const errors = error ? _.castArray(error) : [];
 
   const path = `attributes.${form.model}.${name}`;
@@ -196,7 +194,7 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
     } else {
       if (source) {
         const res = await axios.get<T[]>(source, { params: { query } });
-        console.log(res);
+        // console.log(res);
         setFilteredItems(res.data);
       } else {
         const newFilteredItems = items.filter((item) =>
