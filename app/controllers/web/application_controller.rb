@@ -27,7 +27,11 @@ class Web::ApplicationController < ApplicationController
 
   inertia_share do
     language_categories = Language::Category.all
-    languages_infos = Language::Version::Info.with_locale.includes([ language: :current_version ])
+    languages_infos = Language::Version::Info
+      .joins([ language: :current_version ])
+      .with_locale
+      # to scope
+      .where(Language.arel_table[:current_version_id].eq(Language::Version::Info.arel_table[:language_id]))
 
     {
       courseCategories: Language::CategoryResource.new(language_categories),

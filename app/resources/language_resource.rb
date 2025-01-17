@@ -14,6 +14,11 @@ class LanguageResource
   end
 
   typelize :number, nullable: true
+  attribute :id do |info|
+    info.language_id
+  end
+
+  typelize :number, nullable: true
   attribute :members_count do |info|
     info.language.members_count
   end

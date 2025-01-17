@@ -1,6 +1,7 @@
 class Web::HomeController < Web::ApplicationController
   def index
-    @language_members_by_language = current_user.language_members.index_by(&:language_id)
+    language_member_resources = current_user.language_members.map { |m| Language::MemberResource.new(m) }
+    language_member_resources_by_language = language_member_resources.index_by { |r| r.object.language_id }
 
     blog_posts = BlogPost.published.with_locale.includes(:cover_attachment).last(3)
     # reviews = Review.random
@@ -48,6 +49,7 @@ class Web::HomeController < Web::ApplicationController
     user = User::SignUpForm.new
 
     render inertia: true, props: {
+      courseMembersByCourseId: language_member_resources_by_language,
       blogPosts: BlogPostResource.new(blog_posts),
       newUser: UserSignUpFormResource.new(user),
       courseCategories: Language::CategoryResource.new(Language::Category.all)

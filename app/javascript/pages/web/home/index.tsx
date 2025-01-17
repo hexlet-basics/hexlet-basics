@@ -5,10 +5,11 @@ import { TypeAnimation } from "react-type-animation";
 
 import * as Routes from "@/routes.js";
 import type {
-    BlogPost,
-    LanguageCategory,
-    Review,
-    User,
+  BlogPost,
+  LanguageCategory,
+  LanguageMember,
+  Review,
+  User,
 } from "@/types/serializers";
 
 import BlogPostBlock from "@/components/BlogPostBlock";
@@ -25,6 +26,7 @@ import SignUpFormBlock from "@/components/SignUpFormBlock";
 type Props = PropsWithChildren & {
   blogPosts: BlogPost[];
   courseCategories: LanguageCategory[];
+  courseMembersByCourseId: LanguageMember[];
   reviews: Review[];
   newUser: User;
 };
@@ -53,6 +55,7 @@ const codeImagePaths = {
   en: codeImagePathEn,
 };
 
+// TODO: move to locales
 const reviews = {
   ru: [
     {
@@ -94,11 +97,15 @@ const reviews = {
   ],
 };
 
-export default function Index({ blogPosts, newUser, courseCategories }: Props) {
+export default function Index({
+  blogPosts,
+  newUser,
+  courseCategories,
+  courseMembersByCourseId,
+}: Props) {
   const { t } = useTranslation();
   // FIXME: en version
   const { t: tFaq } = useTranslation("faq");
-  const { t: tHelpers } = useTranslation("helpers");
 
   const {
     locale,
@@ -181,7 +188,10 @@ export default function Index({ blogPosts, newUser, courseCategories }: Props) {
           <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4">
             {courses.map((course) => (
               <div className="col mb-3" key={course.id}>
-                <CourseBlock course={course} />
+                <CourseBlock
+                  course={course}
+                  courseMember={courseMembersByCourseId[course.id]}
+                />
               </div>
             ))}
           </div>

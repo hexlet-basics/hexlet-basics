@@ -1,6 +1,7 @@
 import i18next from "i18next";
 import cn from "classnames";
 import logoImg from "@/images/logo.png";
+import defaultAvatarImg from "@/images/user-avatar.png";
 import { deviconClass, locales } from "@/lib/utils";
 import { Nav, NavDropdown, Navbar, type NavbarProps } from "react-bootstrap";
 
@@ -74,12 +75,31 @@ export default function NavbarBlock({ className }: Props) {
               title={<i className="bi bi-person-circle" />}
             >
               <NavDropdown.Item href={Routes.edit_account_profile_path()}>
+                <div className="d-flex">
+                  <img
+                    width="50px"
+                    src={defaultAvatarImg}
+                    alt="User Avatar"
+                  />
+                  <div>
+                    <div className="fw-bold">{auth.user.name}</div>
+                    <div>{auth.user.email}</div>
+                  </div>
+                </div>
+              </NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item href={Routes.edit_account_profile_path()}>
                 {tLayouts("shared.nav.profile")}
               </NavDropdown.Item>
-              {auth.user.admin && <NavDropdown.Item href={Routes.admin_root_path()}>
-                {tLayouts("shared.nav.admin")}
-              </NavDropdown.Item>}
-              <NavDropdown.Item href={Routes.session_path()} onClick={handleLinkClick("delete")}>
+              {auth.user.admin && (
+                <NavDropdown.Item href={Routes.admin_root_path()}>
+                  {tLayouts("shared.nav.admin")}
+                </NavDropdown.Item>
+              )}
+              <NavDropdown.Item
+                href={Routes.session_path()}
+                onClick={handleLinkClick("delete")}
+              >
                 {tLayouts("shared.nav.sign_out")}
               </NavDropdown.Item>
             </NavDropdown>
@@ -87,7 +107,7 @@ export default function NavbarBlock({ className }: Props) {
           <NavDropdown
             align="end"
             className="link-body-emphasis"
-            title={<i className={locales[i18next.language || 'ru'].icon} />}
+            title={<i className={locales[i18next.language || "ru"].icon} />}
           >
             {Object.entries(locales).map(([k, v]) => (
               <NavDropdown.Item
