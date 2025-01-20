@@ -1,6 +1,7 @@
 class Web::HomeController < Web::ApplicationController
   def index
-    language_member_resources = current_user.language_members.map { |m| Language::MemberResource.new(m) }
+    language_member_resources = current_user.language_members.includes([ language: :current_version ])
+      .map { |m| Language::MemberResource.new(m) }
     language_member_resources_by_language = language_member_resources.index_by { |r| r.object.language_id }
 
     blog_posts = BlogPost.published.with_locale.includes(:cover_attachment).last(3)

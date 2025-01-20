@@ -28,6 +28,7 @@ class Web::ApplicationController < ApplicationController
   inertia_share do
     language_categories = Language::Category.all
     languages_infos = Language::Version::Info
+      .includes([ language: :current_version ])
       .joins([ language: :current_version ])
       .with_locale
       # to scope
