@@ -16,10 +16,7 @@ export default function New({ blog_post }: Props) {
   return (
     <AdminLayout header={t("admin.blog_posts.new.header")}>
       <Menu />
-      <Form
-        data={blog_post}
-        url={Routes.admin_blog_posts_path()}
-      />
+      <Form data={blog_post} url={Routes.admin_blog_posts_path()} />
     </AdminLayout>
   );
 }

@@ -6,7 +6,7 @@ import {
   type AutoCompleteChangeEvent,
   type AutoCompleteCompleteEvent,
 } from "primereact/autocomplete";
-import { useEffect, useState, type InputHTMLAttributes } from "react";
+import { type InputHTMLAttributes, useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import type { AsProp } from "react-bootstrap/esm/helpers";
 import { useTranslation } from "react-i18next";

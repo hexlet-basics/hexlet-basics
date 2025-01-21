@@ -1,7 +1,6 @@
-export const images = import.meta.glob<ImageModule>(
-  "./images/**/*",
-  { eager: true },
-);
+export const images = import.meta.glob<ImageModule>("./images/**/*", {
+  eager: true,
+});
 
 export function getImageUrl(name: string): string {
   const mod = images[`./images/${name}`];

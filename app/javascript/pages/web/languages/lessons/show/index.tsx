@@ -3,11 +3,11 @@ import { Provider } from "react-redux";
 
 import App from "./components/App.tsx";
 
-import { usePage } from "@inertiajs/react";
-import type { Props } from "./types";
-import getStore, { type AppState } from "./slices/index.ts";
-import useLocalStorage from "@rehooks/local-storage";
 import { getKeyForStoringLessonCode } from "@/lib/utils.ts";
+import { usePage } from "@inertiajs/react";
+import useLocalStorage from "@rehooks/local-storage";
+import getStore, { type AppState } from "./slices/index.ts";
+import type { Props } from "./types";
 
 export default function Index() {
   const { lessonMember, lesson } = usePage<Props>().props;

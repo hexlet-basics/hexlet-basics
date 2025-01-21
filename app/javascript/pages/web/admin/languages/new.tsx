@@ -16,10 +16,7 @@ export default function New({ originalCourse }: Props) {
   return (
     <AdminLayout header={t("admin.languages.new.header")}>
       <Menu />
-      <Form
-        data={originalCourse}
-        url={Routes.admin_languages_path()}
-      />
+      <Form data={originalCourse} url={Routes.admin_languages_path()} />
     </AdminLayout>
   );
 }

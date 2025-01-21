@@ -1,13 +1,13 @@
 import type { PageProps } from "@inertiajs/inertia";
 import type i18next from "i18next";
-import type { Language, LanguageCategory, User } from "./serializers";
 import { SortOrder } from "primereact/api";
+import type { Language, LanguageCategory, User } from "./serializers";
 
 export interface BaseModel extends object {
   type: "user" | "review" | "language";
 }
 
-export { SortOrder, type User }
+export { SortOrder, type User };
 
 export type BreadcrumbItem = {
   name: string;
@@ -18,7 +18,7 @@ export interface SharedProps extends PageProps {
   auth: {
     user: User;
   };
-  courseCategories: LanguageCategory[]
+  courseCategories: LanguageCategory[];
   suffix: "ru" | null;
   locale: "ru" | "en"; // TODO: use i18next.i18n["locale"];
   flash: Record<
@@ -36,5 +36,5 @@ export interface SharedProps extends PageProps {
     | null
   >;
   courses: Language[];
-  language
+  language;
 }

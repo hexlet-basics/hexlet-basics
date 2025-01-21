@@ -4,6 +4,6 @@
 
 type UserPassword = {
   password: unknown;
-}
+};
 
 export default UserPassword;

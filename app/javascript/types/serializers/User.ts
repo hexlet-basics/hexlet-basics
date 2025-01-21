@@ -13,6 +13,6 @@ type User = {
   name: string | null;
   password: string | null;
   type: "user";
-}
+};
 
 export default User;

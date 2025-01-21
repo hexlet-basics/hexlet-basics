@@ -7,8 +7,8 @@ import type { PropsWithChildren } from "react";
 import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { Submit } from "use-inertia-form";
-import { XForm, XInput } from "./forms";
 import XssContent from "./XssContent";
+import { XForm, XInput } from "./forms";
 
 type Props = PropsWithChildren & {
   user: User;

@@ -1,5 +1,5 @@
-import { router } from "@inertiajs/react";
 import type { RequestPayload } from "@inertiajs/core";
+import { router } from "@inertiajs/react";
 import { useCallback } from "react";
 
 const useLinkClickHandler = () => {

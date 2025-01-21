@@ -5,7 +5,6 @@ class Web::ErrorsController < Web::ApplicationController
   around_action :use_locale # , only: :not_found
 
   def show
-
     set_meta_tags title: t(".base")
 
     render inertia: true, props: {

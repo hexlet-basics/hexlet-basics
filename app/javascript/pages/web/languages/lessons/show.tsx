@@ -9,13 +9,13 @@ import LessonLayout from "@/pages/layouts/LessonLayout";
 import * as Routes from "@/routes.js";
 import type { BreadcrumbItem } from "@/types/index.js";
 import { Link, usePage } from "@inertiajs/react";
+import i18next from "i18next";
 import React from "react";
 import Markdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
 import EditorBlock from "./show/index.tsx";
 import type { Props } from "./show/types";
-import i18next from "i18next";
 
 const rehypePlugins = [rehypeHighlight, rehypeRaw];
 

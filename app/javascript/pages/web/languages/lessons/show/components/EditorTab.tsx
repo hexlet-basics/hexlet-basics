@@ -1,18 +1,18 @@
-import { usePage } from "@inertiajs/react";
-import MonacoEditor, { loader } from "@monaco-editor/react";
-import { useLocalStorage } from "@rehooks/local-storage";
-import { useEffect, useState } from "react";
-import slice from "../slices/RootSlice.ts";
-import type { Props } from "../types.ts";
 import {
   getEditorLanguage,
   getKeyForStoringLessonCode,
   getTabSize,
   shouldReplaceTabsWithSpaces,
 } from "@/lib/utils.ts";
+import { usePage } from "@inertiajs/react";
+import MonacoEditor, { loader } from "@monaco-editor/react";
+import { useLocalStorage } from "@rehooks/local-storage";
+import { useEffect, useState } from "react";
+import slice from "../slices/RootSlice.ts";
+import type { Props } from "../types.ts";
 
-import { useAppDispatch, useAppSelector } from "../slices/index.ts";
 import type { editor } from "monaco-editor";
+import { useAppDispatch, useAppSelector } from "../slices/index.ts";
 
 // FIXME: async load (for ssr)
 // import * as monaco from "monaco-editor";

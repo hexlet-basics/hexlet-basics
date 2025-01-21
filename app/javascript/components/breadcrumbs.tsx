@@ -3,9 +3,10 @@ import type { HTMLAttributes, PropsWithChildren } from "react";
 import { Breadcrumb, type BreadcrumbProps } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
-type Props = PropsWithChildren & HTMLAttributes<BreadcrumbProps> & {
-  items: BreadcrumbItem[];
-};
+type Props = PropsWithChildren &
+  HTMLAttributes<BreadcrumbProps> & {
+    items: BreadcrumbItem[];
+  };
 
 export function XBreadcrumb({ items = [], className }: Props) {
   const { t } = useTranslation();

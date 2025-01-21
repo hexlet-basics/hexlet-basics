@@ -14,6 +14,7 @@ import type {
 
 import BlogPostBlock from "@/components/BlogPostBlock";
 import CourseBlock from "@/components/CourseBlock";
+import SignUpFormBlock from "@/components/SignUpFormBlock";
 import { getImageUrl } from "@/images";
 import codeImagePathEn from "@/images/code-basics-coding-en.png";
 import codeImagePathRu from "@/images/code-basics-coding-ru.png";
@@ -21,7 +22,6 @@ import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { SharedProps } from "@/types";
 import { usePage } from "@inertiajs/react";
 import { Accordion, Col, Container, Row } from "react-bootstrap";
-import SignUpFormBlock from "@/components/SignUpFormBlock";
 
 type Props = PropsWithChildren & {
   blogPosts: BlogPost[];

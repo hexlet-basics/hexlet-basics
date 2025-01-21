@@ -7,11 +7,11 @@ import { useTranslation } from "react-i18next";
 import * as Routes from "@/routes.js";
 
 import { XForm, XInput } from "@/components/forms";
+import useConfirmation from "@/hooks/useConfirmation";
+import useLinkClickHandler from "@/hooks/useLinkClickHandler";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { UserProfileForm } from "@/types/serializers";
 import { Link } from "@inertiajs/react";
-import useLinkClickHandler from "@/hooks/useLinkClickHandler";
-import useConfirmation from "@/hooks/useConfirmation";
 
 type Props = PropsWithChildren & {
   form: UserProfileForm;
@@ -50,7 +50,9 @@ export default function New({ form }: Props) {
                   onClick={confirmDeleting}
                   className="text-danger"
                   href={Routes.account_profile_path()}
-                >{t('account.profiles.edit.delete')}</Link>
+                >
+                  {t("account.profiles.edit.delete")}
+                </Link>
               </Card.Body>
             </Card>
           </div>

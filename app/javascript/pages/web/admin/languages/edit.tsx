@@ -14,7 +14,9 @@ export default function Edit({ originalCourse }: Props) {
   const { t } = useTranslation();
 
   return (
-    <AdminLayout header={t("admin.languages.edit.header", { id: originalCourse.id })}>
+    <AdminLayout
+      header={t("admin.languages.edit.header", { id: originalCourse.id })}
+    >
       <Menu data={originalCourse} />
       <Form
         method="patch"

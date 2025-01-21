@@ -1,5 +1,10 @@
-import type { Language, LanguageCategory, LanguageLesson, LanguageLessonMember } from "@/types/serializers";
 import type { SharedProps } from "@/types";
+import type {
+  Language,
+  LanguageCategory,
+  LanguageLesson,
+  LanguageLessonMember,
+} from "@/types/serializers";
 
 export type Props = SharedProps & {
   courseCategory: LanguageCategory;
@@ -15,7 +20,7 @@ export interface RootState {
   processState: "checked" | "unchecked" | "checking";
   currentTab: "editor" | "output" | "tests" | "solution";
   finished: boolean;
-  result: 'error' | 'passed' | 'failed' | 'failed-infinity';
+  result: "error" | "passed" | "failed" | "failed-infinity";
   output: string;
   passed: boolean;
   content: string;
@@ -29,4 +34,3 @@ export interface CheckingResponse {
   output: string;
   passed: boolean;
 }
-

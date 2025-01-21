@@ -1,6 +1,6 @@
+import XssContent from "@/components/XssContent";
 import React from "react";
 import Frame from "react-frame-component";
-import XssContent from "@/components/XssContent";
 
 function HTMLPreview({ html }: { html: string }) {
   return (

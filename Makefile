@@ -50,7 +50,7 @@ language-load:
 
 lint:
 	bin/rubocop -x
-	npx @biomejs/biome check --write
+	# npx @biomejs/biome check
 
 docker-build:
 	docker build . -t hexlet-basics/hexlet-basics

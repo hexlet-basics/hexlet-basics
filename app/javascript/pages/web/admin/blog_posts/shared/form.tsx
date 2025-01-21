@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next";
 
+import { XForm, XInput, XSelect } from "@/components/forms";
 import type { BlogPost } from "@/types/serializers";
 import { Col, Row } from "react-bootstrap";
-import { XForm, XInput, XSelect } from "@/components/forms";
 import { type HTTPVerb, Submit } from "use-inertia-form";
 
 import * as Routes from "@/routes.js";
@@ -25,7 +25,12 @@ export default function Form({ data, url, method }: Props) {
   return (
     <Row>
       <Col className="col-7">
-        <XForm method={method} model="blog_post" data={{ blog_post: data }} to={url}>
+        <XForm
+          method={method}
+          model="blog_post"
+          data={{ blog_post: data }}
+          to={url}
+        >
           <XSelect
             name="locale"
             labelField="name"
@@ -45,4 +50,3 @@ export default function Form({ data, url, method }: Props) {
     </Row>
   );
 }
-

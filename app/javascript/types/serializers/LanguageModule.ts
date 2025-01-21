@@ -7,6 +7,6 @@ type LanguageModule = {
   description: string | null;
   name: string | null;
   id: id | null;
-}
+};
 
 export default LanguageModule;

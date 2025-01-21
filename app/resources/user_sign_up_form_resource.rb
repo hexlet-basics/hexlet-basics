@@ -6,4 +6,3 @@ class UserSignUpFormResource
 
   attributes :first_name, :email, :password
 end
-

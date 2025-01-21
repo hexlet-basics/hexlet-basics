@@ -3,9 +3,9 @@ import { Card, Container, Row } from "react-bootstrap";
 
 import { useTranslation } from "react-i18next";
 
+import SignUpFormBlock from "@/components/SignUpFormBlock";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { User } from "@/types/serializers";
-import SignUpFormBlock from "@/components/SignUpFormBlock";
 
 type Props = PropsWithChildren & {
   user: User;

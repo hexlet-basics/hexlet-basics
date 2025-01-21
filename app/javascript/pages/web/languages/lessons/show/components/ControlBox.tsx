@@ -7,13 +7,13 @@ import { Button, OverlayTrigger, Popover, Spinner } from "react-bootstrap";
 // import Hotkeys from 'react-hot-keys';
 import { useHotkeys } from "react-hotkeys-hook";
 
-import slice, { runCheck } from "../slices/RootSlice.ts";
-import * as Routes from "@/routes.js";
-import { getKeyForStoringLessonCode } from "@/lib/utils.ts";
-import { Link, router, usePage } from "@inertiajs/react";
-import type { Props } from "../types.ts";
-import { useAppDispatch, useAppSelector } from "../slices/index.ts";
 import useConfirmation from "@/hooks/useConfirmation.ts";
+import { getKeyForStoringLessonCode } from "@/lib/utils.ts";
+import * as Routes from "@/routes.js";
+import { Link, router, usePage } from "@inertiajs/react";
+import slice, { runCheck } from "../slices/RootSlice.ts";
+import { useAppDispatch, useAppSelector } from "../slices/index.ts";
+import type { Props } from "../types.ts";
 
 export default function ControlBox() {
   const {
@@ -37,8 +37,8 @@ export default function ControlBox() {
   };
 
   const confirmResetting = useConfirmation(() => {
-      deleteFromStorage(getKeyForStoringLessonCode(lesson));
-      router.reload()
+    deleteFromStorage(getKeyForStoringLessonCode(lesson));
+    router.reload();
   });
 
   const isCodeChecking = processState === "checking";
@@ -73,16 +73,11 @@ export default function ControlBox() {
     );
   };
 
-  const prevButtonClasses = cn(
-    "btn btn-sm btn-outline-success me-3",
-  );
+  const prevButtonClasses = cn("btn btn-sm btn-outline-success me-3");
 
-  const nextButtonClasses = cn(
-    "btn btn-sm btn-outline-success fw-normal",
-    {
-      disabled: !finished || !nextLesson,
-    },
-  );
+  const nextButtonClasses = cn("btn btn-sm btn-outline-success fw-normal", {
+    disabled: !finished || !nextLesson,
+  });
 
   useHotkeys("ctrl+enter", handleRunCheck);
 

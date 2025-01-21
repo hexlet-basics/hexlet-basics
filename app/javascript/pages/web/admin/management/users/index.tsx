@@ -4,13 +4,13 @@ import * as Routes from "@/routes.js";
 import { useTranslation } from "react-i18next";
 
 import { DTDateTemplate } from "@/components/dtTemplates";
+import useDataTable from "@/hooks/useDataTable";
+import { fieldsToFilters } from "@/lib/utils";
 import AdminLayout from "@/pages/layouts/AdminLayout";
 import type { Grid, User } from "@/types/serializers";
 import { Link } from "@inertiajs/react";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import useDataTable from "@/hooks/useDataTable";
-import { fieldsToFilters } from "@/lib/utils";
 
 type Props = PropsWithChildren & {
   users: User[];

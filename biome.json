@@ -3,6 +3,9 @@
   "formatter": {
     "indentStyle": "space"
   },
+  "files": {
+    "ignore": ["public/**/*", "routes.js", "*.json", "types/serializers/**/*"]
+  },
   "organizeImports": {
     "enabled": true
   },

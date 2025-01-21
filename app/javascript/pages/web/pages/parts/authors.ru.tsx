@@ -115,4 +115,4 @@ export default function AuthorsRu() {
       </ul>
     </>
   );
-};
+}

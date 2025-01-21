@@ -1,13 +1,13 @@
 import { useTranslation } from "react-i18next";
 
+import { XForm, XInput, XSelect } from "@/components/forms";
 import type { LanguageCategory, OriginalLanguage } from "@/types/serializers";
 import { Col, Row } from "react-bootstrap";
-import { XForm, XInput, XSelect } from "@/components/forms";
 import { type HTTPVerb, Submit } from "use-inertia-form";
 
 import * as Routes from "@/routes.js";
-import { usePage } from "@inertiajs/react";
 import type { SharedProps } from "@/types";
+import { usePage } from "@inertiajs/react";
 
 type Props = {
   data: OriginalLanguage;

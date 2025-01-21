@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
-import slice from "./RootSlice.ts";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../types.ts";
+import slice from "./RootSlice.ts";
 
 export const initialRootState: RootState = {
   processState: "unchecked",

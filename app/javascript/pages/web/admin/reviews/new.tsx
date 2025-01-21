@@ -16,10 +16,7 @@ export default function New({ review }: Props) {
   return (
     <AdminLayout header={t("admin.reviews.new.header")}>
       <Menu />
-      <Form
-        data={review}
-        url={Routes.admin_reviews_path()}
-      />
+      <Form data={review} url={Routes.admin_reviews_path()} />
     </AdminLayout>
   );
 }

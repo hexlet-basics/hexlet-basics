@@ -3,18 +3,18 @@ import { Col, Container, Row } from "react-bootstrap";
 
 import { XBreadcrumb } from "@/components/breadcrumbs";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
-import type { BlogPost } from "@/types/serializers";
 import type { BreadcrumbItem, SharedProps } from "@/types";
+import type { BlogPost } from "@/types/serializers";
 import Markdown from "react-markdown";
+import rehypeHighlight from "rehype-highlight";
 import rehypeSlug from "rehype-slug";
 import remarkToc from "remark-toc";
-import rehypeHighlight from "rehype-highlight";
 
 import BlogPostBlock from "@/components/BlogPostBlock";
 import * as Routes from "@/routes.js";
-import { useTranslation } from "react-i18next";
 import { usePage } from "@inertiajs/react";
 import type { PluggableList } from "node_modules/react-markdown/lib";
+import { useTranslation } from "react-i18next";
 
 type Props = PropsWithChildren & {
   blogPost: BlogPost;

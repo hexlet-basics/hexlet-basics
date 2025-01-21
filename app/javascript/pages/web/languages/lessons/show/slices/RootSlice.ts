@@ -6,8 +6,8 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 import axios from "axios";
-import type { CheckingResponse, RootState } from "../types";
 import { initialRootState } from ".";
+import type { CheckingResponse, RootState } from "../types";
 
 export const runCheck = createAsyncThunk(
   "runCheck",

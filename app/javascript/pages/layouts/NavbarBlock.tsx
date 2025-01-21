@@ -1,16 +1,16 @@
-import i18next from "i18next";
-import cn from "classnames";
 import logoImg from "@/images/logo.png";
 import defaultAvatarImg from "@/images/user-avatar.png";
 import { deviconClass, locales } from "@/lib/utils";
+import cn from "classnames";
+import i18next from "i18next";
 import { Nav, NavDropdown, Navbar, type NavbarProps } from "react-bootstrap";
 
+import useLinkClickHandler from "@/hooks/useLinkClickHandler";
 import * as Routes from "@/routes.js";
 import type { SharedProps } from "@/types";
 import { usePage } from "@inertiajs/react";
-import { useTranslation } from "react-i18next";
 import type { HTMLAttributes, PropsWithChildren } from "react";
-import useLinkClickHandler from "@/hooks/useLinkClickHandler";
+import { useTranslation } from "react-i18next";
 
 type Props = PropsWithChildren & HTMLAttributes<NavbarProps>;
 
@@ -76,11 +76,7 @@ export default function NavbarBlock({ className }: Props) {
             >
               <NavDropdown.Item href={Routes.edit_account_profile_path()}>
                 <div className="d-flex">
-                  <img
-                    width="50px"
-                    src={defaultAvatarImg}
-                    alt="User Avatar"
-                  />
+                  <img width="50px" src={defaultAvatarImg} alt="User Avatar" />
                   <div>
                     <div className="fw-bold">{auth.user.name}</div>
                     <div>{auth.user.email}</div>

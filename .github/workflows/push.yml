@@ -6,54 +6,37 @@ on:
       - main
 
 env:
-  CI: true
-  APP_IMAGE_NAME: hexletbasics/services-app
-  NGINX_IMAGE_NAME: hexletbasics/services-nginx
-  COLOR_MAP: '{ success: "#008000", failure: "#800000" }'
+  # CI: true
+  # APP_IMAGE_NAME: hexletbasics/services-app
+  # NGINX_IMAGE_NAME: hexletbasics/services-nginx
+  # COLOR_MAP: '{ success: "#008000", failure: "#800000" }'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
 
-      - uses: actions/checkout@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v2
+      - uses: actions/setup-node@v4
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          node-version: 23
+          cache: 'npm'
+      - run: npm ci
 
-      - name: Build App
-        uses: docker/build-push-action@v3
+      - uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
         with:
-          context: .
-          file: Dockerfile.production
-          cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}
-          cache-to: type=inline
-          push: true
-          tags: ${{ env.APP_IMAGE_NAME }}
+          bundler-cache: true
+      - run: bundle install
 
-      - name: Check
-        run: |
-          make ansible-generate-env
-          docker compose --file docker-compose.yml up --abort-on-container-exit
-
-      - name: Build Nginx
-        uses: docker/build-push-action@v3
+      - name: Cache assets
+        uses: actions/cache@v4
         with:
-          context: .
-          push: true
-          file: services/web-nginx/Dockerfile
-          tags: ${{ env.NGINX_IMAGE_NAME }}:latest
+          path: public/vite-test
+          key: test-assets-${{ runner.os }}-${{ hashFiles('**/package-lock.json', '**/Gemfile.lock', '**/vite.config.ts') }}
+          restore-keys: |
+            assets-${{ runner.os }}-
 
-      - name: Send notification into Slack
-        if: ${{ always() }}
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_COLOR: ${{ fromJson(env.COLOR_MAP)[job.status] }}
-          SLACK_TITLE: ${{ job.status }}
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      - run: RAILS_ENV=test bin/rails assets:precompile
+
+      - run: make lint
+      - run: make test

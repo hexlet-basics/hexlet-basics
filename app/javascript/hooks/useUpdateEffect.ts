@@ -1,4 +1,9 @@
-import { useEffect, useRef, type EffectCallback, type DependencyList } from "react";
+import {
+  type DependencyList,
+  type EffectCallback,
+  useEffect,
+  useRef,
+} from "react";
 
 /**
  * A custom hook that works like useEffect but skips the initial render.

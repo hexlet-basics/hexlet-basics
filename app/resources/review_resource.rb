@@ -13,5 +13,4 @@ class ReviewResource
   attribute :full_name do |user|
     [ user.first_name, user.last_name ].join " "
   end
-
 end

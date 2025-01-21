@@ -4,7 +4,9 @@ import { router } from "@inertiajs/react";
 import type { DataTableStateEvent } from "primereact/datatable";
 
 const useDataTable = () => {
-  const handleDataTable = (e: Partial<DataTableStateEvent> & { page?: number }) => {
+  const handleDataTable = (
+    e: Partial<DataTableStateEvent> & { page?: number },
+  ) => {
     const newGrid: Partial<Grid> = {};
     if (e.sortField) {
       newGrid.sf = e.sortField;

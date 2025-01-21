@@ -9,6 +9,6 @@ type Pagy = {
   prev: unknown;
   next: unknown;
   from: unknown;
-}
+};
 
 export default Pagy;

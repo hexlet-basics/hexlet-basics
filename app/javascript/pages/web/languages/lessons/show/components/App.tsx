@@ -4,12 +4,12 @@ import { useSelector } from "react-redux";
 import { usePage } from "@inertiajs/react";
 
 import { neededPreview } from "@/lib/utils.ts";
+import _ from "lodash";
+import { useAppSelector } from "../slices/index.ts";
+import type { Props } from "../types.ts";
 import ControlBox from "./ControlBox.tsx";
 import HTMLPreview from "./HTMLPreview.tsx";
 import TabsBox from "./TabsBox.tsx";
-import type { Props } from "../types.ts";
-import { useAppSelector } from "../slices/index.ts";
-import _ from "lodash";
 
 function App() {
   const { course } = usePage<Props>().props;

@@ -4,16 +4,16 @@ import { Col, Container, Row } from "react-bootstrap";
 import Application from "@/pages/layouts/ApplicationLayout.tsx";
 import type { User } from "@/types/serializers";
 import i18next from "i18next";
-import TosRu from "./parts/tos.ru";
-import AboutRu from "./parts/about.ru";
-import PrivaryRu from "./parts/privacy.ru";
-import AuthorsRu from "./parts/authors.ru";
 import AboutEn from "./parts/about.en";
+import AboutRu from "./parts/about.ru";
 import AuthorsEn from "./parts/authors.en";
+import AuthorsRu from "./parts/authors.ru";
+import PrivaryRu from "./parts/privacy.ru";
+import TosRu from "./parts/tos.ru";
 
 type Props = PropsWithChildren & {
   page: "about" | "tos" | "privacy" | "cookie_policy" | "authors";
-  title: string
+  title: string;
   user: User;
 };
 

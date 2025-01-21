@@ -6,6 +6,6 @@ type UserSignUpForm = {
   first_name: string | null;
   email: string | null;
   password: unknown;
-}
+};
 
 export default UserSignUpForm;

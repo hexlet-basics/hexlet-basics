@@ -14,6 +14,6 @@ type Language = {
   slug: string | null;
   name: string | null;
   cover: string | null;
-}
+};
 
 export default Language;

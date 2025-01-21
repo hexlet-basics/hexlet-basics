@@ -1,9 +1,9 @@
 // @ts-check
 
+import * as Routes from "@/routes.js";
 import { AnsiUp } from "ansi_up";
 import cn from "classnames";
 import { useTranslation } from "react-i18next";
-import * as Routes from "@/routes.js";
 
 import XssContent from "@/components/XssContent";
 import { usePage } from "@inertiajs/react";
@@ -29,7 +29,9 @@ export default function OutputTab() {
 
   const message = tCommon(`check.${result}.message`);
 
-  const messageForGuest = tCommon("signInSuggestion", { url: Routes.new_user_path() });
+  const messageForGuest = tCommon("signInSuggestion", {
+    url: Routes.new_user_path(),
+  });
   // NOTE: исправление неверной кодировки для кириллицы
   // https://developer.mozilla.org/en-US/docs/Glossary/Base64
   const outputAsHTML = ansi.ansi_to_html(decodeURIComponent(escape(output)));

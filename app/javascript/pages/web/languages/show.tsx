@@ -4,10 +4,12 @@ import { Col, Container, ListGroup, Row } from "react-bootstrap";
 
 import { useTranslation } from "react-i18next";
 
+import CourseBlock from "@/components/CourseBlock";
 import { XBreadcrumb } from "@/components/breadcrumbs";
 import { deviconClass } from "@/lib/utils";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import * as Routes from "@/routes.js";
+import type { BreadcrumbItem, SharedProps } from "@/types";
 import type {
   Language,
   LanguageCategory,
@@ -15,9 +17,7 @@ import type {
   LanguageModule,
   User,
 } from "@/types/serializers";
-import type { BreadcrumbItem, SharedProps } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
-import CourseBlock from "@/components/CourseBlock";
 
 type Props = PropsWithChildren & {
   courseCategory: LanguageCategory;
@@ -83,12 +83,14 @@ export default function Show({
               <span className="me-2">{t("languages.show.start")}</span>
               <i className="bi bi-arrow-right" />
             </Link>
-            {auth.user.guest && <Link
-              className="btn btn-outline-secondary"
-              href={Routes.new_user_path()}
-            >
-              {t("languages.show.registration")}
-            </Link>}
+            {auth.user.guest && (
+              <Link
+                className="btn btn-outline-secondary"
+                href={Routes.new_user_path()}
+              >
+                {t("languages.show.registration")}
+              </Link>
+            )}
           </div>
         </div>
         <div className="mb-5">
@@ -149,8 +151,7 @@ export default function Show({
               <div className="align-content-around">
                 <Link
                   className="link-body-emphasis text-muted text-decoration-none"
-                  href={Routes.language_category_path(courseCategory.slug!, {
-                  })}
+                  href={Routes.language_category_path(courseCategory.slug!, {})}
                 >
                   {t("languages.show.see_all_courses_in_category", {
                     name: courseCategory.name,

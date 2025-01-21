@@ -1,9 +1,9 @@
 import { Nav } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
+import { url } from "@/lib/utils";
 import * as Routes from "@/routes.js";
 import type { Review } from "@/types/serializers";
-import { url } from "@/lib/utils";
 
 type Props = {
   data?: Review;

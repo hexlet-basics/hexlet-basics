@@ -33,7 +33,11 @@ export default function New({ userPassword }: Props) {
                   data={{ user_password_form: userPassword }}
                   to={Routes.password_path()}
                 >
-                  <XInput name="password" type="password" autoComplete="new-password" />
+                  <XInput
+                    name="password"
+                    type="password"
+                    autoComplete="new-password"
+                  />
                   <Submit className="btn w-100 btn-lg btn-primary mb-3">
                     {tHelpers("submit.replace")}
                   </Submit>

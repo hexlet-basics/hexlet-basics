@@ -66,10 +66,11 @@ createInertiaApp({
   setup({ el, App, props }) {
     const RootComponent = () => {
       // const { locale, suffix } = usePage<SharedProps>().props;
-      const { locale, suffix } = props.initialPage.props as unknown as SharedProps;
+      const { locale, suffix } = props.initialPage
+        .props as unknown as SharedProps;
 
       // useEffect?
-      i18next.changeLanguage(locale)
+      i18next.changeLanguage(locale);
       Routes.configure({ default_url_options: { suffix } });
 
       return (

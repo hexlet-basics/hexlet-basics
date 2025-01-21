@@ -3,10 +3,10 @@ import type { PropsWithChildren } from "react";
 import * as Routes from "@/routes.js";
 import { useTranslation } from "react-i18next";
 
+import { XCheck, XForm, XInput } from "@/components/forms";
 import AdminLayout from "@/pages/layouts/AdminLayout";
 import type { User } from "@/types/serializers";
 import { Col, Row } from "react-bootstrap";
-import { XCheck, XForm, XInput } from "@/components/forms";
 import { Submit } from "use-inertia-form";
 
 type Props = PropsWithChildren & {

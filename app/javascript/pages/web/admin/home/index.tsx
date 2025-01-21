@@ -2,12 +2,12 @@ import type { PropsWithChildren } from "react";
 
 import { useTranslation } from "react-i18next";
 
+import useDataTable from "@/hooks/useDataTable";
 import { fieldsToFilters } from "@/lib/utils";
 import AdminLayout from "@/pages/layouts/AdminLayout";
 import type { Grid, User } from "@/types/serializers";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import useDataTable from "@/hooks/useDataTable";
 
 type Props = PropsWithChildren & {
   admins: User[];
@@ -38,7 +38,13 @@ export default function Index({ admins, grid }: Props) {
       >
         <Column field="id" header="id" />
         <Column field="name" header="name" sortable />
-        <Column sortable filter filterPlaceholder="Search" field="email" header="email" />
+        <Column
+          sortable
+          filter
+          filterPlaceholder="Search"
+          field="email"
+          header="email"
+        />
       </DataTable>
     </AdminLayout>
   );

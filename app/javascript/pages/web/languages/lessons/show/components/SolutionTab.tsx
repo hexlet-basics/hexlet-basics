@@ -1,17 +1,17 @@
 import { format } from "date-fns";
-import { github } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import React from "react";
 import Countdown, { type CountdownRenderProps } from "react-countdown";
 import { useTranslation } from "react-i18next";
+import { github } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 import waitingClock from "@/images/waiting_clock.png";
-import slice from "../slices/RootSlice.ts";
 import { getEditorLanguage } from "@/lib/utils.ts";
-import { useAppDispatch, useAppSelector } from "../slices/index.ts";
-import SyntaxHighlighter from "react-syntax-highlighter";
 import { usePage } from "@inertiajs/react";
-import type { Props } from "../types.ts";
 import { Alert } from "react-bootstrap";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import slice from "../slices/RootSlice.ts";
+import { useAppDispatch, useAppSelector } from "../slices/index.ts";
+import type { Props } from "../types.ts";
 
 const waitingTime = 20 * 60 * 1000; // 20 min
 // const waitingTime = 3000;

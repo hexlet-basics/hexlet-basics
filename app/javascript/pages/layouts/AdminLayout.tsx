@@ -5,11 +5,11 @@ import { useTranslation } from "react-i18next";
 
 import * as Routes from "@/routes.js";
 
+import XFlash from "@/components/XFlash.tsx";
 import type { SharedProps } from "@/types/index.js";
 import { Head, Link, usePage } from "@inertiajs/react";
 import i18next from "i18next";
 import NavbarBlock from "./NavbarBlock.tsx";
-import XFlash from "@/components/XFlash.tsx";
 
 type Props = PropsWithChildren & {
   header: string;

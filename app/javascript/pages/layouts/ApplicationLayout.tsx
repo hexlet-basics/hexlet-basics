@@ -5,11 +5,11 @@ import { useTranslation } from "react-i18next";
 
 import * as Routes from "@/routes.js";
 
+import XFlash from "@/components/XFlash.tsx";
 import type { SharedProps } from "@/types/index.js";
 import { Link, usePage } from "@inertiajs/react";
-import NavbarBlock from "./NavbarBlock.tsx";
 import i18next from "i18next";
-import XFlash from "@/components/XFlash.tsx";
+import NavbarBlock from "./NavbarBlock.tsx";
 
 type Props = PropsWithChildren & {
   header?: string;
@@ -26,9 +26,7 @@ export default function ApplicationLayout({ children, header }: Props) {
         <NavbarBlock className="pb-3 border-bottom" />
         <XFlash />
       </Container>
-      <Container className="mb-4">
-        {header && <h1>{header}</h1>}
-      </Container>
+      <Container className="mb-4">{header && <h1>{header}</h1>}</Container>
       {children}
       <footer className="mt-5 bg-body-tertiary py-5">
         <Container>

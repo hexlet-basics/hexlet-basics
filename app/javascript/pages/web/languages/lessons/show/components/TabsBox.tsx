@@ -2,11 +2,15 @@ import { Nav, Tab } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import slice from "../slices/RootSlice.ts";
 
+import {
+  type AppState,
+  useAppDispatch,
+  useAppSelector,
+} from "../slices/index.ts";
 import Editor from "./EditorTab.tsx";
 import Output from "./OutputTab.tsx";
 import Solution from "./SolutionTab.tsx";
 import TestsBox from "./TestsBox.tsx";
-import { type AppState, useAppDispatch, useAppSelector } from "../slices/index.ts";
 
 function TabsBox() {
   const { t } = useTranslation();
@@ -15,9 +19,7 @@ function TabsBox() {
   const currentTab = useAppSelector((state) => state.currentTab);
 
   const changeTab = (newTabState: string | null) => {
-    dispatch(
-      slice.actions.changeTab(newTabState as AppState["currentTab"]),
-    );
+    dispatch(slice.actions.changeTab(newTabState as AppState["currentTab"]));
   };
 
   // TODO: use anchor on load for choosing previuosly selected tab
