@@ -160,6 +160,7 @@ GEM
       net-http (>= 0.5.0)
     ffi (1.17.1-aarch64-linux-gnu)
     ffi (1.17.1-arm64-darwin)
+    ffi (1.17.1-x86_64-linux-gnu)
     foreman (0.88.1)
     fugit (1.11.1)
       et-orbi (~> 1, >= 1.2.11)
@@ -261,6 +262,8 @@ GEM
     nokogiri (1.18.2-aarch64-linux-gnu)
       racc (~> 1.4)
     nokogiri (1.18.2-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.18.2-x86_64-linux-gnu)
       racc (~> 1.4)
     os (1.1.4)
     ostruct (0.6.1)
@@ -419,6 +422,7 @@ GEM
     sorbet-runtime (0.5.11766)
     sorbet-static (0.5.11766-aarch64-linux)
     sorbet-static (0.5.11766-universal-darwin)
+    sorbet-static (0.5.11766-x86_64-linux)
     sorbet-static-and-runtime (0.5.11766)
       sorbet (= 0.5.11766)
       sorbet-runtime (= 0.5.11766)
@@ -430,6 +434,7 @@ GEM
       thor (>= 0.19.2)
     sqlite3 (2.5.0-aarch64-linux-gnu)
     sqlite3 (2.5.0-arm64-darwin)
+    sqlite3 (2.5.0-x86_64-linux-gnu)
     sshkit (1.23.2)
       base64
       net-scp (>= 1.1.2)
@@ -453,6 +458,7 @@ GEM
     thor (1.3.2)
     thruster (0.1.10-aarch64-linux)
     thruster (0.1.10-arm64-darwin)
+    thruster (0.1.10-x86_64-linux)
     timeout (0.4.3)
     tins (1.38.0)
       bigdecimal
@@ -498,6 +504,7 @@ GEM
 PLATFORMS
   aarch64-linux
   arm64-darwin-24
+  x86_64-linux
 
 DEPENDENCIES
   aasm

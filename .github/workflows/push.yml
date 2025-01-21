@@ -13,7 +13,8 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest-arm64
+    # TODO: switch to arm https://github.blog/changelog/2025-01-16-linux-arm64-hosted-runners-now-available-for-free-in-public-repositories-public-preview/
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
