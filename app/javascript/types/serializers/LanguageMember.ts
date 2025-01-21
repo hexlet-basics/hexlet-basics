@@ -8,6 +8,6 @@ type LanguageMember = {
   language_id: number;
   state: "started" | "finished";
   language_name: string;
-};
+}
 
 export default LanguageMember;

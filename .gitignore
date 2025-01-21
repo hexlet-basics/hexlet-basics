@@ -45,7 +45,7 @@ node_modules
 
 
 # Ignore automatically generated js-routes files.
-/app/javascript/routes.js
-/app/javascript/routes.d.ts
+# /app/javascript/routes.js
+# /app/javascript/routes.d.ts
 
 .DS_Store

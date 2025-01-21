@@ -8,6 +8,6 @@ type OriginalLanguage = {
   slug: string | null;
   learn_as: string | null;
   state: string | null;
-};
+}
 
 export default OriginalLanguage;

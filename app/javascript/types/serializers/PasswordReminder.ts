@@ -4,6 +4,6 @@
 
 type PasswordReminder = {
   email: unknown;
-};
+}
 
 export default PasswordReminder;

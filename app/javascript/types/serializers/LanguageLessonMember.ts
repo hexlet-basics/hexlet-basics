@@ -6,6 +6,6 @@ type LanguageLessonMember = {
   id: number;
   user_id: number;
   state: "started" | "finished";
-};
+}
 
 export default LanguageLessonMember;

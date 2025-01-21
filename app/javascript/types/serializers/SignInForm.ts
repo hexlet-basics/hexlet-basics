@@ -6,6 +6,6 @@ type SignInForm = {
   email: string;
   password: string;
   type: "sign_in_form";
-};
+}
 
 export default SignInForm;
