@@ -5,6 +5,8 @@ html.h-100 lang="#{I18n.locale}"
     = render 'layouts/deps/domains_verifications'
 
   body.d-flex.flex-column.h-100
+    - if Time.utc(2025, 2, 1, 7, 0).future?
+      = render 'layouts/competition_banner'
     - if Rails.env.production?
       = render 'layouts/deps/gtm_body'
     - unless supported_browser?

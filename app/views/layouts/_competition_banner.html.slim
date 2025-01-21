@@ -1,0 +1,14 @@
+.competition-banner.position-sticky.py-4.py-lg-3#competition-banner style='background-color: #4EA7B7;'
+  .container.px-3
+    .row.justify-content-between.align-items-center.gy-4
+      .col-md-7.col-lg-5.col-xl-auto.text-sm-center.text-md-start
+        .fs-3.text-light.lh-sm Поддержи нас в конкурсе на лучший продукт месяца
+      .col.d-none.d-lg-block.ps-xl-4
+        = image_tag('decor.svg', class: 'img-fluid')
+      .col.col-md-auto
+        = link_to 'https://productradar.ru/?groupby=month', class: 'btn btn-light rounded-3 w-100 w-md-auto px-5 py-2 stretched-link', target: :_blank, rel: :noopener do
+          .fs-5.px-md-4.py-md-1 Голосую!
+  .position-absolute.end-0.top-0.me-2.z-3
+      button.btn-close.btn-close-white#competition-banner-close-btn type='button' aria-hidden='true' aria-label='Закрыть' style='width: 0.5em; height: 0.5em'
+
+- append_javascript_packs 'competition_banner'
