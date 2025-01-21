@@ -6,7 +6,7 @@ class Web::LanguageCategoriesController < Web::ApplicationController
   def show
     category = Language::Category.find_by! slug: params[:id]
     # @language_members_by_language = current_user.language_members.index_by(&:language_id)
-    courses = category.language_version_infos.with_locale.merge Language.web.ordered
+    courses = category.language_version_infos.includes([ language: :current_version ]).with_locale.merge Language.web.ordered
     #
     # infos = Language::Version::Info.where(locale: I18n.locale, language: @languages)
     # infos_by_language = infos.index_by { |item| item.language.id }
@@ -21,7 +21,7 @@ class Web::LanguageCategoriesController < Web::ApplicationController
     # end
 
     seo_tags = {
-      title: t(".title"),
+      title: t(".title")
     }
     set_meta_tags seo_tags
 

@@ -6,7 +6,7 @@
   "dependencies": {
     "@giscus/react": "^3.1.0",
     "@inertiajs/progress": "^0.2.7",
-    "@inertiajs/react": "^2.0.2",
+    "@inertiajs/react": "^2.0.3",
     "@monaco-editor/react": "^4.7.0-rc.0",
     "@rails/actioncable": "^8.0.100",
     "@rails/activestorage": "^8.0.100",
@@ -36,7 +36,7 @@
     "qs": "^6.14.0",
     "quill": "^2.0.3",
     "react": "^19.0.0",
-    "react-bootstrap": "^2.10.7",
+    "react-bootstrap": "^2.10.8",
     "react-countdown": "^2.3.6",
     "react-dom": "^19.0.0",
     "react-frame-component": "^5.2.7",
@@ -73,7 +73,7 @@
     "sass": "1.83.4",
     "simple-git-hooks": "^2.11.1",
     "typescript": "^5.7.3",
-    "vite": "^6.0.10",
+    "vite": "^6.0.11",
     "vite-plugin-rails": "^0.5.0",
     "vite-plugin-ruby": "^5.1.1"
   },

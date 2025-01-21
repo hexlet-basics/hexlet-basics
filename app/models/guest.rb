@@ -30,7 +30,7 @@ class Guest
   def locale; end
 
   def language_members
-    []
+    Language::Member.none
   end
 
   def finished_lessons_for_language(_)
