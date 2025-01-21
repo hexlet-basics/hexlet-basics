@@ -7,7 +7,12 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "VITE_");
 
   return {
-    plugins: [react(), ViteRails()],
+    plugins: [
+      react(),
+      ViteRails({
+        compress: mode !== "test",
+      }),
+    ],
     server: {
       allowedHosts: [env.VITE_APP_HOST],
       hmr: {
