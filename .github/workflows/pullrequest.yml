@@ -5,32 +5,24 @@ on:
     branches:
       - main
 
-env:
-  CI: true
-  APP_IMAGE_NAME: hexletbasics/services-app
-
 jobs:
   main:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
 
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - uses: actions/checkout@v3
-
-      - name: Build App
-        uses: docker/build-push-action@v3
+      - uses: actions/setup-node@v4
         with:
-          context: .
-          file: Dockerfile.production
-          cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}:cached
-          tags: |
-            ${{ env.APP_IMAGE_NAME }}:cached
-            ${{ env.APP_IMAGE_NAME }}:latest
+          node-version: 23
+          cache: "npm"
+      - run: npm ci
 
-      - name: Check
-        run: |
-          make ansible-generate-env
-          docker compose --file docker-compose.yml up --abort-on-container-exit
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - run: bundle install
+
+      - run: RAILS_ENV=test bin/rails assets:precompile
+
+      - run: make lint
+      - run: make test

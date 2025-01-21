@@ -5,12 +5,6 @@ on:
     branches:
       - main
 
-# env:
-#   CI: true
-#   APP_IMAGE_NAME: hexletbasics/services-app
-#   NGINX_IMAGE_NAME: hexletbasics/services-nginx
-#   COLOR_MAP: '{ success: "#008000", failure: "#800000" }'
-
 jobs:
   build:
     # TODO: switch to arm https://github.blog/changelog/2025-01-16-linux-arm64-hosted-runners-now-available-for-free-in-public-repositories-public-preview/
@@ -28,14 +22,6 @@ jobs:
         with:
           bundler-cache: true
       - run: bundle install
-
-      - name: Cache assets
-        uses: actions/cache@v4
-        with:
-          path: public/vite-test
-          key: test-assets-${{ runner.os }}-${{ hashFiles('**/package-lock.json', '**/Gemfile.lock', '**/vite.config.ts') }}
-          restore-keys: |
-            assets-${{ runner.os }}-
 
       - run: RAILS_ENV=test bin/rails assets:precompile
 
