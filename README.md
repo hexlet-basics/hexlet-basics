@@ -62,8 +62,9 @@ export TWC_TOKEN=<your token>
 
 1. theme switcher
 1. <https://github.com/DavidWells/analytics>
-1. auth: vk id, yandex id
+1. auth: vk id, yandex id, google id (except ru)
 1. fix XPaging
+1. devicons => react-devicons
 
 ---
 
