@@ -6,7 +6,7 @@ class CourseSchema
 
     def to_builder(language, info)
       Jbuilder.new do |json|
-        json.set! '@type', 'Course'
+        json.set! "@type", "Course"
         json.name info.header
         json.url language_url(language.slug, locale: AppHost.locale_for_url(info.locale))
         json.description info.description

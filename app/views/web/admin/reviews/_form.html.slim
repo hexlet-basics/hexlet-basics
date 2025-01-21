@@ -1,8 +1,0 @@
-= f.input :locale
-= f.input :first_name
-= f.input :last_name
-= f.input :state_event, as: :aasm_state_event
-= f.association :language, collection: Language.with_locale
-= f.association :user, as: :autocomplete, source: search_admin_api_users_url(format: 'json')
-= f.input :body, input_html: { rows: 20 }
-= f.submit class: 'btn btn-primary'

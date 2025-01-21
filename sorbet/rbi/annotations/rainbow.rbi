@@ -1,4 +1,4 @@
-# typed: strict
+# typed: true
 
 # DO NOT EDIT MANUALLY
 # This file was pulled from a central RBI files repository.
@@ -60,14 +60,14 @@ module Rainbow
     class X11Named < Rainbow::Color::RGB
       include Rainbow::X11ColorNames
 
+      sig { params(ground: Symbol, name: Symbol).void }
+      def initialize(ground, name); end
+
       sig { returns(T::Array[Symbol]) }
       def self.color_names; end
 
       sig { returns(String) }
       def self.valid_names; end
-
-      sig { params(ground: Symbol, name: Symbol).void }
-      def initialize(ground, name); end
     end
   end
 

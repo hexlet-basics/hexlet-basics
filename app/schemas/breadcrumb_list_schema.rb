@@ -4,7 +4,7 @@ class BreadcrumbListSchema
   class << self
     def to_builder(_items)
       Jbuilder.new do |json|
-        json.set! '@type', 'BreadCrumbList'
+        json.set! "@type", "BreadCrumbList"
         # json.itemListElement items.each_with_index.to_a do |(item, index)|
         #   json.set! '@type', 'ListItem'
         #   json.position index + 1

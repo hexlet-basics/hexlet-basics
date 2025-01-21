@@ -1,26 +1,27 @@
-# frozen_string_literal: true
-
-# == Route Map
-#
-
 Rails.application.routes.draw do
-  # require 'sidekiq/web'
-  # mount Sidekiq::Web => '/sidekiq', constraints: AdminConstraint.new
-
-  # for kubernets probe
-  get '/health', to: proc { |_env| [200, {}, ['it works!']] }
+  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
+  # Can be used by load balancers and uptime monitors to verify that the app is live.
+  get "up" => "rails/health#show", as: :rails_health_check
 
   scope module: :web do
-    post '/auth/:provider', to: 'auth#request', as: :auth_request
-    get '/auth/:provider/callback', to: 'auth#callback', as: :callback_auth
-    post '/google/callback', to: 'google_auth#one_tap', as: :google_onetap_callback
+    # post "/auth/:provider", to: "auth#request", as: :auth_request
+    # get "/auth/:provider/callback", to: "auth#callback", as: :callback_auth
+    # post "/google/callback", to: "google_auth#one_tap", as: :google_onetap_callback
 
-    match '/403', to: 'errors#forbidden', via: :all
-    match '/404', to: 'errors#not_found', via: :all
-    match '/500', to: 'errors#server_error', via: :all
+    # match "/403", to: "errors#forbidden", via: :all
+    # match "/404", to: "errors#not_found", via: :all
+    # match "/500", to: "errors#server_error", via: :all
+    match "/:code",
+      to: "errors#show",
+      via: :all,
+      constraints: {
+        code: Regexp.new(
+          Rack::Utils::HTTP_STATUS_CODES.keys.join("|")
+        )
+      }
   end
 
-  scope '(:locale)', locale: /en|ru/ do
+  scope "(:suffix)", suffix: /es|ru/ do
     namespace :api do
       resources :languages, only: %i[index show] do
         scope module: :languages do
@@ -35,15 +36,15 @@ Rails.application.routes.draw do
 
       namespace :partners do
         namespace :yandex_market do
-          resources :languages, only: [:index]
+          resources :languages, only: [ :index ]
         end
       end
     end
 
     scope module: :web do
-      root 'home#index'
+      root "home#index"
 
-      get '/robots.:format' => 'home#robots', as: :robots
+      get "/robots.:format" => "home#robots", as: :robots
       resources :pages, only: %i[show]
       resources :blog_posts, only: %i[index show]
       resources :reviews, only: %i[index]
@@ -58,9 +59,9 @@ Rails.application.routes.draw do
       resource :remind_password, only: %i[new create]
       resource :password, only: %i[edit update]
 
-      resources :languages, only: [:show] do
+      resources :languages, only: [ :show ] do
         scope module: :languages do
-          resources :lessons, only: [:show] do
+          resources :lessons, only: [ :show ] do
             get :next_lesson, on: :member
             get :prev_lesson, on: :member
           end
@@ -68,7 +69,7 @@ Rails.application.routes.draw do
       end
 
       namespace :admin do
-        root 'home#index'
+        root "home#index"
 
         namespace :api do
           resources :users do

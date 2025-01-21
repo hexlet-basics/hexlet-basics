@@ -2,7 +2,7 @@
 #
 # Table name: language_module_versions
 #
-#  id                  :bigint           not null, primary key
+#  id                  :integer          not null, primary key
 #  order               :integer
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
@@ -18,9 +18,9 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (language_id => languages.id)
-#  fk_rails_...  (language_version_id => language_versions.id)
-#  fk_rails_...  (module_id => language_modules.id)
+#  language_id          (language_id => languages.id)
+#  language_version_id  (language_version_id => language_versions.id)
+#  module_id            (module_id => language_modules.id)
 #
 ---
 
@@ -36,10 +36,22 @@ two:
   module: php-basics
   language: php
 
-javascript:
+javascript1-module1_version1:
+  order: 10
+  language_version: javascript1
+  module: javascript-module1
+  language: javascript
+
+javascript1-module2_version1:
+  order: 10
+  language_version: javascript1
+  module: javascript-module2
+  language: javascript
+
+javascript1-module1_version2:
   order: 20
-  language_version: javascript
-  module: two
+  language_version: javascript1
+  module: javascript-module1
   language: javascript
 
 variables_one:

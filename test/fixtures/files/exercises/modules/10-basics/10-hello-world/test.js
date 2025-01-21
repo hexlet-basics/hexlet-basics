@@ -1,6 +1,6 @@
 // @ts-check
 
-import { expectOutput } from 'hexlet-basics/tests';
+import { expectOutput } from "hexlet-basics/tests";
 
-const expected = 'Hello, World!';
+const expected = "Hello, World!";
 expectOutput(expected);

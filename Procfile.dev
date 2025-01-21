@@ -1,0 +1,5 @@
+vite: bin/vite dev
+web: bin/rails s
+job: bin/jobs
+caddy: caddy run
+# vite-test: bin/vite dev --mode=test

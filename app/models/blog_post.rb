@@ -4,7 +4,7 @@
 #
 # Table name: blog_posts
 #
-#  id          :bigint           not null, primary key
+#  id          :integer          not null, primary key
 #  body        :text
 #  description :string
 #  locale      :string
@@ -24,8 +24,8 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (creator_id => users.id)
-#  fk_rails_...  (language_id => languages.id)
+#  creator_id   (creator_id => users.id)
+#  language_id  (language_id => languages.id)
 #
 class BlogPost < ApplicationRecord
   extend Enumerize
@@ -33,12 +33,12 @@ class BlogPost < ApplicationRecord
   include BlogPostRepository
 
   has_one_attached :cover do |attachable|
-    attachable.variant :thumb, resize_to_limit: [100, 100]
-    attachable.variant :list, resize_to_limit: [456, 215]
+    attachable.variant :thumb, resize_to_limit: [ 100, 100 ]
+    attachable.variant :list, resize_to_limit: [ 456, 215 ]
   end
 
   def self.ransackable_attributes(_auth_object = nil)
-    ['created_at']
+    [ "created_at" ]
   end
 
   def self.ransackable_associations(_auth_object = nil)
@@ -54,8 +54,8 @@ class BlogPost < ApplicationRecord
   validates :description, presence: true
 
   belongs_to :language, optional: true
-  has_one :category, through: :language, class_name: 'Language::Category'
-  belongs_to :creator, class_name: 'User'
+  has_one :category, through: :language, class_name: "Language::Category"
+  belongs_to :creator, class_name: "User"
 
   aasm column: :state do
     state :draft, initial: true

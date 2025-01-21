@@ -4,7 +4,7 @@
 #
 # Table name: language_lesson_versions
 #
-#  id                  :bigint           not null, primary key
+#  id                  :integer          not null, primary key
 #  natural_order       :integer
 #  order               :integer
 #  original_code       :string
@@ -27,29 +27,30 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (language_id => languages.id)
-#  fk_rails_...  (language_version_id => language_versions.id)
-#  fk_rails_...  (lesson_id => language_lessons.id)
-#  fk_rails_...  (module_version_id => language_module_versions.id)
+#  language_id          (language_id => languages.id)
+#  language_version_id  (language_version_id => language_versions.id)
+#  lesson_id            (lesson_id => language_lessons.id)
+#  module_version_id    (module_version_id => language_module_versions.id)
 #
 class Language::Lesson::Version < ApplicationRecord
-  belongs_to :language_version, class_name: 'Language::Version'
+  belongs_to :language_version, class_name: "Language::Version"
   belongs_to :lesson
   belongs_to :language
-  belongs_to :module_version, class_name: 'Language::Module::Version'
+  belongs_to :module_version, class_name: "Language::Module::Version"
+  has_one :module, through: :module_version
 
   has_many :infos, dependent: :destroy
 
-  def next_lesson
+  def next_lesson_version
     language_version
       .lesson_versions.order(:natural_order)
-      .find_by('natural_order > ?', natural_order)&.lesson
+      .find_by("natural_order > ?", natural_order)&.lesson
   end
 
-  def prev_lesson
+  def prev_lesson_version
     language_version
       .lesson_versions.order(natural_order: :desc)
-      .find_by('natural_order < ?', natural_order)&.lesson
+      .find_by("natural_order < ?", natural_order)&.lesson
   end
 
   def to_s

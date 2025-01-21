@@ -4,7 +4,7 @@
 #
 # Table name: reviews
 #
-#  id          :bigint           not null, primary key
+#  id          :integer          not null, primary key
 #  body        :text
 #  first_name  :string
 #  last_name   :string
@@ -22,14 +22,14 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (language_id => languages.id)
-#  fk_rails_...  (user_id => users.id)
+#  language_id  (language_id => languages.id)
+#  user_id      (user_id => users.id)
 #
 FactoryBot.define do
   factory :review do
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
-    state { 'published' }
+    state { "published" }
     body { Faker::Lorem.paragraph_by_chars }
   end
 end

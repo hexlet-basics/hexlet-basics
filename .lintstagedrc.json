@@ -1,6 +1,0 @@
-{
-  "**/*.{rb,rake,axlsx}": "bundle exec rubocop --force-exclusion",
-  "**/*.scss": "npx stylelint",
-  "**/*.js?(x)": "npx eslint",
-  "**/*.html.slim": "bundle exec slim-lint"
-}

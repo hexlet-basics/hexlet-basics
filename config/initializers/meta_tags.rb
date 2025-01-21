@@ -9,6 +9,15 @@ MetaTags.configure do |config|
   # When true, site title will be truncated instead of title. Default is false.
   # config.truncate_site_title_first = false
 
+  # Add HTML attributes to the <title> HTML tag. Default is {}.
+  # config.title_tag_attributes = {}
+
+  # Natural separator when truncating. Default is " " (space character).
+  # Set to nil to disable natural separator.
+  # This also allows you to use a whitespace regular expression (/\s/) or
+  # a Unicode space (/\p{Space}/).
+  # config.truncate_on_natural_separator = " "
+
   # Maximum length of the page description. Default is 300.
   # Set to nil or 0 to remove limits.
   # config.description_limit = 300

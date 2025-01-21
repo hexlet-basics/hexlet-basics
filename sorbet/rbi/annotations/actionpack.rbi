@@ -1,4 +1,4 @@
-# typed: strict
+# typed: true
 
 # DO NOT EDIT MANUALLY
 # This file was pulled from a central RBI files repository.
@@ -75,8 +75,8 @@ class ActionController::Parameters
   sig { returns(String) }
   def inspect; end
 
-  sig { params(other_hash: T.untyped).returns(ActionController::Parameters) }
-  def merge!(other_hash); end
+  sig { params(other_hash: T.untyped, block: T.untyped).returns(ActionController::Parameters) }
+  def merge!(other_hash, &block); end
 
   sig { params(other_hash: T.untyped).returns(ActionController::Parameters) }
   def merge(other_hash); end
@@ -107,14 +107,16 @@ class ActionController::Parameters
   sig { params(block: T.untyped).returns(T.untyped) }
   def reject(&block); end
 
-  sig { params(key: T.any(String, Symbol)).returns(T.nilable(T.any(String, Numeric, ActionController::Parameters))) }
+  sig { params(key: T.any(String, Symbol)).returns(T.untyped) }
   def [](key); end
 
-  sig { params(key: T.any(String, Symbol, T::Array[T.any(String, Symbol)])).returns(T.any(String, Numeric, T::Array[T.untyped], ActionController::Parameters)) }
+  sig { params(key: T.any(String, Symbol)).returns(ActionController::Parameters) }
+  sig { params(key: T::Array[T.any(String, Symbol)]).returns(T::Array[ActionController::Parameters]) }
   def require(key); end
 
   # required is an alias of require
-  sig { params(key: T.any(String, Symbol, T::Array[T.any(String, Symbol)])).returns(T.any(String, Numeric, T::Array[T.untyped], ActionController::Parameters)) }
+  sig { params(key: T.any(String, Symbol)).returns(ActionController::Parameters) }
+  sig { params(key: T::Array[T.any(String, Symbol)]).returns(T::Array[ActionController::Parameters]) }
   def required(key); end
 
   sig { params(other_hash: T.untyped).returns(ActionController::Parameters) }
@@ -141,32 +143,14 @@ class ActionController::Parameters
   sig { params(block: T.untyped).returns(ActionController::Parameters) }
   def select(&block); end
 
-  sig { returns(T.any(Symbol, T::Boolean)) }
-  def self.action_on_unpermitted_parameters; end
-
-  sig { params(obj: T.any(Symbol, T::Boolean)).void }
-  def self.action_on_unpermitted_parameters=(obj); end
-
-  sig { returns(T::Array[T.any(String, Symbol)]) }
-  def self.always_permitted_parameters; end
-
-  sig { params(obj: T::Array[T.any(String, Symbol)]).void }
-  def self.always_permitted_parameters=(obj); end
-
-  sig { returns(T::Boolean) }
-  def self.permit_all_parameters; end
-
-  sig { params(obj: T::Boolean).void }
-  def self.permit_all_parameters=(obj); end
-
   sig { params(keys: T.any(String, Symbol)).returns(ActionController::Parameters) }
   def slice!(*keys); end
 
   sig { params(keys: T.any(String, Symbol)).returns(ActionController::Parameters) }
   def slice(*keys); end
 
-  sig { returns(ActiveSupport::HashWithIndifferentAccess) }
-  def to_h; end
+  sig { params(block: T.nilable(Proc)).returns(ActiveSupport::HashWithIndifferentAccess) }
+  def to_h(&block); end
 
   sig { returns(T::Hash[T.untyped, T.untyped]) }
   def to_hash; end
@@ -199,6 +183,24 @@ class ActionController::Parameters
 
   sig { params(keys: T.any(String, Symbol)).returns(T.untyped) }
   def values_at(*keys); end
+
+  sig { returns(T.any(Symbol, T::Boolean)) }
+  def self.action_on_unpermitted_parameters; end
+
+  sig { params(obj: T.any(Symbol, T::Boolean)).void }
+  def self.action_on_unpermitted_parameters=(obj); end
+
+  sig { returns(T::Array[T.any(String, Symbol)]) }
+  def self.always_permitted_parameters; end
+
+  sig { params(obj: T::Array[T.any(String, Symbol)]).void }
+  def self.always_permitted_parameters=(obj); end
+
+  sig { returns(T::Boolean) }
+  def self.permit_all_parameters; end
+
+  sig { params(obj: T::Boolean).void }
+  def self.permit_all_parameters=(obj); end
 end
 
 module ActionController::RequestForgeryProtection
@@ -267,7 +269,7 @@ class ActionDispatch::IntegrationTest
   def status_message; end
 
   # @method_missing: delegated to ActionDispatch::TestResponse
-  sig { returns(T.nilable(ActionDispatch::Response::Header)) }
+  sig { returns(ActionDispatch::Response::Header) }
   def headers; end
 
   # @method_missing: delegated to ActionDispatch::TestResponse
@@ -389,7 +391,7 @@ class ActionDispatch::Request
   #
   # This unique ID is useful for tracing a request from end-to-end as part of logging or debugging.
   # This relies on the Rack variable set by the ActionDispatch::RequestId middleware.
-  sig { returns(String) }
+  sig { returns(T.nilable(String)) }
   def request_id; end
 
   # Returns true if the request has a header matching the given key parameter.

@@ -1,91 +1,127 @@
 # frozen_string_literal: true
 
 class Web::Languages::LessonsController < Web::Languages::ApplicationController
-  before_action :authenticate_user!, only: [:next_lesson]
-
-  # NOTE: нужно для определения правильный путей к воркерам monaco-editor
-  before_action only: :show do
-    gon.assets_prefix = Rails.application.config.assets.prefix
-    gon.monaco_worker_assets = Rails.application.assets_manifest.assets.select { |asset| asset.end_with?('.worker.js') }
-  end
+  before_action :authenticate_user!, only: [ :next_lesson ]
 
   def show
-    @lesson = resource_language.lessons.find_by(slug: params[:id])
-    unless @lesson
+    lesson = resource_language.lessons.find_by(slug: params[:id])
+
+    unless lesson
       f(:lesson_not_found, type: :info)
       redirect_to language_path(resource_language.slug)
       return
     end
 
-    @lesson_version = resource_language.current_lesson_versions.find_by!(lesson: @lesson)
-    @info = @lesson_version.infos.with_locale.sole
-    @language_lessons_count = resource_language.current_lessons.count
-    @lessons_info = resource_language.current_lesson_infos
-                                     .joins(version: :lesson)
-                                     .includes(version: :lesson)
-                                     .with_locale
-                                     .order('language_lesson_versions.natural_order')
+    lesson_version = resource_language.current_lesson_versions.find_by!(lesson: lesson)
+    lesson_info = lesson_version.infos.find_by!(locale: I18n.locale)
+    language_info = resource_language.current_version.infos.find_by!(locale: I18n.locale)
 
-    if current_user.guest?
-      gon.lesson_member = Language::Lesson::MemberFake.new
-    else
+    next_lesson_version = lesson_version.next_lesson_version
+    next_lesson_info = next_lesson_version ? next_lesson_version.infos.find_by!(locale: I18n.locale) : nil
+    prev_lesson_version = lesson_version.prev_lesson_version
+    prev_lesson_info = prev_lesson_version ? prev_lesson_version.infos.find_by!(locale: I18n.locale) : nil
+
+    language_member = nil
+    lesson_member = nil
+
+    if !current_user.guest?
       language_member = resource_language.members.find_or_initialize_by(user: current_user)
-
-      if language_member.new_record?
-        language_member.save!
-        js_event_options = {
-          user: current_user.serializable_data,
-          language: resource_language.serializable_data,
-          language_member: language_member.serializable_data
-        }
-        js_event :language_started, js_event_options
-      end
-
-      lesson_member = language_member.lesson_members.find_or_initialize_by(language: resource_language, user: current_user, lesson: @lesson)
-
-      if lesson_member.new_record?
-        lesson_member.save!
-        js_event_options = {
-          user: current_user.serializable_data,
-          language: resource_language.serializable_data,
-          language_member: language_member.serializable_data,
-          lesson_member: lesson_member.serializable_data,
-          lesson: @lesson.serializable_data
-        }
-        js_event :lesson_started, js_event_options
-      end
-
-      gon.lesson_member = lesson_member
+      language_member.save! if language_member.new_record?
+      lesson_member = language_member.lesson_members.find_or_initialize_by(
+        language: resource_language,
+        lesson:,
+        user: current_user,
+      )
+      lesson_member.save! if lesson_member.new_record?
     end
 
-    gon.language = resource_language.slug
-    gon.lesson_version = @lesson_version
-    gon.lesson = @lesson
-
-    title = [@info, resource_language.current_version.name].join(' | ').squish
-    description = view_context.truncate("[#{resource_language.current_version}] — #{@info.name} — #{@info.theory}", length: 220)
+    # unless @lesson
+    #   f(:lesson_not_found, type: :info)
+    #   redirect_to language_path(resource_language.slug)
+    #   return
+    # end
+    #
+    # @lesson_version = resource_language.current_lesson_versions.find_by!(lesson: @lesson)
+    # @info = @lesson_version.infos.with_locale.sole
+    # @language_lessons_count = resource_language.current_lessons.count
+    # @lessons_info = resource_language.current_lesson_infos
+    #                                  .joins(version: :lesson)
+    #                                  .includes(version: :lesson)
+    #                                  .with_locale
+    #                                  .order('language_lesson_versions.natural_order')
+    #
+    # if current_user.guest?
+    #   gon.lesson_member = Language::Lesson::MemberFake.new
+    # else
+    #
+    #   if language_member.new_record?
+    #     language_member.save!
+    #     js_event_options = {
+    #       user: current_user.serializable_data,
+    #       language: resource_language.serializable_data,
+    #       language_member: language_member.serializable_data
+    #     }
+    #     js_event :language_started, js_event_options
+    #   end
+    #
+    #
+    #   if lesson_member.new_record?
+    #     lesson_member.save!
+    #     js_event_options = {
+    #       user: current_user.serializable_data,
+    #       language: resource_language.serializable_data,
+    #       language_member: language_member.serializable_data,
+    #       lesson_member: lesson_member.serializable_data,
+    #       lesson: @lesson.serializable_data
+    #     }
+    #     js_event :lesson_started, js_event_options
+    #   end
+    #
+    #   gon.lesson_member = lesson_member
+    # end
+    #
+    # gon.language = resource_language.slug
+    # gon.lesson_version = @lesson_version
+    # gon.lesson = @lesson
+    #
+    title = [ lesson_info, language_info ].join(" | ").squish
+    description = view_context.truncate("[#{resource_language.current_version}] — #{lesson_info} — #{lesson_info.theory}", length: 220)
 
     seo_tags = {
-      title: title,
-      canonical: language_lesson_url(@lesson.language.slug, @lesson.slug),
-      amphtml: language_lesson_url(@lesson.language.slug, @lesson.slug, format: 'amp', only_path: false),
-      image_src: view_context.image_url("#{@lesson.language.slug}.png"),
-      description: description,
+      title:,
+      description:,
+      canonical: language_lesson_url(resource_language.slug, lesson.slug),
+      # amphtml: language_lesson_url(@lesson.language.slug, @lesson.slug, format: "amp", only_path: false),
+      image_src: view_context.vite_asset_url("images/#{resource_language.slug}.png"),
       og: {
-        type: 'article',
+        type: "article",
         locale: I18n.locale,
         title: title,
-        url: language_lesson_url(@lesson.language.slug, @lesson.slug),
-        image: view_context.image_url("#{@lesson.language.slug}.png")
+        url: language_lesson_url(resource_language.slug, lesson.slug),
+        image: view_context.vite_asset_url("images/#{resource_language.slug}.png")
       }
     }
     set_meta_tags seo_tags
 
-    @switching_locales.each do |locale,|
-      if @lesson_version.infos.exists?(locale: locale)
-        @switching_locales[locale] = language_lesson_url(resource_language.slug, @lesson.slug, locale: AppHost.locale_for_url(locale))
-      end
-    end
+    # @switching_locales.each do |locale,|
+    #   if @lesson_version.infos.exists?(locale: locale)
+    #     @switching_locales[locale] = language_lesson_url(resource_language.slug, @lesson.slug, locale: AppHost.locale_for_url(locale))
+    #   end
+    # end
+
+    lessons_infos = resource_language.current_lesson_infos.with_locale.includes(:lesson).joins(:lesson).merge(
+      Language::Lesson.order(:natural_order)
+    )
+
+    render inertia: true, props: {
+      course: LanguageResource.new(language_info),
+      courseCategory: Language::CategoryResource.new(resource_language.category),
+      lesson: Language::LessonResource.new(lesson_info),
+      nextLesson: next_lesson_info && Language::LessonResource.new(next_lesson_info),
+      prevLesson: prev_lesson_info && Language::LessonResource.new(prev_lesson_info),
+      lessons: Language::LessonResource.new(lessons_infos),
+      lessonMember: lesson_member && Language::Lesson::MemberResource.new(lesson_member)
+    }
   end
 
   def next_lesson
@@ -95,7 +131,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
 
     # language_member = current_user.language_members.find_by! language: resource_language
 
-    next_lesson = lesson_version.next_lesson
+    next_lesson = lesson_version.next_lesson_version
 
     # TODO Добавить сериализацию language, lesson, language_member
     # NOTE Временно отключил и заменил на language_finished
@@ -121,7 +157,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     lesson = resource_language.lessons.find_by!(slug: params[:id])
     lesson_version = resource_language.current_lesson_versions.find_by!(lesson: lesson)
 
-    prev_lesson = lesson_version.prev_lesson
+    prev_lesson = lesson_version.prev_lesson_version
 
     if prev_lesson.nil?
       redirect_to language_path(language_slug)

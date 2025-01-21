@@ -2,7 +2,7 @@
 #
 # Table name: languages
 #
-#  id                     :bigint           not null, primary key
+#  id                     :integer          not null, primary key
 #  docker_image           :string(255)
 #  exercise_filename      :string(255)
 #  exercise_test_filename :string(255)
@@ -30,9 +30,9 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...              (category_id => language_categories.id)
-#  fk_rails_...              (current_version_id => language_versions.id)
-#  languages_upload_id_fkey  (upload_id => uploads.id)
+#  category_id         (category_id => language_categories.id)
+#  current_version_id  (current_version_id => language_versions.id)
+#  upload_id           (upload_id => uploads.id)
 #
 DEFAULTS: &DEFAULTS
   slug: $LABEL
@@ -50,6 +50,7 @@ elixir:
 javascript:
   <<: *DEFAULTS
   category: programming
+  current_version: javascript1
 
 java:
   <<: *DEFAULTS

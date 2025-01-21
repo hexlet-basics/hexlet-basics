@@ -1,0 +1,22 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "formatter": {
+    "indentStyle": "space"
+  },
+  "organizeImports": {
+    "enabled": true
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "double"
+    }
+  },
+  "linter": {
+    "rules": {
+      "recommended": true,
+      "style": {
+        "noNonNullAssertion": "off"
+      }
+    }
+  }
+}

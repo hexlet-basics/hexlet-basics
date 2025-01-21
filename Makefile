@@ -1,9 +1,62 @@
-include make-app.mk
-include make-compose-app.mk
-include make-compose.mk
 include k8s/Makefile
 
-project-setup: ansible-generate-env compose-setup
+setup:
+	# brew install vips
+	bundle install
+	bin/rails db:prepare
+	bin/rails db:fixtures:load
+
+test:
+	bin/rails test
+
+db-reset:
+	bin/rails db:reset
+	bin/rails db:fixtures:load
+
+dev:
+	bin/dev
+
+log-mails:
+	 tail -n 30 log/mailer.log | base64 --decode
+
+staging:
+	bin/vite clobber
+	# VISUAL="code --wait" bin/rails credentials:edit
+	RAILS_ENV=staging bin/rails db:prepare db:fixtures:load
+	# bin/vite build --ssr
+	NODE_ENV=development RAILS_ENV=staging bin/rails assets:precompile
+	DEBUG=vite-plugin-ruby:* NODE_ENV=development RAILS_ENV=staging bundle exec foreman start -f Procfile.staging
+
+dev-ssr:
+	bin/vite ssr
+
+i18n-export:
+	bundle exec i18n export
+
+sync-fixtures:
+	bin/rails db:fixtures:load
+
+editor-setup:
+	bin/tapioca dsl
+
+sync: i18n-export sync-fixtures
+	bin/rails typelizer:generate:refresh
+
+app-lint-staged:
+	echo 'disabled'
+
+language-load:
+	bin/rails exercises:load[${L}]
+
+lint:
+	bin/rubocop -x
+	npx @biomejs/biome check --write
+
+docker-build:
+	docker build . -t hexlet-basics/hexlet-basics
+
+docker-staging: docker-build
+	# TODO: implement starting server
 
 ansible-generate-env:
 	docker run --rm -e RUNNER_PLAYBOOK=ansible/development.yml \
@@ -23,19 +76,10 @@ ansible-vaults-edit:
 		-v $(CURDIR):/runner/project \
 		quay.io/ansible/ansible-runner ansible-vault edit --vault-password-file project/tmp/ansible-vault-password project/ansible/production/group_vars/all/vault.yml
 
-tag:
-	git tag $(TAG) && git push --tags --no-verify
+# tag:
+# 	git tag $(TAG) && git push --tags --no-verify
+#
+# next-tag:
+# 	make tag TAG=$(shell bin/generate_next_tag)
 
-next-tag:
-	make tag TAG=$(shell bin/generate_next_tag)
-
-editor-setup:
-	bundle
-	bundle exec annotate --models
-	# bundle exec annotate --routes
-	# bundle exec solargraph bundle
-	bundle exec yard gems
-	bundle exec solargraph bundle
-	bin/tapioca annotations
-	bin/tapioca gems --all
-	bin/tapioca dsl
+.PHONY: test

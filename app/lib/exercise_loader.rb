@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ExerciseLoader
-  include Import['docker_exercise_api']
+  include Import["docker_exercise_api"]
 
   def run(language_version)
     return unless language_version.may_build?
@@ -22,13 +22,12 @@ class ExerciseLoader
     docker_exercise_api.tag_image_version(lang_name, language_version.image_tag)
 
     # TODO: rename to building_error_descriptoin and use only for error messages
-    language_version.result = 'Success'
+    language_version.result = "Success"
     ActiveRecord::Base.transaction do
       language_version.mark_as_built!
       language_version.language.update!(current_version: language_version)
     end
   rescue StandardError => e
-    language_version.infos.map(&:destroy) # NOTE: may be invalid and don't allow to save version model, anyway not needed in this state
     language_version.result = "Error class: #{e.class} message: #{e.message}"
     language_version.mark_as_failed
     language_version.save(validate: false)
@@ -60,7 +59,7 @@ class ExerciseLoader
       .filter { |file| File.directory?(file) }
       .map do |directory|
         filename = File.basename(directory)
-        order, slug = filename.split('-', 2)
+        order, slug = filename.split("-", 2)
         infos = get_infos(File.join(dest, filename))
         { order: order, slug: slug, infos: infos }
       end
@@ -71,10 +70,10 @@ class ExerciseLoader
 
     files.map do |file|
       filename = File.basename(file)
-      _, locale, = filename.split('.')
+      _, locale, = filename.split(".")
 
       data = YAML.load_file(file)
-      [locale, data]
+      [ locale, data ]
     end
   end
 
@@ -87,7 +86,7 @@ class ExerciseLoader
         locale = File.basename(directory)
         data = get_lesson_info_data(directory)
 
-        [locale, data]
+        [ locale, data ]
       end
   end
 
@@ -97,8 +96,8 @@ class ExerciseLoader
 
   def get_lesson_info_data(directory)
     data = YAML.load_file("#{directory}/data.yml")
-    data['theory']       = File.read("#{directory}/README.md")
-    data['instructions'] = File.read("#{directory}/EXERCISE.md")
+    data["theory"]       = File.read("#{directory}/README.md")
+    data["instructions"] = File.read("#{directory}/EXERCISE.md")
     data
   end
 
@@ -106,14 +105,14 @@ class ExerciseLoader
     language_module = module_version.module
     module_dir = "#{module_version.order}-#{language_module.slug}"
     module_path = File.join(dest, module_dir)
-    wildcard_path = File.join(module_path, '*')
+    wildcard_path = File.join(module_path, "*")
     files = Dir.glob(wildcard_path)
 
     files
       .filter { |file| File.directory?(file) }
       .map do |directory|
         filename = File.basename(directory)
-        order, slug = filename.split('-', 2)
+        order, slug = filename.split("-", 2)
 
         infos = get_lesson_infos(directory)
         lesson_version = get_lesson_version(directory, language_version, module_version)
@@ -151,17 +150,17 @@ class ExerciseLoader
 
   def update_language(language_version)
     repo_dest = docker_exercise_api.repo_dest(language_version.language.slug)
-    spec_filepath = File.join(repo_dest, 'spec.yml')
-    language_spec = YAML.load_file(spec_filepath).fetch('language')
+    spec_filepath = File.join(repo_dest, "spec.yml")
+    language_spec = YAML.load_file(spec_filepath).fetch("language")
 
     language_version.assign_attributes(
-      name: language_spec.fetch('name'),
-      progress: language_spec.fetch('progress'),
-      learn_as: language_spec.fetch('learn_as'),
-      extension: language_spec.fetch('extension'),
-      docker_image: language_spec.fetch('docker_image'),
-      exercise_filename: language_spec.fetch('exercise_filename'),
-      exercise_test_filename: language_spec.fetch('exercise_test_filename')
+      name: language_spec.fetch("name"),
+      progress: language_spec.fetch("progress"),
+      learn_as: language_spec.fetch("learn_as"),
+      extension: language_spec.fetch("extension"),
+      docker_image: language_spec.fetch("docker_image"),
+      exercise_filename: language_spec.fetch("exercise_filename"),
+      exercise_test_filename: language_spec.fetch("exercise_test_filename")
     )
 
     language_version.save!
@@ -169,11 +168,11 @@ class ExerciseLoader
     infos = get_infos(repo_dest)
     infos.each do |locale, info_spec|
       language_version_info = language_version.infos.build(language: language_version.language)
-      language_version_info.description = info_spec.fetch('description')
-      language_version_info.header = info_spec.fetch('header')
-      language_version_info.title = info_spec.fetch('title', '')
-      language_version_info.keywords = info_spec.fetch('keywords', [])
-      language_version_info.seo_description = info_spec.fetch('seo_description', '')
+      language_version_info.description = info_spec.fetch("description")
+      language_version_info.header = info_spec.fetch("header")
+      language_version_info.title = info_spec.fetch("title", "")
+      language_version_info.keywords = info_spec.fetch("keywords", [])
+      language_version_info.seo_description = info_spec.fetch("seo_description", "")
       language_version_info.locale = locale
       language_version_info.save!
     end
@@ -264,6 +263,7 @@ class ExerciseLoader
       locale: locale,
       language: language_version.language,
       language_version: language_version,
+      language_lesson: lesson_version.lesson,
       version: lesson_version
     }.merge(data)
 
@@ -277,8 +277,8 @@ class ExerciseLoader
     reg = /(?<begin>^[^\n]*?BEGIN.*?$\s*)(?<content>.+?)(?<end>^[^\n]*?END.*?$)/msu
 
     result = code.gsub(reg, "\\k<begin>\n\\k<end>")
-    template_code = result.gsub('BEGIN', 'BEGIN (write your solution here)')
+    template_code = result.gsub("BEGIN", "BEGIN (write your solution here)")
 
-    result == code ? '' : template_code
+    result == code ? "" : template_code
   end
 end

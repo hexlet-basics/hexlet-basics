@@ -1,20 +1,28 @@
-# frozen_string_literal: true
-
 class Web::PasswordsController < Web::ApplicationController
   before_action :assert_reset_token_passed
 
   def edit
-    @user = User::PasswordForm.find_by!(reset_password_token: params[:reset_password_token])
+    user_password_form = User::PasswordForm.find_by!(reset_password_token: params[:reset_password_token])
+
+    seo_tags = {
+      title: t(".title")
+    }
+    set_meta_tags seo_tags
+
+    render inertia: true, props: {
+      userPassword: UserPasswordResource.new(user_password_form)
+    }
   end
 
   def update
-    @user = User::PasswordForm.find_by!(reset_password_token: params[:reset_password_token])
+    user_password_form = User::PasswordForm.find_by!(reset_password_token: params[:reset_password_token])
 
-    if @user.update(params[:user_password_form])
+    if user_password_form.update(params[:user_password_form])
       f(:success)
       redirect_to root_path
     else
-      render :edit
+      # f(:error, now: true)
+      redirect_to_inertia edit_password_path(reset_password_token: params[:reset_password_token]), user_password_form
     end
   end
 

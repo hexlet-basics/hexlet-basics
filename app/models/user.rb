@@ -4,7 +4,7 @@
 #
 # Table name: users
 #
-#  id                   :bigint           not null, primary key
+#  id                   :integer          not null, primary key
 #  admin                :boolean
 #  confirmation_token   :string(255)
 #  email                :string(255)
@@ -24,7 +24,7 @@
 #
 # Indexes
 #
-#  index_users_on_email  (email) UNIQUE WHERE ((state)::text <> 'removed'::text)
+#  index_users_on_email  (email) UNIQUE
 #
 class User < ApplicationRecord
   include UserRepository
@@ -37,17 +37,17 @@ class User < ApplicationRecord
   end
 
   def self.ransackable_associations(_auth_object = nil)
-    ['language_members']
+    [ "language_members" ]
   end
 
   validates :email, presence: true,
                     uniqueness: { case_sensitive: false },
-                    'valid_email_2/email': { mx: true },
+                    # 'valid_email_2/email': { mx: true },
                     unless: :removed?
 
-  has_many :lesson_members, class_name: 'Language::Lesson::Member', dependent: :destroy
-  has_many :lessons, through: :lesson_members, class_name: 'Language::Lesson'
-  has_many :language_members, class_name: 'Language::Member', dependent: :destroy
+  has_many :lesson_members, class_name: "Language::Lesson::Member", dependent: :destroy
+  has_many :lessons, through: :lesson_members, class_name: "Language::Lesson"
+  has_many :language_members, class_name: "Language::Member", dependent: :destroy
   has_many :accounts, dependent: :destroy
   has_many :reviews, dependent: :destroy
   has_many :blog_posts, dependent: :destroy
@@ -98,7 +98,7 @@ class User < ApplicationRecord
   end
 
   def serializable_data
-    attributes.extract! 'id', 'email', 'nickname', 'first_name', 'nickname', 'created_at'
+    attributes.extract! "id", "email", "nickname", "first_name", "nickname", "created_at"
   end
 
   private

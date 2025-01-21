@@ -13,7 +13,7 @@ module PacksHelper
   end
 
   def render_javascript_stored_packs
-    javascript_include_tag(*@javascript_packs&.uniq, crossorigin: 'anonymous', defer: true, nonce: true)
+    javascript_include_tag(*@javascript_packs&.uniq, crossorigin: "anonymous", defer: true, nonce: true)
   end
 
   def append_stylesheet_packs(*packs)
@@ -22,7 +22,7 @@ module PacksHelper
   end
 
   def render_stylesheet_stored_packs
-    stylesheet_link_tag(*@stylesheet_packs&.uniq, media: 'all')
+    stylesheet_link_tag(*@stylesheet_packs&.uniq, media: "all")
   end
 end
 # rubocop:enable Rails/HelperInstanceVariable

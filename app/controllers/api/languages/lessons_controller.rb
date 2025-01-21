@@ -5,7 +5,7 @@ class Api::Languages::LessonsController < Api::Languages::ApplicationController
     @lesson_infos = resource_language.current_lesson_infos
                                      .joins(version: :lesson)
                                      .with_locale
-                                     .order('language_lesson_versions.natural_order')
+                                     .order("language_lesson_versions.natural_order")
   end
 
   def show

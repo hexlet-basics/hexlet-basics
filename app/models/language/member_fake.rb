@@ -6,6 +6,6 @@ class Language::MemberFake
   end
 
   def state
-    'ready_to_start'
+    "ready_to_start"
   end
 end

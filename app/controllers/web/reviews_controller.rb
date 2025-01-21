@@ -2,6 +2,18 @@
 
 class Web::ReviewsController < Web::ApplicationController
   def index
-    @reviews = Review.published.with_locale.order(id: :desc).page(params[:page])
+    scope = Review.published.with_locale.includes([ :user ]).order(id: :desc)
+    pagy, records = pagy(scope)
+
+    seo_tags = {
+      title: t(".title"),
+      canonical: reviews_url
+    }
+    set_meta_tags seo_tags
+
+    render inertia: true, props: {
+      reviews: ReviewResource.new(records),
+      pagy:
+    }
   end
 end

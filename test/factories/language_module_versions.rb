@@ -4,7 +4,7 @@
 #
 # Table name: language_module_versions
 #
-#  id                  :bigint           not null, primary key
+#  id                  :integer          not null, primary key
 #  order               :integer
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
@@ -20,13 +20,13 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (language_id => languages.id)
-#  fk_rails_...  (language_version_id => language_versions.id)
-#  fk_rails_...  (module_id => language_modules.id)
+#  language_id          (language_id => languages.id)
+#  language_version_id  (language_version_id => language_versions.id)
+#  module_id            (module_id => language_modules.id)
 #
 FactoryBot.define do
   factory :language_module_version do
     language_version { nil }
-    order { 'MyString' }
+    order { "MyString" }
   end
 end

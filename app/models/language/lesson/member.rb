@@ -4,7 +4,7 @@
 #
 # Table name: language_lesson_members
 #
-#  id                 :bigint           not null, primary key
+#  id                 :integer          not null, primary key
 #  state              :string
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
@@ -22,9 +22,9 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...                                          (language_member_id => language_members.id)
-#  user_finished_lessons_language_module_lesson_id_fkey  (lesson_id => language_lessons.id)
-#  user_finished_lessons_user_id_fkey                    (user_id => users.id)
+#  language_member_id  (language_member_id => language_members.id)
+#  lesson_id           (lesson_id => language_lessons.id)
+#  user_id             (user_id => users.id)
 #
 class Language::Lesson::Member < ApplicationRecord
   include AASM
@@ -32,11 +32,11 @@ class Language::Lesson::Member < ApplicationRecord
 
   belongs_to :user
   belongs_to :language
-  belongs_to :language_member, class_name: 'Language::Member'
+  belongs_to :language_member, class_name: "Language::Member"
   belongs_to :lesson
 
   counter_culture :language_member,
-                  column_name: ->(model) { model.finished? ? 'finished_lessons_count' : nil }
+                  column_name: ->(model) { model.finished? ? "finished_lessons_count" : nil }
 
   aasm :state do
     state :started, initial: true
@@ -48,6 +48,6 @@ class Language::Lesson::Member < ApplicationRecord
   end
 
   def serializable_data
-    attributes.extract! 'id', 'state', 'created_at'
+    attributes.extract! "id", "state", "created_at"
   end
 end

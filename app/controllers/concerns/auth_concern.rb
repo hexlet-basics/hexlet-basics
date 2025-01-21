@@ -31,4 +31,8 @@ module AuthConcern
   def require_api_auth!
     head :forbidden unless signed_in?
   end
+
+  def require_admin_api_auth!
+    head :forbidden unless current_user.admin?
+  end
 end

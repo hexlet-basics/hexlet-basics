@@ -1,9 +1,0 @@
-- @blog_posts.each do |post|
-  .col
-    .card.border-0.bg-body
-      - if post.cover.attached?
-        = link_to blog_post_path(post.slug) do
-          = image_tag post.cover.variant(:list), class: 'card-img-top image-fluid'
-      .card-body
-        h2.card-title.fs-6 = link_to post, blog_post_path(post.slug), class: 'text-decoration-none'
-        .card-text = post.description

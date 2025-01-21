@@ -1,120 +1,135 @@
-# frozen_string_literal: true
+source "https://rubygems.org"
 
-source 'https://rubygems.org'
-git_source(:github) { |repo| "https://github.com/#{repo}.git" }
+# Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
+gem "rails", "~> 8.0.1"
+# Use sqlite3 as the database for Active Record
+gem "sqlite3", ">= 2.1"
+# Use the Puma web server [https://github.com/puma/puma]
+gem "puma", ">= 5.0"
+# Build JSON APIs with ease [https://github.com/rails/jbuilder]
+# gem "jbuilder"
 
-gem 'aws-sdk-s3'
+# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
+gem "tzinfo-data", platforms: %i[ windows jruby ]
+gem "alba"
+gem "typelizer"
 
-gem 'configus'
-gem 'geocoder'
-gem 'image_processing'
-gem 'puma'
-gem 'rails'
+# Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
+gem "solid_cache"
+gem "solid_queue"
+# gem "solid_cable"
 
-gem 'responders'
+# Reduces boot times through caching; required in config/boot.rb
+gem "bootsnap", require: false
 
-gem 'bootsnap', require: false
-gem 'http_accept_language'
-gem 'jbuilder'
-gem 'kaminari'
-gem 'omniauth-facebook'
-gem 'omniauth-github'
-gem 'omniauth-rails_csrf_protection'
-gem 'ransack'
-gem 'redis'
-gem 'term-ansicolor'
-gem 'valid_email2'
+# Deploy this application anywhere as a Docker container [https://kamal-deploy.org]
+gem "kamal", require: false
 
-gem 'bootstrap'
-gem 'jquery-rails'
+# Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
+gem "thruster", require: false
 
-gem 'terser'
+gem "inertia_rails"
+gem "vite_rails"
+gem "foreman"
+
+# gem 'aws-sdk-s3'
+
+# gem "configus"
+gem "geocoder"
+gem "image_processing"
+# gem 'responders'
+
+# gem 'http_accept_language'
+gem "pagy"
+# gem 'omniauth-facebook'
+# gem 'omniauth-github'
+# gem 'omniauth-rails_csrf_protection'
+gem "ransack"
+# gem 'redis'
+gem "term-ansicolor"
+# gem 'valid_email2'
+
+# gem 'bootstrap'
+# gem 'jquery-rails'
+
+# gem 'terser'
 
 # gem 'jsbundling-rails'
 
-gem 'sassc-rails'
-gem 'sprockets-rails'
-
-gem 'sentry-rails'
-gem 'sentry-ruby'
-gem 'sentry-sidekiq'
+# gem 'sentry-rails'
+# gem 'sentry-ruby'
 
 # gem 'stimulus-rails'
 # gem 'turbo-rails'
 
-gem 'js-routes'
+gem "js-routes"
+gem "i18n-js"
 
-group :development, :test do
-  gem 'brakeman'
-  gem 'bundler-audit'
-  gem 'byebug', platforms: %i[mri mingw x64_mingw]
-  gem 'dalli'
-  gem 'dotenv-rails'
-  gem 'factory_bot_rails'
-  gem 'faker'
-  gem 'slim_lint', require: false
-  # gem 'sorbet'
-  gem 'spring'
-  gem 'sqlite3'
-  gem 'tapioca', require: false
+group :development, :test, :staging do
+  gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
+
+  # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
+  gem "brakeman", require: false
+
+  # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
+  gem "rubocop-rails-omakase", require: false
+
+  gem "factory_bot_rails"
+  gem "faker"
+
+  # https://github.com/Shopify/tapioca/pull/2129/files
+  gem "tapioca", require: false
+  gem "bullet"
 end
 
-group :development do
-  gem 'annotate'
-  gem 'i18n-debug'
+group :development, :staging do
+  # gem 'annotate'
+  gem "annotaterb"
+  # gem 'i18n-debug'
   # gem 'listen'
-  gem 'bullet'
-  gem 'derailed_benchmarks'
-  gem 'rubocop', require: false
-  gem 'rubocop-performance', require: false
-  gem 'rubocop-rails', require: false
-  gem 'rubocop-rake', require: false
-  gem 'rubocop-rspec', require: false
-  gem 'ruby-lsp'
-  gem 'solargraph', require: false
-  gem 'solargraph-rails', require: false
-  gem 'sorbet', require: false
-  gem 'web-console'
+  # gem 'derailed_benchmarks'
+  gem "web-console"
+  gem "ruby-lsp", require: false
+  gem "ruby-lsp-rails", require: false
 end
 
 group :test do
-  gem 'capybara'
-  gem 'minitest-power_assert'
-  gem 'selenium-webdriver'
-  gem 'webdrivers'
-  gem 'whiny_validation'
+gem "capybara"
+  gem "selenium-webdriver"
+  gem "minitest-power_assert"
+  # gem 'webdrivers'
+  # gem 'whiny_validation'
 end
 
 group :production do
-  gem 'pg'
+  gem "pg"
 end
 
-gem 'aasm'
-gem 'active_form_model', github: 'Hexlet/active_form_model'
-gem 'bcrypt'
-gem 'dry-auto_inject'
-gem 'dry-container'
-gem 'enumerize'
-gem 'gon'
-gem 'googleauth'
-gem 'rails-i18n'
-gem 'redcarpet'
-gem 'sidekiq', '7.1.3'
-gem 'simple_form'
+gem "aasm"
+gem "active_form_model", github: "Hexlet/active_form_model"
+gem "bcrypt"
+gem "dry-auto_inject"
+gem "dry-container"
+gem "enumerize"
+gem "gon"
+gem "googleauth"
+gem "rails-i18n"
+gem "redcarpet"
+gem "simple_form"
 
-# NOTE: to fix domain: :all in cookie_store settings https://github.com/rails/rails/pull/46595
-gem 'cgi', '~>0.3.6'
+# gem 'sitemap_generator'
+# gem 'slim-rails'
 
-gem 'sitemap_generator'
-gem 'slim-rails'
-gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
-
-gem 'counter_culture'
-gem 'country_select'
+gem "counter_culture"
+gem "country_select"
 # gem 'sorbet-rails' # Temp disable sorbet for memory optimization
 
-gem 'browser'
-
+gem "browser"
+#
 gem 'meta-tags'
+#
+# gem 'browserslist_useragent'
 
-gem 'browserslist_useragent'
+gem "responders", "~> 3.1"
+
+gem "configus", "~> 0.0.5"

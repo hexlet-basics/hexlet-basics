@@ -2,7 +2,7 @@
 #
 # Table name: language_lesson_members
 #
-#  id                 :bigint           not null, primary key
+#  id                 :integer          not null, primary key
 #  state              :string
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
@@ -20,9 +20,9 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...                                          (language_member_id => language_members.id)
-#  user_finished_lessons_language_module_lesson_id_fkey  (lesson_id => language_lessons.id)
-#  user_finished_lessons_user_id_fkey                    (user_id => users.id)
+#  language_member_id  (language_member_id => language_members.id)
+#  lesson_id           (lesson_id => language_lessons.id)
+#  user_id             (user_id => users.id)
 #
 one:
   user: one

@@ -4,7 +4,7 @@
 #
 # Table name: reviews
 #
-#  id          :bigint           not null, primary key
+#  id          :integer          not null, primary key
 #  body        :text
 #  first_name  :string
 #  last_name   :string
@@ -22,8 +22,8 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (language_id => languages.id)
-#  fk_rails_...  (user_id => users.id)
+#  language_id  (language_id => languages.id)
+#  user_id      (user_id => users.id)
 #
 class Review < ApplicationRecord
   extend Enumerize
@@ -33,7 +33,7 @@ class Review < ApplicationRecord
   enumerize :locale, in: I18n.available_locales
 
   def self.ransackable_attributes(_auth_object = nil)
-    ['created_at']
+    [ "created_at" ]
   end
 
   def self.ransackable_associations(_auth_object = nil)

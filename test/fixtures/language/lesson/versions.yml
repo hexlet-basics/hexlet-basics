@@ -2,7 +2,7 @@
 #
 # Table name: language_lesson_versions
 #
-#  id                  :bigint           not null, primary key
+#  id                  :integer          not null, primary key
 #  natural_order       :integer
 #  order               :integer
 #  original_code       :string
@@ -25,10 +25,10 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (language_id => languages.id)
-#  fk_rails_...  (language_version_id => language_versions.id)
-#  fk_rails_...  (lesson_id => language_lessons.id)
-#  fk_rails_...  (module_version_id => language_module_versions.id)
+#  language_id          (language_id => languages.id)
+#  language_version_id  (language_version_id => language_versions.id)
+#  lesson_id            (lesson_id => language_lessons.id)
+#  module_version_id    (module_version_id => language_module_versions.id)
 #
 ---
 
@@ -38,31 +38,31 @@ DEFAULTS: &DEFAULTS
   path_to_code: ''
   original_code: ''
 
-one:
+javascript1-module1_version1-lesson1_version1:
   <<: *DEFAULTS
   order: 10
   natural_order: 10
-  language_version: javascript
-  module_version: one
-  lesson: one
+  language_version: javascript1
+  module_version: javascript1-module1_version1
+  lesson: javascript-module1-lesson1
   language: javascript
 
-two:
+javascript1-module1_version1-lesson2_version1:
   <<: *DEFAULTS
   order: 20
   natural_order: 20
-  language_version: javascript
-  module_version: two
-  lesson: two
+  language_version: javascript1
+  module_version: javascript1-module1_version1
+  lesson: javascript-module1-lesson2
   language: javascript
 
-three:
+javascript1-module2_version1-lesson1_version1:
   <<: *DEFAULTS
-  order: 25
+  order: 10
   natural_order: 25
-  language_version: javascript
-  module_version: two
-  lesson: three
+  language_version: javascript1
+  module_version: javascript1-module2_version1
+  lesson: javascript-module2-lesson1
   language: javascript
 
 tags_one:
@@ -91,15 +91,6 @@ naming_variables_one:
   module_version: variables_one
   lesson: naming_variables_one
   language: php
-
-javascript:
-  <<: *DEFAULTS
-  order: 1
-  natural_order: 1
-  language_version: javascript
-  module_version: javascript
-  lesson: javascript
-  language: javascript
 
 elixir-hello-world:
   <<: *DEFAULTS

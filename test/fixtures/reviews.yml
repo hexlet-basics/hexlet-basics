@@ -2,7 +2,7 @@
 #
 # Table name: reviews
 #
-#  id          :bigint           not null, primary key
+#  id          :integer          not null, primary key
 #  body        :text
 #  first_name  :string
 #  last_name   :string
@@ -20,6 +20,9 @@
 #
 # Foreign Keys
 #
+#  language_id  (language_id => languages.id)
+#  user_id      (user_id => users.id)
+#
 #  fk_rails_...  (language_id => languages.id)
 #  fk_rails_...  (user_id => users.id)
 
@@ -28,16 +31,34 @@
 DEFAULTS: &DEFAULTS
   state: published
   user: full
-  first_name: First Name
-  last_name: Last Name
+  first_name: First $LABEL
+  last_name: Last $LABEL
   language: javascript
   locale: <%= I18n.locale %>
 
 full-javascript:
   <<: *DEFAULTS
+  user: admin
   body: <%= Faker::Lorem.paragraph_by_chars %>
 
 full-javascript-ru:
+  <<: *DEFAULTS
+  user: one
+  body: <%= Faker::Lorem.paragraph_by_chars %>
+  locale: ru
+
+full-javascript-ru2:
+  <<: *DEFAULTS
+  user: two
+  body: <%= Faker::Lorem.paragraph_by_chars %>
+  locale: ru
+
+full-javascript-ru3:
+  <<: *DEFAULTS
+  body: <%= Faker::Lorem.paragraph_by_chars %>
+  locale: ru
+
+full-javascript-ru4:
   <<: *DEFAULTS
   body: <%= Faker::Lorem.paragraph_by_chars %>
   locale: ru

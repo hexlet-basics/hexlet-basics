@@ -12,7 +12,7 @@ class DockerExerciseApi
   def self.download(lang_name)
     ok = system("docker pull #{image_name(lang_name)}")
 
-    raise 'Docker servise not available' unless ok
+    raise "Docker servise not available" unless ok
 
     system("rm -rf #{repo_dest(lang_name)}")
 
@@ -30,7 +30,7 @@ class DockerExerciseApi
     output = []
     status = BashRunner.start(command) { |line| output << line }
 
-    [output.join, status]
+    [ output.join, status ]
   end
 
   def self.tag_image_version(lang_name, tag)

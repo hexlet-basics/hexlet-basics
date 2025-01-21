@@ -1,21 +1,44 @@
-# frozen_string_literal: true
-
 class Web::BlogPostsController < Web::ApplicationController
   def index
-    @blog_posts = BlogPost.published.with_locale.page(params[:page])
+    scope = BlogPost.published.with_locale.includes([ :cover_attachment ])
+    pagy, records = pagy(scope)
+
+    seo_tags = {
+      title: t(".title"),
+      canonical: blog_posts_url
+    }
+    set_meta_tags seo_tags
+
+    render inertia: true, props: {
+      blogPosts: BlogPostResource.new(records),
+      pagy:
+    }
   end
 
   def show
-    @blog_post = BlogPost.published.find_by!(slug: params[:id])
+    blog_post = BlogPost.published.find_by!(slug: params[:id])
 
-    @category = @blog_post.category
-    @blog_posts = []
-    @languages = []
-    if @category
-      @blog_posts = @category.blog_posts.except(@blog_post).limit(3)
-      @languages = @category.languages.limit(3)
-    end
+    # category = blog_post.category
+
+    # blog_posts = []
+    # languages = []
+
+    blog_posts = BlogPost.with_locale.except(blog_post).includes([ :cover_attachment ]).limit(2)
+
+    # if category
+    #   blog_posts = category.blog_posts.except(blog_post).limit(3)
+    #   languages = category.languages.limit(3)
+    # end
+
+    seo_tags = {
+      title: blog_post.name
+    }
+    set_meta_tags seo_tags
 
     # TODO: add https://developers.google.com/search/docs/appearance/structured-data/article
+    render inertia: true, props: {
+      blogPost: BlogPostResource.new(blog_post),
+      recommendedBlogPosts: BlogPostResource.new(blog_posts)
+    }
   end
 end

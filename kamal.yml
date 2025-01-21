@@ -1,0 +1,24 @@
+app:
+  image: myapp:latest
+  service: app
+  port: 3000
+
+services:
+  web:
+    container_name: rails_app_web
+    command: puma -C config/puma.rb
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    environment:
+      RAILS_ENV: development
+      DATABASE_URL: postgres://postgres:password@db:5432/myapp_development
+  db:
+    image: postgres:14
+    container_name: rails_app_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"

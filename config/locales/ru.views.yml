@@ -7,7 +7,7 @@ ru:
         blog_posts: Посты в блоге
     reviews:
       index:
-        header: Отзывы
+        title: Отзывы
         empty: Похоже, что тут пока ничего нет
         read_more: Читать далее
         course: 'Курс %{language}'
@@ -15,10 +15,12 @@ ru:
       title: Админка Code-Basics
       languages:
         index:
-          languages: Языки
-          add_new_language: Добавить новый язык
+          header: Курсы
+          add_new_language: Добавить новый курс
         new:
-          new_language: Новый язык
+          header: Новый курс
+        edit:
+          header: Редактирование %{id}
       home:
         index:
           dashboard: Кабинет
@@ -27,27 +29,31 @@ ru:
         users:
           index:
             finished_lessons: Завершенные уроки
-            users: Пользователи
+            header: Пользователи
           filter:
             from: Начал прохождение с
       reviews:
         index:
           header: Отзывы
           add_new_review: Добавить новый отзыв
+        edit:
+          header: Редактирование %{id}
         new:
-          new_review: Новый отзыв
+          header: Новый отзыв
       blog_posts:
         index:
           header: Посты в блоге
           add_new_blog_post: Добавить новый пост
         new:
-          new_blog_post: Новый пост
+          header: Новый пост
+        edit:
+          header: Редактирование %{id}
     home:
       reviews:
         reviews: Отзывы
         course_html: Курс %{link}
       hero:
-        learn_html: Изучи&nbsp;
+        learn_html: Изучи
         free_programming_courses: Бесплатные курсы программирования
         fastest_way_to_start_coding: Самый быстрый способ попробовать программирование прямо в браузере. Бесплатные курсы с тренажером. Практика после каждого урока
         try: Попробовать
@@ -62,7 +68,8 @@ ru:
         all_reviews: Все отзывы
         categories: Направления
         join: Зарегистрируйтесь и начните учиться прямо сейчас
-        meta_description: Бесплатные практические курсы программирования для начинающих от сообщества Хекслет. Обучение языкам программирования с нуля бесплатно, интерактивные уроки онлайн на русском
+        meta:
+          description: Бесплатные практические курсы программирования для начинающих от сообщества Хекслет. Обучение языкам программирования с нуля бесплатно, интерактивные уроки онлайн на русском
         title: |
           Code Basics: бесплатные курсы программирования, обучение онлайн
         header: Обучение программированию. Онлайн. Бесплатно
@@ -74,21 +81,24 @@ ru:
         all_blog_posts: Все статьи
     users:
       new:
-        confirmation_html: Регистрируясь, вы соглашаетесь с <a href="%{link}" class="text-decoration-none" target="_blank">условиями использования</a>
+        confirmation_html: Регистрируясь, вы соглашаетесь с <a href="%{url}" class="text-decoration-none" target="_blank">условиями использования</a>
         title: Регистрация
-        meta_description: Зарегистрироваться на Code Basics
+        meta:
+          description: Зарегистрироваться на Code Basics
         sign_up: Регистрация
         have_account: Есть аккаунт?
         sign_in: Войти
     sessions:
       new:
         title: Вход
-        meta_description: Войти на Code Basics
+        meta:
+          description: Войти на Code Basics
         sign_in: Вход
         dont_have_account: Нет аккаунта?
         register: Регистрация
         sign_in_with_github: Войти через GitHub
         forgot_password: Забыли пароль?
+        reset_password: Восстановить
         password: Пароль
         email: Email
     passwords:
@@ -112,12 +122,12 @@ ru:
         blog_posts: Рекомендованные статьи
         courses: Рекомендованные курсы
       index:
-        header: Блог
+        title: Блог
         empty: Похоже, что тут пока ничего нет
     languages:
       show:
         breadcrumbs: Хлебные крошки
-        see_all_courses_in_category: Посмотреть все курсы категории %{name}
+        see_all_courses_in_category: Все курсы "%{name}"
         to_home_title: Главная
         registration: Регистрация
         registration_description: Начните прямо сейчас
@@ -153,8 +163,19 @@ ru:
           share_fb_text: "Этот курс побеждён! Было круто! #hexlet"
           share_twitter_text: "Этот курс побеждён! Было круто!"
       lessons:
-        content:
-          issues: Нашли ошибку? Есть что добавить? Пулреквесты приветствуются
+        show:
+          confirm: "Вы хотите сбросить прогресс упражнения. Текущая версия кода не сохранится — надеемся, вы уже скопировали его. Продолжаем сброс?"
+          controls:
+            header: Справка
+            body: |
+              Сбросить прогресс. По этой кнопке можно вернуться в начало упражнения, если что-то сломалось и не чинится. Текущий код не сохранится. Если он вам еще потребуется, скопируйте его перед сбросом — например, в блокнот
+            run: Запустить
+
+          editor: Редактор
+          output: Вывод
+          solution: Решение
+          tests: Тесты
+          issues:
           sign_up_for_tracking_progress_html: |
             Бесплатный курс по %{name}. <a href="%{link}" class="text-decoration-none" target="_blank">Зарегистрируйтесь</a> для отслеживания прогресса &rarr;
           instructions: Задание
@@ -179,58 +200,54 @@ ru:
                 Создавать обучающие материалы, понятные для всех без исключения, довольно сложно. Мы очень стараемся, но всегда есть что улучшать. Если вы встретили материал, который вам непонятен, опишите проблему в «Обсуждениях». Идеально, если вы сформулируете непонятные моменты в виде вопросов. Обычно нам нужно несколько дней для внесения правок.
 
                 Кстати, вы тоже можете участвовать в улучшении курсов: внизу есть ссылка на исходный код уроков, который можно править прямо из браузера.
-          prev: Предыдущий
-          next: Следующий
+          prev: ← Предыдущий
+          next: Следующий →
           separator: ' — '
-        show:
           navigation: Навигация
           show_full_version: Реактор кода доступен в основной версии →
-          if_stuck_html: 'Если вы столкнулись с трудностями и не знаете, что делать, задайте вопрос в нашем большом и дружном <a href="%{link}" target="_blank" rel="noopener">сообществе</a>'
+          if_stuck_html: |
+            Если вы столкнулись с трудностями и не знаете, что делать, задайте вопрос в нашем большом и дружном <a href="%{url}" target="_blank" rel="noopener">телеграм-сообществе</a>
           discuss: Обсуждение
           lesson: Урок
           only_for_signed_in_users: Упражнение доступно только авторизованным пользователям.
           please_sign_in: Пожалуйста, авторизуйтесь, это необходимо для отслеживания прогресса выполнения уроков. Если у вас ещё нет учётной записи, то сейчас самое время создать аккаунт.
           sign_in: Войти
-        lesson_tab:
           to_home_title: Домой
           breadcrumb: Хлебные крошки
-        navigation_tab:
     pages:
-      about:
-        title: О проекте
-        meta_description: |
-          Code Basics — качественные интерактивные уроки по основам программирования бесплатно, для всех.
-        projects_goal: |
-          Цель Code Basics — предоставить качественные интерактивные уроки по основам программирования бесплатно, для всех.
-        extended_credits: |
-          Идея, учебный план, платформа: Кирилл Мокевнин. Уроки (9 базовых модулей): Рахим Давлеткалиев и Наталия Басс. Расширения и адаптация: Кирилл Мокевнин, Улугбек Туйчиев, Алексей Пыльцын и другие участники сообщества Хекслет.
-        contributions: |
-          Исходный код платформы Code Basics, всех уроков и упражнений доступен на GitHub. Вы можете поучаствовать в процессе улучшения уроков, исправления неточностей и расширения курсов на другие языки программирования.
-        source_code: Исходный код
-      privacy:
-        meta_description: Политика конфиденциальности Code Basics
-        title: Политика конфиденциальности
-      tos:
-        title: Условия использования образовательной платформы
-        meta_description: Условия использования образовательной платформы Code Basics
-      authors:
-        title: Автору
-        meta_description: |
-          Code Basics открытый проект, в котором любой человек может стать автором курсов. Вот список шагов, которые нужно выполнить для этого.
-      cookie_policy:
-        title: Cookie Policy
-        meta_description: Cookies Policy
+      parts:
+        about:
+          title: О проекте
+          meta:
+            description: |
+              Code Basics — качественные интерактивные уроки по основам программирования бесплатно, для всех.
+        privacy:
+          meta:
+            description: Политика конфиденциальности Code Basics
+          title: Политика конфиденциальности
+        tos:
+          title: Условия использования образовательной платформы
+          meta:
+            description: Условия использования образовательной платформы Code Basics
+        authors:
+          title: Автору
+          meta:
+            description: |
+              Code Basics открытый проект, в котором любой человек может стать автором курсов. Вот список шагов, которые нужно выполнить для этого.
+        cookie_policy:
+          title: Cookie Policy
+          meta:
+            description: Cookies Policy
 
 
     account:
       profiles:
         edit:
-          meta_description: Профиль
-          title: Профиль %{email}
+          title: Редактирование профиля
+          meta:
+            description: Здесь меняются личные данные
           delete: Удалить аккаунт
           confirm_delete: Вы уверены, что хотите удалить свой аккаунт?
-        destroy:
-          success: Аккаунт успешно удален
     errors:
       not_found:
         base: Не найдено

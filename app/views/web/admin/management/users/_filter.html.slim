@@ -1,8 +1,0 @@
-.p-3.pb-2.mb-3.bg-light
-  = simple_form_for @search, default_filter_form_options(url: url_for) do |f|
-    = f.input :email_cont, placeholder: han(:users, :email)
-    = f.input :language_members_language_id_eq, as: :select, collection: Language.pluck(:slug, :id), input_html: { title: han(:language, :name) }
-    = f.input :language_members_created_at_gteq, as: :date, html5: true, label: t('.from')
-    .col.d-flex.align-self-end.mb-3
-      = f.button :submit, class: 'btn-primary flex-grow-1 me-2'
-      = link_to t('reset'), url_for, class: 'btn btn-outline-primary'

@@ -4,7 +4,7 @@
 #
 # Table name: languages
 #
-#  id                     :bigint           not null, primary key
+#  id                     :integer          not null, primary key
 #  docker_image           :string(255)
 #  exercise_filename      :string(255)
 #  exercise_test_filename :string(255)
@@ -32,9 +32,9 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...              (category_id => language_categories.id)
-#  fk_rails_...              (current_version_id => language_versions.id)
-#  languages_upload_id_fkey  (upload_id => uploads.id)
+#  category_id         (category_id => language_categories.id)
+#  current_version_id  (current_version_id => language_versions.id)
+#  upload_id           (upload_id => uploads.id)
 #
 class Language < ApplicationRecord
   include LanguageRepository
@@ -43,7 +43,7 @@ class Language < ApplicationRecord
   extend Enumerize
 
   def self.ransackable_attributes(_auth_object = nil)
-    ['created_at']
+    [ "created_at" ]
   end
 
   enumerize :slug, in: %i[ada bash clang clojure cobol cpp csharp css crystal dart dlang elixir elm fortran go groovy haskell html java
@@ -58,13 +58,13 @@ class Language < ApplicationRecord
   validates :slug, presence: true
   # validates :learn_as, presence: true
 
-  belongs_to :current_version, optional: true, class_name: 'Language::Version'
+  belongs_to :current_version, optional: true, class_name: "Language::Version"
   belongs_to :category, optional: true
 
   has_many :modules, dependent: :destroy
   has_many :lessons, dependent: :destroy
-  has_many :versions, dependent: :destroy, class_name: '::Language::Version'
-  has_many :infos, class_name: '::Language::Version::Info', dependent: :restrict_with_exception
+  has_many :versions, dependent: :destroy, class_name: "::Language::Version"
+  has_many :infos, class_name: "::Language::Version::Info", dependent: :restrict_with_exception
   has_many :members, dependent: :destroy
   has_many :reviews, dependent: :restrict_with_exception
   has_many :blog_posts, dependent: :restrict_with_exception
@@ -77,10 +77,10 @@ class Language < ApplicationRecord
 
   delegate :to_s, to: :current_version
   delegate :serializable_data, to: :current_version
-  delegate :name, to: :current_version
+  delegate :name, to: :current_version, allow_nil: true
 
   def duration
     # TODO Пересадить на counter_culture от Language::Version
-    current_lessons.size * 15 / 60
+    lessons_count * 15 / 60
   end
 end

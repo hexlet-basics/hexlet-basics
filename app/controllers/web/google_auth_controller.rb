@@ -1,11 +1,9 @@
-# frozen_string_literal: true
-
 class Web::GoogleAuthController < Web::ApplicationController
   before_action :validate_google_csrf
 
   def one_tap
     payload = ApplicationContainer[:google_one_tap].verify_oidc(params[:credential], aud: configus.google.client.id)
-    email = payload['email']
+    email = payload["email"]
     existing_user = User.find_by(email: email)
     user = GoogleAuthService.authenticate_user(payload)
 
@@ -28,8 +26,8 @@ class Web::GoogleAuthController < Web::ApplicationController
   private
 
   def validate_google_csrf
-    if cookies['g_csrf_token'].blank? || params['g_csrf_token'].blank? ||
-       cookies['g_csrf_token'] != params['g_csrf_token']
+    if cookies["g_csrf_token"].blank? || params["g_csrf_token"].blank? ||
+       cookies["g_csrf_token"] != params["g_csrf_token"]
       f(:error)
       redirect_to root_path
     end

@@ -6,8 +6,8 @@ class ProviderSchema
 
     def to_builder
       Jbuilder.new do |json|
-        json.set! '@type', 'Organization'
-        json.name 'Code Basics'
+        json.set! "@type", "Organization"
+        json.name "Code Basics"
         json.sameAs root_url
       end
     end

@@ -1,9 +1,17 @@
 ru:
   helpers:
+    reset: Сбросить
+    crud:
+      list: Список
+      add: Добавить
+      editing: Редактирование
+      adding: Добавление
     submit:
+      replace: Сменить
       create: Создать
       update: Изменить
-      sign_in_form:
+      save: Сохранить
+      user_sign_in_form:
         create: Войти
       user_sign_up_form:
         create: Создать аккаунт

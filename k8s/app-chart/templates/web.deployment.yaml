@@ -58,13 +58,13 @@ spec:
           image: "{{ .Values.nginx.image.repository }}:{{ .Values.version }}"
           startupProbe:
             httpGet:
-              path: /health
+              path: /up
               port: 8080
             periodSeconds: 10
             failureThreshold: 30
           readinessProbe:
             httpGet:
-              path: /health
+              path: /up
               port: 8080
             initialDelaySeconds: 15
             periodSeconds: 8
@@ -72,7 +72,7 @@ spec:
             failureThreshold: 3
           livenessProbe:
             httpGet:
-              path: /health
+              path: /up
               port: 8080
             initialDelaySeconds: 15
             periodSeconds: 3
@@ -101,7 +101,7 @@ spec:
           image: "{{ .Values.web.image.repository }}:{{ .Values.version }}"
           startupProbe:
             httpGet:
-              path: /health
+              path: /up
               port: 3000
               httpHeaders:
                 - name: X-Forwarded-Proto
@@ -110,7 +110,7 @@ spec:
             failureThreshold: 30
           readinessProbe:
             httpGet:
-              path: /health
+              path: /up
               port: 3000
               httpHeaders:
                 - name: X-Forwarded-Proto
@@ -121,7 +121,7 @@ spec:
             failureThreshold: 3
           livenessProbe:
             httpGet:
-              path: /health
+              path: /up
               port: 3000
               httpHeaders:
                 - name: X-Forwarded-Proto

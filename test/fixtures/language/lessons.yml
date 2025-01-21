@@ -2,7 +2,7 @@
 #
 # Table name: language_lessons
 #
-#  id            :bigint           not null, primary key
+#  id            :integer          not null, primary key
 #  natural_order :integer
 #  order         :integer
 #  original_code :text
@@ -26,9 +26,9 @@
 #
 # Foreign Keys
 #
-#  language_module_lessons_language_id_fkey  (language_id => languages.id)
-#  language_module_lessons_module_id_fkey    (module_id => language_modules.id)
-#  language_module_lessons_upload_id_fkey    (upload_id => uploads.id)
+#  language_id  (language_id => languages.id)
+#  module_id    (module_id => language_modules.id)
+#  upload_id    (upload_id => uploads.id)
 #
 DEFAULTS: &DEFAULTS
   slug: $LABEL
@@ -38,15 +38,25 @@ one:
   language: php
   module: one
 
-two:
-  slug: hello_world
+javascript-module1-lesson1:
+  slug: $LABEL
   language: javascript
-  module: two
+  module: javascript-module1
 
-three:
+javascript-module1-lesson2:
   slug: functions
   language: javascript
-  module: two
+  module: javascript-module1
+
+javascript-module1-lesson3:
+  slug: loops
+  language: javascript
+  module: javascript-module1
+
+javascript-module2-lesson1:
+  slug: $LABEL
+  language: javascript
+  module: javascript-module2
 
 tags_one:
   slug: tags
@@ -62,11 +72,6 @@ naming_variables_one:
   slug: quotes
   language: php
   module: variables_one
-
-javascript:
-  slug: alone_lesson
-  language: javascript
-  module: javascript
 
 elixir-hello-world:
   <<: *DEFAULTS

@@ -4,14 +4,14 @@
 #
 # Table name: language_categories
 #
-#  id         :bigint           not null, primary key
-#  name_ru    :string
+#  id         :integer          not null, primary key
 #  name_en    :string
+#  name_ru    :string
 #  slug       :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
-require 'test_helper'
+require "test_helper"
 
 class Language::CategoryTest < ActiveSupport::TestCase
   # test "the truth" do

@@ -1,17 +1,137 @@
-@import '../stylesheets/devicon.css';
-@import 'highlight.js/styles/github.css';
+@import "highlight.js/styles/github.css";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+@import "flag-icons/css/flag-icons.min.css";
+@import 'devicon/devicon.min.css';
 
-@import '../stylesheets/custom';
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
 
-@import 'bootstrap/scss/bootstrap';
-@import '../stylesheets/bootstrap-icons.css';
+@import "bootstrap/scss/variables-dark";
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/root";
 
-@import 'ilyabirman-likely/release/likely.min.css';
+@import "bootstrap/scss/utilities";
 
-@import 'node_modules/select2/src/scss/core';
+$utilities: map-merge($utilities,
+    ("responsive-height": (property: height,
+        class: 'x-h',
+        responsive: true,
+        values: (100: 100%,
+        )),
+    ));
 
-// NOTE https://github.com/apalfrey/select2-bootstrap-5-theme/issues/75
-$s2bs5-border-color: $border-color;
-@import 'select2-bootstrap-5-theme/src/include-all';
+@import "bootstrap/scss/bootstrap";
 
-@import '../stylesheets/blog';
+// NOTE: https://github.com/react-bootstrap/react-bootstrap/blob/58e632c1a4c605ced6bab88fc8c7adfdd159fa86/src/NavDropdown.tsx#L92
+.dropdown-toggle {
+  @extend .link-body-emphasis;
+}
+
+.breadcrumb a {
+  @extend .text-decoration-none;
+  @extend .link-body-emphasis;
+  @extend .fw-medium;
+}
+
+#app {
+  @extend .h-100, .d-flex, .flex-column;
+}
+
+:root {
+  --terminal-bg: #f8f9fa;
+  /* Light theme background */
+  --terminal-text: #212529;
+  /* Light theme text color */
+  --terminal-border: #ced4da;
+  /* Light theme border */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --terminal-bg: #2d2d2d;
+    /* Dark theme background */
+    --terminal-text: #f8f8f2;
+    /* Dark theme text color */
+    --terminal-border: #444;
+    /* Dark theme border */
+  }
+}
+
+// TODO: chatgpt recommendation. Fix if needed
+.hexlet-basics-output {
+  background-color: var(--terminal-bg);
+  color: var(--terminal-text);
+  padding: 15px;
+  border-radius: 5px;
+  font-family: monospace;
+  font-size: 0.9rem;
+  overflow: auto;
+  border: 1px solid var(--terminal-border);
+}
+
+/* the only light, non-standard block, has to be customized directly */
+.hexlet-basics-content {
+
+  img {
+    @include img-fluid();
+  }
+
+  table {
+    @extend .table;
+    @extend .w-auto;
+  }
+
+  pre {
+    @extend .border;
+    @extend .rounded;
+
+    code {
+      @extend .d-block;
+      @extend .p-3;
+    }
+  }
+
+  .hexlet-basics-example {
+    @extend .border;
+    @extend .rounded;
+    @extend .p-3;
+  }
+
+  pre.hexlet-basics-output {
+    display: block;
+    background-color: $black;
+    color: white;
+    width: 100%;
+    padding: 0 10px 12px 15px;
+    border: none;
+  }
+
+  pre.hexlet-basics-output:before {
+    content: '';
+    // background: url('../images/fake_output_topbar.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 27px;
+    display: block;
+    margin-bottom: 10px;
+    background-color: #353d46;
+    width: calc(100% + 25px);
+    margin-left: -15px;
+  }
+
+  .ratio {
+    @extend .my-4;
+  }
+}
+
+// $utilities: (
+//   "height": (property: height,
+//     responsive: true,
+//     class: x-h,
+//     values: (25: 25%,
+//       50: 50%,
+//       75: 75%,
+//       100: 100%,
+//       auto: auto)),
+// );

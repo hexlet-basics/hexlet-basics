@@ -4,7 +4,7 @@
 #
 # Table name: language_lessons
 #
-#  id            :bigint           not null, primary key
+#  id            :integer          not null, primary key
 #  natural_order :integer
 #  order         :integer
 #  original_code :text
@@ -28,9 +28,9 @@
 #
 # Foreign Keys
 #
-#  language_module_lessons_language_id_fkey  (language_id => languages.id)
-#  language_module_lessons_module_id_fkey    (module_id => language_modules.id)
-#  language_module_lessons_upload_id_fkey    (upload_id => uploads.id)
+#  language_id  (language_id => languages.id)
+#  module_id    (module_id => language_modules.id)
+#  upload_id    (upload_id => uploads.id)
 #
 class Language::Lesson < ApplicationRecord
   include Language::LessonRepository
@@ -47,7 +47,7 @@ class Language::Lesson < ApplicationRecord
   has_many :versions, dependent: :destroy
   has_many :members, dependent: :destroy
 
-  has_many :infos, through: :versions, class_name: 'Language::Lesson::Version::Info'
+  has_many :infos, through: :versions, class_name: "Language::Lesson::Version::Info"
 
   aasm :state do
     state :created, initial: true
@@ -68,6 +68,6 @@ class Language::Lesson < ApplicationRecord
   end
 
   def serializable_data
-    attributes.extract! 'id', 'slug', 'created_at'
+    attributes.extract! "id", "slug", "created_at"
   end
 end

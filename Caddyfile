@@ -1,0 +1,41 @@
+# Caddyfile for Rails 8 + Vite-Ruby + HTTPS
+# {
+#   debug
+# }
+
+# Define the site using HTTPS
+# https://code-basics.test:3036 {
+# 	reverse_proxy /vite-dev/* http://127.0.0.1:3036
+# }
+
+https://code-basics.test {
+	# Root directory for Rails
+	# root * ./public
+	# file_server
+
+	# Enable gzip and other compression
+	encode gzip zstd
+
+	reverse_proxy /vite-dev/* http://127.0.0.1:3036
+	reverse_proxy http://127.0.0.1:3100
+
+
+	# # Redirect Vite HMR requests
+	# @vite_hmr {
+	#     path /vite/@vite/client
+	#     path_regexp vite_hmr ^/vite/.*\.(js|css|map)$
+	# }
+	# reverse_proxy @vite_hmr http://127.0.0.1:5173
+
+	# Serve static assets directly
+	# file_server /assets/* /path/to/your/rails-app/public/assets
+	# file_server /packs/* /path/to/your/rails-app/public/packs
+
+	# Log configuration for debugging (optional)
+	# log {
+	#    level info
+	# }
+
+	# Automatic HTTPS
+	tls internal
+}

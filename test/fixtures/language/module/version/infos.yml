@@ -2,7 +2,7 @@
 #
 # Table name: language_module_version_infos
 #
-#  id                  :bigint           not null, primary key
+#  id                  :integer          not null, primary key
 #  description         :string
 #  locale              :string
 #  name                :string
@@ -19,12 +19,14 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (language_id => languages.id)
-#  fk_rails_...  (language_version_id => language_versions.id)
-#  fk_rails_...  (version_id => language_module_versions.id)
+#  language_id          (language_id => languages.id)
+#  language_version_id  (language_version_id => language_versions.id)
+#  version_id           (version_id => language_module_versions.id)
 #
 DEFAULTS: &DEFAULTS
-  description: <%= Faker::Lorem.paragraph %>
+  description: |
+    $LABEL
+    <%= Faker::Lorem.paragraph %>
   name: $LABEL
 
 one:
@@ -34,12 +36,33 @@ one:
   version: one
   language_version: ruby
 
-two:
+javascript1-module1-version1-ru:
   <<: *DEFAULTS
   locale: ru
   language: javascript
-  version: two
-  language_version: javascript
+  version: javascript1-module1_version1
+  language_version: javascript1
+
+javascript1-module1-version2-ru:
+  <<: *DEFAULTS
+  locale: ru
+  language: javascript
+  version: javascript1-module1_version2
+  language_version: javascript2
+
+javascript1-module2-version1-ru:
+  <<: *DEFAULTS
+  locale: ru
+  language: javascript
+  version: javascript1-module2_version1
+  language_version: javascript1
+
+javascript1-module1-version1-en:
+  <<: *DEFAULTS
+  locale: en
+  language: javascript
+  version: javascript1-module1_version1
+  language_version: javascript1
 
 variables_one:
   name: Переменные

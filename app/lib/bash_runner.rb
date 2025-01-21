@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'English' # NOTE Без явного указания $CHILD_STATUS nil
-require 'pty'
+require "English" # NOTE Без явного указания $CHILD_STATUS nil
+require "pty"
 
 class BashRunner
   class << self

@@ -2,6 +2,6 @@
 
 FactoryBot.define do
   factory :language_upload do
-    uploader { 'website' }
+    uploader { "website" }
   end
 end

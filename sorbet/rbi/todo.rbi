@@ -4,18 +4,15 @@
 
 # typed: false
 
-module ::MiniMagick::Tool; end
-module ::Vips::Image; end
-module ActionText::Record; end
-module ActionText::RichText::GeneratedAssociationMethods; end
-module ActiveStorage::Attachment::GeneratedAssociationMethods; end
-module ActiveStorage::BaseController; end
-module ActiveStorage::Record; end
-module ActiveSupport::Testing::Stream; end
-module Capybara::DSL; end
-module Capybara::Minitest::Assertions; end
-module Kaminari::ActionViewExtension::LogSubscriberSilencer; end
-module Kaminari::Helpers::HelperMethods; end
-module Kaminari::Helpers::UrlHelper; end
-module Sidekiq::Process; end
-module Sidekiq::SortedEntry; end
+module ::FactoryBot; end
+module BreadcrumbListSchema::Jbuilder; end
+module CourseSchema::Jbuilder; end
+module FaqSchema::Jbuilder; end
+module FlashConcern::Term::ANSIColor; end
+module ItemListSchema::Jbuilder; end
+module ProviderSchema::Jbuilder; end
+module ReviewSchema::Jbuilder; end
+module UserSerializer::Jbuilder; end
+module Web::AuthControllerTest::OmniAuth; end
+module Web::AuthControllerTest::OmniAuth::AuthHash::InfoHash; end
+module Web::UsersControllerTest::FactoryBot; end
