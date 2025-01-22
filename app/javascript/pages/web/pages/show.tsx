@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 
-import Application from "@/pages/layouts/ApplicationLayout.tsx";
+import ApplicationLayout from "@/pages/layouts/ApplicationLayout.tsx";
 import type { User } from "@/types/serializers";
 import i18next from "i18next";
 import AboutEn from "./parts/about.en";
@@ -42,7 +42,7 @@ const mapping = {
 export default function New({ page, title }: Props) {
   const Component = mapping[i18next.language][page];
   return (
-    <Application>
+    <ApplicationLayout>
       <Container>
         <Row className="justify-content-center mb-5">
           <Col className="col-12 col-md-10 col-lg-8">
@@ -51,6 +51,6 @@ export default function New({ page, title }: Props) {
           </Col>
         </Row>
       </Container>
-    </Application>
+    </ApplicationLayout>
   );
 }

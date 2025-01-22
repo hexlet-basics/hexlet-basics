@@ -50,7 +50,7 @@ elixir:
 javascript:
   <<: *DEFAULTS
   category: programming
-  current_version: javascript1
+  current_version: javascript2
 
 java:
   <<: *DEFAULTS

@@ -26,7 +26,7 @@
 #
 
 DEFAULTS: &DEFAULTS
-  description: Бесплатное обучение программированию на javascript от сообщества Хекслет. Онлайн курс посвящен азам написания программ на Javascript с нуля
+  description: $LABEL - Бесплатное обучение программированию от сообщества Хекслет. Онлайн курс посвящен азам написания программ на Javascript с нуля
 
 javascript1-ru:
   <<: *DEFAULTS
@@ -35,6 +35,17 @@ javascript1-ru:
   seo_description: Изучение программирования — интересный и захватывающий процесс. Синтаксис языка — самая простая и короткая часть пути, но без неё невозможно начать. Этот бесплатный онлайн-курс по JavaScript познакомит с базовыми понятиями языка. Вы выучите основы и напишете свои первые программы на JS
   locale: ru
 
+javascript2-ru:
+  <<: *DEFAULTS
+  language: javascript
+  language_version: javascript2
+  locale: ru
+
+javascript2-en:
+  <<: *DEFAULTS
+  language: javascript
+  language_version: javascript2
+  locale: en
 
 javascript1-en:
   <<: *DEFAULTS

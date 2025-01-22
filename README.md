@@ -65,6 +65,7 @@ export TWC_TOKEN=<your token>
 1. auth: vk id, yandex id, google id (except ru)
 1. fix XPaging
 1. devicons => react-devicons
+1. schema.org
 
 ---
 

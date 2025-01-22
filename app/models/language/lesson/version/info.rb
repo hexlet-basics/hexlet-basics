@@ -15,7 +15,7 @@
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #  language_id         :bigint           not null
-#  language_lesson_id  :integer
+#  language_lesson_id  :bigint           not null
 #  language_version_id :bigint           not null
 #  version_id          :bigint           not null
 #

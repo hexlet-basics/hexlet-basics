@@ -13,7 +13,7 @@
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #  language_id         :bigint           not null
-#  language_lesson_id  :integer
+#  language_lesson_id  :bigint           not null
 #  language_version_id :bigint           not null
 #  version_id          :bigint           not null
 #
@@ -44,10 +44,13 @@ DEFAULTS: &DEFAULTS
   tips: <%= [Faker::Lorem.paragraph] %>
   locale: ru
 
+
+
 javascript1-module1_version1-lesson1_version1-ru:
   <<: *DEFAULTS
   name: <%= Faker::Lorem.word %>
   language: javascript
+  language_lesson: javascript-module1-lesson1
   language_version: javascript1
   version: javascript1-module1_version1-lesson1_version1
 
@@ -55,6 +58,7 @@ javascript1-module1_version1-lesson2_version1-ru:
   <<: *DEFAULTS
   name: <%= Faker::Lorem.word %>
   language: javascript
+  language_lesson: javascript-module1-lesson2
   language_version: javascript1
   version: javascript1-module1_version1-lesson2_version1
 
@@ -62,6 +66,7 @@ javascript1-module2_version1-lesson1_version1-ru:
   <<: *DEFAULTS
   name: <%= Faker::Lorem.word %>
   language: javascript
+  language_lesson: javascript-module2-lesson1
   language_version: javascript1
   version: javascript1-module2_version1-lesson1_version1
 
@@ -69,14 +74,52 @@ javascript1-module1_version1-lesson1_version1-en:
   <<: *DEFAULTS
   locale: en
   name: <%= Faker::Lorem.word %>
+  language_lesson: javascript-module1-lesson1
   language: javascript
   language_version: javascript1
   version: javascript1-module1_version1-lesson1_version1
 
+
+
+javascript2-module1_version2-lesson1_version2-ru:
+  <<: *DEFAULTS
+  name: <%= Faker::Lorem.word %>
+  language: javascript
+  language_lesson: javascript-module1-lesson1
+  language_version: javascript2
+  version: javascript2-module1_version2-lesson1_version2
+
+javascript2-module1_version2-lesson2_version2-ru:
+  <<: *DEFAULTS
+  name: <%= Faker::Lorem.word %>
+  language: javascript
+  language_lesson: javascript-module1-lesson2
+  language_version: javascript2
+  version: javascript2-module1_version2-lesson2_version2
+
+javascript2-module2_version2-lesson1_version2-ru:
+  <<: *DEFAULTS
+  name: <%= Faker::Lorem.word %>
+  language: javascript
+  language_lesson: javascript-module2-lesson1
+  language_version: javascript2
+  version: javascript2-module2_version2-lesson1_version2
+
+javascript2-module3_version1-lesson1_version1-ru:
+  <<: *DEFAULTS
+  name: <%= Faker::Lorem.word %>
+  language: javascript
+  language_lesson: javascript-module3-lesson1
+  language_version: javascript2
+  version: javascript2-module3_version1-lesson1_version1
+ 
+ 
+ 
 one:
   <<: *DEFAULTS
   name: <%= Faker::Lorem.word %>
   language: php
+  language_lesson: one
   language_version: php
   version: tags_one
 
@@ -84,6 +127,7 @@ tags_one:
   <<: *DEFAULTS
   name: Теги
   language: php
+  language_lesson: tags_one
   language_version: php
   version: tags_one
 
@@ -91,6 +135,7 @@ comments_one_ru:
   <<: *DEFAULTS
   name: Коментарии
   language: php
+  language_lesson: comments_one
   language_version: php
   version: comments_one
 
@@ -98,14 +143,16 @@ comments_one_en:
   <<: *DEFAULTS
   name: Comments
   language: php
+  language_lesson: comments_one
   language_version: php
   version: comments_one
   locale: en
- 
+
 naming_variables_one:
   <<: *DEFAULTS
   name: Именования переменной
   language: php
+  language_lesson: naming_variables_one
   language_version: php
   version: tags_one
 
@@ -113,6 +160,7 @@ elixir-hello-world-ru:
   <<: *DEFAULTS
   name: Привет Мир
   language: elixir
+  language_lesson: elixir-hello-world
   language_version: elixir
   version: elixir-hello-world
 
@@ -120,6 +168,7 @@ elixir-variables-ru:
   <<: *DEFAULTS
   name: Переменные
   language: elixir
+  language_lesson: elixir-variables
   language_version: elixir
   version: elixir-variables
 
@@ -127,6 +176,7 @@ elixir-strings-ru:
   <<: *DEFAULTS
   name: Строки
   language: elixir
+  language_lesson: elixir-strings
   language_version: elixir
   version: elixir-strings
 
@@ -134,6 +184,7 @@ ruby-hello-world-ru:
   <<: *DEFAULTS
   name: Привет Мир
   language: ruby
+  language_lesson: ruby-hello-world
   language_version: ruby
   version: ruby-hello-world
 
@@ -142,6 +193,7 @@ php-hello-world-ru:
   locale: ru
   name: Привет Мир
   language: php
+  language_lesson: php-hello-world
   language_version: php
   version: php-hello-world
 
@@ -150,5 +202,6 @@ php-hello-world-en:
   locale: en
   name: Hello World
   language: php
+  language_lesson: php-hello-world
   language_version: php
   version: php-hello-world

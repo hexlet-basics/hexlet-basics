@@ -39,6 +39,17 @@ javascript-module1:
   language: javascript
 
 javascript-module2:
+  <<: *DEFAULTS
+  language: javascript
+
+# Exists only for version javascript1
+javascript-module3old:
+  <<: *DEFAULTS
+  language: javascript
+
+# Appeared starting from javascript2
+javascript-module3:
+  <<: *DEFAULTS
   language: javascript
 
 variables_one:

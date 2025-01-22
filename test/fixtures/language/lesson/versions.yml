@@ -65,6 +65,46 @@ javascript1-module2_version1-lesson1_version1:
   lesson: javascript-module2-lesson1
   language: javascript
 
+
+
+javascript2-module1_version2-lesson1_version2:
+  <<: *DEFAULTS
+  order: 10
+  natural_order: 10
+  language_version: javascript2
+  module_version: javascript2-module1_version2
+  lesson: javascript-module1-lesson1
+  language: javascript
+
+javascript2-module1_version2-lesson2_version2:
+  <<: *DEFAULTS
+  order: 20
+  natural_order: 20
+  language_version: javascript2
+  module_version: javascript2-module1_version2
+  lesson: javascript-module1-lesson2
+  language: javascript
+
+javascript2-module2_version2-lesson1_version2:
+  <<: *DEFAULTS
+  order: 10
+  natural_order: 25
+  language_version: javascript2
+  module_version: javascript2-module2_version2
+  lesson: javascript-module2-lesson1
+  language: javascript
+
+javascript2-module3_version1-lesson1_version1:
+  <<: *DEFAULTS
+  order: 10
+  natural_order: 25
+  language_version: javascript2
+  module_version: javascript2-module3_version1
+  lesson: javascript-module3-lesson1
+  language: javascript
+
+
+
 tags_one:
   <<: *DEFAULTS
   order: 30

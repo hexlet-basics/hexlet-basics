@@ -26,7 +26,7 @@ export default function ApplicationLayout({ children, header }: Props) {
         <NavbarBlock className="pb-3 border-bottom" />
         <XFlash />
       </Container>
-      <Container className="mb-4">{header && <h1>{header}</h1>}</Container>
+      <Container className="mb-4">{header && <h1 className="mt-5">{header}</h1>}</Container>
       {children}
       <footer className="mt-5 bg-body-tertiary py-5">
         <Container>

@@ -58,6 +58,16 @@ javascript-module2-lesson1:
   language: javascript
   module: javascript-module2
 
+javascript-module3-lesson1:
+  slug: $LABEL
+  language: javascript
+  module: javascript-module3
+
+javascript-module3old-lesson1:
+  slug: $LABEL
+  language: javascript
+  module: javascript-module3old
+
 tags_one:
   slug: tags
   language: php

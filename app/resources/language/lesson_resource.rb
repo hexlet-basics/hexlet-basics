@@ -16,12 +16,12 @@ class Language::LessonResource
 
   typelize tips: "String[]", definitions: "Array<{ name: string, description: string }>"
 
-  typelize :number, nullable: true
+  typelize :number
   attribute :id do |info|
     info.language_lesson_id
   end
 
-  typelize :number, nullable: true
+  # typelize :number, nullable: true
 
   typelize :string, nullable: true
   attribute :prepared_code do |info|

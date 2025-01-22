@@ -48,10 +48,34 @@ javascript1-module2_version1:
   module: javascript-module2
   language: javascript
 
-javascript1-module1_version2:
-  order: 20
+javascript1-module3old_version1:
+  order: 10
   language_version: javascript1
+  module: javascript-module3old
+  language: javascript
+
+# javascript1-module1_version2:
+#   order: 20
+#   language_version: javascript1
+#   module: javascript-module1
+#   language: javascript
+
+javascript2-module1_version2:
+  order: 20
+  language_version: javascript2
   module: javascript-module1
+  language: javascript
+
+javascript2-module2_version2:
+  order: 25
+  language_version: javascript2
+  module: javascript-module2
+  language: javascript
+
+javascript2-module3_version1:
+  order: 30
+  language_version: javascript2
+  module: javascript-module3
   language: javascript
 
 variables_one:

@@ -43,12 +43,12 @@ javascript1-module1-version1-ru:
   version: javascript1-module1_version1
   language_version: javascript1
 
-javascript1-module1-version2-ru:
-  <<: *DEFAULTS
-  locale: ru
-  language: javascript
-  version: javascript1-module1_version2
-  language_version: javascript2
+# javascript1-module1-version2-ru:
+#   <<: *DEFAULTS
+#   locale: ru
+#   language: javascript
+#   version: javascript1-module1_version2
+#   language_version: javascript2
 
 javascript1-module2-version1-ru:
   <<: *DEFAULTS
@@ -63,6 +63,27 @@ javascript1-module1-version1-en:
   language: javascript
   version: javascript1-module1_version1
   language_version: javascript1
+
+javascript2-module1-version2-ru:
+  <<: *DEFAULTS
+  locale: ru
+  language: javascript
+  version: javascript2-module1_version2
+  language_version: javascript2
+
+javascript2-module2-version2-ru:
+  <<: *DEFAULTS
+  locale: ru
+  language: javascript
+  version: javascript2-module2_version2
+  language_version: javascript2
+
+javascript2-module3-version1-ru:
+  <<: *DEFAULTS
+  locale: ru
+  language: javascript
+  version: javascript2-module3_version1
+  language_version: javascript2
 
 variables_one:
   name: Переменные
