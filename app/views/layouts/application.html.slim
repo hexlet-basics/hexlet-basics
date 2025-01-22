@@ -5,7 +5,7 @@ html.h-100 lang="#{I18n.locale}"
     = render 'layouts/deps/domains_verifications'
 
   body.d-flex.flex-column.h-100
-    - if Time.utc(2025, 2, 1, 7, 0).future? && @top_banner_name == :competition_banner && cookies[:competition_banner] != 'hide'
+    - if I18n.locale == :ru && Time.utc(2025, 2, 1, 7, 0).future? && controller_name == 'home' && action_name == 'index' && cookies[:competition_banner] != 'hide'
       = render 'layouts/competition_banner'
     - if Rails.env.production?
       = render 'layouts/deps/gtm_body'
