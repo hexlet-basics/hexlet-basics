@@ -1,6 +1,6 @@
 import cn from "classnames";
 import type { PropsWithChildren } from "react";
-import { Col, Container, ListGroup, Row } from "react-bootstrap";
+import { Alert, Col, Container, ListGroup, Row } from "react-bootstrap";
 
 import { useTranslation } from "react-i18next";
 
@@ -14,16 +14,21 @@ import type {
   Language,
   LanguageCategory,
   LanguageLesson,
+  LanguageMember,
   LanguageModule,
   User,
 } from "@/types/serializers";
 import { Link, usePage } from "@inertiajs/react";
+import XssContent from "@/components/XssContent";
 
-type Props = PropsWithChildren & {
+type Props = {
+  courseMember: LanguageMember;
+  finishedLessonIds: number[];
   courseCategory: LanguageCategory;
   course: Language;
   firstLesson: LanguageLesson;
-  user: User;
+  nextLesson: LanguageLesson;
+  // user: User;
   courseModules: LanguageModule[];
   recommendedCourses: Language[];
   lessonsByModuleId: {
@@ -33,9 +38,12 @@ type Props = PropsWithChildren & {
 
 export default function Show({
   firstLesson,
+  nextLesson,
   course,
+  courseMember,
   courseCategory,
   courseModules,
+  finishedLessonIds,
   recommendedCourses,
   lessonsByModuleId,
 }: Props) {
@@ -57,6 +65,11 @@ export default function Show({
     <ApplicationLayout>
       <Container>
         <XBreadcrumb items={breadcrumbItems} />
+        {courseMember.state === "finished" && (
+          <Alert variant="success">
+            <XssContent>{t("languages.show.completed_html")}</XssContent>
+          </Alert>
+        )}
         <div className="p-5 text-center bg-body-tertiary rounded-3 mb-5 border">
           <div className="d-flex justify-content-center align-items-center">
             <i
@@ -73,16 +86,30 @@ export default function Show({
             {course.description!}
           </p>
           <div className="d-inline-flex gap-2 mb-5">
-            <Link
-              className="btn btn-primary"
-              href={Routes.language_lesson_path(
-                course.slug!,
-                firstLesson.slug!,
-              )}
-            >
-              <span className="me-2">{t("languages.show.start")}</span>
-              <i className="bi bi-arrow-right" />
-            </Link>
+            {!courseMember && (
+              <Link
+                className="btn btn-primary"
+                href={Routes.language_lesson_path(
+                  course.slug!,
+                  firstLesson.slug!,
+                )}
+              >
+                <span className="me-2">{t("languages.show.start")}</span>
+                <i className="bi bi-arrow-right" />
+              </Link>
+            )}
+            {courseMember && (
+              <Link
+                className="btn btn-outline-primary"
+                href={Routes.language_lesson_path(
+                  course.slug!,
+                  nextLesson.slug!,
+                )}
+              >
+                <span className="me-2">{t("languages.show.continue")}</span>
+                <i className="bi bi-arrow-right" />
+              </Link>
+            )}
             {auth.user.guest && (
               <Link
                 className="btn btn-outline-secondary"
@@ -103,14 +130,19 @@ export default function Show({
                     {lessonsByModuleId[m.id].map((l) => (
                       <ListGroup.Item key={l.id}>
                         <Link
-                          className="text-decoration-none stretched-link"
+                          className="text-decoration-none stretched-link d-flex"
                           href={Routes.language_lesson_path(
                             course.slug!,
                             l.slug!,
                           )}
                         >
-                          <span className="me-1">{l.natural_order!}.</span>
-                          {l.name}
+                          <div className="me-auto">
+                            <span className="me-1">{l.natural_order!}.</span>
+                            {l.name}
+                          </div>
+                          {finishedLessonIds.includes(l.id) && (
+                            <i className="bi bi-check-lg" />
+                          )}
                         </Link>
                       </ListGroup.Item>
                     ))}

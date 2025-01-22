@@ -14,10 +14,15 @@ import React from "react";
 import Markdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
+import rehypeExternalLinks from "rehype-external-links";
 import EditorBlock from "./show/index.tsx";
 import type { Props } from "./show/types";
 
-const rehypePlugins = [rehypeHighlight, rehypeRaw];
+const rehypePlugins = [
+  rehypeHighlight,
+  rehypeRaw,
+  [rehypeExternalLinks, { target: "_blank" }],
+];
 
 export default function Show() {
   const {
@@ -119,7 +124,9 @@ export default function Show() {
                         <ul>
                           {lesson.tips.map((t) => (
                             <li key={t}>
-                              <Markdown>{t}</Markdown>
+                              <Markdown rehypePlugins={rehypePlugins}>
+                                {t}
+                              </Markdown>
                             </li>
                           ))}
                         </ul>
@@ -149,7 +156,12 @@ export default function Show() {
                           className="mt-1 border rounded"
                         >
                           <summary className="p-2">{v.question}</summary>
-                          <Markdown className="px-2 pt-2">{v.answer}</Markdown>
+                          <Markdown
+                            rehypePlugins={rehypePlugins}
+                            className="px-2 pt-2"
+                          >
+                            {v.answer}
+                          </Markdown>
                         </details>
                       ))}
                     </div>

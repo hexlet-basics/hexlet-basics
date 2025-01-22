@@ -1,20 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../types.ts";
-import slice from "./RootSlice.ts";
-
-export const initialRootState: RootState = {
-  processState: "unchecked",
-  currentTab: "editor",
-  finished: false,
-  result: null,
-  output: "",
-  passed: false,
-  content: "",
-  focusesCount: 1,
-  startTime: 0,
-  solutionState: "notAllowedToBeShown",
-};
+import slice, { initialRootState } from "./RootSlice.ts";
 
 export default function getStore(incomingPreloadState?: Partial<AppState>) {
   const store = configureStore({

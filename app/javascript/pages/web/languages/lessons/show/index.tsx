@@ -23,6 +23,7 @@ export default function Index() {
     startTime: Date.now(),
     content,
     finished: isFinished,
+    solutionState: isFinished ? "canBeShown" : "notAllowedToBeShown",
   };
   const store = getStore(preloadedState);
 

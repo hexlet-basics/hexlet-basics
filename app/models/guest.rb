@@ -34,10 +34,10 @@ class Guest
   end
 
   def finished_lessons_for_language(_)
-    []
+    Language::Lesson.none
   end
 
-  def not_finished_lessons_for_language(language)
-    language.current_lesson_infos
-  end
+  # def not_finished_lessons_for_language(language)
+  #   language.current_lesson_infos
+  # end
 end

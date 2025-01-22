@@ -6,7 +6,6 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 import axios from "axios";
-import { initialRootState } from ".";
 import type { CheckingResponse, RootState } from "../types";
 
 export const runCheck = createAsyncThunk(
@@ -30,6 +29,19 @@ export const runCheck = createAsyncThunk(
     return result;
   },
 );
+
+export const initialRootState: RootState = {
+  processState: "unchecked",
+  currentTab: "editor",
+  finished: false,
+  result: null,
+  output: "",
+  passed: false,
+  content: "",
+  focusesCount: 1,
+  startTime: 0,
+  solutionState: "notAllowedToBeShown",
+};
 
 const slice = createSlice({
   name: "GeneralSlice",
@@ -63,14 +75,12 @@ const slice = createSlice({
       .addCase(
         runCheck.fulfilled,
         (state, action: PayloadAction<CheckingResponse>) => {
-          if (state.finished) {
-            return;
-          }
-
           if (action.payload.passed) {
-            state.solutionState = "canBeShown";
+            state.solutionState = "shown";
           }
-          state.finished = action.payload.passed;
+          if (!state.finished) {
+            state.finished = action.payload.passed;
+          }
           state.result = action.payload.result;
           state.output = action.payload.output;
           state.passed = action.payload.passed;

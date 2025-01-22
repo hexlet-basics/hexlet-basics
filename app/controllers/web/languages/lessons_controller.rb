@@ -109,9 +109,9 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     #   end
     # end
 
-    lessons_infos = resource_language.current_lesson_infos.with_locale.includes(:lesson).joins(:lesson).merge(
-      Language::Lesson.order(:natural_order)
-    )
+    lessons_infos = resource_language.current_lesson_infos.with_locale
+      .includes(:lesson).joins(:lesson)
+      .order(language_lesson_versions: { natural_order: :asc })
 
     render inertia: true, props: {
       course: LanguageResource.new(language_info),
