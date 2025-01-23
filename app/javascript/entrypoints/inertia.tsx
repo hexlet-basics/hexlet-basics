@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/react";
 import { createInertiaApp } from "@inertiajs/react";
 import { PrimeReactProvider } from "primereact/api";
 import type { ReactNode } from "react";
@@ -81,9 +82,19 @@ createInertiaApp({
     };
     if (el) {
       if (import.meta.env.MODE === "production") {
-        hydrateRoot(el, <RootComponent />);
+        hydrateRoot(el, <RootComponent />, {
+          // Callback called when an error is thrown and not caught by an ErrorBoundary.
+          onUncaughtError: Sentry.reactErrorHandler((error, errorInfo) => {
+            console.warn("Uncaught error", error, errorInfo.componentStack);
+          }),
+          // Callback called when React catches an error in an ErrorBoundary.
+          onCaughtError: Sentry.reactErrorHandler(),
+          // Callback called when React automatically recovers from errors.
+          onRecoverableError: Sentry.reactErrorHandler(),
+        });
       } else {
-        createRoot(el).render(<RootComponent />);
+        const root = createRoot(el);
+        root.render(<RootComponent />);
       }
     } else {
       console.error(
