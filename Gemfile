@@ -56,8 +56,8 @@ gem "term-ansicolor"
 
 # gem 'jsbundling-rails'
 
-# gem 'sentry-rails'
-# gem 'sentry-ruby'
+gem "sentry-ruby"
+gem "sentry-rails"
 
 # gem 'stimulus-rails'
 # gem 'turbo-rails'
@@ -126,7 +126,7 @@ gem "country_select"
 
 gem "browser"
 #
-gem 'meta-tags'
+gem "meta-tags"
 #
 # gem 'browserslist_useragent'
 
