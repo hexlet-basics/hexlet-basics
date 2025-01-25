@@ -20,6 +20,7 @@ import type {
 } from "@/types/serializers";
 import { Link, usePage } from "@inertiajs/react";
 import XssContent from "@/components/XssContent";
+import _ from "lodash";
 
 type Props = {
   courseMember: LanguageMember;
@@ -127,7 +128,7 @@ export default function Show({
               <Row className="col-12">
                 <Col>
                   <ListGroup>
-                    {lessonsByModuleId[m.id].map((l) => (
+                    {_.get(lessonsByModuleId, m.id, []).map((l) => (
                       <ListGroup.Item key={l.id}>
                         <Link
                           className="text-decoration-none stretched-link d-flex"

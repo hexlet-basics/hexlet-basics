@@ -80852,7 +80852,7 @@
           "email": "Email"
         },
         "user_password_form": {
-          "password": "Пароль"
+          "password": "Новый пароль"
         },
         "user_sign_in_form": {
           "email": "Email",
@@ -83347,7 +83347,7 @@
         "show": {
           "blog_posts": "Посты в блоге",
           "breadcrumbs": "Хлебные крошки",
-          "completed_html": "Поздравляем! Вы успешно завершили базовый курс на Code Basics. Это первый шаг в мир <b>профессиональной разработки</b>. Что дальше? Посмотрите <a href=\"https://ru.hexlet.io/courses\" target=\"_blank\">продолжение на Хекслете</a>.\n",
+          "completed_html": "Поздравляем! Вы успешно завершили базовый курс на Code Basics. Это первый шаг в мир <b>профессиональной разработки</b>. Что дальше? Посмотрите <a href=\"https://ru.hexlet.io/courses\" target=\"_blank\">продолжение на Хекслете</a>\n",
           "continue": "Продолжить обучение",
           "free_course": "Бесплатный курс",
           "lessons": "%{lessons_count} с практикой в браузере",

@@ -1,8 +1,10 @@
-# frozen_string_literal: true
-
 module AppHost
   def self.canonical
     ENV.fetch("APP_HOST")
+  end
+
+  def self.port
+    ENV.fetch("APP_PORT")
   end
 
   # NOTE: for en dont use path /en but /

@@ -54,7 +54,7 @@ Rails.application.configure do
   config.action_mailer.perform_caching = false
 
   # Set localhost to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "localhost", port: 3100 }
+  config.action_mailer.default_url_options = { host: AppHost.canonical, port: AppHost.port }
 
   config.action_mailer.logger = ActiveSupport::Logger.new("log/mailer.log")
   config.action_mailer.delivery_method = :file

@@ -60,6 +60,7 @@ export TWC_TOKEN=<your token>
 
 ## TODO
 
+1. switch to yandex postbox (smtp)
 1. events to n8n
 1. theme switcher
 1. <https://github.com/DavidWells/analytics>

@@ -1,4 +1,4 @@
-import { type PropsWithChildren, useEffect } from "react";
+import type { PropsWithChildren } from "react";
 import { Col, Container, Nav, Row } from "react-bootstrap";
 
 import { useTranslation } from "react-i18next";
@@ -8,7 +8,6 @@ import * as Routes from "@/routes.js";
 import XFlash from "@/components/XFlash.tsx";
 import type { SharedProps } from "@/types/index.js";
 import { Link, usePage } from "@inertiajs/react";
-import i18next from "i18next";
 import NavbarBlock from "./NavbarBlock.tsx";
 
 type Props = PropsWithChildren & {

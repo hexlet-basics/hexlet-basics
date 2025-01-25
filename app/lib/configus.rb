@@ -33,7 +33,7 @@ Configus.build Rails.env do
     end
 
     mailer do
-      from "code-basics@hexlet.io"
+      from "support@hexlet.io"
 
       smtp do
         username ENV.fetch("SPARKPOST_SMTP_USERNAME", nil)
