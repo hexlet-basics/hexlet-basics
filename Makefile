@@ -42,6 +42,9 @@ editor-setup:
 sync: i18n-export sync-fixtures
 	bin/rails typelizer:generate:refresh
 
+coverage-open:
+	open coverage/index.html
+
 app-lint-staged:
 	echo 'disabled'
 

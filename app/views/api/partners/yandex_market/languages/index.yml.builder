@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 xml.instruct! :xml, version: "1.0", encoding: "utf-8", standalone: :yes
 xml.yml_catalog date: l(Time.current, format: :date_time) do
   xml.shop do

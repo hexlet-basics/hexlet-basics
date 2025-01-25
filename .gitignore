@@ -49,3 +49,4 @@ node_modules
 # /app/javascript/routes.d.ts
 
 .DS_Store
+coverage/

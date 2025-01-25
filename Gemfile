@@ -23,7 +23,7 @@ gem "solid_queue"
 gem "bootsnap", require: false
 
 # Deploy this application anywhere as a Docker container [https://kamal-deploy.org]
-gem "kamal", require: false
+# gem "kamal", require: false
 
 # Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
 gem "thruster", require: false
@@ -94,9 +94,10 @@ group :development, :staging do
 end
 
 group :test do
-gem "capybara"
+  gem "capybara"
   gem "selenium-webdriver"
   gem "minitest-power_assert"
+  gem "simplecov"
   # gem 'webdrivers'
   # gem 'whiny_validation'
 end
@@ -111,17 +112,17 @@ gem "bcrypt"
 gem "dry-auto_inject"
 gem "dry-container"
 gem "enumerize"
-gem "gon"
+# gem "gon"
 gem "googleauth"
 gem "rails-i18n"
-gem "redcarpet"
-gem "simple_form"
+# gem "redcarpet"
+# gem "simple_form"
 
 # gem 'sitemap_generator'
 # gem 'slim-rails'
 
 gem "counter_culture"
-gem "country_select"
+# gem "country_select"
 # gem 'sorbet-rails' # Temp disable sorbet for memory optimization
 
 gem "browser"
