@@ -153,6 +153,14 @@ export default function ApplicationLayout({ children, header, items }: Props) {
                     {tLayouts("shared.footer.privacy")}
                   </Link>
                 </Nav.Item>
+                <Nav.Item>
+                  <Link
+                    className="link-body-emphasis text-decoration-none"
+                    href={Routes.page_path("cookie_policy")}
+                  >
+                    {tLayouts("shared.footer.cookie_policy")}
+                  </Link>
+                </Nav.Item>
               </Nav>
             </Col>
           </Row>
