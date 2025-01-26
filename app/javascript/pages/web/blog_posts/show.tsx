@@ -1,7 +1,6 @@
 import type { PropsWithChildren } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 
-import { XBreadcrumb } from "@/components/breadcrumbs";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { BreadcrumbItem, SharedProps } from "@/types";
 import type { BlogPost } from "@/types/serializers";
@@ -21,12 +20,16 @@ type Props = PropsWithChildren & {
   recommendedBlogPosts: BlogPost[];
 };
 
-const remarkPlugins: PluggableList = [[remarkToc, { heading: "Содержание" }]];
 const rehypePlugins = [rehypeHighlight, rehypeSlug];
 
-export default function New({ blogPost, recommendedBlogPosts }: Props) {
+export default function Show({ blogPost, recommendedBlogPosts }: Props) {
   const { t } = useTranslation();
+  const { t: tCommon } = useTranslation("common");
   const { suffix } = usePage<SharedProps>().props;
+
+  const heading = tCommon("tos");
+
+  const remarkPlugins: PluggableList = [[remarkToc, { heading }]];
 
   const items: BreadcrumbItem[] = [
     {
@@ -40,17 +43,15 @@ export default function New({ blogPost, recommendedBlogPosts }: Props) {
   ];
 
   return (
-    <ApplicationLayout>
+    <ApplicationLayout items={items} header={blogPost.name!}>
       <Container>
         <Row className="justify-content-center mb-5">
           <Col className="col-12 col-md-10 col-lg-8">
-            <XBreadcrumb items={items} />
-            <h1 className="mb-5">{blogPost.name}</h1>
             <Markdown
               remarkPlugins={remarkPlugins}
               rehypePlugins={rehypePlugins}
             >
-              {`\n\n## Содержание\n\n ${blogPost.body}`}
+              {`\n\n## ${heading}\n\n ${blogPost.body}`}
             </Markdown>
           </Col>
         </Row>

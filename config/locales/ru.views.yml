@@ -4,6 +4,7 @@ ru:
   web:
     language_categories:
       show:
+        header: Курсы по %{name}
         blog_posts: Посты в блоге
     reviews:
       index:

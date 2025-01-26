@@ -148,6 +148,7 @@
       "teacherSolution": "Teacher's solution:",
       "testForExercise": "Tests",
       "testInstructions": "Your exercise will be checked with these tests:",
+      "tos": "Table Of Content",
       "userCode": "Your solution:",
       "userCodeInstructions": "(start writing in Editor, your code will appear here and you'll be able to compare it to the teacher's solution)"
     },
@@ -77994,7 +77995,8 @@
       },
       "language_categories": {
         "show": {
-          "blog_posts": "Blog Posts"
+          "blog_posts": "Blog Posts",
+          "header": "%{name} courses\n"
         }
       },
       "languages": {
@@ -78113,29 +78115,37 @@
         }
       },
       "pages": {
-        "about": {
-          "contributions": "Source code of Code Basics platform, all lessons and exercisees is available on GitHub. You can contribute by improving lessons, fixing mistakes and extending the content to cover more programming languages.",
-          "extended_credits": "Idea, syllabus, platform: Kirill Mokevnin. Core lessons: Rakhim Davletkaliyev, Natalia Bass. Extensions and adaptation: Kirill Mokevnin, Ulugbek Tuychiev, Aleksey Pyltsyn and other Hexlet community members.",
-          "meta_description": "Code Basics quality interactive lessons on programming basics for free, for everyone.",
-          "projects_goal": "The goal of Code Basics is to provide quality interactive lessons on the basics of programming, free of charge, available to everybody.",
-          "source_code": "Source code",
-          "title": "About"
-        },
-        "authors": {
-          "meta_description": "Code Basics is open source. Everyone can be an author. Here is some simple steps to start.\n",
-          "title": "How to become an author?"
-        },
-        "cookie_policy": {
-          "meta_description": "Политика в отношении файлов cookie",
-          "title": "Cookie Policy"
-        },
-        "privacy": {
-          "meta_description": "Code Basics Privacy Policy",
-          "title": "Privacy Policy"
-        },
-        "tos": {
-          "meta_description": "Terms of Service of the Code Basics Platform",
-          "title": "Terms of Service"
+        "parts": {
+          "about": {
+            "meta": {
+              "description": "Code Basics quality interactive lessons on programming basics for free, for everyone."
+            },
+            "title": "About"
+          },
+          "authors": {
+            "meta": {
+              "description": "Code Basics is open source. Everyone can be an author. Here is some simple steps to start.\n"
+            },
+            "title": "How to become an author?"
+          },
+          "cookie_policy": {
+            "meta": {
+              "description": "Политика в отношении файлов cookie"
+            },
+            "title": "Cookie Policy"
+          },
+          "privacy": {
+            "meta": {
+              "description": "Code Basics Privacy Policy"
+            },
+            "title": "Privacy Policy"
+          },
+          "tos": {
+            "meta": {
+              "description": "Terms of Service of the Code Basics Platform"
+            },
+            "title": "Terms of Service"
+          }
         }
       },
       "passwords": {
@@ -81026,6 +81036,7 @@
       "teacherSolution": "Решение учителя:",
       "testForExercise": "Тесты",
       "testInstructions": "Ваше упражнение проверяется по этим тестам",
+      "tos": "Содержание",
       "userCode": "Ваше решение:",
       "userCodeInstructions": "Когда вы начнёте писать решение в Редакторе, оно появится тут для сравнения с учительским",
       "views": {
@@ -83290,7 +83301,8 @@
       },
       "language_categories": {
         "show": {
-          "blog_posts": "Посты в блоге"
+          "blog_posts": "Посты в блоге",
+          "header": "Курсы по %{name}"
         }
       },
       "languages": {

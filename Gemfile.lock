@@ -123,6 +123,7 @@ GEM
       irb (~> 1.10)
       reline (>= 0.3.8)
     docile (1.4.1)
+    dotenv (3.1.7)
     drb (2.2.1)
     dry-auto_inject (1.1.0)
       dry-core (~> 1.1)
@@ -492,6 +493,7 @@ DEPENDENCIES
   configus (~> 0.0.5)
   counter_culture
   debug
+  dotenv
   dry-auto_inject
   dry-container
   enumerize

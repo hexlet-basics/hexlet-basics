@@ -67,6 +67,7 @@ gem "i18n-js"
 
 group :development, :test, :staging do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
+  gem "dotenv"
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false

@@ -63,9 +63,8 @@ export default function Show({
   ];
 
   return (
-    <ApplicationLayout>
+    <ApplicationLayout items={breadcrumbItems}>
       <Container>
-        <XBreadcrumb items={breadcrumbItems} />
         {courseMember.state === "finished" && (
           <Alert variant="success">
             <XssContent>{t("languages.show.completed_html")}</XssContent>

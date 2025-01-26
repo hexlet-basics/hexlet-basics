@@ -6,15 +6,17 @@ import { useTranslation } from "react-i18next";
 import * as Routes from "@/routes.js";
 
 import XFlash from "@/components/XFlash.tsx";
-import type { SharedProps } from "@/types/index.js";
+import type { BreadcrumbItem, SharedProps } from "@/types/index.js";
 import { Link, usePage } from "@inertiajs/react";
 import NavbarBlock from "./NavbarBlock.tsx";
+import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
 
 type Props = PropsWithChildren & {
   header?: string;
+  items?: BreadcrumbItem[];
 };
 
-export default function ApplicationLayout({ children, header }: Props) {
+export default function ApplicationLayout({ children, header, items }: Props) {
   const { t: tLayouts } = useTranslation("layouts");
   const { t: tCommon } = useTranslation("common");
   const { locale } = usePage<SharedProps>().props;
@@ -25,7 +27,10 @@ export default function ApplicationLayout({ children, header }: Props) {
         <NavbarBlock className="pb-3 border-bottom" />
         <XFlash />
       </Container>
-      <Container className="mb-4">{header && <h1 className="mt-5">{header}</h1>}</Container>
+      <Container className="mb-4 mt-5">
+        {items && <XBreadcrumb items={items} />}
+        {header && <h1>{header}</h1>}
+      </Container>
       {children}
       <footer className="mt-5 bg-body-tertiary py-5">
         <Container>
@@ -74,14 +79,16 @@ export default function ApplicationLayout({ children, header }: Props) {
                     {tLayouts("shared.footer.authors")}
                   </Link>
                 </Nav.Item>
-                <Nav.Item>
-                  <a
-                    className="link-body-emphasis text-decoration-none"
-                    href="https://ttttt.me/hexlet_ru"
-                  >
-                    {tLayouts("shared.footer.community")}
-                  </a>
-                </Nav.Item>
+                {locale === "ru" && (
+                  <Nav.Item>
+                    <a
+                      className="link-body-emphasis text-decoration-none"
+                      href="https://ttttt.me/hexlet_ru"
+                    >
+                      {tLayouts("shared.footer.community")}
+                    </a>
+                  </Nav.Item>
+                )}
               </Nav>
             </Col>
             <Col>
