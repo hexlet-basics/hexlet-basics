@@ -201,7 +201,7 @@ export function fieldsToFilters(
   return result;
 }
 
-export const locales = {
+export const localesByCode = {
   ru: {
     icon: "fi fi-ru",
     name: "Русский",
@@ -211,3 +211,9 @@ export const locales = {
     name: "English",
   },
 };
+
+export const locales = [
+  { name: "Russian", code: "ru" },
+  { name: "English", code: "en" },
+];
+

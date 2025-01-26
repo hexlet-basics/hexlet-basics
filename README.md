@@ -70,6 +70,7 @@ export TWC_TOKEN=<your token>
 1. schema.org
 1. virtual landings
 1. extract primereact configuration to https://github.com/Hexlet/primereact-bootstrap-theme
+1. switch from ansible vault to helm secrets
 
 ---
 

@@ -14,4 +14,9 @@ class BlogPostResource
   attribute :cover_list_variant do |post|
     rails_representation_url(post.cover.variant(:list), only_path: true) if post.cover.attached?
   end
+
+  typelize "Array<[string, string]>"
+  attribute :state_events do |obj|
+    obj.aasm.events_for_select
+  end
 end

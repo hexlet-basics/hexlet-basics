@@ -1,6 +1,8 @@
 ---
 en:
   common:
+    current_state: Current state
+    state_events: State Events
     tos: Table Of Content
     reset: Reset
     phones:

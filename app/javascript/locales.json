@@ -38,9 +38,10 @@
     "activerecord": {
       "attributes": {
         "user": {
+          "admin": "Admin?",
           "email": "Email",
           "first_name": "First name",
-          "last_name": "Lasn name",
+          "last_name": "Last name",
           "nickname": "Nickname",
           "password": "Password"
         }
@@ -98,6 +99,7 @@
         }
       },
       "confirm": "You want to reset the exercise progress. The current code version will not be saved. We hope you’ve already copied it. Continue resetting?",
+      "current_state": "Current state",
       "discuss": "Discussion",
       "editor": "Editor",
       "errors": {
@@ -141,6 +143,7 @@
       "solution": "Solution",
       "solutionInstructions": "Teacher's solution will be available in:",
       "solutionNotice": "It's best to solve the problem yourself, but if you're stuck for a long time, feel free to check out the solution. But make sure to study it thoroughly to truly understand it.",
+      "state_events": "State Events",
       "students": {
         "one": "%{count} student",
         "other": "%{count} students"
@@ -77888,12 +77891,15 @@
       },
       "admin": {
         "blog_posts": {
+          "edit": {
+            "header": "Edit Blog Post"
+          },
           "index": {
             "add_new_blog_post": "Add New Blog Post",
             "header": "Blog Posts"
           },
           "new": {
-            "new_blog_post": "New Blog Post"
+            "header": "New Blog Post"
           }
         },
         "home": {
@@ -77902,32 +77908,42 @@
           }
         },
         "languages": {
+          "edit": {
+            "header": "Edit Language"
+          },
           "index": {
             "add_new_language": "Add new language",
+            "header": "Languages",
             "languages": "Languages"
           },
           "new": {
-            "new_language": "New Language"
+            "header": "New Language"
           }
         },
         "management": {
           "users": {
+            "edit": {
+              "header": "Edit User"
+            },
             "filter": {
               "from": "From"
             },
             "index": {
               "finished_lessons": "Finished Lessons",
-              "users": "Users"
+              "header": "Users"
             }
           }
         },
         "reviews": {
+          "edit": {
+            "header": "Edit Review"
+          },
           "index": {
             "add_new_review": "Add New Review",
             "header": "Reviews"
           },
           "new": {
-            "new_review": "New Review"
+            "header": "New Review"
           }
         }
       },
@@ -80983,6 +80999,7 @@
       },
       "community_url": "https://ttttt.me/HexletLearningBot\n",
       "confirm": "Убеждаемся, что мы делаем то что действительно хотим. Хотим?",
+      "current_state": "Текущее состояние",
       "discuss": "Обсуждение",
       "editor": "Редактор",
       "errors": {
@@ -81028,6 +81045,7 @@
       "solution": "Решение",
       "solutionInstructions": "Решение учителя откроется через:",
       "solutionNotice": "Желательно решить задачу самостоятельно, но если вы застряли и долгое время ничего не получается, посмотрите решение учителя. Но обязательно разберитесь в нём и повторите по памяти",
+      "state_events": "Варианты действий",
       "students": {
         "few": "%{count} студента",
         "many": "%{count} студентов",
@@ -82766,7 +82784,7 @@
           "reviews": {
             "create": {
               "error": "Что-то пошло не так",
-              "success": "Отзыв успешно опубликован"
+              "success": "Отзыв успешно добавлен"
             },
             "update": {
               "error": "Что-то пошло не так",

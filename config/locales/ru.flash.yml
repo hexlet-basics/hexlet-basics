@@ -8,7 +8,7 @@ ru:
             error: Что-то пошло не так
         reviews:
           create:
-            success: Отзыв успешно опубликован
+            success: Отзыв успешно добавлен
             error: Что-то пошло не так
           update:
             success: Отзыв успешно обновлен!

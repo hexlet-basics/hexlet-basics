@@ -2,6 +2,8 @@
 
 ru:
   common:
+    current_state: Текущее состояние
+    state_events: Варианты действий
     tos: Содержание
     community_url: |
       https://ttttt.me/HexletLearningBot

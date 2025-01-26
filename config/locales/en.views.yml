@@ -19,19 +19,26 @@ en:
           header: Blog Posts
           add_new_blog_post: Add New Blog Post
         new:
-          new_blog_post: New Blog Post
+          header: New Blog Post
+        edit:
+          header: Edit Blog Post
       reviews:
         index:
           header: Reviews
           add_new_review: Add New Review
         new:
-          new_review: New Review
+          header: New Review
+        edit:
+          header: Edit Review
       languages:
         index:
+          header: Languages
           languages: Languages
           add_new_language: Add new language
         new:
-          new_language: New Language
+          header: New Language
+        edit:
+          header: Edit Language
       home:
         index:
           dashboard: Dashboard
@@ -39,8 +46,10 @@ en:
         users:
           filter:
             from: From
+          edit:
+            header: Edit User
           index:
-            users: Users
+            header: Users
             finished_lessons: Finished Lessons
     home:
       hero:

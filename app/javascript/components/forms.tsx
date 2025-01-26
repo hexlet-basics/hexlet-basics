@@ -6,8 +6,9 @@ import {
   type AutoCompleteChangeEvent,
   type AutoCompleteCompleteEvent,
 } from "primereact/autocomplete";
-import { type InputHTMLAttributes, useEffect, useState } from "react";
-import { Form } from "react-bootstrap";
+import { Editor } from "primereact/editor";
+import { useEffect, useState, type InputHTMLAttributes } from "react";
+import { Badge, Form } from "react-bootstrap";
 import type { AsProp } from "react-bootstrap/esm/helpers";
 import { useTranslation } from "react-i18next";
 import {
@@ -29,6 +30,7 @@ export function XForm<TForm extends NestedObject>({
   className,
   ...props
 }: FormProps<TForm>) {
+  // console.log(railsAttributes, props.data.review)
   return (
     <InertiaForm
       className={`form ${className}`}
@@ -57,7 +59,7 @@ export function XInput({ name, model, as, ...props }: Props) {
   const label = tAr(path, tAm(path));
 
   const controlClasses = cn({
-    "is-invalid": error,
+    "is-invalid": errors.length > 0,
   });
 
   return (
@@ -73,7 +75,7 @@ export function XInput({ name, model, as, ...props }: Props) {
           onChange={(e) => setValue(e.target.value)}
           {...props}
         />
-        {error && (
+        {errors && (
           <Form.Control.Feedback type="invalid">
             {errors.map((e) => (
               <div key={e}>{e}</div>
@@ -81,6 +83,57 @@ export function XInput({ name, model, as, ...props }: Props) {
           </Form.Control.Feedback>
         )}
       </Form.FloatingLabel>
+    </Form.Group>
+  );
+}
+
+export function XEditor({ name, model, as, ...props }: Props) {
+  const { t: tAr } = useTranslation("activerecord");
+  const { t: tAm } = useTranslation("activemodel");
+
+  const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
+    name,
+    model,
+  });
+
+  const errors = error ? _.castArray(error) : [];
+
+  const path = `attributes.${form.model}.${name}`;
+  const label = tAr(path, tAm(path));
+
+  const controlClasses = cn({
+    "is-invalid": errors.length > 0,
+  });
+
+  return (
+    <Form.Group className="mb-4">
+      <Editor
+        {...props}
+        id={inputId}
+        name={inputName}
+        value={String(value)}
+        onTextChange={(e) => setValue(e.htmlValue)}
+        // style={{ height: "500px" }}
+      />
+      {/* <Form.FloatingLabel label={label}> */}
+      {/*   <Form.Control */}
+      {/*     as={as} */}
+      {/*     name={inputName} */}
+      {/*     value={value} */}
+      {/*     id={inputId} */}
+      {/*     placeholder={label} */}
+      {/*     className={controlClasses} */}
+      {/*     onChange={(e) => setValue(e.target.value)} */}
+      {/*     {...props} */}
+      {/*   /> */}
+      {/* </Form.FloatingLabel> */}
+      {errors && (
+        <Form.Control.Feedback type="invalid">
+          {errors.map((e) => (
+            <div key={e}>{e}</div>
+          ))}
+        </Form.Control.Feedback>
+      )}
     </Form.Group>
   );
 }
@@ -101,7 +154,7 @@ export function XCheck({ name, model, type, ...props }: Props) {
   const label = tAr(path, tAm(path));
 
   const controlClasses = cn({
-    "is-invalid": error,
+    "is-invalid": errors.length > 0,
   });
 
   return (
@@ -117,7 +170,7 @@ export function XCheck({ name, model, type, ...props }: Props) {
         onChange={(e) => setValue(e.target.checked)}
         {...props}
       />
-      {error && (
+      {errors.length > 0 && (
         <Form.Control.Feedback type="invalid">
           {errors.map((e) => (
             <div key={e}>{e}</div>
@@ -133,7 +186,7 @@ type XSelectProps<
   K extends keyof T,
 > = Props & {
   items?: T[];
-  has?: K;
+  has?: string; // K;
   source?: string;
   labelField: K;
   valueField: K;
@@ -158,11 +211,14 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
     model,
   });
 
+  const realError = has ? form.errors[`${form.model}.${has}`] : error;
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (has) {
       const defaultItem = _.get(form.data, [form.model!, has]);
       setSelected(defaultItem);
+      // console.log(name, form.model, form.data, has)
     } else {
       const defaultItem = _.first(
         filteredItems.filter((i) => i[valueField] === value),
@@ -171,13 +227,13 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
     }
   }, []);
 
-  const errors = error ? _.castArray(error) : [];
+  const errors = realError ? _.castArray(realError) : [];
 
   const path = `attributes.${form.model}.${name}`;
   const label = tAr(path, tAm(path));
 
   const controlClasses = cn({
-    "is-invalid": error,
+    "is-invalid": errors.length > 0,
   });
 
   const [filteredItems, setFilteredItems] = useState(items);
@@ -222,13 +278,56 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
         dropdown
         {...props}
       />
-      {error && (
+      {errors.length > 0 && (
         <Form.Control.Feedback type="invalid">
           {errors.map((e) => (
             <div key={e}>{e}</div>
           ))}
         </Form.Control.Feedback>
       )}
+    </Form.Group>
+  );
+}
+
+type XStateEventProps = {
+  fieldName: string;
+};
+
+export function XStateEvent({ fieldName, ...props }: XStateEventProps) {
+  const { t: tAr } = useTranslation("activerecord");
+  const { t: tAm } = useTranslation("activemodel");
+  const { t: tCommon } = useTranslation("common");
+
+  const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
+    name: `${fieldName}_event`,
+    // model,
+  });
+
+  const currentState = _.get(form.data, [form.model!, fieldName]);
+  const stateEvents = _.get(
+    form.data,
+    [form.model!, `${fieldName}_events`],
+    [],
+  ) as Array<[string, string]>;
+
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setValue(e.target.value);
+  };
+
+  return (
+    <Form.Group className="mb-4">
+      <Form.Select name={inputName} id={inputId} onChange={handleChange}>
+        <option>{tCommon("state_events")}</option>
+        {stateEvents.map(([k, v]) => (
+          <option key={v} value={v}>
+            {k}
+          </option>
+        ))}
+      </Form.Select>
+      <div className="small">
+        <span className="me-3">{tCommon("current_state")}:</span>
+        <Badge bg="secondary">{currentState}</Badge>
+      </div>
     </Form.Group>
   );
 }

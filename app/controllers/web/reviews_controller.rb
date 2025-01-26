@@ -2,7 +2,7 @@
 
 class Web::ReviewsController < Web::ApplicationController
   def index
-    scope = Review.published.with_locale.includes([ :user ]).order(id: :desc)
+    scope = Review.published.with_locale.includes([ :user, :language ]).order(id: :desc)
     pagy, records = pagy(scope)
 
     seo_tags = {

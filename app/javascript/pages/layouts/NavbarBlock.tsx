@@ -1,6 +1,6 @@
 import logoImg from "@/images/logo.png";
 import defaultAvatarImg from "@/images/user-avatar.png";
-import { deviconClass, locales } from "@/lib/utils";
+import { deviconClass, localesByCode } from "@/lib/utils";
 import cn from "classnames";
 import i18next from "i18next";
 import { Nav, NavDropdown, Navbar, type NavbarProps } from "react-bootstrap";
@@ -103,9 +103,9 @@ export default function NavbarBlock({ className }: Props) {
           <NavDropdown
             align="end"
             className="link-body-emphasis"
-            title={<i className={locales[i18next.language || "ru"].icon} />}
+            title={<i className={localesByCode[i18next.language || "ru"].icon} />}
           >
-            {Object.entries(locales).map(([k, v]) => (
+            {Object.entries(localesByCode).map(([k, v]) => (
               <NavDropdown.Item
                 className="d-flex align-items-center"
                 key={k}

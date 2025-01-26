@@ -38,7 +38,6 @@
 #
 class Language < ApplicationRecord
   include LanguageRepository
-  include LanguagePresenter
 
   extend Enumerize
 
@@ -46,6 +45,7 @@ class Language < ApplicationRecord
     [ "created_at" ]
   end
 
+  # TODO: extract to constant
   enumerize :slug, in: %i[ada bash clang clojure cobol cpp csharp css crystal dart dlang elixir elm fortran go groovy haskell html java
                           javascript kotlin lua objectivec ocaml perl php prolog python racket rescript rproject ruby
                           rust scala smalltalk swift typescript perl powershell ocaml layout-designer pre-course-java pre-course-python

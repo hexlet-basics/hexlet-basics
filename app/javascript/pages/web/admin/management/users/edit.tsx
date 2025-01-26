@@ -8,6 +8,7 @@ import AdminLayout from "@/pages/layouts/AdminLayout";
 import type { User } from "@/types/serializers";
 import { Col, Row } from "react-bootstrap";
 import { Submit } from "use-inertia-form";
+import { Menu } from "./shared/menu";
 
 type Props = PropsWithChildren & {
   user: User;
@@ -18,7 +19,8 @@ export default function Edit({ user }: Props) {
   const { t: tHelpers } = useTranslation("helpers");
 
   return (
-    <AdminLayout header={t("admin.management.users.index.users")}>
+    <AdminLayout header={t("admin.management.users.edit.header")}>
+      <Menu data={user} />
       <Row>
         <Col className="col-7">
           <XForm

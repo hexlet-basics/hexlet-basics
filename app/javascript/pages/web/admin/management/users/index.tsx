@@ -11,6 +11,7 @@ import type { Grid, User } from "@/types/serializers";
 import { Link } from "@inertiajs/react";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
+import { Menu } from "./shared/menu";
 
 type Props = PropsWithChildren & {
   users: User[];
@@ -34,7 +35,8 @@ export default function Index({ grid, users }: Props) {
   };
 
   return (
-    <AdminLayout header={t("admin.management.users.index.users")}>
+    <AdminLayout header={t("admin.management.users.index.header")}>
+      <Menu />
       <DataTable
         lazy
         paginator
@@ -49,7 +51,7 @@ export default function Index({ grid, users }: Props) {
         value={users}
       >
         <Column field="id" header="id" />
-        <Column field="admin" header="isAdmin" />
+        <Column field="admin" header="Admin?" />
         <Column field="name" header="name" sortable />
         <Column sortable field="email" header="email" />
         <Column

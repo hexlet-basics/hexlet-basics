@@ -1,24 +1,21 @@
 import { useTranslation } from "react-i18next";
 
-import { XForm, XInput, XSelect } from "@/components/forms";
-import type { Review } from "@/types/serializers";
+import { XForm, XInput, XSelect, XStateEvent } from "@/components/forms";
+import type { OriginalLanguage, Review } from "@/types/serializers";
 import { Col, Row } from "react-bootstrap";
 import { type HTTPVerb, Submit } from "use-inertia-form";
 
 import * as Routes from "@/routes.js";
+import { locales } from "@/lib/utils";
 
 type Props = {
   data: Review;
   url: string;
+  courses: OriginalLanguage[];
   method?: HTTPVerb;
 };
 
-const locales = [
-  { name: "Russian", code: "ru" },
-  { name: "English", code: "en" },
-];
-
-export default function Form({ data, url, method }: Props) {
+export default function Form({ courses, data, url, method }: Props) {
   const { t } = useTranslation();
   const { t: tHelpers } = useTranslation("helpers");
 
@@ -26,11 +23,21 @@ export default function Form({ data, url, method }: Props) {
     <Row>
       <Col className="col-7">
         <XForm method={method} model="review" data={{ review: data }} to={url}>
+          <XStateEvent
+            fieldName="state"
+          />
           <XSelect
             name="locale"
             labelField="name"
             valueField="code"
             items={locales}
+          />
+          <XSelect
+            name="language_id"
+            has="language"
+            labelField="name"
+            valueField="id"
+            items={courses}
           />
           <XSelect
             name="user_id"

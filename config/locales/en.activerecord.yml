@@ -2,8 +2,9 @@ en:
   activerecord:
     attributes:
       user:
+        admin: Admin?
         first_name: First name
-        last_name: Lasn name
+        last_name: Last name
         nickname: Nickname
         password: Password
         email: Email

@@ -3,7 +3,7 @@
 class Web::Admin::ReviewsController < Web::Admin::ApplicationController
   def index
     q = ransack_params("s" => "created_at desc")
-    search = Review.includes([ :user ]).ransack(q)
+    search = Review.includes([ :user, :language ]).ransack(q)
     pagy, records = pagy(search.result)
 
     render inertia: true, props: {
@@ -14,17 +14,21 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
 
   def new
     review = Admin::ReviewForm.new
+    languages = Language.includes([ :current_version ])
 
     render inertia: true, props: {
-      review: ReviewResource.new(review)
+      review: ReviewResource.new(review),
+      courses: OriginalLanguageResource.new(languages)
     }
   end
 
   def edit
     review = Admin::ReviewForm.find(params[:id])
+    languages = Language.includes([ :current_version ])
 
     render inertia: true, props: {
-      review: ReviewResource.new(review)
+      review: ReviewResource.new(review),
+      courses: OriginalLanguageResource.new(languages)
     }
   end
 
