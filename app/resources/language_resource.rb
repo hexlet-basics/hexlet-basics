@@ -40,7 +40,7 @@ class LanguageResource
 
   typelize :string, nullable: true
   attribute :name do |info|
-    info.language.name
+    info.title
   end
 
   typelize :string, nullable: true

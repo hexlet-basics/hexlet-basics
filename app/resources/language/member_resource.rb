@@ -11,6 +11,7 @@ class Language::MemberResource
 
   typelize language_name: :string
   attribute :language_name do |member|
-    member.language.name
+    # TODO: use title from current version info
+    member.language.current_version.name
   end
 end

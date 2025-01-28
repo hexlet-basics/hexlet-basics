@@ -38,10 +38,10 @@ DEFAULTS: &DEFAULTS
   slug: $LABEL
   current_version: $LABEL
   progress: completed
+  category: programming
 
 php:
   <<: *DEFAULTS
-  category: programming
 
 elixir:
   <<: *DEFAULTS
@@ -49,20 +49,21 @@ elixir:
 
 javascript:
   <<: *DEFAULTS
-  category: programming
   current_version: javascript2
+
+pre-course-javascript:
+  <<: *DEFAULTS
+  progress: draft
+  current_version: pre-course-javascript1
 
 java:
   <<: *DEFAULTS
-  category: programming
 
 go:
   <<: *DEFAULTS
-  category: programming
 
 csharp:
   <<: *DEFAULTS
-  category: programming
 
 css:
   <<: *DEFAULTS
@@ -70,7 +71,6 @@ css:
 
 python:
   <<: *DEFAULTS
-  category: programming
 
 html:
   <<: *DEFAULTS
@@ -78,4 +78,3 @@ html:
 
 ruby:
   <<: *DEFAULTS
-  category: programming

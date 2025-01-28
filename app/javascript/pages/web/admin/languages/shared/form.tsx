@@ -8,6 +8,7 @@ import { type HTTPVerb, Submit } from "use-inertia-form";
 import * as Routes from "@/routes.js";
 import type { SharedProps } from "@/types";
 import { usePage } from "@inertiajs/react";
+import { enumToOptions } from "@/lib/utils";
 
 type Props = {
   data: OriginalLanguage;
@@ -24,6 +25,12 @@ export default function Form({ data, url, method }: Props) {
   const { t } = useTranslation();
   const { courseCategories } = usePage<SharedProps>().props;
   const { t: tHelpers } = useTranslation("helpers");
+  const { t: tEnums } = useTranslation("enumerize");
+  const languageProgressEnum = tEnums("language.progress", { returnObjects: true });
+  const languageProgressEnumOptions = enumToOptions(languageProgressEnum)
+
+  const languageLearnAsEnum = tEnums("language.learn_as", { returnObjects: true });
+  const languageLearnAsEnumOptions = enumToOptions(languageLearnAsEnum)
 
   return (
     <Row>
@@ -40,9 +47,19 @@ export default function Form({ data, url, method }: Props) {
             valueField="id"
             items={courseCategories}
           />
-          <XInput name="name" />
+          <XSelect
+            name="progress"
+            labelField="name"
+            valueField="id"
+            items={languageProgressEnumOptions}
+          />
+          <XSelect
+            name="learn_as"
+            labelField="name"
+            valueField="id"
+            items={languageLearnAsEnumOptions}
+          />
           <XInput name="slug" />
-          <XInput name="state" />
 
           <Submit className="btn w-100 btn-lg btn-primary mb-3">
             {tHelpers("submit.save")}

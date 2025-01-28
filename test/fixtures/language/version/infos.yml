@@ -28,6 +28,12 @@
 DEFAULTS: &DEFAULTS
   description: $LABEL - Бесплатное обучение программированию от сообщества Хекслет. Онлайн курс посвящен азам написания программ на Javascript с нуля
 
+pre-course-javascript1-ru:
+  <<: *DEFAULTS
+  language: pre-course-javascript
+  language_version: pre-course-javascript1
+  locale: ru
+
 javascript1-ru:
   <<: *DEFAULTS
   language: javascript

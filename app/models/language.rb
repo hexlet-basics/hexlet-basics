@@ -37,6 +37,7 @@
 #  upload_id           (upload_id => uploads.id)
 #
 class Language < ApplicationRecord
+  # TODO: remove name
   include LanguageRepository
 
   extend Enumerize
@@ -45,16 +46,16 @@ class Language < ApplicationRecord
     [ "created_at" ]
   end
 
-  # TODO: extract to constant
-  enumerize :slug, in: %i[ada bash clang clojure cobol cpp csharp css crystal dart dlang elixir elm fortran go groovy haskell html java
-                          javascript kotlin lua objectivec ocaml perl php prolog python racket rescript rproject ruby
-                          rust scala smalltalk swift typescript perl powershell ocaml layout-designer pre-course-java pre-course-python
-                          pre-course-javascript]
+  # enumerize :slug, in: %i[ada bash clang clojure cobol cpp csharp css crystal dart dlang elixir elm fortran go groovy haskell html java
+  #                         javascript kotlin lua objectivec ocaml perl php prolog python racket rescript rproject ruby
+  #                         rust scala smalltalk swift typescript perl powershell ocaml layout-designer pre-course-java pre-course-python
+  #                         pre-course-javascript]
 
   enumerize :progress, in: %i[completed in_development draft], default: :draft, scope: true, predicates: { prefix: true }
   # TODO: move to language version and populate inside the job
   enumerize :learn_as, in: %i[first_language second_language], default: :first_language
 
+  # NOTE: must be part of the docker image: hexlet-basics/exercises-<slug>
   validates :slug, presence: true
   # validates :learn_as, presence: true
 
@@ -76,11 +77,15 @@ class Language < ApplicationRecord
   has_many :current_lessons, through: :current_version, source: :lessons
 
   delegate :to_s, to: :current_version
-  delegate :serializable_data, to: :current_version
-  delegate :name, to: :current_version, allow_nil: true
+  # delegate :serializable_data, to: :current_version
+  # delegate :name, to: :current_version, allow_nil: true
 
   def duration
     # TODO Пересадить на counter_culture от Language::Version
     lessons_count * 15 / 60
+  end
+
+  def repository_url
+    "https://github.com/hexlet-basics/exercises-#{slug}"
   end
 end

@@ -281,6 +281,11 @@
         "learn_as": {
           "first_language": "basics for beginners",
           "second_language": "as a second language"
+        },
+        "progress": {
+          "completed": "Completed",
+          "draft": "Draft",
+          "in_development": "In Development"
         }
       }
     },
@@ -80928,6 +80933,10 @@
           "state/published": "Опубликован",
           "state_event": "Смена состояния"
         },
+        "language": {
+          "category_id": "Категория",
+          "slug": "Slug"
+        },
         "review": {
           "body": "Отзыв",
           "first_name": "Имя",
@@ -81219,6 +81228,11 @@
         "learn_as": {
           "first_language": "для начинающих",
           "second_language": "как второй язык"
+        },
+        "progress": {
+          "completed": "Завершенный",
+          "draft": "Черновик",
+          "in_development": "В разработке"
         }
       }
     },

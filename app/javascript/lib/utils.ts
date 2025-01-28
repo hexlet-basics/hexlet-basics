@@ -217,3 +217,8 @@ export const locales = [
   { name: "English", code: "en" },
 ];
 
+export function enumToOptions(en: Record<string, string>) {
+  return Object.entries(en).map(
+    ([key, value]) => ({ id: key, name: value })
+  );
+}

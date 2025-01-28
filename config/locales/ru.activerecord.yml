@@ -1,6 +1,10 @@
 ru:
   activerecord:
     attributes:
+      language:
+        category_id: Категория
+        slug: Slug
+        # state
       review:
         first_name: Имя
         last_name: Фамилия

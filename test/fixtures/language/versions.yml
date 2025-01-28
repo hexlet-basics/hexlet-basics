@@ -58,6 +58,10 @@ javascript2:
   <<: *DEFAULTS
   language: javascript
 
+pre-course-javascript1:
+  <<: *DEFAULTS
+  language: pre-course-javascript
+
 css:
   <<: *DEFAULTS
 

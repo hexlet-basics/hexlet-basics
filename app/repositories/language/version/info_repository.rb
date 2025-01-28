@@ -10,6 +10,7 @@ module Language::Version::InfoRepository
     scope :ordered, -> { order("language.order asc") }
     scope :current, -> {
       joins(:language)
+      .merge(Language.with_progress(:completed))
       .where(Language.arel_table[:current_version_id].eq(Language::Version::Info.arel_table[:language_version_id]))
     }
   end
