@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AddIndexForLanguageLessonToInfos < ActiveRecord::Migration[7.2]
+class AddIndexForLanguageLessonToInfos < ActiveRecord::Migration[8.0]
   disable_ddl_transaction!
 
   def change
