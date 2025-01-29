@@ -72,6 +72,8 @@ export TWC_TOKEN=<your token>
 1. extract primereact configuration to https://github.com/Hexlet/primereact-bootstrap-theme
 1. switch from ansible vault to helm secrets
 1. Beautify error pages (4xx, 5xx)
+1. upload course image in admin interface
+1. remove datadog configuration from k8s
 
 ---
 
