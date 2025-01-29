@@ -50,3 +50,10 @@ node_modules
 
 .DS_Store
 coverage/
+
+.kube/
+.terraform/
+terraform/*.tfvars
+terraform/*.json
+
+.envrc
