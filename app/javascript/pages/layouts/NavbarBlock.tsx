@@ -22,7 +22,7 @@ export default function NavbarBlock({ className }: Props) {
 
   return (
     <Navbar expand="lg" className={cn(className, "border-bottom")}>
-      <Navbar.Brand href="/">
+      <Navbar.Brand href={Routes.root_path()}>
         <img
           src={logoImg}
           width="30"
