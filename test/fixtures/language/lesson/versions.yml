@@ -38,6 +38,15 @@ DEFAULTS: &DEFAULTS
   path_to_code: ''
   original_code: ''
 
+pre-course-javascript1-module1_version1-lesson1_version1:
+  <<: *DEFAULTS
+  order: 10
+  natural_order: 10
+  language_version: pre-course-javascript1
+  module_version: pre-course-javascript1-module1_version1
+  lesson: pre-course-javascript-module1-lesson1
+  language: pre-course-javascript
+
 javascript1-module1_version1-lesson1_version1:
   <<: *DEFAULTS
   order: 10

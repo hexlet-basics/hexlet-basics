@@ -44,7 +44,13 @@ DEFAULTS: &DEFAULTS
   tips: <%= [Faker::Lorem.paragraph] %>
   locale: ru
 
-
+pre-course-javascript1-module1_version1-lesson1_version1-ru:
+  <<: *DEFAULTS
+  name: <%= Faker::Lorem.word %>
+  language: pre-course-javascript
+  language_lesson: pre-course-javascript-module1-lesson1
+  language_version: pre-course-javascript1
+  version: pre-course-javascript1-module1_version1-lesson1_version1
 
 javascript1-module1_version1-lesson1_version1-ru:
   <<: *DEFAULTS

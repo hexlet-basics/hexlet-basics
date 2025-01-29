@@ -22,7 +22,7 @@ class Web::LanguagesController < Web::ApplicationController
     end
 
     first_lesson_info = language.current_lesson_infos
-      .joins(:lesson).merge(Language::Lesson.ordered).first
+      .joins(:lesson).merge(Language::Lesson.ordered).first!
 
     finished_lesson_ids = current_user.finished_lessons_for_language(language).pluck(:id)
 
@@ -71,10 +71,10 @@ class Web::LanguagesController < Web::ApplicationController
       finishedLessonIds: finished_lesson_ids,
       courseCategory: Language::CategoryResource.new(language.category),
       firstLesson: Language::LessonResource.new(first_lesson_info),
-      nextLesson: !current_user.guest? && Language::LessonResource.new(next_lesson_info),
+      nextLesson: next_lesson_info && Language::LessonResource.new(next_lesson_info),
       courseModules: Language::ModuleResource.new(language_modules_infos),
       lessonsByModuleId: lesson_resources_by_module_id,
-      courseMember: !current_user.guest? && Language::MemberResource.new(language_member),
+      courseMember: language_member && Language::MemberResource.new(language_member),
       recommendedCourses: LanguageResource.new(recommendedCourses)
     }
   end

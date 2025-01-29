@@ -76,7 +76,7 @@ class Language < ApplicationRecord
   has_many :current_module_versions, through: :current_version, source: :module_versions
   has_many :current_lessons, through: :current_version, source: :lessons
 
-  delegate :to_s, to: :current_version
+  # delegate :to_s, to: :current_version
   # delegate :serializable_data, to: :current_version
   # delegate :name, to: :current_version, allow_nil: true
 

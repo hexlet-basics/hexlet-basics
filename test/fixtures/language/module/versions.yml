@@ -36,6 +36,12 @@ two:
   module: php-basics
   language: php
 
+pre-course-javascript1-module1_version1:
+  order: 10
+  language_version: pre-course-javascript1
+  module: pre-course-javascript-module1
+  language: pre-course-javascript
+
 javascript1-module1_version1:
   order: 10
   language_version: javascript1

@@ -34,6 +34,10 @@ php-basics:
   <<: *DEFAULTS
   language: php
 
+pre-course-javascript-module1:
+  <<: *DEFAULTS
+  language: pre-course-javascript
+
 javascript-module1:
   <<: *DEFAULTS
   language: javascript

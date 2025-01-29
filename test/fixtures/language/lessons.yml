@@ -38,6 +38,11 @@ one:
   language: php
   module: one
 
+pre-course-javascript-module1-lesson1:
+  slug: $LABEL
+  language: pre-course-javascript
+  module: pre-course-javascript-module1
+
 javascript-module1-lesson1:
   slug: $LABEL
   language: javascript

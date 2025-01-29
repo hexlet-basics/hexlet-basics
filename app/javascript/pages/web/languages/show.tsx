@@ -1,29 +1,26 @@
 import cn from "classnames";
-import type { PropsWithChildren } from "react";
 import { Alert, Col, Container, ListGroup, Row } from "react-bootstrap";
 
 import { useTranslation } from "react-i18next";
 
 import CourseBlock from "@/components/CourseBlock";
-import { XBreadcrumb } from "@/components/breadcrumbs";
 import { deviconClass } from "@/lib/utils";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import * as Routes from "@/routes.js";
 import type { BreadcrumbItem, SharedProps } from "@/types";
 import type {
-  Language,
-  LanguageCategory,
-  LanguageLesson,
-  LanguageMember,
-  LanguageModule,
-  User,
+    Language,
+    LanguageCategory,
+    LanguageLesson,
+    LanguageMember,
+    LanguageModule
 } from "@/types/serializers";
 import { Link, usePage } from "@inertiajs/react";
 import XssContent from "@/components/XssContent";
 import _ from "lodash";
 
 type Props = {
-  courseMember: LanguageMember;
+  courseMember?: LanguageMember;
   finishedLessonIds: number[];
   courseCategory: LanguageCategory;
   course: Language;
@@ -65,7 +62,7 @@ export default function Show({
   return (
     <ApplicationLayout items={breadcrumbItems}>
       <Container>
-        {courseMember.state === "finished" && (
+        {courseMember?.state === "finished" && (
           <Alert variant="success">
             <XssContent>{t("languages.show.completed_html")}</XssContent>
           </Alert>
