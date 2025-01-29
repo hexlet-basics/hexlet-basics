@@ -74,6 +74,19 @@ Rails.application.configure do
   #   authentication: :plain
   # }
 
+  config.action_mailer.perform_caching = false
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    user_name: configus.mailer.smtp.username,
+    password: configus.mailer.smtp.password,
+    address: "smtp.sparkpostmail.com",
+    port: 587,
+    domain: configus.mailer.from,
+    format: :html,
+    enable_starttls_auto: true
+  }
+
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
   config.i18n.fallbacks = true
