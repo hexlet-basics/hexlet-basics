@@ -23,11 +23,8 @@ const pt: PrimeReactPTOptions = {
         "m-0",
         "text-body bg-white border transition-colors rounded",
         {
-          "focus:outline-none focus:ring-2 focus:ring-primary":
-            !context.disabled,
           "hover:border-primary": !props.invalid && !context.disabled,
           "opacity-50 cursor-not-allowed": context.disabled,
-          "border-secondary": !props.invalid,
           "border-danger": props.invalid && !context.disabled,
           "border-danger opacity-75": props.invalid && context.disabled,
         },
@@ -302,7 +299,7 @@ const pt: PrimeReactPTOptions = {
     root: ({ props }) => ({
       className: classNames(
         "dropdown position-relative d-inline-flex",
-        "bg-white border border-secondary rounded",
+        "bg-white border rounded",
         "transition-all ease-in-out",
         "w-100 md:w-56",
         "hover:border-primary focus:outline-none focus-shadow",
@@ -360,7 +357,6 @@ const pt: PrimeReactPTOptions = {
         "w-100",
         "py-2 px-3",
         "rounded",
-        "border-secondary",
         "transition-all",
       ),
     },
@@ -371,7 +367,7 @@ const pt: PrimeReactPTOptions = {
   autocomplete: {
     root: ({ props }) => ({
       className: classNames(
-        "position-relative d-inline-flex",
+        "position-relative d-flex",
         {
           "opacity-50 pointer-events-none": props.disabled,
         },
@@ -382,9 +378,7 @@ const pt: PrimeReactPTOptions = {
       className: classNames(
         "list-unstyled d-flex align-items-center flex-wrap w-100",
         "px-3 py-2 gap-2",
-        "text-body bg-white border border-secondary rounded",
-        "focus-within:shadow focus-within:border-primary",
-        "transition-all",
+        "text-body bg-white rounded",
       ),
     },
     inputToken: {

@@ -6,7 +6,7 @@ class OriginalLanguageResource
 
   # root_key :user
 
-  attributes :id, :name, :slug, :learn_as, :progress, :category_id
+  attributes :id, :slug, :learn_as, :progress, :category_id
 
   typelize learn_as: [ enum: [ "first_language", "second_language" ] ]
   typelize progress: [ enum: [ "completed", "in_development", "draft" ] ]

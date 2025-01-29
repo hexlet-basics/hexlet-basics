@@ -87,6 +87,77 @@ export function XInput({ name, model, as, ...props }: Props) {
   );
 }
 
+type XFileProps = InputHTMLAttributes<HTMLInputElement> &
+  AsProp & {
+    fieldName: string;
+    model?: string;
+    name: string;
+  };
+
+export function XFile({ name, model, fieldName, ...props }: XFileProps) {
+  const { t: tAr } = useTranslation("activerecord");
+  const { t: tAm } = useTranslation("activemodel");
+
+  const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
+    name,
+    model,
+  });
+
+  const imageUrl = _.get(form.data, [form.model!, fieldName]);
+
+  // console.log(form)
+
+  const errors = error ? _.castArray(error) : [];
+
+  const path = `attributes.${form.model}.${name}`;
+  const label = tAr(path, tAm(path));
+
+  const controlClasses = cn({
+    "is-invalid": errors.length > 0,
+  });
+
+  return (
+    <Form.Group className="mb-4">
+      <Form.Control
+        type="file"
+        name={inputName}
+        // value={value}
+        className={controlClasses}
+        onChange={(e) => setValue(e.target.files[0])}
+      />
+      {/* {progress && ( */}
+      {/*   <progress value={progress.percentage} max="100"> */}
+      {/*     {progress.percentage}% */}
+      {/*   </progress> */}
+      {/* )} */}
+      {imageUrl && (
+        <div className="m-3">
+          <img src={imageUrl} alt={name} />
+        </div>
+      )}
+      {/* <Form.FloatingLabel label={label}> */}
+      {/*   <Form.Control */}
+      {/*     as={as} */}
+      {/*     name={inputName} */}
+      {/*     value={value} */}
+      {/*     id={inputId} */}
+      {/*     placeholder={label} */}
+      {/*     className={controlClasses} */}
+      {/*     onChange={(e) => setValue(e.target.value)} */}
+      {/*     {...props} */}
+      {/*   /> */}
+      {/*   {errors && ( */}
+      {/*     <Form.Control.Feedback type="invalid"> */}
+      {/*       {errors.map((e) => ( */}
+      {/*         <div key={e}>{e}</div> */}
+      {/*       ))} */}
+      {/*     </Form.Control.Feedback> */}
+      {/*   )} */}
+      {/* </Form.FloatingLabel> */}
+    </Form.Group>
+  );
+}
+
 export function XEditor({ name, model, as, ...props }: Props) {
   const { t: tAr } = useTranslation("activerecord");
   const { t: tAm } = useTranslation("activemodel");

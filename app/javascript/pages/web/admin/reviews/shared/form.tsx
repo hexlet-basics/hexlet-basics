@@ -35,7 +35,7 @@ export default function Form({ courses, data, url, method }: Props) {
           <XSelect
             name="language_id"
             has="language"
-            labelField="name"
+            labelField="slug"
             valueField="id"
             items={courses}
           />

@@ -36,6 +36,7 @@ module HexletBasics
 
     config.active_record.default_column_serializer = YAML
 
+    routes.default_url_options = { host: AppHost.canonical }
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

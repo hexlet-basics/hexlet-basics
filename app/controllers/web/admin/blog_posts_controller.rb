@@ -44,6 +44,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
 
   def update
     blog_post = Admin::BlogPostForm.find(params[:id])
+    # raise params[:cover].inspect
 
     if blog_post.update(params[:blog_post])
       f(:success)

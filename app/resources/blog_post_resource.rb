@@ -7,12 +7,12 @@ class BlogPostResource
 
   typelize :string, nullable: true
   attribute :cover_thumb_variant do |post|
-    rails_representation_url(post.cover.variant(:thumb), only_path: true) if post.cover.attached?
+    rails_representation_url(post.cover.variant(:thumb)) if post.cover.attached?
   end
 
   typelize :string, nullable: true
   attribute :cover_list_variant do |post|
-    rails_representation_url(post.cover.variant(:list), only_path: true) if post.cover.attached?
+    rails_representation_url(post.cover.variant(:list)) if post.cover.attached?
   end
 
   typelize "Array<[string, string]>"
