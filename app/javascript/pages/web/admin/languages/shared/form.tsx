@@ -26,46 +26,41 @@ export default function Form({ data, url, method }: Props) {
   const { courseCategories } = usePage<SharedProps>().props;
   const { t: tHelpers } = useTranslation("helpers");
   const { t: tEnums } = useTranslation("enumerize");
-  const languageProgressEnum = tEnums("language.progress", { returnObjects: true });
-  const languageProgressEnumOptions = enumToOptions(languageProgressEnum)
+  const languageProgressEnum = tEnums("language.progress", {
+    returnObjects: true,
+  });
+  const languageProgressEnumOptions = enumToOptions(languageProgressEnum);
 
-  const languageLearnAsEnum = tEnums("language.learn_as", { returnObjects: true });
-  const languageLearnAsEnumOptions = enumToOptions(languageLearnAsEnum)
+  const languageLearnAsEnum = tEnums("language.learn_as", {
+    returnObjects: true,
+  });
+  const languageLearnAsEnumOptions = enumToOptions(languageLearnAsEnum);
 
   return (
-    <Row>
-      <Col className="col-7">
-        <XForm
-          method={method}
-          model="language"
-          data={{ language: data }}
-          to={url}
-        >
-          <XSelect
-            name="category_id"
-            labelField="name"
-            valueField="id"
-            items={courseCategories}
-          />
-          <XSelect
-            name="progress"
-            labelField="name"
-            valueField="id"
-            items={languageProgressEnumOptions}
-          />
-          <XSelect
-            name="learn_as"
-            labelField="name"
-            valueField="id"
-            items={languageLearnAsEnumOptions}
-          />
-          <XInput name="slug" />
+    <XForm method={method} model="language" data={{ language: data }} to={url}>
+      <XSelect
+        name="category_id"
+        labelField="name"
+        valueField="id"
+        items={courseCategories}
+      />
+      <XSelect
+        name="progress"
+        labelField="name"
+        valueField="id"
+        items={languageProgressEnumOptions}
+      />
+      <XSelect
+        name="learn_as"
+        labelField="name"
+        valueField="id"
+        items={languageLearnAsEnumOptions}
+      />
+      <XInput name="slug" />
 
-          <Submit className="btn w-100 btn-lg btn-primary mb-3">
-            {tHelpers("submit.save")}
-          </Submit>
-        </XForm>
-      </Col>
-    </Row>
+      <Submit className="btn w-100 btn-lg btn-primary mb-3">
+        {tHelpers("submit.save")}
+      </Submit>
+    </XForm>
   );
 }

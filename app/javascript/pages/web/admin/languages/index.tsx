@@ -61,6 +61,8 @@ export default function Index({ grid, originalCourses }: Props) {
         value={originalCourses}
       >
         <Column field="id" header="id" />
+        <Column field="current_version_id" header="Version Id" />
+        {/* <Column field="current_version.result" header="Version Id" /> */}
         <Column field="slug" header="slug" />
         <Column field="progress" header="Progress" sortable />
         <Column field="learn_as" header="Learn As" sortable />

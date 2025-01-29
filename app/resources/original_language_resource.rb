@@ -4,9 +4,8 @@ class OriginalLanguageResource
 
   typelize_from Language
 
-  # root_key :user
-
-  attributes :id, :slug, :learn_as, :progress, :category_id
+  attributes :id, :slug, :learn_as, :progress, :category_id, :current_version_id
+  has_one :current_version, resource: Language::VersionResource
 
   typelize learn_as: [ enum: [ "first_language", "second_language" ] ]
   typelize progress: [ enum: [ "completed", "in_development", "draft" ] ]

@@ -21,9 +21,11 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
 
   def edit
     language = Language.find(params[:id])
+    versions = language.versions.limit(5).order(created_at: :desc)
 
     render inertia: true, props: {
-      originalCourse: OriginalLanguageResource.new(language)
+      originalCourse: OriginalLanguageResource.new(language),
+      courseVersions: Language::VersionResource.new(versions)
     }
   end
 
