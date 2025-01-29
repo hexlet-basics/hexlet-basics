@@ -24,14 +24,23 @@ export default function Index({ grid, originalCourses }: Props) {
   const handleDataTable = useDataTable();
 
   const actionBodyTemplate = (data: OriginalLanguage) => {
-    console.log(data);
     return (
-      <Link
-        className="link-body-emphasis"
-        href={Routes.edit_admin_language_path(data.id)}
-      >
-        <i className="bi bi-pencil-fill" />
-      </Link>
+      <>
+        <a
+          className="link-body-emphasis me-2"
+          target="_blank"
+          rel="noreferrer"
+          href={Routes.language_path(data.slug!)}
+        >
+          <i className="bi bi-box-arrow-up-right" />
+        </a>
+        <Link
+          className="link-body-emphasis"
+          href={Routes.edit_admin_language_path(data.id)}
+        >
+          <i className="bi bi-pencil-fill" />
+        </Link>
+      </>
     );
   };
 
@@ -52,9 +61,10 @@ export default function Index({ grid, originalCourses }: Props) {
         value={originalCourses}
       >
         <Column field="id" header="id" />
-        <Column field="name" header="name" sortable />
-        <Column field="state" header="state" sortable />
         <Column field="slug" header="slug" />
+        <Column field="progress" header="Progress" sortable />
+        <Column field="learn_as" header="Learn As" sortable />
+        <Column field="order" header="order" />
         <Column
           field="created_at"
           header="created_at"
