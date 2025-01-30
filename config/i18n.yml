@@ -1,11 +1,11 @@
 ---
-<% group = "{en,ru,es}" %>
+# <% group = "{en,ru,es}" %>
 
 translations:
   - file: app/javascript/locales.json
     patterns:
-      - "<%= group %>.*"
-      - "!*.activerecord"
-      - "!*.errors"
-      - "!*.number.nth"
+      - "{ru,en,es}.*"
+      - "!*.faker.*"
+      # - "!*.errors"
+      # - "!*.number.nth"
 
