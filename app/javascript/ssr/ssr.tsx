@@ -1,6 +1,6 @@
+import Root from "@/components/Root";
 import { createInertiaApp } from "@inertiajs/react";
 import createServer from "@inertiajs/react/server";
-import React from "react";
 import ReactDOMServer from "react-dom/server";
 
 createServer((page) =>
@@ -14,6 +14,13 @@ createServer((page) =>
       });
       return pages[`../pages/${name}.tsx`];
     },
-    setup: ({ App, props }) => <App {...props} />,
+    setup: ({ App, props }) => {
+      const vdom = (
+        <Root {...props}>
+          <App {...props} />
+        </Root>
+      );
+      return vdom
+    },
   }),
 );

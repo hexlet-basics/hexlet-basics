@@ -1,34 +1,8 @@
 import * as Sentry from "@sentry/react";
 import { createInertiaApp } from "@inertiajs/react";
-import { PrimeReactProvider } from "primereact/api";
 import type { ReactNode } from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
-
-import * as Routes from "@/routes.js";
-import pt from "../primereact.ts";
-
-import "react-bootstrap";
-
-import type { SharedProps } from "@/types";
-import i18next from "i18next";
-import { initReactI18next } from "react-i18next";
-import locales from "../locales.json";
-
-export const resources = locales;
-export const defaultNS = "web";
-
-i18next.use(initReactI18next);
-i18next.init({
-  resources,
-  defaultNS,
-  ns: Object.keys(resources.ru),
-  // lng: locale,
-  interpolation: {
-    prefix: "%{",
-    suffix: "}",
-    escapeValue: false, // react already safes from xss => https://www.i18next.com/translation-function/interpolation#unescape
-  },
-});
+import Root from "@/components/Root";
 
 // Temporary type definition, until @inertiajs/react provides one
 type ResolvedComponent = {
@@ -65,24 +39,14 @@ createInertiaApp({
   },
 
   setup({ el, App, props }) {
-    const RootComponent = () => {
-      // const { locale, suffix } = usePage<SharedProps>().props;
-      const { locale, suffix } = props.initialPage
-        .props as unknown as SharedProps;
-
-      // useEffect?
-      i18next.changeLanguage(locale);
-      Routes.configure({ default_url_options: { suffix } });
-
-      return (
-        <PrimeReactProvider value={{ pt, unstyled: true }}>
-          <App {...props} />
-        </PrimeReactProvider>
-      );
-    };
     if (el) {
+      const vdom = (
+        <Root {...props}>
+          <App {...props} />
+        </Root>
+      );
       if (import.meta.env.MODE === "production") {
-        hydrateRoot(el, <RootComponent />, {
+        hydrateRoot(el, vdom, {
           // Callback called when an error is thrown and not caught by an ErrorBoundary.
           onUncaughtError: Sentry.reactErrorHandler((error, errorInfo) => {
             console.warn("Uncaught error", error, errorInfo.componentStack);
@@ -94,7 +58,7 @@ createInertiaApp({
         });
       } else {
         const root = createRoot(el);
-        root.render(<RootComponent />);
+        root.render(vdom);
       }
     } else {
       console.error(
