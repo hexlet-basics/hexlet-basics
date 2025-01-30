@@ -39,8 +39,13 @@ class LanguageResource
   end
 
   typelize :string, nullable: true
-  attribute :name do |info|
+  attribute :title do |info|
     info.title
+  end
+
+  typelize :string, nullable: true
+  attribute :name do |info|
+    info.header
   end
 
   typelize :string, nullable: true

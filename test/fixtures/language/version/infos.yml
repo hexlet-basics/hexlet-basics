@@ -28,6 +28,7 @@
 DEFAULTS: &DEFAULTS
   description: $LABEL - Бесплатное обучение программированию от сообщества Хекслет. Онлайн курс посвящен азам написания программ на Javascript с нуля
   title: $LABEL
+  header: $LABEL
 
 pre-course-javascript1-ru:
   <<: *DEFAULTS

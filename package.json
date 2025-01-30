@@ -39,6 +39,7 @@
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.8",
     "react-countdown": "^2.3.6",
+    "react-devicons": "^2.16.2",
     "react-dom": "^19.0.0",
     "react-frame-component": "^5.2.7",
     "react-hotkeys-hook": "^4.6.1",
