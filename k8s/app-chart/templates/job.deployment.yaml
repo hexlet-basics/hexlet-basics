@@ -43,7 +43,7 @@ spec:
                 path: config.json
 
       containers:
-        - name: sidekiq
+        - name: jobs
           imagePullPolicy: Always
           image: "{{ .Values.web.image.repository }}:{{ .Values.version }}"
           resources:
@@ -52,14 +52,14 @@ spec:
               cpu: 10m
             limits:
               memory: 600Mi
-          command: ["bundle", "exec", "sidekiq"]
+          command: ["bin/jobs"]
           volumeMounts:
             - mountPath: /tmp/hexlet-basics
               name: users-code-path
             - mountPath: /var/run/docker.sock
               name: docker-sock
             - name: docker-secret
-              mountPath: /root/.docker
+              mountPath: /home/rails/.docker
           envFrom:
             - secretRef:
                 name: hexlet-basics-environment-secrets

@@ -52,19 +52,28 @@ spec:
           hostPath:
             path: /var/run/docker.sock
 
+      # TODO: нужно только при первом деплое для смены прав. Закомментировать после первого деплоя
+      initContainers:
+        - name: volume-permissions
+          image: busybox
+          command: ['sh', '-c', 'chown -R 1000:1000 /tmp/hexlet-basics']
+          volumeMounts:
+            - mountPath: /tmp/hexlet-basics
+              name: users-code-path
+
       containers:
         - name: nginx
           imagePullPolicy: Always
           image: "{{ .Values.nginx.image.repository }}:{{ .Values.version }}"
           startupProbe:
             httpGet:
-              path: /up
+              path: /health
               port: 8080
             periodSeconds: 10
             failureThreshold: 30
           readinessProbe:
             httpGet:
-              path: /up
+              path: /health
               port: 8080
             initialDelaySeconds: 15
             periodSeconds: 8
@@ -72,7 +81,7 @@ spec:
             failureThreshold: 3
           livenessProbe:
             httpGet:
-              path: /up
+              path: /health
               port: 8080
             initialDelaySeconds: 15
             periodSeconds: 3
@@ -152,6 +161,44 @@ spec:
             postStart:
               exec:
                 command: {{ .Values.slack_notification }}
+            preStop:
+              exec:
+                command: ["sleep", "15"]
+
+        - name: ssr
+          imagePullPolicy: Always
+          image: "{{ .Values.web.image.repository }}:{{ .Values.version }}"
+          command: ["bin/vite", "ssr"]
+          startupProbe:
+            httpGet:
+              path: /
+              port: 13714
+            periodSeconds: 10
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 13714
+            initialDelaySeconds: 5
+            periodSeconds: 8
+            timeoutSeconds: 2
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 13714
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            timeoutSeconds: 3
+          ports:
+            - containerPort: 13714
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 100m
+            limits:
+              memory: 600Mi
+          lifecycle:
             preStop:
               exec:
                 command: ["sleep", "15"]
