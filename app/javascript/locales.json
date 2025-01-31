@@ -822,21 +822,25 @@
         }
       },
       "errors": {
-        "forbidden": {
-          "base": "Forbidden",
-          "forbidden": "We're sorry, but you don't have access to this page.",
-          "meta_description": "We're sorry, but you don't have access to this page."
-        },
-        "not_found": {
-          "base": "Not Found",
-          "meta_description": "Page not found",
-          "not_found": "Sorry, seems to be the hardest search",
-          "not_found_link_my_html": "But you can back to <a href=\"%{link}\">homepage</a>"
-        },
-        "server_error": {
-          "base": "Server Error",
-          "meta_description": "Oops, something wen wrong. Our programmers are already solving this problem",
-          "server_error": "Oops, something wen wrong. Our programmers are already solving this problem"
+        "show": {
+          "codes": {
+            "403": {
+              "description": "Most likely, this is administrative access, so no entry for you :)",
+              "header": "Access Denied"
+            },
+            "404": {
+              "description": "The page may have been deleted",
+              "header": "Page Not Found"
+            },
+            "500": {
+              "description": "Something went wrong. The developers have already received an SMS and are rushing to their computers to deploy a fix as soon as possible",
+              "header": "Server Error"
+            },
+            "other": {
+              "description": "Something went wrong. We have received a notification and are investigating the issue carefully",
+              "header": "Error"
+            }
+          }
         }
       },
       "home": {
@@ -2418,21 +2422,25 @@
         }
       },
       "errors": {
-        "forbidden": {
-          "base": "Запрещено",
-          "forbidden": "У вас нет прав для доступа к этой страницe",
-          "meta_description": "У вас нет прав для доступа к этой страницe"
-        },
-        "not_found": {
-          "base": "Не найдено",
-          "meta_description": "Запрашиваемая страница не найдена",
-          "not_found": "Ой, мы не нашли нужную вам страницу",
-          "not_found_link_my_html": "Но вы можете вернуться на <a href=\"%{link}\">главную страницу</a>"
-        },
-        "server_error": {
-          "base": "Ошибка сервера",
-          "meta_description": "Что-то пошло не так",
-          "server_error": "Упс, что-то пошло не так, наши программисты уже решают эту проблему"
+        "show": {
+          "codes": {
+            "403": {
+              "description": "Скорее всего это административный доступ, поэтому нини :)",
+              "header": "Доступ к странице закрыт"
+            },
+            "404": {
+              "description": "Возможно страница была удалена. Попробуйте перейти на нужную страницу через верхнее меню",
+              "header": "Страница не найдена"
+            },
+            "500": {
+              "description": "Что-то пошло не так. Программистам уже пришла смс и они бегут к компьютеру, чтобы быстрее выкатить исправление",
+              "header": "Ошибка сервера"
+            },
+            "other": {
+              "description": "Что-то пошло не так. Мы получили уведомление и внимательно разбираемся с проблемой",
+              "header": "Ошибка"
+            }
+          }
         }
       },
       "home": {

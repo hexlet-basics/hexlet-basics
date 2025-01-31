@@ -7,12 +7,12 @@ import {
   useAppDispatch,
   useAppSelector,
 } from "../slices/index.ts";
-import Editor from "./EditorTab.tsx";
-import Output from "./OutputTab.tsx";
-import Solution from "./SolutionTab.tsx";
-import TestsBox from "./TestsBox.tsx";
+import EditorTab from "./EditorTab.tsx";
+import OutputTab from "./OutputTab.tsx";
+import SolutionTab from "./SolutionTab.tsx";
+import TestsTab from "./TestsTab.tsx";
 
-function TabsBox() {
+export default function TabsBox() {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
@@ -60,20 +60,18 @@ function TabsBox() {
 
       <Tab.Content className="x-h-md-100 overflow-hidden">
         <Tab.Pane className="x-h-md-100 vh-100" eventKey="editor">
-          <Editor />
+          <EditorTab />
         </Tab.Pane>
         <Tab.Pane eventKey="output" className="overflow-auto h-100">
-          <Output />
+          <OutputTab />
         </Tab.Pane>
         <Tab.Pane eventKey="tests" className="overflow-auto h-100">
-          <TestsBox />
+          <TestsTab />
         </Tab.Pane>
         <Tab.Pane eventKey="solution" className="overflow-auto h-100">
-          <Solution />
+          <SolutionTab />
         </Tab.Pane>
       </Tab.Content>
     </Tab.Container>
   );
 }
-
-export default TabsBox;

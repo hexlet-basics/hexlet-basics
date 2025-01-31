@@ -28,6 +28,8 @@ export default defineConfig(({ mode }) => {
         "use-inertia-form",
         "monaco-editor",
         "primereact",
+        "react-timer-hook",
+        "@monaco-editor/react",
       ], // Ensure it's handled correctly
     },
     resolve: {

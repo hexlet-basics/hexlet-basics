@@ -1,10 +1,6 @@
-import React from "react";
-import { useSelector } from "react-redux";
-
 import { usePage } from "@inertiajs/react";
 
 import { neededPreview } from "@/lib/utils.ts";
-import _ from "lodash";
 import { useAppSelector } from "../slices/index.ts";
 import type { Props } from "../types.ts";
 import ControlBox from "./ControlBox.tsx";

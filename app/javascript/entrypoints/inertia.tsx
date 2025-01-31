@@ -2,7 +2,7 @@ import * as Sentry from "@sentry/react";
 import { createInertiaApp } from "@inertiajs/react";
 import type { ReactNode } from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
-import Root from "@/components/Root";
+import Root from "@/components/Root.tsx";
 
 // Temporary type definition, until @inertiajs/react provides one
 type ResolvedComponent = {

@@ -3,11 +3,11 @@ import { Alert, Col, Container, Nav, Row, Tab } from "react-bootstrap";
 
 import { useTranslation } from "react-i18next";
 
-import XssContent from "@/components/XssContent";
-import { XBreadcrumb } from "@/components/breadcrumbs";
-import LessonLayout from "@/pages/layouts/LessonLayout";
+import XssContent from "@/components/XssContent.tsx";
+import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
+import LessonLayout from "@/pages/layouts/LessonLayout.tsx";
 import * as Routes from "@/routes.js";
-import type { BreadcrumbItem } from "@/types/index.js";
+import type { BreadcrumbItem } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
 import i18next from "i18next";
 import React from "react";
@@ -16,7 +16,7 @@ import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
 import rehypeExternalLinks from "rehype-external-links";
 import EditorBlock from "./show/index.tsx";
-import type { Props } from "./show/types";
+import type { Props } from "./show/types.ts";
 
 const rehypePlugins = [
   rehypeHighlight,

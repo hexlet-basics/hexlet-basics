@@ -1,4 +1,4 @@
-import Root from "@/components/Root";
+import Root from "@/components/Root.tsx";
 import { createInertiaApp } from "@inertiajs/react";
 import createServer from "@inertiajs/react/server";
 import ReactDOMServer from "react-dom/server";

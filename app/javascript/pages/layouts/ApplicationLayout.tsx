@@ -27,12 +27,15 @@ export default function ApplicationLayout({ children, header, items }: Props) {
         <NavbarBlock className="pb-3 border-bottom" />
         <XFlash />
       </Container>
-      <Container className="mb-4 mt-5">
-        {items && <XBreadcrumb items={items} />}
-        {header && <h1>{header}</h1>}
-      </Container>
+      {(items || header) && (
+        <Container className="mb-4 mt-5">
+          {items && <XBreadcrumb items={items} />}
+          {header && <h1>{header}</h1>}
+        </Container>
+      )}
       {children}
-      <footer className="mt-5 bg-body-tertiary py-5">
+
+      <footer className="mt-5 bg-body-tertiary pt-5">
         <Container>
           <Row>
             <Col>

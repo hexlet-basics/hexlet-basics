@@ -1,17 +1,15 @@
 import { deleteFromStorage } from "@rehooks/local-storage";
-import React from "react";
 import { useTranslation } from "react-i18next";
 
 import cn from "classnames";
 import { Button, OverlayTrigger, Popover, Spinner } from "react-bootstrap";
-// import Hotkeys from 'react-hot-keys';
 import { useHotkeys } from "react-hotkeys-hook";
 
 import useConfirmation from "@/hooks/useConfirmation.ts";
 import { getKeyForStoringLessonCode } from "@/lib/utils.ts";
 import * as Routes from "@/routes.js";
 import { Link, router, usePage } from "@inertiajs/react";
-import slice, { runCheck } from "../slices/RootSlice.ts";
+import { runCheck } from "../slices/RootSlice.ts";
 import { useAppDispatch, useAppSelector } from "../slices/index.ts";
 import type { Props } from "../types.ts";
 

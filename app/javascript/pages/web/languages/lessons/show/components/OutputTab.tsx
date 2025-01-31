@@ -2,7 +2,6 @@
 
 import * as Routes from "@/routes.js";
 import { AnsiUp } from "ansi_up";
-import cn from "classnames";
 import { useTranslation } from "react-i18next";
 
 import XssContent from "@/components/XssContent";
@@ -10,7 +9,7 @@ import { usePage } from "@inertiajs/react";
 import escape from "core-js/actual/escape.js";
 import { Alert } from "react-bootstrap";
 import { useAppSelector } from "../slices";
-import type { Props } from "../types";
+import type { Props } from "../types.ts";
 
 const ansi = new AnsiUp();
 

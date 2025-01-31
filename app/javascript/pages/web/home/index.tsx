@@ -104,7 +104,7 @@ export default function Index({
   courseMembersByCourseId,
 }: Props) {
   const { t } = useTranslation();
-  // FIXME: en version
+  // FIXME: add en version
   const { t: tFaq } = useTranslation("faq");
 
   const {
@@ -117,7 +117,7 @@ export default function Index({
 
   return (
     <ApplicationLayout>
-      <Container className="mb-5 py-5">
+      <Container className="mb-lg-5 py-5">
         <div className="bg-body-tertiary p-4 pb-0 pt-lg-5 align-items-center border shadow-sm rounded-3">
           <div className="row">
             <div className="col-lg-7 p-3 p-lg-5 pt-lg-3">
@@ -159,7 +159,7 @@ export default function Index({
         </div>
       </Container>
 
-      <div className="py-5 mb-5">
+      <div className="mb-5">
         <Container className="py-4">
           <div className="d-flex flex-column flex-sm-row align-items-sm-center mb-4">
             <h2 className="me-auto mb-3 mb-sm-0">

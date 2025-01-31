@@ -5,8 +5,9 @@ import {
   shouldReplaceTabsWithSpaces,
 } from "@/lib/utils.ts";
 import { usePage } from "@inertiajs/react";
-import MonacoEditor, { loader } from "@monaco-editor/react";
-import { useLocalStorage } from "@rehooks/local-storage";
+import MonacoEditor from "@monaco-editor/react";
+import useLocalStorageState from "use-local-storage-state";
+
 import { useEffect, useState } from "react";
 import slice from "../slices/RootSlice.ts";
 import type { Props } from "../types.ts";
@@ -14,33 +15,6 @@ import type { Props } from "../types.ts";
 import type { editor } from "monaco-editor";
 import { useAppDispatch, useAppSelector } from "../slices/index.ts";
 
-// FIXME: async load (for ssr)
-// import * as monaco from "monaco-editor";
-// import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
-// import cssWorker from "monaco-editor/esm/vs/language/css/css.worker?worker";
-// import htmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
-// import jsonWorker from "monaco-editor/esm/vs/language/json/json.worker?worker";
-// import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
-//
-// self.MonacoEnvironment = {
-//   getWorker(_, label) {
-//     if (label === "json") {
-//       return new jsonWorker();
-//     }
-//     if (label === "css" || label === "scss" || label === "less") {
-//       return new cssWorker();
-//     }
-//     if (label === "html" || label === "handlebars" || label === "razor") {
-//       return new htmlWorker();
-//     }
-//     if (label === "typescript" || label === "javascript") {
-//       return new tsWorker();
-//     }
-//     return new editorWorker();
-//   },
-// };
-//
-// loader.config({ monaco });
 
 export default function EditorTab() {
   const { course, lesson } = usePage<Props>().props;
@@ -66,9 +40,9 @@ export default function EditorTab() {
   const content = useAppSelector((state) => state.content);
   const dispatch = useAppDispatch();
 
-  const [_, setLocalStorageContent] = useLocalStorage<string>(
+  const [_, setLocalStorageContent] = useLocalStorageState<string>(
     getKeyForStoringLessonCode(lesson),
-    lesson.prepared_code || "",
+    { defaultValue: lesson.prepared_code || "" },
   );
 
   const [editorInstance, setEditorInstance] =

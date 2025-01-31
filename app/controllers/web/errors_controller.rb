@@ -5,11 +5,20 @@ class Web::ErrorsController < Web::ApplicationController
   around_action :use_locale # , only: :not_found
 
   def show
-    set_meta_tags title: t(".base")
+    code = params[:code].to_i
+    header = t(".codes.#{code}.header", default: t(".codes.other.header"))
+    description = t(".codes.#{code}.description", default: t(".codes.other.header"))
+
+    seo_tags = {
+      title: header,
+      description: description
+    }
+    set_meta_tags seo_tags
 
     render inertia: true, props: {
-      code: params[:code],
-      message: Rack::Utils::HTTP_STATUS_CODES[params[:code].to_i]
+      code:,
+      header:,
+      description:
     }
   end
 

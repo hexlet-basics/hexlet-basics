@@ -1,6 +1,4 @@
-import { format } from "date-fns";
-import React from "react";
-import Countdown, { type CountdownRenderProps } from "react-countdown";
+import { useTimer } from "react-timer-hook";
 import { useTranslation } from "react-i18next";
 import { github } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
@@ -13,6 +11,11 @@ import slice from "../slices/RootSlice.ts";
 import { useAppDispatch, useAppSelector } from "../slices/index.ts";
 import type { Props } from "../types.ts";
 
+import dayjs from "dayjs";
+import duration from 'dayjs/plugin/duration';
+
+dayjs.extend(duration);
+
 const waitingTime = 20 * 60 * 1000; // 20 min
 // const waitingTime = 3000;
 
@@ -23,6 +26,10 @@ export default function SolutionTab() {
   const startTime = useAppSelector((state) => state.startTime);
   const { t: tCommon } = useTranslation("common");
   const dispatch = useAppDispatch();
+
+  const expiryTimestamp = new Date(startTime + waitingTime);
+  const timerData = useTimer({ expiryTimestamp });
+  // console.log(timerData.isRunning, timerData.totalSeconds, expiryTimestamp)
 
   const renderUserCode = () => {
     if (content === "") {
@@ -82,14 +89,13 @@ export default function SolutionTab() {
     </>
   );
 
-  const renderContent = (countdownData: CountdownRenderProps) => {
-    const { completed } = countdownData;
+  const Countdown = () => {
+    const { isRunning, totalSeconds } = timerData;
 
-    if (completed || solutionState === "canBeShown") {
+    if (!isRunning || solutionState === "canBeShown") {
       return renderShowButton();
     }
-
-    const remainingTime = format(new Date(countdownData.total), "mm:ss");
+    const remainingTime = dayjs.duration(totalSeconds, 'seconds').format('mm:ss');
 
     return (
       <div className="text-center">
@@ -109,7 +115,7 @@ export default function SolutionTab() {
       {solutionState === "shown" ? (
         renderSolution()
       ) : (
-        <Countdown date={startTime + waitingTime} renderer={renderContent} />
+        <Countdown />
       )}
     </div>
   );

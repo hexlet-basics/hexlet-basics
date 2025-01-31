@@ -271,19 +271,21 @@ en:
           success: Account successfully deleted
 
     errors:
-      not_found:
-        base: Not Found
-        meta_description: Page not found
-        not_found: Sorry, seems to be the hardest search
-        not_found_link_my_html: But you can back to <a href="%{link}">homepage</a>
-      forbidden:
-        base: Forbidden
-        meta_description: We're sorry, but you don't have access to this page.
-        forbidden: We're sorry, but you don't have access to this page.
-      server_error:
-        base: Server Error
-        meta_description: Oops, something wen wrong. Our programmers are already solving this problem
-        server_error: Oops, something wen wrong. Our programmers are already solving this problem
+      show:
+        codes:
+          404:
+            header: Page Not Found
+            description: The page may have been deleted
+          403:
+            header: Access Denied
+            description: Most likely, this is administrative access, so no entry for you :)
+          500:
+            header: Server Error
+            description: Something went wrong. The developers have already received an SMS and are rushing to their computers to deploy a fix as soon as possible
+          other:
+            header: Error
+            description: Something went wrong. We have received a notification and are investigating the issue carefully
+
 
     shared:
       via_social_networks:
