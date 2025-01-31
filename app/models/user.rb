@@ -42,7 +42,7 @@ class User < ApplicationRecord
 
   validates :email, presence: true,
                     uniqueness: { case_sensitive: false },
-                    # 'valid_email_2/email': { mx: true },
+                    'valid_email_2/email': { mx: true },
                     unless: :removed?
 
   has_many :lesson_members, class_name: "Language::Lesson::Member", dependent: :destroy

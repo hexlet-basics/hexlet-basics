@@ -47,7 +47,7 @@ gem "pagy"
 gem "ransack"
 # gem 'redis'
 gem "term-ansicolor"
-# gem 'valid_email2'
+gem "valid_email2"
 
 # gem 'bootstrap'
 # gem 'jquery-rails'

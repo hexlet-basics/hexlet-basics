@@ -464,6 +464,9 @@ GEM
     uniform_notifier (1.16.0)
     uri (1.0.2)
     useragent (0.16.11)
+    valid_email2 (7.0.0)
+      activemodel (>= 6.0)
+      mail (~> 2.5)
     vite_rails (3.0.19)
       railties (>= 5.1, < 9)
       vite_ruby (~> 3.0, >= 3.2.2)
@@ -548,6 +551,7 @@ DEPENDENCIES
   thruster
   typelizer
   tzinfo-data
+  valid_email2
   vite_rails
   web-console
 
