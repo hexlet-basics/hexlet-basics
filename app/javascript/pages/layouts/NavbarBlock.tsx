@@ -50,6 +50,7 @@ export default function NavbarBlock({ className }: Props) {
               </NavDropdown.Item>
             ))}
           </NavDropdown>
+          <Nav.Link href={Routes.blog_posts_path()}>{tLayouts('shared.nav.blog')}</Nav.Link>
         </Nav>
         <Nav>
           {auth.user.guest && (

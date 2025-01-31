@@ -2611,8 +2611,8 @@
         "index": {
           "course": "Курс %{language}",
           "empty": "Похоже, что тут пока ничего нет",
-          "read_more": "Читать далее",
-          "title": "Отзывы"
+          "header": "Отзывы",
+          "read_more": "Читать далее"
         }
       },
       "sessions": {
