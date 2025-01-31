@@ -198,6 +198,12 @@ spec:
               cpu: 100m
             limits:
               memory: 600Mi
+          env:
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: hexlet-basics-environment-secrets
+                  key: SENTRY_DSN
           lifecycle:
             preStop:
               exec:
