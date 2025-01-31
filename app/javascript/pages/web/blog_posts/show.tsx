@@ -43,7 +43,7 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
   ];
 
   return (
-    <ApplicationLayout items={items} header={blogPost.name!}>
+    <ApplicationLayout items={items} center header={blogPost.name!}>
       <Container>
         <Row className="justify-content-center mb-5">
           <Col className="col-12 col-md-10 col-lg-8">
@@ -51,6 +51,7 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
               remarkPlugins={remarkPlugins}
               rehypePlugins={rehypePlugins}
             >
+              {/* {blogPost.body} */}
               {`\n\n## ${heading}\n\n ${blogPost.body}`}
             </Markdown>
           </Col>

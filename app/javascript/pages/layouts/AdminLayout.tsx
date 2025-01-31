@@ -10,6 +10,7 @@ import type { SharedProps } from "@/types/index.js";
 import { Head, Link, usePage } from "@inertiajs/react";
 import i18next from "i18next";
 import NavbarBlock from "./NavbarBlock.tsx";
+import Footer from "./Footer.tsx";
 
 type Props = PropsWithChildren & {
   header: string;
@@ -36,7 +37,7 @@ export default function AdminLayout({ children, header }: Props) {
         <XFlash />
       </Container>
       <Container fluid className="h-100">
-        <Row className="h-100">
+        <Row className="mb-5">
           <Col className="col-2 border-end h-100">
             <Nav className="flex-column">
               <Nav.Item>
@@ -92,6 +93,7 @@ export default function AdminLayout({ children, header }: Props) {
             {children}
           </Col>
         </Row>
+        <Footer />
       </Container>
     </>
   );

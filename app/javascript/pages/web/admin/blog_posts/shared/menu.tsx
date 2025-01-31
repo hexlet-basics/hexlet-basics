@@ -30,14 +30,25 @@ export function Menu({ data }: Props) {
         </Nav.Link>
       </Nav.Item>
       {data && (
-        <Nav.Item>
-          <Nav.Link
-            className="link-body-emphasis"
-            href={Routes.edit_admin_blog_post_path(data.id)}
-          >
-            {tHelpers("crud.editing")}
-          </Nav.Link>
-        </Nav.Item>
+        <>
+          <Nav.Item>
+            <Nav.Link
+              className="link-body-emphasis"
+              href={Routes.edit_admin_blog_post_path(data.id)}
+            >
+              {tHelpers("crud.editing")}
+            </Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link
+              target="_blank"
+              className="link-body-emphasis"
+              href={Routes.blog_post_path(data.slug!)}
+            >
+              <i className="bi bi-arrow-up-right-square" />
+            </Nav.Link>
+          </Nav.Item>
+        </>
       )}
     </Nav>
   );
