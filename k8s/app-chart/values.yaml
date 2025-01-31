@@ -1,6 +1,6 @@
 ---
 
-version: v979
+version: v980
 
 nginx:
   image:
