@@ -66,6 +66,9 @@ jobs:
           file: services/web-nginx/Dockerfile
           push: true
           tags: ${{ env.NGINX_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
+          build-args: |
+            APP_IMAGE_WITH_TAG=${{ env.APP_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
+
 
       # - name: Send notification into Slack
       #   if: ${{ always() }}

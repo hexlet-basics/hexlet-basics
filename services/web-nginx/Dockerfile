@@ -1,6 +1,9 @@
+ARG APP_IMAGE_WITH_TAG=hexletbasics/services-app
+FROM ${APP_IMAGE_WITH_TAG} AS rails-app
+
 FROM nginx:1.23.1
 
-COPY --from=hexletbasics/services-app /rails/public /var/www/hexlet-basics/shared/public
+COPY --from=rails-app /rails/public /var/www/hexlet-basics/shared/public
 
 COPY services/web-nginx/files/nginx.hexlet.basics.conf.template /etc/nginx/conf.d/hexlet-basics.conf.template
 
