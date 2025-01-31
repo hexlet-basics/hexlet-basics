@@ -34,7 +34,7 @@ export default function Index({ admins, grid }: Props) {
         filters={fieldsToFilters(grid.fields)}
         onSort={handleDataTable}
         onFilter={handleDataTable}
-        globalFilterFields={["email"]}
+        // globalFilterFields={["email"]}
       >
         <Column field="id" header="id" />
         <Column field="name" header="name" sortable />

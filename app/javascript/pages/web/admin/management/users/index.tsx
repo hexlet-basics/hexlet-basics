@@ -40,6 +40,7 @@ export default function Index({ grid, users }: Props) {
       <DataTable
         lazy
         paginator
+        filterDisplay="row"
         totalRecords={grid.tr}
         rows={grid.per}
         sortField={grid.sf}
@@ -48,12 +49,18 @@ export default function Index({ grid, users }: Props) {
         onFilter={handleDataTable}
         onPage={handleDataTable}
         filters={fieldsToFilters(grid.fields)}
+        // globalFilterFields={["email"]}
         value={users}
       >
         <Column field="id" header="id" />
         <Column field="admin" header="Admin?" />
         <Column field="name" header="name" sortable />
-        <Column sortable field="email" header="email" />
+        <Column
+          sortable
+          filter
+          field="email"
+          header="email"
+        />
         <Column
           field="created_at"
           header="created_at"
