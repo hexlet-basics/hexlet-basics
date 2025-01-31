@@ -48,6 +48,7 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
         <Row className="justify-content-center mb-5">
           <Col className="col-12 col-md-10 col-lg-8">
             <Markdown
+              className="hexlet-basics-content"
               remarkPlugins={remarkPlugins}
               rehypePlugins={rehypePlugins}
             >
