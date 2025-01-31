@@ -47,7 +47,6 @@ class Web::HomeController < Web::ApplicationController
     }
     set_meta_tags seo_tags
 
-    raise 'xxx'
     user = User::SignUpForm.new
 
     render inertia: true, props: {
