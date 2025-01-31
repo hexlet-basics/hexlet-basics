@@ -25,7 +25,7 @@ type Props = {
   courseCategory: LanguageCategory;
   course: Language;
   firstLesson: LanguageLesson;
-  nextLesson: LanguageLesson;
+  nextLesson?: LanguageLesson;
   // user: User;
   courseModules: LanguageModule[];
   recommendedCourses: Language[];
@@ -95,7 +95,7 @@ export default function Show({
                 <i className="bi bi-arrow-right" />
               </Link>
             )}
-            {courseMember && (
+            {courseMember && nextLesson && (
               <Link
                 className="btn btn-outline-primary"
                 href={Routes.language_lesson_path(
