@@ -4,7 +4,7 @@ import { Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
-import type { Language, LanguageCategory, User } from "@/types/serializers";
+import type { Language, LanguageCategory } from "@/types/serializers";
 
 import CourseBlock from "@/components/CourseBlock";
 import * as Routes from "@/routes.js";
@@ -13,10 +13,9 @@ type Props = PropsWithChildren & {
   categoryCourses: Language[];
   courses: Language[];
   courseCategory: LanguageCategory;
-  user: User;
 };
 
-export default function New({ courseCategory, categoryCourses }: Props) {
+export default function Show({ courseCategory, categoryCourses }: Props) {
   const { t } = useTranslation();
 
   const header = t("language_categories.show.header", {
@@ -24,6 +23,10 @@ export default function New({ courseCategory, categoryCourses }: Props) {
   });
 
   const items = [
+    {
+      name: t("language_categories.index.header"),
+      url: Routes.language_categories_path(),
+    },
     {
       name: header,
       url: Routes.language_category_path(courseCategory.slug!),

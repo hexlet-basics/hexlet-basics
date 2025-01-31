@@ -3,6 +3,8 @@
 en:
   web:
     language_categories:
+      index:
+        header: Course categories
       show:
         header: |
           %{name} courses

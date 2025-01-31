@@ -3,8 +3,10 @@
 ru:
   web:
     language_categories:
+      index:
+        header: Категории курсов
       show:
-        header: Курсы по %{name}
+        header: Курсы категории "%{name}"
         blog_posts: Посты в блоге
     reviews:
       index:

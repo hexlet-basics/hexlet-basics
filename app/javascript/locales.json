@@ -876,6 +876,9 @@
         }
       },
       "language_categories": {
+        "index": {
+          "header": "Course categories"
+        },
         "show": {
           "blog_posts": "Blog Posts",
           "header": "%{name} courses\n"
@@ -2480,9 +2483,12 @@
         }
       },
       "language_categories": {
+        "index": {
+          "header": "Категории курсов"
+        },
         "show": {
           "blog_posts": "Посты в блоге",
-          "header": "Курсы по %{name}"
+          "header": "Курсы категории \"%{name}\""
         }
       },
       "languages": {

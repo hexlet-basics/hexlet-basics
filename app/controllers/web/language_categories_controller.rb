@@ -1,7 +1,18 @@
 # frozen_string_literal: true
 
 class Web::LanguageCategoriesController < Web::ApplicationController
-  def index; end
+  def index
+    categories = Language::Category.all
+
+    seo_tags = {
+      title: t(".header")
+    }
+    set_meta_tags seo_tags
+
+    render inertia: true, props: {
+      categories: Language::CategoryResource.new(categories)
+    }
+  end
 
   def show
     category = Language::Category.find_by! slug: params[:id]
