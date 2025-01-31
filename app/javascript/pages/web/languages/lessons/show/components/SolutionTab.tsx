@@ -22,6 +22,7 @@ const waitingTime = 20 * 60 * 1000; // 20 min
 export default function SolutionTab() {
   const { course, lesson } = usePage<Props>().props;
   const content = useAppSelector((state) => state.content);
+  const finished = useAppSelector((state) => state.finished);
   const solutionState = useAppSelector((state) => state.solutionState);
   const startTime = useAppSelector((state) => state.startTime);
   const { t: tCommon } = useTranslation("common");
@@ -112,7 +113,7 @@ export default function SolutionTab() {
 
   return (
     <div>
-      {solutionState === "shown" ? (
+      {finished || solutionState === "shown" ? (
         renderSolution()
       ) : (
         <Countdown />

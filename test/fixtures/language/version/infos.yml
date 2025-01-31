@@ -43,6 +43,13 @@ javascript1-ru:
   seo_description: Изучение программирования — интересный и захватывающий процесс. Синтаксис языка — самая простая и короткая часть пути, но без неё невозможно начать. Этот бесплатный онлайн-курс по JavaScript познакомит с базовыми понятиями языка. Вы выучите основы и напишете свои первые программы на JS
   locale: ru
 
+elixir-ru:
+  <<: *DEFAULTS
+  language: elixir
+  language_version: elixir
+  seo_description: "Описание элексира"
+  locale: ru
+
 javascript2-ru:
   <<: *DEFAULTS
   language: javascript

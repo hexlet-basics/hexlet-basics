@@ -45,7 +45,6 @@ php:
 
 elixir:
   <<: *DEFAULTS
-  progress: in_development
 
 javascript:
   <<: *DEFAULTS
