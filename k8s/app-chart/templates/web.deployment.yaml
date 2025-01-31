@@ -53,13 +53,13 @@ spec:
             path: /var/run/docker.sock
 
       # TODO: нужно только при первом деплое для смены прав. Закомментировать после первого деплоя
-      initContainers:
-        - name: volume-permissions
-          image: busybox
-          command: ['sh', '-c', 'chown -R 1000:1000 /tmp/hexlet-basics']
-          volumeMounts:
-            - mountPath: /tmp/hexlet-basics
-              name: users-code-path
+      # initContainers:
+      #   - name: volume-permissions
+      #     image: busybox
+      #     command: ['sh', '-c', 'chown -R 1000:1000 /tmp/hexlet-basics']
+      #     volumeMounts:
+      #       - mountPath: /tmp/hexlet-basics
+      #         name: users-code-path
 
       containers:
         - name: nginx
