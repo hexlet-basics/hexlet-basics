@@ -4,7 +4,7 @@ class Web::BlogPostsController < Web::ApplicationController
     pagy, records = pagy(scope)
 
     seo_tags = {
-      title: t(".title"),
+      title: t(".header"),
       canonical: blog_posts_url
     }
     set_meta_tags seo_tags
