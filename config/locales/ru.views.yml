@@ -28,8 +28,9 @@ ru:
         index:
           dashboard: Кабинет
       management:
-        title: Пользователи
         users:
+          edit:
+            header: Редактирование пользователя
           index:
             finished_lessons: Завершенные уроки
             header: Пользователи

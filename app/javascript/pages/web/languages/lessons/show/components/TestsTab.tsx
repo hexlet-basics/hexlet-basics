@@ -19,7 +19,7 @@ export default function TestsTab() {
         showLineNumbers
         language={getEditorLanguage(course.slug!)}
       >
-        {lesson.test_code}
+        {lesson.test_code!}
       </SyntaxHighlighter>
     </div>
   );

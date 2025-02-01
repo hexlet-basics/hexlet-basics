@@ -9,12 +9,15 @@ import type { User } from "@/types/serializers";
 import { Col, Row } from "react-bootstrap";
 import { Submit } from "use-inertia-form";
 import { Menu } from "./shared/menu";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
 
 type Props = PropsWithChildren & {
   user: User;
+  progress: Record<string, number>[]
 };
 
-export default function Edit({ user }: Props) {
+export default function Edit({ user, progress }: Props) {
   const { t } = useTranslation();
   const { t: tHelpers } = useTranslation("helpers");
 
@@ -22,7 +25,7 @@ export default function Edit({ user }: Props) {
     <AdminLayout header={t("admin.management.users.edit.header")}>
       <Menu data={user} />
       <Row>
-        <Col className="col-7">
+        <Col className="col-5">
           <XForm
             method="patch"
             model="user"
@@ -38,6 +41,15 @@ export default function Edit({ user }: Props) {
               {tHelpers("submit.save")}
             </Submit>
           </XForm>
+        </Col>
+        <Col>
+          <div className="d-flex mb-1">
+            <h2 className="me-auto">Progress</h2>
+          </div>
+          <DataTable value={progress}>
+            <Column field="language" header="Language" />
+            <Column field="count" header="Count" />
+          </DataTable>
         </Col>
       </Row>
     </AdminLayout>

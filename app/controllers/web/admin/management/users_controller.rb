@@ -42,9 +42,14 @@ class Web::Admin::Management::UsersController < Web::Admin::Management::Applicat
 
   def edit
     user = User.find params[:id]
+    progressByLanguage = user.lesson_members.group(:language).count
+    progress = progressByLanguage.map do |language, count|
+      { language: language.slug, count: }
+    end
 
     render inertia: true, props: {
-      user: UserResource.new(user)
+      user: UserResource.new(user),
+      progress:
     }
   end
 
