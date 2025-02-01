@@ -4,7 +4,7 @@ ru:
       admin:
         application:
           dashboard: Кабинет
-          languages: Языки
+          languages: Курсы
           users: Пользователи
           reviews: Отзывы
           blog_posts: Посты в блоге

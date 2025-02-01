@@ -531,7 +531,7 @@
           "application": {
             "blog_posts": "Blog Posts",
             "dashboard": "Dashboard",
-            "languages": "Languages",
+            "languages": "Courses",
             "reviews": "Reviews",
             "users": "Users"
           }
@@ -2107,7 +2107,7 @@
           "application": {
             "blog_posts": "Посты в блоге",
             "dashboard": "Кабинет",
-            "languages": "Языки",
+            "languages": "Курсы",
             "reviews": "Отзывы",
             "users": "Пользователи"
           }

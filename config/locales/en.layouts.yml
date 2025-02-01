@@ -4,7 +4,7 @@ en:
       admin:
         application:
           dashboard: Dashboard
-          languages: Languages
+          languages: Courses
           reviews: Reviews
           blog_posts: Blog Posts
           users: Users
