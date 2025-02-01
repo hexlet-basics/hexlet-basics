@@ -1,11 +1,14 @@
+import React, { Suspense } from "react";
 import { usePage } from "@inertiajs/react";
 
 import { neededPreview } from "@/lib/utils.ts";
 import { useAppSelector } from "../slices/index.ts";
 import type { Props } from "../types.ts";
 import ControlBox from "./ControlBox.tsx";
-import HTMLPreview from "./HTMLPreview.tsx";
 import TabsBox from "./TabsBox.tsx";
+
+// or window is not defined in ssr mode
+const HTMLPreview = React.lazy(() => import("./HTMLPreview.tsx"));
 
 function App() {
   const { course } = usePage<Props>().props;
@@ -21,7 +24,11 @@ function App() {
       return null;
     }
 
-    return <HTMLPreview html={content} />;
+    return (
+      <Suspense fallback={<div>Loading...</div>}>
+        <HTMLPreview html={content} />
+      </Suspense>
+    );
   };
 
   return (
