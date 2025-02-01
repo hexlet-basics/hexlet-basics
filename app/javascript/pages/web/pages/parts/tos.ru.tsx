@@ -121,7 +121,7 @@ export default function TosRu() {
 
       <p>
         Вопросы об условиях обслуживания следует направлять на{" "}
-        <a href="mailto:info@hexlet.io">info@hexlet.io</a> на английском или
+        <a href="mailto:support@hexlet.io">support@hexlet.io</a> на английском или
         русском языке.
       </p>
       <p>Последнее обновление: 15 июня 2019 года.</p>
