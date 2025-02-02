@@ -1,10 +1,7 @@
-import { getImageUrl } from "@/images";
 import * as Routes from "@/routes.js";
-import type { SharedProps, User } from "@/types";
-import type { Language } from "@/types/serializers";
-import { Link, usePage } from "@inertiajs/react";
+import type { User } from "@/types";
+import { Link } from "@inertiajs/react";
 import type { PropsWithChildren } from "react";
-import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { Submit } from "use-inertia-form";
 import XssContent from "./XssContent";

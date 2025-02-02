@@ -17,8 +17,8 @@ class CreateEventStoreEvents < ActiveRecord::Migration[8.0]
       t.references  :event,       null: false, type: :string, limit: 36, index: true, foreign_key: { to_table: :event_store_events, primary_key: :event_id }
       t.datetime    :created_at,  null: false, precision: 6, index: true
 
-      t.index [:stream, :position], unique: true
-      t.index [:stream, :event_id], unique: true
+      t.index [ :stream, :position ], unique: true
+      t.index [ :stream, :event_id ], unique: true
     end
   end
 end

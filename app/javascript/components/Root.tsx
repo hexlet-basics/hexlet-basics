@@ -35,7 +35,7 @@ export default function Root(props) {
 
   return (
     <PrimeReactProvider value={{ pt, unstyled: true }}>
-        {props.children}
+      {props.children}
     </PrimeReactProvider>
   );
 }
