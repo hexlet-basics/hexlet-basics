@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     build: {
-      sourcemap: true,
+      sourcemap: 'hidden',
     },
     plugins: [
       react(),
