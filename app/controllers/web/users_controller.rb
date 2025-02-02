@@ -19,6 +19,11 @@ class Web::UsersController < Web::ApplicationController
     user = User::SignUpForm.new(params[:user_sign_up_form])
 
     if user.save
+      event = UserSignedUpEvent.new(data: user.slice(:id, :email))
+      event_store.publish(event, stream_name: "user-#{user.id}")
+
+      event_to_js(event)
+
       sign_in user
       # js_event_options = {
       #   user: @user

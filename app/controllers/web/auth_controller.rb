@@ -6,10 +6,10 @@ class Web::AuthController < Web::ApplicationController
 
     sign_in result.user
     f(:success)
-    js_event_options = {
-      user: result.user
-    }
-    js_event(result.is_new ? :signed_up : :signed_in, js_event_options)
+    # js_event_options = {
+    #   user: result.user
+    # }
+    # js_event(result.is_new ? :signed_up : :signed_in, js_event_options)
     redirect_to root_path
     # TODO Посылать расширенный контекст в sentry
     # rescue ActiveRecord::RecordInvalid => e

@@ -27,7 +27,7 @@ class Api::LessonsController < Api::ApplicationController
 
       # js_event :lesson_finished, lesson_finished_event_options
 
-      language_member = language.members.find_or_create_by!(user: current_user)
+      language_member = language.members.find_by!(user: current_user)
       if language_member.may_finish?
         language_member.finish!
 

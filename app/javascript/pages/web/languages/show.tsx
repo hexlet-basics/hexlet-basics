@@ -156,29 +156,31 @@ export default function Show({
             </div>
           ))}
 
-          <div className="p-3 p-sm-4 bg-body-tertiary rounded-3 mb-5">
-            <div className="d-flex justify-content-between">
-              <div>
-                <div className="display-6 fw-bold">
-                  {t("languages.show.ready")}
+          {courseMember?.state !== "finished" && (
+            <div className="p-3 p-sm-4 bg-body-tertiary rounded-3 mb-5">
+              <div className="d-flex justify-content-between">
+                <div>
+                  <div className="display-6 fw-bold">
+                    {t("languages.show.ready")}
+                  </div>
+                  <div className="fs-4 fw-bold text-primary">
+                    {t("languages.show.no_registration")}
+                  </div>
                 </div>
-                <div className="fs-4 fw-bold text-primary">
-                  {t("languages.show.no_registration")}
+                <div className="align-content-around">
+                  <Link
+                    className="btn btn-lg btn-outline-primary"
+                    href={Routes.language_lesson_path(
+                      course.slug!,
+                      firstLesson.slug!,
+                    )}
+                  >
+                    {t("languages.show.start_demo_lesson")}
+                  </Link>
                 </div>
-              </div>
-              <div className="align-content-around">
-                <Link
-                  className="btn btn-lg btn-outline-primary"
-                  href={Routes.language_lesson_path(
-                    course.slug!,
-                    firstLesson.slug!,
-                  )}
-                >
-                  {t("languages.show.start_demo_lesson")}
-                </Link>
               </div>
             </div>
-          </div>
+          )}
 
           <div className="mb-5">
             <div className="d-flex justify-content-between border-bottom mb-3">

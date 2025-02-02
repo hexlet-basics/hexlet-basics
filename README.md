@@ -71,8 +71,9 @@ export TWC_TOKEN=<your token>
 1. extract primereact configuration to https://github.com/Hexlet/primereact-bootstrap-theme
 1. switch from ansible vault to helm secrets
 1. upload course image in admin interface (and remove devicon)
-1. remove datadog configuration from k8s
 1. configus => dotenv
+1. Check if yandex.market is used
+1. primary keys: integer = bigint
 
 ---
 

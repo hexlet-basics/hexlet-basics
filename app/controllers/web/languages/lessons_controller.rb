@@ -21,18 +21,28 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     prev_lesson_version = lesson_version.prev_lesson_version
     prev_lesson_info = prev_lesson_version ? prev_lesson_version.infos.find_by!(locale: I18n.locale) : nil
 
-    language_member = nil
     lesson_member = nil
 
     if !current_user.guest?
+      # Dynamic creation, because user can start from any lesson directly
       language_member = resource_language.members.find_or_initialize_by(user: current_user)
-      language_member.save! if language_member.new_record?
+      if language_member.new_record?
+        language_member.save!
+        event = CourseStartedEvent.new(data: language_member.slice(:language_id, :user_id))
+        event_store.publish(event, stream_name: "user-#{current_user.id}")
+        event_to_js(event)
+      end
       lesson_member = language_member.lesson_members.find_or_initialize_by(
         language: resource_language,
         lesson:,
         user: current_user,
       )
-      lesson_member.save! if lesson_member.new_record?
+      if lesson_member.new_record?
+        lesson_member.save!
+        event = LessonStartedEvent.new(data: lesson_member.slice(:language_id, :user_id, :lesson_id, :language_member_id))
+        event_store.publish(event, stream_name: "user-#{current_user.id}")
+        event_to_js(event)
+      end
     end
 
     # unless @lesson
