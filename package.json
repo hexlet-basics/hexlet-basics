@@ -14,6 +14,7 @@
     "@reduxjs/toolkit": "^2.5.1",
     "@rehooks/local-storage": "2.4.5",
     "@sentry/browser": "^8.53.0",
+    "@sentry/node": "^8.53.0",
     "@sentry/react": "^8.53.0",
     "@sentry/tracing": "^7.120.3",
     "ansi_up": "^6.0.2",
@@ -61,6 +62,7 @@
   "devDependencies": {
     "@4c/tsconfig": "^0.4.1",
     "@biomejs/biome": "1.9.4",
+    "@sentry/vite-plugin": "^3.1.1",
     "@types/core-js": "^2.5.8",
     "@types/lodash": "^4.17.15",
     "@types/node": "^22.13.0",

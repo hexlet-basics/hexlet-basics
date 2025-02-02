@@ -199,11 +199,11 @@ spec:
             limits:
               memory: 600Mi
           env:
-            - name: SENTRY_DSN
+            - name: NODE_ENV
               valueFrom:
                 secretKeyRef:
                   name: hexlet-basics-environment-secrets
-                  key: SENTRY_DSN
+                  key: NODE_ENV
           lifecycle:
             preStop:
               exec:

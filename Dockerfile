@@ -58,8 +58,15 @@ COPY . .
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 
+ARG RELEASE_VERSION="unknown"
+ENV VITE_RELEASE_VERSION=$RELEASE_VERSION
+
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+RUN --mount=type=secret,id=sentry-org,env=VITE_SENTRY_ORG \
+    --mount=type=secret,id=sentry-project,env=VITE_SENTRY_PROJECT \
+    --mount=type=secret,id=sentry-dsn,env=VITE_SENTRY_DSN \
+    --mount=type=secret,id=sentry-auth-token,env=VITE_SENTRY_AUTH_TOKEN \
+    SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 # Final stage for app image
 FROM base
