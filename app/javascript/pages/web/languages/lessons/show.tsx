@@ -16,7 +16,7 @@ import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
 import rehypeExternalLinks from "rehype-external-links";
 import EditorBlock from "./show/index.tsx";
-import type { Props } from "./show/types.ts";
+import type { LessonSharedProps } from "./show/types.ts";
 
 const rehypePlugins = [
   rehypeHighlight,
@@ -31,7 +31,7 @@ export default function Show() {
     lessons,
     lesson,
     auth: { user },
-  } = usePage<Props>().props;
+  } = usePage<LessonSharedProps>().props;
   const { t } = useTranslation();
   const { t: tCommon } = useTranslation("common");
 

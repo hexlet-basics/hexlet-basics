@@ -4,19 +4,19 @@ import { Alert, Col, Container, ListGroup, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
 import CourseBlock from "@/components/CourseBlock";
+import XssContent from "@/components/XssContent";
 import { deviconClass } from "@/lib/utils";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import * as Routes from "@/routes.js";
 import type { BreadcrumbItem, SharedProps } from "@/types";
 import type {
-    Language,
-    LanguageCategory,
-    LanguageLesson,
-    LanguageMember,
-    LanguageModule
+  Language,
+  LanguageCategory,
+  LanguageLesson,
+  LanguageMember,
+  LanguageModule,
 } from "@/types/serializers";
 import { Link, usePage } from "@inertiajs/react";
-import XssContent from "@/components/XssContent";
 import _ from "lodash";
 
 type Props = {
@@ -82,47 +82,53 @@ export default function Show({
           <p className="col-lg-8 mx-auto fs-5 text-muted">
             {course.description!}
           </p>
-          <div className="d-inline-flex gap-2 mb-5">
+          <Row className="row-cols-1 row-cols-sm-2 justify-content-center">
             {!courseMember && (
-              <Link
-                className="btn btn-primary"
-                href={Routes.language_lesson_path(
-                  course.slug!,
-                  firstLesson.slug!,
-                )}
-              >
-                <span className="me-2">{t("languages.show.start")}</span>
-                <i className="bi bi-arrow-right" />
-              </Link>
+              <Col className="mb-3 col-lg-3">
+                <Link
+                  className="btn d-block btn-primary"
+                  href={Routes.language_lesson_path(
+                    course.slug!,
+                    firstLesson.slug!,
+                  )}
+                >
+                  <span className="me-2">{t("languages.show.start")}</span>
+                  <i className="bi bi-arrow-right" />
+                </Link>
+              </Col>
             )}
             {courseMember && nextLesson && (
-              <Link
-                className="btn btn-outline-primary"
-                href={Routes.language_lesson_path(
-                  course.slug!,
-                  nextLesson.slug!,
-                )}
-              >
-                <span className="me-2">{t("languages.show.continue")}</span>
-                <i className="bi bi-arrow-right" />
-              </Link>
+              <Col className="mb-3 col-lg-3">
+                <Link
+                  className="btn d-block btn-outline-primary"
+                  href={Routes.language_lesson_path(
+                    course.slug!,
+                    nextLesson.slug!,
+                  )}
+                >
+                  <span className="me-2">{t("languages.show.continue")}</span>
+                  <i className="bi bi-arrow-right" />
+                </Link>
+              </Col>
             )}
             {auth.user.guest && (
-              <Link
-                className="btn btn-outline-secondary"
-                href={Routes.new_user_path()}
-              >
-                {t("languages.show.registration")}
-              </Link>
+              <Col className="mb-3 col-lg-3">
+                <Link
+                  className="btn d-block btn-outline-secondary"
+                  href={Routes.new_user_path()}
+                >
+                  {t("languages.show.registration")}
+                </Link>
+              </Col>
             )}
-          </div>
+          </Row>
         </div>
         <div className="mb-5">
           {courseModules.map((m) => (
             <div key={m.id} className="mb-5">
               <h2 className="mb-4">{m.name!}</h2>
-              <Row className="col-12">
-                <Col>
+              <Row className="row-cols-1 row-cols-md-2">
+                <Col className="mb-3">
                   <ListGroup>
                     {_.get(lessonsByModuleId, m.id, []).map((l) => (
                       <ListGroup.Item key={l.id}>
@@ -145,12 +151,12 @@ export default function Show({
                     ))}
                   </ListGroup>
                 </Col>
-                <Col>{m.description}</Col>
+                <Col className="d-none d-sm-block">{m.description}</Col>
               </Row>
             </div>
           ))}
 
-          <div className="p-5 bg-body-tertiary rounded-3 mb-5">
+          <div className="p-3 p-sm-4 bg-body-tertiary rounded-3 mb-5">
             <div className="d-flex justify-content-between">
               <div>
                 <div className="display-6 fw-bold">

@@ -9,7 +9,7 @@ import { Alert } from "react-bootstrap";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import slice from "../slices/RootSlice.ts";
 import { useAppDispatch, useAppSelector } from "../slices/index.ts";
-import type { Props } from "../types.ts";
+import type { LessonSharedProps } from "../types.ts";
 
 import dayjs from "dayjs";
 import duration from 'dayjs/plugin/duration';
@@ -20,7 +20,7 @@ const waitingTime = 20 * 60 * 1000; // 20 min
 // const waitingTime = 3000;
 
 export default function SolutionTab() {
-  const { course, lesson } = usePage<Props>().props;
+  const { course, lesson } = usePage<LessonSharedProps>().props;
   const content = useAppSelector((state) => state.content);
   const finished = useAppSelector((state) => state.finished);
   const solutionState = useAppSelector((state) => state.solutionState);

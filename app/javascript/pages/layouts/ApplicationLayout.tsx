@@ -28,7 +28,7 @@ export default function ApplicationLayout({
         <XFlash />
       </Container>
       {(items || header) && (
-        <Container className="mb-4 mt-5">
+        <Container className="my-2 my-md-4">
           {items && <XBreadcrumb items={items} />}
           {header && <h1 className={center ? "text-center" : ""}>{header}</h1>}
         </Container>

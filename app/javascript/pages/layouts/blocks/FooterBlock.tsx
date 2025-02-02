@@ -22,7 +22,7 @@ export default function FooterBlock() {
               <Nav.Item className="mb-3">
                 <a href="mailto:support@hexlet.io">support@hexlet.io</a>
               </Nav.Item>
-              <Nav.Item>{tCommon("address")}</Nav.Item>
+              <Nav.Item className="mb-3">{tCommon("address")}</Nav.Item>
             </Nav>
           </Col>
           <Col>
