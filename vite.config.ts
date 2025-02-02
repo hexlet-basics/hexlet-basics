@@ -44,6 +44,7 @@ export default defineConfig(({ mode }) => {
         "use-inertia-form",
         "monaco-editor",
         "primereact",
+        "posthog-js",
         "react-timer-hook",
         "@monaco-editor/react",
       ], // Ensure it's handled correctly

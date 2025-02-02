@@ -1,14 +1,11 @@
-import { type PropsWithChildren, useEffect } from "react";
+import type { PropsWithChildren } from "react";
 import { Container } from "react-bootstrap";
 
 import { useTranslation } from "react-i18next";
 
-import * as Routes from "@/routes.js";
 
-import type { SharedProps } from "@/types/index.js";
-import { usePage } from "@inertiajs/react";
-import i18next from "i18next";
-import NavbarBlock from "./NavbarBlock.tsx";
+import NavbarBlock from "./blocks/NavbarBlock.tsx";
+import RootLayout from "./RootLayout.tsx";
 
 type Props = PropsWithChildren & {};
 
@@ -23,11 +20,11 @@ export default function LessonLayout({ children }: Props) {
   // }, [suffix, locale]);
 
   return (
-    <>
+    <RootLayout>
       <Container fluid className="mb-2">
         <NavbarBlock />
       </Container>
       {children}
-    </>
+    </RootLayout>
   );
 }

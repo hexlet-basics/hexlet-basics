@@ -3,6 +3,9 @@
 module AuthConcern
   def sign_in(user)
     session[:user_id] = user.id
+
+    event = UserSignedInEvent.new(data: user.slice(:id, :email))
+    event_store.publish(event, stream_name: "user-#{user.id}")
   end
 
   def sign_out

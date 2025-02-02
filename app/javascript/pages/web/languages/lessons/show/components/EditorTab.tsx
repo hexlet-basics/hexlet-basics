@@ -1,23 +1,27 @@
 import {
   getEditorLanguage,
-  getKeyForStoringLessonCode,
+  // getKeyForStoringLessonCode,
   getTabSize,
   shouldReplaceTabsWithSpaces,
 } from "@/lib/utils.ts";
 import { usePage } from "@inertiajs/react";
 import MonacoEditor from "@monaco-editor/react";
-import useLocalStorageState from "use-local-storage-state";
+// import useLocalStorageState from "use-local-storage-state";
 
 import { useEffect, useState } from "react";
-import slice from "../slices/RootSlice.ts";
-import type { Props } from "../types.ts";
+import slice, { runCheck } from "../slices/RootSlice.ts";
+import type { LessonSharedProps } from "../types.ts";
 
 import type { editor } from "monaco-editor";
 import { useAppDispatch, useAppSelector } from "../slices/index.ts";
 
+type Props = {
+  code: string;
+  setCode: React.Dispatch<React.SetStateAction<string>>;
+};
 
-export default function EditorTab() {
-  const { course, lesson } = usePage<Props>().props;
+export default function EditorTab({ code, setCode }: Props) {
+  const { course, lesson } = usePage<LessonSharedProps>().props;
 
   const editorOptions: editor.IStandaloneEditorConstructionOptions = {
     tabSize: getTabSize(course.slug!),
@@ -37,13 +41,9 @@ export default function EditorTab() {
   };
 
   const focusesCount = useAppSelector((state) => state.focusesCount);
+  const resetsCount = useAppSelector((state) => state.resetsCount);
   const content = useAppSelector((state) => state.content);
   const dispatch = useAppDispatch();
-
-  const [_, setLocalStorageContent] = useLocalStorageState<string>(
-    getKeyForStoringLessonCode(lesson),
-    { defaultValue: lesson.prepared_code || "" },
-  );
 
   const [editorInstance, setEditorInstance] =
     useState<editor.IStandaloneCodeEditor>();
@@ -68,13 +68,18 @@ export default function EditorTab() {
     editorInstance?.focus();
   }, [focusesCount, editorInstance]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    editorInstance?.setValue(content);
+  }, [resetsCount]);
+
   const handleRunCheck = () => {
-    // dispatch(slice.actions.runCheck({ lesson }));
+    dispatch(runCheck(lesson));
   };
 
   const handleEditorChange = (value: string | undefined) => {
     const newContent = value || "";
-    setLocalStorageContent(newContent);
+    setCode(newContent);
     dispatch(slice.actions.changeContent(newContent));
   };
 
@@ -82,7 +87,7 @@ export default function EditorTab() {
     <MonacoEditor
       options={editorOptions}
       onMount={handleEditorDidMount}
-      defaultValue={content}
+      defaultValue={code}
       onChange={handleEditorChange}
       language={getEditorLanguage(course.slug!)}
       // defaultLanguage={course.slug!}

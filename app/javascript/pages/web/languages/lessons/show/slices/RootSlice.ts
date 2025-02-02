@@ -34,7 +34,9 @@ export const initialRootState: RootState = {
   processState: "unchecked",
   currentTab: "editor",
   finished: false,
+  defaultCode: "",
   result: null,
+  resetsCount: 0,
   output: "",
   passed: false,
   content: "",
@@ -49,6 +51,11 @@ const slice = createSlice({
   reducers: {
     changeContent(state, action: PayloadAction<RootState["content"]>) {
       state.content = action.payload;
+    },
+    resetContent(state) {
+      state.content = state.defaultCode;
+      state.focusesCount += 1;
+      state.resetsCount += 1;
     },
     changeTab(state, action: PayloadAction<RootState["currentTab"]>) {
       state.currentTab = action.payload;

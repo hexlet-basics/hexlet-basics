@@ -9,12 +9,12 @@ import { usePage } from "@inertiajs/react";
 import escape from "core-js/actual/escape.js";
 import { Alert } from "react-bootstrap";
 import { useAppSelector } from "../slices";
-import type { Props } from "../types.ts";
+import type { LessonSharedProps } from "../types.ts";
 
 const ansi = new AnsiUp();
 
 export default function OutputTab() {
-  const { lessonMember } = usePage<Props>().props;
+  const { lessonMember } = usePage<LessonSharedProps>().props;
   const result = useAppSelector((state) => state.result);
   const processState = useAppSelector((state) => state.processState);
   const output = useAppSelector((state) => state.output);

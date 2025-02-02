@@ -1,6 +1,6 @@
 import { PrimeReactProvider } from "primereact/api";
 import * as Routes from "@/routes.js";
-import pt from "../primereact.ts";
+import pt from "@/primereact.ts";
 
 import "react-bootstrap";
 
@@ -9,8 +9,8 @@ import i18next from "i18next";
 import { initReactI18next } from "react-i18next";
 import locales from "../locales.json";
 
-export const resources = locales;
-export const defaultNS = "web";
+const resources = locales;
+const defaultNS = "web";
 
 i18next.use(initReactI18next);
 i18next.init({
@@ -35,7 +35,7 @@ export default function Root(props) {
 
   return (
     <PrimeReactProvider value={{ pt, unstyled: true }}>
-      {props.children}
+        {props.children}
     </PrimeReactProvider>
   );
 }

@@ -3,6 +3,8 @@
 class ApplicationContainer
   extend Dry::Container::Mixin
 
+  # register :event_store, Rails.configuration.event_store
+
   if Rails.env.test?
     register :docker_exercise_api, -> { DockerExerciseApiStub }
     register :google_one_tap, -> { GoogleAuthStub }

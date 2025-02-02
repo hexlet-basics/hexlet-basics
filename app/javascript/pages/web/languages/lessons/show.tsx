@@ -206,7 +206,7 @@ export default function Show() {
                       inputPosition="top"
                       theme="light"
                       lang={i18next.language}
-                      // loading="lazy"
+                      loading="lazy"
                     />
                   </Tab.Pane>
                   <Tab.Pane

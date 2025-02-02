@@ -4,9 +4,10 @@ import { Container } from "react-bootstrap";
 
 import XFlash from "@/components/XFlash.tsx";
 import type { BreadcrumbItem } from "@/types/index.js";
-import NavbarBlock from "./NavbarBlock.tsx";
+import NavbarBlock from "./blocks/NavbarBlock.tsx";
 import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
-import Footer from "./Footer.tsx";
+import FooterBlock from "./blocks/FooterBlock.tsx";
+import RootLayout from "./RootLayout.tsx";
 
 type Props = PropsWithChildren & {
   header?: string;
@@ -21,7 +22,7 @@ export default function ApplicationLayout({
   center = false,
 }: Props) {
   return (
-    <>
+    <RootLayout>
       <Container className="py-2">
         <NavbarBlock className="pb-3 border-bottom" />
         <XFlash />
@@ -33,7 +34,7 @@ export default function ApplicationLayout({
         </Container>
       )}
       {children}
-      <Footer />
-    </>
+      <FooterBlock />
+    </RootLayout>
   );
 }

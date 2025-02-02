@@ -3,35 +3,28 @@ import { Provider } from "react-redux";
 
 import App from "./components/App.tsx";
 
-import { getKeyForStoringLessonCode } from "@/lib/utils.ts";
 import { usePage } from "@inertiajs/react";
-import useLocalStorageState from "use-local-storage-state";
 import getStore, { type AppState } from "./slices/index.ts";
-import type { Props } from "./types.ts";
+import type { LessonSharedProps } from "./types.ts";
 
 export default function Index() {
-  const { lessonMember, lesson } = usePage<Props>().props;
+  const { lessonMember, lesson } = usePage<LessonSharedProps>().props;
 
   const isFinished = lessonMember?.state === "finished";
 
-  const [content] = useLocalStorageState<string>(
-    getKeyForStoringLessonCode(lesson),
-    { defaultValue: lesson.prepared_code || "" },
-  );
-
   const preloadedState: Partial<AppState> = {
     startTime: Date.now(),
-    content,
+    defaultCode: lesson.prepared_code!,
     finished: isFinished,
     solutionState: isFinished ? "canBeShown" : "notAllowedToBeShown",
   };
   const store = getStore(preloadedState);
 
   return (
-    <StrictMode>
-      <Provider store={store}>
-        <App />
-      </Provider>
-    </StrictMode>
+
+    <Provider store={store}>
+      <App />
+    </Provider>
+
   );
 }

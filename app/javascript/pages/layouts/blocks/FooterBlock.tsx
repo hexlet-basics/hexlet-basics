@@ -6,7 +6,7 @@ import { locale } from "dayjs";
 import { Container, Row, Col, Nav } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
-export default function Footer() {
+export default function FooterBlock() {
   const { t: tLayouts } = useTranslation("layouts");
   const { t: tCommon } = useTranslation("common");
   const { locale } = usePage<SharedProps>().props;

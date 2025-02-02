@@ -3,6 +3,11 @@ import { createInertiaApp } from "@inertiajs/react";
 import type { ReactNode } from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 import Root from "@/components/Root.tsx";
+import { PostHogProvider } from "posthog-js/react";
+
+const posthogOptions = {
+  api_host: import.meta.env.VITE_REACT_APP_PUBLIC_POSTHOG_HOST,
+};
 
 // Temporary type definition, until @inertiajs/react provides one
 type ResolvedComponent = {
@@ -45,9 +50,14 @@ createInertiaApp({
   setup({ el, App, props }) {
     if (el) {
       const vdom = (
-        <Root {...props}>
-          <App {...props} />
-        </Root>
+        <PostHogProvider
+          apiKey={import.meta.env.VITE_REACT_APP_PUBLIC_POSTHOG_KEY}
+          options={posthogOptions}
+        >
+          <Root {...props}>
+            <App {...props} />
+          </Root>
+        </PostHogProvider>
       );
       if (import.meta.env.MODE === "production") {
         hydrateRoot(el, vdom, {

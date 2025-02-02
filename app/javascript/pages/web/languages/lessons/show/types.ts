@@ -6,7 +6,7 @@ import type {
   LanguageLessonMember,
 } from "@/types/serializers";
 
-export type Props = SharedProps & {
+export type LessonSharedProps = SharedProps & {
   courseCategory: LanguageCategory;
   course: Language;
   prevLesson?: LanguageLesson;
@@ -21,6 +21,8 @@ export interface RootState {
   currentTab: "editor" | "output" | "tests" | "solution";
   finished: boolean;
   result: "error" | "passed" | "failed" | "failed-infinity";
+  resetsCount: number;
+  defaultCode: string;
   output: string;
   passed: boolean;
   content: string;

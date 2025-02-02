@@ -8,23 +8,22 @@ import { useHotkeys } from "react-hotkeys-hook";
 import useConfirmation from "@/hooks/useConfirmation.ts";
 import { getKeyForStoringLessonCode } from "@/lib/utils.ts";
 import * as Routes from "@/routes.js";
-import { Link, router, usePage } from "@inertiajs/react";
-import { runCheck } from "../slices/RootSlice.ts";
+import { Link, usePage } from "@inertiajs/react";
+import slice, { runCheck } from "../slices/RootSlice.ts";
 import { useAppDispatch, useAppSelector } from "../slices/index.ts";
-import type { Props } from "../types.ts";
+import type { LessonSharedProps } from "../types.ts";
 
-export default function ControlBox() {
-  const {
-    course,
-    prevLesson,
-    nextLesson,
-    auth: { user },
-  } = usePage<Props>().props;
+type Props = {
+  removeItem: () => void;
+};
+
+export default function ControlBox({ removeItem }: Props) {
+  const { course, prevLesson, nextLesson } = usePage<LessonSharedProps>().props;
 
   const { t } = useTranslation();
   const { t: tCommon } = useTranslation("common");
 
-  const { lesson } = usePage<Props>().props;
+  const { lesson } = usePage<LessonSharedProps>().props;
 
   const processState = useAppSelector((state) => state.processState);
   const finished = useAppSelector((state) => state.finished);
@@ -35,8 +34,8 @@ export default function ControlBox() {
   };
 
   const confirmResetting = useConfirmation(() => {
-    deleteFromStorage(getKeyForStoringLessonCode(lesson));
-    router.reload();
+    removeItem()
+    dispatch(slice.actions.resetContent());
   });
 
   const isCodeChecking = processState === "checking";

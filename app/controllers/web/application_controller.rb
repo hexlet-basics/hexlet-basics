@@ -20,7 +20,7 @@ class Web::ApplicationController < ApplicationController
   # include ActionView::Helpers::UrlHelper
   include FlashConcern
   # include TitleConcern
-  # include EventConcern
+  include EventConcern
   include LocaleConcern
 
   before_action :prepare_locale_settings
@@ -49,10 +49,6 @@ class Web::ApplicationController < ApplicationController
   # end
 
   private
-
-  def default_url_options
-    { suffix: params[:suffix] }
-  end
 
   def prepare_locale_settings
     # NOTE: never redirect bots

@@ -136,3 +136,4 @@ gem "meta-tags"
 gem "responders", "~> 3.1"
 
 gem "configus", "~> 0.0.5"
+gem "rails_event_store", "~> 2.15.0"

@@ -21,6 +21,7 @@ export interface SharedProps extends PageProps {
   courseCategories: LanguageCategory[];
   suffix: "ru" | null;
   locale: "ru" | "en"; // TODO: use i18next.i18n["locale"];
+  event: any,
   flash: Record<
     | "alert"
     | "notice"

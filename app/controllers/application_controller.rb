@@ -5,9 +5,11 @@ class ApplicationController < ActionController::Base
 
   include AuthConcern
 
-  # content_security_policy Rails.env.production?
+  def default_url_options
+    { suffix: params[:suffix] }
+  end
 
-  # def default_url_options
-  #   { locale: AppHost.locale_for_url(I18n.locale) }
-  # end
+  def event_store
+    Rails.configuration.event_store
+  end
 end
