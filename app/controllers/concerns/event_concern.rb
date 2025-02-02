@@ -14,7 +14,12 @@ module EventConcern
 
   def event_to_js(event)
     session[:events] ||= []
-    eventData = { event_type: event.event_type, data: event.data }
+    eventData = {
+      id: event.id,
+      type: event.event_type,
+      data: event.data,
+      metadata: event.metadata
+    }
     session[:events] << eventData
     # EventsMapping.exists!(event_name)
     # session[:fired_events][event_name] = options

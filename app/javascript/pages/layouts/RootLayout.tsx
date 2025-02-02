@@ -12,9 +12,9 @@ export default (props: Props) => {
   useEffect(() => {
     if (events) {
       for (const event of events) {
-        switch (event.event_type) {
+        switch (event.type) {
           case "UserSignedInEvent":
-            // add carrot quest
+            // add carrot quest, ym, ga
             // posthog?.identify(event.data.id, {
             //   email: event.data.email,
             // });
@@ -34,7 +34,7 @@ export default (props: Props) => {
         }
       }
     }
-  }, [event]);
+  }, []);
 
   return props.children;
 };
