@@ -10,6 +10,10 @@ type ResolvedComponent = {
   layout?: (page: ReactNode) => ReactNode;
 };
 
+Sentry.init({
+  dsn: import.meta.env.VITE_SENTRY_DSN,
+});
+
 createInertiaApp({
   // Set default page title
   // see https://inertia-rails.netlify.app/guide/title-and-meta

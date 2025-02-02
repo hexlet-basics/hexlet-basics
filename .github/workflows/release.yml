@@ -58,6 +58,13 @@ jobs:
           cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}
           push: true
           tags: ${{ env.APP_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
+          secrets: |
+            "sentry-org=${{ secrets.SENTRY_ORG }}"
+            "sentry-project=${{ secrets.SENTRY_PROJECT }}"
+            "sentry-dsn=${{ secrets.SENTRY_DSN }}"
+            "sentry-auth-token=${{ secrets.SENTRY_AUTH_TOKEN }}"
+          build-args: |
+            RELEASE_VERSION=${{ env.RELEASE_VERSION }}
 
       - name: Build&Push Nginx
         uses: docker/build-push-action@v6

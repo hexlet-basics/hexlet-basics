@@ -2,11 +2,29 @@ import Root from "@/components/Root.tsx";
 import { createInertiaApp } from "@inertiajs/react";
 import createServer from "@inertiajs/react/server";
 import ReactDOMServer from "react-dom/server";
+import * as Sentry from "@sentry/node";
+
+Sentry.init({
+  dsn: import.meta.env.VITE_SENTRY_DSN,
+});
 
 createServer((page) =>
   createInertiaApp({
     page,
-    render: ReactDOMServer.renderToString,
+    render: (...args) => {
+      try {
+        return ReactDOMServer.renderToString(...args);
+      } catch (error) {
+        Sentry.setContext("page", {
+          url: page.url,
+          component: page.component,
+        });
+
+        Sentry.captureException(error);
+
+        throw error;
+      }
+    },
     resolve: (name) => {
       // const pages = import.meta.glob("../pages/**/*.jsx", { eager: true });
       const pages = import.meta.glob("../pages/**/*.tsx", {
@@ -20,7 +38,8 @@ createServer((page) =>
           <App {...props} />
         </Root>
       );
-      return vdom
+
+      return vdom;
     },
   }),
 );
