@@ -67,7 +67,7 @@ RUN --mount=type=secret,id=sentry-org,env=VITE_SENTRY_ORG \
     --mount=type=secret,id=sentry-dsn,env=VITE_SENTRY_DSN \
     --mount=type=secret,id=sentry-auth-token,env=VITE_SENTRY_AUTH_TOKEN \
     --mount=type=secret,id=posthog-api-key,env=VITE_REACT_APP_PUBLIC_POSTHOG_KEY \
-    --mount=type=secret,id=posthog-api-host,env=VITE_REACT_APP_PUBLIC_POSTHOG_HOSTd \
+    --mount=type=secret,id=posthog-api-host,env=VITE_REACT_APP_PUBLIC_POSTHOG_HOST \
     SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 # Final stage for app image
