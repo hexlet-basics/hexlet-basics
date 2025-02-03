@@ -63,6 +63,8 @@ jobs:
             "sentry-project=${{ secrets.SENTRY_PROJECT }}"
             "sentry-dsn=${{ secrets.SENTRY_DSN }}"
             "sentry-auth-token=${{ secrets.SENTRY_AUTH_TOKEN }}"
+            "posthog-api-key=${{ secrets.POSTHOG_API_KEY }}"
+            "posthog-api-host=${{ secrets.POSTHOG_API_HOST }}"
           build-args: |
             RELEASE_VERSION=${{ env.RELEASE_VERSION }}
 
