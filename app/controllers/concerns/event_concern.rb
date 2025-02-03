@@ -15,7 +15,7 @@ module EventConcern
   def event_to_js(event)
     session[:events] ||= []
     eventData = {
-      id: event.id,
+      id: event.event_id,
       type: event.event_type,
       data: event.data,
       metadata: event.metadata

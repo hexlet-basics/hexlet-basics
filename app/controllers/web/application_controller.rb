@@ -1,25 +1,10 @@
 # frozen_string_literal: true
 
 class Web::ApplicationController < ApplicationController
-  # include ActionView::Helpers::UrlHelper
-
   allow_browser versions: :modern
   inertia_share flash: -> { flash.to_hash }
 
-  # https://inertia-rails.dev/guide/error-handling
-  # rescue_from StandardError, with: :inertia_error_page
-  #
-  # def inertia_error_page(exception)
-  #   raise exception if Rails.env.local?
-  #
-  #   status = ActionDispatch::ExceptionWrapper.new(nil, exception).status_code
-  #
-  #   render inertia: "error", props: { status: }, status:
-  # end
-
-  # include ActionView::Helpers::UrlHelper
   include FlashConcern
-  # include TitleConcern
   include EventConcern
   include LocaleConcern
 
@@ -41,6 +26,10 @@ class Web::ApplicationController < ApplicationController
         user: UserResource.new(current_user)
       }
     }
+  end
+
+  before_action do
+    gon.current_user = UserResource.new(current_user)
   end
 
   # before_action do
