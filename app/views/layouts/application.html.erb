@@ -2,6 +2,15 @@
 <html class="x-h-md-100" data-bs-theme="light" lang="<%= I18n.locale %>">
   <head>
     <%= include_gon %>
+    <!-- Google Tag Manager -->
+    <script>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})
+      (window, document, 'script', 'dataLayer', 'GTM-WVMW3V8');
+    </script>
+    <!-- End Google Tag Manager -->
     <%= display_meta_tags reverse: true, site: "CodeBasics" %>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
@@ -17,6 +26,11 @@
   <body class="x-h-md-100">
     <% if Rails.env.production? %>
       <%#https://help.carrotquest.io/article/235 %>
+      <!-- Google Tag Manager (noscript) -->
+      <noscript>
+        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WVMW3V8" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+      </noscript>
+      <!-- End Google Tag Manager (noscript) -->
       <!-- Google tag (gtag.js) -->
       <script async src="https://www.googletagmanager.com/gtag/js?id=G-5GVCBLE773"></script>
       <script>
