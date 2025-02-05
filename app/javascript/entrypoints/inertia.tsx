@@ -17,6 +17,10 @@ type ResolvedComponent = {
 
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
+  ignoreErrors: [
+    // https://github.com/inertiajs/inertia/issues/2204
+    "Cannot read properties of null (reading 'scrollRegions')",
+  ],
 });
 
 createInertiaApp({
