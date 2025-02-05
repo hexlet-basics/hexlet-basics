@@ -38,4 +38,5 @@ export interface SharedProps extends PageProps {
   >;
   courses: Language[];
   language;
+  mobileBrowser: boolean;
 }
