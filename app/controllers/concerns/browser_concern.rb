@@ -21,6 +21,7 @@ module BrowserConcern
   # https://developer.mozilla.org/en-US/docs/Web/API/Window/structuredClone
   def modern_browser?
     [
+      browser.bot?,
       browser.chrome?(">= 98"),
       browser.safari?(">= 15.4"),
       browser.firefox?(">= 94"),
