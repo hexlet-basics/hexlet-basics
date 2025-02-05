@@ -7,6 +7,8 @@ import { PostHogProvider } from "posthog-js/react";
 
 const posthogOptions = {
   api_host: import.meta.env.VITE_REACT_APP_PUBLIC_POSTHOG_HOST,
+  autocapture: false,
+  capture_pageleave: false,
 };
 
 // Temporary type definition, until @inertiajs/react provides one

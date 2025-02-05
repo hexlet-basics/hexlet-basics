@@ -9,6 +9,8 @@
 - docker
 - ruby >= 3.0.0
 - make
+- node
+- caddy
 
 ### Run
 

@@ -28,7 +28,11 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
       language_member = resource_language.members.find_or_initialize_by(user: current_user)
       if language_member.new_record?
         language_member.save!
-        event = CourseStartedEvent.new(data: language_member.slice(:language_id, :user_id))
+        event_data = {
+          slug: lesson.slug,
+          locale: language_info.locale
+        }
+        event = CourseStartedEvent.new(data: event_data)
         event_store.publish(event, stream_name: "user-#{current_user.id}")
         event_to_js(event)
       end
@@ -39,7 +43,13 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
       )
       if lesson_member.new_record?
         lesson_member.save!
-        event = LessonStartedEvent.new(data: lesson_member.slice(:language_id, :user_id, :lesson_id, :language_member_id))
+
+        event_data = {
+          lesson_slug: lesson.slug,
+          course_slug: resource_language.slug,
+          locale: language_info.locale
+        }
+        event = LessonStartedEvent.new(data: event_data)
         event_store.publish(event, stream_name: "user-#{current_user.id}")
         event_to_js(event)
       end
