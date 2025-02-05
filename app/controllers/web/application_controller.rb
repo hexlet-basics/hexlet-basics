@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 class Web::ApplicationController < ApplicationController
-  allow_browser versions: :modern
+  include BrowserConcern
+
+  allow_modern_browsers
   inertia_share flash: -> { flash.to_hash }
 
   include FlashConcern
@@ -24,7 +26,8 @@ class Web::ApplicationController < ApplicationController
       suffix: I18n.locale == :en ? nil : I18n.locale,
       auth: {
         user: UserResource.new(current_user)
-      }
+      },
+      mobileBrowser: mobile_browser?
     }
   end
 

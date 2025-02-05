@@ -21,7 +21,7 @@ type Props = {
 };
 
 export default function EditorTab({ code, setCode }: Props) {
-  const { course, lesson } = usePage<LessonSharedProps>().props;
+  const { course, lesson, mobileBrowser } = usePage<LessonSharedProps>().props;
 
   const editorOptions: editor.IStandaloneEditorConstructionOptions = {
     tabSize: getTabSize(course.slug!),
@@ -65,8 +65,10 @@ export default function EditorTab({ code, setCode }: Props) {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
+    if (mobileBrowser) return;
+
     editorInstance?.focus();
-  }, [focusesCount, editorInstance]);
+  }, [focusesCount, editorInstance, mobileBrowser]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
