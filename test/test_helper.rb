@@ -63,3 +63,10 @@ class ActionDispatch::IntegrationTest
   include AuthConcern
   include SignInHelper
 end
+
+class Rack::Request
+  def initialize(env)
+    env["HTTP_USER_AGENT"] ||= "Chrome/87.0.0.0"
+    super
+  end
+end

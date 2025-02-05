@@ -10,14 +10,10 @@ class Web::HomeControllerTest < ActionDispatch::IntegrationTest
 
   test "#index with stored locale" do
     open_session do |s|
-      s.get s.root_url(suffix: :ru), headers: {
-        'User-Agent': "Mozilla"
-      }
+      s.get s.root_url(suffix: :ru)
       s.assert_response :success
 
-      s.get s.root_url(suffix: nil), headers: {
-        'User-Agent': "Mozilla"
-      }
+      s.get s.root_url(suffix: nil)
       s.assert_response :redirect
     end
   end
