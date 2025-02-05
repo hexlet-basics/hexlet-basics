@@ -17,16 +17,18 @@ module BrowserConcern
   private
 
   # https://vite.dev/guide/build#browser-compatibility
+  # version updated with functional using in code
+  # https://developer.mozilla.org/en-US/docs/Web/API/Window/structuredClone
   def modern_browser?
     [
-      browser.chrome?(">= 87"),
-      browser.safari?(">= 14"),
-      browser.firefox?(">= 78"),
-      browser.edge?(">= 88"),
-      browser.opera?(">= 73"),
+      browser.chrome?(">= 98"),
+      browser.safari?(">= 15.4"),
+      browser.firefox?(">= 94"),
+      browser.edge?(">= 98"),
+      browser.opera?(">= 84"),
       browser.facebook? &&
         browser.safari_webapp_mode? &&
-        browser.webkit_full_version.to_i >= 605
+        browser.webkit_full_version.to_i >= 613
     ].any?
   end
 

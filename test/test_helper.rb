@@ -66,7 +66,7 @@ end
 
 class Rack::Request
   def initialize(env)
-    env["HTTP_USER_AGENT"] ||= "Chrome/87.0.0.0"
+    env["HTTP_USER_AGENT"] ||= "Chrome/98.0.0.0"
     super
   end
 end
