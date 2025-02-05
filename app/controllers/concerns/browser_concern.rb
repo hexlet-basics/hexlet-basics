@@ -26,6 +26,8 @@ module BrowserConcern
       browser.firefox?(">= 94"),
       browser.edge?(">= 98"),
       browser.opera?(">= 84"),
+      browser.samsung_browser?(">=18"),
+      browser.yandex?(">=22.3"),
       browser.facebook? &&
         browser.safari_webapp_mode? &&
         browser.webkit_full_version.to_i >= 613
