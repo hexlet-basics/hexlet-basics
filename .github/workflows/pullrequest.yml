@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+env:
+  VITE_RUBY_AUTO_BUILD: "false"
+
 jobs:
   main:
     runs-on: ubuntu-latest

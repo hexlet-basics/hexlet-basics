@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+env:
+  VITE_RUBY_AUTO_BUILD: "false"
+
 jobs:
   build:
     # TODO: switch to arm https://github.blog/changelog/2025-01-16-linux-arm64-hosted-runners-now-available-for-free-in-public-repositories-public-preview/
