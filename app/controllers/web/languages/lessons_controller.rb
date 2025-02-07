@@ -29,7 +29,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
       if language_member.new_record?
         language_member.save!
         event_data = {
-          slug: lesson.slug,
+          slug: resource_language.slug,
           locale: language_info.locale
         }
         event = CourseStartedEvent.new(data: event_data)
