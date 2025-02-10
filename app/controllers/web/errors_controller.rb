@@ -15,7 +15,7 @@ class Web::ErrorsController < Web::ApplicationController
     }
     set_meta_tags seo_tags
 
-    render inertia: true, props: {
+    render inertia: true, status: code, props: {
       code:,
       header:,
       description:
