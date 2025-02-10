@@ -15,7 +15,7 @@ import type * as monacoEditor from "monaco-editor";
 import { useAppDispatch, useAppSelector } from "../slices/index.ts";
 
 type Props = {
-  setCode: React.Dispatch<React.SetStateAction<string>>;
+  setCode: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
 export default function EditorTab({ setCode }: Props) {

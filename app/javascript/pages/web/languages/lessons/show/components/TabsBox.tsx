@@ -13,7 +13,7 @@ import SolutionTab from "./SolutionTab.tsx";
 import TestsTab from "./TestsTab.tsx";
 
 type Props = {
-  setCode: React.Dispatch<React.SetStateAction<string>>;
+  setCode: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
 export default function TabsBox({ setCode }: Props) {

@@ -16,12 +16,10 @@ function App() {
   const { course, lesson } = usePage<LessonSharedProps>().props;
 
   const content = useAppSelector((state) => state.content);
-  const defaultCode = useAppSelector((state) => state.defaultCode);
   const currentTab = useAppSelector((state) => state.currentTab);
 
   const [, setCode, { removeItem }] = useLocalStorageState<string>(
     getKeyForStoringLessonCode(lesson),
-    { defaultValue: defaultCode },
   );
 
   const renderHtmlPreview = () => {
