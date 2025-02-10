@@ -712,56 +712,6 @@ export const rails_health_check_path: ((
 
 /**
  * Generates rails route to
- * /rails/info(.:format)
- * @param {object | undefined} options
- * @returns {string} route path
- */
-export const rails_info_path: ((
-  options?: {format?: OptionalRouteParameter} & RouteOptions
-) => string) & RouteHelperExtras;
-
-/**
- * Generates rails route to
- * /rails/info/notes(.:format)
- * @param {object | undefined} options
- * @returns {string} route path
- */
-export const rails_info_notes_path: ((
-  options?: {format?: OptionalRouteParameter} & RouteOptions
-) => string) & RouteHelperExtras;
-
-/**
- * Generates rails route to
- * /rails/info/properties(.:format)
- * @param {object | undefined} options
- * @returns {string} route path
- */
-export const rails_info_properties_path: ((
-  options?: {format?: OptionalRouteParameter} & RouteOptions
-) => string) & RouteHelperExtras;
-
-/**
- * Generates rails route to
- * /rails/info/routes(.:format)
- * @param {object | undefined} options
- * @returns {string} route path
- */
-export const rails_info_routes_path: ((
-  options?: {format?: OptionalRouteParameter} & RouteOptions
-) => string) & RouteHelperExtras;
-
-/**
- * Generates rails route to
- * /rails/mailers(.:format)
- * @param {object | undefined} options
- * @returns {string} route path
- */
-export const rails_mailers_path: ((
-  options?: {format?: OptionalRouteParameter} & RouteOptions
-) => string) & RouteHelperExtras;
-
-/**
- * Generates rails route to
  * /rails/action_mailbox/mailgun/inbound_emails/mime(.:format)
  * @param {object | undefined} options
  * @returns {string} route path
@@ -888,16 +838,6 @@ export const robots_path: ((
  */
 export const root_path: ((
   options?: {suffix?: OptionalRouteParameter, format?: OptionalRouteParameter} & RouteOptions
-) => string) & RouteHelperExtras;
-
-/**
- * Generates rails route to
- * /res
- * @param {object | undefined} options
- * @returns {string} route path
- */
-export const ruby_event_store_browser_app_path: ((
-  options?: RouteOptions
 ) => string) & RouteHelperExtras;
 
 /**

@@ -1,4 +1,3 @@
-import { deleteFromStorage } from "@rehooks/local-storage";
 import { useTranslation } from "react-i18next";
 
 import cn from "classnames";
@@ -6,18 +5,13 @@ import { Button, OverlayTrigger, Popover, Spinner } from "react-bootstrap";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import useConfirmation from "@/hooks/useConfirmation.ts";
-import { getKeyForStoringLessonCode } from "@/lib/utils.ts";
 import * as Routes from "@/routes.js";
 import { Link, usePage } from "@inertiajs/react";
 import slice, { runCheck } from "../slices/RootSlice.ts";
 import { useAppDispatch, useAppSelector } from "../slices/index.ts";
 import type { LessonSharedProps } from "../types.ts";
 
-type Props = {
-  removeItem: () => void;
-};
-
-export default function ControlBox({ removeItem }: Props) {
+export default function ControlBox() {
   const { course, prevLesson, nextLesson } = usePage<LessonSharedProps>().props;
 
   const { t } = useTranslation();
@@ -34,7 +28,6 @@ export default function ControlBox({ removeItem }: Props) {
   };
 
   const confirmResetting = useConfirmation(() => {
-    removeItem()
     dispatch(slice.actions.resetContent());
   });
 

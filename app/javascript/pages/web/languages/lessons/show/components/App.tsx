@@ -1,10 +1,7 @@
 import React, { Suspense } from "react";
 import { usePage } from "@inertiajs/react";
-import { getKeyForStoringLessonCode } from "@/lib/utils.ts";
-import useLocalStorageState from "use-local-storage-state";
-
 import { neededPreview } from "@/lib/utils.ts";
-import { useAppSelector } from "../slices/index.ts";
+import { useAppDispatch, useAppSelector } from "../slices/index.ts";
 import type { LessonSharedProps } from "../types.ts";
 import ControlBox from "./ControlBox.tsx";
 import TabsBox from "./TabsBox.tsx";
@@ -15,13 +12,8 @@ const HTMLPreview = React.lazy(() => import("./HTMLPreview.tsx"));
 function App() {
   const { course, lesson } = usePage<LessonSharedProps>().props;
 
-  // const content = useAppSelector((state) => state.content);
+  const content = useAppSelector((state) => state.content);
   const currentTab = useAppSelector((state) => state.currentTab);
-
-  const [code, setCode, { removeItem }] = useLocalStorageState<string>(
-    getKeyForStoringLessonCode(lesson),
-    { defaultValue: lesson.prepared_code || "" },
-  );
 
   const renderHtmlPreview = () => {
     if (currentTab !== "editor") {
@@ -33,16 +25,16 @@ function App() {
 
     return (
       <Suspense fallback={<div>Loading...</div>}>
-        <HTMLPreview html={code} />
+        <HTMLPreview html={content} />
       </Suspense>
     );
   };
 
   return (
     <>
-      <TabsBox code={code} setCode={setCode} />
+      <TabsBox />
       {renderHtmlPreview()}
-      <ControlBox removeItem={removeItem} />
+      <ControlBox />
     </>
   );
 }

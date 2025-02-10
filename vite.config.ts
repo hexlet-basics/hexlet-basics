@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     build: {
-      sourcemap: 'hidden',
+      sourcemap: "hidden",
     },
     plugins: [
       react(),
@@ -47,6 +47,7 @@ export default defineConfig(({ mode }) => {
         "posthog-js",
         "react-timer-hook",
         "@monaco-editor/react",
+        "react-use",
       ], // Ensure it's handled correctly
     },
     resolve: {

@@ -55,18 +55,21 @@ createInertiaApp({
 
   setup({ el, App, props }) {
     if (el) {
-      const vdom = (
-        <PostHogProvider
-          apiKey={import.meta.env.VITE_REACT_APP_PUBLIC_POSTHOG_KEY}
-          options={posthogOptions}
-        >
-          <Root {...props}>
-            <App {...props} />
-          </Root>
-        </PostHogProvider>
-      );
+      const vdomFn = () => {
+        return (
+          <PostHogProvider
+            apiKey={import.meta.env.VITE_REACT_APP_PUBLIC_POSTHOG_KEY}
+            options={posthogOptions}
+          >
+            <Root {...props}>
+              <App {...props} />
+            </Root>
+          </PostHogProvider>
+        );
+      };
+
       if (import.meta.env.MODE === "production") {
-        hydrateRoot(el, vdom, {
+        hydrateRoot(el, vdomFn(), {
           // Callback called when an error is thrown and not caught by an ErrorBoundary.
           onUncaughtError: Sentry.reactErrorHandler((error, errorInfo) => {
             console.warn("Uncaught error", error, errorInfo.componentStack);
@@ -78,7 +81,7 @@ createInertiaApp({
         });
       } else {
         const root = createRoot(el);
-        root.render(vdom);
+        root.render(vdomFn());
       }
     } else {
       console.error(

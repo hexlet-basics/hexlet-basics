@@ -11,6 +11,7 @@
 - make
 - node
 - caddy
+- biome (in editor, for linting)
 
 ### Run
 

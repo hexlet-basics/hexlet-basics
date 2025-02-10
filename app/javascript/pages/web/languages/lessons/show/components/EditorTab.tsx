@@ -6,7 +6,9 @@ import {
 } from "@/lib/utils.ts";
 import { usePage } from "@inertiajs/react";
 import MonacoEditor from "@monaco-editor/react";
-// import useLocalStorageState from "use-local-storage-state";
+import { useLocalStorage, useUpdateEffect } from "react-use";
+
+import { getKeyForStoringLessonCode } from "@/lib/utils.ts";
 
 import { useEffect, useState } from "react";
 import slice, { runCheck } from "../slices/RootSlice.ts";
@@ -15,12 +17,7 @@ import type { LessonSharedProps } from "../types.ts";
 import type { editor } from "monaco-editor";
 import { useAppDispatch, useAppSelector } from "../slices/index.ts";
 
-type Props = {
-  code: string;
-  setCode: React.Dispatch<React.SetStateAction<string>>;
-};
-
-export default function EditorTab({ code, setCode }: Props) {
+export default function EditorTab() {
   const { course, lesson, mobileBrowser } = usePage<LessonSharedProps>().props;
 
   const editorOptions: editor.IStandaloneEditorConstructionOptions = {
@@ -45,22 +42,29 @@ export default function EditorTab({ code, setCode }: Props) {
   const content = useAppSelector((state) => state.content);
   const dispatch = useAppDispatch();
 
+  const defaultCode = lesson.prepared_code || "";
+
+  const [code, setCode] = useLocalStorage(
+    getKeyForStoringLessonCode(lesson),
+    defaultCode,
+  );
+
   const [editorInstance, setEditorInstance] =
     useState<editor.IStandaloneCodeEditor>();
 
   const handleEditorDidMount = (editor: editor.IStandaloneCodeEditor) => {
     setEditorInstance(editor);
 
-    const extraKeys = [
-      {
-        key: monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
-        action: handleRunCheck,
-      },
-    ];
-
-    for (const v of extraKeys) {
-      editor.addCommand(v.key, v.action);
-    }
+    // const extraKeys = [
+    //   {
+    //     key: monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
+    //     action: handleRunCheck,
+    //   },
+    // ];
+    //
+    // for (const v of extraKeys) {
+    //   editor.addCommand(v.key, v.action);
+    // }
   };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -70,10 +74,15 @@ export default function EditorTab({ code, setCode }: Props) {
     editorInstance?.focus();
   }, [focusesCount, editorInstance, mobileBrowser]);
 
+  useUpdateEffect(() => {
+    editorInstance?.setValue(defaultCode);
+    setCode(defaultCode);
+  }, [resetsCount]);
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    editorInstance?.setValue(content);
-  }, [resetsCount]);
+    dispatch(slice.actions.changeContent(code || ""));
+  }, []);
 
   const handleRunCheck = () => {
     dispatch(runCheck(lesson));
@@ -92,8 +101,8 @@ export default function EditorTab({ code, setCode }: Props) {
       defaultValue={code}
       onChange={handleEditorChange}
       language={getEditorLanguage(course.slug!)}
-      // defaultLanguage={course.slug!}
-      // className="w-100 h-100"
+    // defaultLanguage={course.slug!}
+    // className="w-100 h-100"
     />
   );
 }

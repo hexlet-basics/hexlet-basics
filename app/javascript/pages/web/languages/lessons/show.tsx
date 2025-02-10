@@ -10,13 +10,16 @@ import * as Routes from "@/routes.js";
 import type { BreadcrumbItem } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
 import i18next from "i18next";
-import React from "react";
+import React, { memo } from "react";
 import Markdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
 import rehypeExternalLinks from "rehype-external-links";
 import EditorBlock from "./show/index.tsx";
 import type { LessonSharedProps } from "./show/types.ts";
+
+// inertiajs renders every page twice (at least in dev mode)
+const MemoizedEditorBlock = memo(EditorBlock);
 
 const rehypePlugins = [
   rehypeHighlight,
@@ -240,7 +243,7 @@ export default function Show() {
           <Col className="x-h-md-100 col-12 col-md-6 col-lg-7 mb-3 mb-md-0 position-relative col">
             <Tab.Container id="left-tabs-example" defaultActiveKey="editor">
               <div className="x-h-md-100 d-flex flex-column">
-                <EditorBlock />
+                <MemoizedEditorBlock />
               </div>
             </Tab.Container>
           </Col>
