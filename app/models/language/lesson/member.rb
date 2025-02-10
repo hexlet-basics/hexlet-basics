@@ -43,7 +43,7 @@ class Language::Lesson::Member < ApplicationRecord
     state :finished
 
     event :finish do
-      transitions from: %i[started finished], to: :finished
+      transitions from: %i[started], to: :finished
     end
   end
 

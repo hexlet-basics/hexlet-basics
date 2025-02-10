@@ -7,6 +7,7 @@ import {
 } from "@reduxjs/toolkit";
 import axios from "axios";
 import type { CheckingResponse, RootState } from "../types.ts";
+import analytics from "@/analytics.ts";
 
 export const runCheck = createAsyncThunk(
   "runCheck",
@@ -21,6 +22,17 @@ export const runCheck = createAsyncThunk(
         },
       },
     });
+
+    const {
+      is_lesson_become_finished: isLessonBecomeFinished,
+      is_language_become_finished: isCourseBecomeFinished
+    } = response.data.passing_of_entities;
+
+    if (isLessonBecomeFinished) {
+      analytics.track('lesson_finished', {
+        lesson_slug: lesson.slug
+      });
+    }
 
     const result = {
       ...response.data.attributes,

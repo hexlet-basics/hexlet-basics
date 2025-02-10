@@ -40,7 +40,7 @@ class Language::Member < ApplicationRecord
     state :finished
 
     event :finish do
-      transitions from: %i[started finished], to: :finished, guard: :all_lessons_finished?
+      transitions from: %i[started], to: :finished, guard: :all_lessons_finished?
     end
   end
 
