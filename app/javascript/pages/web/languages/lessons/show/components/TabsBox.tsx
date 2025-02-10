@@ -13,11 +13,10 @@ import SolutionTab from "./SolutionTab.tsx";
 import TestsTab from "./TestsTab.tsx";
 
 type Props = {
-  code: string;
   setCode: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export default function TabsBox({ code, setCode }: Props) {
+export default function TabsBox({ setCode }: Props) {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
@@ -65,7 +64,7 @@ export default function TabsBox({ code, setCode }: Props) {
 
       <Tab.Content className="x-h-md-100 overflow-hidden">
         <Tab.Pane className="x-h-md-100 vh-100" eventKey="editor">
-          <EditorTab code={code} setCode={setCode} />
+          <EditorTab setCode={setCode} />
         </Tab.Pane>
         <Tab.Pane eventKey="output" className="overflow-auto h-100">
           <OutputTab />

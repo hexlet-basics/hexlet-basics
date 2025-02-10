@@ -15,11 +15,10 @@ import type * as monacoEditor from "monaco-editor";
 import { useAppDispatch, useAppSelector } from "../slices/index.ts";
 
 type Props = {
-  code: string;
   setCode: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export default function EditorTab({ code, setCode }: Props) {
+export default function EditorTab({ setCode }: Props) {
   const { course, lesson, mobileBrowser } = usePage<LessonSharedProps>().props;
 
   const editorOptions: editor.IStandaloneEditorConstructionOptions = {
@@ -74,12 +73,7 @@ export default function EditorTab({ code, setCode }: Props) {
     if (mobileBrowser) return;
 
     editorInstance?.focus();
-  }, [focusesCount, editorInstance, mobileBrowser]);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    editorInstance?.setValue(content);
-  }, [resetsCount]);
+  }, [focusesCount, resetsCount, editorInstance, mobileBrowser]);
 
   const handleRunCheck = () => {
     dispatch(runCheck(lesson));
@@ -95,7 +89,7 @@ export default function EditorTab({ code, setCode }: Props) {
     <MonacoEditor
       options={editorOptions}
       onMount={handleEditorDidMount}
-      defaultValue={code}
+      value={content}
       onChange={handleEditorChange}
       language={getEditorLanguage(course.slug!)}
       // defaultLanguage={course.slug!}

@@ -15,12 +15,13 @@ const HTMLPreview = React.lazy(() => import("./HTMLPreview.tsx"));
 function App() {
   const { course, lesson } = usePage<LessonSharedProps>().props;
 
-  // const content = useAppSelector((state) => state.content);
+  const content = useAppSelector((state) => state.content);
+  const defaultCode = useAppSelector((state) => state.defaultCode);
   const currentTab = useAppSelector((state) => state.currentTab);
 
-  const [code, setCode, { removeItem }] = useLocalStorageState<string>(
+  const [, setCode, { removeItem }] = useLocalStorageState<string>(
     getKeyForStoringLessonCode(lesson),
-    { defaultValue: lesson.prepared_code || "" },
+    { defaultValue: defaultCode },
   );
 
   const renderHtmlPreview = () => {
@@ -33,14 +34,14 @@ function App() {
 
     return (
       <Suspense fallback={<div>Loading...</div>}>
-        <HTMLPreview html={code} />
+        <HTMLPreview html={content} />
       </Suspense>
     );
   };
 
   return (
     <>
-      <TabsBox code={code} setCode={setCode} />
+      <TabsBox setCode={setCode} />
       {renderHtmlPreview()}
       <ControlBox removeItem={removeItem} />
     </>
