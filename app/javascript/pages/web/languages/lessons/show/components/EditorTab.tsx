@@ -50,6 +50,13 @@ export default function EditorTab({ code, setCode }: Props) {
   const handleEditorDidMount = (editor: editor.IStandaloneCodeEditor, monaco: typeof monacoEditor) => {
     setEditorInstance(editor);
 
+    const model = editor.getModel();
+    if (model) {
+      // set cursor to the end of code
+      editor.setPosition({ lineNumber: model.getLineCount() + 1, column: 0 });
+    }
+
+    // TODO: It works only with Ctrl+Enter and whe mouse cursor hovers ControlBox
     const extraKeys = [
       {
         key: monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
