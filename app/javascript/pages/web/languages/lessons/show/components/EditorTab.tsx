@@ -13,6 +13,7 @@ import slice, { runCheck } from "../slices/RootSlice.ts";
 import type { LessonSharedProps } from "../types.ts";
 
 import type { editor } from "monaco-editor";
+import type * as monacoEditor from "monaco-editor";
 import { useAppDispatch, useAppSelector } from "../slices/index.ts";
 
 type Props = {
@@ -48,7 +49,7 @@ export default function EditorTab({ code, setCode }: Props) {
   const [editorInstance, setEditorInstance] =
     useState<editor.IStandaloneCodeEditor>();
 
-  const handleEditorDidMount = (editor: editor.IStandaloneCodeEditor) => {
+  const handleEditorDidMount = (editor: editor.IStandaloneCodeEditor, monaco: typeof monacoEditor) => {
     setEditorInstance(editor);
 
     const extraKeys = [
