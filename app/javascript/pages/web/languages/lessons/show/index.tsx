@@ -1,4 +1,3 @@
-import React, { StrictMode } from "react";
 import { Provider } from "react-redux";
 
 import App from "./components/App.tsx";
@@ -21,10 +20,8 @@ export default function Index() {
   const store = getStore(preloadedState);
 
   return (
-
     <Provider store={store}>
       <App />
     </Provider>
-
   );
 }

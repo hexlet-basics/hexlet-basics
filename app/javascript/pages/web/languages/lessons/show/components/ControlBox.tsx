@@ -1,4 +1,3 @@
-import { deleteFromStorage } from "@rehooks/local-storage";
 import { useTranslation } from "react-i18next";
 
 import cn from "classnames";
@@ -6,7 +5,6 @@ import { Button, OverlayTrigger, Popover, Spinner } from "react-bootstrap";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import useConfirmation from "@/hooks/useConfirmation.ts";
-import { getKeyForStoringLessonCode } from "@/lib/utils.ts";
 import * as Routes from "@/routes.js";
 import { Link, usePage } from "@inertiajs/react";
 import slice, { runCheck } from "../slices/RootSlice.ts";
@@ -34,7 +32,7 @@ export default function ControlBox({ removeItem }: Props) {
   };
 
   const confirmResetting = useConfirmation(() => {
-    removeItem()
+    removeItem();
     dispatch(slice.actions.resetContent());
   });
 

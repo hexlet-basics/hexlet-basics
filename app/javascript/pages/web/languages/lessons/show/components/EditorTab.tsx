@@ -1,12 +1,10 @@
 import {
   getEditorLanguage,
-  // getKeyForStoringLessonCode,
   getTabSize,
   shouldReplaceTabsWithSpaces,
 } from "@/lib/utils.ts";
 import { usePage } from "@inertiajs/react";
 import MonacoEditor from "@monaco-editor/react";
-// import useLocalStorageState from "use-local-storage-state";
 
 import { useEffect, useState } from "react";
 import slice, { runCheck } from "../slices/RootSlice.ts";
