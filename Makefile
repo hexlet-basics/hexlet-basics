@@ -51,6 +51,10 @@ app-lint-staged:
 language-load:
 	bin/rails exercises:load[${L}]
 
+check-types:
+	# bundle exec srb tc
+	# npx tsc --build --noEmit
+
 lint:
 	bin/rubocop -x
 	# npx @biomejs/biome check

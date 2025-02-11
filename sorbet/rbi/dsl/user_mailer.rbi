@@ -7,7 +7,7 @@
 
 class UserMailer
   class << self
-    sig { params(user_id: T.untyped).returns(::ActionMailer::MessageDelivery) }
-    def reset_password(user_id); end
+    sig { returns(::ActionMailer::MessageDelivery) }
+    def reset_password; end
   end
 end

@@ -615,7 +615,7 @@ class ActiveStorage::VariantRecord
     sig { params(args: T.untyped).returns(PrivateAssociationRelation) }
     sig do
       params(
-        blk: T.proc.params(record: ::ActiveStorage::VariantRecord).returns(T::Boolean)
+        blk: T.proc.params(record: ::ActiveStorage::VariantRecord).returns(BasicObject)
       ).returns(T::Array[::ActiveStorage::VariantRecord])
     end
     def select(*args, &blk); end
@@ -997,7 +997,7 @@ class ActiveStorage::VariantRecord
     sig { params(args: T.untyped).returns(PrivateRelation) }
     sig do
       params(
-        blk: T.proc.params(record: ::ActiveStorage::VariantRecord).returns(T::Boolean)
+        blk: T.proc.params(record: ::ActiveStorage::VariantRecord).returns(BasicObject)
       ).returns(T::Array[::ActiveStorage::VariantRecord])
     end
     def select(*args, &blk); end
@@ -1070,13 +1070,8 @@ class ActiveStorage::VariantRecord
     sig { params(column_name: T.any(String, Symbol)).returns(T::Hash[T.untyped, T.untyped]) }
     def minimum(column_name); end
 
-    sig do
-      params(
-        column_name: T.nilable(T.any(String, Symbol)),
-        block: T.nilable(T.proc.params(record: T.untyped).returns(T.untyped))
-      ).returns(T::Hash[T.untyped, T.any(Integer, Float, BigDecimal)])
-    end
-    def size(column_name = nil, &block); end
+    sig { returns(T::Hash[T.untyped, Integer]) }
+    def size; end
 
     sig do
       params(
@@ -1206,13 +1201,8 @@ class ActiveStorage::VariantRecord
     sig { params(column_name: T.any(String, Symbol)).returns(T::Hash[T.untyped, T.untyped]) }
     def minimum(column_name); end
 
-    sig do
-      params(
-        column_name: T.nilable(T.any(String, Symbol)),
-        block: T.nilable(T.proc.params(record: T.untyped).returns(T.untyped))
-      ).returns(T::Hash[T.untyped, T.any(Integer, Float, BigDecimal)])
-    end
-    def size(column_name = nil, &block); end
+    sig { returns(T::Hash[T.untyped, Integer]) }
+    def size; end
 
     sig do
       params(

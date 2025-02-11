@@ -464,6 +464,20 @@ class Language::Lesson
     sig { returns(T::Boolean) }
     def language_previously_changed?; end
 
+    sig { returns(T::Array[T.untyped]) }
+    def member_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def member_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Language::Lesson` class because it declared `has_many :members`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::Language::Lesson::Member::PrivateCollectionProxy) }
+    def members; end
+
+    sig { params(value: T::Enumerable[::Language::Lesson::Member]).void }
+    def members=(value); end
+
     sig { returns(T.nilable(::Language::Module)) }
     def module; end
 
@@ -636,7 +650,7 @@ class Language::Lesson
     sig { params(args: T.untyped).returns(PrivateAssociationRelation) }
     sig do
       params(
-        blk: T.proc.params(record: ::Language::Lesson).returns(T::Boolean)
+        blk: T.proc.params(record: ::Language::Lesson).returns(BasicObject)
       ).returns(T::Array[::Language::Lesson])
     end
     def select(*args, &blk); end
@@ -1717,7 +1731,7 @@ class Language::Lesson
     sig { params(args: T.untyped).returns(PrivateRelation) }
     sig do
       params(
-        blk: T.proc.params(record: ::Language::Lesson).returns(T::Boolean)
+        blk: T.proc.params(record: ::Language::Lesson).returns(BasicObject)
       ).returns(T::Array[::Language::Lesson])
     end
     def select(*args, &blk); end
@@ -1947,13 +1961,8 @@ class Language::Lesson
     sig { params(column_name: T.any(String, Symbol)).returns(T::Hash[T.untyped, T.untyped]) }
     def minimum(column_name); end
 
-    sig do
-      params(
-        column_name: T.nilable(T.any(String, Symbol)),
-        block: T.nilable(T.proc.params(record: T.untyped).returns(T.untyped))
-      ).returns(T::Hash[T.untyped, T.any(Integer, Float, BigDecimal)])
-    end
-    def size(column_name = nil, &block); end
+    sig { returns(T::Hash[T.untyped, Integer]) }
+    def size; end
 
     sig do
       params(
@@ -2083,13 +2092,8 @@ class Language::Lesson
     sig { params(column_name: T.any(String, Symbol)).returns(T::Hash[T.untyped, T.untyped]) }
     def minimum(column_name); end
 
-    sig do
-      params(
-        column_name: T.nilable(T.any(String, Symbol)),
-        block: T.nilable(T.proc.params(record: T.untyped).returns(T.untyped))
-      ).returns(T::Hash[T.untyped, T.any(Integer, Float, BigDecimal)])
-    end
-    def size(column_name = nil, &block); end
+    sig { returns(T::Hash[T.untyped, Integer]) }
+    def size; end
 
     sig do
       params(

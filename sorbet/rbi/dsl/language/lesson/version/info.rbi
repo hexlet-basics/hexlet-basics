@@ -424,6 +424,9 @@ class Language::Lesson::Version::Info
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language) }
     def build_language(*args, &blk); end
 
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Language::Lesson) }
+    def build_language_lesson(*args, &blk); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language::Version) }
     def build_language_version(*args, &blk); end
 
@@ -438,6 +441,12 @@ class Language::Lesson::Version::Info
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language) }
     def create_language!(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Language::Lesson) }
+    def create_language_lesson(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Language::Lesson) }
+    def create_language_lesson!(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language::Version) }
     def create_language_version(*args, &blk); end
@@ -466,6 +475,18 @@ class Language::Lesson::Version::Info
     sig { returns(T::Boolean) }
     def language_changed?; end
 
+    sig { returns(T.nilable(::Language::Lesson)) }
+    def language_lesson; end
+
+    sig { params(value: T.nilable(::Language::Lesson)).void }
+    def language_lesson=(value); end
+
+    sig { returns(T::Boolean) }
+    def language_lesson_changed?; end
+
+    sig { returns(T::Boolean) }
+    def language_lesson_previously_changed?; end
+
     sig { returns(T::Boolean) }
     def language_previously_changed?; end
 
@@ -490,6 +511,9 @@ class Language::Lesson::Version::Info
     sig { returns(T.nilable(::Language)) }
     def reload_language; end
 
+    sig { returns(T.nilable(::Language::Lesson)) }
+    def reload_language_lesson; end
+
     sig { returns(T.nilable(::Language::Version)) }
     def reload_language_version; end
 
@@ -501,6 +525,9 @@ class Language::Lesson::Version::Info
 
     sig { void }
     def reset_language; end
+
+    sig { void }
+    def reset_language_lesson; end
 
     sig { void }
     def reset_language_version; end
@@ -598,6 +625,9 @@ class Language::Lesson::Version::Info
     def none(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def not_finished_by(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def null_relation?(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
@@ -642,7 +672,7 @@ class Language::Lesson::Version::Info
     sig { params(args: T.untyped).returns(PrivateAssociationRelation) }
     sig do
       params(
-        blk: T.proc.params(record: ::Language::Lesson::Version::Info).returns(T::Boolean)
+        blk: T.proc.params(record: ::Language::Lesson::Version::Info).returns(BasicObject)
       ).returns(T::Array[::Language::Lesson::Version::Info])
     end
     def select(*args, &blk); end
@@ -993,6 +1023,51 @@ class Language::Lesson::Version::Info
     def language_id_will_change!; end
 
     sig { returns(::Integer) }
+    def language_lesson_id; end
+
+    sig { params(value: ::Integer).returns(::Integer) }
+    def language_lesson_id=(value); end
+
+    sig { returns(T::Boolean) }
+    def language_lesson_id?; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def language_lesson_id_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def language_lesson_id_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def language_lesson_id_came_from_user?; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def language_lesson_id_change; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def language_lesson_id_change_to_be_saved; end
+
+    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    def language_lesson_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::Integer)) }
+    def language_lesson_id_in_database; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def language_lesson_id_previous_change; end
+
+    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    def language_lesson_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::Integer)) }
+    def language_lesson_id_previously_was; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def language_lesson_id_was; end
+
+    sig { void }
+    def language_lesson_id_will_change!; end
+
+    sig { returns(::Integer) }
     def language_version_id; end
 
     sig { params(value: ::Integer).returns(::Integer) }
@@ -1149,6 +1224,9 @@ class Language::Lesson::Version::Info
     def restore_language_id!; end
 
     sig { void }
+    def restore_language_lesson_id!; end
+
+    sig { void }
     def restore_language_version_id!; end
 
     sig { void }
@@ -1210,6 +1288,12 @@ class Language::Lesson::Version::Info
 
     sig { returns(T::Boolean) }
     def saved_change_to_language_id?; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def saved_change_to_language_lesson_id; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_language_lesson_id?; end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_language_version_id; end
@@ -1455,6 +1539,9 @@ class Language::Lesson::Version::Info
     def will_save_change_to_language_id?; end
 
     sig { returns(T::Boolean) }
+    def will_save_change_to_language_lesson_id?; end
+
+    sig { returns(T::Boolean) }
     def will_save_change_to_language_version_id?; end
 
     sig { returns(T::Boolean) }
@@ -1550,6 +1637,9 @@ class Language::Lesson::Version::Info
     def none(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def not_finished_by(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def null_relation?(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
@@ -1594,7 +1684,7 @@ class Language::Lesson::Version::Info
     sig { params(args: T.untyped).returns(PrivateRelation) }
     sig do
       params(
-        blk: T.proc.params(record: ::Language::Lesson::Version::Info).returns(T::Boolean)
+        blk: T.proc.params(record: ::Language::Lesson::Version::Info).returns(BasicObject)
       ).returns(T::Array[::Language::Lesson::Version::Info])
     end
     def select(*args, &blk); end
@@ -1667,13 +1757,8 @@ class Language::Lesson::Version::Info
     sig { params(column_name: T.any(String, Symbol)).returns(T::Hash[T.untyped, T.untyped]) }
     def minimum(column_name); end
 
-    sig do
-      params(
-        column_name: T.nilable(T.any(String, Symbol)),
-        block: T.nilable(T.proc.params(record: T.untyped).returns(T.untyped))
-      ).returns(T::Hash[T.untyped, T.any(Integer, Float, BigDecimal)])
-    end
-    def size(column_name = nil, &block); end
+    sig { returns(T::Hash[T.untyped, Integer]) }
+    def size; end
 
     sig do
       params(
@@ -1803,13 +1888,8 @@ class Language::Lesson::Version::Info
     sig { params(column_name: T.any(String, Symbol)).returns(T::Hash[T.untyped, T.untyped]) }
     def minimum(column_name); end
 
-    sig do
-      params(
-        column_name: T.nilable(T.any(String, Symbol)),
-        block: T.nilable(T.proc.params(record: T.untyped).returns(T.untyped))
-      ).returns(T::Hash[T.untyped, T.any(Integer, Float, BigDecimal)])
-    end
-    def size(column_name = nil, &block); end
+    sig { returns(T::Hash[T.untyped, Integer]) }
+    def size; end
 
     sig do
       params(

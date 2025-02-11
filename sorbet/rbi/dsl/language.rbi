@@ -671,7 +671,7 @@ class Language
     def rewhere(*args, &blk); end
 
     sig { params(args: T.untyped).returns(PrivateAssociationRelation) }
-    sig { params(blk: T.proc.params(record: ::Language).returns(T::Boolean)).returns(T::Array[::Language]) }
+    sig { params(blk: T.proc.params(record: ::Language).returns(BasicObject)).returns(T::Array[::Language]) }
     def select(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
@@ -1529,7 +1529,7 @@ class Language
     sig { returns(T::Boolean) }
     def saved_change_to_progress?; end
 
-    sig { returns(T.nilable([T.untyped, T.untyped])) }
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_slug; end
 
     sig { returns(T::Boolean) }
@@ -1553,16 +1553,16 @@ class Language
     sig { returns(T::Boolean) }
     def saved_change_to_upload_id?; end
 
-    sig { returns(T.untyped) }
+    sig { returns(T.nilable(::String)) }
     def slug; end
 
-    sig { params(value: T.untyped).returns(T.untyped) }
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
     def slug=(value); end
 
     sig { returns(T::Boolean) }
     def slug?; end
 
-    sig { returns(T.untyped) }
+    sig { returns(T.nilable(::String)) }
     def slug_before_last_save; end
 
     sig { returns(T.untyped) }
@@ -1571,28 +1571,28 @@ class Language
     sig { returns(T::Boolean) }
     def slug_came_from_user?; end
 
-    sig { returns(T.nilable([T.untyped, T.untyped])) }
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def slug_change; end
 
-    sig { returns(T.nilable([T.untyped, T.untyped])) }
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def slug_change_to_be_saved; end
 
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
     def slug_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.untyped) }
+    sig { returns(T.nilable(::String)) }
     def slug_in_database; end
 
-    sig { returns(T.nilable([T.untyped, T.untyped])) }
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def slug_previous_change; end
 
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
     def slug_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.untyped) }
+    sig { returns(T.nilable(::String)) }
     def slug_previously_was; end
 
-    sig { returns(T.untyped) }
+    sig { returns(T.nilable(::String)) }
     def slug_was; end
 
     sig { void }
@@ -1910,7 +1910,7 @@ class Language
     def rewhere(*args, &blk); end
 
     sig { params(args: T.untyped).returns(PrivateRelation) }
-    sig { params(blk: T.proc.params(record: ::Language).returns(T::Boolean)).returns(T::Array[::Language]) }
+    sig { params(blk: T.proc.params(record: ::Language).returns(BasicObject)).returns(T::Array[::Language]) }
     def select(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
@@ -1984,13 +1984,8 @@ class Language
     sig { params(column_name: T.any(String, Symbol)).returns(T::Hash[T.untyped, T.untyped]) }
     def minimum(column_name); end
 
-    sig do
-      params(
-        column_name: T.nilable(T.any(String, Symbol)),
-        block: T.nilable(T.proc.params(record: T.untyped).returns(T.untyped))
-      ).returns(T::Hash[T.untyped, T.any(Integer, Float, BigDecimal)])
-    end
-    def size(column_name = nil, &block); end
+    sig { returns(T::Hash[T.untyped, Integer]) }
+    def size; end
 
     sig do
       params(
@@ -2120,13 +2115,8 @@ class Language
     sig { params(column_name: T.any(String, Symbol)).returns(T::Hash[T.untyped, T.untyped]) }
     def minimum(column_name); end
 
-    sig do
-      params(
-        column_name: T.nilable(T.any(String, Symbol)),
-        block: T.nilable(T.proc.params(record: T.untyped).returns(T.untyped))
-      ).returns(T::Hash[T.untyped, T.any(Integer, Float, BigDecimal)])
-    end
-    def size(column_name = nil, &block); end
+    sig { returns(T::Hash[T.untyped, Integer]) }
+    def size; end
 
     sig do
       params(
