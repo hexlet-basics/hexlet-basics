@@ -64,16 +64,10 @@ module GeneratedPathHelpersModule
   def api_partners_yandex_market_languages_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def auth_request_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def blog_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def blog_posts_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def callback_auth_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def check_api_lesson_path(*args); end
@@ -98,12 +92,6 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def edit_password_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def google_onetap_callback_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def health_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def language_categories_path(*args); end
@@ -187,6 +175,9 @@ module GeneratedPathHelpersModule
   def rails_disk_service_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def rails_health_check_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def rails_info_notes_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -245,6 +236,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def root_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def ruby_event_store_browser_app_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def search_admin_api_users_path(*args); end

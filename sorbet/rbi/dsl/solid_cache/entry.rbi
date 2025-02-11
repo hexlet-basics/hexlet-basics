@@ -6,6 +6,7 @@
 
 
 class SolidCache::Entry
+  include GeneratedAttributeMethods
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
@@ -505,7 +506,7 @@ class SolidCache::Entry
     sig { params(args: T.untyped).returns(PrivateAssociationRelation) }
     sig do
       params(
-        blk: T.proc.params(record: ::SolidCache::Entry).returns(T::Boolean)
+        blk: T.proc.params(record: ::SolidCache::Entry).returns(BasicObject)
       ).returns(T::Array[::SolidCache::Entry])
     end
     def select(*args, &blk); end
@@ -537,6 +538,407 @@ class SolidCache::Entry
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def without(*args, &blk); end
+  end
+
+  module GeneratedAttributeMethods
+    sig { returns(::Integer) }
+    def byte_size; end
+
+    sig { params(value: ::Integer).returns(::Integer) }
+    def byte_size=(value); end
+
+    sig { returns(T::Boolean) }
+    def byte_size?; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def byte_size_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def byte_size_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def byte_size_came_from_user?; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def byte_size_change; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def byte_size_change_to_be_saved; end
+
+    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    def byte_size_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::Integer)) }
+    def byte_size_in_database; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def byte_size_previous_change; end
+
+    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    def byte_size_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::Integer)) }
+    def byte_size_previously_was; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def byte_size_was; end
+
+    sig { void }
+    def byte_size_will_change!; end
+
+    sig { returns(::ActiveSupport::TimeWithZone) }
+    def created_at; end
+
+    sig { params(value: ::ActiveSupport::TimeWithZone).returns(::ActiveSupport::TimeWithZone) }
+    def created_at=(value); end
+
+    sig { returns(T::Boolean) }
+    def created_at?; end
+
+    sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
+    def created_at_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def created_at_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def created_at_came_from_user?; end
+
+    sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
+    def created_at_change; end
+
+    sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
+    def created_at_change_to_be_saved; end
+
+    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    def created_at_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
+    def created_at_in_database; end
+
+    sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
+    def created_at_previous_change; end
+
+    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    def created_at_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
+    def created_at_previously_was; end
+
+    sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
+    def created_at_was; end
+
+    sig { void }
+    def created_at_will_change!; end
+
+    sig { returns(::Integer) }
+    def id; end
+
+    sig { params(value: ::Integer).returns(::Integer) }
+    def id=(value); end
+
+    sig { returns(T::Boolean) }
+    def id?; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def id_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def id_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def id_came_from_user?; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def id_change; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def id_change_to_be_saved; end
+
+    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    def id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::Integer)) }
+    def id_in_database; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def id_previous_change; end
+
+    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    def id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::Integer)) }
+    def id_previously_was; end
+
+    sig { returns(::Integer) }
+    def id_value; end
+
+    sig { params(value: ::Integer).returns(::Integer) }
+    def id_value=(value); end
+
+    sig { returns(T::Boolean) }
+    def id_value?; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def id_value_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def id_value_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def id_value_came_from_user?; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def id_value_change; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def id_value_change_to_be_saved; end
+
+    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    def id_value_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::Integer)) }
+    def id_value_in_database; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def id_value_previous_change; end
+
+    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    def id_value_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::Integer)) }
+    def id_value_previously_was; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def id_value_was; end
+
+    sig { void }
+    def id_value_will_change!; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def id_was; end
+
+    sig { void }
+    def id_will_change!; end
+
+    sig { returns(::String) }
+    def key; end
+
+    sig { params(value: ::String).returns(::String) }
+    def key=(value); end
+
+    sig { returns(T::Boolean) }
+    def key?; end
+
+    sig { returns(T.nilable(::String)) }
+    def key_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def key_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def key_came_from_user?; end
+
+    sig { returns(T.nilable([::String, ::String])) }
+    def key_change; end
+
+    sig { returns(T.nilable([::String, ::String])) }
+    def key_change_to_be_saved; end
+
+    sig { params(from: ::String, to: ::String).returns(T::Boolean) }
+    def key_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(::Integer) }
+    def key_hash; end
+
+    sig { params(value: ::Integer).returns(::Integer) }
+    def key_hash=(value); end
+
+    sig { returns(T::Boolean) }
+    def key_hash?; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def key_hash_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def key_hash_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def key_hash_came_from_user?; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def key_hash_change; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def key_hash_change_to_be_saved; end
+
+    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    def key_hash_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::Integer)) }
+    def key_hash_in_database; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def key_hash_previous_change; end
+
+    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    def key_hash_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::Integer)) }
+    def key_hash_previously_was; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def key_hash_was; end
+
+    sig { void }
+    def key_hash_will_change!; end
+
+    sig { returns(T.nilable(::String)) }
+    def key_in_database; end
+
+    sig { returns(T.nilable([::String, ::String])) }
+    def key_previous_change; end
+
+    sig { params(from: ::String, to: ::String).returns(T::Boolean) }
+    def key_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def key_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def key_was; end
+
+    sig { void }
+    def key_will_change!; end
+
+    sig { void }
+    def restore_byte_size!; end
+
+    sig { void }
+    def restore_created_at!; end
+
+    sig { void }
+    def restore_id!; end
+
+    sig { void }
+    def restore_id_value!; end
+
+    sig { void }
+    def restore_key!; end
+
+    sig { void }
+    def restore_key_hash!; end
+
+    sig { void }
+    def restore_value!; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def saved_change_to_byte_size; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_byte_size?; end
+
+    sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
+    def saved_change_to_created_at; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_created_at?; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def saved_change_to_id; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_id?; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def saved_change_to_id_value; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_id_value?; end
+
+    sig { returns(T.nilable([::String, ::String])) }
+    def saved_change_to_key; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_key?; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def saved_change_to_key_hash; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_key_hash?; end
+
+    sig { returns(T.nilable([::String, ::String])) }
+    def saved_change_to_value; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_value?; end
+
+    sig { returns(::String) }
+    def value; end
+
+    sig { params(value: ::String).returns(::String) }
+    def value=(value); end
+
+    sig { returns(T::Boolean) }
+    def value?; end
+
+    sig { returns(T.nilable(::String)) }
+    def value_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def value_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def value_came_from_user?; end
+
+    sig { returns(T.nilable([::String, ::String])) }
+    def value_change; end
+
+    sig { returns(T.nilable([::String, ::String])) }
+    def value_change_to_be_saved; end
+
+    sig { params(from: ::String, to: ::String).returns(T::Boolean) }
+    def value_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def value_in_database; end
+
+    sig { returns(T.nilable([::String, ::String])) }
+    def value_previous_change; end
+
+    sig { params(from: ::String, to: ::String).returns(T::Boolean) }
+    def value_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def value_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def value_was; end
+
+    sig { void }
+    def value_will_change!; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_byte_size?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_created_at?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_id?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_id_value?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_key?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_key_hash?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_value?; end
   end
 
   module GeneratedRelationMethods
@@ -663,7 +1065,7 @@ class SolidCache::Entry
     sig { params(args: T.untyped).returns(PrivateRelation) }
     sig do
       params(
-        blk: T.proc.params(record: ::SolidCache::Entry).returns(T::Boolean)
+        blk: T.proc.params(record: ::SolidCache::Entry).returns(BasicObject)
       ).returns(T::Array[::SolidCache::Entry])
     end
     def select(*args, &blk); end
@@ -736,13 +1138,8 @@ class SolidCache::Entry
     sig { params(column_name: T.any(String, Symbol)).returns(T::Hash[T.untyped, T.untyped]) }
     def minimum(column_name); end
 
-    sig do
-      params(
-        column_name: T.nilable(T.any(String, Symbol)),
-        block: T.nilable(T.proc.params(record: T.untyped).returns(T.untyped))
-      ).returns(T::Hash[T.untyped, T.any(Integer, Float, BigDecimal)])
-    end
-    def size(column_name = nil, &block); end
+    sig { returns(T::Hash[T.untyped, Integer]) }
+    def size; end
 
     sig do
       params(
@@ -872,13 +1269,8 @@ class SolidCache::Entry
     sig { params(column_name: T.any(String, Symbol)).returns(T::Hash[T.untyped, T.untyped]) }
     def minimum(column_name); end
 
-    sig do
-      params(
-        column_name: T.nilable(T.any(String, Symbol)),
-        block: T.nilable(T.proc.params(record: T.untyped).returns(T.untyped))
-      ).returns(T::Hash[T.untyped, T.any(Integer, Float, BigDecimal)])
-    end
-    def size(column_name = nil, &block); end
+    sig { returns(T::Hash[T.untyped, Integer]) }
+    def size; end
 
     sig do
       params(

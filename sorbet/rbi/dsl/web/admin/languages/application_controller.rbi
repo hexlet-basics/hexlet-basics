@@ -13,21 +13,9 @@ class Web::Admin::Languages::ApplicationController
     include ::ActionText::ContentHelper
     include ::ActionText::TagHelper
     include ::InertiaRails::Helper
+    include ::Ransack::Helpers::FormHelper
     include ::ViteRails::TagHelpers
     include ::ActionController::Base::HelperMethods
-    include ::AuthConcern
-    include ::ApplicationHelper
-    include ::Api::LanguagesHelper
-    include ::Api::Languages::LessonsHelper
-    include ::LanguageCategoriesHelper
-    include ::ModelHelper
-    include ::PacksHelper
-    include ::ReviewsHelper
-    include ::Web::Admin::Api::UsersHelper
-    include ::Web::Admin::BlogPostsHelper
-    include ::Web::Admin::ReviewsHelper
-    include ::Web::BlogPostsHelper
-    include ::ApplicationController::HelperMethods
 
     sig { returns(T.untyped) }
     def resource_language; end

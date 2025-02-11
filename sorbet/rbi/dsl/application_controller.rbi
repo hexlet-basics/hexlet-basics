@@ -8,31 +8,4 @@
 class ApplicationController
   include GeneratedUrlHelpersModule
   include GeneratedPathHelpersModule
-
-  sig { returns(HelperProxy) }
-  def helpers; end
-
-  module HelperMethods
-    include ::ActionText::ContentHelper
-    include ::ActionText::TagHelper
-    include ::InertiaRails::Helper
-    include ::ViteRails::TagHelpers
-    include ::ActionController::Base::HelperMethods
-    include ::AuthConcern
-    include ::ApplicationHelper
-    include ::Api::LanguagesHelper
-    include ::Api::Languages::LessonsHelper
-    include ::LanguageCategoriesHelper
-    include ::ModelHelper
-    include ::PacksHelper
-    include ::ReviewsHelper
-    include ::Web::Admin::Api::UsersHelper
-    include ::Web::Admin::BlogPostsHelper
-    include ::Web::Admin::ReviewsHelper
-    include ::Web::BlogPostsHelper
-  end
-
-  class HelperProxy < ::ActionView::Base
-    include HelperMethods
-  end
 end

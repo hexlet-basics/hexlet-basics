@@ -64,16 +64,10 @@ module GeneratedUrlHelpersModule
   def api_partners_yandex_market_languages_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def auth_request_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def blog_post_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def blog_posts_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def callback_auth_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def check_api_lesson_url(*args); end
@@ -98,12 +92,6 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def edit_password_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def google_onetap_callback_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def health_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def language_categories_url(*args); end
@@ -187,6 +175,9 @@ module GeneratedUrlHelpersModule
   def rails_disk_service_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def rails_health_check_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def rails_info_notes_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -245,6 +236,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def root_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def ruby_event_store_browser_app_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def search_admin_api_users_url(*args); end
