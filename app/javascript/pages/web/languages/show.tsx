@@ -17,7 +17,6 @@ import type {
   LanguageModule,
 } from "@/types/serializers";
 import { Link, usePage } from "@inertiajs/react";
-import _ from "lodash";
 
 type Props = {
   courseMember?: LanguageMember;
@@ -130,7 +129,7 @@ export default function Show({
               <Row className="row-cols-1 row-cols-md-2">
                 <Col className="mb-3">
                   <ListGroup>
-                    {_.get(lessonsByModuleId, m.id, []).map((l) => (
+                    {(lessonsByModuleId[m.id] ?? []).map((l) => (
                       <ListGroup.Item key={l.id}>
                         <Link
                           className="text-decoration-none stretched-link d-flex"

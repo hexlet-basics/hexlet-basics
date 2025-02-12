@@ -1,6 +1,5 @@
 import axios from "axios";
 import cn from "classnames";
-import _ from "lodash";
 import {
   AutoComplete,
   type AutoCompleteChangeEvent,
@@ -53,7 +52,7 @@ export function XInput({ name, model, as, ...props }: Props) {
 
   // console.log(form)
 
-  const errors = error ? _.castArray(error) : [];
+  const errors = error ? [error] : [];
 
   const path = `attributes.${form.model}.${name}`;
   const label = tAr(path, tAm(path));

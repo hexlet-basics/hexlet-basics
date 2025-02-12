@@ -1,10 +1,7 @@
-import type { Grid, LanguageLesson } from "@/types/serializers";
-import _ from "lodash";
+import type { LanguageLesson } from "@/types/serializers";
 import type {
-  DataTableFilterMeta,
-  DataTableStateEvent,
+    DataTableFilterMeta
 } from "primereact/datatable";
-import { ChangeEvent, SyntheticEvent } from "react";
 
 export function deviconClass(langName: string): string {
   const mapping: Record<string, string> = {

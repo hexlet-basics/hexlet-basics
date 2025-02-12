@@ -1,4 +1,3 @@
-import _ from "lodash";
 import type React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -17,7 +16,7 @@ export default function useConfirmation(
   const requestConfirmation = (event: React.SyntheticEvent) => {
     event.preventDefault();
 
-    const message = _.get(options, "message", tCommon("confirm"));
+    const message = options?.message ?? tCommon("confirm");
     const isConfirmed = window.confirm(`${message}`);
     if (isConfirmed) {
       callback(event);

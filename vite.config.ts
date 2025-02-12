@@ -40,7 +40,6 @@ export default defineConfig(({ mode }) => {
         "lowlight",
         "highlight.js",
         "react-syntax-highlighter",
-        "lodash",
         "use-inertia-form",
         "monaco-editor",
         "primereact",
