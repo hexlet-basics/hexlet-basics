@@ -5,6 +5,7 @@ setup:
 	bundle install
 	bin/rails db:prepare
 	bin/rails db:fixtures:load
+	npm install
 
 test:
 	bin/rails test
@@ -83,10 +84,12 @@ ansible-vaults-edit:
 		-v $(CURDIR):/runner/project \
 		quay.io/ansible/ansible-runner ansible-vault edit --vault-password-file project/tmp/ansible-vault-password project/ansible/production/group_vars/all/vault.yml
 
-# tag:
-# 	git tag $(TAG) && git push --tags --no-verify
-#
-# next-tag:
-# 	make tag TAG=$(shell bin/generate_next_tag)
+tag:
+	git tag $(TAG) && git push --tags --no-verify
+
+next-tag:
+	@old_version=$(shell git tag -l 'v[0-9]*' | sort -V | tail -n 1 | sed 's/^v//'); \
+		new_version=$$((old_version + 1)); \
+		make tag TAG=v$$new_version
 
 .PHONY: test
