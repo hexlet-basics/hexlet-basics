@@ -5,6 +5,7 @@ import type {
   LanguageLesson,
   LanguageLessonMember,
 } from "@/types/serializers";
+import { SetupOptions } from "node_modules/@inertiajs/react/types/createInertiaApp";
 
 export type LessonSharedProps = SharedProps & {
   courseCategory: LanguageCategory;
@@ -16,13 +17,18 @@ export type LessonSharedProps = SharedProps & {
   lessons: LanguageLesson[];
 };
 
-export type CheckingResult = "error" | "passed" | "failed" | "failed-infinity" | null
+export type CheckingResult =
+  | "error"
+  | "passed"
+  | "failed"
+  | "failed-infinity"
+  | null;
 
 export interface RootState {
   processState: "checked" | "unchecked" | "checking";
   currentTab: "editor" | "output" | "tests" | "solution";
   finished: boolean;
-  result: CheckingResult
+  result: CheckingResult;
   resetsCount: number;
   defaultCode: string;
   output: string;

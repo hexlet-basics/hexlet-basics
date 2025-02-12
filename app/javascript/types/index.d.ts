@@ -45,3 +45,5 @@ export interface SharedProps extends PageProps {
   language;
   mobileBrowser: boolean;
 }
+
+export type RootProps = SetupOptions<HTMLElement, SharedProps>["props"];

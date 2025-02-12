@@ -1,15 +1,14 @@
-import { PrimeReactProvider } from "primereact/api";
-import * as Routes from "@/routes.js";
 import pt from "@/primereact.ts";
+import * as Routes from "@/routes.js";
+import { PrimeReactProvider } from "primereact/api";
 
 import "react-bootstrap";
 
-import type { SharedProps } from "@/types";
+import type { RootProps, SharedProps } from "@/types";
 import i18next from "i18next";
+import type { PropsWithChildren } from "react";
 import { initReactI18next } from "react-i18next";
 import locales from "../locales.json";
-import type { SetupOptions } from "node_modules/@inertiajs/react/types/createInertiaApp";
-import type { PropsWithChildren } from "react";
 
 const resources = locales;
 const defaultNS = "web";
@@ -28,7 +27,7 @@ i18next.init({
 });
 
 export default function Root(
-  props: SetupOptions<HTMLElement, SharedProps>["props"] & PropsWithChildren,
+  props: RootProps & PropsWithChildren,
 ) {
   // const { locale, suffix } = usePage<SharedProps>().props;
   const { locale, suffix } = props.initialPage.props;
