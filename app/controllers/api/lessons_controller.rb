@@ -69,12 +69,14 @@ class Api::LessonsController < Api::ApplicationController
       end
     end
 
-    render json: {
+    response_data = OpenStruct.new({
       attributes: lesson_exercise_data,
       passing_of_entities: {
         is_lesson_become_finished:,
         is_language_become_finished:
       }
-    }, status: :ok
+    })
+
+    render json: LessonCheckResource.new(response_data), status: :ok
   end
 end

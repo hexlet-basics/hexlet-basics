@@ -14,7 +14,7 @@ export const runCheck = createAsyncThunk(
   async (lesson: LanguageLesson, thunkAPI) => {
     const { content } = thunkAPI.getState() as RootState;
     const checkLessonPath = Routes.check_api_lesson_path(lesson.id!);
-    const response = await axios.post(checkLessonPath, {
+    const response: CheckingResponse = await axios.post(checkLessonPath, {
       version_id: lesson.version!,
       data: {
         attributes: {
@@ -93,7 +93,7 @@ const slice = createSlice({
       })
       .addCase(
         runCheck.fulfilled,
-        (state, action: PayloadAction<CheckingResponse>) => {
+        (state, action: PayloadAction<CheckingResponse["data"]["attributes"]>) => {
           if (action.payload.passed) {
             state.solutionState = "shown";
           }

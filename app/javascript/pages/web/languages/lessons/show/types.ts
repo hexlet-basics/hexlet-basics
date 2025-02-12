@@ -4,6 +4,7 @@ import type {
   LanguageCategory,
   LanguageLesson,
   LanguageLessonMember,
+  LessonCheck,
 } from "@/types/serializers";
 import { SetupOptions } from "node_modules/@inertiajs/react/types/createInertiaApp";
 
@@ -28,7 +29,6 @@ export interface RootState {
   processState: "checked" | "unchecked" | "checking";
   currentTab: "editor" | "output" | "tests" | "solution";
   finished: boolean;
-  result: CheckingResult;
   resetsCount: number;
   defaultCode: string;
   output: string;
@@ -43,4 +43,5 @@ export interface CheckingResponse {
   result: CheckingResult;
   output: string;
   passed: boolean;
+  data: LessonCheck;
 }
