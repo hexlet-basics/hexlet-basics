@@ -16,7 +16,7 @@ type Props = PropsWithChildren & {
 
 export default function Index({ admins, grid }: Props) {
   const { t } = useTranslation();
-  const { t: tHelpers } = useTranslation("helpers");
+  // const { t: tHelpers } = useTranslation("helpers");
 
   const handleDataTable = useDataTable();
 

@@ -7,7 +7,7 @@ import { DTDateTemplate } from "@/components/dtTemplates";
 import useDataTable from "@/hooks/useDataTable";
 import { fieldsToFilters } from "@/lib/utils";
 import AdminLayout from "@/pages/layouts/AdminLayout";
-import type { BlogPost, Grid, User } from "@/types/serializers";
+import type { BlogPost, Grid } from "@/types/serializers";
 import { Link } from "@inertiajs/react";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";

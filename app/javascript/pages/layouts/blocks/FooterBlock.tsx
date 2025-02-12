@@ -2,7 +2,6 @@ import * as Routes from "@/routes.js";
 import type { SharedProps } from "@/types";
 
 import { Link, usePage } from "@inertiajs/react";
-import { locale } from "dayjs";
 import { Container, Row, Col, Nav } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 

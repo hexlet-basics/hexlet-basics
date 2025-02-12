@@ -5,7 +5,7 @@ import type { Language, LanguageMember } from "@/types/serializers";
 import { usePage } from "@inertiajs/react";
 import type { PropsWithChildren } from "react";
 import { Card } from "react-bootstrap";
-import { useTranslation } from "react-i18next";
+// import { useTranslation } from "react-i18next";
 
 type Props = PropsWithChildren & {
   course: Language;
@@ -13,8 +13,8 @@ type Props = PropsWithChildren & {
 };
 
 export default function CourseBlock({ course, courseMember }: Props) {
-  const { t } = useTranslation();
-  const { t: tCommon } = useTranslation("js");
+  // const { t } = useTranslation();
+  // const { t: tCommon } = useTranslation("js");
   const { suffix } = usePage<SharedProps>().props;
 
   return (

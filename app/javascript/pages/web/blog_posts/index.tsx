@@ -15,7 +15,7 @@ type Props = PropsWithChildren & {
   pagy: Pagy;
 };
 
-export default function Index({ blogPosts, pagy }: Props) {
+export default function Index({ blogPosts }: Props) {
   const { t } = useTranslation();
   const header = t("blog_posts.index.header");
   const { suffix } = usePage<SharedProps>().props;

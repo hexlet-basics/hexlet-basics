@@ -1,5 +1,10 @@
 import classNames from "classnames";
 import type { PrimeReactPTOptions } from "primereact/api";
+import type { InputTextPassThroughMethodOptions } from "primereact/inputtext";
+import type { DataTablePassThroughMethodOptions, DataTableValueArray } from "primereact/datatable";
+import type { ButtonPassThroughMethodOptions } from "primereact/button";
+import type { DropdownPassThroughMethodOptions } from "primereact/dropdown";
+import type { AutoCompletePassThroughMethodOptions } from "primereact/autocomplete";
 
 const TRANSITIONS = {
   overlay: {
@@ -17,7 +22,7 @@ const TRANSITIONS = {
 // TODO: Extract to https://github.com/Hexlet/primereact-bootstrap-theme
 const pt: PrimeReactPTOptions = {
   inputtext: {
-    root: ({ props, context }) => ({
+    root: ({ props, context }: InputTextPassThroughMethodOptions) => ({
       className: classNames(
         "form-control", // Bootstrap's base class for input
         "m-0",
@@ -41,7 +46,7 @@ const pt: PrimeReactPTOptions = {
     }),
   },
   datatable: {
-    root: ({ props }) => ({
+    root: ({ props }: DataTablePassThroughMethodOptions<DataTableValueArray>) => ({
       className: classNames("table-responsive", {
         "d-flex flex-column h-100":
           props.scrollable && props.scrollHeight === "flex",
@@ -55,31 +60,31 @@ const pt: PrimeReactPTOptions = {
       ),
     },
     loadingicon: "spinner-border text-primary",
-    wrapper: ({ props }) => ({
+    wrapper: ({ props }: DataTablePassThroughMethodOptions<DataTableValueArray>) => ({
       className: classNames({
         "position-relative": props.scrollable,
         "d-flex flex-column flex-grow-1 h-100":
           props.scrollable && props.scrollHeight === "flex",
       }),
     }),
-    header: ({ props }) => ({
+    header: ({ props }: DataTablePassThroughMethodOptions<DataTableValueArray>) => ({
       className: classNames(
         "bg-light text-dark border-bottom font-weight-bold p-3",
         props.showGridlines ? "border border-top-0" : "",
       ),
     }),
     table: "table table-hover table-striped",
-    thead: ({ context }) => ({
+    thead: ({ context }: DataTablePassThroughMethodOptions<DataTableValueArray>) => ({
       className: classNames({
         "position-sticky top-0 bg-light": context.scrollable,
       }),
     }),
-    tbody: ({ props, context }) => ({
+    tbody: ({ props, context }: DataTablePassThroughMethodOptions<DataTableValueArray>) => ({
       className: classNames({
         "position-sticky z-index-1": props.frozenRow && context.scrollable,
       }),
     }),
-    tfoot: ({ context }) => ({
+    tfoot: ({ context }: DataTablePassThroughMethodOptions<DataTableValueArray>) => ({
       className: classNames({
         "position-sticky bottom-0 bg-light z-index-1": context.scrollable,
       }),
@@ -202,7 +207,7 @@ const pt: PrimeReactPTOptions = {
     transition: TRANSITIONS.overlay,
   },
   button: {
-    root: ({ props, context }) => ({
+    root: ({ props, context }: ButtonPassThroughMethodOptions) => ({
       className: classNames(
         "btn d-inline-flex align-items-center justify-center text-center",
         "transition duration-200 ease-in-out",
@@ -261,21 +266,21 @@ const pt: PrimeReactPTOptions = {
         { "pe-5": props.loading && props.label != null },
       ),
     }),
-    label: ({ props }) => ({
+    label: ({ props }: ButtonPassThroughMethodOptions) => ({
       className: classNames(
         "flex-1 fw-bold",
         { "text-decoration-underline": props.link },
         { invisible: !props.label },
       ),
     }),
-    icon: ({ props }) => ({
+    icon: ({ props }: ButtonPassThroughMethodOptions) => ({
       className: classNames("me-2", {
         "ms-2": props.iconPos === "right" && props.label != null,
         "mb-2": props.iconPos === "top" && props.label != null,
         "mt-2": props.iconPos === "bottom" && props.label != null,
       }),
     }),
-    loadingIcon: ({ props }) => ({
+    loadingIcon: ({ props }: ButtonPassThroughMethodOptions) => ({
       className: classNames("spinner-border spinner-border-sm me-2", {
         "ms-2":
           props.loading && props.iconPos === "right" && props.label != null,
@@ -284,7 +289,7 @@ const pt: PrimeReactPTOptions = {
           props.loading && props.iconPos === "bottom" && props.label != null,
       }),
     }),
-    badge: ({ props }) => ({
+    badge: ({ props }: ButtonPassThroughMethodOptions) => ({
       className: classNames("badge rounded-pill ms-2", {
         "badge-primary": props.badge && props.severity === "primary",
         "badge-secondary": props.badge && props.severity === "secondary",
@@ -296,7 +301,7 @@ const pt: PrimeReactPTOptions = {
   },
 
   dropdown: {
-    root: ({ props }) => ({
+    root: ({ props }: DropdownPassThroughMethodOptions) => ({
       className: classNames(
         "dropdown position-relative d-inline-flex",
         "bg-white border rounded",
@@ -306,7 +311,7 @@ const pt: PrimeReactPTOptions = {
         { "opacity-50 pointer-events-none cursor-default": props.disabled },
       ),
     }),
-    input: ({ props }) => ({
+    input: ({ props }: DropdownPassThroughMethodOptions) => ({
       className: classNames(
         "form-control border-0",
         "text-body bg-transparent",
@@ -329,7 +334,7 @@ const pt: PrimeReactPTOptions = {
       ),
     },
     list: "list-unstyled p-2",
-    item: ({ context }) => ({
+    item: ({ context }: DropdownPassThroughMethodOptions) => ({
       className: classNames(
         "dropdown-item d-flex align-items-center",
         "transition-all",
@@ -365,7 +370,7 @@ const pt: PrimeReactPTOptions = {
     transition: TRANSITIONS.overlay,
   },
   autocomplete: {
-    root: ({ props }) => ({
+    root: ({ props }: AutoCompletePassThroughMethodOptions) => ({
       className: classNames(
         "position-relative d-flex",
         {
@@ -414,7 +419,7 @@ const pt: PrimeReactPTOptions = {
       ),
     },
     list: "py-2 list-unstyled m-0",
-    item: ({ context }) => ({
+    item: ({ context }: AutoCompletePassThroughMethodOptions) => ({
       className: classNames(
         "cursor-pointer text-body overflow-hidden",
         "py-2 px-3 transition-shadow",

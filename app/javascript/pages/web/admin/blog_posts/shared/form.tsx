@@ -1,11 +1,11 @@
 import { useTranslation } from "react-i18next";
 
-import { XEditor, XFile, XForm, XInput, XSelect, XStateEvent } from "@/components/forms";
+import { XFile, XForm, XInput, XSelect, XStateEvent } from "@/components/forms";
 import type { BlogPost } from "@/types/serializers";
 import { Col, Row } from "react-bootstrap";
 import { type HTTPVerb, Submit } from "use-inertia-form";
 
-import * as Routes from "@/routes.js";
+// import * as Routes from "@/routes.js";
 
 type Props = {
   data: BlogPost;
@@ -19,7 +19,7 @@ const locales = [
 ];
 
 export default function Form({ data, url, method }: Props) {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const { t: tHelpers } = useTranslation("helpers");
 
   return (

@@ -1,6 +1,6 @@
 import { Container } from "react-bootstrap";
 
-import { useTranslation } from "react-i18next";
+// import { useTranslation } from "react-i18next";
 
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 
@@ -11,7 +11,7 @@ type Props = {
 };
 
 export default function Show({ code, header, description }: Props) {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   return (
     <ApplicationLayout>

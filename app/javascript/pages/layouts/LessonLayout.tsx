@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react";
 import { Container } from "react-bootstrap";
 
-import { useTranslation } from "react-i18next";
+// import { useTranslation } from "react-i18next";
 
 
 import NavbarBlock from "./blocks/NavbarBlock.tsx";
@@ -10,8 +10,8 @@ import RootLayout from "./RootLayout.tsx";
 type Props = PropsWithChildren & {};
 
 export default function LessonLayout({ children }: Props) {
-  const { t: tLayouts } = useTranslation("layouts");
-  const { t: tCommon } = useTranslation("common");
+  // const { t: tLayouts } = useTranslation("layouts");
+  // const { t: tCommon } = useTranslation("common");
   // const { locale, suffix } = usePage<SharedProps>().props;
   //
   // useEffect(() => {

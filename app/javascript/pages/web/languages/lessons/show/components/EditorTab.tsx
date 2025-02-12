@@ -11,7 +11,7 @@ import { useLocalStorage, useUpdateEffect } from "react-use";
 import { getKeyForStoringLessonCode } from "@/lib/utils.ts";
 
 import { useEffect, useState } from "react";
-import slice, { runCheck } from "../slices/RootSlice.ts";
+import slice from "../slices/RootSlice.ts";
 import type { LessonSharedProps } from "../types.ts";
 
 import type { editor } from "monaco-editor";
@@ -39,7 +39,7 @@ export default function EditorTab() {
 
   const focusesCount = useAppSelector((state) => state.focusesCount);
   const resetsCount = useAppSelector((state) => state.resetsCount);
-  const content = useAppSelector((state) => state.content);
+  // const content = useAppSelector((state) => state.content);
   const dispatch = useAppDispatch();
 
   const defaultCode = lesson.prepared_code || "";
@@ -84,9 +84,9 @@ export default function EditorTab() {
     dispatch(slice.actions.changeContent(code || ""));
   }, []);
 
-  const handleRunCheck = () => {
-    dispatch(runCheck(lesson));
-  };
+  // const handleRunCheck = () => {
+  //   dispatch(runCheck(lesson));
+  // };
 
   const handleEditorChange = (value: string | undefined) => {
     const newContent = value || "";

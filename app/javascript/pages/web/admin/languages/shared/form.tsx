@@ -1,11 +1,11 @@
 import { useTranslation } from "react-i18next";
 
 import { XForm, XInput, XSelect } from "@/components/forms";
-import type { LanguageCategory, OriginalLanguage } from "@/types/serializers";
-import { Col, Row } from "react-bootstrap";
+import type { OriginalLanguage } from "@/types/serializers";
+// import { Col, Row } from "react-bootstrap";
 import { type HTTPVerb, Submit } from "use-inertia-form";
 
-import * as Routes from "@/routes.js";
+// import * as Routes from "@/routes.js";
 import type { SharedProps } from "@/types";
 import { usePage } from "@inertiajs/react";
 import { enumToOptions } from "@/lib/utils";
@@ -16,13 +16,13 @@ type Props = {
   method?: HTTPVerb;
 };
 
-const locales = [
-  { name: "Russian", code: "ru" },
-  { name: "English", code: "en" },
-];
+// const locales = [
+//   { name: "Russian", code: "ru" },
+//   { name: "English", code: "en" },
+// ];
 
 export default function Form({ data, url, method }: Props) {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const { courseCategories } = usePage<SharedProps>().props;
   const { t: tHelpers } = useTranslation("helpers");
   const { t: tEnums } = useTranslation("enumerize");

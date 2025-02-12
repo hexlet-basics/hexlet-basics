@@ -94,11 +94,11 @@ type XFileProps = InputHTMLAttributes<HTMLInputElement> &
     name: string;
   };
 
-export function XFile({ name, model, fieldName, ...props }: XFileProps) {
-  const { t: tAr } = useTranslation("activerecord");
-  const { t: tAm } = useTranslation("activemodel");
+export function XFile({ name, model, fieldName }: XFileProps) {
+  // const { t: tAr } = useTranslation("activerecord");
+  // const { t: tAm } = useTranslation("activemodel");
 
-  const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
+  const { inputName, setValue, error, form } = useInertiaInput({
     name,
     model,
   });
@@ -109,8 +109,8 @@ export function XFile({ name, model, fieldName, ...props }: XFileProps) {
 
   const errors = error ? _.castArray(error) : [];
 
-  const path = `attributes.${form.model}.${name}`;
-  const label = tAr(path, tAm(path));
+  // const path = `attributes.${form.model}.${name}`;
+  // const label = tAr(path, tAm(path));
 
   const controlClasses = cn({
     "is-invalid": errors.length > 0,
@@ -159,22 +159,22 @@ export function XFile({ name, model, fieldName, ...props }: XFileProps) {
 }
 
 export function XEditor({ name, model, as, ...props }: Props) {
-  const { t: tAr } = useTranslation("activerecord");
-  const { t: tAm } = useTranslation("activemodel");
+  // const { t: tAr } = useTranslation("activerecord");
+  // const { t: tAm } = useTranslation("activemodel");
 
-  const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
+  const { inputName, inputId, value, setValue, error } = useInertiaInput({
     name,
     model,
   });
 
   const errors = error ? _.castArray(error) : [];
 
-  const path = `attributes.${form.model}.${name}`;
-  const label = tAr(path, tAm(path));
+  // const path = `attributes.${form.model}.${name}`;
+  // const label = tAr(path, tAm(path));
 
-  const controlClasses = cn({
-    "is-invalid": errors.length > 0,
-  });
+  // const controlClasses = cn({
+  //   "is-invalid": errors.length > 0,
+  // });
 
   return (
     <Form.Group className="mb-4">
@@ -364,12 +364,12 @@ type XStateEventProps = {
   fieldName: string;
 };
 
-export function XStateEvent({ fieldName, ...props }: XStateEventProps) {
-  const { t: tAr } = useTranslation("activerecord");
-  const { t: tAm } = useTranslation("activemodel");
+export function XStateEvent({ fieldName }: XStateEventProps) {
+  // const { t: tAr } = useTranslation("activerecord");
+  // const { t: tAm } = useTranslation("activemodel");
   const { t: tCommon } = useTranslation("common");
 
-  const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
+  const { inputName, inputId, setValue, form } = useInertiaInput({
     name: `${fieldName}_event`,
     // model,
   });

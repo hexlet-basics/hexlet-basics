@@ -9,7 +9,6 @@ import * as Routes from "@/routes.js";
 import { XForm, XInput } from "@/components/forms";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { UserPassword } from "@/types/serializers";
-import { Link } from "@inertiajs/react";
 
 type Props = PropsWithChildren & {
   userPassword: UserPassword;

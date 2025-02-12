@@ -2,7 +2,7 @@ import type { BlogPost } from "@/types/serializers";
 import type { PropsWithChildren } from "react";
 
 import { Card } from "react-bootstrap";
-import { useTranslation } from "react-i18next";
+// import { useTranslation } from "react-i18next";
 
 import * as Routes from "@/routes.js";
 import type { SharedProps } from "@/types";
@@ -13,7 +13,7 @@ type Props = PropsWithChildren & {
 };
 
 export default function BlogPostBlock({ post }: Props) {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const { suffix } = usePage<SharedProps>().props;
 
   return (

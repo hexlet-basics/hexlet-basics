@@ -19,7 +19,7 @@ export default function OutputTab() {
   const processState = useAppSelector((state) => state.processState);
   const output = useAppSelector((state) => state.output);
   const passed = useAppSelector((state) => state.passed);
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const { t: tCommon } = useTranslation("common");
 
   if (processState !== "checked") {

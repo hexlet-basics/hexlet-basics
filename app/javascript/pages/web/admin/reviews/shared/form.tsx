@@ -16,7 +16,7 @@ type Props = {
 };
 
 export default function Form({ courses, data, url, method }: Props) {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const { t: tHelpers } = useTranslation("helpers");
 
   return (
