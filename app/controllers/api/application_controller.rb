@@ -7,4 +7,8 @@ class Api::ApplicationController < ActionController::API
   include EventConcern
 
   respond_to :json
+
+  def event_store
+    Rails.configuration.event_store
+  end
 end

@@ -130,7 +130,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     # end
 
     lessons_infos = resource_language.current_lesson_infos.with_locale
-      .includes(:lesson, :version)
+      .includes(:lesson, :versio
       .order(language_lesson_versions: { natural_order: :asc })
 
     render inertia: true, props: {
