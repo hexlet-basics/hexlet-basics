@@ -7,7 +7,7 @@ class Language::ModuleResource
 
   attributes :locale, :description, :name
 
-  typelize :id, nullable: true
+  typelize :number
   attribute :id do |info|
     info.version.module.id
   end

@@ -14,7 +14,7 @@ class Language::LessonResource
     :definitions,
     :tips
 
-  typelize tips: "String[]", definitions: "Array<{ name: string, description: string }>"
+  typelize tips: "string[]", definitions: "Array<{ name: string, description: string }>"
 
   typelize :number
   attribute :id do |info|

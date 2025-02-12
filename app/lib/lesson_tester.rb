@@ -25,11 +25,11 @@ class LessonTester
 
     result = case exitstatus
     when 0
-               "passed"
+      "passed"
     when 124
-               "failed-infinity"
+      "failed-infinity"
     else
-               "failed"
+      "failed"
     end
     passed = result == "passed"
 

@@ -54,7 +54,7 @@ language-load:
 
 check-types:
 	# bundle exec srb tc
-	# npx tsc --build --noEmit
+	npm run check
 
 lint:
 	bin/rubocop -x
