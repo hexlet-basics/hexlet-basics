@@ -7,9 +7,9 @@ import {
   type AutoCompleteChangeEvent,
   type AutoCompleteCompleteEvent,
 } from "primereact/autocomplete";
-import { Editor } from "primereact/editor";
+// import { Editor } from "primereact/editor";
 import { useEffect, useState, type InputHTMLAttributes } from "react";
-import { Badge, Form } from "react-bootstrap";
+import { Badge, Form, type FormCheckProps, type FormControlProps } from "react-bootstrap";
 import type { AsProp } from "react-bootstrap/esm/helpers";
 import { useTranslation } from "react-i18next";
 import {
@@ -19,11 +19,15 @@ import {
   useInertiaInput,
 } from "use-inertia-form";
 
-type Props = InputHTMLAttributes<HTMLInputElement> &
-  AsProp & {
-    model?: string;
-    name: string;
-  };
+type XFormControlProps = FormControlProps & {
+  model?: string;
+  name: string;
+};
+
+type XFormCheckProps = FormCheckProps & {
+  model?: string;
+  name: string;
+};
 
 export function XForm<TForm extends NestedObject>({
   children,
@@ -43,16 +47,16 @@ export function XForm<TForm extends NestedObject>({
   );
 }
 
-export function XInput({ name, model, as, ...props }: Props) {
+export function XInput({ name, model, as, ...props }: XFormControlProps) {
   const { t: tAr } = useTranslation("activerecord");
   const { t: tAm } = useTranslation("activemodel");
 
-  const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
+  const { inputName, inputId, value, setValue, error, form } = useInertiaInput<
+    string | undefined
+  >({
     name,
     model,
   });
-
-  // console.log(form)
 
   const errors = error ? [error] : [];
 
@@ -67,6 +71,7 @@ export function XInput({ name, model, as, ...props }: Props) {
     <Form.Group className="mb-4">
       <Form.FloatingLabel label={label}>
         <Form.Control
+          {...props}
           as={as}
           name={inputName}
           value={value}
@@ -74,7 +79,6 @@ export function XInput({ name, model, as, ...props }: Props) {
           placeholder={label}
           className={controlClasses}
           onChange={(e) => setValue(e.target.value)}
-          {...props}
         />
         {errors && (
           <Form.Control.Feedback type="invalid">
@@ -159,58 +163,58 @@ export function XFile({ name, model, fieldName, ...props }: XFileProps) {
   );
 }
 
-export function XEditor({ name, model, as, ...props }: Props) {
-  const { t: tAr } = useTranslation("activerecord");
-  const { t: tAm } = useTranslation("activemodel");
+// export function XEditor({ name, model, as, ...props }: Props) {
+//   const { t: tAr } = useTranslation("activerecord");
+//   const { t: tAm } = useTranslation("activemodel");
+//
+//   const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
+//     name,
+//     model,
+//   });
+//
+//   const errors = error ? [error] : [];
+//
+//   const path = `attributes.${form.model}.${name}`;
+//   const label = tAr(path, tAm(path));
+//
+//   const controlClasses = cn({
+//     "is-invalid": errors.length > 0,
+//   });
+//
+//   return (
+//     <Form.Group className="mb-4">
+//       <Editor
+//         {...props}
+//         id={inputId}
+//         name={inputName}
+//         value={String(value)}
+//         onTextChange={(e) => setValue(e.htmlValue)}
+//       // style={{ height: "500px" }}
+//       />
+//       {/* <Form.FloatingLabel label={label}> */}
+//       {/*   <Form.Control */}
+//       {/*     as={as} */}
+//       {/*     name={inputName} */}
+//       {/*     value={value} */}
+//       {/*     id={inputId} */}
+//       {/*     placeholder={label} */}
+//       {/*     className={controlClasses} */}
+//       {/*     onChange={(e) => setValue(e.target.value)} */}
+//       {/*     {...props} */}
+//       {/*   /> */}
+//       {/* </Form.FloatingLabel> */}
+//       {errors && (
+//         <Form.Control.Feedback type="invalid">
+//           {errors.map((e) => (
+//             <div key={e}>{e}</div>
+//           ))}
+//         </Form.Control.Feedback>
+//       )}
+//     </Form.Group>
+//   );
+// }
 
-  const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
-    name,
-    model,
-  });
-
-  const errors = error ? [error] : [];
-
-  const path = `attributes.${form.model}.${name}`;
-  const label = tAr(path, tAm(path));
-
-  const controlClasses = cn({
-    "is-invalid": errors.length > 0,
-  });
-
-  return (
-    <Form.Group className="mb-4">
-      <Editor
-        {...props}
-        id={inputId}
-        name={inputName}
-        value={String(value)}
-        onTextChange={(e) => setValue(e.htmlValue)}
-      // style={{ height: "500px" }}
-      />
-      {/* <Form.FloatingLabel label={label}> */}
-      {/*   <Form.Control */}
-      {/*     as={as} */}
-      {/*     name={inputName} */}
-      {/*     value={value} */}
-      {/*     id={inputId} */}
-      {/*     placeholder={label} */}
-      {/*     className={controlClasses} */}
-      {/*     onChange={(e) => setValue(e.target.value)} */}
-      {/*     {...props} */}
-      {/*   /> */}
-      {/* </Form.FloatingLabel> */}
-      {errors && (
-        <Form.Control.Feedback type="invalid">
-          {errors.map((e) => (
-            <div key={e}>{e}</div>
-          ))}
-        </Form.Control.Feedback>
-      )}
-    </Form.Group>
-  );
-}
-
-export function XCheck({ name, model, type, ...props }: Props) {
+export function XCheck({ name, model, type, ...props }: XFormCheckProps) {
   const { t: tAr } = useTranslation("activerecord");
   const { t: tAm } = useTranslation("activemodel");
 
@@ -256,7 +260,7 @@ export function XCheck({ name, model, type, ...props }: Props) {
 type XSelectProps<
   T extends Record<string, unknown>,
   K extends keyof T,
-> = Props & {
+> = XFormControlProps & {
   items?: T[];
   has?: string; // K;
   source?: string;
