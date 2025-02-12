@@ -1,5 +1,7 @@
 import axios from "axios";
 import cn from "classnames";
+import { get } from "es-toolkit/compat";
+import { first } from "es-toolkit/compat";
 import {
   AutoComplete,
   type AutoCompleteChangeEvent,
@@ -102,11 +104,11 @@ export function XFile({ name, model, fieldName, ...props }: XFileProps) {
     model,
   });
 
-  const imageUrl = _.get(form.data, [form.model!, fieldName]);
+  const imageUrl = get(form.data, [form.model!, fieldName]);
 
   // console.log(form)
 
-  const errors = error ? _.castArray(error) : [];
+  const errors = error ? [error] : [];
 
   const path = `attributes.${form.model}.${name}`;
   const label = tAr(path, tAm(path));
@@ -166,7 +168,7 @@ export function XEditor({ name, model, as, ...props }: Props) {
     model,
   });
 
-  const errors = error ? _.castArray(error) : [];
+  const errors = error ? [error] : [];
 
   const path = `attributes.${form.model}.${name}`;
   const label = tAr(path, tAm(path));
@@ -183,7 +185,7 @@ export function XEditor({ name, model, as, ...props }: Props) {
         name={inputName}
         value={String(value)}
         onTextChange={(e) => setValue(e.htmlValue)}
-        // style={{ height: "500px" }}
+      // style={{ height: "500px" }}
       />
       {/* <Form.FloatingLabel label={label}> */}
       {/*   <Form.Control */}
@@ -218,7 +220,7 @@ export function XCheck({ name, model, type, ...props }: Props) {
   });
   // console.log(form, value)
 
-  const errors = error ? _.castArray(error) : [];
+  const errors = error ? [error] : [];
 
   const path = `attributes.${form.model}.${name}`;
   const label = tAr(path, tAm(path));
@@ -286,18 +288,18 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (has) {
-      const defaultItem = _.get(form.data, [form.model!, has]);
+      const defaultItem = get(form.data, [form.model!, has]);
       setSelected(defaultItem);
       // console.log(name, form.model, form.data, has)
     } else {
-      const defaultItem = _.first(
+      const defaultItem = first(
         filteredItems.filter((i) => i[valueField] === value),
       );
       setSelected(defaultItem);
     }
   }, []);
 
-  const errors = realError ? _.castArray(realError) : [];
+  const errors = realError ? [realError] : [];
 
   const path = `attributes.${form.model}.${name}`;
   const label = tAr(path, tAm(path));
@@ -373,8 +375,8 @@ export function XStateEvent({ fieldName, ...props }: XStateEventProps) {
     // model,
   });
 
-  const currentState = _.get(form.data, [form.model!, fieldName]);
-  const stateEvents = _.get(
+  const currentState = get(form.data, [form.model!, fieldName]);
+  const stateEvents = get(
     form.data,
     [form.model!, `${fieldName}_events`],
     [],
