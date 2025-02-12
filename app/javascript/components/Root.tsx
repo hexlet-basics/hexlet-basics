@@ -8,6 +8,8 @@ import type { SharedProps } from "@/types";
 import i18next from "i18next";
 import { initReactI18next } from "react-i18next";
 import locales from "../locales.json";
+import type { SetupOptions } from "node_modules/@inertiajs/react/types/createInertiaApp";
+import type { PropsWithChildren } from "react";
 
 const resources = locales;
 const defaultNS = "web";
@@ -25,9 +27,11 @@ i18next.init({
   },
 });
 
-export default function Root(props) {
+export default function Root(
+  props: SetupOptions<HTMLElement, SharedProps>["props"] & PropsWithChildren,
+) {
   // const { locale, suffix } = usePage<SharedProps>().props;
-  const { locale, suffix } = props.initialPage.props as unknown as SharedProps;
+  const { locale, suffix } = props.initialPage.props;
 
   // useEffect?
   i18next.changeLanguage(locale);
