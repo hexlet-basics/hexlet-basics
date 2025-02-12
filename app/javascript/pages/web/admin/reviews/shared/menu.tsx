@@ -1,7 +1,7 @@
 import { Nav } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+import { usePage } from "@inertiajs/react";
 
-import { url } from "@/lib/utils";
 import * as Routes from "@/routes.js";
 import type { Review } from "@/types/serializers";
 
@@ -10,9 +10,11 @@ type Props = {
 };
 
 export function Menu({ data }: Props) {
+  const { url } = usePage();
   const { t: tHelpers } = useTranslation("helpers");
+
   return (
-    <Nav variant="tabs" className="mb-4" activeKey={url({ onlyPath: true })}>
+    <Nav variant="tabs" className="mb-4" activeKey={url}>
       <Nav.Item>
         <Nav.Link
           className="link-body-emphasis"
