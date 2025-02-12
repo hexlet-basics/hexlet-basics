@@ -103,7 +103,7 @@ export function XFile({ name, model, fieldName, ...props }: XFileProps) {
   const { t: tAr } = useTranslation("activerecord");
   const { t: tAm } = useTranslation("activemodel");
 
-  const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
+  const { inputName, inputId, value, setValue, error, form } = useInertiaInput<undefined | File>({
     name,
     model,
   });
@@ -114,12 +114,14 @@ export function XFile({ name, model, fieldName, ...props }: XFileProps) {
 
   const errors = error ? [error] : [];
 
-  const path = `attributes.${form.model}.${name}`;
-  const label = tAr(path, tAm(path));
+  // const path = `attributes.${form.model}.${name}`;
+  // const label = tAr(path, tAm(path));
 
   const controlClasses = cn({
     "is-invalid": errors.length > 0,
   });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.files?.[0])
 
   return (
     <Form.Group className="mb-4">
@@ -128,7 +130,7 @@ export function XFile({ name, model, fieldName, ...props }: XFileProps) {
         name={inputName}
         // value={value}
         className={controlClasses}
-        onChange={(e) => setValue(e.target.files[0])}
+        onChange={handleChange}
       />
       {/* {progress && ( */}
       {/*   <progress value={progress.percentage} max="100"> */}

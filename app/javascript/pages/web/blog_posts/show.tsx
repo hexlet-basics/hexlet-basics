@@ -12,7 +12,7 @@ import remarkToc from "remark-toc";
 import BlogPostBlock from "@/components/BlogPostBlock";
 import * as Routes from "@/routes.js";
 import { usePage } from "@inertiajs/react";
-import type { PluggableList } from "node_modules/react-markdown/lib";
+import type { Pluggable } from "unified";
 import { useTranslation } from "react-i18next";
 
 type Props = PropsWithChildren & {
@@ -29,7 +29,7 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
 
   const heading = tCommon("tos");
 
-  const remarkPlugins: PluggableList = [[remarkToc, { heading }]];
+  const remarkPlugins: Pluggable[] = [[remarkToc, { heading }]];
 
   const items: BreadcrumbItem[] = [
     {
