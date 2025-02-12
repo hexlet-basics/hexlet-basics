@@ -3,6 +3,8 @@ import { Alert, Col, Container, Nav, Row, Tab } from "react-bootstrap";
 
 import { useTranslation } from "react-i18next";
 
+import type { Pluggable } from "unified";
+
 import XssContent from "@/components/XssContent.tsx";
 import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
 import LessonLayout from "@/pages/layouts/LessonLayout.tsx";
@@ -12,16 +14,16 @@ import { Link, usePage } from "@inertiajs/react";
 import i18next from "i18next";
 import React, { memo } from "react";
 import Markdown from "react-markdown";
+import rehypeExternalLinks from "rehype-external-links";
 import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
-import rehypeExternalLinks from "rehype-external-links";
 import EditorBlock from "./show/index.tsx";
 import type { LessonSharedProps } from "./show/types.ts";
 
 // inertiajs renders every page twice (at least in dev mode)
 const MemoizedEditorBlock = memo(EditorBlock);
 
-const rehypePlugins = [
+const rehypePlugins: Pluggable[] = [
   rehypeHighlight,
   rehypeRaw,
   [rehypeExternalLinks, { target: "_blank" }],
