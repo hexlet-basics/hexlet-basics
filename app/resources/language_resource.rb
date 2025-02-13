@@ -13,6 +13,11 @@ class LanguageResource
     I18n.t("common.hours", count: info.language.duration)
   end
 
+  typelize :number
+  attribute :id do |info|
+    info.language_id
+  end
+
   typelize :number, nullable: true
   attribute :members_count do |info|
     info.language.members_count
