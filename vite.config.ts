@@ -41,6 +41,7 @@ export default defineConfig(({ mode }) => {
         "highlight.js",
         "react-syntax-highlighter",
         "use-inertia-form",
+        "lodash",
         "monaco-editor",
         "primereact",
         "posthog-js",
