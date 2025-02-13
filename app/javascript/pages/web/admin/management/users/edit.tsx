@@ -14,7 +14,7 @@ import { Column } from "primereact/column";
 
 type Props = PropsWithChildren & {
   user: User;
-  progress: Record<string, number>[]
+  progress: Record<string, number>[];
 };
 
 export default function Edit({ user, progress }: Props) {

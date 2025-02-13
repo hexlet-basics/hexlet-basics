@@ -10,6 +10,7 @@ import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
 import LessonLayout from "@/pages/layouts/LessonLayout.tsx";
 import * as Routes from "@/routes.js";
 import type { BreadcrumbItem } from "@/types";
+import type { CommonQuestion } from "@/types/i18next";
 import { Link, usePage } from "@inertiajs/react";
 import i18next from "i18next";
 import React, { memo } from "react";
@@ -40,9 +41,12 @@ export default function Show() {
   const { t } = useTranslation();
   const { t: tCommon } = useTranslation("common");
 
-  const commonQuestions = t("languages.lessons.show.common_questions", {
-    returnObjects: true,
-  });
+  const commonQuestions: CommonQuestion[] = t(
+    "languages.lessons.show.common_questions",
+    {
+      returnObjects: true,
+    },
+  );
 
   const items: BreadcrumbItem[] = [
     {

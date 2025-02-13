@@ -19,6 +19,20 @@ export type BreadcrumbItem = {
   url: string;
 };
 
+type EventData = {
+  id: string;
+  email: string;
+  slug: string;
+  locale: string;
+  course_slug: string;
+  lesson_slug: string;
+};
+
+type Event = {
+  data: EventData;
+  [key: string]: unknown;
+};
+
 export interface SharedProps extends PageProps {
   auth: {
     user: User;
@@ -26,7 +40,7 @@ export interface SharedProps extends PageProps {
   courseCategories: LanguageCategory[];
   suffix: "ru" | null;
   locale: "ru" | "en"; // TODO: use i18next.i18n["locale"];
-  events: Record<string, unknown>[] | null;
+  events: Event[] | null;
   flash: Record<
     | "alert"
     | "notice"

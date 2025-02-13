@@ -20,13 +20,13 @@ export default (props: Props) => {
             });
             break;
           case "UserSignedUpEvent":
-            posthog?.capture('signed_up');
+            posthog?.capture("signed_up");
             posthog?.identify(event.data.id, {
               email: event.data.email,
             });
             break;
           case "CourseStartedEvent":
-            posthog?.capture('course_started', {
+            posthog?.capture("course_started", {
               slug: event.data.slug,
               locale: event.data.locale,
             });
@@ -34,7 +34,7 @@ export default (props: Props) => {
           case "CourseFinishedEvent":
             break;
           case "LessonStartedEvent":
-            posthog?.capture('lesson_started', {
+            posthog?.capture("lesson_started", {
               course_slug: event.data.course_slug,
               lesson_slug: event.data.lesson_slug,
               locale: event.data.locale,

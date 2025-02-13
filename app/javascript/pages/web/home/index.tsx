@@ -11,6 +11,7 @@ import type {
   Review,
   User,
 } from "@/types/serializers";
+import type { CommonQuestion } from "@/types/i18next";
 
 import BlogPostBlock from "@/components/BlogPostBlock";
 import CourseBlock from "@/components/CourseBlock";
@@ -91,7 +92,7 @@ const reviews = {
     {
       name: "Eliyah Kleyman",
       avatar: getImageUrl("user-avatar.png"),
-      body: `For me, it was my very first programming course. I liked it because all the information is very well 
+      body: `For me, it was my very first programming course. I liked it because all the information is very well
         structured and given in a clear hierarchical order. It motivated me a lot to move forward in my studies.`,
     },
   ],
@@ -113,7 +114,7 @@ export default function Index({
     auth: { user },
   } = usePage<SharedProps>().props;
 
-  const faq = tFaq("main", { returnObjects: true });
+  const faq: CommonQuestion[] = tFaq("main", { returnObjects: true });
 
   return (
     <ApplicationLayout>

@@ -9,7 +9,12 @@ import {
 } from "primereact/autocomplete";
 // import { Editor } from "primereact/editor";
 import { useEffect, useState, type InputHTMLAttributes } from "react";
-import { Badge, Form, type FormCheckProps, type FormControlProps } from "react-bootstrap";
+import {
+  Badge,
+  Form,
+  type FormCheckProps,
+  type FormControlProps,
+} from "react-bootstrap";
 import type { AsProp } from "react-bootstrap/esm/helpers";
 import { useTranslation } from "react-i18next";
 import {
@@ -83,7 +88,7 @@ export function XInput({ name, model, as, ...props }: XFormControlProps) {
         {errors && (
           <Form.Control.Feedback type="invalid">
             {errors.map((e) => (
-              <div key={e}>{e}</div>
+              <div key={e.toString()}>{e}</div>
             ))}
           </Form.Control.Feedback>
         )}
@@ -103,7 +108,9 @@ export function XFile({ name, model, fieldName, ...props }: XFileProps) {
   const { t: tAr } = useTranslation("activerecord");
   const { t: tAm } = useTranslation("activemodel");
 
-  const { inputName, inputId, value, setValue, error, form } = useInertiaInput<undefined | File>({
+  const { inputName, inputId, value, setValue, error, form } = useInertiaInput<
+    undefined | File
+  >({
     name,
     model,
   });
@@ -121,7 +128,8 @@ export function XFile({ name, model, fieldName, ...props }: XFileProps) {
     "is-invalid": errors.length > 0,
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.files?.[0])
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setValue(e.target.files?.[0]);
 
   return (
     <Form.Group className="mb-4">
@@ -251,7 +259,7 @@ export function XCheck({ name, model, type, ...props }: XFormCheckProps) {
       {errors.length > 0 && (
         <Form.Control.Feedback type="invalid">
           {errors.map((e) => (
-            <div key={e}>{e}</div>
+            <div key={e.toString()}>{e}</div>
           ))}
         </Form.Control.Feedback>
       )}
@@ -359,7 +367,7 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
       {errors.length > 0 && (
         <Form.Control.Feedback type="invalid">
           {errors.map((e) => (
-            <div key={e}>{e}</div>
+            <div key={e.toString()}>{e}</div>
           ))}
         </Form.Control.Feedback>
       )}

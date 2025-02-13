@@ -13,3 +13,8 @@ declare module "i18next" {
     resources: (typeof resources)["ru"];
   }
 }
+
+export type CommonQuestion = {
+  question: string;
+  answer: string;
+};
