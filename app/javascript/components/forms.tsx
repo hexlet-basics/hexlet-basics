@@ -9,7 +9,12 @@ import {
 } from "primereact/autocomplete";
 // import { Editor } from "primereact/editor";
 import { useEffect, useState, type InputHTMLAttributes } from "react";
-import { Badge, Form, type FormCheckProps, type FormControlProps } from "react-bootstrap";
+import {
+  Badge,
+  Form,
+  type FormCheckProps,
+  type FormControlProps,
+} from "react-bootstrap";
 import type { AsProp } from "react-bootstrap/esm/helpers";
 import { useTranslation } from "react-i18next";
 import {
@@ -58,7 +63,7 @@ export function XInput({ name, model, as, ...props }: XFormControlProps) {
     model,
   });
 
-  const errors = error ? [error] : [];
+  const errors = error ? [error].flat() : [];
 
   const path = `attributes.${form.model}.${name}`;
   const label = tAr(path, tAm(path));
@@ -103,7 +108,9 @@ export function XFile({ name, model, fieldName, ...props }: XFileProps) {
   const { t: tAr } = useTranslation("activerecord");
   const { t: tAm } = useTranslation("activemodel");
 
-  const { inputName, inputId, value, setValue, error, form } = useInertiaInput<undefined | File>({
+  const { inputName, inputId, value, setValue, error, form } = useInertiaInput<
+    undefined | File
+  >({
     name,
     model,
   });
@@ -112,7 +119,7 @@ export function XFile({ name, model, fieldName, ...props }: XFileProps) {
 
   // console.log(form)
 
-  const errors = error ? [error] : [];
+  const errors = error ? [error].flat() : [];
 
   // const path = `attributes.${form.model}.${name}`;
   // const label = tAr(path, tAm(path));
@@ -121,7 +128,8 @@ export function XFile({ name, model, fieldName, ...props }: XFileProps) {
     "is-invalid": errors.length > 0,
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.files?.[0])
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setValue(e.target.files?.[0]);
 
   return (
     <Form.Group className="mb-4">
@@ -226,7 +234,7 @@ export function XCheck({ name, model, type, ...props }: XFormCheckProps) {
   });
   // console.log(form, value)
 
-  const errors = error ? [error] : [];
+  const errors = error ? [error].flat() : [];
 
   const path = `attributes.${form.model}.${name}`;
   const label = tAr(path, tAm(path));
@@ -305,7 +313,7 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
     }
   }, []);
 
-  const errors = realError ? [realError] : [];
+  const errors = realError ? [realError].flat() : [];
 
   const path = `attributes.${form.model}.${name}`;
   const label = tAr(path, tAm(path));

@@ -1,10 +1,13 @@
 import type { SharedProps } from "@/types";
 import { usePage } from "@inertiajs/react";
 import { Alert } from "react-bootstrap";
+import type { FlashVariants } from "@/types";
+import { isObjectKey } from "@/lib/utils";
 
 export default function XFlash() {
   const { flash } = usePage<SharedProps>().props;
-  const variants = {
+
+  const variants: FlashVariants = {
     error: "danger",
     notice: "primary",
     success: "success",
@@ -14,7 +17,7 @@ export default function XFlash() {
     <>
       {Object.entries(variants).map(
         ([key, variant]) =>
-          flash[key] && (
+          isObjectKey(flash, key) && (
             <Alert
               dismissible
               key={key}
