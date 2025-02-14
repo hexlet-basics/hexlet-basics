@@ -4,6 +4,7 @@ import { PrimeReactProvider } from "primereact/api";
 
 import "react-bootstrap";
 
+import type { PageProps } from "@inertiajs/inertia";
 import type { RootProps, SharedProps } from "@/types";
 import i18next from "i18next";
 import type { PropsWithChildren } from "react";
@@ -27,10 +28,11 @@ i18next.init({
 });
 
 export default function Root(
-  props: RootProps & PropsWithChildren,
+  props: PropsWithChildren,
 ) {
+  const typedProps = props as RootProps
   // const { locale, suffix } = usePage<SharedProps>().props;
-  const { locale, suffix } = props.initialPage.props;
+  const { locale, suffix } = typedProps.initialPage.props;
 
   // useEffect?
   i18next.changeLanguage(locale);
