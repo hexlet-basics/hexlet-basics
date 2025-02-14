@@ -4,7 +4,14 @@
     "indentStyle": "space"
   },
   "files": {
-    "ignore": ["public/**/*", "routes.js", "*.json", "types/serializers/**/*"]
+    "ignore": [
+      "public/**/*",
+      "routes.js",
+      "routes.d.ts",
+      "*.json",
+      "types/serializers/**/*",
+      "coverage/**/*"
+    ]
   },
   "organizeImports": {
     "enabled": true

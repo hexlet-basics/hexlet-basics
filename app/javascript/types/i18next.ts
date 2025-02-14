@@ -1,6 +1,8 @@
 // import the original type declarations
 import "i18next";
-import type { defaultNS, resources } from "../init.ts";
+import type locales from "../locales.json";
+
+const defaultNS = "web" as const;
 
 declare module "i18next" {
   interface i18n {
@@ -10,6 +12,6 @@ declare module "i18next" {
   interface CustomTypeOptions {
     // custom namespace type, if you changed it
     defaultNS: typeof defaultNS;
-    resources: (typeof resources)["ru"];
+    resources: (typeof locales)["ru"];
   }
 }

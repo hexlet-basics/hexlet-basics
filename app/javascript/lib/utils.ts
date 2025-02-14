@@ -1,7 +1,5 @@
 import type { LanguageLesson } from "@/types/serializers";
-import type {
-    DataTableFilterMeta
-} from "primereact/datatable";
+import type { DataTableFilterMeta } from "primereact/datatable";
 
 export function deviconClass(langName: string): string {
   const mapping: Record<string, string> = {
@@ -215,7 +213,12 @@ export const locales = [
 ];
 
 export function enumToOptions(en: Record<string, string>) {
-  return Object.entries(en).map(
-    ([key, value]) => ({ id: key, name: value })
-  );
+  return Object.entries(en).map(([key, value]) => ({ id: key, name: value }));
+}
+
+export function isObjectKey<T extends object>(
+  obj: T,
+  key: PropertyKey,
+): key is keyof T {
+  return key in obj;
 }

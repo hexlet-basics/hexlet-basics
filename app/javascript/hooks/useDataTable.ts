@@ -5,7 +5,10 @@ import type { DataTableStateEvent } from "primereact/datatable";
 
 const useDataTable = () => {
   const handleDataTable = (
-    e: Partial<DataTableStateEvent> & { page?: number },
+    e: Partial<DataTableStateEvent> & {
+      page?: number;
+      filters?: Record<string, { value?: string | null }>;
+    },
   ) => {
     const newGrid: Partial<Grid> = {};
     if (e.sortField) {
@@ -22,6 +25,7 @@ const useDataTable = () => {
       Object.entries(e.filters)
         .filter(([_, filter]) => filter.value !== null && filter.value !== "")
         .map(([field, filter]) => {
+          newGrid.fields = newGrid.fields || {};
           newGrid.fields[`${field}_cont`] = filter.value;
         });
     }

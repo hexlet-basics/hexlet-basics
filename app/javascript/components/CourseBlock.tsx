@@ -14,7 +14,7 @@ type Props = PropsWithChildren & {
 
 export default function CourseBlock({ course, courseMember }: Props) {
   const { t } = useTranslation();
-  const { t: tCommon } = useTranslation("js");
+  const { t: tCommon } = useTranslation("common");
   const { suffix } = usePage<SharedProps>().props;
 
   return (
