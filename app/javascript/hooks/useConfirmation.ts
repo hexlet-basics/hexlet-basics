@@ -5,15 +5,15 @@ interface ConfirmDialogOptions {
   message: string;
 }
 
-type UseConfirmationResult = (event: React.SyntheticEvent) => void;
+type UseConfirmationCallback = (event: React.MouseEvent<Element>) => void;
 
 export default function useConfirmation(
-  callback: (cb: React.SyntheticEvent) => void,
+  callback: UseConfirmationCallback,
   options?: ConfirmDialogOptions,
-): UseConfirmationResult {
+): UseConfirmationCallback {
   const { t: tCommon } = useTranslation("common");
 
-  const requestConfirmation = (event: React.SyntheticEvent) => {
+  const requestConfirmation = (event: React.MouseEvent<Element>) => {
     event.preventDefault();
 
     const message = options?.message ?? tCommon("confirm");
