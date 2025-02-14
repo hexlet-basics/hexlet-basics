@@ -66,6 +66,7 @@ export function XInput({ name, model, as, ...props }: XFormControlProps) {
   const errors = error ? [error].flat() : [];
 
   const path = `attributes.${form.model}.${name}`;
+  // @ts-expect-error
   const label = tAr(path, tAm(path));
 
   const controlClasses = cn({
@@ -104,11 +105,8 @@ type XFileProps = InputHTMLAttributes<HTMLInputElement> &
     name: string;
   };
 
-export function XFile({ name, model, fieldName, ...props }: XFileProps) {
-  const { t: tAr } = useTranslation("activerecord");
-  const { t: tAm } = useTranslation("activemodel");
-
-  const { inputName, inputId, value, setValue, error, form } = useInertiaInput<
+export function XFile({ name, model, fieldName }: XFileProps) {
+  const { inputName, setValue, error, form } = useInertiaInput<
     undefined | File
   >({
     name,
@@ -237,6 +235,7 @@ export function XCheck({ name, model, type, ...props }: XFormCheckProps) {
   const errors = error ? [error].flat() : [];
 
   const path = `attributes.${form.model}.${name}`;
+  // @ts-expect-error
   const label = tAr(path, tAm(path));
 
   const controlClasses = cn({
@@ -316,6 +315,7 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
   const errors = realError ? [realError].flat() : [];
 
   const path = `attributes.${form.model}.${name}`;
+  // @ts-expect-error
   const label = tAr(path, tAm(path));
 
   const controlClasses = cn({
@@ -362,7 +362,6 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
         completeMethod={search}
         onChange={handleChange}
         dropdown
-        {...props}
       />
       {errors.length > 0 && (
         <Form.Control.Feedback type="invalid">
@@ -379,12 +378,12 @@ type XStateEventProps = {
   fieldName: string;
 };
 
-export function XStateEvent({ fieldName, ...props }: XStateEventProps) {
+export function XStateEvent({ fieldName }: XStateEventProps) {
   const { t: tAr } = useTranslation("activerecord");
   const { t: tAm } = useTranslation("activemodel");
   const { t: tCommon } = useTranslation("common");
 
-  const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
+  const { inputName, inputId, setValue, form } = useInertiaInput({
     name: `${fieldName}_event`,
     // model,
   });
