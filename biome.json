@@ -3,16 +3,13 @@
   "formatter": {
     "indentStyle": "space"
   },
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
   "files": {
-    "ignore": [
-      "public/**/*",
-      "routes.js",
-      "routes.d.ts",
-      "*.json",
-      "types/serializers/**/*",
-      "coverage/**/*",
-      "vendor/**/*"
-    ]
+    "ignore": ["*.json", "routes.*", "types/serializers/**/*"]
   },
   "organizeImports": {
     "enabled": true
