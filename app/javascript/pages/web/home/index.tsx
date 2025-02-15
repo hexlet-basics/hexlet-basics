@@ -142,13 +142,13 @@ export default function Index({
                   className="btn btn-primary btn-lg px-4 me-md-2 fw-bold"
                   href="#courses"
                 >
-                  Попробовать
+                  {t("home.hero.try")}
                 </a>
               </div>
             </div>
             <div className="col-lg-4 offset-lg-1 p-0 overflow-hidden shadow-lg text-center">
               <img
-                alt="Как работает обучение на code-basics"
+                alt="Code Basics learning preview"
                 className="rounded-lg-3"
                 height="356"
                 src={codeImagePaths[locale]}
