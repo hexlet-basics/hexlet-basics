@@ -10,7 +10,8 @@
       "routes.d.ts",
       "*.json",
       "types/serializers/**/*",
-      "coverage/**/*"
+      "coverage/**/*",
+      "vendor/**/*"
     ]
   },
   "organizeImports": {
