@@ -3,9 +3,8 @@ import { Container } from "react-bootstrap";
 
 import { useTranslation } from "react-i18next";
 
-
-import NavbarBlock from "./blocks/NavbarBlock.tsx";
 import RootLayout from "./RootLayout.tsx";
+import NavbarBlock from "./blocks/NavbarBlock.tsx";
 
 type Props = PropsWithChildren & {};
 

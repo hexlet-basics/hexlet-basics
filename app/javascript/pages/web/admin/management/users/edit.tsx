@@ -6,15 +6,15 @@ import { useTranslation } from "react-i18next";
 import { XCheck, XForm, XInput } from "@/components/forms";
 import AdminLayout from "@/pages/layouts/AdminLayout";
 import type { User } from "@/types/serializers";
+import { Column } from "primereact/column";
+import { DataTable } from "primereact/datatable";
 import { Col, Row } from "react-bootstrap";
 import { Submit } from "use-inertia-form";
 import { Menu } from "./shared/menu";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
 
 type Props = PropsWithChildren & {
   user: User;
-  progress: Record<string, number>[]
+  progress: Record<string, number>[];
 };
 
 export default function Edit({ user, progress }: Props) {

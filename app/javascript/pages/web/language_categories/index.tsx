@@ -30,7 +30,10 @@ export default function Index({ categories }: Props) {
         <div className="row row-cols-1 row-cols-lg-2">
           {categories.map((category) => (
             <div className="col mb-3" key={category.id}>
-              <Link className="display-5" href={Routes.language_category_path(category.slug!)}>
+              <Link
+                className="display-5"
+                href={Routes.language_category_path(category.slug!)}
+              >
                 {category.name}
               </Link>
             </div>

@@ -3,9 +3,9 @@ import { useTranslation } from "react-i18next";
 
 import AdminLayout from "@/pages/layouts/AdminLayout";
 import type { OriginalLanguage } from "@/types/serializers";
+import { Col, Row } from "react-bootstrap";
 import Form from "./shared/form";
 import { Menu } from "./shared/menu";
-import { Col, Row } from "react-bootstrap";
 
 type Props = {
   originalCourse: OriginalLanguage;

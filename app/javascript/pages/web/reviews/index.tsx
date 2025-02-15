@@ -1,14 +1,14 @@
+import * as Routes from "@/routes.js";
 import dayjs from "dayjs";
 import type { PropsWithChildren } from "react";
 import { Card, Col, Container, Row } from "react-bootstrap";
-import * as Routes from "@/routes.js";
 
 import XPaging from "@/components/XPaging";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
-import type { Pagy, Review } from "@/types/serializers";
-import { useTranslation } from "react-i18next";
 import type { BreadcrumbItem, SharedProps } from "@/types";
+import type { Pagy, Review } from "@/types/serializers";
 import { usePage } from "@inertiajs/react";
+import { useTranslation } from "react-i18next";
 
 type Props = PropsWithChildren & {
   reviews: Review[];
@@ -18,7 +18,7 @@ type Props = PropsWithChildren & {
 export default function New({ reviews, pagy }: Props) {
   const { suffix } = usePage<SharedProps>().props;
   const { t } = useTranslation();
-  const header = t("reviews.index.header")
+  const header = t("reviews.index.header");
 
   const items: BreadcrumbItem[] = [
     {

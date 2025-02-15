@@ -1,13 +1,12 @@
 import type { PropsWithChildren } from "react";
 import { Container } from "react-bootstrap";
 
-
 import XFlash from "@/components/XFlash.tsx";
-import type { BreadcrumbItem } from "@/types/index.js";
-import NavbarBlock from "./blocks/NavbarBlock.tsx";
 import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
-import FooterBlock from "./blocks/FooterBlock.tsx";
+import type { BreadcrumbItem } from "@/types/index.js";
 import RootLayout from "./RootLayout.tsx";
+import FooterBlock from "./blocks/FooterBlock.tsx";
+import NavbarBlock from "./blocks/NavbarBlock.tsx";
 
 type Props = PropsWithChildren & {
   header?: string;

@@ -8,7 +8,7 @@ import {
   type AutoCompleteCompleteEvent,
 } from "primereact/autocomplete";
 // import { Editor } from "primereact/editor";
-import { useEffect, useState, type InputHTMLAttributes } from "react";
+import { type InputHTMLAttributes, useEffect, useState } from "react";
 import {
   Badge,
   Form,

@@ -1,15 +1,15 @@
+import { DTDateTemplate } from "@/components/dtTemplates";
+import AdminLayout from "@/pages/layouts/AdminLayout";
 import * as Routes from "@/routes.js";
+import type { LanguageVersion, OriginalLanguage } from "@/types/serializers";
+import { Link } from "@inertiajs/react";
+import { Column } from "primereact/column";
+import { DataTable } from "primereact/datatable";
+import { Col, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
-import AdminLayout from "@/pages/layouts/AdminLayout";
-import type { LanguageVersion, OriginalLanguage } from "@/types/serializers";
 import Form from "./shared/form";
 import { Menu } from "./shared/menu";
-import { Col, Row } from "react-bootstrap";
-import { DTDateTemplate } from "@/components/dtTemplates";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import { Link } from "@inertiajs/react";
 
 type Props = {
   originalCourse: OriginalLanguage;
@@ -39,7 +39,9 @@ export default function Edit({ originalCourse, courseVersions }: Props) {
               method="post"
               className="btn btn-sm btn-outline-secondary"
               href={Routes.admin_language_versions_path(originalCourse.id)}
-            >Load New Version</Link>
+            >
+              Load New Version
+            </Link>
           </div>
           <DataTable value={courseVersions}>
             <Column field="id" header="id" />

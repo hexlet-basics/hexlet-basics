@@ -101,8 +101,8 @@ export default function EditorTab() {
       defaultValue={code}
       onChange={handleEditorChange}
       language={getEditorLanguage(course.slug!)}
-    // defaultLanguage={course.slug!}
-    // className="w-100 h-100"
+      // defaultLanguage={course.slug!}
+      // className="w-100 h-100"
     />
   );
 }

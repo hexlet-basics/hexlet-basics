@@ -5,10 +5,9 @@ import type { LanguageCategory, OriginalLanguage } from "@/types/serializers";
 import { Col, Row } from "react-bootstrap";
 import { type HTTPVerb, Submit } from "use-inertia-form";
 
-import * as Routes from "@/routes.js";
+import { enumToOptions } from "@/lib/utils";
 import type { SharedProps } from "@/types";
 import { usePage } from "@inertiajs/react";
-import { enumToOptions } from "@/lib/utils";
 
 type Props = {
   data: OriginalLanguage;

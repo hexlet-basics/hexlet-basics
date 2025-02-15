@@ -1,14 +1,14 @@
 import type { PageProps } from "@inertiajs/inertia";
+import type { SetupOptions } from "node_modules/@inertiajs/react/types/createInertiaApp";
 import type { SortOrder } from "primereact/api";
+import type { BackendEvent } from "./events";
 import type {
   Language,
   LanguageCategory,
-  User,
   LanguageVersion,
   OriginalLanguage,
+  User,
 } from "./serializers";
-import type { SetupOptions } from "node_modules/@inertiajs/react/types/createInertiaApp";
-import type { BackendEvent } from "./events";
 
 export type { SortOrder, User, LanguageVersion, OriginalLanguage };
 

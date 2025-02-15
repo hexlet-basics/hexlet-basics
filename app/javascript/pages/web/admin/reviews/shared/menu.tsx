@@ -1,6 +1,6 @@
+import { usePage } from "@inertiajs/react";
 import { Nav } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import { usePage } from "@inertiajs/react";
 
 import * as Routes from "@/routes.js";
 import type { Review } from "@/types/serializers";

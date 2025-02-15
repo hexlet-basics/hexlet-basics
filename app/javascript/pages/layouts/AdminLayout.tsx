@@ -9,9 +9,9 @@ import XFlash from "@/components/XFlash.tsx";
 import type { SharedProps } from "@/types/index.js";
 import { Head, Link, usePage } from "@inertiajs/react";
 import i18next from "i18next";
-import NavbarBlock from "./blocks/NavbarBlock.tsx";
-import FooterBlock from "./blocks/FooterBlock.tsx";
 import RootLayout from "./RootLayout.tsx";
+import FooterBlock from "./blocks/FooterBlock.tsx";
+import NavbarBlock from "./blocks/NavbarBlock.tsx";
 
 type Props = PropsWithChildren & {
   header: string;

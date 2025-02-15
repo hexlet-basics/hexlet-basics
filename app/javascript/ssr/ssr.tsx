@@ -1,8 +1,8 @@
 import Root from "@/components/Root.tsx";
 import { createInertiaApp } from "@inertiajs/react";
 import createServer from "@inertiajs/react/server";
-import ReactDOMServer from "react-dom/server";
 import * as Sentry from "@sentry/node";
+import ReactDOMServer from "react-dom/server";
 
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,

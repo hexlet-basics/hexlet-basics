@@ -7,8 +7,8 @@ import type { BlogPost, Pagy } from "@/types/serializers";
 
 import BlogPostBlock from "@/components/BlogPostBlock";
 import type { BreadcrumbItem, SharedProps } from "@/types";
-import { useTranslation } from "react-i18next";
 import { usePage } from "@inertiajs/react";
+import { useTranslation } from "react-i18next";
 
 type Props = PropsWithChildren & {
   blogPosts: BlogPost[];

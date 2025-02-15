@@ -34,10 +34,7 @@ export default function Show({ courseCategory, categoryCourses }: Props) {
   ];
 
   return (
-    <ApplicationLayout
-      items={items}
-      header={header}
-    >
+    <ApplicationLayout items={items} header={header}>
       <Container>
         <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4">
           {categoryCourses.map((course) => (

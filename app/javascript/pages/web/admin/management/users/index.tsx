@@ -55,12 +55,7 @@ export default function Index({ grid, users }: Props) {
         <Column field="id" header="id" />
         <Column field="admin" header="Admin?" />
         <Column field="name" header="name" sortable />
-        <Column
-          sortable
-          filter
-          field="email"
-          header="email"
-        />
+        <Column sortable filter field="email" header="email" />
         <Column
           field="created_at"
           header="created_at"

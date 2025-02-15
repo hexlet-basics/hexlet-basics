@@ -12,8 +12,8 @@ import remarkToc from "remark-toc";
 import BlogPostBlock from "@/components/BlogPostBlock";
 import * as Routes from "@/routes.js";
 import { usePage } from "@inertiajs/react";
-import type { Pluggable } from "unified";
 import { useTranslation } from "react-i18next";
+import type { Pluggable } from "unified";
 
 type Props = PropsWithChildren & {
   blogPost: BlogPost;

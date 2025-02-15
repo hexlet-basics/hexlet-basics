@@ -5,8 +5,8 @@ import type { OriginalLanguage, Review } from "@/types/serializers";
 import { Col, Row } from "react-bootstrap";
 import { type HTTPVerb, Submit } from "use-inertia-form";
 
-import * as Routes from "@/routes.js";
 import { locales } from "@/lib/utils";
+import * as Routes from "@/routes.js";
 
 type Props = {
   data: Review;
@@ -23,9 +23,7 @@ export default function Form({ courses, data, url, method }: Props) {
     <Row>
       <Col className="col-7">
         <XForm method={method} model="review" data={{ review: data }} to={url}>
-          <XStateEvent
-            fieldName="state"
-          />
+          <XStateEvent fieldName="state" />
           <XSelect
             name="locale"
             labelField="name"

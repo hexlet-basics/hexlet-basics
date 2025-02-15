@@ -1,9 +1,9 @@
-import * as Sentry from "@sentry/react";
+import Root from "@/components/Root.tsx";
 import { createInertiaApp } from "@inertiajs/react";
+import * as Sentry from "@sentry/react";
+import { PostHogProvider } from "posthog-js/react";
 import type { ReactNode } from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
-import Root from "@/components/Root.tsx";
-import { PostHogProvider } from "posthog-js/react";
 
 const posthogOptions = {
   api_host: import.meta.env.VITE_REACT_APP_PUBLIC_POSTHOG_HOST,

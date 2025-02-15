@@ -50,7 +50,9 @@ export default function NavbarBlock({ className }: Props) {
               </NavDropdown.Item>
             ))}
           </NavDropdown>
-          <Nav.Link href={Routes.blog_posts_path()}>{tLayouts('shared.nav.blog')}</Nav.Link>
+          <Nav.Link href={Routes.blog_posts_path()}>
+            {tLayouts("shared.nav.blog")}
+          </Nav.Link>
         </Nav>
         <Nav>
           {auth.user.guest && (
@@ -104,7 +106,9 @@ export default function NavbarBlock({ className }: Props) {
           <NavDropdown
             align="end"
             className="link-body-emphasis"
-            title={<i className={localesByCode[i18next.language || "ru"].icon} />}
+            title={
+              <i className={localesByCode[i18next.language || "ru"].icon} />
+            }
           >
             {Object.entries(localesByCode).map(([k, v]) => (
               <NavDropdown.Item

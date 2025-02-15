@@ -1,8 +1,8 @@
+import { isObjectKey } from "@/lib/utils";
 import type { SharedProps } from "@/types";
+import type { FlashVariants } from "@/types";
 import { usePage } from "@inertiajs/react";
 import { Alert } from "react-bootstrap";
-import type { FlashVariants } from "@/types";
-import { isObjectKey } from "@/lib/utils";
 
 export default function XFlash() {
   const { flash } = usePage<SharedProps>().props;

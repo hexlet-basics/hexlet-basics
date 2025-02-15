@@ -1,7 +1,7 @@
-import React, { Suspense } from "react";
-import { usePage } from "@inertiajs/react";
 import { neededPreview } from "@/lib/utils.ts";
-import { useAppDispatch, useAppSelector } from "../slices/index.ts";
+import { usePage } from "@inertiajs/react";
+import React, { Suspense } from "react";
+import { useAppSelector } from "../slices/index.ts";
 import type { LessonSharedProps } from "../types.ts";
 import ControlBox from "./ControlBox.tsx";
 import TabsBox from "./TabsBox.tsx";
