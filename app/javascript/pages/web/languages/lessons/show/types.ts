@@ -18,11 +18,13 @@ export type LessonSharedProps = SharedProps & {
   lessons: LanguageLesson[];
 };
 
+type CheckingResult = LessonCheckingResponse["result"] | "error" | null;
+
 export interface RootState {
   processState: "checked" | "unchecked" | "checking";
   currentTab: "editor" | "output" | "tests" | "solution";
   finished: boolean;
-  result: LessonCheckingResponse["result"] | null;
+  result: CheckingResult;
   resetsCount: number;
   defaultCode: string;
   output: string;
