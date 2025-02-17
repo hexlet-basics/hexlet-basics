@@ -4,7 +4,6 @@ import * as Sentry from "@sentry/react";
 import { PostHogProvider } from "posthog-js/react";
 import type { ReactNode } from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
-import Root from "@/components/Root.tsx";
 // import { PostHogProvider } from "posthog-js/react";
 
 const posthogOptions = {

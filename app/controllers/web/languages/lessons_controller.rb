@@ -50,6 +50,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
           locale: language_info.locale
         }
         event = LessonStartedEvent.new(data: event_data)
+
         event_store.publish(event, stream_name: "user-#{current_user.id}")
         event_to_js(event)
       end

@@ -11,6 +11,7 @@ type UserSignedUpEvent = {
   data: {
     id: string;
     email: string;
+    first_name: string;
   };
 };
 

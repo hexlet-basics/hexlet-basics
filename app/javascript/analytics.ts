@@ -1,5 +1,5 @@
+import postHog from "@metro-fs/analytics-plugin-posthog";
 import Analytics from "analytics";
-import postHog from '@metro-fs/analytics-plugin-posthog';
 // import googleAnalytics from '@analytics/google-analytics'
 
 /* Initialize analytics */
@@ -16,7 +16,7 @@ const analytics = Analytics({
       enabled: true,
       options: {
         api_host: import.meta.env.VITE_REACT_APP_PUBLIC_POSTHOG_HOST,
-        debug: process.env.NODE_ENV === 'development',
+        debug: process.env.NODE_ENV === "development",
         disable_session_recording: true,
         autocapture: false,
         capture_pageleave: false,
