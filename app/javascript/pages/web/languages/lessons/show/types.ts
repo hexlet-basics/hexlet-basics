@@ -6,7 +6,6 @@ import type {
   LanguageLessonMember,
   LessonCheckingResponse,
 } from "@/types/serializers";
-import { SetupOptions } from "node_modules/@inertiajs/react/types/createInertiaApp";
 
 export type LessonSharedProps = SharedProps & {
   courseCategory: LanguageCategory;

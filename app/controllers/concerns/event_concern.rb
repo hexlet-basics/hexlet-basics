@@ -33,11 +33,11 @@ module EventConcern
     end
   end
 
-  # def publish_event(event, user)
-  #   event_store.publish(event, stream_name: "user-#{user.id}")
-  # end
+  def publish_event(event, user)
+    event_store.publish(event, stream_name: "user-#{user.id}")
+  end
 
-  # def event_store
-  #   Rails.configuration.event_store
-  # end
+  def event_store
+    Rails.configuration.event_store
+  end
 end

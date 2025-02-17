@@ -1,16 +1,8 @@
 import Root from "@/components/Root.tsx";
 import { createInertiaApp } from "@inertiajs/react";
 import * as Sentry from "@sentry/react";
-import { PostHogProvider } from "posthog-js/react";
 import type { ReactNode } from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
-// import { PostHogProvider } from "posthog-js/react";
-
-const posthogOptions = {
-  api_host: import.meta.env.VITE_REACT_APP_PUBLIC_POSTHOG_HOST,
-  autocapture: false,
-  capture_pageleave: false,
-};
 
 // Temporary type definition, until @inertiajs/react provides one
 type ResolvedComponent = {
@@ -58,10 +50,6 @@ createInertiaApp({
     if (el) {
       const vdomFn = () => {
         return (
-          // <PostHogProvider
-          //   apiKey={import.meta.env.VITE_REACT_APP_PUBLIC_POSTHOG_KEY}
-          //   options={posthogOptions}
-          // >
           <Root {...props}>
             <App {...props} />
           </Root>

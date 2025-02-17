@@ -33,17 +33,8 @@ class Api::LessonsController < Api::ApplicationController
         }
 
         event = LessonFinishedEvent.new(data: event_data)
-        event_store.publish(event, stream_name: "user-#{current_user.id}")
+        publish_event(event, current_user)
       end
-
-      # lesson_finished_event_options = {
-      #   user: current_user.serializable_data,
-      #   language: language.serializable_data,
-      #   lesson: lesson.serializable_data,
-      #   finished_at: lesson_member.updated_at
-      # }
-
-      # js_event :lesson_finished, lesson_finished_event_options
 
       language_member = language.members.find_by!(user: current_user)
 
@@ -56,52 +47,16 @@ class Api::LessonsController < Api::ApplicationController
           locale: language_info.locale
         }
         event = CourseFinishedEvent.new(data: event_data)
-
-        # publish_event(event, current_user)
-
-
-        # event_store.publish(event, stream_name: "user-#{current_user.id}")
-
-        # language_finished_event_options = {
-        #   user: current_user.serializable_data,
-        #   language: language.serializable_data,
-        #   language_member: language_member.serializable_data,
-        #   finished_at: lesson_member.updated_at
-        # }
-
-        # js_event :language_finished, language_finished_event_options
+        publish_event(event, current_user)
       end
     end
-
-    # raise lesson_exercise_data.inspect
 
     response_data = OpenStruct.new({
       **lesson_exercise_data,
       lesson_has_been_finished:,
       language_has_been_finished:
-
-
-      # checking: lesson_exercise_data,
-      # checking: {
-      #   passed: passed,
-      #   output: sanitized_output,
-      #   result: result,
-      #   status: exitstatus,
-      # },
-
-      #   passed: passed,
-      #   output: sanitized_output,
-      #   result: result,
-      #   status: exitstatus,
-      # passing_of_entities: {
-      #   lesson_becomes_finished:,
-      #   language_becomes_finished:
-      # }
-      # lesson_becomes_finished:
-      # language_becomes_finished:
-
     })
 
-    render json: LessonCheckResponseResource.new(response_data), status: :ok
+    render json: LessonCheckingResponseResource.new(response_data), status: :ok
   end
 end

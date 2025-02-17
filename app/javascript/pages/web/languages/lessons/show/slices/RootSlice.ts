@@ -1,6 +1,9 @@
 import analytics from "@/analytics.ts";
 import * as Routes from "@/routes.js";
-import type { LanguageLesson, LessonCheckingResponse } from "@/types/serializers";
+import type {
+  LanguageLesson,
+  LessonCheckingResponse,
+} from "@/types/serializers";
 import {
   type PayloadAction,
   createAsyncThunk,
@@ -93,10 +96,7 @@ const slice = createSlice({
       })
       .addCase(
         runCheck.fulfilled,
-        (
-          state,
-          action: PayloadAction<LessonCheckingResponse>,
-        ) => {
+        (state, action: PayloadAction<LessonCheckingResponse>) => {
           if (action.payload.passed) {
             state.solutionState = "shown";
           }
