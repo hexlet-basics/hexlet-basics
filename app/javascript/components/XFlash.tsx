@@ -1,4 +1,4 @@
-import { isObjectKey } from "@/lib/utils";
+import { hasObjectKey } from "@/lib/utils";
 import type { SharedProps } from "@/types";
 import type { FlashVariants } from "@/types";
 import { usePage } from "@inertiajs/react";
@@ -17,7 +17,7 @@ export default function XFlash() {
     <>
       {Object.entries(variants).map(
         ([key, variant]) =>
-          isObjectKey(flash, key) && (
+          hasObjectKey(flash, key) && (
             <Alert
               dismissible
               key={key}

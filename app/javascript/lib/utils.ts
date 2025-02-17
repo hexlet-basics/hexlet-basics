@@ -216,7 +216,7 @@ export function enumToOptions(en: Record<string, string>) {
   return Object.entries(en).map(([key, value]) => ({ id: key, name: value }));
 }
 
-export function isObjectKey<T extends object>(
+export function hasObjectKey<T extends object>(
   obj: T,
   key: PropertyKey,
 ): key is keyof T {
