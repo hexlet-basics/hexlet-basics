@@ -17,12 +17,12 @@ export default (props: Props) => {
         switch (event.type) {
           case "UserSignedInEvent":
             // add carrot quest, ym, ga
-            analytics.identify(event.data.id.toString(), {
+            analytics.identify(event.data.id, {
               email: event.data.email,
             });
             break;
           case "UserSignedUpEvent":
-            analytics.identify(event.data.id.toString(), {
+            analytics.identify(event.data.id, {
               email: event.data.email,
               first_name: event.data.first_name,
             });
