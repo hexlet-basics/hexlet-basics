@@ -1,7 +1,7 @@
 type UserSignedInEvent = {
   type: "UserSignedInEvent";
   data: {
-    id: string;
+    id: number;
     email: string;
   };
 };
@@ -9,8 +9,9 @@ type UserSignedInEvent = {
 type UserSignedUpEvent = {
   type: "UserSignedUpEvent";
   data: {
-    id: string;
+    id: number;
     email: string;
+    first_name: string;
   };
 };
 

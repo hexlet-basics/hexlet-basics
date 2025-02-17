@@ -1,19 +1,23 @@
+import analytics from "@/analytics.ts";
 import * as Routes from "@/routes.js";
-import type { LanguageLesson } from "@/types/serializers";
+import type {
+  LanguageLesson,
+  LessonCheckingResponse,
+} from "@/types/serializers";
 import {
   type PayloadAction,
   createAsyncThunk,
   createSlice,
 } from "@reduxjs/toolkit";
 import axios from "axios";
-import type { CheckingResponse, RootState } from "../types.ts";
+import type { RootState } from "../types.ts";
 
 export const runCheck = createAsyncThunk(
   "runCheck",
   async (lesson: LanguageLesson, thunkAPI) => {
     const { content } = thunkAPI.getState() as RootState;
     const checkLessonPath = Routes.check_api_lesson_path(lesson.id!);
-    const response = await axios.post(checkLessonPath, {
+    const response = await axios.post<LessonCheckingResponse>(checkLessonPath, {
       version_id: lesson.version!,
       data: {
         attributes: {
@@ -22,9 +26,20 @@ export const runCheck = createAsyncThunk(
       },
     });
 
+    const {
+      lesson_has_been_finished: lessonHasBeenFinished,
+      language_has_been_finished: courseHasBeenFinished,
+    } = response.data;
+
+    if (lessonHasBeenFinished) {
+      analytics.track("lesson_finished", {
+        lesson_slug: lesson.slug,
+      });
+    }
+
     const result = {
-      ...response.data.attributes,
-      output: atob(response.data.attributes.output),
+      ...response.data,
+      output: atob(response.data.output),
     };
     return result;
   },
@@ -81,7 +96,7 @@ const slice = createSlice({
       })
       .addCase(
         runCheck.fulfilled,
-        (state, action: PayloadAction<CheckingResponse>) => {
+        (state, action: PayloadAction<LessonCheckingResponse>) => {
           if (action.payload.passed) {
             state.solutionState = "shown";
           }

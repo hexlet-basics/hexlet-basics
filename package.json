@@ -7,6 +7,7 @@
     "@giscus/react": "^3.1.0",
     "@inertiajs/progress": "^0.2.7",
     "@inertiajs/react": "^2.0.3",
+    "@metro-fs/analytics-plugin-posthog": "^1.14.0",
     "@monaco-editor/react": "^4.7.0",
     "@rails/actioncable": "^8.0.100",
     "@rails/activestorage": "^8.0.100",

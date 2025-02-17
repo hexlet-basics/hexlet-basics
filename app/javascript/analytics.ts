@@ -1,3 +1,4 @@
+import postHog from "@metro-fs/analytics-plugin-posthog";
 import Analytics from "analytics";
 // import googleAnalytics from '@analytics/google-analytics'
 
@@ -10,6 +11,17 @@ const analytics = Analytics({
     // googleAnalytics({
     //   measurementIds: ['G-XXXXXXXX'],
     // }),
+    postHog({
+      token: import.meta.env.VITE_REACT_APP_PUBLIC_POSTHOG_KEY,
+      enabled: true,
+      options: {
+        api_host: import.meta.env.VITE_REACT_APP_PUBLIC_POSTHOG_HOST,
+        debug: process.env.NODE_ENV === "development",
+        disable_session_recording: true,
+        autocapture: false,
+        capture_pageleave: false,
+      },
+    }),
   ],
 });
 

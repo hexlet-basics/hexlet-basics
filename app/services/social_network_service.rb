@@ -14,7 +14,7 @@ class SocialNetworkService
       if user.new_record?
         user.save!
         event = UserSignedUpEvent.new(data: user.slice(:id, :email))
-        event_store.publish(event, stream_name: "user-#{user.id}")
+        publish_event(event, user)
       end
 
       account = user.accounts.find_or_initialize_by(provider: auth[:provider])

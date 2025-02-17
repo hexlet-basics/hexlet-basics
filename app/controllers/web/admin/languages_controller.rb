@@ -3,7 +3,7 @@
 class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   def index
     q = ransack_params("sf" => "created_at", "so" => "0")
-    search = Language.ransack(q)
+    search = Language.includes([ :current_version ]).ransack(q)
     pagy, records = pagy(search.result)
 
     render inertia: true, props: {

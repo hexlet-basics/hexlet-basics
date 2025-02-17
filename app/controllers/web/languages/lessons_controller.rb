@@ -33,7 +33,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
           locale: language_info.locale
         }
         event = CourseStartedEvent.new(data: event_data)
-        event_store.publish(event, stream_name: "user-#{current_user.id}")
+        publish_event(event, current_user)
         event_to_js(event)
       end
       lesson_member = language_member.lesson_members.find_or_initialize_by(
@@ -50,7 +50,8 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
           locale: language_info.locale
         }
         event = LessonStartedEvent.new(data: event_data)
-        event_store.publish(event, stream_name: "user-#{current_user.id}")
+
+        publish_event(event, current_user)
         event_to_js(event)
       end
     end

@@ -15,10 +15,8 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     lesson_member = @lesson.members.find_or_create_by!(language: @lesson.language, user: user, language_member: language_member)
     code = file_fixture("exercise/correct.rb").read
     expected = {
-      "attributes" => {
-        "passed" => true,
-        "result" => "passed"
-      }
+      passed: true,
+      result: "passed"
     }
 
     post check_api_lesson_url(@lesson), params: { version_id: @lesson.versions.first.id, data: { attributes: { code: code } } }
@@ -28,18 +26,16 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     language_member.reload
     lesson_member.reload
 
-    assert { body["attributes"]["passed"] == expected["attributes"]["passed"] }
-    assert { body["attributes"]["result"] == expected["attributes"]["result"] }
+    assert { body[:passed] == expected[:passed] }
+    assert { body[:result] == expected[:result] }
     assert { lesson_member.finished? }
     assert { language_member.finished? }
   end
 
   test "lesson result failed with incorrect solution" do
     expected = {
-      "attributes" => {
-        "passed" => false,
-        "result" => "failed"
-      }
+      passed: false,
+      result: "failed"
     }
     code = file_fixture("exercise/incorrect.rb").read
 
@@ -47,7 +43,7 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     body = response.parsed_body
-    assert { body["attributes"]["passed"] == expected["attributes"]["passed"] }
-    assert { body["attributes"]["result"] == expected["attributes"]["result"] }
+    assert { body[:passed] == expected[:passed] }
+    assert { body[:result] == expected[:result] }
   end
 end
