@@ -10,5 +10,5 @@ class LessonCheckingResponseResource
     lesson_has_been_finished: :boolean,
     language_has_been_finished: :boolean
 
-    typelize result: [ enum: [ "error", "passed", "failed", "failed-infinity" ] ]
+  typelize result: [ enum: [ "error", "passed", "failed", "failed-infinity" ] ]
 end
