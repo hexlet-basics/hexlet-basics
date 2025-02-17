@@ -13,30 +13,19 @@ export default (props: Props) => {
       for (const event of events) {
         switch (event.type) {
           case "UserSignedInEvent":
-            analytics.identify(event.data.id, {
-              email: event.data.email,
-            });
+            analytics.identify(event.data.id.toString(), event.data);
             break;
           case "UserSignedUpEvent":
-            analytics.identify(event.data.id, {
-              email: event.data.email,
-              first_name: event.data.first_name,
-            });
+            analytics.track("signed_up", event.data);
+            analytics.identify(event.data.id.toString(), event.data);
             break;
           case "CourseStartedEvent":
-            analytics.track("course_started", {
-              slug: event.data.slug,
-              locale: event.data.locale,
-            });
+            analytics.track("course_started", event.data);
             break;
           case "CourseFinishedEvent":
             break;
           case "LessonStartedEvent":
-            analytics.track("lesson_started", {
-              course_slug: event.data.course_slug,
-              lesson_slug: event.data.lesson_slug,
-              locale: event.data.locale,
-            });
+            analytics.track("lesson_started", event.data);
             break;
           case "LessonFinishedEvent":
             break;
