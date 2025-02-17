@@ -8,8 +8,4 @@ class ApplicationController < ActionController::Base
   def default_url_options
     { suffix: params[:suffix] }
   end
-
-  def event_store
-    Rails.configuration.event_store
-  end
 end
