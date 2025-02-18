@@ -44,10 +44,11 @@ export default defineConfig(({ mode }) => {
         "lodash",
         "monaco-editor",
         "primereact",
-        "posthog-js",
         "react-timer-hook",
         "@monaco-editor/react",
         "react-use",
+        "@metro-fs/analytics-plugin-posthog",
+        "analytics",
       ], // Ensure it's handled correctly
     },
     resolve: {
