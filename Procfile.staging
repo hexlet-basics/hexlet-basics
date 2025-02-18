@@ -1,3 +1,4 @@
 vite: bin/vite ssr
-web: bin/rails s
+web: bin/rails s -p 3100
 job: bin/jobs
+caddy: caddy run
