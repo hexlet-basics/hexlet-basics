@@ -2,6 +2,7 @@ include k8s/Makefile
 
 setup:
 	# brew install vips
+	cp -n .env.example .env
 	bundle install
 	bin/rails db:prepare
 	bin/rails db:fixtures:load
