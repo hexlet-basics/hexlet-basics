@@ -13,10 +13,10 @@ const analytics = Analytics({
     // }),
     postHog({
       token: import.meta.env.VITE_REACT_APP_PUBLIC_POSTHOG_KEY,
-      enabled: true,
+      enabled: !import.meta.env.SSR,
       options: {
         api_host: import.meta.env.VITE_REACT_APP_PUBLIC_POSTHOG_HOST,
-        debug: process.env.NODE_ENV === "development",
+        debug: import.meta.env.DEV,
         disable_session_recording: true,
         autocapture: false,
         capture_pageleave: false,

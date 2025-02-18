@@ -47,8 +47,9 @@ export default defineConfig(({ mode }) => {
         "react-timer-hook",
         "@monaco-editor/react",
         "react-use",
-        "@metro-fs/analytics-plugin-posthog",
         "analytics",
+        "posthog-js",
+        "@metro-fs/analytics-plugin-posthog",
       ], // Ensure it's handled correctly
     },
     resolve: {

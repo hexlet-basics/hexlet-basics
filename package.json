@@ -33,7 +33,6 @@
     "ilyabirman-likely": "^3.2.0",
     "install": "^0.13.0",
     "js-base64": "^3.7.7",
-    "posthog-js": "^1.219.1",
     "primereact": "^10.9.2",
     "qs": "^6.14.0",
     "quill": "^2.0.3",
