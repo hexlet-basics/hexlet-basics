@@ -48,7 +48,6 @@ export default defineConfig(({ mode }) => {
         "@monaco-editor/react",
         "react-use",
         "analytics",
-        "posthog-js",
         "@metro-fs/analytics-plugin-posthog",
       ], // Ensure it's handled correctly
     },
