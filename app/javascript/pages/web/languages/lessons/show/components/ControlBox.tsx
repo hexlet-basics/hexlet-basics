@@ -24,7 +24,7 @@ export default function ControlBox() {
 
   const dispatch = useAppDispatch();
   const handleRunCheck = () => {
-    dispatch(runCheck(lesson));
+    dispatch(runCheck({ course, lesson }));
   };
 
   const confirmResetting = useConfirmation(() => {
