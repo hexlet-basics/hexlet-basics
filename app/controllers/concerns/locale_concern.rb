@@ -3,33 +3,34 @@
 module LocaleConcern
   extend ActiveSupport::Concern
 
-  included do
-    around_action :switch_locale
+  private
+
+  def setup_locale
+    I18n.locale = params[:suffix].presence || I18n.default_locale
   end
 
-  # NOTE: for en locale dont use path /en but /
-  def switch_locale(&)
-    extracted_locale = extract_locale_from_subdomain
-    if extracted_locale
-      locale = AppHost.locale_for_url(extracted_locale)
-      redirect_to full_url_for(locale: locale, subdomain: nil), allow_other_host: true, status: :moved_permanently
-      return
-    end
+  def prepare_locale_settings
+    # NOTE: never redirect bots
+    setup_locale and return if browser_bot?
 
-    if params[:locale]&.to_sym == I18n.default_locale
-      redirect_to full_url_for(locale: nil), status: :moved_permanently
-      return
-    end
-
-    if params[:locale].present?
-      I18n.with_locale(params[:locale], &)
+    if view_context.current_page?(root_path) && !params[:suffix]
+      remembered_locale = session[:locale].presence
+      if remembered_locale
+        # root page, no subdomain and no default locale -> redirect
+        if remembered_locale.to_sym != I18n.default_locale
+          redirect_to root_url(suffix: remembered_locale), allow_other_host: true
+        end
+      else
+        # root page, no subdomain, never changed locale
+        ru_country_codes = [ "RU" ]
+        if locale_from_header == :ru || ru_country_codes.include?(country_by_ip)
+          redirect_to root_url(suffix: :ru), allow_other_host: true
+        end
+      end
     else
-      I18n.with_locale(I18n.default_locale, &)
+      setup_locale
+      # not root page or root with subdomain
+      session[:locale] = I18n.locale
     end
-  end
-
-  def extract_locale_from_subdomain
-    parsed_locale = request.subdomains.first
-    I18n.available_locales.map(&:to_s).include?(parsed_locale) ? parsed_locale : nil
   end
 end
