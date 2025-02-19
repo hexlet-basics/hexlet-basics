@@ -6,5 +6,7 @@ class Api::ApplicationController < ActionController::API
   include LocaleConcern
   include EventConcern
 
+  before_action :setup_locale
+
   respond_to :json
 end
