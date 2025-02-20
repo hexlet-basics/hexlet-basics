@@ -1,6 +1,7 @@
 import analytics from "@/analytics.ts";
 import * as Routes from "@/routes.js";
 import type {
+  Language,
   LanguageLesson,
   LessonCheckingResponse,
 } from "@/types/serializers";
@@ -14,7 +15,10 @@ import type { RootState } from "../types.ts";
 
 export const runCheck = createAsyncThunk(
   "runCheck",
-  async (lesson: LanguageLesson, thunkAPI) => {
+  async (
+    { course, lesson }: { course: Language; lesson: LanguageLesson },
+    thunkAPI,
+  ) => {
     const { content } = thunkAPI.getState() as RootState;
     const checkLessonPath = Routes.check_api_lesson_path(lesson.id!);
     const response = await axios.post<LessonCheckingResponse>(checkLessonPath, {
@@ -33,7 +37,16 @@ export const runCheck = createAsyncThunk(
 
     if (lessonHasBeenFinished) {
       analytics.track("lesson_finished", {
+        course_slug: course.slug,
         lesson_slug: lesson.slug,
+        locale: lesson.locale,
+      });
+    }
+
+    if (courseHasBeenFinished) {
+      analytics.track("course_finished", {
+        course_slug: course.slug,
+        locale: course.locale,
       });
     }
 

@@ -84,9 +84,9 @@ export default function EditorTab() {
     dispatch(slice.actions.changeContent(code || ""));
   }, []);
 
-  const handleRunCheck = () => {
-    dispatch(runCheck(lesson));
-  };
+  // const handleRunCheck = () => {
+  //   dispatch(runCheck(lesson));
+  // };
 
   const handleEditorChange = (value: string | undefined) => {
     const newContent = value || "";
