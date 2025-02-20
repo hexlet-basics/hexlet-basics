@@ -3,15 +3,18 @@
 module LocaleConcern
   extend ActiveSupport::Concern
 
+  included do
+    around_action :setup_locale
+  end
+
   private
 
-  def setup_locale
-    I18n.locale = params[:suffix].presence || I18n.default_locale
+  def setup_locale(&)
+    locale = params[:suffix].presence || I18n.default_locale
+    I18n.with_locale(locale, &)
   end
 
   def prepare_locale_settings
-    setup_locale
-
     # NOTE: never redirect bots
     return if browser_bot?
 
