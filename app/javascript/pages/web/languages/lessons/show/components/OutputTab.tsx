@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 
 import XssContent from "@/components/XssContent";
 import { usePage } from "@inertiajs/react";
-import { escape as tkEscape } from "es-toolkit";
 import { Alert } from "react-bootstrap";
 import { useAppSelector } from "../slices";
 import type { LessonSharedProps } from "../types.ts";
@@ -32,7 +31,7 @@ export default function OutputTab() {
   });
   // NOTE: исправление неверной кодировки для кириллицы
   // https://developer.mozilla.org/en-US/docs/Glossary/Base64
-  const outputAsHTML = ansi.ansi_to_html(tkEscape(output));
+  const outputAsHTML = ansi.ansi_to_html(decodeURIComponent(output));
 
   return (
     <div className="d-flex flex-column h-100">
