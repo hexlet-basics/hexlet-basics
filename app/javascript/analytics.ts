@@ -22,12 +22,12 @@ const analytics = Analytics({
         capture_pageleave: false,
         disable_surveys: true,
         custom_campaign_params: [
-          'promo_name',
-          'promo_position',
-          'promo_type',
-          'promo_creative',
-          'promo_start',
-        ]
+          "promo_name",
+          "promo_position",
+          "promo_type",
+          "promo_creative",
+          "promo_start",
+        ],
       },
     }),
   ],
