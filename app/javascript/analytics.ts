@@ -20,6 +20,14 @@ const analytics = Analytics({
         disable_session_recording: true,
         autocapture: false,
         capture_pageleave: false,
+        disable_surveys: true,
+        custom_campaign_params: [
+          'promo_name',
+          'promo_position',
+          'promo_type',
+          'promo_creative',
+          'promo_start',
+        ]
       },
     }),
   ],
