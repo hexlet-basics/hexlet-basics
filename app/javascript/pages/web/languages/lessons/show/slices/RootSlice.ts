@@ -30,10 +30,19 @@ export const runCheck = createAsyncThunk(
       },
     });
 
+    const response_data = response.data;
+
     const {
       lesson_has_been_finished: lessonHasBeenFinished,
       language_has_been_finished: courseHasBeenFinished,
     } = response.data;
+
+    analytics.track("solution_checked", {
+      course_slug: course.slug,
+      lesson_slug: lesson.slug,
+      passed: response_data.passed,
+      locale: lesson.locale,
+    });
 
     if (lessonHasBeenFinished) {
       analytics.track("lesson_finished", {
@@ -51,8 +60,8 @@ export const runCheck = createAsyncThunk(
     }
 
     const result = {
-      ...response.data,
-      output: atob(response.data.output),
+      ...response_data,
+      output: atob(response_data.output),
     };
     return result;
   },
