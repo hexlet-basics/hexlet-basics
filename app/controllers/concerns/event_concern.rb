@@ -34,6 +34,11 @@ module EventConcern
   end
 
   def publish_event(event, user)
+    if user.guest?
+      event_store.publish(event)
+      return
+    end
+
     event_store.publish(event, stream_name: "user-#{user.id}")
   end
 

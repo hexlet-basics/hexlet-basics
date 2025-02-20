@@ -51,6 +51,15 @@ class Api::LessonsController < Api::ApplicationController
       end
     end
 
+    event_data = {
+      lesson_slug: lesson.slug,
+      course_slug: language.slug,
+      locale: language_info.locale,
+      passed: lesson_exercise_data[:passed]
+    }
+    event = SolutionCheckedEvent.new(data: event_data)
+    publish_event(event, current_user)
+
     response_data = OpenStruct.new({
       **lesson_exercise_data,
       lesson_has_been_finished:,
