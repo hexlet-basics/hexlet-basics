@@ -33,8 +33,8 @@ class LessonTester
     end
     passed = result == "passed"
 
-    # NOTE: scrub нужен для удаления недопустимых символов в UTF-8, которые могут быть в выводе упражнения
-    sanitized_output = result == "failed-infinity" ? "" : Base64.strict_encode64(output.scrub)
+    # NOTE: escapeURIComponent нужен для удаления недопустимых символов в UTF-8, которые могут быть в выводе упражнения
+    sanitized_output = result == "failed-infinity" ? "" : Base64.strict_encode64(CGI.escapeURIComponent(output))
 
     { passed: passed, output: sanitized_output, result: result, status: exitstatus }
   end
