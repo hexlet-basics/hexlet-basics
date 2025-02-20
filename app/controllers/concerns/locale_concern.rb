@@ -10,8 +10,10 @@ module LocaleConcern
   end
 
   def prepare_locale_settings
+    setup_locale
+
     # NOTE: never redirect bots
-    setup_locale and return if browser_bot?
+    return if browser_bot?
 
     if view_context.current_page?(root_path) && !params[:suffix]
       remembered_locale = session[:locale].presence
@@ -28,7 +30,6 @@ module LocaleConcern
         end
       end
     else
-      setup_locale
       # not root page or root with subdomain
       session[:locale] = I18n.locale
     end
