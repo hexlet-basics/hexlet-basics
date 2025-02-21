@@ -42,7 +42,7 @@ Rails.application.routes.draw do
       end
     end
 
-    scope module: :web do
+    scope module: :web, format: false do
       root "home#index"
 
       get "/robots.:format" => "home#robots", as: :robots
