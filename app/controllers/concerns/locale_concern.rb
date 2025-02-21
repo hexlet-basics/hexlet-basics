@@ -37,4 +37,19 @@ module LocaleConcern
       session[:locale] = I18n.locale
     end
   end
+
+  def locale_from_header
+    return unless request.env["HTTP_ACCEPT_LANGUAGE"]
+
+    # Extract the preferred locale from the Accept-Language header
+    parsed_locales = request.env["HTTP_ACCEPT_LANGUAGE"]
+                      .split(",")
+                      .map { |l| l.split(";").first }
+    # Find the first locale that is available in the app
+    parsed_locales.find { |locale| I18n.available_locales.map(&:to_s).include?(locale) }
+  end
+
+  def country_by_ip
+    @country_by_ip ||= Geocoder.search(request.remote_ip).first&.country_code || "EN"
+  end
 end

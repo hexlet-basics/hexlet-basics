@@ -66,19 +66,4 @@ class Web::ApplicationController < ApplicationController
   def redirect_to_inertia(url, model)
       redirect_to url, inertia: { errors: model.errors }
   end
-
-  def country_by_ip
-    @country_by_ip ||= Geocoder.search(request.remote_ip).first&.country_code || "EN"
-  end
-
-  def locale_from_header
-    return unless request.env["HTTP_ACCEPT_LANGUAGE"]
-
-    # Extract the preferred locale from the Accept-Language header
-    parsed_locales = request.env["HTTP_ACCEPT_LANGUAGE"]
-                      .split(",")
-                      .map { |l| l.split(";").first }
-    # Find the first locale that is available in the app
-    parsed_locales.find { |locale| I18n.available_locales.map(&:to_s).include?(locale) }
-  end
 end
