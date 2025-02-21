@@ -12,11 +12,7 @@ datadog:
           username: "ENC[k8s_secret@default/datadog-secret/db_user]"
           password: "ENC[k8s_secret@default/datadog-secret/db_password]"
           dbname: "ENC[k8s_secret@default/datadog-secret/db_name]"
-          custom_queries:
-            - metric_prefix: "postgresql"
-              query: "SELECT pg_database_size(current_database()) AS db_size"
-              columns:
-                - name: db_size
-                  type: gauge
+          dbstrict: true
+          collect_wal_metrics: false
   secretBackend:
     command: "/readsecret_multiple_providers.sh"

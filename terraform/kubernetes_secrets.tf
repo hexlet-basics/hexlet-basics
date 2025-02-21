@@ -26,6 +26,8 @@ resource "kubernetes_secret" "environment_secrets" {
 }
 
 resource "kubernetes_secret" "docker_registry_auth" {
+  depends_on = [twc_k8s_cluster.hexlet_basics]
+
   metadata {
     name = "docker-config"
   }
