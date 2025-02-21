@@ -26,16 +26,7 @@ resource "twc_database_cluster" "postgresql" {
   # TODO: убрать после переноса и удалить IP
   is_external_ip = true
 
-  # NOTE: на самом деле postgres16, но устаревший terraform провайдер понимает максимум postgres15
-  # Потому импортировано в terraform и данное поле игнорируется ниже с помощью ignore_changes
-  # type = "postgres16"
-  type = "postgres"
-
-  lifecycle {
-    ignore_changes = [
-      type,
-    ]
-  }
+  type = "postgres16"
 }
 
 resource "twc_database_backup_schedule" "postgresql" {

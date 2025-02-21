@@ -1,5 +1,5 @@
 output "bounces_hostname" {
-  value = resource.cloudflare_record.bounces.hostname
+  value = resource.cloudflare_dns_record.bounces.name
 }
 
 output "hb_s3_access_key" {
