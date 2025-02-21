@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
 class Web::ErrorsController < Web::ApplicationController
-  # NOTE: for 404 page locale from route params is undefined
-  around_action :use_locale # , only: :not_found
+  # NOTE: for error pages locale from route params is undefined
+  around_action :use_locale
+
+  before_action do
+    request.format = :html
+  end
 
   def show
     code = params[:code].to_i
