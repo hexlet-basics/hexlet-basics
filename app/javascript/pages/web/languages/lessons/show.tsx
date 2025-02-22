@@ -161,12 +161,11 @@ export default function Show() {
                           className="mt-1 border rounded"
                         >
                           <summary className="p-2">{v.question}</summary>
-                          <Markdown
-                            rehypePlugins={rehypePlugins}
-                            className="px-2 pt-2"
-                          >
-                            {v.answer}
-                          </Markdown>
+                          <div className="px-2 pt-2">
+                            <Markdown rehypePlugins={rehypePlugins}>
+                              {v.answer}
+                            </Markdown>
+                          </div>
                         </details>
                       ))}
                     </div>

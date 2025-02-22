@@ -47,14 +47,15 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
       <Container>
         <Row className="justify-content-center mb-5">
           <Col className="col-12 col-md-10 col-lg-8">
-            <Markdown
-              className="hexlet-basics-content"
-              remarkPlugins={remarkPlugins}
-              rehypePlugins={rehypePlugins}
-            >
-              {/* {blogPost.body} */}
-              {`\n\n## ${heading}\n\n ${blogPost.body}`}
-            </Markdown>
+            <div className="hexlet-basics-content">
+              <Markdown
+                remarkPlugins={remarkPlugins}
+                rehypePlugins={rehypePlugins}
+              >
+                {/* {blogPost.body} */}
+                {`\n\n## ${heading}\n\n ${blogPost.body}`}
+              </Markdown>
+            </div>
           </Col>
         </Row>
         <Row className="justify-content-center row-cols-sm-2 row-cols-md-3 row-cols-1">
