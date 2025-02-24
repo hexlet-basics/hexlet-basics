@@ -23,6 +23,7 @@ import type { LessonSharedProps } from "./show/types.ts";
 // inertiajs renders every page twice (at least in dev mode)
 const MemoizedEditorBlock = memo(EditorBlock);
 
+// Replace rehype plugins with remark ones whenever possible
 const rehypePlugins: Pluggable[] = [
   rehypeHighlight,
   rehypeRaw,
