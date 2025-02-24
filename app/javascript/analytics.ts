@@ -36,7 +36,12 @@ const analytics = Analytics({
       eventsMapping: {
         signed_in: "$authorized",
       },
-      propsMapping: {},
+      // Возможно, стоит сохранять все свойства
+      eventPropsMapping: {
+        id: 'id',
+        email: 'email',
+      },
+      userPropsMapping: {},
     }),
   ],
 });
