@@ -83,10 +83,11 @@ export default function EditorTab() {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    import("@/lib/monacoLoader.ts").then(() => {
+    (async () => {
+      await import("@/lib/monacoLoader.ts");
       setEditorLoaded(true);
-    });
-    dispatch(slice.actions.changeContent(code || ""));
+      dispatch(slice.actions.changeContent(code || ""));
+    })();
   }, []);
 
   if (!editorLoaded) {
