@@ -1,5 +1,6 @@
 import carrotquest from "@hexlet/analytics-plugin-carrotquest";
 import postHog from "@metro-fs/analytics-plugin-posthog";
+import carrotquest from "@hexlet/analytics-plugin-carrotquest";
 import Analytics from "analytics";
 // import googleAnalytics from "@analytics/google-analytics"
 
