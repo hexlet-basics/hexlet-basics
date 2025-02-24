@@ -1,3 +1,4 @@
+import "@/lib/monacoLoader.ts";
 import {
   getEditorLanguage,
   // getKeyForStoringLessonCode,

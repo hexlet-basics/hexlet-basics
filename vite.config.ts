@@ -4,7 +4,7 @@ import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv } from "vite";
 import ViteRails from "vite-plugin-rails";
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode, isSsrBuild }) => {
   const env = loadEnv(mode, process.cwd(), "VITE_");
 
   return {
@@ -54,6 +54,10 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         // "~bootstrap": path.resolve(__dirname, "node_modules/bootstrap"),
+        // NOTE: код модуля monacoLoader.ts не должен выполнятся в ssr режиме
+        "@/lib/monacoLoader.ts": isSsrBuild
+          ? path.resolve(__dirname, "./app/javascript/lib/emptyModule.ts")
+          : path.resolve(__dirname, "./app/javascript/lib/monacoLoader.ts"),
         "@": path.resolve(__dirname, "./app/javascript"),
       },
     },
