@@ -19,7 +19,7 @@ const analytics = Analytics({
         debug: import.meta.env.DEV,
         disable_session_recording: true,
         autocapture: false,
-        capture_pageleave: false,
+        capture_pageleave: true,
         disable_surveys: true,
         custom_campaign_params: [
           "promo_name",
