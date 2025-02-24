@@ -1,4 +1,5 @@
 import postHog from "@metro-fs/analytics-plugin-posthog";
+import carrotquest from "@hexlet/analytics-plugin-carrotquest";
 import Analytics from "analytics";
 // import googleAnalytics from '@analytics/google-analytics'
 
@@ -29,6 +30,13 @@ const analytics = Analytics({
           "promo_start",
         ],
       },
+    }),
+    carrotquest({
+      apiKey: import.meta.env.VITE_CARROTQUEST_API_KEY,
+      eventsMapping: {
+        signed_in: "$authorized",
+      },
+      propsMapping: {},
     }),
   ],
 });

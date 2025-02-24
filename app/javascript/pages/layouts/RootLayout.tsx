@@ -5,15 +5,21 @@ import { type PropsWithChildren, useEffect } from "react";
 
 type Props = PropsWithChildren & {};
 export default (props: Props) => {
-  const { events } = usePage<SharedProps>().props;
+  const { auth, carrotquest, events } = usePage<SharedProps>().props;
+  const user = auth.user;
+
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
+    if (!user.guest) {
+      analytics.plugins.carrotquest.auth(user.id, carrotquest.user_hash);
+    }
     if (events) {
       for (const event of events) {
         switch (event.type) {
           case "UserSignedInEvent":
             analytics.identify(event.data.id.toString(), event.data);
+            analytics.track("signed_in", event.data);
             break;
           case "UserSignedUpEvent":
             analytics.track("signed_up", event.data);

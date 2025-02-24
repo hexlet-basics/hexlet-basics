@@ -27,7 +27,11 @@ class Web::ApplicationController < ApplicationController
       auth: {
         user: UserResource.new(current_user)
       },
-      mobileBrowser: mobile_browser?
+      mobileBrowser: mobile_browser?,
+      carrotquest: {
+        api_key: configus.carrotquest.api_key,
+        user_hash: signed_in? ? OpenSSL::HMAC.hexdigest("SHA256", configus.carrotquest.user_auth_key, current_user.id.to_s) : nil
+      }
     }
   end
 
