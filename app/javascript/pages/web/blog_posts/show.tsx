@@ -7,6 +7,7 @@ import type { BlogPost } from "@/types/serializers";
 import Markdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import rehypeSlug from "rehype-slug";
+import remarkGfm from "remark-gfm";
 import remarkToc from "remark-toc";
 
 import BlogPostBlock from "@/components/BlogPostBlock";
@@ -29,7 +30,7 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
 
   const heading = tCommon("tos");
 
-  const remarkPlugins: Pluggable[] = [[remarkToc, { heading }]];
+  const remarkPlugins: Pluggable[] = [[remarkToc, { heading }], [remarkGfm]];
 
   const items: BreadcrumbItem[] = [
     {

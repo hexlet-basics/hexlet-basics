@@ -69,6 +69,11 @@ from-full-js:
     const name = 'kira';
     const wow = `hello, ${name}`;
     ```
+
+    | id | first name | last name |
+    |--|--|--|
+    | 1 | John | Smith  |
+    | 2 | Ivan | Petrov  |
   locale: ru
 
 from-full-ru-js:
