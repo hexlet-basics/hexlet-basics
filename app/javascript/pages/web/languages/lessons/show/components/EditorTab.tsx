@@ -20,6 +20,8 @@ import { useAppDispatch, useAppSelector } from "../slices/index.ts";
 export default function EditorTab() {
   const { course, lesson, mobileBrowser } = usePage<LessonSharedProps>().props;
 
+  const [editorLoaded, setEditorLoaded] = useState(false);
+
   const editorOptions: editor.IStandaloneEditorConstructionOptions = {
     tabSize: getTabSize(course.slug!),
     insertSpaces: shouldReplaceTabsWithSpaces(course.slug!),
@@ -81,12 +83,16 @@ export default function EditorTab() {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
+    import("@/lib/monacoLoader.ts").then(() => {
+      setEditorLoaded(true);
+    });
     dispatch(slice.actions.changeContent(code || ""));
   }, []);
 
-  // const handleRunCheck = () => {
-  //   dispatch(runCheck(lesson));
-  // };
+  if (!editorLoaded) {
+    // TODO: можно добавить текст посреди редактора Loading...
+    return null;
+  }
 
   const handleEditorChange = (value: string | undefined) => {
     const newContent = value || "";
