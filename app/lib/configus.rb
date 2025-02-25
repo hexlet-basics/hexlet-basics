@@ -84,5 +84,8 @@ Configus.build Rails.env do
       app_id
       app_secret
     end
+    carrotquest do
+      user_auth_key "test"
+    end
   end
 end
