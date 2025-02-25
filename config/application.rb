@@ -46,7 +46,7 @@ module HexletBasics
     # config.eager_load_paths << Rails.root.join("extras")
     # config.middleware.use ActiveStorage::SetCurrent
 
-    config.i18n.available_locales = %i[en ru]
+    config.i18n.available_locales = %i[en ru es]
     config.i18n.default_locale = :en
   end
 end
