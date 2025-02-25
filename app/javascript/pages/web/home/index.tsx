@@ -91,7 +91,7 @@ const reviews = {
     {
       name: "Eliyah Kleyman",
       avatar: getImageUrl("user-avatar.png"),
-      body: `For me, it was my very first programming course. I liked it because all the information is very well 
+      body: `For me, it was my very first programming course. I liked it because all the information is very well
         structured and given in a clear hierarchical order. It motivated me a lot to move forward in my studies.`,
     },
   ],
@@ -289,7 +289,7 @@ export default function Index({
             <Accordion defaultActiveKey="0">
               {Object.entries(faq).map(([key, value], index) => (
                 <Accordion.Item eventKey={String(index)} key={key}>
-                  <Accordion.Header>{value.question}</Accordion.Header>
+                  <Accordion.Header as="h3">{value.question}</Accordion.Header>
                   <Accordion.Body>
                     <Markdown>{value.answer}</Markdown>
                   </Accordion.Body>
