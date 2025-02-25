@@ -8,6 +8,7 @@ import fortran from "highlight.js/lib/languages/fortran";
 import haskell from "highlight.js/lib/languages/haskell";
 import ocaml from "highlight.js/lib/languages/ocaml";
 import prolog from "highlight.js/lib/languages/prolog";
+import scheme from "highlight.js/lib/languages/scheme";
 import { common } from "lowlight";
 
 export function deviconClass(langName: string): string {
@@ -178,6 +179,7 @@ export const highlightingLanguages: Record<string, LanguageFn> = {
   haskell,
   ocaml,
   prolog,
+  scheme,
 };
 
 export const getKeyForStoringLessonCode = (lesson: LanguageLesson): string => {
