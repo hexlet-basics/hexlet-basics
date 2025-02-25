@@ -966,6 +966,7 @@
             "solution": "Solution",
             "tests": "Tests",
             "tips": "Tips",
+            "title": "%{lesson} | %{language}\n",
             "to_home_title": "Home"
           }
         },
@@ -2567,6 +2568,7 @@
             "solution": "Решение",
             "tests": "Тесты",
             "tips": "Полезное",
+            "title": "%{lesson} | Уроки %{language}\n",
             "to_home_title": "Домой"
           }
         },

@@ -191,6 +191,8 @@ en:
 
       lessons:
         show:
+          title: |
+            %{lesson} | %{language}
           common_questions:
             - question: The exercise doesn't pass checking. What to do? 😶
               answer: |

@@ -105,7 +105,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     # gon.lesson_version = @lesson_version
     # gon.lesson = @lesson
     #
-    title = [ lesson_info, language_info ].join(" | ").squish
+    title = t(".title", lesson: lesson_info, language: language_info).squish
     description = view_context.truncate("[#{resource_language.current_version}] — #{lesson_info} — #{lesson_info.theory}", length: 220)
 
     seo_tags = {
