@@ -37,7 +37,9 @@ const analytics = Analytics({
         signed_in: "$authorized",
         signed_up: "$registered",
         course_started: "Начал курс",
+        course_finished: "Завершил курс",
         lesson_started: "Начал урок",
+        lesson_finished: "Завершил урок",
       },
       // Возможно, стоит сохранять все свойства
       eventPropsMapping: {
