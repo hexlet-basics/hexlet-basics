@@ -63,8 +63,9 @@ en:
       index:
         title: |
           Free Online Programming Courses: HTML, CSS, JavaScript
-        meta_description: |
-          Learn the Code Basics of HTML, CSS and JavaScript with Interactive Coding Environment right in your Browser! Perfect for Beginners & 100% for Free | Join our Online Programming Courses
+        meta:
+          description: |
+            Learn the Code Basics of HTML, CSS and JavaScript with Interactive Coding Environment right in your Browser! Perfect for Beginners & 100% for Free | Join our Online Programming Courses
         reviews: Reviews
         all_reviews: All Reviews
         blog_posts: Posts

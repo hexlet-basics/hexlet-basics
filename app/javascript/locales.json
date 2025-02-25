@@ -861,7 +861,9 @@
           "in_development": "Coming soon",
           "in_development_description": "Courses below are not in production at the moment. However, you can contribute by sending a pull request to Github repository.",
           "join": "Sign up and start learning. For free. Forever",
-          "meta_description": "Learn the Code Basics of HTML, CSS and JavaScript with Interactive Coding Environment right in your Browser! Perfect for Beginners & 100% for Free | Join our Online Programming Courses\n",
+          "meta": {
+            "description": "Learn the Code Basics of HTML, CSS and JavaScript with Interactive Coding Environment right in your Browser! Perfect for Beginners & 100% for Free | Join our Online Programming Courses\n"
+          },
           "reviews": "Reviews",
           "start": "Start",
           "subheader": "For those who start from scratch. From the creators of ",
