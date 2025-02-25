@@ -32,7 +32,7 @@ const analytics = Analytics({
       },
     }),
     carrotquest({
-      apiKey: import.meta.env.VITE_CARROTQUEST_API_KEY,
+      apiKey: import.meta.env.CARROTQUEST_API_KEY,
       eventsMapping: {
         signed_in: "$authorized",
         signed_up: "$registered",

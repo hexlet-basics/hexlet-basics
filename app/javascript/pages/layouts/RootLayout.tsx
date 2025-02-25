@@ -22,6 +22,7 @@ export default (props: Props) => {
       for (const event of events) {
         switch (event.type) {
           case "UserSignedInEvent":
+            analytics.track("signed_in", event.data);
             analytics.identify(event.data.id.toString(), event.data);
             break;
           case "UserSignedUpEvent":
