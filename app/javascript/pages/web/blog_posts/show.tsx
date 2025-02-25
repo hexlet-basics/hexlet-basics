@@ -1,6 +1,7 @@
 import type { PropsWithChildren } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 
+import { highlightingLanguages } from "@/lib/utils.ts";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { BreadcrumbItem, SharedProps } from "@/types";
 import type { BlogPost } from "@/types/serializers";
@@ -21,7 +22,10 @@ type Props = PropsWithChildren & {
   recommendedBlogPosts: BlogPost[];
 };
 
-const rehypePlugins = [rehypeHighlight, rehypeSlug];
+const rehypePlugins: Pluggable[] = [
+  [rehypeHighlight, { languages: highlightingLanguages }],
+  rehypeSlug,
+];
 
 export default function Show({ blogPost, recommendedBlogPosts }: Props) {
   const { t } = useTranslation();

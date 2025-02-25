@@ -1,5 +1,14 @@
 import type { LanguageLesson } from "@/types/serializers";
+import type { LanguageFn } from "highlight.js";
 import type { DataTableFilterMeta } from "primereact/datatable";
+
+import clojure from "highlight.js/lib/languages/clojure";
+import elixir from "highlight.js/lib/languages/elixir";
+import fortran from "highlight.js/lib/languages/fortran";
+import haskell from "highlight.js/lib/languages/haskell";
+import ocaml from "highlight.js/lib/languages/ocaml";
+import prolog from "highlight.js/lib/languages/prolog";
+import { common } from "lowlight";
 
 export function deviconClass(langName: string): string {
   const mapping: Record<string, string> = {
@@ -160,6 +169,16 @@ export const neededPreview = (language: string) => {
 //
 //   return languagesToHelpByTutorUrls[language] || defaultUrl;
 // };
+
+export const highlightingLanguages: Record<string, LanguageFn> = {
+  ...common,
+  clojure,
+  elixir,
+  fortran,
+  haskell,
+  ocaml,
+  prolog,
+};
 
 export const getKeyForStoringLessonCode = (lesson: LanguageLesson): string => {
   return `lesson-${lesson.id}`;

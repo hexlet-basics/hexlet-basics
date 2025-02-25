@@ -7,6 +7,7 @@ import type { Pluggable } from "unified";
 
 import XssContent from "@/components/XssContent.tsx";
 import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
+import { highlightingLanguages } from "@/lib/utils.ts";
 import LessonLayout from "@/pages/layouts/LessonLayout.tsx";
 import * as Routes from "@/routes.js";
 import type { BreadcrumbItem } from "@/types";
@@ -17,6 +18,7 @@ import Markdown from "react-markdown";
 import rehypeExternalLinks from "rehype-external-links";
 import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
 import EditorBlock from "./show/index.tsx";
 import type { LessonSharedProps } from "./show/types.ts";
 
@@ -25,10 +27,12 @@ const MemoizedEditorBlock = memo(EditorBlock);
 
 // Replace rehype plugins with remark ones whenever possible
 const rehypePlugins: Pluggable[] = [
-  rehypeHighlight,
+  [rehypeHighlight, { languages: highlightingLanguages }],
   rehypeRaw,
   [rehypeExternalLinks, { target: "_blank" }],
 ];
+
+const remarkPlugins: Pluggable[] = [remarkGfm];
 
 export default function Show() {
   const {
@@ -111,13 +115,19 @@ export default function Show() {
 
                     <div className="hexlet-basics-content">
                       <h1 className="h2">{`${course.name}: ${lesson.name}`}</h1>
-                      <Markdown rehypePlugins={rehypePlugins}>
+                      <Markdown
+                        rehypePlugins={rehypePlugins}
+                        remarkPlugins={remarkPlugins}
+                      >
                         {lesson.theory}
                       </Markdown>
                       <h2 className="h3">
                         {t("languages.lessons.show.instructions")}
                       </h2>
-                      <Markdown rehypePlugins={rehypePlugins}>
+                      <Markdown
+                        rehypePlugins={rehypePlugins}
+                        remarkPlugins={remarkPlugins}
+                      >
                         {lesson.instructions}
                       </Markdown>
                     </div>
@@ -130,7 +140,10 @@ export default function Show() {
                         <ul>
                           {lesson.tips.map((t) => (
                             <li key={t}>
-                              <Markdown rehypePlugins={rehypePlugins}>
+                              <Markdown
+                                rehypePlugins={rehypePlugins}
+                                remarkPlugins={remarkPlugins}
+                              >
                                 {t}
                               </Markdown>
                             </li>
@@ -163,7 +176,10 @@ export default function Show() {
                         >
                           <summary className="p-2">{v.question}</summary>
                           <div className="px-2 pt-2">
-                            <Markdown rehypePlugins={rehypePlugins}>
+                            <Markdown
+                              rehypePlugins={rehypePlugins}
+                              remarkPlugins={remarkPlugins}
+                            >
                               {v.answer}
                             </Markdown>
                           </div>
