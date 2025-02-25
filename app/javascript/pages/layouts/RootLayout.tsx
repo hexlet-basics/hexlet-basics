@@ -11,8 +11,8 @@ export default (props: Props) => {
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (!user.guest) {
-      // NOTE: This is a hack to access the Carrotquest plugin
-      const plugins = analytics.plugins as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+      // biome-ignore lint/suspicious/noExplicitAny: This is a hack to access the Carrotquest plugin
+      const plugins = analytics.plugins as any;
       plugins.carrotquest.auth(user.id, carrotquest.user_hash);
     }
     if (events) {
