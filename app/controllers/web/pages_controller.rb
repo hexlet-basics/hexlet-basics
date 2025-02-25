@@ -7,6 +7,8 @@ class Web::PagesController < Web::ApplicationController
              authors
              tos].freeze
 
+  DISALLOWED_PAGES = %w[cookie_policy privacy tos].freeze
+
   def show
     page = params[:id]
     unless PAGES.include? page
@@ -19,6 +21,9 @@ class Web::PagesController < Web::ApplicationController
       title:,
       description: t(".parts.#{params[:id]}.meta.description")
     }
+    if DISALLOWED_PAGES.exclude? page
+      seo_tags[:canonical] = page_url(page)
+    end
     set_meta_tags seo_tags
     # set_meta_tags title: t(@page, scope: 'web.pages')
 

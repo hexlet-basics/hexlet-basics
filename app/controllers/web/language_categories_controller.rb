@@ -6,7 +6,8 @@ class Web::LanguageCategoriesController < Web::ApplicationController
 
     seo_tags = {
       title: t(".header"),
-      description: t(".meta.description")
+      description: t(".meta.description"),
+      canonical: language_categories_url
     }
     set_meta_tags seo_tags
 
@@ -36,7 +37,8 @@ class Web::LanguageCategoriesController < Web::ApplicationController
 
     seo_tags = {
       title: t(".header", name: category),
-      description: t(".meta.category_descriptions.#{category.slug}")
+      description: t(".meta.category_descriptions.#{category.slug}"),
+      canonical: language_category_url(category.slug)
     }
     set_meta_tags seo_tags
 

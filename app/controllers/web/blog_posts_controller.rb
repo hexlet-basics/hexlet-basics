@@ -32,7 +32,8 @@ class Web::BlogPostsController < Web::ApplicationController
     # end
 
     seo_tags = {
-      title: blog_post.name
+      title: blog_post.name,
+      canonical: blog_post_url(blog_post.slug)
     }
     set_meta_tags seo_tags
 
