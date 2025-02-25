@@ -5,10 +5,24 @@ en:
     language_categories:
       index:
         header: Course categories
+        meta:
+          description: |
+            Browse free programming courses on Code-basics.com.
+            Find categories tailored to your learning needs, whether you're a beginner or looking to deepen your expertise.
+            Start coding today with interactive and easy-to-follow lessons.
       show:
         header: |
           %{name} courses
         blog_posts: Blog Posts
+        meta:
+          category_descriptions:
+            programming: |
+              Access free programming courses covering a wide range of modern languages, including Python, PHP, JavaScript, and more.
+              Start coding at your own pace with practical exercises and expert-led tutorials at Code-basics.com.
+            layouting: |
+              Learn web development with free HTML and CSS courses on Code-basics.com.
+              Master the essentials of building responsive websites with step-by-step lessons and interactive exercises.
+              Perfect for beginners.
     reviews:
       index:
         header: Reviews
@@ -125,6 +139,11 @@ en:
         courses: Recommended Courses
       index:
         header: Blog
+        meta:
+          description: |
+            Explore insightful articles on learning programming languages at Code-basics.com.
+            Discover tips, tutorials, and guides to boost your coding skills,
+            from beginners to advanced topics in various programming languages.
         empty: Looks like there is noting yet
     languages:
       show:

@@ -5,6 +5,7 @@ class Web::BlogPostsController < Web::ApplicationController
 
     seo_tags = {
       title: t(".header"),
+      description: t(".meta.description"),
       canonical: blog_posts_url
     }
     set_meta_tags seo_tags

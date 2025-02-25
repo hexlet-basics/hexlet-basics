@@ -812,7 +812,10 @@
       "blog_posts": {
         "index": {
           "empty": "Looks like there is noting yet",
-          "header": "Blog"
+          "header": "Blog",
+          "meta": {
+            "description": "Explore insightful articles on learning programming languages at Code-basics.com.\nDiscover tips, tutorials, and guides to boost your coding skills,\nfrom beginners to advanced topics in various programming languages.\n"
+          }
         },
         "show": {
           "blog_posts": "Recommended Posts",
@@ -879,11 +882,20 @@
       },
       "language_categories": {
         "index": {
-          "header": "Course categories"
+          "header": "Course categories",
+          "meta": {
+            "description": "Browse free programming courses on Code-basics.com.\nFind categories tailored to your learning needs, whether you're a beginner or looking to deepen your expertise.\nStart coding today with interactive and easy-to-follow lessons.\n"
+          }
         },
         "show": {
           "blog_posts": "Blog Posts",
-          "header": "%{name} courses\n"
+          "header": "%{name} courses\n",
+          "meta": {
+            "category_descriptions": {
+              "layouting": "Learn web development with free HTML and CSS courses on Code-basics.com.\nMaster the essentials of building responsive websites with step-by-step lessons and interactive exercises.\nPerfect for beginners.\n",
+              "programming": "Access free programming courses covering a wide range of modern languages, including Python, PHP, JavaScript, and more.\nStart coding at your own pace with practical exercises and expert-led tutorials at Code-basics.com.\n"
+            }
+          }
         }
       },
       "languages": {
@@ -2419,7 +2431,10 @@
       "blog_posts": {
         "index": {
           "empty": "Похоже, что тут пока ничего нет",
-          "header": "Блог"
+          "header": "Блог",
+          "meta": {
+            "description": ""
+          }
         },
         "show": {
           "blog_posts": "Рекомендованные статьи",
@@ -2488,11 +2503,20 @@
       },
       "language_categories": {
         "index": {
-          "header": "Категории курсов"
+          "header": "Категории курсов",
+          "meta": {
+            "description": ""
+          }
         },
         "show": {
           "blog_posts": "Посты в блоге",
-          "header": "Курсы категории \"%{name}\""
+          "header": "Курсы категории \"%{name}\"",
+          "meta": {
+            "category_descriptions": {
+              "layouting": "",
+              "programming": ""
+            }
+          }
         }
       },
       "languages": {

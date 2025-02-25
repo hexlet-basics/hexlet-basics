@@ -5,7 +5,8 @@ class Web::LanguageCategoriesController < Web::ApplicationController
     categories = Language::Category.all
 
     seo_tags = {
-      title: t(".header")
+      title: t(".header"),
+      description: t(".meta.description")
     }
     set_meta_tags seo_tags
 
@@ -34,7 +35,8 @@ class Web::LanguageCategoriesController < Web::ApplicationController
     # end
 
     seo_tags = {
-      title: t(".header", name: category)
+      title: t(".header", name: category),
+      description: t(".meta.category_descriptions.#{category.slug}")
     }
     set_meta_tags seo_tags
 

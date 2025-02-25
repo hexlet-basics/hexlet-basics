@@ -5,9 +5,15 @@ ru:
     language_categories:
       index:
         header: Категории курсов
+        meta:
+          description: ""
       show:
         header: Курсы категории "%{name}"
         blog_posts: Посты в блоге
+        meta:
+          category_descriptions:
+            programming: ""
+            layouting: ""
     reviews:
       index:
         header: Отзывы
@@ -127,6 +133,8 @@ ru:
         courses: Рекомендованные курсы
       index:
         header: Блог
+        meta:
+          description: ""
         empty: Похоже, что тут пока ничего нет
     languages:
       show:
