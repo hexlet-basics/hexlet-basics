@@ -8,18 +8,19 @@ export default (props: Props) => {
   const { auth, carrotquest, events } = usePage<SharedProps>().props;
   const user = auth.user;
 
-
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (!user.guest) {
-      analytics.plugins.carrotquest.auth(user.id, carrotquest.user_hash);
+      // NOTE: This is a hack to access the Carrotquest plugin
+      const plugins = analytics.plugins as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+      plugins.carrotquest.auth(user.id, carrotquest.user_hash);
     }
     if (events) {
       for (const event of events) {
         switch (event.type) {
           case "UserSignedInEvent":
-            analytics.identify(event.data.id.toString(), event.data);
             analytics.track("signed_in", event.data);
+            analytics.identify(event.data.id.toString(), event.data);
             break;
           case "UserSignedUpEvent":
             analytics.track("signed_up", event.data);
