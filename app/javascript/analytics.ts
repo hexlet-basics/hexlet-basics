@@ -1,6 +1,7 @@
+import carrotquest from "@hexlet/analytics-plugin-carrotquest";
 import postHog from "@metro-fs/analytics-plugin-posthog";
 import Analytics from "analytics";
-// import googleAnalytics from '@analytics/google-analytics'
+// import googleAnalytics from "@analytics/google-analytics"
 
 /* Initialize analytics */
 const analytics = Analytics({
@@ -9,7 +10,7 @@ const analytics = Analytics({
   version: 100,
   plugins: [
     // googleAnalytics({
-    //   measurementIds: ['G-XXXXXXXX'],
+    //   measurementIds: ["G-XXXXXXXX"],
     // }),
     postHog({
       token: import.meta.env.VITE_REACT_APP_PUBLIC_POSTHOG_KEY,
