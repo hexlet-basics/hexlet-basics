@@ -44,6 +44,7 @@ export interface SharedProps extends PageProps {
   flash: Partial<Record<FlashKey, string | null>>;
   courses: Language[];
   mobileBrowser: boolean;
+  carrotQuestUserHash: string | null;
 }
 
 export type RootProps = SetupOptions<HTMLElement, SharedProps>["props"];

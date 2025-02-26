@@ -5,7 +5,7 @@ import { type PropsWithChildren, useEffect } from "react";
 
 type Props = PropsWithChildren & {};
 export default (props: Props) => {
-  const { auth, events } = usePage<SharedProps>().props;
+  const { auth, events, carrotQuestUserHash } = usePage<SharedProps>().props;
   const user = auth.user;
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -16,12 +16,13 @@ export default (props: Props) => {
       // https://github.com/DavidWells/analytics/issues/266
       // https://getanalytics.io/plugins/writing-plugins/#adding-custom-methods
       // @ts-expect-error
-      analytics.plugins.carrotquest.auth(user.id, user.carrotquest_hash);
+      analytics.plugins.carrotquest.auth(user.id, carrotQuestUserHash);
     }
     if (events) {
       for (const event of events) {
         switch (event.type) {
           case "UserSignedInEvent":
+            // TODO: Add type for event name to avoid sending wrong events 
             analytics.track("signed_in", event.data);
             analytics.identify(event.data.id.toString(), event.data);
             break;

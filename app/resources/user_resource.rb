@@ -4,7 +4,7 @@ class UserResource
 
   typelize_from User
 
-  attributes :id, :first_name, :email, :created_at, :last_name, :admin, :carrotquest_hash
+  attributes :id, :first_name, :email, :created_at, :last_name, :admin
 
   typelize :boolean, nullable: true
   attribute :guest do |user|
@@ -27,10 +27,5 @@ class UserResource
   typelize '"user"', nullable: false
   attribute :type do |user|
     "user"
-  end
-
-  typelize :string, nullable: true
-  attribute :carrotquest_hash do |user|
-    user.carrotquest_hash
   end
 end

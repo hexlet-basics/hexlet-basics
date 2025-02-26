@@ -101,10 +101,6 @@ class User < ApplicationRecord
     attributes.extract! "id", "email", "nickname", "first_name", "nickname", "created_at"
   end
 
-  def carrotquest_hash
-    OpenSSL::HMAC.hexdigest("SHA256", configus.carrotquest_user_auth_key, id.to_s)
-  end
-
   private
 
   def clean_fields
