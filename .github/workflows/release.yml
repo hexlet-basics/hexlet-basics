@@ -65,6 +65,7 @@ jobs:
             "sentry-auth-token=${{ secrets.SENTRY_AUTH_TOKEN }}"
             "posthog-api-key=${{ secrets.POSTHOG_API_KEY }}"
             "posthog-api-host=${{ secrets.POSTHOG_API_HOST }}"
+            "carrotquest-api-key=${{ secrets.CARROTQUEST_API_KEY }}"
           build-args: |
             RELEASE_VERSION=${{ env.RELEASE_VERSION }}
 
