@@ -63,7 +63,7 @@ Configus.build Rails.env do
 
     csp_report_uri ENV.fetch("CSP_REPORT_URI", "")
 
-    carrotquest_user_auth_key ENV.fetch("CARROTQUEST_USER_AUTH_KEY", nil)
+    carrotquest_user_auth_key -> { ENV.fetch("CARROTQUEST_USER_AUTH_KEY", nil) }
   end
 
   env :staging, parent: :production do
