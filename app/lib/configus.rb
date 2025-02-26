@@ -60,6 +60,8 @@ Configus.build Rails.env do
       secret_access_key ENV.fetch("STORAGE_S3_ACCESS_SECRET_KEY", nil)
       bucket ENV.fetch("STORAGE_S3_BUCKET", nil)
     end
+
+    csp_report_uri ENV.fetch("CSP_REPORT_URI", "")
   end
 
   env :staging, parent: :production do

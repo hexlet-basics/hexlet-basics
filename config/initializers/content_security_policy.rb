@@ -35,8 +35,8 @@ Rails.application.configure do
     # Allow @vite/client to hot reload style changes in development
     # policy.style_src *policy.style_src, :unsafe_inline if Rails.env.development?
 
-    #     # Specify URI for violation reports
-    #     # policy.report_uri "/csp-violation-report-endpoint"
+    # Specify URI for violation reports
+    policy.report_uri configus.csp_report_uri
   end
 
   #
