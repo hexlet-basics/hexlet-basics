@@ -5,7 +5,7 @@ import { type PropsWithChildren, useEffect } from "react";
 
 type Props = PropsWithChildren & {};
 export default (props: Props) => {
-  const { auth, carrotquest, events } = usePage<SharedProps>().props;
+  const { auth, events } = usePage<SharedProps>().props;
   const user = auth.user;
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -13,7 +13,7 @@ export default (props: Props) => {
     if (!user.guest) {
       // biome-ignore lint/suspicious/noExplicitAny: This is a hack to access the Carrotquest plugin
       const plugins = analytics.plugins as any;
-      plugins.carrotquest.auth(user.id, carrotquest.user_hash);
+      plugins.carrotquest.auth(user.id, user.carrotquest_hash);
     }
     if (events) {
       for (const event of events) {
