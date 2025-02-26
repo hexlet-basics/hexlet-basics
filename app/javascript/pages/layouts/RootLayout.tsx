@@ -24,7 +24,6 @@ export default (props: Props) => {
           case "UserSignedInEvent":
             analytics.track("signed_in", event.data);
             analytics.identify(event.data.id.toString(), event.data);
-            analytics.track("signed_in", event.data);
             break;
           case "UserSignedUpEvent":
             analytics.track("signed_up", event.data);
