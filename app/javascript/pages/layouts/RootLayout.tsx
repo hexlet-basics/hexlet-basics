@@ -11,9 +11,12 @@ export default (props: Props) => {
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (!user.guest) {
-      // biome-ignore lint/suspicious/noExplicitAny: This is a hack to access the Carrotquest plugin
-      const plugins = analytics.plugins as any;
-      plugins.carrotquest.auth(user.id, user.carrotquest_hash);
+      // NOTE: This is a hack to access the Carrotquest plugin. Type Plugins contains only enable and disable properties,
+      // but according to the documentation, we can call custom plugins methods this way.
+      // https://github.com/DavidWells/analytics/issues/266
+      // https://getanalytics.io/plugins/writing-plugins/#adding-custom-methods
+      // @ts-expect-error
+      analytics.plugins.carrotquest.auth(user.id, user.carrotquest_hash);
     }
     if (events) {
       for (const event of events) {
