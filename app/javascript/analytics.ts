@@ -30,6 +30,27 @@ const analytics = Analytics({
         ],
       },
     }),
+    carrotquest({
+      apiKey: import.meta.env.VITE_CARROTQUEST_API_KEY,
+      eventsMapping: {
+        signed_in: "$authorized",
+        signed_up: "$registered",
+        course_started: "Начал курс",
+        course_finished: "Завершил курс",
+        lesson_started: "Начал урок",
+        lesson_finished: "Завершил урок",
+      },
+      // Возможно, стоит сохранять все свойства
+      eventPropsMapping: {
+        id: "id",
+        email: "email",
+        locale: "locale",
+        course_slug: "course_slug",
+        lesson_slug: "lesson_slug",
+        slug: "slug",
+      },
+      userPropsMapping: {},
+    }),
   ],
 });
 

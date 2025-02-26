@@ -5,7 +5,8 @@ import { type PropsWithChildren, useEffect } from "react";
 
 type Props = PropsWithChildren & {};
 export default (props: Props) => {
-  const { events } = usePage<SharedProps>().props;
+  const { auth, events } = usePage<SharedProps>().props;
+  const user = auth.user;
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
