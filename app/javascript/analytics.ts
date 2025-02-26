@@ -1,7 +1,6 @@
-import carrotquest from "@hexlet/analytics-plugin-carrotquest";
 import postHog from "@metro-fs/analytics-plugin-posthog";
 import Analytics from "analytics";
-// import googleAnalytics from "@analytics/google-analytics"
+// import googleAnalytics from '@analytics/google-analytics'
 
 /* Initialize analytics */
 const analytics = Analytics({
@@ -10,7 +9,7 @@ const analytics = Analytics({
   version: 100,
   plugins: [
     // googleAnalytics({
-    //   measurementIds: ["G-XXXXXXXX"],
+    //   measurementIds: ['G-XXXXXXXX'],
     // }),
     postHog({
       token: import.meta.env.VITE_REACT_APP_PUBLIC_POSTHOG_KEY,
@@ -30,27 +29,6 @@ const analytics = Analytics({
           "promo_start",
         ],
       },
-    }),
-    carrotquest({
-      apiKey: import.meta.env.VITE_CARROTQUEST_API_KEY,
-      eventsMapping: {
-        signed_in: "$authorized",
-        signed_up: "$registered",
-        course_started: "Начал курс",
-        course_finished: "Завершил курс",
-        lesson_started: "Начал урок",
-        lesson_finished: "Завершил урок",
-      },
-      // Возможно, стоит сохранять все свойства
-      eventPropsMapping: {
-        id: "id",
-        email: "email",
-        locale: "locale",
-        course_slug: "course_slug",
-        lesson_slug: "lesson_slug",
-        slug: "slug",
-      },
-      userPropsMapping: {},
     }),
   ],
 });

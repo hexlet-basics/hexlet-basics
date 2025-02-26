@@ -5,7 +5,6 @@
   "type": "module",
   "dependencies": {
     "@giscus/react": "^3.1.0",
-    "@hexlet/analytics-plugin-carrotquest": "github:Hexlet/analytics-plugin-carrotquest",
     "@inertiajs/progress": "^0.2.7",
     "@inertiajs/react": "^2.0.3",
     "@metro-fs/analytics-plugin-posthog": "^1.14.0",
