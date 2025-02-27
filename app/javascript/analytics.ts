@@ -1,7 +1,31 @@
 import carrotquest from "@hexlet/analytics-plugin-carrotquest";
 import postHog from "@metro-fs/analytics-plugin-posthog";
 import Analytics from "analytics";
+import { mapValues } from "es-toolkit";
 // import googleAnalytics from "@analytics/google-analytics"
+
+const carrotQuestEventsMapping = {
+  signed_in: "$authorized",
+  signed_up: "$registered",
+  course_started: "Начал курс",
+  course_finished: "Завершил курс",
+  lesson_started: "Начал урок",
+  lesson_finished: "Завершил урок",
+} as const;
+
+export const carrotQuestEvents = mapValues(
+  carrotQuestEventsMapping,
+  (_, k) => k,
+);
+
+const carrotQuestEventPropsMapping = {
+  id: "id",
+  email: "email",
+  locale: "locale",
+  course_slug: "course_slug",
+  lesson_slug: "lesson_slug",
+  slug: "slug",
+};
 
 /* Initialize analytics */
 const analytics = Analytics({
@@ -33,23 +57,9 @@ const analytics = Analytics({
     }),
     carrotquest({
       apiKey: import.meta.env.VITE_CARROTQUEST_API_KEY,
-      eventsMapping: {
-        signed_in: "$authorized",
-        signed_up: "$registered",
-        course_started: "Начал курс",
-        course_finished: "Завершил курс",
-        lesson_started: "Начал урок",
-        lesson_finished: "Завершил урок",
-      },
+      eventsMapping: carrotQuestEventsMapping,
       // Возможно, стоит сохранять все свойства
-      eventPropsMapping: {
-        id: "id",
-        email: "email",
-        locale: "locale",
-        course_slug: "course_slug",
-        lesson_slug: "lesson_slug",
-        slug: "slug",
-      },
+      eventPropsMapping: carrotQuestEventPropsMapping,
       userPropsMapping: {},
     }),
   ],

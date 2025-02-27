@@ -1,4 +1,4 @@
-import analytics from "@/analytics";
+import analytics, { carrotQuestEvents } from "@/analytics";
 import type { SharedProps } from "@/types";
 import { usePage } from "@inertiajs/react";
 import { type PropsWithChildren, useEffect } from "react";
@@ -22,12 +22,11 @@ export default (props: Props) => {
       for (const event of events) {
         switch (event.type) {
           case "UserSignedInEvent":
-            // TODO: Add type for event name to avoid sending wrong events
-            analytics.track("signed_in", event.data);
+            analytics.track(carrotQuestEvents.signed_in, event.data);
             analytics.identify(event.data.id.toString(), event.data);
             break;
           case "UserSignedUpEvent":
-            analytics.track("signed_up", event.data);
+            analytics.track(carrotQuestEvents.signed_up, event.data);
             analytics.identify(event.data.id.toString(), event.data);
             break;
           case "CourseStartedEvent":
