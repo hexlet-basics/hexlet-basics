@@ -12,6 +12,10 @@ class Web::ApplicationController < ApplicationController
 
   before_action :prepare_locale_settings
 
+  before_action do
+    set_meta_tags site: "CodeBasics"
+  end
+
   inertia_share do
     language_categories = Language::Category.all
     languages_infos = Language::Version::Info
@@ -28,7 +32,8 @@ class Web::ApplicationController < ApplicationController
         user: UserResource.new(current_user)
       },
       mobileBrowser: mobile_browser?,
-      carrotQuestUserHash: signed_in? ? OpenSSL::HMAC.hexdigest("SHA256", configus.carrotquest_user_auth_key, current_user.id.to_s) : nil
+      carrotQuestUserHash: signed_in? ? OpenSSL::HMAC.hexdigest("SHA256", configus.carrotquest_user_auth_key, current_user.id.to_s) : nil,
+      metaTagsHTMLString: helpers.display_meta_tags(reverse: true)
     }
   end
 

@@ -1,11 +1,13 @@
 import analytics from "@/analytics";
 import type { SharedProps } from "@/types";
-import { usePage } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
+import parseHtml from "html-react-parser";
 import { type PropsWithChildren, useEffect } from "react";
 
 type Props = PropsWithChildren & {};
 export default (props: Props) => {
-  const { auth, events, carrotQuestUserHash } = usePage<SharedProps>().props;
+  const { auth, events, carrotQuestUserHash, metaTagsHTMLString } =
+    usePage<SharedProps>().props;
   const user = auth.user;
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -47,5 +49,10 @@ export default (props: Props) => {
     }
   }, []);
 
-  return props.children;
+  return (
+    <>
+      <Head>{parseHtml(metaTagsHTMLString, { trim: true })}</Head>
+      {props.children}
+    </>
+  );
 };

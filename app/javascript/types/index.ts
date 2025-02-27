@@ -45,6 +45,7 @@ export interface SharedProps extends PageProps {
   courses: Language[];
   mobileBrowser: boolean;
   carrotQuestUserHash: string | null;
+  metaTagsHTMLString: string;
 }
 
 export type RootProps = SetupOptions<HTMLElement, SharedProps>["props"];
