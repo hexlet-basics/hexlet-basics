@@ -12,6 +12,11 @@ export default (props: Props) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
+    analytics.page({
+      $current_url: window.location.href,
+      $pathname: window.location.pathname,
+    });
+
     if (!user.guest) {
       // NOTE: This is a hack to access the Carrotquest plugin. Type Plugins contains only enable and disable properties,
       // but according to the documentation, we can call custom plugins methods this way.

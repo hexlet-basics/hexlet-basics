@@ -15,6 +15,7 @@ const plugins = [
       debug: import.meta.env.DEV,
       disable_session_recording: true,
       autocapture: false,
+      capture_pageview: false,
       capture_pageleave: true,
       disable_surveys: true,
       custom_campaign_params: [
