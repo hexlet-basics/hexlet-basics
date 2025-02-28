@@ -15,6 +15,7 @@ Sentry.init({
   ignoreErrors: [
     // https://github.com/inertiajs/inertia/issues/2204
     "Cannot read properties of null (reading 'scrollRegions')",
+    "Cannot read properties of null (reading 'page')",
   ],
 });
 
