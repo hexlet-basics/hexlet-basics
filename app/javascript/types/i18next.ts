@@ -6,7 +6,8 @@ const defaultNS = "web" as const;
 
 declare module "i18next" {
   interface i18n {
-    language: "en" | "ru";
+    // TODO: remove exclude es after adding es locale
+    language: Exclude<keyof typeof locales, "es">;
   }
   // Extend CustomTypeOptions
   interface CustomTypeOptions {

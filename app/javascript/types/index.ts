@@ -1,4 +1,5 @@
 import type { PageProps } from "@inertiajs/inertia";
+import type { i18n } from "i18next";
 import type { SetupOptions } from "node_modules/@inertiajs/react/types/createInertiaApp";
 import type { SortOrder } from "primereact/api";
 import type { BackendEvent } from "./events";
@@ -39,7 +40,7 @@ export interface SharedProps extends PageProps {
   };
   courseCategories: LanguageCategory[];
   suffix: "ru" | null;
-  locale: "ru" | "en"; // TODO: use i18next.i18n["locale"];
+  locale: i18n["language"];
   events: BackendEvent[] | null;
   flash: Partial<Record<FlashKey, string | null>>;
   courses: Language[];
