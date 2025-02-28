@@ -6,15 +6,16 @@ import { type PropsWithChildren, useEffect } from "react";
 
 type Props = PropsWithChildren & {};
 export default (props: Props) => {
-  const { auth, events, carrotQuestUserHash, metaTagsHTMLString } =
-    usePage<SharedProps>().props;
+  const page = usePage<SharedProps>();
+  const { url } = page;
+  const { auth, events, carrotQuestUserHash, metaTagsHTMLString } = page.props;
+
   const user = auth.user;
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     analytics.page({
-      $current_url: window.location.href,
-      $pathname: window.location.pathname,
+      $pathname: url,
     });
 
     if (!user.guest) {
