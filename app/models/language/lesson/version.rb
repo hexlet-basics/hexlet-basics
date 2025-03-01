@@ -41,6 +41,8 @@ class Language::Lesson::Version < ApplicationRecord
 
   has_many :infos, dependent: :destroy
 
+  validates :natural_order, presence: true
+
   def next_lesson_version
     language_version
       .lesson_versions.order(:natural_order)

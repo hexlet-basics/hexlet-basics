@@ -16,8 +16,8 @@ type LanguageLesson = {
   original_code: string | null;
   test_code: string | null;
   version: number | null;
-  slug: number | null;
-  natural_order: number | null;
+  slug: string;
+  natural_order: number;
   source_code_url: string | null;
 }
 
