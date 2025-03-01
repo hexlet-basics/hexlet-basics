@@ -68,6 +68,14 @@ export default function FooterBlock() {
                   </a>
                 </Nav.Item>
               )}
+              <Nav.Item>
+                <Link
+                  className="link-body-emphasis text-decoration-none"
+                  href={Routes.map_path()}
+                >
+                  {tLayouts("shared.footer.sitemap")}
+                </Link>
+              </Nav.Item>
             </Nav>
           </Col>
           <Col>

@@ -89,6 +89,8 @@ ru:
         in_development_description: Данные курсы находятся в разработке и не являются финальной версией. Вы можете помочь в разработке, прислав Pull Request в репозиторий GitHub
         blog_posts: Блог
         all_blog_posts: Все статьи
+      sitemap:
+        title: Карта сайта
     users:
       new:
         confirmation_html: Регистрируясь, вы соглашаетесь с <a href="%{url}" class="text-decoration-none" target="_blank">условиями использования</a>

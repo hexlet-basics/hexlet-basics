@@ -43,12 +43,12 @@ class Language::LessonResource
     info.version.id
   end
 
-  typelize :number, nullable: true
+  typelize :string
   attribute :slug do |info|
     info.lesson.slug
   end
 
-  typelize :number, nullable: true
+  typelize :number
   attribute :natural_order do |info|
     info.version.natural_order
   end

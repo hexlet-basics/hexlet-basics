@@ -34,13 +34,15 @@ export type FlashVariant =
 
 export type FlashVariants = Record<FlashKey, FlashVariant>;
 
+export type Locale = i18n["language"];
+
 export interface SharedProps extends PageProps {
   auth: {
     user: User;
   };
   courseCategories: LanguageCategory[];
   suffix: "ru" | null;
-  locale: i18n["language"];
+  locale: Locale;
   events: BackendEvent[] | null;
   flash: Partial<Record<FlashKey, string | null>>;
   courses: Language[];
