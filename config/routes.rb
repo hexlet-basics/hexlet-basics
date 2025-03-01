@@ -45,7 +45,9 @@ Rails.application.routes.draw do
     scope module: :web, format: false do
       root "home#index"
 
-      get "/robots.:format" => "home#robots", as: :robots
+      get "/robots.:format", to: "home#robots", as: :robots
+      get "/map", to: "home#sitemap"
+
       resources :pages, only: %i[show]
       resources :blog_posts, only: %i[index show]
       resources :reviews, only: %i[index]

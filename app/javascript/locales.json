@@ -495,6 +495,7 @@
           "recommended_books": "Recommended Books",
           "resources": "Resources",
           "reviews": "Reviews",
+          "sitemap": "Sitemap",
           "social_networks": "Social",
           "source_code": "Source code",
           "tos": "Terms of Service",
@@ -878,6 +879,9 @@
         "reviews": {
           "course_html": "Course %{link}",
           "reviews": "Reviews"
+        },
+        "sitemap": {
+          "title": "Sitemap"
         }
       },
       "language_categories": {
@@ -2086,6 +2090,7 @@
           "recommended_books": "Рекомендуемые книги",
           "resources": "Ресурсы",
           "reviews": "Отзывы",
+          "sitemap": "Карта сайта",
           "social_networks": "Социальные сети",
           "source_code": "Исходный код",
           "tos": "Условия использования",
@@ -2497,6 +2502,9 @@
         "reviews": {
           "course_html": "Курс %{link}",
           "reviews": "Отзывы"
+        },
+        "sitemap": {
+          "title": "Карта сайта"
         },
         "stats": {
           "trusted_by": "Присоединись к %{count} изующих программирование с помощью Code Basics\n"
