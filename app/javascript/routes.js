@@ -1032,46 +1032,6 @@ export const rails_health_check_path = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[
 
 /**
  * Generates rails route to
- * /rails/info(.:format)
- * @param {object | undefined} options
- * @returns {string} route path
- */
-export const rails_info_path = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"info"],[1,[2,[8,"."],[3,"format"]]]]]]]);
-
-/**
- * Generates rails route to
- * /rails/info/notes(.:format)
- * @param {object | undefined} options
- * @returns {string} route path
- */
-export const rails_info_notes_path = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"info"],[2,[7,"/"],[2,[6,"notes"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
-
-/**
- * Generates rails route to
- * /rails/info/properties(.:format)
- * @param {object | undefined} options
- * @returns {string} route path
- */
-export const rails_info_properties_path = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"info"],[2,[7,"/"],[2,[6,"properties"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
-
-/**
- * Generates rails route to
- * /rails/info/routes(.:format)
- * @param {object | undefined} options
- * @returns {string} route path
- */
-export const rails_info_routes_path = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"info"],[2,[7,"/"],[2,[6,"routes"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
-
-/**
- * Generates rails route to
- * /rails/mailers(.:format)
- * @param {object | undefined} options
- * @returns {string} route path
- */
-export const rails_mailers_path = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"mailers"],[1,[2,[8,"."],[3,"format"]]]]]]]);
-
-/**
- * Generates rails route to
  * /rails/action_mailbox/mailgun/inbound_emails/mime(.:format)
  * @param {object | undefined} options
  * @returns {string} route path
@@ -1170,14 +1130,6 @@ export const robots_path = /*#__PURE__*/ __jsr.r({"suffix":{},"format":{"r":true
  * @returns {string} route path
  */
 export const root_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[7,"/"],[1,[3,"suffix"]]]);
-
-/**
- * Generates rails route to
- * /res
- * @param {object | undefined} options
- * @returns {string} route path
- */
-export const ruby_event_store_browser_app_path = /*#__PURE__*/ __jsr.r({}, [2,[7,"/"],[6,"res"]]);
 
 /**
  * Generates rails route to
