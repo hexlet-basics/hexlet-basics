@@ -38,6 +38,7 @@ en:
         blog: Blog
         reviews: Reviews
         authors: For the author
+        sitemap: Sitemap
         language_categories: Categories
         all_courses: All Courses
         hexlet_title_html: © <a href="%{link}" class="text-decoration-none text-light" target="_blank" rel="noopener">Hexlet</a>, %{year}
