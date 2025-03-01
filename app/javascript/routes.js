@@ -84,7 +84,7 @@ const __jsr = (
         },
         NIL: {
             define() {
-                // Defined using const __jsr = 
+                // Defined using const __jsr =
             },
             isSupported() {
                 return true;
@@ -824,6 +824,14 @@ export const language_lesson_path = /*#__PURE__*/ __jsr.r({"suffix":{},"language
 
 /**
  * Generates rails route to
+ * (/:suffix)/map
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const map_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[6,"map"]]]);
+
+/**
+ * Generates rails route to
  * (/:suffix)/admin/api/users/new
  * @param {object | undefined} options
  * @returns {string} route path
@@ -1211,4 +1219,3 @@ export const update_rails_disk_service_path = /*#__PURE__*/ __jsr.r({"encoded_to
  * @returns {string} route path
  */
 export const users_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[6,"users"]]]);
-

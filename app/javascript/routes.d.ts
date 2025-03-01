@@ -450,6 +450,16 @@ export const language_lesson_path: ((
 
 /**
  * Generates rails route to
+ * (/:suffix)/map
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const map_path: ((
+  options?: {suffix?: OptionalRouteParameter} & RouteOptions
+) => string) & RouteHelperExtras;
+
+/**
+ * Generates rails route to
  * (/:suffix)/admin/api/users/new
  * @param {object | undefined} options
  * @returns {string} route path
