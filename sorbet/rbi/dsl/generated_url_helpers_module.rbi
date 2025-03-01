@@ -106,6 +106,9 @@ module GeneratedUrlHelpersModule
   def language_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def map_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_admin_api_user_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
