@@ -91,6 +91,7 @@ ru:
         all_blog_posts: Все статьи
       sitemap:
         title: Карта сайта
+        home: Главная
     users:
       new:
         confirmation_html: Регистрируясь, вы соглашаетесь с <a href="%{url}" class="text-decoration-none" target="_blank">условиями использования</a>

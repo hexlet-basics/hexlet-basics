@@ -881,6 +881,7 @@
           "reviews": "Reviews"
         },
         "sitemap": {
+          "home": "Home",
           "title": "Sitemap"
         }
       },
@@ -2504,6 +2505,7 @@
           "reviews": "Отзывы"
         },
         "sitemap": {
+          "home": "Главная",
           "title": "Карта сайта"
         },
         "stats": {

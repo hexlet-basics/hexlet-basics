@@ -1,6 +1,7 @@
 import type { Locale, SharedProps } from "@/types";
 import type { PropsWithChildren } from "react";
 import React from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import * as Routes from "@/routes.js";
@@ -11,7 +12,7 @@ import type {
 } from "@/types/serializers";
 
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
-import { Accordion, Container } from "react-bootstrap";
+import { Collapse, Container } from "react-bootstrap";
 
 type Props = PropsWithChildren & {
   title: string;
@@ -37,13 +38,14 @@ type LessonsBlockProps = {
 
 type BlogPostsBlockProps = {
   posts: SitemapBlogPost[];
+  opened: boolean;
 };
 
 const getSuffix = (locale: Locale) => (locale === "en" ? null : locale);
 
 function LessonsBlock({ lessons, course }: LessonsBlockProps) {
   return (
-    <ul className="m-0 ms-3 list-unstyled">
+    <ul className="m-0 ms-3 list-unstyled pb-2">
       {lessons.map((lesson) => (
         <li key={lesson.id}>
           <a
@@ -68,49 +70,68 @@ function CoursesBlock({
   const filteredCourses = courses.filter(
     (course) => lessonsByLocaleAndLanguageId[course.locale][course.id],
   );
+  const [activeCourseIdx, setActiveCourseIdx] = useState<number | null>(null);
 
   return (
-    <Accordion defaultActiveKey="0">
-      {filteredCourses.map((course, index) => (
-        <Accordion.Item eventKey={String(index)} key={course.id}>
-          <Accordion.Header as="h3">
+    <div className="ms-3">
+      {filteredCourses.map((course, index) => {
+        const courseOpened = index === activeCourseIdx;
+
+        return (
+          <div key={course.id}>
             <a
-              className="link-body-emphasis"
+              className="text-decoration-none text-body"
               href={Routes.language_path(course.slug, {
                 suffix: getSuffix(course.locale),
               })}
             >
               {course.name}
             </a>
-          </Accordion.Header>
-          <Accordion.Body>
-            <LessonsBlock
-              course={course}
-              lessons={lessonsByLocaleAndLanguageId[course.locale][course.id]}
-            />
-          </Accordion.Body>
-        </Accordion.Item>
-      ))}
-    </Accordion>
+            <button
+              type="button"
+              onClick={() => setActiveCourseIdx(courseOpened ? null : index)}
+              aria-controls={String(index)}
+              className="btn btn-link py-0 shadow-none"
+            >
+              <span
+                className={`bi ${courseOpened ? "bi-chevron-up" : "bi-chevron-down"}`}
+              />
+            </button>
+            <Collapse in={courseOpened}>
+              <div id={String(index)}>
+                <LessonsBlock
+                  course={course}
+                  lessons={
+                    lessonsByLocaleAndLanguageId[course.locale][course.id]
+                  }
+                />
+              </div>
+            </Collapse>
+          </div>
+        );
+      })}
+    </div>
   );
 }
 
-function BlogPostsBlock({ posts }: BlogPostsBlockProps) {
+function BlogPostsBlock({ posts, opened }: BlogPostsBlockProps) {
   return (
-    <ul className="m-0 ms-3 list-unstyled">
-      {posts.map((post) => (
-        <li key={post.id}>
-          <a
-            className="text-decoration-none"
-            href={Routes.blog_post_path(post.slug, {
-              suffix: getSuffix(post.locale),
-            })}
-          >
-            {post.name}
-          </a>
-        </li>
-      ))}
-    </ul>
+    <Collapse in={opened}>
+      <ul className="m-0 ms-3 list-unstyled" id="blog-collapse">
+        {posts.map((post) => (
+          <li key={post.id}>
+            <a
+              className="text-decoration-none"
+              href={Routes.blog_post_path(post.slug, {
+                suffix: getSuffix(post.locale),
+              })}
+            >
+              {post.name}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </Collapse>
   );
 }
 
@@ -125,35 +146,61 @@ export default function SiteMap({
 
   return (
     <ApplicationLayout header={title}>
-      {orderedLocales.map((locale) => (
-        <Container key={locale} className="mb-5">
-          <h2 className="mb-3">
-            <a
-              id={`courses-${locale}`}
-              className="text-decoration-none link-body-emphasis"
-              href={`#courses-${locale}`}
-            >
-              {t("home.languages.courses", { lng: locale })}
-            </a>
-          </h2>
-          <CoursesBlock
-            locale={locale}
-            courses={coursesByLocale[locale]}
-            lessonsByLocaleAndLanguageId={lessonsByLocaleAndLanguageId}
-          />
+      {orderedLocales.map((locale) => {
+        const [blogOpened, setBlogOpened] = useState(false);
 
-          <h2 className="my-3">
-            <a
-              id={`blog-${locale}`}
-              className="text-decoration-none link-body-emphasis"
-              href={`#blog-${locale}`}
-            >
-              {t("blog_posts.index.header", { lng: locale })}
-            </a>
-          </h2>
-          <BlogPostsBlock posts={blogPostsByLocale[locale]} />
-        </Container>
-      ))}
+        return (
+          <Container key={locale} className="mb-5">
+            <h2 className="mb-3">
+              <a
+                id={`main-${locale}`}
+                className="text-decoration-none link-body-emphasis"
+                href={Routes.root_path({ suffix: getSuffix(locale) })}
+              >
+                {t("home.sitemap.home", { lng: locale })}
+              </a>
+            </h2>
+            <h2 className="mb-3">
+              <a
+                id={`courses-${locale}`}
+                className="text-decoration-none link-body-emphasis"
+                href={`#courses-${locale}`}
+              >
+                {t("home.languages.courses", { lng: locale })}
+              </a>
+            </h2>
+            <CoursesBlock
+              locale={locale}
+              courses={coursesByLocale[locale]}
+              lessonsByLocaleAndLanguageId={lessonsByLocaleAndLanguageId}
+            />
+
+            <h2 className="my-3">
+              <a
+                id={`blog-${locale}`}
+                className="text-decoration-none link-body-emphasis"
+                href={`#blog-${locale}`}
+              >
+                {t("blog_posts.index.header", { lng: locale })}
+              </a>
+              <button
+                type="button"
+                onClick={() => setBlogOpened(!blogOpened)}
+                aria-controls="blog-collapse"
+                className="btn btn-link py-0 shadow-none"
+              >
+                <span
+                  className={`bi ${blogOpened ? "bi-chevron-up" : "bi-chevron-down"}`}
+                />
+              </button>
+            </h2>
+            <BlogPostsBlock
+              posts={blogPostsByLocale[locale]}
+              opened={blogOpened}
+            />
+          </Container>
+        );
+      })}
     </ApplicationLayout>
   );
 }
