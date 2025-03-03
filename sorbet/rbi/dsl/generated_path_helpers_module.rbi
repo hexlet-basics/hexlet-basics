@@ -106,6 +106,9 @@ module GeneratedPathHelpersModule
   def language_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def map_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_admin_api_user_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
