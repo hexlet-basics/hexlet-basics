@@ -97,6 +97,9 @@ en:
       reviews:
         reviews: Reviews
         course_html: Course %{link}
+      sitemap:
+        title: Sitemap
+        home: Home
     users:
       new:
         confirmation_html: By clicking Sign up, you agree to our <a href="%{link}" class="text-decoration-none" target="_blank">service conditions</a>

@@ -60,4 +60,57 @@ class Web::HomeController < Web::ApplicationController
   def robots
     respond_to :text
   end
+
+  def sitemap
+    # NOTE: в запросах используется точечная выборка с помощью select из-за большого количества данных для уменьшения нагрузки
+
+    locales = I18n.available_locales - [ I18n.locale, :es ]
+    ordered_locales = [ I18n.locale, *locales ]
+
+    languages_infos = Language::Version::Info
+      .current
+      .where(locale: ordered_locales)
+      .includes(:language)
+      .select(:language_id, :locale, :header, "languages.slug")
+
+    language_info_resources_by_locale = languages_infos
+      .in_order_of(:locale, ordered_locales)
+      .order(id: :asc)
+      .group_by(&:locale)
+      .transform_values { |infos| SitemapLanguageResource.new(infos) }
+
+    lesson_infos_by_locale = Language::Lesson::Version::Info
+      .joins(language_version: :infos).merge(languages_infos)
+      .includes(:lesson, :version)
+      .select(:locale, :name, :language_id, :language_lesson_id, :version_id, "language_lesson_versions.natural_order", "language_lesson_versions.lesson_id", "language_lessons.slug")
+      .distinct
+      .order("language_lesson_versions.natural_order ASC")
+      .group_by(&:locale)
+      .transform_values { |infos| infos.group_by(&:language_id) }
+
+    lesson_resources_by_locale_and_language_id = lesson_infos_by_locale.transform_values do |infos_by_language_id|
+      infos_by_language_id.transform_values { |infos| Language::SitemapLessonResource.new(infos) }
+    end
+
+    blog_post_resources_by_locale = BlogPost.published
+      .select(:id, :slug, :name, :locale)
+      .order(id: :desc)
+      .group_by(&:locale)
+      .transform_values { |posts| SitemapBlogPostResource.new(posts) }
+
+    title = t(".title")
+
+    seo_tags = {
+      title:
+    }
+    set_meta_tags seo_tags
+
+    render inertia: true, props: {
+      title:,
+      orderedLocales: ordered_locales,
+      coursesByLocale: language_info_resources_by_locale,
+      lessonsByLocaleAndLanguageId: lesson_resources_by_locale_and_language_id,
+      blogPostsByLocale: blog_post_resources_by_locale
+    }
+  end
 end
