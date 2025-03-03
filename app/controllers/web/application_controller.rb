@@ -33,7 +33,7 @@ class Web::ApplicationController < ApplicationController
       },
       mobileBrowser: mobile_browser?,
       carrotQuestUserHash: signed_in? ? OpenSSL::HMAC.hexdigest("SHA256", configus.carrotquest_user_auth_key, current_user.id.to_s) : nil,
-      metaTagsHTMLString: display_escaped_html_tags(reverse: true)
+      metaTagsHTMLString: display_escaped_meta_tags(reverse: true)
     }
   end
 
@@ -85,7 +85,7 @@ class Web::ApplicationController < ApplicationController
     end
   end
 
-  def display_escaped_html_tags(...)
+  def display_escaped_meta_tags(...)
     escape_meta_tags(meta_tags.instance_values["meta_tags"])
     helpers.display_meta_tags(...)
   end
