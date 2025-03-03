@@ -33,7 +33,7 @@ class Web::ApplicationController < ApplicationController
       },
       mobileBrowser: mobile_browser?,
       carrotQuestUserHash: signed_in? ? OpenSSL::HMAC.hexdigest("SHA256", configus.carrotquest_user_auth_key, current_user.id.to_s) : nil,
-      metaTagsHTMLString: helpers.display_meta_tags(reverse: true)
+      metaTagsHTMLString: display_escaped_html_tags(reverse: true)
     }
   end
 
@@ -71,5 +71,22 @@ class Web::ApplicationController < ApplicationController
 
   def redirect_to_inertia(url, model)
       redirect_to url, inertia: { errors: model.errors }
+  end
+
+  def escape_meta_tags(tags)
+    tags.transform_values! do |tag|
+      if tag.is_a?(Hash)
+        escape_meta_tags(tag)
+      elsif tag.is_a?(Array)
+        tag.map! { |item| Rack::Utils.escape_html(item) }
+      else
+        Rack::Utils.escape_html(tag)
+      end
+    end
+  end
+
+  def display_escaped_html_tags(...)
+    escape_meta_tags(meta_tags.instance_values["meta_tags"])
+    helpers.display_meta_tags(...)
   end
 end
