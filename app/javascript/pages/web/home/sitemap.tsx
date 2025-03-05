@@ -151,7 +151,7 @@ export default function SiteMap({
 
         return (
           <Container key={locale} className="mb-5">
-            <h2 className="mb-3">
+            <h2 className="h5 mb-3">
               <a
                 id={`main-${locale}`}
                 className="text-decoration-none link-body-emphasis"
@@ -160,7 +160,7 @@ export default function SiteMap({
                 {t("home.sitemap.home", { lng: locale })}
               </a>
             </h2>
-            <h2 className="mb-3">
+            <h2 className="h5 mb-3">
               <a
                 id={`courses-${locale}`}
                 className="text-decoration-none link-body-emphasis"
@@ -175,7 +175,7 @@ export default function SiteMap({
               lessonsByLocaleAndLanguageId={lessonsByLocaleAndLanguageId}
             />
 
-            <h2 className="my-3">
+            <h2 className="h5 my-3">
               <a
                 id={`blog-${locale}`}
                 className="text-decoration-none link-body-emphasis"
