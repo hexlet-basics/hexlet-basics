@@ -77,6 +77,7 @@ export TWC_TOKEN=<your token>
 1. configus => dotenv
 1. Check if yandex.market is used
 1. primary keys: integer = bigint
+1. add rss to blog
 
 ---
 
