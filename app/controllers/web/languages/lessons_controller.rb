@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Web::Languages::LessonsController < Web::Languages::ApplicationController
-  before_action :authenticate_user!, only: [ :next_lesson ]
+  # before_action :authenticate_user!, only: [ :next_lesson ]
 
   def show
     lesson = resource_language.lessons.find_by(slug: params[:id])
@@ -145,45 +145,45 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     }
   end
 
-  def next_lesson
-    language_slug = params[:language_id]
-    lesson = resource_language.lessons.find_by!(slug: params[:id])
-    lesson_version = resource_language.current_lesson_versions.find_by!(lesson: lesson)
+  # def next_lesson
+  #   language_slug = params[:language_id]
+  #   lesson = resource_language.lessons.find_by!(slug: params[:id])
+  #   lesson_version = resource_language.current_lesson_versions.find_by!(lesson: lesson)
+  #
+  #   # language_member = current_user.language_members.find_by! language: resource_language
+  #
+  #   next_lesson = lesson_version.next_lesson_version
+  #
+  #   # TODO Добавить сериализацию language, lesson, language_member
+  #   # NOTE Временно отключил и заменил на language_finished
+  #   # js_event_options = {
+  #   #   user: current_user,
+  #   #   language: resource_language.serializable_data,
+  #   #   lesson: next_lesson&.serializable_data,
+  #   #   language_member: language_member.serializable_data,
+  #   #   lessons_started: current_user.lesson_members.where(language: resource_language).count,
+  #   #   lessons_finished: current_user.lesson_members.where(language: resource_language).finished.count
+  #   # }
+  #   # js_event :next_lesson, js_event_options
+  #
+  #   if next_lesson.nil?
+  #     redirect_to language_path(language_slug)
+  #   else
+  #     redirect_to language_lesson_path(language_slug, next_lesson.slug)
+  #   end
+  # end
 
-    # language_member = current_user.language_members.find_by! language: resource_language
-
-    next_lesson = lesson_version.next_lesson_version
-
-    # TODO Добавить сериализацию language, lesson, language_member
-    # NOTE Временно отключил и заменил на language_finished
-    # js_event_options = {
-    #   user: current_user,
-    #   language: resource_language.serializable_data,
-    #   lesson: next_lesson&.serializable_data,
-    #   language_member: language_member.serializable_data,
-    #   lessons_started: current_user.lesson_members.where(language: resource_language).count,
-    #   lessons_finished: current_user.lesson_members.where(language: resource_language).finished.count
-    # }
-    # js_event :next_lesson, js_event_options
-
-    if next_lesson.nil?
-      redirect_to language_path(language_slug)
-    else
-      redirect_to language_lesson_path(language_slug, next_lesson.slug)
-    end
-  end
-
-  def prev_lesson
-    language_slug = params[:language_id]
-    lesson = resource_language.lessons.find_by!(slug: params[:id])
-    lesson_version = resource_language.current_lesson_versions.find_by!(lesson: lesson)
-
-    prev_lesson = lesson_version.prev_lesson_version
-
-    if prev_lesson.nil?
-      redirect_to language_path(language_slug)
-    else
-      redirect_to language_lesson_path(language_slug, prev_lesson.slug)
-    end
-  end
+  # def prev_lesson
+  #   language_slug = params[:language_id]
+  #   lesson = resource_language.lessons.find_by!(slug: params[:id])
+  #   lesson_version = resource_language.current_lesson_versions.find_by!(lesson: lesson)
+  #
+  #   prev_lesson = lesson_version.prev_lesson_version
+  #
+  #   if prev_lesson.nil?
+  #     redirect_to language_path(language_slug)
+  #   else
+  #     redirect_to language_lesson_path(language_slug, prev_lesson.slug)
+  #   end
+  # end
 end
