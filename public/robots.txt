@@ -10,6 +10,7 @@ Disallow: */next_lesson
 Disallow: */pages/cookie_policy
 Disallow: */pages/privacy
 Disallow: */pages/tos
+Disallow: */assets/
 Disallow: */~partytown/
 Disallow: */pre-course-
 
