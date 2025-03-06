@@ -10,7 +10,7 @@ env:
   APP_IMAGE_NAME: hexletbasics/services-app
   # CADDY_IMAGE_NAME: hexletbasics/services-caddy
   NGINX_IMAGE_NAME: hexletbasics/services-nginx
-  # COLOR_MAP: '{ success: "#008000", failure: "#800000" }'
+  COLOR_MAP: '{ success: "#008000", failure: "#800000" }'
 
 jobs:
   build:
@@ -79,12 +79,11 @@ jobs:
           build-args: |
             APP_IMAGE_WITH_TAG=${{ env.APP_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
 
-
-      # - name: Send notification into Slack
-      #   if: ${{ always() }}
-      #   uses: rtCamp/action-slack-notify@v2
-      #   env:
-      #     SLACK_COLOR: ${{ fromJson(env.COLOR_MAP)[job.status] }}
-      #     SLACK_TITLE: ${{ job.status }}
-      #     SLACK_MESSAGE: RELEASE
-      #     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      - name: Send notification into Slack
+        if: ${{ always() }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_COLOR: ${{ fromJson(env.COLOR_MAP)[job.status] }}
+          SLACK_TITLE: ${{ job.status }}
+          SLACK_MESSAGE: RELEASE
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
