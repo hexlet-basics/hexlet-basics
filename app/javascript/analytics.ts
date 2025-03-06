@@ -3,13 +3,15 @@ import postHog from "@metro-fs/analytics-plugin-posthog";
 import Analytics from "analytics";
 // import googleAnalytics from "@analytics/google-analytics"
 
+const enabled = !import.meta.env.SSR && import.meta.env.PROD;
+
 const plugins = [
   // googleAnalytics({
   //   measurementIds: ["G-XXXXXXXX"],
   // }),
   postHog({
     token: import.meta.env.VITE_REACT_APP_PUBLIC_POSTHOG_KEY,
-    enabled: true,
+    enabled,
     options: {
       api_host: import.meta.env.VITE_REACT_APP_PUBLIC_POSTHOG_HOST,
       debug: import.meta.env.DEV,
@@ -29,6 +31,7 @@ const plugins = [
   }),
   carrotquest({
     apiKey: import.meta.env.VITE_CARROTQUEST_API_KEY,
+    enabled,
     eventsMapping: {
       signed_in: "$authorized",
       signed_up: "$registered",
@@ -52,10 +55,11 @@ const plugins = [
 
 /* Initialize analytics */
 const analytics = Analytics({
-  debug: true,
+  debug: import.meta.env.DEV,
   app: "hexlet-basics",
   version: 100,
-  plugins: import.meta.env.SSR ? [] : plugins,
+  // FIXME: implement enabled for carrotquest and check ssr inside the plugin
+  plugins: import.meta.env.SSR ? [] : plugins
 });
 
 export default analytics;

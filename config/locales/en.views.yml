@@ -291,7 +291,7 @@ en:
       profiles:
         edit:
           meta_description: Profile
-          title: Profile %{email}
+          title: Profile editing
           delete: Delete account
           confirm_delete: Are you sure you want to delete your account?
         destroy:

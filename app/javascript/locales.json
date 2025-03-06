@@ -748,7 +748,7 @@
             "confirm_delete": "Are you sure you want to delete your account?",
             "delete": "Delete account",
             "meta_description": "Profile",
-            "title": "Profile %{email}"
+            "title": "Profile editing"
           }
         }
       },
