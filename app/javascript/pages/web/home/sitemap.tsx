@@ -135,6 +135,7 @@ function BlogPostsBlock({ posts, opened }: BlogPostsBlockProps) {
   );
 }
 
+// NOTE для карты сайта выводим ссылки для всех локалей
 export default function SiteMap({
   title,
   orderedLocales,

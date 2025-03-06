@@ -63,6 +63,7 @@ class Web::HomeController < Web::ApplicationController
 
   def sitemap
     # NOTE: в запросах используется точечная выборка с помощью select из-за большого количества данных для уменьшения нагрузки
+    # NOTE: данные выбираются специально по всем локалям, так как для карты сайта выводим ссылки для всех локалей.
 
     locales = I18n.available_locales - [ I18n.locale, :es ]
     ordered_locales = [ I18n.locale, *locales ]
