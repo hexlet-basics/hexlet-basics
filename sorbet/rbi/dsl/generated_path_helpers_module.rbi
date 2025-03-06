@@ -136,16 +136,10 @@ module GeneratedPathHelpersModule
   def new_user_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def next_lesson_language_lesson_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def page_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def password_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def prev_lesson_language_lesson_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def rails_blob_path(*args); end
