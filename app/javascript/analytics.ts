@@ -59,7 +59,7 @@ const analytics = Analytics({
   app: "hexlet-basics",
   version: 100,
   // FIXME: implement enabled for carrotquest and check ssr inside the plugin
-  plugins: import.meta.env.SSR ? [] : plugins
+  plugins: import.meta.env.SSR ? [] : plugins,
 });
 
 export default analytics;
