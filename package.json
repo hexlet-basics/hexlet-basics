@@ -20,7 +20,7 @@
     "@sentry/tracing": "^7.120.3",
     "analytics": "^0.8.16",
     "ansi_up": "^6.0.2",
-    "axios": "^1.8.1",
+    "axios": "^1.8.2",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "class-variance-authority": "^0.7.1",
