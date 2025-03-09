@@ -68,22 +68,31 @@ class Web::HomeController < Web::ApplicationController
     locales = I18n.available_locales - [ I18n.locale, :es ]
     ordered_locales = [ I18n.locale, *locales ]
 
-    languages_infos = Language::Version::Info
-      .current
-      .where(locale: ordered_locales)
+    language_landing_pages = Language::LandingPage
+      # .current
+      # .where(locale: ordered_locales)
       .includes(:language)
-      .select(:language_id, :locale, :header, "languages.slug")
+      .select(:language_id, :locale, :header, :slug)
 
-    language_info_resources_by_locale = languages_infos
+    language_landing_page_resources_by_locale = language_landing_pages
       .in_order_of(:locale, ordered_locales)
       .order(id: :asc)
       .group_by(&:locale)
       .transform_values { |infos| SitemapLanguageResource.new(infos) }
 
     lesson_infos_by_locale = Language::Lesson::Version::Info
-      .joins(language_version: :infos).merge(languages_infos)
+      # .joins(language_version: :infos).merge(languages_infos)
       .includes(:lesson, :version)
-      .select(:locale, :name, :language_id, :language_lesson_id, :version_id, "language_lesson_versions.natural_order", "language_lesson_versions.lesson_id", "language_lessons.slug")
+      .select(
+        :locale,
+        :name,
+        :language_id,
+        :language_lesson_id,
+        :version_id,
+        "language_lesson_versions.natural_order",
+        "language_lesson_versions.lesson_id",
+        "language_lessons.slug"
+      )
       .distinct
       .order("language_lesson_versions.natural_order ASC")
       .group_by(&:locale)
@@ -109,7 +118,7 @@ class Web::HomeController < Web::ApplicationController
     render inertia: true, props: {
       title:,
       orderedLocales: ordered_locales,
-      coursesByLocale: language_info_resources_by_locale,
+      coursesByLocale: language_landing_page_resources_by_locale,
       lessonsByLocaleAndLanguageId: lesson_resources_by_locale_and_language_id,
       blogPostsByLocale: blog_post_resources_by_locale
     }

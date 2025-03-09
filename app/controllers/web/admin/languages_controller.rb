@@ -13,24 +13,26 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   end
 
   def new
-    language = Language.new
+    language = Admin::LanguageForm.new
     render inertia: true, props: {
-      course: LanguageResource.new(language)
+      courseDto: LanguageCrudResource.new(language)
     }
   end
 
   def edit
-    language = Language.find(params[:id])
+    language = Admin::LanguageForm.find(params[:id])
     versions = language.versions.limit(5).order(created_at: :desc)
+    landing_page = language.landing_pages.published.find_by!(locale: I18n.locale, main: true)
 
     render inertia: true, props: {
-      course: LanguageResource.new(language),
+      courseDto: LanguageCrudResource.new(language),
+      landingPage: Language::LandingPageResource.new(landing_page),
       courseVersions: Language::VersionResource.new(versions)
     }
   end
 
   def create
-    language = Language.new(language_params)
+    language = Admin::LanguageForm.new(params[:language])
 
     if language.save
       f(:success)
@@ -42,19 +44,13 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   end
 
   def update
-    language = Language.find(params[:id])
+    language = Admin::LanguageForm.find(params[:id])
 
-    if language.update(language_params)
+    if language.update(params[:language])
       f(:success)
     else
       f(:error)
     end
     redirect_to_inertia edit_admin_language_path(language), language
-  end
-
-  private
-
-  def language_params
-    params.require(:language).permit!
   end
 end

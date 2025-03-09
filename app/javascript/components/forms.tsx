@@ -1,6 +1,9 @@
+import type { SharedProps } from "@/types";
 import { LanguageLandingPageCrud } from "@/types/serializers";
+import { usePage } from "@inertiajs/react";
 import axios from "axios";
 import cn from "classnames";
+import debug from "debug";
 import { get } from "es-toolkit/compat";
 import { first } from "es-toolkit/compat";
 import {
@@ -35,6 +38,8 @@ type XFormCheckProps = FormCheckProps & {
   name: string;
 };
 
+const debugLog = debug("app:xform");
+
 export function XForm<TForm extends NestedObject>({
   children,
   railsAttributes = true,
@@ -62,6 +67,7 @@ export function XInput({ name, model, as, ...props }: XFormControlProps) {
   >({
     name,
     model,
+    errorKey: name,
   });
 
   const errors = error ? [error].flat() : [];
@@ -101,29 +107,37 @@ export function XInput({ name, model, as, ...props }: XFormControlProps) {
 
 type XFileProps = InputHTMLAttributes<HTMLInputElement> &
   AsProp & {
-    fieldName: string;
+    metaName: string;
     model?: string;
     name: string;
   };
 
-export function XFile({ name, model, fieldName }: XFileProps) {
+export function XFile({ name, model, metaName }: XFileProps) {
+  const {
+    props: { railsDirectUploadsUrl },
+  } = usePage<SharedProps>();
   const { inputName, setValue, error, form } = useInertiaInput<
     undefined | File
   >({
     name,
+    errorKey: name,
     model,
   });
 
-  const imageUrl = get(form.data, [form.model!, fieldName]);
-
-  // console.log(form)
+  const imageUrl = get(form.data, ["meta", metaName]);
+  if (!imageUrl) {
+    debugLog(
+      "imageUrl is not found",
+      ["form.data", "meta", metaName].join("."),
+    );
+  }
 
   const errors = error ? [error].flat() : [];
 
   // const path = `attributes.${form.model}.${name}`;
   // const label = tAr(path, tAm(path));
 
-  const controlClasses = cn({
+  const controlClasses = cn("form-control", {
     "is-invalid": errors.length > 0,
   });
 
@@ -132,9 +146,11 @@ export function XFile({ name, model, fieldName }: XFileProps) {
 
   return (
     <Form.Group className="mb-4">
-      <Form.Control
+      {/* <Form.Control type="hidden" name={inputName} value={form.data.meta.cover_signed_id} /> */}
+      <input
         type="file"
         name={inputName}
+        data-direct-upload-url={railsDirectUploadsUrl}
         // value={value}
         className={controlClasses}
         onChange={handleChange}
@@ -230,6 +246,7 @@ export function XCheck({ name, model, type, ...props }: XFormCheckProps) {
   const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
     name,
     model,
+    errorKey: name,
   });
   // console.log(form, value)
 
@@ -295,6 +312,7 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
   const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
     name,
     model,
+    errorKey: name,
   });
 
   const realError = has ? form.errors[`${form.model}.${has}`] : error;

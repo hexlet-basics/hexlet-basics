@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 
 import CourseBlock from "@/components/CourseBlock";
 import XssContent from "@/components/XssContent";
-import { deviconClass } from "@/lib/utils";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import * as Routes from "@/routes.js";
 import type { BreadcrumbItem, SharedProps } from "@/types";
@@ -69,14 +68,6 @@ export default function Show({
         )}
         <div className="p-5 text-center bg-body-tertiary rounded-3 mb-5 border">
           <div className="d-flex justify-content-center align-items-center">
-            <i
-              className={cn(
-                deviconClass(courseLandingPage.slug),
-                "colored",
-                "fs-3",
-                "me-2",
-              )}
-            />
             <h1>{courseLandingPage.header}</h1>
           </div>
           <p className="col-lg-8 mx-auto fs-5 text-muted">

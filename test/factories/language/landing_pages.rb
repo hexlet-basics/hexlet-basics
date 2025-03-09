@@ -6,6 +6,7 @@
 #  description          :string
 #  header               :string
 #  locale               :string
+#  main                 :boolean
 #  meta_description     :string
 #  meta_title           :string
 #  order                :string

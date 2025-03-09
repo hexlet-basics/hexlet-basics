@@ -1,9 +1,14 @@
 import { useTranslation } from "react-i18next";
 
-import { XForm, XInput, XSelect, XStateEvent } from "@/components/forms";
+import {
+  XCheck,
+  XForm,
+  XInput,
+  XSelect,
+  XStateEvent,
+} from "@/components/forms";
 import { type HTTPVerb, Submit } from "use-inertia-form";
 
-import { enumToOptions } from "@/lib/utils";
 import type { SharedProps } from "@/types";
 import type { LanguageLandingPageCrud } from "@/types/serializers";
 import { usePage } from "@inertiajs/react";
@@ -37,6 +42,7 @@ export default function Form({ data, url, method }: Props) {
 
   return (
     <XForm method={method} model="language_landing_page" data={data} to={url}>
+      <XCheck name="main" />
       <XStateEvent fieldName="state" />
       <XSelect
         name="language_category_id"

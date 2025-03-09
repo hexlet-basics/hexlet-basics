@@ -3,13 +3,14 @@ import { Nav } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
 import * as Routes from "@/routes.js";
-import type { Language } from "@/types/serializers";
+import type { LanguageCrud, LanguageLandingPage } from "@/types/serializers";
 
 type Props = {
-  data?: Language;
+  data?: LanguageCrud;
+  landingPage?: LanguageLandingPage | null;
 };
 
-export function Menu({ data }: Props) {
+export function Menu({ data, landingPage }: Props) {
   const { url } = usePage();
   const { t: tHelpers } = useTranslation("helpers");
 
@@ -36,25 +37,27 @@ export function Menu({ data }: Props) {
           <Nav.Item>
             <Nav.Link
               className="link-body-emphasis"
-              href={Routes.edit_admin_language_path(data.id)}
+              href={Routes.edit_admin_language_path(data.language.id)}
             >
               {tHelpers("crud.editing")}
             </Nav.Link>
           </Nav.Item>
+          {landingPage && (
+            <Nav.Item>
+              <Nav.Link
+                target="_blank"
+                className="link-body-emphasis"
+                href={Routes.language_path(landingPage.slug)}
+              >
+                <i className="bi bi-arrow-up-right-square" />
+              </Nav.Link>
+            </Nav.Item>
+          )}
           <Nav.Item>
             <Nav.Link
               target="_blank"
               className="link-body-emphasis"
-              href={Routes.language_path(data.slug!)}
-            >
-              <i className="bi bi-arrow-up-right-square" />
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link
-              target="_blank"
-              className="link-body-emphasis"
-              href={data.repository_url!}
+              href={data.meta.repository_url}
             >
               <i className="bi bi-github" />
             </Nav.Link>

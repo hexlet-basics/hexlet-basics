@@ -2,16 +2,16 @@ import * as Routes from "@/routes.js";
 import { useTranslation } from "react-i18next";
 
 import AdminLayout from "@/pages/layouts/AdminLayout";
-import type { Language } from "@/types/serializers";
+import type LanguageCrud from "@/types/serializers/LanguageCrud";
 import { Col, Row } from "react-bootstrap";
 import Form from "./shared/form";
 import { Menu } from "./shared/menu";
 
 type Props = {
-  course: Language;
+  courseDto: LanguageCrud;
 };
 
-export default function New({ course }: Props) {
+export default function New({ courseDto }: Props) {
   const { t } = useTranslation();
 
   return (
@@ -19,7 +19,7 @@ export default function New({ course }: Props) {
       <Menu />
       <Row>
         <Col className="col-7">
-          <Form data={course} url={Routes.admin_languages_path()} />
+          <Form data={courseDto} url={Routes.admin_languages_path()} />
         </Col>
       </Row>
     </AdminLayout>

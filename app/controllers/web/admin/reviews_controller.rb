@@ -3,7 +3,7 @@
 class Web::Admin::ReviewsController < Web::Admin::ApplicationController
   def index
     q = ransack_params("sf" => "created_at", "so" => "0")
-    search = Review.includes([ :user ]).ransack(q)
+    search = Review.with_locale.includes([ :user ]).ransack(q)
     pagy, records = pagy(search.result)
 
     render inertia: true, props: {
@@ -34,6 +34,7 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
 
   def create
     review = Admin::ReviewForm.new(params[:review])
+    review.locale = I18n.locale
 
     if review.save
       f(:success)
@@ -46,6 +47,7 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
 
   def update
     review = Admin::ReviewForm.find(params[:id])
+    review.locale = I18n.locale
 
     if review.update(params[:review])
       f(:success)

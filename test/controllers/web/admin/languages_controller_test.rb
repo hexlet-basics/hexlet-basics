@@ -37,10 +37,11 @@ class Web::Admin::LanguagesControllerTest < ActionDispatch::IntegrationTest
   test "update" do
     language = languages(:php)
 
-    patch admin_language_url(language), params: { language: { progress: "in_development" } }
+    params = { language: { progress: "in_development" } }
+    patch admin_language_url(language), params: params
     assert_response :redirect
 
     language.reload
-    assert { language.progress.in_development? }
+    assert { language.in_development_progress? }
   end
 end

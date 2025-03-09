@@ -6,6 +6,7 @@
 #  description          :string
 #  header               :string
 #  locale               :string
+#  main                 :boolean
 #  meta_description     :string
 #  meta_title           :string
 #  order                :string
@@ -43,6 +44,7 @@ pre-course-javascript1-ru:
 javascript-ru:
   <<: *DEFAULTS
   language: javascript
+  main: true
   locale: ru
 
 frontend-ru:
@@ -61,6 +63,7 @@ frontend-en:
 elixir-ru:
   <<: *DEFAULTS
   language: elixir
+  main: true
   locale: ru
 
 nodejs-ru:
@@ -75,65 +78,77 @@ nodejs-en:
 
 php-ru:
   <<: *DEFAULTS
+  main: true
   language: php
   locale: ru
 
 php-en:
   <<: *DEFAULTS
+  main: true
   language: php
   locale: en
 
 ruby-ru:
   <<: *DEFAULTS
+  main: true
   language: ruby
   locale: ru
 
 
 ruby-en:
   <<: *DEFAULTS
+  main: true
   language: ruby
   locale: en
 
 go-ru:
   <<: *DEFAULTS
+  main: true
   language: go
   locale: ru
 
 
 go-en:
   <<: *DEFAULTS
+  main: true
   language: go
   locale: en
 
 java-ru:
   <<: *DEFAULTS
+  main: true
   language: java
   locale: ru
 
 
 java-en:
   <<: *DEFAULTS
+  main: true
   language: java
   locale: en
 
 csharp-ru:
   <<: *DEFAULTS
+  main: true
   language: csharp
   locale: ru
 
 csharp-en:
   <<: *DEFAULTS
+  main: true
   language: csharp
   locale: en
 
 css-en:
   <<: *DEFAULTS
+  main: true
   language: css
   language_category: layouting
   locale: en
 
 css-ru:
   <<: *DEFAULTS
+  main: true
   language: css
   language_category: layouting
   locale: ru

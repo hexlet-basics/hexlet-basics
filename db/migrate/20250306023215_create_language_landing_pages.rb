@@ -8,6 +8,7 @@ class CreateLanguageLandingPages < ActiveRecord::Migration[8.0]
       t.string :header
       t.string :slug
       t.string :order
+      t.boolean :main
       t.string :state
       t.string :description
       t.string :meta_description

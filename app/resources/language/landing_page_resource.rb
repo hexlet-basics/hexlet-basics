@@ -32,8 +32,8 @@ class Language::LandingPageResource
     lp.language&.members_count || 0
   end
 
-  typelize :string
-  attribute :cover do |lp|
-    "#{lp.language&.slug}.png"
-  end
+  # typelize :string
+  # attribute :cover do |lp|
+  #   "#{lp.language&.slug}.png"
+  # end
 end

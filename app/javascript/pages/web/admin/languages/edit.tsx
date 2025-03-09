@@ -1,7 +1,11 @@
 import { DTDateTemplate } from "@/components/dtTemplates";
 import AdminLayout from "@/pages/layouts/AdminLayout";
 import * as Routes from "@/routes.js";
-import type { Language, LanguageVersion } from "@/types/serializers";
+import type {
+  LanguageCrud,
+  LanguageLandingPage,
+  LanguageVersion,
+} from "@/types/serializers";
 import { Link } from "@inertiajs/react";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
@@ -12,22 +16,29 @@ import Form from "./shared/form";
 import { Menu } from "./shared/menu";
 
 type Props = {
-  course: Language;
+  courseDto: LanguageCrud;
+  landingPage: LanguageLandingPage;
   courseVersions: LanguageVersion[];
 };
 
-export default function Edit({ course, courseVersions }: Props) {
+export default function Edit({
+  courseDto,
+  courseVersions,
+  landingPage,
+}: Props) {
   const { t } = useTranslation();
 
   return (
-    <AdminLayout header={t("admin.languages.edit.header", { id: course.id })}>
-      <Menu data={course} />
+    <AdminLayout
+      header={t("admin.languages.edit.header", { id: courseDto.meta.slug })}
+    >
+      <Menu data={courseDto} landingPage={landingPage} />
       <Row>
         <Col className="col-4">
           <Form
             method="patch"
-            data={course}
-            url={Routes.admin_language_path(course.id)}
+            data={courseDto}
+            url={Routes.admin_language_path(courseDto.language.id)}
           />
         </Col>
         <Col>
@@ -36,7 +47,7 @@ export default function Edit({ course, courseVersions }: Props) {
             <Link
               method="post"
               className="btn btn-sm btn-outline-secondary"
-              href={Routes.admin_language_versions_path(course.id)}
+              href={Routes.admin_language_versions_path(courseDto.language.id)}
             >
               Load New Version
             </Link>

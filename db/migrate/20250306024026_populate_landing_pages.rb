@@ -5,6 +5,7 @@ class PopulateLandingPages < ActiveRecord::Migration[8.0]
       p.language = i.language
       p.locale = i.locale
       p.slug = i.language.slug
+      p.main = true
       p.language_category = i.language.category
       p.header = i.header
       p.meta_title = i.title

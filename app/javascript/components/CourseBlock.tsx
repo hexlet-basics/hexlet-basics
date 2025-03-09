@@ -19,11 +19,11 @@ export default function CourseBlock({ landingPage, courseMember }: Props) {
 
   return (
     <Card className="h-100 shadow-sm bg-body-tertiary">
-      {/* <Card.Img */}
-      {/*   variant="top" */}
-      {/*   src={getImageUrl(landingPage.cover!)} */}
-      {/*   alt={landingPage.header} */}
-      {/* /> */}
+      <Card.Img
+        variant="top"
+        src={landingPage.language.cover_list_variant}
+        alt={landingPage.header}
+      />
       {/* {languageMembersByLanguage && */}
       {/*   languageMembersByLanguage[language.id]?.finished && ( */}
       {/*     <div className="card-img-overlay m-auto bg-light text-center shadow-sm p-1"> */}

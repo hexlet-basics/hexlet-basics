@@ -23,21 +23,16 @@ export default function Form({ data, url, method }: Props) {
   return (
     <Row>
       <Col className="col-7">
-        <XForm
-          method={method}
-          model="blog_post"
-          data={{ blog_post: data }}
-          to={url}
-        >
+        <XForm method={method} model="blog_post" data={data} to={url}>
           <XStateEvent fieldName="state" />
-          <XSelect
-            name="locale"
-            labelField="name"
-            valueField="code"
-            items={locales}
-          />
+          {/* <XSelect */}
+          {/*   name="locale" */}
+          {/*   labelField="name" */}
+          {/*   valueField="code" */}
+          {/*   items={locales} */}
+          {/* /> */}
           <XInput name="name" />
-          <XFile fieldName="cover_thumb_variant" name="cover" />
+          <XFile metaName="cover_thumb_variant" name="cover" />
           <XInput name="slug" />
           <XInput
             name="description"

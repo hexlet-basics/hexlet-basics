@@ -18,10 +18,12 @@ class Web::ApplicationController < ApplicationController
 
   inertia_share do
     language_categories = Language::Category.all
-    landing_pages = Language::LandingPage.with_locale
+    landing_pages = Language::LandingPage.with_locale.where(main: true)
+      .includes({ language: [ :cover_attachment, :current_version ] })
 
     {
       courseCategories: Language::CategoryResource.new(language_categories),
+      railsDirectUploadsUrl: view_context.rails_direct_uploads_url,
       landingPagesForLists: Language::LandingPageForListsResource.new(landing_pages),
       locale: I18n.locale,
       suffix: I18n.locale == :en ? nil : I18n.locale,

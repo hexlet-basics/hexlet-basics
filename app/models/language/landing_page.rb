@@ -6,6 +6,7 @@
 #  description          :string
 #  header               :string
 #  locale               :string
+#  main                 :boolean
 #  meta_description     :string
 #  meta_title           :string
 #  order                :string
@@ -35,6 +36,7 @@ class Language::LandingPage < ApplicationRecord
   validates :meta_title, presence: true
   validates :header, presence: true
   validates :slug, presence: true, uniqueness: { scope: :locale }
+  validates :main, uniqueness: { scope: [ :locale, :language_id ] }
   # validates :description, presence: true
   validates :locale, presence: true # , inclusion: I18n.available_locales
 

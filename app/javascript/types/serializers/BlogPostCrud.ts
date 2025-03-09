@@ -12,7 +12,7 @@ type BlogPostCrudData = {
 
 type BlogPostCrud = {
   blog_post: BlogPostCrudData;
-  meta: { state_events: Array<[string, string]>};
+  meta: { cover_thumb_url: string, state_events: Array<[string, string]>};
 }
 
 export default BlogPostCrud;

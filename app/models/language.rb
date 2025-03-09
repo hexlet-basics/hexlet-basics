@@ -40,7 +40,12 @@ class Language < ApplicationRecord
   # TODO: remove name
   include LanguageRepository
 
-  extend Enumerize
+  has_one_attached :cover do |attachable|
+    attachable.variant :list, resize_to_limit: [ 390, 320 ], preprocessed: true
+    attachable.variant :thumb, resize_to_limit: [ 39, 32 ], preprocessed: true
+  end
+
+  # extend Enumerize
 
   def self.ransackable_associations(_)
     []
@@ -50,14 +55,10 @@ class Language < ApplicationRecord
     [ "created_at", "learn_as", "progress" ]
   end
 
-  # enumerize :slug, in: %i[ada bash clang clojure cobol cpp csharp css crystal dart dlang elixir elm fortran go groovy haskell html java
-  #                         javascript kotlin lua objectivec ocaml perl php prolog python racket rescript rproject ruby
-  #                         rust scala smalltalk swift typescript perl powershell ocaml layout-designer pre-course-java pre-course-python
-  #                         pre-course-javascript]
-
-  enumerize :progress, in: %i[completed in_development draft], default: :draft, scope: true, predicates: { prefix: true }
-  # TODO: move to language version and populate inside the job
-  enumerize :learn_as, in: %i[first_language second_language], default: :first_language
+  enum :progress, { completed: "completed", in_development: "in_development", draft: "draft" }, default: "draft", suffix: true, validate: true
+  enum :learn_as, { first_language: "first_language", second_language: "second_language" }, default: "first_language", suffix: true, validate: true
+  # enumerize :progress, in: %i[completed in_development draft], default: :draft, scope: true, predicates: { prefix: true }
+  # enumerize :learn_as, in: %i[first_language second_language], default: :first_language
 
   # NOTE: must be part of the docker image: hexlet-basics/exercises-<slug>
   validates :slug, presence: true

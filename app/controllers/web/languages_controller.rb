@@ -67,7 +67,7 @@ class Web::LanguagesController < Web::ApplicationController
       courseModules: Language::ModuleResource.new(language_modules_infos),
       lessonsByModuleId: lesson_resources_by_module_id,
       courseMember: language_member && Language::MemberResource.new(language_member),
-      recommendedCourseLandingPages: Language::LandingPageResource.new(recommendedCourseLandingPages)
+      recommendedCourseLandingPages: Language::LandingPageForListsResource.new(recommendedCourseLandingPages)
     }
   end
 end

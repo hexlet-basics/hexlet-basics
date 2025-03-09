@@ -1,15 +1,15 @@
 import { useTranslation } from "react-i18next";
 
-import { XForm, XInput, XSelect } from "@/components/forms";
-import type { Language } from "@/types/serializers";
+import { XFile, XForm, XInput, XSelect } from "@/components/forms";
 import { type HTTPVerb, Submit } from "use-inertia-form";
 
 import { enumToOptions } from "@/lib/utils";
 import type { SharedProps } from "@/types";
+import type LanguageCrud from "@/types/serializers/LanguageCrud";
 import { usePage } from "@inertiajs/react";
 
 type Props = {
-  data: Language;
+  data: LanguageCrud;
   url: string;
   method?: HTTPVerb;
 };
@@ -20,8 +20,6 @@ const locales = [
 ];
 
 export default function Form({ data, url, method }: Props) {
-  const { t } = useTranslation();
-  const { courseCategories } = usePage<SharedProps>().props;
   const { t: tHelpers } = useTranslation("helpers");
   const { t: tEnums } = useTranslation("enumerize");
   const languageProgressEnum = tEnums("language.progress", {
@@ -35,13 +33,7 @@ export default function Form({ data, url, method }: Props) {
   const languageLearnAsEnumOptions = enumToOptions(languageLearnAsEnum);
 
   return (
-    <XForm method={method} model="language" data={{ language: data }} to={url}>
-      <XSelect
-        name="category_id"
-        labelField="name"
-        valueField="id"
-        items={courseCategories}
-      />
+    <XForm method={method} model="language" data={data} to={url}>
       <XSelect
         name="progress"
         labelField="name"
@@ -55,6 +47,7 @@ export default function Form({ data, url, method }: Props) {
         items={languageLearnAsEnumOptions}
       />
       <XInput name="slug" />
+      <XFile metaName="cover_thumb_variant_url" name="cover" />
 
       <Submit className="btn w-100 btn-lg btn-primary mb-3">
         {tHelpers("submit.save")}

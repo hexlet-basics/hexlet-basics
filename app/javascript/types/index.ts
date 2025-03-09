@@ -40,6 +40,7 @@ export interface SharedProps extends PageProps {
   auth: {
     user: User;
   };
+  railsDirectUploadsUrl: string;
   courseCategories: LanguageCategory[];
   suffix: "ru" | null;
   locale: Locale;

@@ -70,6 +70,7 @@ export default function Index({ grid, landingPages }: Props) {
         value={landingPages}
       >
         <Column field="id" header="id" />
+        <Column field="main" header="main" />
         <Column field="state" header="state" />
         <Column field="order" header="order" />
         <Column

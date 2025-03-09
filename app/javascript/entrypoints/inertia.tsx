@@ -1,8 +1,13 @@
 import Root from "@/components/Root.tsx";
 import { createInertiaApp } from "@inertiajs/react";
+import * as ActiveStorage from "@rails/activestorage";
 import * as Sentry from "@sentry/react";
 import type { ReactNode } from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
+
+ActiveStorage.start();
+
+localStorage.debug = "app:*";
 
 // Temporary type definition, until @inertiajs/react provides one
 type ResolvedComponent = {

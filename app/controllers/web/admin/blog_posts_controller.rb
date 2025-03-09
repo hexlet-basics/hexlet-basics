@@ -3,7 +3,7 @@
 class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
   def index
     q = ransack_params("sf" => "created_at", "so" => "0")
-    search = BlogPost.includes([ :cover_attachment ]).ransack(q)
+    search = BlogPost.with_locale.includes([ :cover_attachment ]).ransack(q)
     pagy, records = pagy(search.result)
 
     render inertia: true, props: {
@@ -17,7 +17,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
     blog_post.creator = current_user
 
     render inertia: true, props: {
-      blogPostDto: BlogPostResource.new(blog_post)
+      blogPostDto: BlogPostCrudResource.new(blog_post)
     }
   end
 
@@ -25,12 +25,13 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
     blog_post = Admin::BlogPostForm.find(params[:id])
 
     render inertia: true, props: {
-      blogPostDto: BlogPostResource.new(blog_post)
+      blogPostDto: BlogPostCrudResource.new(blog_post)
     }
   end
 
   def create
     blog_post = Admin::BlogPostForm.new(params[:blog_post])
+    blog_post.locale = I18n.locale
     blog_post.creator = current_user
 
     if blog_post.save
@@ -44,7 +45,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
 
   def update
     blog_post = Admin::BlogPostForm.find(params[:id])
-    # raise params[:cover].inspect
+    blog_post.locale = I18n.locale
 
     if blog_post.update(params[:blog_post])
       f(:success)

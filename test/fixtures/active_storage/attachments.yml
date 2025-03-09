@@ -1,3 +1,8 @@
+language_javascript:
+  name: cover
+  record: javascript (Language)
+  blob: language_cover_blog
+
 blog_post_from_full_cover:
   name: cover
   record: from-full (BlogPost)

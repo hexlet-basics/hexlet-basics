@@ -75,7 +75,9 @@ Rails.application.routes.draw do
         resources :reviews
         resources :blog_posts
         resources :languages, only: %i[index new edit update create] do
-          resources :versions, only: %i[create]
+          scope module: :languages do
+            resources :versions, only: %i[create]
+          end
         end
         resources :language_landing_pages
 
