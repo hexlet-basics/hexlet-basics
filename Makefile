@@ -58,8 +58,13 @@ check-types:
 	npm run check
 
 lint:
-	bin/rubocop -x
+	npx tsc --build
+	bin/rubocop
 	npx @biomejs/biome check
+
+lint-fix:
+	bin/rubocop -x
+	npx @biomejs/biome check --fix --unsafe
 
 docker-build:
 	docker build . -t hexlet-basics/hexlet-basics

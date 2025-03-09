@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_01_133129) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_06_024026) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -91,6 +91,23 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_01_133129) do
     t.string "slug"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "language_landing_pages", force: :cascade do |t|
+    t.integer "language_id", null: false
+    t.integer "language_category_id"
+    t.string "meta_title"
+    t.string "locale"
+    t.string "header"
+    t.string "slug"
+    t.string "order"
+    t.string "state"
+    t.string "description"
+    t.string "meta_description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["language_category_id"], name: "index_language_landing_pages_on_language_category_id"
+    t.index ["language_id"], name: "index_language_landing_pages_on_language_id"
   end
 
   create_table "language_lesson_members", force: :cascade do |t|
@@ -464,6 +481,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_01_133129) do
   add_foreign_key "blog_posts", "languages"
   add_foreign_key "blog_posts", "users", column: "creator_id"
   add_foreign_key "event_store_events_in_streams", "event_store_events", column: "event_id", primary_key: "event_id"
+  add_foreign_key "language_landing_pages", "language_categories"
+  add_foreign_key "language_landing_pages", "languages"
   add_foreign_key "language_lesson_members", "language_lessons", column: "lesson_id"
   add_foreign_key "language_lesson_members", "language_members"
   add_foreign_key "language_lesson_members", "users"

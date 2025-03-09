@@ -3,20 +3,21 @@ import { useTranslation } from "react-i18next";
 
 import AdminLayout from "@/pages/layouts/AdminLayout";
 import type { BlogPost } from "@/types/serializers";
+import type BlogPostCrud from "@/types/serializers/BlogPostCrud";
 import Form from "./shared/form";
 import { Menu } from "./shared/menu";
 
 type Props = {
-  blog_post: BlogPost;
+  blogPostDto: BlogPostCrud;
 };
 
-export default function New({ blog_post }: Props) {
+export default function New({ blogPostDto }: Props) {
   const { t } = useTranslation();
 
   return (
     <AdminLayout header={t("admin.blog_posts.new.header")}>
       <Menu />
-      <Form data={blog_post} url={Routes.admin_blog_posts_path()} />
+      <Form data={blogPostDto} url={Routes.admin_blog_posts_path()} />
     </AdminLayout>
   );
 }

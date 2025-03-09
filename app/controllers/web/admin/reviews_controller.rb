@@ -17,8 +17,8 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
     languages = Language.all
 
     render inertia: true, props: {
-      review: ReviewResource.new(review),
-      courses: OriginalLanguageResource.new(languages)
+      reviewDto: ReviewCrudResource.new(review),
+      courses: LanguageResource.new(languages)
     }
   end
 
@@ -27,8 +27,8 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
     languages = Language.all
 
     render inertia: true, props: {
-      review: ReviewResource.new(review),
-      courses: OriginalLanguageResource.new(languages)
+      reviewDto: ReviewCrudResource.new(review),
+      courses: LanguageResource.new(languages)
     }
   end
 

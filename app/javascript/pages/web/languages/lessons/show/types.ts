@@ -2,14 +2,16 @@ import type { SharedProps } from "@/types";
 import type {
   Language,
   LanguageCategory,
+  LanguageLandingPageForLists,
   LanguageLesson,
   LanguageLessonMember,
   LessonCheckingResponse,
 } from "@/types/serializers";
 
 export type LessonSharedProps = SharedProps & {
-  courseCategory: LanguageCategory;
   course: Language;
+  courseCategory: LanguageCategory;
+  landingPage: LanguageLandingPageForLists;
   prevLesson?: LanguageLesson;
   nextLesson?: LanguageLesson;
   lessonMember?: LanguageLessonMember;

@@ -1,14 +1,12 @@
-import { type PropsWithChildren, useEffect } from "react";
-import { Card, Col, Container, Nav, Row } from "react-bootstrap";
+import type { PropsWithChildren } from "react";
+import { Col, Container, Nav, Row } from "react-bootstrap";
 
 import { useTranslation } from "react-i18next";
 
 import * as Routes from "@/routes.js";
 
 import XFlash from "@/components/XFlash.tsx";
-import type { SharedProps } from "@/types/index.js";
-import { Head, Link, usePage } from "@inertiajs/react";
-import i18next from "i18next";
+import { Link } from "@inertiajs/react";
 import RootLayout from "./RootLayout.tsx";
 import FooterBlock from "./blocks/FooterBlock.tsx";
 import NavbarBlock from "./blocks/NavbarBlock.tsx";
@@ -57,6 +55,15 @@ export default function AdminLayout({ children, header }: Props) {
                 >
                   <i className="bi bi-terminal me-2" />
                   {tLayouts("web.admin.application.languages")}
+                </Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Link
+                  className="nav-link fw-medium link-body-emphasis"
+                  href={Routes.admin_language_landing_pages_path()}
+                >
+                  <i className="bi bi-terminal me-2" />
+                  {tLayouts("web.admin.application.language_landing_pages")}
                 </Link>
               </Nav.Item>
               <Nav.Item>

@@ -6,12 +6,12 @@ import type { BackendEvent } from "./events";
 import type {
   Language,
   LanguageCategory,
+  LanguageLandingPageForLists,
   LanguageVersion,
-  OriginalLanguage,
   User,
 } from "./serializers";
 
-export type { SortOrder, User, LanguageVersion, OriginalLanguage };
+export type { SortOrder, User, LanguageVersion, Language };
 
 export type BreadcrumbItem = {
   name: string;
@@ -45,7 +45,7 @@ export interface SharedProps extends PageProps {
   locale: Locale;
   events: BackendEvent[] | null;
   flash: Partial<Record<FlashKey, string | null>>;
-  courses: Language[];
+  landingPagesForLists: LanguageLandingPageForLists[];
   mobileBrowser: boolean;
   carrotQuestUserHash: string | null;
   metaTagsHTMLString: string;

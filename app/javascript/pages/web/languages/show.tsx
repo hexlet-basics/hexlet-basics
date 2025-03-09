@@ -10,8 +10,9 @@ import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import * as Routes from "@/routes.js";
 import type { BreadcrumbItem, SharedProps } from "@/types";
 import type {
-  Language,
   LanguageCategory,
+  LanguageLandingPage,
+  LanguageLandingPageForLists,
   LanguageLesson,
   LanguageMember,
   LanguageModule,
@@ -22,12 +23,12 @@ type Props = {
   courseMember?: LanguageMember;
   finishedLessonIds: number[];
   courseCategory: LanguageCategory;
-  course: Language;
+  courseLandingPage: LanguageLandingPage;
   firstLesson: LanguageLesson;
   nextLesson?: LanguageLesson;
   // user: User;
   courseModules: LanguageModule[];
-  recommendedCourses: Language[];
+  recommendedCourseLandingPages: LanguageLandingPageForLists[];
   lessonsByModuleId: {
     [moduleId: number]: LanguageLesson[];
   };
@@ -36,12 +37,12 @@ type Props = {
 export default function Show({
   firstLesson,
   nextLesson,
-  course,
+  courseLandingPage,
   courseMember,
   courseCategory,
   courseModules,
   finishedLessonIds,
-  recommendedCourses,
+  recommendedCourseLandingPages,
   lessonsByModuleId,
 }: Props) {
   const { t } = useTranslation();
@@ -49,12 +50,12 @@ export default function Show({
 
   const breadcrumbItems: BreadcrumbItem[] = [
     {
-      name: courseCategory.name!,
+      name: courseCategory.name,
       url: Routes.language_category_path(courseCategory.slug!),
     },
     {
-      name: course.name!,
-      url: Routes.language_path(course.slug!),
+      name: courseLandingPage.header,
+      url: Routes.language_path(courseLandingPage.slug),
     },
   ];
 
@@ -70,16 +71,16 @@ export default function Show({
           <div className="d-flex justify-content-center align-items-center">
             <i
               className={cn(
-                deviconClass(course.slug!),
+                deviconClass(courseLandingPage.slug),
                 "colored",
                 "fs-3",
                 "me-2",
               )}
             />
-            <h1>{course.name}</h1>
+            <h1>{courseLandingPage.header}</h1>
           </div>
           <p className="col-lg-8 mx-auto fs-5 text-muted">
-            {course.description!}
+            {courseLandingPage.description}
           </p>
           <Row className="row-cols-1 row-cols-sm-2 justify-content-center">
             {!courseMember && (
@@ -87,8 +88,8 @@ export default function Show({
                 <Link
                   className="btn d-block btn-primary"
                   href={Routes.language_lesson_path(
-                    course.slug!,
-                    firstLesson.slug!,
+                    courseLandingPage.language.slug!,
+                    firstLesson.slug,
                   )}
                 >
                   <span className="me-2">{t("languages.show.start")}</span>
@@ -101,8 +102,8 @@ export default function Show({
                 <Link
                   className="btn d-block btn-outline-primary"
                   href={Routes.language_lesson_path(
-                    course.slug!,
-                    nextLesson.slug!,
+                    courseLandingPage.language.slug!,
+                    nextLesson.slug,
                   )}
                 >
                   <span className="me-2">{t("languages.show.continue")}</span>
@@ -134,7 +135,7 @@ export default function Show({
                         <Link
                           className="text-decoration-none stretched-link d-flex"
                           href={Routes.language_lesson_path(
-                            course.slug!,
+                            courseLandingPage.language.slug!,
                             l.slug!,
                           )}
                         >
@@ -170,7 +171,7 @@ export default function Show({
                   <Link
                     className="btn btn-lg btn-outline-primary"
                     href={Routes.language_lesson_path(
-                      course.slug!,
+                      courseLandingPage.language.slug!,
                       firstLesson.slug!,
                     )}
                   >
@@ -197,9 +198,9 @@ export default function Show({
             </div>
 
             <Row className="row row-cols-2 row-cols-md-4 g-3">
-              {recommendedCourses.map((l) => (
-                <Col key={l.id}>
-                  <CourseBlock course={l} />
+              {recommendedCourseLandingPages.map((lp) => (
+                <Col key={lp.id}>
+                  <CourseBlock landingPage={lp} />
                 </Col>
               ))}
             </Row>

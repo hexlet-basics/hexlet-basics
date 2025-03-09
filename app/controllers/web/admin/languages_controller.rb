@@ -3,11 +3,11 @@
 class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   def index
     q = ransack_params("sf" => "created_at", "so" => "0")
-    search = Language.includes([ :current_version ]).ransack(q)
+    search = Language.ransack(q)
     pagy, records = pagy(search.result)
 
     render inertia: true, props: {
-      originalCourses: OriginalLanguageResource.new(records),
+      courses: LanguageResource.new(records),
       grid: GridResource.new(grid_params(pagy))
     }
   end
@@ -15,7 +15,7 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   def new
     language = Language.new
     render inertia: true, props: {
-      originalCourse: OriginalLanguageResource.new(language)
+      course: LanguageResource.new(language)
     }
   end
 
@@ -24,7 +24,7 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
     versions = language.versions.limit(5).order(created_at: :desc)
 
     render inertia: true, props: {
-      originalCourse: OriginalLanguageResource.new(language),
+      course: LanguageResource.new(language),
       courseVersions: Language::VersionResource.new(versions)
     }
   end
@@ -55,6 +55,6 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   private
 
   def language_params
-    params.require(:language).permit(:slug, :progress, :learn_as, :order, :category_id)
+    params.require(:language).permit!
   end
 end

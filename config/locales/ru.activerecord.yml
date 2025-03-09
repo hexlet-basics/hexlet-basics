@@ -1,6 +1,14 @@
 ru:
   activerecord:
     attributes:
+      language_landing_page:
+        language_id: Курс
+        meta_title: Meta Title
+        meta_description: Meta Description
+        description: Описание
+        header: Заголовок
+        slug: Slug
+        order: Order
       language:
         category_id: Категория
         slug: Slug

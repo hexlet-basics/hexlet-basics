@@ -1,0 +1,140 @@
+# == Schema Information
+#
+# Table name: language_landing_pages
+#
+#  id                   :integer          not null, primary key
+#  description          :string
+#  header               :string
+#  locale               :string
+#  meta_description     :string
+#  meta_title           :string
+#  order                :string
+#  slug                 :string
+#  state                :string
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  language_category_id :integer
+#  language_id          :integer          not null
+#
+# Indexes
+#
+#  index_language_landing_pages_on_language_category_id  (language_category_id)
+#  index_language_landing_pages_on_language_id           (language_id)
+#
+# Foreign Keys
+#
+#  language_category_id  (language_category_id => language_categories.id)
+#  language_id           (language_id => languages.id)
+#
+DEFAULTS: &DEFAULTS
+  description: $LABEL - Бесплатное обучение программированию от сообщества Хекслет. Онлайн курс посвящен азам написания программ на Javascript с нуля
+  language_category: programming
+  meta_description: $LABEL - Бесплатное обучение программированию от сообщества Хекслет. Онлайн курс посвящен азам написания программ на Javascript с нуля
+  meta_title: $LABEL
+  state: published
+  slug: $LABEL
+  header: $LABEL
+
+pre-course-javascript1-ru:
+  <<: *DEFAULTS
+  language: pre-course-javascript
+  locale: ru
+
+javascript-ru:
+  <<: *DEFAULTS
+  language: javascript
+  locale: ru
+
+frontend-ru:
+  <<: *DEFAULTS
+  language_category: frontend
+  language: javascript
+  locale: ru
+
+frontend-en:
+  <<: *DEFAULTS
+  language: javascript
+  language_category: frontend
+  description: Programming learning is an interesting and exciting process. The syntax of the language is the simplest and shortest path, without which it is impossible to start. This free online JavaScript course will introduce you to the basic concepts of the language. Learn the basics and write your first JS programs
+  locale: en
+
+elixir-ru:
+  <<: *DEFAULTS
+  language: elixir
+  locale: ru
+
+nodejs-ru:
+  <<: *DEFAULTS
+  language: javascript
+  locale: ru
+
+nodejs-en:
+  <<: *DEFAULTS
+  language: javascript
+  locale: en
+
+php-ru:
+  <<: *DEFAULTS
+  language: php
+  locale: ru
+
+php-en:
+  <<: *DEFAULTS
+  language: php
+  locale: en
+
+ruby-ru:
+  <<: *DEFAULTS
+  language: ruby
+  locale: ru
+
+
+ruby-en:
+  <<: *DEFAULTS
+  language: ruby
+  locale: en
+
+go-ru:
+  <<: *DEFAULTS
+  language: go
+  locale: ru
+
+
+go-en:
+  <<: *DEFAULTS
+  language: go
+  locale: en
+
+java-ru:
+  <<: *DEFAULTS
+  language: java
+  locale: ru
+
+
+java-en:
+  <<: *DEFAULTS
+  language: java
+  locale: en
+
+csharp-ru:
+  <<: *DEFAULTS
+  language: csharp
+  locale: ru
+
+csharp-en:
+  <<: *DEFAULTS
+  language: csharp
+  locale: en
+
+css-en:
+  <<: *DEFAULTS
+  language: css
+  language_category: layouting
+  locale: en
+
+css-ru:
+  <<: *DEFAULTS
+  language: css
+  language_category: layouting
+  locale: ru
+

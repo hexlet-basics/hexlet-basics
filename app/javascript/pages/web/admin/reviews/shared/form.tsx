@@ -1,17 +1,18 @@
 import { useTranslation } from "react-i18next";
 
 import { XForm, XInput, XSelect, XStateEvent } from "@/components/forms";
-import type { OriginalLanguage, Review } from "@/types/serializers";
+import type { Language, Review } from "@/types/serializers";
 import { Col, Row } from "react-bootstrap";
 import { type HTTPVerb, Submit } from "use-inertia-form";
 
 import { locales } from "@/lib/utils";
 import * as Routes from "@/routes.js";
+import type ReviewCrud from "@/types/serializers/ReviewCrud";
 
 type Props = {
-  data: Review;
+  data: ReviewCrud;
   url: string;
-  courses: OriginalLanguage[];
+  courses: Language[];
   method?: HTTPVerb;
 };
 

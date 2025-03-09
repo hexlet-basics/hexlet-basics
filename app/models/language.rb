@@ -42,8 +42,12 @@ class Language < ApplicationRecord
 
   extend Enumerize
 
+  def self.ransackable_associations(_)
+    []
+  end
+
   def self.ransackable_attributes(_auth_object = nil)
-    [ "created_at" ]
+    [ "created_at", "learn_as", "progress" ]
   end
 
   # enumerize :slug, in: %i[ada bash clang clojure cobol cpp csharp css crystal dart dlang elixir elm fortran go groovy haskell html java
@@ -60,12 +64,13 @@ class Language < ApplicationRecord
   # validates :learn_as, presence: true
 
   belongs_to :current_version, optional: true, class_name: "Language::Version"
-  belongs_to :category, optional: true
+  # belongs_to :category, optional: true
 
   has_many :modules, dependent: :destroy
   has_many :lessons, dependent: :destroy
+  has_many :landing_pages, dependent: :destroy
   has_many :versions, dependent: :destroy, class_name: "::Language::Version"
-  has_many :infos, class_name: "::Language::Version::Info", dependent: :restrict_with_exception
+  # has_many :infos, class_name: "::Language::Version::Info", dependent: :restrict_with_exception
   has_many :members, dependent: :destroy
   has_many :reviews, dependent: :restrict_with_exception
   has_many :blog_posts, dependent: :restrict_with_exception

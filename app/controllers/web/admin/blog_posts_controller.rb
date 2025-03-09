@@ -17,7 +17,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
     blog_post.creator = current_user
 
     render inertia: true, props: {
-      blog_post: BlogPostResource.new(blog_post)
+      blogPostDto: BlogPostResource.new(blog_post)
     }
   end
 
@@ -25,7 +25,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
     blog_post = Admin::BlogPostForm.find(params[:id])
 
     render inertia: true, props: {
-      blog_post: BlogPostResource.new(blog_post)
+      blogPostDto: BlogPostResource.new(blog_post)
     }
   end
 

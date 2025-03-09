@@ -37,7 +37,7 @@ const remarkPlugins: Pluggable[] = [remarkGfm];
 export default function Show() {
   const {
     courseCategory,
-    course,
+    landingPage,
     lessons,
     lesson,
     auth: { user },
@@ -55,12 +55,12 @@ export default function Show() {
       url: Routes.language_category_path(courseCategory.slug!),
     },
     {
-      name: course.name!,
-      url: Routes.language_path(course.slug!),
+      name: landingPage.header!,
+      url: Routes.language_path(landingPage.slug!),
     },
     {
       name: lesson.name!,
-      url: Routes.language_lesson_path(course.slug!, lesson.slug!),
+      url: Routes.language_lesson_path(landingPage.slug!, lesson.slug!),
     },
   ];
 
@@ -105,7 +105,7 @@ export default function Show() {
                           {t(
                             "languages.lessons.show.sign_up_for_tracking_progress_html",
                             {
-                              name: course.name,
+                              name: landingPage.header,
                               link: Routes.new_user_path(),
                             },
                           )}
@@ -114,7 +114,7 @@ export default function Show() {
                     )}
 
                     <div className="hexlet-basics-content">
-                      <h1 className="h2">{`${course.name}: ${lesson.name}`}</h1>
+                      <h1 className="h2">{`${landingPage.header}: ${lesson.name}`}</h1>
                       <Markdown
                         rehypePlugins={rehypePlugins}
                         remarkPlugins={remarkPlugins}
@@ -243,7 +243,7 @@ export default function Show() {
                             as={l.slug === lesson.slug ? "b" : "a"}
                             className="link-body-emphasis"
                             href={Routes.language_lesson_path(
-                              course.slug!,
+                              landingPage.slug!,
                               l.slug!,
                             )}
                           >

@@ -7,23 +7,23 @@ import { DTDateTemplate } from "@/components/dtTemplates";
 import useDataTable from "@/hooks/useDataTable";
 import { fieldsToFilters } from "@/lib/utils";
 import AdminLayout from "@/pages/layouts/AdminLayout";
-import type { Grid, OriginalLanguage } from "@/types/serializers";
+import type { Grid, Language } from "@/types/serializers";
 import { Link } from "@inertiajs/react";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { Menu } from "./shared/menu";
 
 type Props = PropsWithChildren & {
-  originalCourses: OriginalLanguage[];
+  courses: Language[];
   grid: Grid;
 };
 
-export default function Index({ grid, originalCourses }: Props) {
+export default function Index({ grid, courses }: Props) {
   const { t } = useTranslation();
 
   const handleDataTable = useDataTable();
 
-  const actionBodyTemplate = (data: OriginalLanguage) => {
+  const actionBodyTemplate = (data: Language) => {
     return (
       <>
         <a
@@ -58,7 +58,7 @@ export default function Index({ grid, originalCourses }: Props) {
         onFilter={handleDataTable}
         onPage={handleDataTable}
         filters={fieldsToFilters(grid.fields)}
-        value={originalCourses}
+        value={courses}
       >
         <Column field="id" header="id" />
         <Column field="current_version_id" header="Version Id" />

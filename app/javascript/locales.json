@@ -1549,6 +1549,15 @@
           "category_id": "Категория",
           "slug": "Slug"
         },
+        "language_landing_page": {
+          "description": "Описание",
+          "header": "Заголовок",
+          "language_id": "Курс",
+          "meta_description": "Meta Description",
+          "meta_title": "Meta Title",
+          "order": "Order",
+          "slug": "Slug"
+        },
         "review": {
           "body": "Отзыв",
           "first_name": "Имя",
@@ -2128,6 +2137,7 @@
           "application": {
             "blog_posts": "Посты в блоге",
             "dashboard": "Кабинет",
+            "language_landing_pages": "Лендинги",
             "languages": "Курсы",
             "reviews": "Отзывы",
             "users": "Пользователи"
@@ -2395,12 +2405,24 @@
             "dashboard": "Кабинет"
           }
         },
+        "language_landing_pages": {
+          "edit": {
+            "header": "Редактирование %{id}"
+          },
+          "index": {
+            "add_new_language": "Добавить лендинг",
+            "header": "Лендинги"
+          },
+          "new": {
+            "header": "Новый лендинг"
+          }
+        },
         "languages": {
           "edit": {
             "header": "Редактирование %{id}"
           },
           "index": {
-            "add_new_language": "Добавить новый курс",
+            "add_new_language": "Добавить курс",
             "header": "Курсы"
           },
           "new": {

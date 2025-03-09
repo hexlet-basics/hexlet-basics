@@ -1,10 +1,4 @@
-# frozen_string_literal: true
-
 class Api::LessonsController < Api::ApplicationController
-  # include Gon::ControllerHelpers
-  # include EventConcern
-  # before_action :require_api_auth!
-
   def check
     lesson = Language::Lesson.find(params[:id])
     language = lesson.language
@@ -12,7 +6,6 @@ class Api::LessonsController < Api::ApplicationController
     code = params[:data][:attributes][:code]
 
     language_version = lesson_version.language_version
-    language_info = language_version.infos.find_by!(locale: I18n.locale)
 
     lesson_exercise_data = LessonTester.new.run(lesson_version, language_version, code, current_user)
 
@@ -29,7 +22,7 @@ class Api::LessonsController < Api::ApplicationController
         event_data = {
           lesson_slug: lesson.slug,
           course_slug: language.slug,
-          locale: language_info.locale
+          locale: I18n.locale
         }
 
         event = LessonFinishedEvent.new(data: event_data)
@@ -44,7 +37,7 @@ class Api::LessonsController < Api::ApplicationController
 
         event_data = {
           slug: language.slug,
-          locale: language_info.locale
+          locale: I18n.locale
         }
         event = CourseFinishedEvent.new(data: event_data)
         publish_event(event, current_user)
@@ -54,7 +47,7 @@ class Api::LessonsController < Api::ApplicationController
     event_data = {
       lesson_slug: lesson.slug,
       course_slug: language.slug,
-      locale: language_info.locale,
+      locale: I18n.locale,
       passed: lesson_exercise_data[:passed]
     }
     event = SolutionCheckedEvent.new(data: event_data)

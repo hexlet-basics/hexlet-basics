@@ -165,17 +165,17 @@ class ExerciseLoader
 
     language_version.save!
 
-    infos = get_infos(repo_dest)
-    infos.each do |locale, info_spec|
-      language_version_info = language_version.infos.build(language: language_version.language)
-      language_version_info.description = info_spec.fetch("description")
-      language_version_info.header = info_spec.fetch("header")
-      language_version_info.title = info_spec.fetch("title", "")
-      language_version_info.keywords = info_spec.fetch("keywords", [])
-      language_version_info.seo_description = info_spec.fetch("seo_description", "")
-      language_version_info.locale = locale
-      language_version_info.save!
-    end
+    # infos = get_infos(repo_dest)
+    # infos.each do |locale, info_spec|
+    #   language_version_info = language_version.infos.build(language: language_version.language)
+    #   language_version_info.description = info_spec.fetch("description")
+    #   language_version_info.header = info_spec.fetch("header")
+    #   language_version_info.title = info_spec.fetch("title", "")
+    #   language_version_info.keywords = info_spec.fetch("keywords", [])
+    #   language_version_info.seo_description = info_spec.fetch("seo_description", "")
+    #   language_version_info.locale = locale
+    #   language_version_info.save!
+    # end
   end
 
   def create_module_hierachy(language_version, data)

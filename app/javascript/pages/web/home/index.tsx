@@ -109,7 +109,7 @@ export default function Index({
 
   const {
     locale,
-    courses,
+    landingPagesForLists,
     auth: { user },
   } = usePage<SharedProps>().props;
 
@@ -186,11 +186,11 @@ export default function Index({
           </div>
 
           <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4">
-            {courses.map((course) => (
-              <div className="col mb-3" key={course.id}>
+            {landingPagesForLists.map((lp) => (
+              <div className="col mb-3" key={lp.id}>
                 <CourseBlock
-                  course={course}
-                  courseMember={courseMembersByCourseId[course.id]}
+                  landingPage={lp}
+                  courseMember={courseMembersByCourseId[lp.id]}
                 />
               </div>
             ))}

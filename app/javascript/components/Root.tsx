@@ -1,4 +1,4 @@
-import pt from "@/primereact.ts";
+// import pt from "@/primereact.ts";
 import * as Routes from "@/routes.js";
 import { PrimeReactProvider } from "primereact/api";
 
@@ -36,9 +36,5 @@ export default function Root(props: PropsWithChildren) {
   i18next.changeLanguage(locale);
   Routes.configure({ default_url_options: { suffix } });
 
-  return (
-    <PrimeReactProvider value={{ pt, unstyled: true }}>
-      {props.children}
-    </PrimeReactProvider>
-  );
+  return <PrimeReactProvider>{props.children}</PrimeReactProvider>;
 }

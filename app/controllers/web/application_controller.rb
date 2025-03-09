@@ -18,14 +18,11 @@ class Web::ApplicationController < ApplicationController
 
   inertia_share do
     language_categories = Language::Category.all
-    languages_infos = Language::Version::Info
-      .current
-      .with_locale
-      .includes([ language: :current_version ])
+    landing_pages = Language::LandingPage.with_locale
 
     {
       courseCategories: Language::CategoryResource.new(language_categories),
-      courses: LanguageResource.new(languages_infos),
+      landingPagesForLists: Language::LandingPageForListsResource.new(landing_pages),
       locale: I18n.locale,
       suffix: I18n.locale == :en ? nil : I18n.locale,
       auth: {

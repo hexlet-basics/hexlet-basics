@@ -12,12 +12,11 @@ import { useAppDispatch, useAppSelector } from "../slices/index.ts";
 import type { LessonSharedProps } from "../types.ts";
 
 export default function ControlBox() {
-  const { course, prevLesson, nextLesson } = usePage<LessonSharedProps>().props;
+  const { lesson, course, prevLesson, nextLesson } =
+    usePage<LessonSharedProps>().props;
 
   const { t } = useTranslation();
   const { t: tCommon } = useTranslation("common");
-
-  const { lesson } = usePage<LessonSharedProps>().props;
 
   const processState = useAppSelector((state) => state.processState);
   const finished = useAppSelector((state) => state.finished);

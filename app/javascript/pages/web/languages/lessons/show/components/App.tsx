@@ -10,7 +10,7 @@ import TabsBox from "./TabsBox.tsx";
 const HTMLPreview = React.lazy(() => import("./HTMLPreview.tsx"));
 
 function App() {
-  const { course, lesson } = usePage<LessonSharedProps>().props;
+  const { course } = usePage<LessonSharedProps>().props;
 
   const content = useAppSelector((state) => state.content);
   const currentTab = useAppSelector((state) => state.currentTab);

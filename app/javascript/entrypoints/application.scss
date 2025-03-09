@@ -1,7 +1,8 @@
+// switch to shiki
 @import "highlight.js/styles/github.css";
 @import "bootstrap-icons/font/bootstrap-icons.css";
 @import "flag-icons/css/flag-icons.min.css";
-@import 'devicon/devicon.min.css';
+// @import 'devicon/devicon.min.css';
 
 @import "bootstrap/scss/functions";
 @import "bootstrap/scss/variables";
@@ -12,6 +13,8 @@
 @import "bootstrap/scss/root";
 
 @import "bootstrap/scss/utilities";
+
+@import "primereact/resources/themes/bootstrap4-light-blue/theme.css";
 
 $utilities: map-merge($utilities,
     ("responsive-height": (property: height,

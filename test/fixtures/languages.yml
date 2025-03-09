@@ -35,10 +35,11 @@
 #  upload_id           (upload_id => uploads.id)
 #
 DEFAULTS: &DEFAULTS
+  learn_as: first_language
   slug: $LABEL
   current_version: $LABEL
   progress: completed
-  category: programming
+  # category: programming
 
 php:
   <<: *DEFAULTS
@@ -60,20 +61,22 @@ java:
 
 go:
   <<: *DEFAULTS
+  learn_as: second_language
 
 csharp:
   <<: *DEFAULTS
 
 css:
   <<: *DEFAULTS
-  category: layouting
+  # category: layouting
 
 python:
   <<: *DEFAULTS
 
 html:
   <<: *DEFAULTS
-  category: layouting
+  # category: layouting
 
 ruby:
   <<: *DEFAULTS
+  learn_as: second_language

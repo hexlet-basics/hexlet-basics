@@ -17,6 +17,11 @@ programming:
   name_ru: Программирование
   name_en: Programming
 
+frontend:
+  <<: *DEFAULTS
+  name_ru: Фронтенд
+  name_en: Frontend
+
 layouting:
   <<: *DEFAULTS
   name_en: Layouting

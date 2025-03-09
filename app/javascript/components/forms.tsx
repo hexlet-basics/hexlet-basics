@@ -1,3 +1,4 @@
+import { LanguageLandingPageCrud } from "@/types/serializers";
 import axios from "axios";
 import cn from "classnames";
 import { get } from "es-toolkit/compat";
@@ -376,6 +377,7 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
 
 type XStateEventProps = {
   fieldName: string;
+  // stateEvents: Array<[string, string]>;
 };
 
 export function XStateEvent({ fieldName }: XStateEventProps) {
@@ -388,12 +390,15 @@ export function XStateEvent({ fieldName }: XStateEventProps) {
     // model,
   });
 
+  // @ts-expect-error fix
+  const stateEvents = form.data.meta.state_events as Array<[string, string]>;
+
   const currentState = get(form.data, [form.model!, fieldName]);
-  const stateEvents = get(
-    form.data,
-    [form.model!, `${fieldName}_events`],
-    [],
-  ) as Array<[string, string]>;
+  // const stateEvents = get(
+  //   form.data,
+  //   [form.model!, `${fieldName}_events`],
+  //   [],
+  // ) as Array<[string, string]>;
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setValue(e.target.value);

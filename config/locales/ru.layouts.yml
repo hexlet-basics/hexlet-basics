@@ -5,6 +5,7 @@ ru:
         application:
           dashboard: Кабинет
           languages: Курсы
+          language_landing_pages: Лендинги
           users: Пользователи
           reviews: Отзывы
           blog_posts: Посты в блоге

@@ -11,12 +11,19 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 import axios from "axios";
+import i18next from "i18next";
 import type { RootState } from "../types.ts";
 
 export const runCheck = createAsyncThunk(
   "runCheck",
   async (
-    { course, lesson }: { course: Language; lesson: LanguageLesson },
+    {
+      course,
+      lesson,
+    }: {
+      course: Language;
+      lesson: LanguageLesson;
+    },
     thunkAPI,
   ) => {
     const { content } = thunkAPI.getState() as RootState;
@@ -41,21 +48,21 @@ export const runCheck = createAsyncThunk(
       course_slug: course.slug,
       lesson_slug: lesson.slug,
       passed: response_data.passed,
-      locale: lesson.locale,
+      locale: i18next.language,
     });
 
     if (lessonHasBeenFinished) {
       analytics.track("lesson_finished", {
         course_slug: course.slug,
         lesson_slug: lesson.slug,
-        locale: lesson.locale,
+        locale: i18next.language,
       });
     }
 
     if (courseHasBeenFinished) {
       analytics.track("course_finished", {
         course_slug: course.slug,
-        locale: course.locale,
+        locale: i18next.language,
       });
     }
 

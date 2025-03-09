@@ -1,8 +1,7 @@
 import { useTranslation } from "react-i18next";
 
 import { XForm, XInput, XSelect } from "@/components/forms";
-import type { LanguageCategory, OriginalLanguage } from "@/types/serializers";
-import { Col, Row } from "react-bootstrap";
+import type { Language } from "@/types/serializers";
 import { type HTTPVerb, Submit } from "use-inertia-form";
 
 import { enumToOptions } from "@/lib/utils";
@@ -10,7 +9,7 @@ import type { SharedProps } from "@/types";
 import { usePage } from "@inertiajs/react";
 
 type Props = {
-  data: OriginalLanguage;
+  data: Language;
   url: string;
   method?: HTTPVerb;
 };

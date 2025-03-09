@@ -14,7 +14,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
 
     lesson_version = resource_language.current_lesson_versions.find_by!(lesson: lesson)
     lesson_info = lesson_version.infos.find_by!(locale: I18n.locale)
-    language_info = resource_language.current_version.infos.find_by!(locale: I18n.locale)
+    # language_info = resource_language.current_version.infos.find_by!(locale: I18n.locale)
 
     next_lesson_version = lesson_version.next_lesson_version
     next_lesson_info = next_lesson_version ? next_lesson_version.infos.find_by!(locale: I18n.locale) : nil
@@ -30,7 +30,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
         language_member.save!
         event_data = {
           slug: resource_language.slug,
-          locale: language_info.locale
+          locale: resource_language_landing_page.locale
         }
         event = CourseStartedEvent.new(data: event_data)
         publish_event(event, current_user)
@@ -47,7 +47,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
         event_data = {
           lesson_slug: lesson.slug,
           course_slug: resource_language.slug,
-          locale: language_info.locale
+          locale: resource_language_landing_page.locale
         }
         event = LessonStartedEvent.new(data: event_data)
 
@@ -105,7 +105,11 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     # gon.lesson_version = @lesson_version
     # gon.lesson = @lesson
     #
-    title = t(".title", lesson: lesson_info, language: language_info).squish
+    title = t(
+      ".title",
+      lesson: lesson_info,
+      language: resource_language_landing_page.header
+    ).squish
     description = view_context.truncate("[#{resource_language.current_version}] — #{lesson_info} — #{lesson_info.theory}", length: 220)
 
     seo_tags = {
@@ -134,9 +138,11 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
       .includes(:lesson, :version)
       .order(language_lesson_versions: { natural_order: :asc })
 
+    # raise resource_language.category.inspect
     render inertia: true, props: {
-      course: LanguageResource.new(language_info),
-      courseCategory: Language::CategoryResource.new(resource_language.category),
+      course: LanguageResource.new(resource_language),
+      landingPage: Language::LandingPageForListsResource.new(resource_language_landing_page),
+      courseCategory: Language::CategoryResource.new(resource_language_landing_page.language_category),
       lesson: Language::LessonResource.new(lesson_info),
       nextLesson: next_lesson_info && Language::LessonResource.new(next_lesson_info),
       prevLesson: prev_lesson_info && Language::LessonResource.new(prev_lesson_info),

@@ -3,10 +3,10 @@ import { Nav } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
 import * as Routes from "@/routes.js";
-import type { Review } from "@/types/serializers";
+import type ReviewCrud from "@/types/serializers/ReviewCrud";
 
 type Props = {
-  data?: Review;
+  data?: ReviewCrud;
 };
 
 export function Menu({ data }: Props) {
@@ -35,7 +35,7 @@ export function Menu({ data }: Props) {
         <Nav.Item>
           <Nav.Link
             className="link-body-emphasis"
-            href={Routes.edit_admin_review_path(data.id)}
+            href={Routes.edit_admin_review_path(data.review.id)}
           >
             {tHelpers("crud.editing")}
           </Nav.Link>

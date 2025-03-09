@@ -2,54 +2,16 @@ class LanguageResource
   include Alba::Resource
   include Typelizer::DSL
 
-  typelize_from Language::Version::Info
+  typelize_from Language
 
-  # root_key :user
+  attributes :id, :slug, :learn_as, :progress, :category_id, :current_version_id
+  has_one :current_version, resource: Language::VersionResource
 
-  attributes :id, :description, :locale, :created_at, :state, :order
-
-  typelize :string, nullable: true
-  attribute :duration do |info|
-    I18n.t("common.hours", count: info.language.duration)
-  end
-
-  typelize :number
-  attribute :id do |info|
-    info.language_id
-  end
-
-  typelize :number, nullable: true
-  attribute :members_count do |info|
-    info.language.members_count
-  end
+  typelize learn_as: [ enum: [ "first_language", "second_language" ] ]
+  typelize progress: [ enum: [ "completed", "in_development", "draft" ] ]
 
   typelize :string, nullable: true
-  attribute :state do |info|
-    info.language.state
-  end
-
-  typelize :number, nullable: true
-  attribute :order do |info|
-    info.language.order
-  end
-
-  typelize :string, nullable: true
-  attribute :slug do |info|
-    info.language.slug
-  end
-
-  typelize :string, nullable: true
-  attribute :title do |info|
-    info.title
-  end
-
-  typelize :string, nullable: true
-  attribute :name do |info|
-    info.header
-  end
-
-  typelize :string, nullable: true
-  attribute :cover do |info|
-    "#{info.language.slug}.png"
+  attribute :repository_url do |obj|
+    obj.repository_url
   end
 end

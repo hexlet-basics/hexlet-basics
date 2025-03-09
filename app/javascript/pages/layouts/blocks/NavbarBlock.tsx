@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 type Props = PropsWithChildren & HTMLAttributes<NavbarProps>;
 
 export default function NavbarBlock({ className }: Props) {
-  const { courses, auth } = usePage<SharedProps>().props;
+  const { landingPagesForLists, auth } = usePage<SharedProps>().props;
   const { t: tLayouts } = useTranslation("layouts");
 
   const handleLinkClick = useLinkClickHandler();
@@ -39,14 +39,14 @@ export default function NavbarBlock({ className }: Props) {
             title={tLayouts("shared.nav.courses")}
             id="basic-nav-dropdown"
           >
-            {courses.map((c) => (
+            {landingPagesForLists.map((lp) => (
               <NavDropdown.Item
                 className="d-flex align-items-center"
-                key={c.id}
-                href={Routes.language_path(c.slug!)}
+                key={lp.id}
+                href={Routes.language_path(lp.slug)}
               >
-                <i className={cn(deviconClass(c.slug!), "colored", "me-2")} />
-                {c.name}
+                <i className={cn(deviconClass(lp.slug), "colored", "me-2")} />
+                {lp.header}
               </NavDropdown.Item>
             ))}
           </NavDropdown>

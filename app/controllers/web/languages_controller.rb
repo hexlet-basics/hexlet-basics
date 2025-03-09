@@ -1,7 +1,8 @@
 class Web::LanguagesController < Web::ApplicationController
   def show
-    language = Language.find_by!(slug: params[:id])
-    language_info = language.current_version.infos.find_by!(locale: I18n.locale)
+    landing_page = Language::LandingPage.published.find_by!(locale: I18n.locale, slug: params[:id])
+    language = landing_page.language
+    # language_info = language.current_version.infos.find_by!(locale: I18n.locale)
     #
     # @builder = CourseSchema.to_builder(@language, @language_version_info)
 
@@ -32,28 +33,19 @@ class Web::LanguagesController < Web::ApplicationController
         .joins(:lesson).merge(Language::Lesson.ordered).first
     end
 
-    recommendedCourses = Language::Version::Info.current.with_locale.order("RANDOM()").excluding(language_info).limit(4)
-
-    # @blog_posts = @language.blog_posts.published
-    #
-    # gon.language = @language.slug
-    #
-    # human_language_header = [ @language.current_version.name, @language.learn_as.text ].join(' ')
-    # @header = @language_version_info.header || human_language_header
-    # title = @language_version_info.title || @header
-    # description = @language_version_info.seo_description || @language_version_info.description
+    recommendedCourseLandingPages = Language::LandingPage.with_locale.order("RANDOM()").excluding(landing_page).limit(4)
 
     seo_tags = {
-      title: language_info.title,
-      keywords: language_info.keywords.join(", "),
-      description: language_info.seo_description,
+      title: landing_page.meta_title,
+      # keywords: language_info.keywords.join(", "),
+      description: landing_page.meta_description,
       canonical: language_url(language.slug),
       image_src: view_context.vite_asset_url("images/#{language.slug}.png"),
       og: {
-        title: language_info.title,
+        title: landing_page.meta_title,
         type: "website",
-        description: language_info.seo_description,
-        url: language_url(language.slug),
+        description: landing_page.meta_description,
+        url: language_url(landing_page.slug),
         image: view_context.vite_asset_url("images/#{language.slug}.png"),
         locale: I18n.locale
       }
@@ -67,15 +59,15 @@ class Web::LanguagesController < Web::ApplicationController
     # end
 
     render inertia: true, props: {
-      course: LanguageResource.new(language_info),
+      courseLandingPage: Language::LandingPageResource.new(landing_page),
       finishedLessonIds: finished_lesson_ids,
-      courseCategory: Language::CategoryResource.new(language.category),
+      courseCategory: Language::CategoryResource.new(landing_page.language_category),
       firstLesson: Language::LessonResource.new(first_lesson_info),
       nextLesson: next_lesson_info && Language::LessonResource.new(next_lesson_info),
       courseModules: Language::ModuleResource.new(language_modules_infos),
       lessonsByModuleId: lesson_resources_by_module_id,
       courseMember: language_member && Language::MemberResource.new(language_member),
-      recommendedCourses: LanguageResource.new(recommendedCourses)
+      recommendedCourseLandingPages: Language::LandingPageResource.new(recommendedCourseLandingPages)
     }
   end
 end

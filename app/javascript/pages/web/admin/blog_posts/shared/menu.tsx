@@ -3,10 +3,10 @@ import { Nav } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
 import * as Routes from "@/routes.js";
-import type { BlogPost } from "@/types/serializers";
+import type { BlogPostCrud } from "@/types/serializers";
 
 type Props = {
-  data?: BlogPost;
+  data?: BlogPostCrud;
 };
 
 export function Menu({ data }: Props) {
@@ -36,7 +36,7 @@ export function Menu({ data }: Props) {
           <Nav.Item>
             <Nav.Link
               className="link-body-emphasis"
-              href={Routes.edit_admin_blog_post_path(data.id)}
+              href={Routes.edit_admin_blog_post_path(data.blog_post.id)}
             >
               {tHelpers("crud.editing")}
             </Nav.Link>
@@ -45,7 +45,7 @@ export function Menu({ data }: Props) {
             <Nav.Link
               target="_blank"
               className="link-body-emphasis"
-              href={Routes.blog_post_path(data.slug!)}
+              href={Routes.blog_post_path(data.blog_post.slug!)}
             >
               <i className="bi bi-arrow-up-right-square" />
             </Nav.Link>

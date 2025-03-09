@@ -3,10 +3,10 @@ import { Nav } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
 import * as Routes from "@/routes.js";
-import type { OriginalLanguage } from "@/types/serializers";
+import type { Language } from "@/types/serializers";
 
 type Props = {
-  data?: OriginalLanguage;
+  data?: Language;
 };
 
 export function Menu({ data }: Props) {

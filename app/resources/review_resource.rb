@@ -6,7 +6,7 @@ class ReviewResource
 
   # one :user, resource: UserResource
   has_one :user
-  has_one :language, resource: OriginalLanguageResource
+  has_one :language, resource: LanguageResource
 
   attributes :id, :body, :state, :first_name, :last_name, :language_id, :user_id, :created_at, :locale
 

@@ -24,20 +24,9 @@ Rails.application.routes.draw do
 
   scope "(:suffix)", suffix: /es|ru/ do
     namespace :api do
-      resources :languages, only: %i[index show] do
-        scope module: :languages do
-          resources :lessons, only: %i[index show]
-        end
-      end
       resources :lessons, only: [] do
         member do
           post :check
-        end
-      end
-
-      namespace :partners do
-        namespace :yandex_market do
-          resources :languages, only: [ :index ]
         end
       end
     end
@@ -86,10 +75,9 @@ Rails.application.routes.draw do
         resources :reviews
         resources :blog_posts
         resources :languages, only: %i[index new edit update create] do
-          scope module: :languages do
-            resources :versions, only: %i[index create]
-          end
+          resources :versions, only: %i[create]
         end
+        resources :language_landing_pages
 
         namespace :management do
           resources :users, only: %i[index edit update]
