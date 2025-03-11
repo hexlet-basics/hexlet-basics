@@ -8,7 +8,7 @@ export default function TgContestBanner() {
     const bannerClosed = document.cookie.includes("tg_contest_banner=hide");
 
     const currentDate = new Date();
-    const endDate = new Date("2025-03-17");
+    const endDate = new Date("2025-03-18");
 
     if (bannerClosed || currentDate > endDate) {
       setIsVisible(false);
