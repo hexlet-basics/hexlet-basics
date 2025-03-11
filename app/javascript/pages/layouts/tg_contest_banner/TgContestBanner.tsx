@@ -6,7 +6,11 @@ export default function TgContestBanner() {
 
   useEffect(() => {
     const bannerClosed = document.cookie.includes("tg_contest_banner=hide");
-    if (bannerClosed) {
+
+    const currentDate = new Date();
+    const endDate = new Date("2025-03-17");
+
+    if (bannerClosed || currentDate > endDate) {
       setIsVisible(false);
     }
   }, []);
