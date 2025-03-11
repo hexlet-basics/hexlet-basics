@@ -18,7 +18,10 @@ export default function TgContestBanner() {
 
   return (
     isVisible && (
-      <div className="position-sticky py-4 py-sm-3 tg-contest-banner">
+      <div
+        className="position-sticky py-4 py-sm-3 tg-contest-banner"
+        id="tg-contest-banner"
+      >
         <Container className="px-3">
           <div className="row justify-content-center justify-content-lg-end align-items-center gy-3 gy-sm-4 gy-lg-0 py-lg-1">
             <div className="col-md col-lg-7">
