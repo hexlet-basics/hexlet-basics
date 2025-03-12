@@ -15,7 +15,6 @@
 @import "bootstrap/scss/utilities";
 
 @import "primereact/resources/themes/bootstrap4-light-blue/theme.css";
-@import 'tg-contest-banner';
 
 $utilities: map-merge($utilities,
     ("responsive-height": (property: height,

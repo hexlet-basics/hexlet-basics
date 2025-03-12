@@ -1,33 +1,20 @@
-import * as Routes from "@/routes.js";
 import { Container } from "react-bootstrap";
-import { useCookie } from "react-use";
+import "./tg-contest-banner.scss";
+import type { SharedProps } from "@/types";
+import { usePage } from "@inertiajs/react";
 
-type Props = {
-  locale: string;
-  url: string;
-};
+export default function TgContestBanner() {
+  const {
+    props: { locale },
+  } = usePage<SharedProps>();
 
-export default function TgContestBanner({ locale, url }: Props) {
   const localeToShowBanner = "ru";
-  const isRuHomePage = url === Routes.root_path({ suffix: localeToShowBanner });
-  const isRuCoursePage = url.startsWith(`/${localeToShowBanner}/languages/`);
-
-  if (locale !== localeToShowBanner || !(isRuHomePage || isRuCoursePage)) {
-    return null;
-  }
-
-  const [tgBannerClosed, updateTgBannerClosedCookie] =
-    useCookie("tg_banner_closed");
-
   const currentDate = new Date();
   const endDate = new Date("2025-03-18");
-  if (tgBannerClosed === "true" || currentDate > endDate) {
+
+  if (locale !== localeToShowBanner || currentDate > endDate) {
     return null;
   }
-
-  const handleCloseBanner = () => {
-    updateTgBannerClosedCookie("true", { expires: 1 });
-  };
 
   return (
     <div
@@ -54,16 +41,6 @@ export default function TgContestBanner({ locale, url }: Props) {
               <span className="fs-5">Пройти тест</span>
             </a>
           </div>
-        </div>
-        <div className="position-absolute end-0 top-0 me-2 z-3">
-          <button
-            id="tg-contest-banner-close-btn"
-            type="button"
-            aria-label="Закрыть"
-            className="btn-close btn-close-white"
-            style={{ width: "0.5em", height: "0.5em" }}
-            onClick={handleCloseBanner}
-          />
         </div>
       </Container>
     </div>

@@ -3,11 +3,9 @@ import { Container } from "react-bootstrap";
 
 import XFlash from "@/components/XFlash.tsx";
 import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
-import type { SharedProps } from "@/types";
 import type { BreadcrumbItem } from "@/types/index.js";
-import { usePage } from "@inertiajs/react";
 import RootLayout from "./RootLayout.tsx";
-import TgContestBanner from "./banners/TgContestBanner.tsx";
+import TgContestBanner from "./banners/tg_contest_banner/TgContestBanner.tsx";
 import FooterBlock from "./blocks/FooterBlock.tsx";
 import NavbarBlock from "./blocks/NavbarBlock.tsx";
 
@@ -23,14 +21,9 @@ export default function ApplicationLayout({
   items,
   center = false,
 }: Props) {
-  const {
-    url,
-    props: { locale },
-  } = usePage<SharedProps>();
-
   return (
     <RootLayout>
-      <TgContestBanner locale={locale} url={url} />
+      <TgContestBanner />
       <Container className="py-2">
         <NavbarBlock className="pb-3 border-bottom" />
         <XFlash />
