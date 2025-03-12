@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Row, Image } from "react-bootstrap";
 
 import { highlightingLanguages } from "@/lib/utils.ts";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
@@ -52,6 +52,9 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
       <Container>
         <Row className="justify-content-center mb-5">
           <Col className="col-12 col-md-10 col-lg-8">
+            <div className="mb-4">
+              <Image src={blogPost.cover_main_variant!} />
+            </div>
             <div className="hexlet-basics-content">
               <Markdown
                 remarkPlugins={remarkPlugins}

@@ -62,6 +62,15 @@ end
 class ActionDispatch::IntegrationTest
   include AuthConcern
   include SignInHelper
+
+  parallelize_setup do |i|
+    ActiveStorage::Blob.service.root = "#{ActiveStorage::Blob.service.root}-#{i}"
+  end
+
+  def after_teardown
+    super
+    FileUtils.rm_rf(ActiveStorage::Blob.service.root)
+  end
 end
 
 class Rack::Request

@@ -14,4 +14,9 @@ class BlogPostResource
   attribute :cover_list_variant do |post|
     rails_representation_url(post.cover.variant(:list)) if post.cover.attached?
   end
+
+  typelize :string, nullable: true
+  attribute :cover_main_variant do |post|
+    rails_representation_url(post.cover.variant(:main)) if post.cover.attached?
+  end
 end
