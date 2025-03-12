@@ -34,7 +34,7 @@ export default function TgContestBanner() {
           <div className="col-sm-11 col-md-3 col-xl-2">
             <a
               className="btn btn-light rounded-3 w-100 py-2 stretched-link"
-              href="https://web.telegram.org/a/#7948580238"
+              href="https://t.me/hexletquizbot"
               target="_blank"
               rel="noopener noreferrer"
             >
