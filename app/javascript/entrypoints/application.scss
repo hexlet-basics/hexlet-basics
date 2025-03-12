@@ -76,6 +76,21 @@ $utilities: map-merge($utilities,
 /* the only light, non-standard block, has to be customized directly */
 .hexlet-basics-content {
 
+  blockquote {
+    @extend .fs-5;
+    @extend .fw-light;
+    @extend .fst-italic;
+    @extend .border-start;
+    @extend .p-3;
+    @extend .my-3;
+    // padding: 1rem;
+    // border-left: 2px solid #c1c1c1;
+    // border-width: 3px;
+    p {
+      @extend .m-0;
+    }
+  }
+
   img {
     @include img-fluid();
   }

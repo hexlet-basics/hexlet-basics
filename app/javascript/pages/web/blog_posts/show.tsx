@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "react";
 import { Col, Container, Row, Image } from "react-bootstrap";
 
-import { highlightingLanguages } from "@/lib/utils.ts";
+import { dayjs, highlightingLanguages } from "@/lib/utils.ts";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { BreadcrumbItem, SharedProps } from "@/types";
 import type { BlogPost } from "@/types/serializers";
@@ -50,8 +50,8 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
   return (
     <ApplicationLayout items={items} center header={blogPost.name!}>
       <Container>
-        <Row className="justify-content-center mb-5">
-          <Col className="col-12 col-md-10 col-lg-8">
+        <Row className="justify-content-center mb-3">
+          <Col className="col-12 col-md-10 col-lg-8 d-flex flex-column">
             <div className="mb-4">
               <Image src={blogPost.cover_main_variant!} />
             </div>
@@ -63,6 +63,15 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
                 {/* {blogPost.body} */}
                 {`\n\n## ${heading}\n\n ${blogPost.body}`}
               </Markdown>
+            </div>
+            <div className="mt-5 d-flex">
+              <div className="text-muted me-auto">
+                {dayjs().to(blogPost.created_at)}
+              </div>
+              <div className="text-muted">
+                <i className="bi bi-clock me-1" />
+                ~{tCommon("time.minutes", { count: 5 })}
+              </div>
             </div>
           </Col>
         </Row>

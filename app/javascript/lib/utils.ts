@@ -2,6 +2,10 @@ import type { LanguageLesson } from "@/types/serializers";
 import type { LanguageFn } from "highlight.js";
 import type { DataTableFilterMeta } from "primereact/datatable";
 
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import duration from "dayjs/plugin/duration";
+// Switch to shiki
 import clojure from "highlight.js/lib/languages/clojure";
 import elixir from "highlight.js/lib/languages/elixir";
 import fortran from "highlight.js/lib/languages/fortran";
@@ -11,23 +15,10 @@ import prolog from "highlight.js/lib/languages/prolog";
 import scheme from "highlight.js/lib/languages/scheme";
 import { common } from "lowlight";
 
-export function deviconClass(langName: string): string {
-  const mapping: Record<string, string> = {
-    css: "css3",
-    html: "html5",
-    cpp: "cplusplus",
-    clang: "c",
-    racket: "devicon",
-    prolog: "devicon",
-    fortran: "devicon",
-  };
-  const normalizedLangName = mapping[langName] ?? langName;
-  return `devicon-${normalizedLangName}-plain`;
-}
+dayjs.extend(relativeTime);
+dayjs.extend(duration);
 
-// export function assetPath(filepath: string) {
-//   return `${import.meta.env.BASE_URL}images/${filepath}`;
-// }
+export { dayjs };
 
 const editorMapping: Record<string, string> = {
   css: "html",

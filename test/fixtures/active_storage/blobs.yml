@@ -1,2 +1,2 @@
-blog_post_blob: <%= ActiveStorage::FixtureSet.blob filename: "blog_post.png", service_name: "local" %>
-language_cover_blog: <%= ActiveStorage::FixtureSet.blob filename: "javascript.png", service_name: "local" %>
+blog_post_blob: <%= ActiveStorage::FixtureSet.blob filename: "blog_post.png", service_name: "fixtures" %>
+language_cover_blog: <%= ActiveStorage::FixtureSet.blob filename: "javascript.png", service_name: "fixtures" %>

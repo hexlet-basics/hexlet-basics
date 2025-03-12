@@ -24,6 +24,13 @@ ru:
       one: "%{count} час"
       few: "%{count} часа"
       many: "%{count} часов"
+    time:
+      minutes_zero: "%{count} минут"
+      minutes_one: "%{count} минута"
+      minutes_two: "%{count} минуты"
+      minutes_few: "%{count} минуты"
+      minutes_many: "%{count} минут"
+      minutes_other: "%{count} минут"
     students:
       one: "%{count} студент"
       few: "%{count} студента"

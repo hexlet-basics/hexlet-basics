@@ -1684,6 +1684,14 @@
       "teacherSolution": "Решение учителя:",
       "testForExercise": "Тесты",
       "testInstructions": "Ваше упражнение проверяется по этим тестам",
+      "time": {
+        "minutes_few": "%{count} минуты",
+        "minutes_many": "%{count} минут",
+        "minutes_one": "%{count} минута",
+        "minutes_other": "%{count} минут",
+        "minutes_two": "%{count} минуты",
+        "minutes_zero": "%{count} минут"
+      },
       "tos": "Содержание",
       "userCode": "Ваше решение:",
       "userCodeInstructions": "Когда вы начнёте писать решение в Редакторе, оно появится тут для сравнения с учительским",
@@ -2036,6 +2044,7 @@
         "editing": "Редактирование",
         "list": "Список"
       },
+      "read": "Читать",
       "reset": "Сбросить",
       "select": {
         "prompt": "Выберите: "

@@ -65,6 +65,8 @@ from-full-js:
     <%= Faker::Markdown.emphasis %>
     <%= Faker::Markdown.headers %>
 
+    > Это цитата лала
+
     ```javascript
     const name = 'kira';
     const wow = `hello, ${name}`;

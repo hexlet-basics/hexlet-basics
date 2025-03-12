@@ -3,7 +3,15 @@ class BlogPostResource
   include Alba::Resource
   include Typelizer::DSL
 
-  attributes :id, :name, :slug, :description, :body, :created_at, :state, :locale
+  attributes :id,
+    :name,
+    :slug,
+    :description,
+    :body,
+    :created_at,
+    :state,
+    :locale,
+    :created_at
 
   typelize :string, nullable: true
   attribute :cover_thumb_variant do |post|
@@ -18,5 +26,10 @@ class BlogPostResource
   typelize :string, nullable: true
   attribute :cover_main_variant do |post|
     rails_representation_url(post.cover.variant(:main)) if post.cover.attached?
+  end
+
+  typelize :number
+  attribute :reading_time do |post|
+    (post.body.split.size / 260).ceil
   end
 end

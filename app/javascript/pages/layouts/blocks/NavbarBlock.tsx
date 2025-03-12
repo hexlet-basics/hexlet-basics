@@ -1,6 +1,6 @@
 import logoImg from "@/images/logo.png";
 import defaultAvatarImg from "@/images/user-avatar.png";
-import { deviconClass, localesByCode } from "@/lib/utils";
+import { localesByCode } from "@/lib/utils";
 import cn from "classnames";
 import i18next from "i18next";
 import { Nav, NavDropdown, Navbar, type NavbarProps } from "react-bootstrap";
@@ -45,7 +45,6 @@ export default function NavbarBlock({ className }: Props) {
                 key={lp.id}
                 href={Routes.language_path(lp.slug)}
               >
-                <i className={cn(deviconClass(lp.slug), "colored", "me-2")} />
                 {lp.header}
               </NavDropdown.Item>
             ))}

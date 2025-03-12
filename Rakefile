@@ -12,4 +12,10 @@ Rake::Task["db:fixtures:load"].enhance do
 
   Language::Member.counter_culture_fix_counts
   Language::Lesson.counter_culture_fix_counts
+
+  include ActionDispatch::TestProcess
+  BlogPost.find_each do |p|
+    p.cover = File.open(Rails.root.join("test/fixtures/files/blog_post.png"))
+    p.save!
+  end
 end

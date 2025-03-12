@@ -7,14 +7,16 @@ import { useTranslation } from "react-i18next";
 import * as Routes from "@/routes.js";
 import type { SharedProps } from "@/types";
 import { usePage } from "@inertiajs/react";
+import { dayjs } from "@/lib/utils";
 
 type Props = PropsWithChildren & {
   post: BlogPost;
 };
 
 export default function BlogPostBlock({ post }: Props) {
-  const { t } = useTranslation();
   const { suffix } = usePage<SharedProps>().props;
+  const { t: tCommon } = useTranslation("common");
+  const { t: tHelpers } = useTranslation("helpers");
 
   return (
     <Card className="border-0">
@@ -35,6 +37,19 @@ export default function BlogPostBlock({ post }: Props) {
           </a>
         </Card.Title>
         <Card.Text>{post.description}</Card.Text>
+        <div className="mt-2 d-flex small text-muted">
+          <div className="me-auto">
+            {dayjs().to(post.created_at)}
+          </div>
+          <div className="me-3">
+            <i className="bi bi-clock me-1" />~
+            {tCommon("time.minutes", { count: 5 })}
+          </div>
+          <div>
+            {tHelpers('read')}
+            <i className="bi bi-arrow-right ms-1 lh-1" />
+          </div>
+        </div>
       </Card.Body>
     </Card>
   );
