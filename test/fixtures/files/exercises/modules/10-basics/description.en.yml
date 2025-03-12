@@ -1,4 +1,5 @@
 ---
-name: Basics
+name: JavaScript basics
 description: |
-  Learning to program is a hard and a long process. And it's not limited to the syntax of a language. We would say that learning syntax is the easiest and the shortest step on the path, but we can't skip it. This Basics module is devoted to the basics of writing programs in JavaScript. It will serve as the basis for writing more complex programs later.
+  JavaScript is one of the most popular programming languages in the world.
+  It is used to build interactive web pages, mobile applications, and in server-side development. You will learn JS from scratch, from the very beginning. The first module provides a launching pad for writing meaningful programs. We will find out how to write your first JS code. Learn what comments are and why programmers need them. By checking your solutions, we will examine what testing is and how to read the output of tests.

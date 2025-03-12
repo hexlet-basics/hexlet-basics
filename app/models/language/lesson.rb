@@ -36,8 +36,6 @@ class Language::Lesson < ApplicationRecord
   include Language::LessonRepository
   include AASM
 
-  has_many_attached :assets
-
   # FIXME: add unique index
   validates :slug, presence: true, uniqueness: { scope: :language }
 

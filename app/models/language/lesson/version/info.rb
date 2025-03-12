@@ -38,6 +38,8 @@ class Language::Lesson::Version::Info < ApplicationRecord
   serialize :tips, type: Array
   serialize :definitions, type: Array
 
+  has_many_attached :assets
+
   belongs_to :language
   belongs_to :version
   belongs_to :language_lesson, class_name: "Language::Lesson"

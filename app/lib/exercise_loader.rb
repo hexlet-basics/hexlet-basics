@@ -27,10 +27,18 @@ class ExerciseLoader
       language_version.mark_as_built!
       language_version.language.update!(current_version: language_version)
     end
+
+    true
   rescue StandardError => e
     language_version.result = "Error class: #{e.class} message: #{e.message}"
     language_version.mark_as_failed
     language_version.save(validate: false)
+
+    if Rails.env.test?
+      raise e
+    end
+
+    false
   end
 
   private
@@ -86,7 +94,7 @@ class ExerciseLoader
         locale = File.basename(directory)
         data = get_lesson_info_data(directory)
 
-        [ locale, data ]
+        { locale:, data:, directory: }
       end
   end
 
@@ -257,10 +265,10 @@ class ExerciseLoader
   end
 
   def create_lesson_info(language_version, lesson_version, info_data)
-    locale, data = info_data
+    data = info_data[:data]
 
     new_datum_attr = {
-      locale: locale,
+      locale: info_data[:locale],
       language: language_version.language,
       language_version: language_version,
       language_lesson: lesson_version.lesson,
@@ -269,6 +277,22 @@ class ExerciseLoader
 
     info = Language::Lesson::Version::Info.new(new_datum_attr)
     info.save!
+
+    helpers = Rails.application.routes.url_helpers
+    data["theory"] = MarkdownImageProcessor.process(data["theory"]) do |asset_path|
+      file = File.open(File.join(info_data[:directory], asset_path))
+      info.assets.attach(file)
+      attached_asset = info.assets.attachments.last
+      url = helpers.url_for(attached_asset)
+      # url = helpers.rails_representation_url(attached_asset.variant(:main))
+      # raise url.inspect
+      url
+    end
+
+    info.save!
+
+    # raise data["theory"]
+
 
     info
   end

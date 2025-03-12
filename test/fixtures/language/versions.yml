@@ -30,6 +30,7 @@ DEFAULTS: &DEFAULTS
   docker_image: hexlet-basics/exercises-${LABEL}
   extension: extension_$LABEL
   exercise_filename: filename_$LABEL
+  state: created
   exercise_test_filename: test_filename_$LABEL
   language: $LABEL
   name: $LABEL
