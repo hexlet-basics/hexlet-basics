@@ -5,6 +5,7 @@ import XFlash from "@/components/XFlash.tsx";
 import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
 import type { BreadcrumbItem } from "@/types/index.js";
 import RootLayout from "./RootLayout.tsx";
+import TgContestBanner from "./banners/tg_contest_banner/TgContestBanner.tsx";
 import FooterBlock from "./blocks/FooterBlock.tsx";
 import NavbarBlock from "./blocks/NavbarBlock.tsx";
 
@@ -22,6 +23,7 @@ export default function ApplicationLayout({
 }: Props) {
   return (
     <RootLayout>
+      <TgContestBanner />
       <Container className="py-2">
         <NavbarBlock className="pb-3 border-bottom" />
         <XFlash />

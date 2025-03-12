@@ -1,0 +1,30 @@
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+
+.tg-contest-banner {
+  background-color: #4EA7B7;
+  background-image: url(images/background.svg);
+  background-position: top;
+  background-repeat: no-repeat;
+
+  @include media-breakpoint-up(lg) {
+    &::before {
+      content: '';
+      width: 92px;
+      height: 92px;
+      background-image: url(images/pi-image.svg);
+      background-size: contain;
+      background-repeat: no-repeat;
+      position: absolute;
+      top: 7px;
+      left: 6%;
+    }
+  }
+
+  @include media-breakpoint-up(xl) {
+    &::before {
+      left: 10%;
+    }
+  }
+}
