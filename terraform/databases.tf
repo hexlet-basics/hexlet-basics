@@ -79,3 +79,15 @@ resource "twc_database_user" "datadog_user_readonly" {
     privileges  = ["SELECT"]
   }
 }
+
+resource "twc_database_user" "hexlet_basics_user_2" {
+  cluster_id = twc_database_cluster.postgresql.id
+
+  login = var.postgres_db.username2
+  password = var.postgres_db.password
+
+  instance {
+    instance_id = twc_database_instance.hexlet_basics.id
+    privileges  = ["SELECT", "INSERT", "UPDATE", "DELETE", "ALTER", "REFERENCES", "CREATE", "DROP", "INDEX"]
+  }
+}
