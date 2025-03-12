@@ -65,7 +65,7 @@ class Language < ApplicationRecord
   # validates :learn_as, presence: true
 
   belongs_to :current_version, optional: true, class_name: "Language::Version"
-  # belongs_to :category, optional: true
+  belongs_to :category, optional: true # remove after deploy
 
   has_many :modules, dependent: :destroy
   has_many :lessons, dependent: :destroy
