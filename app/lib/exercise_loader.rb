@@ -34,7 +34,7 @@ class ExerciseLoader
     language_version.mark_as_failed
     language_version.save(validate: false)
 
-    if Rails.env.test?
+    unless Rails.env.production?
       raise e
     end
 

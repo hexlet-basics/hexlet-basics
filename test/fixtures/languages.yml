@@ -47,6 +47,10 @@ php:
 elixir:
   <<: *DEFAULTS
 
+typescript:
+  <<: *DEFAULTS
+  current_version: null
+
 javascript:
   <<: *DEFAULTS
   current_version: javascript2

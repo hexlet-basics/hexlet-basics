@@ -66,6 +66,12 @@ elixir-ru:
   main: true
   locale: ru
 
+typescript-ru:
+  <<: *DEFAULTS
+  language: typescript
+  main: true
+  locale: ru
+
 nodejs-ru:
   <<: *DEFAULTS
   language: javascript

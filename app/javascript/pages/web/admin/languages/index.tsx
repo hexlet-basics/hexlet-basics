@@ -26,14 +26,16 @@ export default function Index({ grid, courses }: Props) {
   const actionBodyTemplate = (data: Language) => {
     return (
       <>
-        <a
-          className="link-body-emphasis me-2"
-          target="_blank"
-          rel="noreferrer"
-          href={Routes.language_path(data.slug!)}
-        >
-          <i className="bi bi-box-arrow-up-right" />
-        </a>
+        {data.main_landing_slug && (
+          <a
+            className="link-body-emphasis me-2"
+            target="_blank"
+            rel="noreferrer"
+            href={Routes.language_path(data.main_landing_slug!)}
+          >
+            <i className="bi bi-box-arrow-up-right" />
+          </a>
+        )}
         <Link
           className="link-body-emphasis"
           href={Routes.edit_admin_language_path(data.id)}

@@ -5,7 +5,7 @@ class MarkdownImageProcessor
       image_url = Regexp.last_match(2)
 
       # Delegate processing logic to a block
-      new_path = yield(image_url)
+      new_path = image_url.start_with?("./assets") ? yield(image_url) : image_url
 
       "![#{alt_text}](#{new_path})"
     end
