@@ -30,7 +30,7 @@ export default function Index({ blogPosts, pagy }: Props) {
   return (
     <ApplicationLayout items={items} header={header}>
       <Container>
-        <Row className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        <Row className="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-3">
           {blogPosts.map((post) => (
             <Col key={post.id}>
               <BlogPostBlock post={post} />

@@ -38,17 +38,19 @@ export default function BlogPostBlock({ post }: Props) {
         </Card.Title>
         <Card.Text>{post.description}</Card.Text>
         <div className="mt-2 d-flex small text-muted">
-          <div className="me-auto">
-            {dayjs().to(post.created_at)}
-          </div>
+          <div className="me-auto">{dayjs().to(post.created_at)}</div>
           <div className="me-3">
-            <i className="bi bi-clock me-1" />~
-            {tCommon("time.minutes", { count: 5 })}
+            <i className="bi bi-hand-thumbs-up me-1" />
+            {post.likes_count}
           </div>
-          <div>
-            {tHelpers('read')}
-            <i className="bi bi-arrow-right ms-1 lh-1" />
+          <div className="me-1">
+            <i className="bi bi-clock me-1" />
           </div>
+          <div className="me-2">~{tCommon("time.minutes", { count: 5 })}</div>
+          {/* <div> */}
+          {/*   {tHelpers("read")} */}
+          {/*   <i className="bi bi-arrow-right ms-1 lh-1" /> */}
+          {/* </div> */}
         </div>
       </Card.Body>
     </Card>

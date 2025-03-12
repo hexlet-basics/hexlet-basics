@@ -36,6 +36,7 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
 
   const remarkPlugins: Pluggable[] = [[remarkToc, { heading }], [remarkGfm]];
 
+  const postUrl = Routes.blog_post_path(blogPost.slug!, { suffix })
   const items: BreadcrumbItem[] = [
     {
       name: t("blog_posts.index.header"),
@@ -43,7 +44,7 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
     },
     {
       name: blogPost.name!,
-      url: Routes.blog_post_path(blogPost.slug!, { suffix }),
+      url: postUrl,
     },
   ];
 
@@ -68,9 +69,15 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
               <div className="text-muted me-auto">
                 {dayjs().to(blogPost.created_at)}
               </div>
+              <div className="me-3 text-muted">
+                <a href={postUrl} className="link-body-emphasis">
+                  <i className="bi bi-hand-thumbs-up me-1" />
+                </a>
+                {blogPost.likes_count}
+              </div>
               <div className="text-muted">
-                <i className="bi bi-clock me-1" />
-                ~{tCommon("time.minutes", { count: 5 })}
+                <i className="bi bi-clock me-2" />~
+                {tCommon("time.minutes", { count: 5 })}
               </div>
             </div>
           </Col>

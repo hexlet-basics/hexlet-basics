@@ -32,4 +32,9 @@ class BlogPostResource
   attribute :reading_time do |post|
     (post.body.split.size / 260).ceil
   end
+
+  typelize :number
+  attribute :likes_count do |post|
+    post.id.digits.last
+  end
 end

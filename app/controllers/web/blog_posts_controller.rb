@@ -1,6 +1,6 @@
 class Web::BlogPostsController < Web::ApplicationController
   def index
-    scope = BlogPost.published.with_locale.includes([ :cover_attachment ])
+    scope = BlogPost.published.with_locale.includes([ :cover_attachment ]).order(id: :desc)
     pagy, records = pagy(scope)
 
     seo_tags = {
