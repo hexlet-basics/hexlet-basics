@@ -15,6 +15,7 @@
 @import "bootstrap/scss/utilities";
 
 @import "primereact/resources/themes/bootstrap4-light-blue/theme.css";
+@import 'tg-contest-banner';
 
 $utilities: map-merge($utilities,
     ("responsive-height": (property: height,
@@ -138,30 +139,3 @@ $utilities: map-merge($utilities,
 //       100: 100%,
 //       auto: auto)),
 // );
-
-.tg-contest-banner {
-  background-color: #4EA7B7;
-  background-image: url(../images/tg-contest-banner/background.svg);
-  background-position: top;
-  background-repeat: no-repeat;
-
-  @include media-breakpoint-up(lg) {
-    &::before {
-      content: '';
-      width: 92px;
-      height: 92px;
-      background-image: url(../images/tg-contest-banner/pi-image.svg);
-      background-size: contain;
-      background-repeat: no-repeat;
-      position: absolute;
-      top: 7px;
-      left: 6%;
-    }
-  }
-
-  @include media-breakpoint-up(xl) {
-    &::before {
-      left: 10%;
-    }
-  }
-}
