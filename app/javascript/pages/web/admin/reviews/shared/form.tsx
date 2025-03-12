@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-import { XForm, XInput, XSelect, XStateEvent } from "@/components/forms";
+import { XCheck, XForm, XInput, XSelect, XStateEvent } from "@/components/forms";
 import type { Language, Review } from "@/types/serializers";
 import { Col, Row } from "react-bootstrap";
 import { type HTTPVerb, Submit } from "use-inertia-form";
@@ -25,6 +25,7 @@ export default function Form({ courses, data, url, method }: Props) {
       <Col className="col-7">
         <XForm method={method} model="review" data={data} to={url}>
           <XStateEvent fieldName="state" />
+          <XCheck name="pinned" />
           {/* <XSelect */}
           {/*   name="locale" */}
           {/*   labelField="name" */}

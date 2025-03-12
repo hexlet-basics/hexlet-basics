@@ -39,7 +39,7 @@ export default function New({ reviews, pagy }: Props) {
                     <Card.Title>{review.full_name}</Card.Title>
                     <Card.Text>{review.body}</Card.Text>
                   </div>
-                  <div className="d-flex">
+                  <div className="d-flex small text-muted">
                     {/* {review.language && ( */}
                     {/*   <Card.Link */}
                     {/*     href={Routes.language_path(review.language.slug!)} */}
@@ -48,6 +48,12 @@ export default function New({ reviews, pagy }: Props) {
                     {/*     {review.language.name} */}
                     {/*   </Card.Link> */}
                     {/* )} */}
+                    <div className="me-2">
+                      <b>
+                        <i className="bi bi-person-circle me-2" />
+                        {review.user.name}
+                      </b>
+                    </div>
                     <div>{dayjs(review.created_at).format("YYYY-MM-DD")}</div>
                   </div>
                 </Card.Body>

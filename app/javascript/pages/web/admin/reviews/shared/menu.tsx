@@ -31,6 +31,15 @@ export function Menu({ data }: Props) {
           {tHelpers("crud.add")}
         </Nav.Link>
       </Nav.Item>
+      <Nav.Item>
+        <Nav.Link
+          target="_blank"
+          className="link-body-emphasis"
+          href={Routes.reviews_path()}
+        >
+          <i className="bi bi-arrow-up-right-square" />
+        </Nav.Link>
+      </Nav.Item>
       {data && (
         <Nav.Item>
           <Nav.Link

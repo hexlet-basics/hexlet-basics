@@ -9,7 +9,7 @@ class ReviewCrudResource
   has_one :user
   has_one :language
 
-  attributes :id, :body, :state, :first_name, :last_name, :language_id, :user_id
+  attributes :id, :body, :state, :first_name, :last_name, :language_id, :user_id, :pinned
 
   typelize_meta meta: "{ state_events: Array<[string, string]>}"
   meta do

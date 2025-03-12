@@ -7,6 +7,7 @@
 #  first_name  :string
 #  last_name   :string
 #  locale      :string
+#  pinned      :boolean
 #  state       :string
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
@@ -31,6 +32,7 @@
 DEFAULTS: &DEFAULTS
   state: published
   user: full
+  pinned: false
   first_name: First $LABEL
   last_name: Last $LABEL
   language: javascript
@@ -39,7 +41,9 @@ DEFAULTS: &DEFAULTS
 full-javascript:
   <<: *DEFAULTS
   user: admin
-  body: <%= Faker::Lorem.paragraph_by_chars %>
+  pinned: true
+  body: Этот классный отзыв, который помечен как pinned
+  locale: ru
 
 full-javascript-ru:
   <<: *DEFAULTS
@@ -51,11 +55,12 @@ full-javascript-ru2:
   <<: *DEFAULTS
   user: two
   body: <%= Faker::Lorem.paragraph_by_chars %>
-  locale: ru
+  locale: en
 
 full-javascript-ru3:
   <<: *DEFAULTS
-  body: <%= Faker::Lorem.paragraph_by_chars %>
+  pinned: true
+  body: Это pinned отзыв, который должен быть где-то впереди
   locale: ru
 
 full-javascript-ru4:

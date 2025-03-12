@@ -9,6 +9,7 @@
 #  first_name  :string
 #  last_name   :string
 #  locale      :string
+#  pinned      :boolean
 #  state       :string
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null

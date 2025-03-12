@@ -14,6 +14,7 @@ ru:
         slug: Slug
         # state
       review:
+        pinned: Закрепленный (Показывается сверху списка)
         first_name: Имя
         last_name: Фамилия
         body: Отзыв
