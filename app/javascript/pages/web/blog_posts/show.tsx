@@ -36,7 +36,7 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
 
   const remarkPlugins: Pluggable[] = [[remarkToc, { heading }], [remarkGfm]];
 
-  const postUrl = Routes.blog_post_path(blogPost.slug!, { suffix })
+  const postUrl = Routes.blog_post_path(blogPost.slug!, { suffix });
   const items: BreadcrumbItem[] = [
     {
       name: t("blog_posts.index.header"),
@@ -65,11 +65,15 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
                 {`\n\n## ${heading}\n\n ${blogPost.body}`}
               </Markdown>
             </div>
-            <div className="mt-5 d-flex">
-              <div className="text-muted me-auto">
-                {dayjs().to(blogPost.created_at)}
+            <div className="mt-5 d-flex text-muted">
+              <div className="me-2">
+                <b>
+                  <i className="bi bi-person-circle me-2" />
+                  {blogPost.creator.name}
+                </b>
               </div>
-              <div className="me-3 text-muted">
+              <div className="me-auto">{dayjs().to(blogPost.created_at)}</div>
+              <div className="me-3">
                 <a href={postUrl} className="link-body-emphasis">
                   <i className="bi bi-hand-thumbs-up me-1" />
                 </a>

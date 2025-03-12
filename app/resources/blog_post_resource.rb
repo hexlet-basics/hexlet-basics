@@ -3,6 +3,8 @@ class BlogPostResource
   include Alba::Resource
   include Typelizer::DSL
 
+  has_one :creator, resource: UserResource
+
   attributes :id,
     :name,
     :slug,
