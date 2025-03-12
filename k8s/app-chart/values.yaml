@@ -1,6 +1,6 @@
 ---
 
-version: v1023
+version: v1021
 
 nginx:
   image:
