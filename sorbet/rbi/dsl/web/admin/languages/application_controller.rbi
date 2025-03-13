@@ -16,6 +16,9 @@ class Web::Admin::Languages::ApplicationController
     include ::Ransack::Helpers::FormHelper
     include ::ViteRails::TagHelpers
     include ::ActionController::Base::HelperMethods
+    include ::LanguageCategoriesHelper
+    include ::Web::Admin::LanguageLandingPagesHelper
+    include ::ApplicationController::HelperMethods
 
     sig { returns(T.untyped) }
     def resource_language; end

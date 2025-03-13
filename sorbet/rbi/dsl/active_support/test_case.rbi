@@ -46,6 +46,16 @@ class ActiveSupport::TestCase
   end
   def language_categories(fixture_name = nil, *other_fixtures); end
 
+  sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[Language::LandingPage]) }
+  sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(Language::LandingPage) }
+  sig do
+    params(
+      fixture_name: T.any(String, Symbol),
+      other_fixtures: T.any(String, Symbol)
+    ).returns(T::Array[Language::LandingPage])
+  end
+  def language_landing_pages(fixture_name = nil, *other_fixtures); end
+
   sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[Language::Lesson::Member]) }
   sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(Language::Lesson::Member) }
   sig do
@@ -135,16 +145,6 @@ class ActiveSupport::TestCase
     ).returns(T::Array[Language::Module])
   end
   def language_modules(fixture_name = nil, *other_fixtures); end
-
-  sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[Language::Version::Info]) }
-  sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(Language::Version::Info) }
-  sig do
-    params(
-      fixture_name: T.any(String, Symbol),
-      other_fixtures: T.any(String, Symbol)
-    ).returns(T::Array[Language::Version::Info])
-  end
-  def language_version_infos(fixture_name = nil, *other_fixtures); end
 
   sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[Language::Version]) }
   sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(Language::Version) }

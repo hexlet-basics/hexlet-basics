@@ -25,6 +25,18 @@ module GeneratedUrlHelpersModule
   def admin_blog_posts_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def admin_language_categories_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_language_category_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_language_landing_page_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_language_landing_pages_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def admin_language_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -49,21 +61,6 @@ module GeneratedUrlHelpersModule
   def admin_root_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def api_language_lesson_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def api_language_lessons_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def api_language_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def api_languages_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def api_partners_yandex_market_languages_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def blog_post_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -80,6 +77,12 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def edit_admin_blog_post_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def edit_admin_language_category_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def edit_admin_language_landing_page_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def edit_admin_language_url(*args); end
@@ -113,6 +116,12 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def new_admin_blog_post_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_admin_language_category_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_admin_language_landing_page_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_admin_language_url(*args); end

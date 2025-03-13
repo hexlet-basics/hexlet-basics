@@ -25,6 +25,18 @@ module GeneratedPathHelpersModule
   def admin_blog_posts_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def admin_language_categories_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_language_category_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_language_landing_page_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_language_landing_pages_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def admin_language_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -49,21 +61,6 @@ module GeneratedPathHelpersModule
   def admin_root_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def api_language_lesson_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def api_language_lessons_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def api_language_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def api_languages_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def api_partners_yandex_market_languages_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def blog_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -80,6 +77,12 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def edit_admin_blog_post_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def edit_admin_language_category_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def edit_admin_language_landing_page_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def edit_admin_language_path(*args); end
@@ -113,6 +116,12 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def new_admin_blog_post_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_admin_language_category_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_admin_language_landing_page_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_admin_language_path(*args); end

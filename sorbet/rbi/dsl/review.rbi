@@ -938,6 +938,51 @@ class Review
     sig { void }
     def locale_will_change!; end
 
+    sig { returns(T.nilable(T::Boolean)) }
+    def pinned; end
+
+    sig { params(value: T.nilable(T::Boolean)).returns(T.nilable(T::Boolean)) }
+    def pinned=(value); end
+
+    sig { returns(T::Boolean) }
+    def pinned?; end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def pinned_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def pinned_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def pinned_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
+    def pinned_change; end
+
+    sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
+    def pinned_change_to_be_saved; end
+
+    sig { params(from: T.nilable(T::Boolean), to: T.nilable(T::Boolean)).returns(T::Boolean) }
+    def pinned_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def pinned_in_database; end
+
+    sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
+    def pinned_previous_change; end
+
+    sig { params(from: T.nilable(T::Boolean), to: T.nilable(T::Boolean)).returns(T::Boolean) }
+    def pinned_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def pinned_previously_was; end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def pinned_was; end
+
+    sig { void }
+    def pinned_will_change!; end
+
     sig { void }
     def restore_body!; end
 
@@ -961,6 +1006,9 @@ class Review
 
     sig { void }
     def restore_locale!; end
+
+    sig { void }
+    def restore_pinned!; end
 
     sig { void }
     def restore_state!; end
@@ -1021,6 +1069,12 @@ class Review
 
     sig { returns(T::Boolean) }
     def saved_change_to_locale?; end
+
+    sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
+    def saved_change_to_pinned; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_pinned?; end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_state; end
@@ -1249,6 +1303,9 @@ class Review
 
     sig { returns(T::Boolean) }
     def will_save_change_to_locale?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_pinned?; end
 
     sig { returns(T::Boolean) }
     def will_save_change_to_state?; end
