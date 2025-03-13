@@ -18,7 +18,7 @@ export default function CourseBlock({ landingPage, courseMember }: Props) {
   const { suffix } = usePage<SharedProps>().props;
 
   return (
-    <Card className="h-100 shadow-sm bg-body-tertiary">
+    <Card className="h-100 border-0 border-bottom shadow-sm bg-body-tertiary">
       <Card.Img
         variant="top"
         src={landingPage.language.cover_list_variant}

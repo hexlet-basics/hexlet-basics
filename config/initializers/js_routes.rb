@@ -20,7 +20,7 @@ JsRoutes.setup do |c|
 
   # Generate `*_url` helpers besides `*_path`
   # for apps that work on multiple domains.
-  # c.url_links = true
+  c.url_links = true
 
   # More options:
   # @see https://github.com/railsware/js-routes#available-options

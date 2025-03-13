@@ -35,8 +35,8 @@ dev-ssr:
 i18n-export:
 	bundle exec i18n export
 
-sync-fixtures:
-	bin/rails db:fixtures:load
+sync-fixtures: db-reset
+	# bin/rails db:fixtures:load
 
 editor-setup:
 	bin/tapioca dsl

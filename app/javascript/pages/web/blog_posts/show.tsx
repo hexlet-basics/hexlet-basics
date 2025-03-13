@@ -13,9 +13,10 @@ import remarkToc from "remark-toc";
 
 import BlogPostBlock from "@/components/BlogPostBlock";
 import * as Routes from "@/routes.js";
-import { usePage } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 import { useTranslation } from "react-i18next";
 import type { Pluggable } from "unified";
+import { WithContext, Article } from "schema-dts";
 
 type Props = PropsWithChildren & {
   blogPost: BlogPost;
@@ -36,11 +37,11 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
 
   const remarkPlugins: Pluggable[] = [[remarkToc, { heading }], [remarkGfm]];
 
-  const postUrl = Routes.blog_post_path(blogPost.slug!, { suffix });
+  const postUrl = Routes.blog_post_url(blogPost.slug!, { suffix });
   const items: BreadcrumbItem[] = [
     {
       name: t("blog_posts.index.header"),
-      url: Routes.blog_posts_path({ suffix }),
+      url: Routes.blog_posts_url({ suffix }),
     },
     {
       name: blogPost.name!,
@@ -48,52 +49,67 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
     },
   ];
 
+  const article: WithContext<Article> = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    author: blogPost.creator.name!,
+    name: blogPost.name!,
+    datePublished: blogPost.created_at,
+    headline: blogPost.description!,
+    image: blogPost.cover_main_variant!,
+  };
+
   return (
-    <ApplicationLayout items={items} center header={blogPost.name!}>
-      <Container>
-        <Row className="justify-content-center mb-3">
-          <Col className="col-12 col-md-10 col-lg-8 d-flex flex-column">
-            <div className="mb-4">
-              <Image src={blogPost.cover_main_variant!} />
-            </div>
-            <div className="hexlet-basics-content">
-              <Markdown
-                remarkPlugins={remarkPlugins}
-                rehypePlugins={rehypePlugins}
-              >
-                {/* {blogPost.body} */}
-                {`\n\n## ${heading}\n\n ${blogPost.body}`}
-              </Markdown>
-            </div>
-            <div className="mt-5 d-flex text-muted">
-              <div className="me-2">
-                <b>
-                  <i className="bi bi-person-circle me-2" />
-                  {blogPost.creator.name}
-                </b>
+    <>
+      <Head>
+        <script type="application/ld+json">{JSON.stringify(article)}</script>
+      </Head>
+      <ApplicationLayout items={items} center header={blogPost.name!}>
+        <Container>
+          <Row className="justify-content-center mb-3">
+            <Col className="col-12 col-md-10 col-lg-8 d-flex flex-column">
+              <div className="mb-4">
+                <Image src={blogPost.cover_main_variant!} />
               </div>
-              <div className="me-auto">{dayjs().to(blogPost.created_at)}</div>
-              <div className="me-3">
-                <a href={postUrl} className="link-body-emphasis">
-                  <i className="bi bi-hand-thumbs-up me-1" />
-                </a>
-                {blogPost.likes_count}
+              <div className="hexlet-basics-content">
+                <Markdown
+                  remarkPlugins={remarkPlugins}
+                  rehypePlugins={rehypePlugins}
+                >
+                  {/* {blogPost.body} */}
+                  {`\n\n## ${heading}\n\n ${blogPost.body}`}
+                </Markdown>
               </div>
-              <div className="text-muted">
-                <i className="bi bi-clock me-2" />~
-                {tCommon("time.minutes", { count: 5 })}
+              <div className="mt-5 d-flex text-muted">
+                <div className="me-2">
+                  <b>
+                    <i className="bi bi-person-circle me-2" />
+                    {blogPost.creator.name}
+                  </b>
+                </div>
+                <div className="me-auto">{dayjs().to(blogPost.created_at)}</div>
+                <div className="me-3">
+                  <a href={postUrl} className="link-body-emphasis">
+                    <i className="bi bi-hand-thumbs-up me-1" />
+                  </a>
+                  {blogPost.likes_count}
+                </div>
+                <div className="text-muted">
+                  <i className="bi bi-clock me-2" />~
+                  {tCommon("time.minutes", { count: 5 })}
+                </div>
               </div>
-            </div>
-          </Col>
-        </Row>
-        <Row className="justify-content-center row-cols-sm-2 row-cols-md-3 row-cols-1">
-          {recommendedBlogPosts.map((post) => (
-            <Col key={post.id} className="border-top pt-5">
-              <BlogPostBlock post={post} />
             </Col>
-          ))}
-        </Row>
-      </Container>
-    </ApplicationLayout>
+          </Row>
+          <Row className="justify-content-center row-cols-sm-2 row-cols-md-3 row-cols-1">
+            {recommendedBlogPosts.map((post) => (
+              <Col key={post.id} className="border-top pt-5">
+                <BlogPostBlock post={post} />
+              </Col>
+            ))}
+          </Row>
+        </Container>
+      </ApplicationLayout>
+    </>
   );
 }

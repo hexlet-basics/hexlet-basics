@@ -1,4 +1,3 @@
-import cn from "classnames";
 import { Alert, Col, Container, ListGroup, Row } from "react-bootstrap";
 
 import { useTranslation } from "react-i18next";
@@ -7,7 +6,8 @@ import CourseBlock from "@/components/CourseBlock";
 import XssContent from "@/components/XssContent";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import * as Routes from "@/routes.js";
-import type { BreadcrumbItem, SharedProps } from "@/types";
+import type { Product, WithContext } from "schema-dts";
+import type { BreadcrumbItem, Language, SharedProps } from "@/types";
 import type {
   LanguageCategory,
   LanguageLandingPage,
@@ -16,9 +16,10 @@ import type {
   LanguageMember,
   LanguageModule,
 } from "@/types/serializers";
-import { Link, usePage } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 
 type Props = {
+  course: Language;
   courseMember?: LanguageMember;
   finishedLessonIds: number[];
   courseCategory: LanguageCategory;
@@ -43,23 +44,47 @@ export default function Show({
   finishedLessonIds,
   recommendedCourseLandingPages,
   lessonsByModuleId,
+  course,
 }: Props) {
   const { t } = useTranslation();
   const { auth } = usePage<SharedProps>().props;
 
+  const product: WithContext<Product> = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    description: courseLandingPage.description,
+    image: course.cover_list_variant,
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "RUB",
+      availability: "https://schema.org/InStock",
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: course.rating_value,
+      ratingCount: course.rating_count,
+    },
+    name: courseLandingPage.header,
+    // TODO: add review
+  };
+
   const breadcrumbItems: BreadcrumbItem[] = [
     {
       name: courseCategory.name,
-      url: Routes.language_category_path(courseCategory.slug!),
+      url: Routes.language_category_url(courseCategory.slug!),
     },
     {
       name: courseLandingPage.header,
-      url: Routes.language_path(courseLandingPage.slug),
+      url: Routes.language_url(courseLandingPage.slug),
     },
   ];
 
   return (
     <ApplicationLayout items={breadcrumbItems}>
+      <Head>
+        <script type="application/ld+json">{JSON.stringify(product)}</script>
+      </Head>
       <Container>
         {courseMember?.state === "finished" && (
           <Alert variant="success">

@@ -52,15 +52,15 @@ export default function Show() {
   const items: BreadcrumbItem[] = [
     {
       name: courseCategory.name!,
-      url: Routes.language_category_path(courseCategory.slug!),
+      url: Routes.language_category_url(courseCategory.slug!),
     },
     {
       name: landingPage.header!,
-      url: Routes.language_path(landingPage.slug!),
+      url: Routes.language_url(landingPage.slug!),
     },
     {
       name: lesson.name!,
-      url: Routes.language_lesson_path(landingPage.slug!, lesson.slug!),
+      url: Routes.language_lesson_url(landingPage.slug!, lesson.slug!),
     },
   ];
 

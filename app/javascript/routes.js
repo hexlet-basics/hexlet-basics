@@ -551,7 +551,24 @@ export const serialize = __jsr.serialize;
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const account_profile_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"account"],[2,[7,"/"],[6,"profile"]]]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/account/profile
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const account_profile_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"account"],[2,[7,"/"],[6,"profile"]]]]]);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/api/users/:id
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const admin_api_user_url = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"api"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[3,"id"]]]]]]]]], true);
 
 /**
  * Generates rails route to
@@ -568,7 +585,24 @@ export const admin_api_user_path = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const admin_api_users_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"api"],[2,[7,"/"],[6,"users"]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/api/users
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const admin_api_users_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"api"],[2,[7,"/"],[6,"users"]]]]]]]);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/blog_posts/:id
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const admin_blog_post_url = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"blog_posts"],[2,[7,"/"],[3,"id"]]]]]]], true);
 
 /**
  * Generates rails route to
@@ -585,7 +619,24 @@ export const admin_blog_post_path = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r"
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const admin_blog_posts_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[6,"blog_posts"]]]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/blog_posts
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const admin_blog_posts_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[6,"blog_posts"]]]]]);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/languages/:id
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const admin_language_url = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"languages"],[2,[7,"/"],[3,"id"]]]]]]], true);
 
 /**
  * Generates rails route to
@@ -603,7 +654,24 @@ export const admin_language_path = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const admin_language_landing_page_url = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"language_landing_pages"],[2,[7,"/"],[3,"id"]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/language_landing_pages/:id
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const admin_language_landing_page_path = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"language_landing_pages"],[2,[7,"/"],[3,"id"]]]]]]]);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/language_landing_pages
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const admin_language_landing_pages_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[6,"language_landing_pages"]]]]], true);
 
 /**
  * Generates rails route to
@@ -620,7 +688,24 @@ export const admin_language_landing_pages_path = /*#__PURE__*/ __jsr.r({"suffix"
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const admin_language_versions_url = /*#__PURE__*/ __jsr.r({"suffix":{},"language_id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"languages"],[2,[7,"/"],[2,[3,"language_id"],[2,[7,"/"],[6,"versions"]]]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/languages/:language_id/versions
+ * @param {any} language_id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const admin_language_versions_path = /*#__PURE__*/ __jsr.r({"suffix":{},"language_id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"languages"],[2,[7,"/"],[2,[3,"language_id"],[2,[7,"/"],[6,"versions"]]]]]]]]]);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/languages
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const admin_languages_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[6,"languages"]]]]], true);
 
 /**
  * Generates rails route to
@@ -637,7 +722,24 @@ export const admin_languages_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const admin_management_user_url = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"management"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[3,"id"]]]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/management/users/:id
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const admin_management_user_path = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"management"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[3,"id"]]]]]]]]]);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/management/users
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const admin_management_users_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"management"],[2,[7,"/"],[6,"users"]]]]]]], true);
 
 /**
  * Generates rails route to
@@ -654,6 +756,15 @@ export const admin_management_users_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, 
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const admin_review_url = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"reviews"],[2,[7,"/"],[3,"id"]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/reviews/:id
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const admin_review_path = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"reviews"],[2,[7,"/"],[3,"id"]]]]]]]);
 
 /**
@@ -662,7 +773,23 @@ export const admin_review_path = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":tr
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const admin_reviews_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[6,"reviews"]]]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/reviews
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const admin_reviews_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[6,"reviews"]]]]]);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const admin_root_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[6,"admin"]]], true);
 
 /**
  * Generates rails route to
@@ -679,7 +806,24 @@ export const admin_root_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const blog_post_url = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"blog_posts"],[2,[7,"/"],[3,"id"]]]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/blog_posts/:id
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const blog_post_path = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"blog_posts"],[2,[7,"/"],[3,"id"]]]]]);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/blog_posts
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const blog_posts_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[6,"blog_posts"]]], true);
 
 /**
  * Generates rails route to
@@ -696,6 +840,15 @@ export const blog_posts_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const check_api_lesson_url = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true},"format":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"api"],[2,[7,"/"],[2,[6,"lessons"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"check"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/api/lessons/:id/check(.:format)
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const check_api_lesson_path = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true},"format":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"api"],[2,[7,"/"],[2,[6,"lessons"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"check"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]);
 
 /**
@@ -704,7 +857,24 @@ export const check_api_lesson_path = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const edit_account_profile_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"account"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[6,"edit"]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/account/profile/edit
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const edit_account_profile_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"account"],[2,[7,"/"],[2,[6,"profile"],[2,[7,"/"],[6,"edit"]]]]]]]);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/api/users/:id/edit
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const edit_admin_api_user_url = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"api"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[6,"edit"]]]]]]]]]]], true);
 
 /**
  * Generates rails route to
@@ -722,7 +892,25 @@ export const edit_admin_api_user_path = /*#__PURE__*/ __jsr.r({"suffix":{},"id":
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const edit_admin_blog_post_url = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"blog_posts"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[6,"edit"]]]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/blog_posts/:id/edit
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const edit_admin_blog_post_path = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"blog_posts"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[6,"edit"]]]]]]]]]);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/languages/:id/edit
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const edit_admin_language_url = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"languages"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[6,"edit"]]]]]]]]], true);
 
 /**
  * Generates rails route to
@@ -740,7 +928,25 @@ export const edit_admin_language_path = /*#__PURE__*/ __jsr.r({"suffix":{},"id":
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const edit_admin_language_landing_page_url = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"language_landing_pages"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[6,"edit"]]]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/language_landing_pages/:id/edit
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const edit_admin_language_landing_page_path = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"language_landing_pages"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[6,"edit"]]]]]]]]]);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/management/users/:id/edit
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const edit_admin_management_user_url = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"management"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[6,"edit"]]]]]]]]]]], true);
 
 /**
  * Generates rails route to
@@ -758,7 +964,24 @@ export const edit_admin_management_user_path = /*#__PURE__*/ __jsr.r({"suffix":{
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const edit_admin_review_url = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"reviews"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[6,"edit"]]]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/reviews/:id/edit
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const edit_admin_review_path = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"reviews"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[6,"edit"]]]]]]]]]);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/password/edit
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const edit_password_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"password"],[2,[7,"/"],[6,"edit"]]]]], true);
 
 /**
  * Generates rails route to
@@ -775,6 +998,15 @@ export const edit_password_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const language_url = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"languages"],[2,[7,"/"],[3,"id"]]]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/languages/:id
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const language_path = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"languages"],[2,[7,"/"],[3,"id"]]]]]);
 
 /**
@@ -783,7 +1015,24 @@ export const language_path = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const language_categories_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[6,"language_categories"]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/language_categories
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const language_categories_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[6,"language_categories"]]]);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/language_categories/:id
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const language_category_url = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"language_categories"],[2,[7,"/"],[3,"id"]]]]], true);
 
 /**
  * Generates rails route to
@@ -802,7 +1051,25 @@ export const language_category_path = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const language_lesson_url = /*#__PURE__*/ __jsr.r({"suffix":{},"language_id":{"r":true},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"languages"],[2,[7,"/"],[2,[3,"language_id"],[2,[7,"/"],[2,[6,"lessons"],[2,[7,"/"],[3,"id"]]]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/languages/:language_id/lessons/:id
+ * @param {any} language_id
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const language_lesson_path = /*#__PURE__*/ __jsr.r({"suffix":{},"language_id":{"r":true},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"languages"],[2,[7,"/"],[2,[3,"language_id"],[2,[7,"/"],[2,[6,"lessons"],[2,[7,"/"],[3,"id"]]]]]]]]]);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/map
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const map_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[6,"map"]]], true);
 
 /**
  * Generates rails route to
@@ -818,7 +1085,23 @@ export const map_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const new_admin_api_user_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"api"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[6,"new"]]]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/api/users/new
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const new_admin_api_user_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"api"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[6,"new"]]]]]]]]]);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/blog_posts/new
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const new_admin_blog_post_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"blog_posts"],[2,[7,"/"],[6,"new"]]]]]]], true);
 
 /**
  * Generates rails route to
@@ -834,7 +1117,23 @@ export const new_admin_blog_post_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const new_admin_language_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"languages"],[2,[7,"/"],[6,"new"]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/languages/new
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const new_admin_language_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"languages"],[2,[7,"/"],[6,"new"]]]]]]]);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/language_landing_pages/new
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const new_admin_language_landing_page_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"language_landing_pages"],[2,[7,"/"],[6,"new"]]]]]]], true);
 
 /**
  * Generates rails route to
@@ -850,7 +1149,23 @@ export const new_admin_language_landing_page_path = /*#__PURE__*/ __jsr.r({"suff
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const new_admin_review_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"reviews"],[2,[7,"/"],[6,"new"]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/reviews/new
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const new_admin_review_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"reviews"],[2,[7,"/"],[6,"new"]]]]]]]);
+
+/**
+ * Generates rails route to
+ * /rails/conductor/action_mailbox/inbound_emails/new(.:format)
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const new_rails_conductor_inbound_email_url = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"conductor"],[2,[7,"/"],[2,[6,"action_mailbox"],[2,[7,"/"],[2,[6,"inbound_emails"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]], true);
 
 /**
  * Generates rails route to
@@ -866,7 +1181,23 @@ export const new_rails_conductor_inbound_email_path = /*#__PURE__*/ __jsr.r({"fo
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const new_rails_conductor_inbound_email_source_url = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"conductor"],[2,[7,"/"],[2,[6,"action_mailbox"],[2,[7,"/"],[2,[6,"inbound_emails"],[2,[7,"/"],[2,[6,"sources"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * /rails/conductor/action_mailbox/inbound_emails/sources/new(.:format)
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const new_rails_conductor_inbound_email_source_path = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"conductor"],[2,[7,"/"],[2,[6,"action_mailbox"],[2,[7,"/"],[2,[6,"inbound_emails"],[2,[7,"/"],[2,[6,"sources"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/remind_password/new
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const new_remind_password_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"remind_password"],[2,[7,"/"],[6,"new"]]]]], true);
 
 /**
  * Generates rails route to
@@ -882,7 +1213,23 @@ export const new_remind_password_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const new_session_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"session"],[2,[7,"/"],[6,"new"]]]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/session/new
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const new_session_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"session"],[2,[7,"/"],[6,"new"]]]]]);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/users/new
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const new_user_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[6,"new"]]]]], true);
 
 /**
  * Generates rails route to
@@ -899,6 +1246,15 @@ export const new_user_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const page_url = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"pages"],[2,[7,"/"],[3,"id"]]]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/pages/:id
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const page_path = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"pages"],[2,[7,"/"],[3,"id"]]]]]);
 
 /**
@@ -907,7 +1263,26 @@ export const page_path = /*#__PURE__*/ __jsr.r({"suffix":{},"id":{"r":true}}, [2
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const password_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[6,"password"]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/password
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const password_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[6,"password"]]]);
+
+/**
+ * Generates rails route to
+ * /rails/active_storage/representations/redirect/:signed_blob_id/:variation_key/*filename(.:format)
+ * @param {any} signed_blob_id
+ * @param {any} variation_key
+ * @param {any} filename
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const rails_blob_representation_url = /*#__PURE__*/ __jsr.r({"signed_blob_id":{"r":true},"variation_key":{"r":true},"filename":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"active_storage"],[2,[7,"/"],[2,[6,"representations"],[2,[7,"/"],[2,[6,"redirect"],[2,[7,"/"],[2,[3,"signed_blob_id"],[2,[7,"/"],[2,[3,"variation_key"],[2,[7,"/"],[2,[5,[3,"filename"]],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]], true);
 
 /**
  * Generates rails route to
@@ -929,7 +1304,27 @@ export const rails_blob_representation_path = /*#__PURE__*/ __jsr.r({"signed_blo
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const rails_blob_representation_proxy_url = /*#__PURE__*/ __jsr.r({"signed_blob_id":{"r":true},"variation_key":{"r":true},"filename":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"active_storage"],[2,[7,"/"],[2,[6,"representations"],[2,[7,"/"],[2,[6,"proxy"],[2,[7,"/"],[2,[3,"signed_blob_id"],[2,[7,"/"],[2,[3,"variation_key"],[2,[7,"/"],[2,[5,[3,"filename"]],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * /rails/active_storage/representations/proxy/:signed_blob_id/:variation_key/*filename(.:format)
+ * @param {any} signed_blob_id
+ * @param {any} variation_key
+ * @param {any} filename
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const rails_blob_representation_proxy_path = /*#__PURE__*/ __jsr.r({"signed_blob_id":{"r":true},"variation_key":{"r":true},"filename":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"active_storage"],[2,[7,"/"],[2,[6,"representations"],[2,[7,"/"],[2,[6,"proxy"],[2,[7,"/"],[2,[3,"signed_blob_id"],[2,[7,"/"],[2,[3,"variation_key"],[2,[7,"/"],[2,[5,[3,"filename"]],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
+
+/**
+ * Generates rails route to
+ * /rails/conductor/action_mailbox/inbound_emails/:id(.:format)
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const rails_conductor_inbound_email_url = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"conductor"],[2,[7,"/"],[2,[6,"action_mailbox"],[2,[7,"/"],[2,[6,"inbound_emails"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]], true);
 
 /**
  * Generates rails route to
@@ -947,7 +1342,25 @@ export const rails_conductor_inbound_email_path = /*#__PURE__*/ __jsr.r({"id":{"
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const rails_conductor_inbound_email_incinerate_url = /*#__PURE__*/ __jsr.r({"inbound_email_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"conductor"],[2,[7,"/"],[2,[6,"action_mailbox"],[2,[7,"/"],[2,[3,"inbound_email_id"],[2,[7,"/"],[2,[6,"incinerate"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * /rails/conductor/action_mailbox/:inbound_email_id/incinerate(.:format)
+ * @param {any} inbound_email_id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const rails_conductor_inbound_email_incinerate_path = /*#__PURE__*/ __jsr.r({"inbound_email_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"conductor"],[2,[7,"/"],[2,[6,"action_mailbox"],[2,[7,"/"],[2,[3,"inbound_email_id"],[2,[7,"/"],[2,[6,"incinerate"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
+
+/**
+ * Generates rails route to
+ * /rails/conductor/action_mailbox/:inbound_email_id/reroute(.:format)
+ * @param {any} inbound_email_id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const rails_conductor_inbound_email_reroute_url = /*#__PURE__*/ __jsr.r({"inbound_email_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"conductor"],[2,[7,"/"],[2,[6,"action_mailbox"],[2,[7,"/"],[2,[3,"inbound_email_id"],[2,[7,"/"],[2,[6,"reroute"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]], true);
 
 /**
  * Generates rails route to
@@ -964,6 +1377,14 @@ export const rails_conductor_inbound_email_reroute_path = /*#__PURE__*/ __jsr.r(
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const rails_conductor_inbound_email_sources_url = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"conductor"],[2,[7,"/"],[2,[6,"action_mailbox"],[2,[7,"/"],[2,[6,"inbound_emails"],[2,[7,"/"],[2,[6,"sources"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * /rails/conductor/action_mailbox/inbound_emails/sources(.:format)
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const rails_conductor_inbound_email_sources_path = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"conductor"],[2,[7,"/"],[2,[6,"action_mailbox"],[2,[7,"/"],[2,[6,"inbound_emails"],[2,[7,"/"],[2,[6,"sources"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
 
 /**
@@ -972,7 +1393,23 @@ export const rails_conductor_inbound_email_sources_path = /*#__PURE__*/ __jsr.r(
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const rails_conductor_inbound_emails_url = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"conductor"],[2,[7,"/"],[2,[6,"action_mailbox"],[2,[7,"/"],[2,[6,"inbound_emails"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * /rails/conductor/action_mailbox/inbound_emails(.:format)
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const rails_conductor_inbound_emails_path = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"conductor"],[2,[7,"/"],[2,[6,"action_mailbox"],[2,[7,"/"],[2,[6,"inbound_emails"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
+
+/**
+ * Generates rails route to
+ * /rails/active_storage/direct_uploads(.:format)
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const rails_direct_uploads_url = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"active_storage"],[2,[7,"/"],[2,[6,"direct_uploads"],[1,[2,[8,"."],[3,"format"]]]]]]]]], true);
 
 /**
  * Generates rails route to
@@ -990,7 +1427,25 @@ export const rails_direct_uploads_path = /*#__PURE__*/ __jsr.r({"format":{}}, [2
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const rails_disk_service_url = /*#__PURE__*/ __jsr.r({"encoded_key":{"r":true},"filename":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"active_storage"],[2,[7,"/"],[2,[6,"disk"],[2,[7,"/"],[2,[3,"encoded_key"],[2,[7,"/"],[2,[5,[3,"filename"]],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * /rails/active_storage/disk/:encoded_key/*filename(.:format)
+ * @param {any} encoded_key
+ * @param {any} filename
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const rails_disk_service_path = /*#__PURE__*/ __jsr.r({"encoded_key":{"r":true},"filename":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"active_storage"],[2,[7,"/"],[2,[6,"disk"],[2,[7,"/"],[2,[3,"encoded_key"],[2,[7,"/"],[2,[5,[3,"filename"]],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
+
+/**
+ * Generates rails route to
+ * /up(.:format)
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const rails_health_check_url = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"up"],[1,[2,[8,"."],[3,"format"]]]]], true);
 
 /**
  * Generates rails route to
@@ -1006,7 +1461,23 @@ export const rails_health_check_path = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const rails_info_url = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"info"],[1,[2,[8,"."],[3,"format"]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * /rails/info(.:format)
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const rails_info_path = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"info"],[1,[2,[8,"."],[3,"format"]]]]]]]);
+
+/**
+ * Generates rails route to
+ * /rails/info/notes(.:format)
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const rails_info_notes_url = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"info"],[2,[7,"/"],[2,[6,"notes"],[1,[2,[8,"."],[3,"format"]]]]]]]]], true);
 
 /**
  * Generates rails route to
@@ -1022,7 +1493,23 @@ export const rails_info_notes_path = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const rails_info_properties_url = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"info"],[2,[7,"/"],[2,[6,"properties"],[1,[2,[8,"."],[3,"format"]]]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * /rails/info/properties(.:format)
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const rails_info_properties_path = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"info"],[2,[7,"/"],[2,[6,"properties"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
+
+/**
+ * Generates rails route to
+ * /rails/info/routes(.:format)
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const rails_info_routes_url = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"info"],[2,[7,"/"],[2,[6,"routes"],[1,[2,[8,"."],[3,"format"]]]]]]]]], true);
 
 /**
  * Generates rails route to
@@ -1038,7 +1525,23 @@ export const rails_info_routes_path = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const rails_mailers_url = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"mailers"],[1,[2,[8,"."],[3,"format"]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * /rails/mailers(.:format)
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const rails_mailers_path = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"mailers"],[1,[2,[8,"."],[3,"format"]]]]]]]);
+
+/**
+ * Generates rails route to
+ * /rails/action_mailbox/mailgun/inbound_emails/mime(.:format)
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const rails_mailgun_inbound_emails_url = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"action_mailbox"],[2,[7,"/"],[2,[6,"mailgun"],[2,[7,"/"],[2,[6,"inbound_emails"],[2,[7,"/"],[2,[6,"mime"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]], true);
 
 /**
  * Generates rails route to
@@ -1054,7 +1557,23 @@ export const rails_mailgun_inbound_emails_path = /*#__PURE__*/ __jsr.r({"format"
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const rails_mandrill_inbound_emails_url = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"action_mailbox"],[2,[7,"/"],[2,[6,"mandrill"],[2,[7,"/"],[2,[6,"inbound_emails"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * /rails/action_mailbox/mandrill/inbound_emails(.:format)
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const rails_mandrill_inbound_emails_path = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"action_mailbox"],[2,[7,"/"],[2,[6,"mandrill"],[2,[7,"/"],[2,[6,"inbound_emails"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
+
+/**
+ * Generates rails route to
+ * /rails/action_mailbox/mandrill/inbound_emails(.:format)
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const rails_mandrill_inbound_health_check_url = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"action_mailbox"],[2,[7,"/"],[2,[6,"mandrill"],[2,[7,"/"],[2,[6,"inbound_emails"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]], true);
 
 /**
  * Generates rails route to
@@ -1070,7 +1589,23 @@ export const rails_mandrill_inbound_health_check_path = /*#__PURE__*/ __jsr.r({"
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const rails_postmark_inbound_emails_url = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"action_mailbox"],[2,[7,"/"],[2,[6,"postmark"],[2,[7,"/"],[2,[6,"inbound_emails"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * /rails/action_mailbox/postmark/inbound_emails(.:format)
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const rails_postmark_inbound_emails_path = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"action_mailbox"],[2,[7,"/"],[2,[6,"postmark"],[2,[7,"/"],[2,[6,"inbound_emails"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
+
+/**
+ * Generates rails route to
+ * /rails/action_mailbox/relay/inbound_emails(.:format)
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const rails_relay_inbound_emails_url = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"action_mailbox"],[2,[7,"/"],[2,[6,"relay"],[2,[7,"/"],[2,[6,"inbound_emails"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]], true);
 
 /**
  * Generates rails route to
@@ -1086,7 +1621,25 @@ export const rails_relay_inbound_emails_path = /*#__PURE__*/ __jsr.r({"format":{
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const rails_sendgrid_inbound_emails_url = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"action_mailbox"],[2,[7,"/"],[2,[6,"sendgrid"],[2,[7,"/"],[2,[6,"inbound_emails"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * /rails/action_mailbox/sendgrid/inbound_emails(.:format)
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const rails_sendgrid_inbound_emails_path = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"action_mailbox"],[2,[7,"/"],[2,[6,"sendgrid"],[2,[7,"/"],[2,[6,"inbound_emails"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
+
+/**
+ * Generates rails route to
+ * /rails/active_storage/blobs/redirect/:signed_id/*filename(.:format)
+ * @param {any} signed_id
+ * @param {any} filename
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const rails_service_blob_url = /*#__PURE__*/ __jsr.r({"signed_id":{"r":true},"filename":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"active_storage"],[2,[7,"/"],[2,[6,"blobs"],[2,[7,"/"],[2,[6,"redirect"],[2,[7,"/"],[2,[3,"signed_id"],[2,[7,"/"],[2,[5,[3,"filename"]],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]], true);
 
 /**
  * Generates rails route to
@@ -1106,6 +1659,16 @@ export const rails_service_blob_path = /*#__PURE__*/ __jsr.r({"signed_id":{"r":t
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const rails_service_blob_proxy_url = /*#__PURE__*/ __jsr.r({"signed_id":{"r":true},"filename":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"active_storage"],[2,[7,"/"],[2,[6,"blobs"],[2,[7,"/"],[2,[6,"proxy"],[2,[7,"/"],[2,[3,"signed_id"],[2,[7,"/"],[2,[5,[3,"filename"]],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * /rails/active_storage/blobs/proxy/:signed_id/*filename(.:format)
+ * @param {any} signed_id
+ * @param {any} filename
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const rails_service_blob_proxy_path = /*#__PURE__*/ __jsr.r({"signed_id":{"r":true},"filename":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"active_storage"],[2,[7,"/"],[2,[6,"blobs"],[2,[7,"/"],[2,[6,"proxy"],[2,[7,"/"],[2,[3,"signed_id"],[2,[7,"/"],[2,[5,[3,"filename"]],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
 
 /**
@@ -1114,7 +1677,23 @@ export const rails_service_blob_proxy_path = /*#__PURE__*/ __jsr.r({"signed_id":
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const remind_password_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[6,"remind_password"]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/remind_password
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const remind_password_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[6,"remind_password"]]]);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/reviews
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const reviews_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[6,"reviews"]]], true);
 
 /**
  * Generates rails route to
@@ -1131,7 +1710,24 @@ export const reviews_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const robots_url = /*#__PURE__*/ __jsr.r({"suffix":{},"format":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"robots"],[2,[8,"."],[3,"format"]]]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/robots.:format
+ * @param {any} format
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const robots_path = /*#__PURE__*/ __jsr.r({"suffix":{},"format":{"r":true}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"robots"],[2,[8,"."],[3,"format"]]]]]);
+
+/**
+ * Generates rails route to
+ * /(:suffix)
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const root_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[7,"/"],[1,[3,"suffix"]]], true);
 
 /**
  * Generates rails route to
@@ -1147,7 +1743,23 @@ export const root_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[7,"/"],[1,[3,"
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const ruby_event_store_browser_app_url = /*#__PURE__*/ __jsr.r({}, [2,[7,"/"],[6,"res"]], true);
+
+/**
+ * Generates rails route to
+ * /res
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const ruby_event_store_browser_app_path = /*#__PURE__*/ __jsr.r({}, [2,[7,"/"],[6,"res"]]);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/admin/api/users/search
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const search_admin_api_users_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"api"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[6,"search"]]]]]]]]], true);
 
 /**
  * Generates rails route to
@@ -1163,7 +1775,23 @@ export const search_admin_api_users_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, 
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const session_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[6,"session"]]], true);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/session
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const session_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[6,"session"]]]);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/locale/switch
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const switch_locale_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[2,[6,"locale"],[2,[7,"/"],[6,"switch"]]]]], true);
 
 /**
  * Generates rails route to
@@ -1180,7 +1808,24 @@ export const switch_locale_path = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,
  * @param {object | undefined} options
  * @returns {string} route path
  */
+export const update_rails_disk_service_url = /*#__PURE__*/ __jsr.r({"encoded_token":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"active_storage"],[2,[7,"/"],[2,[6,"disk"],[2,[7,"/"],[2,[3,"encoded_token"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]], true);
+
+/**
+ * Generates rails route to
+ * /rails/active_storage/disk/:encoded_token(.:format)
+ * @param {any} encoded_token
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
 export const update_rails_disk_service_path = /*#__PURE__*/ __jsr.r({"encoded_token":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"rails"],[2,[7,"/"],[2,[6,"active_storage"],[2,[7,"/"],[2,[6,"disk"],[2,[7,"/"],[2,[3,"encoded_token"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
+
+/**
+ * Generates rails route to
+ * (/:suffix)/users
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const users_url = /*#__PURE__*/ __jsr.r({"suffix":{}}, [2,[1,[2,[7,"/"],[3,"suffix"]]],[2,[7,"/"],[6,"users"]]], true);
 
 /**
  * Generates rails route to

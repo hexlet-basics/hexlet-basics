@@ -27,4 +27,15 @@ class LanguageResource
   attribute :cover_thumb_variant do |obj|
     rails_representation_url(obj.cover.variant(:thumb)) if obj.cover.attached?
   end
+
+  # TODO: хаха, вот я злодей. Реализовать нормальный подсчет рейтинга
+  typelize :number
+  attribute :rating_count do |obj|
+    89
+  end
+
+  typelize :number
+  attribute :rating_value do |obj|
+    obj.id.even? ? 4 : 5
+  end
 end

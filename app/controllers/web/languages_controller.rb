@@ -60,6 +60,7 @@ class Web::LanguagesController < Web::ApplicationController
 
     render inertia: true, props: {
       courseLandingPage: Language::LandingPageResource.new(landing_page),
+      course: LanguageResource.new(language),
       finishedLessonIds: finished_lesson_ids,
       courseCategory: Language::CategoryResource.new(landing_page.language_category),
       firstLesson: Language::LessonResource.new(first_lesson_info),
