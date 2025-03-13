@@ -14,17 +14,32 @@
 DEFAULTS: &DEFAULTS
   slug: $LABEL
 
-programming:
+programming-ru:
   <<: *DEFAULTS
-  name_ru: Программирование
-  name_en: Programming
+  name: Программирование
+  locale: ru
 
-frontend:
+programming-en:
   <<: *DEFAULTS
-  name_ru: Фронтенд
-  name_en: Frontend
+  locale: en
+  name: Programming
 
-layouting:
+frontend-ru:
   <<: *DEFAULTS
-  name_en: Layouting
-  name_ru: Верстка
+  name: Фронтенд
+  locale: ru
+
+frontend-en:
+  <<: *DEFAULTS
+  name: Frontend
+  locale: en
+
+layouting-ru:
+  <<: *DEFAULTS
+  name: Верстка
+  locale: ru
+
+layouting-en:
+  <<: *DEFAULTS
+  name: Layouting
+  locale: en

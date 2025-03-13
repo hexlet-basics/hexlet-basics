@@ -47,7 +47,7 @@ export function Menu({ data }: Props) {
             <Nav.Link
               target="_blank"
               className="link-body-emphasis"
-              href={Routes.language_path(data.language_category.slug!)}
+              href={Routes.language_category_path(data.language_category.slug!)}
             >
               <i className="bi bi-arrow-up-right-square" />
             </Nav.Link>

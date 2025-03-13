@@ -7,18 +7,22 @@ import { DTDateTemplate } from "@/components/dtTemplates";
 import useDataTable from "@/hooks/useDataTable";
 import { fieldsToFilters } from "@/lib/utils";
 import AdminLayout from "@/pages/layouts/AdminLayout";
-import type { Grid, LanguageCategory } from "@/types/serializers";
+import type {
+  Grid,
+  LanguageCategory,
+  LanguageCategoryCrud,
+} from "@/types/serializers";
 import { Link } from "@inertiajs/react";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { Menu } from "./shared/menu";
 
 type Props = PropsWithChildren & {
-  landingPages: LanguageCategory[];
+  categories: LanguageCategoryCrud[];
   grid: Grid;
 };
 
-export default function Index({ grid, landingPages }: Props) {
+export default function Index({ grid, categories }: Props) {
   const { t } = useTranslation();
 
   const handleDataTable = useDataTable();
@@ -30,7 +34,7 @@ export default function Index({ grid, landingPages }: Props) {
           className="link-body-emphasis me-2"
           target="_blank"
           rel="noreferrer"
-          href={Routes.language_path(data.slug!)}
+          href={Routes.language_category_path(data.slug!)}
         >
           <i className="bi bi-box-arrow-up-right" />
         </a>
@@ -59,15 +63,11 @@ export default function Index({ grid, landingPages }: Props) {
         onSort={handleDataTable}
         onFilter={handleDataTable}
         onPage={handleDataTable}
-        value={landingPages}
+        value={categories}
       >
         <Column field="id" header="id" />
-        <Column field="main" header="main" />
-        <Column field="state" header="state" />
-        <Column field="order" header="order" />
         <Column field="slug" header="slug" />
-        <Column field="header" header="header" />
-        {/* <Column field="order" header="order" /> */}
+        <Column field="name" header="name" />
         <Column
           field="created_at"
           header="created_at"

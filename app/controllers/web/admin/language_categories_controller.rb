@@ -11,30 +11,32 @@ class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationControll
   end
 
   def new
-    category = Admin::Language::CategoryForm.new
+    category = Admin::LanguageCategoryForm.new
     category.creator = current_user
+    category.locale = I18n.locale
 
     render inertia: true, props: {
-      cartegoryDto: Language::CategoryCrudResource.new(category)
+      categoryDto: Language::CategoryCrudResource.new(category)
     }
   end
 
   def edit
-    category = Admin::Language::CategoryForm.find(params[:id])
+    category = Admin::LanguageCategoryForm.find(params[:id])
+    category.locale = I18n.locale
 
     render inertia: true, props: {
-      cartegoryDto: Language::CategoryCrudResource.new(category)
+      categoryDto: Language::CategoryCrudResource.new(category)
     }
   end
 
   def create
-    category = Admin::Language::CategoryForm.new(params[:category])
+    category = Admin::LanguageCategoryForm.new(params[:language_category])
     category.locale = I18n.locale
     category.creator = current_user
 
     if category.save
       f(:success)
-      redirect_to_inertia edit_admin_category_path(category), category
+      redirect_to_inertia edit_admin_language_category_path(category), category
     else
       f(:error)
       redirect_to_inertia new_admin_category_url, category
@@ -42,15 +44,15 @@ class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationControll
   end
 
   def update
-    category = Admin::Language::CategoryForm.find(params[:id])
+    category = Admin::LanguageCategoryForm.find(params[:id])
     category.locale = I18n.locale
 
-    if category.update(params[:category])
+    if category.update(params[:language_category])
       f(:success)
     else
       f(:error)
     end
 
-      redirect_to_inertia edit_admin_category_path(category), category
+      redirect_to_inertia edit_admin_language_category_path(category), category
   end
 end

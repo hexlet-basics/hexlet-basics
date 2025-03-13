@@ -7,25 +7,25 @@ import Form from "./shared/form";
 import { Menu } from "./shared/menu";
 
 type Props = {
-  landingPageDto: LanguageCategoryCrud;
+  categoryDto: LanguageCategoryCrud;
   // courseVersions: LanguageVersion[];
 };
 
-export default function Edit({ landingPageDto }: Props) {
+export default function Edit({ categoryDto }: Props) {
   const { t } = useTranslation();
 
   return (
     <AdminLayout
       header={t("admin.language_categories.edit.header", {
-        id: landingPageDto.language_category.name_ru,
+        id: categoryDto.language_category.name,
       })}
     >
-      <Menu data={landingPageDto} />
+      <Menu data={categoryDto} />
       <Form
         method="patch"
-        data={landingPageDto}
+        data={categoryDto}
         url={Routes.admin_language_category_path(
-          landingPageDto.language_category.id,
+          categoryDto.language_category.id,
         )}
       />
     </AdminLayout>

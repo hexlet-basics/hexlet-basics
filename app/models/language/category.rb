@@ -15,6 +15,7 @@ class Language::Category < ApplicationRecord
   include Language::CategoryRepository
 
   validates :name, presence: true
+  validates :slug, presence: true, uniqueness: { scope: :locale }
 
   has_many :languages, ->(category) { where(category: category) }, dependent: :nullify, inverse_of: :category
   has_many :language_landing_pages, class_name: "Language::LandingPage", foreign_key: "language_category_id"
@@ -28,10 +29,6 @@ class Language::Category < ApplicationRecord
 
   def self.ransackable_associations(auth_object = nil)
     []
-  end
-
-  def name
-    send :"name_#{I18n.locale}"
   end
 
   def to_s

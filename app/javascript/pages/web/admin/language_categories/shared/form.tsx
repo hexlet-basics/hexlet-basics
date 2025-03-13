@@ -42,42 +42,8 @@ export default function Form({ data, url, method }: Props) {
 
   return (
     <XForm method={method} model="language_category" data={data} to={url}>
-      <XCheck name="main" />
-      <XStateEvent fieldName="state" />
-      <XSelect
-        name="language_category_id"
-        labelField="name"
-        valueField="id"
-        items={courseCategories}
-      />
-      <XSelect
-        name="language_id"
-        labelField="header"
-        valueField="language_id"
-        items={landingPagesForLists}
-      />
-      {/* <XSelect */}
-      {/*   name="progress" */}
-      {/*   labelField="name" */}
-      {/*   valueField="id" */}
-      {/*   items={languageProgressEnumOptions} */}
-      {/* /> */}
-      {/* <XSelect */}
-      {/*   name="learn_as" */}
-      {/*   labelField="name" */}
-      {/*   valueField="id" */}
-      {/*   items={languageLearnAsEnumOptions} */}
-      {/* /> */}
+      <XInput name="name" />
       <XInput name="slug" />
-      <XInput name="order" />
-      <XInput name="meta_title" />
-      <XInput
-        as="textarea"
-        style={{ height: "150px" }}
-        name="meta_description"
-      />
-      <XInput name="header" />
-      <XInput as="textarea" style={{ height: "150px" }} name="description" />
 
       <Submit className="btn w-100 btn-lg btn-primary mb-3">
         {tHelpers("submit.save")}
