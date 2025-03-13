@@ -8,6 +8,8 @@ class Language::LandingPageResource
 
   attributes :id,
     :slug,
+    :main,
+    :listed,
     :state,
     :order,
     :header,

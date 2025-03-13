@@ -71,6 +71,7 @@ export default function Index({ grid, landingPages }: Props) {
       >
         <Column field="id" header="id" />
         <Column field="main" header="main" />
+        <Column field="listed" header="listed" />
         <Column field="state" header="state" />
         <Column field="order" header="order" />
         <Column
@@ -81,7 +82,6 @@ export default function Index({ grid, landingPages }: Props) {
           header="language"
         />
         <Column field="slug" header="slug" />
-        <Column field="header" header="header" />
         {/* <Column field="order" header="order" /> */}
         <Column
           field="created_at"

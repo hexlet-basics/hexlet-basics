@@ -17,7 +17,7 @@ class Web::ApplicationController < ApplicationController
   end
 
   inertia_share do
-    language_categories = Language::Category.all
+    language_categories = Language::Category.with_locale
     landing_pages = Language::LandingPage.with_locale.where(main: true).where(listed: true)
       .includes({ language: [ :cover_attachment, :current_version ] }).merge(Language.ordered)
 

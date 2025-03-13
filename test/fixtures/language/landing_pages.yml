@@ -41,12 +41,20 @@ DEFAULTS: &DEFAULTS
 pre-course-javascript1-ru:
   <<: *DEFAULTS
   language: pre-course-javascript
+  listed: false
+  main: true
   locale: ru
 
 javascript-ru:
   <<: *DEFAULTS
   language: javascript
   main: true
+  locale: ru
+
+nodejs-ru:
+  <<: *DEFAULTS
+  language: javascript
+  state: draft
   locale: ru
 
 frontend-ru:

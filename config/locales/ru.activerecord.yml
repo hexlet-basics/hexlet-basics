@@ -7,6 +7,8 @@ ru:
         meta_description: Meta Description
         description: Описание
         header: Заголовок
+        main: Основной
+        listed: Отображать в списках
         slug: Slug
         order: Order
       language:

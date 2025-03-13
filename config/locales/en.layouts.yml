@@ -4,6 +4,8 @@ en:
       admin:
         application:
           dashboard: Dashboard
+          language_categories: Categories
+          language_landing_pages: Landing Pages
           languages: Courses
           reviews: Reviews
           blog_posts: Blog Posts
