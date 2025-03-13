@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { Col, Container, Row, Image } from "react-bootstrap";
+import { Col, Container, Image, Row } from "react-bootstrap";
 
 import { dayjs, highlightingLanguages } from "@/lib/utils.ts";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";

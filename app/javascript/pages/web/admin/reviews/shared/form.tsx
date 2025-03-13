@@ -1,6 +1,12 @@
 import { useTranslation } from "react-i18next";
 
-import { XCheck, XForm, XInput, XSelect, XStateEvent } from "@/components/forms";
+import {
+  XCheck,
+  XForm,
+  XInput,
+  XSelect,
+  XStateEvent,
+} from "@/components/forms";
 import type { Language, Review } from "@/types/serializers";
 import { Col, Row } from "react-bootstrap";
 import { type HTTPVerb, Submit } from "use-inertia-form";

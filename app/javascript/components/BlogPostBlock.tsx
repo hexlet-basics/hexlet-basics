@@ -4,10 +4,10 @@ import type { PropsWithChildren } from "react";
 import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
+import { dayjs } from "@/lib/utils";
 import * as Routes from "@/routes.js";
 import type { SharedProps } from "@/types";
 import { usePage } from "@inertiajs/react";
-import { dayjs } from "@/lib/utils";
 
 type Props = PropsWithChildren & {
   post: BlogPost;

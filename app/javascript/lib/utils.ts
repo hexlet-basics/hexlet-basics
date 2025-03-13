@@ -3,8 +3,8 @@ import type { LanguageFn } from "highlight.js";
 import type { DataTableFilterMeta } from "primereact/datatable";
 
 import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
 import duration from "dayjs/plugin/duration";
+import relativeTime from "dayjs/plugin/relativeTime";
 // Switch to shiki
 import clojure from "highlight.js/lib/languages/clojure";
 import elixir from "highlight.js/lib/languages/elixir";

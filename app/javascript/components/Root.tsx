@@ -2,12 +2,12 @@ import * as Routes from "@/routes.js";
 import "dayjs/locale/ru";
 import { PrimeReactProvider } from "primereact/api";
 import "react-bootstrap";
+import { dayjs } from "@/lib/utils";
 import type { RootProps } from "@/types";
 import i18next from "i18next";
 import type { PropsWithChildren } from "react";
 import { initReactI18next } from "react-i18next";
 import locales from "../locales.json";
-import { dayjs } from "@/lib/utils";
 
 const resources = locales;
 const defaultNS = "web";
