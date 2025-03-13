@@ -171,7 +171,7 @@ export default function FooterBlock() {
             </Col>
           </Row>
           <div className="d-flex flex-column flex-sm-row justify-content-between pt-4 my-4 border-top">
-            <div>{`© ${new Date().getFullYear()} ${tCommon("legal_name")}`}</div>
+            <div>{`© ${new Date().getFullYear()} ${tCommon("organization.legal_name")}`}</div>
             <ul className="fs-3 d-flex list-unstyled">
               <li className="me-3">
                 <a

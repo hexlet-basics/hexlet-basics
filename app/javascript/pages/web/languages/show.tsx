@@ -6,7 +6,6 @@ import CourseBlock from "@/components/CourseBlock";
 import XssContent from "@/components/XssContent";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import * as Routes from "@/routes.js";
-import type { Product, WithContext } from "schema-dts";
 import type { BreadcrumbItem, Language, SharedProps } from "@/types";
 import type {
   LanguageCategory,
@@ -17,6 +16,7 @@ import type {
   LanguageModule,
 } from "@/types/serializers";
 import { Head, Link, usePage } from "@inertiajs/react";
+import type { Product, WithContext } from "schema-dts";
 
 type Props = {
   course: Language;

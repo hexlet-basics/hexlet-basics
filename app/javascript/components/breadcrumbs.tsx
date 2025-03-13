@@ -3,10 +3,7 @@ import { Head } from "@inertiajs/react";
 import type { HTMLAttributes, PropsWithChildren } from "react";
 import { Breadcrumb, type BreadcrumbProps } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import type {
-    BreadcrumbList, ListItem,
-    WithContext
-} from "schema-dts";
+import type { BreadcrumbList, ListItem, WithContext } from "schema-dts";
 
 type Props = PropsWithChildren &
   HTMLAttributes<BreadcrumbProps> & {

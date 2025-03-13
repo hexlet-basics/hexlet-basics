@@ -15,8 +15,8 @@ import BlogPostBlock from "@/components/BlogPostBlock";
 import * as Routes from "@/routes.js";
 import { Head, usePage } from "@inertiajs/react";
 import { useTranslation } from "react-i18next";
+import type { Article, WithContext } from "schema-dts";
 import type { Pluggable } from "unified";
-import { WithContext, Article } from "schema-dts";
 
 type Props = PropsWithChildren & {
   blogPost: BlogPost;
