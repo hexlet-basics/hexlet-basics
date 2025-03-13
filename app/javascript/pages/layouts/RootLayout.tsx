@@ -41,12 +41,8 @@ export default (props: Props) => {
           case "CourseStartedEvent":
             analytics.track("course_started", event.data);
             break;
-          case "CourseFinishedEvent":
-            break;
           case "LessonStartedEvent":
             analytics.track("lesson_started", event.data);
-            break;
-          case "LessonFinishedEvent":
             break;
           default:
             break;
