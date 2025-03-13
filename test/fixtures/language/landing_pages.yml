@@ -74,16 +74,6 @@ typescript-ru:
   main: true
   locale: ru
 
-nodejs-ru:
-  <<: *DEFAULTS
-  language: javascript
-  locale: ru
-
-nodejs-en:
-  <<: *DEFAULTS
-  language: javascript
-  locale: en
-
 php-ru:
   <<: *DEFAULTS
   main: true
@@ -160,4 +150,3 @@ css-ru:
   language: css
   language_category: layouting-ru
   locale: ru
-
