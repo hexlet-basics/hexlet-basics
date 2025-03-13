@@ -11,7 +11,7 @@ class Web::Admin::LanguageCategoriesControllerTest < ActionDispatch::Integration
   end
 
   test "new" do
-    get new_admin_language_language_category_url
+    get new_admin_language_category_url
     assert_response :success
   end
 

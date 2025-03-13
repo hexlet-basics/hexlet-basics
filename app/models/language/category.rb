@@ -22,6 +22,10 @@ class Language::Category < ApplicationRecord
   has_many :language_version_infos, through: :language_versions, source: :infos, class_name: "Language::Version::Info"
   has_many :blog_posts, through: :languages, dependent: :restrict_with_exception
 
+  def self.ransackable_attributes(auth_object = nil)
+    []
+  end
+
   def name
     send :"name_#{I18n.locale}"
   end
