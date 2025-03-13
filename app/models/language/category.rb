@@ -26,6 +26,10 @@ class Language::Category < ApplicationRecord
     []
   end
 
+  def self.ransackable_associations(auth_object = nil)
+    []
+  end
+
   def name
     send :"name_#{I18n.locale}"
   end
