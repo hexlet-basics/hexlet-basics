@@ -73,6 +73,7 @@ Rails.application.routes.draw do
         end
 
         resources :reviews
+        resources :language_categories
         resources :blog_posts
         resources :languages, only: %i[index new edit update create] do
           scope module: :languages do

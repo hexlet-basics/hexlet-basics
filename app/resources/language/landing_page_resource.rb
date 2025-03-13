@@ -4,7 +4,7 @@ class Language::LandingPageResource
 
   typelize_from Language::LandingPage
 
-  has_one :language, resource: LanguageResource
+  # has_one :language, resource: LanguageResource
 
   attributes :id,
     :slug,

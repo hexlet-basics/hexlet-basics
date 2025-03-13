@@ -3,6 +3,8 @@
 # Table name: language_categories
 #
 #  id         :integer          not null, primary key
+#  locale     :string
+#  name       :string
 #  name_en    :string
 #  name_ru    :string
 #  slug       :string
@@ -10,6 +12,8 @@
 #  updated_at :datetime         not null
 #
 class Language::Category < ApplicationRecord
+  include Language::CategoryRepository
+
   validates :name, presence: true
 
   has_many :languages, ->(category) { where(category: category) }, dependent: :nullify, inverse_of: :category

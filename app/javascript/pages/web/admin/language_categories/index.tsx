@@ -7,14 +7,14 @@ import { DTDateTemplate } from "@/components/dtTemplates";
 import useDataTable from "@/hooks/useDataTable";
 import { fieldsToFilters } from "@/lib/utils";
 import AdminLayout from "@/pages/layouts/AdminLayout";
-import type { Grid, LanguageLandingPage } from "@/types/serializers";
+import type { Grid, LanguageCategory } from "@/types/serializers";
 import { Link } from "@inertiajs/react";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { Menu } from "./shared/menu";
 
 type Props = PropsWithChildren & {
-  landingPages: LanguageLandingPage[];
+  landingPages: LanguageCategory[];
   grid: Grid;
 };
 
@@ -23,7 +23,7 @@ export default function Index({ grid, landingPages }: Props) {
 
   const handleDataTable = useDataTable();
 
-  const actionBodyTemplate = (data: LanguageLandingPage) => {
+  const actionBodyTemplate = (data: LanguageCategory) => {
     return (
       <>
         <a
@@ -36,7 +36,7 @@ export default function Index({ grid, landingPages }: Props) {
         </a>
         <Link
           className="link-body-emphasis"
-          href={Routes.edit_admin_language_landing_page_path(data.id)}
+          href={Routes.edit_admin_language_category_path(data.id)}
         >
           <i className="bi bi-pencil-fill" />
         </Link>
@@ -44,16 +44,8 @@ export default function Index({ grid, landingPages }: Props) {
     );
   };
 
-  const languageTemplate = (data: LanguageLandingPage) => {
-    return (
-      <Link href={Routes.edit_admin_language_path(data.language_id)}>
-        {data.header}
-      </Link>
-    );
-  };
-
   return (
-    <AdminLayout header={t("admin.language_landing_pages.index.header")}>
+    <AdminLayout header={t("admin.language_categories.index.header")}>
       <Menu />
       <DataTable
         lazy
@@ -73,13 +65,6 @@ export default function Index({ grid, landingPages }: Props) {
         <Column field="main" header="main" />
         <Column field="state" header="state" />
         <Column field="order" header="order" />
-        <Column
-          sortable
-          filter
-          field="language_slug"
-          body={languageTemplate}
-          header="language"
-        />
         <Column field="slug" header="slug" />
         <Column field="header" header="header" />
         {/* <Column field="order" header="order" /> */}

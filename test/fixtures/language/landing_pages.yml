@@ -5,6 +5,7 @@
 #  id                   :integer          not null, primary key
 #  description          :string
 #  header               :string
+#  listed               :boolean
 #  locale               :string
 #  main                 :boolean
 #  meta_description     :string
@@ -33,6 +34,7 @@ DEFAULTS: &DEFAULTS
   meta_description: $LABEL - Бесплатное обучение программированию от сообщества Хекслет. Онлайн курс посвящен азам написания программ на Javascript с нуля
   meta_title: $LABEL
   state: published
+  listed: true
   slug: $LABEL
   header: $LABEL
 

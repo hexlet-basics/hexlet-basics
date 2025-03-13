@@ -51,6 +51,15 @@ export default function AdminLayout({ children, header }: Props) {
               <Nav.Item>
                 <Link
                   className="nav-link fw-medium link-body-emphasis"
+                  href={Routes.admin_language_categories_path()}
+                >
+                  <i className="bi bi-file-text me-2" />
+                  {tLayouts("web.admin.application.language_categories")}
+                </Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Link
+                  className="nav-link fw-medium link-body-emphasis"
                   href={Routes.admin_languages_path()}
                 >
                   <i className="bi bi-terminal me-2" />

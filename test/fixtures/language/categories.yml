@@ -3,6 +3,8 @@
 # Table name: language_categories
 #
 #  id         :integer          not null, primary key
+#  locale     :string
+#  name       :string
 #  name_en    :string
 #  name_ru    :string
 #  slug       :string

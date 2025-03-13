@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_12_212333) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_13_133342) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -91,6 +91,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_12_212333) do
     t.string "slug"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name"
+    t.string "locale"
   end
 
   create_table "language_landing_pages", force: :cascade do |t|
@@ -107,6 +109,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_12_212333) do
     t.string "meta_description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "listed"
     t.index ["language_category_id"], name: "index_language_landing_pages_on_language_category_id"
     t.index ["language_id"], name: "index_language_landing_pages_on_language_id"
   end

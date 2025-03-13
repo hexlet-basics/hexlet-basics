@@ -22,6 +22,14 @@ ru:
         course: 'Курс %{language}'
     admin:
       title: Админка Code-Basics
+      language_categories:
+        index:
+          header: Категории
+          add_new_language: Добавить категорию
+        new:
+          header: Новая категория
+        edit:
+          header: Редактирование %{id}
       language_landing_pages:
         index:
           header: Лендинги

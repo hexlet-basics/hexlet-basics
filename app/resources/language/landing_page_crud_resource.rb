@@ -8,6 +8,7 @@ class Language::LandingPageCrudResource
   attributes :id,
     :slug,
     :state,
+    :listed,
     :main,
     :order,
     :header,

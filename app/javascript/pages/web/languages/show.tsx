@@ -104,7 +104,7 @@ export default function Show({
                 <Link
                   className="btn d-block btn-primary"
                   href={Routes.language_lesson_path(
-                    courseLandingPage.language.slug!,
+                    course.slug!,
                     firstLesson.slug,
                   )}
                 >
@@ -118,7 +118,7 @@ export default function Show({
                 <Link
                   className="btn d-block btn-outline-primary"
                   href={Routes.language_lesson_path(
-                    courseLandingPage.language.slug!,
+                    course.slug!,
                     nextLesson.slug,
                   )}
                 >
@@ -151,7 +151,7 @@ export default function Show({
                         <Link
                           className="text-decoration-none stretched-link d-flex"
                           href={Routes.language_lesson_path(
-                            courseLandingPage.language.slug!,
+                            course.slug!,
                             l.slug!,
                           )}
                         >
@@ -187,7 +187,7 @@ export default function Show({
                   <Link
                     className="btn btn-lg btn-outline-primary"
                     href={Routes.language_lesson_path(
-                      courseLandingPage.language.slug!,
+                      course.slug!,
                       firstLesson.slug!,
                     )}
                   >

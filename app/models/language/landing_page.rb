@@ -5,6 +5,7 @@
 #  id                   :integer          not null, primary key
 #  description          :string
 #  header               :string
+#  listed               :boolean
 #  locale               :string
 #  main                 :boolean
 #  meta_description     :string

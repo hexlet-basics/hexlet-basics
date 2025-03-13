@@ -33,7 +33,9 @@ class Web::LanguagesController < Web::ApplicationController
         .joins(:lesson).merge(Language::Lesson.ordered).first
     end
 
-    recommendedCourseLandingPages = Language::LandingPage.with_locale.order("RANDOM()").excluding(landing_page).limit(4)
+    recommended_langauge_pages = Language::LandingPage.with_locale
+      .where(main: true).where(listed: true)
+      .order("RANDOM()").excluding(landing_page).limit(4)
 
     seo_tags = {
       title: landing_page.meta_title,
@@ -68,7 +70,7 @@ class Web::LanguagesController < Web::ApplicationController
       courseModules: Language::ModuleResource.new(language_modules_infos),
       lessonsByModuleId: lesson_resources_by_module_id,
       courseMember: language_member && Language::MemberResource.new(language_member),
-      recommendedCourseLandingPages: Language::LandingPageForListsResource.new(recommendedCourseLandingPages)
+      recommendedCourseLandingPages: Language::LandingPageForListsResource.new(recommended_langauge_pages)
     }
   end
 end

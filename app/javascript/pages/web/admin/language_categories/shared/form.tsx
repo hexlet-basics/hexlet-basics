@@ -10,11 +10,11 @@ import {
 import { type HTTPVerb, Submit } from "use-inertia-form";
 
 import type { SharedProps } from "@/types";
-import type { LanguageLandingPageCrud } from "@/types/serializers";
+import type { LanguageCategoryCrud } from "@/types/serializers";
 import { usePage } from "@inertiajs/react";
 
 type Props = {
-  data: LanguageLandingPageCrud;
+  data: LanguageCategoryCrud;
   url: string;
   method?: HTTPVerb;
 };
@@ -41,9 +41,8 @@ export default function Form({ data, url, method }: Props) {
   // const languageLearnAsEnumOptions = enumToOptions(languageLearnAsEnum);
 
   return (
-    <XForm method={method} model="language_landing_page" data={data} to={url}>
+    <XForm method={method} model="language_category" data={data} to={url}>
       <XCheck name="main" />
-      <XCheck name="listed" />
       <XStateEvent fieldName="state" />
       <XSelect
         name="language_category_id"

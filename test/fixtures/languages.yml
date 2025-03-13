@@ -39,6 +39,7 @@ DEFAULTS: &DEFAULTS
   slug: $LABEL
   current_version: $LABEL
   progress: completed
+  order: 10
   # category: programming
 
 php:
@@ -49,10 +50,12 @@ elixir:
 
 typescript:
   <<: *DEFAULTS
+  order: 1
   current_version: null
 
 javascript:
   <<: *DEFAULTS
+  order: 2
   current_version: javascript2
 
 pre-course-javascript:

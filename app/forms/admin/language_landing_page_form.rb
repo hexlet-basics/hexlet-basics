@@ -3,6 +3,7 @@ class Admin::LanguageLandingPageForm < Language::LandingPage
 
   permit :meta_title,
     :meta_description,
+    :listed,
     :main,
     :header,
     :state_event,

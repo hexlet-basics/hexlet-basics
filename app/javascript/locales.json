@@ -2152,6 +2152,7 @@
           "application": {
             "blog_posts": "Посты в блоге",
             "dashboard": "Кабинет",
+            "language_categories": "Категории",
             "language_landing_pages": "Лендинги",
             "languages": "Курсы",
             "reviews": "Отзывы",
@@ -2418,6 +2419,18 @@
         "home": {
           "index": {
             "dashboard": "Кабинет"
+          }
+        },
+        "language_categories": {
+          "edit": {
+            "header": "Редактирование %{id}"
+          },
+          "index": {
+            "add_new_language": "Добавить категорию",
+            "header": "Категории"
+          },
+          "new": {
+            "header": "Новая категория"
           }
         },
         "language_landing_pages": {
