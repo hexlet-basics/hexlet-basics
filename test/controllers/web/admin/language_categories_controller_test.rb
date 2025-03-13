@@ -26,14 +26,14 @@ class Web::Admin::LanguageCategoriesControllerTest < ActionDispatch::Integration
   end
 
   test "edit" do
-    language_category = language_categories("php-ru")
+    language_category = language_categories("frontend-ru")
 
     get edit_admin_language_category_url(language_category)
     assert_response :success
   end
 
   test "update" do
-    language_category = language_categories("php-ru")
+    language_category = language_categories("frontend-ru")
 
     params = { language_category: { name: "new description" } }
     patch admin_language_category_url(language_category), params: params

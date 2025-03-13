@@ -12,7 +12,6 @@ class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationControll
 
   def new
     category = Admin::LanguageCategoryForm.new
-    category.creator = current_user
     category.locale = I18n.locale
 
     render inertia: true, props: {
@@ -32,14 +31,13 @@ class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationControll
   def create
     category = Admin::LanguageCategoryForm.new(params[:language_category])
     category.locale = I18n.locale
-    category.creator = current_user
 
     if category.save
       f(:success)
       redirect_to_inertia edit_admin_language_category_path(category), category
     else
       f(:error)
-      redirect_to_inertia new_admin_category_url, category
+      redirect_to_inertia new_admin_language_category_url, category
     end
   end
 
