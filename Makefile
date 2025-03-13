@@ -7,6 +7,7 @@ setup:
 	bin/rails db:prepare
 	bin/rails db:fixtures:load
 	npm install
+	npx simple-git-hooks
 
 test:
 	bin/rails test

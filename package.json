@@ -1,7 +1,9 @@
 {
   "name": "hexlet_basics",
   "private": true,
-  "simple-git-hooks": {},
+  "simple-git-hooks": {
+    "pre-push": "make lint"
+  },
   "type": "module",
   "dependencies": {
     "@giscus/react": "^3.1.0",
