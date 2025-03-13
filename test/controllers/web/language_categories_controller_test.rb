@@ -9,7 +9,7 @@ class LanguageCategoriesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get show" do
-    category = language_categories(:programming)
+    category = language_categories("frontend-ru")
     get language_category_url(id: category.slug)
     assert_response :success
   end
