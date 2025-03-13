@@ -532,6 +532,8 @@
           "application": {
             "blog_posts": "Blog Posts",
             "dashboard": "Dashboard",
+            "language_categories": "Categories",
+            "language_landing_pages": "Landing Pages",
             "languages": "Courses",
             "reviews": "Reviews",
             "users": "Users"
@@ -1553,6 +1555,8 @@
           "description": "Описание",
           "header": "Заголовок",
           "language_id": "Курс",
+          "listed": "Отображать в списках",
+          "main": "Основной",
           "meta_description": "Meta Description",
           "meta_title": "Meta Title",
           "order": "Order",

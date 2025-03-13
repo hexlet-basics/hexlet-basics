@@ -8,6 +8,7 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
 
     render inertia: true, props: {
       courses: LanguageResource.new(records),
+      # mainLandingPagesByLanguageId: main_landing_pages_by_landing_id
       grid: GridResource.new(grid_params(pagy))
     }
   end

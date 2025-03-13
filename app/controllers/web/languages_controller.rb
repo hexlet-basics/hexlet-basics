@@ -35,6 +35,7 @@ class Web::LanguagesController < Web::ApplicationController
 
     recommended_langauge_pages = Language::LandingPage.with_locale
       .where(main: true).where(listed: true)
+      .includes({ language: [ :current_version, { cover_attachment: :blob } ] })
       .order("RANDOM()").excluding(landing_page).limit(4)
 
     seo_tags = {

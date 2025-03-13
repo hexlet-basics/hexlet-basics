@@ -13,10 +13,10 @@ class LanguageResource
     obj.repository_url
   end
 
-  typelize :string, nullable: true
-  attribute :main_landing_slug do |obj|
-    obj.landing_pages.find_by(main: true)&.slug
-  end
+  # typelize :string, nullable: true
+  # attribute :main_landing_slug do |obj|
+  #   obj.landing_pages.find_by(main: true)&.slug
+  # end
 
   typelize :string
   attribute :cover_list_variant do |obj|

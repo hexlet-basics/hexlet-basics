@@ -4,7 +4,11 @@ class Web::HomeController < Web::ApplicationController
       .map { |m| Language::MemberResource.new(m) }
     language_member_resources_by_language = language_member_resources.index_by { |r| r.object.language_id }
 
-    blog_posts = BlogPost.published.with_locale.includes(:cover_attachment).last(3)
+    blog_posts = BlogPost.published
+      .includes([ :creator, { cover_attachment: :blob } ])
+      .with_locale
+      .includes(:cover_attachment)
+      .last(3)
     # reviews = Review.random
     #
     # # TODO: need refactor it

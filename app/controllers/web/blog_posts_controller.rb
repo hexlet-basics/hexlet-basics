@@ -1,6 +1,8 @@
 class Web::BlogPostsController < Web::ApplicationController
   def index
-    scope = BlogPost.published.with_locale.includes([ :cover_attachment ]).order(id: :desc)
+    scope = BlogPost.published.with_locale
+      .includes([ :creator, { cover_attachment: :blob } ])
+      .order(id: :desc)
     pagy, records = pagy(scope)
 
     seo_tags = {
@@ -24,7 +26,10 @@ class Web::BlogPostsController < Web::ApplicationController
     # blog_posts = []
     # languages = []
 
-    blog_posts = BlogPost.published.with_locale.except(blog_post).includes([ :cover_attachment ]).limit(2)
+    blog_posts = BlogPost.published.with_locale
+      .includes([ :creator, { cover_attachment: :blob } ])
+      .except(blog_post)
+      .limit(2)
 
     # if category
     #   blog_posts = category.blog_posts.except(blog_post).limit(3)
