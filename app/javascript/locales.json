@@ -556,8 +556,8 @@
       "hexlet_slack": "https://slack.hexlet.io/",
       "hexlet_success_stories": "https://hexlet.io/blog/categories/success?promo_name=blog-success&promo_position=body&promo_type=link",
       "hexlet_support_mail": "support@hexlet.io",
-      "hexlet_telegram": "https://t.me/hexlet_ru",
-      "hexlet_telegram_volunteers": "https://t.me/hexletcommunity/12",
+      "hexlet_telegram": "https://ttttt.me/hexlet_ru",
+      "hexlet_telegram_volunteers": "https://ttttt.me/hexletcommunity/12",
       "hexlet_twitter": "https://twitter.com/hexlet_io",
       "hexlet_youtube": "https://www.youtube.com/channel/UCMGJqXOa4m37IdmDLO-n-eQ"
     },
@@ -1634,7 +1634,7 @@
       "editor": "Редактор",
       "errors": {
         "network": "Возникла сетевая проблема. Попробуйте повторить ещё раз. Если не получилось, убедитесь, что с интернетом всё в порядке, и отключите блокировщики рекламы",
-        "server": "Ошибка на сервере. Возможно, скоро отпустит, а возможно — нет. Попробуйте узнать, что произошло в https://t.me/hexletcommunity/12"
+        "server": "Ошибка на сервере. Возможно, скоро отпустит, а возможно — нет. Попробуйте узнать, что произошло в https://ttttt.me/hexletcommunity/12"
       },
       "export": "Экспорт",
       "hello": "Привет мир",
@@ -2180,8 +2180,8 @@
       "hexlet_rails": "https://ru.hexlet.io/programs/rails?promo_name=prof-rails&promo_position=body&promo_type=link",
       "hexlet_recommended_books": "https://ru.hexlet.io/pages/recommended-books?promo_name=books&promo_position=body&promo_type=link",
       "hexlet_success_stories": "https://ru.hexlet.io/blog/categories/success?promo_name=blog-success&promo_position=body&promo_type=link",
-      "hexlet_telegram": "https://t.me/hexlet_ru",
-      "hexlet_telegram_volunteers": "https://t.me/hexletcommunity/12",
+      "hexlet_telegram": "https://ttttt.me/hexlet_ru",
+      "hexlet_telegram_volunteers": "https://ttttt.me/hexletcommunity/12",
       "hexlet_twitter": "https://twitter.com/HexletHQ",
       "hexlet_youtube": "https://www.youtube.com/user/HexletUniversity"
     },
