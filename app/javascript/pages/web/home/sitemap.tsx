@@ -6,9 +6,9 @@ import { useTranslation } from "react-i18next";
 
 import * as Routes from "@/routes.js";
 import type {
+  LanguageSitemapLandingPage,
   LanguageSitemapLesson,
   SitemapBlogPost,
-  SitemapLanguage,
 } from "@/types/serializers";
 
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
@@ -17,7 +17,7 @@ import { Collapse, Container } from "react-bootstrap";
 type Props = PropsWithChildren & {
   title: string;
   orderedLocales: Locale[];
-  coursesByLocale: Record<Locale, SitemapLanguage[]>;
+  landingPagesByLocale: Record<Locale, LanguageSitemapLandingPage[]>;
   lessonsByLocaleAndLanguageId: Record<
     Locale,
     Record<number, LanguageSitemapLesson[]>
@@ -25,15 +25,15 @@ type Props = PropsWithChildren & {
   blogPostsByLocale: Record<Locale, SitemapBlogPost[]>;
 };
 
-type CoursesBlockProps = {
+type LandingPagesBlockProps = {
   locale: Locale;
-  courses: SitemapLanguage[];
+  landingPages: LanguageSitemapLandingPage[];
   lessonsByLocaleAndLanguageId: Props["lessonsByLocaleAndLanguageId"];
 };
 
 type LessonsBlockProps = {
   lessons: LanguageSitemapLesson[];
-  course: SitemapLanguage;
+  landingPage: LanguageSitemapLandingPage;
 };
 
 type BlogPostsBlockProps = {
@@ -43,14 +43,14 @@ type BlogPostsBlockProps = {
 
 const getSuffix = (locale: Locale) => (locale === "en" ? null : locale);
 
-function LessonsBlock({ lessons, course }: LessonsBlockProps) {
+function LessonsBlock({ lessons, landingPage }: LessonsBlockProps) {
   return (
     <ul className="m-0 ms-3 list-unstyled pb-2">
       {lessons.map((lesson) => (
-        <li key={lesson.id}>
+        <li key={`${landingPage.id}-${lesson.id}`}>
           <a
             className="text-decoration-none"
-            href={Routes.language_lesson_path(course.slug, lesson.slug, {
+            href={Routes.language_lesson_path(landingPage.slug, lesson.slug, {
               suffix: getSuffix(lesson.locale),
             })}
           >
@@ -63,46 +63,54 @@ function LessonsBlock({ lessons, course }: LessonsBlockProps) {
   );
 }
 
-function CoursesBlock({
-  courses,
+function LadingPagesBlock({
+  landingPages,
   lessonsByLocaleAndLanguageId,
-}: CoursesBlockProps) {
-  const filteredCourses = courses.filter(
-    (course) => lessonsByLocaleAndLanguageId[course.locale][course.id],
+}: LandingPagesBlockProps) {
+  const filteredLandingPages = landingPages.filter(
+    (landingPage) =>
+      lessonsByLocaleAndLanguageId[landingPage.locale][landingPage.language_id],
   );
-  const [activeCourseIdx, setActiveCourseIdx] = useState<number | null>(null);
+
+  const [activeLandingPageIdx, setActiveLandingPageIdx] = useState<
+    number | null
+  >(null);
 
   return (
     <div className="ms-3">
-      {filteredCourses.map((course, index) => {
-        const courseOpened = index === activeCourseIdx;
+      {filteredLandingPages.map((landingPage, index) => {
+        const landingPageOpened = index === activeLandingPageIdx;
 
         return (
-          <div key={course.id}>
+          <div key={landingPage.id}>
             <a
               className="text-decoration-none text-body"
-              href={Routes.language_path(course.slug, {
-                suffix: getSuffix(course.locale),
+              href={Routes.language_path(landingPage.slug, {
+                suffix: getSuffix(landingPage.locale),
               })}
             >
-              {course.name}
+              {landingPage.header}
             </a>
             <button
               type="button"
-              onClick={() => setActiveCourseIdx(courseOpened ? null : index)}
+              onClick={() =>
+                setActiveLandingPageIdx(landingPageOpened ? null : index)
+              }
               aria-controls={String(index)}
               className="btn btn-link py-0 shadow-none"
             >
               <span
-                className={`bi ${courseOpened ? "bi-chevron-up" : "bi-chevron-down"}`}
+                className={`bi ${landingPageOpened ? "bi-chevron-up" : "bi-chevron-down"}`}
               />
             </button>
-            <Collapse in={courseOpened}>
+            <Collapse in={landingPageOpened}>
               <div id={String(index)}>
                 <LessonsBlock
-                  course={course}
+                  landingPage={landingPage}
                   lessons={
-                    lessonsByLocaleAndLanguageId[course.locale][course.id]
+                    lessonsByLocaleAndLanguageId[landingPage.locale][
+                      landingPage.language_id
+                    ]
                   }
                 />
               </div>
@@ -139,7 +147,7 @@ function BlogPostsBlock({ posts, opened }: BlogPostsBlockProps) {
 export default function SiteMap({
   title,
   orderedLocales,
-  coursesByLocale,
+  landingPagesByLocale,
   lessonsByLocaleAndLanguageId,
   blogPostsByLocale,
 }: Props) {
@@ -170,9 +178,9 @@ export default function SiteMap({
                 {t("home.languages.courses", { lng: locale })}
               </a>
             </h2>
-            <CoursesBlock
+            <LadingPagesBlock
               locale={locale}
-              courses={coursesByLocale[locale]}
+              landingPages={landingPagesByLocale[locale]}
               lessonsByLocaleAndLanguageId={lessonsByLocaleAndLanguageId}
             />
 
