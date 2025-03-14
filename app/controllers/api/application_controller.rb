@@ -7,5 +7,5 @@ class Api::ApplicationController < ActionController::API
   include LocaleConcern
   include EventConcern
 
-  respond_to :json
+  respond_to :json, :xml
 end
