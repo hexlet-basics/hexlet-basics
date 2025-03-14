@@ -2,11 +2,23 @@ require "application_system_test_case"
 
 class HomeTest < ApplicationSystemTestCase
   test "/" do
-    visit root_path
+    visit root_path(suffix: :ru)
+    visit root_path(suffix: nil)
   end
 
-  test "/ru" do
-    visit root_path(suffix: :ru)
+  test "/users/new" do
+    visit new_user_path(suffix: :ru)
+    visit new_user_path(suffix: nil)
+  end
+
+  test "/remind_password/new" do
+    visit remind_password_path(suffix: :ru)
+    visit remind_password_path(suffix: nil)
+  end
+
+  test "/session/new" do
+    visit new_session_path(suffix: :ru)
+    visit new_session_path(suffix: nil)
   end
 
   test "/map" do
@@ -21,6 +33,11 @@ class HomeTest < ApplicationSystemTestCase
   test "/blog_posts" do
     visit blog_posts_path(suffix: :ru)
     visit blog_posts_path(suffix: nil)
+  end
+
+  test "/pages/:id" do
+    visit page_path("about", suffix: :ru)
+    visit page_path("about", suffix: nil)
   end
 
   test "/blog_posts/:id" do
