@@ -7,11 +7,18 @@ import type {
   Language,
   LanguageCategory,
   LanguageLandingPageForLists,
+  LanguageLandingPageQnaItemCrud,
   LanguageVersion,
   User,
 } from "./serializers";
 
-export type { SortOrder, User, LanguageVersion, Language };
+export type {
+  SortOrder,
+  User,
+  LanguageVersion,
+  Language,
+  LanguageLandingPageQnaItemCrud,
+};
 
 export type BreadcrumbItem = {
   name: string;

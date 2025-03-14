@@ -1,9 +1,12 @@
 class Language::LandingPageCrudResource
+  include Rails.application.routes.url_helpers
   include Alba::Resource
   include Typelizer::DSL
 
   typelize_from Language::LandingPage
   root_key :language_landing_page
+
+  has_many :qna_items, resource: Language::LandingPageQnaItemCrudResource
 
   attributes :id,
     :slug,
@@ -22,9 +25,13 @@ class Language::LandingPageCrudResource
     :outcomes_header,
     :outcomes_description
 
-  typelize_meta meta: "{ state_events: Array<[string, string]>}"
+  typelize_meta meta: "{ outcomes_image_thumb_url: string, state_events: Array<[string, string]>}"
   meta do
-    { state_events: object.aasm.events_for_select }
+    {
+      outcomes_image_thumb_url: object.outcomes_image.attached? ?
+        rails_representation_url(object.outcomes_image.variant(:thumb)) : nil,
+      state_events: object.aasm.events_for_select
+    }
   end
 
   # typelize :state_events

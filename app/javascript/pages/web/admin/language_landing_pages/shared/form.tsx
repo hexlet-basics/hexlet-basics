@@ -2,6 +2,8 @@ import { useTranslation } from "react-i18next";
 
 import {
   XCheck,
+  XDynamicInputs,
+  XFile,
   XForm,
   XInput,
   XSelect,
@@ -25,7 +27,6 @@ type Props = {
 // ];
 
 export default function Form({ data, url, method }: Props) {
-  const { t } = useTranslation();
   const { courseCategories, landingPagesForLists } =
     usePage<SharedProps>().props;
   const { t: tHelpers } = useTranslation("helpers");
@@ -75,12 +76,21 @@ export default function Form({ data, url, method }: Props) {
         name="used_in_description"
       />
 
+      <XFile metaName="outcomes_image_thumb_url" name="outcomes_image" />
       <XInput name="outcomes_header" />
       <XInput
         as="textarea"
         style={{ height: "150px" }}
         name="outcomes_description"
       />
+
+      <XDynamicInputs
+        model="qna_items"
+        emptyData={{ question: "", answer: "" }}
+      >
+        <XInput name="question" />
+        <XInput name="answer" />
+      </XDynamicInputs>
 
       <Submit className="btn w-100 btn-lg btn-primary mb-3">
         {tHelpers("submit.save")}

@@ -18,7 +18,7 @@
 #  language_landing_page_id  (language_landing_page_id => language_landing_pages.id)
 #
 class Language::LandingPage::QnaItem < ApplicationRecord
-  belongs_to :landing_page
+  belongs_to :language_landing_page, class_name: "Language::LandingPage"
 
   validates :question, presence: true
   validates :answer, presence: true

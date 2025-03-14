@@ -1562,6 +1562,10 @@
           "order": "Order",
           "slug": "Slug"
         },
+        "qna_item": {
+          "answer": "Ответ",
+          "question": "Вопрос"
+        },
         "review": {
           "body": "Отзыв",
           "first_name": "Имя",

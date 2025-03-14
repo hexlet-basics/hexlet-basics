@@ -12,9 +12,15 @@ import {
   type AutoCompleteCompleteEvent,
 } from "primereact/autocomplete";
 // import { Editor } from "primereact/editor";
-import { type InputHTMLAttributes, useEffect, useState } from "react";
+import {
+  type InputHTMLAttributes,
+  type PropsWithChildren,
+  useEffect,
+  useState,
+} from "react";
 import {
   Badge,
+  Button,
   Form,
   type FormCheckProps,
   type FormControlProps,
@@ -24,7 +30,9 @@ import { useTranslation } from "react-i18next";
 import {
   type FormProps,
   Form as InertiaForm,
+  NestedFields,
   type NestedObject,
+  useDynamicInputs,
   useInertiaInput,
 } from "use-inertia-form";
 
@@ -72,6 +80,7 @@ export function XInput({ name, model, as, ...props }: XFormControlProps) {
 
   const errors = error ? [error].flat() : [];
 
+  // console.log(name, model, inputName)
   const path = `attributes.${form.model}.${name}`;
   // @ts-expect-error
   const label = tAr(path, tAm(path));
@@ -439,3 +448,45 @@ export function XStateEvent({ fieldName }: XStateEventProps) {
     </Form.Group>
   );
 }
+
+type XDynamicInputs = PropsWithChildren & {
+  model: string;
+  emptyData: Record<string, unknown>;
+  // label: string;
+};
+
+export const XDynamicInputs = ({
+  children,
+  model,
+  // label,
+  emptyData,
+}: XDynamicInputs) => {
+  const { addInput, removeInput, paths } = useDynamicInputs({
+    model,
+    emptyData,
+  });
+
+  return (
+    <div className="mb-4">
+      <Button onClick={() => addInput()}>+</Button>
+      {/* <div style={ { display: 'flex' } }> */}
+      {/*   <label style={ { flex: 1 } }>{ label }</label> */}
+      {/*   <button onClick={ addInput }>+</button> */}
+      {/* </div> */}
+
+      <div className="mt-4">
+        {paths.map((path, i) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+          <NestedFields key={i} model={path}>
+            <Form.Group className="mb-4">
+              <div>{children}</div>
+              <Button variant="outline-primary" onClick={() => removeInput(i)}>
+                -
+              </Button>
+            </Form.Group>
+          </NestedFields>
+        ))}
+      </div>
+    </div>
+  );
+};

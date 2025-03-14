@@ -11,6 +11,9 @@ ru:
         listed: Отображать в списках
         slug: Slug
         order: Order
+      qna_item:
+        question: Вопрос
+        answer: Ответ
       language:
         category_id: Категория
         slug: Slug
