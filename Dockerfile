@@ -63,6 +63,7 @@ ENV VITE_RELEASE_VERSION=$RELEASE_VERSION
 
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN --mount=type=secret,id=sentry-org,env=VITE_SENTRY_ORG \
+    --mount=type=secret,id=sentry-url,env=VITE_SENTRY_URL \
     --mount=type=secret,id=sentry-project,env=VITE_SENTRY_PROJECT \
     --mount=type=secret,id=sentry-dsn,env=VITE_SENTRY_DSN \
     --mount=type=secret,id=sentry-auth-token,env=VITE_SENTRY_AUTH_TOKEN \

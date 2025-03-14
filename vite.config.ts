@@ -17,6 +17,7 @@ export default defineConfig(({ mode, isSsrBuild }) => {
         compress: mode !== "test",
       }),
       sentryVitePlugin({
+        url: env.VITE_SENTRY_URL,
         org: env.VITE_SENTRY_ORG,
         project: env.VITE_SENTRY_PROJECT,
         authToken: env.VITE_SENTRY_AUTH_TOKEN,
