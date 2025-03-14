@@ -12,6 +12,9 @@ setup:
 test:
 	bin/rails test
 
+test-system:
+	bin/rails test:system
+
 db-reset:
 	bin/rails db:reset
 	bin/rails db:fixtures:load

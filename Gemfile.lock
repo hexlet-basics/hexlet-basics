@@ -139,6 +139,9 @@ GEM
       activesupport (>= 4.2)
     crass (1.0.6)
     csv (3.3.2)
+    cuprite (0.15.1)
+      capybara (~> 3.0)
+      ferrum (~> 0.15.0)
     date (3.4.1)
     debug (1.10.0)
       irb (~> 1.10)
@@ -174,6 +177,11 @@ GEM
       logger
     faraday-net_http (3.4.0)
       net-http (>= 0.5.0)
+    ferrum (0.15)
+      addressable (~> 2.5)
+      concurrent-ruby (~> 1.1)
+      webrick (~> 1.7)
+      websocket-driver (~> 0.7)
     ffi (1.17.1-aarch64-linux-gnu)
     ffi (1.17.1-arm64-darwin)
     ffi (1.17.1-x86_64-linux-gnu)
@@ -192,7 +200,8 @@ GEM
       i18n (>= 0.7)
       multi_json
       request_store (>= 1.0)
-    google-cloud-env (2.2.1)
+    google-cloud-env (2.2.2)
+      base64 (~> 0.2)
       faraday (>= 1.0, < 3.a)
     google-logging-utils (0.1.0)
     googleauth (1.13.1)
@@ -264,11 +273,11 @@ GEM
       net-protocol
     netrc (0.11.0)
     nio4r (2.7.4)
-    nokogiri (1.18.3-aarch64-linux-gnu)
+    nokogiri (1.18.4-aarch64-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.18.3-arm64-darwin)
+    nokogiri (1.18.4-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.18.3-x86_64-linux-gnu)
+    nokogiri (1.18.4-x86_64-linux-gnu)
       racc (~> 1.4)
     os (1.1.4)
     ostruct (0.6.1)
@@ -366,7 +375,6 @@ GEM
     responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
-    rexml (3.4.1)
     rubocop (1.74.0)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
@@ -413,14 +421,7 @@ GEM
     ruby_event_store-browser (2.15.0)
       rack
       ruby_event_store (= 2.15.0)
-    rubyzip (2.4.1)
     securerandom (0.4.1)
-    selenium-webdriver (4.29.1)
-      base64 (~> 0.2)
-      logger (~> 1.4)
-      rexml (~> 3.2, >= 3.2.5)
-      rubyzip (>= 1.2.2, < 3.0)
-      websocket (~> 1.0)
     sentry-rails (5.23.0)
       railties (>= 5.0)
       sentry-ruby (~> 5.23.0)
@@ -449,15 +450,15 @@ GEM
       fugit (~> 1.11.0)
       railties (>= 7.1)
       thor (~> 1.3.1)
-    sorbet (0.5.11930)
-      sorbet-static (= 0.5.11930)
-    sorbet-runtime (0.5.11930)
-    sorbet-static (0.5.11930-aarch64-linux)
-    sorbet-static (0.5.11930-universal-darwin)
-    sorbet-static (0.5.11930-x86_64-linux)
-    sorbet-static-and-runtime (0.5.11930)
-      sorbet (= 0.5.11930)
-      sorbet-runtime (= 0.5.11930)
+    sorbet (0.5.11933)
+      sorbet-static (= 0.5.11933)
+    sorbet-runtime (0.5.11933)
+    sorbet-static (0.5.11933-aarch64-linux)
+    sorbet-static (0.5.11933-universal-darwin)
+    sorbet-static (0.5.11933-x86_64-linux)
+    sorbet-static-and-runtime (0.5.11933)
+      sorbet (= 0.5.11933)
+      sorbet-runtime (= 0.5.11933)
     spoom (1.6.1)
       erubi (>= 1.10.0)
       prism (>= 0.28.0)
@@ -516,7 +517,7 @@ GEM
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
       railties (>= 6.0.0)
-    websocket (1.2.11)
+    webrick (1.9.1)
     websocket-driver (0.7.7)
       base64
       websocket-extensions (>= 0.1.0)
@@ -548,6 +549,7 @@ DEPENDENCIES
   capybara
   configus (~> 0.0.5)
   counter_culture
+  cuprite
   debug
   dotenv
   dry-auto_inject
@@ -576,7 +578,6 @@ DEPENDENCIES
   rubocop-rails-omakase
   ruby-lsp
   ruby-lsp-rails
-  selenium-webdriver
   sentry-rails
   sentry-ruby
   simplecov

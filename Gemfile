@@ -96,7 +96,7 @@ end
 
 group :test do
   gem "capybara"
-  gem "selenium-webdriver"
+  gem "cuprite"
   gem "minitest-power_assert"
   gem "simplecov"
   # gem 'webdrivers'
