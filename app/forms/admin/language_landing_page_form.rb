@@ -4,12 +4,16 @@ class Admin::LanguageLandingPageForm < Language::LandingPage
   permit :meta_title,
     :meta_description,
     :listed,
+    :slug,
+    :order,
     :main,
-    :header,
     :state_event,
+    :header,
     :description,
     :language_id,
     :language_category_id,
-    :slug,
-    :order
+    :used_in_header,
+    :used_in_description,
+    :outcomes_header,
+    :outcomes_description
 end

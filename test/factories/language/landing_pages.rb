@@ -11,8 +11,12 @@
 #  meta_description     :string
 #  meta_title           :string
 #  order                :string
+#  outcomes_description :string
+#  outcomes_header      :string
 #  slug                 :string
 #  state                :string
+#  used_in_description  :string
+#  used_in_header       :string
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
 #  language_category_id :integer

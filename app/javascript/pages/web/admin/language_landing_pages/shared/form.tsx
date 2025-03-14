@@ -57,18 +57,6 @@ export default function Form({ data, url, method }: Props) {
         valueField="language_id"
         items={landingPagesForLists}
       />
-      {/* <XSelect */}
-      {/*   name="progress" */}
-      {/*   labelField="name" */}
-      {/*   valueField="id" */}
-      {/*   items={languageProgressEnumOptions} */}
-      {/* /> */}
-      {/* <XSelect */}
-      {/*   name="learn_as" */}
-      {/*   labelField="name" */}
-      {/*   valueField="id" */}
-      {/*   items={languageLearnAsEnumOptions} */}
-      {/* /> */}
       <XInput name="slug" />
       <XInput name="order" />
       <XInput name="meta_title" />
@@ -79,6 +67,20 @@ export default function Form({ data, url, method }: Props) {
       />
       <XInput name="header" />
       <XInput as="textarea" style={{ height: "150px" }} name="description" />
+
+      <XInput name="used_in_header" />
+      <XInput
+        as="textarea"
+        style={{ height: "150px" }}
+        name="used_in_description"
+      />
+
+      <XInput name="outcomes_header" />
+      <XInput
+        as="textarea"
+        style={{ height: "150px" }}
+        name="outcomes_description"
+      />
 
       <Submit className="btn w-100 btn-lg btn-primary mb-3">
         {tHelpers("submit.save")}

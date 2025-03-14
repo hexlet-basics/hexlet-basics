@@ -2,9 +2,8 @@ include k8s/Makefile
 
 setup:
 	# brew install vips
-	cp -n .env.example .env
-	bundle install
-	bin/rails db:prepare
+	cp -n .env.sample .env || exit 0
+	bin/setup --skip-server
 	bin/rails db:fixtures:load
 	npm install
 	npx simple-git-hooks

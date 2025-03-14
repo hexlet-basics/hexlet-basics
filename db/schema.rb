@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_13_135619) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_14_201800) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -95,6 +95,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_13_135619) do
     t.string "locale"
   end
 
+  create_table "language_landing_page_qna_items", force: :cascade do |t|
+    t.integer "language_landing_page_id", null: false
+    t.string "question"
+    t.string "answer"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["language_landing_page_id"], name: "idx_on_language_landing_page_id_98023e1f90"
+  end
+
   create_table "language_landing_pages", force: :cascade do |t|
     t.integer "language_id", null: false
     t.integer "language_category_id"
@@ -110,6 +119,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_13_135619) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "listed"
+    t.string "used_in_header"
+    t.string "used_in_description"
+    t.string "outcomes_header"
+    t.string "outcomes_description"
     t.index ["language_category_id"], name: "index_language_landing_pages_on_language_category_id"
     t.index ["language_id"], name: "index_language_landing_pages_on_language_id"
   end
@@ -486,6 +499,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_13_135619) do
   add_foreign_key "blog_posts", "languages"
   add_foreign_key "blog_posts", "users", column: "creator_id"
   add_foreign_key "event_store_events_in_streams", "event_store_events", column: "event_id", primary_key: "event_id"
+  add_foreign_key "language_landing_page_qna_items", "language_landing_pages"
   add_foreign_key "language_landing_pages", "language_categories"
   add_foreign_key "language_landing_pages", "languages"
   add_foreign_key "language_lesson_members", "language_lessons", column: "lesson_id"

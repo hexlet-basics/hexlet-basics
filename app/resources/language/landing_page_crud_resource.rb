@@ -11,12 +11,16 @@ class Language::LandingPageCrudResource
     :listed,
     :main,
     :order,
-    :header,
     :meta_title,
     :meta_description,
     :language_id,
     :language_category_id,
-    :description
+    :header,
+    :description,
+    :used_in_header,
+    :used_in_description,
+    :outcomes_header,
+    :outcomes_description
 
   typelize_meta meta: "{ state_events: Array<[string, string]>}"
   meta do
