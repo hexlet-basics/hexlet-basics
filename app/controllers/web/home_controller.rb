@@ -68,23 +68,26 @@ class Web::HomeController < Web::ApplicationController
     # NOTE: в запросах используется точечная выборка с помощью select из-за большого количества данных для уменьшения нагрузки
     # NOTE: данные выбираются специально по всем локалям, так как для карты сайта выводим ссылки для всех локалей.
 
+    # NOTE: исключаем es, так как на сайте пока не работают ссылки связанный с es локалью
     locales = I18n.available_locales - [ I18n.locale, :es ]
     ordered_locales = [ I18n.locale, *locales ]
 
     language_landing_pages = Language::LandingPage
-      # .current
-      # .where(locale: ordered_locales)
+      .published.where(listed: true)
+      .with_locale(ordered_locales)
       .includes(:language)
-      .select(:language_id, :locale, :header, :slug)
+      .select(:language_id, :locale, :header, :slug, :id)
 
     language_landing_page_resources_by_locale = language_landing_pages
       .in_order_of(:locale, ordered_locales)
       .order(id: :asc)
       .group_by(&:locale)
-      .transform_values { |infos| SitemapLanguageResource.new(infos) }
+      .transform_values { |pages| Language::SitemapLandingPageResource.new(pages) }
 
     lesson_infos_by_locale = Language::Lesson::Version::Info
-      # .joins(language_version: :infos).merge(languages_infos)
+      .with_locale(ordered_locales)
+      .joins(:language)
+  .where("language_lesson_version_infos.language_version_id = languages.current_version_id")
       .includes(:lesson, :version)
       .select(
         :locale,
@@ -121,7 +124,7 @@ class Web::HomeController < Web::ApplicationController
     render inertia: true, props: {
       title:,
       orderedLocales: ordered_locales,
-      coursesByLocale: language_landing_page_resources_by_locale,
+      landingPagesByLocale: language_landing_page_resources_by_locale,
       lessonsByLocaleAndLanguageId: lesson_resources_by_locale_and_language_id,
       blogPostsByLocale: blog_post_resources_by_locale
     }
