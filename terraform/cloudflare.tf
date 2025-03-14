@@ -142,6 +142,22 @@ resource "cloudflare_dns_record" "txt" {
   ttl     = 1
 }
 
+resource "cloudflare_dns_record" "cq-dkim" {
+  zone_id = resource.cloudflare_zone.hexlet_basics_zone.id
+  name    = "carrotquest.221._domainkey.${var.domain}"
+  content = "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDDsu2HwjCwx7xR6Qhmjj5+IJV/XhMnZ4lJR2T4ipfJy+buC05S2LO4HsivGvweLLGUb1xEtskw5JCxTcdnPa+zfdyNt80iujEZS66VPC8hUxH+spxPGA4uwBvS0kOBhARYhHbqVb4RAJNB7rtkLxcdXs19lU+ccqk8iQhctY+gkwIDAQAB"
+  type    = "TXT"
+  ttl     = 1
+}
+
+resource "cloudflare_dns_record" "spf" {
+  zone_id = resource.cloudflare_zone.hexlet_basics_zone.id
+  name    = var.domain
+  content = "v=spf1 +a +mx include:spf.sendsay.ru include:mailgun.org ~all"
+  type    = "TXT"
+  ttl     = 1
+}
+
 resource "cloudflare_dns_record" "yandex_verification" {
   zone_id = resource.cloudflare_zone.hexlet_basics_zone.id
   name    = var.domain
