@@ -61,6 +61,12 @@ module GeneratedPathHelpersModule
   def admin_root_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def api_feed_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def api_feeds_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def blog_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -92,6 +98,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def edit_admin_review_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def edit_api_feed_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def edit_password_path(*args); end
@@ -128,6 +137,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def new_admin_review_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_api_feed_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_rails_conductor_inbound_email_path(*args); end
@@ -260,4 +272,7 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def users_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def yandex_courses_api_feeds_path(*args); end
 end

@@ -61,6 +61,12 @@ module GeneratedUrlHelpersModule
   def admin_root_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def api_feed_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def api_feeds_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def blog_post_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -92,6 +98,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def edit_admin_review_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def edit_api_feed_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def edit_password_url(*args); end
@@ -128,6 +137,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def new_admin_review_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_api_feed_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_rails_conductor_inbound_email_source_url(*args); end
@@ -260,4 +272,7 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def users_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def yandex_courses_api_feeds_url(*args); end
 end

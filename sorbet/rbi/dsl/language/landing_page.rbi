@@ -32,6 +32,12 @@ class Language::LandingPage
   sig { returns(T::Boolean) }
   def may_publish?; end
 
+  sig { returns(ActiveStorage::Attached::One) }
+  def outcomes_image; end
+
+  sig { params(attachable: T.untyped).returns(T.untyped) }
+  def outcomes_image=(attachable); end
+
   sig { params(opts: T.untyped).returns(T.untyped) }
   def publish(*opts); end
 
@@ -458,6 +464,12 @@ class Language::LandingPage
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language::Category) }
     def build_language_category(*args, &blk); end
 
+    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Attachment) }
+    def build_outcomes_image_attachment(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Blob) }
+    def build_outcomes_image_blob(*args, &blk); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language) }
     def create_language(*args, &blk); end
 
@@ -469,6 +481,18 @@ class Language::LandingPage
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language::Category) }
     def create_language_category!(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Attachment) }
+    def create_outcomes_image_attachment(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Attachment) }
+    def create_outcomes_image_attachment!(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Blob) }
+    def create_outcomes_image_blob(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Blob) }
+    def create_outcomes_image_blob!(*args, &blk); end
 
     sig { returns(T.nilable(::Language)) }
     def language; end
@@ -494,17 +518,55 @@ class Language::LandingPage
     sig { returns(T::Boolean) }
     def language_previously_changed?; end
 
+    sig { returns(T.nilable(::ActiveStorage::Attachment)) }
+    def outcomes_image_attachment; end
+
+    sig { params(value: T.nilable(::ActiveStorage::Attachment)).void }
+    def outcomes_image_attachment=(value); end
+
+    sig { returns(T.nilable(::ActiveStorage::Blob)) }
+    def outcomes_image_blob; end
+
+    sig { params(value: T.nilable(::ActiveStorage::Blob)).void }
+    def outcomes_image_blob=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def qna_item_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def qna_item_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Language::LandingPage` class because it declared `has_many :qna_items`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::Language::LandingPage::QnaItem::PrivateCollectionProxy) }
+    def qna_items; end
+
+    sig { params(value: T::Enumerable[::Language::LandingPage::QnaItem]).void }
+    def qna_items=(value); end
+
     sig { returns(T.nilable(::Language)) }
     def reload_language; end
 
     sig { returns(T.nilable(::Language::Category)) }
     def reload_language_category; end
 
+    sig { returns(T.nilable(::ActiveStorage::Attachment)) }
+    def reload_outcomes_image_attachment; end
+
+    sig { returns(T.nilable(::ActiveStorage::Blob)) }
+    def reload_outcomes_image_blob; end
+
     sig { void }
     def reset_language; end
 
     sig { void }
     def reset_language_category; end
+
+    sig { void }
+    def reset_outcomes_image_attachment; end
+
+    sig { void }
+    def reset_outcomes_image_blob; end
   end
 
   module GeneratedAssociationRelationMethods
@@ -657,6 +719,9 @@ class Language::LandingPage
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def with(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def with_attached_outcomes_image(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def with_locale(*args, &blk); end
@@ -1254,6 +1319,96 @@ class Language::LandingPage
     sig { void }
     def order_will_change!; end
 
+    sig { returns(T.nilable(::String)) }
+    def outcomes_description; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def outcomes_description=(value); end
+
+    sig { returns(T::Boolean) }
+    def outcomes_description?; end
+
+    sig { returns(T.nilable(::String)) }
+    def outcomes_description_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def outcomes_description_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def outcomes_description_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def outcomes_description_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def outcomes_description_change_to_be_saved; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def outcomes_description_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def outcomes_description_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def outcomes_description_previous_change; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def outcomes_description_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def outcomes_description_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def outcomes_description_was; end
+
+    sig { void }
+    def outcomes_description_will_change!; end
+
+    sig { returns(T.nilable(::String)) }
+    def outcomes_header; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def outcomes_header=(value); end
+
+    sig { returns(T::Boolean) }
+    def outcomes_header?; end
+
+    sig { returns(T.nilable(::String)) }
+    def outcomes_header_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def outcomes_header_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def outcomes_header_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def outcomes_header_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def outcomes_header_change_to_be_saved; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def outcomes_header_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def outcomes_header_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def outcomes_header_previous_change; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def outcomes_header_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def outcomes_header_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def outcomes_header_was; end
+
+    sig { void }
+    def outcomes_header_will_change!; end
+
     sig { void }
     def restore_created_at!; end
 
@@ -1294,6 +1449,12 @@ class Language::LandingPage
     def restore_order!; end
 
     sig { void }
+    def restore_outcomes_description!; end
+
+    sig { void }
+    def restore_outcomes_header!; end
+
+    sig { void }
     def restore_slug!; end
 
     sig { void }
@@ -1304,6 +1465,12 @@ class Language::LandingPage
 
     sig { void }
     def restore_updated_at!; end
+
+    sig { void }
+    def restore_used_in_description!; end
+
+    sig { void }
+    def restore_used_in_header!; end
 
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def saved_change_to_created_at; end
@@ -1384,6 +1551,18 @@ class Language::LandingPage
     def saved_change_to_order?; end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_outcomes_description; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_outcomes_description?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_outcomes_header; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_outcomes_header?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_slug; end
 
     sig { returns(T::Boolean) }
@@ -1406,6 +1585,18 @@ class Language::LandingPage
 
     sig { returns(T::Boolean) }
     def saved_change_to_updated_at?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_used_in_description; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_used_in_description?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_used_in_header; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_used_in_header?; end
 
     sig { returns(T.nilable(::String)) }
     def slug; end
@@ -1587,6 +1778,96 @@ class Language::LandingPage
     sig { void }
     def updated_at_will_change!; end
 
+    sig { returns(T.nilable(::String)) }
+    def used_in_description; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def used_in_description=(value); end
+
+    sig { returns(T::Boolean) }
+    def used_in_description?; end
+
+    sig { returns(T.nilable(::String)) }
+    def used_in_description_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def used_in_description_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def used_in_description_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def used_in_description_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def used_in_description_change_to_be_saved; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def used_in_description_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def used_in_description_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def used_in_description_previous_change; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def used_in_description_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def used_in_description_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def used_in_description_was; end
+
+    sig { void }
+    def used_in_description_will_change!; end
+
+    sig { returns(T.nilable(::String)) }
+    def used_in_header; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def used_in_header=(value); end
+
+    sig { returns(T::Boolean) }
+    def used_in_header?; end
+
+    sig { returns(T.nilable(::String)) }
+    def used_in_header_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def used_in_header_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def used_in_header_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def used_in_header_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def used_in_header_change_to_be_saved; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def used_in_header_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def used_in_header_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def used_in_header_previous_change; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def used_in_header_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def used_in_header_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def used_in_header_was; end
+
+    sig { void }
+    def used_in_header_will_change!; end
+
     sig { returns(T::Boolean) }
     def will_save_change_to_created_at?; end
 
@@ -1627,6 +1908,12 @@ class Language::LandingPage
     def will_save_change_to_order?; end
 
     sig { returns(T::Boolean) }
+    def will_save_change_to_outcomes_description?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_outcomes_header?; end
+
+    sig { returns(T::Boolean) }
     def will_save_change_to_slug?; end
 
     sig { returns(T::Boolean) }
@@ -1637,6 +1924,12 @@ class Language::LandingPage
 
     sig { returns(T::Boolean) }
     def will_save_change_to_updated_at?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_used_in_description?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_used_in_header?; end
   end
 
   module GeneratedRelationMethods
@@ -1789,6 +2082,9 @@ class Language::LandingPage
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def with(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def with_attached_outcomes_image(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def with_locale(*args, &blk); end

@@ -42,7 +42,9 @@ sync-fixtures: db-reset
 	# bin/rails db:fixtures:load
 
 editor-setup:
-	bin/tapioca dsl
+	bin/tapioca gems --verify
+	bin/tapioca dsl --verify
+	bin/tapioca require
 
 sync: i18n-export sync-fixtures
 	bin/rails typelizer:generate:refresh
