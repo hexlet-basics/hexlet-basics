@@ -2,6 +2,9 @@
 
 ru:
   web:
+    my:
+      started: Начатые курсы
+      finished: Завершенные курсы
     language_categories:
       index:
         header: Категории курсов

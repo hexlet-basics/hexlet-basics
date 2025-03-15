@@ -2053,6 +2053,7 @@
       }
     },
     "helpers": {
+      "continue": "Продолжить",
       "crud": {
         "add": "Добавить",
         "adding": "Добавление",
@@ -2143,6 +2144,7 @@
           "community": "Сообщество",
           "courses": "Курсы",
           "for_authors": "Авторам",
+          "my": "Прогресс",
           "profile": "Настройки",
           "registration": "Регистрация",
           "reviews": "Отзывы",
@@ -2659,6 +2661,10 @@
           "start_demo_lesson": "Демо урок",
           "to_home_title": "Главная"
         }
+      },
+      "my": {
+        "finished": "Завершенные курсы",
+        "started": "Начатые курсы"
       },
       "pages": {
         "parts": {

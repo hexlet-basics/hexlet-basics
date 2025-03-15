@@ -34,6 +34,11 @@ full_java:
   user: full
   state: finished
 
+full_typescript:
+  language: typescript
+  user: full
+  state: started
+
 full_javascript:
   language: javascript
   user: full

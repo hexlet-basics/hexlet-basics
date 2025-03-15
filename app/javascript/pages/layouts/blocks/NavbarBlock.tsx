@@ -32,96 +32,96 @@ export default function NavbarBlock({ className }: Props) {
         />
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
-      <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="me-auto">
-          <NavDropdown
-            className="link-body-emphasis"
-            title={tLayouts("shared.nav.courses")}
-            id="basic-nav-dropdown"
-          >
-            {landingPagesForLists.map((lp) => (
-              <NavDropdown.Item
-                className="d-flex align-items-center"
-                key={lp.id}
-                href={Routes.language_path(lp.slug)}
-              >
-                {lp.header}
-              </NavDropdown.Item>
-            ))}
-          </NavDropdown>
-          <Nav.Link href={Routes.blog_posts_path()}>
-            {tLayouts("shared.nav.blog")}
-          </Nav.Link>
-        </Nav>
-        <Nav>
-          {auth.user.guest && (
-            <>
-              <Nav.Link
-                className="link-body-emphasis"
-                href={Routes.new_session_path()}
-              >
-                {tLayouts("shared.nav.sign_in")}
-              </Nav.Link>
-              <Nav.Link
-                className="link-body-emphasis"
-                href={Routes.new_user_path()}
-              >
-                {tLayouts("shared.nav.registration")}
-              </Nav.Link>
-            </>
-          )}
-          {!auth.user.guest && (
-            <NavDropdown
-              align="end"
-              className="link-body-emphasis"
-              title={<i className="bi bi-person-circle" />}
+
+      <Nav className="me-auto">
+        <NavDropdown
+          className="link-body-emphasis"
+          title={tLayouts("shared.nav.courses")}
+          id="basic-nav-dropdown"
+        >
+          {landingPagesForLists.map((lp) => (
+            <NavDropdown.Item
+              className="d-flex align-items-center"
+              key={lp.id}
+              href={Routes.language_path(lp.slug)}
             >
-              <NavDropdown.Item href={Routes.edit_account_profile_path()}>
-                <div className="d-flex">
-                  <img width="50px" src={defaultAvatarImg} alt="User Avatar" />
-                  <div>
-                    <div className="fw-bold">{auth.user.name}</div>
-                    <div>{auth.user.email}</div>
-                  </div>
-                </div>
-              </NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href={Routes.edit_account_profile_path()}>
-                {tLayouts("shared.nav.profile")}
-              </NavDropdown.Item>
-              {auth.user.admin && (
-                <NavDropdown.Item href={Routes.admin_root_path()}>
-                  {tLayouts("shared.nav.admin")}
-                </NavDropdown.Item>
-              )}
-              <NavDropdown.Item
-                href={Routes.session_path()}
-                onClick={handleLinkClick("delete")}
-              >
-                {tLayouts("shared.nav.sign_out")}
-              </NavDropdown.Item>
-            </NavDropdown>
-          )}
+              {lp.header}
+            </NavDropdown.Item>
+          ))}
+        </NavDropdown>
+        <Nav.Link href={Routes.blog_posts_path()}>
+          {tLayouts("shared.nav.blog")}
+        </Nav.Link>
+        <Nav.Link className="link-body-emphasis" href={Routes.my_path()}>
+          {tLayouts("shared.nav.my")}
+        </Nav.Link>
+      </Nav>
+      <Nav>
+        {auth.user.guest && (
+          <>
+            <Nav.Link
+              className="link-body-emphasis"
+              href={Routes.new_session_path()}
+            >
+              {tLayouts("shared.nav.sign_in")}
+            </Nav.Link>
+            <Nav.Link
+              className="link-body-emphasis"
+              href={Routes.new_user_path()}
+            >
+              {tLayouts("shared.nav.registration")}
+            </Nav.Link>
+          </>
+        )}
+        {!auth.user.guest && (
           <NavDropdown
             align="end"
             className="link-body-emphasis"
-            title={
-              <i className={localesByCode[i18next.language || "ru"].icon} />
-            }
+            title={<i className="bi bi-person-circle" />}
           >
-            {Object.entries(localesByCode).map(([k, v]) => (
-              <NavDropdown.Item
-                className="d-flex align-items-center"
-                key={k}
-                href={Routes.switch_locale_path({ new_locale: k })}
-              >
-                <i className={cn(v.icon, "me-2")} />
-                {v.name}
+            <NavDropdown.Item href={Routes.edit_account_profile_path()}>
+              <div className="d-flex">
+                <img width="50px" src={defaultAvatarImg} alt="User Avatar" />
+                <div>
+                  <div className="fw-bold">{auth.user.name}</div>
+                  <div>{auth.user.email}</div>
+                </div>
+              </div>
+            </NavDropdown.Item>
+            <NavDropdown.Divider />
+            <NavDropdown.Item href={Routes.edit_account_profile_path()}>
+              {tLayouts("shared.nav.profile")}
+            </NavDropdown.Item>
+            {auth.user.admin && (
+              <NavDropdown.Item href={Routes.admin_root_path()}>
+                {tLayouts("shared.nav.admin")}
               </NavDropdown.Item>
-            ))}
+            )}
+            <NavDropdown.Item
+              href={Routes.session_path()}
+              onClick={handleLinkClick("delete")}
+            >
+              {tLayouts("shared.nav.sign_out")}
+            </NavDropdown.Item>
           </NavDropdown>
-        </Nav>
-      </Navbar.Collapse>
+        )}
+        <NavDropdown
+          align="end"
+          className="link-body-emphasis"
+          title={<i className={localesByCode[i18next.language || "ru"].icon} />}
+        >
+          {Object.entries(localesByCode).map(([k, v]) => (
+            <NavDropdown.Item
+              className="d-flex align-items-center"
+              key={k}
+              href={Routes.switch_locale_path({ new_locale: k })}
+            >
+              <i className={cn(v.icon, "me-2")} />
+              {v.name}
+            </NavDropdown.Item>
+          ))}
+        </NavDropdown>
+      </Nav>
     </Navbar>
   );
 }

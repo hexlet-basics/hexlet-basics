@@ -42,6 +42,8 @@ Rails.application.routes.draw do
       get "/robots.:format", to: "home#robots", as: :robots
       get "/map", to: "home#sitemap"
 
+      resource :my, only: [ :show ]
+
       resources :pages, only: %i[show]
       resources :blog_posts, only: %i[index show]
       resources :reviews, only: %i[index]

@@ -2,6 +2,7 @@ ru:
   helpers:
     reset: Сбросить
     read: Читать
+    continue: Продолжить
     crud:
       list: Список
       add: Добавить
