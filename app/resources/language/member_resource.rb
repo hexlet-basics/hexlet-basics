@@ -1,15 +1,17 @@
 class Language::MemberResource
-  # include Rails.application.routes.url_helpers
   include Alba::Resource
   include Typelizer::DSL
 
   typelize_from Language::Member
+  # root_key :user
 
-  attributes :id, :state, :language_id
-  # has_one :current_version, resource: Language::VersionResource
+  attributes :id, :user_id, :language_id, :state
 
-  # typelize :string, nullable: true
-  # attribute :repository_url do |obj|
-  #   obj.repository_url
+  typelize state: [ enum: [ "started", "finished" ] ]
+
+  # typelize language_name: :string
+  # attribute :language_name do |member|
+  #   # TODO: use title from current version info
+  #   member.language.current_version.name
   # end
 end
