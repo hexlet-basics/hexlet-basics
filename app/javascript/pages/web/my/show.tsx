@@ -26,9 +26,9 @@ export default function My(props: Props) {
     <ApplicationLayout>
       <Container className="mb-lg-5 py-5">
         <h2 className="mb-5">{tViews("my.started")}</h2>
-        <Row className="mb-5 row-cols-2 row-cols-md-3 row-cols-lg-4">
+        <Row className="row-cols-2 row-cols-md-3 row-cols-lg-4">
           {startedCourseMembers.map((cm) => (
-            <Col key={cm.id}>
+            <Col key={cm.id} className="mb-5">
               <CourseBlock
                 courseMember={cm}
                 landingPage={landingPageResourcesByCourseId[cm.language_id]}
