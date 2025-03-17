@@ -2,6 +2,9 @@
 
 en:
   web:
+    my:
+      started: Started Courses
+      finished: Finished Courses
     language_categories:
       index:
         header: Course categories

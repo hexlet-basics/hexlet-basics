@@ -79,7 +79,6 @@
       }
     },
     "common": {
-      "address": "The Republic of Kazakhstan, Almaty, Auezova St., 14A",
       "check": {
         "error": {
           "headline": "Oops!",
@@ -102,6 +101,7 @@
       "current_state": "Current state",
       "discuss": "Discussion",
       "editor": "Editor",
+      "empty": "Empty",
       "errors": {
         "network": "There was a network problem. Please try again. If it doesn’t work, make sure you have good internet and no blockers.",
         "server": "Error on server. Maybe it’ll let go soon, but maybe not. Try to find out what happened in https://slack.hexlet.io/"
@@ -122,7 +122,6 @@
         "en": "English",
         "ru": "Russian"
       },
-      "legal_name": "TOO \"Hexlet\"",
       "lesson": "Lesson",
       "lessons": {
         "one": "%{count} lesson",
@@ -130,6 +129,11 @@
       },
       "loading": "Loading...",
       "nextLesson": "Next",
+      "organization": {
+        "address": "The Republic of Kazakhstan, Almaty, Auezova St., 14A",
+        "email": "support@hexlet.io",
+        "legal_name": "TOO \"Hexlet\""
+      },
       "output": "Output",
       "phones": [
         "+7 717 272 76 70"
@@ -514,6 +518,7 @@
           "community": "Community",
           "courses": "Courses",
           "for_authors": "For authors",
+          "my": "Dashboard",
           "profile": "Settings",
           "registration": "Sign up",
           "reviews": "Reviews",
@@ -1020,6 +1025,10 @@
           "to_home_title": "Home",
           "typescript_description": "TypeScript is a JavaScript-based programming language. Includes a typing system"
         }
+      },
+      "my": {
+        "finished": "Finished Courses",
+        "started": "Started Courses"
       },
       "pages": {
         "parts": {
@@ -1640,6 +1649,7 @@
       "current_state": "Текущее состояние",
       "discuss": "Обсуждение",
       "editor": "Редактор",
+      "empty": "Пусто",
       "errors": {
         "network": "Возникла сетевая проблема. Попробуйте повторить ещё раз. Если не получилось, убедитесь, что с интернетом всё в порядке, и отключите блокировщики рекламы",
         "server": "Ошибка на сервере. Возможно, скоро отпустит, а возможно — нет. Попробуйте узнать, что произошло в https://ttttt.me/hexletcommunity/12"

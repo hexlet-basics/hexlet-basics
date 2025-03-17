@@ -21,11 +21,17 @@ export default function My(props: Props) {
     landingPageResourcesByCourseId,
   } = props;
   const { t: tViews } = useTranslation("web");
+  const { t: tCommon } = useTranslation("common");
 
   return (
     <ApplicationLayout>
       <Container className="mb-lg-5 py-5">
-        <h2 className="mb-5">{tViews("my.started")}</h2>
+        <div className="mb-5">
+          <h2>{tViews("my.started")}</h2>
+          {startedCourseMembers.length === 0 && (
+            <p className="mt-5">{tCommon("empty")}</p>
+          )}
+        </div>
         <Row className="row-cols-2 row-cols-md-3 row-cols-lg-4">
           {startedCourseMembers.map((cm) => (
             <Col key={cm.id} className="mb-5">
@@ -37,7 +43,12 @@ export default function My(props: Props) {
             </Col>
           ))}
         </Row>
-        <h2 className="mb-5">{tViews("my.finished")}</h2>
+        <div className="mb-5">
+          <h2>{tViews("my.finished")}</h2>
+          {finishedCourseMembers.length === 0 && (
+            <p className="mt-5">{tCommon("empty")}</p>
+          )}
+        </div>
         <Row className="mb-5 row-cols-2 row-cols-md-3 row-cols-lg-4">
           {finishedCourseMembers.map((cm) => (
             <Col key={cm.id}>

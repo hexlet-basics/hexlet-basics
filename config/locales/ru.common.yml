@@ -2,6 +2,7 @@
 
 ru:
   common:
+    empty: Пусто
     current_state: Текущее состояние
     state_events: Варианты действий
     tos: Содержание
