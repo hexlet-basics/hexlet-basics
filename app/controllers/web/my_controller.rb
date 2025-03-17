@@ -15,7 +15,7 @@ class Web::MyController < Web::ApplicationController
     landing_pages = Language::LandingPage
       # .with_locale
       .joins(language: :members)
-      .where(language: { members: current_user.language_members })
+      .merge(current_user.language_members)
 
     landing_page_resources_by_language_id = landing_pages
       .index_by { it.language_id }
