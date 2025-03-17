@@ -10,7 +10,7 @@ export default function TgContestBanner() {
 
   const localeToShowBanner = "ru";
   const currentDate = new Date();
-  const endDate = new Date("2025-03-18");
+  const endDate = new Date("2025-03-20");
 
   if (locale !== localeToShowBanner || currentDate > endDate) {
     return null;
