@@ -19,9 +19,7 @@ class Web::LanguageCategoriesController < Web::ApplicationController
   def show
     category = Language::Category.find_by! slug: params[:id]
     # @language_members_by_language = current_user.language_members.index_by(&:language_id)
-    landing_pages = category.language_landing_pages.with_locale
-      .includes(:language)
-      .where(main: true).where(listed: true).merge(Language.ordered)
+    landing_pages = category.language_landing_pages.web.merge(Language.ordered)
 
     # infos = Language::Version::Info.where(locale: I18n.locale, language: @languages)
     # infos_by_language = infos.index_by { |item| item.language.id }
