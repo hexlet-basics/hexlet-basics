@@ -63,15 +63,14 @@ class Web::LanguagesController < Web::ApplicationController
 
     render inertia: true, props: {
       courseLandingPage: Language::LandingPageResource.new(landing_page),
+      courseLandingPageQnaItems: Language::LandingPageQnaItemResource.new(landing_page.qna_items),
       course: LanguageResource.new(language),
-      finishedLessonIds: finished_lesson_ids,
       courseCategory: Language::CategoryResource.new(landing_page.language_category),
       firstLesson: Language::LessonResource.new(first_lesson_info),
       nextLesson: next_lesson_info && Language::LessonResource.new(next_lesson_info),
       courseModules: Language::ModuleResource.new(language_modules_infos),
       lessonsByModuleId: lesson_resources_by_module_id,
-      courseMember: language_member && Language::MemberResource.new(language_member),
-      recommendedCourseLandingPages: Language::LandingPageForListsResource.new(recommended_langauge_pages)
+      courseMember: language_member && Language::MemberResource.new(language_member)
     }
   end
 end

@@ -1,4 +1,5 @@
 class Language::LandingPageResource
+  urls = Rails.application.routes.url_helpers
   include Alba::Resource
   include Typelizer::DSL
 
@@ -36,6 +37,11 @@ class Language::LandingPageResource
   typelize :number
   attribute :members_count do |lp|
     lp.language&.members_count || 0
+  end
+
+  typelize :string, nullable: true
+  attribute :outcomes_image do |lp|
+    urls.rails_representation_url(lp.outcomes_image.variant(:main)) if lp.outcomes_image.attached?
   end
 
   # typelize :string

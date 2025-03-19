@@ -1,8 +1,8 @@
-import { Alert, Col, Container, ListGroup, Row } from "react-bootstrap";
+import { Accordion, Alert, Col, Container, Row } from "react-bootstrap";
 
+import learningVideo from "@/images/course-landing-page/learning.mov";
 import { useTranslation } from "react-i18next";
 
-import CourseBlock from "@/components/CourseBlock";
 import XssContent from "@/components/XssContent";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import * as Routes from "@/routes.js";
@@ -10,7 +10,7 @@ import type { BreadcrumbItem, Language, SharedProps } from "@/types";
 import type {
   LanguageCategory,
   LanguageLandingPage,
-  LanguageLandingPageForLists,
+  LanguageLandingPageQnaItem,
   LanguageLesson,
   LanguageMember,
   LanguageModule,
@@ -21,14 +21,13 @@ import type { Product, WithContext } from "schema-dts";
 type Props = {
   course: Language;
   courseMember?: LanguageMember;
-  finishedLessonIds: number[];
   courseCategory: LanguageCategory;
   courseLandingPage: LanguageLandingPage;
+  courseLandingPageQnaItems: LanguageLandingPageQnaItem[];
   firstLesson: LanguageLesson;
   nextLesson?: LanguageLesson;
   // user: User;
   courseModules: LanguageModule[];
-  recommendedCourseLandingPages: LanguageLandingPageForLists[];
   lessonsByModuleId: {
     [moduleId: number]: LanguageLesson[];
   };
@@ -38,11 +37,10 @@ export default function Show({
   firstLesson,
   nextLesson,
   courseLandingPage,
+  courseLandingPageQnaItems,
   courseMember,
   courseCategory,
   courseModules,
-  finishedLessonIds,
-  recommendedCourseLandingPages,
   lessonsByModuleId,
   course,
 }: Props) {
@@ -69,159 +67,206 @@ export default function Show({
     // TODO: add review
   };
 
-  const breadcrumbItems: BreadcrumbItem[] = [
-    {
-      name: courseCategory.name,
-      url: Routes.language_category_url(courseCategory.slug!),
-    },
-    {
-      name: courseLandingPage.header,
-      url: Routes.language_url(courseLandingPage.slug),
-    },
-  ];
+  // const breadcrumbItems: BreadcrumbItem[] = [
+  //   {
+  //     name: courseCategory.name,
+  //     url: Routes.language_category_url(courseCategory.slug!),
+  //   },
+  //   {
+  //     name: courseLandingPage.header,
+  //     url: Routes.language_url(courseLandingPage.slug),
+  //   },
+  // ];
 
   return (
-    <ApplicationLayout items={breadcrumbItems}>
+    <ApplicationLayout>
       <Head>
         <script type="application/ld+json">{JSON.stringify(product)}</script>
       </Head>
-      <Container>
+      <Container className="pt-3 pt-lg-5">
         {courseMember?.state === "finished" && (
           <Alert variant="success">
             <XssContent>{t("languages.show.completed_html")}</XssContent>
           </Alert>
         )}
-        <div className="p-5 text-center bg-body-tertiary rounded-3 mb-5 border">
-          <div className="d-flex justify-content-center align-items-center">
-            <h1>{courseLandingPage.header}</h1>
-          </div>
-          <p className="col-lg-8 mx-auto fs-5 text-muted">
-            {courseLandingPage.description}
-          </p>
-          <Row className="row-cols-1 row-cols-sm-2 justify-content-center">
-            {!courseMember && (
-              <Col className="mb-3 col-lg-3">
-                <Link
-                  className="btn d-block btn-primary"
-                  href={Routes.language_lesson_path(
-                    course.slug!,
-                    firstLesson.slug,
-                  )}
-                >
-                  <span className="me-2">{t("languages.show.start")}</span>
-                  <i className="bi bi-arrow-right" />
-                </Link>
-              </Col>
-            )}
-            {courseMember && nextLesson && (
-              <Col className="mb-3 col-lg-3">
-                <Link
-                  className="btn d-block btn-outline-primary"
-                  href={Routes.language_lesson_path(
-                    course.slug!,
-                    nextLesson.slug,
-                  )}
-                >
-                  <span className="me-2">{t("languages.show.continue")}</span>
-                  <i className="bi bi-arrow-right" />
-                </Link>
-              </Col>
-            )}
-            {auth.user.guest && (
-              <Col className="mb-3 col-lg-3">
-                <Link
-                  className="btn d-block btn-outline-secondary"
-                  href={Routes.new_user_path()}
-                >
-                  {t("languages.show.registration")}
-                </Link>
-              </Col>
-            )}
-          </Row>
-        </div>
-        <div className="mb-5">
-          {courseModules.map((m) => (
-            <div key={m.id} className="mb-5">
-              <h2 className="mb-4">{m.name!}</h2>
-              <Row className="row-cols-1 row-cols-md-2">
-                <Col className="mb-3">
-                  <ListGroup>
-                    {(lessonsByModuleId[m.id] ?? []).map((l) => (
-                      <ListGroup.Item key={l.id}>
-                        <Link
-                          className="text-decoration-none stretched-link d-flex"
-                          href={Routes.language_lesson_path(
-                            course.slug!,
-                            l.slug!,
-                          )}
-                        >
-                          <div className="me-auto">
-                            <span className="me-1">{l.natural_order!}.</span>
-                            {l.name}
-                          </div>
-                          {finishedLessonIds.includes(l.id) && (
-                            <i className="bi bi-check-lg" />
-                          )}
-                        </Link>
-                      </ListGroup.Item>
-                    ))}
-                  </ListGroup>
-                </Col>
-                <Col className="d-none d-sm-block">{m.description}</Col>
-              </Row>
+        <Row className="justify-content-center mb-4 mb-lg-5">
+          <Col className="col-lg-7 text-center">
+            <div className="fs-5 fw-medium text-primary text-opacity-75">
+              {t("languages.show.free_course")}
             </div>
-          ))}
-
-          {courseMember?.state !== "finished" && (
-            <div className="p-3 p-sm-4 bg-body-tertiary rounded-3 mb-5">
-              <div className="d-flex justify-content-between">
-                <div>
-                  <div className="display-6 fw-bold">
-                    {t("languages.show.ready")}
-                  </div>
-                  <div className="fs-4 fw-bold text-primary">
-                    {t("languages.show.no_registration")}
-                  </div>
-                </div>
-                <div className="align-content-around">
+            <h1 className="display-5 fw-bolder mb-3">
+              {courseLandingPage.header}
+            </h1>
+            <div className="fs-5 text-body-secondary mb-5">
+              {courseLandingPage.description}
+            </div>
+            <Row className="row-cols-1 row-cols-sm-2 justify-content-center gy-3">
+              {!courseMember && (
+                <Col className="col-lg-4">
                   <Link
-                    className="btn btn-lg btn-outline-primary"
+                    className="btn btn-primary w-100"
                     href={Routes.language_lesson_path(
                       course.slug!,
-                      firstLesson.slug!,
+                      firstLesson.slug,
                     )}
                   >
-                    {t("languages.show.start_demo_lesson")}
+                    <span>{t("languages.show.start")}</span>
                   </Link>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="mb-5">
-            <div className="d-flex justify-content-between border-bottom mb-3">
-              <h2 className="mb-2">{t("languages.show.similar_courses")}</h2>
-              <div className="align-content-around">
-                <Link
-                  className="link-body-emphasis text-muted text-decoration-none"
-                  href={Routes.language_category_path(courseCategory.slug!, {})}
-                >
-                  {t("languages.show.see_all_courses_in_category", {
-                    name: courseCategory.name,
-                  })}
-                </Link>
-              </div>
-            </div>
-
-            <Row className="row row-cols-2 row-cols-md-4 g-3">
-              {recommendedCourseLandingPages.map((lp) => (
-                <Col key={lp.id}>
-                  <CourseBlock landingPage={lp} />
                 </Col>
-              ))}
+              )}
+              {courseMember && nextLesson && (
+                <Col className="col-lg-4">
+                  <Link
+                    className="btn btn-outline-primary w-100"
+                    href={Routes.language_lesson_path(
+                      course.slug!,
+                      nextLesson.slug,
+                    )}
+                  >
+                    <span>{t("languages.show.continue")}</span>
+                  </Link>
+                </Col>
+              )}
+              {auth.user.guest && (
+                <Col className="col-lg-5">
+                  <Link className="btn fw-medium" href={Routes.new_user_path()}>
+                    <span className="me-2">
+                      {t("languages.show.registration")}
+                    </span>
+                    <i className="bi bi-arrow-right" />
+                  </Link>
+                </Col>
+              )}
             </Row>
-          </div>
-        </div>
+          </Col>
+        </Row>
+        <Row className="mb-lg-5 py-3 py-md-5">
+          <Col className="col-lg-9">
+            <h2 className="display-5 fw-medium lh-1 mb-4">
+              {courseLandingPage.used_in_header}
+            </h2>
+            <p className="text-body-secondary pe-lg-2">
+              {courseLandingPage.used_in_description}
+            </p>
+          </Col>
+        </Row>
+        <Row className="row-cols-1 row-cols-md-2 gx-lg-5 gy-4 mb-lg-4 py-3 py-md-5 justify-content-between">
+          <Col>
+            {courseLandingPage.outcomes_image && (
+              <img
+                src={courseLandingPage.outcomes_image}
+                width="100%"
+                height="auto"
+                alt="example"
+                className="rounded-5 shadow-lg"
+              />
+            )}
+          </Col>
+          <Col>
+            <div className="display-5 fw-semibold lh-1 mb-4">
+              {courseLandingPage.outcomes_header}
+            </div>
+            <p className="text-body-secondary pe-lg-5">
+              {courseLandingPage.outcomes_description}
+            </p>
+          </Col>
+        </Row>
+        <Row className="mb-lg-5 py-3 py-md-5">
+          <Col className="col-lg-10">
+            <div className="display-5 fw-semibold lh-1 mb-4">
+              {t("languages.show.learning_program")}
+            </div>
+            <Accordion defaultActiveKey="0" className="hexlet-basics-accordion">
+              {courseModules.map((m, index) => (
+                <Accordion.Item
+                  eventKey={index.toString()}
+                  key={m.id}
+                  className="rounded-0 border-0 border-bottom border-secondary-subtle py-4"
+                >
+                  <Accordion.Header as="h3">
+                    {index + 1}. {m.name!}
+                  </Accordion.Header>
+                  <Accordion.Body className="px-0">
+                    <div className="d-flex flex-wrap">
+                      {(lessonsByModuleId[m.id] ?? []).map((l) => (
+                        <div key={l.id}>
+                          <Link
+                            className="text-decoration-none text-body-secondary"
+                            href={Routes.language_lesson_path(
+                              course.slug!,
+                              l.slug!,
+                            )}
+                          >
+                            <i className="bi bi-dot align-middle" />
+                            <span>{l.name}</span>
+                          </Link>
+                        </div>
+                      ))}
+                    </div>
+                  </Accordion.Body>
+                </Accordion.Item>
+              ))}
+            </Accordion>
+          </Col>
+        </Row>
+        <Row className="row-cols-1 row-cols-lg-2 mb-lg-5 py-4 py-md-5 gy-4">
+          <Col className="pt-lg-4">
+            <div className="display-5 fw-semibold lh-1 mb-4 mb-lg-5">
+              {t("languages.show.about_learning")}
+            </div>
+            <div className="me-lg-5 pe-lg-4">
+              <div className="d-flex mb-3">
+                <i className="bi bi-cloud-arrow-up-fill me-3 text-primary" />
+                <XssContent>
+                  {t("languages.show.without_registration_html")}
+                </XssContent>
+              </div>
+              <div className="d-flex mb-3">
+                <i className="bi bi-laptop-fill me-3 text-primary" />
+                <XssContent>
+                  {t("languages.show.learning_conveniently_html")}
+                </XssContent>
+              </div>
+              <div className="d-flex">
+                <i className="bi bi-lock-fill me-3 text-primary" />
+                <XssContent>
+                  {t("languages.show.real_life_challenges_html")}
+                </XssContent>
+              </div>
+            </div>
+          </Col>
+          <Col>
+            <video
+              className="w-100"
+              src={learningVideo}
+              autoPlay
+              loop
+              muted
+              playsInline
+            />
+          </Col>
+        </Row>
+        <Row className="mb-lg-5 py-4 py-lg-5">
+          <Col className="col-lg-10">
+            <div className="display-5 fw-semibold lh-1 mb-4">
+              {t("languages.show.sort_questions")}
+            </div>
+            <Accordion defaultActiveKey="0" className="hexlet-basics-accordion">
+              {courseLandingPageQnaItems.map((item, index) => (
+                <Accordion.Item
+                  eventKey={index.toString()}
+                  key={item.id}
+                  className="rounded-0 border-0 border-bottom border-secondary-subtle py-4"
+                >
+                  <Accordion.Header as="h3">{item.question}</Accordion.Header>
+                  <Accordion.Body className="px-0">
+                    {item.answer}
+                  </Accordion.Body>
+                </Accordion.Item>
+              ))}
+            </Accordion>
+          </Col>
+        </Row>
       </Container>
     </ApplicationLayout>
   );
