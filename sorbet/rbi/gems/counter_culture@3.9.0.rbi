@@ -7,28 +7,62 @@
 
 # source://counter_culture//lib/counter_culture/version.rb#1
 module CounterCulture
-  # source://counter_culture//lib/counter_culture.rb#11
+  # source://counter_culture//lib/counter_culture.rb#12
   def batch_size; end
 
-  # source://counter_culture//lib/counter_culture.rb#11
+  # source://counter_culture//lib/counter_culture.rb#12
   def batch_size=(val); end
 
   class << self
-    # source://counter_culture//lib/counter_culture.rb#19
+    # source://counter_culture//lib/counter_culture.rb#20
     def aggregate_counter_updates; end
 
-    # source://counter_culture//lib/counter_culture.rb#11
+    # source://counter_culture//lib/counter_culture.rb#12
     def batch_size; end
 
-    # source://counter_culture//lib/counter_culture.rb#11
+    # source://counter_culture//lib/counter_culture.rb#12
     def batch_size=(val); end
 
     # @yield [_self]
     # @yieldparam _self [CounterCulture] the object that the method was called on
     #
-    # source://counter_culture//lib/counter_culture.rb#14
+    # source://counter_culture//lib/counter_culture.rb#15
     def config; end
+
+    # source://counter_culture//lib/counter_culture/configuration.rb#2
+    def configuration; end
+
+    # @yield [configuration]
+    #
+    # source://counter_culture//lib/counter_culture/configuration.rb#6
+    def configure; end
+
+    # source://counter_culture//lib/counter_culture/configuration.rb#10
+    def reset_configuration; end
   end
+end
+
+# source://counter_culture//lib/counter_culture/configuration.rb#14
+class CounterCulture::Configuration
+  # @return [Configuration] a new instance of Configuration
+  #
+  # source://counter_culture//lib/counter_culture/configuration.rb#17
+  def initialize; end
+
+  # Returns the value of attribute use_read_replica.
+  #
+  # source://counter_culture//lib/counter_culture/configuration.rb#15
+  def use_read_replica; end
+
+  # source://counter_culture//lib/counter_culture/configuration.rb#21
+  def use_read_replica=(value); end
+
+  private
+
+  # @return [Boolean]
+  #
+  # source://counter_culture//lib/counter_culture/configuration.rb#30
+  def rails_supports_read_replica?; end
 end
 
 # source://counter_culture//lib/counter_culture/counter.rb#4
@@ -402,7 +436,7 @@ class CounterCulture::Reconciler::Reconciliation
 
   # @raise [ArgumentError]
   #
-  # source://counter_culture//lib/counter_culture/reconciler.rb#71
+  # source://counter_culture//lib/counter_culture/reconciler.rb#72
   def perform; end
 
   # source://counter_culture//lib/counter_culture/reconciler.rb#62
@@ -424,48 +458,48 @@ class CounterCulture::Reconciler::Reconciliation
 
   private
 
-  # source://counter_culture//lib/counter_culture/reconciler.rb#208
+  # source://counter_culture//lib/counter_culture/reconciler.rb#209
   def count_select; end
 
-  # source://counter_culture//lib/counter_culture/reconciler.rb#234
+  # source://counter_culture//lib/counter_culture/reconciler.rb#235
   def join_clauses(where); end
 
-  # source://counter_culture//lib/counter_culture/reconciler.rb#181
+  # source://counter_culture//lib/counter_culture/reconciler.rb#182
   def log(message); end
 
   # @return [Boolean]
   #
-  # source://counter_culture//lib/counter_culture/reconciler.rb#193
+  # source://counter_culture//lib/counter_culture/reconciler.rb#194
   def log?; end
 
-  # source://counter_culture//lib/counter_culture/reconciler.rb#187
+  # source://counter_culture//lib/counter_culture/reconciler.rb#188
   def log_without_newline(message); end
 
-  # source://counter_culture//lib/counter_culture/reconciler.rb#322
+  # source://counter_culture//lib/counter_culture/reconciler.rb#323
   def parameterize(string); end
 
   # This is only needed in relatively unusal cases, for example if you are
   # using Postgres with schema-namespaced tables. But then it's required,
   # and otherwise it's just a no-op, so why not do it?
   #
-  # source://counter_culture//lib/counter_culture/reconciler.rb#316
+  # source://counter_culture//lib/counter_culture/reconciler.rb#317
   def quote_table_name(table_name); end
 
-  # source://counter_culture//lib/counter_culture/reconciler.rb#223
+  # source://counter_culture//lib/counter_culture/reconciler.rb#224
   def self_table_name; end
 
   # keep track of what we fixed, e.g. for a notification email
   #
-  # source://counter_culture//lib/counter_culture/reconciler.rb#198
+  # source://counter_culture//lib/counter_culture/reconciler.rb#199
   def track_change(record, column_name, count); end
 
-  # source://counter_culture//lib/counter_culture/reconciler.rb#149
+  # source://counter_culture//lib/counter_culture/reconciler.rb#150
   def update_count_for_batch(column_name, records); end
 
-  # source://counter_culture//lib/counter_culture/reconciler.rb#330
+  # source://counter_culture//lib/counter_culture/reconciler.rb#331
   def with_reading_db_connection(&block); end
 
-  # source://counter_culture//lib/counter_culture/reconciler.rb#338
+  # source://counter_culture//lib/counter_culture/reconciler.rb#341
   def with_writing_db_connection(&block); end
 end
 
@@ -500,7 +534,7 @@ class CounterCulture::WithConnection
   def initialize(recipient); end
 
   # source://counter_culture//lib/counter_culture/with_connection.rb#9
-  def call; end
+  def call(reading: T.unsafe(nil)); end
 
   # Returns the value of attribute recipient.
   #
@@ -511,11 +545,19 @@ class CounterCulture::WithConnection
 
   # @return [Boolean]
   #
-  # source://counter_culture//lib/counter_culture/with_connection.rb#25
+  # source://counter_culture//lib/counter_culture/with_connection.rb#43
   def rails_7_1?; end
 
   # @return [Boolean]
   #
-  # source://counter_culture//lib/counter_culture/with_connection.rb#29
+  # source://counter_culture//lib/counter_culture/with_connection.rb#35
+  def rails_7_1_or_greater?; end
+
+  # @return [Boolean]
+  #
+  # source://counter_culture//lib/counter_culture/with_connection.rb#39
   def rails_7_2_or_greater?; end
+
+  # source://counter_culture//lib/counter_culture/with_connection.rb#25
+  def yield_with_connection; end
 end
