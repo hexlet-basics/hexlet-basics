@@ -1,6 +1,7 @@
 import { Accordion, Alert, Col, Container, Row } from "react-bootstrap";
 
-import learningVideo from "@/images/course-landing-page/learning.mov";
+import learningEnVideo from "@/images/course-landing-page/learning_en.mov";
+import learningRuVideo from "@/images/course-landing-page/learning_ru.mov";
 import { useTranslation } from "react-i18next";
 
 import XssContent from "@/components/XssContent";
@@ -45,7 +46,7 @@ export default function Show({
   course,
 }: Props) {
   const { t } = useTranslation();
-  const { auth } = usePage<SharedProps>().props;
+  const { auth, locale } = usePage<SharedProps>().props;
 
   const product: WithContext<Product> = {
     "@context": "https://schema.org",
@@ -238,7 +239,7 @@ export default function Show({
           <Col>
             <video
               className="w-100"
-              src={learningVideo}
+              src={locale === "en" ? learningEnVideo : learningRuVideo}
               autoPlay
               loop
               muted
