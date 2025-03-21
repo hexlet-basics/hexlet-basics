@@ -25,6 +25,10 @@ load File.expand_path("../lib/app_host.rb", __dir__)
 
 module HexletBasics
   class Application < Rails::Application
+    def self.assets_precompiling?
+      Rake.application.top_level_tasks.include?("assets:precompile")
+    end
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.0
 
