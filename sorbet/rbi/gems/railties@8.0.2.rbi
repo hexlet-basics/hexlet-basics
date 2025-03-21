@@ -5,6 +5,154 @@
 # Please instead update this file by running `bin/tapioca gem railties`.
 
 
+# source://railties//lib/minitest/rails_plugin.rb#7
+module Minitest
+  # source://railties//lib/minitest/rails_plugin.rb#139
+  def run_via; end
+
+  class << self
+    # source://minitest/5.25.5/lib/minitest.rb#323
+    def __run(reporter, options); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#97
+    def after_run(&block); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def allow_fork; end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def allow_fork=(_arg0); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#70
+    def autorun; end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def backtrace_filter; end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def backtrace_filter=(_arg0); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#19
+    def cattr_accessor(name); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#1216
+    def clock_time; end
+
+    # source://minitest/5.25.5/lib/minitest.rb#303
+    def empty_run!(options); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def extensions; end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def extensions=(_arg0); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#336
+    def filter_backtrace(bt); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def info_signal; end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def info_signal=(_arg0); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#125
+    def init_plugins(options); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#109
+    def load_plugins; end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def parallel_executor; end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def parallel_executor=(_arg0); end
+
+    # source://minitest/5.25.5/lib/minitest/pride_plugin.rb#10
+    def plugin_pride_init(options); end
+
+    # source://minitest/5.25.5/lib/minitest/pride_plugin.rb#4
+    def plugin_pride_options(opts, _options); end
+
+    # Owes great inspiration to test runner trailblazers like RSpec,
+    # minitest-reporters, maxitest, and others.
+    #
+    # source://railties//lib/minitest/rails_plugin.rb#111
+    def plugin_rails_init(options); end
+
+    # source://railties//lib/minitest/rails_plugin.rb#68
+    def plugin_rails_options(opts, options); end
+
+    # source://simplecov/0.22.0/lib/minitest/simplecov_plugin.rb#6
+    def plugin_simplecov_init(_options); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#143
+    def process_args(args = T.unsafe(nil)); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#104
+    def register_plugin(name_or_mod); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def reporter; end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def reporter=(_arg0); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#269
+    def run(args = T.unsafe(nil)); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#1207
+    def run_one_method(klass, method_name); end
+
+    # source://railties//lib/minitest/rails_plugin.rb#139
+    def run_via; end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def seed; end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def seed=(_arg0); end
+  end
+end
+
+# source://railties//lib/minitest/rails_plugin.rb#8
+class Minitest::BacktraceFilterWithFallback
+  # @return [BacktraceFilterWithFallback] a new instance of BacktraceFilterWithFallback
+  #
+  # source://railties//lib/minitest/rails_plugin.rb#9
+  def initialize(preferred, fallback); end
+
+  # source://railties//lib/minitest/rails_plugin.rb#14
+  def filter(backtrace); end
+end
+
+# source://railties//lib/minitest/rails_plugin.rb#28
+class Minitest::ProfileReporter < ::Minitest::Reporter
+  # @return [ProfileReporter] a new instance of ProfileReporter
+  #
+  # source://railties//lib/minitest/rails_plugin.rb#29
+  def initialize(io = T.unsafe(nil), options = T.unsafe(nil)); end
+
+  # source://railties//lib/minitest/rails_plugin.rb#35
+  def record(result); end
+
+  # source://railties//lib/minitest/rails_plugin.rb#39
+  def report; end
+
+  private
+
+  # source://railties//lib/minitest/rails_plugin.rb#56
+  def source_location(result); end
+end
+
+# source://railties//lib/minitest/rails_plugin.rb#21
+class Minitest::SuppressedSummaryReporter < ::Minitest::SummaryReporter
+  # Disable extra failure output after a run if output is inline.
+  #
+  # source://railties//lib/minitest/rails_plugin.rb#23
+  def aggregated_results(*_arg0); end
+end
+
 # :include: ../README.rdoc
 #
 # source://railties//lib/rails/gem_version.rb#3
@@ -6367,6 +6515,108 @@ end
 
 # source://railties//lib/rails/test_unit/railtie.rb#6
 class Rails::TestUnitRailtie < ::Rails::Railtie; end
+
+# source://railties//lib/rails/test_unit/reporter.rb#7
+class Rails::TestUnitReporter < ::Minitest::StatisticsReporter
+  # source://railties//lib/rails/test_unit/reporter.rb#49
+  def aggregated_results; end
+
+  # source://railties//lib/rails/test_unit/reporter.rb#8
+  def app_root=(_arg0); end
+
+  # source://railties//lib/rails/test_unit/reporter.rb#8
+  def app_root?; end
+
+  # source://railties//lib/rails/test_unit/reporter.rb#9
+  def executable; end
+
+  # source://railties//lib/rails/test_unit/reporter.rb#9
+  def executable=(_arg0); end
+
+  # source://railties//lib/rails/test_unit/reporter.rb#9
+  def executable?; end
+
+  # source://railties//lib/rails/test_unit/reporter.rb#53
+  def filtered_results; end
+
+  # source://railties//lib/rails/test_unit/reporter.rb#11
+  def prerecord(test_class, test_name); end
+
+  # source://railties//lib/rails/test_unit/reporter.rb#18
+  def record(result); end
+
+  # source://railties//lib/rails/test_unit/reporter.rb#61
+  def relative_path_for(file); end
+
+  # source://railties//lib/rails/test_unit/reporter.rb#41
+  def report; end
+
+  private
+
+  # source://railties//lib/rails/test_unit/reporter.rb#92
+  def app_root; end
+
+  # source://railties//lib/rails/test_unit/reporter.rb#113
+  def color_output(string, by:); end
+
+  # @return [Boolean]
+  #
+  # source://railties//lib/rails/test_unit/reporter.rb#101
+  def colored_output?; end
+
+  # @return [Boolean]
+  #
+  # source://railties//lib/rails/test_unit/reporter.rb#74
+  def fail_fast?; end
+
+  # source://railties//lib/rails/test_unit/reporter.rb#78
+  def format_line(result); end
+
+  # source://railties//lib/rails/test_unit/reporter.rb#82
+  def format_rerun_snippet(result); end
+
+  # @return [Boolean]
+  #
+  # source://railties//lib/rails/test_unit/reporter.rb#70
+  def output_inline?; end
+
+  class << self
+    # source://railties//lib/rails/test_unit/reporter.rb#8
+    def app_root; end
+
+    # source://railties//lib/rails/test_unit/reporter.rb#8
+    def app_root=(value); end
+
+    # source://railties//lib/rails/test_unit/reporter.rb#8
+    def app_root?; end
+
+    # source://railties//lib/rails/test_unit/reporter.rb#9
+    def executable; end
+
+    # source://railties//lib/rails/test_unit/reporter.rb#9
+    def executable=(value); end
+
+    # source://railties//lib/rails/test_unit/reporter.rb#9
+    def executable?; end
+
+    private
+
+    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#15
+    def __class_attr_app_root; end
+
+    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#17
+    def __class_attr_app_root=(new_value); end
+
+    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#15
+    def __class_attr_executable; end
+
+    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#17
+    def __class_attr_executable=(new_value); end
+  end
+end
+
+# source://railties//lib/rails/test_unit/reporter.rb#106
+Rails::TestUnitReporter::COLOR_BY_RESULT_CODE = T.let(T.unsafe(nil), Hash)
 
 # source://railties//lib/rails/gem_version.rb#9
 module Rails::VERSION; end

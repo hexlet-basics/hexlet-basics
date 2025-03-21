@@ -11,6 +11,8 @@ ParseError = Racc::ParseError
 # source://racc//lib/racc/info.rb#17
 Racc::Copyright = T.let(T.unsafe(nil), String)
 
+class Racc::CparseParams; end
+
 # source://racc//lib/racc/parser.rb#184
 class Racc::Parser
   # source://racc//lib/racc/parser.rb#279
@@ -133,8 +135,12 @@ end
 # source://racc//lib/racc/parser.rb#205
 Racc::Parser::Racc_Main_Parsing_Routine = T.let(T.unsafe(nil), Symbol)
 
+Racc::Parser::Racc_Runtime_Core_Id_C = T.let(T.unsafe(nil), String)
+
 # source://racc//lib/racc/parser.rb#207
 Racc::Parser::Racc_Runtime_Core_Version = T.let(T.unsafe(nil), String)
+
+Racc::Parser::Racc_Runtime_Core_Version_C = T.let(T.unsafe(nil), String)
 
 # source://racc//lib/racc/parser.rb#187
 Racc::Parser::Racc_Runtime_Core_Version_R = T.let(T.unsafe(nil), String)

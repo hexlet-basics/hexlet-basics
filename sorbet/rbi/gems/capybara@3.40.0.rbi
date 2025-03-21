@@ -6442,10 +6442,10 @@ class Capybara::Selector::Definition
   # @option options
   # @option options
   # @option options
-  # @param options [Hash] ({})      Options of the filter
   # @param name [Symbol, Regexp] The filter name
   # @param matcher [Regexp] (nil)   A Regexp used to check whether a specific option is handled by this filter
   # @param types [Array<Symbol>] The types of the filter - currently valid types are [:boolean]
+  # @param options [Hash] ({})      Options of the filter
   #
   # source://forwardable/1.3.3/forwardable.rb#231
   def expression_filter(*args, **_arg1, &block); end

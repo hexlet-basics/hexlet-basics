@@ -302,10 +302,10 @@ class Gon::Jbuilder::Parser
   # source://gon//lib/gon/jbuilder/parser.rb#6
   def controller=(_arg0); end
 
-  # source://actionview/8.0.1/lib/action_view/helpers/translation_helper.rb#18
+  # source://actionview/8.0.2/lib/action_view/helpers/translation_helper.rb#18
   def debug_missing_translation; end
 
-  # source://actionview/8.0.1/lib/action_view/helpers/translation_helper.rb#18
+  # source://actionview/8.0.2/lib/action_view/helpers/translation_helper.rb#18
   def debug_missing_translation=(val); end
 
   # source://gon//lib/gon/jbuilder/parser.rb#36
@@ -363,10 +363,10 @@ class Gon::Jbuilder::Parser
   def wrap_locals_in_methods(locals); end
 
   class << self
-    # source://actionview/8.0.1/lib/action_view/helpers/translation_helper.rb#18
+    # source://actionview/8.0.2/lib/action_view/helpers/translation_helper.rb#18
     def debug_missing_translation; end
 
-    # source://actionview/8.0.1/lib/action_view/helpers/translation_helper.rb#18
+    # source://actionview/8.0.2/lib/action_view/helpers/translation_helper.rb#18
     def debug_missing_translation=(val); end
   end
 end

@@ -310,13 +310,13 @@ class Faker::Alphanumeric < ::Faker::Base
     # Produces a random string of alphanumeric characters
     #
     # @example
-    #   Faker::Alphanumeric.alphanumeric(number: 10, min_alpha: 3) #=> "3yfq2phxtb"
-    # @example
     #   Faker::Alphanumeric.alphanumeric(number: 10) #=> "3yfq2phxtb"
     # @example
+    #   Faker::Alphanumeric.alphanumeric(number: 10, min_alpha: 3) #=> "3yfq2phxtb"
+    # @example
     #   Faker::Alphanumeric.alphanumeric(number: 10, min_alpha: 3, min_numeric: 3) #=> "3yfq2phx8b"
-    # @param min_alpha [Integer] The minimum number of alphabetic to add to the string
     # @param number [Integer] The number of characters to generate
+    # @param min_alpha [Integer] The minimum number of alphabetic to add to the string
     # @param min_numeric [Integer] The minimum number of numbers to add to the string
     # @raise [ArgumentError]
     # @return [String]
@@ -10343,8 +10343,8 @@ class Faker::Placeholdit < ::Faker::Base
     # @param size [String] Specifies the image's size, dimensions separated by 'x'.
     # @param format [String] Specifies the image's extension.
     # @param background_color [String, Symbol] Specifies the background color, either in hexadecimal format (without #) or as :random.
-    # @param text [String] Specifies a custom text to be used.
     # @param text_color [String, Symbol] Specifies the text color, either in hexadecimal format (without #) or as :random.
+    # @param text [String] Specifies a custom text to be used.
     # @raise [ArgumentError]
     # @return [String]
     #

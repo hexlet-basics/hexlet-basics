@@ -57,8 +57,6 @@ class Integer < ::Numeric
   def to_msgpack_with_packer(packer); end
 end
 
-Integer::GMP_VERSION = T.let(T.unsafe(nil), String)
-
 # MessagePack extention packer and unpacker for built-in Time class
 #
 # source://msgpack//lib/msgpack/version.rb#1

@@ -5,5 +5,4453 @@
 # Please instead update this file by running `bin/tapioca gem ferrum`.
 
 
-# THIS IS AN EMPTY RBI FILE.
-# see https://github.com/Shopify/tapioca#manually-requiring-parts-of-a-gem
+# RemoteObjectId is from a JavaScript world, and corresponds to any JavaScript
+# object, including JS wrappers for DOM nodes. There is a way to convert between
+# node ids and remote object ids (DOM.requestNode and DOM.resolveNode).
+#
+# NodeId is used for inspection, when backend tracks the node and sends updates to
+# the frontend. If you somehow got NodeId over protocol, backend should have
+# pushed to the frontend all of it's ancestors up to the Document node via
+# DOM.setChildNodes. After that, frontend is always kept up-to-date about anything
+# happening to the node.
+#
+# BackendNodeId is just a unique identifier for a node. Obtaining it does not send
+# any updates, for example, the node may be destroyed without any notification.
+# This is a way to keep a reference to the Node, when you don't necessarily want
+# to keep track of it. One example would be linking to the node from performance
+# data (e.g. relayout root node). BackendNodeId may be either resolved to
+# inspected node (DOM.pushNodesByBackendIdsToFrontend) or described in more
+# details (DOM.describeNode).
+#
+# source://ferrum//lib/ferrum/utils/event.rb#3
+module Ferrum; end
+
+# source://ferrum//lib/ferrum/errors.rb#8
+class Ferrum::BinaryNotFoundError < ::Ferrum::Error; end
+
+# source://ferrum//lib/ferrum/browser/xvfb.rb#4
+class Ferrum::Browser
+  extend ::Forwardable
+
+  # Initializes the browser.
+  #
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @param options [Hash{Symbol => Object}, nil] Additional browser options.
+  # @return [Browser] a new instance of Browser
+  #
+  # source://ferrum//lib/ferrum/browser.rb#128
+  def initialize(options = T.unsafe(nil)); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def add_script_tag(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def add_style_tag(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def at_css(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def at_xpath(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def back(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def base_url(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def base_url=(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def body(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def bypass_csp(*args, **_arg1, &block); end
+
+  # Returns the value of attribute client.
+  #
+  # source://ferrum//lib/ferrum/browser.rb#33
+  def client; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def command(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def content=(*args, **_arg1, &block); end
+
+  # Returns the value of attribute contexts.
+  #
+  # source://ferrum//lib/ferrum/browser.rb#33
+  def contexts; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def cookies(*args, **_arg1, &block); end
+
+  # source://ferrum//lib/ferrum/browser.rb#221
+  def crash; end
+
+  # Creates a new page.
+  #
+  # @param new_context [Boolean] Whether to create a page in a new context or not.
+  # @param proxy [Hash] Whether to use proxy for a page. The page will be created in a new context if so.
+  # @return [Ferrum::Page] Created page.
+  #
+  # source://ferrum//lib/ferrum/browser.rb#147
+  def create_page(new_context: T.unsafe(nil), proxy: T.unsafe(nil)); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def create_target(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def css(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def current_title(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def current_url(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def default_context(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def default_user_agent(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def default_user_agent=(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def device_pixel_ratio(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def disable_javascript(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def doctype(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def downloads(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def evaluate(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def evaluate_async(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def evaluate_func(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def evaluate_on(*args, **_arg1, &block); end
+
+  # Evaluate JavaScript to modify things before a page load.
+  #
+  # @example
+  #   browser.evaluate_on_new_document <<~JS
+  #   Object.defineProperty(navigator, "languages", {
+  #   get: function() { return ["tlh"]; }
+  #   });
+  #   JS
+  # @param expression [String] The JavaScript to add to each new document.
+  #
+  # source://ferrum//lib/ferrum/browser.rb#184
+  def evaluate_on_new_document(expression); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def execute(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def extensions(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def forward(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def frame_by(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def frames(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def go(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def go_to(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def goto(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def headers(*args, **_arg1, &block); end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/browser.rb#236
+  def headless_new?; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def keyboard(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def main_frame(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def mhtml(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def mouse(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def network(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def on(*args, **_arg1, &block); end
+
+  # Returns the value of attribute options.
+  #
+  # source://ferrum//lib/ferrum/browser.rb#33
+  def options; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def page(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def pages(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def pdf(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def playback_rate(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def playback_rate=(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def position(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def position=(*args, **_arg1, &block); end
+
+  # Returns the value of attribute process.
+  #
+  # source://ferrum//lib/ferrum/browser.rb#33
+  def process; end
+
+  # source://ferrum//lib/ferrum/browser.rb#211
+  def quit; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def refresh(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def reload(*args, **_arg1, &block); end
+
+  # Closes browser tabs opened by the `Browser` instance.
+  #
+  # @example
+  #   # connect to a long-running Chrome process
+  #   browser = Ferrum::Browser.new(url: 'http://localhost:9222')
+  #
+  #   browser.go_to("https://github.com/")
+  #
+  #   # clean up, lest the tab stays there hanging forever
+  #   browser.reset
+  #
+  #   browser.quit
+  #
+  # source://ferrum//lib/ferrum/browser.rb#202
+  def reset; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def resize(*args, **_arg1, &block); end
+
+  # source://ferrum//lib/ferrum/browser.rb#206
+  def restart; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def screenshot(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def set_viewport(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def stop(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def targets(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def timeout(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def timeout=(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def title(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def url(*args, **_arg1, &block); end
+
+  # Gets the version information from the browser.
+  #
+  # @return [VersionInfo]
+  # @since 0.13
+  #
+  # source://ferrum//lib/ferrum/browser.rb#232
+  def version; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def viewport_size(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def wait_for_reload(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def windows(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def xpath(*args, **_arg1, &block); end
+
+  private
+
+  # source://ferrum//lib/ferrum/browser.rb#242
+  def start; end
+end
+
+# source://ferrum//lib/ferrum/browser/binary.rb#5
+module Ferrum::Browser::Binary
+  private
+
+  # source://ferrum//lib/ferrum/browser/binary.rb#12
+  def all(commands); end
+
+  # source://ferrum//lib/ferrum/browser/binary.rb#16
+  def enum(commands); end
+
+  # source://ferrum//lib/ferrum/browser/binary.rb#8
+  def find(commands); end
+
+  # source://ferrum//lib/ferrum/browser/binary.rb#31
+  def lazy_find(cmds); end
+
+  # source://ferrum//lib/ferrum/browser/binary.rb#22
+  def prepare_paths; end
+
+  class << self
+    # source://ferrum//lib/ferrum/browser/binary.rb#12
+    def all(commands); end
+
+    # source://ferrum//lib/ferrum/browser/binary.rb#16
+    def enum(commands); end
+
+    # source://ferrum//lib/ferrum/browser/binary.rb#8
+    def find(commands); end
+
+    # source://ferrum//lib/ferrum/browser/binary.rb#31
+    def lazy_find(cmds); end
+
+    # @raise [EmptyPathError]
+    #
+    # source://ferrum//lib/ferrum/browser/binary.rb#22
+    def prepare_paths; end
+  end
+end
+
+# source://ferrum//lib/ferrum/browser/command.rb#5
+class Ferrum::Browser::Command
+  # @raise [BinaryNotFoundError]
+  # @return [Command] a new instance of Command
+  #
+  # source://ferrum//lib/ferrum/browser/command.rb#27
+  def initialize(defaults, options, user_data_dir); end
+
+  # Returns the value of attribute defaults.
+  #
+  # source://ferrum//lib/ferrum/browser/command.rb#25
+  def defaults; end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/browser/command.rb#42
+  def headless_new?; end
+
+  # Returns the value of attribute options.
+  #
+  # source://ferrum//lib/ferrum/browser/command.rb#25
+  def options; end
+
+  # Returns the value of attribute path.
+  #
+  # source://ferrum//lib/ferrum/browser/command.rb#25
+  def path; end
+
+  # source://ferrum//lib/ferrum/browser/command.rb#46
+  def to_a; end
+
+  # source://ferrum//lib/ferrum/browser/command.rb#50
+  def to_s; end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/browser/command.rb#38
+  def xvfb?; end
+
+  private
+
+  # source://ferrum//lib/ferrum/browser/command.rb#56
+  def merge_options; end
+
+  class << self
+    # Currently only these browsers support CDP:
+    # https://github.com/cyrus-and/chrome-remote-interface#implementations
+    #
+    # source://ferrum//lib/ferrum/browser/command.rb#12
+    def build(options, user_data_dir); end
+  end
+end
+
+# source://ferrum//lib/ferrum/browser/command.rb#6
+Ferrum::Browser::Command::NOT_FOUND = T.let(T.unsafe(nil), String)
+
+# source://ferrum//lib/ferrum/browser/options.rb#5
+class Ferrum::Browser::Options
+  # @return [Options] a new instance of Options
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#21
+  def initialize(options = T.unsafe(nil)); end
+
+  # Returns the value of attribute base_url.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#14
+  def base_url; end
+
+  # source://ferrum//lib/ferrum/browser/options.rb#53
+  def base_url=(value); end
+
+  # Returns the value of attribute browser_name.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#14
+  def browser_name; end
+
+  # Returns the value of attribute browser_options.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#14
+  def browser_options; end
+
+  # Returns the value of attribute browser_path.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#14
+  def browser_path; end
+
+  # Returns the value of attribute default_user_agent.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#19
+  def default_user_agent; end
+
+  # Sets the attribute default_user_agent
+  #
+  # @param value the value to set the attribute default_user_agent to.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#19
+  def default_user_agent=(_arg0); end
+
+  # Returns the value of attribute env.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#14
+  def env; end
+
+  # source://ferrum//lib/ferrum/browser/options.rb#57
+  def extensions; end
+
+  # Returns the value of attribute flatten.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#14
+  def flatten; end
+
+  # Returns the value of attribute headless.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#14
+  def headless; end
+
+  # Returns the value of attribute host.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#14
+  def host; end
+
+  # Returns the value of attribute ignore_default_browser_options.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#14
+  def ignore_default_browser_options; end
+
+  # Returns the value of attribute js_errors.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#14
+  def js_errors; end
+
+  # Returns the value of attribute logger.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#14
+  def logger; end
+
+  # Returns the value of attribute pending_connection_errors.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#14
+  def pending_connection_errors; end
+
+  # Returns the value of attribute port.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#14
+  def port; end
+
+  # Returns the value of attribute process_timeout.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#14
+  def process_timeout; end
+
+  # Returns the value of attribute proxy.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#14
+  def proxy; end
+
+  # source://cuprite/0.15.1/lib/capybara/cuprite/options.rb#9
+  def reset_window_size; end
+
+  # Returns the value of attribute save_path.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#14
+  def save_path; end
+
+  # Returns the value of attribute slowmo.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#14
+  def slowmo; end
+
+  # Returns the value of attribute timeout.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#19
+  def timeout; end
+
+  # Sets the attribute timeout
+  #
+  # @param value the value to set the attribute timeout to.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#19
+  def timeout=(_arg0); end
+
+  # source://ferrum//lib/ferrum/browser/options.rb#75
+  def to_h; end
+
+  # Returns the value of attribute url.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#14
+  def url; end
+
+  # source://cuprite/0.15.1/lib/capybara/cuprite/options.rb#7
+  def url_blacklist; end
+
+  # source://cuprite/0.15.1/lib/capybara/cuprite/options.rb#7
+  def url_blacklist=(_arg0); end
+
+  # source://cuprite/0.15.1/lib/capybara/cuprite/options.rb#7
+  def url_whitelist; end
+
+  # source://cuprite/0.15.1/lib/capybara/cuprite/options.rb#7
+  def url_whitelist=(_arg0); end
+
+  # @raise [ArgumentError]
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#63
+  def validate_proxy(options); end
+
+  # Returns the value of attribute window_size.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#14
+  def window_size; end
+
+  # source://cuprite/0.15.1/lib/capybara/cuprite/options.rb#6
+  def window_size=(_arg0); end
+
+  # Returns the value of attribute ws_max_receive_size.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#14
+  def ws_max_receive_size; end
+
+  # Returns the value of attribute ws_url.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#14
+  def ws_url; end
+
+  # Returns the value of attribute xvfb.
+  #
+  # source://ferrum//lib/ferrum/browser/options.rb#14
+  def xvfb; end
+
+  private
+
+  # source://ferrum//lib/ferrum/browser/options.rb#87
+  def parse_base_url(value); end
+
+  # source://ferrum//lib/ferrum/browser/options.rb#81
+  def parse_logger(logger); end
+end
+
+# source://ferrum//lib/ferrum/browser/options.rb#9
+Ferrum::Browser::Options::BASE_URL_SCHEMA = T.let(T.unsafe(nil), Array)
+
+# source://ferrum//lib/ferrum/browser/options.rb#7
+Ferrum::Browser::Options::BROWSER_HOST = T.let(T.unsafe(nil), String)
+
+# source://ferrum//lib/ferrum/browser/options.rb#6
+Ferrum::Browser::Options::BROWSER_PORT = T.let(T.unsafe(nil), String)
+
+# source://ferrum//lib/ferrum/browser/options/base.rb#8
+class Ferrum::Browser::Options::Base
+  include ::Singleton::SingletonInstanceMethods
+  include ::Singleton
+  extend ::Singleton::SingletonClassMethods
+
+  # source://ferrum//lib/ferrum/browser/options/base.rb#23
+  def detect_path; end
+
+  # source://ferrum//lib/ferrum/browser/options/base.rb#19
+  def except(*keys); end
+
+  # @raise [NotImplementedError]
+  #
+  # source://ferrum//lib/ferrum/browser/options/base.rb#31
+  def merge_default(flags, options); end
+
+  # @raise [NotImplementedError]
+  #
+  # source://ferrum//lib/ferrum/browser/options/base.rb#27
+  def merge_required(flags, options, user_data_dir); end
+
+  # source://ferrum//lib/ferrum/browser/options/base.rb#15
+  def to_h; end
+
+  class << self
+    # source://ferrum//lib/ferrum/browser/options/base.rb#11
+    def options; end
+
+    private
+
+    def allocate; end
+    def new(*_arg0); end
+  end
+end
+
+# source://ferrum//lib/ferrum/browser/options/chrome.rb#6
+class Ferrum::Browser::Options::Chrome < ::Ferrum::Browser::Options::Base
+  # source://ferrum//lib/ferrum/browser/options/chrome.rb#77
+  def merge_default(flags, options); end
+
+  # source://ferrum//lib/ferrum/browser/options/chrome.rb#63
+  def merge_required(flags, options, user_data_dir); end
+end
+
+# source://ferrum//lib/ferrum/browser/options/chrome.rb#7
+Ferrum::Browser::Options::Chrome::DEFAULT_OPTIONS = T.let(T.unsafe(nil), Hash)
+
+# source://ferrum//lib/ferrum/browser/options/chrome.rb#51
+Ferrum::Browser::Options::Chrome::LINUX_BIN_PATH = T.let(T.unsafe(nil), Array)
+
+# source://ferrum//lib/ferrum/browser/options/chrome.rb#47
+Ferrum::Browser::Options::Chrome::MAC_BIN_PATH = T.let(T.unsafe(nil), Array)
+
+# source://ferrum//lib/ferrum/browser/options/chrome.rb#57
+Ferrum::Browser::Options::Chrome::PLATFORM_PATH = T.let(T.unsafe(nil), Hash)
+
+# source://ferrum//lib/ferrum/browser/options/chrome.rb#53
+Ferrum::Browser::Options::Chrome::WINDOWS_BIN_PATH = T.let(T.unsafe(nil), Array)
+
+# source://ferrum//lib/ferrum/browser/options.rb#12
+Ferrum::Browser::Options::DEBUG_MODE = T.let(T.unsafe(nil), FalseClass)
+
+# source://ferrum//lib/ferrum/browser/options.rb#10
+Ferrum::Browser::Options::DEFAULT_TIMEOUT = T.let(T.unsafe(nil), Integer)
+
+# source://ferrum//lib/ferrum/browser/options/firefox.rb#6
+class Ferrum::Browser::Options::Firefox < ::Ferrum::Browser::Options::Base
+  # source://ferrum//lib/ferrum/browser/options/firefox.rb#29
+  def merge_default(flags, options); end
+
+  # source://ferrum//lib/ferrum/browser/options/firefox.rb#25
+  def merge_required(flags, options, user_data_dir); end
+end
+
+# source://ferrum//lib/ferrum/browser/options/firefox.rb#7
+Ferrum::Browser::Options::Firefox::DEFAULT_OPTIONS = T.let(T.unsafe(nil), Hash)
+
+# source://ferrum//lib/ferrum/browser/options/firefox.rb#14
+Ferrum::Browser::Options::Firefox::LINUX_BIN_PATH = T.let(T.unsafe(nil), Array)
+
+# source://ferrum//lib/ferrum/browser/options/firefox.rb#11
+Ferrum::Browser::Options::Firefox::MAC_BIN_PATH = T.let(T.unsafe(nil), Array)
+
+# source://ferrum//lib/ferrum/browser/options/firefox.rb#19
+Ferrum::Browser::Options::Firefox::PLATFORM_PATH = T.let(T.unsafe(nil), Hash)
+
+# source://ferrum//lib/ferrum/browser/options/firefox.rb#15
+Ferrum::Browser::Options::Firefox::WINDOWS_BIN_PATH = T.let(T.unsafe(nil), Array)
+
+# source://ferrum//lib/ferrum/browser/options.rb#11
+Ferrum::Browser::Options::PROCESS_TIMEOUT = T.let(T.unsafe(nil), Integer)
+
+# source://ferrum//lib/ferrum/browser/options.rb#8
+Ferrum::Browser::Options::WINDOW_SIZE = T.let(T.unsafe(nil), Array)
+
+# source://ferrum//lib/ferrum/browser/process.rb#15
+class Ferrum::Browser::Process
+  extend ::Forwardable
+
+  # @return [Process] a new instance of Process
+  #
+  # source://ferrum//lib/ferrum/browser/process.rb#62
+  def initialize(options); end
+
+  # Returns the value of attribute browser_version.
+  #
+  # source://ferrum//lib/ferrum/browser/process.rb#19
+  def browser_version; end
+
+  # Returns the value of attribute command.
+  #
+  # source://ferrum//lib/ferrum/browser/process.rb#19
+  def command; end
+
+  # Returns the value of attribute default_user_agent.
+  #
+  # source://ferrum//lib/ferrum/browser/process.rb#19
+  def default_user_agent; end
+
+  # Returns the value of attribute host.
+  #
+  # source://ferrum//lib/ferrum/browser/process.rb#19
+  def host; end
+
+  # source://ferrum//lib/ferrum/browser/process.rb#129
+  def inspect; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def path(*args, **_arg1, &block); end
+
+  # Returns the value of attribute pid.
+  #
+  # source://ferrum//lib/ferrum/browser/process.rb#19
+  def pid; end
+
+  # Returns the value of attribute port.
+  #
+  # source://ferrum//lib/ferrum/browser/process.rb#19
+  def port; end
+
+  # Returns the value of attribute protocol_version.
+  #
+  # source://ferrum//lib/ferrum/browser/process.rb#19
+  def protocol_version; end
+
+  # source://ferrum//lib/ferrum/browser/process.rb#124
+  def restart; end
+
+  # source://ferrum//lib/ferrum/browser/process.rb#87
+  def start; end
+
+  # source://ferrum//lib/ferrum/browser/process.rb#113
+  def stop; end
+
+  # Returns the value of attribute v8_version.
+  #
+  # source://ferrum//lib/ferrum/browser/process.rb#19
+  def v8_version; end
+
+  # Returns the value of attribute webkit_version.
+  #
+  # source://ferrum//lib/ferrum/browser/process.rb#19
+  def webkit_version; end
+
+  # Returns the value of attribute ws_url.
+  #
+  # source://ferrum//lib/ferrum/browser/process.rb#19
+  def ws_url; end
+
+  # Returns the value of attribute xvfb.
+  #
+  # source://ferrum//lib/ferrum/browser/process.rb#19
+  def xvfb; end
+
+  private
+
+  # source://ferrum//lib/ferrum/browser/process.rb#181
+  def close_io(*ios); end
+
+  # source://ferrum//lib/ferrum/browser/process.rb#142
+  def kill(pid); end
+
+  # source://ferrum//lib/ferrum/browser/process.rb#189
+  def parse_json_version(url); end
+
+  # @raise [ProcessTimeoutError]
+  #
+  # source://ferrum//lib/ferrum/browser/process.rb#151
+  def parse_ws_url(read_io, timeout); end
+
+  # source://ferrum//lib/ferrum/browser/process.rb#146
+  def remove_user_data_dir; end
+
+  # source://ferrum//lib/ferrum/browser/process.rb#175
+  def ws_url=(url); end
+
+  class << self
+    # source://ferrum//lib/ferrum/browser/process.rb#52
+    def directory_remover(path); end
+
+    # source://ferrum//lib/ferrum/browser/process.rb#30
+    def process_killer(pid); end
+
+    # source://ferrum//lib/ferrum/browser/process.rb#26
+    def start(*args); end
+  end
+end
+
+# source://ferrum//lib/ferrum/browser/process.rb#16
+Ferrum::Browser::Process::KILL_TIMEOUT = T.let(T.unsafe(nil), Integer)
+
+# source://ferrum//lib/ferrum/browser/process.rb#17
+Ferrum::Browser::Process::WAIT_KILLED = T.let(T.unsafe(nil), Float)
+
+# The browser's version information returned by [Browser.getVersion].
+#
+# [Browser.getVersion]: https://chromedevtools.github.io/devtools-protocol/1-3/Browser/#method-getVersion
+#
+# @since 0.13
+#
+# source://ferrum//lib/ferrum/browser/version_info.rb#12
+class Ferrum::Browser::VersionInfo
+  # Initializes the browser's version information.
+  #
+  # @api private
+  # @param properties [Hash{String => Object}] The object properties returned by [Browser.getVersion](https://chromedevtools.github.io/devtools-protocol/1-3/Browser/#method-getVersion).
+  # @return [VersionInfo] a new instance of VersionInfo
+  # @since 0.13
+  #
+  # source://ferrum//lib/ferrum/browser/version_info.rb#21
+  def initialize(properties); end
+
+  # The JavaScript engine version.
+  #
+  # @return [String]
+  # @since 0.13
+  #
+  # source://ferrum//lib/ferrum/browser/version_info.rb#66
+  def js_version; end
+
+  # The Chrome version.
+  #
+  # @return [String]
+  # @since 0.13
+  #
+  # source://ferrum//lib/ferrum/browser/version_info.rb#39
+  def product; end
+
+  # The Chrome DevTools protocol version.
+  #
+  # @return [String]
+  # @since 0.13
+  #
+  # source://ferrum//lib/ferrum/browser/version_info.rb#30
+  def protocol_version; end
+
+  # The Chrome revision properties.
+  #
+  # @return [String]
+  # @since 0.13
+  #
+  # source://ferrum//lib/ferrum/browser/version_info.rb#48
+  def revision; end
+
+  # The Chrome `User-Agent` string.
+  #
+  # @return [String]
+  # @since 0.13
+  #
+  # source://ferrum//lib/ferrum/browser/version_info.rb#57
+  def user_agent; end
+end
+
+# source://ferrum//lib/ferrum/browser/xvfb.rb#5
+class Ferrum::Browser::Xvfb
+  # @raise [BinaryNotFoundError]
+  # @return [Xvfb] a new instance of Xvfb
+  #
+  # source://ferrum//lib/ferrum/browser/xvfb.rb#15
+  def initialize(options); end
+
+  # Returns the value of attribute display_id.
+  #
+  # source://ferrum//lib/ferrum/browser/xvfb.rb#13
+  def display_id; end
+
+  # Returns the value of attribute pid.
+  #
+  # source://ferrum//lib/ferrum/browser/xvfb.rb#13
+  def pid; end
+
+  # Returns the value of attribute screen_size.
+  #
+  # source://ferrum//lib/ferrum/browser/xvfb.rb#13
+  def screen_size; end
+
+  # source://ferrum//lib/ferrum/browser/xvfb.rb#23
+  def start; end
+
+  # source://ferrum//lib/ferrum/browser/xvfb.rb#28
+  def to_env; end
+
+  class << self
+    # source://ferrum//lib/ferrum/browser/xvfb.rb#9
+    def start(*args); end
+  end
+end
+
+# source://ferrum//lib/ferrum/browser/xvfb.rb#6
+Ferrum::Browser::Xvfb::NOT_FOUND = T.let(T.unsafe(nil), String)
+
+# source://ferrum//lib/ferrum/errors.rb#81
+class Ferrum::BrowserError < ::Ferrum::Error
+  # @return [BrowserError] a new instance of BrowserError
+  #
+  # source://ferrum//lib/ferrum/errors.rb#84
+  def initialize(response); end
+
+  # source://ferrum//lib/ferrum/errors.rb#89
+  def code; end
+
+  # source://ferrum//lib/ferrum/errors.rb#93
+  def data; end
+
+  # Returns the value of attribute response.
+  #
+  # source://ferrum//lib/ferrum/errors.rb#82
+  def response; end
+end
+
+# source://ferrum//lib/ferrum/client/subscriber.rb#4
+class Ferrum::Client
+  extend ::Forwardable
+
+  # @return [Client] a new instance of Client
+  #
+  # source://ferrum//lib/ferrum/client.rb#62
+  def initialize(ws_url, options); end
+
+  # source://ferrum//lib/ferrum/client.rb#125
+  def build_message(method, params); end
+
+  # source://ferrum//lib/ferrum/client.rb#110
+  def close; end
+
+  # source://ferrum//lib/ferrum/client.rb#73
+  def command(method, async: T.unsafe(nil), **params); end
+
+  # source://ferrum//lib/ferrum/client.rb#118
+  def inspect; end
+
+  # source://ferrum//lib/ferrum/client.rb#98
+  def on(event, &block); end
+
+  # Returns the value of attribute options.
+  #
+  # source://ferrum//lib/ferrum/client.rb#60
+  def options; end
+
+  # source://ferrum//lib/ferrum/client.rb#78
+  def send_message(message, async:); end
+
+  # source://ferrum//lib/ferrum/client.rb#106
+  def session(session_id); end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/client.rb#102
+  def subscribed?(event); end
+
+  # Returns the value of attribute subscriber.
+  #
+  # source://ferrum//lib/ferrum/client.rb#60
+  def subscriber; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def timeout(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def timeout=(*args, **_arg1, &block); end
+
+  # Returns the value of attribute ws_url.
+  #
+  # source://ferrum//lib/ferrum/client.rb#60
+  def ws_url; end
+
+  private
+
+  # source://ferrum//lib/ferrum/client.rb#146
+  def next_command_id; end
+
+  # source://ferrum//lib/ferrum/client.rb#150
+  def raise_browser_error(error); end
+
+  # source://ferrum//lib/ferrum/client.rb#131
+  def start; end
+end
+
+# source://ferrum//lib/ferrum/client/subscriber.rb#5
+class Ferrum::Client::Subscriber
+  # @return [Subscriber] a new instance of Subscriber
+  #
+  # source://ferrum//lib/ferrum/client/subscriber.rb#8
+  def initialize; end
+
+  # source://ferrum//lib/ferrum/client/subscriber.rb#16
+  def <<(message); end
+
+  # source://ferrum//lib/ferrum/client/subscriber.rb#38
+  def clear(session_id:); end
+
+  # source://ferrum//lib/ferrum/client/subscriber.rb#33
+  def close; end
+
+  # source://ferrum//lib/ferrum/client/subscriber.rb#24
+  def on(event, &block); end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/client/subscriber.rb#29
+  def subscribed?(event); end
+
+  private
+
+  # source://ferrum//lib/ferrum/client/subscriber.rb#64
+  def call(message); end
+
+  # source://ferrum//lib/ferrum/client/subscriber.rb#44
+  def start; end
+end
+
+# source://ferrum//lib/ferrum/client/subscriber.rb#6
+Ferrum::Client::Subscriber::INTERRUPTIONS = T.let(T.unsafe(nil), Array)
+
+# source://ferrum//lib/ferrum/client/web_socket.rb#9
+class Ferrum::Client::WebSocket
+  # @return [WebSocket] a new instance of WebSocket
+  #
+  # source://ferrum//lib/ferrum/client/web_socket.rb#16
+  def initialize(url, max_receive_size, logger); end
+
+  # source://ferrum//lib/ferrum/client/web_socket.rb#85
+  def close; end
+
+  # Returns the value of attribute messages.
+  #
+  # source://ferrum//lib/ferrum/client/web_socket.rb#14
+  def messages; end
+
+  # source://ferrum//lib/ferrum/client/web_socket.rb#65
+  def on_close(_event); end
+
+  # source://ferrum//lib/ferrum/client/web_socket.rb#52
+  def on_message(event); end
+
+  # source://ferrum//lib/ferrum/client/web_socket.rb#47
+  def on_open(_event); end
+
+  # source://ferrum//lib/ferrum/client/web_socket.rb#71
+  def send_message(data); end
+
+  # Returns the value of attribute url.
+  #
+  # source://ferrum//lib/ferrum/client/web_socket.rb#14
+  def url; end
+
+  # source://ferrum//lib/ferrum/client/web_socket.rb#79
+  def write(data); end
+
+  private
+
+  # source://ferrum//lib/ferrum/client/web_socket.rb#91
+  def start; end
+end
+
+# source://ferrum//lib/ferrum/client/web_socket.rb#11
+Ferrum::Client::WebSocket::DEFAULT_PORTS = T.let(T.unsafe(nil), Hash)
+
+# source://ferrum//lib/ferrum/client/web_socket.rb#12
+Ferrum::Client::WebSocket::SKIP_LOGGING_SCREENSHOTS = T.let(T.unsafe(nil), TrueClass)
+
+# source://ferrum//lib/ferrum/client/web_socket.rb#10
+Ferrum::Client::WebSocket::WEBSOCKET_BUG_SLEEP = T.let(T.unsafe(nil), Float)
+
+# source://ferrum//lib/ferrum/context.rb#6
+class Ferrum::Context
+  # @return [Context] a new instance of Context
+  #
+  # source://ferrum//lib/ferrum/context.rb#11
+  def initialize(client, contexts, id); end
+
+  # source://ferrum//lib/ferrum/context.rb#56
+  def add_target(params:, session_id: T.unsafe(nil)); end
+
+  # source://ferrum//lib/ferrum/context.rb#72
+  def close_targets_connection; end
+
+  # source://ferrum//lib/ferrum/context.rb#43
+  def create_page(**options); end
+
+  # @raise [NoSuchTargetError]
+  #
+  # source://ferrum//lib/ferrum/context.rb#48
+  def create_target; end
+
+  # source://ferrum//lib/ferrum/context.rb#19
+  def default_target; end
+
+  # source://ferrum//lib/ferrum/context.rb#68
+  def delete_target(target_id); end
+
+  # source://ferrum//lib/ferrum/context.rb#80
+  def dispose; end
+
+  # Returns the value of attribute id.
+  #
+  # source://ferrum//lib/ferrum/context.rb#9
+  def id; end
+
+  # source://ferrum//lib/ferrum/context.rb#88
+  def inspect; end
+
+  # source://ferrum//lib/ferrum/context.rb#23
+  def page; end
+
+  # source://ferrum//lib/ferrum/context.rb#27
+  def pages; end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/context.rb#84
+  def target?(target_id); end
+
+  # Returns the value of attribute targets.
+  #
+  # source://ferrum//lib/ferrum/context.rb#9
+  def targets; end
+
+  # source://ferrum//lib/ferrum/context.rb#64
+  def update_target(target_id, params); end
+
+  # When we call `page` method on target it triggers ruby to connect to given
+  # page by WebSocket, if there are many opened windows but we need only one
+  # it makes more sense to get and connect to the needed one only which
+  # usually is the last one.
+  #
+  # @raise [ArgumentError]
+  #
+  # source://ferrum//lib/ferrum/context.rb#35
+  def windows(pos = T.unsafe(nil), size = T.unsafe(nil)); end
+end
+
+# source://ferrum//lib/ferrum/context.rb#7
+Ferrum::Context::POSITION = T.let(T.unsafe(nil), Array)
+
+# source://ferrum//lib/ferrum/contexts.rb#6
+class Ferrum::Contexts
+  include ::Enumerable
+
+  # @return [Contexts] a new instance of Contexts
+  #
+  # source://ferrum//lib/ferrum/contexts.rb#11
+  def initialize(client); end
+
+  # source://ferrum//lib/ferrum/contexts.rb#29
+  def [](id); end
+
+  # source://ferrum//lib/ferrum/contexts.rb#55
+  def close_connections; end
+
+  # Returns the value of attribute contexts.
+  #
+  # source://ferrum//lib/ferrum/contexts.rb#9
+  def contexts; end
+
+  # source://ferrum//lib/ferrum/contexts.rb#39
+  def create(**options); end
+
+  # source://ferrum//lib/ferrum/contexts.rb#19
+  def default_context; end
+
+  # source://ferrum//lib/ferrum/contexts.rb#47
+  def dispose(context_id); end
+
+  # source://ferrum//lib/ferrum/contexts.rb#23
+  def each(&block); end
+
+  # source://ferrum//lib/ferrum/contexts.rb#33
+  def find_by(target_id:); end
+
+  # source://ferrum//lib/ferrum/contexts.rb#59
+  def reset; end
+
+  # source://ferrum//lib/ferrum/contexts.rb#64
+  def size; end
+
+  private
+
+  # source://ferrum//lib/ferrum/contexts.rb#113
+  def auto_attach; end
+
+  # source://ferrum//lib/ferrum/contexts.rb#109
+  def discover; end
+
+  # source://ferrum//lib/ferrum/contexts.rb#70
+  def subscribe; end
+end
+
+# source://ferrum//lib/ferrum/cookies/cookie.rb#4
+class Ferrum::Cookies
+  include ::Enumerable
+
+  # @return [Cookies] a new instance of Cookies
+  #
+  # source://ferrum//lib/ferrum/cookies.rb#9
+  def initialize(page); end
+
+  # Returns cookie.
+  #
+  # @example
+  #   browser.cookies["NID"] # =>
+  #   # <Ferrum::Cookies::Cookie:0x0000558624b67a88 @attributes={
+  #   #  "name"=>"NID", "value"=>"...", "domain"=>".google.com",
+  #   #  "path"=>"/", "expires"=>1583211046.575681, "size"=>178,
+  #   #  "httpOnly"=>true, "secure"=>false, "session"=>false
+  #   # }>
+  # @param name [String] The cookie name to fetch.
+  # @return [Cookie, nil] The cookie with the matching name.
+  #
+  # source://ferrum//lib/ferrum/cookies.rb#71
+  def [](name); end
+
+  # Returns cookies hash.
+  #
+  # @example
+  #   browser.cookies.all # => {
+  #   #  "NID" => #<Ferrum::Cookies::Cookie:0x0000558624b37a40 @attributes={
+  #   #     "name"=>"NID", "value"=>"...", "domain"=>".google.com", "path"=>"/",
+  #   #     "expires"=>1583211046.575681, "size"=>178, "httpOnly"=>true, "secure"=>false, "session"=>false
+  #   #  }>
+  #   # }
+  # @return [Hash{String => Cookie}]
+  #
+  # source://ferrum//lib/ferrum/cookies.rb#48
+  def all; end
+
+  # Removes all cookies for current page.
+  #
+  # @example
+  #   browser.cookies.clear # => true
+  # @return [true]
+  #
+  # source://ferrum//lib/ferrum/cookies.rb#167
+  def clear; end
+
+  # Enumerates over all cookies.
+  #
+  # @return [Enumerator] If no block is given, an Enumerator object will be returned.
+  # @yield [cookie] The given block will be passed each cookie.
+  # @yieldparam cookie [Cookie] A cookie in the browser.
+  #
+  # source://ferrum//lib/ferrum/cookies.rb#25
+  def each; end
+
+  # Removes given cookie.
+  #
+  # @example
+  #   browser.cookies.remove(name: "stealth", domain: "google.com") # => true
+  # @option options
+  # @option options
+  # @param name [String]
+  # @param options [Hash{Symbol => Object}] Additional keyword arguments.
+  #
+  # source://ferrum//lib/ferrum/cookies.rb#148
+  def remove(name:, **options); end
+
+  # Sets a cookie.
+  #
+  # @example
+  #   browser.cookies.set(name: "stealth", value: "omg", domain: "google.com") # => true
+  # @example
+  #   nid_cookie = browser.cookies["NID"] # => <Ferrum::Cookies::Cookie:0x0000558624b67a88>
+  #   browser.cookies.set(nid_cookie) # => true
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @param options [Hash{Symbol => Object}, Cookie]
+  #
+  # source://ferrum//lib/ferrum/cookies.rb#117
+  def set(options); end
+
+  private
+
+  # source://ferrum//lib/ferrum/cookies.rb#174
+  def default_domain; end
+end
+
+# Represents a [cookie value](https://chromedevtools.github.io/devtools-protocol/1-3/Network/#type-Cookie).
+#
+# source://ferrum//lib/ferrum/cookies/cookie.rb#8
+class Ferrum::Cookies::Cookie
+  # Initializes the cookie.
+  #
+  # @param attributes [Hash{String => String}] The parsed JSON attributes.
+  # @return [Cookie] a new instance of Cookie
+  #
+  # source://ferrum//lib/ferrum/cookies/cookie.rb#20
+  def initialize(attributes); end
+
+  # Compares different cookie objects.
+  #
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/cookies/cookie.rb#153
+  def ==(other); end
+
+  # The parsed JSON attributes.
+  #
+  # @return [Hash{String => [String, Boolean, nil]}]
+  #
+  # source://ferrum//lib/ferrum/cookies/cookie.rb#12
+  def attributes; end
+
+  # The cookie's domain.
+  #
+  # @return [String]
+  #
+  # source://ferrum//lib/ferrum/cookies/cookie.rb#47
+  def domain; end
+
+  # Specifies when the cookie will expire.
+  #
+  # @return [Time, nil]
+  #
+  # source://ferrum//lib/ferrum/cookies/cookie.rb#112
+  def expires; end
+
+  # Specifies whether the cookie is HTTP-only or not.
+  #
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/cookies/cookie.rb#93
+  def http_only?; end
+
+  # Specifies whether the cookie is HTTP-only or not.
+  #
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/cookies/cookie.rb#93
+  def httponly?; end
+
+  # The cookie's name.
+  #
+  # @return [String]
+  #
+  # source://ferrum//lib/ferrum/cookies/cookie.rb#29
+  def name; end
+
+  # The cookie's path.
+  #
+  # @return [String]
+  #
+  # source://ferrum//lib/ferrum/cookies/cookie.rb#56
+  def path; end
+
+  # The priority of the cookie.
+  #
+  # @return [String]
+  #
+  # source://ferrum//lib/ferrum/cookies/cookie.rb#121
+  def priority; end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/cookies/cookie.rb#128
+  def same_party?; end
+
+  # The `sameSite` configuration.
+  #
+  # @return ["Strict", "Lax", "None", nil]
+  #
+  # source://ferrum//lib/ferrum/cookies/cookie.rb#65
+  def same_site; end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/cookies/cookie.rb#128
+  def sameparty?; end
+
+  # The `sameSite` configuration.
+  #
+  # @return ["Strict", "Lax", "None", nil]
+  #
+  # source://ferrum//lib/ferrum/cookies/cookie.rb#65
+  def samesite; end
+
+  # Specifies whether the cookie is secure or not.
+  #
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/cookies/cookie.rb#84
+  def secure?; end
+
+  # Specifies whether the cookie is a session cookie or not.
+  #
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/cookies/cookie.rb#103
+  def session?; end
+
+  # The cookie's size.
+  #
+  # @return [Integer]
+  #
+  # source://ferrum//lib/ferrum/cookies/cookie.rb#75
+  def size; end
+
+  # @return [Integer]
+  #
+  # source://ferrum//lib/ferrum/cookies/cookie.rb#144
+  def source_port; end
+
+  # @return [String]
+  #
+  # source://ferrum//lib/ferrum/cookies/cookie.rb#137
+  def source_scheme; end
+
+  # The parsed JSON attributes.
+  #
+  # @return [Hash{String => [String, Boolean, nil]}]
+  #
+  # source://ferrum//lib/ferrum/cookies/cookie.rb#12
+  def to_h; end
+
+  # Converts the cookie back into a raw cookie String.
+  #
+  # @return [String] The raw cookie string.
+  #
+  # source://ferrum//lib/ferrum/cookies/cookie.rb#163
+  def to_s; end
+
+  # The cookie's value.
+  #
+  # @return [String]
+  #
+  # source://ferrum//lib/ferrum/cookies/cookie.rb#38
+  def value; end
+end
+
+# source://ferrum//lib/ferrum/errors.rb#75
+class Ferrum::CoordinatesNotFoundError < ::Ferrum::Error
+  # @return [CoordinatesNotFoundError] a new instance of CoordinatesNotFoundError
+  #
+  # source://ferrum//lib/ferrum/errors.rb#76
+  def initialize(message = T.unsafe(nil)); end
+end
+
+# source://ferrum//lib/ferrum/frame/runtime.rb#6
+class Ferrum::CyclicObject
+  include ::Singleton::SingletonInstanceMethods
+  include ::Singleton
+  extend ::Singleton::SingletonClassMethods
+
+  # source://ferrum//lib/ferrum/frame/runtime.rb#9
+  def inspect; end
+
+  class << self
+    private
+
+    def allocate; end
+    def new(*_arg0); end
+  end
+end
+
+# source://ferrum//lib/ferrum/errors.rb#54
+class Ferrum::DeadBrowserError < ::Ferrum::Error
+  # @return [DeadBrowserError] a new instance of DeadBrowserError
+  #
+  # source://ferrum//lib/ferrum/errors.rb#55
+  def initialize(message = T.unsafe(nil)); end
+end
+
+# source://ferrum//lib/ferrum/dialog.rb#4
+class Ferrum::Dialog
+  # @return [Dialog] a new instance of Dialog
+  #
+  # source://ferrum//lib/ferrum/dialog.rb#7
+  def initialize(page, params); end
+
+  # Accept dialog with given text or default prompt if applicable
+  #
+  # @example
+  #   browser = Ferrum::Browser.new
+  #   browser.on(:dialog) do |dialog|
+  #   if dialog.match?(/bla-bla/)
+  #   dialog.accept
+  #   else
+  #   dialog.dismiss
+  #   end
+  #   end
+  #   browser.go_to("https://google.com")
+  # @param prompt_text [String, nil]
+  #
+  # source://ferrum//lib/ferrum/dialog.rb#29
+  def accept(prompt_text = T.unsafe(nil)); end
+
+  # Returns the value of attribute default_prompt.
+  #
+  # source://ferrum//lib/ferrum/dialog.rb#5
+  def default_prompt; end
+
+  # Dismiss dialog.
+  #
+  # @example
+  #   browser = Ferrum::Browser.new
+  #   browser.on(:dialog) do |dialog|
+  #   if dialog.match?(/bla-bla/)
+  #   dialog.accept
+  #   else
+  #   dialog.dismiss
+  #   end
+  #   end
+  #   browser.go_to("https://google.com")
+  #
+  # source://ferrum//lib/ferrum/dialog.rb#50
+  def dismiss; end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/dialog.rb#54
+  def match?(regexp); end
+
+  # Returns the value of attribute message.
+  #
+  # source://ferrum//lib/ferrum/dialog.rb#5
+  def message; end
+end
+
+# source://ferrum//lib/ferrum/downloads.rb#4
+class Ferrum::Downloads
+  # @return [Downloads] a new instance of Downloads
+  #
+  # source://ferrum//lib/ferrum/downloads.rb#7
+  def initialize(page); end
+
+  # source://ferrum//lib/ferrum/downloads.rb#13
+  def files; end
+
+  # @raise [ArgumentError]
+  #
+  # source://ferrum//lib/ferrum/downloads.rb#24
+  def set_behavior(save_path:, behavior: T.unsafe(nil)); end
+
+  # source://ferrum//lib/ferrum/downloads.rb#35
+  def subscribe; end
+
+  # source://ferrum//lib/ferrum/downloads.rb#47
+  def subscribe_download_progress; end
+
+  # source://ferrum//lib/ferrum/downloads.rb#40
+  def subscribe_download_will_begin; end
+
+  # source://ferrum//lib/ferrum/downloads.rb#17
+  def wait(timeout = T.unsafe(nil)); end
+end
+
+# source://ferrum//lib/ferrum/downloads.rb#5
+Ferrum::Downloads::VALID_BEHAVIOR = T.let(T.unsafe(nil), Array)
+
+# source://ferrum//lib/ferrum/errors.rb#9
+class Ferrum::EmptyPathError < ::Ferrum::Error; end
+
+# source://ferrum//lib/ferrum/errors.rb#4
+class Ferrum::Error < ::StandardError; end
+
+# source://ferrum//lib/ferrum/frame/dom.rb#21
+class Ferrum::Frame
+  include ::Ferrum::Frame::DOM
+  include ::Ferrum::Frame::Runtime
+
+  # @return [Frame] a new instance of Frame
+  #
+  # source://ferrum//lib/ferrum/frame.rb#42
+  def initialize(id, page, parent_id = T.unsafe(nil)); end
+
+  # Sets a content of a given frame.
+  #
+  # @example
+  #   browser.go_to("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe")
+  #   frame = browser.frames[1]
+  #   frame.body # <html lang="en"><head><style>body {transition: opacity ease-in 0.2s; }...
+  #   frame.content = "<html><head></head><body><p>lol</p></body></html>"
+  #   frame.body # => <html><head></head><body><p>lol</p></body></html>
+  # @param html [String]
+  #
+  # source://ferrum//lib/ferrum/frame.rb#109
+  def content=(html); end
+
+  # Execution context id which is used by JS, each frame has it's own
+  # context in which JS evaluates.
+  #
+  # @return [Integer, nil]
+  #
+  # source://ferrum//lib/ferrum/frame.rb#143
+  def execution_id; end
+
+  # Execution context id which is used by JS, each frame has it's own
+  # context in which JS evaluates. Locks for a page timeout and raises
+  # an error if an execution id hasn't been set yet, if id is set
+  # returns immediately.
+  #
+  # @raise [NoExecutionContextError]
+  # @return [Integer]
+  #
+  # source://ferrum//lib/ferrum/frame.rb#130
+  def execution_id!; end
+
+  # source://ferrum//lib/ferrum/frame.rb#150
+  def execution_id=(value); end
+
+  # The Frame's unique id.
+  #
+  # @return [String]
+  #
+  # source://ferrum//lib/ferrum/frame.rb#20
+  def id; end
+
+  # The Frame's unique id.
+  #
+  # @return [String]
+  #
+  # source://ferrum//lib/ferrum/frame.rb#20
+  def id=(_arg0); end
+
+  # source://ferrum//lib/ferrum/frame.rb#158
+  def inspect; end
+
+  # If current frame is the main frame of the page (top of the tree).
+  #
+  # @example
+  #   browser.go_to("https://www.w3schools.com/tags/tag_frame.asp")
+  #   frame = browser.frame_by(id: "C09C4E4404314AAEAE85928EAC109A93")
+  #   frame.main? # => false
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/frame.rb#93
+  def main?; end
+
+  # If frame was given a name it should be here.
+  #
+  # @return [String, nil]
+  #
+  # source://ferrum//lib/ferrum/frame.rb#25
+  def name; end
+
+  # If frame was given a name it should be here.
+  #
+  # @return [String, nil]
+  #
+  # source://ferrum//lib/ferrum/frame.rb#25
+  def name=(_arg0); end
+
+  # The page the frame belongs to.
+  #
+  # @return [Page]
+  #
+  # source://ferrum//lib/ferrum/frame.rb#30
+  def page; end
+
+  # Parent frame id if this one is nested in another one.
+  #
+  # @return [String, nil]
+  #
+  # source://ferrum//lib/ferrum/frame.rb#35
+  def parent_id; end
+
+  # Sets a content of a given frame.
+  #
+  # @example
+  #   browser.go_to("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe")
+  #   frame = browser.frames[1]
+  #   frame.body # <html lang="en"><head><style>body {transition: opacity ease-in 0.2s; }...
+  #   frame.content = "<html><head></head><body><p>lol</p></body></html>"
+  #   frame.body # => <html><head></head><body><p>lol</p></body></html>
+  # @param html [String]
+  #
+  # source://ferrum//lib/ferrum/frame.rb#109
+  def set_content(html); end
+
+  # One of the states frame's in.
+  #
+  # @return [:started_loading, :navigated, :stopped_loading, nil]
+  #
+  # source://ferrum//lib/ferrum/frame.rb#40
+  def state; end
+
+  # @raise [ArgumentError]
+  #
+  # source://ferrum//lib/ferrum/frame.rb#49
+  def state=(value); end
+
+  # Returns current frame's title.
+  #
+  # @example
+  #   browser.go_to("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe")
+  #   frame = browser.frames[1]
+  #   frame.title # => HTML Demo: <iframe>
+  # @return [String]
+  #
+  # source://ferrum//lib/ferrum/frame.rb#79
+  def title; end
+
+  # Returns current frame's `location.href`.
+  #
+  # @example
+  #   browser.go_to("https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe")
+  #   frame = browser.frames[1]
+  #   frame.url # => https://interactive-examples.mdn.mozilla.net/pages/tabbed/iframe.html
+  # @return [String]
+  #
+  # source://ferrum//lib/ferrum/frame.rb#65
+  def url; end
+end
+
+# source://ferrum//lib/ferrum/frame/dom.rb#22
+module Ferrum::Frame::DOM
+  # Adds a `<script>` tag to the document.
+  #
+  # @example
+  #   browser.add_script_tag(url: "http://example.com/stylesheet.css") # => true
+  # @param url [String, nil]
+  # @param path [String, nil]
+  # @param content [String, nil]
+  # @param type [String]
+  #
+  # source://ferrum//lib/ferrum/frame/dom.rb#227
+  def add_script_tag(url: T.unsafe(nil), path: T.unsafe(nil), content: T.unsafe(nil), type: T.unsafe(nil)); end
+
+  # Adds a `<style>` tag to the document.
+  #
+  # @example
+  #   browser.add_style_tag(content: "h1 { font-size: 40px; }") # => true
+  # @param url [String, nil]
+  # @param path [String, nil]
+  # @param content [String, nil]
+  #
+  # source://ferrum//lib/ferrum/frame/dom.rb#253
+  def add_style_tag(url: T.unsafe(nil), path: T.unsafe(nil), content: T.unsafe(nil)); end
+
+  # Finds a node by using a CSS path selector.
+  #
+  # @example
+  #   browser.go_to("https://github.com/")
+  #   browser.at_css("a[aria-label='Issues you created']") # => Node
+  # @param selector [String] The CSS path selector.
+  # @param within [Node, nil] The parent node to search within.
+  # @return [Node, nil] The matching node.
+  #
+  # source://ferrum//lib/ferrum/frame/dom.rb#202
+  def at_css(selector, within: T.unsafe(nil)); end
+
+  # Finds a node by using a XPath selector.
+  #
+  # @example
+  #   browser.go_to("https://github.com/")
+  #   browser.at_xpath("//a[@aria-label='Issues you created']") # => Node
+  # @param selector [String] The XPath selector.
+  # @param within [Node, nil] The parent node to search within.
+  # @return [Node, nil] The matching node.
+  #
+  # source://ferrum//lib/ferrum/frame/dom.rb#148
+  def at_xpath(selector, within: T.unsafe(nil)); end
+
+  # Returns current page's html.
+  #
+  # @example
+  #   browser.go_to("https://google.com/")
+  #   browser.body # => '<html itemscope="" itemtype="http://schema.org/WebPage" lang="ru"><head>...
+  # @return [String] The HTML source of the current page.
+  #
+  # source://ferrum//lib/ferrum/frame/dom.rb#94
+  def body; end
+
+  # Finds nodes by using a CSS path selector.
+  #
+  # @example
+  #   browser.go_to("https://github.com/")
+  #   browser.css("a[aria-label='Issues you created']") # => [Node]
+  # @param selector [String] The CSS path selector.
+  # @param within [Node, nil] The parent node to search within.
+  # @return [Array<Node>] The matching nodes.
+  #
+  # source://ferrum//lib/ferrum/frame/dom.rb#175
+  def css(selector, within: T.unsafe(nil)); end
+
+  # Returns current top window title.
+  #
+  # @example
+  #   browser.go_to("https://google.com/")
+  #   browser.current_title # => "Google"
+  # @return [String] The window's current title.
+  #
+  # source://ferrum//lib/ferrum/frame/dom.rb#76
+  def current_title; end
+
+  # Returns current top window `location href`.
+  #
+  # @example
+  #   browser.go_to("https://google.com/")
+  #   browser.current_url # => "https://www.google.com/"
+  # @return [String] The window's current URL.
+  #
+  # source://ferrum//lib/ferrum/frame/dom.rb#62
+  def current_url; end
+
+  # source://ferrum//lib/ferrum/frame/dom.rb#80
+  def doctype; end
+
+  # Finds nodes by using a XPath selector.
+  #
+  # @example
+  #   browser.go_to("https://github.com/")
+  #   browser.xpath("//a[@aria-label='Issues you created']") # => [Node]
+  # @param selector [String] The XPath selector.
+  # @param within [Node, nil] The parent node to search within.
+  # @return [Array<Node>] The matching nodes.
+  #
+  # source://ferrum//lib/ferrum/frame/dom.rb#114
+  def xpath(selector, within: T.unsafe(nil)); end
+end
+
+# source://ferrum//lib/ferrum/frame/dom.rb#44
+Ferrum::Frame::DOM::LINK_TAG = T.let(T.unsafe(nil), String)
+
+# source://ferrum//lib/ferrum/frame/dom.rb#23
+Ferrum::Frame::DOM::SCRIPT_SRC_TAG = T.let(T.unsafe(nil), String)
+
+# source://ferrum//lib/ferrum/frame/dom.rb#30
+Ferrum::Frame::DOM::SCRIPT_TEXT_TAG = T.let(T.unsafe(nil), String)
+
+# source://ferrum//lib/ferrum/frame/dom.rb#37
+Ferrum::Frame::DOM::STYLE_TAG = T.let(T.unsafe(nil), String)
+
+# source://ferrum//lib/ferrum/frame/runtime.rb#15
+module Ferrum::Frame::Runtime
+  # Evaluate and return result for given JS expression.
+  #
+  # @example
+  #   browser.evaluate("[window.scrollX, window.scrollY]")
+  # @param expression [String] The JavaScript to evaluate.
+  # @param args [Array] Additional arguments to pass to the JavaScript code.
+  #
+  # source://ferrum//lib/ferrum/frame/runtime.rb#31
+  def evaluate(expression, *args); end
+
+  # Evaluate asynchronous expression and return result.
+  #
+  # @example
+  #   browser.evaluate_async(%(arguments[0]({foo: "bar"})), 5) # => { "foo" => "bar" }
+  # @param expression [String] The JavaScript to evaluate.
+  # @param wait [Integer] How long we should wait for Promise to resolve or reject.
+  # @param args [Array] Additional arguments to pass to the JavaScript code.
+  #
+  # source://ferrum//lib/ferrum/frame/runtime.rb#51
+  def evaluate_async(expression, wait, *args); end
+
+  # source://ferrum//lib/ferrum/frame/runtime.rb#89
+  def evaluate_func(expression, *args, on: T.unsafe(nil)); end
+
+  # source://ferrum//lib/ferrum/frame/runtime.rb#93
+  def evaluate_on(node:, expression:, by_value: T.unsafe(nil), wait: T.unsafe(nil)); end
+
+  # Execute expression. Doesn't return the result.
+  #
+  # @example
+  #   browser.execute(%(1 + 1)) # => true
+  # @param expression [String] The JavaScript to evaluate.
+  # @param args [Array] Additional arguments to pass to the JavaScript code.
+  #
+  # source://ferrum//lib/ferrum/frame/runtime.rb#83
+  def execute(expression, *args); end
+
+  private
+
+  # source://ferrum//lib/ferrum/frame/runtime.rb#102
+  def call(expression:, arguments: T.unsafe(nil), on: T.unsafe(nil), wait: T.unsafe(nil), handle: T.unsafe(nil), **options); end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/frame/runtime.rb#208
+  def cyclic?(object_id); end
+
+  # source://ferrum//lib/ferrum/frame/runtime.rb#241
+  def cyclic_object; end
+
+  # FIXME: We should have a central place to handle all type of errors
+  #
+  # source://ferrum//lib/ferrum/frame/runtime.rb#130
+  def handle_error(response); end
+
+  # source://ferrum//lib/ferrum/frame/runtime.rb#142
+  def handle_response(response); end
+
+  # source://ferrum//lib/ferrum/frame/runtime.rb#182
+  def prepare_args(args); end
+
+  # source://ferrum//lib/ferrum/frame/runtime.rb#195
+  def reduce_props(object_id, to); end
+end
+
+# source://ferrum//lib/ferrum/frame/runtime.rb#16
+Ferrum::Frame::Runtime::INTERMITTENT_ATTEMPTS = T.let(T.unsafe(nil), Integer)
+
+# source://ferrum//lib/ferrum/frame/runtime.rb#17
+Ferrum::Frame::Runtime::INTERMITTENT_SLEEP = T.let(T.unsafe(nil), Float)
+
+# source://ferrum//lib/ferrum/frame.rb#11
+Ferrum::Frame::STATE_VALUES = T.let(T.unsafe(nil), Array)
+
+# source://ferrum//lib/ferrum/headers.rb#4
+class Ferrum::Headers
+  # @return [Headers] a new instance of Headers
+  #
+  # source://ferrum//lib/ferrum/headers.rb#5
+  def initialize(page); end
+
+  # Adds given headers to already set ones.
+  #
+  # @param headers [Hash{String => String}] key-value pairs for example `"Referer" => "http://example.com"`.
+  # @param permanent [Boolean]
+  # @return [true]
+  #
+  # source://ferrum//lib/ferrum/headers.rb#52
+  def add(headers, permanent: T.unsafe(nil)); end
+
+  # Clear all headers.
+  #
+  # @return [true]
+  #
+  # source://ferrum//lib/ferrum/headers.rb#37
+  def clear; end
+
+  # Get all headers.
+  #
+  # @return [Hash{String => String}]
+  #
+  # source://ferrum//lib/ferrum/headers.rb#15
+  def get; end
+
+  # Set given headers. Eventually clear all headers and set given ones.
+  #
+  # @param headers [Hash{String => String}] key-value pairs for example `"User-Agent" => "Browser"`.
+  # @return [true]
+  #
+  # source://ferrum//lib/ferrum/headers.rb#27
+  def set(headers); end
+
+  private
+
+  # source://ferrum//lib/ferrum/headers.rb#69
+  def set_overrides(user_agent: T.unsafe(nil), accept_language: T.unsafe(nil), platform: T.unsafe(nil)); end
+end
+
+# source://ferrum//lib/ferrum/errors.rb#107
+class Ferrum::JavaScriptError < ::Ferrum::BrowserError
+  # @return [JavaScriptError] a new instance of JavaScriptError
+  #
+  # source://ferrum//lib/ferrum/errors.rb#110
+  def initialize(response, stack_trace = T.unsafe(nil)); end
+
+  # Returns the value of attribute class_name.
+  #
+  # source://ferrum//lib/ferrum/errors.rb#108
+  def class_name; end
+
+  # Returns the value of attribute message.
+  #
+  # source://ferrum//lib/ferrum/errors.rb#108
+  def message; end
+
+  # Returns the value of attribute stack_trace.
+  #
+  # source://ferrum//lib/ferrum/errors.rb#108
+  def stack_trace; end
+end
+
+# source://ferrum//lib/ferrum/keyboard.rb#6
+class Ferrum::Keyboard
+  # @return [Keyboard] a new instance of Keyboard
+  #
+  # source://ferrum//lib/ferrum/keyboard.rb#29
+  def initialize(page); end
+
+  # Dispatches a `keydown` event.
+  #
+  # @param key [String, Symbol] Name of the key, such as `"a"`, `:enter`, or `:backspace`.
+  # @return [self]
+  #
+  # source://ferrum//lib/ferrum/keyboard.rb#41
+  def down(key); end
+
+  # Returns bitfield for a given keys.
+  #
+  # @param keys [Array<:alt, :ctrl, :command, :shift>]
+  # @return [Integer]
+  #
+  # source://ferrum//lib/ferrum/keyboard.rb#90
+  def modifiers(keys); end
+
+  # Sends a keydown, keypress/input, and keyup event for each character in
+  # the text.
+  #
+  # @param keys [Array<String, Symbol, (Symbol, String)>] The text to type into a focused element, `[:Shift, "s"], "tring"`.
+  # @return [self]
+  #
+  # source://ferrum//lib/ferrum/keyboard.rb#71
+  def type(*keys); end
+
+  # Dispatches a `keyup` event.
+  #
+  # @param key [String, Symbol] Name of the key, such as `"a"`, `:enter`, or `:backspace`.
+  # @return [self]
+  #
+  # source://ferrum//lib/ferrum/keyboard.rb#56
+  def up(key); end
+
+  private
+
+  # source://ferrum//lib/ferrum/keyboard.rb#151
+  def combine_strings(keys); end
+
+  # TODO: Refactor it, and try to simplify complexity
+  #
+  # source://ferrum//lib/ferrum/keyboard.rb#99
+  def normalize_keys(keys, pressed_keys = T.unsafe(nil), memo = T.unsafe(nil)); end
+
+  # source://ferrum//lib/ferrum/keyboard.rb#158
+  def to_options(hash); end
+end
+
+# source://ferrum//lib/ferrum/keyboard.rb#7
+Ferrum::Keyboard::KEYS = T.let(T.unsafe(nil), Hash)
+
+# source://ferrum//lib/ferrum/keyboard.rb#10
+Ferrum::Keyboard::KEYS_MAPPING = T.let(T.unsafe(nil), Hash)
+
+# source://ferrum//lib/ferrum/keyboard.rb#8
+Ferrum::Keyboard::MODIFIERS = T.let(T.unsafe(nil), Hash)
+
+# source://ferrum//lib/ferrum/mouse.rb#4
+class Ferrum::Mouse
+  # @return [Mouse] a new instance of Mouse
+  #
+  # source://ferrum//lib/ferrum/mouse.rb#8
+  def initialize(page); end
+
+  # Click given coordinates, fires mouse move, down and up events.
+  #
+  # @option options
+  # @option options
+  # @option options
+  # @param x [Integer]
+  # @param y [Integer]
+  # @param delay [Float] Delay between mouse down and mouse up events.
+  # @param wait [Float]
+  # @param options [Hash{Symbol => Object}] Additional keyword arguments.
+  # @return [self]
+  #
+  # source://ferrum//lib/ferrum/mouse.rb#57
+  def click(x:, y:, delay: T.unsafe(nil), wait: T.unsafe(nil), **options); end
+
+  # Mouse down for given coordinates.
+  #
+  # @option options
+  # @option options
+  # @option options
+  # @param options [Hash{Symbol => Object}] Additional keyword arguments.
+  # @return [self]
+  #
+  # source://ferrum//lib/ferrum/mouse.rb#83
+  def down(**options); end
+
+  # Mouse move to given x and y.
+  #
+  # @param x [Integer]
+  # @param y [Integer]
+  # @param steps [Integer] Sends intermediate mousemove events.
+  # @return [self]
+  #
+  # source://ferrum//lib/ferrum/mouse.rb#119
+  def move(x:, y:, steps: T.unsafe(nil)); end
+
+  # Scroll page to a given x, y coordinates.
+  #
+  # @example
+  #   browser.go_to("https://www.google.com/search?q=Ruby+headless+driver+for+Capybara")
+  #   browser.mouse.scroll_to(0, 400)
+  # @param top [Integer] The pixel along the horizontal axis of the document that you want
+  #   displayed in the upper left.
+  # @param left [Integer] The pixel along the vertical axis of the document that you want
+  #   displayed in the upper left.
+  #
+  # source://ferrum//lib/ferrum/mouse.rb#28
+  def scroll_to(top, left); end
+
+  # Mouse up for given coordinates.
+  #
+  # @option options
+  # @option options
+  # @option options
+  # @param options [Hash{Symbol => Object}] Additional keyword arguments.
+  # @return [self]
+  #
+  # source://ferrum//lib/ferrum/mouse.rb#103
+  def up(**options); end
+
+  private
+
+  # source://ferrum//lib/ferrum/mouse.rb#141
+  def mouse_event(type:, button: T.unsafe(nil), count: T.unsafe(nil), modifiers: T.unsafe(nil), wait: T.unsafe(nil)); end
+
+  # source://ferrum//lib/ferrum/mouse.rb#148
+  def validate_button(button); end
+end
+
+# source://ferrum//lib/ferrum/mouse.rb#5
+Ferrum::Mouse::CLICK_WAIT = T.let(T.unsafe(nil), Float)
+
+# source://ferrum//lib/ferrum/mouse.rb#6
+Ferrum::Mouse::VALID_BUTTONS = T.let(T.unsafe(nil), Array)
+
+# source://ferrum//lib/ferrum/network/exchange.rb#4
+class Ferrum::Network
+  # @return [Network] a new instance of Network
+  #
+  # source://ferrum//lib/ferrum/network.rb#35
+  def initialize(page); end
+
+  # source://ferrum//lib/ferrum/network.rb#161
+  def allowlist=(patterns); end
+
+  # Sets HTTP Basic-Auth credentials.
+  #
+  # @example
+  #   browser.network.authorize(user: "login", password: "pass") { |req| req.continue }
+  #   browser.go_to("http://example.com/authenticated")
+  #   puts browser.network.status # => 200
+  #   puts browser.body # => Welcome, authenticated client
+  # @param user [String] The username to send.
+  # @param password [String] The password to send.
+  # @param type [:server, :proxy] Specifies whether the credentials are for a website or a proxy.
+  # @raise [ArgumentError]
+  # @yield [request] The given block will be passed each authenticated request and can allow
+  #   or deny the request.
+  # @yieldparam request [Request] An HTTP request.
+  #
+  # source://ferrum//lib/ferrum/network.rb#232
+  def authorize(user:, password:, type: T.unsafe(nil), &block); end
+
+  # source://ferrum//lib/ferrum/network.rb#267
+  def authorized_response(ids, request_id, username, password); end
+
+  # source://ferrum//lib/ferrum/network.rb#155
+  def blacklist=(patterns); end
+
+  # source://ferrum//lib/ferrum/network.rb#155
+  def blocklist=(patterns); end
+
+  # source://ferrum//lib/ferrum/network.rb#281
+  def build_exchange(id); end
+
+  # Toggles ignoring cache for each request. If true, cache will not be used.
+  #
+  # @example
+  #   browser.network.cache(disable: true)
+  #
+  # source://ferrum//lib/ferrum/network.rb#349
+  def cache(disable:); end
+
+  # Clear browser's cache or collected traffic.
+  #
+  # @example
+  #   traffic = browser.network.traffic # => []
+  #   browser.go_to("https://github.com/")
+  #   traffic.size # => 51
+  #   browser.network.clear(:traffic)
+  #   traffic.size # => 0
+  # @param type [:traffic, :cache] The type of traffic to clear.
+  # @raise [ArgumentError]
+  # @return [true]
+  #
+  # source://ferrum//lib/ferrum/network.rb#143
+  def clear(type); end
+
+  # Activates emulation of network conditions.
+  #
+  # @example
+  #   browser.network.emulate_network_conditions(connection_type: "cellular2g")
+  #   browser.go_to("https://github.com/")
+  # @param offline [Boolean] Emulate internet disconnection,
+  # @param latency [Integer] Minimum latency from request sent to response headers received (ms).
+  # @param download_throughput [Integer] Maximal aggregated download throughput (bytes/sec).
+  # @param upload_throughput [Integer] Maximal aggregated upload throughput (bytes/sec).
+  # @param connection_type [String, nil] Connection type if known:
+  #   * `"none"`
+  #   * `"cellular2g"`
+  #   * `"cellular3g"`
+  #   * `"cellular4g"`
+  #   * `"bluetooth"`
+  #   * `"ethernet"`
+  #   * `"wifi"`
+  #   * `"wimax"`
+  #   * `"other"`
+  #
+  # source://ferrum//lib/ferrum/network.rb#316
+  def emulate_network_conditions(offline: T.unsafe(nil), latency: T.unsafe(nil), download_throughput: T.unsafe(nil), upload_throughput: T.unsafe(nil), connection_type: T.unsafe(nil)); end
+
+  # source://ferrum//lib/ferrum/network.rb#80
+  def finished_connections; end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network.rb#72
+  def idle?(connections = T.unsafe(nil)); end
+
+  # Set request interception for given options. This method is only sets
+  # request interception, you should use `on` callback to catch requests and
+  # abort or continue them.
+  #
+  # @example
+  #   browser = Ferrum::Browser.new
+  #   browser.network.intercept
+  #   browser.on(:request) do |request|
+  #   if request.match?(/bla-bla/)
+  #   request.abort
+  #   elsif request.match?(/lorem/)
+  #   request.respond(body: "Lorem ipsum")
+  #   else
+  #   request.continue
+  #   end
+  #   end
+  #   browser.go_to("https://google.com")
+  # @param pattern [String]
+  # @param resource_type [Symbol, nil] One of the [resource types](https://chromedevtools.github.io/devtools-protocol/tot/Network#type-ResourceType)
+  #
+  # source://ferrum//lib/ferrum/network.rb#191
+  def intercept(pattern: T.unsafe(nil), resource_type: T.unsafe(nil), request_stage: T.unsafe(nil), handle_auth_requests: T.unsafe(nil)); end
+
+  # Activates offline mode for a page.
+  #
+  # @example
+  #   browser.network.offline_mode
+  #   browser.go_to("https://github.com/")
+  #   # => Request to https://github.com/ failed (net::ERR_INTERNET_DISCONNECTED) (Ferrum::StatusError)
+  #
+  # source://ferrum//lib/ferrum/network.rb#339
+  def offline_mode; end
+
+  # source://ferrum//lib/ferrum/network.rb#84
+  def pending_connections; end
+
+  # Page request of the main frame.
+  #
+  # @example
+  #   browser.go_to("https://github.com/")
+  #   browser.network.request # => #<Ferrum::Network::Request...
+  # @return [Request]
+  #
+  # source://ferrum//lib/ferrum/network.rb#97
+  def request; end
+
+  # Page response of the main frame.
+  #
+  # @example
+  #   browser.go_to("https://github.com/")
+  #   browser.network.response # => #<Ferrum::Network::Response...
+  # @return [Response, nil]
+  #
+  # source://ferrum//lib/ferrum/network.rb#110
+  def response; end
+
+  # source://ferrum//lib/ferrum/network.rb#277
+  def select(request_id); end
+
+  # Contains the status code of the main page response (e.g., 200 for a
+  # success). This is just a shortcut for `response.status`.
+  #
+  # @example
+  #   browser.go_to("https://github.com/")
+  #   browser.network.status # => 200
+  # @return [Integer, nil]
+  #
+  # source://ferrum//lib/ferrum/network.rb#124
+  def status; end
+
+  # source://ferrum//lib/ferrum/network.rb#259
+  def subscribe; end
+
+  # source://ferrum//lib/ferrum/network.rb#76
+  def total_connections; end
+
+  # Network traffic.
+  #
+  # @example
+  #   browser.go_to("https://github.com/")
+  #   browser.network.traffic # => [#<Ferrum::Network::Exchange, ...]
+  # @return [Array<Exchange>] Returns all information about network traffic as {Exchange}
+  #   instance which in general is a wrapper around `request`, `response` and
+  #   `error`.
+  #
+  # source://ferrum//lib/ferrum/network.rb#33
+  def traffic; end
+
+  # Waits for network idle or raises {Ferrum::TimeoutError} error.
+  #
+  # @example
+  #   browser.go_to("https://example.com/")
+  #   browser.at_xpath("//a[text() = 'No UI changes button']").click
+  #   browser.network.wait_for_idle
+  # @param connections [Integer] how many connections are allowed for network to be idling,
+  # @param duration [Float] Sleep for given amount of time and check again.
+  # @param timeout [Float] During what time we try to check idle.
+  # @raise [Ferrum::TimeoutError]
+  #
+  # source://ferrum//lib/ferrum/network.rb#62
+  def wait_for_idle(connections: T.unsafe(nil), duration: T.unsafe(nil), timeout: T.unsafe(nil)); end
+
+  # source://ferrum//lib/ferrum/network.rb#161
+  def whitelist=(patterns); end
+
+  private
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network.rb#475
+  def blacklist?; end
+
+  # @raise [ArgumentError]
+  #
+  # source://ferrum//lib/ferrum/network.rb#437
+  def blacklist_subscribe; end
+
+  # source://ferrum//lib/ferrum/network.rb#407
+  def subscribe_loading_failed; end
+
+  # source://ferrum//lib/ferrum/network.rb#395
+  def subscribe_loading_finished; end
+
+  # source://ferrum//lib/ferrum/network.rb#421
+  def subscribe_log_entry_added; end
+
+  # source://ferrum//lib/ferrum/network.rb#355
+  def subscribe_request_will_be_sent; end
+
+  # source://ferrum//lib/ferrum/network.rb#385
+  def subscribe_response_received; end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network.rb#479
+  def whitelist?; end
+
+  # @raise [ArgumentError]
+  #
+  # source://ferrum//lib/ferrum/network.rb#456
+  def whitelist_subscribe; end
+end
+
+# source://ferrum//lib/ferrum/network.rb#21
+Ferrum::Network::ALLOWED_CONNECTION_TYPE = T.let(T.unsafe(nil), Array)
+
+# source://ferrum//lib/ferrum/network.rb#18
+Ferrum::Network::AUTHORIZE_BLOCK_MISSING = T.let(T.unsafe(nil), String)
+
+# source://ferrum//lib/ferrum/network.rb#13
+Ferrum::Network::AUTHORIZE_TYPE = T.let(T.unsafe(nil), Array)
+
+# source://ferrum//lib/ferrum/network.rb#20
+Ferrum::Network::AUTHORIZE_TYPE_WRONG = T.let(T.unsafe(nil), String)
+
+# source://ferrum//lib/ferrum/network/auth_request.rb#5
+class Ferrum::Network::AuthRequest
+  # @return [AuthRequest] a new instance of AuthRequest
+  #
+  # source://ferrum//lib/ferrum/network/auth_request.rb#8
+  def initialize(page, params); end
+
+  # source://ferrum//lib/ferrum/network/auth_request.rb#34
+  def abort; end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network/auth_request.rb#21
+  def auth_challenge?(source); end
+
+  # source://ferrum//lib/ferrum/network/auth_request.rb#29
+  def continue(**options); end
+
+  # Returns the value of attribute frame_id.
+  #
+  # source://ferrum//lib/ferrum/network/auth_request.rb#6
+  def frame_id; end
+
+  # Sets the attribute frame_id
+  #
+  # @param value the value to set the attribute frame_id to.
+  #
+  # source://ferrum//lib/ferrum/network/auth_request.rb#6
+  def frame_id=(_arg0); end
+
+  # source://ferrum//lib/ferrum/network/auth_request.rb#46
+  def headers; end
+
+  # source://ferrum//lib/ferrum/network/auth_request.rb#50
+  def initial_priority; end
+
+  # source://ferrum//lib/ferrum/network/auth_request.rb#58
+  def inspect; end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network/auth_request.rb#25
+  def match?(regexp); end
+
+  # source://ferrum//lib/ferrum/network/auth_request.rb#42
+  def method; end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network/auth_request.rb#17
+  def navigation_request?; end
+
+  # source://ferrum//lib/ferrum/network/auth_request.rb#54
+  def referrer_policy; end
+
+  # Returns the value of attribute request_id.
+  #
+  # source://ferrum//lib/ferrum/network/auth_request.rb#6
+  def request_id; end
+
+  # Sets the attribute request_id
+  #
+  # @param value the value to set the attribute request_id to.
+  #
+  # source://ferrum//lib/ferrum/network/auth_request.rb#6
+  def request_id=(_arg0); end
+
+  # Returns the value of attribute resource_type.
+  #
+  # source://ferrum//lib/ferrum/network/auth_request.rb#6
+  def resource_type; end
+
+  # Sets the attribute resource_type
+  #
+  # @param value the value to set the attribute resource_type to.
+  #
+  # source://ferrum//lib/ferrum/network/auth_request.rb#6
+  def resource_type=(_arg0); end
+
+  # source://ferrum//lib/ferrum/network/auth_request.rb#38
+  def url; end
+end
+
+# source://ferrum//lib/ferrum/network.rb#12
+Ferrum::Network::CLEAR_TYPE = T.let(T.unsafe(nil), Array)
+
+# source://ferrum//lib/ferrum/network/error.rb#5
+class Ferrum::Network::Error
+  # Sets the attribute canceled
+  #
+  # @param value the value to set the attribute canceled to.
+  #
+  # source://ferrum//lib/ferrum/network/error.rb#6
+  def canceled=(_arg0); end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network/error.rb#10
+  def canceled?; end
+
+  # Returns the value of attribute description.
+  #
+  # source://ferrum//lib/ferrum/network/error.rb#8
+  def description; end
+
+  # Sets the attribute description
+  #
+  # @param value the value to set the attribute description to.
+  #
+  # source://ferrum//lib/ferrum/network/error.rb#8
+  def description=(_arg0); end
+
+  # Returns the value of attribute error_text.
+  #
+  # source://ferrum//lib/ferrum/network/error.rb#8
+  def error_text; end
+
+  # Sets the attribute error_text
+  #
+  # @param value the value to set the attribute error_text to.
+  #
+  # source://ferrum//lib/ferrum/network/error.rb#8
+  def error_text=(_arg0); end
+
+  # Returns the value of attribute id.
+  #
+  # source://ferrum//lib/ferrum/network/error.rb#8
+  def id; end
+
+  # Sets the attribute id
+  #
+  # @param value the value to set the attribute id to.
+  #
+  # source://ferrum//lib/ferrum/network/error.rb#8
+  def id=(_arg0); end
+
+  # Returns the value of attribute monotonic_time.
+  #
+  # source://ferrum//lib/ferrum/network/error.rb#8
+  def monotonic_time; end
+
+  # Sets the attribute monotonic_time
+  #
+  # @param value the value to set the attribute monotonic_time to.
+  #
+  # source://ferrum//lib/ferrum/network/error.rb#8
+  def monotonic_time=(_arg0); end
+
+  # Returns the value of attribute time.
+  #
+  # source://ferrum//lib/ferrum/network/error.rb#7
+  def time; end
+
+  # Returns the value of attribute timestamp.
+  #
+  # source://ferrum//lib/ferrum/network/error.rb#7
+  def timestamp; end
+
+  # source://ferrum//lib/ferrum/network/error.rb#14
+  def timestamp=(value); end
+
+  # Returns the value of attribute type.
+  #
+  # source://ferrum//lib/ferrum/network/error.rb#8
+  def type; end
+
+  # Sets the attribute type
+  #
+  # @param value the value to set the attribute type to.
+  #
+  # source://ferrum//lib/ferrum/network/error.rb#8
+  def type=(_arg0); end
+
+  # Returns the value of attribute url.
+  #
+  # source://ferrum//lib/ferrum/network/error.rb#8
+  def url; end
+
+  # Sets the attribute url
+  #
+  # @param value the value to set the attribute url to.
+  #
+  # source://ferrum//lib/ferrum/network/error.rb#8
+  def url=(_arg0); end
+end
+
+# source://ferrum//lib/ferrum/network/exchange.rb#5
+class Ferrum::Network::Exchange
+  # Initializes the network exchange.
+  #
+  # @param page [Page]
+  # @param id [String]
+  # @return [Exchange] a new instance of Exchange
+  #
+  # source://ferrum//lib/ferrum/network/exchange.rb#38
+  def initialize(page, id); end
+
+  # Determines if the network exchange has a request.
+  #
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network/exchange.rb#62
+  def blank?; end
+
+  # Determines if the request was intercepted and blocked.
+  #
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network/exchange.rb#71
+  def blocked?; end
+
+  # The error object.
+  #
+  # @return [Error, nil]
+  #
+  # source://ferrum//lib/ferrum/network/exchange.rb#29
+  def error; end
+
+  # The error object.
+  #
+  # @return [Error, nil]
+  #
+  # source://ferrum//lib/ferrum/network/exchange.rb#29
+  def error=(_arg0); end
+
+  # Determines if the request was blocked, a response was returned, or if an
+  # error occurred.
+  #
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network/exchange.rb#81
+  def finished?; end
+
+  # ID of the request.
+  #
+  # @return String
+  #
+  # source://ferrum//lib/ferrum/network/exchange.rb#9
+  def id; end
+
+  # Inspects the network exchange.
+  #
+  # @return [String]
+  #
+  # source://ferrum//lib/ferrum/network/exchange.rb#153
+  def inspect; end
+
+  # Determines if the exchange's request was intercepted.
+  #
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network/exchange.rb#99
+  def intercepted?; end
+
+  # The intercepted request.
+  #
+  # @return [InterceptedRequest, nil]
+  #
+  # source://ferrum//lib/ferrum/network/exchange.rb#14
+  def intercepted_request; end
+
+  # The intercepted request.
+  #
+  # @return [InterceptedRequest, nil]
+  #
+  # source://ferrum//lib/ferrum/network/exchange.rb#14
+  def intercepted_request=(_arg0); end
+
+  # Determines if the network exchange was caused by a page navigation
+  # event.
+  #
+  # @param frame_id [String]
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network/exchange.rb#53
+  def navigation_request?(frame_id); end
+
+  # Determines if the network exchange is still not finished.
+  #
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network/exchange.rb#90
+  def pending?; end
+
+  # Determines if the exchange is ping.
+  #
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network/exchange.rb#126
+  def ping?; end
+
+  # Determines if the exchange is a redirect.
+  #
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network/exchange.rb#117
+  def redirect?; end
+
+  # The request object.
+  #
+  # @return [Request, nil]
+  #
+  # source://ferrum//lib/ferrum/network/exchange.rb#19
+  def request; end
+
+  # The request object.
+  #
+  # @return [Request, nil]
+  #
+  # source://ferrum//lib/ferrum/network/exchange.rb#19
+  def request=(_arg0); end
+
+  # The response object.
+  #
+  # @return [Response, nil]
+  #
+  # source://ferrum//lib/ferrum/network/exchange.rb#24
+  def response; end
+
+  # The response object.
+  #
+  # @return [Response, nil]
+  #
+  # source://ferrum//lib/ferrum/network/exchange.rb#24
+  def response=(_arg0); end
+
+  # Converts the network exchange into a request, response, and error tuple.
+  #
+  # @return [Array]
+  #
+  # source://ferrum//lib/ferrum/network/exchange.rb#144
+  def to_a; end
+
+  # Returns request's URL.
+  #
+  # @return [String, nil]
+  #
+  # source://ferrum//lib/ferrum/network/exchange.rb#135
+  def url; end
+
+  # Determines if the exchange is XHR.
+  #
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network/exchange.rb#108
+  def xhr?; end
+end
+
+# source://ferrum//lib/ferrum/network/intercepted_request.rb#8
+class Ferrum::Network::InterceptedRequest
+  include ::Ferrum::Network::RequestParams
+
+  # @return [InterceptedRequest] a new instance of InterceptedRequest
+  #
+  # source://ferrum//lib/ferrum/network/intercepted_request.rb#13
+  def initialize(client, params); end
+
+  # source://ferrum//lib/ferrum/network/intercepted_request.rb#55
+  def abort; end
+
+  # source://ferrum//lib/ferrum/network/intercepted_request.rb#49
+  def continue(**options); end
+
+  # Returns the value of attribute frame_id.
+  #
+  # source://ferrum//lib/ferrum/network/intercepted_request.rb#11
+  def frame_id; end
+
+  # Sets the attribute frame_id
+  #
+  # @param value the value to set the attribute frame_id to.
+  #
+  # source://ferrum//lib/ferrum/network/intercepted_request.rb#11
+  def frame_id=(_arg0); end
+
+  # source://ferrum//lib/ferrum/network/intercepted_request.rb#60
+  def initial_priority; end
+
+  # source://ferrum//lib/ferrum/network/intercepted_request.rb#68
+  def inspect; end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network/intercepted_request.rb#32
+  def match?(regexp); end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network/intercepted_request.rb#28
+  def navigation_request?; end
+
+  # Returns the value of attribute network_id.
+  #
+  # source://ferrum//lib/ferrum/network/intercepted_request.rb#11
+  def network_id; end
+
+  # Sets the attribute network_id
+  #
+  # @param value the value to set the attribute network_id to.
+  #
+  # source://ferrum//lib/ferrum/network/intercepted_request.rb#11
+  def network_id=(_arg0); end
+
+  # source://ferrum//lib/ferrum/network/intercepted_request.rb#64
+  def referrer_policy; end
+
+  # Returns the value of attribute request_id.
+  #
+  # source://ferrum//lib/ferrum/network/intercepted_request.rb#11
+  def request_id; end
+
+  # Sets the attribute request_id
+  #
+  # @param value the value to set the attribute request_id to.
+  #
+  # source://ferrum//lib/ferrum/network/intercepted_request.rb#11
+  def request_id=(_arg0); end
+
+  # Returns the value of attribute resource_type.
+  #
+  # source://ferrum//lib/ferrum/network/intercepted_request.rb#11
+  def resource_type; end
+
+  # Sets the attribute resource_type
+  #
+  # @param value the value to set the attribute resource_type to.
+  #
+  # source://ferrum//lib/ferrum/network/intercepted_request.rb#11
+  def resource_type=(_arg0); end
+
+  # source://ferrum//lib/ferrum/network/intercepted_request.rb#36
+  def respond(**options); end
+
+  # Returns the value of attribute status.
+  #
+  # source://ferrum//lib/ferrum/network/intercepted_request.rb#11
+  def status; end
+
+  # Sets the attribute status
+  #
+  # @param value the value to set the attribute status to.
+  #
+  # source://ferrum//lib/ferrum/network/intercepted_request.rb#11
+  def status=(_arg0); end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network/intercepted_request.rb#24
+  def status?(value); end
+
+  private
+
+  # source://ferrum//lib/ferrum/network/intercepted_request.rb#78
+  def header_array(values); end
+end
+
+# source://ferrum//lib/ferrum/network.rb#14
+Ferrum::Network::REQUEST_STAGES = T.let(T.unsafe(nil), Array)
+
+# source://ferrum//lib/ferrum/network.rb#15
+Ferrum::Network::RESOURCE_TYPES = T.let(T.unsafe(nil), Array)
+
+# Represents a [Network.Request](https://chromedevtools.github.io/devtools-protocol/1-3/Network/#type-Request)
+# object.
+#
+# source://ferrum//lib/ferrum/network/request.rb#12
+class Ferrum::Network::Request
+  include ::Ferrum::Network::RequestParams
+
+  # Initializes the request object.
+  #
+  # @param params [Hash{String => Object}] The parsed JSON attributes.
+  # @return [Request] a new instance of Request
+  #
+  # source://ferrum//lib/ferrum/network/request.rb#21
+  def initialize(params); end
+
+  # The frame ID of the request.
+  #
+  # @return [String]
+  #
+  # source://ferrum//lib/ferrum/network/request.rb#70
+  def frame_id; end
+
+  # The request ID.
+  #
+  # @return [String]
+  #
+  # source://ferrum//lib/ferrum/network/request.rb#31
+  def id; end
+
+  # Determines if a request is of type ping.
+  #
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network/request.rb#88
+  def ping?; end
+
+  # The request timestamp.
+  #
+  # @return [Time]
+  #
+  # source://ferrum//lib/ferrum/network/request.rb#79
+  def time; end
+
+  # Converts the request to a Hash.
+  #
+  # @return [Hash{String => Object}] The params of the request.
+  #
+  # source://ferrum//lib/ferrum/network/request.rb#98
+  def to_h; end
+
+  # The request resouce type.
+  #
+  # @return [String]
+  #
+  # source://ferrum//lib/ferrum/network/request.rb#40
+  def type; end
+
+  # Determines if the request is of the given type.
+  #
+  # @param value [String, Symbol] The type value to compare against.
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network/request.rb#52
+  def type?(value); end
+
+  # Determines if the request is XHR.
+  #
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network/request.rb#61
+  def xhr?; end
+end
+
+# Common methods used by both {Request} and {InterceptedRequest}.
+#
+# source://ferrum//lib/ferrum/network/request_params.rb#8
+module Ferrum::Network::RequestParams
+  # The optional HTTP `POST` form data.
+  #
+  # @return [String, nil] The HTTP `POST` form data.
+  #
+  # source://ferrum//lib/ferrum/network/request_params.rb#51
+  def body; end
+
+  # The request headers.
+  #
+  # @return [Hash{String => String}]
+  #
+  # source://ferrum//lib/ferrum/network/request_params.rb#41
+  def headers; end
+
+  # The request method.
+  #
+  # @return [String]
+  #
+  # source://ferrum//lib/ferrum/network/request_params.rb#32
+  def method; end
+
+  # The optional HTTP `POST` form data.
+  #
+  # @return [String, nil] The HTTP `POST` form data.
+  #
+  # source://ferrum//lib/ferrum/network/request_params.rb#51
+  def post_data; end
+
+  # The URL for the request.
+  #
+  # @return [String]
+  #
+  # source://ferrum//lib/ferrum/network/request_params.rb#14
+  def url; end
+
+  # The URL fragment for the request.
+  #
+  # @return [String, nil]
+  #
+  # source://ferrum//lib/ferrum/network/request_params.rb#23
+  def url_fragment; end
+end
+
+# Represents a [Network.Response](https://chromedevtools.github.io/devtools-protocol/1-3/Network/#type-Response)
+# object.
+#
+# source://ferrum//lib/ferrum/network/response.rb#9
+class Ferrum::Network::Response
+  # Initializes the responses object.
+  #
+  # @param page [Page] The page associated with the network response.
+  # @param params [Hash{String => Object}] The parsed JSON attributes for the [Network.Response](https://chromedevtools.github.io/devtools-protocol/1-3/Network/#type-Response)
+  # @return [Response] a new instance of Response
+  #
+  # source://ferrum//lib/ferrum/network/response.rb#35
+  def initialize(page, params); end
+
+  # Compares the response's ID to another response's ID.
+  #
+  # @return [Boolean] Indicates whether the response has the same ID as the other response
+  #   object.
+  #
+  # source://ferrum//lib/ferrum/network/response.rb#163
+  def ==(other); end
+
+  # The response body.
+  #
+  # @return [String]
+  #
+  # source://ferrum//lib/ferrum/network/response.rb#127
+  def body; end
+
+  # The response body size.
+  #
+  # @return [Integer, nil]
+  #
+  # source://ferrum//lib/ferrum/network/response.rb#13
+  def body_size; end
+
+  # See https://crbug.com/883475
+  # Sometimes we never get the Network.responseReceived event.
+  # See https://crbug.com/764946
+  # `Network.loadingFinished` encodedDataLength contains both body and
+  # headers sizes received by wire.
+  #
+  # source://ferrum//lib/ferrum/network/response.rb#118
+  def body_size=(size); end
+
+  # The `Content-Type` header value of the response.
+  #
+  # @return [String, nil]
+  #
+  # source://ferrum//lib/ferrum/network/response.rb#109
+  def content_type; end
+
+  # The headers of the response.
+  #
+  # @return [Hash{String => String}]
+  #
+  # source://ferrum//lib/ferrum/network/response.rb#82
+  def headers; end
+
+  # The total size in bytes of the response.
+  #
+  # @return [Integer]
+  #
+  # source://ferrum//lib/ferrum/network/response.rb#91
+  def headers_size; end
+
+  # The request ID associated with the response.
+  #
+  # @return [String]
+  #
+  # source://ferrum//lib/ferrum/network/response.rb#46
+  def id; end
+
+  # Inspects the response object.
+  #
+  # @return [String]
+  #
+  # source://ferrum//lib/ferrum/network/response.rb#172
+  def inspect; end
+
+  # The response is fully loaded by the browser.
+  #
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network/response.rb#24
+  def loaded=(_arg0); end
+
+  # The response is fully loaded by the browser or not.
+  #
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network/response.rb#145
+  def loaded?; end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network/response.rb#138
+  def main?; end
+
+  # The parsed JSON attributes for the [Network.Response](https://chromedevtools.github.io/devtools-protocol/1-3/Network/#type-Response)
+  # object.
+  #
+  # @return [Hash{String => Object}]
+  #
+  # source://ferrum//lib/ferrum/network/response.rb#19
+  def params; end
+
+  # Whether the response is a redirect.
+  #
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/network/response.rb#152
+  def redirect?; end
+
+  # The HTTP status of the response.
+  #
+  # @return [Integer]
+  #
+  # source://ferrum//lib/ferrum/network/response.rb#64
+  def status; end
+
+  # The HTTP status text.
+  #
+  # @return [String]
+  #
+  # source://ferrum//lib/ferrum/network/response.rb#73
+  def status_text; end
+
+  # The parsed JSON attributes for the [Network.Response](https://chromedevtools.github.io/devtools-protocol/1-3/Network/#type-Response)
+  # object.
+  #
+  # @return [Hash{String => Object}]
+  #
+  # source://ferrum//lib/ferrum/network/response.rb#19
+  def to_h; end
+
+  # The resource type of the response.
+  #
+  # @return [String]
+  #
+  # source://ferrum//lib/ferrum/network/response.rb#100
+  def type; end
+
+  # The URL of the response.
+  #
+  # @return [String]
+  #
+  # source://ferrum//lib/ferrum/network/response.rb#55
+  def url; end
+end
+
+# source://ferrum//lib/ferrum/errors.rb#100
+class Ferrum::NoExecutionContextError < ::Ferrum::BrowserError
+  # @return [NoExecutionContextError] a new instance of NoExecutionContextError
+  #
+  # source://ferrum//lib/ferrum/errors.rb#101
+  def initialize(response = T.unsafe(nil)); end
+end
+
+# source://ferrum//lib/ferrum/errors.rb#5
+class Ferrum::NoSuchPageError < ::Ferrum::Error; end
+
+# source://ferrum//lib/ferrum/errors.rb#6
+class Ferrum::NoSuchTargetError < ::Ferrum::Error; end
+
+# source://ferrum//lib/ferrum/node.rb#4
+class Ferrum::Node
+  # @return [Node] a new instance of Node
+  #
+  # source://ferrum//lib/ferrum/node.rb#10
+  def initialize(frame, target_id, node_id, description); end
+
+  # source://ferrum//lib/ferrum/node.rb#190
+  def ==(other); end
+
+  # source://ferrum//lib/ferrum/node.rb#144
+  def [](name); end
+
+  # source://ferrum//lib/ferrum/node.rb#119
+  def at_css(selector); end
+
+  # source://ferrum//lib/ferrum/node.rb#115
+  def at_xpath(selector); end
+
+  # source://ferrum//lib/ferrum/node.rb#149
+  def attribute(name); end
+
+  # source://ferrum//lib/ferrum/node.rb#55
+  def blur; end
+
+  # mode: (:left | :right | :double)
+  # keys: (:alt, (:ctrl | :control), (:meta | :command), :shift)
+  # offset: { :x, :y, :position (:top | :center) }
+  #
+  # source://ferrum//lib/ferrum/node.rb#66
+  def click(mode: T.unsafe(nil), keys: T.unsafe(nil), offset: T.unsafe(nil), delay: T.unsafe(nil)); end
+
+  # Returns a hash of the computed styles for the node
+  #
+  # source://ferrum//lib/ferrum/node.rb#214
+  def computed_style; end
+
+  # source://ferrum//lib/ferrum/node.rb#127
+  def css(selector); end
+
+  # Returns the value of attribute description.
+  #
+  # source://ferrum//lib/ferrum/node.rb#8
+  def description; end
+
+  # source://ferrum//lib/ferrum/node.rb#186
+  def evaluate(expression); end
+
+  # source://ferrum//lib/ferrum/node.rb#203
+  def find_position(x: T.unsafe(nil), y: T.unsafe(nil), position: T.unsafe(nil)); end
+
+  # source://ferrum//lib/ferrum/node.rb#30
+  def focus; end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/node.rb#34
+  def focusable?; end
+
+  # source://ferrum//lib/ferrum/node.rb#26
+  def frame; end
+
+  # source://ferrum//lib/ferrum/node.rb#22
+  def frame_id; end
+
+  # @raise [NotImplementedError]
+  #
+  # source://ferrum//lib/ferrum/node.rb#87
+  def hover; end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/node.rb#95
+  def in_viewport?(of: T.unsafe(nil)); end
+
+  # FIXME: clear API for text and inner_text
+  #
+  # source://ferrum//lib/ferrum/node.rb#136
+  def inner_text; end
+
+  # source://ferrum//lib/ferrum/node.rb#199
+  def inspect; end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/node.rb#50
+  def moving?(delay: T.unsafe(nil)); end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/node.rb#18
+  def node?; end
+
+  # Returns the value of attribute node_id.
+  #
+  # source://ferrum//lib/ferrum/node.rb#8
+  def node_id; end
+
+  # Returns the value of attribute page.
+  #
+  # source://ferrum//lib/ferrum/node.rb#8
+  def page; end
+
+  # source://ferrum//lib/ferrum/node.rb#144
+  def property(name); end
+
+  # source://ferrum//lib/ferrum/node.rb#91
+  def scroll_into_view; end
+
+  # source://ferrum//lib/ferrum/node.rb#165
+  def select(*values, by: T.unsafe(nil)); end
+
+  # source://ferrum//lib/ferrum/node.rb#111
+  def select_file(value); end
+
+  # source://ferrum//lib/ferrum/node.rb#153
+  def selected; end
+
+  # Returns the value of attribute tag_name.
+  #
+  # source://ferrum//lib/ferrum/node.rb#8
+  def tag_name; end
+
+  # Returns the value of attribute target_id.
+  #
+  # source://ferrum//lib/ferrum/node.rb#8
+  def target_id; end
+
+  # source://ferrum//lib/ferrum/node.rb#131
+  def text; end
+
+  # source://ferrum//lib/ferrum/node.rb#59
+  def type(*keys); end
+
+  # source://ferrum//lib/ferrum/node.rb#140
+  def value; end
+
+  # source://ferrum//lib/ferrum/node.rb#41
+  def wait_for_stop_moving(delay: T.unsafe(nil), attempts: T.unsafe(nil)); end
+
+  # source://ferrum//lib/ferrum/node.rb#123
+  def xpath(selector); end
+
+  private
+
+  # source://ferrum//lib/ferrum/node.rb#222
+  def bounding_rect_coordinates; end
+
+  # @raise [CoordinatesNotFoundError]
+  #
+  # source://ferrum//lib/ferrum/node.rb#229
+  def content_quads; end
+
+  # source://ferrum//lib/ferrum/node.rb#236
+  def content_quads_with(delay: T.unsafe(nil)); end
+
+  # source://ferrum//lib/ferrum/node.rb#243
+  def get_position(points, offset_x, offset_y, position); end
+
+  # source://ferrum//lib/ferrum/node.rb#268
+  def to_points(quad); end
+end
+
+# source://ferrum//lib/ferrum/node.rb#6
+Ferrum::Node::MOVING_WAIT_ATTEMPTS = T.let(T.unsafe(nil), Integer)
+
+# source://ferrum//lib/ferrum/node.rb#5
+Ferrum::Node::MOVING_WAIT_DELAY = T.let(T.unsafe(nil), Float)
+
+# source://ferrum//lib/ferrum/errors.rb#60
+class Ferrum::NodeMovingError < ::Ferrum::Error
+  # @return [NodeMovingError] a new instance of NodeMovingError
+  #
+  # source://ferrum//lib/ferrum/errors.rb#61
+  def initialize(node, prev, current); end
+
+  # source://ferrum//lib/ferrum/errors.rb#68
+  def message; end
+end
+
+# source://ferrum//lib/ferrum/errors.rb#98
+class Ferrum::NodeNotFoundError < ::Ferrum::BrowserError; end
+
+# source://ferrum//lib/ferrum/errors.rb#7
+class Ferrum::NotImplementedError < ::Ferrum::Error; end
+
+# source://ferrum//lib/ferrum/page/frames.rb#6
+class Ferrum::Page
+  include ::Ferrum::Page::Animation
+  include ::Ferrum::Page::Screenshot
+  include ::Ferrum::Page::Frames
+  include ::Ferrum::Page::Stream
+  extend ::Forwardable
+
+  # @return [Page] a new instance of Page
+  #
+  # source://ferrum//lib/ferrum/page.rb#72
+  def initialize(client, context_id:, target_id:, proxy: T.unsafe(nil)); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def add_script_tag(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def add_style_tag(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def at_css(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def at_xpath(*args, **_arg1, &block); end
+
+  # Navigates to the previous URL in the history.
+  #
+  # @example
+  #   page.go_to("https://github.com/")
+  #   page.at_xpath("//a").click
+  #   page.back
+  #
+  # source://ferrum//lib/ferrum/page.rb#297
+  def back; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def base_url(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def body(*args, **_arg1, &block); end
+
+  # Enables/disables CSP bypass.
+  #
+  # @example
+  #   page.bypass_csp # => true
+  #   page.go_to("https://github.com/ruby-concurrency/concurrent-ruby/blob/master/docs-source/promises.in.md")
+  #   page.refresh
+  #   page.add_script_tag(content: "window.__injected = 42")
+  #   page.evaluate("window.__injected") # => 42
+  # @param enabled [Boolean]
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/page.rb#334
+  def bypass_csp(enabled: T.unsafe(nil)); end
+
+  # Client connection.
+  #
+  # @return [Client]
+  #
+  # source://ferrum//lib/ferrum/page.rb#40
+  def client; end
+
+  # source://ferrum//lib/ferrum/page.rb#124
+  def close; end
+
+  # source://ferrum//lib/ferrum/page.rb#132
+  def close_connection; end
+
+  # source://ferrum//lib/ferrum/page.rb#339
+  def command(method, wait: T.unsafe(nil), slowmoable: T.unsafe(nil), **params); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def content=(*args, **_arg1, &block); end
+
+  # Returns the value of attribute context_id.
+  #
+  # source://ferrum//lib/ferrum/page.rb#35
+  def context_id; end
+
+  # Cookie store.
+  #
+  # @return [Cookies]
+  #
+  # source://ferrum//lib/ferrum/page.rb#65
+  def cookies; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def css(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def current_title(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def current_url(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def default_user_agent(*args, **_arg1, &block); end
+
+  # Disables JavaScript execution from the HTML source for the page.
+  #
+  # This doesn't prevent users evaluate JavaScript with Ferrum.
+  #
+  # source://ferrum//lib/ferrum/page.rb#177
+  def disable_javascript; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def doctype(*args, **_arg1, &block); end
+
+  # source://ferrum//lib/ferrum/page.rb#394
+  def document_node_id; end
+
+  # Downloads object.
+  #
+  # @return [Downloads]
+  #
+  # source://ferrum//lib/ferrum/page.rb#70
+  def downloads; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def evaluate(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def evaluate_async(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def evaluate_func(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def evaluate_on(*args, **_arg1, &block); end
+
+  # Returns the value of attribute event.
+  #
+  # source://ferrum//lib/ferrum/page.rb#35
+  def event; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def execute(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def execution_id(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def execution_id!(*args, **_arg1, &block); end
+
+  # Navigates to the next URL in the history.
+  #
+  # @example
+  #   page.go_to("https://github.com/")
+  #   page.at_xpath("//a").click
+  #   page.back
+  #   page.forward
+  #
+  # source://ferrum//lib/ferrum/page.rb#310
+  def forward; end
+
+  # Navigates the page to a URL.
+  #
+  # @example
+  #   page.go_to("https://github.com/")
+  # @param url [String, nil] The URL to navigate to. The url should include scheme unless you set
+  #   `{Browser#base_url = url}` when configuring.
+  #
+  # source://ferrum//lib/ferrum/page.rb#105
+  def go(url = T.unsafe(nil)); end
+
+  # Navigates the page to a URL.
+  #
+  # @example
+  #   page.go_to("https://github.com/")
+  # @param url [String, nil] The URL to navigate to. The url should include scheme unless you set
+  #   `{Browser#base_url = url}` when configuring.
+  #
+  # source://ferrum//lib/ferrum/page.rb#105
+  def go_to(url = T.unsafe(nil)); end
+
+  # Navigates the page to a URL.
+  #
+  # @example
+  #   page.go_to("https://github.com/")
+  # @param url [String, nil] The URL to navigate to. The url should include scheme unless you set
+  #   `{Browser#base_url = url}` when configuring.
+  #
+  # source://ferrum//lib/ferrum/page.rb#105
+  def goto(url = T.unsafe(nil)); end
+
+  # Headers object.
+  #
+  # @return [Headers]
+  #
+  # source://ferrum//lib/ferrum/page.rb#60
+  def headers; end
+
+  # Keyboard object.
+  #
+  # @return [Keyboard]
+  #
+  # source://ferrum//lib/ferrum/page.rb#50
+  def keyboard; end
+
+  # Mouse object.
+  #
+  # @return [Mouse]
+  #
+  # source://ferrum//lib/ferrum/page.rb#45
+  def mouse; end
+
+  # Network object.
+  #
+  # @return [Network]
+  #
+  # source://ferrum//lib/ferrum/page.rb#55
+  def network; end
+
+  # source://ferrum//lib/ferrum/page.rb#357
+  def on(name, &block); end
+
+  # The current position of the window.
+  #
+  # @example
+  #   page.position # => [10, 20]
+  # @return [(Integer, Integer)] The left, top coordinates of the window.
+  #
+  # source://ferrum//lib/ferrum/page.rb#190
+  def position; end
+
+  # Sets the position of the window.
+  #
+  # @example
+  #   page.position = { left: 10, top: 20 }
+  # @option options
+  # @option options
+  # @param options [Hash{Symbol => Object}]
+  #
+  # source://ferrum//lib/ferrum/page.rb#208
+  def position=(options); end
+
+  # Returns the value of attribute referrer.
+  #
+  # source://ferrum//lib/ferrum/page.rb#34
+  def referrer; end
+
+  # Sets the attribute referrer
+  #
+  # @param value the value to set the attribute referrer to.
+  #
+  # source://ferrum//lib/ferrum/page.rb#34
+  def referrer=(_arg0); end
+
+  # Reloads the current page.
+  #
+  # @example
+  #   page.go_to("https://github.com/")
+  #   page.refresh
+  #
+  # source://ferrum//lib/ferrum/page.rb#273
+  def refresh; end
+
+  # Reloads the current page.
+  #
+  # @example
+  #   page.go_to("https://github.com/")
+  #   page.refresh
+  #
+  # source://ferrum//lib/ferrum/page.rb#273
+  def reload; end
+
+  # source://ferrum//lib/ferrum/page.rb#160
+  def resize(width: T.unsafe(nil), height: T.unsafe(nil), fullscreen: T.unsafe(nil)); end
+
+  # Overrides device screen dimensions and emulates viewport according to parameters
+  #
+  # Read more [here](https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-setDeviceMetricsOverride).
+  #
+  # @param width [Integer] width value in pixels. 0 disables the override
+  # @param height [Integer] height value in pixels. 0 disables the override
+  # @param scale_factor [Float] device scale factor value. 0 disables the override
+  # @param mobile [Boolean] whether to emulate mobile device
+  #
+  # source://ferrum//lib/ferrum/page.rb#149
+  def set_viewport(width:, height:, scale_factor: T.unsafe(nil), mobile: T.unsafe(nil)); end
+
+  # Stop all navigations and loading pending resources on the page.
+  #
+  # @example
+  #   page.go_to("https://github.com/")
+  #   page.stop
+  #
+  # source://ferrum//lib/ferrum/page.rb#285
+  def stop; end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/page.rb#382
+  def subscribed?(event); end
+
+  # Returns the value of attribute target_id.
+  #
+  # source://ferrum//lib/ferrum/page.rb#35
+  def target_id; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def timeout(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def timeout=(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def title(*args, **_arg1, &block); end
+
+  # Returns the value of attribute tracing.
+  #
+  # source://ferrum//lib/ferrum/page.rb#35
+  def tracing; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def url(*args, **_arg1, &block); end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/page.rb#390
+  def use_authorized_proxy?; end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/page.rb#386
+  def use_proxy?; end
+
+  # source://ferrum//lib/ferrum/page.rb#314
+  def wait_for_reload(timeout = T.unsafe(nil)); end
+
+  # Current window bounds.
+  #
+  # @example
+  #   page.window_bounds # => { "left": 0, "top": 1286, "width": 10, "height": 10, "windowState": "normal" }
+  # @return [Hash{String => (Integer, String)}]
+  #
+  # source://ferrum//lib/ferrum/page.rb#250
+  def window_bounds; end
+
+  # Sets the position of the window.
+  #
+  # @example
+  #   page.window_bounds = { left: 10, top: 20, width: 1024, height: 768, window_state: "normal" }
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @param bounds [Hash{Symbol => Object}]
+  # @param options [Hash] a customizable set of options
+  #
+  # source://ferrum//lib/ferrum/page.rb#234
+  def window_bounds=(bounds); end
+
+  # Current window id.
+  #
+  # @example
+  #   page.window_id # => 1
+  # @return [Integer]
+  #
+  # source://ferrum//lib/ferrum/page.rb#262
+  def window_id; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def xpath(*args, **_arg1, &block); end
+
+  private
+
+  # source://ferrum//lib/ferrum/page.rb#493
+  def combine_url!(url_or_path); end
+
+  # source://ferrum//lib/ferrum/page.rb#479
+  def history_navigate(delta:); end
+
+  # source://ferrum//lib/ferrum/page.rb#466
+  def inject_extensions; end
+
+  # source://ferrum//lib/ferrum/page.rb#430
+  def prepare_page; end
+
+  # source://ferrum//lib/ferrum/page.rb#504
+  def proxy=(options); end
+
+  # source://ferrum//lib/ferrum/page.rb#400
+  def subscribe; end
+end
+
+# source://ferrum//lib/ferrum/page/animation.rb#5
+module Ferrum::Page::Animation
+  # Returns playback rate for CSS animations, defaults to `1`.
+  #
+  # @return [Integer]
+  #
+  # source://ferrum//lib/ferrum/page/animation.rb#11
+  def playback_rate; end
+
+  # Sets playback rate of CSS animations.
+  #
+  # @example
+  #   browser = Ferrum::Browser.new
+  #   browser.playback_rate = 2000
+  #   browser.go_to("https://google.com")
+  #   browser.playback_rate # => 2000
+  # @param value [Integer]
+  #
+  # source://ferrum//lib/ferrum/page/animation.rb#26
+  def playback_rate=(value); end
+end
+
+# source://ferrum//lib/ferrum/page/frames.rb#7
+module Ferrum::Page::Frames
+  # Find frame by given options.
+  #
+  # @example
+  #   page.frame_by(id: "C6D104CE454A025FBCF22B98DE612B12")
+  # @param id [String] Unique frame's id that page provides.
+  # @param name [String] Frame's name if there's one.
+  # @param execution_id [String] Frame's context execution id.
+  # @return [Frame, nil] The matching frame.
+  #
+  # source://ferrum//lib/ferrum/page/frames.rb#56
+  def frame_by(id: T.unsafe(nil), name: T.unsafe(nil), execution_id: T.unsafe(nil)); end
+
+  # Returns all the frames current page have.
+  #
+  # @example
+  #   page.go_to("https://www.w3schools.com/tags/tag_frame.asp")
+  #   page.frames # =>
+  #   # [
+  #   #   #<Ferrum::Frame
+  #   #     @id="C6D104CE454A025FBCF22B98DE612B12"
+  #   #     @parent_id=nil @name=nil @state=:stopped_loading @execution_id=1>,
+  #   #   #<Ferrum::Frame
+  #   #     @id="C09C4E4404314AAEAE85928EAC109A93"
+  #   #     @parent_id="C6D104CE454A025FBCF22B98DE612B12" @state=:stopped_loading @execution_id=2>,
+  #   #   #<Ferrum::Frame
+  #   #     @id="2E9C7F476ED09D87A42F2FEE3C6FBC3C"
+  #   #     @parent_id="C6D104CE454A025FBCF22B98DE612B12" @state=:stopped_loading @execution_id=3>,
+  #   #   ...
+  #   # ]
+  # @return [Array<Frame>]
+  #
+  # source://ferrum//lib/ferrum/page/frames.rb#34
+  def frames; end
+
+  # source://ferrum//lib/ferrum/page/frames.rb#68
+  def frames_subscribe; end
+
+  # The page's main frame, the top of the tree and the parent of all frames.
+  #
+  # @return [Frame]
+  #
+  # source://ferrum//lib/ferrum/page/frames.rb#11
+  def main_frame; end
+
+  private
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/page/frames.rb#191
+  def idling?; end
+
+  # source://ferrum//lib/ferrum/page/frames.rb#159
+  def subscribe_execution_context_created; end
+
+  # source://ferrum//lib/ferrum/page/frames.rb#177
+  def subscribe_execution_context_destroyed; end
+
+  # source://ferrum//lib/ferrum/page/frames.rb#185
+  def subscribe_execution_contexts_cleared; end
+
+  # source://ferrum//lib/ferrum/page/frames.rb#86
+  def subscribe_frame_attached; end
+
+  # source://ferrum//lib/ferrum/page/frames.rb#93
+  def subscribe_frame_detached; end
+
+  # source://ferrum//lib/ferrum/page/frames.rb#113
+  def subscribe_frame_navigated; end
+
+  # source://ferrum//lib/ferrum/page/frames.rb#105
+  def subscribe_frame_started_loading; end
+
+  # source://ferrum//lib/ferrum/page/frames.rb#125
+  def subscribe_frame_stopped_loading; end
+
+  # source://ferrum//lib/ferrum/page/frames.rb#143
+  def subscribe_navigated_within_document; end
+
+  # source://ferrum//lib/ferrum/page/frames.rb#149
+  def subscribe_request_will_be_sent; end
+end
+
+# source://ferrum//lib/ferrum/page.rb#20
+Ferrum::Page::GOTO_WAIT = T.let(T.unsafe(nil), Float)
+
+# source://ferrum//lib/ferrum/page/screenshot.rb#7
+module Ferrum::Page::Screenshot
+  # source://ferrum//lib/ferrum/page/screenshot.rb#156
+  def device_pixel_ratio; end
+
+  # source://ferrum//lib/ferrum/page/screenshot.rb#162
+  def document_size; end
+
+  # Saves MHTML on a disk or returns it as a string.
+  #
+  # @example
+  #   page.go_to("https://google.com/")
+  #   page.mhtml(path: "google.mhtml") # => 87742
+  # @param path [String, nil] The path to save a file on the disk.
+  #
+  # source://ferrum//lib/ferrum/page/screenshot.rb#143
+  def mhtml(path: T.unsafe(nil)); end
+
+  # Saves PDF on a disk or returns it as Base64.
+  #
+  # @example
+  #   page.go_to("https://google.com/")
+  #   # Save to disk as a PDF
+  #   page.pdf(path: "google.pdf", paper_width: 1.0, paper_height: 1.0) # => true
+  # @note See other [native options](https://chromedevtools.github.io/devtools-protocol/tot/Page#method-printToPDF) you
+  #   can pass.
+  # @option opts
+  # @option opts
+  # @option opts
+  # @option opts
+  # @option opts
+  # @option opts
+  # @option opts
+  # @param opts [Hash{Symbol => Object}]
+  #
+  # source://ferrum//lib/ferrum/page/screenshot.rb#126
+  def pdf(**opts); end
+
+  # Saves screenshot on a disk or returns it as base64.
+  #
+  # @example
+  #   page.go_to("https://google.com/")
+  # @example Save on the disk in PNG:
+  #   page.screenshot(path: "google.png") # => 134660
+  # @example Save on the disk in JPG:
+  #   page.screenshot(path: "google.jpg") # => 30902
+  # @example Save to Base64 the whole page not only viewport and reduce quality:
+  #   page.screenshot(full: true, quality: 60) # "iVBORw0KGgoAAAANS...
+  # @example Save with specific background color:
+  #   page.screenshot(background_color: Ferrum::RGBA.new(0, 0, 0, 0.0))
+  # @option opts
+  # @option opts
+  # @option opts
+  # @option opts
+  # @option opts
+  # @option opts
+  # @option opts
+  # @option opts
+  # @option opts
+  # @param opts [Hash{Symbol => Object}]
+  #
+  # source://ferrum//lib/ferrum/page/screenshot.rb#80
+  def screenshot(**opts); end
+
+  # source://ferrum//lib/ferrum/page/screenshot.rb#150
+  def viewport_size; end
+
+  private
+
+  # source://ferrum//lib/ferrum/page/screenshot.rb#223
+  def area_options(full, selector, scale, area = T.unsafe(nil)); end
+
+  # source://ferrum//lib/ferrum/page/screenshot.rb#252
+  def bounding_rect(selector); end
+
+  # source://ferrum//lib/ferrum/page/screenshot.rb#270
+  def capture_screenshot(options, full, background_color); end
+
+  # source://ferrum//lib/ferrum/page/screenshot.rb#177
+  def common_options(encoding: T.unsafe(nil), path: T.unsafe(nil), **_); end
+
+  # source://ferrum//lib/ferrum/page/screenshot.rb#213
+  def format_options(format, path, quality); end
+
+  # source://ferrum//lib/ferrum/page/screenshot.rb#242
+  def full_window_area; end
+
+  # source://ferrum//lib/ferrum/page/screenshot.rb#278
+  def maybe_resize_fullscreen(full); end
+
+  # source://ferrum//lib/ferrum/page/screenshot.rb#183
+  def pdf_options(**opts); end
+
+  # source://ferrum//lib/ferrum/page/screenshot.rb#171
+  def save_file(path, data); end
+
+  # source://ferrum//lib/ferrum/page/screenshot.rb#200
+  def screenshot_options(path = T.unsafe(nil), format: T.unsafe(nil), scale: T.unsafe(nil), **options); end
+
+  # source://ferrum//lib/ferrum/page/screenshot.rb#264
+  def to_camel_case(option); end
+
+  # source://ferrum//lib/ferrum/page/screenshot.rb#247
+  def viewport_area; end
+
+  # source://ferrum//lib/ferrum/page/screenshot.rb#289
+  def with_background_color(color); end
+end
+
+# source://ferrum//lib/ferrum/page/screenshot.rb#9
+Ferrum::Page::Screenshot::AREA_WARNING = T.let(T.unsafe(nil), String)
+
+# source://ferrum//lib/ferrum/page/screenshot.rb#11
+Ferrum::Page::Screenshot::DEFAULT_PDF_OPTIONS = T.let(T.unsafe(nil), Hash)
+
+# source://ferrum//lib/ferrum/page/screenshot.rb#8
+Ferrum::Page::Screenshot::FULL_WARNING = T.let(T.unsafe(nil), String)
+
+# source://ferrum//lib/ferrum/page/screenshot.rb#18
+Ferrum::Page::Screenshot::PAPER_FORMATS = T.let(T.unsafe(nil), Hash)
+
+# source://ferrum//lib/ferrum/page/stream.rb#5
+module Ferrum::Page::Stream
+  # source://ferrum//lib/ferrum/page/stream.rb#27
+  def stream(output:, handle:); end
+
+  # source://ferrum//lib/ferrum/page/stream.rb#8
+  def stream_to(path:, encoding:, handle:); end
+
+  # source://ferrum//lib/ferrum/page/stream.rb#16
+  def stream_to_file(path:, handle:); end
+
+  # source://ferrum//lib/ferrum/page/stream.rb#21
+  def stream_to_memory(encoding:, handle:); end
+end
+
+# source://ferrum//lib/ferrum/page/stream.rb#6
+Ferrum::Page::Stream::STREAM_CHUNK = T.let(T.unsafe(nil), Integer)
+
+# source://ferrum//lib/ferrum/page/tracing.rb#5
+class Ferrum::Page::Tracing
+  # @return [Tracing] a new instance of Tracing
+  #
+  # source://ferrum//lib/ferrum/page/tracing.rb#17
+  def initialize(page); end
+
+  # Accepts block, records trace and by default returns trace data from `Tracing.tracingComplete` event as output.
+  #
+  # @param path [String, nil] Save data on the disk.
+  # @param encoding [:binary, :base64] Encode output as Base64 or plain text.
+  # @param timeout [Float, nil] Wait until file streaming finishes in the specified time or raise
+  #   error.
+  # @param screenshots [Boolean] capture screenshots in the trace.
+  # @param trace_config [Hash{String => Object}] config for [trace](https://chromedevtools.github.io/devtools-protocol/tot/Tracing/#type-TraceConfig),
+  #   for categories see [getCategories](https://chromedevtools.github.io/devtools-protocol/tot/Tracing/#method-getCategories),
+  #   only one trace config can be active at a time per browser.
+  # @return [String, true] The trace data from the `Tracing.tracingComplete` event.
+  #   When `path` is specified returns `true` and stores trace data into
+  #   file.
+  #
+  # source://ferrum//lib/ferrum/page/tracing.rb#48
+  def record(path: T.unsafe(nil), encoding: T.unsafe(nil), timeout: T.unsafe(nil), trace_config: T.unsafe(nil), screenshots: T.unsafe(nil)); end
+
+  private
+
+  # source://ferrum//lib/ferrum/page/tracing.rb#70
+  def start(config); end
+
+  # source://ferrum//lib/ferrum/page/tracing.rb#74
+  def stop; end
+
+  # source://ferrum//lib/ferrum/page/tracing.rb#92
+  def stream_handle(handle); end
+
+  # source://ferrum//lib/ferrum/page/tracing.rb#78
+  def subscribe_tracing_complete; end
+end
+
+# source://ferrum//lib/ferrum/page/tracing.rb#12
+Ferrum::Page::Tracing::DEFAULT_TRACE_CONFIG = T.let(T.unsafe(nil), Hash)
+
+# source://ferrum//lib/ferrum/page/tracing.rb#6
+Ferrum::Page::Tracing::EXCLUDED_CATEGORIES = T.let(T.unsafe(nil), Array)
+
+# source://ferrum//lib/ferrum/page/tracing.rb#8
+Ferrum::Page::Tracing::INCLUDED_CATEGORIES = T.let(T.unsafe(nil), Array)
+
+# source://ferrum//lib/ferrum/page/tracing.rb#7
+Ferrum::Page::Tracing::SCREENSHOT_CATEGORIES = T.let(T.unsafe(nil), Array)
+
+# source://ferrum//lib/ferrum/errors.rb#18
+class Ferrum::PendingConnectionsError < ::Ferrum::StatusError
+  # @return [PendingConnectionsError] a new instance of PendingConnectionsError
+  #
+  # source://ferrum//lib/ferrum/errors.rb#21
+  def initialize(url, pendings = T.unsafe(nil)); end
+
+  # Returns the value of attribute pendings.
+  #
+  # source://ferrum//lib/ferrum/errors.rb#19
+  def pendings; end
+end
+
+# source://ferrum//lib/ferrum/errors.rb#45
+class Ferrum::ProcessTimeoutError < ::Ferrum::Error
+  # @return [ProcessTimeoutError] a new instance of ProcessTimeoutError
+  #
+  # source://ferrum//lib/ferrum/errors.rb#48
+  def initialize(timeout, output); end
+
+  # Returns the value of attribute output.
+  #
+  # source://ferrum//lib/ferrum/errors.rb#46
+  def output; end
+end
+
+# source://ferrum//lib/ferrum/proxy.rb#8
+class Ferrum::Proxy
+  # @return [Proxy] a new instance of Proxy
+  #
+  # source://ferrum//lib/ferrum/proxy.rb#15
+  def initialize(host: T.unsafe(nil), port: T.unsafe(nil), user: T.unsafe(nil), password: T.unsafe(nil)); end
+
+  # Returns the value of attribute host.
+  #
+  # source://ferrum//lib/ferrum/proxy.rb#13
+  def host; end
+
+  # Returns the value of attribute password.
+  #
+  # source://ferrum//lib/ferrum/proxy.rb#13
+  def password; end
+
+  # Returns the value of attribute port.
+  #
+  # source://ferrum//lib/ferrum/proxy.rb#13
+  def port; end
+
+  # source://ferrum//lib/ferrum/proxy.rb#48
+  def rotate(host:, port:, user: T.unsafe(nil), password: T.unsafe(nil)); end
+
+  # source://ferrum//lib/ferrum/proxy.rb#23
+  def start; end
+
+  # source://ferrum//lib/ferrum/proxy.rb#54
+  def stop; end
+
+  # Returns the value of attribute user.
+  #
+  # source://ferrum//lib/ferrum/proxy.rb#13
+  def user; end
+
+  class << self
+    # source://ferrum//lib/ferrum/proxy.rb#9
+    def start(**args); end
+  end
+end
+
+# Fix hanging proxy at exit
+#
+# source://ferrum//lib/ferrum/proxy.rb#60
+class Ferrum::Proxy::HTTPProxyServer < ::WEBrick::HTTPProxyServer
+  # @raise [WEBrick::HTTPStatus::InternalServerError]
+  #
+  # source://ferrum//lib/ferrum/proxy.rb#62
+  def do_CONNECT(req, res); end
+end
+
+# source://ferrum//lib/ferrum/rgba.rb#4
+class Ferrum::RGBA
+  # @return [RGBA] a new instance of RGBA
+  #
+  # source://ferrum//lib/ferrum/rgba.rb#5
+  def initialize(red, green, blue, alpha); end
+
+  # source://ferrum//lib/ferrum/rgba.rb#14
+  def to_h; end
+
+  private
+
+  # Returns the value of attribute alpha.
+  #
+  # source://ferrum//lib/ferrum/rgba.rb#20
+  def alpha; end
+
+  # Sets the attribute alpha
+  #
+  # @param value the value to set the attribute alpha to.
+  #
+  # source://ferrum//lib/ferrum/rgba.rb#20
+  def alpha=(_arg0); end
+
+  # Returns the value of attribute blue.
+  #
+  # source://ferrum//lib/ferrum/rgba.rb#20
+  def blue; end
+
+  # Sets the attribute blue
+  #
+  # @param value the value to set the attribute blue to.
+  #
+  # source://ferrum//lib/ferrum/rgba.rb#20
+  def blue=(_arg0); end
+
+  # Returns the value of attribute green.
+  #
+  # source://ferrum//lib/ferrum/rgba.rb#20
+  def green; end
+
+  # Sets the attribute green
+  #
+  # @param value the value to set the attribute green to.
+  #
+  # source://ferrum//lib/ferrum/rgba.rb#20
+  def green=(_arg0); end
+
+  # Returns the value of attribute red.
+  #
+  # source://ferrum//lib/ferrum/rgba.rb#20
+  def red; end
+
+  # Sets the attribute red
+  #
+  # @param value the value to set the attribute red to.
+  #
+  # source://ferrum//lib/ferrum/rgba.rb#20
+  def red=(_arg0); end
+
+  # source://ferrum//lib/ferrum/rgba.rb#22
+  def validate; end
+
+  # @raise [ArgumentError]
+  #
+  # source://ferrum//lib/ferrum/rgba.rb#33
+  def validate_alpha; end
+
+  # @raise [ArgumentError]
+  #
+  # source://ferrum//lib/ferrum/rgba.rb#27
+  def validate_color(value); end
+end
+
+# source://ferrum//lib/ferrum/errors.rb#39
+class Ferrum::ScriptTimeoutError < ::Ferrum::Error
+  # source://ferrum//lib/ferrum/errors.rb#40
+  def message; end
+end
+
+# source://ferrum//lib/ferrum/errors.rb#10
+class Ferrum::ServerError < ::Ferrum::Error; end
+
+# source://ferrum//lib/ferrum/client.rb#8
+class Ferrum::SessionClient
+  # @return [SessionClient] a new instance of SessionClient
+  #
+  # source://ferrum//lib/ferrum/client.rb#15
+  def initialize(client, session_id); end
+
+  # Returns the value of attribute client.
+  #
+  # source://ferrum//lib/ferrum/client.rb#9
+  def client; end
+
+  # source://ferrum//lib/ferrum/client.rb#41
+  def close; end
+
+  # source://ferrum//lib/ferrum/client.rb#20
+  def command(method, async: T.unsafe(nil), **params); end
+
+  # source://ferrum//lib/ferrum/client.rb#37
+  def method_missing(name, *_arg1, **_arg2, &_arg3); end
+
+  # source://ferrum//lib/ferrum/client.rb#25
+  def on(event, &block); end
+
+  # Returns the value of attribute session_id.
+  #
+  # source://ferrum//lib/ferrum/client.rb#9
+  def session_id; end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/client.rb#29
+  def subscribed?(event); end
+
+  private
+
+  # source://ferrum//lib/ferrum/client.rb#47
+  def build_message(method, params); end
+
+  # source://ferrum//lib/ferrum/client.rb#51
+  def event_name(event); end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/client.rb#33
+  def respond_to_missing?(name, include_private); end
+
+  class << self
+    # source://ferrum//lib/ferrum/client.rb#11
+    def event_name(event, session_id); end
+  end
+end
+
+# source://ferrum//lib/ferrum/errors.rb#12
+class Ferrum::StatusError < ::Ferrum::Error
+  # @return [StatusError] a new instance of StatusError
+  #
+  # source://ferrum//lib/ferrum/errors.rb#13
+  def initialize(url, message = T.unsafe(nil)); end
+end
+
+# source://ferrum//lib/ferrum/target.rb#4
+class Ferrum::Target
+  # @return [Target] a new instance of Target
+  #
+  # source://ferrum//lib/ferrum/target.rb#13
+  def initialize(browser_client, session_id = T.unsafe(nil), params = T.unsafe(nil)); end
+
+  # source://ferrum//lib/ferrum/target.rb#37
+  def build_page(**options); end
+
+  # source://ferrum//lib/ferrum/target.rb#33
+  def client; end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/target.rb#25
+  def connected?; end
+
+  # source://ferrum//lib/ferrum/target.rb#62
+  def context_id; end
+
+  # source://ferrum//lib/ferrum/target.rb#42
+  def id; end
+
+  # source://ferrum//lib/ferrum/target.rb#70
+  def maybe_sleep_if_new_window; end
+
+  # source://ferrum//lib/ferrum/target.rb#58
+  def opener_id; end
+
+  # Returns the value of attribute options.
+  #
+  # source://ferrum//lib/ferrum/target.rb#11
+  def options; end
+
+  # source://ferrum//lib/ferrum/target.rb#29
+  def page; end
+
+  # You can create page yourself and assign it to target, used in cuprite
+  # where we enhance page class and build page ourselves.
+  #
+  # source://ferrum//lib/ferrum/target.rb#9
+  def page=(_arg0); end
+
+  # Returns the value of attribute session_id.
+  #
+  # source://ferrum//lib/ferrum/target.rb#11
+  def session_id; end
+
+  # source://ferrum//lib/ferrum/target.rb#50
+  def title; end
+
+  # source://ferrum//lib/ferrum/target.rb#46
+  def type; end
+
+  # source://ferrum//lib/ferrum/target.rb#21
+  def update(params); end
+
+  # source://ferrum//lib/ferrum/target.rb#54
+  def url; end
+
+  # @return [Boolean]
+  #
+  # source://ferrum//lib/ferrum/target.rb#66
+  def window?; end
+
+  private
+
+  # source://ferrum//lib/ferrum/target.rb#77
+  def build_client; end
+
+  # source://ferrum//lib/ferrum/target.rb#83
+  def ws_url; end
+end
+
+# source://ferrum//lib/ferrum/target.rb#5
+Ferrum::Target::NEW_WINDOW_WAIT = T.let(T.unsafe(nil), Float)
+
+# source://ferrum//lib/ferrum/errors.rb#30
+class Ferrum::TimeoutError < ::Ferrum::Error
+  # source://ferrum//lib/ferrum/errors.rb#31
+  def message; end
+end
+
+# source://ferrum//lib/ferrum/utils/event.rb#4
+module Ferrum::Utils; end
+
+# source://ferrum//lib/ferrum/utils/attempt.rb#5
+module Ferrum::Utils::Attempt
+  private
+
+  # source://ferrum//lib/ferrum/utils/attempt.rb#8
+  def with_retry(errors:, max:, wait:); end
+
+  class << self
+    # source://ferrum//lib/ferrum/utils/attempt.rb#8
+    def with_retry(errors:, max:, wait:); end
+  end
+end
+
+# source://ferrum//lib/ferrum/utils/elapsed_time.rb#5
+module Ferrum::Utils::ElapsedTime
+  private
+
+  # source://ferrum//lib/ferrum/utils/elapsed_time.rb#12
+  def elapsed_time(start = T.unsafe(nil)); end
+
+  # source://ferrum//lib/ferrum/utils/elapsed_time.rb#16
+  def monotonic_time; end
+
+  # source://ferrum//lib/ferrum/utils/elapsed_time.rb#8
+  def start; end
+
+  # source://ferrum//lib/ferrum/utils/elapsed_time.rb#20
+  def timeout?(start, timeout); end
+
+  class << self
+    # source://ferrum//lib/ferrum/utils/elapsed_time.rb#12
+    def elapsed_time(start = T.unsafe(nil)); end
+
+    # source://ferrum//lib/ferrum/utils/elapsed_time.rb#16
+    def monotonic_time; end
+
+    # source://ferrum//lib/ferrum/utils/elapsed_time.rb#8
+    def start; end
+
+    # @return [Boolean]
+    #
+    # source://ferrum//lib/ferrum/utils/elapsed_time.rb#20
+    def timeout?(start, timeout); end
+  end
+end
+
+# source://ferrum//lib/ferrum/utils/event.rb#5
+class Ferrum::Utils::Event < ::Concurrent::Event
+  # source://ferrum//lib/ferrum/utils/event.rb#6
+  def iteration; end
+
+  # source://ferrum//lib/ferrum/utils/event.rb#10
+  def reset; end
+end
+
+# source://ferrum//lib/ferrum/utils/platform.rb#5
+module Ferrum::Utils::Platform
+  private
+
+  # source://ferrum//lib/ferrum/utils/platform.rb#19
+  def mac?; end
+
+  # source://ferrum//lib/ferrum/utils/platform.rb#23
+  def mac_arm?; end
+
+  # source://ferrum//lib/ferrum/utils/platform.rb#27
+  def mri?; end
+
+  # source://ferrum//lib/ferrum/utils/platform.rb#8
+  def name; end
+
+  # source://ferrum//lib/ferrum/utils/platform.rb#15
+  def windows?; end
+
+  class << self
+    # @return [Boolean]
+    #
+    # source://ferrum//lib/ferrum/utils/platform.rb#19
+    def mac?; end
+
+    # @return [Boolean]
+    #
+    # source://ferrum//lib/ferrum/utils/platform.rb#23
+    def mac_arm?; end
+
+    # @return [Boolean]
+    #
+    # source://ferrum//lib/ferrum/utils/platform.rb#27
+    def mri?; end
+
+    # source://ferrum//lib/ferrum/utils/platform.rb#8
+    def name; end
+
+    # @return [Boolean]
+    #
+    # source://ferrum//lib/ferrum/utils/platform.rb#15
+    def windows?; end
+  end
+end
+
+# source://ferrum//lib/ferrum/utils/thread.rb#5
+module Ferrum::Utils::Thread
+  private
+
+  # source://ferrum//lib/ferrum/utils/thread.rb#8
+  def spawn(abort_on_exception: T.unsafe(nil)); end
+
+  class << self
+    # source://ferrum//lib/ferrum/utils/thread.rb#8
+    def spawn(abort_on_exception: T.unsafe(nil)); end
+  end
+end

@@ -2009,30 +2009,30 @@ class Aws::EC2Metadata
   #   result as a String. A path starts with the API version (usually
   #   "/latest/"). See the instance data categories for possible paths.
   #
+  # @example Fetching the instance ID
+  #
+  #   ec2_metadata = Aws::EC2Metadata.new
+  #   ec2_metadata.get('/latest/meta-data/instance-id')
+  #   => "i-023a25f10a73a0f79"
   # @example Fetching and parsing JSON meta-data
   #
   #   require 'json'
   #   data = ec2_metadata.get('/latest/dynamic/instance-identity/document')
   #   JSON.parse(data)
   #   => {"accountId"=>"012345678912", ... }
-  # @example Fetching the instance ID
-  #
-  #   ec2_metadata = Aws::EC2Metadata.new
-  #   ec2_metadata.get('/latest/meta-data/instance-id')
-  #   => "i-023a25f10a73a0f79"
   # @example Fetching and parsing directory listings
   #
   #   listing = ec2_metadata.get('/latest/meta-data')
   #   listing.split(10.chr)
   #   => ["ami-id", "ami-launch-index", ...]
+  # @note This implementation always returns a String and will not parse any
+  #   responses. Parsable responses may include JSON objects or directory
+  #   listings, which are strings separated by line feeds (ASCII 10).
   # @note Unlike other services, IMDS does not have a service API model. This
   #   means that we cannot confidently generate code with methods and
   #   response structures. This implementation ensures that new IMDS features
   #   are always supported by being deployed to the instance and does not
   #   require code changes.
-  # @note This implementation always returns a String and will not parse any
-  #   responses. Parsable responses may include JSON objects or directory
-  #   listings, which are strings separated by line feeds (ASCII 10).
   # @param path [String] The full path to the metadata.
   # @see https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-categories.html
   # @see https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-identity-documents.html
@@ -8593,12 +8593,6 @@ class Aws::SSO::Client < ::Seahorse::Client::Base
   # Returns the STS short-term credentials for a given role name that is
   # assigned to the user.
   #
-  # @example Response structure
-  #
-  #   resp.role_credentials.access_key_id #=> String
-  #   resp.role_credentials.secret_access_key #=> String
-  #   resp.role_credentials.session_token #=> String
-  #   resp.role_credentials.expiration #=> Integer
   # @example Request syntax with placeholder values
   #
   #   resp = client.get_role_credentials({
@@ -8606,6 +8600,12 @@ class Aws::SSO::Client < ::Seahorse::Client::Base
   #   account_id: "AccountIdType", # required
   #   access_token: "AccessTokenType", # required
   #   })
+  # @example Response structure
+  #
+  #   resp.role_credentials.access_key_id #=> String
+  #   resp.role_credentials.secret_access_key #=> String
+  #   resp.role_credentials.session_token #=> String
+  #   resp.role_credentials.expiration #=> Integer
   # @option params
   # @option params
   # @option params
@@ -8623,12 +8623,6 @@ class Aws::SSO::Client < ::Seahorse::Client::Base
   #
   # The returned {Seahorse::Client::Response response} is a pageable response and is Enumerable. For details on usage see {Aws::PageableResponse PageableResponse}.
   #
-  # @example Response structure
-  #
-  #   resp.next_token #=> String
-  #   resp.role_list #=> Array
-  #   resp.role_list[0].role_name #=> String
-  #   resp.role_list[0].account_id #=> String
   # @example Request syntax with placeholder values
   #
   #   resp = client.list_account_roles({
@@ -8637,6 +8631,12 @@ class Aws::SSO::Client < ::Seahorse::Client::Base
   #   access_token: "AccessTokenType", # required
   #   account_id: "AccountIdType", # required
   #   })
+  # @example Response structure
+  #
+  #   resp.next_token #=> String
+  #   resp.role_list #=> Array
+  #   resp.role_list[0].role_name #=> String
+  #   resp.role_list[0].account_id #=> String
   # @option params
   # @option params
   # @option params
@@ -8663,13 +8663,6 @@ class Aws::SSO::Client < ::Seahorse::Client::Base
   #
   # The returned {Seahorse::Client::Response response} is a pageable response and is Enumerable. For details on usage see {Aws::PageableResponse PageableResponse}.
   #
-  # @example Response structure
-  #
-  #   resp.next_token #=> String
-  #   resp.account_list #=> Array
-  #   resp.account_list[0].account_id #=> String
-  #   resp.account_list[0].account_name #=> String
-  #   resp.account_list[0].email_address #=> String
   # @example Request syntax with placeholder values
   #
   #   resp = client.list_accounts({
@@ -8677,6 +8670,13 @@ class Aws::SSO::Client < ::Seahorse::Client::Base
   #   max_results: 1,
   #   access_token: "AccessTokenType", # required
   #   })
+  # @example Response structure
+  #
+  #   resp.next_token #=> String
+  #   resp.account_list #=> Array
+  #   resp.account_list[0].account_id #=> String
+  #   resp.account_list[0].account_name #=> String
+  #   resp.account_list[0].email_address #=> String
   # @option params
   # @option params
   # @option params
@@ -9426,6 +9426,41 @@ class Aws::SSOOIDC::Client < ::Seahorse::Client::Base
   # fetch short-lived credentials for the assigned AWS accounts or to
   # access application APIs using `bearer` authentication.
   #
+  # @example Example: Call OAuth/OIDC /token endpoint for Device Code grant with Secret authentication
+  #
+  #   resp = client.create_token({
+  #   client_id: "_yzkThXVzLWVhc3QtMQEXAMPLECLIENTID",
+  #   client_secret: "VERYLONGSECRETeyJraWQiOiJrZXktMTU2NDAyODA5OSIsImFsZyI6IkhTMzg0In0",
+  #   device_code: "yJraWQiOiJrZXktMTU2Njk2ODA4OCIsImFsZyI6IkhTMzIn0EXAMPLEDEVICECODE",
+  #   grant_type: "urn:ietf:params:oauth:grant-type:device-code",
+  #   })
+  #
+  #   resp.to_h outputs the following:
+  #   {
+  #   access_token: "aoal-YigITUDiNX1xZwOMXM5MxOWDL0E0jg9P6_C_jKQPxS_SKCP6f0kh1Up4g7TtvQqkMnD-GJiU_S1gvug6SrggAkc0:MGYCMQD3IatVjV7jAJU91kK3PkS/SfA2wtgWzOgZWDOR7sDGN9t0phCZz5It/aes/3C1Zj0CMQCKWOgRaiz6AIhza3DSXQNMLjRKXC8F8ceCsHlgYLMZ7hZidEXAMPLEACCESSTOKEN",
+  #   expires_in: 1579729529,
+  #   refresh_token: "aorvJYubGpU6i91YnH7Mfo-AT2fIVa1zCfA_Rvq9yjVKIP3onFmmykuQ7E93y2I-9Nyj-A_sVvMufaLNL0bqnDRtgAkc0:MGUCMFrRsktMRVlWaOR70XGMFGLL0SlcCw4DiYveIiOVx1uK9BbD0gvAddsW3UTLozXKMgIxAJ3qxUvjpnlLIOaaKOoa/FuNgqJVvr9GMwDtnAtlh9iZzAkEXAMPLEREFRESHTOKEN",
+  #   token_type: "Bearer",
+  #   }
+  # @example Example: Call OAuth/OIDC /token endpoint for Refresh Token grant with Secret authentication
+  #
+  #   resp = client.create_token({
+  #   client_id: "_yzkThXVzLWVhc3QtMQEXAMPLECLIENTID",
+  #   client_secret: "VERYLONGSECRETeyJraWQiOiJrZXktMTU2NDAyODA5OSIsImFsZyI6IkhTMzg0In0",
+  #   grant_type: "refresh_token",
+  #   refresh_token: "aorvJYubGpU6i91YnH7Mfo-AT2fIVa1zCfA_Rvq9yjVKIP3onFmmykuQ7E93y2I-9Nyj-A_sVvMufaLNL0bqnDRtgAkc0:MGUCMFrRsktMRVlWaOR70XGMFGLL0SlcCw4DiYveIiOVx1uK9BbD0gvAddsW3UTLozXKMgIxAJ3qxUvjpnlLIOaaKOoa/FuNgqJVvr9GMwDtnAtlh9iZzAkEXAMPLEREFRESHTOKEN",
+  #   scope: [
+  #   "codewhisperer:completions",
+  #   ],
+  #   })
+  #
+  #   resp.to_h outputs the following:
+  #   {
+  #   access_token: "aoal-YigITUDiNX1xZwOMXM5MxOWDL0E0jg9P6_C_jKQPxS_SKCP6f0kh1Up4g7TtvQqkMnD-GJiU_S1gvug6SrggAkc0:MGYCMQD3IatVjV7jAJU91kK3PkS/SfA2wtgWzOgZWDOR7sDGN9t0phCZz5It/aes/3C1Zj0CMQCKWOgRaiz6AIhza3DSXQNMLjRKXC8F8ceCsHlgYLMZ7hZidEXAMPLEACCESSTOKEN",
+  #   expires_in: 1579729529,
+  #   refresh_token: "aorvJYubGpU6i91YnH7Mfo-AT2fIVa1zCfA_Rvq9yjVKIP3onFmmykuQ7E93y2I-9Nyj-A_sVvMufaLNL0bqnDRtgAkc0:MGUCMFrRsktMRVlWaOR70XGMFGLL0SlcCw4DiYveIiOVx1uK9BbD0gvAddsW3UTLozXKMgIxAJ3qxUvjpnlLIOaaKOoa/FuNgqJVvr9GMwDtnAtlh9iZzAkEXAMPLEREFRESHTOKEN",
+  #   token_type: "Bearer",
+  #   }
   # @example Request syntax with placeholder values
   #
   #   resp = client.create_token({
@@ -9446,41 +9481,6 @@ class Aws::SSOOIDC::Client < ::Seahorse::Client::Base
   #   resp.expires_in #=> Integer
   #   resp.refresh_token #=> String
   #   resp.id_token #=> String
-  # @example Example: Call OAuth/OIDC /token endpoint for Refresh Token grant with Secret authentication
-  #
-  #   resp = client.create_token({
-  #   client_id: "_yzkThXVzLWVhc3QtMQEXAMPLECLIENTID",
-  #   client_secret: "VERYLONGSECRETeyJraWQiOiJrZXktMTU2NDAyODA5OSIsImFsZyI6IkhTMzg0In0",
-  #   grant_type: "refresh_token",
-  #   refresh_token: "aorvJYubGpU6i91YnH7Mfo-AT2fIVa1zCfA_Rvq9yjVKIP3onFmmykuQ7E93y2I-9Nyj-A_sVvMufaLNL0bqnDRtgAkc0:MGUCMFrRsktMRVlWaOR70XGMFGLL0SlcCw4DiYveIiOVx1uK9BbD0gvAddsW3UTLozXKMgIxAJ3qxUvjpnlLIOaaKOoa/FuNgqJVvr9GMwDtnAtlh9iZzAkEXAMPLEREFRESHTOKEN",
-  #   scope: [
-  #   "codewhisperer:completions",
-  #   ],
-  #   })
-  #
-  #   resp.to_h outputs the following:
-  #   {
-  #   access_token: "aoal-YigITUDiNX1xZwOMXM5MxOWDL0E0jg9P6_C_jKQPxS_SKCP6f0kh1Up4g7TtvQqkMnD-GJiU_S1gvug6SrggAkc0:MGYCMQD3IatVjV7jAJU91kK3PkS/SfA2wtgWzOgZWDOR7sDGN9t0phCZz5It/aes/3C1Zj0CMQCKWOgRaiz6AIhza3DSXQNMLjRKXC8F8ceCsHlgYLMZ7hZidEXAMPLEACCESSTOKEN",
-  #   expires_in: 1579729529,
-  #   refresh_token: "aorvJYubGpU6i91YnH7Mfo-AT2fIVa1zCfA_Rvq9yjVKIP3onFmmykuQ7E93y2I-9Nyj-A_sVvMufaLNL0bqnDRtgAkc0:MGUCMFrRsktMRVlWaOR70XGMFGLL0SlcCw4DiYveIiOVx1uK9BbD0gvAddsW3UTLozXKMgIxAJ3qxUvjpnlLIOaaKOoa/FuNgqJVvr9GMwDtnAtlh9iZzAkEXAMPLEREFRESHTOKEN",
-  #   token_type: "Bearer",
-  #   }
-  # @example Example: Call OAuth/OIDC /token endpoint for Device Code grant with Secret authentication
-  #
-  #   resp = client.create_token({
-  #   client_id: "_yzkThXVzLWVhc3QtMQEXAMPLECLIENTID",
-  #   client_secret: "VERYLONGSECRETeyJraWQiOiJrZXktMTU2NDAyODA5OSIsImFsZyI6IkhTMzg0In0",
-  #   device_code: "yJraWQiOiJrZXktMTU2Njk2ODA4OCIsImFsZyI6IkhTMzIn0EXAMPLEDEVICECODE",
-  #   grant_type: "urn:ietf:params:oauth:grant-type:device-code",
-  #   })
-  #
-  #   resp.to_h outputs the following:
-  #   {
-  #   access_token: "aoal-YigITUDiNX1xZwOMXM5MxOWDL0E0jg9P6_C_jKQPxS_SKCP6f0kh1Up4g7TtvQqkMnD-GJiU_S1gvug6SrggAkc0:MGYCMQD3IatVjV7jAJU91kK3PkS/SfA2wtgWzOgZWDOR7sDGN9t0phCZz5It/aes/3C1Zj0CMQCKWOgRaiz6AIhza3DSXQNMLjRKXC8F8ceCsHlgYLMZ7hZidEXAMPLEACCESSTOKEN",
-  #   expires_in: 1579729529,
-  #   refresh_token: "aorvJYubGpU6i91YnH7Mfo-AT2fIVa1zCfA_Rvq9yjVKIP3onFmmykuQ7E93y2I-9Nyj-A_sVvMufaLNL0bqnDRtgAkc0:MGUCMFrRsktMRVlWaOR70XGMFGLL0SlcCw4DiYveIiOVx1uK9BbD0gvAddsW3UTLozXKMgIxAJ3qxUvjpnlLIOaaKOoa/FuNgqJVvr9GMwDtnAtlh9iZzAkEXAMPLEREFRESHTOKEN",
-  #   token_type: "Bearer",
-  #   }
   # @option params
   # @option params
   # @option params
@@ -9510,16 +9510,34 @@ class Aws::SSOOIDC::Client < ::Seahorse::Client::Base
   # Amazon Web Services accounts or to access application APIs using
   # `bearer` authentication.
   #
-  # @example Response structure
+  # @example Example: Call OAuth/OIDC /token endpoint for Authorization Code grant with IAM authentication
   #
-  #   resp.access_token #=> String
-  #   resp.token_type #=> String
-  #   resp.expires_in #=> Integer
-  #   resp.refresh_token #=> String
-  #   resp.id_token #=> String
-  #   resp.issued_token_type #=> String
-  #   resp.scope #=> Array
-  #   resp.scope[0] #=> String
+  #   resp = client.create_token_with_iam({
+  #   client_id: "arn:aws:sso::123456789012:application/ssoins-111111111111/apl-222222222222",
+  #   code: "yJraWQiOiJrZXktMTU2Njk2ODA4OCIsImFsZyI6IkhTMzg0In0EXAMPLEAUTHCODE",
+  #   grant_type: "authorization_code",
+  #   redirect_uri: "https://mywebapp.example/redirect",
+  #   scope: [
+  #   "openid",
+  #   "aws",
+  #   "sts:identity_context",
+  #   ],
+  #   })
+  #
+  #   resp.to_h outputs the following:
+  #   {
+  #   access_token: "aoal-YigITUDiNX1xZwOMXM5MxOWDL0E0jg9P6_C_jKQPxS_SKCP6f0kh1Up4g7TtvQqkMnD-GJiU_S1gvug6SrggAkc0:MGYCMQD3IatVjV7jAJU91kK3PkS/SfA2wtgWzOgZWDOR7sDGN9t0phCZz5It/aes/3C1Zj0CMQCKWOgRaiz6AIhza3DSXQNMLjRKXC8F8ceCsHlgYLMZ7hZidEXAMPLEACCESSTOKEN",
+  #   expires_in: 1579729529,
+  #   id_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhd3M6aWRlbnRpdHlfc3RvcmVfaWQiOiJkLTMzMzMzMzMzMzMiLCJzdWIiOiI3MzA0NDhmMi1lMGExLTcwYTctYzk1NC0wMDAwMDAwMDAwMDAiLCJhd3M6aW5zdGFuY2VfYWNjb3VudCI6IjExMTExMTExMTExMSIsInN0czppZGVudGl0eV9jb250ZXh0IjoiRVhBTVBMRUlERU5USVRZQ09OVEVYVCIsInN0czphdWRpdF9jb250ZXh0IjoiRVhBTVBMRUFVRElUQ09OVEVYVCIsImlzcyI6Imh0dHBzOi8vaWRlbnRpdHljZW50ZXIuYW1hem9uYXdzLmNvbS9zc29pbnMtMTExMTExMTExMTExIiwiYXdzOmlkZW50aXR5X3N0b3JlX2FybiI6ImFybjphd3M6aWRlbnRpdHlzdG9yZTo6MTExMTExMTExMTExOmlkZW50aXR5c3RvcmUvZC0zMzMzMzMzMzMzIiwiYXVkIjoiYXJuOmF3czpzc286OjEyMzQ1Njc4OTAxMjphcHBsaWNhdGlvbi9zc29pbnMtMTExMTExMTExMTExL2FwbC0yMjIyMjIyMjIyMjIiLCJhd3M6aW5zdGFuY2VfYXJuIjoiYXJuOmF3czpzc286OjppbnN0YW5jZS9zc29pbnMtMTExMTExMTExMTExIiwiYXdzOmNyZWRlbnRpYWxfaWQiOiJfWlIyTjZhVkJqMjdGUEtheWpfcEtwVjc3QVBERl80MXB4ZXRfWWpJdUpONlVJR2RBdkpFWEFNUExFQ1JFRElEIiwiYXV0aF90aW1lIjoiMjAyMC0wMS0yMlQxMjo0NToyOVoiLCJleHAiOjE1Nzk3Mjk1MjksImlhdCI6MTU3OTcyNTkyOX0.Xyah6qbk78qThzJ41iFU2yfGuRqqtKXHrJYwQ8L9Ip0",
+  #   issued_token_type: "urn:ietf:params:oauth:token-type:refresh_token",
+  #   refresh_token: "aorvJYubGpU6i91YnH7Mfo-AT2fIVa1zCfA_Rvq9yjVKIP3onFmmykuQ7E93y2I-9Nyj-A_sVvMufaLNL0bqnDRtgAkc0:MGUCMFrRsktMRVlWaOR70XGMFGLL0SlcCw4DiYveIiOVx1uK9BbD0gvAddsW3UTLozXKMgIxAJ3qxUvjpnlLIOaaKOoa/FuNgqJVvr9GMwDtnAtlh9iZzAkEXAMPLEREFRESHTOKEN",
+  #   scope: [
+  #   "openid",
+  #   "aws",
+  #   "sts:identity_context",
+  #   ],
+  #   token_type: "Bearer",
+  #   }
   # @example Example: Call OAuth/OIDC /token endpoint for Refresh Token grant with IAM authentication
   #
   #   resp = client.create_token_with_iam({
@@ -9601,34 +9619,16 @@ class Aws::SSOOIDC::Client < ::Seahorse::Client::Base
   #   requested_token_type: "TokenTypeURI",
   #   code_verifier: "CodeVerifier",
   #   })
-  # @example Example: Call OAuth/OIDC /token endpoint for Authorization Code grant with IAM authentication
+  # @example Response structure
   #
-  #   resp = client.create_token_with_iam({
-  #   client_id: "arn:aws:sso::123456789012:application/ssoins-111111111111/apl-222222222222",
-  #   code: "yJraWQiOiJrZXktMTU2Njk2ODA4OCIsImFsZyI6IkhTMzg0In0EXAMPLEAUTHCODE",
-  #   grant_type: "authorization_code",
-  #   redirect_uri: "https://mywebapp.example/redirect",
-  #   scope: [
-  #   "openid",
-  #   "aws",
-  #   "sts:identity_context",
-  #   ],
-  #   })
-  #
-  #   resp.to_h outputs the following:
-  #   {
-  #   access_token: "aoal-YigITUDiNX1xZwOMXM5MxOWDL0E0jg9P6_C_jKQPxS_SKCP6f0kh1Up4g7TtvQqkMnD-GJiU_S1gvug6SrggAkc0:MGYCMQD3IatVjV7jAJU91kK3PkS/SfA2wtgWzOgZWDOR7sDGN9t0phCZz5It/aes/3C1Zj0CMQCKWOgRaiz6AIhza3DSXQNMLjRKXC8F8ceCsHlgYLMZ7hZidEXAMPLEACCESSTOKEN",
-  #   expires_in: 1579729529,
-  #   id_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhd3M6aWRlbnRpdHlfc3RvcmVfaWQiOiJkLTMzMzMzMzMzMzMiLCJzdWIiOiI3MzA0NDhmMi1lMGExLTcwYTctYzk1NC0wMDAwMDAwMDAwMDAiLCJhd3M6aW5zdGFuY2VfYWNjb3VudCI6IjExMTExMTExMTExMSIsInN0czppZGVudGl0eV9jb250ZXh0IjoiRVhBTVBMRUlERU5USVRZQ09OVEVYVCIsInN0czphdWRpdF9jb250ZXh0IjoiRVhBTVBMRUFVRElUQ09OVEVYVCIsImlzcyI6Imh0dHBzOi8vaWRlbnRpdHljZW50ZXIuYW1hem9uYXdzLmNvbS9zc29pbnMtMTExMTExMTExMTExIiwiYXdzOmlkZW50aXR5X3N0b3JlX2FybiI6ImFybjphd3M6aWRlbnRpdHlzdG9yZTo6MTExMTExMTExMTExOmlkZW50aXR5c3RvcmUvZC0zMzMzMzMzMzMzIiwiYXVkIjoiYXJuOmF3czpzc286OjEyMzQ1Njc4OTAxMjphcHBsaWNhdGlvbi9zc29pbnMtMTExMTExMTExMTExL2FwbC0yMjIyMjIyMjIyMjIiLCJhd3M6aW5zdGFuY2VfYXJuIjoiYXJuOmF3czpzc286OjppbnN0YW5jZS9zc29pbnMtMTExMTExMTExMTExIiwiYXdzOmNyZWRlbnRpYWxfaWQiOiJfWlIyTjZhVkJqMjdGUEtheWpfcEtwVjc3QVBERl80MXB4ZXRfWWpJdUpONlVJR2RBdkpFWEFNUExFQ1JFRElEIiwiYXV0aF90aW1lIjoiMjAyMC0wMS0yMlQxMjo0NToyOVoiLCJleHAiOjE1Nzk3Mjk1MjksImlhdCI6MTU3OTcyNTkyOX0.Xyah6qbk78qThzJ41iFU2yfGuRqqtKXHrJYwQ8L9Ip0",
-  #   issued_token_type: "urn:ietf:params:oauth:token-type:refresh_token",
-  #   refresh_token: "aorvJYubGpU6i91YnH7Mfo-AT2fIVa1zCfA_Rvq9yjVKIP3onFmmykuQ7E93y2I-9Nyj-A_sVvMufaLNL0bqnDRtgAkc0:MGUCMFrRsktMRVlWaOR70XGMFGLL0SlcCw4DiYveIiOVx1uK9BbD0gvAddsW3UTLozXKMgIxAJ3qxUvjpnlLIOaaKOoa/FuNgqJVvr9GMwDtnAtlh9iZzAkEXAMPLEREFRESHTOKEN",
-  #   scope: [
-  #   "openid",
-  #   "aws",
-  #   "sts:identity_context",
-  #   ],
-  #   token_type: "Bearer",
-  #   }
+  #   resp.access_token #=> String
+  #   resp.token_type #=> String
+  #   resp.expires_in #=> Integer
+  #   resp.refresh_token #=> String
+  #   resp.id_token #=> String
+  #   resp.issued_token_type #=> String
+  #   resp.scope #=> Array
+  #   resp.scope[0] #=> String
   # @option params
   # @option params
   # @option params
@@ -9732,21 +9732,6 @@ class Aws::SSOOIDC::Client < ::Seahorse::Client::Base
   # Initiates device authorization by requesting a pair of verification
   # codes from the authorization service.
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.start_device_authorization({
-  #   client_id: "ClientId", # required
-  #   client_secret: "ClientSecret", # required
-  #   start_url: "URI", # required
-  #   })
-  # @example Response structure
-  #
-  #   resp.device_code #=> String
-  #   resp.user_code #=> String
-  #   resp.verification_uri #=> String
-  #   resp.verification_uri_complete #=> String
-  #   resp.expires_in #=> Integer
-  #   resp.interval #=> Integer
   # @example Example: Call OAuth/OIDC /start-device-authorization endpoint
   #
   #   resp = client.start_device_authorization({
@@ -9764,6 +9749,21 @@ class Aws::SSOOIDC::Client < ::Seahorse::Client::Base
   #   verification_uri: "https://device.sso.us-west-2.amazonaws.com",
   #   verification_uri_complete: "https://device.sso.us-west-2.amazonaws.com?user_code=makdfsk83yJraWQiOiJrZXktMTU2Njk2sImFsZyI6IkhTMzIn0EXAMPLEUSERCODE",
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.start_device_authorization({
+  #   client_id: "ClientId", # required
+  #   client_secret: "ClientSecret", # required
+  #   start_url: "URI", # required
+  #   })
+  # @example Response structure
+  #
+  #   resp.device_code #=> String
+  #   resp.user_code #=> String
+  #   resp.verification_uri #=> String
+  #   resp.verification_uri_complete #=> String
+  #   resp.expires_in #=> Integer
+  #   resp.interval #=> Integer
   # @option params
   # @option params
   # @option params
@@ -11319,6 +11319,20 @@ class Aws::STS::Client < ::Seahorse::Client::Base
   #   subject: "SamlExample",
   #   subject_type: "transient",
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.assume_role_with_saml({
+  #   role_arn: "arnType", # required
+  #   principal_arn: "arnType", # required
+  #   saml_assertion: "SAMLAssertionType", # required
+  #   policy_arns: [
+  #   {
+  #   arn: "arnType",
+  #   },
+  #   ],
+  #   policy: "sessionPolicyDocumentType",
+  #   duration_seconds: 1,
+  #   })
   # @example Response structure
   #
   #   resp.credentials.access_key_id #=> String
@@ -11334,20 +11348,6 @@ class Aws::STS::Client < ::Seahorse::Client::Base
   #   resp.audience #=> String
   #   resp.name_qualifier #=> String
   #   resp.source_identity #=> String
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.assume_role_with_saml({
-  #   role_arn: "arnType", # required
-  #   principal_arn: "arnType", # required
-  #   saml_assertion: "SAMLAssertionType", # required
-  #   policy_arns: [
-  #   {
-  #   arn: "arnType",
-  #   },
-  #   ],
-  #   policy: "sessionPolicyDocumentType",
-  #   duration_seconds: 1,
-  #   })
   # @option params
   # @option params
   # @option params
@@ -11630,22 +11630,6 @@ class Aws::STS::Client < ::Seahorse::Client::Base
   # [2]: https://docs.aws.amazon.com/STS/latest/APIReference/welcome.html#sts-endpoints
   # [3]: https://docs.aws.amazon.com/IAM/latest/UserGuide/cloudtrail-track-privileged-tasks.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.assume_root({
-  #   target_principal: "TargetPrincipalType", # required
-  #   task_policy_arn: { # required
-  #   arn: "arnType",
-  #   },
-  #   duration_seconds: 1,
-  #   })
-  # @example Response structure
-  #
-  #   resp.credentials.access_key_id #=> String
-  #   resp.credentials.secret_access_key #=> String
-  #   resp.credentials.session_token #=> String
-  #   resp.credentials.expiration #=> Time
-  #   resp.source_identity #=> String
   # @example Example: To launch a privileged session
   #
   #   # The following command retrieves a set of short-term credentials you can use to unlock an S3 bucket for a member account
@@ -11669,6 +11653,22 @@ class Aws::STS::Client < ::Seahorse::Client::Base
   #   },
   #   source_identity: "Alice",
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.assume_root({
+  #   target_principal: "TargetPrincipalType", # required
+  #   task_policy_arn: { # required
+  #   arn: "arnType",
+  #   },
+  #   duration_seconds: 1,
+  #   })
+  # @example Response structure
+  #
+  #   resp.credentials.access_key_id #=> String
+  #   resp.credentials.secret_access_key #=> String
+  #   resp.credentials.session_token #=> String
+  #   resp.credentials.expiration #=> Time
+  #   resp.source_identity #=> String
   # @option params
   # @option params
   # @option params
@@ -12006,24 +12006,6 @@ class Aws::STS::Client < ::Seahorse::Client::Base
   # [8]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_session-tags.html
   # [9]: https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_attribute-based-access-control.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.get_federation_token({
-  #   name: "userNameType", # required
-  #   policy: "sessionPolicyDocumentType",
-  #   policy_arns: [
-  #   {
-  #   arn: "arnType",
-  #   },
-  #   ],
-  #   duration_seconds: 1,
-  #   tags: [
-  #   {
-  #   key: "tagKeyType", # required
-  #   value: "tagValueType", # required
-  #   },
-  #   ],
-  #   })
   # @example Example: To get temporary credentials for a role by using GetFederationToken
   #
   #   resp = client.get_federation_token({
@@ -12056,6 +12038,24 @@ class Aws::STS::Client < ::Seahorse::Client::Base
   #   },
   #   packed_policy_size: 8,
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.get_federation_token({
+  #   name: "userNameType", # required
+  #   policy: "sessionPolicyDocumentType",
+  #   policy_arns: [
+  #   {
+  #   arn: "arnType",
+  #   },
+  #   ],
+  #   duration_seconds: 1,
+  #   tags: [
+  #   {
+  #   key: "tagKeyType", # required
+  #   value: "tagValueType", # required
+  #   },
+  #   ],
+  #   })
   # @example Response structure
   #
   #   resp.credentials.access_key_id #=> String
@@ -12157,19 +12157,6 @@ class Aws::STS::Client < ::Seahorse::Client::Base
   # [4]: https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#lock-away-credentials
   # [5]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_request.html#api_getsessiontoken
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.get_session_token({
-  #   duration_seconds: 1,
-  #   serial_number: "serialNumberType",
-  #   token_code: "tokenCodeType",
-  #   })
-  # @example Response structure
-  #
-  #   resp.credentials.access_key_id #=> String
-  #   resp.credentials.secret_access_key #=> String
-  #   resp.credentials.session_token #=> String
-  #   resp.credentials.expiration #=> Time
   # @example Example: To get temporary credentials for an IAM user or an AWS account
   #
   #   resp = client.get_session_token({
@@ -12187,6 +12174,19 @@ class Aws::STS::Client < ::Seahorse::Client::Base
   #   session_token: "AQoEXAMPLEH4aoAH0gNCAPyJxz4BlCFFxWNE1OPTgk5TthT+FvwqnKwRcOIfrRh3c/LTo6UDdyJwOOvEVPvLXCrrrUtdnniCEXAMPLE/IvU1dYUg2RVAJBanLiHb4IgRmpRV3zrkuWJOgQs8IZZaIv2BXIa2R4OlgkBN9bkUDNCJiBeb/AXlzBBko7b15fjrBs2+cTQtpZ3CYWFXG8C5zqx37wnOE49mRl/+OtkIKGO7fAE",
   #   },
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.get_session_token({
+  #   duration_seconds: 1,
+  #   serial_number: "serialNumberType",
+  #   token_code: "tokenCodeType",
+  #   })
+  # @example Response structure
+  #
+  #   resp.credentials.access_key_id #=> String
+  #   resp.credentials.secret_access_key #=> String
+  #   resp.credentials.session_token #=> String
+  #   resp.credentials.expiration #=> Time
   # @option params
   # @option params
   # @option params

@@ -3451,9 +3451,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   resp.to_h outputs the following:
   #   {
   #   }
-  # @example Response structure
-  #
-  #   resp.request_charged #=> String, one of "requester"
   # @example Request syntax with placeholder values
   #
   #   resp = client.abort_multipart_upload({
@@ -3464,6 +3461,9 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   expected_bucket_owner: "AccountId",
   #   if_match_initiated_time: Time.now,
   #   })
+  # @example Response structure
+  #
+  #   resp.request_charged #=> String, one of "requester"
   # @option params
   # @option params
   # @option params
@@ -3665,24 +3665,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   key: "bigobject",
   #   location: "https://examplebucket.s3.<Region>.amazonaws.com/bigobject",
   #   }
-  # @example Response structure
-  #
-  #   resp.location #=> String
-  #   resp.bucket #=> String
-  #   resp.key #=> String
-  #   resp.expiration #=> String
-  #   resp.etag #=> String
-  #   resp.checksum_crc32 #=> String
-  #   resp.checksum_crc32c #=> String
-  #   resp.checksum_crc64nvme #=> String
-  #   resp.checksum_sha1 #=> String
-  #   resp.checksum_sha256 #=> String
-  #   resp.checksum_type #=> String, one of "COMPOSITE", "FULL_OBJECT"
-  #   resp.server_side_encryption #=> String, one of "AES256", "aws:kms", "aws:kms:dsse"
-  #   resp.version_id #=> String
-  #   resp.ssekms_key_id #=> String
-  #   resp.bucket_key_enabled #=> Boolean
-  #   resp.request_charged #=> String, one of "requester"
   # @example Request syntax with placeholder values
   #
   #   resp = client.complete_multipart_upload({
@@ -3717,6 +3699,24 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   sse_customer_key: "SSECustomerKey",
   #   sse_customer_key_md5: "SSECustomerKeyMD5",
   #   })
+  # @example Response structure
+  #
+  #   resp.location #=> String
+  #   resp.bucket #=> String
+  #   resp.key #=> String
+  #   resp.expiration #=> String
+  #   resp.etag #=> String
+  #   resp.checksum_crc32 #=> String
+  #   resp.checksum_crc32c #=> String
+  #   resp.checksum_crc64nvme #=> String
+  #   resp.checksum_sha1 #=> String
+  #   resp.checksum_sha256 #=> String
+  #   resp.checksum_type #=> String, one of "COMPOSITE", "FULL_OBJECT"
+  #   resp.server_side_encryption #=> String, one of "AES256", "aws:kms", "aws:kms:dsse"
+  #   resp.version_id #=> String
+  #   resp.ssekms_key_id #=> String
+  #   resp.bucket_key_enabled #=> Boolean
+  #   resp.request_charged #=> String, one of "requester"
   # @option params
   # @option params
   # @option params
@@ -4226,9 +4226,18 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [12]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutObject.html
   # [13]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucket.html
   #
-  # @example Response structure
+  # @example Example: To create a bucket
   #
-  #   resp.location #=> String
+  #   # The following example creates a bucket.
+  #
+  #   resp = client.create_bucket({
+  #   bucket: "examplebucket",
+  #   })
+  #
+  #   resp.to_h outputs the following:
+  #   {
+  #   location: "/examplebucket",
+  #   }
   # @example Example: To create a bucket in a specific region
   #
   #   # The following example creates a bucket. The request specifies an AWS region where to create the bucket.
@@ -4268,18 +4277,9 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   object_lock_enabled_for_bucket: false,
   #   object_ownership: "BucketOwnerPreferred", # accepts BucketOwnerPreferred, ObjectWriter, BucketOwnerEnforced
   #   })
-  # @example Example: To create a bucket
+  # @example Response structure
   #
-  #   # The following example creates a bucket.
-  #
-  #   resp = client.create_bucket({
-  #   bucket: "examplebucket",
-  #   })
-  #
-  #   resp.to_h outputs the following:
-  #   {
-  #   location: "/examplebucket",
-  #   }
+  #   resp.location #=> String
   # @option params
   # @option params
   # @option params
@@ -5914,11 +5914,18 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [8]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateSession.html
   # [9]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutObject.html
   #
-  # @example Response structure
+  # @example Example: To delete an object
   #
-  #   resp.delete_marker #=> Boolean
-  #   resp.version_id #=> String
-  #   resp.request_charged #=> String, one of "requester"
+  #   # The following example deletes an object from an S3 bucket.
+  #
+  #   resp = client.delete_object({
+  #   bucket: "examplebucket",
+  #   key: "objectkey.jpg",
+  #   })
+  #
+  #   resp.to_h outputs the following:
+  #   {
+  #   }
   # @example Example: To delete an object (from a non-versioned bucket)
   #
   #   # The following example deletes an object from a non-versioned bucket.
@@ -5941,18 +5948,11 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   if_match_last_modified_time: Time.now,
   #   if_match_size: 1,
   #   })
-  # @example Example: To delete an object
+  # @example Response structure
   #
-  #   # The following example deletes an object from an S3 bucket.
-  #
-  #   resp = client.delete_object({
-  #   bucket: "examplebucket",
-  #   key: "objectkey.jpg",
-  #   })
-  #
-  #   resp.to_h outputs the following:
-  #   {
-  #   }
+  #   resp.delete_marker #=> Boolean
+  #   resp.version_id #=> String
+  #   resp.request_charged #=> String, one of "requester"
   # @option params
   # @option params
   # @option params
@@ -6001,6 +6001,20 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [2]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutObjectTagging.html
   # [3]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetObjectTagging.html
   #
+  # @example Example: To remove tag set from an object
+  #
+  #   # The following example removes tag set associated with the specified object. If the bucket is versioning enabled, the
+  #   # operation removes tag set from the latest object version.
+  #
+  #   resp = client.delete_object_tagging({
+  #   bucket: "examplebucket",
+  #   key: "HappyFace.jpg",
+  #   })
+  #
+  #   resp.to_h outputs the following:
+  #   {
+  #   version_id: "null",
+  #   }
   # @example Example: To remove tag set from an object version
   #
   #   # The following example removes tag set associated with the specified object version. The request specifies both the
@@ -6024,20 +6038,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   version_id: "ObjectVersionId",
   #   expected_bucket_owner: "AccountId",
   #   })
-  # @example Example: To remove tag set from an object
-  #
-  #   # The following example removes tag set associated with the specified object. If the bucket is versioning enabled, the
-  #   # operation removes tag set from the latest object version.
-  #
-  #   resp = client.delete_object_tagging({
-  #   bucket: "examplebucket",
-  #   key: "HappyFace.jpg",
-  #   })
-  #
-  #   resp.to_h outputs the following:
-  #   {
-  #   version_id: "null",
-  #   }
   # @example Response structure
   #
   #   resp.version_id #=> String
@@ -6388,10 +6388,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [3]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketAccelerateConfiguration.html
   # [4]: https://docs.aws.amazon.com/AmazonS3/latest/dev/transfer-acceleration.html
   #
-  # @example Response structure
-  #
-  #   resp.status #=> String, one of "Enabled", "Suspended"
-  #   resp.request_charged #=> String, one of "requester"
   # @example Request syntax with placeholder values
   #
   #   resp = client.get_bucket_accelerate_configuration({
@@ -6399,6 +6395,10 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   expected_bucket_owner: "AccountId",
   #   request_payer: "requester", # accepts requester
   #   })
+  # @example Response structure
+  #
+  #   resp.status #=> String, one of "Enabled", "Suspended"
+  #   resp.request_charged #=> String, one of "requester"
   # @option params
   # @option params
   # @option params
@@ -6521,6 +6521,13 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [5]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBucketAnalyticsConfigurations.html
   # [6]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketAnalyticsConfiguration.html
   #
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.get_bucket_analytics_configuration({
+  #   bucket: "BucketName", # required
+  #   id: "AnalyticsId", # required
+  #   expected_bucket_owner: "AccountId",
+  #   })
   # @example Response structure
   #
   #   resp.analytics_configuration.id #=> String
@@ -6536,13 +6543,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   resp.analytics_configuration.storage_class_analysis.data_export.destination.s3_bucket_destination.bucket_account_id #=> String
   #   resp.analytics_configuration.storage_class_analysis.data_export.destination.s3_bucket_destination.bucket #=> String
   #   resp.analytics_configuration.storage_class_analysis.data_export.destination.s3_bucket_destination.prefix #=> String
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.get_bucket_analytics_configuration({
-  #   bucket: "BucketName", # required
-  #   id: "AnalyticsId", # required
-  #   expected_bucket_owner: "AccountId",
-  #   })
   # @option params
   # @option params
   # @option params
@@ -6593,12 +6593,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [3]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketCors.html
   # [4]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketCors.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.get_bucket_cors({
-  #   bucket: "BucketName", # required
-  #   expected_bucket_owner: "AccountId",
-  #   })
   # @example Example: To get cors configuration set on a bucket
   #
   #   # The following example returns cross-origin resource sharing (CORS) configuration set on a bucket.
@@ -6624,6 +6618,12 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   },
   #   ],
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.get_bucket_cors({
+  #   bucket: "BucketName", # required
+  #   expected_bucket_owner: "AccountId",
+  #   })
   # @example Response structure
   #
   #   resp.cors_rules #=> Array
@@ -6839,6 +6839,13 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [5]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBucketInventoryConfigurations.html
   # [6]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketInventoryConfiguration.html
   #
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.get_bucket_inventory_configuration({
+  #   bucket: "BucketName", # required
+  #   id: "InventoryId", # required
+  #   expected_bucket_owner: "AccountId",
+  #   })
   # @example Response structure
   #
   #   resp.inventory_configuration.destination.s3_bucket_destination.account_id #=> String
@@ -6853,13 +6860,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   resp.inventory_configuration.optional_fields #=> Array
   #   resp.inventory_configuration.optional_fields[0] #=> String, one of "Size", "LastModifiedDate", "StorageClass", "ETag", "IsMultipartUploaded", "ReplicationStatus", "EncryptionStatus", "ObjectLockRetainUntilDate", "ObjectLockMode", "ObjectLockLegalHoldStatus", "IntelligentTieringAccessTier", "BucketKeyStatus", "ChecksumAlgorithm", "ObjectAccessControlList", "ObjectOwner"
   #   resp.inventory_configuration.schedule.frequency #=> String, one of "Daily", "Weekly"
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.get_bucket_inventory_configuration({
-  #   bucket: "BucketName", # required
-  #   id: "InventoryId", # required
-  #   expected_bucket_owner: "AccountId",
-  #   })
   # @option params
   # @option params
   # @option params
@@ -6921,12 +6921,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [5]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketLifecycle.html
   # [6]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketLifecycle.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.get_bucket_lifecycle({
-  #   bucket: "BucketName", # required
-  #   expected_bucket_owner: "AccountId",
-  #   })
   # @example Example: To get a bucket acl
   #
   #   # The following example gets ACL on the specified bucket.
@@ -6948,6 +6942,12 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   },
   #   ],
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.get_bucket_lifecycle({
+  #   bucket: "BucketName", # required
+  #   expected_bucket_owner: "AccountId",
+  #   })
   # @example Response structure
   #
   #   resp.rules #=> Array
@@ -7071,12 +7071,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [7]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketLifecycle.html
   # [8]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketLifecycle.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.get_bucket_lifecycle_configuration({
-  #   bucket: "BucketName", # required
-  #   expected_bucket_owner: "AccountId",
-  #   })
   # @example Example: To get lifecycle configuration on a bucket
   #
   #   # The following example retrieves lifecycle configuration on set on a bucket.
@@ -7101,6 +7095,12 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   },
   #   ],
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.get_bucket_lifecycle_configuration({
+  #   bucket: "BucketName", # required
+  #   expected_bucket_owner: "AccountId",
+  #   })
   # @example Response structure
   #
   #   resp.rules #=> Array
@@ -7183,12 +7183,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [3]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadBucket.html
   # [4]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetObject.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.get_bucket_location({
-  #   bucket: "BucketName", # required
-  #   expected_bucket_owner: "AccountId",
-  #   })
   # @example Example: To get bucket location
   #
   #   # The following example returns bucket location.
@@ -7201,6 +7195,12 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   {
   #   location_constraint: "us-west-2",
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.get_bucket_location({
+  #   bucket: "BucketName", # required
+  #   expected_bucket_owner: "AccountId",
+  #   })
   # @example Response structure
   #
   #   resp.location_constraint #=> String, one of "af-south-1", "ap-east-1", "ap-northeast-1", "ap-northeast-2", "ap-northeast-3", "ap-south-1", "ap-south-2", "ap-southeast-1", "ap-southeast-2", "ap-southeast-3", "ap-southeast-4", "ap-southeast-5", "ca-central-1", "cn-north-1", "cn-northwest-1", "EU", "eu-central-1", "eu-central-2", "eu-north-1", "eu-south-1", "eu-south-2", "eu-west-1", "eu-west-2", "eu-west-3", "il-central-1", "me-central-1", "me-south-1", "sa-east-1", "us-east-2", "us-gov-east-1", "us-gov-west-1", "us-west-1", "us-west-2"
@@ -7354,6 +7354,13 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [5]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketMetricsConfiguration.html
   # [6]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBucketMetricsConfigurations.html
   #
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.get_bucket_metrics_configuration({
+  #   bucket: "BucketName", # required
+  #   id: "MetricsId", # required
+  #   expected_bucket_owner: "AccountId",
+  #   })
   # @example Response structure
   #
   #   resp.metrics_configuration.id #=> String
@@ -7366,13 +7373,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   resp.metrics_configuration.filter.and.tags[0].key #=> String
   #   resp.metrics_configuration.filter.and.tags[0].value #=> String
   #   resp.metrics_configuration.filter.and.access_point_arn #=> String
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.get_bucket_metrics_configuration({
-  #   bucket: "BucketName", # required
-  #   id: "MetricsId", # required
-  #   expected_bucket_owner: "AccountId",
-  #   })
   # @option params
   # @option params
   # @option params
@@ -7704,12 +7704,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [6]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-security-iam-example-bucket-policies.html
   # [7]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetObject.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.get_bucket_policy({
-  #   bucket: "BucketName", # required
-  #   expected_bucket_owner: "AccountId",
-  #   })
   # @example Example: To get bucket policy
   #
   #   # The following example returns bucket policy associated with a bucket.
@@ -7722,6 +7716,12 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   {
   #   policy: "{\"Version\":\"2008-10-17\",\"Id\":\"LogPolicy\",\"Statement\":[{\"Sid\":\"Enables the log delivery group to publish logs to your bucket \",\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"111122223333\"},\"Action\":[\"s3:GetBucketAcl\",\"s3:GetObjectAcl\",\"s3:PutObject\"],\"Resource\":[\"arn:aws:s3:::policytest1/*\",\"arn:aws:s3:::policytest1\"]}]}",
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.get_bucket_policy({
+  #   bucket: "BucketName", # required
+  #   expected_bucket_owner: "AccountId",
+  #   })
   # @example Response structure
   #
   #   resp.policy #=> String
@@ -7830,12 +7830,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [4]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketReplication.html
   # [5]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketReplication.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.get_bucket_replication({
-  #   bucket: "BucketName", # required
-  #   expected_bucket_owner: "AccountId",
-  #   })
   # @example Example: To get replication configuration set on a bucket
   #
   #   # The following example returns replication configuration set on a bucket.
@@ -7860,6 +7854,12 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   ],
   #   },
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.get_bucket_replication({
+  #   bucket: "BucketName", # required
+  #   expected_bucket_owner: "AccountId",
+  #   })
   # @example Response structure
   #
   #   resp.replication_configuration.role #=> String
@@ -7919,12 +7919,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [1]: https://docs.aws.amazon.com/AmazonS3/latest/dev/RequesterPaysBuckets.html
   # [2]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjects.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.get_bucket_request_payment({
-  #   bucket: "BucketName", # required
-  #   expected_bucket_owner: "AccountId",
-  #   })
   # @example Example: To get bucket versioning configuration
   #
   #   # The following example retrieves bucket versioning configuration.
@@ -7937,6 +7931,12 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   {
   #   payer: "BucketOwner",
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.get_bucket_request_payment({
+  #   bucket: "BucketName", # required
+  #   expected_bucket_owner: "AccountId",
+  #   })
   # @example Response structure
   #
   #   resp.payer #=> String, one of "Requester", "BucketOwner"
@@ -7981,12 +7981,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [1]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketTagging.html
   # [2]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketTagging.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.get_bucket_tagging({
-  #   bucket: "BucketName", # required
-  #   expected_bucket_owner: "AccountId",
-  #   })
   # @example Example: To get tag set associated with a bucket
   #
   #   # The following example returns tag set associated with a bucket
@@ -8008,6 +8002,12 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   },
   #   ],
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.get_bucket_tagging({
+  #   bucket: "BucketName", # required
+  #   expected_bucket_owner: "AccountId",
+  #   })
   # @example Response structure
   #
   #   resp.tag_set #=> Array
@@ -8053,12 +8053,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [2]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutObject.html
   # [3]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteObject.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.get_bucket_versioning({
-  #   bucket: "BucketName", # required
-  #   expected_bucket_owner: "AccountId",
-  #   })
   # @example Example: To get bucket versioning configuration
   #
   #   # The following example retrieves bucket versioning configuration.
@@ -8072,6 +8066,12 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   mfa_delete: "Disabled",
   #   status: "Enabled",
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.get_bucket_versioning({
+  #   bucket: "BucketName", # required
+  #   expected_bucket_owner: "AccountId",
+  #   })
   # @example Response structure
   #
   #   resp.status #=> String, one of "Enabled", "Suspended"
@@ -8116,12 +8116,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [2]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketWebsite.html
   # [3]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketWebsite.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.get_bucket_website({
-  #   bucket: "BucketName", # required
-  #   expected_bucket_owner: "AccountId",
-  #   })
   # @example Example: To get bucket website configuration
   #
   #   # The following example retrieves website configuration of a bucket.
@@ -8139,6 +8133,12 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   suffix: "index.html",
   #   },
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.get_bucket_website({
+  #   bucket: "BucketName", # required
+  #   expected_bucket_owner: "AccountId",
+  #   })
   # @example Response structure
   #
   #   resp.redirect_all_requests_to.host_name #=> String
@@ -8342,13 +8342,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [9]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html
   # [10]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetObjectAcl.html
   #
-  # @example Download object into memory
-  #   # omit :response_target to download to a StringIO in memory
-  #   resp = s3.get_object(bucket: 'bucket-name', key: 'object-key')
-  #
-  #   # call #read or #string on the response body
-  #   resp.body.read
-  #   #=> '...'
   # @example Example: To retrieve an object
   #
   #   # The following example retrieves an object for an S3 bucket.
@@ -8370,6 +8363,46 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   tag_count: 2,
   #   version_id: "null",
   #   }
+  # @example Example: To retrieve a byte range of an object
+  #
+  #   # The following example retrieves an object for an S3 bucket. The request specifies the range header to retrieve a
+  #   # specific byte range.
+  #
+  #   resp = client.get_object({
+  #   bucket: "examplebucket",
+  #   key: "SampleFile.txt",
+  #   range: "bytes=0-9",
+  #   })
+  #
+  #   resp.to_h outputs the following:
+  #   {
+  #   accept_ranges: "bytes",
+  #   content_length: 10,
+  #   content_range: "bytes 0-9/43",
+  #   content_type: "text/plain",
+  #   etag: "\"0d94420ffd0bc68cd3d152506b97a9cc\"",
+  #   last_modified: Time.parse("2014-10-09T22:57:28.000Z"),
+  #   metadata: {
+  #   },
+  #   version_id: "null",
+  #   }
+  # @example Download an object to disk
+  #   # stream object directly to disk
+  #   resp = s3.get_object(
+  #   response_target: '/path/to/file',
+  #   bucket: 'bucket-name',
+  #   key: 'object-key')
+  #
+  #   # you can still access other response data
+  #   resp.metadata #=> { ... }
+  #   resp.etag #=> "..."
+  # @example Download object into memory
+  #   # omit :response_target to download to a StringIO in memory
+  #   resp = s3.get_object(bucket: 'bucket-name', key: 'object-key')
+  #
+  #   # call #read or #string on the response body
+  #   resp.body.read
+  #   #=> '...'
   # @example Streaming data to a block
   #   # WARNING: yielding data to a block disables retries of networking errors
   #   # However truncation of the body will be retried automatically using a range request
@@ -8446,39 +8479,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   resp.object_lock_mode #=> String, one of "GOVERNANCE", "COMPLIANCE"
   #   resp.object_lock_retain_until_date #=> Time
   #   resp.object_lock_legal_hold_status #=> String, one of "ON", "OFF"
-  # @example Example: To retrieve a byte range of an object
-  #
-  #   # The following example retrieves an object for an S3 bucket. The request specifies the range header to retrieve a
-  #   # specific byte range.
-  #
-  #   resp = client.get_object({
-  #   bucket: "examplebucket",
-  #   key: "SampleFile.txt",
-  #   range: "bytes=0-9",
-  #   })
-  #
-  #   resp.to_h outputs the following:
-  #   {
-  #   accept_ranges: "bytes",
-  #   content_length: 10,
-  #   content_range: "bytes 0-9/43",
-  #   content_type: "text/plain",
-  #   etag: "\"0d94420ffd0bc68cd3d152506b97a9cc\"",
-  #   last_modified: Time.parse("2014-10-09T22:57:28.000Z"),
-  #   metadata: {
-  #   },
-  #   version_id: "null",
-  #   }
-  # @example Download an object to disk
-  #   # stream object directly to disk
-  #   resp = s3.get_object(
-  #   response_target: '/path/to/file',
-  #   bucket: 'bucket-name',
-  #   key: 'object-key')
-  #
-  #   # you can still access other response data
-  #   resp.metadata #=> { ... }
-  #   resp.etag #=> "..."
   # @option params
   # @option params
   # @option params
@@ -8592,15 +8592,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [5]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteObject.html
   # [6]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutObject.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.get_object_acl({
-  #   bucket: "BucketName", # required
-  #   key: "ObjectKey", # required
-  #   version_id: "ObjectVersionId",
-  #   request_payer: "requester", # accepts requester
-  #   expected_bucket_owner: "AccountId",
-  #   })
   # @example Example: To retrieve object ACL
   #
   #   # The following example retrieves access control list (ACL) of an object.
@@ -8651,6 +8642,15 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   id: "examplee7a2f25102679df27bb0ae12b3f85be6f290b936c4393484be31bebcc",
   #   },
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.get_object_acl({
+  #   bucket: "BucketName", # required
+  #   key: "ObjectKey", # required
+  #   version_id: "ObjectVersionId",
+  #   request_payer: "requester", # accepts requester
+  #   expected_bucket_owner: "AccountId",
+  #   })
   # @example Response structure
   #
   #   resp.owner.display_name #=> String
@@ -8863,6 +8863,21 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [15]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadObject.html
   # [16]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListParts.html
   #
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.get_object_attributes({
+  #   bucket: "BucketName", # required
+  #   key: "ObjectKey", # required
+  #   version_id: "ObjectVersionId",
+  #   max_parts: 1,
+  #   part_number_marker: 1,
+  #   sse_customer_algorithm: "SSECustomerAlgorithm",
+  #   sse_customer_key: "SSECustomerKey",
+  #   sse_customer_key_md5: "SSECustomerKeyMD5",
+  #   request_payer: "requester", # accepts requester
+  #   expected_bucket_owner: "AccountId",
+  #   object_attributes: ["ETag"], # required, accepts ETag, Checksum, ObjectParts, StorageClass, ObjectSize
+  #   })
   # @example Response structure
   #
   #   resp.delete_marker #=> Boolean
@@ -8891,21 +8906,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   resp.object_parts.parts[0].checksum_sha256 #=> String
   #   resp.storage_class #=> String, one of "STANDARD", "REDUCED_REDUNDANCY", "STANDARD_IA", "ONEZONE_IA", "INTELLIGENT_TIERING", "GLACIER", "DEEP_ARCHIVE", "OUTPOSTS", "GLACIER_IR", "SNOW", "EXPRESS_ONEZONE"
   #   resp.object_size #=> Integer
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.get_object_attributes({
-  #   bucket: "BucketName", # required
-  #   key: "ObjectKey", # required
-  #   version_id: "ObjectVersionId",
-  #   max_parts: 1,
-  #   part_number_marker: 1,
-  #   sse_customer_algorithm: "SSECustomerAlgorithm",
-  #   sse_customer_key: "SSECustomerKey",
-  #   sse_customer_key_md5: "SSECustomerKeyMD5",
-  #   request_payer: "requester", # accepts requester
-  #   expected_bucket_owner: "AccountId",
-  #   object_attributes: ["ETag"], # required, accepts ETag, Checksum, ObjectParts, StorageClass, ObjectSize
-  #   })
   # @option params
   # @option params
   # @option params
@@ -9109,15 +9109,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [3]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetObjectAttributes.html
   # [4]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutObjectTagging.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.get_object_tagging({
-  #   bucket: "BucketName", # required
-  #   key: "ObjectKey", # required
-  #   version_id: "ObjectVersionId",
-  #   expected_bucket_owner: "AccountId",
-  #   request_payer: "requester", # accepts requester
-  #   })
   # @example Example: To retrieve tag set of a specific object version
   #
   #   # The following example retrieves tag set of an object. The request specifies object version.
@@ -9138,12 +9129,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   ],
   #   version_id: "ydlaNkwWm0SfKJR.T1b1fIdPRbldTYRI",
   #   }
-  # @example Response structure
-  #
-  #   resp.version_id #=> String
-  #   resp.tag_set #=> Array
-  #   resp.tag_set[0].key #=> String
-  #   resp.tag_set[0].value #=> String
   # @example Example: To retrieve tag set of an object
   #
   #   # The following example retrieves tag set of an object.
@@ -9167,6 +9152,21 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   ],
   #   version_id: "null",
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.get_object_tagging({
+  #   bucket: "BucketName", # required
+  #   key: "ObjectKey", # required
+  #   version_id: "ObjectVersionId",
+  #   expected_bucket_owner: "AccountId",
+  #   request_payer: "requester", # accepts requester
+  #   })
+  # @example Response structure
+  #
+  #   resp.version_id #=> String
+  #   resp.tag_set #=> Array
+  #   resp.tag_set[0].key #=> String
+  #   resp.tag_set[0].value #=> String
   # @option params
   # @option params
   # @option params
@@ -9210,14 +9210,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #
   # [1]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetObject.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.get_object_torrent({
-  #   bucket: "BucketName", # required
-  #   key: "ObjectKey", # required
-  #   request_payer: "requester", # accepts requester
-  #   expected_bucket_owner: "AccountId",
-  #   })
   # @example Example: To retrieve torrent files for an object
   #
   #   # The following example retrieves torrent files of an object.
@@ -9230,6 +9222,14 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   resp.to_h outputs the following:
   #   {
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.get_object_torrent({
+  #   bucket: "BucketName", # required
+  #   key: "ObjectKey", # required
+  #   request_payer: "requester", # accepts requester
+  #   expected_bucket_owner: "AccountId",
+  #   })
   # @example Response structure
   #
   #   resp.body #=> IO
@@ -9397,18 +9397,18 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   * bucket_exists
   #   * bucket_not_exists
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.head_bucket({
-  #   bucket: "BucketName", # required
-  #   expected_bucket_owner: "AccountId",
-  #   })
   # @example Example: To determine if bucket exists
   #
   #   # This operation checks to see if a bucket exists.
   #
   #   resp = client.head_bucket({
   #   bucket: "acl1",
+  #   })
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.head_bucket({
+  #   bucket: "BucketName", # required
+  #   expected_bucket_owner: "AccountId",
   #   })
   # @example Response structure
   #
@@ -9594,6 +9594,51 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   * object_exists
   #   * object_not_exists
   #
+  # @example Example: To retrieve metadata of an object without returning the object itself
+  #
+  #   # The following example retrieves an object metadata.
+  #
+  #   resp = client.head_object({
+  #   bucket: "examplebucket",
+  #   key: "HappyFace.jpg",
+  #   })
+  #
+  #   resp.to_h outputs the following:
+  #   {
+  #   accept_ranges: "bytes",
+  #   content_length: 3191,
+  #   content_type: "image/jpeg",
+  #   etag: "\"6805f2cfc46c0f04559748bb039d69ae\"",
+  #   last_modified: Time.parse("2016-12-15T01:19:41.000Z"),
+  #   metadata: {
+  #   },
+  #   version_id: "null",
+  #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.head_object({
+  #   bucket: "BucketName", # required
+  #   if_match: "IfMatch",
+  #   if_modified_since: Time.now,
+  #   if_none_match: "IfNoneMatch",
+  #   if_unmodified_since: Time.now,
+  #   key: "ObjectKey", # required
+  #   range: "Range",
+  #   response_cache_control: "ResponseCacheControl",
+  #   response_content_disposition: "ResponseContentDisposition",
+  #   response_content_encoding: "ResponseContentEncoding",
+  #   response_content_language: "ResponseContentLanguage",
+  #   response_content_type: "ResponseContentType",
+  #   response_expires: Time.now,
+  #   version_id: "ObjectVersionId",
+  #   sse_customer_algorithm: "SSECustomerAlgorithm",
+  #   sse_customer_key: "SSECustomerKey",
+  #   sse_customer_key_md5: "SSECustomerKeyMD5",
+  #   request_payer: "requester", # accepts requester
+  #   part_number: 1,
+  #   expected_bucket_owner: "AccountId",
+  #   checksum_mode: "ENABLED", # accepts ENABLED
+  #   })
   # @example Response structure
   #
   #   resp.delete_marker #=> Boolean
@@ -9635,51 +9680,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   resp.object_lock_mode #=> String, one of "GOVERNANCE", "COMPLIANCE"
   #   resp.object_lock_retain_until_date #=> Time
   #   resp.object_lock_legal_hold_status #=> String, one of "ON", "OFF"
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.head_object({
-  #   bucket: "BucketName", # required
-  #   if_match: "IfMatch",
-  #   if_modified_since: Time.now,
-  #   if_none_match: "IfNoneMatch",
-  #   if_unmodified_since: Time.now,
-  #   key: "ObjectKey", # required
-  #   range: "Range",
-  #   response_cache_control: "ResponseCacheControl",
-  #   response_content_disposition: "ResponseContentDisposition",
-  #   response_content_encoding: "ResponseContentEncoding",
-  #   response_content_language: "ResponseContentLanguage",
-  #   response_content_type: "ResponseContentType",
-  #   response_expires: Time.now,
-  #   version_id: "ObjectVersionId",
-  #   sse_customer_algorithm: "SSECustomerAlgorithm",
-  #   sse_customer_key: "SSECustomerKey",
-  #   sse_customer_key_md5: "SSECustomerKeyMD5",
-  #   request_payer: "requester", # accepts requester
-  #   part_number: 1,
-  #   expected_bucket_owner: "AccountId",
-  #   checksum_mode: "ENABLED", # accepts ENABLED
-  #   })
-  # @example Example: To retrieve metadata of an object without returning the object itself
-  #
-  #   # The following example retrieves an object metadata.
-  #
-  #   resp = client.head_object({
-  #   bucket: "examplebucket",
-  #   key: "HappyFace.jpg",
-  #   })
-  #
-  #   resp.to_h outputs the following:
-  #   {
-  #   accept_ranges: "bytes",
-  #   content_length: 3191,
-  #   content_type: "image/jpeg",
-  #   etag: "\"6805f2cfc46c0f04559748bb039d69ae\"",
-  #   last_modified: Time.parse("2016-12-15T01:19:41.000Z"),
-  #   metadata: {
-  #   },
-  #   version_id: "null",
-  #   }
   # @option params
   # @option params
   # @option params
@@ -9792,6 +9792,13 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [5]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketAnalyticsConfiguration.html
   # [6]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketAnalyticsConfiguration.html
   #
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.list_bucket_analytics_configurations({
+  #   bucket: "BucketName", # required
+  #   continuation_token: "Token",
+  #   expected_bucket_owner: "AccountId",
+  #   })
   # @example Response structure
   #
   #   resp.is_truncated #=> Boolean
@@ -9811,13 +9818,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   resp.analytics_configuration_list[0].storage_class_analysis.data_export.destination.s3_bucket_destination.bucket_account_id #=> String
   #   resp.analytics_configuration_list[0].storage_class_analysis.data_export.destination.s3_bucket_destination.bucket #=> String
   #   resp.analytics_configuration_list[0].storage_class_analysis.data_export.destination.s3_bucket_destination.prefix #=> String
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.list_bucket_analytics_configurations({
-  #   bucket: "BucketName", # required
-  #   continuation_token: "Token",
-  #   expected_bucket_owner: "AccountId",
-  #   })
   # @option params
   # @option params
   # @option params
@@ -9959,6 +9959,13 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [5]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketInventoryConfiguration.html
   # [6]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketInventoryConfiguration.html
   #
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.list_bucket_inventory_configurations({
+  #   bucket: "BucketName", # required
+  #   continuation_token: "Token",
+  #   expected_bucket_owner: "AccountId",
+  #   })
   # @example Response structure
   #
   #   resp.continuation_token #=> String
@@ -9977,13 +9984,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   resp.inventory_configuration_list[0].schedule.frequency #=> String, one of "Daily", "Weekly"
   #   resp.is_truncated #=> Boolean
   #   resp.next_continuation_token #=> String
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.list_bucket_inventory_configurations({
-  #   bucket: "BucketName", # required
-  #   continuation_token: "Token",
-  #   expected_bucket_owner: "AccountId",
-  #   })
   # @option params
   # @option params
   # @option params
@@ -10046,6 +10046,13 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [5]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketMetricsConfiguration.html
   # [6]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketMetricsConfiguration.html
   #
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.list_bucket_metrics_configurations({
+  #   bucket: "BucketName", # required
+  #   continuation_token: "Token",
+  #   expected_bucket_owner: "AccountId",
+  #   })
   # @example Response structure
   #
   #   resp.is_truncated #=> Boolean
@@ -10062,13 +10069,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   resp.metrics_configuration_list[0].filter.and.tags[0].key #=> String
   #   resp.metrics_configuration_list[0].filter.and.tags[0].value #=> String
   #   resp.metrics_configuration_list[0].filter.and.access_point_arn #=> String
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.list_bucket_metrics_configurations({
-  #   bucket: "BucketName", # required
-  #   continuation_token: "Token",
-  #   expected_bucket_owner: "AccountId",
-  #   })
   # @option params
   # @option params
   # @option params
@@ -10111,16 +10111,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #
   # The returned {Seahorse::Client::Response response} is a pageable response and is Enumerable. For details on usage see {Aws::PageableResponse PageableResponse}.
   #
-  # @example Response structure
-  #
-  #   resp.buckets #=> Array
-  #   resp.buckets[0].name #=> String
-  #   resp.buckets[0].creation_date #=> Time
-  #   resp.buckets[0].bucket_region #=> String
-  #   resp.owner.display_name #=> String
-  #   resp.owner.id #=> String
-  #   resp.continuation_token #=> String
-  #   resp.prefix #=> String
   # @example Example: To list all buckets
   #
   #   # The following example returns all the buckets owned by the sender of this request.
@@ -10157,6 +10147,16 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   prefix: "Prefix",
   #   bucket_region: "BucketRegion",
   #   })
+  # @example Response structure
+  #
+  #   resp.buckets #=> Array
+  #   resp.buckets[0].name #=> String
+  #   resp.buckets[0].creation_date #=> Time
+  #   resp.buckets[0].bucket_region #=> String
+  #   resp.owner.display_name #=> String
+  #   resp.owner.id #=> String
+  #   resp.continuation_token #=> String
+  #   resp.prefix #=> String
   # @option params
   # @option params
   # @option params
@@ -10371,45 +10371,47 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #
   # The returned {Seahorse::Client::Response response} is a pageable response and is Enumerable. For details on usage see {Aws::PageableResponse PageableResponse}.
   #
-  # @example Request syntax with placeholder values
+  # @example Example: To list in-progress multipart uploads on a bucket
+  #
+  #   # The following example lists in-progress multipart uploads on a specific bucket.
   #
   #   resp = client.list_multipart_uploads({
-  #   bucket: "BucketName", # required
-  #   delimiter: "Delimiter",
-  #   encoding_type: "url", # accepts url
-  #   key_marker: "KeyMarker",
-  #   max_uploads: 1,
-  #   prefix: "Prefix",
-  #   upload_id_marker: "UploadIdMarker",
-  #   expected_bucket_owner: "AccountId",
-  #   request_payer: "requester", # accepts requester
+  #   bucket: "examplebucket",
   #   })
-  # @example Response structure
   #
-  #   resp.bucket #=> String
-  #   resp.key_marker #=> String
-  #   resp.upload_id_marker #=> String
-  #   resp.next_key_marker #=> String
-  #   resp.prefix #=> String
-  #   resp.delimiter #=> String
-  #   resp.next_upload_id_marker #=> String
-  #   resp.max_uploads #=> Integer
-  #   resp.is_truncated #=> Boolean
-  #   resp.uploads #=> Array
-  #   resp.uploads[0].upload_id #=> String
-  #   resp.uploads[0].key #=> String
-  #   resp.uploads[0].initiated #=> Time
-  #   resp.uploads[0].storage_class #=> String, one of "STANDARD", "REDUCED_REDUNDANCY", "STANDARD_IA", "ONEZONE_IA", "INTELLIGENT_TIERING", "GLACIER", "DEEP_ARCHIVE", "OUTPOSTS", "GLACIER_IR", "SNOW", "EXPRESS_ONEZONE"
-  #   resp.uploads[0].owner.display_name #=> String
-  #   resp.uploads[0].owner.id #=> String
-  #   resp.uploads[0].initiator.id #=> String
-  #   resp.uploads[0].initiator.display_name #=> String
-  #   resp.uploads[0].checksum_algorithm #=> String, one of "CRC32", "CRC32C", "SHA1", "SHA256", "CRC64NVME"
-  #   resp.uploads[0].checksum_type #=> String, one of "COMPOSITE", "FULL_OBJECT"
-  #   resp.common_prefixes #=> Array
-  #   resp.common_prefixes[0].prefix #=> String
-  #   resp.encoding_type #=> String, one of "url"
-  #   resp.request_charged #=> String, one of "requester"
+  #   resp.to_h outputs the following:
+  #   {
+  #   uploads: [
+  #   {
+  #   initiated: Time.parse("2014-05-01T05:40:58.000Z"),
+  #   initiator: {
+  #   display_name: "display-name",
+  #   id: "examplee7a2f25102679df27bb0ae12b3f85be6f290b936c4393484be31bebcc",
+  #   },
+  #   key: "JavaFile",
+  #   owner: {
+  #   display_name: "display-name",
+  #   id: "examplee7a2f25102679df27bb0ae12b3f85be6f290b936c4393484be31bebcc",
+  #   },
+  #   storage_class: "STANDARD",
+  #   upload_id: "examplelUa.CInXklLQtSMJITdUnoZ1Y5GACB5UckOtspm5zbDMCkPF_qkfZzMiFZ6dksmcnqxJyIBvQMG9X9Q--",
+  #   },
+  #   {
+  #   initiated: Time.parse("2014-05-01T05:41:27.000Z"),
+  #   initiator: {
+  #   display_name: "display-name",
+  #   id: "examplee7a2f25102679df27bb0ae12b3f85be6f290b936c4393484be31bebcc",
+  #   },
+  #   key: "JavaFile",
+  #   owner: {
+  #   display_name: "display-name",
+  #   id: "examplee7a2f25102679df27bb0ae12b3f85be6f290b936c4393484be31bebcc",
+  #   },
+  #   storage_class: "STANDARD",
+  #   upload_id: "examplelo91lv1iwvWpvCiJWugw2xXLPAD7Z8cJyX9.WiIRgNrdG6Ldsn.9FtS63TCl1Uf5faTB.1U5Ckcbmdw--",
+  #   },
+  #   ],
+  #   }
   # @example Example: List next set of multipart uploads when previous result is truncated
   #
   #   # The following example specifies the upload-id-marker and key-marker from previous truncated response to retrieve next
@@ -10462,47 +10464,45 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   },
   #   ],
   #   }
-  # @example Example: To list in-progress multipart uploads on a bucket
-  #
-  #   # The following example lists in-progress multipart uploads on a specific bucket.
+  # @example Request syntax with placeholder values
   #
   #   resp = client.list_multipart_uploads({
-  #   bucket: "examplebucket",
+  #   bucket: "BucketName", # required
+  #   delimiter: "Delimiter",
+  #   encoding_type: "url", # accepts url
+  #   key_marker: "KeyMarker",
+  #   max_uploads: 1,
+  #   prefix: "Prefix",
+  #   upload_id_marker: "UploadIdMarker",
+  #   expected_bucket_owner: "AccountId",
+  #   request_payer: "requester", # accepts requester
   #   })
+  # @example Response structure
   #
-  #   resp.to_h outputs the following:
-  #   {
-  #   uploads: [
-  #   {
-  #   initiated: Time.parse("2014-05-01T05:40:58.000Z"),
-  #   initiator: {
-  #   display_name: "display-name",
-  #   id: "examplee7a2f25102679df27bb0ae12b3f85be6f290b936c4393484be31bebcc",
-  #   },
-  #   key: "JavaFile",
-  #   owner: {
-  #   display_name: "display-name",
-  #   id: "examplee7a2f25102679df27bb0ae12b3f85be6f290b936c4393484be31bebcc",
-  #   },
-  #   storage_class: "STANDARD",
-  #   upload_id: "examplelUa.CInXklLQtSMJITdUnoZ1Y5GACB5UckOtspm5zbDMCkPF_qkfZzMiFZ6dksmcnqxJyIBvQMG9X9Q--",
-  #   },
-  #   {
-  #   initiated: Time.parse("2014-05-01T05:41:27.000Z"),
-  #   initiator: {
-  #   display_name: "display-name",
-  #   id: "examplee7a2f25102679df27bb0ae12b3f85be6f290b936c4393484be31bebcc",
-  #   },
-  #   key: "JavaFile",
-  #   owner: {
-  #   display_name: "display-name",
-  #   id: "examplee7a2f25102679df27bb0ae12b3f85be6f290b936c4393484be31bebcc",
-  #   },
-  #   storage_class: "STANDARD",
-  #   upload_id: "examplelo91lv1iwvWpvCiJWugw2xXLPAD7Z8cJyX9.WiIRgNrdG6Ldsn.9FtS63TCl1Uf5faTB.1U5Ckcbmdw--",
-  #   },
-  #   ],
-  #   }
+  #   resp.bucket #=> String
+  #   resp.key_marker #=> String
+  #   resp.upload_id_marker #=> String
+  #   resp.next_key_marker #=> String
+  #   resp.prefix #=> String
+  #   resp.delimiter #=> String
+  #   resp.next_upload_id_marker #=> String
+  #   resp.max_uploads #=> Integer
+  #   resp.is_truncated #=> Boolean
+  #   resp.uploads #=> Array
+  #   resp.uploads[0].upload_id #=> String
+  #   resp.uploads[0].key #=> String
+  #   resp.uploads[0].initiated #=> Time
+  #   resp.uploads[0].storage_class #=> String, one of "STANDARD", "REDUCED_REDUNDANCY", "STANDARD_IA", "ONEZONE_IA", "INTELLIGENT_TIERING", "GLACIER", "DEEP_ARCHIVE", "OUTPOSTS", "GLACIER_IR", "SNOW", "EXPRESS_ONEZONE"
+  #   resp.uploads[0].owner.display_name #=> String
+  #   resp.uploads[0].owner.id #=> String
+  #   resp.uploads[0].initiator.id #=> String
+  #   resp.uploads[0].initiator.display_name #=> String
+  #   resp.uploads[0].checksum_algorithm #=> String, one of "CRC32", "CRC32C", "SHA1", "SHA256", "CRC64NVME"
+  #   resp.uploads[0].checksum_type #=> String, one of "COMPOSITE", "FULL_OBJECT"
+  #   resp.common_prefixes #=> Array
+  #   resp.common_prefixes[0].prefix #=> String
+  #   resp.encoding_type #=> String, one of "url"
+  #   resp.request_charged #=> String, one of "requester"
   # @option params
   # @option params
   # @option params
@@ -10572,20 +10572,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #
   # The returned {Seahorse::Client::Response response} is a pageable response and is Enumerable. For details on usage see {Aws::PageableResponse PageableResponse}.
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.list_object_versions({
-  #   bucket: "BucketName", # required
-  #   delimiter: "Delimiter",
-  #   encoding_type: "url", # accepts url
-  #   key_marker: "KeyMarker",
-  #   max_keys: 1,
-  #   prefix: "Prefix",
-  #   version_id_marker: "VersionIdMarker",
-  #   expected_bucket_owner: "AccountId",
-  #   request_payer: "requester", # accepts requester
-  #   optional_object_attributes: ["RestoreStatus"], # accepts RestoreStatus
-  #   })
   # @example Example: To list object versions
   #
   #   # The following example returns versions of an object with specific key name prefix.
@@ -10626,6 +10612,20 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   },
   #   ],
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.list_object_versions({
+  #   bucket: "BucketName", # required
+  #   delimiter: "Delimiter",
+  #   encoding_type: "url", # accepts url
+  #   key_marker: "KeyMarker",
+  #   max_keys: 1,
+  #   prefix: "Prefix",
+  #   version_id_marker: "VersionIdMarker",
+  #   expected_bucket_owner: "AccountId",
+  #   request_payer: "requester", # accepts requester
+  #   optional_object_attributes: ["RestoreStatus"], # accepts RestoreStatus
+  #   })
   # @example Response structure
   #
   #   resp.is_truncated #=> Boolean
@@ -10732,45 +10732,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #
   # The returned {Seahorse::Client::Response response} is a pageable response and is Enumerable. For details on usage see {Aws::PageableResponse PageableResponse}.
   #
-  # @example Response structure
-  #
-  #   resp.is_truncated #=> Boolean
-  #   resp.marker #=> String
-  #   resp.next_marker #=> String
-  #   resp.contents #=> Array
-  #   resp.contents[0].key #=> String
-  #   resp.contents[0].last_modified #=> Time
-  #   resp.contents[0].etag #=> String
-  #   resp.contents[0].checksum_algorithm #=> Array
-  #   resp.contents[0].checksum_algorithm[0] #=> String, one of "CRC32", "CRC32C", "SHA1", "SHA256", "CRC64NVME"
-  #   resp.contents[0].checksum_type #=> String, one of "COMPOSITE", "FULL_OBJECT"
-  #   resp.contents[0].size #=> Integer
-  #   resp.contents[0].storage_class #=> String, one of "STANDARD", "REDUCED_REDUNDANCY", "GLACIER", "STANDARD_IA", "ONEZONE_IA", "INTELLIGENT_TIERING", "DEEP_ARCHIVE", "OUTPOSTS", "GLACIER_IR", "SNOW", "EXPRESS_ONEZONE"
-  #   resp.contents[0].owner.display_name #=> String
-  #   resp.contents[0].owner.id #=> String
-  #   resp.contents[0].restore_status.is_restore_in_progress #=> Boolean
-  #   resp.contents[0].restore_status.restore_expiry_date #=> Time
-  #   resp.name #=> String
-  #   resp.prefix #=> String
-  #   resp.delimiter #=> String
-  #   resp.max_keys #=> Integer
-  #   resp.common_prefixes #=> Array
-  #   resp.common_prefixes[0].prefix #=> String
-  #   resp.encoding_type #=> String, one of "url"
-  #   resp.request_charged #=> String, one of "requester"
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.list_objects({
-  #   bucket: "BucketName", # required
-  #   delimiter: "Delimiter",
-  #   encoding_type: "url", # accepts url
-  #   marker: "Marker",
-  #   max_keys: 1,
-  #   prefix: "Prefix",
-  #   request_payer: "requester", # accepts requester
-  #   expected_bucket_owner: "AccountId",
-  #   optional_object_attributes: ["RestoreStatus"], # accepts RestoreStatus
-  #   })
   # @example Example: To list objects in a bucket
   #
   #   # The following example list two objects in a bucket.
@@ -10808,6 +10769,45 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   ],
   #   next_marker: "eyJNYXJrZXIiOiBudWxsLCAiYm90b190cnVuY2F0ZV9hbW91bnQiOiAyfQ==",
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.list_objects({
+  #   bucket: "BucketName", # required
+  #   delimiter: "Delimiter",
+  #   encoding_type: "url", # accepts url
+  #   marker: "Marker",
+  #   max_keys: 1,
+  #   prefix: "Prefix",
+  #   request_payer: "requester", # accepts requester
+  #   expected_bucket_owner: "AccountId",
+  #   optional_object_attributes: ["RestoreStatus"], # accepts RestoreStatus
+  #   })
+  # @example Response structure
+  #
+  #   resp.is_truncated #=> Boolean
+  #   resp.marker #=> String
+  #   resp.next_marker #=> String
+  #   resp.contents #=> Array
+  #   resp.contents[0].key #=> String
+  #   resp.contents[0].last_modified #=> Time
+  #   resp.contents[0].etag #=> String
+  #   resp.contents[0].checksum_algorithm #=> Array
+  #   resp.contents[0].checksum_algorithm[0] #=> String, one of "CRC32", "CRC32C", "SHA1", "SHA256", "CRC64NVME"
+  #   resp.contents[0].checksum_type #=> String, one of "COMPOSITE", "FULL_OBJECT"
+  #   resp.contents[0].size #=> Integer
+  #   resp.contents[0].storage_class #=> String, one of "STANDARD", "REDUCED_REDUNDANCY", "GLACIER", "STANDARD_IA", "ONEZONE_IA", "INTELLIGENT_TIERING", "DEEP_ARCHIVE", "OUTPOSTS", "GLACIER_IR", "SNOW", "EXPRESS_ONEZONE"
+  #   resp.contents[0].owner.display_name #=> String
+  #   resp.contents[0].owner.id #=> String
+  #   resp.contents[0].restore_status.is_restore_in_progress #=> Boolean
+  #   resp.contents[0].restore_status.restore_expiry_date #=> Time
+  #   resp.name #=> String
+  #   resp.prefix #=> String
+  #   resp.delimiter #=> String
+  #   resp.max_keys #=> Integer
+  #   resp.common_prefixes #=> Array
+  #   resp.common_prefixes[0].prefix #=> String
+  #   resp.encoding_type #=> String, one of "url"
+  #   resp.request_charged #=> String, one of "requester"
   # @option params
   # @option params
   # @option params
@@ -10933,34 +10933,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #
   # The returned {Seahorse::Client::Response response} is a pageable response and is Enumerable. For details on usage see {Aws::PageableResponse PageableResponse}.
   #
-  # @example Response structure
-  #
-  #   resp.is_truncated #=> Boolean
-  #   resp.contents #=> Array
-  #   resp.contents[0].key #=> String
-  #   resp.contents[0].last_modified #=> Time
-  #   resp.contents[0].etag #=> String
-  #   resp.contents[0].checksum_algorithm #=> Array
-  #   resp.contents[0].checksum_algorithm[0] #=> String, one of "CRC32", "CRC32C", "SHA1", "SHA256", "CRC64NVME"
-  #   resp.contents[0].checksum_type #=> String, one of "COMPOSITE", "FULL_OBJECT"
-  #   resp.contents[0].size #=> Integer
-  #   resp.contents[0].storage_class #=> String, one of "STANDARD", "REDUCED_REDUNDANCY", "GLACIER", "STANDARD_IA", "ONEZONE_IA", "INTELLIGENT_TIERING", "DEEP_ARCHIVE", "OUTPOSTS", "GLACIER_IR", "SNOW", "EXPRESS_ONEZONE"
-  #   resp.contents[0].owner.display_name #=> String
-  #   resp.contents[0].owner.id #=> String
-  #   resp.contents[0].restore_status.is_restore_in_progress #=> Boolean
-  #   resp.contents[0].restore_status.restore_expiry_date #=> Time
-  #   resp.name #=> String
-  #   resp.prefix #=> String
-  #   resp.delimiter #=> String
-  #   resp.max_keys #=> Integer
-  #   resp.common_prefixes #=> Array
-  #   resp.common_prefixes[0].prefix #=> String
-  #   resp.encoding_type #=> String, one of "url"
-  #   resp.key_count #=> Integer
-  #   resp.continuation_token #=> String
-  #   resp.next_continuation_token #=> String
-  #   resp.start_after #=> String
-  #   resp.request_charged #=> String, one of "requester"
   # @example Example: To get object list
   #
   #   # The following example retrieves object list. The request specifies max keys to limit response to include only 2 object
@@ -11011,6 +10983,34 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   expected_bucket_owner: "AccountId",
   #   optional_object_attributes: ["RestoreStatus"], # accepts RestoreStatus
   #   })
+  # @example Response structure
+  #
+  #   resp.is_truncated #=> Boolean
+  #   resp.contents #=> Array
+  #   resp.contents[0].key #=> String
+  #   resp.contents[0].last_modified #=> Time
+  #   resp.contents[0].etag #=> String
+  #   resp.contents[0].checksum_algorithm #=> Array
+  #   resp.contents[0].checksum_algorithm[0] #=> String, one of "CRC32", "CRC32C", "SHA1", "SHA256", "CRC64NVME"
+  #   resp.contents[0].checksum_type #=> String, one of "COMPOSITE", "FULL_OBJECT"
+  #   resp.contents[0].size #=> Integer
+  #   resp.contents[0].storage_class #=> String, one of "STANDARD", "REDUCED_REDUNDANCY", "GLACIER", "STANDARD_IA", "ONEZONE_IA", "INTELLIGENT_TIERING", "DEEP_ARCHIVE", "OUTPOSTS", "GLACIER_IR", "SNOW", "EXPRESS_ONEZONE"
+  #   resp.contents[0].owner.display_name #=> String
+  #   resp.contents[0].owner.id #=> String
+  #   resp.contents[0].restore_status.is_restore_in_progress #=> Boolean
+  #   resp.contents[0].restore_status.restore_expiry_date #=> Time
+  #   resp.name #=> String
+  #   resp.prefix #=> String
+  #   resp.delimiter #=> String
+  #   resp.max_keys #=> Integer
+  #   resp.common_prefixes #=> Array
+  #   resp.common_prefixes[0].prefix #=> String
+  #   resp.encoding_type #=> String, one of "url"
+  #   resp.key_count #=> Integer
+  #   resp.continuation_token #=> String
+  #   resp.next_continuation_token #=> String
+  #   resp.start_after #=> String
+  #   resp.request_charged #=> String, one of "requester"
   # @option params
   # @option params
   # @option params
@@ -11139,20 +11139,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #
   # The returned {Seahorse::Client::Response response} is a pageable response and is Enumerable. For details on usage see {Aws::PageableResponse PageableResponse}.
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.list_parts({
-  #   bucket: "BucketName", # required
-  #   key: "ObjectKey", # required
-  #   max_parts: 1,
-  #   part_number_marker: 1,
-  #   upload_id: "MultipartUploadId", # required
-  #   request_payer: "requester", # accepts requester
-  #   expected_bucket_owner: "AccountId",
-  #   sse_customer_algorithm: "SSECustomerAlgorithm",
-  #   sse_customer_key: "SSECustomerKey",
-  #   sse_customer_key_md5: "SSECustomerKeyMD5",
-  #   })
   # @example Example: To list parts of a multipart upload.
   #
   #   # The following example lists parts uploaded for a specific multipart upload.
@@ -11189,6 +11175,20 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   ],
   #   storage_class: "STANDARD",
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.list_parts({
+  #   bucket: "BucketName", # required
+  #   key: "ObjectKey", # required
+  #   max_parts: 1,
+  #   part_number_marker: 1,
+  #   upload_id: "MultipartUploadId", # required
+  #   request_payer: "requester", # accepts requester
+  #   expected_bucket_owner: "AccountId",
+  #   sse_customer_algorithm: "SSECustomerAlgorithm",
+  #   sse_customer_key: "SSECustomerKey",
+  #   sse_customer_key_md5: "SSECustomerKeyMD5",
+  #   })
   # @example Response structure
   #
   #   resp.abort_date #=> Time
@@ -11498,6 +11498,17 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [7]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucket.html
   # [8]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetObjectAcl.html
   #
+  # @example Example: Put bucket acl
+  #
+  #   # The following example replaces existing ACL on a bucket. The ACL grants the bucket owner (specified using the owner ID)
+  #   # and write permission to the LogDelivery group. Because this is a replace operation, you must specify all the grants in
+  #   # your request. To incrementally add or remove ACL grants, you might use the console.
+  #
+  #   resp = client.put_bucket_acl({
+  #   bucket: "examplebucket",
+  #   grant_full_control: "id=examplee7a2f25102679df27bb0ae12b3f85be6f290b936c4393484",
+  #   grant_write: "uri=http://acs.amazonaws.com/groups/s3/LogDelivery",
+  #   })
   # @example Request syntax with placeholder values
   #
   #   resp = client.put_bucket_acl({
@@ -11529,17 +11540,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   grant_write: "GrantWrite",
   #   grant_write_acp: "GrantWriteACP",
   #   expected_bucket_owner: "AccountId",
-  #   })
-  # @example Example: Put bucket acl
-  #
-  #   # The following example replaces existing ACL on a bucket. The ACL grants the bucket owner (specified using the owner ID)
-  #   # and write permission to the LogDelivery group. Because this is a replace operation, you must specify all the grants in
-  #   # your request. To incrementally add or remove ACL grants, you might use the console.
-  #
-  #   resp = client.put_bucket_acl({
-  #   bucket: "examplebucket",
-  #   grant_full_control: "id=examplee7a2f25102679df27bb0ae12b3f85be6f290b936c4393484",
-  #   grant_write: "uri=http://acs.amazonaws.com/groups/s3/LogDelivery",
   #   })
   # @option params
   # @option params
@@ -12490,6 +12490,33 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [9]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketLifecycleConfiguration.html
   # [10]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketLifecycle.html
   #
+  # @example Example: Put bucket lifecycle
+  #
+  #   # The following example replaces existing lifecycle configuration, if any, on the specified bucket.
+  #
+  #   resp = client.put_bucket_lifecycle_configuration({
+  #   bucket: "examplebucket",
+  #   lifecycle_configuration: {
+  #   rules: [
+  #   {
+  #   expiration: {
+  #   days: 3650,
+  #   },
+  #   filter: {
+  #   prefix: "documents/",
+  #   },
+  #   id: "TestOnly",
+  #   status: "Enabled",
+  #   transitions: [
+  #   {
+  #   days: 365,
+  #   storage_class: "GLACIER",
+  #   },
+  #   ],
+  #   },
+  #   ],
+  #   },
+  #   })
   # @example Request syntax with placeholder values
   #
   #   resp = client.put_bucket_lifecycle_configuration({
@@ -12552,33 +12579,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   },
   #   expected_bucket_owner: "AccountId",
   #   transition_default_minimum_object_size: "varies_by_storage_class", # accepts varies_by_storage_class, all_storage_classes_128K
-  #   })
-  # @example Example: Put bucket lifecycle
-  #
-  #   # The following example replaces existing lifecycle configuration, if any, on the specified bucket.
-  #
-  #   resp = client.put_bucket_lifecycle_configuration({
-  #   bucket: "examplebucket",
-  #   lifecycle_configuration: {
-  #   rules: [
-  #   {
-  #   expiration: {
-  #   days: 3650,
-  #   },
-  #   filter: {
-  #   prefix: "documents/",
-  #   },
-  #   id: "TestOnly",
-  #   status: "Enabled",
-  #   transitions: [
-  #   {
-  #   days: 365,
-  #   storage_class: "GLACIER",
-  #   },
-  #   ],
-  #   },
-  #   ],
-  #   },
   #   })
   # @example Response structure
   #
@@ -12961,6 +12961,23 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [2]: https://docs.aws.amazon.com/general/latest/gr/s3.html#limits_s3
   # [3]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketNotificationConfiguration.html
   #
+  # @example Example: Set notification configuration for a bucket
+  #
+  #   # The following example sets notification configuration on a bucket to publish the object created events to an SNS topic.
+  #
+  #   resp = client.put_bucket_notification_configuration({
+  #   bucket: "examplebucket",
+  #   notification_configuration: {
+  #   topic_configurations: [
+  #   {
+  #   events: [
+  #   "s3:ObjectCreated:*",
+  #   ],
+  #   topic_arn: "arn:aws:sns:us-west-2:123456789012:s3-notification-topic",
+  #   },
+  #   ],
+  #   },
+  #   })
   # @example Request syntax with placeholder values
   #
   #   resp = client.put_bucket_notification_configuration({
@@ -13022,23 +13039,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   },
   #   expected_bucket_owner: "AccountId",
   #   skip_destination_validation: false,
-  #   })
-  # @example Example: Set notification configuration for a bucket
-  #
-  #   # The following example sets notification configuration on a bucket to publish the object created events to an SNS topic.
-  #
-  #   resp = client.put_bucket_notification_configuration({
-  #   bucket: "examplebucket",
-  #   notification_configuration: {
-  #   topic_configurations: [
-  #   {
-  #   events: [
-  #   "s3:ObjectCreated:*",
-  #   ],
-  #   topic_arn: "arn:aws:sns:us-west-2:123456789012:s3-notification-topic",
-  #   },
-  #   ],
-  #   },
   #   })
   # @option params
   # @option params
@@ -13957,6 +13957,73 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [9]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_CopyObject.html
   # [10]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteObject.html
   #
+  # @example Example: To upload an object
+  #
+  #   # The following example uploads an object to a versioning-enabled bucket. The source file is specified using Windows file
+  #   # syntax. S3 returns VersionId of the newly created object.
+  #
+  #   resp = client.put_object({
+  #   body: "HappyFace.jpg",
+  #   bucket: "examplebucket",
+  #   key: "HappyFace.jpg",
+  #   })
+  #
+  #   resp.to_h outputs the following:
+  #   {
+  #   etag: "\"6805f2cfc46c0f04559748bb039d69ae\"",
+  #   version_id: "tpf3zF08nBplQK1XLOefGskR7mGDwcDk",
+  #   }
+  # @example Example: To upload an object (specify optional headers)
+  #
+  #   # The following example uploads an object. The request specifies optional request headers to directs S3 to use specific
+  #   # storage class and use server-side encryption.
+  #
+  #   resp = client.put_object({
+  #   body: "HappyFace.jpg",
+  #   bucket: "examplebucket",
+  #   key: "HappyFace.jpg",
+  #   server_side_encryption: "AES256",
+  #   storage_class: "STANDARD_IA",
+  #   })
+  #
+  #   resp.to_h outputs the following:
+  #   {
+  #   etag: "\"6805f2cfc46c0f04559748bb039d69ae\"",
+  #   server_side_encryption: "AES256",
+  #   version_id: "CG612hodqujkf8FaaNfp8U..FIhLROcp",
+  #   }
+  # @example Example: To create an object.
+  #
+  #   # The following example creates an object. If the bucket is versioning enabled, S3 returns version ID in response.
+  #
+  #   resp = client.put_object({
+  #   body: "filetoupload",
+  #   bucket: "examplebucket",
+  #   key: "objectkey",
+  #   })
+  #
+  #   resp.to_h outputs the following:
+  #   {
+  #   etag: "\"6805f2cfc46c0f04559748bb039d69ae\"",
+  #   version_id: "Bvq0EDKxOcXLJXNo_Lkz37eM3R4pfzyQ",
+  #   }
+  # @example Example: To upload an object and specify optional tags
+  #
+  #   # The following example uploads an object. The request specifies optional object tags. The bucket is versioned, therefore
+  #   # S3 returns version ID of the newly created object.
+  #
+  #   resp = client.put_object({
+  #   body: "c:\\HappyFace.jpg",
+  #   bucket: "examplebucket",
+  #   key: "HappyFace.jpg",
+  #   tagging: "key1=value1&key2=value2",
+  #   })
+  #
+  #   resp.to_h outputs the following:
+  #   {
+  #   etag: "\"6805f2cfc46c0f04559748bb039d69ae\"",
+  #   version_id: "psM2sYY4.o1501dSx8wMvnkOzSBB.V4a",
+  #   }
   # @example Example: To upload an object and specify server-side encryption and object tags
   #
   #   # The following example uploads an object. The request specifies the optional server-side encryption option. The request
@@ -13976,21 +14043,25 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   server_side_encryption: "AES256",
   #   version_id: "Ri.vC6qVlA4dEnjgRV4ZHsHoFIjqEMNt",
   #   }
-  # @example Example: To upload an object
+  # @example Example: To upload object and specify user-defined metadata
   #
-  #   # The following example uploads an object to a versioning-enabled bucket. The source file is specified using Windows file
-  #   # syntax. S3 returns VersionId of the newly created object.
+  #   # The following example creates an object. The request also specifies optional metadata. If the bucket is versioning
+  #   # enabled, S3 returns version ID in response.
   #
   #   resp = client.put_object({
-  #   body: "HappyFace.jpg",
+  #   body: "filetoupload",
   #   bucket: "examplebucket",
-  #   key: "HappyFace.jpg",
+  #   key: "exampleobject",
+  #   metadata: {
+  #   "metadata1" => "value1",
+  #   "metadata2" => "value2",
+  #   },
   #   })
   #
   #   resp.to_h outputs the following:
   #   {
   #   etag: "\"6805f2cfc46c0f04559748bb039d69ae\"",
-  #   version_id: "tpf3zF08nBplQK1XLOefGskR7mGDwcDk",
+  #   version_id: "pSKidl4pHBiNwukdbcPXAIs.sshFFOc0",
   #   }
   # @example Example: To upload an object and specify canned ACL.
   #
@@ -14080,77 +14151,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   resp.bucket_key_enabled #=> Boolean
   #   resp.size #=> Integer
   #   resp.request_charged #=> String, one of "requester"
-  # @example Example: To upload an object (specify optional headers)
-  #
-  #   # The following example uploads an object. The request specifies optional request headers to directs S3 to use specific
-  #   # storage class and use server-side encryption.
-  #
-  #   resp = client.put_object({
-  #   body: "HappyFace.jpg",
-  #   bucket: "examplebucket",
-  #   key: "HappyFace.jpg",
-  #   server_side_encryption: "AES256",
-  #   storage_class: "STANDARD_IA",
-  #   })
-  #
-  #   resp.to_h outputs the following:
-  #   {
-  #   etag: "\"6805f2cfc46c0f04559748bb039d69ae\"",
-  #   server_side_encryption: "AES256",
-  #   version_id: "CG612hodqujkf8FaaNfp8U..FIhLROcp",
-  #   }
-  # @example Example: To create an object.
-  #
-  #   # The following example creates an object. If the bucket is versioning enabled, S3 returns version ID in response.
-  #
-  #   resp = client.put_object({
-  #   body: "filetoupload",
-  #   bucket: "examplebucket",
-  #   key: "objectkey",
-  #   })
-  #
-  #   resp.to_h outputs the following:
-  #   {
-  #   etag: "\"6805f2cfc46c0f04559748bb039d69ae\"",
-  #   version_id: "Bvq0EDKxOcXLJXNo_Lkz37eM3R4pfzyQ",
-  #   }
-  # @example Example: To upload an object and specify optional tags
-  #
-  #   # The following example uploads an object. The request specifies optional object tags. The bucket is versioned, therefore
-  #   # S3 returns version ID of the newly created object.
-  #
-  #   resp = client.put_object({
-  #   body: "c:\\HappyFace.jpg",
-  #   bucket: "examplebucket",
-  #   key: "HappyFace.jpg",
-  #   tagging: "key1=value1&key2=value2",
-  #   })
-  #
-  #   resp.to_h outputs the following:
-  #   {
-  #   etag: "\"6805f2cfc46c0f04559748bb039d69ae\"",
-  #   version_id: "psM2sYY4.o1501dSx8wMvnkOzSBB.V4a",
-  #   }
-  # @example Example: To upload object and specify user-defined metadata
-  #
-  #   # The following example creates an object. The request also specifies optional metadata. If the bucket is versioning
-  #   # enabled, S3 returns version ID in response.
-  #
-  #   resp = client.put_object({
-  #   body: "filetoupload",
-  #   bucket: "examplebucket",
-  #   key: "exampleobject",
-  #   metadata: {
-  #   "metadata1" => "value1",
-  #   "metadata2" => "value2",
-  #   },
-  #   })
-  #
-  #   resp.to_h outputs the following:
-  #   {
-  #   etag: "\"6805f2cfc46c0f04559748bb039d69ae\"",
-  #   version_id: "pSKidl4pHBiNwukdbcPXAIs.sshFFOc0",
-  #   }
   # @option params
   # @option params
   # @option params
@@ -14385,9 +14385,23 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [6]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_CopyObject.html
   # [7]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetObject.html
   #
-  # @example Response structure
+  # @example Example: To grant permissions using object ACL
   #
-  #   resp.request_charged #=> String, one of "requester"
+  #   # The following example adds grants to an object ACL. The first permission grants user1 and user2 FULL_CONTROL and the
+  #   # AllUsers group READ permission.
+  #
+  #   resp = client.put_object_acl({
+  #   access_control_policy: {
+  #   },
+  #   bucket: "examplebucket",
+  #   grant_full_control: "emailaddress=user1@example.com,emailaddress=user2@example.com",
+  #   grant_read: "uri=http://acs.amazonaws.com/groups/global/AllUsers",
+  #   key: "HappyFace.jpg",
+  #   })
+  #
+  #   resp.to_h outputs the following:
+  #   {
+  #   }
   # @example Request syntax with placeholder values
   #
   #   resp = client.put_object_acl({
@@ -14423,23 +14437,9 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   version_id: "ObjectVersionId",
   #   expected_bucket_owner: "AccountId",
   #   })
-  # @example Example: To grant permissions using object ACL
+  # @example Response structure
   #
-  #   # The following example adds grants to an object ACL. The first permission grants user1 and user2 FULL_CONTROL and the
-  #   # AllUsers group READ permission.
-  #
-  #   resp = client.put_object_acl({
-  #   access_control_policy: {
-  #   },
-  #   bucket: "examplebucket",
-  #   grant_full_control: "emailaddress=user1@example.com,emailaddress=user2@example.com",
-  #   grant_read: "uri=http://acs.amazonaws.com/groups/global/AllUsers",
-  #   key: "HappyFace.jpg",
-  #   })
-  #
-  #   resp.to_h outputs the following:
-  #   {
-  #   }
+  #   resp.request_charged #=> String, one of "requester"
   # @option params
   # @option params
   # @option params
@@ -14477,9 +14477,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #
   # [1]: https://docs.aws.amazon.com/AmazonS3/latest/dev/object-lock.html
   #
-  # @example Response structure
-  #
-  #   resp.request_charged #=> String, one of "requester"
   # @example Request syntax with placeholder values
   #
   #   resp = client.put_object_legal_hold({
@@ -14494,6 +14491,9 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   checksum_algorithm: "CRC32", # accepts CRC32, CRC32C, SHA1, SHA256, CRC64NVME
   #   expected_bucket_owner: "AccountId",
   #   })
+  # @example Response structure
+  #
+  #   resp.request_charged #=> String, one of "requester"
   # @option params
   # @option params
   # @option params
@@ -14537,9 +14537,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [1]: https://docs.aws.amazon.com/AmazonS3/latest/dev/object-lock.html
   # [2]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock-configure.html
   #
-  # @example Response structure
-  #
-  #   resp.request_charged #=> String, one of "requester"
   # @example Request syntax with placeholder values
   #
   #   resp = client.put_object_lock_configuration({
@@ -14560,6 +14557,9 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   checksum_algorithm: "CRC32", # accepts CRC32, CRC32C, SHA1, SHA256, CRC64NVME
   #   expected_bucket_owner: "AccountId",
   #   })
+  # @example Response structure
+  #
+  #   resp.request_charged #=> String, one of "requester"
   # @option params
   # @option params
   # @option params
@@ -14684,28 +14684,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [4]: https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html
   # [5]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteObjectTagging.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.put_object_tagging({
-  #   bucket: "BucketName", # required
-  #   key: "ObjectKey", # required
-  #   version_id: "ObjectVersionId",
-  #   content_md5: "ContentMD5",
-  #   checksum_algorithm: "CRC32", # accepts CRC32, CRC32C, SHA1, SHA256, CRC64NVME
-  #   tagging: { # required
-  #   tag_set: [ # required
-  #   {
-  #   key: "ObjectKey", # required
-  #   value: "Value", # required
-  #   },
-  #   ],
-  #   },
-  #   expected_bucket_owner: "AccountId",
-  #   request_payer: "requester", # accepts requester
-  #   })
-  # @example Response structure
-  #
-  #   resp.version_id #=> String
   # @example Example: To add tags to an existing object
   #
   #   # The following example adds tags to an existing object.
@@ -14731,6 +14709,28 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   {
   #   version_id: "null",
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.put_object_tagging({
+  #   bucket: "BucketName", # required
+  #   key: "ObjectKey", # required
+  #   version_id: "ObjectVersionId",
+  #   content_md5: "ContentMD5",
+  #   checksum_algorithm: "CRC32", # accepts CRC32, CRC32C, SHA1, SHA256, CRC64NVME
+  #   tagging: { # required
+  #   tag_set: [ # required
+  #   {
+  #   key: "ObjectKey", # required
+  #   value: "Value", # required
+  #   },
+  #   ],
+  #   },
+  #   expected_bucket_owner: "AccountId",
+  #   request_payer: "requester", # accepts requester
+  #   })
+  # @example Response structure
+  #
+  #   resp.version_id #=> String
   # @option params
   # @option params
   # @option params
@@ -15240,54 +15240,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [11]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketLifecycleConfiguration.html
   # [12]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketLifecycleConfiguration.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.select_object_content({
-  #   bucket: "BucketName", # required
-  #   key: "ObjectKey", # required
-  #   sse_customer_algorithm: "SSECustomerAlgorithm",
-  #   sse_customer_key: "SSECustomerKey",
-  #   sse_customer_key_md5: "SSECustomerKeyMD5",
-  #   expression: "Expression", # required
-  #   expression_type: "SQL", # required, accepts SQL
-  #   request_progress: {
-  #   enabled: false,
-  #   },
-  #   input_serialization: { # required
-  #   csv: {
-  #   file_header_info: "USE", # accepts USE, IGNORE, NONE
-  #   comments: "Comments",
-  #   quote_escape_character: "QuoteEscapeCharacter",
-  #   record_delimiter: "RecordDelimiter",
-  #   field_delimiter: "FieldDelimiter",
-  #   quote_character: "QuoteCharacter",
-  #   allow_quoted_record_delimiter: false,
-  #   },
-  #   compression_type: "NONE", # accepts NONE, GZIP, BZIP2
-  #   json: {
-  #   type: "DOCUMENT", # accepts DOCUMENT, LINES
-  #   },
-  #   parquet: {
-  #   },
-  #   },
-  #   output_serialization: { # required
-  #   csv: {
-  #   quote_fields: "ALWAYS", # accepts ALWAYS, ASNEEDED
-  #   quote_escape_character: "QuoteEscapeCharacter",
-  #   record_delimiter: "RecordDelimiter",
-  #   field_delimiter: "FieldDelimiter",
-  #   quote_character: "QuoteCharacter",
-  #   },
-  #   json: {
-  #   record_delimiter: "RecordDelimiter",
-  #   },
-  #   },
-  #   scan_range: {
-  #   start: 1,
-  #   end: 1,
-  #   },
-  #   expected_bucket_owner: "AccountId",
-  #   })
   # @example EventStream Operation Example
   #
   #   You can process the event once it arrives immediately, or wait until the
@@ -15406,6 +15358,54 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #
   #   Events are available at resp.payload # => Enumerator
   #   For parameter input example, please refer to following request syntax
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.select_object_content({
+  #   bucket: "BucketName", # required
+  #   key: "ObjectKey", # required
+  #   sse_customer_algorithm: "SSECustomerAlgorithm",
+  #   sse_customer_key: "SSECustomerKey",
+  #   sse_customer_key_md5: "SSECustomerKeyMD5",
+  #   expression: "Expression", # required
+  #   expression_type: "SQL", # required, accepts SQL
+  #   request_progress: {
+  #   enabled: false,
+  #   },
+  #   input_serialization: { # required
+  #   csv: {
+  #   file_header_info: "USE", # accepts USE, IGNORE, NONE
+  #   comments: "Comments",
+  #   quote_escape_character: "QuoteEscapeCharacter",
+  #   record_delimiter: "RecordDelimiter",
+  #   field_delimiter: "FieldDelimiter",
+  #   quote_character: "QuoteCharacter",
+  #   allow_quoted_record_delimiter: false,
+  #   },
+  #   compression_type: "NONE", # accepts NONE, GZIP, BZIP2
+  #   json: {
+  #   type: "DOCUMENT", # accepts DOCUMENT, LINES
+  #   },
+  #   parquet: {
+  #   },
+  #   },
+  #   output_serialization: { # required
+  #   csv: {
+  #   quote_fields: "ALWAYS", # accepts ALWAYS, ASNEEDED
+  #   quote_escape_character: "QuoteEscapeCharacter",
+  #   record_delimiter: "RecordDelimiter",
+  #   field_delimiter: "FieldDelimiter",
+  #   quote_character: "QuoteCharacter",
+  #   },
+  #   json: {
+  #   record_delimiter: "RecordDelimiter",
+  #   },
+  #   },
+  #   scan_range: {
+  #   start: 1,
+  #   end: 1,
+  #   },
+  #   expected_bucket_owner: "AccountId",
+  #   })
   # @example Response structure
   #
   #   All events are available at resp.payload:
@@ -15661,20 +15661,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   {
   #   etag: "\"d8c2eafd90c266e19ab9dcacc479f8af\"",
   #   }
-  # @example Response structure
-  #
-  #   resp.server_side_encryption #=> String, one of "AES256", "aws:kms", "aws:kms:dsse"
-  #   resp.etag #=> String
-  #   resp.checksum_crc32 #=> String
-  #   resp.checksum_crc32c #=> String
-  #   resp.checksum_crc64nvme #=> String
-  #   resp.checksum_sha1 #=> String
-  #   resp.checksum_sha256 #=> String
-  #   resp.sse_customer_algorithm #=> String
-  #   resp.sse_customer_key_md5 #=> String
-  #   resp.ssekms_key_id #=> String
-  #   resp.bucket_key_enabled #=> Boolean
-  #   resp.request_charged #=> String, one of "requester"
   # @example Request syntax with placeholder values
   #
   #   resp = client.upload_part({
@@ -15697,6 +15683,20 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   request_payer: "requester", # accepts requester
   #   expected_bucket_owner: "AccountId",
   #   })
+  # @example Response structure
+  #
+  #   resp.server_side_encryption #=> String, one of "AES256", "aws:kms", "aws:kms:dsse"
+  #   resp.etag #=> String
+  #   resp.checksum_crc32 #=> String
+  #   resp.checksum_crc32c #=> String
+  #   resp.checksum_crc64nvme #=> String
+  #   resp.checksum_sha1 #=> String
+  #   resp.checksum_sha256 #=> String
+  #   resp.sse_customer_algorithm #=> String
+  #   resp.sse_customer_key_md5 #=> String
+  #   resp.ssekms_key_id #=> String
+  #   resp.bucket_key_enabled #=> Boolean
+  #   resp.request_charged #=> String, one of "requester"
   # @option params
   # @option params
   # @option params
@@ -15932,45 +15932,6 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # [19]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListParts.html
   # [20]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListMultipartUploads.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.upload_part_copy({
-  #   bucket: "BucketName", # required
-  #   copy_source: "CopySource", # required
-  #   copy_source_if_match: "CopySourceIfMatch",
-  #   copy_source_if_modified_since: Time.now,
-  #   copy_source_if_none_match: "CopySourceIfNoneMatch",
-  #   copy_source_if_unmodified_since: Time.now,
-  #   copy_source_range: "CopySourceRange",
-  #   key: "ObjectKey", # required
-  #   part_number: 1, # required
-  #   upload_id: "MultipartUploadId", # required
-  #   sse_customer_algorithm: "SSECustomerAlgorithm",
-  #   sse_customer_key: "SSECustomerKey",
-  #   sse_customer_key_md5: "SSECustomerKeyMD5",
-  #   copy_source_sse_customer_algorithm: "CopySourceSSECustomerAlgorithm",
-  #   copy_source_sse_customer_key: "CopySourceSSECustomerKey",
-  #   copy_source_sse_customer_key_md5: "CopySourceSSECustomerKeyMD5",
-  #   request_payer: "requester", # accepts requester
-  #   expected_bucket_owner: "AccountId",
-  #   expected_source_bucket_owner: "AccountId",
-  #   })
-  # @example Response structure
-  #
-  #   resp.copy_source_version_id #=> String
-  #   resp.copy_part_result.etag #=> String
-  #   resp.copy_part_result.last_modified #=> Time
-  #   resp.copy_part_result.checksum_crc32 #=> String
-  #   resp.copy_part_result.checksum_crc32c #=> String
-  #   resp.copy_part_result.checksum_crc64nvme #=> String
-  #   resp.copy_part_result.checksum_sha1 #=> String
-  #   resp.copy_part_result.checksum_sha256 #=> String
-  #   resp.server_side_encryption #=> String, one of "AES256", "aws:kms", "aws:kms:dsse"
-  #   resp.sse_customer_algorithm #=> String
-  #   resp.sse_customer_key_md5 #=> String
-  #   resp.ssekms_key_id #=> String
-  #   resp.bucket_key_enabled #=> Boolean
-  #   resp.request_charged #=> String, one of "requester"
   # @example Example: To upload a part by copying byte range from an existing object as data source
   #
   #   # The following example uploads a part of a multipart upload by copying a specified byte range from an existing object as
@@ -16011,6 +15972,45 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   #   last_modified: Time.parse("2016-12-29T21:24:43.000Z"),
   #   },
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.upload_part_copy({
+  #   bucket: "BucketName", # required
+  #   copy_source: "CopySource", # required
+  #   copy_source_if_match: "CopySourceIfMatch",
+  #   copy_source_if_modified_since: Time.now,
+  #   copy_source_if_none_match: "CopySourceIfNoneMatch",
+  #   copy_source_if_unmodified_since: Time.now,
+  #   copy_source_range: "CopySourceRange",
+  #   key: "ObjectKey", # required
+  #   part_number: 1, # required
+  #   upload_id: "MultipartUploadId", # required
+  #   sse_customer_algorithm: "SSECustomerAlgorithm",
+  #   sse_customer_key: "SSECustomerKey",
+  #   sse_customer_key_md5: "SSECustomerKeyMD5",
+  #   copy_source_sse_customer_algorithm: "CopySourceSSECustomerAlgorithm",
+  #   copy_source_sse_customer_key: "CopySourceSSECustomerKey",
+  #   copy_source_sse_customer_key_md5: "CopySourceSSECustomerKeyMD5",
+  #   request_payer: "requester", # accepts requester
+  #   expected_bucket_owner: "AccountId",
+  #   expected_source_bucket_owner: "AccountId",
+  #   })
+  # @example Response structure
+  #
+  #   resp.copy_source_version_id #=> String
+  #   resp.copy_part_result.etag #=> String
+  #   resp.copy_part_result.last_modified #=> Time
+  #   resp.copy_part_result.checksum_crc32 #=> String
+  #   resp.copy_part_result.checksum_crc32c #=> String
+  #   resp.copy_part_result.checksum_crc64nvme #=> String
+  #   resp.copy_part_result.checksum_sha1 #=> String
+  #   resp.copy_part_result.checksum_sha256 #=> String
+  #   resp.server_side_encryption #=> String, one of "AES256", "aws:kms", "aws:kms:dsse"
+  #   resp.sse_customer_algorithm #=> String
+  #   resp.sse_customer_key_md5 #=> String
+  #   resp.ssekms_key_id #=> String
+  #   resp.bucket_key_enabled #=> Boolean
+  #   resp.request_charged #=> String, one of "requester"
   # @option params
   # @option params
   # @option params
@@ -16120,9 +16120,9 @@ class Aws::S3::Client < ::Seahorse::Client::Base
   # @option options
   # @option options
   # @option options
-  # @param options [Hash] ({})
   # @param waiter_name [Symbol]
   # @param params [Hash] ({})
+  # @param options [Hash] ({})
   # @raise [Errors::FailureStateError] Raised when the waiter terminates
   #   because the waiter has entered a state that it will not transition
   #   out of, preventing success.
@@ -25617,14 +25617,14 @@ class Aws::S3::Object
 
   # Generates a pre-signed URL for this object.
   #
+  # @example Pre-signed GET URL, valid for one hour
+  #
+  #   obj.presigned_url(:get, expires_in: 3600)
+  #   #=> "https://bucket-name.s3.amazonaws.com/object-key?..."
   # @example Pre-signed PUT with a canned ACL
   #
   #   # the object uploaded using this URL will be publicly accessible
   #   obj.presigned_url(:put, acl: 'public-read')
-  #   #=> "https://bucket-name.s3.amazonaws.com/object-key?..."
-  # @example Pre-signed GET URL, valid for one hour
-  #
-  #   obj.presigned_url(:get, expires_in: 3600)
   #   #=> "https://bucket-name.s3.amazonaws.com/object-key?..."
   # @example Pre-signed UploadPart PUT
   #

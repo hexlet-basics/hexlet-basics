@@ -224,10 +224,10 @@ class Alba::Association
   # @param condition [Proc, nil] a proc filtering data
   # @param resource [Class<Alba::Resource>, Proc, String, Symbol, nil] a resource class for the association, a proc returning a resource class or a name of the resource
   # @param params [Hash] params override for the association
+  # @param nesting [String] a namespace where source class is inferred with
   # @param key_transformation [Symbol] key transformation type
   # @param helper [Module] helper module to include
   # @param block [Block] used to define resource when resource arg is absent
-  # @param nesting [String] a namespace where source class is inferred with
   # @return [Association] a new instance of Association
   #
   # source://alba//lib/alba/association.rb#24
@@ -546,9 +546,9 @@ module Alba::Resource::ClassMethods
   # @param condition [Proc, nil] a Proc to modify the association
   # @param resource [Class<Alba::Resource>, String, Proc, nil] representing resource for this association
   # @param key [String, Symbol, nil] used as key when given
+  # @param params [Hash] params override for the association
   # @param options [Hash<Symbol, Proc>]
   # @param block [Block]
-  # @param params [Hash] params override for the association
   # @return [void]
   # @see Alba::Association#initialize
   #
@@ -591,9 +591,9 @@ module Alba::Resource::ClassMethods
   # @param condition [Proc, nil] a Proc to modify the association
   # @param resource [Class<Alba::Resource>, String, Proc, nil] representing resource for this association
   # @param key [String, Symbol, nil] used as key when given
+  # @param params [Hash] params override for the association
   # @param options [Hash<Symbol, Proc>]
   # @param block [Block]
-  # @param params [Hash] params override for the association
   # @return [void]
   # @see Alba::Association#initialize
   #
@@ -607,9 +607,9 @@ module Alba::Resource::ClassMethods
   # @param condition [Proc, nil] a Proc to modify the association
   # @param resource [Class<Alba::Resource>, String, Proc, nil] representing resource for this association
   # @param key [String, Symbol, nil] used as key when given
+  # @param params [Hash] params override for the association
   # @param options [Hash<Symbol, Proc>]
   # @param block [Block]
-  # @param params [Hash] params override for the association
   # @return [void]
   # @see Alba::Association#initialize
   #
@@ -643,9 +643,9 @@ module Alba::Resource::ClassMethods
   # @param condition [Proc, nil] a Proc to modify the association
   # @param resource [Class<Alba::Resource>, String, Proc, nil] representing resource for this association
   # @param key [String, Symbol, nil] used as key when given
+  # @param params [Hash] params override for the association
   # @param options [Hash<Symbol, Proc>]
   # @param block [Block]
-  # @param params [Hash] params override for the association
   # @return [void]
   # @see Alba::Association#initialize
   #
@@ -710,9 +710,9 @@ module Alba::Resource::ClassMethods
   # @param condition [Proc, nil] a Proc to modify the association
   # @param resource [Class<Alba::Resource>, String, Proc, nil] representing resource for this association
   # @param key [String, Symbol, nil] used as key when given
+  # @param params [Hash] params override for the association
   # @param options [Hash<Symbol, Proc>]
   # @param block [Block]
-  # @param params [Hash] params override for the association
   # @return [void]
   # @see Alba::Association#initialize
   #

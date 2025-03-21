@@ -5,5 +5,315 @@
 # Please instead update this file by running `bin/tapioca gem aggregate_root`.
 
 
-# THIS IS AN EMPTY RBI FILE.
-# see https://github.com/Shopify/tapioca#manually-requiring-parts-of-a-gem
+# source://aggregate_root//lib/aggregate_root/version.rb#3
+module AggregateRoot
+  include ::AggregateRoot::AggregateMethods
+
+  mixes_in_class_methods ::AggregateRoot::OnDSL
+  mixes_in_class_methods ::AggregateRoot::Constructor
+
+  class << self
+    # Returns the value of attribute configuration.
+    #
+    # source://aggregate_root//lib/aggregate_root/configuration.rb#5
+    def configuration; end
+
+    # Sets the attribute configuration
+    #
+    # @param value the value to set the attribute configuration to.
+    #
+    # source://aggregate_root//lib/aggregate_root/configuration.rb#5
+    def configuration=(_arg0); end
+
+    # @yield [configuration]
+    #
+    # source://aggregate_root//lib/aggregate_root/configuration.rb#8
+    def configure; end
+
+    # @private
+    #
+    # source://aggregate_root//lib/aggregate_root.rb#103
+    def included(host_class); end
+
+    # source://aggregate_root//lib/aggregate_root.rb#81
+    def with_default_apply_strategy; end
+
+    # source://aggregate_root//lib/aggregate_root.rb#90
+    def with_strategy(strategy); end
+  end
+end
+
+# source://aggregate_root//lib/aggregate_root.rb#44
+module AggregateRoot::AggregateMethods
+  # source://aggregate_root//lib/aggregate_root.rb#45
+  def apply(*events); end
+
+  # source://aggregate_root//lib/aggregate_root.rb#67
+  def marshal_dump; end
+
+  # source://aggregate_root//lib/aggregate_root.rb#74
+  def marshal_load(vars); end
+
+  # source://aggregate_root//lib/aggregate_root.rb#61
+  def unpublished_events; end
+
+  # source://aggregate_root//lib/aggregate_root.rb#52
+  def version; end
+
+  # source://aggregate_root//lib/aggregate_root.rb#56
+  def version=(value); end
+end
+
+# source://aggregate_root//lib/aggregate_root.rb#65
+AggregateRoot::AggregateMethods::UNMARSHALED_VARIABLES = T.let(T.unsafe(nil), Array)
+
+# source://aggregate_root//lib/aggregate_root/configuration.rb#13
+class AggregateRoot::Configuration
+  # Returns the value of attribute default_event_store.
+  #
+  # source://aggregate_root//lib/aggregate_root/configuration.rb#14
+  def default_event_store; end
+
+  # Sets the attribute default_event_store
+  #
+  # @param value the value to set the attribute default_event_store to.
+  #
+  # source://aggregate_root//lib/aggregate_root/configuration.rb#14
+  def default_event_store=(_arg0); end
+end
+
+# source://aggregate_root//lib/aggregate_root.rb#35
+module AggregateRoot::Constructor
+  # source://aggregate_root//lib/aggregate_root.rb#36
+  def new(*_arg0, **_arg1); end
+end
+
+# source://aggregate_root//lib/aggregate_root/default_apply_strategy.rb#6
+class AggregateRoot::DefaultApplyStrategy
+  # @return [DefaultApplyStrategy] a new instance of DefaultApplyStrategy
+  #
+  # source://aggregate_root//lib/aggregate_root/default_apply_strategy.rb#7
+  def initialize(strict: T.unsafe(nil)); end
+
+  # source://aggregate_root//lib/aggregate_root/default_apply_strategy.rb#11
+  def call(aggregate, event); end
+
+  private
+
+  # source://aggregate_root//lib/aggregate_root/default_apply_strategy.rb#30
+  def apply_handler_name(event_type); end
+
+  # source://aggregate_root//lib/aggregate_root/default_apply_strategy.rb#34
+  def event_type(event_type); end
+
+  # source://aggregate_root//lib/aggregate_root/default_apply_strategy.rb#22
+  def handler_name(aggregate, event); end
+
+  # source://aggregate_root//lib/aggregate_root/default_apply_strategy.rb#26
+  def on_dsl_handler_name(aggregate, event_type); end
+
+  # Returns the value of attribute on_methods.
+  #
+  # source://aggregate_root//lib/aggregate_root/default_apply_strategy.rb#38
+  def on_methods; end
+
+  # Returns the value of attribute strict.
+  #
+  # source://aggregate_root//lib/aggregate_root/default_apply_strategy.rb#38
+  def strict; end
+end
+
+# source://aggregate_root//lib/aggregate_root/instrumented_apply_strategy.rb#4
+class AggregateRoot::InstrumentedApplyStrategy
+  # @return [InstrumentedApplyStrategy] a new instance of InstrumentedApplyStrategy
+  #
+  # source://aggregate_root//lib/aggregate_root/instrumented_apply_strategy.rb#5
+  def initialize(strategy, instrumentation); end
+
+  # source://aggregate_root//lib/aggregate_root/instrumented_apply_strategy.rb#10
+  def call(aggregate, event); end
+
+  # source://aggregate_root//lib/aggregate_root/instrumented_apply_strategy.rb#18
+  def method_missing(method_name, *arguments, &block); end
+
+  private
+
+  # Returns the value of attribute instrumentation.
+  #
+  # source://aggregate_root//lib/aggregate_root/instrumented_apply_strategy.rb#32
+  def instrumentation; end
+
+  # @return [Boolean]
+  #
+  # source://aggregate_root//lib/aggregate_root/instrumented_apply_strategy.rb#26
+  def respond_to_missing?(method_name, _include_private); end
+
+  # Returns the value of attribute strategy.
+  #
+  # source://aggregate_root//lib/aggregate_root/instrumented_apply_strategy.rb#32
+  def strategy; end
+end
+
+# source://aggregate_root//lib/aggregate_root/instrumented_repository.rb#5
+class AggregateRoot::InstrumentedRepository
+  # @return [InstrumentedRepository] a new instance of InstrumentedRepository
+  #
+  # source://aggregate_root//lib/aggregate_root/instrumented_repository.rb#6
+  def initialize(repository, instrumentation); end
+
+  # source://aggregate_root//lib/aggregate_root/instrumented_repository.rb#12
+  def load(aggregate, stream_name); end
+
+  # source://aggregate_root//lib/aggregate_root/instrumented_repository.rb#33
+  def method_missing(method_name, *arguments, **keyword_arguments, &block); end
+
+  # source://aggregate_root//lib/aggregate_root/instrumented_repository.rb#18
+  def store(aggregate, stream_name); end
+
+  # source://aggregate_root//lib/aggregate_root/instrumented_repository.rb#28
+  def with_aggregate(aggregate, stream_name, &block); end
+
+  private
+
+  # source://aggregate_root//lib/aggregate_root/instrumented_repository.rb#47
+  def handle_error(error); end
+
+  # Returns the value of attribute instrumentation.
+  #
+  # source://aggregate_root//lib/aggregate_root/instrumented_repository.rb#55
+  def instrumentation; end
+
+  # Returns the value of attribute repository.
+  #
+  # source://aggregate_root//lib/aggregate_root/instrumented_repository.rb#55
+  def repository; end
+
+  # @return [Boolean]
+  #
+  # source://aggregate_root//lib/aggregate_root/instrumented_repository.rb#41
+  def respond_to_missing?(method_name, _include_private); end
+end
+
+# source://aggregate_root//lib/aggregate_root/default_apply_strategy.rb#4
+class AggregateRoot::MissingHandler < ::StandardError; end
+
+# source://aggregate_root//lib/aggregate_root.rb#13
+module AggregateRoot::OnDSL
+  # source://aggregate_root//lib/aggregate_root.rb#16
+  def on(*event_klasses, &block); end
+
+  # source://aggregate_root//lib/aggregate_root.rb#29
+  def on_methods; end
+end
+
+# source://aggregate_root//lib/aggregate_root.rb#14
+AggregateRoot::OnDSL::ANONYMOUS_CLASS = T.let(T.unsafe(nil), String)
+
+# source://aggregate_root//lib/aggregate_root/repository.rb#4
+class AggregateRoot::Repository
+  # @return [Repository] a new instance of Repository
+  #
+  # source://aggregate_root//lib/aggregate_root/repository.rb#5
+  def initialize(event_store = T.unsafe(nil)); end
+
+  # source://aggregate_root//lib/aggregate_root/repository.rb#9
+  def load(aggregate, stream_name); end
+
+  # source://aggregate_root//lib/aggregate_root/repository.rb#15
+  def store(aggregate, stream_name); end
+
+  # source://aggregate_root//lib/aggregate_root/repository.rb#24
+  def with_aggregate(aggregate, stream_name, &block); end
+
+  private
+
+  # source://aggregate_root//lib/aggregate_root/repository.rb#33
+  def default_event_store; end
+
+  # Returns the value of attribute event_store.
+  #
+  # source://aggregate_root//lib/aggregate_root/repository.rb#31
+  def event_store; end
+end
+
+# source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#6
+class AggregateRoot::SnapshotRepository
+  # @raise [ArgumentError]
+  # @return [SnapshotRepository] a new instance of SnapshotRepository
+  #
+  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#12
+  def initialize(event_store, interval = T.unsafe(nil)); end
+
+  # Sets the attribute error_handler
+  #
+  # @param value the value to set the attribute error_handler to.
+  #
+  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#20
+  def error_handler=(_arg0); end
+
+  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#24
+  def load(aggregate, stream_name); end
+
+  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#42
+  def store(aggregate, stream_name); end
+
+  private
+
+  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#72
+  def build_marshal(aggregate); end
+
+  # Returns the value of attribute error_handler.
+  #
+  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#61
+  def error_handler; end
+
+  # Returns the value of attribute event_store.
+  #
+  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#61
+  def event_store; end
+
+  # Returns the value of attribute interval.
+  #
+  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#61
+  def interval; end
+
+  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#84
+  def load_marshal(snpashot_event); end
+
+  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#80
+  def load_snapshot_event(stream_name); end
+
+  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#63
+  def publish_snapshot_event(aggregate, stream_name, last_event_id); end
+
+  # @return [Boolean]
+  #
+  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#92
+  def time_for_snapshot?(aggregate_version, just_published_events); end
+end
+
+# source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#7
+AggregateRoot::SnapshotRepository::DEFAULT_SNAPSHOT_INTERVAL = T.let(T.unsafe(nil), Integer)
+
+# source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#10
+class AggregateRoot::SnapshotRepository::NotDumpableAggregateRoot < ::StandardError; end
+
+# source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#9
+class AggregateRoot::SnapshotRepository::NotRestorableSnapshot < ::StandardError; end
+
+# source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#8
+AggregateRoot::SnapshotRepository::SNAPSHOT_STREAM_PATTERN = T.let(T.unsafe(nil), Proc)
+
+# source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#22
+class AggregateRoot::SnapshotRepository::Snapshot < ::RubyEventStore::Event; end
+
+# source://aggregate_root//lib/aggregate_root/transform.rb#4
+class AggregateRoot::Transform
+  class << self
+    # source://aggregate_root//lib/aggregate_root/transform.rb#5
+    def to_snake_case(name); end
+  end
+end
+
+# source://aggregate_root//lib/aggregate_root/version.rb#4
+AggregateRoot::VERSION = T.let(T.unsafe(nil), String)

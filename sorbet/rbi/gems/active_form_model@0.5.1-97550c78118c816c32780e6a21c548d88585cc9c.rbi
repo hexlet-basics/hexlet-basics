@@ -76,7 +76,7 @@ module ActiveFormModel::Permittable::ClassMethods
   # source://active_form_model//lib/active_form_model/permittable.rb#28
   def _permit_attrs(attrs); end
 
-  # source://activesupport/8.0.1/lib/active_support/deprecation/method_wrappers.rb#46
+  # source://activesupport/8.0.2/lib/active_support/deprecation/method_wrappers.rb#46
   def fields(*args, **_arg1, &block); end
 
   # source://active_form_model//lib/active_form_model/permittable.rb#15

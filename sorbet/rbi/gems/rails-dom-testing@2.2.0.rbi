@@ -8,70 +8,70 @@
 # source://rails-dom-testing//lib/rails/dom/testing/assertions/dom_assertions.rb#3
 module Rails
   class << self
-    # source://railties/8.0.1/lib/rails.rb#44
+    # source://railties/8.0.2/lib/rails.rb#44
     def app_class; end
 
-    # source://railties/8.0.1/lib/rails.rb#44
+    # source://railties/8.0.2/lib/rails.rb#44
     def app_class=(_arg0); end
 
-    # source://railties/8.0.1/lib/rails.rb#45
+    # source://railties/8.0.2/lib/rails.rb#45
     def application; end
 
-    # source://railties/8.0.1/lib/rails.rb#43
+    # source://railties/8.0.2/lib/rails.rb#43
     def application=(_arg0); end
 
-    # source://railties/8.0.1/lib/rails.rb#126
+    # source://railties/8.0.2/lib/rails.rb#126
     def autoloaders; end
 
-    # source://railties/8.0.1/lib/rails.rb#56
+    # source://railties/8.0.2/lib/rails.rb#56
     def backtrace_cleaner; end
 
-    # source://railties/8.0.1/lib/rails.rb#44
+    # source://railties/8.0.2/lib/rails.rb#44
     def cache; end
 
-    # source://railties/8.0.1/lib/rails.rb#44
+    # source://railties/8.0.2/lib/rails.rb#44
     def cache=(_arg0); end
 
-    # source://railties/8.0.1/lib/rails.rb#52
+    # source://railties/8.0.2/lib/rails.rb#52
     def configuration; end
 
-    # source://railties/8.0.1/lib/rails/deprecator.rb#4
+    # source://railties/8.0.2/lib/rails/deprecator.rb#4
     def deprecator; end
 
-    # source://railties/8.0.1/lib/rails.rb#75
+    # source://railties/8.0.2/lib/rails.rb#75
     def env; end
 
-    # source://railties/8.0.1/lib/rails.rb#82
+    # source://railties/8.0.2/lib/rails.rb#82
     def env=(environment); end
 
-    # source://railties/8.0.1/lib/rails.rb#93
+    # source://railties/8.0.2/lib/rails.rb#93
     def error; end
 
-    # source://railties/8.0.1/lib/rails/gem_version.rb#5
+    # source://railties/8.0.2/lib/rails/gem_version.rb#5
     def gem_version; end
 
-    # source://railties/8.0.1/lib/rails.rb#106
+    # source://railties/8.0.2/lib/rails.rb#106
     def groups(*groups); end
 
-    # source://railties/8.0.1/lib/rails.rb#49
+    # source://railties/8.0.2/lib/rails.rb#49
     def initialize!(*_arg0, **_arg1, &_arg2); end
 
-    # source://railties/8.0.1/lib/rails.rb#49
+    # source://railties/8.0.2/lib/rails.rb#49
     def initialized?(*_arg0, **_arg1, &_arg2); end
 
-    # source://railties/8.0.1/lib/rails.rb#44
+    # source://railties/8.0.2/lib/rails.rb#44
     def logger; end
 
-    # source://railties/8.0.1/lib/rails.rb#44
+    # source://railties/8.0.2/lib/rails.rb#44
     def logger=(_arg0); end
 
-    # source://railties/8.0.1/lib/rails.rb#122
+    # source://railties/8.0.2/lib/rails.rb#122
     def public_path; end
 
-    # source://railties/8.0.1/lib/rails.rb#65
+    # source://railties/8.0.2/lib/rails.rb#65
     def root; end
 
-    # source://railties/8.0.1/lib/rails/version.rb#7
+    # source://railties/8.0.2/lib/rails/version.rb#7
     def version; end
   end
 end

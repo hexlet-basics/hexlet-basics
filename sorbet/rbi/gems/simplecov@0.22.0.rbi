@@ -5,6 +5,116 @@
 # Please instead update this file by running `bin/tapioca gem simplecov`.
 
 
+# How minitest plugins. See https://github.com/simplecov-ruby/simplecov/pull/756 for why we need this.
+# https://github.com/seattlerb/minitest#writing-extensions
+#
+# source://simplecov//lib/minitest/simplecov_plugin.rb#5
+module Minitest
+  # source://railties/8.0.2/lib/minitest/rails_plugin.rb#139
+  def run_via; end
+
+  class << self
+    # source://minitest/5.25.5/lib/minitest.rb#323
+    def __run(reporter, options); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#97
+    def after_run(&block); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def allow_fork; end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def allow_fork=(_arg0); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#70
+    def autorun; end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def backtrace_filter; end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def backtrace_filter=(_arg0); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#19
+    def cattr_accessor(name); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#1216
+    def clock_time; end
+
+    # source://minitest/5.25.5/lib/minitest.rb#303
+    def empty_run!(options); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def extensions; end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def extensions=(_arg0); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#336
+    def filter_backtrace(bt); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def info_signal; end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def info_signal=(_arg0); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#125
+    def init_plugins(options); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#109
+    def load_plugins; end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def parallel_executor; end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def parallel_executor=(_arg0); end
+
+    # source://minitest/5.25.5/lib/minitest/pride_plugin.rb#10
+    def plugin_pride_init(options); end
+
+    # source://minitest/5.25.5/lib/minitest/pride_plugin.rb#4
+    def plugin_pride_options(opts, _options); end
+
+    # source://railties/8.0.2/lib/minitest/rails_plugin.rb#111
+    def plugin_rails_init(options); end
+
+    # source://railties/8.0.2/lib/minitest/rails_plugin.rb#68
+    def plugin_rails_options(opts, options); end
+
+    # source://simplecov//lib/minitest/simplecov_plugin.rb#6
+    def plugin_simplecov_init(_options); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#143
+    def process_args(args = T.unsafe(nil)); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#104
+    def register_plugin(name_or_mod); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def reporter; end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def reporter=(_arg0); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#269
+    def run(args = T.unsafe(nil)); end
+
+    # source://minitest/5.25.5/lib/minitest.rb#1207
+    def run_one_method(klass, method_name); end
+
+    # source://railties/8.0.2/lib/minitest/rails_plugin.rb#139
+    def run_via; end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def seed; end
+
+    # source://minitest/5.25.5/lib/minitest.rb#20
+    def seed=(_arg0); end
+  end
+end
+
 # Code coverage for ruby. Please check out README for a full introduction.
 #
 # source://simplecov//lib/simplecov.rb#22

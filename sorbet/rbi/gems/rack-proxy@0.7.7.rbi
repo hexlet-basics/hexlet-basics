@@ -67,7 +67,7 @@ end
 # source://rack-proxy//lib/rack/http_streaming_response.rb#4
 module Rack
   class << self
-    # source://rack/3.1.8/lib/rack/version.rb#18
+    # source://rack/3.1.12/lib/rack/version.rb#18
     def release; end
   end
 end

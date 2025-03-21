@@ -268,23 +268,6 @@ module Enumerize::Base::ClassMethods::Hook
   def inherited(subclass); end
 end
 
-# source://enumerize//lib/enumerize/hooks/simple_form.rb#6
-module Enumerize::Hooks; end
-
-# source://enumerize//lib/enumerize/hooks/simple_form.rb#7
-module Enumerize::Hooks::SimpleFormBuilderExtension
-  # source://enumerize//lib/enumerize/hooks/simple_form.rb#9
-  def input(attribute_name, options = T.unsafe(nil), &block); end
-
-  # source://enumerize//lib/enumerize/hooks/simple_form.rb#14
-  def input_field(attribute_name, options = T.unsafe(nil)); end
-
-  private
-
-  # source://enumerize//lib/enumerize/hooks/simple_form.rb#21
-  def add_input_options_for_enumerized_attribute(attribute_name, options); end
-end
-
 # source://enumerize//lib/enumerize/module.rb#4
 class Enumerize::Module < ::Module
   # @return [Module] a new instance of Module
@@ -582,8 +565,4 @@ class Enumerize::Value < ::String
 
   # source://enumerize//lib/enumerize/value.rb#47
   def predicate_call(value); end
-end
-
-class SimpleForm::FormBuilder < ::ActionView::Helpers::FormBuilder
-  include ::Enumerize::Hooks::SimpleFormBuilderExtension
 end

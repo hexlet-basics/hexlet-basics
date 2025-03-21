@@ -12405,11 +12405,80 @@ class ActiveSupport::TestCase < ::Minitest::Test
   # source://activesupport//lib/active_support/testing/file_fixtures.rb#20
   def file_fixture_path?; end
 
+  # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#33
+  def fixture_class_names; end
+
+  # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#33
+  def fixture_class_names=(_arg0); end
+
+  # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#33
+  def fixture_class_names?; end
+
+  # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#31
+  def fixture_paths; end
+
+  # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#31
+  def fixture_paths?; end
+
+  # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#38
+  def fixture_sets; end
+
+  # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#38
+  def fixture_sets=(_arg0); end
+
+  # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#38
+  def fixture_sets?; end
+
+  # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#32
+  def fixture_table_names; end
+
+  # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#32
+  def fixture_table_names=(_arg0); end
+
+  # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#32
+  def fixture_table_names?; end
+
   # source://activesupport//lib/active_support/test_case.rb#300
   def inspect; end
 
+  # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#37
+  def lock_threads; end
+
+  # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#37
+  def lock_threads=(_arg0); end
+
+  # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#37
+  def lock_threads?; end
+
   # source://minitest/5.25.5/lib/minitest.rb#376
   def method_name; end
+
+  # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#36
+  def pre_loaded_fixtures; end
+
+  # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#36
+  def pre_loaded_fixtures=(_arg0); end
+
+  # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#36
+  def pre_loaded_fixtures?; end
+
+  # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#35
+  def use_instantiated_fixtures; end
+
+  # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#35
+  def use_instantiated_fixtures=(_arg0); end
+
+  # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#35
+  def use_instantiated_fixtures?; end
+
+  # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#34
+  def use_transactional_tests; end
+
+  # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#34
+  def use_transactional_tests=(_arg0); end
+
+  # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#34
+  def use_transactional_tests?; end
 
   class << self
     # source://activesupport//lib/active_support/callbacks.rb#69
@@ -12438,6 +12507,51 @@ class ActiveSupport::TestCase < ::Minitest::Test
 
     # source://activesupport//lib/active_support/testing/file_fixtures.rb#20
     def file_fixture_path?; end
+
+    # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#33
+    def fixture_class_names; end
+
+    # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#33
+    def fixture_class_names=(value); end
+
+    # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#33
+    def fixture_class_names?; end
+
+    # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#31
+    def fixture_paths; end
+
+    # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#31
+    def fixture_paths=(value); end
+
+    # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#31
+    def fixture_paths?; end
+
+    # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#38
+    def fixture_sets; end
+
+    # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#38
+    def fixture_sets=(value); end
+
+    # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#38
+    def fixture_sets?; end
+
+    # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#32
+    def fixture_table_names; end
+
+    # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#32
+    def fixture_table_names=(value); end
+
+    # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#32
+    def fixture_table_names?; end
+
+    # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#37
+    def lock_threads; end
+
+    # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#37
+    def lock_threads=(value); end
+
+    # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#37
+    def lock_threads?; end
 
     # Parallelizes the test suite.
     #
@@ -12510,6 +12624,15 @@ class ActiveSupport::TestCase < ::Minitest::Test
     # source://activesupport//lib/active_support/test_case.rb#118
     def parallelize_teardown(&block); end
 
+    # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#36
+    def pre_loaded_fixtures; end
+
+    # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#36
+    def pre_loaded_fixtures=(value); end
+
+    # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#36
+    def pre_loaded_fixtures?; end
+
     # Returns the order in which test cases are run.
     #
     #   ActiveSupport::TestCase.test_order # => :random
@@ -12533,6 +12656,24 @@ class ActiveSupport::TestCase < ::Minitest::Test
     # source://activesupport//lib/active_support/test_case.rb#34
     def test_order=(new_order); end
 
+    # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#35
+    def use_instantiated_fixtures; end
+
+    # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#35
+    def use_instantiated_fixtures=(value); end
+
+    # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#35
+    def use_instantiated_fixtures?; end
+
+    # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#34
+    def use_transactional_tests; end
+
+    # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#34
+    def use_transactional_tests=(value); end
+
+    # source://activerecord/8.0.2/lib/active_record/test_fixtures.rb#34
+    def use_transactional_tests?; end
+
     private
 
     # source://activesupport//lib/active_support/class_attribute.rb#15
@@ -12546,6 +12687,54 @@ class ActiveSupport::TestCase < ::Minitest::Test
 
     # source://activesupport//lib/active_support/class_attribute.rb#17
     def __class_attr_file_fixture_path=(new_value); end
+
+    # source://activesupport//lib/active_support/class_attribute.rb#15
+    def __class_attr_fixture_class_names; end
+
+    # source://activesupport//lib/active_support/class_attribute.rb#17
+    def __class_attr_fixture_class_names=(new_value); end
+
+    # source://activesupport//lib/active_support/class_attribute.rb#15
+    def __class_attr_fixture_paths; end
+
+    # source://activesupport//lib/active_support/class_attribute.rb#17
+    def __class_attr_fixture_paths=(new_value); end
+
+    # source://activesupport//lib/active_support/class_attribute.rb#15
+    def __class_attr_fixture_sets; end
+
+    # source://activesupport//lib/active_support/class_attribute.rb#17
+    def __class_attr_fixture_sets=(new_value); end
+
+    # source://activesupport//lib/active_support/class_attribute.rb#15
+    def __class_attr_fixture_table_names; end
+
+    # source://activesupport//lib/active_support/class_attribute.rb#17
+    def __class_attr_fixture_table_names=(new_value); end
+
+    # source://activesupport//lib/active_support/class_attribute.rb#15
+    def __class_attr_lock_threads; end
+
+    # source://activesupport//lib/active_support/class_attribute.rb#17
+    def __class_attr_lock_threads=(new_value); end
+
+    # source://activesupport//lib/active_support/class_attribute.rb#15
+    def __class_attr_pre_loaded_fixtures; end
+
+    # source://activesupport//lib/active_support/class_attribute.rb#17
+    def __class_attr_pre_loaded_fixtures=(new_value); end
+
+    # source://activesupport//lib/active_support/class_attribute.rb#15
+    def __class_attr_use_instantiated_fixtures; end
+
+    # source://activesupport//lib/active_support/class_attribute.rb#17
+    def __class_attr_use_instantiated_fixtures=(new_value); end
+
+    # source://activesupport//lib/active_support/class_attribute.rb#15
+    def __class_attr_use_transactional_tests; end
+
+    # source://activesupport//lib/active_support/class_attribute.rb#17
+    def __class_attr_use_transactional_tests=(new_value); end
   end
 end
 
@@ -18022,8 +18211,6 @@ class Integer < ::Numeric
   # source://activesupport//lib/active_support/core_ext/integer/time.rb#18
   def years; end
 end
-
-Integer::GMP_VERSION = T.let(T.unsafe(nil), String)
 
 # source://activesupport//lib/active_support/core_ext/kernel/reporting.rb#3
 module Kernel

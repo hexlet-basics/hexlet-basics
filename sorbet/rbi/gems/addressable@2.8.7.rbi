@@ -168,6 +168,608 @@ Addressable::IDNA::UTF8_REGEX = T.let(T.unsafe(nil), Regexp)
 # source://addressable//lib/addressable/idna/pure.rb#53
 Addressable::IDNA::UTF8_REGEX_MULTIBYTE = T.let(T.unsafe(nil), Regexp)
 
+# This is an implementation of a URI template based on
+# RFC 6570 (http://tools.ietf.org/html/rfc6570).
+#
+# source://addressable//lib/addressable/template.rb#27
+class Addressable::Template
+  # Creates a new <tt>Addressable::Template</tt> object.
+  #
+  # @param pattern [#to_str] The URI Template pattern.
+  # @return [Addressable::Template] The initialized Template object.
+  #
+  # source://addressable//lib/addressable/template.rb#234
+  def initialize(pattern); end
+
+  # Returns <code>true</code> if the Template objects are equal. This method
+  # does NOT normalize either Template before doing the comparison.
+  #
+  # @param template [Object] The Template to compare.
+  # @return [TrueClass, FalseClass] <code>true</code> if the Templates are equivalent, <code>false</code>
+  #   otherwise.
+  #
+  # source://addressable//lib/addressable/template.rb#274
+  def ==(template); end
+
+  # Returns <code>true</code> if the Template objects are equal. This method
+  # does NOT normalize either Template before doing the comparison.
+  # Addressable::Template makes no distinction between `==` and `eql?`.
+  #
+  # @param template [Object] The Template to compare.
+  # @return [TrueClass, FalseClass] <code>true</code> if the Templates are equivalent, <code>false</code>
+  #   otherwise.
+  # @see #==
+  #
+  # source://addressable//lib/addressable/template.rb#274
+  def eql?(template); end
+
+  # Expands a URI template into a full URI.
+  #
+  # The object should respond to either the <tt>validate</tt> or
+  # <tt>transform</tt> messages or both. Both the <tt>validate</tt> and
+  # <tt>transform</tt> methods should take two parameters: <tt>name</tt> and
+  # <tt>value</tt>. The <tt>validate</tt> method should return <tt>true</tt>
+  # or <tt>false</tt>; <tt>true</tt> if the value of the variable is valid,
+  # <tt>false</tt> otherwise. An <tt>InvalidTemplateValueError</tt>
+  # exception will be raised if the value is invalid. The <tt>transform</tt>
+  # method should return the transformed variable value as a <tt>String</tt>.
+  # If a <tt>transform</tt> method is used, the value will not be percent
+  # encoded automatically. Unicode normalization will be performed both
+  # before and after sending the value to the transform method.
+  #
+  # @example
+  #   class ExampleProcessor
+  #   def self.validate(name, value)
+  #   return !!(value =~ /^[\w ]+$/) if name == "query"
+  #   return true
+  #   end
+  #
+  #   def self.transform(name, value)
+  #   return value.gsub(/ /, "+") if name == "query"
+  #   return value
+  #   end
+  #   end
+  #
+  #   Addressable::Template.new(
+  #   "http://example.com/search/{query}/"
+  #   ).expand(
+  #   {"query" => "an example search query"},
+  #   ExampleProcessor
+  #   ).to_str
+  #   #=> "http://example.com/search/an+example+search+query/"
+  #
+  #   Addressable::Template.new(
+  #   "http://example.com/search/{query}/"
+  #   ).expand(
+  #   {"query" => "an example search query"}
+  #   ).to_str
+  #   #=> "http://example.com/search/an%20example%20search%20query/"
+  #
+  #   Addressable::Template.new(
+  #   "http://example.com/search/{query}/"
+  #   ).expand(
+  #   {"query" => "bogus!"},
+  #   ExampleProcessor
+  #   ).to_str
+  #   #=> Addressable::Template::InvalidTemplateValueError
+  # @param mapping [Hash] The mapping that corresponds to the pattern.
+  # @param processor [#validate, #transform] An optional processor object may be supplied.
+  # @param normalize_values [Boolean] Optional flag to enable/disable unicode normalization. Default: true
+  # @return [Addressable::URI] The expanded URI template.
+  #
+  # source://addressable//lib/addressable/template.rb#591
+  def expand(mapping, processor = T.unsafe(nil), normalize_values = T.unsafe(nil)); end
+
+  # Extracts a mapping from the URI using a URI Template pattern.
+  #
+  # @example
+  #   class ExampleProcessor
+  #   def self.restore(name, value)
+  #   return value.gsub(/\+/, " ") if name == "query"
+  #   return value
+  #   end
+  #
+  #   def self.match(name)
+  #   return ".*?" if name == "first"
+  #   return ".*"
+  #   end
+  #   end
+  #
+  #   uri = Addressable::URI.parse(
+  #   "http://example.com/search/an+example+search+query/"
+  #   )
+  #   Addressable::Template.new(
+  #   "http://example.com/search/{query}/"
+  #   ).extract(uri, ExampleProcessor)
+  #   #=> {"query" => "an example search query"}
+  #
+  #   uri = Addressable::URI.parse("http://example.com/a/b/c/")
+  #   Addressable::Template.new(
+  #   "http://example.com/{first}/{second}/"
+  #   ).extract(uri, ExampleProcessor)
+  #   #=> {"first" => "a", "second" => "b/c"}
+  #
+  #   uri = Addressable::URI.parse("http://example.com/a/b/c/")
+  #   Addressable::Template.new(
+  #   "http://example.com/{first}/{-list|/|second}/"
+  #   ).extract(uri)
+  #   #=> {"first" => "a", "second" => ["b", "c"]}
+  # @param uri [Addressable::URI, #to_str] The URI to extract from.
+  # @param processor [#restore, #match] A template processor object may optionally be supplied.
+  #
+  #   The object should respond to either the <tt>restore</tt> or
+  #   <tt>match</tt> messages or both. The <tt>restore</tt> method should
+  #   take two parameters: `[String] name` and `[String] value`.
+  #   The <tt>restore</tt> method should reverse any transformations that
+  #   have been performed on the value to ensure a valid URI.
+  #   The <tt>match</tt> method should take a single
+  #   parameter: `[String] name`.  The <tt>match</tt> method should return
+  #   a <tt>String</tt> containing a regular expression capture group for
+  #   matching on that particular variable. The default value is `".*?"`.
+  #   The <tt>match</tt> method has no effect on multivariate operator
+  #   expansions.
+  # @return [Hash, NilClass] The <tt>Hash</tt> mapping that was extracted from the URI, or
+  #   <tt>nil</tt> if the URI didn't match the template.
+  #
+  # source://addressable//lib/addressable/template.rb#342
+  def extract(uri, processor = T.unsafe(nil)); end
+
+  # Freeze URI, initializing instance variables.
+  #
+  # @return [Addressable::URI] The frozen URI object.
+  #
+  # source://addressable//lib/addressable/template.rb#245
+  def freeze; end
+
+  # Returns a <tt>String</tt> representation of the Template object's state.
+  #
+  # @return [String] The Template object's state, as a <tt>String</tt>.
+  #
+  # source://addressable//lib/addressable/template.rb#260
+  def inspect; end
+
+  # Returns an Array of variables used within the template pattern.
+  # The variables are listed in the Array in the order they appear within
+  # the pattern.  Multiple occurrences of a variable within a pattern are
+  # not represented in this Array.
+  #
+  # @return [Array] The variables present in the template's pattern.
+  #
+  # source://addressable//lib/addressable/template.rb#607
+  def keys; end
+
+  # Extracts match data from the URI using a URI Template pattern.
+  #
+  # @example
+  #   class ExampleProcessor
+  #   def self.restore(name, value)
+  #   return value.gsub(/\+/, " ") if name == "query"
+  #   return value
+  #   end
+  #
+  #   def self.match(name)
+  #   return ".*?" if name == "first"
+  #   return ".*"
+  #   end
+  #   end
+  #
+  #   uri = Addressable::URI.parse(
+  #   "http://example.com/search/an+example+search+query/"
+  #   )
+  #   match = Addressable::Template.new(
+  #   "http://example.com/search/{query}/"
+  #   ).match(uri, ExampleProcessor)
+  #   match.variables
+  #   #=> ["query"]
+  #   match.captures
+  #   #=> ["an example search query"]
+  #
+  #   uri = Addressable::URI.parse("http://example.com/a/b/c/")
+  #   match = Addressable::Template.new(
+  #   "http://example.com/{first}/{+second}/"
+  #   ).match(uri, ExampleProcessor)
+  #   match.variables
+  #   #=> ["first", "second"]
+  #   match.captures
+  #   #=> ["a", "b/c"]
+  #
+  #   uri = Addressable::URI.parse("http://example.com/a/b/c/")
+  #   match = Addressable::Template.new(
+  #   "http://example.com/{first}{/second*}/"
+  #   ).match(uri)
+  #   match.variables
+  #   #=> ["first", "second"]
+  #   match.captures
+  #   #=> ["a", ["b", "c"]]
+  # @param uri [Addressable::URI, #to_str] The URI to extract from.
+  # @param processor [#restore, #match] A template processor object may optionally be supplied.
+  #
+  #   The object should respond to either the <tt>restore</tt> or
+  #   <tt>match</tt> messages or both. The <tt>restore</tt> method should
+  #   take two parameters: `[String] name` and `[String] value`.
+  #   The <tt>restore</tt> method should reverse any transformations that
+  #   have been performed on the value to ensure a valid URI.
+  #   The <tt>match</tt> method should take a single
+  #   parameter: `[String] name`. The <tt>match</tt> method should return
+  #   a <tt>String</tt> containing a regular expression capture group for
+  #   matching on that particular variable. The default value is `".*?"`.
+  #   The <tt>match</tt> method has no effect on multivariate operator
+  #   expansions.
+  # @return [Hash, NilClass] The <tt>Hash</tt> mapping that was extracted from the URI, or
+  #   <tt>nil</tt> if the URI didn't match the template.
+  #
+  # source://addressable//lib/addressable/template.rb#413
+  def match(uri, processor = T.unsafe(nil)); end
+
+  # Returns the named captures of the coerced `Regexp`.
+  #
+  # @api private
+  # @return [Hash] The named captures of the `Regexp` given by {#to_regexp}.
+  #
+  # source://addressable//lib/addressable/template.rb#651
+  def named_captures; end
+
+  # Returns an Array of variables used within the template pattern.
+  # The variables are listed in the Array in the order they appear within
+  # the pattern.  Multiple occurrences of a variable within a pattern are
+  # not represented in this Array.
+  #
+  # @return [Array] The variables present in the template's pattern.
+  #
+  # source://addressable//lib/addressable/template.rb#607
+  def names; end
+
+  # Expands a URI template into another URI template.
+  #
+  # The object should respond to either the <tt>validate</tt> or
+  # <tt>transform</tt> messages or both. Both the <tt>validate</tt> and
+  # <tt>transform</tt> methods should take two parameters: <tt>name</tt> and
+  # <tt>value</tt>. The <tt>validate</tt> method should return <tt>true</tt>
+  # or <tt>false</tt>; <tt>true</tt> if the value of the variable is valid,
+  # <tt>false</tt> otherwise. An <tt>InvalidTemplateValueError</tt>
+  # exception will be raised if the value is invalid. The <tt>transform</tt>
+  # method should return the transformed variable value as a <tt>String</tt>.
+  # If a <tt>transform</tt> method is used, the value will not be percent
+  # encoded automatically. Unicode normalization will be performed both
+  # before and after sending the value to the transform method.
+  #
+  # @example
+  #   Addressable::Template.new(
+  #   "http://example.com/{one}/{two}/"
+  #   ).partial_expand({"one" => "1"}).pattern
+  #   #=> "http://example.com/1/{two}/"
+  #
+  #   Addressable::Template.new(
+  #   "http://example.com/{?one,two}/"
+  #   ).partial_expand({"one" => "1"}).pattern
+  #   #=> "http://example.com/?one=1{&two}/"
+  #
+  #   Addressable::Template.new(
+  #   "http://example.com/{?one,two,three}/"
+  #   ).partial_expand({"one" => "1", "three" => 3}).pattern
+  #   #=> "http://example.com/?one=1{&two}&three=3"
+  # @param mapping [Hash] The mapping that corresponds to the pattern.
+  # @param processor [#validate, #transform] An optional processor object may be supplied.
+  # @param normalize_values [Boolean] Optional flag to enable/disable unicode normalization. Default: true
+  # @return [Addressable::Template] The partially expanded URI template.
+  #
+  # source://addressable//lib/addressable/template.rb#524
+  def partial_expand(mapping, processor = T.unsafe(nil), normalize_values = T.unsafe(nil)); end
+
+  # @return [String] The Template object's pattern.
+  #
+  # source://addressable//lib/addressable/template.rb#254
+  def pattern; end
+
+  # Returns the source of the coerced `Regexp`.
+  #
+  # @api private
+  # @return [String] The source of the `Regexp` given by {#to_regexp}.
+  #
+  # source://addressable//lib/addressable/template.rb#641
+  def source; end
+
+  # Coerces a template into a `Regexp` object. This regular expression will
+  # behave very similarly to the actual template, and should match the same
+  # URI values, but it cannot fully handle, for example, values that would
+  # extract to an `Array`.
+  #
+  # @return [Regexp] A regular expression which should match the template.
+  #
+  # source://addressable//lib/addressable/template.rb#630
+  def to_regexp; end
+
+  # Returns a mapping of variables to their default values specified
+  # in the template. Variables without defaults are not returned.
+  #
+  # @return [Hash] Mapping of template variables to their defaults
+  #
+  # source://addressable//lib/addressable/template.rb#618
+  def variable_defaults; end
+
+  # Returns an Array of variables used within the template pattern.
+  # The variables are listed in the Array in the order they appear within
+  # the pattern.  Multiple occurrences of a variable within a pattern are
+  # not represented in this Array.
+  #
+  # @return [Array] The variables present in the template's pattern.
+  #
+  # source://addressable//lib/addressable/template.rb#607
+  def variables; end
+
+  private
+
+  # Takes a set of values, and joins them together based on the
+  # operator.
+  #
+  # @param operator [String, Nil] One of the operators from the set
+  #   (?,&,+,#,;,/,.), or nil if there wasn't one.
+  # @param return_value [Array] The set of return values (as [variable_name, value] tuples) that will
+  #   be joined together.
+  # @return [String] The transformed mapped value
+  #
+  # source://addressable//lib/addressable/template.rb#861
+  def join_values(operator, return_value); end
+
+  # Generates a hash with string keys
+  #
+  # @param mapping [Hash] A mapping hash to normalize
+  # @return [Hash] A hash with stringified keys
+  #
+  # source://addressable//lib/addressable/template.rb#924
+  def normalize_keys(mapping); end
+
+  # Takes a set of values, and joins them together based on the
+  # operator.
+  #
+  # @param value [Hash, Array, String] Normalizes unicode keys and values with String#unicode_normalize (NFC)
+  # @return [Hash, Array, String] The normalized values
+  #
+  # source://addressable//lib/addressable/template.rb#898
+  def normalize_value(value); end
+
+  # source://addressable//lib/addressable/template.rb#656
+  def ordered_variable_defaults; end
+
+  # Generates the <tt>Regexp</tt> that parses a template pattern.
+  #
+  # @param pattern [String] The URI template pattern.
+  # @param processor [#match] The template processor to use.
+  # @return [Array, Regexp] An array of expansion variables nad a regular expression which may be
+  #   used to parse a template pattern
+  #
+  # source://addressable//lib/addressable/template.rb#968
+  def parse_new_template_pattern(pattern, processor = T.unsafe(nil)); end
+
+  # Generates the <tt>Regexp</tt> that parses a template pattern. Memoizes the
+  # value if template processor not set (processors may not be deterministic)
+  #
+  # @param pattern [String] The URI template pattern.
+  # @param processor [#match] The template processor to use.
+  # @return [Array, Regexp] An array of expansion variables nad a regular expression which may be
+  #   used to parse a template pattern
+  #
+  # source://addressable//lib/addressable/template.rb#950
+  def parse_template_pattern(pattern, processor = T.unsafe(nil)); end
+
+  # Transforms a mapped value so that values can be substituted into the
+  # template.
+  #
+  # The object should respond to either the <tt>validate</tt> or
+  # <tt>transform</tt> messages or both. Both the <tt>validate</tt> and
+  # <tt>transform</tt> methods should take two parameters: <tt>name</tt> and
+  # <tt>value</tt>. The <tt>validate</tt> method should return <tt>true</tt>
+  # or <tt>false</tt>; <tt>true</tt> if the value of the variable is valid,
+  # <tt>false</tt> otherwise. An <tt>InvalidTemplateValueError</tt> exception
+  # will be raised if the value is invalid. The <tt>transform</tt> method
+  # should return the transformed variable value as a <tt>String</tt>. If a
+  # <tt>transform</tt> method is used, the value will not be percent encoded
+  # automatically. Unicode normalization will be performed both before and
+  # after sending the value to the transform method.
+  #
+  # @param mapping [Hash] The mapping to replace captures
+  # @param capture [String] The expression to replace
+  # @param processor [#validate, #transform] An optional processor object may be supplied.
+  # @param normalize_values [Boolean] Optional flag to enable/disable unicode normalization. Default: true
+  # @return [String] The expanded expression
+  #
+  # source://addressable//lib/addressable/template.rb#753
+  def transform_capture(mapping, capture, processor = T.unsafe(nil), normalize_values = T.unsafe(nil)); end
+
+  # Loops through each capture and expands any values available in mapping
+  #
+  # The object should respond to either the <tt>validate</tt> or
+  # <tt>transform</tt> messages or both. Both the <tt>validate</tt> and
+  # <tt>transform</tt> methods should take two parameters: <tt>name</tt> and
+  # <tt>value</tt>. The <tt>validate</tt> method should return <tt>true</tt>
+  # or <tt>false</tt>; <tt>true</tt> if the value of the variable is valid,
+  # <tt>false</tt> otherwise. An <tt>InvalidTemplateValueError</tt> exception
+  # will be raised if the value is invalid. The <tt>transform</tt> method
+  # should return the transformed variable value as a <tt>String</tt>. If a
+  # <tt>transform</tt> method is used, the value will not be percent encoded
+  # automatically. Unicode normalization will be performed both before and
+  # after sending the value to the transform method.
+  #
+  # @param mapping [Hash] Set of keys to expand
+  # @param capture [String] The expression to expand
+  # @param processor [#validate, #transform] An optional processor object may be supplied.
+  # @param normalize_values [Boolean] Optional flag to enable/disable unicode normalization. Default: true
+  # @return [String] The expanded expression
+  #
+  # source://addressable//lib/addressable/template.rb#694
+  def transform_partial_capture(mapping, capture, processor = T.unsafe(nil), normalize_values = T.unsafe(nil)); end
+end
+
+# source://addressable//lib/addressable/template.rb#58
+Addressable::Template::EXPRESSION = T.let(T.unsafe(nil), Regexp)
+
+# Raised if an invalid template operator is used in a pattern.
+#
+# source://addressable//lib/addressable/template.rb#85
+class Addressable::Template::InvalidTemplateOperatorError < ::StandardError; end
+
+# Raised if an invalid template value is supplied.
+#
+# source://addressable//lib/addressable/template.rb#80
+class Addressable::Template::InvalidTemplateValueError < ::StandardError; end
+
+# source://addressable//lib/addressable/template.rb#70
+Addressable::Template::JOINERS = T.let(T.unsafe(nil), Hash)
+
+# source://addressable//lib/addressable/template.rb#62
+Addressable::Template::LEADERS = T.let(T.unsafe(nil), Hash)
+
+# This class represents the data that is extracted when a Template
+# is matched against a URI.
+#
+# source://addressable//lib/addressable/template.rb#96
+class Addressable::Template::MatchData
+  # Creates a new MatchData object.
+  # MatchData objects should never be instantiated directly.
+  #
+  # @param uri [Addressable::URI] The URI that the template was matched against.
+  # @return [MatchData] a new instance of MatchData
+  #
+  # source://addressable//lib/addressable/template.rb#103
+  def initialize(uri, template, mapping); end
+
+  # Accesses captured values by name or by index.
+  #
+  # @param key [String, Symbol, Fixnum] Capture index or name. Note that when accessing by with index
+  #   of 0, the full URI will be returned. The intention is to mimic
+  #   the ::MatchData#[] behavior.
+  # @param len [#to_int, nil] If provided, an array of values will be returned with the given
+  #   parameter used as length.
+  # @return [Array, String, nil] The captured value corresponding to the index or name. If the
+  #   value was not provided or the key is unknown, nil will be
+  #   returned.
+  #
+  #   If the second parameter is provided, an array of that length will
+  #   be returned instead.
+  #
+  # source://addressable//lib/addressable/template.rb#170
+  def [](key, len = T.unsafe(nil)); end
+
+  # @return [Array] The list of values that were captured by the Template.
+  #   Note that this list will include nils for any variables which
+  #   were in the Template, but did not appear in the URI.
+  #
+  # source://addressable//lib/addressable/template.rb#143
+  def captures; end
+
+  # Returns a <tt>String</tt> representation of the MatchData's state.
+  #
+  # @return [String] The MatchData's state, as a <tt>String</tt>.
+  #
+  # source://addressable//lib/addressable/template.rb#213
+  def inspect; end
+
+  # @return [Array] The list of variables that were present in the Template.
+  #   Note that this list will include variables which do not appear
+  #   in the mapping because they were not present in URI.
+  #
+  # source://addressable//lib/addressable/template.rb#132
+  def keys; end
+
+  # @return [Hash] The mapping that resulted from the match.
+  #   Note that this mapping does not include keys or values for
+  #   variables that appear in the Template, but are not present
+  #   in the URI.
+  #
+  # source://addressable//lib/addressable/template.rb#125
+  def mapping; end
+
+  # @return [Array] The list of variables that were present in the Template.
+  #   Note that this list will include variables which do not appear
+  #   in the mapping because they were not present in URI.
+  #
+  # source://addressable//lib/addressable/template.rb#132
+  def names; end
+
+  # Dummy method for code expecting a ::MatchData instance
+  #
+  # @return [String] An empty string.
+  #
+  # source://addressable//lib/addressable/template.rb#222
+  def post_match; end
+
+  # Dummy method for code expecting a ::MatchData instance
+  #
+  # @return [String] An empty string.
+  #
+  # source://addressable//lib/addressable/template.rb#222
+  def pre_match; end
+
+  # @return [String] The matched URI as String.
+  #
+  # source://addressable//lib/addressable/template.rb#191
+  def string; end
+
+  # @return [Addressable::Template] The Template used for the match.
+  #
+  # source://addressable//lib/addressable/template.rb#117
+  def template; end
+
+  # @return [Array] Array with the matched URI as first element followed by the captured
+  #   values.
+  #
+  # source://addressable//lib/addressable/template.rb#184
+  def to_a; end
+
+  # @return [String] The matched URI as String.
+  #
+  # source://addressable//lib/addressable/template.rb#191
+  def to_s; end
+
+  # @return [Addressable::URI] The URI that the Template was matched against.
+  #
+  # source://addressable//lib/addressable/template.rb#112
+  def uri; end
+
+  # @return [Array] The list of values that were captured by the Template.
+  #   Note that this list will include nils for any variables which
+  #   were in the Template, but did not appear in the URI.
+  #
+  # source://addressable//lib/addressable/template.rb#143
+  def values; end
+
+  # Returns multiple captured values at once.
+  #
+  # @param *indexes [String, Symbol, Fixnum] Indices of the captures to be returned
+  # @return [Array] Values corresponding to given indices.
+  # @see Addressable::Template::MatchData#[]
+  #
+  # source://addressable//lib/addressable/template.rb#205
+  def values_at(*indexes); end
+
+  # @return [Array] The list of variables that were present in the Template.
+  #   Note that this list will include variables which do not appear
+  #   in the mapping because they were not present in URI.
+  #
+  # source://addressable//lib/addressable/template.rb#132
+  def variables; end
+end
+
+# source://addressable//lib/addressable/template.rb#40
+Addressable::Template::RESERVED = T.let(T.unsafe(nil), String)
+
+# Raised if an invalid template operator is used in a pattern.
+#
+# source://addressable//lib/addressable/template.rb#90
+class Addressable::Template::TemplateOperatorAbortedError < ::StandardError; end
+
+# source://addressable//lib/addressable/template.rb#42
+Addressable::Template::UNRESERVED = T.let(T.unsafe(nil), String)
+
+# source://addressable//lib/addressable/template.rb#54
+Addressable::Template::VARIABLE_LIST = T.let(T.unsafe(nil), Regexp)
+
+# source://addressable//lib/addressable/template.rb#50
+Addressable::Template::VARNAME = T.let(T.unsafe(nil), Regexp)
+
+# source://addressable//lib/addressable/template.rb#52
+Addressable::Template::VARSPEC = T.let(T.unsafe(nil), Regexp)
+
 # This is an implementation of a URI parser based on
 # <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
 # <a href="http://www.ietf.org/rfc/rfc3987.txt">RFC 3987</a>.

@@ -577,6 +577,90 @@ class ActiveRecord::AmbiguousSourceReflectionForThroughAssociation < ::ActiveRec
   def initialize(klass, macro, association_name, options, possible_sources); end
 end
 
+# source://activerecord//lib/active_record/testing/query_assertions.rb#4
+module ActiveRecord::Assertions; end
+
+# source://activerecord//lib/active_record/testing/query_assertions.rb#5
+module ActiveRecord::Assertions::QueryAssertions
+  # Asserts that no SQL queries are executed in the given block.
+  #
+  #   assert_no_queries { post.comments }
+  #
+  # If the +:include_schema+ option is provided, any queries (including schema related) are counted.
+  #
+  #   assert_no_queries(include_schema: true) { Post.columns }
+  #
+  # source://activerecord//lib/active_record/testing/query_assertions.rb#42
+  def assert_no_queries(include_schema: T.unsafe(nil), &block); end
+
+  # Asserts that no SQL queries matching the pattern are executed in the given block.
+  #
+  #   assert_no_queries_match(/SELECT/i) { post.comments }
+  #
+  # If the +:include_schema+ option is provided, any queries (including schema related)
+  # that match the matcher are counted.
+  #
+  #   assert_no_queries_match(/FROM pg_attribute/i, include_schema: true) { Post.columns }
+  #
+  # source://activerecord//lib/active_record/testing/query_assertions.rb#87
+  def assert_no_queries_match(match, include_schema: T.unsafe(nil), &block); end
+
+  # Asserts that the number of SQL queries executed in the given block matches the expected count.
+  #
+  #   # Check for exact number of queries
+  #   assert_queries_count(1) { Post.first }
+  #
+  #   # Check for any number of queries
+  #   assert_queries_count { Post.first }
+  #
+  # If the +:include_schema+ option is provided, any queries (including schema related) are counted.
+  #
+  #   assert_queries_count(1, include_schema: true) { Post.columns }
+  #
+  # source://activerecord//lib/active_record/testing/query_assertions.rb#18
+  def assert_queries_count(count = T.unsafe(nil), include_schema: T.unsafe(nil), &block); end
+
+  # Asserts that the SQL queries executed in the given block match expected pattern.
+  #
+  #   # Check for exact number of queries
+  #   assert_queries_match(/LIMIT \?/, count: 1) { Post.first }
+  #
+  #   # Check for any number of queries
+  #   assert_queries_match(/LIMIT \?/) { Post.first }
+  #
+  # If the +:include_schema+ option is provided, any queries (including schema related)
+  # that match the matcher are considered.
+  #
+  #   assert_queries_match(/FROM pg_attribute/i, include_schema: true) { Post.columns }
+  #
+  # source://activerecord//lib/active_record/testing/query_assertions.rb#59
+  def assert_queries_match(match, count: T.unsafe(nil), include_schema: T.unsafe(nil), &block); end
+end
+
+# source://activerecord//lib/active_record/testing/query_assertions.rb#91
+class ActiveRecord::Assertions::QueryAssertions::SQLCounter
+  # @return [SQLCounter] a new instance of SQLCounter
+  #
+  # source://activerecord//lib/active_record/testing/query_assertions.rb#94
+  def initialize; end
+
+  # source://activerecord//lib/active_record/testing/query_assertions.rb#103
+  def call(*_arg0, payload); end
+
+  # source://activerecord//lib/active_record/testing/query_assertions.rb#99
+  def log; end
+
+  # Returns the value of attribute log_all.
+  #
+  # source://activerecord//lib/active_record/testing/query_assertions.rb#92
+  def log_all; end
+
+  # Returns the value of attribute log_full.
+  #
+  # source://activerecord//lib/active_record/testing/query_assertions.rb#92
+  def log_full; end
+end
+
 # source://activerecord//lib/active_record/associations/errors.rb#4
 class ActiveRecord::AssociationNotFoundError < ::ActiveRecord::ConfigurationError
   include ::DidYouMean::Correctable

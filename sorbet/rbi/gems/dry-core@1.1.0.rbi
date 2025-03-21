@@ -8,7 +8,7 @@
 # source://dry-core//lib/dry/core/constants.rb#5
 module Dry
   class << self
-    # source://dry-auto_inject/1.0.1/lib/dry/auto_inject.rb#61
+    # source://dry-auto_inject/1.1.0/lib/dry/auto_inject.rb#61
     def AutoInject(container, options = T.unsafe(nil)); end
 
     # source://dry-cli/1.2.0/lib/dry/cli.rb#224
@@ -1003,10 +1003,10 @@ class Dry::Core::Container::Registry
   #
   # @api public
   # @option options
-  # @param key [Mixed] The key to register the container item with (used to resolve)
-  # @param options [Hash]
-  # @param item [Mixed] The item to register with the container
   # @param container [Concurrent::Hash] The container
+  # @param key [Mixed] The key to register the container item with (used to resolve)
+  # @param item [Mixed] The item to register with the container
+  # @param options [Hash]
   # @raise [Dry::Core::Container::KeyError] If an item is already registered with the given key
   # @return [Mixed]
   #

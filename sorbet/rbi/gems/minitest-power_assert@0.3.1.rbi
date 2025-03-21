@@ -7,6 +7,9 @@
 
 # source://minitest-power_assert//lib/minitest/power_assert/version.rb#1
 module Minitest
+  # source://railties/8.0.2/lib/minitest/rails_plugin.rb#139
+  def run_via; end
+
   class << self
     # source://minitest/5.25.5/lib/minitest.rb#323
     def __run(reporter, options); end
@@ -65,6 +68,21 @@ module Minitest
     # source://minitest/5.25.5/lib/minitest.rb#20
     def parallel_executor=(_arg0); end
 
+    # source://minitest/5.25.5/lib/minitest/pride_plugin.rb#10
+    def plugin_pride_init(options); end
+
+    # source://minitest/5.25.5/lib/minitest/pride_plugin.rb#4
+    def plugin_pride_options(opts, _options); end
+
+    # source://railties/8.0.2/lib/minitest/rails_plugin.rb#111
+    def plugin_rails_init(options); end
+
+    # source://railties/8.0.2/lib/minitest/rails_plugin.rb#68
+    def plugin_rails_options(opts, options); end
+
+    # source://simplecov/0.22.0/lib/minitest/simplecov_plugin.rb#6
+    def plugin_simplecov_init(_options); end
+
     # source://minitest/5.25.5/lib/minitest.rb#143
     def process_args(args = T.unsafe(nil)); end
 
@@ -82,6 +100,9 @@ module Minitest
 
     # source://minitest/5.25.5/lib/minitest.rb#1207
     def run_one_method(klass, method_name); end
+
+    # source://railties/8.0.2/lib/minitest/rails_plugin.rb#139
+    def run_via; end
 
     # source://minitest/5.25.5/lib/minitest.rb#20
     def seed; end

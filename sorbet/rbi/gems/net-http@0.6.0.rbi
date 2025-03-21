@@ -2360,6 +2360,11 @@ Net::HTTPAlreadyReported::HAS_BODY = T.let(T.unsafe(nil), TrueClass)
 # source://net-http//lib/net/http/responses.rb#67
 Net::HTTPClientError::EXCEPTION_TYPE = Net::HTTPClientException
 
+# source://net-http//lib/net/http/exceptions.rb#23
+class Net::HTTPClientException < ::Net::ProtoServerError
+  include ::Net::HTTPExceptions
+end
+
 # Response class for <tt>Early Hints</tt> responses (status code 103).
 #
 # The <tt>Early Hints</tt> indicates that the server has received
@@ -2379,6 +2384,31 @@ class Net::HTTPEarlyHints < ::Net::HTTPInformation; end
 
 # source://net-http//lib/net/http/responses.rb#148
 Net::HTTPEarlyHints::HAS_BODY = T.let(T.unsafe(nil), FalseClass)
+
+# source://net-http//lib/net/http/exceptions.rb#15
+class Net::HTTPError < ::Net::ProtocolError
+  include ::Net::HTTPExceptions
+end
+
+# Net::HTTP exception class.
+# You cannot use Net::HTTPExceptions directly; instead, you must use
+# its subclasses.
+#
+# source://net-http//lib/net/http/exceptions.rb#6
+module Net::HTTPExceptions
+  # source://net-http//lib/net/http/exceptions.rb#7
+  def initialize(msg, res); end
+
+  # Returns the value of attribute response.
+  #
+  # source://net-http//lib/net/http/exceptions.rb#11
+  def response; end
+end
+
+# source://net-http//lib/net/http/exceptions.rb#27
+class Net::HTTPFatalError < ::Net::ProtoFatalError
+  include ::Net::HTTPExceptions
+end
 
 # \HTTPGenericRequest is the parent of the Net::HTTPRequest class.
 #
@@ -2550,9 +2580,6 @@ class Net::HTTPGenericRequest
 
   # source://net-http//lib/net/http/generic_request.rb#269
   def send_request_with_body_stream(sock, ver, path, f); end
-
-  # source://net-http//lib/net/http/generic_request.rb#376
-  def supply_default_content_type; end
 
   # Waits up to the continue timeout for a response from the server provided
   # we're speaking HTTP 1.1 and are expecting a 100-continue response.
@@ -3602,6 +3629,92 @@ Net::HTTPRangeNotSatisfiable::HAS_BODY = T.let(T.unsafe(nil), TrueClass)
 # source://net-http//lib/net/http/responses.rb#53
 Net::HTTPRedirection::EXCEPTION_TYPE = Net::HTTPRetriableError
 
+# This class is the base class for \Net::HTTP request classes.
+# The class should not be used directly;
+# instead you should use its subclasses, listed below.
+#
+# == Creating a Request
+#
+# An request object may be created with either a URI or a string hostname:
+#
+#   require 'net/http'
+#   uri = URI('https://jsonplaceholder.typicode.com/')
+#   req = Net::HTTP::Get.new(uri)          # => #<Net::HTTP::Get GET>
+#   req = Net::HTTP::Get.new(uri.hostname) # => #<Net::HTTP::Get GET>
+#
+# And with any of the subclasses:
+#
+#   req = Net::HTTP::Head.new(uri) # => #<Net::HTTP::Head HEAD>
+#   req = Net::HTTP::Post.new(uri) # => #<Net::HTTP::Post POST>
+#   req = Net::HTTP::Put.new(uri)  # => #<Net::HTTP::Put PUT>
+#   # ...
+#
+# The new instance is suitable for use as the argument to Net::HTTP#request.
+#
+# == Request Headers
+#
+# A new request object has these header fields by default:
+#
+#   req.to_hash
+#   # =>
+#   {"accept-encoding"=>["gzip;q=1.0,deflate;q=0.6,identity;q=0.3"],
+#   "accept"=>["*/*"],
+#   "user-agent"=>["Ruby"],
+#   "host"=>["jsonplaceholder.typicode.com"]}
+#
+# See:
+#
+# - {Request header Accept-Encoding}[https://en.wikipedia.org/wiki/List_of_HTTP_header_fields#Accept-Encoding]
+#   and {Compression and Decompression}[rdoc-ref:Net::HTTP@Compression+and+Decompression].
+# - {Request header Accept}[https://en.wikipedia.org/wiki/List_of_HTTP_header_fields#accept-request-header].
+# - {Request header User-Agent}[https://en.wikipedia.org/wiki/List_of_HTTP_header_fields#user-agent-request-header].
+# - {Request header Host}[https://en.wikipedia.org/wiki/List_of_HTTP_header_fields#host-request-header].
+#
+# You can add headers or override default headers:
+#
+#   #   res = Net::HTTP::Get.new(uri, {'foo' => '0', 'bar' => '1'})
+#
+# This class (and therefore its subclasses) also includes (indirectly)
+# module Net::HTTPHeader, which gives access to its
+# {methods for setting headers}[rdoc-ref:Net::HTTPHeader@Setters].
+#
+# == Request Subclasses
+#
+# Subclasses for HTTP requests:
+#
+# - Net::HTTP::Get
+# - Net::HTTP::Head
+# - Net::HTTP::Post
+# - Net::HTTP::Put
+# - Net::HTTP::Delete
+# - Net::HTTP::Options
+# - Net::HTTP::Trace
+# - Net::HTTP::Patch
+#
+# Subclasses for WebDAV requests:
+#
+# - Net::HTTP::Propfind
+# - Net::HTTP::Proppatch
+# - Net::HTTP::Mkcol
+# - Net::HTTP::Copy
+# - Net::HTTP::Move
+# - Net::HTTP::Lock
+# - Net::HTTP::Unlock
+#
+# source://net-http//lib/net/http/request.rb#75
+class Net::HTTPRequest < ::Net::HTTPGenericRequest
+  # Creates an HTTP request object for +path+.
+  #
+  # +initheader+ are the default headers to use.  Net::HTTP adds
+  # Accept-Encoding to enable compression of the response body unless
+  # Accept-Encoding or Range are supplied in +initheader+.
+  #
+  # @return [HTTPRequest] a new instance of HTTPRequest
+  #
+  # source://net-http//lib/net/http/request.rb#82
+  def initialize(path, initheader = T.unsafe(nil)); end
+end
+
 # source://net-http//lib/net/http/responses.rb#709
 Net::HTTPRequestURITooLarge = Net::HTTPURITooLong
 
@@ -4071,6 +4184,11 @@ class Net::HTTPResponse::Inflater
   #
   # source://net-http//lib/net/http/response.rb#729
   def read_all(dest); end
+end
+
+# source://net-http//lib/net/http/exceptions.rb#19
+class Net::HTTPRetriableError < ::Net::ProtoRetriableError
+  include ::Net::HTTPExceptions
 end
 
 # source://net-http//lib/net/http/responses.rb#81

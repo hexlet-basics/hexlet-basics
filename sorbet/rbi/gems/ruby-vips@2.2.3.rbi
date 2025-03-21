@@ -793,7 +793,6 @@ module Vips
   def vips_band_format_iscomplex(*_arg0); end
   def vips_band_format_isfloat(*_arg0); end
   def vips_blend_mode_get_type(*_arg0); end
-  def vips_block_untrusted_set(*_arg0); end
   def vips_cache_drop_all(*_arg0); end
   def vips_cache_get_max(*_arg0); end
   def vips_cache_get_max_files(*_arg0); end
@@ -848,7 +847,6 @@ module Vips
   def vips_object_print_all(*_arg0); end
   def vips_object_set_from_string(*_arg0); end
   def vips_object_unref_outputs(*_arg0); end
-  def vips_operation_block_set(*_arg0); end
   def vips_operation_get_flags(*_arg0); end
   def vips_operation_new(*_arg0); end
   def vips_region_fetch(*_arg0); end
@@ -888,25 +886,6 @@ module Vips
     #
     # source://ruby-vips//lib/vips.rb#805
     def at_least_libvips?(x, y); end
-
-    # Block/unblock all operations in the libvips class hierarchy at specified *operation_name* and below.
-    #
-    # For example this will block all loaders except JPEG
-    #
-    #   Vips.block("VipsForeignLoad", true);
-    #   Vips.block("VipsForeignLoadJpeg", false)
-    #
-    # Use `vips -l` at the command-line to see the class hierarchy.
-    # This call does nothing if the named operation is not found.
-    #
-    # source://ruby-vips//lib/vips.rb#832
-    def block(operation_name, state); end
-
-    # Block/unblock all untrusted operations from running.
-    # Use `vips -l` at the command-line to see the class hierarchy and which operations are marked as untrusted.
-    #
-    # source://ruby-vips//lib/vips.rb#818
-    def block_untrusted(state); end
 
     # Drop the libvips operation cache. Handy for leak tracking.
     #
@@ -1052,7 +1031,6 @@ module Vips
     def vips_band_format_iscomplex(*_arg0); end
     def vips_band_format_isfloat(*_arg0); end
     def vips_blend_mode_get_type(*_arg0); end
-    def vips_block_untrusted_set(*_arg0); end
     def vips_cache_drop_all(*_arg0); end
     def vips_cache_get_max(*_arg0); end
     def vips_cache_get_max_files(*_arg0); end
@@ -1107,7 +1085,6 @@ module Vips
     def vips_object_print_all(*_arg0); end
     def vips_object_set_from_string(*_arg0); end
     def vips_object_unref_outputs(*_arg0); end
-    def vips_operation_block_set(*_arg0); end
     def vips_operation_get_flags(*_arg0); end
     def vips_operation_new(*_arg0); end
     def vips_region_fetch(*_arg0); end

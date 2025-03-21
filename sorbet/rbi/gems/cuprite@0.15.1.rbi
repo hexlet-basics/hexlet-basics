@@ -5,5 +5,1517 @@
 # Please instead update this file by running `bin/tapioca gem cuprite`.
 
 
-# THIS IS AN EMPTY RBI FILE.
-# see https://github.com/Shopify/tapioca#manually-requiring-parts-of-a-gem
+# source://cuprite//lib/capybara/cuprite/driver.rb#7
+module Capybara
+  class << self
+    # source://capybara/3.40.0/lib/capybara.rb#390
+    def HTML(html); end
+
+    # source://capybara/3.40.0/lib/capybara.rb#182
+    def add_selector(name, **options, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def allow_gumbo(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def allow_gumbo=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def always_include_port(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def always_include_port=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def app(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def app=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def app_host(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def app_host=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def asset_host(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def asset_host=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def automatic_label_click(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def automatic_label_click=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def automatic_reload(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def automatic_reload=(*args, **_arg1, &block); end
+
+    # source://capybara/3.40.0/lib/capybara.rb#114
+    def configure; end
+
+    # source://capybara/3.40.0/lib/capybara.rb#261
+    def current_driver; end
+
+    # source://capybara/3.40.0/lib/capybara.rb#270
+    def current_driver=(name); end
+
+    # source://capybara/3.40.0/lib/capybara.rb#316
+    def current_session; end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def default_driver(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def default_driver=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def default_host(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def default_host=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def default_max_wait_time(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def default_max_wait_time=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def default_normalize_ws(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def default_normalize_ws=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def default_retry_interval(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def default_retry_interval=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def default_selector(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def default_selector=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def default_set_options(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def default_set_options=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def disable_animation(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def disable_animation=(*args, **_arg1, &block); end
+
+    # source://capybara/3.40.0/lib/capybara.rb#204
+    def drivers; end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def enable_aria_label(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def enable_aria_label=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def enable_aria_role(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def enable_aria_role=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def exact(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def exact=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def exact_text(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def exact_text=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def ignore_hidden_elements(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def ignore_hidden_elements=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def javascript_driver(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def javascript_driver=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def match(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def match=(*args, **_arg1, &block); end
+
+    # source://capybara/3.40.0/lib/capybara.rb#261
+    def mode; end
+
+    # source://capybara/3.40.0/lib/capybara.rb#200
+    def modify_selector(name, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def predicates_wait(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def predicates_wait=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def raise_server_errors(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def raise_server_errors=(*args, **_arg1, &block); end
+
+    # source://capybara/3.40.0/lib/capybara.rb#131
+    def register_driver(name, &block); end
+
+    # source://capybara/3.40.0/lib/capybara.rb#150
+    def register_server(name, &block); end
+
+    # source://capybara/3.40.0/lib/capybara.rb#325
+    def reset!; end
+
+    # source://capybara/3.40.0/lib/capybara.rb#325
+    def reset_sessions!; end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def reuse_server(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def reuse_server=(*args, **_arg1, &block); end
+
+    # source://capybara/3.40.0/lib/capybara.rb#253
+    def run_default_server(app, port); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def run_server(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def run_server=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def save_path(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def save_path=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def server(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def server=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def server_errors(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def server_errors=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def server_host(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def server_host=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def server_port(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def server_port=(*args, **_arg1, &block); end
+
+    # source://capybara/3.40.0/lib/capybara.rb#208
+    def servers; end
+
+    # source://capybara/3.40.0/lib/capybara.rb#337
+    def session_name; end
+
+    # source://capybara/3.40.0/lib/capybara.rb#346
+    def session_name=(name); end
+
+    # source://capybara/3.40.0/lib/capybara.rb#410
+    def session_options; end
+
+    # source://capybara/3.40.0/lib/capybara.rb#240
+    def string(html); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def test_id(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def test_id=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def threadsafe(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def threadsafe=(*args, **_arg1, &block); end
+
+    # source://capybara/3.40.0/lib/capybara.rb#282
+    def use_default_driver; end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def use_html5_parsing(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def use_html5_parsing=(*args, **_arg1, &block); end
+
+    # source://capybara/3.40.0/lib/capybara.rb#290
+    def using_driver(driver); end
+
+    # source://capybara/3.40.0/lib/capybara.rb#358
+    def using_session(name_or_session, &block); end
+
+    # source://capybara/3.40.0/lib/capybara.rb#302
+    def using_wait_time(seconds); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def visible_text_only(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def visible_text_only=(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def w3c_click_offset(*args, **_arg1, &block); end
+
+    # source://forwardable/1.3.3/forwardable.rb#231
+    def w3c_click_offset=(*args, **_arg1, &block); end
+
+    private
+
+    # source://capybara/3.40.0/lib/capybara.rb#416
+    def config; end
+
+    # source://capybara/3.40.0/lib/capybara.rb#420
+    def session_pool; end
+
+    # source://capybara/3.40.0/lib/capybara.rb#426
+    def specified_session; end
+
+    # source://capybara/3.40.0/lib/capybara.rb#434
+    def specified_session=(session); end
+  end
+end
+
+# source://cuprite//lib/capybara/cuprite/driver.rb#8
+module Capybara::Cuprite; end
+
+# source://cuprite//lib/capybara/cuprite/browser.rb#7
+class Capybara::Cuprite::Browser < ::Ferrum::Browser
+  # @return [Browser] a new instance of Browser
+  #
+  # source://cuprite//lib/capybara/cuprite/browser.rb#14
+  def initialize(options = T.unsafe(nil)); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def accept_confirm(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def accept_prompt(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#130
+  def active_element; end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#206
+  def all_text(node); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#186
+  def attribute(node, name); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#181
+  def attributes(node); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def before_click(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#134
+  def browser_error; end
+
+  # @raise [Ferrum::NoSuchPageError]
+  #
+  # source://cuprite//lib/capybara/cuprite/browser.rb#121
+  def close_window(target_id); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#23
+  def command(*_arg0, **_arg1, &_arg2); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#177
+  def delete_text(node); end
+
+  # @return [Boolean]
+  #
+  # source://cuprite//lib/capybara/cuprite/browser.rb#198
+  def disabled?(node); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def dismiss_confirm(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def dismiss_prompt(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#142
+  def drag(node, other, steps, delay = T.unsafe(nil)); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#153
+  def drag_by(node, x, y, steps, delay = T.unsafe(nil)); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#82
+  def find(method, selector); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def find_modal(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#90
+  def find_within(node, method, selector); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def hover(*args, **_arg1, &block); end
+
+  # @raise [Ferrum::NoSuchPageError]
+  #
+  # source://cuprite//lib/capybara/cuprite/browser.rb#30
+  def page; end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#169
+  def parents(node); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#202
+  def path(node); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#86
+  def property(node, name); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#42
+  def quit; end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#36
+  def reset; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def reset_modals(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#47
+  def resize(**options); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def select(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#165
+  def select_file(node, value); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def send_keys(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def set(*args, **_arg1, &block); end
+
+  # @raise [NotImplementedError]
+  #
+  # source://cuprite//lib/capybara/cuprite/browser.rb#138
+  def source; end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#78
+  def status_code; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def switch_to_frame(*args, **_arg1, &block); end
+
+  # @raise [Ferrum::NoSuchPageError]
+  #
+  # source://cuprite//lib/capybara/cuprite/browser.rb#114
+  def switch_to_window(target_id); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def trigger(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#52
+  def url_allowlist; end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#57
+  def url_allowlist=(patterns); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#63
+  def url_blacklist; end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#68
+  def url_blacklist=(patterns); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#63
+  def url_blocklist; end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#68
+  def url_blocklist=(patterns); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#52
+  def url_whitelist; end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#57
+  def url_whitelist=(patterns); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#190
+  def value(node); end
+
+  # @return [Boolean]
+  #
+  # source://cuprite//lib/capybara/cuprite/browser.rb#194
+  def visible?(node); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#173
+  def visible_text(node); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#74
+  def visit(*args); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#96
+  def window_handle; end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#100
+  def window_handles; end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#104
+  def within_window(locator = T.unsafe(nil)); end
+
+  private
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#244
+  def attach_page(target_id = T.unsafe(nil)); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#212
+  def find_all(method, selector, within = T.unsafe(nil)); end
+
+  # source://cuprite//lib/capybara/cuprite/browser.rb#226
+  def prepare_wildcards(patterns); end
+end
+
+# source://cuprite//lib/capybara/cuprite/errors.rb#7
+class Capybara::Cuprite::ClientError < ::Capybara::Cuprite::Error
+  # @return [ClientError] a new instance of ClientError
+  #
+  # source://cuprite//lib/capybara/cuprite/errors.rb#10
+  def initialize(response); end
+
+  # Returns the value of attribute response.
+  #
+  # source://cuprite//lib/capybara/cuprite/errors.rb#8
+  def response; end
+end
+
+# source://cuprite//lib/capybara/cuprite/page.rb#7
+class Capybara::Cuprite::ClosedPage
+  # @return [Boolean]
+  #
+  # source://cuprite//lib/capybara/cuprite/page.rb#8
+  def closed?; end
+end
+
+# source://cuprite//lib/capybara/cuprite/driver.rb#9
+class Capybara::Cuprite::Driver < ::Capybara::Driver::Base
+  extend ::Forwardable
+
+  # @return [Driver] a new instance of Driver
+  #
+  # source://cuprite//lib/capybara/cuprite/driver.rb#26
+  def initialize(app, options = T.unsafe(nil)); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#352
+  def accept_modal(type, options = T.unsafe(nil)); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#72
+  def active_element; end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#232
+  def add_header(name, value, permanent: T.unsafe(nil)); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#228
+  def add_headers(headers); end
+
+  # Returns the value of attribute app.
+  #
+  # source://cuprite//lib/capybara/cuprite/driver.rb#24
+  def app; end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#269
+  def authorize(user, password); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def back(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#269
+  def basic_authorize(user, password); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def body(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#51
+  def browser; end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#257
+  def clear_cookies; end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#265
+  def clear_memory_cache; end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#212
+  def clear_network_traffic; end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#88
+  def click(x, y); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def close_window(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#240
+  def cookies; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def current_url(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def current_window_handle(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#285
+  def debug(binding = T.unsafe(nil)); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#276
+  def debug_url; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def device_pixel_ratio(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#365
+  def dismiss_modal(type, options = T.unsafe(nil)); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#97
+  def evaluate_async_script(script, *args); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#92
+  def evaluate_script(script, *args); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#102
+  def execute_script(script, *args); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#84
+  def find(method, selector); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#80
+  def find_css(selector); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#76
+  def find_xpath(selector); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def forward(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#68
+  def frame_title; end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#60
+  def frame_url; end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#188
+  def fullscreen_window(handle); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def go_back(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def go_forward(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#220
+  def headers; end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#224
+  def headers=(headers); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def html(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#344
+  def invalid_element_errors; end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#178
+  def maximize_window(handle); end
+
+  # @return [Boolean]
+  #
+  # source://cuprite//lib/capybara/cuprite/driver.rb#47
+  def needs_server?; end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#198
+  def network_traffic(type = T.unsafe(nil)); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#125
+  def no_such_window_error; end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#118
+  def open_new_window; end
+
+  # Returns the value of attribute options.
+  #
+  # source://cuprite//lib/capybara/cuprite/driver.rb#24
+  def options; end
+
+  # Sets the attribute paper_size
+  #
+  # @param value the value to set the attribute paper_size to.
+  #
+  # source://cuprite//lib/capybara/cuprite/driver.rb#165
+  def paper_size=(_arg0); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#304
+  def pause; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def quit(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def refresh(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#252
+  def remove_cookie(name, **options); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#138
+  def render(path, options = T.unsafe(nil)); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#151
+  def render_base64(format = T.unsafe(nil), options = T.unsafe(nil)); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#129
+  def reset!; end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#167
+  def resize(width, height); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#167
+  def resize_window(width, height); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#172
+  def resize_window_to(handle, width, height); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#236
+  def response_headers; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def restart(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#138
+  def save_screenshot(path, options = T.unsafe(nil)); end
+
+  # Returns the value of attribute screen_size.
+  #
+  # source://cuprite//lib/capybara/cuprite/driver.rb#24
+  def screen_size; end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#194
+  def scroll_to(left, top); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def send_keys(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#244
+  def set_cookie(name, value, options = T.unsafe(nil)); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#216
+  def set_proxy(host, port, user = T.unsafe(nil), password = T.unsafe(nil), bypass = T.unsafe(nil)); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#64
+  def source; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def status_code(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#107
+  def switch_to_frame(locator); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def switch_to_window(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def timeout(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def timeout=(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def title(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def viewport_size(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#55
+  def visit(url); end
+
+  # @return [Boolean]
+  #
+  # source://cuprite//lib/capybara/cuprite/driver.rb#340
+  def wait?; end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#261
+  def wait_for_network_idle(**options); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def wait_for_reload(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def window_handle(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def window_handles(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#182
+  def window_size(handle); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def within_window(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#161
+  def zoom_factor=(value); end
+
+  private
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#380
+  def build_remote_debug_url(path:); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#408
+  def default_cookie_host; end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#384
+  def default_domain; end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#392
+  def native_args(args); end
+
+  # @return [Boolean]
+  #
+  # source://cuprite//lib/capybara/cuprite/driver.rb#429
+  def pdf?(path, options); end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#396
+  def session_wait_time; end
+
+  # source://cuprite//lib/capybara/cuprite/driver.rb#416
+  def unwrap_script_result(arg); end
+end
+
+# source://cuprite//lib/capybara/cuprite/driver.rb#10
+Capybara::Cuprite::Driver::DEFAULT_MAXIMIZE_SCREEN_SIZE = T.let(T.unsafe(nil), Array)
+
+# source://cuprite//lib/capybara/cuprite/driver.rb#11
+Capybara::Cuprite::Driver::EXTENSION = T.let(T.unsafe(nil), String)
+
+# source://cuprite//lib/capybara/cuprite/errors.rb#5
+class Capybara::Cuprite::Error < ::StandardError; end
+
+# source://cuprite//lib/capybara/cuprite/errors.rb#16
+class Capybara::Cuprite::InvalidSelector < ::Capybara::Cuprite::ClientError
+  # @return [InvalidSelector] a new instance of InvalidSelector
+  #
+  # source://cuprite//lib/capybara/cuprite/errors.rb#17
+  def initialize(response, method, selector); end
+
+  # source://cuprite//lib/capybara/cuprite/errors.rb#23
+  def message; end
+end
+
+# source://cuprite//lib/capybara/cuprite/errors.rb#28
+class Capybara::Cuprite::MouseEventFailed < ::Capybara::Cuprite::ClientError
+  # @return [MouseEventFailed] a new instance of MouseEventFailed
+  #
+  # source://cuprite//lib/capybara/cuprite/errors.rb#31
+  def initialize(*_arg0); end
+
+  # source://cuprite//lib/capybara/cuprite/errors.rb#38
+  def message; end
+
+  # Returns the value of attribute name.
+  #
+  # source://cuprite//lib/capybara/cuprite/errors.rb#29
+  def name; end
+
+  # Returns the value of attribute position.
+  #
+  # source://cuprite//lib/capybara/cuprite/errors.rb#29
+  def position; end
+
+  # Returns the value of attribute selector.
+  #
+  # source://cuprite//lib/capybara/cuprite/errors.rb#29
+  def selector; end
+end
+
+# source://cuprite//lib/capybara/cuprite/node.rb#7
+class Capybara::Cuprite::Node < ::Capybara::Driver::Node
+  extend ::Forwardable
+
+  # @return [Node] a new instance of Node
+  #
+  # source://cuprite//lib/capybara/cuprite/node.rb#15
+  def initialize(driver, node); end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#201
+  def ==(other); end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#69
+  def [](name); end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#53
+  def all_text; end
+
+  # @api private
+  #
+  # source://cuprite//lib/capybara/cuprite/node.rb#224
+  def as_json(*_arg0); end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#84
+  def attributes; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def browser(*args, **_arg1, &block); end
+
+  # @return [Boolean]
+  #
+  # source://cuprite//lib/capybara/cuprite/node.rb#134
+  def checked?; end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#146
+  def click(keys = T.unsafe(nil), **options); end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#20
+  def command(name, *args); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def description(*args, **_arg1, &block); end
+
+  # @return [Boolean]
+  #
+  # source://cuprite//lib/capybara/cuprite/node.rb#142
+  def disabled?; end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#154
+  def double_click(keys = T.unsafe(nil), **options); end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#168
+  def drag_by(x, y, **options); end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#162
+  def drag_to(other, **options); end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#47
+  def find(method, selector); end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#43
+  def find_css(selector); end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#39
+  def find_xpath(selector); end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#158
+  def hover; end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#214
+  def inspect; end
+
+  # Returns the value of attribute node.
+  #
+  # source://cuprite//lib/capybara/cuprite/node.rb#8
+  def node; end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#33
+  def parents; end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#210
+  def path; end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#65
+  def property(name); end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#150
+  def right_click(keys = T.unsafe(nil), **options); end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#189
+  def scroll_by(x, y); end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#178
+  def scroll_to(element, location, position = T.unsafe(nil)); end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#117
+  def select_option; end
+
+  # @return [Boolean]
+  #
+  # source://cuprite//lib/capybara/cuprite/node.rb#138
+  def selected?; end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#205
+  def send_key(*keys); end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#205
+  def send_keys(*keys); end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#92
+  def set(value, options = T.unsafe(nil)); end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#126
+  def tag_name; end
+
+  # @api private
+  #
+  # source://cuprite//lib/capybara/cuprite/node.rb#219
+  def to_json(*_arg0); end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#174
+  def trigger(event); end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#121
+  def unselect_option; end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#88
+  def value; end
+
+  # @return [Boolean]
+  #
+  # source://cuprite//lib/capybara/cuprite/node.rb#130
+  def visible?; end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#57
+  def visible_text; end
+
+  private
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#239
+  def filter_text(text); end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#231
+  def prepare_and_click(mode, name, keys, options); end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#247
+  def scroll_element_to_location(element, location); end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#277
+  def scroll_to_coords(x, y); end
+
+  # source://cuprite//lib/capybara/cuprite/node.rb#263
+  def scroll_to_location(location); end
+end
+
+# source://cuprite//lib/capybara/cuprite/errors.rb#46
+class Capybara::Cuprite::ObsoleteNode < ::Capybara::Cuprite::ClientError
+  # @return [ObsoleteNode] a new instance of ObsoleteNode
+  #
+  # source://cuprite//lib/capybara/cuprite/errors.rb#49
+  def initialize(node, response); end
+
+  # source://cuprite//lib/capybara/cuprite/errors.rb#54
+  def message; end
+
+  # Returns the value of attribute node.
+  #
+  # source://cuprite//lib/capybara/cuprite/errors.rb#47
+  def node; end
+end
+
+# source://cuprite//lib/capybara/cuprite/page.rb#13
+class Capybara::Cuprite::Page < ::Ferrum::Page
+  # @return [Page] a new instance of Page
+  #
+  # source://cuprite//lib/capybara/cuprite/page.rb#22
+  def initialize(*_arg0, **_arg1, &_arg2); end
+
+  # source://cuprite//lib/capybara/cuprite/page.rb#60
+  def accept_confirm; end
+
+  # source://cuprite//lib/capybara/cuprite/page.rb#68
+  def accept_prompt(modal_response); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def at_css(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def at_xpath(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/page.rb#104
+  def before_click(node, name, _keys = T.unsafe(nil), offset = T.unsafe(nil)); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def body(*args, **_arg1, &block); end
+
+  # @return [Boolean]
+  #
+  # source://cuprite//lib/capybara/cuprite/page.rb#138
+  def closed?; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def css(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def current_title(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def current_url(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/page.rb#64
+  def dismiss_confirm; end
+
+  # source://cuprite//lib/capybara/cuprite/page.rb#73
+  def dismiss_prompt; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def evaluate(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def evaluate_async(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def evaluate_on(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def execute(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def execution_id(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def execution_id!(*args, **_arg1, &block); end
+
+  # source://cuprite//lib/capybara/cuprite/page.rb#77
+  def find_modal(options); end
+
+  # source://cuprite//lib/capybara/cuprite/page.rb#130
+  def frame_name; end
+
+  # source://cuprite//lib/capybara/cuprite/page.rb#45
+  def hover(node); end
+
+  # source://cuprite//lib/capybara/cuprite/page.rb#98
+  def reset_modals; end
+
+  # source://cuprite//lib/capybara/cuprite/page.rb#35
+  def select(node, value); end
+
+  # source://cuprite//lib/capybara/cuprite/page.rb#51
+  def send_keys(node, keys); end
+
+  # source://cuprite//lib/capybara/cuprite/page.rb#30
+  def set(node, value); end
+
+  # source://cuprite//lib/capybara/cuprite/page.rb#118
+  def switch_to_frame(handle); end
+
+  # source://cuprite//lib/capybara/cuprite/page.rb#134
+  def title; end
+
+  # source://cuprite//lib/capybara/cuprite/page.rb#39
+  def trigger(node, event); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def xpath(*args, **_arg1, &block); end
+
+  private
+
+  # source://cuprite//lib/capybara/cuprite/page.rb#185
+  def active_frame; end
+
+  # source://cuprite//lib/capybara/cuprite/page.rb#177
+  def find_position(node, **options); end
+
+  # source://cuprite//lib/capybara/cuprite/page.rb#144
+  def prepare_page; end
+end
+
+# source://cuprite//lib/capybara/cuprite/page.rb#14
+Capybara::Cuprite::Page::MODAL_WAIT = T.let(T.unsafe(nil), Float)
+
+# source://cuprite//lib/capybara/cuprite/page.rb#15
+Capybara::Cuprite::Page::TRIGGER_CLICK_WAIT = T.let(T.unsafe(nil), Float)
+
+# source://cuprite//lib/capybara/cuprite/options.rb#3
+module Ferrum; end
+
+# source://cuprite//lib/capybara/cuprite/options.rb#4
+class Ferrum::Browser
+  # source://ferrum/0.15/lib/ferrum/browser.rb#128
+  def initialize(options = T.unsafe(nil)); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def add_script_tag(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def add_style_tag(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def at_css(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def at_xpath(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def back(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def base_url(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def base_url=(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def body(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def bypass_csp(*args, **_arg1, &block); end
+
+  # source://ferrum/0.15/lib/ferrum/browser.rb#33
+  def client; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def command(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def content=(*args, **_arg1, &block); end
+
+  # source://ferrum/0.15/lib/ferrum/browser.rb#33
+  def contexts; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def cookies(*args, **_arg1, &block); end
+
+  # source://ferrum/0.15/lib/ferrum/browser.rb#221
+  def crash; end
+
+  # source://ferrum/0.15/lib/ferrum/browser.rb#147
+  def create_page(new_context: T.unsafe(nil), proxy: T.unsafe(nil)); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def create_target(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def css(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def current_title(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def current_url(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def default_context(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def default_user_agent(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def default_user_agent=(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def device_pixel_ratio(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def disable_javascript(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def doctype(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def downloads(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def evaluate(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def evaluate_async(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def evaluate_func(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def evaluate_on(*args, **_arg1, &block); end
+
+  # source://ferrum/0.15/lib/ferrum/browser.rb#184
+  def evaluate_on_new_document(expression); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def execute(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def extensions(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def forward(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def frame_by(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def frames(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def go(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def go_to(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def goto(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def headers(*args, **_arg1, &block); end
+
+  # source://ferrum/0.15/lib/ferrum/browser.rb#236
+  def headless_new?; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def keyboard(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def main_frame(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def mhtml(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def mouse(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def network(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def on(*args, **_arg1, &block); end
+
+  # source://ferrum/0.15/lib/ferrum/browser.rb#33
+  def options; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def page(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def pages(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def pdf(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def playback_rate(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def playback_rate=(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def position(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def position=(*args, **_arg1, &block); end
+
+  # source://ferrum/0.15/lib/ferrum/browser.rb#33
+  def process; end
+
+  # source://ferrum/0.15/lib/ferrum/browser.rb#211
+  def quit; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def refresh(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def reload(*args, **_arg1, &block); end
+
+  # source://ferrum/0.15/lib/ferrum/browser.rb#202
+  def reset; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def resize(*args, **_arg1, &block); end
+
+  # source://ferrum/0.15/lib/ferrum/browser.rb#206
+  def restart; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def screenshot(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def set_viewport(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def stop(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def targets(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def timeout(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def timeout=(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def title(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def url(*args, **_arg1, &block); end
+
+  # source://ferrum/0.15/lib/ferrum/browser.rb#232
+  def version; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def viewport_size(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def wait_for_reload(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def windows(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def xpath(*args, **_arg1, &block); end
+
+  private
+
+  # source://ferrum/0.15/lib/ferrum/browser.rb#242
+  def start; end
+end
+
+# source://cuprite//lib/capybara/cuprite/options.rb#5
+class Ferrum::Browser::Options
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#21
+  def initialize(options = T.unsafe(nil)); end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  def base_url; end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#53
+  def base_url=(value); end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  def browser_name; end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  def browser_options; end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  def browser_path; end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#19
+  def default_user_agent; end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#19
+  def default_user_agent=(_arg0); end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  def env; end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#57
+  def extensions; end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  def flatten; end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  def headless; end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  def host; end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  def ignore_default_browser_options; end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  def js_errors; end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  def logger; end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  def pending_connection_errors; end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  def port; end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  def process_timeout; end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  def proxy; end
+
+  # source://cuprite//lib/capybara/cuprite/options.rb#9
+  def reset_window_size; end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  def save_path; end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  def slowmo; end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#19
+  def timeout; end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#19
+  def timeout=(_arg0); end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#75
+  def to_h; end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  def url; end
+
+  # Returns the value of attribute url_blacklist.
+  #
+  # source://cuprite//lib/capybara/cuprite/options.rb#7
+  def url_blacklist; end
+
+  # Sets the attribute url_blacklist
+  #
+  # @param value the value to set the attribute url_blacklist to.
+  #
+  # source://cuprite//lib/capybara/cuprite/options.rb#7
+  def url_blacklist=(_arg0); end
+
+  # Returns the value of attribute url_whitelist.
+  #
+  # source://cuprite//lib/capybara/cuprite/options.rb#7
+  def url_whitelist; end
+
+  # Sets the attribute url_whitelist
+  #
+  # @param value the value to set the attribute url_whitelist to.
+  #
+  # source://cuprite//lib/capybara/cuprite/options.rb#7
+  def url_whitelist=(_arg0); end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#63
+  def validate_proxy(options); end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  def window_size; end
+
+  # Sets the attribute window_size
+  #
+  # @param value the value to set the attribute window_size to.
+  #
+  # source://cuprite//lib/capybara/cuprite/options.rb#6
+  def window_size=(_arg0); end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  def ws_max_receive_size; end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  def ws_url; end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  def xvfb; end
+
+  private
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#87
+  def parse_base_url(value); end
+
+  # source://ferrum/0.15/lib/ferrum/browser/options.rb#81
+  def parse_logger(logger); end
+end

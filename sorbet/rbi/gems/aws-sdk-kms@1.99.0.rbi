@@ -443,6 +443,21 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   # [9]: https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html
   # [10]: https://docs.aws.amazon.com/kms/latest/developerguide/programming-eventual-consistency.html
   #
+  # @example Example: To create an AWS CloudHSM key store
+  #
+  #   # This example creates a custom key store that is associated with an AWS CloudHSM cluster.
+  #
+  #   resp = client.create_custom_key_store({
+  #   cloud_hsm_cluster_id: "cluster-234abcdefABC", # The ID of the CloudHSM cluster.
+  #   custom_key_store_name: "ExampleKeyStore", # A friendly name for the custom key store.
+  #   key_store_password: "kmsPswd", # The password for the kmsuser CU account in the specified cluster.
+  #   trust_anchor_certificate: "<certificate-goes-here>", # The content of the customerCA.crt file that you created when you initialized the cluster.
+  #   })
+  #
+  #   resp.to_h outputs the following:
+  #   {
+  #   custom_key_store_id: "cks-1234567890abcdef0", # The ID of the new custom key store.
+  #   }
   # @example Example: To create an external key store with VPC endpoint service connectivity
   #
   #   # This example creates an external key store that uses an Amazon VPC endpoint service to communicate with AWS KMS.
@@ -504,21 +519,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   # @example Response structure
   #
   #   resp.custom_key_store_id #=> String
-  # @example Example: To create an AWS CloudHSM key store
-  #
-  #   # This example creates a custom key store that is associated with an AWS CloudHSM cluster.
-  #
-  #   resp = client.create_custom_key_store({
-  #   cloud_hsm_cluster_id: "cluster-234abcdefABC", # The ID of the CloudHSM cluster.
-  #   custom_key_store_name: "ExampleKeyStore", # A friendly name for the custom key store.
-  #   key_store_password: "kmsPswd", # The password for the kmsuser CU account in the specified cluster.
-  #   trust_anchor_certificate: "<certificate-goes-here>", # The content of the customerCA.crt file that you created when you initialized the cluster.
-  #   })
-  #
-  #   resp.to_h outputs the following:
-  #   {
-  #   custom_key_store_id: "cks-1234567890abcdef0", # The ID of the new custom key store.
-  #   }
   # @option params
   # @option params
   # @option params
@@ -604,6 +604,24 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   # [5]: https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html
   # [6]: https://docs.aws.amazon.com/kms/latest/developerguide/programming-eventual-consistency.html
   #
+  # @example Example: To create a grant
+  #
+  #   # The following example creates a grant that allows the specified IAM role to encrypt data with the specified KMS key.
+  #
+  #   resp = client.create_grant({
+  #   grantee_principal: "arn:aws:iam::111122223333:role/ExampleRole", # The identity that is given permission to perform the operations specified in the grant.
+  #   key_id: "arn:aws:kms:us-east-2:444455556666:key/1234abcd-12ab-34cd-56ef-1234567890ab", # The identifier of the KMS key to which the grant applies. You can use the key ID or the Amazon Resource Name (ARN) of the KMS key.
+  #   operations: [
+  #   "Encrypt",
+  #   "Decrypt",
+  #   ], # A list of operations that the grant allows.
+  #   })
+  #
+  #   resp.to_h outputs the following:
+  #   {
+  #   grant_id: "0c237476b39f8bc44e45212e08498fbe3151305030726c0590dd8d3e9f3d6a60", # The unique identifier of the grant.
+  #   grant_token: "AQpAM2RhZTk1MGMyNTk2ZmZmMzEyYWVhOWViN2I1MWM4Mzc0MWFiYjc0ZDE1ODkyNGFlNTIzODZhMzgyZjBlNGY3NiKIAgEBAgB4Pa6VDCWW__MSrqnre1HIN0Grt00ViSSuUjhqOC8OT3YAAADfMIHcBgkqhkiG9w0BBwaggc4wgcsCAQAwgcUGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMmqLyBTAegIn9XlK5AgEQgIGXZQjkBcl1dykDdqZBUQ6L1OfUivQy7JVYO2-ZJP7m6f1g8GzV47HX5phdtONAP7K_HQIflcgpkoCqd_fUnE114mSmiagWkbQ5sqAVV3ov-VeqgrvMe5ZFEWLMSluvBAqdjHEdMIkHMlhlj4ENZbzBfo9Wxk8b8SnwP4kc4gGivedzFXo-dwN8fxjjq_ZZ9JFOj2ijIbj5FyogDCN0drOfi8RORSEuCEmPvjFRMFAwcmwFkN2NPp89amA", # The grant token.
+  #   }
   # @example Request syntax with placeholder values
   #
   #   resp = client.create_grant({
@@ -627,24 +645,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #
   #   resp.grant_token #=> String
   #   resp.grant_id #=> String
-  # @example Example: To create a grant
-  #
-  #   # The following example creates a grant that allows the specified IAM role to encrypt data with the specified KMS key.
-  #
-  #   resp = client.create_grant({
-  #   grantee_principal: "arn:aws:iam::111122223333:role/ExampleRole", # The identity that is given permission to perform the operations specified in the grant.
-  #   key_id: "arn:aws:kms:us-east-2:444455556666:key/1234abcd-12ab-34cd-56ef-1234567890ab", # The identifier of the KMS key to which the grant applies. You can use the key ID or the Amazon Resource Name (ARN) of the KMS key.
-  #   operations: [
-  #   "Encrypt",
-  #   "Decrypt",
-  #   ], # A list of operations that the grant allows.
-  #   })
-  #
-  #   resp.to_h outputs the following:
-  #   {
-  #   grant_id: "0c237476b39f8bc44e45212e08498fbe3151305030726c0590dd8d3e9f3d6a60", # The unique identifier of the grant.
-  #   grant_token: "AQpAM2RhZTk1MGMyNTk2ZmZmMzEyYWVhOWViN2I1MWM4Mzc0MWFiYjc0ZDE1ODkyNGFlNTIzODZhMzgyZjBlNGY3NiKIAgEBAgB4Pa6VDCWW__MSrqnre1HIN0Grt00ViSSuUjhqOC8OT3YAAADfMIHcBgkqhkiG9w0BBwaggc4wgcsCAQAwgcUGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMmqLyBTAegIn9XlK5AgEQgIGXZQjkBcl1dykDdqZBUQ6L1OfUivQy7JVYO2-ZJP7m6f1g8GzV47HX5phdtONAP7K_HQIflcgpkoCqd_fUnE114mSmiagWkbQ5sqAVV3ov-VeqgrvMe5ZFEWLMSluvBAqdjHEdMIkHMlhlj4ENZbzBfo9Wxk8b8SnwP4kc4gGivedzFXo-dwN8fxjjq_ZZ9JFOj2ijIbj5FyogDCN0drOfi8RORSEuCEmPvjFRMFAwcmwFkN2NPp89amA", # The grant token.
-  #   }
   # @option params
   # @option params
   # @option params
@@ -892,6 +892,35 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   # [11]: https://docs.aws.amazon.com/kms/latest/developerguide/iam-policies.html#iam-policy-example-create-key
   # [12]: https://docs.aws.amazon.com/kms/latest/developerguide/programming-eventual-consistency.html
   #
+  # @example Example: To create a KMS key
+  #
+  #   # The following example creates a symmetric KMS key for encryption and decryption. No parameters are required for this
+  #   # operation.
+  #
+  #   resp = client.create_key({
+  #   })
+  #
+  #   resp.to_h outputs the following:
+  #   {
+  #   key_metadata: {
+  #   aws_account_id: "111122223333",
+  #   arn: "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+  #   creation_date: Time.parse("2017-07-05T14:04:55-07:00"),
+  #   customer_master_key_spec: "SYMMETRIC_DEFAULT",
+  #   description: "",
+  #   enabled: true,
+  #   encryption_algorithms: [
+  #   "SYMMETRIC_DEFAULT",
+  #   ],
+  #   key_id: "1234abcd-12ab-34cd-56ef-1234567890ab",
+  #   key_manager: "CUSTOMER",
+  #   key_spec: "SYMMETRIC_DEFAULT",
+  #   key_state: "Enabled",
+  #   key_usage: "ENCRYPT_DECRYPT",
+  #   multi_region: false,
+  #   origin: "AWS_KMS",
+  #   }, # Detailed information about the KMS key that this operation creates.
+  #   }
   # @example Example: To create an asymmetric RSA KMS key for encryption and decryption
   #
   #   # This example creates a KMS key that contains an asymmetric RSA key pair for encryption and decryption. The key spec and
@@ -924,12 +953,15 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   origin: "AWS_KMS",
   #   }, # Detailed information about the KMS key that this operation creates.
   #   }
-  # @example Example: To create a KMS key
+  # @example Example: To create an asymmetric elliptic curve KMS key for signing and verification
   #
-  #   # The following example creates a symmetric KMS key for encryption and decryption. No parameters are required for this
-  #   # operation.
+  #   # This example creates a KMS key that contains an asymmetric elliptic curve (ECC) key pair for signing and verification.
+  #   # The key usage is required even though "SIGN_VERIFY" is the only valid value for ECC KMS keys. The key spec and key usage
+  #   # can't be changed after the key is created.
   #
   #   resp = client.create_key({
+  #   key_spec: "ECC_NIST_P521", # Describes the type of key material in the KMS key.
+  #   key_usage: "SIGN_VERIFY", # The cryptographic operations for which you can use the KMS key.
   #   })
   #
   #   resp.to_h outputs the following:
@@ -937,20 +969,20 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   key_metadata: {
   #   aws_account_id: "111122223333",
   #   arn: "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
-  #   creation_date: Time.parse("2017-07-05T14:04:55-07:00"),
-  #   customer_master_key_spec: "SYMMETRIC_DEFAULT",
+  #   creation_date: Time.parse("2019-12-02T07:48:55-07:00"),
+  #   customer_master_key_spec: "ECC_NIST_P521",
   #   description: "",
   #   enabled: true,
-  #   encryption_algorithms: [
-  #   "SYMMETRIC_DEFAULT",
-  #   ],
   #   key_id: "1234abcd-12ab-34cd-56ef-1234567890ab",
   #   key_manager: "CUSTOMER",
-  #   key_spec: "SYMMETRIC_DEFAULT",
+  #   key_spec: "ECC_NIST_P521",
   #   key_state: "Enabled",
-  #   key_usage: "ENCRYPT_DECRYPT",
+  #   key_usage: "SIGN_VERIFY",
   #   multi_region: false,
   #   origin: "AWS_KMS",
+  #   signing_algorithms: [
+  #   "ECDSA_SHA_512",
+  #   ],
   #   }, # Detailed information about the KMS key that this operation creates.
   #   }
   # @example Example: To create an HMAC KMS key
@@ -1180,38 +1212,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   resp.key_metadata.mac_algorithms #=> Array
   #   resp.key_metadata.mac_algorithms[0] #=> String, one of "HMAC_SHA_224", "HMAC_SHA_256", "HMAC_SHA_384", "HMAC_SHA_512"
   #   resp.key_metadata.xks_key_configuration.id #=> String
-  # @example Example: To create an asymmetric elliptic curve KMS key for signing and verification
-  #
-  #   # This example creates a KMS key that contains an asymmetric elliptic curve (ECC) key pair for signing and verification.
-  #   # The key usage is required even though "SIGN_VERIFY" is the only valid value for ECC KMS keys. The key spec and key usage
-  #   # can't be changed after the key is created.
-  #
-  #   resp = client.create_key({
-  #   key_spec: "ECC_NIST_P521", # Describes the type of key material in the KMS key.
-  #   key_usage: "SIGN_VERIFY", # The cryptographic operations for which you can use the KMS key.
-  #   })
-  #
-  #   resp.to_h outputs the following:
-  #   {
-  #   key_metadata: {
-  #   aws_account_id: "111122223333",
-  #   arn: "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
-  #   creation_date: Time.parse("2019-12-02T07:48:55-07:00"),
-  #   customer_master_key_spec: "ECC_NIST_P521",
-  #   description: "",
-  #   enabled: true,
-  #   key_id: "1234abcd-12ab-34cd-56ef-1234567890ab",
-  #   key_manager: "CUSTOMER",
-  #   key_spec: "ECC_NIST_P521",
-  #   key_state: "Enabled",
-  #   key_usage: "SIGN_VERIFY",
-  #   multi_region: false,
-  #   origin: "AWS_KMS",
-  #   signing_algorithms: [
-  #   "ECDSA_SHA_512",
-  #   ],
-  #   }, # Detailed information about the KMS key that this operation creates.
-  #   }
   # @option params
   # @option params
   # @option params
@@ -1331,22 +1331,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   # [9]: https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html
   # [10]: https://docs.aws.amazon.com/kms/latest/developerguide/programming-eventual-consistency.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.decrypt({
-  #   ciphertext_blob: "data", # required
-  #   encryption_context: {
-  #   "EncryptionContextKey" => "EncryptionContextValue",
-  #   },
-  #   grant_tokens: ["GrantTokenType"],
-  #   key_id: "KeyIdType",
-  #   encryption_algorithm: "SYMMETRIC_DEFAULT", # accepts SYMMETRIC_DEFAULT, RSAES_OAEP_SHA_1, RSAES_OAEP_SHA_256, SM2PKE
-  #   recipient: {
-  #   key_encryption_algorithm: "RSAES_OAEP_SHA_256", # accepts RSAES_OAEP_SHA_256
-  #   attestation_document: "data",
-  #   },
-  #   dry_run: false,
-  #   })
   # @example Example: To decrypt data with a symmetric encryption KMS key
   #
   #   # The following example decrypts data that was encrypted with a symmetric encryption KMS key. The KeyId is not required
@@ -1363,12 +1347,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   key_id: "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab", # The Amazon Resource Name (ARN) of the KMS key that was used to decrypt the data.
   #   plaintext: "<binary data>", # The decrypted (plaintext) data.
   #   }
-  # @example Response structure
-  #
-  #   resp.key_id #=> String
-  #   resp.plaintext #=> String
-  #   resp.encryption_algorithm #=> String, one of "SYMMETRIC_DEFAULT", "RSAES_OAEP_SHA_1", "RSAES_OAEP_SHA_256", "SM2PKE"
-  #   resp.ciphertext_for_recipient #=> String
   # @example Example: To decrypt data with an asymmetric encryption KMS key
   #
   #   # The following example decrypts data that was encrypted with an asymmetric encryption KMS key. When the KMS encryption
@@ -1407,6 +1385,28 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   key_id: "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab", # The KMS key that was used to decrypt the encrypted data (CiphertextBlob)
   #   plaintext: "", # This field is null or empty
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.decrypt({
+  #   ciphertext_blob: "data", # required
+  #   encryption_context: {
+  #   "EncryptionContextKey" => "EncryptionContextValue",
+  #   },
+  #   grant_tokens: ["GrantTokenType"],
+  #   key_id: "KeyIdType",
+  #   encryption_algorithm: "SYMMETRIC_DEFAULT", # accepts SYMMETRIC_DEFAULT, RSAES_OAEP_SHA_1, RSAES_OAEP_SHA_256, SM2PKE
+  #   recipient: {
+  #   key_encryption_algorithm: "RSAES_OAEP_SHA_256", # accepts RSAES_OAEP_SHA_256
+  #   attestation_document: "data",
+  #   },
+  #   dry_run: false,
+  #   })
+  # @example Response structure
+  #
+  #   resp.key_id #=> String
+  #   resp.plaintext #=> String
+  #   resp.encryption_algorithm #=> String, one of "SYMMETRIC_DEFAULT", "RSAES_OAEP_SHA_1", "RSAES_OAEP_SHA_256", "SM2PKE"
+  #   resp.ciphertext_for_recipient #=> String
   # @option params
   # @option params
   # @option params
@@ -1759,13 +1759,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   key_origin: "AWS_KMS", # The source of the key material for the specified KMS key.
   #   shared_secret: "MEYCIQCKZLWyTk5runarx6XiAkU9gv3lbwPO/pHa+DXFehzdDwIhANwpsIV2g/9SPWLLsF6p/hiSskuIXMTRwqrMdVKWTMHG", # The raw secret derived from the specified key agreement algorithm, private key in the asymmetric KMS key, and your peer's public key.
   #   }
-  # @example Response structure
-  #
-  #   resp.key_id #=> String
-  #   resp.shared_secret #=> String
-  #   resp.ciphertext_for_recipient #=> String
-  #   resp.key_agreement_algorithm #=> String, one of "ECDH"
-  #   resp.key_origin #=> String, one of "AWS_KMS", "EXTERNAL", "AWS_CLOUDHSM", "EXTERNAL_KEY_STORE"
   # @example Request syntax with placeholder values
   #
   #   resp = client.derive_shared_secret({
@@ -1779,6 +1772,13 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   attestation_document: "data",
   #   },
   #   })
+  # @example Response structure
+  #
+  #   resp.key_id #=> String
+  #   resp.shared_secret #=> String
+  #   resp.ciphertext_for_recipient #=> String
+  #   resp.key_agreement_algorithm #=> String, one of "ECDH"
+  #   resp.key_origin #=> String, one of "AWS_KMS", "EXTERNAL", "AWS_CLOUDHSM", "EXTERNAL_KEY_STORE"
   # @option params
   # @option params
   # @option params
@@ -1865,6 +1865,19 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #
   # The returned {Seahorse::Client::Response response} is a pageable response and is Enumerable. For details on usage see {Aws::PageableResponse PageableResponse}.
   #
+  # @example Example: To get detailed information about custom key stores in the account and Region
+  #
+  #   # This example gets detailed information about all AWS KMS custom key stores in an AWS account and Region. To get all key
+  #   # stores, do not enter a custom key store name or ID.
+  #
+  #   resp = client.describe_custom_key_stores({
+  #   })
+  #
+  #   resp.to_h outputs the following:
+  #   {
+  #   custom_key_stores: [
+  #   ], # Details about each custom key store in the account and Region.
+  #   }
   # @example Example: To get detailed information about an AWS CloudHSM key store by specifying its friendly name
   #
   #   # This example gets detailed information about a particular AWS CloudHSM key store by specifying its friendly name. To
@@ -1887,19 +1900,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   trust_anchor_certificate: "<certificate appears here>",
   #   },
   #   ], # Detailed information about the specified custom key store.
-  #   }
-  # @example Example: To get detailed information about custom key stores in the account and Region
-  #
-  #   # This example gets detailed information about all AWS KMS custom key stores in an AWS account and Region. To get all key
-  #   # stores, do not enter a custom key store name or ID.
-  #
-  #   resp = client.describe_custom_key_stores({
-  #   })
-  #
-  #   resp.to_h outputs the following:
-  #   {
-  #   custom_key_stores: [
-  #   ], # Details about each custom key store in the account and Region.
   #   }
   # @example Example: To get detailed information about an external key store by specifying its ID
   #
@@ -2791,11 +2791,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   # [3]: https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html
   # [4]: https://docs.aws.amazon.com/kms/latest/developerguide/programming-eventual-consistency.html
   #
-  # @example Response structure
-  #
-  #   resp.ciphertext_blob #=> String
-  #   resp.key_id #=> String
-  #   resp.encryption_algorithm #=> String, one of "SYMMETRIC_DEFAULT", "RSAES_OAEP_SHA_1", "RSAES_OAEP_SHA_256", "SM2PKE"
   # @example Example: To encrypt data with a symmetric encryption KMS key
   #
   #   # The following example encrypts data with the specified symmetric encryption KMS key.
@@ -2840,6 +2835,11 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   encryption_algorithm: "SYMMETRIC_DEFAULT", # accepts SYMMETRIC_DEFAULT, RSAES_OAEP_SHA_1, RSAES_OAEP_SHA_256, SM2PKE
   #   dry_run: false,
   #   })
+  # @example Response structure
+  #
+  #   resp.ciphertext_blob #=> String
+  #   resp.key_id #=> String
+  #   resp.encryption_algorithm #=> String, one of "SYMMETRIC_DEFAULT", "RSAES_OAEP_SHA_1", "RSAES_OAEP_SHA_256", "SM2PKE"
   # @option params
   # @option params
   # @option params
@@ -3158,14 +3158,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   # [8]: https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html
   # [9]: https://docs.aws.amazon.com/kms/latest/developerguide/programming-eventual-consistency.html
   #
-  # @example Response structure
-  #
-  #   resp.private_key_ciphertext_blob #=> String
-  #   resp.private_key_plaintext #=> String
-  #   resp.public_key #=> String
-  #   resp.key_id #=> String
-  #   resp.key_pair_spec #=> String, one of "RSA_2048", "RSA_3072", "RSA_4096", "ECC_NIST_P256", "ECC_NIST_P384", "ECC_NIST_P521", "ECC_SECG_P256K1", "SM2"
-  #   resp.ciphertext_for_recipient #=> String
   # @example Example: To generate an RSA key pair for encryption and decryption
   #
   #   # This example generates an RSA data key pair for encryption and decryption. The operation returns a plaintext public key
@@ -3225,6 +3217,14 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   },
   #   dry_run: false,
   #   })
+  # @example Response structure
+  #
+  #   resp.private_key_ciphertext_blob #=> String
+  #   resp.private_key_plaintext #=> String
+  #   resp.public_key #=> String
+  #   resp.key_id #=> String
+  #   resp.key_pair_spec #=> String, one of "RSA_2048", "RSA_3072", "RSA_4096", "ECC_NIST_P256", "ECC_NIST_P384", "ECC_NIST_P521", "ECC_SECG_P256K1", "SM2"
+  #   resp.ciphertext_for_recipient #=> String
   # @option params
   # @option params
   # @option params
@@ -3319,17 +3319,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   # [4]: https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html
   # [5]: https://docs.aws.amazon.com/kms/latest/developerguide/programming-eventual-consistency.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.generate_data_key_pair_without_plaintext({
-  #   encryption_context: {
-  #   "EncryptionContextKey" => "EncryptionContextValue",
-  #   },
-  #   key_id: "KeyIdType", # required
-  #   key_pair_spec: "RSA_2048", # required, accepts RSA_2048, RSA_3072, RSA_4096, ECC_NIST_P256, ECC_NIST_P384, ECC_NIST_P521, ECC_SECG_P256K1, SM2
-  #   grant_tokens: ["GrantTokenType"],
-  #   dry_run: false,
-  #   })
   # @example Example: To generate an asymmetric data key pair without a plaintext key
   #
   #   # This example returns an asymmetric elliptic curve (ECC) data key pair. The private key is encrypted under the symmetric
@@ -3347,6 +3336,17 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   private_key_ciphertext_blob: "<binary data>", # The encrypted private key of the asymmetric ECC data key pair.
   #   public_key: "<binary data>", # The public key (plaintext).
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.generate_data_key_pair_without_plaintext({
+  #   encryption_context: {
+  #   "EncryptionContextKey" => "EncryptionContextValue",
+  #   },
+  #   key_id: "KeyIdType", # required
+  #   key_pair_spec: "RSA_2048", # required, accepts RSA_2048, RSA_3072, RSA_4096, ECC_NIST_P256, ECC_NIST_P384, ECC_NIST_P521, ECC_SECG_P256K1, SM2
+  #   grant_tokens: ["GrantTokenType"],
+  #   dry_run: false,
+  #   })
   # @example Response structure
   #
   #   resp.private_key_ciphertext_blob #=> String
@@ -3470,10 +3470,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   ciphertext_blob: "<binary data>", # The encrypted data key.
   #   key_id: "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab", # The ARN of the KMS key that was used to encrypt the data key.
   #   }
-  # @example Response structure
-  #
-  #   resp.ciphertext_blob #=> String
-  #   resp.key_id #=> String
   # @example Request syntax with placeholder values
   #
   #   resp = client.generate_data_key_without_plaintext({
@@ -3486,6 +3482,10 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   grant_tokens: ["GrantTokenType"],
   #   dry_run: false,
   #   })
+  # @example Response structure
+  #
+  #   resp.ciphertext_blob #=> String
+  #   resp.key_id #=> String
   # @option params
   # @option params
   # @option params
@@ -3549,15 +3549,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   # [4]: https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html
   # [5]: https://docs.aws.amazon.com/kms/latest/developerguide/programming-eventual-consistency.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.generate_mac({
-  #   message: "data", # required
-  #   key_id: "KeyIdType", # required
-  #   mac_algorithm: "HMAC_SHA_224", # required, accepts HMAC_SHA_224, HMAC_SHA_256, HMAC_SHA_384, HMAC_SHA_512
-  #   grant_tokens: ["GrantTokenType"],
-  #   dry_run: false,
-  #   })
   # @example Example: To generate an HMAC for a message
   #
   #   # This example generates an HMAC for a message, an HMAC KMS key, and a MAC algorithm. The algorithm must be supported by
@@ -3575,6 +3566,15 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   mac: "<HMAC_TAG>", # The HMAC tag that results from this operation.
   #   mac_algorithm: "HMAC_SHA_384", # The HMAC algorithm used in the operation.
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.generate_mac({
+  #   message: "data", # required
+  #   key_id: "KeyIdType", # required
+  #   mac_algorithm: "HMAC_SHA_224", # required, accepts HMAC_SHA_224, HMAC_SHA_256, HMAC_SHA_384, HMAC_SHA_512
+  #   grant_tokens: ["GrantTokenType"],
+  #   dry_run: false,
+  #   })
   # @example Response structure
   #
   #   resp.mac #=> String
@@ -3640,6 +3640,18 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #
   # @example Example: To generate random data
   #
+  #   # The following example generates 32 bytes of random data.
+  #
+  #   resp = client.generate_random({
+  #   number_of_bytes: 32, # The length of the random data, specified in number of bytes.
+  #   })
+  #
+  #   resp.to_h outputs the following:
+  #   {
+  #   plaintext: "<binary data>", # The random data.
+  #   }
+  # @example Example: To generate random data
+  #
   #   # The following example includes the Recipient parameter with a signed attestation document from an AWS Nitro enclave.
   #   # Instead of returning a plaintext (unencrypted) byte string, GenerateRandom returns the byte string encrypted by the
   #   # public key from the enclave's attestation document.
@@ -3656,18 +3668,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   {
   #   ciphertext_for_recipient: "<binary data>", # The random data encrypted under the public key from the attestation document
   #   plaintext: "", # This field is null or empty
-  #   }
-  # @example Example: To generate random data
-  #
-  #   # The following example generates 32 bytes of random data.
-  #
-  #   resp = client.generate_random({
-  #   number_of_bytes: 32, # The length of the random data, specified in number of bytes.
-  #   })
-  #
-  #   resp.to_h outputs the following:
-  #   {
-  #   plaintext: "<binary data>", # The random data.
   #   }
   # @example Request syntax with placeholder values
   #
@@ -3715,12 +3715,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   # [2]: https://docs.aws.amazon.com/kms/latest/APIReference/API_PutKeyPolicy.html
   # [3]: https://docs.aws.amazon.com/kms/latest/developerguide/programming-eventual-consistency.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.get_key_policy({
-  #   key_id: "KeyIdType", # required
-  #   policy_name: "PolicyNameType",
-  #   })
   # @example Example: To retrieve a key policy
   #
   #   # The following example retrieves the key policy for the specified KMS key.
@@ -3734,6 +3728,12 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   {
   #   policy: "{\n  \"Version\" : \"2012-10-17\",\n  \"Id\" : \"key-default-1\",\n  \"Statement\" : [ {\n    \"Sid\" : \"Enable IAM User Permissions\",\n    \"Effect\" : \"Allow\",\n    \"Principal\" : {\n      \"AWS\" : \"arn:aws:iam::111122223333:root\"\n    },\n    \"Action\" : \"kms:*\",\n    \"Resource\" : \"*\"\n  } ]\n}", # The key policy document.
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.get_key_policy({
+  #   key_id: "KeyIdType", # required
+  #   policy_name: "PolicyNameType",
+  #   })
   # @example Response structure
   #
   #   resp.policy #=> String
@@ -4134,12 +4134,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   # [8]: https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html
   # [9]: https://docs.aws.amazon.com/kms/latest/developerguide/programming-eventual-consistency.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.get_public_key({
-  #   key_id: "KeyIdType", # required
-  #   grant_tokens: ["GrantTokenType"],
-  #   })
   # @example Example: To download the public key of an asymmetric KMS key
   #
   #   # This example gets the public key of an asymmetric RSA KMS key used for encryption and decryption. The operation returns
@@ -4161,6 +4155,12 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   key_usage: "ENCRYPT_DECRYPT", # The key usage of the asymmetric KMS key from which the public key was downloaded.
   #   public_key: "<binary data>", # The public key (plaintext) of the asymmetric KMS key.
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.get_public_key({
+  #   key_id: "KeyIdType", # required
+  #   grant_tokens: ["GrantTokenType"],
+  #   })
   # @example Response structure
   #
   #   resp.key_id #=> String
@@ -4319,6 +4319,16 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #
   # @example Example: To import key material into a KMS key
   #
+  #   # The following example imports key material into the specified KMS key.
+  #
+  #   resp = client.import_key_material({
+  #   encrypted_key_material: "<binary data>", # The encrypted key material to import.
+  #   expiration_model: "KEY_MATERIAL_DOES_NOT_EXPIRE", # A value that specifies whether the key material expires.
+  #   import_token: "<binary data>", # The import token that you received in the response to a previous GetParametersForImport request.
+  #   key_id: "1234abcd-12ab-34cd-56ef-1234567890ab", # The identifier of the KMS key to import the key material into. You can use the key ID or the Amazon Resource Name (ARN) of the KMS key.
+  #   })
+  # @example Example: To import key material into a KMS key
+  #
   #   # The following example imports key material that expires in 3 days. It might be part of an application that frequently
   #   # reimports the same key material to comply with business rules or regulations.
   #
@@ -4328,16 +4338,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   import_token: "<binary data>", # The import token that you received in the response to a previous GetParametersForImport request.
   #   key_id: "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab", # The identifier of the KMS key to import the key material into. You can use the key ID or the Amazon Resource Name (ARN) of the KMS key.
   #   valid_to: Time.parse("2023-09-30T00:00:00-00:00"), # Specifies the date and time when the imported key material expires.
-  #   })
-  # @example Example: To import key material into a KMS key
-  #
-  #   # The following example imports key material into the specified KMS key.
-  #
-  #   resp = client.import_key_material({
-  #   encrypted_key_material: "<binary data>", # The encrypted key material to import.
-  #   expiration_model: "KEY_MATERIAL_DOES_NOT_EXPIRE", # A value that specifies whether the key material expires.
-  #   import_token: "<binary data>", # The import token that you received in the response to a previous GetParametersForImport request.
-  #   key_id: "1234abcd-12ab-34cd-56ef-1234567890ab", # The identifier of the KMS key to import the key material into. You can use the key ID or the Amazon Resource Name (ARN) of the KMS key.
   #   })
   # @example Request syntax with placeholder values
   #
@@ -4409,23 +4409,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #
   # The returned {Seahorse::Client::Response response} is a pageable response and is Enumerable. For details on usage see {Aws::PageableResponse PageableResponse}.
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.list_aliases({
-  #   key_id: "KeyIdType",
-  #   limit: 1,
-  #   marker: "MarkerType",
-  #   })
-  # @example Response structure
-  #
-  #   resp.aliases #=> Array
-  #   resp.aliases[0].alias_name #=> String
-  #   resp.aliases[0].alias_arn #=> String
-  #   resp.aliases[0].target_key_id #=> String
-  #   resp.aliases[0].creation_date #=> Time
-  #   resp.aliases[0].last_updated_date #=> Time
-  #   resp.next_marker #=> String
-  #   resp.truncated #=> Boolean
   # @example Example: To list aliases
   #
   #   # The following example lists aliases.
@@ -4479,6 +4462,23 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   ], # A list of aliases, including the key ID of the KMS key that each alias refers to.
   #   truncated: false, # A boolean that indicates whether there are more items in the list. Returns true when there are more items, or false when there are not.
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.list_aliases({
+  #   key_id: "KeyIdType",
+  #   limit: 1,
+  #   marker: "MarkerType",
+  #   })
+  # @example Response structure
+  #
+  #   resp.aliases #=> Array
+  #   resp.aliases[0].alias_name #=> String
+  #   resp.aliases[0].alias_arn #=> String
+  #   resp.aliases[0].target_key_id #=> String
+  #   resp.aliases[0].creation_date #=> Time
+  #   resp.aliases[0].last_updated_date #=> Time
+  #   resp.next_marker #=> String
+  #   resp.truncated #=> Boolean
   # @option params
   # @option params
   # @option params
@@ -4542,15 +4542,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #
   # The returned {Seahorse::Client::Response response} is a pageable response and is Enumerable. For details on usage see {Aws::PageableResponse PageableResponse}.
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.list_grants({
-  #   limit: 1,
-  #   marker: "MarkerType",
-  #   key_id: "KeyIdType", # required
-  #   grant_id: "GrantIdType",
-  #   grantee_principal: "PrincipalIdType",
-  #   })
   # @example Example: To list grants for a KMS key
   #
   #   # The following example lists grants for the specified KMS key.
@@ -4616,6 +4607,15 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   ], # A list of grants.
   #   truncated: true, # A boolean that indicates whether there are more items in the list. Returns true when there are more items, or false when there are not.
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.list_grants({
+  #   limit: 1,
+  #   marker: "MarkerType",
+  #   key_id: "KeyIdType", # required
+  #   grant_id: "GrantIdType",
+  #   grantee_principal: "PrincipalIdType",
+  #   })
   # @example Response structure
   #
   #   resp.grants #=> Array
@@ -4678,19 +4678,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #
   # The returned {Seahorse::Client::Response response} is a pageable response and is Enumerable. For details on usage see {Aws::PageableResponse PageableResponse}.
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.list_key_policies({
-  #   key_id: "KeyIdType", # required
-  #   limit: 1,
-  #   marker: "MarkerType",
-  #   })
-  # @example Response structure
-  #
-  #   resp.policy_names #=> Array
-  #   resp.policy_names[0] #=> String
-  #   resp.next_marker #=> String
-  #   resp.truncated #=> Boolean
   # @example Example: To list key policies for a KMS key
   #
   #   # The following example lists key policies for the specified KMS key.
@@ -4706,6 +4693,19 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   ], # A list of key policy names.
   #   truncated: false, # A boolean that indicates whether there are more items in the list. Returns true when there are more items, or false when there are not.
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.list_key_policies({
+  #   key_id: "KeyIdType", # required
+  #   limit: 1,
+  #   marker: "MarkerType",
+  #   })
+  # @example Response structure
+  #
+  #   resp.policy_names #=> Array
+  #   resp.policy_names[0] #=> String
+  #   resp.next_marker #=> String
+  #   resp.truncated #=> Boolean
   # @option params
   # @option params
   # @option params
@@ -4757,21 +4757,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #
   # The returned {Seahorse::Client::Response response} is a pageable response and is Enumerable. For details on usage see {Aws::PageableResponse PageableResponse}.
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.list_key_rotations({
-  #   key_id: "KeyIdType", # required
-  #   limit: 1,
-  #   marker: "MarkerType",
-  #   })
-  # @example Response structure
-  #
-  #   resp.rotations #=> Array
-  #   resp.rotations[0].key_id #=> String
-  #   resp.rotations[0].rotation_date #=> Time
-  #   resp.rotations[0].rotation_type #=> String, one of "AUTOMATIC", "ON_DEMAND"
-  #   resp.next_marker #=> String
-  #   resp.truncated #=> Boolean
   # @example Example: To retrieve information about all completed key material rotations
   #
   #   # The following example returns information about all completed key material rotations for the specified KMS key.
@@ -4796,6 +4781,21 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   ], # A list of key rotations.
   #   truncated: false, # A flag that indicates whether there are more items in the list. When the value is true, the list in this response is truncated. To get more items, pass the value of the NextMarker element in this response to the Marker parameter in a subsequent request.
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.list_key_rotations({
+  #   key_id: "KeyIdType", # required
+  #   limit: 1,
+  #   marker: "MarkerType",
+  #   })
+  # @example Response structure
+  #
+  #   resp.rotations #=> Array
+  #   resp.rotations[0].key_id #=> String
+  #   resp.rotations[0].rotation_date #=> Time
+  #   resp.rotations[0].rotation_type #=> String, one of "AUTOMATIC", "ON_DEMAND"
+  #   resp.next_marker #=> String
+  #   resp.truncated #=> Boolean
   # @option params
   # @option params
   # @option params
@@ -4839,12 +4839,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #
   # The returned {Seahorse::Client::Response response} is a pageable response and is Enumerable. For details on usage see {Aws::PageableResponse PageableResponse}.
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.list_keys({
-  #   limit: 1,
-  #   marker: "MarkerType",
-  #   })
   # @example Example: To list KMS keys
   #
   #   # The following example lists KMS keys.
@@ -4886,6 +4880,12 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   ], # A list of KMS keys, including the key ID and Amazon Resource Name (ARN) of each one.
   #   truncated: false, # A boolean that indicates whether there are more items in the list. Returns true when there are more items, or false when there are not.
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.list_keys({
+  #   limit: 1,
+  #   marker: "MarkerType",
+  #   })
   # @example Response structure
   #
   #   resp.keys #=> Array
@@ -4941,20 +4941,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #
   # The returned {Seahorse::Client::Response response} is a pageable response and is Enumerable. For details on usage see {Aws::PageableResponse PageableResponse}.
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.list_resource_tags({
-  #   key_id: "KeyIdType", # required
-  #   limit: 1,
-  #   marker: "MarkerType",
-  #   })
-  # @example Response structure
-  #
-  #   resp.tags #=> Array
-  #   resp.tags[0].tag_key #=> String
-  #   resp.tags[0].tag_value #=> String
-  #   resp.next_marker #=> String
-  #   resp.truncated #=> Boolean
   # @example Example: To list tags for a KMS key
   #
   #   # The following example lists tags for a KMS key.
@@ -4981,6 +4967,20 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   ], # A list of tags.
   #   truncated: false, # A boolean that indicates whether there are more items in the list. Returns true when there are more items, or false when there are not.
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.list_resource_tags({
+  #   key_id: "KeyIdType", # required
+  #   limit: 1,
+  #   marker: "MarkerType",
+  #   })
+  # @example Response structure
+  #
+  #   resp.tags #=> Array
+  #   resp.tags[0].tag_key #=> String
+  #   resp.tags[0].tag_value #=> String
+  #   resp.next_marker #=> String
+  #   resp.truncated #=> Boolean
   # @option params
   # @option params
   # @option params
@@ -5052,31 +5052,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #
   # The returned {Seahorse::Client::Response response} is a pageable response and is Enumerable. For details on usage see {Aws::PageableResponse PageableResponse}.
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.list_retirable_grants({
-  #   limit: 1,
-  #   marker: "MarkerType",
-  #   retiring_principal: "PrincipalIdType", # required
-  #   })
-  # @example Response structure
-  #
-  #   resp.grants #=> Array
-  #   resp.grants[0].key_id #=> String
-  #   resp.grants[0].grant_id #=> String
-  #   resp.grants[0].name #=> String
-  #   resp.grants[0].creation_date #=> Time
-  #   resp.grants[0].grantee_principal #=> String
-  #   resp.grants[0].retiring_principal #=> String
-  #   resp.grants[0].issuing_account #=> String
-  #   resp.grants[0].operations #=> Array
-  #   resp.grants[0].operations[0] #=> String, one of "Decrypt", "Encrypt", "GenerateDataKey", "GenerateDataKeyWithoutPlaintext", "ReEncryptFrom", "ReEncryptTo", "Sign", "Verify", "GetPublicKey", "CreateGrant", "RetireGrant", "DescribeKey", "GenerateDataKeyPair", "GenerateDataKeyPairWithoutPlaintext", "GenerateMac", "VerifyMac", "DeriveSharedSecret"
-  #   resp.grants[0].constraints.encryption_context_subset #=> Hash
-  #   resp.grants[0].constraints.encryption_context_subset["EncryptionContextKey"] #=> String
-  #   resp.grants[0].constraints.encryption_context_equals #=> Hash
-  #   resp.grants[0].constraints.encryption_context_equals["EncryptionContextKey"] #=> String
-  #   resp.next_marker #=> String
-  #   resp.truncated #=> Boolean
   # @example Example: To list grants that the specified principal can retire
   #
   #   # The following example lists the grants that the specified principal (identity) can retire.
@@ -5103,6 +5078,31 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   ], # A list of grants that the specified principal can retire.
   #   truncated: false, # A boolean that indicates whether there are more items in the list. Returns true when there are more items, or false when there are not.
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.list_retirable_grants({
+  #   limit: 1,
+  #   marker: "MarkerType",
+  #   retiring_principal: "PrincipalIdType", # required
+  #   })
+  # @example Response structure
+  #
+  #   resp.grants #=> Array
+  #   resp.grants[0].key_id #=> String
+  #   resp.grants[0].grant_id #=> String
+  #   resp.grants[0].name #=> String
+  #   resp.grants[0].creation_date #=> Time
+  #   resp.grants[0].grantee_principal #=> String
+  #   resp.grants[0].retiring_principal #=> String
+  #   resp.grants[0].issuing_account #=> String
+  #   resp.grants[0].operations #=> Array
+  #   resp.grants[0].operations[0] #=> String, one of "Decrypt", "Encrypt", "GenerateDataKey", "GenerateDataKeyWithoutPlaintext", "ReEncryptFrom", "ReEncryptTo", "Sign", "Verify", "GetPublicKey", "CreateGrant", "RetireGrant", "DescribeKey", "GenerateDataKeyPair", "GenerateDataKeyPairWithoutPlaintext", "GenerateMac", "VerifyMac", "DeriveSharedSecret"
+  #   resp.grants[0].constraints.encryption_context_subset #=> Hash
+  #   resp.grants[0].constraints.encryption_context_subset["EncryptionContextKey"] #=> String
+  #   resp.grants[0].constraints.encryption_context_equals #=> Hash
+  #   resp.grants[0].constraints.encryption_context_equals["EncryptionContextKey"] #=> String
+  #   resp.next_marker #=> String
+  #   resp.truncated #=> Boolean
   # @option params
   # @option params
   # @option params
@@ -5146,14 +5146,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   # [4]: https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html
   # [5]: https://docs.aws.amazon.com/kms/latest/developerguide/programming-eventual-consistency.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.put_key_policy({
-  #   key_id: "KeyIdType", # required
-  #   policy_name: "PolicyNameType",
-  #   policy: "PolicyType", # required
-  #   bypass_policy_lockout_safety_check: false,
-  #   })
   # @example Example: To attach a key policy to a KMS key
   #
   #   # The following example attaches a key policy to the specified KMS key.
@@ -5162,6 +5154,14 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   key_id: "1234abcd-12ab-34cd-56ef-1234567890ab", # The identifier of the KMS key to attach the key policy to. You can use the key ID or the Amazon Resource Name (ARN) of the KMS key.
   #   policy: "{\"Version\":\"2012-10-17\",\"Id\":\"custom-policy-2016-12-07\",\"Statement\":[{\"Sid\":\"EnableIAMUserPermissions\",\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"arn:aws:iam::111122223333:root\"},\"Action\":\"kms:*\",\"Resource\":\"*\"},{\"Sid\":\"AllowaccessforKeyAdministrators\",\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"arn:aws:iam::111122223333:user/ExampleAdminUser\",\"arn:aws:iam::111122223333:role/ExampleAdminRole\"]},\"Action\":[\"kms:Create*\",\"kms:Describe*\",\"kms:Enable*\",\"kms:List*\",\"kms:Put*\",\"kms:Update*\",\"kms:Revoke*\",\"kms:Disable*\",\"kms:Get*\",\"kms:Delete*\",\"kms:ScheduleKeyDeletion\",\"kms:CancelKeyDeletion\"],\"Resource\":\"*\"},{\"Sid\":\"Allowuseofthekey\",\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"arn:aws:iam::111122223333:role/ExamplePowerUserRole\"},\"Action\":[\"kms:Encrypt\",\"kms:Decrypt\",\"kms:ReEncrypt*\",\"kms:GenerateDataKey*\",\"kms:DescribeKey\"],\"Resource\":\"*\"},{\"Sid\":\"Allowattachmentofpersistentresources\",\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"arn:aws:iam::111122223333:role/ExamplePowerUserRole\"},\"Action\":[\"kms:CreateGrant\",\"kms:ListGrants\",\"kms:RevokeGrant\"],\"Resource\":\"*\",\"Condition\":{\"Bool\":{\"kms:GrantIsForAWSResource\":\"true\"}}}]}", # The key policy document.
   #   policy_name: "default", # The name of the key policy.
+  #   })
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.put_key_policy({
+  #   key_id: "KeyIdType", # required
+  #   policy_name: "PolicyNameType",
+  #   policy: "PolicyType", # required
+  #   bypass_policy_lockout_safety_check: false,
   #   })
   # @option params
   # @option params
@@ -5282,13 +5282,21 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   # [8]: https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html
   # [9]: https://docs.aws.amazon.com/kms/latest/developerguide/programming-eventual-consistency.html
   #
-  # @example Response structure
+  # @example Example: To reencrypt data
   #
-  #   resp.ciphertext_blob #=> String
-  #   resp.source_key_id #=> String
-  #   resp.key_id #=> String
-  #   resp.source_encryption_algorithm #=> String, one of "SYMMETRIC_DEFAULT", "RSAES_OAEP_SHA_1", "RSAES_OAEP_SHA_256", "SM2PKE"
-  #   resp.destination_encryption_algorithm #=> String, one of "SYMMETRIC_DEFAULT", "RSAES_OAEP_SHA_1", "RSAES_OAEP_SHA_256", "SM2PKE"
+  #   # The following example reencrypts data with the specified KMS key.
+  #
+  #   resp = client.re_encrypt({
+  #   ciphertext_blob: "<binary data>", # The data to reencrypt.
+  #   destination_key_id: "0987dcba-09fe-87dc-65ba-ab0987654321", # The identifier of the KMS key to use to reencrypt the data. You can use any valid key identifier.
+  #   })
+  #
+  #   resp.to_h outputs the following:
+  #   {
+  #   ciphertext_blob: "<binary data>", # The reencrypted data.
+  #   key_id: "arn:aws:kms:us-east-2:111122223333:key/0987dcba-09fe-87dc-65ba-ab0987654321", # The ARN of the KMS key that was used to reencrypt the data.
+  #   source_key_id: "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab", # The ARN of the KMS key that was originally used to encrypt the data.
+  #   }
   # @example Request syntax with placeholder values
   #
   #   resp = client.re_encrypt({
@@ -5306,21 +5314,13 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   grant_tokens: ["GrantTokenType"],
   #   dry_run: false,
   #   })
-  # @example Example: To reencrypt data
+  # @example Response structure
   #
-  #   # The following example reencrypts data with the specified KMS key.
-  #
-  #   resp = client.re_encrypt({
-  #   ciphertext_blob: "<binary data>", # The data to reencrypt.
-  #   destination_key_id: "0987dcba-09fe-87dc-65ba-ab0987654321", # The identifier of the KMS key to use to reencrypt the data. You can use any valid key identifier.
-  #   })
-  #
-  #   resp.to_h outputs the following:
-  #   {
-  #   ciphertext_blob: "<binary data>", # The reencrypted data.
-  #   key_id: "arn:aws:kms:us-east-2:111122223333:key/0987dcba-09fe-87dc-65ba-ab0987654321", # The ARN of the KMS key that was used to reencrypt the data.
-  #   source_key_id: "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab", # The ARN of the KMS key that was originally used to encrypt the data.
-  #   }
+  #   resp.ciphertext_blob #=> String
+  #   resp.source_key_id #=> String
+  #   resp.key_id #=> String
+  #   resp.source_encryption_algorithm #=> String, one of "SYMMETRIC_DEFAULT", "RSAES_OAEP_SHA_1", "RSAES_OAEP_SHA_256", "SM2PKE"
+  #   resp.destination_encryption_algorithm #=> String, one of "SYMMETRIC_DEFAULT", "RSAES_OAEP_SHA_1", "RSAES_OAEP_SHA_256", "SM2PKE"
   # @option params
   # @option params
   # @option params
@@ -5494,6 +5494,21 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   replica_tags: [
   #   ], # The tags on the replica key, if any.
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.replicate_key({
+  #   key_id: "KeyIdType", # required
+  #   replica_region: "RegionType", # required
+  #   policy: "PolicyType",
+  #   bypass_policy_lockout_safety_check: false,
+  #   description: "DescriptionType",
+  #   tags: [
+  #   {
+  #   tag_key: "TagKeyType", # required
+  #   tag_value: "TagValueType", # required
+  #   },
+  #   ],
+  #   })
   # @example Response structure
   #
   #   resp.replica_key_metadata.aws_account_id #=> String
@@ -5534,21 +5549,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   resp.replica_tags #=> Array
   #   resp.replica_tags[0].tag_key #=> String
   #   resp.replica_tags[0].tag_value #=> String
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.replicate_key({
-  #   key_id: "KeyIdType", # required
-  #   replica_region: "RegionType", # required
-  #   policy: "PolicyType",
-  #   bypass_policy_lockout_safety_check: false,
-  #   description: "DescriptionType",
-  #   tags: [
-  #   {
-  #   tag_key: "TagKeyType", # required
-  #   tag_value: "TagValueType", # required
-  #   },
-  #   ],
-  #   })
   # @option params
   # @option params
   # @option params
@@ -5612,14 +5612,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   # [4]: https://docs.aws.amazon.com/kms/latest/developerguide/programming-grants.html
   # [5]: https://docs.aws.amazon.com/kms/latest/developerguide/programming-eventual-consistency.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.retire_grant({
-  #   grant_token: "GrantTokenType",
-  #   key_id: "KeyIdType",
-  #   grant_id: "GrantIdType",
-  #   dry_run: false,
-  #   })
   # @example Example: To retire a grant
   #
   #   # The following example retires a grant.
@@ -5627,6 +5619,14 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   resp = client.retire_grant({
   #   grant_id: "0c237476b39f8bc44e45212e08498fbe3151305030726c0590dd8d3e9f3d6a60", # The identifier of the grant to retire.
   #   key_id: "arn:aws:kms:us-east-2:444455556666:key/1234abcd-12ab-34cd-56ef-1234567890ab", # The Amazon Resource Name (ARN) of the KMS key associated with the grant.
+  #   })
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.retire_grant({
+  #   grant_token: "GrantTokenType",
+  #   key_id: "KeyIdType",
+  #   grant_id: "GrantIdType",
+  #   dry_run: false,
   #   })
   # @option params
   # @option params
@@ -5684,13 +5684,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   # [5]: https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html
   # [6]: https://docs.aws.amazon.com/kms/latest/developerguide/programming-eventual-consistency.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.revoke_grant({
-  #   key_id: "KeyIdType", # required
-  #   grant_id: "GrantIdType", # required
-  #   dry_run: false,
-  #   })
   # @example Example: To revoke a grant
   #
   #   # The following example revokes a grant.
@@ -5698,6 +5691,13 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   resp = client.revoke_grant({
   #   grant_id: "0c237476b39f8bc44e45212e08498fbe3151305030726c0590dd8d3e9f3d6a60", # The identifier of the grant to revoke.
   #   key_id: "1234abcd-12ab-34cd-56ef-1234567890ab", # The identifier of the KMS key associated with the grant. You can use the key ID or the Amazon Resource Name (ARN) of the KMS key.
+  #   })
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.revoke_grant({
+  #   key_id: "KeyIdType", # required
+  #   grant_id: "GrantIdType", # required
+  #   dry_run: false,
   #   })
   # @option params
   # @option params
@@ -5891,12 +5891,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   # [6]: https://docs.aws.amazon.com/kms/latest/developerguide/key-state.html
   # [7]: https://docs.aws.amazon.com/kms/latest/developerguide/programming-eventual-consistency.html
   #
-  # @example Request syntax with placeholder values
-  #
-  #   resp = client.schedule_key_deletion({
-  #   key_id: "KeyIdType", # required
-  #   pending_window_in_days: 1,
-  #   })
   # @example Example: To schedule a KMS key for deletion
   #
   #   # The following example schedules the specified KMS key for deletion.
@@ -5911,6 +5905,12 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   deletion_date: Time.parse("2016-12-17T16:00:00-08:00"), # The date and time after which KMS deletes the KMS key.
   #   key_id: "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab", # The ARN of the KMS key that is scheduled for deletion.
   #   }
+  # @example Request syntax with placeholder values
+  #
+  #   resp = client.schedule_key_deletion({
+  #   key_id: "KeyIdType", # required
+  #   pending_window_in_days: 1,
+  #   })
   # @example Response structure
   #
   #   resp.key_id #=> String
@@ -6002,11 +6002,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   # [4]: https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html
   # [5]: https://docs.aws.amazon.com/kms/latest/developerguide/programming-eventual-consistency.html
   #
-  # @example Response structure
-  #
-  #   resp.key_id #=> String
-  #   resp.signature #=> String
-  #   resp.signing_algorithm #=> String, one of "RSASSA_PSS_SHA_256", "RSASSA_PSS_SHA_384", "RSASSA_PSS_SHA_512", "RSASSA_PKCS1_V1_5_SHA_256", "RSASSA_PKCS1_V1_5_SHA_384", "RSASSA_PKCS1_V1_5_SHA_512", "ECDSA_SHA_256", "ECDSA_SHA_384", "ECDSA_SHA_512", "SM2DSA"
   # @example Example: To digitally sign a message with an asymmetric KMS key.
   #
   #   # This operation uses the private key in an asymmetric elliptic curve (ECC) KMS key to generate a digital signature for a
@@ -6054,6 +6049,11 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   signing_algorithm: "RSASSA_PSS_SHA_256", # required, accepts RSASSA_PSS_SHA_256, RSASSA_PSS_SHA_384, RSASSA_PSS_SHA_512, RSASSA_PKCS1_V1_5_SHA_256, RSASSA_PKCS1_V1_5_SHA_384, RSASSA_PKCS1_V1_5_SHA_512, ECDSA_SHA_256, ECDSA_SHA_384, ECDSA_SHA_512, SM2DSA
   #   dry_run: false,
   #   })
+  # @example Response structure
+  #
+  #   resp.key_id #=> String
+  #   resp.signature #=> String
+  #   resp.signing_algorithm #=> String, one of "RSASSA_PSS_SHA_256", "RSASSA_PSS_SHA_384", "RSASSA_PSS_SHA_512", "RSASSA_PKCS1_V1_5_SHA_256", "RSASSA_PKCS1_V1_5_SHA_384", "RSASSA_PKCS1_V1_5_SHA_512", "ECDSA_SHA_256", "ECDSA_SHA_384", "ECDSA_SHA_512", "SM2DSA"
   # @option params
   # @option params
   # @option params
@@ -6438,6 +6438,47 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   # [2]: https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html
   # [3]: https://docs.aws.amazon.com/kms/latest/developerguide/programming-eventual-consistency.html
   #
+  # @example Example: To edit the friendly name of a custom key store
+  #
+  #   # This example changes the friendly name of the AWS KMS custom key store to the name that you specify. This operation does
+  #   # not return any data. To verify that the operation worked, use the DescribeCustomKeyStores operation.
+  #
+  #   resp = client.update_custom_key_store({
+  #   custom_key_store_id: "cks-1234567890abcdef0", # The ID of the custom key store that you are updating.
+  #   new_custom_key_store_name: "DevelopmentKeys", # A new friendly name for the custom key store.
+  #   })
+  #
+  #   resp.to_h outputs the following:
+  #   {
+  #   }
+  # @example Example: To edit the password of an AWS CloudHSM key store
+  #
+  #   # This example tells AWS KMS the password for the kmsuser crypto user in the AWS CloudHSM cluster that is associated with
+  #   # the AWS KMS custom key store. (It does not change the password in the CloudHSM cluster.) This operation does not return
+  #   # any data.
+  #
+  #   resp = client.update_custom_key_store({
+  #   custom_key_store_id: "cks-1234567890abcdef0", # The ID of the custom key store that you are updating.
+  #   key_store_password: "ExamplePassword", # The password for the kmsuser crypto user in the CloudHSM cluster.
+  #   })
+  #
+  #   resp.to_h outputs the following:
+  #   {
+  #   }
+  # @example Example: To associate the custom key store with a different, but related, AWS CloudHSM cluster.
+  #
+  #   # This example changes the AWS CloudHSM cluster that is associated with an AWS CloudHSM key store to a related cluster,
+  #   # such as a different backup of the same cluster. This operation does not return any data. To verify that the operation
+  #   # worked, use the DescribeCustomKeyStores operation.
+  #
+  #   resp = client.update_custom_key_store({
+  #   cloud_hsm_cluster_id: "cluster-234abcdefABC", # The ID of the AWS CloudHSM cluster that you want to associate with the custom key store. This cluster must be related to the original CloudHSM cluster for this key store.
+  #   custom_key_store_id: "cks-1234567890abcdef0", # The ID of the custom key store that you are updating.
+  #   })
+  #
+  #   resp.to_h outputs the following:
+  #   {
+  #   }
   # @example Example: To update the proxy authentication credential of an external key store
   #
   #   # To update the proxy authentication credential for your external key store, specify both the
@@ -6451,19 +6492,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   access_key_id: "ABCDE12345670EXAMPLE",
   #   raw_secret_access_key: "DXjSUawnel2fr6SKC7G25CNxTyWKE5PF9XX6H/u9pSo=",
   #   }, # Specifies the values in the proxy authentication credential
-  #   })
-  #
-  #   resp.to_h outputs the following:
-  #   {
-  #   }
-  # @example Example: To edit the friendly name of a custom key store
-  #
-  #   # This example changes the friendly name of the AWS KMS custom key store to the name that you specify. This operation does
-  #   # not return any data. To verify that the operation worked, use the DescribeCustomKeyStores operation.
-  #
-  #   resp = client.update_custom_key_store({
-  #   custom_key_store_id: "cks-1234567890abcdef0", # The ID of the custom key store that you are updating.
-  #   new_custom_key_store_name: "DevelopmentKeys", # A new friendly name for the custom key store.
   #   })
   #
   #   resp.to_h outputs the following:
@@ -6514,34 +6542,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   },
   #   xks_proxy_connectivity: "PUBLIC_ENDPOINT", # accepts PUBLIC_ENDPOINT, VPC_ENDPOINT_SERVICE
   #   })
-  # @example Example: To edit the password of an AWS CloudHSM key store
-  #
-  #   # This example tells AWS KMS the password for the kmsuser crypto user in the AWS CloudHSM cluster that is associated with
-  #   # the AWS KMS custom key store. (It does not change the password in the CloudHSM cluster.) This operation does not return
-  #   # any data.
-  #
-  #   resp = client.update_custom_key_store({
-  #   custom_key_store_id: "cks-1234567890abcdef0", # The ID of the custom key store that you are updating.
-  #   key_store_password: "ExamplePassword", # The password for the kmsuser crypto user in the CloudHSM cluster.
-  #   })
-  #
-  #   resp.to_h outputs the following:
-  #   {
-  #   }
-  # @example Example: To associate the custom key store with a different, but related, AWS CloudHSM cluster.
-  #
-  #   # This example changes the AWS CloudHSM cluster that is associated with an AWS CloudHSM key store to a related cluster,
-  #   # such as a different backup of the same cluster. This operation does not return any data. To verify that the operation
-  #   # worked, use the DescribeCustomKeyStores operation.
-  #
-  #   resp = client.update_custom_key_store({
-  #   cloud_hsm_cluster_id: "cluster-234abcdefABC", # The ID of the AWS CloudHSM cluster that you want to associate with the custom key store. This cluster must be related to the original CloudHSM cluster for this key store.
-  #   custom_key_store_id: "cks-1234567890abcdef0", # The ID of the custom key store that you are updating.
-  #   })
-  #
-  #   resp.to_h outputs the following:
-  #   {
-  #   }
   # @option params
   # @option params
   # @option params
@@ -6919,11 +6919,6 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   mac_algorithm: "HMAC_SHA_384", # The HMAC algorithm used in the operation.
   #   mac_valid: true, # A value of 'true' indicates that verification succeeded. If verification fails, the call to VerifyMac fails.
   #   }
-  # @example Response structure
-  #
-  #   resp.key_id #=> String
-  #   resp.mac_valid #=> Boolean
-  #   resp.mac_algorithm #=> String, one of "HMAC_SHA_224", "HMAC_SHA_256", "HMAC_SHA_384", "HMAC_SHA_512"
   # @example Request syntax with placeholder values
   #
   #   resp = client.verify_mac({
@@ -6934,6 +6929,11 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #   grant_tokens: ["GrantTokenType"],
   #   dry_run: false,
   #   })
+  # @example Response structure
+  #
+  #   resp.key_id #=> String
+  #   resp.mac_valid #=> Boolean
+  #   resp.mac_algorithm #=> String, one of "HMAC_SHA_224", "HMAC_SHA_256", "HMAC_SHA_384", "HMAC_SHA_512"
   # @option params
   # @option params
   # @option params

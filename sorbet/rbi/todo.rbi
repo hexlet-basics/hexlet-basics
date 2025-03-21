@@ -4,26 +4,15 @@
 
 # typed: false
 
-module ::AggregateRoot; end
-module ::Arkency::CommandBus; end
-module ::FactoryBot; end
-module ::MetaTags; end
-module ::RailsEventStore::Browser; end
-module ::RailsEventStore::Client; end
-module ::RailsEventStore::Event; end
-module ::RailsEventStore::LinkByCausationId; end
-module ::RailsEventStore::LinkByCorrelationId; end
-module ::RailsEventStore::LinkByEventType; end
-module ::Ransack::Helpers::FormHelper; end
-module ::SimpleCov; end
-module ActiveSupport::TestCase::FactoryBot::Syntax::Methods; end
 module BreadcrumbListSchema::Jbuilder; end
+module CountryInfo::ISO3166::Country; end
 module CourseSchema::Jbuilder; end
 module FaqSchema::Jbuilder; end
-module FlashConcern::Term::ANSIColor; end
 module ItemListSchema::Jbuilder; end
+module Parser::Builders::Default; end
+module Parser::Diagnostic; end
+module Parser::Source::Range; end
 module ProviderSchema::Jbuilder; end
 module ReviewSchema::Jbuilder; end
 module Web::AuthControllerTest::OmniAuth; end
 module Web::AuthControllerTest::OmniAuth::AuthHash::InfoHash; end
-module Web::UsersControllerTest::FactoryBot; end

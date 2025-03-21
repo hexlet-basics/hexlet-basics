@@ -491,19 +491,19 @@ RUBY19 = T.let(T.unsafe(nil), TrueClass)
 #
 # source://yard//lib/yard/server/rack_adapter.rb#93
 class Rack::Request
-  # source://rack/3.1.8/lib/rack/request.rb#62
+  # source://rack/3.1.12/lib/rack/request.rb#62
   def initialize(env); end
 
-  # source://rack/3.1.8/lib/rack/request.rb#76
+  # source://rack/3.1.12/lib/rack/request.rb#76
   def delete_param(k); end
 
-  # source://rack/3.1.8/lib/rack/request.rb#67
+  # source://rack/3.1.12/lib/rack/request.rb#67
   def params; end
 
-  # source://rack/3.1.8/lib/rack/request.rb#67
+  # source://rack/3.1.12/lib/rack/request.rb#67
   def query; end
 
-  # source://rack/3.1.8/lib/rack/request.rb#71
+  # source://rack/3.1.12/lib/rack/request.rb#71
   def update_param(k, v); end
 
   # Returns the value of attribute version_supplied.
@@ -524,22 +524,22 @@ class Rack::Request
   def xhr?; end
 
   class << self
-    # source://rack/3.1.8/lib/rack/request.rb#31
+    # source://rack/3.1.12/lib/rack/request.rb#31
     def forwarded_priority; end
 
-    # source://rack/3.1.8/lib/rack/request.rb#31
+    # source://rack/3.1.12/lib/rack/request.rb#31
     def forwarded_priority=(_arg0); end
 
-    # source://rack/3.1.8/lib/rack/request.rb#18
+    # source://rack/3.1.12/lib/rack/request.rb#18
     def ip_filter; end
 
-    # source://rack/3.1.8/lib/rack/request.rb#18
+    # source://rack/3.1.12/lib/rack/request.rb#18
     def ip_filter=(_arg0); end
 
-    # source://rack/3.1.8/lib/rack/request.rb#40
+    # source://rack/3.1.12/lib/rack/request.rb#40
     def x_forwarded_proto_priority; end
 
-    # source://rack/3.1.8/lib/rack/request.rb#40
+    # source://rack/3.1.12/lib/rack/request.rb#40
     def x_forwarded_proto_priority=(_arg0); end
   end
 end
@@ -646,6 +646,28 @@ class SymbolHash < ::Hash
     # source://yard//lib/yard/core_ext/symbol_hash.rb#28
     def [](*hsh); end
   end
+end
+
+# @private
+#
+# source://yard//lib/yard/server/webrick_adapter.rb#42
+class WEBrick::HTTPRequest
+  # Returns the value of attribute version_supplied.
+  #
+  # source://yard//lib/yard/server/webrick_adapter.rb#43
+  def version_supplied; end
+
+  # Sets the attribute version_supplied
+  #
+  # @param value the value to set the attribute version_supplied to.
+  #
+  # source://yard//lib/yard/server/webrick_adapter.rb#43
+  def version_supplied=(_arg0); end
+
+  # @return [Boolean]
+  #
+  # source://yard//lib/yard/server/webrick_adapter.rb#44
+  def xhr?; end
 end
 
 # Gem::YARDoc provides methods to generate YARDoc and yri data for installed gems
@@ -7469,13 +7491,13 @@ class YARD::I18n::Text
   #   block separated by one or more empty lines. Empty line is a
   #   line that contains only zero or more whitespaces. It may
   #   called many times.
-  # @yieldparam text [String] the text of extracted paragraph.
-  # @yieldparam start_line_no [Integer] the start line number of
-  #   extracted paragraph.
   # @yieldparam name [String] the name of extracted attribute.
   # @yieldparam value [String] the value of extracted attribute.
   # @yieldparam line_no [Integer] the defined line number of extracted
   #   attribute.
+  # @yieldparam text [String] the text of extracted paragraph.
+  # @yieldparam start_line_no [Integer] the start line number of
+  #   extracted paragraph.
   #
   # source://yard//lib/yard/i18n/text.rb#35
   def extract_messages; end
@@ -11343,10 +11365,6 @@ class YARD::Parser::SourceParser
     # To register a callback that is called before the entire list of files
     # is processed, see {before_parse_list}.
     #
-    # @example Cancel parsing of any test_*.rb files
-    #   SourceParser.before_parse_file do |parser|
-    #   return false if parser.file =~ /^test_.+\.rb$/
-    #   end
     # @example Installing a simple callback
     #   SourceParser.before_parse_file do |parser|
     #   puts "I'm parsing #{parser.file}"
@@ -11356,9 +11374,13 @@ class YARD::Parser::SourceParser
     #   "I'm parsing lib/foo.rb"
     #   "I'm parsing lib/foo_bar.rb"
     #   "I'm parsing lib/last_file.rb"
+    # @example Cancel parsing of any test_*.rb files
+    #   SourceParser.before_parse_file do |parser|
+    #   return false if parser.file =~ /^test_.+\.rb$/
+    #   end
     # @return [Proc] the yielded block
-    # @see before_parse_list
     # @see after_parse_file
+    # @see before_parse_list
     # @since 0.7.0
     # @yield [parser] the yielded block is called once before each
     #   file that is parsed. This might happen many times for a single
@@ -11382,6 +11404,12 @@ class YARD::Parser::SourceParser
     # via {parse}. The block passed to this method will be called on
     # subsequent parse calls.
     #
+    # @example Installing a simple callback
+    #   SourceParser.before_parse_list do |files, globals|
+    #   puts "Starting to parse..."
+    #   end
+    #   YARD.parse('lib/**/*.rb')
+    #   # prints "Starting to parse..."
     # @example Setting global state
     #   SourceParser.before_parse_list do |files, globals|
     #   globals.method_count = 0
@@ -11395,12 +11423,6 @@ class YARD::Parser::SourceParser
     #   end
     #   YARD.parse
     #   # Prints: "Found 37 methods"
-    # @example Installing a simple callback
-    #   SourceParser.before_parse_list do |files, globals|
-    #   puts "Starting to parse..."
-    #   end
-    #   YARD.parse('lib/**/*.rb')
-    #   # prints "Starting to parse..."
     # @example Using a global callback to cancel parsing
     #   SourceParser.before_parse_list do |files, globals|
     #   return false if files.include?('foo.rb')
@@ -11409,8 +11431,8 @@ class YARD::Parser::SourceParser
     #   YARD.parse(['foo.rb', 'bar.rb']) # callback cancels this method
     #   YARD.parse('bar.rb') # parses normally
     # @return [Proc] the yielded block
-    # @see before_parse_file
     # @see after_parse_list
+    # @see before_parse_file
     # @since 0.7.0
     # @yield [files, globals] the yielded block is called once before
     #   parsing all files
@@ -11937,22 +11959,22 @@ module YARD::Registry
     # Attempts to find an object by name starting at +namespace+, performing
     # a lookup similar to Ruby's method of resolving a constant in a namespace.
     #
+    # @example Looks for instance method #reverse starting from A::B::C
+    #   Registry.resolve(P("A::B::C"), "#reverse")
     # @example Looks for a constant in the root namespace
     #   Registry.resolve(nil, 'CONSTANT')
     # @example Looks for a class method respecting the inheritance tree
     #   Registry.resolve(myclass, 'mymethod', true)
-    # @example Looks for instance method #reverse starting from A::B::C
-    #   Registry.resolve(P("A::B::C"), "#reverse")
     # @example Looks for a constant but returns a proxy if not found
     #   Registry.resolve(P('A::B::C'), 'D', false, true) # => #<yardoc proxy A::B::C::D>
     # @example Looks for a complex path from a namespace
     #   Registry.resolve(P('A::B'), 'B::D') # => #<yardoc class A::B::D>
-    # @param inheritance [Boolean] Follows inheritance chain (mixins, superclass)
-    #   when performing name resolution if set to +true+.
     # @param namespace [CodeObjects::NamespaceObject, nil] the starting namespace
     #   (module or class). If +nil+ or +:root+, starts from the {root} object.
     # @param name [String, Symbol] the name (or complex path) to look for from
     #   +namespace+.
+    # @param inheritance [Boolean] Follows inheritance chain (mixins, superclass)
+    #   when performing name resolution if set to +true+.
     # @param proxy_fallback [Boolean] If +true+, returns a proxy representing
     #   the unresolved path (namespace + name) if no object is found.
     # @param type [Symbol, nil] the {CodeObjects::Base#type} that the resolved
@@ -12110,12 +12132,12 @@ class YARD::RegistryResolver
   # object can be returned if the lookup fails for future resolution. The
   # proxy will be type hinted with the +type+ used in the original lookup.
   #
-  # @example A lookup on a method through the inheritance tree
-  #   resolver.lookup_by_math("A::B#foo", inheritance: true)
   # @example A lookup from root
   #   resolver.lookup_by_path("A::B::C")
   # @example A lookup from the A::B namespace
   #   resolver.lookup_by_path("C", namespace: P("A::B"))
+  # @example A lookup on a method through the inheritance tree
+  #   resolver.lookup_by_math("A::B#foo", inheritance: true)
   # @option opts
   # @option opts
   # @option opts
@@ -12418,104 +12440,6 @@ class YARD::RegistryStore
   #
   # source://yard//lib/yard/registry_store.rb#324
   def write_proxy_types; end
-end
-
-# source://yard//lib/yard/rubygems/hook.rb#13
-class YARD::RubygemsHook
-  include ::Gem::Text
-  include ::Gem::DefaultUserInteraction
-  include ::Gem::UserInteraction
-  extend ::Gem::Text
-  extend ::Gem::DefaultUserInteraction
-  extend ::Gem::UserInteraction
-
-  # @return [RubygemsHook] a new instance of RubygemsHook
-  #
-  # source://yard//lib/yard/rubygems/hook.rb#93
-  def initialize(spec, generate_yard = T.unsafe(nil), generate_yri = T.unsafe(nil)); end
-
-  # Force installation of documentation?
-  #
-  # source://yard//lib/yard/rubygems/hook.rb#22
-  def force; end
-
-  # Force installation of documentation?
-  #
-  # source://yard//lib/yard/rubygems/hook.rb#22
-  def force=(_arg0); end
-
-  # Generates YARD and yri data
-  #
-  # source://yard//lib/yard/rubygems/hook.rb#148
-  def generate; end
-
-  # Generate yard?
-  #
-  # source://yard//lib/yard/rubygems/hook.rb#27
-  def generate_yard; end
-
-  # Generate yard?
-  #
-  # source://yard//lib/yard/rubygems/hook.rb#27
-  def generate_yard=(_arg0); end
-
-  # Generate yri data?
-  #
-  # source://yard//lib/yard/rubygems/hook.rb#32
-  def generate_yri; end
-
-  # Generate yri data?
-  #
-  # source://yard//lib/yard/rubygems/hook.rb#32
-  def generate_yri=(_arg0); end
-
-  # source://yard//lib/yard/rubygems/hook.rb#131
-  def install_yard; end
-
-  # source://yard//lib/yard/rubygems/hook.rb#138
-  def install_yri; end
-
-  # Removes YARD and yri data
-  #
-  # source://yard//lib/yard/rubygems/hook.rb#189
-  def remove; end
-
-  # source://yard//lib/yard/rubygems/hook.rb#105
-  def run_yardoc(*args); end
-
-  # Prepares the spec for documentation generation
-  #
-  # source://yard//lib/yard/rubygems/hook.rb#162
-  def setup; end
-
-  # source://yard//lib/yard/rubygems/hook.rb#172
-  def uninstall_yard; end
-
-  # source://yard//lib/yard/rubygems/hook.rb#179
-  def uninstall_yri; end
-
-  class << self
-    # Post installs hook that generates documentation for each specification in
-    # +specs+
-    #
-    # source://yard//lib/yard/rubygems/hook.rb#45
-    def generation_hook(installer, specs); end
-
-    # Loads the YARD generator
-    #
-    # source://yard//lib/yard/rubygems/hook.rb#85
-    def load_yard; end
-
-    # Pre uninstalls hook that removes documentation
-    #
-    # source://yard//lib/yard/rubygems/hook.rb#78
-    def removal_hook(uninstaller); end
-
-    # Loaded version of YARD. Set by ::load_yard
-    #
-    # source://yard//lib/yard/rubygems/hook.rb#38
-    def yard_version; end
-  end
 end
 
 # Namespace for components that serialize to various endpoints
@@ -14934,6 +14858,50 @@ module YARD::Server::StaticCaching
   #
   # source://yard//lib/yard/server/static_caching.rb#34
   def check_static_cache; end
+end
+
+# The main adapter to initialize a WEBrick server.
+#
+# @since 0.6.0
+#
+# source://yard//lib/yard/server/webrick_adapter.rb#7
+class YARD::Server::WebrickAdapter < ::YARD::Server::Adapter
+  # Initializes a WEBrick server. If {Adapter#server_options} contains a
+  # +:daemonize+ key set to true, the server will be daemonized.
+  #
+  # @since 0.6.0
+  #
+  # source://yard//lib/yard/server/webrick_adapter.rb#10
+  def start; end
+end
+
+# The main WEBrick servlet implementation, accepting only GET requests.
+#
+# @since 0.6.0
+#
+# source://yard//lib/yard/server/webrick_adapter.rb#20
+class YARD::Server::WebrickServlet < ::WEBrick::HTTPServlet::AbstractServlet
+  # @return [WebrickServlet] a new instance of WebrickServlet
+  # @since 0.6.0
+  #
+  # source://yard//lib/yard/server/webrick_adapter.rb#23
+  def initialize(server, adapter); end
+
+  # @since 0.6.0
+  #
+  # source://yard//lib/yard/server/webrick_adapter.rb#21
+  def adapter; end
+
+  # @since 0.6.0
+  #
+  # source://yard//lib/yard/server/webrick_adapter.rb#21
+  def adapter=(_arg0); end
+
+  # @private
+  # @since 0.6.0
+  #
+  # source://yard//lib/yard/server/webrick_adapter.rb#29
+  def do_GET(request, response); end
 end
 
 # Stubs marshal dumps and acts a delegate class for an object by path

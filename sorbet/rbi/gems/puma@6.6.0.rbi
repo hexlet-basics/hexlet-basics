@@ -2549,7 +2549,7 @@ end
 Puma::IS_JRUBY = T.let(T.unsafe(nil), FalseClass)
 
 # source://puma//lib/puma/detect.rb#19
-Puma::IS_LINUX = T.let(T.unsafe(nil), FalseClass)
+Puma::IS_LINUX = T.let(T.unsafe(nil), TrueClass)
 
 # @version 5.2.0
 #
@@ -2557,7 +2557,7 @@ Puma::IS_LINUX = T.let(T.unsafe(nil), FalseClass)
 Puma::IS_MRI = T.let(T.unsafe(nil), TrueClass)
 
 # source://puma//lib/puma/detect.rb#15
-Puma::IS_OSX = T.let(T.unsafe(nil), TrueClass)
+Puma::IS_OSX = T.let(T.unsafe(nil), FalseClass)
 
 # source://puma//lib/puma/detect.rb#17
 Puma::IS_WINDOWS = T.let(T.unsafe(nil), FalseClass)
@@ -3943,7 +3943,7 @@ class Puma::Server
 
   # @return [Boolean]
   #
-  # source://puma//lib/puma/server.rb#208
+  # source://puma//lib/puma/server.rb#191
   def closed_socket?(socket); end
 
   # source://puma//lib/puma/server.rb#684
@@ -3953,7 +3953,7 @@ class Puma::Server
   # 3 == TCP_CORK
   # 1/0 == turn on/off
   #
-  # source://puma//lib/puma/server.rb#181
+  # source://puma//lib/puma/server.rb#163
   def cork_socket(socket); end
 
   # @todo the following may be deprecated in the future
@@ -4123,7 +4123,7 @@ class Puma::Server
   # source://puma//lib/puma/server.rb#39
   def thread; end
 
-  # source://puma//lib/puma/server.rb#184
+  # source://puma//lib/puma/server.rb#172
   def uncork_socket(socket); end
 
   # Triggers a client timeout if the thread-pool shuts down
@@ -4166,6 +4166,9 @@ end
 #
 # source://puma//lib/puma/server.rb#653
 Puma::Server::STAT_METHODS = T.let(T.unsafe(nil), Array)
+
+# source://puma//lib/puma/server.rb#189
+Puma::Server::UNPACK_TCP_STATE_FROM_TCP_INFO = T.let(T.unsafe(nil), String)
 
 # This class is instantiated by the `Puma::Launcher` and used
 # to boot and serve a Ruby application when no puma "workers" are needed

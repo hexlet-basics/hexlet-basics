@@ -355,6 +355,9 @@ class WEBrick::Daemon
   end
 end
 
+# source://webrick//lib/webrick/httpproxy.rb#26
+WEBrick::FakeProxyURI = T.let(T.unsafe(nil), Object)
+
 # --
 # Updates WEBrick::GenericServer with SSL functionality
 #
@@ -1018,6 +1021,124 @@ module WEBrick::HTTPAuth::UserDB
   # source://webrick//lib/webrick/httpauth/userdb.rb#40
   def set_passwd(realm, user, pass); end
 end
+
+# An HTTP Proxy server which proxies GET, HEAD and POST requests.
+#
+# To create a simple proxy server:
+#
+#   require 'webrick'
+#   require 'webrick/httpproxy'
+#
+#   proxy = WEBrick::HTTPProxyServer.new Port: 8000
+#
+#   trap 'INT'  do proxy.shutdown end
+#   trap 'TERM' do proxy.shutdown end
+#
+#   proxy.start
+#
+# See ::new for proxy-specific configuration items.
+#
+# == Modifying proxied responses
+#
+# To modify content the proxy server returns use the +:ProxyContentHandler+
+# option:
+#
+#   handler = proc do |req, res|
+#     if res['content-type'] == 'text/plain' then
+#       res.body << "\nThis content was proxied!\n"
+#     end
+#   end
+#
+#   proxy =
+#     WEBrick::HTTPProxyServer.new Port: 8000, ProxyContentHandler: handler
+#
+# source://webrick//lib/webrick/httpproxy.rb#69
+class WEBrick::HTTPProxyServer < ::WEBrick::HTTPServer
+  # Proxy server configurations.  The proxy server handles the following
+  # configuration items in addition to those supported by HTTPServer:
+  #
+  # :ProxyAuthProc:: Called with a request and response to authorize a
+  #                  request
+  # :ProxyVia:: Appended to the via header
+  # :ProxyURI:: The proxy server's URI
+  # :ProxyContentHandler:: Called with a request and response and allows
+  #                        modification of the response
+  # :ProxyTimeout:: Sets the proxy timeouts to 30 seconds for open and 60
+  #                 seconds for read operations
+  #
+  # @return [HTTPProxyServer] a new instance of HTTPProxyServer
+  #
+  # source://webrick//lib/webrick/httpproxy.rb#84
+  def initialize(config = T.unsafe(nil), default = T.unsafe(nil)); end
+
+  # @raise [HTTPStatus::InternalServerError]
+  #
+  # source://webrick//lib/webrick/httpproxy.rb#133
+  def do_CONNECT(req, res); end
+
+  # source://webrick//lib/webrick/httpproxy.rb#213
+  def do_GET(req, res); end
+
+  # source://webrick//lib/webrick/httpproxy.rb#217
+  def do_HEAD(req, res); end
+
+  # source://webrick//lib/webrick/httpproxy.rb#225
+  def do_OPTIONS(req, res); end
+
+  # source://webrick//lib/webrick/httpproxy.rb#221
+  def do_POST(req, res); end
+
+  # source://webrick//lib/webrick/httpproxy.rb#101
+  def proxy_auth(req, res); end
+
+  # source://webrick//lib/webrick/httpproxy.rb#113
+  def proxy_service(req, res); end
+
+  # source://webrick//lib/webrick/httpproxy.rb#108
+  def proxy_uri(req, res); end
+
+  # :stopdoc:
+  #
+  # source://webrick//lib/webrick/httpproxy.rb#91
+  def service(req, res); end
+
+  private
+
+  # source://webrick//lib/webrick/httpproxy.rb#237
+  def choose_header(src, dst); end
+
+  # source://webrick//lib/webrick/httpproxy.rb#298
+  def create_net_http(uri, upstream); end
+
+  # source://webrick//lib/webrick/httpproxy.rb#302
+  def perform_proxy_request(req, res, req_class, body_stream = T.unsafe(nil)); end
+
+  # Net::HTTP is stupid about the multiple header fields.
+  # Here is workaround:
+  #
+  # source://webrick//lib/webrick/httpproxy.rb#253
+  def set_cookie(src, dst); end
+
+  # source://webrick//lib/webrick/httpproxy.rb#269
+  def set_via(h); end
+
+  # source://webrick//lib/webrick/httpproxy.rb#279
+  def setup_proxy_header(req, res); end
+
+  # source://webrick//lib/webrick/httpproxy.rb#287
+  def setup_upstream_proxy_authentication(req, res, header); end
+
+  # source://webrick//lib/webrick/httpproxy.rb#235
+  def split_field(f); end
+end
+
+# Some header fields should not be transferred.
+#
+# source://webrick//lib/webrick/httpproxy.rb#232
+WEBrick::HTTPProxyServer::HopByHop = T.let(T.unsafe(nil), Array)
+
+# source://webrick//lib/webrick/httpproxy.rb#234
+WEBrick::HTTPProxyServer::ShouldNotTransfer = T.let(T.unsafe(nil), Array)
 
 # --
 # Adds SSL functionality to WEBrick::HTTPRequest
@@ -2669,6 +2790,9 @@ class WEBrick::Log < ::WEBrick::BasicLog
   # source://webrick//lib/webrick/log.rb#137
   def time_format=(_arg0); end
 end
+
+# source://webrick//lib/webrick/httpproxy.rb#18
+WEBrick::NullReader = T.let(T.unsafe(nil), Object)
 
 # Base server class
 #

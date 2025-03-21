@@ -5,5 +5,37 @@
 # Please instead update this file by running `bin/tapioca gem arkency-command_bus`.
 
 
-# THIS IS AN EMPTY RBI FILE.
-# see https://github.com/Shopify/tapioca#manually-requiring-parts-of-a-gem
+# source://arkency-command_bus//lib/arkency/command_bus/version.rb#1
+module Arkency; end
+
+# source://arkency-command_bus//lib/arkency/command_bus/version.rb#2
+class Arkency::CommandBus
+  # @return [CommandBus] a new instance of CommandBus
+  #
+  # source://arkency-command_bus//lib/arkency/command_bus.rb#9
+  def initialize; end
+
+  # source://arkency-command_bus//lib/arkency/command_bus.rb#19
+  def call(command); end
+
+  # @raise [MultipleHandlers]
+  #
+  # source://arkency-command_bus//lib/arkency/command_bus.rb#14
+  def register(klass, handler); end
+
+  private
+
+  # Returns the value of attribute handlers.
+  #
+  # source://arkency-command_bus//lib/arkency/command_bus.rb#26
+  def handlers; end
+end
+
+# source://arkency-command_bus//lib/arkency/command_bus.rb#7
+class Arkency::CommandBus::MultipleHandlers < ::StandardError; end
+
+# source://arkency-command_bus//lib/arkency/command_bus.rb#6
+class Arkency::CommandBus::UnregisteredHandler < ::StandardError; end
+
+# source://arkency-command_bus//lib/arkency/command_bus/version.rb#3
+Arkency::CommandBus::VERSION = T.let(T.unsafe(nil), String)

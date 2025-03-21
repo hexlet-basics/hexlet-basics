@@ -5,11 +5,58 @@
 # Please instead update this file by running `bin/tapioca gem minitest`.
 
 
+# Kernel extensions for minitest
+#
+# source://minitest//lib/minitest/spec.rb#46
+module Kernel
+  private
+
+  # Describe a series of expectations for a given target +desc+.
+  #
+  # Defines a test class subclassing from either Minitest::Spec or
+  # from the surrounding describe's class. The surrounding class may
+  # subclass Minitest::Spec manually in order to easily share code:
+  #
+  #     class MySpec < Minitest::Spec
+  #       # ... shared code ...
+  #     end
+  #
+  #     class TestStuff < MySpec
+  #       it "does stuff" do
+  #         # shared code available here
+  #       end
+  #       describe "inner stuff" do
+  #         it "still does stuff" do
+  #           # ...and here
+  #         end
+  #       end
+  #     end
+  #
+  # For more information on getting started with writing specs, see:
+  #
+  # http://www.rubyinside.com/a-minitestspec-tutorial-elegant-spec-style-testing-that-comes-with-ruby-5354.html
+  #
+  # For some suggestions on how to improve your specs, try:
+  #
+  # https://betterspecs.org
+  #
+  # but do note that several items there are debatable or specific to
+  # rspec.
+  #
+  # For more information about expectations, see Minitest::Expectations.
+  #
+  # source://minitest//lib/minitest/spec.rb#82
+  def describe(desc, *additional_desc, &block); end
+end
+
 # The top-level namespace for Minitest. Also the location of the main
 # runtime. See +Minitest.run+ for more information.
 #
 # source://minitest//lib/minitest/parallel.rb#1
 module Minitest
+  # source://railties/8.0.2/lib/minitest/rails_plugin.rb#139
+  def run_via; end
+
   class << self
     # Internal run method. Responsible for telling all Runnable
     # sub-classes to run.
@@ -78,6 +125,21 @@ module Minitest
     # source://minitest//lib/minitest.rb#20
     def parallel_executor=(_arg0); end
 
+    # source://minitest//lib/minitest/pride_plugin.rb#10
+    def plugin_pride_init(options); end
+
+    # source://minitest//lib/minitest/pride_plugin.rb#4
+    def plugin_pride_options(opts, _options); end
+
+    # source://railties/8.0.2/lib/minitest/rails_plugin.rb#111
+    def plugin_rails_init(options); end
+
+    # source://railties/8.0.2/lib/minitest/rails_plugin.rb#68
+    def plugin_rails_options(opts, options); end
+
+    # source://simplecov/0.22.0/lib/minitest/simplecov_plugin.rb#6
+    def plugin_simplecov_init(_options); end
+
     # source://minitest//lib/minitest.rb#143
     def process_args(args = T.unsafe(nil)); end
 
@@ -116,6 +178,9 @@ module Minitest
 
     # source://minitest//lib/minitest.rb#1207
     def run_one_method(klass, method_name); end
+
+    # source://railties/8.0.2/lib/minitest/rails_plugin.rb#139
+    def run_via; end
 
     # source://minitest//lib/minitest.rb#20
     def seed; end
@@ -267,6 +332,11 @@ module Minitest::Assertions
   #
   # source://minitest//lib/minitest/assertions.rb#287
   def assert_match(matcher, obj, msg = T.unsafe(nil)); end
+
+  # Assert that the mock verifies correctly and fail if not.
+  #
+  # source://minitest//lib/minitest/mock.rb#253
+  def assert_mock(mock, msg = T.unsafe(nil)); end
 
   # Fails unless +obj+ is nil
   #
@@ -719,6 +789,254 @@ module Minitest::Compress
   def compress(orig); end
 end
 
+# source://minitest//lib/minitest/spec.rb#41
+class Minitest::Expectation < ::Struct
+  def ctx; end
+  def ctx=(_); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def must_be(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def must_be_close_to(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def must_be_empty(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def must_be_instance_of(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def must_be_kind_of(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def must_be_nil(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def must_be_same_as(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def must_be_silent(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def must_be_within_delta(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def must_be_within_epsilon(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def must_equal(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def must_include(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def must_match(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def must_output(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def must_pattern_match(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def must_raise(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def must_respond_to(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def must_throw(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def must_verify(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def path_must_exist(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def path_wont_exist(*args, **_arg1); end
+
+  def target; end
+  def target=(_); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def wont_be(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def wont_be_close_to(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def wont_be_empty(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def wont_be_instance_of(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def wont_be_kind_of(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def wont_be_nil(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def wont_be_same_as(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def wont_be_within_delta(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def wont_be_within_epsilon(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def wont_equal(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def wont_include(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def wont_match(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def wont_pattern_match(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#25
+  def wont_respond_to(*args, **_arg1); end
+
+  class << self
+    def [](*_arg0); end
+    def inspect; end
+    def keyword_init?; end
+    def members; end
+    def new(*_arg0); end
+  end
+end
+
+# It's where you hide your "assertions".
+#
+# Please note, because of the way that expectations are implemented,
+# all expectations (eg must_equal) are dependent upon a thread local
+# variable +:current_spec+. If your specs rely on mixing threads into
+# the specs themselves, you're better off using assertions or the new
+# _(value) wrapper. For example:
+#
+#     it "should still work in threads" do
+#       my_threaded_thingy do
+#         (1+1).must_equal 2                  # bad
+#         assert_equal 2, 1+1                 # good
+#         _(1 + 1).must_equal 2               # good
+#         value(1 + 1).must_equal 2           # good, also #expect
+#         _ { 1 + "1" }.must_raise TypeError  # good
+#       end
+#     end
+#
+# source://minitest//lib/minitest/expectations.rb#20
+module Minitest::Expectations
+  # source://minitest//lib/minitest/spec.rb#15
+  def must_be(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def must_be_close_to(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def must_be_empty(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def must_be_instance_of(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def must_be_kind_of(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def must_be_nil(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def must_be_same_as(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def must_be_silent(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def must_be_within_delta(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def must_be_within_epsilon(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def must_equal(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def must_include(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def must_match(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def must_output(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def must_pattern_match(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def must_raise(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def must_respond_to(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def must_throw(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def must_verify(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def path_must_exist(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def path_wont_exist(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def wont_be(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def wont_be_close_to(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def wont_be_empty(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def wont_be_instance_of(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def wont_be_kind_of(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def wont_be_nil(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def wont_be_same_as(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def wont_be_within_delta(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def wont_be_within_epsilon(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def wont_equal(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def wont_include(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def wont_match(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def wont_pattern_match(*args, **_arg1); end
+
+  # source://minitest//lib/minitest/spec.rb#15
+  def wont_respond_to(*args, **_arg1); end
+end
+
 # Provides a simple set of guards that you can use in your tests
 # to skip execution if it is not applicable. These methods are
 # mixed into Test as both instance and class methods so you
@@ -778,6 +1096,106 @@ module Minitest::Guard
   def windows?(platform = T.unsafe(nil)); end
 end
 
+# A simple and clean mock object framework.
+#
+# All mock objects are an instance of Mock
+#
+# source://minitest//lib/minitest/mock.rb#10
+class Minitest::Mock
+  # @return [Mock] a new instance of Mock
+  #
+  # source://minitest//lib/minitest/mock.rb#53
+  def initialize(delegator = T.unsafe(nil)); end
+
+  # source://minitest//lib/minitest/mock.rb#34
+  def ===(*args, **kwargs, &b); end
+
+  # source://minitest//lib/minitest/mock.rb#125
+  def __call(name, data); end
+
+  def __respond_to?(*_arg0); end
+
+  # source://minitest//lib/minitest/mock.rb#34
+  def class(*args, **kwargs, &b); end
+
+  # Expect that method +name+ is called, optionally with +args+ (and
+  # +kwargs+ or a +blk+), and returns +retval+.
+  #
+  #   @mock.expect(:meaning_of_life, 42)
+  #   @mock.meaning_of_life # => 42
+  #
+  #   @mock.expect(:do_something_with, true, [some_obj, true])
+  #   @mock.do_something_with(some_obj, true) # => true
+  #
+  #   @mock.expect(:do_something_else, true) do |a1, a2|
+  #     a1 == "buggs" && a2 == :bunny
+  #   end
+  #
+  # +args+ is compared to the expected args using case equality (ie, the
+  # '===' operator), allowing for less specific expectations.
+  #
+  #   @mock.expect(:uses_any_string, true, [String])
+  #   @mock.uses_any_string("foo") # => true
+  #   @mock.verify  # => true
+  #
+  #   @mock.expect(:uses_one_string, true, ["foo"])
+  #   @mock.uses_one_string("bar") # => raises MockExpectationError
+  #
+  # If a method will be called multiple times, specify a new expect for each one.
+  # They will be used in the order you define them.
+  #
+  #   @mock.expect(:ordinal_increment, 'first')
+  #   @mock.expect(:ordinal_increment, 'second')
+  #
+  #   @mock.ordinal_increment # => 'first'
+  #   @mock.ordinal_increment # => 'second'
+  #   @mock.ordinal_increment # => raises MockExpectationError "No more expects available for :ordinal_increment"
+  #
+  # source://minitest//lib/minitest/mock.rb#96
+  def expect(name, retval, args = T.unsafe(nil), **kwargs, &blk); end
+
+  # source://minitest//lib/minitest/mock.rb#34
+  def inspect(*args, **kwargs, &b); end
+
+  # source://minitest//lib/minitest/mock.rb#34
+  def instance_eval(*args, **kwargs, &b); end
+
+  # source://minitest//lib/minitest/mock.rb#34
+  def instance_variables(*args, **kwargs, &b); end
+
+  # source://minitest//lib/minitest/mock.rb#155
+  def method_missing(sym, *args, **kwargs, &block); end
+
+  # source://minitest//lib/minitest/mock.rb#34
+  def object_id(*args, **kwargs, &b); end
+
+  # source://minitest//lib/minitest/mock.rb#34
+  def public_send(*args, **kwargs, &b); end
+
+  # @return [Boolean]
+  #
+  # source://minitest//lib/minitest/mock.rb#241
+  def respond_to?(sym, include_private = T.unsafe(nil)); end
+
+  # source://minitest//lib/minitest/mock.rb#34
+  def send(*args, **kwargs, &b); end
+
+  # source://minitest//lib/minitest/mock.rb#34
+  def to_s(*args, **kwargs, &b); end
+
+  # Verify that all methods were called as expected. Raises
+  # +MockExpectationError+ if the mock object was not called as
+  # expected.
+  #
+  # source://minitest//lib/minitest/mock.rb#145
+  def verify; end
+
+  private
+
+  # source://minitest//lib/minitest/mock.rb#34
+  def respond_to_missing?(*args, **kwargs, &b); end
+end
+
 # source://minitest//lib/minitest/parallel.rb#2
 module Minitest::Parallel; end
 
@@ -829,6 +1247,81 @@ module Minitest::Parallel::Test::ClassMethods
   # source://minitest//lib/minitest/parallel.rb#64
   def test_order; end
 end
+
+# Show your testing pride!
+#
+# source://minitest//lib/minitest/pride_plugin.rb#24
+class Minitest::PrideIO
+  # @return [PrideIO] a new instance of PrideIO
+  #
+  # source://minitest//lib/minitest/pride_plugin.rb#48
+  def initialize(io); end
+
+  # The IO we're going to pipe through.
+  #
+  # source://minitest//lib/minitest/pride_plugin.rb#46
+  def io; end
+
+  # source://minitest//lib/minitest/pride_plugin.rb#92
+  def method_missing(msg, *args); end
+
+  # Color a string.
+  #
+  # source://minitest//lib/minitest/pride_plugin.rb#85
+  def pride(string); end
+
+  # Wrap print to colorize the output.
+  #
+  # source://minitest//lib/minitest/pride_plugin.rb#60
+  def print(o); end
+
+  # source://minitest//lib/minitest/pride_plugin.rb#71
+  def puts(*o); end
+
+  class << self
+    # Activate the pride plugin. Called from both -p option and minitest/pride
+    #
+    # source://minitest//lib/minitest/pride_plugin.rb#28
+    def pride!; end
+
+    # Are we showing our testing pride?
+    #
+    # @return [Boolean]
+    #
+    # source://minitest//lib/minitest/pride_plugin.rb#35
+    def pride?; end
+  end
+end
+
+# Start an escape sequence
+#
+# source://minitest//lib/minitest/pride_plugin.rb#40
+Minitest::PrideIO::ESC = T.let(T.unsafe(nil), String)
+
+# End the escape sequence
+#
+# source://minitest//lib/minitest/pride_plugin.rb#43
+Minitest::PrideIO::NND = T.let(T.unsafe(nil), String)
+
+# If you thought the PrideIO was colorful...
+#
+# (Inspired by lolcat, but with clean math)
+#
+# source://minitest//lib/minitest/pride_plugin.rb#102
+class Minitest::PrideLOL < ::Minitest::PrideIO
+  # @return [PrideLOL] a new instance of PrideLOL
+  #
+  # source://minitest//lib/minitest/pride_plugin.rb#105
+  def initialize(io); end
+
+  # Make the string even more colorful. Damnit.
+  #
+  # source://minitest//lib/minitest/pride_plugin.rb#129
+  def pride(string); end
+end
+
+# source://minitest//lib/minitest/pride_plugin.rb#103
+Minitest::PrideLOL::PI_3 = T.let(T.unsafe(nil), Float)
 
 # A very simple reporter that prints the "dots" during the run.
 #
@@ -1149,6 +1642,239 @@ class Minitest::Skip < ::Minitest::Assertion
   # source://minitest//lib/minitest.rb#1051
   def result_label; end
 end
+
+# Minitest::Spec -- The faster, better, less-magical spec framework!
+#
+# For a list of expectations, see Minitest::Expectations.
+#
+# source://minitest//lib/minitest/spec.rb#107
+class Minitest::Spec < ::Minitest::Test
+  include ::Minitest::Spec::DSL::InstanceMethods
+  extend ::Minitest::Spec::DSL
+
+  # @return [Spec] a new instance of Spec
+  #
+  # source://minitest//lib/minitest/spec.rb#113
+  def initialize(name); end
+
+  class << self
+    # source://minitest//lib/minitest/spec.rb#109
+    def current; end
+  end
+end
+
+# Oh look! A Minitest::Spec::DSL module! Eat your heart out DHH.
+#
+# source://minitest//lib/minitest/spec.rb#121
+module Minitest::Spec::DSL
+  # Define an 'after' action. Inherits the way normal methods should.
+  #
+  # NOTE: +type+ is ignored and is only there to make porting easier.
+  #
+  # Equivalent to Minitest::Test#teardown.
+  #
+  # source://minitest//lib/minitest/spec.rb#206
+  def after(_type = T.unsafe(nil), &block); end
+
+  # Define a 'before' action. Inherits the way normal methods should.
+  #
+  # NOTE: +type+ is ignored and is only there to make porting easier.
+  #
+  # Equivalent to Minitest::Test#setup.
+  #
+  # source://minitest//lib/minitest/spec.rb#192
+  def before(_type = T.unsafe(nil), &block); end
+
+  # source://minitest//lib/minitest/spec.rb#175
+  def children; end
+
+  # source://minitest//lib/minitest/spec.rb#271
+  def create(name, desc); end
+
+  # source://minitest//lib/minitest/spec.rb#292
+  def desc; end
+
+  # source://minitest//lib/minitest/spec.rb#171
+  def describe_stack; end
+
+  # Define an expectation with name +desc+. Name gets morphed to a
+  # proper test method name. For some freakish reason, people who
+  # write specs don't like class inheritance, so this goes way out of
+  # its way to make sure that expectations aren't inherited.
+  #
+  # This is also aliased to #specify and doesn't require a +desc+ arg.
+  #
+  # Hint: If you _do_ want inheritance, use minitest/test. You can mix
+  # and match between assertions and expectations as much as you want.
+  #
+  # source://minitest//lib/minitest/spec.rb#224
+  def it(desc = T.unsafe(nil), &block); end
+
+  # Essentially, define an accessor for +name+ with +block+.
+  #
+  # Why use let instead of def? I honestly don't know.
+  #
+  # @raise [ArgumentError]
+  #
+  # source://minitest//lib/minitest/spec.rb#248
+  def let(name, &block); end
+
+  # source://minitest//lib/minitest/spec.rb#284
+  def name; end
+
+  # source://minitest//lib/minitest/spec.rb#179
+  def nuke_test_methods!; end
+
+  # Register a new type of spec that matches the spec's description.
+  # This method can take either a Regexp and a spec class or a spec
+  # class and a block that takes the description and returns true if
+  # it matches.
+  #
+  # Eg:
+  #
+  #     register_spec_type(/Controller$/, Minitest::Spec::Rails)
+  #
+  # or:
+  #
+  #     register_spec_type(Minitest::Spec::RailsModel) do |desc|
+  #       desc.superclass == ActiveRecord::Base
+  #     end
+  #
+  # source://minitest//lib/minitest/spec.rb#147
+  def register_spec_type(*args, &block); end
+
+  # Figure out the spec class to use based on a spec's description. Eg:
+  #
+  #     spec_type("BlahController") # => Minitest::Spec::Rails
+  #
+  # source://minitest//lib/minitest/spec.rb#161
+  def spec_type(desc, *additional); end
+
+  # Define an expectation with name +desc+. Name gets morphed to a
+  # proper test method name. For some freakish reason, people who
+  # write specs don't like class inheritance, so this goes way out of
+  # its way to make sure that expectations aren't inherited.
+  #
+  # This is also aliased to #specify and doesn't require a +desc+ arg.
+  #
+  # Hint: If you _do_ want inheritance, use minitest/test. You can mix
+  # and match between assertions and expectations as much as you want.
+  #
+  # source://minitest//lib/minitest/spec.rb#224
+  def specify(desc = T.unsafe(nil), &block); end
+
+  # Another lazy man's accessor generator. Made even more lazy by
+  # setting the name for you to +subject+.
+  #
+  # source://minitest//lib/minitest/spec.rb#267
+  def subject(&block); end
+
+  # source://minitest//lib/minitest/spec.rb#288
+  def to_s; end
+
+  class << self
+    # source://minitest//lib/minitest/spec.rb#336
+    def extended(obj); end
+  end
+end
+
+# Rdoc... why are you so dumb?
+#
+# source://minitest//lib/minitest/spec.rb#298
+module Minitest::Spec::DSL::InstanceMethods
+  # Takes a value or a block and returns a value monad that has
+  # all of Expectations methods available to it.
+  #
+  #   _(1 + 1).must_equal 2
+  #
+  # And for blocks:
+  #
+  #   _ { 1 + "1" }.must_raise TypeError
+  #
+  # This method of expectation-based testing is preferable to
+  # straight-expectation methods (on Object) because it stores its
+  # test context, bypassing our hacky use of thread-local variables.
+  #
+  # NOTE: At some point, the methods on Object will be deprecated
+  # and then removed.
+  #
+  # It is also aliased to #value and #expect for your aesthetic
+  # pleasure:
+  #
+  #         _(1 + 1).must_equal 2
+  #     value(1 + 1).must_equal 2
+  #    expect(1 + 1).must_equal 2
+  #
+  # source://minitest//lib/minitest/spec.rb#323
+  def _(value = T.unsafe(nil), &block); end
+
+  # source://minitest//lib/minitest/spec.rb#330
+  def before_setup; end
+
+  # Takes a value or a block and returns a value monad that has
+  # all of Expectations methods available to it.
+  #
+  #   _(1 + 1).must_equal 2
+  #
+  # And for blocks:
+  #
+  #   _ { 1 + "1" }.must_raise TypeError
+  #
+  # This method of expectation-based testing is preferable to
+  # straight-expectation methods (on Object) because it stores its
+  # test context, bypassing our hacky use of thread-local variables.
+  #
+  # NOTE: At some point, the methods on Object will be deprecated
+  # and then removed.
+  #
+  # It is also aliased to #value and #expect for your aesthetic
+  # pleasure:
+  #
+  #         _(1 + 1).must_equal 2
+  #     value(1 + 1).must_equal 2
+  #    expect(1 + 1).must_equal 2
+  #
+  # source://minitest//lib/minitest/spec.rb#323
+  def expect(value = T.unsafe(nil), &block); end
+
+  # Takes a value or a block and returns a value monad that has
+  # all of Expectations methods available to it.
+  #
+  #   _(1 + 1).must_equal 2
+  #
+  # And for blocks:
+  #
+  #   _ { 1 + "1" }.must_raise TypeError
+  #
+  # This method of expectation-based testing is preferable to
+  # straight-expectation methods (on Object) because it stores its
+  # test context, bypassing our hacky use of thread-local variables.
+  #
+  # NOTE: At some point, the methods on Object will be deprecated
+  # and then removed.
+  #
+  # It is also aliased to #value and #expect for your aesthetic
+  # pleasure:
+  #
+  #         _(1 + 1).must_equal 2
+  #     value(1 + 1).must_equal 2
+  #    expect(1 + 1).must_equal 2
+  #
+  # source://minitest//lib/minitest/spec.rb#323
+  def value(value = T.unsafe(nil), &block); end
+end
+
+# Contains pairs of matchers and Spec classes to be used to
+# calculate the superclass of a top-level describe. This allows for
+# automatically customizable spec types.
+#
+# See: register_spec_type and spec_type
+#
+# source://minitest//lib/minitest/spec.rb#129
+Minitest::Spec::DSL::TYPES = T.let(T.unsafe(nil), Array)
+
+# source://minitest//lib/minitest/spec.rb#343
+Minitest::Spec::TYPES = T.let(T.unsafe(nil), Array)
 
 # A reporter that gathers statistics about a test run. Does not do
 # any IO because meant to be used as a parent class for a reporter
@@ -1545,3 +2271,41 @@ end
 
 # source://minitest//lib/minitest.rb#13
 Minitest::VERSION = T.let(T.unsafe(nil), String)
+
+# source://minitest//lib/minitest/mock.rb#1
+class MockExpectationError < ::StandardError; end
+
+# source://minitest//lib/minitest/spec.rb#3
+class Module
+  # source://minitest//lib/minitest/spec.rb#4
+  def infect_an_assertion(meth, new_name, dont_flip = T.unsafe(nil)); end
+end
+
+# source://minitest//lib/minitest/spec.rb#348
+class Object < ::BasicObject
+  include ::Kernel
+  include ::PP::ObjectMixin
+  include ::Minitest::Expectations
+
+  # Add a temporary stubbed method replacing +name+ for the duration
+  # of the +block+. If +val_or_callable+ responds to #call, then it
+  # returns the result of calling it, otherwise returns the value
+  # as-is. If stubbed method yields a block, +block_args+ will be
+  # passed along. Cleans up the stub at the end of the +block+. The
+  # method +name+ must exist before stubbing.
+  #
+  #     def test_stale_eh
+  #       obj_under_test = Something.new
+  #       refute obj_under_test.stale?
+  #
+  #       Time.stub :now, Time.at(0) do
+  #         assert obj_under_test.stale?
+  #       end
+  #     end
+  # --
+  # NOTE: keyword args in callables are NOT checked for correctness
+  # against the existing method. Too many edge cases to be worth it.
+  #
+  # source://minitest//lib/minitest/mock.rb#298
+  def stub(name, val_or_callable, *block_args, **block_kwargs, &block); end
+end

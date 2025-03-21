@@ -1297,6 +1297,7 @@ FFI::Platform::DOUBLE_ALIGN = T.let(T.unsafe(nil), Integer)
 FFI::Platform::DOUBLE_SIZE = T.let(T.unsafe(nil), Integer)
 FFI::Platform::FLOAT_ALIGN = T.let(T.unsafe(nil), Integer)
 FFI::Platform::FLOAT_SIZE = T.let(T.unsafe(nil), Integer)
+FFI::Platform::GNU_LIBC = T.let(T.unsafe(nil), String)
 FFI::Platform::INT16_ALIGN = T.let(T.unsafe(nil), Integer)
 FFI::Platform::INT16_SIZE = T.let(T.unsafe(nil), Integer)
 FFI::Platform::INT32_ALIGN = T.let(T.unsafe(nil), Integer)
@@ -1307,7 +1308,7 @@ FFI::Platform::INT8_ALIGN = T.let(T.unsafe(nil), Integer)
 FFI::Platform::INT8_SIZE = T.let(T.unsafe(nil), Integer)
 
 # source://ffi//lib/ffi/platform.rb#105
-FFI::Platform::IS_BSD = T.let(T.unsafe(nil), TrueClass)
+FFI::Platform::IS_BSD = T.let(T.unsafe(nil), FalseClass)
 
 # source://ffi//lib/ffi/platform.rb#102
 FFI::Platform::IS_DRAGONFLYBSD = T.let(T.unsafe(nil), FalseClass)
@@ -1316,13 +1317,13 @@ FFI::Platform::IS_DRAGONFLYBSD = T.let(T.unsafe(nil), FalseClass)
 FFI::Platform::IS_FREEBSD = T.let(T.unsafe(nil), FalseClass)
 
 # source://ffi//lib/ffi/platform.rb#96
-FFI::Platform::IS_GNU = T.let(T.unsafe(nil), T.untyped)
+FFI::Platform::IS_GNU = T.let(T.unsafe(nil), String)
 
 # source://ffi//lib/ffi/platform.rb#97
-FFI::Platform::IS_LINUX = T.let(T.unsafe(nil), FalseClass)
+FFI::Platform::IS_LINUX = T.let(T.unsafe(nil), TrueClass)
 
 # source://ffi//lib/ffi/platform.rb#98
-FFI::Platform::IS_MAC = T.let(T.unsafe(nil), TrueClass)
+FFI::Platform::IS_MAC = T.let(T.unsafe(nil), FalseClass)
 
 # source://ffi//lib/ffi/platform.rb#100
 FFI::Platform::IS_NETBSD = T.let(T.unsafe(nil), FalseClass)

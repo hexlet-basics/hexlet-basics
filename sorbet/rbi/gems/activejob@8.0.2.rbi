@@ -229,22 +229,22 @@ class ActiveJob::Base
   # source://activejob//lib/active_job/exceptions.rb#12
   def after_discard_procs?; end
 
-  # source://solid_queue/1.1.3/lib/active_job/concurrency_controls.rb#14
+  # source://solid_queue/1.1.4/lib/active_job/concurrency_controls.rb#14
   def concurrency_duration; end
 
-  # source://solid_queue/1.1.3/lib/active_job/concurrency_controls.rb#14
+  # source://solid_queue/1.1.4/lib/active_job/concurrency_controls.rb#14
   def concurrency_duration=(_arg0); end
 
-  # source://solid_queue/1.1.3/lib/active_job/concurrency_controls.rb#14
+  # source://solid_queue/1.1.4/lib/active_job/concurrency_controls.rb#14
   def concurrency_duration?; end
 
-  # source://solid_queue/1.1.3/lib/active_job/concurrency_controls.rb#13
+  # source://solid_queue/1.1.4/lib/active_job/concurrency_controls.rb#13
   def concurrency_limit; end
 
-  # source://solid_queue/1.1.3/lib/active_job/concurrency_controls.rb#13
+  # source://solid_queue/1.1.4/lib/active_job/concurrency_controls.rb#13
   def concurrency_limit=(_arg0); end
 
-  # source://solid_queue/1.1.3/lib/active_job/concurrency_controls.rb#13
+  # source://solid_queue/1.1.4/lib/active_job/concurrency_controls.rb#13
   def concurrency_limit?; end
 
   # source://activejob//lib/active_job/logging.rb#15
@@ -320,40 +320,40 @@ class ActiveJob::Base
     # source://activejob//lib/active_job/exceptions.rb#12
     def after_discard_procs?; end
 
-    # source://solid_queue/1.1.3/lib/active_job/concurrency_controls.rb#14
+    # source://solid_queue/1.1.4/lib/active_job/concurrency_controls.rb#14
     def concurrency_duration; end
 
-    # source://solid_queue/1.1.3/lib/active_job/concurrency_controls.rb#14
+    # source://solid_queue/1.1.4/lib/active_job/concurrency_controls.rb#14
     def concurrency_duration=(value); end
 
-    # source://solid_queue/1.1.3/lib/active_job/concurrency_controls.rb#14
+    # source://solid_queue/1.1.4/lib/active_job/concurrency_controls.rb#14
     def concurrency_duration?; end
 
-    # source://solid_queue/1.1.3/lib/active_job/concurrency_controls.rb#11
+    # source://solid_queue/1.1.4/lib/active_job/concurrency_controls.rb#11
     def concurrency_group; end
 
-    # source://solid_queue/1.1.3/lib/active_job/concurrency_controls.rb#11
+    # source://solid_queue/1.1.4/lib/active_job/concurrency_controls.rb#11
     def concurrency_group=(value); end
 
-    # source://solid_queue/1.1.3/lib/active_job/concurrency_controls.rb#11
+    # source://solid_queue/1.1.4/lib/active_job/concurrency_controls.rb#11
     def concurrency_group?; end
 
-    # source://solid_queue/1.1.3/lib/active_job/concurrency_controls.rb#10
+    # source://solid_queue/1.1.4/lib/active_job/concurrency_controls.rb#10
     def concurrency_key; end
 
-    # source://solid_queue/1.1.3/lib/active_job/concurrency_controls.rb#10
+    # source://solid_queue/1.1.4/lib/active_job/concurrency_controls.rb#10
     def concurrency_key=(value); end
 
-    # source://solid_queue/1.1.3/lib/active_job/concurrency_controls.rb#10
+    # source://solid_queue/1.1.4/lib/active_job/concurrency_controls.rb#10
     def concurrency_key?; end
 
-    # source://solid_queue/1.1.3/lib/active_job/concurrency_controls.rb#13
+    # source://solid_queue/1.1.4/lib/active_job/concurrency_controls.rb#13
     def concurrency_limit; end
 
-    # source://solid_queue/1.1.3/lib/active_job/concurrency_controls.rb#13
+    # source://solid_queue/1.1.4/lib/active_job/concurrency_controls.rb#13
     def concurrency_limit=(value); end
 
-    # source://solid_queue/1.1.3/lib/active_job/concurrency_controls.rb#13
+    # source://solid_queue/1.1.4/lib/active_job/concurrency_controls.rb#13
     def concurrency_limit?; end
 
     # source://activejob//lib/active_job/enqueuing.rb#53
