@@ -159,15 +159,25 @@ en:
         see_all_courses_in_category: See all courses in %{name}
         registration: Sign Up
         registration_description: Let's get started
+        about_learning: How the training is organised
         similar_courses: Similar courses
         sign_up: Sign Up
-        free_course: Free course
+        free_course: Free course for beginners
+        learning_program: Learning program
+        sort_questions: Sorting out the questions
         start: Start Learning
         continue: Continue Learning
         start_demo_lesson: Demo lesson
         ready: Are you ready?
         no_registration: Registration is not required
         lessons: "%{lessons_count} with practice in the browser"
+        learning_preview: Learning preview
+        without_registration_html: |
+          <b>Registration is optional</b> You can try the first lesson without registering, but you need to register to save your progress
+        learning_conveniently_html: |
+          <b>Simple, clear and always at hand</b> You learn the theory in a convenient text format - easy to read even from your phone. Live examples help you immediately understand how everything works in practice. The material is organised in such a way that you move step by step from simple to complex without missing important details
+        real_life_challenges_html: |
+          <b>Learn from real-life challenges</b> We've created a convenient virtual environment where you solve problems right in your browser. You have a code editor, a console and automatic tests that instantly show the results. If something doesn't work out, you can always look at the teacher's solution
         javascript_description: Programming learning is an interesting and exciting process. The syntax of the language is the simplest and shortest path, without which it is impossible to start. This free online JavaScript course will introduce you to the basic concepts of the language. Learn the basics and write your first JS programs.
         php_description: The study of programming is a difficult and lengthy process. Learning the syntax of the language it is impossible to start without it. This The course is devoted to the basics of writing programs for a PHP. He is preparing a springboard for writing meaningful programs.
         python_description: The study of programming is a difficult and lengthy process. Learning the syntax of the language it is impossible to start without it. This The course is devoted to the basics of writing programs for a racket. He is preparing a springboard for writing meaningful programs.

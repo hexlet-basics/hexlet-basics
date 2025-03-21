@@ -983,6 +983,7 @@
           }
         },
         "show": {
+          "about_learning": "How the training is organised",
           "bash_description": "Bash is command language",
           "blog_posts": "Blog Posts",
           "breadcrumbs": "Breadcrumbs",
@@ -996,13 +997,16 @@
           "dlang_description": "D is a multi-paradigm, statically typed, compiled language. Has built-in error prevention - contracts and unittests",
           "elixir_description": "Elixir is a programming language that runs on top of Erlang. How this happens is a functional language with rigorous computations, unambiguous assignment and dynamic typing, creation to support distributed, fault-tolerant, non-stop, hot-swappable applications.",
           "fortran_description": "Fortran is a general-purpose, compiled imperative programming language that is especially suited to numeric computation and scientific computing",
-          "free_course": "Free course",
+          "free_course": "Free course for beginners",
           "go_description": "Go is a general-purpose language with rich features and clear syntax. Thanks to its multi-platform, reliable, well-documented standard library and focus on convenient approaches to the development itself, Go is an ideal language for the first steps in programming.",
           "haskell_description": "Haskell is a standardized pure functional general-purpose programming language. The main control structure is function. A distinctive feature is a serious attitude to typing",
           "html_description": "To standardize the output of text inside the browser, an HTML standard was created that describes the rules for formatting text data for correct output. This course is devoted to the basics of HTML markup, working with typography, outputting media documents and working with forms.",
           "java_description": "The study of programming is a difficult and lengthy process. Learning the syntax of the language it is impossible to start without it. This The course is devoted to the basics of writing programs for a Java. He is preparing a springboard for writing meaningful programs.",
           "javascript_description": "Programming learning is an interesting and exciting process. The syntax of the language is the simplest and shortest path, without which it is impossible to start. This free online JavaScript course will introduce you to the basic concepts of the language. Learn the basics and write your first JS programs.",
           "kotlin_description": "Kotlin is a cross-platform, statically typed, general-purpose programming language with type inference",
+          "learning_conveniently_html": "<b>Simple, clear and always at hand</b> You learn the theory in a convenient text format - easy to read even from your phone. Live examples help you immediately understand how everything works in practice. The material is organised in such a way that you move step by step from simple to complex without missing important details\n",
+          "learning_preview": "Learning preview",
+          "learning_program": "Learning program",
           "lessons": "%{lessons_count} with practice in the browser",
           "no_registration": "Registration is not required",
           "ocaml_description": "OCaml is a general-purpose, industrial-strength programming language with an emphasis on expressiveness and safety",
@@ -1013,6 +1017,7 @@
           "python_description": "The study of programming is a difficult and lengthy process. Learning the syntax of the language it is impossible to start without it. This The course is devoted to the basics of writing programs for a racket. He is preparing a springboard for writing meaningful programs.",
           "racket_description": "The racket belongs to the Lisp language family. These programmers should learn them from the very beginning. This module is about introducing the syntax and concepts underlying any lisp.",
           "ready": "Are you ready?",
+          "real_life_challenges_html": "<b>Learn from real-life challenges</b> We've created a convenient virtual environment where you solve problems right in your browser. You have a code editor, a console and automatic tests that instantly show the results. If something doesn't work out, you can always look at the teacher's solution\n",
           "registration": "Sign Up",
           "registration_description": "Let's get started",
           "ruby_description": "Ruby is a language designed to make programmers happy. He took from himself the best of Lisp, Smalltalk and Perl he is object-oriented, but at the same time his declarative nature allows writing in a procedural and functional paradigm.",
@@ -1020,10 +1025,12 @@
           "see_all_courses_in_category": "See all courses in %{name}",
           "sign_up": "Sign Up",
           "similar_courses": "Similar courses",
+          "sort_questions": "Sorting out the questions",
           "start": "Start Learning",
           "start_demo_lesson": "Demo lesson",
           "to_home_title": "Home",
-          "typescript_description": "TypeScript is a JavaScript-based programming language. Includes a typing system"
+          "typescript_description": "TypeScript is a JavaScript-based programming language. Includes a typing system",
+          "without_registration_html": "<b>Registration is optional</b> You can try the first lesson without registering, but you need to register to save your progress\n"
         }
       },
       "my": {
@@ -2654,22 +2661,29 @@
           }
         },
         "show": {
+          "about_learning": "Как проходит обучение",
           "blog_posts": "Посты в блоге",
           "breadcrumbs": "Хлебные крошки",
           "completed_html": "Поздравляем! Вы успешно завершили базовый курс на Code Basics. Это первый шаг в мир <b>профессиональной разработки</b>. Что дальше? Посмотрите <a href=\"https://ru.hexlet.io/courses\" target=\"_blank\">продолжение на Хекслете</a>\n",
           "continue": "Продолжить обучение",
-          "free_course": "Бесплатный курс",
+          "free_course": "Бесплатный курс для начинающих",
+          "learning_conveniently_html": "<b>Просто, наглядно и всегда под рукой</b> Вы изучаете теорию в удобном текстовом формате — легко читать даже с телефона. Живые примеры помогают сразу понять, как всё работает на практике. Материал выстроен так, чтобы вы шаг за шагом двигались от простого к сложному, не упуская важных деталей\n",
+          "learning_preview": "Предварительный просмотр обучения",
+          "learning_program": "Программа обучения",
           "lessons": "%{lessons_count} с практикой в браузере",
           "no_registration": "Регистрация не требуется",
           "ready": "Готовы попробовать?",
-          "registration": "Регистрация",
+          "real_life_challenges_html": "<b>Учитесь на реальных задачах</b> Мы создали удобную виртуальную среду, где вы решаете задачи прямо в браузере. У вас есть редактор кода, консоль и автоматические тесты, которые моментально  показывают результат. Если что-то не получается — всегда можно посмотреть решение учителя\n",
+          "registration": "Зарегистрироваться",
           "registration_description": "Начните прямо сейчас",
           "see_all_courses_in_category": "Все курсы \"%{name}\"",
           "sign_up": "Зарегистрироваться",
           "similar_courses": "Похожие курсы",
+          "sort_questions": "Разбираем вопросы",
           "start": "Начать обучение",
           "start_demo_lesson": "Демо урок",
-          "to_home_title": "Главная"
+          "to_home_title": "Главная",
+          "without_registration_html": "<b>Регистрация – по желанию</b> Вы можете попробовать без регистрации пройти первый урок, но чтобы сохранить прогресс нужно зарегистрироваться\n"
         }
       },
       "my": {

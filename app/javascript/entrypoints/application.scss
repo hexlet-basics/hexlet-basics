@@ -153,3 +153,13 @@ $utilities: map-merge($utilities,
 //       100: 100%,
 //       auto: auto)),
 // );
+
+.hexlet-basics-accordion {
+  .accordion-header > button {
+    @extend .bg-body;
+    @extend .shadow-none;
+    @extend .px-1;
+    @extend .fw-medium;
+    @extend .text-body;
+  }
+}
