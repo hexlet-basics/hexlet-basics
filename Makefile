@@ -99,7 +99,7 @@ tag:
 	git tag $(TAG) && git push --tags --no-verify
 
 next-tag:
-	@old_version=$(shell git tag -l 'v[0-9]*' | sort -V | tail -n 1 | sed 's/^v//'); \
+	@old_version=$(shell git fetch --tags && git tag -l 'v[0-9]*' | sort -V | tail -n 1 | sed 's/^v//'); \
 		new_version=$$((old_version + 1)); \
 		make tag TAG=v$$new_version
 
