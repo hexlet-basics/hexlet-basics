@@ -178,6 +178,7 @@ ru:
         no_registration: Регистрация не требуется
         lessons: "%{lessons_count} с практикой в браузере"
         blog_posts: Посты в блоге
+        learning_preview: Предварительный просмотр обучения
         completed_html: |
           Поздравляем! Вы успешно завершили базовый курс на Code Basics. Это первый шаг в мир <b>профессиональной разработки</b>. Что дальше? Посмотрите <a href="https://ru.hexlet.io/courses" target="_blank">продолжение на Хекслете</a>
         without_registration_html: |

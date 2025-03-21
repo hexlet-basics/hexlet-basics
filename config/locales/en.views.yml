@@ -171,6 +171,7 @@ en:
         ready: Are you ready?
         no_registration: Registration is not required
         lessons: "%{lessons_count} with practice in the browser"
+        learning_preview: Learning preview
         without_registration_html: |
           <b>Registration is optional</b> You can try the first lesson without registering, but you need to register to save your progress
         learning_conveniently_html: |

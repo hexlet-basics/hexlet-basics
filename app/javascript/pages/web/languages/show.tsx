@@ -68,19 +68,19 @@ export default function Show({
     // TODO: add review
   };
 
-  // const breadcrumbItems: BreadcrumbItem[] = [
-  //   {
-  //     name: courseCategory.name,
-  //     url: Routes.language_category_url(courseCategory.slug!),
-  //   },
-  //   {
-  //     name: courseLandingPage.header,
-  //     url: Routes.language_url(courseLandingPage.slug),
-  //   },
-  // ];
+  const breadcrumbItems: BreadcrumbItem[] = [
+    {
+      name: courseCategory.name,
+      url: Routes.language_category_url(courseCategory.slug!),
+    },
+    {
+      name: courseLandingPage.header,
+      url: Routes.language_url(courseLandingPage.slug),
+    },
+  ];
 
   return (
-    <ApplicationLayout>
+    <ApplicationLayout items={breadcrumbItems}>
       <Head>
         <script type="application/ld+json">{JSON.stringify(product)}</script>
       </Head>
@@ -151,14 +151,14 @@ export default function Show({
             </p>
           </Col>
         </Row>
-        <Row className="row-cols-1 row-cols-md-2 gx-lg-5 gy-4 mb-lg-4 py-3 py-md-5 justify-content-between">
+        <Row className="row-cols-1 row-cols-md-2 gx-lg-5 gy-5 mb-lg-4 py-3 py-md-5 justify-content-between">
           <Col>
             {courseLandingPage.outcomes_image && (
               <img
                 src={courseLandingPage.outcomes_image}
                 width="100%"
                 height="auto"
-                alt="example"
+                alt={t("languages.show.learning_preview")}
                 className="rounded-5 shadow-lg"
               />
             )}
@@ -182,7 +182,7 @@ export default function Show({
                 <Accordion.Item
                   eventKey={index.toString()}
                   key={m.id}
-                  className="rounded-0 border-0 border-bottom border-secondary-subtle py-4"
+                  className="rounded-0 border-0 border-bottom border-secondary-subtle py-3 py-md-4"
                 >
                   <Accordion.Header as="h3">
                     {index + 1}. {m.name!}
@@ -257,7 +257,7 @@ export default function Show({
                 <Accordion.Item
                   eventKey={index.toString()}
                   key={item.id}
-                  className="rounded-0 border-0 border-bottom border-secondary-subtle py-4"
+                  className="rounded-0 border-0 border-bottom border-secondary-subtle py-3 py-md-4"
                 >
                   <Accordion.Header as="h3">{item.question}</Accordion.Header>
                   <Accordion.Body className="px-0">
