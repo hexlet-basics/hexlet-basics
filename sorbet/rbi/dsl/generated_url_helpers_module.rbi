@@ -121,6 +121,9 @@ module GeneratedUrlHelpersModule
   def map_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def my_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_admin_api_user_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
