@@ -1,0 +1,50 @@
+javascript-ru-1:
+  language_landing_page: javascript-ru
+  question: Что нужно знать перед тем, как начинать изучать JavaScript?
+  answer: Достаточно базового понимания, как работает браузер и что такое сайты. Остальному научим с нуля.
+
+javascript-ru-2:
+  language_landing_page: javascript-ru
+  question: Можно ли учить JavaScript, если я никогда не программировал(а)?
+  answer: Конечно. Мы объясняем всё простыми словами, шаг за шагом, без перегруза сложной теорией.
+
+javascript-ru-3:
+  language_landing_page: javascript-ru
+  question: Что я смогу сделать после прохождения курса?
+  answer: Вы научитесь писать интерактивные элементы на сайте — кнопки, формы, динамические списки и многое другое.
+
+javascript-ru-4:
+  language_landing_page: javascript-ru
+  question: Нужно ли устанавливать что-то на компьютер?
+  answer: Нет. Всё обучение проходит в браузере — учитесь где и когда удобно.
+
+javascript-ru-5:
+  language_landing_page: javascript-ru
+  question: Сколько времени нужно, чтобы освоить основы JavaScript?
+  answer: В среднем — 1–2 месяца при регулярных занятиях по часу в день. Но можно и быстрее, если захотите.
+
+javascript-ru-6:
+  language_landing_page: javascript-ru
+  question: JavaScript — это только для веб-сайтов?
+  answer: В основном да, но JavaScript используется и для серверов, мобильных приложений, и даже в играх.
+
+javascript-ru-7:
+  language_landing_page: javascript-ru
+  question: А если я ошибусь в коде?
+  answer: Ошибаться — это нормально. Мы специально даём задачи с проверкой, чтобы вы учились на своих ошибках и понимали, как всё работает.
+
+javascript-ru-8:
+  language_landing_page: javascript-ru
+  question: На каком языке проходят объяснения?
+  answer: Все объяснения, задания и видео — на русском языке.
+
+javascript-ru-9:
+  language_landing_page: javascript-ru
+  question: Могу ли я учиться в удобное для себя время?
+  answer: Да. Курс асинхронный — вы проходите его в своём ритме.
+
+javascript-ru-10:
+  language_landing_page: javascript-ru
+  question: А потом я смогу продолжить обучение и стать разработчиком?
+  answer: Да! Этот курс — отличная стартовая точка. После него можно углубляться в фреймворки, алгоритмы и настоящую веб-разработку.
+

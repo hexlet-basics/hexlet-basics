@@ -1,7 +1,7 @@
 class Web::LanguagesController < Web::ApplicationController
   def show
     landing_page = Language::LandingPage.published.find_by!(locale: I18n.locale, slug: params[:id])
-    language = landing_page.language
+    language = T.must(landing_page.language)
     # language_info = language.current_version.infos.find_by!(locale: I18n.locale)
     #
     # @builder = CourseSchema.to_builder(@language, @language_version_info)

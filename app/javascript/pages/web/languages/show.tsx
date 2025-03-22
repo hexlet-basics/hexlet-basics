@@ -210,11 +210,11 @@ export default function Show({
             </Accordion>
           </Col>
         </Row>
-        <Row className="row-cols-1 row-cols-lg-2 mb-lg-5 py-4 py-md-5 gy-4">
-          <Col className="pt-lg-4">
-            <div className="display-5 fw-semibold lh-1 mb-4 mb-lg-5">
-              {t("languages.show.about_learning")}
-            </div>
+        <div className="display-5 fw-semibold lh-1">
+          {t("languages.show.about_learning")}
+        </div>
+        <Row className="row-cols-1 row-cols-lg-2 mb-lg-5 pb-4 py-md-5 gy-4">
+          <Col>
             <div className="me-lg-5 pe-lg-4">
               <div className="d-flex mb-3">
                 <i className="bi bi-cloud-arrow-up-fill me-3 text-primary" />

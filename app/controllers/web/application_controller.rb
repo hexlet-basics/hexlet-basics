@@ -46,6 +46,10 @@ class Web::ApplicationController < ApplicationController
 
   private
 
+  # def check!(value)
+  #   raise ActiveRecord::RecordNotFound if value.nil?
+  # end
+
   def ransack_params(defaults)
     raw = params.permit(:sf, :so, fields: {}).with_defaults({ fields: {} }).with_defaults(defaults)
     ransack = raw["fields"]

@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::Base
   include ActiveStorage::SetCurrent
-  # respond_to :html
   include Pagy::Backend
 
   include AuthConcern
