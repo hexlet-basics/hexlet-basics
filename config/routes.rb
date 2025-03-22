@@ -59,6 +59,9 @@ Rails.application.routes.draw do
       resource :password, only: %i[edit update]
 
       resources :languages, only: [ :show ] do
+        member do
+          get :success
+        end
         scope module: :languages do
           resources :lessons, only: [ :show ]
           # do

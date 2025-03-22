@@ -1,6 +1,7 @@
 class Web::LanguagesController < Web::ApplicationController
+  before_action :authenticate_user!, only: [ :success ]
+
   def show
-    landing_page = Language::LandingPage.published.find_by!(locale: I18n.locale, slug: params[:id])
     language = T.must(landing_page.language)
     # language_info = language.current_version.infos.find_by!(locale: I18n.locale)
     #
@@ -33,10 +34,10 @@ class Web::LanguagesController < Web::ApplicationController
         .joins(:lesson).merge(Language::Lesson.ordered).first
     end
 
-    recommended_langauge_pages = Language::LandingPage.with_locale
-      .where(main: true).where(listed: true)
-      .includes({ language: [ :current_version, { cover_attachment: :blob } ] })
-      .order("RANDOM()").excluding(landing_page).limit(4)
+    # recommended_language_pages = Language::LandingPage.with_locale
+    #   .where(main: true).where(listed: true)
+    #   .includes({ language: [ :current_version, { cover_attachment: :blob } ] })
+    #   .order("RANDOM()").excluding(landing_page).limit(4)
 
     seo_tags = {
       title: landing_page.meta_title,
@@ -72,5 +73,20 @@ class Web::LanguagesController < Web::ApplicationController
       lessonsByModuleId: lesson_resources_by_module_id,
       courseMember: language_member && Language::MemberResource.new(language_member)
     }
+  end
+
+  def success
+    language_member = landing_page.language.members.find_by(user: current_user)
+    unless language_member.finished?
+      redirect_to root_path
+    end
+
+    render inertia: true, props: {}
+  end
+
+  private
+
+  def landing_page
+    @language_page ||= Language::LandingPage.published.find_by!(locale: I18n.locale, slug: params[:id])
   end
 end

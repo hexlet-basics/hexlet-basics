@@ -159,6 +159,10 @@ ru:
           description: ""
         empty: Похоже, что тут пока ничего нет
     languages:
+      success:
+        header: Поздравляем с прохождением курса!
+        description: |
+          Пора двигаться дальше :)
       show:
         breadcrumbs: Хлебные крошки
         see_all_courses_in_category: Все курсы "%{name}"
