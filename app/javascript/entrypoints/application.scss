@@ -158,7 +158,7 @@ $utilities: map-merge($utilities,
   .accordion-header > button {
     @extend .bg-body;
     @extend .shadow-none;
-    @extend .px-1;
+    @extend .px-0;
     @extend .fw-medium;
     @extend .text-body;
   }
