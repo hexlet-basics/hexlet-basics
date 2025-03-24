@@ -238,27 +238,32 @@ export default function Show({
             />
           </Col>
         </Row>
-        <Row className="mb-lg-5 py-4 py-lg-5">
-          <Col className="col-lg-10">
-            <div className="display-5 fw-semibold lh-1 mb-4">
-              {t("languages.show.sort_questions")}
-            </div>
-            <Accordion defaultActiveKey="0" className="hexlet-basics-accordion">
-              {courseLandingPageQnaItems.map((item, index) => (
-                <Accordion.Item
-                  eventKey={index.toString()}
-                  key={item.id}
-                  className="rounded-0 border-0 border-bottom border-secondary-subtle py-3 py-md-4"
-                >
-                  <Accordion.Header as="h3">{item.question}</Accordion.Header>
-                  <Accordion.Body className="px-0">
-                    {item.answer}
-                  </Accordion.Body>
-                </Accordion.Item>
-              ))}
-            </Accordion>
-          </Col>
-        </Row>
+        {courseLandingPageQnaItems.length > 0 && (
+          <Row className="mb-lg-5 py-4 py-lg-5">
+            <Col className="col-lg-10">
+              <div className="display-5 fw-semibold lh-1 mb-4">
+                {t("languages.show.sort_questions")}
+              </div>
+              <Accordion
+                defaultActiveKey="0"
+                className="hexlet-basics-accordion"
+              >
+                {courseLandingPageQnaItems.map((item, index) => (
+                  <Accordion.Item
+                    eventKey={index.toString()}
+                    key={item.id}
+                    className="rounded-0 border-0 border-bottom border-secondary-subtle py-3 py-md-4"
+                  >
+                    <Accordion.Header as="h3">{item.question}</Accordion.Header>
+                    <Accordion.Body className="px-0">
+                      {item.answer}
+                    </Accordion.Body>
+                  </Accordion.Item>
+                ))}
+              </Accordion>
+            </Col>
+          </Row>
+        )}
       </Container>
     </ApplicationLayout>
   );
