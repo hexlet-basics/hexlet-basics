@@ -162,4 +162,7 @@ $utilities: map-merge($utilities,
     @extend .fw-medium;
     @extend .text-body;
   }
+  .accordion-header > button, .accordion-body {
+    font-size: 18px;
+  }
 }
