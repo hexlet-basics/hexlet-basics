@@ -25,14 +25,23 @@ server {
   listen         [::]:8080;
 
   server_name    code-basics.ru;
-  rewrite ^ https://ru.code-basics.com$request_uri permanent;
+  return 301 https://code-basics.com/ru$request_uri;
+}
+
+server {
+  listen         8080;
+  listen         [::]:8080;
+
+  server_name    ru.code-basics.com;
+
+  return 301 https://code-basics.com/ru$request_uri;
 }
 
 server {
   listen      8080;
   listen      [::]:8080;
 
-  server_name code-basics.com ru.code-basics.com;
+  server_name code-basics.com;
 
   # log_not_found on;
   # log_subrequest on;
