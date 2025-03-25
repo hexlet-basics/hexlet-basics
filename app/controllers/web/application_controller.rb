@@ -67,6 +67,10 @@ class Web::ApplicationController < ApplicationController
       result[:page] = pagy.page
       result[:tr] = pagy.count()
       result[:per] = pagy.limit()
+    else
+      result[:page] = 1
+      result[:tr] = 0
+      result[:per] = 10
     end
 
     OpenStruct.new(result)
