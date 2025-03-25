@@ -22,7 +22,7 @@ class Web::LanguagesController < Web::ApplicationController
     next_lesson_info = nil
     if !current_user.guest?
       language_member = language.members.find_by(user: current_user)
-      next_lesson_info = language_member.next_lesson_info
+      next_lesson_info = language_member&.next_lesson_info
     end
 
     first_lesson_info = language.current_lesson_infos
