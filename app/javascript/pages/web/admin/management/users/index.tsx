@@ -43,6 +43,7 @@ export default function Index({ grid, users }: Props) {
         filterDisplay="row"
         totalRecords={grid.tr}
         rows={grid.per}
+        first={grid.first}
         sortField={grid.sf}
         sortOrder={grid.so}
         onSort={handleDataTable}

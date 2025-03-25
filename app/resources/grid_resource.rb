@@ -10,4 +10,9 @@ class GridResource
     per: :number,
     page: :number,
     fields: "Record<string, string | number | string[] | undefined>"
+
+  typelize :number
+  attribute :first do |obj|
+    (obj.page - 1) * obj.per
+  end
 end

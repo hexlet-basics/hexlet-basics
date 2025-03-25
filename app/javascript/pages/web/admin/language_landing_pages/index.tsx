@@ -59,6 +59,7 @@ export default function Index({ grid, landingPages }: Props) {
         lazy
         paginator
         filterDisplay="row"
+        first={grid.first}
         totalRecords={grid.tr}
         rows={grid.per}
         sortField={grid.sf}

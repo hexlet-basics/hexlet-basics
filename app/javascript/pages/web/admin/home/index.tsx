@@ -26,6 +26,7 @@ export default function Index({ admins, grid }: Props) {
         // header={header}
         value={admins}
         filterDisplay="row"
+        first={grid.first}
         lazy
         totalRecords={grid.tr}
         rows={grid.per}

@@ -37,6 +37,7 @@ export default function Index({ grid, reviews }: Props) {
       <Menu />
       <DataTable
         lazy
+        first={grid.first}
         paginator
         totalRecords={grid.tr}
         rows={grid.per}

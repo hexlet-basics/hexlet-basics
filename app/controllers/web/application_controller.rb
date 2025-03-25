@@ -62,8 +62,9 @@ class Web::ApplicationController < ApplicationController
   end
 
   def grid_params(pagy = nil)
-    result = params.permit(:sf, :so, fields: {}).with_defaults({ page: 1 })
+    result = params.permit(:sf, :so, fields: {})
     if pagy
+      result[:page] = pagy.page
       result[:tr] = pagy.count()
       result[:per] = pagy.limit()
     end

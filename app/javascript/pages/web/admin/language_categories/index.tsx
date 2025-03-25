@@ -57,6 +57,7 @@ export default function Index({ grid, categories }: Props) {
         filterDisplay="row"
         totalRecords={grid.tr}
         rows={grid.per}
+        first={grid.first}
         sortField={grid.sf}
         sortOrder={grid.so}
         filters={fieldsToFilters(grid.fields)}

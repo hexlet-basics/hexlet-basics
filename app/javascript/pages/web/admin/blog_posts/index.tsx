@@ -57,6 +57,7 @@ export default function Index({ grid, blogPosts }: Props) {
       <DataTable
         lazy
         paginator
+        first={grid.first}
         totalRecords={grid.tr}
         rows={grid.per}
         sortField={grid.sf}
