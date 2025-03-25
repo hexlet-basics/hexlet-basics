@@ -190,8 +190,16 @@ export default function Show({
                   <Accordion.Body className="px-0 pb-0">
                     <ul className="list-unstyled">
                       {(lessonsByModuleId[m.id] ?? []).map((l) => (
-                        <li key={l.id} className="text-body-secondary">
-                          {l.name}
+                        <li key={l.id}>
+                          <Link
+                            className="text-decoration-none text-body-secondary"
+                            href={Routes.language_lesson_path(
+                              course.slug!,
+                              l.slug!,
+                            )}
+                          >
+                            <span>{l.name}</span>
+                          </Link>
                         </li>
                       ))}
                     </ul>
