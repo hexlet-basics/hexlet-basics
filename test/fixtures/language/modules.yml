@@ -38,6 +38,10 @@ pre-course-javascript-module1:
   <<: *DEFAULTS
   language: pre-course-javascript
 
+typescript-module1:
+  <<: *DEFAULTS
+  language: typescript
+
 javascript-module1:
   <<: *DEFAULTS
   language: javascript

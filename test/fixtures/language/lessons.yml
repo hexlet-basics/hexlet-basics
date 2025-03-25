@@ -43,6 +43,21 @@ pre-course-javascript-module1-lesson1:
   language: pre-course-javascript
   module: pre-course-javascript-module1
 
+typescript-module1-lesson1:
+  slug: $LABEL
+  language: typescript
+  module: typescript-module1
+
+typescript-module1-lesson2:
+  slug: $LABEL
+  language: typescript
+  module: typescript-module1
+
+typescript-module1-lesson3:
+  slug: $LABEL
+  language: typescript
+  module: typescript-module1
+
 javascript-module1-lesson1:
   slug: $LABEL
   language: javascript

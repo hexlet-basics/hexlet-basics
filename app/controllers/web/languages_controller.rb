@@ -19,20 +19,14 @@ class Web::LanguagesController < Web::ApplicationController
     end
 
     language_member = nil
+    next_lesson_info = nil
     if !current_user.guest?
       language_member = language.members.find_by(user: current_user)
+      next_lesson_info = language_member.next_lesson_info
     end
 
     first_lesson_info = language.current_lesson_infos
       .joins(:lesson).merge(Language::Lesson.ordered).first!
-
-    finished_lesson_ids = current_user.finished_lessons_for_language(language).pluck(:id)
-
-    next_lesson_info = nil
-    if !current_user.guest?
-      next_lesson_info = language.current_lesson_infos.where.not(language_lesson_id: finished_lesson_ids)
-        .joins(:lesson).merge(Language::Lesson.ordered).first
-    end
 
     # recommended_language_pages = Language::LandingPage.with_locale
     #   .where(main: true).where(listed: true)

@@ -1,6 +1,9 @@
 en:
   helpers:
+    send: Отправить
     reset: Reset
+    read: Read
+    continue: Continue
     crud:
       list: List
       add: Add

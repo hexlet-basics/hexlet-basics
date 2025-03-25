@@ -434,16 +434,19 @@
       }
     },
     "helpers": {
+      "continue": "Continue",
       "crud": {
         "add": "Add",
         "adding": "Addmin",
         "editing": "Editing",
         "list": "List"
       },
+      "read": "Read",
       "reset": "Reset",
       "select": {
         "prompt": "Please select"
       },
+      "send": "Отправить",
       "submit": {
         "create": "Create",
         "q": {
@@ -2082,6 +2085,7 @@
       "select": {
         "prompt": "Выберите: "
       },
+      "send": "Отправить",
       "submit": {
         "create": "Создать",
         "q": {

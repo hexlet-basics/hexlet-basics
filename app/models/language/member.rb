@@ -53,4 +53,12 @@ class Language::Member < ApplicationRecord
 
     not_finished_lessons.empty?
   end
+
+  def next_lesson_info
+    finished_lesson_ids = user.finished_lessons_for_language(language).pluck(:id)
+    not_finished_infos = language.current_lesson_infos.where.not(language_lesson_id: finished_lesson_ids)
+      .joins(:lesson).merge(Language::Lesson.ordered)
+
+    not_finished_infos.first
+  end
 end

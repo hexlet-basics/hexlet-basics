@@ -1,9 +1,8 @@
 class Web::HomeController < Web::ApplicationController
   def index
-    # TODO: it + transform_values
     language_member_resources = current_user.language_members.includes([ language: :current_version ])
-      .map { |m| Language::MemberResource.new(m) }
-    language_member_resources_by_language = language_member_resources.index_by { |r| r.object.language_id }
+      .map { Language::MemberResource.new(it) }
+    language_member_resources_by_language = language_member_resources.index_by { it.object.language_id }
 
     blog_posts = BlogPost.published
       .includes([ :creator, { cover_attachment: :blob } ])

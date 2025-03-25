@@ -41,7 +41,7 @@ export default function CourseBlock({
         <Card.Body>
           <Card.Title>
             <a
-              href={Routes.language_path(landingPage.slug, { suffix })}
+              href={Routes.language_path(landingPage.slug)}
               className="stretched-link text-decoration-none link-body-emphasis h2"
             >
               {courseMember && <i className="me-3 bi bi-trophy" />}

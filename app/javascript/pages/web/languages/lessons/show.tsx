@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import type { Pluggable } from "unified";
 
+import Chat from "@/components/Chat.tsx";
 import XssContent from "@/components/XssContent.tsx";
 import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
 import { highlightingLanguages } from "@/lib/utils.ts";
@@ -39,6 +40,7 @@ export default function Show() {
     courseCategory,
     landingPage,
     lessons,
+    lessonMember,
     lesson,
     auth: { user },
   } = usePage<LessonSharedProps>().props;
@@ -214,21 +216,22 @@ export default function Show() {
                         </XssContent>
                       </Alert>
                     )}
-                    <Giscus
-                      id="comments"
-                      repo="hexlet-basics/hexlet-basics"
-                      repoId="MDEwOlJlcG9zaXRvcnkyNjE1MTMxODc="
-                      category="Comments"
-                      categoryId="DIC_kwDOD5Zf484CmEmm"
-                      strict="0"
-                      mapping="pathname"
-                      reactionsEnabled="0"
-                      emitMetadata="0"
-                      inputPosition="top"
-                      theme="light"
-                      lang={i18next.language}
-                      loading="lazy"
-                    />
+                    <Chat lesson={lesson} lessonMember={lessonMember} />
+                    {/* <Giscus */}
+                    {/*   id="comments" */}
+                    {/*   repo="hexlet-basics/hexlet-basics" */}
+                    {/*   repoId="MDEwOlJlcG9zaXRvcnkyNjE1MTMxODc=" */}
+                    {/*   category="Comments" */}
+                    {/*   categoryId="DIC_kwDOD5Zf484CmEmm" */}
+                    {/*   strict="0" */}
+                    {/*   mapping="pathname" */}
+                    {/*   reactionsEnabled="0" */}
+                    {/*   emitMetadata="0" */}
+                    {/*   inputPosition="top" */}
+                    {/*   theme="light" */}
+                    {/*   lang={i18next.language} */}
+                    {/*   loading="lazy" */}
+                    {/* /> */}
                   </Tab.Pane>
                   <Tab.Pane
                     eventKey="navigation"

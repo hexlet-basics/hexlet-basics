@@ -4,7 +4,8 @@ class Admin::LanguageForm < Language
   include ActiveFormModel
 
   permit :progress,
-         :learn_as,
-        :slug,
-         :cover
+    :learn_as,
+    :slug,
+    :cover,
+    :openai_assistant_id
 end

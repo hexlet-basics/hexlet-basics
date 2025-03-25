@@ -52,6 +52,30 @@ pre-course-javascript1-module1_version1-lesson1_version1-ru:
   language_version: pre-course-javascript1
   version: pre-course-javascript1-module1_version1-lesson1_version1
 
+typescript1-module1_version1-lesson1_version1-ru:
+  <<: *DEFAULTS
+  name: Привет мир
+  language: typescript
+  language_lesson: typescript-module1-lesson1
+  language_version: typescript1
+  version: typescript1-module1_version1-lesson1_version1
+
+typescript1-module1_version1-lesson2_version1-ru:
+  <<: *DEFAULTS
+  name: Статическая типизация
+  language: typescript
+  language_lesson: typescript-module1-lesson2
+  language_version: typescript1
+  version: typescript1-module1_version1-lesson2_version1
+
+typescript1-module1_version1-lesson3_version1-ru:
+  <<: *DEFAULTS
+  name: Создание дженерика
+  language: typescript
+  language_lesson: typescript-module1-lesson3
+  language_version: typescript1
+  version: typescript1-module1_version1-lesson3_version1
+
 javascript1-module1_version1-lesson1_version1-ru:
   <<: *DEFAULTS
   name: <%= Faker::Lorem.word %>

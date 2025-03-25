@@ -9,6 +9,7 @@
 #  language_id        :bigint           not null
 #  language_member_id :integer          not null
 #  lesson_id          :bigint           not null
+#  openai_thread_id   :string
 #  user_id            :bigint           not null
 #
 # Indexes
@@ -64,3 +65,17 @@ full-elixir-strings:
   lesson: elixir-strings
   state: finished
   language_member: full_elixir
+
+full-typescript-lesson1:
+  user: full
+  language: typescript
+  lesson: typescript-module1-lesson1
+  state: finished
+  language_member: full_typescript
+
+full-typescript-lesson2:
+  user: full
+  language: typescript
+  lesson: typescript-module1-lesson2
+  state: started
+  language_member: full_typescript

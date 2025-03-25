@@ -1,6 +1,7 @@
 ru:
   helpers:
     reset: Сбросить
+    send: Отправить
     read: Читать
     continue: Продолжить
     crud:

@@ -21,6 +21,7 @@
 #  updated_at             :datetime         not null
 #  category_id            :bigint
 #  current_version_id     :bigint
+#  openai_assistant_id    :string
 #  upload_id              :bigint
 #
 # Indexes

@@ -11,6 +11,7 @@
 #  language_id        :bigint           not null
 #  language_member_id :integer          not null
 #  lesson_id          :bigint           not null
+#  openai_thread_id   :string
 #  user_id            :bigint           not null
 #
 # Indexes

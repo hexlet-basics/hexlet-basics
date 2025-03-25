@@ -46,6 +46,12 @@ export default function NavbarBlock({ className }: Props) {
                 key={lp.id}
                 href={Routes.language_path(lp.slug)}
               >
+                <img
+                  height={20}
+                  className="rounded me-2"
+                  src={lp.language.cover_thumb_variant}
+                  alt={lp.header}
+                />
                 {lp.header}
               </NavDropdown.Item>
             ))}

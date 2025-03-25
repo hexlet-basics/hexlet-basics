@@ -19,7 +19,7 @@ class Web::MyController < Web::ApplicationController
 
     landing_page_resources_by_language_id = landing_pages
       .index_by { it.language_id }
-      .transform_values { |lp| Language::LandingPageForListsResource.new(lp) }
+      .transform_values { Language::LandingPageForListsResource.new(it) }
 
     render inertia: true, props: {
       startedCourseMembers: Language::MemberResource.new(started_language_members),

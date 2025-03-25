@@ -19,6 +19,7 @@
 #  updated_at             :datetime         not null
 #  category_id            :bigint
 #  current_version_id     :bigint
+#  openai_assistant_id    :string
 #  upload_id              :bigint
 #
 # Indexes
@@ -47,15 +48,17 @@ php:
 
 elixir:
   <<: *DEFAULTS
+  current_version: elixir
 
 typescript:
   <<: *DEFAULTS
   order: 1
-  current_version: null
+  current_version: typescript1
 
 javascript:
   <<: *DEFAULTS
   order: 2
+  openai_assistant_id: asst_BnPHo7ddQhnV3KfUtJV3PJVX
   current_version: javascript2
 
 pre-course-javascript:

@@ -15763,28 +15763,28 @@ class Seahorse::Client::AsyncBase < ::Seahorse::Client::Base
   #
   # @return [Symbol] Returns the status of the connection (:closed)
   #
-  # source://aws-sdk-core//lib/seahorse/client/async_base.rb#31
+  # source://aws-sdk-core//lib/seahorse/client/async_base.rb#30
   def close_connection; end
 
   # @return [H2::Connection]
   #
-  # source://aws-sdk-core//lib/seahorse/client/async_base.rb#21
+  # source://aws-sdk-core//lib/seahorse/client/async_base.rb#20
   def connection; end
 
-  # source://aws-sdk-core//lib/seahorse/client/async_base.rb#45
+  # source://aws-sdk-core//lib/seahorse/client/async_base.rb#44
   def connection_errors; end
 
   # Creates a new HTTP2 Connection for the client
   #
   # @return [Seahorse::Client::H2::Connection]
   #
-  # source://aws-sdk-core//lib/seahorse/client/async_base.rb#37
+  # source://aws-sdk-core//lib/seahorse/client/async_base.rb#36
   def new_connection; end
 
   # @return [Array<Symbol>] Returns a list of valid async request
   #   operation names.
   #
-  # source://aws-sdk-core//lib/seahorse/client/async_base.rb#25
+  # source://aws-sdk-core//lib/seahorse/client/async_base.rb#24
   def operation_names; end
 end
 
@@ -16249,136 +16249,128 @@ end
 module Seahorse::Client::H2; end
 
 # H2 Connection build on top of `http/2` gem
-# (requires Ruby >= 2.1)
-# with TLS layer plus ALPN, requires:
-# Ruby >= 2.3 and OpenSSL >= 1.0.2
 #
 # @api private
 #
-# source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#18
+# source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#14
 class Seahorse::Client::H2::Connection
   # @api private
   # @return [Connection] a new instance of Connection
   #
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#38
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#33
   def initialize(options = T.unsafe(nil)); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#141
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#134
   def close!; end
 
   # @api private
   # @return [Boolean]
   #
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#152
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#145
   def closed?; end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#75
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#68
   def connect(endpoint); end
 
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#58
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#53
   def connection_read_timeout; end
 
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#58
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#53
   def connection_timeout; end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#156
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#149
   def debug_output(msg, type = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#58
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#53
   def enable_alpn; end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#63
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#56
   def errors; end
 
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#58
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#53
   def http_wire_trace; end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#65
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#58
   def input_signal_thread; end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#65
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#58
   def input_signal_thread=(_arg0); end
 
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#58
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#53
   def logger; end
 
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#58
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#53
   def max_concurrent_streams; end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#67
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#60
   def new_stream; end
 
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#58
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#53
   def ssl_ca_bundle; end
 
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#58
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#53
   def ssl_ca_directory; end
 
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#58
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#53
   def ssl_ca_store; end
 
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#58
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#53
   def ssl_verify_peer; end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#58
-  def ssl_verify_peer?; end
-
-  # @api private
-  #
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#105
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#98
   def start(stream); end
 
   private
 
   # @api private
   #
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#169
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#162
   def _debug_entry(str); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#238
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#235
+  def _defalt_ca_directory; end
+
+  # @api private
+  #
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#231
   def _default_ca_bundle; end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#243
-  def _default_ca_directory; end
-
-  # @api private
-  #
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#205
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#198
   def _nonblocking_connect(tcp, addr); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#174
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#167
   def _register_h2_callbacks; end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#195
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#188
   def _tcp_socket(endpoint); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#221
+  # source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#214
   def _tls_context; end
 end
 
@@ -16386,17 +16378,17 @@ end
 #
 # @api private
 #
-# source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#34
+# source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#29
 Seahorse::Client::H2::Connection::CHUNKSIZE = T.let(T.unsafe(nil), Integer)
 
 # @api private
 #
-# source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#20
+# source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#15
 Seahorse::Client::H2::Connection::OPTIONS = T.let(T.unsafe(nil), Hash)
 
 # @api private
 #
-# source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#36
+# source://aws-sdk-core//lib/seahorse/client/h2/connection.rb#31
 Seahorse::Client::H2::Connection::SOCKET_FAMILY = T.let(T.unsafe(nil), Integer)
 
 # @api private

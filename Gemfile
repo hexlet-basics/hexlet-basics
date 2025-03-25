@@ -128,6 +128,7 @@ gem "counter_culture"
 # gem "country_select"
 # gem 'sorbet-rails' # Temp disable sorbet for memory optimization
 
+gem "strong_migrations"
 gem "browser"
 #
 gem "meta-tags"

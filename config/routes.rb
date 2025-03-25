@@ -23,8 +23,15 @@ Rails.application.routes.draw do
   end
 
   scope "(:suffix)", suffix: /es|ru/ do
+    namespace :ai do
+      resources :lessons, only: [] do
+        scope module: :lessons do
+          resources :messages, only: [ :create ]
+        end
+      end
+    end
     namespace :api do
-      resources :feeds do
+      resources :feeds, only: [] do
         collection do
           get :yandex_courses
         end

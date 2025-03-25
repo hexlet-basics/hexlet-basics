@@ -51,6 +51,10 @@ csharp:
 elixir:
   <<: *DEFAULTS
 
+typescript1:
+  <<: *DEFAULTS
+  language: typescript
+
 javascript1:
   <<: *DEFAULTS
   language: javascript

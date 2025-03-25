@@ -47,6 +47,7 @@ export default function Form({ data, url, method }: Props) {
         items={languageLearnAsEnumOptions}
       />
       <XInput name="slug" />
+      <XInput name="openai_assistant_id" />
       <XFile metaName="cover_thumb_url" name="cover" />
 
       <Submit className="btn w-100 btn-lg btn-primary mb-3">

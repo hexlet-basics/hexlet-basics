@@ -47,6 +47,33 @@ pre-course-javascript1-module1_version1-lesson1_version1:
   lesson: pre-course-javascript-module1-lesson1
   language: pre-course-javascript
 
+typescript1-module1_version1-lesson1_version1:
+  <<: *DEFAULTS
+  order: 10
+  natural_order: 10
+  language_version: typescript1
+  module_version: typescript1-module1_version1
+  lesson: typescript-module1-lesson1
+  language: typescript
+
+typescript1-module1_version1-lesson2_version1:
+  <<: *DEFAULTS
+  order: 10
+  natural_order: 10
+  language_version: typescript1
+  module_version: typescript1-module1_version1
+  lesson: typescript-module1-lesson2
+  language: typescript
+
+typescript1-module1_version1-lesson3_version1:
+  <<: *DEFAULTS
+  order: 10
+  natural_order: 10
+  language_version: typescript1
+  module_version: typescript1-module1_version1
+  lesson: typescript-module1-lesson3
+  language: typescript
+
 javascript1-module1_version1-lesson1_version1:
   <<: *DEFAULTS
   order: 10

@@ -280,7 +280,10 @@ class ExerciseLoader
 
     helpers = Rails.application.routes.url_helpers
     data["theory"] = MarkdownImageProcessor.process(data["theory"]) do |asset_path|
-      file = File.open(File.join(info_data[:directory], asset_path))
+      begin
+        file = File.open(File.join(info_data[:directory], asset_path))
+      rescue => e
+      end
       info.assets.attach(file)
       attached_asset = info.assets.attachments.last
       url = helpers.url_for(attached_asset)
