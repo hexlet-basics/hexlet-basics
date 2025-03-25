@@ -216,22 +216,22 @@ export default function Show() {
                         </XssContent>
                       </Alert>
                     )}
-                    <Chat lesson={lesson} lessonMember={lessonMember} />
-                    {/* <Giscus */}
-                    {/*   id="comments" */}
-                    {/*   repo="hexlet-basics/hexlet-basics" */}
-                    {/*   repoId="MDEwOlJlcG9zaXRvcnkyNjE1MTMxODc=" */}
-                    {/*   category="Comments" */}
-                    {/*   categoryId="DIC_kwDOD5Zf484CmEmm" */}
-                    {/*   strict="0" */}
-                    {/*   mapping="pathname" */}
-                    {/*   reactionsEnabled="0" */}
-                    {/*   emitMetadata="0" */}
-                    {/*   inputPosition="top" */}
-                    {/*   theme="light" */}
-                    {/*   lang={i18next.language} */}
-                    {/*   loading="lazy" */}
-                    {/* /> */}
+                    {/* <Chat lesson={lesson} lessonMember={lessonMember} /> */}
+                    <Giscus
+                      id="comments"
+                      repo="hexlet-basics/hexlet-basics"
+                      repoId="MDEwOlJlcG9zaXRvcnkyNjE1MTMxODc="
+                      category="Comments"
+                      categoryId="DIC_kwDOD5Zf484CmEmm"
+                      strict="0"
+                      mapping="pathname"
+                      reactionsEnabled="0"
+                      emitMetadata="0"
+                      inputPosition="top"
+                      theme="light"
+                      lang={i18next.language}
+                      loading="lazy"
+                    />
                   </Tab.Pane>
                   <Tab.Pane
                     eventKey="navigation"
