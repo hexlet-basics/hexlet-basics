@@ -278,24 +278,18 @@ class ExerciseLoader
     info = Language::Lesson::Version::Info.new(new_datum_attr)
     info.save!
 
-    helpers = Rails.application.routes.url_helpers
-    data["theory"] = MarkdownImageProcessor.process(data["theory"]) do |asset_path|
-      begin
-        file = File.open(File.join(info_data[:directory], asset_path))
-      rescue => e
-      end
+    urls = Rails.application.routes.url_helpers
+    info.theory = MarkdownImageProcessor.process(data["theory"]) do |asset_path|
+      file = File.open(File.join(info_data[:directory], asset_path))
       info.assets.attach(file)
       attached_asset = info.assets.attachments.last
-      url = helpers.url_for(attached_asset)
+      url = urls.rails_representation_path(attached_asset, only_path: true)
       # url = helpers.rails_representation_url(attached_asset.variant(:main))
       # raise url.inspect
       url
     end
 
     info.save!
-
-    # raise data["theory"]
-
 
     info
   end
