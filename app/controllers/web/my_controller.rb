@@ -12,8 +12,7 @@ class Web::MyController < Web::ApplicationController
       .merge(Language::LandingPage.with_locale.where(main: true))
       .finished
 
-    landing_pages = Language::LandingPage
-      # .with_locale
+    landing_pages = Language::LandingPage.web
       .joins(language: :members)
       .merge(current_user.language_members)
 

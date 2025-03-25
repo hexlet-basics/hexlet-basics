@@ -17,7 +17,9 @@ class Language::MemberResource
     finished_lessons_count = obj.lesson_members.finished.size
     if lessons_count != 0
       result = ((finished_lessons_count.to_f / lessons_count) * 100).ceil
-      result
+      # NOTE: Такая ситуация возможна, когда в новой версии курса уроков меньше
+      # TODO: В идеале надо учитывать пройденные уроки только через current_lessons
+      result > 100 ? 100 : result
     else
       0
     end
