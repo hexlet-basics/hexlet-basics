@@ -10,7 +10,6 @@ class BlogPostResource
     :slug,
     :description,
     :body,
-    :created_at,
     :state,
     :locale,
     :created_at

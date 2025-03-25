@@ -9,6 +9,7 @@ class Language::LandingPageResource
 
   attributes :id,
     :language_id,
+    :created_at,
     :slug,
     :main,
     :listed,
