@@ -4,7 +4,9 @@ module Language::LandingPageRepository
   included do
     scope :with_locale, ->(locale = I18n.locale) { where(locale: locale) }
     scope :web, ->() do
-      with_locale.where(listed: true).includes({ language: [ :current_version, { cover_attachment: :blob } ] })
+      with_locale.where(listed: true)
+        .merge(Language.completed_progress)
+        .joins({ language: [ :current_version, { cover_attachment: :blob } ] })
     end
   end
 end
