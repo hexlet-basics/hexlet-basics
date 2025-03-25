@@ -17,7 +17,7 @@ import { Menu } from "./shared/menu";
 
 type Props = {
   courseDto: LanguageCrud;
-  landingPage: LanguageLandingPage;
+  landingPage?: LanguageLandingPage;
   courseVersions: LanguageVersion[];
 };
 

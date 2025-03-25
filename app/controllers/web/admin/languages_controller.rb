@@ -23,11 +23,11 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   def edit
     language = Admin::LanguageForm.find(params[:id])
     versions = language.versions.limit(5).order(created_at: :desc)
-    landing_page = language.landing_pages.published.find_by!(locale: I18n.locale, main: true)
+    landing_page = language.landing_pages.published.find_by(locale: I18n.locale, main: true)
 
     render inertia: true, props: {
       courseDto: LanguageCrudResource.new(language),
-      landingPage: Language::LandingPageResource.new(landing_page),
+      landingPage: landing_page && Language::LandingPageResource.new(landing_page),
       courseVersions: Language::VersionResource.new(versions)
     }
   end
