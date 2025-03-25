@@ -1,7 +1,7 @@
 import { Accordion, Alert, Col, Container, Row } from "react-bootstrap";
 
-import learningEnVideo from "@/images/course-landing-page/learning_en.mov";
-import learningRuVideo from "@/images/course-landing-page/learning_ru.mov";
+import learningEnVideo from "@/images/course-landing-page/learning_en.mp4";
+import learningRuVideo from "@/images/course-landing-page/learning_ru.mp4";
 import { useTranslation } from "react-i18next";
 
 import XssContent from "@/components/XssContent";
@@ -228,14 +228,17 @@ export default function Show({
             </div>
           </Col>
           <Col>
-            <video
-              className="w-100"
-              src={locale === "en" ? learningEnVideo : learningRuVideo}
-              autoPlay
-              loop
-              muted
-              playsInline
-            />
+            <div className="bg-primary rounded-5 overflow-hidden py-lg-3">
+              <video
+                className="w-100 rounded-4 position-relative"
+                style={{ bottom: "-30px", left: "50px" }}
+                src={locale === "en" ? learningEnVideo : learningRuVideo}
+                autoPlay
+                loop
+                muted
+                playsInline
+              />
+            </div>
           </Col>
         </Row>
         {courseLandingPageQnaItems.length > 0 && (
