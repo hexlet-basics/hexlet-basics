@@ -238,8 +238,7 @@ export default function Show({
           <Col>
             <div className="bg-primary rounded-5 overflow-hidden py-lg-3">
               <video
-                className="w-100 rounded-4 position-relative"
-                style={{ bottom: "-30px", left: "50px" }}
+                className="w-100 rounded-4 hexlet-basics-learning-video"
                 src={locale === "en" ? learningEnVideo : learningRuVideo}
                 autoPlay
                 loop
