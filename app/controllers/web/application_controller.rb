@@ -16,14 +16,19 @@ class Web::ApplicationController < ApplicationController
 
   inertia_share do
     language_categories = Language::Category.with_locale
-    landing_pages = Language::LandingPage.web
+    landing_pages_for_lists = Language::LandingPage.web
       .where(main: true)
+      .merge(Language.ordered)
+
+    landing_pages_for_footer = Language::LandingPage.web
+      .where(footer: true)
       .merge(Language.ordered)
 
     {
       courseCategories: Language::CategoryResource.new(language_categories),
       railsDirectUploadsUrl: view_context.rails_direct_uploads_url,
-      landingPagesForLists: Language::LandingPageForListsResource.new(landing_pages),
+      landingPagesForLists: Language::LandingPageForListsResource.new(landing_pages_for_lists),
+      landingPagesForFooter: Language::LandingPageForListsResource.new(landing_pages_for_footer),
       locale: I18n.locale,
       suffix: I18n.locale == :en ? nil : I18n.locale,
       auth: {

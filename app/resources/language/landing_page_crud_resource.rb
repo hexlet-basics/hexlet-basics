@@ -10,6 +10,8 @@ class Language::LandingPageCrudResource
 
   attributes :id,
     :slug,
+    :footer,
+    :footer_name,
     :state,
     :listed,
     :main,

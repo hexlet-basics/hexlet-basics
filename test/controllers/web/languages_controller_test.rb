@@ -17,6 +17,15 @@ class Web::LanguagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "show (non-member/signed in)" do
+    landing_page = language_landing_pages("php-ru")
+
+    sign_in_as(:full)
+
+    get language_url(landing_page.slug)
+    assert_response :success
+  end
+
   test "success (signed in)" do
     landing_page = language_landing_pages("elixir-ru")
 

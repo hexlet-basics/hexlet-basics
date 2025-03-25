@@ -6,7 +6,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@ai-sdk/react": "^1.2.1",
+    "@ai-sdk/react": "^1.2.2",
     "@giscus/react": "^3.1.0",
     "@hexlet/analytics-plugin-carrotquest": "github:Hexlet/analytics-plugin-carrotquest",
     "@inertiajs/progress": "^0.2.7",

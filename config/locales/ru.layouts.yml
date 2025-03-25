@@ -40,9 +40,8 @@ ru:
         authors: Автору
         sitemap: Карта сайта
         hexlet: Хекслет
-        hexlet-cv: Хекслет.Резюме
-        hexlet-friends: Хекслет.Проекты
-        hexlet-sicp: Хекслет.СИКП
+        hexlet-cv: Хекслет.Карьера
+        hexlet-sicp: Хекслет.SICP
         language_categories: Направления обучения
         all_courses: Все курсы
         hexlet_title_html: © <a href="%{link}" class="text-decoration-none text-light" target="_blank" rel="noopener">Хекслет</a>, %{year}

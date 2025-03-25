@@ -63,7 +63,7 @@ javascript:
 
 pre-course-javascript:
   <<: *DEFAULTS
-  progress: draft
+  progress: completed
   current_version: pre-course-javascript1
 
 java:

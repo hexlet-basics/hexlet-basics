@@ -5,6 +5,8 @@ class Admin::LanguageLandingPageForm < Language::LandingPage
     :meta_description,
     :listed,
     :slug,
+    :footer,
+    :footer_name,
     :order,
     :main,
     :state_event,

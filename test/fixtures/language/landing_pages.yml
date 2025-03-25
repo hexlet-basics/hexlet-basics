@@ -4,6 +4,8 @@
 #
 #  id                   :integer          not null, primary key
 #  description          :string
+#  footer               :boolean
+#  footer_name          :string
 #  header               :string
 #  listed               :boolean
 #  locale               :string
@@ -60,6 +62,8 @@ javascript-ru:
   used_in_description: |
     JavaScript – это универсальный и востребованный язык программирования, который работает во всех браузерах и на сервере. С его помощью ты освоишь веб-разработку, научишься создавать интерактивные сайты, мобильные приложения и серверные сервисы. JavaScript легко изучать, он популярен в IT, а большое сообщество и множество вакансий помогут тебе быстро построить карьеру
   main: true
+  footer: true
+  footer_name: Основы JavaScript
   locale: ru
 
 nodejs-ru:
@@ -82,6 +86,8 @@ frontend-en:
   language: javascript
   language_category: frontend-en
   description: Programming learning is an interesting and exciting process. The syntax of the language is the simplest and shortest path, without which it is impossible to start. This free online JavaScript course will introduce you to the basic concepts of the language. Learn the basics and write your first JS programs
+  footer: true
+  footer_name: Frontend Basics
   locale: en
 
 elixir-ru:
@@ -95,6 +101,8 @@ typescript-ru:
   <<: *DEFAULTS
   header: TypeScript
   language: typescript
+  footer: true
+  footer_name: Основы TypeScript
   main: true
   locale: ru
 

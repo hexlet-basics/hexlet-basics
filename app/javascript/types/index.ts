@@ -56,6 +56,7 @@ export interface SharedProps extends PageProps {
   events: BackendEvent[] | null;
   flash: Partial<Record<FlashKey, string | null>>;
   landingPagesForLists: LanguageLandingPageForLists[];
+  landingPagesForFooter: LanguageLandingPageForLists[];
   mobileBrowser: boolean;
   carrotQuestUserHash: string | null;
   metaTagsHTMLString: string;

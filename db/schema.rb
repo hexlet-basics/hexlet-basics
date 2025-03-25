@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_25_003039) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_25_190304) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -123,6 +123,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_25_003039) do
     t.string "used_in_description"
     t.string "outcomes_header"
     t.string "outcomes_description"
+    t.boolean "footer"
+    t.string "footer_name"
     t.index ["language_category_id"], name: "index_language_landing_pages_on_language_category_id"
     t.index ["language_id"], name: "index_language_landing_pages_on_language_id"
   end

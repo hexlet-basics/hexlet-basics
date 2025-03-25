@@ -9,7 +9,7 @@ import type { Organization, WithContext } from "schema-dts";
 export default function FooterBlock() {
   const { t: tLayouts } = useTranslation("layouts");
   const { t: tCommon } = useTranslation("common");
-  const { locale } = usePage<SharedProps>().props;
+  const { locale, landingPagesForFooter } = usePage<SharedProps>().props;
 
   const organization: WithContext<Organization> = {
     "@context": "https://schema.org",
@@ -95,10 +95,6 @@ export default function FooterBlock() {
                     {tLayouts("shared.footer.sitemap")}
                   </Link>
                 </Nav.Item>
-              </Nav>
-            </Col>
-            <Col>
-              <Nav className="flex-column">
                 <Nav.Item>
                   <a
                     target="_blank"
@@ -129,16 +125,20 @@ export default function FooterBlock() {
                     {tLayouts("shared.footer.hexlet-sicp")}
                   </a>
                 </Nav.Item>
-                <Nav.Item>
-                  <a
-                    target="_blank"
-                    rel="noreferrer"
-                    className="link-body-emphasis text-decoration-none"
-                    href="https://friends.hexlet.io"
-                  >
-                    {tLayouts("shared.footer.hexlet-friends")}
-                  </a>
-                </Nav.Item>
+              </Nav>
+            </Col>
+            <Col>
+              <Nav className="flex-column">
+                {landingPagesForFooter.map((lp) => (
+                  <Nav.Item key={lp.id}>
+                    <Link
+                      className="link-body-emphasis text-decoration-none"
+                      href={Routes.language_path(lp.slug)}
+                    >
+                      {lp.footer_name}
+                    </Link>
+                  </Nav.Item>
+                ))}
               </Nav>
             </Col>
             <Col>

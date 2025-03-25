@@ -4,6 +4,8 @@
 #
 #  id                   :integer          not null, primary key
 #  description          :string
+#  footer               :boolean
+#  footer_name          :string
 #  header               :string
 #  listed               :boolean
 #  locale               :string
