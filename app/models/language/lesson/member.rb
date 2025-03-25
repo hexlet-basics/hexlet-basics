@@ -48,6 +48,7 @@ class Language::Lesson::Member < ApplicationRecord
     end
   end
 
+  # TODO: remove
   def serializable_data
     attributes.extract! "id", "state", "created_at"
   end
