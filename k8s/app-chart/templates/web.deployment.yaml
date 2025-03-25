@@ -94,12 +94,6 @@ spec:
               cpu: 15m
             limits:
               memory: 100Mi
-          env:
-            - name: SITEMAPS_S3_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: hexlet-basics-environment-secrets
-                  key: SITEMAPS_S3_HOST
           lifecycle:
             preStop:
               exec:

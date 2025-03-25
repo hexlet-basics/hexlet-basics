@@ -16,6 +16,3 @@ Disallow: */pre-course-
 
 User-agent: Yandex
 Disallow: *.amp
-
-Sitemap: https://code-basics.com/sitemaps/ru/sitemap.xml.gz
-Sitemap: https://code-basics.com/sitemaps/en/sitemap.xml.gz
