@@ -1,5 +1,4 @@
 import type { SharedProps } from "@/types";
-import { LanguageLandingPageCrud } from "@/types/serializers";
 import { usePage } from "@inertiajs/react";
 import axios from "axios";
 import cn from "classnames";
@@ -63,6 +62,24 @@ export function XForm<TForm extends NestedObject>({
     >
       {children}
     </InertiaForm>
+  );
+}
+
+export function XHidden({ name, model, as, ...props }: XFormControlProps) {
+  const { inputName, inputId, value } = useInertiaInput<string | undefined>({
+    name,
+    model,
+    errorKey: name,
+  });
+
+  return (
+    <Form.Control
+      {...props}
+      type="hidden"
+      name={inputName}
+      value={value}
+      id={inputId}
+    />
   );
 }
 
@@ -297,7 +314,6 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
   valueField,
   labelField,
   type,
-  ...props
 }: XSelectProps<T, K>) {
   const { t: tAr } = useTranslation("activerecord");
   const { t: tAm } = useTranslation("activemodel");
@@ -445,7 +461,7 @@ export const XDynamicInputs = ({
   label,
   emptyData,
 }: XDynamicInputs) => {
-  const { addInput, removeInput, paths } = useDynamicInputs({
+  const { addInput, paths } = useDynamicInputs({
     model,
     emptyData,
   });

@@ -1,3 +1,4 @@
+import { Inertia } from "@inertiajs/inertia";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -5,6 +6,7 @@ import {
   XDynamicInputs,
   XFile,
   XForm,
+  XHidden,
   XInput,
   XSelect,
   XStateEvent,
@@ -42,7 +44,13 @@ export default function Form({ data, url, method }: Props) {
   // const languageLearnAsEnumOptions = enumToOptions(languageLearnAsEnum);
 
   return (
-    <XForm method={method} model="language_landing_page" data={data} to={url}>
+    <XForm
+      // onSuccess={() => Inertia.reload()}
+      method={method}
+      model="language_landing_page"
+      data={data}
+      to={url}
+    >
       <XCheck name="main" />
       <XCheck name="listed" />
       <XCheck name="footer" />
@@ -91,6 +99,7 @@ export default function Form({ data, url, method }: Props) {
         label="QNA"
         emptyData={{ question: "", answer: "" }}
       >
+        <XHidden type="hidden" name="id" />
         <XInput name="question" />
         <XInput name="answer" />
         <XCheck name="_destroy" />

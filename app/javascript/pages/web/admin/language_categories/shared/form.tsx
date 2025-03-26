@@ -1,12 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-import {
-  XCheck,
-  XForm,
-  XInput,
-  XSelect,
-  XStateEvent,
-} from "@/components/forms";
+import { XForm, XInput } from "@/components/forms";
 import { type HTTPVerb, Submit } from "use-inertia-form";
 
 import type { SharedProps } from "@/types";
@@ -41,13 +35,7 @@ export default function Form({ data, url, method }: Props) {
   // const languageLearnAsEnumOptions = enumToOptions(languageLearnAsEnum);
 
   return (
-    <XForm
-      onSuccess={() => window.location.reload()}
-      method={method}
-      model="language_category"
-      data={data}
-      to={url}
-    >
+    <XForm method={method} model="language_category" data={data} to={url}>
       <XInput name="name" />
       <XInput name="slug" />
 

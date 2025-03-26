@@ -4,9 +4,7 @@ import { XFile, XForm, XInput, XSelect } from "@/components/forms";
 import { type HTTPVerb, Submit } from "use-inertia-form";
 
 import { enumToOptions } from "@/lib/utils";
-import type { SharedProps } from "@/types";
 import type LanguageCrud from "@/types/serializers/LanguageCrud";
-import { usePage } from "@inertiajs/react";
 
 type Props = {
   data: LanguageCrud;
