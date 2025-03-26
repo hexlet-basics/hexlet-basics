@@ -62,7 +62,7 @@ export default function Chat({ course, lesson, lessonMember }: Props) {
   }, [status]);
 
   const result = useSWRImmutable<Message[]>(
-    Routes.ai_lesson_messages_path(lesson.id),
+    user.guest ? null : Routes.ai_lesson_messages_path(lesson.id),
     fetcher,
   );
   const previousMessages = result.data ?? [];

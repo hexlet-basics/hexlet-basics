@@ -27,7 +27,10 @@ log-mails:
 staging:
 	bin/vite clobber
 	# VISUAL="code --wait" bin/rails credentials:edit
-	RAILS_ENV=staging bin/rails db:prepare db:fixtures:load
+	RAILS_ENV=staging bin/rails db:drop
+	RAILS_ENV=staging bin/rails db:prepare
+	RAILS_ENV=staging bin/rails db:fixtures:load
+	# RAILS_ENV=staging bin/rails db:prepare db:fixtures:load
 	# bin/vite build --ssr
 	NODE_ENV=development RAILS_ENV=staging bin/rails assets:precompile
 	DEBUG=vite-plugin-ruby:* NODE_ENV=development RAILS_ENV=staging bundle exec foreman start -f Procfile.staging

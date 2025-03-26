@@ -27,6 +27,12 @@ module YandexSearchFeedBuilder
 
           xml.offers do
             landingPages.each do |lp|
+              module_infos = lp.language.current_module_infos
+
+              if module_infos.size >= 3
+                next
+              end
+
               xml.offer(id: lp.language.id) do
                 xml.name lp.header
                 xml.url urls.language_url(lp.slug, suffix: :ru)
@@ -49,15 +55,11 @@ module YandexSearchFeedBuilder
                 if lp.language.cover.attached?
                   xml.picture urls.rails_representation_url(lp.language.cover.variant(:list))
                 end
-
-                module_infos = lp.language.current_module_infos
-                if module_infos.size >= 3
-                  module_infos.each_with_index do |mi, i|
-                    xml.param(name: "План", order: "#{i + 1}", unit: mi.name, hours: 5) do
-                      xml.cdata <<-CDATA
-                      #{mi.description}
-                      CDATA
-                    end
+                module_infos.each_with_index do |mi, i|
+                  xml.param(name: "План", order: "#{i + 1}", unit: mi.name, hours: 5) do
+                    xml.cdata <<-CDATA
+                    #{mi.description}
+                    CDATA
                   end
                 end
               end
