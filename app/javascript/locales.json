@@ -1568,6 +1568,7 @@
         },
         "language": {
           "category_id": "Категория",
+          "openai_assistant_id": "assistant_id (OpenAI)",
           "slug": "Slug"
         },
         "language_landing_page": {
@@ -1575,6 +1576,7 @@
           "answer": "Ответ",
           "description": "Описание",
           "footer": "Выводить в футере",
+          "footer_name": "Имя в футере",
           "header": "Заголовок",
           "language_id": "Курс",
           "listed": "Отображать в списках",
