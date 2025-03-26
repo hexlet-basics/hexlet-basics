@@ -28,6 +28,7 @@ export default function CourseBlock({
     <div className="h-100">
       <Card className="border-0 border-bottom shadow-sm bg-body-tertiary">
         <Card.Img
+          loading="lazy"
           variant="top"
           src={landingPage.language.cover_list_variant}
           alt={landingPage.header}

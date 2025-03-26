@@ -6,6 +6,7 @@ FROM nginx:1.27.4
 COPY --from=rails-app /rails/public /var/www/code-basics/shared/public
 
 COPY services/web-nginx/files/nginx.code-basics.conf /etc/nginx/conf.d/code-basics.conf
+COPY services/web-nginx/files/nginx.cors.conf /etc/nginx/snippets/cors.conf
 
 # for security reason
 RUN rm -rf /etc/nginx/conf.d/default.conf
