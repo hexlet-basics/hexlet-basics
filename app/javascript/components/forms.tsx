@@ -468,7 +468,6 @@ export const XDynamicInputs = ({
 
   return (
     <div className="mb-4">
-      <Button onClick={() => addInput()}>+</Button>
       {/* <div style={ { display: 'flex' } }> */}
       {/*   <label style={ { flex: 1 } }>{ label }</label> */}
       {/*   <button onClick={ addInput }>+</button> */}
@@ -487,6 +486,7 @@ export const XDynamicInputs = ({
           </NestedFields>
         ))}
       </div>
+      <Button onClick={() => addInput()}>+</Button>
     </div>
   );
 };
