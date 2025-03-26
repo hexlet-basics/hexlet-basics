@@ -59,11 +59,11 @@ export default function NavbarBlock({ className }: Props) {
           <Nav.Link href={Routes.blog_posts_path()}>
             {tLayouts("shared.nav.blog")}
           </Nav.Link>
+        </Nav>
+        <Nav>
           <Nav.Link className="link-body-emphasis" href={Routes.my_path()}>
             {tLayouts("shared.nav.my")}
           </Nav.Link>
-        </Nav>
-        <Nav>
           {auth.user.guest && (
             <>
               <Nav.Link
