@@ -1,6 +1,8 @@
 import path from "node:path";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 import react from "@vitejs/plugin-react";
+import browserslist from "browserslist";
+import { browserslistToTargets } from "lightningcss";
 import { defineConfig, loadEnv } from "vite";
 import ViteRails from "vite-plugin-rails";
 
@@ -8,8 +10,14 @@ export default defineConfig(({ mode, isSsrBuild }) => {
   const env = loadEnv(mode, process.cwd(), "VITE_");
 
   return {
+    css: {
+      lightningcss: {
+        targets: browserslistToTargets(browserslist(">= 0.25%")),
+      },
+    },
     build: {
       sourcemap: "hidden",
+      cssMinify: "lightningcss",
     },
     plugins: [
       react(),

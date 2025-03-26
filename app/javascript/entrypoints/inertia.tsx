@@ -1,13 +1,16 @@
 import Root from "@/components/Root.tsx";
 import { createInertiaApp } from "@inertiajs/react";
-import * as ActiveStorage from "@rails/activestorage";
 import * as Sentry from "@sentry/react";
 import type { ReactNode } from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 
-ActiveStorage.start();
+window.addEventListener("vite:preloadError", (event) => {
+  window.location.reload(); // for example, refresh the page
+});
 
-localStorage.debug = "app:*";
+if (import.meta.env.DEV) {
+  localStorage.debug = "app:*";
+}
 
 // Temporary type definition, until @inertiajs/react provides one
 type ResolvedComponent = {
@@ -17,11 +20,7 @@ type ResolvedComponent = {
 
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
-  ignoreErrors: [
-    // https://github.com/inertiajs/inertia/issues/2204
-    "Cannot read properties of null (reading 'scrollRegions')",
-    "Cannot read properties of null (reading 'page')",
-  ],
+  ignoreErrors: [],
 });
 
 createInertiaApp({

@@ -546,6 +546,12 @@
             "reviews": "Reviews",
             "users": "Users"
           }
+        },
+        "root": {
+          "fallback": {
+            "description": "Oops, something went wrong on the frontend. Try refreshing the page.\nIf that doesn’t help, see if it works in a different browser (sometimes browser extensions cause issues), or even with a different internet connection, like mobile data.\nAnd as a last resort, try clearing your cookies — if you know what that is :)\nWe’ve already received the error and are checking it. If it’s on our side, the developers won’t get their morning coffee.\n",
+            "header": "Something went wrong"
+          }
         }
       }
     },
@@ -2199,6 +2205,12 @@
             "languages": "Курсы",
             "reviews": "Отзывы",
             "users": "Пользователи"
+          }
+        },
+        "root": {
+          "fallback": {
+            "description": "Опс, что-то случилось на фронтенде. Попробуйте перезагрузить страницу.\nЕсли не получится, посмотрите сработает ли в другом браузере (иногда это проблема расширений) или даже с другим интернетом, например, мобильным. Ну и на крайний вариант почистите куки, если вы знаете что это такое :)\nА ошибку мы уже получили и смотрим, если она на нашей стороне, то разработчики не получат свой утренний кофе.\n",
+            "header": "Вызывайте санитаров!"
           }
         }
       }

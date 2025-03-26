@@ -45,6 +45,7 @@ module HexletBasics
 
     config.autoload_lib(ignore: %w[assets tasks])
     config.exceptions_app = routes
+    config.active_storage.service_urls_expire_in = 1.week
 
     config.active_record.default_column_serializer = YAML
 

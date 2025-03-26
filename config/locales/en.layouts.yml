@@ -1,6 +1,14 @@
 en:
   layouts:
     web:
+      root:
+        fallback:
+          header: Something went wrong
+          description: |
+            Oops, something went wrong on the frontend. Try refreshing the page.
+            If that doesn’t help, see if it works in a different browser (sometimes browser extensions cause issues), or even with a different internet connection, like mobile data.
+            And as a last resort, try clearing your cookies — if you know what that is :)
+            We’ve already received the error and are checking it. If it’s on our side, the developers won’t get their morning coffee.
       admin:
         application:
           dashboard: Dashboard
