@@ -45,7 +45,7 @@ export default function Form({ data, url, method }: Props) {
     <XForm method={method} model="language_landing_page" data={data} to={url}>
       <XCheck name="main" />
       <XCheck name="listed" />
-      <XInput name="footer" />
+      <XCheck name="footer" />
       <XInput name="footer_name" />
       <XStateEvent fieldName="state" />
       <XSelect

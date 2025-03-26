@@ -25,6 +25,7 @@ ru:
         question: Вопрос
         answer: Ответ
       language:
+        openai_assistant_id: assistant_id (OpenAI)
         category_id: Категория
         slug: Slug
         # state
