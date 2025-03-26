@@ -4,10 +4,8 @@ import React, { Suspense } from "react";
 import { useAppSelector } from "../slices/index.ts";
 import type { LessonSharedProps } from "../types.ts";
 import ControlBox from "./ControlBox.tsx";
+import HTMLPreview from "./HTMLPreview.tsx";
 import TabsBox from "./TabsBox.tsx";
-
-// or window is not defined in ssr mode
-const HTMLPreview = React.lazy(() => import("./HTMLPreview.tsx"));
 
 function App() {
   const { course } = usePage<LessonSharedProps>().props;

@@ -183,3 +183,10 @@ css-ru:
   language: css
   language_category: layouting-ru
   locale: ru
+
+html-ru:
+  <<: *DEFAULTS
+  main: true
+  language: html
+  language_category: layouting-ru
+  locale: ru
