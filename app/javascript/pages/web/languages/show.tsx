@@ -1,7 +1,7 @@
 import { Accordion, Alert, Col, Container, Row } from "react-bootstrap";
 
-import learningEnVideo from "@/images/course-landing-page/learning_en.mov";
-import learningRuVideo from "@/images/course-landing-page/learning_ru.mov";
+import learningEnVideo from "@/images/course-landing-page/learning_en.mp4";
+import learningRuVideo from "@/images/course-landing-page/learning_ru.mp4";
 import { useTranslation } from "react-i18next";
 
 import XssContent from "@/components/XssContent";
@@ -187,10 +187,10 @@ export default function Show({
                   <Accordion.Header as="h3">
                     {index + 1}. {m.name!}
                   </Accordion.Header>
-                  <Accordion.Body className="px-0">
-                    <div className="d-flex flex-wrap">
+                  <Accordion.Body className="px-0 pb-0">
+                    <ul className="list-unstyled">
                       {(lessonsByModuleId[m.id] ?? []).map((l) => (
-                        <div key={l.id}>
+                        <li key={l.id}>
                           <Link
                             className="text-decoration-none text-body-secondary"
                             href={Routes.language_lesson_path(
@@ -198,12 +198,11 @@ export default function Show({
                               l.slug!,
                             )}
                           >
-                            <i className="bi bi-dot align-middle" />
                             <span>{l.name}</span>
                           </Link>
-                        </div>
+                        </li>
                       ))}
-                    </div>
+                    </ul>
                   </Accordion.Body>
                 </Accordion.Item>
               ))}
@@ -237,37 +236,44 @@ export default function Show({
             </div>
           </Col>
           <Col>
-            <video
-              className="w-100"
-              src={locale === "en" ? learningEnVideo : learningRuVideo}
-              autoPlay
-              loop
-              muted
-              playsInline
-            />
-          </Col>
-        </Row>
-        <Row className="mb-lg-5 py-4 py-lg-5">
-          <Col className="col-lg-10">
-            <div className="display-5 fw-semibold lh-1 mb-4">
-              {t("languages.show.sort_questions")}
+            <div className="bg-primary rounded-5 overflow-hidden py-lg-3">
+              <video
+                className="w-100 rounded-4 hexlet-basics-learning-video"
+                src={locale === "en" ? learningEnVideo : learningRuVideo}
+                autoPlay
+                loop
+                muted
+                playsInline
+              />
             </div>
-            <Accordion defaultActiveKey="0" className="hexlet-basics-accordion">
-              {courseLandingPageQnaItems.map((item, index) => (
-                <Accordion.Item
-                  eventKey={index.toString()}
-                  key={item.id}
-                  className="rounded-0 border-0 border-bottom border-secondary-subtle py-3 py-md-4"
-                >
-                  <Accordion.Header as="h3">{item.question}</Accordion.Header>
-                  <Accordion.Body className="px-0">
-                    {item.answer}
-                  </Accordion.Body>
-                </Accordion.Item>
-              ))}
-            </Accordion>
           </Col>
         </Row>
+        {courseLandingPageQnaItems.length > 0 && (
+          <Row className="mb-lg-5 py-4 py-lg-5">
+            <Col className="col-lg-10">
+              <div className="display-5 fw-semibold lh-1 mb-4">
+                {t("languages.show.sort_questions")}
+              </div>
+              <Accordion
+                defaultActiveKey="0"
+                className="hexlet-basics-accordion"
+              >
+                {courseLandingPageQnaItems.map((item, index) => (
+                  <Accordion.Item
+                    eventKey={index.toString()}
+                    key={item.id}
+                    className="rounded-0 border-0 border-bottom border-secondary-subtle py-3 py-md-4"
+                  >
+                    <Accordion.Header as="h3">{item.question}</Accordion.Header>
+                    <Accordion.Body className="px-0">
+                      {item.answer}
+                    </Accordion.Body>
+                  </Accordion.Item>
+                ))}
+              </Accordion>
+            </Col>
+          </Row>
+        )}
       </Container>
     </ApplicationLayout>
   );

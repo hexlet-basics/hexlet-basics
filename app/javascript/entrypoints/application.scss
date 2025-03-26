@@ -158,8 +158,17 @@ $utilities: map-merge($utilities,
   .accordion-header > button {
     @extend .bg-body;
     @extend .shadow-none;
-    @extend .px-1;
+    @extend .px-0;
     @extend .fw-medium;
     @extend .text-body;
   }
+  .accordion-header > button, .accordion-body {
+    font-size: 18px;
+  }
+}
+
+.hexlet-basics-learning-video {
+  position: relative;
+  bottom: -28px;
+  left: 50px;
 }
