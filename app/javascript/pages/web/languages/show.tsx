@@ -248,7 +248,7 @@ export default function Show({
             </div>
           </Col>
         </Row>
-        {/* {courseLandingPageQnaItems.length > 0 && (
+        {courseLandingPageQnaItems.length > 0 && (
           <Row className="mb-lg-5 py-4 py-lg-5">
             <Col className="col-lg-10">
               <div className="display-5 fw-semibold lh-1 mb-4">
@@ -273,7 +273,7 @@ export default function Show({
               </Accordion>
             </Col>
           </Row>
-        )} */}
+        )}
       </Container>
     </ApplicationLayout>
   );
