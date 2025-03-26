@@ -84,15 +84,15 @@ export default function Show({
       <Head>
         <script type="application/ld+json">{JSON.stringify(product)}</script>
       </Head>
-      <Container className="pt-3 pt-lg-5">
+      <Container className="pt-4 pt-lg-5">
         {courseMember?.state === "finished" && (
           <Alert variant="success">
             <XssContent>{t("languages.show.completed_html")}</XssContent>
           </Alert>
         )}
-        <Row className="justify-content-center mb-4 mb-lg-5">
+        <Row className="justify-content-center py-2 mb-5">
           <Col className="col-lg-7 text-center">
-            <div className="fs-5 fw-medium text-primary text-opacity-75">
+            <div className="fs-5 fw-medium text-primary text-opacity-75 lh-sm mb-2">
               {t("languages.show.free_course")}
             </div>
             <h1 className="display-5 fw-bolder mb-3">
@@ -141,7 +141,7 @@ export default function Show({
             </Row>
           </Col>
         </Row>
-        <Row className="mb-lg-5 py-3 py-md-5">
+        <Row className="mb-lg-5 py-4 py-md-5">
           <Col className="col-lg-9">
             <h2 className="display-5 fw-medium lh-1 mb-4">
               {courseLandingPage.used_in_header}
@@ -172,7 +172,7 @@ export default function Show({
             </p>
           </Col>
         </Row>
-        <Row className="mb-lg-5 py-3 py-md-5">
+        <Row className="mb-lg-5 py-5">
           <Col className="col-lg-10">
             <div className="display-5 fw-semibold lh-1 mb-4">
               {t("languages.show.learning_program")}
@@ -209,7 +209,7 @@ export default function Show({
             </Accordion>
           </Col>
         </Row>
-        <div className="display-5 fw-semibold lh-1">
+        <div className="display-5 fw-semibold lh-1 mb-4 mb-lg-0">
           {t("languages.show.about_learning")}
         </div>
         <Row className="row-cols-1 row-cols-lg-2 mb-lg-5 pb-4 py-md-5 gy-4">
