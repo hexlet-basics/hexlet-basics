@@ -72,7 +72,7 @@
   "devDependencies": {
     "@4c/tsconfig": "^0.4.1",
     "@biomejs/biome": "1.9.4",
-    "@sentry/vite-plugin": "^3.2.2",
+    "@sentry/vite-plugin": "^3.2.3",
     "@types/lodash": "^4.17.16",
     "@types/node": "^22.13.13",
     "@types/qs": "^6.9.18",

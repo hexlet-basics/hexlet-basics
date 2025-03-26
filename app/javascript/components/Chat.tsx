@@ -61,11 +61,11 @@ export default function Chat({ course, lesson, lessonMember }: Props) {
     }
   }, [status]);
 
-  const result = useSWRImmutable<Message[]>(
-    user.guest ? null : Routes.ai_lesson_messages_path(lesson.id),
-    fetcher,
-  );
-  const previousMessages = result.data ?? [];
+  // const result = useSWRImmutable<Message[]>(
+  //   user.guest ? null : Routes.ai_lesson_messages_path(lesson.id),
+  //   fetcher,
+  // );
+  // const previousMessages = result.data ?? [];
 
   const { t: tHelpers } = useTranslation("helpers");
 
@@ -96,9 +96,9 @@ export default function Chat({ course, lesson, lessonMember }: Props) {
     <div ref={ref} className="h-100">
       <div className="mb-3">
         <MessagePresenter message={initMessage} />
-        {previousMessages.map((m: Message) => (
-          <MessagePresenter key={m.id} message={m} />
-        ))}
+        {/* {previousMessages.map((m: Message) => ( */}
+        {/*   <MessagePresenter key={m.id} message={m} /> */}
+        {/* ))} */}
         {messages.map((m: Message) => (
           <MessagePresenter key={m.id} message={m} />
         ))}
