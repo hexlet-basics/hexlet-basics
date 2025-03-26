@@ -1,7 +1,8 @@
-import { Accordion, Alert, Col, Container, Row } from "react-bootstrap";
+import { Accordion, Alert, Card, Col, Container, Row } from "react-bootstrap";
 
 import learningEnVideo from "@/images/course-landing-page/learning_en.mp4";
 import learningRuVideo from "@/images/course-landing-page/learning_ru.mp4";
+import waitingClock from "@/images/waiting_clock.png";
 import { useTranslation } from "react-i18next";
 
 import XssContent from "@/components/XssContent";
@@ -101,7 +102,7 @@ export default function Show({
             <div className="fs-5 text-body-secondary mb-5">
               {courseLandingPage.description}
             </div>
-            <Row className="row-cols-1 row-cols-sm-2 justify-content-center gy-3">
+            <Row className="row-cols-1 row-cols-sm-2 gy-3">
               {!courseMember && (
                 <Col className="col-lg-4">
                   <Link
@@ -248,31 +249,194 @@ export default function Show({
             </div>
           </Col>
         </Row>
-        {courseLandingPageQnaItems.length > 0 && (
-          <Row className="mb-lg-5 py-4 py-lg-5">
-            <Col className="col-lg-10">
-              <div className="display-5 fw-semibold lh-1 mb-4">
-                {t("languages.show.sort_questions")}
-              </div>
-              <Accordion
-                defaultActiveKey="0"
-                className="hexlet-basics-accordion"
-              >
-                {courseLandingPageQnaItems.map((item, index) => (
-                  <Accordion.Item
-                    eventKey={index.toString()}
-                    key={item.id}
-                    className="rounded-0 border-0 border-bottom border-secondary-subtle py-3 py-md-4"
+        <div className="py-4 mb-lg-5">
+          <Card className="px-3 px-sm-4 px-lg-5 py-5">
+            <Row className="gy-4 justify-content-between align-items-center py-lg-5">
+              <Col className="col-12 col-sm-11 col-lg-9 col-xxl-7">
+                <div className="display-5 fw-semibold lh-1">
+                  Готовы к инновациям в обучении? Начните обучение с AI прямо
+                  сейчас
+                </div>
+              </Col>
+              <Col className="col-auto">
+                {!courseMember && (
+                  <Link
+                    className="btn btn-primary"
+                    href={Routes.language_lesson_path(
+                      course.slug!,
+                      firstLesson.slug,
+                    )}
                   >
-                    <Accordion.Header as="h3">{item.question}</Accordion.Header>
-                    <Accordion.Body className="px-0">
-                      {item.answer}
-                    </Accordion.Body>
-                  </Accordion.Item>
-                ))}
-              </Accordion>
+                    <span>{t("languages.show.start")}</span>
+                  </Link>
+                )}
+                {courseMember && nextLesson && (
+                  <Link
+                    className="btn btn-primary"
+                    href={Routes.language_lesson_path(
+                      course.slug!,
+                      nextLesson.slug,
+                    )}
+                  >
+                    <span>{t("languages.show.continue")}</span>
+                  </Link>
+                )}
+              </Col>
+            </Row>
+          </Card>
+        </div>
+        <div className="py-4 py-lg-5">
+          <div className="display-5 fw-semibold lh-1 mb-5">Отзывы</div>
+          <Row className="row-cols-1 row-cols-lg-2 row-cols-xl-3 gy-4">
+            <Col>
+              <div className="d-flex flex-column h-100 rounded-3 bg-body-tertiary p-4">
+                <div className="mb-3">
+                  Простота, легкость, доходчивость. Я, человек который никогда
+                  не занимался и не изучал программирование (не считая уроков
+                  информатики), очень легко вошел в суть базы Python. Да, я
+                  только начал, даже не закончил программу, но на моей памяти
+                  сохранилось все то, когда только начинал. Мне понравилось, как
+                  я (а-ля студент) за счет простых и часто интересных примеров
+                  изучаю темы. Я понимаю, что здесь не смогу полностью понять и
+                  стать гуру в Puthon-е, но для старта и понимания "интересна ли
+                  тебе эта профессия?" - я считаю этот сайт отличным примером
+                </div>
+                <div className="mt-auto">
+                  <div className="fw-bold">Timur</div>
+                  <div>Сcылка на курс</div>
+                </div>
+              </div>
+            </Col>
+            <Col>
+              <div className="d-flex flex-column h-100 rounded-3 bg-body-tertiary p-4">
+                <div className="mb-3">
+                  Удобство интерфейса Платформа имеет простой и интуитивно
+                  понятный интерфейс, что позволяет легко ориентироваться среди
+                  курсов и материалов. Качество контента Курсы содержат
+                  актуальные и полезные материалы. Они прекрасно
+                  структурированы, что облегчает усвоение информации
+                </div>
+                <div className="mt-auto">
+                  <div className="fw-bold">Цапкова Любовь Евгеньевна</div>
+                  <div>Сcылка на курс</div>
+                </div>
+              </div>
+            </Col>
+            <Col>
+              <div className="d-flex flex-column h-100 rounded-3 bg-body-tertiary p-4">
+                <div className="mb-3">
+                  Очень понравился курс. Задачи по возрастанию сложности,
+                  понятное объяснение тем. Удобная песочница и в конце можно
+                  посмотреть вариант решения. Он не всегда совпадает с моим.
+                  Удобно, что можно изучить тесты и это помогает в решении. так
+                  же помогает, что можно посмотреть почему не прошли тесты и
+                  исправить свое решение
+                </div>
+                <div className="mt-auto">
+                  <div className="fw-bold">Анна Задирака</div>
+                  <div>Сcылка на курс</div>
+                </div>
+              </div>
+            </Col>
+            <Col>
+              <div className="d-flex flex-column h-100 rounded-3 bg-body-tertiary p-4">
+                <div className="mb-3">
+                  Курс был организован очень логично и последовательно. Он
+                  начинался с основ, что идеально подходит для новичков, и
+                  постепенно переходил к более сложным темам. Каждый модуль был
+                  четко структурирован, что позволяло легко следовать за
+                  материалом и не терять нить
+                </div>
+                <div className="mt-auto">
+                  <div className="fw-bold">Дмитрий Кондрашов</div>
+                  <div>Сcылка на курс</div>
+                </div>
+              </div>
+            </Col>
+            <Col>
+              <div className="d-flex flex-column h-100 rounded-3 bg-body-tertiary p-4">
+                <div className="mb-3">
+                  Очень грамотно и мягко вводят в курс HTML (Проходил конкретно
+                  его). Дают очень хорошую базу, подкрепляют задачами в конце
+                  каждого урока. Полностью стоит своего времени. Я как человек с
+                  нулевым бэкграундом в верстке, остался полностью доволен
+                  данным курсом
+                </div>
+                <div className="mt-auto">
+                  <div className="fw-bold">Игорь</div>
+                  <div>Сcылка на курс</div>
+                </div>
+              </div>
+            </Col>
+            <Col>
+              <div className="d-flex flex-column h-100 rounded-3 bg-body-tertiary p-4">
+                <div className="mb-3">
+                  Сначала относился скептически, потому что базовых курсов для
+                  новичков хоть пруд-пруди. Но когда начал проходить обратил
+                  внимание на хорошие примеры использования кода и задачки после
+                  каждого урока, заставляющие хоть немножко задуматься. Хоть
+                  базовые знания уже и имеются, но какие-то моменты узнал
+                  впервые. Разборался с тернальными операторами, свойствами и
+                  методами и с интерполяций, что вызывало у меня какие-то
+                  затруднения
+                </div>
+                <div className="mt-auto">
+                  <div className="fw-bold">Виталий</div>
+                  <div>Сcылка на курс</div>
+                </div>
+              </div>
             </Col>
           </Row>
+        </div>
+        <div className="py-4 py-lg-5">
+          <div className="bg-dark text-light p-4 rounded-3">
+            <Row className="flex-column flex-lg-row">
+              <Col className="col-lg-4 col-xl-5 col-xxl-6">
+                <img
+                  src={waitingClock}
+                  width="100%"
+                  height="auto"
+                  alt={t("languages.show.learning_preview")}
+                />
+              </Col>
+              <Col className="d-flex flex-column justify-content-center py-4 py-md-5">
+                <div className="display-5 fw-semibold lh-1 mb-4">
+                  Больше чем Поддержка
+                </div>
+                <div className="pe-lg-5">
+                  <div className="mb-5">
+                    Мы знаем, как непросто начинать в IT, поэтому создали
+                    сообщество разработчиков, где вам всегда готовы помочь.
+                    Здесь можно задавать вопросы, получать поддержку, общаться с
+                    опытными специалистами и быстрее влиться в профессию
+                  </div>
+                  <Link
+                    className="btn btn-outline-secondary"
+                    href="https://ttttt.me/HexletLearningBot"
+                  >
+                    <span>Присоединиться</span>
+                  </Link>
+                </div>
+              </Col>
+            </Row>
+          </div>
+        </div>
+        {courseLandingPageQnaItems.length > 0 && (
+          <div className="py-4 py-lg-5">
+            <div className="display-5 fw-semibold lh-1 mb-5">
+              {t("languages.show.sort_questions")}
+            </div>
+            <Row className="gy-4 gy-md-5">
+              {courseLandingPageQnaItems.map((item) => (
+                <Col key={item.id} className="col-12 col-md-6">
+                  <div className="fs-5 fw-medium mb-3 pe-lg-5">
+                    {item.question}
+                  </div>
+                  <p className="pe-lg-5">{item.answer}</p>
+                </Col>
+              ))}
+            </Row>
+          </div>
         )}
       </Container>
     </ApplicationLayout>
