@@ -23,6 +23,7 @@ Rails.application.configure do
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :production
+  config.active_storage.resolve_model_to_route = :rails_storage_proxy
 
   # TODO: enable (nginx configuration needed)
   # https://guides.rubyonrails.org/active_storage_overview.html#proxy-mode
