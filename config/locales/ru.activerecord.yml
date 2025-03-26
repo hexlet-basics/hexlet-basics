@@ -17,6 +17,7 @@ ru:
         header: Заголовок
         main: Основной
         footer: Выводить в футере
+        footer_name: Имя в футере
         listed: Отображать в списках
         slug: Slug
         order: Order
