@@ -27,16 +27,20 @@ class Ai::Lessons::MessagesController < Ai::ApplicationController
 
   def create
     response.headers["Content-Type"] = "text/event-stream"
+    response.headers["Cache-Control"] = "no-cache"
+
+    # Disable nginx buffering
+    response.headers["X-Accel-Buffering"] = "no"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Transfer-Encoding"] = "chunked"
     response.headers["x-vercel-ai-data-stream"] = "v1"
-    # response.headers["X-Accel-Buffering"] = "no"
-    # sse = SSE.new(response.stream, retry: 300, event: "empty")
 
     lesson = Language::Lesson.find(params[:lesson_id])
     lesson_info = lesson.infos.find_by!(locale: I18n.locale)
     language = lesson.language
     lesson_member = lesson.members.find_by!(user: current_user)
     # TODO: fix dry-inject
-    openai_api = OpenAI::Client.new
+    openai_api = OpenAI::Client.new log_errors: true
 
     # TODO: if guest
 
