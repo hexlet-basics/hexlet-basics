@@ -6,7 +6,7 @@ module Language::LandingPageRepository
     scope :web, ->() do
       with_locale.where(listed: true)
         .merge(Language.completed_progress)
-        .joins({ language: [ :current_version, { cover_attachment: :blob } ] })
+        .includes({ language: [ :current_version, { cover_attachment: :blob } ] })
     end
   end
 end
