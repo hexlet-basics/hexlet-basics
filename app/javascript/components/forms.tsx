@@ -125,6 +125,10 @@ export function XFile({ name, model, metaName }: XFileProps) {
   const {
     props: { railsDirectUploadsUrl },
   } = usePage<SharedProps>();
+
+  const { t: tAr } = useTranslation("activerecord");
+  const { t: tAm } = useTranslation("activemodel");
+
   const { inputName, setValue, error, form } = useInertiaInput<
     undefined | File
   >({
@@ -143,8 +147,10 @@ export function XFile({ name, model, metaName }: XFileProps) {
 
   const errors = error ? [error].flat() : [];
 
-  // const path = `attributes.${form.model}.${name}`;
-  // const label = tAr(path, tAm(path));
+  const path = `attributes.${form.model}.${name}`;
+  // @ts-expect-error type
+  const label = tAr(path, tAm(path));
+  console.log(label);
 
   const controlClasses = cn("form-control", {
     "is-invalid": errors.length > 0,
@@ -156,6 +162,8 @@ export function XFile({ name, model, metaName }: XFileProps) {
   return (
     <Form.Group className="mb-4">
       {/* <Form.Control type="hidden" name={inputName} value={form.data.meta.cover_signed_id} /> */}
+
+      <Form.Label>{label}</Form.Label>
       <input
         type="file"
         name={inputName}
@@ -164,35 +172,11 @@ export function XFile({ name, model, metaName }: XFileProps) {
         className={controlClasses}
         onChange={handleChange}
       />
-      {/* {progress && ( */}
-      {/*   <progress value={progress.percentage} max="100"> */}
-      {/*     {progress.percentage}% */}
-      {/*   </progress> */}
-      {/* )} */}
       {imageUrl && (
         <div className="m-3">
           <img src={imageUrl} alt={name} />
         </div>
       )}
-      {/* <Form.FloatingLabel label={label}> */}
-      {/*   <Form.Control */}
-      {/*     as={as} */}
-      {/*     name={inputName} */}
-      {/*     value={value} */}
-      {/*     id={inputId} */}
-      {/*     placeholder={label} */}
-      {/*     className={controlClasses} */}
-      {/*     onChange={(e) => setValue(e.target.value)} */}
-      {/*     {...props} */}
-      {/*   /> */}
-      {/*   {errors && ( */}
-      {/*     <Form.Control.Feedback type="invalid"> */}
-      {/*       {errors.map((e) => ( */}
-      {/*         <div key={e}>{e}</div> */}
-      {/*       ))} */}
-      {/*     </Form.Control.Feedback> */}
-      {/*   )} */}
-      {/* </Form.FloatingLabel> */}
     </Form.Group>
   );
 }
@@ -452,13 +436,13 @@ export function XStateEvent({ fieldName }: XStateEventProps) {
 type XDynamicInputs = PropsWithChildren & {
   model: string;
   emptyData: Record<string, unknown>;
-  // label: string;
+  label?: string;
 };
 
 export const XDynamicInputs = ({
   children,
   model,
-  // label,
+  label,
   emptyData,
 }: XDynamicInputs) => {
   const { addInput, removeInput, paths } = useDynamicInputs({
@@ -467,26 +451,32 @@ export const XDynamicInputs = ({
   });
 
   return (
-    <div className="mb-4">
-      {/* <div style={ { display: 'flex' } }> */}
-      {/*   <label style={ { flex: 1 } }>{ label }</label> */}
-      {/*   <button onClick={ addInput }>+</button> */}
-      {/* </div> */}
+    <fieldset>
+      <legend>{label}</legend>
+      <div className="mb-4">
+        {/* <div style={ { display: 'flex' } }> */}
+        {/*   <label style={ { flex: 1 } }>{ label }</label> */}
+        {/*   <button onClick={ addInput }>+</button> */}
+        {/* </div> */}
 
-      <div className="mt-4">
-        {paths.map((path, i) => (
-          // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-          <NestedFields key={i} model={path}>
-            <Form.Group className="mb-4">
-              <div>{children}</div>
-              <Button variant="outline-primary" onClick={() => removeInput(i)}>
-                -
-              </Button>
-            </Form.Group>
-          </NestedFields>
-        ))}
+        <div className="mt-4">
+          {paths.map((path, i) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+            <NestedFields key={i} model={path}>
+              <Form.Group className="mb-4">
+                <div>{children}</div>
+                {/* <Button */}
+                {/*   variant="outline-primary" */}
+                {/*   onClick={() => removeInput(i)} */}
+                {/* > */}
+                {/*   - */}
+                {/* </Button> */}
+              </Form.Group>
+            </NestedFields>
+          ))}
+        </div>
+        <Button onClick={() => addInput()}>+</Button>
       </div>
-      <Button onClick={() => addInput()}>+</Button>
-    </div>
+    </fieldset>
   );
 };

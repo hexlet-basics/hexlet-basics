@@ -88,10 +88,12 @@ export default function Form({ data, url, method }: Props) {
 
       <XDynamicInputs
         model="qna_items"
+        label="QNA"
         emptyData={{ question: "", answer: "" }}
       >
         <XInput name="question" />
         <XInput name="answer" />
+        <XCheck name="_destroy" />
       </XDynamicInputs>
 
       <Submit className="btn w-100 btn-lg btn-primary mb-3">

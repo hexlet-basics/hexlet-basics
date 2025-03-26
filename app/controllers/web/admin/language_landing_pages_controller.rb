@@ -43,7 +43,6 @@ class Web::Admin::LanguageLandingPagesController < Web::ApplicationController
 
   def update
     landing_page = Admin::LanguageLandingPageForm.with_locale.find(params[:id])
-    # raise params.inspect
 
     if landing_page.update(params[:language_landing_page])
       f(:success)
