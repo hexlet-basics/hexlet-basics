@@ -29,7 +29,7 @@ module YandexSearchFeedBuilder
             landingPages.each do |lp|
               module_infos = lp.language.current_module_infos
 
-              if module_infos.size >= 3
+              if module_infos.size < 3
                 next
               end
 

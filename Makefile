@@ -19,6 +19,7 @@ db-reset:
 	bin/rails db:fixtures:load
 
 dev:
+	# rm -rf dist
 	bin/dev
 
 log-mails:
