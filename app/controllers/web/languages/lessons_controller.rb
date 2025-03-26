@@ -56,55 +56,6 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
       end
     end
 
-    # unless @lesson
-    #   f(:lesson_not_found, type: :info)
-    #   redirect_to language_path(resource_language.slug)
-    #   return
-    # end
-    #
-    # @lesson_version = resource_language.current_lesson_versions.find_by!(lesson: @lesson)
-    # @info = @lesson_version.infos.with_locale.sole
-    # @language_lessons_count = resource_language.current_lessons.count
-    # @lessons_info = resource_language.current_lesson_infos
-    #                                  .joins(version: :lesson)
-    #                                  .includes(version: :lesson)
-    #                                  .with_locale
-    #                                  .order('language_lesson_versions.natural_order')
-    #
-    # if current_user.guest?
-    #   gon.lesson_member = Language::Lesson::MemberFake.new
-    # else
-    #
-    #   if language_member.new_record?
-    #     language_member.save!
-    #     js_event_options = {
-    #       user: current_user.serializable_data,
-    #       language: resource_language.serializable_data,
-    #       language_member: language_member.serializable_data
-    #     }
-    #     js_event :language_started, js_event_options
-    #   end
-    #
-    #
-    #   if lesson_member.new_record?
-    #     lesson_member.save!
-    #     js_event_options = {
-    #       user: current_user.serializable_data,
-    #       language: resource_language.serializable_data,
-    #       language_member: language_member.serializable_data,
-    #       lesson_member: lesson_member.serializable_data,
-    #       lesson: @lesson.serializable_data
-    #     }
-    #     js_event :lesson_started, js_event_options
-    #   end
-    #
-    #   gon.lesson_member = lesson_member
-    # end
-    #
-    # gon.language = resource_language.slug
-    # gon.lesson_version = @lesson_version
-    # gon.lesson = @lesson
-    #
     title = t(
       ".title",
       lesson: lesson_info,

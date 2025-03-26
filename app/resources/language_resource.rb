@@ -5,7 +5,7 @@ class LanguageResource
 
   typelize_from Language
 
-  attributes :id, :slug, :learn_as, :progress, :category_id, :current_version_id, :created_at
+  attributes :id, :slug, :learn_as, :progress, :category_id, :current_version_id, :created_at, :openai_assistant_id
   has_one :current_version, resource: Language::VersionResource
 
   typelize :string, nullable: true

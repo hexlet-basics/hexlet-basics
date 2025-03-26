@@ -26,7 +26,7 @@ Rails.application.routes.draw do
     namespace :ai do
       resources :lessons, only: [] do
         scope module: :lessons do
-          resources :messages, only: [ :create ]
+          resources :messages, only: [ :index, :create ]
         end
       end
     end

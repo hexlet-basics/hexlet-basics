@@ -2,13 +2,39 @@ class Ai::Lessons::MessagesController < Ai::ApplicationController
   include ActionController::Live
   # include Import["openai_api"]
 
+  def index
+    lesson = Language::Lesson.find(params[:lesson_id])
+    # language = lesson_info.language
+    lesson_member = lesson.members.find_by!(user: current_user)
+
+    messages = []
+    if lesson_member.openai_thread_id?
+      openai_api = OpenAI::Client.new
+      result = openai_api.messages.list(thread_id: lesson_member.openai_thread_id)
+      # raise result["data"].inspect
+      messages = result["data"].map do
+        {
+          id: it["id"],
+          role: it["role"],
+          created_at: it["created_at"],
+          content: it["content"].map { it["text"]["value"] }.join
+        }
+      end.reverse
+    end
+
+    render json: messages
+  end
+
   def create
     response.headers["Content-Type"] = "text/event-stream"
-    sse = SSE.new(response.stream, retry: 300, event: "empty")
+    response.headers["x-vercel-ai-data-stream"] = "v1"
+    # response.headers["X-Accel-Buffering"] = "no"
+    # sse = SSE.new(response.stream, retry: 300, event: "empty")
 
-    lesson_info = Language::Lesson.find(params[:lesson_id])
-    language = lesson_info.language
-    lesson_member = lesson_info.members.find_by!(user: current_user)
+    lesson = Language::Lesson.find(params[:lesson_id])
+    lesson_info = lesson.infos.find_by!(locale: I18n.locale)
+    language = lesson.language
+    lesson_member = lesson.members.find_by!(user: current_user)
     # TODO: fix dry-inject
     openai_api = OpenAI::Client.new
 
@@ -30,24 +56,50 @@ class Ai::Lessons::MessagesController < Ai::ApplicationController
       }
     )
 
+    response.stream.write("4:#{{
+      id: SecureRandom.uuid,
+      role: "assistant",
+      content: [
+        {
+          type: "text",
+          text: { value: "" }
+        }
+      ]
+    }.to_json}\n")
+
+    instructions = "
+      Ты помогаешь изучать #{language.slug} на основе загруженного курса в файлах.
+      Этот тред посвящен уроку #{lesson_info.name}.lesson
+      Курс состоит из теории, практики и тестов, которые выполняются прямо в браузере.
+      Ты не показываешь решение практики, пользователь должен решить практику самостоятельно.
+      Направляй, давай объяснения, помогай разобраться, предлагай шаги для решения, выдвигай гипотезы.
+      "
+
     _run_response = openai_api.runs.create(
       thread_id: lesson_member.openai_thread_id,
       parameters: {
         assistant_id: language.openai_assistant_id,
+        instructions:,
         stream: proc do |chunk|
-            # if chunk["object"] == "thread.message.delta"
-            # delta = chunk.dig("delta", "content", 0, "text", "value")
-            sse.write chunk, event: chunk["object"]
-          # sse.write chunk.dig("delta")
-          # end
+          # https://sdk.vercel.ai/docs/ai-sdk-ui/stream-protocol
+          if chunk["object"] == "thread.message.delta"
+            content = chunk.dig("delta", "content")
+            text = content.map { it.dig("text", "value") }.join
+            response.stream.write("0:#{text.to_json}\n")
+          end
         end
       }
     )
 
-  rescue => e
-    # response.stream.write("event: error\ndata: #{e.message}\n\n")
-    raise e
+    # response.stream.write("d:#{{
+    #   finishReason: "stop",
+    #   usage: {
+    #     promptTokens: 10,
+    #     completionTokens: 20
+    #   }
+    # }.to_json}\n")
+
   ensure
-    sse.close
+    response.stream.close
   end
 end
