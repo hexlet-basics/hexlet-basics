@@ -36,6 +36,7 @@ export default function NavbarBlock({ className }: Props) {
       <Navbar.Collapse>
         <Nav className="me-auto">
           <NavDropdown
+            renderMenuOnMount={true}
             className="link-body-emphasis"
             title={tLayouts("shared.nav.courses")}
             id="basic-nav-dropdown"
