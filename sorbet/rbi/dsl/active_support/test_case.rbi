@@ -46,6 +46,16 @@ class ActiveSupport::TestCase
   end
   def language_categories(fixture_name = nil, *other_fixtures); end
 
+  sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[Language::LandingPage::QnaItem]) }
+  sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(Language::LandingPage::QnaItem) }
+  sig do
+    params(
+      fixture_name: T.any(String, Symbol),
+      other_fixtures: T.any(String, Symbol)
+    ).returns(T::Array[Language::LandingPage::QnaItem])
+  end
+  def language_landing_page_qna_item(fixture_name = nil, *other_fixtures); end
+
   sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[Language::LandingPage]) }
   sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(Language::LandingPage) }
   sig do

@@ -61,10 +61,7 @@ module GeneratedPathHelpersModule
   def admin_root_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def api_feed_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def api_feeds_path(*args); end
+  def ai_lesson_messages_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def blog_post_path(*args); end
@@ -98,9 +95,6 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def edit_admin_review_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def edit_api_feed_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def edit_password_path(*args); end
@@ -142,15 +136,6 @@ module GeneratedPathHelpersModule
   def new_admin_review_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def new_api_feed_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def new_rails_conductor_inbound_email_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def new_rails_conductor_inbound_email_source_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def new_remind_password_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -173,21 +158,6 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def rails_blob_representation_proxy_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def rails_conductor_inbound_email_incinerate_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def rails_conductor_inbound_email_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def rails_conductor_inbound_email_reroute_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def rails_conductor_inbound_email_sources_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def rails_conductor_inbound_emails_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def rails_direct_uploads_path(*args); end
@@ -214,25 +184,7 @@ module GeneratedPathHelpersModule
   def rails_mailers_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def rails_mailgun_inbound_emails_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def rails_mandrill_inbound_emails_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def rails_mandrill_inbound_health_check_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def rails_postmark_inbound_emails_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def rails_relay_inbound_emails_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def rails_representation_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def rails_sendgrid_inbound_emails_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def rails_service_blob_path(*args); end
@@ -266,6 +218,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def session_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def success_language_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def switch_locale_path(*args); end

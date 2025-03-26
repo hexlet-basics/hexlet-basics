@@ -827,6 +827,96 @@ class Language::LandingPage
     sig { void }
     def description_will_change!; end
 
+    sig { returns(T.nilable(T::Boolean)) }
+    def footer; end
+
+    sig { params(value: T.nilable(T::Boolean)).returns(T.nilable(T::Boolean)) }
+    def footer=(value); end
+
+    sig { returns(T::Boolean) }
+    def footer?; end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def footer_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def footer_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def footer_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
+    def footer_change; end
+
+    sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
+    def footer_change_to_be_saved; end
+
+    sig { params(from: T.nilable(T::Boolean), to: T.nilable(T::Boolean)).returns(T::Boolean) }
+    def footer_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def footer_in_database; end
+
+    sig { returns(T.nilable(::String)) }
+    def footer_name; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def footer_name=(value); end
+
+    sig { returns(T::Boolean) }
+    def footer_name?; end
+
+    sig { returns(T.nilable(::String)) }
+    def footer_name_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def footer_name_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def footer_name_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def footer_name_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def footer_name_change_to_be_saved; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def footer_name_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def footer_name_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def footer_name_previous_change; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def footer_name_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def footer_name_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def footer_name_was; end
+
+    sig { void }
+    def footer_name_will_change!; end
+
+    sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
+    def footer_previous_change; end
+
+    sig { params(from: T.nilable(T::Boolean), to: T.nilable(T::Boolean)).returns(T::Boolean) }
+    def footer_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def footer_previously_was; end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def footer_was; end
+
+    sig { void }
+    def footer_will_change!; end
+
     sig { returns(T.nilable(::String)) }
     def header; end
 
@@ -1419,6 +1509,12 @@ class Language::LandingPage
     def restore_description!; end
 
     sig { void }
+    def restore_footer!; end
+
+    sig { void }
+    def restore_footer_name!; end
+
+    sig { void }
     def restore_header!; end
 
     sig { void }
@@ -1486,6 +1582,18 @@ class Language::LandingPage
 
     sig { returns(T::Boolean) }
     def saved_change_to_description?; end
+
+    sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
+    def saved_change_to_footer; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_footer?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_footer_name; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_footer_name?; end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_header; end
@@ -1876,6 +1984,12 @@ class Language::LandingPage
 
     sig { returns(T::Boolean) }
     def will_save_change_to_description?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_footer?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_footer_name?; end
 
     sig { returns(T::Boolean) }
     def will_save_change_to_header?; end

@@ -13,8 +13,6 @@ class ApplicationController
   def helpers; end
 
   module HelperMethods
-    include ::ActionText::ContentHelper
-    include ::ActionText::TagHelper
     include ::InertiaRails::Helper
     include ::Ransack::Helpers::FormHelper
     include ::ViteRails::TagHelpers
