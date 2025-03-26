@@ -8,4 +8,6 @@ class Admin::LanguageForm < Language
     :slug,
     :cover,
     :openai_assistant_id
+
+  skip_if_empty :cover
 end

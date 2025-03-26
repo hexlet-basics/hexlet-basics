@@ -21,5 +21,7 @@ class Admin::LanguageLandingPageForm < Language::LandingPage
     :outcomes_description,
     qna_items_attributes: [ :id, :question, :answer, :_destroy ]
 
+  skip_if_empty :outcomes_image
+
   accepts_nested_attributes_for :qna_items, allow_destroy: true
 end

@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/Hexlet/active_form_model.git
-  revision: 97550c78118c816c32780e6a21c548d88585cc9c
+  revision: 07fea08948217845de47bf6e09badeb298cf3dd6
   specs:
-    active_form_model (0.5.1)
+    active_form_model (0.6.0)
       activesupport (>= 3)
 
 GEM
@@ -380,7 +380,7 @@ GEM
     responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
-    rubocop (1.74.0)
+    rubocop (1.75.0)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -388,7 +388,7 @@ GEM
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 2.9.3, < 3.0)
-      rubocop-ast (>= 1.38.0, < 2.0)
+      rubocop-ast (>= 1.43.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
     rubocop-ast (1.43.0)
