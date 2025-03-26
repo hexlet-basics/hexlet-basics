@@ -9,8 +9,8 @@ module YandexSearchFeedBuilder
           xml.company I18n.t("common.organization.legal_name")
           xml.url urls.root_url(suffix: :ru)
           xml.email I18n.t("common.organization.email")
-          # TODO: добавить xml.picture "https://code-basics.com/vite/assets/logo-z8eNEt-I.png"
           xml.description I18n.t("common.organization.description")
+          xml.picture "https://code-basics.com/images/logo.png"
 
           # xml.currencies do
           #   xml.currency(id: "RUR", rate: "0")
@@ -50,11 +50,14 @@ module YandexSearchFeedBuilder
                   xml.picture urls.rails_representation_url(lp.language.cover.variant(:list))
                 end
 
-                lp.language.current_module_infos.each_with_index do |mi, i|
-                  xml.param(name: "План", order: "#{i + 1}", unit: mi.name, hours: 5) do
-                    xml.cdata <<-CDATA
-                    #{mi.description}
-                    CDATA
+                module_infos = lp.language.current_module_infos
+                if module_infos.size >= 3
+                  module_infos.each_with_index do |mi, i|
+                    xml.param(name: "План", order: "#{i + 1}", unit: mi.name, hours: 5) do
+                      xml.cdata <<-CDATA
+                      #{mi.description}
+                      CDATA
+                    end
                   end
                 end
               end
