@@ -1,10 +1,12 @@
 import * as Routes from "@/routes.js";
+import type { SharedProps } from "@/types";
 import type {
   Language,
   LanguageLesson,
   LanguageLessonMember,
 } from "@/types/serializers";
 import { type Message, useAssistant } from "@ai-sdk/react";
+import { usePage } from "@inertiajs/react";
 import axios from "axios";
 import cn from "classnames";
 import { useEffect, useRef } from "react";
@@ -36,6 +38,9 @@ function MessagePresenter({ message }: { message: Message }) {
 // https://sdk.vercel.ai/cookbook/next/stream-assistant-response
 export default function Chat({ course, lesson, lessonMember }: Props) {
   const { t: tViews } = useTranslation("web");
+  const {
+    auth: { user },
+  } = usePage<SharedProps>().props;
   const formRef = useRef<HTMLTextAreaElement>(null);
   const { ref } = useInView({
     threshold: 0,
@@ -71,9 +76,16 @@ export default function Chat({ course, lesson, lessonMember }: Props) {
     }
   }, [error]);
 
-  const content = course.openai_assistant_id
-    ? tViews("languages.lessons.show.chat.hi")
-    : tViews("languages.lessons.show.chat.disabled");
+  let content: string;
+
+  if (user.guest) {
+    content = tViews("languages.lessons.show.chat.guest");
+  } else if (course.openai_assistant_id) {
+    content = tViews("languages.lessons.show.chat.hi");
+  } else {
+    content = tViews("languages.lessons.show.chat.disabled");
+  }
+
   const initMessage: Message = {
     id: "0",
     role: "assistant",
@@ -92,7 +104,7 @@ export default function Chat({ course, lesson, lessonMember }: Props) {
         ))}
       </div>
 
-      {course.openai_assistant_id && (
+      {course.openai_assistant_id && !user.guest && (
         <form onSubmit={submitMessage}>
           <Form.Control
             ref={formRef}
