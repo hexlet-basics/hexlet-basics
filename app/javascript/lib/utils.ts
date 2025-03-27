@@ -150,9 +150,9 @@ export const neededPreview = (language: string) => {
 //     "https://pre.hexlet.io/python?promo_name=base-python&promo_position=article-body&promo_type=link&promo_creative=test-failed-link",
 //   javascript:
 //     "https://pre.hexlet.io/frontend?promo_name=base-frontend&promo_position=article-body&promo_type=link&promo_creative=test-failed-link",
-//   php: "https://ru.hexlet.io/programs/php?promo_name=prof-php&promo_position=article-body&promo_type=link&promo_creative=test-failed-link",
-//   css: "https://ru.hexlet.io/programs/frontend?promo_name=prof-frontend&promo_position=article-body&promo_type=link&promo_creative=test-failed-link",
-//   html: "https://ru.hexlet.io/programs/frontend?promo_name=prof-frontend&promo_position=article-body&promo_type=link&promo_creative=test-failed-link",
+//   php: "https://ru.hexlet.io/programs/php?promo_name=prof-php&promo_position=article-body&promo_type=link&promo_creative=test-failed-link&utm_source=code-basics&utm_medium=referral&utm_campaign=programs&utm_content=lesson",
+//   css: "https://ru.hexlet.io/programs/frontend?promo_name=prof-frontend&promo_position=article-body&promo_type=link&promo_creative=test-failed-link&utm_source=code-basics&utm_medium=referral&utm_campaign=programs&utm_content=lesson",
+//   html: "https://ru.hexlet.io/programs/frontend?promo_name=prof-frontend&promo_position=article-body&promo_type=link&promo_creative=test-failed-link&utm_source=code-basics&utm_medium=referral&utm_campaign=programs&utm_content=lesson",
 // };
 //
 // export const getHelpByTutorUrl = (language) => {
