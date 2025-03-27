@@ -3,7 +3,7 @@ import { createConsumer } from "@rails/actioncable";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 
-const url = `wss://${import.meta.env.VITE_APP_HOST}/cable`;
+const url = `wss://${import.meta.env.VITE_APP_HOST || "code-basics.com"}/cable`;
 const cableInstance = createConsumer(url);
 
 export type AssistantMessage = {
