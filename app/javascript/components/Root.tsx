@@ -1,5 +1,6 @@
 import * as Routes from "@/routes.js";
 import * as Sentry from "@sentry/react";
+import { SnackbarProvider } from "notistack";
 import "dayjs/locale/ru";
 import { PrimeReactProvider } from "primereact/api";
 import "react-bootstrap";
@@ -52,9 +53,11 @@ function Root(props: PropsWithChildren) {
 
   return (
     <PrimeReactProvider>
-      <Sentry.ErrorBoundary fallback={FallbackComponent} showDialog>
-        {props.children}
-      </Sentry.ErrorBoundary>
+      <SnackbarProvider>
+        <Sentry.ErrorBoundary fallback={FallbackComponent} showDialog>
+          {props.children}
+        </Sentry.ErrorBoundary>
+      </SnackbarProvider>
     </PrimeReactProvider>
   );
 }

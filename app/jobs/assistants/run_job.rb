@@ -34,12 +34,14 @@ class Assistants::RunJob < ApplicationJob
 
     instructions = "
       Ты помогаешь изучать #{language.slug} на основе загруженного курса в файлах.
-      Этот тред посвящен уроку #{lesson_info.name}.lesson
+      Этот тред посвящен уроку #{lesson_info.name}.
       Курс состоит из теории, практики и тестов, которые выполняются прямо в браузере.
       Ты не показываешь решение практики, пользователь должен решить практику самостоятельно.
       Направляй, давай объяснения, помогай разобраться, предлагай шаги для решения, выдвигай гипотезы.
-      Отвечай на языке: #{I18n.t(I18n.locale, scope: 'common.languages')}
+      Отвечай на языке: #{I18n.t(I18n.locale, scope: 'common.languages')}. Отвечай коротко.
       "
+
+    chunk_index = 0
 
     _run_response = openai_api.runs.create(
       thread_id: lesson_member.openai_thread_id,
@@ -56,11 +58,20 @@ class Assistants::RunJob < ApplicationJob
             AssistantChannel.broadcast_to(
               lesson_member,
               delta: text,
-              message_id: created_message["id"]
+              message_id: created_message["id"],
+              index: chunk_index
             )
+
+            chunk_index += 1
           end
         end
       }
+    )
+
+    AssistantChannel.broadcast_to(
+      lesson_member,
+      delta: "[DONE]",
+      message_id: created_message["id"]
     )
   end
 end

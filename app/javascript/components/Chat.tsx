@@ -2,6 +2,7 @@ import {
   type AssistantMessage,
   useAssistantStream,
 } from "@/hooks/useAssistantStream";
+
 import type {
   Language,
   LanguageLesson,
@@ -72,14 +73,6 @@ export default function Chat({ course, lesson, lessonMember }: Props) {
     threshold: 0,
     // onChange: () => formRef.current?.focus(),
   });
-
-  // const { status, messages, input, submitMessage, error, handleInputChange } =
-  //   useAssistant({
-  //     threadId: lessonMember
-  //       ? lessonMember.openai_thread_id || undefined
-  //       : undefined,
-  //     api: Routes.ai_lesson_messages_path(lesson.id),
-  //   });
 
   const { input, status, messages, submitMessage, handleInputChange } =
     useAssistantStream(lessonMember.id, lesson.id);

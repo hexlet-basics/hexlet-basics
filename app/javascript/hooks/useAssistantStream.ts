@@ -1,6 +1,8 @@
 import * as Routes from "@/routes.js";
 import { createConsumer } from "@rails/actioncable";
 import axios from "axios";
+import { debounce } from "es-toolkit";
+import { useSnackbar } from "notistack";
 import { useEffect, useRef, useState } from "react";
 
 const url = `wss://${import.meta.env.VITE_APP_HOST}/cable`;
@@ -15,9 +17,12 @@ export type AssistantMessage = {
 type StreamMessage = {
   delta: string;
   message_id: string;
+  index: number;
 };
 
 export function useAssistantStream(lessonMemberId: number, lessonId: number) {
+  const { enqueueSnackbar } = useSnackbar();
+
   const [messages, setMessages] = useState<AssistantMessage[]>([]);
   const [input, setInput] = useState("");
   const [status, setStatus] = useState<"awaiting_message" | "in_progress">(
@@ -25,8 +30,32 @@ export function useAssistantStream(lessonMemberId: number, lessonId: number) {
   );
 
   // Buffer per message_id
-  const buffers = useRef<Record<string, string>>({});
+  const buffers = useRef<Record<string, string[]>>({});
 
+  // Debounced update to reduce flickering + broken words
+  const scheduleUpdate = useRef(
+    debounce((messageId: string) => {
+      const parts = buffers.current[messageId];
+      const fullText = parts.join("");
+
+      setMessages((prev) => {
+        const existing = prev.find((m) => m.id === messageId);
+
+        if (existing) {
+          return prev.map((m) =>
+            m.id === messageId ? { ...m, content: fullText } : m,
+          );
+        }
+
+        return [
+          ...prev,
+          { id: messageId, role: "assistant", content: fullText },
+        ];
+      });
+    }, 50),
+  ).current;
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const subscription = cableInstance.subscriptions.create(
       { channel: "AssistantChannel", id: lessonMemberId },
@@ -35,6 +64,7 @@ export function useAssistantStream(lessonMemberId: number, lessonId: number) {
           console.log("connected");
         },
         disconnected() {
+          setStatus("awaiting_message");
           console.log("disconnected");
         },
         rejected() {
@@ -42,39 +72,27 @@ export function useAssistantStream(lessonMemberId: number, lessonId: number) {
         },
 
         received(data: StreamMessage) {
-          const { message_id, delta } = data;
+          const { message_id, delta, index } = data;
+
           if (!buffers.current[message_id]) {
-            buffers.current[message_id] = "";
+            buffers.current[message_id] = [];
           }
 
-          buffers.current[message_id] += delta;
+          if (delta === "[DONE]") {
+            console.log("📡 Stream finished for message:", message_id);
+            setStatus("awaiting_message");
+          } else {
+            buffers.current[message_id][index] = delta;
+          }
 
-          setMessages((prev) => {
-            const existing = prev.find((m) => m.id === message_id);
-
-            if (existing) {
-              return prev.map((m) =>
-                m.id === message_id
-                  ? { ...m, content: buffers.current[message_id] }
-                  : m,
-              );
-            }
-
-            return [
-              ...prev,
-              {
-                id: message_id,
-                role: "assistant",
-                content: buffers.current[message_id],
-              },
-            ];
-          });
+          scheduleUpdate(message_id);
         },
       },
     );
 
     return () => {
       subscription.unsubscribe();
+      scheduleUpdate.cancel();
     };
   }, [lessonMemberId]);
 
@@ -98,9 +116,10 @@ export function useAssistantStream(lessonMemberId: number, lessonId: number) {
         message: input,
       });
     } catch (error) {
-      console.error("Failed to send message", error);
-    } finally {
+      const msg = "Connection Error";
+      enqueueSnackbar(msg);
       setStatus("awaiting_message");
+      console.error(msg, error);
     }
   };
 
