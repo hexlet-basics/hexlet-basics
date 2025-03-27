@@ -20,7 +20,7 @@ type ResolvedComponent = {
 
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
-  ignoreErrors: [],
+  ignoreErrors: ["dynamically imported module", "Unable to preload CSS"],
 });
 
 createInertiaApp({
