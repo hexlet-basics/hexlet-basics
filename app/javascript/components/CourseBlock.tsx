@@ -39,7 +39,7 @@ export default function CourseBlock({
         {/*       {t(".course_finished")} */}
         {/*     </div> */}
         {/*   )} */}
-        <Card.Body>
+        <Card.Body className="p-2 p-md-3">
           <Card.Title>
             <a
               href={Routes.language_path(landingPage.slug)}
