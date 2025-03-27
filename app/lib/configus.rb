@@ -66,7 +66,7 @@ Configus.build Rails.env do
     carrotquest_user_auth_key -> { ENV.fetch("CARROTQUEST_USER_AUTH_KEY", "") }
 
     hexlet_proxy do
-      url do ENV.fetch("HEXLET_PROXY_URL", nil)
+      url ENV.fetch("HEXLET_PROXY_URL", nil)
     end
   end
 
