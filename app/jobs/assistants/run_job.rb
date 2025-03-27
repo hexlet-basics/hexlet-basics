@@ -10,7 +10,9 @@ class Assistants::RunJob < ApplicationJob
     # TODO: fix dry-inject
     openai_api = OpenAI::Client.new do |f|
       f.response :logger, Rails.logger, bodies: true
-      f.proxy = { uri: configus.hexlet_proxy.url }
+      if configus.hexlet_proxy.url.present?
+        f.proxy = { uri: configus.hexlet_proxy.url }
+      end
     end
 
     # TODO: if guest
