@@ -42,22 +42,7 @@ resource "cloudflare_ruleset" "http_request_dynamic_redirect_main_ru" {
   kind    = "zone"
   phase   = "http_request_dynamic_redirect"
 
-  rules = [{
-    action      = "redirect"
-    description = "Redirect from ru domain to main domain"
-    enabled     = true
-    expression = "true"
-
-    action_parameters = {
-      from_value = {
-        preserve_query_string = true
-        status_code           = 301
-        target_url = {
-          value = "https://${var.domain}/ru"
-        }
-      }
-    }
-  }]
+  rules = []
 }
 
 # --------------------------------------
@@ -204,20 +189,5 @@ resource "cloudflare_ruleset" "http_request_dynamic_redirect_main" {
   kind    = "zone"
   phase   = "http_request_dynamic_redirect"
 
-  rules = [{
-    action      = "redirect"
-    description = "Redirect from ru subdomain to main domain"
-    enabled     = true
-    expression = "(http.host eq \"ru.${var.domain}\")"
-
-    action_parameters = {
-      from_value = {
-        preserve_query_string = true
-        status_code           = 301
-        target_url = {
-          value = "https://${var.domain}/ru"
-        }
-      }
-    }
-  }]
+  rules = []
 }
