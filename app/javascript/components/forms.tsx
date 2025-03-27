@@ -69,7 +69,7 @@ export function XHidden({ name, model, as, ...props }: XFormControlProps) {
   const { inputName, inputId, value } = useInertiaInput<string | undefined>({
     name,
     model,
-    errorKey: name,
+    // errorKey: name,
   });
 
   return (
@@ -92,7 +92,7 @@ export function XInput({ name, model, as, ...props }: XFormControlProps) {
   >({
     name,
     model,
-    errorKey: name,
+    // errorKey: name,
   });
 
   const errors = error ? [error].flat() : [];
@@ -150,7 +150,7 @@ export function XFile({ name, model, metaName }: XFileProps) {
     undefined | File
   >({
     name,
-    errorKey: name,
+    // errorKey: name,
     model,
   });
 
@@ -256,7 +256,7 @@ export function XCheck({ name, model, type, ...props }: XFormCheckProps) {
   const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
     name,
     model,
-    errorKey: name,
+    // errorKey: name,
   });
   // console.log(form, value)
 
@@ -321,7 +321,7 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
   const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
     name,
     model,
-    errorKey: name,
+    // errorKey: name,
   });
 
   const realError = has ? form.errors[`${form.model}.${has}`] : error;

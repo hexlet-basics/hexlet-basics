@@ -26,6 +26,7 @@ class Web::SessionsController < Web::ApplicationController
       f(:success)
       redirect_to root_path
     else
+      f(:error)
       redirect_to_inertia new_session_path, sign_in_form
     end
   end
