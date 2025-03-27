@@ -69,7 +69,10 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
           <Row className="justify-content-center mb-3">
             <Col className="col-12 col-md-10 col-lg-8 d-flex flex-column">
               <div className="mb-4">
-                <Image src={blogPost.cover_main_variant!} />
+                <Image
+                  className="img-fluid"
+                  src={blogPost.cover_main_variant!}
+                />
               </div>
               <div className="hexlet-basics-content">
                 <Markdown
