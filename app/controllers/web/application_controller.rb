@@ -17,7 +17,7 @@ class Web::ApplicationController < ApplicationController
   inertia_share do
     language_categories = Language::Category.with_locale
     landing_pages_for_lists = Language::LandingPage.web
-      .where(main: true)
+      .where(main: true).where(listed: true)
       .merge(Language.ordered)
 
     landing_pages_for_footer = Language::LandingPage.web
