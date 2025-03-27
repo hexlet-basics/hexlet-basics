@@ -64,6 +64,10 @@ Configus.build Rails.env do
     csp_report_uri ENV.fetch("CSP_REPORT_URI", "")
 
     carrotquest_user_auth_key -> { ENV.fetch("CARROTQUEST_USER_AUTH_KEY", "") }
+
+    hexlet_proxy do
+      url do ENV.fetch("HEXLET_PROXY_URL", nil)
+    end
   end
 
   env :staging, parent: :production do

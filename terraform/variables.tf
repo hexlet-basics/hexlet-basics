@@ -62,7 +62,6 @@ variable "yc" {
     cloud_id = string
     folder_id = string
     zone = string
-    sitemaps_storage = map(any)
     storage = map(any)
   })
 }
