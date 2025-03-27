@@ -11,6 +11,7 @@ env:
   # CADDY_IMAGE_NAME: hexletbasics/services-caddy
   NGINX_IMAGE_NAME: hexletbasics/services-nginx
   COLOR_MAP: '{ success: "#008000", failure: "#800000" }'
+  APP_HOST: code-basics.com
 
 jobs:
   build:
@@ -69,6 +70,7 @@ jobs:
             "carrotquest-api-key=${{ secrets.CARROTQUEST_API_KEY }}"
           build-args: |
             RELEASE_VERSION=${{ env.RELEASE_VERSION }}
+            APP_HOST=${{ env.APP_HOST }}
 
       - name: Build&Push Nginx
         uses: docker/build-push-action@v6

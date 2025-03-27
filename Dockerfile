@@ -60,6 +60,7 @@ RUN bundle exec bootsnap precompile app/ lib/
 
 ARG RELEASE_VERSION="unknown"
 ENV VITE_RELEASE_VERSION=$RELEASE_VERSION
+ENV VITE_APP_HOST=$APP_HOST
 
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN --mount=type=secret,id=sentry-org,env=VITE_SENTRY_ORG \
