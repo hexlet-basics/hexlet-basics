@@ -1,9 +1,9 @@
 import { Accordion, Alert, Card, Col, Container, Row } from "react-bootstrap";
 
+import communityImg from "@/images/course-landing-page/community.png";
 import learningEnVideo from "@/images/course-landing-page/learning_en.mp4";
 import learningRuVideo from "@/images/course-landing-page/learning_ru.mp4";
 import jsImage from "@/images/javascript.png";
-import waitingClock from "@/images/waiting_clock.png";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 
@@ -374,30 +374,27 @@ export default function Show({
         </div>
         {i18next.language === "ru" && (
           <div className="py-4 py-lg-5">
-            <div className="bg-dark text-light p-4 rounded-3">
-              <Row className="flex-column flex-lg-row">
-                <Col className="col-lg-4 col-xl-5 col-xxl-6">
-                  <img
-                    src={waitingClock}
-                    width="100%"
-                    height="auto"
-                    alt={t("languages.show.community_image_preview")}
-                  />
+            <div className="bg-dark text-light rounded-3 overflow-hidden">
+              <Row className="flex-column flex-lg-row justify-content-end m-0">
+                <Col className="position-relative p-0">
+                  <div className="hexlet-basics-community-image" />
                 </Col>
-                <Col className="d-flex flex-column justify-content-center py-4 py-md-5">
-                  <div className="display-5 fw-semibold lh-1 mb-4">
-                    {t("languages.show.more_than_support")}
-                  </div>
-                  <div className="pe-lg-5">
-                    <div className="mb-5">
-                      {t("languages.show.about_developer_community")}
+                <Col className="col-lg-7 col-xl-6 p-4 p-lg-5">
+                  <div className="d-flex flex-column justify-content-center py-3 py-lg-4">
+                    <div className="display-5 fw-semibold lh-1 mb-4">
+                      {t("languages.show.more_than_support")}
                     </div>
-                    <Link
-                      className="btn btn-outline-secondary"
-                      href="https://ttttt.me/HexletLearningBot"
-                    >
-                      <span>{t("languages.show.join")}</span>
-                    </Link>
+                    <div className="pe-lg-5">
+                      <div className="mb-5">
+                        {t("languages.show.about_developer_community")}
+                      </div>
+                      <Link
+                        className="btn btn-outline-secondary"
+                        href="https://ttttt.me/HexletLearningBot"
+                      >
+                        <span>{t("languages.show.join")}</span>
+                      </Link>
+                    </div>
                   </div>
                 </Col>
               </Row>
