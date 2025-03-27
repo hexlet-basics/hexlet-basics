@@ -62,9 +62,6 @@ export default function NavbarBlock({ className }: Props) {
           </Nav.Link>
         </Nav>
         <Nav>
-          <Nav.Link className="link-body-emphasis" href={Routes.my_path()}>
-            {tLayouts("shared.nav.my")}
-          </Nav.Link>
           {auth.user.guest && (
             <>
               <Nav.Link
@@ -82,36 +79,45 @@ export default function NavbarBlock({ className }: Props) {
             </>
           )}
           {!auth.user.guest && (
-            <NavDropdown
-              align="end"
-              className="link-body-emphasis"
-              title={<i className="bi bi-person-circle" />}
-            >
-              <NavDropdown.Item href={Routes.edit_account_profile_path()}>
-                <div className="d-flex">
-                  <img width="50px" src={defaultAvatarImg} alt="User Avatar" />
-                  <div>
-                    <div className="fw-bold">{auth.user.name}</div>
-                    <div>{auth.user.email}</div>
-                  </div>
-                </div>
-              </NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href={Routes.edit_account_profile_path()}>
-                {tLayouts("shared.nav.profile")}
-              </NavDropdown.Item>
-              {auth.user.admin && (
-                <NavDropdown.Item href={Routes.admin_root_path()}>
-                  {tLayouts("shared.nav.admin")}
-                </NavDropdown.Item>
-              )}
-              <NavDropdown.Item
-                href={Routes.session_path()}
-                onClick={handleLinkClick("delete")}
+            <>
+              <Nav.Link className="link-body-emphasis" href={Routes.my_path()}>
+                {tLayouts("shared.nav.my")}
+              </Nav.Link>
+              <NavDropdown
+                align="end"
+                className="link-body-emphasis"
+                title={<i className="bi bi-person-circle" />}
               >
-                {tLayouts("shared.nav.sign_out")}
-              </NavDropdown.Item>
-            </NavDropdown>
+                <NavDropdown.Item href={Routes.edit_account_profile_path()}>
+                  <div className="d-flex">
+                    <img
+                      width="50px"
+                      src={defaultAvatarImg}
+                      alt="User Avatar"
+                    />
+                    <div>
+                      <div className="fw-bold">{auth.user.name}</div>
+                      <div>{auth.user.email}</div>
+                    </div>
+                  </div>
+                </NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item href={Routes.edit_account_profile_path()}>
+                  {tLayouts("shared.nav.profile")}
+                </NavDropdown.Item>
+                {auth.user.admin && (
+                  <NavDropdown.Item href={Routes.admin_root_path()}>
+                    {tLayouts("shared.nav.admin")}
+                  </NavDropdown.Item>
+                )}
+                <NavDropdown.Item
+                  href={Routes.session_path()}
+                  onClick={handleLinkClick("delete")}
+                >
+                  {tLayouts("shared.nav.sign_out")}
+                </NavDropdown.Item>
+              </NavDropdown>
+            </>
           )}
           <NavDropdown
             align="end"
