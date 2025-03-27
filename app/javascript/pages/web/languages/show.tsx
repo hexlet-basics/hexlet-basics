@@ -1,6 +1,5 @@
 import { Accordion, Alert, Card, Col, Container, Row } from "react-bootstrap";
 
-import communityImg from "@/images/course-landing-page/community.png";
 import learningEnVideo from "@/images/course-landing-page/learning_en.mp4";
 import learningRuVideo from "@/images/course-landing-page/learning_ru.mp4";
 import jsImage from "@/images/javascript.png";
