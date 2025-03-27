@@ -8,10 +8,9 @@ class Assistants::RunJob < ApplicationJob
     language = lesson.language
 
     # TODO: fix dry-inject
-    # proxy_url = ENV.fetch("HEXLET_PROXY_URL")
     openai_api = OpenAI::Client.new do |f|
       f.response :logger, Rails.logger, bodies: true
-      # f.proxy = { uri: proxy_url }
+      f.proxy = { uri: configus.hexlet_proxy.url }
     end
 
     # TODO: if guest

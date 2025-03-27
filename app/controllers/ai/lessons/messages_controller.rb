@@ -9,7 +9,9 @@ class Ai::Lessons::MessagesController < Ai::ApplicationController
 
     messages = []
     if lesson_member.openai_thread_id?
-      openai_api = OpenAI::Client.new
+      openai_api = OpenAI::Client.new do |f|
+        f.proxy = { uri: configus.hexlet_proxy.url }
+      end
       result = openai_api.messages.list(thread_id: lesson_member.openai_thread_id)
       messages = result["data"].map do
         {
