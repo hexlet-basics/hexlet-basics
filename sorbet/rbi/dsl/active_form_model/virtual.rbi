@@ -18,6 +18,8 @@ module ActiveFormModel::Virtual
     def __callbacks=(value); end
     def _permitted_args; end
     def _permitted_args=(value); end
+    def _skipped_args; end
+    def _skipped_args=(value); end
     def _validators; end
     def _validators=(value); end
     def _validators?; end
@@ -30,6 +32,8 @@ module ActiveFormModel::Virtual
     def __callbacks; end
     def _permitted_args; end
     def _permitted_args=(value); end
+    def _skipped_args; end
+    def _skipped_args=(value); end
     def _validators; end
     def _validators?; end
     def param_delimiter=(value); end

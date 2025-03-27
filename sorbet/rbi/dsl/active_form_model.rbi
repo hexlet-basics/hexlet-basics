@@ -14,10 +14,14 @@ module ActiveFormModel
   module GeneratedClassMethods
     def _permitted_args; end
     def _permitted_args=(value); end
+    def _skipped_args; end
+    def _skipped_args=(value); end
   end
 
   module GeneratedInstanceMethods
     def _permitted_args; end
     def _permitted_args=(value); end
+    def _skipped_args; end
+    def _skipped_args=(value); end
   end
 end

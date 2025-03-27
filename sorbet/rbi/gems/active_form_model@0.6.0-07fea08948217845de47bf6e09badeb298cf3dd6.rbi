@@ -18,11 +18,15 @@ module ActiveFormModel
   module GeneratedClassMethods
     def _permitted_args; end
     def _permitted_args=(value); end
+    def _skipped_args; end
+    def _skipped_args=(value); end
   end
 
   module GeneratedInstanceMethods
     def _permitted_args; end
     def _permitted_args=(value); end
+    def _skipped_args; end
+    def _skipped_args=(value); end
   end
 end
 
@@ -46,44 +50,51 @@ module ActiveFormModel::Permittable
   mixes_in_class_methods GeneratedClassMethods
   mixes_in_class_methods ::ActiveFormModel::Permittable::ClassMethods
 
-  # source://active_form_model//lib/active_form_model/permittable.rb#43
+  # source://active_form_model//lib/active_form_model/permittable.rb#57
   def assign_attributes(attrs = T.unsafe(nil)); end
 
-  # source://active_form_model//lib/active_form_model/permittable.rb#33
+  # source://active_form_model//lib/active_form_model/permittable.rb#47
   def update(attrs = T.unsafe(nil)); end
 
-  # source://active_form_model//lib/active_form_model/permittable.rb#38
+  # source://active_form_model//lib/active_form_model/permittable.rb#52
   def update!(attrs = T.unsafe(nil)); end
 
   private
 
-  # source://active_form_model//lib/active_form_model/permittable.rb#50
+  # source://active_form_model//lib/active_form_model/permittable.rb#64
   def permit_attrs(attrs); end
 
   module GeneratedClassMethods
     def _permitted_args; end
     def _permitted_args=(value); end
+    def _skipped_args; end
+    def _skipped_args=(value); end
   end
 
   module GeneratedInstanceMethods
     def _permitted_args; end
     def _permitted_args=(value); end
+    def _skipped_args; end
+    def _skipped_args=(value); end
   end
 end
 
 # source://active_form_model//lib/active_form_model/permittable.rb#0
 module ActiveFormModel::Permittable::ClassMethods
-  # source://active_form_model//lib/active_form_model/permittable.rb#28
+  # source://active_form_model//lib/active_form_model/permittable.rb#33
   def _permit_attrs(attrs); end
 
   # source://activesupport/8.0.2/lib/active_support/deprecation/method_wrappers.rb#46
   def fields(*args, **_arg1, &block); end
 
-  # source://active_form_model//lib/active_form_model/permittable.rb#15
+  # source://active_form_model//lib/active_form_model/permittable.rb#16
   def new(attrs = T.unsafe(nil), &block); end
 
-  # source://active_form_model//lib/active_form_model/permittable.rb#21
+  # source://active_form_model//lib/active_form_model/permittable.rb#22
   def permit(*args); end
+
+  # source://active_form_model//lib/active_form_model/permittable.rb#26
+  def skip_if_empty(*args); end
 end
 
 # source://active_form_model//lib/active_form_model/version.rb#4
@@ -117,6 +128,8 @@ module ActiveFormModel::Virtual
     def __callbacks=(value); end
     def _permitted_args; end
     def _permitted_args=(value); end
+    def _skipped_args; end
+    def _skipped_args=(value); end
     def _validators; end
     def _validators=(value); end
     def _validators?; end
@@ -129,6 +142,8 @@ module ActiveFormModel::Virtual
     def __callbacks; end
     def _permitted_args; end
     def _permitted_args=(value); end
+    def _skipped_args; end
+    def _skipped_args=(value); end
     def _validators; end
     def _validators?; end
     def param_delimiter=(value); end

@@ -6,26 +6,6 @@
 
 
 class ActiveSupport::TestCase
-  sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[ActiveStorage::Attachment]) }
-  sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(ActiveStorage::Attachment) }
-  sig do
-    params(
-      fixture_name: T.any(String, Symbol),
-      other_fixtures: T.any(String, Symbol)
-    ).returns(T::Array[ActiveStorage::Attachment])
-  end
-  def active_storage_attachments(fixture_name = nil, *other_fixtures); end
-
-  sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[ActiveStorage::Blob]) }
-  sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(ActiveStorage::Blob) }
-  sig do
-    params(
-      fixture_name: T.any(String, Symbol),
-      other_fixtures: T.any(String, Symbol)
-    ).returns(T::Array[ActiveStorage::Blob])
-  end
-  def active_storage_blobs(fixture_name = nil, *other_fixtures); end
-
   sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[BlogPost]) }
   sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(BlogPost) }
   sig do
