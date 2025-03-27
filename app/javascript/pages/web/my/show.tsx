@@ -27,16 +27,16 @@ function StartedCourse({
   cm,
 }: { lp: LanguageLandingPageForLists; cm: LanguageMember }) {
   return (
-    <Card border="0">
-      <Row className="g-0">
-        <Col className="col-md-4 d-flex align-items-stretch">
+    <Card className="overflow-hidden h-100">
+      <Row className="g-0 h-100">
+        <Col className="col-lg-4">
           <img
             alt={lp.header}
-            className="img-fluid w-100 h-100 object-fit-cover rounded-start"
+            className="img-fluid w-100 h-100 object-fit-fill"
             src={lp.language.cover_list_variant}
           />
         </Col>
-        <Col className="col-md-8 border rounded-end">
+        <Col className="col-6 col-lg-8">
           <Card.Body className="d-flex flex-column h-100">
             <Card.Title className="m-0">
               <a
@@ -49,7 +49,7 @@ function StartedCourse({
                 <h3>{lp.header}</h3>
               </a>
             </Card.Title>
-            <Card.Text>{cm.next_lesson.name} →</Card.Text>
+            <Card.Text className="pe-3">{cm.next_lesson.name} →</Card.Text>
             <ProgressBar
               className="mt-auto"
               now={cm.progress}
@@ -80,9 +80,9 @@ export default function My(props: Props) {
             <p className="mt-5">{tCommon("empty")}</p>
           )}
         </div>
-        <Row className="row-cols-1 row-cols-sm-2">
+        <Row className="row-cols-1 row-cols-md-2 gy-4 gy-lg-5 pb-5">
           {startedCourseMembers.map((cm) => (
-            <Col key={cm.id} className="mb-5">
+            <Col key={cm.id}>
               <StartedCourse
                 cm={cm}
                 lp={landingPageResourcesByCourseId[cm.language_id]}
