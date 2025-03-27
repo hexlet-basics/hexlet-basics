@@ -59,6 +59,7 @@ COPY . .
 RUN bundle exec bootsnap precompile app/ lib/
 
 ARG RELEASE_VERSION="unknown"
+ARG APP_HOST
 ENV VITE_RELEASE_VERSION=$RELEASE_VERSION
 ENV VITE_APP_HOST=$APP_HOST
 
