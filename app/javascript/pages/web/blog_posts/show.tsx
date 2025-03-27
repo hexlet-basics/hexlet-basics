@@ -5,6 +5,7 @@ import { dayjs, highlightingLanguages } from "@/lib/utils.ts";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { BreadcrumbItem, SharedProps } from "@/types";
 import type { BlogPost } from "@/types/serializers";
+import i18next from "i18next";
 import Markdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import rehypeSlug from "rehype-slug";
@@ -80,6 +81,38 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
                   {`\n\n## ${heading}\n\n ${blogPost.body}`}
                 </Markdown>
               </div>
+              {i18next.language === "ru" && (
+                <Row className="justify-content-center py-4">
+                  <Col className="col-lg-11">
+                    <div className="bg-primary rounded-4 shadow text-light py-4 px-4 px-md-5 position-relative">
+                      <div className="d-flex flex-column flex-md-row gap-4">
+                        <div className="fs-3 d-none d-md-block">
+                          <i className="bi bi-chat" />
+                        </div>
+                        <div>
+                          <div className="h2 fw-semibold mb-1">
+                            {t("blog_posts.show.join_community")}
+                          </div>
+                          <p className="fs-5 lh-sm mb-4">
+                            {t("blog_posts.show.discuss")}
+                          </p>
+                          <a
+                            className="link-light text-decoration-none stretched-link icon-link icon-link-hover"
+                            href="https://ttttt.me/HexletLearningBot"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <span className="me-2">
+                              {t("blog_posts.show.link")}
+                            </span>
+                            <span className="bi bi-arrow-right lh-1" />
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </Col>
+                </Row>
+              )}
               <div className="mt-5 d-flex text-muted">
                 <div className="me-2">
                   <b>
