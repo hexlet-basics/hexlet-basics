@@ -12,7 +12,7 @@ require "action_mailer/railtie"
 # require "action_mailbox/engine"
 # require "action_text/engine"
 require "action_view/railtie"
-# require "action_cable/engine"
+require "action_cable/engine"
 # require "sprockets/railtie"
 require "rails/test_unit/railtie"
 
@@ -50,6 +50,8 @@ module HexletBasics
     config.active_record.default_column_serializer = YAML
 
     routes.default_url_options = { host: AppHost.canonical }
+
+    # config.solid_queue.logger = ActiveSupport::Logger.new(STDOUT)
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

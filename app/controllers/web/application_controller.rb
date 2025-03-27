@@ -44,11 +44,6 @@ class Web::ApplicationController < ApplicationController
     gon.current_user = UserResource.new(current_user)
   end
 
-  # before_action do
-  #   @switching_locales ||= I18n.available_locales.without(I18n.locale)
-  #                              .index_with { |locale| switch_locale_path(new_locale: locale) }
-  # end
-
   private
 
   # def check!(value)

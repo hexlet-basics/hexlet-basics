@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require "English"
+require "action_cable/engine"
 require "action_controller/railtie"
 require "action_mailbox/engine"
 require "action_mailer/railtie"

@@ -18,7 +18,7 @@ gem "ruby-openai"
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
 gem "solid_cache"
 gem "solid_queue"
-# gem "solid_cable"
+gem "solid_cable"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
@@ -128,7 +128,7 @@ gem "counter_culture"
 # gem "country_select"
 # gem 'sorbet-rails' # Temp disable sorbet for memory optimization
 
-gem "strong_migrations"
+# gem "strong_migrations"
 gem "browser"
 #
 gem "meta-tags"

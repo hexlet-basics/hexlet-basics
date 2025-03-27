@@ -3,5 +3,5 @@ class Ai::ApplicationController < ActionController::Base
   # include ActionController::MimeResponds
   # # skip_before_action :verify_authenticity_token
   include AuthConcern
-  # include LocaleConcern
+  include LocaleConcern
 end
