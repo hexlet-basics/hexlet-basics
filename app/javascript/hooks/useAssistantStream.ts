@@ -15,7 +15,7 @@ export type AssistantMessage = {
 };
 
 type StreamMessage = {
-  delta: string;
+  delta: string[];
   message_id: string;
   index: number;
 };
@@ -30,7 +30,7 @@ export function useAssistantStream(lessonMemberId: number, lessonId: number) {
   );
 
   // Buffer per message_id
-  const buffers = useRef<Record<string, string[]>>({});
+  const buffers = useRef<Record<string, string[][]>>({});
 
   // Debounced update to reduce flickering + broken words
   const scheduleUpdate = useRef(
@@ -73,12 +73,13 @@ export function useAssistantStream(lessonMemberId: number, lessonId: number) {
 
         received(data: StreamMessage) {
           const { message_id, delta, index } = data;
+          console.log(delta);
 
           if (!buffers.current[message_id]) {
             buffers.current[message_id] = [];
           }
 
-          if (delta === "[DONE]") {
+          if (delta[0] === "DONE") {
             console.log("📡 Stream finished for message:", message_id);
             setStatus("awaiting_message");
           } else {

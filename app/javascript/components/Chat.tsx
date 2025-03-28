@@ -3,25 +3,39 @@ import {
   useAssistantStream,
 } from "@/hooks/useAssistantStream";
 
+import { highlightingLanguages } from "@/lib/utils.ts";
 import type {
   Language,
   LanguageLesson,
   LanguageLessonMember,
 } from "@/types/serializers";
-// import { type Message, useAssistant } from "@ai-sdk/react";
-import axios from "axios";
 import cn from "classnames";
 import { useRef } from "react";
 import { Button, Form, Spinner } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { useInView } from "react-intersection-observer";
 import Markdown from "react-markdown";
+import rehypeExternalLinks from "rehype-external-links";
+import rehypeHighlight from "rehype-highlight";
+import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
+// import { type Message, useAssistant } from "@ai-sdk/react";
+import type { Pluggable } from "unified";
 
 type Props = {
   lesson: LanguageLesson;
   course: Language;
   lessonMember?: LanguageLessonMember;
 };
+
+// Replace rehype plugins with remark ones whenever possible
+const rehypePlugins: Pluggable[] = [
+  [rehypeHighlight, { languages: highlightingLanguages }],
+  rehypeRaw,
+  [rehypeExternalLinks, { target: "_blank" }],
+];
+
+const remarkPlugins: Pluggable[] = [remarkGfm];
 
 // const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
@@ -36,7 +50,9 @@ function MessagePresenter({ message }: { message: AssistantMessage }) {
   });
   return (
     <div className={classesLine}>
-      <Markdown>{message.content}</Markdown>
+      <Markdown rehypePlugins={rehypePlugins} remarkPlugins={remarkPlugins}>
+        {message.content}
+      </Markdown>
     </div>
   );
 }

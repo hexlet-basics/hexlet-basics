@@ -11,7 +11,9 @@ class Assistants::RunJob < ApplicationJob
     openai_api = OpenAI::Client.new do |f|
       f.response :logger, Rails.logger, bodies: true
       if configus.hexlet_proxy.url.present?
-        f.proxy = { uri: configus.hexlet_proxy.url }
+        if configus.hexlet_proxy.url
+          f.proxy = { uri: configus.hexlet_proxy.url }
+        end
       end
     end
 
@@ -52,12 +54,12 @@ class Assistants::RunJob < ApplicationJob
           # https://sdk.vercel.ai/docs/ai-sdk-ui/stream-protocol
           if chunk["object"] == "thread.message.delta"
             content = chunk.dig("delta", "content") || []
-            text = content.map { it.dig("text", "value") }.join
-            next if text.blank?
+            texts = content.map { it.dig("text", "value") }
+            next if texts.blank?
             # response.stream.write("0:#{text.to_json}\n")
             AssistantChannel.broadcast_to(
               lesson_member,
-              delta: text,
+              delta: texts,
               message_id: created_message["id"],
               index: chunk_index
             )
@@ -70,7 +72,7 @@ class Assistants::RunJob < ApplicationJob
 
     AssistantChannel.broadcast_to(
       lesson_member,
-      delta: "[DONE]",
+      delta: [ "DONE" ],
       message_id: created_message["id"]
     )
   end
