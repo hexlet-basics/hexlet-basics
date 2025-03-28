@@ -311,6 +311,25 @@ export default function Show({
             </div>
           </Col>
         </Row>
+        <Row className="py-4 mb-lg-5">
+          <Col className="col-lg-9">
+            <div className="display-5 fw-semibold lh-1 mb-4">
+              {t("languages.show.about_ai")}
+            </div>
+            <div className="text-body-secondary">
+              <div className="mb-3">{t("languages.show.support_from_ai")}</div>
+              <div className="fw-bold mb-2">
+                {t("languages.show.ai_features")}
+              </div>
+              <ul>
+                <li>{t("languages.show.explain_topics")}</li>
+                <li>{t("languages.show.help_to_understand")}</li>
+                <li>{t("languages.show.answers_questions")}</li>
+                <li>{t("languages.show.always_in_touch")}</li>
+              </ul>
+            </div>
+          </Col>
+        </Row>
         <div className="py-4 mb-lg-5">
           <Card className="px-3 px-sm-4 px-lg-5 py-5">
             <Row className="gy-4 justify-content-between align-items-center py-lg-5">
