@@ -57,7 +57,7 @@ class ExerciseLoader
       unordered_lessons = get_lessons(module_dest, module_data[:module_version], language_version)
       unordered_lessons.sort_by { |lesson| lesson[:order] }
     end
-    lessons.each_with_index { |lesson, index| create_lesson_hierarch(lesson, index) }
+    lessons.each_with_index { |lesson, index| create_lesson_hierarchy(lesson, index) }
   end
 
   def get_modules(dest)
