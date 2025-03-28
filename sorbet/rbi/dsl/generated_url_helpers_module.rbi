@@ -52,6 +52,9 @@ module GeneratedUrlHelpersModule
   def admin_management_users_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def admin_messages_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def admin_review_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

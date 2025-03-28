@@ -46,6 +46,21 @@ class ActiveSupport::TestCase
   end
   def language_landing_pages(fixture_name = nil, *other_fixtures); end
 
+  sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[Language::Lesson::Member::Message]) }
+  sig do
+    params(
+      fixture_name: T.any(String, Symbol),
+      other_fixtures: NilClass
+    ).returns(Language::Lesson::Member::Message)
+  end
+  sig do
+    params(
+      fixture_name: T.any(String, Symbol),
+      other_fixtures: T.any(String, Symbol)
+    ).returns(T::Array[Language::Lesson::Member::Message])
+  end
+  def language_lesson_member_messages(fixture_name = nil, *other_fixtures); end
+
   sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[Language::Lesson::Member]) }
   sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(Language::Lesson::Member) }
   sig do

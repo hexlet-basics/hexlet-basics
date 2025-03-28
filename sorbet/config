@@ -3,5 +3,3 @@
 --ignore=tmp/
 --ignore=vendor/
 --typed=true
-
-enable-it-blocks: true

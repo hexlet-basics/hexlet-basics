@@ -52,6 +52,9 @@ module GeneratedPathHelpersModule
   def admin_management_users_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def admin_messages_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def admin_review_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
