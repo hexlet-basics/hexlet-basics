@@ -28,8 +28,22 @@ export default function FooterBlock() {
       </Head>
       <footer className="mt-5 bg-body-tertiary pt-5">
         <Container>
-          <Row>
+          <Row className="row-cols-1 row-cols-sm-2 row-cols-lg-4 gy-4">
             <Col>
+              <Nav className="flex-column">
+                {landingPagesForFooter.map((lp) => (
+                  <Nav.Item key={lp.id}>
+                    <Link
+                      className="link-body-emphasis text-decoration-none"
+                      href={Routes.language_path(lp.slug)}
+                    >
+                      {lp.footer_name}
+                    </Link>
+                  </Nav.Item>
+                ))}
+              </Nav>
+            </Col>
+            <Col className="order-last order-sm-first">
               <Nav className="flex-column">
                 <Nav.Item className="h5">+7 (495) 085 21 62</Nav.Item>
                 <Nav.Item className="h5">8 800 100 22 47</Nav.Item>
@@ -38,13 +52,11 @@ export default function FooterBlock() {
                     {tCommon("organization.email")}
                   </a>
                 </Nav.Item>
-                <Nav.Item className="mb-3">
-                  {tCommon("organization.address")}
-                </Nav.Item>
+                <Nav.Item>{tCommon("organization.address")}</Nav.Item>
               </Nav>
             </Col>
-            <Col>
-              <Nav className="flex-column mb-3">
+            <Col className="order-lg-first">
+              <Nav className="flex-column">
                 <Nav.Item>
                   <Link
                     className="link-body-emphasis text-decoration-none"
@@ -127,21 +139,7 @@ export default function FooterBlock() {
                 </Nav.Item>
               </Nav>
             </Col>
-            <Col>
-              <Nav className="flex-column">
-                {landingPagesForFooter.map((lp) => (
-                  <Nav.Item key={lp.id}>
-                    <Link
-                      className="link-body-emphasis text-decoration-none"
-                      href={Routes.language_path(lp.slug)}
-                    >
-                      {lp.footer_name}
-                    </Link>
-                  </Nav.Item>
-                ))}
-              </Nav>
-            </Col>
-            <Col>
+            <Col className="col-sm-12">
               <Nav className="flex-column">
                 <Nav.Item>
                   <Link
