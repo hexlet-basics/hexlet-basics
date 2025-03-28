@@ -46,12 +46,16 @@ class Language::Lesson::Version < ApplicationRecord
   def next_lesson_version
     language_version
       .lesson_versions.order(:natural_order)
+      .joins(:infos)
+      .merge(Language::Lesson::Version::Info.with_locale)
       .find_by("natural_order > ?", natural_order)&.lesson
   end
 
   def prev_lesson_version
     language_version
       .lesson_versions.order(natural_order: :desc)
+      .joins(:infos)
+      .merge(Language::Lesson::Version::Info.with_locale)
       .find_by("natural_order < ?", natural_order)&.lesson
   end
 

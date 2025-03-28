@@ -57,7 +57,7 @@ class ExerciseLoader
       unordered_lessons = get_lessons(module_dest, module_data[:module_version], language_version)
       unordered_lessons.sort_by { |lesson| lesson[:order] }
     end
-    lessons.each_with_index { |lesson, index| create_lesson_hierarchy(lesson, index) }
+    lessons.each_with_index { |lesson, index| create_lesson_hierarch(lesson, index) }
   end
 
   def get_modules(dest)
@@ -260,6 +260,8 @@ class ExerciseLoader
     raise "Lesson '#{language_module.slug}.#{lesson.slug}' does not have info" if infos.empty?
 
     lesson_infos = infos.map { |info| create_lesson_info(language_version, version, info) }
+
+    Rails.logger.info("Lesson #{lesson.slug} (#{lesson_infos.map { it[:locale] }.join(', ')}) loaded")
 
     { lesson: lesson, lesson_version: version, lesson_infos: lesson_infos }
   end
