@@ -28,8 +28,8 @@ export default function FooterBlock() {
       </Head>
       <footer className="mt-5 bg-body-tertiary pt-5">
         <Container>
-          <Row>
-            <Col>
+          <Row className="gy-4">
+            <Col className="col-12 col-sm-6 col-lg-3">
               <Nav className="flex-column">
                 <Nav.Item className="h5">+7 (495) 085 21 62</Nav.Item>
                 <Nav.Item className="h5">8 800 100 22 47</Nav.Item>
@@ -38,13 +38,11 @@ export default function FooterBlock() {
                     {tCommon("organization.email")}
                   </a>
                 </Nav.Item>
-                <Nav.Item className="mb-3">
-                  {tCommon("organization.address")}
-                </Nav.Item>
+                <Nav.Item>{tCommon("organization.address")}</Nav.Item>
               </Nav>
             </Col>
-            <Col>
-              <Nav className="flex-column mb-3">
+            <Col className="col-12 col-sm-6 col-lg-3">
+              <Nav className="flex-column">
                 <Nav.Item>
                   <Link
                     className="link-body-emphasis text-decoration-none"
@@ -128,20 +126,22 @@ export default function FooterBlock() {
               </Nav>
             </Col>
             <Col>
-              <Nav className="flex-column">
+              <Row>
                 {landingPagesForFooter.map((lp) => (
-                  <Nav.Item key={lp.id}>
-                    <Link
-                      className="link-body-emphasis text-decoration-none"
-                      href={Routes.language_path(lp.slug)}
-                    >
-                      {lp.footer_name}
-                    </Link>
-                  </Nav.Item>
+                  <Col key={lp.id} className="col-12 col-sm-6 col-lg-12">
+                    <Nav.Item>
+                      <Link
+                        className="link-body-emphasis text-decoration-none"
+                        href={Routes.language_path(lp.slug)}
+                      >
+                        {lp.footer_name}
+                      </Link>
+                    </Nav.Item>
+                  </Col>
                 ))}
-              </Nav>
+              </Row>
             </Col>
-            <Col>
+            <Col className="col-12 col-lg-3">
               <Nav className="flex-column">
                 <Nav.Item>
                   <Link
