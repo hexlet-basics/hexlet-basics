@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_27_181441) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_28_175524) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -127,6 +127,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_27_181441) do
     t.string "footer_name"
     t.index ["language_category_id"], name: "index_language_landing_pages_on_language_category_id"
     t.index ["language_id"], name: "index_language_landing_pages_on_language_id"
+  end
+
+  create_table "language_lesson_member_messages", force: :cascade do |t|
+    t.integer "language_id", null: false
+    t.integer "language_lesson_id", null: false
+    t.integer "language_lesson_member_id", null: false
+    t.string "role"
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["language_id"], name: "index_language_lesson_member_messages_on_language_id"
+    t.index ["language_lesson_id"], name: "index_language_lesson_member_messages_on_language_lesson_id"
+    t.index ["language_lesson_member_id"], name: "idx_on_language_lesson_member_id_fe254654e9"
   end
 
   create_table "language_lesson_members", force: :cascade do |t|
@@ -516,6 +529,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_27_181441) do
   add_foreign_key "language_landing_page_qna_items", "language_landing_pages"
   add_foreign_key "language_landing_pages", "language_categories"
   add_foreign_key "language_landing_pages", "languages"
+  add_foreign_key "language_lesson_member_messages", "language_lesson_members"
+  add_foreign_key "language_lesson_member_messages", "language_lessons"
+  add_foreign_key "language_lesson_member_messages", "languages"
   add_foreign_key "language_lesson_members", "language_lessons", column: "lesson_id"
   add_foreign_key "language_lesson_members", "language_members"
   add_foreign_key "language_lesson_members", "users"

@@ -1,6 +1,4 @@
 class Assistants::RunJob < ApplicationJob
-  # queue_as :assistant
-
   def perform(lesson_member_id:, message:)
     lesson_member = Language::Lesson::Member.find(lesson_member_id)
     lesson = lesson_member.lesson
@@ -43,6 +41,12 @@ class Assistants::RunJob < ApplicationJob
       Отвечай на языке: #{I18n.t(I18n.locale, scope: 'common.languages')}. Отвечай коротко.
       "
 
+    m = lesson_member.messages.build
+    m.role = "assistant"
+    m.language_lesson = lesson
+    m.language = lesson.language
+    deltas = []
+
     chunk_index = 0
 
     _run_response = openai_api.runs.create(
@@ -64,11 +68,16 @@ class Assistants::RunJob < ApplicationJob
               index: chunk_index
             )
 
+            deltas << texts.join
+
             chunk_index += 1
           end
         end
       }
     )
+
+    m.body = deltas.join
+    m.save!
 
     AssistantChannel.broadcast_to(
       lesson_member,

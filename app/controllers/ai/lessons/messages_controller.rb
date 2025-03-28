@@ -32,6 +32,12 @@ class Ai::Lessons::MessagesController < Ai::ApplicationController
     lesson = Language::Lesson.find(params[:lesson_id])
     lesson_member = lesson.members.find_by!(user: current_user)
 
+    m = lesson_member.messages.build body: params[:message]
+    m.role = "user"
+    m.language_lesson = lesson
+    m.language = lesson.language
+    m.save!
+
     Assistants::RunJob.perform_later(
       lesson_member_id: lesson_member.id,
       message: params[:message],
