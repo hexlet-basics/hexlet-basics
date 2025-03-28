@@ -93,6 +93,15 @@ export default function AdminLayout({ children, header }: Props) {
                   {tLayouts("web.admin.application.blog_posts")}
                 </Link>
               </Nav.Item>
+              <Nav.Item>
+                <Link
+                  className="nav-link fw-medium link-body-emphasis"
+                  href={Routes.admin_messages_path()}
+                >
+                  <i className="bi bi-file-text me-2" />
+                  {tLayouts("web.admin.application.messages")}
+                </Link>
+              </Nav.Item>
               <hr />
               <Nav.Item>
                 <Link

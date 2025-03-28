@@ -32,4 +32,12 @@ class Language::Lesson::Member::Message < ApplicationRecord
   validates :body, presence: true
 
   enum :role, { user: "user", assistant: "assistant" }, suffix: true, validate: true
+
+  def self.ransackable_attributes(auth_object = nil)
+    []
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    []
+  end
 end

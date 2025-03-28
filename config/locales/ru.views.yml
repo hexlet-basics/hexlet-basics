@@ -41,6 +41,9 @@ ru:
           header: Новый лендинг
         edit:
           header: Редактирование %{id}
+      messages:
+        index:
+          header: Разговоры с AI
       languages:
         index:
           header: Курсы
