@@ -55,7 +55,6 @@ class Assistants::RunJob < ApplicationJob
         assistant_id: language.openai_assistant_id,
         instructions:,
         stream: proc do |chunk|
-          # https://sdk.vercel.ai/docs/ai-sdk-ui/stream-protocol
           if chunk["object"] == "thread.message.delta"
             content = chunk.dig("delta", "content") || []
             texts = content.map { it.dig("text", "value") }

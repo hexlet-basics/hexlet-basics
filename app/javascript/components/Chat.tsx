@@ -19,7 +19,6 @@ import rehypeExternalLinks from "rehype-external-links";
 import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
-// import { type Message, useAssistant } from "@ai-sdk/react";
 import type { Pluggable } from "unified";
 
 type Props = {
