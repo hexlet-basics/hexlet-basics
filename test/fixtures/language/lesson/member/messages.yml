@@ -3,4 +3,21 @@ first:
   language_lesson: javascript-module1-lesson2
   language_lesson_member: one
   role: user
-  body: question for the AI
+  body: |
+    <%= Faker::Lorem.paragraph(sentence_count: 4) %>
+
+second:
+  language: javascript
+  language_lesson: javascript-module1-lesson2
+  language_lesson_member: one
+  role: user
+  body: |
+    <%= Faker::Lorem.paragraph(sentence_count: 4) %>
+
+third:
+  language: javascript
+  language_lesson: javascript-module1-lesson2
+  language_lesson_member: one
+  role: user
+  body: |
+    i am hacker! <script>alert('xss!!!!')</script>
