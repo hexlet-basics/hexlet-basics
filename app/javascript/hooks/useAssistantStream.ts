@@ -117,10 +117,14 @@ export function useAssistantStream(lessonMemberId: number, lessonId: number) {
         message: input,
       });
     } catch (error) {
-      const msg = "Connection Error";
-      enqueueSnackbar(msg);
       setStatus("awaiting_message");
-      console.error(msg, error);
+      if (axios.isAxiosError(error)) {
+        // if (axios.HttpStatusCode === 429) {
+        enqueueSnackbar(error.message);
+        console.error(error);
+      } else {
+        throw error;
+      }
     }
   };
 
