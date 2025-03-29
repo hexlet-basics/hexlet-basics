@@ -184,7 +184,7 @@ ru:
         blog_posts: Посты в блоге
         learning_preview: Предварительный просмотр обучения
         completed_html: |
-          Поздравляем! Вы успешно завершили базовый курс на Code Basics. Это первый шаг в мир <b>профессиональной разработки</b>. Что дальше? Посмотрите <a href="https://ru.hexlet.io/courses" target="_blank">продолжение на Хекслете</a>
+          Поздравляем! Вы успешно завершили базовый курс на Code Basics. Это первый шаг в мир <b>профессиональной разработки</b>. Что дальше? Посмотрите <a href="https://ru.hexlet.io/courses&utm_medium=referral&utm_campaign=programs&utm_content=next-steps" target="_blank" rel="noopener noreferrer" target="_blank">продолжение на Хекслете</a>
         without_registration_html: |
           <b>Регистрация – по желанию</b> Вы можете попробовать без регистрации пройти первый урок, но чтобы сохранить прогресс нужно зарегистрироваться
         learning_conveniently_html: |
