@@ -1,3 +1,4 @@
+import * as Routes from "@/routes.js";
 import { useTranslation } from "react-i18next";
 
 import { DTDateTemplate } from "@/components/dtTemplates";
@@ -5,6 +6,7 @@ import useDataTable from "@/hooks/useDataTable";
 import { fieldsToFilters } from "@/lib/utils";
 import AdminLayout from "@/pages/layouts/AdminLayout";
 import type { Grid, LanguageLessonMemberMessage } from "@/types/serializers";
+import { Link } from "@inertiajs/react";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { Dialog } from "primereact/dialog";
@@ -15,6 +17,14 @@ type Props = {
   messages: LanguageLessonMemberMessage[];
   grid: Grid;
 };
+
+export function LessonUrlTemplate(message: LanguageLessonMemberMessage) {
+  const url = Routes.language_lesson_path(
+    message.language_slug,
+    message.language_lesson_slug,
+  );
+  return <Link href={url}>lesson</Link>;
+}
 
 export function MessageBodyTemplate(message: LanguageLessonMemberMessage) {
   const [visible, setVisible] = useState(false);
@@ -27,9 +37,10 @@ export function MessageBodyTemplate(message: LanguageLessonMemberMessage) {
         // biome-ignore lint/a11y/useValidAnchor: <explanation>
         onClick={() => setVisible(true)}
       >
-        {message.body?.slice(1, 50)}
+        {message.body?.slice(0, 50)}
       </a>
       <Dialog
+        style={{ width: "50vw" }}
         visible={visible}
         modal
         onHide={() => {
@@ -67,6 +78,7 @@ export default function Index({ grid, messages }: Props) {
       >
         <Column field="id" header="id" />
         <Column field="role" header="role" />
+        <Column body={LessonUrlTemplate} header="Lesson Url" />
         <Column field="body" header="body" body={MessageBodyTemplate} />
         <Column
           field="created_at"

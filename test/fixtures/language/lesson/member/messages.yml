@@ -4,7 +4,7 @@ first:
   language_lesson_member: one
   role: user
   body: |
-    <%= Faker::Lorem.paragraph(sentence_count: 4) %>
+    <%= Faker::Lorem.paragraphs(number: 3).join %>
 
 second:
   language: javascript

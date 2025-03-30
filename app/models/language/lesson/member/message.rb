@@ -34,7 +34,7 @@ class Language::Lesson::Member::Message < ApplicationRecord
   enum :role, { user: "user", assistant: "assistant" }, suffix: true, validate: true
 
   def self.ransackable_attributes(auth_object = nil)
-    []
+    [ "created_at" ]
   end
 
   def self.ransackable_associations(auth_object = nil)
