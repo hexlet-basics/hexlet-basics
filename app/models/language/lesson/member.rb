@@ -49,9 +49,4 @@ class Language::Lesson::Member < ApplicationRecord
       transitions from: %i[started], to: :finished
     end
   end
-
-  # TODO: remove
-  def serializable_data
-    attributes.extract! "id", "state", "created_at"
-  end
 end

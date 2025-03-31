@@ -79,17 +79,6 @@ class Language::Version < ApplicationRecord
     name
   end
 
-  def serializable_data
-    attrs = attributes.extract! "id", "name", "created_at"
-
-    language_info = infos.find_by!(locale: I18n.locale)
-
-    attrs.merge({
-                  slug: language.slug,
-                  locale: language_info.locale
-                })
-  end
-
   # TODO: move to presenter
   def image_tag
     return "lv#{id}" if Rails.env.production?

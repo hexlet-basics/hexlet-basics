@@ -97,10 +97,6 @@ class User < ApplicationRecord
     email
   end
 
-  def serializable_data
-    attributes.extract! "id", "email", "nickname", "first_name", "nickname", "created_at"
-  end
-
   private
 
   def clean_fields

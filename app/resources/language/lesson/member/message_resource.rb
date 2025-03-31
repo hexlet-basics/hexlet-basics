@@ -24,4 +24,20 @@ class Language::Lesson::Member::MessageResource
   attribute :language_lesson_slug do |obj|
     obj.language_lesson.slug
   end
+
+  typelize :number
+  attribute :user_id do |obj|
+    obj.language_lesson_member.user_id
+  end
+
+  typelize :string
+  attribute :language_lesson_slug do |obj|
+    obj.language_lesson.slug
+  end
+
+  typelize :string
+  attribute :language_lesson_name do |obj|
+    info = obj.language_lesson.localed_info
+    info.name
+  end
 end

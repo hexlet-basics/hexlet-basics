@@ -48,6 +48,10 @@ class Language::Lesson < ApplicationRecord
   has_many :members, dependent: :destroy
 
   has_many :infos, through: :versions, class_name: "Language::Lesson::Version::Info"
+  # has_one :localed_info, -> { merge(Language::Lesson::Version::Info.with_locale) },
+  #   through: :versions, class_name: "Language::Lesson::Version::Info"
+  has_one :localed_info, -> { merge(Language::Lesson::Version::Info.with_locale) },
+    class_name: "Language::Lesson::Version::Info", through: :versions, source: :infos
 
   aasm :state do
     state :created, initial: true
@@ -67,7 +71,7 @@ class Language::Lesson < ApplicationRecord
     slug
   end
 
-  def serializable_data
-    attributes.extract! "id", "slug", "created_at"
+  def localed_info
+    infos.with_locale.order(created_at: :desc).first
   end
 end

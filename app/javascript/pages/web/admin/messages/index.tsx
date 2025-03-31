@@ -23,7 +23,7 @@ export function LessonUrlTemplate(message: LanguageLessonMemberMessage) {
     message.language_slug,
     message.language_lesson_slug,
   );
-  return <Link href={url}>lesson</Link>;
+  return <Link href={url}>{message.language_lesson_name}</Link>;
 }
 
 export function MessageBodyTemplate(message: LanguageLessonMemberMessage) {
@@ -48,7 +48,7 @@ export function MessageBodyTemplate(message: LanguageLessonMemberMessage) {
           setVisible(false);
         }}
       >
-        {message.body}
+        <pre>{message.body}</pre>
       </Dialog>
     </>
   );
@@ -78,6 +78,7 @@ export default function Index({ grid, messages }: Props) {
       >
         <Column field="id" header="id" />
         <Column field="role" header="role" />
+        <Column field="user_id" header="user_id" />
         <Column body={LessonUrlTemplate} header="Lesson Url" />
         <Column field="body" header="body" body={MessageBodyTemplate} />
         <Column

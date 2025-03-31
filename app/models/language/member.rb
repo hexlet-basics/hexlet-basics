@@ -44,10 +44,6 @@ class Language::Member < ApplicationRecord
     end
   end
 
-  # def serializable_data
-  #   attributes.extract! "id", "state", "created_at"
-  # end
-
   def all_lessons_finished?
     not_finished_lessons = user.not_finished_lessons_for_language(language)
 
