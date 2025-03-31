@@ -20,7 +20,12 @@ type StreamMessage = {
   index: number;
 };
 
-export function useAssistantStream(lessonMemberId: number, lessonId: number) {
+export function useAssistantStream(
+  lessonMemberId: number,
+  lessonId: number,
+  userCode: string,
+  output: string,
+) {
   const { enqueueSnackbar } = useSnackbar();
 
   const [messages, setMessages] = useState<AssistantMessage[]>([]);
@@ -115,6 +120,8 @@ export function useAssistantStream(lessonMemberId: number, lessonId: number) {
     try {
       await axios.post(Routes.ai_lesson_messages_path(lessonId), {
         message: input,
+        user_code: userCode,
+        output,
       });
     } catch (error) {
       setStatus("awaiting_message");

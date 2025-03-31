@@ -752,4 +752,7 @@ class OpenAI::VectorStores
 
   # source://ruby-openai//lib/openai/vector_stores.rb#11
   def retrieve(id:); end
+
+  # source://ruby-openai//lib/openai/vector_stores.rb#27
+  def search(id:, parameters: T.unsafe(nil)); end
 end

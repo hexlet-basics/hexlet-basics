@@ -547,7 +547,7 @@ class RDoc::ClassModule < ::RDoc::Context
   # source://rdoc//lib/rdoc/code_object/class_module.rb#249
   def each_ancestor; end
 
-  # source://rdoc//lib/rdoc/code_object/class_module.rb#847
+  # source://rdoc//lib/rdoc/code_object/class_module.rb#849
   def embed_mixins; end
 
   # Looks for a symbol in the #ancestors. See Context#find_local_symbol.
@@ -638,7 +638,7 @@ class RDoc::ClassModule < ::RDoc::Context
   # modules and classes that are aliases for another
   # module or class return the name of the latter.
   #
-  # source://rdoc//lib/rdoc/code_object/class_module.rb#641
+  # source://rdoc//lib/rdoc/code_object/class_module.rb#643
   def name_for_path; end
 
   # Return array of full_name splitted by +::+.
@@ -650,7 +650,7 @@ class RDoc::ClassModule < ::RDoc::Context
   # aliasing another class or module. For use by formatters
   # only (caches its result).
   #
-  # source://rdoc//lib/rdoc/code_object/class_module.rb#650
+  # source://rdoc//lib/rdoc/code_object/class_module.rb#652
   def non_aliases; end
 
   # Parses +comment_location+ into an RDoc::Markup::Document composed of
@@ -671,32 +671,32 @@ class RDoc::ClassModule < ::RDoc::Context
   # <tt>parent.classes_hash</tt> and +all_hash+ is ::all_modules_hash or
   # ::all_classes_hash.
   #
-  # source://rdoc//lib/rdoc/code_object/class_module.rb#662
+  # source://rdoc//lib/rdoc/code_object/class_module.rb#664
   def remove_nodoc_children; end
 
-  # source://rdoc//lib/rdoc/code_object/class_module.rb#676
+  # source://rdoc//lib/rdoc/code_object/class_module.rb#678
   def remove_things(my_things, other_files); end
 
   # Search record used by RDoc::Generator::JsonIndex
   #
-  # source://rdoc//lib/rdoc/code_object/class_module.rb#691
+  # source://rdoc//lib/rdoc/code_object/class_module.rb#693
   def search_record; end
 
   # Sets the store for this class or module and its contained code objects.
   #
-  # source://rdoc//lib/rdoc/code_object/class_module.rb#706
+  # source://rdoc//lib/rdoc/code_object/class_module.rb#708
   def store=(store); end
 
   # Get all super classes of this class in an array. The last element might be
   # a string if the name is unknown.
   #
-  # source://rdoc//lib/rdoc/code_object/class_module.rb#749
+  # source://rdoc//lib/rdoc/code_object/class_module.rb#751
   def super_classes; end
 
   # Get the superclass of this class.  Attempts to retrieve the superclass
   # object, returns the name if it is not known.
   #
-  # source://rdoc//lib/rdoc/code_object/class_module.rb#720
+  # source://rdoc//lib/rdoc/code_object/class_module.rb#722
   def superclass; end
 
   # Set the superclass of this class to +superclass+
@@ -709,15 +709,15 @@ class RDoc::ClassModule < ::RDoc::Context
   #
   # @raise [NoMethodError]
   #
-  # source://rdoc//lib/rdoc/code_object/class_module.rb#733
+  # source://rdoc//lib/rdoc/code_object/class_module.rb#735
   def superclass=(superclass); end
 
-  # source://rdoc//lib/rdoc/code_object/class_module.rb#759
+  # source://rdoc//lib/rdoc/code_object/class_module.rb#761
   def to_s; end
 
   # 'module' or 'class'
   #
-  # source://rdoc//lib/rdoc/code_object/class_module.rb#770
+  # source://rdoc//lib/rdoc/code_object/class_module.rb#772
   def type; end
 
   # Updates the child modules & classes by replacing the ones that are
@@ -734,7 +734,7 @@ class RDoc::ClassModule < ::RDoc::Context
   # the aliased modules are included in the constants of the class/module,
   # that are listed separately.
   #
-  # source://rdoc//lib/rdoc/code_object/class_module.rb#789
+  # source://rdoc//lib/rdoc/code_object/class_module.rb#791
   def update_aliases; end
 
   # Deletes from #extends those whose module has been removed from the
@@ -742,7 +742,7 @@ class RDoc::ClassModule < ::RDoc::Context
   # --
   # FIXME: like update_includes, extends are not reliably removed
   #
-  # source://rdoc//lib/rdoc/code_object/class_module.rb#837
+  # source://rdoc//lib/rdoc/code_object/class_module.rb#839
   def update_extends; end
 
   # Deletes from #includes those whose module has been removed from the
@@ -750,12 +750,12 @@ class RDoc::ClassModule < ::RDoc::Context
   # --
   # FIXME: includes are not reliably removed, see _possible_bug test case
   #
-  # source://rdoc//lib/rdoc/code_object/class_module.rb#822
+  # source://rdoc//lib/rdoc/code_object/class_module.rb#824
   def update_includes; end
 
   private
 
-  # source://rdoc//lib/rdoc/code_object/class_module.rb#876
+  # source://rdoc//lib/rdoc/code_object/class_module.rb#878
   def prepare_to_embed(code_object, singleton = T.unsafe(nil)); end
 
   class << self
@@ -7693,10 +7693,10 @@ end
 class RDoc::Options
   # @return [Options] a new instance of Options
   #
-  # source://rdoc//lib/rdoc/options.rb#366
+  # source://rdoc//lib/rdoc/options.rb#376
   def initialize(loaded_options = T.unsafe(nil)); end
 
-  # source://rdoc//lib/rdoc/options.rb#494
+  # source://rdoc//lib/rdoc/options.rb#506
   def ==(other); end
 
   # Exclude the default patterns as well if true.
@@ -7726,13 +7726,23 @@ class RDoc::Options
 
   # Check that the files on the command line exist
   #
-  # source://rdoc//lib/rdoc/options.rb#521
+  # source://rdoc//lib/rdoc/options.rb#533
   def check_files; end
 
   # Ensure only one generator is loaded
   #
-  # source://rdoc//lib/rdoc/options.rb#542
+  # source://rdoc//lib/rdoc/options.rb#554
   def check_generator; end
+
+  # The prefix to use for class and module page paths
+  #
+  # source://rdoc//lib/rdoc/options.rb#369
+  def class_module_path_prefix; end
+
+  # The prefix to use for class and module page paths
+  #
+  # source://rdoc//lib/rdoc/options.rb#369
+  def class_module_path_prefix=(_arg0); end
 
   # If true, only report on undocumented files
   #
@@ -7748,7 +7758,7 @@ class RDoc::Options
   # from a source file, so that a title set from the command line
   # will have the priority.
   #
-  # source://rdoc//lib/rdoc/options.rb#554
+  # source://rdoc//lib/rdoc/options.rb#566
   def default_title=(string); end
 
   # If true, RDoc will not write any files.
@@ -7789,13 +7799,23 @@ class RDoc::Options
 
   # Create a regexp for #exclude
   #
-  # source://rdoc//lib/rdoc/options.rb#582
+  # source://rdoc//lib/rdoc/options.rb#594
   def exclude; end
 
   # Files matching this pattern will be excluded
   #
   # source://rdoc//lib/rdoc/options.rb#169
   def exclude=(_arg0); end
+
+  # The prefix to use for file page paths
+  #
+  # source://rdoc//lib/rdoc/options.rb#374
+  def file_path_prefix; end
+
+  # The prefix to use for file page paths
+  #
+  # source://rdoc//lib/rdoc/options.rb#374
+  def file_path_prefix=(_arg0); end
 
   # The list of files to be processed
   #
@@ -7811,13 +7831,13 @@ class RDoc::Options
   # existent files, creating a regexp for #exclude and setting a default
   # #template.
   #
-  # source://rdoc//lib/rdoc/options.rb#600
+  # source://rdoc//lib/rdoc/options.rb#612
   def finish; end
 
   # Fixes the page_dir to be relative to the root_dir and adds the page_dir to
   # the files list.
   #
-  # source://rdoc//lib/rdoc/options.rb#641
+  # source://rdoc//lib/rdoc/options.rb#653
   def finish_page_dir; end
 
   # Create the output even if the output directory does not look
@@ -7864,7 +7884,7 @@ class RDoc::Options
 
   # Returns a properly-space list of generators and their descriptions.
   #
-  # source://rdoc//lib/rdoc/options.rb#660
+  # source://rdoc//lib/rdoc/options.rb#672
   def generator_descriptions; end
 
   # For #==
@@ -7896,10 +7916,10 @@ class RDoc::Options
   # source://rdoc//lib/rdoc/options.rb#212
   def hyperlink_all=(_arg0); end
 
-  # source://rdoc//lib/rdoc/options.rb#376
+  # source://rdoc//lib/rdoc/options.rb#386
   def init_ivars; end
 
-  # source://rdoc//lib/rdoc/options.rb#422
+  # source://rdoc//lib/rdoc/options.rb#434
   def init_with(map); end
 
   # Include line numbers in the source code
@@ -7988,7 +8008,7 @@ class RDoc::Options
   # source://rdoc//lib/rdoc/options.rb#258
   def output_decoration=(_arg0); end
 
-  # source://rdoc//lib/rdoc/options.rb#457
+  # source://rdoc//lib/rdoc/options.rb#469
   def override(map); end
 
   # Directory where guides, FAQ, and other pages not associated with a class
@@ -8005,7 +8025,7 @@ class RDoc::Options
 
   # Parses command line options.
   #
-  # source://rdoc//lib/rdoc/options.rb#686
+  # source://rdoc//lib/rdoc/options.rb#698
   def parse(argv); end
 
   # Is RDoc in pipe mode?
@@ -8020,12 +8040,12 @@ class RDoc::Options
 
   # Don't display progress as we process the files
   #
-  # source://rdoc//lib/rdoc/options.rb#1258
+  # source://rdoc//lib/rdoc/options.rb#1270
   def quiet; end
 
   # Set quietness to +bool+
   #
-  # source://rdoc//lib/rdoc/options.rb#1265
+  # source://rdoc//lib/rdoc/options.rb#1277
   def quiet=(bool); end
 
   # Array of directories to search for files to satisfy an :include:
@@ -8054,7 +8074,7 @@ class RDoc::Options
 
   # Removes directories from +path+ that are outside the current directory
   #
-  # source://rdoc//lib/rdoc/options.rb#1272
+  # source://rdoc//lib/rdoc/options.rb#1284
   def sanitize_path(path); end
 
   # Set up an output generator for the named +generator_name+.
@@ -8063,7 +8083,7 @@ class RDoc::Options
   # the options instance.  This allows generators to add custom options or set
   # default options.
   #
-  # source://rdoc//lib/rdoc/options.rb#1299
+  # source://rdoc//lib/rdoc/options.rb#1311
   def setup_generator(generator_name = T.unsafe(nil)); end
 
   # Include the '#' at the front of hyperlinked instance method names
@@ -8128,7 +8148,7 @@ class RDoc::Options
 
   # Finds the template dir for +template+
   #
-  # source://rdoc//lib/rdoc/options.rb#1321
+  # source://rdoc//lib/rdoc/options.rb#1333
   def template_dir_for(template); end
 
   # Additional template stylesheets
@@ -8153,7 +8173,7 @@ class RDoc::Options
 
   # For dumping YAML
   #
-  # source://rdoc//lib/rdoc/options.rb#561
+  # source://rdoc//lib/rdoc/options.rb#573
   def to_yaml(*options); end
 
   # Should RDoc update the timestamps in the output dir?
@@ -8192,12 +8212,12 @@ class RDoc::Options
   # When +:all+ is passed, visibility is set to +:private+, similarly to
   # RDOCOPT="--all", see #visibility for more information.
   #
-  # source://rdoc//lib/rdoc/options.rb#1338
+  # source://rdoc//lib/rdoc/options.rb#1350
   def visibility=(visibility); end
 
   # Displays a warning using Kernel#warn if we're being verbose
   #
-  # source://rdoc//lib/rdoc/options.rb#1350
+  # source://rdoc//lib/rdoc/options.rb#1362
   def warn(message); end
 
   # Warn if rdoc-ref links can't be resolved
@@ -8225,10 +8245,10 @@ class RDoc::Options
   # Writes the YAML file .rdoc_options to the current directory containing the
   # parsed options.
   #
-  # source://rdoc//lib/rdoc/options.rb#1358
+  # source://rdoc//lib/rdoc/options.rb#1370
   def write_options; end
 
-  # source://rdoc//lib/rdoc/options.rb#453
+  # source://rdoc//lib/rdoc/options.rb#465
   def yaml_initialize(tag, map); end
 
   class << self
@@ -8237,12 +8257,12 @@ class RDoc::Options
     #
     # @raise [RDoc::Error]
     #
-    # source://rdoc//lib/rdoc/options.rb#1372
+    # source://rdoc//lib/rdoc/options.rb#1384
     def load_options; end
   end
 end
 
-# source://rdoc//lib/rdoc/options.rb#371
+# source://rdoc//lib/rdoc/options.rb#381
 RDoc::Options::DEFAULT_EXCLUDE = T.let(T.unsafe(nil), Array)
 
 # A parser is simple a class that subclasses RDoc::Parser and implements #scan
@@ -12743,7 +12763,7 @@ class RDoc::TopLevel < ::RDoc::Context
   # source://rdoc//lib/rdoc/code_object/top_level.rb#228
   def path; end
 
-  # source://rdoc//lib/rdoc/code_object/top_level.rb#232
+  # source://rdoc//lib/rdoc/code_object/top_level.rb#234
   def pretty_print(q); end
 
   # Relative name of this file
@@ -12758,17 +12778,17 @@ class RDoc::TopLevel < ::RDoc::Context
 
   # Search record used by RDoc::Generator::JsonIndex
   #
-  # source://rdoc//lib/rdoc/code_object/top_level.rb#246
+  # source://rdoc//lib/rdoc/code_object/top_level.rb#248
   def search_record; end
 
   # Is this TopLevel from a text file instead of a source code file?
   #
   # @return [Boolean]
   #
-  # source://rdoc//lib/rdoc/code_object/top_level.rb#263
+  # source://rdoc//lib/rdoc/code_object/top_level.rb#265
   def text?; end
 
-  # source://rdoc//lib/rdoc/code_object/top_level.rb#267
+  # source://rdoc//lib/rdoc/code_object/top_level.rb#269
   def to_s; end
 end
 

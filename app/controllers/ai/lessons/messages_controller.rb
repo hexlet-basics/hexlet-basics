@@ -41,6 +41,8 @@ class Ai::Lessons::MessagesController < Ai::ApplicationController
     Assistants::RunJob.perform_later(
       lesson_member_id: lesson_member.id,
       message: params[:message],
+      output: params[:output],
+      user_code: params[:user_code]
     )
 
     head :created

@@ -1,5 +1,5 @@
 class Assistants::RunJob < ApplicationJob
-  def perform(lesson_member_id:, message:)
+  def perform(lesson_member_id:, message:, user_code:, output:)
     lesson_member = Language::Lesson::Member.find(lesson_member_id)
     lesson = lesson_member.lesson
     lesson_info = lesson.infos.find_by!(locale: I18n.locale)
@@ -28,7 +28,20 @@ class Assistants::RunJob < ApplicationJob
       thread_id: lesson_member.openai_thread_id,
       parameters: {
         role: "user",
-        content: message
+        content: [
+          {
+            type: "text",
+            text: "Пользовательский код (решение практики): #{user_code}"
+          },
+          {
+            type: "text",
+            text: "Результат запуска пользовательского кода (используя тесты задания): #{output}"
+          },
+          {
+            type: "text",
+            text: "Вопрос пользователя: #{message}"
+          }
+        ]
       }
     )
 

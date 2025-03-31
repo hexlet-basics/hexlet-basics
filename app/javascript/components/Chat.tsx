@@ -24,6 +24,8 @@ import type { Pluggable } from "unified";
 type Props = {
   lesson: LanguageLesson;
   course: Language;
+  userCode: string;
+  output: string;
   lessonMember?: LanguageLessonMember;
 };
 
@@ -57,7 +59,13 @@ function MessagePresenter({ message }: { message: AssistantMessage }) {
 }
 
 // https://sdk.vercel.ai/cookbook/next/stream-assistant-response
-export default function Chat({ course, lesson, lessonMember }: Props) {
+export default function Chat({
+  userCode,
+  output,
+  course,
+  lesson,
+  lessonMember,
+}: Props) {
   const { t: tViews } = useTranslation("web");
 
   if (!lessonMember || !course.openai_assistant_id) {
@@ -90,7 +98,7 @@ export default function Chat({ course, lesson, lessonMember }: Props) {
   });
 
   const { input, status, messages, submitMessage, handleInputChange } =
-    useAssistantStream(lessonMember.id, lesson.id);
+    useAssistantStream(lessonMember.id, lesson.id, userCode, output);
 
   // useEffect(() => {
   //   if (status !== "in_progress") {
