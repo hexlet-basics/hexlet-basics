@@ -106,11 +106,11 @@ export default function Show({
             <div className="fs-5 text-body-secondary mb-5">
               {courseLandingPage.description}
             </div>
-            <Row className="row-cols-1 row-cols-sm-2 gy-3">
+            <Row className="row-cols-1 row-cols-sm-auto gy-3">
               {!courseMember && (
-                <Col className="col-lg-4">
+                <Col className="col-lg-5 col-xl-4">
                   <Link
-                    className="btn btn-primary w-100"
+                    className="btn btn-lg btn-primary"
                     href={Routes.language_lesson_path(
                       course.slug!,
                       firstLesson.slug,
@@ -121,9 +121,9 @@ export default function Show({
                 </Col>
               )}
               {courseMember && nextLesson && (
-                <Col className="col-lg-4">
+                <Col>
                   <Link
-                    className="btn btn-outline-primary w-100"
+                    className="btn btn-lg btn-outline-primary"
                     href={Routes.language_lesson_path(
                       course.slug!,
                       nextLesson.slug,
@@ -134,9 +134,9 @@ export default function Show({
                 </Col>
               )}
               {auth.user.guest && (
-                <Col className="col-lg-5">
+                <Col>
                   <Link
-                    className="btn fw-medium w-100"
+                    className="btn btn-lg fw-medium"
                     href={Routes.new_user_path()}
                   >
                     <span className="me-2">
@@ -236,7 +236,7 @@ export default function Show({
                 <div className="d-flex flex-column flex-sm-row justify-content-center gap-2">
                   {!courseMember && (
                     <Link
-                      className="btn btn-light text-primary"
+                      className="btn btn-light btn-lg text-primary"
                       href={Routes.language_lesson_path(
                         course.slug!,
                         firstLesson.slug,
@@ -247,7 +247,7 @@ export default function Show({
                   )}
                   {courseMember && nextLesson && (
                     <Link
-                      className="btn btn-outline-light"
+                      className="btn btn-lg btn-outline-light"
                       href={Routes.language_lesson_path(
                         course.slug!,
                         nextLesson.slug,
@@ -258,7 +258,7 @@ export default function Show({
                   )}
                   {auth.user.guest && (
                     <Link
-                      className="btn text-light fw-medium"
+                      className="btn btn-lg text-light fw-medium"
                       href={Routes.new_user_path()}
                     >
                       <span className="me-2">
@@ -280,21 +280,36 @@ export default function Show({
             <div className="me-lg-5 pe-lg-4">
               <div className="d-flex mb-3">
                 <i className="bi bi-cloud-arrow-up-fill me-3 text-primary" />
-                <XssContent>
-                  {t("languages.show.without_registration_html")}
-                </XssContent>
+                <div>
+                  <div className="fw-bold">
+                    {t("languages.show.try_without_registration")}
+                  </div>
+                  <XssContent>
+                    {t("languages.show.without_registration")}
+                  </XssContent>
+                </div>
               </div>
               <div className="d-flex mb-3">
                 <i className="bi bi-laptop-fill me-3 text-primary" />
-                <XssContent>
-                  {t("languages.show.learning_conveniently_html")}
-                </XssContent>
+                <div>
+                  <div className="fw-bold">
+                    {t("languages.show.convenient format")}
+                  </div>
+                  <XssContent>
+                    {t("languages.show.learning_conveniently")}
+                  </XssContent>
+                </div>
               </div>
               <div className="d-flex">
                 <i className="bi bi-lock-fill me-3 text-primary" />
-                <XssContent>
-                  {t("languages.show.real_life_challenges_html")}
-                </XssContent>
+                <div>
+                  <div className="fw-bold">
+                    {t("languages.show.browser_practice")}
+                  </div>
+                  <XssContent>
+                    {t("languages.show.real_life_challenges")}
+                  </XssContent>
+                </div>
               </div>
             </div>
           </Col>
@@ -333,15 +348,15 @@ export default function Show({
         <div className="py-4 mb-lg-5">
           <Card className="px-3 px-sm-4 px-lg-5 py-5">
             <Row className="gy-4 justify-content-between align-items-center py-lg-5">
-              <Col className="col-12 col-sm-11 col-lg-9 col-xxl-7">
-                <div className="display-5 fw-semibold lh-1">
+              <Col className="col-12 col-lg-9 col-xxl-8">
+                <div className="display-6 fw-semibold lh-1">
                   {t("languages.show.ai_learning")}
                 </div>
               </Col>
               <Col className="col-auto">
                 {!courseMember && (
                   <Link
-                    className="btn btn-primary"
+                    className="btn btn-lg btn-primary"
                     href={Routes.language_lesson_path(
                       course.slug!,
                       firstLesson.slug,
@@ -352,7 +367,7 @@ export default function Show({
                 )}
                 {courseMember && nextLesson && (
                   <Link
-                    className="btn btn-primary"
+                    className="btn btn-lg btn-primary"
                     href={Routes.language_lesson_path(
                       course.slug!,
                       nextLesson.slug,
@@ -407,7 +422,7 @@ export default function Show({
                         {t("languages.show.about_developer_community")}
                       </div>
                       <Link
-                        className="btn btn-outline-secondary"
+                        className="btn btn-secondary"
                         href="https://ttttt.me/HexletLearningBot"
                       >
                         <span>{t("languages.show.join")}</span>
