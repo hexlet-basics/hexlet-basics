@@ -162,8 +162,23 @@ en:
         about_learning: How the training is organised
         similar_courses: Similar courses
         sign_up: Sign Up
+        cover_image: Course cover
         free_course: Free course for beginners
         learning_program: Learning program
+        course_graduates: Join the 74,761 students who have successfully completed the course
+        about_ai: How AI helps you learn
+        support_from_ai: On our platform, you don't just learn theory - you get instant support from a smart AI assistant
+        ai_features: 'What AI can do:'
+        explain_topics: Explains complex topics in simple terms
+        help_to_understand: Helps you understand the assignments and tells you where to start
+        answers_questions: Answers any questions on theory and practice
+        always_in_touch: Works like a mentor 24/7 - always there for you when you're stuck
+        ai_learning: Ready to innovate your learning? Start learning with AI now
+        more_than_support: More than Support
+        about_developer_community: We know how hard it is to start in IT, so we've created a developer community where you're always ready to help. Here you can ask questions, get support, communicate with experienced specialists and get into the profession faster
+        join: Join
+        reviews: Reviews
+        community_image_preview: Developer community
         sort_questions: Sorting out the questions
         start: Start Learning
         continue: Continue Learning

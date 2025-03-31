@@ -176,3 +176,17 @@ $utilities: map-merge($utilities,
     left: 50px;
   }
 }
+
+.hexlet-basics-community-image {
+  min-height: 200px;
+  background-image: url(../images/course-landing-page/community.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  @include media-breakpoint-up(md) { min-height: 300px; }
+  @include media-breakpoint-up(lg) {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+  }
+}
