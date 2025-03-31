@@ -394,7 +394,7 @@ export default function Show({
                     {review.language.slug && (
                       <Link
                         className="text-decoration-none text-body"
-                        href={Routes.language_path(review.language.slug)}
+                        href={Routes.language_path(courseLandingPage.slug)}
                       >
                         <span>{review.language.slug}</span>
                       </Link>

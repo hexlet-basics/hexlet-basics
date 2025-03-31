@@ -56,12 +56,13 @@ class Web::LanguagesController < Web::ApplicationController
     #   end
     # end
 
-    scope = Review.published.with_locale
+    reviews = Review.published.with_locale
       .includes([ :user, :language ])
+      .where(language: landing_page.language)
       .order(
         Review.arel_table[:pinned].desc.nulls_last,
         id: :desc
-      )
+      ).limit(6)
 
     render inertia: true, props: {
       courseLandingPage: Language::LandingPageResource.new(landing_page),
@@ -73,7 +74,7 @@ class Web::LanguagesController < Web::ApplicationController
       courseModules: Language::ModuleResource.new(language_modules_infos),
       lessonsByModuleId: lesson_resources_by_module_id,
       courseMember: language_member && Language::MemberResource.new(language_member),
-      reviews: ReviewResource.new(scope)
+      reviews: ReviewResource.new(reviews)
     }
   end
 
