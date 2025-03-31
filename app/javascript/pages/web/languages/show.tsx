@@ -189,44 +189,83 @@ export default function Show({
             </p>
           </Col>
         </Row>
-        <Row className="mb-lg-5 py-5">
-          <Col className="col-lg-10">
-            <div className="display-5 fw-semibold lh-1 mb-4">
-              {t("languages.show.learning_program")}
-            </div>
-            <Accordion defaultActiveKey="0" className="hexlet-basics-accordion">
-              {courseModules.map((m, index) => (
-                <Accordion.Item
-                  eventKey={index.toString()}
-                  key={m.id}
-                  className="rounded-0 border-0 border-bottom border-secondary-subtle py-3 py-md-4"
-                >
-                  <Accordion.Header as="h3">
-                    {index + 1}. {m.name!}
-                  </Accordion.Header>
-                  <Accordion.Body className="px-0 pb-0">
-                    <ul className="list-unstyled">
-                      {(lessonsByModuleId[m.id] ?? []).map((l) => (
-                        <li key={l.id}>
-                          <Link
-                            className="text-decoration-none text-body-secondary"
-                            href={Routes.language_lesson_path(
-                              course.slug!,
-                              l.slug!,
-                            )}
-                          >
-                            <span>{l.name}</span>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </Accordion.Body>
-                </Accordion.Item>
-              ))}
-            </Accordion>
-          </Col>
-        </Row>
-        <div className="pb-5 mb-lg-5">
+        <div className="mb-lg-5 py-5">
+          <div className="display-5 fw-semibold lh-1 mb-4">
+            {t("languages.show.learning_program")}
+          </div>
+          <Accordion
+            defaultActiveKey={["0"]}
+            className="hexlet-basics-accordion"
+            alwaysOpen
+          >
+            <Row className="row-cols-1 row-cols-lg-auto gx-lg-5">
+              {/* Левая колонка (модули с 1 по 6) */}
+              <Col className="col-lg-6">
+                {courseModules.slice(0, 6).map((m, index) => (
+                  <Accordion.Item
+                    eventKey={index.toString()}
+                    className="rounded-0 border-0 border-bottom border-secondary-subtle py-3 py-md-4"
+                    key={m.id}
+                  >
+                    <Accordion.Header as="h3">
+                      {index + 1}. {m.name!}
+                    </Accordion.Header>
+                    <Accordion.Body className="px-0 pb-0">
+                      <ul className="list-unstyled">
+                        {(lessonsByModuleId[m.id] ?? []).map((l) => (
+                          <li key={l.id}>
+                            <Link
+                              className="text-decoration-none text-body-secondary"
+                              href={Routes.language_lesson_path(
+                                course.slug!,
+                                l.slug!,
+                              )}
+                            >
+                              <span>{l.name}</span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </Accordion.Body>
+                  </Accordion.Item>
+                ))}
+              </Col>
+
+              {/* Правая колонка (модули с 7 по последний) */}
+              <Col className="col-lg-6">
+                {courseModules.slice(6).map((m, index) => (
+                  <Accordion.Item
+                    eventKey={(index + 6).toString()}
+                    className="rounded-0 border-0 border-bottom border-secondary-subtle py-3 py-md-4"
+                    key={m.id}
+                  >
+                    <Accordion.Header as="h3">
+                      {index + 7}. {m.name!}
+                    </Accordion.Header>
+                    <Accordion.Body className="px-0 pb-0">
+                      <ul className="list-unstyled">
+                        {(lessonsByModuleId[m.id] ?? []).map((l) => (
+                          <li key={l.id}>
+                            <Link
+                              className="text-decoration-none text-body-secondary"
+                              href={Routes.language_lesson_path(
+                                course.slug!,
+                                l.slug!,
+                              )}
+                            >
+                              <span>{l.name}</span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </Accordion.Body>
+                  </Accordion.Item>
+                ))}
+              </Col>
+            </Row>
+          </Accordion>
+        </div>
+        <div className="pb-5 pt-3 mb-lg-5">
           <Card className="bg-primary border-0 py-5">
             <Row className="justify-content-center my-5">
               <Col className="col-11 col-lg-7">
@@ -421,12 +460,14 @@ export default function Show({
                       <div className="mb-5">
                         {t("languages.show.about_developer_community")}
                       </div>
-                      <Link
+                      <a
                         className="btn btn-secondary"
                         href="https://ttttt.me/HexletLearningBot"
+                        target="_blank"
+                        rel="noopener noreferrer"
                       >
                         <span>{t("languages.show.join")}</span>
-                      </Link>
+                      </a>
                     </div>
                   </div>
                 </Col>
