@@ -451,13 +451,13 @@ export default function Show({
                 <Col className="position-relative p-0">
                   <div className="hexlet-basics-community-image" />
                 </Col>
-                <Col className="col-lg-7 col-xl-6 p-4 p-lg-5">
+                <Col className="col-lg-7 col-xl-6 p-4 p-md-5">
                   <div className="d-flex flex-column justify-content-center py-3 py-lg-4">
                     <div className="display-5 fw-semibold lh-1 mb-4">
                       {t("languages.show.more_than_support")}
                     </div>
                     <div className="pe-lg-5">
-                      <div className="mb-5">
+                      <div className="mb-5 pe-xl-4">
                         {t("languages.show.about_developer_community")}
                       </div>
                       <a
