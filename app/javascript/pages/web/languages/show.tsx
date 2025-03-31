@@ -419,7 +419,7 @@ export default function Show({
             </Row>
           </Card>
         </div>
-        <div className="py-4 py-lg-5">
+        {/* <div className="py-4 py-lg-5">
           <div className="display-5 fw-semibold lh-1 mb-5">
             {t("languages.show.reviews")}
           </div>
@@ -443,7 +443,7 @@ export default function Show({
               </Col>
             ))}
           </Row>
-        </div>
+        </div> */}
         {i18next.language === "ru" && (
           <div className="py-4 py-lg-5">
             <div className="bg-dark text-light rounded-3 overflow-hidden">
