@@ -162,8 +162,16 @@ en:
         about_learning: How the training is organised
         similar_courses: Similar courses
         sign_up: Sign Up
+        cover_image: Course cover
         free_course: Free course for beginners
         learning_program: Learning program
+        course_graduates: Join 74,761 students who have successfully completed courses
+        ai_learning: Ready to innovate your learning? Start learning with AI now
+        more_than_support: More than Support
+        about_developer_community: We know how hard it is to start in IT, so we've created a developer community where you're always ready to help. Here you can ask questions, get support, communicate with experienced specialists and get into the profession faster
+        join: Join
+        reviews: Reviews
+        community_image_preview: Developer community
         sort_questions: Sorting out the questions
         start: Start Learning
         continue: Continue Learning
@@ -172,12 +180,14 @@ en:
         no_registration: Registration is not required
         lessons: "%{lessons_count} with practice in the browser"
         learning_preview: Learning preview
-        without_registration_html: |
-          <b>Registration is optional</b> You can try the first lesson without registering, but you need to register to save your progress
-        learning_conveniently_html: |
-          <b>Simple, clear and always at hand</b> You learn the theory in a convenient text format - easy to read even from your phone. Live examples help you immediately understand how everything works in practice. The material is organised in such a way that you move step by step from simple to complex without missing important details
-        real_life_challenges_html: |
-          <b>Learn from real-life challenges</b> We've created a convenient virtual environment where you solve problems right in your browser. You have a code editor, a console and automatic tests that instantly show the results. If something doesn't work out, you can always look at the teacher's solution
+        try_without_registration: Try it without registering
+        without_registration: Start learning right away - first lessons are available without an account. If you like the format, you can register to save your progress
+        convenient format: Convenient format
+        learning_conveniently: Everything you need to master new topics is on one screen. Theory, practice and live examples go hand in hand. The clear structure helps you to learn in a consistent manner and not to miss important details
+        browser_practice: Practice in the browser
+        real_life_challenges: You don't need to install anything - all tasks are performed right in your browser. Built-in code editor, console and automatic tests make learning comfortable. And if something fails, you can always see the teacher's solution
+        ai_without_limits: AI assistance without limits
+        ai_explanation: AI explains topics, tells you how to solve assignments, and helps you at any time - like a personal tutor 24/7
         javascript_description: Programming learning is an interesting and exciting process. The syntax of the language is the simplest and shortest path, without which it is impossible to start. This free online JavaScript course will introduce you to the basic concepts of the language. Learn the basics and write your first JS programs.
         php_description: The study of programming is a difficult and lengthy process. Learning the syntax of the language it is impossible to start without it. This The course is devoted to the basics of writing programs for a PHP. He is preparing a springboard for writing meaningful programs.
         python_description: The study of programming is a difficult and lengthy process. Learning the syntax of the language it is impossible to start without it. This The course is devoted to the basics of writing programs for a racket. He is preparing a springboard for writing meaningful programs.
