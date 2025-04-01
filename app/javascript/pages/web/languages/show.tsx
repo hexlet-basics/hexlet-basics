@@ -309,7 +309,11 @@ export default function Show({
             <div className="bg-primary rounded-5 overflow-hidden py-lg-3">
               <video
                 className="w-100 rounded-4 hexlet-basics-learning-video"
-                src={locale === "en" ? learningEnVideo : learningRuVideo}
+                src={
+                  locale === "en"
+                    ? "https://cdn6.hexlet.io/g4ugKzIANCge.mp4"
+                    : "https://cdn6.hexlet.io/gVLbxD9NmCR2.mp4"
+                } // Temporarily use an external link as the internal link doesn't work on iphone
                 autoPlay
                 loop
                 muted
