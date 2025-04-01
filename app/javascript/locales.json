@@ -994,7 +994,7 @@
         "show": {
           "about_developer_community": "We know how hard it is to start in IT, so we've created a developer community where you're always ready to help. Here you can ask questions, get support, communicate with experienced specialists and get into the profession faster",
           "about_learning": "How the training is organised",
-          "ai_explanation": "The integrated AI assistant is always there for you. It explains complex topics in simple words, tells you where to start, and helps you figure things out if you get stuck. Works like a personal tutor 24/7 - simple and accessible",
+          "ai_explanation": "AI explains topics, tells you how to solve assignments, and helps you at any time - like a personal tutor 24/7",
           "ai_learning": "Ready to innovate your learning? Start learning with AI now",
           "ai_without_limits": "AI assistance without limits",
           "bash_description": "Bash is command language",
@@ -1052,7 +1052,7 @@
           "to_home_title": "Home",
           "try_without_registration": "Try it without registering",
           "typescript_description": "TypeScript is a JavaScript-based programming language. Includes a typing system",
-          "without_registration": "Start learning right away - the first lessons are available without an account. This is a great way to familiarise yourself with the platform and see if this format is right for you. If you like it, you can register to save your progress and continue learning at your convenience"
+          "without_registration": "Start learning right away - first lessons are available without an account. If you like the format, you can register to save your progress"
         }
       },
       "my": {
@@ -2711,7 +2711,7 @@
         "show": {
           "about_developer_community": "Мы знаем, как непросто начинать в IT, поэтому создали сообщество разработчиков, где вам всегда готовы помочь. Здесь можно задавать вопросы, получать поддержку, общаться с опытными специалистами и быстрее влиться в профессию",
           "about_learning": "Как проходит обучение",
-          "ai_explanation": "Интегрированный AI-помощник всегда рядом. Он объясняет сложные темы простыми словами, подсказывает, с чего начать решение задания, и помогает разобраться, если вы застряли. Работает как личный наставник 24/7 — просто и доступно",
+          "ai_explanation": "AI объясняет темы, подсказывает, как решить задания, и помогает в любой момент — как личный наставник 24/7",
           "ai_learning": "Готовы к инновациям в обучении? Начните обучение с AI прямо сейчас",
           "ai_without_limits": "Помощь AI без ограничений",
           "blog_posts": "Посты в блоге",
@@ -2744,7 +2744,7 @@
           "start_demo_lesson": "Демо урок",
           "to_home_title": "Главная",
           "try_without_registration": "Попробуйте без регистрации",
-          "without_registration": "Начните обучение сразу — первые уроки доступны без аккаунта. Это отличный способ познакомиться с платформой и понять, подходит ли вам такой формат. Понравится — зарегистрируетесь, чтобы сохранить прогресс и продолжить обучение в удобное время"
+          "without_registration": "Начните обучение сразу — первые уроки доступны без аккаунта. Понравится формат — зарегистрируетесь, чтобы сохранить прогресс"
         },
         "success": {
           "description": "Пора двигаться дальше :)\n",

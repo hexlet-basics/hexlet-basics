@@ -181,13 +181,13 @@ en:
         lessons: "%{lessons_count} with practice in the browser"
         learning_preview: Learning preview
         try_without_registration: Try it without registering
-        without_registration: Start learning right away - the first lessons are available without an account. This is a great way to familiarise yourself with the platform and see if this format is right for you. If you like it, you can register to save your progress and continue learning at your convenience
+        without_registration: Start learning right away - first lessons are available without an account. If you like the format, you can register to save your progress
         convenient format: Convenient format
         learning_conveniently: Everything you need to master new topics is on one screen. Theory, practice and live examples go hand in hand. The clear structure helps you to learn in a consistent manner and not to miss important details
         browser_practice: Practice in the browser
         real_life_challenges: You don't need to install anything - all tasks are performed right in your browser. Built-in code editor, console and automatic tests make learning comfortable. And if something fails, you can always see the teacher's solution
         ai_without_limits: AI assistance without limits
-        ai_explanation: The integrated AI assistant is always there for you. It explains complex topics in simple words, tells you where to start, and helps you figure things out if you get stuck. Works like a personal tutor 24/7 - simple and accessible
+        ai_explanation: AI explains topics, tells you how to solve assignments, and helps you at any time - like a personal tutor 24/7
         javascript_description: Programming learning is an interesting and exciting process. The syntax of the language is the simplest and shortest path, without which it is impossible to start. This free online JavaScript course will introduce you to the basic concepts of the language. Learn the basics and write your first JS programs.
         php_description: The study of programming is a difficult and lengthy process. Learning the syntax of the language it is impossible to start without it. This The course is devoted to the basics of writing programs for a PHP. He is preparing a springboard for writing meaningful programs.
         python_description: The study of programming is a difficult and lengthy process. Learning the syntax of the language it is impossible to start without it. This The course is devoted to the basics of writing programs for a racket. He is preparing a springboard for writing meaningful programs.
