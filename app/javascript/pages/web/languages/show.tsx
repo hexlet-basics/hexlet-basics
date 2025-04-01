@@ -2,9 +2,10 @@ import { Accordion, Alert, Card, Col, Container, Row } from "react-bootstrap";
 
 import learningEnVideo from "@/images/course-landing-page/learning_en.mp4";
 import learningRuVideo from "@/images/course-landing-page/learning_ru.mp4";
-import jsImage from "@/images/javascript.png";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
+
+import codeIllustration from "@/images/code.svg";
 
 import XssContent from "@/components/XssContent";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
@@ -95,7 +96,7 @@ export default function Show({
             <XssContent>{t("languages.show.completed_html")}</XssContent>
           </Alert>
         )}
-        <Row className="flex-column flex-lg-row gy-4 gy-md-5 gx-lg-5 mb-4 mb-lg-5">
+        <Row className="flex-column flex-lg-row gy-5 gx-lg-5 mb-4 mb-lg-5">
           <Col className="col-lg-7">
             <div className="fs-5 fw-medium text-primary text-opacity-75 mb-3">
               {t("languages.show.free_course")}
@@ -107,51 +108,22 @@ export default function Show({
               {courseLandingPage.description}
             </div>
             <Row className="row-cols-1 row-cols-sm-auto gy-3">
-              {!courseMember && (
-                <Col className="col-lg-5 col-xl-4">
-                  <Link
-                    className="btn btn-lg btn-primary"
-                    href={Routes.language_lesson_path(
-                      course.slug!,
-                      firstLesson.slug,
-                    )}
-                  >
-                    <span>{t("languages.show.start")}</span>
-                  </Link>
-                </Col>
-              )}
-              {courseMember && nextLesson && (
-                <Col>
-                  <Link
-                    className="btn btn-lg btn-outline-primary"
-                    href={Routes.language_lesson_path(
-                      course.slug!,
-                      nextLesson.slug,
-                    )}
-                  >
-                    <span>{t("languages.show.continue")}</span>
-                  </Link>
-                </Col>
-              )}
-              {auth.user.guest && (
-                <Col>
-                  <Link
-                    className="btn btn-lg fw-medium"
-                    href={Routes.new_user_path()}
-                  >
-                    <span className="me-2">
-                      {t("languages.show.registration")}
-                    </span>
-                    <i className="bi bi-arrow-right" />
-                  </Link>
-                </Col>
-              )}
+              <Col className="col-lg-5 col-xl-4">
+                <Link
+                  className="btn btn-lg btn-primary"
+                  href={Routes.language_lesson_path(
+                    course.slug!,
+                    firstLesson.slug,
+                  )}
+                >
+                  <span>{t("languages.show.start")}</span>
+                </Link>
+              </Col>
             </Row>
           </Col>
           <Col>
             <img
-              // src={course.cover_list_variant}
-              src={jsImage}
+              src={codeIllustration}
               width="100%"
               height="auto"
               alt={t("languages.show.cover_image")}
@@ -199,7 +171,6 @@ export default function Show({
             alwaysOpen
           >
             <Row className="row-cols-1 row-cols-lg-auto gx-lg-5">
-              {/* Левая колонка (модули с 1 по 6) */}
               <Col className="col-lg-6">
                 {courseModules.slice(0, 6).map((m, index) => (
                   <Accordion.Item
@@ -230,8 +201,6 @@ export default function Show({
                   </Accordion.Item>
                 ))}
               </Col>
-
-              {/* Правая колонка (модули с 7 по последний) */}
               <Col className="col-lg-6">
                 {courseModules.slice(6).map((m, index) => (
                   <Accordion.Item
@@ -273,39 +242,15 @@ export default function Show({
                   {t("languages.show.course_graduates")}
                 </div>
                 <div className="d-flex flex-column flex-sm-row justify-content-center gap-2">
-                  {!courseMember && (
-                    <Link
-                      className="btn btn-light btn-lg text-primary"
-                      href={Routes.language_lesson_path(
-                        course.slug!,
-                        firstLesson.slug,
-                      )}
-                    >
-                      <span>{t("languages.show.start")}</span>
-                    </Link>
-                  )}
-                  {courseMember && nextLesson && (
-                    <Link
-                      className="btn btn-lg btn-outline-light"
-                      href={Routes.language_lesson_path(
-                        course.slug!,
-                        nextLesson.slug,
-                      )}
-                    >
-                      <span>{t("languages.show.continue")}</span>
-                    </Link>
-                  )}
-                  {auth.user.guest && (
-                    <Link
-                      className="btn btn-lg text-light fw-medium"
-                      href={Routes.new_user_path()}
-                    >
-                      <span className="me-2">
-                        {t("languages.show.registration")}
-                      </span>
-                      <i className="bi bi-arrow-right" />
-                    </Link>
-                  )}
+                  <Link
+                    className="btn btn-light btn-lg text-primary"
+                    href={Routes.language_lesson_path(
+                      course.slug!,
+                      firstLesson.slug,
+                    )}
+                  >
+                    <span>{t("languages.show.start")}</span>
+                  </Link>
                 </div>
               </Col>
             </Row>
@@ -316,7 +261,7 @@ export default function Show({
         </div>
         <Row className="row-cols-1 row-cols-lg-2 mb-lg-5 pb-4 py-md-5 gy-4">
           <Col>
-            <div className="me-lg-5 pe-lg-4">
+            <div className="pe-lg-5">
               <div className="d-flex mb-3">
                 <i className="bi bi-cloud-arrow-up-fill me-3 text-primary" />
                 <div>
@@ -339,7 +284,7 @@ export default function Show({
                   </XssContent>
                 </div>
               </div>
-              <div className="d-flex">
+              <div className="d-flex mb-3">
                 <i className="bi bi-lock-fill me-3 text-primary" />
                 <div>
                   <div className="fw-bold">
@@ -348,6 +293,15 @@ export default function Show({
                   <XssContent>
                     {t("languages.show.real_life_challenges")}
                   </XssContent>
+                </div>
+              </div>
+              <div className="d-flex">
+                <i className="bi bi-lock-fill me-3 text-primary" />
+                <div>
+                  <div className="fw-bold">
+                    {t("languages.show.ai_without_limits")}
+                  </div>
+                  <XssContent>{t("languages.show.ai_explanation")}</XssContent>
                 </div>
               </div>
             </div>
@@ -365,25 +319,6 @@ export default function Show({
             </div>
           </Col>
         </Row>
-        <Row className="py-4 mb-lg-5">
-          <Col className="col-lg-9">
-            <div className="display-5 fw-semibold lh-1 mb-4">
-              {t("languages.show.about_ai")}
-            </div>
-            <div className="text-body-secondary">
-              <div className="mb-3">{t("languages.show.support_from_ai")}</div>
-              <div className="fw-bold mb-2">
-                {t("languages.show.ai_features")}
-              </div>
-              <ul>
-                <li>{t("languages.show.explain_topics")}</li>
-                <li>{t("languages.show.help_to_understand")}</li>
-                <li>{t("languages.show.answers_questions")}</li>
-                <li>{t("languages.show.always_in_touch")}</li>
-              </ul>
-            </div>
-          </Col>
-        </Row>
         <div className="py-4 mb-lg-5">
           <Card className="px-3 px-sm-4 px-lg-5 py-5">
             <Row className="gy-4 justify-content-between align-items-center py-lg-5">
@@ -393,28 +328,15 @@ export default function Show({
                 </div>
               </Col>
               <Col className="col-auto">
-                {!courseMember && (
-                  <Link
-                    className="btn btn-lg btn-primary"
-                    href={Routes.language_lesson_path(
-                      course.slug!,
-                      firstLesson.slug,
-                    )}
-                  >
-                    <span>{t("languages.show.start")}</span>
-                  </Link>
-                )}
-                {courseMember && nextLesson && (
-                  <Link
-                    className="btn btn-lg btn-primary"
-                    href={Routes.language_lesson_path(
-                      course.slug!,
-                      nextLesson.slug,
-                    )}
-                  >
-                    <span>{t("languages.show.continue")}</span>
-                  </Link>
-                )}
+                <Link
+                  className="btn btn-lg btn-primary"
+                  href={Routes.language_lesson_path(
+                    course.slug!,
+                    firstLesson.slug,
+                  )}
+                >
+                  <span>{t("languages.show.start")}</span>
+                </Link>
               </Col>
             </Row>
           </Card>
