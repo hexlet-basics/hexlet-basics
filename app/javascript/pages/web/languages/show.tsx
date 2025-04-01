@@ -140,8 +140,8 @@ export default function Show({
             </p>
           </Col>
         </Row>
-        <Row className="row-cols-1 row-cols-md-2 gx-lg-5 gy-5 mb-lg-4 py-3 py-md-5 justify-content-between">
-          <Col>
+        <Row className="row-cols-1 row-cols-lg-2 gx-lg-5 gy-3 mb-lg-4 py-3 py-md-5 justify-content-between">
+          <Col className="order-last order-lg-first">
             {courseLandingPage.outcomes_image && (
               <img
                 src={courseLandingPage.outcomes_image}
@@ -180,9 +180,7 @@ export default function Show({
                       className="rounded-0 border-0 border-bottom border-secondary-subtle py-3 py-md-4"
                       key={m.id}
                     >
-                      <Accordion.Header as="h3">
-                        {index + 1}. {m.name!}
-                      </Accordion.Header>
+                      <Accordion.Header as="h3">{m.name!}</Accordion.Header>
                       <Accordion.Body className="px-0 pb-0">
                         <ul className="list-unstyled">
                           {(lessonsByModuleId[m.id] ?? []).map((l) => (
@@ -215,10 +213,7 @@ export default function Show({
                       className="rounded-0 border-0 border-bottom border-secondary-subtle py-3 py-md-4"
                       key={m.id}
                     >
-                      <Accordion.Header as="h3">
-                        {index + Math.ceil(courseModules.length / 2) + 1}.{" "}
-                        {m.name!}
-                      </Accordion.Header>
+                      <Accordion.Header as="h3">{m.name!}</Accordion.Header>
                       <Accordion.Body className="px-0 pb-0">
                         <ul className="list-unstyled">
                           {(lessonsByModuleId[m.id] ?? []).map((l) => (
@@ -271,7 +266,6 @@ export default function Show({
           <Col>
             <div className="pe-lg-5">
               <div className="d-flex mb-3">
-                <i className="bi bi-cloud-arrow-up-fill me-3 text-primary" />
                 <div>
                   <div className="fw-bold">
                     {t("languages.show.try_without_registration")}
@@ -282,7 +276,6 @@ export default function Show({
                 </div>
               </div>
               <div className="d-flex mb-3">
-                <i className="bi bi-laptop-fill me-3 text-primary" />
                 <div>
                   <div className="fw-bold">
                     {t("languages.show.convenient format")}
@@ -293,7 +286,6 @@ export default function Show({
                 </div>
               </div>
               <div className="d-flex mb-3">
-                <i className="bi bi-lock-fill me-3 text-primary" />
                 <div>
                   <div className="fw-bold">
                     {t("languages.show.browser_practice")}
@@ -304,7 +296,6 @@ export default function Show({
                 </div>
               </div>
               <div className="d-flex">
-                <i className="bi bi-lock-fill me-3 text-primary" />
                 <div>
                   <div className="fw-bold">
                     {t("languages.show.ai_without_limits")}
