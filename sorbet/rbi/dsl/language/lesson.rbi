@@ -423,6 +423,9 @@ class Language::Lesson
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language) }
     def build_language(*args, &blk); end
 
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Language::Lesson::Version::Info) }
+    def build_localed_info(*args, &blk); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language::Module) }
     def build_module(*args, &blk); end
 
@@ -431,6 +434,12 @@ class Language::Lesson
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language) }
     def create_language!(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Language::Lesson::Version::Info) }
+    def create_localed_info(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Language::Lesson::Version::Info) }
+    def create_localed_info!(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language::Module) }
     def create_module(*args, &blk); end
@@ -464,6 +473,12 @@ class Language::Lesson
     sig { returns(T::Boolean) }
     def language_previously_changed?; end
 
+    sig { returns(T.nilable(::Language::Lesson::Version::Info)) }
+    def localed_info; end
+
+    sig { params(value: T.nilable(::Language::Lesson::Version::Info)).void }
+    def localed_info=(value); end
+
     sig { returns(T::Array[T.untyped]) }
     def member_ids; end
 
@@ -493,11 +508,17 @@ class Language::Lesson
     sig { returns(T.nilable(::Language)) }
     def reload_language; end
 
+    sig { returns(T.nilable(::Language::Lesson::Version::Info)) }
+    def reload_localed_info; end
+
     sig { returns(T.nilable(::Language::Module)) }
     def reload_module; end
 
     sig { void }
     def reset_language; end
+
+    sig { void }
+    def reset_localed_info; end
 
     sig { void }
     def reset_module; end

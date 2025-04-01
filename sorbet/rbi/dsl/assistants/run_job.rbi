@@ -11,12 +11,21 @@ class Assistants::RunJob
       params(
         lesson_member_id: T.untyped,
         message: T.untyped,
+        user_code: T.untyped,
+        output: T.untyped,
         block: T.nilable(T.proc.params(job: Assistants::RunJob).void)
       ).returns(T.any(Assistants::RunJob, FalseClass))
     end
-    def perform_later(lesson_member_id:, message:, &block); end
+    def perform_later(lesson_member_id:, message:, user_code:, output:, &block); end
 
-    sig { params(lesson_member_id: T.untyped, message: T.untyped).returns(T.untyped) }
-    def perform_now(lesson_member_id:, message:); end
+    sig do
+      params(
+        lesson_member_id: T.untyped,
+        message: T.untyped,
+        user_code: T.untyped,
+        output: T.untyped
+      ).returns(T.untyped)
+    end
+    def perform_now(lesson_member_id:, message:, user_code:, output:); end
   end
 end
