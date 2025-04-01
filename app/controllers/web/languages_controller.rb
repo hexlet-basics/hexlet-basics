@@ -50,6 +50,8 @@ class Web::LanguagesController < Web::ApplicationController
     }
     set_meta_tags seo_tags
 
+    courseFinishedMembers = landing_page.language.members.finished.size
+
     # @switching_locales.each do |locale,|
     #   if @language.current_version.infos.exists?(locale: locale)
     #     @switching_locales[locale] = language_path(@language.slug, locale: AppHost.locale_for_url(locale))
@@ -73,7 +75,8 @@ class Web::LanguagesController < Web::ApplicationController
       nextLesson: next_lesson_info && Language::LessonResource.new(next_lesson_info),
       courseModules: Language::ModuleResource.new(language_modules_infos),
       lessonsByModuleId: lesson_resources_by_module_id,
-      courseMember: language_member && Language::MemberResource.new(language_member)
+      courseMember: language_member && Language::MemberResource.new(language_member),
+      courseFinishedMembers: courseFinishedMembers
       # reviews: ReviewResource.new(reviews)
     }
   end

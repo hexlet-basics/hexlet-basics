@@ -37,6 +37,7 @@ type Props = {
     [moduleId: number]: LanguageLesson[];
   };
   reviews: Review[];
+  courseFinishedMembers: number;
 };
 
 export default function Show({
@@ -50,6 +51,7 @@ export default function Show({
   lessonsByModuleId,
   course,
   reviews,
+  courseFinishedMembers,
 }: Props) {
   const { t } = useTranslation();
   const { auth, locale } = usePage<SharedProps>().props;
@@ -242,7 +244,11 @@ export default function Show({
             <Row className="justify-content-center my-5">
               <Col className="col-11 col-lg-7">
                 <div className="text-light display-5 fw-semibold lh-1 text-center mb-5">
-                  {t("languages.show.course_graduates")}
+                  <XssContent>
+                    {t("languages.show.course_graduates_html", {
+                      count: courseFinishedMembers,
+                    })}
+                  </XssContent>
                 </div>
                 <div className="d-flex flex-column flex-sm-row justify-content-center gap-2">
                   <Link
