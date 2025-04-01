@@ -9,6 +9,7 @@ import AboutRu from "./parts/about.ru";
 import AuthorsEn from "./parts/authors.en";
 import AuthorsRu from "./parts/authors.ru";
 import PrivaryRu from "./parts/privacy.ru";
+import TosEn from "./parts/tos.en";
 import TosRu from "./parts/tos.ru";
 
 type Props = PropsWithChildren & {
@@ -32,7 +33,7 @@ const mapping = {
   },
   en: {
     about: AboutEn,
-    tos: Empty,
+    tos: TosEn,
     privacy: Empty,
     cookie_policy: Empty,
     authors: AuthorsEn,
