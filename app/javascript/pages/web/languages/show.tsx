@@ -172,64 +172,72 @@ export default function Show({
           >
             <Row className="row-cols-1 row-cols-lg-auto gx-lg-5">
               <Col className="col-lg-6">
-                {courseModules.slice(0, 6).map((m, index) => (
-                  <Accordion.Item
-                    eventKey={index.toString()}
-                    className="rounded-0 border-0 border-bottom border-secondary-subtle py-3 py-md-4"
-                    key={m.id}
-                  >
-                    <Accordion.Header as="h3">
-                      {index + 1}. {m.name!}
-                    </Accordion.Header>
-                    <Accordion.Body className="px-0 pb-0">
-                      <ul className="list-unstyled">
-                        {(lessonsByModuleId[m.id] ?? []).map((l) => (
-                          <li key={l.id}>
-                            <Link
-                              className="text-decoration-none text-body-secondary"
-                              href={Routes.language_lesson_path(
-                                course.slug!,
-                                l.slug!,
-                              )}
-                            >
-                              <span>{l.name}</span>
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </Accordion.Body>
-                  </Accordion.Item>
-                ))}
+                {courseModules
+                  .slice(0, Math.ceil(courseModules.length / 2))
+                  .map((m, index) => (
+                    <Accordion.Item
+                      eventKey={index.toString()}
+                      className="rounded-0 border-0 border-bottom border-secondary-subtle py-3 py-md-4"
+                      key={m.id}
+                    >
+                      <Accordion.Header as="h3">
+                        {index + 1}. {m.name!}
+                      </Accordion.Header>
+                      <Accordion.Body className="px-0 pb-0">
+                        <ul className="list-unstyled">
+                          {(lessonsByModuleId[m.id] ?? []).map((l) => (
+                            <li key={l.id}>
+                              <Link
+                                className="text-decoration-none text-body-secondary"
+                                href={Routes.language_lesson_path(
+                                  course.slug!,
+                                  l.slug!,
+                                )}
+                              >
+                                <span>{l.name}</span>
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  ))}
               </Col>
+
               <Col className="col-lg-6">
-                {courseModules.slice(6).map((m, index) => (
-                  <Accordion.Item
-                    eventKey={(index + 6).toString()}
-                    className="rounded-0 border-0 border-bottom border-secondary-subtle py-3 py-md-4"
-                    key={m.id}
-                  >
-                    <Accordion.Header as="h3">
-                      {index + 7}. {m.name!}
-                    </Accordion.Header>
-                    <Accordion.Body className="px-0 pb-0">
-                      <ul className="list-unstyled">
-                        {(lessonsByModuleId[m.id] ?? []).map((l) => (
-                          <li key={l.id}>
-                            <Link
-                              className="text-decoration-none text-body-secondary"
-                              href={Routes.language_lesson_path(
-                                course.slug!,
-                                l.slug!,
-                              )}
-                            >
-                              <span>{l.name}</span>
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </Accordion.Body>
-                  </Accordion.Item>
-                ))}
+                {courseModules
+                  .slice(Math.ceil(courseModules.length / 2))
+                  .map((m, index) => (
+                    <Accordion.Item
+                      eventKey={(
+                        index + Math.ceil(courseModules.length / 2)
+                      ).toString()}
+                      className="rounded-0 border-0 border-bottom border-secondary-subtle py-3 py-md-4"
+                      key={m.id}
+                    >
+                      <Accordion.Header as="h3">
+                        {index + Math.ceil(courseModules.length / 2) + 1}.{" "}
+                        {m.name!}
+                      </Accordion.Header>
+                      <Accordion.Body className="px-0 pb-0">
+                        <ul className="list-unstyled">
+                          {(lessonsByModuleId[m.id] ?? []).map((l) => (
+                            <li key={l.id}>
+                              <Link
+                                className="text-decoration-none text-body-secondary"
+                                href={Routes.language_lesson_path(
+                                  course.slug!,
+                                  l.slug!,
+                                )}
+                              >
+                                <span>{l.name}</span>
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  ))}
               </Col>
             </Row>
           </Accordion>
