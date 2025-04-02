@@ -14,18 +14,21 @@ class Web::Admin::LanguageLandingPagesController < Web::ApplicationController
     landing_page = Admin::LanguageLandingPageForm.new
     landing_page.locale = I18n.locale
 
+    languages = Language.all
+
     render inertia: true, props: {
-      landingPageDto: Language::LandingPageCrudResource.new(landing_page)
+      landingPageDto: Language::LandingPageCrudResource.new(landing_page),
+      languages: LanguageResource.new(languages)
     }
   end
 
   def edit
     landing_page = Admin::LanguageLandingPageForm.with_locale.find(params[:id])
-    # versions = language.versions.limit(5).order(created_at: :desc)
+    languages = Language.all
 
     render inertia: true, props: {
-      landingPageDto: Language::LandingPageCrudResource.new(landing_page)
-      # courseVersions: Language::VersionResource.new(versions)
+      landingPageDto: Language::LandingPageCrudResource.new(landing_page),
+      languages: LanguageResource.new(languages)
     }
   end
 

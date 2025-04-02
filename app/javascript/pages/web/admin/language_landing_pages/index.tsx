@@ -47,7 +47,7 @@ export default function Index({ grid, landingPages }: Props) {
   const languageTemplate = (data: LanguageLandingPage) => {
     return (
       <Link href={Routes.edit_admin_language_path(data.language_id)}>
-        {data.header}
+        {data.language_slug}
       </Link>
     );
   };

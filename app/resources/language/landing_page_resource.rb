@@ -45,8 +45,8 @@ class Language::LandingPageResource
     urls.rails_representation_url(lp.outcomes_image.variant(:main)) if lp.outcomes_image.attached?
   end
 
-  # typelize :string
-  # attribute :cover do |lp|
-  #   "#{lp.language&.slug}.png"
-  # end
+  typelize :string
+  attribute :language_slug do |lp|
+    lp.language&.slug
+  end
 end

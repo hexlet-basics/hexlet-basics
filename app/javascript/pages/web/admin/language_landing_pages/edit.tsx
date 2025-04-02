@@ -1,6 +1,6 @@
 import AdminLayout from "@/pages/layouts/AdminLayout";
 import * as Routes from "@/routes.js";
-import type { LanguageLandingPageCrud } from "@/types/serializers";
+import type { Language, LanguageLandingPageCrud } from "@/types";
 import { useTranslation } from "react-i18next";
 
 import Form from "./shared/form";
@@ -8,10 +8,11 @@ import { Menu } from "./shared/menu";
 
 type Props = {
   landingPageDto: LanguageLandingPageCrud;
+  languages: Language[];
   // courseVersions: LanguageVersion[];
 };
 
-export default function Edit({ landingPageDto }: Props) {
+export default function Edit({ landingPageDto, languages }: Props) {
   const { t } = useTranslation();
 
   return (
@@ -22,6 +23,7 @@ export default function Edit({ landingPageDto }: Props) {
     >
       <Menu data={landingPageDto} />
       <Form
+        languages={languages}
         method="patch"
         data={landingPageDto}
         url={Routes.admin_language_landing_page_path(

@@ -13,7 +13,7 @@ import {
 } from "@/components/forms";
 import { type HTTPVerb, Submit } from "use-inertia-form";
 
-import type { SharedProps } from "@/types";
+import type { Language, SharedProps } from "@/types";
 import type { LanguageLandingPageCrud } from "@/types/serializers";
 import { usePage } from "@inertiajs/react";
 
@@ -21,6 +21,7 @@ type Props = {
   data: LanguageLandingPageCrud;
   url: string;
   method?: HTTPVerb;
+  languages: Language[];
 };
 
 // const locales = [
@@ -28,9 +29,8 @@ type Props = {
 //   { name: "English", code: "en" },
 // ];
 
-export default function Form({ data, url, method }: Props) {
-  const { courseCategories, landingPagesForLists } =
-    usePage<SharedProps>().props;
+export default function Form({ data, url, method, languages }: Props) {
+  const { courseCategories } = usePage<SharedProps>().props;
   const { t: tHelpers } = useTranslation("helpers");
   // const { t: tEnums } = useTranslation("enumerize");
   // const languageProgressEnum = tEnums("language.progress", {
@@ -64,9 +64,9 @@ export default function Form({ data, url, method }: Props) {
       />
       <XSelect
         name="language_id"
-        labelField="header"
-        valueField="language_id"
-        items={landingPagesForLists}
+        labelField="slug"
+        valueField="id"
+        items={languages}
       />
       <XInput name="slug" />
       <XInput name="order" />
