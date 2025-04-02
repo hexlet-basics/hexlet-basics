@@ -69,6 +69,9 @@ pre-course-javascript:
 java:
   <<: *DEFAULTS
 
+1c:
+  <<: *DEFAULTS
+
 go:
   <<: *DEFAULTS
   learn_as: second_language

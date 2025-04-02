@@ -48,6 +48,9 @@ java:
 csharp:
   <<: *DEFAULTS
 
+1c:
+  <<: *DEFAULTS
+
 elixir:
   <<: *DEFAULTS
 
