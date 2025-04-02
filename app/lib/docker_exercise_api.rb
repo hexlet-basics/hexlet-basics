@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "open3"
+
 class DockerExerciseApi
   def self.repo_dest(lang_name)
     "/tmp/#{image_name(lang_name)}"
@@ -10,9 +12,11 @@ class DockerExerciseApi
   end
 
   def self.download(lang_name)
-    ok = system("docker pull #{image_name(lang_name)}")
+    _stdout, stderr, status = Open3.capture3("docker pull #{image_name(lang_name)}")
 
-    raise "Docker service not available (image exists?)" unless ok
+    unless status.success?
+      raise "Docker command failed: #{stderr.strip}"
+    end
 
     system("rm -rf #{repo_dest(lang_name)}")
 
