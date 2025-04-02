@@ -12,7 +12,7 @@ class DockerExerciseApi
   def self.download(lang_name)
     ok = system("docker pull #{image_name(lang_name)}")
 
-    raise "Docker servise not available" unless ok
+    raise "Docker service not available (image exists?)" unless ok
 
     system("rm -rf #{repo_dest(lang_name)}")
 
