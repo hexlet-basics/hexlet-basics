@@ -1075,7 +1075,7 @@
           },
           "cookie_policy": {
             "meta": {
-              "description": "Политика в отношении файлов cookie"
+              "description": "Cookie policy"
             },
             "title": "Cookie Policy"
           },
@@ -2781,9 +2781,9 @@
           },
           "cookie_policy": {
             "meta": {
-              "description": "Cookies Policy"
+              "description": "Условия использования Cookie-файлов"
             },
-            "title": "Cookie Policy"
+            "title": "Условия использования Cookie-файлов"
           },
           "privacy": {
             "meta": {

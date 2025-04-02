@@ -302,9 +302,9 @@ ru:
             description: |
               Code Basics открытый проект, в котором любой человек может стать автором курсов. Вот список шагов, которые нужно выполнить для этого.
         cookie_policy:
-          title: Cookie Policy
+          title: Условия использования Cookie-файлов
           meta:
-            description: Cookies Policy
+            description: Условия использования Cookie-файлов
 
 
     account:

@@ -9,6 +9,7 @@ import AboutRu from "./parts/about.ru";
 import AuthorsEn from "./parts/authors.en";
 import AuthorsRu from "./parts/authors.ru";
 import CookiePolicyEn from "./parts/cookie_policy.en";
+import CookiePolicyRu from "./parts/cookie_policy.ru";
 import PrivacyEn from "./parts/privacy.en";
 import PrivaryRu from "./parts/privacy.ru";
 import TosEn from "./parts/tos.en";
@@ -30,7 +31,7 @@ const mapping = {
     about: AboutRu,
     tos: TosRu,
     privacy: PrivaryRu,
-    cookie_policy: Empty,
+    cookie_policy: CookiePolicyRu,
     authors: AuthorsRu,
   },
   en: {
