@@ -35,7 +35,12 @@ export default function Form({ data, url, method }: Props) {
   // const languageLearnAsEnumOptions = enumToOptions(languageLearnAsEnum);
 
   return (
-    <XForm method={method} model="language_category" data={data} to={url}>
+    <XForm
+      method={method}
+      model="language_category"
+      data={{ language_category: data }}
+      to={url}
+    >
       <XInput name="name" />
       <XInput name="slug" />
 

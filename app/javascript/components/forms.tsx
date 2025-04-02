@@ -95,7 +95,7 @@ export function XInput({ name, model, as, ...props }: XFormControlProps) {
     // errorKey: name,
   });
 
-  const errors = error ? [error].flat() : [];
+  const errors = [error ?? []].flat();
 
   // console.log(name, model, inputName)
   const path = `attributes.${form.model}.${name}`;
@@ -162,7 +162,7 @@ export function XFile({ name, model, metaName }: XFileProps) {
     );
   }
 
-  const errors = error ? [error].flat() : [];
+  const errors = [error ?? []].flat();
 
   const path = `attributes.${form.model}.${name}`;
   // @ts-expect-error type
@@ -260,7 +260,7 @@ export function XCheck({ name, model, type, ...props }: XFormCheckProps) {
   });
   // console.log(form, value)
 
-  const errors = error ? [error].flat() : [];
+  const errors = [error ?? []].flat();
 
   const path = `attributes.${form.model}.${name}`;
   // @ts-expect-error
@@ -418,7 +418,9 @@ export function XStateEvent({ fieldName }: XStateEventProps) {
   });
 
   // @ts-expect-error fix
-  const stateEvents = form.data.meta.state_events as Array<[string, string]>;
+  const stateEvents = form.data[form.model].meta.state_events as Array<
+    [string, string]
+  >;
 
   const currentState = get(form.data, [form.model!, fieldName]);
   // const stateEvents = get(

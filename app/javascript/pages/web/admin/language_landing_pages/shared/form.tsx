@@ -48,7 +48,7 @@ export default function Form({ data, url, method, languages }: Props) {
       // onSuccess={() => Inertia.reload()}
       method={method}
       model="language_landing_page"
-      data={data}
+      data={{ language_landing_page: data }}
       to={url}
     >
       <XCheck name="main" />

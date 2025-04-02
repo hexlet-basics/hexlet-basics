@@ -1,4 +1,4 @@
-class Web::Admin::LanguageLandingPagesController < Web::ApplicationController
+class Web::Admin::LanguageLandingPagesController < Web::Admin::ApplicationController
   def index
     q = ransack_params("sf" => "created_at", "so" => "0")
     search = Language::LandingPage.with_locale.joins(:language).ransack(q)
@@ -34,6 +34,7 @@ class Web::Admin::LanguageLandingPagesController < Web::ApplicationController
 
   def create
     landing_page = Admin::LanguageLandingPageForm.new(params[:language_landing_page])
+    landing_page.locale = I18n.locale
 
     if landing_page.save
       f(:success)
