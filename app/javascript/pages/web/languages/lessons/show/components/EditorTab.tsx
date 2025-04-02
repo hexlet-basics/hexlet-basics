@@ -97,6 +97,7 @@ export default function EditorTab() {
 
   return (
     <MonacoEditor
+      theme="github-light"
       options={editorOptions}
       onMount={handleEditorDidMount}
       defaultValue={code}

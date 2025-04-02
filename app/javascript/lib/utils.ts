@@ -5,6 +5,7 @@ import type { DataTableFilterMeta } from "primereact/datatable";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
+
 // Switch to shiki
 import clojure from "highlight.js/lib/languages/clojure";
 import elixir from "highlight.js/lib/languages/elixir";
@@ -33,6 +34,7 @@ const editorMapping: Record<string, string> = {
 };
 
 const langToTabSizeMapping: Record<string, number> = {
+  "1c": 4,
   javascript: 2,
   ruby: 2,
   racket: 2,
@@ -90,6 +92,7 @@ export const langToSpacesMapping: Record<string, boolean> = {
   swift: true,
   rust: true,
   perl: true,
+  "1c": true,
 };
 
 const defaultTabSize = 4;
@@ -105,11 +108,8 @@ export const shouldReplaceTabsWithSpaces = (language: string): boolean =>
   langToSpacesMapping[language] ?? false;
 
 export const languages = {
-  "layout-designer": "layout-designer",
-  // "pre-course-java": "pre-course-java",
-  // "pre-course-python": "pre-course-python",
-  // "pre-course-javascript": "pre-course-javascript",
   css: "css",
+  "1c": "1c",
   html: "html",
   javascript: "javascript",
   php: "php",
@@ -120,14 +120,15 @@ export const languages = {
   go: "go",
   elixir: "elixir",
   clojure: "clojure",
-  clang: "clang",
-  dlang: "dlang",
+  c: "c",
+  d: "d",
+  racket: "racket",
   lua: "lua",
   prolog: "prolog",
   haskell: "haskell",
   cpp: "cpp",
   bash: "bash",
-  fortran: "fortran",
+  // fortran: "fortran",
   kotlin: "kotlin",
   swift: "swift",
 };
@@ -135,9 +136,9 @@ export const languages = {
 // TODO: move to db
 export const neededPreview = (language: string) => {
   switch (language) {
-    case languages.css:
-    case languages.html:
-    case languages["layout-designer"]:
+    case "css":
+    case "html":
+    case "layout-designer":
       return true;
     default:
       return false;
