@@ -73,6 +73,14 @@ nodejs-ru:
   state: draft
   locale: ru
 
+1c-ru:
+  <<: *DEFAULTS
+  header: 1C
+  language_category: programming-ru
+  language: 1c
+  main: true
+  locale: ru
+
 frontend-ru:
   <<: *DEFAULTS
   header: Фронтенд
