@@ -8,6 +8,7 @@ import AboutEn from "./parts/about.en";
 import AboutRu from "./parts/about.ru";
 import AuthorsEn from "./parts/authors.en";
 import AuthorsRu from "./parts/authors.ru";
+import PrivacyEn from "./parts/privacy.en";
 import PrivaryRu from "./parts/privacy.ru";
 import TosEn from "./parts/tos.en";
 import TosRu from "./parts/tos.ru";
@@ -34,7 +35,7 @@ const mapping = {
   en: {
     about: AboutEn,
     tos: TosEn,
-    privacy: Empty,
+    privacy: PrivacyEn,
     cookie_policy: Empty,
     authors: AuthorsEn,
   },
