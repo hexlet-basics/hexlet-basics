@@ -100,12 +100,14 @@ export default function Index() {
                     <XBreadcrumb className="small" items={items} />
 
                     {user.guest && (
-                      <Alert variant="info" className="border-0 small">
+                      <Alert
+                        variant="info"
+                        className="border-0 small text-center"
+                      >
                         <XssContent>
                           {t(
                             "languages.lessons.show.sign_up_for_tracking_progress_html",
                             {
-                              name: landingPage.header,
                               link: Routes.new_user_path(),
                             },
                           )}

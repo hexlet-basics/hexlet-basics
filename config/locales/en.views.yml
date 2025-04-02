@@ -245,7 +245,7 @@ en:
             run: Run
           issues: Found a bug? Have something to add? Pull requests are welcome!
           sign_up_for_tracking_progress_html: |
-            Free %{name} course. <a href="%{link}" class="text-decoration-none" target="_blank">Sign Up</a> for tracking progress &rarr;
+            Be sure to <a href="%{link}" class="text-decoration-none" target="_blank">register</a> to ensure you don't lose the results you've achieved
           instructions: Instructions
           definitions: Definitions
           tips: Tips

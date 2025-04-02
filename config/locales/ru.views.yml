@@ -246,7 +246,7 @@ ru:
           tests: Тесты
           issues: Нашли ошибку? Есть что добавить? Пулреквесты приветствуются
           sign_up_for_tracking_progress_html: |
-            Бесплатный курс по %{name}. <a href="%{link}" class="text-decoration-none" target="_blank">Зарегистрируйтесь</a> для отслеживания прогресса &rarr;
+            Чтобы не потерять достигнутые результаты, обязательно <a href="%{link}" class="text-decoration-none" target="_blank">зарегистрируйтесь</a>
           instructions: Задание
           definitions: Определения
           tips: Полезное
