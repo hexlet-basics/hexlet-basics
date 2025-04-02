@@ -6,6 +6,8 @@ class PasswordReminderFormResource
 
   attributes :email
 
+  typelize email: :string
+
   meta do
     {}
   end

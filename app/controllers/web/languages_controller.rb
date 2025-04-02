@@ -33,18 +33,19 @@ class Web::LanguagesController < Web::ApplicationController
     #   .includes({ language: [ :current_version, { cover_attachment: :blob } ] })
     #   .order("RANDOM()").excluding(landing_page).limit(4)
 
+    image_url = language.cover.attached? && view_context.rails_representation_url(language.cover.variant(:list))
     seo_tags = {
       title: landing_page.meta_title,
       # keywords: language_info.keywords.join(", "),
       description: landing_page.meta_description,
       canonical: language_url(language.slug),
-      image_src: view_context.vite_asset_url("images/#{language.slug}.png"),
+      image_src: image_url,
       og: {
         title: landing_page.meta_title,
         type: "website",
         description: landing_page.meta_description,
         url: language_url(landing_page.slug),
-        image: view_context.vite_asset_url("images/#{language.slug}.png"),
+        image: image_url,
         locale: I18n.locale
       }
     }

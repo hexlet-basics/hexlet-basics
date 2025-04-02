@@ -1,7 +1,7 @@
 import { Accordion, Alert, Card, Col, Container, Row } from "react-bootstrap";
 
-import learningEnVideo from "@/images/course-landing-page/learning_en.mp4";
-import learningRuVideo from "@/images/course-landing-page/learning_ru.mp4";
+// import learningEnVideo from "@/images/course-landing-page/learning_en.mp4";
+// import learningRuVideo from "@/images/course-landing-page/learning_ru.mp4";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 

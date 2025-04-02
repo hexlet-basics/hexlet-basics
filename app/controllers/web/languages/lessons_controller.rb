@@ -63,18 +63,19 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     ).squish
     description = view_context.truncate("[#{resource_language.current_version}] — #{lesson_info} — #{lesson_info.theory}", length: 220)
 
+    image_url = resource_language.cover.attached? && view_context.rails_representation_url(resource_language.cover.variant(:list))
     seo_tags = {
       title:,
       description:,
       canonical: language_lesson_url(resource_language.slug, lesson.slug),
       # amphtml: language_lesson_url(@lesson.language.slug, @lesson.slug, format: "amp", only_path: false),
-      image_src: view_context.vite_asset_url("images/#{resource_language.slug}.png"),
+      image_src: image_url,
       og: {
         type: "article",
         locale: I18n.locale,
         title: title,
         url: language_lesson_url(resource_language.slug, lesson.slug),
-        image: view_context.vite_asset_url("images/#{resource_language.slug}.png")
+        image: image_url
       }
     }
     set_meta_tags seo_tags
