@@ -5,4 +5,8 @@ class Language::LandingPageQnaItemCrudResource
   attributes :id,
     :question,
     :answer
+
+  meta do
+    {}
+  end
 end

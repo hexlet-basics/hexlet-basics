@@ -52,7 +52,7 @@ class Web::Admin::LanguageLandingPagesController < Web::Admin::ApplicationContro
       f(:success)
     else
       # raise landing_page.qna_items.inspect
-      raise landing_page.errors.full_messages.inspect
+      # raise landing_page.errors.full_messages.inspect
       f(:error)
     end
     redirect_to_inertia edit_admin_language_landing_page_path(landing_page), landing_page

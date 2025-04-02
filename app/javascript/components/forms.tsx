@@ -53,7 +53,7 @@ export function XForm<TForm extends NestedObject>({
   className,
   ...props
 }: FormProps<TForm>) {
-  // console.log(railsAttributes, props.data.review)
+  // console.log(props)
   return (
     <InertiaForm
       className={`form ${className}`}
@@ -69,7 +69,7 @@ export function XHidden({ name, model, as, ...props }: XFormControlProps) {
   const { inputName, inputId, value } = useInertiaInput<string | undefined>({
     name,
     model,
-    // errorKey: name,
+    errorKey: name,
   });
 
   return (
@@ -92,10 +92,11 @@ export function XInput({ name, model, as, ...props }: XFormControlProps) {
   >({
     name,
     model,
-    // errorKey: name,
+    errorKey: name,
   });
 
   const errors = [error ?? []].flat();
+  // console.log(name, form.errors, error)
 
   // console.log(name, model, inputName)
   const path = `attributes.${form.model}.${name}`;
@@ -150,12 +151,12 @@ export function XFile({ name, model, metaName }: XFileProps) {
     undefined | File
   >({
     name,
-    // errorKey: name,
+    errorKey: name,
     model,
   });
 
   const imageUrl = get(form.data, ["meta", metaName]);
-  if (!imageUrl) {
+  if (imageUrl === undefined) {
     debugLog(
       "imageUrl is not found",
       ["form.data", "meta", metaName].join("."),
@@ -167,7 +168,6 @@ export function XFile({ name, model, metaName }: XFileProps) {
   const path = `attributes.${form.model}.${name}`;
   // @ts-expect-error type
   const label = tAr(path, tAm(path));
-  console.log(label);
 
   const controlClasses = cn("form-control", {
     "is-invalid": errors.length > 0,
@@ -256,9 +256,8 @@ export function XCheck({ name, model, type, ...props }: XFormCheckProps) {
   const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
     name,
     model,
-    // errorKey: name,
+    errorKey: name,
   });
-  // console.log(form, value)
 
   const errors = [error ?? []].flat();
 
@@ -321,10 +320,12 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
   const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
     name,
     model,
-    // errorKey: name,
+    errorKey: name,
   });
 
-  const realError = has ? form.errors[`${form.model}.${has}`] : error;
+  // В ошибках название модели, а не id (хрен знает почему)
+  const realError = has ? form.errors[has] : error;
+  console.log(name, model, form.errors, error);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -418,9 +419,7 @@ export function XStateEvent({ fieldName }: XStateEventProps) {
   });
 
   // @ts-expect-error fix
-  const stateEvents = form.data[form.model].meta.state_events as Array<
-    [string, string]
-  >;
+  const stateEvents = form.data.meta.state_events as Array<[string, string]>;
 
   const currentState = get(form.data, [form.model!, fieldName]);
   // const stateEvents = get(

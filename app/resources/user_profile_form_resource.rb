@@ -10,4 +10,8 @@ class UserProfileFormResource
   attribute :type do |user|
     "user_profile_form"
   end
+
+  meta do
+    {}
+  end
 end

@@ -32,25 +32,8 @@ type Props = {
 export default function Form({ data, url, method, languages }: Props) {
   const { courseCategories } = usePage<SharedProps>().props;
   const { t: tHelpers } = useTranslation("helpers");
-  // const { t: tEnums } = useTranslation("enumerize");
-  // const languageProgressEnum = tEnums("language.progress", {
-  //   returnObjects: true,
-  // });
-  // const languageProgressEnumOptions = enumToOptions(languageProgressEnum);
-  //
-  // const languageLearnAsEnum = tEnums("language.learn_as", {
-  //   returnObjects: true,
-  // });
-  // const languageLearnAsEnumOptions = enumToOptions(languageLearnAsEnum);
-
   return (
-    <XForm
-      // onSuccess={() => Inertia.reload()}
-      method={method}
-      model="language_landing_page"
-      data={{ language_landing_page: data }}
-      to={url}
-    >
+    <XForm method={method} model="language_landing_page" data={data} to={url}>
       <XCheck name="main" />
       <XCheck name="listed" />
       <XCheck name="footer" />
@@ -58,12 +41,14 @@ export default function Form({ data, url, method, languages }: Props) {
       <XStateEvent fieldName="state" />
       <XSelect
         name="language_category_id"
+        has="language_category"
         labelField="name"
         valueField="id"
         items={courseCategories}
       />
       <XSelect
         name="language_id"
+        has="language"
         labelField="slug"
         valueField="id"
         items={languages}

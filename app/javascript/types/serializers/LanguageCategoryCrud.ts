@@ -10,6 +10,7 @@ type LanguageCategoryCrudData = {
 
 type LanguageCategoryCrud = {
   language_category: LanguageCategoryCrudData;
+  meta: unknown;
 }
 
 export default LanguageCategoryCrud;

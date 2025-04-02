@@ -16,11 +16,7 @@ export default function SignUpFormBlock({ user }: Props) {
   const { t: tHelpers } = useTranslation("helpers");
 
   return (
-    <XForm
-      model="user_sign_up_form"
-      data={{ user_sign_up_form: user }}
-      to={Routes.users_path()}
-    >
+    <XForm model="user_sign_up_form" data={user} to={Routes.users_path()}>
       <XInput name="first_name" autoComplete="name" />
       <XInput name="email" autoComplete="email" />
       <XInput name="password" type="password" autoComplete="current-password" />

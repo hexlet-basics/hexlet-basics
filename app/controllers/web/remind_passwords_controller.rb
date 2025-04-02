@@ -8,7 +8,7 @@ class Web::RemindPasswordsController < Web::ApplicationController
     set_meta_tags seo_tags
 
     render inertia: true, props: {
-      passwordReminder: PasswordReminderResource.new(remind_password_form)
+      passwordReminder: PasswordReminderFormResource.new(remind_password_form)
     }
   end
 

@@ -8,11 +8,11 @@ import * as Routes from "@/routes.js";
 
 import { XForm, XInput } from "@/components/forms";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
-import type { PasswordReminder } from "@/types/serializers";
+import type { PasswordReminderForm } from "@/types";
 import { Link } from "@inertiajs/react";
 
 type Props = PropsWithChildren & {
-  passwordReminder: PasswordReminder;
+  passwordReminder: PasswordReminderForm;
 };
 
 export default function New({ passwordReminder }: Props) {

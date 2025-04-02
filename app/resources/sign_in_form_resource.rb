@@ -11,4 +11,8 @@ class SignInFormResource
   attribute :type do |user|
     "sign_in_form"
   end
+
+  meta do
+    {}
+  end
 end

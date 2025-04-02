@@ -31,7 +31,7 @@ export default function Form({ data, url, method }: Props) {
   const languageLearnAsEnumOptions = enumToOptions(languageLearnAsEnum);
 
   return (
-    <XForm method={method} model="language" data={{ language: data }} to={url}>
+    <XForm method={method} model="language" data={data} to={url}>
       <XSelect
         name="progress"
         labelField="name"

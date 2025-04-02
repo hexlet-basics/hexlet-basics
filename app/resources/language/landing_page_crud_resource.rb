@@ -7,6 +7,8 @@ class Language::LandingPageCrudResource
   root_key :language_landing_page
 
   has_many :qna_items, resource: Language::LandingPageQnaItemCrudResource
+  has_one :language, resource: LanguageCrudResource
+  has_one :language_category, resource: Language::CategoryCrudResource
 
   attributes :id,
     :slug,

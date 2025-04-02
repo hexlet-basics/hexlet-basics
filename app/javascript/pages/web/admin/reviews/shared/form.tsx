@@ -29,7 +29,7 @@ export default function Form({ courses, data, url, method }: Props) {
   return (
     <Row>
       <Col className="col-7">
-        <XForm method={method} model="review" data={{ review: data }} to={url}>
+        <XForm method={method} model="review" data={data} to={url}>
           <XStateEvent fieldName="state" />
           <XCheck name="pinned" />
           {/* <XSelect */}

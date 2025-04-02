@@ -23,12 +23,7 @@ export default function Form({ data, url, method }: Props) {
   return (
     <Row>
       <Col className="col-7">
-        <XForm
-          method={method}
-          model="blog_post"
-          data={{ blog_post: data }}
-          to={url}
-        >
+        <XForm method={method} model="blog_post" data={data} to={url}>
           <XStateEvent fieldName="state" />
           <XInput name="name" />
           <XFile metaName="cover_thumb_variant" name="cover" />
