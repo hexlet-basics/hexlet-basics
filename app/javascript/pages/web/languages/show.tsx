@@ -162,16 +162,43 @@ export default function Show({
           </Col>
         </Row>
         <div className="mb-lg-5 py-5">
-          <div className="display-5 fw-semibold lh-1 mb-4">
+          <div className="display-5 fw-semibold lh-1 mb-5">
             {t("languages.show.learning_program")}
           </div>
           <Accordion
             defaultActiveKey={["0"]}
             className="hexlet-basics-accordion"
-            alwaysOpen
           >
-            <Row className="row-cols-1 row-cols-lg-auto gx-lg-5">
-              <Col className="col-lg-6">
+            <Row className="gx-lg-5">
+              <Col>
+                {courseModules.map((m, index) => (
+                  <Accordion.Item
+                    eventKey={index.toString()}
+                    className="rounded-0 border-0 border-bottom border-secondary-subtle py-3"
+                    key={m.id}
+                  >
+                    <Accordion.Header as="h3">{m.name!}</Accordion.Header>
+                    <Accordion.Body className="px-0 pb-0">
+                      <ul className="list-unstyled">
+                        {(lessonsByModuleId[m.id] ?? []).map((l) => (
+                          <li key={l.id}>
+                            <Link
+                              className="text-decoration-none text-body-secondary"
+                              href={Routes.language_lesson_path(
+                                course.slug!,
+                                l.slug!,
+                              )}
+                            >
+                              <span>{l.name}</span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </Accordion.Body>
+                  </Accordion.Item>
+                ))}
+              </Col>
+              {/* <Col className="col-lg-6">
                 {courseModules
                   .slice(0, Math.ceil(courseModules.length / 2))
                   .map((m, index) => (
@@ -233,7 +260,7 @@ export default function Show({
                       </Accordion.Body>
                     </Accordion.Item>
                   ))}
-              </Col>
+              </Col> */}
             </Row>
           </Accordion>
         </div>
