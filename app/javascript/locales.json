@@ -1040,6 +1040,12 @@
           "to_home_title": "Home",
           "typescript_description": "TypeScript is a JavaScript-based programming language. Includes a typing system",
           "without_registration_html": "<b>Registration is optional</b> You can try the first lesson without registering, but you need to register to save your progress\n"
+        },
+        "success": {
+          "choose_profession": "Choose a profession",
+          "description": "Now you have new knowledge and skills, but that's just the beginning - there are more opportunities ahead. It's time to choose your IT career and move on with your life\n",
+          "header": "Congratulations, you completed the course!",
+          "home": "Home"
         }
       },
       "my": {
