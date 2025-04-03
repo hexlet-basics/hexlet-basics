@@ -1,7 +1,7 @@
 import { Accordion, Alert, Card, Col, Container, Row } from "react-bootstrap";
 
-// import learningEnVideo from "@/images/course-landing-page/learning_en.mp4";
-// import learningRuVideo from "@/images/course-landing-page/learning_ru.mp4";
+import learningEnVideo from "@/images/course-landing-page/learning_en.mp4";
+import learningRuVideo from "@/images/course-landing-page/learning_ru.mp4";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 
@@ -273,11 +273,7 @@ export default function Show({
             <div className="bg-primary rounded-5 overflow-hidden py-lg-3">
               <video
                 className="w-100 rounded-4 hexlet-basics-learning-video"
-                src={
-                  locale === "en"
-                    ? "https://cdn6.hexlet.io/g4ugKzIANCge.mp4"
-                    : "https://cdn6.hexlet.io/gVLbxD9NmCR2.mp4"
-                } // Temporarily use an external link as the internal link doesn't work on iphone
+                src={locale === "en" ? learningEnVideo : learningRuVideo}
                 autoPlay
                 loop
                 muted
