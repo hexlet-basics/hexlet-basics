@@ -6,6 +6,8 @@ import successImg from "@/images/success-image.svg";
 
 import * as Routes from "@/routes.js";
 
+import i18next from "i18next";
+
 export default function Success() {
   const { t: tViews } = useTranslation("web");
 
@@ -27,7 +29,11 @@ export default function Success() {
               <div className="d-flex flex-column flex-md-row justify-content-center gap-3 gap-lg-4">
                 <a
                   className="btn btn-primary btn-lg"
-                  href="https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=all-courses&utm_content=finished_course_page"
+                  href={
+                    i18next.language === "ru"
+                      ? "https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=all-courses&utm_content=finished_course_page"
+                      : "https://code-basics.com/ru#courses"
+                  }
                   target="_blank"
                   rel="noreferrer"
                 >
