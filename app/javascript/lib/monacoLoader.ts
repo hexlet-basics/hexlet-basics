@@ -34,17 +34,21 @@ self.MonacoEnvironment = {
   },
 };
 
-const langs = Object.keys(languages);
+const fn = async () => {
+  const langs = Object.keys(languages);
 
-const highlighter = await createHighlighter({
-  themes: [lightTheme, darkTheme],
-  langs,
-});
+  const highlighter = await createHighlighter({
+    themes: [lightTheme, darkTheme],
+    langs,
+  });
 
-for (const name of langs) {
-  monaco.languages.register({ id: name });
-}
+  for (const name of langs) {
+    monaco.languages.register({ id: name });
+  }
 
-shikiToMonaco(highlighter, monaco);
+  shikiToMonaco(highlighter, monaco);
 
-loader.config({ monaco });
+  loader.config({ monaco });
+};
+
+void fn();
