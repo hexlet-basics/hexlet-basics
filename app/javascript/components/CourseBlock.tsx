@@ -25,8 +25,8 @@ export default function CourseBlock({
   const { t: tHelpers } = useTranslation("helpers");
 
   return (
-    <div className="h-100">
-      <Card className="border-0 border-bottom shadow-sm bg-body-tertiary">
+    <>
+      <Card className="border-0 border-bottom shadow-sm bg-body-tertiary h-100">
         <Card.Img
           loading="lazy"
           variant="top"
@@ -50,11 +50,11 @@ export default function CourseBlock({
             </a>
           </Card.Title>
           <div className="text-muted">
-            <span className="text-nowrap d-inline-block me-4">
+            <span className="text-nowrap d-block d-sm-inline-block me-4">
               <span className="bi bi-clock me-2" />
               {landingPage.duration}
             </span>
-            <span className="text-nowrap d-inline-block">
+            <span className="text-nowrap d-block d-sm-inline-block">
               <span className="bi bi-people me-2" />
               {landingPage.members_count}
             </span>
@@ -66,6 +66,6 @@ export default function CourseBlock({
           {tHelpers("continue")}
         </Button>
       )}
-    </div>
+    </>
   );
 }
