@@ -8,11 +8,13 @@ class Api::LessonsController < Api::ApplicationController
     language_version = lesson_version.language_version
 
     lesson_exercise_data = LessonTester.new.run(lesson_version, language_version, code, current_user)
+    passed = lesson_exercise_data[:passed]
+
 
     lesson_has_been_finished = false
     language_has_been_finished = false
 
-    if lesson_exercise_data[:passed] && !current_user.guest?
+    if passed && !current_user.guest?
       lesson_member = lesson.members.find_by!(user: current_user)
 
       if lesson_member.may_finish?
@@ -48,8 +50,14 @@ class Api::LessonsController < Api::ApplicationController
       lesson_slug: lesson.slug,
       course_slug: language.slug,
       locale: I18n.locale,
-      passed: lesson_exercise_data[:passed]
+      passed:
     }
+
+    if passed && current_user.guest?
+      session[:finished_as_guest] ||= {}
+      session[:finished_as_guest][lesson.id] = true
+    end
+
     event = SolutionCheckedEvent.new(data: event_data)
     publish_event(event, current_user)
 

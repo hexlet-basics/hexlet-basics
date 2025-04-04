@@ -11,6 +11,7 @@ class Web::UsersController < Web::ApplicationController
     set_meta_tags seo_tags
 
     render inertia: true, props: {
+      demo: params[:demo],
       user: UserSignUpFormResource.new(user)
     }
   end
@@ -25,10 +26,21 @@ class Web::UsersController < Web::ApplicationController
       event_to_js(event)
 
       sign_in user
-      # js_event_options = {
-      #   user: @user
-      # }
-      # js_event :signed_up, js_event_options
+
+      lesson_ids = session.fetch(:finished_as_guest, {}).keys
+      lesson_ids.each do |id|
+        lesson = Language::Lesson.find(id)
+        language = lesson.language
+        language_member = language.members.build(user:)
+        language_member.save!
+
+        lesson_member = language_member.lesson_members.build(
+          language:,
+          lesson:,
+          user:
+        )
+        lesson_member.finish!
+      end
 
       f(:success)
       redirect_to root_url

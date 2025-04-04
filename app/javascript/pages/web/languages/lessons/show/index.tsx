@@ -99,21 +99,21 @@ export default function Index() {
                   >
                     <XBreadcrumb className="small" items={items} />
 
-                    {user.guest && (
-                      <Alert
-                        variant="info"
-                        className="border-0 small text-center"
-                      >
-                        <XssContent>
-                          {t(
-                            "languages.lessons.show.sign_up_for_tracking_progress_html",
-                            {
-                              link: Routes.new_user_path(),
-                            },
-                          )}
-                        </XssContent>
-                      </Alert>
-                    )}
+                    {/* {user.guest && ( */}
+                    {/*   <Alert */}
+                    {/*     variant="info" */}
+                    {/*     className="border-0 small text-center" */}
+                    {/*   > */}
+                    {/*     <XssContent> */}
+                    {/*       {t( */}
+                    {/*         "languages.lessons.show.sign_up_for_tracking_progress_html", */}
+                    {/*         { */}
+                    {/*           link: Routes.new_user_path(), */}
+                    {/*         }, */}
+                    {/*       )} */}
+                    {/*     </XssContent> */}
+                    {/*   </Alert> */}
+                    {/* )} */}
 
                     <div className="hexlet-basics-content">
                       <h1 className="h2">{`${landingPage.header}: ${lesson.name}`}</h1>

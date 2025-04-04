@@ -46,11 +46,11 @@ export default function OutputTab() {
       >
         <XssContent>{message}</XssContent>
       </Alert>
-      {!lessonMember && passed && (
-        <Alert variant="primary" className="small border-0 p-2">
-          <XssContent>{messageForGuest}</XssContent>
-        </Alert>
-      )}
+      {/* {!lessonMember && passed && ( */}
+      {/*   <Alert variant="primary" className="small border-0 p-2"> */}
+      {/*     <XssContent>{messageForGuest}</XssContent> */}
+      {/*   </Alert> */}
+      {/* )} */}
     </div>
   );
 }

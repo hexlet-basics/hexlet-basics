@@ -73,7 +73,7 @@
   "devDependencies": {
     "@4c/tsconfig": "^0.4.1",
     "@biomejs/biome": "1.9.4",
-    "@sentry/vite-plugin": "^3.2.4",
+    "@sentry/vite-plugin": "^3.3.1",
     "@shikijs/monaco": "^3.2.1",
     "@types/lodash": "^4.17.16",
     "@types/node": "^22.14.0",
@@ -89,7 +89,7 @@
     "lightningcss": "^1.29.3",
     "npm-check-updates": "^17.1.16",
     "postcss": "^8.5.3",
-    "sass-embedded": "^1.86.2",
+    "sass-embedded": "^1.86.3",
     "simple-git-hooks": "^2.12.1",
     "typescript": "^5.8.2",
     "vite": "^6.2.5",

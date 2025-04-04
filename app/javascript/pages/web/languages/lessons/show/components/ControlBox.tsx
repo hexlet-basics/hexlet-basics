@@ -12,8 +12,13 @@ import { useAppDispatch, useAppSelector } from "../slices/index.ts";
 import type { LessonSharedProps } from "../types.ts";
 
 export default function ControlBox() {
-  const { lesson, course, prevLesson, nextLesson } =
-    usePage<LessonSharedProps>().props;
+  const {
+    lesson,
+    course,
+    prevLesson,
+    nextLesson,
+    auth: { user },
+  } = usePage<LessonSharedProps>().props;
 
   const { t } = useTranslation();
   const { t: tCommon } = useTranslation("common");
@@ -120,7 +125,15 @@ export default function ControlBox() {
         >
           {renderRunButtonContent()}
         </Button>
-        {nextLesson && (
+        {user.guest && (
+          <Link
+            className={nextButtonClasses}
+            href={Routes.new_user_path({ demo: true })}
+          >
+            {t("languages.lessons.show.next")}
+          </Link>
+        )}
+        {!user.guest && nextLesson && (
           <Link
             className={nextButtonClasses}
             href={Routes.language_lesson_path(course.slug!, nextLesson.slug!)}

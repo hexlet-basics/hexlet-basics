@@ -4,10 +4,6 @@ import * as Sentry from "@sentry/react";
 import type { ReactNode } from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 
-window.addEventListener("vite:preloadError", (event) => {
-  window.location.reload(); // for example, refresh the page
-});
-
 if (import.meta.env.DEV) {
   localStorage.debug = "app:*";
 }

@@ -24,7 +24,7 @@ export default function New({ signInForm }: Props) {
       <Container>
         <Row className="justify-content-center">
           <div className="col-sm-8 col-md-7 col-lg-5">
-            <h1 className="text-center mb-3">{t("sessions.new.title")}</h1>
+            <h1 className="text-center my-5 mb-3">{t("sessions.new.title")}</h1>
             <Card className="p-4 border-0">
               <Card.Body>
                 <XForm
