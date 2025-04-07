@@ -304,87 +304,87 @@ class Bullet::BulletRailtie < ::Rails::Railtie; end
 module Bullet::Dependency
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/dependency.rb#85
+  # source://bullet//lib/bullet/dependency.rb#87
   def active_record40?; end
 
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/dependency.rb#89
+  # source://bullet//lib/bullet/dependency.rb#91
   def active_record41?; end
 
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/dependency.rb#93
+  # source://bullet//lib/bullet/dependency.rb#95
   def active_record42?; end
 
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/dependency.rb#65
+  # source://bullet//lib/bullet/dependency.rb#67
   def active_record4?; end
 
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/dependency.rb#97
+  # source://bullet//lib/bullet/dependency.rb#99
   def active_record50?; end
 
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/dependency.rb#101
+  # source://bullet//lib/bullet/dependency.rb#103
   def active_record51?; end
 
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/dependency.rb#105
+  # source://bullet//lib/bullet/dependency.rb#107
   def active_record52?; end
 
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/dependency.rb#69
+  # source://bullet//lib/bullet/dependency.rb#71
   def active_record5?; end
 
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/dependency.rb#109
+  # source://bullet//lib/bullet/dependency.rb#111
   def active_record60?; end
 
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/dependency.rb#113
+  # source://bullet//lib/bullet/dependency.rb#115
   def active_record61?; end
 
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/dependency.rb#73
+  # source://bullet//lib/bullet/dependency.rb#75
   def active_record6?; end
 
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/dependency.rb#117
+  # source://bullet//lib/bullet/dependency.rb#119
   def active_record70?; end
 
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/dependency.rb#121
+  # source://bullet//lib/bullet/dependency.rb#123
   def active_record71?; end
 
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/dependency.rb#125
+  # source://bullet//lib/bullet/dependency.rb#127
   def active_record72?; end
 
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/dependency.rb#77
+  # source://bullet//lib/bullet/dependency.rb#79
   def active_record7?; end
 
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/dependency.rb#129
+  # source://bullet//lib/bullet/dependency.rb#131
   def active_record80?; end
 
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/dependency.rb#81
+  # source://bullet//lib/bullet/dependency.rb#83
   def active_record8?; end
 
   # @return [Boolean]
@@ -397,28 +397,33 @@ module Bullet::Dependency
 
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/dependency.rb#133
+  # source://bullet//lib/bullet/dependency.rb#135
   def mongoid4x?; end
 
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/dependency.rb#137
+  # source://bullet//lib/bullet/dependency.rb#139
   def mongoid5x?; end
 
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/dependency.rb#141
+  # source://bullet//lib/bullet/dependency.rb#143
   def mongoid6x?; end
 
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/dependency.rb#145
+  # source://bullet//lib/bullet/dependency.rb#147
   def mongoid7x?; end
 
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/dependency.rb#149
+  # source://bullet//lib/bullet/dependency.rb#151
   def mongoid8x?; end
+
+  # @return [Boolean]
+  #
+  # source://bullet//lib/bullet/dependency.rb#155
+  def mongoid9x?; end
 
   # @return [Boolean]
   #
@@ -550,7 +555,7 @@ class Bullet::Detector::NPlusOneQuery < ::Bullet::Detector::Association
     #
     # @return [Boolean]
     #
-    # source://bullet//lib/bullet/detector/n_plus_one_query.rb#93
+    # source://bullet//lib/bullet/detector/n_plus_one_query.rb#103
     def association?(object, associations); end
 
     # executed when object.associations is called.
@@ -565,22 +570,25 @@ class Bullet::Detector::NPlusOneQuery < ::Bullet::Detector::Association
     #
     # @return [Boolean]
     #
-    # source://bullet//lib/bullet/detector/n_plus_one_query.rb#80
+    # source://bullet//lib/bullet/detector/n_plus_one_query.rb#90
     def conditions_met?(object, associations); end
 
     # @return [Boolean]
     #
-    # source://bullet//lib/bullet/detector/n_plus_one_query.rb#88
+    # source://bullet//lib/bullet/detector/n_plus_one_query.rb#98
     def impossible?(object); end
 
     # @return [Boolean]
     #
-    # source://bullet//lib/bullet/detector/n_plus_one_query.rb#84
+    # source://bullet//lib/bullet/detector/n_plus_one_query.rb#94
     def possible?(object); end
+
+    # source://bullet//lib/bullet/detector/n_plus_one_query.rb#79
+    def update_inversed_object(object); end
 
     private
 
-    # source://bullet//lib/bullet/detector/n_plus_one_query.rb#108
+    # source://bullet//lib/bullet/detector/n_plus_one_query.rb#118
     def create_notification(callers, klazz, associations); end
   end
 end
@@ -908,6 +916,11 @@ class Bullet::Registry::Base
   #
   # source://bullet//lib/bullet/registry/base.rb#37
   def include?(key, value); end
+
+  # @return [Boolean]
+  #
+  # source://bullet//lib/bullet/registry/base.rb#41
+  def key?(key); end
 
   # Returns the value of attribute registry.
   #

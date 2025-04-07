@@ -323,7 +323,7 @@ module InertiaRails::InertiaMapper
 
   private
 
-  # source://inertia_rails//lib/patches/mapper.rb#13
+  # source://inertia_rails//lib/patches/mapper.rb#11
   def extract_route_and_component(path); end
 end
 
