@@ -24,10 +24,6 @@ variable "environment_file" {
   type    = map(any)
 }
 
-variable "datadog_api_key" {
-  type = string
-}
-
 # Cloudflare
 variable "cloudflare_email" {
   type        = string
@@ -47,6 +43,14 @@ variable "domain" {
 variable "domain_ru" {
   type        = string
   description = "App domain"
+}
+
+variable "victoriametrics" {
+  type = object({
+    url = string
+    username = string
+    password = string
+  })
 }
 
 variable "k8s_data" {

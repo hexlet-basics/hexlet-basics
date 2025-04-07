@@ -1,12 +1,14 @@
-resource "kubernetes_secret" "datadog_secrets" {
+resource "kubernetes_secret" "grafana_alloy_secrets" {
   depends_on = [twc_k8s_cluster.hexlet_basics]
 
   metadata {
-    name = "datadog-secret"
+    name = "grafana-alloy-secrets"
   }
 
   data = {
-    api-key = var.datadog_api_key
+    receiver_url = var.victoriametrics.url
+    receiver_username = var.victoriametrics.username
+    receiver_password = var.victoriametrics.password
     db_host = var.postgres_db.host
     db_port = var.postgres_db.port
     db_name = var.postgres_db.name

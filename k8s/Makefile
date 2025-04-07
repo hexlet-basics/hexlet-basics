@@ -21,10 +21,13 @@ helm-upgrade-app:
 	git commit --no-verify -m ":rocket: deploy"
 	git push --no-verify
 
-helm-install-datadog:
-	helm repo add datadog https://helm.datadoghq.com
+helm-install-grafana-alloy:
+	helm repo add grafana https://grafana.github.io/helm-charts
 	helm repo update
-	helm install datadog-agent -f datadog-values.yaml datadog/datadog
+	helm install grafana-alloy -f grafana-alloy-values.yaml grafana/alloy
+
+helm-upgrade-grafana-alloy:
+	helm upgrade grafana-alloy -f grafana-alloy-values.yaml grafana/alloy
 
 kube-docker-install:
 	kubectl apply -f docker-installer.daemonset.yaml
