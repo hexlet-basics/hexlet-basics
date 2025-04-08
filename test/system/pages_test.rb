@@ -25,6 +25,11 @@ class HomeTest < ApplicationSystemTestCase
     visit map_path
   end
 
+  test "/for_school_teachers" do
+    visit for_school_teachers_path(suffix: :ru)
+    visit for_school_teachers_path(suffix: nil)
+  end
+
   test "/reviews" do
     visit reviews_path(suffix: :ru)
     visit reviews_path(suffix: nil)

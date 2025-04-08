@@ -56,6 +56,7 @@ Rails.application.routes.draw do
       resources :blog_posts, only: %i[index show]
       resources :reviews, only: %i[index]
       resources :language_categories, only: %i[index show]
+      resources :for_school_teachers, only: %i[index]
       resource :session, only: %i[new create destroy]
       resource :locale, only: [] do
         member do
