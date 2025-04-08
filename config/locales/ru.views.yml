@@ -10,6 +10,7 @@ ru:
         header: Категории курсов
         meta:
           description: ""
+        link: Перейти
       show:
         header: Курсы категории "%{name}"
         blog_posts: Посты в блоге

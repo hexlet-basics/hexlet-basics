@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { Container } from "react-bootstrap";
+import { Card, Col, Container, Row } from "react-bootstrap";
 
 import { useTranslation } from "react-i18next";
 
@@ -27,18 +27,24 @@ export default function Index({ categories }: Props) {
   return (
     <ApplicationLayout items={items} header={header}>
       <Container>
-        <div className="row row-cols-1 row-cols-lg-2">
+        <Row className="row row-cols-1 row-cols-md-2 row-cols-lg-3 py-3">
           {categories.map((category) => (
-            <div className="col mb-3" key={category.id}>
-              <Link
-                className="display-5"
-                href={Routes.language_category_path(category.slug!)}
-              >
-                {category.name}
-              </Link>
-            </div>
+            <Col className="col mb-3" key={category.id}>
+              <Card className="bg-body-tertiary p-4 rounded-4 shadow-sm h-100 d-flex">
+                <div className="h4 fw-bold mb-2">{category.name}</div>
+                <Link
+                  className="text-decoration-none stretched-link icon-link icon-link-hover mt-auto"
+                  href={Routes.language_category_path(category.slug!)}
+                >
+                  <span className="me-1">
+                    {t("language_categories.index.link")}
+                  </span>
+                  <i className="bi bi-arrow-right lh-1" />
+                </Link>
+              </Card>
+            </Col>
           ))}
-        </div>
+        </Row>
       </Container>
     </ApplicationLayout>
   );

@@ -905,6 +905,7 @@
       "language_categories": {
         "index": {
           "header": "Course categories",
+          "link": "Go to",
           "meta": {
             "description": "Browse free programming courses on Code-basics.com.\nFind categories tailored to your learning needs, whether you're a beginner or looking to deepen your expertise.\nStart coding today with interactive and easy-to-follow lessons.\n"
           }
@@ -2643,6 +2644,7 @@
       "language_categories": {
         "index": {
           "header": "Категории курсов",
+          "link": "Перейти",
           "meta": {
             "description": ""
           }

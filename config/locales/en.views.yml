@@ -13,6 +13,7 @@ en:
             Browse free programming courses on Code-basics.com.
             Find categories tailored to your learning needs, whether you're a beginner or looking to deepen your expertise.
             Start coding today with interactive and easy-to-follow lessons.
+        link: Go to
       show:
         header: |
           %{name} courses
