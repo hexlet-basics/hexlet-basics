@@ -27,15 +27,23 @@ module YandexSearchFeedBuilder
 
           xml.offers do
             landingPages.each do |lp|
-              module_infos = lp.language.current_module_infos
+              module_infos = lp.language.current_module_infos.with_locale
 
               if module_infos.size < 3
                 next
               end
 
+              utm_params = {
+                utm_source: :yandex,
+                utm_medium: :organic,
+                utm_content: :feed_search,
+                utm_campaign: "cb-#{lp.slug}",
+                utm_term: "page_#{lp.slug}"
+              }
+
               xml.offer(id: lp.language.id) do
                 xml.name lp.header
-                xml.url urls.language_url(lp.slug, suffix: :ru)
+                xml.url urls.language_url(lp.slug, suffix: :ru, **utm_params)
                 # TODO добавить на сайт в базу и сделать прямую привязку курсов к категориям
                 # https://yastatic.net/s3/doc-binary/src/support/products/education_rubricator.xml
                 xml.categoryId 101
