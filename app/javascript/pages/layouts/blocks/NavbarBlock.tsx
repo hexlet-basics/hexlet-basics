@@ -57,6 +57,14 @@ export default function NavbarBlock({ className }: Props) {
               </NavDropdown.Item>
             ))}
           </NavDropdown>
+          <NavDropdown
+            className="link-body-emphasis"
+            title={tLayouts("shared.nav.solutions")}
+          >
+            <NavDropdown.Item href={Routes.for_school_teachers_path()}>
+              {tLayouts("shared.nav.for_school_teachers")}
+            </NavDropdown.Item>
+          </NavDropdown>
           <Nav.Link href={Routes.blog_posts_path()}>
             {tLayouts("shared.nav.blog")}
           </Nav.Link>
