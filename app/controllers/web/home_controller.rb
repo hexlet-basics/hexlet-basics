@@ -114,6 +114,11 @@ class Web::HomeController < Web::ApplicationController
       .group_by(&:locale)
       .transform_values { |posts| SitemapBlogPostResource.new(posts) }
 
+      language_category_resources_by_locale = Language::Category
+      .select(:id, :name, :slug, :locale)
+      .group_by(&:locale)
+      .transform_values { |categories| Language::SitemapCategoryResource.new(categories) }
+
     title = t(".title")
 
     seo_tags = {
@@ -126,7 +131,8 @@ class Web::HomeController < Web::ApplicationController
       orderedLocales: ordered_locales,
       landingPagesByLocale: language_landing_page_resources_by_locale,
       lessonsByLocaleAndLanguageId: lesson_resources_by_locale_and_language_id,
-      blogPostsByLocale: blog_post_resources_by_locale
+      blogPostsByLocale: blog_post_resources_by_locale,
+      categoriesByLocale: language_category_resources_by_locale
     }
   end
 end

@@ -17,6 +17,7 @@ export type { default as LanguageLessonForLists } from './LanguageLessonForLists
 export type { default as LanguageLesson } from './LanguageLesson'
 export type { default as LanguageMember } from './LanguageMember'
 export type { default as LanguageModule } from './LanguageModule'
+export type { default as LanguageSitemapCategory } from './LanguageSitemapCategory'
 export type { default as LanguageSitemapLandingPage } from './LanguageSitemapLandingPage'
 export type { default as LanguageSitemapLesson } from './LanguageSitemapLesson'
 export type { default as LanguageVersion } from './LanguageVersion'
