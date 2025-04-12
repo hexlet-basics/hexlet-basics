@@ -93,12 +93,12 @@ module Faraday
     # @example With an URL argument
     #   Faraday.new 'http://faraday.com'
     #   # => Faraday::Connection to http://faraday.com
-    # @example With an URL argument and an options hash
-    #   Faraday.new 'http://faraday.com', params: { page: 1 }
-    #   # => Faraday::Connection to http://faraday.com?page=1
     # @example With everything in an options hash
     #   Faraday.new url: 'http://faraday.com',
     #   params: { page: 1 }
+    #   # => Faraday::Connection to http://faraday.com?page=1
+    # @example With an URL argument and an options hash
+    #   Faraday.new 'http://faraday.com', params: { page: 1 }
     #   # => Faraday::Connection to http://faraday.com?page=1
     # @option options
     # @option options
@@ -1791,17 +1791,17 @@ end
 class Faraday::RackBuilder
   # @return [RackBuilder] a new instance of RackBuilder
   #
-  # source://faraday//lib/faraday/rack_builder.rb#60
+  # source://faraday//lib/faraday/rack_builder.rb#61
   def initialize(&block); end
 
-  # source://faraday//lib/faraday/rack_builder.rb#178
+  # source://faraday//lib/faraday/rack_builder.rb#179
   def ==(other); end
 
-  # source://faraday//lib/faraday/rack_builder.rb#78
+  # source://faraday//lib/faraday/rack_builder.rb#79
   def [](idx); end
 
-  # source://faraday//lib/faraday/rack_builder.rb#109
-  def adapter(klass = T.unsafe(nil), *args, **_arg2, &block); end
+  # source://faraday//lib/faraday/rack_builder.rb#110
+  def adapter(klass = T.unsafe(nil), *args, **kwargs, &block); end
 
   # The "rack app" wrapped in middleware. All requests are sent here.
   #
@@ -1811,10 +1811,10 @@ class Faraday::RackBuilder
   #
   # Returns an object that responds to `call` and returns a Response.
   #
-  # source://faraday//lib/faraday/rack_builder.rb#162
+  # source://faraday//lib/faraday/rack_builder.rb#163
   def app; end
 
-  # source://faraday//lib/faraday/rack_builder.rb#72
+  # source://faraday//lib/faraday/rack_builder.rb#73
   def build; end
 
   # ENV Keys
@@ -1834,7 +1834,7 @@ class Faraday::RackBuilder
   #     :password   - Proxy server password
   # :ssl - Hash of options for configuring SSL requests.
   #
-  # source://faraday//lib/faraday/rack_builder.rb#200
+  # source://faraday//lib/faraday/rack_builder.rb#201
   def build_env(connection, request); end
 
   # Processes a Request into a Response by passing it through this Builder's
@@ -1844,10 +1844,10 @@ class Faraday::RackBuilder
   # @param request [Faraday::Request]
   # @return [Faraday::Response]
   #
-  # source://faraday//lib/faraday/rack_builder.rb#151
+  # source://faraday//lib/faraday/rack_builder.rb#152
   def build_response(connection, request); end
 
-  # source://faraday//lib/faraday/rack_builder.rb#139
+  # source://faraday//lib/faraday/rack_builder.rb#140
   def delete(handler); end
 
   # Returns the value of attribute handlers.
@@ -1864,74 +1864,74 @@ class Faraday::RackBuilder
 
   # methods to push onto the various positions in the stack:
   #
-  # source://faraday//lib/faraday/rack_builder.rb#118
+  # source://faraday//lib/faraday/rack_builder.rb#119
   def insert(index, *_arg1, **_arg2, &_arg3); end
 
-  # source://faraday//lib/faraday/rack_builder.rb#127
+  # source://faraday//lib/faraday/rack_builder.rb#128
   def insert_after(index, *_arg1, **_arg2, &_arg3); end
 
   # methods to push onto the various positions in the stack:
   #
-  # source://faraday//lib/faraday/rack_builder.rb#118
+  # source://faraday//lib/faraday/rack_builder.rb#119
   def insert_before(index, *_arg1, **_arg2, &_arg3); end
 
   # Locks the middleware stack to ensure no further modifications are made.
   #
-  # source://faraday//lib/faraday/rack_builder.rb#83
+  # source://faraday//lib/faraday/rack_builder.rb#84
   def lock!; end
 
   # @return [Boolean]
   #
-  # source://faraday//lib/faraday/rack_builder.rb#87
+  # source://faraday//lib/faraday/rack_builder.rb#88
   def locked?; end
 
-  # source://faraday//lib/faraday/rack_builder.rb#101
+  # source://faraday//lib/faraday/rack_builder.rb#102
   def request(key, *_arg1, **_arg2, &_arg3); end
 
-  # source://faraday//lib/faraday/rack_builder.rb#105
+  # source://faraday//lib/faraday/rack_builder.rb#106
   def response(*_arg0, **_arg1, &_arg2); end
 
-  # source://faraday//lib/faraday/rack_builder.rb#132
+  # source://faraday//lib/faraday/rack_builder.rb#133
   def swap(index, *_arg1, **_arg2, &_arg3); end
 
-  # source://faraday//lib/faraday/rack_builder.rb#170
+  # source://faraday//lib/faraday/rack_builder.rb#171
   def to_app; end
 
-  # source://faraday//lib/faraday/rack_builder.rb#91
+  # source://faraday//lib/faraday/rack_builder.rb#92
   def use(klass, *_arg1, **_arg2, &_arg3); end
 
   private
 
   # @return [Boolean]
   #
-  # source://faraday//lib/faraday/rack_builder.rb#232
+  # source://faraday//lib/faraday/rack_builder.rb#233
   def adapter_set?; end
 
-  # source://faraday//lib/faraday/rack_builder.rb#244
+  # source://faraday//lib/faraday/rack_builder.rb#245
   def assert_index(index); end
 
   # @raise [MISSING_ADAPTER_ERROR]
   #
-  # source://faraday//lib/faraday/rack_builder.rb#228
+  # source://faraday//lib/faraday/rack_builder.rb#229
   def ensure_adapter!; end
 
-  # source://faraday//lib/faraday/rack_builder.rb#66
+  # source://faraday//lib/faraday/rack_builder.rb#67
   def initialize_dup(original); end
 
   # @return [Boolean]
   #
-  # source://faraday//lib/faraday/rack_builder.rb#236
+  # source://faraday//lib/faraday/rack_builder.rb#237
   def is_adapter?(klass); end
 
-  # source://faraday//lib/faraday/rack_builder.rb#222
+  # source://faraday//lib/faraday/rack_builder.rb#223
   def raise_if_adapter(klass); end
 
   # @raise [StackLocked]
   #
-  # source://faraday//lib/faraday/rack_builder.rb#218
+  # source://faraday//lib/faraday/rack_builder.rb#219
   def raise_if_locked; end
 
-  # source://faraday//lib/faraday/rack_builder.rb#240
+  # source://faraday//lib/faraday/rack_builder.rb#241
   def use_symbol(mod, key, *_arg2, **_arg3, &_arg4); end
 end
 
@@ -1940,19 +1940,21 @@ end
 #
 # source://faraday//lib/faraday/rack_builder.rb#25
 class Faraday::RackBuilder::Handler
+  # @return [Handler] a new instance of Handler
+  #
   # source://faraday//lib/faraday/rack_builder.rb#30
-  def initialize(klass, *args, **_arg2, &block); end
+  def initialize(klass, *args, **kwargs, &block); end
 
-  # source://faraday//lib/faraday/rack_builder.rb#45
+  # source://faraday//lib/faraday/rack_builder.rb#46
   def ==(other); end
 
-  # source://faraday//lib/faraday/rack_builder.rb#55
+  # source://faraday//lib/faraday/rack_builder.rb#56
   def build(app = T.unsafe(nil)); end
 
-  # source://faraday//lib/faraday/rack_builder.rb#41
+  # source://faraday//lib/faraday/rack_builder.rb#42
   def inspect; end
 
-  # source://faraday//lib/faraday/rack_builder.rb#37
+  # source://faraday//lib/faraday/rack_builder.rb#38
   def klass; end
 
   # Returns the value of attribute name.
@@ -1964,10 +1966,10 @@ end
 # source://faraday//lib/faraday/rack_builder.rb#26
 Faraday::RackBuilder::Handler::REGISTRY = T.let(T.unsafe(nil), Faraday::AdapterRegistry)
 
-# source://faraday//lib/faraday/rack_builder.rb#213
+# source://faraday//lib/faraday/rack_builder.rb#214
 Faraday::RackBuilder::LOCK_ERR = T.let(T.unsafe(nil), String)
 
-# source://faraday//lib/faraday/rack_builder.rb#214
+# source://faraday//lib/faraday/rack_builder.rb#215
 Faraday::RackBuilder::MISSING_ADAPTER_ERROR = T.let(T.unsafe(nil), String)
 
 # Used to detect missing arguments
@@ -2507,7 +2509,7 @@ class Faraday::SSLError < ::Faraday::Error; end
 
 # SSL-related options.
 #
-# source://faraday//lib/faraday/options/ssl_options.rb#53
+# source://faraday//lib/faraday/options/ssl_options.rb#56
 class Faraday::SSLOptions < ::Faraday::Options
   # @return [String] CA file
   def ca_file; end
@@ -2551,8 +2553,14 @@ class Faraday::SSLOptions < ::Faraday::Options
   # @return [String, OpenSSL::PKey::RSA, OpenSSL::PKey::DSA] client key
   def client_key=(_); end
 
-  # source://faraday//lib/faraday/options/ssl_options.rb#64
+  # source://faraday//lib/faraday/options/ssl_options.rb#67
   def disable?; end
+
+  # @return [String] Server hostname used for SNI (see https://ruby-doc.org/stdlib-2.5.1/libdoc/openssl/rdoc/OpenSSL/SSL/SSLSocket.html#method-i-hostname-3D)
+  def hostname; end
+
+  # @return [String] Server hostname used for SNI (see https://ruby-doc.org/stdlib-2.5.1/libdoc/openssl/rdoc/OpenSSL/SSL/SSLSocket.html#method-i-hostname-3D)
+  def hostname=(_); end
 
   # @return [String, Symbol] maximum SSL version (see https://ruby-doc.org/stdlib-2.5.1/libdoc/openssl/rdoc/OpenSSL/SSL/SSLContext.html#method-i-max_version-3D)
   def max_version; end
@@ -2578,7 +2586,7 @@ class Faraday::SSLOptions < ::Faraday::Options
   # @return [Boolean] whether to verify SSL certificates or not
   def verify=(_); end
 
-  # source://faraday//lib/faraday/options/ssl_options.rb#59
+  # source://faraday//lib/faraday/options/ssl_options.rb#62
   def verify?; end
 
   # @return [Integer] maximum depth for the certificate chain verification
@@ -2595,7 +2603,7 @@ class Faraday::SSLOptions < ::Faraday::Options
   #   during the handshake or not (see https://github.com/ruby/openssl/pull/60)
   def verify_hostname=(_); end
 
-  # source://faraday//lib/faraday/options/ssl_options.rb#69
+  # source://faraday//lib/faraday/options/ssl_options.rb#72
   def verify_hostname?; end
 
   # @return [Integer] Any `OpenSSL::SSL::` constant (see https://ruby-doc.org/stdlib-2.5.1/libdoc/openssl/rdoc/OpenSSL/SSL.html)

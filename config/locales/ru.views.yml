@@ -26,6 +26,9 @@ ru:
         course: 'Курс %{language}'
     admin:
       title: Админка Code-Basics
+      language_lesson_members:
+        index:
+          header: Прохождение уроков
       language_categories:
         index:
           header: Категории

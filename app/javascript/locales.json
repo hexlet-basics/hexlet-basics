@@ -2218,8 +2218,9 @@
             "dashboard": "Кабинет",
             "language_categories": "Категории",
             "language_landing_pages": "Лендинги",
+            "language_lesson_members": "Прохождение уроков",
             "languages": "Курсы",
-            "messages": "Разговоры с AI",
+            "messages": "Соообщения (AI)",
             "reviews": "Отзывы",
             "users": "Пользователи"
           }
@@ -2514,6 +2515,11 @@
           },
           "new": {
             "header": "Новый лендинг"
+          }
+        },
+        "language_lesson_members": {
+          "index": {
+            "header": "Прохождение уроков"
           }
         },
         "languages": {

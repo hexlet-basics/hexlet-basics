@@ -92,6 +92,7 @@ Rails.application.routes.draw do
 
         resources :reviews
         resources :messages, only: [ :index ]
+        resources :language_lesson_members, only: [ :index ]
         resources :language_categories
         resources :blog_posts
         resources :languages, only: %i[index new edit update create] do

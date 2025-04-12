@@ -16,7 +16,8 @@ ru:
           language_landing_pages: Лендинги
           users: Пользователи
           reviews: Отзывы
-          messages: Разговоры с AI
+          messages: Соообщения (AI)
+          language_lesson_members: Прохождение уроков
           blog_posts: Посты в блоге
     shared:
       language_menu:

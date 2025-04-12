@@ -31,10 +31,12 @@ class Language::Lesson::Member::Message < ApplicationRecord
   validates :role, presence: true
   validates :body, presence: true
 
+  counter_culture :language_lesson_member, column_name: "messages_count"
+
   enum :role, { user: "user", assistant: "assistant" }, suffix: true, validate: true
 
   def self.ransackable_attributes(auth_object = nil)
-    [ "created_at" ]
+    [ "created_at", "language_lesson_member_id" ]
   end
 
   def self.ransackable_associations(auth_object = nil)

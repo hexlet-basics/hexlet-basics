@@ -5,6 +5,7 @@
 # Table name: language_lesson_members
 #
 #  id                 :integer          not null, primary key
+#  messages_count     :integer          default(0)
 #  state              :string
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
@@ -48,5 +49,13 @@ class Language::Lesson::Member < ApplicationRecord
     event :finish do
       transitions from: %i[started], to: :finished
     end
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    [ "created_at" ]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    []
   end
 end

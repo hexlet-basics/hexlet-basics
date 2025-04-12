@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_28_175524) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_12_004351) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -151,6 +151,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_28_175524) do
     t.datetime "created_at", null: false
     t.integer "language_member_id", null: false
     t.string "openai_thread_id"
+    t.integer "messages_count", default: 0
     t.index ["language_member_id"], name: "index_language_lesson_members_on_language_member_id"
     t.index ["lesson_id"], name: "user_finished_lessons_language_module_lesson_id_index"
     t.index ["user_id", "lesson_id"], name: "user_finished_lessons_user_id_language_module_lesson_id_index", unique: true

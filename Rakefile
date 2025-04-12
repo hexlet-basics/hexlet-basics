@@ -12,6 +12,8 @@ Rake::Task["db:fixtures:load"].enhance do
 
   Language::Member.counter_culture_fix_counts
   Language::Lesson.counter_culture_fix_counts
+  # Language::Lesson::Member.counter_culture_fix_counts
+  Language::Lesson::Member::Message.counter_culture_fix_counts
 
   include ActionDispatch::TestProcess
 

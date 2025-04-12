@@ -102,6 +102,15 @@ export default function AdminLayout({ children, header }: Props) {
                   {tLayouts("web.admin.application.messages")}
                 </Link>
               </Nav.Item>
+              <Nav.Item>
+                <Link
+                  className="nav-link fw-medium link-body-emphasis"
+                  href={Routes.admin_language_lesson_members_path()}
+                >
+                  <i className="bi bi-file-text me-2" />
+                  {tLayouts("web.admin.application.language_lesson_members")}
+                </Link>
+              </Nav.Item>
               <hr />
               <Nav.Item>
                 <Link
