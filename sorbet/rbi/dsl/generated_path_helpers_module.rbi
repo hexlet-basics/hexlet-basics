@@ -37,6 +37,9 @@ module GeneratedPathHelpersModule
   def admin_language_landing_pages_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def admin_language_lesson_members_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def admin_language_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

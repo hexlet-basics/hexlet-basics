@@ -37,6 +37,9 @@ module GeneratedUrlHelpersModule
   def admin_language_landing_pages_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def admin_language_lesson_members_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def admin_language_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
