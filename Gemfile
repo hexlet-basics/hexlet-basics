@@ -109,7 +109,7 @@ group :production do
 end
 
 gem "aasm"
-gem "active_form_model", github: "Hexlet/active_form_model"
+gem "active_form_model"
 gem "aws-sdk-s3"
 gem "bcrypt"
 gem "dry-auto_inject"

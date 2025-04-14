@@ -79,7 +79,7 @@
     "@types/node": "^22.14.1",
     "@types/qs": "^6.9.18",
     "@types/rails__actioncable": "^6.1.11",
-    "@types/react": "^19.1.1",
+    "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@types/react-syntax-highlighter": "^15.5.13",
     "@vitejs/plugin-react": "^4.3.4",
