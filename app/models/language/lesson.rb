@@ -50,8 +50,8 @@ class Language::Lesson < ApplicationRecord
   has_many :infos, through: :versions, class_name: "Language::Lesson::Version::Info"
   # has_one :localed_info, -> { merge(Language::Lesson::Version::Info.with_locale) },
   #   through: :versions, class_name: "Language::Lesson::Version::Info"
-  has_one :localed_info, -> { merge(Language::Lesson::Version::Info.with_locale) },
-    class_name: "Language::Lesson::Version::Info", through: :versions, source: :infos
+  # has_one :localed_info, -> { merge(Language::Lesson::Version::Info.with_locale) },
+  #   class_name: "Language::Lesson::Version::Info", through: :versions, source: :infos
 
   aasm :state do
     state :created, initial: true
@@ -71,7 +71,8 @@ class Language::Lesson < ApplicationRecord
     slug
   end
 
+  # work when joined using with_localed_info
   def localed_info
-    infos.with_locale.order(created_at: :desc).first
+    infos.first
   end
 end

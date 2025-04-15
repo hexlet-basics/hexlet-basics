@@ -14,10 +14,10 @@ class Language::Lesson::MemberResource
   end
 
 
-  typelize :string
-  attribute :language_slug do |obj|
-    obj.language.slug
-  end
+   typelize :string
+   attribute :language_slug do |obj|
+     obj.language.slug
+   end
 
   typelize :string
   attribute :language_lesson_name do |obj|

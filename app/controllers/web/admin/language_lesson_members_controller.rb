@@ -2,7 +2,8 @@ class Web::Admin::LanguageLessonMembersController < Web::Admin::ApplicationContr
   def index
     q = ransack_params("sf" => "created_at", "so" => "0")
     search = Language::Lesson::Member
-      .order(id: :desc).ransack(q)
+      .includes([ [ lesson: :infos ], :language ])
+      .ransack(q)
     pagy, records = pagy(search.result)
 
     render inertia: true, props: {

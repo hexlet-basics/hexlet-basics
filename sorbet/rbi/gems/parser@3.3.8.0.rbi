@@ -659,44 +659,44 @@ end
 #
 # @api public
 #
-# source://parser//lib/parser/base.rb#16
+# source://parser//lib/parser/base.rb#19
 class Parser::Base < ::Racc::Parser
   # @api public
   # @param builder [Parser::Builders::Default] The AST builder to use.
   # @return [Base] a new instance of Base
   #
-  # source://parser//lib/parser/base.rb#126
+  # source://parser//lib/parser/base.rb#129
   def initialize(builder = T.unsafe(nil)); end
 
   # @api public
   #
-  # source://parser//lib/parser/base.rb#114
+  # source://parser//lib/parser/base.rb#117
   def builder; end
 
   # @api public
   #
-  # source://parser//lib/parser/base.rb#117
+  # source://parser//lib/parser/base.rb#120
   def context; end
 
   # @api public
   #
-  # source://parser//lib/parser/base.rb#119
+  # source://parser//lib/parser/base.rb#122
   def current_arg_stack; end
 
   # @api public
   # @return [Parser::Diagnostic::Engine]
   #
-  # source://parser//lib/parser/base.rb#113
+  # source://parser//lib/parser/base.rb#116
   def diagnostics; end
 
   # @api public
   #
-  # source://parser//lib/parser/base.rb#112
+  # source://parser//lib/parser/base.rb#115
   def lexer; end
 
   # @api public
   #
-  # source://parser//lib/parser/base.rb#118
+  # source://parser//lib/parser/base.rb#121
   def max_numparam_stack; end
 
   # Parses a source buffer and returns the AST, or `nil` in case of a non fatal error.
@@ -705,7 +705,7 @@ class Parser::Base < ::Racc::Parser
   # @param source_buffer [Parser::Source::Buffer] The source buffer to parse.
   # @return [Parser::AST::Node, nil]
   #
-  # source://parser//lib/parser/base.rb#186
+  # source://parser//lib/parser/base.rb#189
   def parse(source_buffer); end
 
   # Parses a source buffer and returns the AST and the source code comments.
@@ -715,35 +715,35 @@ class Parser::Base < ::Racc::Parser
   # @see #parse
   # @see Parser::Source::Comment#associate
   #
-  # source://parser//lib/parser/base.rb#204
+  # source://parser//lib/parser/base.rb#207
   def parse_with_comments(source_buffer); end
 
   # @api public
   #
-  # source://parser//lib/parser/base.rb#121
+  # source://parser//lib/parser/base.rb#124
   def pattern_hash_keys; end
 
   # @api public
   #
-  # source://parser//lib/parser/base.rb#120
+  # source://parser//lib/parser/base.rb#123
   def pattern_variables; end
 
   # Resets the state of the parser.
   #
   # @api public
   #
-  # source://parser//lib/parser/base.rb#167
+  # source://parser//lib/parser/base.rb#170
   def reset; end
 
   # @api public
   #
-  # source://parser//lib/parser/base.rb#116
+  # source://parser//lib/parser/base.rb#119
   def source_buffer; end
 
   # @api public
   # @return [Parser::StaticEnvironment]
   #
-  # source://parser//lib/parser/base.rb#115
+  # source://parser//lib/parser/base.rb#118
   def static_env; end
 
   # Parses a source buffer and returns the AST, the source code comments,
@@ -767,36 +767,36 @@ class Parser::Base < ::Racc::Parser
   # @param recover [Boolean] If true, recover from syntax errors. False by default.
   # @return [Array]
   #
-  # source://parser//lib/parser/base.rb#233
+  # source://parser//lib/parser/base.rb#236
   def tokenize(source_buffer, recover = T.unsafe(nil)); end
 
   private
 
   # @api public
   #
-  # source://parser//lib/parser/base.rb#257
+  # source://parser//lib/parser/base.rb#260
   def check_kwarg_name(name_t); end
 
   # @api public
   #
-  # source://parser//lib/parser/base.rb#266
+  # source://parser//lib/parser/base.rb#269
   def diagnostic(level, reason, arguments, location_t, highlights_ts = T.unsafe(nil)); end
 
   # @api public
   #
-  # source://parser//lib/parser/base.rb#251
+  # source://parser//lib/parser/base.rb#254
   def next_token; end
 
   # @api public
   #
-  # source://parser//lib/parser/base.rb#282
+  # source://parser//lib/parser/base.rb#285
   def on_error(error_token_id, error_value, value_stack); end
 
   class << self
     # @api public
     # @return [Parser::Base] parser with the default options set.
     #
-    # source://parser//lib/parser/base.rb#84
+    # source://parser//lib/parser/base.rb#87
     def default_parser; end
 
     # Parses a string of Ruby code and returns the AST. If the source
@@ -811,7 +811,7 @@ class Parser::Base < ::Racc::Parser
     # @param line [Numeric] The initial line number.
     # @return [Parser::AST::Node]
     #
-    # source://parser//lib/parser/base.rb#30
+    # source://parser//lib/parser/base.rb#33
     def parse(string, file = T.unsafe(nil), line = T.unsafe(nil)); end
 
     # Parses Ruby source code by reading it from a file. If the source
@@ -823,7 +823,7 @@ class Parser::Base < ::Racc::Parser
     # @return [Parser::AST::Node]
     # @see #parse
     #
-    # source://parser//lib/parser/base.rb#64
+    # source://parser//lib/parser/base.rb#67
     def parse_file(filename); end
 
     # Parses Ruby source code by reading it from a file and returns the AST and
@@ -835,7 +835,7 @@ class Parser::Base < ::Racc::Parser
     # @return [Array]
     # @see #parse
     #
-    # source://parser//lib/parser/base.rb#77
+    # source://parser//lib/parser/base.rb#80
     def parse_file_with_comments(filename); end
 
     # Parses a string of Ruby code and returns the AST and comments. If the
@@ -850,14 +850,14 @@ class Parser::Base < ::Racc::Parser
     # @param line [Numeric] The initial line number.
     # @return [Array]
     #
-    # source://parser//lib/parser/base.rb#49
+    # source://parser//lib/parser/base.rb#52
     def parse_with_comments(string, file = T.unsafe(nil), line = T.unsafe(nil)); end
 
     private
 
     # @api public
     #
-    # source://parser//lib/parser/base.rb#97
+    # source://parser//lib/parser/base.rb#100
     def setup_source_buffer(file, line, string, encoding); end
   end
 end
