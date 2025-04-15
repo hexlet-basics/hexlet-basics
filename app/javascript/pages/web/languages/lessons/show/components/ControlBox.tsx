@@ -16,6 +16,7 @@ export default function ControlBox() {
     lesson,
     course,
     prevLesson,
+    landingPage,
     nextLesson,
     auth: { user },
   } = usePage<LessonSharedProps>().props;
@@ -70,7 +71,7 @@ export default function ControlBox() {
   const prevButtonClasses = cn("btn btn-sm btn-outline-success me-3");
 
   const nextButtonClasses = cn("btn btn-sm btn-outline-success fw-normal", {
-    disabled: !finished || !nextLesson,
+    disabled: !finished,
   });
 
   useHotkeys("ctrl+enter", handleRunCheck);
@@ -139,6 +140,14 @@ export default function ControlBox() {
             href={Routes.language_lesson_path(course.slug!, nextLesson.slug!)}
           >
             {t("languages.lessons.show.next")}
+          </Link>
+        )}
+        {!user.guest && !nextLesson && (
+          <Link
+            className={nextButtonClasses}
+            href={Routes.success_language_url(landingPage.slug!)}
+          >
+            {t("languages.lessons.show.finish")}
           </Link>
         )}
       </div>

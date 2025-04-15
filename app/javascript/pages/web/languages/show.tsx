@@ -92,7 +92,7 @@ export default function Show({
       </Head>
       <Container className="pt-4 pt-lg-5">
         {courseMember?.state === "finished" && (
-          <Alert variant="success">
+          <Alert variant="success" className="mb-5">
             <XssContent>{t("languages.show.completed_html")}</XssContent>
           </Alert>
         )}
@@ -107,17 +107,41 @@ export default function Show({
             <div className="fs-5 text-body-secondary mb-5">
               {courseLandingPage.description}
             </div>
-            <Row className="row-cols-1 row-cols-sm-auto gy-3">
-              <Col className="col-lg-5 col-xl-4">
-                <Link
-                  className="btn btn-lg btn-primary"
-                  href={Routes.language_lesson_path(
-                    course.slug!,
-                    firstLesson.slug,
-                  )}
-                >
-                  <span>{t("languages.show.start")}</span>
-                </Link>
+            <Row className="row-cols-1 gy-3">
+              <Col>
+                {!courseMember && (
+                  <Link
+                    className="btn btn-lg btn-primary"
+                    href={Routes.language_lesson_path(
+                      course.slug!,
+                      firstLesson.slug,
+                    )}
+                  >
+                    <span>{t("languages.show.start")}</span>
+                  </Link>
+                )}
+                {courseMember && nextLesson && (
+                  <Link
+                    className="btn btn-lg btn-primary"
+                    href={Routes.language_lesson_path(
+                      course.slug!,
+                      nextLesson.slug!,
+                    )}
+                  >
+                    <span>{t("languages.show.continue")}</span>
+                  </Link>
+                )}
+                {courseMember?.state === "finished" && (
+                  <Link
+                    className="btn btn-lg btn-primary"
+                    href={Routes.language_lesson_path(
+                      course.slug!,
+                      firstLesson.slug!,
+                    )}
+                  >
+                    <span>{t("languages.show.restart")}</span>
+                  </Link>
+                )}
               </Col>
             </Row>
           </Col>

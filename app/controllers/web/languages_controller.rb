@@ -82,7 +82,9 @@ class Web::LanguagesController < Web::ApplicationController
   def success
     language_member = landing_page.language.members.find_by(user: current_user)
     unless language_member.finished?
-      redirect_to root_path
+      f("error")
+      redirect_to language_path(landing_page.slug)
+      return
     end
 
     render inertia: true, props: {}

@@ -195,6 +195,7 @@ ru:
         reviews: Отзывы
         sort_questions: Разбираем вопросы
         start: Начать обучение
+        restart: Начать заново
         continue: Продолжить обучение
         start_demo_lesson: Демо урок
         ready: Готовы попробовать?
@@ -274,6 +275,7 @@ ru:
 
           prev: ← Предыдущий
           next: Следующий →
+          finish: Завершить
           separator: ' — '
           navigation: Навигация
           show_full_version: Реактор кода доступен в основной версии →
