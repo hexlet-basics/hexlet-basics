@@ -15,6 +15,7 @@ import type {
 import BlogPostBlock from "@/components/BlogPostBlock";
 import CourseBlock from "@/components/CourseBlock";
 import SignUpFormBlock from "@/components/SignUpFormBlock";
+import XssContent from "@/components/XssContent";
 import { getImageUrl } from "@/images";
 import codeImagePathEn from "@/images/code-basics-coding-en.png";
 import codeImagePathRu from "@/images/code-basics-coding-ru.png";
@@ -135,7 +136,9 @@ export default function Index({
                 />
               </div>
               <p className="lead">
-                {t("home.hero.fastest_way_to_start_coding")}
+                <XssContent>
+                  {t("home.hero.fastest_way_to_start_coding")}
+                </XssContent>
               </p>
               <div className="d-grid gap-2 d-md-flex justify-content-md-start mb-4 mb-lg-3">
                 <a
