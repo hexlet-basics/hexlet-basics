@@ -114,10 +114,9 @@ class Web::HomeController < Web::ApplicationController
       .group_by(&:locale)
       .transform_values { |posts| SitemapBlogPostResource.new(posts) }
 
-      language_category_resources_by_locale = Language::Category
-      .select(:id, :name, :slug, :locale)
+    language_category_resources_by_locale = Language::Category.all
       .group_by(&:locale)
-      .transform_values { |categories| Language::SitemapCategoryResource.new(categories) }
+      .transform_values { |categories| Language::CategoryResource.new(categories) }
 
     title = t(".title")
 

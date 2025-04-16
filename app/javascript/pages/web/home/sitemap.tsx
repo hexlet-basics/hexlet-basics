@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import * as Routes from "@/routes.js";
 import type {
-  LanguageSitemapCategory,
+  LanguageCategory,
   LanguageSitemapLandingPage,
   LanguageSitemapLesson,
   SitemapBlogPost,
@@ -24,7 +24,7 @@ type Props = PropsWithChildren & {
     Record<number, LanguageSitemapLesson[]>
   >;
   blogPostsByLocale: Record<Locale, SitemapBlogPost[]>;
-  categoriesByLocale: Record<Locale, LanguageSitemapCategory[]>;
+  categoriesByLocale: Record<Locale, LanguageCategory[]>;
 };
 
 type LandingPagesBlockProps = {
@@ -44,7 +44,7 @@ type BlogPostsBlockProps = {
 };
 
 type LanguageCategoriesBlockProps = {
-  categories: LanguageSitemapCategory[];
+  categories: LanguageCategory[];
   opened: boolean;
 };
 
