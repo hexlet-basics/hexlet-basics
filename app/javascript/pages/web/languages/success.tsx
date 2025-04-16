@@ -30,7 +30,7 @@ export default function Success() {
                   href={
                     i18next.language === "ru"
                       ? "https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=all-courses&utm_content=finished_course_page"
-                      : "https://code-basics.com/ru#courses"
+                      : "/#courses"
                   }
                   target="_blank"
                   rel="noreferrer"
