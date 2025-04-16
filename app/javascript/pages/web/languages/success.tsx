@@ -19,8 +19,6 @@ export default function Success() {
             <img src={successImg} alt="ковер" className="img-fluid" />
           </Col>
           <Col className="col-lg-6">
-            {/* <h1 className="h3">{tViews("languages.success.header")}</h1>
-            <p>{tViews("languages.success.description")}</p> */}
             <div className="text-center">
               <h1 className="h2 mb-4">{tViews("languages.success.header")}</h1>
               <div className="lh-sm mb-5">
