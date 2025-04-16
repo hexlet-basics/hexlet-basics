@@ -11,4 +11,9 @@ class Language::CategoryResource
   # attribute :name do |category|
   #   category.name_ru
   # end
+
+  typelize "Locale"
+  attribute :locale do |category|
+    category.locale
+  end
 end

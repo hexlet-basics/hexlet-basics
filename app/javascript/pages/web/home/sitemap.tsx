@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import * as Routes from "@/routes.js";
 import type {
+  LanguageCategory,
   LanguageSitemapLandingPage,
   LanguageSitemapLesson,
   SitemapBlogPost,
@@ -23,6 +24,7 @@ type Props = PropsWithChildren & {
     Record<number, LanguageSitemapLesson[]>
   >;
   blogPostsByLocale: Record<Locale, SitemapBlogPost[]>;
+  categoriesByLocale: Record<Locale, LanguageCategory[]>;
 };
 
 type LandingPagesBlockProps = {
@@ -38,6 +40,11 @@ type LessonsBlockProps = {
 
 type BlogPostsBlockProps = {
   posts: SitemapBlogPost[];
+  opened: boolean;
+};
+
+type LanguageCategoriesBlockProps = {
+  categories: LanguageCategory[];
   opened: boolean;
 };
 
@@ -143,6 +150,30 @@ function BlogPostsBlock({ posts, opened }: BlogPostsBlockProps) {
   );
 }
 
+function LanguageCategoriesBlock({
+  categories,
+  opened,
+}: LanguageCategoriesBlockProps) {
+  return (
+    <Collapse in={opened}>
+      <ul className="m-0 ms-3 list-unstyled" id="blog-collapse">
+        {categories.map((category) => (
+          <li key={category.id}>
+            <a
+              className="text-decoration-none"
+              href={Routes.language_category_path(category.slug!, {
+                suffix: getSuffix(category.locale),
+              })}
+            >
+              {category.name}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </Collapse>
+  );
+}
+
 // NOTE для карты сайта выводим ссылки для всех локалей
 export default function SiteMap({
   title,
@@ -150,6 +181,7 @@ export default function SiteMap({
   landingPagesByLocale,
   lessonsByLocaleAndLanguageId,
   blogPostsByLocale,
+  categoriesByLocale,
 }: Props) {
   const { t } = useTranslation();
 
@@ -157,6 +189,7 @@ export default function SiteMap({
     <ApplicationLayout header={title}>
       {orderedLocales.map((locale) => {
         const [blogOpened, setBlogOpened] = useState(false);
+        const [categoriesOpened, setCategoriesOpened] = useState(false);
 
         return (
           <Container key={locale} className="mb-5">
@@ -184,7 +217,7 @@ export default function SiteMap({
               lessonsByLocaleAndLanguageId={lessonsByLocaleAndLanguageId}
             />
 
-            <h2 className="h5 my-3">
+            <h2 className="h5 my-2">
               <a
                 id={`blog-${locale}`}
                 className="text-decoration-none link-body-emphasis"
@@ -206,6 +239,29 @@ export default function SiteMap({
             <BlogPostsBlock
               posts={blogPostsByLocale[locale]}
               opened={blogOpened}
+            />
+            <h2 className="h5 py-2">
+              <a
+                id={`categories-${locale}`}
+                className="text-decoration-none link-body-emphasis"
+                href={`#categories-${locale}`}
+              >
+                {t("language_categories.index.header", { lng: locale })}
+              </a>
+              <button
+                type="button"
+                onClick={() => setCategoriesOpened(!categoriesOpened)}
+                aria-controls="categories-collapse"
+                className="btn btn-link py-0 shadow-none"
+              >
+                <span
+                  className={`bi ${categoriesOpened ? "bi-chevron-up" : "bi-chevron-down"}`}
+                />
+              </button>
+            </h2>
+            <LanguageCategoriesBlock
+              categories={categoriesByLocale[locale]}
+              opened={categoriesOpened}
             />
           </Container>
         );
