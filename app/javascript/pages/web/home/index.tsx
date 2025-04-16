@@ -135,11 +135,11 @@ export default function Index({
                   repeat={Number.POSITIVE_INFINITY}
                 />
               </div>
-              <p className="lead">
+              <div className="lead mb-3">
                 <XssContent>
                   {t("home.hero.fastest_way_to_start_coding")}
                 </XssContent>
-              </p>
+              </div>
               <div className="d-grid gap-2 d-md-flex justify-content-md-start mb-4 mb-lg-3">
                 <a
                   className="btn btn-primary btn-lg px-4 me-md-2 fw-bold"
