@@ -6,7 +6,6 @@ import { TypeAnimation } from "react-type-animation";
 import * as Routes from "@/routes.js";
 import type {
   BlogPost,
-  LanguageCategory,
   LanguageMember,
   Review,
   User,
@@ -26,7 +25,6 @@ import { Accordion, Col, Container, Row } from "react-bootstrap";
 
 type Props = PropsWithChildren & {
   blogPosts: BlogPost[];
-  courseCategories: LanguageCategory[];
   courseMembersByCourseId: LanguageMember[];
   reviews: Review[];
   newUser: User;
@@ -101,7 +99,6 @@ const reviews = {
 export default function Index({
   blogPosts,
   newUser,
-  courseCategories,
   courseMembersByCourseId,
 }: Props) {
   const { t } = useTranslation();
@@ -164,29 +161,15 @@ export default function Index({
 
       <div className="mb-5">
         <Container className="py-4">
-          <div className="d-flex flex-column flex-sm-row align-items-sm-center mb-4">
-            <h2 className="me-auto mb-3 mb-sm-0">
-              <a
-                id="courses"
-                className="text-decoration-none link-body-emphasis"
-                href="#courses"
-              >
-                {t("home.languages.courses")}
-              </a>
-            </h2>
-
-            <div className="d-flex flex-wrap">
-              {courseCategories.map((c) => (
-                <a
-                  key={c.id}
-                  href={Routes.language_category_path(c.slug!)}
-                  className="mb-2 mb-sm-0 me-2 me-sm-0 ms-sm-2 fw-light text-decoration-none fs-5 badge text-bg-light p-2 p-sm-3 rounded-pill border"
-                >
-                  {c.name}
-                </a>
-              ))}
-            </div>
-          </div>
+          <h2 className="mb-4">
+            <a
+              id="courses"
+              className="text-decoration-none link-body-emphasis"
+              href="#courses"
+            >
+              {t("home.languages.courses")}
+            </a>
+          </h2>
 
           <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4">
             {landingPagesForLists.map((lp) => (
