@@ -72,7 +72,6 @@ RUN --mount=type=secret,id=sentry-org,env=VITE_SENTRY_ORG \
     --mount=type=secret,id=posthog-api-key,env=VITE_REACT_APP_PUBLIC_POSTHOG_KEY \
     --mount=type=secret,id=posthog-api-host,env=VITE_REACT_APP_PUBLIC_POSTHOG_HOST \
     --mount=type=secret,id=carrotquest-api-key,env=VITE_CARROTQUEST_API_KEY \
-    --mount=type=secret,id=yandex-metrika-counter-id,env=VITE_YANDEX_METRIKA_COUNTER_ID \
     SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 # Final stage for app image
