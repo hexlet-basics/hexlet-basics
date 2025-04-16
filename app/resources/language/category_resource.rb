@@ -5,10 +5,15 @@ class Language::CategoryResource
   typelize_from Language::Category
   # root_key :user
 
-  attributes :id, :slug, :name, :locale, :created_at
+  attributes :id, :slug, :name, :created_at
   # typelize name: :string, nullable: true
   typelize name: :string
   # attribute :name do |category|
   #   category.name_ru
   # end
+
+  typelize "Locale"
+  attribute :locale do |category|
+    category.locale
+  end
 end
