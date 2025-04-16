@@ -1055,6 +1055,12 @@
           "try_without_registration": "Try it without registering",
           "typescript_description": "TypeScript is a JavaScript-based programming language. Includes a typing system",
           "without_registration": "Start learning right away - first lessons are available without an account. If you like the format, you can register to save your progress"
+        },
+        "success": {
+          "choose_profession": "Choose course",
+          "description": "Now you have new knowledge and skills, but that's just the beginning - there are more opportunities ahead. It's time to choose your IT career and move on with your life\n",
+          "header": "Congratulations, you completed the course!",
+          "home": "Home"
         }
       },
       "my": {
@@ -2771,8 +2777,10 @@
           "without_registration": "Начните обучение сразу — первые уроки доступны без аккаунта. Понравится формат — зарегистрируетесь, чтобы сохранить прогресс"
         },
         "success": {
-          "description": "Пора двигаться дальше :)\n",
-          "header": "Поздравляем с прохождением курса!"
+          "choose_profession": "К выбору профессий",
+          "description": "Теперь у вас есть новые знания и навыки, но это только начало – впереди еще больше возможностей. Самое время выбрать себе IT-профессию и двигаться дальше\n",
+          "header": "Поздравляем, вы завершили курс!",
+          "home": "На главную"
         }
       },
       "my": {
