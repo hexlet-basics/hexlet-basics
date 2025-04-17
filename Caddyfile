@@ -19,7 +19,6 @@ https://code-basics.test {
 	reverse_proxy /vite-dev/* http://127.0.0.1:3036
 	reverse_proxy http://127.0.0.1:3100
 
-
 	# # Redirect Vite HMR requests
 	# @vite_hmr {
 	#     path /vite/@vite/client

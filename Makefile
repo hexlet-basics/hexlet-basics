@@ -52,7 +52,7 @@ editor-setup:
 	-bin/tapioca gem
 
 sync: i18n-export sync-fixtures
-	bin/rails typelizer:generate:refresh
+	ENABLE_TYPELIZER=1 bin/rails typelizer:generate:refresh
 
 coverage-open:
 	open coverage/index.html
