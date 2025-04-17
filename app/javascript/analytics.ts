@@ -1,4 +1,5 @@
 import carrotquest from "@hexlet/analytics-plugin-carrotquest";
+import yandexMetrika from "@hexlet/analytics-plugin-yandex-metrika";
 import postHog from "@metro-fs/analytics-plugin-posthog";
 import Analytics from "analytics";
 // import googleAnalytics from "@analytics/google-analytics"
@@ -9,6 +10,10 @@ const plugins = [
   // googleAnalytics({
   //   measurementIds: ["G-XXXXXXXX"],
   // }),
+  yandexMetrika({
+    counterId: import.meta.env.VITE_YANDEX_METRIKA_COUNTER_ID,
+    enabled,
+  }),
   postHog({
     token: import.meta.env.VITE_REACT_APP_PUBLIC_POSTHOG_KEY,
     enabled,

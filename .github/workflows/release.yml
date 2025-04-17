@@ -68,6 +68,7 @@ jobs:
             "posthog-api-key=${{ secrets.POSTHOG_API_KEY }}"
             "posthog-api-host=${{ secrets.POSTHOG_API_HOST }}"
             "carrotquest-api-key=${{ secrets.CARROTQUEST_API_KEY }}"
+            "yandex-metrika-counter-id=${{ secrets.YANDEX_METRIKA_COUNTER_ID }}"
           build-args: |
             RELEASE_VERSION=${{ env.RELEASE_VERSION }}
             APP_HOST=${{ env.APP_HOST }}
