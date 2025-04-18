@@ -48,7 +48,7 @@ function Root(props: PropsWithChildren) {
   // useEffect?
   i18next.changeLanguage(locale);
   dayjs.locale(locale);
-  console.log(locale, dayjs.locale());
+  // console.log(locale, dayjs.locale());
   Routes.configure({ default_url_options: { suffix } });
 
   return (

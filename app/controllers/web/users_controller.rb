@@ -31,8 +31,18 @@ class Web::UsersController < Web::ApplicationController
       lesson_ids.each do |id|
         lesson = Language::Lesson.find(id)
         language = lesson.language
-        language_member = language.members.build(user:)
-        language_member.save!
+        language_member = language.members.find_or_initialize_by(user:)
+        if language_member.new_record?
+          language_member.save!
+
+          event_data = {
+            slug: language.slug,
+            locale: I18n.locale
+          }
+          event = CourseStartedEvent.new(data: event_data)
+          publish_event(event, user)
+          event_to_js(event)
+        end
 
         lesson_member = language_member.lesson_members.build(
           language:,
@@ -40,6 +50,16 @@ class Web::UsersController < Web::ApplicationController
           user:
         )
         lesson_member.finish!
+
+        event_data = {
+          lesson_slug: lesson.slug,
+          course_slug: language.slug,
+          locale: I18n.locale
+        }
+        event = LessonStartedEvent.new(data: event_data)
+
+        publish_event(event, user)
+        event_to_js(event)
       end
 
       f(:success)
