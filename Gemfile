@@ -32,6 +32,7 @@ gem "thruster", require: false
 gem "inertia_rails"
 gem "vite_rails"
 gem "foreman"
+gem "ostruct"
 
 # gem 'aws-sdk-s3'
 

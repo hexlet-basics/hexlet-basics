@@ -1,7 +1,7 @@
 class Web::ApplicationController < ApplicationController
   include BrowserConcern
 
-  allow_modern_browsers
+  # allow_modern_browsers
   inertia_share flash: -> { flash.to_hash }
 
   include FlashConcern

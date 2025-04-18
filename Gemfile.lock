@@ -279,6 +279,7 @@ GEM
     nokogiri (1.18.7-x86_64-linux-gnu)
       racc (~> 1.4)
     os (1.1.4)
+    ostruct (0.6.1)
     pagy (9.3.4)
     parallel (1.27.0)
     parser (3.3.8.0)
@@ -575,6 +576,7 @@ DEPENDENCIES
   js-routes
   meta-tags
   minitest-power_assert
+  ostruct
   pagy
   pg
   puma (>= 5.0)
