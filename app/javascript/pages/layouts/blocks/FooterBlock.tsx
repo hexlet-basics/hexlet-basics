@@ -30,7 +30,7 @@ export default function FooterBlock() {
         <Container>
           <Row className="gy-4">
             <Col className="col-12 col-sm-6 col-md-9">
-              <Nav>
+              <Nav className="d-block">
                 <Row className="row-cols-1 row-cols-md-2 row-cols-lg-3">
                   {landingPagesForFooter.map((lp) => (
                     <Col key={lp.id}>
