@@ -6,7 +6,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@hexlet/analytics-plugin-carrotquest": "github:Hexlet/analytics-plugin-carrotquest",
+    "@hexlet/analytics-plugin-carrotquest": "^0.1.1",
     "@hexlet/analytics-plugin-yandex-metrika": "^1.0.2",
     "@inertiajs/progress": "^0.2.7",
     "@inertiajs/react": "^2.0.8",
