@@ -28,22 +28,26 @@ export default function FooterBlock() {
       </Head>
       <footer className="mt-5 bg-body-tertiary pt-5">
         <Container>
-          <Row className="row-cols-1 row-cols-sm-2 row-cols-lg-4 gy-4">
-            <Col>
-              <Nav className="flex-column">
-                {landingPagesForFooter.map((lp) => (
-                  <Nav.Item key={lp.id}>
-                    <Link
-                      className="link-body-emphasis text-decoration-none"
-                      href={Routes.language_path(lp.slug)}
-                    >
-                      {lp.footer_name}
-                    </Link>
-                  </Nav.Item>
-                ))}
+          <Row className="gy-4">
+            <Col className="col-12 col-sm-6 col-md-9">
+              <Nav>
+                <Row className="row-cols-1 row-cols-md-2 row-cols-lg-3">
+                  {landingPagesForFooter.map((lp) => (
+                    <Col key={lp.id}>
+                      <Nav.Item>
+                        <Link
+                          className="link-body-emphasis text-decoration-none"
+                          href={Routes.language_path(lp.slug)}
+                        >
+                          {lp.footer_name}
+                        </Link>
+                      </Nav.Item>
+                    </Col>
+                  ))}
+                </Row>
               </Nav>
             </Col>
-            <Col className="order-last order-sm-first">
+            {/* <Col className="order-last order-sm-first">
               <Nav className="flex-column">
                 <Nav.Item className="h5">+7 (495) 085 21 62</Nav.Item>
                 <Nav.Item className="h5">8 800 100 22 47</Nav.Item>
@@ -54,8 +58,8 @@ export default function FooterBlock() {
                 </Nav.Item>
                 <Nav.Item>{tCommon("organization.address")}</Nav.Item>
               </Nav>
-            </Col>
-            <Col className="order-lg-first">
+            </Col> */}
+            <Col className="order-lg-first col-sm-6 col-md-3">
               <Nav className="flex-column">
                 <Nav.Item>
                   <Link
@@ -89,7 +93,7 @@ export default function FooterBlock() {
                     {tLayouts("shared.footer.authors")}
                   </Link>
                 </Nav.Item>
-                {locale === "ru" && (
+                {/* {locale === "ru" && (
                   <Nav.Item>
                     <a
                       className="link-body-emphasis text-decoration-none"
@@ -98,7 +102,7 @@ export default function FooterBlock() {
                       {tLayouts("shared.footer.community")}
                     </a>
                   </Nav.Item>
-                )}
+                )} */}
                 <Nav.Item>
                   <Link
                     className="link-body-emphasis text-decoration-none"
@@ -107,7 +111,7 @@ export default function FooterBlock() {
                     {tLayouts("shared.footer.sitemap")}
                   </Link>
                 </Nav.Item>
-                <Nav.Item>
+                {/* <Nav.Item>
                   <a
                     target="_blank"
                     rel="noreferrer"
@@ -136,10 +140,10 @@ export default function FooterBlock() {
                   >
                     {tLayouts("shared.footer.hexlet-sicp")}
                   </a>
-                </Nav.Item>
+                </Nav.Item> */}
               </Nav>
             </Col>
-            <Col className="col-sm-12">
+            {/* <Col className="col-sm-12">
               <Nav className="flex-column">
                 <Nav.Item>
                   <Link
@@ -166,10 +170,11 @@ export default function FooterBlock() {
                   </Link>
                 </Nav.Item>
               </Nav>
-            </Col>
+            </Col> */}
           </Row>
           <div className="d-flex flex-column flex-sm-row justify-content-between pt-4 my-4 border-top">
-            <div>{`© ${new Date().getFullYear()} ${tCommon("organization.legal_name")}`}</div>
+            {/* <div>{`© ${new Date().getFullYear()} ${tCommon("organization.legal_name")}`}</div> */}
+            <div>{`© ${new Date().getFullYear()}`}</div>
             <ul className="fs-3 d-flex list-unstyled">
               <li className="me-3">
                 <a
@@ -181,7 +186,7 @@ export default function FooterBlock() {
                   <i className="bi bi-github" />
                 </a>
               </li>
-              {locale === "ru" && (
+              {/* {locale === "ru" && (
                 <li className="me-3">
                   <a
                     target="_blank"
@@ -202,7 +207,7 @@ export default function FooterBlock() {
                 >
                   <i className="bi bi-youtube" />
                 </a>
-              </li>
+              </li> */}
             </ul>
           </div>
         </Container>
