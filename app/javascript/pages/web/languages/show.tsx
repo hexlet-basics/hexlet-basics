@@ -122,7 +122,7 @@ export default function Show({
                 )}
                 {courseMember && nextLesson && (
                   <Link
-                    className="btn btn-lg btn-primary"
+                    className="btn btn-lg btn-primary me-3"
                     href={Routes.language_lesson_path(
                       course.slug!,
                       nextLesson.slug!,
