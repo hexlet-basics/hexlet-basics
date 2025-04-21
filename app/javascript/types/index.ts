@@ -2,6 +2,7 @@ import type { PageProps } from "@inertiajs/inertia";
 import type { i18n } from "i18next";
 import type { SetupOptions } from "node_modules/@inertiajs/react/types/createInertiaApp";
 import type { SortOrder } from "primereact/api";
+import type { ReactNode } from "react";
 import type { BackendEvent } from "./events";
 import type {
   Language,
@@ -63,3 +64,11 @@ export interface SharedProps extends PageProps {
 }
 
 export type RootProps = SetupOptions<HTMLElement, SharedProps>["props"];
+
+// Temporary type definition, until @inertiajs/react provides one
+export type ResolvedComponent = {
+  default: ReactNode & {
+    layout?: (page: ReactNode) => ReactNode;
+  };
+  layout?: (page: ReactNode) => ReactNode;
+};

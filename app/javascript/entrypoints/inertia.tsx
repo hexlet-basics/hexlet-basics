@@ -1,18 +1,12 @@
 import Root from "@/components/Root.tsx";
+import type { ResolvedComponent } from "@/types";
 import { createInertiaApp } from "@inertiajs/react";
 import * as Sentry from "@sentry/react";
-import type { ReactNode } from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 
 if (import.meta.env.DEV) {
   localStorage.debug = "app:*";
 }
-
-// Temporary type definition, until @inertiajs/react provides one
-type ResolvedComponent = {
-  default: ReactNode;
-  layout?: (page: ReactNode) => ReactNode;
-};
 
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
@@ -33,13 +27,15 @@ createInertiaApp({
   // see https://inertia-rails.netlify.app/guide/progress-indicators
   // progress: false,
 
-  resolve: (name) => {
+  resolve: async (name) => {
     const pages = import.meta.glob<ResolvedComponent>("../pages/**/*.tsx");
     const pageFn = pages[`../pages/${name}.tsx`];
     if (!pageFn) {
       console.error(`Missing Inertia page component: '${name}.tsx'`);
     }
-    const page = pageFn();
+    const page = await pageFn();
+
+    page.default.layout ??= (page) => <Root>{page}</Root>;
 
     // To use a default layout, import the Layout component
     // and use the following line.
@@ -53,11 +49,7 @@ createInertiaApp({
   setup({ el, App, props }) {
     if (el) {
       const vdomFn = () => {
-        return (
-          <Root {...props}>
-            <App {...props} />
-          </Root>
-        );
+        return <App {...props} />;
       };
       if (import.meta.env.MODE === "production") {
         hydrateRoot(el, vdomFn(), {

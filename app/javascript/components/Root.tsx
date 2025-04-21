@@ -5,9 +5,10 @@ import "dayjs/locale/ru";
 import { PrimeReactProvider } from "primereact/api";
 import "react-bootstrap";
 import { dayjs } from "@/lib/utils";
-import type { RootProps } from "@/types";
+import type { RootProps, SharedProps } from "@/types";
+import { usePage } from "@inertiajs/react";
 import i18next from "i18next";
-import type { PropsWithChildren } from "react";
+import { type PropsWithChildren, useEffect } from "react";
 import { Container } from "react-bootstrap";
 import { initReactI18next, useTranslation } from "react-i18next";
 import locales from "../locales.json";
@@ -41,15 +42,14 @@ function FallbackComponent() {
 }
 
 function Root(props: PropsWithChildren) {
-  const typedProps = props as RootProps;
-  // const { locale, suffix } = usePage<SharedProps>().props;
-  const { locale, suffix } = typedProps.initialPage.props;
+  const { locale, suffix } = usePage<SharedProps>().props;
 
-  // useEffect?
-  i18next.changeLanguage(locale);
-  dayjs.locale(locale);
-  // console.log(locale, dayjs.locale());
-  Routes.configure({ default_url_options: { suffix } });
+  useEffect(() => {
+    i18next.changeLanguage(locale);
+    dayjs.locale(locale);
+    Routes.configure({ default_url_options: { suffix } });
+    // console.log(locale, dayjs.locale());
+  }, [locale, suffix]);
 
   return (
     <PrimeReactProvider>

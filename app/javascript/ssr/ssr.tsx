@@ -1,4 +1,5 @@
 import Root from "@/components/Root.tsx";
+import type { ResolvedComponent } from "@/types";
 import { createInertiaApp } from "@inertiajs/react";
 import createServer from "@inertiajs/react/server";
 import * as Sentry from "@sentry/node";
@@ -27,17 +28,17 @@ createServer((page) =>
     },
     resolve: (name) => {
       // const pages = import.meta.glob("../pages/**/*.jsx", { eager: true });
-      const pages = import.meta.glob("../pages/**/*.tsx", {
+      const pages = import.meta.glob<ResolvedComponent>("../pages/**/*.tsx", {
         eager: true,
       });
-      return pages[`../pages/${name}.tsx`];
+      const page = pages[`../pages/${name}.tsx`];
+
+      page.default.layout ??= (page) => <Root>{page}</Root>;
+
+      return page;
     },
     setup: ({ App, props }) => {
-      const vdom = (
-        <Root {...props}>
-          <App {...props} />
-        </Root>
-      );
+      const vdom = <App {...props} />;
 
       return vdom;
     },
