@@ -17,8 +17,7 @@ module EventConcern
     eventData = {
       id: event.event_id,
       type: event.event_type,
-      data: event.data,
-      metadata: event.metadata
+      data: event.data
     }
     session[:events] << eventData
     # EventsMapping.exists!(event_name)
