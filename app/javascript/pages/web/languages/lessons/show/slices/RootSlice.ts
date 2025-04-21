@@ -61,7 +61,7 @@ export const runCheck = createAsyncThunk(
 
     if (courseHasBeenFinished) {
       analytics.track("course_finished", {
-        course_slug: course.slug,
+        slug: course.slug,
         locale: i18next.language,
       });
     }
