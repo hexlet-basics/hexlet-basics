@@ -34,14 +34,7 @@ createInertiaApp({
       console.error(`Missing Inertia page component: '${name}.tsx'`);
     }
     const page = await pageFn();
-
     page.default.layout ??= (page) => <Root>{page}</Root>;
-
-    // To use a default layout, import the Layout component
-    // and use the following line.
-    // see https://inertia-rails.netlify.app/guide/pages#default-layouts
-    //
-    // page.default.layout ||= (page) => createElement(Layout, null, page)
 
     return page;
   },
