@@ -171,23 +171,22 @@ export default function Index() {
                     )}
 
                     <div className="my-4">
-                      {Array.isArray(commonQuestions) &&
-                        commonQuestions.map((v) => (
-                          <details
-                            key={v.question}
-                            className="mt-1 border rounded"
-                          >
-                            <summary className="p-2">{v.question}</summary>
-                            <div className="px-2 pt-2">
-                              <Markdown
-                                rehypePlugins={rehypePlugins}
-                                remarkPlugins={remarkPlugins}
-                              >
-                                {v.answer}
-                              </Markdown>
-                            </div>
-                          </details>
-                        ))}
+                      {commonQuestions.map((v) => (
+                        <details
+                          key={v.question}
+                          className="mt-1 border rounded"
+                        >
+                          <summary className="p-2">{v.question}</summary>
+                          <div className="px-2 pt-2">
+                            <Markdown
+                              rehypePlugins={rehypePlugins}
+                              remarkPlugins={remarkPlugins}
+                            >
+                              {v.answer}
+                            </Markdown>
+                          </div>
+                        </details>
+                      ))}
                     </div>
 
                     <div className="small text-muted py-2">
