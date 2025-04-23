@@ -44,12 +44,9 @@ function FallbackComponent() {
 function Root(props: PropsWithChildren) {
   const { locale, suffix } = usePage<SharedProps>().props;
 
-  useEffect(() => {
-    i18next.changeLanguage(locale);
-    dayjs.locale(locale);
-    Routes.configure({ default_url_options: { suffix } });
-    // console.log(locale, dayjs.locale());
-  }, [locale, suffix]);
+  i18next.changeLanguage(locale);
+  dayjs.locale(locale);
+  Routes.configure({ default_url_options: { suffix } });
 
   return (
     <PrimeReactProvider>
