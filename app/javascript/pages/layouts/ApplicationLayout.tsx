@@ -34,7 +34,7 @@ export default function ApplicationLayout({
           {header && <h1 className={center ? "text-center" : ""}>{header}</h1>}
         </Container>
       )}
-      {children}
+      <div className="pb-5">{children}</div>
       <FooterBlock />
     </RootLayout>
   );

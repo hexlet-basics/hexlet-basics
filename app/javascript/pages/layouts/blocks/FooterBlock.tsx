@@ -26,7 +26,7 @@ export default function FooterBlock() {
           {JSON.stringify(organization)}
         </script>
       </Head>
-      <footer className="mt-5 bg-body-tertiary pt-5">
+      <footer className="mt-auto bg-body-tertiary pt-5">
         <Container>
           <Row className="gy-4">
             <Col className="col-12 col-sm-6 col-md-9">
