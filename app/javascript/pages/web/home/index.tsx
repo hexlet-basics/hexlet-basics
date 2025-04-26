@@ -1,6 +1,5 @@
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
-import Markdown from "react-markdown";
 import { TypeAnimation } from "react-type-animation";
 
 import * as Routes from "@/routes.js";
@@ -22,6 +21,7 @@ import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { SharedProps } from "@/types";
 import { usePage } from "@inertiajs/react";
 import { Accordion, Col, Container, Row } from "react-bootstrap";
+import MarkdownViewer from "@/components/MarkdownViewer";
 
 type Props = PropsWithChildren & {
   blogPosts: BlogPost[];
@@ -277,7 +277,7 @@ export default function Index({
                 <Accordion.Item eventKey={String(index)} key={key}>
                   <Accordion.Header as="h3">{value.question}</Accordion.Header>
                   <Accordion.Body>
-                    <Markdown>{value.answer}</Markdown>
+                    <MarkdownViewer>{value.answer}</MarkdownViewer>
                   </Accordion.Body>
                 </Accordion.Item>
               ))}

@@ -70,11 +70,11 @@ check-types:
 lint:
 	npx tsc --build
 	bin/rubocop
-	npx @biomejs/biome check
+	npx oxlint
 
 lint-fix:
 	bin/rubocop -x
-	npx @biomejs/biome check --fix --unsafe
+	npx oxlint --fix --fix-suggestions
 
 docker-build:
 	docker build . -t hexlet-basics/hexlet-basics
