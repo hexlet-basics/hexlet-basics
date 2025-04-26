@@ -3,7 +3,6 @@ import {
   useAssistantStream,
 } from "@/hooks/useAssistantStream";
 
-import { highlightingLanguages } from "@/lib/utils.ts";
 import type {
   Language,
   LanguageLesson,
@@ -14,12 +13,7 @@ import { useRef } from "react";
 import { Button, Form, Spinner } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { useInView } from "react-intersection-observer";
-import Markdown from "react-markdown";
-import rehypeExternalLinks from "rehype-external-links";
-import rehypeHighlight from "rehype-highlight";
-import rehypeRaw from "rehype-raw";
-import remarkGfm from "remark-gfm";
-import type { Pluggable } from "unified";
+import MarkdownViewer from "./MarkdownViewer";
 
 type Props = {
   lesson: LanguageLesson;
@@ -29,31 +23,13 @@ type Props = {
   lessonMember?: LanguageLessonMember;
 };
 
-// Replace rehype plugins with remark ones whenever possible
-const rehypePlugins: Pluggable[] = [
-  [rehypeHighlight, { languages: highlightingLanguages }],
-  rehypeRaw,
-  [rehypeExternalLinks, { target: "_blank" }],
-];
-
-const remarkPlugins: Pluggable[] = [remarkGfm];
-
-// const fetcher = (url: string) => axios.get(url).then((res) => res.data);
-
-// type Message = {
-//   role: string;
-//   content: string;
-// };
-
 function MessagePresenter({ message }: { message: AssistantMessage }) {
   const classesLine = cn("hexlet-basics-content mt-2", {
     "text-end bg-light ms-5 p-3 rounded": message.role === "user",
   });
   return (
     <div className={classesLine}>
-      <Markdown rehypePlugins={rehypePlugins} remarkPlugins={remarkPlugins}>
-        {message.content}
-      </Markdown>
+      <MarkdownViewer>{message.content}</MarkdownViewer>
     </div>
   );
 }

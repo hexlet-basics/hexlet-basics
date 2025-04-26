@@ -1,5 +1,4 @@
 // switch to shiki
-@import "highlight.js/styles/github.css";
 @import "bootstrap-icons/font/bootstrap-icons.css";
 @import "flag-icons/css/flag-icons.min.css";
 // @import 'devicon/devicon.min.css';
@@ -83,6 +82,7 @@ $utilities: map-merge($utilities,
     @extend .border-start;
     @extend .p-3;
     @extend .my-3;
+
     // padding: 1rem;
     // border-left: 2px solid #c1c1c1;
     // border-width: 3px;
@@ -155,14 +155,16 @@ $utilities: map-merge($utilities,
 // );
 
 .hexlet-basics-accordion {
-  .accordion-header > button {
+  .accordion-header>button {
     @extend .bg-body;
     @extend .shadow-none;
     @extend .px-0;
     @extend .fw-medium;
     @extend .text-body;
   }
-  .accordion-header > button, .accordion-body {
+
+  .accordion-header>button,
+  .accordion-body {
     font-size: 18px;
   }
 }
@@ -171,6 +173,7 @@ $utilities: map-merge($utilities,
   position: relative;
   bottom: -18px;
   left: 20px;
+
   @include media-breakpoint-up(lg) {
     bottom: -28px;
     left: 50px;
@@ -183,7 +186,11 @@ $utilities: map-merge($utilities,
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  @include media-breakpoint-up(md) { min-height: 300px; }
+
+  @include media-breakpoint-up(md) {
+    min-height: 300px;
+  }
+
   @include media-breakpoint-up(lg) {
     width: 100%;
     height: 100%;

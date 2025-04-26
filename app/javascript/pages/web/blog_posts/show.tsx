@@ -1,33 +1,23 @@
 import type { PropsWithChildren } from "react";
 import { Col, Container, Image, Row } from "react-bootstrap";
 
-import { dayjs, highlightingLanguages } from "@/lib/utils.ts";
+import { dayjs } from "@/lib/utils.ts";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { BreadcrumbItem, SharedProps } from "@/types";
 import type { BlogPost } from "@/types/serializers";
 import i18next from "i18next";
-import Markdown from "react-markdown";
-import rehypeHighlight from "rehype-highlight";
-import rehypeSlug from "rehype-slug";
-import remarkGfm from "remark-gfm";
-import remarkToc from "remark-toc";
 
 import BlogPostBlock from "@/components/BlogPostBlock";
+import MarkdownViewer from "@/components/MarkdownViewer.tsx";
 import * as Routes from "@/routes.js";
 import { Head, usePage } from "@inertiajs/react";
 import { useTranslation } from "react-i18next";
 import type { Article, WithContext } from "schema-dts";
-import type { Pluggable } from "unified";
 
 type Props = PropsWithChildren & {
   blogPost: BlogPost;
   recommendedBlogPosts: BlogPost[];
 };
-
-const rehypePlugins: Pluggable[] = [
-  [rehypeHighlight, { languages: highlightingLanguages }],
-  rehypeSlug,
-];
 
 export default function Show({ blogPost, recommendedBlogPosts }: Props) {
   const { t } = useTranslation();
@@ -35,8 +25,6 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
   const { suffix } = usePage<SharedProps>().props;
 
   const heading = tCommon("tos");
-
-  const remarkPlugins: Pluggable[] = [[remarkToc, { heading }], [remarkGfm]];
 
   const postUrl = Routes.blog_post_url(blogPost.slug!, { suffix });
   const items: BreadcrumbItem[] = [
@@ -76,13 +64,7 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
                 />
               </div>
               <div className="hexlet-basics-content">
-                <Markdown
-                  remarkPlugins={remarkPlugins}
-                  rehypePlugins={rehypePlugins}
-                >
-                  {/* {blogPost.body} */}
-                  {`\n\n## ${heading}\n\n ${blogPost.body}`}
-                </Markdown>
+                <MarkdownViewer>{blogPost.body || ""}</MarkdownViewer>
               </div>
               {i18next.language === "ru" && (
                 <Row className="justify-content-center py-4">

@@ -2,32 +2,18 @@ import * as Routes from "@/routes.js";
 import { Alert, Col, Container, Nav, Row, Tab } from "react-bootstrap";
 
 import Chat from "@/components/Chat.tsx";
+import MarkdownViewer from "@/components/MarkdownViewer.tsx";
 import XssContent from "@/components/XssContent.tsx";
 import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
-import { highlightingLanguages } from "@/lib/utils.ts";
 import LessonLayout from "@/pages/layouts/LessonLayout.tsx";
 import type { BreadcrumbItem } from "@/types/index.ts";
 import { Link, usePage } from "@inertiajs/react";
 import i18next, { t } from "i18next";
-import React, { memo } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
-import Markdown from "react-markdown";
-import rehypeExternalLinks from "rehype-external-links";
-import rehypeHighlight from "rehype-highlight";
-import rehypeRaw from "rehype-raw";
-import remarkGfm from "remark-gfm";
-import type { Pluggable } from "unified";
 import App from "./components/App.tsx";
 import { useAppSelector } from "./slices/index.ts";
 import type { LessonSharedProps } from "./types.ts";
-
-const rehypePlugins: Pluggable[] = [
-  [rehypeHighlight, { languages: highlightingLanguages }],
-  rehypeRaw,
-  [rehypeExternalLinks, { target: "_blank" }],
-];
-
-const remarkPlugins: Pluggable[] = [remarkGfm];
 
 export default function Index() {
   const {
@@ -37,7 +23,7 @@ export default function Index() {
     course,
     lessonMember,
     lesson,
-    auth: { user },
+    // auth: { user },
   } = usePage<LessonSharedProps>().props;
 
   const { t: tCommon } = useTranslation("common");
@@ -117,21 +103,13 @@ export default function Index() {
 
                     <div className="hexlet-basics-content">
                       <h1 className="h2">{`${landingPage.header}: ${lesson.name}`}</h1>
-                      <Markdown
-                        rehypePlugins={rehypePlugins}
-                        remarkPlugins={remarkPlugins}
-                      >
-                        {lesson.theory}
-                      </Markdown>
+                      <MarkdownViewer>{lesson.theory || ""}</MarkdownViewer>
                       <h2 className="h3">
                         {t("languages.lessons.show.instructions")}
                       </h2>
-                      <Markdown
-                        rehypePlugins={rehypePlugins}
-                        remarkPlugins={remarkPlugins}
-                      >
-                        {lesson.instructions}
-                      </Markdown>
+                      <MarkdownViewer>
+                        {lesson.instructions || ""}
+                      </MarkdownViewer>
                     </div>
 
                     {lesson.tips.length > 0 && (
@@ -142,12 +120,7 @@ export default function Index() {
                         <ul>
                           {lesson.tips.map((t) => (
                             <li key={t}>
-                              <Markdown
-                                rehypePlugins={rehypePlugins}
-                                remarkPlugins={remarkPlugins}
-                              >
-                                {t}
-                              </Markdown>
+                              <MarkdownViewer>{t}</MarkdownViewer>
                             </li>
                           ))}
                         </ul>
@@ -178,12 +151,7 @@ export default function Index() {
                         >
                           <summary className="p-2">{v.question}</summary>
                           <div className="px-2 pt-2">
-                            <Markdown
-                              rehypePlugins={rehypePlugins}
-                              remarkPlugins={remarkPlugins}
-                            >
-                              {v.answer}
-                            </Markdown>
+                            <MarkdownViewer>{v.answer}</MarkdownViewer>
                           </div>
                         </details>
                       ))}
