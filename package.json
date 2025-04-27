@@ -90,7 +90,7 @@
     "globals": "^16.0.0",
     "lightningcss": "^1.29.3",
     "npm-check-updates": "^18.0.1",
-    "oxlint": "^0.16.7",
+    "oxlint": "^0.16.8",
     "postcss": "^8.5.3",
     "sass-embedded": "^1.87.0",
     "simple-git-hooks": "^2.13.0",

@@ -1,6 +1,4 @@
 class Web::Account::ProfilesController < Web::Account::ApplicationController
-  before_action :authenticate_user!
-
   def edit
     form = current_user.becomes(User::ProfileForm)
 

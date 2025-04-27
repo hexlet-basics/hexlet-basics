@@ -26,6 +26,13 @@ ru:
         course: 'Курс %{language}'
     admin:
       title: Админка Code-Basics
+      surveys:
+        index:
+          header: Опросы
+        new:
+          header: Новый опрос
+        edit:
+          header: Редактирование опроса
       language_lesson_members:
         index:
           header: Прохождение уроков

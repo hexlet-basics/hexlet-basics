@@ -19,6 +19,7 @@ ru:
           messages: Соообщения (AI)
           language_lesson_members: Прохождение уроков
           blog_posts: Посты в блоге
+          surveys: Опросы
     shared:
       language_menu:
         in_development: В разработке

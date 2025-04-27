@@ -230,26 +230,26 @@ class Aws::AssumeRoleCredentials
 
   # @return [Hash]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/assume_role_credentials.rb#60
+  # source://aws-sdk-core//lib/aws-sdk-core/assume_role_credentials.rb#61
   def assume_role_params; end
 
   # @return [STS::Client]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/assume_role_credentials.rb#57
+  # source://aws-sdk-core//lib/aws-sdk-core/assume_role_credentials.rb#58
   def client; end
 
   private
 
-  # source://aws-sdk-core//lib/aws-sdk-core/assume_role_credentials.rb#76
+  # source://aws-sdk-core//lib/aws-sdk-core/assume_role_credentials.rb#77
   def parse_account_id(resp); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/assume_role_credentials.rb#64
+  # source://aws-sdk-core//lib/aws-sdk-core/assume_role_credentials.rb#65
   def refresh; end
 
   class << self
     # @api private
     #
-    # source://aws-sdk-core//lib/aws-sdk-core/assume_role_credentials.rb#84
+    # source://aws-sdk-core//lib/aws-sdk-core/assume_role_credentials.rb#85
     def assume_role_options; end
   end
 end
@@ -289,27 +289,27 @@ class Aws::AssumeRoleWebIdentityCredentials
 
   # @return [STS::Client]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/assume_role_web_identity_credentials.rb#68
+  # source://aws-sdk-core//lib/aws-sdk-core/assume_role_web_identity_credentials.rb#69
   def client; end
 
   private
 
-  # source://aws-sdk-core//lib/aws-sdk-core/assume_role_web_identity_credentials.rb#94
+  # source://aws-sdk-core//lib/aws-sdk-core/assume_role_web_identity_credentials.rb#95
   def _session_name; end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/assume_role_web_identity_credentials.rb#87
+  # source://aws-sdk-core//lib/aws-sdk-core/assume_role_web_identity_credentials.rb#88
   def _token_from_file(path); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/assume_role_web_identity_credentials.rb#98
+  # source://aws-sdk-core//lib/aws-sdk-core/assume_role_web_identity_credentials.rb#99
   def parse_account_id(resp); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/assume_role_web_identity_credentials.rb#72
+  # source://aws-sdk-core//lib/aws-sdk-core/assume_role_web_identity_credentials.rb#73
   def refresh; end
 
   class << self
     # @api private
     #
-    # source://aws-sdk-core//lib/aws-sdk-core/assume_role_web_identity_credentials.rb#106
+    # source://aws-sdk-core//lib/aws-sdk-core/assume_role_web_identity_credentials.rb#107
     def assume_role_web_identity_options; end
   end
 end
@@ -1604,9 +1604,23 @@ module Aws::CredentialProvider
   # source://aws-sdk-core//lib/aws-sdk-core/credential_provider.rb#10
   def expiration; end
 
+  # Returns UserAgent metrics for credentials.
+  #
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider.rb#14
+  def metrics; end
+
+  # Returns UserAgent metrics for credentials.
+  #
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider.rb#14
+  def metrics=(_arg0); end
+
   # @return [Boolean]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider.rb#13
+  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider.rb#17
   def set?; end
 end
 
@@ -1630,42 +1644,42 @@ class Aws::CredentialProviderChain
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#144
+  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#160
   def assume_role_credentials(options); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#150
+  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#166
   def assume_role_web_identity_credentials(options); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#179
+  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#199
   def assume_role_with_profile(options, profile_name); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#114
+  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#124
   def determine_profile_name(options); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#94
+  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#102
   def env_credentials(_options); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#107
+  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#117
   def envar(keys); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#169
+  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#189
   def instance_profile_credentials(options); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#125
+  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#137
   def process_credentials(options); end
 
   # @api private
@@ -1675,12 +1689,12 @@ class Aws::CredentialProviderChain
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#118
+  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#128
   def shared_credentials(options); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#135
+  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#151
   def sso_credentials(options); end
 
   # @api private
@@ -1690,27 +1704,27 @@ class Aws::CredentialProviderChain
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#71
+  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#73
   def static_profile_assume_role_credentials(options); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#54
+  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#56
   def static_profile_assume_role_web_identity_credentials(options); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#77
+  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#79
   def static_profile_credentials(options); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#85
+  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#89
   def static_profile_process_credentials(options); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#63
+  # source://aws-sdk-core//lib/aws-sdk-core/credential_provider_chain.rb#65
   def static_profile_sso_credentials(options); end
 end
 
@@ -1728,40 +1742,56 @@ class Aws::Credentials
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/credentials.rb#20
+  # source://aws-sdk-core//lib/aws-sdk-core/credentials.rb#21
   def access_key_id; end
 
   # @return [String, nil]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/credentials.rb#29
+  # source://aws-sdk-core//lib/aws-sdk-core/credentials.rb#30
   def account_id; end
 
   # @return [Credentials]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/credentials.rb#32
+  # source://aws-sdk-core//lib/aws-sdk-core/credentials.rb#38
   def credentials; end
 
   # Removing the secret access key from the default inspect string.
   #
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/credentials.rb#47
+  # source://aws-sdk-core//lib/aws-sdk-core/credentials.rb#53
   def inspect; end
+
+  # Returns the credentials source. Used for tracking credentials
+  # related UserAgent metrics.
+  #
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/credentials.rb#35
+  def metrics; end
+
+  # Returns the credentials source. Used for tracking credentials
+  # related UserAgent metrics.
+  #
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/credentials.rb#35
+  def metrics=(_arg0); end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/credentials.rb#23
+  # source://aws-sdk-core//lib/aws-sdk-core/credentials.rb#24
   def secret_access_key; end
 
   # @return [String, nil]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/credentials.rb#26
+  # source://aws-sdk-core//lib/aws-sdk-core/credentials.rb#27
   def session_token; end
 
   # @return [Boolean] Returns `true` if the access key id and secret
   #   access key are both set.
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/credentials.rb#38
+  # source://aws-sdk-core//lib/aws-sdk-core/credentials.rb#44
   def set?; end
 end
 
@@ -2156,12 +2186,12 @@ class Aws::ECSCredentials
   # @return [Integer] The number of times to retry failed attempts to
   #   fetch credentials from the instance metadata service. Defaults to 0.
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#85
+  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#86
   def retries; end
 
   private
 
-  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#173
+  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#174
   def backoff(backoff); end
 
   # Verify that the IP address is a link-local address from ECS or EKS.
@@ -2170,30 +2200,30 @@ class Aws::ECSCredentials
   #
   # @return [Boolean]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#162
+  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#163
   def ecs_or_eks_ip?(ip_address); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#215
+  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#216
   def fetch_authorization_token; end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#223
+  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#224
   def fetch_authorization_token_file(path); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#199
+  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#200
   def get_credentials; end
 
   # @raise [Non200Response]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#249
+  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#250
   def http_get(connection, path); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#109
+  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#110
   def initialize_full_uri(endpoint); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#102
+  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#103
   def initialize_relative_uri(options, path); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#89
+  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#90
   def initialize_uri(options, credential_path, endpoint); end
 
   # loopback? method is available in Ruby 2.5+
@@ -2202,41 +2232,41 @@ class Aws::ECSCredentials
   #
   # @return [Boolean]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#148
+  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#149
   def ip_loopback?(ip_address); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#239
+  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#240
   def open_connection; end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#181
+  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#182
   def refresh; end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#265
+  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#266
   def retry_errors(error_classes, options = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#258
+  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#259
   def set_authorization_token(request); end
 
   # @return [Boolean]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#141
+  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#142
   def valid_ip_address?(ip_address); end
 
   # @raise [InvalidTokenError]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#231
+  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#232
   def validate_authorization_token!(token); end
 
   # Validate that the full URI is using a loopback address if scheme is http.
   #
   # @raise [ArgumentError]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#126
+  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#127
   def validate_full_uri!(full_uri); end
 
   # @raise [ArgumentError]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#119
+  # source://aws-sdk-core//lib/aws-sdk-core/ecs_credentials.rb#120
   def validate_full_uri_scheme!(full_uri); end
 end
 
@@ -3195,7 +3225,7 @@ module Aws::Errors::DynamicErrors
   end
 end
 
-# Rasied when endpoint discovery failed for operations
+# Raised when endpoint discovery failed for operations
 # that requires endpoints from endpoint discovery
 #
 # source://aws-sdk-core//lib/aws-sdk-core/errors.rb#73
@@ -3373,7 +3403,7 @@ class Aws::Errors::MissingCredentialsError < ::RuntimeError
   def initialize(*args); end
 end
 
-# raised when hostLabel member is not provided
+# Raised when hostLabel member is not provided
 # at operation input when endpoint trait is available
 # with 'hostPrefix' requirement
 #
@@ -3654,74 +3684,74 @@ class Aws::InstanceProfileCredentials
   #   from the instance metadata service. Defaults to 0 when resolving from
   #   the default credential chain ({Aws::CredentialProviderChain}).
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#99
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#100
   def retries; end
 
   private
 
   # token is optional - if nil, uses v1 (insecure) flow
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#243
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#244
   def _get_credentials(conn, token); end
 
   # @return [Boolean]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#259
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#260
   def _metadata_disabled?; end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#141
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#142
   def backoff(backoff); end
 
   # @return [Boolean]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#329
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#330
   def empty_credentials?(creds); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#225
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#226
   def fetch_token(conn); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#197
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#198
   def get_credentials; end
 
   # GET request fetch profile and credentials
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#274
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#275
   def http_get(connection, path, token = T.unsafe(nil)); end
 
   # PUT request fetch token with ttl
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#290
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#291
   def http_put(connection, path, ttl); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#263
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#264
   def open_connection; end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#149
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#150
   def refresh; end
 
   # Compute an offset for refresh with jitter
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#334
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#335
   def refresh_offset; end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#131
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#132
   def resolve_disable_v1(options); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#112
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#113
   def resolve_endpoint(options, endpoint_mode); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#103
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#104
   def resolve_endpoint_mode(options); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#309
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#310
   def retry_errors(error_classes, options = T.unsafe(nil), &_block); end
 
   # @return [Boolean]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#255
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#256
   def token_set?; end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#323
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#324
   def warn_expired_credentials; end
 end
 
@@ -3758,25 +3788,25 @@ class Aws::InstanceProfileCredentials::Non200Response < ::RuntimeError; end
 #
 # @api private
 #
-# source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#340
+# source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#341
 class Aws::InstanceProfileCredentials::Token
   # @api private
   # @return [Token] a new instance of Token
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#341
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#342
   def initialize(value, ttl, created_time = T.unsafe(nil)); end
 
   # @api private
   # @return [Boolean]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#350
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#351
   def expired?; end
 
   # [String] token value
   #
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#348
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#349
   def value; end
 end
 
@@ -5344,12 +5374,12 @@ class Aws::Plugins::ClientMetricsPlugin::Handler < ::Seahorse::Client::Handler
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/client_metrics_plugin.rb#203
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/client_metrics_plugin.rb#202
   def _calculate_service_id(context); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/client_metrics_plugin.rb#209
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/client_metrics_plugin.rb#208
   def _fallback_service_id(id); end
 end
 
@@ -6661,30 +6691,30 @@ end
 
 # @api private
 #
-# source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#66
+# source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#74
 class Aws::Plugins::Sign::Bearer
   # @api private
   # @return [Bearer] a new instance of Bearer
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#67
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#75
   def initialize; end
 
   # @api private
   # @raise [ArgumentError]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#84
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#92
   def presign_url(*args); end
 
   # @api private
   # @raise [Errors::MissingBearerTokenError]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#70
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#78
   def sign(context); end
 
   # @api private
   # @raise [ArgumentError]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#88
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#96
   def sign_event(*args); end
 end
 
@@ -6702,27 +6732,32 @@ class Aws::Plugins::Sign::Handler < ::Seahorse::Client::Handler
   # @api private
   # @return [Boolean]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#58
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#66
   def v2_signing?(config); end
+
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#60
+  def with_metrics(credentials, &block); end
 end
 
 # @api private
 #
-# source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#200
+# source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#214
 class Aws::Plugins::Sign::NullSigner
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#205
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#219
   def presign_url(*args); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#202
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#216
   def sign(context); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#208
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#222
   def sign_event(*args); end
 end
 
@@ -6733,50 +6768,60 @@ Aws::Plugins::Sign::SUPPORTED_AUTH_TYPES = T.let(T.unsafe(nil), Array)
 
 # @api private
 #
-# source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#94
+# source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#102
 class Aws::Plugins::Sign::SignatureV4
   # @api private
   # @return [SignatureV4] a new instance of SignatureV4
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#95
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#105
   def initialize(auth_scheme, config, sigv4_overrides = T.unsafe(nil)); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#150
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#168
+  def credentials; end
+
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#160
   def presign_url(*args); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#123
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#133
   def sign(context); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#154
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#164
   def sign_event(*args); end
+
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#103
+  def signer; end
 
   private
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#160
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#174
   def apply_authtype(context, req); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#183
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#197
   def apply_clock_skew(context, req); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#175
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#189
   def reset_signature(req); end
 
   # @api private
   # @return [Boolean]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#169
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/sign.rb#183
   def unsigned_payload?(context, req); end
 end
 
@@ -6992,44 +7037,44 @@ class Aws::Plugins::UserAgent < ::Seahorse::Client::Plugin
     #
     # @api private
     #
-    # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#61
+    # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#81
     def feature(_feature, &block); end
 
     # @api private
     #
-    # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#65
+    # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#85
     def metric(*metrics, &block); end
   end
 end
 
 # @api private
 #
-# source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#75
+# source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#95
 class Aws::Plugins::UserAgent::Handler < ::Seahorse::Client::Handler
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#76
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#96
   def call(context); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#81
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#101
   def set_user_agent(context); end
 end
 
 # @api private
 #
-# source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#85
+# source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#105
 class Aws::Plugins::UserAgent::Handler::UserAgent
   # @api private
   # @return [UserAgent] a new instance of UserAgent
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#86
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#106
   def initialize(context); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#90
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#110
   def to_s; end
 
   private
@@ -7038,41 +7083,41 @@ class Aws::Plugins::UserAgent::Handler::UserAgent
   #
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#119
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#139
   def api_metadata; end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#158
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#178
   def app_id_metadata; end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#152
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#172
   def env_metadata; end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#166
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#186
   def framework_metadata; end
 
   # Used to be RUBY_ENGINE/RUBY_VERSION
   #
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#148
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#168
   def language_metadata; end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#183
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#203
   def metric_metadata; end
 
   # Used to be RUBY_PLATFORM
   #
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#129
+  # source://aws-sdk-core//lib/aws-sdk-core/plugins/user_agent.rb#149
   def os_metadata; end
 end
 
@@ -9334,18 +9379,18 @@ class Aws::SSOCredentials
 
   # @return [SSO::Client]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/sso_credentials.rb#121
+  # source://aws-sdk-core//lib/aws-sdk-core/sso_credentials.rb#123
   def client; end
 
   private
 
-  # source://aws-sdk-core//lib/aws-sdk-core/sso_credentials.rb#125
+  # source://aws-sdk-core//lib/aws-sdk-core/sso_credentials.rb#127
   def read_cached_token; end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/sso_credentials.rb#140
+  # source://aws-sdk-core//lib/aws-sdk-core/sso_credentials.rb#142
   def refresh; end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/sso_credentials.rb#165
+  # source://aws-sdk-core//lib/aws-sdk-core/sso_credentials.rb#167
   def sso_cache_file; end
 end
 
@@ -13308,10 +13353,10 @@ class Aws::SharedConfig
   # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#52
   def initialize(options = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def account_id_endpoint_mode(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def adaptive_retry_wait_to_fill(opts = T.unsafe(nil)); end
 
   # Attempts to assume a role from shared config or shared credentials file.
@@ -13328,7 +13373,7 @@ class Aws::SharedConfig
   # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#130
   def assume_role_web_identity_credentials_from_config(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def ca_bundle(opts = T.unsafe(nil)); end
 
   # @api private
@@ -13351,13 +13396,13 @@ class Aws::SharedConfig
   # @option opts
   # @param opts [Hash]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#175
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#179
   def configured_endpoint(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def correct_clock_skew(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def credential_process(opts = T.unsafe(nil)); end
 
   # Sources static credentials from shared credential/config files.
@@ -13378,34 +13423,34 @@ class Aws::SharedConfig
   # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#13
   def credentials_path; end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def csm_client_id(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def csm_enabled(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def csm_host(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def csm_port(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def defaults_mode(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def disable_request_compression(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def ec2_metadata_service_endpoint(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def ec2_metadata_service_endpoint_mode(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def ec2_metadata_v1_disabled(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def endpoint_discovery_enabled(opts = T.unsafe(nil)); end
 
   # @api private
@@ -13413,7 +13458,7 @@ class Aws::SharedConfig
   # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#69
   def fresh(options = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def ignore_configured_endpoint_urls(opts = T.unsafe(nil)); end
 
   # @api private
@@ -13425,7 +13470,7 @@ class Aws::SharedConfig
   # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#90
   def loadable?(path); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def max_attempts(opts = T.unsafe(nil)); end
 
   # @api private
@@ -13434,37 +13479,37 @@ class Aws::SharedConfig
   # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#19
   def profile_name; end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def region(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def request_checksum_calculation(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def request_min_compression_size_bytes(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def response_checksum_validation(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def retry_mode(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def s3_disable_express_session_auth(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def s3_disable_multiregion_access_points(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def s3_us_east_1_regional_endpoint(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def s3_use_arn_region(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def sdk_ua_app_id(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def sigv4a_signing_region_set(opts = T.unsafe(nil)); end
 
   # Attempts to load from shared config or shared credentials file.
@@ -13473,7 +13518,7 @@ class Aws::SharedConfig
   #
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#149
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#153
   def sso_credentials_from_config(opts = T.unsafe(nil)); end
 
   # Attempts to load from shared config or shared credentials file.
@@ -13482,68 +13527,73 @@ class Aws::SharedConfig
   #
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#161
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#165
   def sso_token_from_config(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def sts_regional_endpoints(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def use_dualstack_endpoint(opts = T.unsafe(nil)); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#195
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#199
   def use_fips_endpoint(opts = T.unsafe(nil)); end
 
   private
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#246
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#250
   def assume_role_from_profile(cfg, profile, opts, chain_config); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#339
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#375
   def assume_role_process_credentials_from_config(profile); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#354
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#348
+  def assume_role_web_identity_credentials_from_config_with_metrics(opts); end
+
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#394
   def credentials_from_config(profile, _opts); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#416
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#461
   def credentials_from_profile(prof_config); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#348
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#388
   def credentials_from_shared(profile, _opts); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#324
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#360
   def credentials_from_source(credential_source, config); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#444
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#490
   def default_shared_config_path(file); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#440
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#486
   def determine_config_path; end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#436
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#482
   def determine_credentials_path; end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#460
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#506
   def determine_profile(options); end
 
   # Get a config value from from shared credential/config files.
@@ -13552,35 +13602,40 @@ class Aws::SharedConfig
   #
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#238
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#242
   def get_config_value(key, opts); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#432
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#478
   def load_config_file; end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#426
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#472
   def load_credentials_file; end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#299
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#323
   def resolve_source_profile(profile, opts = T.unsafe(nil)); end
+
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#354
+  def sso_credentials_from_config_with_metrics(profile); end
 
   # If any of the sso_ profile values are present, attempt to construct
   # SSOCredentials
   #
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#362
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#402
   def sso_credentials_from_profile(cfg, profile); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#467
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#513
   def sso_session(cfg, profile, sso_session_name); end
 
   # If the required sso_ profile values are present, attempt to construct
@@ -13588,13 +13643,18 @@ class Aws::SharedConfig
   #
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#401
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#446
   def sso_token_from_profile(cfg, profile); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#451
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#497
   def validate_profile_exists(profile); end
+
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#530
+  def with_metrics(metrics, &block); end
 
   class << self
     # Add an accessor method (similar to attr_reader) to return a configuration value
@@ -13603,7 +13663,7 @@ class Aws::SharedConfig
     #
     # @api private
     #
-    # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#193
+    # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#197
     def config_reader(*attrs); end
   end
 end
@@ -13653,12 +13713,12 @@ class Aws::SharedCredentials
 
   # @return [Credentials]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_credentials.rb#52
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_credentials.rb#53
   def credentials; end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_credentials.rb#55
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_credentials.rb#56
   def inspect; end
 
   # @deprecated This method is no longer used.
@@ -13667,17 +13727,17 @@ class Aws::SharedCredentials
   # @return [Boolean] Returns `true` if a credential file
   #   exists and has appropriate read permissions at {#path}.
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_credentials.rb#69
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_credentials.rb#70
   def loadable?; end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_credentials.rb#46
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_credentials.rb#47
   def path; end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_credentials.rb#49
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_credentials.rb#50
   def profile_name; end
 end
 
@@ -16762,7 +16822,7 @@ Seahorse::Client::HandlerListEntry::STEPS = T.let(T.unsafe(nil), Hash)
 # source://aws-sdk-core//lib/seahorse/client/http/headers.rb#5
 module Seahorse::Client::Http; end
 
-# Rasied when trying to use an closed connection
+# Raised when trying to use an closed connection
 #
 # source://aws-sdk-core//lib/seahorse/client/networking_error.rb#43
 class Seahorse::Client::Http2ConnectionClosedError < ::StandardError; end

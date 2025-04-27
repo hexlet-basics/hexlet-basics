@@ -31,6 +31,7 @@ class Review < ApplicationRecord
   include AASM
   include ReviewRepository
 
+  # TODO: switch to enum
   enumerize :locale, in: I18n.available_locales
 
   def self.ransackable_attributes(_auth_object = nil)

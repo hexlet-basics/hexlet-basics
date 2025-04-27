@@ -12,269 +12,269 @@ module Bullet
   class << self
     # Returns the value of attribute add_footer.
     #
-    # source://bullet//lib/bullet.rb#44
+    # source://bullet//lib/bullet.rb#47
     def add_footer; end
 
     # Sets the attribute add_footer
     #
     # @param value the value to set the attribute add_footer to.
     #
-    # source://bullet//lib/bullet.rb#44
+    # source://bullet//lib/bullet.rb#47
     def add_footer=(_arg0); end
 
-    # source://bullet//lib/bullet.rb#112
+    # source://bullet//lib/bullet.rb#115
     def add_safelist(options); end
 
-    # source://bullet//lib/bullet.rb#54
+    # source://bullet//lib/bullet.rb#57
     def airbrake=(arg); end
 
-    # source://bullet//lib/bullet.rb#54
+    # source://bullet//lib/bullet.rb#57
     def alert=(arg); end
 
     # Returns the value of attribute always_append_html_body.
     #
-    # source://bullet//lib/bullet.rb#44
+    # source://bullet//lib/bullet.rb#47
     def always_append_html_body; end
 
     # Sets the attribute always_append_html_body
     #
     # @param value the value to set the attribute always_append_html_body to.
     #
-    # source://bullet//lib/bullet.rb#44
+    # source://bullet//lib/bullet.rb#47
     def always_append_html_body=(_arg0); end
 
     # Rails.root might be nil if `railties` is a dependency on a project that does not use Rails
     #
-    # source://bullet//lib/bullet.rb#88
+    # source://bullet//lib/bullet.rb#91
     def app_root; end
 
-    # source://bullet//lib/bullet.rb#54
+    # source://bullet//lib/bullet.rb#57
     def appsignal=(arg); end
 
-    # source://bullet//lib/bullet.rb#54
+    # source://bullet//lib/bullet.rb#57
     def bugsnag=(arg); end
 
-    # source://bullet//lib/bullet.rb#137
+    # source://bullet//lib/bullet.rb#140
     def bullet_logger=(active); end
 
-    # source://bullet//lib/bullet.rb#133
+    # source://bullet//lib/bullet.rb#136
     def clear_safelist; end
 
-    # source://bullet//lib/bullet.rb#54
+    # source://bullet//lib/bullet.rb#57
     def console=(arg); end
 
     # @return [Boolean]
     #
-    # source://bullet//lib/bullet.rb#258
+    # source://bullet//lib/bullet.rb#261
     def console_enabled?; end
 
     # Sets the attribute counter_cache_enable
     #
     # @param value the value to set the attribute counter_cache_enable to.
     #
-    # source://bullet//lib/bullet.rb#37
+    # source://bullet//lib/bullet.rb#40
     def counter_cache_enable=(_arg0); end
 
     # @return [Boolean]
     #
-    # source://bullet//lib/bullet.rb#100
+    # source://bullet//lib/bullet.rb#103
     def counter_cache_enable?; end
 
-    # source://bullet//lib/bullet.rb#54
+    # source://bullet//lib/bullet.rb#57
     def customized_logger=(arg); end
 
-    # source://bullet//lib/bullet.rb#147
+    # source://bullet//lib/bullet.rb#150
     def debug(title, message); end
 
-    # source://bullet//lib/bullet.rb#118
+    # source://bullet//lib/bullet.rb#121
     def delete_safelist(options); end
 
-    # source://bullet//lib/bullet.rb#66
+    # source://bullet//lib/bullet.rb#69
     def enable=(enable); end
 
     # @return [Boolean]
     #
-    # source://bullet//lib/bullet.rb#81
+    # source://bullet//lib/bullet.rb#84
     def enable?; end
 
-    # source://bullet//lib/bullet.rb#66
+    # source://bullet//lib/bullet.rb#69
     def enabled=(enable); end
 
     # @return [Boolean]
     #
-    # source://bullet//lib/bullet.rb#81
+    # source://bullet//lib/bullet.rb#84
     def enabled?; end
 
-    # source://bullet//lib/bullet.rb#172
+    # source://bullet//lib/bullet.rb#175
     def end_request; end
 
-    # source://bullet//lib/bullet.rb#216
+    # source://bullet//lib/bullet.rb#219
     def footer_info; end
 
-    # source://bullet//lib/bullet.rb#202
+    # source://bullet//lib/bullet.rb#205
     def gather_inline_notifications; end
 
-    # source://bullet//lib/bullet.rb#125
+    # source://bullet//lib/bullet.rb#128
     def get_safelist_associations(type, class_name); end
 
-    # source://bullet//lib/bullet.rb#54
+    # source://bullet//lib/bullet.rb#57
     def honeybadger=(arg); end
 
     # @return [Boolean]
     #
-    # source://bullet//lib/bullet.rb#262
+    # source://bullet//lib/bullet.rb#265
     def inject_into_page?; end
 
     # Sets the attribute n_plus_one_query_enable
     #
     # @param value the value to set the attribute n_plus_one_query_enable to.
     #
-    # source://bullet//lib/bullet.rb#37
+    # source://bullet//lib/bullet.rb#40
     def n_plus_one_query_enable=(_arg0); end
 
     # @return [Boolean]
     #
-    # source://bullet//lib/bullet.rb#92
+    # source://bullet//lib/bullet.rb#95
     def n_plus_one_query_enable?; end
 
     # @return [Boolean]
     #
-    # source://bullet//lib/bullet.rb#195
+    # source://bullet//lib/bullet.rb#198
     def notification?; end
 
-    # source://bullet//lib/bullet.rb#191
+    # source://bullet//lib/bullet.rb#194
     def notification_collector; end
 
     # Returns the value of attribute orm_patches_applied.
     #
-    # source://bullet//lib/bullet.rb#44
+    # source://bullet//lib/bullet.rb#47
     def orm_patches_applied; end
 
     # Sets the attribute orm_patches_applied
     #
     # @param value the value to set the attribute orm_patches_applied to.
     #
-    # source://bullet//lib/bullet.rb#44
+    # source://bullet//lib/bullet.rb#47
     def orm_patches_applied=(_arg0); end
 
-    # source://bullet//lib/bullet.rb#208
+    # source://bullet//lib/bullet.rb#211
     def perform_out_of_channel_notifications(env = T.unsafe(nil)); end
 
-    # source://bullet//lib/bullet.rb#238
+    # source://bullet//lib/bullet.rb#241
     def profile; end
 
-    # source://bullet//lib/bullet.rb#54
+    # source://bullet//lib/bullet.rb#57
     def rails_logger=(arg); end
 
-    # source://bullet//lib/bullet.rb#56
+    # source://bullet//lib/bullet.rb#59
     def raise=(should_raise); end
 
-    # source://bullet//lib/bullet.rb#129
+    # source://bullet//lib/bullet.rb#132
     def reset_safelist; end
 
-    # source://bullet//lib/bullet.rb#54
+    # source://bullet//lib/bullet.rb#57
     def rollbar=(arg); end
 
     # Returns the value of attribute safelist.
     #
-    # source://bullet//lib/bullet.rb#43
+    # source://bullet//lib/bullet.rb#46
     def safelist; end
 
-    # source://bullet//lib/bullet.rb#54
+    # source://bullet//lib/bullet.rb#57
     def sentry=(arg); end
 
     # Sets the attribute skip_html_injection
     #
     # @param value the value to set the attribute skip_html_injection to.
     #
-    # source://bullet//lib/bullet.rb#37
+    # source://bullet//lib/bullet.rb#40
     def skip_html_injection=(_arg0); end
 
     # Returns the value of attribute skip_http_headers.
     #
-    # source://bullet//lib/bullet.rb#44
+    # source://bullet//lib/bullet.rb#47
     def skip_http_headers; end
 
     # Sets the attribute skip_http_headers
     #
     # @param value the value to set the attribute skip_http_headers to.
     #
-    # source://bullet//lib/bullet.rb#44
+    # source://bullet//lib/bullet.rb#47
     def skip_http_headers=(_arg0); end
 
     # Returns the value of attribute skip_user_in_notification.
     #
-    # source://bullet//lib/bullet.rb#44
+    # source://bullet//lib/bullet.rb#47
     def skip_user_in_notification; end
 
     # Sets the attribute skip_user_in_notification
     #
     # @param value the value to set the attribute skip_user_in_notification to.
     #
-    # source://bullet//lib/bullet.rb#44
+    # source://bullet//lib/bullet.rb#47
     def skip_user_in_notification=(_arg0); end
 
-    # source://bullet//lib/bullet.rb#54
+    # source://bullet//lib/bullet.rb#57
     def slack=(arg); end
 
-    # source://bullet//lib/bullet.rb#108
+    # source://bullet//lib/bullet.rb#111
     def stacktrace_excludes; end
 
     # Sets the attribute stacktrace_excludes
     #
     # @param value the value to set the attribute stacktrace_excludes to.
     #
-    # source://bullet//lib/bullet.rb#37
+    # source://bullet//lib/bullet.rb#40
     def stacktrace_excludes=(_arg0); end
 
-    # source://bullet//lib/bullet.rb#104
+    # source://bullet//lib/bullet.rb#107
     def stacktrace_includes; end
 
     # Sets the attribute stacktrace_includes
     #
     # @param value the value to set the attribute stacktrace_includes to.
     #
-    # source://bullet//lib/bullet.rb#37
+    # source://bullet//lib/bullet.rb#40
     def stacktrace_includes=(_arg0); end
 
     # @return [Boolean]
     #
-    # source://bullet//lib/bullet.rb#187
+    # source://bullet//lib/bullet.rb#190
     def start?; end
 
-    # source://bullet//lib/bullet.rb#151
+    # source://bullet//lib/bullet.rb#154
     def start_request; end
 
-    # source://bullet//lib/bullet.rb#54
+    # source://bullet//lib/bullet.rb#57
     def terminal_notifier=(arg); end
 
-    # source://bullet//lib/bullet.rb#222
+    # source://bullet//lib/bullet.rb#225
     def text_notifications; end
 
     # Sets the attribute unused_eager_loading_enable
     #
     # @param value the value to set the attribute unused_eager_loading_enable to.
     #
-    # source://bullet//lib/bullet.rb#37
+    # source://bullet//lib/bullet.rb#40
     def unused_eager_loading_enable=(_arg0); end
 
     # @return [Boolean]
     #
-    # source://bullet//lib/bullet.rb#96
+    # source://bullet//lib/bullet.rb#99
     def unused_eager_loading_enable?; end
 
-    # source://bullet//lib/bullet.rb#230
+    # source://bullet//lib/bullet.rb#233
     def warnings; end
 
-    # source://bullet//lib/bullet.rb#54
+    # source://bullet//lib/bullet.rb#57
     def xmpp=(arg); end
 
     private
 
-    # source://bullet//lib/bullet.rb#279
+    # source://bullet//lib/bullet.rb#282
     def build_request_uri(env); end
 
-    # source://bullet//lib/bullet.rb#270
+    # source://bullet//lib/bullet.rb#273
     def for_each_active_notifier_with_notification; end
   end
 end
@@ -289,10 +289,10 @@ module Bullet::ActiveJob
   end
 end
 
-# source://bullet//lib/bullet/active_record80.rb#13
+# source://bullet//lib/bullet/active_record80.rb#14
 module Bullet::ActiveRecord
   class << self
-    # source://bullet//lib/bullet/active_record80.rb#14
+    # source://bullet//lib/bullet/active_record80.rb#15
     def enable; end
   end
 end
@@ -809,76 +809,86 @@ class Bullet::NotificationCollector
   def reset; end
 end
 
-# source://bullet//lib/bullet/rack.rb#4
+# source://bullet//lib/bullet/rack.rb#8
 class Bullet::Rack
   include ::Bullet::Dependency
 
   # @return [Rack] a new instance of Rack
   #
-  # source://bullet//lib/bullet/rack.rb#9
+  # source://bullet//lib/bullet/rack.rb#13
   def initialize(app); end
 
-  # source://bullet//lib/bullet/rack.rb#57
+  # source://bullet//lib/bullet/rack.rb#62
   def append_to_html_body(response_body, content); end
 
-  # source://bullet//lib/bullet/rack.rb#13
+  # source://bullet//lib/bullet/rack.rb#17
   def call(env); end
 
   # fix issue if response's body is a Proc
   #
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/rack.rb#48
+  # source://bullet//lib/bullet/rack.rb#53
   def empty?(response); end
 
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/rack.rb#80
+  # source://bullet//lib/bullet/rack.rb#103
   def file?(headers); end
 
-  # source://bullet//lib/bullet/rack.rb#68
+  # source://bullet//lib/bullet/rack.rb#73
   def footer_note; end
 
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/rack.rb#88
+  # source://bullet//lib/bullet/rack.rb#111
   def html_request?(headers, response); end
 
-  # source://bullet//lib/bullet/rack.rb#92
+  # source://bullet//lib/bullet/rack.rb#115
   def response_body(response); end
 
-  # source://bullet//lib/bullet/rack.rb#72
+  # source://bullet//lib/bullet/rack.rb#77
   def set_header(headers, header_name, header_array); end
+
+  # Simple query string parser
+  #
+  # source://bullet//lib/bullet/rack.rb#94
+  def simple_parse_query_string(query_string); end
 
   # @return [Boolean]
   #
-  # source://bullet//lib/bullet/rack.rb#84
+  # source://bullet//lib/bullet/rack.rb#85
+  def skip_html_injection?(request); end
+
+  # @return [Boolean]
+  #
+  # source://bullet//lib/bullet/rack.rb#107
   def sse?(headers); end
 
   private
 
-  # source://bullet//lib/bullet/rack.rb#102
+  # source://bullet//lib/bullet/rack.rb#125
   def details_attributes; end
 
-  # source://bullet//lib/bullet/rack.rb#121
+  # source://bullet//lib/bullet/rack.rb#144
   def footer_console_message; end
 
-  # source://bullet//lib/bullet/rack.rb#115
+  # source://bullet//lib/bullet/rack.rb#138
   def footer_content_attributes; end
 
-  # source://bullet//lib/bullet/rack.rb#109
+  # source://bullet//lib/bullet/rack.rb#132
   def summary_attributes; end
 
-  # source://bullet//lib/bullet/rack.rb#138
+  # source://bullet//lib/bullet/rack.rb#161
   def with_security_policy_nonce(headers); end
 
   # Make footer work for XHR requests by appending data to the footer
   #
-  # source://bullet//lib/bullet/rack.rb#128
+  # source://bullet//lib/bullet/rack.rb#151
   def xhr_script(nonce = T.unsafe(nil)); end
 end
 
-# source://bullet//lib/bullet/rack.rb#7
+# source://bullet//lib/bullet/rack.rb#11
 Bullet::Rack::NONCE_MATCHER = T.let(T.unsafe(nil), Regexp)
 
 # source://bullet//lib/bullet/registry.rb#4

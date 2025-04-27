@@ -1,0 +1,69 @@
+# == Schema Information
+#
+# Table name: survey_items
+#
+#  id         :integer          not null, primary key
+#  order      :integer          not null
+#  state      :string
+#  value      :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  survey_id  :integer          not null
+#
+# Indexes
+#
+#  index_survey_items_on_survey_id  (survey_id)
+#
+# Foreign Keys
+#
+#  survey_id  (survey_id => surveys.id)
+#
+
+DEFAULTS: &DEFAULTS
+  order: 100
+
+goal-item1:
+  <<: *DEFAULTS
+  survey: goal
+  value: Switch careers
+
+goal-item2:
+  <<: *DEFAULTS
+  survey: goal
+  value: Learn a skill for my job
+
+goal-item3:
+  <<: *DEFAULTS
+  survey: goal
+  value: Build a project
+
+goal-item4:
+  <<: *DEFAULTS
+  survey: goal
+  value: Learn for school
+
+goal-item5:
+  <<: *DEFAULTS
+  survey: goal
+  value: Learn for fun
+
+goal-item6:
+  <<: *DEFAULTS
+  order: 110
+  survey: goal
+  value: Not sure yet
+
+coding-experience-item1:
+  <<: *DEFAULTS
+  survey: coding-experience
+  value: I've never coded, or I only know the basics.
+
+coding-experience-item2:
+  <<: *DEFAULTS
+  survey: coding-experience
+  value: I've created some projects with code.
+
+coding-experience-item3:
+  <<: *DEFAULTS
+  survey: coding-experience
+  value: I have professional experience writing code.

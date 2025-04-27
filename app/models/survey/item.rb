@@ -1,0 +1,32 @@
+# == Schema Information
+#
+# Table name: survey_items
+#
+#  id         :integer          not null, primary key
+#  order      :integer          not null
+#  state      :string
+#  value      :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  survey_id  :integer          not null
+#
+# Indexes
+#
+#  index_survey_items_on_survey_id  (survey_id)
+#
+# Foreign Keys
+#
+#  survey_id  (survey_id => surveys.id)
+#
+class Survey::Item < ApplicationRecord
+  include AASM
+
+  belongs_to :survey
+
+  enum :state, { active: "active", archived: "archived" }
+
+  aasm :state, enum: true do
+    state :active, initial: true
+    state :archived
+  end
+end

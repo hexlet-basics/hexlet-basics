@@ -13,13 +13,18 @@ import type { LessonSharedProps } from "../types.ts";
 
 export default function ControlBox() {
   const {
+    props: sharedProps,
+    url,
+  } = usePage<LessonSharedProps>();
+
+  const {
     lesson,
     course,
     prevLesson,
     landingPage,
     nextLesson,
     auth: { user },
-  } = usePage<LessonSharedProps>().props;
+  } = sharedProps
 
   const { t } = useTranslation();
   const { t: tCommon } = useTranslation("common");
@@ -103,7 +108,7 @@ export default function ControlBox() {
             size="sm"
             className="me-3"
             onClick={confirmResetting}
-            // title={t('resetCode')}
+          // title={t('resetCode')}
           >
             <span className="bi bi-arrow-repeat" />
           </Button>
@@ -129,7 +134,7 @@ export default function ControlBox() {
         {user.guest && (
           <Link
             className={nextButtonClasses}
-            href={Routes.new_user_path({ demo: true })}
+            href={Routes.new_user_path({ demo: true, from: url })}
           >
             {t("languages.lessons.show.next")}
           </Link>

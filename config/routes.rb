@@ -52,6 +52,12 @@ Rails.application.routes.draw do
 
       resource :my, only: [ :show ]
 
+      resources :surveys do
+        scope module: :surveys do
+          resources :answers, only: [ :create ]
+        end
+      end
+
       resources :pages, only: %i[show]
       resources :blog_posts, only: %i[index show]
       resources :reviews, only: %i[index]
@@ -82,6 +88,10 @@ Rails.application.routes.draw do
       namespace :admin do
         root "home#index"
 
+        namespace :analytics do
+          resources :users, only: [ :index ]
+        end
+
         namespace :api do
           resources :users do
             collection do
@@ -91,6 +101,7 @@ Rails.application.routes.draw do
         end
 
         resources :reviews
+        resources :surveys
         resources :messages, only: [ :index ]
         resources :language_lesson_members, only: [ :index ]
         resources :language_categories

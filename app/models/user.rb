@@ -51,6 +51,7 @@ class User < ApplicationRecord
   has_many :accounts, dependent: :destroy
   has_many :reviews, dependent: :destroy
   has_many :blog_posts, dependent: :destroy
+  has_many :survey_answers, class_name: "Survey::Answer"
 
   aasm :state do
     state :active, initial: true

@@ -1,7 +1,10 @@
+import * as Routes from "@/routes.js";
 import Root from "@/components/Root.tsx";
-import type { ResolvedComponent } from "@/types";
+import type { ResolvedComponent, RootProps } from "@/types";
 import { createInertiaApp } from "@inertiajs/react";
 import * as Sentry from "@sentry/react";
+import dayjs from "dayjs";
+import i18next from "i18next";
 import { createRoot, hydrateRoot } from "react-dom/client";
 
 if (import.meta.env.DEV) {
@@ -41,6 +44,13 @@ createInertiaApp({
 
   setup({ el, App, props }) {
     if (el) {
+      const typedProps = props as RootProps;
+      const { locale, suffix } = typedProps.initialPage.props;
+
+      i18next.changeLanguage(locale);
+      dayjs.locale(locale);
+      Routes.configure({ default_url_options: { suffix } });
+
       const vdomFn = () => {
         return <App {...props} />;
       };

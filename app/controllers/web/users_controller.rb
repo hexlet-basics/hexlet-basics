@@ -63,7 +63,7 @@ class Web::UsersController < Web::ApplicationController
       end
 
       f(:success)
-      redirect_to root_url
+      redirect_to params[:from].presence || root_path
     else
       f(:error)
       redirect_to_inertia new_user_url, user

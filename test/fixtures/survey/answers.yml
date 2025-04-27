@@ -1,0 +1,5 @@
+just_signed_up__goal:
+  state: requested
+  user: just_signed_up
+  survey: goal
+  

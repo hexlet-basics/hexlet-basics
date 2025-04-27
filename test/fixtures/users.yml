@@ -38,6 +38,9 @@ full:
   last_name: Smith
   reset_password_token: <%= SecureHelper.generate_token %>
 
+just_signed_up:
+  <<: *DEFAULTS
+
 one:
   <<: *DEFAULTS
 

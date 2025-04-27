@@ -38,7 +38,12 @@ module EventConcern
       return
     end
 
-    event_store.publish(event, stream_name: "user-#{user.id}")
+    event_store.with_metadata(user_id: user.id) do
+      event_store.publish(
+        event,
+        stream_name: "user-#{user.id}",
+      )
+    end
   end
 
   def event_store

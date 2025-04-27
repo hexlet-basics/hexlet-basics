@@ -97,6 +97,7 @@ export function XInput({ name, model, as, ...props }: XFormControlProps) {
 
   const errors = [error ?? []].flat();
   // console.log(name, form.errors, error)
+  // console.log(name, model, errors, form)
 
   // console.log(name, model, inputName)
   const path = `attributes.${form.model}.${name}`;
@@ -312,10 +313,13 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
   source,
   valueField,
   labelField,
-  type,
+  // type,
 }: XSelectProps<T, K>) {
   const { t: tAr } = useTranslation("activerecord");
   const { t: tAm } = useTranslation("activemodel");
+
+  const [filteredItems, setFilteredItems] = useState(items);
+  const [selected, setSelected] = useState<T | null | undefined>(null);
 
   const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
     name,
@@ -325,9 +329,8 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
 
   // В ошибках название модели, а не id (хрен знает почему)
   const realError = has ? form.errors[has] : error;
-  console.log(name, model, form.errors, error);
+  // console.log(name, model, form.errors, error);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (has) {
       const defaultItem = get(form.data, [form.model!, has]);
@@ -335,7 +338,7 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
       // console.log(name, form.model, form.data, has)
     } else {
       const defaultItem = first(
-        filteredItems.filter((i) => i[valueField] === value),
+        filteredItems.filter((item) => item[valueField] === value),
       );
       setSelected(defaultItem);
     }
@@ -350,9 +353,6 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
   const controlClasses = cn({
     "is-invalid": errors.length > 0,
   });
-
-  const [filteredItems, setFilteredItems] = useState(items);
-  const [selected, setSelected] = useState<T | null | undefined>(null);
 
   const handleChange = (e: AutoCompleteChangeEvent) => {
     setValue(e.value[valueField]);
@@ -468,7 +468,7 @@ export const XDynamicInputs = ({
   });
 
   return (
-    <fieldset>
+    <fieldset className="border p-5 mb-5 rounded">
       <legend>{label}</legend>
       <div className="mb-4">
         {/* <div style={ { display: 'flex' } }> */}
@@ -480,7 +480,7 @@ export const XDynamicInputs = ({
           {paths.map((path, i) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
             <NestedFields key={i} model={path}>
-              <Form.Group className="mb-4">
+              <Form.Group className="mb-5 ps-3 border-start">
                 <div>{children}</div>
                 {/* <Button */}
                 {/*   variant="outline-primary" */}

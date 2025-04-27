@@ -1,6 +1,10 @@
 ru:
   activerecord:
     attributes:
+      survey:
+        question: Вопрос
+        description: Описание
+        slug: Слаг
       language_landing_page:
         language_id: Курс
         meta_title: Meta Title

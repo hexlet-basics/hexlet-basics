@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_12_004351) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_27_005025) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -488,6 +488,40 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_12_004351) do
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
   end
 
+  create_table "survey_answers", force: :cascade do |t|
+    t.integer "survey_id", null: false
+    t.integer "survey_item_id"
+    t.integer "user_id", null: false
+    t.string "state"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["survey_id", "user_id"], name: "index_survey_answers_on_survey_id_and_user_id", unique: true
+    t.index ["survey_id"], name: "index_survey_answers_on_survey_id"
+    t.index ["survey_item_id"], name: "index_survey_answers_on_survey_item_id"
+    t.index ["user_id"], name: "index_survey_answers_on_user_id"
+  end
+
+  create_table "survey_items", force: :cascade do |t|
+    t.integer "survey_id", null: false
+    t.integer "order", null: false
+    t.string "value"
+    t.string "state"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["survey_id"], name: "index_survey_items_on_survey_id"
+  end
+
+  create_table "surveys", force: :cascade do |t|
+    t.string "question"
+    t.string "state"
+    t.string "slug"
+    t.string "locale"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug", "locale"], name: "index_surveys_on_slug_and_locale", unique: true
+  end
+
   create_table "uploads", force: :cascade do |t|
     t.string "language_name", limit: 255
     t.datetime "inserted_at", precision: nil, null: false
@@ -575,5 +609,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_12_004351) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "survey_answers", "survey_items"
+  add_foreign_key "survey_answers", "surveys"
+  add_foreign_key "survey_answers", "users"
+  add_foreign_key "survey_items", "surveys"
   add_foreign_key "user_accounts", "users"
 end

@@ -2453,18 +2453,21 @@ class Faraday::Response::Logger < ::Faraday::Middleware
   # @return [Logger] a new instance of Logger
   # @yield [@formatter]
   #
-  # source://faraday//lib/faraday/response/logger.rb#13
+  # source://faraday//lib/faraday/response/logger.rb#15
   def initialize(app, logger = T.unsafe(nil), options = T.unsafe(nil)); end
 
-  # source://faraday//lib/faraday/response/logger.rb#21
+  # source://faraday//lib/faraday/response/logger.rb#23
   def call(env); end
 
-  # source://faraday//lib/faraday/response/logger.rb#26
+  # source://faraday//lib/faraday/response/logger.rb#28
   def on_complete(env); end
 
-  # source://faraday//lib/faraday/response/logger.rb#30
+  # source://faraday//lib/faraday/response/logger.rb#32
   def on_error(exc); end
 end
+
+# source://faraday//lib/faraday/response/logger.rb#13
+Faraday::Response::Logger::DEFAULT_OPTIONS = T.let(T.unsafe(nil), Hash)
 
 # RaiseError is a Faraday middleware that raises exceptions on common HTTP
 # client or server error responses.

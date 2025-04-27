@@ -111,6 +111,15 @@ export default function AdminLayout({ children, header }: Props) {
                   {tLayouts("web.admin.application.language_lesson_members")}
                 </Link>
               </Nav.Item>
+              <Nav.Item>
+                <Link
+                  className="nav-link fw-medium link-body-emphasis"
+                  href={Routes.admin_surveys_path()}
+                >
+                  <i className="bi bi-patch-question me-2" />
+                  {tLayouts("web.admin.application.surveys")}
+                </Link>
+              </Nav.Item>
               <hr />
               <Nav.Item>
                 <Link

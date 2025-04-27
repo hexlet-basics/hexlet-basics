@@ -1,0 +1,30 @@
+# == Schema Information
+#
+# Table name: surveys
+#
+#  id          :integer          not null, primary key
+#  description :string
+#  locale      :string
+#  question    :string
+#  slug        :string
+#  state       :string
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+# Indexes
+#
+#  index_surveys_on_slug_and_locale  (slug,locale) UNIQUE
+#
+DEFAULTS: &DEFAULTS
+  slug: $LABEL
+  locale: ru
+
+goal:
+  <<: *DEFAULTS
+  question: Какую задачу вы решаете?
+  description: В зависимости от цели, мы сможем подобрать вам персонализированный трек обучения
+
+coding-experience:
+  <<: *DEFAULTS
+  question: Какой у вас опыт программирования?
+  # description:

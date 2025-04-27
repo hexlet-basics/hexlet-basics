@@ -804,6 +804,7 @@ class SolidQueue::ClaimedExecution < ::SolidQueue::Execution
   def failed_with(error); end
   def perform; end
   def release; end
+  def unblock_next_job; end
 
   private
 
@@ -2049,9 +2050,9 @@ class SolidQueue::Processes::Base
   include ::SolidQueue::Processes::Callbacks
   include ::ActiveSupport::Callbacks
   include ::SolidQueue::Processes::Procline
+  include ::SolidQueue::Processes::Interruptible
   include ::SolidQueue::Processes::Registrable
   include ::SolidQueue::AppExecutor
-  include ::SolidQueue::Processes::Interruptible
   extend ::ActiveModel::Callbacks
   extend ::ActiveSupport::Callbacks::ClassMethods
   extend ::ActiveSupport::DescendantsTracker
@@ -2176,54 +2177,28 @@ end
 
 # source://solid_queue//lib/solid_queue/processes/interruptible.rb#4
 module SolidQueue::Processes::Interruptible
-  include ::SolidQueue::AppExecutor
-
-  # source://solid_queue//lib/solid_queue/processes/interruptible.rb#7
+  # source://solid_queue//lib/solid_queue/processes/interruptible.rb#5
   def wake_up; end
 
   private
 
-  # source://solid_queue//lib/solid_queue/processes/interruptible.rb#13
-  def interrupt; end
-
-  # Sleeps for 'time'.  Can be interrupted asynchronously and return early via wake_up.
-  #
-  # @param time [Numeric, Duration] the time to sleep. 0 returns immediately.
-  #
-  # source://solid_queue//lib/solid_queue/processes/interruptible.rb#19
-  def interruptible_sleep(time); end
-
-  # source://solid_queue//lib/solid_queue/processes/interruptible.rb#33
-  def queue; end
-end
-
-# The original implementation of Interruptible that works
-# with Ruby 3.1 and earlier
-#
-# source://solid_queue//lib/solid_queue/processes/og_interruptible.rb#6
-module SolidQueue::Processes::OgInterruptible
-  # source://solid_queue//lib/solid_queue/processes/og_interruptible.rb#7
-  def wake_up; end
-
-  private
-
-  # source://solid_queue//lib/solid_queue/processes/og_interruptible.rb#34
+  # source://solid_queue//lib/solid_queue/processes/interruptible.rb#32
   def create_self_pipe; end
 
-  # source://solid_queue//lib/solid_queue/processes/og_interruptible.rb#14
+  # source://solid_queue//lib/solid_queue/processes/interruptible.rb#12
   def interrupt; end
 
-  # source://solid_queue//lib/solid_queue/processes/og_interruptible.rb#22
+  # source://solid_queue//lib/solid_queue/processes/interruptible.rb#20
   def interruptible_sleep(time); end
 
   # Self-pipe for signal-handling (http://cr.yp.to/docs/selfpipe.html)
   #
-  # source://solid_queue//lib/solid_queue/processes/og_interruptible.rb#30
+  # source://solid_queue//lib/solid_queue/processes/interruptible.rb#28
   def self_pipe; end
 end
 
-# source://solid_queue//lib/solid_queue/processes/og_interruptible.rb#12
-SolidQueue::Processes::OgInterruptible::SELF_PIPE_BLOCK_SIZE = T.let(T.unsafe(nil), Integer)
+# source://solid_queue//lib/solid_queue/processes/interruptible.rb#10
+SolidQueue::Processes::Interruptible::SELF_PIPE_BLOCK_SIZE = T.let(T.unsafe(nil), Integer)
 
 # source://solid_queue//lib/solid_queue/processes/poller.rb#4
 class SolidQueue::Processes::Poller < ::SolidQueue::Processes::Base
