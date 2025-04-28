@@ -1,11 +1,9 @@
-import * as Routes from "@/routes.js";
 import Root from "@/components/Root.tsx";
-import type { ResolvedComponent, RootProps } from "@/types";
+import type { ResolvedComponent } from "@/types";
 import { createInertiaApp } from "@inertiajs/react";
 import * as Sentry from "@sentry/react";
-import dayjs from "dayjs";
-import i18next from "i18next";
 import { createRoot, hydrateRoot } from "react-dom/client";
+import "../init.ts";
 
 if (import.meta.env.DEV) {
   localStorage.debug = "app:*";
@@ -44,13 +42,6 @@ createInertiaApp({
 
   setup({ el, App, props }) {
     if (el) {
-      const typedProps = props as RootProps;
-      const { locale, suffix } = typedProps.initialPage.props;
-
-      i18next.changeLanguage(locale);
-      dayjs.locale(locale);
-      Routes.configure({ default_url_options: { suffix } });
-
       const vdomFn = () => {
         return <App {...props} />;
       };
@@ -72,8 +63,8 @@ createInertiaApp({
     } else {
       console.error(
         "Missing root element.\n\n" +
-          "If you see this error, it probably means you load Inertia.js on non-Inertia pages.\n" +
-          'Consider moving <%= vite_typescript_tag "inertia" %> to the Inertia-specific layout instead.',
+        "If you see this error, it probably means you load Inertia.js on non-Inertia pages.\n" +
+        'Consider moving <%= vite_typescript_tag "inertia" %> to the Inertia-specific layout instead.',
       );
     }
   },

@@ -44,6 +44,8 @@ class Web::ApplicationController < ApplicationController
 
   before_action do
     gon.current_user = UserResource.new(current_user)
+    gon.locale = I18n.locale
+    gon.suffix = I18n.locale == :en ? nil : I18n.locale
   end
 
   private
