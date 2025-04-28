@@ -5,7 +5,7 @@ class Web::Admin::SurveysController < Web::Admin::ApplicationController
     pagy, records = pagy(search.result)
 
     render inertia: true, props: {
-      surveys: SurveyResource.new(records),
+      surveys: SurveyCrudResource.new(records),
       grid: GridResource.new(grid_params(pagy))
     }
   end
@@ -22,7 +22,8 @@ class Web::Admin::SurveysController < Web::Admin::ApplicationController
     survey = Admin::SurveyForm.find(params[:id])
 
     render inertia: true, props: {
-      surveyDto: SurveyCrudResource.new(survey)
+      surveyDto: SurveyCrudResource.new(survey),
+      surveysItems: Survey::ItemCrudResource.new(Survey::Item.all)
     }
   end
 

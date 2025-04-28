@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_28_133219) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_28_205159) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -522,6 +522,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_28_133219) do
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "parent_survey_item_id"
+    t.bigint "parent_survey_id"
+    t.index ["parent_survey_id"], name: "index_surveys_on_parent_survey_id"
+    t.index ["parent_survey_item_id"], name: "index_surveys_on_parent_survey_item_id"
     t.index ["slug", "locale"], name: "index_surveys_on_slug_and_locale", unique: true
   end
 
@@ -625,5 +629,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_28_133219) do
   add_foreign_key "survey_answers", "surveys"
   add_foreign_key "survey_answers", "users"
   add_foreign_key "survey_items", "surveys"
+  add_foreign_key "surveys", "survey_items", column: "parent_survey_item_id"
+  add_foreign_key "surveys", "surveys", column: "parent_survey_id"
   add_foreign_key "user_accounts", "users"
 end

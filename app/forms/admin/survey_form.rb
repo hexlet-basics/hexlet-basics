@@ -5,6 +5,7 @@ class Admin::SurveyForm < Survey
     :description,
     :slug,
     :state,
+    :parent_survey_item_id,
     items_attributes: [ :id, :value, :state, :order, :_destroy ]
 
   accepts_nested_attributes_for :items, allow_destroy: true

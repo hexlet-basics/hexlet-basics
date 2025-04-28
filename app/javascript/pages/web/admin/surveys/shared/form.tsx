@@ -9,16 +9,18 @@ import {
 import { Col, Row } from "react-bootstrap";
 import { type HTTPVerb, Submit } from "use-inertia-form";
 
-import { SurveyCrud } from "@/types";
+import { SurveyCrud, SurveyItem, SurveyItemCrud } from "@/types";
 
 type Props = {
   data: SurveyCrud;
+  surveysItems: SurveyItemCrud[]
   url: string;
   method?: HTTPVerb;
 };
 
-export default function Form({ data, url, method }: Props) {
+export default function Form({ data, url, method, surveysItems }: Props) {
   const { t } = useTranslation();
+  console.log(surveysItems)
   const { t: tHelpers } = useTranslation("helpers");
 
   return (
@@ -28,6 +30,7 @@ export default function Form({ data, url, method }: Props) {
           {/* <XStateEvent fieldName="state" /> */}
           <XInput name="question" />
           <XInput name="slug" />
+          <XSelect name="parent_survey_item_id" items={surveysItems} valueField="id" labelField="value_for_select" />
           <XInput name="description" as="textarea" style={{ height: "200px" }} />
 
           <XDynamicInputs

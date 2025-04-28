@@ -16031,7 +16031,7 @@ class Seahorse::Client::Base
     # @param options [Hash] a customizable set of options
     # @return [Class<Client::Base>]
     #
-    # source://aws-sdk-core//lib/seahorse/client/base.rb#187
+    # source://aws-sdk-core//lib/seahorse/client/base.rb#185
     def define(options = T.unsafe(nil)); end
 
     # @option options
@@ -16039,7 +16039,7 @@ class Seahorse::Client::Base
     # @param options [Hash] a customizable set of options
     # @return [Class<Client::Base>]
     #
-    # source://aws-sdk-core//lib/seahorse/client/base.rb#187
+    # source://aws-sdk-core//lib/seahorse/client/base.rb#185
     def extend(options = T.unsafe(nil)); end
 
     # source://aws-sdk-core//lib/seahorse/client/base.rb#97
@@ -16084,18 +16084,15 @@ class Seahorse::Client::Base
 
     private
 
-    # source://aws-sdk-core//lib/seahorse/client/base.rb#215
+    # source://aws-sdk-core//lib/seahorse/client/base.rb#201
     def before_initialize(plugins, options); end
 
-    # source://aws-sdk-core//lib/seahorse/client/base.rb#211
+    # source://aws-sdk-core//lib/seahorse/client/base.rb#197
     def build_plugins(plugins); end
-
-    # source://aws-sdk-core//lib/seahorse/client/base.rb#199
-    def define_operation_methods; end
 
     # @private
     #
-    # source://aws-sdk-core//lib/seahorse/client/base.rb#231
+    # source://aws-sdk-core//lib/seahorse/client/base.rb#217
     def inherited(subclass); end
   end
 end

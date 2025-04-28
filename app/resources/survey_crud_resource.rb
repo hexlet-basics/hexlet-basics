@@ -7,9 +7,14 @@ class SurveyCrudResource < ApplicationResource
   # has_one :language
   has_many :items, resource: Survey::ItemResource
 
-  attributes :id, :state, :question, :description, :slug
+  attributes :id, :state, :question, :description, :slug, :parent_survey_item_id, :parent_survey_id
 
   typelize :state, nullabe: false
+
+  typelize :string, nullable: true
+  attribute :parent_survey_item_value do |obj|
+    obj.parent_survey_item&.value
+  end
 
   typelize_meta meta: "{ item_states: Record<string, unknown>[]}"
   meta do
