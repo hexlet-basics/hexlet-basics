@@ -20,6 +20,7 @@ ru:
           language_lesson_members: Прохождение уроков
           blog_posts: Посты в блоге
           surveys: Опросы
+          surveys_analytics: Аналитика опросов
     shared:
       language_menu:
         in_development: В разработке

@@ -10,7 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_27_005025) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_28_133219) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_catalog.plpgsql"
+
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -347,21 +350,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_27_005025) do
   end
 
   create_table "solid_cable_messages", force: :cascade do |t|
-    t.binary "channel", limit: 1024, null: false
-    t.binary "payload", limit: 536870912, null: false
+    t.binary "channel", null: false
+    t.binary "payload", null: false
     t.datetime "created_at", null: false
-    t.integer "channel_hash", limit: 8, null: false
+    t.bigint "channel_hash", null: false
     t.index ["channel"], name: "index_solid_cable_messages_on_channel"
     t.index ["channel_hash"], name: "index_solid_cable_messages_on_channel_hash"
     t.index ["created_at"], name: "index_solid_cable_messages_on_created_at"
   end
 
   create_table "solid_cache_entries", force: :cascade do |t|
-    t.binary "key", limit: 1024, null: false
-    t.binary "value", limit: 536870912, null: false
+    t.binary "key", null: false
+    t.binary "value", null: false
     t.datetime "created_at", null: false
-    t.integer "key_hash", limit: 8, null: false
-    t.integer "byte_size", limit: 4, null: false
+    t.bigint "key_hash", null: false
+    t.integer "byte_size", null: false
     t.index ["byte_size"], name: "index_solid_cache_entries_on_byte_size"
     t.index ["key_hash", "byte_size"], name: "index_solid_cache_entries_on_key_hash_and_byte_size"
     t.index ["key_hash"], name: "index_solid_cache_entries_on_key_hash", unique: true
@@ -536,6 +539,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_27_005025) do
     t.datetime "created_at", null: false
   end
 
+  create_table "user_survey_pivots", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "coding_experience_item_id"
+    t.integer "goal_item_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["coding_experience_item_id"], name: "index_user_survey_pivots_on_coding_experience_item_id"
+    t.index ["goal_item_id"], name: "index_user_survey_pivots_on_goal_item_id"
+    t.index ["user_id"], name: "index_user_survey_pivots_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "first_name", limit: 255
     t.string "last_name", limit: 255
@@ -584,8 +598,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_27_005025) do
   add_foreign_key "language_members", "languages"
   add_foreign_key "language_members", "users"
   add_foreign_key "language_module_descriptions", "language_modules", column: "module_id"
-  add_foreign_key "language_module_descriptions", "language_modules", column: "module_id"
-  add_foreign_key "language_module_descriptions", "languages"
   add_foreign_key "language_module_descriptions", "languages"
   add_foreign_key "language_module_version_infos", "language_module_versions", column: "version_id"
   add_foreign_key "language_module_version_infos", "language_versions"

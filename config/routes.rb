@@ -88,8 +88,10 @@ Rails.application.routes.draw do
       namespace :admin do
         root "home#index"
 
-        namespace :analytics do
-          resources :users, only: [ :index ]
+        resources :analytics do
+          collection do
+            get :surveys
+          end
         end
 
         namespace :api do

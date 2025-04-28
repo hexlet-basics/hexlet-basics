@@ -2,7 +2,7 @@
 #
 # Table name: survey_items
 #
-#  id         :integer          not null, primary key
+#  id         :bigint           not null, primary key
 #  order      :integer          not null
 #  state      :string
 #  value      :string
@@ -16,7 +16,7 @@
 #
 # Foreign Keys
 #
-#  survey_id  (survey_id => surveys.id)
+#  fk_rails_...  (survey_id => surveys.id)
 #
 FactoryBot.define do
   factory "survey/item" do

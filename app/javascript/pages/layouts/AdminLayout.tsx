@@ -120,7 +120,9 @@ export default function AdminLayout({ children, header }: Props) {
                   {tLayouts("web.admin.application.surveys")}
                 </Link>
               </Nav.Item>
+
               <hr />
+
               <Nav.Item>
                 <Link
                   className="nav-link fw-medium link-body-emphasis"
@@ -128,6 +130,18 @@ export default function AdminLayout({ children, header }: Props) {
                 >
                   <i className="bi bi-people me-2" />
                   {tLayouts("web.admin.application.users")}
+                </Link>
+              </Nav.Item>
+
+              <hr />
+
+              <Nav.Item>
+                <Link
+                  className="nav-link fw-medium link-body-emphasis"
+                  href={Routes.surveys_admin_analytics_path()}
+                >
+                  <i className="bi bi-people me-2" />
+                  {tLayouts("web.admin.application.surveys_analytics")}
                 </Link>
               </Nav.Item>
             </Nav>

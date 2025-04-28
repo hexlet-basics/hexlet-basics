@@ -2,7 +2,7 @@
 #
 # Table name: language_landing_pages
 #
-#  id                   :integer          not null, primary key
+#  id                   :bigint           not null, primary key
 #  description          :string
 #  footer               :boolean
 #  footer_name          :string
@@ -31,8 +31,8 @@
 #
 # Foreign Keys
 #
-#  language_category_id  (language_category_id => language_categories.id)
-#  language_id           (language_id => languages.id)
+#  fk_rails_...  (language_category_id => language_categories.id)
+#  fk_rails_...  (language_id => languages.id)
 #
 FactoryBot.define do
   factory :language_landing_page, class: "Language::LandingPage" do

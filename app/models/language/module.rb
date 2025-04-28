@@ -4,7 +4,7 @@
 #
 # Table name: language_modules
 #
-#  id          :integer          not null, primary key
+#  id          :bigint           not null, primary key
 #  order       :integer
 #  slug        :string(255)
 #  state       :string(255)
@@ -20,8 +20,8 @@
 #
 # Foreign Keys
 #
-#  language_id  (language_id => languages.id)
-#  upload_id    (upload_id => uploads.id)
+#  fk_rails_...  (language_id => languages.id)
+#  fk_rails_...  (upload_id => uploads.id)
 #
 class Language::Module < ApplicationRecord
   belongs_to :language

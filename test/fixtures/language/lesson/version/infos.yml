@@ -2,7 +2,7 @@
 #
 # Table name: language_lesson_version_infos
 #
-#  id                  :integer          not null, primary key
+#  id                  :bigint           not null, primary key
 #  definitions         :string
 #  description         :string
 #  instructions        :string
@@ -25,10 +25,10 @@
 #
 # Foreign Keys
 #
-#  language_id          (language_id => languages.id)
-#  language_lesson_id   (language_lesson_id => language_lessons.id)
-#  language_version_id  (language_version_id => language_versions.id)
-#  version_id           (version_id => language_lesson_versions.id)
+#  fk_rails_...  (language_id => languages.id)
+#  fk_rails_...  (language_lesson_id => language_lessons.id)
+#  fk_rails_...  (language_version_id => language_versions.id)
+#  fk_rails_...  (version_id => language_lesson_versions.id)
 #
 DEFAULTS: &DEFAULTS
   theory: |

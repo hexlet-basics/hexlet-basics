@@ -1,5 +1,5 @@
-vite: bin/vite dev
-web: bin/rails s -p 3100
-job: bin/jobs
-caddy: caddy run
 # vite-test: bin/vite dev --mode=test
+webserver: make services-webserver-run
+vite: make services-frontend-run
+app: make services-app-run
+jobs: make services-jobs-run

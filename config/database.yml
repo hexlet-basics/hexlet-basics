@@ -5,14 +5,24 @@
 #   gem "sqlite3"
 #
 default: &default
-  adapter: sqlite3
+  adapter: postgresql
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
 
 development:
   primary:
     <<: *default
-    database: storage/development.sqlite3
+    database: code_basics_development
+    username: postgres
+    password: postgres
+    host: 127.0.0.1
+  primary_replica:
+    <<: *default
+    database: code_basics_development
+    username: postgres
+    password: postgres
+    host: 127.0.0.1
+    replica: true
   # queue:
   #   <<: *default
   #   database: storage/development_queue.sqlite3
@@ -24,7 +34,17 @@ development:
 test:
   primary:
     <<: *default
-    database: storage/test.sqlite3
+    database: code_basics_test
+    username: postgres
+    password: postgres
+    host: <%= ENV["DATABASE_TEST_HOST"] || "127.0.0.1" %>
+  primary_replica:
+    <<: *default
+    database: code_basics_test
+    username: postgres
+    password: postgres
+    host: <%= ENV["DATABASE_TEST_HOST"] || "127.0.0.1" %>
+    replica: true
 
 
 # Store production database in the storage/ directory, which by default
@@ -33,9 +53,14 @@ staging:
   primary:
     <<: *default
     database: storage/staging.sqlite3
+
 production:
   primary:
     <<: *default
+    url: <%= ENV['DATABASE_URL'] %>
+  primary_replica:
+    url: <%= ENV['DATABASE_REPLICA_URL'] %>
+    replica: true
     # database: storage/production.sqlite3
   # cache:
   #   <<: *default

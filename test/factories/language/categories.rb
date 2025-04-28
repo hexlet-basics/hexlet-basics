@@ -4,7 +4,7 @@
 #
 # Table name: language_categories
 #
-#  id         :integer          not null, primary key
+#  id         :bigint           not null, primary key
 #  locale     :string
 #  name       :string
 #  name_en    :string

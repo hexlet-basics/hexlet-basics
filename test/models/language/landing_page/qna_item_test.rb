@@ -2,7 +2,7 @@
 #
 # Table name: language_landing_page_qna_items
 #
-#  id                       :integer          not null, primary key
+#  id                       :bigint           not null, primary key
 #  answer                   :string
 #  question                 :string
 #  created_at               :datetime         not null
@@ -15,7 +15,7 @@
 #
 # Foreign Keys
 #
-#  language_landing_page_id  (language_landing_page_id => language_landing_pages.id)
+#  fk_rails_...  (language_landing_page_id => language_landing_pages.id)
 #
 require "test_helper"
 

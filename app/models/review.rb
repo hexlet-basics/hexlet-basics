@@ -4,7 +4,7 @@
 #
 # Table name: reviews
 #
-#  id          :integer          not null, primary key
+#  id          :bigint           not null, primary key
 #  body        :text
 #  first_name  :string
 #  last_name   :string
@@ -23,8 +23,8 @@
 #
 # Foreign Keys
 #
-#  language_id  (language_id => languages.id)
-#  user_id      (user_id => users.id)
+#  fk_rails_...  (language_id => languages.id)
+#  fk_rails_...  (user_id => users.id)
 #
 class Review < ApplicationRecord
   extend Enumerize

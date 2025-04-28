@@ -2,7 +2,7 @@
 #
 # Table name: surveys
 #
-#  id          :integer          not null, primary key
+#  id          :bigint           not null, primary key
 #  description :string
 #  locale      :string
 #  question    :string

@@ -2,7 +2,7 @@
 #
 # Table name: language_lessons
 #
-#  id            :integer          not null, primary key
+#  id            :bigint           not null, primary key
 #  natural_order :integer
 #  order         :integer
 #  original_code :text
@@ -26,9 +26,9 @@
 #
 # Foreign Keys
 #
-#  language_id  (language_id => languages.id)
-#  module_id    (module_id => language_modules.id)
-#  upload_id    (upload_id => uploads.id)
+#  fk_rails_...  (language_id => languages.id)
+#  fk_rails_...  (module_id => language_modules.id)
+#  fk_rails_...  (upload_id => uploads.id)
 #
 DEFAULTS: &DEFAULTS
   slug: $LABEL

@@ -4,7 +4,7 @@
 #
 # Table name: users
 #
-#  id                   :integer          not null, primary key
+#  id                   :bigint           not null, primary key
 #  admin                :boolean
 #  confirmation_token   :string(255)
 #  email                :string(255)

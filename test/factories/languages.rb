@@ -4,7 +4,7 @@
 #
 # Table name: languages
 #
-#  id                     :integer          not null, primary key
+#  id                     :bigint           not null, primary key
 #  docker_image           :string(255)
 #  exercise_filename      :string(255)
 #  exercise_test_filename :string(255)
@@ -33,9 +33,9 @@
 #
 # Foreign Keys
 #
-#  category_id         (category_id => language_categories.id)
-#  current_version_id  (current_version_id => language_versions.id)
-#  upload_id           (upload_id => uploads.id)
+#  fk_rails_...  (category_id => language_categories.id)
+#  fk_rails_...  (current_version_id => language_versions.id)
+#  fk_rails_...  (upload_id => uploads.id)
 #
 FactoryBot.define do
   factory :language do

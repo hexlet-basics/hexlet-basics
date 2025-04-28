@@ -42,8 +42,8 @@ dev-ssr:
 i18n-export:
 	bundle exec i18n export
 
-sync-fixtures: db-reset
-	# bin/rails db:fixtures:load
+sync-fixtures:
+	bin/rails db:fixtures:load
 
 editor-setup:
 	-bin/tapioca gems --verify
@@ -53,6 +53,7 @@ editor-setup:
 
 sync: i18n-export sync-fixtures
 	ENABLE_TYPELIZER=1 bin/rails typelizer:generate:refresh
+	bin/rails js:routes:typescript
 
 coverage-open:
 	open coverage/index.html
@@ -107,5 +108,39 @@ next-tag:
 	@old_version=$(shell git fetch --tags && git tag -l 'v[0-9]*' | sort -V | tail -n 1 | sed 's/^v//'); \
 		new_version=$$((old_version + 1)); \
 		make tag TAG=v$$new_version
+
+services-frontend-run:
+	bin/vite dev
+
+services-app-run:
+	bin/rails s -p 3000
+
+services-jobs-run:
+	bin/jobs -c config/queues/web.queue.yml
+
+services-webserver-run:
+	caddy run # --config ./services/webserver/caddy/conf/Caddyfile --envfile=.env
+
+services-db-start:
+	docker run -d -it --rm \
+		-p 5432:5432 \
+		--name code_basics_postgres \
+		-e POSTGRES_DB=code_basics_development \
+		-e POSTGRES_PASSWORD=postgres \
+		-v code_basics_pgdata:/var/lib/postgresql/data \
+		postgres
+
+services-db-stop:
+	docker stop code_basics_postgres
+
+services-db-remove: services-db-stop
+	docker volume remove codebasics_pgdata
+
+services-stop: services-db-stop
+
+services-start: services-db-start
+
+sync-analytics:
+	bin/rails analytics:refresh_user_survey_pivot
 
 .PHONY: test

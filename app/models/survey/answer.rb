@@ -2,7 +2,7 @@
 #
 # Table name: survey_answers
 #
-#  id             :integer          not null, primary key
+#  id             :bigint           not null, primary key
 #  state          :string
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
@@ -19,9 +19,9 @@
 #
 # Foreign Keys
 #
-#  survey_id       (survey_id => surveys.id)
-#  survey_item_id  (survey_item_id => survey_items.id)
-#  user_id         (user_id => users.id)
+#  fk_rails_...  (survey_id => surveys.id)
+#  fk_rails_...  (survey_item_id => survey_items.id)
+#  fk_rails_...  (user_id => users.id)
 #
 class Survey::Answer < ApplicationRecord
   include AASM

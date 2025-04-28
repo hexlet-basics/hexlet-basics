@@ -4,7 +4,7 @@
 #
 # Table name: language_lesson_members
 #
-#  id                 :integer          not null, primary key
+#  id                 :bigint           not null, primary key
 #  messages_count     :integer          default(0)
 #  state              :string
 #  created_at         :datetime         not null
@@ -24,9 +24,9 @@
 #
 # Foreign Keys
 #
-#  language_member_id  (language_member_id => language_members.id)
-#  lesson_id           (lesson_id => language_lessons.id)
-#  user_id             (user_id => users.id)
+#  fk_rails_...  (language_member_id => language_members.id)
+#  fk_rails_...  (lesson_id => language_lessons.id)
+#  fk_rails_...  (user_id => users.id)
 #
 class Language::Lesson::Member < ApplicationRecord
   include AASM

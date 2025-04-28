@@ -4,7 +4,7 @@
 #
 # Table name: blog_posts
 #
-#  id          :integer          not null, primary key
+#  id          :bigint           not null, primary key
 #  body        :text
 #  description :string
 #  locale      :string
@@ -24,8 +24,8 @@
 #
 # Foreign Keys
 #
-#  creator_id   (creator_id => users.id)
-#  language_id  (language_id => languages.id)
+#  fk_rails_...  (creator_id => users.id)
+#  fk_rails_...  (language_id => languages.id)
 #
 class BlogPost < ApplicationRecord
   extend Enumerize

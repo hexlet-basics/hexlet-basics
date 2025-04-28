@@ -2,7 +2,7 @@
 #
 # Table name: language_lesson_member_messages
 #
-#  id                        :integer          not null, primary key
+#  id                        :bigint           not null, primary key
 #  body                      :text
 #  role                      :string
 #  created_at                :datetime         not null
@@ -19,9 +19,9 @@
 #
 # Foreign Keys
 #
-#  language_id                (language_id => languages.id)
-#  language_lesson_id         (language_lesson_id => language_lessons.id)
-#  language_lesson_member_id  (language_lesson_member_id => language_lesson_members.id)
+#  fk_rails_...  (language_id => languages.id)
+#  fk_rails_...  (language_lesson_id => language_lessons.id)
+#  fk_rails_...  (language_lesson_member_id => language_lesson_members.id)
 #
 require "test_helper"
 

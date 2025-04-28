@@ -4,7 +4,7 @@
 #
 # Table name: language_lesson_versions
 #
-#  id                  :integer          not null, primary key
+#  id                  :bigint           not null, primary key
 #  natural_order       :integer
 #  order               :integer
 #  original_code       :string
@@ -27,10 +27,10 @@
 #
 # Foreign Keys
 #
-#  language_id          (language_id => languages.id)
-#  language_version_id  (language_version_id => language_versions.id)
-#  lesson_id            (lesson_id => language_lessons.id)
-#  module_version_id    (module_version_id => language_module_versions.id)
+#  fk_rails_...  (language_id => languages.id)
+#  fk_rails_...  (language_version_id => language_versions.id)
+#  fk_rails_...  (lesson_id => language_lessons.id)
+#  fk_rails_...  (module_version_id => language_module_versions.id)
 #
 FactoryBot.define do
   factory :language_lesson_version do

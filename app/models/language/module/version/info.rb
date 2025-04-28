@@ -4,7 +4,7 @@
 #
 # Table name: language_module_version_infos
 #
-#  id                  :integer          not null, primary key
+#  id                  :bigint           not null, primary key
 #  description         :string
 #  locale              :string
 #  name                :string
@@ -21,9 +21,9 @@
 #
 # Foreign Keys
 #
-#  language_id          (language_id => languages.id)
-#  language_version_id  (language_version_id => language_versions.id)
-#  version_id           (version_id => language_module_versions.id)
+#  fk_rails_...  (language_id => languages.id)
+#  fk_rails_...  (language_version_id => language_versions.id)
+#  fk_rails_...  (version_id => language_module_versions.id)
 #
 class Language::Module::Version::Info < ApplicationRecord
   include Language::Module::Version::InfoRepository
