@@ -9,4 +9,13 @@ class Web::SurveysControllerTest < ActionDispatch::IntegrationTest
     get survey_path(survey.slug)
     assert_response :success
   end
+
+  test "#show if answered" do
+    user = sign_in_as(:full)
+
+    survey = surveys("goal")
+
+    get survey_path(survey.slug)
+    assert_response :redirect
+  end
 end

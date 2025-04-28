@@ -116,7 +116,7 @@ services-app-run:
 	bin/rails s -p 3000
 
 services-jobs-run:
-	bin/jobs -c config/queues/web.queue.yml
+	bin/jobs
 
 services-webserver-run:
 	caddy run # --config ./services/webserver/caddy/conf/Caddyfile --envfile=.env

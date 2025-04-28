@@ -1,6 +1,10 @@
 ru:
   flash:
     web:
+      surveys:
+        show:
+          success: Вы уже отвечали на этот опрос. Возвращаемся обратно
+          # warning:
       admin:
         languages:
           update:
