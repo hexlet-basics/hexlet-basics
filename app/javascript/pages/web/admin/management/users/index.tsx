@@ -55,6 +55,7 @@ export default function Index({ grid, users }: Props) {
       >
         <Column field="id" header="id" />
         <Column field="admin" header="Admin?" />
+        <Column field="assistant_messages_count" header="Messages" />
         <Column field="name" header="name" sortable />
         <Column sortable filter field="email" header="email" />
         <Column

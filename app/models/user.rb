@@ -4,23 +4,24 @@
 #
 # Table name: users
 #
-#  id                   :bigint           not null, primary key
-#  admin                :boolean
-#  confirmation_token   :string(255)
-#  email                :string(255)
-#  email_delivery_state :string(255)
-#  facebook_uid         :string(255)
-#  first_name           :string(255)
-#  github_uid           :integer
-#  help                 :boolean
-#  last_name            :string(255)
-#  locale               :string(255)
-#  nickname             :string(255)
-#  password_digest      :string(255)
-#  reset_password_token :string(255)
-#  state                :string(255)
-#  created_at           :datetime         not null
-#  updated_at           :datetime         not null
+#  id                       :bigint           not null, primary key
+#  admin                    :boolean
+#  assistant_messages_count :integer          default(0)
+#  confirmation_token       :string(255)
+#  email                    :string(255)
+#  email_delivery_state     :string(255)
+#  facebook_uid             :string(255)
+#  first_name               :string(255)
+#  github_uid               :integer
+#  help                     :boolean
+#  last_name                :string(255)
+#  locale                   :string(255)
+#  nickname                 :string(255)
+#  password_digest          :string(255)
+#  reset_password_token     :string(255)
+#  state                    :string(255)
+#  created_at               :datetime         not null
+#  updated_at               :datetime         not null
 #
 # Indexes
 #
@@ -52,6 +53,7 @@ class User < ApplicationRecord
   has_many :reviews, dependent: :destroy
   has_many :blog_posts, dependent: :destroy
   has_many :survey_answers, class_name: "Survey::Answer"
+  has_many :assistant_messages, class_name: "Language::Lesson::Member::Message"
 
   aasm :state do
     state :active, initial: true

@@ -60,6 +60,7 @@ class Assistants::RunJob < ApplicationJob
     m = lesson_member.messages.build
     m.role = "assistant"
     m.language_lesson = lesson
+    m.user = lesson_member.user
     m.language = lesson.language
     deltas = []
 

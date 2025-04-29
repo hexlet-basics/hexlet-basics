@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_28_205159) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_29_020324) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -140,9 +140,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_28_205159) do
     t.text "body"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
     t.index ["language_id"], name: "index_language_lesson_member_messages_on_language_id"
     t.index ["language_lesson_id"], name: "index_language_lesson_member_messages_on_language_lesson_id"
     t.index ["language_lesson_member_id"], name: "idx_on_language_lesson_member_id_fe254654e9"
+    t.index ["user_id"], name: "index_language_lesson_member_messages_on_user_id"
   end
 
   create_table "language_lesson_members", force: :cascade do |t|
@@ -573,6 +575,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_28_205159) do
     t.boolean "admin"
     t.datetime "created_at", null: false
     t.boolean "help"
+    t.integer "assistant_messages_count", default: 0
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
@@ -587,6 +590,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_28_205159) do
   add_foreign_key "language_lesson_member_messages", "language_lesson_members"
   add_foreign_key "language_lesson_member_messages", "language_lessons"
   add_foreign_key "language_lesson_member_messages", "languages"
+  add_foreign_key "language_lesson_member_messages", "users"
   add_foreign_key "language_lesson_members", "language_lessons", column: "lesson_id"
   add_foreign_key "language_lesson_members", "language_members"
   add_foreign_key "language_lesson_members", "users"

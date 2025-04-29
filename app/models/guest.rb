@@ -11,6 +11,10 @@ class Guest
 
   def email; end
 
+  def assistant_messages_count
+    0
+  end
+
   def first_name
     ""
   end
