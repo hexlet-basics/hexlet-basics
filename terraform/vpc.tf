@@ -45,3 +45,21 @@ resource "twc_firewall_rule" "out_tcp" {
   protocol = "tcp"
   cidr = "0.0.0.0/0"
 }
+
+resource "twc_firewall_rule" "datalens_connection_1" {
+  firewall_id = resource.twc_firewall.databases.id
+
+  direction = "ingress"
+  port = 5432
+  protocol = "tcp"
+  cidr = "178.154.242.0/24"
+}
+
+resource "twc_firewall_rule" "datalens_connection_2" {
+  firewall_id = resource.twc_firewall.databases.id
+
+  direction = "ingress"
+  port = 5432
+  protocol = "tcp"
+  cidr = "130.193.60.0/28"
+}
