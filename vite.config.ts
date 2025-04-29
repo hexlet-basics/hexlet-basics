@@ -22,7 +22,7 @@ export default defineConfig(({ mode, isSsrBuild }) => {
     plugins: [
       react(),
       ViteRails({
-        compress: mode !== "test",
+        compress: false,
       }),
       sentryVitePlugin({
         url: env.VITE_SENTRY_URL,

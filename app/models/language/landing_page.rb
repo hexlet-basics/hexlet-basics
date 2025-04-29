@@ -45,7 +45,7 @@ class Language::LandingPage < ApplicationRecord
   validates :header, presence: true
   validates :footer_name, presence: true, if: :footer?
   validates :slug, presence: true, uniqueness: { scope: :locale }
-  validates :main, uniqueness: { scope: [ :locale, :language_id ] }
+  validates :main, uniqueness: { scope: [ :locale, :language_id ] }, if: :main?
   # validates :description, presence: true
   validates :locale, presence: true # , inclusion: I18n.available_locales
 

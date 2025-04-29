@@ -42,7 +42,7 @@ export default function CourseBlock({
         <Card.Body className="p-2 p-md-3">
           <Card.Title>
             <a
-              href={Routes.language_path(landingPage.slug)}
+              href={Routes.language_url(landingPage.slug)}
               className="stretched-link text-decoration-none link-body-emphasis h2"
             >
               {courseMember && <i className="me-3 bi bi-trophy" />}

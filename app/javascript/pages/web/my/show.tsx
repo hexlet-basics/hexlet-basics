@@ -5,14 +5,12 @@ import type {
   LanguageLandingPageForLists,
   LanguageMember,
 } from "@/types/serializers";
-import { Link } from "@inertiajs/react";
 import {
-  Button,
   Card,
   Col,
   Container,
   ProgressBar,
-  Row,
+  Row
 } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 

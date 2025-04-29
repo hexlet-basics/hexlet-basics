@@ -9,7 +9,7 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
 
-development:
+development: &development
   primary:
     <<: *default
     database: code_basics_development
@@ -52,7 +52,17 @@ test:
 staging:
   primary:
     <<: *default
-    database: storage/staging.sqlite3
+    database: code_basics_staging
+    username: postgres
+    password: postgres
+    host: 127.0.0.1
+  primary_replica:
+    <<: *default
+    database: code_basics_staging
+    username: postgres
+    password: postgres
+    host: 127.0.0.1
+    replica: true
 
 production:
   primary:

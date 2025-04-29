@@ -72,6 +72,8 @@ from-full-js:
     const wow = `hello, ${name}`;
     ```
 
+    [внешняя ссылка](https://ru.hexlet.io)
+
     | id | first name | last name |
     |--|--|--|
     | 1 | John | Smith  |

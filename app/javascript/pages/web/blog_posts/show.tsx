@@ -22,15 +22,12 @@ type Props = PropsWithChildren & {
 export default function Show({ blogPost, recommendedBlogPosts }: Props) {
   const { t } = useTranslation();
   const { t: tCommon } = useTranslation("common");
-  const { suffix } = usePage<SharedProps>().props;
 
-  const heading = tCommon("tos");
-
-  const postUrl = Routes.blog_post_url(blogPost.slug!, { suffix });
+  const postUrl = Routes.blog_post_url(blogPost.slug!);
   const items: BreadcrumbItem[] = [
     {
       name: t("blog_posts.index.header"),
-      url: Routes.blog_posts_url({ suffix }),
+      url: Routes.blog_posts_url(),
     },
     {
       name: blogPost.name!,

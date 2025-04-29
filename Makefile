@@ -25,7 +25,7 @@ dev:
 log-mails:
 	 tail -n 30 log/mailer.log | base64 --decode
 
-staging:
+setup-staging:
 	bin/vite clobber
 	# VISUAL="code --wait" bin/rails credentials:edit
 	RAILS_ENV=staging bin/rails db:drop
@@ -34,7 +34,9 @@ staging:
 	# RAILS_ENV=staging bin/rails db:prepare db:fixtures:load
 	# bin/vite build --ssr
 	NODE_ENV=development RAILS_ENV=staging bin/rails assets:precompile
-	DEBUG=vite-plugin-ruby:* NODE_ENV=development RAILS_ENV=staging bundle exec foreman start -f Procfile.staging
+
+staging:
+	DEBUG=vite-plugin-ruby:* NODE_ENV=development RAILS_ENV=staging overmind start -f Procfile.staging
 
 dev-ssr:
 	bin/vite ssr

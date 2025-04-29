@@ -1,4 +1,3 @@
-import * as Routes from "@/routes.js";
 import * as Sentry from "@sentry/react";
 import { SnackbarProvider } from "notistack";
 import { PrimeReactProvider } from "primereact/api";
@@ -6,6 +5,8 @@ import "react-bootstrap";
 import { type PropsWithChildren } from "react";
 import { Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+import { Locale } from "@/types";
+import configure from "@/configure";
 
 function FallbackComponent() {
   const { t: tLayouts } = useTranslation("layouts");
@@ -19,7 +20,15 @@ function FallbackComponent() {
   );
 }
 
-function Root(props: PropsWithChildren) {
+type Props = PropsWithChildren & {
+  // locale: Locale;
+  // suffix: string | null
+}
+
+function Root(props: Props) {
+
+  // configure(props.locale, props.suffix)
+
   return (
     <PrimeReactProvider>
       <SnackbarProvider>

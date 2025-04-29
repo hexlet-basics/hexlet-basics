@@ -3,13 +3,15 @@ import type { ResolvedComponent, RootProps } from "@/types";
 import { createInertiaApp } from "@inertiajs/react";
 import * as Sentry from "@sentry/react";
 import { createRoot, hydrateRoot } from "react-dom/client";
-import init from "@/init.ts";
+import "@/init.ts";
+import configure from "@/configure";
 
 if (import.meta.env.DEV) {
   localStorage.debug = "app:*";
 }
 
 Sentry.init({
+  debug: import.meta.env.DEV,
   dsn: import.meta.env.VITE_SENTRY_DSN,
   ignoreErrors: [
     "Failed to fetch dynamically imported module",
@@ -44,11 +46,12 @@ createInertiaApp({
     if (el) {
       const typedProps = props as RootProps;
       const { locale, suffix } = typedProps.initialPage.props;
-      init(locale, suffix)
+      configure(locale, suffix)
       const vdomFn = () => {
-        return <App {...props} />;
+        // return <Root locale={locale} suffix={suffix}><App {...props} /></Root>;
+        return <App {...props} />
       };
-      if (import.meta.env.MODE === "production") {
+      if (import.meta.env.MODE !== "development") {
         hydrateRoot(el, vdomFn(), {
           // Callback called when an error is thrown and not caught by an ErrorBoundary.
           onUncaughtError: Sentry.reactErrorHandler((error, errorInfo) => {
