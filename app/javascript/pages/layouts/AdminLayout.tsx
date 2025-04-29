@@ -125,7 +125,7 @@ export default function AdminLayout({ children, header }: Props) {
                   className="nav-link fw-medium link-body-emphasis"
                   href={Routes.admin_survey_answers_path()}
                 >
-                  <i className="bi bi-patch-question me-2" />
+                  <i className="bi bi-signpost-2 me-2" />
                   {tLayouts("web.admin.application.survey_answers")}
                 </Link>
               </Nav.Item>
