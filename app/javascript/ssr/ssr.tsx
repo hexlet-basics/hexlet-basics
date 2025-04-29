@@ -4,7 +4,7 @@ import { createInertiaApp } from "@inertiajs/react";
 import createServer from "@inertiajs/react/server";
 import * as Sentry from "@sentry/node";
 import ReactDOMServer from "react-dom/server";
-import "../init";
+import init from "../init";
 
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
@@ -39,6 +39,10 @@ createServer((page) =>
       return page;
     },
     setup: ({ App, props }) => {
+      const typedProps = props as RootProps;
+      const { locale, suffix } = typedProps.initialPage.props;
+      init(locale, suffix)
+
       const vdom = <App {...props} />;
       return vdom;
     },

@@ -5,7 +5,8 @@ import { dayjs } from "@/lib/utils";
 import i18next from "i18next";
 import { initReactI18next } from "react-i18next";
 import locales from "./locales.json";
-import { gon } from "@/lib/gon";
+import { Locale } from "./types";
+// import { gon } from "@/lib/gon";
 
 const resources = locales;
 const defaultNS = "web";
@@ -23,7 +24,9 @@ i18next.init({
   },
 });
 
-i18next.changeLanguage(gon.locale);
-dayjs.locale(gon.locale);
-Routes.configure({ default_url_options: { suffix: gon.suffix } });
 
+export default function init(locale: Locale, suffix: string | null) {
+  i18next.changeLanguage(locale);
+  dayjs.locale(locale);
+  Routes.configure({ default_url_options: { suffix: suffix } });
+}

@@ -1,9 +1,9 @@
 import Root from "@/components/Root.tsx";
-import type { ResolvedComponent } from "@/types";
+import type { ResolvedComponent, RootProps } from "@/types";
 import { createInertiaApp } from "@inertiajs/react";
 import * as Sentry from "@sentry/react";
 import { createRoot, hydrateRoot } from "react-dom/client";
-import "../init.ts";
+import init from "@/init.ts";
 
 if (import.meta.env.DEV) {
   localStorage.debug = "app:*";
@@ -42,6 +42,9 @@ createInertiaApp({
 
   setup({ el, App, props }) {
     if (el) {
+      const typedProps = props as RootProps;
+      const { locale, suffix } = typedProps.initialPage.props;
+      init(locale, suffix)
       const vdomFn = () => {
         return <App {...props} />;
       };
