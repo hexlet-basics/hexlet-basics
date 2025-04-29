@@ -55,6 +55,7 @@ export default function Index({ grid, userSurveyAnswers }: Props) {
         <Column field="user_id" header="user_id" />
         <Column field="goal" header="goal" />
         <Column field="coding_experience" header="coding_experience" />
+        <Column field="study_plan" header="study_plan" />
         <Column
           field="created_at"
           header="created_at"

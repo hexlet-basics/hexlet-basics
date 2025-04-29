@@ -40,6 +40,12 @@ full__coding_experience:
   survey: coding-experience
   survey_item: coding-experience-item2
 
+full__study_plan:
+  state: fulfilled
+  user: full
+  survey: study-plan
+  survey_item: study-plan-item3
+
 admin__goal:
   state: fulfilled
   user: admin

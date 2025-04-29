@@ -12,4 +12,9 @@ class UserSurveyPivotResource < ApplicationResource
   attribute :coding_experience do |obj|
     obj.coding_experience_item&.value
   end
+
+  typelize :string, nullable: true
+  attribute :study_plan do |obj|
+    obj.study_plan_item&.value
+  end
 end

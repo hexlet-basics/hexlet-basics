@@ -71,14 +71,20 @@ coding-experience-item3:
 study-plan-item1:
   <<: *DEFAULTS
   survey: study-plan
-  value: I have professional experience writing code.
+  value: Да, у меня есть план и я его придерживаюсь
 
 study-plan-item2:
   <<: *DEFAULTS
   survey: study-plan
-  value: I have professional experience writing code.
+  value: У меня есть примерное представление, того что надо делать
 
 study-plan-item3:
   <<: *DEFAULTS
   survey: study-plan
-  value: I have professional experience writing code.
+  value: Я выбрал направление, но у меня нет плана обучения
+
+study-plan-item4:
+  <<: *DEFAULTS
+  survey: study-plan
+  value: Я все еще выбираю то, чем заниматься и/или на каком языке писать
+
