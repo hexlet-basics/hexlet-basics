@@ -52,7 +52,7 @@ resource "twc_database_user" "hexlet_basics_user" {
 
   instance {
     instance_id = twc_database_instance.hexlet_basics.id
-    privileges  = ["SELECT", "INSERT", "UPDATE", "DELETE", "ALTER", "REFERENCES", "CREATE", "DROP", "INDEX"]
+    privileges  = ["SELECT", "INSERT", "UPDATE", "DELETE", "ALTER", "REFERENCES", "CREATE", "DROP", "INDEX", "TRUNCATE"]
   }
 }
 
