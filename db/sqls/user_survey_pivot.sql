@@ -1,4 +1,4 @@
-TRUNCATE TABLE user_survey_pivots RESTART IDENTITY CASCADE;
+TRUNCATE TABLE user_survey_pivots RESTART IDENTITY;
 
 INSERT INTO user_survey_pivots (
   user_id,
