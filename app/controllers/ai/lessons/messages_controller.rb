@@ -1,5 +1,4 @@
 class Ai::Lessons::MessagesController < Ai::ApplicationController
-  # include ActionController::Live
   # include Import["openai_api"]
 
   def index

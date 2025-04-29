@@ -5,9 +5,16 @@ ENV["RAILS_ENV"] ||= "test"
 
 require_relative "../config/environment"
 require "rails/test_help"
+# require "vcr"
 
 I18n.locale = "ru"
 Rails.application.routes.default_url_options[:suffix] = AppHost.locale_for_url(I18n.locale)
+
+VCR.configure do |config|
+  config.filter_sensitive_data("<OPENAI_ACCESS_TOKEN>") { ENV.fetch("OPENAI_ACCESS_TOKEN") }
+  config.cassette_library_dir = "fixtures/vcr_cassettes"
+  config.hook_into :webmock
+end
 
 module ActiveSupport
   class TestCase

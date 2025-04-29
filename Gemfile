@@ -97,6 +97,7 @@ group :development, :staging do
 end
 
 group :test do
+  gem "vcr"
   gem "capybara"
   gem "cuprite"
   gem "minitest-power_assert"
@@ -110,6 +111,7 @@ group :production do
 end
 
 gem "aasm"
+gem "webmock"
 gem "active_form_model"
 gem "aws-sdk-s3"
 gem "bcrypt"

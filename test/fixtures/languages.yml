@@ -49,6 +49,7 @@ php:
 elixir:
   <<: *DEFAULTS
   current_version: elixir
+  openai_assistant_id: asst_BnPHo7ddQhnV3KfUtJV3PJVX
 
 typescript:
   <<: *DEFAULTS

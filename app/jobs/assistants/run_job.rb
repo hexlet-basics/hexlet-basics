@@ -5,6 +5,10 @@ class Assistants::RunJob < ApplicationJob
     lesson_info = lesson.infos.find_by!(locale: I18n.locale)
     language = lesson.language
 
+    unless language.openai_assistant_id
+      throw RuntimeError.new "#{language} without openai_assistant_id"
+    end
+
     # TODO: fix dry-inject
     openai_api = OpenAI::Client.new do |f|
       f.response :logger, Rails.logger, bodies: true

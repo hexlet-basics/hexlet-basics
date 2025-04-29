@@ -2,15 +2,16 @@ require "test_helper"
 
 class Ai::Lessons::MessagesControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @language = languages(:ruby)
-    @lesson = @language.lessons.first
+    @language = languages(:elixir)
+    @lesson = language_lessons("elixir-variables")
   end
 
-  # TODO:use fake openapi
-  # test "create" do
-  #   sign_in_as(:one)
-  #
-  #   post ai_lesson_messages_path(@lesson), params: { message: "test" }
-  #   assert_response :success
-  # end
+  test "create" do
+    sign_in_as(:full)
+
+    VCR.use_cassette("ai-lessons-messages-create") do
+      post ai_lesson_messages_path(@lesson), params: { message: "test" }
+    end
+    assert_response :success
+  end
 end
