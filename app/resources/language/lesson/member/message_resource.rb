@@ -12,12 +12,17 @@ class Language::Lesson::Member::MessageResource
     :language_lesson_id,
     :language_lesson_member_id,
     :role,
-    :body,
+    # :body,
     :created_at
 
   typelize :string
   attribute :language_slug do |obj|
     obj.language.slug
+  end
+
+  typelize :string
+  attribute :content do |obj|
+    obj.body
   end
 
   typelize :string

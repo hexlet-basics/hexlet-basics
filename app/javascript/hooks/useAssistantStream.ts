@@ -4,13 +4,14 @@ import axios from "axios";
 import { debounce } from "es-toolkit";
 import { useSnackbar } from "notistack";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const url = `wss://${import.meta.env.VITE_APP_HOST}/cable`;
 const cableInstance = createConsumer(url);
 
 export type AssistantMessage = {
   id?: string;
-  role: "user" | "assistant";
+  role: "user" | "assistant" | "system";
   content: string;
 };
 
@@ -33,6 +34,8 @@ export function useAssistantStream(
   const [status, setStatus] = useState<"awaiting_message" | "in_progress">(
     "awaiting_message",
   );
+
+  const { t: tViews } = useTranslation("web");
 
   // Buffer per message_id
   const buffers = useRef<Record<string, string[][]>>({});
@@ -126,7 +129,18 @@ export function useAssistantStream(
     } catch (error) {
       setStatus("awaiting_message");
       if (axios.isAxiosError(error)) {
-        // if (axios.HttpStatusCode === 429) {
+        if (error.response?.status === 429) {
+          const message = tViews("languages.lessons.show.chat.disabled");
+
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: crypto.randomUUID(),
+              role: "assistant",
+              content: message,
+            },
+          ]);
+        }
         enqueueSnackbar(error.message);
         console.error(error);
       } else {

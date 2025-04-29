@@ -28,10 +28,21 @@ class Ai::Lessons::MessagesController < Ai::ApplicationController
   end
 
   def create
+    can_create_assistant_message = Language::Lesson::Member::MessagePolicy.new(
+      current_user,
+      Language::Lesson::Member::Message
+    ).create?
+
+    unless can_create_assistant_message
+      head :too_many_requests
+      return
+    end
+
     lesson = Language::Lesson.find(params[:lesson_id])
     lesson_member = lesson.members.find_by!(user: current_user)
 
     m = lesson_member.messages.build body: params[:message]
+
     m.role = "user"
     m.language_lesson = lesson
     m.language = lesson.language

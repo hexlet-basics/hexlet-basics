@@ -1,3 +1,4 @@
+import { AssistantMessage } from "@/hooks/useAssistantStream";
 import type { SharedProps } from "@/types";
 import type {
   Language,
@@ -9,6 +10,7 @@ import type {
 } from "@/types/serializers";
 
 export type LessonSharedProps = SharedProps & {
+  canCreateAssistantMessage: boolean;
   course: Language;
   courseCategory: LanguageCategory;
   landingPage: LanguageLandingPageForLists;
@@ -17,6 +19,7 @@ export type LessonSharedProps = SharedProps & {
   lessonMember?: LanguageLessonMember;
   lesson: LanguageLesson;
   lessons: LanguageLesson[];
+  previousMessages: AssistantMessage[];
 };
 
 type CheckingResult = LessonCheckingResponse["result"] | "error" | null;

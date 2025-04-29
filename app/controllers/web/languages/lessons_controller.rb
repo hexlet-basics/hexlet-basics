@@ -90,8 +90,15 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
       .includes(:lesson, :version)
       .order(language_lesson_versions: { natural_order: :asc })
 
+    can_create_assistant_message = Language::Lesson::Member::MessagePolicy.new(
+      current_user,
+      Language::Lesson::Member::Message
+    ).create?
+
     # raise resource_language.category.inspect
     render inertia: true, props: {
+      previousMessages: Language::Lesson::Member::MessageResource.new(lesson_member.messages.order(id: :asc)),
+      canCreateAssistantMessage: can_create_assistant_message,
       course: LanguageResource.new(resource_language),
       landingPage: Language::LandingPageForListsResource.new(resource_language_landing_page),
       courseCategory: Language::CategoryResource.new(resource_language_landing_page.language_category),

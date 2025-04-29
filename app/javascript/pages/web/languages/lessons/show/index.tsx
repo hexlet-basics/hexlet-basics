@@ -23,6 +23,8 @@ export default function Index() {
     course,
     lessonMember,
     lesson,
+    canCreateAssistantMessage,
+    previousMessages,
     // auth: { user },
   } = usePage<LessonSharedProps>().props;
 
@@ -185,6 +187,8 @@ export default function Index() {
                       </Alert>
                     )}
                     <Chat
+                      previousMessages={previousMessages}
+                      enabled={canCreateAssistantMessage}
                       userCode={userCode}
                       output={output}
                       course={course}

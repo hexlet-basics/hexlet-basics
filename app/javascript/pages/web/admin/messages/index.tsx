@@ -37,7 +37,7 @@ export function MessageBodyTemplate(message: LanguageLessonMemberMessage) {
         // biome-ignore lint/a11y/useValidAnchor: <explanation>
         onClick={() => setVisible(true)}
       >
-        {message.body?.slice(0, 50)}
+        {message.content?.slice(0, 50)}
       </a>
       <Dialog
         style={{ width: "50vw" }}
@@ -48,7 +48,7 @@ export function MessageBodyTemplate(message: LanguageLessonMemberMessage) {
           setVisible(false);
         }}
       >
-        <pre>{message.body}</pre>
+        <pre>{message.content}</pre>
       </Dialog>
     </>
   );
