@@ -7,9 +7,18 @@ on:
 
 env:
   VITE_RUBY_AUTO_BUILD: "false"
+  DATABASE_TEST_HOST: localhost
 
 jobs:
   build:
+    services:
+      postgres:
+        image: postgres:alpine
+        env:
+          POSTGRES_DB: code_basics_test
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
     # TODO: switch to arm https://github.blog/changelog/2025-01-16-linux-arm64-hosted-runners-now-available-for-free-in-public-repositories-public-preview/
     runs-on: ubuntu-latest
     steps:

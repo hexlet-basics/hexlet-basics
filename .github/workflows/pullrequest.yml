@@ -7,9 +7,19 @@ on:
 
 env:
   VITE_RUBY_AUTO_BUILD: "false"
+  DATABASE_TEST_HOST: localhost
 
 jobs:
   main:
+    services:
+      postgres:
+        image: postgres:alpine
+        env:
+          POSTGRES_DB: code_basics_test
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
