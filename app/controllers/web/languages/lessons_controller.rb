@@ -30,7 +30,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
         language_member.save!
         event_data = {
           slug: resource_language.slug,
-          locale: resource_language_landing_page.locale
+          locale: resource_language_landing_page.locale.to_sym
         }
         event = CourseStartedEvent.new(data: event_data)
         publish_event(event, current_user)
@@ -47,7 +47,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
         event_data = {
           lesson_slug: lesson.slug,
           course_slug: resource_language.slug,
-          locale: resource_language_landing_page.locale
+          locale: resource_language_landing_page.locale.to_sym
         }
         event = LessonStartedEvent.new(data: event_data)
 

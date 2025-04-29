@@ -67,3 +67,18 @@ coding-experience-item3:
   <<: *DEFAULTS
   survey: coding-experience
   value: I have professional experience writing code.
+
+study-plan-item1:
+  <<: *DEFAULTS
+  survey: study-plan
+  value: I have professional experience writing code.
+
+study-plan-item2:
+  <<: *DEFAULTS
+  survey: study-plan
+  value: I have professional experience writing code.
+
+study-plan-item3:
+  <<: *DEFAULTS
+  survey: study-plan
+  value: I have professional experience writing code.

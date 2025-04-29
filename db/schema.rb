@@ -544,13 +544,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_28_205159) do
   end
 
   create_table "user_survey_pivots", force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.integer "coding_experience_item_id"
-    t.integer "goal_item_id"
+    t.bigint "user_id", null: false
+    t.bigint "coding_experience_item_id"
+    t.bigint "goal_item_id"
+    t.bigint "study_plan_item_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["coding_experience_item_id"], name: "index_user_survey_pivots_on_coding_experience_item_id"
     t.index ["goal_item_id"], name: "index_user_survey_pivots_on_goal_item_id"
+    t.index ["study_plan_item_id"], name: "index_user_survey_pivots_on_study_plan_item_id"
     t.index ["user_id"], name: "index_user_survey_pivots_on_user_id"
   end
 
@@ -632,4 +634,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_28_205159) do
   add_foreign_key "surveys", "survey_items", column: "parent_survey_item_id"
   add_foreign_key "surveys", "surveys", column: "parent_survey_id"
   add_foreign_key "user_accounts", "users"
+  add_foreign_key "user_survey_pivots", "survey_items", column: "coding_experience_item_id"
+  add_foreign_key "user_survey_pivots", "survey_items", column: "goal_item_id"
+  add_foreign_key "user_survey_pivots", "survey_items", column: "study_plan_item_id"
+  add_foreign_key "user_survey_pivots", "users"
 end

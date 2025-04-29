@@ -14,6 +14,7 @@ class Web::Admin::SurveysController < Web::Admin::ApplicationController
     survey = Admin::SurveyForm.new
 
     render inertia: true, props: {
+      surveysItems: Survey::ItemCrudResource.new(Survey::Item.all),
       surveyDto: SurveyCrudResource.new(survey)
     }
   end

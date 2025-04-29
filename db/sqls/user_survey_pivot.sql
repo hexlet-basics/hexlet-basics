@@ -9,6 +9,7 @@ INSERT INTO user_survey_pivots (
 )
 SELECT
   u.id,
+  MAX(CASE WHEN s.slug = 'study-plan' THEN sa.survey_item_id END) AS goal_item_id,
   MAX(CASE WHEN s.slug = 'coding-experience' THEN sa.survey_item_id END) AS coding_experience_item_id,
   MAX(CASE WHEN s.slug = 'goal' THEN sa.survey_item_id END) AS goal_item_id,
   now(),

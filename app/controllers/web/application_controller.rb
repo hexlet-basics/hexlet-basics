@@ -81,9 +81,9 @@ class Web::ApplicationController < ApplicationController
   end
 
   def redirect_to_inertia(url, model)
-    # if model.errors.any? && Rails.env.test?
-    #   raise model.errors.full_messages.inspect
-    # end
+    if model.errors.any? && Rails.env.test?
+      raise model.errors.full_messages.inspect
+    end
     redirect_to url, inertia: { errors: model.errors }
   end
 

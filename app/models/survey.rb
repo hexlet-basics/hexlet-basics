@@ -28,7 +28,7 @@ class Survey < ApplicationRecord
   has_many :items, class_name: "Survey::Item", dependent: :restrict_with_exception
   has_many :answers, class_name: "Survey::Answer", dependent: :restrict_with_exception
 
-  belongs_to :parent_survey_item, class_name: "Survey::Item"
+  belongs_to :parent_survey_item, class_name: "Survey::Item", optional: true
 
   validates :question, presence: true
   validates :locale, presence: true
@@ -39,9 +39,15 @@ class Survey < ApplicationRecord
     [ "created_at", "description", "id", "locale", "question", "slug", "state", "updated_at" ]
   end
 
-  def self.find_or_request_answer_by(slug, user)
+  def self.find_or_request_answer_if_needed_by(slug, user)
     survey = self.find_by slug: slug
     return unless survey
+
+    parent_survey_item = survey.parent_survey_item
+    if parent_survey_item
+      needed_answer = Survey::Answer.fulfilled.find_by user: user, item: parent_survey_item
+      return unless needed_answer
+    end
 
     answer = survey.answers.find_or_initialize_by user: user
     answer.save! if answer.new_record?

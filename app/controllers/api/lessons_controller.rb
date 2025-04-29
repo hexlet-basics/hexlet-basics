@@ -46,17 +46,17 @@ class Api::LessonsController < Api::ApplicationController
       end
     end
 
+    if passed && current_user.guest?
+      session[:finished_as_guest] ||= {}
+      session[:finished_as_guest][lesson.id] = true
+    end
+
     event_data = {
       lesson_slug: lesson.slug,
       course_slug: language.slug,
       locale: I18n.locale,
       passed:
     }
-
-    if passed && current_user.guest?
-      session[:finished_as_guest] ||= {}
-      session[:finished_as_guest][lesson.id] = true
-    end
 
     event = SolutionCheckedEvent.new(data: event_data)
     publish_event(event, current_user)

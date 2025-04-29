@@ -37,3 +37,9 @@ coding-experience:
   <<: *DEFAULTS
   question: Какой у вас опыт программирования?
   # description:
+
+study-plan:
+  <<: *DEFAULTS
+  question: Есть ли у вас готовый план обучения?
+  parent_survey_item: goal-item1
+  # description:

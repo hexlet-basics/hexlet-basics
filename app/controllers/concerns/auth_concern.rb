@@ -4,7 +4,11 @@ module AuthConcern
   def sign_in(user)
     session[:user_id] = user.id
 
-    event = UserSignedInEvent.new(data: user.slice(:id, :email))
+    event_data = {
+      id: user.id,
+      email: user.email
+    }
+    event = UserSignedInEvent.new(data: event_data)
     publish_event(event, user)
   end
 

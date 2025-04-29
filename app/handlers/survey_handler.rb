@@ -9,10 +9,18 @@ class SurveyHandler
 
     case event
     when UserSignedUpEvent
-      _survey_answer1 = Survey.find_or_request_answer_by("goal", user)
-      _survey_answer2 = Survey.find_or_request_answer_by("coding-experience", user)
+      Survey.find_or_request_answer_if_needed_by("goal", user)
+      Survey.find_or_request_answer_if_needed_by("coding-experience", user)
       # raise survey_answer.inspect
     when LessonFinishedEvent
+      course_slug = event.data.fetch(:course_slug)
+      locale = event.data.fetch(:locale)
+      course = Language.find_by slug: course_slug
+      course_member = course.members.find_by user: user
+      request_answer = course_member.lesson_members.size > 2
+      if request_answer
+        Survey.find_or_request_answer_if_needed_by("study-plan", user)
+      end
       # Если завершил 3 урока, то запускаем опрос для ответа (хочу сменить профессию)
 
       # Есть ли у вас готовый план обучения?
