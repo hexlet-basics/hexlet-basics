@@ -7,18 +7,20 @@ class SurveyHandler
 
     user = User.find(user_id)
 
+    # Rails.logger.info("!!!!!! #{event}")
     case event
     when UserSignedUpEvent
       Survey.find_or_request_answer_if_needed_by("goal", user)
       Survey.find_or_request_answer_if_needed_by("coding-experience", user)
       # raise survey_answer.inspect
     when LessonFinishedEvent
+      Rails.logger.info("LessonFinishedEvent")
       course_slug = event.data.fetch(:course_slug)
       locale = event.data.fetch(:locale)
       course = Language.find_by slug: course_slug
       course_member = course.members.find_by user: user
-      request_answer = course_member.lesson_members.size > 2
-      if request_answer
+      should_request_answer = course_member.lesson_members.size > 2
+      if should_request_answer
         Survey.find_or_request_answer_if_needed_by("study-plan", user)
       end
       # Если завершил 3 урока, то запускаем опрос для ответа (хочу сменить профессию)

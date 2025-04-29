@@ -44,8 +44,10 @@ class Survey < ApplicationRecord
     return unless survey
 
     parent_survey_item = survey.parent_survey_item
+    # Rails.logger.info("LessonFinishedEvent #{parent_survey_item}")
     if parent_survey_item
-      needed_answer = Survey::Answer.fulfilled.find_by user: user, item: parent_survey_item
+      # Rails.logger.info("LessonFinishedEvent PARENT")
+      needed_answer = Survey::Answer.fulfilled.find_by user: user, survey_item: parent_survey_item
       return unless needed_answer
     end
 

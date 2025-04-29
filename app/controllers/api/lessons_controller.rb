@@ -11,6 +11,16 @@ class Api::LessonsController < Api::ApplicationController
     passed = lesson_exercise_data[:passed]
 
 
+    solution_checking_event_data = {
+      lesson_slug: lesson.slug,
+      course_slug: language.slug,
+      locale: I18n.locale,
+      passed:
+    }
+
+    event = SolutionCheckedEvent.new(data: solution_checking_event_data)
+    publish_event(event, current_user)
+
     lesson_has_been_finished = false
     language_has_been_finished = false
 
@@ -21,13 +31,13 @@ class Api::LessonsController < Api::ApplicationController
         lesson_member.finish!
         lesson_has_been_finished = true
 
-        event_data = {
+        lesson_finished_event_data = {
           lesson_slug: lesson.slug,
           course_slug: language.slug,
           locale: I18n.locale
         }
 
-        event = LessonFinishedEvent.new(data: event_data)
+        event = LessonFinishedEvent.new(data: lesson_finished_event_data)
         publish_event(event, current_user)
       end
 
@@ -37,11 +47,11 @@ class Api::LessonsController < Api::ApplicationController
         language_member.finish!
         language_has_been_finished = true
 
-        event_data = {
+        course_finished_event_data = {
           slug: language.slug,
           locale: I18n.locale
         }
-        event = CourseFinishedEvent.new(data: event_data)
+        event = CourseFinishedEvent.new(data: course_finished_event_data)
         publish_event(event, current_user)
       end
     end
@@ -50,16 +60,6 @@ class Api::LessonsController < Api::ApplicationController
       session[:finished_as_guest] ||= {}
       session[:finished_as_guest][lesson.id] = true
     end
-
-    event_data = {
-      lesson_slug: lesson.slug,
-      course_slug: language.slug,
-      locale: I18n.locale,
-      passed:
-    }
-
-    event = SolutionCheckedEvent.new(data: event_data)
-    publish_event(event, current_user)
 
     response_data = OpenStruct.new({
       **lesson_exercise_data,
