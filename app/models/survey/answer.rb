@@ -34,6 +34,10 @@ class Survey::Answer < ApplicationRecord
 
   enum :state, { requested: "requested", fulfilled: "fulfilled" }
 
+  def self.ransackable_attributes(auth_object = nil)
+    [ "created_at", "id", "state", "survey_id", "survey_item_id", "updated_at", "user_id" ]
+  end
+
   aasm :state, enum: true do
     state :requested, initial: true
     state :fulfilled do

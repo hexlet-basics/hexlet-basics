@@ -2241,6 +2241,7 @@
             "languages": "Курсы",
             "messages": "Соообщения (AI)",
             "reviews": "Отзывы",
+            "survey_answers": "Ответы на опросы",
             "surveys": "Опросы",
             "surveys_analytics": "Аналитика опросов",
             "users": "Пользователи"
@@ -2584,6 +2585,11 @@
           },
           "new": {
             "header": "Новый отзыв"
+          }
+        },
+        "survey_answers": {
+          "index": {
+            "header": "Ответы на опросы"
           }
         },
         "surveys": {

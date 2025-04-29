@@ -88,6 +88,7 @@ Rails.application.routes.draw do
       namespace :admin do
         root "home#index"
 
+        resources :survey_answers, only: [ :index ]
         resources :analytics do
           collection do
             get :surveys

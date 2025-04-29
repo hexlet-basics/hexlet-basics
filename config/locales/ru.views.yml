@@ -26,6 +26,9 @@ ru:
         course: 'Курс %{language}'
     admin:
       title: Админка Code-Basics
+      survey_answers:
+        index:
+          header: Ответы на опросы
       surveys:
         index:
           header: Опросы
