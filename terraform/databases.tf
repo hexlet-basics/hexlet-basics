@@ -59,8 +59,8 @@ resource "twc_database_user" "hexlet_basics_user" {
 resource "twc_database_user" "hexlet_basics_user_readonly" {
   cluster_id = twc_database_cluster.postgresql.id
 
-  login = var.postgres_db.username_readonly
-  password = var.postgres_db.password
+  login = var.postgres_db.readonly_username
+  password = var.postgres_db.readonly_password
 
   instance {
     instance_id = twc_database_instance.hexlet_basics.id
