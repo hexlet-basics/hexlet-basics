@@ -36,6 +36,7 @@ class Ai::Lessons::MessagesController < Ai::ApplicationController
     m.role = "user"
     m.language_lesson = lesson
     m.language = lesson.language
+    m.user = lesson_member.user
     m.save!
 
     Assistants::RunJob.perform_later(
