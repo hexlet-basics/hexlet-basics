@@ -1,6 +1,6 @@
 production:
   sync_analytics_tables:
-    command: bin/rails analytics:refresh_user_survey_pivot
+    class: RefreshUserSurveyPivotJob
     priority: 2
     schedule: every 2 hours
 #   periodic_cleanup:
