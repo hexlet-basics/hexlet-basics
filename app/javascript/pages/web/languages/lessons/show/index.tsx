@@ -9,7 +9,7 @@ import LessonLayout from "@/pages/layouts/LessonLayout.tsx";
 import type { BreadcrumbItem } from "@/types/index.ts";
 import { Link, usePage } from "@inertiajs/react";
 import i18next, { t } from "i18next";
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import App from "./components/App.tsx";
 import { useAppSelector } from "./slices/index.ts";
@@ -33,6 +33,14 @@ export default function Index() {
   const commonQuestions = t("languages.lessons.show.common_questions", {
     returnObjects: true,
   });
+
+  const [focusesCount, setFocusCount] = useState(0);
+
+  const handleSelect = (selectedKey: string | null) => {
+    if (selectedKey == "assistant") {
+      setFocusCount((state) => state + 1)
+    }
+  }
 
   const items: BreadcrumbItem[] = [
     {
@@ -59,14 +67,14 @@ export default function Index() {
           <Col className="x-h-md-100 col-12 col-md-6 col-lg-5 mb-3 mb-md-0 position-relative border-end">
             <Tab.Container id="left-tabs-example" defaultActiveKey="lesson">
               <div className="x-h-md-100 d-flex flex-column">
-                <Nav variant="underline" fill justify className="mb-3 small">
+                <Nav variant="underline" onSelect={handleSelect} fill justify className="mb-3 small">
                   <Nav.Item>
                     <Nav.Link className="link-body-emphasis" eventKey="lesson">
                       {t("languages.lessons.show.lesson")}
                     </Nav.Link>
                   </Nav.Item>
                   <Nav.Item>
-                    <Nav.Link className="link-body-emphasis" eventKey="discuss">
+                    <Nav.Link className="link-body-emphasis" eventKey="assistant">
                       {t("languages.lessons.show.discuss")}
                     </Nav.Link>
                   </Nav.Item>
@@ -174,7 +182,7 @@ export default function Index() {
                     </div>
                   </Tab.Pane>
                   <Tab.Pane
-                    eventKey="discuss"
+                    eventKey="assistant"
                     className="overflow-auto x-h-md-100"
                   >
                     {i18next.language === "ru" && (
@@ -187,6 +195,7 @@ export default function Index() {
                       </Alert>
                     )}
                     <Chat
+                      focusesCount={focusesCount}
                       previousMessages={previousMessages}
                       enabled={canCreateAssistantMessage}
                       userCode={userCode}

@@ -9,7 +9,7 @@ import type {
   LanguageLessonMember,
 } from "@/types/serializers";
 import cn from "classnames";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Button, Form, Spinner } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { useInView } from "react-intersection-observer";
@@ -18,6 +18,7 @@ import MarkdownViewer from "./MarkdownViewer";
 type Props = {
   enabled: boolean
   lesson: LanguageLesson;
+  focusesCount: number;
   course: Language;
   userCode: string;
   output: string;
@@ -36,10 +37,10 @@ function MessagePresenter({ message }: { message: AssistantMessage }) {
   );
 }
 
-// https://sdk.vercel.ai/cookbook/next/stream-assistant-response
 export default function Chat({
   userCode,
   enabled,
+  focusesCount,
   output,
   course,
   lesson,
@@ -47,6 +48,12 @@ export default function Chat({
   previousMessages,
 }: Props) {
   const { t: tViews } = useTranslation("web");
+
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [focusesCount]);
 
   if (!lessonMember || !course.openai_assistant_id || !enabled) {
     let content = "";
@@ -73,12 +80,6 @@ export default function Chat({
     );
   }
 
-  const formRef = useRef<HTMLTextAreaElement>(null);
-  const { ref } = useInView({
-    threshold: 0,
-    // onChange: () => formRef.current?.focus(),
-  });
-
   const { input, status, messages, submitMessage, handleInputChange } =
     useAssistantStream(lessonMember.id, lesson.id, userCode, output);
 
@@ -90,7 +91,7 @@ export default function Chat({
   };
 
   return (
-    <div ref={ref} className="h-100">
+    <div className="h-100">
       <div className="mb-3">
         <MessagePresenter message={initMessage} />
         {previousMessages.map((m: AssistantMessage) => (
@@ -103,7 +104,8 @@ export default function Chat({
 
       <form onSubmit={submitMessage}>
         <Form.Control
-          ref={formRef}
+          ref={inputRef}
+          rows={5}
           disabled={status === "in_progress"}
           as="textarea"
           value={input}

@@ -79,6 +79,9 @@ lint-fix:
 	bin/rubocop -x
 	npx oxlint --fix --fix-suggestions
 
+clear:
+	rm -rf ./.overmind.sock
+
 docker-build:
 	docker build . -t hexlet-basics/hexlet-basics
 
