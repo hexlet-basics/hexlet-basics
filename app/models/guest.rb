@@ -11,6 +11,10 @@ class Guest
 
   def email; end
 
+  def assistant_messages
+    Language::Lesson::Member::Message.none
+  end
+
   def assistant_messages_count
     0
   end

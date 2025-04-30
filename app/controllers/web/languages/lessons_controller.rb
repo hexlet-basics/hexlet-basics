@@ -97,7 +97,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
 
     # raise resource_language.category.inspect
     render inertia: true, props: {
-      previousMessages: Language::Lesson::Member::MessageResource.new(lesson_member.messages.order(id: :asc)),
+      previousMessages: lesson_member && Language::Lesson::Member::MessageResource.new(lesson_member.messages.order(id: :asc)),
       canCreateAssistantMessage: can_create_assistant_message,
       course: LanguageResource.new(resource_language),
       landingPage: Language::LandingPageForListsResource.new(resource_language_landing_page),
