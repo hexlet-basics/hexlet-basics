@@ -51,10 +51,10 @@ export default function Chat({
   if (!lessonMember || !course.openai_assistant_id || !enabled) {
     let content = "";
 
-    if (!enabled) {
-      content = tViews("languages.lessons.show.chat.disabled");
-    } else if (!lessonMember) {
+    if (!lessonMember) {
       content = tViews("languages.lessons.show.chat.guest");
+    } else if (!enabled) {
+      content = tViews("languages.lessons.show.chat.disabled");
     } else if (!course.openai_assistant_id) {
       content = tViews("languages.lessons.show.chat.not_available");
     }
