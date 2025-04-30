@@ -465,6 +465,20 @@ class User::ProfileForm
     def accounts=(value); end
 
     sig { returns(T::Array[T.untyped]) }
+    def assistant_message_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def assistant_message_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :assistant_messages`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::Language::Lesson::Member::Message::PrivateCollectionProxy) }
+    def assistant_messages; end
+
+    sig { params(value: T::Enumerable[::Language::Lesson::Member::Message]).void }
+    def assistant_messages=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
     def blog_post_ids; end
 
     sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
@@ -533,6 +547,20 @@ class User::ProfileForm
 
     sig { params(value: T::Enumerable[::Review]).void }
     def reviews=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def survey_answer_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def survey_answer_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :survey_answers`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::Survey::Answer::PrivateCollectionProxy) }
+    def survey_answers; end
+
+    sig { params(value: T::Enumerable[::Survey::Answer]).void }
+    def survey_answers=(value); end
   end
 
   module GeneratedAssociationRelationMethods
@@ -741,6 +769,51 @@ class User::ProfileForm
 
     sig { void }
     def admin_will_change!; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def assistant_messages_count; end
+
+    sig { params(value: T.nilable(::Integer)).returns(T.nilable(::Integer)) }
+    def assistant_messages_count=(value); end
+
+    sig { returns(T::Boolean) }
+    def assistant_messages_count?; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def assistant_messages_count_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def assistant_messages_count_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def assistant_messages_count_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
+    def assistant_messages_count_change; end
+
+    sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
+    def assistant_messages_count_change_to_be_saved; end
+
+    sig { params(from: T.nilable(::Integer), to: T.nilable(::Integer)).returns(T::Boolean) }
+    def assistant_messages_count_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::Integer)) }
+    def assistant_messages_count_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
+    def assistant_messages_count_previous_change; end
+
+    sig { params(from: T.nilable(::Integer), to: T.nilable(::Integer)).returns(T::Boolean) }
+    def assistant_messages_count_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::Integer)) }
+    def assistant_messages_count_previously_was; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def assistant_messages_count_was; end
+
+    sig { void }
+    def assistant_messages_count_will_change!; end
 
     sig { returns(T.nilable(::String)) }
     def confirmation_token; end
@@ -1421,6 +1494,9 @@ class User::ProfileForm
     def restore_admin!; end
 
     sig { void }
+    def restore_assistant_messages_count!; end
+
+    sig { void }
     def restore_confirmation_token!; end
 
     sig { void }
@@ -1479,6 +1555,12 @@ class User::ProfileForm
 
     sig { returns(T::Boolean) }
     def saved_change_to_admin?; end
+
+    sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
+    def saved_change_to_assistant_messages_count; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_assistant_messages_count?; end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_confirmation_token; end
@@ -1725,6 +1807,9 @@ class User::ProfileForm
 
     sig { returns(T::Boolean) }
     def will_save_change_to_admin?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_assistant_messages_count?; end
 
     sig { returns(T::Boolean) }
     def will_save_change_to_confirmation_token?; end

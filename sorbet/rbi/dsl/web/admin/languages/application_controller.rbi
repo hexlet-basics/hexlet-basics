@@ -16,6 +16,7 @@ class Web::Admin::Languages::ApplicationController
     include ::ActionController::Base::HelperMethods
     include ::LanguageCategoriesHelper
     include ::Web::Admin::LanguageLandingPagesHelper
+    include ::Pundit::Helper
     include ::ApplicationController::HelperMethods
 
     sig { returns(T.untyped) }

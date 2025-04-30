@@ -13,6 +13,12 @@ module GeneratedPathHelpersModule
   def account_profile_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def admin_analytic_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_analytics_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def admin_api_user_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -67,6 +73,15 @@ module GeneratedPathHelpersModule
   def admin_root_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def admin_survey_answers_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_survey_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_surveys_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def ai_lesson_messages_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -80,6 +95,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def edit_account_profile_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def edit_admin_analytic_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def edit_admin_api_user_path(*args); end
@@ -103,7 +121,13 @@ module GeneratedPathHelpersModule
   def edit_admin_review_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def edit_admin_survey_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def edit_password_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def edit_survey_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def language_categories_path(*args); end
@@ -124,6 +148,9 @@ module GeneratedPathHelpersModule
   def my_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def new_admin_analytic_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_admin_api_user_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -142,10 +169,16 @@ module GeneratedPathHelpersModule
   def new_admin_review_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def new_admin_survey_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_remind_password_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_session_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_survey_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_user_path(*args); end
@@ -227,6 +260,18 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def success_language_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def survey_answers_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def survey_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def surveys_admin_analytics_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def surveys_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def switch_locale_path(*args); end

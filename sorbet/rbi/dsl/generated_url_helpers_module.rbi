@@ -13,6 +13,12 @@ module GeneratedUrlHelpersModule
   def account_profile_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def admin_analytic_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_analytics_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def admin_api_user_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -67,6 +73,15 @@ module GeneratedUrlHelpersModule
   def admin_root_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def admin_survey_answers_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_survey_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_surveys_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def ai_lesson_messages_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -80,6 +95,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def edit_account_profile_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def edit_admin_analytic_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def edit_admin_api_user_url(*args); end
@@ -103,7 +121,13 @@ module GeneratedUrlHelpersModule
   def edit_admin_review_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def edit_admin_survey_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def edit_password_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def edit_survey_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def language_categories_url(*args); end
@@ -124,6 +148,9 @@ module GeneratedUrlHelpersModule
   def my_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def new_admin_analytic_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_admin_api_user_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -142,10 +169,16 @@ module GeneratedUrlHelpersModule
   def new_admin_review_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def new_admin_survey_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_remind_password_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_session_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_survey_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_user_url(*args); end
@@ -227,6 +260,18 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def success_language_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def survey_answers_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def survey_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def surveys_admin_analytics_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def surveys_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def switch_locale_url(*args); end

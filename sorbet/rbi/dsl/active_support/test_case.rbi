@@ -176,6 +176,31 @@ class ActiveSupport::TestCase
   sig { params(fixture_name: T.any(String, Symbol), other_fixtures: T.any(String, Symbol)).returns(T::Array[Review]) }
   def reviews(fixture_name = nil, *other_fixtures); end
 
+  sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[Survey::Answer]) }
+  sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(Survey::Answer) }
+  sig do
+    params(
+      fixture_name: T.any(String, Symbol),
+      other_fixtures: T.any(String, Symbol)
+    ).returns(T::Array[Survey::Answer])
+  end
+  def survey_answers(fixture_name = nil, *other_fixtures); end
+
+  sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[Survey::Item]) }
+  sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(Survey::Item) }
+  sig do
+    params(
+      fixture_name: T.any(String, Symbol),
+      other_fixtures: T.any(String, Symbol)
+    ).returns(T::Array[Survey::Item])
+  end
+  def survey_items(fixture_name = nil, *other_fixtures); end
+
+  sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[Survey]) }
+  sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(Survey) }
+  sig { params(fixture_name: T.any(String, Symbol), other_fixtures: T.any(String, Symbol)).returns(T::Array[Survey]) }
+  def surveys(fixture_name = nil, *other_fixtures); end
+
   sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[User]) }
   sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(User) }
   sig { params(fixture_name: T.any(String, Symbol), other_fixtures: T.any(String, Symbol)).returns(T::Array[User]) }
