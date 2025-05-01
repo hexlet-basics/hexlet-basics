@@ -19,7 +19,7 @@ class SurveyHandler
       should_request_answer1 = course_member.lesson_members.size > 2
       if should_request_answer1
         Survey.find_or_request_answer_if_needed_by("career-change-reason", user)
-        Survey.find_or_request_answer_if_needed_by("study-plan", user)
+        Survey.find_or_request_answer_if_needed_by("career-change-study-plan", user)
       end
 
       should_request_answer2 = course_member.lesson_members.size > 5

@@ -43,8 +43,8 @@ full__coding_experience:
 full__study_plan:
   state: fulfilled
   user: full
-  survey: study-plan
-  survey_item: study-plan-item3
+  survey: career-change-study-plan
+  survey_item: career-change-study-plan-item3
 
 admin__goal:
   state: fulfilled

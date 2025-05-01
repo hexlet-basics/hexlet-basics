@@ -69,24 +69,24 @@ coding-experience-item3:
   survey: coding-experience
   value: I have professional experience writing code.
 
-study-plan-item1:
+career-change-study-plan-item1:
   <<: *DEFAULTS
-  survey: study-plan
+  survey: career-change-study-plan
   value: У меня есть чёткий план — от учёбы до трудоустройства
 
-study-plan-item2:
+career-change-study-plan-item2:
   <<: *DEFAULTS
-  survey: study-plan
+  survey: career-change-study-plan
   value: Примерно понимаю, что нужно делать
 
-study-plan-item3:
+career-change-study-plan-item3:
   <<: *DEFAULTS
-  survey: study-plan
+  survey: career-change-study-plan
   value: Я выбрал(а) направление, но не знаю, что делать дальше
 
-study-plan-item4:
+career-change-study-plan-item4:
   <<: *DEFAULTS
-  survey: study-plan
+  survey: career-change-study-plan
   value: Я всё ещё на этапе выбора направления
 
 career-change-reason-item1:
