@@ -113,11 +113,11 @@ export default function Index() {
 
                     <div className="hexlet-basics-content">
                       <h1 className="h2">{`${landingPage.header}: ${lesson.name}`}</h1>
-                      <MarkdownViewer>{lesson.theory || ""}</MarkdownViewer>
+                      <MarkdownViewer allowHtml>{lesson.theory || ""}</MarkdownViewer>
                       <h2 className="h3">
                         {t("languages.lessons.show.instructions")}
                       </h2>
-                      <MarkdownViewer>
+                      <MarkdownViewer allowHtml>
                         {lesson.instructions || ""}
                       </MarkdownViewer>
                     </div>
@@ -130,7 +130,7 @@ export default function Index() {
                         <ul>
                           {lesson.tips.map((t) => (
                             <li key={t}>
-                              <MarkdownViewer>{t}</MarkdownViewer>
+                              <MarkdownViewer allowHtml>{t}</MarkdownViewer>
                             </li>
                           ))}
                         </ul>
@@ -161,7 +161,7 @@ export default function Index() {
                         >
                           <summary className="p-2">{v.question}</summary>
                           <div className="px-2 pt-2">
-                            <MarkdownViewer>{v.answer}</MarkdownViewer>
+                            <MarkdownViewer allowHtml>{v.answer}</MarkdownViewer>
                           </div>
                         </details>
                       ))}

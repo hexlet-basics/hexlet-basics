@@ -130,7 +130,7 @@ export function useAssistantStream(
       setStatus("awaiting_message");
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 429) {
-          const message = tViews("languages.lessons.show.chat.disabled");
+          const message = tViews("languages.lessons.show.chat.disabled_html");
 
           setMessages((prev) => [
             ...prev,

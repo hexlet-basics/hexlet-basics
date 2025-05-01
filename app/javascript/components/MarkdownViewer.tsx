@@ -9,23 +9,27 @@ import { PluggableList } from "unified";
 
 type MarkdownViewerProps = {
   children: string;
+  allowHtml?: boolean
 };
 
 export default function MarkdownViewer({
   children,
+  allowHtml = false,
   // foldCode,
   // foldCodeMessage,
   // inlineCodeHighlight,
 }: MarkdownViewerProps) {
 
   const rehypePlugins: PluggableList = [
-    rehypeRaw,
     rehypeHighlight,
     [rehypeExternalLinks, {
       target: "_blank",
       rel: ["noopener", "noreferrer"],
     }]
   ]
+  if (allowHtml) {
+    rehypePlugins.push(rehypeRaw)
+  }
 
   return <Markdown
     remarkPlugins={[remarkGfm]}

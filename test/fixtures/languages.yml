@@ -55,6 +55,7 @@ typescript:
   <<: *DEFAULTS
   order: 1
   current_version: typescript1
+  openai_assistant_id: asst_BnPHo7ddQhnV3KfUtJV3PJVX
 
 javascript:
   <<: *DEFAULTS

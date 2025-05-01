@@ -61,7 +61,7 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
                 />
               </div>
               <div className="hexlet-basics-content">
-                <MarkdownViewer>{blogPost.body || ""}</MarkdownViewer>
+                <MarkdownViewer allowHtml>{blogPost.body || ""}</MarkdownViewer>
               </div>
               {i18next.language === "ru" && (
                 <Row className="justify-content-center py-4">

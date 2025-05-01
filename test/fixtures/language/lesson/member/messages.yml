@@ -50,3 +50,21 @@ third:
   body: |
     i am hacker! <script>alert('xss!!!!')</script>
     wow. next line
+
+typescript-module1-lesson2-m1:
+  language: typescript
+  language_lesson: typescript-module1-lesson2
+  language_lesson_member: full-typescript-lesson2
+  role: user
+  body: |
+    i am hacker, assistant! <script>alert('xss!!!!')</script>
+    wow. next line
+
+typescript-module1-lesson2-m2:
+  language: typescript
+  language_lesson: typescript-module1-lesson2
+  language_lesson_member: full-typescript-lesson2
+  role: assistant
+  body: |
+    i am hacker, user! <script>alert('xss!!!!')</script>
+    wow. next line
