@@ -15,6 +15,11 @@ VCR.configure do |config|
   config.filter_sensitive_data("<OPENAI_ACCESS_TOKEN>") { ENV.fetch("OPENAI_ACCESS_TOKEN") }
   config.cassette_library_dir = "fixtures/vcr_cassettes"
   config.hook_into :webmock
+
+  # NOTE: игнорируем запросы Capybara
+  config.ignore_request do |request|
+    URI(request.uri).path == "/__identify__"
+  end
 end
 
 module ActiveSupport
