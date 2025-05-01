@@ -27,17 +27,13 @@ export default function Success() {
               <div className="d-flex flex-column flex-md-row justify-content-center gap-3 gap-lg-4">
                 <a
                   className="btn btn-primary btn-lg"
-                  href={
-                    i18next.language === "ru"
-                      ? "https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=all-courses&utm_content=finished_course_page"
-                      : "/#courses"
-                  }
+                  href={"https://hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=all-courses&utm_content=finished_course_page"}
                   target="_blank"
                   rel="noreferrer"
                 >
                   <span>{tViews("languages.success.choose_profession")}</span>
                 </a>
-                <a className="btn btn-success btn-lg" href={Routes.root_path()}>
+                <a className="btn btn-outline-secondary btn-lg" href={Routes.root_path()}>
                   <span className="me-2">
                     {tViews("languages.success.home")}
                   </span>

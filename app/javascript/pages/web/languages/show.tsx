@@ -90,7 +90,7 @@ export default function Show({
       <Head>
         <script type="application/ld+json">{JSON.stringify(product)}</script>
       </Head>
-      <Container className="pt-4 pt-lg-5">
+      <Container>
         {courseMember?.state === "finished" && (
           <Alert variant="success" className="mb-5">
             <XssContent>{t("languages.show.completed_html")}</XssContent>
