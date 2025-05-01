@@ -74,3 +74,10 @@ career-change-preferred-intro-format:
   description: |
     Мы можем предложить вам первый шаг, который будет максимально комфортным: от вебинара до личной консультации
   parent_survey_item: goal-item1
+
+career-change-contact-method:
+  <<: *DEFAULTS
+  slug: career-change-contact-method
+  question: Какой способ связи вам удобнее всего?
+  description: Мы свяжемся с вами только по выбранному вами каналу — без навязчивости и в удобное время
+  parent_survey_item: career-change-preferred-intro-format-item2

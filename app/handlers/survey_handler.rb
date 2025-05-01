@@ -32,6 +32,7 @@ class SurveyHandler
       if should_request_answer3
         Survey.find_or_request_answer_if_needed_by("career-change-priority", user)
         Survey.find_or_request_answer_if_needed_by("career-change-preferred-intro-format", user)
+        Survey.find_or_request_answer_if_needed_by("career-change-contact-method", user)
       end
     else
       # nothing to do
