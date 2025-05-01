@@ -102,19 +102,14 @@ career-change-reason-item2:
 career-change-reason-item3:
   <<: *DEFAULTS
   survey: career-change-reason
-  value: Мне просто нравится программировать
+  value: Не вижу будущего в своей текущей профессии
 
 career-change-reason-item4:
   <<: *DEFAULTS
   survey: career-change-reason
-  value: Не вижу будущего в своей текущей профессии
-
-career-change-reason-item5:
-  <<: *DEFAULTS
-  survey: career-change-reason
   value: Меня вдохновил кто-то из знакомых, кто уже перешёл
 
-career-change-reason-item6:
+career-change-reason-item5:
   <<: *DEFAULTS
   survey: career-change-reason
   value: Хочу заниматься чем-то более интересным и интеллектуальным

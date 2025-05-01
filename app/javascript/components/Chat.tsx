@@ -61,7 +61,7 @@ export default function Chat({
     if (!lessonMember) {
       content = tViews("languages.lessons.show.chat.guest");
     } else if (!enabled) {
-      content = tViews("languages.lessons.show.chat.disabled");
+      content = tViews("languages.lessons.show.chat.disabled_html");
     } else if (!course.openai_assistant_id) {
       content = tViews("languages.lessons.show.chat.not_available");
     }

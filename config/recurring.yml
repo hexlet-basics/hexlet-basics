@@ -1,8 +1,8 @@
-production:
-  sync_analytics_tables:
-    class: RefreshUserSurveyPivotJob
-    priority: 2
-    schedule: every 2 hours
+# production:
+#   sync_analytics_tables:
+#     class: RefreshUserSurveyPivotJob
+#     priority: 2
+#     schedule: every 2 hours
 #   periodic_cleanup:
 #     class: CleanSoftDeletedRecordsJob
 #     queue: background
