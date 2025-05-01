@@ -35,6 +35,11 @@ export default function NavbarBlock({ className }: Props) {
 
       <Navbar.Collapse>
         <Nav className="me-auto">
+          {!auth.user.guest && (
+            <Nav.Link className="link-body-emphasis" href={Routes.my_path()}>
+              {tLayouts("shared.nav.my")}
+            </Nav.Link>
+          )}
           <NavDropdown
             renderMenuOnMount={true}
             className="link-body-emphasis"
@@ -80,9 +85,6 @@ export default function NavbarBlock({ className }: Props) {
           )}
           {!auth.user.guest && (
             <>
-              <Nav.Link className="link-body-emphasis" href={Routes.my_path()}>
-                {tLayouts("shared.nav.my")}
-              </Nav.Link>
               <NavDropdown
                 align="end"
                 className="link-body-emphasis"
