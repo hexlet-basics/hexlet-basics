@@ -21,6 +21,7 @@
 
 DEFAULTS: &DEFAULTS
   order: 100
+  state: active
 
 goal-item1:
   <<: *DEFAULTS

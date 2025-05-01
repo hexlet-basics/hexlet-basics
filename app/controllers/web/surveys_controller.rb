@@ -11,9 +11,11 @@ class Web::SurveysController < Web::ApplicationController
       return
     end
 
+    survey_answers = survey.items.active.order(order: :asc)
+
     render inertia: true, props: {
       survey: SurveyResource.new(survey),
-      surveyItems: Survey::ItemResource.new(survey.items.active.order(order: :asc))
+      surveyItems: Survey::ItemResource.new(survey_answers)
     }
   end
 end
