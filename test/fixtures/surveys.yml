@@ -40,6 +40,37 @@ coding-experience:
 
 study-plan:
   <<: *DEFAULTS
-  question: Есть ли у вас готовый план обучения?
+  question: Понимаете ли вы, что и в каком порядке делать, чтобы стать программистом?
+  description: Благодаря вашему ответу мы сможем подсказать, с чего начать, как выстроить план действий и какие шаги нужны для перехода в профессию
   parent_survey_item: goal-item1
-  # description:
+
+career-change-reason:
+  <<: *DEFAULTS
+  question: Что стало основной причиной, по которой, вы решили сменить карьеру?
+  parent_survey_item: goal-item1
+
+career-change-barrier:
+  <<: *DEFAULTS
+  question: Что мешает вам начать или продолжить обучение?
+  description: Это поможет нам понять, какие сложности стоят на пути, и как мы можем вас поддержать
+  parent_survey_item: goal-item1
+
+career-change-time-commitment:
+  <<: *DEFAULTS
+  question: Сколько времени в неделю вы готовы тратить на обучение?
+  description: Мы подберём формат, который подойдёт вашему ритму жизни
+  parent_survey_item: goal-item1
+
+career-change-priority:
+  <<: *DEFAULTS
+  question: Что для вас самое важное в обучении?
+  description: Благодаря этому мы покажем те форматы и курсы, которые лучше всего подходят вам
+  parent_survey_item: goal-item1
+
+career-change-preferred-intro-format:
+  <<: *DEFAULTS
+  slug: preferred-intro-format
+  question: Какой формат знакомства с обучением вам был бы удобнее всего?
+  description: |
+    Мы можем предложить вам первый шаг, который будет максимально комфортным: от вебинара до личной консультации
+  parent_survey_item: goal-item1

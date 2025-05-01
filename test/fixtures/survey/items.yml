@@ -72,20 +72,156 @@ coding-experience-item3:
 study-plan-item1:
   <<: *DEFAULTS
   survey: study-plan
-  value: Да, у меня есть план и я его придерживаюсь
+  value: У меня есть чёткий план — от учёбы до трудоустройства
 
 study-plan-item2:
   <<: *DEFAULTS
   survey: study-plan
-  value: У меня есть примерное представление, того что надо делать
+  value: Примерно понимаю, что нужно делать
 
 study-plan-item3:
   <<: *DEFAULTS
   survey: study-plan
-  value: Я выбрал направление, но у меня нет плана обучения
+  value: Я выбрал(а) направление, но не знаю, что делать дальше
 
 study-plan-item4:
   <<: *DEFAULTS
   survey: study-plan
-  value: Я все еще выбираю то, чем заниматься и/или на каком языке писать
+  value: Я всё ещё на этапе выбора направления
 
+career-change-reason-item1:
+  <<: *DEFAULTS
+  survey: career-change-reason
+  value: Хочу стабильную и хорошо оплачиваемую работу
+
+career-change-reason-item2:
+  <<: *DEFAULTS
+  survey: career-change-reason
+  value: Хочу работать удалённо или с гибким графиком
+
+career-change-reason-item3:
+  <<: *DEFAULTS
+  survey: career-change-reason
+  value: Мне просто нравится программировать
+
+career-change-reason-item4:
+  <<: *DEFAULTS
+  survey: career-change-reason
+  value: Не вижу будущего в своей текущей профессии
+
+career-change-reason-item5:
+  <<: *DEFAULTS
+  survey: career-change-reason
+  value: Меня вдохновил кто-то из знакомых, кто уже перешёл
+
+career-change-reason-item6:
+  <<: *DEFAULTS
+  survey: career-change-reason
+  value: Хочу заниматься чем-то более интересным и интеллектуальным
+
+career-change-barrier-item1:
+  <<: *DEFAULTS
+  survey: career-change-barrier
+  value: Нет времени
+
+career-change-barrier-item2:
+  <<: *DEFAULTS
+  survey: career-change-barrier
+  value: Неуверенность, что получится
+
+career-change-barrier-item3:
+  <<: *DEFAULTS
+  survey: career-change-barrier
+  value: Не знаю, с чего начать
+
+career-change-barrier-item4:
+  <<: *DEFAULTS
+  survey: career-change-barrier
+  value: Боюсь, что не найду работу
+
+career-change-barrier-item5:
+  <<: *DEFAULTS
+  survey: career-change-barrier
+  value: Финансовые причины
+
+career-change-barrier-item6:
+  <<: *DEFAULTS
+  survey: career-change-barrier
+  value: Другое
+
+# career-change-time-commitment
+career-change-time-commitment-item1:
+  <<: *DEFAULTS
+  survey: career-change-time-commitment
+  value: Менее 2 часов
+
+career-change-time-commitment-item2:
+  <<: *DEFAULTS
+  survey: career-change-time-commitment
+  value: 2–4 часа
+
+career-change-time-commitment-item3:
+  <<: *DEFAULTS
+  survey: career-change-time-commitment
+  value: 5–8 часов
+
+career-change-time-commitment-item4:
+  <<: *DEFAULTS
+  survey: career-change-time-commitment
+  value: Более 8 часов
+
+career-change-time-commitment-item5:
+  <<: *DEFAULTS
+  survey: career-change-time-commitment
+  value: Пока не знаю
+
+# career-change-priority
+career-change-priority-item1:
+  <<: *DEFAULTS
+  survey: career-change-priority
+  value: Структурированный план
+
+career-change-priority-item2:
+  <<: *DEFAULTS
+  survey: career-change-priority
+  value: Помощь наставника
+
+career-change-priority-item3:
+  <<: *DEFAULTS
+  survey: career-change-priority
+  value: Практика и проекты
+
+career-change-priority-item4:
+  <<: *DEFAULTS
+  survey: career-change-priority
+  value: Гибкий график
+
+career-change-priority-item5:
+  <<: *DEFAULTS
+  survey: career-change-priority
+  value: Быстрый выход на работу
+
+career-change-preferred-intro-format-item1:
+  <<: *DEFAULTS
+  survey: career-change-preferred-intro-format
+  value: Вводный вебинар
+
+career-change-preferred-intro-format-item2:
+  <<: *DEFAULTS
+  survey: career-change-preferred-intro-format
+  value: Индивидуальная консультация
+
+career-change-preferred-intro-format-item3:
+  <<: *DEFAULTS
+  survey: career-change-preferred-intro-format
+  value: Почитать самостоятельно
+
+career-change-preferred-intro-format-item4:
+  <<: *DEFAULTS
+  survey: career-change-preferred-intro-format
+  value: Пока не знаю
+
+career-change-preferred-intro-format-item5:
+  <<: *DEFAULTS
+  survey: career-change-preferred-intro-format
+  value: Чат со специалистом, чтобы задать вопросы
