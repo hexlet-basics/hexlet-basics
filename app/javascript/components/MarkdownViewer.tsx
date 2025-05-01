@@ -3,6 +3,7 @@
 import Markdown from 'react-markdown'
 import rehypeHighlight from 'rehype-highlight'
 import remarkGfm from 'remark-gfm'
+import rehypeRaw from 'rehype-raw'
 import rehypeExternalLinks from "rehype-external-links";
 import { PluggableList } from "unified";
 
@@ -18,6 +19,7 @@ export default function MarkdownViewer({
 }: MarkdownViewerProps) {
 
   const rehypePlugins: PluggableList = [
+    rehypeRaw,
     rehypeHighlight,
     [rehypeExternalLinks, {
       target: "_blank",
