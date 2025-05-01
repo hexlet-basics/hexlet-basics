@@ -5,14 +5,14 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   driven_by :cuprite
 
   # https://guides.rubyonrails.org/active_storage_overview.html#serving-files
-  parallelize_setup do |i|
-    ActiveStorage::Blob.service.root = "#{ActiveStorage::Blob.service.root}-#{i}"
-  end
+  # parallelize_setup do |i|
+  #   ActiveStorage::Blob.service.root = "#{ActiveStorage::Blob.service.root}-#{i}"
+  # end
 
-  def after_teardown
-    super
-    FileUtils.rm_rf(ActiveStorage::Blob.service.root)
-  end
+  # def after_teardown
+  #   super
+  #   FileUtils.rm_rf(ActiveStorage::Blob.service.root)
+  # end
 
   def sign_in_as(name)
     user = users(name)

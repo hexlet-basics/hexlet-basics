@@ -11,6 +11,7 @@ I18n.locale = "ru"
 Rails.application.routes.default_url_options[:suffix] = AppHost.locale_for_url(I18n.locale)
 
 VCR.configure do |config|
+  config.allow_http_connections_when_no_cassette = true
   config.filter_sensitive_data("<OPENAI_ACCESS_TOKEN>") { ENV.fetch("OPENAI_ACCESS_TOKEN") }
   config.cassette_library_dir = "fixtures/vcr_cassettes"
   config.hook_into :webmock
@@ -70,14 +71,14 @@ class ActionDispatch::IntegrationTest
   include AuthConcern
   include SignInHelper
 
-  parallelize_setup do |i|
-    ActiveStorage::Blob.service.root = "#{ActiveStorage::Blob.service.root}-#{i}"
-  end
-
-  def after_teardown
-    super
-    FileUtils.rm_rf(ActiveStorage::Blob.service.root)
-  end
+  # parallelize_setup do |i|
+  #   ActiveStorage::Blob.service.root = "#{ActiveStorage::Blob.service.root}-#{i}"
+  # end
+  #
+  # def after_teardown
+  #   super
+  #   FileUtils.rm_rf(ActiveStorage::Blob.service.root)
+  # end
 end
 
 class Rack::Request
