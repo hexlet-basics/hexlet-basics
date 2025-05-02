@@ -88,7 +88,7 @@
     "@types/react-syntax-highlighter": "^15.5.13",
     "@vitejs/plugin-react": "^4.4.1",
     "autoprefixer": "^10.4.21",
-    "browserslist": "^4.24.4",
+    "browserslist": "^4.24.5",
     "globals": "^16.0.0",
     "lightningcss": "^1.29.3",
     "npm-check-updates": "^18.0.1",
