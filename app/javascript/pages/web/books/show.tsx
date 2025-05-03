@@ -1,13 +1,13 @@
 import type { PropsWithChildren } from "react";
 import * as Routes from "@/routes.js";
-import { Button, Col, Container, Row, Table } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 
-import bookCoverImg from "@/images/profession-developer-book-cover.png"
+import bookCoverImg from "@/images/profession-developer-book-cover.png";
 
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout.tsx";
 import { useTranslation } from "react-i18next";
 import { Link } from "@inertiajs/react";
-import bookToc from '@/lib/book.ts'
+import bookToc from '@/lib/book.ts';
 
 type Props = PropsWithChildren & {
   bookRequested: boolean
@@ -79,7 +79,7 @@ export default function New({ bookRequested }: Props) {
           <h2 className="mb-4">{t('books.show.toc')}</h2>
           <Row className="flex-column">
             {bookToc.map((item, index) => (
-              <Col className="py-3">
+              <Col key={item.title} className="py-3">
                 <Row>
                   <Col className="col-12 col-md-2 mb-3 fw-bold">
                     {t('books.show.chapter', { number: index + 1 })}
@@ -87,8 +87,8 @@ export default function New({ bookRequested }: Props) {
                   <Col className="col-12 col-md-4 mb-3">{item.title}</Col>
                   <Col className="col-12 col-md-6 mb-3">
                     <ul>
-                      {item.subsections.map((subsection) => (
-                        <li>{subsection}</li>
+                      {item.subsections.map((subsection, index) => (
+                        <li key={index}>{subsection}</li>
                       ))}
                     </ul>
                   </Col>
