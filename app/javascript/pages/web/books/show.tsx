@@ -78,8 +78,8 @@ export default function New({ bookRequested }: Props) {
           </Row>
           <h2 className="mb-4">{t('books.show.toc')}</h2>
           {bookToc.map((item, index) => (
-            <>
-              <Row key={item.title} className="py-3 bottom">
+            <div key={item.title}>
+              <Row className="py-3 bottom">
                 <Col className="col-12 col-md-2 fw-bold">
                   {t('books.show.chapter', { number: index + 1 })}
                 </Col>
@@ -93,7 +93,7 @@ export default function New({ bookRequested }: Props) {
                 </Col>
               </Row>
               {(index !== bookToc.length - 1) && <hr />}
-            </>
+            </div>
           ))}
 
         </div>
