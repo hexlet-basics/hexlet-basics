@@ -3,6 +3,7 @@
 # Table name: book_requests
 #
 #  id         :bigint           not null, primary key
+#  state      :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  user_id    :bigint           not null
@@ -16,5 +17,18 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class BookRequest < ApplicationRecord
+  include AASM
+
   belongs_to :user
+
+  enum :state, { requested: "requested", downloaded: "downloaded" }, default: "requested", suffix: true, validate: true
+
+  aasm :state, enum: true do
+    state :requested
+    state :downloaded
+
+    event :mark_as_downloaded do
+      transitions to: :downloaded
+    end
+  end
 end

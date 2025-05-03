@@ -26,6 +26,8 @@ class Web::BooksController < Web::ApplicationController
       redirect_to view_context.book_path
     end
 
+    current_user.book_request.mark_as_downloaded!
+
     filepath = Rails.root.join("public/book.pdf")
     send_file filepath,
       filename: "profession-developer-hexlet-book.pdf",

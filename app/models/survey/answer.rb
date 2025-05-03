@@ -32,14 +32,14 @@ class Survey::Answer < ApplicationRecord
 
   validates :survey, uniqueness: { scope: :user }
 
-  enum :state, { requested: "requested", fulfilled: "fulfilled" }
+  enum :state, { requested: "requested", fulfilled: "fulfilled" }, default: "requested"
 
   def self.ransackable_attributes(auth_object = nil)
     [ "created_at", "id", "state", "survey_id", "survey_item_id", "updated_at", "user_id" ]
   end
 
   aasm :state, enum: true do
-    state :requested, initial: true
+    state :requested
     state :fulfilled do
       validates :survey_item, optional: false
     end

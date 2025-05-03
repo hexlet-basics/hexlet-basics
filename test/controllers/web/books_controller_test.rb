@@ -14,16 +14,23 @@ class Web::BooksControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "create_request" do
-    _user = users(:ready_to_start_learning)
+    user = sign_in_as(:ready_to_start_learning)
+    assert { user.book_request.nil? }
 
     post create_request_book_path
     assert_response :redirect
+
+    user.reload
+
+    assert { user.book_request }
   end
 
   test "download" do
-    sign_in_as(:full)
+    user = sign_in_as(:full)
 
     get download_book_path
     assert_response :success
+
+    assert { user.book_request.downloaded? }
   end
 end
