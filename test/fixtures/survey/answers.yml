@@ -51,3 +51,15 @@ admin__goal:
   user: admin
   survey: goal
   survey_item: goal-item2
+
+ready_to_start_learning__goal:
+  state: fulfilled
+  user: ready_to_start_learning
+  survey: goal
+  survey_item: goal-item1
+
+ready_to_start_learning__coding_experience:
+  state: fulfilled
+  user: ready_to_start_learning
+  survey: coding-experience
+  survey_item: coding-experience-item2

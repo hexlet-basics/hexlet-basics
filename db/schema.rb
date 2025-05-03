@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_29_020324) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_02_214832) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -56,6 +56,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_29_020324) do
     t.index ["creator_id"], name: "index_blog_posts_on_creator_id"
     t.index ["language_id"], name: "index_blog_posts_on_language_id"
     t.index ["slug"], name: "index_blog_posts_on_slug", unique: true
+  end
+
+  create_table "book_requests", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_book_requests_on_user_id", unique: true
   end
 
   create_table "course_categories", force: :cascade do |t|
@@ -583,6 +590,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_29_020324) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "blog_posts", "languages"
   add_foreign_key "blog_posts", "users", column: "creator_id"
+  add_foreign_key "book_requests", "users"
   add_foreign_key "event_store_events_in_streams", "event_store_events", column: "event_id", primary_key: "event_id"
   add_foreign_key "language_landing_page_qna_items", "language_landing_pages"
   add_foreign_key "language_landing_pages", "language_categories"

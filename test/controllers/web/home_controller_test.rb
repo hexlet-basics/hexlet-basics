@@ -8,6 +8,13 @@ class Web::HomeControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "index (sign in)" do
+    sign_in_as(:full)
+
+    get root_url
+    assert_response :success
+  end
+
   test "#index with stored locale" do
     open_session do |s|
       s.get s.root_url(suffix: :ru)

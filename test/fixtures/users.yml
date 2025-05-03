@@ -42,6 +42,9 @@ full:
 just_signed_up:
   <<: *DEFAULTS
 
+ready_to_start_learning:
+  <<: *DEFAULTS
+
 one:
   <<: *DEFAULTS
 

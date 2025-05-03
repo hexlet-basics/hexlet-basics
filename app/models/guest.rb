@@ -19,6 +19,10 @@ class Guest
     0
   end
 
+  def book_request
+    nil
+  end
+
   def first_name
     ""
   end

@@ -3,7 +3,7 @@ import defaultAvatarImg from "@/images/user-avatar.png";
 import { localesByCode } from "@/lib/utils";
 import cn from "classnames";
 import i18next from "i18next";
-import { Nav, NavDropdown, Navbar, type NavbarProps } from "react-bootstrap";
+import { Button, Form, Nav, NavDropdown, Navbar, type NavbarProps } from "react-bootstrap";
 
 import useLinkClickHandler from "@/hooks/useLinkClickHandler";
 import * as Routes from "@/routes.js";
@@ -62,8 +62,17 @@ export default function NavbarBlock({ className }: Props) {
               </NavDropdown.Item>
             ))}
           </NavDropdown>
-          <Nav.Link href={Routes.blog_posts_path()}>
-            {tLayouts("shared.nav.blog")}
+          {/* <Nav.Link href={Routes.blog_posts_path()}> */}
+          {/*   {tLayouts("shared.nav.blog")} */}
+          {/* </Nav.Link> */}
+          {/* <Button size="sm" variant="outline-secondary" type="button"> */}
+          {/*   {tLayouts("shared.nav.book")} */}
+          {/* </Button> */}
+          <Nav.Link
+            className="link-body-emphasis link-btn"
+            href={Routes.book_path()}
+          >
+            {tLayouts("shared.nav.book")}
           </Nav.Link>
         </Nav>
         <Nav>

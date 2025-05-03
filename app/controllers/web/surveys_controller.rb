@@ -5,6 +5,11 @@ class Web::SurveysController < Web::ApplicationController
     survey = Survey.where(locale: I18n.locale).find_by! slug: params[:id]
 
     answer = survey.answers.find_by user: current_user
+    unless answer
+      redirect_to view_context.root_path
+      return
+    end
+
     if answer.fulfilled?
       f(:success)
       redirect_to params[:from].presence || root_path

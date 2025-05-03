@@ -41,7 +41,7 @@ staging:
 dev-ssr:
 	bin/vite ssr
 
-i18n-export:
+sync-i18n:
 	bundle exec i18n export
 
 sync-fixtures:
@@ -53,7 +53,7 @@ editor-setup:
 	-bin/tapioca require
 	-bin/tapioca gem
 
-sync: i18n-export sync-fixtures
+sync: sync-i18n sync-fixtures
 	ENABLE_TYPELIZER=1 bin/rails typelizer:generate:refresh
 	bin/rails js:routes:typescript
 
@@ -81,6 +81,9 @@ lint-fix:
 
 clear:
 	rm -rf ./.overmind.sock
+	bin/rails log:clear
+	bin/rails tmp:clear
+	bin/rails assets:clobber
 
 docker-build:
 	docker build . -t hexlet-basics/hexlet-basics

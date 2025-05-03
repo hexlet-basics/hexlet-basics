@@ -58,6 +58,13 @@ Rails.application.routes.draw do
         end
       end
 
+      resource :book do
+        member do
+          post :create_request
+          get :download
+        end
+      end
+
       resources :pages, only: %i[show]
       resources :blog_posts, only: %i[index show]
       resources :reviews, only: %i[index]

@@ -54,6 +54,7 @@ class User < ApplicationRecord
   has_many :blog_posts, dependent: :destroy
   has_many :survey_answers, class_name: "Survey::Answer"
   has_many :assistant_messages, class_name: "Language::Lesson::Member::Message"
+  has_one :book_request
 
   aasm :state do
     state :active, initial: true

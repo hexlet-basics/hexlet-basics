@@ -4,7 +4,7 @@ class TypedEvent < RailsEventStore::Event
   extend T::Sig
 
   sig { params(data: T::Hash[String, T.untyped], kwargs: T.untyped).void }
-  def initialize(data:, **kwargs)
+  def initialize(data = {}, **kwargs)
     # no need to transform keys
     super(data: data, **kwargs)
   end

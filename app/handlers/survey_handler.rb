@@ -34,6 +34,14 @@ class SurveyHandler
         Survey.find_or_request_answer_if_needed_by("career-change-preferred-intro-format", user)
         Survey.find_or_request_answer_if_needed_by("career-change-contact-method", user)
       end
+    when BookRequestedEvent
+      Survey.find_or_request_answer_if_needed_by("career-change-reason", user)
+      Survey.find_or_request_answer_if_needed_by("career-change-study-plan", user)
+      Survey.find_or_request_answer_if_needed_by("career-change-barrier", user)
+      Survey.find_or_request_answer_if_needed_by("career-change-time-commitment", user)
+      Survey.find_or_request_answer_if_needed_by("career-change-priority", user)
+      Survey.find_or_request_answer_if_needed_by("career-change-preferred-intro-format", user)
+      Survey.find_or_request_answer_if_needed_by("career-change-contact-method", user)
     else
       # nothing to do
     end
