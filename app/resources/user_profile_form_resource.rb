@@ -1,10 +1,7 @@
-class UserProfileFormResource
-  include Alba::Resource
-  include Typelizer::DSL
-
+class UserProfileFormResource < ApplicationResource
   typelize_from User::ProfileForm
 
-  attributes :first_name, :last_name
+  attributes :first_name, :last_name, :contact_method, :contact_value
 
   typelize '"user_profile_form"', nullable: false
   attribute :type do |user|

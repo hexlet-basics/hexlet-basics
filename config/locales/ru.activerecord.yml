@@ -46,6 +46,12 @@ ru:
         first_name: Имя
         last_name: Фамилия
         nickname: Никнейм
+        contact_method: Способ связи
+        contact_method/values:
+          whatsapp: WhatsApp
+          telegram: Telegram
+          phone: Телефон
+        contact_value: Номер для связи (или имя пользователя)
         password: Пароль
         email: Email
       blog_post:

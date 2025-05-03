@@ -8,6 +8,8 @@
 #  admin                    :boolean
 #  assistant_messages_count :integer          default(0)
 #  confirmation_token       :string(255)
+#  contact_method           :string
+#  contact_value            :string
 #  email                    :string(255)
 #  email_delivery_state     :string(255)
 #  facebook_uid             :string(255)

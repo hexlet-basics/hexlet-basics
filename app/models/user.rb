@@ -8,6 +8,8 @@
 #  admin                    :boolean
 #  assistant_messages_count :integer          default(0)
 #  confirmation_token       :string(255)
+#  contact_method           :string
+#  contact_value            :string
 #  email                    :string(255)
 #  email_delivery_state     :string(255)
 #  facebook_uid             :string(255)
@@ -46,6 +48,18 @@ class User < ApplicationRecord
                     'valid_email_2/email': { mx: true },
                     unless: :removed?
 
+  validates :first_name, length: { maximum: 40 },
+                         format: { with: UsefulRegexp.without_spec_chars },
+                         allow_blank: true
+
+  validates :last_name, length: { maximum: 40 },
+                        format: { with: UsefulRegexp.without_spec_chars },
+                        allow_blank: true
+
+  validates :nickname, length: { maximum: 40 },
+                       format: { with: UsefulRegexp.without_spec_chars },
+                       allow_blank: true
+
   has_many :lesson_members, class_name: "Language::Lesson::Member", dependent: :destroy
   has_many :lessons, through: :lesson_members, class_name: "Language::Lesson"
   has_many :language_members, class_name: "Language::Member", dependent: :destroy
@@ -55,6 +69,8 @@ class User < ApplicationRecord
   has_many :survey_answers, class_name: "Survey::Answer"
   has_many :assistant_messages, class_name: "Language::Lesson::Member::Message"
   has_one :book_request
+
+  enum :contact_method, { telegram: "telegram", phone: "phone", whatsapp: "whatsapp" }, suffix: true
 
   aasm :state do
     state :active, initial: true

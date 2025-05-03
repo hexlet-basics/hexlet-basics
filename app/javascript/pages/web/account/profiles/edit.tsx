@@ -6,12 +6,12 @@ import { useTranslation } from "react-i18next";
 
 import * as Routes from "@/routes.js";
 
-import { XForm, XInput } from "@/components/forms";
+import { XForm, XInput, XSelect } from "@/components/forms";
 import useConfirmation from "@/hooks/useConfirmation";
-import useLinkClickHandler from "@/hooks/useLinkClickHandler";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { UserProfileForm } from "@/types/serializers";
 import { Link } from "@inertiajs/react";
+import { enumToOptions } from "@/lib/utils";
 
 type Props = PropsWithChildren & {
   form: UserProfileForm;
@@ -20,9 +20,12 @@ type Props = PropsWithChildren & {
 export default function New({ form }: Props) {
   const { t } = useTranslation();
   const { t: tHelpers } = useTranslation("helpers");
+  const { t: tViews } = useTranslation("activerecord");
 
-  const handleLinkClick = useLinkClickHandler();
-  const confirmDeleting = useConfirmation(handleLinkClick("delete"));
+  const confirmDeleting = useConfirmation();
+
+  const contactMethodEnum = tViews('attributes.user.contact_method/values', { returnObjects: true })
+  const contactMethodOptions = enumToOptions(contactMethodEnum);
 
   return (
     <ApplicationLayout>
@@ -42,13 +45,22 @@ export default function New({ form }: Props) {
                 >
                   <XInput name="first_name" autoComplete="name" />
                   <XInput name="last_name" autoComplete="name" />
+                  <XSelect
+                    name="contact_method"
+                    labelField="name"
+                    valueField="id"
+                    items={contactMethodOptions}
+                  />
+                  <XInput name="contact_value" />
                   <Submit className="btn w-100 btn-lg btn-primary mb-3">
                     {tHelpers("submit.save")}
                   </Submit>
                 </XForm>
                 <Link
                   onClick={confirmDeleting}
-                  className="text-danger"
+                  as="button"
+                  className="mt-5 btn btn-sm btn-outline-danger"
+                  method="delete"
                   href={Routes.account_profile_path()}
                 >
                   {t("account.profiles.edit.delete")}

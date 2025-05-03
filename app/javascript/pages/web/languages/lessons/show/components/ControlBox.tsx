@@ -37,8 +37,10 @@ export default function ControlBox() {
     dispatch(runCheck({ course, lesson }));
   };
 
-  const confirmResetting = useConfirmation(() => {
-    dispatch(slice.actions.resetContent());
+  const confirmResetting = useConfirmation({
+    callback: () => {
+      dispatch(slice.actions.resetContent());
+    }
   });
 
   const isCodeChecking = processState === "checking";

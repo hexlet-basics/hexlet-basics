@@ -1639,6 +1639,13 @@
         },
         "user": {
           "admin": "Администратор",
+          "contact_method": "Способ связи",
+          "contact_method/values": {
+            "phone": "Телефон",
+            "telegram": "Telegram",
+            "whatsapp": "WhatsApp"
+          },
+          "contact_value": "Номер для связи (или имя пользователя)",
           "email": "Email",
           "first_name": "Имя",
           "last_name": "Фамилия",
