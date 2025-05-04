@@ -51,6 +51,12 @@ third:
     i am hacker! <script>alert('xss!!!!')</script>
     wow. next line
 
+    ```javascript
+    const x = 'value'
+    ```
+
+    ## Header
+
 typescript-module1-lesson2-m1:
   language: typescript
   language_lesson: typescript-module1-lesson2

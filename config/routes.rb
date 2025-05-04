@@ -111,6 +111,7 @@ Rails.application.routes.draw do
         end
 
         resources :reviews
+        resources :leads, only: [ :index ]
         resources :surveys
         resources :messages, only: [ :index ]
         resources :language_lesson_members, only: [ :index ]

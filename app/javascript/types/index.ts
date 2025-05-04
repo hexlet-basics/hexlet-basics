@@ -36,6 +36,7 @@ export interface SharedProps extends PageProps {
   auth: {
     user: User;
   };
+  shouldAddContactMethod: boolean,
   railsDirectUploadsUrl: string;
   courseCategories: LanguageCategory[];
   suffix: "ru" | null;

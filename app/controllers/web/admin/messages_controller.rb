@@ -2,7 +2,7 @@ class Web::Admin::MessagesController < Web::Admin::ApplicationController
   def index
     q = ransack_params("sf" => "created_at", "so" => "0")
     # raise q.inspect
-    search = Language::Lesson::Member::Message.user_role
+    search = Language::Lesson::Member::Message
       .joins(:language, :language_lesson)
       .includes([ :language_lesson_member ]).ransack(q)
     # raise search.result.to_sql

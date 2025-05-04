@@ -10,6 +10,7 @@ ru:
               А ошибку мы уже получили и смотрим, если она на нашей стороне, то разработчики не получат свой утренний кофе.
       admin:
         application:
+          leads: Лиды
           dashboard: Кабинет
           language_categories: Категории
           languages: Курсы
@@ -75,3 +76,6 @@ ru:
         english_links: English links
       unsupported_browser_warning:
         unsupported_browser_warning: Ваш браузер устарел :( Некоторые возможности отключены.
+      contact_method_requesting:
+        description_html: |
+          Чтобы мы могли связаться с вами, укажите предпочительный способ связи <a href="%{url}">в профиле</a>

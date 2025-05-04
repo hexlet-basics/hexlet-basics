@@ -1,0 +1,33 @@
+# == Schema Information
+#
+# Table name: leads
+#
+#  id                  :bigint           not null, primary key
+#  email               :string
+#  phone               :string
+#  state               :string
+#  survey_answers_data :text
+#  telegram            :string
+#  whatsapp            :string
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  user_id             :bigint           not null
+#
+# Indexes
+#
+#  index_leads_on_user_id  (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (user_id => users.id)
+#
+FactoryBot.define do
+  factory :lead do
+    user { nil }
+    email { "MyString" }
+    phone { "MyString" }
+    telegram { "MyString" }
+    whatsapp { "MyString" }
+    survey_answers_data { "MyText" }
+  end
+end

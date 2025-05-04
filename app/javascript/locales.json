@@ -2186,6 +2186,9 @@
     },
     "layouts": {
       "shared": {
+        "contact_method_requesting": {
+          "description_html": "Чтобы мы могли связаться с вами, укажите предпочительный способ связи <a href=\"%{url}\">в профиле</a>\n"
+        },
         "footer": {
           "about": "О проекте",
           "all_courses": "Все курсы",
@@ -2252,6 +2255,7 @@
             "language_landing_pages": "Лендинги",
             "language_lesson_members": "Прохождение уроков",
             "languages": "Курсы",
+            "leads": "Лиды",
             "messages": "Соообщения (AI)",
             "reviews": "Отзывы",
             "survey_answers": "Ответы на опросы",
@@ -2567,6 +2571,11 @@
           },
           "new": {
             "header": "Новый курс"
+          }
+        },
+        "leads": {
+          "index": {
+            "header": "Лиды"
           }
         },
         "management": {

@@ -4,6 +4,7 @@
 #
 #  id         :bigint           not null, primary key
 #  order      :integer          not null
+#  slug       :string
 #  state      :string
 #  value      :string
 #  created_at :datetime         not null

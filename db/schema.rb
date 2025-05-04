@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_03_161009) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_04_130520) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -344,6 +344,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_03_161009) do
     t.index ["upload_id"], name: "languages_upload_id_index"
   end
 
+  create_table "leads", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "state"
+    t.string "email"
+    t.string "phone"
+    t.string "telegram"
+    t.string "whatsapp"
+    t.text "survey_answers_data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_leads_on_user_id"
+  end
+
   create_table "reviews", force: :cascade do |t|
     t.bigint "language_id", null: false
     t.bigint "user_id", null: false
@@ -521,6 +534,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_03_161009) do
     t.string "state"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "slug"
     t.index ["survey_id"], name: "index_survey_items_on_survey_id"
   end
 
@@ -634,6 +648,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_03_161009) do
   add_foreign_key "languages", "language_categories", column: "category_id"
   add_foreign_key "languages", "language_versions", column: "current_version_id"
   add_foreign_key "languages", "uploads"
+  add_foreign_key "leads", "users"
   add_foreign_key "reviews", "languages"
   add_foreign_key "reviews", "users"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

@@ -4,6 +4,7 @@
 #
 #  id         :bigint           not null, primary key
 #  order      :integer          not null
+#  slug       :string
 #  state      :string
 #  value      :string
 #  created_at :datetime         not null
@@ -22,6 +23,7 @@
 DEFAULTS: &DEFAULTS
   order: 100
   state: active
+  slug: $LABEL
 
 goal-item1:
   <<: *DEFAULTS

@@ -5,29 +5,19 @@ import { DTDateTemplate } from "@/components/dtTemplates";
 import useDataTable from "@/hooks/useDataTable";
 import { fieldsToFilters } from "@/lib/utils";
 import AdminLayout from "@/pages/layouts/AdminLayout";
-import type { Grid, LanguageLessonMemberMessage } from "@/types/serializers";
+import type { Grid, Lead, Review } from "@/types/serializers";
 import { Link } from "@inertiajs/react";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import { Dialog } from "primereact/dialog";
 import { useState } from "react";
-import MarkdownViewer from "@/components/MarkdownViewer";
-// import { Menu } from "./shared/menu";
+import { Dialog } from "primereact/dialog";
 
 type Props = {
-  messages: LanguageLessonMemberMessage[];
+  leads: Lead[];
   grid: Grid;
 };
 
-export function LessonUrlTemplate(message: LanguageLessonMemberMessage) {
-  const url = Routes.language_lesson_path(
-    message.language_slug,
-    message.language_lesson_slug,
-  );
-  return <Link href={url}>{message.language_lesson_name}</Link>;
-}
-
-export function MessageBodyTemplate(message: LanguageLessonMemberMessage) {
+export function SurveyAnswersDataTemplate(lead: Lead) {
   const [visible, setVisible] = useState(false);
 
   return (
@@ -35,10 +25,9 @@ export function MessageBodyTemplate(message: LanguageLessonMemberMessage) {
       <a
         type="button"
         className="link-body-emphasis"
-        // biome-ignore lint/a11y/useValidAnchor: <explanation>
         onClick={() => setVisible(true)}
       >
-        {message.content?.slice(0, 50)}
+        {"answers_data"}
       </a>
       <Dialog
         style={{ width: "50vw" }}
@@ -49,20 +38,30 @@ export function MessageBodyTemplate(message: LanguageLessonMemberMessage) {
           setVisible(false);
         }}
       >
-        <MarkdownViewer>{message.content}</MarkdownViewer>
+        <pre>{JSON.stringify(lead.survey_answers_data)}</pre>
       </Dialog>
     </>
   );
 }
 
-export default function Index({ grid, messages }: Props) {
+export default function Index({ grid, leads }: Props) {
   const { t } = useTranslation();
 
   const handleDataTable = useDataTable();
 
+  // const actionBodyTemplate = (data: Review) => {
+  //   return (
+  //     <Link
+  //       className="link-body-emphasis"
+  //       href={Routes.edit_admin_review_path(data.id)}
+  //     >
+  //       <i className="bi bi-pencil-fill" />
+  //     </Link>
+  //   );
+  // };
+
   return (
-    <AdminLayout header={t("admin.messages.index.header")}>
-      {/* <Menu /> */}
+    <AdminLayout header={t("admin.leads.index.header")}>
       <DataTable
         lazy
         first={grid.first}
@@ -75,13 +74,16 @@ export default function Index({ grid, messages }: Props) {
         onFilter={handleDataTable}
         onPage={handleDataTable}
         filters={fieldsToFilters(grid.fields)}
-        value={messages}
+        value={leads}
       >
         <Column field="id" header="id" />
-        <Column field="role" header="role" />
+        {/* <Column field="locale" header="locale" /> */}
         <Column field="user_id" header="user_id" />
-        <Column body={LessonUrlTemplate} header="Lesson Url" />
-        <Column field="body" header="body" body={MessageBodyTemplate} />
+        <Column field="full_name" header="full_name" />
+        <Column field="phone" header="phone" />
+        <Column field="telegram" header="telegram" />
+        <Column field="whatsapp" header="whatsapp" />
+        <Column field="answers" header="answers" body={SurveyAnswersDataTemplate} />
         <Column
           field="created_at"
           header="created_at"
@@ -93,3 +95,4 @@ export default function Index({ grid, messages }: Props) {
     </AdminLayout>
   );
 }
+

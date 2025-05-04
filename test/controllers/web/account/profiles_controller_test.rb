@@ -3,7 +3,7 @@
 require "test_helper"
 
 class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
-  def setup
+  setup do
     @user = users :full
     sign_in_as(:full)
   end
@@ -18,7 +18,9 @@ class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
 
     patch account_profile_url(id: @user.id), params: {
       user: {
-        first_name: new_name
+        first_name: new_name,
+        contact_method: :telegram,
+        contact_value: "@orgprog"
       }
     }
     assert_response :redirect
@@ -26,6 +28,7 @@ class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
     @user.reload
 
     assert { @user.first_name == new_name }
+    assert { @user.lead }
   end
 
   test "destroy" do

@@ -49,6 +49,9 @@ ru:
       survey_answers:
         index:
           header: Ответы на опросы
+      leads:
+        index:
+          header: Лиды
       surveys:
         index:
           header: Опросы

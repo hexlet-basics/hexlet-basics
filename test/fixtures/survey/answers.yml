@@ -63,3 +63,15 @@ ready_to_start_learning__coding_experience:
   user: ready_to_start_learning
   survey: coding-experience
   survey_item: coding-experience-item2
+
+should_add_contact_method__goal:
+  state: fulfilled
+  user: should_add_contact_method
+  survey: goal
+  survey_item: goal-item1
+
+should_add_contact_method__career-change-contact-method:
+  state: fulfilled
+  user: should_add_contact_method
+  survey: career-change-contact-method
+  survey_item: career-change-contact-method-item4

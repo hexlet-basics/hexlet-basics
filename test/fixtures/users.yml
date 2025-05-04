@@ -47,6 +47,9 @@ just_signed_up:
 ready_to_start_learning:
   <<: *DEFAULTS
 
+should_add_contact_method:
+  <<: *DEFAULTS
+
 one:
   <<: *DEFAULTS
 

@@ -69,6 +69,7 @@ class User < ApplicationRecord
   has_many :survey_answers, class_name: "Survey::Answer"
   has_many :assistant_messages, class_name: "Language::Lesson::Member::Message"
   has_one :book_request
+  has_one :lead
 
   enum :contact_method, { telegram: "telegram", phone: "phone", whatsapp: "whatsapp" }, suffix: true
 
@@ -115,6 +116,17 @@ class User < ApplicationRecord
     end
 
     email
+  end
+
+  def should_add_contact_method
+    return false if contact_value
+
+    items = Survey::Item.active.where(slug: [
+      "career-change-contact-method-item2",
+      "career-change-contact-method-item3",
+      "career-change-contact-method-item4"
+    ])
+    survey_answers.where(survey_item: items).exists?
   end
 
   private

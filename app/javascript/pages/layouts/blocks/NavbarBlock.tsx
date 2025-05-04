@@ -3,7 +3,7 @@ import defaultAvatarImg from "@/images/user-avatar.png";
 import { localesByCode } from "@/lib/utils";
 import cn from "classnames";
 import i18next from "i18next";
-import { Button, Form, Nav, NavDropdown, Navbar, type NavbarProps } from "react-bootstrap";
+import { Nav, NavDropdown, Navbar, type NavbarProps } from "react-bootstrap";
 
 import useLinkClickHandler from "@/hooks/useLinkClickHandler";
 import * as Routes from "@/routes.js";

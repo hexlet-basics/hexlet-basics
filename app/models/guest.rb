@@ -19,6 +19,10 @@ class Guest
     0
   end
 
+  def should_add_contact_method
+    false
+  end
+
   def book_request
     nil
   end
