@@ -130,6 +130,16 @@ export default function AdminLayout({ children, header }: Props) {
                 </Link>
               </Nav.Item>
 
+              <Nav.Item>
+                <Link
+                  className="nav-link fw-medium link-body-emphasis"
+                  href={Routes.admin_leads_url()}
+                >
+                  <i className="bi bi-person-check me-2" />
+                  {tLayouts("web.admin.application.leads")}
+                </Link>
+              </Nav.Item>
+
               <hr />
 
               <Nav.Item>
@@ -139,16 +149,6 @@ export default function AdminLayout({ children, header }: Props) {
                 >
                   <i className="bi bi-people me-2" />
                   {tLayouts("web.admin.application.users")}
-                </Link>
-              </Nav.Item>
-
-              <Nav.Item>
-                <Link
-                  className="nav-link fw-medium link-body-emphasis"
-                  href={Routes.admin_leads_url()}
-                >
-                  <i className="bi bi-house me-2" />
-                  {tLayouts("web.admin.application.leads")}
                 </Link>
               </Nav.Item>
 
