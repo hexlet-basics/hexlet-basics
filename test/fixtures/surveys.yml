@@ -81,3 +81,45 @@ career-change-contact-method:
   question: Какой способ связи вам удобнее всего?
   description: Мы свяжемся с вами только по выбранному вами каналу — без навязчивости и в удобное время
   parent_survey_item: career-change-preferred-intro-format-item2
+
+new-skill-depth:
+  <<: *DEFAULTS
+  question: Насколько глубокое понимание программирования вам нужно для решения вашей задачи?
+  description: Это поможет определить подходящий уровень и формат обучения
+  parent_survey_item: goal-item2
+
+new-skill-current-role:
+  <<: *DEFAULTS
+  question: Какую роль вы сейчас занимаете?
+  description: Это поможет предложить обучение, релевантное вашей текущей деятельности
+  parent_survey_item: goal-item2
+
+new-skill-task-type:
+  <<: *DEFAULTS
+  question: Какие задачи вы хотите решать с помощью программирования?
+  description: Мы подскажем подходящие направления и курсы
+  parent_survey_item: goal-item2
+
+formal-study-institution:
+  <<: *DEFAULTS
+  question: В каком учебном заведении вы сейчас учитесь?
+  description: Это поможет адаптировать примеры и подходы к вашему уровню
+  parent_survey_item: goal-item4
+
+formal-study-context:
+  <<: *DEFAULTS
+  question: Зачем вы изучаете программирование в рамках вашей учёбы?
+  description: Это поможет понять, какие материалы будут вам полезнее
+  parent_survey_item: goal-item4
+
+formal-study-depth:
+  <<: *DEFAULTS
+  question: Насколько глубокие знания вам нужны в рамках учёбы?
+  description: Это поможет понять, достаточно ли вам базового уровня или нужно больше
+  parent_survey_item: goal-item4
+
+formal-study-priority:
+  <<: *DEFAULTS
+  question: Что для вас самое важное в обучении сейчас?
+  description: Это поможет адаптировать рекомендации под ваш ритм и мотивацию
+  parent_survey_item: goal-item4

@@ -20,6 +20,14 @@ class SurveyHandler
       if should_request_answer1
         Survey.find_or_request_answer_if_needed_by("career-change-reason", user)
         Survey.find_or_request_answer_if_needed_by("career-change-study-plan", user)
+
+        Survey::FUNNELS["new-skill"].map do |slug|
+          Survey.find_or_request_answer_if_needed_by(slug, user)
+        end
+
+        Survey::FUNNELS["format-study"].map do |slug|
+          Survey.find_or_request_answer_if_needed_by(slug, user)
+        end
       end
 
       should_request_answer2 = course_member.lesson_members.size > 5

@@ -28,33 +28,37 @@ DEFAULTS: &DEFAULTS
 goal-item1:
   <<: *DEFAULTS
   survey: goal
-  value: Switch careers
+  value: Планирую поменять карьеру
 
 goal-item2:
   <<: *DEFAULTS
   survey: goal
-  value: Learn a skill for my job
+  value: Изучаю новый навык для текущей работы или своей профессии
 
 goal-item3:
   <<: *DEFAULTS
   survey: goal
-  value: Build a project
+  value: Хочу реализовать свой проект, где нужен навык программирования
 
 goal-item4:
   <<: *DEFAULTS
   survey: goal
-  value: Learn for school
+  value: Изучаю в рамках своей учебы в школе, вузе, курсах и т.п.
 
 goal-item5:
   <<: *DEFAULTS
   survey: goal
-  value: Learn for fun
+  value: Подбираю курсы для своих студентов, сотрудников и т.п.
 
 goal-item6:
   <<: *DEFAULTS
-  order: 110
   survey: goal
-  value: Not sure yet
+  value: Учусь для удовольствия
+
+goal-item7:
+  <<: *DEFAULTS
+  survey: goal
+  value: Пока не знаю, просто осматриваюсь
 
 coding-experience-item1:
   <<: *DEFAULTS
@@ -242,3 +246,194 @@ career-change-contact-method-item5:
   <<: *DEFAULTS
   survey: career-change-contact-method
   value: Пока не хочу, свяжусь сам(а) при необходимости
+
+new-skill-current-role-item1:
+  <<: *DEFAULTS
+  survey: new-skill-current-role
+  value: Фронтенд-разработчик
+
+new-skill-current-role-item2:
+  <<: *DEFAULTS
+  survey: new-skill-current-role
+  value: Backend-разработчик
+
+new-skill-current-role-item3:
+  <<: *DEFAULTS
+  survey: new-skill-current-role
+  value: Мобильный разработчик
+
+new-skill-current-role-item4:
+  <<: *DEFAULTS
+  survey: new-skill-current-role
+  value: Разработчик 1С
+
+new-skill-current-role-item5:
+  <<: *DEFAULTS
+  survey: new-skill-current-role
+  value: Тестировщик
+
+new-skill-current-role-item6:
+  <<: *DEFAULTS
+  survey: new-skill-current-role
+  value: Системный администратор / DevOps
+
+new-skill-current-role-item7:
+  <<: *DEFAULTS
+  survey: new-skill-current-role
+  value: Менеджер (продуктовый, проектный и др.)
+
+new-skill-current-role-item8:
+  <<: *DEFAULTS
+  survey: new-skill-current-role
+  value: Владелец бизнеса
+
+new-skill-current-role-item9:
+  <<: *DEFAULTS
+  survey: new-skill-current-role
+  value: Другое
+
+new-skill-task-type-item1:
+  <<: *DEFAULTS
+  survey: new-skill-task-type
+  value: Автоматизация рутинных или повторяющихся процессов
+
+new-skill-task-type-item2:
+  <<: *DEFAULTS
+  survey: new-skill-task-type
+  value: Разработка проектов, сервисов или интерфейсов
+
+new-skill-task-type-item3:
+  <<: *DEFAULTS
+  survey: new-skill-task-type
+  value: Работа с данными и создание отчётов
+
+new-skill-task-type-item4:
+  <<: *DEFAULTS
+  survey: new-skill-task-type
+  value: Интеграции между системами или сервисами (API)
+
+new-skill-task-type-item5:
+  <<: *DEFAULTS
+  survey: new-skill-task-type
+  value: Написание вспомогательных скриптов и утилит
+
+new-skill-task-type-item6:
+  <<: *DEFAULTS
+  survey: new-skill-task-type
+  value: Понимание работы программистов и IT-команд
+
+new-skill-task-type-item7:
+  <<: *DEFAULTS
+  survey: new-skill-task-type
+  value: Другое
+
+new-skill-depth-item1:
+  <<: *DEFAULTS
+  survey: new-skill-depth
+  value: Достаточно знать основы языка, без глубокого погружения
+
+new-skill-depth-item2:
+  <<: *DEFAULTS
+  survey: new-skill-depth
+  value: Нужно разбираться глубже и уметь писать продуманный код
+
+new-skill-depth-item3:
+  <<: *DEFAULTS
+  survey: new-skill-depth
+  value: Нужно освоить фреймворки и уметь применять язык в реальных проектах
+
+new-skill-depth-item4:
+  <<: *DEFAULTS
+  survey: new-skill-depth
+  value: Нужно уметь работать на продакшене — в команде, с инфраструктурой и сложными системами
+
+
+formal-study-context-item1:
+  <<: *DEFAULTS
+  survey: formal-study-context
+  value: Это часть обязательной программы
+
+formal-study-context-item2:
+  <<: *DEFAULTS
+  survey: formal-study-context
+  value: Это факультатив или доп.курс, выбрал(а) сам(а)
+
+formal-study-context-item3:
+  <<: *DEFAULTS
+  survey: formal-study-context
+  value: Готовлюсь к экзамену или проекту
+
+formal-study-context-item4:
+  <<: *DEFAULTS
+  survey: formal-study-context
+  value: Просто интересно, решил(а) попробовать
+
+formal-study-context-item5:
+  <<: *DEFAULTS
+  survey: formal-study-context
+  value: Другое
+
+formal-study-institution-item1:
+  <<: *DEFAULTS
+  survey: formal-study-institution
+  value: Школа
+
+formal-study-institution-item2:
+  <<: *DEFAULTS
+  survey: formal-study-institution
+  value: Колледж / техникум
+
+formal-study-institution-item3:
+  <<: *DEFAULTS
+  survey: formal-study-institution
+  value: Университет / вуз
+
+formal-study-institution-item4:
+  <<: *DEFAULTS
+  survey: formal-study-institution
+  value: Курсы или онлайн-программа
+
+formal-study-institution-item5:
+  <<: *DEFAULTS
+  survey: formal-study-institution
+  value: Другое
+
+formal-study-depth-item1:
+  <<: *DEFAULTS
+  survey: formal-study-depth
+  value: Достаточно просто сдать курс/экзамен
+
+formal-study-depth-item2:
+  <<: *DEFAULTS
+  survey: formal-study-depth
+  value: Хочу лучше разобраться в теме, чем требует программа
+
+formal-study-depth-item3:
+  <<: *DEFAULTS
+  survey: formal-study-depth
+  value: Хочу выйти за рамки и использовать знания в практике
+
+formal-study-priority-item1:
+  <<: *DEFAULTS
+  survey: formal-study-priority
+  value: Понять материал, а не просто сдать
+
+formal-study-priority-item2:
+  <<: *DEFAULTS
+  survey: formal-study-priority
+  value: Видеть практическое применение знаний
+
+formal-study-priority-item3:
+  <<: *DEFAULTS
+  survey: formal-study-priority
+  value: Удобный формат и гибкий темп
+
+formal-study-priority-item4:
+  <<: *DEFAULTS
+  survey: formal-study-priority
+  value: Возможность получить помощь, если не получается
+
+formal-study-priority-item5:
+  <<: *DEFAULTS
+  survey: formal-study-priority
+  value: Пока не знаю

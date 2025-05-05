@@ -25,6 +25,28 @@
 #  fk_rails_...  (parent_survey_item_id => survey_items.id)
 #
 class Survey < ApplicationRecord
+  FUNNELS = {
+    "career-change" => [
+      "career-change-study-plan",
+      "career-change-reason",
+      "career-change-barrier",
+      "career-change-priority",
+      "career-change-time-commitment",
+      "career-change-preferred-intro-format"
+    ],
+    "new-skill" => [
+      "new-skill-current-role",
+      "new-skill-task-type",
+      "new-skill-depth"
+    ],
+    "formal-study" => [
+      "formal-study-institution",
+      "formal-study-context",
+      "formal-study-depth",
+      "formal-study-priority"
+    ]
+  }
+
   has_many :items, class_name: "Survey::Item", dependent: :restrict_with_exception
   has_many :answers, class_name: "Survey::Answer", dependent: :restrict_with_exception
 

@@ -8,6 +8,8 @@ class Web::Surveys::AnswersController < Web::ApplicationController
     answer.state = "fulfilled"
     answer.save!
 
+    # TODO: check dependent surveys and plan them
+
     requested_answer = current_user.survey_answers.requested.first
 
     if requested_answer
