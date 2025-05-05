@@ -38,7 +38,7 @@ export function SurveyAnswersDataTemplate(lead: Lead) {
           setVisible(false);
         }}
       >
-        <pre>{JSON.stringify(lead.survey_answers_data)}</pre>
+        <pre>{JSON.stringify(lead.survey_answers_data, null, 2)}</pre>
       </Dialog>
     </>
   );
@@ -77,7 +77,7 @@ export default function Index({ grid, leads }: Props) {
         value={leads}
       >
         <Column field="id" header="id" />
-        {/* <Column field="locale" header="locale" /> */}
+        <Column field="email" header="email" />
         <Column field="user_id" header="user_id" />
         <Column field="full_name" header="full_name" />
         <Column field="phone" header="phone" />

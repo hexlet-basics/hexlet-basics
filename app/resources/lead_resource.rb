@@ -7,6 +7,11 @@ class LeadResource < ApplicationResource
   attribute :full_name do |obj|
     [ obj.user.first_name, obj.user.last_name ].join " "
   end
+
+  typelize :string, nullable: true
+  attribute :email do |obj|
+    obj.user.email
+  end
   #
   # typelize "Array<[string, string]>"
   # attribute :state_events do |obj|
