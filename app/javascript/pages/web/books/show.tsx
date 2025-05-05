@@ -39,15 +39,15 @@ export default function New({ bookRequested }: Props) {
               >
                 {t('books.show.download')}
               </a>}
-              <Row className="mt-5">
-                <Col>
+              <Row className="mt-5 row-cols-1 row-cols-md-2">
+                <Col className="mb-4">
                   <div className="d-flex">
                     <i className="bi bi-compass me-2 my-auto" />
                     <span className="fw-bold fs-5">{t('books.show.features.direction')}</span>
                   </div>
                   <div>{t('books.show.features.direction_explanation')} </div>
                 </Col>
-                <Col>
+                <Col className="mb-4">
                   <div className="d-flex">
                     <i className="bi bi-compass me-2 my-auto" />
                     <span className="fw-bold fs-5">{t('books.show.features.plan')}</span>
@@ -55,15 +55,15 @@ export default function New({ bookRequested }: Props) {
                   <div>{t('books.show.features.plan_explanation')} </div>
                 </Col>
               </Row>
-              <Row className="mt-4">
-                <Col>
+              <Row className="row-cols-1 row-cols-md-2">
+                <Col className="mb-4">
                   <div className="d-flex">
                     <i className="bi bi-compass me-2 my-auto" />
                     <span className="fw-bold fs-5">{t('books.show.features.resume')}</span>
                   </div>
                   <div>{t('books.show.features.resume_explanation')} </div>
                 </Col>
-                <Col>
+                <Col className="mb-4">
                   <div className="d-flex">
                     <i className="bi bi-compass me-2 my-auto" />
                     <span className="fw-bold fs-5">{t('books.show.features.interview')}</span>
