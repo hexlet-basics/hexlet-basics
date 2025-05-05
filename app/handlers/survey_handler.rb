@@ -25,7 +25,7 @@ class SurveyHandler
           Survey.find_or_request_answer_if_needed_by(slug, user)
         end
 
-        Survey::FUNNELS["format-study"].map do |slug|
+        Survey::FUNNELS["formal-study"].map do |slug|
           Survey.find_or_request_answer_if_needed_by(slug, user)
         end
       end
