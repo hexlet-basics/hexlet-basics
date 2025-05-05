@@ -239,6 +239,14 @@ en:
                 It's hard to make educational materials that will suit everyone. We do our best but there is always something to improve. If you see a material that is not clear to you, describe the problem in “Discussions”. It will be great if you'll write unclear points in the question form. Usually, we need a few days for corrections.
 
                 By the way, you can participate in courses improvement. There is a link below to the lessons course code which you can edit right in your browser.
+          chat:
+            guest: Hi! I'm Tota, and my job is to help you learn. To activate me, please sign up or log in if you already have an account
+            hi: |
+              Hi! My name is Tota, and I'm here to help you with any questions about theory or practice. Just ask — I'm always here for you!
+
+              P.S. You can send up to 7 messages per day, so try to ask only the most important questions
+            not_available: Our AI assistant will be here soon — we're setting things up right now
+
           controls:
             header: Help
             body: |

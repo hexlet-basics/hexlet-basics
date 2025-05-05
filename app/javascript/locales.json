@@ -948,6 +948,11 @@
         "lessons": {
           "show": {
             "breadcrumb": "breadcrumb",
+            "chat": {
+              "guest": "Hi! I'm Tota, and my job is to help you learn. To activate me, please sign up or log in if you already have an account",
+              "hi": "Hi! My name is Tota, and I'm here to help you with any questions about theory or practice. Just ask — I'm always here for you!\n\nP.S. You can send up to 7 messages per day, so try to ask only the most important questions\n",
+              "not_available": "Our AI assistant will be here soon — we're setting things up right now"
+            },
             "common_questions": [
               {
                 "question": "The exercise doesn't pass checking. What to do? 😶",
