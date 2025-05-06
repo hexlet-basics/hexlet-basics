@@ -12,13 +12,13 @@ import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import * as Routes from "@/routes.js";
 import type { BreadcrumbItem, Language, SharedProps } from "@/types";
 import type {
-  LanguageCategory,
-  LanguageLandingPage,
-  LanguageLandingPageQnaItem,
-  LanguageLesson,
-  LanguageMember,
-  LanguageModule,
-  Review,
+    LanguageCategory,
+    LanguageLandingPage,
+    LanguageLandingPageQnaItem,
+    LanguageLesson,
+    LanguageMember,
+    LanguageModule,
+    Review,
 } from "@/types/serializers";
 import { Head, Link, usePage } from "@inertiajs/react";
 import type { Product, WithContext } from "schema-dts";
@@ -54,7 +54,7 @@ export default function Show({
   const { t } = useTranslation();
   const { auth, locale } = usePage<SharedProps>().props;
 
-  const product: WithContext<Product> = {
+  const productSchema: WithContext<Product> = {
     "@context": "https://schema.org",
     "@type": "Product",
     description: courseLandingPage.description,
@@ -88,7 +88,7 @@ export default function Show({
   return (
     <ApplicationLayout items={breadcrumbItems}>
       <Head>
-        <script type="application/ld+json">{JSON.stringify(product)}</script>
+        <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
       </Head>
       <Container>
         {courseMember?.state === "finished" && (

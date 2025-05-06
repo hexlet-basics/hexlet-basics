@@ -19,9 +19,10 @@ import codeImagePathEn from "@/images/code-basics-coding-en.png";
 import codeImagePathRu from "@/images/code-basics-coding-ru.png";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { SharedProps } from "@/types";
-import { usePage } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 import { Accordion, Col, Container, Row } from "react-bootstrap";
 import MarkdownViewer from "@/components/MarkdownViewer";
+import type { Question, FAQPage, WithContext } from "schema-dts";
 
 type Props = PropsWithChildren & {
   blogPosts: BlogPost[];
@@ -113,8 +114,28 @@ export default function Index({
 
   const faq = tFaq("main", { returnObjects: true });
 
+  const entities: Question[] = Object.values(faq).map((item) => {
+    return {
+      "@type": "Question",
+      "name": item.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": item.answer,
+      }
+    }
+  })
+  // https://developers.google.com/search/docs/appearance/structured-data/faqpage
+  const qaSchema: WithContext<FAQPage> = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": entities,
+  };
+
   return (
     <ApplicationLayout>
+      <Head>
+        <script type="application/ld+json">{JSON.stringify(qaSchema)}</script>
+      </Head>
       <Container className="mb-lg-5 py-5">
         <div className="bg-body-tertiary p-4 pb-0 pt-lg-5 align-items-center border shadow-sm rounded-3">
           <div className="row">
