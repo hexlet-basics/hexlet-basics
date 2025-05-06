@@ -3,6 +3,7 @@ ru:
     attributes:
       survey:
         question: Вопрос
+        run_always: Запускать всегда
         description: Описание
         slug: Слаг
       language_landing_page:
