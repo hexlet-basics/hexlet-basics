@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-
   # Redirects (Old routes/SEO)
   get "/:locale/languages/:lang/modules/:module/lessons/:lesson", to: redirect("/%{locale}/languages/%{lang}/lessons/%{lesson}")
 
