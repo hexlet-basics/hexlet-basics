@@ -21,7 +21,6 @@ type Props = {
 
 export default function Form({ data, url, method, surveysItems }: Props) {
   const { t } = useTranslation();
-  console.log(surveysItems)
   const { t: tHelpers } = useTranslation("helpers");
 
   return (
