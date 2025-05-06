@@ -2,16 +2,18 @@
 #
 # Table name: surveys
 #
-#  id                    :bigint           not null, primary key
-#  description           :string
-#  locale                :string
-#  question              :string
-#  slug                  :string
-#  state                 :string
-#  created_at            :datetime         not null
-#  updated_at            :datetime         not null
-#  parent_survey_id      :bigint
-#  parent_survey_item_id :bigint
+#  id                                :bigint           not null, primary key
+#  description                       :string
+#  locale                            :string
+#  question                          :string
+#  run_after_finishing_lessons_count :integer          default(0)
+#  run_always                        :boolean          default(FALSE)
+#  slug                              :string
+#  state                             :string
+#  created_at                        :datetime         not null
+#  updated_at                        :datetime         not null
+#  parent_survey_id                  :bigint
+#  parent_survey_item_id             :bigint
 #
 # Indexes
 #

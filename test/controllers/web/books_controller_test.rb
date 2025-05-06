@@ -23,6 +23,7 @@ class Web::BooksControllerTest < ActionDispatch::IntegrationTest
     user.reload
 
     assert { user.book_request }
+    assert { user.survey_answers.requested.count == 7 }
   end
 
   test "download" do

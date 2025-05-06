@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 
 import {
+    XCheck,
   XDynamicInputs,
   XForm,
   XInput,
@@ -42,6 +43,8 @@ export default function Form({ data, url, method, surveysItems }: Props) {
             <XInput name="slug" />
             <XSelect name="state" valueField="value" labelField="key" items={data.meta.item_states} />
             <XInput name="order" />
+            <XCheck name="run_always" />
+            <XInput name="run_after_finishing_lessons_count" />
             {/* <XCheck name="_destroy" /> */}
           </XDynamicInputs>
 

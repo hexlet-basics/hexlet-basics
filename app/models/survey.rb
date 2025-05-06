@@ -2,16 +2,18 @@
 #
 # Table name: surveys
 #
-#  id                    :bigint           not null, primary key
-#  description           :string
-#  locale                :string
-#  question              :string
-#  slug                  :string
-#  state                 :string
-#  created_at            :datetime         not null
-#  updated_at            :datetime         not null
-#  parent_survey_id      :bigint
-#  parent_survey_item_id :bigint
+#  id                                :bigint           not null, primary key
+#  description                       :string
+#  locale                            :string
+#  question                          :string
+#  run_after_finishing_lessons_count :integer          default(0)
+#  run_always                        :boolean          default(FALSE)
+#  slug                              :string
+#  state                             :string
+#  created_at                        :datetime         not null
+#  updated_at                        :datetime         not null
+#  parent_survey_id                  :bigint
+#  parent_survey_item_id             :bigint
 #
 # Indexes
 #
@@ -25,28 +27,6 @@
 #  fk_rails_...  (parent_survey_item_id => survey_items.id)
 #
 class Survey < ApplicationRecord
-  FUNNELS = {
-    "career-change" => [
-      "career-change-study-plan",
-      "career-change-reason",
-      "career-change-barrier",
-      "career-change-priority",
-      "career-change-time-commitment",
-      "career-change-preferred-intro-format"
-    ],
-    "new-skill" => [
-      "new-skill-current-role",
-      "new-skill-task-type",
-      "new-skill-depth"
-    ],
-    "formal-study" => [
-      "formal-study-institution",
-      "formal-study-context",
-      "formal-study-depth",
-      "formal-study-priority"
-    ]
-  }
-
   has_many :items, class_name: "Survey::Item", dependent: :restrict_with_exception
   has_many :answers, class_name: "Survey::Answer", dependent: :restrict_with_exception
 
@@ -61,20 +41,32 @@ class Survey < ApplicationRecord
     [ "created_at", "description", "id", "locale", "question", "slug", "state", "updated_at" ]
   end
 
-  def self.find_or_request_answer_if_needed_by(slug, user)
-    survey = self.find_by slug: slug
-    return unless survey
-
-    parent_survey_item = survey.parent_survey_item
-    # Rails.logger.info("LessonFinishedEvent #{parent_survey_item}")
-    if parent_survey_item
-      # Rails.logger.info("LessonFinishedEvent PARENT")
-      needed_answer = Survey::Answer.fulfilled.find_by user: user, survey_item: parent_survey_item
-      return unless needed_answer
-    end
+  def self.find_or_request_answer_if_needed_by(survey, user)
+    # parent_survey_item = survey.parent_survey_item
+    # # Rails.logger.info("LessonFinishedEvent #{parent_survey_item}")
+    # if parent_survey_item
+    #   # Rails.logger.info("LessonFinishedEvent PARENT")
+    #   needed_answer = Survey::Answer.fulfilled.find_by user: user, survey_item: parent_survey_item
+    #   return unless needed_answer
+    # end
 
     answer = survey.answers.find_or_initialize_by user: user
     answer.save! if answer.new_record?
     answer
+  end
+
+  def self.next_for_user(user, course_member: nil, ignore_filters: false)
+    answers = user.survey_answers
+    finished_lessons_count = course_member ? course_member.lesson_members.size : -1
+
+    # scope = where(parent_survey_item_id: answers.select(:survey_item_id))
+    #   .where.not(id: answers.select(:survey_id))
+    scope = where("parent_survey_item_id IS NULL OR parent_survey_item_id IN (?)", answers.select(:survey_item_id))
+      .where.not(id: answers.select(:survey_id))
+
+    return scope if ignore_filters
+
+    scope = scope.where("run_always = ? OR run_after_finishing_lessons_count <= ?", true, finished_lessons_count)
+    scope
   end
 end

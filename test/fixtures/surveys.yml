@@ -2,16 +2,18 @@
 #
 # Table name: surveys
 #
-#  id                    :bigint           not null, primary key
-#  description           :string
-#  locale                :string
-#  question              :string
-#  slug                  :string
-#  state                 :string
-#  created_at            :datetime         not null
-#  updated_at            :datetime         not null
-#  parent_survey_id      :bigint
-#  parent_survey_item_id :bigint
+#  id                                :bigint           not null, primary key
+#  description                       :string
+#  locale                            :string
+#  question                          :string
+#  run_after_finishing_lessons_count :integer          default(0)
+#  run_always                        :boolean          default(FALSE)
+#  slug                              :string
+#  state                             :string
+#  created_at                        :datetime         not null
+#  updated_at                        :datetime         not null
+#  parent_survey_id                  :bigint
+#  parent_survey_item_id             :bigint
 #
 # Indexes
 #
@@ -26,15 +28,21 @@
 #
 DEFAULTS: &DEFAULTS
   slug: $LABEL
+  run_always: false
+  run_after_finishing_lessons_count: 1
   locale: ru
 
 goal:
   <<: *DEFAULTS
+  run_always: true
+  run_after_finishing_lessons_count: 0
   question: Какую задачу вы решаете?
   description: В зависимости от цели, мы сможем подобрать вам персонализированный трек обучения
 
 coding-experience:
   <<: *DEFAULTS
+  run_always: true
+  run_after_finishing_lessons_count: 0
   question: Какой у вас опыт программирования?
   # description:
 
@@ -70,6 +78,7 @@ career-change-priority:
 career-change-preferred-intro-format:
   <<: *DEFAULTS
   slug: preferred-intro-format
+  run_after_finishing_lessons_count: 2
   question: Какой формат знакомства с обучением вам был бы удобнее всего?
   description: |
     Мы можем предложить вам первый шаг, который будет максимально комфортным: от вебинара до личной консультации
@@ -78,9 +87,10 @@ career-change-preferred-intro-format:
 career-change-contact-method:
   <<: *DEFAULTS
   slug: career-change-contact-method
+  run_after_finishing_lessons_count: 2
   question: Какой способ связи вам удобнее всего?
   description: Мы свяжемся с вами только по выбранному вами каналу — без навязчивости и в удобное время
-  parent_survey_item: career-change-preferred-intro-format-item2
+  parent_survey_item: goal-item1
 
 new-skill-depth:
   <<: *DEFAULTS

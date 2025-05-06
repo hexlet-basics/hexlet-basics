@@ -46,4 +46,17 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     assert { body[:passed] == expected[:passed] }
     assert { body[:result] == expected[:result] }
   end
+
+  test "add new surveys" do
+    user = sign_in_as(:ready_to_start_learning)
+
+    language_member = @language.members.find_or_create_by!(user: user)
+    _lesson_member = @lesson.members.find_or_create_by!(language: @lesson.language, user: user, language_member: language_member)
+    code = file_fixture("exercise/correct.rb").read
+
+    post check_api_lesson_url(@lesson), params: { version_id: @lesson.versions.first.id, data: { attributes: { code: code } } }
+    assert_response :success
+
+    assert { user.survey_answers.count == 7 }
+  end
 end

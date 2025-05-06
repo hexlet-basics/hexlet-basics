@@ -7,7 +7,15 @@ class SurveyCrudResource < ApplicationResource
   # has_one :language
   has_many :items, resource: Survey::ItemResource
 
-  attributes :id, :state, :question, :description, :slug, :parent_survey_item_id, :parent_survey_id
+  attributes :id,
+    :state,
+    :question,
+    :description,
+    :slug,
+    :parent_survey_item_id,
+    :parent_survey_id,
+    :run_always,
+    :run_after_finishing_lessons_count
 
   typelize :state, nullabe: false
 

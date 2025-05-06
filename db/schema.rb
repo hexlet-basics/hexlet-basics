@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_04_130520) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_06_021547) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -548,6 +548,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_04_130520) do
     t.datetime "updated_at", null: false
     t.bigint "parent_survey_item_id"
     t.bigint "parent_survey_id"
+    t.boolean "run_always", default: false
+    t.integer "run_after_finishing_lessons_count", default: 0
     t.index ["parent_survey_id"], name: "index_surveys_on_parent_survey_id"
     t.index ["parent_survey_item_id"], name: "index_surveys_on_parent_survey_item_id"
     t.index ["slug", "locale"], name: "index_surveys_on_slug_and_locale", unique: true

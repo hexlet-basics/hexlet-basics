@@ -50,7 +50,9 @@ export default function Index({ grid, surveys }: Props) {
         value={surveys}
       >
         <Column field="id" header="id" />
-        <Column field="parent_survey_id" header="Parent Survey" />
+        {/* <Column field="parent_survey_id" header="Parent Survey" /> */}
+        <Column field="run_always" header="Run Always" />
+        <Column field="run_after_finishing_lessons_count" header="Run After Lessons" />
         <Column field="parent_survey_item_value" header="Parent Item" />
         <Column field="slug" header="slug" />
         <Column field="state" header="state" sortable />

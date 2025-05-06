@@ -9,47 +9,26 @@ class SurveyHandler
 
     case event
     when UserSignedUpEvent
-      Survey.find_or_request_answer_if_needed_by("goal", user)
-      Survey.find_or_request_answer_if_needed_by("coding-experience", user)
+      surveys = Survey.next_for_user(user)
+      surveys.map do |survey|
+        Survey.find_or_request_answer_if_needed_by(survey, user)
+      end
     when LessonFinishedEvent
       course_slug = event.data.fetch(:course_slug)
       locale = event.data.fetch(:locale)
       course = Language.find_by slug: course_slug
       course_member = course.members.find_by user: user
-      should_request_answer1 = course_member.lesson_members.size > 2
-      if should_request_answer1
-        Survey.find_or_request_answer_if_needed_by("career-change-reason", user)
-        Survey.find_or_request_answer_if_needed_by("career-change-study-plan", user)
 
-        Survey::FUNNELS["new-skill"].map do |slug|
-          Survey.find_or_request_answer_if_needed_by(slug, user)
-        end
-
-        Survey::FUNNELS["formal-study"].map do |slug|
-          Survey.find_or_request_answer_if_needed_by(slug, user)
-        end
+      surveys = Survey.next_for_user(user, course_member: course_member)
+      surveys.map do |survey|
+        Survey.find_or_request_answer_if_needed_by(survey, user)
       end
 
-      should_request_answer2 = course_member.lesson_members.size > 5
-      if should_request_answer2
-        Survey.find_or_request_answer_if_needed_by("career-change-barrier", user)
-        Survey.find_or_request_answer_if_needed_by("career-change-time-commitment", user)
-      end
-
-      should_request_answer3 = course_member.lesson_members.size > 8
-      if should_request_answer3
-        Survey.find_or_request_answer_if_needed_by("career-change-priority", user)
-        Survey.find_or_request_answer_if_needed_by("career-change-preferred-intro-format", user)
-        Survey.find_or_request_answer_if_needed_by("career-change-contact-method", user)
-      end
     when BookRequestedEvent
-      Survey.find_or_request_answer_if_needed_by("career-change-reason", user)
-      Survey.find_or_request_answer_if_needed_by("career-change-study-plan", user)
-      Survey.find_or_request_answer_if_needed_by("career-change-barrier", user)
-      Survey.find_or_request_answer_if_needed_by("career-change-time-commitment", user)
-      Survey.find_or_request_answer_if_needed_by("career-change-priority", user)
-      Survey.find_or_request_answer_if_needed_by("career-change-preferred-intro-format", user)
-      Survey.find_or_request_answer_if_needed_by("career-change-contact-method", user)
+      surveys = Survey.next_for_user(user, ignore_filters: true)
+      surveys.map do |survey|
+        Survey.find_or_request_answer_if_needed_by(survey, user)
+      end
     else
       # nothing to do
     end

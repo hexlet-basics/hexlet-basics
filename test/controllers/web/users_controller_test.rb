@@ -15,6 +15,7 @@ class Web::UsersControllerTest < ActionDispatch::IntegrationTest
 
     assert { user.present? }
     assert { signed_in? }
+    assert { user.survey_answers.requested.count == 2 }
   end
 
   test "create (with demo)" do
