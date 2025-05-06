@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+
+  # Redirects (Old routes/SEO)
+  get "/:locale/languages/:lang/modules/:module/lessons/:lesson", to: redirect("/%{locale}/languages/%{lang}/lessons/%{lesson}")
+
+
   mount RailsEventStore::Browser => "/res" if Rails.env.development?
   mount ActionCable.server => "/cable"
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

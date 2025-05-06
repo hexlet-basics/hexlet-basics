@@ -16,6 +16,7 @@ import { Link } from "@inertiajs/react";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { Menu } from "./shared/menu";
+import useConfirmation from "@/hooks/useConfirmation";
 
 type Props = PropsWithChildren & {
   categories: LanguageCategoryCrud[];
@@ -24,6 +25,7 @@ type Props = PropsWithChildren & {
 
 export default function Index({ grid, categories }: Props) {
   const { t } = useTranslation();
+  const confirmDeleting = useConfirmation();
 
   const handleDataTable = useDataTable();
 
@@ -39,10 +41,18 @@ export default function Index({ grid, categories }: Props) {
           <i className="bi bi-box-arrow-up-right" />
         </a>
         <Link
-          className="link-body-emphasis"
+          className="link-body-emphasis me-2"
           href={Routes.edit_admin_language_category_path(data.id)}
         >
           <i className="bi bi-pencil-fill" />
+        </Link>
+        <Link
+          onClick={confirmDeleting}
+          className="btn btn-link link-body-emphasis p-0 m-0"
+          method="delete"
+          href={Routes.admin_language_category_path(data.id)}
+        >
+          {<i className="bi bi-file-x" />}
         </Link>
       </>
     );

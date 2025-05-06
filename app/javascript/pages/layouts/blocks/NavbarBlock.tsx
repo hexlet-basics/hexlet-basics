@@ -62,18 +62,12 @@ export default function NavbarBlock({ className }: Props) {
               </NavDropdown.Item>
             ))}
           </NavDropdown>
-          {/* <Nav.Link href={Routes.blog_posts_path()}> */}
-          {/*   {tLayouts("shared.nav.blog")} */}
-          {/* </Nav.Link> */}
-          {/* <Button size="sm" variant="outline-secondary" type="button"> */}
-          {/*   {tLayouts("shared.nav.book")} */}
-          {/* </Button> */}
-          <Nav.Link
+          {i18next.language == 'ru' && <Nav.Link
             className="link-body-emphasis link-btn"
             href={Routes.book_path()}
           >
             {tLayouts("shared.nav.book")}
-          </Nav.Link>
+          </Nav.Link>}
         </Nav>
         <Nav>
           {auth.user.guest && (

@@ -53,4 +53,22 @@ class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationControll
 
       redirect_to_inertia edit_admin_language_category_path(category), category
   end
+
+  def destroy
+    category = Language::Category.find(params[:id])
+
+    # if category.language_landing_pages.any?
+    #   f(:error)
+    #   redirect_to admin_language_categories_path
+    #   return
+    # end
+
+    if category.destroy
+      f(:success)
+    else
+      f(:error)
+    end
+
+    redirect_to admin_language_categories_path
+  end
 end

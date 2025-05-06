@@ -1,7 +1,5 @@
-class Language::LandingPageResource
+class Language::LandingPageResource < ApplicationResource
   urls = Rails.application.routes.url_helpers
-  include Alba::Resource
-  include Typelizer::DSL
 
   typelize_from Language::LandingPage
 
@@ -9,6 +7,7 @@ class Language::LandingPageResource
 
   attributes :id,
     :language_id,
+    :language_category_id,
     :created_at,
     :slug,
     :main,
@@ -48,5 +47,10 @@ class Language::LandingPageResource
   typelize :string
   attribute :language_slug do |lp|
     lp.language&.slug
+  end
+
+  typelize :string
+  attribute :language_category_name do |lp|
+    lp.language_category&.name
   end
 end

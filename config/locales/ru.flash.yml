@@ -9,6 +9,9 @@ ru:
           success: Вы уже отвечали на этот опрос. Возвращаемся обратно
           # warning:
       admin:
+        # language_categories:
+        #   destroy:
+        #     error: Категория не пустая. Сначала удалите из нее все курсы
         languages:
           update:
             success: Язык успешно сохранен
