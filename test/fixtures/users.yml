@@ -44,6 +44,9 @@ full:
 just_signed_up:
   <<: *DEFAULTS
 
+inside_base_survey_scenario:
+  <<: *DEFAULTS
+
 ready_to_start_learning:
   <<: *DEFAULTS
 

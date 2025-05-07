@@ -41,7 +41,8 @@ export interface SharedProps extends PageProps {
   courseCategories: LanguageCategory[];
   suffix: "ru" | null;
   locale: Locale;
-  events: BackendEvent[] | null;
+  happendEvents: BackendEvent[] | null;
+  // eventNames: BackendEvent[]
   flash: Partial<Record<FlashKey, string | null>>;
   landingPagesForLists: LanguageLandingPageForLists[];
   landingPagesForFooter: LanguageLandingPageForLists[];

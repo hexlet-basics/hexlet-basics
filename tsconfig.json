@@ -33,5 +33,5 @@
   },
   "include": [
     "app/javascript"
-  ]
+, "app/javascript/types/.d.ts"  ]
 }

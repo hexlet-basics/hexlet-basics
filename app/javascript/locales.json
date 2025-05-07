@@ -1640,7 +1640,13 @@
         "survey": {
           "description": "Описание",
           "question": "Вопрос",
+          "run_always": "Запускать всегда",
           "slug": "Слаг"
+        },
+        "survey_scenario": {
+          "_destroy": "Удалить",
+          "name": "Название",
+          "survey_item_id": "Ответ триггер (Начало воронки)"
         },
         "user": {
           "admin": "Администратор",
@@ -2264,6 +2270,7 @@
             "messages": "Соообщения (AI)",
             "reviews": "Отзывы",
             "survey_answers": "Ответы на опросы",
+            "survey_scenarios": "Сценарии",
             "surveys": "Опросы",
             "surveys_analytics": "Аналитика опросов",
             "users": "Пользователи"
@@ -2617,6 +2624,17 @@
         "survey_answers": {
           "index": {
             "header": "Ответы на опросы"
+          }
+        },
+        "survey_scenarios": {
+          "edit": {
+            "header": "Редактирование сценария"
+          },
+          "index": {
+            "header": "Сценарии"
+          },
+          "new": {
+            "header": "Новый сценарий"
           }
         },
         "surveys": {

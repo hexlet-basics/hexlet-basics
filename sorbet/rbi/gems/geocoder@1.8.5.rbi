@@ -1261,7 +1261,7 @@ class Geocoder::Result::Base
   #
   # This default implementation dumbly follows the United States address
   # format and will return incorrect results for most countries. Some APIs
-  # return properly formatted addresses and those should be funneled
+  # return properly formatted addresses and those should be scenarioed
   # through this method.
   #
   # source://geocoder//lib/geocoder/results/base.rb#28

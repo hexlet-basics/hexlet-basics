@@ -1,0 +1,44 @@
+# == Schema Information
+#
+# Table name: survey_scenario_triggers
+#
+#  id                    :bigint           not null, primary key
+#  event_name            :string
+#  event_threshold_count :integer
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  scenario_id           :bigint           not null
+#
+# Indexes
+#
+#  index_survey_scenario_triggers_on_event_name_and_scenario_id  (event_name,scenario_id) UNIQUE
+#  index_survey_scenario_triggers_on_scenario_id                 (scenario_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (scenario_id => survey_scenarios.id)
+#
+base--trigger1:
+  scenario: base
+  event_name: UserSignedUpEvent
+  event_threshold_count: 1
+
+career-change--trigger1:
+  scenario: career-change
+  event_name: LessonFinishedEvent
+  event_threshold_count: 2
+
+career-change--trigger2:
+  scenario: career-change
+  event_name: BookRequestedEvent
+  event_threshold_count: 1
+
+request-contact-method--trigger1:
+  scenario: request-contact-method
+  event_name: LessonFinishedEvent
+  event_threshold_count: 3
+
+request-contact-method--trigger2:
+  scenario: request-contact-method
+  event_name: BookRequestedEvent
+  event_threshold_count: 1

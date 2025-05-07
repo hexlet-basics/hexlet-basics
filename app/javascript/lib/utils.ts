@@ -1,15 +1,6 @@
 import type { LanguageLesson } from "@/types/serializers";
 import type { DataTableFilterMeta } from "primereact/datatable";
 
-import dayjs from "dayjs";
-import duration from "dayjs/plugin/duration";
-import relativeTime from "dayjs/plugin/relativeTime";
-
-dayjs.extend(relativeTime);
-dayjs.extend(duration);
-
-export { dayjs };
-
 const editorMapping: Record<string, string> = {
   css: "html",
   racket: "scheme",

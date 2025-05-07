@@ -50,86 +50,84 @@ career-change-study-plan:
   <<: *DEFAULTS
   question: Понимаете ли вы, что и в каком порядке делать, чтобы стать программистом?
   description: Благодаря вашему ответу мы сможем подсказать, с чего начать, как выстроить план действий и какие шаги нужны для перехода в профессию
-  parent_survey_item: goal-item1
+  # parent_survey_item: goal-item1
 
 career-change-reason:
   <<: *DEFAULTS
   question: Что стало основной причиной, по которой, вы решили сменить карьеру?
-  parent_survey_item: goal-item1
+  # parent_survey_item: goal-item1
 
 career-change-barrier:
   <<: *DEFAULTS
   question: Что мешает вам начать или продолжить обучение?
   description: Это поможет нам понять, какие сложности стоят на пути, и как мы можем вас поддержать
-  parent_survey_item: goal-item1
+  # parent_survey_item: goal-item1
 
 career-change-time-commitment:
   <<: *DEFAULTS
   question: Сколько времени в неделю вы готовы тратить на обучение?
   description: Мы подберём формат, который подойдёт вашему ритму жизни
-  parent_survey_item: goal-item1
+  # parent_survey_item: goal-item1
 
 career-change-priority:
   <<: *DEFAULTS
   question: Что для вас самое важное в обучении?
   description: Благодаря этому мы покажем те форматы и курсы, которые лучше всего подходят вам
-  parent_survey_item: goal-item1
+  # parent_survey_item: goal-item1
 
 career-change-preferred-intro-format:
   <<: *DEFAULTS
-  slug: preferred-intro-format
   run_after_finishing_lessons_count: 2
   question: Какой формат знакомства с обучением вам был бы удобнее всего?
   description: |
     Мы можем предложить вам первый шаг, который будет максимально комфортным: от вебинара до личной консультации
-  parent_survey_item: goal-item1
+  # parent_survey_item: goal-item1
 
 career-change-contact-method:
   <<: *DEFAULTS
-  slug: career-change-contact-method
   run_after_finishing_lessons_count: 2
   question: Какой способ связи вам удобнее всего?
   description: Мы свяжемся с вами только по выбранному вами каналу — без навязчивости и в удобное время
-  parent_survey_item: goal-item1
+  # parent_survey_item: goal-item1
 
 new-skill-depth:
   <<: *DEFAULTS
   question: Насколько глубокое понимание программирования вам нужно для решения вашей задачи?
   description: Это поможет определить подходящий уровень и формат обучения
-  parent_survey_item: goal-item2
+  # parent_survey_item: goal-item2
 
 new-skill-current-role:
   <<: *DEFAULTS
   question: Какую роль вы сейчас занимаете?
   description: Это поможет предложить обучение, релевантное вашей текущей деятельности
-  parent_survey_item: goal-item2
+  # parent_survey_item: goal-item2
 
 new-skill-task-type:
   <<: *DEFAULTS
   question: Какие задачи вы хотите решать с помощью программирования?
   description: Мы подскажем подходящие направления и курсы
-  parent_survey_item: goal-item2
+  # parent_survey_item: goal-item2
 
 formal-study-institution:
   <<: *DEFAULTS
   question: В каком учебном заведении вы сейчас учитесь?
   description: Это поможет адаптировать примеры и подходы к вашему уровню
-  parent_survey_item: goal-item4
+  # parent_survey_item: goal-item4
 
 formal-study-context:
   <<: *DEFAULTS
   question: Зачем вы изучаете программирование в рамках вашей учёбы?
   description: Это поможет понять, какие материалы будут вам полезнее
-  parent_survey_item: goal-item4
+  # parent_survey_item: goal-item4
 
 formal-study-depth:
   <<: *DEFAULTS
   question: Насколько глубокие знания вам нужны в рамках учёбы?
   description: Это поможет понять, достаточно ли вам базового уровня или нужно больше
-  parent_survey_item: goal-item4
+  # parent_survey_item: goal-item4
 
 formal-study-priority:
   <<: *DEFAULTS
   question: Что для вас самое важное в обучении сейчас?
   description: Это поможет адаптировать рекомендации под ваш ритм и мотивацию
-  parent_survey_item: goal-item4
+  # parent_survey_item: goal-item4

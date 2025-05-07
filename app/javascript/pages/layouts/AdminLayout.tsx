@@ -111,6 +111,7 @@ export default function AdminLayout({ children, header }: Props) {
                   {tLayouts("web.admin.application.language_lesson_members")}
                 </Link>
               </Nav.Item>
+
               <Nav.Item>
                 <Link
                   className="nav-link fw-medium link-body-emphasis"
@@ -120,6 +121,17 @@ export default function AdminLayout({ children, header }: Props) {
                   {tLayouts("web.admin.application.surveys")}
                 </Link>
               </Nav.Item>
+
+              <Nav.Item>
+                <Link
+                  className="nav-link fw-medium link-body-emphasis"
+                  href={Routes.admin_survey_scenarios_path()}
+                >
+                  <i className="bi bi-patch-question me-2" />
+                  {tLayouts("web.admin.application.survey_scenarios")}
+                </Link>
+              </Nav.Item>
+
               <Nav.Item>
                 <Link
                   className="nav-link fw-medium link-body-emphasis"
@@ -152,17 +164,6 @@ export default function AdminLayout({ children, header }: Props) {
                 </Link>
               </Nav.Item>
 
-              <hr />
-
-              <Nav.Item>
-                <Link
-                  className="nav-link fw-medium link-body-emphasis"
-                  href={Routes.surveys_admin_analytics_path()}
-                >
-                  <i className="bi bi-people me-2" />
-                  {tLayouts("web.admin.application.surveys_analytics")}
-                </Link>
-              </Nav.Item>
             </Nav>
           </Col>
           <Col className="col-10">

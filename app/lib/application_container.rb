@@ -4,6 +4,7 @@ class ApplicationContainer
   extend Dry::Container::Mixin
 
   register :openai_api, -> { OpenAI::Client.new }
+  register :event_registry, -> { EventRegistry.new }
 
   if Rails.env.test?
     register :docker_exercise_api, -> { DockerExerciseApiStub }

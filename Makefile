@@ -56,6 +56,7 @@ editor-setup:
 sync: sync-i18n sync-fixtures
 	ENABLE_TYPELIZER=1 bin/rails typelizer:generate:refresh
 	bin/rails js:routes:typescript
+	bin/rails app:export_events_to_ts
 
 coverage-open:
 	open coverage/index.html
@@ -130,7 +131,7 @@ services-webserver-run:
 	caddy run # --config ./services/webserver/caddy/conf/Caddyfile --envfile=.env
 
 services-db-start:
-	docker run -d -it --rm \
+	docker run -d -it \
 		-p 5432:5432 \
 		--name code_basics_postgres \
 		-e POSTGRES_DB=code_basics_development \
@@ -141,8 +142,11 @@ services-db-start:
 services-db-stop:
 	docker stop code_basics_postgres
 
+services-remove: services-db-remove
+
 services-db-remove: services-db-stop
-	docker volume remove codebasics_pgdata
+	docker rm code_basics_postgres
+	docker volume remove code_basics_pgdata
 
 services-stop: services-db-stop
 

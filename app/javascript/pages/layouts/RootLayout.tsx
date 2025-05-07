@@ -1,4 +1,4 @@
-import analytics from "@/analytics";
+import analytics from "@/lib/analytics";
 import type { SharedProps } from "@/types";
 import { Head, usePage } from "@inertiajs/react";
 import parseHtml from "html-react-parser";
@@ -8,7 +8,7 @@ type Props = PropsWithChildren & {};
 export default (props: Props) => {
   const page = usePage<SharedProps>();
   const { url } = page;
-  const { auth, events, carrotQuestUserHash, metaTagsHTMLString } = page.props;
+  const { auth, happendEvents: events, carrotQuestUserHash, metaTagsHTMLString } = page.props;
 
   const user = auth.user;
 

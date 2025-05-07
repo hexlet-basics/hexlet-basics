@@ -61,10 +61,12 @@ typescript1:
 javascript1:
   <<: *DEFAULTS
   language: javascript
+  extension: rb
 
 javascript2:
   <<: *DEFAULTS
   language: javascript
+  extension: rb
 
 pre-course-javascript1:
   <<: *DEFAULTS

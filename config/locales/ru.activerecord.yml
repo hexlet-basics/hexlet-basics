@@ -1,6 +1,10 @@
 ru:
   activerecord:
     attributes:
+      survey_scenario:
+        name: Название
+        survey_item_id: Ответ триггер (Начало воронки)
+        _destroy: Удалить
       survey:
         question: Вопрос
         run_always: Запускать всегда

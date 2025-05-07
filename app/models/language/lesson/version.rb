@@ -43,7 +43,7 @@ class Language::Lesson::Version < ApplicationRecord
 
   validates :natural_order, presence: true
 
-  def next_lesson_version
+  def next_lesson
     language_version
       .lesson_versions.order(:natural_order)
       .joins(:infos)
@@ -51,7 +51,7 @@ class Language::Lesson::Version < ApplicationRecord
       .find_by("natural_order > ?", natural_order)&.lesson
   end
 
-  def prev_lesson_version
+  def prev_lesson
     language_version
       .lesson_versions.order(natural_order: :desc)
       .joins(:infos)

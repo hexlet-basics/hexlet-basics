@@ -5,7 +5,7 @@ import createServer from "@inertiajs/react/server";
 import * as Sentry from "@sentry/node";
 import ReactDOMServer from "react-dom/server";
 import "@/init.ts";
-import configure from "@/configure";
+import configure from "@/lib/configure";
 
 Sentry.init({
   // debug: import.meta.env.DEV,

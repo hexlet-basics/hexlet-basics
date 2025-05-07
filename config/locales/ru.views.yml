@@ -52,6 +52,13 @@ ru:
       leads:
         index:
           header: Лиды
+      survey_scenarios:
+        index:
+          header: Сценарии
+        new:
+          header: Новый сценарий
+        edit:
+          header: Редактирование сценария
       surveys:
         index:
           header: Опросы

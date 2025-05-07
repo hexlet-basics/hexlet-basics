@@ -56,9 +56,13 @@ Rails.application.routes.draw do
 
       resource :my, only: [ :show ]
 
-      resources :surveys do
-        scope module: :surveys do
-          resources :answers, only: [ :create ]
+      resources :scenarios, only: [ :show ] do
+        scope module: :scenarios do
+          resources :surveys, only: [ :show ] do
+            scope module: :surveys do
+              resources :answers, only: [ :create ]
+            end
+          end
         end
       end
 
@@ -99,13 +103,6 @@ Rails.application.routes.draw do
       namespace :admin do
         root "home#index"
 
-        resources :survey_answers, only: [ :index ]
-        resources :analytics do
-          collection do
-            get :surveys
-          end
-        end
-
         namespace :api do
           resources :users do
             collection do
@@ -114,9 +111,12 @@ Rails.application.routes.draw do
           end
         end
 
+        resources :surveys
+        resources :survey_scenarios
+        resources :survey_answers, only: [ :index ]
+
         resources :reviews
         resources :leads, only: [ :index ]
-        resources :surveys
         resources :messages, only: [ :index ]
         resources :language_lesson_members, only: [ :index ]
         resources :language_categories

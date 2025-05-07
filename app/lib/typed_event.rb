@@ -2,6 +2,8 @@
 
 class TypedEvent < RailsEventStore::Event
   extend T::Sig
+  extend T::Helpers
+  abstract!
 
   sig { params(data: T::Hash[String, T.untyped], kwargs: T.untyped).void }
   def initialize(data = {}, **kwargs)

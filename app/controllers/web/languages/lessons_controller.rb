@@ -16,10 +16,10 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     lesson_info = lesson_version.infos.find_by!(locale: I18n.locale)
     # language_info = resource_language.current_version.infos.find_by!(locale: I18n.locale)
 
-    next_lesson_version = lesson_version.next_lesson_version
-    next_lesson_info = next_lesson_version ? next_lesson_version.infos.find_by!(locale: I18n.locale) : nil
-    prev_lesson_version = lesson_version.prev_lesson_version
-    prev_lesson_info = prev_lesson_version ? prev_lesson_version.infos.find_by!(locale: I18n.locale) : nil
+    next_lesson = lesson_version.next_lesson
+    next_lesson_info = next_lesson ? next_lesson.infos.find_by!(locale: I18n.locale) : nil
+    prev_lesson = lesson_version.prev_lesson
+    prev_lesson_info = prev_lesson ? prev_lesson.infos.find_by!(locale: I18n.locale) : nil
 
     lesson_member = nil
 
@@ -29,6 +29,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
       if language_member.new_record?
         language_member.save!
         event_data = {
+          occurrence_count: current_user.language_members.started.count,
           slug: resource_language.slug,
           locale: resource_language_landing_page.locale.to_sym
         }
@@ -45,6 +46,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
         lesson_member.save!
 
         event_data = {
+          occurrence_count: language_member.lesson_members.count,
           lesson_slug: lesson.slug,
           course_slug: resource_language.slug,
           locale: resource_language_landing_page.locale.to_sym

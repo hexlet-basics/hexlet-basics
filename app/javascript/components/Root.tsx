@@ -6,7 +6,7 @@ import { type PropsWithChildren } from "react";
 import { Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { Locale } from "@/types";
-import configure from "@/configure";
+import configure from "@/lib/configure";
 
 function FallbackComponent() {
   const { t: tLayouts } = useTranslation("layouts");

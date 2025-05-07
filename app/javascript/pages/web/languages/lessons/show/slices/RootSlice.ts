@@ -1,4 +1,4 @@
-import analytics from "@/analytics.ts";
+import analytics from "@/lib/analytics.ts";
 import * as Routes from "@/routes.js";
 import type {
   Language,

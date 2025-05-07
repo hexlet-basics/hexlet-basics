@@ -4,7 +4,7 @@ import { createInertiaApp } from "@inertiajs/react";
 import * as Sentry from "@sentry/react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 import "@/init.ts";
-import configure from "@/configure";
+import configure from "@/lib/configure";
 
 if (import.meta.env.DEV) {
   localStorage.debug = "app:*";

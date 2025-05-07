@@ -62,7 +62,9 @@ class Language::LandingPage < ApplicationRecord
     [ "created_at", "language_slug" ]
   end
 
-  aasm column: :state do
+  enum :state, { draft: "draft", archived: "archived", published: "published" }, default: "draft"
+
+  aasm column: :state, enum: true do
     state :draft, initial: true
     state :archived
     state :published do

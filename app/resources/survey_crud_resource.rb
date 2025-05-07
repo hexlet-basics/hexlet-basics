@@ -11,18 +11,14 @@ class SurveyCrudResource < ApplicationResource
     :state,
     :question,
     :description,
-    :slug,
-    :parent_survey_item_id,
-    :parent_survey_id,
-    :run_always,
-    :run_after_finishing_lessons_count
+    :slug
 
   typelize :state, nullabe: false
 
   typelize :string, nullable: true
-  attribute :parent_survey_item_value do |obj|
-    obj.parent_survey_item&.value
-  end
+  # attribute :parent_survey_item_value do |obj|
+  #   obj.parent_survey_item&.value
+  # end
 
   typelize_meta meta: "{ item_states: Record<string, unknown>[]}"
   meta do

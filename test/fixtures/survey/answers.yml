@@ -1,4 +1,4 @@
-# == Schema Information
+# == Schema Informtion
 #
 # Table name: survey_answers
 #
@@ -23,10 +23,20 @@
 #  fk_rails_...  (survey_item_id => survey_items.id)
 #  fk_rails_...  (user_id => users.id)
 #
-just_signed_up__goal:
-  state: requested
-  user: just_signed_up
-  survey: goal
+#  fk_rails_...  (survey_id => surveys.id)
+#  fk_rails_...  (survey_item_id => survey_items.id)
+#  fk_rails_...  (user_id => users.id)
+
+# just_signed_up__goal:
+#   state: requested
+#   user: just_signed_up
+#   survey: goal
+
+inside_base_survey_scenario__coding_experience:
+  state: fulfilled
+  user: inside_base_survey_scenario
+  survey: coding-experience
+  survey_item: coding-experience-item1
 
 full__goal:
   state: fulfilled
@@ -70,8 +80,8 @@ should_add_contact_method__goal:
   survey: goal
   survey_item: goal-item1
 
-should_add_contact_method__career-change-contact-method:
+should_add_contact_method__contact-method:
   state: fulfilled
   user: should_add_contact_method
   survey: career-change-contact-method
-  survey_item: career-change-contact-method-item4
+  survey_item: contact-method-item4

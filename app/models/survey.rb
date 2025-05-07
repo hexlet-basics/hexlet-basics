@@ -29,8 +29,10 @@
 class Survey < ApplicationRecord
   has_many :items, class_name: "Survey::Item", dependent: :restrict_with_exception
   has_many :answers, class_name: "Survey::Answer", dependent: :restrict_with_exception
+  has_many :scenario_items, class_name: "Survey::Scenario::Item"
+  has_many :scenarios, through: :scenario_items, source: :scenario
 
-  belongs_to :parent_survey_item, class_name: "Survey::Item", optional: true
+  # belongs_to :parent_survey_item, class_name: "Survey::Item", optional: true
 
   validates :question, presence: true
   validates :locale, presence: true
@@ -41,32 +43,32 @@ class Survey < ApplicationRecord
     [ "created_at", "description", "id", "locale", "question", "slug", "state", "updated_at" ]
   end
 
-  def self.find_or_request_answer_if_needed_by(survey, user)
-    # parent_survey_item = survey.parent_survey_item
-    # # Rails.logger.info("LessonFinishedEvent #{parent_survey_item}")
-    # if parent_survey_item
-    #   # Rails.logger.info("LessonFinishedEvent PARENT")
-    #   needed_answer = Survey::Answer.fulfilled.find_by user: user, survey_item: parent_survey_item
-    #   return unless needed_answer
-    # end
+  # def self.find_or_request_answer_if_needed_by(survey, user)
+  #   # parent_survey_item = survey.parent_survey_item
+  #   # # Rails.logger.info("LessonFinishedEvent #{parent_survey_item}")
+  #   # if parent_survey_item
+  #   #   # Rails.logger.info("LessonFinishedEvent PARENT")
+  #   #   needed_answer = Survey::Answer.fulfilled.find_by user: user, survey_item: parent_survey_item
+  #   #   return unless needed_answer
+  #   # end
+  #
+  #   answer = survey.answers.find_or_initialize_by user: user
+  #   answer.save! if answer.new_record?
+  #   answer
+  # end
 
-    answer = survey.answers.find_or_initialize_by user: user
-    answer.save! if answer.new_record?
-    answer
-  end
-
-  def self.next_for_user(user, course_member: nil, ignore_filters: false)
-    answers = user.survey_answers
-    finished_lessons_count = course_member ? course_member.lesson_members.size : -1
-
-    # scope = where(parent_survey_item_id: answers.select(:survey_item_id))
-    #   .where.not(id: answers.select(:survey_id))
-    scope = where("parent_survey_item_id IS NULL OR parent_survey_item_id IN (?)", answers.select(:survey_item_id))
-      .where.not(id: answers.select(:survey_id))
-
-    return scope if ignore_filters
-
-    scope = scope.where("run_always = ? OR run_after_finishing_lessons_count <= ?", true, finished_lessons_count)
-    scope
-  end
+  # def self.next_for_user(user, course_member: nil, ignore_filters: false)
+  #   answers = user.survey_answers
+  #   finished_lessons_count = course_member ? course_member.lesson_members.size : -1
+  #
+  #   # scope = where(parent_survey_item_id: answers.select(:survey_item_id))
+  #   #   .where.not(id: answers.select(:survey_id))
+  #   scope = where("parent_survey_item_id IS NULL OR parent_survey_item_id IN (?)", answers.select(:survey_item_id))
+  #     .where.not(id: answers.select(:survey_id))
+  #
+  #   return scope if ignore_filters
+  #
+  #   scope = scope.where("run_always = ? OR run_after_finishing_lessons_count <= ?", true, finished_lessons_count)
+  #   scope
+  # end
 end

@@ -25,6 +25,7 @@ class Api::LessonsController < Api::ApplicationController
     language_has_been_finished = false
 
     if passed && !current_user.guest?
+      language_member = language.members.find_by!(user: current_user)
       lesson_member = lesson.members.find_by!(user: current_user)
 
       if lesson_member.may_finish?
@@ -32,6 +33,7 @@ class Api::LessonsController < Api::ApplicationController
         lesson_has_been_finished = true
 
         lesson_finished_event_data = {
+          occurrence_count: language_member.lesson_members.count,
           lesson_slug: lesson.slug,
           course_slug: language.slug,
           locale: I18n.locale
@@ -41,13 +43,12 @@ class Api::LessonsController < Api::ApplicationController
         publish_event(event, current_user)
       end
 
-      language_member = language.members.find_by!(user: current_user)
-
       if language_member.may_finish?
         language_member.finish!
         language_has_been_finished = true
 
         course_finished_event_data = {
+          occurrence_count: current_user.language_members.finished.count,
           slug: language.slug,
           locale: I18n.locale
         }

@@ -1,0 +1,40 @@
+# == Schema Information
+#
+# Table name: survey_scenario_items
+#
+#  id          :bigint           not null, primary key
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  scenario_id :bigint           not null
+#  survey_id   :bigint           not null
+#
+# Indexes
+#
+#  index_survey_scenario_items_on_scenario_id                (scenario_id)
+#  index_survey_scenario_items_on_survey_id                  (survey_id)
+#  index_survey_scenario_items_on_survey_id_and_scenario_id  (survey_id,scenario_id) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (scenario_id => survey_scenarios.id)
+#  fk_rails_...  (survey_id => surveys.id)
+#
+career-change-item1:
+  scenario: career-change
+  survey: career-change-study-plan
+
+career-change-item2:
+  scenario: career-change
+  survey: career-change-reason
+
+base-coding-experience:
+  scenario: base
+  survey: coding-experience
+
+request-contat-method-contact-method:
+  scenario: request-contact-method
+  survey: career-change-contact-method
+
+base-goal:
+  scenario: base
+  survey: goal

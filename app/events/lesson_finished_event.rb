@@ -3,6 +3,7 @@
 class LessonFinishedEvent < TypedEvent
   DataShape = T.type_alias {
     {
+      occurrence_count: Integer,
       lesson_slug: String,
       course_slug: String,
       locale: Symbol

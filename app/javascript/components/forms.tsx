@@ -321,6 +321,7 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
   const [filteredItems, setFilteredItems] = useState(items);
   const [selected, setSelected] = useState<T | null | undefined>(null);
 
+  // console.log(name, model)
   const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
     name,
     model,
@@ -333,9 +334,11 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
 
   useEffect(() => {
     if (has) {
-      const defaultItem = get(form.data, [form.model!, has]);
+      const path = `${inputName.substring(0, inputName.lastIndexOf('.'))}.${has}`
+      const defaultItem = get(form.data, path) as T;
+      // console.log(path, has);
       setSelected(defaultItem);
-      // console.log(name, form.model, form.data, has)
+      // console.log(name, form.data, form.model, has, defaultItem)
     } else {
       const defaultItem = first(
         filteredItems.filter((item) => item[valueField] === value),
@@ -350,7 +353,7 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
   // @ts-expect-error
   const label = tAr(path, tAm(path));
 
-  const controlClasses = cn({
+  const controlClasses = cn("w-100", {
     "is-invalid": errors.length > 0,
   });
 
@@ -435,7 +438,7 @@ export function XStateEvent({ fieldName }: XStateEventProps) {
   return (
     <Form.Group className="mb-4">
       <Form.Select name={inputName} id={inputId} onChange={handleChange}>
-        <option>{tCommon("state_events")}</option>
+        <option value="">{tCommon("state_events")}</option>
         {stateEvents.map(([k, v]) => (
           <option key={v} value={v}>
             {k}
@@ -466,7 +469,6 @@ export const XDynamicInputs = ({
     model,
     emptyData,
   });
-
   return (
     <fieldset className="border p-5 mb-5 rounded">
       <legend>{label}</legend>

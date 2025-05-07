@@ -30,9 +30,8 @@ export default function Form({ data, url, method, surveysItems }: Props) {
           {/* <XStateEvent fieldName="state" /> */}
           <XInput name="question" />
           <XInput name="slug" />
-          <XCheck name="run_always" />
-          <XInput name="run_after_finishing_lessons_count" />
-          <XSelect name="parent_survey_item_id" items={surveysItems} valueField="id" labelField="value_for_select" />
+          {/* <XCheck name="run_always" /> */}
+          {/* <XInput name="run_after_finishing_lessons_count" /> */}
           <XInput name="description" as="textarea" style={{ height: "200px" }} />
 
           <XDynamicInputs

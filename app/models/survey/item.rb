@@ -27,7 +27,9 @@ class Survey::Item < ApplicationRecord
   enum :state, { active: "active", archived: "archived" }
 
   aasm :state, enum: true do
-    state :active, initial: true
+    state :active, initial: true do
+      validates :value, presence: true
+    end
     state :archived
   end
 end

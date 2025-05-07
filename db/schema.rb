@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_06_021547) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_08_175604) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -538,6 +538,46 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_06_021547) do
     t.index ["survey_id"], name: "index_survey_items_on_survey_id"
   end
 
+  create_table "survey_scenario_items", force: :cascade do |t|
+    t.bigint "survey_id", null: false
+    t.bigint "scenario_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["scenario_id"], name: "index_survey_scenario_items_on_scenario_id"
+    t.index ["survey_id", "scenario_id"], name: "index_survey_scenario_items_on_survey_id_and_scenario_id", unique: true
+    t.index ["survey_id"], name: "index_survey_scenario_items_on_survey_id"
+  end
+
+  create_table "survey_scenario_members", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "scenario_id", null: false
+    t.string "state"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["scenario_id"], name: "index_survey_scenario_members_on_scenario_id"
+    t.index ["user_id"], name: "index_survey_scenario_members_on_user_id"
+  end
+
+  create_table "survey_scenario_triggers", force: :cascade do |t|
+    t.bigint "scenario_id", null: false
+    t.string "event_name"
+    t.integer "event_threshold_count"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_name", "scenario_id"], name: "index_survey_scenario_triggers_on_event_name_and_scenario_id", unique: true
+    t.index ["scenario_id"], name: "index_survey_scenario_triggers_on_scenario_id"
+  end
+
+  create_table "survey_scenarios", force: :cascade do |t|
+    t.bigint "survey_item_id"
+    t.string "name"
+    t.string "state"
+    t.string "locale"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["survey_item_id"], name: "index_survey_scenarios_on_survey_item_id"
+  end
+
   create_table "surveys", force: :cascade do |t|
     t.string "question"
     t.string "state"
@@ -663,6 +703,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_06_021547) do
   add_foreign_key "survey_answers", "surveys"
   add_foreign_key "survey_answers", "users"
   add_foreign_key "survey_items", "surveys"
+  add_foreign_key "survey_scenario_items", "survey_scenarios", column: "scenario_id"
+  add_foreign_key "survey_scenario_items", "surveys"
+  add_foreign_key "survey_scenario_members", "survey_scenarios", column: "scenario_id"
+  add_foreign_key "survey_scenario_members", "users"
+  add_foreign_key "survey_scenario_triggers", "survey_scenarios", column: "scenario_id"
+  add_foreign_key "survey_scenarios", "survey_items"
   add_foreign_key "surveys", "survey_items", column: "parent_survey_item_id"
   add_foreign_key "surveys", "surveys", column: "parent_survey_id"
   add_foreign_key "user_accounts", "users"

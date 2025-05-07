@@ -1,18 +1,18 @@
 import type { PropsWithChildren } from "react";
 import { Col, Container, Image, Row } from "react-bootstrap";
 
-import { dayjs } from "@/lib/utils.ts";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
-import type { BreadcrumbItem, SharedProps } from "@/types";
+import type { BreadcrumbItem } from "@/types";
 import type { BlogPost } from "@/types/serializers";
 import i18next from "i18next";
 
 import BlogPostBlock from "@/components/BlogPostBlock";
 import MarkdownViewer from "@/components/MarkdownViewer.tsx";
 import * as Routes from "@/routes.js";
-import { Head, usePage } from "@inertiajs/react";
+import { Head } from "@inertiajs/react";
 import { useTranslation } from "react-i18next";
 import type { Article, WithContext } from "schema-dts";
+import dayjs from "dayjs";
 
 type Props = PropsWithChildren & {
   blogPost: BlogPost;

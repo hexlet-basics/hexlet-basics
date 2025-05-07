@@ -4,10 +4,10 @@ import type { PropsWithChildren } from "react";
 import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
-import { dayjs } from "@/lib/utils";
 import * as Routes from "@/routes.js";
 import type { SharedProps } from "@/types";
 import { usePage } from "@inertiajs/react";
+import dayjs from "dayjs";
 
 type Props = PropsWithChildren & {
   post: BlogPost;
@@ -16,7 +16,6 @@ type Props = PropsWithChildren & {
 export default function BlogPostBlock({ post }: Props) {
   const { suffix } = usePage<SharedProps>().props;
   const { t: tCommon } = useTranslation("common");
-  const { t: tHelpers } = useTranslation("helpers");
 
   return (
     <Card className="border-0">
