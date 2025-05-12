@@ -3,6 +3,7 @@
 # Table name: survey_scenario_members
 #
 #  id          :bigint           not null, primary key
+#  event_name  :string
 #  state       :string
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null

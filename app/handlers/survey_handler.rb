@@ -28,7 +28,10 @@ class SurveyHandler
 
       scenarios.each do |scenario|
         maybe_new_member = scenario.members.find_or_initialize_by user: user
-        maybe_new_member.save! if maybe_new_member.new_record?
+        if maybe_new_member.new_record?
+          maybe_new_member.event_name = event.class.name
+          maybe_new_member.save!
+        end
       end
 
       # if event.class == LessonFinishedEvent

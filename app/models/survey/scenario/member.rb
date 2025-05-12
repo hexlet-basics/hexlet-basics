@@ -3,6 +3,7 @@
 # Table name: survey_scenario_members
 #
 #  id          :bigint           not null, primary key
+#  event_name  :string
 #  state       :string
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
@@ -23,8 +24,11 @@ class Survey::Scenario::Member < ApplicationRecord
   belongs_to :user
   belongs_to :scenario, class_name: "Survey::Scenario"
 
+  event_registry = ApplicationContainer["event_registry"]
+
   validates :scenario, uniqueness: { scope: :user }
 
+  enum :event_name, event_registry.all.index_with(&:to_s), suffix: true
   enum :state, { started: "started", finished: "finished" }, default: "started"
 
   def next_survey

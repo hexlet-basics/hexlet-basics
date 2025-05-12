@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_08_175604) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_12_233658) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -554,6 +554,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_08_175604) do
     t.string "state"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "event_name"
     t.index ["scenario_id"], name: "index_survey_scenario_members_on_scenario_id"
     t.index ["user_id"], name: "index_survey_scenario_members_on_user_id"
   end
