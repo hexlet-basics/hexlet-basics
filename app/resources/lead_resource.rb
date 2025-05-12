@@ -1,7 +1,7 @@
 class LeadResource < ApplicationResource
   typelize_from Lead
 
-  attributes :id, :user_id, :phone, :whatsapp, :telegram, :survey_answers_data
+  attributes :id, :user_id, :phone, :whatsapp, :telegram, :survey_answers_data, :created_at
 
   typelize :string, nullable: true
   attribute :full_name do |obj|
