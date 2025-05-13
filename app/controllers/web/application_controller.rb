@@ -37,7 +37,7 @@ class Web::ApplicationController < ApplicationController
         user: UserResource.new(current_user)
       },
       mobileBrowser: mobile_browser?,
-      carrotQuestUserHash: signed_in? ? OpenSSL::HMAC.hexdigest("SHA256", configus.carrotquest_user_auth_key, current_user.id.to_s) : nil,
+      # carrotQuestUserHash: signed_in? ? OpenSSL::HMAC.hexdigest("SHA256", configus.carrotquest_user_auth_key, current_user.id.to_s) : nil,
       metaTagsHTMLString: display_escaped_meta_tags(reverse: true)
     }
   end

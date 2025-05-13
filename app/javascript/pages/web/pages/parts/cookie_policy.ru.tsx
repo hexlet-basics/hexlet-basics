@@ -106,17 +106,6 @@ export default function CookiePolicyEn() {
               </a>
               ;
             </li>
-            <li>
-              статистики{" "}
-              <a
-                href="https://www.carrotquest.io/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                https://www.carrotquest.io/
-              </a>
-              ;
-            </li>
           </ul>
         </li>
         <li>

@@ -12,8 +12,9 @@ import cn from "classnames";
 import { useEffect, useRef } from "react";
 import { Button, Form, Spinner } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import { useInView } from "react-intersection-observer";
+// import { useInView } from "react-intersection-observer";
 import MarkdownViewer from "./MarkdownViewer";
+import i18next from "i18next";
 
 type Props = {
   enabled: boolean
@@ -90,6 +91,8 @@ export default function Chat({
     content: tViews("languages.lessons.show.chat.hi"),
   };
 
+  const { t: tCommon } = useTranslation("common");
+
   return (
     <div className="h-100">
       <div className="mb-3">
@@ -112,10 +115,11 @@ export default function Chat({
           onChange={handleInputChange}
           aria-label="With textarea"
         />
-        <div className="d-flex justify-content-end">
+        <div className="d-flex justify-content-end pt-3">
+          {i18next.language === 'ru' &&
+            <a className="btn btn-outline-primary me-2" target="_blank" href={tCommon("community_url")}>{tViews('languages.lessons.show.chat.community')}</a>}
           <Button
             disabled={status !== "awaiting_message"}
-            className="mt-3"
             type="submit"
           >
             {status === "in_progress" && (
