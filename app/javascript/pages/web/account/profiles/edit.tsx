@@ -29,7 +29,7 @@ export default function New({ form }: Props) {
 
   return (
     <ApplicationLayout>
-      <Container>
+      <Container className="mt-5">
         <Row className="justify-content-center">
           <div className="col-sm-10 col-lg-7">
             <h1 className="text-center mb-3">
