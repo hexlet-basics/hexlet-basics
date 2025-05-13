@@ -3,6 +3,7 @@
 # Table name: leads
 #
 #  id                  :bigint           not null, primary key
+#  courses_data        :text
 #  email               :string
 #  phone               :string
 #  state               :string

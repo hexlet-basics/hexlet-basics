@@ -3,6 +3,7 @@
 # Table name: leads
 #
 #  id                  :bigint           not null, primary key
+#  courses_data        :text
 #  email               :string
 #  phone               :string
 #  state               :string
@@ -34,3 +35,6 @@ full:
     - {"question":"Что для вас самое важное в обучении?","answer":"Быстрый выход на работу"}
     - {"question":"Какой формат знакомства с обучением вам был бы удобнее всего?","answer":"Пока не знаю"}
     - {"question":" Какой способ связи вам удобнее всего?","answer":"WhatsApp"}
+  courses_data:
+    - { slug: php, lessons_finished_count: 3 }
+    - { slug: javascript, lessons_finished_count: 10 }

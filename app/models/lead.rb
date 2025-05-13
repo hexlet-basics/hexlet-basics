@@ -3,6 +3,7 @@
 # Table name: leads
 #
 #  id                  :bigint           not null, primary key
+#  courses_data        :text
 #  email               :string
 #  phone               :string
 #  state               :string
@@ -24,6 +25,7 @@
 class Lead < ApplicationRecord
   belongs_to :user
   serialize :survey_answers_data
+  serialize :courses_data
 
   def self.ransackable_attributes(auth_object = nil)
     [ "created_at", "email", "id", "phone", "state", "survey_answers_data", "telegram", "updated_at", "user_id", "whatsapp" ]
@@ -35,6 +37,18 @@ class Lead < ApplicationRecord
     if user.contact_method? && user.contact_value?
       lead[user.contact_method] = user.contact_value
     end
+
+    courses_data = []
+    user.language_members.each do |member|
+      course_data = {
+        slug: member.language.slug,
+        lessons_finished_count: member.lesson_members.finished.count
+      }
+
+      courses_data << course_data
+    end
+
+    lead.courses_data = courses_data
 
     survey_answers_data = []
     user.survey_answers.each do |answer|

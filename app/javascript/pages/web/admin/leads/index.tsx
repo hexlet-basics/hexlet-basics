@@ -7,7 +7,7 @@ import { fieldsToFilters } from "@/lib/utils";
 import AdminLayout from "@/pages/layouts/AdminLayout";
 import type { Grid, Lead, Review } from "@/types/serializers";
 import { Link } from "@inertiajs/react";
-import { Column } from "primereact/column";
+import { Column, ColumnBodyOptions } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { useState } from "react";
 import { Dialog } from "primereact/dialog";
@@ -17,7 +17,7 @@ type Props = {
   grid: Grid;
 };
 
-export function SurveyAnswersDataTemplate(lead: Lead) {
+export function DataTemplate(lead: Lead, options: ColumnBodyOptions) {
   const [visible, setVisible] = useState(false);
 
   return (
@@ -27,7 +27,7 @@ export function SurveyAnswersDataTemplate(lead: Lead) {
         className="link-body-emphasis"
         onClick={() => setVisible(true)}
       >
-        {"answers_data"}
+        {"data"}
       </a>
       <Dialog
         style={{ width: "50vw" }}
@@ -38,7 +38,7 @@ export function SurveyAnswersDataTemplate(lead: Lead) {
           setVisible(false);
         }}
       >
-        <pre>{JSON.stringify(lead.survey_answers_data, null, 2)}</pre>
+        <pre>{JSON.stringify(lead[options.field as keyof Lead], null, 2)}</pre>
       </Dialog>
     </>
   );
@@ -83,7 +83,8 @@ export default function Index({ grid, leads }: Props) {
         <Column field="phone" header="phone" />
         <Column field="telegram" header="telegram" />
         <Column field="whatsapp" header="whatsapp" />
-        <Column field="answers" header="answers" body={SurveyAnswersDataTemplate} />
+        <Column field="survey_answers_data" header="answers" body={DataTemplate} />
+        <Column field="courses_data" header="courses" body={DataTemplate} />
         <Column
           field="created_at"
           header="created_at"
