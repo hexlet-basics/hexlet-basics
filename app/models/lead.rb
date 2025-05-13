@@ -66,13 +66,14 @@ class Lead < ApplicationRecord
 
     event = nil
     if new_lead
-      event_data = lead.slice(
-        :user_id,
-        :phone,
-        :telegram,
-        :whatsapp,
-        :survey_answers_data
-      )
+      event_data = {
+        # :user_id,
+        phone: lead.phone,
+        telegram: lead.telegram,
+        whatsapp: lead.whatsapp,
+        survey_answers_data: lead.survey_answers_data,
+        courses_data: lead.courses_data
+      }
 
       event = LeadCreatedEvent.new(data: event_data)
     end
