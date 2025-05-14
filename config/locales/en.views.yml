@@ -303,9 +303,15 @@ en:
     cases:
       for_school_teachers: For school teachers
       link: Go to
+      title: Cases
+      meta:
+        description: Examples of using Code Basics in different areas
     for_school_teachers:
       header: The fastest way to teach students programming
       description: Free courses with a simulator right in your browser. Practice during each lesson
+      title: Online programming courses for high school students - Hexlet
+      meta:
+        description: Programming courses for children and teenagers from Hexlet online school. All classes are designed by experienced teachers and programmers, taking into account the age characteristics of children. Teaching programming to schoolchildren online
       try: try
       integrate_into_education: Why integrate CodeBasics into the education of school children?
       lay_programming_foundations: CodeBasics lays the foundations of programming in an interactive way, for which it won 3rd place in the Best Off-Platform Online Course category in the 2020 EdCrunch Award OOC International Open Online Courses Competition

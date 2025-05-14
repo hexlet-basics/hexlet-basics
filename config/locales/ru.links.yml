@@ -24,3 +24,4 @@ ru:
     hexlet_awesome_text: 'https://ru.hexlet.io/courses/awesome-text?promo_name=course-awesome-text&promo_position=body&promo_type=link'
     hexlet_awesome_text_structure: 'https://ru.hexlet.io/courses/awesome-text-structure?promo_name=course-awesome-text-structure&promo_position=body&promo_type=link'
     hexlet_authors_school: 'https://making.hexlet.io/authors?promo_name=school-of-authors&promo_position=body&promo_type=link'
+    hexlet_courses: 'https://ru.hexlet.io/courses'

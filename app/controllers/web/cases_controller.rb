@@ -2,13 +2,20 @@
 
 class Web::CasesController < Web::ApplicationController
   def index
+    seo_tags = {
+      title: t(".title"),
+      description: t(".meta.description")
+    }
+
+    set_meta_tags seo_tags
+
     render inertia: true, props: {}
   end
 
   def for_school_teachers
     seo_tags = {
-      title: t(".header"),
-      description: t(".meta_description")
+      title: t(".title"),
+      description: t(".meta.description")
     }
 
     set_meta_tags seo_tags

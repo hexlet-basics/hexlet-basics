@@ -561,6 +561,7 @@
     "links": {
       "hexlet": "https://hexlet.io/?promo_name=main&promo_position=body&promo_type=link",
       "hexlet_blog": "https://hexlet.io/blog?promo_name=blog&promo_position=body&promo_type=link",
+      "hexlet_courses": "https://hexlet.io/courses",
       "hexlet_facebook": "https://www.facebook.com/hexlethq",
       "hexlet_frontend": "https://hexlet.io/programs/frontend?promo_name=prof-frontend&promo_position=body&promo_type=link",
       "hexlet_instagram": "https://instagram.com/hello_hexlet",
@@ -846,7 +847,11 @@
       },
       "cases": {
         "for_school_teachers": "For school teachers",
-        "link": "Go to"
+        "link": "Go to",
+        "meta": {
+          "description": "Examples of using Code Basics in different areas"
+        },
+        "title": "Cases"
       },
       "errors": {
         "show": {
@@ -911,6 +916,9 @@
           "Connect an AI tutor who explains theory or the essence of a task to students"
         ],
         "lay_programming_foundations": "CodeBasics lays the foundations of programming in an interactive way, for which it won 3rd place in the Best Off-Platform Online Course category in the 2020 EdCrunch Award OOC International Open Online Courses Competition",
+        "meta": {
+          "description": "Programming courses for children and teenagers from Hexlet online school. All classes are designed by experienced teachers and programmers, taking into account the age characteristics of children. Teaching programming to schoolchildren online"
+        },
         "open_browser_and_sign_up": "Just open your browser and sign up",
         "programming_basic_list": [
           "Explain how systems function in general, rather than the specifics of technology at the startup",
@@ -922,6 +930,7 @@
         "select_course": "Select a course",
         "sign_up": "Sign up",
         "sign_up_and_start_learning": "Sign up and start teaching programming to your students now",
+        "title": "Online programming courses for high school students - Hexlet",
         "try": "try"
       },
       "home": {
@@ -2353,6 +2362,7 @@
       "hexlet_awesome_text": "https://ru.hexlet.io/courses/awesome-text?promo_name=course-awesome-text&promo_position=body&promo_type=link",
       "hexlet_awesome_text_structure": "https://ru.hexlet.io/courses/awesome-text-structure?promo_name=course-awesome-text-structure&promo_position=body&promo_type=link",
       "hexlet_blog": "https://ru.hexlet.io/blog?promo_name=blog&promo_position=body&promo_type=link&utm_source=code-basics&utm_medium=referral&utm_campaign=blog&utm_content=lesson",
+      "hexlet_courses": "https://ru.hexlet.io/courses",
       "hexlet_facebook": "https://www.facebook.com/codebasicsru",
       "hexlet_frontend": "https://ru.hexlet.io/programs/frontend?promo_name=prof-frontend&promo_position=body&promo_type=link&utm_source=code-basics&utm_medium=referral&utm_campaign=programs&utm_content=frontend-course",
       "hexlet_instagram": "https://www.instagram.com/hexlethq",
@@ -2753,9 +2763,11 @@
       },
       "cases": {
         "for_school_teachers": "Для школьных учителей",
-        "header": "Онлайн курсы программирования для школьников - Хекслет",
         "link": "Перейти",
-        "meta_description": "Курсы программирования для детей и подростков от онлайн-школы Хекслет. Все занятия разработаны опытными педагогами и программистами, с учетом возрастных особенностей детей. Обучение школьников программированию онлайн."
+        "meta": {
+          "description": "Примеры использования Code Basics в разных сферах"
+        },
+        "title": "Кейсы"
       },
       "errors": {
         "show": {
@@ -2820,6 +2832,9 @@
           "Подключаем ИИ-наставника, который объясняет ученикам теорию или суть задания"
         ],
         "lay_programming_foundations": "CodeBasics закладывает основы программирования в интерактивной форме, за что получил 3-е место в номинации «Лучший внеплатформенный онлайн-курс» в 2020 году на Международном конкурсе открытых онлайн-курсов EdCrunch Award OOC",
+        "meta": {
+          "description": "Курсы программирования для детей и подростков от онлайн-школы Хекслет. Все занятия разработаны опытными педагогами и программистами, с учетом возрастных особенностей детей. Обучение школьников программированию онлайн"
+        },
         "open_browser_and_sign_up": "Просто откройте браузер и зарегистрируйтесь",
         "programming_basic_list": [
           "Объясняем, как функционируют системы в общем, а не специфику технологий на старте",
@@ -2831,6 +2846,7 @@
         "select_course": "Выбрать курс",
         "sign_up": "Зарегистрироваться",
         "sign_up_and_start_learning": "Зарегистрируйтесь и начните обучать ваших учеников программированию прямо сейчас",
+        "title": "Онлайн курсы программирования для школьников - Хекслет",
         "try": "Попробовать"
       },
       "home": {

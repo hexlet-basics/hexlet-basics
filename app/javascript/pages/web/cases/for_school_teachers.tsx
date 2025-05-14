@@ -1,3 +1,4 @@
+import { getImageUrl } from "@/images";
 import learningEnVideo from "@/images/course-landing-page/learning_en.mp4";
 import learningRuVideo from "@/images/course-landing-page/learning_ru.mp4";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
@@ -14,10 +15,12 @@ export default function ForSchoolTeachersBlock() {
     auth: { user },
   } = usePage<SharedProps>().props;
   const { t } = useTranslation();
+  const { t: tLinks } = useTranslation("links");
 
-  const programmingBasicList = t("for_school_teachers.programming_basic_list", {
-    returnObjects: true,
-  });
+  const programmingBasicList = t(
+    "for_school_teachers.programming_basic_list",
+    { returnObjects: true },
+  );
 
   const interactiveApproachList = t(
     "for_school_teachers.interactive_approach_list",
@@ -47,7 +50,7 @@ export default function ForSchoolTeachersBlock() {
             </div>
             <a
               className="btn btn-lg btn-primary w-100 w-lg-auto px-lg-5"
-              href={user.guest ? Routes.new_user_path() : "https://ru.hexlet.io/courses"}
+              href={user.guest ? Routes.new_user_path() : tLinks("hexlet_courses")}
             >
               <span>{t("for_school_teachers.try")}</span>
             </a>
@@ -75,12 +78,11 @@ export default function ForSchoolTeachersBlock() {
                 {t("for_school_teachers.programming_competently")}
               </div>
               <ul className="text-body-secondary lh-1 list-unstyled my-4 pb-2 py-lg-2">
-                {Array.isArray(programmingBasicList) &&
-                  programmingBasicList.map((item, index) => (
-                    <li key={index.toString()} className="d-flex gap-3 mb-3">
-                      <span>–</span>
-                      <span>{t(item, { defaultValue: item })}</span>
-                    </li>
+                {programmingBasicList.map((item, index) => (
+                  <li key={index.toString()} className="d-flex gap-3 mb-3">
+                    <span>–</span>
+                    <span>{item}</span>
+                  </li>
                   ))}
               </ul>
             </div>
@@ -89,13 +91,12 @@ export default function ForSchoolTeachersBlock() {
                 {t("for_school_teachers.interactive_approach")}
               </div>
               <ul className="text-body-secondary lh-1 list-unstyled my-4 pb-2 py-lg-2">
-                {Array.isArray(interactiveApproachList) &&
-                  interactiveApproachList.map((item, index) => (
-                    <li key={index.toString()} className="d-flex gap-3 mb-3">
-                      <span>–</span>
-                      <span>{t(item, { defaultValue: item })}</span>
-                    </li>
-                  ))}
+                {interactiveApproachList.map((item, index) => (
+                  <li key={index.toString()} className="d-flex gap-3 mb-3">
+                    <span>–</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
               </ul>
             </div>
             <div className="pe-lg-5">
@@ -103,12 +104,11 @@ export default function ForSchoolTeachersBlock() {
                 {t("for_school_teachers.early_career_guidance")}
               </div>
               <ul className="text-body-secondary lh-1 list-unstyled my-4 py-lg-2">
-                {Array.isArray(earlyCareerGuidanceList) &&
-                  earlyCareerGuidanceList.map((item, index) => (
-                    <li key={index.toString()} className="d-flex gap-3 mb-3">
-                      <span>–</span>
-                      <span>{t(item, { defaultValue: item })}</span>
-                    </li>
+                {earlyCareerGuidanceList.map((item, index) => (
+                  <li key={index.toString()} className="d-flex gap-3 mb-3">
+                    <span>–</span>
+                    <span>{item}</span>
+                  </li>
                   ))}
               </ul>
             </div>
@@ -148,7 +148,7 @@ export default function ForSchoolTeachersBlock() {
               {!user.guest && (
                 <a
                   className="btn btn-lg btn-light w-100 w-lg-auto px-lg-5"
-                  href="https://ru.hexlet.io/courses"
+                  href={tLinks('hexlet_courses')}
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -163,24 +163,23 @@ export default function ForSchoolTeachersBlock() {
             {t("for_school_teachers.how_to_learn_programming")}
           </div>
           <Row className="row-cols-1 row-cols-md-2 row-cols-xl-4 gy-4">
-            {Array.isArray(howToLearnCards) &&
-              howToLearnCards.map((item, index) => (
-                <Col key={index.toString()}>
-                  <div className="border rounded-4 p-3 p-lg-4 h-100 d-flex flex-column gap-4">
-                    <img
-                      src={`https://code-basics.test/vite-dev/images/for-school-teachers-page/${t(item.img, { defaultValue: item.img })}.svg`}
-                      width="90"
-                      height="65"
-                      alt={t(item.img, { defaultValue: item.img })}
-                    />
-                    <div className="lh-sm">
-                      {t(item.title, { defaultValue: item.title })}
-                    </div>
-                    <div className="lh-sm">
-                      {t(item.subtitle, { defaultValue: item.subtitle })}
-                    </div>
+            {howToLearnCards.map((item, index) => (
+              <Col key={index.toString()}>
+                <div className="border rounded-4 p-3 p-lg-4 h-100 d-flex flex-column gap-4">
+                  <img
+                    src={getImageUrl(`for-school-teachers-page/${item.img}.svg`)}
+                    width="90"
+                    height="65"
+                    alt={item.img}
+                  />
+                  <div className="lh-sm">
+                    {item.title}
                   </div>
-                </Col>
+                  <div className="lh-sm">
+                    {item.subtitle}
+                  </div>
+                </div>
+              </Col>
               ))}
           </Row>
         </div>
@@ -203,7 +202,7 @@ export default function ForSchoolTeachersBlock() {
               {!user.guest && (
                 <a
                   className="btn btn-lg btn-light w-100 w-lg-auto px-lg-5 mb-3 mb-lg-0"
-                  href="https://ru.hexlet.io/courses"
+                  href={tLinks("hexlet_courses")}
                   target="_blank"
                   rel="noreferrer"
                 >
