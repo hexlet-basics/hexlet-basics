@@ -68,6 +68,9 @@ export default function NavbarBlock({ className }: Props) {
           >
             {tLayouts("shared.nav.book")}
           </Nav.Link>}
+          <Nav.Link className="link-body-emphasis" href={Routes.cases_path()}>
+            {tLayouts("shared.nav.solutions")}
+          </Nav.Link>
         </Nav>
         <Nav>
           {auth.user.guest && (

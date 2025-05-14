@@ -21,7 +21,12 @@ $utilities: map-merge($utilities,
         responsive: true,
         values: (100: 100%,
         )),
+      "width": map-merge(
+        map-get($utilities, "width"),
+        ( responsive: true ),
+      ),
     ));
+
 
 @import "bootstrap/scss/bootstrap";
 
@@ -196,4 +201,22 @@ $utilities: map-merge($utilities,
     height: 100%;
     position: absolute;
   }
+}
+
+.hexlet-basics-cases-block-image {
+  background-image: url(../images/for-school-teachers-page/languages-image-small.png);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 260px;
+  @include media-breakpoint-up(md) {
+    background-image: url(../images/for-school-teachers-page/languages-image.png);
+    height: 400px;
+  }
+  @include media-breakpoint-up(lg) { height: 503px; }
+}
+
+.hexlet-basics-cases-reviews-cards {
+  min-width: 282px;
 }

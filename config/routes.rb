@@ -73,6 +73,12 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :cases, only: %i[index] do
+        collection do
+          get :for_school_teachers
+        end
+      end
+
       resources :pages, only: %i[show]
       resources :blog_posts, only: %i[index show]
       resources :reviews, only: %i[index]
