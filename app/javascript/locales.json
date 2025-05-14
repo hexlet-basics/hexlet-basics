@@ -521,12 +521,14 @@
           "community": "Community",
           "courses": "Courses",
           "for_authors": "For authors",
+          "for_school_teachers": "For school teachers",
           "my": "My learning",
           "profile": "Settings",
           "registration": "Sign up",
           "reviews": "Reviews",
           "sign_in": "Sign in",
           "sign_out": "Sign out",
+          "solutions": "Solutions",
           "success_stories": "Why CodeBasics?",
           "toggle_navigation": "Toggle navigation",
           "toggle_user_menu": "Toggle the display of user menu"
@@ -842,6 +844,10 @@
           "to_home_title": "To home"
         }
       },
+      "cases": {
+        "for_school_teachers": "For school teachers",
+        "link": "Go to"
+      },
       "errors": {
         "show": {
           "codes": {
@@ -863,6 +869,60 @@
             }
           }
         }
+      },
+      "for_school_teachers": {
+        "description": "Free courses with a simulator right in your browser. Practice during each lesson",
+        "early_career_guidance": "Stimulate early career guidance:",
+        "early_career_guidance_list": [
+          "We show programming from the inside out to make an informed decision about studying your future profession",
+          "We give you the opportunity to quickly immerse yourself in a programming language and see if the student likes it",
+          "We help you to see basic examples of real-life tasks to take a closer look at your professional routine"
+        ],
+        "header": "The fastest way to teach students programming",
+        "how_to_learn_programming": "How do students learn programming in CodeBasics?",
+        "how_to_learn_programming_cards": [
+          {
+            "title": "Integration without integration: to implement CodeBasics in the educational process, you will need a PC with Internet access",
+            "subtitle": "You need to open your browser, register and start taking the course you are interested in",
+            "img": "integration-icon"
+          },
+          {
+            "title": "Theory backed by practice: PHP, Java, JS, Python, Ruby, HTML, CSS, Racket, Elixir and Go simulators are available on the platform now",
+            "subtitle": "It is possible to take several courses at the same time",
+            "img": "practice-icon"
+          },
+          {
+            "title": "Interactive format: the system automatically checks the completed tasks, shows errors and correct solution, as well as a detailed output",
+            "subtitle": "If something doesn't work out, you can use the Teacher's Solution",
+            "img": "interactive-format-icon"
+          },
+          {
+            "title": "Discussing complex issues: pupils can clarify unclear details in the “Discussion” section, where they will be answered by tech support or other pupils",
+            "subtitle": "An Artificial Intelligence based Virtual Mentor is also available to them",
+            "img": "discussion-icon"
+          }
+        ],
+        "integrate_into_education": "Why integrate CodeBasics into the education of school children?",
+        "integrate_now": "Integrate CodeBasics into your school curriculum now!",
+        "interactive_approach": "We focus on practice and an interactive approach:",
+        "interactive_approach_list": [
+          "Accompany theoretical course materials with practical assignments directly in the browser",
+          "Give instant feedback: show the correct solution, give a conclusion for each test",
+          "Connect an AI tutor who explains theory or the essence of a task to students"
+        ],
+        "lay_programming_foundations": "CodeBasics lays the foundations of programming in an interactive way, for which it won 3rd place in the Best Off-Platform Online Course category in the 2020 EdCrunch Award OOC International Open Online Courses Competition",
+        "open_browser_and_sign_up": "Just open your browser and sign up",
+        "programming_basic_list": [
+          "Explain how systems function in general, rather than the specifics of technology at the startup",
+          "We teach novice programmers the best coding standards, such as proper function naming",
+          "We cover the major programming languages and continue to add courses on modern technology"
+        ],
+        "programming_competently": "Laying the foundations of programming intelligently:",
+        "quotes_icon": "Quotes",
+        "select_course": "Select a course",
+        "sign_up": "Sign up",
+        "sign_up_and_start_learning": "Sign up and start teaching programming to your students now",
+        "try": "try"
       },
       "home": {
         "hero": {
@@ -2243,12 +2303,14 @@
           "community": "Сообщество",
           "courses": "Курсы",
           "for_authors": "Авторам",
+          "for_school_teachers": "Для школьных учителей",
           "my": "Мое обучение",
           "profile": "Настройки",
           "registration": "Регистрация",
           "reviews": "Отзывы",
           "sign_in": "Вход",
           "sign_out": "Выйти",
+          "solutions": "Решения",
           "success_stories": "Истории успеха",
           "toggle_navigation": "Переключить навигацию",
           "toggle_user_menu": "Показать/скрыть меню пользователя"
@@ -2689,6 +2751,12 @@
           "toc": "Содержание"
         }
       },
+      "cases": {
+        "for_school_teachers": "Для школьных учителей",
+        "header": "Онлайн курсы программирования для школьников - Хекслет",
+        "link": "Перейти",
+        "meta_description": "Курсы программирования для детей и подростков от онлайн-школы Хекслет. Все занятия разработаны опытными педагогами и программистами, с учетом возрастных особенностей детей. Обучение школьников программированию онлайн."
+      },
       "errors": {
         "show": {
           "codes": {
@@ -2710,6 +2778,60 @@
             }
           }
         }
+      },
+      "for_school_teachers": {
+        "description": "Бесплатные курсы с тренажером прямо в браузере. Практика во время каждого урока",
+        "early_career_guidance": "Стимулируем раннюю профориентацию:",
+        "early_career_guidance_list": [
+          "Показываем программирование изнутри, чтобы принять взвешенное решение об изучении будущей профессии",
+          "Даем возможность быстро погрузиться в язык программирования и понять, нравится ли он ученику",
+          "Помогаем увидеть базовые примеры реальных задач, чтобы присмотреться к профессиональной рутине"
+        ],
+        "header": "Самый быстрый способ обучить школьников программированию",
+        "how_to_learn_programming": "Как школьники изучают программирование в CodeBasics?",
+        "how_to_learn_programming_cards": [
+          {
+            "title": "Интеграция без интеграции: чтобы внедрить CodeBasics в образовательный процесс, потребуется ПК с доступом в интернет",
+            "subtitle": "Нужно открыть браузер, зарегистрироваться и начать проходить интересующий курс",
+            "img": "integration-icon"
+          },
+          {
+            "title": "Теория, подкрепленная практикой: на платформе уже сейчас доступны тренажеры по PHP, Java, JS, Python, Ruby, HTML, CSS, Racket, Elixir и Go",
+            "subtitle": "Можно проходить несколько курсов одновременно",
+            "img": "practice-icon"
+          },
+          {
+            "title": "Интерактивный формат: система автоматически проверяет выполненные задания, показывает ошибки и правильное решение, а также детальный вывод",
+            "subtitle": "Если что-то не получается, можно воспользоваться Решением учителя",
+            "img": "interactive-format-icon"
+          },
+          {
+            "title": "Обсуждение сложных вопросов: школьники могут уточнить непонятные детали в разделе «Обсуждение», где им ответит техподдержка или другие ученики",
+            "subtitle": "Также им доступен Виртуальный наставник на основе Искусственного интеллекта",
+            "img": "discussion-icon"
+          }
+        ],
+        "integrate_into_education": "Зачем интегрировать CodeBasics в обучение школьников?",
+        "integrate_now": "Интегрируйте CodeBasics в школьную программу сейчас!",
+        "interactive_approach": "Ориентируемся на практику и интерактивный подход:",
+        "interactive_approach_list": [
+          "Сопровождаем теоретические материалы курса практическими заданиями прямо в браузере",
+          "Даем мгновенную обратную связь: показываем правильное решение, даем вывод по каждому тесту",
+          "Подключаем ИИ-наставника, который объясняет ученикам теорию или суть задания"
+        ],
+        "lay_programming_foundations": "CodeBasics закладывает основы программирования в интерактивной форме, за что получил 3-е место в номинации «Лучший внеплатформенный онлайн-курс» в 2020 году на Международном конкурсе открытых онлайн-курсов EdCrunch Award OOC",
+        "open_browser_and_sign_up": "Просто откройте браузер и зарегистрируйтесь",
+        "programming_basic_list": [
+          "Объясняем, как функционируют системы в общем, а не специфику технологий на старте",
+          "Обучаем начинающих программистов лучшим стандартам кодирования, например правильному именованию функций",
+          "Охватываем основные языки программирования и продолжаем добавлять курсы по современным технологиям"
+        ],
+        "programming_competently": "Закладываем основы программирования грамотно:",
+        "quotes_icon": "Ковычки",
+        "select_course": "Выбрать курс",
+        "sign_up": "Зарегистрироваться",
+        "sign_up_and_start_learning": "Зарегистрируйтесь и начните обучать ваших учеников программированию прямо сейчас",
+        "try": "Попробовать"
       },
       "home": {
         "hero": {

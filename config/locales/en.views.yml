@@ -300,6 +300,50 @@ en:
           Now you have new knowledge and skills, but that's just the beginning - there are more opportunities ahead. It's time to choose your IT career and move on with your life
         choose_profession: Choose course
         home: Home
+    cases:
+      for_school_teachers: For school teachers
+      link: Go to
+    for_school_teachers:
+      header: The fastest way to teach students programming
+      description: Free courses with a simulator right in your browser. Practice during each lesson
+      try: try
+      integrate_into_education: Why integrate CodeBasics into the education of school children?
+      lay_programming_foundations: CodeBasics lays the foundations of programming in an interactive way, for which it won 3rd place in the Best Off-Platform Online Course category in the 2020 EdCrunch Award OOC International Open Online Courses Competition
+      programming_competently: 'Laying the foundations of programming intelligently:'
+      programming_basic_list:
+        - 'Explain how systems function in general, rather than the specifics of technology at the startup'
+        - 'We teach novice programmers the best coding standards, such as proper function naming'
+        - 'We cover the major programming languages and continue to add courses on modern technology'
+      interactive_approach: 'We focus on practice and an interactive approach:'
+      interactive_approach_list:
+        - 'Accompany theoretical course materials with practical assignments directly in the browser'
+        - 'Give instant feedback: show the correct solution, give a conclusion for each test'
+        - 'Connect an AI tutor who explains theory or the essence of a task to students'
+      early_career_guidance: 'Stimulate early career guidance:'
+      early_career_guidance_list:
+        - 'We show programming from the inside out to make an informed decision about studying your future profession'
+        - 'We give you the opportunity to quickly immerse yourself in a programming language and see if the student likes it'
+        - 'We help you to see basic examples of real-life tasks to take a closer look at your professional routine'
+      integrate_now: Integrate CodeBasics into your school curriculum now!
+      open_browser_and_sign_up: Just open your browser and sign up
+      sign_up: Sign up
+      select_course: Select a course
+      quotes_icon: Quotes
+      how_to_learn_programming: How do students learn programming in CodeBasics?
+      how_to_learn_programming_cards:
+        - title: 'Integration without integration: to implement CodeBasics in the educational process, you will need a PC with Internet access'
+          subtitle: 'You need to open your browser, register and start taking the course you are interested in'
+          img: integration-icon
+        - title: 'Theory backed by practice: PHP, Java, JS, Python, Ruby, HTML, CSS, Racket, Elixir and Go simulators are available on the platform now'
+          subtitle: 'It is possible to take several courses at the same time'
+          img: practice-icon
+        - title: 'Interactive format: the system automatically checks the completed tasks, shows errors and correct solution, as well as a detailed output'
+          subtitle: "If something doesn't work out, you can use the Teacher's Solution"
+          img: interactive-format-icon
+        - title: 'Discussing complex issues: pupils can clarify unclear details in the “Discussion” section, where they will be answered by tech support or other pupils'
+          subtitle: 'An Artificial Intelligence based Virtual Mentor is also available to them'
+          img: discussion-icon
+      sign_up_and_start_learning: Sign up and start teaching programming to your students now
 
     pages:
       parts:
