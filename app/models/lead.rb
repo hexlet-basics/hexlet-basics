@@ -67,7 +67,8 @@ class Lead < ApplicationRecord
     event = nil
     if new_lead
       event_data = {
-        # :user_id,
+        user_id: user.id,
+        email: user.email,
         phone: lead.phone,
         telegram: lead.telegram,
         whatsapp: lead.whatsapp,

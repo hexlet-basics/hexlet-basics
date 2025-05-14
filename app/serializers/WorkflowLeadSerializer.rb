@@ -1,0 +1,2 @@
+class WorkflowLeadSerializer
+end
