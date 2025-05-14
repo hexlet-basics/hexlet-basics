@@ -10,14 +10,10 @@ export default (props: Props) => {
   const { url } = page;
   const { auth, happendEvents: events, metaTagsHTMLString } = page.props;
 
-  const user = auth.user;
+  // const user = auth.user;
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    analytics.page({
-      $pathname: url,
-    });
-
     if (events) {
       for (const event of events) {
         switch (event.type) {

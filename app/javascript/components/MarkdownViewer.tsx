@@ -1,5 +1,3 @@
-// import { type RenderMarkdownOptions } from "@/lib/markdown";
-// import { useEffect, useState } from "react";
 import Markdown from 'react-markdown'
 import rehypeHighlight from 'rehype-highlight'
 import remarkGfm from 'remark-gfm'
@@ -15,9 +13,6 @@ type MarkdownViewerProps = {
 export default function MarkdownViewer({
   children,
   allowHtml = false,
-  // foldCode,
-  // foldCodeMessage,
-  // inlineCodeHighlight,
 }: MarkdownViewerProps) {
 
   const rehypePlugins: PluggableList = [
@@ -37,32 +32,4 @@ export default function MarkdownViewer({
   >
     {children}
   </Markdown>
-  // const [html, setHtml] = useState<string>("");
-  //
-  // useEffect(() => {
-  //   let cancelled = false;
-  //
-  //   const render = async () => {
-  //     const result = await renderMarkdown(children, {
-  //       foldCode,
-  //       foldCodeMessage,
-  //       inlineCodeHighlight,
-  //     });
-  //     if (!cancelled) setHtml(result);
-  //   };
-  //
-  //   render();
-  //
-  //   return () => {
-  //     cancelled = true;
-  //   };
-  // }, [children, foldCode, foldCodeMessage, inlineCodeHighlight]);
-  //
-  // return (
-  //   <div
-  //     className="markdown-body"
-  //     // biome-ignore lint/security/noDangerouslySetInnerHtml: markdown is sanitized by pipeline
-  //     dangerouslySetInnerHTML={{ __html: html }}
-  //   />
-  // );
 }

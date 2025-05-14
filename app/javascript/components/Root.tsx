@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/react";
+import "react-bootstrap";
 import { SnackbarProvider } from "notistack";
 import { PrimeReactProvider } from "primereact/api";
-import "react-bootstrap";
 import { type PropsWithChildren } from "react";
 import { Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";

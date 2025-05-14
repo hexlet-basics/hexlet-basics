@@ -62,20 +62,22 @@ export default function NavbarBlock({ className }: Props) {
               </NavDropdown.Item>
             ))}
           </NavDropdown>
+
+          <NavDropdown
+              className="link-body-emphasis"
+              title={tLayouts("shared.nav.cases")}
+            >
+              <NavDropdown.Item href={Routes.for_school_teachers_cases_path()}>
+                {tLayouts("shared.nav.for_school_teachers")}
+              </NavDropdown.Item>
+          </NavDropdown>
+
           {i18next.language == 'ru' && <Nav.Link
             className="link-body-emphasis link-btn"
             href={Routes.book_path()}
           >
             {tLayouts("shared.nav.book")}
           </Nav.Link>}
-          <NavDropdown
-              className="link-body-emphasis"
-              title={tLayouts("shared.nav.cases")}
-            >
-              <NavDropdown.Item className="link-body-emphasis" href={Routes.for_school_teachers_cases_path()}>
-                {tLayouts("shared.nav.for_school_teachers")}
-              </NavDropdown.Item>
-          </NavDropdown>
         </Nav>
         <Nav>
           {auth.user.guest && (

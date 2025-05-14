@@ -1,10 +1,14 @@
+import analytics from "@/lib/analytics";
 import Root from "@/components/Root.tsx";
 import type { ResolvedComponent, RootProps } from "@/types";
 import { createInertiaApp } from "@inertiajs/react";
 import * as Sentry from "@sentry/react";
 import { createRoot, hydrateRoot } from "react-dom/client";
-import "@/init.ts";
 import configure from "@/lib/configure";
+
+import "@/init.ts";
+
+analytics.page()
 
 if (import.meta.env.DEV) {
   localStorage.debug = "app:*";
