@@ -517,6 +517,7 @@
           "about_platform": "About Platform",
           "admin": "Admins",
           "blog": "Blog",
+          "cases": "Cases",
           "categories": "Categories",
           "community": "Community",
           "courses": "Courses",
@@ -528,7 +529,6 @@
           "reviews": "Reviews",
           "sign_in": "Sign in",
           "sign_out": "Sign out",
-          "solutions": "Solutions",
           "success_stories": "Why CodeBasics?",
           "toggle_navigation": "Toggle navigation",
           "toggle_user_menu": "Toggle the display of user menu"
@@ -2308,6 +2308,7 @@
           "admin": "Админство",
           "blog": "Блог",
           "book": "С нуля до трудоустройства (Книга)",
+          "cases": "Кейсы",
           "categories": "Категории",
           "community": "Сообщество",
           "courses": "Курсы",
@@ -2319,7 +2320,6 @@
           "reviews": "Отзывы",
           "sign_in": "Вход",
           "sign_out": "Выйти",
-          "solutions": "Решения",
           "success_stories": "Истории успеха",
           "toggle_navigation": "Переключить навигацию",
           "toggle_user_menu": "Показать/скрыть меню пользователя"
@@ -2818,8 +2818,8 @@
             "img": "interactive-format-icon"
           },
           {
-            "title": "Обсуждение сложных вопросов: школьники могут уточнить непонятные детали в разделе «Обсуждение», где им ответит техподдержка или другие ученики",
-            "subtitle": "Также им доступен Виртуальный наставник на основе Искусственного интеллекта",
+            "title": "Пользователям доступен Виртуальный наставник на основе Искусственного интеллекта",
+            "subtitle": "",
             "img": "discussion-icon"
           }
         ],
