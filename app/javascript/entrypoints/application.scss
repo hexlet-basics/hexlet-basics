@@ -176,8 +176,13 @@ $utilities: map-merge($utilities,
 
 .hexlet-basics-learning-video {
   position: relative;
-  bottom: -18px;
-  left: 20px;
+  bottom: -10px;
+  left: 14px;
+
+  @include media-breakpoint-up(sm) {
+    bottom: -15px;
+    left: 20px;
+  }
 
   @include media-breakpoint-up(lg) {
     bottom: -28px;

@@ -66,7 +66,7 @@ export default function ForSchoolTeachersBlock() {
             </div>
           </Col>
           <Col>
-            <p className="fs-5 text-body-secondary lh-1 pe-lg-4">
+            <p className="fs-5 text-body-secondary lh-sm pe-lg-4">
               {t("for_school_teachers.lay_programming_foundations")}
             </p>
           </Col>
@@ -185,12 +185,12 @@ export default function ForSchoolTeachersBlock() {
         </div>
         <div className="pt-5 pb-3 pb-lg-5">
           <Row className="bg-dark text-light rounded-4 d-flex align-items-end justify-content-between p-2 p-md-3 p-lg-4 m-0 gy-2">
-            <Col className="col-md-10 col-lg-7">
+            <Col className="col-md-10 col-lg-8 col-xl-7">
               <div className="h1 lh-1 fw-normal pe-lg-4 mb-4">
                 {t("for_school_teachers.sign_up_and_start_learning")}
               </div>
             </Col>
-            <Col className="col-lg-auto">
+            <Col className="col-12 col-lg-auto">
               {user.guest && (
                 <Link
                   className="btn btn-lg btn-light w-100 w-lg-auto px-lg-5 mb-3 mb-lg-0"
