@@ -14,6 +14,9 @@ export default (props: Props) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
+
+    analytics.page()
+
     if (events) {
       for (const event of events) {
         switch (event.type) {
