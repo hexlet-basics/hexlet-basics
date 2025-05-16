@@ -18,8 +18,8 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
 
     next_lesson = lesson_version.next_lesson
     next_lesson_info = next_lesson ? next_lesson.infos.find_by!(locale: I18n.locale) : nil
-    prev_lesson = lesson_version.prev_lesson
-    prev_lesson_info = prev_lesson ? prev_lesson.infos.find_by!(locale: I18n.locale) : nil
+    prev_lesson_version = lesson_version.prev_lesson
+    prev_lesson_info = prev_lesson_version ? prev_lesson_version.infos.find_by!(locale: I18n.locale) : nil
 
     lesson_member = nil
 
@@ -33,9 +33,9 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
           slug: resource_language.slug,
           locale: resource_language_landing_page.locale.to_sym
         }
-        event = CourseStartedEvent.new(data: event_data)
-        publish_event(event, current_user)
-        event_to_js(event)
+        course_started_event = CourseStartedEvent.new(data: event_data)
+        publish_event(course_started_event, current_user)
+        event_to_js(course_started_event)
       end
       lesson_member = language_member.lesson_members.find_or_initialize_by(
         language: resource_language,
@@ -51,10 +51,10 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
           course_slug: resource_language.slug,
           locale: resource_language_landing_page.locale.to_sym
         }
-        event = LessonStartedEvent.new(data: event_data)
+        lesson_started_event = LessonStartedEvent.new(data: event_data)
 
-        publish_event(event, current_user)
-        event_to_js(event)
+        publish_event(lesson_started_event, current_user)
+        event_to_js(lesson_started_event)
       end
     end
 

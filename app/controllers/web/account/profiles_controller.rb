@@ -23,6 +23,7 @@ class Web::Account::ProfilesController < Web::Account::ApplicationController
         result = Lead.create_or_update(form)
         if result[:event]
           publish_event(result[:event], current_user)
+          event_to_js(result[:event])
         end
       end
 

@@ -45,9 +45,9 @@ class Web::UsersController < Web::ApplicationController
             slug: language.slug,
             locale: I18n.locale
           }
-          course_started = CourseStartedEvent.new(data: course_started_event_data)
-          publish_event(course_started, user)
-          event_to_js(course_started)
+          course_started_event = CourseStartedEvent.new(data: course_started_event_data)
+          publish_event(course_started_event, user)
+          event_to_js(course_started_event)
         end
 
         lesson_member = language_member.lesson_members.build(

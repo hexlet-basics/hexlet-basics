@@ -21,7 +21,6 @@ export default (props: Props) => {
       for (const event of events) {
         switch (event.type) {
           case "UserSignedInEvent":
-            // TODO: Add type for event name to avoid sending wrong events
             analytics.track("signed_in", event.data);
             analytics.identify(event.data.id.toString(), event.data);
             break;
@@ -31,6 +30,9 @@ export default (props: Props) => {
             break;
           case "CourseStartedEvent":
             analytics.track("course_started", event.data);
+            break;
+          case "LeadCreatedEvent":
+            analytics.track("lead_created", event.data);
             break;
           case "LessonStartedEvent":
             analytics.track("lesson_started", event.data);
