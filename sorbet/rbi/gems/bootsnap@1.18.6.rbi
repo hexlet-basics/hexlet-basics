@@ -742,7 +742,7 @@ class Bootsnap::LoadPathCache::LoadedFeaturesIndex
   # will _never_ run on MacOS, and therefore think they can get away
   # with calling a Ruby file 'x.dylib.rb' and then requiring it as 'x.dylib'.)
   #
-  # See <https://ruby-doc.org/core-2.6.4/Kernel.html#method-i-require>.
+  # See <https://docs.ruby-lang.org/en/master/Kernel.html#method-i-require>.
   #
   # @return [Boolean]
   #
@@ -880,7 +880,7 @@ Bootsnap::LoadPathCache::PathScanner::ALTERNATIVE_NATIVE_EXTENSIONS_PATTERN = T.
 Bootsnap::LoadPathCache::PathScanner::BUNDLE_PATH = T.let(T.unsafe(nil), String)
 
 # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#9
-Bootsnap::LoadPathCache::PathScanner::NORMALIZE_NATIVE_EXTENSIONS = T.let(T.unsafe(nil), FalseClass)
+Bootsnap::LoadPathCache::PathScanner::NORMALIZE_NATIVE_EXTENSIONS = T.let(T.unsafe(nil), TrueClass)
 
 # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#8
 Bootsnap::LoadPathCache::PathScanner::REQUIRABLE_EXTENSIONS = T.let(T.unsafe(nil), Array)

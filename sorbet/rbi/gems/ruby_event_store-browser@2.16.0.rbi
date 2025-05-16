@@ -74,12 +74,12 @@ class RubyEventStore::Browser::GemSource
 
   # @return [Boolean]
   #
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/gem_source.rb#27
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/gem_source.rb#29
   def from_git?; end
 
   # @return [Boolean]
   #
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/gem_source.rb#23
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/gem_source.rb#25
   def from_rubygems?; end
 
   # Returns the value of attribute path.
@@ -87,7 +87,7 @@ class RubyEventStore::Browser::GemSource
   # source://ruby_event_store-browser//lib/ruby_event_store/browser/gem_source.rb#6
   def path; end
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/gem_source.rb#15
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/gem_source.rb#17
   def version; end
 end
 
@@ -103,20 +103,20 @@ class RubyEventStore::Browser::GetEvent
 
   private
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_event.rb#28
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_event.rb#30
   def event; end
 
   # Returns the value of attribute event_id.
   #
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_event.rb#26
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_event.rb#28
   def event_id; end
 
   # Returns the value of attribute event_store.
   #
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_event.rb#26
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_event.rb#28
   def event_store; end
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_event.rb#32
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_event.rb#34
   def parent_event_id; end
 
   # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_event.rb#22
@@ -135,10 +135,10 @@ class RubyEventStore::Browser::GetEventsFromStream
 
   private
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_events_from_stream.rb#93
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_events_from_stream.rb#112
   def count; end
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_events_from_stream.rb#97
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_events_from_stream.rb#116
   def direction; end
 
   # Returns the value of attribute event_store.
@@ -149,16 +149,16 @@ class RubyEventStore::Browser::GetEventsFromStream
   # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_events_from_stream.rb#23
   def events; end
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_events_from_stream.rb#55
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_events_from_stream.rb#57
   def events_backward(position); end
 
   # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_events_from_stream.rb#48
   def events_forward(position); end
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_events_from_stream.rb#85
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_events_from_stream.rb#94
   def first_page_link; end
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_events_from_stream.rb#89
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_events_from_stream.rb#103
   def last_page_link; end
 
   # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_events_from_stream.rb#33
@@ -166,10 +166,10 @@ class RubyEventStore::Browser::GetEventsFromStream
 
   # @return [Boolean]
   #
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_events_from_stream.rb#62
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_events_from_stream.rb#66
   def next_event?; end
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_events_from_stream.rb#76
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_events_from_stream.rb#85
   def next_page_link(event_id); end
 
   # Returns the value of attribute page.
@@ -177,15 +177,15 @@ class RubyEventStore::Browser::GetEventsFromStream
   # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_events_from_stream.rb#21
   def page; end
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_events_from_stream.rb#106
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_events_from_stream.rb#125
   def position; end
 
   # @return [Boolean]
   #
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_events_from_stream.rb#67
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_events_from_stream.rb#71
   def prev_event?; end
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_events_from_stream.rb#72
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_events_from_stream.rb#76
   def prev_page_link(event_id); end
 
   # Returns the value of attribute routing.
@@ -214,25 +214,25 @@ class RubyEventStore::Browser::GetStream
 
   private
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_stream.rb#20
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_stream.rb#27
   def events_from_stream_url; end
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_stream.rb#24
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_stream.rb#31
   def related_streams; end
 
   # Returns the value of attribute related_streams_query.
   #
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_stream.rb#18
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_stream.rb#25
   def related_streams_query; end
 
   # Returns the value of attribute routing.
   #
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_stream.rb#18
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_stream.rb#25
   def routing; end
 
   # Returns the value of attribute stream_name.
   #
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_stream.rb#18
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/get_stream.rb#25
   def stream_name; end
 end
 
@@ -248,10 +248,10 @@ class RubyEventStore::Browser::JsonApiEvent
 
   private
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/json_api_event.rb#42
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/json_api_event.rb#65
   def causation_stream_name; end
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/json_api_event.rb#38
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/json_api_event.rb#59
   def correlation_stream_name; end
 
   # Returns the value of attribute event.
@@ -259,7 +259,7 @@ class RubyEventStore::Browser::JsonApiEvent
   # source://ruby_event_store-browser//lib/ruby_event_store/browser/json_api_event.rb#29
   def event; end
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/json_api_event.rb#31
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/json_api_event.rb#46
   def metadata; end
 
   # Returns the value of attribute parent_event_id.
@@ -267,7 +267,10 @@ class RubyEventStore::Browser::JsonApiEvent
   # source://ruby_event_store-browser//lib/ruby_event_store/browser/json_api_event.rb#29
   def parent_event_id; end
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/json_api_event.rb#46
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/json_api_event.rb#31
+  def sanitize_infinity_values(value); end
+
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/json_api_event.rb#69
   def type_stream_name; end
 end
 
@@ -306,27 +309,27 @@ RubyEventStore::Browser::PAGE_SIZE = T.let(T.unsafe(nil), Integer)
 class RubyEventStore::Browser::Router
   # @return [Router] a new instance of Router
   #
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/router.rb#38
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/router.rb#42
   def initialize(urls = T.unsafe(nil)); end
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/router.rb#43
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/router.rb#47
   def add_route(request_method, pattern, &block); end
 
   # @raise [NoMatch]
   #
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/router.rb#47
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/router.rb#51
   def handle(request); end
 
   private
 
   # Returns the value of attribute routes.
   #
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/router.rb#57
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/router.rb#68
   def routes; end
 
   # Returns the value of attribute urls.
   #
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/router.rb#57
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/router.rb#68
   def urls; end
 end
 
@@ -340,7 +343,7 @@ class RubyEventStore::Browser::Router::Route
   # source://ruby_event_store-browser//lib/ruby_event_store/browser/router.rb#12
   def initialize(request_method, pattern, &block); end
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/router.rb#25
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/router.rb#29
   def call(params, urls); end
 
   # source://ruby_event_store-browser//lib/ruby_event_store/browser/router.rb#18
@@ -350,20 +353,20 @@ class RubyEventStore::Browser::Router::Route
 
   # Returns the value of attribute handler.
   #
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/router.rb#35
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/router.rb#39
   def handler; end
 
   # Returns the value of attribute pattern.
   #
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/router.rb#35
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/router.rb#39
   def pattern; end
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/router.rb#31
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/router.rb#35
   def regexp; end
 
   # Returns the value of attribute request_method.
   #
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/router.rb#35
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/router.rb#39
   def request_method; end
 end
 
@@ -377,48 +380,48 @@ RubyEventStore::Browser::SERIALIZED_GLOBAL_STREAM_NAME = T.let(T.unsafe(nil), St
 class RubyEventStore::Browser::Urls
   # @return [Urls] a new instance of Urls
   #
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#20
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#24
   def initialize(host, root_path, api_url); end
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#72
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#77
   def ==(o); end
 
   # Returns the value of attribute api_url.
   #
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#18
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#22
   def api_url; end
 
   # Returns the value of attribute app_url.
   #
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#18
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#22
   def app_url; end
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#68
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#73
   def bootstrap_js_url; end
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#59
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#68
   def browser_css_url; end
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#50
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#63
   def browser_js_url; end
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#28
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#32
   def events_url; end
 
   # Returns the value of attribute host.
   #
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#18
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#22
   def host; end
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#36
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#40
   def paginated_events_from_stream_url(id:, position: T.unsafe(nil), direction: T.unsafe(nil), count: T.unsafe(nil)); end
 
   # Returns the value of attribute root_path.
   #
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#18
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#22
   def root_path; end
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#32
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#36
   def streams_url; end
 
   # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#14
@@ -426,15 +429,15 @@ class RubyEventStore::Browser::Urls
 
   private
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#83
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#90
   def cdn_file_url(name); end
 
   # Returns the value of attribute gem_source.
   #
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#77
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#84
   def gem_source; end
 
-  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#79
+  # source://ruby_event_store-browser//lib/ruby_event_store/browser/urls.rb#86
   def local_file_url(name); end
 
   class << self

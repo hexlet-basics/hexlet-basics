@@ -138,9 +138,9 @@ gem "meta-tags"
 #
 # gem 'browserslist_useragent'
 
-gem "responders", "~> 3.1"
+gem "responders"
 
-gem "configus", "~> 0.0.5"
-gem "rails_event_store", "~> 2.15.0"
+gem "configus"
+gem "rails_event_store"
 
-gem "pundit", "~> 2.5"
+gem "pundit"

@@ -705,144 +705,144 @@ class RubyEventStore::ImmediateAsyncDispatcher
   def verify(subscriber); end
 end
 
-# source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#5
+# source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#4
 class RubyEventStore::InMemoryRepository
   # @return [InMemoryRepository] a new instance of InMemoryRepository
   #
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#26
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#25
   def initialize(serializer: T.unsafe(nil), ensure_supported_any_usage: T.unsafe(nil)); end
 
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#34
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#33
   def append_to_stream(records, stream, expected_version); end
 
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#103
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#102
   def count(spec); end
 
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#69
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#68
   def delete_stream(stream); end
 
   # @return [Boolean]
   #
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#139
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#138
   def event_in_stream?(event_id, stream); end
 
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#135
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#134
   def global_position(event_id); end
 
   # @return [Boolean]
   #
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#73
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#72
   def has_event?(event_id); end
 
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#77
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#76
   def last_stream_event(stream); end
 
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#52
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#51
   def link_to_stream(event_ids, stream, expected_version); end
 
   # @raise [EventNotFoundInStream]
   #
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#129
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#128
   def position_in_stream(event_id, stream); end
 
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#82
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#81
   def read(spec); end
 
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#125
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#124
   def streams_of(event_id); end
 
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#107
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#106
   def update_messages(records); end
 
   private
 
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#233
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#232
   def add_to_stream(stream, serialized_record, resolved_version, index); end
 
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#229
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#228
   def compute_position(resolved_version, index); end
 
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#237
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#236
   def ensure_supported_any_usage(resolved_version, stream); end
 
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#181
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#180
   def event_ids_of_stream(stream); end
 
   # @return [Boolean]
   #
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#218
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#217
   def has_event_in_stream?(event_id, stream_name); end
 
   # @raise [EventNotFound]
   #
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#222
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#221
   def index_of(source, event_id); end
 
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#200
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#199
   def last_stream_version(stream); end
 
   # Returns the value of attribute mutex.
   #
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#248
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#247
   def mutex; end
 
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#189
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#188
   def ordered(serialized_records, spec); end
 
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#177
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#176
   def read_event(event_id); end
 
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#145
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#144
   def read_scope(spec); end
 
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#185
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#184
   def serialized_records_of_stream(stream); end
 
   # Returns the value of attribute serializer.
   #
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#248
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#247
   def serializer; end
 
   # Returns the value of attribute storage.
   #
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#248
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#247
   def storage; end
 
   # Returns the value of attribute streams.
   #
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#248
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#247
   def streams; end
 
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#169
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#168
   def time_comparison_field(spec, sr); end
 
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#204
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#203
   def with_synchronize(expected_version, stream, &block); end
 end
 
-# source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#17
+# source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#16
 class RubyEventStore::InMemoryRepository::EventInStream
   # @return [EventInStream] a new instance of EventInStream
   #
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#18
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#17
   def initialize(event_id, position); end
 
   # Returns the value of attribute event_id.
   #
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#23
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#22
   def event_id; end
 
   # Returns the value of attribute position.
   #
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#23
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#22
   def position; end
 end
 
-# source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#6
+# source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#5
 class RubyEventStore::InMemoryRepository::UnsupportedVersionAnyUsage < ::StandardError
   # @return [UnsupportedVersionAnyUsage] a new instance of UnsupportedVersionAnyUsage
   #
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#7
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#6
   def initialize; end
 end
 

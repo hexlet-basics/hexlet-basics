@@ -328,13 +328,13 @@ class Capybara::Cuprite::Browser < ::Ferrum::Browser
   # source://cuprite//lib/capybara/cuprite/browser.rb#130
   def active_element; end
 
-  # source://cuprite//lib/capybara/cuprite/browser.rb#206
+  # source://cuprite//lib/capybara/cuprite/browser.rb#217
   def all_text(node); end
 
-  # source://cuprite//lib/capybara/cuprite/browser.rb#186
+  # source://cuprite//lib/capybara/cuprite/browser.rb#193
   def attribute(node, name); end
 
-  # source://cuprite//lib/capybara/cuprite/browser.rb#181
+  # source://cuprite//lib/capybara/cuprite/browser.rb#188
   def attributes(node); end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -351,12 +351,12 @@ class Capybara::Cuprite::Browser < ::Ferrum::Browser
   # source://cuprite//lib/capybara/cuprite/browser.rb#23
   def command(*_arg0, **_arg1, &_arg2); end
 
-  # source://cuprite//lib/capybara/cuprite/browser.rb#177
+  # source://cuprite//lib/capybara/cuprite/browser.rb#184
   def delete_text(node); end
 
   # @return [Boolean]
   #
-  # source://cuprite//lib/capybara/cuprite/browser.rb#198
+  # source://cuprite//lib/capybara/cuprite/browser.rb#205
   def disabled?(node); end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -366,10 +366,10 @@ class Capybara::Cuprite::Browser < ::Ferrum::Browser
   def dismiss_prompt(*args, **_arg1, &block); end
 
   # source://cuprite//lib/capybara/cuprite/browser.rb#142
-  def drag(node, other, steps, delay = T.unsafe(nil)); end
+  def drag(node, other, steps, delay = T.unsafe(nil), scroll = T.unsafe(nil)); end
 
-  # source://cuprite//lib/capybara/cuprite/browser.rb#153
-  def drag_by(node, x, y, steps, delay = T.unsafe(nil)); end
+  # source://cuprite//lib/capybara/cuprite/browser.rb#157
+  def drag_by(node, dx, dy, steps, delay = T.unsafe(nil), scroll = T.unsafe(nil)); end
 
   # source://cuprite//lib/capybara/cuprite/browser.rb#82
   def find(method, selector); end
@@ -383,15 +383,20 @@ class Capybara::Cuprite::Browser < ::Ferrum::Browser
   # source://forwardable/1.3.3/forwardable.rb#231
   def hover(*args, **_arg1, &block); end
 
+  # @return [Boolean]
+  #
+  # source://cuprite//lib/capybara/cuprite/browser.rb#213
+  def obscured?(node); end
+
   # @raise [Ferrum::NoSuchPageError]
   #
   # source://cuprite//lib/capybara/cuprite/browser.rb#30
   def page; end
 
-  # source://cuprite//lib/capybara/cuprite/browser.rb#169
+  # source://cuprite//lib/capybara/cuprite/browser.rb#176
   def parents(node); end
 
-  # source://cuprite//lib/capybara/cuprite/browser.rb#202
+  # source://cuprite//lib/capybara/cuprite/browser.rb#209
   def path(node); end
 
   # source://cuprite//lib/capybara/cuprite/browser.rb#86
@@ -412,7 +417,7 @@ class Capybara::Cuprite::Browser < ::Ferrum::Browser
   # source://forwardable/1.3.3/forwardable.rb#231
   def select(*args, **_arg1, &block); end
 
-  # source://cuprite//lib/capybara/cuprite/browser.rb#165
+  # source://cuprite//lib/capybara/cuprite/browser.rb#172
   def select_file(node, value); end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -464,15 +469,15 @@ class Capybara::Cuprite::Browser < ::Ferrum::Browser
   # source://cuprite//lib/capybara/cuprite/browser.rb#57
   def url_whitelist=(patterns); end
 
-  # source://cuprite//lib/capybara/cuprite/browser.rb#190
+  # source://cuprite//lib/capybara/cuprite/browser.rb#197
   def value(node); end
 
   # @return [Boolean]
   #
-  # source://cuprite//lib/capybara/cuprite/browser.rb#194
+  # source://cuprite//lib/capybara/cuprite/browser.rb#201
   def visible?(node); end
 
-  # source://cuprite//lib/capybara/cuprite/browser.rb#173
+  # source://cuprite//lib/capybara/cuprite/browser.rb#180
   def visible_text(node); end
 
   # source://cuprite//lib/capybara/cuprite/browser.rb#74
@@ -489,13 +494,13 @@ class Capybara::Cuprite::Browser < ::Ferrum::Browser
 
   private
 
-  # source://cuprite//lib/capybara/cuprite/browser.rb#244
+  # source://cuprite//lib/capybara/cuprite/browser.rb#255
   def attach_page(target_id = T.unsafe(nil)); end
 
-  # source://cuprite//lib/capybara/cuprite/browser.rb#212
+  # source://cuprite//lib/capybara/cuprite/browser.rb#223
   def find_all(method, selector, within = T.unsafe(nil)); end
 
-  # source://cuprite//lib/capybara/cuprite/browser.rb#226
+  # source://cuprite//lib/capybara/cuprite/browser.rb#237
   def prepare_wildcards(patterns); end
 end
 
@@ -529,7 +534,7 @@ class Capybara::Cuprite::Driver < ::Capybara::Driver::Base
   # source://cuprite//lib/capybara/cuprite/driver.rb#26
   def initialize(app, options = T.unsafe(nil)); end
 
-  # source://cuprite//lib/capybara/cuprite/driver.rb#352
+  # source://cuprite//lib/capybara/cuprite/driver.rb#329
   def accept_modal(type, options = T.unsafe(nil)); end
 
   # source://cuprite//lib/capybara/cuprite/driver.rb#72
@@ -546,13 +551,13 @@ class Capybara::Cuprite::Driver < ::Capybara::Driver::Base
   # source://cuprite//lib/capybara/cuprite/driver.rb#24
   def app; end
 
-  # source://cuprite//lib/capybara/cuprite/driver.rb#269
+  # source://cuprite//lib/capybara/cuprite/driver.rb#270
   def authorize(user, password); end
 
   # source://forwardable/1.3.3/forwardable.rb#231
   def back(*args, **_arg1, &block); end
 
-  # source://cuprite//lib/capybara/cuprite/driver.rb#269
+  # source://cuprite//lib/capybara/cuprite/driver.rb#270
   def basic_authorize(user, password); end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -561,10 +566,10 @@ class Capybara::Cuprite::Driver < ::Capybara::Driver::Base
   # source://cuprite//lib/capybara/cuprite/driver.rb#51
   def browser; end
 
-  # source://cuprite//lib/capybara/cuprite/driver.rb#257
+  # source://cuprite//lib/capybara/cuprite/driver.rb#258
   def clear_cookies; end
 
-  # source://cuprite//lib/capybara/cuprite/driver.rb#265
+  # source://cuprite//lib/capybara/cuprite/driver.rb#266
   def clear_memory_cache; end
 
   # source://cuprite//lib/capybara/cuprite/driver.rb#212
@@ -585,16 +590,13 @@ class Capybara::Cuprite::Driver < ::Capybara::Driver::Base
   # source://forwardable/1.3.3/forwardable.rb#231
   def current_window_handle(*args, **_arg1, &block); end
 
-  # source://cuprite//lib/capybara/cuprite/driver.rb#285
-  def debug(binding = T.unsafe(nil)); end
-
-  # source://cuprite//lib/capybara/cuprite/driver.rb#276
-  def debug_url; end
+  # source://cuprite//lib/capybara/cuprite/driver.rb#277
+  def debug(*_arg0, **_arg1, &_arg2); end
 
   # source://forwardable/1.3.3/forwardable.rb#231
   def device_pixel_ratio(*args, **_arg1, &block); end
 
-  # source://cuprite//lib/capybara/cuprite/driver.rb#365
+  # source://cuprite//lib/capybara/cuprite/driver.rb#342
   def dismiss_modal(type, options = T.unsafe(nil)); end
 
   # source://cuprite//lib/capybara/cuprite/driver.rb#97
@@ -642,7 +644,7 @@ class Capybara::Cuprite::Driver < ::Capybara::Driver::Base
   # source://forwardable/1.3.3/forwardable.rb#231
   def html(*args, **_arg1, &block); end
 
-  # source://cuprite//lib/capybara/cuprite/driver.rb#344
+  # source://cuprite//lib/capybara/cuprite/driver.rb#321
   def invalid_element_errors; end
 
   # source://cuprite//lib/capybara/cuprite/driver.rb#178
@@ -674,7 +676,7 @@ class Capybara::Cuprite::Driver < ::Capybara::Driver::Base
   # source://cuprite//lib/capybara/cuprite/driver.rb#165
   def paper_size=(_arg0); end
 
-  # source://cuprite//lib/capybara/cuprite/driver.rb#304
+  # source://cuprite//lib/capybara/cuprite/driver.rb#281
   def pause; end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -759,10 +761,10 @@ class Capybara::Cuprite::Driver < ::Capybara::Driver::Base
 
   # @return [Boolean]
   #
-  # source://cuprite//lib/capybara/cuprite/driver.rb#340
+  # source://cuprite//lib/capybara/cuprite/driver.rb#317
   def wait?; end
 
-  # source://cuprite//lib/capybara/cuprite/driver.rb#261
+  # source://cuprite//lib/capybara/cuprite/driver.rb#262
   def wait_for_network_idle(**options); end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -785,27 +787,24 @@ class Capybara::Cuprite::Driver < ::Capybara::Driver::Base
 
   private
 
-  # source://cuprite//lib/capybara/cuprite/driver.rb#380
-  def build_remote_debug_url(path:); end
-
-  # source://cuprite//lib/capybara/cuprite/driver.rb#408
+  # source://cuprite//lib/capybara/cuprite/driver.rb#381
   def default_cookie_host; end
 
-  # source://cuprite//lib/capybara/cuprite/driver.rb#384
+  # source://cuprite//lib/capybara/cuprite/driver.rb#357
   def default_domain; end
 
-  # source://cuprite//lib/capybara/cuprite/driver.rb#392
+  # source://cuprite//lib/capybara/cuprite/driver.rb#365
   def native_args(args); end
 
   # @return [Boolean]
   #
-  # source://cuprite//lib/capybara/cuprite/driver.rb#429
+  # source://cuprite//lib/capybara/cuprite/driver.rb#402
   def pdf?(path, options); end
 
-  # source://cuprite//lib/capybara/cuprite/driver.rb#396
+  # source://cuprite//lib/capybara/cuprite/driver.rb#369
   def session_wait_time; end
 
-  # source://cuprite//lib/capybara/cuprite/driver.rb#416
+  # source://cuprite//lib/capybara/cuprite/driver.rb#389
   def unwrap_script_result(arg); end
 end
 
@@ -864,7 +863,7 @@ class Capybara::Cuprite::Node < ::Capybara::Driver::Node
   # source://cuprite//lib/capybara/cuprite/node.rb#15
   def initialize(driver, node); end
 
-  # source://cuprite//lib/capybara/cuprite/node.rb#201
+  # source://cuprite//lib/capybara/cuprite/node.rb#203
   def ==(other); end
 
   # source://cuprite//lib/capybara/cuprite/node.rb#69
@@ -875,7 +874,7 @@ class Capybara::Cuprite::Node < ::Capybara::Driver::Node
 
   # @api private
   #
-  # source://cuprite//lib/capybara/cuprite/node.rb#224
+  # source://cuprite//lib/capybara/cuprite/node.rb#230
   def as_json(*_arg0); end
 
   # source://cuprite//lib/capybara/cuprite/node.rb#84
@@ -906,7 +905,7 @@ class Capybara::Cuprite::Node < ::Capybara::Driver::Node
   # source://cuprite//lib/capybara/cuprite/node.rb#154
   def double_click(keys = T.unsafe(nil), **options); end
 
-  # source://cuprite//lib/capybara/cuprite/node.rb#168
+  # source://cuprite//lib/capybara/cuprite/node.rb#169
   def drag_by(x, y, **options); end
 
   # source://cuprite//lib/capybara/cuprite/node.rb#162
@@ -924,7 +923,7 @@ class Capybara::Cuprite::Node < ::Capybara::Driver::Node
   # source://cuprite//lib/capybara/cuprite/node.rb#158
   def hover; end
 
-  # source://cuprite//lib/capybara/cuprite/node.rb#214
+  # source://cuprite//lib/capybara/cuprite/node.rb#220
   def inspect; end
 
   # Returns the value of attribute node.
@@ -932,10 +931,15 @@ class Capybara::Cuprite::Node < ::Capybara::Driver::Node
   # source://cuprite//lib/capybara/cuprite/node.rb#8
   def node; end
 
+  # @return [Boolean]
+  #
+  # source://cuprite//lib/capybara/cuprite/node.rb#216
+  def obscured?; end
+
   # source://cuprite//lib/capybara/cuprite/node.rb#33
   def parents; end
 
-  # source://cuprite//lib/capybara/cuprite/node.rb#210
+  # source://cuprite//lib/capybara/cuprite/node.rb#212
   def path; end
 
   # source://cuprite//lib/capybara/cuprite/node.rb#65
@@ -944,10 +948,10 @@ class Capybara::Cuprite::Node < ::Capybara::Driver::Node
   # source://cuprite//lib/capybara/cuprite/node.rb#150
   def right_click(keys = T.unsafe(nil), **options); end
 
-  # source://cuprite//lib/capybara/cuprite/node.rb#189
+  # source://cuprite//lib/capybara/cuprite/node.rb#191
   def scroll_by(x, y); end
 
-  # source://cuprite//lib/capybara/cuprite/node.rb#178
+  # source://cuprite//lib/capybara/cuprite/node.rb#180
   def scroll_to(element, location, position = T.unsafe(nil)); end
 
   # source://cuprite//lib/capybara/cuprite/node.rb#117
@@ -958,10 +962,10 @@ class Capybara::Cuprite::Node < ::Capybara::Driver::Node
   # source://cuprite//lib/capybara/cuprite/node.rb#138
   def selected?; end
 
-  # source://cuprite//lib/capybara/cuprite/node.rb#205
+  # source://cuprite//lib/capybara/cuprite/node.rb#207
   def send_key(*keys); end
 
-  # source://cuprite//lib/capybara/cuprite/node.rb#205
+  # source://cuprite//lib/capybara/cuprite/node.rb#207
   def send_keys(*keys); end
 
   # source://cuprite//lib/capybara/cuprite/node.rb#92
@@ -972,10 +976,10 @@ class Capybara::Cuprite::Node < ::Capybara::Driver::Node
 
   # @api private
   #
-  # source://cuprite//lib/capybara/cuprite/node.rb#219
+  # source://cuprite//lib/capybara/cuprite/node.rb#225
   def to_json(*_arg0); end
 
-  # source://cuprite//lib/capybara/cuprite/node.rb#174
+  # source://cuprite//lib/capybara/cuprite/node.rb#176
   def trigger(event); end
 
   # source://cuprite//lib/capybara/cuprite/node.rb#121
@@ -994,19 +998,19 @@ class Capybara::Cuprite::Node < ::Capybara::Driver::Node
 
   private
 
-  # source://cuprite//lib/capybara/cuprite/node.rb#239
+  # source://cuprite//lib/capybara/cuprite/node.rb#245
   def filter_text(text); end
 
-  # source://cuprite//lib/capybara/cuprite/node.rb#231
+  # source://cuprite//lib/capybara/cuprite/node.rb#237
   def prepare_and_click(mode, name, keys, options); end
 
-  # source://cuprite//lib/capybara/cuprite/node.rb#247
+  # source://cuprite//lib/capybara/cuprite/node.rb#253
   def scroll_element_to_location(element, location); end
 
-  # source://cuprite//lib/capybara/cuprite/node.rb#277
+  # source://cuprite//lib/capybara/cuprite/node.rb#283
   def scroll_to_coords(x, y); end
 
-  # source://cuprite//lib/capybara/cuprite/node.rb#263
+  # source://cuprite//lib/capybara/cuprite/node.rb#269
   def scroll_to_location(location); end
 end
 
@@ -1053,7 +1057,7 @@ class Capybara::Cuprite::Page < ::Ferrum::Page
 
   # @return [Boolean]
   #
-  # source://cuprite//lib/capybara/cuprite/page.rb#138
+  # source://cuprite//lib/capybara/cuprite/page.rb#137
   def closed?; end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -1092,7 +1096,7 @@ class Capybara::Cuprite::Page < ::Ferrum::Page
   # source://cuprite//lib/capybara/cuprite/page.rb#77
   def find_modal(options); end
 
-  # source://cuprite//lib/capybara/cuprite/page.rb#130
+  # source://cuprite//lib/capybara/cuprite/page.rb#129
   def frame_name; end
 
   # source://cuprite//lib/capybara/cuprite/page.rb#45
@@ -1113,7 +1117,7 @@ class Capybara::Cuprite::Page < ::Ferrum::Page
   # source://cuprite//lib/capybara/cuprite/page.rb#118
   def switch_to_frame(handle); end
 
-  # source://cuprite//lib/capybara/cuprite/page.rb#134
+  # source://cuprite//lib/capybara/cuprite/page.rb#133
   def title; end
 
   # source://cuprite//lib/capybara/cuprite/page.rb#39
@@ -1124,13 +1128,13 @@ class Capybara::Cuprite::Page < ::Ferrum::Page
 
   private
 
-  # source://cuprite//lib/capybara/cuprite/page.rb#185
+  # source://cuprite//lib/capybara/cuprite/page.rb#184
   def active_frame; end
 
-  # source://cuprite//lib/capybara/cuprite/page.rb#177
+  # source://cuprite//lib/capybara/cuprite/page.rb#176
   def find_position(node, **options); end
 
-  # source://cuprite//lib/capybara/cuprite/page.rb#144
+  # source://cuprite//lib/capybara/cuprite/page.rb#143
   def prepare_page; end
 end
 
@@ -1145,7 +1149,7 @@ module Ferrum; end
 
 # source://cuprite//lib/capybara/cuprite/options.rb#4
 class Ferrum::Browser
-  # source://ferrum/0.15/lib/ferrum/browser.rb#128
+  # source://ferrum/0.17.1/lib/ferrum/browser.rb#132
   def initialize(options = T.unsafe(nil)); end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -1175,8 +1179,11 @@ class Ferrum::Browser
   # source://forwardable/1.3.3/forwardable.rb#231
   def bypass_csp(*args, **_arg1, &block); end
 
-  # source://ferrum/0.15/lib/ferrum/browser.rb#33
+  # source://ferrum/0.17.1/lib/ferrum/browser.rb#34
   def client; end
+
+  # source://ferrum/0.17.1/lib/ferrum/browser.rb#237
+  def close; end
 
   # source://forwardable/1.3.3/forwardable.rb#231
   def command(*args, **_arg1, &block); end
@@ -1184,16 +1191,16 @@ class Ferrum::Browser
   # source://forwardable/1.3.3/forwardable.rb#231
   def content=(*args, **_arg1, &block); end
 
-  # source://ferrum/0.15/lib/ferrum/browser.rb#33
+  # source://ferrum/0.17.1/lib/ferrum/browser.rb#34
   def contexts; end
 
   # source://forwardable/1.3.3/forwardable.rb#231
   def cookies(*args, **_arg1, &block); end
 
-  # source://ferrum/0.15/lib/ferrum/browser.rb#221
+  # source://ferrum/0.17.1/lib/ferrum/browser.rb#228
   def crash; end
 
-  # source://ferrum/0.15/lib/ferrum/browser.rb#147
+  # source://ferrum/0.17.1/lib/ferrum/browser.rb#151
   def create_page(new_context: T.unsafe(nil), proxy: T.unsafe(nil)); end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -1207,6 +1214,9 @@ class Ferrum::Browser
 
   # source://forwardable/1.3.3/forwardable.rb#231
   def current_url(*args, **_arg1, &block); end
+
+  # source://ferrum/0.17.1/lib/ferrum/browser.rb#259
+  def debug(bind = T.unsafe(nil)); end
 
   # source://forwardable/1.3.3/forwardable.rb#231
   def default_context(*args, **_arg1, &block); end
@@ -1241,7 +1251,7 @@ class Ferrum::Browser
   # source://forwardable/1.3.3/forwardable.rb#231
   def evaluate_on(*args, **_arg1, &block); end
 
-  # source://ferrum/0.15/lib/ferrum/browser.rb#184
+  # source://ferrum/0.17.1/lib/ferrum/browser.rb#188
   def evaluate_on_new_document(expression); end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -1271,9 +1281,6 @@ class Ferrum::Browser
   # source://forwardable/1.3.3/forwardable.rb#231
   def headers(*args, **_arg1, &block); end
 
-  # source://ferrum/0.15/lib/ferrum/browser.rb#236
-  def headless_new?; end
-
   # source://forwardable/1.3.3/forwardable.rb#231
   def keyboard(*args, **_arg1, &block); end
 
@@ -1292,7 +1299,7 @@ class Ferrum::Browser
   # source://forwardable/1.3.3/forwardable.rb#231
   def on(*args, **_arg1, &block); end
 
-  # source://ferrum/0.15/lib/ferrum/browser.rb#33
+  # source://ferrum/0.17.1/lib/ferrum/browser.rb#34
   def options; end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -1316,10 +1323,10 @@ class Ferrum::Browser
   # source://forwardable/1.3.3/forwardable.rb#231
   def position=(*args, **_arg1, &block); end
 
-  # source://ferrum/0.15/lib/ferrum/browser.rb#33
+  # source://ferrum/0.17.1/lib/ferrum/browser.rb#34
   def process; end
 
-  # source://ferrum/0.15/lib/ferrum/browser.rb#211
+  # source://ferrum/0.17.1/lib/ferrum/browser.rb#215
   def quit; end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -1328,13 +1335,13 @@ class Ferrum::Browser
   # source://forwardable/1.3.3/forwardable.rb#231
   def reload(*args, **_arg1, &block); end
 
-  # source://ferrum/0.15/lib/ferrum/browser.rb#202
+  # source://ferrum/0.17.1/lib/ferrum/browser.rb#206
   def reset; end
 
   # source://forwardable/1.3.3/forwardable.rb#231
   def resize(*args, **_arg1, &block); end
 
-  # source://ferrum/0.15/lib/ferrum/browser.rb#206
+  # source://ferrum/0.17.1/lib/ferrum/browser.rb#210
   def restart; end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -1344,7 +1351,13 @@ class Ferrum::Browser
   def set_viewport(*args, **_arg1, &block); end
 
   # source://forwardable/1.3.3/forwardable.rb#231
+  def start_screencast(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
   def stop(*args, **_arg1, &block); end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def stop_screencast(*args, **_arg1, &block); end
 
   # source://forwardable/1.3.3/forwardable.rb#231
   def targets(*args, **_arg1, &block); end
@@ -1361,7 +1374,7 @@ class Ferrum::Browser
   # source://forwardable/1.3.3/forwardable.rb#231
   def url(*args, **_arg1, &block); end
 
-  # source://ferrum/0.15/lib/ferrum/browser.rb#232
+  # source://ferrum/0.17.1/lib/ferrum/browser.rb#248
   def version; end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -1378,91 +1391,100 @@ class Ferrum::Browser
 
   private
 
-  # source://ferrum/0.15/lib/ferrum/browser.rb#242
+  # source://ferrum/0.17.1/lib/ferrum/browser.rb#297
+  def build_remote_debug_url(path:); end
+
+  # source://ferrum/0.17.1/lib/ferrum/browser.rb#288
+  def debug_url; end
+
+  # source://ferrum/0.17.1/lib/ferrum/browser.rb#272
   def start; end
 end
 
 # source://cuprite//lib/capybara/cuprite/options.rb#5
 class Ferrum::Browser::Options
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#21
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#21
   def initialize(options = T.unsafe(nil)); end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#14
   def base_url; end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#53
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#54
   def base_url=(value); end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#14
   def browser_name; end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#14
   def browser_options; end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#14
   def browser_path; end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#19
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#19
   def default_user_agent; end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#19
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#19
   def default_user_agent=(_arg0); end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#14
   def env; end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#57
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#58
   def extensions; end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#14
   def flatten; end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#14
   def headless; end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#14
   def host; end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#14
   def ignore_default_browser_options; end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#14
+  def incognito; end
+
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#14
   def js_errors; end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#14
   def logger; end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#14
   def pending_connection_errors; end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#14
   def port; end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#14
   def process_timeout; end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#14
   def proxy; end
 
   # source://cuprite//lib/capybara/cuprite/options.rb#9
   def reset_window_size; end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#14
   def save_path; end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#14
   def slowmo; end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#19
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#19
   def timeout; end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#19
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#19
   def timeout=(_arg0); end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#75
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#76
   def to_h; end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#14
   def url; end
 
   # Returns the value of attribute url_blacklist.
@@ -1489,10 +1511,10 @@ class Ferrum::Browser::Options
   # source://cuprite//lib/capybara/cuprite/options.rb#7
   def url_whitelist=(_arg0); end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#63
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#64
   def validate_proxy(options); end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#14
   def window_size; end
 
   # Sets the attribute window_size
@@ -1502,20 +1524,20 @@ class Ferrum::Browser::Options
   # source://cuprite//lib/capybara/cuprite/options.rb#6
   def window_size=(_arg0); end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#14
   def ws_max_receive_size; end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#14
   def ws_url; end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#14
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#14
   def xvfb; end
 
   private
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#87
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#88
   def parse_base_url(value); end
 
-  # source://ferrum/0.15/lib/ferrum/browser/options.rb#81
+  # source://ferrum/0.17.1/lib/ferrum/browser/options.rb#82
   def parse_logger(logger); end
 end
