@@ -3,7 +3,7 @@ import yandexMetrika from "@hexlet/analytics-plugin-yandex-metrika";
 import Analytics from "analytics";
 // import googleAnalytics from "@analytics/google-analytics"
 
-const enabled = !import.meta.env.SSR && import.meta.env.PROD;
+const enabled = !import.meta.env.SSR;
 
 const plugins = [
   // googleAnalytics({

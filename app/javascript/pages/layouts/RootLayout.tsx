@@ -8,25 +8,24 @@ type Props = PropsWithChildren & {};
 export default (props: Props) => {
   const page = usePage<SharedProps>();
   const { url } = page;
-  const { auth, happendEvents: events, metaTagsHTMLString } = page.props;
+  const { auth, happendEvents, metaTagsHTMLString } = page.props;
 
   // const user = auth.user;
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
 
     analytics.page()
 
-    if (events) {
-      for (const event of events) {
+    if (happendEvents) {
+      for (const event of happendEvents) {
         switch (event.type) {
           case "UserSignedInEvent":
-            analytics.track("signed_in", event.data);
             analytics.identify(event.data.id.toString(), event.data);
+            analytics.track("signed_in", event.data);
             break;
           case "UserSignedUpEvent":
-            analytics.track("signed_up", event.data);
             analytics.identify(event.data.id.toString(), event.data);
+            analytics.track("signed_up", event.data);
             break;
           case "CourseStartedEvent":
             analytics.track("course_started", event.data);

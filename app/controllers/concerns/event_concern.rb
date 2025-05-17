@@ -6,20 +6,20 @@ module EventConcern
       after_action :clean_js_events
 
       inertia_share do
-        events = session[:events]
-        { events: }
+        happendEvents = session[:happendEvents]
+        { happendEvents: }
       end
     end
   end
 
   def event_to_js(event)
-    session[:events] ||= []
+    session[:happendEvents] ||= []
     eventData = {
       id: event.event_id,
       type: event.event_type,
       data: event.data
     }
-    session[:events] << eventData
+    session[:happendEvents] << eventData
     # EventsMapping.exists!(event_name)
     # session[:fired_events][event_name] = options
   end
@@ -28,7 +28,7 @@ module EventConcern
     # NOTE: могут быть двойные редиректы и стираем данные только
     # при отрисовке хтмл страницы, а не запросу по апи
     if response.successful? # && response.content_type.include?("text/html")
-      session[:events] = nil
+      session[:happendEvents] = nil
     end
   end
 
