@@ -7,6 +7,7 @@ import SignUpFormBlock from "@/components/SignUpFormBlock";
 import XssContent from "@/components/XssContent";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { User } from "@/types/serializers";
+import { useForm } from "@inertiajs/react";
 
 type Props = PropsWithChildren & {
   user: User;
@@ -15,6 +16,8 @@ type Props = PropsWithChildren & {
 
 export default function New({ user, demo }: Props) {
   const { t } = useTranslation();
+  const data = useForm()
+  console.log(data)
 
   return (
     <ApplicationLayout>

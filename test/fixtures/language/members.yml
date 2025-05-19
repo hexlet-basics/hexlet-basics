@@ -38,7 +38,6 @@ full_php:
   <<: *DEFAULTS
   language: php
   user: full
-  state: finished
 
 full_java:
   <<: *DEFAULTS

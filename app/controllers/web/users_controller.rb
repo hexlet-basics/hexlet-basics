@@ -80,6 +80,7 @@ class Web::UsersController < Web::ApplicationController
     else
       f(:error)
       redirect_to_inertia new_user_url, user
+      # raise user.errors.full_messages.inspect
     end
   end
 end

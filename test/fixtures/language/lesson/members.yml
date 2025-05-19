@@ -46,6 +46,27 @@ naming_variables_one:
   state: finished
   language_member: one
 
+full-one:
+  user: full
+  language: php
+  lesson: one
+  language_member: full_php
+  state: finished
+
+full-tags_one:
+  user: full
+  language: php
+  lesson: tags_one
+  state: finished
+  language_member: full_php
+
+full-naming_variables_one:
+  user: full
+  language: php
+  lesson: naming_variables_one
+  language_member: full_php
+
+
 full-elixir-hello-world:
   user: full
   language: elixir

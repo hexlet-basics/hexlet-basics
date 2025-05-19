@@ -12,13 +12,13 @@ import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import * as Routes from "@/routes.js";
 import type { BreadcrumbItem, Language, SharedProps } from "@/types";
 import type {
-    LanguageCategory,
-    LanguageLandingPage,
-    LanguageLandingPageQnaItem,
-    LanguageLesson,
-    LanguageMember,
-    LanguageModule,
-    Review,
+  LanguageCategory,
+  LanguageLandingPage,
+  LanguageLandingPageQnaItem,
+  LanguageLesson,
+  LanguageMember,
+  LanguageModule,
+  Review,
 } from "@/types/serializers";
 import { Head, Link, usePage } from "@inertiajs/react";
 import type { Product, WithContext } from "schema-dts";
@@ -203,21 +203,28 @@ export default function Show({
                   >
                     <Accordion.Header as="h3">{m.name!}</Accordion.Header>
                     <Accordion.Body className="px-0 pb-0">
-                      <ul className="list-unstyled">
-                        {(lessonsByModuleId[m.id] ?? []).map((l) => (
-                          <li key={l.id}>
-                            <Link
-                              className="text-decoration-none text-body-secondary"
-                              href={Routes.language_lesson_path(
-                                course.slug!,
-                                l.slug!,
-                              )}
-                            >
-                              <span>{l.name}</span>
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
+                      <Row>
+                        <Col className="col-4">
+                          <ul className="">
+                            {(lessonsByModuleId[m.id] ?? []).map((l) => (
+                              <li key={l.id}>
+                                <Link
+                                  className="text-decoration-none link-body-emphasis"
+                                  href={Routes.language_lesson_path(
+                                    course.slug!,
+                                    l.slug!,
+                                  )}
+                                >
+                                  <span>{l.name}</span>
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </Col>
+                        <Col>
+                          {m.description}
+                        </Col>
+                      </Row>
                     </Accordion.Body>
                   </Accordion.Item>
                 ))}
