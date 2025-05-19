@@ -1,7 +1,11 @@
+# typed: strict
+
 class WorkflowLeadSerializer
-  # Соответствие ключей входных данных и ID полей в AmoCRM
+  extend T::Sig
+
   LEAD_FIELD_MAPPER = {}.freeze
 
+  # Соответствие ключей входных данных и ID полей AmoCRM для контакта
   CONTACT_FIELD_MAPPER = {
     user_id:   1_030_881,
     email:     { field_id: 316_907, enum_id: 158_463 }, # Личная почта
@@ -10,22 +14,17 @@ class WorkflowLeadSerializer
     whatsapp:  1_012_781
   }.freeze
 
-  DEFAULT_TAG = { name: "cb" }.freeze
-
+  sig { params(event: LeadCreatedEvent).void }
   def initialize(event)
-    @data = event.data
+    @data = T.let(event.data, LeadCreatedEvent::DataShape)
   end
 
-  def payload
+  sig { returns(T::Hash[Symbol, T.untyped]) }
+  def to_h
     lead = base_payload
     lead[:custom_fields] = build_custom_fields(LEAD_FIELD_MAPPER)
 
-    embedded = {
-      contacts: [ contact_payload ],
-      tags:     [ DEFAULT_TAG ]
-    }
-
-    lead[:_embedded] = embedded
+    lead[:_embedded] = { contacts: [ contact_payload ] }
 
     {
       lead: [ lead ],
@@ -35,15 +34,17 @@ class WorkflowLeadSerializer
 
   private
 
+  sig { returns(T::Hash[Symbol, T.untyped]) }
   def base_payload
     {
       name:                @data[:email],
-      pipeline_id:         5_101_747,
-      status_id:           45_861_256,
+      pipeline_id:         9_614_774,
+      status_id:           76_748_378,
       responsible_user_id: 7_877_026
     }
   end
 
+  sig { returns(T::Hash[Symbol, String]) }
   def notes_payload
     text = @data[:survey_answers_data]
              .map { |qa| "Вопрос: #{qa[:question]}\nОтвет: #{qa[:answer]}" }
@@ -52,6 +53,7 @@ class WorkflowLeadSerializer
     { text: text }
   end
 
+  sig { returns(T::Hash[Symbol, T.untyped]) }
   def contact_payload
     {
       name:                 @data[:user_name],
@@ -59,6 +61,11 @@ class WorkflowLeadSerializer
     }
   end
 
+  sig do
+    params(
+      mapper: T::Hash[Symbol, T.any(Integer, T::Hash[Symbol, Integer])]
+    ).returns(T::Array[T::Hash[Symbol, T.untyped]])
+  end
   def build_custom_fields(mapper)
     mapper.each_with_object([]) do |(key, config), arr|
       next unless @data[key]&.present?
@@ -72,10 +79,7 @@ class WorkflowLeadSerializer
       value_hash = { value: @data[key] }
       value_hash[:enum_id] = enum_id if enum_id
 
-      arr << {
-        field_id: field_id,
-        values:   [ value_hash ]
-      }
+      arr << { field_id: field_id, values: [ value_hash ] }
     end
   end
 end
