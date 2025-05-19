@@ -20,25 +20,38 @@
 #  fk_rails_...  (language_id => languages.id)
 #  fk_rails_...  (user_id => users.id)
 #
+
+DEFAULTS: &DEFAULTS
+  state: started
+
 one:
+  <<: *DEFAULTS
   language: php
   user: one
 
 full_elixir:
+  <<: *DEFAULTS
   language: elixir
+  user: full
+
+full_php:
+  <<: *DEFAULTS
+  language: php
   user: full
   state: finished
 
 full_java:
+  <<: *DEFAULTS
   language: java
   user: full
   state: finished
 
 full_typescript:
+  <<: *DEFAULTS
   language: typescript
   user: full
-  state: started
 
 full_javascript:
+  <<: *DEFAULTS
   language: javascript
   user: full

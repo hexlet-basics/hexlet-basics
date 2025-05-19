@@ -315,7 +315,7 @@ GEM
       activesupport (>= 3.0.0)
     raabro (1.4.0)
     racc (1.8.1)
-    rack (3.1.14)
+    rack (3.1.15)
     rack-proxy (0.7.7)
       rack
     rack-session (2.1.1)

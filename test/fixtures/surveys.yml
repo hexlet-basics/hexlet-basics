@@ -131,3 +131,28 @@ formal-study-priority:
   question: Что для вас самое важное в обучении сейчас?
   description: Это поможет адаптировать рекомендации под ваш ритм и мотивацию
   # parent_survey_item: goal-item4
+
+career-change-direction:
+  <<: *DEFAULTS
+  question: Какое направление вам наиболее интересно?
+  description: Это поможет предложить курсы и треки, соответствующие вашим интересам и целям
+  parent_survey_item: goal-item1
+
+career-dev-track:
+  <<: *DEFAULTS
+  question: Какое направление разработки вам ближе?
+  description: Это поможет выбрать первый язык программирования и начальный курс
+  parent_survey_item: career-change-direction-item1
+
+career-qa-track:
+  <<: *DEFAULTS
+  question: Какой тип тестирования вам интересен?
+  description: Это поможет предложить практичные курсы и симуляторы
+  parent_survey_item: career-change-direction-item2
+
+career-analytics-track:
+  <<: *DEFAULTS
+  question: Какой тип аналитики вам интересен?
+  description: Это поможет предложить подходящие инструменты и курсы
+  parent_survey_item: career-change-direction-item3
+

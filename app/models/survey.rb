@@ -32,7 +32,7 @@ class Survey < ApplicationRecord
   has_many :scenario_items, class_name: "Survey::Scenario::Item"
   has_many :scenarios, through: :scenario_items, source: :scenario
 
-  # belongs_to :parent_survey_item, class_name: "Survey::Item", optional: true
+  belongs_to :parent_survey_item, class_name: "Survey::Item", optional: true
 
   validates :question, presence: true
   validates :locale, presence: true
