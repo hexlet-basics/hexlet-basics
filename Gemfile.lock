@@ -219,6 +219,9 @@ GEM
       os (>= 0.9, < 2.0)
       signet (>= 0.16, < 2.a)
     hashdiff (1.1.2)
+    http-2 (1.1.1)
+    httpx (1.4.4)
+      http-2 (>= 1.0.0)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
     i18n-js (4.2.3)
@@ -602,10 +605,12 @@ DEPENDENCIES
   enumerize
   factory_bot_rails
   faker
+  faraday
   foreman
   geocoder
   gon
   googleauth
+  httpx
   i18n-js
   image_processing
   inertia_rails

@@ -4,6 +4,7 @@ class LeadCreatedEvent < TypedEvent
   DataShape = T.type_alias {
     {
       user_id: Integer,
+      user_name: String,
       email: String,
       phone: T.nilable(String),
       telegram: T.nilable(String),

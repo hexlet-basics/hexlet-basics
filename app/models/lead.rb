@@ -68,6 +68,7 @@ class Lead < ApplicationRecord
     if new_lead
       event_data = {
         user_id: user.id,
+        user_name: user.to_s,
         email: user.email,
         phone: lead.phone,
         telegram: lead.telegram,
