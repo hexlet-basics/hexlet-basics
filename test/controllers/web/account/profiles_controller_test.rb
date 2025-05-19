@@ -33,6 +33,9 @@ class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
 
   test "update (new lead)" do
     user = sign_in_as("should_add_contact_method")
+
+    assert { !user.lead }
+
     patch account_profile_url(id: user.id), params: {
       user: {
         contact_method: :telegram,
