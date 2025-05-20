@@ -8,6 +8,7 @@
 class User
   include GeneratedAssociationMethods
   include GeneratedAttributeMethods
+  include EnumMethodsModule
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
@@ -82,6 +83,9 @@ class User
   class << self
     sig { params(args: T.untyped, block: T.nilable(T.proc.bind(PrivateAASMMachine).void)).returns(PrivateAASMMachine) }
     def aasm(*args, &block); end
+
+    sig { returns(T::Hash[T.any(String, Symbol), String]) }
+    def contact_methods; end
 
     sig { params(attributes: T.untyped, block: T.nilable(T.proc.params(object: ::User).void)).returns(::User) }
     def new(attributes = nil, &block); end
@@ -394,6 +398,26 @@ class User
     def third_to_last!; end
   end
 
+  module EnumMethodsModule
+    sig { void }
+    def phone_contact_method!; end
+
+    sig { returns(T::Boolean) }
+    def phone_contact_method?; end
+
+    sig { void }
+    def telegram_contact_method!; end
+
+    sig { returns(T::Boolean) }
+    def telegram_contact_method?; end
+
+    sig { void }
+    def whatsapp_contact_method!; end
+
+    sig { returns(T::Boolean) }
+    def whatsapp_contact_method?; end
+  end
+
   module GeneratedAssociationMethods
     sig { returns(T::Array[T.untyped]) }
     def account_ids; end
@@ -437,6 +461,30 @@ class User
     sig { params(value: T::Enumerable[::BlogPost]).void }
     def blog_posts=(value); end
 
+    sig { returns(T.nilable(::BookRequest)) }
+    def book_request; end
+
+    sig { params(value: T.nilable(::BookRequest)).void }
+    def book_request=(value); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::BookRequest) }
+    def build_book_request(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Lead) }
+    def build_lead(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::BookRequest) }
+    def create_book_request(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::BookRequest) }
+    def create_book_request!(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Lead) }
+    def create_lead(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Lead) }
+    def create_lead!(*args, &blk); end
+
     sig { returns(T::Array[T.untyped]) }
     def language_member_ids; end
 
@@ -450,6 +498,12 @@ class User
 
     sig { params(value: T::Enumerable[::Language::Member]).void }
     def language_members=(value); end
+
+    sig { returns(T.nilable(::Lead)) }
+    def lead; end
+
+    sig { params(value: T.nilable(::Lead)).void }
+    def lead=(value); end
 
     sig { returns(T::Array[T.untyped]) }
     def lesson_ids; end
@@ -479,6 +533,18 @@ class User
     sig { params(value: T::Enumerable[::Language::Lesson]).void }
     def lessons=(value); end
 
+    sig { returns(T.nilable(::BookRequest)) }
+    def reload_book_request; end
+
+    sig { returns(T.nilable(::Lead)) }
+    def reload_lead; end
+
+    sig { void }
+    def reset_book_request; end
+
+    sig { void }
+    def reset_lead; end
+
     sig { returns(T::Array[T.untyped]) }
     def review_ids; end
 
@@ -506,6 +572,62 @@ class User
 
     sig { params(value: T::Enumerable[::Survey::Answer]).void }
     def survey_answers=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def survey_answers_survey_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def survey_answers_survey_ids=(ids); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def survey_answers_survey_item_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def survey_answers_survey_item_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :survey_answers_survey_items, through: :survey_answers`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::Survey::Item::PrivateCollectionProxy) }
+    def survey_answers_survey_items; end
+
+    sig { params(value: T::Enumerable[::Survey::Item]).void }
+    def survey_answers_survey_items=(value); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :survey_answers_surveys, through: :survey_answers`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::Survey::PrivateCollectionProxy) }
+    def survey_answers_surveys; end
+
+    sig { params(value: T::Enumerable[::Survey]).void }
+    def survey_answers_surveys=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def survey_scenario_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def survey_scenario_ids=(ids); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def survey_scenario_member_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def survey_scenario_member_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :survey_scenario_members`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::Survey::Scenario::Member::PrivateCollectionProxy) }
+    def survey_scenario_members; end
+
+    sig { params(value: T::Enumerable[::Survey::Scenario::Member]).void }
+    def survey_scenario_members=(value); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :survey_scenarios, through: :survey_scenario_members`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::Survey::Scenario::PrivateCollectionProxy) }
+    def survey_scenarios; end
+
+    sig { params(value: T::Enumerable[::Survey::Scenario]).void }
+    def survey_scenarios=(value); end
   end
 
   module GeneratedAssociationRelationMethods
@@ -588,6 +710,15 @@ class User
     def none(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def not_phone_contact_method(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def not_telegram_contact_method(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def not_whatsapp_contact_method(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def null_relation?(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
@@ -604,6 +735,9 @@ class User
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def order(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def phone_contact_method(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def preload(*args, &blk); end
@@ -643,6 +777,9 @@ class User
     def structurally_compatible?(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def telegram_contact_method(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def uniq!(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
@@ -650,6 +787,9 @@ class User
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def waiting_confirmation(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def whatsapp_contact_method(*args, &blk); end
 
     sig { returns(PrivateAssociationRelationWhereChain) }
     sig { params(args: T.untyped).returns(PrivateAssociationRelation) }
@@ -800,6 +940,106 @@ class User
 
     sig { void }
     def confirmation_token_will_change!; end
+
+    sig { returns(T.nilable(::String)) }
+    def contact_method; end
+
+    sig { params(value: T.nilable(T.any(::String, ::Symbol))).returns(T.nilable(T.any(::String, ::Symbol))) }
+    def contact_method=(value); end
+
+    sig { returns(T::Boolean) }
+    def contact_method?; end
+
+    sig { returns(T.nilable(::String)) }
+    def contact_method_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def contact_method_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def contact_method_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def contact_method_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def contact_method_change_to_be_saved; end
+
+    sig do
+      params(
+        from: T.nilable(T.any(::String, ::Symbol)),
+        to: T.nilable(T.any(::String, ::Symbol))
+      ).returns(T::Boolean)
+    end
+    def contact_method_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def contact_method_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def contact_method_previous_change; end
+
+    sig do
+      params(
+        from: T.nilable(T.any(::String, ::Symbol)),
+        to: T.nilable(T.any(::String, ::Symbol))
+      ).returns(T::Boolean)
+    end
+    def contact_method_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def contact_method_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def contact_method_was; end
+
+    sig { void }
+    def contact_method_will_change!; end
+
+    sig { returns(T.nilable(::String)) }
+    def contact_value; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def contact_value=(value); end
+
+    sig { returns(T::Boolean) }
+    def contact_value?; end
+
+    sig { returns(T.nilable(::String)) }
+    def contact_value_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def contact_value_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def contact_value_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def contact_value_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def contact_value_change_to_be_saved; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def contact_value_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def contact_value_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def contact_value_previous_change; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def contact_value_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def contact_value_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def contact_value_was; end
+
+    sig { void }
+    def contact_value_will_change!; end
 
     sig { returns(::ActiveSupport::TimeWithZone) }
     def created_at; end
@@ -1441,6 +1681,12 @@ class User
     def restore_confirmation_token!; end
 
     sig { void }
+    def restore_contact_method!; end
+
+    sig { void }
+    def restore_contact_value!; end
+
+    sig { void }
     def restore_created_at!; end
 
     sig { void }
@@ -1508,6 +1754,18 @@ class User
 
     sig { returns(T::Boolean) }
     def saved_change_to_confirmation_token?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_contact_method; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_contact_method?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_contact_value; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_contact_value?; end
 
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def saved_change_to_created_at; end
@@ -1756,6 +2014,12 @@ class User
     def will_save_change_to_confirmation_token?; end
 
     sig { returns(T::Boolean) }
+    def will_save_change_to_contact_method?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_contact_value?; end
+
+    sig { returns(T::Boolean) }
     def will_save_change_to_created_at?; end
 
     sig { returns(T::Boolean) }
@@ -1887,6 +2151,15 @@ class User
     def none(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def not_phone_contact_method(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def not_telegram_contact_method(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def not_whatsapp_contact_method(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def null_relation?(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
@@ -1903,6 +2176,9 @@ class User
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def order(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def phone_contact_method(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def preload(*args, &blk); end
@@ -1942,6 +2218,9 @@ class User
     def structurally_compatible?(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def telegram_contact_method(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def uniq!(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
@@ -1949,6 +2228,9 @@ class User
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def waiting_confirmation(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def whatsapp_contact_method(*args, &blk); end
 
     sig { returns(PrivateRelationWhereChain) }
     sig { params(args: T.untyped).returns(PrivateRelation) }

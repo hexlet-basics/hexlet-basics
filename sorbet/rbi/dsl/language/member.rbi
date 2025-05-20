@@ -8,6 +8,7 @@
 class Language::Member
   include GeneratedAssociationMethods
   include GeneratedAttributeMethods
+  include EnumMethodsModule
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
@@ -45,6 +46,9 @@ class Language::Member
       ).returns(::Language::Member)
     end
     def new(attributes = nil, &block); end
+
+    sig { returns(T::Hash[T.any(String, Symbol), String]) }
+    def states; end
   end
 
   module CommonRelationMethods
@@ -404,6 +408,20 @@ class Language::Member
     def third_to_last!; end
   end
 
+  module EnumMethodsModule
+    sig { void }
+    def finished!; end
+
+    sig { returns(T::Boolean) }
+    def finished?; end
+
+    sig { void }
+    def started!; end
+
+    sig { returns(T::Boolean) }
+    def started?; end
+  end
+
   module GeneratedAssociationMethods
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language) }
     def build_language(*args, &blk); end
@@ -549,6 +567,12 @@ class Language::Member
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def none(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def not_finished(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def not_started(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def null_relation?(*args, &blk); end
@@ -939,7 +963,7 @@ class Language::Member
     sig { returns(T.nilable(::String)) }
     def state; end
 
-    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    sig { params(value: T.nilable(T.any(::String, ::Symbol))).returns(T.nilable(T.any(::String, ::Symbol))) }
     def state=(value); end
 
     sig { returns(T::Boolean) }
@@ -960,7 +984,12 @@ class Language::Member
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def state_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig do
+      params(
+        from: T.nilable(T.any(::String, ::Symbol)),
+        to: T.nilable(T.any(::String, ::Symbol))
+      ).returns(T::Boolean)
+    end
     def state_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(::String) }
@@ -1014,7 +1043,12 @@ class Language::Member
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def state_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig do
+      params(
+        from: T.nilable(T.any(::String, ::Symbol)),
+        to: T.nilable(T.any(::String, ::Symbol))
+      ).returns(T::Boolean)
+    end
     def state_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1219,6 +1253,12 @@ class Language::Member
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def none(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def not_finished(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def not_started(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def null_relation?(*args, &blk); end
