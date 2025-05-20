@@ -1,8 +1,6 @@
-class SignInFormResource
-  include Alba::Resource
-  include Typelizer::DSL
-
+class SignInFormResource < ApplicationResource
   typelize_from SignInForm
+  root_key :user_sign_in_form
 
   attributes :email, :password
   typelize email: :string, password: :string

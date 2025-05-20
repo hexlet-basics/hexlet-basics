@@ -33,6 +33,7 @@ full_elixir:
   <<: *DEFAULTS
   language: elixir
   user: full
+  state: finished
 
 full_php:
   <<: *DEFAULTS

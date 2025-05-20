@@ -9,15 +9,16 @@ import { XForm, XInput } from "./forms";
 
 type Props = PropsWithChildren & {
   user: User;
+  autoFocus?: boolean
 };
 
-export default function SignUpFormBlock({ user }: Props) {
+export default function SignUpFormBlock({ user, autoFocus = false }: Props) {
   const { t } = useTranslation();
   const { t: tHelpers } = useTranslation("helpers");
 
   return (
     <XForm model="user_sign_up_form" data={user} to={Routes.users_path()}>
-      <XInput name="first_name" autoComplete="name" />
+      <XInput name="first_name" autoComplete="name" autoFocus={autoFocus} />
       <XInput name="email" autoComplete="email" />
       <XInput name="password" type="password" autoComplete="current-password" />
       <div className="text-end text-muted small mb-4">

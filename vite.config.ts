@@ -50,7 +50,6 @@ export default defineConfig(({ mode, isSsrBuild }) => {
         "highlight.js",
         "react-syntax-highlighter",
         "use-inertia-form",
-        "lodash",
         "monaco-editor",
         "primereact",
         "react-timer-hook",

@@ -29,11 +29,11 @@ export default function New({ signInForm }: Props) {
               <Card.Body>
                 <XForm
                   to={Routes.session_path()}
-                  data={{ user_sign_in_form: signInForm }}
+                  data={signInForm}
                   model="user_sign_in_form"
                   className="d-flex flex-column"
                 >
-                  <XInput name="email" autoComplete="email" />
+                  <XInput name="email" autoFocus autoComplete="email" />
                   <XInput
                     name="password"
                     type="password"

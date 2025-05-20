@@ -1,7 +1,4 @@
-class ReviewCrudResource
-  include Alba::Resource
-  include Typelizer::DSL
-
+class ReviewCrudResource < ApplicationResource
   typelize_from Review
   root_key :review
 

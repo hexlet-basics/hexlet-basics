@@ -32,7 +32,7 @@ export default function New({ user, demo }: Props) {
             <h1 className="text-center my-5 mb-3">{t("users.new.sign_up")}</h1>
             <Card className="p-4 border-0">
               <Card.Body>
-                <SignUpFormBlock user={user} />
+                <SignUpFormBlock autoFocus user={user} />
               </Card.Body>
             </Card>
           </div>
