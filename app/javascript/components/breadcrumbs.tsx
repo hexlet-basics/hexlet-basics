@@ -1,5 +1,5 @@
 import type { BreadcrumbItem } from "@/types";
-import { Head } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import type { HTMLAttributes, PropsWithChildren } from "react";
 import { Breadcrumb, type BreadcrumbProps } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
@@ -38,16 +38,22 @@ export function XBreadcrumb({ items = [], className }: Props) {
         </script>
       </Head>
       <Breadcrumb className={className}>
-        <Breadcrumb.Item href="/" title={t("languages.show.to_home_title")}>
+        <Breadcrumb.Item
+          as={Link}
+          title={t("languages.show.to_home_title")}
+        >
+          <Link href="/">
           <i className="bi bi-house" />
+          </Link>
         </Breadcrumb.Item>
         {items.map((item, index) => (
           <Breadcrumb.Item
             key={item.url}
-            href={item.url}
             active={items.length === index + 1}
           >
-            {item.name}
+            <Link href={item.url}>
+              {item.name}
+            </Link>
           </Breadcrumb.Item>
         ))}
       </Breadcrumb>

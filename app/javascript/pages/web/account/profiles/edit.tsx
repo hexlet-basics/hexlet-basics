@@ -17,7 +17,9 @@ type Props = PropsWithChildren & {
   form: UserProfileForm;
 };
 
-export default function New({ form }: Props) {
+export default function Edit(props: Props) {
+  const { form } = props
+  console.log('component props: ', props)
   const { t } = useTranslation();
   const { t: tHelpers } = useTranslation("helpers");
   const { t: tViews } = useTranslation("activerecord");

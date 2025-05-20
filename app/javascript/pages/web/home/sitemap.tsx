@@ -14,6 +14,7 @@ import type {
 
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import { Collapse, Container } from "react-bootstrap";
+import { Link } from "@inertiajs/react";
 
 type Props = PropsWithChildren & {
   title: string;
@@ -55,7 +56,7 @@ function LessonsBlock({ lessons, landingPage }: LessonsBlockProps) {
     <ul className="m-0 ms-3 list-unstyled pb-2">
       {lessons.map((lesson) => (
         <li key={`${landingPage.id}-${lesson.id}`}>
-          <a
+          <Link
             className="text-decoration-none"
             href={Routes.language_lesson_path(landingPage.slug, lesson.slug, {
               suffix: getSuffix(lesson.locale),
@@ -63,7 +64,7 @@ function LessonsBlock({ lessons, landingPage }: LessonsBlockProps) {
           >
             <span className="me-1">{lesson.natural_order}.</span>
             {lesson.name}
-          </a>
+          </Link>
         </li>
       ))}
     </ul>
@@ -90,14 +91,14 @@ function LadingPagesBlock({
 
         return (
           <div key={landingPage.id}>
-            <a
+            <Link
               className="text-decoration-none text-body"
               href={Routes.language_path(landingPage.slug, {
                 suffix: getSuffix(landingPage.locale),
               })}
             >
               {landingPage.header}
-            </a>
+            </Link>
             <button
               type="button"
               onClick={() =>
@@ -135,14 +136,14 @@ function BlogPostsBlock({ posts, opened }: BlogPostsBlockProps) {
       <ul className="m-0 ms-3 list-unstyled" id="blog-collapse">
         {posts.map((post) => (
           <li key={post.id}>
-            <a
+            <Link
               className="text-decoration-none"
               href={Routes.blog_post_path(post.slug, {
                 suffix: getSuffix(post.locale),
               })}
             >
               {post.name}
-            </a>
+            </Link>
           </li>
         ))}
       </ul>
@@ -159,14 +160,14 @@ function LanguageCategoriesBlock({
       <ul className="m-0 ms-3 list-unstyled" id="blog-collapse">
         {categories.map((category) => (
           <li key={category.id}>
-            <a
+            <Link
               className="text-decoration-none"
               href={Routes.language_category_path(category.slug!, {
                 suffix: getSuffix(category.locale),
               })}
             >
               {category.name}
-            </a>
+            </Link>
           </li>
         ))}
       </ul>
@@ -194,22 +195,22 @@ export default function SiteMap({
         return (
           <Container key={locale} className="mb-5">
             <h2 className="h5 mb-3">
-              <a
+              <Link
                 id={`main-${locale}`}
                 className="text-decoration-none link-body-emphasis"
                 href={Routes.root_path({ suffix: getSuffix(locale) })}
               >
                 {t("home.sitemap.home", { lng: locale })}
-              </a>
+              </Link>
             </h2>
             <h2 className="h5 mb-3">
-              <a
+              <Link
                 id={`courses-${locale}`}
                 className="text-decoration-none link-body-emphasis"
                 href={`#courses-${locale}`}
               >
                 {t("home.languages.courses", { lng: locale })}
-              </a>
+              </Link>
             </h2>
             <LadingPagesBlock
               locale={locale}
@@ -218,13 +219,13 @@ export default function SiteMap({
             />
 
             <h2 className="h5 my-2">
-              <a
+              <Link
                 id={`blog-${locale}`}
                 className="text-decoration-none link-body-emphasis"
                 href={`#blog-${locale}`}
               >
                 {t("blog_posts.index.header", { lng: locale })}
-              </a>
+              </Link>
               <button
                 type="button"
                 onClick={() => setBlogOpened(!blogOpened)}
@@ -241,13 +242,13 @@ export default function SiteMap({
               opened={blogOpened}
             />
             <h2 className="h5 py-2">
-              <a
+              <Link
                 id={`categories-${locale}`}
                 className="text-decoration-none link-body-emphasis"
                 href={`#categories-${locale}`}
               >
                 {t("language_categories.index.header", { lng: locale })}
-              </a>
+              </Link>
               <button
                 type="button"
                 onClick={() => setCategoriesOpened(!categoriesOpened)}

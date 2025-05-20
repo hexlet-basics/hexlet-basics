@@ -5,6 +5,7 @@ import type {
   LanguageLandingPageForLists,
   LanguageMember,
 } from "@/types/serializers";
+import { Link } from "@inertiajs/react";
 import {
   Card,
   Col,
@@ -37,7 +38,7 @@ function StartedCourse({
         <Col className="col-6 col-lg-8">
           <Card.Body className="d-flex flex-column h-100">
             <Card.Title className="m-0">
-              <a
+              <Link
                 href={Routes.language_lesson_url(
                   lp.language.slug!,
                   cm.next_lesson.slug,
@@ -45,7 +46,7 @@ function StartedCourse({
                 className="stretched-link text-decoration-none link-body-emphasis h2"
               >
                 <h3>{lp.header}</h3>
-              </a>
+              </Link>
             </Card.Title>
             <Card.Text className="pe-3">{cm.next_lesson.name} →</Card.Text>
             <ProgressBar

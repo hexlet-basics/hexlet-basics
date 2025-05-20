@@ -8,7 +8,7 @@ import { Nav, NavDropdown, Navbar, type NavbarProps } from "react-bootstrap";
 import useLinkClickHandler from "@/hooks/useLinkClickHandler";
 import * as Routes from "@/routes.js";
 import type { SharedProps } from "@/types";
-import { usePage } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import type { HTMLAttributes, PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -22,7 +22,7 @@ export default function NavbarBlock({ className }: Props) {
 
   return (
     <Navbar expand="lg" className={cn(className, "border-bottom")}>
-      <Navbar.Brand href={Routes.root_path()}>
+      <Navbar.Brand as={Link} href={Routes.root_path()}>
         <img
           src={logoImg}
           width="30"
@@ -36,7 +36,11 @@ export default function NavbarBlock({ className }: Props) {
       <Navbar.Collapse>
         <Nav className="me-auto">
           {!auth.user.guest && (
-            <Nav.Link className="link-body-emphasis" href={Routes.my_path()}>
+            <Nav.Link
+              as={Link}
+              className="link-body-emphasis"
+              href={Routes.my_path()}
+            >
               {tLayouts("shared.nav.my")}
             </Nav.Link>
           )}
@@ -48,6 +52,7 @@ export default function NavbarBlock({ className }: Props) {
           >
             {landingPagesForLists.map((lp) => (
               <NavDropdown.Item
+                as={Link}
                 className="d-flex align-items-center"
                 key={lp.id}
                 href={Routes.language_path(lp.slug)}
@@ -64,16 +69,20 @@ export default function NavbarBlock({ className }: Props) {
           </NavDropdown>
 
           <NavDropdown
-              className="link-body-emphasis"
-              title={tLayouts("shared.nav.cases")}
+            className="link-body-emphasis"
+            title={tLayouts("shared.nav.cases")}
+          >
+            <NavDropdown.Item
+              as={Link}
+              href={Routes.for_school_teachers_cases_path()}
             >
-              <NavDropdown.Item href={Routes.for_school_teachers_cases_path()}>
-                {tLayouts("shared.nav.for_school_teachers")}
-              </NavDropdown.Item>
+              {tLayouts("shared.nav.for_school_teachers")}
+            </NavDropdown.Item>
           </NavDropdown>
 
           {i18next.language == 'ru' && <Nav.Link
-            className="link-body-emphasis link-btn"
+            as={Link}
+            className="link-body-emphasis"
             href={Routes.book_path()}
           >
             {tLayouts("shared.nav.book")}
@@ -83,12 +92,14 @@ export default function NavbarBlock({ className }: Props) {
           {auth.user.guest && (
             <>
               <Nav.Link
+                as={Link}
                 className="link-body-emphasis"
                 href={Routes.new_session_path()}
               >
                 {tLayouts("shared.nav.sign_in")}
               </Nav.Link>
               <Nav.Link
+                as={Link}
                 className="link-body-emphasis"
                 href={Routes.new_user_path()}
               >
@@ -103,7 +114,7 @@ export default function NavbarBlock({ className }: Props) {
                 className="link-body-emphasis"
                 title={<i className="bi bi-person-circle" />}
               >
-                <NavDropdown.Item href={Routes.edit_account_profile_path()}>
+                <NavDropdown.Item as={Link} href={Routes.edit_account_profile_path()}>
                   <div className="d-flex">
                     <img
                       width="50px"
@@ -117,15 +128,16 @@ export default function NavbarBlock({ className }: Props) {
                   </div>
                 </NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item href={Routes.edit_account_profile_path()}>
+                <NavDropdown.Item as={Link} href={Routes.edit_account_profile_path()}>
                   {tLayouts("shared.nav.profile")}
                 </NavDropdown.Item>
                 {auth.user.admin && (
-                  <NavDropdown.Item href={Routes.admin_root_path()}>
+                  <NavDropdown.Item as={Link} href={Routes.admin_root_path()}>
                     {tLayouts("shared.nav.admin")}
                   </NavDropdown.Item>
                 )}
                 <NavDropdown.Item
+                  as={Link}
                   href={Routes.session_path()}
                   onClick={handleLinkClick("delete")}
                 >

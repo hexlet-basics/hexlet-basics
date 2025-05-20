@@ -9,7 +9,7 @@ class Language::MemberResource
 
   attributes :id, :user_id, :language_id, :state
 
-  typelize state: [ enum: [ "started", "finished" ] ]
+  # typelize state: [ enum: [ "started", "finished" ] ]
 
   typelize :number
   attribute :progress do |obj|

@@ -35,7 +35,8 @@ class Language::Member < ApplicationRecord
 
   counter_culture :language
 
-  aasm :state do
+  enum :state, { started: "started", finished: "finished" }
+  aasm :state, enum: true do
     state :started, initial: true
     state :finished
 

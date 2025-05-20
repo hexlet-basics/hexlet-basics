@@ -1,7 +1,10 @@
+import { Locale } from "@/types";
+import { BackendEvent } from "@/types/events";
+
 type GonData = {
   [key: string]: any;
   suffix: 'ru' | null;
-  locale: string;
+  locale: Locale;
 };
 
 // @ts-expect-error not defined

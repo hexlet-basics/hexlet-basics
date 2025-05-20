@@ -84,4 +84,4 @@ should_add_contact_method__contact-method:
   state: fulfilled
   user: should_add_contact_method
   survey: career-change-contact-method
-  survey_item: contact-method-item4
+  survey_item: career-change-contact-method-item4

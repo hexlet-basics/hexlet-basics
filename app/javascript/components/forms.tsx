@@ -1,3 +1,4 @@
+import { processHappendEvents } from "@/lib/analytics";
 import type { SharedProps } from "@/types";
 import { usePage } from "@inertiajs/react";
 import axios from "axios";
@@ -14,6 +15,7 @@ import {
 import {
   type InputHTMLAttributes,
   type PropsWithChildren,
+  useCallback,
   useEffect,
   useState,
 } from "react";
@@ -53,15 +55,27 @@ export function XForm<TForm extends NestedObject>({
   className,
   ...props
 }: FormProps<TForm>) {
-  // console.log(props)
+  const page = usePage<SharedProps>();
+  const { happendEvents } = page.props;
+
+  const [wasSubmitted, setWasSubmitted] = useState(false);
+
+  useEffect(() => {
+    if (wasSubmitted && happendEvents) {
+      processHappendEvents(happendEvents)
+      setWasSubmitted(false);
+    }
+  }, [wasSubmitted, happendEvents]);
+
   return (
     <InertiaForm
       className={`form ${className}`}
       railsAttributes={railsAttributes}
+      onSuccess={() => setWasSubmitted(true)}
       {...props}
     >
       {children}
-    </InertiaForm>
+    </InertiaForm >
   );
 }
 

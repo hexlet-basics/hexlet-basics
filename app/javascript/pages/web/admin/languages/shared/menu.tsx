@@ -1,4 +1,4 @@
-import { usePage } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import { Nav } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
@@ -18,6 +18,7 @@ export function Menu({ data, landingPage }: Props) {
     <Nav variant="tabs" className="mb-4" activeKey={url}>
       <Nav.Item>
         <Nav.Link
+          as={Link}
           className="link-body-emphasis"
           href={Routes.admin_languages_path()}
         >
@@ -26,6 +27,7 @@ export function Menu({ data, landingPage }: Props) {
       </Nav.Item>
       <Nav.Item>
         <Nav.Link
+          as={Link}
           className="link-body-emphasis"
           href={Routes.new_admin_language_path()}
         >
@@ -36,6 +38,7 @@ export function Menu({ data, landingPage }: Props) {
         <>
           <Nav.Item>
             <Nav.Link
+              as={Link}
               className="link-body-emphasis"
               href={Routes.edit_admin_language_path(data.language.id)}
             >

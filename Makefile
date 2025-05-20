@@ -131,7 +131,7 @@ services-webserver-run:
 	caddy run # --config ./services/webserver/caddy/conf/Caddyfile --envfile=.env
 
 services-db-start:
-	docker run -d -it \
+	docker run -d -it --rm \
 		-p 5432:5432 \
 		--name code_basics_postgres \
 		-e POSTGRES_DB=code_basics_development \
@@ -146,6 +146,9 @@ services-remove: services-db-remove
 
 services-db-remove: services-db-stop
 	docker rm code_basics_postgres
+	docker volume remove code_basics_pgdata
+
+services-db-down: service-db-remove
 	docker volume remove code_basics_pgdata
 
 services-stop: services-db-stop

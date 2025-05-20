@@ -124,7 +124,7 @@ class User < ApplicationRecord
   end
 
   def should_add_contact_method
-    return false if contact_value
+    return false if contact_value?
 
     items = Survey::Item.active.where(slug: [
       "career-change-contact-method-item2",

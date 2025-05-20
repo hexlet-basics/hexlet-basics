@@ -222,27 +222,27 @@ career-change-preferred-intro-format-item4:
   survey: career-change-preferred-intro-format
   value: Пока не знаю
 
-survcontact-method-item1:
+career-change-contact-method-item1:
   <<: *DEFAULTS
   survey: career-change-contact-method
   value: Email
 
-contact-method-item2:
+career-change-contact-method-item2:
   <<: *DEFAULTS
   survey: career-change-contact-method
   value: Telegram
 
-contact-method-item3:
+career-change-contact-method-item3:
   <<: *DEFAULTS
   survey: career-change-contact-method
   value: WhatsApp
 
-contact-method-item4:
+career-change-contact-method-item4:
   <<: *DEFAULTS
   survey: career-change-contact-method
   value: Звонок по телефону
 
-contact-method-item5:
+career-change-contact-method-item5:
   <<: *DEFAULTS
   survey: career-change-contact-method
   value: Пока не хочу, свяжусь сам(а) при необходимости

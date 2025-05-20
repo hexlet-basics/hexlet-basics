@@ -1,4 +1,5 @@
 // import carrotquest from "@hexlet/analytics-plugin-carrotquest";
+import { BackendEvent } from "@/types/events";
 import yandexMetrika from "@hexlet/analytics-plugin-yandex-metrika";
 import Analytics from "analytics";
 // import googleAnalytics from "@analytics/google-analytics"
@@ -32,5 +33,33 @@ const analytics = Analytics({
   version: 100,
   plugins,
 });
+
+export function processHappendEvents(happendEvents: BackendEvent[]) {
+  for (const happendEvent of happendEvents) {
+    switch (happendEvent.type) {
+      case "UserSignedInEvent":
+        analytics.identify(happendEvent.data.id.toString(), happendEvent.data);
+        analytics.track("signed_in", happendEvent.data);
+        break;
+      case "UserSignedUpEvent":
+        analytics.identify(happendEvent.data.id.toString(), happendEvent.data);
+        analytics.track("signed_up", happendEvent.data);
+        break;
+      case "CourseStartedEvent":
+        analytics.track("course_started", happendEvent.data);
+        break;
+      case "LeadCreatedEvent":
+        console.log('lead created')
+        analytics.track("lead_created", happendEvent.data);
+        break;
+      case "LessonStartedEvent":
+        analytics.track("lesson_started", happendEvent.data);
+        break;
+      default:
+        console.log('Unprocessed event: ', happendEvent)
+        break;
+    }
+  }
+}
 
 export default analytics;

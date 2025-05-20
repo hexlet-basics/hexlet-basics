@@ -4,7 +4,7 @@ import type {
   LanguageLandingPageForLists,
   LanguageMember,
 } from "@/types/serializers";
-import { usePage } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import type { PropsWithChildren } from "react";
 import { Button, Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
@@ -41,13 +41,13 @@ export default function CourseBlock({
         {/*   )} */}
         <Card.Body className="p-2 p-md-3">
           <Card.Title>
-            <a
+            <Link
               href={Routes.language_url(landingPage.slug)}
               className="stretched-link text-decoration-none link-body-emphasis h2"
             >
               {courseMember && <i className="me-3 bi bi-trophy" />}
               {landingPage.header}
-            </a>
+            </Link>
           </Card.Title>
           <div className="text-muted">
             <span className="text-nowrap d-block d-sm-inline-block me-4">

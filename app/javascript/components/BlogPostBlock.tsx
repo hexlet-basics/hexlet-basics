@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import * as Routes from "@/routes.js";
 import type { SharedProps } from "@/types";
-import { usePage } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import dayjs from "dayjs";
 
 type Props = PropsWithChildren & {
@@ -28,12 +28,12 @@ export default function BlogPostBlock({ post }: Props) {
       )}
       <Card.Body className="px-1">
         <Card.Title>
-          <a
+          <Link
             href={Routes.blog_post_path(post.slug!, { suffix })}
             className="link-body-emphasis text-decoration-none stretched-link"
           >
             {post.name}
-          </a>
+          </Link>
         </Card.Title>
         <Card.Text>{post.description}</Card.Text>
         <div className="mt-2 d-flex small text-muted">

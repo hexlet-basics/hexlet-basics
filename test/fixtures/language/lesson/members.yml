@@ -81,12 +81,12 @@ full-elixir-variables:
   state: finished
   language_member: full_elixir
 
-full-elixir-strings:
-  user: full
-  language: elixir
-  lesson: elixir-strings
-  state: finished
-  language_member: full_elixir
+# full-elixir-strings:
+#   user: full
+#   language: elixir
+#   lesson: elixir-strings
+#   state: finished
+#   language_member: full_elixir
 
 full-typescript-lesson1:
   user: full
