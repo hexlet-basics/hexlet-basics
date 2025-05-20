@@ -11,7 +11,7 @@ class LeadsToAmocrmJob < ApplicationJob
   def perform(event)
     n8n_client = T.let(
       ApplicationContainer[:n8n_client],
-      N8nClient
+      T.any(N8nClient, N8nClientStub)
     )
 
     serializer = T.let(
