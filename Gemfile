@@ -144,3 +144,5 @@ gem "configus"
 gem "rails_event_store"
 
 gem "pundit"
+gem "faraday"
+gem "httpx"
