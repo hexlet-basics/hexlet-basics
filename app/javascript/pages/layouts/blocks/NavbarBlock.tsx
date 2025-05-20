@@ -116,11 +116,13 @@ export default function NavbarBlock({ className }: Props) {
               >
                 <NavDropdown.Item as={Link} href={Routes.edit_account_profile_path()}>
                   <div className="d-flex">
-                    <img
-                      width="50px"
-                      src={defaultAvatarImg}
-                      alt="User Avatar"
-                    />
+                    <div className="me-2">
+                      <img
+                        width="50px"
+                        src={defaultAvatarImg}
+                        alt="User Avatar"
+                      />
+                    </div>
                     <div>
                       <div className="fw-bold">{auth.user.name}</div>
                       <div>{auth.user.email}</div>

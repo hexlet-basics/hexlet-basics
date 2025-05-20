@@ -91,8 +91,8 @@ export default function Show({
         <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
       </Head>
       <Container>
-        {courseMember?.state === "finished" && (
-          <Alert variant="success" className="mb-5">
+        {i18next.language === 'ru' && courseMember?.state === "finished" && (
+          <Alert variant="light" className="mb-5">
             <XssContent>{t("languages.show.completed_html")}</XssContent>
           </Alert>
         )}

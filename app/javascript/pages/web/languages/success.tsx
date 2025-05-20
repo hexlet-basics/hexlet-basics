@@ -27,7 +27,7 @@ export default function Success() {
               <div className="d-flex flex-column flex-md-row justify-content-center gap-3 gap-lg-4">
                 <a
                   className="btn btn-primary btn-lg"
-                  href={"https://hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=all-courses&utm_content=finished_course_page"}
+                  href={"https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=finished_course_page"}
                   target="_blank"
                   rel="noreferrer"
                 >
