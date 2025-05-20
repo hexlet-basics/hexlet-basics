@@ -39,21 +39,20 @@ export function XBreadcrumb({ items = [], className }: Props) {
       </Head>
       <Breadcrumb className={className}>
         <Breadcrumb.Item
-          as={Link}
+          linkAs={Link}
+          href="/"
           title={t("languages.show.to_home_title")}
         >
-          <Link href="/">
           <i className="bi bi-house" />
-          </Link>
         </Breadcrumb.Item>
         {items.map((item, index) => (
           <Breadcrumb.Item
+            linkAs={Link}
             key={item.url}
+            href={item.url}
             active={items.length === index + 1}
           >
-            <Link href={item.url}>
-              {item.name}
-            </Link>
+            {item.name}
           </Breadcrumb.Item>
         ))}
       </Breadcrumb>
