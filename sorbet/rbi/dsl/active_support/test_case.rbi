@@ -16,6 +16,16 @@ class ActiveSupport::TestCase
   end
   def blog_posts(fixture_name = nil, *other_fixtures); end
 
+  sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[BookRequest]) }
+  sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(BookRequest) }
+  sig do
+    params(
+      fixture_name: T.any(String, Symbol),
+      other_fixtures: T.any(String, Symbol)
+    ).returns(T::Array[BookRequest])
+  end
+  def book_requests(fixture_name = nil, *other_fixtures); end
+
   sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[Language::Category]) }
   sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(Language::Category) }
   sig do
@@ -171,6 +181,11 @@ class ActiveSupport::TestCase
   end
   def languages(fixture_name = nil, *other_fixtures); end
 
+  sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[Lead]) }
+  sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(Lead) }
+  sig { params(fixture_name: T.any(String, Symbol), other_fixtures: T.any(String, Symbol)).returns(T::Array[Lead]) }
+  def leads(fixture_name = nil, *other_fixtures); end
+
   sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[Review]) }
   sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(Review) }
   sig { params(fixture_name: T.any(String, Symbol), other_fixtures: T.any(String, Symbol)).returns(T::Array[Review]) }
@@ -195,6 +210,46 @@ class ActiveSupport::TestCase
     ).returns(T::Array[Survey::Item])
   end
   def survey_items(fixture_name = nil, *other_fixtures); end
+
+  sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[Survey::Scenario::Item]) }
+  sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(Survey::Scenario::Item) }
+  sig do
+    params(
+      fixture_name: T.any(String, Symbol),
+      other_fixtures: T.any(String, Symbol)
+    ).returns(T::Array[Survey::Scenario::Item])
+  end
+  def survey_scenario_items(fixture_name = nil, *other_fixtures); end
+
+  sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[Survey::Scenario::Member]) }
+  sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(Survey::Scenario::Member) }
+  sig do
+    params(
+      fixture_name: T.any(String, Symbol),
+      other_fixtures: T.any(String, Symbol)
+    ).returns(T::Array[Survey::Scenario::Member])
+  end
+  def survey_scenario_members(fixture_name = nil, *other_fixtures); end
+
+  sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[Survey::Scenario::Trigger]) }
+  sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(Survey::Scenario::Trigger) }
+  sig do
+    params(
+      fixture_name: T.any(String, Symbol),
+      other_fixtures: T.any(String, Symbol)
+    ).returns(T::Array[Survey::Scenario::Trigger])
+  end
+  def survey_scenario_triggers(fixture_name = nil, *other_fixtures); end
+
+  sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[Survey::Scenario]) }
+  sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(Survey::Scenario) }
+  sig do
+    params(
+      fixture_name: T.any(String, Symbol),
+      other_fixtures: T.any(String, Symbol)
+    ).returns(T::Array[Survey::Scenario])
+  end
+  def survey_scenarios(fixture_name = nil, *other_fixtures); end
 
   sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[Survey]) }
   sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(Survey) }
