@@ -56,7 +56,6 @@ export default defineConfig(({ mode, isSsrBuild }) => {
         "@monaco-editor/react",
         "react-use",
         "analytics",
-        "@metro-fs/analytics-plugin-posthog",
       ], // Ensure it's handled correctly
     },
     resolve: {
