@@ -27,7 +27,7 @@ class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
 
     assert { user.first_name == new_name }
     assert { user.lead }
-    assert { user.lead.courses_data.include?({ slug: "elixir", lessons_finished_count: 2 }) }
+    assert { user.lead.courses_data.include?({ slug: "elixir", lessons_finished_count: 3 }) }
     assert { user.lead.survey_answers_data.include?({ question: "Какую задачу вы решаете?", answer: "Планирую поменять карьеру" }) }
   end
 
