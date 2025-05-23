@@ -29,7 +29,10 @@ class Web::Scenarios::Surveys::AnswersController < Web::Scenarios::ApplicationCo
       return
     end
 
-    url = params[:from].presence || root_path
-    redirect_to url
+    return_url = params[:from].presence || root_path
+    if current_user.should_be_lead
+      new_lead_path(from: return_url)
+    end
+    redirect_to return_url
   end
 end

@@ -125,15 +125,8 @@ class User < ApplicationRecord
     email
   end
 
-  def should_add_contact_method
-    return false if contact_value?
-
-    items = Survey::Item.active.where(slug: [
-      "career-change-contact-method-item2",
-      "career-change-contact-method-item3",
-      "career-change-contact-method-item4"
-    ])
-    survey_answers.where(survey_item: items).exists?
+  def should_be_lead
+    tag_list.include?("should_be_lead")
   end
 
   private
