@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   # Redirects (Old routes/SEO)
   get "/:locale/languages/:lang/modules/:module/lessons/:lesson", to: redirect("/%{locale}/languages/%{lang}/lessons/%{lesson}")
+  get "/ru/languages/pre-course-python", to: redirect("/ru/languages/python")
+  get "/ru/languages/pre-course-python/*", to: redirect("/ru/languages/python")
+  get "/ru/languages/pre-course-javascript", to: redirect("/ru/languages/javascript")
+  get "/ru/languages/pre-course-javascript/*", to: redirect("/ru/languages/javascript")
 
 
   mount RailsEventStore::Browser => "/res" if Rails.env.development?
@@ -56,6 +60,7 @@ Rails.application.routes.draw do
 
       resource :my, only: [ :show ]
 
+      resources :leads
       resources :scenarios, only: [ :show ] do
         scope module: :scenarios do
           resources :surveys, only: [ :show ] do
