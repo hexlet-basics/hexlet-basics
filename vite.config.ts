@@ -47,6 +47,7 @@ export default defineConfig(({ mode, isSsrBuild }) => {
     ssr: {
       noExternal: [
         "lowlight",
+        "highlight.js",
         "react-syntax-highlighter",
         "use-inertia-form",
         "monaco-editor",

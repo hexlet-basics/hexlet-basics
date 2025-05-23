@@ -71,6 +71,7 @@ RUN --mount=type=secret,id=sentry-org,env=VITE_SENTRY_ORG \
     --mount=type=secret,id=sentry-auth-token,env=VITE_SENTRY_AUTH_TOKEN \
     # --mount=type=secret,id=carrotquest-api-key,env=VITE_CARROTQUEST_API_KEY \
     --mount=type=secret,id=yandex-metrika-counter-id,env=VITE_YANDEX_METRIKA_COUNTER_ID \
+    --mount=type=secret,id=n8n_base_url,env=N8N_BASE_URL \
     SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 # Final stage for app image
