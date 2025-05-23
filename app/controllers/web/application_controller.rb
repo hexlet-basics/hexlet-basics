@@ -26,7 +26,7 @@ class Web::ApplicationController < ApplicationController
       .merge(Language.ordered)
 
     {
-      shouldAddContactMethod: current_user.should_add_contact_method,
+      shouldAddContactMethod: current_user.tag_list.include?("should_be_lead"),
       courseCategories: Language::CategoryResource.new(language_categories),
       railsDirectUploadsUrl: view_context.rails_direct_uploads_url,
       landingPagesForLists: Language::LandingPageForListsResource.new(landing_pages_for_lists),

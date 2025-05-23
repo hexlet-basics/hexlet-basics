@@ -509,7 +509,7 @@ class RDoc::ClassModule < ::RDoc::Context
 
   # Handy wrapper for marking up this class or module's comment
   #
-  # source://rdoc//lib/rdoc/generator/markup.rb#131
+  # source://rdoc//lib/rdoc/generator/markup.rb#143
   def description; end
 
   # Ancestors list for this ClassModule: the list of included modules
@@ -2458,6 +2458,11 @@ module RDoc::Generator::Markup
   #
   # source://rdoc//lib/rdoc/generator/markup.rb#20
   def as_href(from_path); end
+
+  # The preferred URL for this object.
+  #
+  # source://rdoc//lib/rdoc/generator/markup.rb#61
+  def canonical_url; end
 
   # Build a webcvs URL starting for the given +url+ with +full_path+ appended
   # as the destination path.  If +url+ contains '%s' +full_path+ will be
@@ -6129,7 +6134,7 @@ end
 
 # Outputs RDoc markup as HTML.
 #
-# source://rdoc//lib/rdoc/markup/to_html.rb#7
+# source://rdoc//lib/rdoc/markup/to_html.rb#9
 class RDoc::Markup::ToHtml < ::RDoc::Markup::Formatter
   include ::RDoc::Text
 
@@ -6137,114 +6142,114 @@ class RDoc::Markup::ToHtml < ::RDoc::Markup::Formatter
   #
   # @return [ToHtml] a new instance of ToHtml
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#45
+  # source://rdoc//lib/rdoc/markup/to_html.rb#47
   def initialize(options, markup = T.unsafe(nil)); end
 
   # Adds +blank_line+ to the output
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#296
+  # source://rdoc//lib/rdoc/markup/to_html.rb#301
   def accept_blank_line(blank_line); end
 
   # Adds +block_quote+ to the output
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#195
+  # source://rdoc//lib/rdoc/markup/to_html.rb#200
   def accept_block_quote(block_quote); end
 
   # Adds +heading+ to the output.  The headings greater than 6 are trimmed to
   # level 6.
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#304
+  # source://rdoc//lib/rdoc/markup/to_html.rb#309
   def accept_heading(heading); end
 
   # Finishes consumption of +list+
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#267
+  # source://rdoc//lib/rdoc/markup/to_html.rb#272
   def accept_list_end(list); end
 
   # Finishes consumption of +list_item+
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#289
+  # source://rdoc//lib/rdoc/markup/to_html.rb#294
   def accept_list_item_end(list_item); end
 
   # Prepares the visitor for consuming +list_item+
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#278
+  # source://rdoc//lib/rdoc/markup/to_html.rb#283
   def accept_list_item_start(list_item); end
 
   # Prepares the visitor for consuming +list+
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#258
+  # source://rdoc//lib/rdoc/markup/to_html.rb#263
   def accept_list_start(list); end
 
   # Adds +paragraph+ to the output
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#208
+  # source://rdoc//lib/rdoc/markup/to_html.rb#213
   def accept_paragraph(paragraph); end
 
   # Adds +raw+ to the output
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#325
+  # source://rdoc//lib/rdoc/markup/to_html.rb#330
   def accept_raw(raw); end
 
   # Adds +rule+ to the output
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#251
+  # source://rdoc//lib/rdoc/markup/to_html.rb#256
   def accept_rule(rule); end
 
   # Adds +table+ to the output
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#332
+  # source://rdoc//lib/rdoc/markup/to_html.rb#337
   def accept_table(header, body, aligns); end
 
   # Adds +verbatim+ to the output
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#221
+  # source://rdoc//lib/rdoc/markup/to_html.rb#226
   def accept_verbatim(verbatim); end
 
   # The RDoc::CodeObject HTML is being generated for.  This is used to
   # generate namespaced URI fragments
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#33
+  # source://rdoc//lib/rdoc/markup/to_html.rb#35
   def code_object; end
 
   # The RDoc::CodeObject HTML is being generated for.  This is used to
   # generate namespaced URI fragments
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#33
+  # source://rdoc//lib/rdoc/markup/to_html.rb#35
   def code_object=(_arg0); end
 
   # CGI-escapes +text+
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#357
+  # source://rdoc//lib/rdoc/markup/to_html.rb#362
   def convert_string(text); end
 
   # Returns the generated output
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#188
+  # source://rdoc//lib/rdoc/markup/to_html.rb#193
   def end_accepting; end
 
   # Path to this document for relative links
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#38
+  # source://rdoc//lib/rdoc/markup/to_html.rb#40
   def from_path; end
 
   # Path to this document for relative links
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#38
+  # source://rdoc//lib/rdoc/markup/to_html.rb#40
   def from_path=(_arg0); end
 
   # Generate a link to +url+ with content +text+.  Handles the special cases
   # for img: and link: described under handle_regexp_HYPERLINK
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#365
+  # source://rdoc//lib/rdoc/markup/to_html.rb#370
   def gen_url(url, text); end
 
-  # source://rdoc//lib/rdoc/markup/to_html.rb#85
+  # source://rdoc//lib/rdoc/markup/to_html.rb#87
   def handle_RDOCLINK(url); end
 
   # +target+ is a <code><br></code>
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#115
+  # source://rdoc//lib/rdoc/markup/to_html.rb#120
   def handle_regexp_HARD_BREAK(target); end
 
   # +target+ is a potential link.  The following schemes are handled:
@@ -6258,7 +6263,7 @@ class RDoc::Markup::ToHtml < ::RDoc::Markup::Formatter
   # <tt>link:</tt>::
   #   Reference to a local file relative to the output directory.
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#131
+  # source://rdoc//lib/rdoc/markup/to_html.rb#136
   def handle_regexp_HYPERLINK(target); end
 
   # +target+ is an rdoc-schemed link that will be converted into a hyperlink.
@@ -6269,76 +6274,76 @@ class RDoc::Markup::ToHtml < ::RDoc::Markup::Formatter
   # For the +rdoc-label+ scheme the footnote and label prefixes are stripped
   # when creating a link.  All other contents will be linked verbatim.
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#146
+  # source://rdoc//lib/rdoc/markup/to_html.rb#151
   def handle_regexp_RDOCLINK(target); end
 
   # This +target+ is a link where the label is different from the URL
   # <tt>label[url]</tt> or <tt>{long label}[url]</tt>
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#154
+  # source://rdoc//lib/rdoc/markup/to_html.rb#159
   def handle_regexp_TIDYLINK(target); end
 
   # Determines the HTML list element for +list_type+ and +open_tag+
   #
   # @raise [RDoc::Error]
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#390
+  # source://rdoc//lib/rdoc/markup/to_html.rb#395
   def html_list_name(list_type, open_tag); end
 
-  # source://rdoc//lib/rdoc/markup/to_html.rb#26
+  # source://rdoc//lib/rdoc/markup/to_html.rb#28
   def in_list_entry; end
 
   # Adds regexp handlings about link notations.
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#80
+  # source://rdoc//lib/rdoc/markup/to_html.rb#82
   def init_link_notation_regexp_handlings; end
 
   # Adds regexp handlings.
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#70
+  # source://rdoc//lib/rdoc/markup/to_html.rb#72
   def init_regexp_handlings; end
 
   # Maps attributes to HTML tags
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#399
+  # source://rdoc//lib/rdoc/markup/to_html.rb#404
   def init_tags; end
 
-  # source://rdoc//lib/rdoc/markup/to_html.rb#27
+  # source://rdoc//lib/rdoc/markup/to_html.rb#29
   def list; end
 
   # Returns the HTML end-tag for +list_type+
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#425
+  # source://rdoc//lib/rdoc/markup/to_html.rb#430
   def list_end_for(list_type); end
 
   # Returns the HTML tag for +list_type+, possible using a label from
   # +list_item+
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#409
+  # source://rdoc//lib/rdoc/markup/to_html.rb#414
   def list_item_start(list_item, list_type); end
 
   # Returns true if text is valid ruby syntax
   #
   # @return [Boolean]
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#439
+  # source://rdoc//lib/rdoc/markup/to_html.rb#444
   def parseable?(text); end
 
-  # source://rdoc//lib/rdoc/markup/to_html.rb#25
+  # source://rdoc//lib/rdoc/markup/to_html.rb#27
   def res; end
 
   # Prepares the visitor for HTML generation
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#179
+  # source://rdoc//lib/rdoc/markup/to_html.rb#184
   def start_accepting; end
 
   # Converts +item+ to HTML using RDoc::Text#to_html
   #
-  # source://rdoc//lib/rdoc/markup/to_html.rb#453
+  # source://rdoc//lib/rdoc/markup/to_html.rb#458
   def to_html(item); end
 end
 
-# source://rdoc//lib/rdoc/markup/to_html.rb#65
+# source://rdoc//lib/rdoc/markup/to_html.rb#67
 RDoc::Markup::ToHtml::URL_CHARACTERS_REGEXP_STR = T.let(T.unsafe(nil), String)
 
 # Subclass of the RDoc::Markup::ToHtml class that supports looking up method
@@ -6780,160 +6785,163 @@ class RDoc::Markup::ToRdoc < ::RDoc::Markup::Formatter
   #
   # @return [ToRdoc] a new instance of ToRdoc
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#45
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#55
   def initialize(markup = T.unsafe(nil)); end
 
   # Adds +blank_line+ to the output
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#77
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#78
   def accept_blank_line(blank_line); end
 
   # Adds +paragraph+ to the output
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#84
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#85
   def accept_block_quote(block_quote); end
 
   # Adds +heading+ to the output
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#99
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#100
   def accept_heading(heading); end
 
   # Adds +paragraph+ to the output
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#211
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#212
   def accept_indented_paragraph(paragraph); end
 
   # Finishes consumption of +list+
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#110
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#111
   def accept_list_end(list); end
 
   # Finishes consumption of +list_item+
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#119
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#120
   def accept_list_item_end(list_item); end
 
   # Prepares the visitor for consuming +list_item+
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#143
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#144
   def accept_list_item_start(list_item); end
 
   # Prepares the visitor for consuming +list+
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#176
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#177
   def accept_list_start(list); end
 
   # Adds +paragraph+ to the output
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#203
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#204
   def accept_paragraph(paragraph); end
 
   # Adds +raw+ to the output
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#221
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#222
   def accept_raw(raw); end
 
   # Adds +rule+ to the output
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#228
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#229
   def accept_rule(rule); end
 
   # Adds +table+ to the output
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#251
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#252
   def accept_table(header, body, aligns); end
 
   # Outputs +verbatim+ indented 2 columns
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#237
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#238
   def accept_verbatim(verbatim); end
 
   # Applies attribute-specific markup to +text+ using RDoc::AttributeManager
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#279
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#280
   def attributes(text); end
 
   # Returns the generated output
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#287
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#288
   def end_accepting; end
 
   # Adds a newline to the output
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#303
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#304
   def handle_regexp_HARD_BREAK(target); end
 
   # Removes preceding \\ from the suppressed crossref +target+
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#294
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#295
   def handle_regexp_SUPPRESSED_CROSSREF(target); end
 
   # Current indent amount for output in characters
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#10
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#20
   def indent; end
 
   # Current indent amount for output in characters
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#10
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#20
   def indent=(_arg0); end
 
   # Maps attributes to HTML sequences
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#68
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#69
   def init_tags; end
 
   # Stack of current list indexes for alphabetic and numeric lists
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#20
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#30
   def list_index; end
 
   # Stack of list types
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#25
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#35
   def list_type; end
 
   # Stack of list widths for indentation
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#30
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#40
   def list_width; end
 
   # Prefix for the next list item.  See #use_prefix
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#35
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#45
   def prefix; end
 
   # Output accumulator
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#40
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#50
   def res; end
 
   # Prepares the visitor for text generation
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#310
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#311
   def start_accepting; end
 
   # Adds the stored #prefix to the output and clears it.  Lists generate a
   # prefix for later consumption.
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#324
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#325
   def use_prefix; end
 
   # Output width in characters
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#15
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#25
   def width; end
 
   # Output width in characters
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#15
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#25
   def width=(_arg0); end
 
   # Wraps +text+ to #width
   #
-  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#334
+  # source://rdoc//lib/rdoc/markup/to_rdoc.rb#335
   def wrap(text); end
 end
+
+# source://rdoc//lib/rdoc/markup/to_rdoc.rb#6
+RDoc::Markup::ToRdoc::DEFAULT_HEADINGS = T.let(T.unsafe(nil), Hash)
 
 # Extracts just the RDoc::Markup::Heading elements from a
 # RDoc::Markup::Document to help build a table of contents
@@ -7274,7 +7282,7 @@ class RDoc::MethodAttr < ::RDoc::CodeObject
   # If it has this comment then line numbers are added to +src+ and the <tt>,
   # line dddd</tt> portion of the comment is removed.
   #
-  # source://rdoc//lib/rdoc/generator/markup.rb#77
+  # source://rdoc//lib/rdoc/generator/markup.rb#89
   def add_line_numbers(src); end
 
   # Array of other names for this method/attribute
@@ -7366,7 +7374,7 @@ class RDoc::MethodAttr < ::RDoc::CodeObject
   #
   # Prepends line numbers if +options.line_numbers+ is true.
   #
-  # source://rdoc//lib/rdoc/generator/markup.rb#101
+  # source://rdoc//lib/rdoc/generator/markup.rb#113
   def markup_code; end
 
   # Name of this method/attribute.
@@ -7693,10 +7701,10 @@ end
 class RDoc::Options
   # @return [Options] a new instance of Options
   #
-  # source://rdoc//lib/rdoc/options.rb#376
+  # source://rdoc//lib/rdoc/options.rb#381
   def initialize(loaded_options = T.unsafe(nil)); end
 
-  # source://rdoc//lib/rdoc/options.rb#506
+  # source://rdoc//lib/rdoc/options.rb#513
   def ==(other); end
 
   # Exclude the default patterns as well if true.
@@ -7714,6 +7722,16 @@ class RDoc::Options
   # source://rdoc//lib/rdoc/options.rb#364
   def autolink_excluded_words=(_arg0); end
 
+  # The preferred root URL for the documentation
+  #
+  # source://rdoc//lib/rdoc/options.rb#379
+  def canonical_root; end
+
+  # The preferred root URL for the documentation
+  #
+  # source://rdoc//lib/rdoc/options.rb#379
+  def canonical_root=(_arg0); end
+
   # Character-set for HTML output.  #encoding is preferred over #charset
   #
   # source://rdoc//lib/rdoc/options.rb#152
@@ -7726,12 +7744,12 @@ class RDoc::Options
 
   # Check that the files on the command line exist
   #
-  # source://rdoc//lib/rdoc/options.rb#533
+  # source://rdoc//lib/rdoc/options.rb#540
   def check_files; end
 
   # Ensure only one generator is loaded
   #
-  # source://rdoc//lib/rdoc/options.rb#554
+  # source://rdoc//lib/rdoc/options.rb#561
   def check_generator; end
 
   # The prefix to use for class and module page paths
@@ -7758,7 +7776,7 @@ class RDoc::Options
   # from a source file, so that a title set from the command line
   # will have the priority.
   #
-  # source://rdoc//lib/rdoc/options.rb#566
+  # source://rdoc//lib/rdoc/options.rb#573
   def default_title=(string); end
 
   # If true, RDoc will not write any files.
@@ -7799,7 +7817,7 @@ class RDoc::Options
 
   # Create a regexp for #exclude
   #
-  # source://rdoc//lib/rdoc/options.rb#594
+  # source://rdoc//lib/rdoc/options.rb#601
   def exclude; end
 
   # Files matching this pattern will be excluded
@@ -7831,13 +7849,13 @@ class RDoc::Options
   # existent files, creating a regexp for #exclude and setting a default
   # #template.
   #
-  # source://rdoc//lib/rdoc/options.rb#612
+  # source://rdoc//lib/rdoc/options.rb#619
   def finish; end
 
   # Fixes the page_dir to be relative to the root_dir and adds the page_dir to
   # the files list.
   #
-  # source://rdoc//lib/rdoc/options.rb#653
+  # source://rdoc//lib/rdoc/options.rb#660
   def finish_page_dir; end
 
   # Create the output even if the output directory does not look
@@ -7884,7 +7902,7 @@ class RDoc::Options
 
   # Returns a properly-space list of generators and their descriptions.
   #
-  # source://rdoc//lib/rdoc/options.rb#672
+  # source://rdoc//lib/rdoc/options.rb#679
   def generator_descriptions; end
 
   # For #==
@@ -7916,10 +7934,10 @@ class RDoc::Options
   # source://rdoc//lib/rdoc/options.rb#212
   def hyperlink_all=(_arg0); end
 
-  # source://rdoc//lib/rdoc/options.rb#386
+  # source://rdoc//lib/rdoc/options.rb#391
   def init_ivars; end
 
-  # source://rdoc//lib/rdoc/options.rb#434
+  # source://rdoc//lib/rdoc/options.rb#440
   def init_with(map); end
 
   # Include line numbers in the source code
@@ -8008,7 +8026,7 @@ class RDoc::Options
   # source://rdoc//lib/rdoc/options.rb#258
   def output_decoration=(_arg0); end
 
-  # source://rdoc//lib/rdoc/options.rb#469
+  # source://rdoc//lib/rdoc/options.rb#475
   def override(map); end
 
   # Directory where guides, FAQ, and other pages not associated with a class
@@ -8025,7 +8043,7 @@ class RDoc::Options
 
   # Parses command line options.
   #
-  # source://rdoc//lib/rdoc/options.rb#698
+  # source://rdoc//lib/rdoc/options.rb#705
   def parse(argv); end
 
   # Is RDoc in pipe mode?
@@ -8040,12 +8058,12 @@ class RDoc::Options
 
   # Don't display progress as we process the files
   #
-  # source://rdoc//lib/rdoc/options.rb#1270
+  # source://rdoc//lib/rdoc/options.rb#1277
   def quiet; end
 
   # Set quietness to +bool+
   #
-  # source://rdoc//lib/rdoc/options.rb#1277
+  # source://rdoc//lib/rdoc/options.rb#1284
   def quiet=(bool); end
 
   # Array of directories to search for files to satisfy an :include:
@@ -8074,7 +8092,7 @@ class RDoc::Options
 
   # Removes directories from +path+ that are outside the current directory
   #
-  # source://rdoc//lib/rdoc/options.rb#1284
+  # source://rdoc//lib/rdoc/options.rb#1291
   def sanitize_path(path); end
 
   # Set up an output generator for the named +generator_name+.
@@ -8083,7 +8101,7 @@ class RDoc::Options
   # the options instance.  This allows generators to add custom options or set
   # default options.
   #
-  # source://rdoc//lib/rdoc/options.rb#1311
+  # source://rdoc//lib/rdoc/options.rb#1318
   def setup_generator(generator_name = T.unsafe(nil)); end
 
   # Include the '#' at the front of hyperlinked instance method names
@@ -8148,7 +8166,7 @@ class RDoc::Options
 
   # Finds the template dir for +template+
   #
-  # source://rdoc//lib/rdoc/options.rb#1333
+  # source://rdoc//lib/rdoc/options.rb#1340
   def template_dir_for(template); end
 
   # Additional template stylesheets
@@ -8173,7 +8191,7 @@ class RDoc::Options
 
   # For dumping YAML
   #
-  # source://rdoc//lib/rdoc/options.rb#573
+  # source://rdoc//lib/rdoc/options.rb#580
   def to_yaml(*options); end
 
   # Should RDoc update the timestamps in the output dir?
@@ -8212,12 +8230,12 @@ class RDoc::Options
   # When +:all+ is passed, visibility is set to +:private+, similarly to
   # RDOCOPT="--all", see #visibility for more information.
   #
-  # source://rdoc//lib/rdoc/options.rb#1350
+  # source://rdoc//lib/rdoc/options.rb#1357
   def visibility=(visibility); end
 
   # Displays a warning using Kernel#warn if we're being verbose
   #
-  # source://rdoc//lib/rdoc/options.rb#1362
+  # source://rdoc//lib/rdoc/options.rb#1369
   def warn(message); end
 
   # Warn if rdoc-ref links can't be resolved
@@ -8245,10 +8263,10 @@ class RDoc::Options
   # Writes the YAML file .rdoc_options to the current directory containing the
   # parsed options.
   #
-  # source://rdoc//lib/rdoc/options.rb#1370
+  # source://rdoc//lib/rdoc/options.rb#1377
   def write_options; end
 
-  # source://rdoc//lib/rdoc/options.rb#465
+  # source://rdoc//lib/rdoc/options.rb#471
   def yaml_initialize(tag, map); end
 
   class << self
@@ -8257,12 +8275,12 @@ class RDoc::Options
     #
     # @raise [RDoc::Error]
     #
-    # source://rdoc//lib/rdoc/options.rb#1384
+    # source://rdoc//lib/rdoc/options.rb#1391
     def load_options; end
   end
 end
 
-# source://rdoc//lib/rdoc/options.rb#381
+# source://rdoc//lib/rdoc/options.rb#386
 RDoc::Options::DEFAULT_EXCLUDE = T.let(T.unsafe(nil), Array)
 
 # A parser is simple a class that subclasses RDoc::Parser and implements #scan
@@ -12668,7 +12686,7 @@ class RDoc::TopLevel < ::RDoc::Context
   # Returns a URL for this source file on some web repository.  Use the -W
   # command line option to set.
   #
-  # source://rdoc//lib/rdoc/generator/markup.rb#149
+  # source://rdoc//lib/rdoc/generator/markup.rb#161
   def cvs_url; end
 
   # Only a TopLevel that contains text file) will be displayed.  See also

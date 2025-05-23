@@ -14,12 +14,12 @@ import { SurveyCrud, SurveyItem, SurveyItemCrud } from "@/types";
 
 type Props = {
   data: SurveyCrud;
-  surveysItems: SurveyItemCrud[]
+  surveyItems: SurveyItemCrud[]
   url: string;
   method?: HTTPVerb;
 };
 
-export default function Form({ data, url, method, surveysItems }: Props) {
+export default function Form({ data, url, method, surveyItems }: Props) {
   const { t } = useTranslation();
   const { t: tHelpers } = useTranslation("helpers");
 
@@ -41,6 +41,7 @@ export default function Form({ data, url, method, surveysItems }: Props) {
           >
             <XInput name="value" />
             <XInput name="slug" />
+            <XInput name="tag_list" />
             <XSelect name="state" valueField="value" labelField="key" items={data.meta.item_states} />
             <XInput name="order" />
             {/* <XCheck name="_destroy" /> */}

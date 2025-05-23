@@ -9,11 +9,12 @@ import { Menu } from "./shared/menu";
 type Props = {
   surveyDto: SurveyCrud;
   courses: Language[];
-  surveysItems: SurveyItemCrud[]
+  surveyItems: SurveyItemCrud[]
 };
 
-export default function Edit({ surveyDto, surveysItems }: Props) {
+export default function Edit({ surveyDto, surveyItems }: Props) {
   const { t } = useTranslation();
+  console.log(surveyItems)
 
   return (
     <AdminLayout
@@ -21,7 +22,7 @@ export default function Edit({ surveyDto, surveysItems }: Props) {
     >
       <Menu data={surveyDto} />
       <Form
-        surveysItems={surveysItems}
+        surveyItems={surveyItems}
         method="patch"
         data={surveyDto}
         url={Routes.admin_survey_path(surveyDto.survey.id)}

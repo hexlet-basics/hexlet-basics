@@ -1,6 +1,6 @@
-# frozen_string_literal: true
-
 class Web::UsersController < Web::ApplicationController
+  before_action :guests_only!
+
   def new
     user = User::SignUpForm.new
 

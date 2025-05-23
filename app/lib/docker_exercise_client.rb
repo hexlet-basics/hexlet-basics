@@ -2,7 +2,7 @@
 
 require "open3"
 
-class DockerExerciseApi
+class DockerExerciseClient < DockerExerciseClientInterface
   def self.repo_dest(lang_name)
     "/tmp/#{image_name(lang_name)}"
   end

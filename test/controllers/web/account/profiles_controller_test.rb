@@ -16,9 +16,7 @@ class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
 
     patch account_profile_url(id: user.id), params: {
       user: {
-        first_name: new_name,
-        contact_method: :telegram,
-        contact_value: "@orgprog"
+        first_name: new_name
       }
     }
     assert_response :redirect
@@ -26,29 +24,6 @@ class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
     user.reload
 
     assert { user.first_name == new_name }
-    assert { user.lead }
-    assert { user.lead.courses_data.include?({ slug: "elixir", lessons_finished_count: 3 }) }
-    assert { user.lead.survey_answers_data.include?({ question: "Какую задачу вы решаете?", answer: "Планирую поменять карьеру" }) }
-  end
-
-  test "update (new lead)" do
-    user = sign_in_as("should_add_contact_method")
-
-    assert { !user.lead }
-
-    patch account_profile_url(id: user.id), params: {
-      user: {
-        contact_method: :telegram,
-        contact_value: "@orgprog"
-      }
-    }
-    assert_response :redirect
-
-    user.reload
-
-    assert { user.lead }
-    # assert { @user.lead.courses_data.include?({ slug: "elixir", lessons_finished_count: 3 }) }
-    # assert { @user.lead.survey_answers_data.include?({ question: "Какую задачу вы решаете?", answer: "Планирую поменять карьеру" }) }
   end
 
   test "destroy" do

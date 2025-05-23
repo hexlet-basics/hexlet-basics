@@ -19,14 +19,13 @@ type Props = PropsWithChildren & {
 
 export default function Edit(props: Props) {
   const { form } = props
-  console.log('component props: ', props)
   const { t } = useTranslation();
   const { t: tHelpers } = useTranslation("helpers");
-  const { t: tViews } = useTranslation("activerecord");
+  const { t: tAr } = useTranslation("activerecord");
 
   const confirmDeleting = useConfirmation();
 
-  const contactMethodEnum = tViews('attributes.user.contact_method/values', { returnObjects: true })
+  const contactMethodEnum = tAr('attributes.user.contact_method/values', { returnObjects: true })
   const contactMethodOptions = enumToOptions(contactMethodEnum);
 
   return (

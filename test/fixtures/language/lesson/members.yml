@@ -101,3 +101,10 @@ full-typescript-lesson2:
   lesson: typescript-module1-lesson2
   state: started
   language_member: full_typescript
+
+should_add_contact_method-elixir_hello_world:
+  user: should_add_contact_method
+  language: elixir
+  lesson: elixir-hello-world
+  state: finished
+  language_member: should_add_contact_method-elixir

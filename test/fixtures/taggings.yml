@@ -1,0 +1,11 @@
+user-should_add_contact_method-should_be_lead:
+  tag_id: <%= ActiveRecord::FixtureSet.identify(:tags_should_be_lead) %>
+  taggable_id: <%= ActiveRecord::FixtureSet.identify(:should_add_contact_method) %>
+  taggable_type: User
+  context: tags
+
+survey_item-career_change_contact_method_item2-should_be_lead:
+  tag_id: <%= ActiveRecord::FixtureSet.identify(:tags_should_be_lead) %>
+  taggable_id: <%= ActiveRecord::FixtureSet.identify("career-change-contact-method-item2") %>
+  taggable_type: Survey::Item
+  context: tags

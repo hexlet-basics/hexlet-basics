@@ -1,6 +1,9 @@
 ru:
   activerecord:
     attributes:
+      lead:
+        contact_method: Способ связи
+        contact_value: Телефон / Имя пользователя
       survey_scenario:
         name: Название
         survey_item_id: Ответ триггер (Начало воронки)

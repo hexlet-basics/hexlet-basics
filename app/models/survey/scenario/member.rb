@@ -24,7 +24,7 @@ class Survey::Scenario::Member < ApplicationRecord
   belongs_to :user
   belongs_to :scenario, class_name: "Survey::Scenario"
 
-  event_registry = ApplicationContainer["event_registry"]
+  event_registry = DepsLocator.current.event_registry
 
   validates :scenario, uniqueness: { scope: :user }
 

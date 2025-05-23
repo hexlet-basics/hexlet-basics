@@ -12,7 +12,7 @@ export default function ContactMethodRequestingBlock() {
       <XssContent className="my-auto me-auto">
         {tLayouts('shared.contact_method_requesting.description_html', { url: Routes.edit_account_profile_url() })}
       </XssContent>
-      <Link href={Routes.edit_account_profile_url()} className="btn-outline-primary text-decoration-none">
+      <Link href={Routes.new_lead_path()} className="btn-outline-primary text-decoration-none">
         {tLayouts('shared.contact_method_requesting.go')}
       </Link>
     </div>

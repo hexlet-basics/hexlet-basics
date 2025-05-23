@@ -7,6 +7,10 @@ class Guest
     SecureRandom.uuid
   end
 
+  def tag_list
+    []
+  end
+
   def created_at; end
 
   def email; end

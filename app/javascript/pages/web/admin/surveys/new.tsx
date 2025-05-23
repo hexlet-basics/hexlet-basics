@@ -8,18 +8,18 @@ import { Menu } from "./shared/menu";
 
 type Props = {
   surveyDto: SurveyCrud;
-  surveysItems: SurveyItemCrud[];
+  surveyItems: SurveyItemCrud[];
   courses: Language[];
 };
 
-export default function New({ surveyDto, surveysItems }: Props) {
+export default function New({ surveyDto, surveyItems }: Props) {
   const { t } = useTranslation();
 
   return (
     <AdminLayout header={t("admin.surveys.new.header")}>
       <Menu />
       <Form
-        surveysItems={surveysItems}
+        surveyItems={surveyItems}
         data={surveyDto}
         url={Routes.admin_surveys_path()}
       />

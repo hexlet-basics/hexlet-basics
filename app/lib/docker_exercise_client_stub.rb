@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DockerExerciseApiStub
+class DockerExerciseClientStub < DockerExerciseClientInterface
   def self.repo_dest(_)
     "test/fixtures/files/exercises"
   end
@@ -20,5 +20,6 @@ class DockerExerciseApiStub
   end
 
   def self.remove_image(lang_name, tag); end
-  # rubocop:enable Lint/UnusedMethodArgument
+
+  def self.image_name(lang_name); end
 end

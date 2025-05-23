@@ -180,37 +180,67 @@ module Rails::Dom::Testing::Assertions::DomAssertions
   # source://rails-dom-testing//lib/rails/dom/testing/assertions/dom_assertions.rb#68
   def assert_dom_not_equal(expected, actual, message = T.unsafe(nil), strict: T.unsafe(nil), html_version: T.unsafe(nil)); end
 
+  # The negated form of +assert_dom_equal+.
+  #
+  #   # assert that the referenced method does not generate the specified HTML string
+  #   assert_dom_not_equal(
+  #     '<a href="http://www.example.com">Apples</a>',
+  #     link_to("Oranges", "http://www.example.com"),
+  #   )
+  #
+  # By default, the matcher will not pay attention to whitespace in text nodes (e.g., spaces
+  # and newlines). If you want stricter matching with exact matching for whitespace, pass
+  # <tt>strict: true</tt>:
+  #
+  #   # these assertions will both pass
+  #   assert_dom_equal     "<div>\nfoo\n\</div>", "<div>foo</div>", strict: false
+  #   assert_dom_not_equal "<div>\nfoo\n\</div>", "<div>foo</div>", strict: true
+  #
+  # The DOMs are created using an HTML parser specified by
+  # Rails::Dom::Testing.default_html_version (either :html4 or :html5).
+  #
+  # When testing in a Rails application, the parser default can also be set by setting
+  # +Rails.application.config.dom_testing_default_html_version+.
+  #
+  # If you want to specify the HTML parser just for a particular assertion, pass
+  # <tt>html_version: :html4</tt> or <tt>html_version: :html5</tt> keyword arguments:
+  #
+  #   assert_dom_not_equal expected, actual, html_version: :html5
+  #
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/dom_assertions.rb#68
+  def refute_dom_equal(expected, actual, message = T.unsafe(nil), strict: T.unsafe(nil), html_version: T.unsafe(nil)); end
+
   protected
 
-  # source://rails-dom-testing//lib/rails/dom/testing/assertions/dom_assertions.rb#75
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/dom_assertions.rb#76
   def compare_doms(expected, actual, strict); end
 
   # @return [Boolean]
   #
-  # source://rails-dom-testing//lib/rails/dom/testing/assertions/dom_assertions.rb#128
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/dom_assertions.rb#129
   def equal_attribute?(attr, other_attr); end
 
   # @return [Boolean]
   #
-  # source://rails-dom-testing//lib/rails/dom/testing/assertions/dom_assertions.rb#115
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/dom_assertions.rb#116
   def equal_attribute_nodes?(nodes, other_nodes); end
 
   # @return [Boolean]
   #
-  # source://rails-dom-testing//lib/rails/dom/testing/assertions/dom_assertions.rb#107
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/dom_assertions.rb#108
   def equal_child?(child, other_child, strict); end
 
   # @return [Boolean]
   #
-  # source://rails-dom-testing//lib/rails/dom/testing/assertions/dom_assertions.rb#95
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/dom_assertions.rb#96
   def equal_children?(child, other_child, strict); end
 
-  # source://rails-dom-testing//lib/rails/dom/testing/assertions/dom_assertions.rb#87
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/dom_assertions.rb#88
   def extract_children(node, strict); end
 
   private
 
-  # source://rails-dom-testing//lib/rails/dom/testing/assertions/dom_assertions.rb#133
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/dom_assertions.rb#134
   def fragment(text, html_version: T.unsafe(nil)); end
 end
 
@@ -361,7 +391,7 @@ module Rails::Dom::Testing::Assertions::SelectorAssertions
   #     assert_dom "h1", "Email alert"
   #   end
   #
-  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#285
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#318
   def assert_dom_email(html_version: T.unsafe(nil), &block); end
 
   # Extracts the content of an element, treats it as encoded HTML and runs
@@ -414,8 +444,40 @@ module Rails::Dom::Testing::Assertions::SelectorAssertions
   #     end
   #   end
   #
-  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#232
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#265
   def assert_dom_encoded(element = T.unsafe(nil), html_version: T.unsafe(nil), &block); end
+
+  # The negated form of +assert_dom+.
+  #
+  # === Equality Tests
+  #
+  # Supports the same equality tests as +assert_dom+ except for:
+  # * <tt>true</tt>
+  # * <tt>false</tt>
+  # * <tt>Integer</tt>
+  # * <tt>Range</tt>
+  # * <tt>:count</tt>
+  # * <tt>:minimum</tt>
+  # * <tt>:maximum</tt>
+  #
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#183
+  def assert_not_dom(*args, &block); end
+
+  # The negated form of +assert_dom+.
+  #
+  # === Equality Tests
+  #
+  # Supports the same equality tests as +assert_dom+ except for:
+  # * <tt>true</tt>
+  # * <tt>false</tt>
+  # * <tt>Integer</tt>
+  # * <tt>Range</tt>
+  # * <tt>:count</tt>
+  # * <tt>:minimum</tt>
+  # * <tt>:maximum</tt>
+  #
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#183
+  def assert_not_select(*args, &block); end
 
   # An assertion that selects elements and makes one or more equality tests.
   #
@@ -549,7 +611,7 @@ module Rails::Dom::Testing::Assertions::SelectorAssertions
   #     assert_dom "h1", "Email alert"
   #   end
   #
-  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#285
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#318
   def assert_select_email(html_version: T.unsafe(nil), &block); end
 
   # Extracts the content of an element, treats it as encoded HTML and runs
@@ -602,7 +664,7 @@ module Rails::Dom::Testing::Assertions::SelectorAssertions
   #     end
   #   end
   #
-  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#232
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#265
   def assert_select_encoded(element = T.unsafe(nil), html_version: T.unsafe(nil), &block); end
 
   # Select and return all matching elements.
@@ -647,28 +709,63 @@ module Rails::Dom::Testing::Assertions::SelectorAssertions
   # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#58
   def css_select(*args); end
 
+  # The negated form of +assert_dom+.
+  #
+  # === Equality Tests
+  #
+  # Supports the same equality tests as +assert_dom+ except for:
+  # * <tt>true</tt>
+  # * <tt>false</tt>
+  # * <tt>Integer</tt>
+  # * <tt>Range</tt>
+  # * <tt>:count</tt>
+  # * <tt>:minimum</tt>
+  # * <tt>:maximum</tt>
+  #
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#183
+  def refute_dom(*args, &block); end
+
+  # The negated form of +assert_dom+.
+  #
+  # === Equality Tests
+  #
+  # Supports the same equality tests as +assert_dom+ except for:
+  # * <tt>true</tt>
+  # * <tt>false</tt>
+  # * <tt>Integer</tt>
+  # * <tt>Range</tt>
+  # * <tt>:count</tt>
+  # * <tt>:minimum</tt>
+  # * <tt>:maximum</tt>
+  #
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#183
+  def refute_select(*args, &block); end
+
   private
 
   # +equals+ must contain :minimum, :maximum and :count keys
   #
-  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#307
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#340
   def assert_size_match!(size, equals, css_selector, message = T.unsafe(nil)); end
 
-  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#319
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#352
   def count_description(min, max, count); end
 
   # @raise [NotImplementedError]
   #
-  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#301
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#334
   def document_root_element; end
 
-  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#335
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#193
+  def dom_assertions(selector, &block); end
+
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#368
   def nest_selection(selection); end
 
-  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#344
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#377
   def nodeset(node); end
 
-  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#331
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions.rb#364
   def pluralize_element(quantity); end
 end
 
@@ -679,7 +776,7 @@ class Rails::Dom::Testing::Assertions::SelectorAssertions::HTMLSelector
   # @return [HTMLSelector] a new instance of HTMLSelector
   #
   # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions/html_selector.rb#17
-  def initialize(values, previous_selection = T.unsafe(nil), &root_fallback); end
+  def initialize(values, previous_selection = T.unsafe(nil), refute: T.unsafe(nil), &root_fallback); end
 
   # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions/html_selector.rb#46
   def context; end
@@ -709,13 +806,16 @@ class Rails::Dom::Testing::Assertions::SelectorAssertions::HTMLSelector
 
   private
 
-  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions/html_selector.rb#100
-  def extract_equality_tests; end
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions/html_selector.rb#146
+  def collapse_html_whitespace!(text); end
 
-  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions/html_selector.rb#72
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions/html_selector.rb#102
+  def extract_equality_tests(refute); end
+
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions/html_selector.rb#74
   def extract_root(previous_selection, root_fallback); end
 
-  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions/html_selector.rb#89
+  # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions/html_selector.rb#91
   def extract_selectors; end
 
   # source://rails-dom-testing//lib/rails/dom/testing/assertions/selector_assertions/html_selector.rb#48

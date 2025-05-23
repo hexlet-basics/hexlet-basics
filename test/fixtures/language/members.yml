@@ -35,6 +35,12 @@ full_elixir:
   user: full
   state: finished
 
+should_add_contact_method-elixir:
+  <<: *DEFAULTS
+  language: elixir
+  user: should_add_contact_method
+  state: finished
+
 full_php:
   <<: *DEFAULTS
   language: php

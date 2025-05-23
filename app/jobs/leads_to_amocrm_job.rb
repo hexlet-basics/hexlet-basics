@@ -2,23 +2,14 @@
 
 class LeadsToAmocrmJob < ApplicationJob
   prepend RailsEventStore::AsyncHandler
-  extend T::Sig
 
   retry_on Faraday::Error,
           wait: :polynomially_longer,
           attempts: 5
 
   def perform(event)
-    n8n_client = T.let(
-      ApplicationContainer[:n8n_client],
-      T.any(N8nClient, N8nClientStub)
-    )
-
-    serializer = T.let(
-      WorkflowLeadSerializer.new(event),
-      WorkflowLeadSerializer
-    )
-
+    n8n_client = DepsLocator.current.n8n_client
+    serializer = WorkflowLeadSerializer.new(event)
     n8n_client.trigger_lead_created_workflow(serializer)
   end
 end

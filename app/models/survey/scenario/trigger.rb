@@ -21,7 +21,7 @@
 class Survey::Scenario::Trigger < ApplicationRecord
   include Survey::Scenario::TriggerRepository
 
-  event_registry = ApplicationContainer["event_registry"]
+  event_registry = DepsLocator.current.event_registry
 
   belongs_to :scenario
 

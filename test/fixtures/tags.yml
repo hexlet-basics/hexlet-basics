@@ -1,0 +1,5 @@
+should_be_lead:
+  id: <%= ActiveRecord::FixtureSet.identify(:tags_should_be_lead) %>
+  name: should_be_lead
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>

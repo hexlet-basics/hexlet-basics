@@ -8,7 +8,7 @@ namespace :exercises do
 
   desc "Remove exercies"
   task remove: :environment do
-    docker_exercise_api = ApplicationContainer["docker_exercise_api"]
+    docker_exercise_client = DepsLocator.current.docker_exercise_client
 
     languages = Language.all
 
@@ -20,7 +20,7 @@ namespace :exercises do
                                 .take(10)
 
       latest_versions.each do |version|
-        docker_exercise_api.remove_image(language.slug, version.image_tag)
+        docker_exercise_client.remove_image(language.slug, version.image_tag)
       end
     end
   end

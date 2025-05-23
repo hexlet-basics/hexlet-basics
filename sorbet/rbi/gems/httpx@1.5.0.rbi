@@ -5,6 +5,227 @@
 # Please instead update this file by running `bin/tapioca gem httpx`.
 
 
+# source://httpx//lib/httpx/adapters/faraday.rb#7
+module Faraday
+  class << self
+    # source://faraday/2.13.1/lib/faraday.rb#55
+    def default_adapter; end
+
+    # source://faraday/2.13.1/lib/faraday.rb#102
+    def default_adapter=(adapter); end
+
+    # source://faraday/2.13.1/lib/faraday.rb#59
+    def default_adapter_options; end
+
+    # source://faraday/2.13.1/lib/faraday.rb#59
+    def default_adapter_options=(_arg0); end
+
+    # source://faraday/2.13.1/lib/faraday.rb#120
+    def default_connection; end
+
+    # source://faraday/2.13.1/lib/faraday.rb#62
+    def default_connection=(_arg0); end
+
+    # source://faraday/2.13.1/lib/faraday.rb#127
+    def default_connection_options; end
+
+    # source://faraday/2.13.1/lib/faraday.rb#134
+    def default_connection_options=(options); end
+
+    # source://faraday/2.13.1/lib/faraday.rb#67
+    def ignore_env_proxy; end
+
+    # source://faraday/2.13.1/lib/faraday.rb#67
+    def ignore_env_proxy=(_arg0); end
+
+    # source://faraday/2.13.1/lib/faraday.rb#46
+    def lib_path; end
+
+    # source://faraday/2.13.1/lib/faraday.rb#46
+    def lib_path=(_arg0); end
+
+    # source://faraday/2.13.1/lib/faraday.rb#96
+    def new(url = T.unsafe(nil), options = T.unsafe(nil), &block); end
+
+    # source://faraday/2.13.1/lib/faraday.rb#107
+    def respond_to_missing?(symbol, include_private = T.unsafe(nil)); end
+
+    # source://faraday/2.13.1/lib/faraday.rb#42
+    def root_path; end
+
+    # source://faraday/2.13.1/lib/faraday.rb#42
+    def root_path=(_arg0); end
+
+    private
+
+    # source://faraday/2.13.1/lib/faraday.rb#143
+    def method_missing(name, *args, &block); end
+  end
+end
+
+# source://httpx//lib/httpx/adapters/faraday.rb#8
+class Faraday::Adapter
+  # source://faraday/2.13.1/lib/faraday/adapter.rb#28
+  def initialize(_app = T.unsafe(nil), opts = T.unsafe(nil), &block); end
+
+  # source://faraday/2.13.1/lib/faraday/adapter.rb#55
+  def call(env); end
+
+  # source://faraday/2.13.1/lib/faraday/adapter.rb#50
+  def close; end
+
+  # source://faraday/2.13.1/lib/faraday/adapter.rb#41
+  def connection(env); end
+
+  private
+
+  # source://faraday/2.13.1/lib/faraday/adapter.rb#85
+  def request_timeout(type, options); end
+
+  # source://faraday/2.13.1/lib/faraday/adapter.rb#62
+  def save_response(env, status, body, headers = T.unsafe(nil), reason_phrase = T.unsafe(nil), finished: T.unsafe(nil)); end
+end
+
+# source://httpx//lib/httpx/adapters/faraday.rb#9
+class Faraday::Adapter::HTTPX < ::Faraday::Adapter
+  include ::Faraday::Adapter::HTTPX::RequestMixin
+
+  # source://httpx//lib/httpx/adapters/faraday.rb#250
+  def call(env); end
+
+  private
+
+  # source://httpx//lib/httpx/adapters/faraday.rb#276
+  def connect_and_request(env); end
+
+  # @return [Boolean]
+  #
+  # source://httpx//lib/httpx/adapters/faraday.rb#291
+  def parallel?(env); end
+
+  class << self
+    # source://httpx//lib/httpx/adapters/faraday.rb#245
+    def setup_parallel_manager(options = T.unsafe(nil)); end
+  end
+end
+
+# source://httpx//lib/httpx/adapters/faraday.rb#121
+module Faraday::Adapter::HTTPX::OnDataPlugin; end
+
+# source://httpx//lib/httpx/adapters/faraday.rb#122
+module Faraday::Adapter::HTTPX::OnDataPlugin::RequestMethods
+  # source://httpx//lib/httpx/adapters/faraday.rb#125
+  def response=(response); end
+
+  # Sets the attribute response_on_data
+  #
+  # @param value the value to set the attribute response_on_data to.
+  #
+  # source://httpx//lib/httpx/adapters/faraday.rb#123
+  def response_on_data=(_arg0); end
+end
+
+# source://httpx//lib/httpx/adapters/faraday.rb#134
+module Faraday::Adapter::HTTPX::OnDataPlugin::ResponseBodyMethods
+  # Sets the attribute on_data
+  #
+  # @param value the value to set the attribute on_data to.
+  #
+  # source://httpx//lib/httpx/adapters/faraday.rb#135
+  def on_data=(_arg0); end
+
+  # source://httpx//lib/httpx/adapters/faraday.rb#137
+  def write(chunk); end
+end
+
+# source://httpx//lib/httpx/adapters/faraday.rb#157
+class Faraday::Adapter::HTTPX::ParallelManager
+  include ::Faraday::Adapter::HTTPX::RequestMixin
+
+  # @return [ParallelManager] a new instance of ParallelManager
+  #
+  # source://httpx//lib/httpx/adapters/faraday.rb#189
+  def initialize(options); end
+
+  # from Faraday::Adapter#connection
+  #
+  # @yield [conn]
+  #
+  # source://httpx//lib/httpx/adapters/faraday.rb#226
+  def connection(env); end
+
+  # source://httpx//lib/httpx/adapters/faraday.rb#194
+  def enqueue(request); end
+
+  # source://httpx//lib/httpx/adapters/faraday.rb#200
+  def run; end
+
+  private
+
+  # from Faraday::Adapter#request_timeout
+  #
+  # source://httpx//lib/httpx/adapters/faraday.rb#236
+  def request_timeout(type, options); end
+end
+
+# source://httpx//lib/httpx/adapters/faraday.rb#158
+class Faraday::Adapter::HTTPX::ParallelManager::ResponseHandler < ::SimpleDelegator
+  # @return [ResponseHandler] a new instance of ResponseHandler
+  #
+  # source://httpx//lib/httpx/adapters/faraday.rb#161
+  def initialize(env); end
+
+  # Returns the value of attribute env.
+  #
+  # source://httpx//lib/httpx/adapters/faraday.rb#159
+  def env; end
+
+  # source://httpx//lib/httpx/adapters/faraday.rb#177
+  def on_complete(&blk); end
+
+  # source://httpx//lib/httpx/adapters/faraday.rb#166
+  def on_response(&blk); end
+end
+
+# source://httpx//lib/httpx/adapters/faraday.rb#145
+module Faraday::Adapter::HTTPX::ReasonPlugin
+  class << self
+    # source://httpx//lib/httpx/adapters/faraday.rb#146
+    def load_dependencies(*_arg0); end
+  end
+end
+
+# source://httpx//lib/httpx/adapters/faraday.rb#150
+module Faraday::Adapter::HTTPX::ReasonPlugin::ResponseMethods
+  # source://httpx//lib/httpx/adapters/faraday.rb#151
+  def reason; end
+end
+
+# source://httpx//lib/httpx/adapters/faraday.rb#10
+module Faraday::Adapter::HTTPX::RequestMixin
+  # source://httpx//lib/httpx/adapters/faraday.rb#11
+  def build_connection(env); end
+
+  # source://httpx//lib/httpx/adapters/faraday.rb#37
+  def close; end
+
+  private
+
+  # source://httpx//lib/httpx/adapters/faraday.rb#59
+  def build_request(env); end
+
+  # source://httpx//lib/httpx/adapters/faraday.rb#44
+  def connect(env, &blk); end
+
+  # source://httpx//lib/httpx/adapters/faraday.rb#70
+  def options_from_env(env); end
+
+  # :nocov:
+  #
+  # source://httpx//lib/httpx/adapters/faraday.rb#92
+  def ssl_options_from_env(env); end
+end
+
 # Top-Level Namespace
 #
 # source://httpx//lib/httpx/version.rb#3
@@ -117,16 +338,16 @@ class HTTPX::Buffer
 
   # @return [Buffer] a new instance of Buffer
   #
-  # source://httpx//lib/httpx/buffer.rb#33
+  # source://httpx//lib/httpx/buffer.rb#32
   def initialize(limit); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
-  def <<(*args, **_arg1, &block); end
+  # source://httpx//lib/httpx/buffer.rb#37
+  def <<(chunk); end
 
   # source://forwardable/1.3.3/forwardable.rb#231
   def bytesize(*args, **_arg1, &block); end
 
-  # source://httpx//lib/httpx/buffer.rb#42
+  # source://httpx//lib/httpx/buffer.rb#53
   def capacity; end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -137,18 +358,18 @@ class HTTPX::Buffer
 
   # @return [Boolean]
   #
-  # source://httpx//lib/httpx/buffer.rb#38
+  # source://httpx//lib/httpx/buffer.rb#49
   def full?; end
 
   # Returns the value of attribute limit.
   #
-  # source://httpx//lib/httpx/buffer.rb#31
+  # source://httpx//lib/httpx/buffer.rb#29
   def limit; end
 
   # source://forwardable/1.3.3/forwardable.rb#231
   def replace(*args, **_arg1, &block); end
 
-  # source://httpx//lib/httpx/buffer.rb#46
+  # source://httpx//lib/httpx/buffer.rb#57
   def shift!(fin); end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -260,7 +481,7 @@ end
 # This may be raised due to timeouts during TCP and TLS (when applicable) connection
 # establishment.
 #
-# source://httpx//lib/httpx/errors.rb#47
+# source://httpx//lib/httpx/errors.rb#38
 class HTTPX::ConnectTimeoutError < ::HTTPX::TimeoutError; end
 
 # The Connection can be watched for IO events.
@@ -304,10 +525,10 @@ class HTTPX::Connection
   # source://httpx//lib/httpx/connection.rb#113
   def addresses=(addrs); end
 
-  # source://httpx//lib/httpx/connection.rb#239
+  # source://httpx//lib/httpx/connection.rb#247
   def call; end
 
-  # source://httpx//lib/httpx/connection.rb#258
+  # source://httpx//lib/httpx/connection.rb#267
   def close; end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -318,18 +539,20 @@ class HTTPX::Connection
   #
   # @return [Boolean]
   #
-  # source://httpx//lib/httpx/connection.rb#157
+  # source://httpx//lib/httpx/connection.rb#165
   def coalescable?(connection); end
 
-  # source://httpx//lib/httpx/connection.rb#344
-  def coalesced_connection=(connection); end
+  # coalesces +self+ into +connection+.
+  #
+  # source://httpx//lib/httpx/connection.rb#156
+  def coalesce!(connection); end
 
   # @return [Boolean]
   #
-  # source://httpx//lib/httpx/connection.rb#203
+  # source://httpx//lib/httpx/connection.rb#211
   def connecting?; end
 
-  # source://httpx//lib/httpx/connection.rb#168
+  # source://httpx//lib/httpx/connection.rb#176
   def create_idle(options = T.unsafe(nil)); end
 
   # Sets the attribute current_selector
@@ -351,10 +574,10 @@ class HTTPX::Connection
   # source://httpx//lib/httpx/connection.rb#48
   def current_session=(_arg0); end
 
-  # source://httpx//lib/httpx/connection.rb#330
+  # source://httpx//lib/httpx/connection.rb#345
   def deactivate; end
 
-  # source://httpx//lib/httpx/connection.rb#373
+  # source://httpx//lib/httpx/connection.rb#381
   def disconnect; end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -380,24 +603,29 @@ class HTTPX::Connection
   # bypasses the state machine to force closing of connections still connecting.
   # **only** used for Happy Eyeballs v2.
   #
-  # source://httpx//lib/httpx/connection.rb#272
+  # source://httpx//lib/httpx/connection.rb#287
   def force_reset(cloned = T.unsafe(nil)); end
 
-  # source://httpx//lib/httpx/connection.rb#363
+  # source://httpx//lib/httpx/connection.rb#371
   def handle_connect_error(error); end
 
-  # source://httpx//lib/httpx/connection.rb#338
+  # source://httpx//lib/httpx/connection.rb#353
   def handle_socket_timeout(interval); end
 
-  # source://httpx//lib/httpx/connection.rb#319
+  # source://httpx//lib/httpx/connection.rb#334
   def idling; end
 
   # @return [Boolean]
   #
-  # source://httpx//lib/httpx/connection.rb#207
+  # source://httpx//lib/httpx/connection.rb#215
   def inflight?; end
 
-  # source://httpx//lib/httpx/connection.rb#216
+  # :nocov:
+  #
+  # source://httpx//lib/httpx/connection.rb#390
+  def inspect; end
+
+  # source://httpx//lib/httpx/connection.rb#224
   def interests; end
 
   # Returns the value of attribute io.
@@ -407,7 +635,7 @@ class HTTPX::Connection
 
   # @return [Boolean]
   #
-  # source://httpx//lib/httpx/connection.rb#197
+  # source://httpx//lib/httpx/connection.rb#205
   def io_connected?; end
 
   # @return [Boolean]
@@ -415,7 +643,7 @@ class HTTPX::Connection
   # source://httpx//lib/httpx/connection.rb#125
   def match?(uri, options); end
 
-  # source://httpx//lib/httpx/connection.rb#172
+  # source://httpx//lib/httpx/connection.rb#180
   def merge(connection); end
 
   # @return [Boolean]
@@ -425,7 +653,7 @@ class HTTPX::Connection
 
   # @return [Boolean]
   #
-  # source://httpx//lib/httpx/connection.rb#334
+  # source://httpx//lib/httpx/connection.rb#349
   def open?; end
 
   # Returns the value of attribute options.
@@ -451,16 +679,16 @@ class HTTPX::Connection
   # source://httpx//lib/httpx/connection.rb#44
   def pending; end
 
-  # source://httpx//lib/httpx/connection.rb#185
+  # source://httpx//lib/httpx/connection.rb#193
   def purge_pending(&block); end
 
-  # source://httpx//lib/httpx/connection.rb#278
+  # source://httpx//lib/httpx/connection.rb#293
   def reset; end
 
-  # source://httpx//lib/httpx/connection.rb#286
+  # source://httpx//lib/httpx/connection.rb#301
   def send(request); end
 
-  # source://httpx//lib/httpx/connection.rb#351
+  # source://httpx//lib/httpx/connection.rb#359
   def sibling=(connection); end
 
   # Returns the value of attribute ssl_session.
@@ -473,13 +701,13 @@ class HTTPX::Connection
   # source://httpx//lib/httpx/connection.rb#44
   def state; end
 
-  # source://httpx//lib/httpx/connection.rb#264
+  # source://httpx//lib/httpx/connection.rb#273
   def terminate; end
 
-  # source://httpx//lib/httpx/connection.rb#309
+  # source://httpx//lib/httpx/connection.rb#324
   def timeout; end
 
-  # source://httpx//lib/httpx/connection.rb#235
+  # source://httpx//lib/httpx/connection.rb#243
   def to_io; end
 
   # Returns the value of attribute type.
@@ -489,7 +717,7 @@ class HTTPX::Connection
 
   # @return [Boolean]
   #
-  # source://httpx//lib/httpx/connection.rb#326
+  # source://httpx//lib/httpx/connection.rb#341
   def used?; end
 
   protected
@@ -503,79 +731,77 @@ class HTTPX::Connection
 
   # returns an HTTPX::Connection for the negotiated Alternative Service (or none).
   #
-  # source://httpx//lib/httpx/connection.rb#767
+  # source://httpx//lib/httpx/connection.rb#786
   def build_altsvc_connection(alt_origin, origin, alt_params); end
 
-  # source://httpx//lib/httpx/connection.rb#540
+  # source://httpx//lib/httpx/connection.rb#558
   def build_parser(protocol = T.unsafe(nil)); end
 
-  # source://httpx//lib/httpx/connection.rb#794
+  # source://httpx//lib/httpx/connection.rb#813
   def build_socket(addrs = T.unsafe(nil)); end
 
-  # source://httpx//lib/httpx/connection.rb#731
+  # source://httpx//lib/httpx/connection.rb#750
   def close_sibling; end
 
-  # source://httpx//lib/httpx/connection.rb#383
+  # source://httpx//lib/httpx/connection.rb#401
   def connect; end
 
-  # source://httpx//lib/httpx/connection.rb#387
+  # source://httpx//lib/httpx/connection.rb#405
   def consume; end
 
-  # source://httpx//lib/httpx/connection.rb#836
+  # source://httpx//lib/httpx/connection.rb#855
   def handle_error(error, request = T.unsafe(nil)); end
 
-  # source://httpx//lib/httpx/connection.rb#670
+  # source://httpx//lib/httpx/connection.rb#689
   def handle_transition(nextstate); end
 
-  # source://httpx//lib/httpx/connection.rb#753
+  # source://httpx//lib/httpx/connection.rb#772
   def initialize_type(uri, options); end
 
-  # source://httpx//lib/httpx/connection.rb#818
+  # source://httpx//lib/httpx/connection.rb#837
   def on_error(error, request = T.unsafe(nil)); end
 
-  # source://httpx//lib/httpx/connection.rb#524
+  # source://httpx//lib/httpx/connection.rb#542
   def parser; end
 
-  # source://httpx//lib/httpx/connection.rb#747
+  # source://httpx//lib/httpx/connection.rb#944
+  def parser_type(protocol); end
+
+  # source://httpx//lib/httpx/connection.rb#766
   def purge_after_closed; end
 
-  # source://httpx//lib/httpx/connection.rb#899
+  # source://httpx//lib/httpx/connection.rb#918
   def read_timeout_callback(request, read_timeout, error_type = T.unsafe(nil)); end
 
-  # source://httpx//lib/httpx/connection.rb#518
+  # source://httpx//lib/httpx/connection.rb#536
   def send_pending; end
 
-  # source://httpx//lib/httpx/connection.rb#528
+  # source://httpx//lib/httpx/connection.rb#546
   def send_request_to_parser(request); end
 
-  # source://httpx//lib/httpx/connection.rb#546
+  # source://httpx//lib/httpx/connection.rb#564
   def set_parser_callbacks(parser); end
 
-  # source://httpx//lib/httpx/connection.rb#860
+  # source://httpx//lib/httpx/connection.rb#879
   def set_request_read_timeout(request); end
 
-  # source://httpx//lib/httpx/connection.rb#880
+  # source://httpx//lib/httpx/connection.rb#899
   def set_request_request_timeout(request); end
 
-  # source://httpx//lib/httpx/connection.rb#910
+  # source://httpx//lib/httpx/connection.rb#929
   def set_request_timeout(label, request, timeout, start_event, finish_events, &callback); end
 
-  # source://httpx//lib/httpx/connection.rb#854
+  # source://httpx//lib/httpx/connection.rb#873
   def set_request_timeouts(request); end
 
-  # source://httpx//lib/httpx/connection.rb#870
+  # source://httpx//lib/httpx/connection.rb#889
   def set_request_write_timeout(request); end
 
-  # source://httpx//lib/httpx/connection.rb#641
+  # source://httpx//lib/httpx/connection.rb#660
   def transition(nextstate); end
 
-  # source://httpx//lib/httpx/connection.rb#890
+  # source://httpx//lib/httpx/connection.rb#909
   def write_timeout_callback(request, write_timeout); end
-
-  class << self
-    # source://httpx//lib/httpx/connection.rb#926
-    def parser_type(protocol); end
-  end
 end
 
 # source://httpx//lib/httpx/connection/http1.rb#6
@@ -604,7 +830,7 @@ class HTTPX::Connection::HTTP1
   # source://httpx//lib/httpx/connection/http1.rb#60
   def exhausted?; end
 
-  # source://httpx//lib/httpx/connection/http1.rb#200
+  # source://httpx//lib/httpx/connection/http1.rb#199
   def handle_error(ex, request = T.unsafe(nil)); end
 
   # source://httpx//lib/httpx/connection/http1.rb#33
@@ -634,7 +860,7 @@ class HTTPX::Connection::HTTP1
   # source://httpx//lib/httpx/connection/http1.rb#13
   def pending; end
 
-  # source://httpx//lib/httpx/connection/http1.rb#227
+  # source://httpx//lib/httpx/connection/http1.rb#226
   def ping; end
 
   # source://httpx//lib/httpx/connection/http1.rb#13
@@ -651,37 +877,37 @@ class HTTPX::Connection::HTTP1
 
   private
 
-  # source://httpx//lib/httpx/connection/http1.rb#397
+  # source://httpx//lib/httpx/connection/http1.rb#396
   def capitalized(field); end
 
-  # source://httpx//lib/httpx/connection/http1.rb#271
+  # source://httpx//lib/httpx/connection/http1.rb#270
   def disable; end
 
-  # source://httpx//lib/httpx/connection/http1.rb#278
+  # source://httpx//lib/httpx/connection/http1.rb#277
   def disable_pipelining; end
 
-  # source://httpx//lib/httpx/connection/http1.rb#333
+  # source://httpx//lib/httpx/connection/http1.rb#332
   def handle(request); end
 
-  # source://httpx//lib/httpx/connection/http1.rb#360
+  # source://httpx//lib/httpx/connection/http1.rb#359
   def join_body(request); end
 
-  # source://httpx//lib/httpx/connection/http1.rb#350
+  # source://httpx//lib/httpx/connection/http1.rb#349
   def join_headers(request); end
 
-  # source://httpx//lib/httpx/connection/http1.rb#383
+  # source://httpx//lib/httpx/connection/http1.rb#382
   def join_headers2(headers); end
 
-  # source://httpx//lib/httpx/connection/http1.rb#346
+  # source://httpx//lib/httpx/connection/http1.rb#345
   def join_headline(request); end
 
-  # source://httpx//lib/httpx/connection/http1.rb#375
+  # source://httpx//lib/httpx/connection/http1.rb#374
   def join_trailers(request); end
 
-  # source://httpx//lib/httpx/connection/http1.rb#235
+  # source://httpx//lib/httpx/connection/http1.rb#234
   def manage_connection(request, response); end
 
-  # source://httpx//lib/httpx/connection/http1.rb#298
+  # source://httpx//lib/httpx/connection/http1.rb#297
   def set_protocol_headers(request); end
 end
 
@@ -691,7 +917,7 @@ HTTPX::Connection::HTTP1::CRLF = T.let(T.unsafe(nil), String)
 # source://httpx//lib/httpx/connection/http1.rb#10
 HTTPX::Connection::HTTP1::MAX_REQUESTS = T.let(T.unsafe(nil), Integer)
 
-# source://httpx//lib/httpx/connection/http1.rb#391
+# source://httpx//lib/httpx/connection/http1.rb#390
 HTTPX::Connection::HTTP1::UPCASED = T.let(T.unsafe(nil), Hash)
 
 # source://httpx//lib/httpx/connection/http2.rb#7
@@ -705,13 +931,10 @@ class HTTPX::Connection::HTTP2
   # source://httpx//lib/httpx/connection/http2.rb#97
   def <<(data); end
 
-  # source://httpx//lib/httpx/connection/http2.rb#101
-  def can_buffer_more_requests?; end
-
   # source://httpx//lib/httpx/connection/http2.rb#81
   def close; end
 
-  # source://httpx//lib/httpx/connection/http2.rb#125
+  # source://httpx//lib/httpx/connection/http2.rb#119
   def consume; end
 
   # source://httpx//lib/httpx/connection/http2.rb#89
@@ -720,7 +943,7 @@ class HTTPX::Connection::HTTP2
   # source://httpx//lib/httpx/connection/http2.rb#93
   def exhausted?; end
 
-  # source://httpx//lib/httpx/connection/http2.rb#133
+  # source://httpx//lib/httpx/connection/http2.rb#127
   def handle_error(ex, request = T.unsafe(nil)); end
 
   # source://httpx//lib/httpx/connection/http2.rb#54
@@ -729,13 +952,13 @@ class HTTPX::Connection::HTTP2
   # source://httpx//lib/httpx/connection/http2.rb#31
   def pending; end
 
-  # source://httpx//lib/httpx/connection/http2.rb#153
+  # source://httpx//lib/httpx/connection/http2.rb#147
   def ping; end
 
   # source://httpx//lib/httpx/connection/http2.rb#180
   def reset; end
 
-  # source://httpx//lib/httpx/connection/http2.rb#107
+  # source://httpx//lib/httpx/connection/http2.rb#101
   def send(request, head = T.unsafe(nil)); end
 
   # source://httpx//lib/httpx/connection/http2.rb#31
@@ -745,6 +968,12 @@ class HTTPX::Connection::HTTP2
   def timeout; end
 
   private
+
+  # source://httpx//lib/httpx/connection/http2.rb#156
+  def can_buffer_more_requests?; end
+
+  # source://httpx//lib/httpx/connection/http2.rb#276
+  def end_stream?(request, next_chunk); end
 
   # source://httpx//lib/httpx/connection/http2.rb#168
   def handle(request, stream); end
@@ -764,47 +993,50 @@ class HTTPX::Connection::HTTP2
   # source://httpx//lib/httpx/connection/http2.rb#237
   def join_trailers(stream, request); end
 
-  # source://httpx//lib/httpx/connection/http2.rb#406
+  # source://httpx//lib/httpx/connection/http2.rb#430
   def on_altsvc(origin, frame); end
 
-  # source://httpx//lib/httpx/connection/http2.rb#360
+  # source://httpx//lib/httpx/connection/http2.rb#370
   def on_close(_last_frame, error, _payload); end
 
-  # source://httpx//lib/httpx/connection/http2.rb#349
+  # source://httpx//lib/httpx/connection/http2.rb#359
   def on_frame(bytes); end
 
-  # source://httpx//lib/httpx/connection/http2.rb#397
+  # source://httpx//lib/httpx/connection/http2.rb#414
   def on_frame_received(frame); end
 
-  # source://httpx//lib/httpx/connection/http2.rb#388
+  # source://httpx//lib/httpx/connection/http2.rb#398
   def on_frame_sent(frame); end
 
-  # source://httpx//lib/httpx/connection/http2.rb#418
+  # source://httpx//lib/httpx/connection/http2.rb#442
   def on_origin(origin); end
 
-  # source://httpx//lib/httpx/connection/http2.rb#422
+  # source://httpx//lib/httpx/connection/http2.rb#446
   def on_pong(ping); end
 
-  # source://httpx//lib/httpx/connection/http2.rb#414
+  # source://httpx//lib/httpx/connection/http2.rb#438
   def on_promise(stream); end
 
-  # source://httpx//lib/httpx/connection/http2.rb#353
+  # source://httpx//lib/httpx/connection/http2.rb#363
   def on_settings(*_arg0); end
 
-  # source://httpx//lib/httpx/connection/http2.rb#312
+  # source://httpx//lib/httpx/connection/http2.rb#322
   def on_stream_close(stream, request, error); end
 
-  # source://httpx//lib/httpx/connection/http2.rb#301
+  # source://httpx//lib/httpx/connection/http2.rb#311
   def on_stream_data(stream, request, data); end
 
-  # source://httpx//lib/httpx/connection/http2.rb#274
+  # source://httpx//lib/httpx/connection/http2.rb#284
   def on_stream_headers(stream, request, h); end
 
-  # source://httpx//lib/httpx/connection/http2.rb#307
+  # source://httpx//lib/httpx/connection/http2.rb#317
   def on_stream_refuse(stream, request, error); end
 
-  # source://httpx//lib/httpx/connection/http2.rb#294
+  # source://httpx//lib/httpx/connection/http2.rb#304
   def on_stream_trailers(stream, response, h); end
+
+  # source://httpx//lib/httpx/connection/http2.rb#270
+  def send_chunk(request, stream, chunk, next_chunk); end
 
   # source://httpx//lib/httpx/connection/http2.rb#162
   def send_pending; end
@@ -816,7 +1048,7 @@ end
 # source://httpx//lib/httpx/connection/http2.rb#13
 class HTTPX::Connection::HTTP2::Error < ::HTTPX::Error
   # source://httpx//lib/httpx/connection/http2.rb#14
-  def initialize(id, code); end
+  def initialize(id, error); end
 end
 
 # source://httpx//lib/httpx/connection/http2.rb#25
@@ -839,11 +1071,11 @@ class HTTPX::ConnectionError < ::HTTPX::Error; end
 
 # Helper class which decodes the HTTP "content-type" header.
 #
-# source://httpx//lib/httpx/response.rb#200
+# source://httpx//lib/httpx/response.rb#208
 class HTTPX::ContentType
   # @return [ContentType] a new instance of ContentType
   #
-  # source://httpx//lib/httpx/response.rb#204
+  # source://httpx//lib/httpx/response.rb#212
   def initialize(header_value); end
 
   # returns the charset declared in the header.
@@ -851,21 +1083,21 @@ class HTTPX::ContentType
   #   ContentType.new("application/json; charset=utf-8").charset #=> "utf-8"
   #   ContentType.new("text/plain").charset #=> nil
   #
-  # source://httpx//lib/httpx/response.rb#222
+  # source://httpx//lib/httpx/response.rb#230
   def charset; end
 
   # returns the mime type declared in the header.
   #
   #   ContentType.new("application/json; charset=utf-8").mime_type #=> "application/json"
   #
-  # source://httpx//lib/httpx/response.rb#211
+  # source://httpx//lib/httpx/response.rb#219
   def mime_type; end
 end
 
-# source://httpx//lib/httpx/response.rb#202
+# source://httpx//lib/httpx/response.rb#210
 HTTPX::ContentType::CHARSET_RE = T.let(T.unsafe(nil), Regexp)
 
-# source://httpx//lib/httpx/response.rb#201
+# source://httpx//lib/httpx/response.rb#209
 HTTPX::ContentType::MIME_TYPE_RE = T.let(T.unsafe(nil), Regexp)
 
 # Represents a domain name ready for extracting its registered domain
@@ -945,7 +1177,7 @@ class HTTPX::Error < ::StandardError; end
 #   response = HTTPX.get("https://some-domain/path") #=> response is HTTPX::Response or HTTPX::ErrorResponse
 #   response.raise_for_status #=> raises if it wraps an error
 #
-# source://httpx//lib/httpx/response.rb#236
+# source://httpx//lib/httpx/response.rb#244
 class HTTPX::ErrorResponse
   include ::HTTPX::Loggable
   include ::HTTPX::ErrorResponsePatternMatchExtensions
@@ -953,29 +1185,32 @@ class HTTPX::ErrorResponse
 
   # @return [ErrorResponse] a new instance of ErrorResponse
   #
-  # source://httpx//lib/httpx/response.rb#255
+  # source://httpx//lib/httpx/response.rb#263
   def initialize(request, error); end
 
   # buffers lost chunks to error response
   #
-  # source://httpx//lib/httpx/response.rb#284
+  # source://httpx//lib/httpx/response.rb#294
   def <<(data); end
 
   # closes the error resources.
   #
-  # source://httpx//lib/httpx/response.rb#269
+  # source://httpx//lib/httpx/response.rb#277
   def close; end
 
   # the wrapped exception.
   #
-  # source://httpx//lib/httpx/response.rb#247
+  # source://httpx//lib/httpx/response.rb#255
   def error; end
+
+  # source://httpx//lib/httpx/response.rb#286
+  def finish!; end
 
   # always true for error responses.
   #
   # @return [Boolean]
   #
-  # source://httpx//lib/httpx/response.rb#274
+  # source://httpx//lib/httpx/response.rb#282
   def finished?; end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -985,22 +1220,22 @@ class HTTPX::ErrorResponse
   #
   # @raise [@error]
   #
-  # source://httpx//lib/httpx/response.rb#279
+  # source://httpx//lib/httpx/response.rb#289
   def raise_for_status; end
 
   # the corresponding HTTPX::Request instance.
   #
-  # source://httpx//lib/httpx/response.rb#241
+  # source://httpx//lib/httpx/response.rb#249
   def request; end
 
   # the HTTPX::Response instance, when there is one (i.e. error happens fetching the response).
   #
-  # source://httpx//lib/httpx/response.rb#244
+  # source://httpx//lib/httpx/response.rb#252
   def response; end
 
   # returns the exception full message.
   #
-  # source://httpx//lib/httpx/response.rb#264
+  # source://httpx//lib/httpx/response.rb#272
   def to_s; end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -1018,25 +1253,25 @@ end
 
 # The exception class for HTTP responses with 4xx or 5xx status.
 #
-# source://httpx//lib/httpx/errors.rb#101
+# source://httpx//lib/httpx/errors.rb#92
 class HTTPX::HTTPError < ::HTTPX::Error
   # Creates the instance and assigns the HTTPX::Response +response+.
   #
   # @return [HTTPError] a new instance of HTTPError
   #
-  # source://httpx//lib/httpx/errors.rb#106
+  # source://httpx//lib/httpx/errors.rb#97
   def initialize(response); end
 
   # The HTTPX::Response response object this exception refers to.
   #
-  # source://httpx//lib/httpx/errors.rb#103
+  # source://httpx//lib/httpx/errors.rb#94
   def response; end
 
   # The HTTP response status.
   #
   #   error.status #=> 404
   #
-  # source://httpx//lib/httpx/errors.rb#114
+  # source://httpx//lib/httpx/errors.rb#105
   def status; end
 end
 
@@ -1049,23 +1284,23 @@ class HTTPX::Headers
   # source://httpx//lib/httpx/headers.rb#13
   def initialize(headers = T.unsafe(nil)); end
 
-  # source://httpx//lib/httpx/headers.rb#118
+  # source://httpx//lib/httpx/headers.rb#119
   def ==(other); end
 
   # returns the comma-separated values of the header field
   # identified by +field+, or nil otherwise.
   #
-  # source://httpx//lib/httpx/headers.rb#68
+  # source://httpx//lib/httpx/headers.rb#69
   def [](field); end
 
   # sets +value+ (if not nil) as single value for the +field+ header.
   #
-  # source://httpx//lib/httpx/headers.rb#75
+  # source://httpx//lib/httpx/headers.rb#76
   def []=(field, value); end
 
   # adds additional +value+ to the existing, for header +field+.
   #
-  # source://httpx//lib/httpx/headers.rb#90
+  # source://httpx//lib/httpx/headers.rb#91
   def add(field, value); end
 
   # adds additional +value+ to the existing, for header +field+.
@@ -1076,35 +1311,40 @@ class HTTPX::Headers
   #     h1_headers.add_header("vary", "accept-encoding")
   #     h1_headers["vary"] #=> "Accept-Encoding"
   #
-  # source://httpx//lib/httpx/headers.rb#90
+  # source://httpx//lib/httpx/headers.rb#91
   def add_header(field, value); end
 
   # deletes all values associated with +field+ header.
   #
-  # source://httpx//lib/httpx/headers.rb#83
+  # source://httpx//lib/httpx/headers.rb#84
   def delete(field); end
 
   # returns the enumerable headers store in pairs of header field + the values in
   # the comma-separated string format
   #
-  # source://httpx//lib/httpx/headers.rb#106
+  # source://httpx//lib/httpx/headers.rb#107
   def each(extra_headers = T.unsafe(nil)); end
+
+  # @return [Boolean]
+  #
+  # source://httpx//lib/httpx/headers.rb#123
+  def empty?; end
 
   # freezes the headers hash
   #
-  # source://httpx//lib/httpx/headers.rb#37
+  # source://httpx//lib/httpx/headers.rb#49
   def freeze; end
 
   # returns the values for the +field+ header in array format.
   # This method is more internal, and for this reason doesn't try
   # to "correct" the user input, i.e. it doesn't downcase the key.
   #
-  # source://httpx//lib/httpx/headers.rb#156
+  # source://httpx//lib/httpx/headers.rb#162
   def get(field); end
 
   # :nocov:
   #
-  # source://httpx//lib/httpx/headers.rb#139
+  # source://httpx//lib/httpx/headers.rb#144
   def inspect; end
 
   # this is internal API and doesn't abide to other public API
@@ -1113,57 +1353,52 @@ class HTTPX::Headers
   #
   # @return [Boolean]
   #
-  # source://httpx//lib/httpx/headers.rb#148
+  # source://httpx//lib/httpx/headers.rb#154
   def key?(downcased_key); end
 
   # merges headers with another header-quack.
   # the merge rule is, if the header already exists,
   # ignore what the +other+ headers has. Otherwise, set
   #
-  # source://httpx//lib/httpx/headers.rb#57
+  # source://httpx//lib/httpx/headers.rb#58
   def merge(other); end
-
-  # @return [Boolean]
-  #
-  # source://httpx//lib/httpx/headers.rb#42
-  def same_headers?(headers); end
 
   # the headers store in array of pairs format
   #
-  # source://httpx//lib/httpx/headers.rb#129
+  # source://httpx//lib/httpx/headers.rb#134
   def to_a; end
 
   # the headers store in Hash format
   #
-  # source://httpx//lib/httpx/headers.rb#123
+  # source://httpx//lib/httpx/headers.rb#128
   def to_h; end
 
   # the headers store in Hash format
   #
-  # source://httpx//lib/httpx/headers.rb#123
+  # source://httpx//lib/httpx/headers.rb#128
   def to_hash; end
 
   # headers as string
   #
-  # source://httpx//lib/httpx/headers.rb#134
+  # source://httpx//lib/httpx/headers.rb#139
   def to_s; end
 
   private
 
-  # source://httpx//lib/httpx/headers.rb#162
+  # source://httpx//lib/httpx/headers.rb#168
   def array_value(value); end
 
-  # source://httpx//lib/httpx/headers.rb#171
+  # source://httpx//lib/httpx/headers.rb#172
   def downcased(field); end
 
   # cloned initialization
   #
-  # source://httpx//lib/httpx/headers.rb#25
-  def initialize_clone(orig); end
+  # source://httpx//lib/httpx/headers.rb#37
+  def initialize_clone(orig, **kwargs); end
 
   # dupped initialization
   #
-  # source://httpx//lib/httpx/headers.rb#31
+  # source://httpx//lib/httpx/headers.rb#43
   def initialize_dup(orig); end
 
   class << self
@@ -1183,8 +1418,11 @@ module HTTPX::Loggable
   # source://httpx//lib/httpx/loggable.rb#18
   def log(level: T.unsafe(nil), color: T.unsafe(nil), debug_level: T.unsafe(nil), debug: T.unsafe(nil), &msg); end
 
-  # source://httpx//lib/httpx/loggable.rb#37
+  # source://httpx//lib/httpx/loggable.rb#43
   def log_exception(ex, level: T.unsafe(nil), color: T.unsafe(nil), debug_level: T.unsafe(nil), debug: T.unsafe(nil)); end
+
+  # source://httpx//lib/httpx/loggable.rb#47
+  def log_redact(text, should_redact = T.unsafe(nil)); end
 end
 
 # source://httpx//lib/httpx/loggable.rb#5
@@ -1196,30 +1434,30 @@ HTTPX::Loggable::USE_DEBUG_LOG = T.let(T.unsafe(nil), FalseClass)
 # Error raised when there was an error while resolving a domain to an IP
 # using a HTTPX::Resolver::Native resolver.
 #
-# source://httpx//lib/httpx/errors.rb#88
+# source://httpx//lib/httpx/errors.rb#79
 class HTTPX::NativeResolveError < ::HTTPX::ResolveError
   # initializes the exception with the +connection+ it refers to, the +host+ domain
   # which failed to resolve, and the error +message+.
   #
   # @return [NativeResolveError] a new instance of NativeResolveError
   #
-  # source://httpx//lib/httpx/errors.rb#93
+  # source://httpx//lib/httpx/errors.rb#84
   def initialize(connection, host, message = T.unsafe(nil)); end
 
   # Returns the value of attribute connection.
   #
-  # source://httpx//lib/httpx/errors.rb#89
+  # source://httpx//lib/httpx/errors.rb#80
   def connection; end
 
   # Returns the value of attribute host.
   #
-  # source://httpx//lib/httpx/errors.rb#89
+  # source://httpx//lib/httpx/errors.rb#80
   def host; end
 end
 
 # Error raise when there was a timeout waiting for readiness of the socket the request is related to.
 #
-# source://httpx//lib/httpx/errors.rb#81
+# source://httpx//lib/httpx/errors.rb#72
 class HTTPX::OperationTimeoutError < ::HTTPX::TimeoutError; end
 
 # Contains a set of options which are passed and shared across from session to its requests or
@@ -1231,6 +1469,7 @@ class HTTPX::Options
   #
   # :debug :: an object which log messages are written to (must respond to <tt><<</tt>)
   # :debug_level :: the log level of messages (can be 1, 2, or 3).
+  # :debug_redact :: whether header/body payload should be redacted (defaults to <tt>false</tt>).
   # :ssl :: a hash of options which can be set as params of OpenSSL::SSL::SSLContext (see HTTPX::IO::SSL)
   # :http2_settings :: a hash of options to be passed to a HTTP2::Connection (ex: <tt>{ max_concurrent_streams: 2 }</tt>)
   # :fallback_protocol :: version of HTTP protocol to use by default in the absence of protocol negotiation
@@ -1267,259 +1506,263 @@ class HTTPX::Options
   # :base_path :: path to prefix given relative paths with (ex: "/v2")
   # :max_concurrent_requests :: max number of requests which can be set concurrently
   # :max_requests :: max number of requests which can be made on socket before it reconnects.
+  # :close_on_fork :: whether the session automatically closes when the process is fork (defaults to <tt>false</tt>).
+  #                   it only works if the session is persistent (and ruby 3.1 or higher is used).
   #
   # This list of options are enhanced with each loaded plugin, see the plugin docs for details.
   #
   # @return [Options] a new instance of Options
   #
-  # source://httpx//lib/httpx/options.rb#133
+  # source://httpx//lib/httpx/options.rb#146
   def initialize(options = T.unsafe(nil)); end
 
-  # source://httpx//lib/httpx/options.rb#235
+  # source://httpx//lib/httpx/options.rb#243
   def ==(other); end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def addresses; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def base_path; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def body_threshold_size; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def buffer_size; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
+  def close_on_fork; end
+
+  # source://httpx//lib/httpx/options.rb#97
   def compress_request_body; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def connection_class; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def debug; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def debug_level; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
+  def debug_redact; end
+
+  # source://httpx//lib/httpx/options.rb#97
   def decompress_response_body; end
 
-  # source://httpx//lib/httpx/options.rb#296
+  # source://httpx//lib/httpx/options.rb#304
   def extend_with_plugin_classes(pl); end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def fallback_protocol; end
 
-  # source://httpx//lib/httpx/options.rb#138
+  # source://httpx//lib/httpx/options.rb#151
   def freeze; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def headers; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def headers_class; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def http2_settings; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def io; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def ip_families; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def max_concurrent_requests; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def max_requests; end
 
-  # source://httpx//lib/httpx/options.rb#254
+  # source://httpx//lib/httpx/options.rb#262
   def merge(other); end
 
-  # source://httpx//lib/httpx/options.rb#210
+  # source://httpx//lib/httpx/options.rb#193
   def option_addresses(value); end
 
-  # source://httpx//lib/httpx/options.rb#152
+  # source://httpx//lib/httpx/options.rb#170
   def option_base_path(value); end
 
-  # @raise [TypeError]
-  #
-  # source://httpx//lib/httpx/options.rb#196
+  # source://httpx//lib/httpx/options.rb#208
   def option_body_threshold_size(value); end
 
-  # @raise [TypeError]
-  #
-  # source://httpx//lib/httpx/options.rb#188
+  # source://httpx//lib/httpx/options.rb#208
   def option_buffer_size(value); end
 
-  # source://httpx//lib/httpx/options.rb#229
+  # source://httpx//lib/httpx/options.rb#237
+  def option_close_on_fork(v); end
+
+  # source://httpx//lib/httpx/options.rb#237
   def option_compress_request_body(v); end
 
-  # source://httpx//lib/httpx/options.rb#229
+  # source://httpx//lib/httpx/options.rb#237
   def option_connection_class(v); end
 
-  # source://httpx//lib/httpx/options.rb#229
+  # source://httpx//lib/httpx/options.rb#237
   def option_debug(v); end
 
-  # source://httpx//lib/httpx/options.rb#229
-  def option_debug_level(v); end
+  # source://httpx//lib/httpx/options.rb#208
+  def option_debug_level(value); end
 
-  # source://httpx//lib/httpx/options.rb#229
+  # source://httpx//lib/httpx/options.rb#237
+  def option_debug_redact(v); end
+
+  # source://httpx//lib/httpx/options.rb#237
   def option_decompress_response_body(v); end
 
-  # source://httpx//lib/httpx/options.rb#229
+  # source://httpx//lib/httpx/options.rb#237
   def option_fallback_protocol(v); end
 
-  # source://httpx//lib/httpx/options.rb#156
+  # source://httpx//lib/httpx/options.rb#174
   def option_headers(value); end
 
-  # source://httpx//lib/httpx/options.rb#229
+  # source://httpx//lib/httpx/options.rb#237
   def option_headers_class(v); end
 
-  # source://httpx//lib/httpx/options.rb#229
-  def option_http2_settings(v); end
+  # source://httpx//lib/httpx/options.rb#221
+  def option_http2_settings(value); end
 
-  # source://httpx//lib/httpx/options.rb#229
+  # source://httpx//lib/httpx/options.rb#237
   def option_io(v); end
 
-  # source://httpx//lib/httpx/options.rb#214
+  # source://httpx//lib/httpx/options.rb#197
   def option_ip_families(value); end
 
-  # @raise [TypeError]
-  #
-  # source://httpx//lib/httpx/options.rb#168
+  # source://httpx//lib/httpx/options.rb#208
   def option_max_concurrent_requests(value); end
 
-  # @raise [TypeError]
-  #
-  # source://httpx//lib/httpx/options.rb#174
+  # source://httpx//lib/httpx/options.rb#208
   def option_max_requests(value); end
 
-  # source://httpx//lib/httpx/options.rb#229
+  # source://httpx//lib/httpx/options.rb#237
   def option_options_class(v); end
 
-  # source://httpx//lib/httpx/options.rb#148
+  # source://httpx//lib/httpx/options.rb#166
   def option_origin(value); end
 
-  # source://httpx//lib/httpx/options.rb#229
+  # source://httpx//lib/httpx/options.rb#237
   def option_persistent(v); end
 
-  # source://httpx//lib/httpx/options.rb#229
+  # source://httpx//lib/httpx/options.rb#237
   def option_pool_class(v); end
 
-  # source://httpx//lib/httpx/options.rb#229
+  # source://httpx//lib/httpx/options.rb#237
   def option_pool_options(v); end
 
-  # source://httpx//lib/httpx/options.rb#229
+  # source://httpx//lib/httpx/options.rb#237
   def option_request_body_class(v); end
 
-  # source://httpx//lib/httpx/options.rb#229
+  # source://httpx//lib/httpx/options.rb#237
   def option_request_class(v); end
 
-  # source://httpx//lib/httpx/options.rb#229
+  # source://httpx//lib/httpx/options.rb#237
   def option_resolver_class(v); end
 
-  # source://httpx//lib/httpx/options.rb#229
-  def option_resolver_options(v); end
+  # source://httpx//lib/httpx/options.rb#221
+  def option_resolver_options(value); end
 
-  # source://httpx//lib/httpx/options.rb#229
+  # source://httpx//lib/httpx/options.rb#237
   def option_response_body_class(v); end
 
-  # source://httpx//lib/httpx/options.rb#229
+  # source://httpx//lib/httpx/options.rb#237
   def option_response_class(v); end
 
-  # source://httpx//lib/httpx/options.rb#229
-  def option_ssl(v); end
+  # source://httpx//lib/httpx/options.rb#221
+  def option_ssl(value); end
 
-  # source://httpx//lib/httpx/options.rb#164
+  # source://httpx//lib/httpx/options.rb#182
   def option_supported_compression_formats(value); end
 
-  # source://httpx//lib/httpx/options.rb#160
+  # source://httpx//lib/httpx/options.rb#178
   def option_timeout(value); end
 
   # @raise [TypeError]
   #
-  # source://httpx//lib/httpx/options.rb#203
+  # source://httpx//lib/httpx/options.rb#186
   def option_transport(value); end
 
-  # @raise [TypeError]
-  #
-  # source://httpx//lib/httpx/options.rb#180
+  # source://httpx//lib/httpx/options.rb#208
   def option_window_size(value); end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def options_class; end
 
   # @return [Boolean]
   #
-  # source://httpx//lib/httpx/options.rb#239
+  # source://httpx//lib/httpx/options.rb#247
   def options_equals?(other, ignore_ivars = T.unsafe(nil)); end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def origin; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def persistent; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def pool_class; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def pool_options; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def request_body_class; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def request_class; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def resolver_class; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def resolver_options; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def response_body_class; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def response_class; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def ssl; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def supported_compression_formats; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def timeout; end
 
-  # source://httpx//lib/httpx/options.rb#290
+  # source://httpx//lib/httpx/options.rb#298
   def to_hash; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def transport; end
 
-  # source://httpx//lib/httpx/options.rb#87
+  # source://httpx//lib/httpx/options.rb#97
   def window_size; end
 
   private
 
-  # source://httpx//lib/httpx/options.rb#351
+  # source://httpx//lib/httpx/options.rb#366
   def access_option(obj, k, ivar_map); end
 
-  # source://httpx//lib/httpx/options.rb#338
+  # source://httpx//lib/httpx/options.rb#353
   def do_initialize(options = T.unsafe(nil)); end
 
   class << self
     # @private
     #
-    # source://httpx//lib/httpx/options.rb#80
+    # source://httpx//lib/httpx/options.rb#90
     def method_added(meth); end
 
-    # source://httpx//lib/httpx/options.rb#72
+    # source://httpx//lib/httpx/options.rb#82
     def new(options = T.unsafe(nil)); end
   end
 end
@@ -1533,7 +1776,7 @@ HTTPX::Options::CLOSE_HANDSHAKE_TIMEOUT = T.let(T.unsafe(nil), Integer)
 # source://httpx//lib/httpx/options.rb#15
 HTTPX::Options::CONNECT_TIMEOUT = T.let(T.unsafe(nil), Integer)
 
-# source://httpx//lib/httpx/options.rb#30
+# source://httpx//lib/httpx/options.rb#38
 HTTPX::Options::DEFAULT_OPTIONS = T.let(T.unsafe(nil), Hash)
 
 # source://httpx//lib/httpx/options.rb#12
@@ -1550,7 +1793,7 @@ HTTPX::Options::OPERATION_TIMEOUT = T.let(T.unsafe(nil), T.untyped)
 # source://httpx//lib/httpx/options.rb#15
 HTTPX::Options::READ_TIMEOUT = T.let(T.unsafe(nil), Integer)
 
-# source://httpx//lib/httpx/options.rb#233
+# source://httpx//lib/httpx/options.rb#241
 HTTPX::Options::REQUEST_BODY_IVARS = T.let(T.unsafe(nil), Array)
 
 # source://httpx//lib/httpx/options.rb#16
@@ -1558,6 +1801,9 @@ HTTPX::Options::REQUEST_TIMEOUT = T.let(T.unsafe(nil), T.untyped)
 
 # source://httpx//lib/httpx/options.rb#13
 HTTPX::Options::SETTINGS_TIMEOUT = T.let(T.unsafe(nil), Integer)
+
+# source://httpx//lib/httpx/options.rb#30
+HTTPX::Options::SET_TEMPORARY_NAME = T.let(T.unsafe(nil), Proc)
 
 # 16K
 #
@@ -1727,71 +1973,72 @@ end
 class HTTPX::Pool
   # Sets up the connection pool with the given +options+, which can be the following:
   #
+  # :max_connections:: the maximum number of connections held in the pool.
   # :max_connections_per_origin :: the maximum number of connections held in the pool pointing to a given origin.
   # :pool_timeout :: the number of seconds to wait for a connection to a given origin (before raising HTTPX::PoolTimeoutError)
   #
   # @return [Pool] a new instance of Pool
   #
-  # source://httpx//lib/httpx/pool.rb#19
+  # source://httpx//lib/httpx/pool.rb#20
   def initialize(options); end
 
-  # source://httpx//lib/httpx/pool.rb#61
+  # source://httpx//lib/httpx/pool.rb#85
   def checkin_connection(connection); end
 
-  # source://httpx//lib/httpx/pool.rb#100
+  # source://httpx//lib/httpx/pool.rb#125
   def checkin_resolver(resolver); end
 
   # opens a connection to the IP reachable through +uri+.
   # Many hostnames are reachable through the same IP, so we try to
   # maximize pipelining by opening as few connections as possible.
   #
-  # source://httpx//lib/httpx/pool.rb#42
+  # source://httpx//lib/httpx/pool.rb#45
   def checkout_connection(uri, options); end
 
-  # source://httpx//lib/httpx/pool.rb#71
+  # source://httpx//lib/httpx/pool.rb#96
   def checkout_mergeable_connection(connection); end
 
-  # source://httpx//lib/httpx/pool.rb#86
+  # source://httpx//lib/httpx/pool.rb#111
   def checkout_resolver(options); end
 
-  # source://httpx//lib/httpx/pool.rb#30
+  # :nocov:
+  #
+  # source://httpx//lib/httpx/pool.rb#136
+  def inspect; end
+
+  # connections returned by this function are not expected to return to the connection pool.
+  #
+  # source://httpx//lib/httpx/pool.rb#35
   def pop_connection; end
 
-  # source://httpx//lib/httpx/pool.rb#82
+  # source://httpx//lib/httpx/pool.rb#107
   def reset_resolvers; end
 
   private
 
-  # source://httpx//lib/httpx/pool.rb#112
+  # source://httpx//lib/httpx/pool.rb#146
   def acquire_connection(uri, options); end
 
-  # source://httpx//lib/httpx/pool.rb#120
+  # source://httpx//lib/httpx/pool.rb#156
   def checkout_new_connection(uri, options); end
 
-  # source://httpx//lib/httpx/pool.rb#124
+  # source://httpx//lib/httpx/pool.rb#160
   def checkout_new_resolver(resolver_type, options); end
+
+  # drops and returns the +connection+ from the connection pool; if +connection+ is <tt>nil</tt> (default),
+  # the first available connection from the pool will be dropped.
+  #
+  # source://httpx//lib/httpx/pool.rb#170
+  def drop_connection(connection = T.unsafe(nil)); end
 end
 
 # source://httpx//lib/httpx/pool.rb#12
 HTTPX::Pool::POOL_TIMEOUT = T.let(T.unsafe(nil), Integer)
 
-# Raise when it can't acquire a connection for a given origin.
+# Raise when it can't acquire a connection from the pool.
 #
 # source://httpx//lib/httpx/errors.rb#33
-class HTTPX::PoolTimeoutError < ::HTTPX::TimeoutError
-  # initializes the +origin+ it refers to, and the
-  # +timeout+ causing the error.
-  #
-  # @return [PoolTimeoutError] a new instance of PoolTimeoutError
-  #
-  # source://httpx//lib/httpx/errors.rb#38
-  def initialize(origin, timeout); end
-
-  # Returns the value of attribute origin.
-  #
-  # source://httpx//lib/httpx/errors.rb#34
-  def origin; end
-end
+class HTTPX::PoolTimeoutError < ::HTTPX::TimeoutError; end
 
 # source://httpx//lib/httpx/punycode.rb#4
 module HTTPX::Punycode
@@ -1808,7 +2055,7 @@ end
 
 # Error raised when there was a timeout while receiving a response from the server.
 #
-# source://httpx//lib/httpx/errors.rb#69
+# source://httpx//lib/httpx/errors.rb#60
 class HTTPX::ReadTimeoutError < ::HTTPX::RequestTimeoutError; end
 
 # Defines how an HTTP request is handled internally, both in terms of making attributes accessible,
@@ -1850,7 +2097,7 @@ class HTTPX::Request
   #   session.build_request("GET", "https://google.com/query").authority #=> "google.com"
   #   session.build_request("GET", "http://internal:3182/a").authority #=> "internal:3182"
   #
-  # source://httpx//lib/httpx/request.rb#203
+  # source://httpx//lib/httpx/request.rb#207
   def authority; end
 
   # an HTTPX::Request::Body object containing the request body payload (or +nil+, whenn there is none).
@@ -1858,12 +2105,17 @@ class HTTPX::Request
   # source://httpx//lib/httpx/request.rb#29
   def body; end
 
+  # @return [Boolean]
+  #
+  # source://httpx//lib/httpx/request.rb#158
+  def can_buffer?; end
+
   # source://forwardable/1.3.3/forwardable.rb#231
   def close(*args, **_arg1, &block); end
 
   # consumes and returns the next available chunk of request body that can be sent
   #
-  # source://httpx//lib/httpx/request.rb#233
+  # source://httpx//lib/httpx/request.rb#237
   def drain_body; end
 
   # Exception raised during enumerable body writes.
@@ -1878,7 +2130,7 @@ class HTTPX::Request
   #
   # @return [Boolean]
   #
-  # source://httpx//lib/httpx/request.rb#298
+  # source://httpx//lib/httpx/request.rb#302
   def expects?; end
 
   # an HTTPX::Headers object containing the request HTTP headers.
@@ -1888,7 +2140,7 @@ class HTTPX::Request
 
   # :nocov:
   #
-  # source://httpx//lib/httpx/request.rb#249
+  # source://httpx//lib/httpx/request.rb#253
   def inspect; end
 
   # returns +:r+ or +:w+, depending on whether the request is waiting for a response or flushing.
@@ -1898,7 +2150,7 @@ class HTTPX::Request
 
   # merges +h+ into the instance of HTTPX::Headers of the request.
   #
-  # source://httpx//lib/httpx/request.rb#159
+  # source://httpx//lib/httpx/request.rb#163
   def merge_headers(h); end
 
   # an HTTPX::Options object containing request options.
@@ -1911,12 +2163,12 @@ class HTTPX::Request
   #   session.build_request("GET", "https://google.com/query").authority #=> "https://google.com"
   #   session.build_request("GET", "http://internal:3182/a").authority #=> "http://internal:3182"
   #
-  # source://httpx//lib/httpx/request.rb#211
+  # source://httpx//lib/httpx/request.rb#215
   def origin; end
 
   # returnns the URI path of the request +uri+.
   #
-  # source://httpx//lib/httpx/request.rb#191
+  # source://httpx//lib/httpx/request.rb#195
   def path; end
 
   # The IP address from the peer server.
@@ -1960,7 +2212,7 @@ class HTTPX::Request
   #   session.build_request("GET", "https://search.com", params: { q: "a"}).query #=> "q=a"
   #   session.build_request("GET", "https://search.com?q=a", params: { foo: "bar"}).query #=> "q=a&foo&bar"
   #
-  # source://httpx//lib/httpx/request.rb#221
+  # source://httpx//lib/httpx/request.rb#225
   def query; end
 
   # the read timeout defined for this request.
@@ -1980,15 +2232,15 @@ class HTTPX::Request
 
   # sets the +response+ on this request.
   #
-  # source://httpx//lib/httpx/request.rb#169
+  # source://httpx//lib/httpx/request.rb#173
   def response=(response); end
 
   # the URI scheme of the request +uri+.
   #
-  # source://httpx//lib/httpx/request.rb#164
+  # source://httpx//lib/httpx/request.rb#168
   def scheme; end
 
-  # source://httpx//lib/httpx/request.rb#302
+  # source://httpx//lib/httpx/request.rb#306
   def set_timeout_callback(event, &callback); end
 
   # a symbol describing which frame is currently being flushed.
@@ -2010,7 +2262,7 @@ class HTTPX::Request
 
   # moves on to the +nextstate+ of the request state machine (when all preconditions are met)
   #
-  # source://httpx//lib/httpx/request.rb#259
+  # source://httpx//lib/httpx/request.rb#263
   def transition(nextstate); end
 
   # the absolute URI object for this request.
@@ -2093,33 +2345,33 @@ HTTPX::Request::USER_AGENT = T.let(T.unsafe(nil), String)
 # Error raised when there was a timeout while sending a request, or receiving a response
 # from the server.
 #
-# source://httpx//lib/httpx/errors.rb#51
+# source://httpx//lib/httpx/errors.rb#42
 class HTTPX::RequestTimeoutError < ::HTTPX::TimeoutError
   # initializes the exception with the +request+ and +response+ it refers to, and the
   # +timeout+ causing the error, and the
   #
   # @return [RequestTimeoutError] a new instance of RequestTimeoutError
   #
-  # source://httpx//lib/httpx/errors.rb#57
+  # source://httpx//lib/httpx/errors.rb#48
   def initialize(request, response, timeout); end
 
-  # source://httpx//lib/httpx/errors.rb#63
+  # source://httpx//lib/httpx/errors.rb#54
   def marshal_dump; end
 
   # The HTTPX::Request request object this exception refers to.
   #
-  # source://httpx//lib/httpx/errors.rb#53
+  # source://httpx//lib/httpx/errors.rb#44
   def request; end
 end
 
 # Error raised when there was an error while resolving a domain to an IP.
 #
-# source://httpx//lib/httpx/errors.rb#84
+# source://httpx//lib/httpx/errors.rb#75
 class HTTPX::ResolveError < ::HTTPX::Error; end
 
 # Error raised when there was a timeout while resolving a domain to an IP.
 #
-# source://httpx//lib/httpx/errors.rb#78
+# source://httpx//lib/httpx/errors.rb#69
 class HTTPX::ResolveTimeoutError < ::HTTPX::TimeoutError; end
 
 # source://httpx//lib/httpx/resolver.rb#7
@@ -2205,14 +2457,14 @@ module HTTPX::Resolver
   end
 end
 
-# source://httpx//lib/httpx/resolver/https.rb#10
+# source://httpx//lib/httpx/resolver/https.rb#13
 class HTTPX::Resolver::HTTPS < ::HTTPX::Resolver::Resolver
   extend ::Forwardable
 
-  # source://httpx//lib/httpx/resolver/https.rb#32
+  # source://httpx//lib/httpx/resolver/https.rb#35
   def initialize(_, options); end
 
-  # source://httpx//lib/httpx/resolver/https.rb#45
+  # source://httpx//lib/httpx/resolver/https.rb#47
   def <<(connection); end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -2221,19 +2473,22 @@ class HTTPX::Resolver::HTTPS < ::HTTPX::Resolver::Resolver
   # source://forwardable/1.3.3/forwardable.rb#231
   def close(*args, **_arg1, &block); end
 
-  # source://httpx//lib/httpx/resolver/https.rb#60
+  # source://httpx//lib/httpx/resolver/https.rb#62
   def closed?; end
 
   # source://forwardable/1.3.3/forwardable.rb#231
   def connecting?(*args, **_arg1, &block); end
 
-  # source://httpx//lib/httpx/resolver/https.rb#64
+  # source://httpx//lib/httpx/resolver/https.rb#66
   def empty?; end
+
+  # source://forwardable/1.3.3/forwardable.rb#231
+  def handle_socket_timeout(*args, **_arg1, &block); end
 
   # source://forwardable/1.3.3/forwardable.rb#231
   def inflight?(*args, **_arg1, &block); end
 
-  # source://httpx//lib/httpx/resolver/https.rb#68
+  # source://httpx//lib/httpx/resolver/https.rb#70
   def resolver_connection; end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -2247,38 +2502,38 @@ class HTTPX::Resolver::HTTPS < ::HTTPX::Resolver::Resolver
 
   private
 
-  # source://httpx//lib/httpx/resolver/https.rb#207
+  # source://httpx//lib/httpx/resolver/https.rb#213
   def build_request(hostname); end
 
-  # source://httpx//lib/httpx/resolver/https.rb#226
+  # source://httpx//lib/httpx/resolver/https.rb#232
   def decode_response_body(response); end
 
-  # source://httpx//lib/httpx/resolver/https.rb#123
+  # source://httpx//lib/httpx/resolver/https.rb#129
   def on_promise(_, stream); end
 
-  # source://httpx//lib/httpx/resolver/https.rb#110
+  # source://httpx//lib/httpx/resolver/https.rb#116
   def on_response(request, response); end
 
-  # source://httpx//lib/httpx/resolver/https.rb#128
+  # source://httpx//lib/httpx/resolver/https.rb#134
   def parse(request, response); end
 
-  # source://httpx//lib/httpx/resolver/https.rb#158
+  # source://httpx//lib/httpx/resolver/https.rb#164
   def parse_addresses(answers, request); end
 
-  # source://httpx//lib/httpx/resolver/https.rb#236
+  # source://httpx//lib/httpx/resolver/https.rb#242
   def reset_hostname(hostname, reset_candidates: T.unsafe(nil)); end
 
-  # source://httpx//lib/httpx/resolver/https.rb#78
+  # source://httpx//lib/httpx/resolver/https.rb#80
   def resolve(connection = T.unsafe(nil), hostname = T.unsafe(nil)); end
 end
 
-# source://httpx//lib/httpx/resolver/https.rb#25
+# source://httpx//lib/httpx/resolver/https.rb#28
 HTTPX::Resolver::HTTPS::DEFAULTS = T.let(T.unsafe(nil), Hash)
 
-# source://httpx//lib/httpx/resolver/https.rb#14
+# source://httpx//lib/httpx/resolver/https.rb#17
 module HTTPX::Resolver::HTTPS::DNSExtensions; end
 
-# source://httpx//lib/httpx/resolver/https.rb#23
+# source://httpx//lib/httpx/resolver/https.rb#26
 HTTPX::Resolver::HTTPS::NAMESERVER = T.let(T.unsafe(nil), String)
 
 # source://httpx//lib/httpx/resolver/multi.rb#7
@@ -2325,41 +2580,44 @@ class HTTPX::Resolver::Multi
   def timeout; end
 end
 
-# source://httpx//lib/httpx/resolver/native.rb#7
+# source://httpx//lib/httpx/resolver/native.rb#10
 class HTTPX::Resolver::Native < ::HTTPX::Resolver::Resolver
   extend ::Forwardable
 
-  # source://httpx//lib/httpx/resolver/native.rb#24
+  # source://httpx//lib/httpx/resolver/native.rb#27
   def initialize(family, options); end
 
-  # source://httpx//lib/httpx/resolver/native.rb#76
+  # source://httpx//lib/httpx/resolver/native.rb#82
   def <<(connection); end
 
-  # source://httpx//lib/httpx/resolver/native.rb#57
+  # source://httpx//lib/httpx/resolver/native.rb#63
   def call; end
 
-  # source://httpx//lib/httpx/resolver/native.rb#45
+  # source://httpx//lib/httpx/resolver/native.rb#47
   def close; end
 
-  # source://httpx//lib/httpx/resolver/native.rb#49
+  # source://httpx//lib/httpx/resolver/native.rb#55
   def closed?; end
 
   # source://forwardable/1.3.3/forwardable.rb#231
   def empty?(*args, **_arg1, &block); end
 
-  # source://httpx//lib/httpx/resolver/native.rb#96
+  # source://httpx//lib/httpx/resolver/native.rb#102
   def handle_socket_timeout(interval); end
 
-  # source://httpx//lib/httpx/resolver/native.rb#64
+  # source://httpx//lib/httpx/resolver/native.rb#70
   def interests; end
 
-  # source://httpx//lib/httpx/resolver/native.rb#22
+  # source://httpx//lib/httpx/resolver/native.rb#25
   def state; end
 
-  # source://httpx//lib/httpx/resolver/native.rb#88
+  # source://httpx//lib/httpx/resolver/native.rb#51
+  def terminate; end
+
+  # source://httpx//lib/httpx/resolver/native.rb#94
   def timeout; end
 
-  # source://httpx//lib/httpx/resolver/native.rb#53
+  # source://httpx//lib/httpx/resolver/native.rb#59
   def to_io; end
 
   private
@@ -2367,25 +2625,25 @@ class HTTPX::Resolver::Native < ::HTTPX::Resolver::Resolver
   # source://httpx//lib/httpx/resolver/native.rb#436
   def build_socket; end
 
-  # source://httpx//lib/httpx/resolver/native.rb#100
+  # source://httpx//lib/httpx/resolver/native.rb#106
   def calculate_interests; end
 
   # source://httpx//lib/httpx/resolver/native.rb#527
   def close_or_resolve; end
 
-  # source://httpx//lib/httpx/resolver/native.rb#108
+  # source://httpx//lib/httpx/resolver/native.rb#114
   def consume; end
 
-  # source://httpx//lib/httpx/resolver/native.rb#157
+  # source://httpx//lib/httpx/resolver/native.rb#160
   def do_retry(h, connection, interval); end
 
   # source://httpx//lib/httpx/resolver/native.rb#451
   def downgrade_socket; end
 
-  # source://httpx//lib/httpx/resolver/native.rb#200
+  # source://httpx//lib/httpx/resolver/native.rb#201
   def dread(wsize = T.unsafe(nil)); end
 
-  # source://httpx//lib/httpx/resolver/native.rb#249
+  # source://httpx//lib/httpx/resolver/native.rb#250
   def dwrite; end
 
   # source://httpx//lib/httpx/resolver/native.rb#416
@@ -2397,199 +2655,199 @@ class HTTPX::Resolver::Native < ::HTTPX::Resolver::Resolver
   # source://httpx//lib/httpx/resolver/native.rb#496
   def handle_error(error); end
 
-  # source://httpx//lib/httpx/resolver/native.rb#269
+  # source://httpx//lib/httpx/resolver/native.rb#270
   def parse(buffer); end
 
-  # source://httpx//lib/httpx/resolver/native.rb#318
+  # source://httpx//lib/httpx/resolver/native.rb#319
   def parse_addresses(addresses); end
 
   # source://httpx//lib/httpx/resolver/native.rb#515
   def reset_hostname(hostname, connection: T.unsafe(nil), reset_candidates: T.unsafe(nil)); end
 
-  # source://httpx//lib/httpx/resolver/native.rb#378
+  # source://httpx//lib/httpx/resolver/native.rb#379
   def resolve(connection = T.unsafe(nil), hostname = T.unsafe(nil)); end
 
-  # source://httpx//lib/httpx/resolver/native.rb#140
+  # source://httpx//lib/httpx/resolver/native.rb#143
   def schedule_retry; end
 
   # source://httpx//lib/httpx/resolver/native.rb#459
   def transition(nextstate); end
 end
 
-# source://httpx//lib/httpx/resolver/native.rb#11
+# source://httpx//lib/httpx/resolver/native.rb#14
 HTTPX::Resolver::Native::DEFAULTS = T.let(T.unsafe(nil), Hash)
 
-# source://httpx//lib/httpx/resolver/native.rb#18
+# source://httpx//lib/httpx/resolver/native.rb#21
 HTTPX::Resolver::Native::DNS_PORT = T.let(T.unsafe(nil), Integer)
 
 # source://httpx//lib/httpx/resolver.rb#8
 HTTPX::Resolver::RESOLVE_TIMEOUT = T.let(T.unsafe(nil), Array)
 
-# source://httpx//lib/httpx/resolver/resolver.rb#7
+# source://httpx//lib/httpx/resolver/resolver.rb#10
 class HTTPX::Resolver::Resolver
   include ::HTTPX::Callbacks
   include ::HTTPX::Loggable
 
-  # source://httpx//lib/httpx/resolver/resolver.rb#35
+  # source://httpx//lib/httpx/resolver/resolver.rb#38
   def initialize(family, options); end
 
-  # source://httpx//lib/httpx/resolver/resolver.rb#51
+  # source://httpx//lib/httpx/resolver/resolver.rb#55
   def close; end
 
-  # source://httpx//lib/httpx/resolver/resolver.rb#55
+  # source://httpx//lib/httpx/resolver/resolver.rb#59
   def closed?; end
 
-  # source://httpx//lib/httpx/resolver/resolver.rb#31
+  # source://httpx//lib/httpx/resolver/resolver.rb#34
   def current_selector=(_arg0); end
 
-  # source://httpx//lib/httpx/resolver/resolver.rb#31
+  # source://httpx//lib/httpx/resolver/resolver.rb#34
   def current_session=(_arg0); end
 
-  # source://httpx//lib/httpx/resolver/resolver.rb#43
+  # source://httpx//lib/httpx/resolver/resolver.rb#47
   def each_connection(&block); end
 
-  # source://httpx//lib/httpx/resolver/resolver.rb#67
+  # source://httpx//lib/httpx/resolver/resolver.rb#71
   def emit_addresses(connection, family, addresses, early_resolve = T.unsafe(nil)); end
 
-  # source://httpx//lib/httpx/resolver/resolver.rb#59
+  # source://httpx//lib/httpx/resolver/resolver.rb#63
   def empty?; end
 
-  # source://httpx//lib/httpx/resolver/resolver.rb#29
+  # source://httpx//lib/httpx/resolver/resolver.rb#32
   def family; end
 
-  # source://httpx//lib/httpx/resolver/resolver.rb#63
+  # source://httpx//lib/httpx/resolver/resolver.rb#67
   def inflight?; end
 
-  # source://httpx//lib/httpx/resolver/resolver.rb#33
+  # source://httpx//lib/httpx/resolver/resolver.rb#36
   def multi; end
 
-  # source://httpx//lib/httpx/resolver/resolver.rb#33
+  # source://httpx//lib/httpx/resolver/resolver.rb#36
   def multi=(_arg0); end
 
-  # source://httpx//lib/httpx/resolver/resolver.rb#29
+  # source://httpx//lib/httpx/resolver/resolver.rb#32
   def options; end
 
-  # source://httpx//lib/httpx/resolver/resolver.rb#51
+  # source://httpx//lib/httpx/resolver/resolver.rb#55
   def terminate; end
 
   private
 
-  # source://httpx//lib/httpx/resolver/resolver.rb#161
+  # source://httpx//lib/httpx/resolver/resolver.rb#165
   def close_resolver(resolver); end
 
-  # source://httpx//lib/httpx/resolver/resolver.rb#118
+  # source://httpx//lib/httpx/resolver/resolver.rb#122
   def early_resolve(connection, hostname: T.unsafe(nil)); end
 
-  # source://httpx//lib/httpx/resolver/resolver.rb#155
+  # source://httpx//lib/httpx/resolver/resolver.rb#159
   def emit_connection_error(connection, error); end
 
-  # source://httpx//lib/httpx/resolver/resolver.rb#132
+  # source://httpx//lib/httpx/resolver/resolver.rb#136
   def emit_resolve_error(connection, hostname = T.unsafe(nil), ex = T.unsafe(nil)); end
 
-  # source://httpx//lib/httpx/resolver/resolver.rb#101
+  # source://httpx//lib/httpx/resolver/resolver.rb#105
   def emit_resolved_connection(connection, addresses, early_resolve); end
 
-  # source://httpx//lib/httpx/resolver/resolver.rb#151
+  # source://httpx//lib/httpx/resolver/resolver.rb#155
   def resolve_connection(connection); end
 
-  # source://httpx//lib/httpx/resolver/resolver.rb#136
+  # source://httpx//lib/httpx/resolver/resolver.rb#140
   def resolve_error(hostname, ex = T.unsafe(nil)); end
 
-  # source://httpx//lib/httpx/resolver/resolver.rb#145
+  # source://httpx//lib/httpx/resolver/resolver.rb#149
   def set_resolver_callbacks; end
 
   class << self
-    # source://httpx//lib/httpx/resolver/resolver.rb#24
+    # source://httpx//lib/httpx/resolver/resolver.rb#27
     def multi?; end
   end
 end
 
-# source://httpx//lib/httpx/resolver/resolver.rb#18
+# source://httpx//lib/httpx/resolver/resolver.rb#21
 HTTPX::Resolver::Resolver::FAMILY_TYPES = T.let(T.unsafe(nil), Hash)
 
-# source://httpx//lib/httpx/resolver/resolver.rb#13
+# source://httpx//lib/httpx/resolver/resolver.rb#16
 HTTPX::Resolver::Resolver::RECORD_TYPES = T.let(T.unsafe(nil), Hash)
 
-# source://httpx//lib/httpx/resolver/system.rb#6
+# source://httpx//lib/httpx/resolver/system.rb#15
 class HTTPX::Resolver::System < ::HTTPX::Resolver::Resolver
-  # source://httpx//lib/httpx/resolver/system.rb#25
+  # source://httpx//lib/httpx/resolver/system.rb#34
   def initialize(options); end
 
-  # source://httpx//lib/httpx/resolver/system.rb#90
+  # source://httpx//lib/httpx/resolver/system.rb#98
   def <<(connection); end
 
-  # source://httpx//lib/httpx/resolver/system.rb#66
+  # source://httpx//lib/httpx/resolver/system.rb#74
   def call; end
 
-  # source://httpx//lib/httpx/resolver/system.rb#54
+  # source://httpx//lib/httpx/resolver/system.rb#62
   def close; end
 
-  # source://httpx//lib/httpx/resolver/system.rb#58
+  # source://httpx//lib/httpx/resolver/system.rb#66
   def closed?; end
 
-  # source://httpx//lib/httpx/resolver/system.rb#95
+  # source://httpx//lib/httpx/resolver/system.rb#103
   def early_resolve(connection, **_arg1); end
 
-  # source://httpx//lib/httpx/resolver/system.rb#50
+  # source://httpx//lib/httpx/resolver/system.rb#58
   def empty?; end
 
-  # source://httpx//lib/httpx/resolver/system.rb#100
+  # source://httpx//lib/httpx/resolver/system.rb#108
   def handle_socket_timeout(interval); end
 
-  # source://httpx//lib/httpx/resolver/system.rb#74
+  # source://httpx//lib/httpx/resolver/system.rb#82
   def interests; end
 
-  # source://httpx//lib/httpx/resolver/system.rb#46
+  # source://httpx//lib/httpx/resolver/system.rb#54
   def multi; end
 
-  # source://httpx//lib/httpx/resolver/system.rb#40
+  # source://httpx//lib/httpx/resolver/system.rb#48
   def resolvers; end
 
-  # source://httpx//lib/httpx/resolver/system.rb#23
+  # source://httpx//lib/httpx/resolver/system.rb#32
   def state; end
 
-  # source://httpx//lib/httpx/resolver/system.rb#80
+  # source://httpx//lib/httpx/resolver/system.rb#88
   def timeout; end
 
-  # source://httpx//lib/httpx/resolver/system.rb#62
+  # source://httpx//lib/httpx/resolver/system.rb#70
   def to_io; end
 
   private
 
-  # source://httpx//lib/httpx/resolver/system.rb#220
+  # source://httpx//lib/httpx/resolver/system.rb#243
   def __addrinfo_resolve(host, scheme); end
 
-  # source://httpx//lib/httpx/resolver/system.rb#174
+  # source://httpx//lib/httpx/resolver/system.rb#197
   def async_resolve(connection, hostname, scheme); end
 
-  # source://httpx//lib/httpx/resolver/system.rb#228
+  # source://httpx//lib/httpx/resolver/system.rb#251
   def close_resolver(resolver); end
 
-  # source://httpx//lib/httpx/resolver/system.rb#125
+  # source://httpx//lib/httpx/resolver/system.rb#140
   def consume; end
 
-  # source://httpx//lib/httpx/resolver/system.rb#224
+  # source://httpx//lib/httpx/resolver/system.rb#247
   def emit_connection_error(_, error); end
 
-  # source://httpx//lib/httpx/resolver/system.rb#155
-  def resolve(connection = T.unsafe(nil)); end
+  # source://httpx//lib/httpx/resolver/system.rb#173
+  def resolve(connection = T.unsafe(nil), hostname = T.unsafe(nil)); end
 
-  # source://httpx//lib/httpx/resolver/system.rb#108
+  # source://httpx//lib/httpx/resolver/system.rb#123
   def transition(nextstate); end
 
   class << self
-    # source://httpx//lib/httpx/resolver/system.rb#18
+    # source://httpx//lib/httpx/resolver/system.rb#27
     def multi?; end
   end
 end
 
-# source://httpx//lib/httpx/resolver/system.rb#14
+# source://httpx//lib/httpx/resolver/system.rb#23
 HTTPX::Resolver::System::DONE = T.let(T.unsafe(nil), Integer)
 
-# source://httpx//lib/httpx/resolver/system.rb#15
+# source://httpx//lib/httpx/resolver/system.rb#24
 HTTPX::Resolver::System::ERROR = T.let(T.unsafe(nil), Integer)
 
-# source://httpx//lib/httpx/resolver/system.rb#9
+# source://httpx//lib/httpx/resolver/system.rb#18
 HTTPX::Resolver::System::RESOLV_ERRORS = T.let(T.unsafe(nil), Array)
 
 # Defines a HTTP response is handled internally, with a few properties exposed as attributes.
@@ -2620,7 +2878,7 @@ class HTTPX::Response
 
   # writes +data+ chunk into the response body.
   #
-  # source://httpx//lib/httpx/response.rb#86
+  # source://httpx//lib/httpx/response.rb#94
   def <<(data); end
 
   # a HTTPX::Response::Body object wrapping the response body. The following methods are delegated to it:
@@ -2638,17 +2896,17 @@ class HTTPX::Response
   #
   # @return [Boolean]
   #
-  # source://httpx//lib/httpx/response.rb#110
+  # source://httpx//lib/httpx/response.rb#118
   def bodyless?; end
 
   # closes the respective +@request+ and +@body+.
   #
-  # source://httpx//lib/httpx/response.rb#75
+  # source://httpx//lib/httpx/response.rb#83
   def close; end
 
   # @return [Boolean]
   #
-  # source://httpx//lib/httpx/response.rb#123
+  # source://httpx//lib/httpx/response.rb#131
   def complete?; end
 
   # returns the HTTPX::ContentType for the response, as per what's declared in the content-type header.
@@ -2656,7 +2914,7 @@ class HTTPX::Response
   #   response.content_type #=> #<HTTPX::ContentType:xxx @header_value="text/plain">
   #   response.content_type.mime_type #=> "text/plain"
   #
-  # source://httpx//lib/httpx/response.rb#94
+  # source://httpx//lib/httpx/response.rb#102
   def content_type; end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -2668,25 +2926,25 @@ class HTTPX::Response
   #   ok_response.error #=> nil
   #   not_found_response.error #=> HTTPX::HTTPError instance, status 404
   #
-  # source://httpx//lib/httpx/response.rb#142
+  # source://httpx//lib/httpx/response.rb#150
   def error; end
 
   # marks the response as finished, freezes the headers.
   #
-  # source://httpx//lib/httpx/response.rb#104
+  # source://httpx//lib/httpx/response.rb#112
   def finish!; end
 
   # returns whether the response has been fully fetched.
   #
   # @return [Boolean]
   #
-  # source://httpx//lib/httpx/response.rb#99
+  # source://httpx//lib/httpx/response.rb#107
   def finished?; end
 
   # decodes the response payload into a ruby object **if** the payload is valid
   # "application/x-www-urlencoded" or "multipart/form-data".
   #
-  # source://httpx//lib/httpx/response.rb#168
+  # source://httpx//lib/httpx/response.rb#176
   def form; end
 
   # an HTTPX::Headers object containing the response HTTP headers.
@@ -2696,7 +2954,7 @@ class HTTPX::Response
 
   # :nocov:
   #
-  # source://httpx//lib/httpx/response.rb#128
+  # source://httpx//lib/httpx/response.rb#136
   def inspect; end
 
   # decodes the response payload into a ruby object **if** the payload is valid json.
@@ -2704,12 +2962,12 @@ class HTTPX::Response
   #   response.json #≈> { "foo" => "bar" } for "{\"foo\":\"bar\"}" payload
   #   response.json(symbolize_names: true) #≈> { foo: "bar" } for "{\"foo\":\"bar\"}" payload
   #
-  # source://httpx//lib/httpx/response.rb#162
+  # source://httpx//lib/httpx/response.rb#170
   def json(*args); end
 
   # merges headers defined in +h+ into the response headers.
   #
-  # source://httpx//lib/httpx/response.rb#81
+  # source://httpx//lib/httpx/response.rb#89
   def merge_headers(h); end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -2720,7 +2978,7 @@ class HTTPX::Response
   #   ok_response.raise_for_status #=> ok_response
   #   not_found_response.raise_for_status #=> raises HTTPX::HTTPError exception
   #
-  # source://httpx//lib/httpx/response.rb#152
+  # source://httpx//lib/httpx/response.rb#160
   def raise_for_status; end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -2745,7 +3003,7 @@ class HTTPX::Response
   # source://httpx//lib/httpx/response.rb#42
   def version; end
 
-  # source://httpx//lib/httpx/response.rb#172
+  # source://httpx//lib/httpx/response.rb#180
   def xml; end
 
   private
@@ -2757,34 +3015,39 @@ class HTTPX::Response
   #
   # @raise [Error]
   #
-  # source://httpx//lib/httpx/response.rb#186
+  # source://httpx//lib/httpx/response.rb#194
   def decode(transcoder, *args); end
+
+  # dupped initialization
+  #
+  # source://httpx//lib/httpx/response.rb#75
+  def initialize_dup(orig); end
 end
 
 # source://httpx//lib/httpx/response/body.rb#7
 class HTTPX::Response::Body
-  # source://httpx//lib/httpx/response/body.rb#15
+  # source://httpx//lib/httpx/response/body.rb#18
   def initialize(response, options); end
 
-  # source://httpx//lib/httpx/response/body.rb#150
+  # source://httpx//lib/httpx/response/body.rb#153
   def ==(other); end
 
-  # source://httpx//lib/httpx/response/body.rb#82
+  # source://httpx//lib/httpx/response/body.rb#85
   def bytesize; end
 
-  # source://httpx//lib/httpx/response/body.rb#141
+  # source://httpx//lib/httpx/response/body.rb#144
   def close; end
 
-  # source://httpx//lib/httpx/response/body.rb#46
+  # source://httpx//lib/httpx/response/body.rb#49
   def closed?; end
 
-  # source://httpx//lib/httpx/response/body.rb#128
+  # source://httpx//lib/httpx/response/body.rb#131
   def copy_to(dest); end
 
-  # source://httpx//lib/httpx/response/body.rb#87
+  # source://httpx//lib/httpx/response/body.rb#90
   def each; end
 
-  # source://httpx//lib/httpx/response/body.rb#119
+  # source://httpx//lib/httpx/response/body.rb#122
   def empty?; end
 
   # source://httpx//lib/httpx/response/body.rb#9
@@ -2793,76 +3056,83 @@ class HTTPX::Response::Body
   # source://httpx//lib/httpx/response/body.rb#12
   def encodings; end
 
-  # source://httpx//lib/httpx/response/body.rb#103
+  # source://httpx//lib/httpx/response/body.rb#106
   def filename; end
 
-  # source://httpx//lib/httpx/response/body.rb#161
+  # source://httpx//lib/httpx/response/body.rb#163
   def inspect; end
 
-  # source://httpx//lib/httpx/response/body.rb#69
+  # source://httpx//lib/httpx/response/body.rb#72
   def read(*args); end
 
-  # source://httpx//lib/httpx/response/body.rb#169
+  # source://httpx//lib/httpx/response/body.rb#171
   def rewind; end
 
-  # source://httpx//lib/httpx/response/body.rb#110
+  # source://httpx//lib/httpx/response/body.rb#113
   def to_s; end
 
-  # source://httpx//lib/httpx/response/body.rb#110
+  # source://httpx//lib/httpx/response/body.rb#113
   def to_str; end
 
-  # source://httpx//lib/httpx/response/body.rb#52
+  # source://httpx//lib/httpx/response/body.rb#55
   def write(chunk); end
+
+  protected
+
+  # source://httpx//lib/httpx/response/body.rb#14
+  def buffer; end
 
   private
 
-  # source://httpx//lib/httpx/response/body.rb#229
-  def _with_same_buffer_pos; end
-
-  # source://httpx//lib/httpx/response/body.rb#203
+  # source://httpx//lib/httpx/response/body.rb#205
   def decode_chunk(chunk); end
 
-  # source://httpx//lib/httpx/response/body.rb#40
+  # source://httpx//lib/httpx/response/body.rb#43
   def initialize_dup(other); end
 
-  # source://httpx//lib/httpx/response/body.rb#181
+  # source://httpx//lib/httpx/response/body.rb#183
   def initialize_inflaters; end
 
-  # source://httpx//lib/httpx/response/body.rb#212
+  # source://httpx//lib/httpx/response/body.rb#214
   def transition(nextstate); end
 
   class << self
-    # source://httpx//lib/httpx/response/body.rb#243
+    # source://httpx//lib/httpx/response/body.rb#232
     def initialize_inflater_by_encoding(encoding, response, **kwargs); end
   end
 end
 
 # source://httpx//lib/httpx/response/buffer.rb#9
 class HTTPX::Response::Buffer < ::SimpleDelegator
-  # source://httpx//lib/httpx/response/buffer.rb#12
+  # source://httpx//lib/httpx/response/buffer.rb#15
   def initialize(threshold_size:, bytesize: T.unsafe(nil), encoding: T.unsafe(nil)); end
 
-  # source://httpx//lib/httpx/response/buffer.rb#59
+  # source://httpx//lib/httpx/response/buffer.rb#74
+  def ==(other); end
+
+  # source://httpx//lib/httpx/response/buffer.rb#69
   def close; end
 
-  # source://httpx//lib/httpx/response/buffer.rb#27
+  # source://httpx//lib/httpx/response/buffer.rb#37
   def size; end
 
-  # source://httpx//lib/httpx/response/buffer.rb#39
+  # source://httpx//lib/httpx/response/buffer.rb#49
   def to_s; end
 
-  # source://httpx//lib/httpx/response/buffer.rb#32
+  # source://httpx//lib/httpx/response/buffer.rb#42
   def write(chunk); end
+
+  protected
+
+  # source://httpx//lib/httpx/response/buffer.rb#10
+  def buffer; end
 
   private
 
-  # source://httpx//lib/httpx/response/buffer.rb#86
-  def _with_same_buffer_pos; end
-
-  # source://httpx//lib/httpx/response/buffer.rb#20
+  # source://httpx//lib/httpx/response/buffer.rb#23
   def initialize_dup(other); end
 
-  # source://httpx//lib/httpx/response/buffer.rb#68
+  # source://httpx//lib/httpx/response/buffer.rb#102
   def try_upgrade_buffer; end
 end
 
@@ -2877,69 +3147,69 @@ end
 
 # session may be overridden by certain adapters.
 #
-# source://httpx//lib/httpx/session.rb#492
+# source://httpx//lib/httpx/session.rb#552
 HTTPX::S = HTTPX::Session
 
 # source://httpx//lib/httpx/io/ssl.rb#8
 class HTTPX::SSL < ::HTTPX::TCP
   # @return [SSL] a new instance of SSL
   #
-  # source://httpx//lib/httpx/io/ssl.rb#18
+  # source://httpx//lib/httpx/io/ssl.rb#19
   def initialize(_, _, options); end
 
   # @return [Boolean]
   #
-  # source://httpx//lib/httpx/io/ssl.rb#71
+  # source://httpx//lib/httpx/io/ssl.rb#72
   def can_verify_peer?; end
 
-  # source://httpx//lib/httpx/io/ssl.rb#94
+  # source://httpx//lib/httpx/io/ssl.rb#95
   def connect; end
 
   # @return [Boolean]
   #
-  # source://httpx//lib/httpx/io/ssl.rb#82
+  # source://httpx//lib/httpx/io/ssl.rb#83
   def connected?; end
 
   # @return [Boolean]
   #
-  # source://httpx//lib/httpx/io/ssl.rb#86
+  # source://httpx//lib/httpx/io/ssl.rb#87
   def expired?; end
 
   # in jruby, alpn_protocol may return ""
   # https://github.com/jruby/jruby-openssl/issues/287
   #
-  # source://httpx//lib/httpx/io/ssl.rb#51
+  # source://httpx//lib/httpx/io/ssl.rb#52
   def protocol; end
 
   # session_new_cb not implemented under JRuby
   #
-  # source://httpx//lib/httpx/io/ssl.rb#43
+  # source://httpx//lib/httpx/io/ssl.rb#44
   def session_new_cb(&pr); end
 
   # Sets the attribute ssl_session
   #
   # @param value the value to set the attribute ssl_session to.
   #
-  # source://httpx//lib/httpx/io/ssl.rb#16
+  # source://httpx//lib/httpx/io/ssl.rb#17
   def ssl_session=(_arg0); end
 
   # @return [Boolean]
   #
-  # source://httpx//lib/httpx/io/ssl.rb#90
+  # source://httpx//lib/httpx/io/ssl.rb#91
   def ssl_session_expired?; end
 
-  # source://httpx//lib/httpx/io/ssl.rb#119
+  # source://httpx//lib/httpx/io/ssl.rb#120
   def try_ssl_connect; end
 
-  # source://httpx//lib/httpx/io/ssl.rb#75
+  # source://httpx//lib/httpx/io/ssl.rb#76
   def verify_hostname(host); end
 
   private
 
-  # source://httpx//lib/httpx/io/ssl.rb#149
+  # source://httpx//lib/httpx/io/ssl.rb#150
   def log_transition_state(nextstate); end
 
-  # source://httpx//lib/httpx/io/ssl.rb#137
+  # source://httpx//lib/httpx/io/ssl.rb#138
   def transition(nextstate); end
 end
 
@@ -2960,25 +3230,25 @@ class HTTPX::Selector
 
   # deregisters +io+ from selectables.
   #
-  # source://httpx//lib/httpx/selector.rb#101
+  # source://httpx//lib/httpx/selector.rb#109
   def deregister(io); end
 
   # source://httpx//lib/httpx/selector.rb#25
   def each(&blk); end
 
-  # source://httpx//lib/httpx/selector.rb#76
+  # source://httpx//lib/httpx/selector.rb#83
   def each_connection(&block); end
 
   # source://forwardable/1.3.3/forwardable.rb#231
   def empty?(*args, **_arg1, &block); end
 
-  # source://httpx//lib/httpx/selector.rb#88
+  # source://httpx//lib/httpx/selector.rb#96
   def find_connection(request_uri, options); end
 
-  # source://httpx//lib/httpx/selector.rb#94
+  # source://httpx//lib/httpx/selector.rb#102
   def find_mergeable_connection(connection); end
 
-  # source://httpx//lib/httpx/selector.rb#68
+  # source://httpx//lib/httpx/selector.rb#75
   def find_resolver(options); end
 
   # source://httpx//lib/httpx/selector.rb#29
@@ -2986,29 +3256,26 @@ class HTTPX::Selector
 
   # register +io+.
   #
-  # source://httpx//lib/httpx/selector.rb#106
+  # source://httpx//lib/httpx/selector.rb#114
   def register(io); end
 
-  # source://httpx//lib/httpx/selector.rb#55
+  # source://httpx//lib/httpx/selector.rb#62
   def terminate; end
 
   private
 
-  # source://httpx//lib/httpx/selector.rb#209
-  def emit_error(e); end
-
-  # source://httpx//lib/httpx/selector.rb#191
+  # source://httpx//lib/httpx/selector.rb#203
   def next_timeout; end
 
-  # source://httpx//lib/httpx/selector.rb#114
+  # source://httpx//lib/httpx/selector.rb#122
   def select(interval, &block); end
 
-  # source://httpx//lib/httpx/selector.rb#127
+  # source://httpx//lib/httpx/selector.rb#135
   def select_many(interval, &block); end
 
   # @yield [io]
   #
-  # source://httpx//lib/httpx/selector.rb#165
+  # source://httpx//lib/httpx/selector.rb#175
   def select_one(interval); end
 end
 
@@ -3118,91 +3385,89 @@ class HTTPX::Session
 
   # sends an array of HTTPX::Request objects
   #
-  # source://httpx//lib/httpx/session.rb#296
+  # source://httpx//lib/httpx/session.rb#298
   def _send_requests(requests, selector); end
 
   # returns a set of HTTPX::Request objects built from the given +args+ and +options+.
   #
   # @raise [ArgumentError]
   #
-  # source://httpx//lib/httpx/session.rb#244
+  # source://httpx//lib/httpx/session.rb#247
   def build_requests(*args, params); end
 
   # coalesces +conn2+ into +conn1+. if +conn1+ was loaded from the connection pool
   # (it is known via +from_pool+), then it adds its to the +selector+.
   #
-  # source://httpx//lib/httpx/session.rb#397
+  # source://httpx//lib/httpx/session.rb#396
   def coalesce_connections(conn1, conn2, selector, from_pool); end
 
-  # source://httpx//lib/httpx/session.rb#203
+  # source://httpx//lib/httpx/session.rb#207
   def deactivate(selector); end
 
-  # source://httpx//lib/httpx/session.rb#274
+  # source://httpx//lib/httpx/session.rb#276
   def do_init_connection(connection, selector); end
 
   # returns the corresponding HTTP::Response to the given +request+ if it has been received.
   #
-  # source://httpx//lib/httpx/session.rb#222
+  # source://httpx//lib/httpx/session.rb#221
   def fetch_response(request, _selector, _options); end
 
-  # source://httpx//lib/httpx/session.rb#383
+  # source://httpx//lib/httpx/session.rb#382
   def find_resolver_for(connection, selector); end
 
-  # source://httpx//lib/httpx/session.rb#410
+  # source://httpx//lib/httpx/session.rb#411
   def get_current_selector; end
 
   # callback executed when an HTTP/2 promise frame has been received.
   #
-  # source://httpx//lib/httpx/session.rb#216
+  # source://httpx//lib/httpx/session.rb#215
   def on_promise(_, stream); end
 
-  # source://httpx//lib/httpx/session.rb#376
+  # source://httpx//lib/httpx/session.rb#375
   def on_resolver_close(resolver, selector); end
 
-  # source://httpx//lib/httpx/session.rb#356
+  # source://httpx//lib/httpx/session.rb#358
   def on_resolver_connection(connection, selector); end
-
-  # callback executed when a response for a given request has been received.
-  #
-  # source://httpx//lib/httpx/session.rb#211
-  def on_response(request, response); end
 
   # returns the array of HTTPX::Response objects corresponding to the array of HTTPX::Request +requests+.
   #
-  # source://httpx//lib/httpx/session.rb#303
+  # source://httpx//lib/httpx/session.rb#305
   def receive_requests(requests, selector); end
 
-  # source://httpx//lib/httpx/session.rb#337
+  # source://httpx//lib/httpx/session.rb#339
   def resolve_connection(connection, selector); end
 
-  # source://httpx//lib/httpx/session.rb#422
+  # source://httpx//lib/httpx/session.rb#423
   def selector_store; end
 
   # sends the +request+ to the corresponding HTTPX::Connection
   #
-  # source://httpx//lib/httpx/session.rb#227
+  # source://httpx//lib/httpx/session.rb#228
   def send_request(request, selector, options = T.unsafe(nil)); end
 
   # sends an array of HTTPX::Request +requests+, returns the respective array of HTTPX::Response objects.
   #
-  # source://httpx//lib/httpx/session.rb#279
+  # source://httpx//lib/httpx/session.rb#281
   def send_requests(*requests); end
 
-  # source://httpx//lib/httpx/session.rb#414
+  # source://httpx//lib/httpx/session.rb#415
   def set_current_selector(selector); end
 
-  # source://httpx//lib/httpx/session.rb#269
+  # source://httpx//lib/httpx/session.rb#272
   def set_request_callbacks(request); end
 
   class << self
+    # source://httpx//lib/httpx/session.rb#526
+    def after_fork; end
+
     # Returns the value of attribute default_options.
     #
-    # source://httpx//lib/httpx/session.rb#436
+    # source://httpx//lib/httpx/session.rb#437
     def default_options; end
 
     # @private
     #
-    # source://httpx//lib/httpx/session.rb#438
+    # source://httpx//lib/httpx/session.rb#439
     def inherited(klass); end
 
     # returns a new HTTPX::Session instance, with the plugin pointed by +pl+ loaded.
@@ -3210,14 +3475,23 @@ class HTTPX::Session
     #   session_with_retries = session.plugin(:retries)
     #   session_with_custom = session.plugin(CustomPlugin)
     #
-    # source://httpx//lib/httpx/session.rb#450
+    # source://httpx//lib/httpx/session.rb#451
     def plugin(pl, options = T.unsafe(nil), &block); end
   end
 end
 
+# source://httpx//lib/httpx/session.rb#532
+module HTTPX::Session::ForkTracker
+  # source://httpx//lib/httpx/session.rb#533
+  def _fork; end
+end
+
+# source://httpx//lib/httpx/session.rb#523
+HTTPX::Session::INSTANCES = T.let(T.unsafe(nil), ObjectSpace::WeakMap)
+
 # Error raised when there was a timeout while waiting for the HTTP/2 settings frame from the server.
 #
-# source://httpx//lib/httpx/errors.rb#75
+# source://httpx//lib/httpx/errors.rb#66
 class HTTPX::SettingsTimeoutError < ::HTTPX::TimeoutError; end
 
 # source://httpx//lib/httpx/io/tcp.rb#7
@@ -3305,16 +3579,16 @@ class HTTPX::TCP
 
   private
 
-  # source://httpx//lib/httpx/io/tcp.rb#176
+  # source://httpx//lib/httpx/io/tcp.rb#181
   def build_socket; end
 
-  # source://httpx//lib/httpx/io/tcp.rb#192
+  # source://httpx//lib/httpx/io/tcp.rb#197
   def do_transition(nextstate); end
 
-  # source://httpx//lib/httpx/io/tcp.rb#197
+  # source://httpx//lib/httpx/io/tcp.rb#202
   def log_transition_state(nextstate); end
 
-  # source://httpx//lib/httpx/io/tcp.rb#181
+  # source://httpx//lib/httpx/io/tcp.rb#186
   def transition(nextstate); end
 
   # source://httpx//lib/httpx/io/tcp.rb#98
@@ -3355,73 +3629,74 @@ class HTTPX::Timers
   # source://httpx//lib/httpx/timers.rb#5
   def initialize; end
 
+  # @raise [Error]
+  #
   # source://httpx//lib/httpx/timers.rb#9
   def after(interval_in_secs, cb = T.unsafe(nil), &blk); end
 
-  # source://httpx//lib/httpx/timers.rb#40
+  # source://httpx//lib/httpx/timers.rb#41
   def fire(error = T.unsafe(nil)); end
 
-  # source://httpx//lib/httpx/timers.rb#32
+  # source://httpx//lib/httpx/timers.rb#31
   def wait_interval; end
+
+  private
+
+  # source://httpx//lib/httpx/timers.rb#56
+  def drop_elapsed!(elapsed_time = T.unsafe(nil)); end
 end
 
-# source://httpx//lib/httpx/timers.rb#62
+# source://httpx//lib/httpx/timers.rb#77
 class HTTPX::Timers::Interval
   include ::Comparable
 
   # @return [Interval] a new instance of Interval
   #
-  # source://httpx//lib/httpx/timers.rb#67
+  # source://httpx//lib/httpx/timers.rb#82
   def initialize(interval); end
 
-  # source://httpx//lib/httpx/timers.rb#95
+  # source://httpx//lib/httpx/timers.rb#101
   def <<(callback); end
 
-  # source://httpx//lib/httpx/timers.rb#81
+  # source://httpx//lib/httpx/timers.rb#87
   def <=>(other); end
 
-  # source://httpx//lib/httpx/timers.rb#85
+  # source://httpx//lib/httpx/timers.rb#91
   def ==(other); end
 
-  # source://httpx//lib/httpx/timers.rb#77
-  def cancel; end
-
-  # source://httpx//lib/httpx/timers.rb#99
+  # source://httpx//lib/httpx/timers.rb#105
   def delete(callback); end
 
-  # source://httpx//lib/httpx/timers.rb#112
+  # source://httpx//lib/httpx/timers.rb#117
   def elapse(elapsed); end
 
   # @return [Boolean]
   #
-  # source://httpx//lib/httpx/timers.rb#108
-  def elapsed?; end
+  # source://httpx//lib/httpx/timers.rb#113
+  def elapsed?(elapsed = T.unsafe(nil)); end
 
   # Returns the value of attribute interval.
   #
-  # source://httpx//lib/httpx/timers.rb#65
+  # source://httpx//lib/httpx/timers.rb#80
   def interval; end
 
   # @return [Boolean]
   #
-  # source://httpx//lib/httpx/timers.rb#104
+  # source://httpx//lib/httpx/timers.rb#109
   def no_callbacks?; end
 
-  # source://httpx//lib/httpx/timers.rb#73
-  def on_empty(&blk); end
-
-  # source://httpx//lib/httpx/timers.rb#91
+  # source://httpx//lib/httpx/timers.rb#97
   def to_f; end
 end
 
-# source://httpx//lib/httpx/timers.rb#51
+# source://httpx//lib/httpx/timers.rb#66
 class HTTPX::Timers::Timer
   # @return [Timer] a new instance of Timer
   #
-  # source://httpx//lib/httpx/timers.rb#52
+  # source://httpx//lib/httpx/timers.rb#67
   def initialize(interval, callback); end
 
-  # source://httpx//lib/httpx/timers.rb#57
+  # source://httpx//lib/httpx/timers.rb#72
   def cancel; end
 end
 
@@ -3814,42 +4089,42 @@ HTTPX::Transcoder::JSON::JSON_REGEX = T.let(T.unsafe(nil), Regexp)
 # source://httpx//lib/httpx/transcoder/multipart/encoder.rb#4
 module HTTPX::Transcoder::Multipart; end
 
-# source://httpx//lib/httpx/transcoder/multipart/decoder.rb#20
+# source://httpx//lib/httpx/transcoder/multipart/decoder.rb#21
 class HTTPX::Transcoder::Multipart::Decoder
   include ::HTTPX::Utils
 
   # @return [Decoder] a new instance of Decoder
   #
-  # source://httpx//lib/httpx/transcoder/multipart/decoder.rb#30
+  # source://httpx//lib/httpx/transcoder/multipart/decoder.rb#31
   def initialize(response); end
 
   # @raise [Error]
   #
-  # source://httpx//lib/httpx/transcoder/multipart/decoder.rb#43
+  # source://httpx//lib/httpx/transcoder/multipart/decoder.rb#44
   def call(response, *_arg1); end
 
   private
 
-  # source://httpx//lib/httpx/transcoder/multipart/decoder.rb#57
+  # source://httpx//lib/httpx/transcoder/multipart/decoder.rb#58
   def parse; end
 end
 
-# source://httpx//lib/httpx/transcoder/multipart/decoder.rb#24
+# source://httpx//lib/httpx/transcoder/multipart/decoder.rb#25
 HTTPX::Transcoder::Multipart::Decoder::BOUNDARY_RE = T.let(T.unsafe(nil), Regexp)
 
-# source://httpx//lib/httpx/transcoder/multipart/decoder.rb#23
+# source://httpx//lib/httpx/transcoder/multipart/decoder.rb#24
 HTTPX::Transcoder::Multipart::Decoder::CRLF = T.let(T.unsafe(nil), String)
 
-# source://httpx//lib/httpx/transcoder/multipart/decoder.rb#26
+# source://httpx//lib/httpx/transcoder/multipart/decoder.rb#27
 HTTPX::Transcoder::Multipart::Decoder::MULTIPART_CONTENT_DISPOSITION = T.let(T.unsafe(nil), Regexp)
 
-# source://httpx//lib/httpx/transcoder/multipart/decoder.rb#27
+# source://httpx//lib/httpx/transcoder/multipart/decoder.rb#28
 HTTPX::Transcoder::Multipart::Decoder::MULTIPART_CONTENT_ID = T.let(T.unsafe(nil), Regexp)
 
-# source://httpx//lib/httpx/transcoder/multipart/decoder.rb#25
+# source://httpx//lib/httpx/transcoder/multipart/decoder.rb#26
 HTTPX::Transcoder::Multipart::Decoder::MULTIPART_CONTENT_TYPE = T.let(T.unsafe(nil), Regexp)
 
-# source://httpx//lib/httpx/transcoder/multipart/decoder.rb#28
+# source://httpx//lib/httpx/transcoder/multipart/decoder.rb#29
 HTTPX::Transcoder::Multipart::Decoder::WINDOW_SIZE = T.let(T.unsafe(nil), Integer)
 
 # source://httpx//lib/httpx/transcoder/multipart/encoder.rb#5
@@ -3878,18 +4153,18 @@ class HTTPX::Transcoder::Multipart::Encoder
 
   private
 
-  # source://httpx//lib/httpx/transcoder/multipart/encoder.rb#79
+  # source://httpx//lib/httpx/transcoder/multipart/encoder.rb#80
   def header_part(key, content_type, filename); end
 
-  # source://httpx//lib/httpx/transcoder/multipart/encoder.rb#87
+  # source://httpx//lib/httpx/transcoder/multipart/encoder.rb#88
   def read_chunks(buffer, length = T.unsafe(nil)); end
 
   # if there's a current part to read from, tries to read a chunk.
   #
-  # source://httpx//lib/httpx/transcoder/multipart/encoder.rb#104
+  # source://httpx//lib/httpx/transcoder/multipart/encoder.rb#105
   def read_from_part(max_length = T.unsafe(nil)); end
 
-  # source://httpx//lib/httpx/transcoder/multipart/encoder.rb#53
+  # source://httpx//lib/httpx/transcoder/multipart/encoder.rb#54
   def to_parts(form); end
 end
 
@@ -4080,8 +4355,15 @@ HTTPX::VERSION = T.let(T.unsafe(nil), String)
 
 # Error raised when there was a timeout while sending a request from the server.
 #
-# source://httpx//lib/httpx/errors.rb#72
+# source://httpx//lib/httpx/errors.rb#63
 class HTTPX::WriteTimeoutError < ::HTTPX::RequestTimeoutError; end
+
+module Process
+  extend ::SQLite3::ForkSafety::CoreExt
+  extend ::HTTPX::Session::ForkTracker
+  extend ::ActiveSupport::ForkTracker::CoreExt
+  extend ::FFI::ModernForkTracking
+end
 
 # source://httpx//lib/httpx/adapters/webmock.rb#3
 module WebMock
@@ -4177,13 +4459,13 @@ module WebMock::HttpLibAdapters; end
 # source://httpx//lib/httpx/adapters/webmock.rb#6
 WebMock::HttpLibAdapters::HTTP_REASONS = T.let(T.unsafe(nil), Hash)
 
-# source://httpx//lib/httpx/adapters/webmock.rb#152
+# source://httpx//lib/httpx/adapters/webmock.rb#153
 class WebMock::HttpLibAdapters::HttpxAdapter < ::WebMock::HttpLibAdapter
   class << self
-    # source://httpx//lib/httpx/adapters/webmock.rb#165
+    # source://httpx//lib/httpx/adapters/webmock.rb#166
     def disable!; end
 
-    # source://httpx//lib/httpx/adapters/webmock.rb#156
+    # source://httpx//lib/httpx/adapters/webmock.rb#157
     def enable!; end
   end
 end

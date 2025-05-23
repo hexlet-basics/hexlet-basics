@@ -1,4 +1,5 @@
 source "https://rubygems.org"
+ruby file: ".ruby-version"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.0.1"
@@ -80,8 +81,7 @@ group :development, :test, :staging do
   gem "factory_bot_rails"
   gem "faker"
 
-  # https://github.com/Shopify/tapioca/pull/2129/files
-  gem "tapioca", require: false
+gem "tapioca", ">= 0.17.0", require: false
   gem "bullet"
 end
 
@@ -111,12 +111,11 @@ group :production do
 end
 
 gem "aasm"
+gem "acts-as-taggable-on"
 gem "webmock"
 gem "active_form_model"
 gem "aws-sdk-s3"
 gem "bcrypt"
-gem "dry-auto_inject"
-gem "dry-container"
 gem "enumerize"
 gem "gon"
 gem "googleauth"

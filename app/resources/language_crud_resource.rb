@@ -1,7 +1,5 @@
-class LanguageCrudResource
-  include Rails.application.routes.url_helpers
-  include Alba::Resource
-  include Typelizer::DSL
+class LanguageCrudResource < ApplicationResource
+  urls =  Rails.application.routes.url_helpers
 
   typelize_from Language
   root_key :language
@@ -14,7 +12,7 @@ class LanguageCrudResource
       # cover_signed_id: object.cover.signed_id,
       # state_events: object.aasm.events_for_select,
       cover_thumb_url: object.cover.attached? ?
-        rails_representation_url(object.cover.variant(:thumb)) : nil,
+      urls.rails_representation_url(object.cover.variant(:thumb)) : nil,
       repository_url: object.repository_url,
       slug: object.slug
     }

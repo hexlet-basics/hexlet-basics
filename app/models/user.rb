@@ -33,6 +33,8 @@ class User < ApplicationRecord
   include UserRepository
   include AASM
 
+  acts_as_taggable_on :tags
+
   has_secure_password validations: false
 
   def self.ransackable_attributes(_auth_object = nil)
@@ -74,7 +76,7 @@ class User < ApplicationRecord
   has_many :survey_scenarios, through: :survey_scenario_members, source: :scenario
 
   has_one :book_request
-  has_one :lead
+  has_many :leads
 
   enum :contact_method, { telegram: "telegram", phone: "phone", whatsapp: "whatsapp" }, suffix: true
 

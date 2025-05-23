@@ -31,6 +31,12 @@ module AuthConcern
     redirect_to new_session_path
   end
 
+  def guests_only!
+    return if !signed_in?
+
+    redirect_to root_path
+  end
+
   def authenticate_admin!
     redirect_to root_path unless current_user.admin?
   end

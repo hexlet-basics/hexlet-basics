@@ -11,6 +11,9 @@ class Web::Scenarios::Surveys::AnswersController < Web::Scenarios::ApplicationCo
     answer.survey_item_id = params[:survey_answer][:survey_item_id]
     answer.save!
 
+    current_user.tag_list.add(answer.survey_item.tag_list)
+    current_user.save!
+
     next_survey = member.next_survey
 
     event_data = {

@@ -22,6 +22,8 @@
 class Survey::Item < ApplicationRecord
   include AASM
 
+  acts_as_taggable_on :tags
+
   belongs_to :survey
 
   enum :state, { active: "active", archived: "archived" }

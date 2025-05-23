@@ -1,6 +1,6 @@
-# frozen_string_literal: true
-
 class Web::SessionsController < Web::ApplicationController
+  before_action :guests_only!, only: [ :new, :create ]
+
   def new
     sign_in_form = SignInForm.new
 

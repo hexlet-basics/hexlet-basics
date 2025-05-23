@@ -14,7 +14,7 @@ class Web::Admin::SurveysController < Web::Admin::ApplicationController
     survey = Admin::SurveyForm.new
 
     render inertia: true, props: {
-      surveysItems: Survey::ItemCrudResource.new(Survey::Item.all),
+      surveyItems: [],
       surveyDto: SurveyCrudResource.new(survey)
     }
   end
@@ -24,7 +24,7 @@ class Web::Admin::SurveysController < Web::Admin::ApplicationController
 
     render inertia: true, props: {
       surveyDto: SurveyCrudResource.new(survey),
-      surveysItems: Survey::ItemCrudResource.new(Survey::Item.order(order: :asc))
+      surveyItems: Survey::ItemCrudResource.new(survey.items)
     }
   end
 

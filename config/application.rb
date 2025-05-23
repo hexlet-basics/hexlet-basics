@@ -23,7 +23,7 @@ require "rails/test_unit/railtie"
 Bundler.require(*Rails.groups)
 
 load File.expand_path("../app/lib/configus.rb", __dir__)
-load File.expand_path("../lib/app_host.rb", __dir__)
+load File.expand_path("../app/lib/app_host.rb", __dir__)
 
 module HexletBasics
   class Application < Rails::Application

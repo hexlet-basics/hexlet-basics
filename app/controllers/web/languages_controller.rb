@@ -87,7 +87,10 @@ class Web::LanguagesController < Web::ApplicationController
       return
     end
 
-    render inertia: true, props: {}
+    render inertia: true, props: {
+      courseLandingPage: Language::LandingPageResource.new(landing_page),
+      lead: LeadForm.new
+    }
   end
 
   private

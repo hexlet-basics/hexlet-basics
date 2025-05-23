@@ -3,6 +3,7 @@ import type { SharedProps } from "@/types";
 import type { FlashVariants } from "@/types";
 import { usePage } from "@inertiajs/react";
 import { Alert } from "react-bootstrap";
+import XssContent from "./XssContent";
 
 export default function XFlash() {
   const { flash } = usePage<SharedProps>().props;
@@ -24,7 +25,7 @@ export default function XFlash() {
               className="my-3 border-0"
               variant={variant}
             >
-              {flash[key]}
+              <XssContent>{flash[key]}</XssContent>
             </Alert>
           ),
       )}

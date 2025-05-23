@@ -25,10 +25,10 @@
 FactoryBot.define do
   factory :lead do
     user { nil }
-    email { "MyString" }
-    phone { "MyString" }
-    telegram { "MyString" }
-    whatsapp { "MyString" }
-    survey_answers_data { "MyText" }
+    email { Faker::Internet.email }
+    phone { Faker::PhoneNumber.cell_phone }
+    telegram { Faker::Internet.username }
+    whatsapp { Faker::PhoneNumber.cell_phone }
+    survey_answers_data { [] }
   end
 end

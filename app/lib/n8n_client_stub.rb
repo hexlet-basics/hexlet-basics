@@ -1,11 +1,4 @@
-class N8nClientStub
-  extend T::Sig
-
-  sig do
-    params(
-      serializer: WorkflowLeadSerializer
-    ).returns(T::Hash[Symbol, T.untyped])
-  end
+class N8nClientStub < N8nClientInterface
   def trigger_lead_created_workflow(serializer)
     {}
   end

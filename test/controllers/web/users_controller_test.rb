@@ -3,6 +3,7 @@ require "test_helper"
 class Web::UsersControllerTest < ActionDispatch::IntegrationTest
   test "new" do
     get new_user_url
+    assert_response :success
   end
 
   test "create" do
