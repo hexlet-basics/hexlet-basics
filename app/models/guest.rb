@@ -11,6 +11,10 @@ class Guest
     []
   end
 
+  def should_be_lead
+    false
+  end
+
   def created_at; end
 
   def email; end
