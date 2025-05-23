@@ -19,14 +19,6 @@ class Web::Account::ProfilesController < Web::Account::ApplicationController
     if form.update(params[:user])
       f(:success)
 
-      # if form.contact_value?
-      #   result = Lead.create_or_update(form)
-      #   if result[:event]
-      #     publish_event(result[:event], current_user)
-      #     event_to_js(result[:event])
-      #   end
-      # end
-
       redirect_to edit_account_profile_path
     else
       f(:error)

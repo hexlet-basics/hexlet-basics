@@ -378,7 +378,7 @@ export default function Show({
                       </div>
                       <a
                         className="btn btn-secondary"
-                        href="https://ttttt.me/HexletLearningBot"
+                        href="https://t.me/HexletLearningBot"
                         target="_blank"
                         rel="noopener noreferrer"
                       >

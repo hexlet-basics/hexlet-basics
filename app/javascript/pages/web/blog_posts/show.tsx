@@ -80,7 +80,7 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
                           </p>
                           <a
                             className="link-light text-decoration-none stretched-link icon-link icon-link-hover"
-                            href="https://ttttt.me/HexletLearningBot"
+                            href="https://t.me/HexletLearningBot"
                             target="_blank"
                             rel="noopener noreferrer"
                           >

@@ -118,7 +118,7 @@ export function XInput({ name, model, as, ...props }: XFormControlProps) {
   // @ts-expect-error
   const label = tAr(path, tAm(path));
 
-  const controlClasses = cn({
+  const controlClasses = cn('shadow-sm', {
     "is-invalid": errors.length > 0,
   });
 
@@ -367,7 +367,7 @@ export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
   // @ts-expect-error
   const label = tAr(path, tAm(path));
 
-  const controlClasses = cn("w-100", {
+  const controlClasses = cn("w-100 shadow-sm", {
     "is-invalid": errors.length > 0,
   });
 

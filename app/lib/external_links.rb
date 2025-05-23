@@ -35,7 +35,7 @@ class ExternalLinks
   end
 
   def self.telegram_community_curl
-    "https://ttttt.me/HexletLearningBot"
+    "https://t.me/HexletLearningBot"
   end
 
   # def self.method_missing(name)

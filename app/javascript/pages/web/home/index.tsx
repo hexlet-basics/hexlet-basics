@@ -18,17 +18,19 @@ import { getImageUrl } from "@/images";
 import codeImagePathEn from "@/images/code-basics-coding-en.png";
 import codeImagePathRu from "@/images/code-basics-coding-ru.png";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
-import type { SharedProps } from "@/types";
+import type { LeadCrud, SharedProps } from "@/types";
 import { Head, usePage } from "@inertiajs/react";
 import { Accordion, Col, Container, Row } from "react-bootstrap";
 import MarkdownViewer from "@/components/MarkdownViewer";
 import type { Question, FAQPage, WithContext } from "schema-dts";
+import LeadFormBlock from "@/components/LeadFormBlock";
 
 type Props = PropsWithChildren & {
   blogPosts: BlogPost[];
   courseMembersByCourseId: LanguageMember[];
   reviews: Review[];
   newUser: User;
+  lead: LeadCrud;
 };
 
 const sequence = [
@@ -100,6 +102,7 @@ const reviews = {
 export default function Index({
   blogPosts,
   newUser,
+  lead,
   courseMembersByCourseId,
 }: Props) {
   const { t } = useTranslation();
@@ -308,28 +311,35 @@ export default function Index({
       )}
 
       {user.guest && (
-        <div className="">
-          <div className="container">
-            <div className="row align-items-center g-lg-5 py-5">
-              <div className="col-lg-7 fw-bold display-4">
-                {t("home.index.join")}
-                {/* {cache([I18n.locale], { expiresIn: "1d" }, () => ( */}
-                {/*   <> */}
-                {/*     <h1 className="display-4 fw-bold lh-1 mb-3"> */}
-                {/*       {t(".join", { count: User.count })} */}
-                {/*     </h1> */}
-                {/*     Uncomment this if the paragraph is needed */}
-                {/*     <p className="col-lg-10 fs-4">Forever free.</p> */}
-                {/*   </> */}
-                {/* ))} */}
-              </div>
-              <div className="col-md-10 mx-auto col-lg-5 d-flex flex-column bg-body-tertiary p-4 p-md-5 border rounded-3">
+        <Container>
+          <Row className="align-items-center py-5">
+            <Col className="col-12 col-lg-7 fw-bold display-4 mb-5">
+              {t("home.index.join")}
+            </Col>
+            <Col className="col-12 col-lg-5 mx-auto d-flex flex-column">
+              <div className="bg-body-tertiary p-4 p-md-5 border rounded-3">
                 <SignUpFormBlock user={newUser} />
               </div>
-            </div>
-          </div>
-        </div>
+            </Col>
+          </Row>
+        </Container>
       )}
+
+      {!user.guest && (
+        <Container>
+          <Row className="align-items-center py-5">
+            <Col className="col-12 col-lg-7 fw-bold display-4 mb-5">
+              {t("home.index.consultation")}
+            </Col>
+            <Col className="col-12 col-lg-5 mx-auto d-flex flex-column">
+              <div className="bg-body-tertiary p-4 p-md-5 border rounded-3">
+                <LeadFormBlock lead={lead} />
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      )}
+
     </ApplicationLayout>
   );
 }

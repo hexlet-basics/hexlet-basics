@@ -7,7 +7,7 @@ ru:
     state_events: Варианты действий
     tos: Содержание
     community_url: |
-      https://ttttt.me/HexletLearningBot
+      https://t.me/HexletLearningBot
     confirm: "Убеждаемся, что мы делаем то что действительно хотим. Хотим?"
     organization:
       description: Автоматизированная система для обучения программированию в браузере. Текстовые курсы + удобный тренажер.

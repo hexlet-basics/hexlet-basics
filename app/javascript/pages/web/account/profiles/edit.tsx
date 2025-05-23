@@ -25,9 +25,6 @@ export default function Edit(props: Props) {
 
   const confirmDeleting = useConfirmation();
 
-  const contactMethodEnum = tAr('attributes.user.contact_method/values', { returnObjects: true })
-  const contactMethodOptions = enumToOptions(contactMethodEnum);
-
   return (
     <ApplicationLayout>
       <Container className="mt-5">
@@ -46,13 +43,6 @@ export default function Edit(props: Props) {
                 >
                   <XInput name="first_name" autoComplete="name" />
                   <XInput name="last_name" autoComplete="name" />
-                  <XSelect
-                    name="contact_method"
-                    labelField="name"
-                    valueField="id"
-                    items={contactMethodOptions}
-                  />
-                  <XInput name="contact_value" />
                   <Submit className="btn w-100 btn-lg btn-primary mb-3">
                     {tHelpers("submit.save")}
                   </Submit>

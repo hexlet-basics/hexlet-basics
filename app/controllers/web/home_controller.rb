@@ -131,7 +131,8 @@ class Web::HomeController < Web::ApplicationController
       landingPagesByLocale: language_landing_page_resources_by_locale,
       lessonsByLocaleAndLanguageId: lesson_resources_by_locale_and_language_id,
       blogPostsByLocale: blog_post_resources_by_locale,
-      categoriesByLocale: language_category_resources_by_locale
+      categoriesByLocale: language_category_resources_by_locale,
+      lead: LeadCrudResource.new(LeadForm.new)
     }
   end
 end

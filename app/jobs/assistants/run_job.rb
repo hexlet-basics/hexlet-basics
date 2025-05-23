@@ -58,7 +58,7 @@ class Assistants::RunJob < ApplicationJob
       Отвечай на языке: #{I18n.t(I18n.locale, scope: 'common.languages')}. Отвечай коротко.
 
       Если во время обсуждения обнаружится ошибка в теории или задании (описании, решении, тестах),
-      то порекомендуй написать об этом в сообществе https://ttttt.me/HexletLearningBot. Там сидит команда проекта.
+      то порекомендуй написать об этом в сообществе https://t.me/HexletLearningBot. Там сидит команда проекта.
       "
 
     m = lesson_member.messages.build

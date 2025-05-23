@@ -12,6 +12,7 @@ import XssContent from "@/components/XssContent";
 import { XForm, XInput, XSelect } from "@/components/forms";
 import { Submit } from "use-inertia-form";
 import { enumToOptions } from "@/lib/utils";
+import LeadFormBlock from "@/components/LeadFormBlock";
 
 type Props = {
   courseLandingPage: LanguageLandingPage;
@@ -23,9 +24,6 @@ export default function Success(props: Props) {
   const { t: tAr } = useTranslation("activerecord");
   const { t: tHelpers } = useTranslation("helpers");
   const { courseLandingPage, lead } = props
-
-  const contactMethodEnum = tAr('attributes.user.contact_method/values', { returnObjects: true })
-  const contactMethodOptions = enumToOptions(contactMethodEnum);
 
   return (
     <ApplicationLayout>
@@ -62,20 +60,9 @@ export default function Success(props: Props) {
             </div>
           </Col>
           <Col className="col-lg-5">
-            <Card className="h-100 p-4">
+            <Card className="bg-body-tertiary h-100 border p-4">
               <Card.Body>
-                <XForm className="d-flex flex-column h-100" model="lead" data={lead} to={Routes.leads_path()}>
-                  <XSelect
-                    name="contact_method"
-                    labelField="name"
-                    valueField="id"
-                    items={contactMethodOptions}
-                  />
-                  <XInput name="contact_value" />
-                  <Submit className="btn d-block btn-lg btn-primary mt-auto">
-                    {tHelpers("send")}
-                  </Submit>
-                </XForm>
+                <LeadFormBlock lead={lead} />
               </Card.Body>
             </Card>
           </Col>
