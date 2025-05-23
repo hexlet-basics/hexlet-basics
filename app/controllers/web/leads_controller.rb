@@ -3,7 +3,7 @@ class Web::LeadsController < Web::ApplicationController
 
   def new
     seo_tags = {
-      title: t(".header"),
+      title: t(".header")
       # description: t(".meta.description")
     }
     set_meta_tags seo_tags
