@@ -1,8 +1,10 @@
 class Web::LeadsController < Web::ApplicationController
+  before_action :authenticate_user!
+
   def new
     seo_tags = {
-      title: t(".title"),
-      description: t(".meta.description")
+      title: t(".header"),
+      # description: t(".meta.description")
     }
     set_meta_tags seo_tags
 
