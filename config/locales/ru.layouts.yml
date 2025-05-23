@@ -80,6 +80,6 @@ ru:
       unsupported_browser_warning:
         unsupported_browser_warning: Ваш браузер устарел :( Некоторые возможности отключены.
       contact_method_requesting:
-        go: Заполнить →
+        go: Заполнить&nbsp;→
         description_html: |
           Чтобы мы могли связаться с вами, укажите предпочительный способ связи

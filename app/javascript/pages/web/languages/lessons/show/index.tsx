@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import App from "./components/App.tsx";
 import { useAppSelector } from "./slices/index.ts";
 import type { LessonSharedProps } from "./types.ts";
+import ContactMethodRequestingBlock from "@/pages/layouts/blocks/ContactMethodRequestingBlock.tsx";
 
 export default function Index() {
   const {
@@ -23,6 +24,7 @@ export default function Index() {
     course,
     lessonMember,
     lesson,
+    shouldAddContactMethod,
     canCreateAssistantMessage,
     previousMessages,
     // auth: { user },
@@ -113,6 +115,11 @@ export default function Index() {
 
                     <div className="hexlet-basics-content">
                       <h1 className="h2">{`${landingPage.header}: ${lesson.name}`}</h1>
+
+                      {shouldAddContactMethod && (
+                        <div className="mt-3"><ContactMethodRequestingBlock /></div>
+                      )}
+
                       <MarkdownViewer allowHtml>{lesson.theory || ""}</MarkdownViewer>
                       <h2 className="h3">
                         {t("languages.lessons.show.instructions")}

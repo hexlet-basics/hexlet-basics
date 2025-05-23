@@ -4,7 +4,7 @@ export default function XssContent(
   props: PropsWithChildren & HTMLAttributes<HTMLDivElement>,
 ) {
   return (
-    <div
+    <span
       className={props.className}
       // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
       dangerouslySetInnerHTML={{ __html: props.children! }}
