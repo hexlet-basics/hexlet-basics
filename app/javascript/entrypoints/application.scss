@@ -2,29 +2,29 @@
 @import "flag-icons/css/flag-icons.min.css";
 // @import 'devicon/devicon.min.css';
 
-// @import "bootstrap/scss/functions";
-// @import "bootstrap/scss/variables";
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+
+@import "bootstrap/scss/variables-dark";
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/root";
 //
-// @import "bootstrap/scss/variables-dark";
-// @import "bootstrap/scss/maps";
-// @import "bootstrap/scss/mixins";
-// @import "bootstrap/scss/root";
-//
-// @import "bootstrap/scss/utilities";
+@import "bootstrap/scss/utilities";
 
 @import "primereact/resources/themes/bootstrap4-light-blue/theme.css";
 
-// $utilities: map-merge($utilities,
-//     ("responsive-height": (property: height,
-//         class: 'x-h',
-//         responsive: true,
-//         values: (100: 100%,
-//         )),
-//       "width": map-merge(
-//         map-get($utilities, "width"),
-//         ( responsive: true ),
-//       ),
-//     ));
+$utilities: map-merge($utilities,
+    ("responsive-height": (property: height,
+        class: 'x-h',
+        responsive: true,
+        values: (100: 100%,
+        )),
+      "width": map-merge(
+        map-get($utilities, "width"),
+        ( responsive: true ),
+      ),
+    ));
 
 
 @import "bootstrap/scss/bootstrap";
