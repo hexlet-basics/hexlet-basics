@@ -24,6 +24,7 @@ import { Accordion, Col, Container, Row } from "react-bootstrap";
 import MarkdownViewer from "@/components/MarkdownViewer";
 import type { Question, FAQPage, WithContext } from "schema-dts";
 import LeadFormBlock from "@/components/LeadFormBlock";
+import i18next from "i18next";
 
 type Props = PropsWithChildren & {
   blogPosts: BlogPost[];
@@ -325,7 +326,7 @@ export default function Index({
         </Container>
       )}
 
-      {!user.guest && (
+      {!user.guest && i18next.language === 'ru' && (
         <Container>
           <Row className="align-items-center py-5">
             <Col className="col-12 col-lg-7 fw-bold display-4 mb-5">
