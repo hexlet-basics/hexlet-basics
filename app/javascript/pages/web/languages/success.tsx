@@ -21,8 +21,8 @@ type Props = {
 
 export default function Success(props: Props) {
   const { t: tViews } = useTranslation("web");
-  const { t: tAr } = useTranslation("activerecord");
-  const { t: tHelpers } = useTranslation("helpers");
+  // const { t: tAr } = useTranslation("activerecord");
+  // const { t: tHelpers } = useTranslation("helpers");
   const { courseLandingPage, lead } = props
 
   return (
@@ -62,7 +62,7 @@ export default function Success(props: Props) {
           <Col className="col-lg-5">
             <Card className="bg-body-tertiary h-100 border p-4">
               <Card.Body>
-                <LeadFormBlock lead={lead} />
+                <LeadFormBlock autoFocus lead={lead} />
               </Card.Body>
             </Card>
           </Col>

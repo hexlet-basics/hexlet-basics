@@ -8,9 +8,10 @@ import XssContent from "./XssContent";
 
 type Props = {
   lead: LeadCrud
+  autoFocus?: boolean
 }
 
-export default function LeadFormBlock({ lead }: Props) {
+export default function LeadFormBlock({ lead, autoFocus = false }: Props) {
   const { t: tAr } = useTranslation("activerecord");
   const { t: tHelpers } = useTranslation("helpers");
   const { t: tViews } = useTranslation();
@@ -26,7 +27,7 @@ export default function LeadFormBlock({ lead }: Props) {
         valueField="id"
         items={contactMethodOptions}
       />
-      <XInput name="contact_value" />
+      <XInput autoFocus={autoFocus} name="contact_value" />
       <div className="small text-end mb-5">
         <div>
           <XssContent>

@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { Card, Container, Row } from "react-bootstrap";
+import { Card, Col, Container, Row } from "react-bootstrap";
 import * as Routes from "@/routes.js";
 
 import { useTranslation } from "react-i18next";
@@ -9,6 +9,8 @@ import { XForm, XInput, XSelect } from "@/components/forms";
 import { Submit } from "use-inertia-form";
 import { enumToOptions } from "@/lib/utils";
 import { LeadCrud } from "@/types";
+import LeadFormBlock from "@/components/LeadFormBlock";
+import XssContent from "@/components/XssContent";
 
 type Props = PropsWithChildren & {
   lead: LeadCrud
@@ -16,36 +18,44 @@ type Props = PropsWithChildren & {
 
 export default function New({ lead }: Props) {
   const { t } = useTranslation();
-  const { t: tAr } = useTranslation("activerecord");
-  const { t: tHelpers } = useTranslation("helpers");
-
-  const contactMethodEnum = tAr('attributes.user.contact_method/values', { returnObjects: true })
-  const contactMethodOptions = enumToOptions(contactMethodEnum);
+  // const { t: tAr } = useTranslation("activerecord");
+  // const { t: tHelpers } = useTranslation("helpers");
+  const { t: tViews } = useTranslation("web");
+  const helpItems = tViews('leads.new.help_items', { returnObjects: true })
 
   return (
     <ApplicationLayout>
-      <Container>
+      <Container className="py-4 py-lg-5">
         <Row className="justify-content-center">
-          <div className="col-sm-8 col-md-7 col-lg-5">
-            <h1 className="text-center my-5 mb-5">{t("leads.new.header")}</h1>
-            <Card className="p-4 border-0">
+          <Col className="col-12 col-lg-7 mb-5">
+            <h1 className="h2 mb-4">{tViews("leads.new.header")}</h1>
+            <div className="mb-3">
+              {tViews("leads.new.description")}
+            </div>
+            <div className="fw-bold mb-2">
+              {tViews('leads.new.how_can_we_help')}
+            </div>
+            <ul>
+              {helpItems.map((item, index) =>
+                <li key={index}>
+                  <XssContent>
+                    {item}
+                  </XssContent>
+                </li>
+              )}
+            </ul>
+            <div>
+              <XssContent>{tViews('leads.new.do_it')}</XssContent>
+            </div>
+          </Col>
+          <Col className="col-lg-5">
+            <Card className="bg-body-tertiary h-100 border p-4">
               <Card.Body>
-                <XForm className="d-flex flex-column h-100" model="lead" data={lead} to={Routes.leads_path()}>
-                  <XSelect
-                    name="contact_method"
-                    labelField="name"
-                    valueField="id"
-                    items={contactMethodOptions}
-                  />
-                  <XInput name="contact_value" />
-                  <Submit className="btn d-block btn-lg btn-primary mt-auto">
-                    {tHelpers("send")}
-                  </Submit>
-                </XForm>
+                <LeadFormBlock lead={lead} />
               </Card.Body>
             </Card>
 
-          </div>
+          </Col>
         </Row>
       </Container>
     </ApplicationLayout>
