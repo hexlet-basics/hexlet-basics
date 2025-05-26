@@ -5,6 +5,7 @@ class Web::BooksController < Web::ApplicationController
     book_request = current_user.book_request
 
     render inertia: true, props: {
+      lead: LeadCrudResource.new(LeadForm.new),
       bookRequested: !!book_request
     }
   end

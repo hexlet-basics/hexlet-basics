@@ -6,16 +6,24 @@ import bookCoverImg from "@/images/profession-developer-book-cover.png";
 
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout.tsx";
 import { useTranslation } from "react-i18next";
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import bookToc from '@/lib/book.ts';
+import i18next from "i18next";
+import { LeadCrud, SharedProps } from "@/types";
+import LeadFormBlock from "@/components/LeadFormBlock";
 
 type Props = PropsWithChildren & {
   bookRequested: boolean
+  lead: LeadCrud
   // user: User;
 };
 
-export default function New({ bookRequested }: Props) {
+export default function Show({ bookRequested, lead }: Props) {
   const { t } = useTranslation()
+  const {
+    auth,
+  } = usePage<SharedProps>().props;
+
   return (
     <ApplicationLayout>
       <Container>
@@ -97,6 +105,19 @@ export default function New({ bookRequested }: Props) {
           ))}
 
         </div>
+
+        {!auth.user.guest && i18next.language === 'ru' && (
+          <Row className="align-items-center py-5">
+            <Col className="col-12 col-lg-7 fw-bold display-4 mb-5">
+              {t("home.index.consultation")}
+            </Col>
+            <Col className="col-12 col-lg-5 mx-auto d-flex flex-column">
+              <div className="bg-body-tertiary p-4 p-md-5 border rounded-3">
+                <LeadFormBlock lead={lead} />
+              </div>
+            </Col>
+          </Row>
+        )}
       </Container>
     </ApplicationLayout>
   );
