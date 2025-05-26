@@ -10,7 +10,7 @@ import codeIllustration from "@/images/code.svg";
 import XssContent from "@/components/XssContent";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import * as Routes from "@/routes.js";
-import type { BreadcrumbItem, Language, SharedProps } from "@/types";
+import type { BreadcrumbItem, Language, LeadCrud, SharedProps } from "@/types";
 import type {
   LanguageCategory,
   LanguageLandingPage,
@@ -22,8 +22,10 @@ import type {
 } from "@/types/serializers";
 import { Head, Link, usePage } from "@inertiajs/react";
 import type { Product, WithContext } from "schema-dts";
+import LeadFormBlock from "@/components/LeadFormBlock";
 
 type Props = {
+  lead: LeadCrud;
   course: Language;
   courseMember?: LanguageMember;
   courseCategory: LanguageCategory;
@@ -49,10 +51,13 @@ export default function Show({
   courseModules,
   lessonsByModuleId,
   course,
-  reviews,
+  lead,
 }: Props) {
   const { t } = useTranslation();
-  const { auth, locale } = usePage<SharedProps>().props;
+  const {
+    auth,
+    locale,
+  } = usePage<SharedProps>().props;
 
   const productSchema: WithContext<Product> = {
     "@context": "https://schema.org",
@@ -407,6 +412,19 @@ export default function Show({
               ))}
             </Row>
           </div>
+        )}
+
+        {!auth.user.guest && i18next.language === 'ru' && (
+          <Row className="align-items-center py-5">
+            <Col className="col-12 col-lg-7 fw-bold display-4 mb-5">
+              {t("home.index.consultation")}
+            </Col>
+            <Col className="col-12 col-lg-5 mx-auto d-flex flex-column">
+              <div className="bg-body-tertiary p-4 p-md-5 border rounded-3">
+                <LeadFormBlock lead={lead} />
+              </div>
+            </Col>
+          </Row>
         )}
       </Container>
     </ApplicationLayout>

@@ -74,6 +74,7 @@ class Web::LanguagesController < Web::ApplicationController
       nextLesson: next_lesson_info && Language::LessonResource.new(next_lesson_info),
       courseModules: Language::ModuleResource.new(language_modules_infos),
       lessonsByModuleId: lesson_resources_by_module_id,
+      lead: LeadCrudResource.new(LeadForm.new),
       courseMember: language_member && Language::MemberResource.new(language_member)
       # reviews: ReviewResource.new(reviews)
     }
