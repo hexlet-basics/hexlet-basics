@@ -13,6 +13,7 @@
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #  user_id             :bigint           not null
+#  ym_client_id        :string
 #
 # Indexes
 #

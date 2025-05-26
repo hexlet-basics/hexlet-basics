@@ -1,5 +1,5 @@
 import { Submit } from "use-inertia-form";
-import { XForm, XSelect, XInput } from "./forms";
+import { XForm, XSelect, XInput, XHidden } from "./forms";
 import { useTranslation } from "react-i18next";
 import { enumToOptions } from "@/lib/utils";
 import { LeadCrud } from "@/types";
@@ -19,8 +19,16 @@ export default function LeadFormBlock({ lead, autoFocus = false }: Props) {
   const contactMethodEnum = tAr('attributes.user.contact_method/values', { returnObjects: true })
   const contactMethodOptions = enumToOptions(contactMethodEnum);
 
+  const data = {
+    lead: {
+      ...lead?.lead,
+      ym_client_id: window.ymClientId
+    }
+  }
+
   return (
-    <XForm className="d-flex flex-column h-100" model="lead" data={lead} to={Routes.leads_path()}>
+    <XForm className="d-flex flex-column h-100" model="lead" data={data} to={Routes.leads_path()}>
+      <XHidden name="ym_client_id" />
       <XSelect
         name="contact_method"
         labelField="name"

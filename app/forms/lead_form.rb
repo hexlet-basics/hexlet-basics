@@ -2,7 +2,7 @@ class LeadForm < Lead
   include ActiveFormModel
 
   attr_accessor :contact_method, :contact_value
-  permit :contact_method, :contact_value
+  permit :contact_method, :contact_value, :ym_client_id
 
   validates :contact_method, presence: true
   validates :contact_value, presence: true
