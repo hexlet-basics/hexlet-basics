@@ -46,6 +46,7 @@ class Web::Admin::SurveyScenariosController < Web::Admin::ApplicationController
   end
 
   def update
+    # raise params.inspect
     survey_scenario = Admin::SurveyScenarioForm.find(params[:id])
     survey_scenario.locale = I18n.locale
 

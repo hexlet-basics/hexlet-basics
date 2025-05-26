@@ -2,7 +2,9 @@ class Survey::ScenarioCrudResource < ApplicationResource
   typelize_from Survey::Scenario
   root_key :survey_scenario
 
-  has_many :items, resource: Survey::ScenarioItemCrudResource
+  has_many :items, proc { |items, params, user|
+    items.order(order: :asc)
+  }, resource: Survey::ScenarioItemCrudResource
   has_many :triggers, resource: Survey::ScenarioTriggerCrudResource
   has_one :survey_item, resource: Survey::ItemCrudResource
 

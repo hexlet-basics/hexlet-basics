@@ -10,19 +10,24 @@ import {
 import { Col, Row } from "react-bootstrap";
 import { type HTTPVerb, Submit } from "use-inertia-form";
 
-import { Survey, SurveyScenarioCrud, SurveyItemCrud } from "@/types";
+import { Survey, SurveyScenarioCrud, SurveyItemCrud, SurveyScenarioItemCrud } from "@/types";
 import { eventNames } from "@/event_names";
 
 type Props = {
   data: SurveyScenarioCrud;
   surveys: Survey[],
   surveysItems: SurveyItemCrud[]
-  // surveyScenariosItems: SurveyScenarioItemCrud[]
   url: string;
   method?: HTTPVerb;
 };
 
-export default function Form({ data, url, method, surveys, surveysItems }: Props) {
+export default function Form({
+  data,
+  url,
+  method,
+  surveys,
+  surveysItems,
+}: Props) {
   const { t } = useTranslation();
   const { t: tHelpers } = useTranslation("helpers");
 

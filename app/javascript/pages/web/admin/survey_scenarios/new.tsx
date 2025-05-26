@@ -2,7 +2,7 @@ import * as Routes from "@/routes.js";
 import { useTranslation } from "react-i18next";
 
 import AdminLayout from "@/pages/layouts/AdminLayout";
-import type { SurveyScenarioCrud, SurveyScenarioItemCrud, Survey, SurveyItemCrud } from "@/types";
+import type { SurveyScenarioCrud, Survey, SurveyItemCrud } from "@/types";
 import Form from "./shared/form";
 import { Menu } from "./shared/menu";
 

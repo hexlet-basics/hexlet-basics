@@ -1,8 +1,13 @@
 Rails.application.routes.draw do
   # Redirects (Old routes/SEO)
   get "/:locale/languages/:lang/modules/:module/lessons/:lesson", to: redirect("/%{locale}/languages/%{lang}/lessons/%{lesson}")
+
   get "/ru/languages/pre-course-python", to: redirect("/ru/languages/python")
   get "/ru/languages/pre-course-python/*", to: redirect("/ru/languages/python")
+
+  get "/ru/languages/pre-course-java", to: redirect("/ru/languages/java")
+  get "/ru/languages/pre-course-java/*", to: redirect("/ru/languages/java")
+
   get "/ru/languages/pre-course-javascript", to: redirect("/ru/languages/javascript")
   get "/ru/languages/pre-course-javascript/*", to: redirect("/ru/languages/javascript")
 
