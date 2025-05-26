@@ -461,6 +461,11 @@ career-change-direction-item4:
 career-change-direction-item5:
   <<: *DEFAULTS
   survey: career-change-direction
+  value: Искуственный интелект (ML)
+
+career-change-direction-item6:
+  <<: *DEFAULTS
+  survey: career-change-direction
   value: Пока не знаю
 
 career-qa-track-item1:

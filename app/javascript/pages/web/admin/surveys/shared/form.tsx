@@ -40,7 +40,6 @@ export default function Form({ data, url, method, surveyItems }: Props) {
             emptyData={{ value: '', order: 100 }}
           >
             <XInput name="value" />
-            <XInput name="slug" />
             <XInput name="tag_list" />
             <XSelect name="state" valueField="value" labelField="key" items={data.meta.item_states} />
             <XInput name="order" />
