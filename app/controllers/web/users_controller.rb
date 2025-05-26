@@ -23,7 +23,8 @@ class Web::UsersController < Web::ApplicationController
       signed_up_event_data = {
         id: user.id,
         email: user.email,
-        first_name: user.first_name
+        first_name: user.first_name,
+        last_name: user.last_name
       }
       user_signed_up = UserSignedUpEvent.new(data: signed_up_event_data)
 

@@ -5,6 +5,8 @@ class LeadCreatedEvent < TypedEvent
     {
       user_id: Integer,
       user_name: String,
+      first_name: T.nilable(String),
+      last_name: T.nilable(String),
       ym_client_id: T.nilable(String),
       email: String,
       phone: T.nilable(String),

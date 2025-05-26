@@ -345,7 +345,7 @@ class RBI::TypedParam < ::T::Struct
   const :type, ::String
 
   class << self
-    # source://sorbet-runtime/0.5.12119/lib/types/struct.rb#13
+    # source://sorbet-runtime/0.5.12130/lib/types/struct.rb#13
     def inherited(s); end
   end
 end
@@ -1516,7 +1516,7 @@ class Tapioca::ConfigHelper::ConfigError < ::T::Struct
   const :message_parts, T::Array[::Tapioca::ConfigHelper::ConfigErrorMessagePart]
 
   class << self
-    # source://sorbet-runtime/0.5.12119/lib/types/struct.rb#13
+    # source://sorbet-runtime/0.5.12130/lib/types/struct.rb#13
     def inherited(s); end
   end
 end
@@ -1527,7 +1527,7 @@ class Tapioca::ConfigHelper::ConfigErrorMessagePart < ::T::Struct
   const :colors, T::Array[::Symbol]
 
   class << self
-    # source://sorbet-runtime/0.5.12119/lib/types/struct.rb#13
+    # source://sorbet-runtime/0.5.12130/lib/types/struct.rb#13
     def inherited(s); end
   end
 end
@@ -2927,7 +2927,7 @@ class Tapioca::GemInfo < ::T::Struct
     sig { params(spec: ::Bundler::LazySpecification).returns(::Tapioca::GemInfo) }
     def from_spec(spec); end
 
-    # source://sorbet-runtime/0.5.12119/lib/types/struct.rb#13
+    # source://sorbet-runtime/0.5.12130/lib/types/struct.rb#13
     def inherited(s); end
   end
 end
@@ -3332,18 +3332,18 @@ class Tapioca::Loaders::Loader
   # https://github.com/rails/rails/commit/ebfca905db14020589c22e6937382e6f8f687664
   # : (singleton(Rails::Engine) engine) -> Array[String]
   #
-  # source://tapioca//lib/tapioca/loaders/loader.rb#222
+  # source://tapioca//lib/tapioca/loaders/loader.rb#218
   def eager_load_paths(engine); end
 
   # : -> void
   #
-  # source://tapioca//lib/tapioca/loaders/loader.rb#186
+  # source://tapioca//lib/tapioca/loaders/loader.rb#182
   sig { void }
   def eager_load_rails_app; end
 
   # : -> Array[singleton(Rails::Engine)]
   #
-  # source://tapioca//lib/tapioca/loaders/loader.rb#165
+  # source://tapioca//lib/tapioca/loaders/loader.rb#161
   def engines; end
 
   # : (Tapioca::Gemfile gemfile, String? initialize_file, String? require_file, bool halt_upon_load_error) -> void
@@ -3361,7 +3361,7 @@ class Tapioca::Loaders::Loader
 
   # : -> void
   #
-  # source://tapioca//lib/tapioca/loaders/loader.rb#122
+  # source://tapioca//lib/tapioca/loaders/loader.rb#118
   sig { void }
   def load_engines_in_classic_mode; end
 
@@ -3392,7 +3392,7 @@ class Tapioca::Loaders::Loader
 
   # : (String? file) -> void
   #
-  # source://tapioca//lib/tapioca/loaders/loader.rb#207
+  # source://tapioca//lib/tapioca/loaders/loader.rb#203
   sig { params(file: T.nilable(::String)).void }
   def require_helper(file); end
 
@@ -3401,19 +3401,19 @@ class Tapioca::Loaders::Loader
 
   # : (String path) -> void
   #
-  # source://tapioca//lib/tapioca/loaders/loader.rb#179
+  # source://tapioca//lib/tapioca/loaders/loader.rb#175
   sig { params(path: ::String).void }
   def safe_require(path); end
 
   # : { -> void } -> void
   #
-  # source://tapioca//lib/tapioca/loaders/loader.rb#147
+  # source://tapioca//lib/tapioca/loaders/loader.rb#143
   sig { params(blk: T.proc.void).void }
   def with_rails_application(&blk); end
 
   # : -> bool
   #
-  # source://tapioca//lib/tapioca/loaders/loader.rb#140
+  # source://tapioca//lib/tapioca/loaders/loader.rb#136
   sig { returns(T::Boolean) }
   def zeitwerk_mode?; end
 end
@@ -3710,8 +3710,9 @@ class Tapioca::Runtime::DynamicMixinCompiler
 
   # : (Module constant) -> void
   #
+  # @return [DynamicMixinCompiler] a new instance of DynamicMixinCompiler
+  #
   # source://tapioca//lib/tapioca/runtime/dynamic_mixin_compiler.rb#20
-  sig { params(constant: ::Module).void }
   def initialize(constant); end
 
   # : Array[Symbol]
@@ -3722,7 +3723,6 @@ class Tapioca::Runtime::DynamicMixinCompiler
   # : Array[Symbol]
   #
   # source://tapioca//lib/tapioca/runtime/dynamic_mixin_compiler.rb#14
-  sig { returns(T::Array[::Symbol]) }
   def class_attribute_readers; end
 
   # : Array[Symbol]
@@ -3733,19 +3733,16 @@ class Tapioca::Runtime::DynamicMixinCompiler
   # : (RBI::Tree tree) -> void
   #
   # source://tapioca//lib/tapioca/runtime/dynamic_mixin_compiler.rb#137
-  sig { params(tree: ::RBI::Tree).void }
   def compile_class_attributes(tree); end
 
   # : (RBI::Tree tree) -> [Array[Module], Array[Module]]
   #
   # source://tapioca//lib/tapioca/runtime/dynamic_mixin_compiler.rb#180
-  sig { params(tree: ::RBI::Tree).returns([T::Array[::Module], T::Array[::Module]]) }
   def compile_mixes_in_class_methods(tree); end
 
   # : Array[Module]
   #
   # source://tapioca//lib/tapioca/runtime/dynamic_mixin_compiler.rb#11
-  sig { returns(T::Array[::Module]) }
   def dynamic_extends; end
 
   # : Array[Module]
@@ -3755,14 +3752,16 @@ class Tapioca::Runtime::DynamicMixinCompiler
 
   # : -> bool
   #
+  # @return [Boolean]
+  #
   # source://tapioca//lib/tapioca/runtime/dynamic_mixin_compiler.rb#132
-  sig { returns(T::Boolean) }
   def empty_attributes?; end
 
   # : (String qualified_mixin_name) -> bool
   #
+  # @return [Boolean]
+  #
   # source://tapioca//lib/tapioca/runtime/dynamic_mixin_compiler.rb#222
-  sig { params(qualified_mixin_name: ::String).returns(T::Boolean) }
   def filtered_mixin?(qualified_mixin_name); end
 
   # : Array[Symbol]
@@ -3773,7 +3772,6 @@ class Tapioca::Runtime::DynamicMixinCompiler
   # : Array[Symbol]
   #
   # source://tapioca//lib/tapioca/runtime/dynamic_mixin_compiler.rb#17
-  sig { returns(T::Array[::Symbol]) }
   def instance_attribute_readers; end
 
   # : Array[Symbol]
@@ -3783,8 +3781,9 @@ class Tapioca::Runtime::DynamicMixinCompiler
 
   # : (Module mod, Array[Module] dynamic_extends) -> bool
   #
+  # @return [Boolean]
+  #
   # source://tapioca//lib/tapioca/runtime/dynamic_mixin_compiler.rb#215
-  sig { params(mod: ::Module, dynamic_extends: T::Array[::Module]).returns(T::Boolean) }
   def module_included_by_another_dynamic_extend?(mod, dynamic_extends); end
 end
 
@@ -3811,14 +3810,14 @@ module Tapioca::Runtime::GenericTypeRegistry
   class << self
     # : (Object instance) -> bool
     #
+    # @return [Boolean]
+    #
     # source://tapioca//lib/tapioca/runtime/generic_type_registry.rb#75
-    sig { params(instance: ::Object).returns(T::Boolean) }
     def generic_type_instance?(instance); end
 
     # : (Module constant) -> Array[TypeVariableModule]?
     #
     # source://tapioca//lib/tapioca/runtime/generic_type_registry.rb#80
-    sig { params(constant: ::Module).returns(T.nilable(T::Array[::Tapioca::TypeVariableModule])) }
     def lookup_type_variables(constant); end
 
     # This method is responsible for building the name of the instantiated concrete type
@@ -3835,7 +3834,6 @@ module Tapioca::Runtime::GenericTypeRegistry
     # : (untyped constant, untyped types) -> Module
     #
     # source://tapioca//lib/tapioca/runtime/generic_type_registry.rb#60
-    sig { params(constant: T.untyped, types: T.untyped).returns(::Module) }
     def register_type(constant, types); end
 
     # This method is called from intercepted calls to `type_member` and `type_template`.
@@ -3850,7 +3848,6 @@ module Tapioca::Runtime::GenericTypeRegistry
     # : (untyped constant, TypeVariableModule type_variable) -> void
     #
     # source://tapioca//lib/tapioca/runtime/generic_type_registry.rb#94
-    sig { params(constant: T.untyped, type_variable: ::Tapioca::TypeVariableModule).void }
     def register_type_variable(constant, type_variable); end
 
     private
@@ -3858,19 +3855,16 @@ module Tapioca::Runtime::GenericTypeRegistry
     # : (Module constant, String name) -> Module
     #
     # source://tapioca//lib/tapioca/runtime/generic_type_registry.rb#103
-    sig { params(constant: ::Module, name: ::String).returns(::Module) }
     def create_generic_type(constant, name); end
 
     # : (Class[top] constant) -> Class[top]
     #
     # source://tapioca//lib/tapioca/runtime/generic_type_registry.rb#145
-    sig { params(constant: T::Class[T.anything]).returns(T::Class[T.anything]) }
     def create_safe_subclass(constant); end
 
     # : (Module constant) -> Array[TypeVariableModule]
     #
     # source://tapioca//lib/tapioca/runtime/generic_type_registry.rb#172
-    sig { params(constant: ::Module).returns(T::Array[::Tapioca::TypeVariableModule]) }
     def lookup_or_initialize_type_variables(constant); end
   end
 end
@@ -3879,14 +3873,16 @@ end
 class Tapioca::Runtime::GenericTypeRegistry::GenericType < ::T::Types::Simple
   # : (Module raw_type, Module underlying_type) -> void
   #
+  # @return [GenericType] a new instance of GenericType
+  #
   # source://tapioca//lib/tapioca/runtime/generic_type_registry.rb#32
-  sig { params(raw_type: ::Module, underlying_type: ::Module).void }
   def initialize(raw_type, underlying_type); end
 
   # : (untyped obj) -> bool
   #
+  # @return [Boolean]
+  #
   # source://tapioca//lib/tapioca/runtime/generic_type_registry.rb#40
-  sig { override.params(obj: T.untyped).returns(T::Boolean) }
   def valid?(obj); end
 end
 
@@ -4595,45 +4591,36 @@ end
 class Tapioca::TypeVariableModule < ::Module
   # : (Module context, Type type, Symbol variance, (^-> Hash[Symbol, untyped])? bounds_proc) -> void
   #
+  # @return [TypeVariableModule] a new instance of TypeVariableModule
+  #
   # source://tapioca//lib/tapioca/sorbet_ext/generic_name_patch.rb#139
-  sig do
-    params(
-      context: ::Module,
-      type: ::Tapioca::TypeVariableModule::Type,
-      variance: ::Symbol,
-      bounds_proc: T.nilable(T.proc.returns(T::Hash[::Symbol, T.untyped]))
-    ).void
-  end
   def initialize(context, type, variance, bounds_proc); end
 
   # : -> Tapioca::TypeVariable
   #
   # source://tapioca//lib/tapioca/sorbet_ext/generic_name_patch.rb#175
-  sig { returns(::Tapioca::TypeVariable) }
   def coerce_to_type_variable; end
 
   # : -> bool
   #
+  # @return [Boolean]
+  #
   # source://tapioca//lib/tapioca/sorbet_ext/generic_name_patch.rb#155
-  sig { returns(T::Boolean) }
   def fixed?; end
 
   # : -> String?
   #
   # source://tapioca//lib/tapioca/sorbet_ext/generic_name_patch.rb#149
-  sig { returns(T.nilable(::String)) }
   def name; end
 
   # : -> String
   #
   # source://tapioca//lib/tapioca/sorbet_ext/generic_name_patch.rb#160
-  sig { returns(::String) }
   def serialize; end
 
   # : Type
   #
   # source://tapioca//lib/tapioca/sorbet_ext/generic_name_patch.rb#136
-  sig { returns(::Tapioca::TypeVariableModule::Type) }
   def type; end
 
   private
@@ -4641,7 +4628,6 @@ class Tapioca::TypeVariableModule < ::Module
   # : -> Hash[Symbol, untyped]
   #
   # source://tapioca//lib/tapioca/sorbet_ext/generic_name_patch.rb#182
-  sig { returns(T::Hash[::Symbol, T.untyped]) }
   def bounds; end
 end
 

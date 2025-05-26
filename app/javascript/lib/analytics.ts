@@ -49,7 +49,8 @@ export function processHappendEvents(happendEvents: BackendEvent[]) {
         analytics.track("course_started", happendEvent.data);
         break;
       case "LeadCreatedEvent":
-        console.log('lead created')
+        const data = { ...happendEvent.data, phone_number: happendEvent.data.phone }
+        analytics.identify(happendEvent.data.user_id.toString(), data);
         analytics.track("lead_created", happendEvent.data);
         break;
       case "LessonStartedEvent":

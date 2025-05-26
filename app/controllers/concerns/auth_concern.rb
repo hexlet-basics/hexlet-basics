@@ -6,7 +6,9 @@ module AuthConcern
 
     event_data = {
       id: user.id,
-      email: user.email
+      email: user.email,
+      first_name: user.first_name,
+      last_name: user.last_name
     }
     event = UserSignedInEvent.new(data: event_data)
     publish_event(event, user)

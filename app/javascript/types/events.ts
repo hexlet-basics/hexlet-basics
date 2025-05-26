@@ -3,6 +3,8 @@ type UserSignedInEvent = {
   data: {
     id: number;
     email: string;
+    first_name: string;
+    last_name: string;
   };
 };
 
@@ -12,6 +14,7 @@ type UserSignedUpEvent = {
     id: number;
     email: string;
     first_name: string;
+    last_name: string;
   };
 };
 
@@ -46,6 +49,8 @@ type LeadCreatedEvent = {
     user_id: number;
     email: string;
     phone: string;
+    first_name: string;
+    last_name: string;
     // email: String,
     // phone: T.nilable(String),
     // telegram: T.nilable(String),

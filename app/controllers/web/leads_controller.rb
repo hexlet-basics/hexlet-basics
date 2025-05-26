@@ -49,6 +49,8 @@ class Web::LeadsController < Web::ApplicationController
 
       lead_created_event_data = {
         user_id: current_user.id,
+        first_name: current_user.first_name,
+        last_name: current_user.last_name,
         ym_client_id: lead.ym_client_id,
         user_name: current_user.to_s,
         email: current_user.email,

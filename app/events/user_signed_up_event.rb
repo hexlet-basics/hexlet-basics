@@ -5,7 +5,8 @@ class UserSignedUpEvent < TypedEvent
     {
       id: Integer,
       email: String,
-      first_name: T.nilable(String)
+      first_name: T.nilable(String),
+      last_name: T.nilable(String)
     }
   end
 
