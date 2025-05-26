@@ -3,7 +3,9 @@
 class WorkflowLeadSerializer
   extend T::Sig
 
-  LEAD_FIELD_MAPPER = {}.freeze
+  LEAD_FIELD_MAPPER = {
+    ym_client_id: 316941 # _ym_uid
+  }.freeze
 
   # Соответствие ключей входных данных и ID полей AmoCRM для контакта
   CONTACT_FIELD_MAPPER = {
@@ -22,7 +24,7 @@ class WorkflowLeadSerializer
   sig { returns(T::Hash[Symbol, T.untyped]) }
   def to_h
     lead = base_payload
-    lead[:custom_fields] = build_custom_fields(LEAD_FIELD_MAPPER)
+    lead[:custom_fields_values] = build_custom_fields(LEAD_FIELD_MAPPER)
 
     lead[:_embedded] = { contacts: [ contact_payload ] }
 
