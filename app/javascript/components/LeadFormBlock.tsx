@@ -5,6 +5,7 @@ import { enumToOptions } from "@/lib/utils";
 import { LeadCrud } from "@/types";
 import * as Routes from "@/routes.js";
 import XssContent from "./XssContent";
+import { toMerged } from "es-toolkit";
 
 type Props = {
   lead: LeadCrud
@@ -19,12 +20,10 @@ export default function LeadFormBlock({ lead, autoFocus = false }: Props) {
   const contactMethodEnum = tAr('attributes.user.contact_method/values', { returnObjects: true })
   const contactMethodOptions = enumToOptions(contactMethodEnum);
 
-  const data = {
-    lead: {
-      ...lead?.lead,
-      ym_client_id: window.ymClientId
-    }
-  }
+  const data = toMerged(
+    lead,
+    { lead: { ym_client_id: window.ymClientId } }
+  )
 
   return (
     <XForm className="d-flex flex-column h-100" model="lead" data={data} to={Routes.leads_path()}>

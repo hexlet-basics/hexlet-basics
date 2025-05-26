@@ -56,7 +56,8 @@ class Web::HomeController < Web::ApplicationController
     render inertia: true, props: {
       courseMembersByCourseId: language_member_resources_by_language,
       blogPosts: BlogPostResource.new(blog_posts),
-      newUser: UserSignUpFormResource.new(user)
+      newUser: UserSignUpFormResource.new(user),
+      lead: LeadCrudResource.new(LeadForm.new)
     }
   end
 

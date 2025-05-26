@@ -12,7 +12,7 @@ class LeadResource < ApplicationResource
   attribute :email do |obj|
     obj.user.email
   end
-  #
+
   # typelize "Array<[string, string]>"
   # attribute :state_events do |obj|
   #   obj.aasm.events_for_select

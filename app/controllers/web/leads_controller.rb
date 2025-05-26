@@ -10,7 +10,7 @@ class Web::LeadsController < Web::ApplicationController
 
     render inertia: true, props: {
       # courseLandingPage: Language::LandingPageResource.new(landing_page)
-      # lead: LeadForm.new
+      lead: LeadCrudResource.new(LeadForm.new)
     }
   end
 
