@@ -1,7 +1,7 @@
 import { Submit } from "use-inertia-form";
 import { XForm, XSelect, XInput, XHidden } from "./forms";
 import { useTranslation } from "react-i18next";
-import { enumToOptions } from "@/lib/utils";
+import { enumToOptions, fromWindow } from "@/lib/utils";
 import { LeadCrud } from "@/types";
 import * as Routes from "@/routes.js";
 import XssContent from "./XssContent";
@@ -22,7 +22,7 @@ export default function LeadFormBlock({ lead, autoFocus = false }: Props) {
 
   const data = toMerged(
     lead,
-    { lead: { ym_client_id: window.ymClientId } }
+    { lead: { ym_client_id: fromWindow('ymClientId') } }
   )
 
   return (

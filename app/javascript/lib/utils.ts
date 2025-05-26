@@ -204,3 +204,10 @@ export function hasObjectKey<T extends object>(
 ): key is keyof T {
   return key in obj;
 }
+
+export function fromWindow<K extends keyof Window>(key: K): Window[K] | undefined {
+  if (typeof window !== 'undefined' && window[key] !== undefined) {
+    return window[key];
+  }
+  return undefined; // SSR fallback
+}
