@@ -18,7 +18,7 @@ class Web::LeadsControllerTest < ActionDispatch::IntegrationTest
       contact_value: Faker::PhoneNumber.cell_phone
     }
 
-    post leads_url, params: { lead: lead_params }
+    post leads_url, params: { utm_source: "jopa", lead: lead_params }
     assert_response :redirect
 
     user.reload

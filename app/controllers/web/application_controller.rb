@@ -1,4 +1,5 @@
 class Web::ApplicationController < ApplicationController
+  include AhoyConcern
   include BrowserConcern
   include SurveyConcern
 

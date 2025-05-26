@@ -81,7 +81,7 @@ group :development, :test, :staging do
   gem "factory_bot_rails"
   gem "faker"
 
-gem "tapioca", ">= 0.17.0", require: false
+  gem "tapioca", ">= 0.17.0", require: false
   gem "bullet"
 end
 
@@ -127,6 +127,7 @@ gem "rails-i18n"
 # gem 'slim-rails'
 
 gem "counter_culture"
+gem "ahoy_matey"
 # gem "country_select"
 # gem 'sorbet-rails' # Temp disable sorbet for memory optimization
 

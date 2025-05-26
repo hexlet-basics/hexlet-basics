@@ -63,10 +63,10 @@ end
 # end
 
 module SignInHelper
-  def sign_in_as(name)
+  def sign_in_as(name, extra = {})
     user = users(name)
 
-    post session_url, params: { user_sign_in_form: { email: user.email, password: "password" } }
+    post session_url, params: extra.merge(user_sign_in_form: { email: user.email, password: "password" })
     assert_redirected_to root_path
     user
   end

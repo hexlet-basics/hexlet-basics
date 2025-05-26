@@ -62,6 +62,9 @@ class User < ApplicationRecord
                        format: { with: UsefulRegexp.without_spec_chars },
                        allow_blank: true
 
+  has_many :visits, class_name: "Ahoy::Visit"
+  has_many :events, through: :visits, class_name: "Ahoy::Event"
+
   has_many :lesson_members, class_name: "Language::Lesson::Member", dependent: :destroy
   has_many :lessons, through: :lesson_members, class_name: "Language::Lesson"
   has_many :language_members, class_name: "Language::Member", dependent: :destroy

@@ -42,6 +42,8 @@ class Web::LeadsController < Web::ApplicationController
 
     lead.survey_answers_data = survey_answers_data
 
+    lead.ahoy_visit = current_user.visits.last
+
     if lead.save
 
       current_user.tag_list.remove("should_be_lead")
