@@ -53,6 +53,9 @@ ready_to_start_learning:
 should_add_contact_method:
   <<: *DEFAULTS
 
+choosing_contact_method:
+  <<: *DEFAULTS
+
 one:
   <<: *DEFAULTS
 

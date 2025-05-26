@@ -32,6 +32,6 @@ class Survey::Scenario::Member < ApplicationRecord
   enum :state, { started: "started", finished: "finished" }, default: "started"
 
   def next_survey
-    scenario.surveys.where.not(id: user.survey_answers_surveys).first
+    scenario.surveys.order(order: :asc).where.not(id: user.survey_answers_surveys).first
   end
 end

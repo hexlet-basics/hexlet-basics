@@ -125,7 +125,7 @@ class User < ApplicationRecord
     email
   end
 
-  def should_be_lead
+  def should_be_lead?
     tag_list.include?("should_be_lead")
   end
 

@@ -3,6 +3,7 @@
 # Table name: survey_scenario_items
 #
 #  id          :bigint           not null, primary key
+#  order       :integer
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  scenario_id :bigint           not null
@@ -22,18 +23,25 @@
 career-change-item1:
   scenario: career-change
   survey: career-change-study-plan
+  order: 10
 
 career-change-item2:
   scenario: career-change
   survey: career-change-reason
+  order: 20
+
+career-change-item3:
+  scenario: career-change
+  survey: career-change-contact-method
+  order: 30
 
 base-coding-experience:
   scenario: base
   survey: coding-experience
 
-request-contat-method-contact-method:
-  scenario: request-contact-method
-  survey: career-change-contact-method
+# request-contat-method-contact-method:
+#   scenario: request-contact-method
+#   survey: career-change-contact-method
 
 base-goal:
   scenario: base

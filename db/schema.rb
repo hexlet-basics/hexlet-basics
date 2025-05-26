@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_23_003938) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_26_130500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -544,6 +544,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_23_003938) do
     t.bigint "scenario_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "order"
     t.index ["scenario_id"], name: "index_survey_scenario_items_on_scenario_id"
     t.index ["survey_id", "scenario_id"], name: "index_survey_scenario_items_on_survey_id_and_scenario_id", unique: true
     t.index ["survey_id"], name: "index_survey_scenario_items_on_survey_id"

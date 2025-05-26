@@ -56,6 +56,7 @@ export default function Form({ data, url, method, surveys, surveysItems }: Props
             emptyData={{ survey_id: null }}
           >
             <XSelect name="survey_id" has="survey" valueField="id" labelField="question" items={surveys} />
+            <XInput name="order" type="number" />
             {/* <XSelect name="event_name" valueField="id" labelField="name" items={surveys} /> */}
             <XCheck name="_destroy" />
           </XDynamicInputs>

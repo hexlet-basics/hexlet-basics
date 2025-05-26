@@ -39,3 +39,8 @@ inside_base_survey_scenario__base:
   scenario: base
   user: inside_base_survey_scenario
   state: started
+
+choosing_contact_method-career_change:
+  scenario: career-change
+  user: choosing_contact_method
+  state: started

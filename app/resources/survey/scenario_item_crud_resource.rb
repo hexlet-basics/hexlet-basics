@@ -1,7 +1,7 @@
 class Survey::ScenarioItemCrudResource < ApplicationResource
   typelize_from Survey::Scenario::Item
 
-  attributes :id, :survey_id
+  attributes :id, :survey_id, :order
   has_one :survey, resource: SurveyResource
 
   # typelize :state, nullabe: false

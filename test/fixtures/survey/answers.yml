@@ -85,3 +85,15 @@ should_add_contact_method__contact-method:
   user: should_add_contact_method
   survey: career-change-contact-method
   survey_item: career-change-contact-method-item4
+
+choosing_contact_method-career_change_study_plan:
+  state: fulfilled
+  user: choosing_contact_method
+  survey: career-change-study-plan
+  survey_item: career-change-study-plan-item1
+
+choosing_contact_method-career_change_reason:
+  state: fulfilled
+  user: choosing_contact_method
+  survey: career-change-reason
+  survey_item: career-change-reason-item1

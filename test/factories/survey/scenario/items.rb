@@ -3,6 +3,7 @@
 # Table name: survey_scenario_items
 #
 #  id          :bigint           not null, primary key
+#  order       :integer
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  scenario_id :bigint           not null

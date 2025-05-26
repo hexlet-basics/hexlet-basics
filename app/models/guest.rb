@@ -11,7 +11,7 @@ class Guest
     []
   end
 
-  def should_be_lead
+  def should_be_lead?
     false
   end
 
