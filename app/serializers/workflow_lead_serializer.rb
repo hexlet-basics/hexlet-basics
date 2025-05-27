@@ -4,7 +4,12 @@ class WorkflowLeadSerializer
   extend T::Sig
 
   LEAD_FIELD_MAPPER = {
-    ym_client_id: 316941 # _ym_uid
+    ym_client_id: 316941, # _ym_uid,
+    utm_source: 316919,
+    utm_medium: 316915,
+    utm_campaign: 316917,
+    utm_content: 316913,
+    utm_term: 316921
   }.freeze
 
   # Соответствие ключей входных данных и ID полей AmoCRM для контакта

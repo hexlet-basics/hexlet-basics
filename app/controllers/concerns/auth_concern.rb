@@ -3,6 +3,7 @@
 module AuthConcern
   def sign_in(user)
     session[:user_id] = user.id
+    ahoy.authenticate(user)
 
     event_data = {
       id: user.id,

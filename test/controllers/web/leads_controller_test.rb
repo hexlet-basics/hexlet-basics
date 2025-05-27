@@ -10,6 +10,7 @@ class Web::LeadsControllerTest < ActionDispatch::IntegrationTest
 
   test "create" do
     user = sign_in_as(:should_add_contact_method)
+    FactoryBot.create(:ahoy_visit, user: user)
 
     assert { user.tag_list.include?("should_be_lead") }
     # lead_params = FactoryBot.attributes_for(:lead)
