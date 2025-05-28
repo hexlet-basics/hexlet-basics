@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next"
 export default function ContactMethodRequestingBlock() {
   const { t: tLayouts } = useTranslation("layouts")
 
-  return <Alert variant="light">
+  return <Alert variant="light" className="small">
     <div className="d-flex">
       <XssContent className="my-auto me-auto">
         {tLayouts('shared.contact_method_requesting.description_html', { url: Routes.edit_account_profile_url() })}

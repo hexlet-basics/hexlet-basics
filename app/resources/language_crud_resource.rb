@@ -4,7 +4,7 @@ class LanguageCrudResource < ApplicationResource
   typelize_from Language
   root_key :language
 
-  attributes :id, :progress, :learn_as, :slug, :openai_assistant_id
+  attributes :id, :progress, :learn_as, :slug, :openai_assistant_id, :hexlet_program_landing_page
 
   typelize_meta meta: "{ cover_signed_id: string, cover_thumb_url: string, repository_url: string, slug: string }"
   meta do

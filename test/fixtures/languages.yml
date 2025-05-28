@@ -2,25 +2,26 @@
 #
 # Table name: languages
 #
-#  id                     :bigint           not null, primary key
-#  docker_image           :string(255)
-#  exercise_filename      :string(255)
-#  exercise_test_filename :string(255)
-#  extension              :string(255)
-#  learn_as               :string
-#  lessons_count          :integer          default(0), not null
-#  members_count          :integer          default(0), not null
-#  name                   :string(255)
-#  order                  :integer
-#  progress               :string
-#  slug                   :string(255)
-#  state                  :string(255)
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
-#  category_id            :bigint
-#  current_version_id     :bigint
-#  openai_assistant_id    :string
-#  upload_id              :bigint
+#  id                          :bigint           not null, primary key
+#  docker_image                :string(255)
+#  exercise_filename           :string(255)
+#  exercise_test_filename      :string(255)
+#  extension                   :string(255)
+#  hexlet_program_landing_page :string
+#  learn_as                    :string
+#  lessons_count               :integer          default(0), not null
+#  members_count               :integer          default(0), not null
+#  name                        :string(255)
+#  order                       :integer
+#  progress                    :string
+#  slug                        :string(255)
+#  state                       :string(255)
+#  created_at                  :datetime         not null
+#  updated_at                  :datetime         not null
+#  category_id                 :bigint
+#  current_version_id          :bigint
+#  openai_assistant_id         :string
+#  upload_id                   :bigint
 #
 # Indexes
 #
@@ -62,6 +63,7 @@ javascript:
   order: 2
   openai_assistant_id: asst_BnPHo7ddQhnV3KfUtJV3PJVX
   current_version: javascript2
+  hexlet_program_landing_page: https://ru.hexlet.io/courses
 
 pre-course-javascript:
   <<: *DEFAULTS

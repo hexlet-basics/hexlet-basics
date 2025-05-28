@@ -96,11 +96,11 @@ export default function Show({
         <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
       </Head>
       <Container>
-        {i18next.language === 'ru' && courseMember?.state === "finished" && (
-          <Alert variant="light" className="mb-5">
-            <XssContent>{t("languages.show.completed_html")}</XssContent>
-          </Alert>
-        )}
+        {/* {i18next.language === 'ru' && courseMember?.state === "finished" && ( */}
+        {/*   <Alert variant="light" className="mb-5"> */}
+        {/*     <XssContent>{t("languages.show.completed_html")}</XssContent> */}
+        {/*   </Alert> */}
+        {/* )} */}
         <Row className="flex-column flex-lg-row gy-5 gx-lg-5 mb-4 mb-lg-5">
           <Col className="col-lg-7">
             <div className="fs-5 fw-medium text-primary text-opacity-75 mb-3">

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_26_194817) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_28_195430) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -381,6 +381,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_26_194817) do
     t.integer "order"
     t.bigint "category_id"
     t.string "openai_assistant_id"
+    t.string "hexlet_program_landing_page"
     t.index ["category_id"], name: "index_languages_on_category_id"
     t.index ["current_version_id"], name: "index_languages_on_current_version_id"
     t.index ["slug"], name: "languages_slug_index", unique: true

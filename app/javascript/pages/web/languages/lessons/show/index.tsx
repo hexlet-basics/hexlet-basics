@@ -1,5 +1,5 @@
 import * as Routes from "@/routes.js";
-import { Alert, Col, Container, Nav, Row, Tab } from "react-bootstrap";
+import { Alert, Card, Col, Container, Nav, Row, Tab } from "react-bootstrap";
 
 import Chat from "@/components/Chat.tsx";
 import MarkdownViewer from "@/components/MarkdownViewer.tsx";
@@ -31,6 +31,7 @@ export default function Index() {
   } = usePage<LessonSharedProps>().props;
 
   const { t: tCommon } = useTranslation("common");
+  const { t: tViews } = useTranslation();
 
   const commonQuestions = t("languages.lessons.show.common_questions", {
     returnObjects: true,
@@ -158,6 +159,14 @@ export default function Index() {
                           ))}
                         </dl>
                       </div>
+                    )}
+
+                    {course.hexlet_program_landing_page && (
+                      <Alert variant="primary" className="my-4 small text-center shadow-sm border-0">
+                        <a target="_blank" href={`${course.hexlet_program_landing_page}?utm_source=code-basics&utm_medium=referral`}>
+                          {tViews('languages.lessons.show.profession_description')}
+                        </a>
+                      </Alert>
                     )}
 
                     <div className="my-4">
