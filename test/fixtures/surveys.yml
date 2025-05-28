@@ -156,3 +156,7 @@ career-analytics-track:
   description: Это поможет предложить подходящие инструменты и курсы
   parent_survey_item: career-change-direction-item3
 
+age-range:
+  <<: *DEFAULTS
+  question: Скажите, пожалуйста, сколько вам лет? (укажите диапазон)
+  description: Это поможет нам лучше адаптировать обучение к вашим интересам

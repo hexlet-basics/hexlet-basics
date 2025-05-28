@@ -542,3 +542,38 @@ career-analytics-track-item6:
   <<: *DEFAULTS
   survey: career-analytics-track
   value: Пока не решил(а)
+
+age-range-item1:
+  <<: *DEFAULTS
+  survey: age-range
+  value: до 18 лет
+
+age-range-item2:
+  <<: *DEFAULTS
+  survey: age-range
+  value: 18–24 года
+
+age-range-item3:
+  <<: *DEFAULTS
+  survey: age-range
+  value: 25–34 года
+
+age-range-item4:
+  <<: *DEFAULTS
+  survey: age-range
+  value: 35–44 года
+
+age-range-item5:
+  <<: *DEFAULTS
+  survey: age-range
+  value: 45–54 года
+
+age-range-item6:
+  <<: *DEFAULTS
+  survey: age-range
+  value: 55–64 года
+
+age-range-item7:
+  <<: *DEFAULTS
+  survey: age-range
+  value: 65 лет и старше
