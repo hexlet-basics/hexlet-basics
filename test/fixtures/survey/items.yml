@@ -468,80 +468,80 @@ career-change-direction-item6:
   survey: career-change-direction
   value: Пока не знаю
 
-career-qa-track-item1:
-  <<: *DEFAULTS
-  survey: career-qa-track
-  value: Ручное тестирование
+# career-qa-track-item1:
+#   <<: *DEFAULTS
+#   survey: career-qa-track
+#   value: Ручное тестирование
+#
+# career-qa-track-item2:
+#   <<: *DEFAULTS
+#   survey: career-qa-track
+#   value: Автоматизация (тестирование с помощью кода)
+#
+# career-qa-track-item3:
+#   <<: *DEFAULTS
+#   survey: career-qa-track
+#   value: Не уверен(а)
+#
+# career-dev-track-item1:
+#   <<: *DEFAULTS
+#   survey: career-dev-track
+#   value: Фронтенд-разработка
+#
+# career-dev-track-item2:
+#   <<: *DEFAULTS
+#   survey: career-dev-track
+#   value: Бэкенд-разработка
+#
+# career-dev-track-item3:
+#   <<: *DEFAULTS
+#   survey: career-dev-track
+#   value: Фулстек-разработка
+#
+# career-dev-track-item4:
+#   <<: *DEFAULTS
+#   survey: career-dev-track
+#   value: Мобильная разработка
+#
+# career-dev-track-item5:
+#   <<: *DEFAULTS
+#   survey: career-dev-track
+#   value: Геймдев
+#
+# career-dev-track-item6:
+#   <<: *DEFAULTS
+#   survey: career-dev-track
+#   value: Пока не решил(а)
 
-career-qa-track-item2:
-  <<: *DEFAULTS
-  survey: career-qa-track
-  value: Автоматизация (тестирование с помощью кода)
-
-career-qa-track-item3:
-  <<: *DEFAULTS
-  survey: career-qa-track
-  value: Не уверен(а)
-
-career-dev-track-item1:
-  <<: *DEFAULTS
-  survey: career-dev-track
-  value: Фронтенд-разработка
-
-career-dev-track-item2:
-  <<: *DEFAULTS
-  survey: career-dev-track
-  value: Бэкенд-разработка
-
-career-dev-track-item3:
-  <<: *DEFAULTS
-  survey: career-dev-track
-  value: Фулстек-разработка
-
-career-dev-track-item4:
-  <<: *DEFAULTS
-  survey: career-dev-track
-  value: Мобильная разработка
-
-career-dev-track-item5:
-  <<: *DEFAULTS
-  survey: career-dev-track
-  value: Геймдев
-
-career-dev-track-item6:
-  <<: *DEFAULTS
-  survey: career-dev-track
-  value: Пока не решил(а)
-
-career-analytics-track-item1:
-  <<: *DEFAULTS
-  survey: career-analytics-track
-  value: Бизнес-аналитика (отчёты, дешборды, принятие решений)
-
-career-analytics-track-item2:
-  <<: *DEFAULTS
-  survey: career-analytics-track
-  value: Продуктовая аналитика (поведение пользователей, воронки)
-
-career-analytics-track-item3:
-  <<: *DEFAULTS
-  survey: career-analytics-track
-  value: Data Science и машинное обучение (ИИ)
-
-career-analytics-track-item4:
-  <<: *DEFAULTS
-  survey: career-analytics-track
-  value: Финансовая или маркетинговая аналитика
-
-career-analytics-track-item5:
-  <<: *DEFAULTS
-  survey: career-analytics-track
-  value: Системный анализ (работа с требованиями, диаграммы, взаимодействие с командами)
-
-career-analytics-track-item6:
-  <<: *DEFAULTS
-  survey: career-analytics-track
-  value: Пока не решил(а)
+# career-analytics-track-item1:
+#   <<: *DEFAULTS
+#   survey: career-analytics-track
+#   value: Бизнес-аналитика (отчёты, дешборды, принятие решений)
+#
+# career-analytics-track-item2:
+#   <<: *DEFAULTS
+#   survey: career-analytics-track
+#   value: Продуктовая аналитика (поведение пользователей, воронки)
+#
+# career-analytics-track-item3:
+#   <<: *DEFAULTS
+#   survey: career-analytics-track
+#   value: Data Science и машинное обучение (ИИ)
+#
+# career-analytics-track-item4:
+#   <<: *DEFAULTS
+#   survey: career-analytics-track
+#   value: Финансовая или маркетинговая аналитика
+#
+# career-analytics-track-item5:
+#   <<: *DEFAULTS
+#   survey: career-analytics-track
+#   value: Системный анализ (работа с требованиями, диаграммы, взаимодействие с командами)
+#
+# career-analytics-track-item6:
+#   <<: *DEFAULTS
+#   survey: career-analytics-track
+#   value: Пока не решил(а)
 
 age-range-item1:
   <<: *DEFAULTS
