@@ -3,8 +3,13 @@ class LanguageResource < ApplicationResource
 
   typelize_from Language
 
-  attributes :id, :slug, :learn_as, :progress, :category_id, :current_version_id, :created_at, :openai_assistant_id, :hexlet_program_landing_page
+  attributes :id, :slug, :learn_as, :progress, :category_id, :current_version_id, :created_at, :openai_assistant_id
   has_one :current_version, resource: Language::VersionResource
+
+  typelize :string, nullable: true
+  attribute :hexlet_program_landing_page do |obj|
+    obj.hexlet_program_landing_page.presence
+  end
 
   typelize :string, nullable: true
   attribute :repository_url do |obj|
