@@ -51,6 +51,7 @@ elixir:
   <<: *DEFAULTS
   current_version: elixir
   openai_assistant_id: asst_BnPHo7ddQhnV3KfUtJV3PJVX
+  hexlet_program_landing_page: https://ru.hexlet.io/courses
 
 typescript:
   <<: *DEFAULTS

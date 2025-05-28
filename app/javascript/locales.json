@@ -2367,7 +2367,7 @@
       }
     },
     "links": {
-      "hexlet": "https://ru.hexlet.io/?promo_name=main&promo_position=body&promo_type=linkk&utm_source=code-basics&utm_medium=referral&utm_campaign=general&utm_content=mainpage",
+      "hexlet": "https://ru.hexlet.io/?utm_source=code-basics&utm_medium=referral&utm_campaign=general&utm_content=mainpage",
       "hexlet_author_school_course": "https://ru.hexlet.io/courses/author-school-hexlet?promo_name=course-author-school-hexlet&promo_position=body&promo_type=link",
       "hexlet_authors_school": "https://making.hexlet.io/authors?promo_name=school-of-authors&promo_position=body&promo_type=link",
       "hexlet_awesome_text": "https://ru.hexlet.io/courses/awesome-text?promo_name=course-awesome-text&promo_position=body&promo_type=link",
@@ -3007,6 +3007,7 @@
           "course_graduates": "Присоединяйтесь к 74 761 студентам, которые успешно прошли курсы",
           "cover_image": "Обложка курса",
           "free_course": "Бесплатный курс для начинающих",
+          "hexlet_program_link": "Профессия и Трудоустройство",
           "join": "Присоединиться",
           "learning_conveniently": "Всё, что нужно для освоения новых тем, — на одном экране. Теория, практика и живые примеры идут рука об руку. Чёткая структура помогает учиться последовательно и не упускать важные детали",
           "learning_preview": "Предварительный просмотр обучения",

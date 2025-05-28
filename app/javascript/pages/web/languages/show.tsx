@@ -138,7 +138,7 @@ export default function Show({
                 )}
                 {courseMember?.state === "finished" && (
                   <Link
-                    className="btn btn-lg btn-primary"
+                    className="btn btn-lg btn-outline-primary me-3"
                     href={Routes.language_lesson_path(
                       course.slug!,
                       firstLesson.slug!,
@@ -146,6 +146,15 @@ export default function Show({
                   >
                     <span>{t("languages.show.restart")}</span>
                   </Link>
+                )}
+                {courseMember?.state === "finished" && course.hexlet_program_landing_page && (
+                  <a
+                    target="_blank"
+                    className="btn btn-lg btn-primary"
+                    href={`${course.hexlet_program_landing_page}?utm_source=code-basics&utm_medium=referral`}
+                  >
+                    <span>{t("languages.show.hexlet_program_link")}</span>
+                  </a>
                 )}
               </Col>
             </Row>

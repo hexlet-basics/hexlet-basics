@@ -108,3 +108,17 @@ should_add_contact_method-elixir_hello_world:
   lesson: elixir-hello-world
   state: finished
   language_member: should_add_contact_method-elixir
+
+should_add_contact_method-elixir_variables:
+  user: should_add_contact_method
+  language: elixir
+  lesson: elixir-variables
+  state: finished
+  language_member: should_add_contact_method-elixir
+
+should_add_contact_method-elixir_strings:
+  user: should_add_contact_method
+  language: elixir
+  lesson: elixir-strings
+  state: finished
+  language_member: should_add_contact_method-elixir
