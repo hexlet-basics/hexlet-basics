@@ -29,7 +29,9 @@ class WorkflowLeadSerializer
   sig { returns(T::Hash[Symbol, T.untyped]) }
   def to_h
     lead = base_payload
-    lead[:custom_fields_values] = build_custom_fields(LEAD_FIELD_MAPPER)
+
+    lead_custom_fields = build_custom_fields(LEAD_FIELD_MAPPER)
+    lead[:custom_fields_values] = lead_custom_fields unless lead_custom_fields.empty?
 
     lead[:_embedded] = { contacts: [ contact_payload ] }
 
@@ -53,17 +55,31 @@ class WorkflowLeadSerializer
 
   sig { returns(T::Hash[Symbol, String]) }
   def notes_payload
-    text = @data[:survey_answers_data]
-             .map { |qa| "Вопрос: #{qa[:question]}\nОтвет: #{qa[:answer]}" }
-             .join("\n\n")
+    parts = []
 
-    { text: text }
+    if @data[:survey_answers_data]&.any?
+      qa_text = @data[:survey_answers_data]
+                 .map { |qa| "Вопрос: #{qa[:question]}\nОтвет: #{qa[:answer]}" }
+                 .join("\n\n")
+      parts << qa_text
+    end
+
+    if @data[:courses_data]&.any?
+      courses_text = @data[:courses_data]
+                       .map { |cd| "Курс: #{cd[:slug]}\nПройдено уроков: #{cd[:lessons_finished_count]}" }
+                       .join("\n\n")
+      parts << "Информация по курсам:\n#{courses_text}"
+    end
+
+    { text: parts.join("\n\n---\n\n") }
   end
 
   sig { returns(T::Hash[Symbol, T.untyped]) }
   def contact_payload
     {
       name:                 @data[:user_name],
+      first_name:           @data[:first_name],
+      last_name:            @data[:last_name].to_s,
       custom_fields_values: build_custom_fields(CONTACT_FIELD_MAPPER)
     }
   end

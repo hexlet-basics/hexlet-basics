@@ -29,7 +29,7 @@ class Web::LeadsControllerTest < ActionDispatch::IntegrationTest
 
     assert { user.tag_list.exclude?("should_be_lead") }
 
-    assert { lead.courses_data.include?({ slug: "elixir", lessons_finished_count: 1 }) }
+    assert { lead.courses_data.include?({ slug: "elixir", lessons_finished_count: 3 }) }
     assert { lead.survey_answers_data.include?({ question: "Какую задачу вы решаете?", answer: "Планирую поменять карьеру" }) }
   end
 end
