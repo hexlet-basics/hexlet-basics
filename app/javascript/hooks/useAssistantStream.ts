@@ -63,7 +63,6 @@ export function useAssistantStream(
     }, 50),
   ).current;
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const subscription = cableInstance.subscriptions.create(
       { channel: "AssistantChannel", id: lessonMemberId },

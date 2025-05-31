@@ -3,7 +3,7 @@
 import classNames from "classnames";
 import type { PrimeReactPTOptions } from "primereact/api";
 
-const TRANSITIONS = {
+const _TRANSITIONS = {
   overlay: {
     timeout: 150,
     classNames: {
