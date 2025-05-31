@@ -32,7 +32,7 @@ career-change:
   name: Смена карьеры
   survey_item: goal-item1
 
-request-contact-method:
+career-change2:
   <<: *DEFAULTS
   name: Запрос способа связи
   survey_item: goal-item1

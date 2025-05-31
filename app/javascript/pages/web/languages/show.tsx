@@ -127,7 +127,7 @@ export default function Show({
                 )}
                 {courseMember && nextLesson && (
                   <Link
-                    className="btn btn-lg btn-primary me-3"
+                    className="btn btn-lg btn-primary me-3 mb-2"
                     href={Routes.language_lesson_path(
                       course.slug!,
                       nextLesson.slug!,
@@ -138,7 +138,7 @@ export default function Show({
                 )}
                 {courseMember?.state === "finished" && (
                   <Link
-                    className="btn btn-lg btn-outline-primary me-3"
+                    className="btn btn-lg btn-outline-primary me-3 mb-2"
                     href={Routes.language_lesson_path(
                       course.slug!,
                       firstLesson.slug!,

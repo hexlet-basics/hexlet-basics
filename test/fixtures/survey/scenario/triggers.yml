@@ -33,12 +33,12 @@ career-change--trigger2:
   event_name: BookRequestedEvent
   event_threshold_count: 1
 
-request-contact-method--trigger1:
-  scenario: request-contact-method
+career-change2--trigger1:
+  scenario: career-change2
   event_name: LessonFinishedEvent
   event_threshold_count: 3
 
-request-contact-method--trigger2:
-  scenario: request-contact-method
+career-change2--trigger2:
+  scenario: career-change2
   event_name: BookRequestedEvent
   event_threshold_count: 1

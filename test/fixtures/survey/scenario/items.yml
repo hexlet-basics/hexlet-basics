@@ -30,8 +30,8 @@ career-change-item2:
   survey: career-change-reason
   order: 20
 
-career-change-item3:
-  scenario: career-change
+career-change2-item1:
+  scenario: career-change2
   survey: career-change-contact-method
   order: 30
 
