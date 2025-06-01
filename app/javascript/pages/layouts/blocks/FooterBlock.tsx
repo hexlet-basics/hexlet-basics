@@ -54,7 +54,7 @@ export default function FooterBlock() {
               <b>{tLayouts('shared.footer.categories')}</b>
               <Nav className="d-block">
                 {courseCategories.map((category) => (
-                  <Nav.Item>
+                  <Nav.Item key={category.id}>
                     <Link
                       className="link-body-emphasis text-decoration-none"
                       href={Routes.language_category_path(category.slug!)}
@@ -62,9 +62,7 @@ export default function FooterBlock() {
                       {category.name}
                     </Link>
                   </Nav.Item>
-
                 ))}
-
               </Nav>
             </Col>
 
