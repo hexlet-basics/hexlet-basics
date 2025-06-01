@@ -1,7 +1,4 @@
-class Language::CategoryResource
-  include Alba::Resource
-  include Typelizer::DSL
-
+class Language::CategoryResource < ApplicationResource
   typelize_from Language::Category
   # root_key :user
 

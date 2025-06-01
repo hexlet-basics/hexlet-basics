@@ -69,7 +69,7 @@ class Web::LanguagesController < Web::ApplicationController
       courseLandingPage: Language::LandingPageResource.new(landing_page),
       courseLandingPageQnaItems: Language::LandingPageQnaItemResource.new(landing_page.qna_items),
       course: LanguageResource.new(language),
-      courseCategory: Language::CategoryResource.new(landing_page.language_category),
+      courseCategory: landing_page.language_category && Language::CategoryResource.new(landing_page.language_category),
       firstLesson: Language::LessonResource.new(first_lesson_info),
       nextLesson: next_lesson_info && Language::LessonResource.new(next_lesson_info),
       courseModules: Language::ModuleResource.new(language_modules_infos),

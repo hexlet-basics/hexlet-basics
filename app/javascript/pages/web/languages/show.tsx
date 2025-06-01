@@ -28,7 +28,7 @@ type Props = {
   lead: LeadCrud;
   course: Language;
   courseMember?: LanguageMember;
-  courseCategory: LanguageCategory;
+  courseCategory?: LanguageCategory;
   courseLandingPage: LanguageLandingPage;
   courseLandingPageQnaItems: LanguageLandingPageQnaItem[];
   firstLesson: LanguageLesson;
@@ -81,8 +81,8 @@ export default function Show({
 
   const breadcrumbItems: BreadcrumbItem[] = [
     {
-      name: courseCategory.name,
-      url: Routes.language_category_url(courseCategory.slug!),
+      name: courseCategory?.name ?? '-',
+      url: (courseCategory && Routes.language_category_url(courseCategory.slug!)) ?? '#',
     },
     {
       name: courseLandingPage.header,

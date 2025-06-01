@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_01_142635) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_01_150708) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -149,6 +149,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_01_142635) do
     t.string "locale"
     t.string "header"
     t.string "description"
+  end
+
+  create_table "language_category_items", force: :cascade do |t|
+    t.bigint "language_category_id", null: false
+    t.bigint "language_landing_page_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["language_category_id"], name: "index_language_category_items_on_language_category_id"
+    t.index ["language_landing_page_id"], name: "index_language_category_items_on_language_landing_page_id"
   end
 
   create_table "language_landing_page_qna_items", force: :cascade do |t|
@@ -734,6 +743,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_01_142635) do
   add_foreign_key "blog_posts", "users", column: "creator_id"
   add_foreign_key "book_requests", "users"
   add_foreign_key "event_store_events_in_streams", "event_store_events", column: "event_id", primary_key: "event_id"
+  add_foreign_key "language_category_items", "language_categories"
+  add_foreign_key "language_category_items", "language_landing_pages"
   add_foreign_key "language_landing_page_qna_items", "language_landing_pages"
   add_foreign_key "language_landing_pages", "language_categories"
   add_foreign_key "language_landing_pages", "languages"

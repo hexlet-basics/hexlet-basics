@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-import { XForm, XInput } from "@/components/forms";
+import { XCheck, XDynamicInputs, XForm, XHidden, XInput, XSelect } from "@/components/forms";
 import { type HTTPVerb, Submit } from "use-inertia-form";
 
 import type { SharedProps } from "@/types";
@@ -20,8 +20,6 @@ type Props = {
 
 export default function Form({ data, url, method }: Props) {
   const { t } = useTranslation();
-  const { courseCategories, landingPagesForLists } =
-    usePage<SharedProps>().props;
   const { t: tHelpers } = useTranslation("helpers");
   // const { t: tEnums } = useTranslation("enumerize");
   // const languageProgressEnum = tEnums("language.progress", {
@@ -40,6 +38,16 @@ export default function Form({ data, url, method }: Props) {
       <XInput name="header" />
       <XInput name="slug" />
       <XInput as="textarea" name="description" />
+
+      <XDynamicInputs
+        model="items"
+        label="Items"
+        emptyData={{ language_landing_page_id: null }}
+      >
+        <XHidden type="hidden" name="id" />
+        <XSelect name="language_landing_page_id" valueField="id" labelField="header" items={data.meta.landingPagesForCategories} />
+        <XCheck name="_destroy" />
+      </XDynamicInputs>
 
       <Submit className="btn w-100 btn-lg btn-primary mb-3">
         {tHelpers("submit.save")}

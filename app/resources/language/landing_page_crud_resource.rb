@@ -1,7 +1,5 @@
-class Language::LandingPageCrudResource
-  include Rails.application.routes.url_helpers
-  include Alba::Resource
-  include Typelizer::DSL
+class Language::LandingPageCrudResource < ApplicationResource
+  urls = Rails.application.routes.url_helpers
 
   typelize_from Language::LandingPage
   root_key :language_landing_page
@@ -33,7 +31,7 @@ class Language::LandingPageCrudResource
   meta do
     {
       outcomes_image_thumb_url: object.outcomes_image.attached? ?
-        rails_representation_url(object.outcomes_image.variant(:thumb)) : nil,
+      urls.rails_representation_url(object.outcomes_image.variant(:thumb)) : nil,
       state_events: object.aasm.events_for_select
     }
   end
