@@ -43,16 +43,16 @@ module FactoryBot
 
     # An Array of strings specifying locations that should be searched for
     # factory definitions. By default, factory_bot will attempt to require
-    # "factories", "test/factories" and "spec/factories". Only the first
-    # existing file will be loaded.
+    # "factories.rb", "factories/**/*.rb", "test/factories.rb",
+    # "test/factories/**.rb", "spec/factories.rb", and "spec/factories/**.rb".
     #
     # source://factory_bot//lib/factory_bot/find_definitions.rb#7
     def definition_file_paths; end
 
     # An Array of strings specifying locations that should be searched for
     # factory definitions. By default, factory_bot will attempt to require
-    # "factories", "test/factories" and "spec/factories". Only the first
-    # existing file will be loaded.
+    # "factories.rb", "factories/**/*.rb", "test/factories.rb",
+    # "test/factories/**.rb", "spec/factories.rb", and "spec/factories/**.rb".
     #
     # source://factory_bot//lib/factory_bot/find_definitions.rb#7
     def definition_file_paths=(_arg0); end
@@ -1170,6 +1170,12 @@ class FactoryBot::DefinitionProxy
   # source://factory_bot//lib/factory_bot/definition_proxy.rb#243
   def __declare_attribute__(name, block); end
 
+  # If the sequence has already been registered by a parent, return that one,
+  # otherwise register and return the given sequence
+  #
+  # source://factory_bot//lib/factory_bot/definition_proxy.rb#260
+  def __fetch_or_register_sequence(sequence); end
+
   # @return [Boolean]
   #
   # source://factory_bot//lib/factory_bot/definition_proxy.rb#252
@@ -1862,6 +1868,12 @@ class FactoryBot::Sequence
   def initialize(name, *args, &proc); end
 
   # @api private
+  # @return [Boolean]
+  #
+  # source://factory_bot//lib/factory_bot/sequence.rb#41
+  def matches?(test_sequence); end
+
+  # @api private
   #
   # source://factory_bot//lib/factory_bot/sequence.rb#6
   def name; end
@@ -1881,42 +1893,49 @@ class FactoryBot::Sequence
   # source://factory_bot//lib/factory_bot/sequence.rb#37
   def rewind; end
 
+  protected
+
+  # @api private
+  #
+  # source://factory_bot//lib/factory_bot/sequence.rb#50
+  def proc; end
+
   private
 
   # @api private
   #
-  # source://factory_bot//lib/factory_bot/sequence.rb#47
+  # source://factory_bot//lib/factory_bot/sequence.rb#58
   def increment_value; end
 
   # @api private
   #
-  # source://factory_bot//lib/factory_bot/sequence.rb#43
+  # source://factory_bot//lib/factory_bot/sequence.rb#54
   def value; end
 end
 
 # @api private
 #
-# source://factory_bot//lib/factory_bot/sequence.rb#51
+# source://factory_bot//lib/factory_bot/sequence.rb#62
 class FactoryBot::Sequence::EnumeratorAdapter
   # @api private
   # @return [EnumeratorAdapter] a new instance of EnumeratorAdapter
   #
-  # source://factory_bot//lib/factory_bot/sequence.rb#52
+  # source://factory_bot//lib/factory_bot/sequence.rb#63
   def initialize(value); end
 
   # @api private
   #
-  # source://factory_bot//lib/factory_bot/sequence.rb#61
+  # source://factory_bot//lib/factory_bot/sequence.rb#72
   def next; end
 
   # @api private
   #
-  # source://factory_bot//lib/factory_bot/sequence.rb#57
+  # source://factory_bot//lib/factory_bot/sequence.rb#68
   def peek; end
 
   # @api private
   #
-  # source://factory_bot//lib/factory_bot/sequence.rb#65
+  # source://factory_bot//lib/factory_bot/sequence.rb#76
   def rewind; end
 end
 
@@ -1999,12 +2018,12 @@ class FactoryBot::Strategy::Stub
 
   # @return [Boolean]
   #
-  # source://factory_bot//lib/factory_bot/strategy/stub.rb#114
+  # source://factory_bot//lib/factory_bot/strategy/stub.rb#116
   def missing_created_at?(result_instance); end
 
   # @return [Boolean]
   #
-  # source://factory_bot//lib/factory_bot/strategy/stub.rb#120
+  # source://factory_bot//lib/factory_bot/strategy/stub.rb#122
   def missing_updated_at?(result_instance); end
 
   # source://factory_bot//lib/factory_bot/strategy/stub.rb#50

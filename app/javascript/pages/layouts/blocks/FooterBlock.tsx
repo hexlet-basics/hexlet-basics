@@ -9,7 +9,7 @@ import type { Organization, WithContext } from "schema-dts";
 export default function FooterBlock() {
   const { t: tLayouts } = useTranslation("layouts");
   const { t: tCommon } = useTranslation("common");
-  const { locale, landingPagesForFooter } = usePage<SharedProps>().props;
+  const { landingPagesForFooter, courseCategories } = usePage<SharedProps>().props;
 
   const organization: WithContext<Organization> = {
     "@context": "https://schema.org",
@@ -29,9 +29,11 @@ export default function FooterBlock() {
       <footer className="mt-auto bg-body-tertiary pt-5">
         <Container>
           <Row className="gy-4">
-            <Col className="col-12 col-sm-6 col-md-9">
+
+            <Col className="col-12 col-sm-6 col-md-6">
+              {/* <b>{tLayouts('shared.footer.courses')}</b> */}
               <Nav className="d-block">
-                <Row className="row-cols-1 row-cols-md-2 row-cols-lg-3">
+                <Row className="row-cols-1 row-cols-md-2">
                   {landingPagesForFooter.map((lp) => (
                     <Col key={lp.id}>
                       <Nav.Item>
@@ -47,6 +49,25 @@ export default function FooterBlock() {
                 </Row>
               </Nav>
             </Col>
+
+            <Col className="col-12 col-sm-6 col-md-3">
+              <b>{tLayouts('shared.footer.categories')}</b>
+              <Nav className="d-block">
+                {courseCategories.map((category) => (
+                  <Nav.Item>
+                    <Link
+                      className="link-body-emphasis text-decoration-none"
+                      href={Routes.language_category_path(category.slug!)}
+                    >
+                      {category.name}
+                    </Link>
+                  </Nav.Item>
+
+                ))}
+
+              </Nav>
+            </Col>
+
             {/* <Col className="order-last order-sm-first">
               <Nav className="flex-column">
                 <Nav.Item className="h5">+7 (495) 085 21 62</Nav.Item>

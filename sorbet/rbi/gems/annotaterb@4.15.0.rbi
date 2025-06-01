@@ -579,10 +579,10 @@ class AnnotateRb::ModelAnnotator::ColumnAnnotation::AttributesBuilder
   #
   # @return [Boolean]
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/attributes_builder.rb#99
+  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/attributes_builder.rb#105
   def hide_default?; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/attributes_builder.rb#90
+  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/attributes_builder.rb#96
   def sorted_column_indices; end
 end
 
@@ -1356,88 +1356,94 @@ class AnnotateRb::ModelAnnotator::ModelFilesGetter
 
     private
 
-    # source://annotaterb//lib/annotate_rb/model_annotator/model_files_getter.rb#39
+    # source://annotaterb//lib/annotate_rb/model_annotator/model_files_getter.rb#42
     def list_model_files_from_argument(options); end
   end
 end
 
 # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#5
 class AnnotateRb::ModelAnnotator::ModelWrapper
-  # Should be the wrapper for an ActiveRecord model that serves as the source of truth of the model
-  # of the model that we're annotating
-  #
   # @return [ModelWrapper] a new instance of ModelWrapper
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#9
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#11
   def initialize(klass, options); end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#140
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#115
+  def _retrieve_indexes_from_table; end
+
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#146
   def classified_sort(cols); end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#61
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#63
   def column_defaults; end
 
   # Gets the columns of the ActiveRecord model, processes them, and then returns them.
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#15
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#17
   def columns; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#35
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#37
   def connection; end
 
   # @return [Boolean]
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#56
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#58
   def has_table_comments?; end
 
   # These are the columns that the globalize gem needs to work but
   # are not necessary for the models to be displayed as annotations.
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#164
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#176
   def ignored_translation_table_columns; end
 
   # Calculates the max width of the schema for the model by looking at the columns, schema comments, with respect
   # to the options.
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#87
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#89
   def max_schema_info_width; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#81
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#83
   def model_name; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#44
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#46
   def primary_key; end
 
   # Returns the unmodified model columns
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#40
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#42
   def raw_columns; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#109
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#111
   def retrieve_indexes_from_table; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#52
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#54
   def table_comments; end
 
   # @return [Boolean]
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#48
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#50
   def table_exists?; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#77
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#79
   def table_name; end
 
   # Add columns managed by the globalize gem if this gem is being used.
   # TODO: Audit if this is still needed, it seems like Globalize gem is no longer maintained
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#67
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#69
   def translated_columns; end
 
   # @return [Boolean]
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#130
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#136
   def with_comments?; end
 end
+
+# Should be the wrapper for an ActiveRecord model that serves as the source of truth of the model
+# of the model that we're annotating
+#
+# source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#9
+AnnotateRb::ModelAnnotator::ModelWrapper::DEFAULT_TIMESTAMP_COLUMNS = T.let(T.unsafe(nil), Array)
 
 # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#5
 class AnnotateRb::ModelAnnotator::PatternGetter
@@ -1451,46 +1457,46 @@ class AnnotateRb::ModelAnnotator::PatternGetter
 
   private
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#123
+  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#126
   def active_admin_files(root_directory); end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#117
+  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#120
   def additional_file_patterns; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#104
+  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#107
   def controller_files(root_directory); end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#110
+  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#113
   def controller_test_files(root_directory); end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#169
+  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#172
   def factory_files(root_directory); end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#144
+  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#147
   def fixture_files(root_directory); end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#84
+  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#87
   def generate(root_directory, pattern_type); end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#130
+  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#133
   def helper_files(root_directory); end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#157
+  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#160
   def request_spec_files(root_directory); end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#163
+  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#166
   def routing_spec_files(root_directory); end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#153
+  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#156
   def scaffold_files(root_directory); end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#188
+  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#191
   def serialize_files(root_directory); end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#194
+  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#197
   def serializer_test_files(root_directory); end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#136
+  # source://annotaterb//lib/annotate_rb/model_annotator/pattern_getter.rb#139
   def test_files(root_directory); end
 
   class << self
@@ -1628,7 +1634,7 @@ class AnnotateRb::ModelAnnotator::ProjectAnnotator
   # source://annotaterb//lib/annotate_rb/model_annotator/project_annotator.rb#36
   def build_instructions_for_file(file); end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/project_annotator.rb#58
+  # source://annotaterb//lib/annotate_rb/model_annotator/project_annotator.rb#63
   def model_files; end
 end
 
@@ -1846,32 +1852,32 @@ class AnnotateRb::Options
 
   # @return [Options] a new instance of Options
   #
-  # source://annotaterb//lib/annotate_rb/options.rb#162
+  # source://annotaterb//lib/annotate_rb/options.rb#166
   def initialize(options = T.unsafe(nil), state = T.unsafe(nil)); end
 
   # source://forwardable/1.3.3/forwardable.rb#231
   def [](*args, **_arg1, &block); end
 
-  # source://annotaterb//lib/annotate_rb/options.rb#217
+  # source://annotaterb//lib/annotate_rb/options.rb#221
   def get_state(key); end
 
-  # source://annotaterb//lib/annotate_rb/options.rb#175
+  # source://annotaterb//lib/annotate_rb/options.rb#179
   def load_defaults; end
 
-  # source://annotaterb//lib/annotate_rb/options.rb#221
+  # source://annotaterb//lib/annotate_rb/options.rb#225
   def print; end
 
-  # source://annotaterb//lib/annotate_rb/options.rb#208
+  # source://annotaterb//lib/annotate_rb/options.rb#212
   def set_state(key, value, overwrite = T.unsafe(nil)); end
 
-  # source://annotaterb//lib/annotate_rb/options.rb#171
+  # source://annotaterb//lib/annotate_rb/options.rb#175
   def to_h; end
 
   private
 
   # Guard against user inputting strings instead of symbols
   #
-  # source://annotaterb//lib/annotate_rb/options.rb#228
+  # source://annotaterb//lib/annotate_rb/options.rb#232
   def symbolize_exclude_tests; end
 
   class << self
@@ -1880,31 +1886,31 @@ class AnnotateRb::Options
   end
 end
 
-# source://annotaterb//lib/annotate_rb/options.rb#153
+# source://annotaterb//lib/annotate_rb/options.rb#157
 AnnotateRb::Options::ALL_OPTION_KEYS = T.let(T.unsafe(nil), Array)
 
-# source://annotaterb//lib/annotate_rb/options.rb#94
+# source://annotaterb//lib/annotate_rb/options.rb#97
 AnnotateRb::Options::DEFAULT_OPTIONS = T.let(T.unsafe(nil), Hash)
 
 # source://annotaterb//lib/annotate_rb/options.rb#28
 AnnotateRb::Options::FLAG_OPTIONS = T.let(T.unsafe(nil), Hash)
 
-# source://annotaterb//lib/annotate_rb/options.rb#96
+# source://annotaterb//lib/annotate_rb/options.rb#99
 AnnotateRb::Options::FLAG_OPTION_KEYS = T.let(T.unsafe(nil), Array)
 
 # source://annotaterb//lib/annotate_rb/options.rb#61
 AnnotateRb::Options::OTHER_OPTIONS = T.let(T.unsafe(nil), Hash)
 
-# source://annotaterb//lib/annotate_rb/options.rb#127
+# source://annotaterb//lib/annotate_rb/options.rb#130
 AnnotateRb::Options::OTHER_OPTION_KEYS = T.let(T.unsafe(nil), Array)
 
-# source://annotaterb//lib/annotate_rb/options.rb#85
+# source://annotaterb//lib/annotate_rb/options.rb#88
 AnnotateRb::Options::PATH_OPTIONS = T.let(T.unsafe(nil), Hash)
 
-# source://annotaterb//lib/annotate_rb/options.rb#146
+# source://annotaterb//lib/annotate_rb/options.rb#150
 AnnotateRb::Options::PATH_OPTION_KEYS = T.let(T.unsafe(nil), Array)
 
-# source://annotaterb//lib/annotate_rb/options.rb#157
+# source://annotaterb//lib/annotate_rb/options.rb#161
 AnnotateRb::Options::POSITION_DEFAULT = T.let(T.unsafe(nil), String)
 
 # source://annotaterb//lib/annotate_rb/options.rb#17
