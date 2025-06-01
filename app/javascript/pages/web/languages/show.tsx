@@ -103,8 +103,8 @@ export default function Show({
         {/* )} */}
         <Row className="flex-column flex-lg-row gy-5 gx-lg-5 mb-4 mb-lg-5">
           <Col className="col-lg-7">
-            <div className="fs-5 fw-medium text-primary text-opacity-75 mb-3">
-              {t("languages.show.free_course")}
+            <div className="fs-6 fw-medium text-opacity-75 mb-3">
+              {t("languages.show.free_course", { name: courseLandingPage.header })}
             </div>
             <h1 className="display-5 fw-bolder mb-3">
               {courseLandingPage.header}
