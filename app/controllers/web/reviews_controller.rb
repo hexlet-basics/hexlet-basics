@@ -4,10 +4,7 @@ class Web::ReviewsController < Web::ApplicationController
   def index
     scope = Review.published.with_locale
       .includes([ :user, :language ])
-      .order(
-        Review.arel_table[:pinned].desc.nulls_last,
-        id: :desc
-      )
+      .order(id: :desc)
     pagy, records = pagy(scope)
 
     seo_tags = {

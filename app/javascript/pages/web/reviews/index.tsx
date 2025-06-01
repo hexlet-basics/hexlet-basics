@@ -33,10 +33,13 @@ export default function New({ reviews, pagy }: Props) {
         <Row className="mb-5 row-cols-1 row-cols-lg-2">
           {reviews.map((review) => (
             <Col key={review.id} className="mb-5">
-              <Card key={review.id} className="mb-3 h-100">
+              <Card key={review.id} className="mb-3 h-100 shadow-sm border-0">
                 <Card.Body className="d-flex flex-column">
                   <div className="mb-auto">
-                    <Card.Title>{review.full_name}</Card.Title>
+                    <Card.Title>
+                      <i className="bi bi-person-circle me-2" />
+                      {review.full_name}
+                    </Card.Title>
                     <Card.Text>{review.body}</Card.Text>
                   </div>
                   <div className="d-flex small text-muted">
@@ -48,13 +51,7 @@ export default function New({ reviews, pagy }: Props) {
                     {/*     {review.language.name} */}
                     {/*   </Card.Link> */}
                     {/* )} */}
-                    <div className="me-2">
-                      <b>
-                        <i className="bi bi-person-circle me-2" />
-                        {review.user.name}
-                      </b>
-                    </div>
-                    <div>{dayjs(review.created_at).format("YYYY-MM-DD")}</div>
+                    <div>{dayjs(review.created_at).format("LL")}</div>
                   </div>
                 </Card.Body>
               </Card>

@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { Container } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 
 import { useTranslation } from "react-i18next";
 
@@ -7,24 +7,29 @@ import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type {
   LanguageCategory,
   LanguageLandingPage,
-  LanguageLandingPageForLists,
+  LanguageLandingPageForLists, LeadCrud
 } from "@/types/serializers";
 
 import CourseBlock from "@/components/CourseBlock";
 import * as Routes from "@/routes.js";
+import i18next from "i18next";
+import { usePage } from "@inertiajs/react";
+import { SharedProps } from "@/types";
+import LeadFormBlock from "@/components/LeadFormBlock";
 
 type Props = PropsWithChildren & {
   categoryLandingPages: LanguageLandingPageForLists[];
   landingPages: LanguageLandingPage[];
   courseCategory: LanguageCategory;
+  lead: LeadCrud;
 };
 
-export default function Show({ courseCategory, categoryLandingPages }: Props) {
+export default function Show({ courseCategory, categoryLandingPages, lead }: Props) {
   const { t } = useTranslation();
 
-  const header = t("language_categories.show.header", {
-    name: courseCategory.name!,
-  });
+  const {
+    auth: { user },
+  } = usePage<SharedProps>().props;
 
   const items = [
     {
@@ -32,22 +37,44 @@ export default function Show({ courseCategory, categoryLandingPages }: Props) {
       url: Routes.language_categories_path(),
     },
     {
-      name: header,
+      name: courseCategory.header!,
       url: Routes.language_category_path(courseCategory.slug!),
     },
   ];
 
   return (
-    <ApplicationLayout items={items} header={header}>
+    <ApplicationLayout items={items} header={courseCategory.header!}>
       <Container>
-        <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4">
+        {courseCategory.description && (
+          <Row className="mb-5">
+            <Col className="col-12 col-sm-8">
+              <p className="fs-5">{courseCategory.description}</p>
+            </Col>
+          </Row>
+        )}
+        <Row className="row-cols-2 row-cols-md-3 row-cols-lg-4">
           {categoryLandingPages.map((lp) => (
-            <div className="col mb-3" key={lp.id}>
+            <Col className="mb-4" key={lp.id}>
               <CourseBlock landingPage={lp} />
-            </div>
+            </Col>
           ))}
-        </div>
+        </Row>
       </Container>
+
+      {!user.guest && i18next.language === 'ru' && (
+        <Container>
+          <Row className="align-items-center py-5">
+            <Col className="col-12 col-lg-7 fw-bold display-4 mb-5">
+              {t("home.index.consultation")}
+            </Col>
+            <Col className="col-12 col-lg-5 mx-auto d-flex flex-column">
+              <div className="bg-body-tertiary p-4 p-md-5 border rounded-3">
+                <LeadFormBlock lead={lead} />
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      )}
     </ApplicationLayout>
   );
 }

@@ -2,19 +2,22 @@
 #
 # Table name: language_categories
 #
-#  id         :bigint           not null, primary key
-#  locale     :string
-#  name       :string
-#  name_en    :string
-#  name_ru    :string
-#  slug       :string
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id          :bigint           not null, primary key
+#  description :string
+#  header      :string
+#  locale      :string
+#  name        :string
+#  name_en     :string
+#  name_ru     :string
+#  slug        :string
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
 #
 class Language::Category < ApplicationRecord
   include Language::CategoryRepository
 
   validates :name, presence: true, uniqueness: true
+  validates :header, presence: true, uniqueness: true
   validates :slug, presence: true, uniqueness: { scope: :locale }
 
   has_many :languages, ->(category) { where(category: category) }, dependent: :nullify, inverse_of: :category

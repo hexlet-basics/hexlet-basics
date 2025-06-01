@@ -59,7 +59,7 @@ export default function FooterBlock() {
                       className="link-body-emphasis text-decoration-none"
                       href={Routes.language_category_path(category.slug!)}
                     >
-                      {category.name}
+                      {category.header}
                     </Link>
                   </Nav.Item>
                 ))}

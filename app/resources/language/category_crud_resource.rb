@@ -5,7 +5,7 @@ class Language::CategoryCrudResource
   typelize_from Language::Category
   root_key :language_category
 
-  attributes :id, :slug, :name
+  attributes :slug, :name, :header, :description
 
   meta do
     {}

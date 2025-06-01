@@ -5,10 +5,12 @@ import { Locale } from "../types";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
+import localizedFormat from "dayjs/plugin/localizedFormat";
 
 
 export default function configure(locale: Locale, suffix: string | null) {
   i18next.changeLanguage(locale);
+  dayjs.extend(localizedFormat)
   dayjs.locale(locale);
 
   dayjs.extend(relativeTime);

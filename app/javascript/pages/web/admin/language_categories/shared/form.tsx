@@ -37,7 +37,9 @@ export default function Form({ data, url, method }: Props) {
   return (
     <XForm method={method} model="language_category" data={data} to={url}>
       <XInput name="name" />
+      <XInput name="header" />
       <XInput name="slug" />
+      <XInput as="textarea" name="description" />
 
       <Submit className="btn w-100 btn-lg btn-primary mb-3">
         {tHelpers("submit.save")}

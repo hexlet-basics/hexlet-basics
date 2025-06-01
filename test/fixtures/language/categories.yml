@@ -2,17 +2,21 @@
 #
 # Table name: language_categories
 #
-#  id         :bigint           not null, primary key
-#  locale     :string
-#  name       :string
-#  name_en    :string
-#  name_ru    :string
-#  slug       :string
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id          :bigint           not null, primary key
+#  description :string
+#  header      :string
+#  locale      :string
+#  name        :string
+#  name_en     :string
+#  name_ru     :string
+#  slug        :string
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
 #
 DEFAULTS: &DEFAULTS
   slug: $LABEL
+  header: Курсы по $LABEL
+  description: Получите востребованную профессию, независимо от прошлого опыта, специальности, образования и навыков
 
 programming-ru:
   <<: *DEFAULTS

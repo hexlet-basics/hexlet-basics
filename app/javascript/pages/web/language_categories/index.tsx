@@ -31,7 +31,7 @@ export default function Index({ categories }: Props) {
           {categories.map((category) => (
             <Col className="col mb-3" key={category.id}>
               <Card className="bg-body-tertiary p-4 rounded-4 shadow-sm h-100 d-flex">
-                <div className="h4 fw-bold mb-2">{category.name}</div>
+                <div className="h4 fw-bold mb-2">{category.header}</div>
                 <Link
                   className="text-decoration-none stretched-link icon-link icon-link-hover mt-auto"
                   href={Routes.language_category_path(category.slug!)}

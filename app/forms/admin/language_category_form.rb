@@ -3,5 +3,5 @@
 class Admin::LanguageCategoryForm < Language::Category
   include ActiveFormModel
 
-  permit :name, :slug
+  permit :name, :slug, :header, :description
 end
