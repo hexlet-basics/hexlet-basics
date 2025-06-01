@@ -1,13 +1,11 @@
-class Language::CategoryCrudResource
-  include Alba::Resource
-  include Typelizer::DSL
-
+class Language::CategoryCrudResource < ApplicationResource
   typelize_from Language::Category
   root_key :language_category
 
   attributes :id, :slug, :name, :header, :description
 
   has_many :items, resource: Language::CategoryItemResource
+  has_many :qna_items, resource: Language::CategoryQnaItemCrudResource
 
   typelize_meta meta: "{ landingPagesForCategories: LanguageCategoryCrudData[] }"
   meta do

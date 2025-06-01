@@ -30,7 +30,7 @@ type Props = {
   courseMember?: LanguageMember;
   courseCategory?: LanguageCategory;
   courseLandingPage: LanguageLandingPage;
-  courseLandingPageQnaItems: LanguageLandingPageQnaItem[];
+  qnaItems: LanguageLandingPageQnaItem[];
   firstLesson: LanguageLesson;
   nextLesson?: LanguageLesson;
   // user: User;
@@ -45,7 +45,7 @@ export default function Show({
   firstLesson,
   nextLesson,
   courseLandingPage,
-  courseLandingPageQnaItems,
+  qnaItems,
   courseMember,
   courseCategory,
   courseModules,
@@ -405,13 +405,14 @@ export default function Show({
             </div>
           </div>
         )}
-        {courseLandingPageQnaItems.length > 0 && (
+
+        {qnaItems.length > 0 && (
           <div className="py-4 py-lg-5">
             <div className="display-5 fw-semibold lh-1 mb-5">
               {t("languages.show.sort_questions")}
             </div>
             <Row className="gy-4 gy-md-5">
-              {courseLandingPageQnaItems.map((item) => (
+              {qnaItems.map((item) => (
                 <Col key={item.id} className="col-12 col-md-6">
                   <div className="fs-5 fw-medium mb-3 pe-lg-5">
                     {item.question}

@@ -29,6 +29,7 @@ class Web::LanguageCategoriesController < Web::ApplicationController
 
     render inertia: true, props: {
       courseCategory: Language::CategoryResource.new(category),
+      qnaItems: Language::CategoryQnaItemResource.new(category.qna_items),
       categoryLandingPages: Language::LandingPageForListsResource.new(landing_pages),
       lead: LeadCrudResource.new(LeadForm.new)
     }

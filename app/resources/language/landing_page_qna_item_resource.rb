@@ -1,7 +1,4 @@
-class  Language::LandingPageQnaItemResource
-  include Alba::Resource
-  include Typelizer::DSL
-
+class  Language::LandingPageQnaItemResource < ApplicationResource
   typelize_from Language::LandingPage::QnaItem
 
   attributes :id,

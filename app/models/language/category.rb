@@ -22,7 +22,8 @@ class Language::Category < ApplicationRecord
 
   has_many :items, class_name: "Language::Category::Item", foreign_key: "language_category_id"
   has_many :language_landing_pages, through: :items, source: "language_landing_page"
-  # has_many :qna_items, foreign_key: "language_landing_page_id"
+
+  has_many :qna_items, foreign_key: "language_category_id"
 
   has_many :languages, ->(category) { where(category: category) }, dependent: :nullify, inverse_of: :category
   has_many :language_versions, through: :languages, source: :versions

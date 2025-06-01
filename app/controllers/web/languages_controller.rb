@@ -67,7 +67,7 @@ class Web::LanguagesController < Web::ApplicationController
 
     render inertia: true, props: {
       courseLandingPage: Language::LandingPageResource.new(landing_page),
-      courseLandingPageQnaItems: Language::LandingPageQnaItemResource.new(landing_page.qna_items),
+      qnaItems: Language::LandingPageQnaItemResource.new(landing_page.qna_items),
       course: LanguageResource.new(language),
       courseCategory: landing_page.language_category && Language::CategoryResource.new(landing_page.language_category),
       firstLesson: Language::LessonResource.new(first_lesson_info),
