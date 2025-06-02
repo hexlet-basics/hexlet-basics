@@ -81,7 +81,7 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     # _lesson_member = @lesson.members.find_or_create_by!(language: @lesson.language, user: user, language_member: language_member)
     # code = file_fixture("exercise/correct.rb").read
 
-    scenario = survey_scenarios("request-contact-method")
+    scenario = survey_scenarios("career-change2")
     assert { user.survey_scenarios.include? scenario }
     assert { user.survey_scenarios.count === 3 }
   end
