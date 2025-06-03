@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Web::CasesController < Web::ApplicationController
   def index
     seo_tags = {
@@ -22,4 +20,8 @@ class Web::CasesController < Web::ApplicationController
 
     render inertia: true, props: {}
   end
+
+  # for internal courses
+  # for students
+  # for programers
 end
