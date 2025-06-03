@@ -30,7 +30,6 @@ type Props = {
 // ];
 
 export default function Form({ data, url, method, languages }: Props) {
-  const { courseCategories } = usePage<SharedProps>().props;
   const { t: tHelpers } = useTranslation("helpers");
   return (
     <XForm method={method} model="language_landing_page" data={data} to={url}>
@@ -38,13 +37,6 @@ export default function Form({ data, url, method, languages }: Props) {
       <XCheck name="listed" />
       <XCheck name="footer" />
       <XStateEvent fieldName="state" />
-      <XSelect
-        name="language_category_id"
-        has="language_category"
-        labelField="name"
-        valueField="id"
-        items={courseCategories}
-      />
       <XSelect
         name="language_id"
         has="language"
