@@ -198,7 +198,7 @@ export default function FooterBlock() {
               <li className="me-3">
                 <a
                   target="_blank"
-                  rel="nofollow"
+                  rel="noreferrer nofollow"
                   className="link-body-emphasis"
                   href="https://github.com/hexlet-basics"
                 >
