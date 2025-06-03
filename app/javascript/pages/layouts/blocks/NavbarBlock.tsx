@@ -74,9 +74,9 @@ export default function NavbarBlock({ className }: Props) {
           >
             <NavDropdown.Item
               as={Link}
-              href={Routes.for_school_teachers_cases_path()}
+              href={Routes.for_teachers_cases_path()}
             >
-              {tLayouts("shared.nav.for_school_teachers")}
+              {tLayouts("shared.nav.for_teachers")}
             </NavDropdown.Item>
           </NavDropdown>
 

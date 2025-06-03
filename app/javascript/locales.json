@@ -522,7 +522,7 @@
           "community": "Community",
           "courses": "Courses",
           "for_authors": "For authors",
-          "for_school_teachers": "For school teachers",
+          "for_teachers": "For school teachers",
           "my": "My learning",
           "profile": "Settings",
           "registration": "Sign up",
@@ -846,7 +846,7 @@
         }
       },
       "cases": {
-        "for_school_teachers": "For school teachers",
+        "for_teachers": "For school teachers",
         "link": "Go to",
         "meta": {
           "description": "Examples of using Code Basics in different areas"
@@ -875,7 +875,7 @@
           }
         }
       },
-      "for_school_teachers": {
+      "for_teachers": {
         "description": "Free courses with a simulator right in your browser. Practice during each lesson",
         "early_career_guidance": "Stimulate early career guidance:",
         "early_career_guidance_list": [
@@ -2334,7 +2334,7 @@
           "community": "Сообщество",
           "courses": "Курсы",
           "for_authors": "Авторам",
-          "for_school_teachers": "Для школьных учителей",
+          "for_teachers": "Для учителей и преподавателей",
           "my": "Мой прогресс",
           "profile": "Настройки",
           "registration": "Регистрация",
@@ -2789,7 +2789,7 @@
         }
       },
       "cases": {
-        "for_school_teachers": "Для школьных учителей",
+        "for_teachers": "Для учителей и преподавателей",
         "link": "Перейти",
         "meta": {
           "description": "Примеры использования Code Basics в разных сферах"
@@ -2818,16 +2818,16 @@
           }
         }
       },
-      "for_school_teachers": {
-        "description": "Бесплатные курсы с тренажером прямо в браузере. Практика во время каждого урока",
+      "for_teachers": {
+        "description": "Бесплатные курсы с тренажером прямо в браузере. Много практики и ИИ-ассистент",
         "early_career_guidance": "Стимулируем раннюю профориентацию:",
         "early_career_guidance_list": [
           "Показываем программирование изнутри, чтобы принять взвешенное решение об изучении будущей профессии",
           "Даем возможность быстро погрузиться в язык программирования и понять, нравится ли он ученику",
           "Помогаем увидеть базовые примеры реальных задач, чтобы присмотреться к профессиональной рутине"
         ],
-        "header": "Самый быстрый способ обучить школьников программированию",
-        "how_to_learn_programming": "Как школьники изучают программирование в CodeBasics?",
+        "header": "Эффективное обучение школьников и студентов программированию",
+        "how_to_learn_programming": "Как пользователи изучают программирование в CodeBasics?",
         "how_to_learn_programming_cards": [
           {
             "title": "Интеграция без интеграции: чтобы внедрить CodeBasics в образовательный процесс, потребуется ПК с доступом в интернет",
@@ -2850,8 +2850,8 @@
             "img": "discussion-icon"
           }
         ],
-        "integrate_into_education": "Зачем интегрировать CodeBasics в обучение школьников?",
-        "integrate_now": "Интегрируйте CodeBasics в школьную программу сейчас!",
+        "integrate_into_education": "Зачем интегрировать CodeBasics в обучение?",
+        "integrate_now": "Интегрируйте CodeBasics в учебную программу сейчас!",
         "interactive_approach": "Ориентируемся на практику и интерактивный подход:",
         "interactive_approach_list": [
           "Сопровождаем теоретические материалы курса практическими заданиями прямо в браузере",
@@ -2860,7 +2860,7 @@
         ],
         "lay_programming_foundations": "CodeBasics закладывает основы программирования в интерактивной форме, за что получил 3-е место в номинации «Лучший внеплатформенный онлайн-курс» в 2020 году на Международном конкурсе открытых онлайн-курсов EdCrunch Award OOC",
         "meta": {
-          "description": "Курсы программирования для детей и подростков от онлайн-школы Хекслет. Все занятия разработаны опытными педагогами и программистами, с учетом возрастных особенностей детей. Обучение школьников программированию онлайн"
+          "description": "Курсы программирования для детей и подростков от онлайн-школы Хекслет. Все занятия разработаны опытными педагогами и программистами, с учетом возрастных особенностей детей. Обучение программированию онлайн"
         },
         "open_browser_and_sign_up": "Просто откройте браузер и зарегистрируйтесь",
         "programming_basic_list": [
@@ -2873,7 +2873,7 @@
         "select_course": "Выбрать курс",
         "sign_up": "Зарегистрироваться",
         "sign_up_and_start_learning": "Зарегистрируйтесь и начните обучать ваших учеников программированию прямо сейчас",
-        "title": "Онлайн курсы программирования для школьников - Хекслет",
+        "title": "Онлайн курсы программирования для школьников и студентов - Хекслет",
         "try": "Попробовать"
       },
       "home": {

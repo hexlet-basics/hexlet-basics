@@ -30,9 +30,9 @@ class HomeTest < ApplicationSystemTestCase
     visit cases_path(suffix: nil)
   end
 
-  test "/cases/for_school_teachers" do
-    visit for_school_teachers_cases_path(suffix: :ru)
-    visit for_school_teachers_cases_path(suffix: nil)
+  test "/cases/for_teachers" do
+    visit for_teachers_cases_path(suffix: :ru)
+    visit for_teachers_cases_path(suffix: nil)
   end
 
   test "/reviews" do

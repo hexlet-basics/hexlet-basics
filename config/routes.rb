@@ -85,7 +85,7 @@ Rails.application.routes.draw do
 
       resources :cases, only: %i[index] do
         collection do
-          get :for_school_teachers
+          get :for_teachers
         end
       end
 

@@ -14,11 +14,11 @@ export default function Index() {
           <Col>
             <Card className="bg-body-tertiary p-4 rounded-4 shadow-sm h-100 d-flex">
               <div className="h4 fw-bold mb-2">
-                <span>{t("cases.for_school_teachers")}</span>
+                <span>{t("cases.for_teachers")}</span>
               </div>
               <a
                 className="text-decoration-none stretched-link icon-link icon-link-hover mt-auto"
-                href={Routes.for_school_teachers_cases_path()}
+                href={Routes.for_teachers_cases_path()}
               >
                 <span>{t("cases.link")}</span>
                 <i className="bi bi-arrow-right lh-1" />

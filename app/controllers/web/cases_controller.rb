@@ -12,7 +12,7 @@ class Web::CasesController < Web::ApplicationController
     render inertia: true, props: {}
   end
 
-  def for_school_teachers
+  def for_teachers
     seo_tags = {
       title: t(".title"),
       description: t(".meta.description")

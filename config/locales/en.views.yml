@@ -301,12 +301,12 @@ en:
         choose_profession: Choose course
         home: Home
     cases:
-      for_school_teachers: For school teachers
+      for_teachers: For school teachers
       link: Go to
       title: Cases
       meta:
         description: Examples of using Code Basics in different areas
-    for_school_teachers:
+    for_teachers:
       header: The fastest way to teach students programming
       description: Free courses with a simulator right in your browser. Practice during each lesson
       title: Online programming courses for high school students - Hexlet
