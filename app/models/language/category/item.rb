@@ -19,7 +19,7 @@
 #  fk_rails_...  (language_landing_page_id => language_landing_pages.id)
 #
 class Language::Category::Item < ApplicationRecord
-  validates :language_laindg_page, uniqueness: { scope: :language_category }
+  validates :language_landing_page, uniqueness: { scope: :language_category }
 
   belongs_to :language_category, class_name: "Language::Category"
   belongs_to :language_landing_page, class_name: "Language::LandingPage"

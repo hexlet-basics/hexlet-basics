@@ -16,13 +16,15 @@ class Web::Admin::LanguageCategoriesControllerTest < ActionDispatch::Integration
   end
 
   test "create" do
-    slug = "racket"
+    slug = "web-development"
 
-    params = { language_category: { slug: slug } }
+    params = { language_category: {
+      slug: slug, name: slug, header: slug
+    } }
     post admin_language_categories_url, params: params
     assert_response :redirect
 
-    # assert { Language.find_by(slug: slug) }
+    assert { Language::Category.find_by(slug: slug) }
   end
 
   test "edit" do
@@ -35,7 +37,11 @@ class Web::Admin::LanguageCategoriesControllerTest < ActionDispatch::Integration
   test "update" do
     language_category = language_categories("frontend-ru")
 
-    params = { language_category: { name: "new description" } }
+    items_attributes = [
+      { language_landing_page_id: Language::LandingPage.first.id }
+    ]
+
+    params = { language_category: { name: "new description", items_attributes: } }
     patch admin_language_category_url(language_category), params: params
     assert_response :redirect
 
