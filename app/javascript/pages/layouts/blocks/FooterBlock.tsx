@@ -41,7 +41,7 @@ export default function FooterBlock() {
                           className="link-body-emphasis text-decoration-none"
                           href={Routes.language_path(lp.slug)}
                         >
-                          {lp.footer_name}
+                          {lp.header}
                         </Link>
                       </Nav.Item>
                     </Col>
