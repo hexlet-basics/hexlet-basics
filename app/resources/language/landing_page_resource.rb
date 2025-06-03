@@ -10,6 +10,7 @@ class Language::LandingPageResource < ApplicationResource
     :language_category_id,
     :created_at,
     :slug,
+    :name,
     :main,
     :listed,
     :state,

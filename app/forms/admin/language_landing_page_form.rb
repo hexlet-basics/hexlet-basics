@@ -12,6 +12,7 @@ class Admin::LanguageLandingPageForm < Language::LandingPage
     :state_event,
     :outcomes_image,
     :header,
+    :name,
     :description,
     :language_id,
     :language_category_id,

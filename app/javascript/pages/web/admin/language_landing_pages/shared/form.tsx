@@ -52,6 +52,7 @@ export default function Form({ data, url, method, languages }: Props) {
         style={{ height: "150px" }}
         name="meta_description"
       />
+      <XInput name="name" />
       <XInput name="header" />
       <XInput as="textarea" style={{ height: "150px" }} name="description" />
 

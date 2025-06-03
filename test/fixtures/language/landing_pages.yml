@@ -12,6 +12,7 @@
 #  main                 :boolean
 #  meta_description     :string
 #  meta_title           :string
+#  name                 :string
 #  order                :string
 #  outcomes_description :string
 #  outcomes_header      :string
@@ -35,27 +36,28 @@
 #  fk_rails_...  (language_id => languages.id)
 #
 DEFAULTS: &DEFAULTS
-  description: $LABEL - Бесплатное обучение программированию от сообщества Хекслет. Онлайн курс посвящен азам написания программ на Javascript с нуля
+  description: Изучите язык программирования $LABEL в интерактивной онлайн среде. Десятки заданий прямо в браузере с поддержкой ИИ-ассистента
   language_category: programming-ru
   meta_description: $LABEL - Бесплатное обучение программированию от сообщества Хекслет. Онлайн курс посвящен азам написания программ на Javascript с нуля
   meta_title: $LABEL
   state: published
   listed: true
   footer: true
+  outcomes_header: Чему научитесь на курсе “Основы $LABEL”
+  outcomes_description: |
+    Разберётесь в базовом синтаксисе $LABEL — это фундаментальный навык, который позволит понимать чужой код и писать собственные программы. После курса сможете создавать простые скрипты, например, калькулятор
+  used_in_header: Где используется язык программирования $LABEL?
+  used_in_description: |
+    $LABEL – это универсальный и востребованный язык программирования, который работает во всех браузерах и на сервере. С его помощью ты освоишь веб-разработку, научишься создавать интерактивные сайты, мобильные приложения и серверные сервисы. $LABEL легко изучать, он популярен в IT, а большое сообщество и множество вакансий помогут тебе быстро построить карьеру
   footer_name: $LABEL
   slug: $LABEL
-  header: $LABEL
+  header: Курс $LABEL
+  name: $LABEL
 
 javascript-ru:
   <<: *DEFAULTS
   header: JavaScript
   language: javascript
-  outcomes_header: Чему научитесь на курсе “Основы JavaScript”
-  outcomes_description: |
-    Разберётесь в базовом синтаксисе JavaScript — это фундаментальный навык, который позволит понимать чужой код и писать собственные программы. После курса сможете создавать простые скрипты, например, калькулятор
-  used_in_header: Где используется язык программирования JavaScript?
-  used_in_description: |
-    JavaScript – это универсальный и востребованный язык программирования, который работает во всех браузерах и на сервере. С его помощью ты освоишь веб-разработку, научишься создавать интерактивные сайты, мобильные приложения и серверные сервисы. JavaScript легко изучать, он популярен в IT, а большое сообщество и множество вакансий помогут тебе быстро построить карьеру
   main: true
   footer_name: Основы JavaScript
   locale: ru
@@ -111,6 +113,8 @@ php-ru:
   main: true
   language: php
   locale: ru
+  name: PHP
+  header: Курс PHP
 
 php-en:
   <<: *DEFAULTS

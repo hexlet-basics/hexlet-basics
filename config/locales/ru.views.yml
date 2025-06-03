@@ -298,22 +298,25 @@ ru:
         see_all_courses_in_category: Все курсы "%{name}"
         to_home_title: Главная
         registration: Зарегистрироваться
-        about_learning: Как проходит обучение
+        about_learning: |
+          Платформа: Теория, Практика, ИИ
         registration_description: Начните прямо сейчас
         similar_courses: Похожие курсы
         sign_up: Зарегистрироваться
         cover_image: Обложка курса
         free_course: Бесплатный курс для начинающих с нуля
-        learning_program: Программа обучения
-        course_graduates: Присоединяйтесь к 74 761 студентам, которые успешно прошли курсы
-        ai_learning: Готовы к инновациям в обучении? Начните обучение с AI прямо сейчас
+        learning_program: Программа обучения %{name}
+        course_graduates: Присоединяйтесь к более чем 80 000 студентов
+        demo_description: Попробуйте демо-урок без регистрации. Практика включена
+        demo_start: Демо-урок
         more_than_support: Больше чем Поддержка
         about_developer_community: Мы знаем, как непросто начинать в IT, поэтому создали сообщество разработчиков, где вам всегда готовы помочь. Здесь можно задавать вопросы, получать поддержку, общаться с опытными специалистами и быстрее влиться в профессию
         join: Присоединиться
         community_image_preview: Сообщество разработчиков
         reviews: Отзывы
         sort_questions: Разбираем вопросы
-        start: Начать обучение
+        start: Начать обучение %{name}
+        try: Начать обучение
         restart: Начать заново
         continue: Продолжить обучение
         start_demo_lesson: Демо урок

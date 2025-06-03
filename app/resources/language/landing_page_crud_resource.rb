@@ -15,6 +15,7 @@ class Language::LandingPageCrudResource < ApplicationResource
     :state,
     :listed,
     :main,
+    :name,
     :order,
     :meta_title,
     :meta_description,

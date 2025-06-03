@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_01_214136) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_03_193546) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -199,6 +199,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_01_214136) do
     t.string "outcomes_description"
     t.boolean "footer"
     t.string "footer_name"
+    t.string "name"
     t.index ["language_category_id"], name: "index_language_landing_pages_on_language_category_id"
     t.index ["language_id"], name: "index_language_landing_pages_on_language_id"
   end

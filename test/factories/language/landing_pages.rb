@@ -12,6 +12,7 @@
 #  main                 :boolean
 #  meta_description     :string
 #  meta_title           :string
+#  name                 :string
 #  order                :string
 #  outcomes_description :string
 #  outcomes_header      :string

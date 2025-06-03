@@ -12,6 +12,7 @@
 #  main                 :boolean
 #  meta_description     :string
 #  meta_title           :string
+#  name                 :string
 #  order                :string
 #  outcomes_description :string
 #  outcomes_header      :string
@@ -43,6 +44,7 @@ class Language::LandingPage < ApplicationRecord
   has_many :qna_items, foreign_key: "language_landing_page_id"
   validates :meta_title, presence: true
   validates :header, presence: true
+  validates :name, presence: true
   validates :footer_name, presence: true, if: :footer?
   validates :slug, presence: true, uniqueness: { scope: :locale }
   validates :main, uniqueness: { scope: [ :locale, :language_id ] }, if: :main?

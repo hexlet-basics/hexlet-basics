@@ -1,4 +1,4 @@
-import { Accordion, Alert, Card, Col, Container, Row } from "react-bootstrap";
+import { Accordion, Alert, Button, Card, Col, Container, Row } from "react-bootstrap";
 
 import learningEnVideo from "@/images/course-landing-page/learning_en.mp4";
 import learningRuVideo from "@/images/course-landing-page/learning_ru.mp4";
@@ -92,16 +92,20 @@ export default function Show({
 
   return (
     <ApplicationLayout items={breadcrumbItems}>
+
       <Head>
         <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
       </Head>
+
       <Container>
         {/* {i18next.language === 'ru' && courseMember?.state === "finished" && ( */}
         {/*   <Alert variant="light" className="mb-5"> */}
         {/*     <XssContent>{t("languages.show.completed_html")}</XssContent> */}
         {/*   </Alert> */}
         {/* )} */}
+
         <Row className="flex-column flex-lg-row gy-5 gx-lg-5 mb-4 mb-lg-5">
+
           <Col className="col-lg-7">
             <div className="fs-6 fw-medium text-opacity-75 mb-3">
               {t("languages.show.free_course", { name: courseLandingPage.header })}
@@ -112,6 +116,7 @@ export default function Show({
             <div className="fs-5 text-body-secondary mb-5">
               {courseLandingPage.description}
             </div>
+
             <Row className="row-cols-1 gy-3">
               <Col>
                 {!courseMember && (
@@ -122,7 +127,7 @@ export default function Show({
                       firstLesson.slug,
                     )}
                   >
-                    <span>{t("languages.show.start")}</span>
+                    <span>{t("languages.show.try")}</span>
                   </Link>
                 )}
                 {courseMember && nextLesson && (
@@ -201,7 +206,7 @@ export default function Show({
         </Row>
         <div className="mb-lg-5 py-5">
           <div className="display-5 fw-semibold lh-1 mb-5">
-            {t("languages.show.learning_program")}
+            {t("languages.show.learning_program", { name: courseLandingPage.name })}
           </div>
           <Accordion
             defaultActiveKey={["0"]}
@@ -261,7 +266,7 @@ export default function Show({
                       firstLesson.slug,
                     )}
                   >
-                    <span>{t("languages.show.start")}</span>
+                    <span>{t("languages.show.start", { name: courseLandingPage.name })}</span>
                   </Link>
                 </div>
               </Col>
@@ -274,16 +279,6 @@ export default function Show({
         <Row className="row-cols-1 row-cols-lg-2 mb-lg-5 pb-4 py-md-5 gy-4">
           <Col>
             <div className="pe-lg-5">
-              <div className="d-flex mb-3">
-                <div>
-                  <div className="fw-bold">
-                    {t("languages.show.try_without_registration")}
-                  </div>
-                  <XssContent>
-                    {t("languages.show.without_registration")}
-                  </XssContent>
-                </div>
-              </div>
               <div className="d-flex mb-3">
                 <div>
                   <div className="fw-bold">
@@ -332,19 +327,20 @@ export default function Show({
             <Row className="gy-4 justify-content-between align-items-center py-lg-5">
               <Col className="col-12 col-lg-9 col-xxl-8">
                 <div className="display-6 fw-semibold lh-1">
-                  {t("languages.show.ai_learning")}
+                  {t("languages.show.demo_description")}
                 </div>
               </Col>
-              <Col className="col-auto">
-                <Link
-                  className="btn btn-lg btn-primary"
+              <Col className="d-flex justify-content-center">
+                <Button
+                  as="a"
+                  className="btn-lg btn-primary"
                   href={Routes.language_lesson_path(
                     course.slug!,
                     firstLesson.slug,
                   )}
                 >
-                  <span>{t("languages.show.start")}</span>
-                </Link>
+                  <span>{t("languages.show.demo_start")}</span>
+                </Button>
               </Col>
             </Row>
           </Card>
