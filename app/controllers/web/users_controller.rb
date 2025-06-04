@@ -6,6 +6,7 @@ class Web::UsersController < Web::ApplicationController
 
     seo_tags = {
       title: t(".title"),
+      canonical: view_context.new_user_path,
       description: t(".meta.description")
     }
     set_meta_tags seo_tags
