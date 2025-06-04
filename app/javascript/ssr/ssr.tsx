@@ -12,8 +12,11 @@ Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
 });
 
-createServer((page) =>
-  createInertiaApp({
+createServer((page) => {
+  // NOTE: используется для просмотра последних попыток рендера перед падением контейнера ssr на проде (дебаг)
+  console.log(page.url);
+
+  return createInertiaApp({
     page,
     render: (...args) => {
       try {
@@ -48,6 +51,5 @@ createServer((page) =>
       const vdom = <App {...props} />;
       return vdom;
     },
-  }),
-  { cluster: true },
-);
+  });
+}, { cluster: true });
