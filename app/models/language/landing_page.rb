@@ -40,7 +40,7 @@ class Language::LandingPage < ApplicationRecord
   include Language::LandingPageRepository
 
   belongs_to :language
-  belongs_to :language_category, class_name: "Language::Category"
+  # belongs_to :language_category, class_name: "Language::Category"
   has_many :qna_items, foreign_key: "language_landing_page_id"
   validates :meta_title, presence: true
   validates :header, presence: true
@@ -50,6 +50,9 @@ class Language::LandingPage < ApplicationRecord
   validates :main, uniqueness: { scope: [ :locale, :language_id ] }, if: :main?
   # validates :description, presence: true
   validates :locale, presence: true # , inclusion: I18n.available_locales
+
+  has_many :items, class_name: "Language::Category::Item", foreign_key: "language_category_id"
+  has_many :language_categories, through: :items, source: "language_category"
 
   has_one_attached :outcomes_image do |attachable|
     attachable.variant :thumb, resize_to_limit: [ 39, 32 ], preprocessed: true
@@ -71,7 +74,6 @@ class Language::LandingPage < ApplicationRecord
     state :archived
     state :published do
       validates :description, presence: true
-      validates :language_category, presence: true
     end
 
     event :archive do

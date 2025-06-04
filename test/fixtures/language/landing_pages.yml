@@ -37,7 +37,6 @@
 #
 DEFAULTS: &DEFAULTS
   description: Изучите язык программирования $LABEL в интерактивной онлайн среде. Десятки заданий прямо в браузере с поддержкой ИИ-ассистента
-  language_category: programming-ru
   meta_description: $LABEL - Бесплатное обучение программированию от сообщества Хекслет. Онлайн курс посвящен азам написания программ на Javascript с нуля
   meta_title: $LABEL
   state: published
@@ -72,7 +71,6 @@ nodejs-ru:
 1c-ru:
   <<: *DEFAULTS
   header: 1C
-  language_category: programming-ru
   language: 1c
   main: true
   footer: false
@@ -81,7 +79,6 @@ nodejs-ru:
 frontend-ru:
   <<: *DEFAULTS
   header: Фронтенд
-  language_category: frontend-ru
   language: javascript
   locale: ru
 
@@ -89,7 +86,6 @@ frontend-en:
   <<: *DEFAULTS
   header: Frontend
   language: javascript
-  language_category: frontend-en
   description: Programming learning is an interesting and exciting process. The syntax of the language is the simplest and shortest path, without which it is impossible to start. This free online JavaScript course will introduce you to the basic concepts of the language. Learn the basics and write your first JS programs
   locale: en
 
@@ -178,19 +174,16 @@ css-en:
   <<: *DEFAULTS
   main: true
   language: css
-  language_category: layouting-en
   locale: en
 
 css-ru:
   <<: *DEFAULTS
   main: true
   language: css
-  language_category: layouting-ru
   locale: ru
 
 html-ru:
   <<: *DEFAULTS
   main: true
   language: html
-  language_category: layouting-ru
   locale: ru

@@ -7,7 +7,6 @@ class Language::LandingPageResource < ApplicationResource
 
   attributes :id,
     :language_id,
-    :language_category_id,
     :created_at,
     :slug,
     :name,
@@ -48,10 +47,5 @@ class Language::LandingPageResource < ApplicationResource
   typelize :string
   attribute :language_slug do |lp|
     lp.language&.slug
-  end
-
-  typelize :string
-  attribute :language_category_name do |lp|
-    lp.language_category&.name
   end
 end

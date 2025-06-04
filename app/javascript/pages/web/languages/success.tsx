@@ -4,14 +4,9 @@ import { useTranslation } from "react-i18next";
 
 // import successImg from "@/images/success-image.svg";
 
-import * as Routes from "@/routes.js";
 
-import i18next from "i18next";
 import { LanguageLandingPage, LeadCrud } from "@/types";
 import XssContent from "@/components/XssContent";
-import { XForm, XInput, XSelect } from "@/components/forms";
-import { Submit } from "use-inertia-form";
-import { enumToOptions } from "@/lib/utils";
 import LeadFormBlock from "@/components/LeadFormBlock";
 
 type Props = {

@@ -6,7 +6,6 @@ class Language::LandingPageCrudResource < ApplicationResource
 
   has_many :qna_items, resource: Language::LandingPageQnaItemCrudResource
   has_one :language, resource: LanguageCrudResource
-  has_one :language_category, resource: Language::CategoryCrudResource
 
   attributes :id,
     :slug,
@@ -20,7 +19,6 @@ class Language::LandingPageCrudResource < ApplicationResource
     :meta_title,
     :meta_description,
     :language_id,
-    :language_category_id,
     :header,
     :description,
     :used_in_header,
