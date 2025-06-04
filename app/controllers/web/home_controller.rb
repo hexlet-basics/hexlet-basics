@@ -88,7 +88,7 @@ class Web::HomeController < Web::ApplicationController
     lesson_infos_by_locale = Language::Lesson::Version::Info
       .with_locale(ordered_locales)
       .joins(:language)
-  .where("language_lesson_version_infos.language_version_id = languages.current_version_id")
+      .where("language_lesson_version_infos.language_version_id = languages.current_version_id")
       .includes(:lesson, :version)
       .select(
         :locale,
@@ -100,10 +100,10 @@ class Web::HomeController < Web::ApplicationController
         "language_lesson_versions.lesson_id",
         "language_lessons.slug"
       )
-      .distinct
-      .order("language_lesson_versions.natural_order ASC")
-      .group_by(&:locale)
-      .transform_values { |infos| infos.group_by(&:language_id) }
+        .distinct
+        .order("language_lesson_versions.natural_order ASC")
+        .group_by(&:locale)
+        .transform_values { |infos| infos.group_by(&:language_id) }
 
     lesson_resources_by_locale_and_language_id = lesson_infos_by_locale.transform_values do |infos_by_language_id|
       infos_by_language_id.transform_values { |infos| Language::SitemapLessonResource.new(infos) }

@@ -1,4 +1,47 @@
 en:
   faq:
-    header: Q&A
-    main: {}
+    header: Frequently Asked Questions
+    main:
+      about-project:
+        question: What is Code Basics?
+        answer: |
+          It’s a completely free platform for learning IT from scratch. Code Basics was created by the developers and community of the Hexlet programming school to help anyone try programming and build a solid foundation for a new profession—based not on memorization of specifics, but on understanding the system as a whole. One of the key features of the project is its programming simulator.
+
+      how-much:
+        question: How much do the courses cost?
+        answer: |
+          Code Basics was created as a free project to teach programming from scratch. That’s how it was, is, and will remain. Moreover, Code Basics is an open-source project—you can find its code on GitHub and even contribute to its development.
+
+      for-whom:
+        question: Who are the courses for?
+        answer: |
+          Code Basics courses are suitable for anyone starting to learn programming from scratch and aiming to become a professional developer. Age or profession doesn't matter. Adults and teenagers, tech-savvy learners and pure humanities majors all study on Code Basics.
+
+      what-type-of-courses:
+        question: Do you only teach programming?
+        answer: |
+          Code Basics was originally focused solely on programming, but we are considering expanding the platform to include a broader range of IT courses. Eventually, it will become a full-fledged free IT education platform for beginners.
+
+      how-to-start:
+        question: How do I start using the platform?
+        answer: |
+          Just register. Registration is free, and after signing up, you’ll get access to all the courses on Code Basics. Choose any course and start learning.
+
+      how-it-works:
+        question: How does programming education work?
+        answer: |
+          Code Basics is a fully automated online platform, so you can study whenever it’s convenient for you.
+
+          Programming courses are divided into thematic blocks, each containing several lessons. Go through them in order: first study the theory, then complete a hands-on exercise directly in the browser—your solution will be checked automatically.
+
+      if-something-goes-wrong:
+        question: What if I get stuck?
+        answer: |
+          Just ask! Each lesson includes an "AI Assistant" section where you can chat with our assistant, Tota AI. You can ask questions or clarify the assignment if something seems unclear.
+
+          When working on practical tasks, we also recommend carefully reading the test output—it contains helpful information about why your solution didn't pass. You can also compare your solution with the correct one. However, we suggest only doing this after successfully completing the task on your own. Remember: you're here to learn, not just copy.
+
+      possibilities:
+        question: What opportunities are there for experienced developers?
+        answer: |
+          Code Basics is an open-source project. Any practicing developer can contribute to its growth. The source code is available on [GitHub](https://github.com/hexlet-basics). You can help by creating new courses and lessons, improving existing ones, fixing typos and inaccuracies, or translating courses into English.

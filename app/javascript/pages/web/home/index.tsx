@@ -138,7 +138,7 @@ export default function Index({
   return (
     <ApplicationLayout>
       <Head>
-        <script type="application/ld+json">{JSON.stringify(qaSchema)}</script>
+        {Object.keys(faq).length > 0 && <script type="application/ld+json">{JSON.stringify(qaSchema)}</script>}
       </Head>
       <Container className="mb-lg-5 py-5">
         <div className="bg-body-tertiary p-4 pb-0 pt-lg-5 align-items-center border shadow-sm rounded-3">
@@ -284,32 +284,30 @@ export default function Index({
         </Container>
       )}
 
-      {locale === "ru" && (
-        <div className="bg-body-tertiary mb-5 py-5">
-          <Container className="mb-5">
-            <h2>
-              <a
-                id="faq"
-                className="text-decoration-none link-body-emphasis"
-                href="#faq"
-              >
-                {tFaq("header")}
-              </a>
-            </h2>
-            <hr className="mb-5" />
-            <Accordion defaultActiveKey="0">
-              {Object.entries(faq).map(([key, value], index) => (
-                <Accordion.Item eventKey={String(index)} key={key}>
-                  <Accordion.Header as="h3">{value.question}</Accordion.Header>
-                  <Accordion.Body>
-                    <MarkdownViewer>{value.answer}</MarkdownViewer>
-                  </Accordion.Body>
-                </Accordion.Item>
-              ))}
-            </Accordion>
-          </Container>
-        </div>
-      )}
+      <div className="bg-body-tertiary mb-5 py-5">
+        <Container className="mb-5">
+          <h2>
+            <a
+              id="faq"
+              className="text-decoration-none link-body-emphasis"
+              href="#faq"
+            >
+              {tFaq("header")}
+            </a>
+          </h2>
+          <hr className="mb-5" />
+          <Accordion defaultActiveKey="0">
+            {Object.entries(faq).map(([key, value], index) => (
+              <Accordion.Item eventKey={String(index)} key={key}>
+                <Accordion.Header as="h3">{value.question}</Accordion.Header>
+                <Accordion.Body>
+                  <MarkdownViewer>{value.answer}</MarkdownViewer>
+                </Accordion.Body>
+              </Accordion.Item>
+            ))}
+          </Accordion>
+        </Container>
+      </div>
 
       {user.guest && (
         <Container>
