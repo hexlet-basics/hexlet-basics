@@ -2,6 +2,7 @@ import * as Routes from "@/routes.js";
 import type { SharedProps } from "@/types";
 
 import { Head, Link, usePage } from "@inertiajs/react";
+import i18next from "i18next";
 import { Col, Container, Nav, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import type { Organization, WithContext } from "schema-dts";
@@ -122,14 +123,14 @@ export default function FooterBlock() {
                     </a>
                   </Nav.Item>
                 )} */}
-                <Nav.Item>
+                {i18next.language === 'ru' && <Nav.Item>
                   <Link
                     className="link-body-emphasis text-decoration-none"
                     href={Routes.map_path()}
                   >
                     {tLayouts("shared.footer.sitemap")}
                   </Link>
-                </Nav.Item>
+                </Nav.Item>}
                 {/* <Nav.Item>
                   <a
                     target="_blank"
