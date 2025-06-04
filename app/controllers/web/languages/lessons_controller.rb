@@ -97,12 +97,12 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
       Language::Lesson::Member::Message
     ).create?
 
-    # raise resource_language.category.inspect
     render inertia: true, props: {
       previousMessages: lesson_member && Language::Lesson::Member::MessageResource.new(lesson_member.messages.order(id: :asc)),
       canCreateAssistantMessage: can_create_assistant_message,
       course: LanguageResource.new(resource_language),
       landingPage: Language::LandingPageForListsResource.new(resource_language_landing_page),
+      courseCategory: resource_language_landing_page.language_categories.any? && Language::CategoryResource.new(resource_language_landing_page.language_categories.first),
       lesson: Language::LessonResource.new(lesson_info),
       nextLesson: next_lesson_info && Language::LessonResource.new(next_lesson_info),
       prevLesson: prev_lesson_info && Language::LessonResource.new(prev_lesson_info),

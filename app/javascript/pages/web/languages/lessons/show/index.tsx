@@ -47,8 +47,8 @@ export default function Index() {
 
   const items: BreadcrumbItem[] = [
     {
-      name: courseCategory.name!,
-      url: Routes.language_category_url(courseCategory.slug!),
+      name: courseCategory?.name ?? '-',
+      url: courseCategory ? Routes.language_category_url(courseCategory.slug!) : '#',
     },
     {
       name: landingPage.header!,

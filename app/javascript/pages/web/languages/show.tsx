@@ -82,7 +82,7 @@ export default function Show({
   const breadcrumbItems: BreadcrumbItem[] = [
     {
       name: courseCategory?.name ?? '-',
-      url: (courseCategory && Routes.language_category_url(courseCategory.slug!)) ?? '#',
+      url: courseCategory ? Routes.language_category_url(courseCategory.slug!) : '#',
     },
     {
       name: courseLandingPage.header,

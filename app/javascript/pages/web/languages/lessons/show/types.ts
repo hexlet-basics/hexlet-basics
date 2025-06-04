@@ -12,7 +12,7 @@ import type {
 export type LessonSharedProps = SharedProps & {
   canCreateAssistantMessage: boolean;
   course: Language;
-  courseCategory: LanguageCategory;
+  courseCategory?: LanguageCategory;
   landingPage: LanguageLandingPageForLists;
   prevLesson?: LanguageLesson;
   nextLesson?: LanguageLesson;

@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get "*path.amp", to: redirect("/%{path}", status: 301)
+
   # Redirects (Old routes/SEO)
   get "/:locale/languages/:lang/modules/:module/lessons/:lesson", to: redirect("/%{locale}/languages/%{lang}/lessons/%{lesson}")
 
