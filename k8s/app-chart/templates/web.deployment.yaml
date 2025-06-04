@@ -188,10 +188,10 @@ spec:
             - containerPort: 13714
           resources:
             requests:
-              memory: 200Mi
+              memory: 300Mi
               cpu: 100m
             limits:
-              memory: 900Mi
+              memory: 1100Mi
           env:
             - name: NODE_ENV
               valueFrom:
