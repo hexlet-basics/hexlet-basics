@@ -2,6 +2,7 @@ class Web::ApplicationController < ApplicationController
   include AhoyConcern
   include BrowserConcern
   include SurveyConcern
+  include RedirectConcern
 
   inertia_share flash: -> { flash.to_hash }
 
