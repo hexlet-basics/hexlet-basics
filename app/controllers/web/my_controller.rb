@@ -4,15 +4,16 @@ class Web::MyController < Web::ApplicationController
   def show
     started_language_members = current_user.language_members
       .joins(language: :landing_pages)
-      .merge(Language::LandingPage.with_locale.where(main: true))
+      .merge(Language::LandingPage.web.where(main: true))
       .started
 
     finished_language_members = current_user.language_members
       .joins(language: :landing_pages)
-      .merge(Language::LandingPage.with_locale.where(main: true))
+      .merge(Language::LandingPage.web.where(main: true))
       .finished
 
     landing_pages = Language::LandingPage.web
+      .where(main: true)
       .joins(language: :members)
       .merge(current_user.language_members)
 
