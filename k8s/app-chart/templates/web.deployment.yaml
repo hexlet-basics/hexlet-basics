@@ -191,7 +191,7 @@ spec:
               memory: 300Mi
               cpu: 100m
             limits:
-              memory: 1100Mi
+              memory: 900Mi
           env:
             - name: NODE_ENV
               valueFrom:

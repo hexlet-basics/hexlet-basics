@@ -1,5 +1,5 @@
-resource "kubernetes_secret" "grafana_alloy_secrets" {
-  depends_on = [twc_k8s_cluster.hexlet_basics]
+resource "kubernetes_secret" "grafana_alloy_secrets_3" {
+  depends_on = [twc_k8s_cluster.hexlet_basics_3]
 
   metadata {
     name = "grafana-alloy-secrets"
@@ -17,8 +17,8 @@ resource "kubernetes_secret" "grafana_alloy_secrets" {
   }
 }
 
-resource "kubernetes_secret" "environment_secrets" {
-  depends_on = [twc_k8s_cluster.hexlet_basics]
+resource "kubernetes_secret" "environment_secrets_3" {
+  depends_on = [twc_k8s_cluster.hexlet_basics_3]
 
   metadata {
     name = "hexlet-basics-environment-secrets"
@@ -27,8 +27,8 @@ resource "kubernetes_secret" "environment_secrets" {
   data = var.environment_file
 }
 
-resource "kubernetes_secret" "docker_registry_auth" {
-  depends_on = [twc_k8s_cluster.hexlet_basics]
+resource "kubernetes_secret" "docker_registry_auth_3" {
+  depends_on = [twc_k8s_cluster.hexlet_basics_3]
 
   metadata {
     name = "docker-config"

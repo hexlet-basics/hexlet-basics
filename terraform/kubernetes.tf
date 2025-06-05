@@ -3,13 +3,19 @@ data "twc_k8s_preset" "hexlet_basics_master" {
   type = "master"
 }
 
-resource "twc_k8s_cluster" "hexlet_basics" {
-  name = "Hexlet basics k8s cluster 2"
+data "twc_k8s_preset" "hexlet_basics_worker" {
+  cpu = 2
+  ram = 4096
+  type = "worker"
+}
+
+resource "twc_k8s_cluster" "hexlet_basics_3" {
+  name = "Hexlet basics k8s cluster 3"
 
   project_id = twc_project.hexlet_basics.id
 
   high_availability = false
-  version = "v1.32.1+k0s.0"
+  version = "v1.33.1+k0s.0"
   network_driver = "calico"
   ingress = true
 
@@ -22,14 +28,8 @@ resource "twc_k8s_cluster" "hexlet_basics" {
   }
 }
 
-data "twc_k8s_preset" "hexlet_basics_worker" {
-  cpu = 2
-  ram = 4096
-  type = "worker"
-}
-
-resource "twc_k8s_node_group" "hexlet_basics" {
-  cluster_id = twc_k8s_cluster.hexlet_basics.id
+resource "twc_k8s_node_group" "hexlet_basics_3" {
+  cluster_id = twc_k8s_cluster.hexlet_basics_3.id
   name = "default"
 
   preset_id = data.twc_k8s_preset.hexlet_basics_worker.id
