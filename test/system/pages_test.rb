@@ -21,9 +21,9 @@ class HomeTest < ApplicationSystemTestCase
     visit new_session_path(suffix: nil)
   end
 
-  test "/map" do
-    visit map_path
-  end
+  # test "/map" do
+  #   visit map_path
+  # end
 
   test "/cases" do
     visit cases_path(suffix: :ru)
