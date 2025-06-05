@@ -20,6 +20,8 @@ RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y curl libjemalloc2 libvips sqlite3 libpq-dev libyaml-dev && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
+ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libjemalloc.so.2
+
 # Set production environment
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
@@ -36,7 +38,7 @@ RUN curl -fsSL "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/x86_6
 # Throw-away build stage to reduce size of final image
 FROM base AS build
 
-RUN curl -sL https://deb.nodesource.com/setup_23.x | sh -
+RUN curl -sL https://deb.nodesource.com/setup_24.x | sh -
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
@@ -96,4 +98,5 @@ ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
 # Start server via Thruster by default, this can be overwritten at runtime
 EXPOSE 80
+
 CMD ["./bin/thrust", "./bin/rails", "server"]
