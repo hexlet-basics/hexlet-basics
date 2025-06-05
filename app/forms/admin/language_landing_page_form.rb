@@ -16,6 +16,7 @@ class Admin::LanguageLandingPageForm < Language::LandingPage
     :description,
     :language_id,
     :language_category_id,
+    :landing_page_to_redirect_id,
     :used_in_header,
     :used_in_description,
     :outcomes_header,

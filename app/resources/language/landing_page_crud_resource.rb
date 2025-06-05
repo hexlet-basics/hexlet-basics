@@ -6,6 +6,7 @@ class Language::LandingPageCrudResource < ApplicationResource
 
   has_many :qna_items, resource: Language::LandingPageQnaItemCrudResource
   has_one :language, resource: LanguageCrudResource
+  has_one :landing_page_to_redirect, resource: Language::LandingPageCrudResource
 
   attributes :id,
     :slug,
@@ -19,6 +20,7 @@ class Language::LandingPageCrudResource < ApplicationResource
     :meta_title,
     :meta_description,
     :language_id,
+    :landing_page_to_redirect_id,
     :header,
     :description,
     :used_in_header,

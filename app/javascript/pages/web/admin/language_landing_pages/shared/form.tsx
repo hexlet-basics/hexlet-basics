@@ -1,4 +1,3 @@
-import { Inertia } from "@inertiajs/inertia";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -13,15 +12,15 @@ import {
 } from "@/components/forms";
 import { type HTTPVerb, Submit } from "use-inertia-form";
 
-import type { Language, SharedProps } from "@/types";
+import type { Language, LanguageLandingPage } from "@/types";
 import type { LanguageLandingPageCrud } from "@/types/serializers";
-import { usePage } from "@inertiajs/react";
 
 type Props = {
   data: LanguageLandingPageCrud;
   url: string;
   method?: HTTPVerb;
   languages: Language[];
+  landingPages: LanguageLandingPage[];
 };
 
 // const locales = [
@@ -29,7 +28,13 @@ type Props = {
 //   { name: "English", code: "en" },
 // ];
 
-export default function Form({ data, url, method, languages }: Props) {
+export default function Form({
+  data,
+  landingPages,
+  url,
+  method,
+  languages,
+}: Props) {
   const { t: tHelpers } = useTranslation("helpers");
   return (
     <XForm method={method} model="language_landing_page" data={data} to={url}>
@@ -43,6 +48,13 @@ export default function Form({ data, url, method, languages }: Props) {
         labelField="slug"
         valueField="id"
         items={languages}
+      />
+      <XSelect
+        name="landing_page_to_redirect_id"
+        has="landing_page_to_redirect"
+        labelField="header"
+        valueField="id"
+        items={landingPages}
       />
       <XInput name="slug" />
       <XInput name="order" />

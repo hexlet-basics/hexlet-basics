@@ -1,6 +1,21 @@
 class Web::LanguagesController < Web::ApplicationController
   before_action :authenticate_user!, only: [ :success ]
 
+  before_action do
+    if landing_page.archived?
+      next_landing_page = landing_page.landing_page_to_redirect
+      main_landing_page = landing_page.language.landing_pages.find_by(main: true)
+
+      if next_landing_page
+        redirect_to view_context.language_path(next_landing_page.slug), status: 301
+      elsif main_landing_page
+        redirect_to view_context.language_path(main_landing_page.slug), status: 301
+      else
+        redirect_to view_context.root_path, status: 301
+      end
+    end
+  end
+
   def show
     language = T.must(landing_page.language)
     # language_info = language.current_version.infos.find_by!(locale: I18n.locale)
@@ -97,6 +112,6 @@ class Web::LanguagesController < Web::ApplicationController
   private
 
   def landing_page
-    @language_page ||= Language::LandingPage.published.find_by!(locale: I18n.locale, slug: params[:id])
+    @language_page ||= Language::LandingPage.with_locale.find_by!(slug: params[:id])
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_03_193546) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_05_134023) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -200,6 +200,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_03_193546) do
     t.boolean "footer"
     t.string "footer_name"
     t.string "name"
+    t.bigint "landing_page_to_redirect_id"
+    t.index ["landing_page_to_redirect_id"], name: "index_language_landing_pages_on_landing_page_to_redirect_id"
     t.index ["language_category_id"], name: "index_language_landing_pages_on_language_category_id"
     t.index ["language_id"], name: "index_language_landing_pages_on_language_id"
   end
@@ -758,6 +760,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_03_193546) do
   add_foreign_key "language_category_qna_items", "language_categories"
   add_foreign_key "language_landing_page_qna_items", "language_landing_pages"
   add_foreign_key "language_landing_pages", "language_categories"
+  add_foreign_key "language_landing_pages", "language_landing_pages", column: "landing_page_to_redirect_id"
   add_foreign_key "language_landing_pages", "languages"
   add_foreign_key "language_lesson_member_messages", "language_lesson_members"
   add_foreign_key "language_lesson_member_messages", "language_lessons"

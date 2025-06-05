@@ -8,28 +8,28 @@
 # source://aws-sdk-s3//lib/aws-sdk-s3/customizations.rb#3
 module Aws
   class << self
-    # source://aws-sdk-core/3.224.1/lib/aws-sdk-core.rb#93
+    # source://aws-sdk-core/3.225.0/lib/aws-sdk-core.rb#93
     def config; end
 
-    # source://aws-sdk-core/3.224.1/lib/aws-sdk-core.rb#96
+    # source://aws-sdk-core/3.225.0/lib/aws-sdk-core.rb#96
     def config=(config); end
 
-    # source://aws-sdk-core/3.224.1/lib/aws-sdk-core.rb#155
+    # source://aws-sdk-core/3.225.0/lib/aws-sdk-core.rb#155
     def eager_autoload!(*args); end
 
-    # source://aws-sdk-core/3.224.1/lib/aws-sdk-core.rb#148
+    # source://aws-sdk-core/3.225.0/lib/aws-sdk-core.rb#148
     def empty_connection_pools!; end
 
-    # source://aws-sdk-core/3.224.1/lib/aws-sdk-core.rb#105
+    # source://aws-sdk-core/3.225.0/lib/aws-sdk-core.rb#105
     def partition(partition_name); end
 
-    # source://aws-sdk-core/3.224.1/lib/aws-sdk-core.rb#110
+    # source://aws-sdk-core/3.225.0/lib/aws-sdk-core.rb#110
     def partitions; end
 
-    # source://aws-sdk-core/3.224.1/lib/aws-sdk-core.rb#86
+    # source://aws-sdk-core/3.225.0/lib/aws-sdk-core.rb#86
     def shared_config; end
 
-    # source://aws-sdk-core/3.224.1/lib/aws-sdk-core.rb#125
+    # source://aws-sdk-core/3.225.0/lib/aws-sdk-core.rb#125
     def use_bundled_cert!; end
   end
 end
@@ -391,7 +391,7 @@ class Aws::S3::Bucket
   # @api private
   # @deprecated
   #
-  # source://aws-sdk-core/3.224.1/lib/aws-sdk-core/deprecations.rb#65
+  # source://aws-sdk-core/3.225.0/lib/aws-sdk-core/deprecations.rb#65
   def identifiers(*args, &block); end
 
   # @return [BucketLifecycle]
@@ -873,7 +873,7 @@ class Aws::S3::BucketAcl
   # @api private
   # @deprecated
   #
-  # source://aws-sdk-core/3.224.1/lib/aws-sdk-core/deprecations.rb#65
+  # source://aws-sdk-core/3.225.0/lib/aws-sdk-core/deprecations.rb#65
   def identifiers(*args, &block); end
 
   # Loads, or reloads {#data} for the current {BucketAcl}.
@@ -1103,7 +1103,7 @@ class Aws::S3::BucketCors
   # @api private
   # @deprecated
   #
-  # source://aws-sdk-core/3.224.1/lib/aws-sdk-core/deprecations.rb#65
+  # source://aws-sdk-core/3.225.0/lib/aws-sdk-core/deprecations.rb#65
   def identifiers(*args, &block); end
 
   # Loads, or reloads {#data} for the current {BucketCors}.
@@ -1300,7 +1300,7 @@ class Aws::S3::BucketLifecycle
   # @api private
   # @deprecated
   #
-  # source://aws-sdk-core/3.224.1/lib/aws-sdk-core/deprecations.rb#65
+  # source://aws-sdk-core/3.225.0/lib/aws-sdk-core/deprecations.rb#65
   def identifiers(*args, &block); end
 
   # Loads, or reloads {#data} for the current {BucketLifecycle}.
@@ -1523,7 +1523,7 @@ class Aws::S3::BucketLifecycleConfiguration
   # @api private
   # @deprecated
   #
-  # source://aws-sdk-core/3.224.1/lib/aws-sdk-core/deprecations.rb#65
+  # source://aws-sdk-core/3.225.0/lib/aws-sdk-core/deprecations.rb#65
   def identifiers(*args, &block); end
 
   # Loads, or reloads {#data} for the current {BucketLifecycleConfiguration}.
@@ -1784,7 +1784,7 @@ class Aws::S3::BucketLogging
   # @api private
   # @deprecated
   #
-  # source://aws-sdk-core/3.224.1/lib/aws-sdk-core/deprecations.rb#65
+  # source://aws-sdk-core/3.225.0/lib/aws-sdk-core/deprecations.rb#65
   def identifiers(*args, &block); end
 
   # Loads, or reloads {#data} for the current {BucketLogging}.
@@ -2002,7 +2002,7 @@ class Aws::S3::BucketNotification
   # @api private
   # @deprecated
   #
-  # source://aws-sdk-core/3.224.1/lib/aws-sdk-core/deprecations.rb#65
+  # source://aws-sdk-core/3.225.0/lib/aws-sdk-core/deprecations.rb#65
   def identifiers(*args, &block); end
 
   # Describes the Lambda functions to invoke and the events for which to
@@ -2264,7 +2264,7 @@ class Aws::S3::BucketPolicy
   # @api private
   # @deprecated
   #
-  # source://aws-sdk-core/3.224.1/lib/aws-sdk-core/deprecations.rb#65
+  # source://aws-sdk-core/3.225.0/lib/aws-sdk-core/deprecations.rb#65
   def identifiers(*args, &block); end
 
   # Loads, or reloads {#data} for the current {BucketPolicy}.
@@ -2518,7 +2518,7 @@ class Aws::S3::BucketRequestPayment
   # @api private
   # @deprecated
   #
-  # source://aws-sdk-core/3.224.1/lib/aws-sdk-core/deprecations.rb#65
+  # source://aws-sdk-core/3.225.0/lib/aws-sdk-core/deprecations.rb#65
   def identifiers(*args, &block); end
 
   # Loads, or reloads {#data} for the current {BucketRequestPayment}.
@@ -2713,7 +2713,7 @@ class Aws::S3::BucketTagging
   # @api private
   # @deprecated
   #
-  # source://aws-sdk-core/3.224.1/lib/aws-sdk-core/deprecations.rb#65
+  # source://aws-sdk-core/3.225.0/lib/aws-sdk-core/deprecations.rb#65
   def identifiers(*args, &block); end
 
   # Loads, or reloads {#data} for the current {BucketTagging}.
@@ -2919,7 +2919,7 @@ class Aws::S3::BucketVersioning
   # @api private
   # @deprecated
   #
-  # source://aws-sdk-core/3.224.1/lib/aws-sdk-core/deprecations.rb#65
+  # source://aws-sdk-core/3.225.0/lib/aws-sdk-core/deprecations.rb#65
   def identifiers(*args, &block); end
 
   # Loads, or reloads {#data} for the current {BucketVersioning}.
@@ -3153,7 +3153,7 @@ class Aws::S3::BucketWebsite
   # @api private
   # @deprecated
   #
-  # source://aws-sdk-core/3.224.1/lib/aws-sdk-core/deprecations.rb#65
+  # source://aws-sdk-core/3.225.0/lib/aws-sdk-core/deprecations.rb#65
   def identifiers(*args, &block); end
 
   # The name of the index document for the website (for example
@@ -19745,7 +19745,7 @@ class Aws::S3::Encryption::Client
   # @param options [Hash] a customizable set of options
   # @return [Client] a new instance of Client
   #
-  # source://aws-sdk-core/3.224.1/lib/aws-sdk-core/deprecations.rb#65
+  # source://aws-sdk-core/3.225.0/lib/aws-sdk-core/deprecations.rb#65
   def initialize(*args, &block); end
 
   # source://forwardable/1.3.3/forwardable.rb#231
@@ -24216,7 +24216,7 @@ class Aws::S3::MultipartUpload
   # @api private
   # @deprecated
   #
-  # source://aws-sdk-core/3.224.1/lib/aws-sdk-core/deprecations.rb#65
+  # source://aws-sdk-core/3.225.0/lib/aws-sdk-core/deprecations.rb#65
   def identifiers(*args, &block); end
 
   # Date and time at which the multipart upload was initiated.
@@ -24592,7 +24592,7 @@ class Aws::S3::MultipartUploadPart
   # @api private
   # @deprecated
   #
-  # source://aws-sdk-core/3.224.1/lib/aws-sdk-core/deprecations.rb#65
+  # source://aws-sdk-core/3.225.0/lib/aws-sdk-core/deprecations.rb#65
   def identifiers(*args, &block); end
 
   # Date and time at which the part was uploaded.
@@ -25347,7 +25347,7 @@ class Aws::S3::Object
   # @api private
   # @deprecated
   #
-  # source://aws-sdk-core/3.224.1/lib/aws-sdk-core/deprecations.rb#65
+  # source://aws-sdk-core/3.225.0/lib/aws-sdk-core/deprecations.rb#65
   def identifiers(*args, &block); end
 
   # @example Request syntax with placeholder values
@@ -26336,7 +26336,7 @@ class Aws::S3::Object::Collection < ::Aws::Resources::Collection
   # source://aws-sdk-s3//lib/aws-sdk-s3/object.rb#3554
   def batch_delete!(options = T.unsafe(nil)); end
 
-  # source://aws-sdk-core/3.224.1/lib/aws-sdk-core/deprecations.rb#65
+  # source://aws-sdk-core/3.225.0/lib/aws-sdk-core/deprecations.rb#65
   def delete(*args, &block); end
 
   # source://aws-sdk-s3//lib/aws-sdk-s3/object.rb#3554
@@ -26389,7 +26389,7 @@ class Aws::S3::ObjectAcl
   # @api private
   # @deprecated
   #
-  # source://aws-sdk-core/3.224.1/lib/aws-sdk-core/deprecations.rb#65
+  # source://aws-sdk-core/3.225.0/lib/aws-sdk-core/deprecations.rb#65
   def identifiers(*args, &block); end
 
   # Loads, or reloads {#data} for the current {ObjectAcl}.
@@ -27124,7 +27124,7 @@ class Aws::S3::ObjectSummary
   # @api private
   # @deprecated
   #
-  # source://aws-sdk-core/3.224.1/lib/aws-sdk-core/deprecations.rb#65
+  # source://aws-sdk-core/3.225.0/lib/aws-sdk-core/deprecations.rb#65
   def identifiers(*args, &block); end
 
   # @example Request syntax with placeholder values
@@ -27699,7 +27699,7 @@ class Aws::S3::ObjectSummary::Collection < ::Aws::Resources::Collection
   # source://aws-sdk-s3//lib/aws-sdk-s3/object_summary.rb#2984
   def batch_delete!(options = T.unsafe(nil)); end
 
-  # source://aws-sdk-core/3.224.1/lib/aws-sdk-core/deprecations.rb#65
+  # source://aws-sdk-core/3.225.0/lib/aws-sdk-core/deprecations.rb#65
   def delete(*args, &block); end
 
   # source://aws-sdk-s3//lib/aws-sdk-s3/object_summary.rb#2984
@@ -27893,7 +27893,7 @@ class Aws::S3::ObjectVersion
   # @api private
   # @deprecated
   #
-  # source://aws-sdk-core/3.224.1/lib/aws-sdk-core/deprecations.rb#65
+  # source://aws-sdk-core/3.225.0/lib/aws-sdk-core/deprecations.rb#65
   def identifiers(*args, &block); end
 
   # Specifies whether the object is (true) or is not (false) the latest
@@ -28097,7 +28097,7 @@ class Aws::S3::ObjectVersion::Collection < ::Aws::Resources::Collection
   # source://aws-sdk-s3//lib/aws-sdk-s3/object_version.rb#943
   def batch_delete!(options = T.unsafe(nil)); end
 
-  # source://aws-sdk-core/3.224.1/lib/aws-sdk-core/deprecations.rb#65
+  # source://aws-sdk-core/3.225.0/lib/aws-sdk-core/deprecations.rb#65
   def delete(*args, &block); end
 
   # source://aws-sdk-s3//lib/aws-sdk-s3/object_version.rb#943

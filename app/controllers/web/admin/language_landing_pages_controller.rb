@@ -13,11 +13,13 @@ class Web::Admin::LanguageLandingPagesController < Web::Admin::ApplicationContro
   def new
     landing_page = Admin::LanguageLandingPageForm.new
     landing_page.locale = I18n.locale
+    landing_pages = Language::LandingPage.published
 
     languages = Language.all
 
     render inertia: true, props: {
       landingPageDto: Language::LandingPageCrudResource.new(landing_page),
+      landingPages: Language::LandingPageResource.new(landing_pages),
       languages: LanguageResource.new(languages)
     }
   end
@@ -25,9 +27,11 @@ class Web::Admin::LanguageLandingPagesController < Web::Admin::ApplicationContro
   def edit
     landing_page = Admin::LanguageLandingPageForm.with_locale.find(params[:id])
     languages = Language.all
+    landing_pages = Language::LandingPage.published
 
     render inertia: true, props: {
       landingPageDto: Language::LandingPageCrudResource.new(landing_page),
+      landingPages: Language::LandingPageResource.new(landing_pages),
       languages: LanguageResource.new(languages)
     }
   end
@@ -47,6 +51,7 @@ class Web::Admin::LanguageLandingPagesController < Web::Admin::ApplicationContro
 
   def update
     landing_page = Admin::LanguageLandingPageForm.with_locale.find(params[:id])
+    # raise params.inspect
 
     if landing_page.update(params[:language_landing_page])
       f(:success)
