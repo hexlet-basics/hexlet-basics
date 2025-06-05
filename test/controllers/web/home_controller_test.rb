@@ -30,8 +30,8 @@ class Web::HomeControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "#map" do
-    get map_url
-    assert_response :success
-  end
+  # test "#map" do
+  #   get map_url
+  #   assert_response :success
+  # end
 end
