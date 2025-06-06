@@ -49,7 +49,7 @@ class Language::LandingPage < ApplicationRecord
   validates :meta_title, presence: true
   validates :header, presence: true
   validates :name, presence: true
-  validates :footer_name, presence: true, if: :footer?
+  # validates :footer_name, presence: true, if: :footer?
   validates :slug, presence: true, uniqueness: { scope: :locale }
   validates :main, uniqueness: { scope: [ :locale, :language_id ] }, if: :main?
   # validates :description, presence: true

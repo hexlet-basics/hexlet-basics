@@ -6,7 +6,7 @@ class Language::LandingPageForListsResource
   typelize_from Language::LandingPage
 
   has_one :language # , resource: LanguageResource
-  attributes :id, :slug, :header, :language_id, :locale, :footer_name
+  attributes :id, :slug, :header, :language_id, :locale, :name
 
   typelize slug: :string
   typelize header: :string

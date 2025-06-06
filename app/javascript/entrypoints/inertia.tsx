@@ -16,6 +16,10 @@ Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
   allowUrls: [import.meta.env.VITE_APP_HOST],
   integrations: [
+    Sentry.httpClientIntegration(),
+    Sentry.captureConsoleIntegration(),
+    Sentry.contextLinesIntegration(),
+    Sentry.extraErrorDataIntegration(),
     Sentry.thirdPartyErrorFilterIntegration({
       filterKeys: [import.meta.env.VITE_APP_HOST],
       behaviour: "drop-error-if-contains-third-party-frames",

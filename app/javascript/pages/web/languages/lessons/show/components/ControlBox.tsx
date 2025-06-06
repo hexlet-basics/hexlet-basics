@@ -34,9 +34,9 @@ export default function ControlBox() {
   const finished = useLessonStore((state) => state.finished);
   const runCheck = useLessonStore((state) => state.runCheck);
 
-  const handleRunCheck = () => {
+  const handleRunCheck = async () => {
     try {
-      runCheck({ course, lesson });
+      await runCheck({ course, lesson });
     } catch (error) {
       if (axios.isAxiosError(error)) {
         enqueueSnackbar(error.message);

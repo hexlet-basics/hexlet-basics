@@ -115,14 +115,14 @@ export default function Index() {
                     {/* )} */}
 
                     <div className="hexlet-basics-content">
-                      <h1 className="h2">{`${landingPage.header}: ${lesson.name}`}</h1>
+                      <h1 className="h3">{`${landingPage.name}: ${lesson.name}`}</h1>
 
                       {shouldAddContactMethod && (
                         <div className="mt-3"><ContactMethodRequestingBlock /></div>
                       )}
 
                       <MarkdownViewer allowHtml>{lesson.theory || ""}</MarkdownViewer>
-                      <h2 className="h3">
+                      <h2 className="h4">
                         {t("languages.lessons.show.instructions")}
                       </h2>
                       <MarkdownViewer allowHtml>
@@ -132,7 +132,7 @@ export default function Index() {
 
                     {lesson.tips.length > 0 && (
                       <div>
-                        <h2 className="h3">
+                        <h2 className="h4">
                           {t("languages.lessons.show.tips")}
                         </h2>
                         <ul>
@@ -147,7 +147,7 @@ export default function Index() {
 
                     {lesson.definitions.length > 0 && (
                       <div>
-                        <h2 className="h3">
+                        <h2 className="h4">
                           {t("languages.lessons.show.definitions")}
                         </h2>
                         <dl>
