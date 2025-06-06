@@ -9,6 +9,8 @@ import * as Routes from "@/routes.js";
 import { Link, usePage } from "@inertiajs/react";
 import type { LessonSharedProps } from "../types.ts";
 import { useLessonStore } from "../store.tsx";
+import { enqueueSnackbar } from "notistack";
+import axios from "axios";
 
 export default function ControlBox() {
   const {
@@ -30,10 +32,19 @@ export default function ControlBox() {
 
   const processState = useLessonStore((state) => state.processState);
   const finished = useLessonStore((state) => state.finished);
-  const runCheckAction = useLessonStore((state) => state.runCheck);
+  const runCheck = useLessonStore((state) => state.runCheck);
 
   const handleRunCheck = () => {
-    runCheckAction({ course, lesson });
+    try {
+      runCheck({ course, lesson });
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        enqueueSnackbar(error.message);
+        console.error(error);
+      } else {
+        throw error;
+      }
+    }
   };
 
   const resetContent = useLessonStore((state) => state.resetContent);
