@@ -1,5 +1,5 @@
 import * as Routes from "@/routes.js";
-import { Alert, Card, Col, Container, Nav, Row, Tab } from "react-bootstrap";
+import { Alert, Col, Container, Nav, Row, Tab } from "react-bootstrap";
 
 import Chat from "@/components/Chat.tsx";
 import MarkdownViewer from "@/components/MarkdownViewer.tsx";

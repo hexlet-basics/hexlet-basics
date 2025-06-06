@@ -3,7 +3,6 @@ import SyntaxHighlighter from "react-syntax-highlighter";
 import { github } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 import { getEditorLanguage } from "@/lib/utils.ts";
-// import XssContent from "@/components/XssContent.js";
 import { usePage } from "@inertiajs/react";
 import type { LessonSharedProps } from "../types.ts";
 

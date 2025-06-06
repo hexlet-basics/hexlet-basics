@@ -2,9 +2,6 @@ import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
-// import successImg from "@/images/success-image.svg";
-
-
 import { LanguageLandingPage, LeadCrud } from "@/types";
 import XssContent from "@/components/XssContent";
 import LeadFormBlock from "@/components/LeadFormBlock";

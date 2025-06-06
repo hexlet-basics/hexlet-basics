@@ -17,7 +17,8 @@ export default defineConfig(({ mode, isSsrBuild }) => {
       },
     },
     build: {
-      sourcemap: "hidden",
+      // sourcemap: "hidden",
+      sourcemap: false,
       cssMinify: "lightningcss",
     },
     plugins: [
@@ -29,6 +30,7 @@ export default defineConfig(({ mode, isSsrBuild }) => {
         compress: false,
       }),
       sentryVitePlugin({
+        applicationKey: env.VITE_APP_HOST,
         url: env.VITE_SENTRY_URL,
         org: env.VITE_SENTRY_ORG,
         project: env.VITE_SENTRY_PROJECT,
@@ -50,15 +52,15 @@ export default defineConfig(({ mode, isSsrBuild }) => {
     },
     ssr: {
       noExternal: [
-        "lowlight",
-        "highlight.js",
-        "react-syntax-highlighter",
-        "use-inertia-form",
-        "monaco-editor",
-        "primereact",
-        "react-timer-hook",
-        "@monaco-editor/react",
-        "analytics",
+        // "lowlight",
+        // "highlight.js",
+        // "react-syntax-highlighter",
+        // "use-inertia-form",
+        // "monaco-editor",
+        // "primereact",
+        // "react-timer-hook",
+        // "@monaco-editor/react",
+        // "analytics",
       ], // Ensure it's handled correctly
     },
     resolve: {

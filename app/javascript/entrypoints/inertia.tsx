@@ -14,9 +14,12 @@ if (import.meta.env.DEV) {
 Sentry.init({
   debug: import.meta.env.DEV,
   dsn: import.meta.env.VITE_SENTRY_DSN,
-  ignoreErrors: [
-    "Failed to fetch dynamically imported module",
-    "Unable to preload CSS",
+  allowUrls: [import.meta.env.VITE_APP_HOST],
+  integrations: [
+    Sentry.thirdPartyErrorFilterIntegration({
+      filterKeys: [import.meta.env.VITE_APP_HOST],
+      behaviour: "drop-error-if-contains-third-party-frames",
+    })
   ],
 });
 

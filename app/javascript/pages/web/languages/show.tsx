@@ -1,4 +1,4 @@
-import { Accordion, Alert, Button, Card, Col, Container, Row } from "react-bootstrap";
+import { Accordion, Button, Card, Col, Container, Row } from "react-bootstrap";
 
 import learningEnVideo from "@/images/course-landing-page/learning_en.mp4";
 import learningRuVideo from "@/images/course-landing-page/learning_ru.mp4";
@@ -12,13 +12,13 @@ import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import * as Routes from "@/routes.js";
 import type { BreadcrumbItem, Language, LeadCrud, SharedProps } from "@/types";
 import type {
-  LanguageCategory,
-  LanguageLandingPage,
-  LanguageLandingPageQnaItem,
-  LanguageLesson,
-  LanguageMember,
-  LanguageModule,
-  Review,
+    LanguageCategory,
+    LanguageLandingPage,
+    LanguageLandingPageQnaItem,
+    LanguageLesson,
+    LanguageMember,
+    LanguageModule,
+    Review,
 } from "@/types/serializers";
 import { Head, Link, usePage } from "@inertiajs/react";
 import type { Product, WithContext } from "schema-dts";

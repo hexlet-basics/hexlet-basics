@@ -10,10 +10,7 @@ import SyntaxHighlighter from "react-syntax-highlighter";
 import type { LessonSharedProps } from "../types.ts";
 
 import dayjs from "dayjs";
-import duration from "dayjs/plugin/duration";
 import { useLessonStore } from "../store.tsx";
-
-dayjs.extend(duration);
 
 const waitingTime = 20 * 60 * 1000; // 20 min
 // const waitingTime = 3000;

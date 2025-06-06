@@ -1,5 +1,3 @@
-// @ts-check
-
 import * as Routes from "@/routes.js";
 import { AnsiUp } from "ansi_up";
 import { useTranslation } from "react-i18next";
