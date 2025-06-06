@@ -39,9 +39,8 @@ function StartedCourse({
           <Card.Body className="d-flex flex-column h-100">
             <Card.Title className="m-0">
               <Link
-                href={Routes.language_lesson_url(
-                  lp.language.slug!,
-                  cm.next_lesson.slug,
+                href={Routes.language_url(
+                  lp.slug!,
                 )}
                 className="stretched-link text-decoration-none link-body-emphasis h2"
               >
