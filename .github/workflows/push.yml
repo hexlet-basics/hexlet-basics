@@ -37,7 +37,7 @@ jobs:
 
       - run: make lint
 
-      - run: RAILS_ENV=test bin/rails assets:precompile
+      - run: RAILS_ENV=test make build-assets
 
       - run: make test
       - run: make test-system

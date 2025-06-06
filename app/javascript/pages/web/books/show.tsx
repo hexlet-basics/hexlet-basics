@@ -122,4 +122,3 @@ export default function Show({ bookRequested, lead }: Props) {
     </ApplicationLayout>
   );
 }
-

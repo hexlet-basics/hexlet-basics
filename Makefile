@@ -25,6 +25,9 @@ dev:
 log-mails:
 	 tail -n 30 log/mailer.log | base64 --decode
 
+build-assets:
+	NODE_OPTIONS=--max-old-space-size=3072 bin/rails assets:precompile
+
 setup-staging:
 	bin/vite clobber
 	# VISUAL="code --wait" bin/rails credentials:edit
@@ -33,7 +36,7 @@ setup-staging:
 	RAILS_ENV=staging bin/rails db:fixtures:load
 	# RAILS_ENV=staging bin/rails db:prepare db:fixtures:load
 	# bin/vite build --ssr
-	NODE_ENV=development RAILS_ENV=staging bin/rails assets:precompile
+	NODE_ENV=development RAILS_ENV=staging make build-assets
 
 staging:
 	DEBUG=vite-plugin-ruby:* NODE_ENV=development RAILS_ENV=staging overmind start -f Procfile.staging

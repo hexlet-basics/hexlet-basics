@@ -17,7 +17,7 @@ WORKDIR /rails
 
 # Install base packages
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libvips sqlite3 libpq-dev libyaml-dev && \
+    apt-get install --no-install-recommends -y curl libjemalloc2 libvips sqlite3 libpq-dev libyaml-dev make && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libjemalloc.so.2
@@ -74,7 +74,7 @@ RUN --mount=type=secret,id=sentry-org,env=VITE_SENTRY_ORG \
     # --mount=type=secret,id=carrotquest-api-key,env=VITE_CARROTQUEST_API_KEY \
     --mount=type=secret,id=yandex-metrika-counter-id,env=VITE_YANDEX_METRIKA_COUNTER_ID \
     --mount=type=secret,id=n8n_base_url,env=N8N_BASE_URL \
-    SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+    SECRET_KEY_BASE_DUMMY=1 make build-assets
 
 # Final stage for app image
 FROM base
