@@ -29,7 +29,7 @@
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
     "debug": "^4.4.1",
-    "es-toolkit": "^1.39.0",
+    "es-toolkit": "^1.39.1",
     "flag-icons": "^7.5.0",
     "html-react-parser": "^5.2.5",
     "i18next": "^25.2.1",

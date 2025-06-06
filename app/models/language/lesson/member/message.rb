@@ -33,7 +33,7 @@ class Language::Lesson::Member::Message < ApplicationRecord
   belongs_to :user
 
   validates :role, presence: true
-  validates :body, presence: true
+  # validates :body, presence: true
 
   counter_culture :language_lesson_member, column_name: "messages_count"
   counter_culture :user, column_name: "assistant_messages_count"
