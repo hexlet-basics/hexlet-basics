@@ -54,13 +54,13 @@ export default defineConfig(({ mode, isSsrBuild }) => {
       noExternal: [
         // "lowlight",
         // "highlight.js",
-        // "react-syntax-highlighter",
+        "react-syntax-highlighter",
         // "use-inertia-form",
-        // "monaco-editor",
-        // "primereact",
-        // "react-timer-hook",
-        // "@monaco-editor/react",
-        // "analytics",
+        "monaco-editor",
+        "primereact",
+        "react-timer-hook",
+        "@monaco-editor/react",
+        "analytics",
       ], // Ensure it's handled correctly
     },
     resolve: {
