@@ -1,3 +1,4 @@
+import legacy from '@vitejs/plugin-legacy'
 import path from "node:path";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 import react from "@vitejs/plugin-react";
@@ -20,6 +21,9 @@ export default defineConfig(({ mode, isSsrBuild }) => {
       cssMinify: "lightningcss",
     },
     plugins: [
+      legacy({
+        targets: ['defaults', 'not IE 11'],
+      }),
       react(),
       ViteRails({
         compress: false,
