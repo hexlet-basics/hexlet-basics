@@ -1,8 +1,8 @@
 module Language::LandingPageRepository
   extend ActiveSupport::Concern
+  include LocaleRepository
 
   included do
-    scope :with_locale, ->(locale = I18n.locale) { where(locale: locale) }
     scope :web, ->() do
       published.with_locale
         .joins(:language)

@@ -2,8 +2,8 @@
 
 module Language::Module::Version::InfoRepository
   extend ActiveSupport::Concern
+  include LocaleRepository
 
   included do
-    scope :with_locale, ->(locale = I18n.locale) { where(locale: locale) }
   end
 end

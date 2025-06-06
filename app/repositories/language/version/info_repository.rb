@@ -2,15 +2,15 @@
 
 module Language::Version::InfoRepository
   extend ActiveSupport::Concern
+  include LocaleRepository
 
   included do
-    scope :with_locale, ->(locale = I18n.locale) { where(locale: locale) }
-    scope :completed, -> { merge(Language.with_progress(:completed)) }
-    scope :incompleted, -> { merge(Language.with_progress(:in_development)) }
+    scope :completed, -> { merge(Language.completed_progress) }
+    scope :incompleted, -> { merge(Language.in_development_progress) }
     scope :ordered, -> { order("language.order asc") }
     scope :current, -> {
       joins(:language)
-      .merge(Language.with_progress(:completed))
+      .merge(Language.completed_progress)
       .where(Language.arel_table[:current_version_id].eq(Language::Version::Info.arel_table[:language_version_id]))
     }
   end
