@@ -8,7 +8,7 @@ import configure from "@/lib/configure";
 import "@/init.ts";
 
 if (import.meta.env.DEV) {
-  localStorage.debug = "app:*";
+  // localStorage.debug = "app:*";
 }
 
 Sentry.init({

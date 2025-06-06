@@ -12,9 +12,9 @@ import i18next, { t } from "i18next";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import App from "./components/App.tsx";
-import { useAppSelector } from "./slices/index.ts";
 import type { LessonSharedProps } from "./types.ts";
 import ContactMethodRequestingBlock from "@/pages/layouts/blocks/ContactMethodRequestingBlock.tsx";
+import { useLessonStore } from "./store.tsx";
 
 export default function Index() {
   const {
@@ -60,8 +60,8 @@ export default function Index() {
     },
   ];
 
-  const userCode = useAppSelector((state) => state.content);
-  const output = useAppSelector((state) => state.output);
+  const userCode = useLessonStore((state) => state.content);
+  const output = useLessonStore((state) => state.output);
 
   return (
     <LessonLayout>

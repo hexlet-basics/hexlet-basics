@@ -7,9 +7,8 @@ import { useHotkeys } from "react-hotkeys-hook";
 import useConfirmation from "@/hooks/useConfirmation.ts";
 import * as Routes from "@/routes.js";
 import { Link, usePage } from "@inertiajs/react";
-import slice, { runCheck } from "../slices/RootSlice.ts";
-import { useAppDispatch, useAppSelector } from "../slices/index.ts";
 import type { LessonSharedProps } from "../types.ts";
+import { useLessonStore } from "../store.tsx";
 
 export default function ControlBox() {
   const {
@@ -29,18 +28,17 @@ export default function ControlBox() {
   const { t } = useTranslation();
   const { t: tCommon } = useTranslation("common");
 
-  const processState = useAppSelector((state) => state.processState);
-  const finished = useAppSelector((state) => state.finished);
+  const processState = useLessonStore((state) => state.processState);
+  const finished = useLessonStore((state) => state.finished);
+  const runCheckAction = useLessonStore((state) => state.runCheck);
 
-  const dispatch = useAppDispatch();
   const handleRunCheck = () => {
-    dispatch(runCheck({ course, lesson }));
+    runCheckAction({ course, lesson });
   };
 
+  const resetContent = useLessonStore((state) => state.resetContent);
   const confirmResetting = useConfirmation({
-    callback: () => {
-      dispatch(slice.actions.resetContent());
-    }
+    callback: resetContent
   });
 
   const isCodeChecking = processState === "checking";

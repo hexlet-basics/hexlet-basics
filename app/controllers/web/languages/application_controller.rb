@@ -4,7 +4,7 @@ class Web::Languages::ApplicationController < Web::ApplicationController
   end
 
   def resource_language_landing_page
-    @resource_language_landing_page ||= resource_language.landing_pages.find_by!(locale: I18n.locale)
+    @resource_language_landing_page ||= resource_language.landing_pages.web.find_by(main: true)
   end
 
   # alias_method :resource_language_landing_page, :landing_page

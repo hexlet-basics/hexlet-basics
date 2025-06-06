@@ -1,22 +1,17 @@
 import "@/lib/monacoLoader.ts";
 import {
-  getEditorLanguage,
-  // getKeyForStoringLessonCode,
-  getTabSize,
-  shouldReplaceTabsWithSpaces,
+    getEditorLanguage,
+    // getKeyForStoringLessonCode,
+    getTabSize,
+    shouldReplaceTabsWithSpaces,
 } from "@/lib/utils.ts";
 import { usePage } from "@inertiajs/react";
 import MonacoEditor from "@monaco-editor/react";
-import { useLocalStorage, useUpdateEffect } from "react-use";
-
-import { getKeyForStoringLessonCode } from "@/lib/utils.ts";
 
 import { useEffect, useState } from "react";
-import slice, { runCheck } from "../slices/RootSlice.ts";
 import type { LessonSharedProps } from "../types.ts";
-
 import type { editor } from "monaco-editor";
-import { useAppDispatch, useAppSelector } from "../slices/index.ts";
+import { useLessonStore } from "../store.tsx";
 
 export default function EditorTab() {
   const { course, lesson, mobileBrowser } = usePage<LessonSharedProps>().props;
@@ -38,17 +33,12 @@ export default function EditorTab() {
     fixedOverflowWidgets: true,
   };
 
-  const focusesCount = useAppSelector((state) => state.focusesCount);
-  const resetsCount = useAppSelector((state) => state.resetsCount);
-  const content = useAppSelector((state) => state.content);
-  const dispatch = useAppDispatch();
+  const focusesCount = useLessonStore((state) => state.focusesCount);
+  const resetsCount = useLessonStore((state) => state.resetsCount);
+  const content = useLessonStore((state) => state.content);
+  const changeContent = useLessonStore((state) => state.changeContent);
 
-  const defaultCode = lesson.prepared_code || "";
-
-  const [code, setCode] = useLocalStorage(
-    getKeyForStoringLessonCode(lesson),
-    defaultCode,
-  );
+  // const defaultCode = lesson.prepared_code || "";
 
   const [editorInstance, setEditorInstance] =
     useState<editor.IStandaloneCodeEditor>();
@@ -75,15 +65,15 @@ export default function EditorTab() {
     editorInstance?.focus();
   }, [focusesCount, editorInstance, mobileBrowser]);
 
-  useUpdateEffect(() => {
-    editorInstance?.setValue(defaultCode);
-    setCode(defaultCode);
-  }, [resetsCount]);
+  // useUpdateEffect(() => {
+  //   editorInstance?.setValue(defaultCode);
+  //   setCode(defaultCode);
+  // }, [resetsCount]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    dispatch(slice.actions.changeContent(code || ""));
-  }, []);
+  // useEffect(() => {
+  //   changeContent(code || "");
+  // }, []);
 
   // const handleRunCheck = () => {
   //   dispatch(runCheck(lesson));
@@ -91,8 +81,8 @@ export default function EditorTab() {
 
   const handleEditorChange = (value: string | undefined) => {
     const newContent = value || "";
-    setCode(newContent);
-    dispatch(slice.actions.changeContent(newContent));
+    // setCode(newContent);
+    changeContent(newContent);
   };
 
   return (
@@ -100,7 +90,7 @@ export default function EditorTab() {
       theme="github-light"
       options={editorOptions}
       onMount={handleEditorDidMount}
-      defaultValue={code}
+      defaultValue={content}
       onChange={handleEditorChange}
       language={getEditorLanguage(course.slug!)}
       // defaultLanguage={course.slug!}

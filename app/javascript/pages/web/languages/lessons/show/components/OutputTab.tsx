@@ -7,17 +7,17 @@ import { useTranslation } from "react-i18next";
 import XssContent from "@/components/XssContent";
 import { usePage } from "@inertiajs/react";
 import { Alert } from "react-bootstrap";
-import { useAppSelector } from "../slices";
 import type { LessonSharedProps } from "../types.ts";
+import { useLessonStore } from "../store.tsx";
 
 const ansi = new AnsiUp();
 
 export default function OutputTab() {
   const { lessonMember } = usePage<LessonSharedProps>().props;
-  const result = useAppSelector((state) => state.result);
-  const processState = useAppSelector((state) => state.processState);
-  const output = useAppSelector((state) => state.output);
-  const passed = useAppSelector((state) => state.passed);
+  const result = useLessonStore((state) => state.result);
+  const processState = useLessonStore((state) => state.processState);
+  const output = useLessonStore((state) => state.output);
+  const passed = useLessonStore((state) => state.passed);
   const { t: tCommon } = useTranslation("common");
 
   if (processState !== "checked") {

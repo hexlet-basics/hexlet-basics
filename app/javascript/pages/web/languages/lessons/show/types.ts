@@ -7,7 +7,7 @@ import type {
   LanguageLesson,
   LanguageLessonMember,
   LessonCheckingResponse,
-} from "@/types/serializers";
+} from "@/types";
 
 export type LessonSharedProps = SharedProps & {
   canCreateAssistantMessage: boolean;
@@ -24,17 +24,34 @@ export type LessonSharedProps = SharedProps & {
 
 type CheckingResult = LessonCheckingResponse["result"] | "error" | null;
 
-export interface RootState {
-  processState: "checked" | "unchecked" | "checking";
-  currentTab: "editor" | "output" | "tests" | "solution";
+type TabName = "editor" | "output" | "tests" | "solution";
+type SolutionState = "shown" | "canBeShown" | "notAllowedToBeShown";
+type ProcessState = "checked" | "unchecked" | "checking";
+
+export interface LessonProps {
+  lessonMember?: LanguageLessonMember
+  lesson: LanguageLesson
+}
+
+export interface LessonState {
+  startTime: number;
+  solutionState: SolutionState
   finished: boolean;
+  defaultCode: string;
+  processState: ProcessState
+  currentTab: TabName
   result: CheckingResult;
   resetsCount: number;
-  defaultCode: string;
   output: string;
   passed: boolean;
   content: string;
   focusesCount: number;
-  startTime: number;
-  solutionState: "shown" | "canBeShown" | "notAllowedToBeShown";
-}
+  changeContent: (content: string) => void;
+  resetContent: () => void;
+  changeTab: (tab: TabName) => void;
+  setStartTime: (startTime: number) => void;
+  changeSolutionState: (solutionState: SolutionState) => void;
+  runCheck: (params: { course: Language; lesson: LanguageLesson }) => Promise<
+    LessonCheckingResponse & { output: string }
+  >;
+};

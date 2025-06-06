@@ -54,7 +54,6 @@ export default defineConfig(({ mode, isSsrBuild }) => {
         "primereact",
         "react-timer-hook",
         "@monaco-editor/react",
-        "react-use",
         "analytics",
       ], // Ensure it's handled correctly
     },

@@ -68,26 +68,26 @@ export function useAssistantStream(
       { channel: "AssistantChannel", id: lessonMemberId },
       {
         connected() {
-          console.log("connected");
+          // console.log("connected");
         },
         disconnected() {
           setStatus("awaiting_message");
-          console.log("disconnected");
+          // console.log("disconnected");
         },
         rejected() {
-          console.log("rejected");
+          // console.log("rejected");
         },
 
         received(data: StreamMessage) {
           const { message_id, delta, index } = data;
-          console.log(delta);
+          // console.log(delta);
 
           if (!buffers.current[message_id]) {
             buffers.current[message_id] = [];
           }
 
           if (delta[0] === "DONE") {
-            console.log("📡 Stream finished for message:", message_id);
+            // console.log("📡 Stream finished for message:", message_id);
             setStatus("awaiting_message");
           } else {
             buffers.current[message_id][index] = delta;

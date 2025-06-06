@@ -1,26 +1,15 @@
 import { Nav, Tab } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import slice from "../slices/RootSlice.ts";
-
-import {
-  type AppState,
-  useAppDispatch,
-  useAppSelector,
-} from "../slices/index.ts";
 import EditorTab from "./EditorTab.tsx";
 import OutputTab from "./OutputTab.tsx";
 import SolutionTab from "./SolutionTab.tsx";
 import TestsTab from "./TestsTab.tsx";
+import { useLessonStore } from "../store.tsx";
 
 export default function TabsBox() {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
-
-  const currentTab = useAppSelector((state) => state.currentTab);
-
-  const changeTab = (newTabState: string | null) => {
-    dispatch(slice.actions.changeTab(newTabState as AppState["currentTab"]));
-  };
+  const currentTab = useLessonStore((state) => state.currentTab);
+  const changeTab = useLessonStore((state) => state.changeTab);
 
   // TODO: use anchor on load for choosing previuosly selected tab
   // useEffect(() => {
@@ -33,7 +22,7 @@ export default function TabsBox() {
       id="tabs"
       activeKey={currentTab}
       defaultActiveKey="editor"
-      onSelect={changeTab}
+      onSelect={(key) => changeTab(key as typeof currentTab)}
     >
       <Nav variant="underline" fill justify className="mb-3 small">
         <Nav.Item>

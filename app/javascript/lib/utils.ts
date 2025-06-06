@@ -143,10 +143,6 @@ export const neededPreview = (language: string) => {
 //   return languagesToHelpByTutorUrls[language] || defaultUrl;
 // };
 
-export const getKeyForStoringLessonCode = (lesson: LanguageLesson): string => {
-  return `lesson-${lesson.id}`;
-};
-
 export function url(
   options: { withQuery?: boolean; onlyPath?: boolean } = {
     withQuery: false,
