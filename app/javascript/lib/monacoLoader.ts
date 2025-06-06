@@ -1,7 +1,7 @@
 // NOTE: https://www.npmjs.com/package/@monaco-editor/react#loader-config
 
 import { loader } from "@monaco-editor/react";
-import { shikiToMonaco } from "@shikijs/monaco";
+// import { shikiToMonaco } from "@shikijs/monaco";
 import { createHighlighter } from "shiki";
 
 import darkTheme from "shiki/themes/github-dark.mjs";
@@ -34,17 +34,17 @@ self.MonacoEnvironment = {
   },
 };
 
-const langs = Object.keys(languages);
+// const langs = Object.keys(languages);
 
-const highlighter = await createHighlighter({
-  themes: [lightTheme, darkTheme],
-  langs,
-});
-
-for (const name of langs) {
-  monaco.languages.register({ id: name });
-}
-
-shikiToMonaco(highlighter, monaco);
+// const highlighter = createHighlighter({
+//   themes: [lightTheme, darkTheme],
+//   langs,
+// });
+//
+// for (const name of langs) {
+//   monaco.languages.register({ id: name });
+// }
+//
+// shikiToMonaco(highlighter, monaco);
 
 loader.config({ monaco });

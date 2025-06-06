@@ -36,12 +36,12 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
         publish_event(course_started_event, current_user)
         event_to_js(course_started_event)
       end
-      lesson_member = language_member.lesson_members.find_or_initialize_by(
+      lesson_member = language_member.lesson_members.find_or_create_by!(
         language: resource_language,
         lesson:,
         user: current_user,
       )
-      if lesson_member.new_record?
+      if lesson_member.previously_new_record?
         lesson_member.save!
 
         event_data = {
