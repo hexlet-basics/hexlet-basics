@@ -55,8 +55,8 @@ class Language::LandingPage < ApplicationRecord
   # validates :description, presence: true
   validates :locale, presence: true # , inclusion: I18n.available_locales
 
-  has_many :items, class_name: "Language::Category::Item", foreign_key: "language_category_id"
-  has_many :language_categories, through: :items, source: "language_category"
+  has_many :language_category_items, class_name: "Language::Category::Item", foreign_key: "language_landing_page_id"
+  has_many :language_categories, through: :language_category_items, source: "language_category"
 
   has_one_attached :outcomes_image do |attachable|
     attachable.variant :thumb, resize_to_limit: [ 39, 32 ], preprocessed: true
