@@ -59,8 +59,8 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
 
     title = t(
       ".title",
-      lesson: lesson_info,
-      language: resource_language_landing_page.header
+      lesson_name: lesson_info,
+      language_name: resource_language_landing_page.name
     ).squish
     description = view_context.truncate("[#{resource_language.current_version}] — #{lesson_info} — #{lesson_info.theory}", length: 220)
 
