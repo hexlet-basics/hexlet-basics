@@ -56,7 +56,7 @@ export default function Form({ data, url, method }: Props) {
       >
         <XHidden type="hidden" name="id" />
         <XInput name="question" />
-        <XInput name="answer" />
+        <XInput as="textarea" name="answer" style={{ height: "100px" }} />
         <XCheck name="_destroy" />
       </XDynamicInputs>
 
