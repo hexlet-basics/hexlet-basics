@@ -37,7 +37,7 @@ export default function Form({ data, url, method }: Props) {
       <XInput name="name" />
       <XInput name="header" />
       <XInput name="slug" />
-      <XInput as="textarea" name="description" />
+      <XInput as="textarea" style={{ height: "100px" }} name="description" />
 
       <XDynamicInputs
         model="items"
