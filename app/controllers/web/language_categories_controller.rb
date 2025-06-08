@@ -21,8 +21,8 @@ class Web::LanguageCategoriesController < Web::ApplicationController
     landing_pages = category.language_landing_pages.web.where(listed: true).merge(Language.ordered)
 
     seo_tags = {
-      title: t(".header", name: category),
-      description: t(".meta.category_descriptions.#{category.slug}"),
+      title: t(".header", name: category.header),
+      description: t(".meta.description", name: category.header),
       canonical: language_category_url(category.slug)
     }
     set_meta_tags seo_tags

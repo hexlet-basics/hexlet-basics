@@ -2954,20 +2954,16 @@
       },
       "language_categories": {
         "index": {
-          "header": "Категории курсов",
+          "header": "Категории курсов по программированию",
           "link": "Перейти",
           "meta": {
-            "description": ""
+            "description": "Направления обучения программированию на CodeBasics. Выберите категорию, курсы которой вы бы хотели посмотреть"
           }
         },
         "show": {
-          "blog_posts": "Посты в блоге",
-          "header": "Курсы категории \"%{name}\"",
+          "header": "%{name} | Курсы по программированию\n",
           "meta": {
-            "category_descriptions": {
-              "layouting": "",
-              "programming": ""
-            }
+            "description": "Бесплатные %{name} с практикой прямо в браузере. Короткие текстовые уроки и ИИ-помощник. От создателей Хекслета"
           }
         }
       },
@@ -3032,7 +3028,7 @@
             "solution": "Решение",
             "tests": "Тесты",
             "tips": "Полезное",
-            "title": "%{lesson} | Уроки %{language}\n",
+            "title": "%{lesson_name} | Уроки %{language_name}\n",
             "to_home_title": "Домой"
           }
         },

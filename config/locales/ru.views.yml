@@ -41,17 +41,15 @@ ru:
       finished: Завершенные курсы
     language_categories:
       index:
-        header: Категории курсов
+        header: Категории курсов по программированию
         meta:
-          description: ""
+          description: Направления обучения программированию на CodeBasics. Выберите категорию, курсы которой вы бы хотели посмотреть
         link: Перейти
       show:
-        header: Курсы категории "%{name}"
-        blog_posts: Посты в блоге
+        header: |
+          %{name} | Курсы по программированию
         meta:
-          category_descriptions:
-            programming: ""
-            layouting: ""
+          description: Бесплатные %{name} с практикой прямо в браузере. Короткие текстовые уроки и ИИ-помощник. От создателей Хекслета
     reviews:
       index:
         header: Отзывы
