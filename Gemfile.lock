@@ -87,7 +87,7 @@ GEM
       activesupport (>= 7.1)
       device_detector (>= 1)
       safely_block (>= 0.4)
-    alba (3.7.1)
+    alba (3.7.2)
     annotaterb (4.15.0)
     arkency-command_bus (0.4.1)
       concurrent-ruby
