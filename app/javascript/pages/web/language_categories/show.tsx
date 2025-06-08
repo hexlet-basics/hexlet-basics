@@ -16,6 +16,7 @@ import i18next from "i18next";
 import { usePage } from "@inertiajs/react";
 import { SharedProps } from "@/types";
 import LeadFormBlock from "@/components/LeadFormBlock";
+import MarkdownViewer from "@/components/MarkdownViewer";
 
 type Props = PropsWithChildren & {
   categoryLandingPages: LanguageLandingPageForLists[];
@@ -92,7 +93,7 @@ export default function Show({
                   <div className="fs-5 fw-medium mb-3 pe-lg-5">
                     {item.question}
                   </div>
-                  <p className="pe-lg-5">{item.answer}</p>
+                  <p className="pe-lg-5"><MarkdownViewer>{item.answer}</MarkdownViewer></p>
                 </Col>
               ))}
             </Row>
