@@ -25,6 +25,9 @@ Sentry.init({
       behaviour: "drop-error-if-contains-third-party-frames",
     })
   ],
+  ignoreErrors: [
+    "Failed to fetch dynamically imported module"
+  ]
 });
 
 createInertiaApp({

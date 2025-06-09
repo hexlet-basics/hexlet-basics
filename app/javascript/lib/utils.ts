@@ -1,5 +1,8 @@
-import type { LanguageLesson } from "@/types/serializers";
 import type { DataTableFilterMeta } from "primereact/datatable";
+import debug from 'debug'
+
+const log = debug('app')
+export { log }
 
 const editorMapping: Record<string, string> = {
   css: "html",

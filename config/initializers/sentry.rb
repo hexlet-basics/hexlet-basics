@@ -14,6 +14,7 @@ Sentry.init do |config|
     "ActiveRecord::RecordNotFound",
     "Faraday::ConnectionFailed",
     "Pundit::NotAuthorizedError",
-    "Mime::Type::InvalidMimeType"
+    "Mime::Type::InvalidMimeType",
+    "ActionDispatch::RemoteIp::IpSpoofAttackError"
   ]
 end

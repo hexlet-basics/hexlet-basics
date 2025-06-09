@@ -14,7 +14,7 @@ type Props = {
 
 export default function Edit({ surveyDto, surveyItems }: Props) {
   const { t } = useTranslation();
-  console.log(surveyItems)
+  // console.log(surveyItems)
 
   return (
     <AdminLayout

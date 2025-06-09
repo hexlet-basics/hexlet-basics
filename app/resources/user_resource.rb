@@ -27,6 +27,12 @@ class UserResource < ApplicationResource
   typelize :string, nullable: true
   attribute :password do |user| end
 
+  # For Wootric (GTM)
+  typelize :number, nullable: true
+  attribute :created_at_as_timestamp do |user|
+    user.created_at.to_i
+  end
+
   typelize '"user"', nullable: false
   attribute :type do |user|
     "user"

@@ -40,7 +40,7 @@ export default function ControlBox() {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         enqueueSnackbar(error.message);
-        console.error(error);
+        // console.error(error);
       } else {
         throw error;
       }

@@ -2,6 +2,7 @@
 import { BackendEvent } from "@/types/events";
 import yandexMetrika from "@hexlet/analytics-plugin-yandex-metrika";
 import Analytics from "analytics";
+import { log } from "./utils";
 // import googleAnalytics from "@analytics/google-analytics"
 
 const enabled = !import.meta.env.SSR;
@@ -57,7 +58,7 @@ export function processHappendEvents(happendEvents: BackendEvent[]) {
         analytics.track("lesson_started", happendEvent.data);
         break;
       default:
-        console.log('Unprocessed event: ', happendEvent)
+        log('Unprocessed event: ', happendEvent)
         break;
     }
   }

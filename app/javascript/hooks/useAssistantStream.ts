@@ -141,7 +141,7 @@ export function useAssistantStream(
           ]);
         }
         enqueueSnackbar(error.message);
-        console.error(error);
+        // console.error(error);
       } else {
         throw error;
       }
