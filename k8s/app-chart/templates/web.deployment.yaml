@@ -206,6 +206,7 @@ spec:
         - name: cable
           imagePullPolicy: Always
           image: "{{ .Values.web.image.repository }}:{{ .Values.version }}"
+          command: ["make", "services-cable-run"]
           startupProbe:
             httpGet:
               path: /up
