@@ -219,7 +219,7 @@ en:
       lessons:
         show:
           title: |
-            %{lesson} | %{language}
+            %{lesson_name} | %{language_name}
           common_questions:
             - question: The exercise doesn't pass checking. What to do? 😶
               answer: |
