@@ -17,8 +17,8 @@ export default defineConfig(({ mode, isSsrBuild }) => {
       },
     },
     build: {
-      // sourcemap: "hidden",
-      sourcemap: false,
+      sourcemap: "hidden",
+      // sourcemap: false,
       cssMinify: "lightningcss",
     },
     plugins: [
