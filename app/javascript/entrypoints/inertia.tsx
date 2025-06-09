@@ -17,7 +17,7 @@ Sentry.init({
   allowUrls: [import.meta.env.VITE_APP_HOST],
   integrations: [
     Sentry.httpClientIntegration(),
-    Sentry.captureConsoleIntegration(),
+    // Sentry.captureConsoleIntegration(),
     Sentry.contextLinesIntegration(),
     Sentry.extraErrorDataIntegration(),
     Sentry.thirdPartyErrorFilterIntegration({
