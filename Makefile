@@ -133,6 +133,9 @@ services-jobs-run:
 services-webserver-run:
 	caddy run # --config ./services/webserver/caddy/conf/Caddyfile --envfile=.env
 
+services-cable-run:
+	bundle exec puma -p 28080 cable/config.ru
+
 services-db-start:
 	docker run -d -it --rm \
 		-p 5432:5432 \
