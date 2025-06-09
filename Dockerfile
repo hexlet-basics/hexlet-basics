@@ -20,7 +20,7 @@ RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y curl libjemalloc2 libvips sqlite3 libpq-dev libyaml-dev make && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libjemalloc.so.2
+ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2
 
 # Set production environment
 ENV RAILS_ENV="production" \
