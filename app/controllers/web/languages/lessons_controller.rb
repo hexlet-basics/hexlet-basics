@@ -65,6 +65,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     description = view_context.truncate("[#{resource_language.current_version}] — #{lesson_info} — #{lesson_info.theory}", length: 220)
 
     image_url = resource_language.cover.attached? && view_context.rails_representation_url(resource_language.cover.variant(:list))
+
     seo_tags = {
       title:,
       description:,
@@ -79,6 +80,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
         image: image_url
       }
     }
+
     set_meta_tags seo_tags
 
     # @switching_locales.each do |locale,|

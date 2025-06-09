@@ -78,10 +78,12 @@ Rails.application.routes.draw do
         end
       end
 
-      resource :book do
-        member do
-          post :create_request
-          get :download
+      constraints(RuSuffixConstraint) do
+        resource :book do
+          member do
+            post :create_request
+            get :download
+          end
         end
       end
 

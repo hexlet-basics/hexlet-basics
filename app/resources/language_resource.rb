@@ -38,6 +38,11 @@ class LanguageResource < ApplicationResource
   end
 
   typelize :number
+  attribute :members_count do |obj|
+    obj.members_count
+  end
+
+  typelize :number
   attribute :rating_value do |obj|
     obj.id.even? ? 4 : 5
   end

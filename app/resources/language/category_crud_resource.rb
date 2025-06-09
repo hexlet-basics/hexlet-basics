@@ -10,7 +10,7 @@ class Language::CategoryCrudResource < ApplicationResource
   typelize_meta meta: "{ landingPagesForCategories: LanguageCategoryCrudData[] }"
   meta do
     landing_pages_for_categories = Language::LandingPage.web
-      .where(listed: true)
+      # .where(listed: true)
       .merge(Language.ordered)
 
     {

@@ -12,17 +12,19 @@ import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import * as Routes from "@/routes.js";
 import type { BreadcrumbItem, Language, LeadCrud, SharedProps } from "@/types";
 import type {
-    LanguageCategory,
-    LanguageLandingPage,
-    LanguageLandingPageQnaItem,
-    LanguageLesson,
-    LanguageMember,
-    LanguageModule,
-    Review,
+  LanguageCategory,
+  LanguageLandingPage,
+  LanguageLandingPageQnaItem,
+  LanguageLesson,
+  LanguageMember,
+  LanguageModule,
+  Review,
 } from "@/types/serializers";
 import { Head, Link, usePage } from "@inertiajs/react";
 import type { Product, WithContext } from "schema-dts";
 import LeadFormBlock from "@/components/LeadFormBlock";
+import { FormattedNumber } from "react-intl";
+import dayjs from "dayjs";
 
 type Props = {
   lead: LeadCrud;
@@ -107,14 +109,22 @@ export default function Show({
         <Row className="flex-column flex-lg-row gy-5 gx-lg-5 mb-4 mb-lg-5">
 
           <Col className="col-lg-7">
-            <div className="fs-6 fw-medium text-opacity-75 mb-3">
+            <div className="fs-6 text-muted text-opacity-75 mb-2">
               {t("languages.show.free_course", { name: courseLandingPage.header })}
             </div>
-            <h1 className="display-5 fw-bolder mb-3">
+            <h1 className="display-5 fw-bolder mb-2">
               {courseLandingPage.header}
             </h1>
-            <div className="fs-5 text-body-secondary mb-5">
+            <div className="fs-5 text-body-secondary mb-2">
               {courseLandingPage.description}
+            </div>
+            <div className="mb-5">
+              <span className="me-3">
+                <i className="bi bi-people me-2" /><FormattedNumber value={course.members_count} />
+              </span>
+              <span>
+                <i className="bi bi-clock me-2" />{t('languages.show.updated_at', { date: dayjs(course.current_version!.created_at).format('LL') })}
+              </span>
             </div>
 
             <Row className="row-cols-1 gy-3">

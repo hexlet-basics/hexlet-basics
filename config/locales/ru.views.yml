@@ -293,6 +293,7 @@ ru:
       show:
         hexlet_program_link: Профессия и Трудоустройство
         breadcrumbs: Хлебные крошки
+        updated_at: Обновлен %{date}
         see_all_courses_in_category: Все курсы "%{name}"
         to_home_title: Главная
         registration: Зарегистрироваться

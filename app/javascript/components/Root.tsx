@@ -1,3 +1,4 @@
+import { IntlProvider } from 'react-intl';
 import * as Sentry from "@sentry/react";
 import "react-bootstrap";
 import { SnackbarProvider } from "notistack";
@@ -5,6 +6,7 @@ import { PrimeReactProvider } from "primereact/api";
 import { type PropsWithChildren } from "react";
 import { Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+import i18next from 'i18next';
 
 function FallbackComponent() {
   const { t: tLayouts } = useTranslation("layouts");
@@ -28,13 +30,15 @@ function Root(props: Props) {
   // configure(props.locale, props.suffix)
 
   return (
-    <PrimeReactProvider>
-      <SnackbarProvider>
-        <Sentry.ErrorBoundary fallback={FallbackComponent} showDialog>
-          {props.children}
-        </Sentry.ErrorBoundary>
-      </SnackbarProvider>
-    </PrimeReactProvider>
+    <IntlProvider locale={i18next.language}>
+      <PrimeReactProvider>
+        <SnackbarProvider>
+          <Sentry.ErrorBoundary fallback={FallbackComponent} showDialog>
+            {props.children}
+          </Sentry.ErrorBoundary>
+        </SnackbarProvider>
+      </PrimeReactProvider>
+    </IntlProvider>
   );
 }
 
