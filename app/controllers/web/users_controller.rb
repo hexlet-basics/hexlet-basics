@@ -20,7 +20,9 @@ class Web::UsersController < Web::ApplicationController
   def create
     user = User::SignUpForm.new(params[:user_sign_up_form])
 
-    if user.save
+    begin
+      user.save!
+
       signed_up_event_data = {
         id: user.id,
         email: user.email,
@@ -79,7 +81,7 @@ class Web::UsersController < Web::ApplicationController
 
       f(:success)
       redirect_to params[:from].presence || root_path
-    else
+    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => _e
       f(:error)
       redirect_to_inertia new_user_url, user
       # raise user.errors.full_messages.inspect
