@@ -21,7 +21,7 @@ class Web::PasswordsController < Web::ApplicationController
       f(:success)
       redirect_to root_path
     else
-      # f(:error, now: true)
+      # f(:error)
       redirect_to_inertia edit_password_path(reset_password_token: params[:reset_password_token]), user_password_form
     end
   end

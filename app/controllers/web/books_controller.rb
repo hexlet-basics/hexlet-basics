@@ -25,6 +25,7 @@ class Web::BooksController < Web::ApplicationController
   def download
     unless current_user.book_request
       redirect_to view_context.book_path
+      return
     end
 
     current_user.book_request.mark_as_downloaded!
