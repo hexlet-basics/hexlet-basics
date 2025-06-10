@@ -2,3 +2,4 @@ vite: bin/vite ssr
 web: bin/rails s -p 3000
 job: bin/jobs
 caddy: caddy run
+cable: make services-cable-run
