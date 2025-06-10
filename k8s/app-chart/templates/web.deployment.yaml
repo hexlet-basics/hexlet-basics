@@ -199,7 +199,7 @@ spec:
                   name: hexlet-basics-environment-secrets
                   key: NODE_ENV
             - name: NODE_OPTIONS
-              value: "--max-old-space-size=512"
+              value: "--max-old-space-size=256"
           lifecycle:
             preStop:
               exec:
