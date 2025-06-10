@@ -10,7 +10,6 @@ import { Link, usePage } from "@inertiajs/react";
 import type { LessonSharedProps } from "../types.ts";
 import { useLessonStore } from "../store.tsx";
 import { enqueueSnackbar } from "notistack";
-import axios from "axios";
 
 export default function ControlBox() {
   const {
@@ -35,15 +34,9 @@ export default function ControlBox() {
   const runCheck = useLessonStore((state) => state.runCheck);
 
   const handleRunCheck = async () => {
-    try {
-      await runCheck({ course, lesson });
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        enqueueSnackbar(error.message);
-        // console.error(error);
-      } else {
-        throw error;
-      }
+    const result = await runCheck({ course, lesson });
+    if (!result) {
+      enqueueSnackbar(tCommon('errors.network'));
     }
   };
 

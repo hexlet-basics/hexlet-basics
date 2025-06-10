@@ -48,10 +48,23 @@ export function createLessonStore(lesson: LanguageLesson, initProps?: Partial<Le
           set({ currentTab: "output", processState: "checking" });
           const { content } = get();
           const checkLessonPath = Routes.check_api_lesson_path(lesson.id!);
-          const response = await axios.post<LessonCheckingResponse>(checkLessonPath, {
+          const responsePromise = axios.post<LessonCheckingResponse>(checkLessonPath, {
             version_id: lesson.version!,
             data: { attributes: { code: content } },
           });
+          let response: Awaited<typeof responsePromise> | null = null
+          try {
+            response = await responsePromise
+          } catch (error) {
+            if (axios.isAxiosError(error)) {
+              set((state) => ({
+                processState: "unchecked",
+              }));
+              return false
+            } else {
+              throw error
+            }
+          }
           const response_data = response.data;
           const {
             lesson_has_been_finished: lessonHasBeenFinished,
@@ -93,7 +106,7 @@ export function createLessonStore(lesson: LanguageLesson, initProps?: Partial<Le
             processState: "checked",
           }));
 
-          return result;
+          return true
         },
       }),
         {

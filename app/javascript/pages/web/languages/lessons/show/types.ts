@@ -51,7 +51,5 @@ export interface LessonState {
   changeTab: (tab: TabName) => void;
   setStartTime: (startTime: number) => void;
   changeSolutionState: (solutionState: SolutionState) => void;
-  runCheck: (params: { course: Language; lesson: LanguageLesson }) => Promise<
-    LessonCheckingResponse & { output: string }
-  >;
+  runCheck: (params: { course: Language; lesson: LanguageLesson }) => Promise<boolean>;
 };
