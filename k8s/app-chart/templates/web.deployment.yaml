@@ -191,7 +191,7 @@ spec:
               memory: 300Mi
               cpu: 100m
             limits:
-              memory: 600Mi
+              memory: 900Mi
           env:
             - name: NODE_ENV
               valueFrom:
@@ -199,7 +199,7 @@ spec:
                   name: hexlet-basics-environment-secrets
                   key: NODE_ENV
             - name: NODE_OPTIONS
-              value: "--max-old-space-size=256"
+              value: "--max-old-space-size=190"
           lifecycle:
             preStop:
               exec:
