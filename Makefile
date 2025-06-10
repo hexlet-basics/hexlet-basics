@@ -26,7 +26,7 @@ log-mails:
 	 tail -n 30 log/mailer.log | base64 --decode
 
 build-assets:
-	NODE_OPTIONS=--max-old-space-size=3072 bin/rails assets:precompile
+	bin/rails assets:precompile
 
 setup-staging:
 	bin/vite clobber
