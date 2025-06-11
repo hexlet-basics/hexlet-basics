@@ -35,6 +35,12 @@ alloy:
 
       prometheus.exporter.postgres "database" {
         data_source_names = [remote.kubernetes.secret.alloy.data["db_url"]]
+
+        autodiscovery {
+          database_denylist = ["postgres", "db_default"]
+        }
+
+        enabled_collectors = ["database", "locks", "replication", "stat_database"]
       }
 
       prometheus.scrape "database" {
