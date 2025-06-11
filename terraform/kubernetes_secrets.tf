@@ -14,6 +14,14 @@ resource "kubernetes_secret" "grafana_alloy_secrets_3" {
     db_name = var.postgres_db.name
     db_user = var.postgres_db.datadog_username
     db_password = var.postgres_db.datadog_password
+    db_url = format(
+      "postgresql://%s:%s@%s:%s/%s",
+      var.postgres_db.datadog_username,
+      var.postgres_db.datadog_password,
+      var.postgres_db.host,
+      var.postgres_db.port,
+      var.postgres_db.name
+    )
   }
 }
 

@@ -33,6 +33,26 @@ alloy:
         }
       }
 
+      prometheus.exporter.postgres "database" {
+        data_source_names = [remote.kubernetes.secret.alloy.data["db_url"]]
+      }
+
+      prometheus.scrape "database" {
+        targets = prometheus.exporter.postgres.database.targets
+        forward_to = [prometheus.relabel.database.receiver]
+      }
+
+      prometheus.relabel "database" {
+        forward_to = [prometheus.remote_write.default.receiver]
+
+        rule {
+          source_labels = ["instance"]
+          regex = "(.*)"
+          target_label = "instance"
+          replacement = "hb-postgresql"
+        }
+      }
+
       prometheus.remote_write "default" {
         endpoint {
           url = convert.nonsensitive(remote.kubernetes.secret.alloy.data["receiver_url"])
