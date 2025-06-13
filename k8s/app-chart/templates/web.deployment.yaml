@@ -131,7 +131,10 @@ spec:
                   value: https
             initialDelaySeconds: 20
             periodSeconds: 20
-            timeoutSeconds: 3
+            # NOTE: при большом одновременном количестве запросов puma отвечает дольше таймаута
+            # в итоге контейнер перезапускается кубом из-за фейлов проб
+            # Кейс проявляетс при обходе сайта ботами
+            timeoutSeconds: 5
           ports:
             - containerPort: 3000
           resources:
