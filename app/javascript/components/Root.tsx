@@ -1,21 +1,23 @@
-import { IntlProvider } from 'react-intl';
 import * as Sentry from "@sentry/react";
-import "react-bootstrap";
-import { SnackbarProvider } from "notistack";
-import { PrimeReactProvider } from "primereact/api";
 import { type PropsWithChildren } from "react";
-import { Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import i18next from 'i18next';
+import { Text, Center, MantineProvider, Stack, Title, type MantineProviderProps, Container } from '@mantine/core';
+import { CodeHighlightAdapterProvider, createShikiAdapter } from '@mantine/code-highlight';
+import { loadShiki } from "@/lib/shiki";
+import { ModalsProvider } from "@mantine/modals";
+
+const shikiAdapter = createShikiAdapter(loadShiki);
 
 function FallbackComponent() {
   const { t: tLayouts } = useTranslation("layouts");
   return (
-    <Container className="d-flex h-100">
-      <div className="m-auto">
-        <h1>{tLayouts("web.root.fallback.header")}</h1>
-        <div>{tLayouts("web.root.fallback.description")}</div>
-      </div>
+    <Container>
+      <Center h="100vh">
+        <Stack align="center">
+          <Title order={1}>{tLayouts('web.root.fallback.header')}</Title>
+          <Text>{tLayouts('web.root.fallback.description')}</Text>
+        </Stack>
+      </Center>
     </Container>
   );
 }
@@ -25,20 +27,19 @@ type Props = PropsWithChildren & {
   // suffix: string | null
 }
 
+const theme: MantineProviderProps["theme"] = { components: { Anchor: { defaultProps: { c: 'dark' } } } }
+
 function Root(props: Props) {
-
-  // configure(props.locale, props.suffix)
-
   return (
-    <IntlProvider locale={i18next.language}>
-      <PrimeReactProvider>
-        <SnackbarProvider>
+    <MantineProvider theme={theme}>
+      <ModalsProvider>
+        <CodeHighlightAdapterProvider adapter={shikiAdapter}>
           <Sentry.ErrorBoundary fallback={FallbackComponent} showDialog>
             {props.children}
           </Sentry.ErrorBoundary>
-        </SnackbarProvider>
-      </PrimeReactProvider>
-    </IntlProvider>
+        </CodeHighlightAdapterProvider>
+      </ModalsProvider>
+    </MantineProvider>
   );
 }
 

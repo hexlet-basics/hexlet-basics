@@ -1,0 +1,10 @@
+/* https://github.com/songkeys/tailwind-preset-mantine */
+
+@layer theme, base, mantine, mantine-datatable, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+/* @import "tailwindcss/preflight.css" layer(base); */
+@import "tailwindcss/utilities.css" layer(utilities);
+@import "@mantine/core/styles.layer.css";
+@import 'mantine-datatable/styles.layer.css';
+@import "tailwind-preset-mantine/theme.css";

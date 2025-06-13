@@ -47,6 +47,15 @@ pre-course-javascript1-module1_version1-lesson1_version1:
   lesson: pre-course-javascript-module1-lesson1
   language: pre-course-javascript
 
+html1-module1_version1-lesson1_version1:
+  <<: *DEFAULTS
+  order: 10
+  natural_order: 10
+  language_version: html1
+  module_version: html1-module1_version1
+  lesson: html-module1-lesson1
+  language: html
+
 typescript1-module1_version1-lesson1_version1:
   <<: *DEFAULTS
   order: 10

@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { Col, Container, Nav, Row } from "react-bootstrap";
+import { AppShell, Container, Grid, NavLink, Title } from '@mantine/core';
 
 import { useTranslation } from "react-i18next";
 
@@ -10,6 +10,7 @@ import { Link } from "@inertiajs/react";
 import RootLayout from "./RootLayout.tsx";
 import FooterBlock from "./blocks/FooterBlock.tsx";
 import NavbarBlock from "./blocks/NavbarBlock.tsx";
+import { useDisclosure } from "@mantine/hooks";
 
 type Props = PropsWithChildren & {
   header: string;
@@ -19,160 +20,116 @@ export default function AdminLayout({ children, header }: Props) {
   const { t: tLayouts } = useTranslation("layouts");
   const { t: tCommon } = useTranslation("common");
 
-  // const { locale, suffix } = usePage<SharedProps>().props;
-  //
-  // useEffect(() => {
-  //   i18next.changeLanguage(locale);
-  //   Routes.configure({ default_url_options: { suffix } });
-  // }, [suffix, locale]);
+  const [opened, { toggle }] = useDisclosure();
 
   return (
     <RootLayout>
-      {/* <Head> */}
-      {/*   <title>{header}</title> */}
-      {/* </Head> */}
-      <Container fluid className="mb-2">
-        <NavbarBlock />
-        <XFlash />
-      </Container>
-      <Container fluid className="h-100">
-        <Row className="mb-5">
-          <Col className="col-2 border-end h-100">
-            <Nav className="flex-column">
-              <Nav.Item>
-                <Link
-                  className="nav-link fw-medium link-body-emphasis"
-                  href={Routes.admin_root_path()}
-                >
-                  <i className="bi bi-house me-2" />
-                  {tLayouts("web.admin.application.dashboard")}
-                </Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Link
-                  className="nav-link fw-medium link-body-emphasis"
-                  href={Routes.admin_language_categories_path()}
-                >
-                  <i className="bi bi-file-text me-2" />
-                  {tLayouts("web.admin.application.language_categories")}
-                </Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Link
-                  className="nav-link fw-medium link-body-emphasis"
-                  href={Routes.admin_languages_path()}
-                >
-                  <i className="bi bi-terminal me-2" />
-                  {tLayouts("web.admin.application.languages")}
-                </Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Link
-                  className="nav-link fw-medium link-body-emphasis"
-                  href={Routes.admin_language_landing_pages_path()}
-                >
-                  <i className="bi bi-terminal me-2" />
-                  {tLayouts("web.admin.application.language_landing_pages")}
-                </Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Link
-                  className="nav-link fw-medium link-body-emphasis"
-                  href={Routes.admin_reviews_path()}
-                >
-                  <i className="bi bi-chat-left-quote me-2" />
-                  {tLayouts("web.admin.application.reviews")}
-                </Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Link
-                  className="nav-link fw-medium link-body-emphasis"
-                  href={Routes.admin_blog_posts_path()}
-                >
-                  <i className="bi bi-file-text me-2" />
-                  {tLayouts("web.admin.application.blog_posts")}
-                </Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Link
-                  className="nav-link fw-medium link-body-emphasis"
-                  href={Routes.admin_messages_path()}
-                >
-                  <i className="bi bi-file-text me-2" />
-                  {tLayouts("web.admin.application.messages")}
-                </Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Link
-                  className="nav-link fw-medium link-body-emphasis"
-                  href={Routes.admin_language_lesson_members_path()}
-                >
-                  <i className="bi bi-file-text me-2" />
-                  {tLayouts("web.admin.application.language_lesson_members")}
-                </Link>
-              </Nav.Item>
+      <AppShell
+        header={{ height: 60 }}
+        navbar={{
+          width: 250,
+          breakpoint: 'xs',
+        }}
+        padding="lg"
+      >
+        <AppShell.Header>
+          <NavbarBlock onToggle={toggle} opened={opened} />
+        </AppShell.Header>
 
-              <Nav.Item>
-                <Link
-                  className="nav-link fw-medium link-body-emphasis"
-                  href={Routes.admin_surveys_path()}
-                >
-                  <i className="bi bi-patch-question me-2" />
-                  {tLayouts("web.admin.application.surveys")}
-                </Link>
-              </Nav.Item>
+        <AppShell.Navbar>
+          <NavLink
+            component={Link}
+            href={Routes.admin_root_path()}
+            label={tLayouts("web.admin.application.dashboard")}
+            leftSection={<i className="bi bi-house" />}
+          />
+          <NavLink
+            component={Link}
+            href={Routes.admin_language_categories_path()}
+            label={tLayouts("web.admin.application.language_categories")}
+            leftSection={<i className="bi bi-file-text" />}
+          />
+          <NavLink
+            component={Link}
+            href={Routes.admin_languages_path()}
+            label={tLayouts("web.admin.application.languages")}
+            leftSection={<i className="bi bi-terminal" />}
+          />
+          <NavLink
+            component={Link}
+            href={Routes.admin_language_landing_pages_path()}
+            label={tLayouts("web.admin.application.language_landing_pages")}
+            leftSection={<i className="bi bi-terminal" />}
+          />
+          <NavLink
+            component={Link}
+            href={Routes.admin_reviews_path()}
+            label={tLayouts("web.admin.application.reviews")}
+            leftSection={<i className="bi bi-chat-left-quote" />}
+          />
+          <NavLink
+            component={Link}
+            href={Routes.admin_blog_posts_path()}
+            label={tLayouts("web.admin.application.blog_posts")}
+            leftSection={<i className="bi bi-file-text" />}
+          />
+          <NavLink
+            component={Link}
+            href={Routes.admin_messages_path()}
+            label={tLayouts("web.admin.application.messages")}
+            leftSection={<i className="bi bi-file-text" />}
+          />
+          <NavLink
+            component={Link}
+            href={Routes.admin_language_lesson_members_path()}
+            label={tLayouts("web.admin.application.language_lesson_members")}
+            leftSection={<i className="bi bi-file-text" />}
+          />
+          <NavLink
+            component={Link}
+            href={Routes.admin_surveys_path()}
+            label={tLayouts("web.admin.application.surveys")}
+            leftSection={<i className="bi bi-patch-question" />}
+          />
+          <NavLink
+            component={Link}
+            href={Routes.admin_survey_scenarios_path()}
+            label={tLayouts("web.admin.application.survey_scenarios")}
+            leftSection={<i className="bi bi-collection" />}
+          />
+          <NavLink
+            component={Link}
+            href={Routes.admin_survey_answers_path()}
+            label={tLayouts("web.admin.application.survey_answers")}
+            leftSection={<i className="bi bi-signpost-2" />}
+          />
+          <NavLink
+            component={Link}
+            href={Routes.admin_leads_url()}
+            label={tLayouts("web.admin.application.leads")}
+            leftSection={<i className="bi bi-person-check" />}
+          />
 
-              <Nav.Item>
-                <Link
-                  className="nav-link fw-medium link-body-emphasis"
-                  href={Routes.admin_survey_scenarios_path()}
-                >
-                  <i className="bi bi-collection me-2" />
-                  {tLayouts("web.admin.application.survey_scenarios")}
-                </Link>
-              </Nav.Item>
+          <hr />
 
-              <Nav.Item>
-                <Link
-                  className="nav-link fw-medium link-body-emphasis"
-                  href={Routes.admin_survey_answers_path()}
-                >
-                  <i className="bi bi-signpost-2 me-2" />
-                  {tLayouts("web.admin.application.survey_answers")}
-                </Link>
-              </Nav.Item>
+          <NavLink
+            component={Link}
+            href={Routes.admin_management_users_path()}
+            label={tLayouts("web.admin.application.users")}
+            leftSection={<i className="bi bi-people" />}
+          />
+        </AppShell.Navbar>
 
-              <Nav.Item>
-                <Link
-                  className="nav-link fw-medium link-body-emphasis"
-                  href={Routes.admin_leads_url()}
-                >
-                  <i className="bi bi-person-check me-2" />
-                  {tLayouts("web.admin.application.leads")}
-                </Link>
-              </Nav.Item>
-
-              <hr />
-
-              <Nav.Item>
-                <Link
-                  className="nav-link fw-medium link-body-emphasis"
-                  href={Routes.admin_management_users_path()}
-                >
-                  <i className="bi bi-people me-2" />
-                  {tLayouts("web.admin.application.users")}
-                </Link>
-              </Nav.Item>
-
-            </Nav>
-          </Col>
-          <Col className="col-10">
-            <h1 className="mb-4">{header}</h1>
-            {children}
-          </Col>
-        </Row>
-        <FooterBlock />
-      </Container>
+        <AppShell.Main>
+          <XFlash />
+          {header && (
+            <Title order={1} mb="xl">
+              {header}
+            </Title>
+          )}
+          {children}
+        </AppShell.Main>
+      </AppShell>
     </RootLayout>
   );
 }

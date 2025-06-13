@@ -1,13 +1,21 @@
-import type { HTMLAttributes, PropsWithChildren } from "react";
+import { forwardRef } from "react";
+import { Box, type BoxProps } from "@mantine/core";
 
-export default function XssContent(
-  props: PropsWithChildren & HTMLAttributes<HTMLDivElement>,
-) {
-  return (
-    <span
-      className={props.className}
-      // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-      dangerouslySetInnerHTML={{ __html: props.children! }}
-    />
-  );
+interface XssContentProps extends BoxProps {
+  children?: string | null;
 }
+
+const XssContent = forwardRef<HTMLDivElement, XssContentProps>(
+  ({ children, ...props }, ref) => (
+    <Box
+      ref={ref}
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: trusted HTML from server
+      dangerouslySetInnerHTML={{ __html: children ?? '' }}
+      {...props}
+    />
+  )
+);
+
+XssContent.displayName = "XssContent";
+
+export default XssContent;

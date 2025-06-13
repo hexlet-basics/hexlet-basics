@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { Card, Container, Row } from "react-bootstrap";
+import { Button, Card, Container, Stack, Title } from '@mantine/core';
 import { Submit } from "use-inertia-form";
 
 import { useTranslation } from "react-i18next";
@@ -22,30 +22,28 @@ export default function New({ userPassword }: Props) {
   return (
     <ApplicationLayout>
       <Container>
-        <Row className="justify-content-center">
-          <div className="col-sm-8 col-md-7 col-lg-5">
-            <h1 className="text-center mb-3">{t("passwords.edit.title")}</h1>
-            <Card className="p-4 border-0">
-              <Card.Body>
-                <XForm
-                  method="patch"
-                  model="user_password_form"
-                  data={{ user_password_form: userPassword }}
-                  to={Routes.password_path()}
-                >
-                  <XInput
-                    name="password"
-                    type="password"
-                    autoComplete="new-password"
-                  />
-                  <Submit className="btn w-100 btn-lg btn-primary mb-3">
-                    {tHelpers("submit.replace")}
-                  </Submit>
-                </XForm>
-              </Card.Body>
-            </Card>
-          </div>
-        </Row>
+        <Stack align="center" gap="md">
+          <Title order={1} ta="center" mb="md">
+            {t("passwords.edit.title")}
+          </Title>
+          <Card withBorder p="xl" w={{ base: '100%', sm: '80%', md: '70%', lg: '50%' }}>
+            <XForm
+              method="patch"
+              model="user_password_form"
+              data={{ user_password_form: userPassword }}
+              to={Routes.password_path()}
+            >
+              <XInput
+                field="password"
+                type="password"
+                autoComplete="new-password"
+              />
+              <Button type="submit">
+                {tHelpers("submit.replace")}
+              </Button>
+            </XForm>
+          </Card>
+        </Stack>
       </Container>
     </ApplicationLayout>
   );

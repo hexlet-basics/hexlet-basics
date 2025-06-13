@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import { Grid, Text, Paper, Stack, Container, SimpleGrid, Title, Box } from '@mantine/core';
 
 import { useTranslation } from "react-i18next";
 
@@ -52,56 +52,53 @@ export default function Show({
   return (
     <ApplicationLayout items={items} header={courseCategory.header!}>
       <Container>
-
         {courseCategory.description && (
-          <Row className="mb-5">
-            <Col className="col-12 col-sm-8">
-              <p className="fs-5">{courseCategory.description}</p>
-            </Col>
-          </Row>
+          <Grid mb="xl">
+            <Grid.Col span={{ base: 12, sm: 8 }}>
+              <Text size="lg">{courseCategory.description}</Text>
+            </Grid.Col>
+          </Grid>
         )}
 
-        <Row className="row-cols-2 row-cols-md-3 row-cols-lg-4">
+        <SimpleGrid cols={{ base: 2, xs: 3, sm: 4 }}>
           {categoryLandingPages.map((lp) => (
-            <Col className="mb-4" key={lp.id}>
-              <CourseBlock landingPage={lp} />
-            </Col>
+            <CourseBlock key={lp.id} landingPage={lp} />
           ))}
-        </Row>
+        </SimpleGrid>
 
         {!user.guest && i18next.language === 'ru' && (
-          <Row className="align-items-center py-5">
-            <Col className="col-12 col-lg-7 fw-bold display-4 mb-5">
-              {t("home.index.consultation")}
-            </Col>
-            <Col className="col-12 col-lg-5 mx-auto d-flex flex-column">
-              <div className="bg-body-tertiary p-4 p-md-5 border rounded-3">
+          <Grid align="center" py="xl">
+            <Grid.Col span={{ base: 12, lg: 7 }}>
+              <Text size="xl" fw={700}>
+                {t("home.index.consultation")}
+              </Text>
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, lg: 5 }}>
+              <Paper p="xl" radius="md" withBorder>
                 <LeadFormBlock lead={lead} />
-              </div>
-            </Col>
-          </Row>
+              </Paper>
+            </Grid.Col>
+          </Grid>
         )}
 
         {qnaItems.length > 0 && (
-          <div className="py-4 py-lg-5">
-            <div className="display-5 fw-semibold lh-1 mb-5">
+          <Stack py="xl">
+            <Title order={2}>
               {t("languages.show.sort_questions")}
-            </div>
-            <Row className="gy-4 gy-md-5">
+            </Title>
+            <SimpleGrid cols={{ base: 1, xs: 2 }}>
               {qnaItems.map((item) => (
-                <Col key={item.id} className="col-12 col-md-6">
-                  <div className="fs-5 fw-medium mb-3 pe-lg-5">
+                <Box key={item.id}>
+                  <Text size="lg" fw="bold">
                     {item.question}
-                  </div>
-                  <p className="pe-lg-5"><MarkdownViewer>{item.answer}</MarkdownViewer></p>
-                </Col>
+                  </Text>
+                  <MarkdownViewer>{item.answer}</MarkdownViewer>
+                </Box>
               ))}
-            </Row>
-          </div>
+            </SimpleGrid>
+          </Stack>
         )}
-
       </Container>
-
     </ApplicationLayout>
   );
 }

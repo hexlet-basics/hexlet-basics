@@ -1,13 +1,11 @@
-import type { PropsWithChildren } from "react";
+import { DataTable } from 'mantine-datatable';
+import type { PropsWithChildren } from 'react';
 
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 
-import useDataTable from "@/hooks/useDataTable";
-import { fieldsToFilters } from "@/lib/utils";
-import AdminLayout from "@/pages/layouts/AdminLayout";
-import type { Grid, User } from "@/types/serializers";
-import { Column } from "primereact/column";
-import { DataTable } from "primereact/datatable";
+import AdminLayout from '@/pages/layouts/AdminLayout';
+import type { User, Grid } from '@/types/serializers';
+import useDataTableProps from '@/hooks/useDataTableProps';
 
 type Props = PropsWithChildren & {
   admins: User[];
@@ -16,37 +14,19 @@ type Props = PropsWithChildren & {
 
 export default function Index({ admins, grid }: Props) {
   const { t } = useTranslation();
-  const { t: tHelpers } = useTranslation("helpers");
-
-  const handleDataTable = useDataTable();
+  const gridProps = useDataTableProps<User>(grid);
 
   return (
-    <AdminLayout header={t("admin.home.index.dashboard")}>
+    <AdminLayout header={t('admin.home.index.dashboard')}>
       <DataTable
-        // header={header}
-        value={admins}
-        filterDisplay="row"
-        first={grid.first}
-        lazy
-        totalRecords={grid.tr}
-        rows={grid.per}
-        sortField={grid.sf}
-        sortOrder={grid.so}
-        filters={fieldsToFilters(grid.fields)}
-        onSort={handleDataTable}
-        onFilter={handleDataTable}
-        // globalFilterFields={["email"]}
-      >
-        <Column field="id" header="id" />
-        <Column field="name" header="name" sortable />
-        <Column
-          sortable
-          filter
-          filterPlaceholder="Search"
-          field="email"
-          header="email"
-        />
-      </DataTable>
+        records={admins}
+        columns={[
+          { accessor: 'id' },
+          { accessor: 'name', sortable: true },
+          { accessor: 'email', sortable: true },
+        ]}
+        {...gridProps}
+      />
     </AdminLayout>
   );
 }

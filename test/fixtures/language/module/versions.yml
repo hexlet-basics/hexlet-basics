@@ -42,6 +42,12 @@ pre-course-javascript1-module1_version1:
   module: pre-course-javascript-module1
   language: pre-course-javascript
 
+html1-module1_version1:
+  order: 10
+  language_version: html1
+  module: html-module1
+  language: html
+
 typescript1-module1_version1:
   order: 10
   language_version: typescript1

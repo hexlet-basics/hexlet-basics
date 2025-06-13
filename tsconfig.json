@@ -32,6 +32,7 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": [
-    "app/javascript"
-, "app/javascript/types/.d.ts"  ]
+    "app/javascript",
+    "app/javascript/types/.d.ts"
+  ]
 }

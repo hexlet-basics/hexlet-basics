@@ -6,9 +6,8 @@ import { useTranslation } from "react-i18next";
 import { XCheck, XForm, XInput } from "@/components/forms";
 import AdminLayout from "@/pages/layouts/AdminLayout";
 import type { User } from "@/types/serializers";
-import { Column } from "primereact/column";
-import { DataTable } from "primereact/datatable";
-import { Col, Row } from "react-bootstrap";
+import { DataTable } from 'mantine-datatable';
+import { Grid, Button, Title, Stack } from '@mantine/core';
 import { Submit } from "use-inertia-form";
 import { Menu } from "./shared/menu";
 
@@ -24,34 +23,37 @@ export default function Edit({ user, progress }: Props) {
   return (
     <AdminLayout header={t("admin.management.users.edit.header")}>
       <Menu data={user} />
-      <Row>
-        <Col className="col-5">
+      <Grid>
+        <Grid.Col span={5}>
           <XForm
             method="patch"
             model="user"
             data={{ user }}
             to={Routes.admin_management_user_path(user.id)}
           >
-            <XInput name="email" autoComplete="email" disabled />
-            <XCheck name="admin" />
-            <XInput name="first_name" autoComplete="name" />
-            <XInput name="last_name" autoComplete="name" />
-            <XInput name="last_name" autoComplete="name" />
-            <Submit className="btn w-100 btn-lg btn-primary mb-3">
+            <XInput field="email" autoComplete="email" disabled />
+            <XCheck field="admin" />
+            <XInput field="first_name" autoComplete="name" />
+            <XInput field="last_name" autoComplete="name" />
+            <XInput field="last_name" autoComplete="name" />
+            <Button type="submit">
               {tHelpers("submit.save")}
-            </Submit>
+            </Button>
           </XForm>
-        </Col>
-        <Col>
-          <div className="d-flex mb-1">
-            <h2 className="me-auto">Progress</h2>
-          </div>
-          <DataTable value={progress}>
-            <Column field="language" header="Language" />
-            <Column field="count" header="Count" />
-          </DataTable>
-        </Col>
-      </Row>
+        </Grid.Col>
+        <Grid.Col>
+          <Stack>
+            <Title order={2}>Progress</Title>
+            <DataTable
+              records={progress}
+              columns={[
+                { accessor: 'language', title: 'Language' },
+                { accessor: 'count', title: 'Count' },
+              ]}
+            />
+          </Stack>
+        </Grid.Col>
+      </Grid>
     </AdminLayout>
   );
 }

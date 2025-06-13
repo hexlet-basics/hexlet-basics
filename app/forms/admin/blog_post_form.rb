@@ -11,7 +11,7 @@ class Admin::BlogPostForm < BlogPost
          :name,
          :cover,
          :description,
-         :state_event
+         :state
 
   skip_if_empty :cover
 end

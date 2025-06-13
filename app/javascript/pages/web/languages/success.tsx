@@ -1,5 +1,5 @@
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
-import { Card, Col, Container, Row } from "react-bootstrap";
+import { Grid, Card, Text, Title, List, Stack, Container } from '@mantine/core';
 import { useTranslation } from "react-i18next";
 
 import { LanguageLandingPage, LeadCrud } from "@/types";
@@ -13,52 +13,51 @@ type Props = {
 
 export default function Success(props: Props) {
   const { t: tViews } = useTranslation("web");
-  // const { t: tAr } = useTranslation("activerecord");
-  // const { t: tHelpers } = useTranslation("helpers");
   const { courseLandingPage, lead } = props
 
+  const header = tViews("languages.success.header", { name: courseLandingPage.header })
+
   return (
-    <ApplicationLayout>
-      <Container className="py-4 py-lg-5">
-        <Row>
-          {/* <Col className="col-lg-4 col-md-8 order-last order-lg-first d-none d-md-block"> */}
-          {/*   <img src={successImg} alt="ковер" className="img-fluid" /> */}
-          {/* </Col> */}
-          <Col className="col-12 col-lg-7 mb-5">
-            <h1 className="h2 mb-4">{tViews("languages.success.header", { name: courseLandingPage.header })}</h1>
-            <div className="mb-3">
-              {tViews("languages.success.description")}
-            </div>
-            <div className="fw-bold mb-2">
-              {tViews('languages.success.choose_your_path')}
-            </div>
-            <ul>
-              <li>
-                <XssContent>
-                  {tViews('languages.success.changing_career_html')}
-                </XssContent>
-              </li>
-              <li>
-                <XssContent>
-                  {tViews('languages.success.getting_new_skill_html')}
-                </XssContent>
-              </li>
-            </ul>
-            <div className="fw-bold mb-2">
-              {tViews('languages.success.struggle_choosing')}
-            </div>
-            <div>
-              {tViews('languages.success.leave_request')}
-            </div>
-          </Col>
-          <Col className="col-lg-5">
-            <Card className="bg-body-tertiary h-100 border p-4">
-              <Card.Body>
-                <LeadFormBlock autoFocus lead={lead} />
-              </Card.Body>
+    <ApplicationLayout header={header} center>
+      <Container>
+        <Grid gutter="xl">
+          <Grid.Col span={{ base: 12, sm: 7 }} mb="xl">
+            <Stack>
+              <Title order={1}>
+                {}
+              </Title>
+              <Text>
+                {tViews("languages.success.description")}
+              </Text>
+              <Text fw="bold">
+                {tViews('languages.success.choose_your_path')}
+              </Text>
+              <List>
+                <List.Item>
+                  <XssContent>
+                    {tViews('languages.success.changing_career_html')}
+                  </XssContent>
+                </List.Item>
+                <List.Item>
+                  <XssContent>
+                    {tViews('languages.success.getting_new_skill_html')}
+                  </XssContent>
+                </List.Item>
+              </List>
+              <Text fw="bold">
+                {tViews('languages.success.struggle_choosing')}
+              </Text>
+              <Text>
+                {tViews('languages.success.leave_request')}
+              </Text>
+            </Stack>
+          </Grid.Col>
+          <Grid.Col span={{ base: 12, sm: 5 }}>
+            <Card withBorder p="xl">
+              <LeadFormBlock autoFocus lead={lead} />
             </Card>
-          </Col>
-        </Row>
+          </Grid.Col>
+        </Grid>
       </Container>
     </ApplicationLayout>
   );

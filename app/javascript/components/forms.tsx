@@ -1,60 +1,93 @@
-import { processHappendEvents } from "@/lib/analytics";
-import type { SharedProps } from "@/types";
-import { usePage } from "@inertiajs/react";
-import axios from "axios";
-import cn from "classnames";
-import debug from "debug";
-import { get } from "es-toolkit/compat";
-import { first } from "es-toolkit/compat";
+import { ComboboxItem, Image } from "@mantine/core";
+import { forwardRef, PropsWithChildren, useEffect, useState } from "react";
 import {
-  AutoComplete,
-  type AutoCompleteChangeEvent,
-  type AutoCompleteCompleteEvent,
-} from "primereact/autocomplete";
-// import { Editor } from "primereact/editor";
-import {
-  type InputHTMLAttributes,
-  type PropsWithChildren,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
-import {
-  Badge,
-  Button,
-  Form,
-  type FormCheckProps,
-  type FormControlProps,
-} from "react-bootstrap";
-import type { AsProp } from "react-bootstrap/esm/helpers";
+  TextInput,
+  TextInputProps,
+  PasswordInput,
+  PasswordInputProps,
+  Textarea,
+  TextareaProps, AutocompleteProps,
+  Checkbox,
+  CheckboxProps,
+  Select,
+  SelectProps,
+  FileInput,
+  FileInputProps,
+  Stack, Fieldset,
+  Button
+} from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import {
-  type FormProps,
-  Form as InertiaForm,
-  NestedFields,
-  type NestedObject,
-  useDynamicInputs,
-  useInertiaInput,
-} from "use-inertia-form";
+import { Form, FormProps, NestedFields, NestedObject, useDynamicInputs, useInertiaInput } from "use-inertia-form";
+import { get } from "es-toolkit/compat";
+import { usePage } from "@inertiajs/react";
+import type { SharedProps } from "@/types";
+import { processHappendEvents } from "@/lib/analytics";
+import axios from "axios";
 
-type XFormControlProps = FormControlProps & {
+/* Shared Types */
+export type XFormControlProps = {
   model?: string;
-  name: string;
+  field: string;
 };
 
-type XFormCheckProps = FormCheckProps & {
-  model?: string;
-  name: string;
+export interface XInputProps
+  extends TextInputProps,
+  XFormControlProps,
+  Omit<React.ComponentPropsWithoutRef<"input">, keyof TextInputProps> { }
+
+export interface XPasswordInputProps
+  extends PasswordInputProps,
+  XFormControlProps,
+  Omit<React.ComponentPropsWithoutRef<"input">, keyof PasswordInputProps> { }
+
+export interface XCheckboxProps
+  extends CheckboxProps,
+  XFormControlProps,
+  Omit<React.ComponentPropsWithoutRef<"input">, keyof CheckboxProps> { }
+
+export interface XHiddenProps
+  extends XFormControlProps,
+  Omit<React.ComponentPropsWithoutRef<"input">, "type"> { }
+
+export interface XFileProps
+  extends FileInputProps,
+  XFormControlProps {
+  metaName: string;
+}
+
+export type XStateEventProps = {
+  field: string;
 };
 
-const debugLog = debug("app:xform");
+/* Shared Utilities */
+function useLabel(
+  model: string | undefined,
+  name: string,
+  explicitLabel?: React.ReactNode | string | null
+): string | React.ReactNode {
+  if (explicitLabel) return explicitLabel;
+
+  const { t: tAr } = useTranslation("activerecord");
+  const { t: tAm } = useTranslation("activemodel");
+
+  const path = `attributes.${model}.${name}`;
+  // @ts-expect-error todo
+  const fallback = tAm(path);
+  // @ts-expect-error todo
+  return tAr(path, fallback);
+}
+
+function getFirstError(error: string | string[] | undefined): string | undefined {
+  if (!error) return undefined;
+  return Array.isArray(error) ? error[0] : error;
+}
 
 export function XForm<TForm extends NestedObject>({
   children,
   railsAttributes = true,
   className,
   ...props
-}: FormProps<TForm>) {
+}: FormProps<TForm> & PropsWithChildren) {
   const page = usePage<SharedProps>();
   const { happendEvents } = page.props;
 
@@ -62,454 +95,413 @@ export function XForm<TForm extends NestedObject>({
 
   useEffect(() => {
     if (wasSubmitted && happendEvents) {
-      processHappendEvents(happendEvents)
+      processHappendEvents(happendEvents);
       setWasSubmitted(false);
     }
   }, [wasSubmitted, happendEvents]);
 
   return (
-    <InertiaForm
-      className={`form ${className}`}
+    <Form
+      className={`form ${className ?? ""}`}
       railsAttributes={railsAttributes}
       onSuccess={() => setWasSubmitted(true)}
       {...props}
     >
       {children}
-    </InertiaForm >
+    </Form>
   );
 }
 
-export function XHidden({ name, model, as, ...props }: XFormControlProps) {
-  const { inputName, inputId, value } = useInertiaInput<string | undefined>({
-    name,
+/* XInput */
+export const XInput = forwardRef<HTMLInputElement, XInputProps>(
+  ({ field, model, label, ...props }, ref) => {
+    const { inputName, inputId, value, setValue, error, form } =
+      useInertiaInput<string | undefined>({ name: field, model, errorKey: field });
+    const preparedLabel = useLabel(form.model, field, label);
+    const errorText = getFirstError(error);
+
+    return (
+      <TextInput
+        mb="md"
+        ref={ref}
+        label={preparedLabel}
+        name={inputName}
+        id={inputId}
+        value={value}
+        error={errorText}
+        onChange={(e) => setValue(e.target.value)}
+        {...props}
+      />
+    );
+  }
+);
+XInput.displayName = "XInput";
+
+/* XPasswordInput */
+export const XPasswordInput = forwardRef<HTMLInputElement, XPasswordInputProps>(
+  ({ field, model, label, ...props }, ref) => {
+    const { inputName, inputId, value, setValue, error, form } =
+      useInertiaInput<string | undefined>({ name: field, model, errorKey: field });
+    const preparedLabel = useLabel(form.model, field, label);
+    const errorText = getFirstError(error);
+
+    return (
+      <PasswordInput
+        ref={ref}
+        mb="md"
+        label={preparedLabel}
+        name={inputName}
+        id={inputId}
+        value={value}
+        error={errorText}
+        onChange={(e) => setValue(e.target.value)}
+        {...props}
+      />
+    );
+  }
+);
+XPasswordInput.displayName = "XPasswordInput";
+
+export interface XTextareaProps extends
+  TextareaProps,
+  XFormControlProps,
+  Omit<React.ComponentPropsWithoutRef<"textarea">, keyof TextareaProps> {
+
+}
+
+export const XTextarea = forwardRef<HTMLTextAreaElement, XTextareaProps>(
+  ({ field, model, label, ...props }, ref) => {
+
+    const { inputName, inputId, value, setValue, error, form } =
+      useInertiaInput<string | undefined>({ name: field, model, errorKey: field });
+
+    const preparedLabel = useLabel(form.model, field, label);
+    const errorText = getFirstError(error);
+
+    return (
+      <Textarea
+        ref={ref}
+        mb="md"
+        label={preparedLabel}
+        name={inputName}
+        id={inputId}
+        value={value}
+        error={errorText}
+        onChange={(e) => setValue(e.target.value)}
+        {...props}
+      />
+    );
+  }
+);
+
+XTextarea.displayName = "XTextarea";
+
+/* XCheckbox */
+export const XCheckbox = forwardRef<HTMLInputElement, XCheckboxProps>(
+  ({ field, model, label, ...props }, ref) => {
+    const { inputName, inputId, value, setValue, error, form } =
+      useInertiaInput<boolean | undefined>({ name: field, model, errorKey: field });
+    const preparedLabel = useLabel(form.model, field, label);
+    const errorText = getFirstError(error);
+
+    return (
+      <Checkbox
+        ref={ref}
+        mb="md"
+        label={preparedLabel}
+        name={inputName}
+        id={inputId}
+        checked={value}
+        error={errorText}
+        onChange={(e) => setValue(e.target.checked)}
+        {...props}
+      />
+    );
+  }
+);
+XCheckbox.displayName = "XCheckbox";
+
+export interface XSelectProps<
+  T extends Record<string, unknown>,
+  LabelKey extends keyof T = keyof T,
+  ValueKey extends keyof T = keyof T
+> extends SelectProps,
+  XFormControlProps {
+  items?: T[];
+  labelField: LabelKey;
+  valueField: ValueKey;
+}
+
+export function XSelect<
+  T extends Record<string, unknown>,
+  LabelKey extends keyof T,
+  ValueKey extends keyof T
+>(props: XSelectProps<T, LabelKey, ValueKey>) {
+  const {
+    items = [],
+    field,
     model,
-    errorKey: name,
-  });
+    labelField,
+    valueField,
+    ...rest
+  } = props;
+
+  const { inputName, inputId, value, setValue, error, form } =
+    useInertiaInput<string | undefined>({ name: field, model, errorKey: field });
+
+  const preparedLabel = useLabel(form.model, field);
+  const errorText = getFirstError(error);
+
+  const data: ComboboxItem[] = items.map((item) => ({
+    value: String(item[valueField]),
+    label: String(item[labelField]),
+  }));
+
+  const handleChange = (value: string | null, option: ComboboxItem) => {
+    setValue(String(option.value));
+  };
 
   return (
-    <Form.Control
-      {...props}
-      type="hidden"
+    <Select
       name={inputName}
-      value={value}
+      value={String(value)}
       id={inputId}
+      mb="md"
+      label={preparedLabel}
+      error={errorText}
+      data={data}
+      onChange={handleChange}
+      {...rest}
     />
   );
 }
 
-export function XInput({ name, model, as, ...props }: XFormControlProps) {
-  const { t: tAr } = useTranslation("activerecord");
-  const { t: tAm } = useTranslation("activemodel");
+// XSelect.displayName = "XSelect";
 
-  const { inputName, inputId, value, setValue, error, form } = useInertiaInput<
-    string | undefined
-  >({
-    name,
-    model,
-    errorKey: name,
-  });
-
-  const errors = [error ?? []].flat();
-  // console.log(name, form.errors, error)
-  // console.log(name, model, errors, form)
-
-  // console.log(name, model, inputName)
-  const path = `attributes.${form.model}.${name}`;
-  // @ts-expect-error
-  const label = tAr(path, tAm(path));
-
-  const controlClasses = cn('shadow-sm', {
-    "is-invalid": errors.length > 0,
-  });
-
-  return (
-    <Form.Group className="mb-4">
-      <Form.FloatingLabel label={label}>
-        <Form.Control
-          {...props}
-          as={as}
-          name={inputName}
-          value={value}
-          id={inputId}
-          placeholder={label}
-          className={controlClasses}
-          onChange={(e) => setValue(e.target.value)}
-        />
-        {errors && (
-          <Form.Control.Feedback type="invalid">
-            {errors.map((e) => (
-              <div key={e}>{e}</div>
-            ))}
-          </Form.Control.Feedback>
-        )}
-      </Form.FloatingLabel>
-    </Form.Group>
-  );
-}
-
-type XFileProps = InputHTMLAttributes<HTMLInputElement> &
-  AsProp & {
-    metaName: string;
-    model?: string;
-    name: string;
-  };
-
-export function XFile({ name, model, metaName }: XFileProps) {
-  const {
-    props: { railsDirectUploadsUrl },
-  } = usePage<SharedProps>();
-
-  const { t: tAr } = useTranslation("activerecord");
-  const { t: tAm } = useTranslation("activemodel");
-
-  const { inputName, setValue, error, form } = useInertiaInput<
-    undefined | File
-  >({
-    name,
-    errorKey: name,
-    model,
-  });
-
-  const imageUrl = get(form.data, ["meta", metaName]);
-  if (imageUrl === undefined) {
-    debugLog(
-      "imageUrl is not found",
-      ["form.data", "meta", metaName].join("."),
-    );
-  }
-
-  const errors = [error ?? []].flat();
-
-  const path = `attributes.${form.model}.${name}`;
-  // @ts-expect-error type
-  const label = tAr(path, tAm(path));
-
-  const controlClasses = cn("form-control", {
-    "is-invalid": errors.length > 0,
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setValue(e.target.files?.[0]);
-
-  return (
-    <Form.Group className="mb-4">
-      {/* <Form.Control type="hidden" name={inputName} value={form.data.meta.cover_signed_id} /> */}
-
-      <Form.Label>{label}</Form.Label>
-      <input
-        type="file"
-        name={inputName}
-        data-direct-upload-url={railsDirectUploadsUrl}
-        // value={value}
-        className={controlClasses}
-        onChange={handleChange}
-      />
-      {imageUrl && (
-        <div className="m-3">
-          <img src={imageUrl} alt={name} />
-        </div>
-      )}
-    </Form.Group>
-  );
-}
-
-// export function XEditor({ name, model, as, ...props }: Props) {
-//   const { t: tAr } = useTranslation("activerecord");
-//   const { t: tAm } = useTranslation("activemodel");
-//
-//   const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
-//     name,
-//     model,
-//   });
-//
-//   const errors = error ? [error] : [];
-//
-//   const path = `attributes.${form.model}.${name}`;
-//   const label = tAr(path, tAm(path));
-//
-//   const controlClasses = cn({
-//     "is-invalid": errors.length > 0,
-//   });
-//
-//   return (
-//     <Form.Group className="mb-4">
-//       <Editor
-//         {...props}
-//         id={inputId}
-//         name={inputName}
-//         value={String(value)}
-//         onTextChange={(e) => setValue(e.htmlValue)}
-//       // style={{ height: "500px" }}
-//       />
-//       {/* <Form.FloatingLabel label={label}> */}
-//       {/*   <Form.Control */}
-//       {/*     as={as} */}
-//       {/*     name={inputName} */}
-//       {/*     value={value} */}
-//       {/*     id={inputId} */}
-//       {/*     placeholder={label} */}
-//       {/*     className={controlClasses} */}
-//       {/*     onChange={(e) => setValue(e.target.value)} */}
-//       {/*     {...props} */}
-//       {/*   /> */}
-//       {/* </Form.FloatingLabel> */}
-//       {errors && (
-//         <Form.Control.Feedback type="invalid">
-//           {errors.map((e) => (
-//             <div key={e}>{e}</div>
-//           ))}
-//         </Form.Control.Feedback>
-//       )}
-//     </Form.Group>
-//   );
-// }
-
-export function XCheck({ name, model, type, ...props }: XFormCheckProps) {
-  const { t: tAr } = useTranslation("activerecord");
-  const { t: tAm } = useTranslation("activemodel");
-
-  const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
-    name,
-    model,
-    errorKey: name,
-  });
-
-  const errors = [error ?? []].flat();
-
-  const path = `attributes.${form.model}.${name}`;
-  // @ts-expect-error
-  const label = tAr(path, tAm(path));
-
-  const controlClasses = cn({
-    "is-invalid": errors.length > 0,
-  });
-
-  return (
-    <Form.Group className="mb-4">
-      <Form.Check
-        label={label}
-        name={inputName}
-        type="checkbox"
-        defaultChecked={value as boolean}
-        id={inputId}
-        placeholder={label}
-        className={controlClasses}
-        onChange={(e) => setValue(e.target.checked)}
-        {...props}
-      />
-      {errors.length > 0 && (
-        <Form.Control.Feedback type="invalid">
-          {errors.map((e) => (
-            <div key={e}>{e}</div>
-          ))}
-        </Form.Control.Feedback>
-      )}
-    </Form.Group>
-  );
-}
-
-type XSelectProps<
+export interface XAutocompleteProps<
   T extends Record<string, unknown>,
-  K extends keyof T,
-> = XFormControlProps & {
-  items?: T[];
-  has?: string; // K;
-  source?: string;
-  labelField: K;
-  valueField: K;
-};
+  LabelKey extends keyof T = keyof T,
+  ValueKey extends keyof T = keyof T
+> extends Omit<React.ComponentPropsWithoutRef<'input'>, keyof AutocompleteProps>,
+  XFormControlProps {
+  has?: string;
+  source: string; // теперь обязательный
+  labelField: LabelKey;
+  valueField: ValueKey;
+}
 
-export function XSelect<T extends Record<string, unknown>, K extends keyof T>({
-  name,
-  model,
-  items = [],
-  has,
-  source,
-  valueField,
-  labelField,
-  // type,
-}: XSelectProps<T, K>) {
-  const { t: tAr } = useTranslation("activerecord");
-  const { t: tAm } = useTranslation("activemodel");
-
-  const [filteredItems, setFilteredItems] = useState(items);
-  const [selected, setSelected] = useState<T | null | undefined>(null);
-
-  // console.log(name, model)
-  const { inputName, inputId, value, setValue, error, form } = useInertiaInput({
-    name,
+export function XAutocomplete<
+  T extends Record<string, unknown>,
+  LabelKey extends keyof T,
+  ValueKey extends keyof T
+>(props: XAutocompleteProps<T, LabelKey, ValueKey>) {
+  const {
+    field,
     model,
-    errorKey: name,
-  });
+    has,
+    source,
+    labelField,
+    valueField,
+    ...rest
+  } = props;
 
-  // В ошибках название модели, а не id (хрен знает почему)
-  const realError = has ? form.errors[has] : error;
-  // console.log(name, model, form.errors, error);
+  const [term, setTerm] = useState('')
+
+  const { inputName, inputId, value, setValue, error, form } =
+    useInertiaInput<string | undefined>({ name: field, model, errorKey: field });
+
+  const [loadedItems, setLoadedItems] = useState<T[]>(() => {
+    // @ts-expect-error todo
+    const labelValue = form.data[form.model][has][labelField]
+    const initData = (has ? [{ [labelField]: labelValue, [valueField]: value }] : []) as T[]
+    return initData
+  })
+
+
+  const preparedLabel = useLabel(form.model, field);
+  const errorText = getFirstError(error);
 
   useEffect(() => {
-    if (has) {
-      const path = `${inputName.substring(0, inputName.lastIndexOf('.'))}.${has}`
-      const defaultItem = get(form.data, path) as T;
-      // console.log(path, has);
-      setSelected(defaultItem);
-      // console.log(name, form.data, form.model, has, defaultItem)
-    } else {
-      const defaultItem = first(
-        filteredItems.filter((item) => item[valueField] === value),
-      );
-      setSelected(defaultItem);
+    const fn = async () => {
+      const result = await axios.get<T[]>(source, { params: { q: term } })
+      setLoadedItems(result.data);
     }
-  }, []);
 
-  const errors = realError ? [realError].flat() : [];
+    (term && term.length > 1) ? fn() : setLoadedItems([])
+  }, [term, source]);
 
-  const path = `attributes.${form.model}.${name}`;
-  // @ts-expect-error
-  const label = tAr(path, tAm(path));
+  const data: ComboboxItem[] = loadedItems.map((item) => ({
+    value: String(item[valueField]),
+    label: String(item[labelField]),
+  }));
 
-  const controlClasses = cn("w-100 shadow-sm", {
-    "is-invalid": errors.length > 0,
-  });
-
-  const handleChange = (e: AutoCompleteChangeEvent) => {
-    setValue(e.value[valueField]);
-    setSelected(e.value);
+  const handleChange = (value: string | null, option: ComboboxItem) => {
+    setValue(String(option.value));
   };
 
-  const search = async (event: AutoCompleteCompleteEvent) => {
-    const query = event.query.trim().toLowerCase();
-    // console.log("query:", query);
-    if (query === "") {
-      setFilteredItems([...items]);
-    } else {
-      if (source) {
-        const res = await axios.get<T[]>(source, { params: { query } });
-        // console.log(res);
-        setFilteredItems(res.data);
-      } else {
-        const newFilteredItems = items.filter((item) =>
-          String(item[labelField]).toLowerCase().startsWith(query),
-        );
-        setFilteredItems(newFilteredItems);
-      }
-    }
+  const handleSearchChange = (v: string) => {
+    setTerm(v);
   };
+
+  // useEffect(() => {
+  //   if (has) {
+  //     const related = form.data?.[model ?? ""]?.[has] as T | undefined;
+  //     const relatedValue = related?.[valueField];
+  //     if (relatedValue != null) {
+  //       setValue(String(relatedValue));
+  //     }
+  //   }
+  // }, [has, form.data, model, setValue, valueField]);
 
   return (
-    <Form.Group className="mb-4">
-      <AutoComplete
-        id={inputId}
-        placeholder={label}
-        className={controlClasses}
+    <Select
+      id={inputId}
+      name={inputName}
+      value={String(value)}
+      searchable
+      onChange={handleChange}
+      onSearchChange={handleSearchChange}
+      label={preparedLabel}
+      error={errorText}
+      data={data}
+      mb="md"
+      // rightSection={loading ? "…" : null}
+      {...rest}
+    />
+  );
+}
+XAutocomplete.displayName = 'XAutocomplete';
+
+/* XHidden */
+export const XHidden = forwardRef<HTMLInputElement, XHiddenProps>(
+  ({ field, model, ...props }, ref) => {
+    const { inputName, inputId, value } = useInertiaInput<string | undefined>({
+      name: field,
+      model,
+      errorKey: field,
+    });
+
+    return (
+      <input
+        ref={ref}
+        type="hidden"
         name={inputName}
-        field={String(labelField)}
-        value={selected}
-        suggestions={filteredItems}
-        completeMethod={search}
-        onChange={handleChange}
-        dropdown
+        value={value}
+        id={inputId}
+        {...props}
       />
-      {errors.length > 0 && (
-        <Form.Control.Feedback type="invalid">
-          {errors.map((e) => (
-            <div key={e}>{e}</div>
-          ))}
-        </Form.Control.Feedback>
-      )}
-    </Form.Group>
-  );
-}
+    );
+  }
+);
+XHidden.displayName = "XHidden";
 
-type XStateEventProps = {
-  fieldName: string;
-  // stateEvents: Array<[string, string]>;
-};
+export const XFile = forwardRef<HTMLButtonElement, XFileProps>(
+  ({ field, model, metaName, label, ...props }, ref) => {
+    const {
+      props: { railsDirectUploadsUrl },
+    } = usePage<SharedProps>();
+    // const { t: tAm } = useTranslation("activemodel");
+    const { inputName, setValue, error, form } = useInertiaInput<File | undefined>({
+      name: field,
+      model,
+      errorKey: field,
+    });
 
-export function XStateEvent({ fieldName }: XStateEventProps) {
-  const { t: tAr } = useTranslation("activerecord");
-  const { t: tAm } = useTranslation("activemodel");
-  const { t: tCommon } = useTranslation("common");
+    const imageUrl = get(form.data, ["meta", metaName]);
+    const errorText = getFirstError(error);
+    const preparedLabel = useLabel(form.model, field, label);
 
-  const { inputName, inputId, setValue, form } = useInertiaInput({
-    name: `${fieldName}_event`,
-    // model,
-  });
+    const handleChange = (file: File | File[] | null) => {
+      if (file instanceof File) {
+        setValue(file);
+      } else if (Array.isArray(file) && file.length > 0) {
+        setValue(file[0]);
+      } else {
+        setValue(undefined);
+      }
+    };
 
-  // @ts-expect-error fix
-  const stateEvents = form.data.meta.state_events as Array<[string, string]>;
+    return (
+      <Stack gap="xs" mb="md">
+        <FileInput
+          {...props}
+          label={preparedLabel}
+          name={inputName}
+          data-direct-upload-url={railsDirectUploadsUrl}
+          error={errorText}
+          onChange={handleChange}
+          placeholder={props.placeholder || preparedLabel}
+          accept="image/*"
+          value={form.data[inputName] as File | undefined}
+          ref={ref}
+        />
+        {imageUrl && (
+          <Image src={imageUrl} maw={200} alt={field} />
+        )}
+      </Stack>
+    );
+  }
+);
+XFile.displayName = "XFile";
 
-  const currentState = get(form.data, [form.model!, fieldName]);
-  // const stateEvents = get(
-  //   form.data,
-  //   [form.model!, `${fieldName}_events`],
-  //   [],
-  // ) as Array<[string, string]>;
-
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setValue(e.target.value);
-  };
-
-  return (
-    <Form.Group className="mb-4">
-      <Form.Select name={inputName} id={inputId} onChange={handleChange}>
-        <option value="">{tCommon("state_events")}</option>
-        {stateEvents.map(([k, v]) => (
-          <option key={v} value={v}>
-            {k}
-          </option>
-        ))}
-      </Form.Select>
-      <div className="small">
-        <span className="me-3">{tCommon("current_state")}:</span>
-        <Badge bg="secondary">{currentState}</Badge>
-      </div>
-    </Form.Group>
-  );
-}
-
-type XDynamicInputs = PropsWithChildren & {
+type XDynamicInputsProps = PropsWithChildren & {
   model: string;
   emptyData: Record<string, unknown>;
   label?: string;
 };
 
-export const XDynamicInputs = ({
-  children,
+export function XDynamicInputs({
   model,
-  label,
   emptyData,
-}: XDynamicInputs) => {
-  const { addInput, paths } = useDynamicInputs({
-    model,
-    emptyData,
-  });
-  return (
-    <fieldset className="border p-5 mb-5 rounded">
-      <legend>{label}</legend>
-      <div className="mb-4">
-        {/* <div style={ { display: 'flex' } }> */}
-        {/*   <label style={ { flex: 1 } }>{ label }</label> */}
-        {/*   <button onClick={ addInput }>+</button> */}
-        {/* </div> */}
+  label,
+  children,
+}: XDynamicInputsProps) {
+  const { addInput, paths } = useDynamicInputs({ model, emptyData });
 
-        <div className="mt-4">
-          {paths.map((path, i) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-            <NestedFields key={i} model={path}>
-              <Form.Group className="mb-5 ps-3 border-start">
-                <div>{children}</div>
-                {/* <Button */}
-                {/*   variant="outline-primary" */}
-                {/*   onClick={() => removeInput(i)} */}
-                {/* > */}
-                {/*   - */}
-                {/* </Button> */}
-              </Form.Group>
-            </NestedFields>
-          ))}
-        </div>
-        <Button onClick={() => addInput()}>+</Button>
-      </div>
-    </fieldset>
+  return (
+    <Fieldset legend={label} mb="xl" p="md" radius="md">
+      <Stack gap="md">
+        {paths.map((path, index) => (
+          <NestedFields key={index} model={path}>
+            <Stack gap="xs" p="sm" pl="md" style={{ borderLeft: "2px solid #ccc" }}>
+              {children}
+            </Stack>
+          </NestedFields>
+        ))}
+        <Button onClick={() => addInput()} variant="light" size="xs">
+          +
+        </Button>
+      </Stack>
+    </Fieldset>
   );
-};
+}
+
+export interface XCheckProps
+  extends CheckboxProps,
+  XFormControlProps,
+  Omit<React.ComponentPropsWithoutRef<"input">, keyof CheckboxProps> { }
+
+export const XCheck = forwardRef<HTMLInputElement, XCheckProps>(
+  ({ field, model, label, ...props }, ref) => {
+    const { inputName, inputId, value, setValue, error, form } =
+      useInertiaInput<boolean | undefined>({ name: field, model, errorKey: field });
+
+    const preparedLabel = useLabel(form.model, field, label);
+
+    return (
+      <Checkbox
+        ref={ref}
+        mb="md"
+        label={preparedLabel}
+        name={inputName}
+        id={inputId}
+        checked={!!value}
+        error={getFirstError(error)}
+        onChange={(e) => setValue(e.target.checked)}
+        {...props}
+      />
+    );
+  }
+);
+
+XCheck.displayName = "XCheck";

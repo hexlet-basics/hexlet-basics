@@ -9,6 +9,7 @@ class Web::LeadsController < Web::ApplicationController
     set_meta_tags seo_tags
 
     render inertia: true, props: {
+      from: params[:from],
       # courseLandingPage: Language::LandingPageResource.new(landing_page)
       lead: LeadCrudResource.new(LeadForm.new)
     }

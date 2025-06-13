@@ -58,7 +58,7 @@ DEFAULTS: &DEFAULTS
 
 javascript-ru:
   <<: *DEFAULTS
-  header: JavaScript
+  header: Курс JavaScript
   language: javascript
   main: true
   footer_name: Основы JavaScript

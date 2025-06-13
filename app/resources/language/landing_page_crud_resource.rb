@@ -28,12 +28,12 @@ class Language::LandingPageCrudResource < ApplicationResource
     :outcomes_header,
     :outcomes_description
 
-  typelize_meta meta: "{ outcomes_image_thumb_url: string, state_events: Array<[string, string]>}"
+  typelize_meta meta: "{ outcomes_image_thumb_url: string, state_events: Record<string, unknown>[] }"
   meta do
     {
       outcomes_image_thumb_url: object.outcomes_image.attached? ?
       urls.rails_representation_url(object.outcomes_image.variant(:thumb)) : nil,
-      state_events: object.aasm.events_for_select
+      state_events: object.class.enum_as_hashes(:states)
     }
   end
 

@@ -32,6 +32,6 @@ class Web::BooksControllerTest < ActionDispatch::IntegrationTest
     get download_book_path
     assert_response :success
 
-    assert { user.book_request.downloaded? }
+    assert { user.book_request.downloaded_state? }
   end
 end

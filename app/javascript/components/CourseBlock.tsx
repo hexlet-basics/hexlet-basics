@@ -6,8 +6,9 @@ import type {
 } from "@/types/serializers";
 import { Link, usePage } from "@inertiajs/react";
 import type { PropsWithChildren } from "react";
-import { Button, Card } from "react-bootstrap";
+import { Card, Button, Text, Group, Stack, Image, Title, Anchor } from '@mantine/core';
 import { useTranslation } from "react-i18next";
+import { Clock, Users } from "lucide-react";
 
 type Props = PropsWithChildren & {
   // course: Language;
@@ -25,47 +26,46 @@ export default function CourseBlock({
   const { t: tHelpers } = useTranslation("helpers");
 
   return (
-    <>
-      <Card className="border-0 border-bottom shadow-sm bg-body-tertiary h-100">
-        <Card.Img
+
+    <Card pos="relative" shadow="sm">
+      <Card.Section>
+        <Image
           loading="lazy"
-          variant="top"
           src={landingPage.language.cover_list_variant}
           alt={landingPage.header}
         />
-        {/* {languageMembersByLanguage && */}
-        {/*   languageMembersByLanguage[language.id]?.finished && ( */}
-        {/*     <div className="card-img-overlay m-auto bg-light text-center shadow-sm p-1"> */}
-        {/*       {t(".course_finished")} */}
-        {/*     </div> */}
-        {/*   )} */}
-        <Card.Body className="p-2 p-md-3">
-          <Card.Title>
-            <Link
-              href={Routes.language_url(landingPage.slug)}
-              className="stretched-link text-decoration-none link-body-emphasis h4"
-            >
-              {courseMember && <i className="me-3 bi bi-trophy" />}
-              {landingPage.header}
-            </Link>
-          </Card.Title>
-          <div className="text-muted">
-            <span className="text-nowrap d-block d-sm-inline-block me-4">
-              <span className="bi bi-clock me-2" />
-              {landingPage.duration}
-            </span>
-            <span className="text-nowrap d-block d-sm-inline-block">
-              <span className="bi bi-people me-2" />
-              {landingPage.members_count}
-            </span>
-          </div>
-        </Card.Body>
-      </Card>
-      {continueButton && (
-        <Button variant="outline-primary" className="mt-2 w-100">
-          {tHelpers("continue")}
-        </Button>
-      )}
-    </>
+      </Card.Section>
+
+      <Card.Section p="md">
+        <Title fw="bold" order={2}>
+          {courseMember && <i className="me-3 bi bi-trophy" />}
+          {landingPage.header}
+        </Title>
+        <Group c="dimmed" mt="xs">
+          <Group gap="xs">
+            <Clock size="15" />
+            <Text size="sm">{landingPage.duration}</Text>
+          </Group>
+          <Group gap="xs">
+            <Users size="15" />
+            <Text size="sm">{landingPage.members_count}</Text>
+          </Group>
+        </Group>
+      </Card.Section>
+
+      <Anchor
+        component={Link}
+        pos="absolute"
+        inset={0}
+        href={Routes.language_url(landingPage.slug)}
+      />
+    </Card>
+    //     {
+    //   continueButton && (
+    //     <Button variant="light" fullWidth>
+    //       {tHelpers("continue")}
+    //     </Button>
+    //   )
+    // }
   );
 }

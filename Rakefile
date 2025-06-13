@@ -25,8 +25,10 @@ Rake::Task["db:fixtures:load"].enhance do
   end
 
   Language.find_each do |l|
-    filepath = Rails.root.join("public/images", "#{l.slug}.png")
-    l.cover = File.open(filepath)
-    l.save!
+    filepath = Rails.root.join("app/javascript/images", "#{l.slug}.png")
+    if File.exist?(filepath)
+      l.cover = File.open(filepath)
+      l.save!
+    end
   end
 end

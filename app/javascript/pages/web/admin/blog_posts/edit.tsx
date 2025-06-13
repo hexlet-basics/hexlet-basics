@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import AdminLayout from "@/pages/layouts/AdminLayout";
 import type { BlogPostCrud } from "@/types/serializers";
 import Form from "./shared/form";
-import { Menu } from "./shared/menu";
+import Menu from "./shared/menu";
 
 type Props = {
   blogPostDto: BlogPostCrud;

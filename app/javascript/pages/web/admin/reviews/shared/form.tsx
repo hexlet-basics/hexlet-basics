@@ -1,19 +1,11 @@
 import { useTranslation } from "react-i18next";
+import { Button } from '@mantine/core';
 
-import {
-  XCheck,
-  XForm,
-  XInput,
-  XSelect,
-  XStateEvent,
-} from "@/components/forms";
-import type { Language, Review } from "@/types/serializers";
-import { Col, Row } from "react-bootstrap";
-import { type HTTPVerb, Submit } from "use-inertia-form";
+import { XAutocomplete, XCheck, XForm, XInput, XSelect, XTextarea } from "@/components/forms";
+import type { HTTPVerb } from "use-inertia-form";
 
-import { locales } from "@/lib/utils";
 import * as Routes from "@/routes.js";
-import type ReviewCrud from "@/types/serializers/ReviewCrud";
+import type { Language, ReviewCrud } from "@/types";
 
 type Props = {
   data: ReviewCrud;
@@ -27,39 +19,31 @@ export default function Form({ courses, data, url, method }: Props) {
   const { t: tHelpers } = useTranslation("helpers");
 
   return (
-    <Row>
-      <Col className="col-7">
-        <XForm method={method} model="review" data={data} to={url}>
-          <XStateEvent fieldName="state" />
-          <XCheck name="pinned" />
-          {/* <XSelect */}
-          {/*   name="locale" */}
-          {/*   labelField="name" */}
-          {/*   valueField="code" */}
-          {/*   items={locales} */}
-          {/* /> */}
-          <XSelect
-            name="language_id"
-            has="language"
-            labelField="slug"
-            valueField="id"
-            items={courses}
-          />
-          <XSelect
-            name="user_id"
-            has="user"
-            labelField="email"
-            valueField="id"
-            source={Routes.search_admin_api_users_path()}
-          />
-          <XInput name="first_name" autoComplete="name" />
-          <XInput name="last_name" autoComplete="name" />
-          <XInput name="body" as="textarea" style={{ height: "200px" }} />
-          <Submit className="btn w-100 btn-lg btn-primary mb-3">
-            {tHelpers("submit.save")}
-          </Submit>
-        </XForm>
-      </Col>
-    </Row>
+      <XForm method={method} model="review" data={data} to={url}>
+      <XSelect
+        field="state"
+        items={data.meta.states}
+        labelField="value"
+        valueField="key"
+      />
+      <XCheck field="pinned" />
+      <XSelect
+        field="language_id"
+        labelField="slug"
+        valueField="id"
+        items={courses}
+      />
+      <XAutocomplete
+        field="user_id"
+        has="user"
+        labelField="email"
+        valueField="id"
+        source={Routes.search_admin_api_users_path()}
+      />
+      <XInput field="first_name" autoComplete="name" />
+      <XInput field="last_name" autoComplete="name" />
+      <XTextarea field="body" rows={8} />
+      <Button type="submit">{tHelpers("submit.save")}</Button>
+    </XForm>
   );
 }

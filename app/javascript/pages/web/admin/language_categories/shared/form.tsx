@@ -1,11 +1,10 @@
 import { useTranslation } from "react-i18next";
 
-import { XCheck, XDynamicInputs, XForm, XHidden, XInput, XSelect } from "@/components/forms";
-import { type HTTPVerb, Submit } from "use-inertia-form";
+import { XCheck, XDynamicInputs, XForm, XHidden, XInput, XSelect, XTextarea } from "@/components/forms";
+import { type HTTPVerb } from "use-inertia-form";
 
-import type { SharedProps } from "@/types";
-import type { LanguageCategoryCrud } from "@/types/serializers";
-import { usePage } from "@inertiajs/react";
+import type { LanguageCategoryCrud } from "@/types";
+import { Button } from "@mantine/core";
 
 type Props = {
   data: LanguageCategoryCrud;
@@ -13,40 +12,30 @@ type Props = {
   method?: HTTPVerb;
 };
 
-// const locales = [
-//   { name: "Russian", code: "ru" },
-//   { name: "English", code: "en" },
-// ];
-
 export default function Form({ data, url, method }: Props) {
   const { t } = useTranslation();
   const { t: tHelpers } = useTranslation("helpers");
-  // const { t: tEnums } = useTranslation("enumerize");
-  // const languageProgressEnum = tEnums("language.progress", {
-  //   returnObjects: true,
-  // });
-  // const languageProgressEnumOptions = enumToOptions(languageProgressEnum);
-  //
-  // const languageLearnAsEnum = tEnums("language.learn_as", {
-  //   returnObjects: true,
-  // });
-  // const languageLearnAsEnumOptions = enumToOptions(languageLearnAsEnum);
 
   return (
     <XForm method={method} model="language_category" data={data} to={url}>
-      <XInput name="name" />
-      <XInput name="header" />
-      <XInput name="slug" />
-      <XInput as="textarea" style={{ height: "100px" }} name="description" />
+      <XInput autoFocus field="name" />
+      <XInput field="header" />
+      <XInput field="slug" />
+      <XTextarea field="description" rows={5} />
 
       <XDynamicInputs
         model="items"
         label="Items"
         emptyData={{ language_landing_page_id: null }}
       >
-        <XHidden type="hidden" name="id" />
-        <XSelect name="language_landing_page_id" valueField="id" labelField="header" items={data.meta.landingPagesForCategories} />
-        <XCheck name="_destroy" />
+        <XHidden field="id" />
+        <XSelect
+          field="language_landing_page_id"
+          valueField="id"
+          labelField="header"
+          items={data.meta.landingPagesForCategories}
+        />
+        <XCheck field="_destroy" />
       </XDynamicInputs>
 
       <XDynamicInputs
@@ -54,16 +43,15 @@ export default function Form({ data, url, method }: Props) {
         label="QNA"
         emptyData={{ question: "", answer: "" }}
       >
-        <XHidden type="hidden" name="id" />
-        <XInput name="question" />
-        <XInput as="textarea" name="answer" style={{ height: "100px" }} />
-        <XCheck name="_destroy" />
+        <XHidden field="id" />
+        <XInput field="question" />
+        <XTextarea field="answer" rows={5} />
+        <XCheck field="_destroy" />
       </XDynamicInputs>
 
-
-      <Submit className="btn w-100 btn-lg btn-primary mb-3">
+      <Button type="submit" mt="xl">
         {tHelpers("submit.save")}
-      </Submit>
+      </Button>
     </XForm>
   );
 }

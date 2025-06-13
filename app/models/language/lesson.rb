@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # == Schema Information
 #
 # Table name: language_lessons
@@ -33,8 +31,9 @@
 #  fk_rails_...  (upload_id => uploads.id)
 #
 class Language::Lesson < ApplicationRecord
-  include Language::LessonRepository
   include AASM
+  include Language::LessonRepository
+
 
   # FIXME: add unique index
   validates :slug, presence: true, uniqueness: { scope: :language }
@@ -53,19 +52,20 @@ class Language::Lesson < ApplicationRecord
   # has_one :localed_info, -> { merge(Language::Lesson::Version::Info.with_locale) },
   #   class_name: "Language::Lesson::Version::Info", through: :versions, source: :infos
 
-  aasm :state do
-    state :created, initial: true
-    state :active
-    state :archived
+  enum :state, { created: "created", active: "active", archived: "archived" }, suffix: true
+  aasm :state, enum: true do
+   state :created, initial: true
+   state :active
+   state :archived
 
-    event :activate do
-      transitions from: %i[created archived], to: :active
-    end
+   event :activate do
+     transitions from: %i[created archived], to: :active
+   end
 
-    event :mark_as_archived do
-      transitions from: %i[created active], to: :archived
-    end
-  end
+   event :mark_as_archived do
+     transitions from: %i[created active], to: :archived
+   end
+ end
 
   def to_s
     slug

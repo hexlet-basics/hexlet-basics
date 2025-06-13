@@ -4,14 +4,15 @@ import { useTranslation } from "react-i18next";
 
 import XssContent from "@/components/XssContent";
 import { usePage } from "@inertiajs/react";
-import { Alert } from "react-bootstrap";
+import { Alert, Code, ScrollArea } from "@mantine/core";
 import type { LessonSharedProps } from "../types.ts";
 import { useLessonStore } from "../store.tsx";
+import { Check, TriangleAlert } from "lucide-react";
 
 const ansi = new AnsiUp();
 
 export default function OutputTab() {
-  const { lessonMember } = usePage<LessonSharedProps>().props;
+  // const { lessonMember } = usePage<LessonSharedProps>().props;
   const result = useLessonStore((state) => state.result);
   const processState = useLessonStore((state) => state.processState);
   const output = useLessonStore((state) => state.output);
@@ -23,32 +24,28 @@ export default function OutputTab() {
   }
 
   const message = tCommon(`check.${result!}.message`);
+  // const messageForGuest = tCommon("signInSuggestion", {
+  //   url: Routes.new_user_path(),
+  // });
 
-  const messageForGuest = tCommon("signInSuggestion", {
-    url: Routes.new_user_path(),
-  });
-  // NOTE: исправление неверной кодировки для кириллицы
-  // https://developer.mozilla.org/en-US/docs/Glossary/Base64
   const outputAsHTML = ansi.ansi_to_html(decodeURIComponent(output));
 
   return (
-    <div className="d-flex flex-column h-100">
-      <pre>
-        <code>
-          <XssContent>{outputAsHTML}</XssContent>
-        </code>
-      </pre>
+    <>
       <Alert
-        variant={passed ? "success" : "warning"}
-        className="mt-auto small border-0 p-2"
+        color={passed ? "green" : "yellow"}
+        icon={passed ? <Check size={16} /> : <TriangleAlert size={16} />}
+        withCloseButton={false}
+        fz="sm"
+        variant="light"
+        radius="sm"
+        my="xs"
       >
         <XssContent>{message}</XssContent>
       </Alert>
-      {/* {!lessonMember && passed && ( */}
-      {/*   <Alert variant="primary" className="small border-0 p-2"> */}
-      {/*     <XssContent>{messageForGuest}</XssContent> */}
-      {/*   </Alert> */}
-      {/* )} */}
-    </div>
+      <Code block>
+        <XssContent>{outputAsHTML}</XssContent>
+      </Code>
+    </>
   );
 }

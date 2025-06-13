@@ -1,9 +1,8 @@
-import { Link, usePage } from "@inertiajs/react";
-import { Nav } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-
 import * as Routes from "@/routes.js";
 import type { LanguageCrud, LanguageLandingPage } from "@/types/serializers";
+import { CrudHorizontalMenu, CrudHorizontalMenuItem } from "@/components/CrudHorizontalMenu";
+import { LogIn } from "lucide-react";
 
 type Props = {
   data?: LanguageCrud;
@@ -11,62 +10,26 @@ type Props = {
 };
 
 export function Menu({ data, landingPage }: Props) {
-  const { url } = usePage();
   const { t: tHelpers } = useTranslation("helpers");
 
-  return (
-    <Nav variant="tabs" className="mb-4" activeKey={url}>
-      <Nav.Item>
-        <Nav.Link
-          as={Link}
-          className="link-body-emphasis"
-          href={Routes.admin_languages_path()}
-        >
-          {tHelpers("crud.list")}
-        </Nav.Link>
-      </Nav.Item>
-      <Nav.Item>
-        <Nav.Link
-          as={Link}
-          className="link-body-emphasis"
-          href={Routes.new_admin_language_path()}
-        >
-          {tHelpers("crud.add")}
-        </Nav.Link>
-      </Nav.Item>
-      {data && (
-        <>
-          <Nav.Item>
-            <Nav.Link
-              as={Link}
-              className="link-body-emphasis"
-              href={Routes.edit_admin_language_path(data.language.id)}
-            >
-              {tHelpers("crud.editing")}
-            </Nav.Link>
-          </Nav.Item>
-          {landingPage && (
-            <Nav.Item>
-              <Nav.Link
-                target="_blank"
-                className="link-body-emphasis"
-                href={Routes.language_path(landingPage.slug)}
-              >
-                <i className="bi bi-arrow-up-right-square" />
-              </Nav.Link>
-            </Nav.Item>
-          )}
-          <Nav.Item>
-            <Nav.Link
-              target="_blank"
-              className="link-body-emphasis"
-              href={data.meta.repository_url}
-            >
-              <i className="bi bi-github" />
-            </Nav.Link>
-          </Nav.Item>
-        </>
-      )}
-    </Nav>
-  );
+  const items: CrudHorizontalMenuItem[] = [
+    { href: Routes.admin_languages_path(), label: tHelpers("crud.list") },
+    { href: Routes.new_admin_language_path(), label: tHelpers("crud.add") },
+  ];
+
+  if (data) {
+    items.push(
+      { href: Routes.edit_admin_language_path(data.language.id), label: tHelpers("crud.editing") },
+    );
+    if (landingPage) {
+      items.push(
+        { href: Routes.language_path(landingPage.slug), external: true, label: <LogIn size={15} /> },
+      );
+    }
+    items.push(
+      { href: data.meta.repository_url, external: true, label: <i className="bi bi-github" /> },
+    );
+  }
+
+  return <CrudHorizontalMenu items={items} />;
 }

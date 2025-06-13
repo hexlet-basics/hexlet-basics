@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { Alert, Card, Container, Row } from "react-bootstrap";
+import { Alert, Card, Center, Container, Stack, Title } from '@mantine/core';
 
 import { useTranslation } from "react-i18next";
 
@@ -19,23 +19,19 @@ export default function New({ user, demo }: Props) {
   const data = useForm()
 
   return (
-    <ApplicationLayout>
+    <ApplicationLayout
+      header={t("users.new.sign_up")} center>
       <Container>
         {demo && (
-          <Alert variant="info">
+          <Alert color="blue" mb="md">
             <XssContent>{t("users.new.demo_html")}</XssContent>
           </Alert>
         )}
-        <Row className="justify-content-center">
-          <div className="col-sm-8 col-md-7 col-lg-5">
-            <h1 className="text-center my-5 mb-3">{t("users.new.sign_up")}</h1>
-            <Card className="p-4 border-0">
-              <Card.Body>
-                <SignUpFormBlock autoFocus user={user} />
-              </Card.Body>
-            </Card>
-          </div>
-        </Row>
+        <Center>
+          <Card withBorder p="xl" w={{ base: '100%', sm: '80%', md: '70%', lg: '50%' }}>
+            <SignUpFormBlock autoFocus user={user} />
+          </Card>
+        </Center>
       </Container>
     </ApplicationLayout>
   );

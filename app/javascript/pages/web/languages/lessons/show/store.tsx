@@ -1,5 +1,5 @@
-import { createContext, useContext, useMemo, useRef } from 'react';
-import { createStore, useStore, useStore as useZustandStore } from 'zustand';
+import { createContext, useContext, useMemo } from 'react';
+import { createStore, useStore } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import type { } from '@redux-devtools/extension';
 import analytics from "@/lib/analytics.ts";
@@ -10,7 +10,7 @@ import type { LanguageLesson, LessonCheckingResponse } from "@/types";
 import { LessonProps, LessonState } from './types.ts';
 
 type LessonStore = ReturnType<typeof createLessonStore>
-const LessonContext = createContext<LessonStore | null>(null)
+export const LessonContext = createContext<LessonStore | null>(null)
 
 export function createLessonStore(lesson: LanguageLesson, initProps?: Partial<LessonState>) {
   return createStore<LessonState>()(
@@ -133,7 +133,7 @@ export function LessonProvider({ children, ...props }: LessonProviderProps) {
     return createLessonStore(lesson, {
       startTime, defaultCode, finished, solutionState, content: defaultCode,
     });
-  }, [props.lesson.id]);
+  }, []);
 
   return (
     <LessonContext.Provider value={store}>

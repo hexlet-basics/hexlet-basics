@@ -2,7 +2,6 @@ import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import { TypeAnimation } from "react-type-animation";
 
-import * as Routes from "@/routes.js";
 import type {
   BlogPost,
   LanguageMember,
@@ -20,11 +19,11 @@ import codeImagePathRu from "@/images/code-basics-coding-ru.png";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { LeadCrud, SharedProps } from "@/types";
 import { Head, usePage } from "@inertiajs/react";
-import { Accordion, Col, Container, Row } from "react-bootstrap";
 import MarkdownViewer from "@/components/MarkdownViewer";
 import type { Question, FAQPage, WithContext } from "schema-dts";
 import LeadFormBlock from "@/components/LeadFormBlock";
 import i18next from "i18next";
+import { Container, Image, Grid, Accordion, Paper, Button, Title, Text, Box, Anchor, Group, SimpleGrid, Center, Card } from '@mantine/core';
 
 type Props = PropsWithChildren & {
   blogPosts: BlogPost[];
@@ -65,19 +64,19 @@ const reviews = {
       name: "Александр Авдошкин",
       avatar: getImageUrl("avdoshkin.jpg"),
       body: `Если бы не коронавирус, выполнил бы всё в заход (в смысле каждый день по несколько пунктов в теме).
-              Изучаю с нуля, ваш портал очень ориентирован на новичков. Спасибо вам большое!`,
+Изучаю с нуля, ваш портал очень ориентирован на новичков. Спасибо вам большое!`,
     },
     {
       name: "Сергей Тюрин",
       avatar: getImageUrl("tyrin.jpg"),
       body: `Очень всё доступно даже для полного профана вроде меня. Эта вводная по JS вошла в мой туговатый ум,
-              складно как недостающий пазл. Всем кидаю линк на эту страничку.`,
+складно как недостающий пазл. Всем кидаю линк на эту страничку.`,
     },
     {
       name: "Элиях Клейман",
       avatar: getImageUrl("user-avatar.png"),
       body: `Для меня это первый курс для новичка. Понравилось тем, что вся информация структурирована
-              и дана по мере изучения материала в иерархичном порядке, что значительно повышает и желание к обучению`,
+и дана по мере изучения материала в иерархичном порядке, что значительно повышает и желание к обучению`,
     },
   ],
   en: [
@@ -95,7 +94,7 @@ const reviews = {
       name: "Eliyah Kleyman",
       avatar: getImageUrl("user-avatar.png"),
       body: `For me, it was my very first programming course. I liked it because all the information is very well
-        structured and given in a clear hierarchical order. It motivated me a lot to move forward in my studies.`,
+structured and given in a clear hierarchical order. It motivated me a lot to move forward in my studies.`,
     },
   ],
 };
@@ -107,7 +106,6 @@ export default function Index({
   courseMembersByCourseId,
 }: Props) {
   const { t } = useTranslation();
-  // FIXME: add en version
   const { t: tFaq } = useTranslation("faq");
 
   const {
@@ -140,202 +138,175 @@ export default function Index({
       <Head>
         {Object.keys(faq).length > 0 && <script type="application/ld+json">{JSON.stringify(qaSchema)}</script>}
       </Head>
-      <Container className="mb-lg-5 py-5">
-        <div className="bg-body-tertiary p-4 pb-0 pt-lg-5 align-items-center border shadow-sm rounded-3">
-          <div className="row">
-            <div className="col-lg-7 p-3 p-lg-5 pt-lg-3">
-              <h1 className="h6 text-muted">
+
+      <Container size="lg">
+
+        <Paper shadow="sm" my="60" withBorder ps={60} pt={60}>
+          <Grid overflow="hidden" gutter={0}>
+            <Grid.Col span={{ base: 12, md: 7 }}>
+              <Title size="h5" fw="normal" c="dimmed">
                 {t("home.hero.free_programming_courses")}
-              </h1>
-              <div className="display-4 fw-bold lh-1 mb-3">
-                {t("home.hero.learn_html")}{" "}
-                <TypeAnimation
-                  className="text-primary"
-                  sequence={sequence}
-                  wrapper="span"
-                  speed={5}
-                  repeat={Number.POSITIVE_INFINITY}
-                />
-              </div>
-              <div className="lead mb-3">
-                <XssContent>
-                  {t("home.hero.fastest_way_to_start_coding")}
-                </XssContent>
-              </div>
-              <div className="d-grid gap-2 d-md-flex justify-content-md-start mb-4 mb-lg-3">
-                <a
-                  className="btn btn-primary btn-lg px-4 me-md-2 fw-bold"
-                  href="#courses"
-                >
-                  {t("home.hero.try")}
-                </a>
-              </div>
-            </div>
-            <div className="col-lg-4 offset-lg-1 p-0 overflow-hidden shadow-lg text-center">
-              <img
+              </Title>
+              <Box my="xs">
+                <Text size="55px" fw="bold">
+                  {t("home.hero.learn_html")}{" "}
+                  <Text c="blue" component="span" fw="bold">
+                    <TypeAnimation
+                      // className="text-primary"
+                      sequence={sequence}
+                      wrapper="span"
+                      speed={5}
+                      repeat={Number.POSITIVE_INFINITY}
+                    />
+                  </Text>
+                </Text>
+              </Box>
+              <XssContent mb="xl">
+                {t("home.hero.fastest_way_to_start_coding")}
+              </XssContent>
+              <Button mb="lg" component="a" href="#courses">
+                {t("home.hero.try")}
+              </Button>
+            </Grid.Col>
+
+            <Grid.Col
+              span={{ base: 12, md: 5 }}
+            >
+
+              <Image
                 alt="Code Basics learning preview"
-                className="rounded-lg-3"
+                w="auto"
                 height="356"
                 src={codeImagePaths[locale]}
                 width="720"
               />
-            </div>
-          </div>
-        </div>
+
+            </Grid.Col>
+          </Grid>
+        </Paper>
       </Container>
 
-      <div className="mb-5">
-        <Container className="py-4">
-          <h2 className="mb-4">
-            <a
-              id="courses"
-              className="text-decoration-none link-body-emphasis"
-              href="#courses"
-            >
-              {t("home.languages.courses")}
-            </a>
-          </h2>
 
-          <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4">
-            {landingPagesForLists.map((lp) => (
-              <div className="col mb-3" key={lp.id}>
-                <CourseBlock
-                  landingPage={lp}
-                  courseMember={courseMembersByCourseId[lp.id]}
+      <Container size="lg" my="xl">
+        <Anchor
+          id="courses"
+          href="#courses"
+        >
+          <Title order={2} mb="xl">
+            {t("home.languages.courses")}
+          </Title>
+        </Anchor>
+
+        <SimpleGrid spacing="md" cols={{ base: 2, xs: 3, md: 4 }}>
+          {landingPagesForLists.map((lp) => (
+            <CourseBlock
+              landingPage={lp}
+              key={lp.id}
+              courseMember={courseMembersByCourseId[lp.id]}
+            />
+          ))}
+        </SimpleGrid>
+      </Container>
+
+
+
+      <Container size="lg" my="xl">
+        <Box mb="xl">
+          <Title order={2}>
+            {t("home.index.reviews")}
+          </Title>
+          <hr />
+        </Box>
+
+        <SimpleGrid spacing="md" cols={{ base: 1, xs: 2, md: 3 }}>
+          {reviews[locale].map((review) => (
+            <Box key={review.name}>
+              <Group mb="lg">
+                <Image
+                  src={review.avatar}
+                  fit="contain"
+                  radius="100%"
+                  w={40}
+                  // width={50}
+                  // height={50}
+                  alt={`Аватар пользователя ${review.name}`}
                 />
-              </div>
-            ))}
-          </div>
-        </Container>
-      </div>
+                <Text fw="bold">{review.name}</Text>
+              </Group>
 
-      <div className="bg-body-tertiary py-5 mb-5">
-        <Container className="mb-5">
-          <div className="d-flex">
-            <h2 className="me-auto mt-auto">{t("home.index.reviews")}</h2>
-            <div className="mt-auto">
-              <a
-                href={Routes.reviews_path()}
-                className="text-decoration-none text-muted small"
-              >
-                {t("home.index.all_reviews")}
-              </a>
-            </div>
-          </div>
-          <hr className="mb-5 mt-1" />
+              <Text fs="italic">{review.body}</Text>
+            </Box>
+          ))}
+        </SimpleGrid>
+      </Container>
 
-          <div className="row g-4 row-cols-1 row-cols-sm-2 row-cols-lg-3">
-            {reviews[locale].map((review) => (
-              <div key={review.name} className="col">
-                <div className="d-flex mb-3">
-                  <img
-                    src={review.avatar}
-                    className="rounded-circle flex-shrink-0"
-                    width={50}
-                    height={50}
-                    alt={`Аватар пользователя ${review.name}`}
-                  />
-                  <div className="ms-3">
-                    <div className="fw-bold">{review.name}</div>
-                    <div className="small">
-                      {/* {t(".course_html", { */}
-                      {/*   link: ( */}
-                      {/*     <a */}
-                      {/*       href={language_path(jsCourse.slug)} */}
-                      {/*       className="text-dark" */}
-                      {/*     > */}
-                      {/*       {jsCourse} */}
-                      {/*     </a> */}
-                      {/*   ), */}
-                      {/* })} */}
-                    </div>
-                  </div>
-                </div>
-                <div className="fst-italic">{review.body}</div>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </div>
 
       {blogPosts.length > 0 && (
-        <Container className="mb-5">
-          <>
-            <div className="d-flex">
-              <h2 className="me-auto mt-auto">{t("home.index.blog_posts")}</h2>
-              <div className="mt-auto">
-                <a
-                  href={Routes.blog_posts_path()}
-                  className="text-decoration-none text-muted small"
-                >
-                  {t("home.index.all_blog_posts")}
-                </a>
-              </div>
-            </div>
-            <hr className="mb-5 mt-1" />
-            <Row className="row-cols-sm-2 row-cols-md-3 row-cols-1">
-              {blogPosts.map((post) => (
-                <Col key={post.id}>
-                  <BlogPostBlock post={post} />
-                </Col>
-              ))}
-            </Row>
-          </>
+        <Container size="lg">
+          <Box mb="xl">
+            <Title order={2}>
+              {t("home.index.blog_posts")}
+            </Title>
+            <hr />
+          </Box>
+          <SimpleGrid spacing="md" cols={{ base: 1, xs: 2, md: 3 }}>
+            {blogPosts.map((post) => (
+
+              <BlogPostBlock key={post.id} post={post} />
+
+            ))}
+          </SimpleGrid>
         </Container>
       )}
 
-      <div className="bg-body-tertiary mb-5 py-5">
-        <Container className="mb-5">
-          <h2>
-            <a
-              id="faq"
-              className="text-decoration-none link-body-emphasis"
-              href="#faq"
-            >
-              {tFaq("header")}
-            </a>
-          </h2>
-          <hr className="mb-5" />
-          <Accordion defaultActiveKey="0">
-            {Object.entries(faq).map(([key, value], index) => (
-              <Accordion.Item eventKey={String(index)} key={key}>
-                <Accordion.Header as="h3">{value.question}</Accordion.Header>
-                <Accordion.Body>
-                  <MarkdownViewer>{value.answer}</MarkdownViewer>
-                </Accordion.Body>
-              </Accordion.Item>
-            ))}
-          </Accordion>
-        </Container>
-      </div>
+
+      <Container size="lg" my="xl">
+        <Box mb="xl">
+          <Title order={2}>
+            {tFaq("header")}
+          </Title>
+          <hr />
+        </Box>
+        <Accordion defaultValue={Object.keys(faq)[0]}>
+          {Object.entries(faq).map(([key, item]) => (
+            <Accordion.Item key={key} value={key}>
+              <Accordion.Control>
+                <Box fw="bold">{item.question}</Box>
+              </Accordion.Control>
+              <Accordion.Panel>
+                <MarkdownViewer>{item.answer}</MarkdownViewer>
+              </Accordion.Panel>
+            </Accordion.Item>
+          ))}
+        </Accordion>
+      </Container>
+
 
       {user.guest && (
-        <Container>
-          <Row className="align-items-center py-5">
-            <Col className="col-12 col-lg-7 fw-bold display-4 mb-5">
-              {t("home.index.join")}
-            </Col>
-            <Col className="col-12 col-lg-5 mx-auto d-flex flex-column">
-              <div className="bg-body-tertiary p-4 p-md-5 border rounded-3">
-                <SignUpFormBlock user={newUser} />
-              </div>
-            </Col>
-          </Row>
+        <Container size="lg">
+          <h2 className="mb-4">{t("home.index.join")}</h2>
+          <Grid gutter="md">
+            <Grid.Col span={{ base: 12, md: 6 }}>
+              <SignUpFormBlock user={newUser} />
+            </Grid.Col>
+          </Grid>
         </Container>
       )}
 
       {!user.guest && i18next.language === 'ru' && (
-        <Container>
-          <Row className="align-items-center py-5">
-            <Col className="col-12 col-lg-7 fw-bold display-4 mb-5">
-              {t("home.index.consultation")}
-            </Col>
-            <Col className="col-12 col-lg-5 mx-auto d-flex flex-column">
-              <div className="bg-body-tertiary p-4 p-md-5 border rounded-3">
+        <Container size="lg" mt={100}>
+          <Grid align="center" justify="space-between" gutter={0}>
+            <Grid.Col span={{ base: 12, md: 6 }}>
+              <Center>
+                <Text fz={40} fw="bold">{t("home.index.consultation")}</Text>
+              </Center>
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, md: 4 }}>
+              <Card withBorder shadow="sm" p="xl">
                 <LeadFormBlock lead={lead} />
-              </div>
-            </Col>
-          </Row>
+              </Card>
+            </Grid.Col>
+          </Grid>
         </Container>
       )}
 

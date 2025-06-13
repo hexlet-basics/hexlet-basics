@@ -22,13 +22,4 @@ class BookRequest < ApplicationRecord
   belongs_to :user
 
   enum :state, { requested: "requested", downloaded: "downloaded" }, default: "requested", suffix: true, validate: true
-
-  aasm :state, enum: true do
-    state :requested
-    state :downloaded
-
-    event :mark_as_downloaded do
-      transitions to: :downloaded
-    end
-  end
 end

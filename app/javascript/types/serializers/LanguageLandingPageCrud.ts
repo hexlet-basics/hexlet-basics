@@ -30,7 +30,7 @@ type LanguageLandingPageCrudData = {
 
 type LanguageLandingPageCrud = {
   language_landing_page: LanguageLandingPageCrudData;
-  meta: { outcomes_image_thumb_url: string, state_events: Array<[string, string]>};
+  meta: { outcomes_image_thumb_url: string, state_events: Record<string, unknown>[] };
 }
 
 export default LanguageLandingPageCrud;

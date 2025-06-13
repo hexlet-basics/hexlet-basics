@@ -8,8 +8,8 @@ class ReviewCrudResource < ApplicationResource
 
   attributes :id, :body, :state, :first_name, :last_name, :language_id, :user_id, :pinned
 
-  typelize_meta meta: "{ state_events: Array<[string, string]>}"
+  typelize_meta(meta: "{ states: { key: string, value: string }[] }")
   meta do
-    { state_events: object.aasm.events_for_select }
+    { states: object.class.enum_as_hashes(:states) }
   end
 end

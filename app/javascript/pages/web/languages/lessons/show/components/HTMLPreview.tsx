@@ -1,4 +1,5 @@
 import XssContent from "@/components/XssContent.tsx";
+import { Box } from "@mantine/core";
 import { useEffect, useState } from "react";
 import type { FrameComponentProps } from "react-frame-component";
 // import Frame from "react-frame-component";
@@ -14,10 +15,10 @@ export default function HTMLPreview({ html }: { html: string }) {
   if (!Frame) return null;
 
   return (
-    <div className="pt-3 px-2 pb-2 h-50 border-top">
-      <Frame className="border-0 h-100 w-100">
+    <Box className="border-t border-gray-400">
+      <Frame className="border-none w-full">
         <XssContent>{html}</XssContent>
       </Frame>
-    </div>
+    </Box>
   );
 }

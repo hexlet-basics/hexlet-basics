@@ -1,4 +1,3 @@
-import type { DataTableFilterMeta } from "primereact/datatable";
 import debug from 'debug'
 
 const log = debug('app')
@@ -146,6 +145,10 @@ export const neededPreview = (language: string) => {
 //   return languagesToHelpByTutorUrls[language] || defaultUrl;
 // };
 
+export function isCurrentUrl(checkingUrl: string) {
+  return url() == checkingUrl
+}
+
 export function url(
   options: { withQuery?: boolean; onlyPath?: boolean } = {
     withQuery: false,
@@ -164,26 +167,13 @@ export function url(
   return parts.join("");
 }
 
-export function fieldsToFilters(
-  fields: Record<string, string | number | string[] | undefined | null>,
-): DataTableFilterMeta | undefined {
-  if (!fields) {
-    return;
-  }
-  const pairs = Object.entries(fields).map(([fieldWithMatcher, value]) => {
-    return [fieldWithMatcher.split("_")[0], { value, matchMode: "contains" }];
-  });
-  const result = Object.fromEntries(pairs);
-  return result;
-}
-
 export const localesByCode = {
   ru: {
-    icon: "fi fi-ru",
+    icon: "🇷🇺",
     name: "Русский",
   },
   en: {
-    icon: "fi fi-us",
+    icon: "🇺🇲",
     name: "English",
   },
 };

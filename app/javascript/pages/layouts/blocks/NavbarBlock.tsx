@@ -1,173 +1,225 @@
 import logoImg from "@/images/logo.png";
 import defaultAvatarImg from "@/images/user-avatar.png";
 import { localesByCode } from "@/lib/utils";
-import cn from "classnames";
 import i18next from "i18next";
-import { Nav, NavDropdown, Navbar, type NavbarProps } from "react-bootstrap";
+import {
+  Burger,
+  Group,
+  Image,
+  Anchor, Menu,
+  UnstyledButton,
+  Text,
+  Stack,
+  Center,
+  Divider,
+  Avatar,
+  Drawer
+} from "@mantine/core";
 
-import useLinkClickHandler from "@/hooks/useLinkClickHandler";
 import * as Routes from "@/routes.js";
 import type { SharedProps } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
-import type { HTMLAttributes, PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
+import { ChevronDown, User } from "lucide-react";
+import AppAnchor from "@/components/AppAnchor";
 
-type Props = PropsWithChildren & HTMLAttributes<NavbarProps>;
+export type NavbarBlockProps = {
+  opened: boolean;
+  onToggle: () => void;
+};
 
-export default function NavbarBlock({ className }: Props) {
-  const { landingPagesForLists, auth } = usePage<SharedProps>().props;
-  const { t: tLayouts } = useTranslation("layouts");
-
-  const handleLinkClick = useLinkClickHandler();
+export default function NavbarBlock({ opened, onToggle }: NavbarBlockProps) {
+  const { landingPagesForLists } = usePage<SharedProps>().props;
 
   return (
-    <Navbar expand="lg" className={cn(className, "border-bottom")}>
-      <Navbar.Brand as={Link} href={Routes.root_path()}>
-        <img
-          src={logoImg}
-          width="30"
-          height="30"
-          className="d-inline-block align-top"
-          alt="React Bootstrap logo"
-        />
-      </Navbar.Brand>
-      <Navbar.Toggle aria-controls="basic-navbar-nav" />
+    <>
+      <Group h="100%" px="md">
+        <Group gap={15}>
+          <Anchor component={Link} href={Routes.root_path()} me="lg">
+            <Image src={logoImg} width={30} height={30} alt="Logo" />
+          </Anchor>
 
-      <Navbar.Collapse>
-        <Nav className="me-auto">
-          {!auth.user.guest && (
-            <Nav.Link
-              as={Link}
-              className="link-body-emphasis"
-              href={Routes.my_path()}
-            >
-              {tLayouts("shared.nav.my")}
-            </Nav.Link>
-          )}
-          <NavDropdown
-            renderMenuOnMount={true}
-            className="link-body-emphasis"
-            title={tLayouts("shared.nav.courses")}
-            id="basic-nav-dropdown"
-          >
-            {landingPagesForLists.map((lp) => (
-              <NavDropdown.Item
-                as={Link}
-                className="d-flex align-items-center"
-                key={lp.id}
-                href={Routes.language_path(lp.slug)}
-              >
-                <img
-                  width={25}
-                  className="rounded me-2"
-                  src={lp.language.cover_thumb_variant}
-                  alt={lp.header}
-                />
-                {lp.header}
-              </NavDropdown.Item>
-            ))}
-          </NavDropdown>
+          <MyLink />
+          <CourseMenu landingPages={landingPagesForLists} />
+          <Group visibleFrom="sm">
+            <CaseLink />
+          </Group>
+          <Group visibleFrom="sm">
+          <BookLink />
+          </Group>
+        </Group>
 
-          <NavDropdown
-            className="link-body-emphasis"
-            title={tLayouts("shared.nav.cases")}
-          >
-            <NavDropdown.Item
-              as={Link}
-              href={Routes.for_teachers_cases_path()}
-            >
-              {tLayouts("shared.nav.for_teachers")}
-            </NavDropdown.Item>
-          </NavDropdown>
+        <Group ms="auto" visibleFrom="sm">
+          <AuthLinks avatar={defaultAvatarImg} />
+          <LocaleSwitcher />
+        </Group>
 
-          {i18next.language == 'ru' && <Nav.Link
-            as={Link}
-            className="link-body-emphasis"
-            href={Routes.book_path()}
-          >
-            {tLayouts("shared.nav.book")}
-          </Nav.Link>}
-        </Nav>
-        <Nav>
-          {auth.user.guest && (
-            <>
-              <Nav.Link
-                as={Link}
-                className="link-body-emphasis"
-                href={Routes.new_session_path()}
-              >
-                {tLayouts("shared.nav.sign_in")}
-              </Nav.Link>
-              <Nav.Link
-                as={Link}
-                className="link-body-emphasis"
-                href={Routes.new_user_path()}
-              >
-                {tLayouts("shared.nav.registration")}
-              </Nav.Link>
-            </>
-          )}
-          {!auth.user.guest && (
-            <>
-              <NavDropdown
-                align="end"
-                className="link-body-emphasis"
-                title={<i className="bi bi-person-circle" />}
-              >
-                <NavDropdown.Item as={Link} href={Routes.edit_account_profile_path()}>
-                  <div className="d-flex">
-                    <div className="me-2">
-                      <img
-                        width="50px"
-                        src={defaultAvatarImg}
-                        alt="User Avatar"
-                      />
-                    </div>
-                    <div>
-                      <div className="fw-bold">{auth.user.name}</div>
-                      <div>{auth.user.email}</div>
-                    </div>
-                  </div>
-                </NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item as={Link} href={Routes.edit_account_profile_path()}>
-                  {tLayouts("shared.nav.profile")}
-                </NavDropdown.Item>
-                {auth.user.admin && (
-                  <NavDropdown.Item as={Link} href={Routes.admin_root_path()}>
-                    {tLayouts("shared.nav.admin")}
-                  </NavDropdown.Item>
-                )}
-                <NavDropdown.Item
-                  as={Link}
-                  href={Routes.session_path()}
-                  onClick={handleLinkClick("delete")}
-                >
-                  {tLayouts("shared.nav.sign_out")}
-                </NavDropdown.Item>
-              </NavDropdown>
-            </>
-          )}
-          <NavDropdown
-            align="end"
-            className="link-body-emphasis"
-            title={
-              <i className={localesByCode[i18next.language || "ru"].icon} />
-            }
-          >
-            {Object.entries(localesByCode).map(([k, v]) => (
-              <NavDropdown.Item
-                className="d-flex align-items-center"
-                key={k}
-                href={Routes.switch_locale_path({ new_locale: k })}
-              >
-                <i className={cn(v.icon, "me-2")} />
-                {v.name}
-              </NavDropdown.Item>
-            ))}
-          </NavDropdown>
-        </Nav>
-      </Navbar.Collapse>
-    </Navbar>
+        <Burger opened={opened} onClick={onToggle} ms="auto" hiddenFrom="sm" size="sm" />
+      </Group>
+
+      <Drawer opened={opened} onClose={onToggle} hiddenFrom="sm" mt="md">
+        <MobileMenu landingPages={landingPagesForLists} avatar={defaultAvatarImg} />
+      </Drawer>
+    </>
+  );
+}
+
+function MyLink() {
+  const { auth } = usePage<SharedProps>().props;
+  const { t } = useTranslation("layouts");
+
+  if (auth.user.guest) return null;
+
+  return (
+    <AppAnchor href={Routes.my_path()}>
+      {t("shared.nav.my")}
+    </AppAnchor>
+  );
+}
+
+function CourseMenu({ landingPages }: { landingPages: SharedProps["landingPagesForLists"] }) {
+  const { t } = useTranslation("layouts");
+
+  return (
+    <Menu shadow="md">
+      <Menu.Target>
+        <UnstyledButton>
+          <Center>
+            {t("shared.nav.courses")} <ChevronDown size={14} />
+          </Center>
+        </UnstyledButton>
+      </Menu.Target>
+      <Menu.Dropdown>
+        {landingPages.map((lp) => (
+          <Menu.Item key={lp.id} component={Link} href={Routes.language_path(lp.slug)}>
+            <Group wrap="nowrap">
+              <Image w="auto" fit="contain" src={lp.language.cover_thumb_variant} alt={lp.header} />
+              <Text>{lp.header}</Text>
+            </Group>
+          </Menu.Item>
+        ))}
+      </Menu.Dropdown>
+    </Menu>
+  );
+}
+
+function CaseLink() {
+  const { t } = useTranslation("layouts");
+  return (
+    <Menu shadow="md" width={200}>
+      <Menu.Target>
+        <UnstyledButton>
+          <Center>
+            {t("shared.nav.cases")} <ChevronDown size={14} />
+          </Center>
+        </UnstyledButton>
+      </Menu.Target>
+      <Menu.Dropdown>
+        <Menu.Item component={Link} href={Routes.for_teachers_cases_path()}>
+          {t("shared.nav.for_teachers")}
+        </Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
+  );
+}
+
+function BookLink() {
+  const { t } = useTranslation("layouts");
+  return i18next.language === "ru" ? (
+    <Anchor component={Link} href={Routes.book_path()}>
+      {t("shared.nav.book")}
+    </Anchor>
+  ) : null;
+}
+
+function AuthLinks({ avatar }: { avatar: string }) {
+  const { auth } = usePage<SharedProps>().props;
+  const { t } = useTranslation("layouts");
+
+  if (auth.user.guest) {
+    return (
+      <>
+        <AppAnchor href={Routes.new_session_path()}>
+          {t("shared.nav.sign_in")}
+        </AppAnchor>
+        <AppAnchor href={Routes.new_user_path()}>
+          {t("shared.nav.registration")}
+        </AppAnchor>
+      </>
+    );
+  }
+
+  return (
+    <Menu shadow="md" width={200}>
+      <Menu.Target>
+        <UnstyledButton>
+          <Center>
+            <User size={18} /> <ChevronDown size={14} />
+          </Center>
+        </UnstyledButton>
+      </Menu.Target>
+      <Menu.Dropdown>
+        <Menu.Item component={Link} href={Routes.edit_account_profile_path()}>
+          <Group>
+            <Avatar src={avatar} radius="xl" size="lg" />
+            <Stack gap={0}>
+              <Text fw={500}>{auth.user.name}</Text>
+              <Text size="xs" c="dimmed">
+                {auth.user.email}
+              </Text>
+            </Stack>
+          </Group>
+        </Menu.Item>
+        <Divider />
+        <Menu.Item component={Link} href={Routes.edit_account_profile_path()}>
+          {t("shared.nav.profile")}
+        </Menu.Item>
+        {auth.user.admin && (
+          <Menu.Item component={Link} href={Routes.admin_root_path()}>
+            {t("shared.nav.admin")}
+          </Menu.Item>
+        )}
+        <Menu.Item component={Link} method="delete" href={Routes.session_path()}>
+          {t("shared.nav.sign_out")}
+        </Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
+  );
+}
+
+function LocaleSwitcher() {
+  return (
+    <Menu shadow="md" width={200}>
+      <Menu.Target>
+        <UnstyledButton>
+          <Center>
+            {localesByCode[i18next.language || "ru"].icon} <ChevronDown size={14} />
+          </Center>
+        </UnstyledButton>
+      </Menu.Target>
+      <Menu.Dropdown>
+        {Object.entries(localesByCode).map(([k, v]) => (
+          <Menu.Item key={k} component="a" href={Routes.switch_locale_path({ new_locale: k })}>
+            <Group gap={5}>
+              {v.icon}
+              <Text>{v.name}</Text>
+            </Group>
+          </Menu.Item>
+        ))}
+      </Menu.Dropdown>
+    </Menu>
+  );
+}
+
+function MobileMenu({ landingPages, avatar }: { landingPages: SharedProps["landingPagesForLists"]; avatar: string }) {
+  return (
+    <Stack gap="xs" px="md" align="start">
+      <MyLink />
+      <CourseMenu landingPages={landingPages} />
+      <CaseLink />
+      <BookLink />
+      <AuthLinks avatar={avatar} />
+      <LocaleSwitcher />
+    </Stack>
   );
 }

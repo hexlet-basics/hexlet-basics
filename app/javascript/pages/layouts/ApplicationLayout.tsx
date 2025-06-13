@@ -1,7 +1,7 @@
+import * as Routes from "@/routes.js";
 import type { PropsWithChildren } from "react";
-import { Container } from "react-bootstrap";
+import { AppShell, Container, Title, Stack, Box } from '@mantine/core';
 
-import XFlash from "@/components/XFlash.tsx";
 import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
 import type { BreadcrumbItem, SharedProps } from "@/types/index.js";
 import RootLayout from "./RootLayout.tsx";
@@ -9,7 +9,10 @@ import RootLayout from "./RootLayout.tsx";
 import FooterBlock from "./blocks/FooterBlock.tsx";
 import NavbarBlock from "./blocks/NavbarBlock.tsx";
 import { usePage } from "@inertiajs/react";
+import { useDisclosure } from "@mantine/hooks";
+import XFlash from "@/components/XFlash.tsx";
 import ContactMethodRequestingBlock from "./blocks/ContactMethodRequestingBlock.tsx";
+import { isCurrentUrl, url } from "@/lib/utils.ts";
 
 type Props = PropsWithChildren & {
   header?: string;
@@ -25,24 +28,42 @@ export default function ApplicationLayout({
 }: Props) {
   const page = usePage<SharedProps>();
   const { props: { shouldAddContactMethod } } = page
+  const [opened, { toggle }] = useDisclosure();
 
   return (
     <RootLayout>
-      <Container className="py-2">
-        <NavbarBlock className="pb-3 border-bottom" />
-        <XFlash />
-        {shouldAddContactMethod && (
-          <div className="mt-3"><ContactMethodRequestingBlock /></div>
-        )}
-      </Container>
-      {(items || header) && (
-        <Container className="my-2 my-md-4">
-          {items && <XBreadcrumb items={items} />}
-          {header && <h1 className={center ? "text-center" : ""}>{header}</h1>}
-        </Container>
-      )}
-      <div className="pb-5">{children}</div>
-      <FooterBlock />
+      <AppShell
+        header={{ height: 60 }}
+        padding="lg"
+      >
+        <AppShell.Header>
+          <NavbarBlock onToggle={toggle} opened={opened} />
+        </AppShell.Header>
+
+        <AppShell.Main>
+          <XFlash />
+          {shouldAddContactMethod && isCurrentUrl(Routes.new_lead_path()) && (
+            <Box mt="lg"><ContactMethodRequestingBlock /></Box>
+          )}
+          {(items || header) && (
+            <Container size="lg" my="xl">
+              <Stack>
+                {items && <XBreadcrumb items={items} />}
+                {header && (
+                  <Title order={1} ta={center ? "center" : "left"}>
+                    {header}
+                  </Title>
+                )}
+              </Stack>
+            </Container>
+          )}
+          {children}
+        </AppShell.Main>
+
+        {/* <AppShell.Footer> */}
+        <FooterBlock />
+        {/* </AppShell.Footer> */}
+      </AppShell>
     </RootLayout>
   );
 }

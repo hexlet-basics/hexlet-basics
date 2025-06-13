@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import { Grid, Container, Title } from '@mantine/core';
 
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout.tsx";
 import type { User } from "@/types/serializers";
@@ -21,11 +21,6 @@ type Props = PropsWithChildren & {
   user: User;
 };
 
-// https://termly.io/
-function Empty() {
-  return <></>;
-}
-
 const mapping = {
   ru: {
     about: AboutRu,
@@ -46,14 +41,13 @@ const mapping = {
 export default function New({ page, title }: Props) {
   const Component = mapping[i18next.language][page];
   return (
-    <ApplicationLayout>
+    <ApplicationLayout header={title} center>
       <Container>
-        <Row className="justify-content-center mb-5">
-          <Col className="col-12 col-md-10 col-lg-8">
-            <h1 className="mb-5">{title}</h1>
+        <Grid justify="center" mb="xl">
+          <Grid.Col span={{ base: 12, md: 10, lg: 8 }}>
             <Component />
-          </Col>
-        </Row>
+          </Grid.Col>
+        </Grid>
       </Container>
     </ApplicationLayout>
   );

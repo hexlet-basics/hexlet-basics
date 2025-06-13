@@ -15,8 +15,8 @@ class ReviewResource
     [ review.first_name, review.last_name ].join " "
   end
 
-  typelize "Array<[string, string]>"
-  attribute :state_events do |obj|
-    obj.aasm.events_for_select
-  end
+  # typelize :Array, nullable: true
+  # attribute :state_events do |obj|
+  #   obj.class.enum_as_hashes(:states)
+  # end
 end

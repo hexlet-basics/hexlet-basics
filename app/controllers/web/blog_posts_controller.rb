@@ -1,6 +1,6 @@
 class Web::BlogPostsController < Web::ApplicationController
   def index
-    scope = BlogPost.published.with_locale
+    scope = BlogPost.published_state.with_locale
       .includes([ :creator, { cover_attachment: :blob } ])
       .order(id: :desc)
     pagy, records = pagy(scope)
@@ -19,14 +19,14 @@ class Web::BlogPostsController < Web::ApplicationController
   end
 
   def show
-    blog_post = BlogPost.with_locale.published.find_by!(slug: params[:id])
+    blog_post = BlogPost.with_locale.published_state.find_by!(slug: params[:id])
 
     # category = blog_post.category
 
     # blog_posts = []
     # languages = []
 
-    blog_posts = BlogPost.published.with_locale
+    blog_posts = BlogPost.published_state.with_locale
       .includes([ :creator, { cover_attachment: :blob } ])
       .except(blog_post)
       .limit(2)

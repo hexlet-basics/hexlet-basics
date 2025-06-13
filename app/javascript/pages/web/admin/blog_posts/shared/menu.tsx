@@ -1,57 +1,29 @@
-import { usePage } from "@inertiajs/react";
-import { Nav } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-
 import * as Routes from "@/routes.js";
-import type { BlogPostCrud } from "@/types/serializers";
+import { CrudHorizontalMenu, CrudHorizontalMenuItem } from "@/components/CrudHorizontalMenu";
+import { LogIn } from "lucide-react";
+import { BlogPostCrud } from "@/types";
 
 type Props = {
-  data?: BlogPostCrud;
+  data?: BlogPostCrud
 };
 
-export function Menu({ data }: Props) {
-  const { url } = usePage();
+export default function Menu({ data }: Props) {
   const { t: tHelpers } = useTranslation("helpers");
 
-  return (
-    <Nav variant="tabs" className="mb-4" activeKey={url}>
-      <Nav.Item>
-        <Nav.Link
-          className="link-body-emphasis"
-          href={Routes.admin_blog_posts_path()}
-        >
-          {tHelpers("crud.list")}
-        </Nav.Link>
-      </Nav.Item>
-      <Nav.Item>
-        <Nav.Link
-          className="link-body-emphasis"
-          href={Routes.new_admin_blog_post_path()}
-        >
-          {tHelpers("crud.add")}
-        </Nav.Link>
-      </Nav.Item>
-      {data && (
-        <>
-          <Nav.Item>
-            <Nav.Link
-              className="link-body-emphasis"
-              href={Routes.edit_admin_blog_post_path(data.blog_post.id)}
-            >
-              {tHelpers("crud.editing")}
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link
-              target="_blank"
-              className="link-body-emphasis"
-              href={Routes.blog_post_path(data.blog_post.slug!)}
-            >
-              <i className="bi bi-arrow-up-right-square" />
-            </Nav.Link>
-          </Nav.Item>
-        </>
-      )}
-    </Nav>
-  );
+  const items: CrudHorizontalMenuItem[] = [
+    { href: Routes.admin_blog_posts_path(), label: tHelpers("crud.list") },
+    { href: Routes.new_admin_blog_post_path(), label: tHelpers("crud.add") },
+  ];
+
+  if (data?.blog_post) {
+    items.push(
+      { href: Routes.edit_admin_blog_post_path(data.blog_post.id), label: tHelpers("crud.editing") },
+    );
+    items.push(
+      { href: Routes.blog_post_path(data.blog_post.slug!), external: true, label: <LogIn size={15} /> },
+    );
+  }
+
+  return <CrudHorizontalMenu items={items} />;
 }

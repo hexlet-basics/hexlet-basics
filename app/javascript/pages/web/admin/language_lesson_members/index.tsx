@@ -1,79 +1,58 @@
-import * as Routes from "@/routes.js";
-import { useTranslation } from "react-i18next";
+import { DataTable } from 'mantine-datatable';
+import type { PropsWithChildren } from 'react';
 
-import { DTDateTemplate } from "@/components/dtTemplates";
-import useDataTable from "@/hooks/useDataTable";
-import { fieldsToFilters } from "@/lib/utils";
-import AdminLayout from "@/pages/layouts/AdminLayout";
-import type { Grid, LanguageLessonMember } from "@/types/serializers";
-import { Link } from "@inertiajs/react";
-import { Column } from "primereact/column";
-import { DataTable } from "primereact/datatable";
-import { Dialog } from "primereact/dialog";
-import { useState } from "react";
-// import { Menu } from "./shared/menu";
+import * as Routes from '@/routes.js';
+import { useTranslation } from 'react-i18next';
+
+import AdminLayout from '@/pages/layouts/AdminLayout';
+import AppAnchor from '@/components/AppAnchor';
+import type { LanguageLessonMember, Grid } from '@/types/serializers';
+import useDataTableProps from '@/hooks/useDataTableProps';
+import { Stack, Text } from '@mantine/core';
 
 type Props = {
   languageLessonMembers: LanguageLessonMember[];
   grid: Grid;
 };
 
-export function MessagesUrlTemplate(member: LanguageLessonMember) {
-  const url = Routes.admin_messages_path({
-    fields: { language_lesson_member_id_eq: member.id },
-  });
-  return <Link href={url}>{member.messages_count}</Link>;
-}
-
-export function LessonUrlTemplate(member: LanguageLessonMember) {
-  const url = Routes.language_lesson_path(
-    member.language_slug,
-    member.language_lesson_slug,
-  );
+function renderMessages(member: LanguageLessonMember) {
   return (
-    <div>
-      <Link href={url}>{member.language_lesson_name}</Link>
-      <div className="text-muted small">{member.language_slug}</div>
-    </div>
+    <AppAnchor href={Routes.admin_messages_path({ fields: { language_lesson_member_id_eq: member.id } })}>
+      {member.messages_count}
+    </AppAnchor>
   );
 }
 
-export default function Index({ grid, languageLessonMembers }: Props) {
+function renderLesson(member: LanguageLessonMember) {
+  return (
+    <Stack>
+      <AppAnchor href={Routes.language_lesson_path(member.language_slug, member.language_lesson_slug)}>
+        {member.language_lesson_name}
+      </AppAnchor>
+      <Text c="dimmed" size="sm">{member.language_slug}</Text>
+    </Stack>
+  );
+}
+
+export default function Index({ grid, languageLessonMembers }: PropsWithChildren<Props>) {
   const { t } = useTranslation();
-
-  const handleDataTable = useDataTable();
+  const gridProps = useDataTableProps<LanguageLessonMember>(grid);
 
   return (
-    <AdminLayout header={t("admin.language_lesson_members.index.header")}>
-      {/* <Menu /> */}
+    <AdminLayout header={t('admin.language_lesson_members.index.header')}>
       <DataTable
-        lazy
-        first={grid.first}
-        paginator
-        totalRecords={grid.tr}
-        rows={grid.per}
-        sortField={grid.sf}
-        sortOrder={grid.so}
-        onSort={handleDataTable}
-        onFilter={handleDataTable}
-        onPage={handleDataTable}
-        filters={fieldsToFilters(grid.fields)}
-        value={languageLessonMembers}
-      >
-        <Column field="id" header="id" />
-        <Column body={LessonUrlTemplate} header="Lesson Url" />
-        <Column field="user_id" header="user_id" />
-        <Column field="state" header="state" />
-        <Column field="openai_thread_id" header="openai_thread_id" />
-        <Column body={MessagesUrlTemplate} header="messages_count" />
-        <Column
-          field="created_at"
-          header="created_at"
-          sortable
-          body={DTDateTemplate}
-        />
-        {/* <Column header="actions" body={actionBodyTemplate} /> */}
-      </DataTable>
+        records={languageLessonMembers}
+        columns={[
+          { accessor: 'id' },
+          { accessor: 'lesson', title: 'Lesson Url', render: renderLesson },
+          { accessor: 'user_id' },
+          { accessor: 'state' },
+          { accessor: 'openai_thread_id' },
+          { accessor: 'messages_count', title: 'messages_count', render: renderMessages },
+          { accessor: 'created_at', sortable: true },
+        ]}
+        {...gridProps}
+      />
     </AdminLayout>
   );
 }

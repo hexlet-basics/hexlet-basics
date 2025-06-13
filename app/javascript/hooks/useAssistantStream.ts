@@ -2,7 +2,7 @@ import * as Routes from "@/routes.js";
 import { createConsumer } from "@rails/actioncable";
 import axios from "axios";
 import { debounce } from "es-toolkit";
-import { useSnackbar } from "notistack";
+import { notifications } from '@mantine/notifications';
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -27,7 +27,6 @@ export function useAssistantStream(
   userCode: string,
   output: string,
 ) {
-  const { enqueueSnackbar } = useSnackbar();
 
   const [messages, setMessages] = useState<AssistantMessage[]>([]);
   const [input, setInput] = useState("");
@@ -140,7 +139,10 @@ export function useAssistantStream(
             },
           ]);
         }
-        enqueueSnackbar(error.message);
+        notifications.show({
+          // title: 'Default notification',
+          message: error.message,
+        })
         // console.error(error);
       } else {
         throw error;

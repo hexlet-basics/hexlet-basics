@@ -1,11 +1,13 @@
+import { visualizer } from "rollup-plugin-visualizer";
 import legacy from '@vitejs/plugin-legacy'
 import path from "node:path";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 import react from "@vitejs/plugin-react";
 import browserslist from "browserslist";
 import { browserslistToTargets } from "lightningcss";
-import { defineConfig, loadEnv } from "vite";
+import { defineConfig, loadEnv, PluginOption } from "vite";
 import ViteRails from "vite-plugin-rails";
+import { patchCssModules } from 'vite-css-modules'
 
 export default defineConfig(({ mode, isSsrBuild }) => {
   const env = loadEnv(mode, process.cwd(), "VITE_");
@@ -17,13 +19,17 @@ export default defineConfig(({ mode, isSsrBuild }) => {
       },
     },
     build: {
-      sourcemap: "hidden",
+      // sourcemap: "hidden",
       // sourcemap: false,
       cssMinify: "lightningcss",
     },
     plugins: [
+      visualizer() as PluginOption,
       legacy({
         targets: ['defaults', 'not IE 11'],
+      }),
+      patchCssModules({
+        generateSourceTypes: true
       }),
       react(),
       ViteRails({
@@ -52,12 +58,7 @@ export default defineConfig(({ mode, isSsrBuild }) => {
     },
     ssr: {
       noExternal: [
-        // "lowlight",
-        // "highlight.js",
-        "react-syntax-highlighter",
-        // "use-inertia-form",
         "monaco-editor",
-        "primereact",
         "react-timer-hook",
         "@monaco-editor/react",
         "analytics",

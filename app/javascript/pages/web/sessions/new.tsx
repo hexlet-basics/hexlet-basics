@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { Card, Container, Row } from "react-bootstrap";
+import { Card, Container, Stack, Title, Text, Center, Anchor, Box, Button } from '@mantine/core';
 
 import { useTranslation } from "react-i18next";
 
@@ -20,42 +20,42 @@ export default function New({ signInForm }: Props) {
   const { t: tHelpers } = useTranslation("helpers");
 
   return (
-    <ApplicationLayout>
+    <ApplicationLayout
+      center
+      header={t("sessions.new.title")}
+    >
       <Container>
-        <Row className="justify-content-center">
-          <div className="col-sm-8 col-md-7 col-lg-5">
-            <h1 className="text-center my-5 mb-3">{t("sessions.new.title")}</h1>
-            <Card className="p-4 border-0">
-              <Card.Body>
-                <XForm
-                  to={Routes.session_path()}
-                  data={signInForm}
-                  model="user_sign_in_form"
-                  className="d-flex flex-column"
+        <Center>
+          <Card withBorder p="xl" w={{ base: '100%', sm: '80%', md: '70%', lg: '50%' }}>
+            <XForm
+              to={Routes.session_path()}
+              data={signInForm}
+              model="user_sign_in_form"
+              className="d-flex flex-column"
+            >
+              <XInput field="email" required autoFocus autoComplete="email" />
+              <XInput
+                required
+                field="password"
+                type="password"
+                autoComplete="current-password"
+              />
+              <Box my="lg" ta="right">
+                {t("sessions.new.forgot_password")}{" "}
+                <Anchor
+                  fw="bold"
+                  component={Link}
+                  href={Routes.new_remind_password_path()}
                 >
-                  <XInput name="email" autoFocus autoComplete="email" />
-                  <XInput
-                    name="password"
-                    type="password"
-                    autoComplete="current-password"
-                  />
-                  <div className="text-end text-muted small mb-4">
-                    {t("sessions.new.forgot_password")}{" "}
-                    <Link
-                      href={Routes.new_remind_password_path()}
-                      className="text-decoration-none"
-                    >
-                      {t("sessions.new.reset_password")}
-                    </Link>
-                  </div>
-                  <Submit className="btn w-100 btn-lg btn-primary mb-3">
-                    {tHelpers("submit.user_sign_in_form.create")}
-                  </Submit>
-                </XForm>
-              </Card.Body>
-            </Card>
-          </div>
-        </Row>
+                  {t("sessions.new.reset_password")}
+                </Anchor>
+              </Box>
+              <Button type="submit" fullWidth>
+                {tHelpers("submit.user_sign_in_form.create")}
+              </Button>
+            </XForm>
+          </Card>
+        </Center>
       </Container>
     </ApplicationLayout>
   );

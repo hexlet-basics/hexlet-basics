@@ -2,7 +2,7 @@
 
 class Web::ReviewsController < Web::ApplicationController
   def index
-    scope = Review.published.with_locale
+    scope = Review.published_state.with_locale
       .includes([ :user, :language ])
       .order(id: :desc)
     pagy, records = pagy(scope)

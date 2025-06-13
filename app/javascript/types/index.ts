@@ -4,10 +4,8 @@ import type { SetupOptions } from "node_modules/@inertiajs/react/types/createIne
 import type { ReactNode } from "react";
 import type { BackendEvent } from "./events";
 import { LanguageCategory, LanguageLandingPageForLists, User } from "./serializers";
-import type { SortOrder } from "primereact/api";
 
 export * from "./serializers";
-export { SortOrder }
 
 export type BreadcrumbItem = {
   name: string;
@@ -17,16 +15,20 @@ export type BreadcrumbItem = {
 export type FlashKey = "success" | "notice" | "error";
 
 export type FlashVariant =
-  | "alert"
-  | "notice"
-  | "primary"
-  | "secondary"
-  | "success"
-  | "danger"
-  | "warning"
-  | "info"
-  | "light"
-  | "dark";
+  | "blue"
+  | "cyan"
+  | "dark"
+  | "grape"
+  | "gray"
+  | "green"
+  | "indigo"
+  | "lime"
+  | "orange"
+  | "pink"
+  | "red"
+  | "teal"
+  | "violet"
+  | "yellow";
 
 export type FlashVariants = Record<FlashKey, FlashVariant>;
 

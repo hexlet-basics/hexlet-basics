@@ -4,7 +4,7 @@ class Web::HomeController < Web::ApplicationController
       .map { Language::MemberResource.new(it) }
     language_member_resources_by_language = language_member_resources.index_by { it.object.language_id }
 
-    blog_posts = BlogPost.published
+    blog_posts = BlogPost.published_state
       .includes([ :creator, { cover_attachment: :blob } ])
       .with_locale
       .includes(:cover_attachment)

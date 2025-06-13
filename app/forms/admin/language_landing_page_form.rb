@@ -9,7 +9,7 @@ class Admin::LanguageLandingPageForm < Language::LandingPage
     :footer_name,
     :order,
     :main,
-    :state_event,
+    :state,
     :outcomes_image,
     :header,
     :name,

@@ -6,6 +6,8 @@ import { useTranslation } from "react-i18next";
 import { Submit } from "use-inertia-form";
 import XssContent from "./XssContent";
 import { XForm, XInput } from "./forms";
+import { Anchor, Box, Button, Text } from "@mantine/core";
+import AppAnchor from "./AppAnchor";
 
 type Props = PropsWithChildren & {
   user: User;
@@ -18,23 +20,25 @@ export default function SignUpFormBlock({ user, autoFocus = false }: Props) {
 
   return (
     <XForm model="user_sign_up_form" data={user} to={Routes.users_path()}>
-      <XInput name="first_name" autoComplete="name" autoFocus={autoFocus} />
-      <XInput name="email" autoComplete="email" />
-      <XInput name="password" type="password" autoComplete="current-password" />
-      <div className="text-end text-muted small mb-4">
+      <XInput field="first_name" autoComplete="name" autoFocus={autoFocus} />
+      <XInput field="email" required autoComplete="email" />
+      <XInput field="password" required type="password" autoComplete="current-password" />
+      <Box my="lg" ta="right">
         {t("users.new.have_account")}{" "}
-        <Link href={Routes.new_session_path()} className="text-decoration-none">
+        <AppAnchor fw="bold" href={Routes.new_session_path()}>
           {t("users.new.sign_in")}
-        </Link>
-      </div>
-      <Submit className="btn w-100 btn-lg btn-primary mb-3">
+        </AppAnchor>
+      </Box>
+      <Button type="submit" fullWidth>
         {tHelpers("submit.user_sign_up_form.create")}
-      </Submit>
-      <XssContent className="small text-muted">
-        {t("users.new.confirmation_html", {
-          url: Routes.page_path("tos"),
-        })}
-      </XssContent>
+      </Button>
+      <Text fz={14}>
+        <XssContent>
+          {t("users.new.confirmation_html", {
+            url: Routes.page_path("tos"),
+          })}
+        </XssContent>
+      </Text>
     </XForm>
   );
 }

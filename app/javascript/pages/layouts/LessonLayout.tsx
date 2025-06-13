@@ -1,29 +1,34 @@
-import type { PropsWithChildren } from "react";
-import { Container } from "react-bootstrap";
-
-import { useTranslation } from "react-i18next";
+import { type PropsWithChildren } from "react";
+import { AppShell } from "@mantine/core";
 
 import RootLayout from "./RootLayout.tsx";
 import NavbarBlock from "./blocks/NavbarBlock.tsx";
+import { useDisclosure } from "@mantine/hooks";
 
 type Props = PropsWithChildren & {};
 
 export default function LessonLayout({ children }: Props) {
-  const { t: tLayouts } = useTranslation("layouts");
-  const { t: tCommon } = useTranslation("common");
-  // const { locale, suffix } = usePage<SharedProps>().props;
-  //
-  // useEffect(() => {
-  //   i18next.changeLanguage(locale);
-  //   Routes.configure({ default_url_options: { suffix } });
-  // }, [suffix, locale]);
+  const [opened, { toggle }] = useDisclosure();
+  const [mobileOpened, ] = useDisclosure();
 
   return (
     <RootLayout>
-      <Container fluid className="mb-2">
-        <NavbarBlock />
-      </Container>
-      {children}
+      <AppShell
+        h="100%"
+        navbar={{
+          width: { xs: 300, sm: 400, md: 450, lg: 550 },
+          breakpoint: "sm",
+          collapsed: { mobile: !mobileOpened }
+        }}
+        header={{ height: 60 }}
+      >
+        <AppShell.Header>
+          <NavbarBlock onToggle={toggle} opened={opened} />
+        </AppShell.Header>
+
+        {children}
+
+      </AppShell>
     </RootLayout>
   );
 }

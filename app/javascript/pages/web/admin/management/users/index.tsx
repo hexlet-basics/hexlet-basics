@@ -1,17 +1,15 @@
-import type { PropsWithChildren } from "react";
+import { DataTable } from 'mantine-datatable';
+import type { PropsWithChildren } from 'react';
 
-import * as Routes from "@/routes.js";
-import { useTranslation } from "react-i18next";
+import * as Routes from '@/routes.js';
+import { useTranslation } from 'react-i18next';
 
-import { DTDateTemplate } from "@/components/dtTemplates";
-import useDataTable from "@/hooks/useDataTable";
-import { fieldsToFilters } from "@/lib/utils";
-import AdminLayout from "@/pages/layouts/AdminLayout";
-import type { Grid, User } from "@/types/serializers";
-import { Link } from "@inertiajs/react";
-import { Column } from "primereact/column";
-import { DataTable } from "primereact/datatable";
-import { Menu } from "./shared/menu";
+import AdminLayout from '@/pages/layouts/AdminLayout';
+import AppAnchor from '@/components/AppAnchor';
+import type { User, Grid } from '@/types/serializers';
+import { Menu } from './shared/menu';
+import useDataTableProps from '@/hooks/useDataTableProps';
+import { Edit } from 'lucide-react';
 
 type Props = PropsWithChildren & {
   users: User[];
@@ -20,52 +18,30 @@ type Props = PropsWithChildren & {
 
 export default function Index({ grid, users }: Props) {
   const { t } = useTranslation();
+  const gridProps = useDataTableProps<User>(grid);
 
-  const handleDataTable = useDataTable();
-
-  const actionBodyTemplate = (data: User) => {
-    return (
-      <Link
-        className="link-body-emphasis"
-        href={Routes.edit_admin_management_user_path(data.id)}
-      >
-        <i className="bi bi-pencil-fill" />
-      </Link>
-    );
-  };
+  const renderActions = (item: User) => (
+    <AppAnchor href={Routes.edit_admin_management_user_path(item.id)}>
+      <Edit size={14} />
+    </AppAnchor>
+  );
 
   return (
-    <AdminLayout header={t("admin.management.users.index.header")}>
+    <AdminLayout header={t('admin.management.users.index.header')}>
       <Menu />
       <DataTable
-        lazy
-        paginator
-        filterDisplay="row"
-        totalRecords={grid.tr}
-        rows={grid.per}
-        first={grid.first}
-        sortField={grid.sf}
-        sortOrder={grid.so}
-        onSort={handleDataTable}
-        onFilter={handleDataTable}
-        onPage={handleDataTable}
-        filters={fieldsToFilters(grid.fields)}
-        // globalFilterFields={["email"]}
-        value={users}
-      >
-        <Column field="id" header="id" />
-        <Column field="admin" header="Admin?" />
-        <Column field="assistant_messages_count" header="Messages" />
-        <Column field="name" header="name" sortable />
-        <Column sortable filter field="email" header="email" />
-        <Column
-          field="created_at"
-          header="created_at"
-          sortable
-          body={DTDateTemplate}
-        />
-        <Column header="actions" body={actionBodyTemplate} />
-      </DataTable>
+        records={users}
+        columns={[
+          { accessor: 'id' },
+          { accessor: 'admin', title: 'Admin?' },
+          { accessor: 'assistant_messages_count', title: 'Messages' },
+          { accessor: 'name', sortable: true },
+          { accessor: 'email', sortable: true },
+          { accessor: 'created_at', sortable: true },
+          { accessor: 'actions', title: 'actions', render: renderActions },
+        ]}
+        {...gridProps}
+      />
     </AdminLayout>
   );
 }

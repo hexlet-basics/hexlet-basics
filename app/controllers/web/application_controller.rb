@@ -61,7 +61,7 @@ class Web::ApplicationController < ApplicationController
     ransack = raw["fields"]
 
     if raw.key?("sf")
-      ransack["s"] = "#{raw["sf"]} #{raw["so"] == "1" ? 'asc' : 'desc'}"
+      ransack["s"] = "#{raw["sf"]} #{raw["so"]}"
     end
 
     ransack.to_unsafe_hash

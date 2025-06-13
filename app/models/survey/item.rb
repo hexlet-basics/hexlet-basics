@@ -20,18 +20,11 @@
 #  fk_rails_...  (survey_id => surveys.id)
 #
 class Survey::Item < ApplicationRecord
-  include AASM
-
   acts_as_taggable_on :tags
 
   belongs_to :survey
 
-  enum :state, { active: "active", archived: "archived" }
+  validates :value, presence: true, if: :active?
 
-  aasm :state, enum: true do
-    state :active, initial: true do
-      validates :value, presence: true
-    end
-    state :archived
-  end
+  enum :state, { active: "active", archived: "archived" }
 end

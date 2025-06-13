@@ -1,55 +1,29 @@
-import { usePage } from "@inertiajs/react";
-import { Nav } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-
 import * as Routes from "@/routes.js";
 import type ReviewCrud from "@/types/serializers/ReviewCrud";
+import { LogIn } from "lucide-react";
+import { CrudHorizontalMenu, CrudHorizontalMenuItem } from "@/components/CrudHorizontalMenu";
 
 type Props = {
   data?: ReviewCrud;
 };
 
 export function Menu({ data }: Props) {
-  const { url } = usePage();
   const { t: tHelpers } = useTranslation("helpers");
 
-  return (
-    <Nav variant="tabs" className="mb-4" activeKey={url}>
-      <Nav.Item>
-        <Nav.Link
-          className="link-body-emphasis"
-          href={Routes.admin_reviews_path()}
-        >
-          {tHelpers("crud.list")}
-        </Nav.Link>
-      </Nav.Item>
-      <Nav.Item>
-        <Nav.Link
-          className="link-body-emphasis"
-          href={Routes.new_admin_review_path()}
-        >
-          {tHelpers("crud.add")}
-        </Nav.Link>
-      </Nav.Item>
-      <Nav.Item>
-        <Nav.Link
-          target="_blank"
-          className="link-body-emphasis"
-          href={Routes.reviews_path()}
-        >
-          <i className="bi bi-arrow-up-right-square" />
-        </Nav.Link>
-      </Nav.Item>
-      {data && (
-        <Nav.Item>
-          <Nav.Link
-            className="link-body-emphasis"
-            href={Routes.edit_admin_review_path(data.review.id)}
-          >
-            {tHelpers("crud.editing")}
-          </Nav.Link>
-        </Nav.Item>
-      )}
-    </Nav>
-  );
+  const items: CrudHorizontalMenuItem[] = [
+    { href: Routes.admin_reviews_path(), label: tHelpers("crud.list") },
+    { href: Routes.new_admin_review_path(), label: tHelpers("crud.add") },
+  ];
+
+  if (data) {
+    items.push(
+      { href: Routes.edit_admin_review_path(data.review.id), label: tHelpers("crud.editing") },
+    );
+    items.push(
+      { href: Routes.reviews_path(), external: true, label: <LogIn size={15} /> },
+    );
+  }
+
+  return <CrudHorizontalMenu items={items} />;
 }

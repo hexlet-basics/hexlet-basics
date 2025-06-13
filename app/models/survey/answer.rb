@@ -24,8 +24,6 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Survey::Answer < ApplicationRecord
-  include AASM
-
   belongs_to :survey
   belongs_to :survey_item, class_name: "Survey::Item", optional: true
   belongs_to :user
@@ -37,11 +35,4 @@ class Survey::Answer < ApplicationRecord
   def self.ransackable_attributes(auth_object = nil)
     [ "created_at", "id", "state", "survey_id", "survey_item_id", "updated_at", "user_id" ]
   end
-
-  # aasm :state, enum: true do
-  #   state :requested
-  #   state :fulfilled do
-  #     validates :survey_item, optional: false
-  #   end
-  # end
 end

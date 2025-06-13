@@ -6,6 +6,7 @@ import { LeadCrud } from "@/types";
 import * as Routes from "@/routes.js";
 import XssContent from "./XssContent";
 import { toMerged } from "es-toolkit";
+import { Box, Button } from "@mantine/core";
 
 type Props = {
   lead: LeadCrud
@@ -26,30 +27,32 @@ export default function LeadFormBlock({ lead, autoFocus = false }: Props) {
   )
 
   return (
-    <XForm className="d-flex flex-column h-100" model="lead" data={data} to={Routes.leads_path()}>
-      <XHidden name="ym_client_id" />
+    <XForm model="lead" data={data} to={Routes.leads_path()}>
+      <XHidden field="ym_client_id" />
       <XSelect
-        name="contact_method"
+        required
+        field="contact_method"
+        defaultValue="telegram"
         labelField="name"
         valueField="id"
         items={contactMethodOptions}
       />
-      <XInput autoFocus={autoFocus} name="contact_value" />
-      <div className="small text-end mb-5">
-        <div>
+      <XInput required autoFocus={autoFocus} field="contact_value" />
+      <Box fz={14} my="lg">
+        <Box>
           <XssContent>
             {tViews('blocks.lead_form_block.description1')}
           </XssContent>
-        </div>
-        <div>
+        </Box>
+        <Box>
           <XssContent>
             {tViews('blocks.lead_form_block.description2')}
           </XssContent>
-        </div>
-      </div>
-      <Submit className="btn d-block btn-lg btn-primary mt-auto shadow-sm">
+        </Box>
+      </Box>
+      <Button type="submit" fullWidth>
         {tHelpers("send")}
-      </Submit>
+      </Button>
     </XForm>
   )
 }

@@ -1,15 +1,15 @@
-import { useTranslation } from "react-i18next";
+import { Button, Group, Text, Loader, Box } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
+import { modals } from '@mantine/modals';
+import { useTranslation } from 'react-i18next';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { usePage, Link } from '@inertiajs/react';
 
-import cn from "classnames";
-import { Button, OverlayTrigger, Popover, Spinner } from "react-bootstrap";
-import { useHotkeys } from "react-hotkeys-hook";
-
-import useConfirmation from "@/hooks/useConfirmation.ts";
-import * as Routes from "@/routes.js";
-import { Link, usePage } from "@inertiajs/react";
-import type { LessonSharedProps } from "../types.ts";
-import { useLessonStore } from "../store.tsx";
-import { enqueueSnackbar } from "notistack";
+import * as Routes from '@/routes.js';
+import type { LessonSharedProps } from '../types.ts';
+import { useLessonStore } from '../store.tsx';
+import { noop } from 'es-toolkit';
+import { Repeat, Play, ThumbsUp, ThumbsDown } from 'lucide-react';
 
 export default function ControlBox() {
   const {
@@ -24,10 +24,10 @@ export default function ControlBox() {
     landingPage,
     nextLesson,
     auth: { user },
-  } = sharedProps
+  } = sharedProps;
 
   const { t } = useTranslation();
-  const { t: tCommon } = useTranslation("common");
+  const { t: tCommon } = useTranslation('common');
 
   const processState = useLessonStore((state) => state.processState);
   const finished = useLessonStore((state) => state.finished);
@@ -36,130 +36,136 @@ export default function ControlBox() {
   const handleRunCheck = async () => {
     const result = await runCheck({ course, lesson });
     if (!result) {
-      enqueueSnackbar(tCommon('errors.network'));
+      notifications.show({
+        // title: 'Default notification',
+        message: tCommon('errors.network'),
+      })
     }
   };
 
   const resetContent = useLessonStore((state) => state.resetContent);
-  const confirmResetting = useConfirmation({
-    callback: resetContent
+  // const confirmResetting = useConfirmation({ callback: resetContent });
+  const openModal = () => modals.openConfirmModal({
+    title: tCommon("confirm"),
+    labels: { confirm: <ThumbsUp />, cancel: <ThumbsDown /> },
+    onCancel: noop,
+    onConfirm: resetContent,
   });
 
-  const isCodeChecking = processState === "checking";
+  const isCodeChecking = processState === 'checking';
+
+  useHotkeys('ctrl+enter', handleRunCheck);
 
   const renderRunButtonContent = () => {
-    const text = t("languages.lessons.show.controls.run");
+    const text = t('languages.lessons.show.controls.run');
     if (isCodeChecking) {
       return (
-        <>
-          <Spinner
-            as="span"
-            animation="border"
-            size="sm"
-            role="status"
-            aria-hidden="true"
-          />
-          <span className="visually-hidden">{tCommon("loading")}</span>
-          <span className="d-none d-sm-block d-md-none d-lg-block ms-1">
-            {text}
-          </span>
-        </>
+        <Group gap={4} align="center">
+          <Loader size="xs" />
+          <Text size="xs">{text}</Text>
+        </Group>
       );
     }
 
     return (
-      <>
-        <span className="bi bi-play-circle" />
-        <span className="d-none d-sm-block d-md-none d-lg-block ms-1">
-          {text}
-        </span>
-      </>
+      <Group gap={4} align="center">
+        <Play size={18} />
+        <Text size="xs">{text}</Text>
+      </Group>
     );
   };
 
-  const prevButtonClasses = cn("btn btn-sm btn-outline-success me-3");
-
-  const nextButtonClasses = cn("btn btn-sm btn-outline-success fw-normal", {
-    disabled: !finished,
-  });
-
-  useHotkeys("ctrl+enter", handleRunCheck);
-
-  const popover = (
-    <Popover id="popover-basic">
-      <Popover.Header as="h3">
-        {t("languages.lessons.show.controls.header")}
-      </Popover.Header>
-      <Popover.Body>{t("languages.lessons.show.controls.body")}</Popover.Body>
-    </Popover>
-  );
+  const nextButtonDisabled = !finished;
 
   return (
-    <div className="d-flex p-3 border-top">
-      {/* <OverlayTrigger trigger="click" placement="top" overlay={popover}>
-        <Button variant="link" className="text-muted my-auto me-3 p-1">
-          <span aria-label="help" className="bi bi-question-circle fs-5" />
+    <Box py="sm" className="border-t border-gray-400">
+      <Group justify="center">
+        <Button size="xs" me="xs" onClick={openModal}>
+          <Repeat size={18} />
         </Button>
-      </OverlayTrigger> */}
-      <div className="m-auto">
-        <OverlayTrigger
-          trigger={["hover", "focus"]}
-          placement="top"
-          overlay={popover}
-        >
-          <Button
-            variant="outline-secondary"
-            size="sm"
-            className="me-3"
-            onClick={confirmResetting}
-          // title={t('resetCode')}
-          >
-            <span className="bi bi-arrow-repeat" />
-          </Button>
-        </OverlayTrigger>
+        {/* <Popover width={200} position="top" withArrow shadow="md"> */}
+        {/*   <Popover.Target> */}
+        {/*     <Button size="xs" onClick={openModal}> */}
+        {/*       <IconRepeat size={18} /> */}
+        {/*     </Button> */}
+        {/*   </Popover.Target> */}
+        {/*   <Popover.Dropdown> */}
+        {/*     <Text size="sm" fw={500}> */}
+        {/*       {t('languages.lessons.show.controls.header')} */}
+        {/*     </Text> */}
+        {/*     <Text size="xs">{t('languages.lessons.show.controls.body')}</Text> */}
+        {/*   </Popover.Dropdown> */}
+        {/* </Popover> */}
 
         {prevLesson && (
-          <Link
+          <Button
+            component={Link}
+            size="xs"
+            variant="outline"
+            color="green"
+            radius="sm"
+            me="xs"
             href={Routes.language_lesson_path(course.slug!, prevLesson.slug!)}
-            className={prevButtonClasses}
           >
-            {t("languages.lessons.show.prev")}
-          </Link>
+            {t('languages.lessons.show.prev')}
+          </Button>
         )}
+
         <Button
-          variant="outline-primary"
-          size="sm"
-          className="me-3 d-inline-flex align-items-center"
-          onClick={handleRunCheck}
+          size="xs"
+          variant="outline"
+          color="blue"
+          radius="sm"
+          me="xs"
           disabled={isCodeChecking}
+          onClick={handleRunCheck}
         >
           {renderRunButtonContent()}
         </Button>
+
         {user.guest && (
-          <Link
-            className={nextButtonClasses}
+          <Button
+            component={Link}
+            size="xs"
+            variant="outline"
+            color="green"
+            radius="sm"
+            me="xs"
+            disabled={nextButtonDisabled}
             href={Routes.new_user_path({ demo: true, from: url })}
           >
-            {t("languages.lessons.show.next")}
-          </Link>
+            {t('languages.lessons.show.next')}
+          </Button>
         )}
+
         {!user.guest && nextLesson && (
-          <Link
-            className={nextButtonClasses}
+          <Button
+            component={Link}
+            size="xs"
+            variant="outline"
+            color="green"
+            radius="sm"
+            disabled={nextButtonDisabled}
             href={Routes.language_lesson_path(course.slug!, nextLesson.slug!)}
           >
-            {t("languages.lessons.show.next")}
-          </Link>
+            {t('languages.lessons.show.next')}
+          </Button>
         )}
+
         {!user.guest && !nextLesson && (
-          <Link
-            className={nextButtonClasses}
+          <Button
+            component={Link}
+            size="xs"
+            variant="outline"
+            color="green"
+            radius="sm"
+            disabled={nextButtonDisabled}
             href={Routes.success_language_url(landingPage.slug!)}
           >
-            {t("languages.lessons.show.finish")}
-          </Link>
+            {t('languages.lessons.show.finish')}
+          </Button>
         )}
-      </div>
-    </div>
+      </Group>
+    </Box>
   );
 }

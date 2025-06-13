@@ -23,12 +23,14 @@ class Web::BooksController < Web::ApplicationController
   end
 
   def download
-    unless current_user.book_request
+    book_request = current_user.book_request
+    unless book_request
       redirect_to view_context.book_path
       return
     end
 
-    current_user.book_request.mark_as_downloaded!
+    book_request.state = "downloaded"
+    book_request.save!
 
     filepath = Rails.root.join("public/book.pdf")
     send_file filepath,

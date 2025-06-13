@@ -37,7 +37,7 @@ class Web::Admin::ReviewsControllerTest < ActionDispatch::IntegrationTest
   test "update" do
     review = reviews("full-javascript")
 
-    assert { review.published? }
+    assert { review.published_state? }
 
     patch admin_review_url(review), params: { review: { body: "mumu", state_event: "archive" } }
     assert_response :redirect

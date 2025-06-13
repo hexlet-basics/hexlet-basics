@@ -78,8 +78,9 @@ css:
 python:
   <<: *DEFAULTS
 
-html:
+html1:
   <<: *DEFAULTS
+  language: html
 
 ruby:
   <<: *DEFAULTS

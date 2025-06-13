@@ -1,11 +1,8 @@
-class GridResource
-  include Alba::Resource
-  include Typelizer::DSL
-
+class GridResource < ApplicationResource
   # sf = sort field, so = sort order, tr = total records
   attributes :sf, :so, :page, :fields, :tr, :per
   typelize sf: :string,
-    so: "SortOrder",
+    so: '"asc" | "desc"',
     tr: :number,
     per: :number,
     page: :number,

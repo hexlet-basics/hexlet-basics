@@ -1,0 +1,19 @@
+programming-ru-1:
+  language_category: programming-ru 
+  question: Что нужно знать перед тем, как начинать изучать JavaScript?
+  answer: Достаточно базового понимания, как работает браузер и что такое сайты. Остальному научим с нуля.
+
+programming-ru-2:
+  language_category: programming-ru 
+  question: Можно ли учить JavaScript, если я никогда не программировал(а)?
+  answer: Конечно. Мы объясняем всё простыми словами, шаг за шагом, без перегруза сложной теорией.
+
+programming-ru-3:
+  language_category: programming-ru 
+  question: Что я смогу сделать после прохождения курса?
+  answer: Вы научитесь писать интерактивные элементы на сайте — кнопки, формы, динамические списки и многое другое.
+
+programming-ru-4:
+  language_category: programming-ru 
+  question: Нужно ли устанавливать что-то на компьютер?
+  answer: Нет. Всё обучение проходит в браузере — учитесь где и когда удобно.

@@ -28,8 +28,6 @@
 #  fk_rails_...  (language_id => languages.id)
 #
 class BlogPost < ApplicationRecord
-  extend Enumerize
-  include AASM
   include BlogPostRepository
 
   has_one_attached :cover do |attachable|
@@ -46,7 +44,7 @@ class BlogPost < ApplicationRecord
     []
   end
 
-  enumerize :locale, in: I18n.available_locales
+  enum :state, { draft: "draft", published: "published", archived: "archived" }, suffix: true, validate: true
 
   validates :name, presence: true
   validates :slug, presence: true, uniqueness: true, format: { with: /\A[\w-]+\z/ }
@@ -57,20 +55,6 @@ class BlogPost < ApplicationRecord
   belongs_to :language, optional: true
   has_one :category, through: :language, class_name: "Language::Category"
   belongs_to :creator, class_name: "User"
-
-  aasm column: :state do
-    state :draft, initial: true
-    state :published
-    state :archived
-
-    event :publish do
-      transitions to: :published
-    end
-
-    event :archive do
-      transitions to: :archived
-    end
-  end
 
   def to_s
     name

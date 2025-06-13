@@ -1,7 +1,8 @@
 import * as Routes from "@/routes.js";
 import dayjs from "dayjs";
 import type { PropsWithChildren } from "react";
-import { Card, Col, Container, Row } from "react-bootstrap";
+import { Card, Text, Group, Container, SimpleGrid } from '@mantine/core';
+import { CircleUser } from 'lucide-react';
 
 import XPaging from "@/components/XPaging";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
@@ -30,34 +31,20 @@ export default function New({ reviews, pagy }: Props) {
   return (
     <ApplicationLayout items={items} header={header}>
       <Container>
-        <Row className="mb-5 row-cols-1 row-cols-lg-2">
+        <SimpleGrid cols={{ base: 1, xs: 2 }}>
           {reviews.map((review) => (
-            <Col key={review.id} className="mb-5">
-              <Card key={review.id} className="mb-3 h-100 shadow-sm border-0">
-                <Card.Body className="d-flex flex-column">
-                  <div className="mb-auto">
-                    <Card.Title>
-                      <i className="bi bi-person-circle me-2" />
-                      {review.full_name}
-                    </Card.Title>
-                    <Card.Text>{review.body}</Card.Text>
-                  </div>
-                  <div className="d-flex small text-muted">
-                    {/* {review.language && ( */}
-                    {/*   <Card.Link */}
-                    {/*     href={Routes.language_path(review.language.slug!)} */}
-                    {/*     className="me-auto link-body-emphasis" */}
-                    {/*   > */}
-                    {/*     {review.language.name} */}
-                    {/*   </Card.Link> */}
-                    {/* )} */}
-                    <div>{dayjs(review.created_at).format("LL")}</div>
-                  </div>
-                </Card.Body>
-              </Card>
-            </Col>
+            <Card key={review.id} shadow="sm" padding="lg" radius="md" withBorder>
+              <Group>
+                <CircleUser size={20} />
+                <Text fw={500} size="lg">{review.full_name}</Text>
+              </Group>
+              <Text mb="sm">{review.body}</Text>
+              <Group justify="space-between" c="dimmed" mt="auto">
+                <Text size="sm">{dayjs(review.created_at).format("LL")}</Text>
+              </Group>
+            </Card>
           ))}
-        </Row>
+        </SimpleGrid>
         <XPaging pagy={pagy} />
       </Container>
     </ApplicationLayout>

@@ -34,9 +34,33 @@ DEFAULTS: &DEFAULTS
   theory: |
     <%= Faker::Lorem.paragraph_by_chars(number: 400) %>
 
-    ```javascript
-    const x = 5;
+    ```html
+    <section>
+      <h2>Code Basics</h2>
+      <p>
+        Code Basics — бесплатные практические уроки по программированию для тех,
+        кто начинает с нуля.
+      </p>
+      <p>
+        Если вы совсем новичок и хотите научиться основам — переменным,
+        строкам, циклам, функциям и т.д., то Code Basics вам подойдёт.
+      </p>
+    </section>
     ```
+
+    > Цитата нафиг
+
+    [ссылка](https://ru.hexlet.io)
+
+    ![Картинка](https://placehold.co/600x400)
+
+    ![Картинка 2](https://placehold.co/100x100)
+
+    | Tailwind Class | CSS Property              | Value            |
+    |----------------|---------------------------|------------------|
+    | `rounded`      | `border-radius`           | `0.25rem`        |
+    | `block`        | `display`                 | `block`          |
+    | `p-3`          | `padding`                 | `0.75rem`        |
 
     <iframe src="//player.vimeo.com/video/128853333?api=1&player_id=video1" id="video1" allowfullscreen="true"></iframe>
 
@@ -53,6 +77,14 @@ pre-course-javascript1-module1_version1-lesson1_version1-ru:
   language_lesson: pre-course-javascript-module1-lesson1
   language_version: pre-course-javascript1
   version: pre-course-javascript1-module1_version1-lesson1_version1
+
+html-module1_version1-lesson1_version1-ru:
+  <<: *DEFAULTS
+  name: Привет мир
+  language: html
+  language_lesson: html-module1-lesson1
+  language_version: html1
+  version: html1-module1_version1-lesson1_version1
 
 typescript1-module1_version1-lesson1_version1-ru:
   <<: *DEFAULTS

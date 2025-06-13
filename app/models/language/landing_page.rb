@@ -39,7 +39,6 @@
 #  fk_rails_...  (language_id => languages.id)
 #
 class Language::LandingPage < ApplicationRecord
-  include AASM
   include Language::LandingPageRepository
 
   belongs_to :language
@@ -54,6 +53,7 @@ class Language::LandingPage < ApplicationRecord
   validates :main, uniqueness: { scope: [ :locale, :language_id ] }, if: :main?
   # validates :description, presence: true
   validates :locale, presence: true # , inclusion: I18n.available_locales
+  validates :description, presence: true, if: :published?
 
   has_many :language_category_items, class_name: "Language::Category::Item", foreign_key: "language_landing_page_id"
   has_many :language_categories, through: :language_category_items, source: "language_category"
@@ -72,22 +72,6 @@ class Language::LandingPage < ApplicationRecord
   end
 
   enum :state, { draft: "draft", archived: "archived", published: "published" }, default: "draft"
-
-  aasm column: :state, enum: true do
-    state :draft, initial: true
-    state :archived
-    state :published do
-      validates :description, presence: true
-    end
-
-    event :archive do
-      transitions to: :archived
-    end
-
-    event :publish do
-      transitions to: :published
-    end
-  end
 
   def to_s
     header

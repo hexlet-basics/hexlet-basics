@@ -1,7 +1,6 @@
 import type { BlogPost } from "@/types/serializers";
 import type { PropsWithChildren } from "react";
-
-import { Card } from "react-bootstrap";
+import { Card, Image, Text, Group, Stack, Anchor, Title } from '@mantine/core';
 import { useTranslation } from "react-i18next";
 
 import * as Routes from "@/routes.js";
@@ -18,40 +17,46 @@ export default function BlogPostBlock({ post }: Props) {
   const { t: tCommon } = useTranslation("common");
 
   return (
-    <Card className="border-0">
+    <Card
+      pos="relative"
+      shadow="sm"
+      padding="lg"
+      radius="md"
+      withBorder
+    >
       {post.cover_thumb_variant && (
-        <Card.Img
-          src={post.cover_list_variant!}
-          // className="img-fluid"
-          alt={`Cover for ${post.name}`}
-        />
+        <Card.Section>
+          <Image
+            src={post.cover_list_variant!}
+            alt={`Cover for ${post.name}`}
+          />
+        </Card.Section>
       )}
-      <Card.Body className="px-1">
-        <Card.Title>
-          <Link
-            href={Routes.blog_post_path(post.slug!, { suffix })}
-            className="link-body-emphasis text-decoration-none stretched-link"
-          >
-            {post.name}
-          </Link>
-        </Card.Title>
-        <Card.Text>{post.description}</Card.Text>
-        <div className="mt-2 d-flex small text-muted">
-          <div className="me-auto">{dayjs().to(post.created_at)}</div>
-          <div className="me-3">
-            <i className="bi bi-hand-thumbs-up me-1" />
-            {post.likes_count}
-          </div>
-          <div className="me-1">
-            <i className="bi bi-clock me-1" />
-          </div>
-          <div className="me-2">~{tCommon("time.minutes", { count: 5 })}</div>
-          {/* <div> */}
-          {/*   {tHelpers("read")} */}
-          {/*   <i className="bi bi-arrow-right ms-1 lh-1" /> */}
-          {/* </div> */}
-        </div>
-      </Card.Body>
+
+      <Title order={2} my="md">
+        {post.name}
+      </Title>
+      <Text size="sm" mb="xs">{post.description}</Text>
+
+      <Group gap="xs" c="dimmed" mt="auto">
+        <Text size="sm">{dayjs().to(post.created_at)}</Text>
+        <Group gap="xs">
+          <i className="bi bi-hand-thumbs-up" />
+          <Text size="sm">{post.likes_count}</Text>
+        </Group>
+        <Group gap="xs">
+          <i className="bi bi-clock" />
+          <Text size="sm">~{tCommon("time.minutes", { count: 5 })}</Text>
+        </Group>
+      </Group>
+
+      <Anchor
+        pos="absolute"
+        inset={0}
+        component={Link}
+        href={Routes.blog_post_path(post.slug!, { suffix })}
+      >
+      </Anchor>
     </Card>
   );
 }

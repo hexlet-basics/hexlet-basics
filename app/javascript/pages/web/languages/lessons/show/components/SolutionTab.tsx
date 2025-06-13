@@ -1,16 +1,15 @@
 import { useTranslation } from "react-i18next";
-import { github } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { useTimer } from "react-timer-hook";
+import { Image, Alert, Button, Center, Text, Title, Stack, Box, Group } from '@mantine/core';
 
 import waitingClock from "@/images/waiting_clock.png";
 import { getEditorLanguage } from "@/lib/utils.ts";
 import { usePage } from "@inertiajs/react";
-import { Alert } from "react-bootstrap";
-import SyntaxHighlighter from "react-syntax-highlighter";
 import type { LessonSharedProps } from "../types.ts";
 
 import dayjs from "dayjs";
 import { useLessonStore } from "../store.tsx";
+import { CodeHighlight } from "@mantine/code-highlight";
 
 const waitingTime = 20 * 60 * 1000; // 20 min
 // const waitingTime = 3000;
@@ -30,40 +29,32 @@ export default function SolutionTab() {
 
   const renderUserCode = () => {
     if (content === "") {
-      return <Alert className="mt-3">{tCommon("userCodeInstructions")}</Alert>;
+      return <Alert>{tCommon("userCodeInstructions")}</Alert>;
     }
 
     return (
-      <>
-        <SyntaxHighlighter
-          style={github}
-          showLineNumbers
-          language={getEditorLanguage(course.slug!)}
-        >
-          {content}
-        </SyntaxHighlighter>
-      </>
+      <CodeHighlight
+        code={content}
+        language={getEditorLanguage(course.slug!)}
+      />
     );
   };
 
   const renderSolution = () => {
     return (
-      <div className="p-lg-3 hexlet-basics-content" id="basics-solution">
-        <div className="mb-5">
-          <h2 className="h3">{tCommon("teacherSolution")}</h2>
-          <SyntaxHighlighter
-            style={github}
-            showLineNumbers
+      <>
+        <Stack mb="xl">
+          <Title order={2} mb="lg">{tCommon("teacherSolution")}</Title>
+          <CodeHighlight
+            code={lesson.original_code!}
             language={getEditorLanguage(course.slug!)}
-          >
-            {lesson.original_code!}
-          </SyntaxHighlighter>
-        </div>
-        <div>
-          <h2 className="h3">{tCommon("userCode")}</h2>
+          />
+        </Stack>
+        <Stack>
+          <Title order={2} mb="lg">{tCommon("userCode")}</Title>
           {renderUserCode()}
-        </div>
-      </div>
+        </Stack>
+      </>
     );
   };
 
@@ -73,16 +64,16 @@ export default function SolutionTab() {
 
   const renderShowButton = () => (
     <>
-      <p>{tCommon("solutionNotice")}</p>
-      <div className="text-center">
-        <button
-          type="button"
-          className="btn btn-secondary px-4"
+      <Text>{tCommon("solutionNotice")}</Text>
+      <Center>
+        <Button
+          variant="light"
           onClick={handleShowSolution}
+          px="xl"
         >
           {tCommon("showSolution")}
-        </button>
-      </div>
+        </Button>
+      </Center>
     </>
   );
 
@@ -97,21 +88,21 @@ export default function SolutionTab() {
       .format("mm:ss");
 
     return (
-      <div className="text-center">
-        <p className="lead">{tCommon("solutionInstructions")}</p>
-        <div className="display-4">{remainingTime}</div>
-        <img
-          className="img-fluid px-5"
+      <Stack align="center">
+        <Text size="lg" fw={500}>{tCommon("solutionInstructions")}</Text>
+        <Text fz={50}>{remainingTime}</Text>
+        <Image
           src={waitingClock}
+          fit="contain"
           alt="waiting_clock"
         />
-      </div>
+      </Stack>
     );
   };
 
   return (
-    <div>
+    <Box>
       {finished || solutionState === "shown" ? renderSolution() : <Countdown />}
-    </div>
+    </Box>
   );
 }

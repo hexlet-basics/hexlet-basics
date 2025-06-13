@@ -1,5 +1,5 @@
 import { type PropsWithChildren } from "react";
-import { Button, Card, Container, Row } from "react-bootstrap";
+import { Button, Card, Container, Stack, Title, Text, Center } from '@mantine/core';
 
 import * as Routes from "@/routes.js";
 import { useTranslation } from "react-i18next";
@@ -32,33 +32,32 @@ export default function Show({ scenario, survey, surveyItems }: Props) {
 
   return (
     <ApplicationLayout>
-      <Container className="my-5">
-        <Row className="justify-content-center">
-          <div className="col-sm-9 col-md-8 col-lg-7">
-            <Card className="p-3">
-              <Card.Body>
-                <div className="mb-4">
-                  <Card.Title as="h1">
-                    {survey.question}
-                  </Card.Title>
-                  {survey.description && <p>{survey.description}</p>}
-                </div>
+      <Container my="xl">
+        <Center>
+          <Card withBorder radius="lg" p="xl" w={{ base: '100%', sm: '90%', md: '80%', lg: '70%' }}>
+            <Stack gap="md">
+
+              <Title order={1} mb="lg">
+                {survey.question}
+              </Title>
+              {survey.description && <Text mb="lg">{survey.description}</Text>}
+
+              <Stack gap="xs">
                 {surveyItems.map((item) => (
-                  <div
-                    className="mb-2"
+                  <Button
                     key={item.id}
+                    data-id={item.id}
+                    onClick={handleAnswer}
+                    variant="outline"
                   >
-                    <Button
-                      data-id={item.id}
-                      onClick={handleAnswer}
-                      variant="outline-secondary"
-                    >{item.value}</Button>
-                  </div>
+                    {item.value}
+                  </Button>
                 ))}
-              </Card.Body>
-            </Card>
-          </div>
-        </Row>
+              </Stack>
+            </Stack>
+          </Card>
+        </Center>
+
       </Container>
     </ApplicationLayout>
   );

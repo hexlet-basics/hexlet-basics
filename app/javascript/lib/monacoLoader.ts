@@ -2,10 +2,7 @@
 
 import { loader } from "@monaco-editor/react";
 // import { shikiToMonaco } from "@shikijs/monaco";
-import { createHighlighter } from "shiki";
 
-import darkTheme from "shiki/themes/github-dark.mjs";
-import lightTheme from "shiki/themes/github-light.mjs";
 
 import * as monaco from "monaco-editor";
 
@@ -14,7 +11,6 @@ import cssWorker from "monaco-editor/esm/vs/language/css/css.worker?worker";
 import htmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
 import jsonWorker from "monaco-editor/esm/vs/language/json/json.worker?worker";
 import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
-import { languages } from "./utils";
 
 self.MonacoEnvironment = {
   getWorker(_, label) {

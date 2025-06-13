@@ -1,54 +1,200 @@
 import * as Routes from "@/routes.js";
-import { Alert, Col, Container, Nav, Row, Tab } from "react-bootstrap";
+import { useState } from "react";
+import { AppShell, Paper, Text, ScrollArea, Tabs, List, Alert, Title, Box, Accordion, Center, Stack } from "@mantine/core";
 
-import Chat from "@/components/Chat.tsx";
-import MarkdownViewer from "@/components/MarkdownViewer.tsx";
-import XssContent from "@/components/XssContent.tsx";
 import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
-import LessonLayout from "@/pages/layouts/LessonLayout.tsx";
-import type { BreadcrumbItem } from "@/types/index.ts";
-import { Link, usePage } from "@inertiajs/react";
-import i18next, { t } from "i18next";
-import React, { useState } from "react";
+import MarkdownViewer from "@/components/MarkdownViewer.tsx";
+import i18next from "i18next";
+import { Github, Info } from "lucide-react";
+import XssContent from "@/components/XssContent.tsx";
+import Chat from "@/components/Chat.tsx";
+import AppAnchor from "@/components/AppAnchor.tsx";
 import { useTranslation } from "react-i18next";
-import App from "./components/App.tsx";
-import type { LessonSharedProps } from "./types.ts";
-import ContactMethodRequestingBlock from "@/pages/layouts/blocks/ContactMethodRequestingBlock.tsx";
 import { useLessonStore } from "./store.tsx";
+import { neededPreview } from "@/lib/utils.ts";
+import { Suspense } from "react";
+import HTMLPreview from "./components/HTMLPreview.tsx";
+import { usePage } from "@inertiajs/react";
+import { LessonSharedProps } from "./types.ts";
+import EditorTab from "./components/EditorTab.tsx";
+import OutputTab from "./components/OutputTab.tsx";
+import TestsTab from "./components/TestsTab.tsx";
+import SolutionTab from "./components/SolutionTab.tsx";
+import ControlBox from "./components/ControlBox.tsx";
+import { BookOpenText } from "lucide-react";
+import { BreadcrumbItem } from "@/types/index.ts";
+import ContactMethodRequestingBlock from "@/pages/layouts/blocks/ContactMethodRequestingBlock.tsx";
+import LessonLayout from "@/pages/layouts/LessonLayout.tsx";
+
+function HtmlPreviewBlock() {
+  const { course } = usePage<LessonSharedProps>().props;
+  const currentTab = useLessonStore((state) => state.currentTab);
+  const content = useLessonStore((state) => state.content);
+
+  if (currentTab !== "editor") {
+    return null;
+  }
+  if (!neededPreview(course.slug!)) {
+    return null;
+  }
+
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <HTMLPreview html={content} />
+    </Suspense>
+  );
+};
 
 export default function Index() {
-  const {
-    courseCategory,
-    landingPage,
-    lessons,
-    course,
-    lessonMember,
-    lesson,
-    shouldAddContactMethod,
-    canCreateAssistantMessage,
-    previousMessages,
-    // auth: { user },
-  } = usePage<LessonSharedProps>().props;
-
-  const { t: tCommon } = useTranslation("common");
-  const { t: tViews } = useTranslation();
-
-  const commonQuestions = t("languages.lessons.show.common_questions", {
-    returnObjects: true,
-  });
-
+  const { t } = useTranslation();
+  const changeTab = useLessonStore((state) => state.changeTab);
+  const currentTab = useLessonStore((state) => state.currentTab);
   const [focusesCount, setFocusCount] = useState(0);
 
   const handleSelect = (selectedKey: string | null) => {
-    if (selectedKey == "assistant") {
-      setFocusCount((state) => state + 1)
+    if (selectedKey === "assistant") {
+      setFocusCount((count) => count + 1);
     }
-  }
+  };
+
+  return (
+    <LessonLayout>
+      <AppShell.Navbar>
+        <Tabs
+          defaultValue="lesson"
+          onChange={handleSelect}
+          h="100%"
+          display="flex"
+          style={{ flexDirection: "column" }}
+        >
+          <Tabs.List grow>
+            <Tabs.Tab value="lesson">{t('languages.lessons.show.lesson')}</Tabs.Tab>
+            <Tabs.Tab value="assistant">{t('languages.lessons.show.discuss')}</Tabs.Tab>
+            <Tabs.Tab value="navigation">{t('languages.lessons.show.navigation')}</Tabs.Tab>
+          </Tabs.List>
+
+          <AppShell.Section grow mih={0}>
+            <Tabs.Panel value="lesson" h="100%">
+              <ScrollArea h="100%">
+                <LessonTabContent />
+              </ScrollArea>
+            </Tabs.Panel>
+
+            <Tabs.Panel value="assistant" h="100%">
+              <ScrollArea h="100%">
+                <AssistantTabContent focusesCount={focusesCount} />
+              </ScrollArea>
+            </Tabs.Panel>
+
+            <Tabs.Panel value="navigation" h="100%">
+              <ScrollArea h="100%">
+                <NavigationTabContent />
+              </ScrollArea>
+            </Tabs.Panel>
+          </AppShell.Section>
+        </Tabs>
+      </AppShell.Navbar>
+
+      <AppShell.Main h="100%">
+        <Tabs
+          h="100%" display="flex" style={{ flexDirection: 'column' }}
+          value={currentTab}
+          onChange={(key) => changeTab(key as typeof currentTab)}
+        // keepMounted={false}
+        >
+          <Tabs.List grow>
+            <Tabs.Tab value="lesson" hiddenFrom="sm">
+              <Center>
+                <BookOpenText size={14} />
+              </Center>
+            </Tabs.Tab>
+            <Tabs.Tab value="editor">{t("languages.lessons.show.editor")}</Tabs.Tab>
+            <Tabs.Tab value="output">{t("languages.lessons.show.output")}</Tabs.Tab>
+            <Tabs.Tab value="tests">{t("languages.lessons.show.tests")}</Tabs.Tab>
+            <Tabs.Tab value="solution">{t("languages.lessons.show.solution")}</Tabs.Tab>
+          </Tabs.List>
+
+          <AppShell.Section grow mih={0}>
+
+            <Tabs.Panel value="lesson" h="100%" hiddenFrom="sm">
+              <Stack h="100%" gap={0}>
+                <ScrollArea h="100%">
+                  <LessonTabContent />
+                </ScrollArea>
+                <Box style={{ flexShrink: 0 }}>
+                  <ControlBox />
+                </Box>
+              </Stack>
+            </Tabs.Panel>
+
+            <Tabs.Panel value="editor" h="100%">
+              <Stack h="100%" gap={0} mih={0} style={{ flexGrow: 1 }}>
+                <Stack mih={0} style={{ flexGrow: 1 }}>
+                  <EditorTab />
+                </Stack>
+
+                <Box style={{ flexShrink: 0 }}>
+                  <HtmlPreviewBlock />
+                  <ControlBox />
+                </Box>
+              </Stack>
+            </Tabs.Panel>
+
+            <Tabs.Panel value="output" h="100%">
+              <Stack h="100%" gap={0}>
+                <ScrollArea h="100%">
+                  <OutputTab />
+                </ScrollArea>
+                <Box style={{ flexShrink: 0 }}>
+                  <ControlBox />
+                </Box>
+              </Stack>
+            </Tabs.Panel>
+
+            <Tabs.Panel value="tests" h="100%">
+              <Stack h="100%" gap={0}>
+                <ScrollArea h="100%">
+                  <Box p="md">
+                    <TestsTab />
+                  </Box>
+                </ScrollArea>
+                <ControlBox />
+              </Stack>
+            </Tabs.Panel>
+
+            <Tabs.Panel value="solution" h="100%">
+              <Stack h="100%" gap={0}>
+                <ScrollArea h="100%">
+                  <Box p="md">
+                    <SolutionTab />
+                  </Box>
+                </ScrollArea>
+                <ControlBox />
+              </Stack>
+            </Tabs.Panel>
+          </AppShell.Section>
+        </Tabs>
+      </AppShell.Main>
+    </LessonLayout>
+  );
+}
+
+function LessonTabContent() {
+  const { t } = useTranslation();
+  const { courseCategory, landingPage, lesson, shouldAddContactMethod } =
+    usePage<LessonSharedProps>().props;
+
+  const commonQuestions = t(
+    "languages.lessons.show.common_questions",
+    { returnObjects: true }
+  ) as Array<{ question: string; answer: string }>;
 
   const items: BreadcrumbItem[] = [
     {
-      name: courseCategory?.name ?? '-',
-      url: courseCategory ? Routes.language_category_url(courseCategory.slug!) : '#',
+      name: courseCategory?.name ?? "-",
+      url: courseCategory
+        ? Routes.language_category_url(courseCategory.slug!)
+        : "#",
     },
     {
       name: landingPage.header!,
@@ -60,204 +206,129 @@ export default function Index() {
     },
   ];
 
+  return (
+    <Box p="lg">
+      <XBreadcrumb items={items} />
+      <Title my="sm">{`${landingPage.name}: ${lesson.name}`}</Title>
+
+      {shouldAddContactMethod && (
+        <Paper withBorder shadow="sm" p="md" mt="md">
+          <ContactMethodRequestingBlock />
+        </Paper>
+      )}
+
+      <MarkdownViewer allowHtml>{lesson.theory || ""}</MarkdownViewer>
+
+      <Text fz="lg" fw={600} mt="md">
+        {t("languages.lessons.show.instructions")}
+      </Text>
+      <MarkdownViewer allowHtml>{lesson.instructions || ""}</MarkdownViewer>
+
+      {lesson.tips.length > 0 && (
+        <>
+          <Text fz="lg" fw={600} mt="md">
+            {t("languages.lessons.show.tips")}
+          </Text>
+          <ul>
+            {lesson.tips.map((tip) => (
+              <li key={tip}>
+                <MarkdownViewer allowHtml>{tip}</MarkdownViewer>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      <hr />
+
+      <Accordion mb="lg" defaultValue={commonQuestions[0]?.question}>
+        {commonQuestions.map((v) => (
+          <Accordion.Item key={v.question} value={v.question}>
+            <Accordion.Control>
+              <Text fz="sm">{v.question}</Text>
+            </Accordion.Control>
+            <Accordion.Panel>
+              <MarkdownViewer allowHtml>{v.answer}</MarkdownViewer>
+            </Accordion.Panel>
+          </Accordion.Item>
+        ))}
+      </Accordion>
+
+      <Center>
+        <Text fz="sm" me="sm" component="span">
+          {t("languages.lessons.show.issues")}
+        </Text>
+        <a
+          href={lesson.source_code_url!}
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          <Github size={12} />
+        </a>
+      </Center>
+    </Box>
+  );
+}
+
+function AssistantTabContent({ focusesCount }: { focusesCount: number }) {
+  const { t } = useTranslation();
+  const { t: tCommon } = useTranslation("common");
+
+  const {
+    previousMessages,
+    canCreateAssistantMessage,
+    course,
+    lesson,
+    lessonMember,
+  } = usePage<LessonSharedProps>().props;
+
   const userCode = useLessonStore((state) => state.content);
   const output = useLessonStore((state) => state.output);
 
   return (
-    <LessonLayout>
-      <Container fluid className="overflow-hidden mb-1 x-h-md-100">
-        <Row className="x-h-md-100">
-          <Col className="x-h-md-100 col-12 col-md-6 col-lg-5 mb-3 mb-md-0 position-relative border-end">
-            <Tab.Container id="left-tabs-example" defaultActiveKey="lesson">
-              <div className="x-h-md-100 d-flex flex-column">
-                <Nav variant="underline" onSelect={handleSelect} fill justify className="mb-3 small">
-                  <Nav.Item>
-                    <Nav.Link className="link-body-emphasis" eventKey="lesson">
-                      {t("languages.lessons.show.lesson")}
-                    </Nav.Link>
-                  </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link className="link-body-emphasis" eventKey="assistant">
-                      {t("languages.lessons.show.discuss")}
-                    </Nav.Link>
-                  </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link
-                      className="link-body-emphasis"
-                      eventKey="navigation"
-                    >
-                      {t("languages.lessons.show.navigation")}
-                    </Nav.Link>
-                  </Nav.Item>
-                </Nav>
+    <Box p="lg">
+      {i18next.language === "ru" && (
+        <Alert icon={<Info />} mb="lg">
+          <XssContent>
+            {t("languages.lessons.show.if_stuck_html", {
+              url: tCommon("community_url"),
+            })}
+          </XssContent>
+        </Alert>
+      )}
+      <Chat
+        focusesCount={focusesCount}
+        previousMessages={previousMessages}
+        enabled={canCreateAssistantMessage}
+        userCode={userCode}
+        output={output}
+        course={course}
+        lesson={lesson}
+        lessonMember={lessonMember}
+      />
+    </Box>
+  );
+}
 
-                <Tab.Content className="x-h-md-100 overflow-hidden">
-                  <Tab.Pane
-                    eventKey="lesson"
-                    className="overflow-auto x-h-md-100"
-                  >
-                    <XBreadcrumb className="small" items={items} />
+function NavigationTabContent() {
+  const { lessons, landingPage } = usePage<LessonSharedProps>().props;
 
-                    {/* {user.guest && ( */}
-                    {/*   <Alert */}
-                    {/*     variant="info" */}
-                    {/*     className="border-0 small text-center" */}
-                    {/*   > */}
-                    {/*     <XssContent> */}
-                    {/*       {t( */}
-                    {/*         "languages.lessons.show.sign_up_for_tracking_progress_html", */}
-                    {/*         { */}
-                    {/*           link: Routes.new_user_path(), */}
-                    {/*         }, */}
-                    {/*       )} */}
-                    {/*     </XssContent> */}
-                    {/*   </Alert> */}
-                    {/* )} */}
-
-                    <div className="hexlet-basics-content">
-                      <h1 className="h3">{`${landingPage.name}: ${lesson.name}`}</h1>
-
-                      {shouldAddContactMethod && (
-                        <div className="mt-3"><ContactMethodRequestingBlock /></div>
-                      )}
-
-                      <MarkdownViewer allowHtml>{lesson.theory || ""}</MarkdownViewer>
-                      <h2 className="h4">
-                        {t("languages.lessons.show.instructions")}
-                      </h2>
-                      <MarkdownViewer allowHtml>
-                        {lesson.instructions || ""}
-                      </MarkdownViewer>
-                    </div>
-
-                    {lesson.tips.length > 0 && (
-                      <div>
-                        <h2 className="h4">
-                          {t("languages.lessons.show.tips")}
-                        </h2>
-                        <ul>
-                          {lesson.tips.map((t) => (
-                            <li key={t}>
-                              <MarkdownViewer allowHtml>{t}</MarkdownViewer>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {lesson.definitions.length > 0 && (
-                      <div>
-                        <h2 className="h4">
-                          {t("languages.lessons.show.definitions")}
-                        </h2>
-                        <dl>
-                          {lesson.definitions.map((d) => (
-                            <React.Fragment key={d.name}>
-                              <dt>{d.name}</dt>
-                              <dd>{d.description}</dd>
-                            </React.Fragment>
-                          ))}
-                        </dl>
-                      </div>
-                    )}
-
-                    {course.hexlet_program_landing_page && (
-                      <Alert variant="primary" className="my-4 small text-center shadow-sm border-0">
-                        <a target="_blank" href={`${course.hexlet_program_landing_page}?utm_source=code-basics&utm_medium=referral`}>
-                          {tViews('languages.lessons.show.profession_description')}
-                        </a>
-                      </Alert>
-                    )}
-
-                    <div className="my-4">
-                      {commonQuestions.map((v) => (
-                        <details
-                          key={v.question}
-                          className="mt-1 border rounded"
-                        >
-                          <summary className="p-2">{v.question}</summary>
-                          <div className="px-2 pt-2">
-                            <MarkdownViewer allowHtml>{v.answer}</MarkdownViewer>
-                          </div>
-                        </details>
-                      ))}
-                    </div>
-
-                    <div className="small text-muted py-2">
-                      <span className="me-2">
-                        {t("languages.lessons.show.issues")}
-                      </span>
-                      <a
-                        href={lesson.source_code_url!}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="link-body-emphasis"
-                      >
-                        <i className="bi bi-github" />
-                      </a>
-                    </div>
-                  </Tab.Pane>
-                  <Tab.Pane
-                    eventKey="assistant"
-                    className="overflow-auto x-h-md-100"
-                  >
-                    {i18next.language === "ru" && (
-                      <Alert className="small">
-                        <XssContent>
-                          {t("languages.lessons.show.if_stuck_html", {
-                            url: tCommon("community_url"),
-                          })}
-                        </XssContent>
-                      </Alert>
-                    )}
-                    <Chat
-                      focusesCount={focusesCount}
-                      previousMessages={previousMessages}
-                      enabled={canCreateAssistantMessage}
-                      userCode={userCode}
-                      output={output}
-                      course={course}
-                      lesson={lesson}
-                      lessonMember={lessonMember}
-                    />
-                  </Tab.Pane>
-                  <Tab.Pane
-                    eventKey="navigation"
-                    className="overflow-auto x-h-md-100"
-                  >
-                    <ul className="list-unstyled">
-                      {lessons.map((l) => (
-                        <li key={l.id} className="mb-1">
-                          {l.natural_order}
-                          {". "}
-                          <Link
-                            as={l.slug === lesson.slug ? "b" : "a"}
-                            className="link-body-emphasis"
-                            href={Routes.language_lesson_path(
-                              landingPage.language.slug!,
-                              l.slug!,
-                            )}
-                          >
-                            {l.name}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </Tab.Pane>
-                </Tab.Content>
-              </div>
-            </Tab.Container>
-          </Col>
-
-          <Col className="x-h-md-100 col-12 col-md-6 col-lg-7 mb-3 mb-md-0 position-relative col">
-            <Tab.Container id="left-tabs-example" defaultActiveKey="editor">
-              <div className="x-h-md-100 d-flex flex-column">
-                <App />
-              </div>
-            </Tab.Container>
-          </Col>
-        </Row>
-      </Container>
-    </LessonLayout>
+  return (
+    <Box p="lg">
+      <List type="ordered">
+        {lessons.map((l) => (
+          <List.Item key={l.id}>
+            <AppAnchor
+              href={Routes.language_lesson_path(
+                landingPage.language.slug!,
+                l.slug!
+              )}
+            >
+              {l.name}
+            </AppAnchor>
+          </List.Item>
+        ))}
+      </List>
+    </Box>
   );
 }

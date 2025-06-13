@@ -1,6 +1,6 @@
 class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationController
   def index
-    q = ransack_params("sf" => "created_at", "so" => "0")
+    q = ransack_params("sf" => "created_at", "so" => "desc")
     search = Language::Category.with_locale.ransack(q)
     pagy, records = pagy(search.result)
 

@@ -1,4 +1,4 @@
-import "@/lib/monacoLoader.ts";
+// import "@/lib/monacoLoader.ts";
 import {
     getEditorLanguage,
     // getKeyForStoringLessonCode,
@@ -34,7 +34,7 @@ export default function EditorTab() {
   };
 
   const focusesCount = useLessonStore((state) => state.focusesCount);
-  const resetsCount = useLessonStore((state) => state.resetsCount);
+  // const resetsCount = useLessonStore((state) => state.resetsCount);
   const content = useLessonStore((state) => state.content);
   const changeContent = useLessonStore((state) => state.changeContent);
 
@@ -58,26 +58,11 @@ export default function EditorTab() {
     // }
   };
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (mobileBrowser) return;
 
     editorInstance?.focus();
   }, [focusesCount, editorInstance, mobileBrowser]);
-
-  // useUpdateEffect(() => {
-  //   editorInstance?.setValue(defaultCode);
-  //   setCode(defaultCode);
-  // }, [resetsCount]);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  // useEffect(() => {
-  //   changeContent(code || "");
-  // }, []);
-
-  // const handleRunCheck = () => {
-  //   dispatch(runCheck(lesson));
-  // };
 
   const handleEditorChange = (value: string | undefined) => {
     const newContent = value || "";
@@ -90,7 +75,7 @@ export default function EditorTab() {
       theme="github-light"
       options={editorOptions}
       onMount={handleEditorDidMount}
-      defaultValue={content}
+      value={content}
       onChange={handleEditorChange}
       language={getEditorLanguage(course.slug!)}
       // defaultLanguage={course.slug!}

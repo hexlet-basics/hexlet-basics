@@ -1,8 +1,14 @@
 <!DOCTYPE html>
-<html class="x-h-md-100" data-bs-theme="light" lang="<%= I18n.locale %>">
+<html data-bs-theme="light" lang="<%= I18n.locale %>">
   <head>
     <meta charset="UTF-8">
     <%= include_gon %>
+
+    <script>
+      window.addEventListener("vite:preloadError", (event) => {
+        window.location.reload();
+      });
+    </script>
 
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript" >
@@ -25,7 +31,6 @@
 
       // TODO: add auth/guest https://yandex.ru/support/metrica/ru/data/visit-params-example
     </script>
-    <noscript><div><img src="https://mc.yandex.ru/watch/54648685" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
     <!-- /Yandex.Metrika counter -->
 
     <% if Rails.env.production? %>
@@ -39,12 +44,6 @@
       </script>
       <!-- End Google Tag Manager -->
     <% end %>
-
-    <script>
-      window.addEventListener("vite:preloadError", (event) => {
-        window.location.reload();
-      });
-    </script>
 
     <%#= display_meta_tags reverse: true %>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -60,13 +59,9 @@
     <%= vite_stylesheet_tag "application.scss" %>
   </head>
 
-  <body class="x-h-md-100">
+  <body>
     <% if Rails.env.production? %>
       <!-- Google Tag Manager (noscript) -->
-      <noscript>
-        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WVMW3V8" height="0" width="0" style="display:none;visibility:hidden"></iframe>
-      </noscript>
-      <!-- End Google Tag Manager (noscript) -->
       <!-- Google tag (gtag.js) -->
       <script async src="https://www.googletagmanager.com/gtag/js?id=G-5GVCBLE773"></script>
       <script>
@@ -76,6 +71,10 @@
 
         gtag('config', 'G-5GVCBLE773');
       </script>
+      <noscript>
+        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WVMW3V8" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+      </noscript>
+
       <!-- Yandex.Metrika counter -->
       <noscript>
         <div>
@@ -90,6 +89,5 @@
     <% end %>
 
     <%= yield %>
-    <%#<div id="portal-root"></div> %>
   </body>
 </html>

@@ -1,16 +1,10 @@
 import { useTranslation } from "react-i18next";
+import { Button } from '@mantine/core';
 
-import {
-    XCheck,
-  XDynamicInputs,
-  XForm,
-  XInput,
-  XSelect
-} from "@/components/forms";
-import { Col, Row } from "react-bootstrap";
-import { type HTTPVerb, Submit } from "use-inertia-form";
+import { XCheck, XDynamicInputs, XForm, XInput, XSelect, XTextarea } from "@/components/forms";
+import type { HTTPVerb } from "use-inertia-form";
 
-import { SurveyCrud, SurveyItem, SurveyItemCrud } from "@/types";
+import type { SurveyCrud, SurveyItemCrud } from "@/types";
 
 type Props = {
   data: SurveyCrud;
@@ -24,34 +18,26 @@ export default function Form({ data, url, method, surveyItems }: Props) {
   const { t: tHelpers } = useTranslation("helpers");
 
   return (
-    <Row>
-      <Col className="col-7">
-        <XForm method={method} model="survey" data={data} to={url}>
-          {/* <XStateEvent fieldName="state" /> */}
-          <XInput name="question" />
-          <XInput name="slug" />
-          {/* <XCheck name="run_always" /> */}
-          {/* <XInput name="run_after_finishing_lessons_count" /> */}
-          <XInput name="description" as="textarea" style={{ height: "200px" }} />
+    <XForm method={method} model="survey" data={data} to={url}>
+      <XInput field="question" />
+      <XInput field="slug" />
+      <XTextarea field="description" rows={8} />
 
-          <XDynamicInputs
-            model="items"
-            label="Items"
-            emptyData={{ value: '', order: 100 }}
-          >
-            <XInput name="value" />
-            <XInput name="tag_list" />
-            <XSelect name="state" valueField="value" labelField="key" items={data.meta.item_states} />
-            <XInput name="order" />
-            {/* <XCheck name="_destroy" /> */}
-          </XDynamicInputs>
+      <XDynamicInputs
+        model="items"
+        label="Items"
+        emptyData={{ value: '', order: 100 }}
+      >
+        <XInput field="value" />
+        <XInput field="tag_list" />
+        <XSelect field="state" valueField="value" labelField="key" items={data.meta.item_states} />
+        <XInput field="order" />
+      </XDynamicInputs>
 
-          <Submit className="btn w-100 btn-lg btn-primary mb-3">
-            {tHelpers("submit.save")}
-          </Submit>
-        </XForm>
-      </Col>
-    </Row>
+      <Button type="submit">
+        {tHelpers("submit.save")}
+      </Button>
+    </XForm>
   );
 }
 

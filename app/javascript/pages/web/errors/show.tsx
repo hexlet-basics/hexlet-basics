@@ -1,4 +1,4 @@
-import { Container } from "react-bootstrap";
+import { Container, Text, Title, Stack } from '@mantine/core';
 
 import { useTranslation } from "react-i18next";
 
@@ -15,10 +15,12 @@ export default function Show({ code, header, description }: Props) {
 
   return (
     <ApplicationLayout>
-      <Container className="text-center my-5 py-lg-5">
-        <div className="fw-bold">{code}</div>
-        <h1 className="display-1">{header}</h1>
-        <p className="lead">{description}</p>
+      <Container ta="center" my="xl" py="xl">
+        <Stack align="center" gap="md">
+          <Text fw={700}>{code}</Text>
+          <Title order={1}>{header}</Title>
+          <Text size="lg">{description}</Text>
+        </Stack>
       </Container>
     </ApplicationLayout>
   );

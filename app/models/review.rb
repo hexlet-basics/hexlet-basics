@@ -27,12 +27,9 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Review < ApplicationRecord
-  extend Enumerize
-  include AASM
   include ReviewRepository
 
-  # TODO: switch to enum
-  enumerize :locale, in: I18n.available_locales
+  enum :state, { draft: "draft", published: "published", archived: "archived" }, suffix: true, validate: true
 
   def self.ransackable_attributes(_auth_object = nil)
     [ "created_at" ]
@@ -49,19 +46,6 @@ class Review < ApplicationRecord
   belongs_to :language
   belongs_to :user
 
-  aasm column: :state do
-    state :draft, initial: true
-    state :published
-    state :archived
-
-    event :publish do
-      transitions to: :published
-    end
-
-    event :archive do
-      transitions to: :archived
-    end
-  end
 
   def to_s
     "#{first_name} #{last_name}"

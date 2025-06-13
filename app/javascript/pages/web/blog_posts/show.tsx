@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { Col, Container, Image, Row } from "react-bootstrap";
+import { Anchor, Box, Container, Grid, Image, Stack, Title, Text, Card, Group, Center, Alert, SimpleGrid, TypographyStylesProvider } from '@mantine/core';
 
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { BreadcrumbItem } from "@/types";
@@ -13,6 +13,7 @@ import { Head } from "@inertiajs/react";
 import { useTranslation } from "react-i18next";
 import type { Article, WithContext } from "schema-dts";
 import dayjs from "dayjs";
+import { Clock7, MessageCircleMore, MoveRight, ThumbsUp, User } from "lucide-react";
 
 type Props = PropsWithChildren & {
   blogPost: BlogPost;
@@ -50,79 +51,77 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
       <Head>
         <script type="application/ld+json">{JSON.stringify(article)}</script>
       </Head>
+
       <ApplicationLayout items={items} center header={blogPost.name!}>
-        <Container>
-          <Row className="justify-content-center mb-3">
-            <Col className="col-12 col-md-10 col-lg-8 d-flex flex-column">
-              <div className="mb-4">
-                <Image
-                  className="img-fluid"
-                  src={blogPost.cover_main_variant!}
+        <Container size="sm">
+          <Stack>
+            <Image
+              className="img-fluid"
+              src={blogPost.cover_main_variant!}
+              mb="xl"
+            />
+            <MarkdownViewer allowHtml>{blogPost.body || ""}</MarkdownViewer>
+
+            <Group mb="lg">
+              <Group fw="bold" me="auto">
+                <User size={18} />
+                {blogPost.creator.name}
+                {dayjs().to(blogPost.created_at)}
+              </Group>
+              <Group gap={0} me="lg">
+                <Anchor href={postUrl} me="xs" display="flex">
+                  <ThumbsUp size={18} />
+                </Anchor>
+                {blogPost.likes_count}
+              </Group>
+              <Center>
+                <Center me="xs">
+                  <Clock7 size={18} />
+                </Center>
+                {tCommon("time.minutes", { count: 5 })}
+              </Center>
+            </Group>
+
+            {i18next.language === "ru" && (
+              <Alert
+                radius="lg"
+                p="xl"
+                mb="xl"
+                pos="relative"
+                title={t('blog_posts.show.join_community')}
+                icon={<MessageCircleMore />}
+              >
+                <Text fz="lg" lh="sm" mb="md">
+                  {t('blog_posts.show.discuss')}
+                </Text>
+                <Group gap={0}>
+                  <Text component="span" mr="sm">
+                    {t('blog_posts.show.link')}
+                  </Text>
+                  <MoveRight />
+                </Group>
+
+
+
+                <Anchor
+                  pos="absolute"
+                  inset={0}
+                  href="https://t.me/HexletLearningBot"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 />
-              </div>
-              <div className="hexlet-basics-content">
-                <MarkdownViewer allowHtml>{blogPost.body || ""}</MarkdownViewer>
-              </div>
-              {i18next.language === "ru" && (
-                <Row className="justify-content-center py-4">
-                  <Col className="col-lg-11">
-                    <div className="bg-primary rounded-4 shadow text-light py-4 px-4 px-md-5 position-relative">
-                      <div className="d-flex flex-column flex-md-row gap-4">
-                        <div className="fs-3 d-none d-md-block">
-                          <i className="bi bi-chat" />
-                        </div>
-                        <div>
-                          <div className="h2 fw-semibold mb-1">
-                            {t("blog_posts.show.join_community")}
-                          </div>
-                          <p className="fs-5 lh-sm mb-4">
-                            {t("blog_posts.show.discuss")}
-                          </p>
-                          <a
-                            className="link-light text-decoration-none stretched-link icon-link icon-link-hover"
-                            href="https://t.me/HexletLearningBot"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <span className="me-2">
-                              {t("blog_posts.show.link")}
-                            </span>
-                            <span className="bi bi-arrow-right lh-1" />
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  </Col>
-                </Row>
-              )}
-              <div className="mt-5 d-flex text-muted">
-                <div className="me-2">
-                  <b>
-                    <i className="bi bi-person-circle me-2" />
-                    {blogPost.creator.name}
-                  </b>
-                </div>
-                <div className="me-auto">{dayjs().to(blogPost.created_at)}</div>
-                <div className="me-3">
-                  <a href={postUrl} className="link-body-emphasis">
-                    <i className="bi bi-hand-thumbs-up me-1" />
-                  </a>
-                  {blogPost.likes_count}
-                </div>
-                <div className="text-muted">
-                  <i className="bi bi-clock me-2" />~
-                  {tCommon("time.minutes", { count: 5 })}
-                </div>
-              </div>
-            </Col>
-          </Row>
-          <Row className="justify-content-center row-cols-sm-2 row-cols-md-3 row-cols-1">
+
+              </Alert>
+            )}
+          </Stack>
+
+
+          <SimpleGrid cols={{ base: 1, xs: 2 }}>
             {recommendedBlogPosts.map((post) => (
-              <Col key={post.id} className="border-top pt-5">
-                <BlogPostBlock post={post} />
-              </Col>
+              <BlogPostBlock key={post.id} post={post} />
             ))}
-          </Row>
+          </SimpleGrid>
+
         </Container>
       </ApplicationLayout>
     </>

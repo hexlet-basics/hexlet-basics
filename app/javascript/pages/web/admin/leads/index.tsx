@@ -1,98 +1,66 @@
-import * as Routes from "@/routes.js";
-import { useTranslation } from "react-i18next";
+import { DataTable } from 'mantine-datatable';
+import type { PropsWithChildren } from 'react';
 
-import { DTDateTemplate } from "@/components/dtTemplates";
-import useDataTable from "@/hooks/useDataTable";
-import { fieldsToFilters } from "@/lib/utils";
-import AdminLayout from "@/pages/layouts/AdminLayout";
-import type { Grid, Lead, Review } from "@/types/serializers";
-import { Link } from "@inertiajs/react";
-import { Column, ColumnBodyOptions } from "primereact/column";
-import { DataTable } from "primereact/datatable";
-import { useState } from "react";
-import { Dialog } from "primereact/dialog";
+import * as Routes from '@/routes.js';
+import { useTranslation } from 'react-i18next';
 
-type Props = {
+import AdminLayout from '@/pages/layouts/AdminLayout';
+import AppAnchor from '@/components/AppAnchor';
+import type { Lead, Grid } from '@/types/serializers';
+import useDataTableProps from '@/hooks/useDataTableProps';
+import { Modal, Button, Code } from '@mantine/core';
+import { useState } from 'react';
+import dayjs from 'dayjs';
+
+type Props = PropsWithChildren & {
   leads: Lead[];
   grid: Grid;
 };
 
-export function DataTemplate(lead: Lead, options: ColumnBodyOptions) {
+function renderData(lead: Lead, col: string) {
   const [visible, setVisible] = useState(false);
-
   return (
     <>
-      <a
-        type="button"
-        className="link-body-emphasis"
-        onClick={() => setVisible(true)}
+      <Button variant="subtle" onClick={() => setVisible(true)}>
+        data
+      </Button>
+      <Modal
+        opened={visible}
+        onClose={() => setVisible(false)}
+        size="50vw"
       >
-        {"data"}
-      </a>
-      <Dialog
-        style={{ width: "50vw" }}
-        visible={visible}
-        modal
-        onHide={() => {
-          if (!visible) return;
-          setVisible(false);
-        }}
-      >
-        <pre>{JSON.stringify(lead[options.field as keyof Lead], null, 2)}</pre>
-      </Dialog>
+        <Code block>{JSON.stringify(lead[col as keyof Lead], null, 2)}</Code>
+      </Modal>
     </>
   );
 }
 
 export default function Index({ grid, leads }: Props) {
   const { t } = useTranslation();
-
-  const handleDataTable = useDataTable();
-
-  // const actionBodyTemplate = (data: Review) => {
-  //   return (
-  //     <Link
-  //       className="link-body-emphasis"
-  //       href={Routes.edit_admin_review_path(data.id)}
-  //     >
-  //       <i className="bi bi-pencil-fill" />
-  //     </Link>
-  //   );
-  // };
+  const gridProps = useDataTableProps<Lead>(grid);
 
   return (
-    <AdminLayout header={t("admin.leads.index.header")}>
+    <AdminLayout header={t('admin.leads.index.header')}>
       <DataTable
-        lazy
-        first={grid.first}
-        paginator
-        totalRecords={grid.tr}
-        rows={grid.per}
-        sortField={grid.sf}
-        sortOrder={grid.so}
-        onSort={handleDataTable}
-        onFilter={handleDataTable}
-        onPage={handleDataTable}
-        filters={fieldsToFilters(grid.fields)}
-        value={leads}
-      >
-        <Column field="id" header="id" />
-        <Column field="email" header="email" />
-        <Column field="user_id" header="user_id" />
-        <Column field="full_name" header="full_name" />
-        <Column field="phone" header="phone" />
-        <Column field="telegram" header="telegram" />
-        <Column field="whatsapp" header="whatsapp" />
-        <Column field="survey_answers_data" header="answers" body={DataTemplate} />
-        <Column field="courses_data" header="courses" body={DataTemplate} />
-        <Column
-          field="created_at"
-          header="created_at"
-          sortable
-          body={DTDateTemplate}
-        />
-        {/* <Column header="actions" body={actionBodyTemplate} /> */}
-      </DataTable>
+        records={leads}
+        columns={[
+          { accessor: 'id' },
+          { accessor: 'email' },
+          { accessor: 'user_id' },
+          { accessor: 'full_name' },
+          { accessor: 'phone' },
+          { accessor: 'telegram' },
+          { accessor: 'whatsapp' },
+          { accessor: 'survey_answers_data', title: 'answers', render: (rec) => renderData(rec, 'survey_answers_data') },
+          { accessor: 'courses_data', title: 'courses', render: (rec) => renderData(rec, 'courses_data') },
+          {
+            accessor: 'created_at',
+            render: (r) => dayjs(r.created_at).format('LL'),
+            sortable: true,
+          },
+        ]}
+        {...gridProps}
+      />
     </AdminLayout>
   );
 }

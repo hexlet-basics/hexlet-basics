@@ -93,6 +93,7 @@ python:
 
 html:
   <<: *DEFAULTS
+  current_version: html1
   # category: layouting
 
 ruby:

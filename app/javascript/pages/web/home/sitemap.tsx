@@ -13,7 +13,7 @@ import type {
 } from "@/types/serializers";
 
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
-import { Collapse, Container } from "react-bootstrap";
+import { Container, Collapse, Button, Stack, Text, List, Group } from '@mantine/core';
 import { Link } from "@inertiajs/react";
 
 type Props = PropsWithChildren & {
@@ -53,21 +53,23 @@ const getSuffix = (locale: Locale) => (locale === "en" ? null : locale);
 
 function LessonsBlock({ lessons, landingPage }: LessonsBlockProps) {
   return (
-    <ul className="m-0 ms-3 list-unstyled pb-2">
+    <List listStyleType="none" pl="md" pb="sm">
       {lessons.map((lesson) => (
-        <li key={`${landingPage.id}-${lesson.id}`}>
+        <List.Item key={`${landingPage.id}-${lesson.id}`}>
           <Link
-            className="text-decoration-none"
+            style={{ textDecoration: 'none' }}
             href={Routes.language_lesson_path(landingPage.slug, lesson.slug, {
               suffix: getSuffix(lesson.locale),
             })}
           >
-            <span className="me-1">{lesson.natural_order}.</span>
-            {lesson.name}
+            <Group gap="xs">
+              <Text span>{lesson.natural_order}.</Text>
+              <Text span>{lesson.name}</Text>
+            </Group>
           </Link>
-        </li>
+        </List.Item>
       ))}
-    </ul>
+    </List>
   );
 }
 
@@ -85,32 +87,34 @@ function LadingPagesBlock({
   >(null);
 
   return (
-    <div className="ms-3">
+    <Stack gap="xs" pl="md">
       {filteredLandingPages.map((landingPage, index) => {
         const landingPageOpened = index === activeLandingPageIdx;
 
         return (
           <div key={landingPage.id}>
-            <Link
-              className="text-decoration-none text-body"
-              href={Routes.language_path(landingPage.slug, {
-                suffix: getSuffix(landingPage.locale),
-              })}
-            >
-              {landingPage.header}
-            </Link>
-            <button
-              type="button"
-              onClick={() =>
-                setActiveLandingPageIdx(landingPageOpened ? null : index)
-              }
-              aria-controls={String(index)}
-              className="btn btn-link py-0 shadow-none"
-            >
-              <span
-                className={`bi ${landingPageOpened ? "bi-chevron-up" : "bi-chevron-down"}`}
-              />
-            </button>
+            <Group gap="xs">
+              <Link
+                style={{ textDecoration: 'none' }}
+                href={Routes.language_path(landingPage.slug, {
+                  suffix: getSuffix(landingPage.locale),
+                })}
+              >
+                {landingPage.header}
+              </Link>
+              <Button
+                variant="subtle"
+                size="xs"
+                onClick={() =>
+                  setActiveLandingPageIdx(landingPageOpened ? null : index)
+                }
+                aria-controls={String(index)}
+              >
+                <span
+                  className={`bi ${landingPageOpened ? "bi-chevron-up" : "bi-chevron-down"}`}
+                />
+              </Button>
+            </Group>
             <Collapse in={landingPageOpened}>
               <div id={String(index)}>
                 <LessonsBlock
@@ -126,27 +130,27 @@ function LadingPagesBlock({
           </div>
         );
       })}
-    </div>
+    </Stack>
   );
 }
 
 function BlogPostsBlock({ posts, opened }: BlogPostsBlockProps) {
   return (
     <Collapse in={opened}>
-      <ul className="m-0 ms-3 list-unstyled" id="blog-collapse">
+      <List listStyleType="none" pl="md" id="blog-collapse">
         {posts.map((post) => (
-          <li key={post.id}>
+          <List.Item key={post.id}>
             <Link
-              className="text-decoration-none"
+              style={{ textDecoration: 'none' }}
               href={Routes.blog_post_path(post.slug, {
                 suffix: getSuffix(post.locale),
               })}
             >
               {post.name}
             </Link>
-          </li>
+          </List.Item>
         ))}
-      </ul>
+      </List>
     </Collapse>
   );
 }
@@ -157,20 +161,20 @@ function LanguageCategoriesBlock({
 }: LanguageCategoriesBlockProps) {
   return (
     <Collapse in={opened}>
-      <ul className="m-0 ms-3 list-unstyled" id="blog-collapse">
+      <List listStyleType="none" pl="md" id="blog-collapse">
         {categories.map((category) => (
-          <li key={category.id}>
+          <List.Item key={category.id}>
             <Link
-              className="text-decoration-none"
+              style={{ textDecoration: 'none' }}
               href={Routes.language_category_path(category.slug!, {
                 suffix: getSuffix(category.locale),
               })}
             >
               {category.name}
             </Link>
-          </li>
+          </List.Item>
         ))}
-      </ul>
+      </List>
     </Collapse>
   );
 }
@@ -193,77 +197,83 @@ export default function SiteMap({
         const [categoriesOpened, setCategoriesOpened] = useState(false);
 
         return (
-          <Container key={locale} className="mb-5">
-            <h2 className="h5 mb-3">
-              <Link
-                id={`main-${locale}`}
-                className="text-decoration-none link-body-emphasis"
-                href={Routes.root_path({ suffix: getSuffix(locale) })}
-              >
-                {t("home.sitemap.home", { lng: locale })}
-              </Link>
-            </h2>
-            <h2 className="h5 mb-3">
-              <Link
-                id={`courses-${locale}`}
-                className="text-decoration-none link-body-emphasis"
-                href={`#courses-${locale}`}
-              >
-                {t("home.languages.courses", { lng: locale })}
-              </Link>
-            </h2>
-            <LadingPagesBlock
-              locale={locale}
-              landingPages={landingPagesByLocale[locale]}
-              lessonsByLocaleAndLanguageId={lessonsByLocaleAndLanguageId}
-            />
+          <Container key={locale} mb="xl">
+            <Stack gap="xs">
+              <Text fw={500} size="lg">
+                <Link
+                  id={`main-${locale}`}
+                  style={{ textDecoration: 'none' }}
+                  href={Routes.root_path({ suffix: getSuffix(locale) })}
+                >
+                  {t("home.sitemap.home", { lng: locale })}
+                </Link>
+              </Text>
+              <Text fw={500} size="lg">
+                <Link
+                  id={`courses-${locale}`}
+                  style={{ textDecoration: 'none' }}
+                  href={`#courses-${locale}`}
+                >
+                  {t("home.languages.courses", { lng: locale })}
+                </Link>
+              </Text>
+              <LadingPagesBlock
+                locale={locale}
+                landingPages={landingPagesByLocale[locale]}
+                lessonsByLocaleAndLanguageId={lessonsByLocaleAndLanguageId}
+              />
 
-            <h2 className="h5 my-2">
-              <Link
-                id={`blog-${locale}`}
-                className="text-decoration-none link-body-emphasis"
-                href={`#blog-${locale}`}
-              >
-                {t("blog_posts.index.header", { lng: locale })}
-              </Link>
-              <button
-                type="button"
-                onClick={() => setBlogOpened(!blogOpened)}
-                aria-controls="blog-collapse"
-                className="btn btn-link py-0 shadow-none"
-              >
-                <span
-                  className={`bi ${blogOpened ? "bi-chevron-up" : "bi-chevron-down"}`}
-                />
-              </button>
-            </h2>
-            <BlogPostsBlock
-              posts={blogPostsByLocale[locale]}
-              opened={blogOpened}
-            />
-            <h2 className="h5 py-2">
-              <Link
-                id={`categories-${locale}`}
-                className="text-decoration-none link-body-emphasis"
-                href={`#categories-${locale}`}
-              >
-                {t("language_categories.index.header", { lng: locale })}
-              </Link>
-              <button
-                type="button"
-                onClick={() => setCategoriesOpened(!categoriesOpened)}
-                aria-controls="categories-collapse"
-                className="btn btn-link py-0 shadow-none"
-              >
-                <span
-                  className={`bi ${categoriesOpened ? "bi-chevron-up" : "bi-chevron-down"}`}
-                />
-              </button>
-            </h2>
-            <LanguageCategoriesBlock
-              categories={categoriesByLocale[locale]}
-              opened={categoriesOpened}
-            />
+              <Group gap="xs">
+                <Text fw={500} size="lg">
+                  <Link
+                    id={`blog-${locale}`}
+                    style={{ textDecoration: 'none' }}
+                    href={`#blog-${locale}`}
+                  >
+                    {t("blog_posts.index.header", { lng: locale })}
+                  </Link>
+                </Text>
+                <Button
+                  variant="subtle"
+                  size="xs"
+                  onClick={() => setBlogOpened(!blogOpened)}
+                  aria-controls="blog-collapse"
+                >
+                  <span
+                    className={`bi ${blogOpened ? "bi-chevron-up" : "bi-chevron-down"}`}
+                  />
+                </Button>
+              </Group>
+              <BlogPostsBlock
+                posts={blogPostsByLocale[locale]}
+                opened={blogOpened}
+              />
+              <Group gap="xs">
+                <Text fw={500} size="lg">
+                  <Link
+                    id={`categories-${locale}`}
+                    style={{ textDecoration: 'none' }}
+                    href={`#categories-${locale}`}
+                  >
+                    {t("language_categories.index.header", { lng: locale })}
+                  </Link>
+                </Text>
+                <Button
+                  variant="subtle"
+                  size="xs"
+                  onClick={() => setCategoriesOpened(!categoriesOpened)}
+                  aria-controls="categories-collapse"
+                >
+                  <span
+                    className={`bi ${categoriesOpened ? "bi-chevron-up" : "bi-chevron-down"}`}
+                  />
+                </Button>
+              </Group>
+              <LanguageCategoriesBlock
+                categories={categoriesByLocale[locale]}
+                opened={categoriesOpened}
+              />
+            </Stack>
           </Container>
         );
       })}

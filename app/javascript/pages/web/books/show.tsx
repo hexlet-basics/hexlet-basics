@@ -1,7 +1,5 @@
-import type { PropsWithChildren } from "react";
+import { PropsWithChildren } from "react";
 import * as Routes from "@/routes.js";
-import { Col, Container, Row } from "react-bootstrap";
-
 import bookCoverImg from "@/images/profession-developer-book-cover.png";
 
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout.tsx";
@@ -12,112 +10,144 @@ import i18next from "i18next";
 import { LeadCrud, SharedProps } from "@/types";
 import LeadFormBlock from "@/components/LeadFormBlock";
 
-type Props = PropsWithChildren & {
-  bookRequested: boolean
-  lead: LeadCrud
-  // user: User;
-};
+import {
+  Container,
+  Grid,
+  Title,
+  Text,
+  Button,
+  Image,
+  Stack,
+  Box,
+  Divider,
+  Paper,
+} from '@mantine/core';
+import { Compass, FileText, List, Users } from "lucide-react";
+
+interface Props extends PropsWithChildren {
+  bookRequested: boolean;
+  lead: LeadCrud;
+}
 
 export default function Show({ bookRequested, lead }: Props) {
-  const { t } = useTranslation()
-  const {
-    auth,
-  } = usePage<SharedProps>().props;
+  const { t } = useTranslation();
+  const { auth } = usePage<SharedProps>().props;
+
+  const features = [
+    {
+      key: 'direction',
+      title: 'books.show.features.direction',
+      explanation: 'books.show.features.direction_explanation',
+      icon: Compass,
+    },
+    {
+      key: 'plan',
+      title: 'books.show.features.plan',
+      explanation: 'books.show.features.plan_explanation',
+      icon: List,
+    },
+    {
+      key: 'resume',
+      title: 'books.show.features.resume',
+      explanation: 'books.show.features.resume_explanation',
+      icon: FileText,
+    },
+    {
+      key: 'interview',
+      title: 'books.show.features.interview',
+      explanation: 'books.show.features.interview_explanation',
+      icon: Users,
+    },
+  ] as const;
 
   return (
     <ApplicationLayout>
-      <Container>
-        <div className="p-5 mt-3">
-          <Row>
-            <Col className="col-12 col-md-7">
-              <div className="text-muted fs-5">{t('books.show.freebook')}</div>
-              <h1>{t('books.show.header')}</h1>
-              <p className="lead">{t('books.show.description')}</p>
-              {!bookRequested && <Link
-                method="post"
+      <Container size="lg" my="xl">
+
+        <Grid>
+          <Grid.Col span={{ base: 12, md: 7 }}>
+            <Text c="dimmed" fz="lg">{t('books.show.freebook')}</Text>
+            <Title order={1}>{t('books.show.header')}</Title>
+            <Text fz="lg" fw={500}>{t('books.show.description')}</Text>
+
+            {!bookRequested ? (
+              <Button
+                component={Link}
                 href={Routes.create_request_book_url()}
-                className="btn btn-lg btn-outline-primary"
+                mt="md"
+                variant="outline"
+                size="lg"
               >
                 {t('books.show.request')}
-              </Link>}
-              {bookRequested && <a
-                target="_blank"
+              </Button>
+            ) : (
+              <Button
+                component="a"
                 href={Routes.download_book_url()}
-                className="btn btn-lg btn-outline-primary"
+                target="_blank"
+                mt="md"
+                variant="outline"
+                size="lg"
               >
                 {t('books.show.download')}
-              </a>}
-              <Row className="mt-5 row-cols-1 row-cols-md-2">
-                <Col className="mb-4">
-                  <div className="d-flex">
-                    <i className="bi bi-compass me-2 my-auto" />
-                    <span className="fw-bold fs-5">{t('books.show.features.direction')}</span>
-                  </div>
-                  <div>{t('books.show.features.direction_explanation')} </div>
-                </Col>
-                <Col className="mb-4">
-                  <div className="d-flex">
-                    <i className="bi bi-compass me-2 my-auto" />
-                    <span className="fw-bold fs-5">{t('books.show.features.plan')}</span>
-                  </div>
-                  <div>{t('books.show.features.plan_explanation')} </div>
-                </Col>
-              </Row>
-              <Row className="row-cols-1 row-cols-md-2">
-                <Col className="mb-4">
-                  <div className="d-flex">
-                    <i className="bi bi-compass me-2 my-auto" />
-                    <span className="fw-bold fs-5">{t('books.show.features.resume')}</span>
-                  </div>
-                  <div>{t('books.show.features.resume_explanation')} </div>
-                </Col>
-                <Col className="mb-4">
-                  <div className="d-flex">
-                    <i className="bi bi-compass me-2 my-auto" />
-                    <span className="fw-bold fs-5">{t('books.show.features.interview')}</span>
-                  </div>
-                  <div>{t('books.show.features.interview_explanation')} </div>
-                </Col>
-              </Row>
-            </Col>
-            <Col>
-              <img src={bookCoverImg} className="img-fluid" />
-            </Col>
-          </Row>
-          <h2 className="mb-4">{t('books.show.toc')}</h2>
-          {bookToc.map((item, index) => (
-            <div key={item.title}>
-              <Row className="py-3 bottom">
-                <Col className="col-12 col-md-2 fw-bold">
-                  {t('books.show.chapter', { number: index + 1 })}
-                </Col>
-                <Col className="col-12 col-md-4">{item.title}</Col>
-                <Col className="col-12 col-md-6">
-                  <ul>
-                    {item.subsections.map((subsection, index) => (
-                      <li key={index}>{subsection}</li>
-                    ))}
-                  </ul>
-                </Col>
-              </Row>
-              {(index !== bookToc.length - 1) && <hr />}
-            </div>
-          ))}
+              </Button>
+            )}
 
-        </div>
+            <Grid mt={40} gutter="md">
+              {features.map(({ key, title, explanation, icon: Icon }) => (
+                <Grid.Col span={{ base: 12, md: 6 }} key={key}>
+                  <Stack gap={4}>
+                    <Box style={{ display: 'flex', alignItems: 'center' }}>
+                      <Icon size={20} style={{ marginRight: 8 }} />
+                      <Text fw={700} fz="lg">{t(title)}</Text>
+                    </Box>
+                    <Text>{t(explanation)}</Text>
+                  </Stack>
+                </Grid.Col>
+              ))}
+            </Grid>
+
+          </Grid.Col>
+
+          <Grid.Col span={{ base: 12, md: 5 }}>
+            <Image src={bookCoverImg} alt="Book cover" radius="md" fit="contain" />
+          </Grid.Col>
+        </Grid>
+
+        <Title order={2} mt={40} mb={20}>{t('books.show.toc')}</Title>
+
+        {bookToc.map((item, index) => (
+          <Box key={item.title} py="md">
+            <Grid align="start">
+              <Grid.Col span={{ base: 12, md: 2 }}>
+                <Text fw={700}>{t('books.show.chapter', { number: index + 1 })}</Text>
+              </Grid.Col>
+              <Grid.Col span={{ base: 12, md: 4 }}>{item.title}</Grid.Col>
+              <Grid.Col span={{ base: 12, md: 6 }}>
+                <ul style={{ margin: 0, paddingLeft: 20 }}>
+                  {item.subsections.map((subsection, i) => (
+                    <li key={i}>{subsection}</li>
+                  ))}
+                </ul>
+              </Grid.Col>
+            </Grid>
+            {index !== bookToc.length - 1 && <Divider my="md" />}
+          </Box>
+        ))}
 
         {!auth.user.guest && i18next.language === 'ru' && (
-          <Row className="align-items-center py-5">
-            <Col className="col-12 col-lg-7 fw-bold display-4 mb-5">
-              {t("home.index.consultation")}
-            </Col>
-            <Col className="col-12 col-lg-5 mx-auto d-flex flex-column">
-              <div className="bg-body-tertiary p-4 p-md-5 border rounded-3">
+          <Grid align="center" mt={60}>
+            <Grid.Col span={{ base: 12, lg: 7 }}>
+              <Title order={2}>{t("home.index.consultation")}</Title>
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, lg: 5 }}>
+              <Paper p="lg" radius="md" withBorder>
                 <LeadFormBlock lead={lead} />
-              </div>
-            </Col>
-          </Row>
+              </Paper>
+            </Grid.Col>
+          </Grid>
         )}
+
       </Container>
     </ApplicationLayout>
   );

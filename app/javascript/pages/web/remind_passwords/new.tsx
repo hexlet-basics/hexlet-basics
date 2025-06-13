@@ -1,6 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { Card, Container, Row } from "react-bootstrap";
-import { Submit } from "use-inertia-form";
+import { Card, Container, Button, Anchor, Center, Box } from '@mantine/core';
 
 import { useTranslation } from "react-i18next";
 
@@ -20,38 +19,33 @@ export default function New({ passwordReminder }: Props) {
   const { t: tHelpers } = useTranslation("helpers");
 
   return (
-    <ApplicationLayout>
+    <ApplicationLayout center header={t("remind_passwords.new.title")}>
       <Container>
-        <Row className="justify-content-center">
-          <div className="col-sm-8 col-md-7 col-lg-5">
-            <h1 className="text-center mb-3">
-              {t("remind_passwords.new.title")}
-            </h1>
-            <Card className="p-4 border-0">
-              <Card.Body>
-                <XForm
-                  model="remind_password_form"
-                  data={{ remind_password_form: passwordReminder }}
-                  to={Routes.remind_password_path()}
+        <Center>
+          <Card withBorder shadow="sm" p="xl" w={{ base: '100%', sm: '80%', md: '70%', lg: '50%' }}>
+            <XForm
+              model="remind_password_form"
+              data={{ remind_password_form: passwordReminder }}
+              to={Routes.remind_password_path()}
+            >
+              <XInput field="email" required autoFocus autoComplete="email" />
+              <Box my="lg" ta="right">
+                {t("users.new.have_account")}{" "}
+                <Anchor
+                  fw="bold"
+                  component={Link}
+                  href={Routes.new_session_path()}
+                  style={{ textDecoration: 'none' }}
                 >
-                  <XInput name="email" autoComplete="email" />
-                  <div className="text-end text-muted small mb-4">
-                    {t("users.new.have_account")}{" "}
-                    <Link
-                      href={Routes.new_session_path()}
-                      className="text-decoration-none"
-                    >
-                      {t("users.new.sign_in")}
-                    </Link>
-                  </div>
-                  <Submit className="btn w-100 btn-lg btn-primary mb-3">
-                    {tHelpers("submit.remind_password_form.create")}
-                  </Submit>
-                </XForm>
-              </Card.Body>
-            </Card>
-          </div>
-        </Row>
+                  {t("users.new.sign_in")}
+                </Anchor>
+              </Box>
+              <Button fullWidth type="submit">
+                {tHelpers("submit.remind_password_form.create")}
+              </Button>
+            </XForm>
+          </Card>
+        </Center>
       </Container>
     </ApplicationLayout>
   );

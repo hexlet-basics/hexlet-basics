@@ -6,6 +6,7 @@ class Admin::ReviewForm < Review
     :state_event,
     :language_id,
     :locale,
+    :state,
     :body,
     :first_name,
     :last_name

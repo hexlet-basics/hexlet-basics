@@ -8,9 +8,8 @@ import type {
   LanguageLesson,
   LanguageLessonMember,
 } from "@/types/serializers";
-import cn from "classnames";
 import { useEffect, useRef } from "react";
-import { Button, Form, Spinner } from "react-bootstrap";
+import { Button, Textarea, Loader, Group, Stack } from '@mantine/core';
 import { useTranslation } from "react-i18next";
 // import { useInView } from "react-intersection-observer";
 import MarkdownViewer from "./MarkdownViewer";
@@ -28,13 +27,13 @@ type Props = {
 };
 
 function MessagePresenter({ message }: { message: AssistantMessage }) {
-  const classesLine = cn("hexlet-basics-content mt-2", {
-    "text-end bg-light ms-5 p-3 rounded": message.role === "user",
-  });
+  // const classesLine = cn("hexlet-basics-content mt-2", {
+  //   "text-end bg-light ms-5 p-3 rounded": message.role === "user",
+  // });
   return (
-    <div className={classesLine}>
-      <MarkdownViewer>{message.content}</MarkdownViewer>
-    </div>
+    <MarkdownViewer>
+      {message.content}
+    </MarkdownViewer>
   );
 }
 
@@ -73,11 +72,7 @@ export default function Chat({
     };
 
     return (
-      <div className="h-100">
-        <div className="mb-3">
-          <MessagePresenter message={disabledMessage} />
-        </div>
-      </div>
+      <MessagePresenter message={disabledMessage} />
     );
   }
 
@@ -94,48 +89,46 @@ export default function Chat({
   const { t: tCommon } = useTranslation("common");
 
   return (
-    <div className="h-100">
-      <div className="mb-3">
-        <MessagePresenter message={initMessage} />
-        {previousMessages.map((m: AssistantMessage) => (
-          <MessagePresenter key={m.id} message={m} />
-        ))}
-        {messages.map((m: AssistantMessage) => (
-          <MessagePresenter key={m.id} message={m} />
-        ))}
-      </div>
+    <Stack>
+      <MessagePresenter message={initMessage} />
+      {previousMessages.map((m: AssistantMessage) => (
+        <MessagePresenter key={m.id} message={m} />
+      ))}
+      {messages.map((m: AssistantMessage) => (
+        <MessagePresenter key={m.id} message={m} />
+      ))}
+
 
       <form onSubmit={submitMessage}>
-        <Form.Control
+        <Textarea
           ref={inputRef}
-          rows={5}
           disabled={status === "in_progress"}
-          as="textarea"
           value={input}
           onChange={handleInputChange}
-          aria-label="With textarea"
+          rows={5}
         />
-        <div className="d-flex justify-content-end pt-3">
-          {i18next.language === 'ru' &&
-            <a className="btn btn-outline-primary me-2" target="_blank" href={tCommon("community_url")}>{tViews('languages.lessons.show.chat.community')}</a>}
+        <Group justify="flex-end" pt="md">
+          {i18next.language === 'ru' && (
+            <Button
+              component="a"
+              variant="light"
+              href={tCommon("community_url")}
+              target="_blank"
+            >
+              {tViews('languages.lessons.show.chat.community')}
+            </Button>
+          )}
           <Button
             disabled={status !== "awaiting_message"}
             type="submit"
           >
             {status === "in_progress" && (
-              <Spinner
-                className="me-2"
-                as="span"
-                animation="grow"
-                size="sm"
-                role="status"
-                aria-hidden="true"
-              />
+              <Loader size="sm" mr="xs" />
             )}
             {tHelpers("send")}
           </Button>
-        </div>
+        </Group>
       </form>
-    </div>
+    </Stack>
   );
 }
