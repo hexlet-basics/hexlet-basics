@@ -1,3 +1,4 @@
+import AppAnchor from "@/components/AppAnchor";
 import * as Routes from "@/routes.js";
 import type { SharedProps } from "@/types";
 
@@ -11,13 +12,12 @@ import type { Organization, WithContext } from "schema-dts";
 function FooterLink(props: { href: string } & PropsWithChildren) {
   const { href, children } = props
 
-  return <Anchor
+  return <AppAnchor
     c="dimmed"
-    component={Link}
     href={href}
   >
     {children}
-  </Anchor>
+  </AppAnchor>
 }
 
 export default function FooterBlock() {
@@ -70,7 +70,9 @@ export default function FooterBlock() {
                   </Text>
                 </Stack>
               </Grid.Col>
+
               <Grid.Col span={{ base: 12, sm: 6, md: 3 }}>
+                <Title order={6}>{tLayouts('shared.footer.courses')}</Title>
                 <Stack gap={3}>
                   {landingPagesForFooter.map((lp) => (
                     <FooterLink key={lp.id} href={Routes.language_path(lp.slug)}>
@@ -115,6 +117,21 @@ export default function FooterBlock() {
                     href={Routes.page_path("authors")}
                   >
                     {tLayouts("shared.footer.authors")}
+                  </FooterLink>
+                  <FooterLink
+                    href={Routes.page_path("tos")}
+                  >
+                    {tLayouts("shared.footer.tos")}
+                  </FooterLink>
+                  <FooterLink
+                    href={Routes.page_path("privacy")}
+                  >
+                    {tLayouts("shared.footer.privacy")}
+                  </FooterLink>
+                  <FooterLink
+                    href={Routes.page_path("cookie_policy")}
+                  >
+                    {tLayouts("shared.footer.cookie_policy")}
                   </FooterLink>
                 </Stack>
               </Grid.Col>
