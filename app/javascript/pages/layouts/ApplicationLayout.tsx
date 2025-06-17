@@ -1,6 +1,8 @@
 import * as Routes from "@/routes.js";
-import type { PropsWithChildren } from "react";
+import { useEffect, type PropsWithChildren } from "react";
 import { AppShell, Container, Title, Stack, Box } from '@mantine/core';
+import * as CookieConsent from "vanilla-cookieconsent";
+import cookieTranslations from '@/locales/cookie_consent.ts'
 
 import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
 import type { BreadcrumbItem, SharedProps } from "@/types/index.js";
@@ -12,7 +14,7 @@ import { usePage } from "@inertiajs/react";
 import { useDisclosure } from "@mantine/hooks";
 import XFlash from "@/components/XFlash.tsx";
 import ContactMethodRequestingBlock from "./blocks/ContactMethodRequestingBlock.tsx";
-import { isCurrentUrl, url } from "@/lib/utils.ts";
+import { isCurrentUrl } from "@/lib/utils.ts";
 
 type Props = PropsWithChildren & {
   header?: string;
@@ -29,6 +31,23 @@ export default function ApplicationLayout({
   const page = usePage<SharedProps>();
   const { props: { shouldAddContactMethod } } = page
   const [opened, { toggle }] = useDisclosure();
+
+  useEffect(() => {
+    CookieConsent.run({
+      categories: {
+        necessary: {
+          enabled: true,  // this category is enabled by default
+          readOnly: true  // this category cannot be disabled
+        },
+        analytics: {}
+      },
+      language: {
+        autoDetect: "document",
+        default: 'ru',
+        translations: cookieTranslations,
+      }
+    });
+  }, []);
 
   return (
     <RootLayout>

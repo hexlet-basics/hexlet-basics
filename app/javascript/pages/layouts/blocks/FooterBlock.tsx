@@ -3,6 +3,7 @@ import type { SharedProps } from "@/types";
 
 import { Head, Link, usePage } from "@inertiajs/react";
 import { Container, Grid, Stack, Text, Group, Anchor, Title, Divider, Box } from '@mantine/core';
+import { Github, Send } from "lucide-react";
 import { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import type { Organization, WithContext } from "schema-dts";
@@ -41,13 +42,33 @@ export default function FooterBlock() {
       </Head>
 
       <Box bg="gray.0" mt="xl" pt="lg">
-        <Container size="lg" p="xl" fz="xs">
+        <Container size="lg" pt="lg">
           <footer>
-            <Grid justify="space-around">
+            <Grid justify="space-b">
               <Grid.Col span={{ base: 12, sm: 6, md: 3 }}>
-                <Text c="dimmed" size="sm">
-                  © 2020 mantine.dev. All rights reserved.
+                <Text fz="h3" mb="sm">
+                  8 800 100 22 47
                 </Text>
+                <Text fz="h3" mb="sm">
+                  +7 495 085 21 62
+                </Text>
+                <Anchor href="mailto:support@hexlet.io">
+                  support@hexlet.io
+                </Anchor>
+                <Stack mt="sm" gap={0}>
+                  <Text mb="xs">
+                    ООО «Хекслет Рус»
+                  </Text>
+                  <Text>
+                    108813 г. Москва, вн.тер.г. поселение Московский, г. Московский
+                  </Text>
+                  <Text mb="xs">
+                    ул. Солнечная, д. 3А, стр. 1, помещ. 10/3
+                  </Text>
+                  <Text>
+                    ОГРН 1217300010476
+                  </Text>
+                </Stack>
               </Grid.Col>
               <Grid.Col span={{ base: 12, sm: 6, md: 3 }}>
                 <Stack gap={3}>
@@ -105,12 +126,20 @@ export default function FooterBlock() {
               <Text>{`© ${new Date().getFullYear()}`}</Text>
               <Group gap="md">
                 <Anchor
+                  href="https://ttttt.me/hexlet_ru"
+                  target="_blank"
+                  rel="noreferrer nofollow"
+                  underline="never"
+                >
+                  <Send />
+                </Anchor>
+                <Anchor
                   href="https://github.com/hexlet-basics"
                   target="_blank"
                   rel="noreferrer nofollow"
                   underline="never"
                 >
-                  <i className="bi bi-github" />
+                  <Github />
                 </Anchor>
               </Group>
             </Group>
