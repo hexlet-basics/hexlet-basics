@@ -27,7 +27,7 @@
 ---
 
 DEFAULTS: &DEFAULTS
-  docker_image: hexlet-basics/exercises-${LABEL}
+  docker_image: hexletbasics/exercises-$LABEL
   extension: extension_$LABEL
   exercise_filename: filename_$LABEL
   state: created
@@ -44,7 +44,6 @@ go:
 java:
   <<: *DEFAULTS
 
-
 csharp:
   <<: *DEFAULTS
 
@@ -57,20 +56,24 @@ elixir:
 typescript1:
   <<: *DEFAULTS
   language: typescript
+  docker_image: hexletbasics/exercises-typescript
 
 javascript1:
   <<: *DEFAULTS
   language: javascript
   extension: rb
+  docker_image: hexletbasics/exercises-javascript
 
 javascript2:
   <<: *DEFAULTS
   language: javascript
   extension: rb
+  docker_image: hexletbasics/exercises-javascript
 
 pre-course-javascript1:
   <<: *DEFAULTS
   language: pre-course-javascript
+  docker_image: hexletbasics/exercises-javascript
 
 css:
   <<: *DEFAULTS
@@ -81,6 +84,7 @@ python:
 html1:
   <<: *DEFAULTS
   language: html
+  docker_image: hexletbasics/exercises-html
 
 ruby:
   <<: *DEFAULTS

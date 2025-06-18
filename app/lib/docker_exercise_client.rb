@@ -28,7 +28,7 @@ class DockerExerciseClient < DockerExerciseClientInterface
 
   def self.run_exercise(created_code_file_path:, exercise_file_path:, docker_image:, image_tag:, path_to_code:)
     volume = "-v #{created_code_file_path}:#{exercise_file_path}"
-    command = "docker run --rm  --memory=512m --net none #{volume} #{docker_image}:#{image_tag} timeout 6 make --silent -C #{path_to_code} test"
+    command = "docker run --rm --memory=512m --network none #{volume} #{docker_image}:#{image_tag} timeout 6 make --silent -C #{path_to_code} test"
     Rails.logger.debug(command)
 
     output = []

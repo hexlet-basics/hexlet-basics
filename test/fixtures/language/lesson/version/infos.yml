@@ -62,7 +62,7 @@ DEFAULTS: &DEFAULTS
     | `block`        | `display`                 | `block`          |
     | `p-3`          | `padding`                 | `0.75rem`        |
 
-    <iframe src="//player.vimeo.com/video/128853333?api=1&player_id=video1" id="video1" allowfullscreen="true"></iframe>
+    <iframe src="//player.vimeo.com/video/128853333?api=1&player_id=video1" id="video1" allowfullscreen></iframe>
 
     wow
   instructions: "<%= Faker::Lorem.paragraph %>"
@@ -176,9 +176,9 @@ javascript2-module3_version1-lesson1_version1-ru:
   language_lesson: javascript-module3-lesson1
   language_version: javascript2
   version: javascript2-module3_version1-lesson1_version1
- 
- 
- 
+
+
+
 one:
   <<: *DEFAULTS
   name: <%= Faker::Lorem.word %>
