@@ -1,4 +1,5 @@
 import CourseBlock from "@/components/CourseBlock";
+import XssContent from "@/components/XssContent";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import * as Routes from "@/routes.js";
 import type {
@@ -6,7 +7,8 @@ import type {
   LanguageMember,
 } from "@/types/serializers";
 import { Link } from "@inertiajs/react";
-import { Text, Grid, Container, Progress, Image, Title, Group, Anchor, Stack, Paper, Card, SimpleGrid } from '@mantine/core';
+import { Text, Grid, Container, Progress, Image, Title, Group, Anchor, Stack, Paper, Card, SimpleGrid, Alert } from '@mantine/core';
+import i18next, { t } from "i18next";
 import { useTranslation } from "react-i18next";
 
 type Props = {
@@ -76,7 +78,7 @@ export default function My(props: Props) {
     <ApplicationLayout>
       <Container>
 
-        <Title order={2} my="xl">{tViews("my.started")}</Title>
+        <Title order={2} my="xl">{tViews("my.show.started")}</Title>
         {startedCourseMembers.length === 0 && (
           <p >{tCommon("empty")}</p>
         )}
@@ -91,7 +93,14 @@ export default function My(props: Props) {
           ))}
         </SimpleGrid>
 
-        <Title my="xl" order={2}>{tViews("my.finished")}</Title>
+        <Title my="xl" order={2}>{tViews("my.show.finished")}</Title>
+
+        {finishedCourseMembers.length > 0 && i18next.language == "ru" && (
+          <Alert mb="xl">
+            <XssContent>{t('my.show.add_review')}</XssContent>
+          </Alert>
+        )}
+
         {finishedCourseMembers.length === 0 && (
           <p>{tCommon("empty")}</p>
         )}

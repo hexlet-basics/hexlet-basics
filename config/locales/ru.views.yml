@@ -38,8 +38,10 @@ ru:
           С нуля до трудоустройства. Этот учебник — ваш путеводитель в профессию программиста. Он создан для тех, кто хочет начать с нуля и шаг за шагом дойти до трудоустройства в одной из самых востребованных и перспективных областей
 
     my:
-      started: Начатые курсы
-      finished: Завершенные курсы
+      show:
+        started: Начатые курсы
+        finished: Завершенные курсы
+        add_review: Мы будем очень признательны, если вы оставите отзывы по пройденным курсам. Это можно сделать <a target="_blank" rel="noopener, noreferrer" href="https://taplink.cc/codebasics_reviews">тут</a>
     language_categories:
       index:
         header: Категории курсов по программированию
@@ -54,6 +56,7 @@ ru:
     reviews:
       index:
         header: Отзывы
+        add_review: Попробовали наши курсы и хотите оставить отзыв? Это можно сделать <a target="_blank" rel="noopener, noreferrer" href="https://taplink.cc/codebasics_reviews">тут</a>
         empty: Похоже, что тут пока ничего нет
         read_more: Читать далее
         course: 'Курс %{language}'
@@ -279,6 +282,7 @@ ru:
     languages:
       success:
         header: Поздравляем, вы завершили курс «%{name}»!
+        add_review: Не забудьте оставить отзыв, авторам курсов будет приятно (или не очень хехе). Это можно сделать <a target="_blank" rel="noopener, noreferrer" href="https://taplink.cc/codebasics_reviews">тут</a>
         changing_career_html: |
           <a target="_blank" class="link-body-emphasis" href="https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=finished_course_page">Карьера</a>: если вы хотите обучиться новой профессии
         getting_new_skill_html: |

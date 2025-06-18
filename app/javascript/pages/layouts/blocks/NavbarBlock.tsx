@@ -20,7 +20,7 @@ import * as Routes from "@/routes.js";
 import type { SharedProps } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
 import { useTranslation } from "react-i18next";
-import { ChevronDown, User } from "lucide-react";
+import { ChevronDown, LogOut, ShieldUser, User, UserCog } from "lucide-react";
 import AppAnchor from "@/components/AppAnchor";
 
 export type NavbarBlockProps = {
@@ -148,7 +148,7 @@ function AuthLinks({ avatar }: { avatar: string }) {
   }
 
   return (
-    <Menu shadow="md" width={200}>
+    <Menu shadow="md" width={250}>
       <Menu.Target>
         <UnstyledButton>
           <Center>
@@ -157,27 +157,25 @@ function AuthLinks({ avatar }: { avatar: string }) {
         </UnstyledButton>
       </Menu.Target>
       <Menu.Dropdown>
-        <Menu.Item component={Link} href={Routes.edit_account_profile_path()}>
-          <Group>
-            <Avatar src={avatar} radius="xl" size="lg" />
-            <Stack gap={0}>
-              <Text fw={500}>{auth.user.name}</Text>
-              <Text size="xs" c="dimmed">
-                {auth.user.email}
-              </Text>
-            </Stack>
-          </Group>
-        </Menu.Item>
+        <Menu.Label>
+          <Stack gap={0}>
+            <Text fw={500}>{auth.user.name}</Text>
+            <Text size="xs" c="dimmed">
+              {auth.user.email}
+            </Text>
+          </Stack>
+
+        </Menu.Label>
         <Divider />
-        <Menu.Item component={Link} href={Routes.edit_account_profile_path()}>
+        <Menu.Item leftSection={<UserCog size={14} />} component={Link} href={Routes.edit_account_profile_path()}>
           {t("shared.nav.profile")}
         </Menu.Item>
         {auth.user.admin && (
-          <Menu.Item component={Link} href={Routes.admin_root_path()}>
+          <Menu.Item leftSection={<ShieldUser size={14} />} component={Link} href={Routes.admin_root_path()}>
             {t("shared.nav.admin")}
           </Menu.Item>
         )}
-        <Menu.Item component={Link} method="delete" href={Routes.session_path()}>
+        <Menu.Item leftSection={<LogOut size={14} />} component={Link} method="delete" href={Routes.session_path()}>
           {t("shared.nav.sign_out")}
         </Menu.Item>
       </Menu.Dropdown>

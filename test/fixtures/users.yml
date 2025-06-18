@@ -37,31 +37,47 @@ DEFAULTS: &DEFAULTS
 full:
   <<: *DEFAULTS
   admin: true
-  first_name: John
-  last_name: Smith
+  first_name: <%= Faker::Name.first_name %>
+  last_name: <%= Faker::Name.last_name %>
   reset_password_token: <%= SecureHelper.generate_token %>
 
 just_signed_up:
   <<: *DEFAULTS
+  first_name: <%= Faker::Name.first_name %>
+  last_name: <%= Faker::Name.last_name %>
 
 inside_base_survey_scenario:
   <<: *DEFAULTS
+  first_name: <%= Faker::Name.first_name %>
+  last_name: <%= Faker::Name.last_name %>
 
 ready_to_start_learning:
   <<: *DEFAULTS
+  first_name: <%= Faker::Name.first_name %>
+  last_name: <%= Faker::Name.last_name %>
 
 should_add_contact_method:
   <<: *DEFAULTS
+  first_name: <%= Faker::Name.first_name %>
+  last_name: <%= Faker::Name.last_name %>
 
 choosing_contact_method:
   <<: *DEFAULTS
+  first_name: <%= Faker::Name.first_name %>
+  last_name: <%= Faker::Name.last_name %>
 
 one:
   <<: *DEFAULTS
+  first_name: <%= Faker::Name.first_name %>
+  last_name: <%= Faker::Name.last_name %>
 
 two:
   <<: *DEFAULTS
+  first_name: <%= Faker::Name.first_name %>
+  last_name: <%= Faker::Name.last_name %>
 
 admin:
   <<: *DEFAULTS
+  first_name: <%= Faker::Name.first_name %>
+  last_name: <%= Faker::Name.last_name %>
   admin: true

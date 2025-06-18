@@ -44,31 +44,43 @@ full-javascript:
   pinned: true
   body: Этот классный отзыв, который помечен как pinned
   locale: ru
+  first_name: <%= Faker::Name.first_name %>
+  last_name: <%= Faker::Name.last_name %>
 
 full-javascript-ru:
   <<: *DEFAULTS
   user: one
   body: <%= Faker::Lorem.paragraph_by_chars %>
   locale: ru
+  first_name: <%= Faker::Name.first_name %>
+  last_name: <%= Faker::Name.last_name %>
 
 full-javascript-ru2:
   <<: *DEFAULTS
   user: two
   body: <%= Faker::Lorem.paragraph_by_chars %>
   locale: en
+  first_name: <%= Faker::Name.first_name %>
+  last_name: <%= Faker::Name.last_name %>
 
 full-javascript-ru3:
   <<: *DEFAULTS
   pinned: true
   body: Это pinned отзыв, который должен быть где-то впереди
   locale: ru
+  first_name: <%= Faker::Name.first_name %>
+  last_name: <%= Faker::Name.last_name %>
 
 full-javascript-ru4:
   <<: *DEFAULTS
   body: <%= Faker::Lorem.paragraph_by_chars %>
   locale: ru
+  first_name: <%= Faker::Name.first_name %>
+  last_name: <%= Faker::Name.last_name %>
 
 full-javascript-en:
   <<: *DEFAULTS
   body: <%= Faker::Lorem.paragraph_by_chars %>
   locale: en
+  first_name: <%= Faker::Name.first_name %>
+  last_name: <%= Faker::Name.last_name %>

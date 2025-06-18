@@ -1,10 +1,11 @@
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
-import { Grid, Card, Text, Title, List, Stack, Container } from '@mantine/core';
+import { Grid, Card, Text, Title, List, Stack, Container, Alert } from '@mantine/core';
 import { useTranslation } from "react-i18next";
 
 import { LanguageLandingPage, LeadCrud } from "@/types";
 import XssContent from "@/components/XssContent";
 import LeadFormBlock from "@/components/LeadFormBlock";
+import { t } from "i18next";
 
 type Props = {
   courseLandingPage: LanguageLandingPage;
@@ -20,12 +21,12 @@ export default function Success(props: Props) {
   return (
     <ApplicationLayout header={header} center>
       <Container>
+        <Alert mb="xl">
+          <XssContent>{t('languages.success.add_review')}</XssContent>
+        </Alert>
         <Grid gutter="xl">
           <Grid.Col span={{ base: 12, sm: 7 }} mb="xl">
             <Stack>
-              <Title order={1}>
-                {}
-              </Title>
               <Text>
                 {tViews("languages.success.description")}
               </Text>
