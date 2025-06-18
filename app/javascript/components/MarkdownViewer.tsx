@@ -5,7 +5,7 @@ import remarkGfm from "remark-gfm";
 import rehypeExternalLinks from "rehype-external-links";
 import rehypeRaw from "rehype-raw";
 import type { PluggableList } from "unified";
-import { TypographyStylesProvider, useMantineColorScheme } from "@mantine/core";
+import { Box, TypographyStylesProvider, useMantineColorScheme } from "@mantine/core";
 import { loadShiki } from "@/lib/shiki";
 
 type MarkdownViewerProps = {
@@ -55,7 +55,7 @@ export default function MarkdownViewer({
 
   return (
     <TypographyStylesProvider>
-      <div className="markdown-viewer">
+      <Box className="markdown-viewer">
         <MarkdownHooks
           skipHtml={!allowHtml}
           remarkPlugins={[remarkGfm]}
@@ -63,7 +63,7 @@ export default function MarkdownViewer({
         >
           {children}
         </MarkdownHooks>
-      </div>
+      </Box>
     </TypographyStylesProvider>
   );
 }

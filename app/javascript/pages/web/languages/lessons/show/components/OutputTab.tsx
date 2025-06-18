@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import XssContent from "@/components/XssContent";
 import { usePage } from "@inertiajs/react";
-import { Alert, Code, ScrollArea } from "@mantine/core";
+import { Alert, Box, Code, ScrollArea } from "@mantine/core";
 import type { LessonSharedProps } from "../types.ts";
 import { useLessonStore } from "../store.tsx";
 import { Check, TriangleAlert } from "lucide-react";
@@ -43,9 +43,11 @@ export default function OutputTab() {
       >
         <XssContent>{message}</XssContent>
       </Alert>
-      <Code block>
-        <XssContent>{outputAsHTML}</XssContent>
-      </Code>
+      <Box className="markdown-viewer">
+        <Code block>
+          <XssContent>{outputAsHTML}</XssContent>
+        </Code>
+      </Box>
     </>
   );
 }
