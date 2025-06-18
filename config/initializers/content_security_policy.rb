@@ -20,7 +20,7 @@ Rails.application.configure do
     # Allow @vite/client to hot reload style changes in development
 
     # policy.frame_src :self, "giscus.app"
-    # policy.worker_src :self, "blob:"
+    policy.worker_src :self, "blob:"
     policy.img_src :self, :https, "*", :data
     policy.font_src :self, :https, "*", :data
     #     policy.object_src  :none
