@@ -1,6 +1,6 @@
 class Web::Admin::LanguageLessonMembersController < Web::Admin::ApplicationController
   def index
-    q = ransack_params("sf" => "created_at", "so" => "0")
+    q = ransack_params("sf" => "id", "so" => "desc")
     search = Language::Lesson::Member
       .includes([ [ lesson: :infos ], :language ])
       .ransack(q)

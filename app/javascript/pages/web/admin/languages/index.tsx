@@ -10,6 +10,7 @@ import type { Language, Grid } from '@/types/serializers';
 import { Menu } from './shared/menu';
 import useDataTableProps from '@/hooks/useDataTableProps';
 import { Edit } from 'lucide-react';
+import dayjs from 'dayjs';
 
 type Props = PropsWithChildren & {
   courses: Language[];
@@ -38,7 +39,11 @@ export default function Index({ grid, courses }: Props) {
           { accessor: 'progress', sortable: true },
           { accessor: 'learn_as', sortable: true },
           { accessor: 'order' },
-          { accessor: 'created_at', sortable: true },
+          {
+            accessor: 'created_at',
+            sortable: true,
+            render: (r) => dayjs(r.created_at).format('LL'),
+          },
           { accessor: 'actions', title: 'actions', render: renderActions },
         ]}
         {...gridProps}

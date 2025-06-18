@@ -26,7 +26,7 @@ class Language::Member < ApplicationRecord
   include AASM
 
   def self.ransackable_attributes(_auth_object = nil)
-    %w[created_at language_id]
+    %w[id created_at language_id]
   end
 
   belongs_to :user

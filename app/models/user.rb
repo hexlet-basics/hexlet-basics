@@ -38,7 +38,7 @@ class User < ApplicationRecord
   has_secure_password validations: false
 
   def self.ransackable_attributes(_auth_object = nil)
-    %w[email first_name last_name]
+    %w[id email first_name last_name created_at]
   end
 
   def self.ransackable_associations(_auth_object = nil)

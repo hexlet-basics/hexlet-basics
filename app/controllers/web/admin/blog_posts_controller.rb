@@ -2,7 +2,7 @@
 
 class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
   def index
-    q = ransack_params("sf" => "created_at", "so" => "0")
+    q = ransack_params("sf" => "id", "so" => "desc")
     search = BlogPost.with_locale.includes([ :cover_attachment ]).ransack(q)
     pagy, records = pagy(search.result)
 

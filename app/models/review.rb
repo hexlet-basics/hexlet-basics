@@ -32,7 +32,7 @@ class Review < ApplicationRecord
   enum :state, { draft: "draft", published: "published", archived: "archived" }, suffix: true, validate: true, default: "draft"
 
   def self.ransackable_attributes(_auth_object = nil)
-    [ "created_at" ]
+    [ "id", "created_at" ]
   end
 
   def self.ransackable_associations(_auth_object = nil)

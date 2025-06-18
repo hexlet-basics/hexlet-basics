@@ -10,6 +10,7 @@ import type { Review, Grid } from '@/types/serializers';
 import { Menu } from './shared/menu';
 import useDataTableProps from '@/hooks/useDataTableProps';
 import { Edit } from 'lucide-react';
+import dayjs from 'dayjs';
 
 type Props = PropsWithChildren & {
   reviews: Review[];
@@ -32,13 +33,17 @@ export default function Index({ grid, reviews }: Props) {
       <DataTable
         records={reviews}
         columns={[
-          { accessor: 'id' },
+          { accessor: 'id', sortable: true },
           { accessor: 'locale' },
           { accessor: 'user_id', title: 'user' },
           { accessor: 'first_name', title: 'First Name', sortable: true },
           { accessor: 'last_name', title: 'Last Name', sortable: true },
           { accessor: 'state', sortable: true },
-          { accessor: 'created_at', sortable: true },
+          {
+            accessor: 'created_at',
+            sortable: true,
+            render: (r) => dayjs(r.created_at).format('LL'),
+          },
           { accessor: 'actions', title: 'actions', render: renderActions },
         ]}
         {...gridProps}

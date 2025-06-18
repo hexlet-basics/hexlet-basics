@@ -2,7 +2,7 @@
 
 class Web::Admin::HomeController < Web::Admin::ApplicationController
   def index
-    q = ransack_params("sf" => "created_at", "so" => "0")
+    q = ransack_params("sf" => "id", "so" => "desc")
     search = User.admin.ransack(q)
     admins = search.result
 

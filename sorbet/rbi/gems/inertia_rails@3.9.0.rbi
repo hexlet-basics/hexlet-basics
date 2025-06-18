@@ -92,98 +92,104 @@ class InertiaRails::Configuration
   # @raise [ArgumentError]
   # @return [Configuration] a new instance of Configuration
   #
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#52
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#55
   def initialize(controller: T.unsafe(nil), **attrs); end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#61
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#64
   def bind_controller(controller); end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#85
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#88
   def component_path_resolver(path:, action:); end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#95
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#98
   def component_path_resolver=(value); end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#91
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#94
   def deep_merge_shared_data; end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#95
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#98
   def deep_merge_shared_data=(value); end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#91
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#94
   def default_render; end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#95
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#98
   def default_render=(value); end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#91
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#94
   def encrypt_history; end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#95
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#98
   def encrypt_history=(value); end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#65
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#68
   def freeze; end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#91
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#94
   def layout; end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#95
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#98
   def layout=(value); end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#75
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#78
   def merge(config); end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#70
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#73
   def merge!(config); end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#91
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#94
+  def parent_controller; end
+
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#98
+  def parent_controller=(value); end
+
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#94
   def ssr_enabled; end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#95
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#98
   def ssr_enabled=(value); end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#91
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#94
   def ssr_url; end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#95
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#98
   def ssr_url=(value); end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#91
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#94
   def version; end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#95
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#98
   def version=(value); end
 
   # Internal: Finalizes the configuration for a specific controller.
   #
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#80
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#83
   def with_defaults(config); end
 
   protected
 
   # Returns the value of attribute controller.
   #
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#49
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#52
   def controller; end
 
   # Returns the value of attribute options.
   #
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#50
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#53
   def options; end
 
   private
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#102
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#105
   def evaluate_option(value); end
 
   class << self
-    # source://inertia_rails//lib/inertia_rails/configuration.rb#33
+    # source://inertia_rails//lib/inertia_rails/configuration.rb#36
     def default; end
 
     private
 
-    # source://inertia_rails//lib/inertia_rails/configuration.rb#39
+    # source://inertia_rails//lib/inertia_rails/configuration.rb#42
     def env_options; end
   end
 end
@@ -191,7 +197,7 @@ end
 # source://inertia_rails//lib/inertia_rails/configuration.rb#5
 InertiaRails::Configuration::DEFAULTS = T.let(T.unsafe(nil), Hash)
 
-# source://inertia_rails//lib/inertia_rails/configuration.rb#30
+# source://inertia_rails//lib/inertia_rails/configuration.rb#33
 InertiaRails::Configuration::OPTION_NAMES = T.let(T.unsafe(nil), Array)
 
 # source://inertia_rails//lib/inertia_rails/controller.rb#6
@@ -284,17 +290,7 @@ end
 InertiaRails::DeferProp::DEFAULT_GROUP = T.let(T.unsafe(nil), String)
 
 # source://inertia_rails//lib/inertia_rails/engine.rb#5
-class InertiaRails::Engine < ::Rails::Engine
-  class << self
-    private
-
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#15
-    def __class_attr___callbacks; end
-
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#17
-    def __class_attr___callbacks=(new_value); end
-  end
-end
+class InertiaRails::Engine < ::Rails::Engine; end
 
 # source://inertia_rails//lib/inertia_rails.rb#27
 class InertiaRails::Error < ::StandardError; end

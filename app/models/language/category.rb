@@ -31,7 +31,7 @@ class Language::Category < ApplicationRecord
   has_many :blog_posts, through: :languages, dependent: :restrict_with_exception
 
   def self.ransackable_attributes(auth_object = nil)
-    [ "created_at", "name", "slug" ]
+    [ "id", "created_at", "name", "slug" ]
   end
 
   def self.ransackable_associations(auth_object = nil)

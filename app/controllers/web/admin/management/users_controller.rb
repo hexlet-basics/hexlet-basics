@@ -4,7 +4,7 @@ class Web::Admin::Management::UsersController < Web::Admin::Management::Applicat
   # include ActionController::Live
 
   def index
-    q = ransack_params("sf" => "created_at", "so" => "0")
+    q = ransack_params("sf" => "id", "so" => "desc")
     search = User.ransack(q)
     pagy, records = pagy(search.result)
 

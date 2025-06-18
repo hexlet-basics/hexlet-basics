@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import AdminLayout from '@/pages/layouts/AdminLayout';
 import type { SurveyAnswer, Grid } from '@/types';
 import useDataTableProps from '@/hooks/useDataTableProps';
+import dayjs from 'dayjs';
 
 type Props = PropsWithChildren & {
   surveyAnswers: SurveyAnswer[];
@@ -25,7 +26,11 @@ export default function Index({ grid, surveyAnswers }: Props) {
           { accessor: 'user_id' },
           { accessor: 'survey_slug' },
           { accessor: 'survey_item_value' },
-          { accessor: 'created_at', sortable: true },
+          {
+            accessor: 'created_at',
+            sortable: true,
+            render: (r) => dayjs(r.created_at).format('LL'),
+          },
         ]}
         {...gridProps}
       />

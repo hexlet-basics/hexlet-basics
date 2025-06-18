@@ -1,7 +1,7 @@
 class Survey::AnswerResource < ApplicationResource
   typelize_from Survey::Answer
 
-  attributes :id, :survey_id, :survey_item_id, :user_id
+  attributes :id, :survey_id, :survey_item_id, :user_id, :created_at
 
   typelize :state, nullabe: false
 

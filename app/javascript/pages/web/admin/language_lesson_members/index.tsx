@@ -9,6 +9,7 @@ import AppAnchor from '@/components/AppAnchor';
 import type { LanguageLessonMember, Grid } from '@/types/serializers';
 import useDataTableProps from '@/hooks/useDataTableProps';
 import { Stack, Text } from '@mantine/core';
+import dayjs from 'dayjs';
 
 type Props = {
   languageLessonMembers: LanguageLessonMember[];
@@ -49,7 +50,11 @@ export default function Index({ grid, languageLessonMembers }: PropsWithChildren
           { accessor: 'state' },
           { accessor: 'openai_thread_id' },
           { accessor: 'messages_count', title: 'messages_count', render: renderMessages },
-          { accessor: 'created_at', sortable: true },
+          {
+            accessor: 'created_at',
+            sortable: true,
+            render: (r) => dayjs(r.created_at).format('LL'),
+          },
         ]}
         {...gridProps}
       />

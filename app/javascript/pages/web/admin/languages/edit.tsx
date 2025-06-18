@@ -1,4 +1,3 @@
-import { DTDateTemplate } from "@/components/dtTemplates";
 import AdminLayout from "@/pages/layouts/AdminLayout";
 import * as Routes from "@/routes.js";
 import type {
@@ -13,6 +12,7 @@ import { useTranslation } from "react-i18next";
 
 import Form from "./shared/form";
 import { Menu } from "./shared/menu";
+import dayjs from "dayjs";
 
 type Props = {
   courseDto: LanguageCrud;
@@ -58,7 +58,11 @@ export default function Edit({
             columns={[
               { accessor: 'id', title: 'id' },
               { accessor: 'result', title: 'result' },
-              { accessor: 'created_at', title: 'created_at', render: DTDateTemplate },
+              {
+                accessor: 'created_at',
+                sortable: true,
+                render: (r) => dayjs(r.created_at).format('LL'),
+              },
             ]}
           />
         </Grid.Col>

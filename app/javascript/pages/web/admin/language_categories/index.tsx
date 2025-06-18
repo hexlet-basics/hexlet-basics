@@ -14,6 +14,7 @@ import useConfirmation from "@/hooks/useConfirmation";
 import AppAnchor from '@/components/AppAnchor';
 import useDataTableProps from '@/hooks/useDataTableProps';
 import { Edit, Link } from 'lucide-react';
+import dayjs from 'dayjs';
 
 type Props = PropsWithChildren & {
   categories: LanguageCategory[];
@@ -59,6 +60,11 @@ export default function Index({ grid, categories }: Props) {
           { accessor: 'id' },
           { accessor: 'name', sortable: true },
           { accessor: 'slug', },
+          {
+            accessor: 'created_at',
+            sortable: true,
+            render: (r) => dayjs(r.created_at).format('LL'),
+          },
           {
             accessor: 'actions',
             title: 'actions',

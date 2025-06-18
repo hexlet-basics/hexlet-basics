@@ -31,6 +31,6 @@ class UserSurveyPivot < ApplicationRecord
   belongs_to :study_plan_item, class_name: "Survey::Item", optional: true
 
   def self.ransackable_attributes(auth_object = nil)
-    [ "study_plan_item_id", "coding_experience_item_id", "created_at", "goal_item_id", "id", "updated_at", "user_id" ]
+    [ "id", "study_plan_item_id", "coding_experience_item_id", "created_at", "goal_item_id", "id", "updated_at", "user_id" ]
   end
 end

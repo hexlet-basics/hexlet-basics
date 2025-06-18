@@ -23,7 +23,10 @@ export default function LeadFormBlock({ lead, autoFocus = false }: Props) {
 
   const data = toMerged(
     lead,
-    { lead: { ym_client_id: fromWindow('ymClientId') } }
+    { lead: {
+      ym_client_id: fromWindow('ymClientId'),
+      contact_method: 'telegram',
+    } }
   )
 
   return (
@@ -32,7 +35,6 @@ export default function LeadFormBlock({ lead, autoFocus = false }: Props) {
       <XSelect
         required
         field="contact_method"
-        defaultValue="telegram"
         labelField="name"
         valueField="id"
         items={contactMethodOptions}

@@ -1,6 +1,6 @@
 class Web::Admin::LeadsController < Web::Admin::ApplicationController
   def index
-    q = ransack_params("sf" => "created_at", "so" => "0")
+    q = ransack_params("sf" => "id", "so" => "desc")
     search = Lead.includes([ :user ]).ransack(q)
     pagy, records = pagy(search.result)
 

@@ -10,6 +10,7 @@ import type { Grid, SurveyScenario } from '@/types';
 import { Menu } from './shared/menu';
 import useDataTableProps from '@/hooks/useDataTableProps';
 import { Edit } from 'lucide-react';
+import dayjs from 'dayjs';
 
 type Props = PropsWithChildren & {
   surveyScenarios: SurveyScenario[];
@@ -36,7 +37,11 @@ export default function Index({ grid, surveyScenarios }: Props) {
           { accessor: 'id' },
           { accessor: 'name' },
           { accessor: 'survey_item_value', title: 'Parent Item' },
-          { accessor: 'created_at', sortable: true },
+          {
+            accessor: 'created_at',
+            sortable: true,
+            render: (r) => dayjs(r.created_at).format('LL'),
+          },
           { accessor: 'actions', title: 'actions', render: renderActions },
         ]}
         {...gridProps}

@@ -10,6 +10,7 @@ import type { LanguageLandingPage, Grid } from '@/types/serializers';
 import { Menu } from './shared/menu';
 import useDataTableProps from '@/hooks/useDataTableProps';
 import { Edit, Link } from 'lucide-react';
+import dayjs from 'dayjs';
 
 type Props = PropsWithChildren & {
   landingPages: LanguageLandingPage[];
@@ -51,7 +52,11 @@ export default function Index({ grid, landingPages }: Props) {
           { accessor: 'header' },
           { accessor: 'language', title: 'language', render: renderLanguage },
           { accessor: 'slug' },
-          { accessor: 'created_at', sortable: true },
+          {
+            accessor: 'created_at',
+            sortable: true,
+            render: (r) => dayjs(r.created_at).format('LL'),
+          },
           { accessor: 'actions', title: 'actions', render: renderActions },
         ]}
         {...gridProps}

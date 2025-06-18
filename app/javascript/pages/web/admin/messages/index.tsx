@@ -11,6 +11,7 @@ import useDataTableProps from '@/hooks/useDataTableProps';
 import { Modal, Button } from '@mantine/core';
 import { useState } from 'react';
 import MarkdownViewer from '@/components/MarkdownViewer';
+import dayjs from 'dayjs';
 
 type Props = PropsWithChildren & {
   messages: LanguageLessonMemberMessage[];
@@ -57,7 +58,11 @@ export default function Index({ grid, messages }: Props) {
           { accessor: 'user_id' },
           { accessor: 'lesson', title: 'Lesson Url', render: renderLesson },
           { accessor: 'body', title: 'body', render: renderBody },
-          { accessor: 'created_at', sortable: true },
+          {
+            accessor: 'created_at',
+            sortable: true,
+            render: (r) => dayjs(r.created_at).format('LL'),
+          },
         ]}
         {...gridProps}
       />

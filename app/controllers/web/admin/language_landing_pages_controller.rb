@@ -1,6 +1,6 @@
 class Web::Admin::LanguageLandingPagesController < Web::Admin::ApplicationController
   def index
-    q = ransack_params("sf" => "created_at", "so" => "0")
+    q = ransack_params("sf" => "id", "so" => "desc")
     search = Language::LandingPage.with_locale.joins(:language).ransack(q)
     pagy, records = pagy(search.result)
 

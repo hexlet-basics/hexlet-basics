@@ -54,7 +54,7 @@ class Language < ApplicationRecord
   end
 
   def self.ransackable_attributes(_auth_object = nil)
-    [ "created_at", "learn_as", "progress" ]
+    [ "id", "created_at", "learn_as", "progress" ]
   end
 
   enum :progress, { completed: "completed", in_development: "in_development", draft: "draft" }, default: "draft", suffix: true, validate: true

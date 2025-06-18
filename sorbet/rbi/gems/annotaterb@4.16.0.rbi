@@ -71,17 +71,17 @@ class AnnotateRb::ConfigGenerator
   end
 end
 
-# source://annotaterb//lib/annotate_rb/config_loader.rb#8
+# source://annotaterb//lib/annotate_rb/config_loader.rb#10
 class AnnotateRb::ConfigLoader
   class << self
-    # source://annotaterb//lib/annotate_rb/config_loader.rb#10
+    # source://annotaterb//lib/annotate_rb/config_loader.rb#12
     def load_config; end
 
     # Method from Rubocop::ConfigLoader
     #
     # @raise [TypeError]
     #
-    # source://annotaterb//lib/annotate_rb/config_loader.rb#21
+    # source://annotaterb//lib/annotate_rb/config_loader.rb#23
     def load_yaml_configuration(absolute_path); end
 
     # Read the specified file, or exit with a friendly, concise message on
@@ -90,24 +90,24 @@ class AnnotateRb::ConfigLoader
     #
     # Method from Rubocop::ConfigLoader
     #
-    # source://annotaterb//lib/annotate_rb/config_loader.rb#38
+    # source://annotaterb//lib/annotate_rb/config_loader.rb#41
     def read_file(absolute_path); end
 
     # Method from Rubocop::ConfigLoader
     #
-    # source://annotaterb//lib/annotate_rb/config_loader.rb#45
+    # source://annotaterb//lib/annotate_rb/config_loader.rb#48
     def yaml_safe_load(yaml_code, filename); end
 
     # Method from Rubocop::ConfigLoader
     #
-    # source://annotaterb//lib/annotate_rb/config_loader.rb#56
+    # source://annotaterb//lib/annotate_rb/config_loader.rb#59
     def yaml_safe_load!(yaml_code, filename); end
   end
 end
 
 # Raised when a configuration file is not found.
 #
-# source://annotaterb//lib/annotate_rb/config_loader.rb#5
+# source://annotaterb//lib/annotate_rb/config_loader.rb#7
 class AnnotateRb::ConfigNotFoundError < ::StandardError; end
 
 # source://annotaterb//lib/annotate_rb/core.rb#4
@@ -166,13 +166,34 @@ class AnnotateRb::ModelAnnotator::AnnotatedFile::Generator
 
   private
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/annotated_file/generator.rb#63
+  # source://annotaterb//lib/annotate_rb/model_annotator/annotated_file/generator.rb#90
   def content_annotated_after(parsed, content_without_annotations); end
 
   # source://annotaterb//lib/annotate_rb/model_annotator/annotated_file/generator.rb#47
   def content_annotated_before(parsed, content_without_annotations, write_position); end
 
+  # Determines where to place the annotation based on the nested_position option.
+  # When nested_position is enabled, finds the most deeply nested class declaration
+  # to place annotations directly above nested classes instead of at the file top.
+  #
+  # source://annotaterb//lib/annotate_rb/model_annotator/annotated_file/generator.rb#65
+  def determine_annotation_position(parsed); end
+
+  # Calculates the indentation string to apply to annotations for nested positioning.
+  # Extracts leading whitespace from the target line to preserve visual hierarchy
+  # and readability of nested code structures.
+  #
+  # source://annotaterb//lib/annotate_rb/model_annotator/annotated_file/generator.rb#83
+  def determine_indentation(content_without_annotations, line_number_before); end
+
+  # Formats annotations with appropriate indentation for consistent code structure.
+  # Applies the same indentation level as the target line to maintain proper
+  # code alignment when using nested positioning.
+  #
   # source://annotaterb//lib/annotate_rb/model_annotator/annotated_file/generator.rb#75
+  def formatted_annotations(content_without_annotations, line_number_before); end
+
+  # source://annotaterb//lib/annotate_rb/model_annotator/annotated_file/generator.rb#102
   def wrapped_content(content); end
 end
 
@@ -1855,7 +1876,7 @@ class AnnotateRb::Options
   # source://annotaterb//lib/annotate_rb/options.rb#166
   def initialize(options = T.unsafe(nil), state = T.unsafe(nil)); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://annotaterb//lib/annotate_rb/options.rb#164
   def [](*args, **_arg1, &block); end
 
   # source://annotaterb//lib/annotate_rb/options.rb#221
@@ -1939,13 +1960,13 @@ class AnnotateRb::Parser
   # source://annotaterb//lib/annotate_rb/parser.rb#160
   def add_model_options_to_parser(option_parser); end
 
-  # source://annotaterb//lib/annotate_rb/parser.rb#357
+  # source://annotaterb//lib/annotate_rb/parser.rb#362
   def add_options_to_parser(option_parser); end
 
-  # source://annotaterb//lib/annotate_rb/parser.rb#286
+  # source://annotaterb//lib/annotate_rb/parser.rb#291
   def add_position_options_to_parser(option_parser); end
 
-  # source://annotaterb//lib/annotate_rb/parser.rb#269
+  # source://annotaterb//lib/annotate_rb/parser.rb#274
   def add_route_options_to_parser(option_parser); end
 
   # source://annotaterb//lib/annotate_rb/parser.rb#138
@@ -2114,6 +2135,7 @@ class AnnotateRb::RouteAnnotator::BaseProcessor
 
     private
 
+    # source://annotaterb//lib/annotate_rb/route_annotator/base_processor.rb#16
     def new(*_arg0); end
   end
 end
@@ -2163,6 +2185,7 @@ class AnnotateRb::RouteAnnotator::HeaderGenerator
 
     private
 
+    # source://annotaterb//lib/annotate_rb/route_annotator/header_generator.rb#13
     def new(*_arg0); end
 
     # source://annotaterb//lib/annotate_rb/route_annotator/header_generator.rb#17

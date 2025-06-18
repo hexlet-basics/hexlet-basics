@@ -1,6 +1,6 @@
 class Web::Admin::SurveyScenariosController < Web::Admin::ApplicationController
   def index
-    q = ransack_params("sf" => "created_at", "so" => "0")
+    q = ransack_params("sf" => "id", "so" => "desc")
     search = Survey::Scenario.where(locale: I18n.locale).ransack(q)
     pagy, records = pagy(search.result)
 

@@ -1,10 +1,7 @@
-class Language::Lesson::MemberResource
-  include Alba::Resource
-  include Typelizer::DSL
-
+class Language::Lesson::MemberResource < ApplicationResource
   typelize_from Language::Lesson::Member
 
-  attributes :id, :user_id, :state, :openai_thread_id, :messages_count
+  attributes :id, :user_id, :state, :openai_thread_id, :messages_count, :created_at
 
   typelize state: [ enum: [ "started", "finished" ] ]
 

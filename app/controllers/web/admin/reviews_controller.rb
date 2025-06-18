@@ -2,7 +2,7 @@
 
 class Web::Admin::ReviewsController < Web::Admin::ApplicationController
   def index
-    q = ransack_params("sf" => "created_at", "so" => "0")
+    q = ransack_params("sf" => "id", "so" => "desc")
     search = Review.with_locale.includes([ :user ]).ransack(q)
     pagy, records = pagy(search.result)
 
