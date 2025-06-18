@@ -3,7 +3,6 @@ class Admin::ReviewForm < Review
 
   permit :user_id,
     :pinned,
-    :state_event,
     :language_id,
     :locale,
     :state,

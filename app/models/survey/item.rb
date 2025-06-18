@@ -26,5 +26,5 @@ class Survey::Item < ApplicationRecord
 
   validates :value, presence: true, if: :active?
 
-  enum :state, { active: "active", archived: "archived" }
+  enum :state, { active: "active", archived: "archived" }, default: "active"
 end

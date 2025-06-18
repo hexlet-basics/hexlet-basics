@@ -29,7 +29,7 @@
 class Review < ApplicationRecord
   include ReviewRepository
 
-  enum :state, { draft: "draft", published: "published", archived: "archived" }, suffix: true, validate: true
+  enum :state, { draft: "draft", published: "published", archived: "archived" }, suffix: true, validate: true, default: "draft"
 
   def self.ransackable_attributes(_auth_object = nil)
     [ "created_at" ]
@@ -45,7 +45,6 @@ class Review < ApplicationRecord
 
   belongs_to :language
   belongs_to :user
-
 
   def to_s
     "#{first_name} #{last_name}"

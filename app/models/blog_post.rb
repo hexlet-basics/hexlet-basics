@@ -44,7 +44,7 @@ class BlogPost < ApplicationRecord
     []
   end
 
-  enum :state, { draft: "draft", published: "published", archived: "archived" }, suffix: true, validate: true
+  enum :state, { draft: "draft", published: "published", archived: "archived" }, suffix: true, validate: true, default: "draft"
 
   validates :name, presence: true
   validates :slug, presence: true, uniqueness: true, format: { with: /\A[\w-]+\z/ }

@@ -39,11 +39,11 @@ class Web::Admin::ReviewsControllerTest < ActionDispatch::IntegrationTest
 
     assert { review.published_state? }
 
-    patch admin_review_url(review), params: { review: { body: "mumu", state_event: "archive" } }
+    patch admin_review_url(review), params: { review: { body: "mumu", state: "archived" } }
     assert_response :redirect
 
     review.reload
-    assert { review.archived? }
+    assert { review.archived_state? }
     assert { review.body == "mumu" }
   end
 end
