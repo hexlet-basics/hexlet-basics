@@ -67,8 +67,8 @@ export default function Show({ bookRequested, lead }: Props) {
         <Grid>
           <Grid.Col span={{ base: 12, md: 7 }}>
             <Text c="dimmed" fz="lg">{t('books.show.freebook')}</Text>
-            <Title order={1}>{t('books.show.header')}</Title>
-            <Text fz="lg" fw={500}>{t('books.show.description')}</Text>
+            <Title order={1} mb="lg">{t('books.show.header')}</Title>
+            <Text fz="lg">{t('books.show.description')}</Text>
 
             {!bookRequested ? (
               <Button

@@ -13,7 +13,8 @@ import {
   Center,
   Divider,
   Avatar,
-  Drawer
+  Drawer,
+  Space
 } from "@mantine/core";
 
 import * as Routes from "@/routes.js";
@@ -152,21 +153,22 @@ function AuthLinks({ avatar }: { avatar: string }) {
       <Menu.Target>
         <UnstyledButton>
           <Center>
-            <User size={18} /> <ChevronDown size={14} />
+            <User size={18} />
+            <Space me="xs" />
+            <Text>{auth.user.name}</Text>
+            <ChevronDown size={14} />
           </Center>
         </UnstyledButton>
       </Menu.Target>
       <Menu.Dropdown>
         <Menu.Label>
           <Stack gap={0}>
-            <Text fw={500}>{auth.user.name}</Text>
             <Text size="xs" c="dimmed">
               {auth.user.email}
             </Text>
           </Stack>
 
         </Menu.Label>
-        <Divider />
         <Menu.Item leftSection={<UserCog size={14} />} component={Link} href={Routes.edit_account_profile_path()}>
           {t("shared.nav.profile")}
         </Menu.Item>
