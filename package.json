@@ -34,7 +34,7 @@
     "es-toolkit": "^1.39.3",
     "html-react-parser": "^5.2.5",
     "i18next": "^25.2.1",
-    "lucide-react": "^0.516.0",
+    "lucide-react": "^0.517.0",
     "mantine-datatable": "^8.1.1",
     "react": "^19.1.0",
     "react-countdown": "^2.3.6",

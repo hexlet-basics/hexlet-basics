@@ -53,7 +53,6 @@ export default function ApplicationLayout({
     <RootLayout>
       <AppShell
         header={{ height: 60 }}
-        padding="lg"
       >
         <AppShell.Header>
           <NavbarBlock onToggle={toggle} opened={opened} />

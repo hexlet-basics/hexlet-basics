@@ -1,13 +1,11 @@
 import * as Routes from "@/routes.js";
-import type { SharedProps } from "@/types";
 import type {
   LanguageLandingPageForLists,
   LanguageMember,
 } from "@/types/serializers";
-import { Link, usePage } from "@inertiajs/react";
+import { Link } from "@inertiajs/react";
 import type { PropsWithChildren } from "react";
-import { Card, Button, Text, Group, Stack, Image, Title, Anchor } from '@mantine/core';
-import { useTranslation } from "react-i18next";
+import { Card, Text, Group, Stack, Image, Title, Anchor } from '@mantine/core';
 import { Clock, Users } from "lucide-react";
 
 type Props = PropsWithChildren & {
@@ -23,8 +21,6 @@ export default function CourseBlock({
   courseMember,
   lazy,
 }: Props) {
-  const { suffix } = usePage<SharedProps>().props;
-  const { t: tHelpers } = useTranslation("helpers");
 
   return (
 
@@ -37,12 +33,12 @@ export default function CourseBlock({
         />
       </Card.Section>
 
-      <Card.Section p="md">
-        <Title fw="bold" order={2}>
+      <Stack pt="md" h="100%">
+        <Title fw="bold" order={2} mb="md">
           {courseMember && <i className="me-3 bi bi-trophy" />}
           {landingPage.header}
         </Title>
-        <Group c="dimmed" mt="xs">
+        <Group c="dimmed" mt="auto">
           <Group gap="xs">
             <Clock size="15" />
             <Text size="sm">{landingPage.duration}</Text>
@@ -52,7 +48,8 @@ export default function CourseBlock({
             <Text size="sm">{landingPage.members_count}</Text>
           </Group>
         </Group>
-      </Card.Section>
+      </Stack>
+
 
       <Anchor
         component={Link}

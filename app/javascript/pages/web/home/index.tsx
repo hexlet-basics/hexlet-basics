@@ -141,15 +141,21 @@ export default function Index({
 
       <Container size="lg">
 
-        <Paper shadow="sm" my="60" withBorder ps={60} pt={60}>
+        <Paper
+          shadow="sm"
+          my={{ base: "md", xs: "lg", sm: 60 }}
+          pt={{ base: "md", xs: "lg", sm: 60 }}
+          withBorder
+          ps={60}
+        >
           <Grid overflow="hidden" gutter={0}>
             <Grid.Col span={{ base: 12, md: 7 }}>
-              <Title size="h5" fw="normal" c="dimmed">
+              <Title order={1} size="h5" fw="normal" c="dimmed">
                 {t("home.hero.free_programming_courses")}
               </Title>
-              <Box my="xs">
+              <Box my="xs" visibleFrom="xs">
                 <Text size="55px" fw="bold">
-                  {t("home.hero.learn_html")}{" "}
+                  {t("home.hero.learn")}{" "}
                   <Text c="blue" component="span" fw="bold">
                     <TypeAnimation
                       // className="text-primary"
@@ -159,6 +165,11 @@ export default function Index({
                       repeat={Number.POSITIVE_INFINITY}
                     />
                   </Text>
+                </Text>
+              </Box>
+              <Box my="xs" hiddenFrom="xs">
+                <Text fz="h1" fw="bold">
+                  {t("home.hero.learn_xs")}
                 </Text>
               </Box>
               <XssContent mb="xl">

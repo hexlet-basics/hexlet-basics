@@ -45,7 +45,7 @@ export default function FooterBlock() {
         <Container size="lg" pt="lg">
           <footer>
             <Grid justify="space-b">
-              <Grid.Col span={{ base: 12, sm: 6, md: 3 }}>
+              <Grid.Col span={{ base: 12, xs: 6, md: 3 }}>
                 <Text fz="h3" mb="sm">
                   8 800 100 22 47
                 </Text>
@@ -71,7 +71,7 @@ export default function FooterBlock() {
                 </Stack>
               </Grid.Col>
 
-              <Grid.Col span={{ base: 12, sm: 6, md: 3 }}>
+              <Grid.Col span={{ base: 12, xs: 6, md: 3 }}>
                 <Title order={6}>{tLayouts('shared.footer.courses')}</Title>
                 <Stack gap={3}>
                   {landingPagesForFooter.map((lp) => (
@@ -82,7 +82,7 @@ export default function FooterBlock() {
                 </Stack>
               </Grid.Col>
 
-              <Grid.Col span={{ base: 12, sm: 6, md: 3 }}>
+              <Grid.Col span={{ base: 12, xs: 6, md: 3 }}>
                 <Stack gap={3}>
                   <Title order={6}>{tLayouts('shared.footer.categories')}</Title>
                   {courseCategories.map((category) => (
@@ -96,7 +96,7 @@ export default function FooterBlock() {
                 </Stack>
               </Grid.Col>
 
-              <Grid.Col span={{ base: 12, sm: 6, md: 3 }} order={{ base: 1, lg: 0 }}>
+              <Grid.Col span={{ base: 12, xs: 6, md: 3 }} order={{ base: 1, lg: 0 }}>
                 <Stack gap={3}>
                   <FooterLink
                     href={Routes.page_path("about")}
