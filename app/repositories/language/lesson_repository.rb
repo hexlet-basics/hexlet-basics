@@ -5,10 +5,16 @@ module Language::LessonRepository
 
   included do
     scope :web, -> { active }
+
     scope :left_join_lesson_member_and_user, ->(user) {
-      left_outer_joins(:members)
-        .where(language_lesson_members: { user_id: user.id })
+      lesson_members_table = Language::Lesson::Member.arel_table
+      lessons_table = Language::Lesson.arel_table
+
+      join_condition = lesson_members_table[:lesson_id].eq(lessons_table[:id]).and(lesson_members_table[:user_id].eq(user.id))
+
+      joins(lessons_table.join(lesson_members_table, Arel::Nodes::OuterJoin).on(join_condition).join_sources)
     }
+
     scope :ordered, -> { order("language_lesson_versions.natural_order") }
   end
 end
