@@ -172,6 +172,7 @@ ru:
             header: Редактирование пользователя
           index:
             finished_lessons: Завершенные уроки
+            search_by_email: Поиск по email
             header: Пользователи
           filter:
             from: Начал прохождение с
