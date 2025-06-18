@@ -15,12 +15,13 @@ type Props = PropsWithChildren & {
   landingPage: LanguageLandingPageForLists;
   courseMember?: LanguageMember;
   continueButton?: boolean;
+  lazy?: boolean
 };
 
 export default function CourseBlock({
   landingPage,
   courseMember,
-  continueButton,
+  lazy,
 }: Props) {
   const { suffix } = usePage<SharedProps>().props;
   const { t: tHelpers } = useTranslation("helpers");
@@ -30,7 +31,7 @@ export default function CourseBlock({
     <Card pos="relative" shadow="sm">
       <Card.Section>
         <Image
-          loading="lazy"
+          loading={lazy ? "lazy" : "eager"}
           src={landingPage.language.cover_list_variant}
           alt={landingPage.header}
         />

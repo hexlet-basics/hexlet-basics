@@ -10,9 +10,10 @@ import dayjs from "dayjs";
 
 type Props = PropsWithChildren & {
   post: BlogPost;
+  lazy?: boolean
 };
 
-export default function BlogPostBlock({ post }: Props) {
+export default function BlogPostBlock({ post, lazy }: Props) {
   const { suffix } = usePage<SharedProps>().props;
   const { t: tCommon } = useTranslation("common");
 
@@ -27,6 +28,7 @@ export default function BlogPostBlock({ post }: Props) {
       {post.cover_thumb_variant && (
         <Card.Section>
           <Image
+            loading={lazy ? "lazy" : "eager"}
             src={post.cover_list_variant!}
             alt={`Cover for ${post.name}`}
           />

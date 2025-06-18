@@ -34,19 +34,17 @@ export default function NavbarBlock({ opened, onToggle }: NavbarBlockProps) {
   return (
     <>
       <Group h="100%" px="md">
-        <Group gap={15}>
-          <Anchor component={Link} href={Routes.root_path()} me="lg">
-            <Image src={logoImg} width={30} height={30} alt="Logo" />
-          </Anchor>
+        <Anchor component={Link} href={Routes.root_path()} me="lg">
+          <Image src={logoImg} w={30} h={30} fit="contain" alt="Logo" />
+        </Anchor>
 
-          <MyLink />
-          <CourseMenu landingPages={landingPagesForLists} />
-          <Group visibleFrom="sm">
-            <CaseLink />
-          </Group>
-          <Group visibleFrom="sm">
+        <MyLink />
+        <CourseMenu landingPages={landingPagesForLists} />
+        <Group visibleFrom="sm">
+          <CaseLink />
+        </Group>
+        <Group visibleFrom="sm">
           <BookLink />
-          </Group>
         </Group>
 
         <Group ms="auto" visibleFrom="sm">
@@ -81,7 +79,7 @@ function CourseMenu({ landingPages }: { landingPages: SharedProps["landingPagesF
   const { t } = useTranslation("layouts");
 
   return (
-    <Menu shadow="md" keepMounted={true}>
+    <Menu shadow="md" keepMounted>
       <Menu.Target>
         <UnstyledButton>
           <Center>

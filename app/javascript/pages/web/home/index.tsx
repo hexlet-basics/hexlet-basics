@@ -175,6 +175,7 @@ export default function Index({
 
               <Image
                 alt="Code Basics learning preview"
+                fetchPriority="high"
                 w="auto"
                 height="356"
                 src={codeImagePaths[locale]}
@@ -200,6 +201,7 @@ export default function Index({
         <SimpleGrid spacing="md" cols={{ base: 2, xs: 3, md: 4 }}>
           {landingPagesForLists.map((lp) => (
             <CourseBlock
+              lazy
               landingPage={lp}
               key={lp.id}
               courseMember={courseMembersByCourseId[lp.id]}
@@ -226,6 +228,7 @@ export default function Index({
                   src={review.avatar}
                   fit="contain"
                   radius="100%"
+                  loading="lazy"
                   w={40}
                   // width={50}
                   // height={50}
@@ -252,7 +255,7 @@ export default function Index({
           <SimpleGrid spacing="md" cols={{ base: 1, xs: 2, md: 3 }}>
             {blogPosts.map((post) => (
 
-              <BlogPostBlock key={post.id} post={post} />
+              <BlogPostBlock key={post.id} post={post} lazy />
 
             ))}
           </SimpleGrid>
