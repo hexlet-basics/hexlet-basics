@@ -36,7 +36,7 @@ setup-staging:
 	RAILS_ENV=staging bin/rails db:fixtures:load
 	# RAILS_ENV=staging bin/rails db:prepare db:fixtures:load
 	# bin/vite build --ssr
-	NODE_ENV=development RAILS_ENV=staging make build-assets
+	RAILS_ENV=staging make build-assets
 
 staging:
 	DEBUG=vite-plugin-ruby:* NODE_ENV=development RAILS_ENV=staging overmind start -f Procfile.staging
