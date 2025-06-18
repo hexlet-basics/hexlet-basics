@@ -241,7 +241,7 @@ ru:
         meta:
           description: Войти на Code Basics
         sign_in: Вход
-        dont_have_account: Нет аккаунта?
+        dont_have_account: Первый раз на сайте?
         register: Регистрация
         sign_in_with_github: Войти через GitHub
         forgot_password: Забыли пароль?

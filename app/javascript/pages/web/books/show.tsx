@@ -75,6 +75,7 @@ export default function Show({ bookRequested, lead }: Props) {
                 component={Link}
                 href={Routes.create_request_book_url()}
                 mt="md"
+                method="post"
                 variant="outline"
                 size="lg"
               >

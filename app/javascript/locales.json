@@ -3168,7 +3168,7 @@
       },
       "sessions": {
         "new": {
-          "dont_have_account": "Нет аккаунта?",
+          "dont_have_account": "Первый раз на сайте?",
           "email": "Email",
           "forgot_password": "Забыли пароль?",
           "meta": {

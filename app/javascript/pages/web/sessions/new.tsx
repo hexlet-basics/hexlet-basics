@@ -10,6 +10,7 @@ import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { SignInForm } from "@/types/serializers";
 import { Link } from "@inertiajs/react";
 import { Submit } from "use-inertia-form";
+import AppAnchor from "@/components/AppAnchor";
 
 type Props = PropsWithChildren & {
   signInForm: SignInForm;
@@ -25,7 +26,7 @@ export default function New({ signInForm }: Props) {
       header={t("sessions.new.title")}
     >
       <Container>
-        <Center>
+        <Stack align="center">
           <Card withBorder p="xl" w={{ base: '100%', sm: '80%', md: '70%', lg: '50%' }}>
             <XForm
               to={Routes.session_path()}
@@ -55,7 +56,15 @@ export default function New({ signInForm }: Props) {
               </Button>
             </XForm>
           </Card>
-        </Center>
+
+          <Text mt="xs">
+            {t('sessions.new.dont_have_account')}{' '}
+            <AppAnchor href={Routes.new_user_path()} fw="bold">
+              {t('sessions.new.register')}
+            </AppAnchor>
+          </Text>
+
+        </Stack>
       </Container>
     </ApplicationLayout>
   );
