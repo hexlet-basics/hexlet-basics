@@ -44,10 +44,8 @@ en:
         cases: Cases
         for_teachers: For school teachers
       footer:
+        courses: Courses
         hexlet: Hexlet
-        hexlet-cv: Hexlet.CV
-        hexlet-sicp: Hexlet.SICP
-        hexlet-friends: Hexlet.Friends
         useful: Useful
         blog: Blog
         reviews: Reviews

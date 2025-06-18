@@ -521,11 +521,9 @@
           "blog": "Blog",
           "categories": "Categories",
           "cookie_policy": "Cookie Policy",
+          "courses": "Courses",
           "free_call": "Calls within Russia are toll free",
           "hexlet": "Hexlet",
-          "hexlet-cv": "Hexlet.CV",
-          "hexlet-friends": "Hexlet.Friends",
-          "hexlet-sicp": "Hexlet.SICP",
           "hexlet_address": "TOO \"Hexlet\", The Republic of Kazakhstan, Almaty, Auezova St., 14A",
           "hexlet_blog": "Blog",
           "hexlet_number": "BIN 230340043714",
@@ -973,7 +971,8 @@
           "fastest_way_to_start_coding": "The easiest way to experience coding right in your browser, Code Basics is an online platform featuring free programming tutorials and an interactive coding environment. Every lesson comes with an exercise to practice.",
           "free_programming_courses": "Learn to Programming for Free",
           "how_coding_works": "How learning works with code-basics",
-          "learn_html": "Learn",
+          "learn": "Learn",
+          "learn_xs": "Learn Programming",
           "try": "Try now"
         },
         "index": {

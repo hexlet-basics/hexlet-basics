@@ -219,16 +219,16 @@ function LessonTabContent() {
 
       <MarkdownViewer allowHtml>{lesson.theory || ""}</MarkdownViewer>
 
-      <Text fz="lg" fw={600} mt="md">
+      <Title order={2} my="md">
         {t("languages.lessons.show.instructions")}
-      </Text>
+      </Title>
       <MarkdownViewer allowHtml>{lesson.instructions || ""}</MarkdownViewer>
 
       {lesson.tips.length > 0 && (
         <>
-          <Text fz="lg" fw={600} mt="md">
+          <Title order={2} my="md">
             {t("languages.lessons.show.tips")}
-          </Text>
+          </Title>
           <ul>
             {lesson.tips.map((tip) => (
               <li key={tip}>
@@ -241,7 +241,7 @@ function LessonTabContent() {
 
       <hr />
 
-      <Accordion mb="lg" defaultValue={commonQuestions[0]?.question}>
+      <Accordion mb="xs" defaultValue={commonQuestions[0]?.question}>
         {commonQuestions.map((v) => (
           <Accordion.Item key={v.question} value={v.question}>
             <Accordion.Control>

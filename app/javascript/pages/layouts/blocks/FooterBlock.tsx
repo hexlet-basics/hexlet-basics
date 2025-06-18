@@ -4,6 +4,7 @@ import type { SharedProps } from "@/types";
 
 import { Head, Link, usePage } from "@inertiajs/react";
 import { Container, Grid, Stack, Text, Group, Anchor, Title, Divider, Box } from '@mantine/core';
+import i18next from "i18next";
 import { Github, Send } from "lucide-react";
 import { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
@@ -45,31 +46,33 @@ export default function FooterBlock() {
         <Container size="lg" pt="lg">
           <footer>
             <Grid justify="space-b">
-              <Grid.Col span={{ base: 12, xs: 6, md: 3 }}>
-                <Text fz="h3" mb="sm">
-                  8 800 100 22 47
-                </Text>
-                <Text fz="h3" mb="sm">
-                  +7 495 085 21 62
-                </Text>
-                <Anchor href="mailto:support@hexlet.io">
-                  support@hexlet.io
-                </Anchor>
-                <Stack mt="sm" gap={0}>
-                  <Text mb="xs">
-                    ООО «Хекслет Рус»
+              {i18next.language == 'ru' && (
+                <Grid.Col span={{ base: 12, xs: 6, md: 3 }}>
+                  <Text fz="h3" mb="sm">
+                    8 800 100 22 47
                   </Text>
-                  <Text>
-                    108813 г. Москва, вн.тер.г. поселение Московский, г. Московский
+                  <Text fz="h3" mb="sm">
+                    +7 495 085 21 62
                   </Text>
-                  <Text mb="xs">
-                    ул. Солнечная, д. 3А, стр. 1, помещ. 10/3
-                  </Text>
-                  <Text>
-                    ОГРН 1217300010476
-                  </Text>
-                </Stack>
-              </Grid.Col>
+                  <Anchor href="mailto:support@hexlet.io">
+                    support@hexlet.io
+                  </Anchor>
+                  <Stack mt="sm" gap={0}>
+                    <Text mb="xs">
+                      ООО «Хекслет Рус»
+                    </Text>
+                    <Text>
+                      108813 г. Москва, вн.тер.г. поселение Московский, г. Московский
+                    </Text>
+                    <Text mb="xs">
+                      ул. Солнечная, д. 3А, стр. 1, помещ. 10/3
+                    </Text>
+                    <Text>
+                      ОГРН 1217300010476
+                    </Text>
+                  </Stack>
+                </Grid.Col>
+              )}
 
               <Grid.Col span={{ base: 12, xs: 6, md: 3 }}>
                 <Title order={6}>{tLayouts('shared.footer.courses')}</Title>
