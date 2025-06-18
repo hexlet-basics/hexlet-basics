@@ -1,6 +1,9 @@
-name: pullrequest
+name: build
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
@@ -10,7 +13,7 @@ env:
   DATABASE_TEST_HOST: localhost
 
 jobs:
-  main:
+  build:
     services:
       postgres:
         image: postgres:alpine
@@ -20,13 +23,14 @@ jobs:
         ports:
           - 5432:5432
 
+    # TODO: switch to arm https://github.blog/changelog/2025-01-16-linux-arm64-hosted-runners-now-available-for-free-in-public-repositories-public-preview/
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 23
+          node-version: 24
           cache: "npm"
       - run: npm ci
 
@@ -35,8 +39,9 @@ jobs:
           bundler-cache: true
       - run: bundle install
 
+      - run: make lint
+
       - run: RAILS_ENV=test make build-assets
 
-      - run: make lint
       - run: make test
       - run: make test-system

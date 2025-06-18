@@ -1,4 +1,4 @@
-[![github action status](https://github.com/hexlet-basics/hexlet-basics/workflows/push/badge.svg)](https://actions-badge.atrox.dev/hexlet-basics/hexlet-basics/goto)
+[![github action status](https://github.com/hexlet-basics/hexlet-basics/workflows/build/badge.svg?event=push)](https://github.com/hexlet-basics/hexlet-basics/actions)
 
 # hexlet-basics
 
