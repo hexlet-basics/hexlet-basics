@@ -175,7 +175,7 @@ export default function Index({
               <XssContent mb="xl">
                 {t("home.hero.fastest_way_to_start_coding")}
               </XssContent>
-              <Button mb="lg" component="a" href="#courses">
+              <Button mb="lg" size="xl" component="a" href="#courses">
                 {t("home.hero.try")}
               </Button>
             </Grid.Col>
