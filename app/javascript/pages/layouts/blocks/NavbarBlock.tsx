@@ -81,7 +81,7 @@ function CourseMenu({ landingPages }: { landingPages: SharedProps["landingPagesF
   const { t } = useTranslation("layouts");
 
   return (
-    <Menu shadow="md">
+    <Menu shadow="md" keepMounted={true}>
       <Menu.Target>
         <UnstyledButton>
           <Center>
