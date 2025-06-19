@@ -18,10 +18,11 @@ Sentry.init({
   sendDefaultPii: true,
   allowUrls: [import.meta.env.VITE_APP_HOST],
   integrations: [
-    Sentry.feedbackIntegration({
-      colorScheme: "system",
-
-    }),
+    // TODO: translate
+    // Sentry.feedbackIntegration({
+    //   colorScheme: "system",
+    //
+    // }),
     Sentry.httpClientIntegration(),
     // Sentry.captureConsoleIntegration(),
     Sentry.contextLinesIntegration(),
