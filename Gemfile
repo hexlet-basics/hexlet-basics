@@ -59,6 +59,7 @@ gem "valid_email2"
 
 # gem 'jsbundling-rails'
 
+gem "stackprof"
 gem "sentry-ruby"
 gem "sentry-rails"
 

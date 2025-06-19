@@ -507,6 +507,7 @@ GEM
     sqlite3 (2.7.0-x86_64-darwin)
     sqlite3 (2.7.0-x86_64-linux-gnu)
     sqlite3 (2.7.0-x86_64-linux-musl)
+    stackprof (0.2.27)
     stringio (3.1.7)
     sync (0.5.0)
     tapioca (0.17.3)
@@ -643,6 +644,7 @@ DEPENDENCIES
   solid_cache
   solid_queue
   sqlite3 (>= 2.1)
+  stackprof
   tapioca (>= 0.17.0)
   term-ansicolor
   thruster

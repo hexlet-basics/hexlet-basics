@@ -2,7 +2,8 @@ Sentry.init do |config|
   config.release = configus.hexlet_basics_release_version
 
   config.breadcrumbs_logger = %i[active_support_logger http_logger]
-  config.traces_sample_rate = 0.002
+  config.traces_sample_rate = 1.0
+  config.profiles_sample_rate = 1.0
 
   config.send_default_pii = true
   config.send_modules = false
