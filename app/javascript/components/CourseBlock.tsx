@@ -36,7 +36,7 @@ export default function CourseBlock({
       <Stack pt="md" h="100%">
         <Title fw="bold" order={2} mb="md">
           {courseMember && <i className="me-3 bi bi-trophy" />}
-          {landingPage.header}
+          {landingPage.name}
         </Title>
         <Group c="dimmed" mt="auto">
           <Group gap="xs">
