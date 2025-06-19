@@ -27,6 +27,7 @@ const shikiPromise = createHighlighterCore({
     import('@shikijs/langs/csharp'),
     import('@shikijs/langs/go'),
     import('@shikijs/langs/python'),
+    import('@shikijs/langs/scheme'),
   ],
   themes: [
     import('@shikijs/themes/github-dark'),
