@@ -1,11 +1,11 @@
 import * as Routes from "@/routes.js";
 import { useState } from "react";
-import { AppShell, Paper, Text, ScrollArea, Tabs, List, Alert, Title, Box, Accordion, Center, Stack, Divider } from "@mantine/core";
+import { AppShell, Paper, Text, ScrollArea, Tabs, List, Alert, Title, Box, Accordion, Center, Stack, Divider, Anchor, Group } from "@mantine/core";
 
 import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
 import MarkdownViewer from "@/components/MarkdownViewer.tsx";
 import i18next from "i18next";
-import { Github, Info } from "lucide-react";
+import { Github, Info, Rocket, Space } from "lucide-react";
 import XssContent from "@/components/XssContent.tsx";
 import Chat from "@/components/Chat.tsx";
 import AppAnchor from "@/components/AppAnchor.tsx";
@@ -181,7 +181,7 @@ export default function Index() {
 
 function LessonTabContent() {
   const { t } = useTranslation();
-  const { courseCategory, landingPage, lesson, shouldAddContactMethod } =
+  const { courseCategory, landingPage, course, lesson, shouldAddContactMethod } =
     usePage<LessonSharedProps>().props;
 
   const commonQuestions = t(
@@ -223,6 +223,17 @@ function LessonTabContent() {
         {t("languages.lessons.show.instructions")}
       </Title>
       <MarkdownViewer allowHtml>{lesson.instructions || ""}</MarkdownViewer>
+
+      {course.hexlet_program_landing_page && (
+        <Alert variant="primary" my="xl" radius="lg">
+          <Group justify="center" gap={6}>
+            <Rocket size={15} />
+            <Anchor target="_blank" href={`${course.hexlet_program_landing_page}?utm_source=code-basics&utm_medium=referral`}>
+              {t('languages.lessons.show.profession_description')}
+            </Anchor>
+          </Group>
+        </Alert>
+      )}
 
       {lesson.tips.length > 0 && (
         <>
