@@ -146,7 +146,7 @@ export default function Index({
           my={{ base: "md", xs: "lg", sm: 60 }}
           pt={{ base: "md", xs: "lg", sm: 60 }}
           withBorder
-          ps={60}
+          ps={{ base: "md", xs: "lg", sm: 60 }}
         >
           <Grid overflow="hidden" gutter={0}>
             <Grid.Col span={{ base: 12, md: 7 }}>
