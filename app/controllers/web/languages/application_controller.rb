@@ -5,6 +5,7 @@ class Web::Languages::ApplicationController < Web::ApplicationController
 
   def resource_language_landing_page
     @resource_language_landing_page ||= resource_language.landing_pages.published.with_locale.find_by!(main: true)
+    # TODO: implement redirect logic
     # @resource_language_landing_page ||= resource_language.landing_pages.find_by!(locale: I18n.locale)
   end
 

@@ -13,6 +13,10 @@ Rails.application.routes.draw do
   get "/ru/languages/pre-course-javascript", to: redirect("/ru/languages/javascript")
   get "/ru/languages/pre-course-javascript/*", to: redirect("/ru/languages/javascript")
 
+  get "/languages/:lang/modules/:module/lessons/:lesson", to: redirect { |params, req|
+    "/ru/languages/#{params[:lang]}/lessons/#{params[:lesson]}"
+  }
+
 
   mount RailsEventStore::Browser => "/res" if Rails.env.development?
   # mount ActionCable.server => "/cable"
