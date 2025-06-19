@@ -146,22 +146,27 @@ export const neededPreview = (language: string) => {
 // };
 
 export function isCurrentUrl(checkingUrl: string) {
-  return url() == checkingUrl
+  return getCurrentUrl() == checkingUrl
 }
 
-export function url(
+export function getCurrentUrl(
   options: { withQuery?: boolean; onlyPath?: boolean } = {
     withQuery: false,
     onlyPath: false,
   },
-): string {
+): string | undefined {
+  const location = fromWindow('location')
+  if (!location) {
+    return
+  }
+
   const parts = [];
   if (!options.onlyPath) {
-    parts.push(window.location.origin);
+    parts.push(location.origin);
   }
-  parts.push(window.location.pathname);
+  parts.push(location.pathname);
   if (options.withQuery) {
-    parts.push(window.location.href);
+    parts.push(location.href);
   }
 
   return parts.join("");
@@ -198,5 +203,5 @@ export function fromWindow<K extends keyof Window>(key: K): Window[K] | undefine
   if (typeof window !== 'undefined' && window[key] !== undefined) {
     return window[key];
   }
-  return undefined; // SSR fallback
+  return;
 }

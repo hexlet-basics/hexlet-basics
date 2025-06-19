@@ -26,7 +26,8 @@ Sentry.init({
     })
   ],
   ignoreErrors: [
-    "Failed to fetch dynamically imported module"
+    "Failed to fetch dynamically imported module",
+    "vite:preloadError"
   ]
 });
 

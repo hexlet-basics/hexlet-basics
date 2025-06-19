@@ -1,7 +1,5 @@
-class Language::MemberResource
-  include Alba::Resource
-  include Typelizer::DSL
-
+class Language::MemberResource < ApplicationResource
+  # TODO: make it nullable
   has_one :next_lesson_info, key: :next_lesson, resource: Language::LessonForListsResource
 
   typelize_from Language::Member

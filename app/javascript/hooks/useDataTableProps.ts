@@ -1,7 +1,7 @@
 import type { Grid } from '@/types';
 import type { DataTableSortStatus } from 'mantine-datatable';
 import { router } from '@inertiajs/react';
-import { url } from '@/lib/utils';
+import { getCurrentUrl } from '@/lib/utils';
 
 export default function useDataTableProps<T>( grid: Grid) {
   const sortStatus: DataTableSortStatus<T> = {
@@ -9,8 +9,10 @@ export default function useDataTableProps<T>( grid: Grid) {
     direction: grid.so,
   };
 
+  const url = getCurrentUrl()
+
   const handleSortStatusChange = (status: DataTableSortStatus<T>) => {
-    router.get(url(), {
+    router.get(url!, {
       ...grid,
       sf: status.columnAccessor as string,
       so: status.direction,
@@ -19,7 +21,7 @@ export default function useDataTableProps<T>( grid: Grid) {
   };
 
   const handlePageChange = (page: number) => {
-    router.get(url(), {
+    router.get(url!, {
       ...grid,
       page,
     });
