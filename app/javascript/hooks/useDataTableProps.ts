@@ -50,6 +50,7 @@ export default function useDataTableProps<
         };
       },
     };
+    // oxlint-disable-next-line exhaustive-deps
   }, [filterValues]);
 
   const sortStatus: DataTableSortStatus<T> = {
