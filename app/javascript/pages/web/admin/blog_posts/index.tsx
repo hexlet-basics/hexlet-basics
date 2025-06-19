@@ -20,7 +20,7 @@ type Props = PropsWithChildren & {
 
 export default function Index({ grid, blogPosts }: Props) {
   const { t } = useTranslation();
-  const gridProps = useDataTableProps<BlogPost>(grid);
+  const { gridProps } = useDataTableProps<BlogPost, {}>(grid);
 
   const renderActions = (item: BlogPost) => (
     <>

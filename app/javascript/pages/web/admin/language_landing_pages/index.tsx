@@ -9,17 +9,22 @@ import AppAnchor from '@/components/AppAnchor';
 import type { LanguageLandingPage, Grid } from '@/types/serializers';
 import { Menu } from './shared/menu';
 import useDataTableProps from '@/hooks/useDataTableProps';
-import { Edit, Link } from 'lucide-react';
+import { Edit, Link, Search } from 'lucide-react';
 import dayjs from 'dayjs';
+import { Select } from '@mantine/core';
 
 type Props = PropsWithChildren & {
   landingPages: LanguageLandingPage[];
-  grid: Grid;
+  grid: Grid & {
+    fields: {
+      state_eq: string
+    }
+  };
 };
 
 export default function Index({ grid, landingPages }: Props) {
   const { t } = useTranslation();
-  const gridProps = useDataTableProps<LanguageLandingPage>(grid);
+  const { gridProps, filters } = useDataTableProps<LanguageLandingPage, typeof grid.fields>(grid);
 
   const renderActions = (item: LanguageLandingPage) => (
     <>
@@ -38,6 +43,16 @@ export default function Index({ grid, landingPages }: Props) {
     </AppAnchor>
   );
 
+  const filterState = <Select
+    data={['published', 'archived']}
+    value={filters.values.state_eq}
+    onChange={filters.getOnChange('state_eq')}
+    leftSection={<Search size={16} />}
+    comboboxProps={{ withinPortal: false }}
+    clearable
+    searchable
+  />
+
   return (
     <AdminLayout header={t('admin.language_landing_pages.index.header')}>
       <Menu />
@@ -47,7 +62,7 @@ export default function Index({ grid, landingPages }: Props) {
           { accessor: 'id' },
           { accessor: 'main' },
           { accessor: 'listed' },
-          { accessor: 'state' },
+          { accessor: 'state', filter: filterState },
           { accessor: 'order' },
           { accessor: 'header' },
           { accessor: 'language', title: 'language', render: renderLanguage },

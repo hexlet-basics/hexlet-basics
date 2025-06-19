@@ -46,7 +46,7 @@ function renderBody(item: LanguageLessonMemberMessage) {
 
 export default function Index({ grid, messages }: Props) {
   const { t } = useTranslation();
-  const gridProps = useDataTableProps<LanguageLessonMemberMessage>(grid);
+  const { gridProps } = useDataTableProps<LanguageLessonMemberMessage, {}>(grid);
 
   return (
     <AdminLayout header={t('admin.messages.index.header')}>

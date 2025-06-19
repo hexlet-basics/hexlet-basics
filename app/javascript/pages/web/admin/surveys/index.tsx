@@ -19,7 +19,7 @@ type Props = PropsWithChildren & {
 
 export default function Index({ grid, surveys }: Props) {
   const { t } = useTranslation();
-  const gridProps = useDataTableProps<Survey>(grid);
+  const { gridProps } = useDataTableProps<Survey, {}>(grid);
 
   const renderActions = (item: Survey) => (
     <AppAnchor href={Routes.edit_admin_survey_path(item.id)}>

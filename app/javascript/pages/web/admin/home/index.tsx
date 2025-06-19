@@ -17,7 +17,7 @@ type Props = PropsWithChildren & {
 
 export default function Index({ admins, grid }: Props) {
   const { t } = useTranslation();
-  const gridProps = useDataTableProps<User>(grid);
+  const { gridProps } = useDataTableProps<User, {}>(grid);
 
   return (
     <AdminLayout header={t('admin.home.index.dashboard')}>

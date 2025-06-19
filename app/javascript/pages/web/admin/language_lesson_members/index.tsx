@@ -37,7 +37,7 @@ function renderLesson(member: LanguageLessonMember) {
 
 export default function Index({ grid, languageLessonMembers }: PropsWithChildren<Props>) {
   const { t } = useTranslation();
-  const gridProps = useDataTableProps<LanguageLessonMember>(grid);
+  const { gridProps } = useDataTableProps<LanguageLessonMember, {}>(grid);
 
   return (
     <AdminLayout header={t('admin.language_lesson_members.index.header')}>

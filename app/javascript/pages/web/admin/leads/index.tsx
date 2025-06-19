@@ -37,7 +37,7 @@ function renderData(lead: Lead, col: string) {
 
 export default function Index({ grid, leads }: Props) {
   const { t } = useTranslation();
-  const gridProps = useDataTableProps<Lead>(grid);
+  const { gridProps } = useDataTableProps<Lead, {}>(grid);
 
   return (
     <AdminLayout header={t('admin.leads.index.header')}>

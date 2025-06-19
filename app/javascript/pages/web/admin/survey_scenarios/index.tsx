@@ -19,7 +19,7 @@ type Props = PropsWithChildren & {
 
 export default function Index({ grid, surveyScenarios }: Props) {
   const { t } = useTranslation();
-  const gridProps = useDataTableProps<SurveyScenario>(grid);
+  const { gridProps } = useDataTableProps<SurveyScenario, {}>(grid);
   console.log(surveyScenarios)
 
   const renderActions = (item: SurveyScenario) => (

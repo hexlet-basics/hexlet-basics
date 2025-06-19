@@ -6,7 +6,7 @@ class GridResource < ApplicationResource
     tr: :number,
     per: :number,
     page: :number,
-    fields: "Record<string, string | number | string[] | undefined>"
+    fields: "Record<string, string | number | undefined>"
 
   typelize :number
   attribute :first do |obj|

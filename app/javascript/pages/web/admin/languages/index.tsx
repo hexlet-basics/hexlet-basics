@@ -19,7 +19,7 @@ type Props = PropsWithChildren & {
 
 export default function Index({ grid, courses }: Props) {
   const { t } = useTranslation();
-  const gridProps = useDataTableProps<Language>(grid);
+  const { gridProps } = useDataTableProps<Language, {}>(grid);
 
   const renderActions = (item: Language) => (
     <AppAnchor href={Routes.edit_admin_language_path(item.id)}>

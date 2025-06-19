@@ -19,7 +19,7 @@ type Props = PropsWithChildren & {
 
 export default function Index({ grid, reviews }: Props) {
   const { t } = useTranslation();
-  const gridProps = useDataTableProps<Review>(grid);
+  const { gridProps } = useDataTableProps<Review, {}>(grid);
 
   const renderActions = (item: Review) => (
     <AppAnchor href={Routes.edit_admin_review_path(item.id)}>

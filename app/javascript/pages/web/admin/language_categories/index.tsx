@@ -25,7 +25,7 @@ export default function Index({ grid, categories }: Props) {
   const { t } = useTranslation();
   const confirmDeleting = useConfirmation();
 
-  const gridProps = useDataTableProps<LanguageCategory>(grid)
+  const { gridProps } = useDataTableProps<LanguageCategory, {}>(grid)
 
   const renderActions = (item: LanguageCategory) => {
     return (

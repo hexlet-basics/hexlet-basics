@@ -68,7 +68,7 @@ class Language::LandingPage < ApplicationRecord
   end
 
   def self.ransackable_attributes(_auth_object = nil)
-    [ "id", "created_at", "language_slug" ]
+    [ "id", "created_at", "language_slug", "state" ]
   end
 
   enum :state, { draft: "draft", archived: "archived", published: "published" }, default: "draft"

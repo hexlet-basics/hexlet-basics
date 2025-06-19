@@ -15,7 +15,7 @@ type Props = PropsWithChildren & {
 
 export default function Index({ grid, surveyAnswers }: Props) {
   const { t } = useTranslation();
-  const gridProps = useDataTableProps<SurveyAnswer>(grid);
+  const { gridProps } = useDataTableProps<SurveyAnswer, {}>(grid);
 
   return (
     <AdminLayout header={t('admin.survey_answers.index.header')}>

@@ -19,7 +19,7 @@ type Props = PropsWithChildren & {
 
 export default function Index({ grid, users }: Props) {
   const { t } = useTranslation();
-  const gridProps = useDataTableProps<User>(grid);
+  const { gridProps } = useDataTableProps<User, {}>(grid);
 
   const renderActions = (item: User) => (
     <AppAnchor href={Routes.edit_admin_management_user_path(item.id)}>
