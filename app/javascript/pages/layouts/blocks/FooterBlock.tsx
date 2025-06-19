@@ -75,7 +75,7 @@ export default function FooterBlock() {
               )}
 
               <Grid.Col span={{ base: 12, xs: 6, md: 3 }}>
-                <Title order={6}>{tLayouts('shared.footer.courses')}</Title>
+                <Text fw="bold">{tLayouts('shared.footer.courses')}</Text>
                 <Stack gap={3}>
                   {landingPagesForFooter.map((lp) => (
                     <FooterLink key={lp.id} href={Routes.language_path(lp.slug)}>
@@ -87,7 +87,7 @@ export default function FooterBlock() {
 
               <Grid.Col span={{ base: 12, xs: 6, md: 3 }}>
                 <Stack gap={3}>
-                  <Title order={6}>{tLayouts('shared.footer.categories')}</Title>
+                  <Text fw="bold">{tLayouts('shared.footer.categories')}</Text>
                   {courseCategories.map((category) => (
                     <FooterLink
                       key={category.id}
