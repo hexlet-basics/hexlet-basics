@@ -3,6 +3,8 @@
   "plugins": [
     "unicorn",
     "react-perf",
+    "react",
+    "import",
     "promise",
     "typescript",
     "oxc"

@@ -2,7 +2,7 @@ import * as Routes from "@/routes.js";
 import { useEffect, type PropsWithChildren } from "react";
 import { AppShell, Container, Title, Stack, Box } from '@mantine/core';
 import * as CookieConsent from "vanilla-cookieconsent";
-import cookieTranslations from '@/locales/cookie_consent.ts'
+import cookieTranslations from '@/locales/cookie_consent.ts';
 
 import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
 import type { BreadcrumbItem, SharedProps } from "@/types/index.js";

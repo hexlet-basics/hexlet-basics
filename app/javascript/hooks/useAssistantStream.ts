@@ -101,7 +101,7 @@ export function useAssistantStream(
       subscription.unsubscribe();
       scheduleUpdate.cancel();
     };
-  }, [lessonMemberId]);
+  }, [lessonMemberId, scheduleUpdate]);
 
   const submitMessage = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

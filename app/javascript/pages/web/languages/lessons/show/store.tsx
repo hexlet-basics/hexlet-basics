@@ -133,6 +133,7 @@ export function LessonProvider({ children, ...props }: LessonProviderProps) {
     return createLessonStore(lesson, {
       startTime, defaultCode, finished, solutionState, content: defaultCode,
     });
+    // oxlint-disable-next-line exhaustive-deps
   }, []);
 
   return (

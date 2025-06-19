@@ -14,9 +14,7 @@ import {
   Divider,
   Drawer,
   Space,
-  HoverCard,
-  Button,
-  SimpleGrid,
+  HoverCard, SimpleGrid,
   Box,
   ThemeIcon
 } from "@mantine/core";
@@ -98,7 +96,7 @@ function CourseMenu({ landingPages }: { landingPages: SharedProps["landingPagesF
       <HoverCard.Dropdown>
         <SimpleGrid cols={2} spacing="sm" p="xs">
           {landingPages.map((lp) => (
-            <Group pos="relative">
+            <Group key={lp.id} pos="relative">
               <Image w="auto" radius="sm" fit="contain" src={lp.language.cover_thumb_variant} alt={lp.header} />
               <Text fz="sm">{lp.header}</Text>
               <AppAnchor
