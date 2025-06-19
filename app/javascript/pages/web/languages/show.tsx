@@ -12,6 +12,9 @@ import {
   Box,
   Anchor,
   NumberFormatter,
+  Card,
+  Center,
+  Stack,
 } from '@mantine/core';
 
 import { useTranslation } from "react-i18next";
@@ -22,18 +25,21 @@ import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import * as Routes from "@/routes.js";
 import type { BreadcrumbItem, Language, LeadCrud, SharedProps } from "@/types";
 import type {
-    LanguageCategory,
-    LanguageLandingPage,
-    LanguageLandingPageQnaItem,
-    LanguageLesson,
-    LanguageMember,
-    LanguageModule,
-    Review,
+  LanguageCategory,
+  LanguageLandingPage,
+  LanguageLandingPageQnaItem,
+  LanguageLesson,
+  LanguageMember,
+  LanguageModule,
+  Review,
 } from "@/types/serializers";
 import { Head, Link, usePage } from "@inertiajs/react";
 import type { Product, WithContext } from "schema-dts";
 import dayjs from "dayjs";
 import { Clock, Users } from 'lucide-react';
+import LeadFormBlock from '@/components/LeadFormBlock';
+import i18next from 'i18next';
+import MarkdownViewer from '@/components/MarkdownViewer';
 
 type Props = {
   lead: LeadCrud;
@@ -60,11 +66,12 @@ export default function Show({
   courseModules,
   lessonsByModuleId,
   course,
+  qnaItems,
   lead,
 }: Props) {
   const { t } = useTranslation();
   const {
-    auth,
+    auth: { user },
     locale,
   } = usePage<SharedProps>().props;
 
@@ -257,6 +264,42 @@ export default function Show({
             ))}
           </Accordion>
         </Box>
+
+        {qnaItems.length > 0 && (
+          <Box my="xl" py="xl">
+            <Text fz="h1" fw="bold" mb="xl">
+              {t("languages.show.sort_questions")}
+            </Text>
+            <SimpleGrid cols={{ base: 1, xs: 2 }}>
+              {qnaItems.map((item) => (
+                <Stack key={item.id} gap={0}>
+                  <Text fw="bold">
+                    {item.question}
+                  </Text>
+                  <MarkdownViewer>{item.answer}</MarkdownViewer>
+                </Stack>
+              ))}
+            </SimpleGrid>
+          </Box>
+        )}
+
+        {!user.guest && i18next.language === 'ru' && (
+          <Container size="lg" mt={100}>
+            <Grid align="center" justify="space-between" gutter={0}>
+              <Grid.Col span={{ base: 12, md: 6 }}>
+                <Center>
+                  <Text fz={40} fw="bold">{t("home.index.consultation")}</Text>
+                </Center>
+              </Grid.Col>
+              <Grid.Col span={{ base: 12, md: 4 }}>
+                <Card withBorder shadow="sm" p="xl">
+                  <LeadFormBlock lead={lead} />
+                </Card>
+              </Grid.Col>
+            </Grid>
+          </Container>
+        )}
+
       </Container>
     </ApplicationLayout>
   );
