@@ -1,6 +1,6 @@
 import * as Routes from "@/routes.js";
 import { useState } from "react";
-import { AppShell, Paper, Text, ScrollArea, Tabs, List, Alert, Title, Box, Accordion, Center, Stack } from "@mantine/core";
+import { AppShell, Paper, Text, ScrollArea, Tabs, List, Alert, Title, Box, Accordion, Center, Stack, Divider } from "@mantine/core";
 
 import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
 import MarkdownViewer from "@/components/MarkdownViewer.tsx";
@@ -239,13 +239,13 @@ function LessonTabContent() {
         </>
       )}
 
-      <hr />
+      <Divider my="xl" c="gray" />
 
       <Accordion mb="xs" defaultValue={commonQuestions[0]?.question}>
         {commonQuestions.map((v) => (
           <Accordion.Item key={v.question} value={v.question}>
             <Accordion.Control>
-              <Text fz="sm">{v.question}</Text>
+              <Text>{v.question}</Text>
             </Accordion.Control>
             <Accordion.Panel>
               <MarkdownViewer allowHtml>{v.answer}</MarkdownViewer>

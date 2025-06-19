@@ -12,16 +12,20 @@ import {
   Stack,
   Center,
   Divider,
-  Avatar,
   Drawer,
-  Space
+  Space,
+  HoverCard,
+  Button,
+  SimpleGrid,
+  Box,
+  ThemeIcon
 } from "@mantine/core";
 
 import * as Routes from "@/routes.js";
 import type { SharedProps } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
 import { useTranslation } from "react-i18next";
-import { ChevronDown, LogOut, ShieldUser, User, UserCog } from "lucide-react";
+import { ChevronDown, GitGraph, GraduationCap, Handshake, LogOut, Rocket, ShieldUser, Target, User, UserCog } from "lucide-react";
 import AppAnchor from "@/components/AppAnchor";
 
 export type NavbarBlockProps = {
@@ -42,7 +46,7 @@ export default function NavbarBlock({ opened, onToggle }: NavbarBlockProps) {
         <MyLink />
         <CourseMenu landingPages={landingPagesForLists} />
         <Group visibleFrom="sm">
-          <CaseLink />
+          <SolutionsMenu />
         </Group>
         <Group visibleFrom="sm">
           <BookLink />
@@ -80,45 +84,33 @@ function CourseMenu({ landingPages }: { landingPages: SharedProps["landingPagesF
   const { t } = useTranslation("layouts");
 
   return (
-    <Menu shadow="md" keepMounted>
-      <Menu.Target>
+    <HoverCard shadow="md" keepMounted>
+      <HoverCard.Target>
         <UnstyledButton>
-          <Center>
-            {t("shared.nav.courses")} <ChevronDown size={14} />
+          <Center inline>
+            <Text me={5}>
+              {t("shared.nav.courses")}
+            </Text>
+            <ChevronDown size={16} />
           </Center>
         </UnstyledButton>
-      </Menu.Target>
-      <Menu.Dropdown>
-        {landingPages.map((lp) => (
-          <Menu.Item key={lp.id} component={Link} href={Routes.language_path(lp.slug)}>
-            <Group wrap="nowrap">
-              <Image w="auto" fit="contain" src={lp.language.cover_thumb_variant} alt={lp.header} />
-              <Text>{lp.header}</Text>
+      </HoverCard.Target>
+      <HoverCard.Dropdown>
+        <SimpleGrid cols={2} spacing="sm" p="xs">
+          {landingPages.map((lp) => (
+            <Group pos="relative">
+              <Image w="auto" radius="sm" fit="contain" src={lp.language.cover_thumb_variant} alt={lp.header} />
+              <Text fz="sm">{lp.header}</Text>
+              <AppAnchor
+                href={Routes.language_path(lp.slug)}
+                inset={0}
+                pos="absolute"
+              />
             </Group>
-          </Menu.Item>
-        ))}
-      </Menu.Dropdown>
-    </Menu>
-  );
-}
-
-function CaseLink() {
-  const { t } = useTranslation("layouts");
-  return (
-    <Menu shadow="md" width={200}>
-      <Menu.Target>
-        <UnstyledButton>
-          <Center>
-            {t("shared.nav.cases")} <ChevronDown size={14} />
-          </Center>
-        </UnstyledButton>
-      </Menu.Target>
-      <Menu.Dropdown>
-        <Menu.Item component={Link} href={Routes.for_teachers_cases_path()}>
-          {t("shared.nav.for_teachers")}
-        </Menu.Item>
-      </Menu.Dropdown>
-    </Menu>
+          ))}
+        </SimpleGrid>
+      </HoverCard.Dropdown>
+    </HoverCard>
   );
 }
 
@@ -214,10 +206,103 @@ function MobileMenu({ landingPages, avatar }: { landingPages: SharedProps["landi
     <Stack gap="xs" px="md" align="start">
       <MyLink />
       <CourseMenu landingPages={landingPages} />
-      <CaseLink />
+      <SolutionsMenu />
       <BookLink />
       <AuthLinks avatar={avatar} />
       <LocaleSwitcher />
     </Stack>
+  );
+}
+
+function SolutionsMenu() {
+  const { t: tLayouts } = useTranslation("layouts");
+  const { t: tCommon } = useTranslation("common");
+
+  const solutionMenuData = [
+    {
+      icon: Target,
+      title: tLayouts("shared.nav.courses_with_employement"),
+      description: tLayouts("shared.nav.courses_with_employement_description"),
+      href: 'https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral',
+    },
+    {
+      icon: Rocket,
+      title: tLayouts("shared.nav.career"),
+      description: tLayouts("shared.nav.career_description"),
+      href: 'https://career.hexlet.io?utm_source=code-basics&utm_medium=referral',
+    },
+    {
+      icon: GitGraph,
+      title: tLayouts("shared.nav.upskilling"),
+      description: tLayouts("shared.nav.upskilling_description"),
+      href: 'https://ru.hexlet.io/courses_for_programmers?utm_source=code-basics&utm_medium=referral',
+    },
+    {
+      icon: Handshake,
+      title: tLayouts("shared.nav.business"),
+      description: tLayouts("shared.nav.business_description"),
+      href: 'https://b2b.hexlet.io?utm_source=code-basics&utm_medium=referral',
+    },
+    {
+      icon: GraduationCap,
+      title: tLayouts("shared.nav.for_teachers"),
+      description: tLayouts("shared.nav.for_teachers_description"),
+      href: Routes.for_teachers_cases_path(),
+    },
+  ];
+
+
+  const links = solutionMenuData.map((item) => (
+    <UnstyledButton key={item.title}>
+      <Group wrap="nowrap" align="flex-start">
+        <ThemeIcon size={34} variant="default" radius="md">
+          <item.icon size={22} />
+        </ThemeIcon>
+        <Box>
+          <Text fz="sm" fw={500}>
+            {item.title}
+          </Text>
+          <Text fz="xs" c="dimmed">
+            {item.description}
+          </Text>
+        </Box>
+      </Group>
+      {/* <AppAnchor */}
+      {/*   href={item.href} */}
+      {/*   inset={0} */}
+      {/*   pos="absolute" */}
+      {/* /> */}
+    </UnstyledButton>
+  ));
+
+  return (
+    <HoverCard width={600} radius="md" shadow="md" withinPortal>
+      <HoverCard.Target>
+        <UnstyledButton>
+          <Center inline>
+            <Text mr={5}>
+              {tLayouts("shared.nav.cases")}
+            </Text>
+            <ChevronDown size={16} />
+          </Center>
+        </UnstyledButton>
+      </HoverCard.Target>
+
+      <HoverCard.Dropdown>
+        <Group justify="space-between" px="md" mb="sm">
+          <Text fw={500}>{tLayouts('shared.nav.for_whom')}</Text>
+          <Anchor target="_blank" href={tCommon('organization.site')} fz="xs">
+            {tCommon('organization.site')}
+          </Anchor>
+        </Group>
+
+        <Divider mb="lg" />
+
+        <SimpleGrid cols={2} spacing="md" px="md" mb="md">
+          {links}
+        </SimpleGrid>
+
+      </HoverCard.Dropdown>
+    </HoverCard>
   );
 }

@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { AppShell, Box, Button, Container, Drawer, Grid, Group, NavLink, Title } from '@mantine/core';
+import { AppShell, Box, Button, Container, Divider, Drawer, Grid, Group, NavLink, Title } from '@mantine/core';
 
 import { useTranslation } from "react-i18next";
 
@@ -93,7 +93,7 @@ function NavbarMenu() {
       leftSection={<i className="bi bi-person-check" />}
     />
 
-    <hr />
+    <Divider />
 
     <NavLink
       component={Link}

@@ -1863,7 +1863,8 @@
         "phones": [
           "+7 (495) 085 21 62",
           "8 800 100 22 47"
-        ]
+        ],
+        "site": "https://ru.hexlet.io"
       },
       "output": "Вывод",
       "pages": {
@@ -2363,12 +2364,20 @@
           "admin": "Админство",
           "blog": "Блог",
           "book": "Книга для начинающих",
-          "cases": "Кейсы",
+          "business": "Обучение для бизнеса",
+          "business_description": "Прокачаем ваших сотрудников и дадим аналитику",
+          "career": "Центр Карьеры",
+          "career_description": "Доведем до собеседования и научим их проходить",
+          "cases": "Решения",
           "categories": "Категории",
           "community": "Сообщество",
           "courses": "Курсы",
+          "courses_with_employement": "Курсы с трудоустройством",
+          "courses_with_employement_description": "Обучим программированию, аналитике и тестированию",
           "for_authors": "Авторам",
-          "for_teachers": "Для учителей и преподавателей",
+          "for_teachers": "Для преподавателей",
+          "for_teachers_description": "Организуем обучение школьников и студентов",
+          "for_whom": "Школа программирования Хекслет",
           "my": "Мой прогресс",
           "profile": "Настройки",
           "registration": "Регистрация",
@@ -2377,7 +2386,9 @@
           "sign_out": "Выйти",
           "success_stories": "Истории успеха",
           "toggle_navigation": "Переключить навигацию",
-          "toggle_user_menu": "Показать/скрыть меню пользователя"
+          "toggle_user_menu": "Показать/скрыть меню пользователя",
+          "upskilling": "Повышение квалификации",
+          "upskilling_description": "Обучим новым навыкам в программировании"
         },
         "unsupported_browser_warning": {
           "unsupported_browser_warning": "Ваш браузер устарел :( Некоторые возможности отключены."

@@ -23,10 +23,12 @@ export default function LeadFormBlock({ lead, autoFocus = false }: Props) {
 
   const data = toMerged(
     lead,
-    { lead: {
-      ym_client_id: fromWindow('ymClientId'),
-      contact_method: 'telegram',
-    } }
+    {
+      lead: {
+        ym_client_id: fromWindow('ymClientId'),
+        contact_method: 'telegram',
+      }
+    }
   )
 
   return (
@@ -40,17 +42,13 @@ export default function LeadFormBlock({ lead, autoFocus = false }: Props) {
         items={contactMethodOptions}
       />
       <XInput required autoFocus={autoFocus} field="contact_value" />
-      <Box fz={14} my="lg">
-        <Box>
-          <XssContent>
-            {tViews('blocks.lead_form_block.description1')}
-          </XssContent>
-        </Box>
-        <Box>
-          <XssContent>
-            {tViews('blocks.lead_form_block.description2')}
-          </XssContent>
-        </Box>
+      <Box fz="sm" my="lg">
+        <XssContent>
+          {tViews('blocks.lead_form_block.description1')}
+        </XssContent>
+        <XssContent>
+          {tViews('blocks.lead_form_block.description2')}
+        </XssContent>
       </Box>
       <Button type="submit" fullWidth>
         {tHelpers("send")}

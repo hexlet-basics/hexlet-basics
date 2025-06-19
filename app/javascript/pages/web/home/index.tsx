@@ -23,7 +23,7 @@ import MarkdownViewer from "@/components/MarkdownViewer";
 import type { Question, FAQPage, WithContext } from "schema-dts";
 import LeadFormBlock from "@/components/LeadFormBlock";
 import i18next from "i18next";
-import { Container, Image, Grid, Accordion, Paper, Button, Title, Text, Box, Anchor, Group, SimpleGrid, Center, Card } from '@mantine/core';
+import { Container, Image, Grid, Accordion, Paper, Button, Title, Text, Box, Anchor, Group, SimpleGrid, Center, Card, Divider } from '@mantine/core';
 
 type Props = PropsWithChildren & {
   blogPosts: BlogPost[];
@@ -228,7 +228,7 @@ export default function Index({
           <Title order={2}>
             {t("home.index.reviews")}
           </Title>
-          <hr />
+          <Divider />
         </Box>
 
         <SimpleGrid spacing="md" cols={{ base: 1, xs: 2, md: 3 }}>
@@ -261,7 +261,7 @@ export default function Index({
             <Title order={2}>
               {t("home.index.blog_posts")}
             </Title>
-            <hr />
+            <Divider />
           </Box>
           <SimpleGrid spacing="md" cols={{ base: 1, xs: 2, md: 3 }}>
             {blogPosts.map((post) => (
@@ -279,7 +279,7 @@ export default function Index({
           <Title order={2}>
             {tFaq("header")}
           </Title>
-          <hr />
+          <Divider />
         </Box>
         <Accordion defaultValue={Object.keys(faq)[0]}>
           {Object.entries(faq).map(([key, item]) => (

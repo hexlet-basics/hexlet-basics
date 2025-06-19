@@ -38,17 +38,17 @@ export default function BlogPostBlock({ post, lazy }: Props) {
       <Title order={2} my="md">
         {post.name}
       </Title>
-      <Text size="sm" mb="xs">{post.description}</Text>
+      <Text mb="xs">{post.description}</Text>
 
       <Group gap="xs" c="dimmed" mt="auto">
-        <Text size="sm">{dayjs().to(post.created_at)}</Text>
+        <Text>{dayjs().to(post.created_at)}</Text>
         <Group gap="xs">
           <i className="bi bi-hand-thumbs-up" />
-          <Text size="sm">{post.likes_count}</Text>
+          <Text>{post.likes_count}</Text>
         </Group>
         <Group gap="xs">
           <i className="bi bi-clock" />
-          <Text size="sm">~{tCommon("time.minutes", { count: 5 })}</Text>
+          <Text>~{tCommon("time.minutes", { count: 5 })}</Text>
         </Group>
       </Group>
 

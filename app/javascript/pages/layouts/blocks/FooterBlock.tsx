@@ -2,7 +2,7 @@ import AppAnchor from "@/components/AppAnchor";
 import * as Routes from "@/routes.js";
 import type { SharedProps } from "@/types";
 
-import { Head, Link, usePage } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 import { Container, Grid, Stack, Text, Group, Anchor, Title, Divider, Box } from '@mantine/core';
 import i18next from "i18next";
 import { Github, Send } from "lucide-react";

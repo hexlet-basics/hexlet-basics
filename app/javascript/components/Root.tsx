@@ -27,7 +27,13 @@ type Props = PropsWithChildren & {
   // suffix: string | null
 }
 
-const theme: MantineProviderProps["theme"] = { components: { Anchor: { defaultProps: { c: 'dark' } } } }
+const theme: MantineProviderProps["theme"] = {
+  components: {
+    Anchor: {
+      defaultProps: { c: 'dark' },
+    },
+  },
+}
 
 function Root(props: Props) {
   return (

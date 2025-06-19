@@ -29,6 +29,7 @@ ru:
         in_development: В разработке
       nav:
         blog: Блог
+        for_whom: Школа программирования Хекслет
         book: "Книга для начинающих"
         my: Мой прогресс
         about_platform: О платформе
@@ -47,8 +48,17 @@ ru:
         toggle_user_menu: Показать/скрыть меню пользователя
         admin: Админство
         reviews: Отзывы
-        cases: Кейсы
-        for_teachers: Для учителей и преподавателей
+        cases: Решения
+        for_teachers: Для преподавателей
+        for_teachers_description: Организуем обучение школьников и студентов
+        courses_with_employement: Курсы с трудоустройством
+        courses_with_employement_description: Обучим программированию, аналитике и тестированию
+        career: Центр Карьеры
+        career_description: Доведем до собеседования и научим их проходить
+        business: Обучение для бизнеса
+        business_description: Прокачаем ваших сотрудников и дадим аналитику
+        upskilling: Повышение квалификации
+        upskilling_description: Обучим новым навыкам в программировании
       footer:
         useful: Полезное
         blog: Блог
