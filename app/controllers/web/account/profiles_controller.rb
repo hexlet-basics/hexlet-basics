@@ -23,7 +23,7 @@ class Web::Account::ProfilesController < Web::Account::ApplicationController
     else
       f(:error)
 
-      redirect_to edit_account_profile, inertia: { errors: form.errors }
+      redirect_to edit_account_profile_path, inertia: { errors: form.errors }
     end
   end
 
