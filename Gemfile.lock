@@ -274,7 +274,7 @@ GEM
     mutex_m (0.3.0)
     net-http (0.6.0)
       uri
-    net-imap (0.5.8)
+    net-imap (0.5.9)
       date
       net-protocol
     net-pop (0.1.2)
@@ -426,7 +426,7 @@ GEM
       rubocop (>= 1.72)
       rubocop-performance (>= 1.24)
       rubocop-rails (>= 2.30)
-    ruby-lsp (0.24.1)
+    ruby-lsp (0.24.2)
       language_server-protocol (~> 3.17.0)
       prism (>= 1.2, < 2.0)
       rbs (>= 3, < 5)
@@ -510,7 +510,7 @@ GEM
     stackprof (0.2.27)
     stringio (3.1.7)
     sync (0.5.0)
-    tapioca (0.17.3)
+    tapioca (0.17.4)
       benchmark
       bundler (>= 2.2.25)
       netrc (>= 0.11.0)
