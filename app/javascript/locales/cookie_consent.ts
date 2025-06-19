@@ -38,7 +38,7 @@ export default {
   ru: {
     consentModal: {
       title: 'Мы используем файлы cookie',
-      description: 'Описание модального окна cookie',
+      description: 'Пользуясь нашим сайтом, вы соглашаетесь с тем, что мы <a href="/ru/pages/cookie_policy">используем cookies</a>',
       acceptAllBtn: 'Принять все',
       acceptNecessaryBtn: 'Отклонить все',
       showPreferencesBtn: 'Управлять предпочтениями'
@@ -66,7 +66,7 @@ export default {
         },
         {
           title: 'Дополнительная информация',
-          description: 'Если у вас есть вопросы относительно нашей политики в отношении cookie и ваших выборов, пожалуйста, <a href="#contact-page">свяжитесь с нами</a>'
+          description: 'Если у вас есть вопросы относительно нашей политики в отношении cookie и ваших выборов, пожалуйста, <a href="mailto:support@hexlet.io">свяжитесь с нами</a>'
         }
       ]
     }
