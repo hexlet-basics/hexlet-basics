@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { Grid, Text, Paper, Stack, Container, SimpleGrid, Title, Box } from '@mantine/core';
+import { Grid, Text, Paper, Stack, Container, SimpleGrid, Title, Box, Center, Card } from '@mantine/core';
 
 import { useTranslation } from "react-i18next";
 
@@ -60,23 +60,23 @@ export default function Show({
           </Grid>
         )}
 
-        <SimpleGrid cols={{ base: 2, xs: 3, sm: 4 }}>
+        <SimpleGrid cols={{ base: 2, xs: 3, sm: 4 }} mb="xl">
           {categoryLandingPages.map((lp) => (
             <CourseBlock key={lp.id} landingPage={lp} />
           ))}
         </SimpleGrid>
 
         {!user.guest && i18next.language === 'ru' && (
-          <Grid align="center" py="xl">
-            <Grid.Col span={{ base: 12, lg: 7 }}>
-              <Text size="xl" fw={700}>
-                {t("home.index.consultation")}
-              </Text>
+          <Grid align="center" justify="space-between" gutter={0}>
+            <Grid.Col span={{ base: 12, xs: 7 }}>
+              <Center>
+                <Text fz={40} mb="xs" fw="bold">{t("home.index.consultation")}</Text>
+              </Center>
             </Grid.Col>
-            <Grid.Col span={{ base: 12, lg: 5 }}>
-              <Paper p="xl" radius="md" withBorder>
+            <Grid.Col span={{ base: 12, sm: 5 }}>
+              <Card withBorder shadow="sm" p="xl">
                 <LeadFormBlock lead={lead} />
-              </Paper>
+              </Card>
             </Grid.Col>
           </Grid>
         )}
