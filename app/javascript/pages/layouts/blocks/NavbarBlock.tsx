@@ -144,8 +144,12 @@ function AuthLinks({ avatar }: { avatar: string }) {
         <UnstyledButton>
           <Center>
             <User size={18} />
-            <Space me="xs" />
-            <Text>{auth.user.name}</Text>
+            {auth.user.name && (
+              <>
+                <Space me="xs" />
+                <Text>{auth.user.name}</Text>
+              </>
+            )}
             <ChevronDown size={14} />
           </Center>
         </UnstyledButton>
