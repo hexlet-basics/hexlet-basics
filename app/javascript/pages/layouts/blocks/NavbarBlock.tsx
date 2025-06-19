@@ -251,7 +251,7 @@ function SolutionsMenu() {
 
 
   const links = solutionMenuData.map((item) => (
-    <UnstyledButton key={item.title}>
+    <UnstyledButton key={item.title} pos="relative">
       <Group wrap="nowrap" align="flex-start">
         <ThemeIcon size={34} variant="default" radius="md">
           <item.icon size={22} />
@@ -265,11 +265,12 @@ function SolutionsMenu() {
           </Text>
         </Box>
       </Group>
-      {/* <AppAnchor */}
-      {/*   href={item.href} */}
-      {/*   inset={0} */}
-      {/*   pos="absolute" */}
-      {/* /> */}
+      <Anchor
+        target="_blank"
+        href={item.href}
+        inset={0}
+        pos="absolute"
+      />
     </UnstyledButton>
   ));
 
@@ -289,7 +290,7 @@ function SolutionsMenu() {
       <HoverCard.Dropdown>
         <Group justify="space-between" px="md" mb="sm">
           <Text fw={500}>{tLayouts('shared.nav.for_whom')}</Text>
-          <Anchor target="_blank" href={tCommon('organization.site')} fz="xs">
+          <Anchor target="_blank" href={`${tCommon('organization.site')}?utm_source=code-basics&utm_medium=referral`} fz="xs">
             {tCommon('organization.site')}
           </Anchor>
         </Group>

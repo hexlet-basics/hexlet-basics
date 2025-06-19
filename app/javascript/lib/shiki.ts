@@ -5,6 +5,7 @@ const shikiPromise = createHighlighterCore({
   langs: [
     import('@shikijs/langs/tsx'),
     import('@shikijs/langs/swift'),
+    import('@shikijs/langs/rust'),
     import('@shikijs/langs/scss'),
     import('@shikijs/langs/css'),
     import('@shikijs/langs/html'),
