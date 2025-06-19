@@ -13,9 +13,15 @@ if (import.meta.env.DEV) {
 
 Sentry.init({
   debug: import.meta.env.DEV,
+  _experiments: { enableLogs: true },
   dsn: import.meta.env.VITE_SENTRY_DSN,
+  sendDefaultPii: true,
   allowUrls: [import.meta.env.VITE_APP_HOST],
   integrations: [
+    Sentry.feedbackIntegration({
+      colorScheme: "system",
+
+    }),
     Sentry.httpClientIntegration(),
     // Sentry.captureConsoleIntegration(),
     Sentry.contextLinesIntegration(),
