@@ -4,6 +4,7 @@ class Web::Admin::MessagesController < Web::Admin::ApplicationController
     # raise q.inspect
     search = Language::Lesson::Member::Message
       .joins(:language, :language_lesson)
+      # .merge(Language.with_locale)
       .includes([ :language_lesson_member ]).ransack(q)
     # raise search.result.to_sql
     pagy, records = pagy(search.result)

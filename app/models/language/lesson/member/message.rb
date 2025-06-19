@@ -27,6 +27,7 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Language::Lesson::Member::Message < ApplicationRecord
+  # TODO: add locale
   belongs_to :language, class_name: "Language"
   belongs_to :language_lesson, class_name: "Language::Lesson"
   belongs_to :language_lesson_member, class_name: "Language::Lesson::Member"
