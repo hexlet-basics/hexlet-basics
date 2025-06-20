@@ -188,9 +188,9 @@ export default function Index({
                 alt="Code Basics learning preview"
                 fetchPriority="high"
                 w="auto"
+                width="720"
                 height="356"
                 src={codeImagePaths[locale]}
-                width="720"
               />
 
             </Grid.Col>

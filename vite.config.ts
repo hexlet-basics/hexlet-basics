@@ -1,4 +1,5 @@
 import { visualizer } from "rollup-plugin-visualizer";
+import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 import legacy from '@vitejs/plugin-legacy'
 import path from "node:path";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
@@ -25,6 +26,9 @@ export default defineConfig(({ mode, isSsrBuild }) => {
     },
     plugins: [
       visualizer() as PluginOption,
+      ViteImageOptimizer({
+        /* pass your config */
+      }),
       legacy({
         targets: ['defaults', 'not IE 11'],
       }),
