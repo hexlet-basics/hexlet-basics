@@ -94,6 +94,7 @@ export default function SolutionTab() {
         <Image
           src={waitingClock}
           fit="contain"
+          loading="lazy"
           alt="waiting_clock"
         />
       </Stack>

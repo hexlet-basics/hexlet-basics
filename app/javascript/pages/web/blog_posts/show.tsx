@@ -57,6 +57,7 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
           <Stack>
             <Image
               className="img-fluid"
+              fetchPriority="high"
               radius="md"
               src={blogPost.cover_main_variant!}
               mb="xl"

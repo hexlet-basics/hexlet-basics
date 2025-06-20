@@ -97,7 +97,14 @@ function CourseMenu({ landingPages }: { landingPages: SharedProps["landingPagesF
         <SimpleGrid cols={2} spacing="sm" p="xs">
           {landingPages.map((lp) => (
             <Group key={lp.id} pos="relative">
-              <Image w="auto" radius="sm" fit="contain" src={lp.language.cover_thumb_variant} alt={lp.header} />
+              <Image
+                w="auto"
+                radius="sm"
+                fit="contain"
+                loading="lazy"
+                src={lp.language.cover_thumb_variant}
+                alt={lp.header}
+              />
               <Text fz="sm">{lp.header}</Text>
               <AppAnchor
                 href={Routes.language_path(lp.slug)}

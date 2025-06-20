@@ -144,6 +144,7 @@ export default function ForTeachersBlock() {
                   w={90}
                   h={65}
                   mb="xl"
+                  loading="lazy"
                   fit="contain"
                 />
                 <Text mb="sm" fw={500}>{item.title}</Text>

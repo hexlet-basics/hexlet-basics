@@ -187,6 +187,7 @@ export default function Show({
           </Grid.Col>
           <Grid.Col visibleFrom="sm" span={{ base: 12, sm: 5 }}>
             <Image
+              fetchPriority="high"
               src={codeIllustration}
               // w="auto"
               fit="cover"
@@ -213,6 +214,7 @@ export default function Show({
               src={courseLandingPage.outcomes_image}
               width="100%"
               height="auto"
+              loading="lazy"
               alt={t("languages.show.learning_preview")}
               style={{ borderRadius: 'var(--mantine-radius-xl)', boxShadow: 'var(--mantine-shadow-lg)' }}
             />
