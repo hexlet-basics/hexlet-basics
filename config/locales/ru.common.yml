@@ -16,7 +16,7 @@ ru:
       name: Code Basics
       email: "support@hexlet.io"
       address: 108813, г. Москва, вн.тер.г. поселение Московский, г. Московский, ул. Солнечная, д. 3А, стр. 1, помещ. 10/3
-      phone: +7 (495) 085 21 62 
+      phone: +7 (495) 085 21 62
       phones:
         - "+7 (495) 085 21 62"
         - "8 800 100 22 47"
@@ -99,3 +99,15 @@ ru:
       "failed-infinity":
         message: "Возможно, тесты работали слишком долго или в вашем решении есть бесконечный цикл. Убедитесь, что в цикле верное условие остановки, и вы учитываете пограничные случаи. Если с циклом всё в порядке, попробуйте отправить код на проверку снова через 5 минут"
         headline: "Долгое выполнение"
+
+    sentryFeedbackWidget:
+      triggerLabel: Сообщить об ошибке
+      formTitle: Сообщить об ошибке
+      submitButtonLabel: Отправить сообщение
+      cancelButtonLabel: Отмена
+      addScreenshotButtonLabel: Добавить скриншот
+      nameLabel: Имя
+      namePlaceholder: Ваше имя
+      messageLabel: Описание
+      messagePlaceholder: Опишите ошибку и ожидаемое поведение
+      isRequiredLabel: (обязательно)
