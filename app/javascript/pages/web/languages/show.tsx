@@ -284,10 +284,10 @@ export default function Show({
         )}
 
         {!user.guest && i18next.language === 'ru' && (
-          <Container size="lg" mt={100}>
+          <Container size="lg">
             <Grid align="center" justify="space-between" gutter={0}>
               <Grid.Col span={{ base: 12, md: 6 }}>
-                <Center>
+                <Center mb="xl">
                   <Text fz={40} fw="bold">{t("home.index.consultation")}</Text>
                 </Center>
               </Grid.Col>

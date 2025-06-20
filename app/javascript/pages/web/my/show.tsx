@@ -9,6 +9,7 @@ import type {
 import { Link } from "@inertiajs/react";
 import { Text, Grid, Container, Progress, Image, Title, Group, Anchor, Stack, Paper, Card, SimpleGrid, Alert } from '@mantine/core';
 import i18next, { t } from "i18next";
+import { MessageSquareDiff } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 type Props = {
@@ -96,7 +97,7 @@ export default function My(props: Props) {
         <Title my="xl" order={2}>{tViews("my.show.finished")}</Title>
 
         {finishedCourseMembers.length > 0 && i18next.language == "ru" && (
-          <Alert mb="xl">
+          <Alert icon={<MessageSquareDiff />} mb="xl" px="xl">
             <XssContent>{t('my.show.add_review')}</XssContent>
           </Alert>
         )}
