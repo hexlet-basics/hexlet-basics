@@ -238,7 +238,7 @@ export default function Index({
                 <Image
                   src={review.avatar}
                   fit="contain"
-                  radius="100%"
+                  radius="xl"
                   loading="lazy"
                   w={40}
                   // width={50}
