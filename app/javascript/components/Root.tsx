@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/react";
-import { type PropsWithChildren } from "react";
+import { type PropsWithChildren, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Text, Center, MantineProvider, Stack, Title, type MantineProviderProps, Container } from '@mantine/core';
 import { CodeHighlightAdapterProvider, createShikiAdapter } from '@mantine/code-highlight';
@@ -36,6 +36,14 @@ const theme: MantineProviderProps["theme"] = {
 }
 
 function Root(props: Props) {
+  const { t: tCommon } = useTranslation("common");
+
+  useEffect(() => {
+    Sentry.getFeedback()?.createWidget(
+      tCommon("sentryFeedbackWidget", { returnObjects: true, defaultValue: {} })
+    );
+  }, [tCommon]);
+
   return (
     <MantineProvider theme={theme}>
       <ModalsProvider>

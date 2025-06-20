@@ -1874,6 +1874,18 @@
       "reset": "Сброс",
       "resetCode": "Сбросить код",
       "run": "Проверить",
+      "sentryFeedbackWidget": {
+        "addScreenshotButtonLabel": "Добавить скриншот",
+        "cancelButtonLabel": "Отмена",
+        "formTitle": "Сообщить об ошибке",
+        "isRequiredLabel": "обязательно",
+        "messageLabel": "Описание",
+        "messagePlaceholder": "Опишите ошибку и ожидаемое поведение",
+        "nameLabel": "Имя",
+        "namePlaceholder": "Ваше имя",
+        "submitButtonLabel": "Отправить сообщение",
+        "triggerLabel": "Сообщить об ошибке"
+      },
       "showSolution": "Показать решение",
       "signInSuggestion": "<a href=\"%{url}\">Создайте аккаунт</a> для сохранения прогресса",
       "solution": "Решение",
