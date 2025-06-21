@@ -70,6 +70,7 @@ en:
             header: Edit User
           index:
             header: Users
+            search_by_email: Search by email
             finished_lessons: Finished Lessons
     home:
       hero:

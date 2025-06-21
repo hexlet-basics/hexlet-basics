@@ -846,7 +846,8 @@
             },
             "index": {
               "finished_lessons": "Finished Lessons",
-              "header": "Users"
+              "header": "Users",
+              "search_by_email": "Search by email"
             }
           }
         },
@@ -2750,7 +2751,8 @@
             },
             "index": {
               "finished_lessons": "Завершенные уроки",
-              "header": "Пользователи"
+              "header": "Пользователи",
+              "search_by_email": "Поиск по email"
             }
           }
         },
