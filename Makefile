@@ -124,6 +124,9 @@ next-tag:
 services-frontend-run:
 	bin/vite dev
 
+services-frontend-ssr-run:
+	bin/vite ssr
+
 services-app-run:
 	bin/rails s -p 3000
 

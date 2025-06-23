@@ -8,7 +8,7 @@ import "@/init.ts";
 import configure from "@/lib/configure";
 
 Sentry.init({
-  // debug: import.meta.env.DEV,
+  debug: import.meta.env.DEV,
   dsn: import.meta.env.VITE_SENTRY_DSN,
 });
 
