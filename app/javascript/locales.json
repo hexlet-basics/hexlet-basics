@@ -1878,7 +1878,7 @@
         "addScreenshotButtonLabel": "Добавить скриншот",
         "cancelButtonLabel": "Отмена",
         "formTitle": "Сообщить об ошибке",
-        "isRequiredLabel": "обязательно",
+        "isRequiredLabel": "(обязательно)",
         "messageLabel": "Описание",
         "messagePlaceholder": "Опишите ошибку и ожидаемое поведение",
         "nameLabel": "Имя",
