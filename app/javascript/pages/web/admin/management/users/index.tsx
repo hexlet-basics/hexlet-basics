@@ -10,6 +10,7 @@ import type { User, Grid } from '@/types/serializers';
 import { Menu } from './shared/menu';
 import useDataTableProps from '@/hooks/useDataTableProps';
 import { Edit } from 'lucide-react';
+import { XForm, XInput } from "@/components/forms";
 import dayjs from 'dayjs';
 
 type Props = PropsWithChildren & {
@@ -37,7 +38,15 @@ export default function Index({ grid, users }: Props) {
           { accessor: 'admin', title: 'Admin?' },
           { accessor: 'assistant_messages_count', title: 'Messages' },
           { accessor: 'name', sortable: true },
-          { accessor: 'email', sortable: true },
+          {
+            accessor: 'email',
+            sortable: true,
+            filter: (
+              <XForm method="get" to={Routes.admin_management_users_path()}>
+                <XInput field="fields[email_cont]" label={t('admin.management.users.index.search_by_email')} />
+              </XForm>
+            )
+          },
           {
             accessor: 'created_at',
             sortable: true,
