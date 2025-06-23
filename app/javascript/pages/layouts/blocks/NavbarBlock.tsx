@@ -23,7 +23,7 @@ import * as Routes from "@/routes.js";
 import type { SharedProps } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
 import { useTranslation } from "react-i18next";
-import { ChevronDown, GitGraph, GraduationCap, Handshake, LogOut, Rocket, ShieldUser, Target, User, UserCog } from "lucide-react";
+import { Blocks, ChevronDown, GitGraph, GraduationCap, Handshake, LogOut, Rocket, ShieldUser, Target, User, UserCog } from "lucide-react";
 import AppAnchor from "@/components/AppAnchor";
 
 export type NavbarBlockProps = {
@@ -253,10 +253,16 @@ function SolutionsMenu() {
       href: 'https://b2b.hexlet.io?utm_source=code-basics&utm_medium=referral',
     },
     {
-      icon: GraduationCap,
+      icon: Blocks,
       title: tLayouts("shared.nav.for_teachers"),
       description: tLayouts("shared.nav.for_teachers_description"),
       href: Routes.for_teachers_cases_path(),
+    },
+    {
+      icon: GraduationCap,
+      title: tLayouts("shared.nav.hexly"),
+      description: tLayouts("shared.nav.hexly_description"),
+      href: 'https://hexly.ru?utm_source=code-basics&utm_medium=referral',
     },
   ];
 
