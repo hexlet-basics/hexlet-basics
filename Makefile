@@ -171,4 +171,10 @@ setup-macos:
 	brew install caddy libpq vips watchman
 	brew link --force libpq
 
+setup-ubuntu:
+	curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+	curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
+	sudo apt-get update && sudo apt-get install -yq caddy libpq-dev
+	gem install overmind
+
 .PHONY: test

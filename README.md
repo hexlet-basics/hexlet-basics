@@ -17,7 +17,7 @@
 
 ```bash
 # /etc/hosts 127.0.0.1 code-basics.test
-# make setup-macos or make setup-ubuntu (in progress)
+# make setup-macos or make setup-ubuntu
 make services-start
 make setup
 make dev # run server
