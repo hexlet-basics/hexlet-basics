@@ -92,6 +92,7 @@ group :development, :staging do
   # gem 'listen'
   # gem 'derailed_benchmarks'
   gem "web-console"
+  gem "i18n-tasks", "~> 1.0.15"
   gem "ruby-lsp", require: false
   gem "ruby-lsp-rails", require: false
 end
