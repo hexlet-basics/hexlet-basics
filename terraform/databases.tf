@@ -2,12 +2,12 @@ data "twc_database_preset" "postgresql" {
   location = var.location
 
   type = "postgres"
-  cpu = 1
-  ram = 2048
+  cpu = 2
+  ram = 4096
 
   price_filter {
-    from = 400
-    to   = 600
+    from = 1300
+    to   = 1600
   }
 }
 
@@ -27,6 +27,13 @@ resource "twc_database_cluster" "postgresql" {
   is_external_ip = true
 
   type = "postgres16"
+
+  # NOTE: id пресетов меняются со временем в апи провайдера
+  lifecycle {
+    ignore_changes = [
+      preset_id,
+    ]
+  }
 }
 
 resource "twc_database_backup_schedule" "postgresql" {
