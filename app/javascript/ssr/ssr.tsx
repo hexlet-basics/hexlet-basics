@@ -15,7 +15,7 @@ Sentry.init({
 createServer((page) => {
   // NOTE: используется для просмотра последних попыток рендера перед падением контейнера ssr на проде (дебаг)
   console.log(page.url);
-  console.log(`Memory stats: ${JSON.stringify(process.memoryUsage(), null, 2)}`);
+  // console.log(`Memory stats: ${JSON.stringify(process.memoryUsage(), null, 2)}`);
 
   return createInertiaApp({
     page,
