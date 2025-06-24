@@ -9,7 +9,7 @@
     "@emotion/react": "^11.14.0",
     "@hexlet/analytics-plugin-yandex-metrika": "^1.0.9",
     "@inertiajs/progress": "^0.2.7",
-    "@inertiajs/react": "^2.0.13",
+    "@inertiajs/react": "^2.0.12",
     "@mantine/code-highlight": "^8.1.1",
     "@mantine/core": "^8.1.1",
     "@mantine/dates": "^8.1.1",
