@@ -101,7 +101,6 @@ ru:
         headline: "Долгое выполнение"
 
     sentryFeedbackWidget:
-      triggerLabel: Сообщить об ошибке
       formTitle: Сообщить об ошибке
       submitButtonLabel: Отправить сообщение
       cancelButtonLabel: Отмена

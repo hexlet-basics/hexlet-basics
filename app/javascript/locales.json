@@ -1884,8 +1884,7 @@
         "messagePlaceholder": "Опишите ошибку и ожидаемое поведение",
         "nameLabel": "Имя",
         "namePlaceholder": "Ваше имя",
-        "submitButtonLabel": "Отправить сообщение",
-        "triggerLabel": "Сообщить об ошибке"
+        "submitButtonLabel": "Отправить сообщение"
       },
       "showSolution": "Показать решение",
       "signInSuggestion": "<a href=\"%{url}\">Создайте аккаунт</a> для сохранения прогресса",

@@ -39,9 +39,11 @@ function Root(props: Props) {
   const { t: tCommon } = useTranslation("common");
 
   useEffect(() => {
-    Sentry.getFeedback()?.createWidget(
-      tCommon("sentryFeedbackWidget", { returnObjects: true, defaultValue: {} })
-    );
+    const interfaceTranslations = tCommon("sentryFeedbackWidget", { returnObjects: true, defaultValue: {} })
+    Sentry.getFeedback()?.createWidget({
+      triggerLabel: "", // NOTE: убираем текст с кнопки для всех локалей
+      ...interfaceTranslations,
+    });
   }, [tCommon]);
 
   return (
