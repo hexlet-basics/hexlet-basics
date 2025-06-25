@@ -1,4 +1,6 @@
 class Web::CasesController < Web::ApplicationController
+  before_action :require_russian_locale
+
   def index
     seo_tags = {
       title: t(".title"),

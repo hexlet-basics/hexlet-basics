@@ -43,9 +43,11 @@ export default function NavbarBlock({ opened, onToggle }: NavbarBlockProps) {
 
         <MyLink />
         <CourseMenu landingPages={landingPagesForLists} />
-        <Group visibleFrom="sm">
-          <SolutionsMenu />
-        </Group>
+        {i18next.language === "ru" && (
+          <Group visibleFrom="sm">
+            <SolutionsMenu />
+          </Group>
+        )}
         <Group visibleFrom="sm">
           <BookLink />
         </Group>

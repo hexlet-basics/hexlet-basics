@@ -7,6 +7,10 @@ module LocaleConcern
     around_action :setup_locale
   end
 
+  def require_russian_locale
+    raise ActionController::RoutingError, "Not Found" unless I18n.locale == :ru
+  end
+
   private
 
   def setup_locale(&)
