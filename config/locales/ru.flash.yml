@@ -3,7 +3,7 @@ ru:
     web:
       leads:
         create:
-          success: Заявка отправлена! Свяжемся с вами в течение одного-двух рабочих дней. Или напишите нам в <a target="_blank" href="https://t.me/hexlet_edu">телеграм</a> чтобы получить помощь быстрее
+          success: Заявка отправлена! Свяжемся с вами в течение одного-двух рабочих дней. Или напишите нам в <a target="_blank" href="https://t.me/WelcomeSalesCodebasicsBot">телеграм</a> чтобы получить помощь быстрее
           error: Проверьте ошибки в форме
       books:
         create_request:

@@ -5,7 +5,7 @@ ru:
     blocks:
       lead_form_block:
         description1: Ответим в течение дня
-        description2: Нам можно написать в <a target="_blank" href="https://t.me/hexlet_edu">телеграм</a>
+        description2: Нам можно написать в <a target="_blank" href="https://t.me/WelcomeSalesCodebasicsBot">телеграм</a>
     leads:
       new:
         how_can_we_help: 💡 Чем мы можем помочь?

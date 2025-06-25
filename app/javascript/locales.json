@@ -2248,7 +2248,7 @@
         "leads": {
           "create": {
             "error": "Проверьте ошибки в форме",
-            "success": "Заявка отправлена! Свяжемся с вами в течение одного-двух рабочих дней. Или напишите нам в <a target=\"_blank\" href=\"https://t.me/hexlet_edu\">телеграм</a> чтобы получить помощь быстрее"
+            "success": "Заявка отправлена! Свяжемся с вами в течение одного-двух рабочих дней. Или напишите нам в <a target=\"_blank\" href=\"https://t.me/WelcomeSalesCodebasicsBot\">телеграм</a> чтобы получить помощь быстрее"
           }
         },
         "passwords": {
@@ -2806,7 +2806,7 @@
       "blocks": {
         "lead_form_block": {
           "description1": "Ответим в течение дня",
-          "description2": "Нам можно написать в <a target=\"_blank\" href=\"https://t.me/hexlet_edu\">телеграм</a>"
+          "description2": "Нам можно написать в <a target=\"_blank\" href=\"https://t.me/WelcomeSalesCodebasicsBot\">телеграм</a>"
         }
       },
       "blog_posts": {
