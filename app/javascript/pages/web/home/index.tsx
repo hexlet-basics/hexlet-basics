@@ -297,11 +297,17 @@ export default function Index({
 
 
       {user.guest && (
-        <Container size="lg">
-          <h2 className="mb-4">{t("home.index.join")}</h2>
-          <Grid gutter="md">
+        <Container size="lg" mt={100}>
+          <Grid align="center" justify="space-between" gutter={0}>
             <Grid.Col span={{ base: 12, md: 6 }}>
-              <SignUpFormBlock user={newUser} />
+              <Center>
+                <Text fz={40} fw="bold">{t("home.index.join")}</Text>
+              </Center>
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, md: 5 }}>
+              <Card withBorder shadow="sm" p="xl">
+                <SignUpFormBlock user={newUser} />
+              </Card>
             </Grid.Col>
           </Grid>
         </Container>

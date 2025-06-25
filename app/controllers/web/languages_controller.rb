@@ -66,8 +66,11 @@ class Web::LanguagesController < Web::ApplicationController
     #     id: :desc
     #   ).limit(6)
 
+    user = User::SignUpForm.new
+
     render inertia: true, props: {
       courseLandingPage: Language::LandingPageResource.new(landing_page),
+      newUser: UserSignUpFormResource.new(user),
       qnaItems: Language::LandingPageQnaItemResource.new(landing_page.qna_items),
       course: LanguageResource.new(language),
       courseCategory: landing_page.language_categories.any? && Language::CategoryResource.new(landing_page.language_categories.first),

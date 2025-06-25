@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { Card, Container, Stack, Title, Text, Center, Anchor, Box, Button } from '@mantine/core';
+import { Card, Container, Stack, Text, Anchor, Box, Button } from '@mantine/core';
 
 import { useTranslation } from "react-i18next";
 
@@ -9,7 +9,6 @@ import { XForm, XInput } from "@/components/forms";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { SignInForm } from "@/types/serializers";
 import { Link } from "@inertiajs/react";
-import { Submit } from "use-inertia-form";
 import AppAnchor from "@/components/AppAnchor";
 
 type Props = PropsWithChildren & {

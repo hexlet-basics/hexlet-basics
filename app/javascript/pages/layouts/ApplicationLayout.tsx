@@ -64,7 +64,7 @@ export default function ApplicationLayout({
             <Box mt="lg"><ContactMethodRequestingBlock /></Box>
           )}
           {(items || header) && (
-            <Container size="lg" my="xl">
+            <Container size="lg" my="xl" mt={80}>
               <Stack>
                 {items && <XBreadcrumb items={items} />}
                 {header && (

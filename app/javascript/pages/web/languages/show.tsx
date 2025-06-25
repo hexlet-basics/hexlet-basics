@@ -23,7 +23,7 @@ import codeIllustration from "@/images/code.svg";
 
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import * as Routes from "@/routes.js";
-import type { BreadcrumbItem, Language, LeadCrud, SharedProps } from "@/types";
+import type { BreadcrumbItem, Language, LeadCrud, SharedProps, User } from "@/types";
 import type {
   LanguageCategory,
   LanguageLandingPage,
@@ -40,6 +40,7 @@ import { Clock, Users } from 'lucide-react';
 import LeadFormBlock from '@/components/LeadFormBlock';
 import i18next from 'i18next';
 import MarkdownViewer from '@/components/MarkdownViewer';
+import SignUpFormBlock from '@/components/SignUpFormBlock';
 
 type Props = {
   lead: LeadCrud;
@@ -49,6 +50,7 @@ type Props = {
   courseLandingPage: LanguageLandingPage;
   qnaItems: LanguageLandingPageQnaItem[];
   firstLesson: LanguageLesson;
+  newUser: User;
   nextLesson?: LanguageLesson;
   courseModules: LanguageModule[];
   lessonsByModuleId: {
@@ -67,6 +69,7 @@ export default function Show({
   lessonsByModuleId,
   course,
   qnaItems,
+  newUser,
   lead,
 }: Props) {
   const { t } = useTranslation();
@@ -296,6 +299,23 @@ export default function Show({
               <Grid.Col span={{ base: 12, md: 4 }}>
                 <Card withBorder shadow="sm" p="xl">
                   <LeadFormBlock lead={lead} />
+                </Card>
+              </Grid.Col>
+            </Grid>
+          </Container>
+        )}
+
+        {user.guest && (
+          <Container size="lg" mt={100}>
+            <Grid align="center" justify="space-between" gutter={0}>
+              <Grid.Col span={{ base: 12, md: 6 }}>
+                <Center>
+                  <Text fz={40} fw="bold">{t("home.index.join")}</Text>
+                </Center>
+              </Grid.Col>
+              <Grid.Col span={{ base: 12, md: 5 }}>
+                <Card withBorder shadow="sm" p="xl">
+                  <SignUpFormBlock user={newUser} />
                 </Card>
               </Grid.Col>
             </Grid>

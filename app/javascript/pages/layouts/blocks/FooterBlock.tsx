@@ -42,7 +42,7 @@ export default function FooterBlock() {
         </script>
       </Head>
 
-      <Box bg="gray.0" mt="xl" pt="lg">
+      <Box bg="gray.0" mt={100} pt="lg">
         <Container size="lg" pt="lg">
           <footer>
             <Grid justify="space-b">
