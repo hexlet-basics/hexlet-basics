@@ -20,8 +20,8 @@ function FooterLink(props: {
   return <AppAnchor
     c="dimmed"
     href={href}
-    external
-    pseudo
+    external={external}
+    pseudo={pseudo}
   >
     {children}
   </AppAnchor>
