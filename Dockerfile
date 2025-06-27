@@ -76,6 +76,9 @@ RUN --mount=type=secret,id=sentry-org,env=VITE_SENTRY_ORG \
     --mount=type=secret,id=n8n_base_url,env=N8N_BASE_URL \
     SECRET_KEY_BASE_DUMMY=1 make build-assets
 
+# NOTE: .git is included for Sentry, then removed to keep the image clean.
+RUN rm -rf .git
+
 # Final stage for app image
 FROM base
 
