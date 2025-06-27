@@ -54,7 +54,7 @@ jobs:
       - name: Build&Push App
         uses: docker/build-push-action@v6
         with:
-          # context: .
+          context: .
           # file: Dockerfile.production
           cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}
           push: true
