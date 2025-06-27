@@ -47,6 +47,10 @@ export default defineConfig(({ mode, isSsrBuild }) => {
         authToken: env.VITE_SENTRY_AUTH_TOKEN,
         release: {
           name: env.VITE_RELEASE_VERSION,
+          setCommits: {
+            auto: true,
+            ignoreEmpty: true,
+          },
         },
         sourcemaps: {
           filesToDeleteAfterUpload: ["**/*.js.map"],
