@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import type { Article, WithContext } from "schema-dts";
 import dayjs from "dayjs";
 import { Clock7, MessageCircleMore, MoveRight, ThumbsUp, User } from "lucide-react";
+import AppAnchor from "@/components/AppAnchor";
 
 type Props = PropsWithChildren & {
   blogPost: BlogPost;
@@ -71,9 +72,9 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
                 {dayjs().to(blogPost.created_at)}
               </Group>
               <Group gap={0} me="lg">
-                <Anchor href={postUrl} me="xs" display="flex">
+                <AppAnchor href={postUrl} me="xs" display="flex">
                   <ThumbsUp size={18} />
-                </Anchor>
+                </AppAnchor>
                 {blogPost.likes_count}
               </Group>
               <Center>
@@ -105,12 +106,11 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
 
 
 
-                <Anchor
+                <AppAnchor
                   pos="absolute"
                   inset={0}
                   href="https://t.me/HexletLearningBot"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  external
                 />
 
               </Alert>

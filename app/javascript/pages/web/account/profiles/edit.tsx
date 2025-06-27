@@ -22,8 +22,6 @@ export default function Edit(props: Props) {
   const { t: tHelpers } = useTranslation("helpers");
   const { t: tAr } = useTranslation("activerecord");
 
-  const confirmDeleting = useConfirmation();
-
   return (
     <ApplicationLayout center header={t("account.profiles.edit.title")}>
       <Container mt="xl">
@@ -44,7 +42,7 @@ export default function Edit(props: Props) {
 
             <Box>
               <AppAnchor
-                onClick={confirmDeleting}
+                withConfirmation
                 mt="xl"
                 href={Routes.account_profile_path()}
                 method="delete"

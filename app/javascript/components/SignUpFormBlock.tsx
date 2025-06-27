@@ -1,12 +1,10 @@
 import * as Routes from "@/routes.js";
 import type { User } from "@/types";
-import { Link } from "@inertiajs/react";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
-import { Submit } from "use-inertia-form";
 import XssContent from "./XssContent";
 import { XForm, XInput } from "./forms";
-import { Anchor, Box, Button, Text } from "@mantine/core";
+import { Box, Button, Text } from "@mantine/core";
 import AppAnchor from "./AppAnchor";
 
 type Props = PropsWithChildren & {

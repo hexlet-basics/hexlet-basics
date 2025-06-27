@@ -5,6 +5,7 @@ import { Breadcrumbs, Anchor, Text, Center } from '@mantine/core';
 import { useTranslation } from "react-i18next";
 import type { BreadcrumbList, ListItem, WithContext } from "schema-dts";
 import { Home } from "lucide-react";
+import AppAnchor from "./AppAnchor";
 
 type Props = PropsWithChildren &
   HTMLAttributes<HTMLDivElement> & {
@@ -60,14 +61,13 @@ export function XBreadcrumb({ items = [], className }: Props) {
               {item.title}
             </Text>
           ) : (
-            <Anchor
+            <AppAnchor
               key={item.href}
-              component={Link}
               href={item.href}
               size="sm"
             >
               {item.title}
-            </Anchor>
+            </AppAnchor>
           )
         ))}
       </Breadcrumbs>

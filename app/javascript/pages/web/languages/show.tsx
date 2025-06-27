@@ -41,6 +41,7 @@ import LeadFormBlock from '@/components/LeadFormBlock';
 import i18next from 'i18next';
 import MarkdownViewer from '@/components/MarkdownViewer';
 import SignUpFormBlock from '@/components/SignUpFormBlock';
+import AppAnchor from '@/components/AppAnchor';
 
 type Props = {
   lead: LeadCrud;
@@ -250,12 +251,11 @@ export default function Show({
                       <List>
                         {(lessonsByModuleId[m.id] ?? []).map((l) => (
                           <List.Item key={l.id}>
-                            <Anchor
-                              component={Link}
+                            <AppAnchor
                               href={Routes.language_lesson_path(course.slug!, l.slug!)}
                             >
                               {l.name}
-                            </Anchor>
+                            </AppAnchor>
                           </List.Item>
                         ))}
                       </List>

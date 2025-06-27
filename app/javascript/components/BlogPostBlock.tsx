@@ -7,6 +7,7 @@ import * as Routes from "@/routes.js";
 import type { SharedProps } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
 import dayjs from "dayjs";
+import AppAnchor from "./AppAnchor";
 
 type Props = PropsWithChildren & {
   post: BlogPost;
@@ -52,13 +53,12 @@ export default function BlogPostBlock({ post, lazy }: Props) {
         </Group>
       </Group>
 
-      <Anchor
+      <AppAnchor
         pos="absolute"
         inset={0}
-        component={Link}
         href={Routes.blog_post_path(post.slug!, { suffix })}
       >
-      </Anchor>
+      </AppAnchor>
     </Card>
   );
 }

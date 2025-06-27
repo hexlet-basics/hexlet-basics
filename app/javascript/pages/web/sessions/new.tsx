@@ -42,13 +42,12 @@ export default function New({ signInForm }: Props) {
               />
               <Box my="lg" ta="right">
                 {t("sessions.new.forgot_password")}{" "}
-                <Anchor
+                <AppAnchor
                   fw="bold"
-                  component={Link}
                   href={Routes.new_remind_password_path()}
                 >
                   {t("sessions.new.reset_password")}
-                </Anchor>
+                </AppAnchor>
               </Box>
               <Button type="submit" fullWidth>
                 {tHelpers("submit.user_sign_in_form.create")}

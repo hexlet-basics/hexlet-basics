@@ -7,6 +7,7 @@ import { Link } from "@inertiajs/react";
 import type { PropsWithChildren } from "react";
 import { Card, Text, Group, Stack, Image, Title, Anchor } from '@mantine/core';
 import { Clock, Users } from "lucide-react";
+import AppAnchor from "./AppAnchor";
 
 type Props = PropsWithChildren & {
   // course: Language;
@@ -51,8 +52,7 @@ export default function CourseBlock({
       </Stack>
 
 
-      <Anchor
-        component={Link}
+      <AppAnchor
         pos="absolute"
         inset={0}
         href={Routes.language_url(landingPage.slug)}

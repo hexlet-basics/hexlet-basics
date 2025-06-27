@@ -9,6 +9,7 @@ import { XForm, XInput } from "@/components/forms";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { PasswordReminderForm } from "@/types";
 import { Link } from "@inertiajs/react";
+import AppAnchor from "@/components/AppAnchor";
 
 type Props = PropsWithChildren & {
   passwordReminder: PasswordReminderForm;
@@ -31,14 +32,13 @@ export default function New({ passwordReminder }: Props) {
               <XInput field="email" required autoFocus autoComplete="email" />
               <Box my="lg" ta="right">
                 {t("users.new.have_account")}{" "}
-                <Anchor
+                <AppAnchor
                   fw="bold"
-                  component={Link}
                   href={Routes.new_session_path()}
                   style={{ textDecoration: 'none' }}
                 >
                   {t("users.new.sign_in")}
-                </Anchor>
+                </AppAnchor>
               </Box>
               <Button fullWidth type="submit">
                 {tHelpers("submit.remind_password_form.create")}

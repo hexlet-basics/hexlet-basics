@@ -27,7 +27,7 @@ export default function Index({ categories }: Props) {
 
   return (
     <ApplicationLayout items={items} header={header}>
-      <Container>
+      <Container size="lg">
         <SimpleGrid py="md" cols={{ base: 1, md: 2, lg: 3 }}>
           {categories.map((category) => (
 

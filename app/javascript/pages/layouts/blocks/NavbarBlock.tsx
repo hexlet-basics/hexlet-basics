@@ -37,9 +37,9 @@ export default function NavbarBlock({ opened, onToggle }: NavbarBlockProps) {
   return (
     <>
       <Group h="100%" px="md">
-        <Anchor component={Link} href={Routes.root_path()} me="lg">
+        <AppAnchor href={Routes.root_path()} me="lg">
           <Image src={logoImg} w={30} h={30} fit="contain" alt="Logo" />
-        </Anchor>
+        </AppAnchor>
 
         <MyLink />
         <CourseMenu landingPages={landingPagesForLists} />
@@ -109,6 +109,7 @@ function CourseMenu({ landingPages }: { landingPages: SharedProps["landingPagesF
               />
               <Text fz="sm">{lp.header}</Text>
               <AppAnchor
+                pseudo
                 href={Routes.language_path(lp.slug)}
                 inset={0}
                 pos="absolute"
@@ -124,9 +125,9 @@ function CourseMenu({ landingPages }: { landingPages: SharedProps["landingPagesF
 function BookLink() {
   const { t } = useTranslation("layouts");
   return i18next.language === "ru" ? (
-    <Anchor component={Link} href={Routes.book_path()}>
+    <AppAnchor pseudo href={Routes.book_path()}>
       {t("shared.nav.book")}
-    </Anchor>
+    </AppAnchor>
   ) : null;
 }
 
@@ -137,10 +138,10 @@ function AuthLinks({ avatar }: { avatar: string }) {
   if (auth.user.guest) {
     return (
       <>
-        <AppAnchor href={Routes.new_session_path()}>
+        <AppAnchor pseudo href={Routes.new_session_path()}>
           {t("shared.nav.sign_in")}
         </AppAnchor>
-        <AppAnchor href={Routes.new_user_path()}>
+        <AppAnchor pseudo href={Routes.new_user_path()}>
           {t("shared.nav.registration")}
         </AppAnchor>
       </>
@@ -284,8 +285,7 @@ function SolutionsMenu() {
           </Text>
         </Box>
       </Group>
-      <Anchor
-        target="_blank"
+      <AppAnchor
         href={item.href}
         inset={0}
         pos="absolute"

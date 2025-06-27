@@ -10,12 +10,18 @@ import { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import type { Organization, WithContext } from "schema-dts";
 
-function FooterLink(props: { href: string } & PropsWithChildren) {
-  const { href, children } = props
+function FooterLink(props: {
+  href: string;
+  external?: boolean;
+  pseudo?: boolean;
+} & PropsWithChildren) {
+  const { href, children, external = false, pseudo = false } = props
 
   return <AppAnchor
     c="dimmed"
     href={href}
+    external
+    pseudo
   >
     {children}
   </AppAnchor>
@@ -58,9 +64,9 @@ export default function FooterBlock() {
                     support@hexlet.io
                   </Anchor>
                   <Stack mt="sm" gap={0}>
-                    <Text mb="xs">
+                    <AppAnchor href={Routes.root_path()} mb="xs">
                       ООО «Хекслет Рус»
-                    </Text>
+                    </AppAnchor>
                     <Text>
                       108813 г. Москва, вн.тер.г. поселение Московский, г. Московский
                     </Text>
@@ -103,11 +109,13 @@ export default function FooterBlock() {
                 <Stack gap={3}>
                   <FooterLink
                     href={Routes.page_path("about")}
+                    pseudo
                   >
                     {tLayouts("shared.footer.about")}
                   </FooterLink>
                   <FooterLink
                     href={Routes.blog_posts_path()}
+                    pseudo
                   >
                     {tLayouts("shared.footer.blog")}
                   </FooterLink>
@@ -117,21 +125,25 @@ export default function FooterBlock() {
                     {tLayouts("shared.footer.reviews")}
                   </FooterLink>
                   <FooterLink
+                    pseudo
                     href={Routes.page_path("authors")}
                   >
                     {tLayouts("shared.footer.authors")}
                   </FooterLink>
                   <FooterLink
+                    pseudo
                     href={Routes.page_path("tos")}
                   >
                     {tLayouts("shared.footer.tos")}
                   </FooterLink>
                   <FooterLink
+                    pseudo
                     href={Routes.page_path("privacy")}
                   >
                     {tLayouts("shared.footer.privacy")}
                   </FooterLink>
                   <FooterLink
+                    pseudo
                     href={Routes.page_path("cookie_policy")}
                   >
                     {tLayouts("shared.footer.cookie_policy")}
@@ -145,22 +157,20 @@ export default function FooterBlock() {
             <Group justify="space-between" align="center">
               <Text>{`© ${new Date().getFullYear()}`}</Text>
               <Group gap="md">
-                <Anchor
+                <AppAnchor
                   href="https://ttttt.me/hexlet_ru"
-                  target="_blank"
-                  rel="noreferrer nofollow"
+                  external
                   underline="never"
                 >
                   <Send />
-                </Anchor>
-                <Anchor
+                </AppAnchor>
+                <AppAnchor
                   href="https://github.com/hexlet-basics"
-                  target="_blank"
-                  rel="noreferrer nofollow"
+                  external
                   underline="never"
                 >
                   <Github />
-                </Anchor>
+                </AppAnchor>
               </Group>
             </Group>
 

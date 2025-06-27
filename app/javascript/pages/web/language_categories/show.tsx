@@ -51,7 +51,7 @@ export default function Show({
 
   return (
     <ApplicationLayout items={items} header={courseCategory.header!}>
-      <Container>
+      <Container size="lg">
         {courseCategory.description && (
           <Grid mb="xl">
             <Grid.Col span={{ base: 12, sm: 8 }}>

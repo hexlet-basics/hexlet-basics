@@ -1,3 +1,4 @@
+import AppAnchor from "@/components/AppAnchor";
 import CourseBlock from "@/components/CourseBlock";
 import XssContent from "@/components/XssContent";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
@@ -54,8 +55,7 @@ function StartedCourse({
 
       </Group>
 
-      <Anchor
-        component={Link}
+      <AppAnchor
         pos="absolute"
         inset={0}
         href={Routes.language_url(
