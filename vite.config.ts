@@ -54,6 +54,7 @@ export default defineConfig(({ mode, isSsrBuild }) => {
         },
         sourcemaps: {
           filesToDeleteAfterUpload: ["**/*.js.map"],
+          rewriteSources: (source) => source.replace(/^(\.\.\/|\.\/)+/, ''),
         },
         telemetry: false,
       }),
