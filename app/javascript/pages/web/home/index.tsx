@@ -13,7 +13,7 @@ import BlogPostBlock from "@/components/BlogPostBlock";
 import CourseBlock from "@/components/CourseBlock";
 import SignUpFormBlock from "@/components/SignUpFormBlock";
 import XssContent from "@/components/XssContent";
-import { getImageUrl } from "@/images";
+import { getResourceUrl } from "@/resources";
 import codeImagePathEn from "@/images/code-basics-coding-en.png";
 import codeImagePathRu from "@/images/code-basics-coding-ru.png";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
@@ -62,19 +62,19 @@ const reviews = {
   ru: [
     {
       name: "Александр Авдошкин",
-      avatar: getImageUrl("avdoshkin.jpg"),
+      avatar: getResourceUrl("avdoshkin.jpg"),
       body: `Если бы не коронавирус, выполнил бы всё в заход (в смысле каждый день по несколько пунктов в теме).
 Изучаю с нуля, ваш портал очень ориентирован на новичков. Спасибо вам большое!`,
     },
     {
       name: "Сергей Тюрин",
-      avatar: getImageUrl("tyrin.jpg"),
+      avatar: getResourceUrl("tyrin.jpg"),
       body: `Очень всё доступно даже для полного профана вроде меня. Эта вводная по JS вошла в мой туговатый ум,
 складно как недостающий пазл. Всем кидаю линк на эту страничку.`,
     },
     {
       name: "Элиях Клейман",
-      avatar: getImageUrl("user-avatar.png"),
+      avatar: getResourceUrl("user-avatar.png"),
       body: `Для меня это первый курс для новичка. Понравилось тем, что вся информация структурирована
 и дана по мере изучения материала в иерархичном порядке, что значительно повышает и желание к обучению`,
     },
@@ -82,17 +82,17 @@ const reviews = {
   en: [
     {
       name: "Aleksandr Avdoshkin",
-      avatar: getImageUrl("avdoshkin.jpg"),
+      avatar: getResourceUrl("avdoshkin.jpg"),
       body: "As someone with zero coding skills, I'd say that CodeBasics is focused on newcomers. Thank you very much!",
     },
     {
       name: "Sergei Tyurin",
-      avatar: getImageUrl("tyrin.jpg"),
+      avatar: getResourceUrl("tyrin.jpg"),
       body: "This is all very approachable even for a dummy like me. Now I show people this platform when I get the chance.",
     },
     {
       name: "Eliyah Kleyman",
-      avatar: getImageUrl("user-avatar.png"),
+      avatar: getResourceUrl("user-avatar.png"),
       body: `For me, it was my very first programming course. I liked it because all the information is very well
 structured and given in a clear hierarchical order. It motivated me a lot to move forward in my studies.`,
     },

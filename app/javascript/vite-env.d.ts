@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-type ImageModule = {
+type ResourceModule = {
   default: string;
 };
 

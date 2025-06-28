@@ -1,4 +1,4 @@
-import { getImageUrl } from "@/images";
+import { getResourceUrl } from "@/resources";
 import learningEnVideo from "@/images/course-landing-page/learning_en.mp4";
 import learningRuVideo from "@/images/course-landing-page/learning_ru.mp4";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
@@ -139,7 +139,7 @@ export default function ForTeachersBlock() {
             {howToLearnCards.map((item, index) => (
               <Card key={index} >
                 <Image
-                  src={getImageUrl(`for-school-teachers-page/${item.img}.svg`)}
+                  src={getResourceUrl(`for-school-teachers-page/${item.img}.svg`)}
                   alt={item.img}
                   w={90}
                   h={65}

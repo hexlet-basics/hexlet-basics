@@ -39,29 +39,34 @@ module CounterCulture
 
     # source://counter_culture//lib/counter_culture/configuration.rb#10
     def reset_configuration; end
+
+    # @return [Boolean]
+    #
+    # source://counter_culture//lib/counter_culture/configuration.rb#14
+    def supports_composite_keys?; end
   end
 end
 
-# source://counter_culture//lib/counter_culture/configuration.rb#14
+# source://counter_culture//lib/counter_culture/configuration.rb#18
 class CounterCulture::Configuration
   # @return [Configuration] a new instance of Configuration
   #
-  # source://counter_culture//lib/counter_culture/configuration.rb#17
+  # source://counter_culture//lib/counter_culture/configuration.rb#21
   def initialize; end
 
   # Returns the value of attribute use_read_replica.
   #
-  # source://counter_culture//lib/counter_culture/configuration.rb#15
+  # source://counter_culture//lib/counter_culture/configuration.rb#19
   def use_read_replica; end
 
-  # source://counter_culture//lib/counter_culture/configuration.rb#21
+  # source://counter_culture//lib/counter_culture/configuration.rb#25
   def use_read_replica=(value); end
 
   private
 
   # @return [Boolean]
   #
-  # source://counter_culture//lib/counter_culture/configuration.rb#30
+  # source://counter_culture//lib/counter_culture/configuration.rb#34
   def rails_supports_read_replica?; end
 end
 
@@ -74,7 +79,7 @@ class CounterCulture::Counter
 
   # @return [Boolean]
   #
-  # source://counter_culture//lib/counter_culture/counter.rb#268
+  # source://counter_culture//lib/counter_culture/counter.rb#274
   def attribute_changed?(obj, attr); end
 
   # increments or decrements a counter cache
@@ -103,14 +108,14 @@ class CounterCulture::Counter
   # obj: object to calculate the counter cache name for
   # cache_name_finder: object used to calculate the cache name
   #
-  # source://counter_culture//lib/counter_culture/counter.rb#162
+  # source://counter_culture//lib/counter_culture/counter.rb#167
   def counter_cache_name_for(obj); end
 
   # Gets the delta magnitude of the counter cache for a specific object
   #
   # obj: object to calculate the counter cache name for
   #
-  # source://counter_culture//lib/counter_culture/counter.rb#150
+  # source://counter_culture//lib/counter_culture/counter.rb#155
   def counter_delta_magnitude_for(obj); end
 
   # source://counter_culture//lib/counter_culture/counter.rb#8
@@ -122,12 +127,12 @@ class CounterCulture::Counter
   # source://counter_culture//lib/counter_culture/counter.rb#8
   def execute_after_commit; end
 
-  # source://counter_culture//lib/counter_culture/counter.rb#347
+  # source://counter_culture//lib/counter_culture/counter.rb#354
   def execute_now_or_after_commit(obj, &block); end
 
   # @return [Boolean]
   #
-  # source://counter_culture//lib/counter_culture/counter.rb#260
+  # source://counter_culture//lib/counter_culture/counter.rb#266
   def first_level_relation_changed?(instance); end
 
   # gets the foreign key name of the relation. will look at the first
@@ -137,10 +142,10 @@ class CounterCulture::Counter
   # relation: a symbol or array of symbols; specifies the relation
   #   that has the counter cache column
   #
-  # source://counter_culture//lib/counter_culture/counter.rb#320
+  # source://counter_culture//lib/counter_culture/counter.rb#327
   def first_level_relation_foreign_key; end
 
-  # source://counter_culture//lib/counter_culture/counter.rb#325
+  # source://counter_culture//lib/counter_culture/counter.rb#332
   def first_level_relation_foreign_type; end
 
   # gets the value of the foreign key on the given relation
@@ -151,7 +156,7 @@ class CounterCulture::Counter
   #   pass true to get the past value, false or nothing to get the
   #   current value
   #
-  # source://counter_culture//lib/counter_culture/counter.rb#185
+  # source://counter_culture//lib/counter_culture/counter.rb#190
   def foreign_key_value(obj, relation, was = T.unsafe(nil)); end
 
   # source://counter_culture//lib/counter_culture/counter.rb#8
@@ -159,7 +164,7 @@ class CounterCulture::Counter
 
   # the string to pass to order() in order to sort by primary key
   #
-  # source://counter_culture//lib/counter_culture/counter.rb#174
+  # source://counter_culture//lib/counter_culture/counter.rb#179
   def full_primary_key(klass); end
 
   # source://counter_culture//lib/counter_culture/counter.rb#8
@@ -167,10 +172,10 @@ class CounterCulture::Counter
 
   # @return [Boolean]
   #
-  # source://counter_culture//lib/counter_culture/counter.rb#276
+  # source://counter_culture//lib/counter_culture/counter.rb#282
   def polymorphic?; end
 
-  # source://counter_culture//lib/counter_culture/counter.rb#331
+  # source://counter_culture//lib/counter_culture/counter.rb#338
   def previous_model(obj); end
 
   # source://counter_culture//lib/counter_culture/counter.rb#8
@@ -181,7 +186,7 @@ class CounterCulture::Counter
   # relation: a symbol or array of symbols; specifies the relation
   #   that has the counter cache column
   #
-  # source://counter_culture//lib/counter_culture/counter.rb#288
+  # source://counter_culture//lib/counter_culture/counter.rb#294
   def relation_foreign_key(relation); end
 
   # gets the class of the given relation
@@ -194,7 +199,7 @@ class CounterCulture::Counter
   # was: boolean
   #   we're actually looking for the old value -- only can change for polymorphic relations
   #
-  # source://counter_culture//lib/counter_culture/counter.rb#242
+  # source://counter_culture//lib/counter_culture/counter.rb#248
   def relation_klass(relation, source: T.unsafe(nil), was: T.unsafe(nil)); end
 
   # gets the primary key name of the given relation
@@ -207,7 +212,7 @@ class CounterCulture::Counter
   # was: boolean
   #   we're actually looking for the old value -- only can change for polymorphic relations
   #
-  # source://counter_culture//lib/counter_culture/counter.rb#301
+  # source://counter_culture//lib/counter_culture/counter.rb#307
   def relation_primary_key(relation, source: T.unsafe(nil), was: T.unsafe(nil)); end
 
   # gets the reflect object on the given relation
@@ -215,7 +220,7 @@ class CounterCulture::Counter
   # relation: a symbol or array of symbols; specifies the relation
   #   that has the counter cache column
   #
-  # source://counter_culture//lib/counter_culture/counter.rb#212
+  # source://counter_culture//lib/counter_culture/counter.rb#218
   def relation_reflect(relation); end
 
   # source://counter_culture//lib/counter_culture/counter.rb#8
@@ -223,39 +228,42 @@ class CounterCulture::Counter
 
   private
 
-  # source://counter_culture//lib/counter_culture/counter.rb#422
+  # source://counter_culture//lib/counter_culture/counter.rb#429
   def assemble_counter_update(klass, id_to_change, quoted_column, operator, delta_magnitude); end
 
-  # source://counter_culture//lib/counter_culture/counter.rb#412
+  # source://counter_culture//lib/counter_culture/counter.rb#419
   def assemble_money_counter_update(klass, id_to_change, quoted_column, operator, delta_magnitude); end
 
-  # source://counter_culture//lib/counter_culture/counter.rb#432
+  # source://counter_culture//lib/counter_culture/counter.rb#439
   def assemble_timestamp_update(klass, id_to_change, timestamp_column, value); end
 
   # update associated object counter attribute
   #
-  # source://counter_culture//lib/counter_culture/counter.rb#370
+  # source://counter_culture//lib/counter_culture/counter.rb#377
   def assign_to_associated_object(obj, relation, change_counter_column, operator, delta_magnitude); end
 
-  # source://counter_culture//lib/counter_culture/counter.rb#400
+  # source://counter_culture//lib/counter_culture/counter.rb#407
   def association_object_clear_change(association_object, change_counter_column); end
 
-  # source://counter_culture//lib/counter_culture/counter.rb#383
+  # source://counter_culture//lib/counter_culture/counter.rb#390
   def association_object_for_assign(obj, association_name); end
 
-  # source://counter_culture//lib/counter_culture/counter.rb#408
+  # source://counter_culture//lib/counter_culture/counter.rb#415
   def association_object_new_counter(association_object, change_counter_column, operator, delta_magnitude); end
 
-  # source://counter_culture//lib/counter_culture/counter.rb#359
+  # source://counter_culture//lib/counter_culture/counter.rb#366
   def attribute_was(obj, attr); end
 
-  # source://counter_culture//lib/counter_culture/counter.rb#442
+  # source://counter_culture//lib/counter_culture/counter.rb#455
   def counter_update_snippet(update, klass, id_to_change, operator, delta_magnitude); end
 
-  # source://counter_culture//lib/counter_culture/counter.rb#455
+  # source://counter_culture//lib/counter_culture/counter.rb#449
+  def primary_key_conditions(primary_key, fk_value); end
+
+  # source://counter_culture//lib/counter_culture/counter.rb#468
   def remember_counter_update(klass, id, operation, value); end
 
-  # source://counter_culture//lib/counter_culture/counter.rb#463
+  # source://counter_culture//lib/counter_culture/counter.rb#476
   def remember_timestamp_update(klass, id, operation, value); end
 end
 
@@ -472,48 +480,54 @@ class CounterCulture::Reconciler::Reconciliation
 
   private
 
-  # source://counter_culture//lib/counter_culture/reconciler.rb#209
+  # source://counter_culture//lib/counter_culture/reconciler.rb#233
+  def association_primary_key_select; end
+
+  # source://counter_culture//lib/counter_culture/reconciler.rb#211
   def count_select; end
 
-  # source://counter_culture//lib/counter_culture/reconciler.rb#235
+  # source://counter_culture//lib/counter_culture/reconciler.rb#250
   def join_clauses(where); end
 
-  # source://counter_culture//lib/counter_culture/reconciler.rb#182
+  # source://counter_culture//lib/counter_culture/reconciler.rb#183
   def log(message); end
 
   # @return [Boolean]
   #
-  # source://counter_culture//lib/counter_culture/reconciler.rb#194
+  # source://counter_culture//lib/counter_culture/reconciler.rb#195
   def log?; end
 
-  # source://counter_culture//lib/counter_culture/reconciler.rb#188
+  # source://counter_culture//lib/counter_culture/reconciler.rb#189
   def log_without_newline(message); end
 
-  # source://counter_culture//lib/counter_culture/reconciler.rb#323
+  # source://counter_culture//lib/counter_culture/reconciler.rb#349
   def parameterize(string); end
+
+  # source://counter_culture//lib/counter_culture/reconciler.rb#228
+  def primary_key_select; end
 
   # This is only needed in relatively unusal cases, for example if you are
   # using Postgres with schema-namespaced tables. But then it's required,
   # and otherwise it's just a no-op, so why not do it?
   #
-  # source://counter_culture//lib/counter_culture/reconciler.rb#317
+  # source://counter_culture//lib/counter_culture/reconciler.rb#343
   def quote_table_name(table_name); end
 
-  # source://counter_culture//lib/counter_culture/reconciler.rb#224
+  # source://counter_culture//lib/counter_culture/reconciler.rb#239
   def self_table_name; end
 
   # keep track of what we fixed, e.g. for a notification email
   #
-  # source://counter_culture//lib/counter_culture/reconciler.rb#199
+  # source://counter_culture//lib/counter_culture/reconciler.rb#200
   def track_change(record, column_name, count); end
 
   # source://counter_culture//lib/counter_culture/reconciler.rb#150
   def update_count_for_batch(column_name, records); end
 
-  # source://counter_culture//lib/counter_culture/reconciler.rb#331
+  # source://counter_culture//lib/counter_culture/reconciler.rb#357
   def with_reading_db_connection(&block); end
 
-  # source://counter_culture//lib/counter_culture/reconciler.rb#341
+  # source://counter_culture//lib/counter_culture/reconciler.rb#367
   def with_writing_db_connection(&block); end
 end
 

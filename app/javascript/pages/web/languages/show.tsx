@@ -42,6 +42,8 @@ import i18next from 'i18next';
 import MarkdownViewer from '@/components/MarkdownViewer';
 import SignUpFormBlock from '@/components/SignUpFormBlock';
 import AppAnchor from '@/components/AppAnchor';
+import XssContent from '@/components/XssContent';
+import { getResourceUrl } from '@/resources';
 
 type Props = {
   lead: LeadCrud;
@@ -235,6 +237,25 @@ export default function Show({
 
         </SimpleGrid>
 
+        <Card bg="indigo.0" my={{ base: "lg", sm: 80 }} p="xl">
+          <Group>
+            <Text fz={40}>
+              {t("languages.show.course_graduates")}
+            </Text>
+            <Button
+              bg="dark"
+              size="xl"
+              component={Link}
+              href={Routes.language_lesson_path(
+                course.slug!,
+                firstLesson.slug,
+              )}
+            >
+              {t("languages.show.start", { name: courseLandingPage.name })}
+            </Button>
+          </Group>
+        </Card>
+
         <Box>
           <Title order={2} size="h1" my="xl">
             {t("languages.show.learning_program", { name: courseLandingPage.name })}
@@ -269,6 +290,102 @@ export default function Show({
             ))}
           </Accordion>
         </Box>
+
+        <Box my={{ base: "lg", sm: 80 }}>
+          <Title order={2} fz="h1" mb="xl">
+            {t("languages.show.about_learning")}
+          </Title>
+          <SimpleGrid cols={{ base: 1, lg: 2 }}>
+            <Box>
+              <Text fw="bold">
+                {t("languages.show.convenient format")}
+              </Text>
+              <XssContent mb="md">
+                {t("languages.show.learning_conveniently")}
+              </XssContent>
+              <Text fw="bold">
+                {t("languages.show.browser_practice")}
+              </Text>
+              <XssContent mb="md">
+                {t("languages.show.real_life_challenges")}
+              </XssContent>
+              <Text fw="bold">
+                {t("languages.show.ai_without_limits")}
+              </Text>
+              <XssContent mb="md">
+                {t("languages.show.ai_explanation")}
+              </XssContent>
+
+            </Box>
+
+            <Box h="100%" w="100%">
+              <video
+                className="w-full h-full object-cover"
+                src={getResourceUrl(`course-landing-page/learning_${locale}.mp4`)}
+                autoPlay
+                loop
+                muted
+                playsInline
+              />
+            </Box>
+          </SimpleGrid>
+        </Box>
+
+        <Card bg="indigo.0" p="xl">
+          <Grid>
+            <Grid.Col span={{ base: 12, sm: 8 }}>
+              <Text fz={40}>
+                {t("languages.show.demo_description")}
+              </Text>
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, sm: 4 }}>
+              <Center h="100%">
+                <Button
+                  size="xl"
+                  component={Link}
+                  href={Routes.language_lesson_path(
+                    course.slug!,
+                    firstLesson.slug,
+                  )}
+                >
+                  {t("languages.show.demo_start")}
+                </Button>
+              </Center>
+            </Grid.Col>
+          </Grid>
+        </Card>
+
+
+        {/* {i18next.language === "ru" && ( */}
+        {/*   <Box> */}
+        {/*     <Grid> */}
+        {/*       <Grid.Col className="position-relative p-0"> */}
+        {/*         <div className="hexlet-basics-community-image" /> */}
+        {/*       </Grid.Col> */}
+        {/*       <Grid.Col className="col-lg-7 col-xl-6 p-4 p-md-5"> */}
+        {/*         <div className="d-flex flex-column justify-content-center py-3 py-lg-4"> */}
+        {/*           <div className="display-5 fw-semibold lh-1 mb-4"> */}
+        {/*             {t("languages.show.more_than_support")} */}
+        {/*           </div> */}
+        {/*           <div className="pe-lg-5"> */}
+        {/*             <div className="mb-5 pe-xl-4"> */}
+        {/*               {t("languages.show.about_developer_community")} */}
+        {/*             </div> */}
+        {/*             <a */}
+        {/*               className="btn btn-secondary" */}
+        {/*               href="https://t.me/HexletLearningBot" */}
+        {/*               target="_blank" */}
+        {/*               rel="noopener noreferrer" */}
+        {/*             > */}
+        {/*               <span>{t("languages.show.join")}</span> */}
+        {/*             </a> */}
+        {/*           </div> */}
+        {/*         </div> */}
+        {/*       </Grid.Col> */}
+        {/*     </Grid> */}
+        {/*   </Box> */}
+        {/* )} */}
+
 
         {qnaItems.length > 0 && (
           <Box my="xl" py="xl">
