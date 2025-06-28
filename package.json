@@ -66,11 +66,11 @@
     "@sentry/vite-plugin": "^3.5.0",
     "@shikijs/monaco": "^3.7.0",
     "@shikijs/rehype": "^3.7.0",
-    "@types/node": "^24.0.5",
+    "@types/node": "^24.0.7",
     "@types/rails__actioncable": "^6.1.11",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
-    "@vitejs/plugin-legacy": "^6.1.1",
+    "@vitejs/plugin-legacy": "^7.0.0",
     "@vitejs/plugin-react": "^4.6.0",
     "autoprefixer": "^10.4.21",
     "browserslist": "^4.25.1",
@@ -88,7 +88,7 @@
     "svgo": "^4.0.0",
     "terser": "^5.43.1",
     "typescript": "^5.8.3",
-    "vite": "^6.3.5",
+    "vite": "^7.0.0",
     "vite-bundle-analyzer": "^0.23.0",
     "vite-css-modules": "^1.9.1",
     "vite-plugin-image-optimizer": "^2.0.1",
@@ -98,6 +98,11 @@
   "browserslist": [
     "defaults"
   ],
+  "overrides": {
+    "postcss-mixins": {
+      "sugarss": "^5.0.0"
+    }
+  },
   "scripts": {
     "check": "tsc --build"
   },
