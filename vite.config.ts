@@ -40,6 +40,7 @@ export default defineConfig(({ mode, isSsrBuild }) => {
         compress: false,
       }),
       sentryVitePlugin({
+        disable: env.NODE_ENV != "production",
         applicationKey: env.VITE_APP_HOST,
         url: env.VITE_SENTRY_URL,
         org: env.VITE_SENTRY_ORG,
