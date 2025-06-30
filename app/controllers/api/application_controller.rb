@@ -4,6 +4,7 @@ class Api::ApplicationController < ActionController::API
   include AuthConcern
   include LocaleConcern
   include EventConcern
+  include AhoyConcern
 
   respond_to :json, :xml
 end
