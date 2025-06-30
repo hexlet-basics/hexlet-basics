@@ -64,6 +64,7 @@ ARG RELEASE_VERSION="unknown"
 ARG APP_HOST
 ENV VITE_RELEASE_VERSION=$RELEASE_VERSION
 ENV VITE_APP_HOST=$APP_HOST
+ENV VITE_NODE_ENV=production
 
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN --mount=type=secret,id=sentry-org,env=VITE_SENTRY_ORG \
@@ -74,7 +75,7 @@ RUN --mount=type=secret,id=sentry-org,env=VITE_SENTRY_ORG \
     # --mount=type=secret,id=carrotquest-api-key,env=VITE_CARROTQUEST_API_KEY \
     --mount=type=secret,id=yandex-metrika-counter-id,env=VITE_YANDEX_METRIKA_COUNTER_ID \
     --mount=type=secret,id=n8n_base_url,env=N8N_BASE_URL \
-    SECRET_KEY_BASE_DUMMY=1 NODE_ENV=production make build-assets
+    SECRET_KEY_BASE_DUMMY=1 make build-assets
 
 # NOTE: .git is included for Sentry, then removed to keep the image clean.
 RUN rm -rf .git
