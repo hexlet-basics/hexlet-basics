@@ -30,4 +30,3 @@ export default function Edit({ surveyDto, surveyItems }: Props) {
     </AdminLayout>
   );
 }
-

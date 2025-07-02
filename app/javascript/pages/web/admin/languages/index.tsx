@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import AdminLayout from '@/pages/layouts/AdminLayout';
 import AppAnchor from '@/components/AppAnchor';
-import type { Language, Grid } from '@/types/serializers';
+import type { Language, Grid } from '@/types';
 import { Menu } from './shared/menu';
 import useDataTableProps from '@/hooks/useDataTableProps';
 import { Edit } from 'lucide-react';

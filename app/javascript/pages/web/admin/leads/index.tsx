@@ -5,8 +5,7 @@ import * as Routes from '@/routes.js';
 import { useTranslation } from 'react-i18next';
 
 import AdminLayout from '@/pages/layouts/AdminLayout';
-import AppAnchor from '@/components/AppAnchor';
-import type { Lead, Grid } from '@/types/serializers';
+import type { Lead, Grid } from '@/types';
 import useDataTableProps from '@/hooks/useDataTableProps';
 import { Modal, Button, Code } from '@mantine/core';
 import { useState } from 'react';

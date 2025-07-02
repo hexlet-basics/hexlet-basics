@@ -1,4 +1,3 @@
-import { noop } from "es-toolkit";
 import type React from "react";
 import { useTranslation } from "react-i18next";
 

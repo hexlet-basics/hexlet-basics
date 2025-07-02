@@ -160,7 +160,7 @@ export function getCurrentUrl(
     return
   }
 
-  const parts = [];
+  const parts: string[] = [];
   if (!options.onlyPath) {
     parts.push(location.origin);
   }

@@ -22,6 +22,6 @@ class SurveyCrudResource < ApplicationResource
 
   typelize_meta meta: "{ item_states: Record<string, unknown>[]}"
   meta do
-    { item_states: Survey::Item.enum_as_hashes(:states) }
+    { item_states: Survey::Item.states }
   end
 end

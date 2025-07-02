@@ -3,10 +3,10 @@ import { type PropsWithChildren, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Text, Center, MantineProvider, Stack, Title, type MantineProviderProps, Container } from '@mantine/core';
 import { CodeHighlightAdapterProvider, createShikiAdapter } from '@mantine/code-highlight';
-import { loadShiki } from "@/lib/shiki";
 import { ModalsProvider } from "@mantine/modals";
+import highlighter from "@/lib/shiki";
 
-const shikiAdapter = createShikiAdapter(loadShiki);
+const shikiAdapter = createShikiAdapter(async () => highlighter);
 
 function FallbackComponent() {
   const { t: tLayouts } = useTranslation("layouts");

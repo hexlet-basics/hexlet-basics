@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import AdminLayout from '@/pages/layouts/AdminLayout';
 import AppAnchor from '@/components/AppAnchor';
-import type { LanguageLessonMemberMessage, Grid } from '@/types/serializers';
+import type { LanguageLessonMemberMessage, Grid } from '@/types';
 import useDataTableProps from '@/hooks/useDataTableProps';
 import { Modal, Button } from '@mantine/core';
 import { useState } from 'react';
