@@ -171,6 +171,15 @@ javascript2-module2_version2-lesson1_version2-ru:
 
 javascript2-module3_version1-lesson1_version1-ru:
   <<: *DEFAULTS
+  theory: |
+    Markdown with rendering problem
+
+    ```go
+    type wallet struct { // структура приватна: можно инициализировать только внутри текущего пакета
+      id          string
+      moneyAmount float64
+    }
+    ```
   name: <%= Faker::Lorem.word %>
   language: javascript
   language_lesson: javascript-module3-lesson1
