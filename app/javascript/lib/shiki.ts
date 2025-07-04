@@ -28,6 +28,7 @@ const highlighter = await createHighlighterCore({
     import('@shikijs/langs/go'),
     import('@shikijs/langs/python'),
     import('@shikijs/langs/scheme'),
+    import('@shikijs/langs/perl'),
   ],
   themes: [
     import('@shikijs/themes/github-dark'),
