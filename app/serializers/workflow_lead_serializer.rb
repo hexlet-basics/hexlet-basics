@@ -78,7 +78,7 @@ class WorkflowLeadSerializer
   def contact_payload
     {
       name:                 @data[:user_name],
-      first_name:           @data[:first_name],
+      first_name:           @data[:first_name].to_s,
       last_name:            @data[:last_name].to_s,
       custom_fields_values: build_custom_fields(CONTACT_FIELD_MAPPER)
     }
