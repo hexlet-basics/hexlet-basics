@@ -1,7 +1,7 @@
 import { createHighlighterCore } from 'shiki/core';
 import { createJavaScriptRegexEngine } from 'shiki/engine/javascript';
 
-const highlighter = await createHighlighterCore({
+const highlighterPromise = createHighlighterCore({
   langs: [
     import('@shikijs/langs/tsx'),
     import('@shikijs/langs/swift'),
@@ -35,9 +35,14 @@ const highlighter = await createHighlighterCore({
     import('@shikijs/themes/github-light'),
   ],
   engine: createJavaScriptRegexEngine(),
-})
+}).then((highlighter) => {
+  highlighter.getTheme('github-light').bg = 'var(--mantine-color-gray-0)';
+  highlighter.getTheme('github-dark').bg = 'var(--mantine-color-gray-7)';
 
-highlighter.getTheme('github-light').bg = 'var(--mantine-color-gray-0)';
-highlighter.getTheme('github-dark').bg = 'var(--mantine-color-gray-7)';
+  return highlighter;
+});
 
-export default highlighter
+export default async () => {
+  const highlighter = await highlighterPromise
+  return highlighter;
+}
