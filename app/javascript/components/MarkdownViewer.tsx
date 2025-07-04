@@ -5,7 +5,8 @@ import rehypeExternalLinks from "rehype-external-links";
 import rehypeRaw from "rehype-raw";
 import type { PluggableList } from "unified";
 import { Box, TypographyStylesProvider, useMantineColorScheme } from "@mantine/core";
-import highlighter from "@/lib/shiki";
+import getHighlighter from "@/lib/shiki";
+import { useEffect, useState } from "react";
 
 type MarkdownViewerProps = {
   children: string;
@@ -17,21 +18,32 @@ export default function MarkdownViewer({
   allowHtml = false,
 }: MarkdownViewerProps) {
   // const { colorScheme } = useMantineColorScheme();
+  const [rehypePlugins, setRehypePlugins] = useState<PluggableList>([]);
 
-  const rehypePlugins: PluggableList = [
-    [rehypeShikiFromHighlighter, highlighter, {
-      themes: { light: "github-light", dark: "github-dark" },
-      theme: 'github-light',
-    }],
-    [rehypeExternalLinks, {
-      target: "_blank",
-      rel: ["noopener", "noreferrer"],
-    }],
-  ];
+  useEffect(() => {
+    const loadPlugins = async () => {
+      const highlighter = await getHighlighter();
 
-  if (allowHtml) {
-    rehypePlugins.push(rehypeRaw)
-  }
+      const rehypePlugins: PluggableList = [
+        [rehypeShikiFromHighlighter, highlighter, {
+          themes: { light: "github-light", dark: "github-dark" },
+          theme: 'github-light',
+        }],
+        [rehypeExternalLinks, {
+          target: "_blank",
+          rel: ["noopener", "noreferrer"],
+        }],
+      ];
+
+      if (allowHtml) {
+        rehypePlugins.push(rehypeRaw)
+      }
+
+      setRehypePlugins(rehypePlugins);
+    }
+
+    loadPlugins();
+  }, [allowHtml]);
 
   return (
     <TypographyStylesProvider>
