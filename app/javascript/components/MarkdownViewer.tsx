@@ -4,7 +4,7 @@ import remarkGfm from "remark-gfm";
 import rehypeExternalLinks from "rehype-external-links";
 import rehypeRaw from "rehype-raw";
 import type { PluggableList } from "unified";
-import { Box, TypographyStylesProvider, useMantineColorScheme } from "@mantine/core";
+import { Box, TypographyStylesProvider } from "@mantine/core";
 import getHighlighter from "@/lib/shiki";
 import { useEffect, useState } from "react";
 

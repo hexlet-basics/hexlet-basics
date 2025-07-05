@@ -7,21 +7,20 @@
 ### Requirements
 
 - docker
-- ruby >= 3.0.0
+- ruby >= 3
 - make
-- node
+- node >= 21
 - caddy
 - biome (in editor, for linting)
 
 ### Run
 
 ```bash
-# /etc/hosts 127.0.0.1 code-basics.test
 # make setup-macos or make setup-ubuntu
 make services-start
 make setup
 make dev # run server
-# open code-basics.test
+# open code-basics.localhost
 
 make test # run tests
 

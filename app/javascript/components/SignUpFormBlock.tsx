@@ -30,13 +30,13 @@ export default function SignUpFormBlock({ user, autoFocus = false }: Props) {
       <Button type="submit" fullWidth>
         {tHelpers("submit.user_sign_up_form.create")}
       </Button>
-      <Text fz="sm" mt="xs">
-        <XssContent>
-          {t("users.new.confirmation_html", {
-            url: Routes.page_path("tos"),
-          })}
-        </XssContent>
-      </Text>
+
+      <XssContent fz="sm" mt="xs">
+        {t("users.new.confirmation_html", {
+          url: Routes.page_path("tos"),
+        })}
+      </XssContent>
+
     </XForm>
   );
 }

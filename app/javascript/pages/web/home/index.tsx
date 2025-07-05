@@ -19,7 +19,6 @@ import codeImagePathRu from "@/images/code-basics-coding-ru.png";
 import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
 import type { LeadCrud, SharedProps } from "@/types";
 import { Head, usePage } from "@inertiajs/react";
-import MarkdownViewer from "@/components/MarkdownViewer";
 import type { Question, FAQPage, WithContext } from "schema-dts";
 import LeadFormBlock from "@/components/LeadFormBlock";
 import i18next from "i18next";
@@ -288,7 +287,7 @@ export default function Index({
                 <Box fw="bold">{item.question}</Box>
               </Accordion.Control>
               <Accordion.Panel>
-                <MarkdownViewer>{item.answer}</MarkdownViewer>
+                {item.answer}
               </Accordion.Panel>
             </Accordion.Item>
           ))}

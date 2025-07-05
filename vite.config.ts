@@ -9,6 +9,7 @@ import { browserslistToTargets } from "lightningcss";
 import { defineConfig, loadEnv, PluginOption } from "vite";
 import ViteRails from "vite-plugin-rails";
 import { patchCssModules } from 'vite-css-modules'
+import { beasties } from 'vite-plugin-beasties'
 
 export default defineConfig(({ mode, isSsrBuild }) => {
   const env = loadEnv(mode, process.cwd(), "VITE_");
@@ -23,9 +24,33 @@ export default defineConfig(({ mode, isSsrBuild }) => {
       // sourcemap: "hidden",
       // sourcemap: false,
       cssMinify: "lightningcss",
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            react: ['react', 'react-dom', 'scheduler'],
+            sentry: ['@sentry/react', '@sentry/tracing'],
+            monaco: ['monaco-editor', '@monaco-editor/react'],
+            inertia: ['@inertiajs/inertia', '@inertiajs/react', 'dayjs', 'i18next'],
+            mantine: ['@mantine/core', '@mantine/hooks', '@mantine/modals'],
+            // inertia: ['@inertiajs/inertia', '@inertiajs/inertia-react'],
+            // vendor: ['lodash', 'axios'],
+          },
+        },
+      },
     },
     plugins: [
       visualizer() as PluginOption,
+      beasties({
+        // Plugin options
+        options: {
+          // Beasties library options
+          preload: 'swap',
+          pruneSource: true, // Enable pruning CSS files
+          inlineThreshold: 4000, // Inline stylesheets smaller than 4kb
+        },
+        // Filter to apply beasties only to specific HTML files
+        filter: path => path.endsWith('.html'),
+      }),
       ViteImageOptimizer({
         /* pass your config */
       }),
@@ -66,14 +91,14 @@ export default defineConfig(({ mode, isSsrBuild }) => {
         clientPort: 443,
       },
     },
-    ssr: {
-      noExternal: [
-        "monaco-editor",
-        "react-timer-hook",
-        "@monaco-editor/react",
-        "analytics",
-      ], // Ensure it's handled correctly
-    },
+    // ssr: {
+    //   noExternal: [
+    //     "monaco-editor",
+    //     "react-timer-hook",
+    //     "@monaco-editor/react",
+    //     "analytics",
+    //   ], // Ensure it's handled correctly
+    // },
     resolve: {
       alias: {
         // "~bootstrap": path.resolve(__dirname, "node_modules/bootstrap"),

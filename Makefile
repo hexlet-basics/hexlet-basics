@@ -28,6 +28,10 @@ log-mails:
 build-assets:
 	bin/rails assets:precompile
 
+analyze-bundle:
+	bin/vite build
+	open stats.html
+
 setup-staging:
 	bin/vite clobber
 	# VISUAL="code --wait" bin/rails credentials:edit
