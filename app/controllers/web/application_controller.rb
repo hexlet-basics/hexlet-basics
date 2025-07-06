@@ -56,18 +56,19 @@ class Web::ApplicationController < ApplicationController
   # end
 
   def ransack_params(defaults)
-    raw = params.permit(:sf, :so, fields: {}).with_defaults({ fields: {} }).with_defaults(defaults)
+    raw = params.permit(:sf, :so, fields: {}).with_defaults(fields: {}).to_h
+
+    sf = raw["sf"].presence || defaults[:sf]
+    so = raw["so"].presence || defaults[:so]
+
     ransack = raw["fields"]
+    ransack["s"] = "#{sf} #{so}" if sf && so
 
-    if raw.key?("sf")
-      ransack["s"] = "#{raw["sf"]} #{raw["so"]}"
-    end
-
-    ransack.to_unsafe_hash
+    ransack
   end
 
-  def grid_params(pagy = nil)
-    result = params.permit(:sf, :so, fields: {})
+  def grid_params(pagy = nil, defaults = {})
+    result = params.permit(:sf, :so, fields: {}).with_defaults(defaults)
     if pagy
       result[:page] = pagy.page
       result[:tr] = pagy.count()
