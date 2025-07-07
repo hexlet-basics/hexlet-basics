@@ -24,19 +24,19 @@ export default defineConfig(({ mode, isSsrBuild }) => {
       // sourcemap: "hidden",
       // sourcemap: false,
       cssMinify: "lightningcss",
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            react: ['react', 'react-dom', 'scheduler'],
-            sentry: ['@sentry/react', '@sentry/tracing'],
-            monaco: ['monaco-editor', '@monaco-editor/react'],
-            inertia: ['@inertiajs/inertia', '@inertiajs/react', 'dayjs', 'i18next'],
-            mantine: ['@mantine/core', '@mantine/hooks', '@mantine/modals'],
-            // inertia: ['@inertiajs/inertia', '@inertiajs/inertia-react'],
-            // vendor: ['lodash', 'axios'],
-          },
-        },
-      },
+      // rollupOptions: {
+      //   output: {
+      //     manualChunks: {
+      //       react: ['react', 'react-dom', 'scheduler'],
+      //       sentry: ['@sentry/react', '@sentry/tracing'],
+      //       monaco: ['monaco-editor', '@monaco-editor/react'],
+      //       inertia: ['@inertiajs/inertia', '@inertiajs/react', 'dayjs', 'i18next'],
+      //       mantine: ['@mantine/core', '@mantine/hooks', '@mantine/modals'],
+      //       // inertia: ['@inertiajs/inertia', '@inertiajs/inertia-react'],
+      //       // vendor: ['lodash', 'axios'],
+      //     },
+      //   },
+      // },
     },
     plugins: [
       visualizer() as PluginOption,
