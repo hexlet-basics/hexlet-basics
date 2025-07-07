@@ -91,14 +91,14 @@ export default defineConfig(({ mode, isSsrBuild }) => {
         clientPort: 443,
       },
     },
-    // ssr: {
-    //   noExternal: [
-    //     "monaco-editor",
-    //     "react-timer-hook",
-    //     "@monaco-editor/react",
-    //     "analytics",
-    //   ], // Ensure it's handled correctly
-    // },
+    ssr: {
+      noExternal: [
+        "monaco-editor",
+        "react-timer-hook",
+        "@monaco-editor/react",
+        "analytics",
+      ], // Ensure it's handled correctly
+    },
     resolve: {
       alias: {
         // "~bootstrap": path.resolve(__dirname, "node_modules/bootstrap"),
