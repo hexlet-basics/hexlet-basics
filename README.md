@@ -35,18 +35,11 @@ make services-start
 
 ```bash
 make setup
-make test # run tests
-
-# load language
-# make language-load L=php
-
-make sync # sync locales, types, fixtures
 ```
 
 4. Run
 
 ```bash
-make setup
 make dev # run server
 ```
 
