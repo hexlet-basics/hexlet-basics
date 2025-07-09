@@ -109,7 +109,6 @@ function CourseMenu({ landingPages }: { landingPages: SharedProps["landingPagesF
               />
               <Text fz="sm">{lp.header}</Text>
               <AppAnchor
-                pseudo
                 href={Routes.language_path(lp.slug)}
                 inset={0}
                 pos="absolute"
