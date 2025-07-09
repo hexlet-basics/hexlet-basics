@@ -6,26 +6,60 @@
 
 ### Requirements
 
-- docker
-- ruby >= 3
 - make
+- docker
+- ruby = 3.4.4
 - node >= 21
 - caddy
-- biome (in editor, for linting)
 
 ### Run
 
-```bash
-# make setup-macos or make setup-ubuntu
-make services-start
-make setup
-make dev # run server
-# open code-basics.localhost
+1. Install system deps
 
+```bash
+# Ubuntu
+make setup-ubuntu
+
+# MacOS
+make setup-macos
+```
+
+2. Run services (pg)
+
+```bash
+make services-start
+```
+
+
+3. Setup app
+
+```bash
+make setup
 make test # run tests
 
 # load language
 # make language-load L=php
+
+make sync # sync locales, types, fixtures
+```
+
+4. Run
+
+```bash
+make setup
+make dev # run server
+```
+
+
+Open https://code-basics.localhost
+
+5. Development And Testing
+
+```bash
+make test # run tests
+
+# load language
+make language-load L=php
 
 make sync # sync locales, types, fixtures
 ```
