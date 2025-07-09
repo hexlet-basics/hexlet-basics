@@ -1123,6 +1123,8 @@
           "csharp_description": "C# is a modern object-oriented and type-safe programming language. Application development language for the Microsoft .NET Framework. It is used in the creation of sites, applications and games",
           "css_description": "Cascading Style Sheets (CSS) cascading style sheets that allow you to design the content of the page in accordance with the described rules. Text styles, block layout on a page, animation - everything is described using cascading style sheets.",
           "dart_description": "Dart is a general purpose, strongly typed compiled language. Used to develop mobile and web applications.",
+          "demo_description": "Try a demo lesson without signing up. Practice included",
+          "demo_start": "Start",
           "dlang_description": "D is a multi-paradigm, statically typed, compiled language. Has built-in error prevention - contracts and unittests",
           "elixir_description": "Elixir is a programming language that runs on top of Erlang. How this happens is a functional language with rigorous computations, unambiguous assignment and dynamic typing, creation to support distributed, fault-tolerant, non-stop, hot-swappable applications.",
           "fortran_description": "Fortran is a general-purpose, compiled imperative programming language that is especially suited to numeric computation and scientific computing",
@@ -1161,8 +1163,10 @@
           "start": "Start Learning",
           "start_demo_lesson": "Demo lesson",
           "to_home_title": "Home",
+          "try": "Try It",
           "try_without_registration": "Try it without registering",
           "typescript_description": "TypeScript is a JavaScript-based programming language. Includes a typing system",
+          "updated_at": "updated",
           "without_registration": "Start learning right away - first lessons are available without an account. If you like the format, you can register to save your progress"
         },
         "success": {
@@ -3103,7 +3107,7 @@
           "without_registration": "Начните обучение сразу — первые уроки доступны без аккаунта. Понравится формат — зарегистрируетесь, чтобы сохранить прогресс"
         },
         "success": {
-          "add_review": "Не забудьте оставить отзыв, авторам курсов будет приятно (или не очень хехе). Это можно сделать <a target=\"_blank\" rel=\"noopener, noreferrer\" href=\"https://taplink.cc/codebasics_reviews\">тут</a>",
+          "add_review": "Не забудьте оставить отзыв, авторам курсов будет приятно (или не очень хехе). Это можно сделать <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://taplink.cc/codebasics_reviews\">тут</a>",
           "changing_career_html": "<a target=\"_blank\" class=\"link-body-emphasis\" href=\"https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=finished_course_page\">Карьера</a>: если вы хотите обучиться новой профессии\n",
           "choose_your_path": "🔍 Выберите свой путь:\n",
           "description": "Теперь у вас есть новые знания и навыки. Для кого-то это первый шаг в новую профессию, для кого-то — повышение квалификации. Что дальше?\n",
@@ -3130,7 +3134,7 @@
       },
       "my": {
         "show": {
-          "add_review": "Мы будем очень признательны, если вы оставите отзывы по пройденным курсам. Это можно сделать <a target=\"_blank\" rel=\"noopener, noreferrer\" href=\"https://taplink.cc/codebasics_reviews\">тут</a>",
+          "add_review": "Мы будем очень признательны, если вы оставите отзывы по пройденным курсам. Это можно сделать <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://taplink.cc/codebasics_reviews\">тут</a>",
           "finished": "Завершенные курсы",
           "started": "Начатые курсы"
         }
@@ -3189,7 +3193,7 @@
       },
       "reviews": {
         "index": {
-          "add_review": "Попробовали наши курсы и хотите оставить отзыв? Это можно сделать <a target=\"_blank\" rel=\"noopener, noreferrer\" href=\"https://taplink.cc/codebasics_reviews\">тут</a>",
+          "add_review": "Попробовали наши курсы и хотите оставить отзыв? Это можно сделать <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://taplink.cc/codebasics_reviews\">тут</a>",
           "course": "Курс %{language}",
           "empty": "Похоже, что тут пока ничего нет",
           "header": "Отзывы",

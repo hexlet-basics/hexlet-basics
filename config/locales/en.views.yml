@@ -157,6 +157,10 @@ en:
     languages:
       show:
         blog_posts: Blog Posts
+        try: Try It
+        demo_description: Try a demo lesson without signing up. Practice included
+        demo_start: Start
+        updated_at: updated
         breadcrumbs: Breadcrumbs
         to_home_title: Home
         see_all_courses_in_category: See all courses in %{name}
