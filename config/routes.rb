@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   # get "*path.amp", to: redirect("/%{path}", status: 301)
-  get "*path.amp", to: redirect { |params, _|
+  get "/*path.amp", to: redirect { |params, _|
     "/#{params[:path]}"
   }
 
