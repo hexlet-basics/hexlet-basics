@@ -1,5 +1,5 @@
-import { Locale } from "@/types";
-import { BackendEvent } from "@/types/events";
+import type { Locale } from '@/types';
+import { BackendEvent } from '@/types/events';
 
 type GonData = {
   [key: string]: any;

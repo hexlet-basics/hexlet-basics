@@ -1,22 +1,22 @@
-import debug from 'debug'
+import debug from 'debug';
 
-const log = debug('app')
-export { log }
+const log = debug('app');
+export { log };
 
 const editorMapping: Record<string, string> = {
-  css: "html",
-  racket: "scheme",
-  clang: "c",
-  dlang: "d",
-  bash: "shell",
-  "layout-designer": "html",
-  "pre-course-java": "java",
-  "pre-course-python": "python",
-  "pre-course-javascript": "javascript",
+  css: 'html',
+  racket: 'scheme',
+  clang: 'c',
+  dlang: 'd',
+  bash: 'shell',
+  'layout-designer': 'html',
+  'pre-course-java': 'java',
+  'pre-course-python': 'python',
+  'pre-course-javascript': 'javascript',
 };
 
 const langToTabSizeMapping: Record<string, number> = {
-  "1c": 4,
+  '1c': 4,
   javascript: 2,
   ruby: 2,
   racket: 2,
@@ -74,7 +74,7 @@ export const langToSpacesMapping: Record<string, boolean> = {
   swift: true,
   rust: true,
   perl: true,
-  "1c": true,
+  '1c': true,
 };
 
 const defaultTabSize = 4;
@@ -90,37 +90,37 @@ export const shouldReplaceTabsWithSpaces = (language: string): boolean =>
   langToSpacesMapping[language] ?? false;
 
 export const languages = {
-  css: "css",
-  "1c": "1c",
-  html: "html",
-  javascript: "javascript",
-  php: "php",
-  python: "python",
-  java: "java",
-  scheme: "scheme",
-  ruby: "ruby",
-  go: "go",
-  elixir: "elixir",
-  clojure: "clojure",
-  c: "c",
-  d: "d",
-  racket: "racket",
-  lua: "lua",
-  prolog: "prolog",
-  haskell: "haskell",
-  cpp: "cpp",
-  bash: "bash",
+  css: 'css',
+  '1c': '1c',
+  html: 'html',
+  javascript: 'javascript',
+  php: 'php',
+  python: 'python',
+  java: 'java',
+  scheme: 'scheme',
+  ruby: 'ruby',
+  go: 'go',
+  elixir: 'elixir',
+  clojure: 'clojure',
+  c: 'c',
+  d: 'd',
+  racket: 'racket',
+  lua: 'lua',
+  prolog: 'prolog',
+  haskell: 'haskell',
+  cpp: 'cpp',
+  bash: 'bash',
   // fortran: "fortran",
-  kotlin: "kotlin",
-  swift: "swift",
+  kotlin: 'kotlin',
+  swift: 'swift',
 };
 
 // TODO: move to db
 export const neededPreview = (language: string) => {
   switch (language) {
-    case "css":
-    case "html":
-    case "layout-designer":
+    case 'css':
+    case 'html':
+    case 'layout-designer':
       return true;
     default:
       return false;
@@ -146,7 +146,7 @@ export const neededPreview = (language: string) => {
 // };
 
 export function isCurrentUrl(checkingUrl: string) {
-  return getCurrentUrl() == checkingUrl
+  return getCurrentUrl() == checkingUrl;
 }
 
 export function getCurrentUrl(
@@ -155,9 +155,9 @@ export function getCurrentUrl(
     onlyPath: false,
   },
 ): string | undefined {
-  const location = fromWindow('location')
+  const location = fromWindow('location');
   if (!location) {
-    return
+    return;
   }
 
   const parts: string[] = [];
@@ -169,23 +169,23 @@ export function getCurrentUrl(
     parts.push(location.href);
   }
 
-  return parts.join("");
+  return parts.join('');
 }
 
 export const localesByCode = {
   ru: {
-    icon: "🇷🇺",
-    name: "Русский",
+    icon: '🇷🇺',
+    name: 'Русский',
   },
   en: {
-    icon: "🇺🇲",
-    name: "English",
+    icon: '🇺🇲',
+    name: 'English',
   },
 };
 
 export const locales = [
-  { name: "Russian", code: "ru" },
-  { name: "English", code: "en" },
+  { name: 'Russian', code: 'ru' },
+  { name: 'English', code: 'en' },
 ];
 
 export function enumToOptions(en: Record<string, string>) {
@@ -199,7 +199,9 @@ export function hasObjectKey<T extends object>(
   return key in obj;
 }
 
-export function fromWindow<K extends keyof Window>(key: K): Window[K] | undefined {
+export function fromWindow<K extends keyof Window>(
+  key: K,
+): Window[K] | undefined {
   if (typeof window !== 'undefined' && window[key] !== undefined) {
     return window[key];
   }

@@ -1,20 +1,39 @@
-import type { PropsWithChildren } from "react";
-import { Anchor, Box, Container, Grid, Image, Stack, Title, Text, Card, Group, Center, Alert, SimpleGrid, TypographyStylesProvider } from '@mantine/core';
-
-import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
-import type { BreadcrumbItem } from "@/types";
-import type { BlogPost } from "@/types/serializers";
-import i18next from "i18next";
-
-import BlogPostBlock from "@/components/BlogPostBlock";
-import MarkdownViewer from "@/components/MarkdownViewer.tsx";
-import * as Routes from "@/routes.js";
-import { Head } from "@inertiajs/react";
-import { useTranslation } from "react-i18next";
-import type { Article, WithContext } from "schema-dts";
-import dayjs from "dayjs";
-import { Clock7, MessageCircleMore, MoveRight, ThumbsUp, User } from "lucide-react";
-import AppAnchor from "@/components/AppAnchor";
+import { Head } from '@inertiajs/react';
+import {
+  Alert,
+  Anchor,
+  Box,
+  Card,
+  Center,
+  Container,
+  Grid,
+  Group,
+  Image,
+  SimpleGrid,
+  Stack,
+  Text,
+  Title,
+  TypographyStylesProvider,
+} from '@mantine/core';
+import dayjs from 'dayjs';
+import i18next from 'i18next';
+import {
+  Clock7,
+  MessageCircleMore,
+  MoveRight,
+  ThumbsUp,
+  User,
+} from 'lucide-react';
+import type { PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { Article, WithContext } from 'schema-dts';
+import AppAnchor from '@/components/AppAnchor';
+import BlogPostBlock from '@/components/BlogPostBlock';
+import MarkdownViewer from '@/components/MarkdownViewer.tsx';
+import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
+import * as Routes from '@/routes.js';
+import type { BreadcrumbItem } from '@/types';
+import type { BlogPost } from '@/types/serializers';
 
 type Props = PropsWithChildren & {
   blogPost: BlogPost;
@@ -23,12 +42,12 @@ type Props = PropsWithChildren & {
 
 export default function Show({ blogPost, recommendedBlogPosts }: Props) {
   const { t } = useTranslation();
-  const { t: tCommon } = useTranslation("common");
+  const { t: tCommon } = useTranslation('common');
 
   const postUrl = Routes.blog_post_url(blogPost.slug!);
   const items: BreadcrumbItem[] = [
     {
-      name: t("blog_posts.index.header"),
+      name: t('blog_posts.index.header'),
       url: Routes.blog_posts_url(),
     },
     {
@@ -38,8 +57,8 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
   ];
 
   const article: WithContext<Article> = {
-    "@context": "https://schema.org",
-    "@type": "Article",
+    '@context': 'https://schema.org',
+    '@type': 'Article',
     author: blogPost.creator.name!,
     name: blogPost.name!,
     datePublished: blogPost.created_at,
@@ -63,7 +82,7 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
               src={blogPost.cover_main_variant!}
               mb="xl"
             />
-            <MarkdownViewer allowHtml>{blogPost.body || ""}</MarkdownViewer>
+            <MarkdownViewer allowHtml>{blogPost.body || ''}</MarkdownViewer>
 
             <Group mb="lg">
               <Group fw="bold" me="auto">
@@ -81,11 +100,11 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
                 <Center me="xs">
                   <Clock7 size={18} />
                 </Center>
-                {tCommon("time.minutes", { count: 5 })}
+                {tCommon('time.minutes', { count: 5 })}
               </Center>
             </Group>
 
-            {i18next.language === "ru" && (
+            {i18next.language === 'ru' && (
               <Alert
                 radius="lg"
                 p="xl"
@@ -104,26 +123,21 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
                   <MoveRight />
                 </Group>
 
-
-
                 <AppAnchor
                   pos="absolute"
                   inset={0}
                   href="https://t.me/HexletLearningBot"
                   external
                 />
-
               </Alert>
             )}
           </Stack>
-
 
           <SimpleGrid cols={{ base: 1, xs: 2 }}>
             {recommendedBlogPosts.map((post) => (
               <BlogPostBlock key={post.id} post={post} />
             ))}
           </SimpleGrid>
-
         </Container>
       </ApplicationLayout>
     </>

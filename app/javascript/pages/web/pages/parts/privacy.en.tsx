@@ -1,4 +1,4 @@
-import * as Routes from "@/routes.js";
+import * as Routes from '@/routes.js';
 
 export default function PrivacyEn() {
   return (
@@ -12,7 +12,7 @@ export default function PrivacyEn() {
         ("Services"), including when you:
         <ul>
           <li>
-            Visit our website at{" "}
+            Visit our website at{' '}
             <a href={Routes.root_path()} target="_blank" rel="noreferrer">
               https://code-basics.com
             </a>
@@ -39,7 +39,7 @@ export default function PrivacyEn() {
       <p className="fst-italic fw-medium">
         This summary provides key points from our Privacy Notice, but you can
         find out more details about any of these topics by clicking the link
-        following each key point or by using our{" "}
+        following each key point or by using our{' '}
         <a href="#table-of-contents">table of contents</a> below to find the
         section you are looking for.
       </p>
@@ -49,7 +49,7 @@ export default function PrivacyEn() {
         visit, use, or navigate our Services, we may process personal
         information depending on how you interact with us and the Services, the
         choices you make, and the products and features you use. Learn more
-        about{" "}
+        about{' '}
         <a href="#personal-information">
           personal information you disclose to us
         </a>
@@ -67,7 +67,7 @@ export default function PrivacyEn() {
       <p>
         <strong>Do we collect any information from third parties? </strong> We
         may collect information from public databases, marketing partners,
-        social media platforms, and other outside sources. Learn more about{" "}
+        social media platforms, and other outside sources. Learn more about{' '}
         <a href="#information-from-other-source">
           information collected from other sources
         </a>
@@ -78,12 +78,12 @@ export default function PrivacyEn() {
         <strong>
           In what situations and with which parties do we share personal
           information?
-        </strong>{" "}
+        </strong>{' '}
         We process your information to provide, improve, and administer our
         Services, communicate with you, for security and fraud prevention, and
         to comply with law. We may also process your information for other
         purposes with your consent. We process your information only when we
-        have a valid legal reason to do so. Learn more about{" "}
+        have a valid legal reason to do so. Learn more about{' '}
         <a href="#process-information">how we process your information</a>.
       </p>
 
@@ -91,9 +91,9 @@ export default function PrivacyEn() {
         <strong>
           In what situations and with which parties do we share personal
           information?
-        </strong>{" "}
+        </strong>{' '}
         We may share information in specific situations and with specific third
-        parties. Learn more about{" "}
+        parties. Learn more about{' '}
         <a href="#share-information">
           when and with whom we share your personal information
         </a>
@@ -108,20 +108,20 @@ export default function PrivacyEn() {
         be 100% secure, so we cannot promise or guarantee that hackers,
         cybercriminals, or other unauthorized third parties will not be able to
         defeat our security and improperly collect, access, steal, or modify
-        your information. Learn more about{" "}
+        your information. Learn more about{' '}
         <a href="#save-information">how we keep your information safe</a>.
       </p>
 
       <p>
         <strong>What are your rights?</strong> Depending on where you are
         located geographically, the applicable privacy law may mean you have
-        certain rights regarding your personal information. Learn more about{" "}
+        certain rights regarding your personal information. Learn more about{' '}
         <a href="#privacy-rights">your privacy rights</a>.
       </p>
 
       <p>
         <strong>How do you exercise your rights?</strong> The easiest way to
-        exercise your rights is by submitting a{" "}
+        exercise your rights is by submitting a{' '}
         <a href="https://app.termly.io/notify/7a5b7430-459b-4ae6-940d-56a91aed21ec">
           data subject access request
         </a>
@@ -130,7 +130,7 @@ export default function PrivacyEn() {
       </p>
 
       <p>
-        Want to learn more about what we do with any information we collect?{" "}
+        Want to learn more about what we do with any information we collect?{' '}
         <a href="#personal-information">Review the Privacy Notice in full.</a>.
       </p>
 
@@ -274,9 +274,9 @@ export default function PrivacyEn() {
       <p>
         Like many businesses, we also collect information through cookies and
         similar technologies. You can find out more about this in our Cookie
-        Notice:{" "}
+        Notice:{' '}
         <a
-          href={Routes.page_path("cookie_policy")}
+          href={Routes.page_path('cookie_policy')}
           target="_blank"
           rel="noreferrer"
         >
@@ -362,14 +362,14 @@ export default function PrivacyEn() {
           <span className="fw-medium">
             To facilitate account creation and authentication and otherwise
             manage user accounts.
-          </span>{" "}
+          </span>{' '}
           We may process your information so you can create and log in to your
           account, as well as keep your account in working order.
         </li>
         <li>
           <span className="fw-medium">
             To save or protect an individual's vital interest.
-          </span>{" "}
+          </span>{' '}
           We may process your information when necessary to save or protect an
           individual’s vital interest, such as to prevent harm.
         </li>
@@ -549,7 +549,7 @@ export default function PrivacyEn() {
         "sale"/"sharing" (which includes targeted advertising, as defined under
         the applicable laws) under applicable US state laws, you can opt out of
         these online tracking technologies by submitting a request as described
-        below under section{" "}
+        below under section{' '}
         <a href="#specific-privacy-rights">
           DO UNITED STATES RESIDENTS HAVE SPECIFIC PRIVACY RIGHTS?"
         </a>
@@ -557,9 +557,9 @@ export default function PrivacyEn() {
 
       <p>
         Specific information about how we use such technologies and how you can
-        refuse certain cookies is set out in our Cookie Notice:{" "}
+        refuse certain cookies is set out in our Cookie Notice:{' '}
         <a
-          href={Routes.page_path("cookie_policy")}
+          href={Routes.page_path('cookie_policy')}
           target="_blank"
           rel="noreferrer"
         >
@@ -573,7 +573,7 @@ export default function PrivacyEn() {
         We may share your information with Google Analytics to track and analyze
         the use of the Services. The Google Analytics Advertising Features that
         we may use include: Remarketing with Google Analytics. To opt out of
-        being tracked by Google Analytics across the Services, visit{" "}
+        being tracked by Google Analytics across the Services, visit{' '}
         <a
           href="https://tools.google.com/dlpage/gaoptout"
           target="_blank"
@@ -581,23 +581,23 @@ export default function PrivacyEn() {
         >
           https://tools.google.com/dlpage/gaoptout
         </a>
-        . You can opt out of Google Analytics Advertising Features through{" "}
+        . You can opt out of Google Analytics Advertising Features through{' '}
         <a
           href="https://adssettings.google.com/"
           target="_blank"
           rel="noreferrer"
         >
           Ads Settings
-        </a>{" "}
-        and Ad Settings for mobile apps. Other opt out means include{" "}
+        </a>{' '}
+        and Ad Settings for mobile apps. Other opt out means include{' '}
         <a
           href="https://optout.networkadvertising.org/?c=1"
           target="_blank"
           rel="noreferrer"
         >
           http://optout.networkadvertising.org/
-        </a>{" "}
-        and{" "}
+        </a>{' '}
+        and{' '}
         <a
           href="http://www.networkadvertising.org/mobile-choice"
           target="_blank"
@@ -606,7 +606,7 @@ export default function PrivacyEn() {
           http://www.networkadvertising.org/mobile-choice
         </a>
         . For more information on the privacy practices of Google, please visit
-        the{" "}
+        the{' '}
         <a
           href="https://policies.google.com/privacy"
           target="_blank"
@@ -640,7 +640,7 @@ export default function PrivacyEn() {
         Service Providers"), including OpenAI. As outlined in this Privacy
         Notice, your input, output, and personal information will be shared with
         and processed by these AI Service Providers to enable your use of our AI
-        Products for purposes outlined in{" "}
+        Products for purposes outlined in{' '}
         <a href="#legal-bases">
           "WHAT LEGAL BASES DO WE RELY ON TO PROCESS YOUR PERSONAL INFORMATION?"
         </a>
@@ -755,8 +755,8 @@ export default function PrivacyEn() {
         portability; and (v) not to be subject to automated decision-making. In
         certain circumstances, you may also have the right to object to the
         processing of your personal information. You can make such a request by
-        contacting us by using the contact details provided in the section{" "}
-        <a href="#contacts">"HOW CAN YOU CONTACT US ABOUT THIS NOTICE?"</a>{" "}
+        contacting us by using the contact details provided in the section{' '}
+        <a href="#contacts">"HOW CAN YOU CONTACT US ABOUT THIS NOTICE?"</a>{' '}
         below.
       </p>
 
@@ -768,14 +768,14 @@ export default function PrivacyEn() {
       <p>
         If you are located in the EEA or UK and you believe we are unlawfully
         processing your personal information, you also have the right to
-        complain to your{" "}
+        complain to your{' '}
         <a
           href="https://ec.europa.eu/newsroom/article29/items/612080"
           target="_blank"
           rel="noreferrer"
         >
           Member State data protection authority
-        </a>{" "}
+        </a>{' '}
         or
         <a
           href="https://ico.org.uk/make-a-complaint/data-protection-complaints/"
@@ -788,7 +788,7 @@ export default function PrivacyEn() {
       </p>
 
       <p>
-        If you are located in Switzerland, you may contact the{" "}
+        If you are located in Switzerland, you may contact the{' '}
         <a
           href="https://www.edoeb.admin.ch/en"
           target="_blank"
@@ -805,8 +805,8 @@ export default function PrivacyEn() {
         which may be express and/or implied consent depending on the applicable
         law, you have the right to withdraw your consent at any time. You can
         withdraw your consent at any time by contacting us by using the contact
-        details provided in the section{" "}
-        <a href="#contacts">"HOW CAN YOU CONTACT US ABOUT THIS NOTICE?"</a>{" "}
+        details provided in the section{' '}
+        <a href="#contacts">"HOW CAN YOU CONTACT US ABOUT THIS NOTICE?"</a>{' '}
         below.
       </p>
 
@@ -818,11 +818,11 @@ export default function PrivacyEn() {
       </p>
 
       <p>
-        <strong>Opting out of marketing and promotional communications:</strong>{" "}
+        <strong>Opting out of marketing and promotional communications:</strong>{' '}
         You can unsubscribe from our marketing and promotional communications at
         any time by clicking on the unsubscribe link in the emails that we send,
-        or by contacting us using the details provided in the section{" "}
-        <a href="#contacts">"HOW CAN YOU CONTACT US ABOUT THIS NOTICE?"</a>{" "}
+        or by contacting us using the details provided in the section{' '}
+        <a href="#contacts">"HOW CAN YOU CONTACT US ABOUT THIS NOTICE?"</a>{' '}
         below. You will then be removed from the marketing lists. However, we
         may still communicate with you — for example, to send you
         service-related messages that are necessary for the administration and
@@ -854,9 +854,9 @@ export default function PrivacyEn() {
         to set your browser to remove cookies and to reject cookies. If you
         choose to remove cookies or reject cookies, this could affect certain
         features or services of our Services. For further information, please
-        see our Cookie Notice:{" "}
+        see our Cookie Notice:{' '}
         <a
-          href={Routes.page_path("cookie_policy")}
+          href={Routes.page_path('cookie_policy')}
           target="_blank"
           rel="noreferrer"
         >
@@ -1052,14 +1052,14 @@ export default function PrivacyEn() {
       <h4>Sources of Personal Information</h4>
 
       <p>
-        Learn more about the sources of personal information we collect in{" "}
+        Learn more about the sources of personal information we collect in{' '}
         <a href="#personal-information">"WHAT INFORMATION DO WE COLLECT?"</a>
       </p>
 
       <h4>How We Use and Share Personal Information</h4>
 
       <p>
-        Learn more about how we use your personal information in the section,{" "}
+        Learn more about how we use your personal information in the section,{' '}
         <a href="#process-information">"HOW DO WE PROCESS YOUR INFORMATION?"</a>
       </p>
 
@@ -1068,7 +1068,7 @@ export default function PrivacyEn() {
       <p>
         We may disclose your personal information with our service providers
         pursuant to a written contract between us and each service provider.
-        Learn more about how we disclose personal information to in the section,{" "}
+        Learn more about how we disclose personal information to in the section,{' '}
         <a href="#share-information">
           "WHEN AND WITH WHOM DO WE SHARE YOUR PERSONAL INFORMATION?"
         </a>
@@ -1156,7 +1156,7 @@ export default function PrivacyEn() {
       <h4>How to Exercise Your Rights</h4>
 
       <p>
-        To exercise these rights, you can contact us by submitting a{" "}
+        To exercise these rights, you can contact us by submitting a{' '}
         <a
           href="https://app.termly.io/notify/7a5b7430-459b-4ae6-940d-56a91aed21ec"
           target="_blank"
@@ -1218,7 +1218,7 @@ export default function PrivacyEn() {
         third parties with which we shared personal information in the
         immediately preceding calendar year. If you are a California resident
         and would like to make such a request, please submit your request in
-        writing to us by using the contact details provided in the section{" "}
+        writing to us by using the contact details provided in the section{' '}
         <a href="#contacts">"HOW CAN YOU CONTACT US ABOUT THIS NOTICE?"</a>.
       </p>
 
@@ -1261,7 +1261,7 @@ export default function PrivacyEn() {
       <p>
         At any time, you have the right to request access to or correction of
         your personal information. You can make such a request by contacting us
-        by using the contact details provided in the section{" "}
+        by using the contact details provided in the section{' '}
         <a href="#change-information">
           "HOW CAN YOU REVIEW, UPDATE, OR DELETE THE DATA WE COLLECT FROM YOU?"
         </a>
@@ -1271,7 +1271,7 @@ export default function PrivacyEn() {
       <p>
         If you believe we are unlawfully processing your personal information,
         you have the right to submit a complaint about a breach of the
-        Australian Privacy Principles to the{" "}
+        Australian Privacy Principles to the{' '}
         <a
           href="https://www.oaic.gov.au/privacy/privacy-complaints/lodge-a-privacy-complaint-with-us"
           target="_blank"
@@ -1279,7 +1279,7 @@ export default function PrivacyEn() {
         >
           Office of the Australian Information Commissioner
         </a>
-        and a breach of New Zealand's Privacy Principles to the{" "}
+        and a breach of New Zealand's Privacy Principles to the{' '}
         <a
           href="https://www.privacy.org.nz/your-rights/making-a-complaint/"
           target="_blank"
@@ -1295,7 +1295,7 @@ export default function PrivacyEn() {
       <p>
         At any time, you have the right to request access to or correction of
         your personal information. You can make such a request by contacting us
-        by using the contact details provided in the section{" "}
+        by using the contact details provided in the section{' '}
         <a href="#change-information">
           "HOW CAN YOU REVIEW, UPDATE, OR DELETE THE DATA WE COLLECT FROM YOU?"
         </a>
@@ -1326,8 +1326,8 @@ export default function PrivacyEn() {
             Complaints complete POPIA/PAIA form
             <a href="mailto:PAIAComplaints@inforegulator.org.za">
               PAIAComplaints@inforegulator.org.za
-            </a>{" "}
-            &{" "}
+            </a>{' '}
+            &{' '}
             <a href="mailto:POPIAComplaints@inforegulator.org.za">
               POPIAComplaints@inforegulator.org.za
             </a>
@@ -1355,7 +1355,7 @@ export default function PrivacyEn() {
       <h3 id="contacts">15. HOW CAN YOU CONTACT US ABOUT THIS NOTICE?</h3>
 
       <p>
-        If you have questions or comments about this notice, you may email us at{" "}
+        If you have questions or comments about this notice, you may email us at{' '}
         <a href="mailto:support@hexlet.io">support@hexlet.io</a> or contact us
         by post at:
         <ul className="list-unstyled">
@@ -1378,13 +1378,13 @@ export default function PrivacyEn() {
         have the right to withdraw your consent to our processing of your
         personal information. These rights may be limited in some circumstances
         by applicable law. To request to review, update, or delete your personal
-        information, please fill out and submit a{" "}
+        information, please fill out and submit a{' '}
         <a
           href="https://app.termly.io/notify/7a5b7430-459b-4ae6-940d-56a91aed21ec"
           target="_blank"
           rel="noreferrer"
         >
-          {" "}
+          {' '}
           data subject access request
         </a>
         .

@@ -1,18 +1,17 @@
-import AdminLayout from "@/pages/layouts/AdminLayout";
-import * as Routes from "@/routes.js";
+import { Link } from '@inertiajs/react';
+import { Button, Grid, Group, Title } from '@mantine/core';
+import dayjs from 'dayjs';
+import { DataTable } from 'mantine-datatable';
+import { useTranslation } from 'react-i18next';
+import AdminLayout from '@/pages/layouts/AdminLayout';
+import * as Routes from '@/routes.js';
 import type {
   LanguageCrud,
   LanguageLandingPage,
   LanguageVersion,
-} from "@/types/serializers";
-import { Link } from "@inertiajs/react";
-import { DataTable } from 'mantine-datatable';
-import { Grid, Button, Group, Title } from '@mantine/core';
-import { useTranslation } from "react-i18next";
-
-import Form from "./shared/form";
-import { Menu } from "./shared/menu";
-import dayjs from "dayjs";
+} from '@/types/serializers';
+import Form from './shared/form';
+import { Menu } from './shared/menu';
 
 type Props = {
   courseDto: LanguageCrud;
@@ -29,7 +28,7 @@ export default function Edit({
 
   return (
     <AdminLayout
-      header={t("admin.languages.edit.header", { id: courseDto.meta.slug })}
+      header={t('admin.languages.edit.header', { id: courseDto.meta.slug })}
     >
       <Menu data={courseDto} landingPage={landingPage} />
       <Grid>

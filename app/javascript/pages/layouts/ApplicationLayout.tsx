@@ -1,20 +1,20 @@
-import * as Routes from "@/routes.js";
-import { useEffect, type PropsWithChildren } from "react";
-import { AppShell, Container, Title, Stack, Box } from '@mantine/core';
-import * as CookieConsent from "vanilla-cookieconsent";
-import cookieTranslations from '@/locales/cookie_consent.ts';
+import { usePage } from '@inertiajs/react';
+import { AppShell, Box, Container, Stack, Title } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { type PropsWithChildren, useEffect } from 'react';
+import * as CookieConsent from 'vanilla-cookieconsent';
 
-import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
-import type { BreadcrumbItem, SharedProps } from "@/types/index.js";
-import RootLayout from "./RootLayout.tsx";
+import { XBreadcrumb } from '@/components/breadcrumbs.tsx';
+import XFlash from '@/components/XFlash.tsx';
+import { isCurrentUrl } from '@/lib/utils.ts';
+import cookieTranslations from '@/locales/cookie_consent.ts';
+import * as Routes from '@/routes.js';
+import type { BreadcrumbItem, SharedProps } from '@/types/index.js';
+import ContactMethodRequestingBlock from './blocks/ContactMethodRequestingBlock.tsx';
 // import TgContestBanner from "./banners/tg_contest_banner/TgContestBanner.tsx";
-import FooterBlock from "./blocks/FooterBlock.tsx";
-import NavbarBlock from "./blocks/NavbarBlock.tsx";
-import { usePage } from "@inertiajs/react";
-import { useDisclosure } from "@mantine/hooks";
-import XFlash from "@/components/XFlash.tsx";
-import ContactMethodRequestingBlock from "./blocks/ContactMethodRequestingBlock.tsx";
-import { isCurrentUrl } from "@/lib/utils.ts";
+import FooterBlock from './blocks/FooterBlock.tsx';
+import NavbarBlock from './blocks/NavbarBlock.tsx';
+import RootLayout from './RootLayout.tsx';
 
 type Props = PropsWithChildren & {
   header?: string;
@@ -29,31 +29,31 @@ export default function ApplicationLayout({
   center = false,
 }: Props) {
   const page = usePage<SharedProps>();
-  const { props: { shouldAddContactMethod } } = page
+  const {
+    props: { shouldAddContactMethod },
+  } = page;
   const [opened, { toggle }] = useDisclosure();
 
   useEffect(() => {
     CookieConsent.run({
       categories: {
         necessary: {
-          enabled: true,  // this category is enabled by default
-          readOnly: true  // this category cannot be disabled
+          enabled: true, // this category is enabled by default
+          readOnly: true, // this category cannot be disabled
         },
-        analytics: {}
+        analytics: {},
       },
       language: {
-        autoDetect: "document",
+        autoDetect: 'document',
         default: 'ru',
         translations: cookieTranslations,
-      }
+      },
     });
   }, []);
 
   return (
     <RootLayout>
-      <AppShell
-        header={{ height: 60 }}
-      >
+      <AppShell header={{ height: 60 }}>
         <AppShell.Header>
           <NavbarBlock onToggle={toggle} opened={opened} />
         </AppShell.Header>
@@ -61,14 +61,16 @@ export default function ApplicationLayout({
         <AppShell.Main>
           <XFlash />
           {shouldAddContactMethod && isCurrentUrl(Routes.new_lead_path()) && (
-            <Box mt="lg"><ContactMethodRequestingBlock /></Box>
+            <Box mt="lg">
+              <ContactMethodRequestingBlock />
+            </Box>
           )}
           {(items || header) && (
             <Container size="lg" my="xl" mt={80}>
               <Stack>
                 {items && <XBreadcrumb items={items} />}
                 {header && (
-                  <Title order={1} ta={center ? "center" : "left"}>
+                  <Title order={1} ta={center ? 'center' : 'left'}>
                     {header}
                   </Title>
                 )}

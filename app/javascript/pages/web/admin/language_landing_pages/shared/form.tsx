@@ -1,6 +1,6 @@
-import { useTranslation } from "react-i18next";
-import { Button } from "@mantine/core";
-
+import { Button } from '@mantine/core';
+import { useTranslation } from 'react-i18next';
+import type { HTTPVerb } from 'use-inertia-form';
 import {
   XCheck,
   XDynamicInputs,
@@ -10,11 +10,10 @@ import {
   XInput,
   XSelect,
   XTextarea,
-} from "@/components/forms";
-import type { HTTPVerb } from "use-inertia-form";
+} from '@/components/forms';
 
-import type { Language, LanguageLandingPage } from "@/types";
-import type { LanguageLandingPageCrud } from "@/types/serializers";
+import type { Language, LanguageLandingPage } from '@/types';
+import type { LanguageLandingPageCrud } from '@/types/serializers';
 
 type Props = {
   data: LanguageLandingPageCrud;
@@ -29,10 +28,16 @@ type Props = {
 //   { name: "English", code: "en" },
 // ];
 
-export default function Form({ data, landingPages, url, method, languages }: Props) {
-  const { t: tHelpers } = useTranslation("helpers");
+export default function Form({
+  data,
+  landingPages,
+  url,
+  method,
+  languages,
+}: Props) {
+  const { t: tHelpers } = useTranslation('helpers');
   return (
-      <XForm method={method} model="language_landing_page" data={data} to={url}>
+    <XForm method={method} model="language_landing_page" data={data} to={url}>
       <XCheck field="main" />
       <XCheck field="listed" />
       <XCheck field="footer" />
@@ -72,7 +77,7 @@ export default function Form({ data, landingPages, url, method, languages }: Pro
       <XDynamicInputs
         model="qna_items"
         label="QNA"
-        emptyData={{ question: "", answer: "" }}
+        emptyData={{ question: '', answer: '' }}
       >
         <XHidden field="id" />
         <XInput field="question" />
@@ -80,9 +85,7 @@ export default function Form({ data, landingPages, url, method, languages }: Pro
         <XCheck field="_destroy" />
       </XDynamicInputs>
 
-      <Button type="submit">
-        {tHelpers("submit.save")}
-      </Button>
+      <Button type="submit">{tHelpers('submit.save')}</Button>
     </XForm>
   );
 }

@@ -1,17 +1,15 @@
-import { DataTable } from 'mantine-datatable';
-import type { PropsWithChildren } from 'react';
-
-import * as Routes from '@/routes.js';
-import { useTranslation } from 'react-i18next';
-
-import AdminLayout from '@/pages/layouts/AdminLayout';
-import AppAnchor from '@/components/AppAnchor';
-import type { BlogPost, Grid } from '@/types';
-import Menu from './shared/menu';
-import useDataTableProps from '@/hooks/useDataTableProps';
 import { Image } from '@mantine/core';
 import dayjs from 'dayjs';
 import { Edit, Link } from 'lucide-react';
+import { DataTable } from 'mantine-datatable';
+import type { PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
+import AppAnchor from '@/components/AppAnchor';
+import useDataTableProps from '@/hooks/useDataTableProps';
+import AdminLayout from '@/pages/layouts/AdminLayout';
+import * as Routes from '@/routes.js';
+import type { BlogPost, Grid } from '@/types';
+import Menu from './shared/menu';
 
 type Props = PropsWithChildren & {
   blogPosts: BlogPost[];

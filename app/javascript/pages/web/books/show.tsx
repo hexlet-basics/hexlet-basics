@@ -1,28 +1,26 @@
-import { PropsWithChildren } from "react";
-import * as Routes from "@/routes.js";
-import bookCoverImg from "@/images/profession-developer-book-cover.png";
-
-import ApplicationLayout from "@/pages/layouts/ApplicationLayout.tsx";
-import { useTranslation } from "react-i18next";
-import { Link, usePage } from "@inertiajs/react";
-import bookToc from '@/lib/book.ts';
-import i18next from "i18next";
-import { LeadCrud, SharedProps } from "@/types";
-import LeadFormBlock from "@/components/LeadFormBlock";
-
+import { Link, usePage } from '@inertiajs/react';
 import {
-  Container,
-  Grid,
-  Title,
-  Text,
-  Button,
-  Image,
-  Stack,
   Box,
+  Button,
+  Container,
   Divider,
+  Grid,
+  Image,
   Paper,
+  Stack,
+  Text,
+  Title,
 } from '@mantine/core';
-import { Compass, FileText, List, Users } from "lucide-react";
+import i18next from 'i18next';
+import { Compass, FileText, List, Users } from 'lucide-react';
+import type { PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
+import LeadFormBlock from '@/components/LeadFormBlock';
+import bookCoverImg from '@/images/profession-developer-book-cover.png';
+import bookToc from '@/lib/book.ts';
+import ApplicationLayout from '@/pages/layouts/ApplicationLayout.tsx';
+import * as Routes from '@/routes.js';
+import type { LeadCrud, SharedProps } from '@/types';
 
 interface Props extends PropsWithChildren {
   bookRequested: boolean;
@@ -63,11 +61,14 @@ export default function Show({ bookRequested, lead }: Props) {
   return (
     <ApplicationLayout>
       <Container size="lg" my="xl">
-
         <Grid>
           <Grid.Col span={{ base: 12, md: 7 }}>
-            <Text c="dimmed" fz="lg">{t('books.show.freebook')}</Text>
-            <Title order={1} mb="lg">{t('books.show.header')}</Title>
+            <Text c="dimmed" fz="lg">
+              {t('books.show.freebook')}
+            </Text>
+            <Title order={1} mb="lg">
+              {t('books.show.header')}
+            </Title>
             <Text fz="lg">{t('books.show.description')}</Text>
 
             {!bookRequested ? (
@@ -100,28 +101,38 @@ export default function Show({ bookRequested, lead }: Props) {
                   <Stack gap={4}>
                     <Box style={{ display: 'flex', alignItems: 'center' }}>
                       <Icon size={20} style={{ marginRight: 8 }} />
-                      <Text fw={700} fz="lg">{t(title)}</Text>
+                      <Text fw={700} fz="lg">
+                        {t(title)}
+                      </Text>
                     </Box>
                     <Text>{t(explanation)}</Text>
                   </Stack>
                 </Grid.Col>
               ))}
             </Grid>
-
           </Grid.Col>
 
           <Grid.Col span={{ base: 12, md: 5 }}>
-            <Image src={bookCoverImg} alt="Book cover" radius="md" fit="contain" />
+            <Image
+              src={bookCoverImg}
+              alt="Book cover"
+              radius="md"
+              fit="contain"
+            />
           </Grid.Col>
         </Grid>
 
-        <Title order={2} mt={40} mb={20}>{t('books.show.toc')}</Title>
+        <Title order={2} mt={40} mb={20}>
+          {t('books.show.toc')}
+        </Title>
 
         {bookToc.map((item, index) => (
           <Box key={item.title} py="md">
             <Grid align="start">
               <Grid.Col span={{ base: 12, md: 2 }}>
-                <Text fw={700}>{t('books.show.chapter', { number: index + 1 })}</Text>
+                <Text fw={700}>
+                  {t('books.show.chapter', { number: index + 1 })}
+                </Text>
               </Grid.Col>
               <Grid.Col span={{ base: 12, md: 4 }}>{item.title}</Grid.Col>
               <Grid.Col span={{ base: 12, md: 6 }}>
@@ -139,7 +150,7 @@ export default function Show({ bookRequested, lead }: Props) {
         {!auth.user.guest && i18next.language === 'ru' && (
           <Grid align="center" mt={60}>
             <Grid.Col span={{ base: 12, lg: 7 }}>
-              <Title order={2}>{t("home.index.consultation")}</Title>
+              <Title order={2}>{t('home.index.consultation')}</Title>
             </Grid.Col>
             <Grid.Col span={{ base: 12, lg: 5 }}>
               <Paper p="lg" radius="md" withBorder>
@@ -148,7 +159,6 @@ export default function Show({ bookRequested, lead }: Props) {
             </Grid.Col>
           </Grid>
         )}
-
       </Container>
     </ApplicationLayout>
   );

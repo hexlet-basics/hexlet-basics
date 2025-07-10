@@ -1,8 +1,10 @@
 // import carrotquest from "@hexlet/analytics-plugin-carrotquest";
-import { BackendEvent } from "@/types/events";
-import yandexMetrika from "@hexlet/analytics-plugin-yandex-metrika";
-import Analytics from "analytics";
-import { log } from "./utils";
+
+import yandexMetrika from '@hexlet/analytics-plugin-yandex-metrika';
+import Analytics from 'analytics';
+import type { BackendEvent } from '@/types/events';
+import { log } from './utils';
+
 // import googleAnalytics from "@analytics/google-analytics"
 
 const enabled = !import.meta.env.SSR;
@@ -23,14 +25,14 @@ const plugins = [
       // begin_checkout: 'ym-begin-checkout',
       // add_to_wishlist: 'ym-add-to-wishlist',
       // ...добавляй любые кастомные события
-    }
+    },
   }),
 ];
 
 /* Initialize analytics */
 const analytics = Analytics({
   debug: import.meta.env.DEV,
-  app: "hexlet-basics",
+  app: 'hexlet-basics',
   version: 100,
   plugins,
 });
@@ -38,27 +40,31 @@ const analytics = Analytics({
 export function processHappendEvents(happendEvents: BackendEvent[]) {
   for (const happendEvent of happendEvents) {
     switch (happendEvent.type) {
-      case "UserSignedInEvent":
+      case 'UserSignedInEvent':
         analytics.identify(happendEvent.data.id.toString(), happendEvent.data);
-        analytics.track("signed_in", happendEvent.data);
+        analytics.track('signed_in', happendEvent.data);
         break;
-      case "UserSignedUpEvent":
+      case 'UserSignedUpEvent':
         analytics.identify(happendEvent.data.id.toString(), happendEvent.data);
-        analytics.track("signed_up", happendEvent.data);
+        analytics.track('signed_up', happendEvent.data);
         break;
-      case "CourseStartedEvent":
-        analytics.track("course_started", happendEvent.data);
+      case 'CourseStartedEvent':
+        analytics.track('course_started', happendEvent.data);
         break;
-      case "LeadCreatedEvent":
-        const data = { ...happendEvent.data, phone_number: happendEvent.data.phone }
+      case 'LeadCreatedEvent': {
+        const data = {
+          ...happendEvent.data,
+          phone_number: happendEvent.data.phone,
+        };
         analytics.identify(happendEvent.data.user_id.toString(), data);
-        analytics.track("lead_created", happendEvent.data);
+        analytics.track('lead_created', happendEvent.data);
         break;
-      case "LessonStartedEvent":
-        analytics.track("lesson_started", happendEvent.data);
+      }
+      case 'LessonStartedEvent':
+        analytics.track('lesson_started', happendEvent.data);
         break;
       default:
-        log('Unprocessed event: ', happendEvent)
+        log('Unprocessed event: ', happendEvent);
         break;
     }
   }

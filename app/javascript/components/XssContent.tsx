@@ -1,5 +1,5 @@
-import { forwardRef } from "react";
-import { Box, type BoxProps } from "@mantine/core";
+import { Box, type BoxProps } from '@mantine/core';
+import { forwardRef } from 'react';
 
 interface XssContentProps extends BoxProps {
   children?: string | null;
@@ -13,9 +13,9 @@ const XssContent = forwardRef<HTMLDivElement, XssContentProps>(
       dangerouslySetInnerHTML={{ __html: children ?? '' }}
       {...props}
     />
-  )
+  ),
 );
 
-XssContent.displayName = "XssContent";
+XssContent.displayName = 'XssContent';
 
 export default XssContent;

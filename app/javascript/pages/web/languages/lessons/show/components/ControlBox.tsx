@@ -1,21 +1,17 @@
-import { Button, Group, Text, Loader, Box } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
+import { Link, usePage } from '@inertiajs/react';
+import { Box, Button, Group, Loader, Text } from '@mantine/core';
 import { modals } from '@mantine/modals';
-import { useTranslation } from 'react-i18next';
-import { useHotkeys } from 'react-hotkeys-hook';
-import { usePage, Link } from '@inertiajs/react';
-
-import * as Routes from '@/routes.js';
-import type { LessonSharedProps } from '../types.ts';
-import { useLessonStore } from '../store.tsx';
+import { notifications } from '@mantine/notifications';
 import { noop } from 'es-toolkit';
-import { Repeat, Play, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { Play, Repeat, ThumbsDown, ThumbsUp } from 'lucide-react';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { useTranslation } from 'react-i18next';
+import * as Routes from '@/routes.js';
+import { useLessonStore } from '../store.tsx';
+import type { LessonSharedProps } from '../types.ts';
 
 export default function ControlBox() {
-  const {
-    props: sharedProps,
-    url,
-  } = usePage<LessonSharedProps>();
+  const { props: sharedProps, url } = usePage<LessonSharedProps>();
 
   const {
     lesson,
@@ -39,18 +35,19 @@ export default function ControlBox() {
       notifications.show({
         // title: 'Default notification',
         message: tCommon('errors.network'),
-      })
+      });
     }
   };
 
   const resetContent = useLessonStore((state) => state.resetContent);
   // const confirmResetting = useConfirmation({ callback: resetContent });
-  const openModal = () => modals.openConfirmModal({
-    title: tCommon("confirm"),
-    labels: { confirm: <ThumbsUp />, cancel: <ThumbsDown /> },
-    onCancel: noop,
-    onConfirm: resetContent,
-  });
+  const openModal = () =>
+    modals.openConfirmModal({
+      title: tCommon('confirm'),
+      labels: { confirm: <ThumbsUp />, cancel: <ThumbsDown /> },
+      onCancel: noop,
+      onConfirm: resetContent,
+    });
 
   const isCodeChecking = processState === 'checking';
 

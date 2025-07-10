@@ -79,13 +79,13 @@ check-types:
 	npm run check
 
 lint:
+	npx @biomejs/biome check
 	npx tsc --build
 	bin/rubocop
-	npx oxlint
 
 lint-fix:
 	bin/rubocop -x
-	npx oxlint --fix --fix-suggestions
+	npx @biomejs/biome check --fix
 
 clear:
 	rm -rf ./.overmind.sock

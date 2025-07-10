@@ -1,32 +1,34 @@
-import type { PropsWithChildren } from "react";
-import { Card, Container, Button, Anchor, Center, Box } from '@mantine/core';
-
-import { useTranslation } from "react-i18next";
-
-import * as Routes from "@/routes.js";
-
-import { XForm, XInput } from "@/components/forms";
-import useConfirmation from "@/hooks/useConfirmation";
-import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
-import type { UserProfileForm } from "@/types/serializers";
-import { Link } from "@inertiajs/react";
-import AppAnchor from "@/components/AppAnchor";
+import { Link } from '@inertiajs/react';
+import { Anchor, Box, Button, Card, Center, Container } from '@mantine/core';
+import type { PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
+import AppAnchor from '@/components/AppAnchor';
+import { XForm, XInput } from '@/components/forms';
+import useConfirmation from '@/hooks/useConfirmation';
+import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
+import * as Routes from '@/routes.js';
+import type { UserProfileForm } from '@/types/serializers';
 
 type Props = PropsWithChildren & {
   form: UserProfileForm;
 };
 
 export default function Edit(props: Props) {
-  const { form } = props
+  const { form } = props;
   const { t } = useTranslation();
-  const { t: tHelpers } = useTranslation("helpers");
-  const { t: tAr } = useTranslation("activerecord");
+  const { t: tHelpers } = useTranslation('helpers');
+  const { t: tAr } = useTranslation('activerecord');
 
   return (
-    <ApplicationLayout center header={t("account.profiles.edit.title")}>
+    <ApplicationLayout center header={t('account.profiles.edit.title')}>
       <Container mt="xl">
         <Center>
-          <Card shadow="sm" withBorder p="xl" w={{ base: '100%', xs: '70%', sm: '50%' }}>
+          <Card
+            shadow="sm"
+            withBorder
+            p="xl"
+            w={{ base: '100%', xs: '70%', sm: '50%' }}
+          >
             <XForm
               model="user"
               method="patch"
@@ -36,7 +38,7 @@ export default function Edit(props: Props) {
               <XInput field="first_name" autoComplete="name" />
               <XInput field="last_name" autoComplete="name" />
               <Button type="submit" fullWidth mt="xl">
-                {tHelpers("submit.save")}
+                {tHelpers('submit.save')}
               </Button>
             </XForm>
 
@@ -48,7 +50,7 @@ export default function Edit(props: Props) {
                 method="delete"
                 c="red"
               >
-                {t("account.profiles.edit.delete")}
+                {t('account.profiles.edit.delete')}
               </AppAnchor>
             </Box>
           </Card>

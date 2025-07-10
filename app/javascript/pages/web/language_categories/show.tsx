@@ -1,22 +1,33 @@
-import type { PropsWithChildren } from "react";
-import { Grid, Text, Paper, Stack, Container, SimpleGrid, Title, Box, Center, Card } from '@mantine/core';
+import { usePage } from '@inertiajs/react';
+import {
+  Box,
+  Card,
+  Center,
+  Container,
+  Grid,
+  Paper,
+  SimpleGrid,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
+import i18next from 'i18next';
+import type { PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { useTranslation } from "react-i18next";
-
-import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
+import CourseBlock from '@/components/CourseBlock';
+import LeadFormBlock from '@/components/LeadFormBlock';
+import MarkdownViewer from '@/components/MarkdownViewer';
+import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
+import * as Routes from '@/routes.js';
 import type {
   LanguageCategory,
   LanguageLandingPage,
-  LanguageLandingPageForLists, LanguageLandingPageQnaItem, LeadCrud
-} from "@/types";
-
-import CourseBlock from "@/components/CourseBlock";
-import * as Routes from "@/routes.js";
-import i18next from "i18next";
-import { usePage } from "@inertiajs/react";
-import { SharedProps } from "@/types";
-import LeadFormBlock from "@/components/LeadFormBlock";
-import MarkdownViewer from "@/components/MarkdownViewer";
+  LanguageLandingPageForLists,
+  LanguageLandingPageQnaItem,
+  LeadCrud,
+  SharedProps,
+} from '@/types';
 
 type Props = PropsWithChildren & {
   categoryLandingPages: LanguageLandingPageForLists[];
@@ -40,7 +51,7 @@ export default function Show({
 
   const items = [
     {
-      name: t("language_categories.index.header"),
+      name: t('language_categories.index.header'),
       url: Routes.language_categories_path(),
     },
     {
@@ -70,7 +81,9 @@ export default function Show({
           <Grid align="center" justify="space-between" gutter={0}>
             <Grid.Col span={{ base: 12, xs: 7 }}>
               <Center>
-                <Text fz={40} mb="xs" fw="bold">{t("home.index.consultation")}</Text>
+                <Text fz={40} mb="xs" fw="bold">
+                  {t('home.index.consultation')}
+                </Text>
               </Center>
             </Grid.Col>
             <Grid.Col span={{ base: 12, sm: 5 }}>
@@ -83,9 +96,7 @@ export default function Show({
 
         {qnaItems.length > 0 && (
           <Stack py="xl">
-            <Title order={2}>
-              {t("languages.show.sort_questions")}
-            </Title>
+            <Title order={2}>{t('languages.show.sort_questions')}</Title>
             <SimpleGrid cols={{ base: 1, xs: 2 }}>
               {qnaItems.map((item) => (
                 <Box key={item.id}>

@@ -8,10 +8,8 @@
 
 const headerMenuLink: string;
 
-export {
-	headerMenuLink
-};
+export { headerMenuLink };
 
 export default {
-	headerMenuLink
+  headerMenuLink,
 };

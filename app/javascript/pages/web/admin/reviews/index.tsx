@@ -1,16 +1,14 @@
+import dayjs from 'dayjs';
+import { Edit } from 'lucide-react';
 import { DataTable } from 'mantine-datatable';
 import type { PropsWithChildren } from 'react';
-
-import * as Routes from '@/routes.js';
 import { useTranslation } from 'react-i18next';
-
-import AdminLayout from '@/pages/layouts/AdminLayout';
 import AppAnchor from '@/components/AppAnchor';
-import type { Review, Grid } from '@/types/serializers';
-import { Menu } from './shared/menu';
 import useDataTableProps from '@/hooks/useDataTableProps';
-import { Edit } from 'lucide-react';
-import dayjs from 'dayjs';
+import AdminLayout from '@/pages/layouts/AdminLayout';
+import * as Routes from '@/routes.js';
+import type { Grid, Review } from '@/types/serializers';
+import { Menu } from './shared/menu';
 
 type Props = PropsWithChildren & {
   reviews: Review[];

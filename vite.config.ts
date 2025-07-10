@@ -1,29 +1,29 @@
-import { visualizer } from "rollup-plugin-visualizer";
+import path from 'node:path';
+import { sentryVitePlugin } from '@sentry/vite-plugin';
+import legacy from '@vitejs/plugin-legacy';
+import react from '@vitejs/plugin-react';
+import browserslist from 'browserslist';
+import { browserslistToTargets } from 'lightningcss';
+import { visualizer } from 'rollup-plugin-visualizer';
+import { defineConfig, loadEnv, type PluginOption } from 'vite';
+import { patchCssModules } from 'vite-css-modules';
+import { beasties } from 'vite-plugin-beasties';
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
-import legacy from '@vitejs/plugin-legacy'
-import path from "node:path";
-import { sentryVitePlugin } from "@sentry/vite-plugin";
-import react from "@vitejs/plugin-react";
-import browserslist from "browserslist";
-import { browserslistToTargets } from "lightningcss";
-import { defineConfig, loadEnv, PluginOption } from "vite";
-import ViteRails from "vite-plugin-rails";
-import { patchCssModules } from 'vite-css-modules'
-import { beasties } from 'vite-plugin-beasties'
+import ViteRails from 'vite-plugin-rails';
 
 export default defineConfig(({ mode, isSsrBuild }) => {
-  const env = loadEnv(mode, process.cwd(), "VITE_");
+  const env = loadEnv(mode, process.cwd(), 'VITE_');
 
   return {
     css: {
       lightningcss: {
-        targets: browserslistToTargets(browserslist(">= 0.25%")),
+        targets: browserslistToTargets(browserslist('>= 0.25%')),
       },
     },
     build: {
       // sourcemap: "hidden",
       // sourcemap: false,
-      cssMinify: "lightningcss",
+      cssMinify: 'lightningcss',
       // rollupOptions: {
       //   output: {
       //     manualChunks: {
@@ -49,7 +49,7 @@ export default defineConfig(({ mode, isSsrBuild }) => {
           inlineThreshold: 4000, // Inline stylesheets smaller than 4kb
         },
         // Filter to apply beasties only to specific HTML files
-        filter: path => path.endsWith('.html'),
+        filter: (path) => path.endsWith('.html'),
       }),
       ViteImageOptimizer({
         /* pass your config */
@@ -58,14 +58,14 @@ export default defineConfig(({ mode, isSsrBuild }) => {
         targets: ['defaults', 'not IE 11'],
       }),
       patchCssModules({
-        generateSourceTypes: true
+        generateSourceTypes: true,
       }),
       react(),
       ViteRails({
         compress: false,
       }),
       sentryVitePlugin({
-        disable: env.VITE_NODE_ENV != "production",
+        disable: env.VITE_NODE_ENV != 'production',
         applicationKey: env.VITE_APP_HOST,
         url: env.VITE_SENTRY_URL,
         org: env.VITE_SENTRY_ORG,
@@ -79,7 +79,7 @@ export default defineConfig(({ mode, isSsrBuild }) => {
           },
         },
         sourcemaps: {
-          filesToDeleteAfterUpload: ["**/*.js.map"],
+          filesToDeleteAfterUpload: ['**/*.js.map'],
           // rewriteSources: (source) => source.replace(/^(\.\.\/|\.\/)+/, ''),
         },
         telemetry: false,
@@ -93,20 +93,20 @@ export default defineConfig(({ mode, isSsrBuild }) => {
     },
     ssr: {
       noExternal: [
-        "monaco-editor",
-        "react-timer-hook",
-        "@monaco-editor/react",
-        "analytics",
+        'monaco-editor',
+        'react-timer-hook',
+        '@monaco-editor/react',
+        'analytics',
       ], // Ensure it's handled correctly
     },
     resolve: {
       alias: {
         // "~bootstrap": path.resolve(__dirname, "node_modules/bootstrap"),
         // NOTE: код модуля monacoLoader.ts не должен выполнятся в ssr режиме
-        "@/lib/monacoLoader.ts": isSsrBuild
-          ? path.resolve(__dirname, "./app/javascript/lib/emptyModule.ts")
-          : path.resolve(__dirname, "./app/javascript/lib/monacoLoader.ts"),
-        "@": path.resolve(__dirname, "./app/javascript"),
+        '@/lib/monacoLoader.ts': isSsrBuild
+          ? path.resolve(__dirname, './app/javascript/lib/emptyModule.ts')
+          : path.resolve(__dirname, './app/javascript/lib/monacoLoader.ts'),
+        '@': path.resolve(__dirname, './app/javascript'),
       },
     },
   };

@@ -1,7 +1,5 @@
 export default {
-  content: [
-    './app/javascript/**/*.{js,ts,jsx,tsx}',
-  ],
+  content: ['./app/javascript/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {},
   },

@@ -1,17 +1,17 @@
-import * as Routes from "@/routes.js";
-import { createConsumer } from "@rails/actioncable";
-import axios from "axios";
-import { debounce } from "es-toolkit";
 import { notifications } from '@mantine/notifications';
-import { useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { createConsumer } from '@rails/actioncable';
+import axios from 'axios';
+import { debounce } from 'es-toolkit';
+import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import * as Routes from '@/routes.js';
 
 const url = `wss://${import.meta.env.VITE_APP_HOST}/cable`;
 const cableInstance = createConsumer(url);
 
 export type AssistantMessage = {
   id?: string;
-  role: "user" | "assistant" | "system";
+  role: 'user' | 'assistant' | 'system';
   content: string;
 };
 
@@ -27,14 +27,13 @@ export function useAssistantStream(
   userCode: string,
   output: string,
 ) {
-
   const [messages, setMessages] = useState<AssistantMessage[]>([]);
-  const [input, setInput] = useState("");
-  const [status, setStatus] = useState<"awaiting_message" | "in_progress">(
-    "awaiting_message",
+  const [input, setInput] = useState('');
+  const [status, setStatus] = useState<'awaiting_message' | 'in_progress'>(
+    'awaiting_message',
   );
 
-  const { t: tViews } = useTranslation("web");
+  const { t: tViews } = useTranslation('web');
 
   // Buffer per message_id
   const buffers = useRef<Record<string, string[][]>>({});
@@ -43,7 +42,7 @@ export function useAssistantStream(
   const scheduleUpdate = useRef(
     debounce((messageId: string) => {
       const parts = buffers.current[messageId];
-      const fullText = parts.join("");
+      const fullText = parts.join('');
 
       setMessages((prev) => {
         const existing = prev.find((m) => m.id === messageId);
@@ -56,7 +55,7 @@ export function useAssistantStream(
 
         return [
           ...prev,
-          { id: messageId, role: "assistant", content: fullText },
+          { id: messageId, role: 'assistant', content: fullText },
         ];
       });
     }, 50),
@@ -64,13 +63,13 @@ export function useAssistantStream(
 
   useEffect(() => {
     const subscription = cableInstance.subscriptions.create(
-      { channel: "AssistantChannel", id: lessonMemberId },
+      { channel: 'AssistantChannel', id: lessonMemberId },
       {
         connected() {
           // console.log("connected");
         },
         disconnected() {
-          setStatus("awaiting_message");
+          setStatus('awaiting_message');
           // console.log("disconnected");
         },
         rejected() {
@@ -85,9 +84,9 @@ export function useAssistantStream(
             buffers.current[message_id] = [];
           }
 
-          if (delta[0] === "DONE") {
+          if (delta[0] === 'DONE') {
             // console.log("📡 Stream finished for message:", message_id);
-            setStatus("awaiting_message");
+            setStatus('awaiting_message');
           } else {
             buffers.current[message_id][index] = delta;
           }
@@ -107,16 +106,16 @@ export function useAssistantStream(
     e.preventDefault();
     if (!input.trim()) return;
 
-    setStatus("in_progress");
+    setStatus('in_progress');
 
     const userMessage: AssistantMessage = {
       id: crypto.randomUUID(),
-      role: "user",
+      role: 'user',
       content: input,
     };
 
     setMessages((prev) => [...prev, userMessage]);
-    setInput("");
+    setInput('');
 
     try {
       await axios.post(Routes.ai_lesson_messages_path(lessonId), {
@@ -125,16 +124,16 @@ export function useAssistantStream(
         output,
       });
     } catch (error) {
-      setStatus("awaiting_message");
+      setStatus('awaiting_message');
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 429) {
-          const message = tViews("languages.lessons.show.chat.disabled_html");
+          const message = tViews('languages.lessons.show.chat.disabled_html');
 
           setMessages((prev) => [
             ...prev,
             {
               id: crypto.randomUUID(),
-              role: "assistant",
+              role: 'assistant',
               content: message,
             },
           ]);
@@ -142,7 +141,7 @@ export function useAssistantStream(
         notifications.show({
           // title: 'Default notification',
           message: error.message,
-        })
+        });
         // console.error(error);
       } else {
         throw error;

@@ -1,42 +1,42 @@
-import { Anchor, AnchorProps } from '@mantine/core';
+import type { Method } from '@inertiajs/core';
 import { Link } from '@inertiajs/react';
-import { PropsWithChildren } from 'react';
-import useConfirmation from '@/hooks/useConfirmation';
+import { Anchor, type AnchorProps } from '@mantine/core';
 import { noop } from 'es-toolkit';
-import { Method } from '@inertiajs/core';
+import type { PropsWithChildren } from 'react';
+import useConfirmation from '@/hooks/useConfirmation';
 
-type AppAnchorProps = AnchorProps & PropsWithChildren & {
-  /**
-   * If true, disables href and renders a pseudo-link (SEO-unfriendly).
-   */
-  pseudo?: boolean;
+type AppAnchorProps = AnchorProps &
+  PropsWithChildren & {
+    /**
+     * If true, disables href and renders a pseudo-link (SEO-unfriendly).
+     */
+    pseudo?: boolean;
 
-  /**
-   * If true, opens in a new tab and disables referrer
-   */
-  external?: boolean;
-  withConfirmation?: boolean;
+    /**
+     * If true, opens in a new tab and disables referrer
+     */
+    external?: boolean;
+    withConfirmation?: boolean;
 
-  /**
-    * HTTP method for Inertia-powered links
-    */
-  method?: Method;
+    /**
+     * HTTP method for Inertia-powered links
+     */
+    method?: Method;
 
-  /**
-   * Always required
-   */
-  href: string;
-};
+    /**
+     * Always required
+     */
+    href: string;
+  };
 
 export default function AppAnchor({
   pseudo,
   external,
-  method = "get",
+  method = 'get',
   withConfirmation,
   href,
   ...props
 }: AppAnchorProps) {
-
   const confirmDeleting = useConfirmation();
 
   if (pseudo) {
@@ -74,4 +74,3 @@ export default function AppAnchor({
     />
   );
 }
-

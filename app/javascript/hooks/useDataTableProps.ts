@@ -1,22 +1,20 @@
-import type { Grid } from '@/types';
-import type { DataTableSortStatus } from 'mantine-datatable';
 import { router } from '@inertiajs/react';
-import { getCurrentUrl } from '@/lib/utils';
+import type { DataTableSortStatus } from 'mantine-datatable';
 import { useMemo, useState } from 'react';
+import { getCurrentUrl } from '@/lib/utils';
+import type { Grid } from '@/types';
 
 function cleanObject<T extends Record<string, unknown>>(obj: T): Partial<T> {
   return Object.fromEntries(
-    Object.entries(obj).filter(([, v]) => v != null && v !== '')
+    Object.entries(obj).filter(([, v]) => v != null && v !== ''),
   ) as Partial<T>;
 }
 
 export default function useDataTableProps<
-  T, Fields extends Record<string, string | number | undefined>
->(
-  grid: Grid & { fields: Fields }
-) {
-
-  const url = getCurrentUrl()
+  T,
+  Fields extends Record<string, string | number | undefined>,
+>(grid: Grid & { fields: Fields }) {
+  const url = getCurrentUrl();
 
   const [filterValues, setFilterValues] = useState<Fields>(grid.fields ?? {});
 
@@ -25,13 +23,13 @@ export default function useDataTableProps<
       ...grid,
       fields: cleanObject(filterValues), // 👈 ключевой момент
       ...extra,
-    }
+    };
     router.get(url!, params, { preserveScroll: true });
   };
 
   const onFilterChange = <K extends keyof Fields>(
     key: K,
-    value: Fields[K] | null
+    value: Fields[K] | null,
   ) => {
     const updated = { ...filterValues, [key]: value ?? undefined };
     setFilterValues(updated);
@@ -40,7 +38,9 @@ export default function useDataTableProps<
 
   const filters: {
     values: Fields;
-    getOnChange: <K extends keyof Fields>(key: K) => (val: string | null) => void;
+    getOnChange: <K extends keyof Fields>(
+      key: K,
+    ) => (val: string | null) => void;
   } = useMemo(() => {
     return {
       values: filterValues,
@@ -63,8 +63,8 @@ export default function useDataTableProps<
       sf: status.columnAccessor as string,
       so: status.direction,
       page: 1,
-    })
-  }
+    });
+  };
 
   const gridProps = {
     sortStatus,
@@ -77,4 +77,3 @@ export default function useDataTableProps<
 
   return { gridProps, filters };
 }
-

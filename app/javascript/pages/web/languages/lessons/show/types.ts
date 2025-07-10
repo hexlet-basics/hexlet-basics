@@ -1,5 +1,4 @@
-import { AssistantMessage } from "@/hooks/useAssistantStream";
-import type { SharedProps } from "@/types";
+import type { AssistantMessage } from '@/hooks/useAssistantStream';
 import type {
   Language,
   LanguageCategory,
@@ -7,7 +6,8 @@ import type {
   LanguageLesson,
   LanguageLessonMember,
   LessonCheckingResponse,
-} from "@/types";
+  SharedProps,
+} from '@/types';
 
 export type LessonSharedProps = SharedProps & {
   canCreateAssistantMessage: boolean;
@@ -22,24 +22,24 @@ export type LessonSharedProps = SharedProps & {
   previousMessages: AssistantMessage[];
 };
 
-type CheckingResult = LessonCheckingResponse["result"] | "error" | null;
+type CheckingResult = LessonCheckingResponse['result'] | 'error' | null;
 
-type TabName = "editor" | "output" | "tests" | "solution";
-type SolutionState = "shown" | "canBeShown" | "notAllowedToBeShown";
-type ProcessState = "checked" | "unchecked" | "checking";
+type TabName = 'editor' | 'output' | 'tests' | 'solution';
+type SolutionState = 'shown' | 'canBeShown' | 'notAllowedToBeShown';
+type ProcessState = 'checked' | 'unchecked' | 'checking';
 
 export interface LessonProps {
-  lessonMember?: LanguageLessonMember
-  lesson: LanguageLesson
+  lessonMember?: LanguageLessonMember;
+  lesson: LanguageLesson;
 }
 
 export interface LessonState {
   startTime: number;
-  solutionState: SolutionState
+  solutionState: SolutionState;
   finished: boolean;
   defaultCode: string;
-  processState: ProcessState
-  currentTab: TabName
+  processState: ProcessState;
+  currentTab: TabName;
   result: CheckingResult;
   resetsCount: number;
   output: string;
@@ -51,5 +51,8 @@ export interface LessonState {
   changeTab: (tab: TabName) => void;
   setStartTime: (startTime: number) => void;
   changeSolutionState: (solutionState: SolutionState) => void;
-  runCheck: (params: { course: Language; lesson: LanguageLesson }) => Promise<boolean>;
-};
+  runCheck: (params: {
+    course: Language;
+    lesson: LanguageLesson;
+  }) => Promise<boolean>;
+}

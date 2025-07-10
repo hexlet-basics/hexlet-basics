@@ -1,13 +1,12 @@
-import * as Routes from "@/routes.js";
-import { AnsiUp } from "ansi_up";
-import { useTranslation } from "react-i18next";
-
-import XssContent from "@/components/XssContent";
-import { usePage } from "@inertiajs/react";
-import { Alert, Box, Code, ScrollArea } from "@mantine/core";
-import type { LessonSharedProps } from "../types.ts";
-import { useLessonStore } from "../store.tsx";
-import { Check, TriangleAlert } from "lucide-react";
+import { usePage } from '@inertiajs/react';
+import { Alert, Box, Code, ScrollArea } from '@mantine/core';
+import { AnsiUp } from 'ansi_up';
+import { Check, TriangleAlert } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import XssContent from '@/components/XssContent';
+import * as Routes from '@/routes.js';
+import { useLessonStore } from '../store.tsx';
+import type { LessonSharedProps } from '../types.ts';
 
 const ansi = new AnsiUp();
 
@@ -17,9 +16,9 @@ export default function OutputTab() {
   const processState = useLessonStore((state) => state.processState);
   const output = useLessonStore((state) => state.output);
   const passed = useLessonStore((state) => state.passed);
-  const { t: tCommon } = useTranslation("common");
+  const { t: tCommon } = useTranslation('common');
 
-  if (processState !== "checked") {
+  if (processState !== 'checked') {
     return null;
   }
 
@@ -33,7 +32,7 @@ export default function OutputTab() {
   return (
     <>
       <Alert
-        color={passed ? "green" : "yellow"}
+        color={passed ? 'green' : 'yellow'}
         icon={passed ? <Check size={16} /> : <TriangleAlert size={16} />}
         withCloseButton={false}
         fz="sm"

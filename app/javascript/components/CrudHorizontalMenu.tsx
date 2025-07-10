@@ -1,5 +1,5 @@
-import { Group, NavLink } from '@mantine/core';
 import { Link, usePage } from '@inertiajs/react';
+import { Group, NavLink } from '@mantine/core';
 
 export type CrudHorizontalMenuItem = {
   label: string | React.ReactNode;
@@ -38,9 +38,8 @@ export function CrudHorizontalMenu({ items }: Props) {
             aria-current={getCurrentArea(href)}
             label={label}
           />
-        )
+        ),
       )}
     </Group>
   );
 }
-

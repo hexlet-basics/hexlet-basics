@@ -1,22 +1,21 @@
+import { Button, Group, Loader, Stack, Textarea } from '@mantine/core';
+import i18next from 'i18next';
+import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   type AssistantMessage,
   useAssistantStream,
-} from "@/hooks/useAssistantStream";
-
+} from '@/hooks/useAssistantStream';
 import type {
   Language,
   LanguageLesson,
   LanguageLessonMember,
-} from "@/types/serializers";
-import { useEffect, useRef } from "react";
-import { Button, Textarea, Loader, Group, Stack } from '@mantine/core';
-import { useTranslation } from "react-i18next";
+} from '@/types/serializers';
 // import { useInView } from "react-intersection-observer";
-import MarkdownViewer from "./MarkdownViewer";
-import i18next from "i18next";
+import MarkdownViewer from './MarkdownViewer';
 
 type Props = {
-  enabled: boolean
+  enabled: boolean;
   lesson: LanguageLesson;
   focusesCount: number;
   course: Language;
@@ -30,11 +29,7 @@ function MessagePresenter({ message }: { message: AssistantMessage }) {
   // const classesLine = cn("hexlet-basics-content mt-2", {
   //   "text-end bg-light ms-5 p-3 rounded": message.role === "user",
   // });
-  return (
-    <MarkdownViewer>
-      {message.content}
-    </MarkdownViewer>
-  );
+  return <MarkdownViewer>{message.content}</MarkdownViewer>;
 }
 
 export default function Chat({
@@ -47,7 +42,7 @@ export default function Chat({
   lessonMember,
   previousMessages,
 }: Props) {
-  const { t: tViews } = useTranslation("web");
+  const { t: tViews } = useTranslation('web');
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -56,37 +51,35 @@ export default function Chat({
   }, [focusesCount]);
 
   if (!lessonMember || !course.openai_assistant_id || !enabled) {
-    let content = "";
+    let content = '';
 
     if (!lessonMember) {
-      content = tViews("languages.lessons.show.chat.guest");
+      content = tViews('languages.lessons.show.chat.guest');
     } else if (!enabled) {
-      content = tViews("languages.lessons.show.chat.disabled_html");
+      content = tViews('languages.lessons.show.chat.disabled_html');
     } else if (!course.openai_assistant_id) {
-      content = tViews("languages.lessons.show.chat.not_available");
+      content = tViews('languages.lessons.show.chat.not_available');
     }
 
     const disabledMessage: AssistantMessage = {
-      role: "assistant",
+      role: 'assistant',
       content: content,
     };
 
-    return (
-      <MessagePresenter message={disabledMessage} />
-    );
+    return <MessagePresenter message={disabledMessage} />;
   }
 
   const { input, status, messages, submitMessage, handleInputChange } =
     useAssistantStream(lessonMember.id, lesson.id, userCode, output);
 
-  const { t: tHelpers } = useTranslation("helpers");
+  const { t: tHelpers } = useTranslation('helpers');
 
   const initMessage: AssistantMessage = {
-    role: "assistant",
-    content: tViews("languages.lessons.show.chat.hi"),
+    role: 'assistant',
+    content: tViews('languages.lessons.show.chat.hi'),
   };
 
-  const { t: tCommon } = useTranslation("common");
+  const { t: tCommon } = useTranslation('common');
 
   return (
     <Stack>
@@ -98,11 +91,10 @@ export default function Chat({
         <MessagePresenter key={m.id} message={m} />
       ))}
 
-
       <form onSubmit={submitMessage}>
         <Textarea
           ref={inputRef}
-          disabled={status === "in_progress"}
+          disabled={status === 'in_progress'}
           value={input}
           onChange={handleInputChange}
           rows={5}
@@ -112,20 +104,15 @@ export default function Chat({
             <Button
               component="a"
               variant="light"
-              href={tCommon("community_url")}
+              href={tCommon('community_url')}
               target="_blank"
             >
               {tViews('languages.lessons.show.chat.community')}
             </Button>
           )}
-          <Button
-            disabled={status !== "awaiting_message"}
-            type="submit"
-          >
-            {status === "in_progress" && (
-              <Loader size="sm" mr="xs" />
-            )}
-            {tHelpers("send")}
+          <Button disabled={status !== 'awaiting_message'} type="submit">
+            {status === 'in_progress' && <Loader size="sm" mr="xs" />}
+            {tHelpers('send')}
           </Button>
         </Group>
       </form>

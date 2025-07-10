@@ -1,29 +1,43 @@
+import { Head, Link, usePage } from '@inertiajs/react';
 import {
-  Grid,
-  Image,
-  Text,
-  Title,
-  Button,
   Accordion,
-  List,
-  Container,
-  Group,
-  SimpleGrid,
-  Box,
   Anchor,
-  NumberFormatter,
+  Box,
+  Button,
   Card,
   Center,
+  Container,
+  Grid,
+  Group,
+  Image,
+  List,
+  NumberFormatter,
+  SimpleGrid,
   Stack,
+  Text,
+  Title,
 } from '@mantine/core';
-
-import { useTranslation } from "react-i18next";
-
-import codeIllustration from "@/images/code.svg";
-
-import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
-import * as Routes from "@/routes.js";
-import type { BreadcrumbItem, Language, LeadCrud, SharedProps, User } from "@/types";
+import dayjs from 'dayjs';
+import i18next from 'i18next';
+import { Clock, Users } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import type { Product, WithContext } from 'schema-dts';
+import AppAnchor from '@/components/AppAnchor';
+import LeadFormBlock from '@/components/LeadFormBlock';
+import MarkdownViewer from '@/components/MarkdownViewer';
+import SignUpFormBlock from '@/components/SignUpFormBlock';
+import XssContent from '@/components/XssContent';
+import codeIllustration from '@/images/code.svg';
+import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
+import { getResourceUrl } from '@/resources';
+import * as Routes from '@/routes.js';
+import type {
+  BreadcrumbItem,
+  Language,
+  LeadCrud,
+  SharedProps,
+  User,
+} from '@/types';
 import type {
   LanguageCategory,
   LanguageLandingPage,
@@ -32,18 +46,7 @@ import type {
   LanguageMember,
   LanguageModule,
   Review,
-} from "@/types/serializers";
-import { Head, Link, usePage } from "@inertiajs/react";
-import type { Product, WithContext } from "schema-dts";
-import dayjs from "dayjs";
-import { Clock, Users } from 'lucide-react';
-import LeadFormBlock from '@/components/LeadFormBlock';
-import i18next from 'i18next';
-import MarkdownViewer from '@/components/MarkdownViewer';
-import SignUpFormBlock from '@/components/SignUpFormBlock';
-import AppAnchor from '@/components/AppAnchor';
-import XssContent from '@/components/XssContent';
-import { getResourceUrl } from '@/resources';
+} from '@/types/serializers';
 
 type Props = {
   lead: LeadCrud;
@@ -82,18 +85,18 @@ export default function Show({
   } = usePage<SharedProps>().props;
 
   const productSchema: WithContext<Product> = {
-    "@context": "https://schema.org",
-    "@type": "Product",
+    '@context': 'https://schema.org',
+    '@type': 'Product',
     description: courseLandingPage.description,
     image: course.cover_list_variant,
     offers: {
-      "@type": "Offer",
-      price: "0",
-      priceCurrency: "RUB",
-      availability: "https://schema.org/InStock",
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'RUB',
+      availability: 'https://schema.org/InStock',
     },
     aggregateRating: {
-      "@type": "AggregateRating",
+      '@type': 'AggregateRating',
       ratingValue: course.rating_value,
       ratingCount: course.rating_count,
     },
@@ -103,7 +106,9 @@ export default function Show({
   const breadcrumbItems: BreadcrumbItem[] = [
     {
       name: courseCategory?.name ?? '-',
-      url: courseCategory ? Routes.language_category_url(courseCategory.slug!) : '#',
+      url: courseCategory
+        ? Routes.language_category_url(courseCategory.slug!)
+        : '#',
     },
     {
       name: courseLandingPage.header,
@@ -114,14 +119,18 @@ export default function Show({
   return (
     <ApplicationLayout items={breadcrumbItems}>
       <Head>
-        <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
+        <script type="application/ld+json">
+          {JSON.stringify(productSchema)}
+        </script>
       </Head>
 
       <Container size="lg">
         <Grid>
           <Grid.Col span={{ base: 12, sm: 7 }}>
             <Text size="sm" c="dimmed">
-              {t("languages.show.free_course", { name: courseLandingPage.header })}
+              {t('languages.show.free_course', {
+                name: courseLandingPage.header,
+              })}
             </Text>
             <Title order={1} mb="lg" fz={48}>
               {courseLandingPage.header}
@@ -132,11 +141,16 @@ export default function Show({
             <Group mb="xl">
               <Group me="lg">
                 <Users size={16} />
-                <NumberFormatter thousandSeparator value={course.members_count} />
+                <NumberFormatter
+                  thousandSeparator
+                  value={course.members_count}
+                />
               </Group>
               <Group>
                 <Clock size={16} />
-                {t('languages.show.updated_at', { date: dayjs(course.current_version!.created_at).format('LL') })}
+                {t('languages.show.updated_at', {
+                  date: dayjs(course.current_version!.created_at).format('LL'),
+                })}
               </Group>
             </Group>
 
@@ -150,7 +164,7 @@ export default function Show({
                     firstLesson.slug,
                   )}
                 >
-                  {t("languages.show.try")}
+                  {t('languages.show.try')}
                 </Button>
               )}
               {courseMember && nextLesson && (
@@ -162,10 +176,10 @@ export default function Show({
                     nextLesson.slug!,
                   )}
                 >
-                  {t("languages.show.continue")}
+                  {t('languages.show.continue')}
                 </Button>
               )}
-              {courseMember?.state === "finished" && (
+              {courseMember?.state === 'finished' && (
                 <Button
                   size="lg"
                   variant="outline"
@@ -175,21 +189,21 @@ export default function Show({
                     firstLesson.slug!,
                   )}
                 >
-                  {t("languages.show.restart")}
+                  {t('languages.show.restart')}
                 </Button>
               )}
-              {courseMember?.state === "finished" && course.hexlet_program_landing_page && (
-                <Button
-                  size="lg"
-                  component="a"
-                  target="_blank"
-                  href={`${course.hexlet_program_landing_page}?utm_source=code-basics&utm_medium=referral`}
-                >
-                  {t("languages.show.hexlet_program_link")}
-                </Button>
-              )}
+              {courseMember?.state === 'finished' &&
+                course.hexlet_program_landing_page && (
+                  <Button
+                    size="lg"
+                    component="a"
+                    target="_blank"
+                    href={`${course.hexlet_program_landing_page}?utm_source=code-basics&utm_medium=referral`}
+                  >
+                    {t('languages.show.hexlet_program_link')}
+                  </Button>
+                )}
             </Group>
-
           </Grid.Col>
           <Grid.Col visibleFrom="sm" span={{ base: 12, sm: 5 }}>
             <Image
@@ -197,7 +211,7 @@ export default function Show({
               src={codeIllustration}
               // w="auto"
               fit="cover"
-              alt={t("languages.show.cover_image")}
+              alt={t('languages.show.cover_image')}
             />
           </Grid.Col>
         </Grid>
@@ -207,22 +221,22 @@ export default function Show({
             <Title order={2} size="h1" mb="md">
               {courseLandingPage.used_in_header}
             </Title>
-            <Text>
-              {courseLandingPage.used_in_description}
-            </Text>
+            <Text>{courseLandingPage.used_in_description}</Text>
           </Grid.Col>
         </Grid>
 
         <SimpleGrid cols={{ base: 1, lg: 2 }} py="xl">
-
           {courseLandingPage.outcomes_image && (
             <Image
               src={courseLandingPage.outcomes_image}
               width="100%"
               height="auto"
               loading="lazy"
-              alt={t("languages.show.learning_preview")}
-              style={{ borderRadius: 'var(--mantine-radius-xl)', boxShadow: 'var(--mantine-shadow-lg)' }}
+              alt={t('languages.show.learning_preview')}
+              style={{
+                borderRadius: 'var(--mantine-radius-xl)',
+                boxShadow: 'var(--mantine-shadow-lg)',
+              }}
             />
           )}
 
@@ -230,35 +244,29 @@ export default function Show({
             <Title order={2} size="h1" mb="md">
               {courseLandingPage.outcomes_header}
             </Title>
-            <Text>
-              {courseLandingPage.outcomes_description}
-            </Text>
+            <Text>{courseLandingPage.outcomes_description}</Text>
           </Box>
-
         </SimpleGrid>
 
-        <Card bg="indigo.0" my={{ base: "lg", sm: 80 }} p="xl">
+        <Card bg="indigo.0" my={{ base: 'lg', sm: 80 }} p="xl">
           <Group>
-            <Text fz={40}>
-              {t("languages.show.course_graduates")}
-            </Text>
+            <Text fz={40}>{t('languages.show.course_graduates')}</Text>
             <Button
               bg="dark"
               size="xl"
               component={Link}
-              href={Routes.language_lesson_path(
-                course.slug!,
-                firstLesson.slug,
-              )}
+              href={Routes.language_lesson_path(course.slug!, firstLesson.slug)}
             >
-              {t("languages.show.start", { name: courseLandingPage.name })}
+              {t('languages.show.start', { name: courseLandingPage.name })}
             </Button>
           </Group>
         </Card>
 
         <Box>
           <Title order={2} size="h1" my="xl">
-            {t("languages.show.learning_program", { name: courseLandingPage.name })}
+            {t('languages.show.learning_program', {
+              name: courseLandingPage.name,
+            })}
           </Title>
           <Accordion defaultValue="0">
             {courseModules.map((m, index) => (
@@ -273,7 +281,10 @@ export default function Show({
                         {(lessonsByModuleId[m.id] ?? []).map((l) => (
                           <List.Item key={l.id}>
                             <AppAnchor
-                              href={Routes.language_lesson_path(course.slug!, l.slug!)}
+                              href={Routes.language_lesson_path(
+                                course.slug!,
+                                l.slug!,
+                              )}
                             >
                               {l.name}
                             </AppAnchor>
@@ -291,37 +302,32 @@ export default function Show({
           </Accordion>
         </Box>
 
-        <Box my={{ base: "lg", sm: 80 }}>
+        <Box my={{ base: 'lg', sm: 80 }}>
           <Title order={2} fz="h1" mb="xl">
-            {t("languages.show.about_learning")}
+            {t('languages.show.about_learning')}
           </Title>
           <SimpleGrid cols={{ base: 1, lg: 2 }}>
             <Box>
-              <Text fw="bold">
-                {t("languages.show.convenient format")}
-              </Text>
+              <Text fw="bold">{t('languages.show.convenient format')}</Text>
               <XssContent mb="md">
-                {t("languages.show.learning_conveniently")}
+                {t('languages.show.learning_conveniently')}
               </XssContent>
-              <Text fw="bold">
-                {t("languages.show.browser_practice")}
-              </Text>
+              <Text fw="bold">{t('languages.show.browser_practice')}</Text>
               <XssContent mb="md">
-                {t("languages.show.real_life_challenges")}
+                {t('languages.show.real_life_challenges')}
               </XssContent>
-              <Text fw="bold">
-                {t("languages.show.ai_without_limits")}
-              </Text>
+              <Text fw="bold">{t('languages.show.ai_without_limits')}</Text>
               <XssContent mb="md">
-                {t("languages.show.ai_explanation")}
+                {t('languages.show.ai_explanation')}
               </XssContent>
-
             </Box>
 
             <Box h="100%" w="100%">
               <video
                 className="w-full h-full object-cover"
-                src={getResourceUrl(`course-landing-page/learning_${locale}.mp4`)}
+                src={getResourceUrl(
+                  `course-landing-page/learning_${locale}.mp4`,
+                )}
                 autoPlay
                 loop
                 muted
@@ -334,9 +340,7 @@ export default function Show({
         <Card bg="indigo.0" p="xl">
           <Grid>
             <Grid.Col span={{ base: 12, sm: 8 }}>
-              <Text fz={40}>
-                {t("languages.show.demo_description")}
-              </Text>
+              <Text fz={40}>{t('languages.show.demo_description')}</Text>
             </Grid.Col>
             <Grid.Col span={{ base: 12, sm: 4 }}>
               <Center h="100%">
@@ -348,13 +352,12 @@ export default function Show({
                     firstLesson.slug,
                   )}
                 >
-                  {t("languages.show.demo_start")}
+                  {t('languages.show.demo_start')}
                 </Button>
               </Center>
             </Grid.Col>
           </Grid>
         </Card>
-
 
         {/* {i18next.language === "ru" && ( */}
         {/*   <Box> */}
@@ -386,18 +389,15 @@ export default function Show({
         {/*   </Box> */}
         {/* )} */}
 
-
         {qnaItems.length > 0 && (
           <Box my="xl" py="xl">
             <Text fz="h1" fw="bold" mb="xl">
-              {t("languages.show.sort_questions")}
+              {t('languages.show.sort_questions')}
             </Text>
             <SimpleGrid cols={{ base: 1, xs: 2 }}>
               {qnaItems.map((item) => (
                 <Stack key={item.id} gap={0}>
-                  <Text fw="bold">
-                    {item.question}
-                  </Text>
+                  <Text fw="bold">{item.question}</Text>
                   <MarkdownViewer>{item.answer}</MarkdownViewer>
                 </Stack>
               ))}
@@ -410,7 +410,9 @@ export default function Show({
             <Grid align="center" justify="space-between" gutter={0}>
               <Grid.Col span={{ base: 12, md: 6 }}>
                 <Center mb="xl">
-                  <Text fz={40} fw="bold">{t("home.index.consultation")}</Text>
+                  <Text fz={40} fw="bold">
+                    {t('home.index.consultation')}
+                  </Text>
                 </Center>
               </Grid.Col>
               <Grid.Col span={{ base: 12, md: 4 }}>
@@ -427,7 +429,9 @@ export default function Show({
             <Grid align="center" justify="space-between" gutter={0}>
               <Grid.Col span={{ base: 12, md: 6 }}>
                 <Center>
-                  <Text fz={40} fw="bold">{t("home.index.join")}</Text>
+                  <Text fz={40} fw="bold">
+                    {t('home.index.join')}
+                  </Text>
                 </Center>
               </Grid.Col>
               <Grid.Col span={{ base: 12, md: 5 }}>
@@ -438,7 +442,6 @@ export default function Show({
             </Grid>
           </Container>
         )}
-
       </Container>
     </ApplicationLayout>
   );

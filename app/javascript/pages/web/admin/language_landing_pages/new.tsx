@@ -1,11 +1,15 @@
-import * as Routes from "@/routes.js";
-import { useTranslation } from "react-i18next";
-
-import AdminLayout from "@/pages/layouts/AdminLayout";
-import type { Language, LanguageLandingPage, LanguageLandingPageCrud } from "@/types";
 import { Grid } from '@mantine/core';
-import Form from "./shared/form";
-import { Menu } from "./shared/menu";
+import { useTranslation } from 'react-i18next';
+
+import AdminLayout from '@/pages/layouts/AdminLayout';
+import * as Routes from '@/routes.js';
+import type {
+  Language,
+  LanguageLandingPage,
+  LanguageLandingPageCrud,
+} from '@/types';
+import Form from './shared/form';
+import { Menu } from './shared/menu';
 
 type Props = {
   landingPageDto: LanguageLandingPageCrud;
@@ -21,7 +25,7 @@ export default function New({
   const { t } = useTranslation();
 
   return (
-    <AdminLayout header={t("admin.language_landing_pages.new.header")}>
+    <AdminLayout header={t('admin.language_landing_pages.new.header')}>
       <Menu />
       <Grid>
         <Grid.Col span={7}>

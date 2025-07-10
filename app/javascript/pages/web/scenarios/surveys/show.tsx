@@ -1,42 +1,53 @@
-import { type PropsWithChildren } from "react";
-import { Button, Card, Container, Stack, Title, Text, Center } from '@mantine/core';
+import { router, usePage } from '@inertiajs/react';
+import {
+  Button,
+  Card,
+  Center,
+  Container,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
+import type { PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import * as Routes from "@/routes.js";
-import { useTranslation } from "react-i18next";
-
-import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
-import { Survey, SurveyItem, SurveyScenario } from "@/types";
-import { router, usePage } from "@inertiajs/react";
+import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
+import * as Routes from '@/routes.js';
+import type { Survey, SurveyItem, SurveyScenario } from '@/types';
 
 type Props = PropsWithChildren & {
-  survey: Survey
-  scenario: SurveyScenario
-  surveyItems: SurveyItem[]
+  survey: Survey;
+  scenario: SurveyScenario;
+  surveyItems: SurveyItem[];
 };
 
 export default function Show({ scenario, survey, surveyItems }: Props) {
   const { t } = useTranslation();
 
-  const page = usePage()
+  const page = usePage();
   // is there a better way?
   const queryParams = new URLSearchParams(page.url.split('?')[1]);
 
   const handleAnswer = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
+    e.preventDefault();
     const id = Number((e.currentTarget as HTMLButtonElement).dataset.id);
-    router.post(
-      Routes.scenario_survey_answers_url(scenario.id, survey.id),
-      { from: queryParams.get('from'), survey_answer: { survey_item_id: id } }
-    )
-  }
+    router.post(Routes.scenario_survey_answers_url(scenario.id, survey.id), {
+      from: queryParams.get('from'),
+      survey_answer: { survey_item_id: id },
+    });
+  };
 
   return (
     <ApplicationLayout>
       <Container my="xl">
         <Center>
-          <Card withBorder radius="lg" p="xl" w={{ base: '100%', sm: '90%', md: '80%', lg: '70%' }}>
+          <Card
+            withBorder
+            radius="lg"
+            p="xl"
+            w={{ base: '100%', sm: '90%', md: '80%', lg: '70%' }}
+          >
             <Stack gap="md">
-
               <Title order={1} mb="lg">
                 {survey.question}
               </Title>
@@ -57,7 +68,6 @@ export default function Show({ scenario, survey, surveyItems }: Props) {
             </Stack>
           </Card>
         </Center>
-
       </Container>
     </ApplicationLayout>
   );

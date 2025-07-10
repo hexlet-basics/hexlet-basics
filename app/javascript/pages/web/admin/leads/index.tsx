@@ -1,15 +1,13 @@
+import { Button, Code, Modal } from '@mantine/core';
+import dayjs from 'dayjs';
 import { DataTable } from 'mantine-datatable';
 import type { PropsWithChildren } from 'react';
-
-import * as Routes from '@/routes.js';
-import { useTranslation } from 'react-i18next';
-
-import AdminLayout from '@/pages/layouts/AdminLayout';
-import type { Lead, Grid } from '@/types';
-import useDataTableProps from '@/hooks/useDataTableProps';
-import { Modal, Button, Code } from '@mantine/core';
 import { useState } from 'react';
-import dayjs from 'dayjs';
+import { useTranslation } from 'react-i18next';
+import useDataTableProps from '@/hooks/useDataTableProps';
+import AdminLayout from '@/pages/layouts/AdminLayout';
+import * as Routes from '@/routes.js';
+import type { Grid, Lead } from '@/types';
 
 type Props = PropsWithChildren & {
   leads: Lead[];
@@ -23,11 +21,7 @@ function renderData(lead: Lead, col: string) {
       <Button variant="subtle" onClick={() => setVisible(true)}>
         data
       </Button>
-      <Modal
-        opened={visible}
-        onClose={() => setVisible(false)}
-        size="50vw"
-      >
+      <Modal opened={visible} onClose={() => setVisible(false)} size="50vw">
         <Code block>{JSON.stringify(lead[col as keyof Lead], null, 2)}</Code>
       </Modal>
     </>
@@ -50,8 +44,16 @@ export default function Index({ grid, leads }: Props) {
           { accessor: 'phone' },
           { accessor: 'telegram' },
           { accessor: 'whatsapp' },
-          { accessor: 'survey_answers_data', title: 'answers', render: (rec) => renderData(rec, 'survey_answers_data') },
-          { accessor: 'courses_data', title: 'courses', render: (rec) => renderData(rec, 'courses_data') },
+          {
+            accessor: 'survey_answers_data',
+            title: 'answers',
+            render: (rec) => renderData(rec, 'survey_answers_data'),
+          },
+          {
+            accessor: 'courses_data',
+            title: 'courses',
+            render: (rec) => renderData(rec, 'courses_data'),
+          },
           {
             accessor: 'created_at',
             render: (r) => dayjs(r.created_at).format('LL'),
@@ -63,4 +65,3 @@ export default function Index({ grid, leads }: Props) {
     </AdminLayout>
   );
 }
-

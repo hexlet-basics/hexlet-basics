@@ -1,5 +1,5 @@
 type UserSignedInEvent = {
-  type: "UserSignedInEvent";
+  type: 'UserSignedInEvent';
   data: {
     id: number;
     email: string;
@@ -9,7 +9,7 @@ type UserSignedInEvent = {
 };
 
 type UserSignedUpEvent = {
-  type: "UserSignedUpEvent";
+  type: 'UserSignedUpEvent';
   data: {
     id: number;
     email: string;
@@ -19,7 +19,7 @@ type UserSignedUpEvent = {
 };
 
 type CourseStartedEvent = {
-  type: "CourseStartedEvent";
+  type: 'CourseStartedEvent';
   data: {
     slug: string;
     locale: string;
@@ -27,11 +27,11 @@ type CourseStartedEvent = {
 };
 
 type CourseFinishedEvent = {
-  type: "CourseFinishedEvent";
+  type: 'CourseFinishedEvent';
 };
 
 type LessonStartedEvent = {
-  type: "LessonStartedEvent";
+  type: 'LessonStartedEvent';
   data: {
     course_slug: string;
     lesson_slug: string;
@@ -40,11 +40,11 @@ type LessonStartedEvent = {
 };
 
 type LessonFinishedEvent = {
-  type: "LessonFinishedEvent";
+  type: 'LessonFinishedEvent';
 };
 
 type LeadCreatedEvent = {
-  type: "LeadCreatedEvent";
+  type: 'LeadCreatedEvent';
   data: {
     user_id: number;
     email: string;

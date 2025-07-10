@@ -1,17 +1,15 @@
+import { Button, Modal } from '@mantine/core';
+import dayjs from 'dayjs';
 import { DataTable } from 'mantine-datatable';
 import type { PropsWithChildren } from 'react';
-
-import * as Routes from '@/routes.js';
-import { useTranslation } from 'react-i18next';
-
-import AdminLayout from '@/pages/layouts/AdminLayout';
-import AppAnchor from '@/components/AppAnchor';
-import type { LanguageLessonMemberMessage, Grid } from '@/types';
-import useDataTableProps from '@/hooks/useDataTableProps';
-import { Modal, Button } from '@mantine/core';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import AppAnchor from '@/components/AppAnchor';
 import MarkdownViewer from '@/components/MarkdownViewer';
-import dayjs from 'dayjs';
+import useDataTableProps from '@/hooks/useDataTableProps';
+import AdminLayout from '@/pages/layouts/AdminLayout';
+import * as Routes from '@/routes.js';
+import type { Grid, LanguageLessonMemberMessage } from '@/types';
 
 type Props = PropsWithChildren & {
   messages: LanguageLessonMemberMessage[];
@@ -20,7 +18,12 @@ type Props = PropsWithChildren & {
 
 function renderLesson(item: LanguageLessonMemberMessage) {
   return (
-    <AppAnchor href={Routes.language_lesson_path(item.language_slug, item.language_lesson_slug)}>
+    <AppAnchor
+      href={Routes.language_lesson_path(
+        item.language_slug,
+        item.language_lesson_slug,
+      )}
+    >
       {item.language_lesson_name}
     </AppAnchor>
   );
@@ -33,11 +36,7 @@ function renderBody(item: LanguageLessonMemberMessage) {
       <Button variant="subtle" onClick={() => setVisible(true)}>
         {item.content?.slice(0, 50)}
       </Button>
-      <Modal
-        opened={visible}
-        onClose={() => setVisible(false)}
-        size="50vw"
-      >
+      <Modal opened={visible} onClose={() => setVisible(false)} size="50vw">
         <MarkdownViewer>{item.content}</MarkdownViewer>
       </Modal>
     </>
@@ -46,7 +45,9 @@ function renderBody(item: LanguageLessonMemberMessage) {
 
 export default function Index({ grid, messages }: Props) {
   const { t } = useTranslation();
-  const { gridProps } = useDataTableProps<LanguageLessonMemberMessage, {}>(grid);
+  const { gridProps } = useDataTableProps<LanguageLessonMemberMessage, {}>(
+    grid,
+  );
 
   return (
     <AdminLayout header={t('admin.messages.index.header')}>

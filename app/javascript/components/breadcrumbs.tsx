@@ -1,11 +1,11 @@
-import type { BreadcrumbItem } from "@/types";
-import { Head, Link } from "@inertiajs/react";
-import type { HTMLAttributes, PropsWithChildren, ReactNode } from "react";
-import { Breadcrumbs, Anchor, Text, Center } from '@mantine/core';
-import { useTranslation } from "react-i18next";
-import type { BreadcrumbList, ListItem, WithContext } from "schema-dts";
-import { Home } from "lucide-react";
-import AppAnchor from "./AppAnchor";
+import { Head, Link } from '@inertiajs/react';
+import { Anchor, Breadcrumbs, Center, Text } from '@mantine/core';
+import { Home } from 'lucide-react';
+import type { HTMLAttributes, PropsWithChildren, ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { BreadcrumbList, ListItem, WithContext } from 'schema-dts';
+import type { BreadcrumbItem } from '@/types';
+import AppAnchor from './AppAnchor';
 
 type Props = PropsWithChildren &
   HTMLAttributes<HTMLDivElement> & {
@@ -24,22 +24,29 @@ export function XBreadcrumb({ items = [], className }: Props) {
   const itemListElement: ListItem[] = items.map((item, index) => {
     return {
       position: index + 1,
-      "@type": "ListItem",
+      '@type': 'ListItem',
       item: {
-        "@id": item.url,
+        '@id': item.url,
         name: item.name,
       },
     };
   });
 
   const breadcrumbList: WithContext<BreadcrumbList> = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
     itemListElement,
   };
 
   const breadcrumbs: BreadcrumbItemWithActive[] = [
-    { title: <Center c="dimmed"><Home size={15} /></Center>, href: "/" },
+    {
+      title: (
+        <Center c="dimmed">
+          <Home size={15} />
+        </Center>
+      ),
+      href: '/',
+    },
     ...items.map((item, index) => ({
       title: item.name,
       href: item.url,
@@ -55,21 +62,17 @@ export function XBreadcrumb({ items = [], className }: Props) {
         </script>
       </Head>
       <Breadcrumbs className={className}>
-        {breadcrumbs.map((item) => (
+        {breadcrumbs.map((item) =>
           item.active ? (
             <Text key={item.href} c="dimmed" size="sm">
               {item.title}
             </Text>
           ) : (
-            <AppAnchor
-              key={item.href}
-              href={item.href}
-              size="sm"
-            >
+            <AppAnchor key={item.href} href={item.href} size="sm">
               {item.title}
             </AppAnchor>
-          )
-        ))}
+          ),
+        )}
       </Breadcrumbs>
     </>
   );

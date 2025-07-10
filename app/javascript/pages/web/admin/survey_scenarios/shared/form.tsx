@@ -1,26 +1,20 @@
-import { useTranslation } from "react-i18next";
 import { Button } from '@mantine/core';
-
+import { useTranslation } from 'react-i18next';
+import type { HTTPVerb } from 'use-inertia-form';
 import {
   XCheck,
   XDynamicInputs,
   XForm,
   XInput,
   XSelect,
-} from "@/components/forms";
-import type { HTTPVerb } from "use-inertia-form";
-
-import type {
-  SurveyScenarioCrud,
-  SurveyItemCrud,
-  Survey,
-} from "@/types";
-import { eventNames } from "@/event_names";
+} from '@/components/forms';
+import { eventNames } from '@/event_names';
+import type { Survey, SurveyItemCrud, SurveyScenarioCrud } from '@/types';
 
 type Props = {
   data: SurveyScenarioCrud;
-  surveys: Survey[],
-  surveysItems: SurveyItemCrud[]
+  surveys: Survey[];
+  surveysItems: SurveyItemCrud[];
   url: string;
   method?: HTTPVerb;
 };
@@ -33,12 +27,14 @@ export default function Form({
   surveysItems,
 }: Props) {
   const { t } = useTranslation();
-  const { t: tHelpers } = useTranslation("helpers");
+  const { t: tHelpers } = useTranslation('helpers');
 
-  const eventNameOptions: Record<string, string>[] = eventNames.map((event) => ({
-    label: event,
-    value: event,
-  }));
+  const eventNameOptions: Record<string, string>[] = eventNames.map(
+    (event) => ({
+      label: event,
+      value: event,
+    }),
+  );
 
   return (
     <XForm method={method} model="survey_scenario" data={data} to={url}>
@@ -55,7 +51,12 @@ export default function Form({
         label="Triggers"
         emptyData={{ event_name: null, event_threshold_count: null }}
       >
-        <XSelect field="event_name" items={eventNameOptions} valueField="value" labelField="label" />
+        <XSelect
+          field="event_name"
+          items={eventNameOptions}
+          valueField="value"
+          labelField="label"
+        />
         <XInput field="event_threshold_count" type="number" />
         <XCheck field="_destroy" />
       </XDynamicInputs>
@@ -75,10 +76,7 @@ export default function Form({
         <XCheck field="_destroy" />
       </XDynamicInputs>
 
-      <Button type="submit">
-        {tHelpers("submit.save")}
-      </Button>
+      <Button type="submit">{tHelpers('submit.save')}</Button>
     </XForm>
   );
 }
-

@@ -1,10 +1,9 @@
-import analytics, { processHappendEvents } from "@/lib/analytics";
-
-import type { SharedProps } from "@/types";
-import { Head, router, usePage } from "@inertiajs/react";
-import { ColorSchemeScript } from "@mantine/core";
-import parseHtml from "html-react-parser";
-import { type PropsWithChildren, useEffect } from "react";
+import { Head, router, usePage } from '@inertiajs/react';
+import { ColorSchemeScript } from '@mantine/core';
+import parseHtml from 'html-react-parser';
+import { type PropsWithChildren, useEffect } from 'react';
+import analytics, { processHappendEvents } from '@/lib/analytics';
+import type { SharedProps } from '@/types';
 
 type Props = PropsWithChildren & {};
 
@@ -14,20 +13,22 @@ export default (props: Props) => {
 
   useEffect(() => {
     const unlisten = router.on('navigate', (event) => {
-      analytics.page()
+      analytics.page();
 
       if (happendEvents) {
-        processHappendEvents(happendEvents)
+        processHappendEvents(happendEvents);
       }
-    },)
+    });
 
-    return () => unlisten()
-  }, [happendEvents])
+    return () => unlisten();
+  }, [happendEvents]);
 
   return (
     <>
       <Head>{parseHtml(metaTagsHTMLString, { trim: true })}</Head>
-      <Head><ColorSchemeScript /></Head>
+      <Head>
+        <ColorSchemeScript />
+      </Head>
       {props.children}
     </>
   );

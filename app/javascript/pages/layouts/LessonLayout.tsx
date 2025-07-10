@@ -1,15 +1,14 @@
-import { type PropsWithChildren } from "react";
-import { AppShell } from "@mantine/core";
-
-import RootLayout from "./RootLayout.tsx";
-import NavbarBlock from "./blocks/NavbarBlock.tsx";
-import { useDisclosure } from "@mantine/hooks";
+import { AppShell } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import type { PropsWithChildren } from 'react';
+import NavbarBlock from './blocks/NavbarBlock.tsx';
+import RootLayout from './RootLayout.tsx';
 
 type Props = PropsWithChildren & {};
 
 export default function LessonLayout({ children }: Props) {
   const [opened, { toggle }] = useDisclosure();
-  const [mobileOpened, ] = useDisclosure();
+  const [mobileOpened] = useDisclosure();
 
   return (
     <RootLayout>
@@ -17,8 +16,8 @@ export default function LessonLayout({ children }: Props) {
         h="100%"
         navbar={{
           width: { xs: 300, sm: 400, md: 450, lg: 550 },
-          breakpoint: "sm",
-          collapsed: { mobile: !mobileOpened }
+          breakpoint: 'sm',
+          collapsed: { mobile: !mobileOpened },
         }}
         header={{ height: 60 }}
       >
@@ -27,7 +26,6 @@ export default function LessonLayout({ children }: Props) {
         </AppShell.Header>
 
         {children}
-
       </AppShell>
     </RootLayout>
   );

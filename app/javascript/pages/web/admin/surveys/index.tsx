@@ -1,16 +1,14 @@
+import dayjs from 'dayjs';
+import { Edit } from 'lucide-react';
 import { DataTable } from 'mantine-datatable';
 import type { PropsWithChildren } from 'react';
-
-import * as Routes from '@/routes.js';
 import { useTranslation } from 'react-i18next';
-
-import AdminLayout from '@/pages/layouts/AdminLayout';
 import AppAnchor from '@/components/AppAnchor';
-import type { Survey, Grid } from '@/types';
-import { Menu } from './shared/menu';
 import useDataTableProps from '@/hooks/useDataTableProps';
-import { Edit } from 'lucide-react';
-import dayjs from 'dayjs';
+import AdminLayout from '@/pages/layouts/AdminLayout';
+import * as Routes from '@/routes.js';
+import type { Grid, Survey } from '@/types';
+import { Menu } from './shared/menu';
 
 type Props = PropsWithChildren & {
   surveys: Survey[];
@@ -49,4 +47,3 @@ export default function Index({ grid, surveys }: Props) {
     </AdminLayout>
   );
 }
-

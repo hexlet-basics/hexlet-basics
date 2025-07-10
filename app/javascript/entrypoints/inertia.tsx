@@ -1,11 +1,11 @@
-import Root from "@/components/Root.tsx";
-import type { ResolvedComponent, RootProps } from "@/types";
-import { createInertiaApp } from "@inertiajs/react";
-import * as Sentry from "@sentry/react";
-import { createRoot, hydrateRoot } from "react-dom/client";
-import configure from "@/lib/configure";
+import { createInertiaApp } from '@inertiajs/react';
+import * as Sentry from '@sentry/react';
+import { createRoot, hydrateRoot } from 'react-dom/client';
+import Root from '@/components/Root.tsx';
+import configure from '@/lib/configure';
+import type { ResolvedComponent, RootProps } from '@/types';
 
-import "@/init.ts";
+import '@/init.ts';
 
 if (import.meta.env.DEV) {
   // localStorage.debug = "app:*";
@@ -20,7 +20,7 @@ Sentry.init({
   integrations: [
     Sentry.feedbackIntegration({
       autoInject: false,
-      colorScheme: "system",
+      colorScheme: 'system',
     }),
     Sentry.httpClientIntegration(),
     // Sentry.captureConsoleIntegration(),
@@ -28,12 +28,12 @@ Sentry.init({
     Sentry.extraErrorDataIntegration(),
     Sentry.thirdPartyErrorFilterIntegration({
       filterKeys: [import.meta.env.VITE_APP_HOST],
-      behaviour: "drop-error-if-contains-third-party-frames",
-    })
+      behaviour: 'drop-error-if-contains-third-party-frames',
+    }),
   ],
   ignoreErrors: [
-    "Failed to fetch dynamically imported module",
-    "vite:preloadError"
+    'Failed to fetch dynamically imported module',
+    'vite:preloadError',
   ],
 });
 
@@ -49,7 +49,7 @@ createInertiaApp({
   // progress: false,
 
   resolve: async (name) => {
-    const pages = import.meta.glob<ResolvedComponent>("../pages/**/*.tsx");
+    const pages = import.meta.glob<ResolvedComponent>('../pages/**/*.tsx');
     const pageFn = pages[`../pages/${name}.tsx`];
     if (!pageFn) {
       console.error(`Missing Inertia page component: '${name}.tsx'`);
@@ -64,16 +64,16 @@ createInertiaApp({
     if (el) {
       const typedProps = props as RootProps;
       const { locale, suffix } = typedProps.initialPage.props;
-      configure(locale, suffix)
+      configure(locale, suffix);
       const vdomFn = () => {
         // return <Root locale={locale} suffix={suffix}><App {...props} /></Root>;
-        return <App {...props} />
+        return <App {...props} />;
       };
-      if (import.meta.env.MODE !== "development") {
+      if (import.meta.env.MODE !== 'development') {
         hydrateRoot(el, vdomFn(), {
           // Callback called when an error is thrown and not caught by an ErrorBoundary.
           onUncaughtError: Sentry.reactErrorHandler((error, errorInfo) => {
-            console.warn("Uncaught error", error, errorInfo.componentStack);
+            console.warn('Uncaught error', error, errorInfo.componentStack);
           }),
           // Callback called when React catches an error in an ErrorBoundary.
           onCaughtError: Sentry.reactErrorHandler(),
@@ -86,9 +86,9 @@ createInertiaApp({
       }
     } else {
       console.error(
-        "Missing root element.\n\n" +
-        "If you see this error, it probably means you load Inertia.js on non-Inertia pages.\n" +
-        'Consider moving <%= vite_typescript_tag "inertia" %> to the Inertia-specific layout instead.',
+        'Missing root element.\n\n' +
+          'If you see this error, it probably means you load Inertia.js on non-Inertia pages.\n' +
+          'Consider moving <%= vite_typescript_tag "inertia" %> to the Inertia-specific layout instead.',
       );
     }
   },

@@ -1,20 +1,25 @@
-import type { Locale, SharedProps } from "@/types";
-import type { PropsWithChildren } from "react";
-import React from "react";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-
-import * as Routes from "@/routes.js";
+import { Link } from '@inertiajs/react';
+import {
+  Button,
+  Collapse,
+  Container,
+  Group,
+  List,
+  Stack,
+  Text,
+} from '@mantine/core';
+import type { PropsWithChildren } from 'react';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
+import * as Routes from '@/routes.js';
+import type { Locale, SharedProps } from '@/types';
 import type {
   LanguageCategory,
   LanguageSitemapLandingPage,
   LanguageSitemapLesson,
   SitemapBlogPost,
-} from "@/types/serializers";
-
-import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
-import { Container, Collapse, Button, Stack, Text, List, Group } from '@mantine/core';
-import { Link } from "@inertiajs/react";
+} from '@/types/serializers';
 
 type Props = PropsWithChildren & {
   title: string;
@@ -31,7 +36,7 @@ type Props = PropsWithChildren & {
 type LandingPagesBlockProps = {
   locale: Locale;
   landingPages: LanguageSitemapLandingPage[];
-  lessonsByLocaleAndLanguageId: Props["lessonsByLocaleAndLanguageId"];
+  lessonsByLocaleAndLanguageId: Props['lessonsByLocaleAndLanguageId'];
 };
 
 type LessonsBlockProps = {
@@ -49,7 +54,7 @@ type LanguageCategoriesBlockProps = {
   opened: boolean;
 };
 
-const getSuffix = (locale: Locale) => (locale === "en" ? null : locale);
+const getSuffix = (locale: Locale) => (locale === 'en' ? null : locale);
 
 function LessonsBlock({ lessons, landingPage }: LessonsBlockProps) {
   return (
@@ -111,7 +116,7 @@ function LadingPagesBlock({
                 aria-controls={String(index)}
               >
                 <span
-                  className={`bi ${landingPageOpened ? "bi-chevron-up" : "bi-chevron-down"}`}
+                  className={`bi ${landingPageOpened ? 'bi-chevron-up' : 'bi-chevron-down'}`}
                 />
               </Button>
             </Group>
@@ -205,7 +210,7 @@ export default function SiteMap({
                   style={{ textDecoration: 'none' }}
                   href={Routes.root_path({ suffix: getSuffix(locale) })}
                 >
-                  {t("home.sitemap.home", { lng: locale })}
+                  {t('home.sitemap.home', { lng: locale })}
                 </Link>
               </Text>
               <Text fw={500} size="lg">
@@ -214,7 +219,7 @@ export default function SiteMap({
                   style={{ textDecoration: 'none' }}
                   href={`#courses-${locale}`}
                 >
-                  {t("home.languages.courses", { lng: locale })}
+                  {t('home.languages.courses', { lng: locale })}
                 </Link>
               </Text>
               <LadingPagesBlock
@@ -230,7 +235,7 @@ export default function SiteMap({
                     style={{ textDecoration: 'none' }}
                     href={`#blog-${locale}`}
                   >
-                    {t("blog_posts.index.header", { lng: locale })}
+                    {t('blog_posts.index.header', { lng: locale })}
                   </Link>
                 </Text>
                 <Button
@@ -240,7 +245,7 @@ export default function SiteMap({
                   aria-controls="blog-collapse"
                 >
                   <span
-                    className={`bi ${blogOpened ? "bi-chevron-up" : "bi-chevron-down"}`}
+                    className={`bi ${blogOpened ? 'bi-chevron-up' : 'bi-chevron-down'}`}
                   />
                 </Button>
               </Group>
@@ -255,7 +260,7 @@ export default function SiteMap({
                     style={{ textDecoration: 'none' }}
                     href={`#categories-${locale}`}
                   >
-                    {t("language_categories.index.header", { lng: locale })}
+                    {t('language_categories.index.header', { lng: locale })}
                   </Link>
                 </Text>
                 <Button
@@ -265,7 +270,7 @@ export default function SiteMap({
                   aria-controls="categories-collapse"
                 >
                   <span
-                    className={`bi ${categoriesOpened ? "bi-chevron-up" : "bi-chevron-down"}`}
+                    className={`bi ${categoriesOpened ? 'bi-chevron-up' : 'bi-chevron-down'}`}
                   />
                 </Button>
               </Group>

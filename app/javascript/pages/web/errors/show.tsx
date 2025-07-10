@@ -1,8 +1,8 @@
-import { Container, Text, Title, Stack } from '@mantine/core';
+import { Container, Stack, Text, Title } from '@mantine/core';
 
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 
-import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
+import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
 
 type Props = {
   code: string;

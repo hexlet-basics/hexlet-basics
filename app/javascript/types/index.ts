@@ -1,47 +1,51 @@
-import type { PageProps } from "@inertiajs/inertia";
-import type { i18n } from "i18next";
-import type { SetupOptions } from "node_modules/@inertiajs/react/types/createInertiaApp";
-import type { ReactNode } from "react";
-import type { BackendEvent } from "./events";
-import { LanguageCategory, LanguageLandingPageForLists, User } from "./serializers";
+import type { PageProps } from '@inertiajs/inertia';
+import type { i18n } from 'i18next';
+import type { SetupOptions } from 'node_modules/@inertiajs/react/types/createInertiaApp';
+import type { ReactNode } from 'react';
+import type { BackendEvent } from './events';
+import type {
+  LanguageCategory,
+  LanguageLandingPageForLists,
+  User,
+} from './serializers';
 
-export * from "./serializers";
+export * from './serializers';
 
 export type BreadcrumbItem = {
   name: string;
   url: string;
 };
 
-export type FlashKey = "success" | "notice" | "error";
+export type FlashKey = 'success' | 'notice' | 'error';
 
 export type FlashVariant =
-  | "blue"
-  | "cyan"
-  | "dark"
-  | "grape"
-  | "gray"
-  | "green"
-  | "indigo"
-  | "lime"
-  | "orange"
-  | "pink"
-  | "red"
-  | "teal"
-  | "violet"
-  | "yellow";
+  | 'blue'
+  | 'cyan'
+  | 'dark'
+  | 'grape'
+  | 'gray'
+  | 'green'
+  | 'indigo'
+  | 'lime'
+  | 'orange'
+  | 'pink'
+  | 'red'
+  | 'teal'
+  | 'violet'
+  | 'yellow';
 
 export type FlashVariants = Record<FlashKey, FlashVariant>;
 
-export type Locale = i18n["language"];
+export type Locale = i18n['language'];
 
 export interface SharedProps extends PageProps {
   auth: {
     user: User;
   };
-  shouldAddContactMethod: boolean,
+  shouldAddContactMethod: boolean;
   railsDirectUploadsUrl: string;
   courseCategories: LanguageCategory[];
-  suffix: "ru" | null;
+  suffix: 'ru' | null;
   locale: Locale;
   happendEvents: BackendEvent[] | null;
   // eventNames: BackendEvent[]
@@ -53,7 +57,7 @@ export interface SharedProps extends PageProps {
   metaTagsHTMLString: string;
 }
 
-export type RootProps = SetupOptions<HTMLElement, SharedProps>["props"];
+export type RootProps = SetupOptions<HTMLElement, SharedProps>['props'];
 
 // Temporary type definition, until @inertiajs/react provides one
 export type ResolvedComponent = {

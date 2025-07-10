@@ -1,8 +1,11 @@
-import { useTranslation } from "react-i18next";
-import * as Routes from "@/routes.js";
-import type { LanguageCrud, LanguageLandingPage } from "@/types/serializers";
-import { CrudHorizontalMenu, CrudHorizontalMenuItem } from "@/components/CrudHorizontalMenu";
-import { LogIn } from "lucide-react";
+import { LogIn } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import {
+  CrudHorizontalMenu,
+  type CrudHorizontalMenuItem,
+} from '@/components/CrudHorizontalMenu';
+import * as Routes from '@/routes.js';
+import type { LanguageCrud, LanguageLandingPage } from '@/types/serializers';
 
 type Props = {
   data?: LanguageCrud;
@@ -10,25 +13,30 @@ type Props = {
 };
 
 export function Menu({ data, landingPage }: Props) {
-  const { t: tHelpers } = useTranslation("helpers");
+  const { t: tHelpers } = useTranslation('helpers');
 
   const items: CrudHorizontalMenuItem[] = [
-    { href: Routes.admin_languages_path(), label: tHelpers("crud.list") },
-    { href: Routes.new_admin_language_path(), label: tHelpers("crud.add") },
+    { href: Routes.admin_languages_path(), label: tHelpers('crud.list') },
+    { href: Routes.new_admin_language_path(), label: tHelpers('crud.add') },
   ];
 
   if (data) {
-    items.push(
-      { href: Routes.edit_admin_language_path(data.language.id), label: tHelpers("crud.editing") },
-    );
+    items.push({
+      href: Routes.edit_admin_language_path(data.language.id),
+      label: tHelpers('crud.editing'),
+    });
     if (landingPage) {
-      items.push(
-        { href: Routes.language_path(landingPage.slug), external: true, label: <LogIn size={15} /> },
-      );
+      items.push({
+        href: Routes.language_path(landingPage.slug),
+        external: true,
+        label: <LogIn size={15} />,
+      });
     }
-    items.push(
-      { href: data.meta.repository_url, external: true, label: <i className="bi bi-github" /> },
-    );
+    items.push({
+      href: data.meta.repository_url,
+      external: true,
+      label: <i className="bi bi-github" />,
+    });
   }
 
   return <CrudHorizontalMenu items={items} />;

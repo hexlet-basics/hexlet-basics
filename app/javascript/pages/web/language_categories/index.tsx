@@ -1,14 +1,11 @@
-import type { PropsWithChildren } from "react";
-import { Card, Text, Group, Container, Stack, SimpleGrid } from '@mantine/core';
-
-import { useTranslation } from "react-i18next";
-
-import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
-import type { LanguageCategory } from "@/types/serializers";
-
-import * as Routes from "@/routes.js";
-import { ArrowRight } from "lucide-react";
-import AppAnchor from "@/components/AppAnchor";
+import { Card, Container, Group, SimpleGrid, Stack, Text } from '@mantine/core';
+import { ArrowRight } from 'lucide-react';
+import type { PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
+import AppAnchor from '@/components/AppAnchor';
+import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
+import * as Routes from '@/routes.js';
+import type { LanguageCategory } from '@/types/serializers';
 
 type Props = PropsWithChildren & {
   categories: LanguageCategory[];
@@ -16,7 +13,7 @@ type Props = PropsWithChildren & {
 
 export default function Index({ categories }: Props) {
   const { t } = useTranslation();
-  const header = t("language_categories.index.header");
+  const header = t('language_categories.index.header');
 
   const items = [
     {
@@ -30,12 +27,20 @@ export default function Index({ categories }: Props) {
       <Container size="lg">
         <SimpleGrid py="md" cols={{ base: 1, md: 2, lg: 3 }}>
           {categories.map((category) => (
-
-            <Card key={category.id} padding="xl" radius="md" withBorder h="100%" pos="relative">
+            <Card
+              key={category.id}
+              padding="xl"
+              radius="md"
+              withBorder
+              h="100%"
+              pos="relative"
+            >
               <Stack h="100%">
-                <Text size="xl" fw={700}>{category.header}</Text>
+                <Text size="xl" fw={700}>
+                  {category.header}
+                </Text>
                 <Group mt="auto" c="blue">
-                  <Text>{t("language_categories.index.link")}</Text>
+                  <Text>{t('language_categories.index.link')}</Text>
                   <ArrowRight size={16} />
                 </Group>
               </Stack>
@@ -46,7 +51,6 @@ export default function Index({ categories }: Props) {
                 href={Routes.language_category_path(category.slug!)}
               />
             </Card>
-
           ))}
         </SimpleGrid>
       </Container>

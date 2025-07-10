@@ -1,21 +1,27 @@
-import { useTranslation } from "react-i18next";
 import { Button } from '@mantine/core';
+import { useTranslation } from 'react-i18next';
+import type { HTTPVerb } from 'use-inertia-form';
+import {
+  XCheck,
+  XDynamicInputs,
+  XForm,
+  XInput,
+  XSelect,
+  XTextarea,
+} from '@/components/forms';
 
-import { XCheck, XDynamicInputs, XForm, XInput, XSelect, XTextarea } from "@/components/forms";
-import type { HTTPVerb } from "use-inertia-form";
-
-import type { SurveyCrud, SurveyItemCrud } from "@/types";
+import type { SurveyCrud, SurveyItemCrud } from '@/types';
 
 type Props = {
   data: SurveyCrud;
-  surveyItems: SurveyItemCrud[]
+  surveyItems: SurveyItemCrud[];
   url: string;
   method?: HTTPVerb;
 };
 
 export default function Form({ data, url, method, surveyItems }: Props) {
   const { t } = useTranslation();
-  const { t: tHelpers } = useTranslation("helpers");
+  const { t: tHelpers } = useTranslation('helpers');
 
   return (
     <XForm method={method} model="survey" data={data} to={url}>
@@ -30,14 +36,16 @@ export default function Form({ data, url, method, surveyItems }: Props) {
       >
         <XInput field="value" />
         <XInput field="tag_list" />
-        <XSelect field="state" valueField="value" labelField="key" items={data.meta.item_states} />
+        <XSelect
+          field="state"
+          valueField="value"
+          labelField="key"
+          items={data.meta.item_states}
+        />
         <XInput field="order" />
       </XDynamicInputs>
 
-      <Button type="submit">
-        {tHelpers("submit.save")}
-      </Button>
+      <Button type="submit">{tHelpers('submit.save')}</Button>
     </XForm>
   );
 }
-

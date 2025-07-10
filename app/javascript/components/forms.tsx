@@ -1,28 +1,38 @@
-import { ComboboxItem, Image } from "@mantine/core";
-import { forwardRef, PropsWithChildren, useEffect, useState } from "react";
+import { usePage } from '@inertiajs/react';
 import {
-  TextInput,
-  TextInputProps,
-  PasswordInput,
-  PasswordInputProps,
-  Textarea,
-  TextareaProps, AutocompleteProps,
+  type AutocompleteProps,
+  Button,
   Checkbox,
-  CheckboxProps,
-  Select,
-  SelectProps,
+  type CheckboxProps,
+  type ComboboxItem,
+  Fieldset,
   FileInput,
-  FileInputProps,
-  Stack, Fieldset,
-  Button
-} from "@mantine/core";
-import { useTranslation } from "react-i18next";
-import { Form, FormProps, NestedFields, NestedObject, useDynamicInputs, useInertiaInput } from "use-inertia-form";
-import { get } from "es-toolkit/compat";
-import { usePage } from "@inertiajs/react";
-import type { SharedProps } from "@/types";
-import { processHappendEvents } from "@/lib/analytics";
-import axios from "axios";
+  type FileInputProps,
+  Image,
+  PasswordInput,
+  type PasswordInputProps,
+  Select,
+  type SelectProps,
+  Stack,
+  Textarea,
+  type TextareaProps,
+  TextInput,
+  type TextInputProps,
+} from '@mantine/core';
+import axios from 'axios';
+import { get } from 'es-toolkit/compat';
+import { forwardRef, type PropsWithChildren, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  Form,
+  type FormProps,
+  NestedFields,
+  type NestedObject,
+  useDynamicInputs,
+  useInertiaInput,
+} from 'use-inertia-form';
+import { processHappendEvents } from '@/lib/analytics';
+import type { SharedProps } from '@/types';
 
 /* Shared Types */
 export type XFormControlProps = {
@@ -32,26 +42,24 @@ export type XFormControlProps = {
 
 export interface XInputProps
   extends TextInputProps,
-  XFormControlProps,
-  Omit<React.ComponentPropsWithoutRef<"input">, keyof TextInputProps> { }
+    XFormControlProps,
+    Omit<React.ComponentPropsWithoutRef<'input'>, keyof TextInputProps> {}
 
 export interface XPasswordInputProps
   extends PasswordInputProps,
-  XFormControlProps,
-  Omit<React.ComponentPropsWithoutRef<"input">, keyof PasswordInputProps> { }
+    XFormControlProps,
+    Omit<React.ComponentPropsWithoutRef<'input'>, keyof PasswordInputProps> {}
 
 export interface XCheckboxProps
   extends CheckboxProps,
-  XFormControlProps,
-  Omit<React.ComponentPropsWithoutRef<"input">, keyof CheckboxProps> { }
+    XFormControlProps,
+    Omit<React.ComponentPropsWithoutRef<'input'>, keyof CheckboxProps> {}
 
 export interface XHiddenProps
   extends XFormControlProps,
-  Omit<React.ComponentPropsWithoutRef<"input">, "type"> { }
+    Omit<React.ComponentPropsWithoutRef<'input'>, 'type'> {}
 
-export interface XFileProps
-  extends FileInputProps,
-  XFormControlProps {
+export interface XFileProps extends FileInputProps, XFormControlProps {
   metaName: string;
 }
 
@@ -63,12 +71,12 @@ export type XStateEventProps = {
 function useLabel(
   model: string | undefined,
   name: string,
-  explicitLabel?: React.ReactNode | string | null
+  explicitLabel?: React.ReactNode | string | null,
 ): string | React.ReactNode {
   if (explicitLabel) return explicitLabel;
 
-  const { t: tAr } = useTranslation("activerecord");
-  const { t: tAm } = useTranslation("activemodel");
+  const { t: tAr } = useTranslation('activerecord');
+  const { t: tAm } = useTranslation('activemodel');
 
   const path = `attributes.${model}.${name}`;
   // @ts-expect-error todo
@@ -77,7 +85,9 @@ function useLabel(
   return tAr(path, fallback);
 }
 
-function getFirstError(error: string | string[] | undefined): string | undefined {
+function getFirstError(
+  error: string | string[] | undefined,
+): string | undefined {
   if (!error) return undefined;
   return Array.isArray(error) ? error[0] : error;
 }
@@ -102,7 +112,7 @@ export function XForm<TForm extends NestedObject>({
 
   return (
     <Form
-      className={`form ${className ?? ""}`}
+      className={`form ${className ?? ''}`}
       railsAttributes={railsAttributes}
       onSuccess={() => setWasSubmitted(true)}
       {...props}
@@ -116,7 +126,11 @@ export function XForm<TForm extends NestedObject>({
 export const XInput = forwardRef<HTMLInputElement, XInputProps>(
   ({ field, model, label, ...props }, ref) => {
     const { inputName, inputId, value, setValue, error, form } =
-      useInertiaInput<string | undefined>({ name: field, model, errorKey: field });
+      useInertiaInput<string | undefined>({
+        name: field,
+        model,
+        errorKey: field,
+      });
     const preparedLabel = useLabel(form.model, field, label);
     const errorText = getFirstError(error);
 
@@ -133,15 +147,19 @@ export const XInput = forwardRef<HTMLInputElement, XInputProps>(
         {...props}
       />
     );
-  }
+  },
 );
-XInput.displayName = "XInput";
+XInput.displayName = 'XInput';
 
 /* XPasswordInput */
 export const XPasswordInput = forwardRef<HTMLInputElement, XPasswordInputProps>(
   ({ field, model, label, ...props }, ref) => {
     const { inputName, inputId, value, setValue, error, form } =
-      useInertiaInput<string | undefined>({ name: field, model, errorKey: field });
+      useInertiaInput<string | undefined>({
+        name: field,
+        model,
+        errorKey: field,
+      });
     const preparedLabel = useLabel(form.model, field, label);
     const errorText = getFirstError(error);
 
@@ -158,22 +176,23 @@ export const XPasswordInput = forwardRef<HTMLInputElement, XPasswordInputProps>(
         {...props}
       />
     );
-  }
+  },
 );
-XPasswordInput.displayName = "XPasswordInput";
+XPasswordInput.displayName = 'XPasswordInput';
 
-export interface XTextareaProps extends
-  TextareaProps,
-  XFormControlProps,
-  Omit<React.ComponentPropsWithoutRef<"textarea">, keyof TextareaProps> {
-
-}
+export interface XTextareaProps
+  extends TextareaProps,
+    XFormControlProps,
+    Omit<React.ComponentPropsWithoutRef<'textarea'>, keyof TextareaProps> {}
 
 export const XTextarea = forwardRef<HTMLTextAreaElement, XTextareaProps>(
   ({ field, model, label, ...props }, ref) => {
-
     const { inputName, inputId, value, setValue, error, form } =
-      useInertiaInput<string | undefined>({ name: field, model, errorKey: field });
+      useInertiaInput<string | undefined>({
+        name: field,
+        model,
+        errorKey: field,
+      });
 
     const preparedLabel = useLabel(form.model, field, label);
     const errorText = getFirstError(error);
@@ -191,16 +210,20 @@ export const XTextarea = forwardRef<HTMLTextAreaElement, XTextareaProps>(
         {...props}
       />
     );
-  }
+  },
 );
 
-XTextarea.displayName = "XTextarea";
+XTextarea.displayName = 'XTextarea';
 
 /* XCheckbox */
 export const XCheckbox = forwardRef<HTMLInputElement, XCheckboxProps>(
   ({ field, model, label, ...props }, ref) => {
     const { inputName, inputId, value, setValue, error, form } =
-      useInertiaInput<boolean | undefined>({ name: field, model, errorKey: field });
+      useInertiaInput<boolean | undefined>({
+        name: field,
+        model,
+        errorKey: field,
+      });
     const preparedLabel = useLabel(form.model, field, label);
     const errorText = getFirstError(error);
 
@@ -217,16 +240,16 @@ export const XCheckbox = forwardRef<HTMLInputElement, XCheckboxProps>(
         {...props}
       />
     );
-  }
+  },
 );
-XCheckbox.displayName = "XCheckbox";
+XCheckbox.displayName = 'XCheckbox';
 
 export interface XSelectProps<
   T extends Record<string, unknown>,
   LabelKey extends keyof T = keyof T,
-  ValueKey extends keyof T = keyof T
+  ValueKey extends keyof T = keyof T,
 > extends SelectProps,
-  XFormControlProps {
+    XFormControlProps {
   items?: T[];
   labelField: LabelKey;
   valueField: ValueKey;
@@ -235,19 +258,13 @@ export interface XSelectProps<
 export function XSelect<
   T extends Record<string, unknown>,
   LabelKey extends keyof T,
-  ValueKey extends keyof T
+  ValueKey extends keyof T,
 >(props: XSelectProps<T, LabelKey, ValueKey>) {
-  const {
-    items = [],
-    field,
-    model,
-    labelField,
-    valueField,
-    ...rest
-  } = props;
+  const { items = [], field, model, labelField, valueField, ...rest } = props;
 
-  const { inputName, inputId, value, setValue, error, form } =
-    useInertiaInput<string | undefined>({ name: field, model, errorKey: field });
+  const { inputName, inputId, value, setValue, error, form } = useInertiaInput<
+    string | undefined
+  >({ name: field, model, errorKey: field });
 
   const preparedLabel = useLabel(form.model, field);
   const errorText = getFirstError(error);
@@ -281,9 +298,12 @@ export function XSelect<
 export interface XAutocompleteProps<
   T extends Record<string, unknown>,
   LabelKey extends keyof T = keyof T,
-  ValueKey extends keyof T = keyof T
-> extends Omit<React.ComponentPropsWithoutRef<'input'>, keyof AutocompleteProps>,
-  XFormControlProps {
+  ValueKey extends keyof T = keyof T,
+> extends Omit<
+      React.ComponentPropsWithoutRef<'input'>,
+      keyof AutocompleteProps
+    >,
+    XFormControlProps {
   has?: string;
   source: string; // теперь обязательный
   labelField: LabelKey;
@@ -293,41 +313,35 @@ export interface XAutocompleteProps<
 export function XAutocomplete<
   T extends Record<string, unknown>,
   LabelKey extends keyof T,
-  ValueKey extends keyof T
+  ValueKey extends keyof T,
 >(props: XAutocompleteProps<T, LabelKey, ValueKey>) {
-  const {
-    field,
-    model,
-    has,
-    source,
-    labelField,
-    valueField,
-    ...rest
-  } = props;
+  const { field, model, has, source, labelField, valueField, ...rest } = props;
 
-  const [term, setTerm] = useState('')
+  const [term, setTerm] = useState('');
 
-  const { inputName, inputId, value, setValue, error, form } =
-    useInertiaInput<string | undefined>({ name: field, model, errorKey: field });
+  const { inputName, inputId, value, setValue, error, form } = useInertiaInput<
+    string | undefined
+  >({ name: field, model, errorKey: field });
 
   const [loadedItems, setLoadedItems] = useState<T[]>(() => {
     // @ts-expect-error todo
-    const labelValue = form.data[form.model][has][labelField]
-    const initData = (has ? [{ [labelField]: labelValue, [valueField]: value }] : []) as T[]
-    return initData
-  })
-
+    const labelValue = form.data[form.model][has][labelField];
+    const initData = (
+      has ? [{ [labelField]: labelValue, [valueField]: value }] : []
+    ) as T[];
+    return initData;
+  });
 
   const preparedLabel = useLabel(form.model, field);
   const errorText = getFirstError(error);
 
   useEffect(() => {
     const fn = async () => {
-      const result = await axios.get<T[]>(source, { params: { q: term } })
+      const result = await axios.get<T[]>(source, { params: { q: term } });
       setLoadedItems(result.data);
-    }
+    };
 
-    (term && term.length > 1) ? fn() : setLoadedItems([])
+    term && term.length > 1 ? fn() : setLoadedItems([]);
   }, [term, source]);
 
   const data: ComboboxItem[] = loadedItems.map((item) => ({
@@ -391,9 +405,9 @@ export const XHidden = forwardRef<HTMLInputElement, XHiddenProps>(
         {...props}
       />
     );
-  }
+  },
 );
-XHidden.displayName = "XHidden";
+XHidden.displayName = 'XHidden';
 
 export const XFile = forwardRef<HTMLButtonElement, XFileProps>(
   ({ field, model, metaName, label, ...props }, ref) => {
@@ -401,13 +415,15 @@ export const XFile = forwardRef<HTMLButtonElement, XFileProps>(
       props: { railsDirectUploadsUrl },
     } = usePage<SharedProps>();
     // const { t: tAm } = useTranslation("activemodel");
-    const { inputName, setValue, error, form } = useInertiaInput<File | undefined>({
+    const { inputName, setValue, error, form } = useInertiaInput<
+      File | undefined
+    >({
       name: field,
       model,
       errorKey: field,
     });
 
-    const imageUrl = get(form.data, ["meta", metaName]);
+    const imageUrl = get(form.data, ['meta', metaName]);
     const errorText = getFirstError(error);
     const preparedLabel = useLabel(form.model, field, label);
 
@@ -435,14 +451,12 @@ export const XFile = forwardRef<HTMLButtonElement, XFileProps>(
           value={form.data[inputName] as File | undefined}
           ref={ref}
         />
-        {imageUrl && (
-          <Image src={imageUrl} maw={200} alt={field} />
-        )}
+        {imageUrl && <Image src={imageUrl} maw={200} alt={field} />}
       </Stack>
     );
-  }
+  },
 );
-XFile.displayName = "XFile";
+XFile.displayName = 'XFile';
 
 type XDynamicInputsProps = PropsWithChildren & {
   model: string;
@@ -463,7 +477,12 @@ export function XDynamicInputs({
       <Stack gap="md">
         {paths.map((path, index) => (
           <NestedFields key={index} model={path}>
-            <Stack gap="xs" p="sm" pl="md" style={{ borderLeft: "2px solid #ccc" }}>
+            <Stack
+              gap="xs"
+              p="sm"
+              pl="md"
+              style={{ borderLeft: '2px solid #ccc' }}
+            >
               {children}
             </Stack>
           </NestedFields>
@@ -478,13 +497,17 @@ export function XDynamicInputs({
 
 export interface XCheckProps
   extends CheckboxProps,
-  XFormControlProps,
-  Omit<React.ComponentPropsWithoutRef<"input">, keyof CheckboxProps> { }
+    XFormControlProps,
+    Omit<React.ComponentPropsWithoutRef<'input'>, keyof CheckboxProps> {}
 
 export const XCheck = forwardRef<HTMLInputElement, XCheckProps>(
   ({ field, model, label, ...props }, ref) => {
     const { inputName, inputId, value, setValue, error, form } =
-      useInertiaInput<boolean | undefined>({ name: field, model, errorKey: field });
+      useInertiaInput<boolean | undefined>({
+        name: field,
+        model,
+        errorKey: field,
+      });
 
     const preparedLabel = useLabel(form.model, field, label);
 
@@ -501,7 +524,7 @@ export const XCheck = forwardRef<HTMLInputElement, XCheckProps>(
         {...props}
       />
     );
-  }
+  },
 );
 
-XCheck.displayName = "XCheck";
+XCheck.displayName = 'XCheck';

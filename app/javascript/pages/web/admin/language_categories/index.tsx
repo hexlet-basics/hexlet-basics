@@ -1,20 +1,15 @@
-import { DataTable } from 'mantine-datatable';
-import type { PropsWithChildren } from "react";
-
-import * as Routes from "@/routes.js";
-import { useTranslation } from "react-i18next";
-
-import AdminLayout from "@/pages/layouts/AdminLayout";
-import type {
-  Grid,
-  LanguageCategory,
-} from "@/types";
-import { Menu } from "./shared/menu";
-import useConfirmation from "@/hooks/useConfirmation";
-import AppAnchor from '@/components/AppAnchor';
-import useDataTableProps from '@/hooks/useDataTableProps';
-import { Edit, Link } from 'lucide-react';
 import dayjs from 'dayjs';
+import { Edit, Link } from 'lucide-react';
+import { DataTable } from 'mantine-datatable';
+import type { PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
+import AppAnchor from '@/components/AppAnchor';
+import useConfirmation from '@/hooks/useConfirmation';
+import useDataTableProps from '@/hooks/useDataTableProps';
+import AdminLayout from '@/pages/layouts/AdminLayout';
+import * as Routes from '@/routes.js';
+import type { Grid, LanguageCategory } from '@/types';
+import { Menu } from './shared/menu';
 
 type Props = PropsWithChildren & {
   categories: LanguageCategory[];
@@ -25,18 +20,18 @@ export default function Index({ grid, categories }: Props) {
   const { t } = useTranslation();
   const confirmDeleting = useConfirmation();
 
-  const { gridProps } = useDataTableProps<LanguageCategory, {}>(grid)
+  const { gridProps } = useDataTableProps<LanguageCategory, {}>(grid);
 
   const renderActions = (item: LanguageCategory) => {
     return (
       <>
-        <AppAnchor me="xs" href={Routes.edit_admin_language_category_path(item.id)}>
+        <AppAnchor
+          me="xs"
+          href={Routes.edit_admin_language_category_path(item.id)}
+        >
           <Edit size={14} />
         </AppAnchor>
-        <a
-          target="_blank"
-          href={Routes.language_category_path(item.slug!)}
-        >
+        <a target="_blank" href={Routes.language_category_path(item.slug!)}>
           <Link size={14} />
         </a>
         {/* <Link */}
@@ -52,14 +47,14 @@ export default function Index({ grid, categories }: Props) {
   };
 
   return (
-    <AdminLayout header={t("admin.language_categories.index.header")}>
+    <AdminLayout header={t('admin.language_categories.index.header')}>
       <Menu />
       <DataTable
         records={categories}
         columns={[
           { accessor: 'id' },
           { accessor: 'name', sortable: true },
-          { accessor: 'slug', },
+          { accessor: 'slug' },
           {
             accessor: 'created_at',
             sortable: true,
@@ -68,8 +63,8 @@ export default function Index({ grid, categories }: Props) {
           {
             accessor: 'actions',
             title: 'actions',
-            render: renderActions
-          }
+            render: renderActions,
+          },
         ]}
         {...gridProps}
       />

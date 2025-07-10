@@ -1,17 +1,31 @@
-import AppAnchor from "@/components/AppAnchor";
-import CourseBlock from "@/components/CourseBlock";
-import XssContent from "@/components/XssContent";
-import ApplicationLayout from "@/pages/layouts/ApplicationLayout";
-import * as Routes from "@/routes.js";
+import { Link } from '@inertiajs/react';
+import {
+  Alert,
+  Anchor,
+  Card,
+  Container,
+  Grid,
+  Group,
+  Image,
+  Paper,
+  Progress,
+  SimpleGrid,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
+import i18next, { t } from 'i18next';
+import { MessageSquareDiff } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import AppAnchor from '@/components/AppAnchor';
+import CourseBlock from '@/components/CourseBlock';
+import XssContent from '@/components/XssContent';
+import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
+import * as Routes from '@/routes.js';
 import type {
   LanguageLandingPageForLists,
   LanguageMember,
-} from "@/types/serializers";
-import { Link } from "@inertiajs/react";
-import { Text, Grid, Container, Progress, Image, Title, Group, Anchor, Stack, Paper, Card, SimpleGrid, Alert } from '@mantine/core';
-import i18next, { t } from "i18next";
-import { MessageSquareDiff } from "lucide-react";
-import { useTranslation } from "react-i18next";
+} from '@/types/serializers';
 
 type Props = {
   startedCourseMembers: LanguageMember[];
@@ -22,7 +36,10 @@ type Props = {
 function StartedCourse({
   lp,
   cm,
-}: { lp: LanguageLandingPageForLists; cm: LanguageMember }) {
+}: {
+  lp: LanguageLandingPageForLists;
+  cm: LanguageMember;
+}) {
   return (
     <Card p={0} radius="md" withBorder pos="relative">
       <Group wrap="nowrap" align="stretch">
@@ -37,10 +54,7 @@ function StartedCourse({
         />
 
         <Stack w="100%" p="sm" gap="xs">
-
-          <Title order={3}>
-            {lp.header}
-          </Title>
+          <Title order={3}>{lp.header}</Title>
 
           {cm.next_lesson && <Text>{cm.next_lesson.name} →</Text>}
 
@@ -51,16 +65,12 @@ function StartedCourse({
             />
           </Progress.Root>
         </Stack>
-
-
       </Group>
 
       <AppAnchor
         pos="absolute"
         inset={0}
-        href={Routes.language_url(
-          lp.slug!,
-        )}
+        href={Routes.language_url(lp.slug!)}
       />
     </Card>
   );
@@ -72,17 +82,16 @@ export default function My(props: Props) {
     finishedCourseMembers,
     landingPageResourcesByCourseId,
   } = props;
-  const { t: tViews } = useTranslation("web");
-  const { t: tCommon } = useTranslation("common");
+  const { t: tViews } = useTranslation('web');
+  const { t: tCommon } = useTranslation('common');
 
   return (
     <ApplicationLayout>
       <Container>
-
-        <Title order={2} my="xl">{tViews("my.show.started")}</Title>
-        {startedCourseMembers.length === 0 && (
-          <p >{tCommon("empty")}</p>
-        )}
+        <Title order={2} my="xl">
+          {tViews('my.show.started')}
+        </Title>
+        {startedCourseMembers.length === 0 && <p>{tCommon('empty')}</p>}
 
         <SimpleGrid cols={{ base: 1, xs: 2 }}>
           {startedCourseMembers.map((cm) => (
@@ -94,17 +103,17 @@ export default function My(props: Props) {
           ))}
         </SimpleGrid>
 
-        <Title my="xl" order={2}>{tViews("my.show.finished")}</Title>
+        <Title my="xl" order={2}>
+          {tViews('my.show.finished')}
+        </Title>
 
-        {finishedCourseMembers.length > 0 && i18next.language == "ru" && (
+        {finishedCourseMembers.length > 0 && i18next.language == 'ru' && (
           <Alert icon={<MessageSquareDiff />} mb="xl" px="xl">
             <XssContent>{t('my.show.add_review')}</XssContent>
           </Alert>
         )}
 
-        {finishedCourseMembers.length === 0 && (
-          <p>{tCommon("empty")}</p>
-        )}
+        {finishedCourseMembers.length === 0 && <p>{tCommon('empty')}</p>}
 
         <SimpleGrid cols={{ base: 2, xs: 3, sm: 4 }}>
           {finishedCourseMembers.map((cm) => (

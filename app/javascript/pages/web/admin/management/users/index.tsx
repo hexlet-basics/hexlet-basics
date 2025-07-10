@@ -1,17 +1,15 @@
+import dayjs from 'dayjs';
+import { Edit } from 'lucide-react';
 import { DataTable } from 'mantine-datatable';
 import type { PropsWithChildren } from 'react';
-
-import * as Routes from '@/routes.js';
 import { useTranslation } from 'react-i18next';
-
-import AdminLayout from '@/pages/layouts/AdminLayout';
 import AppAnchor from '@/components/AppAnchor';
-import type { User, Grid } from '@/types/serializers';
-import { Menu } from './shared/menu';
+import { XForm, XInput } from '@/components/forms';
 import useDataTableProps from '@/hooks/useDataTableProps';
-import { Edit } from 'lucide-react';
-import { XForm, XInput } from "@/components/forms";
-import dayjs from 'dayjs';
+import AdminLayout from '@/pages/layouts/AdminLayout';
+import * as Routes from '@/routes.js';
+import type { Grid, User } from '@/types/serializers';
+import { Menu } from './shared/menu';
 
 type Props = PropsWithChildren & {
   users: User[];
@@ -43,9 +41,12 @@ export default function Index({ grid, users }: Props) {
             sortable: true,
             filter: (
               <XForm method="get" to={Routes.admin_management_users_path()}>
-                <XInput field="fields[email_cont]" label={t('admin.management.users.index.search_by_email')} />
+                <XInput
+                  field="fields[email_cont]"
+                  label={t('admin.management.users.index.search_by_email')}
+                />
               </XForm>
-            )
+            ),
           },
           {
             accessor: 'created_at',

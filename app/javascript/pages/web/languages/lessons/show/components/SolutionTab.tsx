@@ -1,15 +1,23 @@
-import { useTranslation } from "react-i18next";
-import { useTimer } from "react-timer-hook";
-import { Image, Alert, Button, Center, Text, Title, Stack, Box, Group } from '@mantine/core';
-
-import waitingClock from "@/images/waiting_clock.png";
-import { getEditorLanguage } from "@/lib/utils.ts";
-import { usePage } from "@inertiajs/react";
-import type { LessonSharedProps } from "../types.ts";
-
-import dayjs from "dayjs";
-import { useLessonStore } from "../store.tsx";
-import { CodeHighlight } from "@mantine/code-highlight";
+import { usePage } from '@inertiajs/react';
+import { CodeHighlight } from '@mantine/code-highlight';
+import {
+  Alert,
+  Box,
+  Button,
+  Center,
+  Group,
+  Image,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
+import dayjs from 'dayjs';
+import { useTranslation } from 'react-i18next';
+import { useTimer } from 'react-timer-hook';
+import waitingClock from '@/images/waiting_clock.png';
+import { getEditorLanguage } from '@/lib/utils.ts';
+import { useLessonStore } from '../store.tsx';
+import type { LessonSharedProps } from '../types.ts';
 
 const waitingTime = 20 * 60 * 1000; // 20 min
 // const waitingTime = 3000;
@@ -20,16 +28,18 @@ export default function SolutionTab() {
   const finished = useLessonStore((state) => state.finished);
   const solutionState = useLessonStore((state) => state.solutionState);
   const startTime = useLessonStore((state) => state.startTime);
-  const { t: tCommon } = useTranslation("common");
-  const changeSolutionState = useLessonStore((state) => state.changeSolutionState);
+  const { t: tCommon } = useTranslation('common');
+  const changeSolutionState = useLessonStore(
+    (state) => state.changeSolutionState,
+  );
 
   const expiryTimestamp = new Date(startTime + waitingTime);
   const timerData = useTimer({ expiryTimestamp });
   // console.log(timerData.isRunning, timerData.totalSeconds, expiryTimestamp)
 
   const renderUserCode = () => {
-    if (content === "") {
-      return <Alert>{tCommon("userCodeInstructions")}</Alert>;
+    if (content === '') {
+      return <Alert>{tCommon('userCodeInstructions')}</Alert>;
     }
 
     return (
@@ -44,14 +54,18 @@ export default function SolutionTab() {
     return (
       <>
         <Stack mb="xl">
-          <Title order={2} mb="lg">{tCommon("teacherSolution")}</Title>
+          <Title order={2} mb="lg">
+            {tCommon('teacherSolution')}
+          </Title>
           <CodeHighlight
             code={lesson.original_code!}
             language={getEditorLanguage(course.slug!)}
           />
         </Stack>
         <Stack>
-          <Title order={2} mb="lg">{tCommon("userCode")}</Title>
+          <Title order={2} mb="lg">
+            {tCommon('userCode')}
+          </Title>
           {renderUserCode()}
         </Stack>
       </>
@@ -59,19 +73,15 @@ export default function SolutionTab() {
   };
 
   const handleShowSolution = () => {
-    changeSolutionState("shown");
+    changeSolutionState('shown');
   };
 
   const renderShowButton = () => (
     <>
-      <Text>{tCommon("solutionNotice")}</Text>
+      <Text>{tCommon('solutionNotice')}</Text>
       <Center>
-        <Button
-          variant="light"
-          onClick={handleShowSolution}
-          px="xl"
-        >
-          {tCommon("showSolution")}
+        <Button variant="light" onClick={handleShowSolution} px="xl">
+          {tCommon('showSolution')}
         </Button>
       </Center>
     </>
@@ -80,16 +90,18 @@ export default function SolutionTab() {
   const Countdown = () => {
     const { isRunning, totalSeconds } = timerData;
 
-    if (!isRunning || solutionState === "canBeShown") {
+    if (!isRunning || solutionState === 'canBeShown') {
       return renderShowButton();
     }
     const remainingTime = dayjs
-      .duration(totalSeconds, "seconds")
-      .format("mm:ss");
+      .duration(totalSeconds, 'seconds')
+      .format('mm:ss');
 
     return (
       <Stack align="center">
-        <Text size="lg" fw={500}>{tCommon("solutionInstructions")}</Text>
+        <Text size="lg" fw={500}>
+          {tCommon('solutionInstructions')}
+        </Text>
         <Text fz={50}>{remainingTime}</Text>
         <Image
           src={waitingClock}
@@ -103,7 +115,7 @@ export default function SolutionTab() {
 
   return (
     <Box>
-      {finished || solutionState === "shown" ? renderSolution() : <Countdown />}
+      {finished || solutionState === 'shown' ? renderSolution() : <Countdown />}
     </Box>
   );
 }

@@ -4,17 +4,13 @@ type ResourceModule = {
   default: string;
 };
 
-interface ViteTypeOptions {
-  // By adding this line, you can make the type of ImportMetaEnv strict
-  // to disallow unknown keys.
-  // strictImportMetaEnv: unknown
-}
+type ViteTypeOptions = {};
 
 interface ImportMetaEnv {
-  readonly VITE_APP_HOST: string
+  readonly VITE_APP_HOST: string;
   // more env variables...
 }
 
 interface ImportMeta {
-  readonly env: ImportMetaEnv
+  readonly env: ImportMetaEnv;
 }

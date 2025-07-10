@@ -1,37 +1,50 @@
-import * as Routes from "@/routes.js";
-import { useState } from "react";
-import { AppShell, Paper, Text, ScrollArea, Tabs, List, Alert, Title, Box, Accordion, Center, Stack, Divider, Anchor, Group } from "@mantine/core";
-
-import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
-import MarkdownViewer from "@/components/MarkdownViewer.tsx";
-import i18next from "i18next";
-import { Github, Info, Rocket, Space } from "lucide-react";
-import XssContent from "@/components/XssContent.tsx";
-import Chat from "@/components/Chat.tsx";
-import AppAnchor from "@/components/AppAnchor.tsx";
-import { useTranslation } from "react-i18next";
-import { useLessonStore } from "./store.tsx";
-import { neededPreview } from "@/lib/utils.ts";
-import { Suspense } from "react";
-import HTMLPreview from "./components/HTMLPreview.tsx";
-import { usePage } from "@inertiajs/react";
-import { LessonSharedProps } from "./types.ts";
-import EditorTab from "./components/EditorTab.tsx";
-import OutputTab from "./components/OutputTab.tsx";
-import TestsTab from "./components/TestsTab.tsx";
-import SolutionTab from "./components/SolutionTab.tsx";
-import ControlBox from "./components/ControlBox.tsx";
-import { BookOpenText } from "lucide-react";
-import { BreadcrumbItem } from "@/types/index.ts";
-import ContactMethodRequestingBlock from "@/pages/layouts/blocks/ContactMethodRequestingBlock.tsx";
-import LessonLayout from "@/pages/layouts/LessonLayout.tsx";
+import { usePage } from '@inertiajs/react';
+import {
+  Accordion,
+  Alert,
+  Anchor,
+  AppShell,
+  Box,
+  Center,
+  Divider,
+  Group,
+  List,
+  Paper,
+  ScrollArea,
+  Stack,
+  Tabs,
+  Text,
+  Title,
+} from '@mantine/core';
+import i18next from 'i18next';
+import { BookOpenText, Github, Info, Rocket, Space } from 'lucide-react';
+import { Suspense, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import AppAnchor from '@/components/AppAnchor.tsx';
+import { XBreadcrumb } from '@/components/breadcrumbs.tsx';
+import Chat from '@/components/Chat.tsx';
+import MarkdownViewer from '@/components/MarkdownViewer.tsx';
+import XssContent from '@/components/XssContent.tsx';
+import { neededPreview } from '@/lib/utils.ts';
+import ContactMethodRequestingBlock from '@/pages/layouts/blocks/ContactMethodRequestingBlock.tsx';
+import LessonLayout from '@/pages/layouts/LessonLayout.tsx';
+import * as Routes from '@/routes.js';
+import type { BreadcrumbItem } from '@/types/index.ts';
+import ControlBox from './components/ControlBox.tsx';
+import EditorTab from './components/EditorTab.tsx';
+import HTMLPreview from './components/HTMLPreview.tsx';
+import OutputTab from './components/OutputTab.tsx';
+import SolutionTab from './components/SolutionTab.tsx';
+import TestsTab from './components/TestsTab.tsx';
+import { useLessonStore } from './store.tsx';
+import type { LessonSharedProps } from './types.ts';
 
 function HtmlPreviewBlock() {
   const { course } = usePage<LessonSharedProps>().props;
   const currentTab = useLessonStore((state) => state.currentTab);
   const content = useLessonStore((state) => state.content);
 
-  if (currentTab !== "editor") {
+  if (currentTab !== 'editor') {
     return null;
   }
   if (!neededPreview(course.slug!)) {
@@ -43,7 +56,7 @@ function HtmlPreviewBlock() {
       <HTMLPreview html={content} />
     </Suspense>
   );
-};
+}
 
 export default function Index() {
   const { t } = useTranslation();
@@ -52,7 +65,7 @@ export default function Index() {
   const [focusesCount, setFocusCount] = useState(0);
 
   const handleSelect = (selectedKey: string | null) => {
-    if (selectedKey === "assistant") {
+    if (selectedKey === 'assistant') {
       setFocusCount((count) => count + 1);
     }
   };
@@ -65,12 +78,18 @@ export default function Index() {
           onChange={handleSelect}
           h="100%"
           display="flex"
-          style={{ flexDirection: "column" }}
+          style={{ flexDirection: 'column' }}
         >
           <Tabs.List grow>
-            <Tabs.Tab value="lesson">{t('languages.lessons.show.lesson')}</Tabs.Tab>
-            <Tabs.Tab value="assistant">{t('languages.lessons.show.discuss')}</Tabs.Tab>
-            <Tabs.Tab value="navigation">{t('languages.lessons.show.navigation')}</Tabs.Tab>
+            <Tabs.Tab value="lesson">
+              {t('languages.lessons.show.lesson')}
+            </Tabs.Tab>
+            <Tabs.Tab value="assistant">
+              {t('languages.lessons.show.discuss')}
+            </Tabs.Tab>
+            <Tabs.Tab value="navigation">
+              {t('languages.lessons.show.navigation')}
+            </Tabs.Tab>
           </Tabs.List>
 
           <AppShell.Section grow mih={0}>
@@ -97,10 +116,12 @@ export default function Index() {
 
       <AppShell.Main h="100%">
         <Tabs
-          h="100%" display="flex" style={{ flexDirection: 'column' }}
+          h="100%"
+          display="flex"
+          style={{ flexDirection: 'column' }}
           value={currentTab}
           onChange={(key) => changeTab(key as typeof currentTab)}
-        // keepMounted={false}
+          // keepMounted={false}
         >
           <Tabs.List grow>
             <Tabs.Tab value="lesson" hiddenFrom="sm">
@@ -108,14 +129,21 @@ export default function Index() {
                 <BookOpenText size={14} />
               </Center>
             </Tabs.Tab>
-            <Tabs.Tab value="editor">{t("languages.lessons.show.editor")}</Tabs.Tab>
-            <Tabs.Tab value="output">{t("languages.lessons.show.output")}</Tabs.Tab>
-            <Tabs.Tab value="tests">{t("languages.lessons.show.tests")}</Tabs.Tab>
-            <Tabs.Tab value="solution">{t("languages.lessons.show.solution")}</Tabs.Tab>
+            <Tabs.Tab value="editor">
+              {t('languages.lessons.show.editor')}
+            </Tabs.Tab>
+            <Tabs.Tab value="output">
+              {t('languages.lessons.show.output')}
+            </Tabs.Tab>
+            <Tabs.Tab value="tests">
+              {t('languages.lessons.show.tests')}
+            </Tabs.Tab>
+            <Tabs.Tab value="solution">
+              {t('languages.lessons.show.solution')}
+            </Tabs.Tab>
           </Tabs.List>
 
           <AppShell.Section grow mih={0}>
-
             <Tabs.Panel value="lesson" h="100%" hiddenFrom="sm">
               <Stack h="100%" gap={0}>
                 <ScrollArea h="100%">
@@ -181,20 +209,24 @@ export default function Index() {
 
 function LessonTabContent() {
   const { t } = useTranslation();
-  const { courseCategory, landingPage, course, lesson, shouldAddContactMethod } =
-    usePage<LessonSharedProps>().props;
+  const {
+    courseCategory,
+    landingPage,
+    course,
+    lesson,
+    shouldAddContactMethod,
+  } = usePage<LessonSharedProps>().props;
 
-  const commonQuestions = t(
-    "languages.lessons.show.common_questions",
-    { returnObjects: true }
-  ) as Array<{ question: string; answer: string }>;
+  const commonQuestions = t('languages.lessons.show.common_questions', {
+    returnObjects: true,
+  }) as Array<{ question: string; answer: string }>;
 
   const items: BreadcrumbItem[] = [
     {
-      name: courseCategory?.name ?? "-",
+      name: courseCategory?.name ?? '-',
       url: courseCategory
         ? Routes.language_category_url(courseCategory.slug!)
-        : "#",
+        : '#',
     },
     {
       name: landingPage.header!,
@@ -217,18 +249,21 @@ function LessonTabContent() {
         </Paper>
       )}
 
-      <MarkdownViewer allowHtml>{lesson.theory || ""}</MarkdownViewer>
+      <MarkdownViewer allowHtml>{lesson.theory || ''}</MarkdownViewer>
 
       <Title order={2} my="md">
-        {t("languages.lessons.show.instructions")}
+        {t('languages.lessons.show.instructions')}
       </Title>
-      <MarkdownViewer allowHtml>{lesson.instructions || ""}</MarkdownViewer>
+      <MarkdownViewer allowHtml>{lesson.instructions || ''}</MarkdownViewer>
 
       {course.hexlet_program_landing_page && (
         <Alert variant="primary" my="xl" radius="lg">
           <Group justify="center" gap={6}>
             <Rocket size={15} />
-            <Anchor target="_blank" href={`${course.hexlet_program_landing_page}?utm_source=code-basics&utm_medium=referral`}>
+            <Anchor
+              target="_blank"
+              href={`${course.hexlet_program_landing_page}?utm_source=code-basics&utm_medium=referral`}
+            >
               {t('languages.lessons.show.profession_description')}
             </Anchor>
           </Group>
@@ -238,7 +273,7 @@ function LessonTabContent() {
       {lesson.tips.length > 0 && (
         <>
           <Title order={2} my="md">
-            {t("languages.lessons.show.tips")}
+            {t('languages.lessons.show.tips')}
           </Title>
           <ul>
             {lesson.tips.map((tip) => (
@@ -267,7 +302,7 @@ function LessonTabContent() {
 
       <Center>
         <Text fz="sm" me="sm" component="span">
-          {t("languages.lessons.show.issues")}
+          {t('languages.lessons.show.issues')}
         </Text>
         <a
           href={lesson.source_code_url!}
@@ -283,7 +318,7 @@ function LessonTabContent() {
 
 function AssistantTabContent({ focusesCount }: { focusesCount: number }) {
   const { t } = useTranslation();
-  const { t: tCommon } = useTranslation("common");
+  const { t: tCommon } = useTranslation('common');
 
   const {
     previousMessages,
@@ -298,11 +333,11 @@ function AssistantTabContent({ focusesCount }: { focusesCount: number }) {
 
   return (
     <Box p="lg">
-      {i18next.language === "ru" && (
+      {i18next.language === 'ru' && (
         <Alert icon={<Info />} mb="lg">
           <XssContent>
-            {t("languages.lessons.show.if_stuck_html", {
-              url: tCommon("community_url"),
+            {t('languages.lessons.show.if_stuck_html', {
+              url: tCommon('community_url'),
             })}
           </XssContent>
         </Alert>
@@ -332,7 +367,7 @@ function NavigationTabContent() {
             <AppAnchor
               href={Routes.language_lesson_path(
                 landingPage.language.slug!,
-                l.slug!
+                l.slug!,
               )}
             >
               {l.name}

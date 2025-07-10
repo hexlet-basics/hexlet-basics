@@ -1,15 +1,13 @@
-import type { PropsWithChildren } from "react";
-
-import * as Routes from "@/routes.js";
-import { useTranslation } from "react-i18next";
-
-import { XCheck, XForm, XInput } from "@/components/forms";
-import AdminLayout from "@/pages/layouts/AdminLayout";
-import type { User } from "@/types/serializers";
+import { Button, Grid, Stack, Title } from '@mantine/core';
 import { DataTable } from 'mantine-datatable';
-import { Grid, Button, Title, Stack } from '@mantine/core';
-import { Submit } from "use-inertia-form";
-import { Menu } from "./shared/menu";
+import type { PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Submit } from 'use-inertia-form';
+import { XCheck, XForm, XInput } from '@/components/forms';
+import AdminLayout from '@/pages/layouts/AdminLayout';
+import * as Routes from '@/routes.js';
+import type { User } from '@/types/serializers';
+import { Menu } from './shared/menu';
 
 type Props = PropsWithChildren & {
   user: User;
@@ -18,10 +16,10 @@ type Props = PropsWithChildren & {
 
 export default function Edit({ user, progress }: Props) {
   const { t } = useTranslation();
-  const { t: tHelpers } = useTranslation("helpers");
+  const { t: tHelpers } = useTranslation('helpers');
 
   return (
-    <AdminLayout header={t("admin.management.users.edit.header")}>
+    <AdminLayout header={t('admin.management.users.edit.header')}>
       <Menu data={user} />
       <Grid>
         <Grid.Col span={5}>
@@ -36,9 +34,7 @@ export default function Edit({ user, progress }: Props) {
             <XInput field="first_name" autoComplete="name" />
             <XInput field="last_name" autoComplete="name" />
             <XInput field="last_name" autoComplete="name" />
-            <Button type="submit">
-              {tHelpers("submit.save")}
-            </Button>
+            <Button type="submit">{tHelpers('submit.save')}</Button>
           </XForm>
         </Grid.Col>
         <Grid.Col>

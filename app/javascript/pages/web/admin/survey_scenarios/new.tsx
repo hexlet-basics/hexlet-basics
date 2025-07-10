@@ -1,22 +1,25 @@
-import * as Routes from "@/routes.js";
-import { useTranslation } from "react-i18next";
-
-import AdminLayout from "@/pages/layouts/AdminLayout";
-import type { SurveyScenarioCrud, Survey, SurveyItemCrud } from "@/types";
-import Form from "./shared/form";
-import { Menu } from "./shared/menu";
+import { useTranslation } from 'react-i18next';
+import AdminLayout from '@/pages/layouts/AdminLayout';
+import * as Routes from '@/routes.js';
+import type { Survey, SurveyItemCrud, SurveyScenarioCrud } from '@/types';
+import Form from './shared/form';
+import { Menu } from './shared/menu';
 
 type Props = {
   surveyScenarioDto: SurveyScenarioCrud;
-  surveysItems: SurveyItemCrud[]
+  surveysItems: SurveyItemCrud[];
   surveys: Survey[];
 };
 
-export default function New({ surveys, surveyScenarioDto, surveysItems }: Props) {
+export default function New({
+  surveys,
+  surveyScenarioDto,
+  surveysItems,
+}: Props) {
   const { t } = useTranslation();
 
   return (
-    <AdminLayout header={t("admin.survey_scenarios.new.header")}>
+    <AdminLayout header={t('admin.survey_scenarios.new.header')}>
       <Menu />
       <Form
         surveys={surveys}
@@ -27,4 +30,3 @@ export default function New({ surveys, surveyScenarioDto, surveysItems }: Props)
     </AdminLayout>
   );
 }
-

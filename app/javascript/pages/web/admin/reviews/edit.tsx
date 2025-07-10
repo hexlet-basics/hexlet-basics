@@ -1,11 +1,10 @@
-import * as Routes from "@/routes.js";
-import { useTranslation } from "react-i18next";
-
-import AdminLayout from "@/pages/layouts/AdminLayout";
-import type { Language, Review } from "@/types/serializers";
-import type ReviewCrud from "@/types/serializers/ReviewCrud";
-import Form from "./shared/form";
-import { Menu } from "./shared/menu";
+import { useTranslation } from 'react-i18next';
+import AdminLayout from '@/pages/layouts/AdminLayout';
+import * as Routes from '@/routes.js';
+import type { Language, Review } from '@/types/serializers';
+import type ReviewCrud from '@/types/serializers/ReviewCrud';
+import Form from './shared/form';
+import { Menu } from './shared/menu';
 
 type Props = {
   reviewDto: ReviewCrud;
@@ -17,7 +16,7 @@ export default function Edit({ reviewDto, courses }: Props) {
 
   return (
     <AdminLayout
-      header={t("admin.reviews.edit.header", { id: reviewDto.review.id })}
+      header={t('admin.reviews.edit.header', { id: reviewDto.review.id })}
     >
       <Menu data={reviewDto} />
       <Form

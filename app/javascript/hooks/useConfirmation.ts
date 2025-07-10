@@ -1,9 +1,9 @@
-import type React from "react";
-import { useTranslation } from "react-i18next";
+import type React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface ConfirmationOptions {
   message?: string;
-  callback?: UseConfirmationCallback,
+  callback?: UseConfirmationCallback;
 }
 
 type UseConfirmationCallback = (event: React.MouseEvent<Element>) => void;
@@ -11,10 +11,10 @@ type UseConfirmationCallback = (event: React.MouseEvent<Element>) => void;
 export default function useConfirmation(
   options?: ConfirmationOptions,
 ): UseConfirmationCallback {
-  const { t: tCommon } = useTranslation("common");
+  const { t: tCommon } = useTranslation('common');
 
   const requestConfirmation = (event: React.MouseEvent<Element>) => {
-    const message = options?.message ?? tCommon("confirm");
+    const message = options?.message ?? tCommon('confirm');
     const isConfirmed = window.confirm(`${message}`);
     if (!isConfirmed) {
       event.preventDefault();

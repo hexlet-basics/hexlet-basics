@@ -1,17 +1,18 @@
 // import "@/lib/monacoLoader.ts";
-import {
-    getEditorLanguage,
-    // getKeyForStoringLessonCode,
-    getTabSize,
-    shouldReplaceTabsWithSpaces,
-} from "@/lib/utils.ts";
-import { usePage } from "@inertiajs/react";
-import MonacoEditor from "@monaco-editor/react";
 
-import { useEffect, useState } from "react";
-import type { LessonSharedProps } from "../types.ts";
-import type { editor } from "monaco-editor";
-import { useLessonStore } from "../store.tsx";
+import { usePage } from '@inertiajs/react';
+import MonacoEditor from '@monaco-editor/react';
+import type { editor } from 'monaco-editor';
+
+import { useEffect, useState } from 'react';
+import {
+  getEditorLanguage,
+  // getKeyForStoringLessonCode,
+  getTabSize,
+  shouldReplaceTabsWithSpaces,
+} from '@/lib/utils.ts';
+import { useLessonStore } from '../store.tsx';
+import type { LessonSharedProps } from '../types.ts';
 
 export default function EditorTab() {
   const { course, lesson, mobileBrowser } = usePage<LessonSharedProps>().props;
@@ -27,7 +28,7 @@ export default function EditorTab() {
     hover: {
       delay: 500,
     },
-    renderWhitespace: "trailing",
+    renderWhitespace: 'trailing',
     formatOnPaste: true,
     // renderLineHighlight: false,
     fixedOverflowWidgets: true,
@@ -65,7 +66,7 @@ export default function EditorTab() {
   }, [focusesCount, editorInstance, mobileBrowser]);
 
   const handleEditorChange = (value: string | undefined) => {
-    const newContent = value || "";
+    const newContent = value || '';
     // setCode(newContent);
     changeContent(newContent);
   };

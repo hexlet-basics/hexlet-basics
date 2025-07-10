@@ -1,20 +1,20 @@
-import * as Routes from "@/routes.js";
+import { Link } from '@inertiajs/react';
+import { Anchor, Card, Group, Image, Stack, Text, Title } from '@mantine/core';
+import { Clock, Users } from 'lucide-react';
+import type { PropsWithChildren } from 'react';
+import * as Routes from '@/routes.js';
 import type {
   LanguageLandingPageForLists,
   LanguageMember,
-} from "@/types/serializers";
-import { Link } from "@inertiajs/react";
-import type { PropsWithChildren } from "react";
-import { Card, Text, Group, Stack, Image, Title, Anchor } from '@mantine/core';
-import { Clock, Users } from "lucide-react";
-import AppAnchor from "./AppAnchor";
+} from '@/types/serializers';
+import AppAnchor from './AppAnchor';
 
 type Props = PropsWithChildren & {
   // course: Language;
   landingPage: LanguageLandingPageForLists;
   courseMember?: LanguageMember;
   continueButton?: boolean;
-  lazy?: boolean
+  lazy?: boolean;
 };
 
 export default function CourseBlock({
@@ -22,13 +22,11 @@ export default function CourseBlock({
   courseMember,
   lazy,
 }: Props) {
-
   return (
-
     <Card pos="relative" shadow="sm">
       <Card.Section>
         <Image
-          loading={lazy ? "lazy" : "eager"}
+          loading={lazy ? 'lazy' : 'eager'}
           src={landingPage.language.cover_list_variant}
           alt={landingPage.header}
         />
@@ -50,7 +48,6 @@ export default function CourseBlock({
           </Group>
         </Group>
       </Stack>
-
 
       <AppAnchor
         pos="absolute"

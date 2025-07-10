@@ -1,15 +1,26 @@
-import * as Sentry from "@sentry/react";
-import { type PropsWithChildren, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { Text, Center, MantineProvider, Stack, Title, type MantineProviderProps, Container } from '@mantine/core';
-import { CodeHighlightAdapterProvider, createShikiAdapter } from '@mantine/code-highlight';
-import { ModalsProvider } from "@mantine/modals";
-import getHighlighter from "@/lib/shiki";
+import {
+  CodeHighlightAdapterProvider,
+  createShikiAdapter,
+} from '@mantine/code-highlight';
+import {
+  Center,
+  Container,
+  MantineProvider,
+  type MantineProviderProps,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
+import { ModalsProvider } from '@mantine/modals';
+import * as Sentry from '@sentry/react';
+import { type PropsWithChildren, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import getHighlighter from '@/lib/shiki';
 
 const shikiAdapter = createShikiAdapter(getHighlighter);
 
 function FallbackComponent() {
-  const { t: tLayouts } = useTranslation("layouts");
+  const { t: tLayouts } = useTranslation('layouts');
   return (
     <Container>
       <Center h="100vh">
@@ -25,23 +36,26 @@ function FallbackComponent() {
 type Props = PropsWithChildren & {
   // locale: Locale;
   // suffix: string | null
-}
+};
 
-const theme: MantineProviderProps["theme"] = {
+const theme: MantineProviderProps['theme'] = {
   components: {
     Anchor: {
       defaultProps: { c: 'dark' },
     },
   },
-}
+};
 
 function Root(props: Props) {
-  const { t: tCommon } = useTranslation("common");
+  const { t: tCommon } = useTranslation('common');
 
   useEffect(() => {
-    const interfaceTranslations = tCommon("sentryFeedbackWidget", { returnObjects: true, defaultValue: {} })
+    const interfaceTranslations = tCommon('sentryFeedbackWidget', {
+      returnObjects: true,
+      defaultValue: {},
+    });
     Sentry.getFeedback()?.createWidget({
-      triggerLabel: "", // NOTE: убираем текст с кнопки для всех локалей
+      triggerLabel: '', // NOTE: убираем текст с кнопки для всех локалей
       ...interfaceTranslations,
     });
   }, [tCommon]);

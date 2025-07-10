@@ -43,6 +43,6 @@ const highlighterPromise = createHighlighterCore({
 });
 
 export default async () => {
-  const highlighter = await highlighterPromise
+  const highlighter = await highlighterPromise;
   return highlighter;
-}
+};

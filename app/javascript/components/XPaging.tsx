@@ -1,6 +1,6 @@
-import type { Pagy } from "@/types";
-import type { PropsWithChildren } from "react";
 import { Center, Pagination } from '@mantine/core';
+import type { PropsWithChildren } from 'react';
+import type { Pagy } from '@/types';
 
 type Props = PropsWithChildren & {
   pagy: Pagy;

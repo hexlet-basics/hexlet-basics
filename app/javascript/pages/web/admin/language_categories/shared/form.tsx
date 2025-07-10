@@ -1,10 +1,16 @@
-import { useTranslation } from "react-i18next";
-
-import { XCheck, XDynamicInputs, XForm, XHidden, XInput, XSelect, XTextarea } from "@/components/forms";
-import { type HTTPVerb } from "use-inertia-form";
-
-import type { LanguageCategoryCrud } from "@/types";
-import { Button } from "@mantine/core";
+import { Button } from '@mantine/core';
+import { useTranslation } from 'react-i18next';
+import type { HTTPVerb } from 'use-inertia-form';
+import {
+  XCheck,
+  XDynamicInputs,
+  XForm,
+  XHidden,
+  XInput,
+  XSelect,
+  XTextarea,
+} from '@/components/forms';
+import type { LanguageCategoryCrud } from '@/types';
 
 type Props = {
   data: LanguageCategoryCrud;
@@ -14,7 +20,7 @@ type Props = {
 
 export default function Form({ data, url, method }: Props) {
   const { t } = useTranslation();
-  const { t: tHelpers } = useTranslation("helpers");
+  const { t: tHelpers } = useTranslation('helpers');
 
   return (
     <XForm method={method} model="language_category" data={data} to={url}>
@@ -41,7 +47,7 @@ export default function Form({ data, url, method }: Props) {
       <XDynamicInputs
         model="qna_items"
         label="QNA"
-        emptyData={{ question: "", answer: "" }}
+        emptyData={{ question: '', answer: '' }}
       >
         <XHidden field="id" />
         <XInput field="question" />
@@ -50,7 +56,7 @@ export default function Form({ data, url, method }: Props) {
       </XDynamicInputs>
 
       <Button type="submit" mt="xl">
-        {tHelpers("submit.save")}
+        {tHelpers('submit.save')}
       </Button>
     </XForm>
   );

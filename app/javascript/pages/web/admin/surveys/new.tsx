@@ -1,10 +1,9 @@
-import * as Routes from "@/routes.js";
-import { useTranslation } from "react-i18next";
-
-import AdminLayout from "@/pages/layouts/AdminLayout";
-import type { Language, SurveyCrud, SurveyItemCrud, } from "@/types";
-import Form from "./shared/form";
-import { Menu } from "./shared/menu";
+import { useTranslation } from 'react-i18next';
+import AdminLayout from '@/pages/layouts/AdminLayout';
+import * as Routes from '@/routes.js';
+import type { Language, SurveyCrud, SurveyItemCrud } from '@/types';
+import Form from './shared/form';
+import { Menu } from './shared/menu';
 
 type Props = {
   surveyDto: SurveyCrud;
@@ -16,7 +15,7 @@ export default function New({ surveyDto, surveyItems }: Props) {
   const { t } = useTranslation();
 
   return (
-    <AdminLayout header={t("admin.surveys.new.header")}>
+    <AdminLayout header={t('admin.surveys.new.header')}>
       <Menu />
       <Form
         surveyItems={surveyItems}
@@ -26,4 +25,3 @@ export default function New({ surveyDto, surveyItems }: Props) {
     </AdminLayout>
   );
 }
-

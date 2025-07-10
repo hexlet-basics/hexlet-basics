@@ -1,16 +1,14 @@
+import dayjs from 'dayjs';
+import { Edit } from 'lucide-react';
 import { DataTable } from 'mantine-datatable';
 import type { PropsWithChildren } from 'react';
-
-import * as Routes from '@/routes.js';
 import { useTranslation } from 'react-i18next';
-
-import AdminLayout from '@/pages/layouts/AdminLayout';
 import AppAnchor from '@/components/AppAnchor';
+import useDataTableProps from '@/hooks/useDataTableProps';
+import AdminLayout from '@/pages/layouts/AdminLayout';
+import * as Routes from '@/routes.js';
 import type { Grid, SurveyScenario } from '@/types';
 import { Menu } from './shared/menu';
-import useDataTableProps from '@/hooks/useDataTableProps';
-import { Edit } from 'lucide-react';
-import dayjs from 'dayjs';
 
 type Props = PropsWithChildren & {
   surveyScenarios: SurveyScenario[];
@@ -20,7 +18,7 @@ type Props = PropsWithChildren & {
 export default function Index({ grid, surveyScenarios }: Props) {
   const { t } = useTranslation();
   const { gridProps } = useDataTableProps<SurveyScenario, {}>(grid);
-  console.log(surveyScenarios)
+  console.log(surveyScenarios);
 
   const renderActions = (item: SurveyScenario) => (
     <AppAnchor href={Routes.edit_admin_survey_scenario_path(item.id)}>
@@ -49,4 +47,3 @@ export default function Index({ grid, surveyScenarios }: Props) {
     </AdminLayout>
   );
 }
-
