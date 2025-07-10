@@ -37,9 +37,9 @@ export default function NavbarBlock({ opened, onToggle }: NavbarBlockProps) {
   return (
     <>
       <Group h="100%" px="md">
-        <AppAnchor href={Routes.root_path()} me="lg">
+        <a href={Routes.root_path()} className="me-lg">
           <Image src={logoImg} w={30} h={30} fit="contain" alt="Logo" />
-        </AppAnchor>
+        </a>
 
         <MyLink />
         <CourseMenu landingPages={landingPagesForLists} />
