@@ -285,6 +285,7 @@ function SolutionsMenu() {
         </Box>
       </Group>
       <AppAnchor
+        external
         href={item.href}
         inset={0}
         pos="absolute"
