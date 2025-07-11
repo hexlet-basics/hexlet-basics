@@ -7,6 +7,7 @@ import { browserslistToTargets } from 'lightningcss';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { defineConfig, loadEnv, type PluginOption } from 'vite';
 import { patchCssModules } from 'vite-css-modules';
+import { imagetools } from 'vite-imagetools';
 import { beasties } from 'vite-plugin-beasties';
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 import ViteRails from 'vite-plugin-rails';
@@ -39,6 +40,7 @@ export default defineConfig(({ mode, isSsrBuild }) => {
       // },
     },
     plugins: [
+      imagetools(),
       visualizer() as PluginOption,
       beasties({
         // Plugin options
@@ -65,7 +67,7 @@ export default defineConfig(({ mode, isSsrBuild }) => {
         compress: false,
       }),
       sentryVitePlugin({
-        disable: env.VITE_NODE_ENV != 'production',
+        disable: env.VITE_NODE_ENV !== 'production',
         applicationKey: env.VITE_APP_HOST,
         url: env.VITE_SENTRY_URL,
         org: env.VITE_SENTRY_ORG,
