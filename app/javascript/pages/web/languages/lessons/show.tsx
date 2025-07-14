@@ -6,10 +6,8 @@ import type { LessonSharedProps } from './show/types.ts';
 export default function Show() {
   const { lessonMember, lesson } = usePage<LessonSharedProps>().props;
   return (
-    <>
-      <LessonProvider lesson={lesson} lessonMember={lessonMember}>
-        <Index />
-      </LessonProvider>
-    </>
+    <LessonProvider lesson={lesson} lessonMember={lessonMember}>
+      <Index />
+    </LessonProvider>
   );
 }

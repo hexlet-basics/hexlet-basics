@@ -61,7 +61,7 @@ export default function FooterBlock() {
         <Container size="lg" pt="lg">
           <footer>
             <Grid justify="space-b">
-              {i18next.language == 'ru' && (
+              {i18next.language === 'ru' && (
                 <Grid.Col span={{ base: 12, xs: 6, md: 3 }}>
                   <Text fz="h3" mb="sm">
                     8 800 100 22 47

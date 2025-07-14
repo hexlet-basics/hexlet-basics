@@ -1,8 +1,8 @@
 /// <reference types="vite/client" />
 
-// type ResourceModule = {
-//   default: string;
-// };
+type ResourceModule = {
+  default: string;
+};
 
 // type ViteTypeOptions = {};
 

@@ -32,7 +32,7 @@ export default function New({ reviews, pagy }: Props) {
   return (
     <ApplicationLayout items={items} header={header}>
       <Container>
-        {i18next.language == 'ru' && (
+        {i18next.language === 'ru' && (
           <Alert mb="xl">
             <XssContent>{t('reviews.index.add_review')}</XssContent>
           </Alert>

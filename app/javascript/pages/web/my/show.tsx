@@ -107,7 +107,7 @@ export default function My(props: Props) {
           {tViews('my.show.finished')}
         </Title>
 
-        {finishedCourseMembers.length > 0 && i18next.language == 'ru' && (
+        {finishedCourseMembers.length > 0 && i18next.language === 'ru' && (
           <Alert icon={<MessageSquareDiff />} mb="xl" px="xl">
             <XssContent>{t('my.show.add_review')}</XssContent>
           </Alert>

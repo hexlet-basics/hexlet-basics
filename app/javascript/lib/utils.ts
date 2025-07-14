@@ -146,7 +146,7 @@ export const neededPreview = (language: string) => {
 // };
 
 export function isCurrentUrl(checkingUrl: string) {
-  return getCurrentUrl() == checkingUrl;
+  return getCurrentUrl() === checkingUrl;
 }
 
 export function getCurrentUrl(

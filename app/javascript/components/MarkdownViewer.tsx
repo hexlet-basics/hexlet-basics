@@ -54,9 +54,7 @@ export default function MarkdownViewer({
 
   return (
     <TypographyStylesProvider>
-      <Box
-        className="markdown-viewer"
-      >
+      <Box className="markdown-viewer">
         <MarkdownHooks
           skipHtml={!allowHtml}
           remarkPlugins={[remarkGfm]}

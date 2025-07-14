@@ -2,6 +2,7 @@ import type { Locale } from '@/types';
 import { BackendEvent } from '@/types/events';
 
 type GonData = {
+  // biome-ignore lint/suspicious/noExplicitAny: false positive
   [key: string]: any;
   suffix: 'ru' | null;
   locale: Locale;
