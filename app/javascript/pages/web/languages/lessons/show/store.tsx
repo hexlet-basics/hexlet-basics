@@ -148,7 +148,7 @@ export function LessonProvider({ children, ...props }: LessonProviderProps) {
       content: defaultCode,
     });
     // oxlint-disable-next-line exhaustive-deps
-  }, []);
+  }, [lesson, lessonMember]);
 
   return (
     <LessonContext.Provider value={store}>{children}</LessonContext.Provider>

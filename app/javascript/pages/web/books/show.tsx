@@ -137,8 +137,8 @@ export default function Show({ bookRequested, lead }: Props) {
               <Grid.Col span={{ base: 12, md: 4 }}>{item.title}</Grid.Col>
               <Grid.Col span={{ base: 12, md: 6 }}>
                 <ul style={{ margin: 0, paddingLeft: 20 }}>
-                  {item.subsections.map((subsection, i) => (
-                    <li key={i}>{subsection}</li>
+                  {item.subsections.map((subsection) => (
+                    <li key={subsection}>{subsection}</li>
                   ))}
                 </ul>
               </Grid.Col>

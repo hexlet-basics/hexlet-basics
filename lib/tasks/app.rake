@@ -13,7 +13,7 @@ namespace :app do
 
       file.puts "export const eventNames = ["
       events.each do |event|
-        file.puts "  \"#{event}\","
+        file.puts "  '#{event}',"
       end
       file.puts "] as const;"
     end

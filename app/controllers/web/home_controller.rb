@@ -112,7 +112,7 @@ class Web::HomeController < Web::ApplicationController
       infos_by_language_id.transform_values { |infos| Language::SitemapLessonResource.new(infos) }
     end
 
-    blog_post_resources_by_locale = BlogPost.published
+    blog_post_resources_by_locale = BlogPost.published_state
       .select(:id, :slug, :name, :locale)
       .order(id: :desc)
       .group_by(&:locale)

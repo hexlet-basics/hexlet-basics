@@ -75,7 +75,9 @@ function useLabel(
 ): string | React.ReactNode {
   if (explicitLabel) return explicitLabel;
 
+  // biome-ignore lint/correctness/useHookAtTopLevel: -
   const { t: tAr } = useTranslation('activerecord');
+  // biome-ignore lint/correctness/useHookAtTopLevel: -
   const { t: tAm } = useTranslation('activemodel');
 
   const path = `attributes.${model}.${name}`;
@@ -476,7 +478,7 @@ export function XDynamicInputs({
     <Fieldset legend={label} mb="xl" p="md" radius="md">
       <Stack gap="md">
         {paths.map((path, index) => (
-          <NestedFields key={index} model={path}>
+          <NestedFields key={path} model={path}>
             <Stack
               gap="xs"
               p="sm"

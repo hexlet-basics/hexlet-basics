@@ -43,12 +43,17 @@ export default function Chat({
   previousMessages,
 }: Props) {
   const { t: tViews } = useTranslation('web');
-
+  const { t: tHelpers } = useTranslation('helpers');
+  const { t: tCommon } = useTranslation('common');
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: -
   useEffect(() => {
     inputRef.current?.focus();
   }, [focusesCount]);
+
+  const { input, status, messages, submitMessage, handleInputChange } =
+    useAssistantStream(lessonMember?.id, lesson.id, userCode, output);
 
   if (!lessonMember || !course.openai_assistant_id || !enabled) {
     let content = '';
@@ -69,17 +74,10 @@ export default function Chat({
     return <MessagePresenter message={disabledMessage} />;
   }
 
-  const { input, status, messages, submitMessage, handleInputChange } =
-    useAssistantStream(lessonMember.id, lesson.id, userCode, output);
-
-  const { t: tHelpers } = useTranslation('helpers');
-
   const initMessage: AssistantMessage = {
     role: 'assistant',
     content: tViews('languages.lessons.show.chat.hi'),
   };
-
-  const { t: tCommon } = useTranslation('common');
 
   return (
     <Stack>

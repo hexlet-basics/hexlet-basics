@@ -14,7 +14,7 @@ type Props = PropsWithChildren & {
   grid: Grid;
 };
 
-function renderData(lead: Lead, col: string) {
+function DataBox({ lead, col }: { lead: Lead; col: string }) {
   const [visible, setVisible] = useState(false);
   return (
     <>
@@ -47,12 +47,12 @@ export default function Index({ grid, leads }: Props) {
           {
             accessor: 'survey_answers_data',
             title: 'answers',
-            render: (rec) => renderData(rec, 'survey_answers_data'),
+            render: (rec) => <DataBox lead={rec} col="survey_answers_data" />,
           },
           {
             accessor: 'courses_data',
             title: 'courses',
-            render: (rec) => renderData(rec, 'courses_data'),
+            render: (rec) => <DataBox lead={rec} col="course_data" />,
           },
           {
             accessor: 'created_at',

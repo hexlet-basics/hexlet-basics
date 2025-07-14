@@ -85,7 +85,7 @@ export default function ForTeachersBlock() {
               {t('cases.for_teachers.early_career_guidance')}
             </Text>
             <List>
-              {earlyCareerGuidanceList.map((item, index) => (
+              {earlyCareerGuidanceList.map((item) => (
                 <List.Item mb="sm" key={item}>
                   {item}
                 </List.Item>
@@ -157,7 +157,7 @@ export default function ForTeachersBlock() {
           </Title>
           <SimpleGrid cols={{ base: 1, md: 2, xl: 4 }} spacing="lg">
             {howToLearnCards.map((item, index) => (
-              <Card key={index}>
+              <Card key={item.title}>
                 <Image
                   src={getResourceUrl(
                     `for-school-teachers-page/${item.img}.svg`,

@@ -15,7 +15,7 @@ import { useLessonStore } from '../store.tsx';
 import type { LessonSharedProps } from '../types.ts';
 
 export default function EditorTab() {
-  const { course, lesson, mobileBrowser } = usePage<LessonSharedProps>().props;
+  const { course, mobileBrowser } = usePage<LessonSharedProps>().props;
 
   const editorOptions: editor.IStandaloneEditorConstructionOptions = {
     tabSize: getTabSize(course.slug!),
@@ -59,6 +59,7 @@ export default function EditorTab() {
     // }
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: -
   useEffect(() => {
     if (mobileBrowser) return;
 

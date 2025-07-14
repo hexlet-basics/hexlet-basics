@@ -22,7 +22,7 @@ type StreamMessage = {
 };
 
 export function useAssistantStream(
-  lessonMemberId: number,
+  lessonMemberId: number | undefined,
   lessonId: number,
   userCode: string,
   output: string,
@@ -62,6 +62,9 @@ export function useAssistantStream(
   ).current;
 
   useEffect(() => {
+    if (!lessonMemberId) {
+      return;
+    }
     const subscription = cableInstance.subscriptions.create(
       { channel: 'AssistantChannel', id: lessonMemberId },
       {

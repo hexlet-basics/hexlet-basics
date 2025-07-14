@@ -41,6 +41,7 @@ export default function useDataTableProps<
     getOnChange: <K extends keyof Fields>(
       key: K,
     ) => (val: string | null) => void;
+    // biome-ignore lint/correctness/useExhaustiveDependencies: -
   } = useMemo(() => {
     return {
       values: filterValues,

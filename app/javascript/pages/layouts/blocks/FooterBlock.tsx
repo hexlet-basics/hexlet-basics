@@ -121,6 +121,11 @@ export default function FooterBlock() {
                 order={{ base: 1, lg: 0 }}
               >
                 <Stack gap={3}>
+                  {i18next.language === 'ru' && (
+                    <FooterLink href={Routes.map_path()}>
+                      {tLayouts('shared.footer.sitemap')}
+                    </FooterLink>
+                  )}
                   <FooterLink href={Routes.page_path('about')} pseudo>
                     {tLayouts('shared.footer.about')}
                   </FooterLink>

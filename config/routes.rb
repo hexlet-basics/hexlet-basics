@@ -72,7 +72,8 @@ Rails.application.routes.draw do
       root "home#index"
 
       get "/robots.:format", to: "home#robots", as: :robots
-      # get "/map", to: "home#sitemap"
+      # use resource
+      get "/map", to: "home#sitemap"
 
       resource :my, only: [ :show ]
 

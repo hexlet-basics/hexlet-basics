@@ -6,7 +6,6 @@ import {
   List,
   Stack,
   Text,
-  Title,
 } from '@mantine/core';
 import { Undo2 } from 'lucide-react';
 import type { PropsWithChildren } from 'react';
@@ -23,7 +22,6 @@ type Props = PropsWithChildren & {
 };
 
 export default function New({ lead, from }: Props) {
-  const { t } = useTranslation();
   // const { t: tAr } = useTranslation("activerecord");
   // const { t: tHelpers } = useTranslation("helpers");
   const { t: tViews } = useTranslation('web');
@@ -41,7 +39,7 @@ export default function New({ lead, from }: Props) {
               <Text fw={500}>{tViews('leads.new.how_can_we_help')}</Text>
               <List>
                 {helpItems.map((item, index) => (
-                  <List.Item key={index}>
+                  <List.Item key={item}>
                     <XssContent>{item}</XssContent>
                   </List.Item>
                 ))}
