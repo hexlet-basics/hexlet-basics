@@ -13,7 +13,7 @@ import {
 } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import * as Sentry from '@sentry/react';
-import { type PropsWithChildren, useEffect } from 'react';
+import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import getHighlighter from '@/lib/shiki';
 
@@ -47,19 +47,6 @@ const theme: MantineProviderProps['theme'] = {
 };
 
 function Root(props: Props) {
-  const { t: tCommon } = useTranslation('common');
-
-  useEffect(() => {
-    const interfaceTranslations = tCommon('sentryFeedbackWidget', {
-      returnObjects: true,
-      defaultValue: {},
-    });
-    Sentry.getFeedback()?.createWidget({
-      triggerLabel: '', // NOTE: убираем текст с кнопки для всех локалей
-      ...interfaceTranslations,
-    });
-  }, [tCommon]);
-
   return (
     <MantineProvider theme={theme}>
       <ModalsProvider>
