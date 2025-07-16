@@ -55,7 +55,7 @@ class RubyEventStore::ActiveRecord::DatabaseAdapter
 
   # @return [Boolean]
   #
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/database_adapter.rb#57
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/database_adapter.rb#61
   def ==(other); end
 
   # Returns the value of attribute data_type.
@@ -137,24 +137,24 @@ class RubyEventStore::ActiveRecord::Event < ::ActiveRecord::Base
   class << self
     private
 
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#15
+    # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#7
     def __class_attr__validators; end
 
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#17
+    # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#7
     def __class_attr__validators=(new_value); end
 
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#15
+    # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#7
     def __class_attr_defined_enums; end
 
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#17
+    # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#7
     def __class_attr_defined_enums=(new_value); end
   end
 end
 
-# source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#0
+# source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#7
 module RubyEventStore::ActiveRecord::Event::GeneratedAssociationMethods; end
 
-# source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#0
+# source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#7
 module RubyEventStore::ActiveRecord::Event::GeneratedAttributeMethods; end
 
 # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/event_id_index_migration_generator.rb#5
@@ -191,159 +191,167 @@ class RubyEventStore::ActiveRecord::EventInStream < ::ActiveRecord::Base
   include ::RubyEventStore::ActiveRecord::EventInStream::GeneratedAttributeMethods
   include ::RubyEventStore::ActiveRecord::EventInStream::GeneratedAssociationMethods
 
-  # source://activerecord/8.0.2/lib/active_record/autosave_association.rb#162
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#16
   def autosave_associated_records_for_event(*args); end
 
   class << self
     private
 
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#15
+    # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#16
     def __class_attr___callbacks; end
 
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#17
+    # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#16
     def __class_attr___callbacks=(new_value); end
 
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#15
+    # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#16
     def __class_attr__reflections; end
 
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#17
+    # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#16
     def __class_attr__reflections=(new_value); end
 
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#15
+    # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#13
     def __class_attr__validators; end
 
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#17
+    # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#13
     def __class_attr__validators=(new_value); end
 
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#15
+    # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#13
     def __class_attr_defined_enums; end
 
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#17
+    # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#13
     def __class_attr_defined_enums=(new_value); end
   end
 end
 
-# source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#0
+# source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#13
 module RubyEventStore::ActiveRecord::EventInStream::GeneratedAssociationMethods
-  # source://activerecord/8.0.2/lib/active_record/associations/builder/singular_association.rb#32
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#16
   def build_event(*args, &block); end
 
-  # source://activerecord/8.0.2/lib/active_record/associations/builder/singular_association.rb#36
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#16
   def create_event(*args, &block); end
 
-  # source://activerecord/8.0.2/lib/active_record/associations/builder/singular_association.rb#40
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#16
   def create_event!(*args, &block); end
 
-  # source://activerecord/8.0.2/lib/active_record/associations/builder/association.rb#104
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#16
   def event; end
 
-  # source://activerecord/8.0.2/lib/active_record/associations/builder/association.rb#112
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#16
   def event=(value); end
 
-  # source://activerecord/8.0.2/lib/active_record/associations/builder/belongs_to.rb#146
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#16
   def event_changed?; end
 
-  # source://activerecord/8.0.2/lib/active_record/associations/builder/belongs_to.rb#150
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#16
   def event_previously_changed?; end
 
-  # source://activerecord/8.0.2/lib/active_record/associations/builder/singular_association.rb#19
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#16
   def reload_event; end
 
-  # source://activerecord/8.0.2/lib/active_record/associations/builder/singular_association.rb#23
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#16
   def reset_event; end
 end
 
-# source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#0
+# source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event.rb#13
 module RubyEventStore::ActiveRecord::EventInStream::GeneratedAttributeMethods; end
 
-# source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#7
+# source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#5
 class RubyEventStore::ActiveRecord::EventRepository
   # @return [EventRepository] a new instance of EventRepository
   #
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#10
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#8
   def initialize(serializer:, model_factory: T.unsafe(nil)); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#18
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#66
   def append_to_stream(records, stream, expected_version); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#46
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#94
   def count(specification); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#30
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#78
   def delete_stream(stream); end
 
   # @return [Boolean]
   #
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#80
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#128
   def event_in_stream?(event_id, stream); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#76
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#124
   def global_position(event_id); end
 
   # @return [Boolean]
   #
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#34
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#82
   def has_event?(event_id); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#38
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#86
   def last_stream_event(stream); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#24
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#72
   def link_to_stream(event_ids, stream, expected_version); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#72
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#120
   def position_in_stream(event_id, stream); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#42
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#90
   def read(specification); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#68
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#38
+  def rescue_from_double_json_serialization!; end
+
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#116
   def streams_of(event_id); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#50
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#98
   def update_messages(records); end
 
   private
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#88
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#136
   def add_to_stream(event_ids, stream, expected_version); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#161
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#207
   def append_to_stream_(records, stream, expected_version); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#117
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#165
   def compute_position(resolved_version, index); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#121
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#169
   def detect_index_violated(message); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#125
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#173
   def insert_hash(record, serialized_record); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#154
+  # @return [Boolean]
+  #
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#219
+  def json_data_type?; end
+
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#202
   def link_to_stream_(event_ids, stream, expected_version); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#146
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#194
   def optimize_timestamp(valid_at, created_at); end
 
   # @raise [EventDuplicatedInStream]
   #
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#112
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#160
   def raise_error(e); end
 
   # Returns the value of attribute serializer.
   #
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#86
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#134
   def serializer; end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#150
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#198
   def start_transaction(&block); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#136
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#184
   def upsert_hash(record, serialized_record); end
 end
 
-# source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#8
+# source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository.rb#6
 RubyEventStore::ActiveRecord::EventRepository::POSITION_SHIFT = T.let(T.unsafe(nil), Integer)
 
 # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#5
@@ -387,40 +395,40 @@ class RubyEventStore::ActiveRecord::EventRepositoryReader
 
   private
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#121
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#122
   def as_at(spec); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#116
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#117
   def as_of(spec); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#176
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#177
   def coalesce(*exprs); end
 
   # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#69
   def monotonic_id_batch_reader(spec, stream); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#196
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#197
   def newer_than_condition(specification); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#200
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#201
   def newer_than_or_equal_condition(specification); end
 
   # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#64
   def offset_limit_batch_reader(spec, stream); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#188
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#189
   def older_than_condition(specification); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#192
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#193
   def older_than_or_equal_condition(specification); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#204
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#205
   def order(spec); end
 
   # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#83
   def read_scope(spec); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#208
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#209
   def record(record); end
 
   # Returns the value of attribute serializer.
@@ -428,25 +436,25 @@ class RubyEventStore::ActiveRecord::EventRepositoryReader
   # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#62
   def serializer; end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#136
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#137
   def start_condition(specification); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#156
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#157
   def start_condition_in_global_stream(specification); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#126
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#127
   def start_offset_condition(specification, record_id, search_in); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#146
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#147
   def stop_condition(specification); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#166
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#167
   def stop_condition_in_global_stream(specification); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#131
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#132
   def stop_offset_condition(specification, record_id, search_in); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#180
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/event_repository_reader.rb#181
   def time_comparison_field(specification); end
 end
 
@@ -460,7 +468,7 @@ class RubyEventStore::ActiveRecord::ForeignKeyOnEventIdMigrationGenerator
   # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/foreign_key_on_event_id_migration_generator.rb#28
   def absolute_path(path); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/foreign_key_on_event_id_migration_generator.rb#52
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/foreign_key_on_event_id_migration_generator.rb#54
   def build_path(migration_path, migration_name, time); end
 
   # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/foreign_key_on_event_id_migration_generator.rb#16
@@ -469,19 +477,19 @@ class RubyEventStore::ActiveRecord::ForeignKeyOnEventIdMigrationGenerator
   # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/foreign_key_on_event_id_migration_generator.rb#32
   def migration_code(database_adapter, migration_name); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/foreign_key_on_event_id_migration_generator.rb#36
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/foreign_key_on_event_id_migration_generator.rb#38
   def migration_template(template_root, name); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/foreign_key_on_event_id_migration_generator.rb#56
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/foreign_key_on_event_id_migration_generator.rb#58
   def migration_verion_number(time); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/foreign_key_on_event_id_migration_generator.rb#44
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/foreign_key_on_event_id_migration_generator.rb#46
   def migration_version; end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/foreign_key_on_event_id_migration_generator.rb#40
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/foreign_key_on_event_id_migration_generator.rb#42
   def template_root(database_adapter); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/foreign_key_on_event_id_migration_generator.rb#48
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/foreign_key_on_event_id_migration_generator.rb#50
   def write_to_file(path, migration_code); end
 end
 
@@ -492,18 +500,18 @@ class RubyEventStore::ActiveRecord::IndexViolationDetector
   # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/index_violation_detector.rb#6
   def initialize(event_store_events, event_store_events_in_streams); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/index_violation_detector.rb#20
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/index_violation_detector.rb#19
   def detect(message); end
 
   private
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/index_violation_detector.rb#30
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/index_violation_detector.rb#29
   def detect_mysql(message); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/index_violation_detector.rb#26
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/index_violation_detector.rb#25
   def detect_postgres(message); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/index_violation_detector.rb#35
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/index_violation_detector.rb#34
   def detect_sqlite(message); end
 end
 
@@ -520,25 +528,25 @@ class RubyEventStore::ActiveRecord::MigrationGenerator
   # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/migration_generator.rb#17
   def absolute_path(path); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/migration_generator.rb#45
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/migration_generator.rb#48
   def build_path(migration_path); end
 
   # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/migration_generator.rb#21
   def migration_code(database_adapter); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/migration_generator.rb#29
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/migration_generator.rb#32
   def migration_template(template_root, name); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/migration_generator.rb#33
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/migration_generator.rb#36
   def migration_version; end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/migration_generator.rb#25
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/migration_generator.rb#28
   def template_root(database_adapter); end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/migration_generator.rb#37
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/migration_generator.rb#40
   def timestamp; end
 
-  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/migration_generator.rb#41
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/migration_generator.rb#44
   def write_to_file(migration_code, path); end
 end
 
@@ -620,6 +628,19 @@ class RubyEventStore::ActiveRecord::RailsMigrationGenerator::Error < ::Thor::Err
 
 # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/railtie.rb#5
 class RubyEventStore::ActiveRecord::Railtie < ::Rails::Railtie; end
+
+# source://ruby_event_store-active_record//lib/ruby_event_store/active_record/skip_json_serialization.rb#7
+module RubyEventStore::ActiveRecord::SkipJsonSerialization
+  extend ::ActiveSupport::Concern
+
+  mixes_in_class_methods ::RubyEventStore::ActiveRecord::SkipJsonSerialization::ClassMethods
+end
+
+# source://ruby_event_store-active_record//lib/ruby_event_store/active_record/skip_json_serialization.rb#15
+module RubyEventStore::ActiveRecord::SkipJsonSerialization::ClassMethods
+  # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/skip_json_serialization.rb#15
+  def hook_attribute_type(name, cast_type); end
+end
 
 # source://ruby_event_store-active_record//lib/ruby_event_store/active_record/generators/database_adapter.rb#5
 class RubyEventStore::ActiveRecord::UnsupportedAdapter < ::StandardError; end

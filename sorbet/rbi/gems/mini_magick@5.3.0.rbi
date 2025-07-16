@@ -331,7 +331,7 @@ class MiniMagick::Image
   # source://mini_magick//lib/mini_magick/image.rb#119
   def dimensions(*args); end
 
-  # source://mini_magick//lib/mini_magick/image.rb#156
+  # source://mini_magick//lib/mini_magick/image.rb#159
   def eql?(other); end
 
   # @return [Hash]
@@ -378,7 +378,7 @@ class MiniMagick::Image
   #   end
   # @return [Array<MiniMagick::Image>]
   #
-  # source://mini_magick//lib/mini_magick/image.rb#295
+  # source://mini_magick//lib/mini_magick/image.rb#302
   def frames; end
 
   # Returns a matrix of pixels from the image. The matrix is constructed as
@@ -451,14 +451,12 @@ class MiniMagick::Image
   # @return [String]
   # @see http://www.imagemagick.org/script/escape.php
   #
-  # source://mini_magick//lib/mini_magick/image.rb#279
+  # source://mini_magick//lib/mini_magick/image.rb#282
   def info(value); end
 
   # Compares if image width
   # is greater than height
   # ============
-  # |          |
-  # |          |
   # ============
   #
   # @return [Boolean]
@@ -506,7 +504,7 @@ class MiniMagick::Image
   #   end
   # @return [Array<MiniMagick::Image>]
   #
-  # source://mini_magick//lib/mini_magick/image.rb#295
+  # source://mini_magick//lib/mini_magick/image.rb#301
   def pages; end
 
   # @return [String] The location of the current working file
@@ -517,10 +515,6 @@ class MiniMagick::Image
   # Compares if image height
   # is greater than width
   # ======
-  # |    |
-  # |    |
-  # |    |
-  # |    |
   # ======
   #
   # @return [Boolean]
@@ -776,17 +770,17 @@ class MiniMagick::Invalid < ::StandardError; end
 #
 # @private
 #
-# source://mini_magick//lib/mini_magick/shell.rb#11
+# source://mini_magick//lib/mini_magick/shell.rb#10
 class MiniMagick::Shell
-  # source://mini_magick//lib/mini_magick/shell.rb#29
+  # source://mini_magick//lib/mini_magick/shell.rb#28
   def execute(command, stdin: T.unsafe(nil), timeout: T.unsafe(nil)); end
 
-  # source://mini_magick//lib/mini_magick/shell.rb#13
+  # source://mini_magick//lib/mini_magick/shell.rb#12
   def run(command, errors: T.unsafe(nil), warnings: T.unsafe(nil), **options); end
 
   private
 
-  # source://mini_magick//lib/mini_magick/shell.rb#45
+  # source://mini_magick//lib/mini_magick/shell.rb#44
   def log(command, &block); end
 end
 
@@ -1004,7 +998,7 @@ class MiniMagick::Tool
     #   command.
     #
     # source://mini_magick//lib/mini_magick/tool.rb#30
-    def new(*args); end
+    def new(name, **options); end
   end
 end
 

@@ -82,7 +82,7 @@ class Pagy
 
   # Returns the value of attribute last.
   #
-  # source://pagy//lib/pagy.rb#27
+  # source://pagy//lib/pagy.rb#28
   def pages; end
 
   # Returns the value of attribute prev.
@@ -203,7 +203,7 @@ module Pagy::I18n
 
   # Translate and pluralize the key with the locale DATA
   #
-  # source://pagy//lib/pagy/i18n.rb#158
+  # source://pagy//lib/pagy/i18n.rb#164
   def t(locale, key, **opts); end
 
   # Translate and pluralize the key with the locale DATA

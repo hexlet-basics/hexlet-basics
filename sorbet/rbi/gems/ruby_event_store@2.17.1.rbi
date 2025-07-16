@@ -47,38 +47,41 @@ class RubyEventStore::Broker
   # @return [Broker] a new instance of Broker
   #
   # source://ruby_event_store//lib/ruby_event_store/broker.rb#5
-  def initialize(subscriptions:, dispatcher:); end
+  def initialize(subscriptions: T.unsafe(nil), dispatcher: T.unsafe(nil)); end
 
   # source://ruby_event_store//lib/ruby_event_store/broker.rb#20
   def add_global_subscription(subscriber); end
 
   # source://ruby_event_store//lib/ruby_event_store/broker.rb#15
-  def add_subscription(subscriber, event_types); end
+  def add_subscription(subscriber, topics); end
 
   # source://ruby_event_store//lib/ruby_event_store/broker.rb#30
   def add_thread_global_subscription(subscriber); end
 
   # source://ruby_event_store//lib/ruby_event_store/broker.rb#25
-  def add_thread_subscription(subscriber, event_types); end
+  def add_thread_subscription(subscriber, topics); end
+
+  # source://ruby_event_store//lib/ruby_event_store/broker.rb#35
+  def all_subscriptions_for(topic); end
 
   # source://ruby_event_store//lib/ruby_event_store/broker.rb#10
-  def call(event, record); end
+  def call(topic, event, record); end
 
   private
 
   # Returns the value of attribute dispatcher.
   #
-  # source://ruby_event_store//lib/ruby_event_store/broker.rb#37
+  # source://ruby_event_store//lib/ruby_event_store/broker.rb#41
   def dispatcher; end
 
   # Returns the value of attribute subscriptions.
   #
-  # source://ruby_event_store//lib/ruby_event_store/broker.rb#37
+  # source://ruby_event_store//lib/ruby_event_store/broker.rb#41
   def subscriptions; end
 
   # @raise [SubscriberNotExist]
   #
-  # source://ruby_event_store//lib/ruby_event_store/broker.rb#39
+  # source://ruby_event_store//lib/ruby_event_store/broker.rb#43
   def verify_subscription(subscriber); end
 end
 
@@ -87,7 +90,7 @@ class RubyEventStore::Client
   # @return [Client] a new instance of Client
   #
   # source://ruby_event_store//lib/ruby_event_store/client.rb#7
-  def initialize(repository: T.unsafe(nil), mapper: T.unsafe(nil), subscriptions: T.unsafe(nil), dispatcher: T.unsafe(nil), clock: T.unsafe(nil), correlation_id_generator: T.unsafe(nil), event_type_resolver: T.unsafe(nil)); end
+  def initialize(repository: T.unsafe(nil), mapper: T.unsafe(nil), subscriptions: T.unsafe(nil), dispatcher: T.unsafe(nil), message_broker: T.unsafe(nil), clock: T.unsafe(nil), correlation_id_generator: T.unsafe(nil), event_type_resolver: T.unsafe(nil)); end
 
   # Persists new event(s) without notifying any subscribed handlers
   #
@@ -96,7 +99,7 @@ class RubyEventStore::Client
   # @param expected_version [:any, :auto, :none, Integer] controls optimistic locking strategy. {http://railseventstore.org/docs/expected_version/ Read more}
   # @return [self]
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#48
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#84
   def append(events, stream_name: T.unsafe(nil), expected_version: T.unsafe(nil)); end
 
   # Deletes a stream.
@@ -106,7 +109,7 @@ class RubyEventStore::Client
   # @param stream_name [String] name of the stream to be cleared.
   # @return [self]
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#75
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#111
   def delete_stream(stream_name); end
 
   # Deserialize event which was serialized for async event handlers
@@ -114,7 +117,7 @@ class RubyEventStore::Client
   #
   # @return [Event] deserialized event
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#273
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#310
   def deserialize(serializer:, event_type:, event_id:, data:, metadata:, timestamp: T.unsafe(nil), valid_at: T.unsafe(nil)); end
 
   # Checks whether event is linked in given stream
@@ -123,7 +126,7 @@ class RubyEventStore::Client
   # @param stream_name [String]
   # @return [Boolean] true if event is linked to given stream, false otherwise
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#127
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#163
   def event_in_stream?(event_id, stream_name); end
 
   # Gets position of the event in global stream
@@ -136,10 +139,10 @@ class RubyEventStore::Client
   # @raise [EventNotFound]
   # @return [Integer] nonnegno ative integer position of event in global stream
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#118
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#154
   def global_position(event_id); end
 
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#332
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#369
   def inspect; end
 
   # Links already persisted event(s) to a different stream.
@@ -150,7 +153,7 @@ class RubyEventStore::Client
   # @param expected_version [:any, :auto, :none, Integer] controls optimistic locking strategy. {http://railseventstore.org/docs/expected_version/ Read more}
   # @return [self]
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#64
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#100
   def link(event_ids, stream_name:, expected_version: T.unsafe(nil)); end
 
   # Read additional metadata which will be added for published events
@@ -158,7 +161,7 @@ class RubyEventStore::Client
   #
   # @return [Hash]
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#294
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#331
   def metadata; end
 
   # Overwrite existing event(s) with the same ID.
@@ -189,7 +192,7 @@ class RubyEventStore::Client
   # @param events [Array<Event>, Event] event(s) to serialize and overwrite again
   # @return [self]
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#327
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#364
   def overwrite(events_or_event); end
 
   # Gets position of the event in given stream
@@ -203,7 +206,7 @@ class RubyEventStore::Client
   # @raise [EventNotInStream]
   # @return [Integer] nonnegative integer position of event in stream
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#105
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#141
   def position_in_stream(event_id, stream_name); end
 
   # Persists events and notifies subscribed handlers about them
@@ -213,22 +216,25 @@ class RubyEventStore::Client
   # @param expected_version [:any, :auto, :none, Integer] controls optimistic locking strategy. {http://railseventstore.org/docs/expected_version/ Read more}
   # @return [self]
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#32
-  def publish(events, stream_name: T.unsafe(nil), expected_version: T.unsafe(nil)); end
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#59
+  def publish(events, topic: T.unsafe(nil), stream_name: T.unsafe(nil), expected_version: T.unsafe(nil)); end
 
   # Starts building a query specification for reading events.
   # {http://railseventstore.org/docs/read/ More info.}
   #
   # @return [Specification]
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#84
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#120
   def read; end
+
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#48
+  def rescue_from_double_json_serialization!; end
 
   # Gets list of streams where event is stored or linked
   #
   # @return [Array<Stream>] where event is stored or linked
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#91
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#127
   def streams_of(event_id); end
 
   # Subscribes a handler (subscriber) that will be invoked for published events of provided type.
@@ -237,7 +243,7 @@ class RubyEventStore::Client
   # @overload subscribe
   # @raise [ArgumentError]
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#144
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#180
   def subscribe(subscriber = T.unsafe(nil), to:, &proc); end
 
   # Subscribes a handler (subscriber) that will be invoked for all published events
@@ -246,7 +252,7 @@ class RubyEventStore::Client
   # @overload subscribe_to_all_events
   # @raise [ArgumentError]
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#160
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#196
   def subscribe_to_all_events(subscriber = T.unsafe(nil), &proc); end
 
   # Get list of handlers subscribed to an event
@@ -254,7 +260,7 @@ class RubyEventStore::Client
   # @param to [Class, String] type of events to get list of sybscribed handlers
   # @return [Array<Object, Class>]
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#169
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#205
   def subscribers_for(event_class); end
 
   # Set additional metadata for all events published within the provided block
@@ -264,7 +270,7 @@ class RubyEventStore::Client
   # @param block [Proc] block of code during which the metadata will be added
   # @return [Object] last value returned by the provided block
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#261
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#298
   def with_metadata(metadata_for_block, &block); end
 
   # Use for starting temporary subscriptions.
@@ -274,82 +280,82 @@ class RubyEventStore::Client
   # @raise [ArgumentError]
   # @return [Within] builder object which collects temporary subscriptions
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#250
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#287
   def within(&block); end
 
   protected
 
+  # @return [Boolean]
+  #
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#400
+  def batch_mapper?(mapper); end
+
   # Returns the value of attribute broker.
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#376
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#416
   def broker; end
 
   # Returns the value of attribute clock.
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#376
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#416
   def clock; end
 
   # Returns the value of attribute correlation_id_generator.
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#376
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#416
   def correlation_id_generator; end
 
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#368
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#408
   def default_clock; end
 
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#372
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#412
   def default_correlation_id_generator; end
 
   # Returns the value of attribute event_type_resolver.
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#376
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#416
   def event_type_resolver; end
 
   # Returns the value of attribute mapper.
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#376
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#416
   def mapper; end
 
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#364
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#404
   def metadata=(value); end
 
   # Returns the value of attribute repository.
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#376
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#416
   def repository; end
-
-  # Returns the value of attribute subscriptions.
-  #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#376
-  def subscriptions; end
 
   private
 
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#358
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#394
   def append_records_to_stream(records, stream_name:, expected_version:); end
 
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#351
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#387
   def enrich_event_metadata(event); end
 
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#345
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#382
   def enrich_events_metadata(events); end
 
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#341
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#378
   def transform(events); end
 end
 
-# source://ruby_event_store//lib/ruby_event_store/client.rb#336
+# source://ruby_event_store//lib/ruby_event_store/client.rb#373
 RubyEventStore::Client::EMPTY_HASH = T.let(T.unsafe(nil), Hash)
 
 # Builder object for collecting temporary handlers (subscribers)
 # which are active only during the invocation of the provided
 # block of code.
 #
-# source://ruby_event_store//lib/ruby_event_store/client.rb#176
+# source://ruby_event_store//lib/ruby_event_store/client.rb#212
 class RubyEventStore::Client::Within
   # @return [Within] a new instance of Within
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#177
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#213
   def initialize(block, broker, resolver); end
 
   # Invokes the block of code provided to {Client#within}
@@ -358,7 +364,7 @@ class RubyEventStore::Client::Within
   #
   # @return [Object] value returned by the invoked block of code
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#225
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#261
   def call; end
 
   # Subscribes temporary handlers that
@@ -371,7 +377,7 @@ class RubyEventStore::Client::Within
   # @overload subscribe
   # @raise [ArgumentError]
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#214
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#250
   def subscribe(handler = T.unsafe(nil), to:, &handler2); end
 
   # Subscribes temporary handlers that
@@ -384,21 +390,59 @@ class RubyEventStore::Client::Within
   # @param handler2 [Proc] handler passed as proc
   # @return [self]
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#194
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#230
   def subscribe_to_all_events(*handlers, &handler2); end
 
   private
 
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#240
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#277
   def add_thread_global_subscribers; end
 
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#236
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#273
   def add_thread_subscribers; end
 
   # Returns the value of attribute resolver.
   #
-  # source://ruby_event_store//lib/ruby_event_store/client.rb#234
+  # source://ruby_event_store//lib/ruby_event_store/client.rb#271
   def resolver; end
+end
+
+# source://ruby_event_store//lib/ruby_event_store/composed_broker.rb#4
+class RubyEventStore::ComposedBroker
+  # @return [ComposedBroker] a new instance of ComposedBroker
+  #
+  # source://ruby_event_store//lib/ruby_event_store/composed_broker.rb#5
+  def initialize(*brokers, multiple_brokers: T.unsafe(nil)); end
+
+  # @raise [SubscriptionsNotSupported]
+  #
+  # source://ruby_event_store//lib/ruby_event_store/composed_broker.rb#27
+  def add_global_subscription(subscriber); end
+
+  # source://ruby_event_store//lib/ruby_event_store/composed_broker.rb#19
+  def add_subscription(subscriber, topics); end
+
+  # @raise [SubscriptionsNotSupported]
+  #
+  # source://ruby_event_store//lib/ruby_event_store/composed_broker.rb#41
+  def add_thread_global_subscription(subscriber); end
+
+  # source://ruby_event_store//lib/ruby_event_store/composed_broker.rb#33
+  def add_thread_subscription(subscriber, topics); end
+
+  # source://ruby_event_store//lib/ruby_event_store/composed_broker.rb#47
+  def all_subscriptions_for(topic); end
+
+  # source://ruby_event_store//lib/ruby_event_store/composed_broker.rb#10
+  def call(event, record, topic); end
+
+  # source://ruby_event_store//lib/ruby_event_store/composed_broker.rb#51
+  def verify(topic); end
+
+  private
+
+  # source://ruby_event_store//lib/ruby_event_store/composed_broker.rb#57
+  def verified_brokers(topic); end
 end
 
 # source://ruby_event_store//lib/ruby_event_store/composed_dispatcher.rb#4
@@ -543,7 +587,7 @@ class RubyEventStore::Event
   # @param other_event [Event, Object] object to compare
   # @return [TrueClass, FalseClass]
   #
-  # source://ruby_event_store//lib/ruby_event_store/event.rb#60
+  # source://ruby_event_store//lib/ruby_event_store/event.rb#126
   def eql?(other_event); end
 
   # Returns the value of attribute event_id.
@@ -602,16 +646,16 @@ end
 # source://ruby_event_store//lib/ruby_event_store/errors.rb#12
 class RubyEventStore::EventDuplicatedInStream < ::RubyEventStore::Error; end
 
-# source://ruby_event_store//lib/ruby_event_store/errors.rb#17
+# source://ruby_event_store//lib/ruby_event_store/errors.rb#18
 class RubyEventStore::EventNotFound < ::RubyEventStore::Error
   # @return [EventNotFound] a new instance of EventNotFound
   #
-  # source://ruby_event_store//lib/ruby_event_store/errors.rb#20
+  # source://ruby_event_store//lib/ruby_event_store/errors.rb#21
   def initialize(event_id); end
 
   # Returns the value of attribute event_id.
   #
-  # source://ruby_event_store//lib/ruby_event_store/errors.rb#18
+  # source://ruby_event_store//lib/ruby_event_store/errors.rb#19
   def event_id; end
 end
 
@@ -644,7 +688,7 @@ class RubyEventStore::ExpectedVersion
   # source://ruby_event_store//lib/ruby_event_store/expected_version.rb#31
   def auto?; end
 
-  # source://ruby_event_store//lib/ruby_event_store/expected_version.rb#56
+  # source://ruby_event_store//lib/ruby_event_store/expected_version.rb#60
   def eql?(other_expected_version); end
 
   # source://ruby_event_store//lib/ruby_event_store/expected_version.rb#52
@@ -723,10 +767,10 @@ class RubyEventStore::InMemoryRepository
 
   # @return [Boolean]
   #
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#138
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#136
   def event_in_stream?(event_id, stream); end
 
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#134
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#132
   def global_position(event_id); end
 
   # @return [Boolean]
@@ -742,13 +786,13 @@ class RubyEventStore::InMemoryRepository
 
   # @raise [EventNotFoundInStream]
   #
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#128
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#126
   def position_in_stream(event_id, stream); end
 
   # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#81
   def read(spec); end
 
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#124
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#122
   def streams_of(event_id); end
 
   # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#106
@@ -792,7 +836,7 @@ class RubyEventStore::InMemoryRepository
   # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#176
   def read_event(event_id); end
 
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#144
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#142
   def read_scope(spec); end
 
   # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#184
@@ -813,7 +857,7 @@ class RubyEventStore::InMemoryRepository
   # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#247
   def streams; end
 
-  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#168
+  # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#172
   def time_comparison_field(spec, sr); end
 
   # source://ruby_event_store//lib/ruby_event_store/in_memory_repository.rb#203
@@ -848,6 +892,52 @@ end
 
 # source://ruby_event_store//lib/ruby_event_store/errors.rb#7
 class RubyEventStore::IncorrectStreamData < ::RubyEventStore::Error; end
+
+# source://ruby_event_store//lib/ruby_event_store/instrumented_broker.rb#4
+class RubyEventStore::InstrumentedBroker
+  # @return [InstrumentedBroker] a new instance of InstrumentedBroker
+  #
+  # source://ruby_event_store//lib/ruby_event_store/instrumented_broker.rb#5
+  def initialize(broker, instrumentation); end
+
+  # source://ruby_event_store//lib/ruby_event_store/instrumented_broker.rb#31
+  def add_global_subscription(subscriber); end
+
+  # source://ruby_event_store//lib/ruby_event_store/instrumented_broker.rb#25
+  def add_subscription(subscriber, topics); end
+
+  # source://ruby_event_store//lib/ruby_event_store/instrumented_broker.rb#45
+  def add_thread_global_subscription(subscriber); end
+
+  # source://ruby_event_store//lib/ruby_event_store/instrumented_broker.rb#37
+  def add_thread_subscription(subscriber, topics); end
+
+  # source://ruby_event_store//lib/ruby_event_store/instrumented_broker.rb#51
+  def all_subscriptions_for(topic); end
+
+  # source://ruby_event_store//lib/ruby_event_store/instrumented_broker.rb#10
+  def call(topic, event, record); end
+
+  # source://ruby_event_store//lib/ruby_event_store/instrumented_broker.rb#57
+  def method_missing(method_name, *arguments, **keyword_arguments, &block); end
+
+  private
+
+  # Returns the value of attribute broker.
+  #
+  # source://ruby_event_store//lib/ruby_event_store/instrumented_broker.rb#71
+  def broker; end
+
+  # Returns the value of attribute instrumentation.
+  #
+  # source://ruby_event_store//lib/ruby_event_store/instrumented_broker.rb#71
+  def instrumentation; end
+
+  # @return [Boolean]
+  #
+  # source://ruby_event_store//lib/ruby_event_store/instrumented_broker.rb#65
+  def respond_to_missing?(method_name, _include_private); end
+end
 
 # source://ruby_event_store//lib/ruby_event_store/instrumented_dispatcher.rb#4
 class RubyEventStore::InstrumentedDispatcher
@@ -942,33 +1032,33 @@ class RubyEventStore::InstrumentedSubscriptions
   # source://ruby_event_store//lib/ruby_event_store/instrumented_subscriptions.rb#10
   def add_subscription(subscriber, event_types); end
 
-  # source://ruby_event_store//lib/ruby_event_store/instrumented_subscriptions.rb#28
+  # source://ruby_event_store//lib/ruby_event_store/instrumented_subscriptions.rb#26
   def add_thread_global_subscription(subscriber); end
 
-  # source://ruby_event_store//lib/ruby_event_store/instrumented_subscriptions.rb#22
+  # source://ruby_event_store//lib/ruby_event_store/instrumented_subscriptions.rb#20
   def add_thread_subscription(subscriber, event_types); end
 
-  # source://ruby_event_store//lib/ruby_event_store/instrumented_subscriptions.rb#34
+  # source://ruby_event_store//lib/ruby_event_store/instrumented_subscriptions.rb#30
   def method_missing(method_name, *arguments, &block); end
 
   private
 
-  # source://ruby_event_store//lib/ruby_event_store/instrumented_subscriptions.rb#48
+  # source://ruby_event_store//lib/ruby_event_store/instrumented_subscriptions.rb#44
   def instrument(args); end
 
   # Returns the value of attribute instrumentation.
   #
-  # source://ruby_event_store//lib/ruby_event_store/instrumented_subscriptions.rb#59
+  # source://ruby_event_store//lib/ruby_event_store/instrumented_subscriptions.rb#51
   def instrumentation; end
 
   # @return [Boolean]
   #
-  # source://ruby_event_store//lib/ruby_event_store/instrumented_subscriptions.rb#42
+  # source://ruby_event_store//lib/ruby_event_store/instrumented_subscriptions.rb#38
   def respond_to_missing?(method_name, _include_private); end
 
   # Returns the value of attribute subscriptions.
   #
-  # source://ruby_event_store//lib/ruby_event_store/instrumented_subscriptions.rb#59
+  # source://ruby_event_store//lib/ruby_event_store/instrumented_subscriptions.rb#51
   def subscriptions; end
 end
 
@@ -1028,6 +1118,20 @@ end
 # source://ruby_event_store//lib/ruby_event_store/mappers/encryption_key.rb#4
 module RubyEventStore::Mappers; end
 
+# source://ruby_event_store//lib/ruby_event_store/mappers/batch_mapper.rb#5
+class RubyEventStore::Mappers::BatchMapper
+  # @return [BatchMapper] a new instance of BatchMapper
+  #
+  # source://ruby_event_store//lib/ruby_event_store/mappers/batch_mapper.rb#6
+  def initialize(mapper = T.unsafe(nil)); end
+
+  # source://ruby_event_store//lib/ruby_event_store/mappers/batch_mapper.rb#10
+  def events_to_records(events); end
+
+  # source://ruby_event_store//lib/ruby_event_store/mappers/batch_mapper.rb#14
+  def records_to_events(records); end
+end
+
 # source://ruby_event_store//lib/ruby_event_store/mappers/default.rb#5
 class RubyEventStore::Mappers::Default < ::RubyEventStore::Mappers::PipelineMapper
   # @return [Default] a new instance of Default
@@ -1045,7 +1149,7 @@ class RubyEventStore::Mappers::EncryptionKey
 
   # Returns the value of attribute cipher.
   #
-  # source://ruby_event_store//lib/ruby_event_store/mappers/encryption_key.rb#32
+  # source://ruby_event_store//lib/ruby_event_store/mappers/encryption_key.rb#39
   def cipher; end
 
   # source://ruby_event_store//lib/ruby_event_store/mappers/encryption_key.rb#19
@@ -1056,27 +1160,27 @@ class RubyEventStore::Mappers::EncryptionKey
 
   # Returns the value of attribute key.
   #
-  # source://ruby_event_store//lib/ruby_event_store/mappers/encryption_key.rb#32
+  # source://ruby_event_store//lib/ruby_event_store/mappers/encryption_key.rb#39
   def key; end
 
-  # source://ruby_event_store//lib/ruby_event_store/mappers/encryption_key.rb#27
+  # source://ruby_event_store//lib/ruby_event_store/mappers/encryption_key.rb#34
   def random_iv; end
 
   private
 
-  # source://ruby_event_store//lib/ruby_event_store/mappers/encryption_key.rb#36
+  # source://ruby_event_store//lib/ruby_event_store/mappers/encryption_key.rb#43
   def ciphertext_from_authenticated(crypto, message); end
 
-  # source://ruby_event_store//lib/ruby_event_store/mappers/encryption_key.rb#42
+  # source://ruby_event_store//lib/ruby_event_store/mappers/encryption_key.rb#49
   def encrypt_authenticated(crypto, message); end
 
-  # source://ruby_event_store//lib/ruby_event_store/mappers/encryption_key.rb#47
+  # source://ruby_event_store//lib/ruby_event_store/mappers/encryption_key.rb#54
   def prepare_auth_data(crypto); end
 
-  # source://ruby_event_store//lib/ruby_event_store/mappers/encryption_key.rb#58
+  # source://ruby_event_store//lib/ruby_event_store/mappers/encryption_key.rb#65
   def prepare_decrypt(cipher); end
 
-  # source://ruby_event_store//lib/ruby_event_store/mappers/encryption_key.rb#52
+  # source://ruby_event_store//lib/ruby_event_store/mappers/encryption_key.rb#59
   def prepare_encrypt(cipher); end
 end
 
@@ -1098,7 +1202,7 @@ class RubyEventStore::Mappers::ForgottenData
   # source://ruby_event_store//lib/ruby_event_store/mappers/forgotten_data.rb#16
   def ==(other); end
 
-  # source://ruby_event_store//lib/ruby_event_store/mappers/forgotten_data.rb#16
+  # source://ruby_event_store//lib/ruby_event_store/mappers/forgotten_data.rb#19
   def eql?(other); end
 
   # source://ruby_event_store//lib/ruby_event_store/mappers/forgotten_data.rb#21
@@ -1142,6 +1246,32 @@ end
 
 # source://ruby_event_store//lib/ruby_event_store/mappers/in_memory_encryption_key_repository.rb#6
 RubyEventStore::Mappers::InMemoryEncryptionKeyRepository::DEFAULT_CIPHER = T.let(T.unsafe(nil), String)
+
+# source://ruby_event_store//lib/ruby_event_store/mappers/instrumented_batch_mapper.rb#5
+class RubyEventStore::Mappers::InstrumentedBatchMapper
+  # @return [InstrumentedBatchMapper] a new instance of InstrumentedBatchMapper
+  #
+  # source://ruby_event_store//lib/ruby_event_store/mappers/instrumented_batch_mapper.rb#6
+  def initialize(mapper, instrumentation); end
+
+  # source://ruby_event_store//lib/ruby_event_store/mappers/instrumented_batch_mapper.rb#11
+  def events_to_records(events); end
+
+  # source://ruby_event_store//lib/ruby_event_store/mappers/instrumented_batch_mapper.rb#17
+  def records_to_events(records); end
+
+  private
+
+  # Returns the value of attribute instrumentation.
+  #
+  # source://ruby_event_store//lib/ruby_event_store/mappers/instrumented_batch_mapper.rb#25
+  def instrumentation; end
+
+  # Returns the value of attribute mapper.
+  #
+  # source://ruby_event_store//lib/ruby_event_store/mappers/instrumented_batch_mapper.rb#25
+  def mapper; end
+end
 
 # source://ruby_event_store//lib/ruby_event_store/mappers/instrumented_mapper.rb#5
 class RubyEventStore::Mappers::InstrumentedMapper
@@ -1252,22 +1382,22 @@ class RubyEventStore::Mappers::Transformation::Encryption
 
   private
 
-  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/encryption.rb#114
+  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/encryption.rb#113
   def decrypt_attribute(data, attribute, meta); end
 
-  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/encryption.rb#94
+  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/encryption.rb#93
   def decrypt_data(data, meta); end
 
   # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/encryption.rb#66
   def deep_dup(hash); end
 
-  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/encryption.rb#101
+  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/encryption.rb#100
   def encrypt_attribute(data, attribute, meta); end
 
-  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/encryption.rb#87
+  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/encryption.rb#86
   def encrypt_data(data, meta); end
 
-  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/encryption.rb#72
+  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/encryption.rb#71
   def encryption_metadata(data, schema); end
 
   # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/encryption.rb#62
@@ -1346,25 +1476,19 @@ class RubyEventStore::Mappers::Transformation::PreserveTypes
 
   # Returns the value of attribute registry.
   #
-  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/preserve_types.rb#111
+  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/preserve_types.rb#112
   def registry; end
 
-  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/preserve_types.rb#153
+  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/preserve_types.rb#142
   def restore_type(argument, type); end
 
-  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/preserve_types.rb#145
-  def restore_types(argument, types); end
-
-  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/preserve_types.rb#134
+  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/preserve_types.rb#129
   def store_type(argument); end
 
-  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/preserve_types.rb#128
-  def store_types(argument); end
-
-  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/preserve_types.rb#117
+  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/preserve_types.rb#118
   def transform(argument); end
 
-  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/preserve_types.rb#113
+  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/preserve_types.rb#114
   def transform_hash(argument); end
 end
 
@@ -1416,10 +1540,10 @@ class RubyEventStore::Mappers::Transformation::PreserveTypes::Registry
   # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/preserve_types.rb#41
   def initialize(resolver); end
 
-  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/preserve_types.rb#50
+  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/preserve_types.rb#49
   def add(type, serializer, deserializer, stored_type); end
 
-  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/preserve_types.rb#54
+  # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/preserve_types.rb#53
   def of(type); end
 
   private
@@ -1435,7 +1559,7 @@ class RubyEventStore::Mappers::Transformation::PreserveTypes::Registry
   def types; end
 end
 
-# source://ruby_event_store//lib/ruby_event_store/mappers/transformation/preserve_types.rb#47
+# source://ruby_event_store//lib/ruby_event_store/mappers/transformation/preserve_types.rb#46
 RubyEventStore::Mappers::Transformation::PreserveTypes::Registry::NULL_TYPE = T.let(T.unsafe(nil), RubyEventStore::Mappers::Transformation::PreserveTypes::NullType)
 
 # source://ruby_event_store//lib/ruby_event_store/mappers/transformation/stringify_metadata_keys.rb#6
@@ -1501,16 +1625,16 @@ class RubyEventStore::Metadata
   # source://ruby_event_store//lib/ruby_event_store/metadata.rb#12
   def initialize(h = T.unsafe(nil)); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def <(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def <=(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def >(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def >=(*args, **_arg1, &block); end
 
   # @raise [ArgumentError]
@@ -1523,106 +1647,106 @@ class RubyEventStore::Metadata
   # source://ruby_event_store//lib/ruby_event_store/metadata.rb#22
   def []=(key, val); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def assoc(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def clear(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def compact(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def compact!(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def delete(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def delete_if(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def dig(*args, **_arg1, &block); end
 
   # source://ruby_event_store//lib/ruby_event_store/metadata.rb#28
   def each(&block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def each_key(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def each_pair(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def each_value(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def empty?(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def fetch(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def fetch_values(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def flatten(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def has_key?(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def has_value?(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def keep_if(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def key(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def key?(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def keys(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def length(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def rassoc(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def reject!(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def select!(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def shift(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def size(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def slice(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def to_proc(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def transform_keys(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def transform_values(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def value?(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def values(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://ruby_event_store//lib/ruby_event_store/metadata.rb#72
   def values_at(*args, **_arg1, &block); end
 
   private
@@ -1723,6 +1847,7 @@ class RubyEventStore::Projection
 
     private
 
+    # source://ruby_event_store//lib/ruby_event_store/projection.rb#5
     def new(*_arg0); end
   end
 end
@@ -1743,7 +1868,7 @@ class RubyEventStore::Record
   # source://ruby_event_store//lib/ruby_event_store/record.rb#18
   def data; end
 
-  # source://ruby_event_store//lib/ruby_event_store/record.rb#24
+  # source://ruby_event_store//lib/ruby_event_store/record.rb#52
   def eql?(other); end
 
   # Returns the value of attribute event_id.
@@ -1806,7 +1931,7 @@ class RubyEventStore::SerializedRecord
   # source://ruby_event_store//lib/ruby_event_store/serialized_record.rb#40
   def deserialize(serializer); end
 
-  # source://ruby_event_store//lib/ruby_event_store/serialized_record.rb#23
+  # source://ruby_event_store//lib/ruby_event_store/serialized_record.rb#51
   def eql?(other); end
 
   # Returns the value of attribute event_id.
@@ -2019,7 +2144,7 @@ class RubyEventStore::Specification
   # @param batch_size [Integer] number of events to read in a single batch
   # @return [Specification]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification.rb#238
+  # source://ruby_event_store//lib/ruby_event_store/specification.rb#247
   def in_batches_of(batch_size = T.unsafe(nil)); end
 
   # Executes the query based on the specification built up to this point.
@@ -2084,7 +2209,7 @@ class RubyEventStore::Specification
   #
   # @return [Specification]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification.rb#288
+  # source://ruby_event_store//lib/ruby_event_store/specification.rb#291
   def of_types(*types); end
 
   # Limits the query to events that occurred before given time.
@@ -2218,14 +2343,17 @@ class RubyEventStore::SpecificationReader
 
   private
 
+  # source://ruby_event_store//lib/ruby_event_store/specification_reader.rb#34
+  def map(records); end
+
   # Returns the value of attribute mapper.
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_reader.rb#34
+  # source://ruby_event_store//lib/ruby_event_store/specification_reader.rb#38
   def mapper; end
 
   # Returns the value of attribute repository.
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_reader.rb#34
+  # source://ruby_event_store//lib/ruby_event_store/specification_reader.rb#38
   def repository; end
 end
 
@@ -2243,7 +2371,7 @@ class RubyEventStore::SpecificationResult
   # @param other_spec [SpecificationResult, Object] object to compare
   # @return [TrueClass, FalseClass]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#259
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#257
   def ==(other_spec); end
 
   # Read strategy. True if all items will be read
@@ -2251,7 +2379,7 @@ class RubyEventStore::SpecificationResult
   #
   # @return [Boolean]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#222
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#220
   def all?; end
 
   # Read direction. True is reading backward
@@ -2259,7 +2387,7 @@ class RubyEventStore::SpecificationResult
   #
   # @return [Boolean]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#150
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#148
   def backward?; end
 
   # Size of batch to read (only for :batch read strategy)
@@ -2267,7 +2395,7 @@ class RubyEventStore::SpecificationResult
   #
   # @return [Integer]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#158
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#156
   def batch_size; end
 
   # Read strategy. True if items will be read in batches
@@ -2275,7 +2403,7 @@ class RubyEventStore::SpecificationResult
   #
   # @return [Boolean]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#198
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#196
   def batched?; end
 
   # Clone [SpecificationResult]
@@ -2284,7 +2412,7 @@ class RubyEventStore::SpecificationResult
   # @return [SpecificationResult]
   # @yield [new_attributes]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#246
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#244
   def dup; end
 
   # Read strategy. True if first item will be read
@@ -2292,7 +2420,7 @@ class RubyEventStore::SpecificationResult
   #
   # @return [Boolean]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#206
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#204
   def first?; end
 
   # Read direction. True is reading forward
@@ -2300,7 +2428,7 @@ class RubyEventStore::SpecificationResult
   #
   # @return [Boolean]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#142
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#140
   def forward?; end
 
   # Generates a Fixnum hash value for this object. This function
@@ -2328,7 +2456,7 @@ class RubyEventStore::SpecificationResult
   #
   # @return [Integer]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#287
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#285
   def hash; end
 
   # Read strategy. True if last item will be read
@@ -2336,7 +2464,7 @@ class RubyEventStore::SpecificationResult
   #
   # @return [Boolean]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#214
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#212
   def last?; end
 
   # Results limit or infinity if limit not defined
@@ -2344,7 +2472,7 @@ class RubyEventStore::SpecificationResult
   #
   # @return [Integer|Infinity]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#70
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#68
   def limit; end
 
   # Limited results. True if number of read elements are limited
@@ -2352,7 +2480,7 @@ class RubyEventStore::SpecificationResult
   #
   # @return [Boolean]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#62
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#60
   def limit?; end
 
   # Starting time.
@@ -2360,7 +2488,7 @@ class RubyEventStore::SpecificationResult
   #
   # @return [Time]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#118
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#116
   def newer_than; end
 
   # Starting time.
@@ -2368,7 +2496,7 @@ class RubyEventStore::SpecificationResult
   #
   # @return [Time]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#126
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#124
   def newer_than_or_equal; end
 
   # Ending time.
@@ -2376,7 +2504,7 @@ class RubyEventStore::SpecificationResult
   #
   # @return [Time]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#102
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#100
   def older_than; end
 
   # Ending time.
@@ -2384,7 +2512,7 @@ class RubyEventStore::SpecificationResult
   #
   # @return [Time]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#110
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#108
   def older_than_or_equal; end
 
   # Starting position. Event id of starting event
@@ -2392,7 +2520,7 @@ class RubyEventStore::SpecificationResult
   #
   # @return [String]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#86
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#84
   def start; end
 
   # Stop position. Event id of stopping event
@@ -2400,7 +2528,7 @@ class RubyEventStore::SpecificationResult
   #
   # @return [String|Symbol]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#94
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#92
   def stop; end
 
   # Stream definition. Stream to be read or nil
@@ -2408,7 +2536,7 @@ class RubyEventStore::SpecificationResult
   #
   # @return [Stream|nil]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#78
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#76
   def stream; end
 
   # Time sorting strategy. Nil when not specified.
@@ -2416,7 +2544,7 @@ class RubyEventStore::SpecificationResult
   #
   # @return [Symbol]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#134
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#132
   def time_sort_by; end
 
   # Read strategy. True if results will be sorted by timestamp
@@ -2424,7 +2552,7 @@ class RubyEventStore::SpecificationResult
   #
   # @return [Boolean]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#230
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#228
   def time_sort_by_as_at?; end
 
   # Read strategy. True if results will be sorted by valid_at
@@ -2432,7 +2560,7 @@ class RubyEventStore::SpecificationResult
   #
   # @return [Boolean]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#238
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#236
   def time_sort_by_as_of?; end
 
   # Ids of specified event to be read (if any given)
@@ -2440,7 +2568,7 @@ class RubyEventStore::SpecificationResult
   #
   # @return [Array|nil]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#166
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#164
   def with_ids; end
 
   # Read by specified ids. True if event ids have been specified.
@@ -2448,7 +2576,7 @@ class RubyEventStore::SpecificationResult
   #
   # @return [Boolean]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#174
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#172
   def with_ids?; end
 
   # Event types to be read (if any given)
@@ -2456,7 +2584,7 @@ class RubyEventStore::SpecificationResult
   #
   # @return [Array|nil]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#182
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#180
   def with_types; end
 
   # Read by specified event types. True if event types have been specified.
@@ -2464,17 +2592,17 @@ class RubyEventStore::SpecificationResult
   #
   # @return [Boolean]
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#190
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#188
   def with_types?; end
 
   private
 
   # Returns the value of attribute attributes.
   #
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#308
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#306
   def attributes; end
 
-  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#310
+  # source://ruby_event_store//lib/ruby_event_store/specification_result.rb#308
   def get_direction; end
 end
 
@@ -2489,7 +2617,7 @@ class RubyEventStore::Stream
   # source://ruby_event_store//lib/ruby_event_store/stream.rb#20
   def ==(other_stream); end
 
-  # source://ruby_event_store//lib/ruby_event_store/stream.rb#20
+  # source://ruby_event_store//lib/ruby_event_store/stream.rb#24
   def eql?(other_stream); end
 
   # @return [Boolean]
@@ -2520,16 +2648,16 @@ class RubyEventStore::Subscriptions
   def add_global_subscription(subscriber); end
 
   # source://ruby_event_store//lib/ruby_event_store/subscriptions.rb#13
-  def add_subscription(subscriber, event_types); end
+  def add_subscription(subscriber, topics); end
 
   # source://ruby_event_store//lib/ruby_event_store/subscriptions.rb#25
   def add_thread_global_subscription(subscriber); end
 
   # source://ruby_event_store//lib/ruby_event_store/subscriptions.rb#21
-  def add_thread_subscription(subscriber, event_types); end
+  def add_thread_subscription(subscriber, topics); end
 
   # source://ruby_event_store//lib/ruby_event_store/subscriptions.rb#29
-  def all_for(event_type); end
+  def all_for(topic); end
 
   private
 
@@ -2560,7 +2688,7 @@ class RubyEventStore::Subscriptions::GlobalSubscriptions
   def add(subscription); end
 
   # source://ruby_event_store//lib/ruby_event_store/subscriptions.rb#74
-  def all_for(_event_type); end
+  def all_for(_topic); end
 end
 
 # source://ruby_event_store//lib/ruby_event_store/subscriptions.rb#49
@@ -2571,10 +2699,10 @@ class RubyEventStore::Subscriptions::LocalSubscriptions
   def initialize; end
 
   # source://ruby_event_store//lib/ruby_event_store/subscriptions.rb#54
-  def add(subscription, event_types); end
+  def add(subscription, topics); end
 
   # source://ruby_event_store//lib/ruby_event_store/subscriptions.rb#59
-  def all_for(event_type); end
+  def all_for(topic); end
 end
 
 # source://ruby_event_store//lib/ruby_event_store/subscriptions.rb#94
@@ -2588,7 +2716,7 @@ class RubyEventStore::Subscriptions::ThreadGlobalSubscriptions
   def add(subscription); end
 
   # source://ruby_event_store//lib/ruby_event_store/subscriptions.rb#104
-  def all_for(_event_type); end
+  def all_for(_topic); end
 end
 
 # source://ruby_event_store//lib/ruby_event_store/subscriptions.rb#79
@@ -2599,10 +2727,10 @@ class RubyEventStore::Subscriptions::ThreadLocalSubscriptions
   def initialize; end
 
   # source://ruby_event_store//lib/ruby_event_store/subscriptions.rb#84
-  def add(subscription, event_types); end
+  def add(subscription, topics); end
 
   # source://ruby_event_store//lib/ruby_event_store/subscriptions.rb#89
-  def all_for(event_type); end
+  def all_for(topic); end
 end
 
 # source://ruby_event_store//lib/ruby_event_store/subscriptions.rb#37
@@ -2613,7 +2741,7 @@ class RubyEventStore::Subscriptions::ThreadSubscriptions
   def initialize; end
 
   # source://ruby_event_store//lib/ruby_event_store/subscriptions.rb#44
-  def all_for(event_type); end
+  def all_for(topic); end
 
   # Returns the value of attribute global.
   #
@@ -2625,6 +2753,9 @@ class RubyEventStore::Subscriptions::ThreadSubscriptions
   # source://ruby_event_store//lib/ruby_event_store/subscriptions.rb#42
   def local; end
 end
+
+# source://ruby_event_store//lib/ruby_event_store/errors.rb#16
+class RubyEventStore::SubscriptionsNotSupported < ::RubyEventStore::Error; end
 
 # source://ruby_event_store//lib/ruby_event_store/constants.rb#6
 RubyEventStore::TIMESTAMP_PRECISION = T.let(T.unsafe(nil), Integer)

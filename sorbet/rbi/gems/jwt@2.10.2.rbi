@@ -285,19 +285,32 @@ class JWT::Claims::Error < ::Struct
   # Returns the value of attribute message
   #
   # @return [Object] the current value of message
+  #
+  # source://jwt//lib/jwt/claims.rb#33
   def message; end
 
   # Sets the attribute message
   #
   # @param value [Object] the value to set the attribute message to.
   # @return [Object] the newly set value
+  #
+  # source://jwt//lib/jwt/claims.rb#33
   def message=(_); end
 
   class << self
+    # source://jwt//lib/jwt/claims.rb#33
     def [](*_arg0); end
+
+    # source://jwt//lib/jwt/claims.rb#33
     def inspect; end
+
+    # source://jwt//lib/jwt/claims.rb#33
     def keyword_init?; end
+
+    # source://jwt//lib/jwt/claims.rb#33
     def members; end
+
+    # source://jwt//lib/jwt/claims.rb#33
     def new(*_arg0); end
   end
 end
@@ -572,19 +585,32 @@ class JWT::Claims::VerificationContext < ::Struct
   # Returns the value of attribute payload
   #
   # @return [Object] the current value of payload
+  #
+  # source://jwt//lib/jwt/claims/decode_verifier.rb#8
   def payload; end
 
   # Sets the attribute payload
   #
   # @param value [Object] the value to set the attribute payload to.
   # @return [Object] the newly set value
+  #
+  # source://jwt//lib/jwt/claims/decode_verifier.rb#8
   def payload=(_); end
 
   class << self
+    # source://jwt//lib/jwt/claims/decode_verifier.rb#8
     def [](*_arg0); end
+
+    # source://jwt//lib/jwt/claims/decode_verifier.rb#8
     def inspect; end
+
+    # source://jwt//lib/jwt/claims/decode_verifier.rb#8
     def keyword_init?; end
+
+    # source://jwt//lib/jwt/claims/decode_verifier.rb#8
     def members; end
+
+    # source://jwt//lib/jwt/claims/decode_verifier.rb#8
     def new(*_arg0); end
   end
 end
@@ -1134,7 +1160,7 @@ class JWT::EncodedToken
   #
   # @return [String] The JWT token.
   #
-  # source://jwt//lib/jwt/encoded_token.rb#19
+  # source://jwt//lib/jwt/encoded_token.rb#106
   def to_s; end
 
   # Checks if the signature of the JWT token is valid.
@@ -1428,7 +1454,7 @@ module JWT::JWA::Hmac::SecurityUtils
     #
     # @raise [ArgumentError]
     #
-    # source://jwt//lib/jwt/jwa/hmac.rb#50
+    # source://jwt//lib/jwt/jwa/hmac.rb#66
     def fixed_length_secure_compare(a, b); end
 
     # Secure string comparison for strings of variable length.
@@ -1438,7 +1464,7 @@ module JWT::JWA::Hmac::SecurityUtils
     # the secret length. This should be considered when using secure_compare
     # to compare weak, short secrets to user input.
     #
-    # source://jwt//lib/jwt/jwa/hmac.rb#74
+    # source://jwt//lib/jwt/jwa/hmac.rb#77
     def secure_compare(a, b); end
   end
 end
@@ -1641,10 +1667,10 @@ module JWT::JWK
     # source://jwt//lib/jwt/jwk.rb#10
     def create_from(key, params = T.unsafe(nil), options = T.unsafe(nil)); end
 
-    # source://jwt//lib/jwt/jwk.rb#10
+    # source://jwt//lib/jwt/jwk.rb#31
     def import(key, params = T.unsafe(nil), options = T.unsafe(nil)); end
 
-    # source://jwt//lib/jwt/jwk.rb#10
+    # source://jwt//lib/jwt/jwk.rb#30
     def new(key, params = T.unsafe(nil), options = T.unsafe(nil)); end
 
     private
@@ -1855,7 +1881,7 @@ class JWT::JWK::KeyBase
   # source://jwt//lib/jwt/jwk/key_base.rb#37
   def []=(key, value); end
 
-  # source://jwt//lib/jwt/jwk/key_base.rb#41
+  # source://jwt//lib/jwt/jwk/key_base.rb#45
   def eql?(other); end
 
   # source://jwt//lib/jwt/jwk/key_base.rb#29
@@ -1985,7 +2011,7 @@ class JWT::JWK::RSA < ::JWT::JWK::KeyBase
   def rsa_key; end
 
   class << self
-    # source://jwt//lib/jwt/jwk/rsa.rb#140
+    # source://jwt//lib/jwt/jwk/rsa.rb#193
     def create_rsa_key(rsa_parameters); end
 
     # source://jwt//lib/jwt/jwk/rsa.rb#168
@@ -2049,10 +2075,10 @@ class JWT::JWK::Set
   # source://jwt//lib/jwt/jwk/set.rb#15
   def initialize(jwks = T.unsafe(nil), options = T.unsafe(nil)); end
 
-  # source://jwt//lib/jwt/jwk/set.rb#60
+  # source://jwt//lib/jwt/jwk/set.rb#78
   def +(enum); end
 
-  # source://jwt//lib/jwt/jwk/set.rb#64
+  # source://jwt//lib/jwt/jwk/set.rb#79
   def <<(key); end
 
   # source://jwt//lib/jwt/jwk/set.rb#69
@@ -2061,22 +2087,22 @@ class JWT::JWK::Set
   # source://jwt//lib/jwt/jwk/set.rb#64
   def add(key); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://jwt//lib/jwt/jwk/set.rb#37
   def delete(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://jwt//lib/jwt/jwk/set.rb#37
   def dig(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://jwt//lib/jwt/jwk/set.rb#37
   def each(*args, **_arg1, &block); end
 
-  # source://jwt//lib/jwt/jwk/set.rb#69
+  # source://jwt//lib/jwt/jwk/set.rb#73
   def eql?(other); end
 
   # source://jwt//lib/jwt/jwk/set.rb#33
   def export(options = T.unsafe(nil)); end
 
-  # source://jwt//lib/jwt/jwk/set.rb#39
+  # source://jwt//lib/jwt/jwk/set.rb#74
   def filter!(&block); end
 
   # Returns the value of attribute keys.
@@ -2084,7 +2110,7 @@ class JWT::JWK::Set
   # source://jwt//lib/jwt/jwk/set.rb#13
   def keys; end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://jwt//lib/jwt/jwk/set.rb#75
   def length(*args, **_arg1, &block); end
 
   # source://jwt//lib/jwt/jwk/set.rb#55
@@ -2096,7 +2122,7 @@ class JWT::JWK::Set
   # source://jwt//lib/jwt/jwk/set.rb#39
   def select!(&block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://jwt//lib/jwt/jwk/set.rb#37
   def size(*args, **_arg1, &block); end
 
   # source://jwt//lib/jwt/jwk/set.rb#60
@@ -2107,7 +2133,7 @@ class JWT::JWK::Set
 
   # For symbolic manipulation
   #
-  # source://jwt//lib/jwt/jwk/set.rb#60
+  # source://jwt//lib/jwt/jwk/set.rb#77
   def |(enum); end
 end
 
@@ -2128,7 +2154,7 @@ class JWT::JWK::Thumbprint
   # source://jwt//lib/jwt/jwk/thumbprint.rb#7
   def jwk; end
 
-  # source://jwt//lib/jwt/jwk/thumbprint.rb#13
+  # source://jwt//lib/jwt/jwk/thumbprint.rb#23
   def to_s; end
 end
 
@@ -2252,7 +2278,7 @@ class JWT::Token
   # @return [String] the JWT token as a string.
   # @return [String] the JWT token as a string.
   #
-  # source://jwt//lib/jwt/token.rb#78
+  # source://jwt//lib/jwt/token.rb#110
   def to_s; end
 end
 

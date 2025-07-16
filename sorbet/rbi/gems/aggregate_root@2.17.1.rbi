@@ -32,13 +32,16 @@ module AggregateRoot
 
     # @private
     #
-    # source://aggregate_root//lib/aggregate_root.rb#103
+    # source://aggregate_root//lib/aggregate_root.rb#115
     def included(host_class); end
+
+    # source://aggregate_root//lib/aggregate_root.rb#99
+    def with(strategy: T.unsafe(nil), event_type_resolver: T.unsafe(nil)); end
 
     # source://aggregate_root//lib/aggregate_root.rb#81
     def with_default_apply_strategy; end
 
-    # source://aggregate_root//lib/aggregate_root.rb#90
+    # source://aggregate_root//lib/aggregate_root.rb#92
     def with_strategy(strategy); end
   end
 end
@@ -51,7 +54,7 @@ module AggregateRoot::AggregateMethods
   # source://aggregate_root//lib/aggregate_root.rb#67
   def marshal_dump; end
 
-  # source://aggregate_root//lib/aggregate_root.rb#74
+  # source://aggregate_root//lib/aggregate_root.rb#76
   def marshal_load(vars); end
 
   # source://aggregate_root//lib/aggregate_root.rb#61
@@ -133,24 +136,24 @@ class AggregateRoot::InstrumentedApplyStrategy
   # source://aggregate_root//lib/aggregate_root/instrumented_apply_strategy.rb#10
   def call(aggregate, event); end
 
-  # source://aggregate_root//lib/aggregate_root/instrumented_apply_strategy.rb#18
+  # source://aggregate_root//lib/aggregate_root/instrumented_apply_strategy.rb#16
   def method_missing(method_name, *arguments, &block); end
 
   private
 
   # Returns the value of attribute instrumentation.
   #
-  # source://aggregate_root//lib/aggregate_root/instrumented_apply_strategy.rb#32
+  # source://aggregate_root//lib/aggregate_root/instrumented_apply_strategy.rb#30
   def instrumentation; end
 
   # @return [Boolean]
   #
-  # source://aggregate_root//lib/aggregate_root/instrumented_apply_strategy.rb#26
+  # source://aggregate_root//lib/aggregate_root/instrumented_apply_strategy.rb#24
   def respond_to_missing?(method_name, _include_private); end
 
   # Returns the value of attribute strategy.
   #
-  # source://aggregate_root//lib/aggregate_root/instrumented_apply_strategy.rb#32
+  # source://aggregate_root//lib/aggregate_root/instrumented_apply_strategy.rb#30
   def strategy; end
 end
 
@@ -259,36 +262,36 @@ class AggregateRoot::SnapshotRepository
 
   private
 
-  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#72
+  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#74
   def build_marshal(aggregate); end
 
   # Returns the value of attribute error_handler.
   #
-  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#61
+  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#59
   def error_handler; end
 
   # Returns the value of attribute event_store.
   #
-  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#61
+  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#59
   def event_store; end
 
   # Returns the value of attribute interval.
   #
-  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#61
+  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#59
   def interval; end
 
-  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#84
+  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#87
   def load_marshal(snpashot_event); end
 
-  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#80
+  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#83
   def load_snapshot_event(stream_name); end
 
-  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#63
+  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#61
   def publish_snapshot_event(aggregate, stream_name, last_event_id); end
 
   # @return [Boolean]
   #
-  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#92
+  # source://aggregate_root//lib/aggregate_root/snapshot_repository.rb#96
   def time_for_snapshot?(aggregate_version, just_published_events); end
 end
 

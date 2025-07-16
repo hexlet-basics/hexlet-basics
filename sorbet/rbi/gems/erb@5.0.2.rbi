@@ -675,7 +675,7 @@ class ERB::Compiler::PercentLine
 
   # Returns the value of attribute value.
   #
-  # source://erb//lib/erb/compiler.rb#78
+  # source://erb//lib/erb/compiler.rb#79
   def to_s; end
 
   # Returns the value of attribute value.
@@ -723,7 +723,7 @@ class ERB::Compiler::Scanner
     # source://erb//lib/erb/compiler.rb#101
     def make_scanner(src, trim_mode, percent); end
 
-    # source://erb//lib/erb/compiler.rb#86
+    # source://erb//lib/erb/compiler.rb#94
     def regist_scanner(klass, trim_mode, percent); end
 
     # source://erb//lib/erb/compiler.rb#86
@@ -823,20 +823,12 @@ module ERB::DefMethod
     # define _methodname_ as instance method of current module, using ERB
     # object or eRuby file
     #
-    # source://erb//lib/erb/def_method.rb#36
+    # source://erb//lib/erb/def_method.rb#46
     def def_erb_method(methodname, erb_or_fname); end
   end
 end
 
-module ERB::Escape
-  private
-
-  def html_escape(_arg0); end
-
-  class << self
-    def html_escape(_arg0); end
-  end
-end
+module ERB::Escape; end
 
 # source://erb//lib/erb.rb#355
 ERB::NOT_GIVEN = T.let(T.unsafe(nil), Object)
@@ -855,7 +847,7 @@ module ERB::Util
 
   # cgi.gem <= v0.3.2
   #
-  # source://erb//lib/erb/util.rb#63
+  # source://erb//lib/erb/util.rb#73
   def u(s); end
 
   # cgi.gem <= v0.3.2
@@ -864,14 +856,20 @@ module ERB::Util
   def url_encode(s); end
 
   class << self
+    # source://erb//lib/erb/util.rb#48
+    def h(s); end
+
+    # source://erb//lib/erb/util.rb#46
+    def html_escape(s); end
+
     # cgi.gem <= v0.3.2
     #
-    # source://erb//lib/erb/util.rb#63
+    # source://erb//lib/erb/util.rb#74
     def u(s); end
 
     # cgi.gem <= v0.3.2
     #
-    # source://erb//lib/erb/util.rb#63
+    # source://erb//lib/erb/util.rb#75
     def url_encode(s); end
   end
 end

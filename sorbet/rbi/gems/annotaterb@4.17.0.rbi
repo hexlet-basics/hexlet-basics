@@ -166,7 +166,7 @@ class AnnotateRb::ModelAnnotator::AnnotatedFile::Generator
 
   private
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/annotated_file/generator.rb#90
+  # source://annotaterb//lib/annotate_rb/model_annotator/annotated_file/generator.rb#93
   def content_annotated_after(parsed, content_without_annotations); end
 
   # source://annotaterb//lib/annotate_rb/model_annotator/annotated_file/generator.rb#47
@@ -183,17 +183,17 @@ class AnnotateRb::ModelAnnotator::AnnotatedFile::Generator
   # Extracts leading whitespace from the target line to preserve visual hierarchy
   # and readability of nested code structures.
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/annotated_file/generator.rb#83
+  # source://annotaterb//lib/annotate_rb/model_annotator/annotated_file/generator.rb#86
   def determine_indentation(content_without_annotations, line_number_before); end
 
   # Formats annotations with appropriate indentation for consistent code structure.
   # Applies the same indentation level as the target line to maintain proper
   # code alignment when using nested positioning.
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/annotated_file/generator.rb#75
+  # source://annotaterb//lib/annotate_rb/model_annotator/annotated_file/generator.rb#78
   def formatted_annotations(content_without_annotations, line_number_before); end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/annotated_file/generator.rb#102
+  # source://annotaterb//lib/annotate_rb/model_annotator/annotated_file/generator.rb#116
   def wrapped_content(content); end
 end
 
@@ -571,15 +571,6 @@ class AnnotateRb::ModelAnnotator::ColumnAnnotation::AnnotationBuilder
 
   # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/annotation_builder.rb#14
   def build; end
-
-  private
-
-  # TODO: Simplify this conditional
-  #
-  # @return [Boolean]
-  #
-  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/annotation_builder.rb#37
-  def is_column_primary_key?(model, column_name); end
 end
 
 # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/attributes_builder.rb#6
@@ -616,50 +607,63 @@ AnnotateRb::ModelAnnotator::ColumnAnnotation::AttributesBuilder::NO_DEFAULT_COL_
 class AnnotateRb::ModelAnnotator::ColumnAnnotation::ColumnComponent < ::AnnotateRb::ModelAnnotator::Components::Base
   # @return [ColumnComponent] a new instance of ColumnComponent
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#12
-  def initialize(name, max_size, type, attributes); end
+  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#13
+  def initialize(column:, max_name_size:, type:, attributes:, position_of_column_comment:, max_attributes_size:); end
 
   # Returns the value of attribute attributes.
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#10
+  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#11
   def attributes; end
 
-  # Returns the value of attribute max_size.
+  # Returns the value of attribute column.
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#10
-  def max_size; end
+  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#11
+  def column; end
 
-  # Returns the value of attribute name.
+  # Returns the value of attribute max_attributes_size.
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#10
+  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#11
+  def max_attributes_size; end
+
+  # Returns the value of attribute max_name_size.
+  #
+  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#11
+  def max_name_size; end
+
+  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#22
   def name; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#56
+  # Returns the value of attribute position_of_column_comment.
+  #
+  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#11
+  def position_of_column_comment; end
+
+  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#74
   def to_default; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#42
+  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#54
   def to_markdown; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#19
+  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#31
   def to_rdoc; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#27
+  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#39
   def to_yard; end
 
   # Returns the value of attribute type.
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#10
+  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#11
   def type; end
 
   private
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#75
+  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#98
   def map_col_type_to_ruby_classes(col_type); end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#65
+  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#88
   def mb_chars_ljust(string, length); end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#88
+  # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#111
   def non_ascii_length(string); end
 end
 
@@ -668,6 +672,9 @@ AnnotateRb::ModelAnnotator::ColumnAnnotation::ColumnComponent::BARE_TYPE_ALLOWAN
 
 # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#7
 AnnotateRb::ModelAnnotator::ColumnAnnotation::ColumnComponent::MD_TYPE_ALLOWANCE = T.let(T.unsafe(nil), Integer)
+
+# source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_component.rb#9
+AnnotateRb::ModelAnnotator::ColumnAnnotation::ColumnComponent::MIN_SPACES_BEFORE_COMMENT = T.let(T.unsafe(nil), Integer)
 
 # source://annotaterb//lib/annotate_rb/model_annotator/column_annotation/column_wrapper.rb#6
 class AnnotateRb::ModelAnnotator::ColumnAnnotation::ColumnWrapper
@@ -1316,7 +1323,7 @@ class AnnotateRb::ModelAnnotator::IndexAnnotation::IndexComponent < ::AnnotateRb
   # @return [IndexComponent] a new instance of IndexComponent
   #
   # source://annotaterb//lib/annotate_rb/model_annotator/index_annotation/index_component.rb#9
-  def initialize(index, max_size); end
+  def initialize(index, max_size, options); end
 
   # Returns the value of attribute index.
   #
@@ -1328,15 +1335,20 @@ class AnnotateRb::ModelAnnotator::IndexAnnotation::IndexComponent < ::AnnotateRb
   # source://annotaterb//lib/annotate_rb/model_annotator/index_annotation/index_component.rb#7
   def max_size; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/index_annotation/index_component.rb#14
+  # Returns the value of attribute options.
+  #
+  # source://annotaterb//lib/annotate_rb/model_annotator/index_annotation/index_component.rb#7
+  def options; end
+
+  # source://annotaterb//lib/annotate_rb/model_annotator/index_annotation/index_component.rb#15
   def to_default; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/index_annotation/index_component.rb#50
+  # source://annotaterb//lib/annotate_rb/model_annotator/index_annotation/index_component.rb#62
   def to_markdown; end
 
   private
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/index_annotation/index_component.rb#92
+  # source://annotaterb//lib/annotate_rb/model_annotator/index_annotation/index_component.rb#115
   def columns_info; end
 end
 
@@ -1389,10 +1401,13 @@ class AnnotateRb::ModelAnnotator::ModelWrapper
   # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#11
   def initialize(klass, options); end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#115
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#145
   def _retrieve_indexes_from_table; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#146
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#129
+  def built_attributes; end
+
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#180
   def classified_sort(cols); end
 
   # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#63
@@ -1414,8 +1429,15 @@ class AnnotateRb::ModelAnnotator::ModelWrapper
   # These are the columns that the globalize gem needs to work but
   # are not necessary for the models to be displayed as annotations.
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#176
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#210
   def ignored_translation_table_columns; end
+
+  # TODO: Simplify this conditional
+  #
+  # @return [Boolean]
+  #
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#113
+  def is_column_primary_key?(column_name); end
 
   # Calculates the max width of the schema for the model by looking at the columns, schema comments, with respect
   # to the options.
@@ -1426,6 +1448,9 @@ class AnnotateRb::ModelAnnotator::ModelWrapper
   # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#83
   def model_name; end
 
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#176
+  def position_of_column_comment; end
+
   # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#46
   def primary_key; end
 
@@ -1434,7 +1459,7 @@ class AnnotateRb::ModelAnnotator::ModelWrapper
   # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#42
   def raw_columns; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#111
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#141
   def retrieve_indexes_from_table; end
 
   # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#54
@@ -1456,7 +1481,7 @@ class AnnotateRb::ModelAnnotator::ModelWrapper
 
   # @return [Boolean]
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#136
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#166
   def with_comments?; end
 end
 
@@ -1655,7 +1680,7 @@ class AnnotateRb::ModelAnnotator::ProjectAnnotator
   # source://annotaterb//lib/annotate_rb/model_annotator/project_annotator.rb#36
   def build_instructions_for_file(file); end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/project_annotator.rb#63
+  # source://annotaterb//lib/annotate_rb/model_annotator/project_annotator.rb#67
   def model_files; end
 end
 
@@ -1873,32 +1898,35 @@ class AnnotateRb::Options
 
   # @return [Options] a new instance of Options
   #
-  # source://annotaterb//lib/annotate_rb/options.rb#166
+  # source://annotaterb//lib/annotate_rb/options.rb#170
   def initialize(options = T.unsafe(nil), state = T.unsafe(nil)); end
 
-  # source://annotaterb//lib/annotate_rb/options.rb#164
+  # source://annotaterb//lib/annotate_rb/options.rb#168
   def [](*args, **_arg1, &block); end
 
-  # source://annotaterb//lib/annotate_rb/options.rb#221
+  # source://annotaterb//lib/annotate_rb/options.rb#230
   def get_state(key); end
 
-  # source://annotaterb//lib/annotate_rb/options.rb#179
+  # source://annotaterb//lib/annotate_rb/options.rb#183
   def load_defaults; end
 
-  # source://annotaterb//lib/annotate_rb/options.rb#225
+  # source://annotaterb//lib/annotate_rb/options.rb#234
   def print; end
 
-  # source://annotaterb//lib/annotate_rb/options.rb#212
+  # source://annotaterb//lib/annotate_rb/options.rb#221
   def set_state(key, value, overwrite = T.unsafe(nil)); end
 
-  # source://annotaterb//lib/annotate_rb/options.rb#175
+  # source://annotaterb//lib/annotate_rb/options.rb#179
   def to_h; end
+
+  # source://annotaterb//lib/annotate_rb/options.rb#217
+  def with_default_fallback(key); end
 
   private
 
   # Guard against user inputting strings instead of symbols
   #
-  # source://annotaterb//lib/annotate_rb/options.rb#232
+  # source://annotaterb//lib/annotate_rb/options.rb#241
   def symbolize_exclude_tests; end
 
   class << self
@@ -1907,31 +1935,31 @@ class AnnotateRb::Options
   end
 end
 
-# source://annotaterb//lib/annotate_rb/options.rb#157
+# source://annotaterb//lib/annotate_rb/options.rb#161
 AnnotateRb::Options::ALL_OPTION_KEYS = T.let(T.unsafe(nil), Array)
 
-# source://annotaterb//lib/annotate_rb/options.rb#97
+# source://annotaterb//lib/annotate_rb/options.rb#99
 AnnotateRb::Options::DEFAULT_OPTIONS = T.let(T.unsafe(nil), Hash)
 
 # source://annotaterb//lib/annotate_rb/options.rb#28
 AnnotateRb::Options::FLAG_OPTIONS = T.let(T.unsafe(nil), Hash)
 
-# source://annotaterb//lib/annotate_rb/options.rb#99
+# source://annotaterb//lib/annotate_rb/options.rb#101
 AnnotateRb::Options::FLAG_OPTION_KEYS = T.let(T.unsafe(nil), Array)
 
-# source://annotaterb//lib/annotate_rb/options.rb#61
+# source://annotaterb//lib/annotate_rb/options.rb#63
 AnnotateRb::Options::OTHER_OPTIONS = T.let(T.unsafe(nil), Hash)
 
-# source://annotaterb//lib/annotate_rb/options.rb#130
+# source://annotaterb//lib/annotate_rb/options.rb#134
 AnnotateRb::Options::OTHER_OPTION_KEYS = T.let(T.unsafe(nil), Array)
 
-# source://annotaterb//lib/annotate_rb/options.rb#88
+# source://annotaterb//lib/annotate_rb/options.rb#90
 AnnotateRb::Options::PATH_OPTIONS = T.let(T.unsafe(nil), Hash)
 
-# source://annotaterb//lib/annotate_rb/options.rb#150
+# source://annotaterb//lib/annotate_rb/options.rb#154
 AnnotateRb::Options::PATH_OPTION_KEYS = T.let(T.unsafe(nil), Array)
 
-# source://annotaterb//lib/annotate_rb/options.rb#161
+# source://annotaterb//lib/annotate_rb/options.rb#165
 AnnotateRb::Options::POSITION_DEFAULT = T.let(T.unsafe(nil), String)
 
 # source://annotaterb//lib/annotate_rb/options.rb#17
@@ -1960,13 +1988,13 @@ class AnnotateRb::Parser
   # source://annotaterb//lib/annotate_rb/parser.rb#160
   def add_model_options_to_parser(option_parser); end
 
-  # source://annotaterb//lib/annotate_rb/parser.rb#362
+  # source://annotaterb//lib/annotate_rb/parser.rb#367
   def add_options_to_parser(option_parser); end
 
-  # source://annotaterb//lib/annotate_rb/parser.rb#291
+  # source://annotaterb//lib/annotate_rb/parser.rb#296
   def add_position_options_to_parser(option_parser); end
 
-  # source://annotaterb//lib/annotate_rb/parser.rb#274
+  # source://annotaterb//lib/annotate_rb/parser.rb#279
   def add_route_options_to_parser(option_parser); end
 
   # source://annotaterb//lib/annotate_rb/parser.rb#138

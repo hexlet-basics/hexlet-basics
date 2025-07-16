@@ -178,7 +178,7 @@ class Faker::Address < ::Faker::Base
     # @param state_abbreviation [String] an abbreviation for a state where the zip code should be located.
     # @return [String]
     #
-    # source://faker//lib/faker/default/address.rb#116
+    # source://faker//lib/faker/default/address.rb#141
     def postcode(state_abbreviation: T.unsafe(nil)); end
 
     # Produces a secondary address.
@@ -254,7 +254,7 @@ class Faker::Address < ::Faker::Base
     # @param state_abbreviation [String] an abbreviation for a state where the zip code should be located.
     # @return [String]
     #
-    # source://faker//lib/faker/default/address.rb#116
+    # source://faker//lib/faker/default/address.rb#140
     def zip(state_abbreviation: T.unsafe(nil)); end
 
     # Produces a Zip Code.
@@ -310,13 +310,13 @@ class Faker::Alphanumeric < ::Faker::Base
     # Produces a random string of alphanumeric characters
     #
     # @example
-    #   Faker::Alphanumeric.alphanumeric(number: 10) #=> "3yfq2phxtb"
-    # @example
     #   Faker::Alphanumeric.alphanumeric(number: 10, min_alpha: 3) #=> "3yfq2phxtb"
     # @example
+    #   Faker::Alphanumeric.alphanumeric(number: 10) #=> "3yfq2phxtb"
+    # @example
     #   Faker::Alphanumeric.alphanumeric(number: 10, min_alpha: 3, min_numeric: 3) #=> "3yfq2phx8b"
-    # @param number [Integer] The number of characters to generate
     # @param min_alpha [Integer] The minimum number of alphabetic to add to the string
+    # @param number [Integer] The number of characters to generate
     # @param min_numeric [Integer] The minimum number of numbers to add to the string
     # @raise [ArgumentError]
     # @return [String]
@@ -1935,31 +1935,31 @@ class Faker::Code < ::Faker::Base
 
     private
 
-    # source://faker//lib/faker/default/code.rb#211
+    # source://faker//lib/faker/default/code.rb#212
     def generate_base10_isbn; end
 
-    # source://faker//lib/faker/default/code.rb#257
+    # source://faker//lib/faker/default/code.rb#258
     def generate_base13_ean; end
 
-    # source://faker//lib/faker/default/code.rb#226
+    # source://faker//lib/faker/default/code.rb#227
     def generate_base13_isbn; end
 
-    # source://faker//lib/faker/default/code.rb#243
+    # source://faker//lib/faker/default/code.rb#244
     def generate_base8_ean; end
 
-    # source://faker//lib/faker/default/code.rb#172
+    # source://faker//lib/faker/default/code.rb#173
     def generate_imei; end
 
-    # source://faker//lib/faker/default/code.rb#279
+    # source://faker//lib/faker/default/code.rb#283
     def generate_nric_check_alphabet(values, prefix); end
 
-    # source://faker//lib/faker/default/code.rb#286
+    # source://faker//lib/faker/default/code.rb#290
     def generate_sin_check_digit(digits); end
 
-    # source://faker//lib/faker/default/code.rb#274
+    # source://faker//lib/faker/default/code.rb#278
     def rut_verificator_digit(rut); end
 
-    # source://faker//lib/faker/default/code.rb#237
+    # source://faker//lib/faker/default/code.rb#238
     def sum(values); end
   end
 end
@@ -4053,7 +4053,7 @@ class Faker::Educator < ::Faker::Base
     #   Faker::Educator.degree #=> "Associate Degree in Criminology"
     # @return [String]
     #
-    # source://faker//lib/faker/default/educator.rb#30
+    # source://faker//lib/faker/default/educator.rb#34
     def course; end
 
     # Produces a course name.
@@ -4325,8 +4325,8 @@ class Faker::Finance < ::Faker::Base
     # Returns a random condominium fiscal code.
     #
     # @example
-    #   Faker::Finance.condominium_fiscal_code #=> "012345678"
-    # @param country [String] Two capital letter country code to use for the vat number.
+    #   Faker::Finance.condominium_fiscal_code #=> "01234567890"
+    # @param country [String] Two capital letter country code to use for the condominium fiscal code number.
     # @return [String]
     #
     # source://faker//lib/faker/default/finance.rb#107
@@ -6365,7 +6365,7 @@ class Faker::IdNumber < ::Faker::Base
     # @param formatted [Boolean] Specifies if the number is formatted with dividers.
     # @return [String]
     #
-    # source://faker//lib/faker/default/id_number.rb#163
+    # source://faker//lib/faker/default/id_number.rb#171
     def brazilian_cpf(formatted: T.unsafe(nil)); end
 
     # Produces a random Brazilian ID Number (RG).
@@ -6387,7 +6387,7 @@ class Faker::IdNumber < ::Faker::Base
     # @param formatted [Boolean] Specifies if the number is formatted with dividers.
     # @return [String]
     #
-    # source://faker//lib/faker/default/id_number.rb#184
+    # source://faker//lib/faker/default/id_number.rb#191
     def brazilian_rg(formatted: T.unsafe(nil)); end
 
     # Produces a random Chilean ID (Rut with 8 digits).
@@ -6463,7 +6463,7 @@ class Faker::IdNumber < ::Faker::Base
     #   Faker::IdNumber.valid_south_african_id_number #=> "8105128870184"
     # @return [String]
     #
-    # source://faker//lib/faker/default/id_number.rb#113
+    # source://faker//lib/faker/default/id_number.rb#124
     def south_african_id_number; end
 
     # Produces a random Spanish citizen identifier (DNI).
@@ -6905,7 +6905,7 @@ class Faker::Internet < ::Faker::Base
     # @param separators [Array]
     # @return [String]
     #
-    # source://faker//lib/faker/default/internet.rb#64
+    # source://faker//lib/faker/default/internet.rb#556
     def user_name(specifier: T.unsafe(nil), separators: T.unsafe(nil)); end
 
     # Returns the username
@@ -6991,8 +6991,8 @@ class Faker::Invoice < ::Faker::Base
     # Produces a random amount between values with 2 decimals
     #
     # @example
-    #   Faker::Finance.amount_between #=> 0
-    #   Faker::Finance.amount_between(0, 10) #=> 4.33
+    #   Faker::Invoice.amount_between #=> 0
+    #   Faker::Invoice.amount_between(from: 0, to: 10) #=> 4.33
     # @param from [Integer] Specifies lower limit.
     # @param to [Integer] Specifies upper limit.
     # @return [Integer]
@@ -7508,7 +7508,7 @@ class Faker::Job < ::Faker::Base
   end
 end
 
-# source://faker//lib/faker/default/json.rb#2
+# source://faker//lib/faker/default/json.rb#4
 class Faker::Json < ::Faker::Base
   class << self
     # Produces a random nested JSON formatted string that can take JSON as an additional argument.
@@ -7546,7 +7546,7 @@ class Faker::Json < ::Faker::Base
     # @param options [Hash] Specifies a Faker gem class to use for nested keys and for values, respectably. options_hash = {key: Class.method, value: Class.method}
     # @return [Hash{String => String}]
     #
-    # source://faker//lib/faker/default/json.rb#69
+    # source://faker//lib/faker/default/json.rb#71
     def add_depth_to_json(json: T.unsafe(nil), width: T.unsafe(nil), options: T.unsafe(nil)); end
 
     # Produces a random simple JSON formatted string.
@@ -7563,21 +7563,21 @@ class Faker::Json < ::Faker::Base
     # @param options [Hash] Specifies a Faker gem class to use for keys and for values, respectably. options_hash = {key: Class.method, value: Class.method}
     # @return [Hash{String => String}]
     #
-    # source://faker//lib/faker/default/json.rb#23
+    # source://faker//lib/faker/default/json.rb#25
     def shallow_json(width: T.unsafe(nil), options: T.unsafe(nil)); end
 
     private
 
-    # source://faker//lib/faker/default/json.rb#106
+    # source://faker//lib/faker/default/json.rb#108
     def add_hash(key_array, hash, width, options); end
 
-    # source://faker//lib/faker/default/json.rb#93
+    # source://faker//lib/faker/default/json.rb#95
     def add_hash_to_bottom(hash, key_array, width, options); end
 
-    # source://faker//lib/faker/default/json.rb#116
+    # source://faker//lib/faker/default/json.rb#120
     def build_keys_from_array(key_array); end
 
-    # source://faker//lib/faker/default/json.rb#82
+    # source://faker//lib/faker/default/json.rb#84
     def build_shallow_hash(width, options); end
   end
 end
@@ -8899,7 +8899,7 @@ class Faker::Movies::StarWars < ::Faker::Base
     #   Faker::Movies::StarWars.wookiee_sentence #=> "Yrroonn ru ooma roo ahuma ur roooarrgh hnn-rowr."
     # @return [String]
     #
-    # source://faker//lib/faker/movies/star_wars.rb#119
+    # source://faker//lib/faker/movies/star_wars.rb#264
     def wookie_sentence; end
 
     # All wookiee words
@@ -8908,7 +8908,7 @@ class Faker::Movies::StarWars < ::Faker::Base
     #   Faker::Movies::StarWars.wookiee_words
     # @return [Array]
     #
-    # source://faker//lib/faker/movies/star_wars.rb#260
+    # source://faker//lib/faker/movies/star_wars.rb#265
     def wookie_words; end
 
     # Produces a wookiee sentence from Star Wars.
@@ -9695,7 +9695,7 @@ class Faker::Name < ::Faker::Base
     #   Faker::Name.female_first_name #=> "Natasha"
     # @return [String]
     #
-    # source://faker//lib/faker/default/name.rb#75
+    # source://faker//lib/faker/default/name.rb#79
     def feminine_name; end
 
     # Produces a random first name.
@@ -9713,7 +9713,7 @@ class Faker::Name < ::Faker::Base
     #   Faker::Name.male_first_name #=> "Edward"
     # @return [String]
     #
-    # source://faker//lib/faker/default/name.rb#60
+    # source://faker//lib/faker/default/name.rb#63
     def first_name_men; end
 
     # Produces a random gender neutral first name.
@@ -9722,7 +9722,7 @@ class Faker::Name < ::Faker::Base
     #   Faker::Name.neutral_first_name #=> "Casey"
     # @return [String]
     #
-    # source://faker//lib/faker/default/name.rb#90
+    # source://faker//lib/faker/default/name.rb#93
     def first_name_neutral; end
 
     # Produces a random female first name.
@@ -9731,7 +9731,7 @@ class Faker::Name < ::Faker::Base
     #   Faker::Name.female_first_name #=> "Natasha"
     # @return [String]
     #
-    # source://faker//lib/faker/default/name.rb#75
+    # source://faker//lib/faker/default/name.rb#78
     def first_name_women; end
 
     # Produces a random gender neutral first name.
@@ -9740,7 +9740,7 @@ class Faker::Name < ::Faker::Base
     #   Faker::Name.neutral_first_name #=> "Casey"
     # @return [String]
     #
-    # source://faker//lib/faker/default/name.rb#90
+    # source://faker//lib/faker/default/name.rb#94
     def gender_neutral_first_name; end
 
     # Produces random initials.
@@ -9778,7 +9778,7 @@ class Faker::Name < ::Faker::Base
     #   Faker::Name.male_first_name #=> "Edward"
     # @return [String]
     #
-    # source://faker//lib/faker/default/name.rb#60
+    # source://faker//lib/faker/default/name.rb#64
     def masculine_name; end
 
     # Produces a random last name.
@@ -9787,7 +9787,7 @@ class Faker::Name < ::Faker::Base
     #   Faker::Name.last_name #=> "Ernser"
     # @return [String]
     #
-    # source://faker//lib/faker/default/name.rb#105
+    # source://faker//lib/faker/default/name.rb#108
     def middle_name; end
 
     # Produces a random name.
@@ -9911,7 +9911,7 @@ class Faker::NationalHealthService < ::Faker::Base
     # @param number [Integer] Specifies the NHS number the check digit belongs to.
     # @return [Integer]
     #
-    # source://faker//lib/faker/default/national_health_service.rb#42
+    # source://faker//lib/faker/default/national_health_service.rb#41
     def check_digit(number: T.unsafe(nil)); end
   end
 end
@@ -10285,7 +10285,7 @@ class Faker::PhoneNumber < ::Faker::Base
     # @param length [Integer] Specifies the length of the return value. Defaults to 4.
     # @return [String]
     #
-    # source://faker//lib/faker/default/phone_number.rb#139
+    # source://faker//lib/faker/default/phone_number.rb#149
     def extension(length: T.unsafe(nil)); end
 
     # Produces a phone number in a random format without the country code and it can have different dividers.
@@ -10343,8 +10343,8 @@ class Faker::Placeholdit < ::Faker::Base
     # @param size [String] Specifies the image's size, dimensions separated by 'x'.
     # @param format [String] Specifies the image's extension.
     # @param background_color [String, Symbol] Specifies the background color, either in hexadecimal format (without #) or as :random.
-    # @param text_color [String, Symbol] Specifies the text color, either in hexadecimal format (without #) or as :random.
     # @param text [String] Specifies a custom text to be used.
+    # @param text_color [String, Symbol] Specifies the text color, either in hexadecimal format (without #) or as :random.
     # @raise [ArgumentError]
     # @return [String]
     #
@@ -13597,7 +13597,7 @@ class Faker::Vehicle < ::Faker::Base
     #   Faker::Vehicle.door_count #=> 3
     # @return [Integer]
     #
-    # source://faker//lib/faker/default/vehicle.rb#234
+    # source://faker//lib/faker/default/vehicle.rb#237
     def door_count; end
 
     # Produces a random vehicle door count.
@@ -13636,7 +13636,7 @@ class Faker::Vehicle < ::Faker::Base
     #   Faker::Vehicle.engine #=> 4
     # @return [String]
     #
-    # source://faker//lib/faker/default/vehicle.rb#192
+    # source://faker//lib/faker/default/vehicle.rb#196
     def engine_size; end
 
     # Produces a random vehicle fuel type.
@@ -13659,7 +13659,7 @@ class Faker::Vehicle < ::Faker::Base
     # @param max [Integer] Specific maximum limit for mileage generation.
     # @return [Integer]
     #
-    # source://faker//lib/faker/default/vehicle.rb#266
+    # source://faker//lib/faker/default/vehicle.rb#270
     def kilometrage(min: T.unsafe(nil), max: T.unsafe(nil)); end
 
     # source://faker//lib/faker/default/vehicle.rb#283
@@ -13689,7 +13689,7 @@ class Faker::Vehicle < ::Faker::Base
     #   Faker::Vehicle.manufacturer #=> "Lamborghini"
     # @return [String]
     #
-    # source://faker//lib/faker/default/vehicle.rb#54
+    # source://faker//lib/faker/default/vehicle.rb#57
     def manufacture; end
 
     # Produces a random vehicle manufacturer.
@@ -14093,8 +14093,6 @@ class PositionalGenerator::Builder
   # We can think of a graph like so:
   #
   #      (a)  (c)
-  #       |    |
-  #       |   (b)
   #       \   /
   #        end
   #
@@ -14301,52 +14299,77 @@ class PositionalGenerator::Component < ::Struct
   # Returns the value of attribute deps
   #
   # @return [Object] the current value of deps
+  #
+  # source://faker//lib/helpers/positional_generator.rb#32
   def deps; end
 
   # Sets the attribute deps
   #
   # @param value [Object] the value to set the attribute deps to.
   # @return [Object] the newly set value
+  #
+  # source://faker//lib/helpers/positional_generator.rb#32
   def deps=(_); end
 
   # Returns the value of attribute generator
   #
   # @return [Object] the current value of generator
+  #
+  # source://faker//lib/helpers/positional_generator.rb#32
   def generator; end
 
   # Sets the attribute generator
   #
   # @param value [Object] the value to set the attribute generator to.
   # @return [Object] the newly set value
+  #
+  # source://faker//lib/helpers/positional_generator.rb#32
   def generator=(_); end
 
   # Returns the value of attribute name
   #
   # @return [Object] the current value of name
+  #
+  # source://faker//lib/helpers/positional_generator.rb#32
   def name; end
 
   # Sets the attribute name
   #
   # @param value [Object] the value to set the attribute name to.
   # @return [Object] the newly set value
+  #
+  # source://faker//lib/helpers/positional_generator.rb#32
   def name=(_); end
 
   # Returns the value of attribute position
   #
   # @return [Object] the current value of position
+  #
+  # source://faker//lib/helpers/positional_generator.rb#32
   def position; end
 
   # Sets the attribute position
   #
   # @param value [Object] the value to set the attribute position to.
   # @return [Object] the newly set value
+  #
+  # source://faker//lib/helpers/positional_generator.rb#32
   def position=(_); end
 
   class << self
+    # source://faker//lib/helpers/positional_generator.rb#32
     def [](*_arg0); end
+
+    # source://faker//lib/helpers/positional_generator.rb#32
     def inspect; end
+
+    # source://faker//lib/helpers/positional_generator.rb#32
     def keyword_init?; end
+
+    # source://faker//lib/helpers/positional_generator.rb#32
     def members; end
+
+    # source://faker//lib/helpers/positional_generator.rb#32
     def new(*_arg0); end
   end
 end

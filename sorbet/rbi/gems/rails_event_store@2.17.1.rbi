@@ -65,7 +65,7 @@ class RailsEventStore::AfterCommitAsyncDispatcher::AsyncRecord
   # source://rails_event_store//lib/rails_event_store/after_commit_async_dispatcher.rb#32
   def initialize(schedule_proc); end
 
-  # source://rails_event_store//lib/rails_event_store/after_commit_async_dispatcher.rb#42
+  # source://rails_event_store//lib/rails_event_store/after_commit_async_dispatcher.rb#43
   def before_committed!; end
 
   # source://rails_event_store//lib/rails_event_store/after_commit_async_dispatcher.rb#36
@@ -76,19 +76,19 @@ class RailsEventStore::AfterCommitAsyncDispatcher::AsyncRecord
 
   # Returns the value of attribute schedule_proc.
   #
-  # source://rails_event_store//lib/rails_event_store/after_commit_async_dispatcher.rb#46
+  # source://rails_event_store//lib/rails_event_store/after_commit_async_dispatcher.rb#49
   def schedule_proc; end
 
   # @return [Boolean]
   #
-  # source://rails_event_store//lib/rails_event_store/after_commit_async_dispatcher.rb#44
+  # source://rails_event_store//lib/rails_event_store/after_commit_async_dispatcher.rb#46
   def trigger_transactional_callbacks?; end
 end
 
 # source://rails_event_store//lib/rails_event_store/async_handler_helpers.rb#4
 module RailsEventStore::AsyncHandler
   class << self
-    # source://rails_event_store//lib/rails_event_store/async_handler_helpers.rb#22
+    # source://rails_event_store//lib/rails_event_store/async_handler_helpers.rb#26
     def prepended(host_class); end
 
     # source://rails_event_store//lib/rails_event_store/async_handler_helpers.rb#9
@@ -99,51 +99,41 @@ module RailsEventStore::AsyncHandler
   end
 end
 
-# source://rails_event_store//lib/rails_event_store/async_handler_helpers.rb#27
+# source://rails_event_store//lib/rails_event_store/async_handler_helpers.rb#31
 module RailsEventStore::AsyncHandlerJobIdOnly
   class << self
-    # source://rails_event_store//lib/rails_event_store/async_handler_helpers.rb#44
+    # source://rails_event_store//lib/rails_event_store/async_handler_helpers.rb#45
     def prepended(host_class); end
 
-    # source://rails_event_store//lib/rails_event_store/async_handler_helpers.rb#32
+    # source://rails_event_store//lib/rails_event_store/async_handler_helpers.rb#36
     def with(event_store: T.unsafe(nil), event_store_locator: T.unsafe(nil)); end
 
-    # source://rails_event_store//lib/rails_event_store/async_handler_helpers.rb#28
+    # source://rails_event_store//lib/rails_event_store/async_handler_helpers.rb#32
     def with_defaults; end
   end
 end
 
 # source://rails_event_store//lib/rails_event_store/browser.rb#7
-class RailsEventStore::Browser < ::Rails::Engine
-  class << self
-    private
-
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#15
-    def __class_attr___callbacks; end
-
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#17
-    def __class_attr___callbacks=(new_value); end
-  end
-end
+class RailsEventStore::Browser < ::Rails::Engine; end
 
 # source://rails_event_store//lib/rails_event_store/client.rb#4
 class RailsEventStore::Client < ::RubyEventStore::Client
   # @return [Client] a new instance of Client
   #
   # source://rails_event_store//lib/rails_event_store/client.rb#7
-  def initialize(mapper: T.unsafe(nil), repository: T.unsafe(nil), subscriptions: T.unsafe(nil), dispatcher: T.unsafe(nil), clock: T.unsafe(nil), correlation_id_generator: T.unsafe(nil), request_metadata: T.unsafe(nil)); end
+  def initialize(mapper: T.unsafe(nil), repository: T.unsafe(nil), subscriptions: T.unsafe(nil), dispatcher: T.unsafe(nil), message_broker: T.unsafe(nil), clock: T.unsafe(nil), correlation_id_generator: T.unsafe(nil), request_metadata: T.unsafe(nil)); end
 
   # Returns the value of attribute request_metadata.
   #
   # source://rails_event_store//lib/rails_event_store/client.rb#5
   def request_metadata; end
 
-  # source://rails_event_store//lib/rails_event_store/client.rb#32
+  # source://rails_event_store//lib/rails_event_store/client.rb#84
   def with_request_metadata(env, &block); end
 
   private
 
-  # source://rails_event_store//lib/rails_event_store/client.rb#38
+  # source://rails_event_store//lib/rails_event_store/client.rb#90
   def default_request_metadata; end
 end
 
@@ -189,12 +179,12 @@ RailsEventStore::InvalidPageStart = RubyEventStore::InvalidPageStart
 # source://rails_event_store//lib/rails_event_store/all.rb#27
 RailsEventStore::InvalidPageStop = RubyEventStore::InvalidPageStop
 
-# source://rails_event_store//lib/rails_event_store/json_client.rb#4
+# source://rails_event_store//lib/rails_event_store/json_client.rb#6
 class RailsEventStore::JSONClient < ::RailsEventStore::Client
   # @return [JSONClient] a new instance of JSONClient
   #
-  # source://rails_event_store//lib/rails_event_store/json_client.rb#5
-  def initialize(mapper: T.unsafe(nil), repository: T.unsafe(nil), subscriptions: T.unsafe(nil), dispatcher: T.unsafe(nil), clock: T.unsafe(nil), correlation_id_generator: T.unsafe(nil), request_metadata: T.unsafe(nil)); end
+  # source://rails_event_store//lib/rails_event_store/json_client.rb#7
+  def initialize(mapper: T.unsafe(nil), repository: T.unsafe(nil), subscriptions: T.unsafe(nil), dispatcher: T.unsafe(nil), message_broker: T.unsafe(nil), clock: T.unsafe(nil), correlation_id_generator: T.unsafe(nil), request_metadata: T.unsafe(nil)); end
 end
 
 # source://rails_event_store//lib/rails_event_store/link_by_metadata.rb#16

@@ -1045,7 +1045,7 @@ class Sentry::Client
   # @param event [LogEvent] the log event to be buffered
   # @return [LogEvent]
   #
-  # source://sentry-ruby//lib/sentry/client.rb#99
+  # source://sentry-ruby//lib/sentry/client.rb#101
   def buffer_log_event(event, scope); end
 
   # Capture an envelope directly.
@@ -1053,7 +1053,7 @@ class Sentry::Client
   # @param envelope [Envelope] the envelope to be captured.
   # @return [void]
   #
-  # source://sentry-ruby//lib/sentry/client.rb#108
+  # source://sentry-ruby//lib/sentry/client.rb#110
   def capture_envelope(envelope); end
 
   # Applies the given scope's data to the event and sends it to Sentry.
@@ -1063,7 +1063,7 @@ class Sentry::Client
   # @param hint [Hash] the hint data that'll be passed to `before_send` callback and the scope's event processors.
   # @return [Event, nil]
   #
-  # source://sentry-ruby//lib/sentry/client.rb#53
+  # source://sentry-ruby//lib/sentry/client.rb#55
   def capture_event(event, scope, hint = T.unsafe(nil)); end
 
   # Returns the value of attribute configuration.
@@ -1081,7 +1081,7 @@ class Sentry::Client
   # @param check_in_id [String, nil] for updating the status of an existing monitor
   # @return [Event]
   #
-  # source://sentry-ruby//lib/sentry/client.rb#164
+  # source://sentry-ruby//lib/sentry/client.rb#166
   def event_from_check_in(slug, status, hint = T.unsafe(nil), duration: T.unsafe(nil), monitor_config: T.unsafe(nil), check_in_id: T.unsafe(nil)); end
 
   # Initializes an Event object with the given exception. Returns `nil` if the exception's class is excluded from reporting.
@@ -1090,7 +1090,7 @@ class Sentry::Client
   # @param hint [Hash] the hint data that'll be passed to `before_send` callback and the scope's event processors.
   # @return [Event, nil]
   #
-  # source://sentry-ruby//lib/sentry/client.rb#124
+  # source://sentry-ruby//lib/sentry/client.rb#126
   def event_from_exception(exception, hint = T.unsafe(nil)); end
 
   # Initializes a LogEvent object with the given message and options
@@ -1101,7 +1101,7 @@ class Sentry::Client
   # @param options [Hash] additional options
   # @return [LogEvent] the created log event
   #
-  # source://sentry-ruby//lib/sentry/client.rb#193
+  # source://sentry-ruby//lib/sentry/client.rb#195
   def event_from_log(message, level:, **options); end
 
   # Initializes an Event object with the given message.
@@ -1110,7 +1110,7 @@ class Sentry::Client
   # @param hint [Hash] the hint data that'll be passed to `before_send` callback and the scope's event processors.
   # @return [Event]
   #
-  # source://sentry-ruby//lib/sentry/client.rb#144
+  # source://sentry-ruby//lib/sentry/client.rb#146
   def event_from_message(message, hint = T.unsafe(nil), backtrace: T.unsafe(nil)); end
 
   # Initializes an Event object with the given Transaction object.
@@ -1118,14 +1118,14 @@ class Sentry::Client
   # @param transaction [Transaction] the transaction to be recorded.
   # @return [TransactionEvent]
   #
-  # source://sentry-ruby//lib/sentry/client.rb#204
+  # source://sentry-ruby//lib/sentry/client.rb#206
   def event_from_transaction(transaction); end
 
   # Flush pending events to Sentry.
   #
   # @return [void]
   #
-  # source://sentry-ruby//lib/sentry/client.rb#114
+  # source://sentry-ruby//lib/sentry/client.rb#116
   def flush; end
 
   # Generates a W3C Baggage header for distributed tracing from the given Span.
@@ -1135,7 +1135,7 @@ class Sentry::Client
   # @param span [Span] the span to generate trace from.
   # @return [String, nil]
   #
-  # source://sentry-ruby//lib/sentry/client.rb#354
+  # source://sentry-ruby//lib/sentry/client.rb#356
   def generate_baggage(span); end
 
   # Generates a Sentry trace for distribted tracing from the given Span.
@@ -1145,7 +1145,7 @@ class Sentry::Client
   # @param span [Span] the span to generate trace from.
   # @return [String, nil]
   #
-  # source://sentry-ruby//lib/sentry/client.rb#340
+  # source://sentry-ruby//lib/sentry/client.rb#342
   def generate_sentry_trace(span); end
 
   # Returns the value of attribute log_event_buffer.
@@ -1158,10 +1158,10 @@ class Sentry::Client
   # @param envelope [Envelope] the envelope to be sent.
   # @return [void]
   #
-  # source://sentry-ruby//lib/sentry/client.rb#321
+  # source://sentry-ruby//lib/sentry/client.rb#323
   def send_envelope(envelope); end
 
-  # source://sentry-ruby//lib/sentry/client.rb#209
+  # source://sentry-ruby//lib/sentry/client.rb#211
   def send_event(event, hint = T.unsafe(nil)); end
 
   # Send an envelope with batched logs
@@ -1170,7 +1170,7 @@ class Sentry::Client
   # @param log_events [Array<LogEvent>] the log events to be sent
   # @return [void]
   #
-  # source://sentry-ruby//lib/sentry/client.rb#275
+  # source://sentry-ruby//lib/sentry/client.rb#277
   def send_logs(log_events); end
 
   # The Transport object that'll send events for the client.
@@ -1189,10 +1189,10 @@ class Sentry::Client
 
   private
 
-  # source://sentry-ruby//lib/sentry/client.rb#374
+  # source://sentry-ruby//lib/sentry/client.rb#376
   def dispatch_async_event(async_block, event, hint); end
 
-  # source://sentry-ruby//lib/sentry/client.rb#368
+  # source://sentry-ruby//lib/sentry/client.rb#370
   def dispatch_background_event(event, hint); end
 end
 
@@ -5636,6 +5636,18 @@ class Sentry::StacktraceInterface::Frame < ::Sentry::Interface
   # source://sentry-ruby//lib/sentry/interfaces/stacktrace.rb#80
   def under_project_root?; end
 end
+
+# Ruby Logger support Add commentMore actions
+# intercepts any logger instance and send the log to Sentry too.
+#
+# source://sentry-ruby//lib/sentry/std_lib_logger.rb#6
+module Sentry::StdLibLogger
+  # source://sentry-ruby//lib/sentry/std_lib_logger.rb#15
+  def add(severity, message = T.unsafe(nil), progname = T.unsafe(nil), &block); end
+end
+
+# source://sentry-ruby//lib/sentry/std_lib_logger.rb#7
+Sentry::StdLibLogger::SEVERITY_MAP = T.let(T.unsafe(nil), Hash)
 
 # The StructuredLogger class implements Sentry's SDK telemetry logs protocol.
 # It provides methods for logging messages at different severity levels and

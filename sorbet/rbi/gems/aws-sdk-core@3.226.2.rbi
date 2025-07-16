@@ -3145,20 +3145,30 @@ class Aws::Endpoints::URL
   def _is_ip(authority); end
 end
 
-# source://aws-sdk-core//lib/aws-sdk-core/error_handler.rb#4
+# @api private
+#
+# source://aws-sdk-core//lib/aws-sdk-core/error_handler.rb#5
 class Aws::ErrorHandler < ::Seahorse::Client::Handler
   private
 
-  # source://aws-sdk-core//lib/aws-sdk-core/error_handler.rb#18
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/error_handler.rb#23
   def build_error(context, code, message, data); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/error_handler.rb#8
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/error_handler.rb#9
   def error(context); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/error_handler.rb#23
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/error_handler.rb#28
   def http_status_error(context); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/error_handler.rb#27
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/error_handler.rb#32
   def http_status_error_code(context); end
 end
 
@@ -3926,34 +3936,56 @@ class Aws::Json::Builder
   def timestamp(ref, value); end
 end
 
-# source://aws-sdk-core//lib/aws-sdk-core/json/error_handler.rb#5
+# @api private
+#
+# source://aws-sdk-core//lib/aws-sdk-core/json/error_handler.rb#6
 class Aws::Json::ErrorHandler < ::Aws::ErrorHandler
-  # source://aws-sdk-core//lib/aws-sdk-core/json/error_handler.rb#7
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/json/error_handler.rb#8
   def call(context); end
 
   private
 
-  # source://aws-sdk-core//lib/aws-sdk-core/json/error_handler.rb#83
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/json/error_handler.rb#93
   def apply_error_headers(rule, context, data); end
 
+  # @api private
   # @return [Boolean]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/json/error_handler.rb#44
+  # source://aws-sdk-core//lib/aws-sdk-core/json/error_handler.rb#48
   def aws_query_error?(context); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/json/error_handler.rb#26
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/json/error_handler.rb#53
+  def aws_query_error_code(context); end
+
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/json/error_handler.rb#27
   def error_code(json, context); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/json/error_handler.rb#57
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/json/error_handler.rb#67
   def error_message(code, json); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/json/error_handler.rb#16
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/json/error_handler.rb#17
   def extract_error(body, context); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/json/error_handler.rb#65
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/json/error_handler.rb#75
   def parse_error_data(context, body, code); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/json/error_handler.rb#49
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/json/error_handler.rb#59
   def remove_prefix(error_code, context); end
 end
 
@@ -8541,33 +8573,52 @@ class Aws::RpcV2::ContentTypeHandler < ::Seahorse::Client::Handler
   def eventstream_output?(context); end
 end
 
-# source://aws-sdk-core//lib/aws-sdk-core/rpc_v2/error_handler.rb#5
+# @api private
+#
+# source://aws-sdk-core//lib/aws-sdk-core/rpc_v2/error_handler.rb#6
 class Aws::RpcV2::ErrorHandler < ::Aws::ErrorHandler
-  # source://aws-sdk-core//lib/aws-sdk-core/rpc_v2/error_handler.rb#7
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/rpc_v2/error_handler.rb#8
   def call(context); end
 
   private
 
+  # @api private
   # @return [Boolean]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/rpc_v2/error_handler.rb#71
+  # source://aws-sdk-core//lib/aws-sdk-core/rpc_v2/error_handler.rb#59
   def aws_query_error?(context); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/rpc_v2/error_handler.rb#39
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/rpc_v2/error_handler.rb#64
+  def aws_query_error_code(context); end
+
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/rpc_v2/error_handler.rb#40
   def error_code(data, context); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/rpc_v2/error_handler.rb#29
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/rpc_v2/error_handler.rb#30
   def extract_error(body, context); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/rpc_v2/error_handler.rb#55
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/rpc_v2/error_handler.rb#78
   def parse_error_data(context, body, code); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/rpc_v2/error_handler.rb#76
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/rpc_v2/error_handler.rb#70
   def remove_prefix(error_code, context); end
 
+  # @api private
   # @return [Boolean]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/rpc_v2/error_handler.rb#23
+  # source://aws-sdk-core//lib/aws-sdk-core/rpc_v2/error_handler.rb#24
   def valid_response?(context); end
 end
 
@@ -12787,157 +12838,156 @@ end
 #
 # Additionally, error classes are dynamically generated for service errors based on the error code
 # if they are not defined above.
-# Some existing error classes may use a different class name than the one documented.
 #
-# source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#47
+# source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#46
 module Aws::STS::Errors
   extend ::Aws::Errors::DynamicErrors
 end
 
-# source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#51
+# source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#50
 class Aws::STS::Errors::ExpiredTokenException < ::Aws::STS::Errors::ServiceError
   # @param context [Seahorse::Client::RequestContext]
   # @param message [String]
   # @param data [Aws::STS::Types::ExpiredTokenException]
   # @return [ExpiredTokenException] a new instance of ExpiredTokenException
   #
-  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#56
+  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#55
   def initialize(context, message, data = T.unsafe(nil)); end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#61
+  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#60
   def message; end
 end
 
 # @deprecated This error class is not used during parsing.
 #   Please use `IDPCommunicationError` instead.
 #
-# source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#68
+# source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#67
 class Aws::STS::Errors::IDPCommunicationErrorException < ::Aws::STS::Errors::ServiceError
   # @param context [Seahorse::Client::RequestContext]
   # @param message [String]
   # @param data [Aws::STS::Types::IDPCommunicationErrorException]
   # @return [IDPCommunicationErrorException] a new instance of IDPCommunicationErrorException
   #
-  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#73
+  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#72
   def initialize(context, message, data = T.unsafe(nil)); end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#78
+  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#77
   def message; end
 end
 
 # @deprecated This error class is not used during parsing.
 #   Please use `IDPRejectedClaim` instead.
 #
-# source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#85
+# source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#84
 class Aws::STS::Errors::IDPRejectedClaimException < ::Aws::STS::Errors::ServiceError
   # @param context [Seahorse::Client::RequestContext]
   # @param message [String]
   # @param data [Aws::STS::Types::IDPRejectedClaimException]
   # @return [IDPRejectedClaimException] a new instance of IDPRejectedClaimException
   #
-  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#90
+  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#89
   def initialize(context, message, data = T.unsafe(nil)); end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#95
+  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#94
   def message; end
 end
 
-# source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#100
+# source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#99
 class Aws::STS::Errors::InvalidAuthorizationMessageException < ::Aws::STS::Errors::ServiceError
   # @param context [Seahorse::Client::RequestContext]
   # @param message [String]
   # @param data [Aws::STS::Types::InvalidAuthorizationMessageException]
   # @return [InvalidAuthorizationMessageException] a new instance of InvalidAuthorizationMessageException
   #
-  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#105
+  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#104
   def initialize(context, message, data = T.unsafe(nil)); end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#110
+  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#109
   def message; end
 end
 
 # @deprecated This error class is not used during parsing.
 #   Please use `InvalidIdentityToken` instead.
 #
-# source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#117
+# source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#116
 class Aws::STS::Errors::InvalidIdentityTokenException < ::Aws::STS::Errors::ServiceError
   # @param context [Seahorse::Client::RequestContext]
   # @param message [String]
   # @param data [Aws::STS::Types::InvalidIdentityTokenException]
   # @return [InvalidIdentityTokenException] a new instance of InvalidIdentityTokenException
   #
-  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#122
+  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#121
   def initialize(context, message, data = T.unsafe(nil)); end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#127
+  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#126
   def message; end
 end
 
 # @deprecated This error class is not used during parsing.
 #   Please use `MalformedPolicyDocument` instead.
 #
-# source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#134
+# source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#133
 class Aws::STS::Errors::MalformedPolicyDocumentException < ::Aws::STS::Errors::ServiceError
   # @param context [Seahorse::Client::RequestContext]
   # @param message [String]
   # @param data [Aws::STS::Types::MalformedPolicyDocumentException]
   # @return [MalformedPolicyDocumentException] a new instance of MalformedPolicyDocumentException
   #
-  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#139
+  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#138
   def initialize(context, message, data = T.unsafe(nil)); end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#144
+  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#143
   def message; end
 end
 
 # @deprecated This error class is not used during parsing.
 #   Please use `PackedPolicyTooLarge` instead.
 #
-# source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#151
+# source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#150
 class Aws::STS::Errors::PackedPolicyTooLargeException < ::Aws::STS::Errors::ServiceError
   # @param context [Seahorse::Client::RequestContext]
   # @param message [String]
   # @param data [Aws::STS::Types::PackedPolicyTooLargeException]
   # @return [PackedPolicyTooLargeException] a new instance of PackedPolicyTooLargeException
   #
-  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#156
+  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#155
   def initialize(context, message, data = T.unsafe(nil)); end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#161
+  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#160
   def message; end
 end
 
-# source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#166
+# source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#165
 class Aws::STS::Errors::RegionDisabledException < ::Aws::STS::Errors::ServiceError
   # @param context [Seahorse::Client::RequestContext]
   # @param message [String]
   # @param data [Aws::STS::Types::RegionDisabledException]
   # @return [RegionDisabledException] a new instance of RegionDisabledException
   #
-  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#171
+  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#170
   def initialize(context, message, data = T.unsafe(nil)); end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#176
+  # source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#175
   def message; end
 end
 
-# source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#49
+# source://aws-sdk-core//lib/aws-sdk-sts/errors.rb#48
 class Aws::STS::Errors::ServiceError < ::Aws::Errors::ServiceError; end
 
 # source://aws-sdk-core//lib/aws-sdk-sts.rb#59
@@ -15565,38 +15615,60 @@ class Aws::Xml::DocBuilder
   def open_el(name, attrs); end
 end
 
-# source://aws-sdk-core//lib/aws-sdk-core/xml/error_handler.rb#8
+# @api private
+#
+# source://aws-sdk-core//lib/aws-sdk-core/xml/error_handler.rb#9
 class Aws::Xml::ErrorHandler < ::Aws::ErrorHandler
-  # source://aws-sdk-core//lib/aws-sdk-core/xml/error_handler.rb#10
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/xml/error_handler.rb#11
   def call(context); end
 
   private
 
-  # source://aws-sdk-core//lib/aws-sdk-core/xml/error_handler.rb#60
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/xml/error_handler.rb#61
   def apply_error_headers(rule, context, data); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/xml/error_handler.rb#65
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/xml/error_handler.rb#66
   def error_code(body, context); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/xml/error_handler.rb#29
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/xml/error_handler.rb#30
   def error_data(context, body, code); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/xml/error_handler.rb#81
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/xml/error_handler.rb#82
   def error_message(body); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/xml/error_handler.rb#19
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/xml/error_handler.rb#20
   def extract_error(body, context); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/xml/error_handler.rb#49
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/xml/error_handler.rb#50
   def parse_error_data(rule, body); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/xml/error_handler.rb#73
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/xml/error_handler.rb#74
   def remove_prefix(error_code, context); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/xml/error_handler.rb#89
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/xml/error_handler.rb#90
   def request_id(body); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/xml/error_handler.rb#95
+  # @api private
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/xml/error_handler.rb#96
   def unescape(str); end
 end
 
