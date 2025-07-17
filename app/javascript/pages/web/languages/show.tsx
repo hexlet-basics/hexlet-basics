@@ -27,7 +27,7 @@ import LeadFormBlock from '@/components/LeadFormBlock';
 import MarkdownViewer from '@/components/MarkdownViewer';
 import SignUpFormBlock from '@/components/SignUpFormBlock';
 import XssContent from '@/components/XssContent';
-import codeIllustration from '@/images/code.webp';
+import codeIllustration from '@/images/code.svg';
 import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
 import { getResourceUrl } from '@/resources';
 import * as Routes from '@/routes.js';
