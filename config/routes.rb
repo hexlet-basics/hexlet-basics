@@ -71,7 +71,6 @@ Rails.application.routes.draw do
     scope module: :web, format: false do
       root "home#index"
 
-      get "/robots.:format", to: "home#robots", as: :robots
       # use resource
       get "/map", to: "home#sitemap"
 

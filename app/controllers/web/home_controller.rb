@@ -61,10 +61,6 @@ class Web::HomeController < Web::ApplicationController
     }
   end
 
-  def robots
-    respond_to :text
-  end
-
   def sitemap
     if I18n.locale != :ru
       throw ActionController::RoutingError, "works only for ru"
