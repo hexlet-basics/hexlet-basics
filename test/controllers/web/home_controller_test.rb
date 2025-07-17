@@ -26,7 +26,7 @@ class Web::HomeControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "#robots" do
-    get robots_url(format: :txt)
+    get "/robots.txt"
     assert_response :success
   end
 
