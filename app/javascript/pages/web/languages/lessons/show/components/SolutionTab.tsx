@@ -14,7 +14,7 @@ import {
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { useTimer } from 'react-timer-hook';
-import waitingClock from '@/images/waiting_clock.png';
+import waitingClock from '@/images/waiting_clock.webp';
 import { getEditorLanguage } from '@/lib/utils.ts';
 import { useLessonStore } from '../store.tsx';
 import type { LessonSharedProps } from '../types.ts';

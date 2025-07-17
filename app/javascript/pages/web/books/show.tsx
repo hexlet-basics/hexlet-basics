@@ -16,7 +16,7 @@ import { Compass, FileText, List, Users } from 'lucide-react';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import LeadFormBlock from '@/components/LeadFormBlock';
-import bookCoverImg from '@/images/profession-developer-book-cover.png';
+import bookCoverImg from '@/images/profession-developer-book-cover.webp';
 import bookToc from '@/lib/book.ts';
 import ApplicationLayout from '@/pages/layouts/ApplicationLayout.tsx';
 import * as Routes from '@/routes.js';

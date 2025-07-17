@@ -33,8 +33,8 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import AppAnchor from '@/components/AppAnchor';
-import logoImg from '@/images/logo.png';
-import defaultAvatarImg from '@/images/user-avatar.png';
+import logoImg from '@/images/logo.webp';
+import defaultAvatarImg from '@/images/user-avatar.webp';
 import { localesByCode } from '@/lib/utils';
 import * as Routes from '@/routes.js';
 import type { SharedProps } from '@/types';
