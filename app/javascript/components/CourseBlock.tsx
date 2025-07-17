@@ -50,6 +50,7 @@ export default function CourseBlock({
       </Stack>
 
       <AppAnchor
+        aria-label={landingPage.name!}
         pos="absolute"
         inset={0}
         href={Routes.language_url(landingPage.slug)}

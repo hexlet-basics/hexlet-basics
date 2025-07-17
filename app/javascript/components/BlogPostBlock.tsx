@@ -47,6 +47,7 @@ export default function BlogPostBlock({ post, lazy }: Props) {
       </Group>
 
       <AppAnchor
+        aria-label={post.name!}
         pos="absolute"
         inset={0}
         href={Routes.blog_post_path(post.slug!, { suffix })}

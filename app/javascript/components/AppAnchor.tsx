@@ -6,6 +6,7 @@ import type { PropsWithChildren } from 'react';
 import useConfirmation from '@/hooks/useConfirmation';
 
 type AppAnchorProps = AnchorProps &
+  React.AriaAttributes &
   PropsWithChildren & {
     /**
      * If true, disables href and renders a pseudo-link (SEO-unfriendly).
