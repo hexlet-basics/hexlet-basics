@@ -95,24 +95,24 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
                 className="img-fluid"
                 fetchPriority="high"
                 radius="md"
-                src={blogPost.cover_main_variant!}
+                src={post.cover_main_variant!}
                 mb="xl"
               />
-              <MarkdownViewer allowHtml>{blogPost.body || ''}</MarkdownViewer>
+              <MarkdownViewer allowHtml>{post.body || ''}</MarkdownViewer>
 
               {index === 0 && (
                 <Box>
                   <Group mb="lg">
                     <Group fw="bold" me="auto">
                       <User size={18} />
-                      {blogPost.creator.name}
-                      {dayjs().to(blogPost.created_at)}
+                      {post.creator.name}
+                      {dayjs().to(post.created_at)}
                     </Group>
                     <Group gap={0} me="lg">
                       <AppAnchor href={postUrl} me="xs" display="flex">
                         <ThumbsUp size={18} />
                       </AppAnchor>
-                      {blogPost.likes_count}
+                      {post.likes_count}
                     </Group>
                     <Center>
                       <Center me="xs">
