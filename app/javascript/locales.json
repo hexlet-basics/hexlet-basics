@@ -2943,20 +2943,27 @@
         }
       },
       "home": {
-        "hero": {
-          "fastest_way_to_start_coding": "Самый быстрый способ попробовать программирование онлайн. Обучение программированию с тренажером и <b>ИИ-помощником</b>. Практика после каждого урока",
-          "free_programming_courses": "Бесплатные курсы по программированию с нуля",
-          "how_coding_works": "Как работает обучение на code-basics",
-          "learn": "Изучи",
-          "learn_xs": "Научись программировать",
-          "try": "Попробовать"
-        },
         "index": {
           "all_blog_posts": "Все статьи",
           "all_reviews": "Все отзывы",
           "blog_posts": "Блог",
           "categories": "Направления",
           "consultation": "Нужна помощь? Оставьте заявку, мы поможем",
+          "hero": {
+            "ai_count": "ИИ-ассистент",
+            "ai_count_description": "Подсказки и анализ кода",
+            "community_count": "Сообщество",
+            "community_count_description": "Более 8 000 тысяч человек",
+            "courses_count": "Текстовые курсы",
+            "courses_count_description": "теория, тренажер, решение учителя",
+            "fastest_way_to_start_coding": "С практикой в тренажере и ассистентом на базе ChatGPT",
+            "free_programming_courses": "Бесплатные курсы по программированию с нуля",
+            "how_coding_works": "Как работает обучение на code-basics",
+            "learn": "Изучи",
+            "learn_xs": "Научись программировать",
+            "source_code": "Исходный код →",
+            "try": "Попробовать"
+          },
           "hexlet": "Хекслета",
           "in_development": "Курсы в разработке",
           "in_development_description": "Данные курсы находятся в разработке и не являются финальной версией. Вы можете помочь в разработке, прислав Pull Request в репозиторий GitHub",

@@ -2,8 +2,8 @@ import { Head, usePage } from '@inertiajs/react';
 import {
   Accordion,
   Anchor,
+  Badge,
   Box,
-  Button,
   Card,
   Center,
   Container,
@@ -11,32 +11,32 @@ import {
   Grid,
   Group,
   Image,
-  Paper,
   SimpleGrid,
   Text,
   Title,
 } from '@mantine/core';
 import i18next from 'i18next';
+import { BookOpenCheck, Bot, Github, Send } from 'lucide-react';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TypeAnimation } from 'react-type-animation';
 import type { FAQPage, Question, WithContext } from 'schema-dts';
+import AppAnchor from '@/components/AppAnchor';
 import BlogPostBlock from '@/components/BlogPostBlock';
 import CourseBlock from '@/components/CourseBlock';
 import LeadFormBlock from '@/components/LeadFormBlock';
+import MarkdownViewer from '@/components/MarkdownViewer';
 import SignUpFormBlock from '@/components/SignUpFormBlock';
 import XssContent from '@/components/XssContent';
-import codeImagePathEn from '@/images/code-basics-coding-en.webp';
-import codeImagePathRu from '@/images/code-basics-coding-ru.webp';
 import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
 import { getResourceUrl } from '@/resources';
-import type { LeadCrud, SharedProps } from '@/types';
 import type {
   BlogPost,
   LanguageMember,
+  LeadCrud,
   Review,
+  SharedProps,
   User,
-} from '@/types/serializers';
+} from '@/types';
 
 type Props = PropsWithChildren & {
   blogPosts: BlogPost[];
@@ -44,30 +44,6 @@ type Props = PropsWithChildren & {
   reviews: Review[];
   newUser: User;
   lead: LeadCrud;
-};
-
-const sequence = [
-  'TypeScript',
-  1000,
-  'Java',
-  1000,
-  'Python',
-  1000,
-  'PHP',
-  1000,
-  'Ruby',
-  1000,
-  'HTML',
-  1000,
-  'CSS',
-  1000,
-  'Go',
-  1000,
-];
-
-const codeImagePaths = {
-  ru: codeImagePathRu,
-  en: codeImagePathEn,
 };
 
 // TODO: move to locales
@@ -154,58 +130,86 @@ export default function Index({
         )}
       </Head>
 
-      <Container size="lg">
-        <Paper
-          shadow="sm"
-          my={{ base: 'md', xs: 'lg', sm: 60 }}
-          pt={{ base: 'md', xs: 'lg', sm: 60 }}
-          withBorder
-          ps={{ base: 'md', xs: 'lg', sm: 60 }}
+      <Container
+        ta="center"
+        size="sm"
+        my={{
+          base: 'xl',
+          xs: 60,
+          sm: 70,
+          md: 80,
+          lg: 120,
+        }}
+      >
+        <AppAnchor
+          external
+          href="https://github.com/orgs/hexlet-basics/repositories"
         >
-          <Grid overflow="hidden" gutter={0}>
-            <Grid.Col span={{ base: 12, md: 7 }}>
-              <Title order={1} size="h5" fw="normal" c="dimmed">
-                {t('home.hero.free_programming_courses')}
-              </Title>
-              <Box my="xs" visibleFrom="xs">
-                <Text size="55px" fw="bold">
-                  {t('home.hero.learn')}{' '}
-                  <Text c="blue" component="span" fw="bold">
-                    <TypeAnimation
-                      // className="text-primary"
-                      sequence={sequence}
-                      wrapper="span"
-                      speed={5}
-                      repeat={Number.POSITIVE_INFINITY}
-                    />
-                  </Text>
-                </Text>
-              </Box>
-              <Box my="xs" hiddenFrom="xs">
-                <Text fz="h1" fw="bold">
-                  {t('home.hero.learn_xs')}
-                </Text>
-              </Box>
-              <XssContent mb="xl">
-                {t('home.hero.fastest_way_to_start_coding')}
-              </XssContent>
-              <Button mb="lg" size="xl" component="a" href="#courses">
-                {t('home.hero.try')}
-              </Button>
-            </Grid.Col>
+          <Badge
+            style={{ cursor: 'pointer' }}
+            component="a"
+            leftSection={<Github size={10} />}
+            // autoContrast
+            size="sm"
+            variant="gradient"
+          >
+            {t('home.index.hero.source_code')}
+          </Badge>
+        </AppAnchor>
+        <Title
+          mb="xs"
+          lh={1}
+          order={1}
+          fz={{
+            base: 25,
+            xs: 30,
+            sm: 40,
+            md: 50,
+          }}
+        >
+          {t('home.index.hero.free_programming_courses')}
+        </Title>
 
-            <Grid.Col span={{ base: 12, md: 5 }}>
-              <Image
-                alt="Code Basics learning preview"
-                fetchPriority="high"
-                w="auto"
-                width="720"
-                height="356"
-                src={codeImagePaths[locale]}
-              />
-            </Grid.Col>
-          </Grid>
-        </Paper>
+        <Text c="gray" fz="xl">
+          <XssContent>
+            {t('home.index.hero.fastest_way_to_start_coding')}
+          </XssContent>
+        </Text>
+      </Container>
+
+      <Container
+        size="lg"
+        my={{
+          base: 'xl',
+          xs: 60,
+          sm: 70,
+          md: 80,
+          lg: 100,
+        }}
+      >
+        <SimpleGrid cols={{ base: 1, xs: 2, md: 3 }} my="xl">
+          <Card bg="blue.0" p="xl" c="blue.9">
+            <BookOpenCheck />
+            <Text fw="bold" fz="h2">
+              {t('home.index.hero.courses_count')}
+            </Text>
+            {t('home.index.hero.courses_count_description')}
+          </Card>
+          <Card bg="green.0" p="xl" c="green.9">
+            <Send />
+            <Text fw="bold" fz="h2">
+              {t('home.index.hero.community_count')}
+            </Text>
+            {t('home.index.hero.community_count_description')}
+          </Card>
+          <Card bg="violet.0" p="xl" c="violet.9">
+            <Bot />
+            <Text fw="bold" fz="h2">
+              {t('home.index.hero.ai_count')}
+            </Text>
+            {t('home.index.hero.ai_count_description')}
+          </Card>
+        </SimpleGrid>
       </Container>
 
       <Container size="lg" my="xl">
@@ -281,7 +285,9 @@ export default function Index({
               <Accordion.Control>
                 <Box fw="bold">{item.question}</Box>
               </Accordion.Control>
-              <Accordion.Panel>{item.answer}</Accordion.Panel>
+              <Accordion.Panel>
+                <MarkdownViewer>{item.answer}</MarkdownViewer>
+              </Accordion.Panel>
             </Accordion.Item>
           ))}
         </Accordion>
@@ -290,9 +296,17 @@ export default function Index({
       {user.guest && (
         <Container size="lg" mt={100}>
           <Grid align="center" justify="space-between" gutter={0}>
-            <Grid.Col span={{ base: 12, md: 6 }}>
+            <Grid.Col span={{ base: 12, md: 6 }} mb="lg">
               <Center>
-                <Text fz={40} fw="bold">
+                <Text
+                  fz={{
+                    base: 25,
+                    xs: 30,
+                    sm: 40,
+                    md: 50,
+                  }}
+                  fw="bold"
+                >
                   {t('home.index.join')}
                 </Text>
               </Center>

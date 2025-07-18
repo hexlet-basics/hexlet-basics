@@ -196,19 +196,26 @@ ru:
       reviews:
         reviews: Отзывы
         course_html: Курс %{link}
-      hero:
-        learn_xs: Научись программировать
-        learn: Изучи
-        free_programming_courses: Бесплатные курсы по программированию с нуля
-        fastest_way_to_start_coding: Самый быстрый способ попробовать программирование онлайн. Обучение программированию с тренажером и <b>ИИ-помощником</b>. Практика после каждого урока
-        try: Попробовать
-        how_coding_works: Как работает обучение на code-basics
       languages:
         courses: Курсы по программированию
       stats:
         trusted_by: |
           Присоединись к %{count} изующих программирование с помощью Code Basics
       index:
+        hero:
+          courses_count: Текстовые курсы
+          courses_count_description: теория, тренажер, решение учителя
+          community_count: Сообщество
+          community_count_description: Более 8 000 тысяч человек
+          ai_count: ИИ-ассистент
+          ai_count_description: Подсказки и анализ кода
+          learn_xs: Научись программировать
+          source_code: Исходный код →
+          learn: Изучи
+          free_programming_courses: Бесплатные курсы по программированию с нуля
+          fastest_way_to_start_coding: С практикой в тренажере и ассистентом на базе ChatGPT
+          try: Попробовать
+          how_coding_works: Как работает обучение на code-basics
         reviews: Отзывы
         all_reviews: Все отзывы
         categories: Направления

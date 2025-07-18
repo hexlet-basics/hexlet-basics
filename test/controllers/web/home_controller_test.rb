@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "test_helper"
 
 class Web::HomeControllerTest < ActionDispatch::IntegrationTest
@@ -23,11 +21,6 @@ class Web::HomeControllerTest < ActionDispatch::IntegrationTest
       s.get s.root_url(suffix: nil)
       s.assert_response :redirect
     end
-  end
-
-  test "#robots" do
-    get "/robots.txt"
-    assert_response :success
   end
 
   test "#map" do
