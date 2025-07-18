@@ -210,12 +210,13 @@ ru:
           ai_count: ИИ-ассистент
           ai_count_description: Подсказки и анализ кода
           learn_xs: Научись программировать
-          source_code: Исходный код →
+          source_code: Исходный код
           learn: Изучи
           free_programming_courses: Бесплатные курсы по программированию с нуля
           fastest_way_to_start_coding: С практикой в тренажере и ассистентом на базе ChatGPT
-          try: Попробовать
+          try: К курсам →
           how_coding_works: Как работает обучение на code-basics
+        sign_up: Регистрация
         reviews: Отзывы
         all_reviews: Все отзывы
         categories: Направления

@@ -87,13 +87,14 @@ en:
           learn: Learn
           free_programming_courses: Free Programming Courses from Scratch
           fastest_way_to_start_coding: With practice in the trainer and an assistant powered by ChatGPT
-          try: Try
+          try: Courses →
           how_coding_works: How Learning Works on Code Basics
         title: |
           Free Online Programming Courses: HTML, CSS, JavaScript
         meta:
           description: |
             Learn the Code Basics of HTML, CSS and JavaScript with Interactive Coding Environment right in your Browser! Perfect for Beginners & 100% for Free | Join our Online Programming Courses
+        sign_up: Sign Up
         reviews: Reviews
         all_reviews: All Reviews
         blog_posts: Posts

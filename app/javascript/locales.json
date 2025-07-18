@@ -988,7 +988,7 @@
             "learn": "Learn",
             "learn_xs": "Learn to Code",
             "source_code": "Source Code →",
-            "try": "Try"
+            "try": "Courses →"
           },
           "hexlet": "Hexlet",
           "in_development": "Coming soon",
@@ -998,6 +998,7 @@
             "description": "Learn the Code Basics of HTML, CSS and JavaScript with Interactive Coding Environment right in your Browser! Perfect for Beginners & 100% for Free | Join our Online Programming Courses\n"
           },
           "reviews": "Reviews",
+          "sign_up": "Sign Up",
           "start": "Start",
           "subheader": "For those who start from scratch. From the creators of ",
           "title": "Free Online Programming Courses: HTML, CSS, JavaScript\n"
@@ -2969,8 +2970,8 @@
             "how_coding_works": "Как работает обучение на code-basics",
             "learn": "Изучи",
             "learn_xs": "Научись программировать",
-            "source_code": "Исходный код →",
-            "try": "Попробовать"
+            "source_code": "Исходный код",
+            "try": "К курсам →"
           },
           "hexlet": "Хекслета",
           "in_development": "Курсы в разработке",
@@ -2980,6 +2981,7 @@
             "description": "Быстрый способ изучить основы языков программирования Go, PHP, Java, JavaScript, Python, Typescript, Ruby, C# и многих других.\n"
           },
           "reviews": "Отзывы",
+          "sign_up": "Регистрация",
           "subheader": "Для тех, кто начинает с нуля. От создателей ",
           "title": "Школа программирования для детей и взрослых"
         },

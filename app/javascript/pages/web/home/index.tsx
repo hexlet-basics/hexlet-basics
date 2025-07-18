@@ -4,6 +4,7 @@ import {
   Anchor,
   Badge,
   Box,
+  Button,
   Card,
   Center,
   Container,
@@ -20,7 +21,6 @@ import { BookOpenCheck, Bot, Github, Send } from 'lucide-react';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { FAQPage, Question, WithContext } from 'schema-dts';
-import AppAnchor from '@/components/AppAnchor';
 import BlogPostBlock from '@/components/BlogPostBlock';
 import CourseBlock from '@/components/CourseBlock';
 import LeadFormBlock from '@/components/LeadFormBlock';
@@ -29,6 +29,7 @@ import SignUpFormBlock from '@/components/SignUpFormBlock';
 import XssContent from '@/components/XssContent';
 import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
 import { getResourceUrl } from '@/resources';
+import * as Routes from '@/routes.js';
 import type {
   BlogPost,
   LanguageMember,
@@ -144,12 +145,13 @@ export default function Index({
         <Badge
           component="a"
           target="_blank"
+          c="gray"
           style={{ cursor: 'pointer' }}
           href="https://github.com/orgs/hexlet-basics/repositories"
           leftSection={<Github size={10} />}
           // autoContrast
           size="sm"
-          variant="gradient"
+          variant="default"
         >
           {t('home.index.hero.source_code')}
         </Badge>
@@ -168,9 +170,23 @@ export default function Index({
           {t('home.index.hero.free_programming_courses')}
         </Title>
 
-        <XssContent c="gray" fz="xl">
+        <XssContent c="gray" fz="xl" mb="xl">
           {t('home.index.hero.fastest_way_to_start_coding')}
         </XssContent>
+
+        <Center>
+          <Button component="a" href="#courses" size="lg" me="sm">
+            {t('home.index.hero.try')}
+          </Button>
+          <Button
+            component="a"
+            href={Routes.new_user_path()}
+            size="lg"
+            variant="outline"
+          >
+            {t('home.index.sign_up')}
+          </Button>
+        </Center>
       </Container>
 
       <Container
