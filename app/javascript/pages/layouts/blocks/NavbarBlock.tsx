@@ -33,7 +33,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import AppAnchor from '@/components/AppAnchor';
-import logoImg from '@/images/logo.webp';
+import logoImg from '@/images/logo.svg';
 import defaultAvatarImg from '@/images/user-avatar.webp';
 import { localesByCode } from '@/lib/utils';
 import * as Routes from '@/routes.js';

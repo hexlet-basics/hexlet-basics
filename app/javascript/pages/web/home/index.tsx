@@ -141,21 +141,19 @@ export default function Index({
           lg: 120,
         }}
       >
-        <AppAnchor
-          external
+        <Badge
+          component="a"
+          target="_blank"
+          style={{ cursor: 'pointer' }}
           href="https://github.com/orgs/hexlet-basics/repositories"
+          leftSection={<Github size={10} />}
+          // autoContrast
+          size="sm"
+          variant="gradient"
         >
-          <Badge
-            style={{ cursor: 'pointer' }}
-            component="a"
-            leftSection={<Github size={10} />}
-            // autoContrast
-            size="sm"
-            variant="gradient"
-          >
-            {t('home.index.hero.source_code')}
-          </Badge>
-        </AppAnchor>
+          {t('home.index.hero.source_code')}
+        </Badge>
+
         <Title
           mb="xs"
           lh={1}
@@ -170,11 +168,9 @@ export default function Index({
           {t('home.index.hero.free_programming_courses')}
         </Title>
 
-        <Text c="gray" fz="xl">
-          <XssContent>
-            {t('home.index.hero.fastest_way_to_start_coding')}
-          </XssContent>
-        </Text>
+        <XssContent c="gray" fz="xl">
+          {t('home.index.hero.fastest_way_to_start_coding')}
+        </XssContent>
       </Container>
 
       <Container
