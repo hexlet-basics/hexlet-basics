@@ -74,13 +74,21 @@ en:
             finished_lessons: Finished Lessons
     home:
       hero:
-        learn: Learn
-        learn_xs: Learn Programming
-        try: Try now
-        free_programming_courses: Learn to Programming for Free
-        fastest_way_to_start_coding: The easiest way to experience coding right in your browser, Code Basics is an online platform featuring free programming tutorials and an interactive coding environment. Every lesson comes with an exercise to practice.
-        how_coding_works: How learning works with code-basics
       index:
+        hero:
+          courses_count: Text Courses
+          courses_count_description: theory, exercises, teacher's solutions
+          community_count: Community
+          community_count_description: Over 8,000 people
+          ai_count: AI Assistant
+          ai_count_description: Hints and code analysis
+          learn_xs: Learn to Code
+          source_code: Source Code →
+          learn: Learn
+          free_programming_courses: Free Programming Courses from Scratch
+          fastest_way_to_start_coding: With practice in the trainer and an assistant powered by ChatGPT
+          try: Try
+          how_coding_works: How Learning Works on Code Basics
         title: |
           Free Online Programming Courses: HTML, CSS, JavaScript
         meta:

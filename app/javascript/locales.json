@@ -968,20 +968,28 @@
         "try": "try"
       },
       "home": {
-        "hero": {
-          "fastest_way_to_start_coding": "The easiest way to experience coding right in your browser, Code Basics is an online platform featuring free programming tutorials and an interactive coding environment. Every lesson comes with an exercise to practice.",
-          "free_programming_courses": "Learn to Programming for Free",
-          "how_coding_works": "How learning works with code-basics",
-          "learn": "Learn",
-          "learn_xs": "Learn Programming",
-          "try": "Try now"
-        },
+        "hero": null,
         "index": {
           "all_blog_posts": "All Blog Posts",
           "all_reviews": "All Reviews",
           "blog_posts": "Posts",
           "categories": "Categories",
           "header": "Learn to code. Online. For free.",
+          "hero": {
+            "ai_count": "AI Assistant",
+            "ai_count_description": "Hints and code analysis",
+            "community_count": "Community",
+            "community_count_description": "Over 8,000 people",
+            "courses_count": "Text Courses",
+            "courses_count_description": "theory, exercises, teacher's solutions",
+            "fastest_way_to_start_coding": "With practice in the trainer and an assistant powered by ChatGPT",
+            "free_programming_courses": "Free Programming Courses from Scratch",
+            "how_coding_works": "How Learning Works on Code Basics",
+            "learn": "Learn",
+            "learn_xs": "Learn to Code",
+            "source_code": "Source Code →",
+            "try": "Try"
+          },
           "hexlet": "Hexlet",
           "in_development": "Coming soon",
           "in_development_description": "Courses below are not in production at the moment. However, you can contribute by sending a pull request to Github repository.",
