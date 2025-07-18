@@ -1,6 +1,6 @@
 import { usePage } from '@inertiajs/react';
 import { AppShell, Box, Container, Stack, Title } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { useDisclosure, useWindowEvent } from '@mantine/hooks';
 import { type PropsWithChildren, useEffect } from 'react';
 import * as CookieConsent from 'vanilla-cookieconsent';
 
@@ -34,7 +34,7 @@ export default function ApplicationLayout({
   } = page;
   const [opened, { toggle }] = useDisclosure();
 
-  useEffect(() => {
+  useWindowEvent('load', () => {
     CookieConsent.run({
       categories: {
         necessary: {
@@ -49,7 +49,7 @@ export default function ApplicationLayout({
         translations: cookieTranslations,
       },
     });
-  }, []);
+  });
 
   return (
     <RootLayout>
