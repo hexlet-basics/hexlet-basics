@@ -29,9 +29,14 @@ export default function BlogPostBlock({ post, lazy }: Props) {
         </Card.Section>
       )}
 
-      <Title order={2} my="md">
-        {post.name}
-      </Title>
+      <AppAnchor
+        className="after:absolute after:inset-0"
+        href={Routes.blog_post_path(post.slug!, { suffix })}
+      >
+        <Title order={2} my="md">
+          {post.name}
+        </Title>
+      </AppAnchor>
       <Text mb="xs">{post.description}</Text>
 
       <Group gap="xs" c="dimmed" mt="auto">
@@ -45,13 +50,6 @@ export default function BlogPostBlock({ post, lazy }: Props) {
           <Text>~{tCommon('time.minutes', { count: 5 })}</Text>
         </Group>
       </Group>
-
-      <AppAnchor
-        aria-label={post.name!}
-        pos="absolute"
-        inset={0}
-        href={Routes.blog_post_path(post.slug!, { suffix })}
-      ></AppAnchor>
     </Card>
   );
 }

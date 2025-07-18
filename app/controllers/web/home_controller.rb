@@ -44,6 +44,7 @@ class Web::HomeController < Web::ApplicationController
       },
       og: {
         title: t(".title"),
+        description: t(".meta.description"),
         type: "website",
         url: root_url,
         image: view_context.vite_asset_path("images/logo.png")

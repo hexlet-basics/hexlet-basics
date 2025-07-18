@@ -33,10 +33,12 @@ export default function CourseBlock({
       </Card.Section>
 
       <Stack pt="md" h="100%">
-        <Title fw="bold" order={2} mb="md">
-          {courseMember && <i className="me-3 bi bi-trophy" />}
-          {landingPage.name}
-        </Title>
+        <AppAnchor href={Routes.language_url(landingPage.slug)} className="after:absolute after:inset-0">
+          <Title fw="bold" order={2} mb="md">
+            {courseMember && <i className="me-3 bi bi-trophy" />}
+            {landingPage.name}
+          </Title>
+        </AppAnchor>
         <Group c="dimmed" mt="auto">
           <Group gap="xs">
             <Clock size="15" />
@@ -48,13 +50,6 @@ export default function CourseBlock({
           </Group>
         </Group>
       </Stack>
-
-      <AppAnchor
-        aria-label={landingPage.name!}
-        pos="absolute"
-        inset={0}
-        href={Routes.language_url(landingPage.slug)}
-      />
     </Card>
     //     {
     //   continueButton && (

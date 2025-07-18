@@ -8,7 +8,6 @@ import {
   Group,
   Stack,
   Text,
-  Title,
 } from '@mantine/core';
 import i18next from 'i18next';
 import { Github, Send } from 'lucide-react';
