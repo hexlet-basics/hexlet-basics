@@ -61,6 +61,11 @@ Rails.application.routes.draw do
           get :yandex_courses
         end
       end
+      resources :blog_posts, only: [ :show ] do
+        member do
+          get :next
+        end
+      end
       resources :lessons, only: [] do
         member do
           post :check
