@@ -71,7 +71,7 @@ export default function NavbarBlock({ opened, onToggle }: NavbarBlockProps) {
         </Group>
 
         <Burger
-          name="Toggle Main Menu Visibility"
+          aria-label="Toggle Main Menu Visibility"
           opened={opened}
           onClick={onToggle}
           ms="auto"

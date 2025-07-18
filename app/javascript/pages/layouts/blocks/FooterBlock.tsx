@@ -159,6 +159,7 @@ export default function FooterBlock() {
                   href="https://ttttt.me/hexlet_ru"
                   external
                   underline="never"
+                  aria-label="Hexlet Telegram Channel"
                 >
                   <Send />
                 </AppAnchor>
@@ -166,6 +167,7 @@ export default function FooterBlock() {
                   href="https://github.com/hexlet-basics"
                   external
                   underline="never"
+                  aria-label="Project Repository On Github"
                 >
                   <Github />
                 </AppAnchor>

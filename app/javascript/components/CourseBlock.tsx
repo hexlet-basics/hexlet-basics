@@ -33,7 +33,10 @@ export default function CourseBlock({
       </Card.Section>
 
       <Stack pt="md" h="100%">
-        <AppAnchor href={Routes.language_url(landingPage.slug)} className="after:absolute after:inset-0">
+        <AppAnchor
+          href={Routes.language_url(landingPage.slug)}
+          className="after:absolute after:inset-0"
+        >
           <Title fw="bold" order={2} mb="md">
             {courseMember && <i className="me-3 bi bi-trophy" />}
             {landingPage.name}
