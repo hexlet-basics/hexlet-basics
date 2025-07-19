@@ -182,13 +182,13 @@ module MultiJson::Options
   def default_load_options; end
 
   # source://multi_json//lib/multi_json/options.rb#17
-  def dump_options(*_arg0); end
+  def dump_options(*args); end
 
   # source://multi_json//lib/multi_json/options.rb#8
   def dump_options=(options); end
 
   # source://multi_json//lib/multi_json/options.rb#13
-  def load_options(*_arg0); end
+  def load_options(*args); end
 
   # source://multi_json//lib/multi_json/options.rb#3
   def load_options=(options); end
@@ -196,10 +196,10 @@ module MultiJson::Options
   private
 
   # source://multi_json//lib/multi_json/options.rb#31
-  def get_options(options, *_arg1); end
+  def get_options(options, *args); end
 
   # source://multi_json//lib/multi_json/options.rb#41
-  def handle_callable_options(options, *_arg1); end
+  def handle_callable_options(options, *args); end
 
   # source://multi_json//lib/multi_json/options.rb#45
   def handle_hashable_options(options); end
@@ -236,7 +236,7 @@ class MultiJson::OptionsCache::Store
   def initialize; end
 
   # source://multi_json//lib/multi_json/options_cache.rb#23
-  def fetch(key, &_arg1); end
+  def fetch(key, &block); end
 
   # source://multi_json//lib/multi_json/options_cache.rb#17
   def reset; end

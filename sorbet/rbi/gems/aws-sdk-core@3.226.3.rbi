@@ -3678,13 +3678,25 @@ class Aws::IniParser
   end
 end
 
-# An auto-refreshing credential provider that loads credentials from
-# EC2 instances.
+# An auto-refreshing credential provider that loads credentials from EC2 instances.
 #
 #     instance_credentials = Aws::InstanceProfileCredentials.new
 #     ec2 = Aws::EC2::Client.new(credentials: instance_credentials)
 #
-# source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#12
+# ## Retries
+# When initialized from the default credential chain, this provider defaults to `0` retries.
+# Breakdown of retries is as follows:
+#
+#  * **Configurable retries** (defaults to `1`): these retries handle errors when communicating
+#     with the IMDS endpoint. There are two separate retry mechanisms within the provider:
+#       * Entire token fetch and credential retrieval process
+#       * Token fetching
+#  * **JSON parsing retries**: Fixed at 3 attempts to handle cases when IMDS returns malformed JSON
+#     responses. These retries are separate from configurable retries.
+#
+# @see https://docs.aws.amazon.com/sdkref/latest/guide/feature-imds-credentials.html IMDS Credential Provider
+#
+# source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#24
 class Aws::InstanceProfileCredentials
   include ::Aws::CredentialProvider
   include ::Aws::RefreshingCredentials
@@ -3704,81 +3716,110 @@ class Aws::InstanceProfileCredentials
   # @param options [Hash]
   # @return [InstanceProfileCredentials] a new instance of InstanceProfileCredentials
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#77
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#79
   def initialize(options = T.unsafe(nil)); end
 
-  # @return [Integer] Number of times to retry when retrieving credentials
-  #   from the instance metadata service. Defaults to 0 when resolving from
-  #   the default credential chain ({Aws::CredentialProviderChain}).
+  # @return [Proc]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#100
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#108
+  def backoff; end
+
+  # @return [Boolean0] Boolean0
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#99
+  def disable_imds_v1; end
+
+  # @return [String]
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#111
+  def endpoint; end
+
+  # @return [IO, nil]
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#123
+  def http_debug_output; end
+
+  # @return [Integer]
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#117
+  def http_open_timeout; end
+
+  # @return [Integer]
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#120
+  def http_read_timeout; end
+
+  # @return [Integer]
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#114
+  def port; end
+
+  # @return [Integer]
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#105
   def retries; end
+
+  # @return [Integer]
+  #
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#102
+  def token_ttl; end
 
   private
 
-  # token is optional - if nil, uses v1 (insecure) flow
-  #
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#244
-  def _get_credentials(conn, token); end
-
   # @return [Boolean]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#260
-  def _metadata_disabled?; end
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#324
+  def empty_credentials?(creds_hash); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#142
-  def backoff(backoff); end
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#243
+  def fetch_credentials(conn); end
 
-  # @return [Boolean]
-  #
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#330
-  def empty_credentials?(creds); end
-
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#226
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#233
   def fetch_token(conn); end
-
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#198
-  def get_credentials; end
 
   # GET request fetch profile and credentials
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#275
-  def http_get(connection, path, token = T.unsafe(nil)); end
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#270
+  def http_get(connection, path); end
 
   # PUT request fetch token with ttl
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#291
-  def http_put(connection, path, ttl); end
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#286
+  def http_put(connection); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#264
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#259
   def open_connection; end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#150
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#173
   def refresh; end
 
-  # Compute an offset for refresh with jitter
-  #
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#335
-  def refresh_offset; end
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#165
+  def resolve_backoff(backoff); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#132
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#156
   def resolve_disable_v1(options); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#113
-  def resolve_endpoint(options, endpoint_mode); end
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#134
+  def resolve_endpoint(options); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#104
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#127
   def resolve_endpoint_mode(options); end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#310
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#202
+  def retrieve_credentials; end
+
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#305
   def retry_errors(error_classes, options = T.unsafe(nil), &_block); end
 
   # @return [Boolean]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#256
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#255
   def token_set?; end
 
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#324
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#224
+  def update_credentials(creds); end
+
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#319
   def warn_expired_credentials; end
 end
 
@@ -3786,65 +3827,63 @@ end
 #
 # @api private
 #
-# source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#42
+# source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#52
 Aws::InstanceProfileCredentials::METADATA_PATH_BASE = T.let(T.unsafe(nil), String)
 
 # Path for PUT request for token
 #
 # @api private
 #
-# source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#46
+# source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#56
 Aws::InstanceProfileCredentials::METADATA_TOKEN_PATH = T.let(T.unsafe(nil), String)
 
-# These are the errors we trap when attempting to talk to the
-# instance metadata service.  Any of these imply the service
-# is not present, no responding or some other non-recoverable
-# error.
+# These are the errors we trap when attempting to talk to the instance metadata service.
+# Any of these imply the service is not present, no responding or some other non-recoverable error.
 #
 # @api private
 #
-# source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#30
+# source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#40
 Aws::InstanceProfileCredentials::NETWORK_ERRORS = T.let(T.unsafe(nil), Array)
 
 # @api private
 #
-# source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#17
+# source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#29
 class Aws::InstanceProfileCredentials::Non200Response < ::RuntimeError; end
 
 # Token used to fetch IMDS profile and credentials
 #
 # @api private
 #
-# source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#341
+# source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#330
 class Aws::InstanceProfileCredentials::Token
   # @api private
   # @return [Token] a new instance of Token
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#342
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#331
   def initialize(value, ttl, created_time = T.unsafe(nil)); end
 
   # @api private
   # @return [Boolean]
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#351
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#340
   def expired?; end
 
   # [String] token value
   #
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#349
+  # source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#338
   def value; end
 end
 
 # @api private
 #
-# source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#23
+# source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#35
 class Aws::InstanceProfileCredentials::TokenExpiredError < ::RuntimeError; end
 
 # @api private
 #
-# source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#20
+# source://aws-sdk-core//lib/aws-sdk-core/instance_profile_credentials.rb#32
 class Aws::InstanceProfileCredentials::TokenRetrivalError < ::RuntimeError; end
 
 # @api private
@@ -18697,7 +18736,8 @@ class Seahorse::Client::RequestContext
   # @option options
   # @option options
   # @option options
-  # @param options [Hash] a customizable set of options
+  # @option options
+  # @param options [Hash]
   # @return [RequestContext] a new instance of RequestContext
   #
   # source://aws-sdk-core//lib/seahorse/client/request_context.rb#20
