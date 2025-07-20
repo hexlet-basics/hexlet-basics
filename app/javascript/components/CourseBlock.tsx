@@ -1,5 +1,12 @@
-import { Link } from '@inertiajs/react';
-import { Anchor, Card, Group, Image, Stack, Text, Title } from '@mantine/core';
+import {
+  Card,
+  type CardProps,
+  Group,
+  Image,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
 import { Clock, Users } from 'lucide-react';
 import type { PropsWithChildren } from 'react';
 import * as Routes from '@/routes.js';
@@ -9,21 +16,23 @@ import type {
 } from '@/types/serializers';
 import AppAnchor from './AppAnchor';
 
-type Props = PropsWithChildren & {
-  // course: Language;
-  landingPage: LanguageLandingPageForLists;
-  courseMember?: LanguageMember;
-  continueButton?: boolean;
-  lazy?: boolean;
-};
+type Props = PropsWithChildren &
+  CardProps & {
+    // course: Language;
+    landingPage: LanguageLandingPageForLists;
+    courseMember?: LanguageMember;
+    continueButton?: boolean;
+    lazy?: boolean;
+  };
 
 export default function CourseBlock({
   landingPage,
   courseMember,
   lazy,
+  ...props
 }: Props) {
   return (
-    <Card pos="relative" shadow="sm">
+    <Card pos="relative" shadow="sm" {...props}>
       <Card.Section>
         <Image
           loading={lazy ? 'lazy' : 'eager'}

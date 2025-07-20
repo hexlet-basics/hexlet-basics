@@ -33,25 +33,31 @@ DEFAULTS: &DEFAULTS
 
 from-full:
   <<: *DEFAULTS
-  body: <%= Faker::Lorem.paragraph_by_chars %>
+  body: |
+    <%= Faker::Lorem.paragraph_by_chars %>
+    ::courses
   description: |
     <%= Faker::Lorem.paragraph(sentence_count: 4) %>
   locale: ru
 
 from-full-ru:
   <<: *DEFAULTS
-  body: DRAFT
+  body: |
+    DRAFT
   description: |
     <%= Faker::Lorem.paragraph(sentence_count: 4) %>
+    ::courses
   state: draft
   locale: ru
 
 from-full-en:
   <<: *DEFAULTS
-  body: DRAFT
+  body: |
+    DRAFT
   name: What is $LABEL
   description: |
     <%= Faker::Lorem.paragraph(sentence_count: 4) %>
+    ::courses
   state: draft
   locale: en
 
@@ -63,7 +69,10 @@ from-full-js:
   body: |
     <%= Faker::Markdown.headers %>
     <%= Faker::Markdown.emphasis %>
-    <%= Faker::Markdown.headers %>
+
+    ## Header 2
+
+    ::courses
 
     > Это цитата лала
 
@@ -82,7 +91,8 @@ from-full-js:
 
 from-full-ru-js:
   <<: *DEFAULTS
-  body: <%= Faker::Lorem.paragraph_by_chars %>
+  body: |
+    <%= Faker::Lorem.paragraph_by_chars %>
   description: |
     <%= Faker::Lorem.paragraph(sentence_count: 4) %>
   language: javascript
@@ -107,7 +117,9 @@ from-full-en-js:
 
 from-full-php:
   <<: *DEFAULTS
-  body: <%= Faker::Lorem.paragraph_by_chars %>
+  body: |
+    <%= Faker::Lorem.paragraph_by_chars %>
+    ::courses
   description: |
     <%= Faker::Lorem.paragraph(sentence_count: 4) %>
   language: php
@@ -115,16 +127,20 @@ from-full-php:
 
 from-full-ru-php:
   <<: *DEFAULTS
-  body: <%= Faker::Lorem.paragraph_by_chars %>
+  body: |
+    Эта статья посвящена языку PHP. Давайте говорить про него и посмотрим какие курсы порекомендуют здесь.
+    ::courses
   description: |
     <%= Faker::Lorem.paragraph(sentence_count: 4) %>
+    ::courses
   language: php
   locale: ru
 
 from-full-en-php:
   <<: *DEFAULTS
   name: What is $LABEL
-  body: <%= Faker::Lorem.paragraph_by_chars %>
+  body: |
+    <%= Faker::Lorem.paragraph_by_chars %>
   description: |
     <%= Faker::Lorem.paragraph(sentence_count: 4) %>
   language: php

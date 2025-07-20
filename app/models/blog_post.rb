@@ -30,6 +30,10 @@
 class BlogPost < ApplicationRecord
   include BlogPostRepository
 
+  has_many :related_language_items
+  has_many :related_languages, through: :related_language_items, source: :language
+  has_many :related_main_language_landing_pages, through: :related_languages, source: :main_landing_page
+
   has_one_attached :cover do |attachable|
     attachable.variant :main, resize_to_limit: [ 1020, 480 ], preprocessed: true
     attachable.variant :list, resize_to_limit: [ 510, 240 ], preprocessed: true

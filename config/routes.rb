@@ -154,7 +154,11 @@ Rails.application.routes.draw do
         resources :messages, only: [ :index ]
         resources :language_lesson_members, only: [ :index ]
         resources :language_categories
-        resources :blog_posts
+        resources :blog_posts do
+          member do
+            post :related_courses
+          end
+        end
         resources :languages, only: %i[index new edit update create] do
           scope module: :languages do
             resources :versions, only: %i[create]

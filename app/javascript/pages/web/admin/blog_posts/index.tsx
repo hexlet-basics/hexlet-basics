@@ -1,6 +1,6 @@
-import { Image } from '@mantine/core';
+import { ActionIcon, Image } from '@mantine/core';
 import dayjs from 'dayjs';
-import { Edit, Link } from 'lucide-react';
+import { Edit, GraduationCap, Link } from 'lucide-react';
 import { DataTable } from 'mantine-datatable';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -23,11 +23,23 @@ export default function Index({ grid, blogPosts }: Props) {
   const renderActions = (item: BlogPost) => (
     <>
       <AppAnchor me="xs" href={Routes.edit_admin_blog_post_path(item.id)}>
-        <Edit size={14} />
+        <ActionIcon variant="default" size="xs">
+          <Edit />
+        </ActionIcon>
       </AppAnchor>
-      <a target="_blank" href={Routes.blog_post_path(item.slug!)}>
-        <Link size={14} />
-      </a>
+      <AppAnchor me="xs" external href={Routes.blog_post_path(item.slug!)}>
+        <ActionIcon variant="default" size="xs">
+          <Link />
+        </ActionIcon>
+      </AppAnchor>
+      <AppAnchor
+        method="post"
+        href={Routes.related_courses_admin_blog_post_path(item.id)}
+      >
+        <ActionIcon variant="default" size="xs">
+          <GraduationCap />
+        </ActionIcon>
+      </AppAnchor>
     </>
   );
 
@@ -52,6 +64,7 @@ export default function Index({ grid, blogPosts }: Props) {
           { accessor: 'cover', title: 'cover', render: renderCover },
           { accessor: 'name', sortable: true },
           { accessor: 'state', sortable: true },
+          { accessor: 'related_courses_count', title: 'Related C' },
           {
             accessor: 'created_at',
             render: (r) => dayjs(r.created_at).format('LL'),

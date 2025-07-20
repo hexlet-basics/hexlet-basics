@@ -21,20 +21,12 @@ class Web::BlogPostsController < Web::ApplicationController
   def show
     blog_post = BlogPost.with_locale.published_state.find_by!(slug: params[:id])
 
-    # category = blog_post.category
-
-    # blog_posts = []
-    # languages = []
-
     blog_posts = BlogPost.published_state.with_locale
       .includes([ :creator, { cover_attachment: :blob } ])
       .except(blog_post)
       .limit(2)
 
-    # if category
-    #   blog_posts = category.blog_posts.except(blog_post).limit(3)
-    #   languages = category.languages.limit(3)
-    # end
+    related_landings = blog_post.related_main_language_landing_pages.order(id: :desc)
 
     seo_tags = {
       title: blog_post.name,
@@ -45,7 +37,8 @@ class Web::BlogPostsController < Web::ApplicationController
     # TODO: add https://developers.google.com/search/docs/appearance/structured-data/article
     render inertia: true, props: {
       blogPost: BlogPostResource.new(blog_post),
-      recommendedBlogPosts: BlogPostResource.new(blog_posts)
+      recommendedBlogPosts: BlogPostResource.new(blog_posts),
+      relatedLandingPages: Language::LandingPageForListsResource.new(related_landings)
     }
   end
 end

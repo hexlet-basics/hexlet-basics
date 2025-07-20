@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
   def index
     q = ransack_params("sf" => "id", "so" => "desc")
@@ -27,6 +25,13 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
     render inertia: true, props: {
       blogPostDto: BlogPostCrudResource.new(blog_post)
     }
+  end
+
+  def related_courses
+    FindRelatedCoursesForBlogPostJob.perform_later(params[:id])
+
+    f(:success)
+    redirect_back_or_to admin_blog_posts_path
   end
 
   def create

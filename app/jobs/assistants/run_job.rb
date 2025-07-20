@@ -9,15 +9,7 @@ class Assistants::RunJob < ApplicationJob
       throw RuntimeError.new "#{language} without openai_assistant_id"
     end
 
-    # TODO: fix dry-inject
-    openai_api = OpenAI::Client.new do |f|
-      f.response :logger, Rails.logger, bodies: true
-      if configus.hexlet_proxy.url.present?
-        if configus.hexlet_proxy.url
-          f.proxy = { uri: configus.hexlet_proxy.url }
-        end
-      end
-    end
+    openai_api = DepsLocator.current.openai_api
 
     # TODO: if guest
 

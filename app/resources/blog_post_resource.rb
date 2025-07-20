@@ -35,6 +35,11 @@ class BlogPostResource
   end
 
   typelize :number
+  attribute :related_courses_count do |post|
+    post.related_language_items.size
+  end
+
+  typelize :number
   attribute :likes_count do |post|
     post.id.digits.last
   end

@@ -72,6 +72,7 @@ class Language < ApplicationRecord
   has_many :modules, dependent: :destroy
   has_many :lessons, dependent: :destroy
   has_many :landing_pages, dependent: :destroy
+  has_one :main_landing_page, -> { where(main: true).with_locale }, class_name: "::Language::LandingPage"
   has_many :versions, dependent: :destroy, class_name: "::Language::Version"
   # has_many :infos, class_name: "::Language::Version::Info", dependent: :restrict_with_exception
   has_many :members, dependent: :destroy

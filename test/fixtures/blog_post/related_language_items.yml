@@ -1,0 +1,11 @@
+from-full-js1:
+  blog_post: from-full-js
+  language: javascript
+
+from-full-js2:
+  blog_post: from-full-js
+  language: typescript
+
+from-full-js3:
+  blog_post: from-full-js
+  language: css

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_05_134023) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_19_200418) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -83,6 +83,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_05_134023) do
     t.index ["user_id"], name: "index_ahoy_visits_on_user_id"
     t.index ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true
     t.index ["visitor_token", "started_at"], name: "index_ahoy_visits_on_visitor_token_and_started_at"
+  end
+
+  create_table "blog_post_related_language_items", force: :cascade do |t|
+    t.bigint "blog_post_id", null: false
+    t.bigint "language_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blog_post_id"], name: "index_blog_post_related_language_items_on_blog_post_id"
+    t.index ["language_id"], name: "index_blog_post_related_language_items_on_language_id"
   end
 
   create_table "blog_posts", force: :cascade do |t|
@@ -751,6 +760,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_05_134023) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "blog_post_related_language_items", "blog_posts"
+  add_foreign_key "blog_post_related_language_items", "languages"
   add_foreign_key "blog_posts", "languages"
   add_foreign_key "blog_posts", "users", column: "creator_id"
   add_foreign_key "book_requests", "users"

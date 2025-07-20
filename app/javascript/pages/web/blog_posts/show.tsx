@@ -27,18 +27,27 @@ import type { Article, WithContext } from 'schema-dts';
 import AppAnchor from '@/components/AppAnchor';
 import BlogPostBlock from '@/components/BlogPostBlock';
 import MarkdownViewer from '@/components/MarkdownViewer.tsx';
+import CoursesList from '@/components/ProgramsList';
 import { useInfiniteBlogPosts } from '@/hooks/useInfiniteBlogPosts';
 import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
 import * as Routes from '@/routes.js';
-import type { BreadcrumbItem } from '@/types';
-import type { BlogPost } from '@/types/serializers';
+import type {
+  BlogPost,
+  BreadcrumbItem,
+  LanguageLandingPageForLists,
+} from '@/types';
 
 type Props = PropsWithChildren & {
   blogPost: BlogPost;
   recommendedBlogPosts: BlogPost[];
+  relatedLandingPages: LanguageLandingPageForLists[];
 };
 
-export default function Show({ blogPost, recommendedBlogPosts }: Props) {
+export default function Show({
+  blogPost,
+  recommendedBlogPosts,
+  relatedLandingPages,
+}: Props) {
   const { t } = useTranslation();
   const { t: tCommon } = useTranslation('common');
 
@@ -76,6 +85,10 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
     loadMore,
   );
 
+  const components = {
+    '::courses': () => <CoursesList landingPages={relatedLandingPages} />,
+  };
+
   return (
     <>
       <Head>
@@ -98,7 +111,9 @@ export default function Show({ blogPost, recommendedBlogPosts }: Props) {
                 src={post.cover_main_variant!}
                 mb="xl"
               />
-              <MarkdownViewer allowHtml>{post.body || ''}</MarkdownViewer>
+              <MarkdownViewer components={components} allowHtml>
+                {post.body || ''}
+              </MarkdownViewer>
 
               {index === 0 && (
                 <Box>

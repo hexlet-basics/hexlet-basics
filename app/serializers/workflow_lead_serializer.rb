@@ -59,15 +59,15 @@ class WorkflowLeadSerializer
 
     if @data[:survey_answers_data]&.any?
       qa_text = @data[:survey_answers_data]
-                 .map { |qa| "Вопрос: #{qa[:question]}\nОтвет: #{qa[:answer]}" }
-                 .join("\n\n")
+        .map { |qa| "Вопрос: #{qa[:question]}\nОтвет: #{qa[:answer]}" }
+        .join("\n\n")
       parts << qa_text
     end
 
     if @data[:courses_data]&.any?
       courses_text = @data[:courses_data]
-                       .map { |cd| "Курс: #{cd[:slug]}\nПройдено уроков: #{cd[:lessons_finished_count]}" }
-                       .join("\n\n")
+        .map { |cd| "Курс: #{cd[:slug]}\nПройдено уроков: #{cd[:lessons_finished_count]}" }
+        .join("\n\n")
       parts << "Информация по курсам:\n#{courses_text}"
     end
 
@@ -94,9 +94,9 @@ class WorkflowLeadSerializer
       next unless @data[key]&.present?
 
       field_id, enum_id = if config.is_a?(Hash)
-                            [ config[:field_id], config[:enum_id] ]
+        [ config[:field_id], config[:enum_id] ]
       else
-                            [ config, nil ]
+        [ config, nil ]
       end
 
       value_hash = { value: @data[key] }
