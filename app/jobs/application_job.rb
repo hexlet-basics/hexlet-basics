@@ -1,9 +1,9 @@
 class ApplicationJob < ActiveJob::Base
   include Sentry::Rails::ActiveJobExtensions
 
-  # unless Rails.env.test?
-  #   retry_on StandardError, wait: :polynomially_longer
-  # end
+  unless Rails.env.test?
+    retry_on StandardError, wait: :polynomially_longer
+  end
   # Automatically retry jobs that encountered a deadlock
   # retry_on ActiveRecord::Deadlocked
 
