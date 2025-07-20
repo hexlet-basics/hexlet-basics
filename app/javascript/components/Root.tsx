@@ -15,7 +15,7 @@ import { ModalsProvider } from '@mantine/modals';
 import * as Sentry from '@sentry/react';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import getHighlighter from '@/lib/shiki';
+import { getHighlighter } from '@/lib/shiki';
 
 const shikiAdapter = createShikiAdapter(getHighlighter);
 

@@ -1,48 +1,79 @@
-import { createHighlighterCore } from 'shiki/core';
-import { createJavaScriptRegexEngine } from 'shiki/engine/javascript';
+import { createHighlighterCore, type LanguageRegistration } from 'shiki/core';
+import { createOnigurumaEngine } from 'shiki/engine/oniguruma';
+
+const languageLoaders: Record<string, Promise<void>> = {};
+
+// shikiLanguages.ts
+const languageModules: Record<
+  string,
+  () => Promise<{ default: LanguageRegistration[] }>
+> = {
+  // Веб
+  html: () => import('@shikijs/langs/html'),
+  css: () => import('@shikijs/langs/css'),
+  scss: () => import('@shikijs/langs/scss'),
+
+  // JavaScript/TypeScript
+  javascript: () => import('@shikijs/langs/js'),
+  js: () => import('@shikijs/langs/js'),
+  typescript: () => import('@shikijs/langs/ts'),
+  ts: () => import('@shikijs/langs/ts'),
+  jsx: () => import('@shikijs/langs/jsx'),
+  tsx: () => import('@shikijs/langs/tsx'),
+
+  // Серверные
+  php: () => import('@shikijs/langs/php'),
+  ruby: () => import('@shikijs/langs/ruby'),
+  python: () => import('@shikijs/langs/python'),
+  go: () => import('@shikijs/langs/go'),
+  java: () => import('@shikijs/langs/java'),
+  csharp: () => import('@shikijs/langs/csharp'),
+
+  // Системные
+  bash: () => import('@shikijs/langs/bash'),
+  json: () => import('@shikijs/langs/json'),
+
+  // Функциональные
+  haskell: () => import('@shikijs/langs/haskell'),
+  elixir: () => import('@shikijs/langs/elixir'),
+  clojure: () => import('@shikijs/langs/clojure'),
+
+  // Прочее
+  perl: () => import('@shikijs/langs/perl'),
+  scheme: () => import('@shikijs/langs/scheme'),
+  racket: () => import('@shikijs/langs/racket'),
+  '1c': () => import('@shikijs/langs/1c'),
+};
 
 const highlighterPromise = createHighlighterCore({
-  langs: [
-    import('@shikijs/langs/tsx'),
-    import('@shikijs/langs/swift'),
-    import('@shikijs/langs/rust'),
-    import('@shikijs/langs/scss'),
-    import('@shikijs/langs/css'),
-    import('@shikijs/langs/html'),
-    import('@shikijs/langs/bash'),
-    import('@shikijs/langs/json'),
-    import('@shikijs/langs/elixir'),
-    import('@shikijs/langs/clojure'),
-    import('@shikijs/langs/racket'),
-    import('@shikijs/langs/1c'),
-    // import('@shikijs/langs/c'),
-    // import('@shikijs/langs/cpp'),
-    import('@shikijs/langs/haskell'),
-    import('@shikijs/langs/js'),
-    import('@shikijs/langs/ts'),
-    import('@shikijs/langs/jsx'),
-    import('@shikijs/langs/php'),
-    import('@shikijs/langs/java'),
-    import('@shikijs/langs/ruby'),
-    import('@shikijs/langs/csharp'),
-    import('@shikijs/langs/go'),
-    import('@shikijs/langs/python'),
-    import('@shikijs/langs/scheme'),
-    import('@shikijs/langs/perl'),
-  ],
-  themes: [
-    import('@shikijs/themes/github-dark'),
-    import('@shikijs/themes/github-light'),
-  ],
-  engine: createJavaScriptRegexEngine(),
+  themes: [import('@shikijs/themes/github-light')],
+  langs: [],
+  engine: createOnigurumaEngine(import('shiki/wasm')),
 }).then((highlighter) => {
   highlighter.getTheme('github-light').bg = 'var(--mantine-color-gray-0)';
-  highlighter.getTheme('github-dark').bg = 'var(--mantine-color-gray-7)';
-
   return highlighter;
 });
 
-export default async () => {
+export async function getHighlighter(lang?: string) {
   const highlighter = await highlighterPromise;
+
+  if (lang && !highlighter.getLoadedLanguages().includes(lang)) {
+    const loader = languageModules[lang];
+    if (!loader) {
+      console.warn(
+        `[Shiki] Unsupported language: ${lang}, fallback to plaintext.`,
+      );
+      return highlighter;
+    }
+
+    if (!languageLoaders[lang]) {
+      languageLoaders[lang] = loader().then((langImport) =>
+        highlighter.loadLanguage(langImport),
+      );
+    }
+
+    await languageLoaders[lang];
+  }
+
   return highlighter;
-};
+}

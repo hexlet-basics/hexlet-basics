@@ -34,6 +34,8 @@ DEFAULTS: &DEFAULTS
   theory: |
     <%= Faker::Lorem.paragraph_by_chars(number: 400) %>
 
+    Тут какой-то текст с инлайн кодом `const a = 5` на js
+
     ```html
     <section>
       <h2>Code Basics</h2>

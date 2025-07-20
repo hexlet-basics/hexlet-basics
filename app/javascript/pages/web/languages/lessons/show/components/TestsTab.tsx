@@ -1,6 +1,6 @@
 import { usePage } from '@inertiajs/react';
-import { CodeHighlight } from '@mantine/code-highlight';
 import { useTranslation } from 'react-i18next';
+import { LazyCodeHighlight } from '@/components/LazyCodeHighlight.tsx';
 import { getEditorLanguage } from '@/lib/utils.ts';
 import type { LessonSharedProps } from '../types.ts';
 
@@ -11,7 +11,7 @@ export default function TestsTab() {
   return (
     <>
       <p className="text-center lead">{tCommon('testInstructions')}</p>
-      <CodeHighlight
+      <LazyCodeHighlight
         language={getEditorLanguage(course.slug!)}
         code={lesson.test_code ?? ''}
       />

@@ -1,7 +1,7 @@
 import { Box, TypographyStylesProvider } from '@mantine/core';
-import rehypeShikiFromHighlighter from '@shikijs/rehype/core';
+// import rehypeShikiFromHighlighter from '@shikijs/rehype/core';
 import type { Directives } from 'mdast-util-directive';
-import { useEffect, useState } from 'react';
+import { type ComponentPropsWithoutRef, useEffect, useState } from 'react';
 import { MarkdownHooks } from 'react-markdown';
 import rehypeExternalLinks from 'rehype-external-links';
 import rehypeRaw from 'rehype-raw';
@@ -10,7 +10,9 @@ import remarkGfm from 'remark-gfm';
 import type { PluggableList } from 'unified';
 import type { Node } from 'unist';
 import { visit } from 'unist-util-visit';
-import getHighlighter from '@/lib/shiki';
+import { LazyCodeHighlight } from './LazyCodeHighlight';
+
+type CodeProps = ComponentPropsWithoutRef<'code'> & { node?: unknown };
 
 type DirectiveComponents = Record<
   string,
@@ -53,6 +55,21 @@ function createDirectivePlugin(components: DirectiveComponents) {
   };
 }
 
+function MarkdownCodeHighlight({ className, children }: CodeProps) {
+  const code = String(children).trim();
+  const match = className?.match(/language-(\w+)/);
+  const language = match ? match[1] : 'plaintext';
+  const isInline = !match;
+
+  if (isInline) {
+    return <code className={className}>{code}</code>;
+  }
+
+  return (
+    <LazyCodeHighlight code={code} language={language} className={className} />
+  );
+}
+
 export default function MarkdownViewer({
   children,
   allowHtml = false,
@@ -60,19 +77,17 @@ export default function MarkdownViewer({
 }: MarkdownViewerProps) {
   const [rehypePlugins, setRehypePlugins] = useState<PluggableList>([]);
 
+  const preparedComponents = {
+    pre: (props: ComponentPropsWithoutRef<'pre'>) => <>{props.children}</>, // убираем обертку pre
+    code: MarkdownCodeHighlight,
+    ...components,
+  };
+
   useEffect(() => {
     const loadPlugins = async () => {
-      const highlighter = await getHighlighter();
+      // const highlighter = await getBaseHighlighter();
 
       const rehypePlugins: PluggableList = [
-        [
-          rehypeShikiFromHighlighter,
-          highlighter,
-          {
-            themes: { light: 'github-light', dark: 'github-dark' },
-            theme: 'github-light',
-          },
-        ],
         [
           rehypeExternalLinks,
           {
@@ -103,7 +118,7 @@ export default function MarkdownViewer({
             createDirectivePlugin(components),
           ]}
           rehypePlugins={rehypePlugins}
-          components={components}
+          components={preparedComponents}
         >
           {children}
         </MarkdownHooks>

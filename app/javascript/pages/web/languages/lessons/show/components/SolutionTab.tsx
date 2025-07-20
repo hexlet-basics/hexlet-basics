@@ -1,11 +1,9 @@
 import { usePage } from '@inertiajs/react';
-import { CodeHighlight } from '@mantine/code-highlight';
 import {
   Alert,
   Box,
   Button,
   Center,
-  Group,
   Image,
   Stack,
   Text,
@@ -14,6 +12,7 @@ import {
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { useTimer } from 'react-timer-hook';
+import { LazyCodeHighlight } from '@/components/LazyCodeHighlight.tsx';
 import waitingClock from '@/images/waiting_clock.webp';
 import { getEditorLanguage } from '@/lib/utils.ts';
 import { useLessonStore } from '../store.tsx';
@@ -43,7 +42,7 @@ export default function SolutionTab() {
     }
 
     return (
-      <CodeHighlight
+      <LazyCodeHighlight
         code={content}
         language={getEditorLanguage(course.slug!)}
       />
@@ -57,7 +56,7 @@ export default function SolutionTab() {
           <Title order={2} mb="lg">
             {tCommon('teacherSolution')}
           </Title>
-          <CodeHighlight
+          <LazyCodeHighlight
             code={lesson.original_code!}
             language={getEditorLanguage(course.slug!)}
           />
