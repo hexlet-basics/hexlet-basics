@@ -18,21 +18,29 @@ export function useInfiniteBlogPosts(
   );
 
   // Отслеживание активного поста
-  // biome-ignore lint/correctness/useExhaustiveDependencies: -
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
           .filter((e) => e.isIntersecting)
-          .sort(
-            (a, b) => a.boundingClientRect.top - b.boundingClientRect.top,
-          )[0];
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
 
-        if (visible) {
-          const slug = visible.target.getAttribute('data-slug');
+        if (visible.length > 0) {
+          const slug = visible[0].target.getAttribute('data-slug');
           if (slug && slug !== activeSlug) {
             setActiveSlug(slug);
             window.history.replaceState({}, '', Routes.blog_post_path(slug));
+          }
+        } else if (activeSlug !== posts[0].slug) {
+          // Если ничего не видно, но мы пролистали вверх до первого поста
+          const firstSlug = posts[0].slug;
+          if (firstSlug) {
+            setActiveSlug(firstSlug);
+            window.history.replaceState(
+              {},
+              '',
+              Routes.blog_post_path(firstSlug),
+            );
           }
         }
       },
