@@ -58,7 +58,9 @@ function createDirectivePlugin(components: DirectiveComponents) {
 function MarkdownCodeHighlight({ className, children }: CodeProps) {
   const code = String(children).trim();
   const match = className?.match(/language-(\w+)/);
-  const language = match ? match[1] : 'plaintext';
+  // TODO: toLowerCase() - быстрофикс ошибок на проде
+  // надо поправить контент и убрать toLowerCase()
+  const language = (match ? match[1] : 'plaintext').toLowerCase();
   const isInline = !match;
 
   if (isInline) {
