@@ -27,7 +27,7 @@ const languageModules: Record<
   python: () => import('@shikijs/langs/python'),
   go: () => import('@shikijs/langs/go'),
   java: () => import('@shikijs/langs/java'),
-  csharp: () => import('@shikijs/langs/csharp'),
+  cs: () => import('@shikijs/langs/csharp'),
 
   // Системные
   bash: () => import('@shikijs/langs/bash'),
@@ -40,8 +40,11 @@ const languageModules: Record<
 
   // Прочее
   perl: () => import('@shikijs/langs/perl'),
+  c: () => import('@shikijs/langs/c'),
+  cpp: () => import('@shikijs/langs/cpp'),
   scheme: () => import('@shikijs/langs/scheme'),
   racket: () => import('@shikijs/langs/racket'),
+  prolog: () => import('@shikijs/langs/prolog'),
   '1c': () => import('@shikijs/langs/1c'),
 };
 
