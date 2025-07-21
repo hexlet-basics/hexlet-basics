@@ -9,6 +9,7 @@ const editorMapping: Record<string, string> = {
   clang: 'c',
   dlang: 'd',
   bash: 'shell',
+  csharp: 'cs',
   'layout-designer': 'html',
   'pre-course-java': 'java',
   'pre-course-python': 'python',
@@ -91,6 +92,7 @@ export const shouldReplaceTabsWithSpaces = (language: string): boolean =>
 
 export const languages = {
   css: 'css',
+  csharp: 'cs',
   '1c': '1c',
   html: 'html',
   javascript: 'javascript',
