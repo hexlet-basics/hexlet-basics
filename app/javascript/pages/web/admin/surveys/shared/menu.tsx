@@ -20,7 +20,7 @@ export function Menu({ data }: Props) {
 
   if (data) {
     items.push({
-      href: Routes.edit_admin_survey_path(data.survey.id),
+      href: Routes.edit_admin_survey_path(data.data.id),
       label: tHelpers('crud.editing'),
     });
   }

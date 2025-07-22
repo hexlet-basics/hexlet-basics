@@ -17,8 +17,8 @@ type ReviewCrudData = {
 }
 
 type ReviewCrud = {
-  review: ReviewCrudData;
-  meta: { states: { key: string, value: string }[] };
+  data: ReviewCrudData;
+  meta: { modelName: string, states: { key: string, value: string }[] };
 }
 
 export default ReviewCrud;

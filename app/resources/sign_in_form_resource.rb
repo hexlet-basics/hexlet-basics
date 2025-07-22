@@ -1,16 +1,14 @@
 class SignInFormResource < ApplicationResource
   typelize_from SignInForm
-  root_key :user_sign_in_form
+  root_key :data
 
   attributes :email, :password
   typelize email: :string, password: :string
 
-  typelize '"sign_in_form"', nullable: false
-  attribute :type do |user|
-    "sign_in_form"
-  end
-
+  typelize_meta meta: "{ modelName: string }"
   meta do
-    {}
+    {
+      modelName: User.to_s.underscore
+    }
   end
 end

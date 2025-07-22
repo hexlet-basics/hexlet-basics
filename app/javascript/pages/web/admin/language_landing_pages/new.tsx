@@ -6,13 +6,13 @@ import * as Routes from '@/routes.js';
 import type {
   Language,
   LanguageLandingPage,
-  LanguageLandingPageCrud,
+  LanguageLandingPageCrudWithAttrs,
 } from '@/types';
 import Form from './shared/form';
 import { Menu } from './shared/menu';
 
 type Props = {
-  landingPageDto: LanguageLandingPageCrud;
+  landingPageDto: LanguageLandingPageCrudWithAttrs;
   landingPages: LanguageLandingPage[];
   languages: Language[];
 };

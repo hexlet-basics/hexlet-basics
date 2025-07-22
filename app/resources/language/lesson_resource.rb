@@ -1,7 +1,4 @@
-class Language::LessonResource
-  include Alba::Resource
-  include Typelizer::DSL
-
+class Language::LessonResource < ApplicationResource
   typelize_from Language::Lesson::Version::Info
 
   attributes :id,

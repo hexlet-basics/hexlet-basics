@@ -13,8 +13,8 @@ type SurveyCrudData = {
 }
 
 type SurveyCrud = {
-  survey: SurveyCrudData;
-  meta: { item_states: Record<string, unknown>[]};
+  data: SurveyCrudData;
+  meta: { modelName: string, item_states: Record<string, unknown>[] };
 }
 
 export default SurveyCrud;

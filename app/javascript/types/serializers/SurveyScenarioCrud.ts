@@ -15,8 +15,8 @@ type SurveyScenarioCrudData = {
 }
 
 type SurveyScenarioCrud = {
-  survey_scenario: SurveyScenarioCrudData;
-  meta: unknown;
+  data: SurveyScenarioCrudData;
+  meta: { modelName: string };
 }
 
 export default SurveyScenarioCrud;

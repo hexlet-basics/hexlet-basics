@@ -21,7 +21,7 @@ export function Menu({ data }: Props) {
 
   if (data) {
     items.push({
-      href: Routes.edit_admin_review_path(data.review.id),
+      href: Routes.edit_admin_review_path(data.data.id),
       label: tHelpers('crud.editing'),
     });
     items.push({

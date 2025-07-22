@@ -9,8 +9,8 @@ type UserSignUpFormData = {
 }
 
 type UserSignUpForm = {
-  user_sign_up_form: UserSignUpFormData;
-  meta: unknown;
+  data: UserSignUpFormData;
+  meta: { modelName: string };
 }
 
 export default UserSignUpForm;

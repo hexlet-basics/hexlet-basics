@@ -16,7 +16,7 @@ class Web::SessionsController < Web::ApplicationController
   end
 
   def create
-    sign_in_form = SignInForm.new(params[:user_sign_in_form])
+    sign_in_form = SignInForm.new(params[:user])
 
     if sign_in_form.valid?
       event_store.within { sign_in sign_in_form.user }

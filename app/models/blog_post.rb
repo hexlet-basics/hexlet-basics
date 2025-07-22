@@ -34,10 +34,10 @@ class BlogPost < ApplicationRecord
   has_many :related_languages, through: :related_language_items, source: :language
   has_many :related_main_language_landing_pages, through: :related_languages, source: :main_landing_page
 
-  has_one_attached :cover do |attachable|
-    attachable.variant :main, resize_to_limit: [ 1020, 480 ], preprocessed: true
-    attachable.variant :list, resize_to_limit: [ 510, 240 ], preprocessed: true
-    attachable.variant :thumb, resize_to_limit: [ 205, 120 ], preprocessed: true
+  has_one_attached :cover do |attachable| # 800 x 400
+    attachable.variant :main, resize_to_limit: [ 688, 344 ], preprocessed: true
+    attachable.variant :list, resize_to_limit: [ 546, 273 ], preprocessed: true
+    attachable.variant :thumb, resize_to_limit: [ 200, 100 ], preprocessed: true
   end
 
   def self.ransackable_attributes(_auth_object = nil)

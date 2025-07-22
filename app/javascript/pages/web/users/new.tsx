@@ -1,20 +1,18 @@
-import { useForm } from '@inertiajs/react';
 import { Alert, Card, Center, Container, Stack, Title } from '@mantine/core';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import SignUpFormBlock from '@/components/SignUpFormBlock';
 import XssContent from '@/components/XssContent';
 import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
-import type { User } from '@/types/serializers';
+import type { User, UserSignUpForm } from '@/types/serializers';
 
 type Props = PropsWithChildren & {
-  user: User;
+  user: UserSignUpForm;
   demo: boolean;
 };
 
 export default function New({ user, demo }: Props) {
   const { t } = useTranslation();
-  const data = useForm();
 
   return (
     <ApplicationLayout header={t('users.new.sign_up')} center>
@@ -30,7 +28,7 @@ export default function New({ user, demo }: Props) {
             p="xl"
             w={{ base: '100%', sm: '80%', md: '70%', lg: '50%' }}
           >
-            <SignUpFormBlock autoFocus user={user} />
+            <SignUpFormBlock autoFocus userDto={user} />
           </Card>
         </Center>
       </Container>

@@ -10,7 +10,6 @@
 - docker
 - ruby = 3.4.4
 - node >= 21
-- caddy
 
 ### Run
 
@@ -46,18 +45,18 @@ make dev # run server
 
 Open https://code-basics.localhost
 
+Admin Access: (login: `full@test.io`, password: `password`)
+
 5. Development And Testing
 
 ```bash
 make test # run tests
 
-# load language
+# load language (course)
 make language-load L=php
 
 make sync # sync locales, types, fixtures
 ```
-
-To manage loaded languages and set other settings, you need to sign in (login: `full@test.io`, password: `password`)
 
 ### Dev Tools
 

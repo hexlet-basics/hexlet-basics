@@ -41,7 +41,7 @@ class Web::Admin::Management::UsersController < Web::Admin::Management::Applicat
   end
 
   def edit
-    user = User.find params[:id]
+    user = Admin::UserForm.find params[:id]
     progressByLanguage = user.lesson_members.group(:language).count
     progress = progressByLanguage.map do |language, count|
       { language: language.slug, count: }
@@ -54,20 +54,14 @@ class Web::Admin::Management::UsersController < Web::Admin::Management::Applicat
   end
 
   def update
-    user = User.find params[:id]
+    user = Admin::UserForm.find params[:id]
 
-    if user.update(user_params)
+    if user.update(params[:user])
       f(:success)
     else
       f(:error)
     end
 
     redirect_to_inertia edit_admin_management_user_url(user), user
-  end
-
-  private
-
-  def user_params
-    params.require(:user).permit(:admin, :first_name, :last_name)
   end
 end

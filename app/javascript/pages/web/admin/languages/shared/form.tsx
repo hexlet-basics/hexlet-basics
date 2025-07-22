@@ -1,20 +1,20 @@
-import { Button } from '@mantine/core';
+import { Button, FileInput, Select, TextInput } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
-import type { HTTPVerb } from 'use-inertia-form';
-import { XFile, XForm, XInput, XSelect } from '@/components/forms';
+import { useAppForm } from '@/hooks/useAppForm';
 import { enumToOptions } from '@/lib/utils';
+import type { HttpRouterMethod } from '@/types';
 import type LanguageCrud from '@/types/serializers/LanguageCrud';
 
 type Props = {
   data: LanguageCrud;
   url: string;
-  method?: HTTPVerb;
+  method?: HttpRouterMethod;
 };
 
-const locales = [
-  { name: 'Russian', code: 'ru' },
-  { name: 'English', code: 'en' },
-];
+// const locales = [
+//   { name: 'Russian', code: 'ru' },
+//   { name: 'English', code: 'en' },
+// ];
 
 export default function Form({ data, url, method }: Props) {
   const { t: tHelpers } = useTranslation('helpers');
@@ -29,26 +29,44 @@ export default function Form({ data, url, method }: Props) {
   });
   const languageLearnAsEnumOptions = enumToOptions(languageLearnAsEnum);
 
-  return (
-    <XForm method={method} model="language" data={data} to={url}>
-      <XSelect
-        field="progress"
-        labelField="name"
-        valueField="id"
-        items={languageProgressEnumOptions}
-      />
-      <XSelect
-        field="learn_as"
-        labelField="name"
-        valueField="id"
-        items={languageLearnAsEnumOptions}
-      />
-      <XInput field="slug" />
-      <XInput field="hexlet_program_landing_page" />
-      <XInput field="openai_assistant_id" />
-      <XFile metaName="cover_thumb_url" field="cover" />
+  const {
+    getInputProps,
+    getSelectProps,
+    getFileInputProps,
+    submit,
+    formState: { isSubmitting },
+  } = useAppForm<LanguageCrud>({
+    url,
+    method: method ?? 'post',
+    container: data,
+  });
 
-      <Button type="submit">{tHelpers('submit.save')}</Button>
-    </XForm>
+  return (
+    <form onSubmit={submit}>
+      <Select
+        {...getSelectProps(
+          'progress',
+          languageProgressEnumOptions,
+          'id',
+          'name',
+        )}
+      />
+      <Select
+        {...getSelectProps(
+          'learn_as',
+          languageLearnAsEnumOptions,
+          'id',
+          'name',
+        )}
+      />
+      <TextInput {...getInputProps('slug')} />
+      <TextInput {...getInputProps('hexlet_program_landing_page')} />
+      <TextInput {...getInputProps('openai_assistant_id')} />
+      <FileInput {...getFileInputProps('cover')} name="cover" />
+
+      <Button type="submit" loading={isSubmitting}>
+        {tHelpers('submit.save')}
+      </Button>
+    </form>
   );
 }

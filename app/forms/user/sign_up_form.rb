@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class User::SignUpForm < User
   include ActiveFormModel
 

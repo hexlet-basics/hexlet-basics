@@ -1,27 +1,41 @@
-import { Box, Button, Text } from '@mantine/core';
+import { Box, Button, TextInput } from '@mantine/core';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useAppForm } from '@/hooks/useAppForm';
 import * as Routes from '@/routes.js';
-import type { User } from '@/types';
+import type { UserSignUpForm } from '@/types';
 import AppAnchor from './AppAnchor';
-import { XForm, XInput } from './forms';
 import XssContent from './XssContent';
 
 type Props = PropsWithChildren & {
-  user: User;
+  userDto: UserSignUpForm;
   autoFocus?: boolean;
 };
 
-export default function SignUpFormBlock({ user, autoFocus = false }: Props) {
+export default function SignUpFormBlock({ userDto, autoFocus = false }: Props) {
   const { t } = useTranslation();
   const { t: tHelpers } = useTranslation('helpers');
 
+  const {
+    getInputProps,
+    submit,
+    formState: { isSubmitting },
+  } = useAppForm<UserSignUpForm>({
+    url: Routes.users_path(),
+    method: 'post',
+    container: userDto,
+  });
+
   return (
-    <XForm model="user_sign_up_form" data={user} to={Routes.users_path()}>
-      <XInput field="first_name" autoComplete="name" autoFocus={autoFocus} />
-      <XInput field="email" required autoComplete="email" />
-      <XInput
-        field="password"
+    <form onSubmit={submit}>
+      <TextInput
+        {...getInputProps('first_name')}
+        autoComplete="name"
+        autoFocus={autoFocus}
+      />
+      <TextInput {...getInputProps('email')} required autoComplete="email" />
+      <TextInput
+        {...getInputProps('password')}
         required
         type="password"
         autoComplete="current-password"
@@ -32,7 +46,7 @@ export default function SignUpFormBlock({ user, autoFocus = false }: Props) {
           {t('users.new.sign_in')}
         </AppAnchor>
       </Box>
-      <Button type="submit" fullWidth>
+      <Button type="submit" fullWidth loading={isSubmitting}>
         {tHelpers('submit.user_sign_up_form.create')}
       </Button>
 
@@ -41,6 +55,6 @@ export default function SignUpFormBlock({ user, autoFocus = false }: Props) {
           url: Routes.page_path('tos'),
         })}
       </XssContent>
-    </XForm>
+    </form>
   );
 }

@@ -1,13 +1,13 @@
-namespace :exercises do
+namespace :app do
   desc "Load exercies"
-  task :load, [ :lang ] => :environment do |_task, args|
+  task :load_exercises, [ :lang ] => :environment do |_task, args|
     language_version = LanguageVersionManager.new.find_or_create_language_with_version(args.lang)
 
     ExerciseLoader.new.run(language_version)
   end
 
   desc "Remove exercies"
-  task remove: :environment do
+  task remove_exercises: :environment do
     docker_exercise_client = DepsLocator.current.docker_exercise_client
 
     languages = Language.all

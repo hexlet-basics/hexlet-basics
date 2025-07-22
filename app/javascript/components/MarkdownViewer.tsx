@@ -1,4 +1,4 @@
-import { Box, TypographyStylesProvider } from '@mantine/core';
+import { Box, Typography, TypographyStylesProvider } from '@mantine/core';
 // import rehypeShikiFromHighlighter from '@shikijs/rehype/core';
 import type { Directives } from 'mdast-util-directive';
 import { type ComponentPropsWithoutRef, useEffect, useState } from 'react';
@@ -85,32 +85,27 @@ export default function MarkdownViewer({
     ...components,
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: -
   useEffect(() => {
-    const loadPlugins = async () => {
-      // const highlighter = await getBaseHighlighter();
+    const rehypePlugins: PluggableList = [
+      [
+        rehypeExternalLinks,
+        {
+          target: '_blank',
+          rel: ['noopener', 'noreferrer'],
+        },
+      ],
+    ];
 
-      const rehypePlugins: PluggableList = [
-        [
-          rehypeExternalLinks,
-          {
-            target: '_blank',
-            rel: ['noopener', 'noreferrer'],
-          },
-        ],
-      ];
+    if (allowHtml) {
+      rehypePlugins.push(rehypeRaw);
+    }
 
-      if (allowHtml) {
-        rehypePlugins.push(rehypeRaw);
-      }
-
-      setRehypePlugins(rehypePlugins);
-    };
-
-    loadPlugins();
-  }, [allowHtml]);
+    setRehypePlugins(rehypePlugins);
+  }, []);
 
   return (
-    <TypographyStylesProvider>
+    <Typography>
       <Box className="markdown-viewer">
         <MarkdownHooks
           skipHtml={!allowHtml}
@@ -125,6 +120,6 @@ export default function MarkdownViewer({
           {children}
         </MarkdownHooks>
       </Box>
-    </TypographyStylesProvider>
+    </Typography>
   );
 }

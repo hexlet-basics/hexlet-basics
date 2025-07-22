@@ -1,7 +1,4 @@
-class Language::VersionResource
-  include Alba::Resource
-  include Typelizer::DSL
-
+class Language::VersionResource < ApplicationResource
   typelize_from Language::Version
 
   attributes :id, :result, :state, :created_at

@@ -1,12 +1,22 @@
-class Language::LandingPageQnaItemCrudResource
-  include Alba::Resource
-  include Typelizer::DSL
+class Language::LandingPageQnaItemCrudResource < ApplicationResource
+  typelize_from Language::LandingPage::QnaItem
+  # root_key :data
 
   attributes :id,
     :question,
     :answer
 
+  typelize id: [ :number, nullable: true ]
+
+  typelize :boolean
+  attribute :_destroy do |category|
+    false
+  end
+
+  typelize_meta meta: "{ modelName: string }"
   meta do
-    {}
+    {
+      modelName: object.class.superclass.to_s.underscore
+    }
   end
 end

@@ -1,7 +1,4 @@
-class Language::SitemapLessonResource
-  include Alba::Resource
-  include Typelizer::DSL
-
+class Language::SitemapLessonResource < ApplicationResource
   typelize_from Language::Lesson::Version::Info
 
   typelize :number

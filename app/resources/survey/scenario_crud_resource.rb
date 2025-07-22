@@ -1,6 +1,6 @@
 class Survey::ScenarioCrudResource < ApplicationResource
   typelize_from Survey::Scenario
-  root_key :survey_scenario
+  root_key :data
 
   has_many :items, proc { |items, params, user|
     items.order(order: :asc)
@@ -22,9 +22,10 @@ class Survey::ScenarioCrudResource < ApplicationResource
     obj.survey_item&.value
   end
 
-  # typelize_meta meta: "{ item_states: Record<string, unknown>[]}"
+  typelize_meta meta: "{ modelName: string }"
   meta do
-    {}
-    # { item_states: Survey::Item.enum_as_hashes(:states) }
+    {
+      modelName: object.class.superclass.to_s.underscore
+    }
   end
 end

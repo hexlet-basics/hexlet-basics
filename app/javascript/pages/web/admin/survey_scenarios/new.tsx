@@ -1,12 +1,17 @@
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '@/pages/layouts/AdminLayout';
 import * as Routes from '@/routes.js';
-import type { Survey, SurveyItemCrud, SurveyScenarioCrud } from '@/types';
+import type {
+  Survey,
+  SurveyItemCrud,
+  SurveyScenarioCrud,
+  SurveyScenarioCrudWithAttrs,
+} from '@/types';
 import Form from './shared/form';
 import { Menu } from './shared/menu';
 
 type Props = {
-  surveyScenarioDto: SurveyScenarioCrud;
+  surveyScenarioDto: SurveyScenarioCrudWithAttrs;
   surveysItems: SurveyItemCrud[];
   surveys: Survey[];
 };

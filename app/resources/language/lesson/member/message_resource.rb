@@ -1,7 +1,4 @@
-class Language::Lesson::Member::MessageResource
-  include Alba::Resource
-  include Typelizer::DSL
-
+class Language::Lesson::Member::MessageResource < ApplicationResource
   typelize_from Language::Lesson::Member::Message
 
   # has_one :language, resource: LanguageResource

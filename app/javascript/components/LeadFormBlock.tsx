@@ -1,19 +1,18 @@
-import { Box, Button } from '@mantine/core';
+import { Box, Button, Select, TextInput } from '@mantine/core';
 import { toMerged } from 'es-toolkit';
 import { useTranslation } from 'react-i18next';
-import { Submit } from 'use-inertia-form';
+import { useAppForm } from '@/hooks/useAppForm';
 import { enumToOptions, fromWindow } from '@/lib/utils';
 import * as Routes from '@/routes.js';
 import type { LeadCrud } from '@/types';
-import { XForm, XHidden, XInput, XSelect } from './forms';
 import XssContent from './XssContent';
 
 type Props = {
-  lead: LeadCrud;
+  leadDto: LeadCrud;
   autoFocus?: boolean;
 };
 
-export default function LeadFormBlock({ lead, autoFocus = false }: Props) {
+export default function LeadFormBlock({ leadDto, autoFocus = false }: Props) {
   const { t: tAr } = useTranslation('activerecord');
   const { t: tHelpers } = useTranslation('helpers');
   const { t: tViews } = useTranslation();
@@ -23,31 +22,53 @@ export default function LeadFormBlock({ lead, autoFocus = false }: Props) {
   });
   const contactMethodOptions = enumToOptions(contactMethodEnum);
 
-  const data = toMerged(lead, {
-    lead: {
+  const preparedLeadDto = toMerged(leadDto, {
+    data: {
       ym_client_id: fromWindow('ymClientId'),
       contact_method: 'telegram',
     },
   });
 
+  const {
+    getInputProps,
+    getSelectProps,
+    submit,
+    formState: { isSubmitting },
+  } = useAppForm<LeadCrud>({
+    url: Routes.leads_path(),
+    method: 'post',
+    container: preparedLeadDto,
+  });
+
   return (
-    <XForm model="lead" data={data} to={Routes.leads_path()}>
-      <XHidden field="ym_client_id" />
-      <XSelect
+    <form onSubmit={submit}>
+      {/* Поле ym_client_id передаём скрыто */}
+      <input type="hidden" {...getInputProps('ym_client_id')} />
+
+      <Select
+        {...getSelectProps(
+          'contact_method',
+          contactMethodOptions,
+          'id',
+          'name',
+        )}
         required
-        field="contact_method"
-        labelField="name"
-        valueField="id"
-        items={contactMethodOptions}
       />
-      <XInput required autoFocus={autoFocus} field="contact_value" />
+
+      <TextInput
+        {...getInputProps('contact_value')}
+        required
+        autoFocus={autoFocus}
+      />
+
       <Box fz="sm" my="lg">
         <XssContent>{tViews('blocks.lead_form_block.description1')}</XssContent>
         <XssContent>{tViews('blocks.lead_form_block.description2')}</XssContent>
       </Box>
-      <Button type="submit" fullWidth>
+
+      <Button type="submit" fullWidth loading={isSubmitting}>
         {tHelpers('send')}
       </Button>
-    </XForm>
+    </form>
   );
 }

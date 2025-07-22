@@ -1,51 +1,94 @@
-import { Button } from '@mantine/core';
-import { useTranslation } from 'react-i18next';
-import type { HTTPVerb } from 'use-inertia-form';
 import {
-  XCheck,
-  XDynamicInputs,
-  XForm,
-  XInput,
-  XSelect,
-  XTextarea,
-} from '@/components/forms';
-
-import type { SurveyCrud, SurveyItemCrud } from '@/types';
+  Box,
+  Button,
+  Fieldset,
+  Select,
+  Textarea,
+  TextInput,
+} from '@mantine/core';
+import { useTranslation } from 'react-i18next';
+import { useAppForm } from '@/hooks/useAppForm';
+import type {
+  HttpRouterMethod,
+  SurveyCrudWithAttrs,
+  SurveyItemCrud,
+} from '@/types';
 
 type Props = {
-  data: SurveyCrud;
-  surveyItems: SurveyItemCrud[];
+  data: SurveyCrudWithAttrs;
   url: string;
-  method?: HTTPVerb;
+  method?: HttpRouterMethod;
 };
 
-export default function Form({ data, url, method, surveyItems }: Props) {
-  const { t } = useTranslation();
+export default function Form({ data, url, method }: Props) {
   const { t: tHelpers } = useTranslation('helpers');
 
+  const {
+    getInputProps,
+    getSelectProps,
+    submit,
+    useArrayField,
+    formState: { isSubmitting },
+  } = useAppForm<SurveyCrudWithAttrs>({
+    url,
+    method: method ?? 'post',
+    container: data, // передаем контейнер целиком
+  });
+
+  const itemsField = useArrayField('items_attributes');
+  const defaultItem: SurveyItemCrud = {
+    id: null,
+    survey_id: null,
+    value: '',
+    tag_list: '',
+    state: null,
+    order: null,
+    value_for_select: null,
+    _destroy: false,
+  };
+
   return (
-    <XForm method={method} model="survey" data={data} to={url}>
-      <XInput field="question" />
-      <XInput field="slug" />
-      <XTextarea field="description" rows={8} />
+    <form onSubmit={submit}>
+      <TextInput {...getInputProps('question')} />
+      <TextInput {...getInputProps('slug')} />
+      <Textarea {...getInputProps('description')} rows={8} />
 
-      <XDynamicInputs
-        model="items"
-        label="Items"
-        emptyData={{ value: '', order: 100 }}
-      >
-        <XInput field="value" />
-        <XInput field="tag_list" />
-        <XSelect
-          field="state"
-          valueField="value"
-          labelField="key"
-          items={data.meta.item_states}
-        />
-        <XInput field="order" />
-      </XDynamicInputs>
+      <Fieldset>
+        {itemsField.fields.map((field, index) => (
+          <Box key={field._internalId}>
+            <TextInput {...getInputProps(`items.${index}.value`)} />
+            <TextInput {...getInputProps(`items.${index}.tag_list`)} />
+            <Select
+              {...getSelectProps(
+                `items.${index}.state`,
+                data.meta.item_states,
+                'value',
+                'key',
+              )}
+            />
+            <TextInput {...getInputProps(`items.${index}.order`)} />
+            <Button
+              variant="outline"
+              color="red"
+              mt="xs"
+              onClick={() => itemsField.remove(index)}
+            >
+              {tHelpers('crud.remove')}
+            </Button>
+          </Box>
+        ))}
+        <Button
+          variant="light"
+          mt="sm"
+          onClick={() => itemsField.append(defaultItem)}
+        >
+          {tHelpers('crud.add')}
+        </Button>
+      </Fieldset>
 
-      <Button type="submit">{tHelpers('submit.save')}</Button>
-    </XForm>
+      <Button type="submit" loading={isSubmitting}>
+        {tHelpers('submit.save')}
+      </Button>
+    </form>
   );
 }

@@ -1,11 +1,15 @@
-import { Link } from '@inertiajs/react';
-import { Button, Card, Container, Stack, Title } from '@mantine/core';
+import {
+  Box,
+  Button,
+  Card,
+  Container,
+  Stack,
+  TextInput,
+  Title,
+} from '@mantine/core';
 import type { PropsWithChildren } from 'react';
-
 import { useTranslation } from 'react-i18next';
-import { Submit } from 'use-inertia-form';
-
-import { XForm, XInput } from '@/components/forms';
+import { useAppForm } from '@/hooks/useAppForm';
 import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
 import * as Routes from '@/routes.js';
 import type { UserPassword } from '@/types/serializers';
@@ -17,6 +21,16 @@ type Props = PropsWithChildren & {
 export default function New({ userPassword }: Props) {
   const { t } = useTranslation();
   const { t: tHelpers } = useTranslation('helpers');
+
+  const {
+    getInputProps,
+    submit,
+    formState: { isSubmitting },
+  } = useAppForm<UserPassword>({
+    url: Routes.password_path(),
+    method: 'patch',
+    container: userPassword,
+  });
 
   return (
     <ApplicationLayout>
@@ -30,19 +44,19 @@ export default function New({ userPassword }: Props) {
             p="xl"
             w={{ base: '100%', sm: '80%', md: '70%', lg: '50%' }}
           >
-            <XForm
-              method="patch"
-              model="user_password_form"
-              data={{ user_password_form: userPassword }}
-              to={Routes.password_path()}
-            >
-              <XInput
-                field="password"
+            <form onSubmit={submit}>
+              <TextInput
+                {...getInputProps('password')}
                 type="password"
                 autoComplete="new-password"
+                required
               />
-              <Button type="submit">{tHelpers('submit.replace')}</Button>
-            </XForm>
+              <Box mt="lg" ta="right">
+                <Button type="submit" loading={isSubmitting}>
+                  {tHelpers('submit.replace')}
+                </Button>
+              </Box>
+            </form>
           </Card>
         </Stack>
       </Container>

@@ -1,7 +1,5 @@
-class BlogPostResource
+class BlogPostResource < ApplicationResource
   urls = Rails.application.routes.url_helpers
-  include Alba::Resource
-  include Typelizer::DSL
 
   has_one :creator, resource: UserResource
 
@@ -37,6 +35,11 @@ class BlogPostResource
   typelize :number
   attribute :related_courses_count do |post|
     post.related_language_items.size
+  end
+
+  typelize :string
+  attribute :url do |post|
+    urls.blog_post_url(post.slug, suffix: I18n.locale == "en" ? "" : I18n.locale)
   end
 
   typelize :number

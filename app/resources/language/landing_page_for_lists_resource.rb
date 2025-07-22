@@ -1,7 +1,5 @@
-class Language::LandingPageForListsResource
+class Language::LandingPageForListsResource < ApplicationResource
   # include Rails.application.routes.url_helpers
-  include Alba::Resource
-  include Typelizer::DSL
 
   typelize_from Language::LandingPage
 

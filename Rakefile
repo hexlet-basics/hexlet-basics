@@ -20,15 +20,12 @@ Rake::Task["db:fixtures:load"].enhance do
   puts "Upload Images"
 
   BlogPost.find_each do |p|
-    p.cover = File.open(Rails.root.join("test/fixtures/files/blog_post.png"))
+    p.cover = File.open(Rails.root.join("test/fixtures/files/blog-post-cover.jpg"))
     p.save!
   end
 
   Language.find_each do |l|
-    filepath = Rails.root.join("app/javascript/images", "#{l.slug}.png")
-    if File.exist?(filepath)
-      l.cover = File.open(filepath)
-      l.save!
-    end
+    l.cover = File.open(Rails.root.join("test/fixtures/files/course-cover.png"))
+    l.save!
   end
 end

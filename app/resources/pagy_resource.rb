@@ -1,7 +1,4 @@
-class PagyResource
-  include Alba::Resource
-  include Typelizer::DSL
-
+class PagyResource < ApplicationResource
   attributes :count, :page, :last, :prev, :next, :from
   typelize count: :number, page: :number, last: :number
 end

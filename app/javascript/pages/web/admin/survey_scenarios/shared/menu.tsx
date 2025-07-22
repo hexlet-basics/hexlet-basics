@@ -7,10 +7,10 @@ import * as Routes from '@/routes.js';
 import type { SurveyScenarioCrud } from '@/types';
 
 type Props = {
-  data?: SurveyScenarioCrud;
+  surveyScenarioCrud?: SurveyScenarioCrud;
 };
 
-export function Menu({ data }: Props) {
+export function Menu({ surveyScenarioCrud }: Props) {
   const { t: tHelpers } = useTranslation('helpers');
 
   const items: CrudHorizontalMenuItem[] = [
@@ -24,9 +24,9 @@ export function Menu({ data }: Props) {
     },
   ];
 
-  if (data) {
+  if (surveyScenarioCrud) {
     items.push({
-      href: Routes.edit_admin_survey_scenario_path(data.survey_scenario.id),
+      href: Routes.edit_admin_survey_scenario_path(surveyScenarioCrud.data.id),
       label: tHelpers('crud.editing'),
     });
   }

@@ -22,7 +22,7 @@ export function Menu({ data, landingPage }: Props) {
 
   if (data) {
     items.push({
-      href: Routes.edit_admin_language_path(data.language.id),
+      href: Routes.edit_admin_language_path(data.data.id),
       label: tHelpers('crud.editing'),
     });
     if (landingPage) {

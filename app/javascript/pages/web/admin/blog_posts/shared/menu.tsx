@@ -19,13 +19,13 @@ export default function Menu({ data }: Props) {
     { href: Routes.new_admin_blog_post_path(), label: tHelpers('crud.add') },
   ];
 
-  if (data?.blog_post) {
+  if (data?.data) {
     items.push({
-      href: Routes.edit_admin_blog_post_path(data.blog_post.id),
+      href: Routes.edit_admin_blog_post_path(data.data.id),
       label: tHelpers('crud.editing'),
     });
     items.push({
-      href: Routes.blog_post_path(data.blog_post.slug!),
+      href: Routes.blog_post_path(data.data.slug!),
       external: true,
       label: <LogIn size={15} />,
     });

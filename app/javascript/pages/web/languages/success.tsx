@@ -61,7 +61,7 @@ export default function Success(props: Props) {
           </Grid.Col>
           <Grid.Col span={{ base: 12, sm: 5 }}>
             <Card withBorder p="xl">
-              <LeadFormBlock autoFocus lead={lead} />
+              <LeadFormBlock autoFocus leadDto={lead} />
             </Card>
           </Grid.Col>
         </Grid>

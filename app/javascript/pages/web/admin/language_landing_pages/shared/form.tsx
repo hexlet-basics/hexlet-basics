@@ -1,24 +1,27 @@
-import { Button } from '@mantine/core';
-import { useTranslation } from 'react-i18next';
-import type { HTTPVerb } from 'use-inertia-form';
 import {
-  XCheck,
-  XDynamicInputs,
-  XFile,
-  XForm,
-  XHidden,
-  XInput,
-  XSelect,
-  XTextarea,
-} from '@/components/forms';
-
-import type { Language, LanguageLandingPage } from '@/types';
-import type { LanguageLandingPageCrud } from '@/types/serializers';
+  Box,
+  Button,
+  Checkbox,
+  Fieldset,
+  FileInput,
+  Select,
+  Textarea,
+  TextInput,
+} from '@mantine/core';
+import { useTranslation } from 'react-i18next';
+import { useAppForm } from '@/hooks/useAppForm';
+import type {
+  HttpRouterMethod,
+  Language,
+  LanguageLandingPage,
+  LanguageLandingPageCrudWithAttrs,
+  LanguageLandingPageQnaItemCrud,
+} from '@/types';
 
 type Props = {
-  data: LanguageLandingPageCrud;
+  data: LanguageLandingPageCrudWithAttrs;
   url: string;
-  method?: HTTPVerb;
+  method?: HttpRouterMethod;
   languages: Language[];
   landingPages: LanguageLandingPage[];
 };
@@ -36,56 +39,102 @@ export default function Form({
   languages,
 }: Props) {
   const { t: tHelpers } = useTranslation('helpers');
+
+  const {
+    getInputProps,
+    getFileInputProps,
+    getSelectProps,
+    submit,
+    useArrayField,
+    formState: { isSubmitting },
+  } = useAppForm<LanguageLandingPageCrudWithAttrs>({
+    url,
+    method: method ?? 'post',
+    container: data,
+  });
+
+  const qnaField = useArrayField('qna_items_attributes');
+  const defaultQna: LanguageLandingPageQnaItemCrud = {
+    id: null,
+    question: '',
+    answer: '',
+    _destroy: false,
+  };
+
   return (
-    <XForm method={method} model="language_landing_page" data={data} to={url}>
-      <XCheck field="main" />
-      <XCheck field="listed" />
-      <XCheck field="footer" />
-      <XSelect
-        field="state"
-        items={data.meta.state_events}
-        labelField="value"
-        valueField="key"
+    <form onSubmit={submit}>
+      <Checkbox {...getInputProps('main')} />
+      <Checkbox {...getInputProps('listed')} />
+      <Checkbox {...getInputProps('footer')} />
+
+      <Select
+        {...getSelectProps('state', data.meta.state_events, 'key', 'value')}
       />
-      <XSelect
-        field="language_id"
-        labelField="slug"
-        valueField="id"
-        items={languages}
+      <Select {...getSelectProps('language_id', languages, 'id', 'slug')} />
+      <Select
+        {...getSelectProps(
+          'landing_page_to_redirect_id',
+          landingPages,
+          'id',
+          'header',
+        )}
       />
-      <XSelect
-        field="landing_page_to_redirect_id"
-        labelField="header"
-        valueField="id"
-        items={landingPages}
-      />
-      <XInput field="slug" />
-      <XInput field="order" />
-      <XInput field="meta_title" />
-      <XTextarea field="meta_description" rows={3} />
-      <XInput field="name" />
-      <XInput field="header" />
-      <XTextarea field="description" rows={5} />
+      <TextInput {...getInputProps('slug')} />
+      <TextInput {...getInputProps('order')} />
+      <TextInput {...getInputProps('meta_title')} />
+      <Textarea {...getInputProps('meta_description')} rows={3} />
+      <TextInput {...getInputProps('name')} />
+      <TextInput {...getInputProps('header')} />
+      <Textarea {...getInputProps('description')} rows={5} />
 
-      <XInput field="used_in_header" />
-      <XTextarea field="used_in_description" rows={5} />
+      <TextInput {...getInputProps('used_in_header')} />
+      <Textarea {...getInputProps('used_in_description')} rows={5} />
 
-      <XFile metaName="outcomes_image_thumb_url" field="outcomes_image" />
-      <XInput field="outcomes_header" />
-      <XTextarea field="outcomes_description" rows={5} />
+      <FileInput {...getFileInputProps('outcomes_image')} />
+      <TextInput {...getInputProps('outcomes_header')} />
+      <Textarea {...getInputProps('outcomes_description')} rows={5} />
 
-      <XDynamicInputs
-        model="qna_items"
-        label="QNA"
-        emptyData={{ question: '', answer: '' }}
-      >
-        <XHidden field="id" />
-        <XInput field="question" />
-        <XTextarea field="answer" rows={5} />
-        <XCheck field="_destroy" />
-      </XDynamicInputs>
+      <Fieldset>
+        {qnaField.fields.map((field, index) => (
+          <Box key={field._internalId}>
+            <input
+              type="hidden"
+              {...getInputProps(`qna_items_attributes.${index}.id`)}
+            />
+            <TextInput
+              {...getInputProps(`qna_items_attributes.${index}.question`)}
+            />
+            <Textarea
+              {...getInputProps(`qna_items_attributes.${index}.answer`)}
+              rows={5}
+            />
+            <Checkbox
+              {...getInputProps(`qna_items_attributes.${index}._destroy`)}
+            />
+            {!field.id && (
+              <Button
+                variant="outline"
+                color="red"
+                mt="xs"
+                onClick={() => qnaField.remove(index)}
+              >
+                {tHelpers('crud.remove')}
+              </Button>
+            )}
+          </Box>
+        ))}
+        <Button
+          variant="light"
+          mt="sm"
+          onClick={() => qnaField.append(defaultQna)}
+        >
+          {tHelpers('crud.add')}
+        </Button>
+      </Fieldset>
 
-      <Button type="submit">{tHelpers('submit.save')}</Button>
-    </XForm>
+      <Button type="submit" loading={isSubmitting}>
+        {tHelpers('submit.save')}
+      </Button>
+    </form>
   );
 }

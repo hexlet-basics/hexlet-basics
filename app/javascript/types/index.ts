@@ -1,4 +1,5 @@
 import type { PageProps } from '@inertiajs/inertia';
+import type { router } from '@inertiajs/react';
 import type { i18n } from 'i18next';
 import type { SetupOptions } from 'node_modules/@inertiajs/react/types/createInertiaApp';
 import type { ReactNode } from 'react';
@@ -10,6 +11,7 @@ import type {
 } from './serializers';
 
 export * from './serializers';
+export * from './tmp.ts';
 
 export type BreadcrumbItem = {
   name: string;
@@ -66,3 +68,8 @@ export type ResolvedComponent = {
   };
   layout?: (page: ReactNode) => ReactNode;
 };
+
+export type HttpRouterMethod = Extract<
+  keyof typeof router,
+  'get' | 'post' | 'put' | 'patch' | 'delete'
+>;
