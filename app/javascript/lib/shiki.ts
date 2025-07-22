@@ -27,10 +27,13 @@ const languageModules: Record<
   python: () => import('@shikijs/langs/python'),
   go: () => import('@shikijs/langs/go'),
   java: () => import('@shikijs/langs/java'),
+  kotlin: () => import('@shikijs/langs/kotlin'),
   cs: () => import('@shikijs/langs/csharp'),
+  csharp: () => import('@shikijs/langs/csharp'),
 
   // Системные
   bash: () => import('@shikijs/langs/bash'),
+  sh: () => import('@shikijs/langs/bash'),
   json: () => import('@shikijs/langs/json'),
 
   // Функциональные
