@@ -6,6 +6,14 @@ en:
           header: Header
           name: Name
           slug: Slug
+      language:
+        category_id: Category
+        cover: Cover
+        learn_as: Learn as
+        hexlet_program_landing_page: Hexlet Program Landing Page
+        openai_assistant_id: Assistant ID (OpenAI)
+        progress: Progress
+        slug: Slug
       user:
         admin: Admin?
         first_name: First name

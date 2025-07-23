@@ -17,7 +17,7 @@ ru:
         description: Описание
         header: Заголовок
         name: Название
-        slug: Slug        
+        slug: Slug
       language_landing_page:
         language_id: Курс
         meta_title: Meta Title
@@ -42,8 +42,12 @@ ru:
         question: Вопрос
         answer: Ответ
       language:
-        openai_assistant_id: Assistent ID (OpenAI)
         category_id: Категория
+        cover: Обложка
+        learn_as: Учить как
+        hexlet_program_landing_page: Hexlet Program Landing Page
+        openai_assistant_id: Assistent ID (OpenAI)
+        progress: Прогресс
         slug: Slug
         # state
       review:

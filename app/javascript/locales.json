@@ -37,6 +37,15 @@
     },
     "activerecord": {
       "attributes": {
+        "language": {
+          "category_id": "Category",
+          "cover": "Cover",
+          "hexlet_program_landing_page": "Hexlet Program Landing Page",
+          "learn_as": "Learn as",
+          "openai_assistant_id": "Assistant ID (OpenAI)",
+          "progress": "Progress",
+          "slug": "Slug"
+        },
         "language_category": {
           "description": "Description",
           "header": "Header",
@@ -1723,7 +1732,11 @@
         },
         "language": {
           "category_id": "Категория",
+          "cover": "Обложка",
+          "hexlet_program_landing_page": "Hexlet Program Landing Page",
+          "learn_as": "Учить как",
           "openai_assistant_id": "Assistent ID (OpenAI)",
+          "progress": "Прогресс",
           "slug": "Slug"
         },
         "language_category": {
