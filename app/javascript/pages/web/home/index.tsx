@@ -178,14 +178,16 @@ export default function Index({
           <Button component="a" href="#courses" size="lg" me="sm">
             {t('home.index.hero.try')}
           </Button>
-          <Button
-            component="a"
-            href={Routes.new_user_path()}
-            size="lg"
-            variant="outline"
-          >
-            {t('home.index.sign_up')}
-          </Button>
+            {user.guest && (
+                <Button
+                    component="a"
+                    href={Routes.new_user_path()}
+                    size="lg"
+                    variant="outline"
+                >
+                    {t('home.index.sign_up')}
+                </Button>
+            )}
         </Center>
       </Container>
 
