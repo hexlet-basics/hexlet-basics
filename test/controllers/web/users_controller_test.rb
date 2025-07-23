@@ -9,7 +9,7 @@ class Web::UsersControllerTest < ActionDispatch::IntegrationTest
   test "create" do
     user_params = FactoryBot.attributes_for(:user)
 
-    post users_url, params: { user_sign_up_form: user_params }
+    post users_url, params: { user: user_params }
     assert_response :redirect
 
     user = User.find_by email: user_params[:email].downcase
@@ -28,7 +28,7 @@ class Web::UsersControllerTest < ActionDispatch::IntegrationTest
     code = file_fixture("exercise/correct.rb").read
     post check_api_lesson_url(lesson), params: { version_id: lesson.versions.first.id, data: { attributes: { code: code } } }
 
-    post users_url, params: { user_sign_up_form: user_params }
+    post users_url, params: { user: user_params }
     user = User.find_by email: user_params[:email].downcase
 
     assert { language.members.exists? user: user }
