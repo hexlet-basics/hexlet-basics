@@ -27,7 +27,7 @@
     "@tailwindcss/postcss": "^4.1.11",
     "analytics": "^0.8.16",
     "ansi_up": "^6.0.6",
-    "axios": "^1.10.0",
+    "axios": "^1.11.0",
     "classnames": "^2.5.1",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
