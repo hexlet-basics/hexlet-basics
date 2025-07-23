@@ -1703,30 +1703,35 @@
     },
     "activerecord": {
       "attributes": {
+        "base": {
+          "_destroy": "Удалить",
+          "answer": "Ответ",
+          "created_at": "Создание",
+          "description": "Описание",
+          "header": "Заголовок",
+          "name": "Имя",
+          "question": "Вопрос",
+          "slug": "Слаг",
+          "updated_at": "Обновление"
+        },
         "blog_post": {
           "body": "Контент",
           "cover": "Изображение",
           "creator": "Автор",
-          "description": "Описание",
-          "locale": "Язык",
-          "name": "Название",
           "state": "Состояние",
           "state/archived": "Архив",
-          "state/published": "Опубликован",
-          "state_event": "Смена состояния"
+          "state/published": "Опубликован"
         },
         "language": {
           "category_id": "Категория",
-          "openai_assistant_id": "assistant_id (OpenAI)",
-          "slug": "Slug"
+          "openai_assistant_id": "assistant_id (OpenAI)"
+        },
+        "language_category_item": {
+          "language_landing_page_id": "Лендинг"
         },
         "language_landing_page": {
-          "_destroy": "Удалить",
-          "answer": "Ответ",
-          "description": "Описание",
           "footer": "Выводить в футере",
           "footer_name": "Имя в футере",
-          "header": "Заголовок",
           "language_id": "Курс",
           "listed": "Отображать в списках",
           "main": "Основной",
@@ -1736,7 +1741,6 @@
           "outcomes_description": "Результаты обучения (Описание)",
           "outcomes_header": "Результаты обучения (Заголовок)",
           "outcomes_image": "Результаты обучения (Картинка)",
-          "question": "Вопрос",
           "slug": "Slug",
           "used_in_description": "Где используется (Описание)",
           "used_in_header": "Где используется (Заголовок)"
@@ -1745,22 +1749,15 @@
           "contact_method": "Способ связи",
           "contact_value": "Телефон / Имя пользователя"
         },
-        "qna_item": {
-          "answer": "Ответ",
-          "question": "Вопрос"
-        },
         "review": {
           "body": "Отзыв",
           "first_name": "Имя",
           "language_id": "Курс",
           "last_name": "Фамилия",
-          "locale": "Локаль",
           "pinned": "Закрепленный (Показывается сверху списка)",
           "user_id": "Пользователь"
         },
         "survey": {
-          "description": "Описание",
-          "question": "Вопрос",
           "run_always": "Запускать всегда",
           "slug": "Слаг"
         },

@@ -33,6 +33,30 @@ interface UseAppFormOptions<
   onSuccess?: () => void;
 }
 
+function normalizeNestedPath(
+  modelName: string,
+  name: string,
+): { mainPath: string; fallbackPath: string } {
+  const parts = name.split('.');
+
+  const attribute = parts[parts.length - 1];
+  let mainPath: string;
+
+  if (parts.length > 1) {
+    const nestedModelRaw = parts[0].replace(/_attributes$/, '');
+    const nestedModel = nestedModelRaw.endsWith('s')
+      ? nestedModelRaw.slice(0, -1) // qna_items → qna_item
+      : nestedModelRaw;
+
+    mainPath = `attributes.${modelName}_${nestedModel}.${attribute}`;
+  } else {
+    mainPath = `attributes.${modelName}.${attribute}`;
+  }
+
+  const fallbackPath = `attributes.base.${attribute}`;
+  return { mainPath, fallbackPath };
+}
+
 export function useAppForm<
   // biome-ignore lint/suspicious/noExplicitAny: false positive
   TContainer extends Container<any>,
@@ -72,11 +96,27 @@ export function useAppForm<
   ): string | React.ReactNode | undefined {
     if (explicitLabel) return explicitLabel;
 
-    const path = `attributes.${modelName}.${name}`;
+    const { mainPath, fallbackPath } = normalizeNestedPath(
+      modelName,
+      name as string,
+    );
     // @ts-expect-error -
-    const fallback = tAm(path);
+    const mainFallback = tAm(mainPath, { defaultValue: false });
+    // console.log(mainFallback)
+    const value = tAr(mainPath, { defaultValue: mainFallback });
+    if (value) {
+      return value;
+    }
+
     // @ts-expect-error -
-    return tAr(path, { defaultValue: fallback });
+    const baseFallback = tAm(fallbackPath, { defaultValue: false });
+    // console.log(baseFallback);
+    const baseValue = tAr(fallbackPath, { defaultValue: baseFallback });
+    if (baseValue) {
+      return baseValue;
+    }
+
+    return mainPath;
   }
 
   function getError<Name extends Path<TForm>>(name: Name): string | undefined {

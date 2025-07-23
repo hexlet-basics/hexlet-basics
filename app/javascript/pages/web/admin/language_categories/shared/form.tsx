@@ -51,14 +51,18 @@ export default function Form({ data, url, method }: Props) {
 
   return (
     <form onSubmit={submit}>
-      <TextInput {...getInputProps('name')} autoFocus />
-      <TextInput {...getInputProps('header')} />
-      <TextInput {...getInputProps('slug')} />
-      <Textarea {...getInputProps('description')} rows={5} />
+      <Fieldset p="lg" mb="xl">
+        <legend>Main</legend>
+        <TextInput {...getInputProps('name')} autoFocus />
+        <TextInput {...getInputProps('header')} />
+        <TextInput {...getInputProps('slug')} />
+        <Textarea {...getInputProps('description')} rows={5} />
+      </Fieldset>
 
-      <Fieldset>
+      <Fieldset p="lg" mb="xl">
+        <legend>Items</legend>
         {itemsField.fields.map((field, index) => (
-          <Box key={field._internalId}>
+          <Box key={field._internalId} mb="xl">
             <input
               type="hidden"
               {...getInputProps(`items_attributes.${index}.id`)}
@@ -95,9 +99,10 @@ export default function Form({ data, url, method }: Props) {
         </Button>
       </Fieldset>
 
-      <Fieldset>
+      <Fieldset p="lg" mb="xl">
+        <legend>QNAItems</legend>
         {qnaItemsField.fields.map((field, index) => (
-          <Box key={field._internalId}>
+          <Box key={field._internalId} mb="xl">
             <input
               type="hidden"
               {...getInputProps(`qna_items_attributes.${index}.id`)}

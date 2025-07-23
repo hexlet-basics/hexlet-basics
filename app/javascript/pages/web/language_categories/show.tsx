@@ -5,7 +5,6 @@ import {
   Center,
   Container,
   Grid,
-  Paper,
   SimpleGrid,
   Stack,
   Text,

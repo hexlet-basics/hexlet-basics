@@ -1,6 +1,18 @@
 ru:
   activerecord:
     attributes:
+      base:
+        _destroy: Удалить
+        description: Описание
+        name: Имя
+        slug: Слаг
+        header: Заголовок
+        question: Вопрос
+        answer: Ответ
+        created_at: Создание
+        updated_at: Обновление
+      language_category_item:
+        language_landing_page_id: Лендинг
       lead:
         contact_method: Способ связи
         contact_value: Телефон / Имя пользователя
@@ -9,37 +21,26 @@ ru:
         survey_item_id: Ответ триггер (Начало воронки)
         _destroy: Удалить
       survey:
-        question: Вопрос
         run_always: Запускать всегда
-        description: Описание
         slug: Слаг
       language_landing_page:
         language_id: Курс
         meta_title: Meta Title
         meta_description: Meta Description
-        description: Описание
         used_in_header: Где используется (Заголовок)
         used_in_description: Где используется (Описание)
         outcomes_header: Результаты обучения (Заголовок)
         outcomes_description: Результаты обучения (Описание)
         outcomes_image: Результаты обучения (Картинка)
-        question: Вопрос
-        answer: Ответ
-        _destroy: Удалить
-        header: Заголовок
         main: Основной
         footer: Выводить в футере
         footer_name: Имя в футере
         listed: Отображать в списках
         slug: Slug
         order: Order
-      qna_item:
-        question: Вопрос
-        answer: Ответ
       language:
         openai_assistant_id: assistant_id (OpenAI)
         category_id: Категория
-        slug: Slug
         # state
       review:
         pinned: Закрепленный (Показывается сверху списка)
@@ -47,7 +48,6 @@ ru:
         last_name: Фамилия
         body: Отзыв
         user_id: Пользователь
-        locale: Локаль
         language_id: Курс
       user:
         admin: Администратор
@@ -64,14 +64,10 @@ ru:
         email: Email
       blog_post:
         body: Контент
-        description: Описание
-        name: Название
-        locale: Язык
         state: Состояние
         state/archived: Архив
         state/published: Опубликован
         cover: Изображение
-        state_event: Смена состояния
         creator: Автор
     errors:
       models:
