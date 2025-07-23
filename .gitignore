@@ -59,3 +59,4 @@ terraform/*.json
 .envrc
 .vscode
 stats.html
+.idea/
