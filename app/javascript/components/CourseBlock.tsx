@@ -1,4 +1,5 @@
 import {
+  AspectRatio,
   Card,
   type CardProps,
   Group,
@@ -34,11 +35,14 @@ export default function CourseBlock({
   return (
     <Card pos="relative" shadow="sm" {...props}>
       <Card.Section>
-        <Image
-          loading={lazy ? 'lazy' : 'eager'}
-          src={landingPage.language.cover_list_variant}
-          alt={landingPage.header}
-        />
+        <AspectRatio ratio={4 / 3}>
+          <Image
+            fit="cover"
+            loading={lazy ? 'lazy' : 'eager'}
+            src={landingPage.language.cover_list_variant}
+            alt={landingPage.header}
+          />
+        </AspectRatio>
       </Card.Section>
 
       <Stack pt="md" h="100%">

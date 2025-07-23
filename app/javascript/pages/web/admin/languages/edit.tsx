@@ -36,7 +36,7 @@ export default function Edit({
           <Form
             method="patch"
             data={courseDto}
-            url={Routes.admin_language_path(courseDto.language.id)}
+            url={Routes.admin_language_path(courseDto.data.id)}
           />
         </Grid.Col>
         <Grid.Col>
@@ -47,7 +47,7 @@ export default function Edit({
               method="post"
               variant="outline"
               size="sm"
-              href={Routes.admin_language_versions_path(courseDto.language.id)}
+              href={Routes.admin_language_versions_path(courseDto.data.id)}
             >
               Load New Version
             </Button>

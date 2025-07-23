@@ -1,5 +1,5 @@
 import type { Method } from '@inertiajs/core';
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { Anchor, type AnchorProps } from '@mantine/core';
 import { noop } from 'es-toolkit';
 import type { PropsWithChildren } from 'react';
@@ -46,7 +46,7 @@ export default function AppAnchor({
         role="button"
         rel="nofollow"
         onClick={() => {
-          window.location.href = href;
+          router.visit(href);
         }}
         {...props}
       />

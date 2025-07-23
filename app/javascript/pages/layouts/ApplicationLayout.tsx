@@ -66,7 +66,7 @@ export default function ApplicationLayout({
             </Box>
           )}
           {(items || header) && (
-            <Container size="lg" my="xl" mt={80}>
+            <Container size="lg" my="xl">
               <Stack>
                 {items && <XBreadcrumb items={items} />}
                 {header && (

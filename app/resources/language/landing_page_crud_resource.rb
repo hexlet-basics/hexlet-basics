@@ -2,9 +2,9 @@ class Language::LandingPageCrudResource < ApplicationResource
   urls = Rails.application.routes.url_helpers
 
   typelize_from Language::LandingPage
-  root_key :language_landing_page
+  root_key :data
 
-  has_many :qna_items, resource: Language::LandingPageQnaItemCrudResource
+  has_many :qna_items, resource: Language::LandingPageQnaItemCrudResource, key: "qna_items_attributes"
   has_one :language, resource: LanguageCrudResource
   has_one :landing_page_to_redirect, resource: Language::LandingPageCrudResource
 
@@ -26,16 +26,16 @@ class Language::LandingPageCrudResource < ApplicationResource
     :used_in_header,
     :used_in_description,
     :outcomes_header,
+    :outcomes_image,
     :outcomes_description
 
-  typelize_meta meta: "{ outcomes_image_thumb_url: string, state_events: Record<string, unknown>[] }"
+  typelize_meta meta: "{ modelName: string, outcomes_image_thumb_url: string, state_events: Record<string, unknown>[] }"
   meta do
     {
       outcomes_image_thumb_url: object.outcomes_image.attached? ?
       urls.rails_representation_url(object.outcomes_image.variant(:thumb)) : nil,
-      state_events: object.class.enum_as_hashes(:states)
+      state_events: object.class.enum_as_hashes(:states),
+      modelName: object.class.superclass.to_s.underscore
     }
   end
-
-  # typelize :state_events
 end

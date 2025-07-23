@@ -154,7 +154,7 @@ export default function Show({ bookRequested, lead }: Props) {
             </Grid.Col>
             <Grid.Col span={{ base: 12, lg: 5 }}>
               <Paper p="lg" radius="md" withBorder>
-                <LeadFormBlock lead={lead} />
+                <LeadFormBlock leadDto={lead} />
               </Paper>
             </Grid.Col>
           </Grid>

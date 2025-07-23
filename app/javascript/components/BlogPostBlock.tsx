@@ -1,5 +1,14 @@
 import { Link, usePage } from '@inertiajs/react';
-import { Anchor, Card, Group, Image, Stack, Text, Title } from '@mantine/core';
+import {
+  Anchor,
+  AspectRatio,
+  Card,
+  Group,
+  Image,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
 import dayjs from 'dayjs';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -18,14 +27,17 @@ export default function BlogPostBlock({ post, lazy }: Props) {
   const { t: tCommon } = useTranslation('common');
 
   return (
-    <Card pos="relative" shadow="sm" padding="lg" radius="md" withBorder>
-      {post.cover_thumb_variant && (
+    <Card pos="relative" shadow="sm" radius="md">
+      {post.cover_list_variant && (
         <Card.Section>
-          <Image
-            loading={lazy ? 'lazy' : 'eager'}
-            src={post.cover_list_variant!}
-            alt={`Cover for ${post.name}`}
-          />
+          <AspectRatio ratio={2 / 1}>
+            <Image
+              fit="cover"
+              loading={lazy ? 'lazy' : 'eager'}
+              src={post.cover_list_variant!}
+              alt={`Cover for ${post.name}`}
+            />
+          </AspectRatio>
         </Card.Section>
       )}
 

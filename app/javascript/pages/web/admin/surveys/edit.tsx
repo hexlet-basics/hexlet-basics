@@ -1,30 +1,26 @@
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '@/pages/layouts/AdminLayout';
 import * as Routes from '@/routes.js';
-import type { Language, SurveyCrud, SurveyItemCrud } from '@/types/serializers';
+import type { SurveyCrudWithAttrs } from '@/types';
 import Form from './shared/form';
 import { Menu } from './shared/menu';
 
 type Props = {
-  surveyDto: SurveyCrud;
-  courses: Language[];
-  surveyItems: SurveyItemCrud[];
+  surveyDto: SurveyCrudWithAttrs;
 };
 
-export default function Edit({ surveyDto, surveyItems }: Props) {
+export default function Edit({ surveyDto }: Props) {
   const { t } = useTranslation();
-  // console.log(surveyItems)
 
   return (
     <AdminLayout
-      header={t('admin.surveys.edit.header', { id: surveyDto.survey.id })}
+      header={t('admin.surveys.edit.header', { id: surveyDto.data.id })}
     >
       <Menu data={surveyDto} />
       <Form
-        surveyItems={surveyItems}
         method="patch"
         data={surveyDto}
-        url={Routes.admin_survey_path(surveyDto.survey.id)}
+        url={Routes.admin_survey_path(surveyDto.data.id)}
       />
     </AdminLayout>
   );

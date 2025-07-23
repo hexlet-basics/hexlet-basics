@@ -4,10 +4,10 @@ import {
   type CrudHorizontalMenuItem,
 } from '@/components/CrudHorizontalMenu';
 import * as Routes from '@/routes.js';
-import type { User } from '@/types/serializers';
+import type { UserCrud } from '@/types';
 
 type Props = {
-  data?: User;
+  data?: UserCrud;
 };
 
 export function Menu({ data }: Props) {
@@ -22,7 +22,7 @@ export function Menu({ data }: Props) {
 
   if (data) {
     items.push({
-      href: Routes.edit_admin_management_user_path(data.id),
+      href: Routes.edit_admin_management_user_path(data.data.id),
       label: tHelpers('crud.editing'),
     });
   }

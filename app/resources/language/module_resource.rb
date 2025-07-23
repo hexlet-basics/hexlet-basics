@@ -1,8 +1,5 @@
 # Language::Module::Version::Info
-class Language::ModuleResource
-  include Alba::Resource
-  include Typelizer::DSL
-
+class Language::ModuleResource < ApplicationResource
   typelize_from Language::Module::Version::Info
 
   attributes :locale, :description, :name

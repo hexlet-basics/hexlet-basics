@@ -1,6 +1,6 @@
 class ReviewCrudResource < ApplicationResource
   typelize_from Review
-  root_key :review
+  root_key :data
 
   # one :user, resource: UserResource
   has_one :user
@@ -8,8 +8,11 @@ class ReviewCrudResource < ApplicationResource
 
   attributes :id, :body, :state, :first_name, :last_name, :language_id, :user_id, :pinned
 
-  typelize_meta(meta: "{ states: { key: string, value: string }[] }")
+  typelize_meta(meta: "{ modelName: string, states: { key: string, value: string }[] }")
   meta do
-    { states: object.class.enum_as_hashes(:states) }
+    {
+      modelName: object.class.superclass.to_s.underscore,
+      states: object.class.enum_as_hashes(:states)
+    }
   end
 end

@@ -36,14 +36,14 @@ import type {
   LeadCrud,
   Review,
   SharedProps,
-  User,
+  UserSignUpForm,
 } from '@/types';
 
 type Props = PropsWithChildren & {
   blogPosts: BlogPost[];
   courseMembersByCourseId: LanguageMember[];
   reviews: Review[];
-  newUser: User;
+  newUser: UserSignUpForm;
   lead: LeadCrud;
 };
 
@@ -178,14 +178,16 @@ export default function Index({
           <Button component="a" href="#courses" size="lg" me="sm">
             {t('home.index.hero.try')}
           </Button>
-          <Button
-            component="a"
-            href={Routes.new_user_path()}
-            size="lg"
-            variant="outline"
-          >
-            {t('home.index.sign_up')}
-          </Button>
+          {user.guest && (
+            <Button
+              component="a"
+              href={Routes.new_user_path()}
+              size="lg"
+              variant="outline"
+            >
+              {t('home.index.sign_up')}
+            </Button>
+          )}
         </Center>
       </Container>
 
@@ -325,7 +327,7 @@ export default function Index({
             </Grid.Col>
             <Grid.Col span={{ base: 12, md: 5 }}>
               <Card withBorder shadow="sm" p="xl">
-                <SignUpFormBlock user={newUser} />
+                <SignUpFormBlock userDto={newUser} />
               </Card>
             </Grid.Col>
           </Grid>
@@ -344,7 +346,7 @@ export default function Index({
             </Grid.Col>
             <Grid.Col span={{ base: 12, md: 4 }}>
               <Card withBorder shadow="sm" p="xl">
-                <LeadFormBlock lead={lead} />
+                <LeadFormBlock leadDto={lead} />
               </Card>
             </Grid.Col>
           </Grid>

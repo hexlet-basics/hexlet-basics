@@ -1,7 +1,4 @@
-class Language::SitemapLandingPageResource
-  include Alba::Resource
-  include Typelizer::DSL
-
+class Language::SitemapLandingPageResource < ApplicationResource
   typelize_from Language::LandingPage
 
   attributes :id, :language_id, :slug, :header

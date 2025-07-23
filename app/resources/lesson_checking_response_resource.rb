@@ -1,7 +1,4 @@
-class LessonCheckingResponseResource
-  include Alba::Resource
-  include Typelizer::DSL
-
+class LessonCheckingResponseResource < ApplicationResource
   attributes :passed, :output, :result, :status, :lesson_has_been_finished, :language_has_been_finished
 
   typelize passed: :boolean,

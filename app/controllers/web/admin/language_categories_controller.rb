@@ -1,12 +1,13 @@
 class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationController
   def index
-    q = ransack_params("sf" => "id", "so" => "desc")
+    default_params = { "sf" => "id", "so" => "desc" }
+    q = ransack_params(default_params)
     search = Language::Category.with_locale.ransack(q)
     pagy, records = pagy(search.result)
 
     render inertia: true, props: {
       categories: Language::CategoryResource.new(records),
-      grid: GridResource.new(grid_params(pagy))
+      grid: GridResource.new(grid_params(pagy, default_params))
     }
   end
 

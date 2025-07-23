@@ -4,14 +4,14 @@ import * as Routes from '@/routes.js';
 import type {
   Language,
   LanguageLandingPage,
-  LanguageLandingPageCrud,
+  LanguageLandingPageCrudWithAttrs,
 } from '@/types';
 
 import Form from './shared/form';
 import { Menu } from './shared/menu';
 
 type Props = {
-  landingPageDto: LanguageLandingPageCrud;
+  landingPageDto: LanguageLandingPageCrudWithAttrs;
   landingPages: LanguageLandingPage[];
   languages: Language[];
   // courseVersions: LanguageVersion[];
@@ -27,7 +27,7 @@ export default function Edit({
   return (
     <AdminLayout
       header={t('admin.language_landing_pages.edit.header', {
-        id: landingPageDto.language_landing_page.header,
+        id: landingPageDto.data.header,
       })}
     >
       <Menu data={landingPageDto} />
@@ -36,9 +36,7 @@ export default function Edit({
         landingPages={landingPages}
         method="patch"
         data={landingPageDto}
-        url={Routes.admin_language_landing_page_path(
-          landingPageDto.language_landing_page.id,
-        )}
+        url={Routes.admin_language_landing_page_path(landingPageDto.data.id)}
       />
     </AdminLayout>
   );

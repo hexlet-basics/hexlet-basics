@@ -14,7 +14,7 @@ class Web::PasswordsControllerTest < ActionDispatch::IntegrationTest
     user = users(:full)
     before_password_digest = user.password_digest
 
-    patch password_url(reset_password_token: user.reset_password_token), params: { user_password_form: { password: "new_password" } }
+    patch password_url(reset_password_token: user.reset_password_token), params: { user: { password: "new_password" } }
     assert_response :redirect
 
     user.reload

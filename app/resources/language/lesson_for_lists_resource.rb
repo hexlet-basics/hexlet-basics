@@ -1,8 +1,5 @@
-class Language::LessonForListsResource
+class Language::LessonForListsResource < ApplicationResource
   # include Rails.application.routes.url_helpers
-  include Alba::Resource
-  include Typelizer::DSL
-
   typelize_from Language::Lesson::Version::Info
 
   # has_one :language # , resource: LanguageResource

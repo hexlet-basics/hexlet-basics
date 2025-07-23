@@ -1,5 +1,5 @@
-import { Head, Link } from '@inertiajs/react';
-import { Anchor, Breadcrumbs, Center, Text } from '@mantine/core';
+import { Head } from '@inertiajs/react';
+import { Breadcrumbs, Center, Text } from '@mantine/core';
 import { Home } from 'lucide-react';
 import type { HTMLAttributes, PropsWithChildren, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -61,7 +61,12 @@ export function XBreadcrumb({ items = [], className }: Props) {
           {JSON.stringify(breadcrumbList)}
         </script>
       </Head>
-      <Breadcrumbs className={className}>
+      <Breadcrumbs
+        className={className}
+        styles={{
+          breadcrumb: { whiteSpace: 'normal' },
+        }}
+      >
         {breadcrumbs.map((item) =>
           item.active ? (
             <Text key={item.href} c="dimmed" size="sm">

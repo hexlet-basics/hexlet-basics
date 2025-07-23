@@ -50,9 +50,9 @@ export default function NavbarBlock({ opened, onToggle }: NavbarBlockProps) {
   return (
     <>
       <Group h="100%" px="md">
-        <a href={Routes.root_path()} className="me-lg">
+        <AppAnchor href={Routes.root_path()} className="me-lg">
           <Image src={logoImg} w={30} h={30} fit="contain" alt="Logo" />
-        </a>
+        </AppAnchor>
 
         <MyLink />
         <CourseMenu landingPages={landingPagesForLists} />
@@ -319,15 +319,20 @@ function SolutionsMenu() {
           <item.icon size={22} />
         </ThemeIcon>
         <Box>
-          <Text fz="sm" fw={500}>
-            {item.title}
-          </Text>
+          <AppAnchor
+            external
+            href={item.href}
+            className="after:absolute after:inset-0"
+          >
+            <Text fz="sm" fw={500}>
+              {item.title}
+            </Text>
+          </AppAnchor>
           <Text fz="xs" c="dimmed">
             {item.description}
           </Text>
         </Box>
       </Group>
-      <AppAnchor external href={item.href} inset={0} pos="absolute" />
     </UnstyledButton>
   ));
 

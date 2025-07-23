@@ -60,8 +60,11 @@ editor-setup:
 	-bin/tapioca require
 	-bin/tapioca gem
 
-sync: sync-i18n sync-fixtures
+sync-types:
 	ENABLE_TYPELIZER=1 bin/rails typelizer:generate:refresh
+
+
+sync: sync-i18n sync-fixtures sync-types
 	bin/rails js:routes:typescript
 	bin/rails app:export_events_to_ts
 
@@ -72,7 +75,7 @@ app-lint-staged:
 	echo 'disabled'
 
 language-load:
-	bin/rails exercises:load[${L}]
+	bin/rails app:load_exercises[${L}]
 
 check-types:
 	# bundle exec srb tc

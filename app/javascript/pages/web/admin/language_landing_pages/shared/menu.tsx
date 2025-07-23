@@ -27,13 +27,11 @@ export function Menu({ data }: Props) {
 
   if (data) {
     items.push({
-      href: Routes.edit_admin_language_landing_page_path(
-        data.language_landing_page.id,
-      ),
+      href: Routes.edit_admin_language_landing_page_path(data.data.id),
       label: tHelpers('crud.editing'),
     });
     items.push({
-      href: Routes.language_path(data.language_landing_page.slug!),
+      href: Routes.language_path(data.data.slug!),
       external: true,
       label: <LogIn size={15} />,
     });

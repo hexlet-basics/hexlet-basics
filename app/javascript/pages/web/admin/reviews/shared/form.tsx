@@ -1,55 +1,44 @@
-import { Button } from '@mantine/core';
+import { Button, Checkbox, Select, Textarea, TextInput } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
-import type { HTTPVerb } from 'use-inertia-form';
-import {
-  XAutocomplete,
-  XCheck,
-  XForm,
-  XInput,
-  XSelect,
-  XTextarea,
-} from '@/components/forms';
-
+import { useAppForm } from '@/hooks/useAppForm';
 import * as Routes from '@/routes.js';
-import type { Language, ReviewCrud } from '@/types';
+import type { HttpRouterMethod, Language, ReviewCrud } from '@/types';
 
 type Props = {
   data: ReviewCrud;
   url: string;
   courses: Language[];
-  method?: HTTPVerb;
+  method?: HttpRouterMethod;
 };
 
 export default function Form({ courses, data, url, method }: Props) {
   const { t } = useTranslation();
   const { t: tHelpers } = useTranslation('helpers');
 
+  const {
+    getInputProps,
+    getSelectProps,
+    submit,
+    formState: { isSubmitting },
+  } = useAppForm<ReviewCrud>({
+    url,
+    method: method ?? 'post',
+    container: data, // передаем контейнер целиком
+  });
+
   return (
-    <XForm method={method} model="review" data={data} to={url}>
-      <XSelect
-        field="state"
-        items={data.meta.states}
-        labelField="value"
-        valueField="key"
-      />
-      <XCheck field="pinned" />
-      <XSelect
-        field="language_id"
-        labelField="slug"
-        valueField="id"
-        items={courses}
-      />
-      <XAutocomplete
-        field="user_id"
-        has="user"
-        labelField="email"
-        valueField="id"
-        source={Routes.search_admin_api_users_path()}
-      />
-      <XInput field="first_name" autoComplete="name" />
-      <XInput field="last_name" autoComplete="name" />
-      <XTextarea field="body" rows={8} />
-      <Button type="submit">{tHelpers('submit.save')}</Button>
-    </XForm>
+    <form onSubmit={submit}>
+      <Select {...getSelectProps('state', data.meta.states, 'key', 'value')} />
+      <Checkbox {...getInputProps('pinned')} />
+      <Select {...getSelectProps('language_id', courses, 'id', 'slug')} />
+      {/* Для XAutocomplete пока ставим TextInput (можно позже сделать кастомный autocomplete-хук) */}
+      <TextInput {...getInputProps('user_id')} />
+      <TextInput {...getInputProps('first_name')} autoComplete="name" />
+      <TextInput {...getInputProps('last_name')} autoComplete="name" />
+      <Textarea {...getInputProps('body')} rows={8} />
+      <Button type="submit" loading={isSubmitting}>
+        {tHelpers('submit.save')}
+      </Button>
+    </form>
   );
 }

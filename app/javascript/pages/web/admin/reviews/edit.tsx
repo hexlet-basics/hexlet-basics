@@ -16,14 +16,14 @@ export default function Edit({ reviewDto, courses }: Props) {
 
   return (
     <AdminLayout
-      header={t('admin.reviews.edit.header', { id: reviewDto.review.id })}
+      header={t('admin.reviews.edit.header', { id: reviewDto.data.id })}
     >
       <Menu data={reviewDto} />
       <Form
         courses={courses}
         method="patch"
         data={reviewDto}
-        url={Routes.admin_review_path(reviewDto.review.id)}
+        url={Routes.admin_review_path(reviewDto.data.id)}
       />
     </AdminLayout>
   );

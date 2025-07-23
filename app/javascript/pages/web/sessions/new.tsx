@@ -1,17 +1,16 @@
-import { Link } from '@inertiajs/react';
 import {
-  Anchor,
   Box,
   Button,
   Card,
   Container,
   Stack,
   Text,
+  TextInput,
 } from '@mantine/core';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import AppAnchor from '@/components/AppAnchor';
-import { XForm, XInput } from '@/components/forms';
+import { useAppForm } from '@/hooks/useAppForm';
 import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
 import * as Routes from '@/routes.js';
 import type { SignInForm } from '@/types/serializers';
@@ -24,6 +23,16 @@ export default function New({ signInForm }: Props) {
   const { t } = useTranslation();
   const { t: tHelpers } = useTranslation('helpers');
 
+  const {
+    getInputProps,
+    submit,
+    formState: { isSubmitting },
+  } = useAppForm<SignInForm>({
+    url: Routes.session_path(),
+    method: 'post',
+    container: signInForm, // передаем весь объект
+  });
+
   return (
     <ApplicationLayout center header={t('sessions.new.title')}>
       <Container>
@@ -33,16 +42,16 @@ export default function New({ signInForm }: Props) {
             p="xl"
             w={{ base: '100%', sm: '80%', md: '70%', lg: '50%' }}
           >
-            <XForm
-              to={Routes.session_path()}
-              data={signInForm}
-              model="user_sign_in_form"
-              className="d-flex flex-column"
-            >
-              <XInput field="email" required autoFocus autoComplete="email" />
-              <XInput
+            <form onSubmit={submit} className="d-flex flex-column">
+              <TextInput
+                {...getInputProps('email')}
                 required
-                field="password"
+                autoFocus
+                autoComplete="email"
+              />
+              <TextInput
+                {...getInputProps('password')}
+                required
                 type="password"
                 autoComplete="current-password"
               />
@@ -52,10 +61,10 @@ export default function New({ signInForm }: Props) {
                   {t('sessions.new.reset_password')}
                 </AppAnchor>
               </Box>
-              <Button type="submit" fullWidth>
+              <Button type="submit" fullWidth loading={isSubmitting}>
                 {tHelpers('submit.user_sign_in_form.create')}
               </Button>
-            </XForm>
+            </form>
           </Card>
 
           <Text mt="xs">

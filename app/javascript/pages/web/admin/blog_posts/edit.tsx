@@ -15,14 +15,14 @@ export default function Edit({ blogPostDto }: Props) {
   return (
     <AdminLayout
       header={t('admin.blog_posts.edit.header', {
-        id: blogPostDto.blog_post.name,
+        id: blogPostDto.data.name,
       })}
     >
       <Menu data={blogPostDto} />
       <Form
         method="patch"
         data={blogPostDto}
-        url={Routes.admin_blog_post_path(blogPostDto.blog_post.id)}
+        url={Routes.admin_blog_post_path(blogPostDto.data.id)}
       />
     </AdminLayout>
   );

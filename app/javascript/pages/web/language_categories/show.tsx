@@ -5,7 +5,6 @@ import {
   Center,
   Container,
   Grid,
-  Paper,
   SimpleGrid,
   Stack,
   Text,
@@ -88,7 +87,7 @@ export default function Show({
             </Grid.Col>
             <Grid.Col span={{ base: 12, sm: 5 }}>
               <Card withBorder shadow="sm" p="xl">
-                <LeadFormBlock lead={lead} />
+                <LeadFormBlock leadDto={lead} />
               </Card>
             </Grid.Col>
           </Grid>

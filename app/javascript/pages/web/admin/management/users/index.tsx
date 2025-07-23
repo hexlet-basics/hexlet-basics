@@ -1,24 +1,25 @@
+import { TextInput } from '@mantine/core';
 import dayjs from 'dayjs';
 import { Edit } from 'lucide-react';
 import { DataTable } from 'mantine-datatable';
-import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import AppAnchor from '@/components/AppAnchor';
-import { XForm, XInput } from '@/components/forms';
 import useDataTableProps from '@/hooks/useDataTableProps';
 import AdminLayout from '@/pages/layouts/AdminLayout';
 import * as Routes from '@/routes.js';
 import type { Grid, User } from '@/types/serializers';
 import { Menu } from './shared/menu';
 
-type Props = PropsWithChildren & {
+type Props = {
   users: User[];
   grid: Grid;
 };
 
 export default function Index({ grid, users }: Props) {
   const { t } = useTranslation();
-  const { gridProps } = useDataTableProps<User, {}>(grid);
+  const { gridProps, filters } = useDataTableProps<User, typeof grid.fields>(
+    grid,
+  );
 
   const renderActions = (item: User) => (
     <AppAnchor href={Routes.edit_admin_management_user_path(item.id)}>
@@ -39,14 +40,13 @@ export default function Index({ grid, users }: Props) {
           {
             accessor: 'email',
             sortable: true,
-            filter: (
-              <XForm method="get" to={Routes.admin_management_users_path()}>
-                <XInput
-                  field="fields[email_cont]"
-                  label={t('admin.management.users.index.search_by_email')}
-                />
-              </XForm>
-            ),
+            // filter: (
+            //   <TextInput
+            //     value={filters.values['fields[email_cont]']}
+            //     onChange={filters.getOnChange('fields[email_cont]')}
+            //     placeholder={t('admin.management.users.index.search_by_email')}
+            //   />
+            // ),
           },
           {
             accessor: 'created_at',

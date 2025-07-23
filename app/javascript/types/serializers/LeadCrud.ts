@@ -9,8 +9,8 @@ type LeadCrudData = {
 }
 
 type LeadCrud = {
-  lead: LeadCrudData;
-  meta: unknown;
+  data: LeadCrudData;
+  meta: { modelName: string };
 }
 
 export default LeadCrud;

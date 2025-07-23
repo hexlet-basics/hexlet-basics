@@ -36,20 +36,19 @@ export default function Index({ categories }: Props) {
               pos="relative"
             >
               <Stack h="100%">
-                <Text size="xl" fw={700}>
-                  {category.header}
-                </Text>
+                <AppAnchor
+                  href={Routes.language_category_path(category.slug!)}
+                  className="after:absolute after:inset-0"
+                >
+                  <Text size="xl" fw={700}>
+                    {category.header}
+                  </Text>
+                </AppAnchor>
                 <Group mt="auto" c="blue">
                   <Text>{t('language_categories.index.link')}</Text>
                   <ArrowRight size={16} />
                 </Group>
               </Stack>
-
-              <AppAnchor
-                pos="absolute"
-                inset={0}
-                href={Routes.language_category_path(category.slug!)}
-              />
             </Card>
           ))}
         </SimpleGrid>

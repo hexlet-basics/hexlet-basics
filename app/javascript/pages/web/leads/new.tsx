@@ -49,7 +49,7 @@ export default function New({ lead, from }: Props) {
           </Grid.Col>
           <Grid.Col span={{ base: 12, lg: 5 }}>
             <Card withBorder p="xl">
-              <LeadFormBlock lead={lead} />
+              <LeadFormBlock leadDto={lead} />
             </Card>
             {from && (
               <Center mt="xl">

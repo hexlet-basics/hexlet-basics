@@ -4,4 +4,9 @@ class Language::CategoryQnaItemResource < ApplicationResource
   attributes :id,
     :question,
     :answer
+
+  typelize :boolean
+  attribute :_destroy do |category|
+    false
+  end
 end

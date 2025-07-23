@@ -1,12 +1,12 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import {
   Accordion,
-  Anchor,
   Box,
   Button,
   Card,
   Center,
   Container,
+  Flex,
   Grid,
   Group,
   Image,
@@ -31,13 +31,7 @@ import codeIllustration from '@/images/code.svg';
 import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
 import { getResourceUrl } from '@/resources';
 import * as Routes from '@/routes.js';
-import type {
-  BreadcrumbItem,
-  Language,
-  LeadCrud,
-  SharedProps,
-  User,
-} from '@/types';
+import type { BreadcrumbItem, Language, LeadCrud, SharedProps } from '@/types';
 import type {
   LanguageCategory,
   LanguageLandingPage,
@@ -46,6 +40,7 @@ import type {
   LanguageMember,
   LanguageModule,
   Review,
+  UserSignUpForm,
 } from '@/types/serializers';
 
 type Props = {
@@ -56,7 +51,7 @@ type Props = {
   courseLandingPage: LanguageLandingPage;
   qnaItems: LanguageLandingPageQnaItem[];
   firstLesson: LanguageLesson;
-  newUser: User;
+  newUser: UserSignUpForm;
   nextLesson?: LanguageLesson;
   courseModules: LanguageModule[];
   lessonsByModuleId: {
@@ -339,12 +334,13 @@ export default function Show({
 
         <Card bg="indigo.0" p="xl">
           <Grid>
-            <Grid.Col span={{ base: 12, sm: 8 }}>
+            <Grid.Col span={{ base: 12, sm: 8 }} display="flex">
               <Text fz={40}>{t('languages.show.demo_description')}</Text>
             </Grid.Col>
             <Grid.Col span={{ base: 12, sm: 4 }}>
-              <Center h="100%">
+              <Flex h="100%" justify="end">
                 <Button
+                  my="auto"
                   size="xl"
                   component={Link}
                   href={Routes.language_lesson_path(
@@ -354,7 +350,7 @@ export default function Show({
                 >
                   {t('languages.show.demo_start')}
                 </Button>
-              </Center>
+              </Flex>
             </Grid.Col>
           </Grid>
         </Card>
@@ -417,7 +413,7 @@ export default function Show({
               </Grid.Col>
               <Grid.Col span={{ base: 12, md: 4 }}>
                 <Card withBorder shadow="sm" p="xl">
-                  <LeadFormBlock lead={lead} />
+                  <LeadFormBlock leadDto={lead} />
                 </Card>
               </Grid.Col>
             </Grid>
@@ -436,7 +432,7 @@ export default function Show({
               </Grid.Col>
               <Grid.Col span={{ base: 12, md: 5 }}>
                 <Card withBorder shadow="sm" p="xl">
-                  <SignUpFormBlock user={newUser} />
+                  <SignUpFormBlock userDto={newUser} />
                 </Card>
               </Grid.Col>
             </Grid>

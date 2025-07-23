@@ -54,7 +54,12 @@ function StartedCourse({
         />
 
         <Stack w="100%" p="sm" gap="xs">
-          <Title order={3}>{lp.header}</Title>
+          <AppAnchor
+            className="after:absolute after:inset-0"
+            href={Routes.language_url(lp.slug!)}
+          >
+            <Title order={3}>{lp.header}</Title>
+          </AppAnchor>
 
           {cm.next_lesson && <Text>{cm.next_lesson.name} →</Text>}
 
@@ -66,12 +71,6 @@ function StartedCourse({
           </Progress.Root>
         </Stack>
       </Group>
-
-      <AppAnchor
-        pos="absolute"
-        inset={0}
-        href={Routes.language_url(lp.slug!)}
-      />
     </Card>
   );
 }
