@@ -33,6 +33,7 @@ DEFAULTS: &DEFAULTS
 
 from-full:
   <<: *DEFAULTS
+  name: Что такое язык программирования $LABEL. Очень длинное название
   body: |
     <%= Faker::Lorem.paragraph_by_chars %>
     ::courses
