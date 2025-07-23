@@ -37,6 +37,19 @@
     },
     "activerecord": {
       "attributes": {
+        "blog_post": {
+          "body": "Content",
+          "cover": "Image",
+          "creator": "Author",
+          "description": "Description",
+          "locale": "Language",
+          "name": "Title",
+          "slug": "Slug",
+          "state": "State",
+          "state/archived": "Archived",
+          "state/published": "Published",
+          "state_event": "Change state"
+        },
         "language": {
           "category_id": "Category",
           "cover": "Cover",
@@ -1759,6 +1772,7 @@
           "description": "Описание",
           "locale": "Язык",
           "name": "Название",
+          "slug": "Slug",
           "state": "Состояние",
           "state/archived": "Архив",
           "state/published": "Опубликован",

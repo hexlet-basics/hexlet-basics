@@ -1,6 +1,18 @@
 en:
   activerecord:
     attributes:
+      blog_post:
+        body: Content
+        creator: Author
+        cover: Image
+        description: Description
+        name: Title
+        locale: Language
+        slug: Slug
+        state/archived: Archived
+        state/published: Published
+        state: State
+        state_event: Change state
       language_category:
           description: Description
           header: Header

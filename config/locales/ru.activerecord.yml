@@ -1,6 +1,18 @@
 ru:
   activerecord:
     attributes:
+      blog_post:
+        body: Контент
+        creator: Автор
+        cover: Изображение
+        description: Описание
+        name: Название
+        locale: Язык
+        slug: Slug
+        state/archived: Архив
+        state/published: Опубликован
+        state: Состояние
+        state_event: Смена состояния
       lead:
         contact_method: Способ связи
         contact_value: Телефон / Имя пользователя
@@ -75,17 +87,7 @@ ru:
         contact_value: Номер для связи (или имя пользователя)
         password: Пароль
         email: Email
-      blog_post:
-        body: Контент
-        description: Описание
-        name: Название
-        locale: Язык
-        state: Состояние
-        state/archived: Архив
-        state/published: Опубликован
-        cover: Изображение
-        state_event: Смена состояния
-        creator: Автор
+      
     errors:
       models:
         sign_up_form:
