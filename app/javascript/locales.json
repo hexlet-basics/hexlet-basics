@@ -37,6 +37,12 @@
     },
     "activerecord": {
       "attributes": {
+        "language_category": {
+          "description": "Description",
+          "header": "Header",
+          "name": "Name",
+          "slug": "Slug"
+        },
         "user": {
           "admin": "Admin?",
           "email": "Email",
@@ -1717,7 +1723,13 @@
         },
         "language": {
           "category_id": "Категория",
-          "openai_assistant_id": "assistant_id (OpenAI)",
+          "openai_assistant_id": "Assistent ID (OpenAI)",
+          "slug": "Slug"
+        },
+        "language_category": {
+          "description": "Описание",
+          "header": "Заголовок",
+          "name": "Название",
           "slug": "Slug"
         },
         "language_landing_page": {

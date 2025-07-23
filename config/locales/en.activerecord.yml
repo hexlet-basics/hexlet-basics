@@ -1,6 +1,11 @@
 en:
   activerecord:
     attributes:
+      language_category:
+          description: Description
+          header: Header
+          name: Name
+          slug: Slug
       user:
         admin: Admin?
         first_name: First name
