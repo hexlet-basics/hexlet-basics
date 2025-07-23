@@ -54,13 +54,14 @@ ru:
         slug: Slug
         # state
       review:
-        pinned: Закрепленный (Показывается сверху списка)
-        first_name: Имя
-        last_name: Фамилия
         body: Отзыв
-        user_id: Пользователь
-        locale: Локаль
+        first_name: Имя
         language_id: Курс
+        last_name: Фамилия
+        locale: Локаль
+        pinned: Закрепленный (Показывается сверху списка)
+        state: Состояние
+        user_id: Пользователь
       user:
         admin: Администратор
         first_name: Имя

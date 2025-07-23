@@ -76,6 +76,16 @@
           "used_in_description": "Used In (Description)",
           "used_in_header": "Used In (Header)"
         },
+        "review": {
+          "body": "Review",
+          "first_name": "First name",
+          "language_id": "Course",
+          "last_name": "Last name",
+          "locale": "Locale",
+          "pinned": "Pinned (Shown at the top of the list)",
+          "state": "State",
+          "user_id": "User"
+        },
         "user": {
           "admin": "Admin?",
           "email": "Email",
@@ -1783,7 +1793,7 @@
           "meta_description": "Meta Description",
           "meta_title": "Meta Title",
           "name": "Название",
-          "order": "Order",
+          "order": "Сортировка",
           "outcomes_description": "Результаты обучения (Описание)",
           "outcomes_header": "Результаты обучения (Заголовок)",
           "outcomes_image": "Результаты обучения (Картинка)",
@@ -1808,6 +1818,7 @@
           "last_name": "Фамилия",
           "locale": "Локаль",
           "pinned": "Закрепленный (Показывается сверху списка)",
+          "state": "Состояние",
           "user_id": "Пользователь"
         },
         "survey": {

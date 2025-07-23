@@ -37,6 +37,15 @@ en:
         openai_assistant_id: Assistant ID (OpenAI)
         progress: Progress
         slug: Slug
+      review:
+        body: Review
+        first_name: First name
+        language_id: Course
+        last_name: Last name
+        locale: Locale
+        pinned: Pinned (Shown at the top of the list)
+        state: State
+        user_id: User
       user:
         admin: Admin?
         first_name: First name
