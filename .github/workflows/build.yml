@@ -40,6 +40,7 @@ jobs:
       - run: bundle install
 
       - run: make lint
+      - run: make check-types
 
       - run: RAILS_ENV=test make build-assets
 
