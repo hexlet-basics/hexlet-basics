@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '@/pages/layouts/AdminLayout';
 import * as Routes from '@/routes.js';
-import type { LanguageCategoryCrudWithAttrs } from '@/types';
+import type { LanguageCategoryCrud } from '@/types';
 import Form from './shared/form';
 import { Menu } from './shared/menu';
 
 type Props = {
-  categoryDto: LanguageCategoryCrudWithAttrs;
+  categoryDto: LanguageCategoryCrud;
 };
 
 export default function New({ categoryDto }: Props) {

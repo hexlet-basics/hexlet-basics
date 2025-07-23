@@ -14,12 +14,12 @@ import type {
   HttpRouterMethod,
   Language,
   LanguageLandingPage,
-  LanguageLandingPageCrudWithAttrs,
+  LanguageLandingPageCrud,
   LanguageLandingPageQnaItemCrud,
 } from '@/types';
 
 type Props = {
-  data: LanguageLandingPageCrudWithAttrs;
+  data: LanguageLandingPageCrud;
   url: string;
   method?: HttpRouterMethod;
   languages: Language[];
@@ -47,7 +47,7 @@ export default function Form({
     submit,
     useArrayField,
     formState: { isSubmitting },
-  } = useAppForm<LanguageLandingPageCrudWithAttrs>({
+  } = useAppForm<LanguageLandingPageCrud>({
     url,
     method: method ?? 'post',
     container: data,

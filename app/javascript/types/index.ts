@@ -11,7 +11,6 @@ import type {
 } from './serializers';
 
 export * from './serializers';
-export * from './tmp.ts';
 
 export type BreadcrumbItem = {
   name: string;

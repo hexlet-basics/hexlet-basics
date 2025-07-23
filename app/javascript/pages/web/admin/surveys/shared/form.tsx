@@ -8,14 +8,10 @@ import {
 } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 import { useAppForm } from '@/hooks/useAppForm';
-import type {
-  HttpRouterMethod,
-  SurveyCrudWithAttrs,
-  SurveyItemCrud,
-} from '@/types';
+import type { HttpRouterMethod, SurveyCrud, SurveyItemCrud } from '@/types';
 
 type Props = {
-  data: SurveyCrudWithAttrs;
+  data: SurveyCrud;
   url: string;
   method?: HttpRouterMethod;
 };
@@ -29,7 +25,7 @@ export default function Form({ data, url, method }: Props) {
     submit,
     useArrayField,
     formState: { isSubmitting },
-  } = useAppForm<SurveyCrudWithAttrs>({
+  } = useAppForm<SurveyCrud>({
     url,
     method: method ?? 'post',
     container: data, // передаем контейнер целиком

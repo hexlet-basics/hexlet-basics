@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '@/pages/layouts/AdminLayout';
 import * as Routes from '@/routes.js';
-import type { SurveyCrud, SurveyCrudWithAttrs } from '@/types';
+import type { SurveyCrud } from '@/types';
 import Form from './shared/form';
 import { Menu } from './shared/menu';
 
 type Props = {
-  surveyDto: SurveyCrudWithAttrs;
+  surveyDto: SurveyCrud;
 };
 
 export default function New({ surveyDto }: Props) {

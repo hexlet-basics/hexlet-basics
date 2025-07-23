@@ -82,7 +82,7 @@ module Typelizer
   end
 end
 
-# source://typelizer//lib/typelizer/config.rb#86
+# source://typelizer//lib/typelizer/config.rb#87
 class Typelizer::Config < ::Struct; end
 
 # source://typelizer//lib/typelizer/dsl.rb#2

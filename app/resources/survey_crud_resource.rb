@@ -5,7 +5,7 @@ class SurveyCrudResource < ApplicationResource
   # one :user, resource: UserResource
   # has_one :user
   # has_one :language
-  has_many :items, resource: Survey::ItemCrudResource, key: "items_attributers"
+  has_many :items, resource: Survey::ItemCrudResource, key: "items_attributes"
 
   attributes :id,
     :state,

@@ -14,13 +14,12 @@ import type {
   Survey,
   SurveyItemCrud,
   SurveyScenarioCrud,
-  SurveyScenarioCrudWithAttrs,
   SurveyScenarioItemCrud,
   SurveyScenarioTriggerCrud,
 } from '@/types';
 
 type Props = {
-  data: SurveyScenarioCrudWithAttrs;
+  data: SurveyScenarioCrud;
   surveys: Survey[];
   surveysItems: SurveyItemCrud[];
   url: string;
@@ -42,7 +41,7 @@ export default function Form({
     submit,
     useArrayField,
     formState: { isSubmitting },
-  } = useAppForm<SurveyScenarioCrudWithAttrs>({
+  } = useAppForm<SurveyScenarioCrud>({
     url,
     method: method ?? 'post',
     container: data,

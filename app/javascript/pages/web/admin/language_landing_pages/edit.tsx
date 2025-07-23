@@ -4,14 +4,14 @@ import * as Routes from '@/routes.js';
 import type {
   Language,
   LanguageLandingPage,
-  LanguageLandingPageCrudWithAttrs,
+  LanguageLandingPageCrud,
 } from '@/types';
 
 import Form from './shared/form';
 import { Menu } from './shared/menu';
 
 type Props = {
-  landingPageDto: LanguageLandingPageCrudWithAttrs;
+  landingPageDto: LanguageLandingPageCrud;
   landingPages: LanguageLandingPage[];
   languages: Language[];
   // courseVersions: LanguageVersion[];

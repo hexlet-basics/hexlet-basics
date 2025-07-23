@@ -11,13 +11,13 @@ import { useTranslation } from 'react-i18next';
 import { useAppForm } from '@/hooks/useAppForm';
 import type {
   HttpRouterMethod,
-  LanguageCategoryCrudWithAttrs,
+  LanguageCategoryCrud,
   LanguageCategoryItemCrud,
   LanguageCategoryQnaItemCrud,
 } from '@/types';
 
 type Props = {
-  data: LanguageCategoryCrudWithAttrs;
+  data: LanguageCategoryCrud;
   url: string;
   method?: HttpRouterMethod;
 };
@@ -27,7 +27,7 @@ export default function Form({ data, url, method }: Props) {
   const { t: tHelpers } = useTranslation('helpers');
 
   const { getInputProps, getSelectProps, submit, useArrayField, formState } =
-    useAppForm<LanguageCategoryCrudWithAttrs>({
+    useAppForm<LanguageCategoryCrud>({
       url,
       method: method ?? 'post',
       container: data, // передаём контейнер целиком
