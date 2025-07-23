@@ -1,3 +1,5 @@
+// https://github.com/Trend-Capital/react-hook-form-mantine
+
 import { router, usePage } from '@inertiajs/react';
 import type { SelectProps } from '@mantine/core';
 import { useEffect } from 'react';

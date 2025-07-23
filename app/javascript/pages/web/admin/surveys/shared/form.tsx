@@ -56,17 +56,19 @@ export default function Form({ data, url, method }: Props) {
       <Fieldset>
         {itemsField.fields.map((field, index) => (
           <Box key={field._internalId}>
-            <TextInput {...getInputProps(`items.${index}.value`)} />
-            <TextInput {...getInputProps(`items.${index}.tag_list`)} />
+            <TextInput {...getInputProps(`items_attributes.${index}.value`)} />
+            <TextInput
+              {...getInputProps(`items_attributes.${index}.tag_list`)}
+            />
             <Select
               {...getSelectProps(
-                `items.${index}.state`,
+                `items_attributes.${index}.state`,
                 data.meta.item_states,
                 'value',
                 'key',
               )}
             />
-            <TextInput {...getInputProps(`items.${index}.order`)} />
+            <TextInput {...getInputProps(`items_attributes.${index}.order`)} />
             <Button
               variant="outline"
               color="red"

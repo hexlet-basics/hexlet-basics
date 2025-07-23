@@ -4,7 +4,7 @@ class Language::LandingPageCrudResource < ApplicationResource
   typelize_from Language::LandingPage
   root_key :data
 
-  has_many :qna_items, resource: Language::LandingPageQnaItemCrudResource
+  has_many :qna_items, resource: Language::LandingPageQnaItemCrudResource, key: "qna_items_attributes"
   has_one :language, resource: LanguageCrudResource
   has_one :landing_page_to_redirect, resource: Language::LandingPageCrudResource
 

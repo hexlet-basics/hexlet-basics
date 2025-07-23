@@ -4,9 +4,9 @@ class Language::CategoryCrudResource < ApplicationResource
 
   attributes :id, :slug, :name, :header, :description
 
-  many :items, resource: Language::CategoryItemCrudResource # , key: "items_attributes"
+  many :items, resource: Language::CategoryItemCrudResource, key: "items_attributes"
 
-  has_many :qna_items, resource: Language::CategoryQnaItemCrudResource # , key: "qna_items_attributes"
+  has_many :qna_items, resource: Language::CategoryQnaItemCrudResource, key: "qna_items_attributes"
 
   typelize_meta meta: "{ modelName: string, landingPagesForCategories: LanguageCategoryCrudData[] }"
   meta do

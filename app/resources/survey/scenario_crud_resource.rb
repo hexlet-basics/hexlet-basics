@@ -4,8 +4,8 @@ class Survey::ScenarioCrudResource < ApplicationResource
 
   has_many :items, proc { |items, params, user|
     items.order(order: :asc)
-  }, resource: Survey::ScenarioItemCrudResource
-  has_many :triggers, resource: Survey::ScenarioTriggerCrudResource
+  }, resource: Survey::ScenarioItemCrudResource, key: "items_attributes"
+  has_many :triggers, resource: Survey::ScenarioTriggerCrudResource, key: "triggers_attributes"
   has_one :survey_item, resource: Survey::ItemCrudResource
 
   attributes :id,
