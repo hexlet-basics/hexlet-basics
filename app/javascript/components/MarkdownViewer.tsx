@@ -1,4 +1,4 @@
-import { Box, Typography, TypographyStylesProvider } from '@mantine/core';
+import { Box, Typography } from '@mantine/core';
 // import rehypeShikiFromHighlighter from '@shikijs/rehype/core';
 import type { Directives } from 'mdast-util-directive';
 import { type ComponentPropsWithoutRef, useEffect, useState } from 'react';
@@ -10,6 +10,7 @@ import remarkGfm from 'remark-gfm';
 import type { PluggableList } from 'unified';
 import type { Node } from 'unist';
 import { visit } from 'unist-util-visit';
+import { typographyStyles } from '@/lib/mantine';
 import { LazyCodeHighlight } from './LazyCodeHighlight';
 
 type CodeProps = ComponentPropsWithoutRef<'code'> & { node?: unknown };
@@ -105,7 +106,7 @@ export default function MarkdownViewer({
   }, []);
 
   return (
-    <Typography>
+    <Typography styles={typographyStyles}>
       <Box className="markdown-viewer">
         <MarkdownHooks
           skipHtml={!allowHtml}
