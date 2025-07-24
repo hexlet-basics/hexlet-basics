@@ -8,7 +8,7 @@
 
 - make
 - docker
-- ruby = 3.4.4
+- ruby = 3.4.5
 - node >= 21
 
 ### Run
