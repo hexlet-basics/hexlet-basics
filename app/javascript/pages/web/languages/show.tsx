@@ -174,7 +174,7 @@ export default function Show({
                   {t('languages.show.continue')}
                 </Button>
               )}
-              {courseMember?.state === 'finished' && (
+              {courseMember?.state === 'finished' && !nextLesson && (
                 <Button
                   size="lg"
                   variant="outline"
@@ -188,6 +188,7 @@ export default function Show({
                 </Button>
               )}
               {courseMember?.state === 'finished' &&
+                !nextLesson &&
                 course.hexlet_program_landing_page && (
                   <Button
                     size="lg"
