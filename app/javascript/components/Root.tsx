@@ -3,10 +3,11 @@ import {
   createShikiAdapter,
 } from '@mantine/code-highlight';
 import {
+  Anchor,
   Center,
   Container,
+  createTheme,
   MantineProvider,
-  type MantineProviderProps,
   Stack,
   Text,
   Title,
@@ -38,13 +39,15 @@ type Props = PropsWithChildren & {
   // suffix: string | null
 };
 
-const theme: MantineProviderProps['theme'] = {
+const theme = createTheme({
   components: {
-    Anchor: {
-      defaultProps: { c: 'dark' },
-    },
+    Anchor: Anchor.extend({
+      defaultProps: {
+        c: 'dark',
+      },
+    }),
   },
-};
+});
 
 function Root(props: Props) {
   return (

@@ -64,7 +64,6 @@ export default function AppAnchor({
     );
   }
 
-  // default: Inertia-powered
   return (
     <Anchor
       component={Link}
