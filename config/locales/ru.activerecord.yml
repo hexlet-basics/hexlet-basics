@@ -1,6 +1,18 @@
 ru:
   activerecord:
     attributes:
+      blog_post:
+        body: Контент
+        creator: Автор
+        cover: Изображение
+        description: Описание
+        name: Название
+        locale: Язык
+        slug: Slug
+        state/archived: Архив
+        state/published: Опубликован
+        state: Состояние
+        state_event: Смена состояния
       base:
         _destroy: Удалить
         description: Описание
@@ -23,15 +35,40 @@ ru:
       survey:
         run_always: Запускать всегда
         slug: Слаг
+      language_category:
+        description: Описание
+        header: Заголовок
+        name: Название
+        slug: Slug
       language_landing_page:
+        answer: Ответ
+        description: Описание
+        footer_name: Имя в футере
+        footer: Выводить в футере
+        header: Заголовок
+        landing_page_to_redirect_id: Перенаправление на страницу
         language_id: Курс
-        meta_title: Meta Title
+        listed: Отображать в списках
+        main: Основной
         meta_description: Meta Description
+        meta_title: Meta Title
+        name: Название
+        order: Сортировка
         used_in_header: Где используется (Заголовок)
         used_in_description: Где используется (Описание)
         outcomes_header: Результаты обучения (Заголовок)
         outcomes_description: Результаты обучения (Описание)
+        outcomes_header: Результаты обучения (Заголовок)
         outcomes_image: Результаты обучения (Картинка)
+        question: Вопрос
+        used_in_description: Где используется (Описание)
+        used_in_header: Где используется (Заголовок)
+        slug: Slug
+        state: Состояние
+        _destroy: Удалить
+      qna_item:
+        question: Вопрос
+        answer: Ответ
         main: Основной
         footer: Выводить в футере
         footer_name: Имя в футере
@@ -39,13 +76,23 @@ ru:
         slug: Slug
         order: Order
       language:
-        openai_assistant_id: assistant_id (OpenAI)
         category_id: Категория
+        cover: Обложка
+        learn_as: Учить как
+        hexlet_program_landing_page: Hexlet Program Landing Page
+        openai_assistant_id: Assistent ID (OpenAI)
+        progress: Прогресс
+        slug: Slug
         # state
       review:
-        pinned: Закрепленный (Показывается сверху списка)
+        body: Отзыв
         first_name: Имя
+        language_id: Курс
         last_name: Фамилия
+        locale: Локаль
+        pinned: Закрепленный (Показывается сверху списка)
+        state: Состояние
+        user_id: Пользователь
         body: Отзыв
         user_id: Пользователь
         language_id: Курс

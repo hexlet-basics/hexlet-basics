@@ -1,6 +1,63 @@
 en:
   activerecord:
     attributes:
+      blog_post:
+        body: Content
+        creator: Author
+        cover: Image
+        description: Description
+        name: Title
+        locale: Language
+        slug: Slug
+        state/archived: Archived
+        state/published: Published
+        state: State
+        state_event: Change state
+      language_category:
+          description: Description
+          header: Header
+          name: Name
+          slug: Slug
+      language_landing_page:
+        answer: Answer
+        description: Description
+        footer_name: Footer Name
+        footer: Show in Footer
+        header: Header
+        landing_page_to_redirect_id: Redirect to Page
+        language_id: Course
+        listed: Show in Lists
+        main: Main
+        meta_description: Meta Description
+        meta_title: Meta Title
+        name: Name
+        order: Order
+        outcomes_description: Learning Outcomes (Description)
+        outcomes_header: Learning Outcomes (Header)
+        outcomes_image: Learning Outcomes (Image)
+        question: Question
+        used_in_description: Used In (Description)
+        used_in_header: Used In (Header)
+        slug: Slug
+        state: State
+        _destroy: Destroy
+      language:
+        category_id: Category
+        cover: Cover
+        learn_as: Learn as
+        hexlet_program_landing_page: Hexlet Program Landing Page
+        openai_assistant_id: Assistant ID (OpenAI)
+        progress: Progress
+        slug: Slug
+      review:
+        body: Review
+        first_name: First name
+        language_id: Course
+        last_name: Last name
+        locale: Locale
+        pinned: Pinned (Shown at the top of the list)
+        state: State
+        user_id: User
       user:
         admin: Admin?
         first_name: First name

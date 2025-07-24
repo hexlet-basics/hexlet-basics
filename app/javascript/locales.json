@@ -37,6 +37,68 @@
     },
     "activerecord": {
       "attributes": {
+        "blog_post": {
+          "body": "Content",
+          "cover": "Image",
+          "creator": "Author",
+          "description": "Description",
+          "locale": "Language",
+          "name": "Title",
+          "slug": "Slug",
+          "state": "State",
+          "state/archived": "Archived",
+          "state/published": "Published",
+          "state_event": "Change state"
+        },
+        "language": {
+          "category_id": "Category",
+          "cover": "Cover",
+          "hexlet_program_landing_page": "Hexlet Program Landing Page",
+          "learn_as": "Learn as",
+          "openai_assistant_id": "Assistant ID (OpenAI)",
+          "progress": "Progress",
+          "slug": "Slug"
+        },
+        "language_category": {
+          "description": "Description",
+          "header": "Header",
+          "name": "Name",
+          "slug": "Slug"
+        },
+        "language_landing_page": {
+          "_destroy": "Destroy",
+          "answer": "Answer",
+          "description": "Description",
+          "footer": "Show in Footer",
+          "footer_name": "Footer Name",
+          "header": "Header",
+          "landing_page_to_redirect_id": "Redirect to Page",
+          "language_id": "Course",
+          "listed": "Show in Lists",
+          "main": "Main",
+          "meta_description": "Meta Description",
+          "meta_title": "Meta Title",
+          "name": "Name",
+          "order": "Order",
+          "outcomes_description": "Learning Outcomes (Description)",
+          "outcomes_header": "Learning Outcomes (Header)",
+          "outcomes_image": "Learning Outcomes (Image)",
+          "question": "Question",
+          "slug": "Slug",
+          "state": "State",
+          "used_in_description": "Used In (Description)",
+          "used_in_header": "Used In (Header)"
+        },
+        "review": {
+          "body": "Review",
+          "first_name": "First name",
+          "language_id": "Course",
+          "last_name": "Last name",
+          "locale": "Locale",
+          "pinned": "Pinned (Shown at the top of the list)",
+          "state": "State",
+          "user_id": "User"
+        },
         "user": {
           "admin": "Admin?",
           "email": "Email",
@@ -1718,12 +1780,28 @@
           "body": "Контент",
           "cover": "Изображение",
           "creator": "Автор",
+          "description": "Описание",
+          "locale": "Язык",
+          "name": "Название",
+          "slug": "Slug",
           "state": "Состояние",
           "state/archived": "Архив",
           "state/published": "Опубликован"
         },
         "language": {
           "category_id": "Категория",
+          "cover": "Обложка",
+          "hexlet_program_landing_page": "Hexlet Program Landing Page",
+          "learn_as": "Учить как",
+          "openai_assistant_id": "Assistent ID (OpenAI)",
+          "progress": "Прогресс",
+          "slug": "Slug"
+        },
+        "language_category": {
+          "description": "Описание",
+          "header": "Заголовок",
+          "name": "Название",
+          "slug": "Slug",
           "openai_assistant_id": "assistant_id (OpenAI)"
         },
         "language_category_item": {
@@ -1732,16 +1810,20 @@
         "language_landing_page": {
           "footer": "Выводить в футере",
           "footer_name": "Имя в футере",
+          "header": "Заголовок",
+          "landing_page_to_redirect_id": "Перенаправление на страницу",
           "language_id": "Курс",
           "listed": "Отображать в списках",
           "main": "Основной",
           "meta_description": "Meta Description",
           "meta_title": "Meta Title",
-          "order": "Order",
+          "name": "Название",
+          "order": "Сортировка",
           "outcomes_description": "Результаты обучения (Описание)",
           "outcomes_header": "Результаты обучения (Заголовок)",
           "outcomes_image": "Результаты обучения (Картинка)",
           "slug": "Slug",
+          "state": "Состояние",
           "used_in_description": "Где используется (Описание)",
           "used_in_header": "Где используется (Заголовок)"
         },
@@ -1755,6 +1837,7 @@
           "language_id": "Курс",
           "last_name": "Фамилия",
           "pinned": "Закрепленный (Показывается сверху списка)",
+          "state": "Состояние",
           "user_id": "Пользователь"
         },
         "survey": {
