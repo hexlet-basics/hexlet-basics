@@ -4,6 +4,7 @@ import {
   type CardProps,
   Group,
   Image,
+  NumberFormatter,
   Stack,
   Text,
   Title,
@@ -62,7 +63,12 @@ export default function CourseBlock({
           </Group>
           <Group gap="xs">
             <Users size="15" />
-            <Text size="sm">{landingPage.members_count}</Text>
+            <Text size="sm">
+              <NumberFormatter
+                thousandSeparator
+                value={landingPage.members_count}
+              />
+            </Text>
           </Group>
         </Group>
       </Stack>
