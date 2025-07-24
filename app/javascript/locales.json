@@ -1801,7 +1801,7 @@
           "description": "Описание",
           "header": "Заголовок",
           "name": "Название",
-          "slug": "Slug"
+          "slug": "Slug",
           "openai_assistant_id": "assistant_id (OpenAI)"
         },
         "language_category_item": {
