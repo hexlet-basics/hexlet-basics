@@ -7,10 +7,9 @@ import type { BreadcrumbList, ListItem, WithContext } from 'schema-dts';
 import type { BreadcrumbItem } from '@/types';
 import AppAnchor from './AppAnchor';
 
-type Props = PropsWithChildren &
-  HTMLAttributes<HTMLDivElement> & {
-    items: BreadcrumbItem[];
-  };
+type Props = PropsWithChildren & {
+  items: BreadcrumbItem[];
+};
 
 type BreadcrumbItemWithActive = {
   title: ReactNode;
@@ -18,7 +17,7 @@ type BreadcrumbItemWithActive = {
   active?: boolean;
 };
 
-export function XBreadcrumb({ items = [], className }: Props) {
+export function XBreadcrumb({ items = [] }: Props) {
   const { t } = useTranslation();
 
   const itemListElement: ListItem[] = items.map((item, index) => {
@@ -62,7 +61,6 @@ export function XBreadcrumb({ items = [], className }: Props) {
         </script>
       </Head>
       <Breadcrumbs
-        className={className}
         styles={{
           breadcrumb: { whiteSpace: 'normal' },
         }}

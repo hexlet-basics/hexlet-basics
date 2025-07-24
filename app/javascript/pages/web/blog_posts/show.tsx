@@ -92,8 +92,6 @@ export default function Show({
     '::courses': () => <CoursesList landingPages={relatedLandingPages} />,
   };
 
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
-
   return (
     <>
       <Head>
@@ -114,9 +112,7 @@ export default function Show({
                 </Title>
               )}
               <AspectRatio ratio={2 / 1}>
-                {!isImageLoaded && <Skeleton h="100%" w="100%" mb="xl" />}
                 <Image
-                  onLoad={() => setIsImageLoaded(true)}
                   fit="cover"
                   w="100%"
                   fallbackSrc="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="
