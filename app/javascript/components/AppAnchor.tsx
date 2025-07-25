@@ -45,8 +45,20 @@ export default function AppAnchor({
       <Anchor
         role="button"
         rel="nofollow"
-        onClick={() => {
+        onClick={(e) => {
+          // Если middle click или cmd/ctrl + click
+          if (e.metaKey || e.ctrlKey || e.button === 1) {
+            window.open(href, '_blank', 'noopener,noreferrer');
+            return;
+          }
+
+          // e.preventDefault();
           router.visit(href);
+        }}
+        onAuxClick={(e) => {
+          if (e.button === 1) {
+            window.open(href, '_blank', 'noopener,noreferrer');
+          }
         }}
         {...props}
       />
