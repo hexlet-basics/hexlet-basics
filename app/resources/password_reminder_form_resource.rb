@@ -8,7 +8,7 @@ class PasswordReminderFormResource < ApplicationResource
   typelize_meta meta: "{ modelName: string }"
   meta do
     {
-      modelName: object.class.superclass.to_s.underscore
+      modelName: object.class.to_s.underscore
     }
   end
 end
