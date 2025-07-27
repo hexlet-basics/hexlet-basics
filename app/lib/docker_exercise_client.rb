@@ -4,11 +4,11 @@ require "open3"
 
 class DockerExerciseClient < DockerExerciseClientInterface
   def self.repo_dest(lang_name)
-    "/tmp/#{image_name(lang_name)}"
+    "/tmp/hexletbasics/exercises-#{lang_name}"
   end
 
   def self.image_name(lang_name)
-    "hexletbasics/exercises-#{lang_name}"
+    "ghcr.io/hexlet-basics/exercises-#{lang_name}"
   end
 
   def self.download(lang_name)

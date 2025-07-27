@@ -1,5 +1,5 @@
 import { Head, router, usePage } from '@inertiajs/react';
-import { ColorSchemeScript } from '@mantine/core';
+// import { ColorSchemeScript } from '@mantine/core';
 import parseHtml from 'html-react-parser';
 import { type PropsWithChildren, useEffect } from 'react';
 import analytics, { processHappendEvents } from '@/lib/analytics';
@@ -26,9 +26,7 @@ export default (props: Props) => {
   return (
     <>
       <Head>{parseHtml(metaTagsHTMLString, { trim: true })}</Head>
-      <Head>
-        <ColorSchemeScript />
-      </Head>
+      <Head>{/* <ColorSchemeScript /> */}</Head>
       {props.children}
     </>
   );

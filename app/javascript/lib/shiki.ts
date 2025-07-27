@@ -1,7 +1,6 @@
+import { createShikiAdapter } from '@mantine/code-highlight';
 import { createHighlighterCore, type LanguageRegistration } from 'shiki/core';
 import { createOnigurumaEngine } from 'shiki/engine/oniguruma';
-
-const languageLoaders: Record<string, Promise<void>> = {};
 
 // shikiLanguages.ts
 const languageModules: Record<
@@ -51,35 +50,15 @@ const languageModules: Record<
   '1c': () => import('@shikijs/langs/1c'),
 };
 
-const highlighterPromise = createHighlighterCore({
-  themes: [import('@shikijs/themes/github-light')],
-  langs: [],
-  engine: createOnigurumaEngine(import('shiki/wasm')),
-}).then((highlighter) => {
-  highlighter.getTheme('github-light').bg = 'var(--mantine-color-gray-0)';
-  return highlighter;
-});
+async function loadShiki() {
+  const highlighterPromise = createHighlighterCore({
+    themes: [() => import('@shikijs/themes/github-light')],
+    langs: Object.values(languageModules),
+    engine: createOnigurumaEngine(() => import('shiki/wasm')),
+  });
 
-export async function getHighlighter(lang?: string) {
-  const highlighter = await highlighterPromise;
-
-  if (lang && !highlighter.getLoadedLanguages().includes(lang)) {
-    const loader = languageModules[lang];
-    if (!loader) {
-      console.warn(
-        `[Shiki] Unsupported language: ${lang}, fallback to plaintext.`,
-      );
-      return highlighter;
-    }
-
-    if (!languageLoaders[lang]) {
-      languageLoaders[lang] = loader().then((langImport) =>
-        highlighter.loadLanguage(langImport),
-      );
-    }
-
-    await languageLoaders[lang];
-  }
-
-  return highlighter;
+  return highlighterPromise;
 }
+
+const shikiAdapter = createShikiAdapter(loadShiki);
+export default shikiAdapter;

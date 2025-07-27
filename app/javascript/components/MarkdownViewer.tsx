@@ -1,4 +1,5 @@
-import { Box, Typography } from '@mantine/core';
+import { CodeHighlight, InlineCodeHighlight } from '@mantine/code-highlight';
+import { Typography } from '@mantine/core';
 // import rehypeShikiFromHighlighter from '@shikijs/rehype/core';
 import type { Directives } from 'mdast-util-directive';
 import { type ComponentPropsWithoutRef, useEffect, useState } from 'react';
@@ -11,9 +12,6 @@ import type { PluggableList } from 'unified';
 import type { Node } from 'unist';
 import { visit } from 'unist-util-visit';
 import { typographyStyles } from '@/lib/mantine';
-import { LazyCodeHighlight } from './LazyCodeHighlight';
-
-type CodeProps = ComponentPropsWithoutRef<'code'> & { node?: unknown };
 
 type DirectiveComponents = Record<
   string,
@@ -56,21 +54,21 @@ function createDirectivePlugin(components: DirectiveComponents) {
   };
 }
 
-function MarkdownCodeHighlight({ className, children }: CodeProps) {
+// Адаптер для CodeHighlight
+function MarkdownCodeHighlight({
+  className,
+  children,
+}: ComponentPropsWithoutRef<'code'>) {
   const code = String(children).trim();
   const match = className?.match(/language-(\w+)/);
-  // TODO: toLowerCase() - быстрофикс ошибок на проде
-  // надо поправить контент и убрать toLowerCase()
-  const language = (match ? match[1] : 'plaintext').toLowerCase();
+  const language = match ? match[1] : 'plaintext';
   const isInline = !match;
 
   if (isInline) {
-    return <code className={className}>{code}</code>;
+    return <InlineCodeHighlight code={code} />;
   }
 
-  return (
-    <LazyCodeHighlight code={code} language={language} className={className} />
-  );
+  return <CodeHighlight code={code} language={language} />;
 }
 
 export default function MarkdownViewer({
@@ -107,20 +105,18 @@ export default function MarkdownViewer({
 
   return (
     <Typography styles={typographyStyles}>
-      <Box className="markdown-viewer">
-        <MarkdownHooks
-          skipHtml={!allowHtml}
-          remarkPlugins={[
-            remarkGfm,
-            remarkDirective,
-            createDirectivePlugin(components),
-          ]}
-          rehypePlugins={rehypePlugins}
-          components={preparedComponents}
-        >
-          {children}
-        </MarkdownHooks>
-      </Box>
+      <MarkdownHooks
+        skipHtml={!allowHtml}
+        remarkPlugins={[
+          remarkGfm,
+          remarkDirective,
+          createDirectivePlugin(components),
+        ]}
+        rehypePlugins={rehypePlugins}
+        components={preparedComponents}
+      >
+        {children}
+      </MarkdownHooks>
     </Typography>
   );
 }

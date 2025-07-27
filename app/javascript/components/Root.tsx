@@ -1,10 +1,12 @@
 import {
+  CodeHighlight,
   CodeHighlightAdapterProvider,
   createShikiAdapter,
 } from '@mantine/code-highlight';
 import {
   Anchor,
   Center,
+  Code,
   Container,
   createTheme,
   MantineProvider,
@@ -16,9 +18,6 @@ import { ModalsProvider } from '@mantine/modals';
 import * as Sentry from '@sentry/react';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getHighlighter } from '@/lib/shiki';
-
-const shikiAdapter = createShikiAdapter(getHighlighter);
 
 function FallbackComponent() {
   const { t: tLayouts } = useTranslation('layouts');
@@ -41,6 +40,17 @@ type Props = PropsWithChildren & {
 
 const theme = createTheme({
   components: {
+    CodeHighlight: CodeHighlight.extend({
+      defaultProps: {
+        mb: 'md',
+        // withBorder: true,
+        // withExpandButton: false,
+        // withCopyButton: false,
+        // fz: 'sm',
+        // bg: 'gray.0',
+        // p: 'sm'
+      },
+    }),
     Anchor: Anchor.extend({
       defaultProps: {
         c: 'dark',
@@ -53,11 +63,9 @@ function Root(props: Props) {
   return (
     <MantineProvider theme={theme}>
       <ModalsProvider>
-        <CodeHighlightAdapterProvider adapter={shikiAdapter}>
-          <Sentry.ErrorBoundary fallback={FallbackComponent} showDialog>
-            {props.children}
-          </Sentry.ErrorBoundary>
-        </CodeHighlightAdapterProvider>
+        <Sentry.ErrorBoundary fallback={FallbackComponent} showDialog>
+          {props.children}
+        </Sentry.ErrorBoundary>
       </ModalsProvider>
     </MantineProvider>
   );

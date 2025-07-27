@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "English" # NOTE Без явного указания $CHILD_STATUS nil
 require "pty"
 
