@@ -5,7 +5,7 @@ import type { HTMLAttributes, PropsWithChildren, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { BreadcrumbList, ListItem, WithContext } from 'schema-dts';
 import type { BreadcrumbItem } from '@/types';
-import AppAnchor from './AppAnchor';
+import AppAnchor from './Elements/AppAnchor';
 
 type Props = PropsWithChildren & {
   items: BreadcrumbItem[];

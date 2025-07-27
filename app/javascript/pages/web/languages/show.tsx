@@ -22,7 +22,7 @@ import i18next from 'i18next';
 import { Clock, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { Product, WithContext } from 'schema-dts';
-import AppAnchor from '@/components/AppAnchor';
+import AppAnchor from '@/components/Elements/AppAnchor';
 import LeadFormBlock from '@/components/LeadFormBlock';
 import MarkdownViewer from '@/components/MarkdownViewer';
 import SignUpFormBlock from '@/components/SignUpFormBlock';
@@ -203,7 +203,6 @@ export default function Show({
           </Grid.Col>
           <Grid.Col visibleFrom="sm" span={{ base: 12, sm: 5 }}>
             <Image
-              fetchPriority="high"
               src={codeIllustration}
               // w="auto"
               fit="cover"
@@ -214,7 +213,7 @@ export default function Show({
 
         <Grid my="xl">
           <Grid.Col span={{ base: 12, lg: 9 }}>
-            <Title order={2} size="h1" mb="md">
+            <Title order={2} size="h1" mb="md" responsive>
               {courseLandingPage.used_in_header}
             </Title>
             <Text>{courseLandingPage.used_in_description}</Text>
@@ -237,7 +236,7 @@ export default function Show({
           )}
 
           <Box>
-            <Title order={2} size="h1" mb="md">
+            <Title order={2} size="h1" mb="md" responsive>
               {courseLandingPage.outcomes_header}
             </Title>
             <Text>{courseLandingPage.outcomes_description}</Text>
@@ -246,7 +245,9 @@ export default function Show({
 
         <Card bg="indigo.0" my={{ base: 'lg', sm: 80 }} p="xl">
           <Group>
-            <Text fz={40}>{t('languages.show.course_graduates')}</Text>
+            <Text responsive="3rem">
+              {t('languages.show.course_graduates')}
+            </Text>
             <Button
               bg="dark"
               size="xl"
@@ -259,7 +260,7 @@ export default function Show({
         </Card>
 
         <Box>
-          <Title order={2} size="h1" my="xl">
+          <Title order={2} size="h1" my="xl" responsive>
             {t('languages.show.learning_program', {
               name: courseLandingPage.name,
             })}
@@ -268,7 +269,9 @@ export default function Show({
             {courseModules.map((m, index) => (
               <Accordion.Item key={m.id} value={index.toString()} py="lg">
                 <Accordion.Control>
-                  <Title order={3}>{m.name!}</Title>
+                  <Title order={3} responsive>
+                    {m.name!}
+                  </Title>
                 </Accordion.Control>
                 <Accordion.Panel>
                   <Grid>
@@ -299,7 +302,7 @@ export default function Show({
         </Box>
 
         <Box my={{ base: 'lg', sm: 80 }}>
-          <Title order={2} fz="h1" mb="xl">
+          <Title order={2} fz="h1" mb="xl" responsive>
             {t('languages.show.about_learning')}
           </Title>
           <SimpleGrid cols={{ base: 1, lg: 2 }}>
@@ -336,7 +339,9 @@ export default function Show({
         <Card bg="indigo.0" p="xl">
           <Grid>
             <Grid.Col span={{ base: 12, sm: 8 }} display="flex">
-              <Text fz={40}>{t('languages.show.demo_description')}</Text>
+              <Text responsive="3rem">
+                {t('languages.show.demo_description')}
+              </Text>
             </Grid.Col>
             <Grid.Col span={{ base: 12, sm: 4 }}>
               <Flex h="100%" justify="end">
@@ -425,8 +430,8 @@ export default function Show({
           <Container size="lg" mt={100}>
             <Grid align="center" justify="space-between" gutter={0}>
               <Grid.Col span={{ base: 12, md: 6 }}>
-                <Center>
-                  <Text fz={40} fw="bold">
+                <Center mb="lg">
+                  <Text fw="bold" responsive="3rem">
                     {t('home.index.join')}
                   </Text>
                 </Center>

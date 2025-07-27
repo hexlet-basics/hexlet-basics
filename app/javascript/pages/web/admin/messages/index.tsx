@@ -4,7 +4,7 @@ import { DataTable } from 'mantine-datatable';
 import type { PropsWithChildren } from 'react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import AppAnchor from '@/components/AppAnchor';
+import AppAnchor from '@/components/Elements/AppAnchor';
 import MarkdownViewer from '@/components/MarkdownViewer';
 import useDataTableProps from '@/hooks/useDataTableProps';
 import AdminLayout from '@/pages/layouts/AdminLayout';

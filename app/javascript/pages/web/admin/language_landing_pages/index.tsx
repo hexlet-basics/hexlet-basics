@@ -4,7 +4,7 @@ import { Edit, Link, Search } from 'lucide-react';
 import { DataTable } from 'mantine-datatable';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import AppAnchor from '@/components/AppAnchor';
+import AppAnchor from '@/components/Elements/AppAnchor';
 import useDataTableProps from '@/hooks/useDataTableProps';
 import AdminLayout from '@/pages/layouts/AdminLayout';
 import * as Routes from '@/routes.js';

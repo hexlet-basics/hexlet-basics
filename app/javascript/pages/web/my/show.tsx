@@ -17,8 +17,8 @@ import {
 import i18next, { t } from 'i18next';
 import { MessageSquareDiff } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import AppAnchor from '@/components/AppAnchor';
 import CourseBlock from '@/components/CourseBlock';
+import AppAnchor from '@/components/Elements/AppAnchor';
 import XssContent from '@/components/XssContent';
 import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
 import * as Routes from '@/routes.js';

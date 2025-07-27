@@ -14,7 +14,7 @@ import { Github, Send } from 'lucide-react';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Organization, WithContext } from 'schema-dts';
-import AppAnchor from '@/components/AppAnchor';
+import AppAnchor from '@/components/Elements/AppAnchor';
 import * as Routes from '@/routes.js';
 import type { SharedProps } from '@/types';
 

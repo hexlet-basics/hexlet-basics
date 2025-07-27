@@ -1,13 +1,4 @@
-import {
-  Alert,
-  Card,
-  Container,
-  Grid,
-  List,
-  Stack,
-  Text,
-  Title,
-} from '@mantine/core';
+import { Alert, Card, Container, Grid, List, Stack, Text } from '@mantine/core';
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import LeadFormBlock from '@/components/LeadFormBlock';

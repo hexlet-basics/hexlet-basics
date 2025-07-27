@@ -26,8 +26,8 @@ import {
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Article, WithContext } from 'schema-dts';
-import AppAnchor from '@/components/AppAnchor';
 import BlogPostBlock from '@/components/BlogPostBlock';
+import AppAnchor from '@/components/Elements/AppAnchor';
 import MarkdownViewer from '@/components/MarkdownViewer.tsx';
 import CoursesList from '@/components/ProgramsList';
 import useInfiniteItems from '@/hooks/useInfiniteItems';

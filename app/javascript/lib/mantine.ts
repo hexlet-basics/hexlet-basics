@@ -1,5 +1,7 @@
 import type { MantineTheme } from '@mantine/core';
 
+export type TitleHeader = keyof MantineTheme['headings']['sizes'];
+
 export const typographyStyles = (t: MantineTheme) => ({
   root: {
     fontSize: t.fontSizes.md,

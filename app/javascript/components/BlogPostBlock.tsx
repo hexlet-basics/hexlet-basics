@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import * as Routes from '@/routes.js';
 import type { SharedProps } from '@/types';
 import type { BlogPost } from '@/types/serializers';
-import AppAnchor from './AppAnchor';
+import AppAnchor from './Elements/AppAnchor';
 
 type Props = PropsWithChildren & {
   post: BlogPost;

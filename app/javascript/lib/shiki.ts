@@ -32,7 +32,8 @@ const languageModules: Record<
 
   // Системные
   bash: () => import('@shikijs/langs/bash'),
-  sh: () => import('@shikijs/langs/bash'),
+  shell: () => import('@shikijs/langs/shell'),
+  sh: () => import('@shikijs/langs/sh'),
   json: () => import('@shikijs/langs/json'),
 
   // Функциональные

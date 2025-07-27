@@ -32,7 +32,7 @@ import {
   UserCog,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import AppAnchor from '@/components/AppAnchor';
+import AppAnchor from '@/components/Elements/AppAnchor';
 import logoImg from '@/images/logo.svg';
 import defaultAvatarImg from '@/images/user-avatar.webp';
 import { localesByCode } from '@/lib/utils';

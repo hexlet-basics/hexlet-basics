@@ -10,7 +10,7 @@ import {
 import { Undo2 } from 'lucide-react';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import AppAnchor from '@/components/AppAnchor';
+import AppAnchor from '@/components/Elements/AppAnchor';
 import LeadFormBlock from '@/components/LeadFormBlock';
 import XssContent from '@/components/XssContent';
 import ApplicationLayout from '@/pages/layouts/ApplicationLayout';

@@ -2,7 +2,7 @@ import { Card, Container, Group, SimpleGrid, Stack, Text } from '@mantine/core';
 import { ArrowRight } from 'lucide-react';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import AppAnchor from '@/components/AppAnchor';
+import AppAnchor from '@/components/Elements/AppAnchor';
 import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
 import * as Routes from '@/routes.js';
 import type { LanguageCategory } from '@/types/serializers';

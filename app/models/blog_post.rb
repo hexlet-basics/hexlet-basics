@@ -30,7 +30,7 @@
 class BlogPost < ApplicationRecord
   include BlogPostRepository
 
-  has_many :related_language_items
+  has_many :related_language_items, dependent: :delete_all
   has_many :related_languages, through: :related_language_items, source: :language
   has_many :related_main_language_landing_pages, through: :related_languages, source: :main_landing_page
 

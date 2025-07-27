@@ -36,7 +36,7 @@ class FindRelatedCoursesForBlogPostJob < ApplicationJob
     logger.info "[Job #{job_id}] Courses #{course_ids}"
     return if course_ids.empty?
 
-    blog_post.related_language_items.clear
+    blog_post.related_language_items.delete_all
     languages = Language.where(id: course_ids)
 
     languages.each do |language|

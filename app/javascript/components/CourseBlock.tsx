@@ -16,7 +16,7 @@ import type {
   LanguageLandingPageForLists,
   LanguageMember,
 } from '@/types/serializers';
-import AppAnchor from './AppAnchor';
+import AppAnchor from './Elements/AppAnchor';
 
 type Props = PropsWithChildren &
   CardProps & {

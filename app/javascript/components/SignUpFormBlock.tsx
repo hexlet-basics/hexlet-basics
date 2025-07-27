@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useAppForm } from '@/hooks/useAppForm';
 import * as Routes from '@/routes.js';
 import type { UserSignUpForm } from '@/types';
-import AppAnchor from './AppAnchor';
+import AppAnchor from './Elements/AppAnchor';
 import XssContent from './XssContent';
 
 type Props = PropsWithChildren & {
