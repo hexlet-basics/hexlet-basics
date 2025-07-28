@@ -48,7 +48,7 @@ class Web::Admin::Management::UsersController < Web::Admin::Management::Applicat
     end
 
     render inertia: true, props: {
-      user: UserResource.new(user),
+      user: UserCrudResource.new(user),
       progress:
     }
   end
