@@ -16,9 +16,10 @@ import type { UserPassword } from '@/types/serializers';
 
 type Props = PropsWithChildren & {
   userPassword: UserPassword;
+  resetPasswordToken: string;
 };
 
-export default function New({ userPassword }: Props) {
+export default function New({ userPassword, resetPasswordToken }: Props) {
   const { t } = useTranslation();
   const { t: tHelpers } = useTranslation('helpers');
 
@@ -27,7 +28,7 @@ export default function New({ userPassword }: Props) {
     submit,
     formState: { isSubmitting },
   } = useAppForm<UserPassword>({
-    url: Routes.password_path(),
+    url: Routes.password_path({ reset_password_token: resetPasswordToken }),
     method: 'patch',
     container: userPassword,
   });

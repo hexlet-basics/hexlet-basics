@@ -10,7 +10,8 @@ class Web::PasswordsController < Web::ApplicationController
     set_meta_tags seo_tags
 
     render inertia: true, props: {
-      userPassword: UserPasswordResource.new(user_password_form)
+      userPassword: UserPasswordResource.new(user_password_form),
+      resetPasswordToken: params[:reset_password_token]
     }
   end
 
