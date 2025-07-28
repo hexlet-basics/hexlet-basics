@@ -41,12 +41,10 @@ class DockerExerciseClient < DockerExerciseClientInterface
     return unless Rails.env.production?
 
     tag_command = "docker tag #{image_name(lang_name)}:latest #{image_name(lang_name)}:#{tag}"
-    BashRunner.start(tag_command)
+    raise "Docker tag error" unless system(tag_command)
 
     push_command = "docker push #{image_name(lang_name)}:#{tag}"
-    ok = BashRunner.start(push_command)
-
-    raise "Docker tag error: #{ok}" unless ok
+    raise "Docker push error" unless system(push_command)
   end
 
   def self.remove_image(lang_name, tag)
