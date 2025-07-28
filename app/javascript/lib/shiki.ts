@@ -49,6 +49,7 @@ const languageModules: Record<
   racket: () => import('@shikijs/langs/racket'),
   prolog: () => import('@shikijs/langs/prolog'),
   '1c': () => import('@shikijs/langs/1c'),
+  md: () => import('@shikijs/langs/markdown'),
 };
 
 async function loadShiki() {
