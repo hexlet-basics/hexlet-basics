@@ -4,7 +4,7 @@ language:
   name: JavaScript
   progress: "completed"
   learn_as: "first_language"
-  docker_image: "hexletbasics/exercises-javascript"
+  docker_image: "ghcr.io/hexlet-basics/exercises-javascript"
   extension: js
   exercise_filename: index.js
   exercise_test_filename: test.js
