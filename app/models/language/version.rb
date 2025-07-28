@@ -79,9 +79,12 @@ class Language::Version < ApplicationRecord
     name
   end
 
-  # TODO: move to presenter
+  # TODO: после пересборки всех языков удалить метод и его использование
+  # для run_exercise использовать тег release
   def image_tag
-    return "lv#{id}" if Rails.env.production?
+    if Rails.env.production?
+      return docker_image&.start_with?("hexletbasics") ? "lv#{id}" : "release"
+    end
 
     :latest
   end

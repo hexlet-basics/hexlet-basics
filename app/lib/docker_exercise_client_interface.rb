@@ -26,9 +26,6 @@ class DockerExerciseClientInterface
   end
   def self.run_exercise(created_code_file_path:, exercise_file_path:, docker_image:, image_tag:, path_to_code:); end
 
-  sig { abstract.params(lang_name: String, tag: String).void }
-  def self.tag_image_version(lang_name, tag); end
-
-  sig { abstract.params(lang_name: String, tag: String).void }
-  def self.remove_image(lang_name, tag); end
+  sig { abstract.params(lang_name: String).void }
+  def self.tag_image_version(lang_name); end
 end

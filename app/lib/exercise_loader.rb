@@ -21,7 +21,7 @@ class ExerciseLoader
 
     create_lessons(language_version, language_modules_data)
 
-    docker_exercise_client.tag_image_version(lang_name, language_version.image_tag)
+    docker_exercise_client.tag_image_version(lang_name)
 
     # TODO: rename to building_error_descriptoin and use only for error messages
     language_version.result = "Success"

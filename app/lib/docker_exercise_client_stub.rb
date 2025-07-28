@@ -7,7 +7,7 @@ class DockerExerciseClientStub < DockerExerciseClientInterface
 
   def self.download(_); end
 
-  def self.tag_image_version(_lang_version, _tag); end
+  def self.tag_image_version(_lang_version); end
 
   # rubocop:disable Lint/UnusedMethodArgument
   def self.run_exercise(created_code_file_path:, exercise_file_path:, docker_image:, image_tag:, path_to_code:)
@@ -18,8 +18,6 @@ class DockerExerciseClientStub < DockerExerciseClientInterface
 
     [ output.join, status ]
   end
-
-  def self.remove_image(lang_name, tag); end
 
   def self.image_name(lang_name); end
 end

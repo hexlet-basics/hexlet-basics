@@ -37,18 +37,13 @@ class DockerExerciseClient < DockerExerciseClientInterface
     [ output.join, status ]
   end
 
-  def self.tag_image_version(lang_name, tag)
+  def self.tag_image_version(lang_name)
     return unless Rails.env.production?
 
-    tag_command = "docker tag #{image_name(lang_name)}:latest #{image_name(lang_name)}:#{tag}"
+    tag_command = "docker tag #{image_name(lang_name)}:latest #{image_name(lang_name)}:release"
     raise "Docker tag error" unless system(tag_command)
 
-    push_command = "docker push #{image_name(lang_name)}:#{tag}"
+    push_command = "docker push #{image_name(lang_name)}:release"
     raise "Docker push error" unless system(push_command)
-  end
-
-  def self.remove_image(lang_name, tag)
-    remove_command = "docker rmi #{image_name(lang_name)}:#{tag}"
-    _ok = BashRunner.start(remove_command)
   end
 end
