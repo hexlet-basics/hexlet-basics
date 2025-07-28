@@ -2,6 +2,9 @@
   "auths": {
     "https://index.docker.io/v1/": {
       "auth": "{{ (hexlet_basics_vault_docker_hub_username + ':' + hexlet_basics_vault_docker_hub_password) | b64encode }}"
+    },
+    "ghcr.io": {
+      "auth": "{{ (hexlet_basics_vault_ghcr.username + ':' + hexlet_basics_vault_ghcr.password) | b64encode }}"
     }
   }
 }
