@@ -50,6 +50,7 @@ const languageModules: Record<
   prolog: () => import('@shikijs/langs/prolog'),
   '1c': () => import('@shikijs/langs/1c'),
   md: () => import('@shikijs/langs/markdown'),
+  swiftt: () => import('@shikijs/langs/swift'),
 };
 
 async function loadShiki() {
