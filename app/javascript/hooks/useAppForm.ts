@@ -157,15 +157,19 @@ export function useAppForm<
 
     // Подготавливаем данные для Select
     const data = items.map((item) => ({
-      value: String(item[valueField]),
-      label: String(item[labelField]),
+      value: item[valueField] != null ? String(item[valueField]) : '',
+      label: item[labelField] != null ? String(item[labelField]) : '',
     }));
 
     return {
       name: inputName,
       value: value != null ? String(value) : '',
       onChange: (val: string | null) => {
-        form.setValue(name, Number(val) as PathValue<TForm, Name>);
+        if (val === null) {
+          form.setValue(name, '' as PathValue<TForm, Name>);
+        } else {
+          form.setValue(name, val as PathValue<TForm, Name>);
+        }
         form.trigger(name); // триггерим валидацию
       },
       onBlur,
