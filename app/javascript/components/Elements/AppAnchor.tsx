@@ -43,7 +43,6 @@ export default function AppAnchor({
   if (pseudo) {
     return (
       <Anchor
-        role="button"
         rel="nofollow"
         onClick={(e) => {
           // Если middle click или cmd/ctrl + click
