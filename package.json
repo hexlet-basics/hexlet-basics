@@ -48,6 +48,7 @@
     "react-i18next": "^15.6.1",
     "react-intersection-observer": "^9.16.0",
     "react-markdown": "^10.1.0",
+    "react-resizable-panels": "^3.0.4",
     "react-timer-hook": "^4.0.5",
     "react-type-animation": "^3.2.0",
     "rehype-external-links": "^3.0.0",
