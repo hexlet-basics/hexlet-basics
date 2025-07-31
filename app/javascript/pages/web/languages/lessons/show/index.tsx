@@ -76,22 +76,11 @@ export default function Index() {
               <LessonLeftBlock />
             </Box>
           </Panel>
-          <Box
-            component={PanelResizeHandle}
-            display="flex"
-            bg={theme.colors.gray[2]}
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Box
-              component={GripVertical}
-              w={10}
-              h={10}
-              color={theme.colors.gray[6]}
-            />
-          </Box>
+          <PanelResizeHandle>
+            <Center h="100%" w={10} bg={theme.colors.gray[2]}>
+              <GripVertical size={10} color={theme.colors.gray[6]} />
+            </Center>
+          </PanelResizeHandle>
           <Panel minSize={30} defaultSize={70}>
             <Box h="100%" pt={headerHeight}>
               <LessonRightBlock />
