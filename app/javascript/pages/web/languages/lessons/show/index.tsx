@@ -78,11 +78,11 @@ export default function Index() {
           </Panel>
           <Box
             component={PanelResizeHandle}
+            display="flex"
+            bg={theme.colors.gray[2]}
             style={{
-              display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: theme.colors.gray[2],
             }}
           >
             <Box
