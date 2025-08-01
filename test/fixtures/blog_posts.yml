@@ -28,6 +28,7 @@
 DEFAULTS: &DEFAULTS
   slug: $LABEL
   name: Что такое язык программирования $LABEL
+  body: $LABEL
   state: published
   creator: full
 
@@ -49,6 +50,15 @@ from-full-ru:
     <%= Faker::Lorem.paragraph(sentence_count: 4) %>
     ::courses
   state: draft
+  locale: ru
+
+full-python-ru:
+  <<: *DEFAULTS
+  name: Зачем нужен Python?
+  description: |
+    <%= Faker::Lorem.paragraph(sentence_count: 4) %>
+    ::courses
+  state: published
   locale: ru
 
 from-full-en:

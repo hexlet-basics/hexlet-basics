@@ -28,4 +28,10 @@ Rake::Task["db:fixtures:load"].enhance do
     l.cover = File.open(Rails.root.join("test/fixtures/files/course-cover.png"))
     l.save!
   end
+
+  puts "Update Models"
+
+  post = BlogPost.find_by!(slug: "full-python-ru") # или другой идентификатор
+  post.body = TestHelpers.read_fixture_file("post-about-python.txt")
+  post.save!
 end
