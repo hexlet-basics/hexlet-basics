@@ -71,7 +71,7 @@ export default function Index() {
     return (
       <LessonLayout>
         <PanelGroup direction="horizontal">
-          <Panel minSize={20} defaultSize={30}>
+          <Panel minSize={20} defaultSize={45}>
             <Box pt={headerHeight}>
               <LessonLeftBlock />
             </Box>
@@ -81,7 +81,7 @@ export default function Index() {
               <GripVertical size={10} color={theme.colors.gray[6]} />
             </Center>
           </PanelResizeHandle>
-          <Panel minSize={30} defaultSize={70}>
+          <Panel minSize={30} defaultSize={55}>
             <Box h="100%" pt={headerHeight}>
               <LessonRightBlock />
             </Box>
