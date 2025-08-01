@@ -40,11 +40,11 @@ export default function OutputTab() {
         radius="sm"
         my="xs"
       >
-        <XssContent>{message}</XssContent>
+        <XssContent fz="sm">{message}</XssContent>
       </Alert>
-      <Box className="markdown-viewer">
+      <Box>
         <Code block>
-          <XssContent>{outputAsHTML}</XssContent>
+          <XssContent fz="sm">{outputAsHTML}</XssContent>
         </Code>
       </Box>
     </>

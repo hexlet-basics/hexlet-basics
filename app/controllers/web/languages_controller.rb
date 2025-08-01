@@ -87,7 +87,7 @@ class Web::LanguagesController < Web::ApplicationController
   def success
     language_member = landing_page.language.members.find_by(user: current_user)
     unless language_member.finished?
-      f("error")
+      f("warning")
       redirect_to language_path(landing_page.slug)
       return
     end
