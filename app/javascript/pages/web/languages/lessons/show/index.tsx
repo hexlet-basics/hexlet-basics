@@ -15,11 +15,14 @@ import {
   Tabs,
   Text,
   Title,
+  useMantineTheme,
 } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import i18next from 'i18next';
-import { BookOpenText, Github, Info, Rocket, Space } from 'lucide-react';
+import { BookOpenText, Github, GripVertical, Info, Rocket } from 'lucide-react'; // TODO: the current github icon is deprecated, need to update from a new lib
 import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { XBreadcrumb } from '@/components/breadcrumbs.tsx';
 import Chat from '@/components/Chat.tsx';
 import AppAnchor from '@/components/Elements/AppAnchor.tsx';
@@ -59,11 +62,50 @@ function HtmlPreviewBlock() {
 }
 
 export default function Index() {
-  const { t } = useTranslation();
-  const changeTab = useLessonStore((state) => state.changeTab);
-  const currentTab = useLessonStore((state) => state.currentTab);
-  const [focusesCount, setFocusCount] = useState(0);
+  const theme = useMantineTheme();
+  const isTabletUp = useMediaQuery(`(min-width: ${theme.breakpoints.sm})`);
+  const headerHeight =
+    theme.components?.AppShell?.defaultProps?.header?.height ?? 60;
 
+  if (isTabletUp) {
+    return (
+      <LessonLayout>
+        <PanelGroup direction="horizontal">
+          <Panel minSize={20} defaultSize={30}>
+            <Box pt={headerHeight}>
+              <LessonLeftBlock />
+            </Box>
+          </Panel>
+          <PanelResizeHandle>
+            <Center h="100%" w={10} bg={theme.colors.gray[2]}>
+              <GripVertical size={10} color={theme.colors.gray[6]} />
+            </Center>
+          </PanelResizeHandle>
+          <Panel minSize={30} defaultSize={70}>
+            <Box h="100%" pt={headerHeight}>
+              <LessonRightBlock />
+            </Box>
+          </Panel>
+        </PanelGroup>
+      </LessonLayout>
+    );
+  }
+
+  return (
+    <LessonLayout>
+      <AppShell.Navbar>
+        <LessonLeftBlock />
+      </AppShell.Navbar>
+      <AppShell.Main h="100%">
+        <LessonRightBlock />
+      </AppShell.Main>
+    </LessonLayout>
+  );
+}
+
+function LessonLeftBlock() {
+  const { t } = useTranslation();
+  const [focusesCount, setFocusCount] = useState(0);
   const handleSelect = (selectedKey: string | null) => {
     if (selectedKey === 'assistant') {
       setFocusCount((count) => count + 1);
@@ -71,139 +113,133 @@ export default function Index() {
   };
 
   return (
-    <LessonLayout>
-      <AppShell.Navbar>
-        <Tabs
-          defaultValue="lesson"
-          onChange={handleSelect}
-          h="100%"
-          display="flex"
-          style={{ flexDirection: 'column' }}
-        >
-          <Tabs.List grow>
-            <Tabs.Tab value="lesson">
-              {t('languages.lessons.show.lesson')}
-            </Tabs.Tab>
-            <Tabs.Tab value="assistant">
-              {t('languages.lessons.show.discuss')}
-            </Tabs.Tab>
-            <Tabs.Tab value="navigation">
-              {t('languages.lessons.show.navigation')}
-            </Tabs.Tab>
-          </Tabs.List>
+    <Tabs
+      defaultValue="lesson"
+      onChange={handleSelect}
+      h="100%"
+      display="flex"
+      style={{ flexDirection: 'column' }}
+    >
+      <Tabs.List grow>
+        <Tabs.Tab value="lesson">{t('languages.lessons.show.lesson')}</Tabs.Tab>
+        <Tabs.Tab value="assistant">
+          {t('languages.lessons.show.discuss')}
+        </Tabs.Tab>
+        <Tabs.Tab value="navigation">
+          {t('languages.lessons.show.navigation')}
+        </Tabs.Tab>
+      </Tabs.List>
 
-          <AppShell.Section grow mih={0}>
-            <Tabs.Panel value="lesson" h="100%">
-              <ScrollArea h="100%">
-                <LessonTabContent />
-              </ScrollArea>
-            </Tabs.Panel>
+      <AppShell.Section grow mih={0}>
+        <Tabs.Panel value="lesson" h="100%">
+          <ScrollArea h="100%">
+            <LessonTabContent />
+          </ScrollArea>
+        </Tabs.Panel>
 
-            <Tabs.Panel value="assistant" h="100%">
-              <ScrollArea h="100%">
-                <AssistantTabContent focusesCount={focusesCount} />
-              </ScrollArea>
-            </Tabs.Panel>
+        <Tabs.Panel value="assistant" h="100%">
+          <ScrollArea h="100%">
+            <AssistantTabContent focusesCount={focusesCount} />
+          </ScrollArea>
+        </Tabs.Panel>
 
-            <Tabs.Panel value="navigation" h="100%">
-              <ScrollArea h="100%">
-                <NavigationTabContent />
-              </ScrollArea>
-            </Tabs.Panel>
-          </AppShell.Section>
-        </Tabs>
-      </AppShell.Navbar>
+        <Tabs.Panel value="navigation" h="100%">
+          <ScrollArea h="100%">
+            <NavigationTabContent />
+          </ScrollArea>
+        </Tabs.Panel>
+      </AppShell.Section>
+    </Tabs>
+  );
+}
 
-      <AppShell.Main h="100%">
-        <Tabs
-          h="100%"
-          display="flex"
-          style={{ flexDirection: 'column' }}
-          value={currentTab}
-          onChange={(key) => changeTab(key as typeof currentTab)}
-          // keepMounted={false}
-        >
-          <Tabs.List grow>
-            <Tabs.Tab value="lesson" hiddenFrom="sm">
-              <Center>
-                <BookOpenText size={14} />
-              </Center>
-            </Tabs.Tab>
-            <Tabs.Tab value="editor">
-              {t('languages.lessons.show.editor')}
-            </Tabs.Tab>
-            <Tabs.Tab value="output">
-              {t('languages.lessons.show.output')}
-            </Tabs.Tab>
-            <Tabs.Tab value="tests">
-              {t('languages.lessons.show.tests')}
-            </Tabs.Tab>
-            <Tabs.Tab value="solution">
-              {t('languages.lessons.show.solution')}
-            </Tabs.Tab>
-          </Tabs.List>
+function LessonRightBlock() {
+  const { t } = useTranslation();
+  const changeTab = useLessonStore((state) => state.changeTab);
+  const currentTab = useLessonStore((state) => state.currentTab);
 
-          <AppShell.Section grow mih={0}>
-            <Tabs.Panel value="lesson" h="100%" hiddenFrom="sm">
-              <Stack h="100%" gap={0}>
-                <ScrollArea h="100%">
-                  <LessonTabContent />
-                </ScrollArea>
-                <Box style={{ flexShrink: 0 }}>
-                  <ControlBox />
-                </Box>
-              </Stack>
-            </Tabs.Panel>
+  return (
+    <Tabs
+      h="100%"
+      display="flex"
+      style={{ flexDirection: 'column' }}
+      value={currentTab}
+      onChange={(key) => changeTab(key as typeof currentTab)}
+      // keepMounted={false}
+    >
+      <Tabs.List grow>
+        <Tabs.Tab value="lesson" hiddenFrom="sm">
+          <Center>
+            <BookOpenText size={14} />
+          </Center>
+        </Tabs.Tab>
+        <Tabs.Tab value="editor">{t('languages.lessons.show.editor')}</Tabs.Tab>
+        <Tabs.Tab value="output">{t('languages.lessons.show.output')}</Tabs.Tab>
+        <Tabs.Tab value="tests">{t('languages.lessons.show.tests')}</Tabs.Tab>
+        <Tabs.Tab value="solution">
+          {t('languages.lessons.show.solution')}
+        </Tabs.Tab>
+      </Tabs.List>
 
-            <Tabs.Panel value="editor" h="100%">
-              <Stack h="100%" gap={0} mih={0} style={{ flexGrow: 1 }}>
-                <Stack mih={0} style={{ flexGrow: 1 }}>
-                  <EditorTab />
-                </Stack>
+      <AppShell.Section grow mih={0}>
+        <Tabs.Panel value="lesson" h="100%" hiddenFrom="sm">
+          <Stack h="100%" gap={0}>
+            <ScrollArea h="100%">
+              <LessonTabContent />
+            </ScrollArea>
+            <Box style={{ flexShrink: 0 }}>
+              <ControlBox />
+            </Box>
+          </Stack>
+        </Tabs.Panel>
 
-                <Box style={{ flexShrink: 0 }}>
-                  <HtmlPreviewBlock />
-                  <ControlBox />
-                </Box>
-              </Stack>
-            </Tabs.Panel>
+        <Tabs.Panel value="editor" h="100%">
+          <Stack h="100%" gap={0} mih={0} style={{ flexGrow: 1 }}>
+            <Stack mih={0} style={{ flexGrow: 1 }}>
+              <EditorTab />
+            </Stack>
 
-            <Tabs.Panel value="output" h="100%">
-              <Stack h="100%" gap={0}>
-                <ScrollArea h="100%">
-                  <OutputTab />
-                </ScrollArea>
-                <Box style={{ flexShrink: 0 }}>
-                  <ControlBox />
-                </Box>
-              </Stack>
-            </Tabs.Panel>
+            <Box style={{ flexShrink: 0 }}>
+              <HtmlPreviewBlock />
+              <ControlBox />
+            </Box>
+          </Stack>
+        </Tabs.Panel>
 
-            <Tabs.Panel value="tests" h="100%">
-              <Stack h="100%" gap={0}>
-                <ScrollArea h="100%">
-                  <Box p="md">
-                    <TestsTab />
-                  </Box>
-                </ScrollArea>
-                <ControlBox />
-              </Stack>
-            </Tabs.Panel>
+        <Tabs.Panel value="output" h="100%">
+          <Stack h="100%" gap={0}>
+            <ScrollArea h="100%">
+              <OutputTab />
+            </ScrollArea>
+            <Box style={{ flexShrink: 0 }}>
+              <ControlBox />
+            </Box>
+          </Stack>
+        </Tabs.Panel>
 
-            <Tabs.Panel value="solution" h="100%">
-              <Stack h="100%" gap={0}>
-                <ScrollArea h="100%">
-                  <Box p="md">
-                    <SolutionTab />
-                  </Box>
-                </ScrollArea>
-                <ControlBox />
-              </Stack>
-            </Tabs.Panel>
-          </AppShell.Section>
-        </Tabs>
-      </AppShell.Main>
-    </LessonLayout>
+        <Tabs.Panel value="tests" h="100%">
+          <Stack h="100%" gap={0}>
+            <ScrollArea h="100%">
+              <Box p="md">
+                <TestsTab />
+              </Box>
+            </ScrollArea>
+            <ControlBox />
+          </Stack>
+        </Tabs.Panel>
+
+        <Tabs.Panel value="solution" h="100%">
+          <Stack h="100%" gap={0}>
+            <ScrollArea h="100%">
+              <Box p="md">
+                <SolutionTab />
+              </Box>
+            </ScrollArea>
+            <ControlBox />
+          </Stack>
+        </Tabs.Panel>
+      </AppShell.Section>
+    </Tabs>
   );
 }
 
