@@ -26,7 +26,7 @@ class Web::BlogPostsController < Web::ApplicationController
       .except(blog_post)
       .limit(2)
 
-    related_landings = blog_post.related_main_language_landing_pages.order(id: :desc)
+    related_landings = blog_post.related_main_language_landing_pages.merge(BlogPost::RelatedLanguageItem.order(order: :asc))
 
     seo_tags = {
       title: blog_post.name,

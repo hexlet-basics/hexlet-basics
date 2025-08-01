@@ -79,6 +79,15 @@ nodejs-ru:
   state: draft
   locale: ru
 
+python-ru:
+  <<: *DEFAULTS
+  header: Python
+  name: Python
+  language: python
+  main: true
+  state: published
+  locale: ru
+
 1c-ru:
   <<: *DEFAULTS
   header: 1C

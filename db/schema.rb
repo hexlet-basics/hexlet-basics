@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_19_200418) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_01_182012) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -90,6 +90,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_19_200418) do
     t.bigint "language_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "order"
     t.index ["blog_post_id"], name: "index_blog_post_related_language_items_on_blog_post_id"
     t.index ["language_id"], name: "index_blog_post_related_language_items_on_language_id"
   end

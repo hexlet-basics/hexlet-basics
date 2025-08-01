@@ -31,6 +31,11 @@ module HexletBasics
       Rake.application.top_level_tasks.include?("assets:precompile")
     end
 
+    # logger = ActiveSupport::Logger.new(STDOUT)
+    # logger.formatter = config.log_formatter
+    #
+    # config.logger = ActiveSupport::TaggedLogging.new(logger)
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.0
 
@@ -53,7 +58,6 @@ module HexletBasics
 
     routes.default_url_options = { host: AppHost.canonical }
 
-    # config.solid_queue.logger = ActiveSupport::Logger.new(STDOUT)
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

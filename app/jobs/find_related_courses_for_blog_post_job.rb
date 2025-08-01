@@ -1,20 +1,20 @@
 class FindRelatedCoursesForBlogPostJob < ApplicationJob
   def perform(blog_post_id)
     blog_post = BlogPost.find(blog_post_id)
-    landing_pages = Language::LandingPage.where(main: true).with_locale(blog_post.locale)
+    landing_pages = Language::LandingPage.where(main: true).with_locale(blog_post.locale).includes(:language)
 
     openai_api = DepsLocator.current.openai_api
 
     instructions = <<~PROMPT
       Ты — ассистент, который помогает подобрать курсы.
       У тебя есть текст статьи блога и список курсов.
-      Найди 5 курсов, которые наиболее соответствуют содержанию статьи.
+      Выбери пять курсов подходящих под тему статьи в порядке приоритета. Первый наиболее близок, последний - наименее.
       Верни результат в виде JSON-массива идентификаторов курсов (по полю `id`) отсортированный по похожести.
       Первыми должны идти наиболее близкие курсы.
     PROMPT
 
     languages_data = landing_pages.map do |lp|
-      { id: lp.language&.id, name: lp.header, description: lp.description }
+      { id: lp.language&.id, name: lp.header }
     end
 
     content = blog_post.body || ""
@@ -31,16 +31,18 @@ class FindRelatedCoursesForBlogPostJob < ApplicationJob
 
     raw_output = chat_completion.dig("choices", 0, "message", "content")
     course_ids = JSON.parse(raw_output)
-    # raise [ languages_data, course_ids ].inspect
 
-    logger.info "[Job #{job_id}] Courses #{course_ids}"
+    Rails.logger.info "COURSES #{course_ids}"
+
     return if course_ids.empty?
 
     blog_post.related_language_items.delete_all
     languages = Language.where(id: course_ids)
 
-    languages.each do |language|
-      item = blog_post.related_language_items.build language: language
+    course_ids.each_with_index do |id, i|
+      item = blog_post.related_language_items.build
+      item.language_id = id
+      item.order = i + 1
       item.save!
     end
   end

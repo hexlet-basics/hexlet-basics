@@ -1780,10 +1780,6 @@
           "body": "Контент",
           "cover": "Изображение",
           "creator": "Автор",
-          "description": "Описание",
-          "locale": "Язык",
-          "name": "Название",
-          "slug": "Slug",
           "state": "Состояние",
           "state/archived": "Архив",
           "state/published": "Опубликован"
@@ -1801,13 +1797,15 @@
           "description": "Описание",
           "header": "Заголовок",
           "name": "Название",
-          "slug": "Slug",
-          "openai_assistant_id": "assistant_id (OpenAI)"
+          "slug": "Slug"
         },
         "language_category_item": {
           "language_landing_page_id": "Лендинг"
         },
         "language_landing_page": {
+          "_destroy": "Удалить",
+          "answer": "Ответ",
+          "description": "Описание",
           "footer": "Выводить в футере",
           "footer_name": "Имя в футере",
           "header": "Заголовок",
@@ -1822,6 +1820,7 @@
           "outcomes_description": "Результаты обучения (Описание)",
           "outcomes_header": "Результаты обучения (Заголовок)",
           "outcomes_image": "Результаты обучения (Картинка)",
+          "question": "Вопрос",
           "slug": "Slug",
           "state": "Состояние",
           "used_in_description": "Где используется (Описание)",
@@ -1831,11 +1830,22 @@
           "contact_method": "Способ связи",
           "contact_value": "Телефон / Имя пользователя"
         },
+        "qna_item": {
+          "answer": "Ответ",
+          "footer": "Выводить в футере",
+          "footer_name": "Имя в футере",
+          "listed": "Отображать в списках",
+          "main": "Основной",
+          "order": "Order",
+          "question": "Вопрос",
+          "slug": "Slug"
+        },
         "review": {
           "body": "Отзыв",
           "first_name": "Имя",
           "language_id": "Курс",
           "last_name": "Фамилия",
+          "locale": "Локаль",
           "pinned": "Закрепленный (Показывается сверху списка)",
           "state": "Состояние",
           "user_id": "Пользователь"
