@@ -12,9 +12,6 @@
 # source://dry-cli//lib/dry/cli.rb#6
 module Dry
   class << self
-    # source://dry-auto_inject/1.1.0/lib/dry/auto_inject.rb#61
-    def AutoInject(container, options = T.unsafe(nil)); end
-
     # Create a new instance
     #
     # @param registry_or_command [Dry::CLI::Registry, Dry::CLI::Command] a registry or singular command
@@ -24,9 +21,6 @@ module Dry
     #
     # source://dry-cli//lib/dry/cli.rb#224
     def CLI(registry_or_command = T.unsafe(nil), &block); end
-
-    # source://dry-core/1.1.0/lib/dry/core.rb#52
-    def Equalizer(*keys, **options); end
   end
 end
 
@@ -291,31 +285,31 @@ end
 class Dry::CLI::Command
   extend ::Forwardable
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://dry-cli//lib/dry/cli/command.rb#371
   def arguments(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://dry-cli//lib/dry/cli/command.rb#371
   def default_params(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://dry-cli//lib/dry/cli/command.rb#371
   def description(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://dry-cli//lib/dry/cli/command.rb#371
   def examples(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://dry-cli//lib/dry/cli/command.rb#371
   def optional_arguments(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://dry-cli//lib/dry/cli/command.rb#371
   def options(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://dry-cli//lib/dry/cli/command.rb#371
   def params(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://dry-cli//lib/dry/cli/command.rb#371
   def required_arguments(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://dry-cli//lib/dry/cli/command.rb#371
   def subcommands(*args, **_arg1, &block); end
 
   class << self
@@ -1155,23 +1149,6 @@ Dry::CLI::ProgramName::SEPARATOR = T.let(T.unsafe(nil), String)
 module Dry::CLI::Registry
   # Register an after callback.
   #
-  # @example
-  #   require "dry/cli"
-  #
-  #   module Foo
-  #   module Commands
-  #   extend Dry::CLI::Registry
-  #
-  #   class Hello < Dry::CLI::Command
-  #   def call(*)
-  #   puts "hello"
-  #   end
-  #   end
-  #
-  #   register "hello", Hello
-  #   after "hello", -> { puts "world" }
-  #   end
-  #   end
   # @example Register an object as callback
   #   require "dry/cli"
   #
@@ -1195,6 +1172,23 @@ module Dry::CLI::Registry
   #
   #   register "hello", Hello
   #   after "hello", Callbacks::World.new
+  #   end
+  #   end
+  # @example
+  #   require "dry/cli"
+  #
+  #   module Foo
+  #   module Commands
+  #   extend Dry::CLI::Registry
+  #
+  #   class Hello < Dry::CLI::Command
+  #   def call(*)
+  #   puts "hello"
+  #   end
+  #   end
+  #
+  #   register "hello", Hello
+  #   after "hello", -> { puts "world" }
   #   end
   #   end
   # @example Register a class as callback
@@ -1222,9 +1216,9 @@ module Dry::CLI::Registry
   #   after "hello", Callbacks::World
   #   end
   #   end
-  # @param command_name [String] the name used for command registration
   # @param callback [Class, #call] the callback object. If a class is given,
   #   it MUST respond to `#call`.
+  # @param command_name [String] the name used for command registration
   # @param blk [Proc] the callback espressed as a block
   # @raise [Dry::CLI::UnknownCommandError] if the command isn't registered
   # @raise [Dry::CLI::InvalidCallbackError] if the given callback doesn't
@@ -1236,23 +1230,6 @@ module Dry::CLI::Registry
 
   # Register a before callback.
   #
-  # @example
-  #   require "dry/cli"
-  #
-  #   module Foo
-  #   module Commands
-  #   extend Dry::CLI::Registry
-  #
-  #   class Hello < Dry::CLI::Command
-  #   def call(*)
-  #   puts "hello"
-  #   end
-  #   end
-  #
-  #   register "hello", Hello
-  #   before "hello", -> { puts "I'm about to say.." }
-  #   end
-  #   end
   # @example Register an object as callback
   #   require "dry/cli"
   #
@@ -1276,6 +1253,23 @@ module Dry::CLI::Registry
   #
   #   register "hello", Hello
   #   before "hello", Callbacks::Hello.new
+  #   end
+  #   end
+  # @example
+  #   require "dry/cli"
+  #
+  #   module Foo
+  #   module Commands
+  #   extend Dry::CLI::Registry
+  #
+  #   class Hello < Dry::CLI::Command
+  #   def call(*)
+  #   puts "hello"
+  #   end
+  #   end
+  #
+  #   register "hello", Hello
+  #   before "hello", -> { puts "I'm about to say.." }
   #   end
   #   end
   # @example Register a class as callback
@@ -1303,9 +1297,9 @@ module Dry::CLI::Registry
   #   before "hello", Callbacks::Hello
   #   end
   #   end
-  # @param command_name [String] the name used for command registration
   # @param callback [Class, #call] the callback object. If a class is given,
   #   it MUST respond to `#call`.
+  # @param command_name [String] the name used for command registration
   # @param blk [Proc] the callback espressed as a block
   # @raise [Dry::CLI::UnknownCommandError] if the command isn't registered
   # @raise [Dry::CLI::InvalidCallbackError] if the given callback doesn't
@@ -1336,19 +1330,6 @@ module Dry::CLI::Registry
   #   register "hi", Hello
   #   end
   #   end
-  # @example Register a command with aliases
-  #   require "dry/cli"
-  #
-  #   module Foo
-  #   module Commands
-  #   extend Dry::CLI::Registry
-  #
-  #   class Hello < Dry::CLI::Command
-  #   end
-  #
-  #   register "hello", Hello, aliases: ["hi", "ciao"]
-  #   end
-  #   end
   # @example Register a group of commands
   #   require "dry/cli"
   #
@@ -1370,10 +1351,23 @@ module Dry::CLI::Registry
   #   end
   #   end
   #   end
-  # @param name [String] the command name
-  # @param command [NilClass, Dry::CLI::Command] the optional command
-  # @param aliases [Array<String>] an optional list of aliases
+  # @example Register a command with aliases
+  #   require "dry/cli"
+  #
+  #   module Foo
+  #   module Commands
+  #   extend Dry::CLI::Registry
+  #
+  #   class Hello < Dry::CLI::Command
+  #   end
+  #
+  #   register "hello", Hello, aliases: ["hi", "ciao"]
+  #   end
+  #   end
   # @param options [Hash] a set of options
+  # @param command [NilClass, Dry::CLI::Command] the optional command
+  # @param name [String] the command name
+  # @param aliases [Array<String>] an optional list of aliases
   # @since 0.1.0
   #
   # source://dry-cli//lib/dry/cli/registry.rb#78
@@ -1424,20 +1418,20 @@ class Dry::CLI::Registry::Prefix
   # @since 0.1.0
   #
   # source://dry-cli//lib/dry/cli/registry.rb#321
-  def register(name, command, aliases: T.unsafe(nil), hidden: T.unsafe(nil)); end
+  def register(name, command = T.unsafe(nil), aliases: T.unsafe(nil), hidden: T.unsafe(nil), &block); end
 
   private
 
   # @api private
   # @since 0.1.0
   #
-  # source://dry-cli//lib/dry/cli/registry.rb#334
+  # source://dry-cli//lib/dry/cli/registry.rb#343
   def prefix; end
 
   # @api private
   # @since 0.1.0
   #
-  # source://dry-cli//lib/dry/cli/registry.rb#330
+  # source://dry-cli//lib/dry/cli/registry.rb#339
   def registry; end
 end
 

@@ -673,7 +673,7 @@ module JSON
   # Output:
   #   {"foo":[0,1],"bar":{"baz":2,"bat":3},"bam":"bad"}
   #
-  # source://json//lib/json/common.rb#892
+  # source://json//lib/json/common.rb#893
   def dump(obj, anIO = T.unsafe(nil), limit = T.unsafe(nil), kwargs = T.unsafe(nil)); end
 
   # :call-seq:
@@ -690,10 +690,10 @@ module JSON
   #   # Raises SystemStackError (stack level too deep):
   #   JSON.fast_generate(a)
   #
-  # source://json//lib/json/common.rb#445
+  # source://json//lib/json/common.rb#446
   def fast_generate(obj, opts = T.unsafe(nil)); end
 
-  # source://json//lib/json/common.rb#937
+  # source://json//lib/json/common.rb#938
   def fast_unparse(*_arg0, **_arg1, &_arg2); end
 
   # :call-seq:
@@ -732,7 +732,7 @@ module JSON
   #   # Raises JSON::NestingError (nesting of 100 is too deep):
   #   JSON.generate(a)
   #
-  # source://json//lib/json/common.rb#424
+  # source://json//lib/json/common.rb#425
   def generate(obj, opts = T.unsafe(nil)); end
 
   # :call-seq:
@@ -870,7 +870,7 @@ module JSON
   #      #<Admin:0x00000000064c41f8
   #      @attributes={"type"=>"Admin", "password"=>"0wn3d"}>}
   #
-  # source://json//lib/json/common.rb#826
+  # source://json//lib/json/common.rb#827
   def load(source, proc = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # :call-seq:
@@ -881,7 +881,7 @@ module JSON
   #
   # See method #parse.
   #
-  # source://json//lib/json/common.rb#373
+  # source://json//lib/json/common.rb#374
   def load_file(filespec, opts = T.unsafe(nil)); end
 
   # :call-seq:
@@ -892,7 +892,7 @@ module JSON
   #
   # See method #parse!
   #
-  # source://json//lib/json/common.rb#384
+  # source://json//lib/json/common.rb#385
   def load_file!(filespec, opts = T.unsafe(nil)); end
 
   # :call-seq:
@@ -943,7 +943,7 @@ module JSON
   #   # Raises JSON::ParserError (783: unexpected token at ''):
   #   JSON.parse('')
   #
-  # source://json//lib/json/common.rb#336
+  # source://json//lib/json/common.rb#337
   def parse(source, opts = T.unsafe(nil)); end
 
   # :call-seq:
@@ -958,7 +958,7 @@ module JSON
   #   which disables checking for nesting depth.
   # - Option +allow_nan+, if not provided, defaults to +true+.
   #
-  # source://json//lib/json/common.rb#358
+  # source://json//lib/json/common.rb#359
   def parse!(source, opts = T.unsafe(nil)); end
 
   # :call-seq:
@@ -991,20 +991,20 @@ module JSON
   #     }
   #   }
   #
-  # source://json//lib/json/common.rb#492
+  # source://json//lib/json/common.rb#493
   def pretty_generate(obj, opts = T.unsafe(nil)); end
 
-  # source://json//lib/json/common.rb#947
+  # source://json//lib/json/common.rb#948
   def pretty_unparse(*_arg0, **_arg1, &_arg2); end
 
-  # source://json//lib/json/common.rb#957
+  # source://json//lib/json/common.rb#958
   def restore(*_arg0, **_arg1, &_arg2); end
 
   # :stopdoc:
   # All these were meant to be deprecated circa 2009, but were just set as undocumented
   # so usage still exist in the wild.
   #
-  # source://json//lib/json/common.rb#927
+  # source://json//lib/json/common.rb#928
   def unparse(*_arg0, **_arg1, &_arg2); end
 
   # :call-seq:
@@ -1136,7 +1136,7 @@ module JSON
   #      #<Admin:0x00000000064c41f8
   #      @attributes={"type"=>"Admin", "password"=>"0wn3d"}>}
   #
-  # source://json//lib/json/common.rb#666
+  # source://json//lib/json/common.rb#667
   def unsafe_load(source, proc = T.unsafe(nil), options = T.unsafe(nil)); end
 
   class << self
@@ -1152,29 +1152,29 @@ module JSON
     #   ruby = [0, 1, nil]
     #   JSON[ruby] # => '[0,1,null]'
     #
-    # source://json//lib/json/common.rb#126
+    # source://json//lib/json/common.rb#127
     def [](object, opts = T.unsafe(nil)); end
 
-    # source://json//lib/json/common.rb#191
+    # source://json//lib/json/common.rb#192
     def _dump_default_options; end
 
-    # source://json//lib/json/common.rb#191
+    # source://json//lib/json/common.rb#192
     def _load_default_options; end
 
-    # source://json//lib/json/common.rb#191
+    # source://json//lib/json/common.rb#192
     def _unsafe_load_default_options; end
 
     # Returns the current create identifier.
     # See also JSON.create_id=.
     #
-    # source://json//lib/json/common.rb#219
+    # source://json//lib/json/common.rb#220
     def create_id; end
 
     # Sets create identifier, which is used to decide if the _json_create_
     # hook of a class should be called; initial value is +json_class+:
     #   JSON.create_id # => 'json_class'
     #
-    # source://json//lib/json/common.rb#213
+    # source://json//lib/json/common.rb#214
     def create_id=(new_value); end
 
     # Return the constant located at _path_. The format of _path_ has to be
@@ -1182,8 +1182,11 @@ module JSON
     # level (absolute namespace path?). If there doesn't exist a constant at
     # the given path, an ArgumentError is raised.
     #
-    # source://json//lib/json/common.rb#153
+    # source://json//lib/json/common.rb#154
     def deep_const_get(path); end
+
+    # source://json//lib/json/common.rb#99
+    def deprecation_warning(message, uplevel = T.unsafe(nil)); end
 
     # :call-seq:
     #   JSON.dump(obj, io = nil, limit = nil)
@@ -1213,13 +1216,13 @@ module JSON
     # Output:
     #   {"foo":[0,1],"bar":{"baz":2,"bat":3},"bam":"bad"}
     #
-    # source://json//lib/json/common.rb#892
+    # source://json//lib/json/common.rb#893
     def dump(obj, anIO = T.unsafe(nil), limit = T.unsafe(nil), kwargs = T.unsafe(nil)); end
 
-    # source://json//lib/json/common.rb#191
+    # source://json//lib/json/common.rb#192
     def dump_default_options; end
 
-    # source://json//lib/json/common.rb#191
+    # source://json//lib/json/common.rb#192
     def dump_default_options=(val); end
 
     # :call-seq:
@@ -1236,10 +1239,10 @@ module JSON
     #   # Raises SystemStackError (stack level too deep):
     #   JSON.fast_generate(a)
     #
-    # source://json//lib/json/common.rb#445
+    # source://json//lib/json/common.rb#446
     def fast_generate(obj, opts = T.unsafe(nil)); end
 
-    # source://json//lib/json/common.rb#937
+    # source://json//lib/json/common.rb#938
     def fast_unparse(*_arg0, **_arg1, &_arg2); end
 
     # :call-seq:
@@ -1278,17 +1281,17 @@ module JSON
     #   # Raises JSON::NestingError (nesting of 100 is too deep):
     #   JSON.generate(a)
     #
-    # source://json//lib/json/common.rb#424
+    # source://json//lib/json/common.rb#425
     def generate(obj, opts = T.unsafe(nil)); end
 
     # Returns the JSON generator module that is used by JSON.
     #
-    # source://json//lib/json/common.rb#181
+    # source://json//lib/json/common.rb#182
     def generator; end
 
     # Set the module _generator_ to be used by JSON.
     #
-    # source://json//lib/json/common.rb#160
+    # source://json//lib/json/common.rb#161
     def generator=(generator); end
 
     # :call-seq:
@@ -1426,13 +1429,13 @@ module JSON
     #      #<Admin:0x00000000064c41f8
     #      @attributes={"type"=>"Admin", "password"=>"0wn3d"}>}
     #
-    # source://json//lib/json/common.rb#826
+    # source://json//lib/json/common.rb#827
     def load(source, proc = T.unsafe(nil), options = T.unsafe(nil)); end
 
-    # source://json//lib/json/common.rb#191
+    # source://json//lib/json/common.rb#192
     def load_default_options; end
 
-    # source://json//lib/json/common.rb#191
+    # source://json//lib/json/common.rb#192
     def load_default_options=(val); end
 
     # :call-seq:
@@ -1443,7 +1446,7 @@ module JSON
     #
     # See method #parse.
     #
-    # source://json//lib/json/common.rb#373
+    # source://json//lib/json/common.rb#374
     def load_file(path, *args, **_arg2); end
 
     # :call-seq:
@@ -1454,7 +1457,7 @@ module JSON
     #
     # See method #parse!
     #
-    # source://json//lib/json/common.rb#384
+    # source://json//lib/json/common.rb#385
     def load_file!(filespec, opts = T.unsafe(nil)); end
 
     # :call-seq:
@@ -1505,7 +1508,7 @@ module JSON
     #   # Raises JSON::ParserError (783: unexpected token at ''):
     #   JSON.parse('')
     #
-    # source://json//lib/json/common.rb#336
+    # source://json//lib/json/common.rb#337
     def parse(source, opts = T.unsafe(nil)); end
 
     # :call-seq:
@@ -1520,17 +1523,17 @@ module JSON
     #   which disables checking for nesting depth.
     # - Option +allow_nan+, if not provided, defaults to +true+.
     #
-    # source://json//lib/json/common.rb#358
+    # source://json//lib/json/common.rb#359
     def parse!(source, opts = T.unsafe(nil)); end
 
     # Returns the JSON parser class that is used by JSON.
     #
-    # source://json//lib/json/common.rb#140
+    # source://json//lib/json/common.rb#141
     def parser; end
 
     # Set the JSON parser class _parser_ to be used by JSON.
     #
-    # source://json//lib/json/common.rb#143
+    # source://json//lib/json/common.rb#144
     def parser=(parser); end
 
     # :call-seq:
@@ -1563,30 +1566,30 @@ module JSON
     #     }
     #   }
     #
-    # source://json//lib/json/common.rb#492
+    # source://json//lib/json/common.rb#493
     def pretty_generate(obj, opts = T.unsafe(nil)); end
 
-    # source://json//lib/json/common.rb#947
+    # source://json//lib/json/common.rb#948
     def pretty_unparse(*_arg0, **_arg1, &_arg2); end
 
-    # source://json//lib/json/common.rb#957
+    # source://json//lib/json/common.rb#958
     def restore(*_arg0, **_arg1, &_arg2); end
 
     # Sets or Returns the JSON generator state class that is used by JSON.
     #
-    # source://json//lib/json/common.rb#184
+    # source://json//lib/json/common.rb#185
     def state; end
 
     # Sets or Returns the JSON generator state class that is used by JSON.
     #
-    # source://json//lib/json/common.rb#184
+    # source://json//lib/json/common.rb#185
     def state=(_arg0); end
 
     # :stopdoc:
     # All these were meant to be deprecated circa 2009, but were just set as undocumented
     # so usage still exist in the wild.
     #
-    # source://json//lib/json/common.rb#927
+    # source://json//lib/json/common.rb#928
     def unparse(*_arg0, **_arg1, &_arg2); end
 
     # :call-seq:
@@ -1718,21 +1721,21 @@ module JSON
     #      #<Admin:0x00000000064c41f8
     #      @attributes={"type"=>"Admin", "password"=>"0wn3d"}>}
     #
-    # source://json//lib/json/common.rb#666
+    # source://json//lib/json/common.rb#667
     def unsafe_load(source, proc = T.unsafe(nil), options = T.unsafe(nil)); end
 
-    # source://json//lib/json/common.rb#191
+    # source://json//lib/json/common.rb#192
     def unsafe_load_default_options; end
 
-    # source://json//lib/json/common.rb#191
+    # source://json//lib/json/common.rb#192
     def unsafe_load_default_options=(val); end
 
     private
 
-    # source://json//lib/json/common.rb#970
+    # source://json//lib/json/common.rb#971
     def const_missing(const_name); end
 
-    # source://json//lib/json/common.rb#188
+    # source://json//lib/json/common.rb#189
     def deprecated_singleton_attr_accessor(*attrs); end
   end
 end
@@ -1747,7 +1750,7 @@ end
 #
 #   MyApp::JSONC_CODER.load(document)
 #
-# source://json//lib/json/common.rb#996
+# source://json//lib/json/common.rb#997
 class JSON::Coder
   # :call-seq:
   #   JSON.new(options = nil, &block)
@@ -1774,7 +1777,7 @@ class JSON::Coder
   #
   # @return [Coder] a new instance of Coder
   #
-  # source://json//lib/json/common.rb#1020
+  # source://json//lib/json/common.rb#1021
   def initialize(options = T.unsafe(nil), &as_json); end
 
   # call-seq:
@@ -1783,7 +1786,7 @@ class JSON::Coder
   #
   # Serialize the given object into a \JSON document.
   #
-  # source://json//lib/json/common.rb#1038
+  # source://json//lib/json/common.rb#1039
   def dump(object, io = T.unsafe(nil)); end
 
   # call-seq:
@@ -1792,7 +1795,7 @@ class JSON::Coder
   #
   # Serialize the given object into a \JSON document.
   #
-  # source://json//lib/json/common.rb#1041
+  # source://json//lib/json/common.rb#1042
   def generate(object, io = T.unsafe(nil)); end
 
   # call-seq:
@@ -1800,7 +1803,7 @@ class JSON::Coder
   #
   # Parse the given \JSON document and return an equivalent Ruby object.
   #
-  # source://json//lib/json/common.rb#1047
+  # source://json//lib/json/common.rb#1048
   def load(source); end
 
   # call-seq:
@@ -1808,7 +1811,7 @@ class JSON::Coder
   #
   # Parse the given \JSON document and return an equivalent Ruby object.
   #
-  # source://json//lib/json/common.rb#1056
+  # source://json//lib/json/common.rb#1057
   def load_file(path); end
 
   # call-seq:
@@ -1816,7 +1819,7 @@ class JSON::Coder
   #
   # Parse the given \JSON document and return an equivalent Ruby object.
   #
-  # source://json//lib/json/common.rb#1050
+  # source://json//lib/json/common.rb#1051
   def parse(source); end
 end
 
@@ -2118,18 +2121,18 @@ end
 # Note: no validation is performed on the provided string. It is the
 # responsibility of the caller to ensure the string contains valid JSON.
 #
-# source://json//lib/json/common.rb#272
+# source://json//lib/json/common.rb#273
 class JSON::Fragment < ::Struct
   # @return [Fragment] a new instance of Fragment
   #
-  # source://json//lib/json/common.rb#273
+  # source://json//lib/json/common.rb#274
   def initialize(json); end
 
   # Returns the value of attribute json
   #
   # @return [Object] the current value of json
   #
-  # source://json//lib/json/common.rb#272
+  # source://json//lib/json/common.rb#273
   def json; end
 
   # Sets the attribute json
@@ -2137,45 +2140,45 @@ class JSON::Fragment < ::Struct
   # @param value [Object] the value to set the attribute json to.
   # @return [Object] the newly set value
   #
-  # source://json//lib/json/common.rb#272
+  # source://json//lib/json/common.rb#273
   def json=(_); end
 
-  # source://json//lib/json/common.rb#281
+  # source://json//lib/json/common.rb#282
   def to_json(state = T.unsafe(nil), *_arg1); end
 
   class << self
-    # source://json//lib/json/common.rb#272
+    # source://json//lib/json/common.rb#273
     def [](*_arg0); end
 
-    # source://json//lib/json/common.rb#272
+    # source://json//lib/json/common.rb#273
     def inspect; end
 
-    # source://json//lib/json/common.rb#272
+    # source://json//lib/json/common.rb#273
     def keyword_init?; end
 
-    # source://json//lib/json/common.rb#272
+    # source://json//lib/json/common.rb#273
     def members; end
 
-    # source://json//lib/json/common.rb#272
+    # source://json//lib/json/common.rb#273
     def new(*_arg0); end
   end
 end
 
 # This exception is raised if a generator or unparser error occurs.
 #
-# source://json//lib/json/common.rb#242
+# source://json//lib/json/common.rb#243
 class JSON::GeneratorError < ::JSON::JSONError
   # @return [GeneratorError] a new instance of GeneratorError
   #
-  # source://json//lib/json/common.rb#245
+  # source://json//lib/json/common.rb#246
   def initialize(message, invalid_object = T.unsafe(nil)); end
 
-  # source://json//lib/json/common.rb#250
+  # source://json//lib/json/common.rb#251
   def detailed_message(*_arg0, **_arg1, &_arg2); end
 
   # Returns the value of attribute invalid_object.
   #
-  # source://json//lib/json/common.rb#243
+  # source://json//lib/json/common.rb#244
   def invalid_object; end
 end
 
@@ -2223,27 +2226,27 @@ class JSON::GenericObject < ::OpenStruct
   end
 end
 
-# source://json//lib/json/common.rb#341
+# source://json//lib/json/common.rb#342
 JSON::PARSE_L_OPTIONS = T.let(T.unsafe(nil), Hash)
 
-# source://json//lib/json/common.rb#454
+# source://json//lib/json/common.rb#455
 JSON::PRETTY_GENERATE_OPTIONS = T.let(T.unsafe(nil), Hash)
 
-# source://json//lib/json/common.rb#146
+# source://json//lib/json/common.rb#147
 JSON::Parser = JSON::Ext::Parser
 
 # This exception is raised if a parser error occurs.
 #
-# source://json//lib/json/common.rb#233
+# source://json//lib/json/common.rb#234
 class JSON::ParserError < ::JSON::JSONError
   # Returns the value of attribute column.
   #
-  # source://json//lib/json/common.rb#234
+  # source://json//lib/json/common.rb#235
   def column; end
 
   # Returns the value of attribute line.
   #
-  # source://json//lib/json/common.rb#234
+  # source://json//lib/json/common.rb#235
   def line; end
 end
 
@@ -2258,12 +2261,12 @@ module JSON::ParserOptions
     # source://json//lib/json/common.rb#40
     def array_class_proc(array_class, on_load); end
 
-    # TODO: exctract :create_additions support to another gem for version 3.0
+    # TODO: extract :create_additions support to another gem for version 3.0
     #
     # source://json//lib/json/common.rb#52
     def create_additions_proc(opts); end
 
-    # source://json//lib/json/common.rb#91
+    # source://json//lib/json/common.rb#90
     def create_additions_warning; end
 
     # source://json//lib/json/common.rb#29
@@ -2271,10 +2274,10 @@ module JSON::ParserOptions
   end
 end
 
-# source://json//lib/json/common.rb#175
+# source://json//lib/json/common.rb#176
 JSON::State = JSON::Ext::Generator::State
 
-# source://json//lib/json/common.rb#1062
+# source://json//lib/json/common.rb#1063
 module Kernel
   private
 
@@ -2285,19 +2288,19 @@ module Kernel
   # The _opts_ argument is passed through to generate/parse respectively. See
   # generate and parse for their documentation.
   #
-  # source://json//lib/json/common.rb#1101
+  # source://json//lib/json/common.rb#1102
   def JSON(object, opts = T.unsafe(nil)); end
 
   # Outputs _objs_ to STDOUT as JSON strings in the shortest form, that is in
   # one line.
   #
-  # source://json//lib/json/common.rb#1067
+  # source://json//lib/json/common.rb#1068
   def j(*objs); end
 
   # Outputs _objs_ to STDOUT as JSON strings in a pretty format, with
   # indentation and over many lines.
   #
-  # source://json//lib/json/common.rb#1082
+  # source://json//lib/json/common.rb#1083
   def jj(*objs); end
 end
 

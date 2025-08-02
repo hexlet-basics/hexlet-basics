@@ -677,9 +677,9 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   # source of its key material, its key policy, description, tags, and
   # other properties.
   #
-  # <note markdown="1"> KMS has replaced the term *customer master key (CMK)* with *KMS key*
-  # and *KMS key*. The concept has not changed. To prevent breaking
-  # changes, KMS is keeping some variations of this term.
+  # <note markdown="1"> KMS has replaced the term *customer master key (CMK)* with *Key
+  # Management Service key* and *KMS key*. The concept has not changed. To
+  # prevent breaking changes, KMS is keeping some variations of this term.
   #
   #  </note>
   #
@@ -2104,8 +2104,8 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #
   #
   #
-  # [1]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk
-  # [2]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk
+  # [1]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-mgn-key
+  # [2]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-key
   # [3]: https://docs.aws.amazon.com/kms/latest/developerguide/multi-region-keys-overview.html
   # [4]: https://docs.aws.amazon.com/kms/latest/developerguide/keystore-cloudhsm.html
   # [5]: https://docs.aws.amazon.com/kms/latest/developerguide/keystore-external.html
@@ -2473,9 +2473,9 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   # [4]: https://docs.aws.amazon.com/kms/latest/developerguide/importing-keys.html
   # [5]: https://docs.aws.amazon.com/kms/latest/developerguide/key-store-overview.html
   # [6]: https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html#multi-region-rotate
-  # [7]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk
-  # [8]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk
-  # [9]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-cmk
+  # [7]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-mgn-key
+  # [8]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-key
+  # [9]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-key
   # [10]: https://docs.aws.amazon.com/kms/latest/developerguide/key-state.html
   # [11]: https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html
   # [12]: https://docs.aws.amazon.com/kms/latest/developerguide/accessing-kms.html#programming-eventual-consistency
@@ -2705,14 +2705,14 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #
   #
   # [1]: https://docs.aws.amazon.com/kms/latest/developerguide/rotating-keys-enable-disable.html
-  # [2]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk
+  # [2]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-mgn-key
   # [3]: https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html
   # [4]: https://docs.aws.amazon.com/kms/latest/developerguide/hmac.html
   # [5]: https://docs.aws.amazon.com/kms/latest/developerguide/importing-keys.html
   # [6]: https://docs.aws.amazon.com/kms/latest/developerguide/key-store-overview.html
   # [7]: https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html#multi-region-rotate
-  # [8]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk
-  # [9]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-cmk
+  # [8]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-key
+  # [9]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-key
   # [10]: https://docs.aws.amazon.com/kms/latest/developerguide/key-state.html
   # [11]: https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html
   # [12]: https://docs.aws.amazon.com/kms/latest/developerguide/accessing-kms.html#programming-eventual-consistency
@@ -3881,7 +3881,7 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   # [5]: https://docs.aws.amazon.com/kms/latest/developerguide/importing-keys.html
   # [6]: https://docs.aws.amazon.com/kms/latest/developerguide/key-store-overview.html
   # [7]: https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html#multi-region-rotate
-  # [8]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk
+  # [8]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-key
   # [9]: https://docs.aws.amazon.com/kms/latest/developerguide/key-state.html
   # [10]: https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html
   # [11]: https://docs.aws.amazon.com/kms/latest/developerguide/accessing-kms.html#programming-eventual-consistency
@@ -5886,8 +5886,8 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   # [6]: https://docs.aws.amazon.com/kms/latest/developerguide/key-store-overview.html
   # [7]: https://docs.aws.amazon.com/kms/latest/developerguide/importing-keys-import-key-material.html
   # [8]: https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html#multi-region-rotate
-  # [9]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk
-  # [10]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-cmk
+  # [9]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-key
+  # [10]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-key
   # [11]: https://docs.aws.amazon.com/kms/latest/developerguide/key-state.html
   # [12]: https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html
   # [13]: https://docs.aws.amazon.com/kms/latest/developerguide/accessing-kms.html#programming-eventual-consistency
@@ -6228,10 +6228,10 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #
   #
   #
-  # [1]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk
+  # [1]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-mgn-key
   # [2]: https://docs.aws.amazon.com/kms/latest/developerguide/abac.html
-  # [3]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk
-  # [4]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-cmk
+  # [3]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-key
+  # [4]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-key
   # [5]: https://docs.aws.amazon.com/kms/latest/developerguide/key-store-overview.html
   # [6]: https://docs.aws.amazon.com/kms/latest/developerguide/kms-alias.html
   # [7]: https://docs.aws.amazon.com/kms/latest/developerguide/tagging-keys.html
@@ -6317,7 +6317,7 @@ class Aws::KMS::Client < ::Seahorse::Client::Base
   #
   #
   #
-  # [1]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk
+  # [1]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-mgn-key
   # [2]: https://docs.aws.amazon.com/kms/latest/developerguide/abac.html
   # [3]: https://docs.aws.amazon.com/kms/latest/developerguide/tagging-keys.html
   # [4]: https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html
