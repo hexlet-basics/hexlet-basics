@@ -70,9 +70,14 @@ export default function Index() {
   if (isTabletUp) {
     return (
       <LessonLayout>
-        <PanelGroup direction="horizontal">
+        <Box
+          component={PanelGroup}
+          direction="horizontal"
+          pt={headerHeight}
+          h="100%"
+        >
           <Panel minSize={20} defaultSize={45}>
-            <Box pt={headerHeight}>
+            <Box h="100%">
               <LessonLeftBlock />
             </Box>
           </Panel>
@@ -82,11 +87,11 @@ export default function Index() {
             </Center>
           </PanelResizeHandle>
           <Panel minSize={30} defaultSize={55}>
-            <Box h="100%" pt={headerHeight}>
+            <Box h="100%">
               <LessonRightBlock />
             </Box>
           </Panel>
-        </PanelGroup>
+        </Box>
       </LessonLayout>
     );
   }
