@@ -92,8 +92,13 @@ const theme = createTheme({
       },
     }),
     CodeHighlight: CodeHighlight.extend({
+      styles: {
+        pre: {
+          padding: 0,
+        },
+      },
       defaultProps: {
-        mb: 'md',
+        mb: 'lg',
         // withBorder: true,
         // withExpandButton: false,
         // withCopyButton: false,

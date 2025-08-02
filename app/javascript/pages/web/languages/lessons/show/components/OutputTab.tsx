@@ -42,10 +42,8 @@ export default function OutputTab() {
       >
         <XssContent fz="sm">{message}</XssContent>
       </Alert>
-      <Box>
-        <Code block>
-          <XssContent fz="sm">{outputAsHTML}</XssContent>
-        </Code>
+      <Box component="pre" p="sm">
+        <XssContent fz="sm">{outputAsHTML}</XssContent>
       </Box>
     </>
   );
