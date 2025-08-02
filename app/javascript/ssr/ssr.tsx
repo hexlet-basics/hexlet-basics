@@ -12,48 +12,45 @@ Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
 });
 
-createServer(
-  (page) => {
-    // NOTE: используется для просмотра последних попыток рендера перед падением контейнера ssr на проде (дебаг)
-    console.log(page.url);
-    // console.log(`Memory stats: ${JSON.stringify(process.memoryUsage(), null, 2)}`);
+createServer((page) => {
+  // NOTE: используется для просмотра последних попыток рендера перед падением контейнера ssr на проде (дебаг)
+  console.log(page.url);
+  // console.log(`Memory stats: ${JSON.stringify(process.memoryUsage(), null, 2)}`);
 
-    return createInertiaApp({
-      page,
-      render: (...args) => {
-        try {
-          return ReactDOMServer.renderToString(...args);
-        } catch (error) {
-          Sentry.setContext('page', {
-            url: page.url,
-            component: page.component,
-          });
-
-          Sentry.captureException(error);
-
-          throw error;
-        }
-      },
-      resolve: (name) => {
-        // const pages = import.meta.glob("../pages/**/*.jsx", { eager: true });
-        const pages = import.meta.glob<ResolvedComponent>('../pages/**/*.tsx', {
-          eager: true,
+  return createInertiaApp({
+    page,
+    render: (...args) => {
+      try {
+        return ReactDOMServer.renderToString(...args);
+      } catch (error) {
+        Sentry.setContext('page', {
+          url: page.url,
+          component: page.component,
         });
-        const page = pages[`../pages/${name}.tsx`];
 
-        page.default.layout ??= (page) => <Root>{page}</Root>;
+        Sentry.captureException(error);
 
-        return page;
-      },
-      setup: ({ App, props }) => {
-        const typedProps = props as RootProps;
-        const { locale, suffix } = typedProps.initialPage.props;
+        throw error;
+      }
+    },
+    resolve: (name) => {
+      // const pages = import.meta.glob("../pages/**/*.jsx", { eager: true });
+      const pages = import.meta.glob<ResolvedComponent>('../pages/**/*.tsx', {
+        eager: true,
+      });
+      const page = pages[`../pages/${name}.tsx`];
 
-        configure(locale, suffix);
-        const vdom = <App {...props} />;
-        return vdom;
-      },
-    });
-  },
-  { cluster: true },
-);
+      page.default.layout ??= (page) => <Root>{page}</Root>;
+
+      return page;
+    },
+    setup: ({ App, props }) => {
+      const typedProps = props as RootProps;
+      const { locale, suffix } = typedProps.initialPage.props;
+
+      configure(locale, suffix);
+      const vdom = <App {...props} />;
+      return vdom;
+    },
+  });
+});

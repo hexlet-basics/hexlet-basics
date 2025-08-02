@@ -2,8 +2,8 @@ import { CodeHighlight, InlineCodeHighlight } from '@mantine/code-highlight';
 import { Typography } from '@mantine/core';
 // import rehypeShikiFromHighlighter from '@shikijs/rehype/core';
 import type { Directives } from 'mdast-util-directive';
-import { type ComponentPropsWithoutRef, useEffect, useState } from 'react';
-import { MarkdownHooks } from 'react-markdown';
+import type { ComponentPropsWithoutRef } from 'react';
+import Markdown from 'react-markdown';
 import rehypeExternalLinks from 'rehype-external-links';
 import rehypeRaw from 'rehype-raw';
 import remarkDirective from 'remark-directive';
@@ -76,36 +76,29 @@ export default function MarkdownViewer({
   allowHtml = false,
   components = {},
 }: MarkdownViewerProps) {
-  const [rehypePlugins, setRehypePlugins] = useState<PluggableList>([]);
-
   const preparedComponents = {
     pre: (props: ComponentPropsWithoutRef<'pre'>) => <>{props.children}</>, // убираем обертку pre
     code: MarkdownCodeHighlight,
     ...components,
   };
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: -
-  useEffect(() => {
-    const rehypePlugins: PluggableList = [
-      [
-        rehypeExternalLinks,
-        {
-          target: '_blank',
-          rel: ['noopener', 'noreferrer'],
-        },
-      ],
-    ];
+  const rehypePlugins: PluggableList = [
+    [
+      rehypeExternalLinks,
+      {
+        target: '_blank',
+        rel: ['noopener', 'noreferrer'],
+      },
+    ],
+  ];
 
-    if (allowHtml) {
-      rehypePlugins.push(rehypeRaw);
-    }
-
-    setRehypePlugins(rehypePlugins);
-  }, []);
+  if (allowHtml) {
+    rehypePlugins.push(rehypeRaw);
+  }
 
   return (
     <Typography styles={typographyStyles}>
-      <MarkdownHooks
+      <Markdown
         skipHtml={!allowHtml}
         remarkPlugins={[
           remarkGfm,
@@ -116,7 +109,7 @@ export default function MarkdownViewer({
         components={preparedComponents}
       >
         {children}
-      </MarkdownHooks>
+      </Markdown>
     </Typography>
   );
 }

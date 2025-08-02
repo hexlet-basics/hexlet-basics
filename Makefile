@@ -8,8 +8,16 @@ setup:
 	npm install
 	npx simple-git-hooks
 
+test-all: test test-frontend test-system
+
 test:
 	bin/rails test
+
+test-frontend:
+	npx vitest run
+
+test-frontend-watch:
+	npx vitest
 
 test-system:
 	bin/rails test:system

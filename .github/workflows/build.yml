@@ -43,5 +43,4 @@ jobs:
 
       - run: RAILS_ENV=test make build-assets
 
-      - run: make test
-      - run: make test-system
+      - run: make test-all
