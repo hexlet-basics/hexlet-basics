@@ -15,7 +15,7 @@ class Language::CategoryCrudResource < ApplicationResource
       .merge(Language.ordered)
 
     {
-      modelName: object.class.superclass.to_s.underscore.tr("/", "_"),
+      modelName: object.class.superclass.form_key,
       landingPagesForCategories: Language::LandingPageForListsResource.new(landing_pages_for_categories)
     }
   end

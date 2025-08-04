@@ -15,7 +15,7 @@ class LanguageCrudResource < ApplicationResource
       urls.rails_representation_url(object.cover.variant(:thumb)) : nil,
       repository_url: object.repository_url,
       slug: object.slug,
-      modelName: object.class.superclass.to_s.underscore
+      modelName: object.class.superclass.form_key
     }
   end
 end

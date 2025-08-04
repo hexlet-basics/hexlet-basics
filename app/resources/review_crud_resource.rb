@@ -11,7 +11,7 @@ class ReviewCrudResource < ApplicationResource
   typelize_meta(meta: "{ modelName: string, states: { key: string, value: string }[] }")
   meta do
     {
-      modelName: object.class.superclass.to_s.underscore,
+      modelName: object.class.superclass.form_key,
       states: object.class.enum_as_hashes(:states)
     }
   end

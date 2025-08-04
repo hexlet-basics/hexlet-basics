@@ -20,7 +20,7 @@ class Survey::ScenarioTriggerCrudResource < ApplicationResource
   typelize_meta meta: "{ modelName: string }"
   meta do
     {
-      modelName: object.class.superclass.to_s.underscore
+      modelName: object.class.superclass.form_key
     }
   end
 end

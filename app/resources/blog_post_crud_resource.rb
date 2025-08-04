@@ -11,7 +11,7 @@ class BlogPostCrudResource < ApplicationResource
     data = {
       cover_thumb_variant_url: object.cover.attached? ? urls.rails_representation_url(object.cover.variant(:thumb)) : nil,
       states: object.class.enum_as_hashes(:states),
-      modelName: object.class.superclass.to_s.underscore
+      modelName: object.class.superclass.form_key
     }
     data
   end

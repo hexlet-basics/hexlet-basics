@@ -23,7 +23,7 @@ class SurveyCrudResource < ApplicationResource
   typelize_meta meta: "{ modelName: string, item_states: Record<string, unknown>[] }"
   meta do
     {
-      modelName: object.class.superclass.to_s.underscore,
+      modelName: object.class.superclass.form_key,
       item_states: Survey::Item.states
     }
   end

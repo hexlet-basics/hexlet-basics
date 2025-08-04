@@ -35,7 +35,7 @@ class Language::LandingPageCrudResource < ApplicationResource
       outcomes_image_thumb_url: object.outcomes_image.attached? ?
       urls.rails_representation_url(object.outcomes_image.variant(:thumb)) : nil,
       state_events: object.class.enum_as_hashes(:states),
-      modelName: object.class.superclass.to_s.underscore
+      modelName: object.class.superclass.form_key
     }
   end
 end
