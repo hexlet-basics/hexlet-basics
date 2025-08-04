@@ -955,7 +955,7 @@ class PG::CompositeCoder < ::PG::Coder
   # source://pg//lib/pg.rb#51
   def elements_type=(_arg0); end
 
-  # source://pg//lib/pg/coder.rb#83
+  # source://pg//lib/pg/coder.rb#84
   def inspect; end
 
   # source://pg//lib/pg.rb#51
@@ -2639,7 +2639,7 @@ PG::Constants::SEEK_CUR = T.let(T.unsafe(nil), Integer)
 PG::Constants::SEEK_END = T.let(T.unsafe(nil), Integer)
 PG::Constants::SEEK_SET = T.let(T.unsafe(nil), Integer)
 
-# source://pg//lib/pg/coder.rb#90
+# source://pg//lib/pg/coder.rb#91
 class PG::CopyCoder < ::PG::Coder
   # source://pg//lib/pg.rb#51
   def delimiter; end
@@ -2653,7 +2653,7 @@ class PG::CopyCoder < ::PG::Coder
   # source://pg//lib/pg.rb#51
   def null_string=(_arg0); end
 
-  # source://pg//lib/pg/coder.rb#91
+  # source://pg//lib/pg/coder.rb#92
   def to_h; end
 
   # source://pg//lib/pg.rb#51
@@ -2872,9 +2872,9 @@ class PG::QueryCanceled < ::PG::OperatorIntervention; end
 class PG::RaiseException < ::PG::PlpgsqlError; end
 class PG::ReadOnlySqlTransaction < ::PG::InvalidTransactionState; end
 
-# source://pg//lib/pg/coder.rb#100
+# source://pg//lib/pg/coder.rb#101
 class PG::RecordCoder < ::PG::Coder
-  # source://pg//lib/pg/coder.rb#101
+  # source://pg//lib/pg/coder.rb#102
   def to_h; end
 
   # source://pg//lib/pg.rb#51
