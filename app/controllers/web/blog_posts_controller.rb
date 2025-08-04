@@ -34,7 +34,6 @@ class Web::BlogPostsController < Web::ApplicationController
     }
     set_meta_tags seo_tags
 
-    # TODO: add https://developers.google.com/search/docs/appearance/structured-data/article
     render inertia: true, props: {
       blogPost: BlogPostResource.new(blog_post),
       recommendedBlogPosts: BlogPostResource.new(blog_posts),
