@@ -1,10 +1,22 @@
 import { usePage } from '@inertiajs/react';
-import { AppShell, Box, Container, Stack, Title } from '@mantine/core';
+import {
+  ActionIcon,
+  Affix,
+  AppShell,
+  Box,
+  Button,
+  Center,
+  Container,
+  Stack,
+  Title,
+  Transition,
+} from '@mantine/core';
 import { useDisclosure, useWindowEvent } from '@mantine/hooks';
+import { Send } from 'lucide-react';
 import { type PropsWithChildren, useEffect } from 'react';
 import * as CookieConsent from 'vanilla-cookieconsent';
-
 import { XBreadcrumb } from '@/components/breadcrumbs.tsx';
+import AppAnchor from '@/components/Elements/AppAnchor.tsx';
 import XFlash from '@/components/XFlash.tsx';
 import { isCurrentUrl } from '@/lib/utils.ts';
 import cookieTranslations from '@/locales/cookie_consent.ts';
@@ -53,6 +65,13 @@ export default function ApplicationLayout({
 
   return (
     <RootLayout>
+      <Affix position={{ bottom: 20, right: 20 }}>
+        <AppAnchor external href="https://t.me/WelcomeCodebasicsBot">
+          <ActionIcon variant="filled" size="xl" radius="xl">
+            <Send />
+          </ActionIcon>
+        </AppAnchor>
+      </Affix>
       <AppShell header={{ height: 60 }}>
         <AppShell.Header>
           <NavbarBlock onToggle={toggle} opened={opened} />
