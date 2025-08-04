@@ -1,7 +1,7 @@
 class FindRelatedCoursesForBlogPostJob < ApplicationJob
   def perform(blog_post_id)
     blog_post = BlogPost.find(blog_post_id)
-    landing_pages = Language::LandingPage.where(main: true).with_locale(blog_post.locale).includes(:language)
+    landing_pages = Language::LandingPage.published.where(main: true).with_locale(blog_post.locale).includes(:language)
 
     openai_api = DepsLocator.current.openai_api
 
@@ -37,7 +37,7 @@ class FindRelatedCoursesForBlogPostJob < ApplicationJob
     return if course_ids.empty?
 
     blog_post.related_language_items.delete_all
-    languages = Language.where(id: course_ids)
+    # languages = Language.where(id: course_ids)
 
     course_ids.each_with_index do |id, i|
       item = blog_post.related_language_items.build
