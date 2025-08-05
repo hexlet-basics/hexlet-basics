@@ -1,6 +1,6 @@
 import type { Method } from '@inertiajs/core';
 import { Link, router } from '@inertiajs/react';
-import { Anchor, type AnchorProps } from '@mantine/core';
+import { Anchor, type AnchorProps, useMantineTheme } from '@mantine/core';
 import { noop } from 'es-toolkit';
 import type { PropsWithChildren } from 'react';
 import useConfirmation from '@/hooks/useConfirmation';
@@ -39,24 +39,31 @@ export default function AppAnchor({
   ...props
 }: AppAnchorProps) {
   const confirmDeleting = useConfirmation();
+  const theme = useMantineTheme();
 
   if (pseudo) {
+    const openInNewTab = () =>
+      window.open(href, '_blank', 'noopener,noreferrer');
+    const openNormally = () => router.visit(href);
+
     return (
       <Anchor
-        rel="nofollow"
+        component="button"
+        style={{
+          all: 'unset',
+          cursor: 'pointer',
+        }}
         onClick={(e) => {
-          // Если middle click или cmd/ctrl + click
           if (e.metaKey || e.ctrlKey || e.button === 1) {
-            window.open(href, '_blank', 'noopener,noreferrer');
+            openInNewTab();
             return;
           }
 
-          // e.preventDefault();
-          router.visit(href);
+          openNormally();
         }}
         onAuxClick={(e) => {
           if (e.button === 1) {
-            window.open(href, '_blank', 'noopener,noreferrer');
+            openInNewTab();
           }
         }}
         {...props}

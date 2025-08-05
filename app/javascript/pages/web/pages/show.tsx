@@ -1,6 +1,7 @@
-import { Container, Grid, Title } from '@mantine/core';
+import { Container, Grid, Title, Typography } from '@mantine/core';
 import i18next from 'i18next';
 import type { PropsWithChildren } from 'react';
+import { typographyStyles } from '@/lib/mantine';
 import ApplicationLayout from '@/pages/layouts/ApplicationLayout.tsx';
 import type { User } from '@/types/serializers';
 import AboutEn from './parts/about.en';
@@ -41,10 +42,12 @@ export default function New({ page, title }: Props) {
   const Component = mapping[i18next.language][page];
   return (
     <ApplicationLayout header={title} center>
-      <Container>
+      <Container size="xl">
         <Grid justify="center" mb="xl">
           <Grid.Col span={{ base: 12, md: 10, lg: 8 }}>
-            <Component />
+            <Typography styles={typographyStyles}>
+              <Component />
+            </Typography>
           </Grid.Col>
         </Grid>
       </Container>
