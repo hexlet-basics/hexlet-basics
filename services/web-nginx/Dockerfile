@@ -1,7 +1,7 @@
 ARG APP_IMAGE_WITH_TAG=hexletbasics/services-app
 FROM ${APP_IMAGE_WITH_TAG} AS rails-app
 
-FROM nginx:1.27.4
+FROM nginx:1.29.0
 
 COPY --from=rails-app /rails/public /var/www/code-basics/shared/public
 
