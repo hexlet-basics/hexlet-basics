@@ -1,80 +1,88 @@
-import { useIntersection } from '@mantine/hooks';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { usePage } from '@inertiajs/react';
+import { useEffect, useRef, useState } from 'react';
+import type { BlogPost } from '@/types';
 
-type Item = { id: number; url: string };
-
-type UseInfiniteItemsReturn<T> = {
+interface Return<T> {
   items: T[];
-  markerRef: (el: HTMLElement | null) => void;
-  setContainerRef: (el: HTMLElement | null, item: T) => void;
-};
+  setContainerRef: (ref: HTMLElement | null, post: T) => void;
+  markerRef: React.RefObject<HTMLDivElement | null>;
+}
 
-export default function useInfiniteItems<T extends Item>(
-  initialItem: T,
-  loadNext: (lastId: number) => Promise<T>,
-): UseInfiniteItemsReturn<T> {
-  const [items, setItems] = useState<T[]>([initialItem]);
-  const itemMapRef = useRef<Map<Element, T>>(new Map());
-
-  const activeUrlRef = useRef(initialItem.url);
-
-  // Маркер подгрузки
-  const { ref: markerRef, entry } = useIntersection({
-    threshold: 0.5,
-    rootMargin: '0px 0px 20% 0px',
-  });
-
+export default function useInfiniteItems<T extends BlogPost>(
+  firstPost: T,
+  loadNext: (lastPostId: number) => Promise<T>,
+): Return<T> {
+  const { url: currentUrl } = usePage();
+  const [items, setItems] = useState<T[]>([firstPost]);
+  const postMapRef = useRef<Map<HTMLElement, T>>(new Map());
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  const setContainerRef = useCallback((el: HTMLElement | null, item: T) => {
-    if (!el) return;
-    itemMapRef.current.set(el, item);
-    observerRef.current?.observe(el);
-  }, []);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: -
-  useEffect(() => {
-    if (entry?.isIntersecting) {
-      (async () => {
-        const lastId = items.at(-1)?.id;
-        if (!lastId) return;
-        try {
-          const newItem = await loadNext(lastId);
-          setItems((prev) => [...prev, newItem]);
-          activeUrlRef.current = newItem.url;
-          window.history.replaceState({}, '', newItem.url);
-        } catch (e) {
-          console.error('Failed to load next item:', e);
-        }
-      })();
+  const setContainerRef = (ref: HTMLElement | null, post: T) => {
+    if (ref && observerRef.current && !postMapRef.current.has(ref)) {
+      postMapRef.current.set(ref, post);
+      observerRef.current.observe(ref);
     }
-  }, [entry]);
+  };
 
+  // IntersectionObserver — отслеживает появление поста в области видимости
   useEffect(() => {
     if (observerRef.current) return;
+
     observerRef.current = new IntersectionObserver(
       (entries) => {
         const visibleEntries = entries
           .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visibleEntries.length === 0) return;
+          .map((entry) => ({
+            entry,
+            post: postMapRef.current.get(entry.target as HTMLElement),
+          }));
 
-        visibleEntries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          const el = entry.target;
-          const currentItem = itemMapRef.current.get(el);
-          console.log('jopA!!!');
-          if (currentItem && currentItem.url !== activeUrlRef.current) {
-            activeUrlRef.current = currentItem.url;
-            window.history.replaceState({}, '', currentItem.url);
-          }
-        });
+        const lastVisible = visibleEntries.at(-1);
+        if (!lastVisible) return;
+
+        const url = lastVisible.post!.url;
+        if (window.location.pathname !== new URL(url).pathname) {
+          console.log('🔁 Switched to post:', url);
+          window.history.replaceState({}, '', url);
+        }
       },
-      { threshold: 0.5 },
+      {
+        threshold: 0,
+      },
     );
 
     return () => observerRef.current?.disconnect();
   }, []);
 
-  return { items, markerRef, setContainerRef };
+  // Маркер загрузки следующих постов
+  const markerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const el = markerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      async ([entry]) => {
+        if (entry.isIntersecting) {
+          const lastPost = items[items.length - 1];
+          const newPost = await loadNext(lastPost.id);
+          console.log('🟢 Loaded new post:', newPost.url);
+          setItems((prev) => [...prev, newPost]);
+        }
+      },
+      {
+        rootMargin: '600px 0px 0px 0px',
+        threshold: 0,
+      },
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [items, loadNext]);
+
+  return {
+    items,
+    setContainerRef,
+    markerRef,
+  };
 }

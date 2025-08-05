@@ -109,7 +109,7 @@ export default function Show({
                 mb="xl"
               >
                 {index !== 0 && (
-                  <Title order={2} mt="xl" mb="sm">
+                  <Title order={1} mt="xl" mb="sm">
                     {post.name}
                   </Title>
                 )}
