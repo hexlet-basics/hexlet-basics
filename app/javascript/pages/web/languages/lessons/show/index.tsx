@@ -28,6 +28,7 @@ import Chat from '@/components/Chat.tsx';
 import AppAnchor from '@/components/Elements/AppAnchor.tsx';
 import MarkdownViewer from '@/components/MarkdownViewer.tsx';
 import XssContent from '@/components/XssContent.tsx';
+import { useIsMobile } from '@/hooks/useIsMobile.ts';
 import { neededPreview } from '@/lib/utils.ts';
 import ContactMethodRequestingBlock from '@/pages/layouts/blocks/ContactMethodRequestingBlock.tsx';
 import LessonLayout from '@/pages/layouts/LessonLayout.tsx';
@@ -63,7 +64,7 @@ function HtmlPreviewBlock() {
 
 export default function Index() {
   const theme = useMantineTheme();
-  const isTabletUp = useMediaQuery(`(min-width: ${theme.breakpoints.sm})`);
+  const isTabletUp = !useIsMobile();
   const headerHeight =
     theme.components?.AppShell?.defaultProps?.header?.height ?? 60;
 

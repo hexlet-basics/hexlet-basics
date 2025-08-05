@@ -10,6 +10,7 @@ import {
   HoverCard,
   Image,
   Menu,
+  Popover,
   SimpleGrid,
   Space,
   Stack,
@@ -17,6 +18,7 @@ import {
   ThemeIcon,
   UnstyledButton,
 } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import i18next from 'i18next';
 import {
   Blocks,
@@ -33,6 +35,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import AppAnchor from '@/components/Elements/AppAnchor';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import logoImg from '@/images/logo.svg';
 import defaultAvatarImg from '@/images/user-avatar.webp';
 import { localesByCode } from '@/lib/utils';
@@ -105,21 +108,39 @@ function CourseMenu({
   landingPages: SharedProps['landingPagesForLists'];
 }) {
   const { t } = useTranslation('layouts');
+  const isMobile = useIsMobile();
+  const [opened, { open, close, toggle }] = useDisclosure(false);
 
   return (
-    <HoverCard shadow="md" keepMounted>
-      <HoverCard.Target>
-        <UnstyledButton>
+    <Popover
+      width={320}
+      position="bottom-start"
+      withArrow
+      shadow="md"
+      opened={opened}
+      onDismiss={close}
+      withinPortal
+    >
+      <Popover.Target>
+        <UnstyledButton
+          onClick={isMobile ? toggle : undefined}
+          onMouseEnter={!isMobile ? open : undefined}
+          onMouseLeave={!isMobile ? close : undefined}
+        >
           <Center inline>
             <Text me={5}>{t('shared.nav.courses')}</Text>
             <ChevronDown size={16} />
           </Center>
         </UnstyledButton>
-      </HoverCard.Target>
-      <HoverCard.Dropdown>
+      </Popover.Target>
+
+      <Popover.Dropdown
+        onMouseEnter={!isMobile ? open : undefined}
+        onMouseLeave={!isMobile ? close : undefined}
+      >
         <SimpleGrid cols={2} spacing="sm" p="xs">
           {landingPages.map((lp) => (
-            <Group key={lp.id} pos="relative">
+            <Group key={lp.id} wrap="nowrap" pos="relative">
               <Image
                 w="auto"
                 radius="sm"
@@ -137,8 +158,8 @@ function CourseMenu({
             </Group>
           ))}
         </SimpleGrid>
-      </HoverCard.Dropdown>
-    </HoverCard>
+      </Popover.Dropdown>
+    </Popover>
   );
 }
 

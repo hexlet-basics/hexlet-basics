@@ -48,6 +48,11 @@ export default function ApplicationLayout({
 
   useWindowEvent('load', () => {
     CookieConsent.run({
+      guiOptions: {
+        consentModal: {
+          layout: 'box inline',
+        },
+      },
       categories: {
         necessary: {
           enabled: true, // this category is enabled by default

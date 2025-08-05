@@ -229,6 +229,11 @@ class AnnotateRb::ModelAnnotator::Annotation::AnnotationBuilder
 
   # source://annotaterb//lib/annotate_rb/model_annotator/annotation/annotation_builder.rb#61
   def build; end
+
+  private
+
+  # source://annotaterb//lib/annotate_rb/model_annotator/annotation/annotation_builder.rb#74
+  def migration_version_for_model(model); end
 end
 
 # source://annotaterb//lib/annotate_rb/model_annotator/annotation/annotation_builder.rb#7
@@ -403,7 +408,7 @@ class AnnotateRb::ModelAnnotator::AnnotationDecider
 
   private
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/annotation_decider.rb#57
+  # source://annotaterb//lib/annotate_rb/model_annotator/annotation_decider.rb#37
   def file_contains_skip_annotation; end
 end
 
@@ -443,14 +448,14 @@ class AnnotateRb::ModelAnnotator::AnnotationDiffGenerator
   # @param annotation_block [String] The annotation block we intend to write to the model file
   # @return [AnnotationDiffGenerator] a new instance of AnnotationDiffGenerator
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/annotation_diff_generator.rb#24
+  # source://annotaterb//lib/annotate_rb/model_annotator/annotation_diff_generator.rb#23
   def initialize(file_content, annotation_block); end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/annotation_diff_generator.rb#29
+  # source://annotaterb//lib/annotate_rb/model_annotator/annotation_diff_generator.rb#28
   def generate; end
 
   class << self
-    # source://annotaterb//lib/annotate_rb/model_annotator/annotation_diff_generator.rb#17
+    # source://annotaterb//lib/annotate_rb/model_annotator/annotation_diff_generator.rb#16
     def call(file_content, annotation_block); end
   end
 end
@@ -1408,7 +1413,7 @@ class AnnotateRb::ModelAnnotator::ModelWrapper
   def built_attributes; end
 
   # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#180
-  def classified_sort(cols); end
+  def classified_sort(cols, grouped_polymorphic); end
 
   # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#63
   def column_defaults; end
@@ -1429,7 +1434,7 @@ class AnnotateRb::ModelAnnotator::ModelWrapper
   # These are the columns that the globalize gem needs to work but
   # are not necessary for the models to be displayed as annotations.
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#210
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#215
   def ignored_translation_table_columns; end
 
   # TODO: Simplify this conditional
@@ -1898,35 +1903,35 @@ class AnnotateRb::Options
 
   # @return [Options] a new instance of Options
   #
-  # source://annotaterb//lib/annotate_rb/options.rb#170
+  # source://annotaterb//lib/annotate_rb/options.rb#172
   def initialize(options = T.unsafe(nil), state = T.unsafe(nil)); end
 
-  # source://annotaterb//lib/annotate_rb/options.rb#168
+  # source://annotaterb//lib/annotate_rb/options.rb#170
   def [](*args, **_arg1, &block); end
 
-  # source://annotaterb//lib/annotate_rb/options.rb#230
+  # source://annotaterb//lib/annotate_rb/options.rb#232
   def get_state(key); end
 
-  # source://annotaterb//lib/annotate_rb/options.rb#183
+  # source://annotaterb//lib/annotate_rb/options.rb#185
   def load_defaults; end
 
-  # source://annotaterb//lib/annotate_rb/options.rb#234
+  # source://annotaterb//lib/annotate_rb/options.rb#236
   def print; end
 
-  # source://annotaterb//lib/annotate_rb/options.rb#221
+  # source://annotaterb//lib/annotate_rb/options.rb#223
   def set_state(key, value, overwrite = T.unsafe(nil)); end
 
-  # source://annotaterb//lib/annotate_rb/options.rb#179
+  # source://annotaterb//lib/annotate_rb/options.rb#181
   def to_h; end
 
-  # source://annotaterb//lib/annotate_rb/options.rb#217
+  # source://annotaterb//lib/annotate_rb/options.rb#219
   def with_default_fallback(key); end
 
   private
 
   # Guard against user inputting strings instead of symbols
   #
-  # source://annotaterb//lib/annotate_rb/options.rb#241
+  # source://annotaterb//lib/annotate_rb/options.rb#243
   def symbolize_exclude_tests; end
 
   class << self
@@ -1935,31 +1940,31 @@ class AnnotateRb::Options
   end
 end
 
-# source://annotaterb//lib/annotate_rb/options.rb#161
+# source://annotaterb//lib/annotate_rb/options.rb#163
 AnnotateRb::Options::ALL_OPTION_KEYS = T.let(T.unsafe(nil), Array)
 
-# source://annotaterb//lib/annotate_rb/options.rb#99
+# source://annotaterb//lib/annotate_rb/options.rb#100
 AnnotateRb::Options::DEFAULT_OPTIONS = T.let(T.unsafe(nil), Hash)
 
 # source://annotaterb//lib/annotate_rb/options.rb#28
 AnnotateRb::Options::FLAG_OPTIONS = T.let(T.unsafe(nil), Hash)
 
-# source://annotaterb//lib/annotate_rb/options.rb#101
+# source://annotaterb//lib/annotate_rb/options.rb#102
 AnnotateRb::Options::FLAG_OPTION_KEYS = T.let(T.unsafe(nil), Array)
 
-# source://annotaterb//lib/annotate_rb/options.rb#63
+# source://annotaterb//lib/annotate_rb/options.rb#64
 AnnotateRb::Options::OTHER_OPTIONS = T.let(T.unsafe(nil), Hash)
 
-# source://annotaterb//lib/annotate_rb/options.rb#134
+# source://annotaterb//lib/annotate_rb/options.rb#136
 AnnotateRb::Options::OTHER_OPTION_KEYS = T.let(T.unsafe(nil), Array)
 
-# source://annotaterb//lib/annotate_rb/options.rb#90
+# source://annotaterb//lib/annotate_rb/options.rb#91
 AnnotateRb::Options::PATH_OPTIONS = T.let(T.unsafe(nil), Hash)
 
-# source://annotaterb//lib/annotate_rb/options.rb#154
+# source://annotaterb//lib/annotate_rb/options.rb#156
 AnnotateRb::Options::PATH_OPTION_KEYS = T.let(T.unsafe(nil), Array)
 
-# source://annotaterb//lib/annotate_rb/options.rb#165
+# source://annotaterb//lib/annotate_rb/options.rb#167
 AnnotateRb::Options::POSITION_DEFAULT = T.let(T.unsafe(nil), String)
 
 # source://annotaterb//lib/annotate_rb/options.rb#17
@@ -2290,11 +2295,30 @@ end
 
 # source://annotaterb//lib/annotate_rb/runner.rb#4
 class AnnotateRb::Runner
-  # source://annotaterb//lib/annotate_rb/runner.rb#11
+  # source://annotaterb//lib/annotate_rb/runner.rb#25
   def run(args); end
 
   class << self
-    # source://annotaterb//lib/annotate_rb/runner.rb#6
+    # source://annotaterb//lib/annotate_rb/runner.rb#8
     def run(args); end
+
+    # Returns the value of attribute runner.
+    #
+    # source://annotaterb//lib/annotate_rb/runner.rb#6
+    def runner; end
+
+    # @return [Boolean]
+    #
+    # source://annotaterb//lib/annotate_rb/runner.rb#16
+    def running?; end
+
+    private
+
+    # Sets the attribute runner
+    #
+    # @param value the value to set the attribute runner to.
+    #
+    # source://annotaterb//lib/annotate_rb/runner.rb#22
+    def runner=(_arg0); end
   end
 end
