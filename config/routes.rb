@@ -10,6 +10,9 @@ Rails.application.routes.draw do
   get "/ru/languages/pre-course-python", to: redirect("/ru/languages/python")
   get "/ru/languages/pre-course-python/*", to: redirect("/ru/languages/python")
 
+  get "/ru/languages/osnovy-python", to: redirect("/ru/languages/python")
+  get "/ru/languages/osnovy-python/*", to: redirect("/ru/languages/python")
+
   get "/ru/languages/layout-designer", to: redirect("/ru/languages/html")
   get "/ru/languages/layout-designer/*", to: redirect("/ru/languages/html")
 

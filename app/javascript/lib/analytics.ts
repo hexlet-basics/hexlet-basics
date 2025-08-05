@@ -1,5 +1,4 @@
-// import carrotquest from "@hexlet/analytics-plugin-carrotquest";
-
+// import googleAnalytics from '@analytics/google-analytics';
 import yandexMetrika from '@hexlet/analytics-plugin-yandex-metrika';
 import Analytics from 'analytics';
 import type { BackendEvent } from '@/types/events';
@@ -10,10 +9,9 @@ import { log } from './utils';
 const plugins = [];
 
 if (!import.meta.env.SSR && !import.meta.env.DEV) {
-  console.log('!!!!');
   plugins.push(
     // googleAnalytics({
-    //   measurementIds: ["G-XXXXXXXX"],
+    //   measurementIds: ['G-5GVCBLE773'],
     // }),
     yandexMetrika({
       counterId: import.meta.env.VITE_YANDEX_METRIKA_COUNTER_ID,
