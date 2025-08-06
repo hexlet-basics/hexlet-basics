@@ -1,11 +1,10 @@
+import { List } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '@/pages/layouts/AdminLayout';
 import * as Routes from '@/routes.js';
-import type { BlogPostCrud } from '@/types/serializers';
-import type { Language } from '@/types/serializers';
+import type { BlogPostCrud, Language } from '@/types/serializers';
 import Form from './shared/form';
 import Menu from './shared/menu';
-import {List} from "@mantine/core";
 
 type Props = {
   blogPostDto: BlogPostCrud;
@@ -25,11 +24,7 @@ export default function Edit({ blogPostDto, relatedCourses }: Props) {
       <b>Related Courses</b>
       <List mb="xl">
         {relatedCourses.map((course) => {
-          return (
-            <List.Item>
-              {course.slug}
-            </List.Item>
-          );
+          return <List.Item key={course.id}>{course.slug}</List.Item>;
         })}
       </List>
       <Form
