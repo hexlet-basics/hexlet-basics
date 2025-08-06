@@ -23,7 +23,8 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
     blog_post = Admin::BlogPostForm.find(params[:id])
 
     render inertia: true, props: {
-      blogPostDto: BlogPostCrudResource.new(blog_post)
+      blogPostDto: BlogPostCrudResource.new(blog_post),
+      relatedCourses: LanguageResource.new(blog_post.related_languages)
     }
   end
 
