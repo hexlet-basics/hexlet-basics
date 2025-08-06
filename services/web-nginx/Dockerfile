@@ -7,6 +7,7 @@ COPY --from=rails-app /rails/public /var/www/code-basics/shared/public
 
 COPY services/web-nginx/files/nginx.code-basics.conf /etc/nginx/conf.d/code-basics.conf
 COPY services/web-nginx/files/nginx.cors.conf /etc/nginx/snippets/cors.conf
+COPY services/web-nginx/files/nginx.proxy.conf /etc/nginx/snippets/proxy_headers.conf
 
 COPY services/web-nginx/system/maintenance.html /system/maintenance.html
 COPY services/web-nginx/system/maintenance.gif /system/maintenance.gif
