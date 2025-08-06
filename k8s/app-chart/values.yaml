@@ -1,6 +1,6 @@
 ---
 
-version: v1238
+version: v1240
 
 nginx:
   image:
