@@ -1,4 +1,5 @@
-// import "@/lib/monacoLoader.ts";
+// NOTE: используется для предотвращения дополнительной загрузки с cdn.jsdelivr.net
+import '@/lib/monacoLoader.ts';
 
 import { usePage } from '@inertiajs/react';
 import MonacoEditor from '@monaco-editor/react';
