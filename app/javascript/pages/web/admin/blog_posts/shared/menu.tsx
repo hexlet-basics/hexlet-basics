@@ -28,11 +28,7 @@ export default function Menu({ data }: Props) {
     items.push({
       href: Routes.related_courses_admin_blog_post_path(data.data.id),
       method: 'post',
-      label: (
-        <ActionIcon variant="default" size="xs">
-          <GraduationCap />
-        </ActionIcon>
-      ),
+      label: <GraduationCap size={15} />,
     });
     items.push({
       href: Routes.blog_post_path(data.data.slug!),
