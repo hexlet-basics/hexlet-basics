@@ -1,4 +1,5 @@
-import { LogIn } from 'lucide-react';
+import { ActionIcon } from '@mantine/core';
+import { GraduationCap, LogIn } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import {
   CrudHorizontalMenu,
@@ -23,6 +24,15 @@ export default function Menu({ data }: Props) {
     items.push({
       href: Routes.edit_admin_blog_post_path(data.data.id),
       label: tHelpers('crud.editing'),
+    });
+    items.push({
+      href: Routes.related_courses_admin_blog_post_path(data.data.id),
+      method: 'post',
+      label: (
+        <ActionIcon variant="default" size="xs">
+          <GraduationCap />
+        </ActionIcon>
+      ),
     });
     items.push({
       href: Routes.blog_post_path(data.data.slug!),
