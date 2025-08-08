@@ -25,7 +25,7 @@
     "@sentry/react": "^10.3.0",
     "@sentry/tracing": "^7.120.4",
     "@tailwindcss/postcss": "^4.1.11",
-    "analytics": "^0.8.18",
+    "analytics": "0.8.16",
     "ansi_up": "^6.0.6",
     "axios": "^1.11.0",
     "classnames": "^2.5.1",
