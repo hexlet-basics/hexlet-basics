@@ -4,16 +4,13 @@ import {
   Affix,
   AppShell,
   Box,
-  Button,
-  Center,
   Container,
   Stack,
   Title,
-  Transition,
 } from '@mantine/core';
 import { useDisclosure, useWindowEvent } from '@mantine/hooks';
 import { Send } from 'lucide-react';
-import { type PropsWithChildren, useEffect } from 'react';
+import type { PropsWithChildren } from 'react';
 import * as CookieConsent from 'vanilla-cookieconsent';
 import { XBreadcrumb } from '@/components/breadcrumbs.tsx';
 import AppAnchor from '@/components/Elements/AppAnchor.tsx';
@@ -48,6 +45,7 @@ export default function ApplicationLayout({
 
   useWindowEvent('load', () => {
     CookieConsent.run({
+      autoShow: false,
       guiOptions: {
         consentModal: {
           layout: 'box inline',
@@ -66,6 +64,7 @@ export default function ApplicationLayout({
         translations: cookieTranslations,
       },
     });
+    setTimeout(CookieConsent.show, 4000);
   });
 
   return (
