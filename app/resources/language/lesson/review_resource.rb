@@ -9,4 +9,3 @@ class Language::Lesson::ReviewResource < ApplicationResource
     :summary,
     :created_at
 end
-

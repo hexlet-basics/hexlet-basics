@@ -10,10 +10,7 @@ import MarkdownViewer from '@/components/MarkdownViewer';
 import useDataTableProps from '@/hooks/useDataTableProps';
 import AdminLayout from '@/pages/layouts/AdminLayout';
 import * as Routes from '@/routes.js';
-import type {
-  Grid,
-  LanguageLessonReview,
-} from '@/types';
+import type { Grid, LanguageLessonReview } from '@/types';
 
 type Props = PropsWithChildren & {
   reviews: LanguageLessonReview[];

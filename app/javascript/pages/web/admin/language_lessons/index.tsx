@@ -15,7 +15,6 @@ type Props = PropsWithChildren & {
   grid: Grid;
 };
 
-
 export default function Index({ grid, lessons }: Props) {
   const { t } = useTranslation();
   const { gridProps } = useDataTableProps<LanguageLesson, {}>(grid);
