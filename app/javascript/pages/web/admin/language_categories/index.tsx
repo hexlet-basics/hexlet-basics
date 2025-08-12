@@ -34,11 +34,11 @@ export default function Index({ grid, categories }: Props) {
             <Edit />
           </ActionIcon>
         </AppAnchor>
-        <a target="_blank" href={Routes.language_category_path(item.slug!)}>
+        <AppAnchor external href={Routes.language_category_path(item.slug!)}>
           <ActionIcon variant="default" size="xs">
             <Link />
           </ActionIcon>
-        </a>
+        </AppAnchor>
         {/* <Link */}
         {/*   onClick={confirmDeleting} */}
         {/*   className="btn btn-link link-body-emphasis p-0 m-0" */}

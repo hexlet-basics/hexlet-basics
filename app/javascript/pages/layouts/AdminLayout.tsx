@@ -43,6 +43,12 @@ function NavbarMenu() {
       />
       <NavLink
         component={Link}
+        href={Routes.admin_language_lessons_path()}
+        label={tLayouts('web.admin.application.language_lessons')}
+        leftSection={<i className="bi bi-file-text" />}
+      />
+      <NavLink
+        component={Link}
         href={Routes.admin_languages_path()}
         label={tLayouts('web.admin.application.languages')}
         leftSection={<i className="bi bi-terminal" />}

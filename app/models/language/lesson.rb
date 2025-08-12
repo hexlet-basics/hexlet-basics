@@ -67,6 +67,10 @@ class Language::Lesson < ApplicationRecord
    end
  end
 
+  def self.ransackable_attributes(auth_object = nil)
+    [ "created_at", "id", "language_id", "module_id", "natural_order", "order", "original_code", "path_to_code", "prepared_code", "review", "slug", "state", "test_code", "updated_at", "upload_id" ]
+  end
+
   def to_s
     slug
   end

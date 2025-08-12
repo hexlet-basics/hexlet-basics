@@ -113,6 +113,9 @@ ru:
         sign_up_and_start_learning: Зарегистрируйтесь и начните обучать ваших учеников программированию прямо сейчас
     admin:
       title: Админка Code-Basics
+      language_lessons:
+        index:
+          header: Уроки
       survey_answers:
         index:
           header: Ответы на опросы

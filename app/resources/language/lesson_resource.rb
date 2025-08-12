@@ -9,7 +9,8 @@ class Language::LessonResource < ApplicationResource
     :version_id,
     :description,
     :definitions,
-    :tips
+    :tips,
+    :created_at
 
   typelize tips: "string[]", definitions: "Array<{ name: string, description: string }>"
 
@@ -52,6 +53,6 @@ class Language::LessonResource < ApplicationResource
 
   typelize :string, nullable: true
   attribute :source_code_url do |info|
-    ExternalLinks.lesson_source_code_curl(info)
+    ExternalLinks.lesson_source_code_curl(info.version.path_to_code, info.locale)
   end
 end

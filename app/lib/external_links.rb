@@ -9,10 +9,9 @@ class ExternalLinks
     "https://github.com/hexlet-basics"
   end
 
-  def self.lesson_source_code_curl(lesson_version_info)
+  def self.lesson_source_code_curl(path_to_code, locale)
     repository_path = ExternalLinks.source_code_curl
-    locale = lesson_version_info.locale
-    path_to_description = File.join(repository_path, lesson_version_info.version.path_to_code, locale, "README.md")
+    path_to_description = File.join(repository_path, path_to_code, locale, "README.md")
 
     path_to_description.sub("modules", "blob/main/modules")
   end
