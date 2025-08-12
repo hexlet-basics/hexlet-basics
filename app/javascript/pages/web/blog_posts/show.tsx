@@ -130,10 +130,10 @@ export default function Show({
                 {index === 0 && (
                   <Box>
                     <Group mb="lg">
-                      <Group fw="bold" me="auto">
+                      <Group me="auto">
                         <User size={18} />
-                        {post.creator.name}
-                        {dayjs().to(post.created_at)}
+                        <Text fw="bold">{post.creator.name}</Text>
+                        <Text fw="bold">{dayjs().to(post.created_at)}</Text>
                       </Group>
                       <Group gap={0} me="lg">
                         <AppAnchor href={postUrl} me="xs" display="flex">
