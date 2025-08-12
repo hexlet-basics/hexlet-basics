@@ -30,6 +30,7 @@ class Review < ApplicationRecord
   include ReviewRepository
 
   enum :state, { draft: "draft", published: "published", archived: "archived" }, suffix: true, validate: true, default: "draft"
+  enum :locale, { ru: "ru", en: "en" }, suffix: true, validate: true
 
   def self.ransackable_attributes(_auth_object = nil)
     [ "id", "created_at" ]
@@ -39,7 +40,7 @@ class Review < ApplicationRecord
     []
   end
 
-  validates :locale, presence: true
+  # validates :locale, presence: true
   validates :body, presence: true
   validates :first_name, presence: true
 

@@ -253,6 +253,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_12_192733) do
     t.bigint "language_lesson_version_id", null: false
     t.bigint "language_lesson_version_info_id", null: false
     t.text "summary", null: false
+    t.string "locale", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["language_id"], name: "index_language_lesson_reviews_on_language_id"

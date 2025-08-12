@@ -17,6 +17,15 @@ class Web::Admin::LanguagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "review" do
+    language = languages(:php)
+
+    VCR.use_cassette("ai-lessons-reviews-create") do
+      post review_admin_language_url(language.id)
+    end
+    assert_response :redirect
+  end
+
   test "create" do
     slug = "racket"
 

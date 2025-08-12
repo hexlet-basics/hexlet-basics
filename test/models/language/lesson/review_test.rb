@@ -3,6 +3,7 @@
 # Table name: language_lesson_reviews
 #
 #  id                              :bigint           not null, primary key
+#  locale                          :string           not null
 #  summary                         :text             not null
 #  created_at                      :datetime         not null
 #  updated_at                      :datetime         not null

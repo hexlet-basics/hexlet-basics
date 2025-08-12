@@ -42,9 +42,11 @@ class Language::Lesson < ApplicationRecord
 
   belongs_to :language
   belongs_to :module
+  belongs_to :review, foreign_key: "language_lesson_id", dependent: :destroy, class_name: "Language::Lesson::Review"
 
   has_many :versions, dependent: :destroy
   has_many :members, dependent: :destroy
+  has_many :messages, through: :members, dependent: :destroy
 
   has_many :infos, through: :versions, class_name: "Language::Lesson::Version::Info"
   # has_one :localed_info, -> { merge(Language::Lesson::Version::Info.with_locale) },

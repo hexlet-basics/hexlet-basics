@@ -37,7 +37,7 @@ class Language::Lesson::Member < ApplicationRecord
   belongs_to :language_member, class_name: "Language::Member"
   belongs_to :lesson
 
-  has_many :messages, foreign_key: "language_lesson_member_id"
+  has_many :messages, foreign_key: "language_lesson_member_id", class_name: "Language::Lesson::Member::Message"
 
   counter_culture :language_member,
                   column_name: ->(model) { model.finished? ? "finished_lessons_count" : nil }

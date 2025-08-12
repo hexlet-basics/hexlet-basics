@@ -54,7 +54,7 @@ export default function Index({ grid, reviews }: Props) {
         {/* </AppAnchor> */}
         <AppAnchor
           external
-          // href={Routes.language_lesson_path(item.language!.slug!, item.slug!)}
+          href={Routes.language_lesson_path(item.language_slug!, item.slug!)}
         >
           <ActionIcon variant="default" size="xs">
             <Link />
@@ -83,7 +83,7 @@ export default function Index({ grid, reviews }: Props) {
         records={reviews}
         columns={[
           { accessor: 'id' },
-          { accessor: 'language.slug' },
+          { accessor: 'language_slug' },
           { accessor: 'slug' },
           {
             accessor: 'review',

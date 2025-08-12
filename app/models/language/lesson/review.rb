@@ -3,6 +3,7 @@
 # Table name: language_lesson_reviews
 #
 #  id                              :bigint           not null, primary key
+#  locale                          :string           not null
 #  summary                         :text             not null
 #  created_at                      :datetime         not null
 #  updated_at                      :datetime         not null
@@ -27,11 +28,12 @@
 #
 class Language::Lesson::Review < ApplicationRecord
   belongs_to :language
-  belongs_to :lesson
-  belongs_to :lesson_version
-  belongs_to :lesson_info
+  belongs_to :lesson, foreign_key: "language_lesson_id"
+  belongs_to :lesson_version, foreign_key: "language_lesson_version_id", class_name: "Language::Lesson::Version"
+  belongs_to :lesson_version_info, foreign_key: "language_lesson_version_info_id", class_name: "Language::Lesson::Version::Info"
 
   validates :summary, presence: true
+  validates :lesson, presence: true, uniqueness: { scope: :locale }
 
   def self.ransackable_attributes(auth_object = nil)
     [ "created_at", "id", "language_id", "language_lesson_id", "language_lesson_version_id", "language_lesson_version_info_id", "summary", "updated_at" ]

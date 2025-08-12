@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   def index
     q = ransack_params("sf" => "id", "so" => "desc")
@@ -42,6 +40,17 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
       f(:error)
       redirect_to_inertia new_admin_language_path, language
     end
+  end
+
+  def review
+    language = Language.find(params[:id])
+    language.current_lesson_infos.find_each do |info|
+      ReviewLessonJob.perform_later(info.id)
+    end
+
+    f(:success)
+
+    redirect_to admin_languages_path
   end
 
   def update

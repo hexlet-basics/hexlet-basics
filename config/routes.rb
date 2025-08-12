@@ -165,6 +165,9 @@ Rails.application.routes.draw do
           end
         end
         resources :languages, only: %i[index new edit update create] do
+          member do
+            post :review
+          end
           scope module: :languages do
             resources :versions, only: %i[create]
           end

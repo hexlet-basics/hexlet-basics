@@ -6,6 +6,7 @@ class CreateLanguageLessonReviews < ActiveRecord::Migration[8.0]
       t.references :language_lesson_version, null: false, foreign_key: true
       t.references :language_lesson_version_info, null: false, foreign_key: true
       t.text :summary, null: false
+      t.string :locale, null: false
 
       t.timestamps
     end

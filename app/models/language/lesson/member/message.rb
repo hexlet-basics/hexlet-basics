@@ -48,4 +48,8 @@ class Language::Lesson::Member::Message < ApplicationRecord
   def self.ransackable_associations(auth_object = nil)
     []
   end
+
+  def to_s
+    body
+  end
 end

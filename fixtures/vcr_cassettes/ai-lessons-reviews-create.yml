@@ -1,0 +1,689 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.openai.com/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"model":"gpt-4.1","messages":[{"role":"system","content":"Проанализируй
+        вопросы, которые задают студенты ассистенту по уроку.\nСуммируй основные претензиии
+        и пожелания. Предложи как поменять урок\n"},{"role":"user","content":"Урок
+        (теория и упражнение): Necessitatibus libero ab. Ut impedit non. Vitae accusantium
+        corporis. Consequuntur explicabo maiores. Dolor sapiente rem. Ea nam expedita.
+        Excepturi ullam harum. Commodi quos omnis. Iusto eveniet rem. Reiciendis ut
+        molestiae. Nostrum modi quo. Architecto ullam cum. Et cupiditate sequi. Saepe
+        quia rerum. Inventore atque quis. Quia aut vitae. Fuga et ullam. Quas doloribus
+        similique. Magni vitae seq.\n\nТут какой-то текст с инлайн кодом `const a
+        = 5` на js\n\n```html\n\u003csection\u003e\n  \u003ch2\u003eCode Basics\u003c/h2\u003e\n  \u003cp\u003e\n    Code
+        Basics — бесплатные практические уроки по программированию для тех,\n    кто
+        начинает с нуля.\n  \u003c/p\u003e\n  \u003cp\u003e\n    Если вы совсем новичок
+        и хотите научиться основам — переменным,\n    строкам, циклам, функциям и
+        т.д., то Code Basics вам подойдёт.\n  \u003c/p\u003e\n\u003c/section\u003e\n```\n\nЕще
+        текст сразу после кода, чтобы посмотреть отступы\n\n\u003e Цитата нафиг\n\n[ссылка](https://ru.hexlet.io)\n\n![Картинка](https://placehold.co/600x400)\n\n![Картинка
+        2](https://placehold.co/100x100)\n\n| Tailwind Class | CSS Property              |
+        Value            |\n|----------------|---------------------------|------------------|\n|
+        `rounded`      | `border-radius`           | `0.25rem`        |\n| `block`        |
+        `display`                 | `block`          |\n| `p-3`          | `padding`                 |
+        `0.75rem`        |\n\n\u003ciframe src=\"//player.vimeo.com/video/128853333?api=1\u0026player_id=video1\"
+        id=\"video1\" allowfullscreen\u003e\u003c/iframe\u003e\n\nwow\n\n\nQui laudantium
+        sequi. Tenetur sunt velit. Velit qui amet."},{"role":"user","content":"Вопросы
+        пользователей: "}]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <OPENAI_ACCESS_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 12 Aug 2025 20:58:27 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Openai-Organization:
+      - hexlet
+      Openai-Processing-Ms:
+      - '2071'
+      Openai-Project:
+      - proj_1VsC0S43I50wJpaQ0iE4zJoC
+      Openai-Version:
+      - '2020-10-01'
+      X-Envoy-Upstream-Service-Time:
+      - '2101'
+      X-Ratelimit-Limit-Requests:
+      - '10000'
+      X-Ratelimit-Limit-Tokens:
+      - '30000000'
+      X-Ratelimit-Remaining-Requests:
+      - '9999'
+      X-Ratelimit-Remaining-Tokens:
+      - '29999475'
+      X-Ratelimit-Reset-Requests:
+      - 6ms
+      X-Ratelimit-Reset-Tokens:
+      - 1ms
+      X-Request-Id:
+      - req_4c5fe7f528024508a306405bbdc6ffa8
+      Cf-Cache-Status:
+      - DYNAMIC
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      Set-Cookie:
+      - _cfuvid=swNrj82hfthAJz1_PachMWT5Fdue4zDzBrnFErrMPmA-1755032307816-0.0.1.1-604800000;
+        path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 96e2e4065c0ee1ca-MIA
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        ewogICJpZCI6ICJjaGF0Y21wbC1DM3FNYlNlWEI5Y20xQnZuR29GVHdBdlFWQm1ETiIsCiAgIm9iamVjdCI6ICJjaGF0LmNvbXBsZXRpb24iLAogICJjcmVhdGVkIjogMTc1NTAzMjMwNSwKICAibW9kZWwiOiAiZ3B0LTQuMS0yMDI1LTA0LTE0IiwKICAiY2hvaWNlcyI6IFsKICAgIHsKICAgICAgImluZGV4IjogMCwKICAgICAgIm1lc3NhZ2UiOiB7CiAgICAgICAgInJvbGUiOiAiYXNzaXN0YW50IiwKICAgICAgICAiY29udGVudCI6ICLQn9C+0LbQsNC70YPQudGB0YLQsCwg0L/RgNC10LTQvtGB0YLQsNCy0YzRgtC1INGB0L/QuNGB0L7QuiDQuNC70Lgg0L/RgNC40LzQtdGA0Ysg0LLQvtC/0YDQvtGB0L7QsiDQv9C+0LvRjNC30L7QstCw0YLQtdC70LXQuSwg0YfRgtC+0LHRiyDRjyDQvNC+0LMg0LjRhSDQv9GA0L7QsNC90LDQu9C40LfQuNGA0L7QstCw0YLRjCDQuCDRgdC00LXQu9Cw0YLRjCDQstGL0LLQvtC00Ysg0L4g0L/RgNC10YLQtdC90LfQuNGP0YUg0Lgg0L/QvtC20LXQu9Cw0L3QuNGP0YUuICBcbtCR0LXQtyDRgdCw0LzQuNGFINCy0L7Qv9GA0L7RgdC+0LIg0LDQvdCw0LvQuNC3INC90LXQstC+0LfQvNC+0LbQtdC9IOKAkyDRjyDQvdC1INCy0LjQttGDLCDQuiDRh9C10LzRgyDRgyDRgdGC0YPQtNC10L3RgtC+0LIg0LLQvtC30L3QuNC60LDRjtGCINGB0LvQvtC20L3QvtGB0YLQuCDQuNC70Lgg0LrQsNC60LjQtSDRh9Cw0YHRgtC4INGD0YDQvtC60LAg0LLRi9C30YvQstCw0Y7RgiDQt9Cw0YLRgNGD0LTQvdC10L3QuNGPLlxuXG4qKtCf0L7QttCw0LvRg9C50YHRgtCwLCDQvtGC0L/RgNCw0LLRjNGC0LUgXCLQktC+0L/RgNC+0YHRiyDQv9C+0LvRjNC30L7QstCw0YLQtdC70LXQuVwiIOKAlCDQuNGFINGB0LDQvCDRgtC10LrRgdGCINC40LvQuCDQstGL0LTQtdGA0LbQutC4LCDQuCDRjyDQv9GA0L7QstC10LTRgyDQsNC90LDQu9C40LchKioiLAogICAgICAgICJyZWZ1c2FsIjogbnVsbCwKICAgICAgICAiYW5ub3RhdGlvbnMiOiBbXQogICAgICB9LAogICAgICAibG9ncHJvYnMiOiBudWxsLAogICAgICAiZmluaXNoX3JlYXNvbiI6ICJzdG9wIgogICAgfQogIF0sCiAgInVzYWdlIjogewogICAgInByb21wdF90b2tlbnMiOiA0ODcsCiAgICAiY29tcGxldGlvbl90b2tlbnMiOiA5MywKICAgICJ0b3RhbF90b2tlbnMiOiA1ODAsCiAgICAicHJvbXB0X3Rva2Vuc19kZXRhaWxzIjogewogICAgICAiY2FjaGVkX3Rva2VucyI6IDAsCiAgICAgICJhdWRpb190b2tlbnMiOiAwCiAgICB9LAogICAgImNvbXBsZXRpb25fdG9rZW5zX2RldGFpbHMiOiB7CiAgICAgICJyZWFzb25pbmdfdG9rZW5zIjogMCwKICAgICAgImF1ZGlvX3Rva2VucyI6IDAsCiAgICAgICJhY2NlcHRlZF9wcmVkaWN0aW9uX3Rva2VucyI6IDAsCiAgICAgICJyZWplY3RlZF9wcmVkaWN0aW9uX3Rva2VucyI6IDAKICAgIH0KICB9LAogICJzZXJ2aWNlX3RpZXIiOiAiZGVmYXVsdCIsCiAgInN5c3RlbV9maW5nZXJwcmludCI6ICJmcF81MWUxMDcwY2YyIgp9Cg==
+  recorded_at: Tue, 12 Aug 2025 20:58:27 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"model":"gpt-4.1","messages":[{"role":"system","content":"Проанализируй
+        вопросы, которые задают студенты ассистенту по уроку.\nСуммируй основные претензиии
+        и пожелания. Предложи как поменять урок\n"},{"role":"user","content":"Урок
+        (теория и упражнение): Necessitatibus libero ab. Ut impedit non. Vitae accusantium
+        corporis. Consequuntur explicabo maiores. Dolor sapiente rem. Ea nam expedita.
+        Excepturi ullam harum. Commodi quos omnis. Iusto eveniet rem. Reiciendis ut
+        molestiae. Nostrum modi quo. Architecto ullam cum. Et cupiditate sequi. Saepe
+        quia rerum. Inventore atque quis. Quia aut vitae. Fuga et ullam. Quas doloribus
+        similique. Magni vitae seq.\n\nТут какой-то текст с инлайн кодом `const a
+        = 5` на js\n\n```html\n\u003csection\u003e\n  \u003ch2\u003eCode Basics\u003c/h2\u003e\n  \u003cp\u003e\n    Code
+        Basics — бесплатные практические уроки по программированию для тех,\n    кто
+        начинает с нуля.\n  \u003c/p\u003e\n  \u003cp\u003e\n    Если вы совсем новичок
+        и хотите научиться основам — переменным,\n    строкам, циклам, функциям и
+        т.д., то Code Basics вам подойдёт.\n  \u003c/p\u003e\n\u003c/section\u003e\n```\n\nЕще
+        текст сразу после кода, чтобы посмотреть отступы\n\n\u003e Цитата нафиг\n\n[ссылка](https://ru.hexlet.io)\n\n![Картинка](https://placehold.co/600x400)\n\n![Картинка
+        2](https://placehold.co/100x100)\n\n| Tailwind Class | CSS Property              |
+        Value            |\n|----------------|---------------------------|------------------|\n|
+        `rounded`      | `border-radius`           | `0.25rem`        |\n| `block`        |
+        `display`                 | `block`          |\n| `p-3`          | `padding`                 |
+        `0.75rem`        |\n\n\u003ciframe src=\"//player.vimeo.com/video/128853333?api=1\u0026player_id=video1\"
+        id=\"video1\" allowfullscreen\u003e\u003c/iframe\u003e\n\nwow\n\n\nQui laudantium
+        sequi. Tenetur sunt velit. Velit qui amet."},{"role":"user","content":"Вопросы
+        пользователей: "}]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <OPENAI_ACCESS_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 12 Aug 2025 20:58:48 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Openai-Organization:
+      - hexlet
+      Openai-Processing-Ms:
+      - '19712'
+      Openai-Project:
+      - proj_1VsC0S43I50wJpaQ0iE4zJoC
+      Openai-Version:
+      - '2020-10-01'
+      X-Envoy-Upstream-Service-Time:
+      - '19968'
+      X-Ratelimit-Limit-Requests:
+      - '10000'
+      X-Ratelimit-Limit-Tokens:
+      - '30000000'
+      X-Ratelimit-Remaining-Requests:
+      - '9999'
+      X-Ratelimit-Remaining-Tokens:
+      - '29999475'
+      X-Ratelimit-Reset-Requests:
+      - 6ms
+      X-Ratelimit-Reset-Tokens:
+      - 1ms
+      X-Request-Id:
+      - req_c53da51a273c4f679cfffabde2c09022
+      Cf-Cache-Status:
+      - DYNAMIC
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      Set-Cookie:
+      - _cfuvid=z1zI.lvgru6wv7dEMAOYD_SAnVOctlVfiJXOx4mxu8o-1755032328268-0.0.1.1-604800000;
+        path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 96e2e414cacf8dc7-MIA
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        ewogICJpZCI6ICJjaGF0Y21wbC1DM3FNZUFSTkRBcjJ6MTlPWmZxbEM3VW5xMnJ5ZyIsCiAgIm9iamVjdCI6ICJjaGF0LmNvbXBsZXRpb24iLAogICJjcmVhdGVkIjogMTc1NTAzMjMwOCwKICAibW9kZWwiOiAiZ3B0LTQuMS0yMDI1LTA0LTE0IiwKICAiY2hvaWNlcyI6IFsKICAgIHsKICAgICAgImluZGV4IjogMCwKICAgICAgIm1lc3NhZ2UiOiB7CiAgICAgICAgInJvbGUiOiAiYXNzaXN0YW50IiwKICAgICAgICAiY29udGVudCI6ICLQmtC+0L3QtdGH0L3QviEg0JTQu9GPINC60LDRh9C10YHRgtCy0LXQvdC90L7Qs9C+INCw0L3QsNC70LjQt9CwLCDQvNC90LUg0L3Rg9C20L3RiyDQv9GA0LjQvNC10YDRiyDQuNC70Lgg0L/QtdGA0LXRh9C10L3RjCDQutC+0L3QutGA0LXRgtC90YvRhSDQstC+0L/RgNC+0YHQvtCyINC/0L7Qu9GM0LfQvtCy0LDRgtC10LvQtdC5L9GB0YLRg9C00LXQvdGC0L7QsiDQv9C+INC00LDQvdC90L7QvNGDINGD0YDQvtC60YMuINCf0L7QttCw0LvRg9C50YHRgtCwLCDQv9GA0LXQtNC+0YHRgtCw0LLRjNGC0LUg0YHQv9C40YHQvtC6INCy0L7Qv9GA0L7RgdC+0LIsINC60L7RgtC+0YDRi9C1INC+0L3QuCDQt9Cw0LTQsNCy0LDQu9C4INCw0YHRgdC40YHRgtC10L3RgtGDINC/0L4g0Y3RgtC+0LzRgyDRg9GA0L7QutGDICjQvNC+0LbQvdC+INC00LDQttC1INCyINC60YDQsNGC0LrQvtC5INC40LvQuCDQutC+0L3RgdC/0LXQutGC0LjQstC90L7QuSDRhNC+0YDQvNC1KS4gIFxu4oCUINCi0L7Qs9C00LAg0Y8g0YHQvNC+0LPRgyDQv9GA0L7QsNC90LDQu9C40LfQuNGA0L7QstCw0YLRjCDQv9GA0LXRgtC10L3Qt9C40LgsINC/0L7QttC10LvQsNC90LjRjyDQuCDQtNCw0YLRjCDRgNC10LrQvtC80LXQvdC00LDRhtC40Lgg0L/QviDRg9C70YPRh9GI0LXQvdC40Y4g0YPRgNC+0LrQsC5cblxuKirQldGB0LvQuCDQstC+0L/RgNC+0YHQvtCyINC/0L7QutCwINC90LXRgiwg0LLQvtGCINC+0LHRidC40Lkg0YjQsNCx0LvQvtC9LCDQutCw0Log0LDQvdCw0LvQuNC3INC/0YDQvtC40LfQstC+0LTQuNGC0YHRjzoqKlxuXG4tLS1cbiMjIyAxLiDQodCx0L7RgCDQuCDQsNC90LDQu9C40Lcg0LLQvtC/0YDQvtGB0L7QslxuXG4+ICoq0J/RgNC40LzQtdGA0Ysg0YLQuNC/0LjRh9C90YvRhSDQstC+0L/RgNC+0YHQvtCyINC/0L4g0YPRgNC+0LrRgzoqKlxuPiAtINCn0YLQviDQt9C90LDRh9C40YIgYGNvbnN0IGEgPSA1YD9cbj4gLSDQl9Cw0YfQtdC8INC90YPQttC10L0g0Y3RgtC+0YIgSFRNTC3QutC+0LQ/XG4+IC0g0J/QvtGH0LXQvNGDINC/0L7RgdC70LUg0LrQvtC00LAg0YHRgtGA0LDQvdC90YvQuSDQvtGC0YHRgtGD0L8/XG4+IC0g0JfQsNGH0LXQvCDRjdGC0LAg0YbQuNGC0LDRgtCwP1xuPiAtINCn0YLQviDQt9CwINC60LvQsNGB0YHRiyBUYWlsd2luZCwg0LrQsNC6INC40YUg0L/RgNC40LzQtdC90Y/RgtGMP1xuPiAtINCf0L7Rh9C10LzRgyDQstC40LTQtdC+INC90LUg0LLQutC70Y7Rh9Cw0LXRgtGB0Y8/XG4+IC0g0J3QtdGCINC+0LHRitGP0YHQvdC10L3QuNGPLCDQutCw0Log0YHQstGP0LfQsNC90Ysg0YfQsNGB0YLQuCDRg9GA0L7QutCwLlxuXG4jIyMgMi4g0KHRg9C80LzQuNGA0L7QstCw0L3QuNC1INC+0YHQvdC+0LLQvdGL0YUg0L/RgNC10YLQtdC90LfQuNC5INC4INC/0L7QttC10LvQsNC90LjQuVxuXG4qKtCn0LDRidC1INCy0YHQtdCz0L4g0L/QvtC70YzQt9C+0LLQsNGC0LXQu9C4INC20LDQu9GD0Y7RgtGB0Y8v0YHQv9GA0LDRiNC40LLQsNGO0YI6Kipcbi0g0KHQu9Cw0LHQsNGPL9C+0YLRgdGD0YLRgdGC0LLRg9GO0YnQsNGPINGB0LLRj9C30L3QvtGB0YLRjCDQvNC10LbQtNGDINGA0LDQt9C70LjRh9C90YvQvNC4INGH0LDRgdGC0Y/QvNC4INC80LDRgtC10YDQuNCw0LvQsCAo0LjQtyDRgtC10L7RgNC40Lgg0YHRgNCw0LfRgyDQsiDQutC+0LQg0LHQtdC3INC/0LvQsNCy0L3QvtCz0L4g0L/QtdGA0LXRhdC+0LTQsCkuXG4tINCd0LXQtNC+0YHRgtCw0YLQvtC6INC/0L7QtNGA0L7QsdC90YvRhSDQvtCx0YrRj9GB0L3QtdC90LjQuSDQutC+0LTQsCDQuCDQuNGB0L/QvtC70YzQt9GD0LXQvNGL0YUg0LjQvdGB0YLRgNGD0LzQtdC90YLQvtCyL9Cx0LjQsdC70LjQvtGC0LXQuiAo0L3QsNC/0YDQuNC80LXRgCwgVGFpbHdpbmQsINC30LDRh9C10Lwg0LjQvdC70LDQudC9LdC60L7QtCwg0YfRgtC+INC+0LfQvdCw0YfQsNGO0YIg0Y3RgtC4INC60LvQsNGB0YHRiykuXG4tINCh0LvQuNGI0LrQvtC8INC80L3QvtCz0L4g0YDQsNC30YDQvtC30L3QtdC90L3Ri9GFINGN0LvQtdC80LXQvdGC0L7QsiAo0YLQvtGCINC20LUg0LHQu9C+0Log0YEg0YbQuNGC0LDRgtC+0LksINGB0YLRgNCw0L3QvdGL0LUg0LrQsNGA0YLQuNC90LrQuCwgaWZyYW1lINCx0LXQtyDQvtCx0YrRj9GB0L3QtdC90LjQuSksINC4INGN0YLQviDQv9GD0YLQsNC10YIuXG4tINCd0LXRgiDRj9GB0L3QvtC5INGB0YLRgNGD0LrRgtGD0YDRizog0L/QvtGH0LXQvNGDINGB0YDQsNC30YMg0L/QvtGB0LvQtSDQvtC00L3QvtCz0L4g0LrRg9GB0LrQsCDQutC+0LTQsCDigJQg0LTRgNGD0LPQvtC5LCDQv9C+0YLQvtC8INGG0LjRgtCw0YLQsCwg0L/QvtGC0L7QvCDRgdGB0YvQu9C60LAsINC/0L7RgtC+0Lwg0YLQsNCx0LvQuNGG0LA/XG4tINCd0LUg0L7QsdGK0Y/RgdC90LXQvdC+LCDQt9Cw0YfQtdC8INC40YHQv9C+0LvRjNC30YPQtdGC0YHRjyDQutCw0LbQtNCw0Y8g0YfQsNGB0YLRjCAoSFRNTCwgY3NzLCDQstC40LTQtdC+Li4uKS5cbi0g0J/QvtC20LXQu9Cw0L3QuNGPOiDQtNC+0LHQsNCy0LjRgtGMINC/0L7RgdC70LXQtNC+0LLQsNGC0LXQu9GM0L3Ri9C1INC/0YDQuNC80LXRgNGLLCDQsdC+0LvRjNGI0LUg0L/QvtGP0YHQvdC10L3QuNC5LCDRg9Cx0YDQsNGC0Ywg0LvQuNGI0L3QuNC1INGN0LvQtdC80LXQvdGC0Ysg0LjQu9C4INC+0LHRitGP0YHQvdC40YLRjCDQuNGFINGB0LzRi9GB0LsuXG5cbiMjIyAzLiDQn9GA0LXQtNC70L7QttC10L3QuNGPINC/0L4g0YPQu9GD0YfRiNC10L3QuNGOINGD0YDQvtC60LBcblxuKirQoNC10LrQvtC80LXQvdC00LDRhtC40Lgg0L/QviDQuNC30LzQtdC90LXQvdC40Y4g0YPRgNC+0LrQsDoqKlxuXG4tICoq0K/RgdC90L4g0L7QsdC+0LfQvdCw0YfQuNGC0Ywg0YbQtdC70Ywg0YPRgNC+0LrQsDoqKiDQp9C10LPQviDQtNC+0LvQttC10L0g0LTQvtGB0YLQuNGH0Ywg0YHRgtGD0LTQtdC90YIg0LIg0LrQvtC90YbQtT8g0J3QsNC/0YDQuNC80LXRgCwgXCLQn9C+0LfQvdCw0LrQvtC80LjRgtGM0YHRjyDRgSDQvtGB0L3QvtCy0LDQvNC4IEpTLdC40L3Qu9Cw0LnQvS3QutC+0LTQsCwg0YHRgtGA0YPQutGC0YPRgNC+0LkgSFRNTCwg0LHQsNC30L7QstGL0LzQuCDQutC70LDRgdGB0LDQvNC4IFRhaWx3aW5kXCIuXG4tICoq0KHRgtGA0YPQutGC0YPRgNC40YDQvtCy0LDRgtGMINC80LDRgtC10YDQuNCw0Ls6Kiog0KHQvdCw0YfQsNC70LAg0LrRgNCw0YLQutCw0Y8g0YLQtdC+0YDQuNGPLCDQt9Cw0YLQtdC8INC/0YDQuNC80LXRgNGLLCDQv9C+0YLQvtC8INC/0YDQsNC60YLQuNGH0LXRgdC60L7QtSDQt9Cw0LTQsNC90LjQtS5cbi0gKirQlNCw0LLQsNGC0Ywg0L7QsdGK0Y/RgdC90LXQvdC40Y8g0L/QvtGB0LvQtSDQutCw0LbQtNC+0LPQviDQsdC70L7QutCwOioqINCf0L7RgdC70LUg0LTQtdC80L7QvdGB0YLRgNCw0YbQuNC4INC60L7QtNCwINC+0LHRj9C30LDRgtC10LvRjNC90L4g0L7QsdGK0Y/RgdC90LjRgtGMLCDRh9GC0L4g0L7QvSDQtNC10LvQsNC10YIg0Lgg0LfQsNGH0LXQvC5cbi0gKirQnNC40L3QuNC80LjQt9C40YDQvtCy0LDRgtGMIFwi0YjRg9C8XCI6Kiog0JvQuNGI0L3QuNC1INC60LDRgNGC0LjQvdC60LgsINCx0LvQvtC60LgsINGG0LjRgtCw0YLRiyDigJQg0YPQsdGA0LDRgtGMINC40LvQuCDQv9C+0LzQtdGB0YLQuNGC0Ywg0LIg0L7RgtC00LXQu9GM0L3Ri9C1INGA0LDQt9C00LXQu9GLINGBINC60L7QvNC80LXQvdGC0LDRgNC40Y/QvNC4IFwi0JTQu9GPINGC0YDQtdC90LjRgNC+0LLQutC4XCIg0LjQu9C4IFwi0JTQu9GPINC+0LfQvdCw0LrQvtC80LvQtdC90LjRj1wiLlxuLSAqKtCb0YPRh9GI0LUg0LLRi9C00LXQu9GP0YLRjCDQt9C+0L3RiyDRg9C/0YDQsNC20L3QtdC90LjQuToqKiDQldGB0LvQuCDQtdGB0YLRjCDQt9Cw0LTQsNC90LjQtSwg0LLRi9C00LXQu9C40YLRjCDQtdCz0L4g0Y/QstC90L4uXG4tICoq0JTQvtCx0LDQstC40YLRjCDQsdC70L7QuiBcItCn0LDRgdGC0YvQtSDQstC+0L/RgNC+0YHRiy/QntGI0LjQsdC60LhcIjoqKiDQkiDQutC+0L3RhtC1INGD0YDQvtC60LAg0L/QvtC80LXRgdGC0LjRgtGMINC+0YLQstC10YLRiyDQvdCwINGC0LjQv9C40YfQvdGL0LUg0LLQvtC/0YDQvtGB0YsuXG4tICoq0JLQuNC00LXQviDQuCDQstC90LXRiNC90LjQtSDRgdGB0YvQu9C60Lgg0LrQvtC80LzQtdC90YLQuNGA0L7QstCw0YLRjDoqKiDQn9C+0Y/RgdC90LjRgtGMLCDRgNC10LrQvtC80LXQvdC00L7QstCw0L3QviDQu9C4INC/0YDQvtGB0LzQvtGC0YDQtdGC0Ywg0LLQuNC00LXQviwg0LfQsNGH0LXQvCDQvdGD0LbQvdCwINGB0YHRi9C70LrQsCwg0LrQsNC6INC+0L3QsCDQtNC+0L/QvtC70L3Rj9C10YIg0YPRgNC+0LouXG5cbi0tLVxuXG4qKtCS0YvQstC+0LQ6KiogIFxu0KHRgtGD0LTQtdC90YLQsNC8INC90YPQttC10L0g0YHRgtGA0YPQutGC0YPRgNC40YDQvtCy0LDQvdC90YvQuSwg0YHQstGP0LfQvdGL0Lkg0YPRgNC+0Log0YEg0Y/RgdC90YvQvNC4INGG0LXQu9GP0LzQuCwg0L/QvtC90Y/RgtC90YvQvNC4INC/0L7Rj9GB0L3QtdC90LjRj9C80Lgg0LrQsNC20LTQvtCz0L4g0YTRgNCw0LPQvNC10L3RgtCwINC4INCx0LXQtyDQu9C40YjQvdC10LPQviBcItC40L3RhNC+0YDQvNCw0YbQuNC+0L3QvdC+0LPQviDRiNGD0LzQsFwiLlxuXG4tLS1cblxuKirQltC00YMg0YHQv9C40YHQvtC6INGA0LXQsNC70YzQvdGL0YUg0LLQvtC/0YDQvtGB0L7QsiDQv9C+0LvRjNC30L7QstCw0YLQtdC70LXQuSoqINC00LvRjyDQsdC+0LvQtdC1INC00LXRgtCw0LvRjNC90L7Qs9C+INC4INGC0L7Rh9C90L7Qs9C+INCw0L3QsNC70LjQt9CwISIsCiAgICAgICAgInJlZnVzYWwiOiBudWxsLAogICAgICAgICJhbm5vdGF0aW9ucyI6IFtdCiAgICAgIH0sCiAgICAgICJsb2dwcm9icyI6IG51bGwsCiAgICAgICJmaW5pc2hfcmVhc29uIjogInN0b3AiCiAgICB9CiAgXSwKICAidXNhZ2UiOiB7CiAgICAicHJvbXB0X3Rva2VucyI6IDQ4NywKICAgICJjb21wbGV0aW9uX3Rva2VucyI6IDcyMSwKICAgICJ0b3RhbF90b2tlbnMiOiAxMjA4LAogICAgInByb21wdF90b2tlbnNfZGV0YWlscyI6IHsKICAgICAgImNhY2hlZF90b2tlbnMiOiAwLAogICAgICAiYXVkaW9fdG9rZW5zIjogMAogICAgfSwKICAgICJjb21wbGV0aW9uX3Rva2Vuc19kZXRhaWxzIjogewogICAgICAicmVhc29uaW5nX3Rva2VucyI6IDAsCiAgICAgICJhdWRpb190b2tlbnMiOiAwLAogICAgICAiYWNjZXB0ZWRfcHJlZGljdGlvbl90b2tlbnMiOiAwLAogICAgICAicmVqZWN0ZWRfcHJlZGljdGlvbl90b2tlbnMiOiAwCiAgICB9CiAgfSwKICAic2VydmljZV90aWVyIjogImRlZmF1bHQiLAogICJzeXN0ZW1fZmluZ2VycHJpbnQiOiAiZnBfNTFlMTA3MGNmMiIKfQo=
+  recorded_at: Tue, 12 Aug 2025 20:58:48 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"model":"gpt-4.1","messages":[{"role":"system","content":"Проанализируй
+        вопросы, которые задают студенты ассистенту по уроку.\nСуммируй основные претензиии
+        и пожелания. Предложи как поменять урок\n"},{"role":"user","content":"Урок
+        (теория и упражнение): Necessitatibus libero ab. Ut impedit non. Vitae accusantium
+        corporis. Consequuntur explicabo maiores. Dolor sapiente rem. Ea nam expedita.
+        Excepturi ullam harum. Commodi quos omnis. Iusto eveniet rem. Reiciendis ut
+        molestiae. Nostrum modi quo. Architecto ullam cum. Et cupiditate sequi. Saepe
+        quia rerum. Inventore atque quis. Quia aut vitae. Fuga et ullam. Quas doloribus
+        similique. Magni vitae seq.\n\nТут какой-то текст с инлайн кодом `const a
+        = 5` на js\n\n```html\n\u003csection\u003e\n  \u003ch2\u003eCode Basics\u003c/h2\u003e\n  \u003cp\u003e\n    Code
+        Basics — бесплатные практические уроки по программированию для тех,\n    кто
+        начинает с нуля.\n  \u003c/p\u003e\n  \u003cp\u003e\n    Если вы совсем новичок
+        и хотите научиться основам — переменным,\n    строкам, циклам, функциям и
+        т.д., то Code Basics вам подойдёт.\n  \u003c/p\u003e\n\u003c/section\u003e\n```\n\nЕще
+        текст сразу после кода, чтобы посмотреть отступы\n\n\u003e Цитата нафиг\n\n[ссылка](https://ru.hexlet.io)\n\n![Картинка](https://placehold.co/600x400)\n\n![Картинка
+        2](https://placehold.co/100x100)\n\n| Tailwind Class | CSS Property              |
+        Value            |\n|----------------|---------------------------|------------------|\n|
+        `rounded`      | `border-radius`           | `0.25rem`        |\n| `block`        |
+        `display`                 | `block`          |\n| `p-3`          | `padding`                 |
+        `0.75rem`        |\n\n\u003ciframe src=\"//player.vimeo.com/video/128853333?api=1\u0026player_id=video1\"
+        id=\"video1\" allowfullscreen\u003e\u003c/iframe\u003e\n\nwow\n\n\nQui laudantium
+        sequi. Tenetur sunt velit. Velit qui amet."},{"role":"user","content":"Вопросы
+        пользователей: "}]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <OPENAI_ACCESS_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 12 Aug 2025 20:58:51 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Openai-Organization:
+      - hexlet
+      Openai-Processing-Ms:
+      - '2677'
+      Openai-Project:
+      - proj_1VsC0S43I50wJpaQ0iE4zJoC
+      Openai-Version:
+      - '2020-10-01'
+      X-Envoy-Upstream-Service-Time:
+      - '2702'
+      X-Ratelimit-Limit-Requests:
+      - '10000'
+      X-Ratelimit-Limit-Tokens:
+      - '30000000'
+      X-Ratelimit-Remaining-Requests:
+      - '9999'
+      X-Ratelimit-Remaining-Tokens:
+      - '29999475'
+      X-Ratelimit-Reset-Requests:
+      - 6ms
+      X-Ratelimit-Reset-Tokens:
+      - 1ms
+      X-Request-Id:
+      - req_d42b96314d464a8c8e50593e2b75fc17
+      Cf-Cache-Status:
+      - DYNAMIC
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      Set-Cookie:
+      - _cfuvid=Kl6wZC2k8osGe7S2GtwIkWh__YvO3xr63i_EWIsxWso-1755032331256-0.0.1.1-604800000;
+        path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 96e2e4950f7f744c-MIA
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        ewogICJpZCI6ICJjaGF0Y21wbC1DM3FNeUY1NUY4Z3FVdW9UTVNmV0RNRGpwSm1YRCIsCiAgIm9iamVjdCI6ICJjaGF0LmNvbXBsZXRpb24iLAogICJjcmVhdGVkIjogMTc1NTAzMjMyOCwKICAibW9kZWwiOiAiZ3B0LTQuMS0yMDI1LTA0LTE0IiwKICAiY2hvaWNlcyI6IFsKICAgIHsKICAgICAgImluZGV4IjogMCwKICAgICAgIm1lc3NhZ2UiOiB7CiAgICAgICAgInJvbGUiOiAiYXNzaXN0YW50IiwKICAgICAgICAiY29udGVudCI6ICLQn9C+0YXQvtC20LUsINCy0Ysg0YXQvtGC0LjRgtC1LCDRh9GC0L7QsdGLINGPINC/0YDQvtCw0L3QsNC70LjQt9C40YDQvtCy0LDQuyDQstC+0L/RgNC+0YHRiyDRgdGC0YPQtNC10L3RgtC+0LIsINC60L7RgtC+0YDRi9C1INC+0L3QuCDQt9Cw0LTQsNGO0YIg0LDRgdGB0LjRgdGC0LXQvdGC0YMg0L/QviDQtNCw0L3QvdC+0LzRgyDRg9GA0L7QutGDLCDQuCDQvdCwINC+0YHQvdC+0LLQtSDRjdGC0L7Qs9C+INGB0LTQtdC70LDQuyDQstGL0LLQvtC00Ysg0Lgg0L/RgNC10LTQu9C+0LbQuNC7LCDQutCw0Log0YPQu9GD0YfRiNC40YLRjCDRg9GA0L7Qui4g0J3QviDRgdCw0LzQuCDQstC+0L/RgNC+0YHRiyDQv9C+0LvRjNC30L7QstCw0YLQtdC70LXQuSDQstGLINC/0L7QutCwINC90LUg0L/RgNC40YHQu9Cw0LvQuCDigJQg0LIg0YHQvtC+0LHRidC10L3QuNC4INC40YUg0L3QtdGCLlxuXG7QldGB0LvQuCDQstGLINC/0YDQuNGI0LvRkdGC0LUg0YHQv9C40YHQvtC6INC40LvQuCDQv9GA0LjQvNC10YDRiyDQstC+0L/RgNC+0YHQvtCyLCDQutC+0YLQvtGA0YvQtSDRh9Cw0YHRgtC+INC30LDQtNCw0Y7RgiDQv9C+INGN0YLQvtC80YMg0YPRgNC+0LrRgywg0Y8g0YHQvNC+0LPRgzpcblxuLSDQodGD0LzQvNC40YDQvtCy0LDRgtGMINC+0YHQvdC+0LLQvdGL0LUg0L/RgNC10YLQtdC90LfQuNC4INC4INC/0L7QttC10LvQsNC90LjRjyDRgdGC0YPQtNC10L3RgtC+0LJcbi0g0JTQsNGC0Ywg0YDQtdC60L7QvNC10L3QtNCw0YbQuNC4LCDQutCw0Log0L/QvtC80LXQvdGP0YLRjCDRg9GA0L7QulxuXG7Qn9C+0LbQsNC70YPQudGB0YLQsCwg0L7RgtC/0YDQsNCy0YzRgtC1INGC0LXQutGB0YIg0LjQu9C4INCy0YvQv9C40YHQutGDINC40Lcg0LLQvtC/0YDQvtGB0L7Qsiwg0LrQvtGC0L7RgNGL0LUg0L/QvtGB0YLRg9C/0LDRjtGCINC/0L4g0Y3RgtC+0LzRgyDRg9GA0L7QutGDISIsCiAgICAgICAgInJlZnVzYWwiOiBudWxsLAogICAgICAgICJhbm5vdGF0aW9ucyI6IFtdCiAgICAgIH0sCiAgICAgICJsb2dwcm9icyI6IG51bGwsCiAgICAgICJmaW5pc2hfcmVhc29uIjogInN0b3AiCiAgICB9CiAgXSwKICAidXNhZ2UiOiB7CiAgICAicHJvbXB0X3Rva2VucyI6IDQ4NywKICAgICJjb21wbGV0aW9uX3Rva2VucyI6IDEzNCwKICAgICJ0b3RhbF90b2tlbnMiOiA2MjEsCiAgICAicHJvbXB0X3Rva2Vuc19kZXRhaWxzIjogewogICAgICAiY2FjaGVkX3Rva2VucyI6IDAsCiAgICAgICJhdWRpb190b2tlbnMiOiAwCiAgICB9LAogICAgImNvbXBsZXRpb25fdG9rZW5zX2RldGFpbHMiOiB7CiAgICAgICJyZWFzb25pbmdfdG9rZW5zIjogMCwKICAgICAgImF1ZGlvX3Rva2VucyI6IDAsCiAgICAgICJhY2NlcHRlZF9wcmVkaWN0aW9uX3Rva2VucyI6IDAsCiAgICAgICJyZWplY3RlZF9wcmVkaWN0aW9uX3Rva2VucyI6IDAKICAgIH0KICB9LAogICJzZXJ2aWNlX3RpZXIiOiAiZGVmYXVsdCIsCiAgInN5c3RlbV9maW5nZXJwcmludCI6ICJmcF81MWUxMDcwY2YyIgp9Cg==
+  recorded_at: Tue, 12 Aug 2025 20:58:51 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"model":"gpt-4.1","messages":[{"role":"system","content":"Проанализируй
+        вопросы, которые задают студенты ассистенту по уроку.\nСуммируй основные претензиии
+        и пожелания. Предложи как поменять урок\n"},{"role":"user","content":"Урок
+        (теория и упражнение): Necessitatibus libero ab. Ut impedit non. Vitae accusantium
+        corporis. Consequuntur explicabo maiores. Dolor sapiente rem. Ea nam expedita.
+        Excepturi ullam harum. Commodi quos omnis. Iusto eveniet rem. Reiciendis ut
+        molestiae. Nostrum modi quo. Architecto ullam cum. Et cupiditate sequi. Saepe
+        quia rerum. Inventore atque quis. Quia aut vitae. Fuga et ullam. Quas doloribus
+        similique. Magni vitae seq.\n\nТут какой-то текст с инлайн кодом `const a
+        = 5` на js\n\n```html\n\u003csection\u003e\n  \u003ch2\u003eCode Basics\u003c/h2\u003e\n  \u003cp\u003e\n    Code
+        Basics — бесплатные практические уроки по программированию для тех,\n    кто
+        начинает с нуля.\n  \u003c/p\u003e\n  \u003cp\u003e\n    Если вы совсем новичок
+        и хотите научиться основам — переменным,\n    строкам, циклам, функциям и
+        т.д., то Code Basics вам подойдёт.\n  \u003c/p\u003e\n\u003c/section\u003e\n```\n\nЕще
+        текст сразу после кода, чтобы посмотреть отступы\n\n\u003e Цитата нафиг\n\n[ссылка](https://ru.hexlet.io)\n\n![Картинка](https://placehold.co/600x400)\n\n![Картинка
+        2](https://placehold.co/100x100)\n\n| Tailwind Class | CSS Property              |
+        Value            |\n|----------------|---------------------------|------------------|\n|
+        `rounded`      | `border-radius`           | `0.25rem`        |\n| `block`        |
+        `display`                 | `block`          |\n| `p-3`          | `padding`                 |
+        `0.75rem`        |\n\n\u003ciframe src=\"//player.vimeo.com/video/128853333?api=1\u0026player_id=video1\"
+        id=\"video1\" allowfullscreen\u003e\u003c/iframe\u003e\n\nwow\n\n\nQui laudantium
+        sequi. Tenetur sunt velit. Velit qui amet."},{"role":"user","content":"Вопросы
+        пользователей: "}]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <OPENAI_ACCESS_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 12 Aug 2025 20:59:08 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Openai-Organization:
+      - hexlet
+      Openai-Processing-Ms:
+      - '16470'
+      Openai-Project:
+      - proj_1VsC0S43I50wJpaQ0iE4zJoC
+      Openai-Version:
+      - '2020-10-01'
+      X-Envoy-Upstream-Service-Time:
+      - '16702'
+      X-Ratelimit-Limit-Requests:
+      - '10000'
+      X-Ratelimit-Limit-Tokens:
+      - '30000000'
+      X-Ratelimit-Remaining-Requests:
+      - '9999'
+      X-Ratelimit-Remaining-Tokens:
+      - '29999475'
+      X-Ratelimit-Reset-Requests:
+      - 6ms
+      X-Ratelimit-Reset-Tokens:
+      - 1ms
+      X-Request-Id:
+      - req_009f89d46fa0451189d27035eb1fe7d6
+      Cf-Cache-Status:
+      - DYNAMIC
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      Set-Cookie:
+      - _cfuvid=44dmAj9pHQNr3_MKineyNyQ3Xi4i2wcqIbU2Ewbop8A-1755032348380-0.0.1.1-604800000;
+        path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 96e2e4a71977b3dd-MIA
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        ewogICJpZCI6ICJjaGF0Y21wbC1DM3FOMVlMRFVha25YNnNOY1VkcU1xWEV4ZHhDSCIsCiAgIm9iamVjdCI6ICJjaGF0LmNvbXBsZXRpb24iLAogICJjcmVhdGVkIjogMTc1NTAzMjMzMSwKICAibW9kZWwiOiAiZ3B0LTQuMS0yMDI1LTA0LTE0IiwKICAiY2hvaWNlcyI6IFsKICAgIHsKICAgICAgImluZGV4IjogMCwKICAgICAgIm1lc3NhZ2UiOiB7CiAgICAgICAgInJvbGUiOiAiYXNzaXN0YW50IiwKICAgICAgICAiY29udGVudCI6ICLQoNCw0Lcg0YLRiyDRg9C60LDQt9Cw0LsgXCLQktC+0L/RgNC+0YHRiyDQv9C+0LvRjNC30L7QstCw0YLQtdC70LXQuTpcIiwg0L3QviDQvdC1INC/0YDQuNC70L7QttC40Lsg0LLQvtC/0YDQvtGB0YssINGPINCx0YPQtNGDINC40YHRhdC+0LTQuNGC0Ywg0LjQtyDRgtC40L/QuNGH0L3Ri9GFINGB0LjRgtGD0LDRhtC40LksINGBINC60L7RgtC+0YDRi9C80Lgg0YHRgtCw0LvQutC40LLQsNGO0YLRgdGPINGB0YLRg9C00LXQvdGC0Ysg0L3QsCDQv9C+0LTQvtCx0L3Ri9GFINGD0YDQvtC60LDRhSwg0LAg0YLQsNC60LbQtSDQv9GA0L7QsNC90LDQu9C40LfQuNGA0YPRjiDRhNGA0LDQs9C80LXQvdGCINGD0YDQvtC60LAsINGH0YLQvtCx0Ysg0YHQv9GA0L7Qs9C90L7Qt9C40YDQvtCy0LDRgtGMINCy0L7Qt9C80L7QttC90YvQtSDQv9GA0LXRgtC10L3Qt9C40Lgg0Lgg0L/QvtC20LXQu9Cw0L3QuNGPLlxuXG4qKtCQ0L3QsNC70LjQtyDRgdGC0YDRg9C60YLRg9GA0Ysg0YPRgNC+0LrQsDoqKlxuXG4tINCSINC90LDRh9Cw0LvQtSDRg9GA0L7QutCwIOKAlCDQu9Cw0YLQuNC90YHQutC40Lkg0L/RgdC10LLQtNC+0YLQtdC60YHRgiAo0L3QtdC40L3RhNC+0YDQvNCw0YLQuNCy0L3Ri9C5INC00LvRjyDRgdGC0YPQtNC10L3RgtCwKS5cbi0g0JXRgdGC0Ywg0YTRgNCw0LPQvNC10L3RgiBIVE1MLdC60L7QtNCwINGBINC80LjQvdC40LzQsNC70YzQvdGL0Lwg0L7Qv9C40YHQsNC90LjQtdC8LlxuLSDQn9C10YDQtdC80LXQttCw0Y7RgtGB0Y8g0YLQtdC60YHRgiwg0LjQvdC70LDQudC9LdC60L7QtCwg0YbQuNGC0LDRgtCwLCDRgdGB0YvQu9C60LgsINC60LDRgNGC0LjQvdC60LgsINGC0LDQsdC70LjRhtCwINC60LvQsNGB0YHQvtCyIFRhaWx3aW5kLCBpZnJhbWUgYyDQstC40LTQtdC+LlxuLSDQndC10YIg0LXQtNC40L3QvtC5INGB0YLRgNGD0LrRgtGD0YDRizog0YLQtdC+0YDQuNGPINC/0LXRgNC10YHQtdC60LDQtdGC0YHRjyDRgSDRhdCw0L7RgtC40YfQvdGL0LzQuCDQstGB0YLQsNCy0LrQsNC80Lgg0YDQsNC30L3QvtCz0L4g0YTQvtGA0LzQsNGC0LA7INC+0YLRgdGD0YLRgdGC0LLRg9C10YIg0YfQtdGC0LrQsNGPINGG0LXQu9GMINC40LvQuCDQvtCx0YrRj9GB0L3QtdC90LjQtSDRgdGD0YLQuCDRgtC10LzRiy5cblxuKirQotC40L/QuNGH0L3Ri9C1INCy0L7Qv9GA0L7RgdGLL9C/0YDQtdGC0LXQvdC30LjQuCDQvdCwINC+0YHQvdC+0LLQtSDQsNC90LDQu9C40LfQsCDRgtCw0LrQvtCz0L4g0YPRgNC+0LrQsDoqKlxuXG4xLiAqKtCh0LvQuNGI0LrQvtC8INC80L3QvtCz0L4g0YDQsNC30YDQvtC30L3QtdC90L3QvtC5INC40L3RhNC+0YDQvNCw0YbQuNC4KiogIFxuICAg4oCUINCd0LXQv9C+0L3Rj9GC0L3Qviwg0LrQsNC60LDRjyDRgyDRg9GA0L7QutCwINGG0LXQu9GMLiAgXG4gICDigJQg0J/QvtGH0LXQvNGDINGB0L3QsNGH0LDQu9CwINC40LTQtdGCINC70LDRgtC40L3RgdC60LjQuSDRgtC10LrRgdGCLCDQv9C+0YLQvtC8INC60YPRgdC60Lgg0LrQvtC00LAsINC/0L7RgtC+0Lwg0LLQvdC10LfQsNC/0L3QsNGPINGC0LDQsdC70LjRhtCwINC4INCy0LjQtNC10L4uINCX0LDRh9C10Lwg0Y3RgtC+INCy0YHRkT9cblxuMi4gKirQndC10LTQvtGB0YLQsNGC0L7Rh9C90L4g0L7QsdGK0Y/RgdC90LXQvdC40Lkg0Lgg0L/QvtGP0YHQvdC10L3QuNC5KiogIFxuICAg4oCUINCU0LvRjyDRh9C10LPQviDQvdGD0LbQtdC9INC60YPRgdC+0Log0LrQvtC00LAgYGNvbnN0IGEgPSA1YD8g0JrQsNC60L7QuSDQsiDQvdC10Lwg0YHQvNGL0YHQuz8gIFxuICAg4oCUINCU0LvRjyDRh9C10LPQviDQv9GA0LjQstC10LTRkdC9INGN0YLQvtGCIEhUTUwt0YTRgNCw0LPQvNC10L3RgiDQuCDRh9GC0L4g0YEg0L3QuNC8INC00LXQu9Cw0YLRjD9cblxuMy4gKirQntGC0YHRg9GC0YHRgtCy0YPQtdGCINC/0L7RiNCw0LPQvtCy0LDRjyDRgdGC0YDRg9C60YLRg9GA0LAqKiAgXG4gICDigJQg0JPQtNC1INC90LDRh9Cw0LvQviwg0LPQtNC1INC+0YHQvdC+0LLQvdCw0Y8g0YLQtdC+0YDQuNGPLCDQs9C00LUg0YPQv9GA0LDQttC90LXQvdC40LU/ICBcbiAgIOKAlCDQmtCw0LrRg9GOINC30LDQtNCw0YfRgyDQvdGD0LbQvdC+INGA0LXRiNC40YLRjCDQv9C+INC40YLQvtCz0LDQvCDRg9GA0L7QutCwP1xuXG40LiAqKtCh0LzQtdGI0LXQvdC40LUg0YDQsNC30L3Ri9GFINGC0LXRhdC90L7Qu9C+0LPQuNC5INCx0LXQtyDQvtCx0YrRj9GB0L3QtdC90LjRjyoqICBcbiAgIOKAlCDQn9C+0YfQtdC80YMg0YPQv9C+0LzQuNC90LDQtdGC0YHRjyBKYXZhU2NyaXB0LCBIVE1MLCBUYWlsd2luZCDQuCDQtNCw0LbQtSDQstGB0YLRgNCw0LjQstCw0LXRgtGB0Y8g0LLQuNC00LXQviDigJQg0LLRgdGRINCyINC+0LTQvdC+0Lkg0LrRg9GH0LU/ICBcbiAgIOKAlCDQmtCw0LrQvtC5INGC0LXRhdC90L7Qu9C+0LPQuNC4INC80Ysg0YPRh9C40LzRgdGPINC90LAg0Y3RgtC+0Lwg0YPRgNC+0LrQtT9cblxuNS4gKirQnNCw0LvQviDQuNC90YLQtdGA0LDQutGC0LjQstCwINC4INC/0YDQsNC60YLQuNC60LgqKiAgXG4gICDigJQg0JPQtNC1INGD0L/RgNCw0LbQvdC10L3QuNGPPyDQmtCw0Log0L/RgNC+0LLQtdGA0LjRgtGMINGB0LLQvtC4INC30L3QsNC90LjRjz9cblxuNi4gKirQndCw0LLQuNCz0LDRhtC40Y8g0Lgg0YfQuNGC0LDQtdC80L7RgdGC0YwqKiAgXG4gICDigJQg0KHQu9C+0LbQvdC+INGH0LjRgtCw0YLRjDog0YLQtdC60YHRgiwg0LrQsNGA0YLQuNC90LrQuCwg0LjQvdC70LDQudC9LdC60L7QtCDQuCDRgtCw0LHQu9C40YbRiyDQuNC00YPRgiDQsdC10Lcg0LLQuNC00LjQvNC+0Lkg0LvQvtCz0LjQutC4LlxuXG4qKtCf0L7QttC10LvQsNC90LjRjyDQv9C+0LvRjNC30L7QstCw0YLQtdC70LXQuSAo0YHRg9C80LzQuNGA0L7QstCw0L3QviDQuCDQs9C40L/QvtGC0LXRgtC40YfQtdGB0LrQuCk6KipcblxuLSDQo9C/0L7RgNGP0LTQvtGH0LjRgtGMINC80LDRgtC10YDQuNCw0Ls6INGH0LXRgtC60L4g0YDQsNC30LTQtdC70LjRgtGMINGC0LXQvtGA0LjRjiwg0L/RgNC40LzQtdGALCDRg9C/0YDQsNC20L3QtdC90LjQtSwg0LLRi9Cy0L7QtNGLLlxuLSDQlNC+0LHQsNCy0LjRgtGMINCx0L7Qu9GM0YjQtSDQv9C+0Y/RgdC90LXQvdC40Lkg0Log0LrQvtC00YMg0Lgg0LjQvdGC0LXRgNGE0LXQudGB0L3Ri9C8INGN0LvQtdC80LXQvdGC0LDQvC5cbi0g0KHQvtCz0LvQsNGB0L7QstCw0YLRjCDRhNC+0YDQvNCw0YI6INC10YHQu9C4INGD0YDQvtC6INC/0YDQviBIVE1MIOKAlCDQvdC1INC90LDQtNC+INCy0L3QtdC30LDQv9C90L4g0LLRgdGC0LDQstC70Y/RgtGMIEphdmFTY3JpcHQg0LjQu9C4IENTUyDQsdC10Lcg0LrQvtC90YLQtdC60YHRgtCwLlxuLSDQlNC+0LHQsNCy0LjRgtGMINCx0L7Qu9GM0YjQtSDQv9GA0LDQutGC0LjRh9C10YHQutC40YUg0LfQsNC00LDQvdC40Lkg0LjQu9C4INC40L3RgtC10YDQsNC60YLQuNCy0L3Ri9GFINGN0LvQtdC80LXQvdGC0L7Qsi5cbi0g0JjRgdC/0L7Qu9GM0LfQvtCy0LDRgtGMINGA0LXQsNC70YzQvdGL0LUsINCwINC90LUgXCLQt9Cw0L/QvtC70L3QuNGC0LXQu9GM0L3Ri9C1XCIgKNC70LDRgtC40L3RgdC60LjQtSwg0L3QtdC40L3RhNC+0YDQvNCw0YLQuNCy0L3Ri9C1KSDRgtC10LrRgdGC0YsuXG4tINCj0LvRg9GH0YjQuNGC0Ywg0LLQuNC30YPQsNC70YzQvdC+0LUg0YDQsNC30LTQtdC70LXQvdC40LUg0LHQu9C+0LrQvtCyINC4INC90LDQstC40LPQsNGG0LjRjiDQv9C+INGD0YDQvtC60YMuXG5cbi0tLVxuXG4jIyDQmtCw0Log0L/QvtC80LXQvdGP0YLRjCDRg9GA0L7QulxuXG4qKjEuINCh0YLRgNGD0LrRgtGD0YDQuNGA0L7QstCw0YLRjCDQutC+0L3RgtC10L3RgjoqKlxuXG4tICoq0JLQstC10LTQtdC90LjQtToqKiAgXG4gIOKAlCDQmtGA0LDRgtC60L4g0Lgg0L/QvtC90Y/RgtC90L4g0L7QsdGK0Y/RgdC90LjRgtGMINGC0LXQvNGDINGD0YDQvtC60LAg0Lgg0YbQtdC70YwuXG4tICoq0KLQtdC+0YDQuNGPOioqICBcbiAg4oCUINCU0LDRgtGMINC90LXQvtCx0YXQvtC00LjQvNGL0LUg0L/QvtGP0YHQvdC10L3QuNGPLCDRgNCw0LfQsdC40YLRjCDQvdCwINC90LXQsdC+0LvRjNGI0LjQtSDQsdC70L7QutC4LlxuLSAqKtCf0YDQuNC80LXRgNGLOioqICBcbiAg4oCUINCe0LTQuNC9LdC00LLQsCDRgtC10LzQsNGC0LjRh9C10YHQutC40YUsINGF0L7RgNC+0YjQviDQv9GA0L7QutC+0LzQvNC10L3RgtC40YDQvtCy0LDQvdC90YvRhSDQutGD0YHQutCwINC60L7QtNCwIOKAlCDRgdC+INGB0LLRj9C30LrQvtC5INGBINGC0LXQutGD0YnQtdC5INGC0LXQvNC+0LkuXG4tICoq0JjQvdGC0LXRgNCw0LrRgtC40LI6KiogIFxuICDigJQg0JTQvtCx0LDQstC40YLRjCDQvdC10LHQvtC70YzRiNC+0LUg0L/RgNCw0LrRgtC40YfQtdGB0LrQvtC1INC30LDQtNCw0L3QuNC1ICjQvdCw0L/RgNC40LzQtdGALCBcItCY0LfQvNC10L3QuNGC0LUgSFRNTCDRgtCw0LosINGH0YLQvtCx0YvigKZcIiwgXCLQntCx0YrRj9GB0L3QuNGC0LUsINGH0YLQviDQtNC10LvQsNC10YIg0Y3RgtC+0YIg0LrQvtC0XCIsIFwi0KHQtNC10LvQsNC50YLQtSDRgdCy0L7RjiDRgtCw0LHQu9C40YbRgyDRgdGC0LjQu9C10LlcIikuXG4tICoq0JLRi9Cy0L7QtNGLOioqICBcbiAg4oCUINCe0LHQvtCx0YnQuNGC0YwsINGH0YLQviDQtNC+0LvQttC90L4g0LHRi9GC0Ywg0YPRgdCy0L7QtdC90L4uXG4tICoq0J/QvtC70LXQt9C90YvQtSDRgdGB0YvQu9C60LgsINCy0LjQtNC10L4sINC40LfQvtCx0YDQsNC20LXQvdC40Y86KiogIFxuICDigJQg0JLRgdGC0YDQsNC40LLQsNGC0Ywg0YLQvtC70YzQutC+INC/0L4g0YLQtdC80LUsINGBINC/0L7Rj9GB0L3QtdC90LjQtdC8LCDQtNC70Y8g0YfQtdCz0L4g0L7QvdC4INC90YPQttC90YsuXG5cbioqMi4g0JjRgdC60LvRjtGH0LjRgtGMINC70LDRgtC40L3RgdC60LjQuSDQuCBmaWxsZXIt0LrQvtC90YLQtdC90YIqKlxuXG4tINCX0LDQvNC10L3QuNGC0YwgbG9yZW0gaXBzdW0g0L3QsCDRgNC10LDQu9GM0L3Ri9C1INC+0LHRitGP0YHQvdC10L3QuNGPLlxuXG4qKjMuINCe0LPRgNCw0L3QuNGH0LjRgtGMINGC0LXRhdC90L7Qu9C+0LPQuNC4INCyINC+0LTQvdC+0Lwg0YPRgNC+0LrQtSoqXG5cbi0g0JXRgdC70Lgg0YPRgNC+0Log0L/RgNC+INC+0YHQvdC+0LLRiyBIVE1MIOKAlCDRhNC+0LrRg9GBINGC0L7Qu9GM0LrQviDQvdCwINGN0YLQvtC8LiDQktGB0LUg0L7RgdGC0LDQu9GM0L3Ri9C1INGC0LXRhdC90L7Qu9C+0LPQuNC4IOKAlCDQsiDQvtGC0LTQtdC70YzQvdGL0YUg0YPRgNC+0LrQsNGFLlxuXG4qKjQuINCj0LvRg9GH0YjQuNGC0Ywg0LLQuNC30YPQsNC70YzQvdGD0Y4g0YHRgtGA0YPQutGC0YPRgNGDKipcblxuLSDQmNGB0L/QvtC70YzQt9C+0LLQsNGC0Ywg0LfQsNCz0L7Qu9C+0LLQutC4LCDQstGL0LTQtdC70LXQvdC40Y8sINGB0L/QuNGB0LrQuCwg0LHQvtC60YHRiyDQtNC70Y8g0L/RgNC40LzQtdGA0L7Qsiwg0L/Qu9Cw0LLQvdGL0LUg0L/QtdGA0LXRhdC+0LTRiyDQvNC10LbQtNGDINCx0LvQvtC60LDQvNC4ICjQvdCw0L/RgNC40LzQtdGALCDCq9Ci0LXQv9C10YDRjCDQvNGLINGA0LDRgdGB0LzQvtGC0YDQuNC84oCmwrspLlxuXG4qKjUuINCh0LTQtdC70LDRgtGMINC90LDQstC40LPQsNGG0LjRjiDQuCDQv9C10YDQtdC80LXRidC10L3QuNC1INC/0L4g0YPRgNC+0LrRgyDQv9GA0L7RgdGC0YvQvNC4KipcblxuLSDQlNC+0LHQsNCy0LjRgtGMINC+0LPQu9Cw0LLQu9C10L3QuNC1LCDQstGL0LTQtdC70Y/RgtGMINCy0LDQttC90YvQtSDQsdC70L7QutC4LCDRgdC00LXQu9Cw0YLRjCDQtNC40LfQsNC50L0g0YfQuNGB0YLRi9C8LlxuXG4tLS1cblxuKirQn9GA0LjQvNC10YAg0YPQu9GD0YfRiNC10L3QvdC+0Lkg0YHRgtGA0YPQutGC0YPRgNGLOioqXG5cbi0tLVxuXG4jIyMgMS4g0JLQstC10LTQtdC90LjQtVxuXG4+INCSINGN0YLQvtC8INGD0YDQvtC60LUg0LLRiyDQvdCw0YPRh9C40YLQtdGB0Ywg0YHQvtC30LTQsNCy0LDRgtGMINC/0YDQvtGB0YLRg9GOIEhUTUwt0YHRgtGA0YPQutGC0YPRgNGDINC4INGD0LfQvdCw0LXRgtC1LCDQutCw0Log0L/RgNC40LzQtdC90Y/RgtGMINCx0LDQt9C+0LLRi9C1IENTUy3QutC70LDRgdGB0YsuXG5cbi0tLVxuXG4jIyMgMi4g0KLQtdC+0YDQuNGPXG5cbioqSFRNTC3RgNCw0LfQvNC10YLQutCwOioqICBcbkhUTUwg0L/QvtC30LLQvtC70Y/QtdGCINGB0YLRgNC+0LjRgtGMINGB0YLRgNGD0LrRgtGD0YDRgyDQstC10LEt0YHRgtGA0LDQvdC40YbRiy4g0J3QsNC/0YDQuNC80LXRgDpcblxuYGBgaHRtbFxuPHNlY3Rpb24+XG4gIDxoMj7Qn9GA0LjQvNC10YAg0LfQsNCz0L7Qu9C+0LLQutCwPC9oMj5cbiAgPHA+0K3RgtC+INC/0LDRgNCw0LPRgNCw0YQg0YEg0YLQtdC60YHRgtC+0LwuPC9wPlxuPC9zZWN0aW9uPlxuYGBgXG5cbioqQ1NTLdC60LvQsNGB0YHRizoqKlxuXG4tIGByb3VuZGVkYCDigJQg0YHQutGA0YPQs9C70Y/QtdGCINGD0LPQu9GLINGN0LvQtdC80LXQvdGC0L7Qsi5cbi0gYGJsb2NrYCDigJQg0LTQtdC70LDQtdGCINGN0LvQtdC80LXQvdGCINCx0LvQvtGH0L3Ri9C8LlxuLSBgcC0zYCDigJQg0LTQvtCx0LDQstC70Y/QtdGCINCy0L3Rg9GC0YDQtdC90L3QuNC5INC+0YLRgdGC0YPQvy5cblxuLS0tXG5cbiMjIyAzLiDQn9GA0LjQvNC10YBcblxuYGBgaHRtbFxuPGRpdiBjbGFzcz1cImJsb2NrIHJvdW5kZWQgcC0zXCI+XG4gINCf0YDQuNC80LXRgCDQsdC70L7QutCwINGBINC60LvQsNGB0YHQsNC80LggVGFpbHdpbmQuXG48L2Rpdj5cbmBgYFxuXG4tLS1cblxuIyMjIDQuINCj0L/RgNCw0LbQvdC10L3QuNC1XG5cbj4g0J/RgNC40LzQtdC90LjRgtC1INGD0LrQsNC30LDQvdC90YvQtSDQutC70LDRgdGB0Ysg0Log0LvRjtCx0L7QvNGDIEhUTUwt0Y3Qu9C10LzQtdC90YLRgyDQuCDQv9C+0YHQvNC+0YLRgNC40YLQtSwg0YfRgtC+INC40LfQvNC10L3QuNGC0YHRjy5cblxuLS0tXG5cbiMjIyA1LiDQktGL0LLQvtC00YtcblxuLSDQktGLINGD0LfQvdCw0LvQuCDQv9GA0L4g0LHQsNC30L7QstGL0LUgSFRNTC3RgdGC0YDRg9C60YLRg9GA0Ysg0Lgg0YHQv9C+0YHQvtCx0Ysg0YHRgtC40LvQuNC30LDRhtC40Lgg0YEg0L/QvtC80L7RidGM0Y4gQ1NTLdC60LvQsNGB0YHQvtCyICjQvdCwINC/0YDQuNC80LXRgNC1IFRhaWx3aW5kKS5cblxuLS0tXG5cbi0tLVxuXG4qKtCV0YHQu9C4INC10YHRgtGMINGA0LXQsNC70YzQvdGL0Lkg0YHQv9C40YHQvtC6INCy0L7Qv9GA0L7RgdC+0LIg4oCUINC/0YDQuNGI0LvQuCDQuNGFLCDRjyDQtNCw0Lwg0LDQvdCw0LvQuNC3INC/0L4g0L3QuNC8LioqIiwKICAgICAgICAicmVmdXNhbCI6IG51bGwsCiAgICAgICAgImFubm90YXRpb25zIjogW10KICAgICAgfSwKICAgICAgImxvZ3Byb2JzIjogbnVsbCwKICAgICAgImZpbmlzaF9yZWFzb24iOiAic3RvcCIKICAgIH0KICBdLAogICJ1c2FnZSI6IHsKICAgICJwcm9tcHRfdG9rZW5zIjogNDg3LAogICAgImNvbXBsZXRpb25fdG9rZW5zIjogMTIyNiwKICAgICJ0b3RhbF90b2tlbnMiOiAxNzEzLAogICAgInByb21wdF90b2tlbnNfZGV0YWlscyI6IHsKICAgICAgImNhY2hlZF90b2tlbnMiOiAwLAogICAgICAiYXVkaW9fdG9rZW5zIjogMAogICAgfSwKICAgICJjb21wbGV0aW9uX3Rva2Vuc19kZXRhaWxzIjogewogICAgICAicmVhc29uaW5nX3Rva2VucyI6IDAsCiAgICAgICJhdWRpb190b2tlbnMiOiAwLAogICAgICAiYWNjZXB0ZWRfcHJlZGljdGlvbl90b2tlbnMiOiAwLAogICAgICAicmVqZWN0ZWRfcHJlZGljdGlvbl90b2tlbnMiOiAwCiAgICB9CiAgfSwKICAic2VydmljZV90aWVyIjogImRlZmF1bHQiLAogICJzeXN0ZW1fZmluZ2VycHJpbnQiOiAiZnBfNTFlMTA3MGNmMiIKfQo=
+  recorded_at: Tue, 12 Aug 2025 20:59:08 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"model":"gpt-4.1","messages":[{"role":"system","content":"Проанализируй
+        вопросы, которые задают студенты ассистенту по уроку.\nСуммируй основные претензиии
+        и пожелания. Предложи как поменять урок\n"},{"role":"user","content":"Урок
+        (теория и упражнение): Necessitatibus libero ab. Ut impedit non. Vitae accusantium
+        corporis. Consequuntur explicabo maiores. Dolor sapiente rem. Ea nam expedita.
+        Excepturi ullam harum. Commodi quos omnis. Iusto eveniet rem. Reiciendis ut
+        molestiae. Nostrum modi quo. Architecto ullam cum. Et cupiditate sequi. Saepe
+        quia rerum. Inventore atque quis. Quia aut vitae. Fuga et ullam. Quas doloribus
+        similique. Magni vitae seq.\n\nТут какой-то текст с инлайн кодом `const a
+        = 5` на js\n\n```html\n\u003csection\u003e\n  \u003ch2\u003eCode Basics\u003c/h2\u003e\n  \u003cp\u003e\n    Code
+        Basics — бесплатные практические уроки по программированию для тех,\n    кто
+        начинает с нуля.\n  \u003c/p\u003e\n  \u003cp\u003e\n    Если вы совсем новичок
+        и хотите научиться основам — переменным,\n    строкам, циклам, функциям и
+        т.д., то Code Basics вам подойдёт.\n  \u003c/p\u003e\n\u003c/section\u003e\n```\n\nЕще
+        текст сразу после кода, чтобы посмотреть отступы\n\n\u003e Цитата нафиг\n\n[ссылка](https://ru.hexlet.io)\n\n![Картинка](https://placehold.co/600x400)\n\n![Картинка
+        2](https://placehold.co/100x100)\n\n| Tailwind Class | CSS Property              |
+        Value            |\n|----------------|---------------------------|------------------|\n|
+        `rounded`      | `border-radius`           | `0.25rem`        |\n| `block`        |
+        `display`                 | `block`          |\n| `p-3`          | `padding`                 |
+        `0.75rem`        |\n\n\u003ciframe src=\"//player.vimeo.com/video/128853333?api=1\u0026player_id=video1\"
+        id=\"video1\" allowfullscreen\u003e\u003c/iframe\u003e\n\nwow\n\n\nQui laudantium
+        sequi. Tenetur sunt velit. Velit qui amet."},{"role":"user","content":"Вопросы
+        пользователей: "}]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <OPENAI_ACCESS_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 12 Aug 2025 20:59:34 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Openai-Organization:
+      - hexlet
+      Openai-Processing-Ms:
+      - '25004'
+      Openai-Project:
+      - proj_1VsC0S43I50wJpaQ0iE4zJoC
+      Openai-Version:
+      - '2020-10-01'
+      X-Envoy-Upstream-Service-Time:
+      - '25231'
+      X-Ratelimit-Limit-Requests:
+      - '10000'
+      X-Ratelimit-Limit-Tokens:
+      - '30000000'
+      X-Ratelimit-Remaining-Requests:
+      - '9999'
+      X-Ratelimit-Remaining-Tokens:
+      - '29999475'
+      X-Ratelimit-Reset-Requests:
+      - 6ms
+      X-Ratelimit-Reset-Tokens:
+      - 1ms
+      X-Request-Id:
+      - req_0aefda2f2c8e4e3180ef88523482bdb6
+      Cf-Cache-Status:
+      - DYNAMIC
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      Set-Cookie:
+      - _cfuvid=Dt0et_A0XgR1MwojuGjqzIYCGyvEgnv1ilRLfO8U6cM-1755032374735-0.0.1.1-604800000;
+        path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 96e2e51228643d4f-MIA
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        ewogICJpZCI6ICJjaGF0Y21wbC1DM3FOSml4YVlXVmtvWWhBd0M0OThGeHhuTm9keCIsCiAgIm9iamVjdCI6ICJjaGF0LmNvbXBsZXRpb24iLAogICJjcmVhdGVkIjogMTc1NTAzMjM0OSwKICAibW9kZWwiOiAiZ3B0LTQuMS0yMDI1LTA0LTE0IiwKICAiY2hvaWNlcyI6IFsKICAgIHsKICAgICAgImluZGV4IjogMCwKICAgICAgIm1lc3NhZ2UiOiB7CiAgICAgICAgInJvbGUiOiAiYXNzaXN0YW50IiwKICAgICAgICAiY29udGVudCI6ICLQodC/0LDRgdC40LHQviDQt9CwINC/0YDQtdC00L7RgdGC0LDQstC70LXQvdC90YvQtSDQvNCw0YLQtdGA0LjQsNC70YshINCh0LXQudGH0LDRgSDQvtCx0L7QsdGJ0YMg0L7RgdC90L7QstC90YvQtSAqKtC/0YDQtdGC0LXQvdC30LjQuCDQuCDQv9C+0LbQtdC70LDQvdC40Y8qKiwg0LrQvtGC0L7RgNGL0LUg0YfQsNGJ0LUg0LLRgdC10LPQviDQstGL0YHQutCw0LfRi9Cy0LDRjtGCINGB0YLRg9C00LXQvdGC0Ysg0L/QviDRg9GA0L7QutCw0Lwg0L3QsCDQv9C+0LTQvtCx0L3QvtC5INGB0YLRgNGD0LrRgtGD0YDQtSAo0YHRg9C00Y8g0L/QviDQvtC/0YvRgtGDINC4INGC0LXQvdC00LXQvdGG0LjRj9C8INCyINC+0LHRg9GH0LDRjtGJ0LjRhSDQutGD0YDRgdCw0YUg0Lgg0LDRgdGB0LjRgdGC0LXQvdGC0YHQutC40YUg0YfQsNGC0LDRhSk6XG5cbi0tLVxuXG4jIyDQntGB0L3QvtCy0L3Ri9C1INC/0YDQtdGC0LXQvdC30LjQuCDQuCDQv9C+0LbQtdC70LDQvdC40Y8g0YHRgtGD0LTQtdC90YLQvtCyXG5cbiMjIyDQn9GA0LXRgtC10L3Qt9C40LhcblxuMS4gKirQndC10YfQtdGC0LrQsNGPINGB0YLRgNGD0LrRgtGD0YDQsCDRg9GA0L7QutCwKipcbiAgIC0g0JzQvdC+0LPQviDRgNCw0LfRgNC+0LfQvdC10L3QvdGL0YUg0LrRg9GB0L7Rh9C60L7Qsjog0YLQtdC60YHRgiwg0LrQvtC0LCDRhtC40YLQsNGC0YssINGC0LDQsdC70LjRhtGLLCDQutCw0YDRgtC40L3QutC4LCDQstC40LTQtdC+LlxuICAgLSDQndC10YIg0Y/QstC90L7Qs9C+INGA0LDQt9C00LXQu9C10L3QuNGPINC80LXQttC00YMg0YfQsNGB0YLRj9C80Lg6INGC0LXQvtGA0LjRjywg0L/RgNC40LzQtdGA0YssINC/0YDQsNC60YLQuNC60LAuXG5cbjIuICoq0J3QtdGP0YHQvdGL0LUg0L7QsdGK0Y/RgdC90LXQvdC40Y8qKlxuICAgLSDQotC10L7RgNC10YLQuNGH0LXRgdC60LDRjyDRh9Cw0YHRgtGMINC00LDQvdCwINGB0LvQuNGI0LrQvtC8INCw0LHRgdGC0YDQsNC60YLQvdC+LCDQuNC90L7Qs9C00LAg0YTQvtGA0LzQsNC70YzQvdCwINC40LvQuCDQt9Cw0L/Rg9GC0LDQvdCwLlxuICAgLSDQndC10YIg0L3QvtGA0LzQsNC70YzQvdC+0LPQviDQvtCx0YrRj9GB0L3QtdC90LjRjywg0LfQsNGH0LXQvCDQvdGD0LbQtdC9INGN0YLQvtGCINC80LDRgtC10YDQuNCw0Lsg0Lgg0LrQsNC6INC10LPQviDQv9GA0LjQvNC10L3Rj9GC0YwuXG5cbjMuICoq0JzQsNC70L4g0L/RgNC+0LPQvtCy0L7RgNC10L3QvdGL0YUg0YHQstGP0LfQtdC5INC80LXQttC00YMg0LrQvtC00L7QvCDQuCDRgtC10L7RgNC40LXQuSoqXG4gICAtINCd0LUg0L/QvtC60LDQt9Cw0L3Qviwg0LrQsNC6INC60L7QtCAoYGNvbnN0IGEgPSA1YCkg0YHQstGP0LfQsNC9INGBINC+0LHRidC10Lkg0YLQtdC80L7QuSDRg9GA0L7QutCwINC4INGBINC+0LHRitGP0YHQvdC10L3QuNC10LwuXG4gICAtINCc0LDQu9C+INC60L7QvNC80LXQvdGC0LDRgNC40LXQsiDQuiDQutC+0LTRgy5cblxuNC4gKirQodC70LDQsdCw0Y8g0LjQvdGC0LXRgNCw0LrRgtC40LLQvdC+0YHRgtGMINC4INC/0YDQsNC60YLQuNC60LAqKlxuICAgLSDQndC10YIg0LjQu9C4INC80LDQu9C+INGD0L/RgNCw0LbQvdC10L3QuNC5LCDRh9GC0L7QsdGLINC/0L7RgtGA0LXQvdC40YDQvtCy0LDRgtGM0YHRjy5cbiAgIC0g0JvQuNCx0L4g0LfQsNC00LDQvdC40Y8g0YTQvtGA0LzQsNC70YzQvdGLLCDQu9C40LHQviDRj9Cy0L3QviDRgtGA0LXQsdGD0Y7RgiDQtNC+0L/QvtC70L3QuNGC0LXQu9GM0L3Ri9GFINC/0L7Rj9GB0L3QtdC90LjQuS5cblxuNS4gKirQktGB0YLQsNCy0LrQuCAo0LrQsNGA0YLQuNC90LrQuCwg0LLQuNC00LXQviwg0YLQsNCx0LvQuNGG0LAgQ1NTKSDQvdC1IMKr0YDQsNCx0L7RgtCw0Y7RgsK7INC90LAg0YPRgNC+0LoqKlxuICAgLSDQndC1INCy0YHQtdCz0LTQsCDQv9C+0L3Rj9GC0L3Qviwg0LfQsNGH0LXQvCDQtNC+0LHQsNCy0LjQu9C4INC40LfQvtCx0YDQsNC20LXQvdC40LUg0LjQu9C4INGC0LDQsdC70LjRhtGDIOKAlCDQvdC1INGP0YHQvdC+LCDQutCw0Log0L7QvdC4INC/0L7QvNC+0LPQsNGO0YIg0YPRh9C40YLRjCDQuNC80LXQvdC90L4g0Y3RgtC+0YIg0LzQsNGC0LXRgNC40LDQuy5cblxuNi4gKirQn9GA0L7QsdC70LXQvNGLINGBINGE0L7RgNC80LDRgtC40YDQvtCy0LDQvdC40LXQvCoqXG4gICAtINCi0LXQutGB0YIg0L/QvtGB0LvQtSDQutC+0LTQsCDQstGL0LPQu9GP0LTQuNGCINGB0LvQuNC/0YjQuNC80YHRjy5cbiAgIC0g0KbQuNGC0LDRgtCwIMKr0LHQvtC70YLQsNC10YLRgdGPwrssINC90LXQv9C+0L3Rj9GC0L3QviDQuiDRh9C10LzRgyDQvtGC0L3QvtGB0LjRgtGB0Y8uXG4gICAtINCc0LXRgdGC0LAg0LLQuNC30YPQsNC70YzQvdC+INC90LUg0L7RgtC00LXQu9C10L3Riy5cblxuNy4gKirQndC10YIg0LjRgtC+0LPQvtCy0L7Qs9C+INCy0YvQstC+0LTQsCDQuCDRgNC10LrQvtC80LXQvdC00LDRhtC40LkqKlxuICAgLSDQodGC0YPQtNC10L3RgtGDINC90LXRj9GB0L3Qviwg0YfRgtC+INC00LXQu9Cw0YLRjCDQv9C+0YHQu9C1INC40LfRg9GH0LXQvdC40Y8g0Y3RgtC+0LPQviDRg9GA0L7QutCwLCDQutGD0LTQsCDQtNCy0LjQs9Cw0YLRjNGB0Y8g0LTQsNC70YzRiNC1LlxuXG4tLS1cblxuIyMjINCf0L7QttC10LvQsNC90LjRjyDQuCDQv9GA0LXQtNC70L7QttC10L3QuNGPINGB0YLRg9C00LXQvdGC0L7QslxuXG4tINCR0L7Qu9C10LUg0YfQtdGC0LrQsNGPINGB0YLRgNGD0LrRgtGD0YDQsDog0YHQvdCw0YfQsNC70LAgwqvQp9GC0L4g0LHRg9C00LXQvCDRg9GH0LjRgtGMP8K7LCDQt9Cw0YLQtdC8INC60YDQsNGC0LrQvtC1INC+0LHRitGP0YHQvdC10L3QuNC1LCDQv9GA0LjQvNC10YDRiywg0YLQvtC70YzQutC+INC/0L7RgtC+0Lwg0LfQsNC00LDQvdC40Y8uXG4tINCf0YDRj9C80YvQtSDRgdCy0Y/Qt9C4INC80LXQttC00YMg0YLQtdC+0YDQuNC10LksINC60L7QtNC+0Lwg0Lgg0L/RgNCw0LrRgtC40LrQvtC5LlxuLSDQkdC+0LvRjNGI0LUg0LrQvtC80LzQtdC90YLQsNGA0LjQtdCyINC4INGA0LDQt9Cx0L7RgNCwINC60L7QtNCwLlxuLSDQp9C10YLQutC40LUsINC70L7Qs9C40YfQvdGL0LUg0L/QtdGA0LXRhdC+0LTRiyDQvNC10LbQtNGDINGA0LDQt9C00LXQu9Cw0LzQuC5cbi0g0K/QstC90L7QtSDQstGL0LTQtdC70LXQvdC40LUg0L/RgNCw0LrRgtC40LrQuC5cbi0g0J/RgNC10LTQvtGB0YLQsNCy0LvRj9GC0Ywg0LTQvtC/0L7Qu9C90LjRgtC10LvRjNC90YvQtSDRgNC10LrQvtC80LXQvdC00LDRhtC40Lg6IMKr0KfRgtC+INC10YnQtSDQv9GA0L7Rh9C40YLQsNGC0Yw/wrssIMKr0JLQviDRh9GC0L4g0L/QvtC40LPRgNCw0YLRjCDQtNC70Y8g0LfQsNC60YDQtdC/0LvQtdC90LjRjz/Cuy5cbi0g0J/RgNC40LzQtdGA0YssINC60L7RgtC+0YDRi9C1INC40LvQu9GO0YHRgtGA0LjRgNGD0Y7RgiDRgNC10LDQu9GM0L3QvtC1INC/0YDQuNC80LXQvdC10L3QuNC1INC30L3QsNC90LjQuS5cbi0g0JHQvtC70YzRiNC1INC40L3RgtC10YDQsNC60YLQuNCy0LAgKNC30LDQv9GD0YHRgtC4INC60L7QtCwg0Y3QutGB0L/QtdGA0LjQvNC10L3RgtC40YDRg9C5KS5cblxuLS0tXG5cbiMjINCa0LDQuiDQvNC+0LbQvdC+INGD0LvRg9GH0YjQuNGC0Ywg0YPRgNC+0Lo/XG5cbiMjIyDQodGC0YDRg9C60YLRg9GA0L3Ri9C1INGA0LXRiNC10L3QuNGPXG5cbjEuICoq0JTQvtCx0LDQstC40YLRjCDQv9C+0L3Rj9GC0L3QvtC1INCy0LLQtdC00LXQvdC40LUqKlxuICAgLSDQntCx0YrRj9GB0L3QuNGC0Ywg0YbQtdC70Ywg0YPRgNC+0LrQsCwg0YfRgtC+INCx0YPQtNC10YIg0LjQt9GD0YfQsNGC0YzRgdGPINC4INC30LDRh9C10LwuXG5cbjIuICoq0KfQtdGC0LrQviDRgNCw0LfQsdC40YLRjCDQvdCwINCx0LvQvtC60Lg6KipcbiAgIC0g0KLQtdC+0YDQuNGPINGBINC60L7RgNC+0YLQutC40LzQuCwg0L/QvtC90Y/RgtC90YvQvNC4INC+0LHRitGP0YHQvdC10L3QuNGP0LzQuC5cbiAgIC0g0J/RgNC40LzQtdGA0Ysg0LrQvtC00LAsINC+0LHRj9C30LDRgtC10LvRjNC90L4g0YEg0LrQvtC80LzQtdC90YLQsNGA0LjRj9C80Lgg0Lgg0L7QsdGK0Y/RgdC90LXQvdC40Y/QvNC4LlxuICAgLSDQn9GA0LDQutGC0LjQutCwIOKAlCDQt9Cw0LTQsNC90LjRjyDQtNC70Y8g0YHQsNC80L7RgdGC0L7Rj9GC0LXQu9GM0L3QvtC5INGA0LDQsdC+0YLRiy5cblxuMy4gKirQktGB0YLQsNCy0LvRj9GC0Ywg0LzQtdC00LjQsCDQuCDRgtCw0LHQu9C40YbRiyDRgtC+0LvRjNC60L4g0LXRgdC70Lgg0L7QvdC4INGD0YHQuNC70LjQstCw0Y7RgiDQv9C+0L3QuNC80LDQvdC40LUqKlxuICAgLSDQn9C+0LQg0LrQsNC20LTQvtC5INC60LDRgNGC0LjQvdC60L7QuS/RgtCw0LHQu9C40YbQtdC5IOKAlCDQutC+0YDQvtGC0LrQvtC1INC/0L7Rj9GB0L3QtdC90LjQtSwg0YfQtdC8INC+0L3QsCDQv9C+0LzQvtCz0LDQtdGCLlxuICAgLSDQktC40LTQtdC+IOKAlCDQvtGC0LTQtdC70YzQvdGL0Lwg0YfQtdGC0LrQviDQstGL0LTQtdC70LXQvdC90YvQvCDQsdC70L7QutC+0LwsINGBIMKr0YfQtdC6LdC70LjRgdGC0L7QvMK7OiDRh9GC0L4g0LIg0L3QtdC8INCy0LDQttC90L4g0L/QvtGB0LzQvtGC0YDQtdGC0YwuXG5cbjQuICoq0K/QstC90L4g0L7RgtC00LXQu9GP0YLRjCDQstC40LfRg9Cw0LvRjNC90L4g0YDQsNC30L3Ri9C1INGH0LDRgdGC0LgqKlxuICAgLSDQmNGB0L/QvtC70YzQt9C+0LLQsNGC0Ywg0LzQsNGA0LrQtdGA0YssINC+0YLRgdGC0YPQv9GLLCDRiNGA0LjRhNGC0YsuXG5cbjUuICoq0JIg0LrQvtC90YbQtSDigJQg0L7QsdGP0LfQsNGC0LXQu9GM0L3QviDQstGL0LLQvtC0INC4INC00LDQu9GM0L3QtdC50YjQuNC1INGI0LDQs9C4KipcbiAgIC0g0JrRgNCw0YLQutC+0LUg0YDQtdC30Y7QvNC1LlxuICAgLSDQodGB0YvQu9C60Lgg0L3QsCDQtNC+0L/QvtC70L3QuNGC0LXQu9GM0L3Ri9C1INGA0LXRgdGD0YDRgdGLLlxuICAgLSDQktCw0YDQuNCw0L3RgtGLINC00LDQu9GM0L3QtdC50YjQuNGFINGD0L/RgNCw0LbQvdC10L3QuNC5LlxuXG42LiAqKtCg0LXRhNCw0LrRgtC+0YDQuNC90LMg0YTQvtGA0LzQsNGC0LjRgNC+0LLQsNC90LjRjyoqXG4gICAtINCh0YLQsNGA0LDRgtGM0YHRjyDQuNC30LHQtdCz0LDRgtGMIMKr0L3QsNC70ZHRgtCwwrsg0LjQtyDRgNCw0LfQvdGL0YUg0LrQvtC80L/QvtC90LXQvdGC0L7QsiDQsdC10Lcg0L/QtdGA0LXRhdC+0LTQvtCyLlxuICAgLSDQn9C+0YHQu9C1INC/0YDQuNC80LXRgNC+0LIg0LrQvtC00LAg4oCUINC/0YPRgdGC0LDRjyDRgdGC0YDQvtC60LAg0Lgg0LrRgNCw0YLQutC+0LUg0L/QvtGP0YHQvdC10L3QuNC1LlxuXG43LiAqKtCf0YDQvtC00YPQvNCw0YLRjCDQstC+0L/RgNC+0YEgwqvQt9Cw0YfQtdC8INGN0YLQviDQvNC90LU/wrsqKlxuICAgLSDQn9C+0LrQsNC30YvQstCw0YLRjCDQvdCwINGA0LXQsNC70YzQvdGL0YUg0LzQuNC90Lgt0L/RgNC40LzQtdGA0LDRhSwg0LPQtNC1INCyINC20LjQt9C90Lgg0LjQu9C4INC90LAg0YDQsNCx0L7RgtC1INC/0YDQuNCz0L7QttC00LDQtdGC0YHRjyDQuNC30YPRh9C10L3QvdGL0Lkg0LzQsNGC0LXRgNC40LDQuy5cblxuLS0tXG5cbiMjIyDQn9GA0LjQvNC10YAg0YPQu9GD0YfRiNC10L3QvdC+0Lkg0YHRgtGA0YPQutGC0YPRgNGLINC00LvRjyDRg9GA0L7QutCwXG5cbmBgYG1hcmtkb3duXG4jINCj0YDQvtC6OiDQntGB0L3QvtCy0Ysg0YDQsNCx0L7RgtGLINGBINC/0LXRgNC10LzQtdC90L3Ri9C80Lgg0LIgSlNcblxuIyMg0KbQtdC70Ywg0YPRgNC+0LrQsFxu0J/QvtC90Y/RgtGMLCDQutCw0Log0L7QsdGK0Y/QstC70Y/RgtGMINC/0LXRgNC10LzQtdC90L3Ri9C1INC90LAgSmF2YVNjcmlwdCwg0LfQsNGH0LXQvCDRjdGC0L4g0L3Rg9C20L3Qviwg0Lgg0LPQtNC1INC/0YDQuNC80LXQvdGP0LXRgtGB0Y8uXG5cbi0tLVxuXG4jIyDQotC10L7RgNC40Y9cblxu0J/QtdGA0LXQvNC10L3QvdCw0Y8g4oCUINGN0YLQviDCq9C60L7RgNC+0LHQutCwwrssINC60YPQtNCwINC80L7QttC90L4g0L/QvtC70L7QttC40YLRjCDQtNCw0L3QvdGL0LUuINCSIEpTINC/0LXRgNC10LzQtdC90L3Ri9C1INC+0LHRitGP0LLQu9GP0Y7RgtGB0Y8g0YEg0L/QvtC80L7RidGM0Y4g0LrQu9GO0YfQtdCy0L7Qs9C+INGB0LvQvtCy0LAgYGNvbnN0YCAo0LjQu9C4IGBsZXRgL2B2YXJgKS5cblxuYGBganNcbmNvbnN0IGEgPSA1OyAvLyDQntCx0YrRj9Cy0LvRj9C10Lwg0L/QtdGA0LXQvNC10L3QvdGD0Y4gXCJhXCIg0Lgg0LrQu9Cw0LTRkdC8INCyINC90LXRkSDRh9C40YHQu9C+IDVcbmBgYFxuXG7QrdGC0L4g0L/QvtC30LLQvtC70Y/QtdGCINGB0L7RhdGA0LDQvdGP0YLRjCDQt9C90LDRh9C10L3QuNGPINC4INC+0LHRgNCw0YnQsNGC0YzRgdGPINC6INC90LjQvCDQv9C+0LfQttC1INCyINC/0YDQvtCz0YDQsNC80LzQtS5cblxuLS0tXG5cbiMjINCf0YDQuNC80LXRgFxuXG5gYGBqc1xuY29uc3QgdXNlck5hbWUgPSBcItCQ0L3Rj1wiO1xuY29uc29sZS5sb2coXCLQn9GA0LjQstC10YIsIFwiICsgdXNlck5hbWUpO1xuYGBgXG5cbtCt0YLQvtGCINC60L7QtCDQstGL0LLQtdC00LXRgjogIFxuKirQn9GA0LjQstC10YIsINCQ0L3RjyoqXG5cbi0tLVxuXG4jIyDQn9GA0LDQutGC0LjQutCwXG5cbtCX0LDQtNCw0L3QuNC1IOKAlCDQvtCx0YrRj9Cy0LjRgtC1INC/0LXRgNC10LzQtdC90L3Rg9GOINC00LvRjyDQstC+0LfRgNCw0YHRgtCwINC/0L7Qu9GM0LfQvtCy0LDRgtC10LvRjyDQuCDQstGL0LLQtdC00LjRgtC1INC10LPQviDQvdCwINGN0LrRgNCw0L0uXG5cbi0tLVxuXG4jIyDQmNC70LvRjtGB0YLRgNCw0YbQuNGPXG5cbl/QndCwINGB0YXQtdC80LUg0L/QvtC60LDQt9Cw0L3Qviwg0LrQsNC6INGA0LDQsdC+0YLQsNC10YIg0L/QtdGA0LXQvNC10L3QvdCw0Y8g0LIgSlM6X1xuXG4hW9Cf0LXRgNC10LzQtdC90L3QsNGPIEpTXSjRgdGB0YvQu9C60LBf0L3QsF/QutCw0YDRgtC40L3QutGDKVxuXG4tLS1cblxuIyMg0JLQuNC00LXQvtGA0LDQt9Cx0L7RgFxuXG5b0KHQvNC+0YLRgNC40YLQtSDQutC+0YDQvtGC0LrQvtC1INCy0LjQtNC10L4gKDIg0LzQuNC9KSwg0LPQtNC1INC+0LHRitGP0YHQvdGP0LXQvCwg0LfQsNGH0LXQvCDQvdGD0LbQvdGLINC/0LXRgNC10LzQtdC90L3Ri9C1Ll0o0YHRgdGL0LvQutCwX9C90LBf0LLQuNC00LXQvilcblxuLS0tXG5cbiMjINCY0YLQvtCz0LhcblxuLSDQktGLINC90LDRg9GH0LjQu9C40YHRjCDQvtCx0YrRj9Cy0LvRj9GC0Ywg0L/QtdGA0LXQvNC10L3QvdGL0LUuXG4tINCf0LXRgNC10LzQtdC90L3Ri9C1INC90YPQttC90YssINGH0YLQvtCx0Ysg0YHQvtGF0YDQsNC90Y/RgtGMINC4INC+0LHRgNCw0LHQsNGC0YvQstCw0YLRjCDQtNCw0L3QvdGL0LUg0LIg0L/RgNC+0LPRgNCw0LzQvNC1LlxuXG5f0KDQtdC60L7QvNC10L3QtNGD0LXQvCDQuNC30YPRh9C40YLRjDpfICBcblvQodGC0LDRgtGM0Y46INCa0LDQuiDRgNCw0LHQvtGC0LDRjtGCINC/0LXRgNC10LzQtdC90L3Ri9C1INCyIEpTXSjRgdGB0YvQu9C60LApXG5cbi0tLVxuXG5f0J/QtdGA0LXRhdC+0LTQuNGC0LUg0Log0YHQu9C10LTRg9GO0YnQtdC80YMg0YPRgNC+0LrRgzpfICBcbioqXCLQnNCw0YLQtdC80LDRgtC40YfQtdGB0LrQuNC1INC+0L/QtdGA0LDRhtC40Lgg0YEg0L/QtdGA0LXQvNC10L3QvdGL0LzQuFwiLioqXG5gYGBcblxuLS0tXG5cbtCV0YHQu9C4INC90YPQttC90Ysg0LrQvtC90LrRgNC10YLQvdGL0LUg0YjQsNCx0LvQvtC90Ysg0LjQu9C4INC10YnQtSDQstCw0YDQuNCw0L3RgtGLINGB0YLRgNGD0LrRgtGD0YDRiyDigJQg0YHQvtC+0LHRidC40YLQtSwg0L/QvtC00LPQvtGC0L7QstC70Y4g0L/RgNC40LzQtdGA0YshIiwKICAgICAgICAicmVmdXNhbCI6IG51bGwsCiAgICAgICAgImFubm90YXRpb25zIjogW10KICAgICAgfSwKICAgICAgImxvZ3Byb2JzIjogbnVsbCwKICAgICAgImZpbmlzaF9yZWFzb24iOiAic3RvcCIKICAgIH0KICBdLAogICJ1c2FnZSI6IHsKICAgICJwcm9tcHRfdG9rZW5zIjogNDg3LAogICAgImNvbXBsZXRpb25fdG9rZW5zIjogMTI2NSwKICAgICJ0b3RhbF90b2tlbnMiOiAxNzUyLAogICAgInByb21wdF90b2tlbnNfZGV0YWlscyI6IHsKICAgICAgImNhY2hlZF90b2tlbnMiOiAwLAogICAgICAiYXVkaW9fdG9rZW5zIjogMAogICAgfSwKICAgICJjb21wbGV0aW9uX3Rva2Vuc19kZXRhaWxzIjogewogICAgICAicmVhc29uaW5nX3Rva2VucyI6IDAsCiAgICAgICJhdWRpb190b2tlbnMiOiAwLAogICAgICAiYWNjZXB0ZWRfcHJlZGljdGlvbl90b2tlbnMiOiAwLAogICAgICAicmVqZWN0ZWRfcHJlZGljdGlvbl90b2tlbnMiOiAwCiAgICB9CiAgfSwKICAic2VydmljZV90aWVyIjogImRlZmF1bHQiLAogICJzeXN0ZW1fZmluZ2VycHJpbnQiOiAiZnBfNTFlMTA3MGNmMiIKfQo=
+  recorded_at: Tue, 12 Aug 2025 20:59:34 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"model":"gpt-4.1","messages":[{"role":"system","content":"Проанализируй
+        вопросы, которые задают студенты ассистенту по уроку.\nСуммируй основные претензиии
+        и пожелания. Предложи как поменять урок\n"},{"role":"user","content":"Урок
+        (теория и упражнение): Necessitatibus libero ab. Ut impedit non. Vitae accusantium
+        corporis. Consequuntur explicabo maiores. Dolor sapiente rem. Ea nam expedita.
+        Excepturi ullam harum. Commodi quos omnis. Iusto eveniet rem. Reiciendis ut
+        molestiae. Nostrum modi quo. Architecto ullam cum. Et cupiditate sequi. Saepe
+        quia rerum. Inventore atque quis. Quia aut vitae. Fuga et ullam. Quas doloribus
+        similique. Magni vitae seq.\n\nТут какой-то текст с инлайн кодом `const a
+        = 5` на js\n\n```html\n\u003csection\u003e\n  \u003ch2\u003eCode Basics\u003c/h2\u003e\n  \u003cp\u003e\n    Code
+        Basics — бесплатные практические уроки по программированию для тех,\n    кто
+        начинает с нуля.\n  \u003c/p\u003e\n  \u003cp\u003e\n    Если вы совсем новичок
+        и хотите научиться основам — переменным,\n    строкам, циклам, функциям и
+        т.д., то Code Basics вам подойдёт.\n  \u003c/p\u003e\n\u003c/section\u003e\n```\n\nЕще
+        текст сразу после кода, чтобы посмотреть отступы\n\n\u003e Цитата нафиг\n\n[ссылка](https://ru.hexlet.io)\n\n![Картинка](https://placehold.co/600x400)\n\n![Картинка
+        2](https://placehold.co/100x100)\n\n| Tailwind Class | CSS Property              |
+        Value            |\n|----------------|---------------------------|------------------|\n|
+        `rounded`      | `border-radius`           | `0.25rem`        |\n| `block`        |
+        `display`                 | `block`          |\n| `p-3`          | `padding`                 |
+        `0.75rem`        |\n\n\u003ciframe src=\"//player.vimeo.com/video/128853333?api=1\u0026player_id=video1\"
+        id=\"video1\" allowfullscreen\u003e\u003c/iframe\u003e\n\nwow\n\n\nQui laudantium
+        sequi. Tenetur sunt velit. Velit qui amet."},{"role":"user","content":"Вопросы
+        пользователей: "}]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <OPENAI_ACCESS_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 12 Aug 2025 20:59:37 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Openai-Organization:
+      - hexlet
+      Openai-Processing-Ms:
+      - '2820'
+      Openai-Project:
+      - proj_1VsC0S43I50wJpaQ0iE4zJoC
+      Openai-Version:
+      - '2020-10-01'
+      X-Envoy-Upstream-Service-Time:
+      - '2842'
+      X-Ratelimit-Limit-Requests:
+      - '10000'
+      X-Ratelimit-Limit-Tokens:
+      - '30000000'
+      X-Ratelimit-Remaining-Requests:
+      - '9999'
+      X-Ratelimit-Remaining-Tokens:
+      - '29999475'
+      X-Ratelimit-Reset-Requests:
+      - 6ms
+      X-Ratelimit-Reset-Tokens:
+      - 1ms
+      X-Request-Id:
+      - req_0a68c830b4244286bad60fdad539da95
+      Cf-Cache-Status:
+      - DYNAMIC
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      Set-Cookie:
+      - _cfuvid=YAvhMNGckvBaI.QuMBdeLs3x.U4gKn3CkyiAqOVXFV4-1755032377842-0.0.1.1-604800000;
+        path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 96e2e5b74f5edfa0-MIA
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        ewogICJpZCI6ICJjaGF0Y21wbC1DM3FOamJLenpjVWFvYVZaYWdkZ0NsSmt0Ym5keSIsCiAgIm9iamVjdCI6ICJjaGF0LmNvbXBsZXRpb24iLAogICJjcmVhdGVkIjogMTc1NTAzMjM3NSwKICAibW9kZWwiOiAiZ3B0LTQuMS0yMDI1LTA0LTE0IiwKICAiY2hvaWNlcyI6IFsKICAgIHsKICAgICAgImluZGV4IjogMCwKICAgICAgIm1lc3NhZ2UiOiB7CiAgICAgICAgInJvbGUiOiAiYXNzaXN0YW50IiwKICAgICAgICAiY29udGVudCI6ICLQn9C+0LbQsNC70YPQudGB0YLQsCwg0L/RgNC10LTQvtGB0YLQsNCy0YzRgtC1INGB0LDQvNC4INCy0L7Qv9GA0L7RgdGLINC/0L7Qu9GM0LfQvtCy0LDRgtC10LvQtdC5LCDRh9GC0L7QsdGLINGPINC80L7QsyDQuNGFINC/0YDQvtCw0L3QsNC70LjQt9C40YDQvtCy0LDRgtGMLiDQn9C+0LrQsCDRh9GC0L4g0YMg0LzQtdC90Y8g0LXRgdGC0Ywg0YLQvtC70YzQutC+INC80LDRgtC10YDQuNCw0Lsg0YPRgNC+0LrQsC4g0JXRgdC70Lgg0LLRiyDQtNC+0LHQsNCy0LjRgtC1INGB0L/QuNGB0L7QuiDQuNC70Lgg0L/RgNC40LzQtdGA0Ysg0LLQvtC/0YDQvtGB0L7Qsi/Qv9GA0LXRgtC10L3Qt9C40Lkg0YHRgtGD0LTQtdC90YLQvtCyIOKAlCDRjyDRgdC80L7Qs9GDOlxuXG4xLiDQn9GA0L7QstC10YHRgtC4INCw0L3QsNC70LjQtyDQv9C+0LLRgtC+0YDRj9GO0YnQuNGF0YHRjyDQttCw0LvQvtCxLCDQvdC10L/QvtC90Y/RgtC90YvRhSDQvNC+0LzQtdC90YLQvtCyLCDQv9GA0L7RgdC40LzRi9GFINC00L7RgNCw0LHQvtGC0L7Qui5cbjIuINCh0YTQvtGA0LzRg9C70LjRgNC+0LLQsNGC0Ywg0L7RgdC90L7QstC90YvQtSDQv9GA0L7QsdC70LXQvNGLINC4INC/0L7QttC10LvQsNC90LjRjy5cbjMuINCf0YDQtdC00LvQvtC20LjRgtGMINC/0YPRgtC4INGD0LvRg9GH0YjQtdC90LjRjyDRg9GA0L7QutCwIOKAlCDQutC+0L3QutGA0LXRgtC90YvQtSDRgNC10LrQvtC80LXQvdC00LDRhtC40Lgg0L/QviDRgdGC0YDRg9C60YLRg9GA0LUsINC+0LHRitGP0YHQvdC10L3QuNGP0LwsINGE0L7RgNC80LDRgtC40YDQvtCy0LDQvdC40Y4sINGD0L/RgNCw0LbQvdC10L3QuNGP0LwuXG5cbioq0KfRgtC+INC00LXQu9Cw0YLRjCDRgdC10LnRh9Cw0YE6KiogIFxu0J/QvtC20LDQu9GD0LnRgdGC0LAsINC00LDQudGC0LUg0L/QtdGA0LXRh9C10L3RjCDRgNC10LDQu9GM0L3Ri9GFINCy0L7Qv9GA0L7RgdC+0LIv0L7QsdGA0LDRidC10L3QuNC5INC6INCw0YHRgdC40YHRgtC10L3RgtGDINC/0L4g0Y3RgtC+0LzRgyDQt9Cw0L3Rj9GC0LjRji4g0KLQvtC70YzQutC+INC30L3QsNGPINC40YUg0YHQvtC00LXRgNC20LDQvdC40LUsINGPINGB0LzQvtCz0YMg0YHQtNC10LvQsNGC0Ywg0LrQsNGH0LXRgdGC0LLQtdC90L3Ri9C5INCw0L3QsNC70LjQty4iLAogICAgICAgICJyZWZ1c2FsIjogbnVsbCwKICAgICAgICAiYW5ub3RhdGlvbnMiOiBbXQogICAgICB9LAogICAgICAibG9ncHJvYnMiOiBudWxsLAogICAgICAiZmluaXNoX3JlYXNvbiI6ICJzdG9wIgogICAgfQogIF0sCiAgInVzYWdlIjogewogICAgInByb21wdF90b2tlbnMiOiA0ODcsCiAgICAiY29tcGxldGlvbl90b2tlbnMiOiAxNTksCiAgICAidG90YWxfdG9rZW5zIjogNjQ2LAogICAgInByb21wdF90b2tlbnNfZGV0YWlscyI6IHsKICAgICAgImNhY2hlZF90b2tlbnMiOiAwLAogICAgICAiYXVkaW9fdG9rZW5zIjogMAogICAgfSwKICAgICJjb21wbGV0aW9uX3Rva2Vuc19kZXRhaWxzIjogewogICAgICAicmVhc29uaW5nX3Rva2VucyI6IDAsCiAgICAgICJhdWRpb190b2tlbnMiOiAwLAogICAgICAiYWNjZXB0ZWRfcHJlZGljdGlvbl90b2tlbnMiOiAwLAogICAgICAicmVqZWN0ZWRfcHJlZGljdGlvbl90b2tlbnMiOiAwCiAgICB9CiAgfSwKICAic2VydmljZV90aWVyIjogImRlZmF1bHQiLAogICJzeXN0ZW1fZmluZ2VycHJpbnQiOiAiZnBfNTFlMTA3MGNmMiIKfQo=
+  recorded_at: Tue, 12 Aug 2025 20:59:37 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"model":"gpt-4.1","messages":[{"role":"system","content":"Проанализируй
+        вопросы, которые задают студенты ассистенту по уроку.\nСуммируй основные претензиии
+        и пожелания. Предложи как поменять урок\n"},{"role":"user","content":"Урок
+        (теория и упражнение): Necessitatibus libero ab. Ut impedit non. Vitae accusantium
+        corporis. Consequuntur explicabo maiores. Dolor sapiente rem. Ea nam expedita.
+        Excepturi ullam harum. Commodi quos omnis. Iusto eveniet rem. Reiciendis ut
+        molestiae. Nostrum modi quo. Architecto ullam cum. Et cupiditate sequi. Saepe
+        quia rerum. Inventore atque quis. Quia aut vitae. Fuga et ullam. Quas doloribus
+        similique. Magni vitae seq.\n\nТут какой-то текст с инлайн кодом `const a
+        = 5` на js\n\n```html\n\u003csection\u003e\n  \u003ch2\u003eCode Basics\u003c/h2\u003e\n  \u003cp\u003e\n    Code
+        Basics — бесплатные практические уроки по программированию для тех,\n    кто
+        начинает с нуля.\n  \u003c/p\u003e\n  \u003cp\u003e\n    Если вы совсем новичок
+        и хотите научиться основам — переменным,\n    строкам, циклам, функциям и
+        т.д., то Code Basics вам подойдёт.\n  \u003c/p\u003e\n\u003c/section\u003e\n```\n\nЕще
+        текст сразу после кода, чтобы посмотреть отступы\n\n\u003e Цитата нафиг\n\n[ссылка](https://ru.hexlet.io)\n\n![Картинка](https://placehold.co/600x400)\n\n![Картинка
+        2](https://placehold.co/100x100)\n\n| Tailwind Class | CSS Property              |
+        Value            |\n|----------------|---------------------------|------------------|\n|
+        `rounded`      | `border-radius`           | `0.25rem`        |\n| `block`        |
+        `display`                 | `block`          |\n| `p-3`          | `padding`                 |
+        `0.75rem`        |\n\n\u003ciframe src=\"//player.vimeo.com/video/128853333?api=1\u0026player_id=video1\"
+        id=\"video1\" allowfullscreen\u003e\u003c/iframe\u003e\n\nwow\n\n\nQui laudantium
+        sequi. Tenetur sunt velit. Velit qui amet."},{"role":"user","content":"Вопросы
+        пользователей: "}]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <OPENAI_ACCESS_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 12 Aug 2025 20:59:40 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Openai-Organization:
+      - hexlet
+      Openai-Processing-Ms:
+      - '2081'
+      Openai-Project:
+      - proj_1VsC0S43I50wJpaQ0iE4zJoC
+      Openai-Version:
+      - '2020-10-01'
+      X-Envoy-Upstream-Service-Time:
+      - '2118'
+      X-Ratelimit-Limit-Requests:
+      - '10000'
+      X-Ratelimit-Limit-Tokens:
+      - '30000000'
+      X-Ratelimit-Remaining-Requests:
+      - '9999'
+      X-Ratelimit-Remaining-Tokens:
+      - '29999475'
+      X-Ratelimit-Reset-Requests:
+      - 6ms
+      X-Ratelimit-Reset-Tokens:
+      - 1ms
+      X-Request-Id:
+      - req_2699f13e3eb24eabadf19ebc6ae2cd9e
+      Cf-Cache-Status:
+      - DYNAMIC
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      Set-Cookie:
+      - _cfuvid=aJaS2n2.4.sFw2S_H1_lyCyYwA9uw.uY8A0qchmGnTc-1755032380149-0.0.1.1-604800000;
+        path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 96e2e5ca5ab532d8-MIA
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        ewogICJpZCI6ICJjaGF0Y21wbC1DM3FObWh3S2xiWDEzMlhOUXBoS29EdVg1Tjc2dCIsCiAgIm9iamVjdCI6ICJjaGF0LmNvbXBsZXRpb24iLAogICJjcmVhdGVkIjogMTc1NTAzMjM3OCwKICAibW9kZWwiOiAiZ3B0LTQuMS0yMDI1LTA0LTE0IiwKICAiY2hvaWNlcyI6IFsKICAgIHsKICAgICAgImluZGV4IjogMCwKICAgICAgIm1lc3NhZ2UiOiB7CiAgICAgICAgInJvbGUiOiAiYXNzaXN0YW50IiwKICAgICAgICAiY29udGVudCI6ICLQn9C+0LbQsNC70YPQudGB0YLQsCwg0L/RgNC10LTQvtGB0YLQsNCy0YzRgtC1INC/0LXRgNC10YfQtdC90Ywg0LLQvtC/0YDQvtGB0L7QsiDQv9C+0LvRjNC30L7QstCw0YLQtdC70LXQuSwg0YfRgtC+0LHRiyDRjyDQvNC+0LMg0LjRhSDQv9GA0L7QsNC90LDQu9C40LfQuNGA0L7QstCw0YLRjC4g0J/QvtC60LAg0LLRiyDQvdC1INC90LDQv9C40YHQsNC70Lgg0YHQv9C40YHQvtC6INCy0L7Qv9GA0L7RgdC+0LIsINGPINC90LUg0LzQvtCz0YMg0LLRi9C/0L7Qu9C90LjRgtGMINCy0LDRiCDQt9Cw0L/RgNC+0YEg0L/QviDQsNC90LDQu9C40LfRgyDQuCDQv9GA0LXQtNC70L7QttC10L3QuNGOINC40LfQvNC10L3QtdC90LjQuSDQsiDRg9GA0L7QutC1LlxuXG4qKtCn0YLQviDQvdGD0LbQvdC+OioqXG4tINCh0L/QuNGB0L7QuiDQstC+0L/RgNC+0YHQvtCyINGB0YLRg9C00LXQvdGC0L7QsiAo0L/Rg9GB0YLRjCDQtNCw0LbQtSDQutGA0LDRgtC60L4sINC10YHQu9C4INC/0L4g0YLQtdC80LUg0Y3RgtC+0LPQviDRg9GA0L7QutCwKVxuXG4qKtCn0YLQviDRjyDQvNC+0LPRgyDRgdC00LXQu9Cw0YLRjCDQv9C+0YHQu9C1INC/0L7Qu9GD0YfQtdC90LjRjyDQstC+0L/RgNC+0YHQvtCyOioqXG4tINCh0YPQvNC80LjRgNC+0LLQsNGC0Ywg0L7RgdC90L7QstC90YvQtSDQv9GA0LXRgtC10L3Qt9C40Lgg0Lgg0L/QvtC20LXQu9Cw0L3QuNGPXG4tINCf0YDQtdC00LvQvtC20LjRgtGMLCDQutCw0Log0YPQu9GD0YfRiNC40YLRjCDRg9GA0L7QuiDRgSDRg9GH0ZHRgtC+0Lwg0LfQsNC80LXRh9Cw0L3QuNC5XG5cbioq0J/QvtC20LDQu9GD0LnRgdGC0LAsINC00L7QsdCw0LLRjNGC0LUg0LLQvtC/0YDQvtGB0Ysg0LTQu9GPINCw0L3QsNC70LjQt9CwISoqIiwKICAgICAgICAicmVmdXNhbCI6IG51bGwsCiAgICAgICAgImFubm90YXRpb25zIjogW10KICAgICAgfSwKICAgICAgImxvZ3Byb2JzIjogbnVsbCwKICAgICAgImZpbmlzaF9yZWFzb24iOiAic3RvcCIKICAgIH0KICBdLAogICJ1c2FnZSI6IHsKICAgICJwcm9tcHRfdG9rZW5zIjogNDg3LAogICAgImNvbXBsZXRpb25fdG9rZW5zIjogMTIwLAogICAgInRvdGFsX3Rva2VucyI6IDYwNywKICAgICJwcm9tcHRfdG9rZW5zX2RldGFpbHMiOiB7CiAgICAgICJjYWNoZWRfdG9rZW5zIjogMCwKICAgICAgImF1ZGlvX3Rva2VucyI6IDAKICAgIH0sCiAgICAiY29tcGxldGlvbl90b2tlbnNfZGV0YWlscyI6IHsKICAgICAgInJlYXNvbmluZ190b2tlbnMiOiAwLAogICAgICAiYXVkaW9fdG9rZW5zIjogMCwKICAgICAgImFjY2VwdGVkX3ByZWRpY3Rpb25fdG9rZW5zIjogMCwKICAgICAgInJlamVjdGVkX3ByZWRpY3Rpb25fdG9rZW5zIjogMAogICAgfQogIH0sCiAgInNlcnZpY2VfdGllciI6ICJkZWZhdWx0IiwKICAic3lzdGVtX2ZpbmdlcnByaW50IjogImZwXzUxZTEwNzBjZjIiCn0K
+  recorded_at: Tue, 12 Aug 2025 20:59:40 GMT
+recorded_with: VCR 6.3.1

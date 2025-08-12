@@ -1,5 +1,6 @@
+import { Group } from '@mantine/core';
 import dayjs from 'dayjs';
-import { Edit } from 'lucide-react';
+import { Edit, TextSearch } from 'lucide-react';
 import { DataTable } from 'mantine-datatable';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,9 +21,17 @@ export default function Index({ grid, courses }: Props) {
   const { gridProps } = useDataTableProps<Language, {}>(grid);
 
   const renderActions = (item: Language) => (
-    <AppAnchor href={Routes.edit_admin_language_path(item.id)}>
-      <Edit size={14} />
-    </AppAnchor>
+    <Group gap={5}>
+      <AppAnchor href={Routes.edit_admin_language_path(item.id)}>
+        <Edit size={14} />
+      </AppAnchor>
+      <AppAnchor
+        method="post"
+        href={Routes.review_admin_language_path(item.id)}
+      >
+        <TextSearch size={14} />
+      </AppAnchor>
+    </Group>
   );
 
   return (
