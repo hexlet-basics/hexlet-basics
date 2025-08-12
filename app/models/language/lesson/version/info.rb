@@ -46,6 +46,10 @@ class Language::Lesson::Version::Info < ApplicationRecord
   has_one :lesson, through: :version
   belongs_to :language_version, class_name: "Language::Version"
 
+  def self.ransackable_attributes(auth_object = nil)
+    [ "created_at", "definitions", "description", "id", "instructions", "language_id", "language_lesson_id", "language_version_id", "locale", "name", "theory", "tips", "updated_at", "version_id" ]
+  end
+
   def to_s
     name
   end

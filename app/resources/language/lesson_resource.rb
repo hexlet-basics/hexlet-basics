@@ -1,6 +1,8 @@
 class Language::LessonResource < ApplicationResource
   typelize_from Language::Lesson::Version::Info
 
+  has_one :language, resource: LanguageResource
+
   attributes :id,
     :name,
     :locale,

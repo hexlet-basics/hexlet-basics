@@ -2520,6 +2520,7 @@
             "language_categories": "Категории",
             "language_landing_pages": "Лендинги",
             "language_lesson_members": "Прохождение уроков",
+            "language_lesson_reviews": "Ревью уроков",
             "language_lessons": "Уроки",
             "languages": "Курсы",
             "leads": "Лиды",
@@ -2828,6 +2829,11 @@
         "language_lesson_members": {
           "index": {
             "header": "Прохождение уроков"
+          }
+        },
+        "language_lesson_reviews": {
+          "index": {
+            "header": "Ревью уроков"
           }
         },
         "language_lessons": {

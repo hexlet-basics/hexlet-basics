@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_01_182012) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_12_192733) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -245,6 +245,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_01_182012) do
     t.index ["lesson_id"], name: "user_finished_lessons_language_module_lesson_id_index"
     t.index ["user_id", "lesson_id"], name: "user_finished_lessons_user_id_language_module_lesson_id_index", unique: true
     t.index ["user_id"], name: "user_finished_lessons_user_id_index"
+  end
+
+  create_table "language_lesson_reviews", force: :cascade do |t|
+    t.bigint "language_id", null: false
+    t.bigint "language_lesson_id", null: false
+    t.bigint "language_lesson_version_id", null: false
+    t.bigint "language_lesson_version_info_id", null: false
+    t.text "summary", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["language_id"], name: "index_language_lesson_reviews_on_language_id"
+    t.index ["language_lesson_id"], name: "index_language_lesson_reviews_on_language_lesson_id"
+    t.index ["language_lesson_version_id"], name: "index_language_lesson_reviews_on_language_lesson_version_id"
+    t.index ["language_lesson_version_info_id"], name: "idx_on_language_lesson_version_info_id_e5ef52eeca"
   end
 
   create_table "language_lesson_version_infos", force: :cascade do |t|
@@ -781,6 +795,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_01_182012) do
   add_foreign_key "language_lesson_members", "language_lessons", column: "lesson_id"
   add_foreign_key "language_lesson_members", "language_members"
   add_foreign_key "language_lesson_members", "users"
+  add_foreign_key "language_lesson_reviews", "language_lesson_version_infos"
+  add_foreign_key "language_lesson_reviews", "language_lesson_versions"
+  add_foreign_key "language_lesson_reviews", "language_lessons"
+  add_foreign_key "language_lesson_reviews", "languages"
   add_foreign_key "language_lesson_version_infos", "language_lesson_versions", column: "version_id"
   add_foreign_key "language_lesson_version_infos", "language_lessons"
   add_foreign_key "language_lesson_version_infos", "language_versions"

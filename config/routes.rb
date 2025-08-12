@@ -156,6 +156,7 @@ Rails.application.routes.draw do
         resources :leads, only: [ :index ]
         resources :messages, only: [ :index ]
         resources :language_lesson_members, only: [ :index ]
+        resources :language_lesson_reviews, only: [ :index ]
         resources :language_categories
         resources :language_lessons, only: [ :index ]
         resources :blog_posts do

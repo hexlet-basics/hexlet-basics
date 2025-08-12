@@ -1,28 +1,52 @@
-import { ActionIcon, Group } from '@mantine/core';
+import { ActionIcon, Button, Modal } from '@mantine/core';
 import dayjs from 'dayjs';
-import { Github, Link } from 'lucide-react';
+import { Link } from 'lucide-react';
 import { DataTable } from 'mantine-datatable';
 import type { PropsWithChildren } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AppAnchor from '@/components/Elements/AppAnchor';
+import MarkdownViewer from '@/components/MarkdownViewer';
 import useDataTableProps from '@/hooks/useDataTableProps';
 import AdminLayout from '@/pages/layouts/AdminLayout';
 import * as Routes from '@/routes.js';
-import type { Grid, LanguageLesson } from '@/types';
+import type {
+  Grid,
+  LanguageLessonReview,
+} from '@/types';
 
 type Props = PropsWithChildren & {
-  lessons: LanguageLesson[];
+  reviews: LanguageLessonReview[];
   grid: Grid;
 };
 
+function DataBox({
+  review,
+  col,
+}: {
+  review: LanguageLessonReview;
+  col: string;
+}) {
+  const [visible, setVisible] = useState(false);
+  return (
+    <>
+      <Button variant="subtle" onClick={() => setVisible(true)}>
+        data
+      </Button>
+      <Modal opened={visible} onClose={() => setVisible(false)} size="50vw">
+        <MarkdownViewer>{review.summary}</MarkdownViewer>
+      </Modal>
+    </>
+  );
+}
 
-export default function Index({ grid, lessons }: Props) {
+export default function Index({ grid, reviews }: Props) {
   const { t } = useTranslation();
-  const { gridProps } = useDataTableProps<LanguageLesson, {}>(grid);
+  const { gridProps } = useDataTableProps<LanguageLessonReview, {}>(grid);
 
-  const renderActions = (item: LanguageLesson) => {
+  const renderActions = (item: LanguageLessonReview) => {
     return (
-      <Group gap="xs">
+      <>
         {/* <AppAnchor */}
         {/*   me="xs" */}
         {/*   href={Routes.edit_admin_language_category_path(item.id)} */}
@@ -33,17 +57,17 @@ export default function Index({ grid, lessons }: Props) {
         {/* </AppAnchor> */}
         <AppAnchor
           external
-          href={Routes.language_lesson_path(item.language!.slug!, item.slug!)}
+          // href={Routes.language_lesson_path(item.language!.slug!, item.slug!)}
         >
           <ActionIcon variant="default" size="xs">
             <Link />
           </ActionIcon>
         </AppAnchor>
-        <AppAnchor external href={item.source_code_url!}>
-          <ActionIcon variant="default" size="xs">
-            <Github />
-          </ActionIcon>
-        </AppAnchor>
+        {/* <AppAnchor external href={item.source_code_url}> */}
+        {/*   <ActionIcon variant="default" size="xs"> */}
+        {/*     <Github /> */}
+        {/*   </ActionIcon> */}
+        {/* </AppAnchor> */}
         {/* <Link */}
         {/*   onClick={confirmDeleting} */}
         {/*   className="btn btn-link link-body-emphasis p-0 m-0" */}
@@ -52,18 +76,23 @@ export default function Index({ grid, lessons }: Props) {
         {/* > */}
         {/*   {<i className="bi bi-file-x" />} */}
         {/* </Link> */}
-      </Group>
+      </>
     );
   };
 
   return (
-    <AdminLayout header={t('admin.language_lessons.index.header')}>
+    <AdminLayout header={t('admin.language_lesson_reviews.index.header')}>
       <DataTable
-        records={lessons}
+        records={reviews}
         columns={[
           { accessor: 'id' },
           { accessor: 'language.slug' },
           { accessor: 'slug' },
+          {
+            accessor: 'review',
+            title: 'review',
+            render: (rec) => <DataBox review={rec} col="review" />,
+          },
           {
             accessor: 'created_at',
             render: (r) => dayjs(r.created_at).format('LL'),

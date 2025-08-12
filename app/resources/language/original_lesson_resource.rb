@@ -4,7 +4,6 @@ class Language::OriginalLessonResource < ApplicationResource
   has_one :language, resource: LanguageResource
 
   attributes :id,
-    :review,
     :slug,
     :language_id,
     :module_id,
