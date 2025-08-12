@@ -1335,7 +1335,7 @@
       },
       "users": {
         "new": {
-          "confirmation_html": "By clicking Sign up, you agree to our <a href=\"%{link}\" class=\"text-decoration-none\" target=\"_blank\">service conditions</a>",
+          "confirmation_html": "By clicking Sign up, you agree to our <a href=\"%{url}\" class=\"text-decoration-none\" target=\"_blank\">service conditions</a>",
           "have_account": "Already have an account?",
           "meta_description": "Sign up on Code Basics",
           "sign_in": "Sign in",
