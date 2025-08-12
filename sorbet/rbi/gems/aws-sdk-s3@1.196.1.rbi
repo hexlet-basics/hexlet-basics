@@ -24361,158 +24361,156 @@ end
 
 # @api private
 #
-# source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#11
+# source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#10
 class Aws::S3::FileDownloader
   # @api private
   # @return [FileDownloader] a new instance of FileDownloader
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#17
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#15
   def initialize(options = T.unsafe(nil)); end
 
   # @api private
   # @return [Client]
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#22
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#20
   def client; end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#24
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#22
   def download(destination, options = T.unsafe(nil)); end
 
   private
 
   # @api private
+  # @raise [ArgumentError]
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#120
-  def batches(chunks, mode); end
-
-  # @api private
-  #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#110
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#89
   def compute_chunk(file_size); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#87
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#79
   def compute_mode(file_size, count, etag); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#97
-  def construct_chunks(file_size); end
-
-  # @api private
-  #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#152
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#118
   def download_in_threads(pending, total_size); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#67
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#151
+  def extract_range(value); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#58
   def multipart_download; end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#145
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#111
   def multithreaded_get_by_parts(n_parts, total_size, etag); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#125
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#95
   def multithreaded_get_by_ranges(file_size, etag); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#201
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#175
   def single_part_progress; end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#189
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#165
   def single_request; end
 
   # @api private
+  # @raise [ArgumentError]
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#61
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#52
   def validate!; end
 
   # @api private
+  # @raise [MultipartDownloadError]
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#183
-  def write(resp); end
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#155
+  def validate_range(actual, expected); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#161
+  def write(body, range); end
 end
 
 # @api private
 #
-# source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#14
+# source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#13
 Aws::S3::FileDownloader::MAX_PARTS = T.let(T.unsafe(nil), Integer)
 
 # @api private
 #
-# source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#13
+# source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#12
 Aws::S3::FileDownloader::MIN_CHUNK_SIZE = T.let(T.unsafe(nil), Integer)
 
 # @api private
 #
-# source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#237
+# source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#212
 class Aws::S3::FileDownloader::MultipartProgress
   # @api private
   # @return [MultipartProgress] a new instance of MultipartProgress
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#238
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#213
   def initialize(parts, total_size, progress_callback); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#245
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#220
   def call(part_number, bytes_received, total); end
 end
 
 # @api private
 #
-# source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#207
+# source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#182
 class Aws::S3::FileDownloader::Part < ::Struct
   include ::Aws::Structure
 end
 
 # @api private
 #
-# source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#212
+# source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#187
 class Aws::S3::FileDownloader::PartList
   include ::Enumerable
 
   # @api private
   # @return [PartList] a new instance of PartList
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#214
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#189
   def initialize(parts = T.unsafe(nil)); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#227
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#202
   def clear!; end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#231
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#206
   def each(&block); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#219
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#194
   def shift; end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#223
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#198
   def size; end
 end
-
-# @api private
-#
-# source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#15
-Aws::S3::FileDownloader::THREAD_COUNT = T.let(T.unsafe(nil), Integer)
 
 # A utility class that provides an IO-like interface to a portion of a file
 # on disk.
@@ -24763,6 +24761,11 @@ end
 # source://aws-sdk-s3//lib/aws-sdk-s3/legacy_signer.rb#15
 Aws::S3::LegacySigner::SIGNED_QUERYSTRING_PARAMS = T.let(T.unsafe(nil), Set)
 
+# Raised when multipart download fails to complete.
+#
+# source://aws-sdk-s3//lib/aws-sdk-s3/multipart_download_error.rb#6
+class Aws::S3::MultipartDownloadError < ::StandardError; end
+
 # @api private
 #
 # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#9
@@ -24773,13 +24776,13 @@ class Aws::S3::MultipartFileUploader
   # @param options [Hash] a customizable set of options
   # @return [MultipartFileUploader] a new instance of MultipartFileUploader
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#39
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#31
   def initialize(options = T.unsafe(nil)); end
 
   # @api private
   # @return [Client]
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#45
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#37
   def client; end
 
   # @api private
@@ -24788,104 +24791,100 @@ class Aws::S3::MultipartFileUploader
   # @option options
   # @param source [String, Pathname, File, Tempfile] The file to upload.
   # @param options [Hash] a customizable set of options
+  # @raise [ArgumentError]
   # @return [Seahorse::Client::Response] - the CompleteMultipartUploadResponse
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#54
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#46
   def upload(source, options = T.unsafe(nil)); end
 
   private
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#90
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#83
   def abort_upload(upload_id, options, errors); end
 
   # @api private
   # @return [Boolean]
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#128
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#113
   def checksum_key?(key); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#145
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#129
   def complete_opts(options); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#70
-  def complete_upload(upload_id, parts, options); end
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#60
+  def complete_upload(upload_id, parts, source, options); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#202
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#179
   def compute_default_part_size(source_size); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#106
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#95
   def compute_parts(upload_id, source, options); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#136
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#121
   def create_opts(options); end
 
   # @api private
   # @return [Boolean]
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#132
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#117
   def has_checksum_key?(keys); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#66
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#56
   def initiate_upload(options); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#206
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#183
   def part_size(total_size, part_size, offset); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#164
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#144
   def upload_in_threads(pending, completed, options); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#154
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#137
   def upload_part_opts(options); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#79
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#72
   def upload_parts(upload_id, source, options); end
 end
 
 # @api private
 #
-# source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#31
+# source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#23
 Aws::S3::MultipartFileUploader::CHECKSUM_KEYS = T.let(T.unsafe(nil), Set)
 
 # @api private
 #
-# source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#23
+# source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#19
 Aws::S3::MultipartFileUploader::COMPLETE_OPTIONS = T.let(T.unsafe(nil), Set)
 
 # @api private
 #
-# source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#19
+# source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#17
 Aws::S3::MultipartFileUploader::CREATE_OPTIONS = T.let(T.unsafe(nil), Set)
 
 # @api private
 #
 # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#13
-Aws::S3::MultipartFileUploader::FILE_TOO_SMALL = T.let(T.unsafe(nil), String)
-
-# @api private
-#
-# source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#15
 Aws::S3::MultipartFileUploader::MAX_PARTS = T.let(T.unsafe(nil), Integer)
 
 # 5MB
@@ -24897,69 +24896,69 @@ Aws::S3::MultipartFileUploader::MIN_PART_SIZE = T.let(T.unsafe(nil), Integer)
 
 # @api private
 #
-# source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#249
+# source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#224
 class Aws::S3::MultipartFileUploader::MultipartProgress
   # @api private
   # @return [MultipartProgress] a new instance of MultipartProgress
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#250
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#225
   def initialize(parts, progress_callback); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#256
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#231
   def call(part_number, bytes_read); end
 end
 
 # @api private
 #
-# source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#215
+# source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#192
 class Aws::S3::MultipartFileUploader::PartList
   # @api private
   # @return [PartList] a new instance of PartList
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#217
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#193
   def initialize(parts = T.unsafe(nil)); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#230
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#206
   def clear!; end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#238
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#214
   def part_sizes; end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#222
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#198
   def push(part); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#226
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#202
   def shift; end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#234
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#210
   def size; end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#242
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#218
   def to_a; end
 end
 
 # @api private
 #
-# source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#17
+# source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#15
 Aws::S3::MultipartFileUploader::THREAD_COUNT = T.let(T.unsafe(nil), Integer)
 
 # @api private
 #
-# source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#27
+# source://aws-sdk-s3//lib/aws-sdk-s3/multipart_file_uploader.rb#21
 Aws::S3::MultipartFileUploader::UPLOAD_PART_OPTIONS = T.let(T.unsafe(nil), Set)
 
 # @api private
@@ -25413,15 +25412,16 @@ end
 # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_upload.rb#686
 class Aws::S3::MultipartUpload::Collection < ::Aws::Resources::Collection; end
 
-# source://aws-sdk-s3//lib/aws-sdk-s3/multipart_upload_error.rb#5
+# Raise when multipart upload fails to complete.
+#
+# source://aws-sdk-s3//lib/aws-sdk-s3/multipart_upload_error.rb#6
 class Aws::S3::MultipartUploadError < ::StandardError
   # @return [MultipartUploadError] a new instance of MultipartUploadError
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_upload_error.rb#7
-  def initialize(message, errors); end
+  # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_upload_error.rb#8
+  def initialize(message, errors = T.unsafe(nil)); end
 
-  # @return [Array<StandardError>] The list of errors encountered
-  #   when uploading or aborting the upload.
+  # @return [Array<StandardError>] The list of errors encountered when uploading or aborting the upload.
   #
   # source://aws-sdk-s3//lib/aws-sdk-s3/multipart_upload_error.rb#14
   def errors; end
@@ -26161,7 +26161,7 @@ class Aws::S3::Object
   #     # small files (< 5MB) are downloaded in a single API call
   #     obj.download_file('/path/to/file')
   #
-  # Files larger than 5MB are downloaded using multipart method
+  # Files larger than 5MB are downloaded using multipart method:
   #
   #     # large files are split into parts
   #     # and the parts are downloaded in parallel
@@ -26171,8 +26171,8 @@ class Aws::S3::Object
   #
   #     # bytes and part_sizes are each an array with 1 entry per part
   #     # part_sizes may not be known until the first bytes are retrieved
-  #     progress = Proc.new do |bytes, part_sizes, file_size|
-  #       puts bytes.map.with_index { |b, i| "Part #{i+1}: #{b} / #{part_sizes[i]}"}.join(' ') + "Total: #{100.0 * bytes.sum / file_size}%" }
+  #     progress = proc do |bytes, part_sizes, file_size|
+  #       puts bytes.map.with_index { |b, i| "Part #{i + 1}: #{b} / #{part_sizes[i]}" }.join(' ') + "Total: #{100.0 * bytes.sum / file_size}%"
   #     end
   #     obj.download_file('/path/to/file', progress_callback: progress)
   #
@@ -26184,14 +26184,13 @@ class Aws::S3::Object
   # @option options
   # @option options
   # @param destination [String] Where to download the file to.
-  # @param options [Hash] Additional options for {Client#get_object} and #{Client#head_object}
-  #   may be provided.
-  # @return [Boolean] Returns `true` when the file is downloaded without
-  #   any errors.
+  # @param options [Hash] Additional options for {Client#get_object} and #{Client#head_object} may be provided.
+  # @raise [MultipartDownloadError] Raised when an object validation fails outside of service errors.
+  # @return [Boolean] Returns `true` when the file is downloaded without any errors.
   # @see Client#get_object
   # @see Client#head_object
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/customizations/object.rb#552
+  # source://aws-sdk-s3//lib/aws-sdk-s3/customizations/object.rb#530
   def download_file(destination, options = T.unsafe(nil)); end
 
   # An entity tag (ETag) is an opaque identifier assigned by a web server
@@ -27090,8 +27089,7 @@ class Aws::S3::Object
   #     # small files are uploaded in a single API call
   #     obj.upload_file('/path/to/file')
   #
-  # Files larger than or equal to `:multipart_threshold` are uploaded
-  # using the Amazon S3 multipart upload APIs.
+  # Files larger than or equal to `:multipart_threshold` are uploaded using the Amazon S3 multipart upload APIs.
   #
   #     # large files are automatically split into parts
   #     # and the parts are uploaded in parallel
@@ -27107,40 +27105,33 @@ class Aws::S3::Object
   # You can provide a callback to monitor progress of the upload:
   #
   #     # bytes and totals are each an array with 1 entry per part
-  #     progress = Proc.new do |bytes, totals|
-  #       puts bytes.map.with_index { |b, i| "Part #{i+1}: #{b} / #{totals[i]}"}.join(' ') + "Total: #{100.0 * bytes.sum / totals.sum }%" }
+  #     progress = proc do |bytes, totals|
+  #       puts bytes.map.with_index { |b, i| "Part #{i+1}: #{b} / #{totals[i]}"}.join(' ') + "Total: #{100.0 * bytes.sum / totals.sum }%"
   #     end
   #     obj.upload_file('/path/to/file', progress_callback: progress)
   #
   # @option options
   # @option options
   # @option options
-  # @param source [String, Pathname, File, Tempfile] A file on the local
-  #   file system that will be uploaded as this object. This can either be
-  #   a String or Pathname to the file, an open File object, or an open
-  #   Tempfile object. If you pass an open File or Tempfile object, then
-  #   you are responsible for closing it after the upload completes. When
-  #   using an open Tempfile, rewind it before uploading or else the object
+  # @param source [String, Pathname, File, Tempfile] A file on the local file system that will be uploaded as
+  #   this object. This can either be a String or Pathname to the file, an open File object, or an open
+  #   Tempfile object. If you pass an open File or Tempfile object, then you are responsible for closing it
+  #   after the upload completes. When using an open Tempfile, rewind it before uploading or else the object
   #   will be empty.
-  # @param options [Hash] Additional options for {Client#put_object}
-  #   when file sizes below the multipart threshold. For files larger than
-  #   the multipart threshold, options for {Client#create_multipart_upload},
-  #   {Client#complete_multipart_upload},
-  #   and {Client#upload_part} can be provided.
-  # @raise [MultipartUploadError] If an object is being uploaded in
-  #   parts, and the upload can not be completed, then the upload is
-  #   aborted and this error is raised.  The raised error has a `#errors`
-  #   method that returns the failures that caused the upload to be
-  #   aborted.
-  # @return [Boolean] Returns `true` when the object is uploaded
-  #   without any errors.
+  # @param options [Hash] Additional options for {Client#put_object} when file sizes below the multipart threshold.
+  #   For files larger than the multipart threshold, options for {Client#create_multipart_upload},
+  #   {Client#complete_multipart_upload}, and {Client#upload_part} can be provided.
+  # @raise [MultipartUploadError] If an object is being uploaded in parts, and the upload can not be completed,
+  #   then the upload is aborted and this error is raised.  The raised error has a `#errors` method that
+  #   returns the failures that caused the upload to be aborted.
+  # @return [Boolean] Returns `true` when the object is uploaded without any errors.
   # @see Client#put_object
   # @see Client#create_multipart_upload
   # @see Client#complete_multipart_upload
   # @see Client#upload_part
   # @yield [response]
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/customizations/object.rb#470
+  # source://aws-sdk-s3//lib/aws-sdk-s3/customizations/object.rb#459
   def upload_file(source, options = T.unsafe(nil)); end
 
   # Uploads a stream in a streaming fashion to the current object in S3.
@@ -27353,10 +27344,10 @@ class Aws::S3::Object::Collection < ::Aws::Resources::Collection
   # source://aws-sdk-s3//lib/aws-sdk-s3/object.rb#3600
   def batch_delete!(options = T.unsafe(nil)); end
 
-  # source://aws-sdk-s3//lib/aws-sdk-s3/customizations/object.rb#564
+  # source://aws-sdk-s3//lib/aws-sdk-s3/customizations/object.rb#539
   def delete(*args, &block); end
 
-  # source://aws-sdk-s3//lib/aws-sdk-s3/customizations/object.rb#566
+  # source://aws-sdk-s3//lib/aws-sdk-s3/customizations/object.rb#541
   def deprecated_delete(options = T.unsafe(nil)); end
 end
 
@@ -28044,10 +28035,8 @@ class Aws::S3::ObjectSummary
   def deprecated_identifiers; end
 
   # @param destination [String] Where to download the file to.
-  # @param options [Hash] Additional options for {Client#get_object} and #{Client#head_object}
-  #   may be provided.
-  # @return [Boolean] Returns `true` when the file is downloaded without
-  #   any errors.
+  # @param options [Hash] Additional options for {Client#get_object} and #{Client#head_object} may be provided.
+  # @return [Boolean] Returns `true` when the file is downloaded without any errors.
   # @see Object#download_file
   #
   # source://aws-sdk-s3//lib/aws-sdk-s3/customizations/object_summary.rb#79
@@ -28545,20 +28534,15 @@ class Aws::S3::ObjectSummary
   # source://aws-sdk-s3//lib/aws-sdk-s3/object_summary.rb#114
   def storage_class; end
 
-  # @param source [String, Pathname, File, Tempfile] A file on the local
-  #   file system that will be uploaded as this object. This can either be
-  #   a String or Pathname to the file, an open File object, or an open
-  #   Tempfile object. If you pass an open File or Tempfile object, then
-  #   you are responsible for closing it after the upload completes. When
-  #   using an open Tempfile, rewind it before uploading or else the object
+  # @param source [String, Pathname, File, Tempfile] A file on the local file system that will be uploaded as
+  #   this object. This can either be a String or Pathname to the file, an open File object, or an open
+  #   Tempfile object. If you pass an open File or Tempfile object, then you are responsible for closing it
+  #   after the upload completes. When using an open Tempfile, rewind it before uploading or else the object
   #   will be empty.
-  # @param options [Hash] Additional options for {Client#put_object}
-  #   when file sizes below the multipart threshold. For files larger than
-  #   the multipart threshold, options for {Client#create_multipart_upload},
-  #   {Client#complete_multipart_upload},
-  #   and {Client#upload_part} can be provided.
-  # @return [Boolean] Returns `true` when the object is uploaded
-  #   without any errors.
+  # @param options [Hash] Additional options for {Client#put_object} when file sizes below the multipart threshold.
+  #   For files larger than the multipart threshold, options for {Client#create_multipart_upload},
+  #   {Client#complete_multipart_upload}, and {Client#upload_part} can be provided.
+  # @return [Boolean] Returns `true` when the object is uploaded without any errors.
   # @see Object#upload_file
   #
   # source://aws-sdk-s3//lib/aws-sdk-s3/customizations/object_summary.rb#64

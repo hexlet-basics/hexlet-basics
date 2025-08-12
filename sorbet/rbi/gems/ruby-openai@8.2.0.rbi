@@ -8,19 +8,19 @@
 # source://ruby-openai//lib/openai/http_headers.rb#1
 module OpenAI
   class << self
-    # source://ruby-openai//lib/openai.rb#71
+    # source://ruby-openai//lib/openai.rb#73
     def configuration; end
 
     # Sets the attribute configuration
     #
     # @param value the value to set the attribute configuration to.
     #
-    # source://ruby-openai//lib/openai.rb#69
+    # source://ruby-openai//lib/openai.rb#71
     def configuration=(_arg0); end
 
     # @yield [configuration]
     #
-    # source://ruby-openai//lib/openai.rb#75
+    # source://ruby-openai//lib/openai.rb#77
     def configure; end
 
     # Log a message with appropriate formatting
@@ -29,7 +29,7 @@ module OpenAI
     # @param message [String] The message to log
     # @param level [Symbol] The log level (:error, :warn, etc.)
     #
-    # source://ruby-openai//lib/openai.rb#95
+    # source://ruby-openai//lib/openai.rb#97
     def log_message(prefix, message, level = T.unsafe(nil)); end
 
     # Estimate the number of tokens in a string, using the rules of thumb from OpenAI:
@@ -37,7 +37,7 @@ module OpenAI
     #
     # @raise [ArgumentError]
     #
-    # source://ruby-openai//lib/openai.rb#81
+    # source://ruby-openai//lib/openai.rb#83
     def rough_token_count(content = T.unsafe(nil)); end
   end
 end
@@ -85,7 +85,7 @@ class OpenAI::Audio
   def translate(parameters: T.unsafe(nil)); end
 end
 
-# source://ruby-openai//lib/openai.rb#26
+# source://ruby-openai//lib/openai.rb#28
 class OpenAI::AuthenticationError < ::OpenAI::Error; end
 
 # source://ruby-openai//lib/openai/batches.rb#2
@@ -108,266 +108,269 @@ class OpenAI::Batches
   def retrieve(id:); end
 end
 
-# source://ruby-openai//lib/openai/client.rb#2
+# source://ruby-openai//lib/openai/client.rb#3
 class OpenAI::Client
   include ::OpenAI::HTTPHeaders
   include ::OpenAI::HTTP
 
   # @return [Client] a new instance of Client
   #
-  # source://ruby-openai//lib/openai/client.rb#11
+  # source://ruby-openai//lib/openai/client.rb#12
   def initialize(config = T.unsafe(nil), &faraday_middleware); end
 
-  # source://ruby-openai//lib/openai/client.rb#8
+  # source://ruby-openai//lib/openai/client.rb#9
   def access_token; end
 
   # Sets the attribute access_token
   #
   # @param value the value to set the attribute access_token to.
   #
-  # source://ruby-openai//lib/openai/client.rb#9
+  # source://ruby-openai//lib/openai/client.rb#10
   def access_token=(_arg0); end
 
-  # source://ruby-openai//lib/openai/client.rb#107
+  # source://ruby-openai//lib/openai/client.rb#112
   def admin; end
 
-  # source://ruby-openai//lib/openai/client.rb#8
+  # source://ruby-openai//lib/openai/client.rb#9
   def admin_token; end
 
-  # source://ruby-openai//lib/openai/client.rb#8
+  # source://ruby-openai//lib/openai/client.rb#9
   def api_type; end
 
-  # source://ruby-openai//lib/openai/client.rb#8
+  # source://ruby-openai//lib/openai/client.rb#9
   def api_version; end
 
-  # source://ruby-openai//lib/openai/client.rb#59
+  # source://ruby-openai//lib/openai/client.rb#60
   def assistants; end
 
-  # source://ruby-openai//lib/openai/client.rb#35
+  # source://ruby-openai//lib/openai/client.rb#36
   def audio; end
 
   # @return [Boolean]
   #
-  # source://ruby-openai//lib/openai/client.rb#103
+  # source://ruby-openai//lib/openai/client.rb#108
   def azure?; end
 
-  # source://ruby-openai//lib/openai/client.rb#91
+  # source://ruby-openai//lib/openai/client.rb#92
   def batches; end
 
-  # source://ruby-openai//lib/openai/client.rb#118
+  # source://ruby-openai//lib/openai/client.rb#123
   def beta(apis); end
 
-  # source://ruby-openai//lib/openai/client.rb#23
+  # source://ruby-openai//lib/openai/client.rb#24
   def chat(parameters: T.unsafe(nil)); end
 
-  # source://ruby-openai//lib/openai/client.rb#31
+  # source://ruby-openai//lib/openai/client.rb#32
   def completions(parameters: T.unsafe(nil)); end
 
-  # source://ruby-openai//lib/openai/client.rb#27
+  # source://ruby-openai//lib/openai/client.rb#28
   def embeddings(parameters: T.unsafe(nil)); end
 
-  # source://ruby-openai//lib/openai/client.rb#8
+  # source://ruby-openai//lib/openai/client.rb#9
   def extra_headers; end
 
-  # source://ruby-openai//lib/openai/client.rb#8
+  # source://ruby-openai//lib/openai/client.rb#9
   def faraday_middleware; end
 
-  # source://ruby-openai//lib/openai/client.rb#39
+  # source://ruby-openai//lib/openai/client.rb#40
   def files; end
 
-  # source://ruby-openai//lib/openai/client.rb#43
+  # source://ruby-openai//lib/openai/client.rb#44
   def finetunes; end
 
-  # source://ruby-openai//lib/openai/client.rb#47
+  # source://ruby-openai//lib/openai/client.rb#48
   def images; end
 
-  # source://ruby-openai//lib/openai/client.rb#124
+  # source://ruby-openai//lib/openai/client.rb#129
   def inspect; end
 
-  # source://ruby-openai//lib/openai/client.rb#8
+  # source://ruby-openai//lib/openai/client.rb#9
   def log_errors; end
 
-  # source://ruby-openai//lib/openai/client.rb#67
+  # source://ruby-openai//lib/openai/client.rb#68
   def messages; end
 
-  # source://ruby-openai//lib/openai/client.rb#51
+  # source://ruby-openai//lib/openai/client.rb#52
   def models; end
 
-  # source://ruby-openai//lib/openai/client.rb#95
+  # source://ruby-openai//lib/openai/client.rb#100
   def moderations(parameters: T.unsafe(nil)); end
 
-  # source://ruby-openai//lib/openai/client.rb#8
+  # source://ruby-openai//lib/openai/client.rb#9
   def organization_id; end
 
-  # source://ruby-openai//lib/openai/client.rb#8
+  # source://ruby-openai//lib/openai/client.rb#96
+  def realtime; end
+
+  # source://ruby-openai//lib/openai/client.rb#9
   def request_timeout; end
 
-  # source://ruby-openai//lib/openai/client.rb#55
+  # source://ruby-openai//lib/openai/client.rb#56
   def responses; end
 
-  # source://ruby-openai//lib/openai/client.rb#75
+  # source://ruby-openai//lib/openai/client.rb#76
   def run_steps; end
 
-  # source://ruby-openai//lib/openai/client.rb#71
+  # source://ruby-openai//lib/openai/client.rb#72
   def runs; end
 
-  # source://ruby-openai//lib/openai/client.rb#63
+  # source://ruby-openai//lib/openai/client.rb#64
   def threads; end
 
-  # source://ruby-openai//lib/openai/client.rb#8
+  # source://ruby-openai//lib/openai/client.rb#9
   def uri_base; end
 
-  # source://ruby-openai//lib/openai/client.rb#99
+  # source://ruby-openai//lib/openai/client.rb#104
   def usage; end
 
-  # source://ruby-openai//lib/openai/client.rb#87
+  # source://ruby-openai//lib/openai/client.rb#88
   def vector_store_file_batches; end
 
-  # source://ruby-openai//lib/openai/client.rb#83
+  # source://ruby-openai//lib/openai/client.rb#84
   def vector_store_files; end
 
-  # source://ruby-openai//lib/openai/client.rb#79
+  # source://ruby-openai//lib/openai/client.rb#80
   def vector_stores; end
 end
 
-# source://ruby-openai//lib/openai/client.rb#6
+# source://ruby-openai//lib/openai/client.rb#7
 OpenAI::Client::CONFIG_KEYS = T.let(T.unsafe(nil), Array)
 
-# source://ruby-openai//lib/openai/client.rb#5
+# source://ruby-openai//lib/openai/client.rb#6
 OpenAI::Client::SENSITIVE_ATTRIBUTES = T.let(T.unsafe(nil), Array)
 
-# source://ruby-openai//lib/openai.rb#39
+# source://ruby-openai//lib/openai.rb#41
 class OpenAI::Configuration
   # @return [Configuration] a new instance of Configuration
   #
-  # source://ruby-openai//lib/openai.rb#55
+  # source://ruby-openai//lib/openai.rb#57
   def initialize; end
 
   # Returns the value of attribute access_token.
   #
-  # source://ruby-openai//lib/openai.rb#40
+  # source://ruby-openai//lib/openai.rb#42
   def access_token; end
 
   # Sets the attribute access_token
   #
   # @param value the value to set the attribute access_token to.
   #
-  # source://ruby-openai//lib/openai.rb#40
+  # source://ruby-openai//lib/openai.rb#42
   def access_token=(_arg0); end
 
   # Returns the value of attribute admin_token.
   #
-  # source://ruby-openai//lib/openai.rb#40
+  # source://ruby-openai//lib/openai.rb#42
   def admin_token; end
 
   # Sets the attribute admin_token
   #
   # @param value the value to set the attribute admin_token to.
   #
-  # source://ruby-openai//lib/openai.rb#40
+  # source://ruby-openai//lib/openai.rb#42
   def admin_token=(_arg0); end
 
   # Returns the value of attribute api_type.
   #
-  # source://ruby-openai//lib/openai.rb#40
+  # source://ruby-openai//lib/openai.rb#42
   def api_type; end
 
   # Sets the attribute api_type
   #
   # @param value the value to set the attribute api_type to.
   #
-  # source://ruby-openai//lib/openai.rb#40
+  # source://ruby-openai//lib/openai.rb#42
   def api_type=(_arg0); end
 
   # Returns the value of attribute api_version.
   #
-  # source://ruby-openai//lib/openai.rb#40
+  # source://ruby-openai//lib/openai.rb#42
   def api_version; end
 
   # Sets the attribute api_version
   #
   # @param value the value to set the attribute api_version to.
   #
-  # source://ruby-openai//lib/openai.rb#40
+  # source://ruby-openai//lib/openai.rb#42
   def api_version=(_arg0); end
 
   # Returns the value of attribute extra_headers.
   #
-  # source://ruby-openai//lib/openai.rb#40
+  # source://ruby-openai//lib/openai.rb#42
   def extra_headers; end
 
   # Sets the attribute extra_headers
   #
   # @param value the value to set the attribute extra_headers to.
   #
-  # source://ruby-openai//lib/openai.rb#40
+  # source://ruby-openai//lib/openai.rb#42
   def extra_headers=(_arg0); end
 
   # Returns the value of attribute log_errors.
   #
-  # source://ruby-openai//lib/openai.rb#40
+  # source://ruby-openai//lib/openai.rb#42
   def log_errors; end
 
   # Sets the attribute log_errors
   #
   # @param value the value to set the attribute log_errors to.
   #
-  # source://ruby-openai//lib/openai.rb#40
+  # source://ruby-openai//lib/openai.rb#42
   def log_errors=(_arg0); end
 
   # Returns the value of attribute organization_id.
   #
-  # source://ruby-openai//lib/openai.rb#40
+  # source://ruby-openai//lib/openai.rb#42
   def organization_id; end
 
   # Sets the attribute organization_id
   #
   # @param value the value to set the attribute organization_id to.
   #
-  # source://ruby-openai//lib/openai.rb#40
+  # source://ruby-openai//lib/openai.rb#42
   def organization_id=(_arg0); end
 
   # Returns the value of attribute request_timeout.
   #
-  # source://ruby-openai//lib/openai.rb#40
+  # source://ruby-openai//lib/openai.rb#42
   def request_timeout; end
 
   # Sets the attribute request_timeout
   #
   # @param value the value to set the attribute request_timeout to.
   #
-  # source://ruby-openai//lib/openai.rb#40
+  # source://ruby-openai//lib/openai.rb#42
   def request_timeout=(_arg0); end
 
   # Returns the value of attribute uri_base.
   #
-  # source://ruby-openai//lib/openai.rb#40
+  # source://ruby-openai//lib/openai.rb#42
   def uri_base; end
 
   # Sets the attribute uri_base
   #
   # @param value the value to set the attribute uri_base to.
   #
-  # source://ruby-openai//lib/openai.rb#40
+  # source://ruby-openai//lib/openai.rb#42
   def uri_base=(_arg0); end
 end
 
-# source://ruby-openai//lib/openai.rb#50
+# source://ruby-openai//lib/openai.rb#52
 OpenAI::Configuration::DEFAULT_API_VERSION = T.let(T.unsafe(nil), String)
 
-# source://ruby-openai//lib/openai.rb#53
+# source://ruby-openai//lib/openai.rb#55
 OpenAI::Configuration::DEFAULT_LOG_ERRORS = T.let(T.unsafe(nil), FalseClass)
 
-# source://ruby-openai//lib/openai.rb#52
+# source://ruby-openai//lib/openai.rb#54
 OpenAI::Configuration::DEFAULT_REQUEST_TIMEOUT = T.let(T.unsafe(nil), Integer)
 
-# source://ruby-openai//lib/openai.rb#51
+# source://ruby-openai//lib/openai.rb#53
 OpenAI::Configuration::DEFAULT_URI_BASE = T.let(T.unsafe(nil), String)
 
-# source://ruby-openai//lib/openai.rb#25
+# source://ruby-openai//lib/openai.rb#27
 class OpenAI::ConfigurationError < ::OpenAI::Error; end
 
-# source://ruby-openai//lib/openai.rb#24
+# source://ruby-openai//lib/openai.rb#26
 class OpenAI::Error < ::StandardError; end
 
 # source://ruby-openai//lib/openai/files.rb#2
@@ -378,7 +381,7 @@ class OpenAI::Files
   def initialize(client:); end
 
   # source://ruby-openai//lib/openai/files.rb#36
-  def content(id:); end
+  def content(id:, parameters: T.unsafe(nil)); end
 
   # source://ruby-openai//lib/openai/files.rb#40
   def delete(id:); end
@@ -387,7 +390,7 @@ class OpenAI::Files
   def list(parameters: T.unsafe(nil)); end
 
   # source://ruby-openai//lib/openai/files.rb#32
-  def retrieve(id:); end
+  def retrieve(id:, parameters: T.unsafe(nil)); end
 
   # source://ruby-openai//lib/openai/files.rb#20
   def upload(parameters: T.unsafe(nil)); end
@@ -453,32 +456,19 @@ module OpenAI::HTTP
 
   private
 
-  # source://ruby-openai//lib/openai/http.rb#119
+  # source://ruby-openai//lib/openai/http.rb#98
   def configure_json_post_request(req, parameters); end
 
-  # source://ruby-openai//lib/openai/http.rb#79
+  # source://ruby-openai//lib/openai/http.rb#58
   def conn(multipart: T.unsafe(nil)); end
 
-  # source://ruby-openai//lib/openai/http.rb#104
+  # source://ruby-openai//lib/openai/http.rb#83
   def multipart_parameters(parameters); end
 
   # source://ruby-openai//lib/openai/http.rb#43
   def parse_json(response); end
 
-  # Given a proc, returns an outer proc that can be used to iterate over a JSON stream of chunks.
-  # For each chunk, the inner user_proc is called giving it the JSON object. The JSON object could
-  # be a data object or an error object as described in the OpenAI API documentation.
-  #
-  # @param user_proc [Proc] The inner proc to call for each JSON object in the chunk.
-  # @return [Proc] An outer proc that iterates over a raw stream, converting it to JSON.
-  #
-  # source://ruby-openai//lib/openai/http.rb#64
-  def to_json_stream(user_proc:); end
-
-  # source://ruby-openai//lib/openai/http.rb#133
-  def try_parse_json(maybe_json); end
-
-  # source://ruby-openai//lib/openai/http.rb#93
+  # source://ruby-openai//lib/openai/http.rb#72
   def uri(path:); end
 end
 
@@ -522,6 +512,9 @@ class OpenAI::Images
 
   # source://ruby-openai//lib/openai/images.rb#21
   def open_files(parameters); end
+
+  # source://ruby-openai//lib/openai/images.rb#34
+  def process_image_array(params); end
 end
 
 # source://ruby-openai//lib/openai/messages.rb#2
@@ -547,9 +540,9 @@ class OpenAI::Messages
   def retrieve(thread_id:, id:); end
 end
 
-# source://ruby-openai//lib/openai.rb#28
+# source://ruby-openai//lib/openai.rb#30
 class OpenAI::MiddlewareErrors < ::Faraday::Middleware
-  # source://ruby-openai//lib/openai.rb#29
+  # source://ruby-openai//lib/openai.rb#31
   def call(env); end
 end
 
@@ -568,6 +561,27 @@ class OpenAI::Models
 
   # source://ruby-openai//lib/openai/models.rb#11
   def retrieve(id:); end
+end
+
+# source://ruby-openai//lib/openai/realtime.rb#2
+class OpenAI::Realtime
+  # @return [Realtime] a new instance of Realtime
+  #
+  # source://ruby-openai//lib/openai/realtime.rb#3
+  def initialize(client:); end
+
+  # Create a new real-time session with OpenAI.
+  #
+  # This method sets up a new session for real-time voice interaction with an OpenAI model.
+  # It returns session details that can be used to establish a WebRTC connection.
+  #
+  # connection information
+  #
+  # @param parameters [Hash] parameters for the session (see: https://platform.openai.com/docs/api-reference/realtime-sessions/create)
+  # @return [Hash] Session details including session ID, ICE servers, and other
+  #
+  # source://ruby-openai//lib/openai/realtime.rb#15
+  def create(parameters: T.unsafe(nil)); end
 end
 
 # source://ruby-openai//lib/openai/responses.rb#2
@@ -632,6 +646,46 @@ class OpenAI::Runs
   # source://ruby-openai//lib/openai/runs.rb#32
   def submit_tool_outputs(thread_id:, run_id:, parameters: T.unsafe(nil)); end
 end
+
+# source://ruby-openai//lib/openai/stream.rb#2
+class OpenAI::Stream
+  # @return [Stream] a new instance of Stream
+  #
+  # source://ruby-openai//lib/openai/stream.rb#6
+  def initialize(user_proc:, parser: T.unsafe(nil)); end
+
+  # source://ruby-openai//lib/openai/stream.rb#20
+  def call(chunk, _bytes, env); end
+
+  # source://ruby-openai//lib/openai/stream.rb#31
+  def to_proc; end
+
+  private
+
+  # source://ruby-openai//lib/openai/stream.rb#39
+  def handle_http_error(chunk:, env:); end
+
+  # Returns the value of attribute parser.
+  #
+  # source://ruby-openai//lib/openai/stream.rb#37
+  def parser; end
+
+  # source://ruby-openai//lib/openai/stream.rb#44
+  def try_parse_json(maybe_json); end
+
+  # Returns the value of attribute user_proc.
+  #
+  # source://ruby-openai//lib/openai/stream.rb#37
+  def user_proc; end
+
+  # Returns the value of attribute user_proc_arity.
+  #
+  # source://ruby-openai//lib/openai/stream.rb#37
+  def user_proc_arity; end
+end
+
+# source://ruby-openai//lib/openai/stream.rb#3
+OpenAI::Stream::DONE = T.let(T.unsafe(nil), String)
 
 # source://ruby-openai//lib/openai/threads.rb#2
 class OpenAI::Threads
