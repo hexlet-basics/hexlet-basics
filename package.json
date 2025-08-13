@@ -9,7 +9,7 @@
     "@emotion/react": "^11.14.0",
     "@hexlet/analytics-plugin-yandex-metrika": "^1.0.9",
     "@inertiajs/progress": "^0.2.7",
-    "@inertiajs/react": "^2.0.17",
+    "@inertiajs/react": "^2.1.0",
     "@mantine/carousel": "^8.2.4",
     "@mantine/code-highlight": "^8.2.4",
     "@mantine/core": "^8.2.4",
@@ -70,7 +70,7 @@
   "version": "0.1.0",
   "devDependencies": {
     "@biomejs/biome": "2.1.4",
-    "@sentry/vite-plugin": "^4.1.0",
+    "@sentry/vite-plugin": "^4.1.1",
     "@shikijs/monaco": "^3.9.2",
     "@types/node": "^24.2.1",
     "@types/rails__actioncable": "^6.1.11",
