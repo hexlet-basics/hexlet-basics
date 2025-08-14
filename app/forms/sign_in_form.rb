@@ -10,15 +10,15 @@ class SignInForm
   validate :user_exists, :user_can_sign_in
 
   def user_can_sign_in
-    errors.add(:password, :cannot_sign_in) if password.present? && !user&.valid_password?(password)
+    errors.add(:password, :cannot_sign_in) if password.present? && user && !user.valid_password?(password)
   end
 
   def user_exists
-    errors.add(:email, :user_does_not_exist_html) if email.present? && !user
+    errors.add(:email, :user_does_not_exist_html) unless user
   end
 
   def user
-    @user ||= User.active.find_by(email: email)
+    @user ||= User.active.find_by(email: email) if email.present?
   end
 
   def email=(value)
