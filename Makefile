@@ -179,8 +179,8 @@ services-stop: services-db-stop
 
 services-start: services-db-start
 
-sync-analytics:
-	bin/rails analytics:refresh_user_survey_pivot
+# sync-analytics:
+# 	bin/rails analytics:refresh_user_survey_pivot
 
 setup-macos:
 	brew install caddy libpq vips watchman
