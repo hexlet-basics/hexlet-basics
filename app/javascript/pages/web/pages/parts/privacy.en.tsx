@@ -1,6 +1,8 @@
+import { useId } from 'react';
 import * as Routes from '@/routes.js';
 
 export default function PrivacyEn() {
+  const baseId = useId();
   return (
     <>
       <p className="fw-medium">Last updated March 28, 2025</p>
@@ -40,8 +42,8 @@ export default function PrivacyEn() {
         This summary provides key points from our Privacy Notice, but you can
         find out more details about any of these topics by clicking the link
         following each key point or by using our{' '}
-        <a href="#table-of-contents">table of contents</a> below to find the
-        section you are looking for.
+        <a href={`#${baseId}-table-of-contents`}>table of contents</a> below to
+        find the section you are looking for.
       </p>
 
       <p>
@@ -50,7 +52,7 @@ export default function PrivacyEn() {
         information depending on how you interact with us and the Services, the
         choices you make, and the products and features you use. Learn more
         about{' '}
-        <a href="#personal-information">
+        <a href={`#${baseId}-personal-information`}>
           personal information you disclose to us
         </a>
         .
@@ -68,7 +70,7 @@ export default function PrivacyEn() {
         <strong>Do we collect any information from third parties? </strong> We
         may collect information from public databases, marketing partners,
         social media platforms, and other outside sources. Learn more about{' '}
-        <a href="#information-from-other-source">
+        <a href={`#${baseId}-information-from-other-source`}>
           information collected from other sources
         </a>
         .
@@ -84,7 +86,10 @@ export default function PrivacyEn() {
         to comply with law. We may also process your information for other
         purposes with your consent. We process your information only when we
         have a valid legal reason to do so. Learn more about{' '}
-        <a href="#process-information">how we process your information</a>.
+        <a href={`#${baseId}-process-information`}>
+          how we process your information
+        </a>
+        .
       </p>
 
       <p>
@@ -94,7 +99,7 @@ export default function PrivacyEn() {
         </strong>{' '}
         We may share information in specific situations and with specific third
         parties. Learn more about{' '}
-        <a href="#share-information">
+        <a href={`#${baseId}-share-information`}>
           when and with whom we share your personal information
         </a>
         .
@@ -109,14 +114,17 @@ export default function PrivacyEn() {
         cybercriminals, or other unauthorized third parties will not be able to
         defeat our security and improperly collect, access, steal, or modify
         your information. Learn more about{' '}
-        <a href="#save-information">how we keep your information safe</a>.
+        <a href={`#${baseId}-save-information`}>
+          how we keep your information safe
+        </a>
+        .
       </p>
 
       <p>
         <strong>What are your rights?</strong> Depending on where you are
         located geographically, the applicable privacy law may mean you have
         certain rights regarding your personal information. Learn more about{' '}
-        <a href="#privacy-rights">your privacy rights</a>.
+        <a href={`#${baseId}-privacy-rights`}>your privacy rights</a>.
       </p>
 
       <p>
@@ -131,87 +139,102 @@ export default function PrivacyEn() {
 
       <p>
         Want to learn more about what we do with any information we collect?{' '}
-        <a href="#personal-information">Review the Privacy Notice in full.</a>.
+        <a href={`#${baseId}-personal-information`}>
+          Review the Privacy Notice in full.
+        </a>
+        .
       </p>
 
-      <h3 id="table-of-contents">TABLE OF CONTENTS</h3>
+      <h3 id={`${baseId}-table-of-contents`}>TABLE OF CONTENTS</h3>
 
       <ul className="list-unstyled">
         <li>
-          <a href="#personal-information">1. WHAT INFORMATION DO WE COLLECT?</a>
+          <a href={`#${baseId}-personal-information`}>
+            1. WHAT INFORMATION DO WE COLLECT?
+          </a>
         </li>
         <li>
-          <a href="#process-information">
+          <a href={`#${baseId}-process-information`}>
             2. HOW DO WE PROCESS YOUR INFORMATION?
           </a>
         </li>
         <li>
-          <a href="#legal-bases">
+          <a href={`#${baseId}-legal-bases`}>
             3. WHAT LEGAL BASES DO WE RELY ON TO PROCESS YOUR PERSONAL
             INFORMATION?
           </a>
         </li>
         <li>
-          <a href="#share-information">
+          <a href={`#${baseId}-share-information`}>
             4. WHEN AND WITH WHOM DO WE SHARE YOUR PERSONAL INFORMATION?
           </a>
         </li>
         <li>
-          <a href="#use-cookies">
+          <a href={`#${baseId}-use-cookies`}>
             5. DO WE USE COOKIES AND OTHER TRACKING TECHNOLOGIES?
           </a>
         </li>
         <li>
-          <a href="#intelligence-based-products">
+          <a href={`#${baseId}-intelligence-based-products`}>
             6. DO WE OFFER ARTIFICIAL INTELLIGENCE-BASED PRODUCTS?
           </a>
         </li>
         <li>
-          <a href="#data-storage">7. HOW LONG DO WE KEEP YOUR INFORMATION?</a>
+          <a href={`#${baseId}-data-storage`}>
+            7. HOW LONG DO WE KEEP YOUR INFORMATION?
+          </a>
         </li>
         <li>
-          <a href="#save-information">
+          <a href={`#${baseId}-save-information`}>
             8. HOW DO WE KEEP YOUR INFORMATION SAFE?
           </a>
         </li>
         <li>
-          <a href="#minors-information">
+          <a href={`#${baseId}-minors-information`}>
             9. DO WE COLLECT INFORMATION FROM MINORS?
           </a>
         </li>
         <li>
-          <a href="#privacy-rights">10. WHAT ARE YOUR PRIVACY RIGHTS?</a>
+          <a href={`#${baseId}-privacy-rights`}>
+            10. WHAT ARE YOUR PRIVACY RIGHTS?
+          </a>
         </li>
         <li>
-          <a href="#do-not-track-features">
+          <a href={`#${baseId}-do-not-track-features`}>
             11. CONTROLS FOR DO-NOT-TRACK FEATURES
           </a>
         </li>
         <li>
-          <a href="#specific-privacy-rights">
+          <a href={`#${baseId}-specific-privacy-rights`}>
             12. DO UNITED STATES RESIDENTS HAVE SPECIFIC PRIVACY RIGHTS?
           </a>
         </li>
         <li>
-          <a href="#specific-rights-of-other-regions">
+          <a href={`#${baseId}-specific-rights-of-other-regions`}>
             13. DO OTHER REGIONS HAVE SPECIFIC PRIVACY RIGHTS?
           </a>
         </li>
         <li>
-          <a href="#notice-update">14. DO WE MAKE UPDATES TO THIS NOTICE?</a>
+          <a href={`#${baseId}-notice-update`}>
+            14. DO WE MAKE UPDATES TO THIS NOTICE?
+          </a>
         </li>
         <li>
-          <a href="#contacts">15. HOW CAN YOU CONTACT US ABOUT THIS NOTICE?</a>
+          <a href={`#${baseId}-contacts`}>
+            15. HOW CAN YOU CONTACT US ABOUT THIS NOTICE?
+          </a>
         </li>
         <li>
-          <a href="#change-information">
+          <a href={`#${baseId}-change-information`}>
             16. HOW CAN YOU REVIEW, UPDATE, OR DELETE THE DATA WE COLLECT FROM
             YOU?
           </a>
         </li>
       </ul>
 
-      <h3 id="personal-information">1. WHAT INFORMATION DO WE COLLECT?</h3>
+      <h3 id={`${baseId}-personal-information`}>
+        1. WHAT INFORMATION DO WE COLLECT?
+      </h3>
 
       <h4>Personal information you disclose to us</h4>
 
@@ -325,7 +348,9 @@ export default function PrivacyEn() {
         </ul>
       </p>
 
-      <h4>Information collected from other sources</h4>
+      <h4 id={`${baseId}-information-from-other-source`}>
+        Information collected from other sources
+      </h4>
 
       <p className="fst-italic">
         <strong>In Short:</strong> We may collect limited data from public
@@ -344,7 +369,9 @@ export default function PrivacyEn() {
         promotion.
       </p>
 
-      <h3 id="process-information">2. HOW DO WE PROCESS YOUR INFORMATION?</h3>
+      <h3 id={`${baseId}-process-information`}>
+        2. HOW DO WE PROCESS YOUR INFORMATION?
+      </h3>
 
       <p className="fst-italic">
         <strong>In Short:</strong> We process your information to provide,
@@ -375,7 +402,7 @@ export default function PrivacyEn() {
         </li>
       </ul>
 
-      <h3 id="legal-bases">
+      <h3 id={`${baseId}-legal-bases`}>
         3. WHAT LEGAL BASES DO WE RELY ON TO PROCESS YOUR INFORMATION?
       </h3>
 
@@ -405,7 +432,10 @@ export default function PrivacyEn() {
           information if you have given us permission (i.e., consent) to use
           your personal information for a specific purpose. You can withdraw
           your consent at any time. Learn more about
-          <a href="#withdrawing-consent"> withdrawing your consent.</a>
+          <a href={`#${baseId}-withdrawing-consent`}>
+            {' '}
+            withdrawing your consent.
+          </a>
         </li>
         <li>
           <span className="fw-medium">Legal Obligations.</span> We may process
@@ -432,8 +462,8 @@ export default function PrivacyEn() {
         (i.e., express consent) to use your personal information for a specific
         purpose, or in situations where your permission can be inferred (i.e.,
         implied consent). You can
-        <a href="#withdrawing-consent"> withdrawing your consent</a> at any
-        time.
+        <a href={`#${baseId}-withdrawing-consent`}> withdrawing your consent</a>{' '}
+        at any time.
       </p>
 
       <p>
@@ -486,7 +516,7 @@ export default function PrivacyEn() {
         </ul>
       </p>
 
-      <h3 id="share-information">
+      <h3 id={`${baseId}-share-information`}>
         4. WHEN AND WITH WHOM DO WE SHARE YOUR PERSONAL INFORMATION?
       </h3>
 
@@ -516,7 +546,7 @@ export default function PrivacyEn() {
         </ul>
       </p>
 
-      <h3 id="use-cookies">
+      <h3 id={`${baseId}-use-cookies`}>
         5. DO WE USE COOKIES AND OTHER TRACKING TECHNOLOGIES?
       </h3>
 
@@ -550,7 +580,7 @@ export default function PrivacyEn() {
         the applicable laws) under applicable US state laws, you can opt out of
         these online tracking technologies by submitting a request as described
         below under section{' '}
-        <a href="#specific-privacy-rights">
+        <a href={`#${baseId}-specific-privacy-rights`}>
           DO UNITED STATES RESIDENTS HAVE SPECIFIC PRIVACY RIGHTS?"
         </a>
       </p>
@@ -616,7 +646,7 @@ export default function PrivacyEn() {
         </a>
       </p>
 
-      <h3 id="intelligence-based-products">
+      <h3 id={`${baseId}-intelligence-based-products`}>
         6. DO WE OFFER ARTIFICIAL INTELLIGENCE-BASED PRODUCTS?
       </h3>
 
@@ -641,7 +671,7 @@ export default function PrivacyEn() {
         Notice, your input, output, and personal information will be shared with
         and processed by these AI Service Providers to enable your use of our AI
         Products for purposes outlined in{' '}
-        <a href="#legal-bases">
+        <a href={`#${baseId}-legal-bases`}>
           "WHAT LEGAL BASES DO WE RELY ON TO PROCESS YOUR PERSONAL INFORMATION?"
         </a>
         You must not use the AI Products in any way that violates the terms or
@@ -667,7 +697,9 @@ export default function PrivacyEn() {
         safety.
       </p>
 
-      <h3 id="save-information">7. HOW LONG DO WE KEEP YOUR INFORMATION?</h3>
+      <h3 id={`${baseId}-data-storage`}>
+        7. HOW LONG DO WE KEEP YOUR INFORMATION?
+      </h3>
 
       <p className="fst-italic">
         <strong>In Short:</strong> We keep your information for as long as
@@ -693,7 +725,9 @@ export default function PrivacyEn() {
         processing until deletion is possible.
       </p>
 
-      <h3 id="save-information">8. HOW DO WE KEEP YOUR INFORMATION SAFE?</h3>
+      <h3 id={`${baseId}-save-information`}>
+        8. HOW DO WE KEEP YOUR INFORMATION SAFE?
+      </h3>
 
       <p className="fst-italic">
         <strong>In Short: </strong>We aim to protect your personal information
@@ -715,7 +749,9 @@ export default function PrivacyEn() {
         a secure environment.
       </p>
 
-      <h3 id="minors-information">9. DO WE COLLECT INFORMATION FROM MINORS?</h3>
+      <h3 id={`${baseId}-minors-information`}>
+        9. DO WE COLLECT INFORMATION FROM MINORS?
+      </h3>
 
       <p className="fst-italic">
         <strong>In Short: </strong>We do not knowingly collect data from or
@@ -735,7 +771,7 @@ export default function PrivacyEn() {
         support@hexlet.io.
       </p>
 
-      <h3 id="privacy-rights">10. WHAT ARE YOUR PRIVACY RIGHTS?</h3>
+      <h3 id={`${baseId}-privacy-rights`}>10. WHAT ARE YOUR PRIVACY RIGHTS?</h3>
 
       <p className="fst-italic">
         <strong>In Short: </strong>Depending on your state of residence in the
@@ -756,7 +792,9 @@ export default function PrivacyEn() {
         certain circumstances, you may also have the right to object to the
         processing of your personal information. You can make such a request by
         contacting us by using the contact details provided in the section{' '}
-        <a href="#contacts">"HOW CAN YOU CONTACT US ABOUT THIS NOTICE?"</a>{' '}
+        <a href={`#${baseId}-contacts`}>
+          "HOW CAN YOU CONTACT US ABOUT THIS NOTICE?"
+        </a>{' '}
         below.
       </p>
 
@@ -800,13 +838,17 @@ export default function PrivacyEn() {
       </p>
 
       <p>
-        <strong id="withdrawing-consent">Withdrawing your consent: </strong>If
-        we are relying on your consent to process your personal information,
+        <strong id={`${baseId}-withdrawing-consent`}>
+          Withdrawing your consent:{' '}
+        </strong>
+        If we are relying on your consent to process your personal information,
         which may be express and/or implied consent depending on the applicable
         law, you have the right to withdraw your consent at any time. You can
         withdraw your consent at any time by contacting us by using the contact
         details provided in the section{' '}
-        <a href="#contacts">"HOW CAN YOU CONTACT US ABOUT THIS NOTICE?"</a>{' '}
+        <a href={`#${baseId}-contacts`}>
+          "HOW CAN YOU CONTACT US ABOUT THIS NOTICE?"
+        </a>{' '}
         below.
       </p>
 
@@ -822,7 +864,9 @@ export default function PrivacyEn() {
         You can unsubscribe from our marketing and promotional communications at
         any time by clicking on the unsubscribe link in the emails that we send,
         or by contacting us using the details provided in the section{' '}
-        <a href="#contacts">"HOW CAN YOU CONTACT US ABOUT THIS NOTICE?"</a>{' '}
+        <a href={`#${baseId}-contacts`}>
+          "HOW CAN YOU CONTACT US ABOUT THIS NOTICE?"
+        </a>{' '}
         below. You will then be removed from the marketing lists. However, we
         may still communicate with you — for example, to send you
         service-related messages that are necessary for the administration and
@@ -870,7 +914,9 @@ export default function PrivacyEn() {
         email us at support@hexlet.io.
       </p>
 
-      <h3 id="do-not-track-features">11. CONTROLS FOR DO-NOT-TRACK FEATURES</h3>
+      <h3 id={`${baseId}-do-not-track-features`}>
+        11. CONTROLS FOR DO-NOT-TRACK FEATURES
+      </h3>
 
       <p>
         Most web browsers and some mobile operating systems and mobile
@@ -892,7 +938,7 @@ export default function PrivacyEn() {
         them at this time.
       </p>
 
-      <h3 id="specific-privacy-rights">
+      <h3 id={`${baseId}-specific-privacy-rights`}>
         12. DO UNITED STATES RESIDENTS HAVE SPECIFIC PRIVACY RIGHTS?
       </h3>
 
@@ -1053,14 +1099,18 @@ export default function PrivacyEn() {
 
       <p>
         Learn more about the sources of personal information we collect in{' '}
-        <a href="#personal-information">"WHAT INFORMATION DO WE COLLECT?"</a>
+        <a href={`#${baseId}-personal-information`}>
+          "WHAT INFORMATION DO WE COLLECT?"
+        </a>
       </p>
 
       <h4>How We Use and Share Personal Information</h4>
 
       <p>
         Learn more about how we use your personal information in the section,{' '}
-        <a href="#process-information">"HOW DO WE PROCESS YOUR INFORMATION?"</a>
+        <a href={`#${baseId}-process-information`}>
+          "HOW DO WE PROCESS YOUR INFORMATION?"
+        </a>
       </p>
 
       <strong>Will your information be shared with anyone else?</strong>
@@ -1069,7 +1119,7 @@ export default function PrivacyEn() {
         We may disclose your personal information with our service providers
         pursuant to a written contract between us and each service provider.
         Learn more about how we disclose personal information to in the section,{' '}
-        <a href="#share-information">
+        <a href={`#${baseId}-share-information`}>
           "WHEN AND WITH WHOM DO WE SHARE YOUR PERSONAL INFORMATION?"
         </a>
       </p>
@@ -1219,10 +1269,13 @@ export default function PrivacyEn() {
         immediately preceding calendar year. If you are a California resident
         and would like to make such a request, please submit your request in
         writing to us by using the contact details provided in the section{' '}
-        <a href="#contacts">"HOW CAN YOU CONTACT US ABOUT THIS NOTICE?"</a>.
+        <a href={`#${baseId}-contacts`}>
+          "HOW CAN YOU CONTACT US ABOUT THIS NOTICE?"
+        </a>
+        .
       </p>
 
-      <h3 id="specific-rights-of-other-regions">
+      <h3 id={`${baseId}-specific-rights-of-other-regions`}>
         13. DO OTHER REGIONS HAVE SPECIFIC PRIVACY RIGHTS?
       </h3>
 
@@ -1262,7 +1315,7 @@ export default function PrivacyEn() {
         At any time, you have the right to request access to or correction of
         your personal information. You can make such a request by contacting us
         by using the contact details provided in the section{' '}
-        <a href="#change-information">
+        <a href={`#${baseId}-change-information`}>
           "HOW CAN YOU REVIEW, UPDATE, OR DELETE THE DATA WE COLLECT FROM YOU?"
         </a>
         .
@@ -1296,7 +1349,7 @@ export default function PrivacyEn() {
         At any time, you have the right to request access to or correction of
         your personal information. You can make such a request by contacting us
         by using the contact details provided in the section{' '}
-        <a href="#change-information">
+        <a href={`#${baseId}-change-information`}>
           "HOW CAN YOU REVIEW, UPDATE, OR DELETE THE DATA WE COLLECT FROM YOU?"
         </a>
         .
@@ -1335,7 +1388,9 @@ export default function PrivacyEn() {
         </ul>
       </p>
 
-      <h3 id="notice-update">14. DO WE MAKE UPDATES TO THIS NOTICE?</h3>
+      <h3 id={`${baseId}-notice-update`}>
+        14. DO WE MAKE UPDATES TO THIS NOTICE?
+      </h3>
 
       <p className="fst-italic">
         <strong>In Short: </strong>Yes, we will update this notice as necessary
@@ -1352,7 +1407,9 @@ export default function PrivacyEn() {
         information.
       </p>
 
-      <h3 id="contacts">15. HOW CAN YOU CONTACT US ABOUT THIS NOTICE?</h3>
+      <h3 id={`${baseId}-contacts`}>
+        15. HOW CAN YOU CONTACT US ABOUT THIS NOTICE?
+      </h3>
 
       <p>
         If you have questions or comments about this notice, you may email us at{' '}
@@ -1366,7 +1423,7 @@ export default function PrivacyEn() {
         </ul>
       </p>
 
-      <h3 id="change-information">
+      <h3 id={`${baseId}-change-information`}>
         16. HOW CAN YOU REVIEW, UPDATE, OR DELETE THE DATA WE COLLECT FROM YOU?
       </h3>
 

@@ -12,11 +12,11 @@
       "!**/*.json",
       "!**/*.css",
       "!**/*.scss",
-      "!test/**",
-      "!public/**",
-      "!app/assets/builds/**",
+      "!test",
+      "!public",
+      "!app/assets/builds",
       "!app/javascript/routes.*",
-      "!app/javascript/types/serializers/**"
+      "!app/javascript/types/serializers"
     ]
   },
   "formatter": {

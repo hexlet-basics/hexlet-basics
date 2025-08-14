@@ -1,6 +1,8 @@
+import { useId } from 'react';
 import * as Routes from '@/routes.js';
 
 export default function TosEn() {
+  const baseId = useId();
   return (
     <>
       <p className="fw-medium">Last updated March 28, 2025</p>
@@ -70,86 +72,100 @@ export default function TosEn() {
 
       <ul className="list-unstyled">
         <li>
-          <a href="#service">1. OUR SERVICES</a>
+          <a href={`#${baseId}-service`}>1. OUR SERVICES</a>
         </li>
         <li>
-          <a href="#intellectual-property-rights">
+          <a href={`#${baseId}-intellectual-property-rights`}>
             2. INTELLECTUAL PROPERTY RIGHTS
           </a>
         </li>
         <li>
-          <a href="#representations">3. USER REPRESENTATIONS</a>
+          <a href={`#${baseId}-representations`}>3. USER REPRESENTATIONS</a>
         </li>
         <li>
-          <a href="#registration">4. USER REGISTRATION</a>
+          <a href={`#${baseId}-registration`}>4. USER REGISTRATION</a>
         </li>
         <li>
-          <a href="#prohibited-activities">5. PROHIBITED ACTIVITIES</a>
+          <a href={`#${baseId}-prohibited-activities`}>
+            5. PROHIBITED ACTIVITIES
+          </a>
         </li>
         <li>
-          <a href="#generated-contributions">6. USER GENERATED CONTRIBUTIONS</a>
+          <a href={`#${baseId}-generated-contributions`}>
+            6. USER GENERATED CONTRIBUTIONS
+          </a>
         </li>
         <li>
-          <a href="#contribution-license">7. CONTRIBUTION LICENSE</a>
+          <a href={`#${baseId}-contribution-license`}>
+            7. CONTRIBUTION LICENSE
+          </a>
         </li>
         <li>
-          <a href="#reviews-guide">8. GUIDELINES FOR REVIEWS</a>
+          <a href={`#${baseId}-reviews-guide`}>8. GUIDELINES FOR REVIEWS</a>
         </li>
         <li>
-          <a href="#website-and-content">9. THIRD-PARTY WEBSITES AND CONTENT</a>
+          <a href={`#${baseId}-website-and-content`}>
+            9. THIRD-PARTY WEBSITES AND CONTENT
+          </a>
         </li>
         <li>
-          <a href="#services-management">10. SERVICES MANAGEMENT</a>
+          <a href={`#${baseId}-services-management`}>10. SERVICES MANAGEMENT</a>
         </li>
         <li>
-          <a href="#privacy-policy">11. PRIVACY POLICY</a>
+          <a href={`#${baseId}-privacy-policy`}>11. PRIVACY POLICY</a>
         </li>
         <li>
-          <a href="#term-and-termination">12. TERM AND TERMINATION</a>
+          <a href={`#${baseId}-term-and-termination`}>
+            12. TERM AND TERMINATION
+          </a>
         </li>
         <li>
-          <a href="#modification-and-interruption">
+          <a href={`#${baseId}-modification-and-interruption`}>
             13. MODIFICATIONS AND INTERRUPTIONS
           </a>
         </li>
         <li>
-          <a href="#governing-low">14. GOVERNING LAW</a>
+          <a href={`#${baseId}-governing-low`}>14. GOVERNING LAW</a>
         </li>
         <li>
-          <a href="#dispute-resolution">15. DISPUTE RESOLUTION</a>
+          <a href={`#${baseId}-dispute-resolution`}>15. DISPUTE RESOLUTION</a>
         </li>
         <li>
-          <a href="#corrections">16. CORRECTIONS</a>
+          <a href={`#${baseId}-corrections`}>16. CORRECTIONS</a>
         </li>
         <li>
-          <a href="#disclaimer">17. DISCLAIMER</a>
+          <a href={`#${baseId}-disclaimer`}>17. DISCLAIMER</a>
         </li>
         <li>
-          <a href="#liability-limitations">18. LIMITATIONS OF LIABILITY</a>
+          <a href={`#${baseId}-liability-limitations`}>
+            18. LIMITATIONS OF LIABILITY
+          </a>
         </li>
         <li>
-          <a href="#indemnification">19. INDEMNIFICATION</a>
+          <a href={`#${baseId}-indemnification`}>19. INDEMNIFICATION</a>
         </li>
         <li>
-          <a href="#user-data">20. USER DATA</a>
+          <a href={`#${baseId}-user-data`}>20. USER DATA</a>
         </li>
         <li>
-          <a href="#electronic-communication">
+          <a href={`#${baseId}-electronic-communication`}>
             21. ELECTRONIC COMMUNICATIONS, TRANSACTIONS, AND SIGNATURES
           </a>
         </li>
         <li>
-          <a href="#california-users">22. CALIFORNIA USERS AND RESIDENTS</a>
+          <a href={`#${baseId}-california-users`}>
+            22. CALIFORNIA USERS AND RESIDENTS
+          </a>
         </li>
         <li>
-          <a href="#miscellaneous">23. MISCELLANEOUS</a>
+          <a href={`#${baseId}-miscellaneous`}>23. MISCELLANEOUS</a>
         </li>
         <li>
-          <a href="#contacts">24. CONTACT US</a>
+          <a href={`#${baseId}-contacts`}>24. CONTACT US</a>
         </li>
       </ul>
 
-      <h3 id="service">1. OUR SERVICES</h3>
+      <h3 id={`${baseId}-service`}>1. OUR SERVICES</h3>
 
       <p>
         The information provided when using the Services is not intended for
@@ -171,7 +187,9 @@ export default function TosEn() {
         the Gramm-Leach-Bliley Act (GLBA).
       </p>
 
-      <h3 id="intellectual-property-rights">2. INTELLECTUAL PROPERTY RIGHTS</h3>
+      <h3 id={`${baseId}-intellectual-property-rights`}>
+        2. INTELLECTUAL PROPERTY RIGHTS
+      </h3>
 
       <h4>Our intellectual property</h4>
 
@@ -195,9 +213,9 @@ export default function TosEn() {
 
       <p>
         Subject to your compliance with these Legal Terms, including the{' '}
-        <a href="#prohibited-activities">"PROHIBITED ACTIVITIES"</a> section
-        below, we grant you a non-exclusive, non-transferable, revocable license
-        to:
+        <a href={`#${baseId}-prohibited-activities`}>"PROHIBITED ACTIVITIES"</a>{' '}
+        section below, we grant you a non-exclusive, non-transferable, revocable
+        license to:
         <ul>
           <li>access the Services; and</li>
           <li>
@@ -244,10 +262,10 @@ export default function TosEn() {
 
       <p>
         Please review this section and the{' '}
-        <a href="#prohibited-activities">"PROHIBITED ACTIVITIES"</a> section
-        carefully prior to using our Services to understand the (a) rights you
-        give us and (b) obligations you have when you post or upload any content
-        through the Services.
+        <a href={`#${baseId}-prohibited-activities`}>"PROHIBITED ACTIVITIES"</a>{' '}
+        section carefully prior to using our Services to understand the (a)
+        rights you give us and (b) obligations you have when you post or upload
+        any content through the Services.
       </p>
 
       <p>
@@ -310,8 +328,10 @@ export default function TosEn() {
         <ul>
           <li>
             confirm that you have read and agree with our{' '}
-            <a href="#prohibited-activities">"PROHIBITED ACTIVITIES"</a> and
-            will not post, send, publish, upload, or transmit through the
+            <a href={`#${baseId}-prohibited-activities`}>
+              "PROHIBITED ACTIVITIES"
+            </a>{' '}
+            and will not post, send, publish, upload, or transmit through the
             Services any Submission nor post any Contribution that is illegal,
             harassing, hateful, harmful, defamatory, obscene, bullying, abusive,
             discriminatory, threatening to any person or group, sexually
@@ -352,7 +372,7 @@ export default function TosEn() {
         you to the authorities.
       </p>
 
-      <h3 id="representations">3. USER REPRESENTATIONS</h3>
+      <h3 id={`${baseId}-representations`}>3. USER REPRESENTATIONS</h3>
 
       <p>
         By using the Services, you represent and warrant that: (1) all
@@ -375,7 +395,7 @@ export default function TosEn() {
         portion thereof).
       </p>
 
-      <h3 id="registration">4. USER REGISTRATION</h3>
+      <h3 id={`${baseId}-registration`}>4. USER REGISTRATION</h3>
 
       <p>
         You may be required to register to use the Services. You agree to keep
@@ -385,7 +405,7 @@ export default function TosEn() {
         username is inappropriate, obscene, or otherwise objectionable.
       </p>
 
-      <h3 id="prohibited-activities">5. PROHIBITED ACTIVITIES</h3>
+      <h3 id={`${baseId}-prohibited-activities`}>5. PROHIBITED ACTIVITIES</h3>
 
       <p>
         You may not access or use the Services for any purpose other than that
@@ -510,7 +530,9 @@ export default function TosEn() {
         </ul>
       </p>
 
-      <h3 id="generated-contributions">6. USER GENERATED CONTRIBUTIONS</h3>
+      <h3 id={`${baseId}-generated-contributions`}>
+        6. USER GENERATED CONTRIBUTIONS
+      </h3>
 
       <p>
         The Services may invite you to chat, contribute to, or participate in
@@ -598,7 +620,7 @@ export default function TosEn() {
         suspension of your rights to use the Services.
       </p>
 
-      <h3 id="contribution-license">7. CONTRIBUTION LICENSE</h3>
+      <h3 id={`${baseId}-contribution-license`}>7. CONTRIBUTION LICENSE</h3>
 
       <p>
         By posting your Contributions to any part of the Services, you
@@ -646,7 +668,7 @@ export default function TosEn() {
         your Contributions.
       </p>
 
-      <h3 id="reviews-guide">8. GUIDELINES FOR REVIEWS</h3>
+      <h3 id={`${baseId}-reviews-guide`}>8. GUIDELINES FOR REVIEWS</h3>
 
       <p>
         We may provide you areas on the Services to leave reviews or ratings.
@@ -678,7 +700,9 @@ export default function TosEn() {
         relating to review.
       </p>
 
-      <h3 id="website-and-content">9. THIRD-PARTY WEBSITES AND CONTENT</h3>
+      <h3 id={`${baseId}-website-and-content`}>
+        9. THIRD-PARTY WEBSITES AND CONTENT
+      </h3>
 
       <p>
         The Services may contain (or you may be sent via the Site) links to
@@ -714,7 +738,7 @@ export default function TosEn() {
         Third-Party Websites.
       </p>
 
-      <h3 id="services-management">10. SERVICES MANAGEMENT</h3>
+      <h3 id={`${baseId}-services-management`}>10. SERVICES MANAGEMENT</h3>
 
       <p>
         We reserve the right, but not the obligation, to: (1) monitor the
@@ -732,7 +756,7 @@ export default function TosEn() {
         facilitate the proper functioning of the Services.
       </p>
 
-      <h3 id="privacy-policy">11. PRIVACY POLICY</h3>
+      <h3 id={`${baseId}-privacy-policy`}>11. PRIVACY POLICY</h3>
 
       <p>
         We care about data privacy and security. Please review our Privacy
@@ -750,7 +774,7 @@ export default function TosEn() {
         data transferred to and processed in Russia.
       </p>
 
-      <h3 id="term-and-termination">12. TERM AND TERMINATION</h3>
+      <h3 id={`${baseId}-term-and-termination`}>12. TERM AND TERMINATION</h3>
 
       <p>
         These Legal Terms shall remain in full force and effect while you use
@@ -775,7 +799,7 @@ export default function TosEn() {
         injunctive redress.
       </p>
 
-      <h3 id="modification-and-interruption">
+      <h3 id={`${baseId}-modification-and-interruption`}>
         13. MODIFICATIONS AND INTERRUPTIONS
       </h3>
 
@@ -802,7 +826,7 @@ export default function TosEn() {
         supply any corrections, updates, or releases in connection therewith.
       </p>
 
-      <h3 id="governing-low">14. GOVERNING LAW</h3>
+      <h3 id={`${baseId}-governing-low`}>14. GOVERNING LAW</h3>
 
       <p>
         These Legal Terms shall be governed by and defined following the laws of
@@ -811,7 +835,7 @@ export default function TosEn() {
         dispute which may arise in connection with these Legal Terms.
       </p>
 
-      <h3 id="dispute-resolution">15. DISPUTE RESOLUTION</h3>
+      <h3 id={`${baseId}-dispute-resolution`}>15. DISPUTE RESOLUTION</h3>
 
       <p>
         You agree to irrevocably submit all disputes related to these Legal
@@ -823,7 +847,7 @@ export default function TosEn() {
         your principal place of business.
       </p>
 
-      <h3 id="corrections">16. CORRECTIONS</h3>
+      <h3 id={`${baseId}-corrections`}>16. CORRECTIONS</h3>
 
       <p>
         There may be information on the Services that contains typographical
@@ -833,7 +857,7 @@ export default function TosEn() {
         the information on the Services at any time, without prior notice.
       </p>
 
-      <h3 id="disclaimer">17. DISCLAIMER</h3>
+      <h3 id={`${baseId}-disclaimer`}>17. DISCLAIMER</h3>
 
       <p>
         THE SERVICES ARE PROVIDED ON AN AS-IS AND AS-AVAILABLE BASIS. YOU AGREE
@@ -866,7 +890,9 @@ export default function TosEn() {
         USE YOUR BEST JUDGMENT AND EXERCISE CAUTION WHERE APPROPRIATE.
       </p>
 
-      <h3 id="liability-limitations">18. LIMITATIONS OF LIABILITY</h3>
+      <h3 id={`${baseId}-liability-limitations`}>
+        18. LIMITATIONS OF LIABILITY
+      </h3>
 
       <p>
         IN NO EVENT WILL WE OR OUR DIRECTORS, EMPLOYEES, OR AGENTS BE LIABLE TO
@@ -877,7 +903,7 @@ export default function TosEn() {
         SUCH DAMAGES.
       </p>
 
-      <h3 id="indemnification">19. INDEMNIFICATION</h3>
+      <h3 id={`${baseId}-indemnification`}>19. INDEMNIFICATION</h3>
 
       <p>
         You agree to defend, indemnify, and hold us harmless, including our
@@ -899,7 +925,7 @@ export default function TosEn() {
         of it.
       </p>
 
-      <h3 id="user-data">20. USER DATA</h3>
+      <h3 id={`${baseId}-user-data`}>20. USER DATA</h3>
 
       <p>
         We will maintain certain data that you transmit to the Services for the
@@ -912,7 +938,7 @@ export default function TosEn() {
         action against us arising from any such loss or corruption of such data.
       </p>
 
-      <h3 id="electronic-communication">
+      <h3 id={`${baseId}-electronic-communication`}>
         21. ELECTRONIC COMMUNICATIONS, TRANSACTIONS, AND SIGNATURES
       </h3>
 
@@ -932,7 +958,9 @@ export default function TosEn() {
         credits by any means other than electronic means.
       </p>
 
-      <h3 id="california-users">22. CALIFORNIA USERS AND RESIDENTS</h3>
+      <h3 id={`${baseId}-california-users`}>
+        22. CALIFORNIA USERS AND RESIDENTS
+      </h3>
 
       <p>
         If any complaint with us is not satisfactorily resolved, you can contact
@@ -942,7 +970,7 @@ export default function TosEn() {
         at (800) 952-5210 or (916) 445-1254.
       </p>
 
-      <h3 id="miscellaneous">23. MISCELLANEOUS</h3>
+      <h3 id={`${baseId}-miscellaneous`}>23. MISCELLANEOUS</h3>
 
       <p>
         These Legal Terms and any policies or operating rules posted by us on
@@ -966,7 +994,7 @@ export default function TosEn() {
         signing by the parties hereto to execute these Legal Terms.
       </p>
 
-      <h3 id="contacts">24. CONTACT US</h3>
+      <h3 id={`${baseId}-contacts`}>24. CONTACT US</h3>
 
       <p>
         In order to resolve a complaint regarding the Services or to receive
