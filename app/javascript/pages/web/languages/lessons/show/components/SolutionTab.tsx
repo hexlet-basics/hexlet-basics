@@ -11,6 +11,7 @@ import {
   Title,
 } from '@mantine/core';
 import dayjs from 'dayjs';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTimer } from 'react-timer-hook';
 import waitingClock from '@/images/waiting_clock.webp';
@@ -20,6 +21,38 @@ import type { LessonSharedProps } from '../types.ts';
 
 const waitingTime = 20 * 60 * 1000; // 20 min
 // const waitingTime = 3000;
+
+type CountdownProps = {
+  showButton: boolean;
+  remainingTime: string;
+  renderShowButton: () => ReactNode;
+};
+
+function Countdown({
+  showButton,
+  remainingTime,
+  renderShowButton,
+}: CountdownProps) {
+  const { t: tCommon } = useTranslation('common');
+  if (showButton) {
+    return renderShowButton();
+  }
+
+  return (
+    <Stack align="center">
+      <Text size="lg" fw={500}>
+        {tCommon('solutionInstructions')}
+      </Text>
+      <Text fz={50}>{remainingTime}</Text>
+      <Image
+        src={waitingClock}
+        fit="contain"
+        loading="lazy"
+        alt="waiting_clock"
+      />
+    </Stack>
+  );
+}
 
 export default function SolutionTab() {
   const { course, lesson } = usePage<LessonSharedProps>().props;
@@ -86,35 +119,19 @@ export default function SolutionTab() {
     </>
   );
 
-  const Countdown = () => {
-    const { isRunning, totalSeconds } = timerData;
-
-    if (!isRunning || solutionState === 'canBeShown') {
-      return renderShowButton();
-    }
-    const remainingTime = dayjs
-      .duration(totalSeconds, 'seconds')
-      .format('mm:ss');
-
-    return (
-      <Stack align="center">
-        <Text size="lg" fw={500}>
-          {tCommon('solutionInstructions')}
-        </Text>
-        <Text fz={50}>{remainingTime}</Text>
-        <Image
-          src={waitingClock}
-          fit="contain"
-          loading="lazy"
-          alt="waiting_clock"
-        />
-      </Stack>
-    );
-  };
-
   return (
     <Box>
-      {finished || solutionState === 'shown' ? renderSolution() : <Countdown />}
+      {finished || solutionState === 'shown' ? (
+        renderSolution()
+      ) : (
+        <Countdown
+          showButton={!timerData.isRunning || solutionState === 'canBeShown'}
+          remainingTime={dayjs
+            .duration(timerData.totalSeconds, 'seconds')
+            .format('mm:ss')}
+          renderShowButton={renderShowButton}
+        />
+      )}
     </Box>
   );
 }
