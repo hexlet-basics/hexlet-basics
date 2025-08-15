@@ -9,7 +9,7 @@
     "@emotion/react": "^11.14.0",
     "@hexlet/analytics-plugin-yandex-metrika": "^1.0.9",
     "@inertiajs/progress": "^0.2.7",
-    "@inertiajs/react": "^2.1.0",
+    "@inertiajs/react": "^2.1.2",
     "@mantine/carousel": "^8.2.4",
     "@mantine/code-highlight": "^8.2.4",
     "@mantine/core": "^8.2.4",
@@ -24,7 +24,7 @@
     "@sentry/node": "^10.5.0",
     "@sentry/react": "^10.5.0",
     "@sentry/tracing": "^7.120.4",
-    "@tailwindcss/postcss": "^4.1.11",
+    "@tailwindcss/postcss": "^4.1.12",
     "analytics": "0.8.19",
     "ansi_up": "^6.0.6",
     "axios": "^1.11.0",
@@ -36,7 +36,7 @@
     "embla-carousel-react": "^8.6.0",
     "es-toolkit": "^1.39.9",
     "html-react-parser": "^5.2.6",
-    "i18next": "^25.3.5",
+    "i18next": "^25.3.6",
     "lucide-react": "^0.539.0",
     "mantine-datatable": "^8.2.0",
     "react": "^19.1.1",
@@ -62,7 +62,7 @@
     "schema-dts": "^1.1.5",
     "shiki": "^3.9.2",
     "tailwind-preset-mantine": "^2.1.0",
-    "tailwindcss": "^4.1.11",
+    "tailwindcss": "^4.1.12",
     "unified": "^11.0.5",
     "vanilla-cookieconsent": "^3.1.0",
     "zustand": "^5.0.7"
@@ -72,13 +72,11 @@
     "@biomejs/biome": "2.2.0",
     "@sentry/vite-plugin": "^4.1.1",
     "@shikijs/monaco": "^3.9.2",
-    "@types/node": "^24.2.1",
+    "@types/node": "^24.3.0",
     "@types/rails__actioncable": "^6.1.11",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
-    "@vitejs/plugin-legacy": "^7.2.1",
     "@vitejs/plugin-react": "^5.0.0",
-    "autoprefixer": "^10.4.21",
     "browserslist": "^4.25.2",
     "globals": "^16.3.0",
     "lightningcss": "^1.30.1",
@@ -105,11 +103,6 @@
   "browserslist": [
     "defaults"
   ],
-  "overrides": {
-    "postcss-mixins": {
-      "sugarss": "^5.0.0"
-    }
-  },
   "scripts": {
     "check": "tsc --build"
   }

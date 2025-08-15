@@ -1,9 +1,7 @@
 import path from 'node:path';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
-import legacy from '@vitejs/plugin-legacy';
+// import legacy from '@vitejs/plugin-legacy';
 import react from '@vitejs/plugin-react';
-import browserslist from 'browserslist';
-import { browserslistToTargets } from 'lightningcss';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { defineConfig, loadEnv, type PluginOption } from 'vite';
 import { patchCssModules } from 'vite-css-modules';
@@ -16,15 +14,13 @@ export default defineConfig(({ mode, isSsrBuild }) => {
   const env = loadEnv(mode, process.cwd(), 'VITE_');
 
   return {
-    css: {
-      lightningcss: {
-        targets: browserslistToTargets(browserslist('>= 0.25%')),
-      },
-    },
+    // css: {
+    //   transformer: 'lightningcss'
+    // },
     build: {
       // sourcemap: "hidden",
       // sourcemap: false,
-      cssMinify: 'lightningcss',
+      // cssMinify: 'lightningcss',
       // rollupOptions: {
       //   output: {
       //     manualChunks: {
@@ -56,9 +52,9 @@ export default defineConfig(({ mode, isSsrBuild }) => {
       ViteImageOptimizer({
         /* pass your config */
       }),
-      legacy({
-        targets: ['defaults', 'not IE 11'],
-      }),
+      // legacy({
+      //   targets: ['defaults', 'not IE 11'],
+      // }),
       patchCssModules({
         generateSourceTypes: true,
       }),
