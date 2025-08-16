@@ -128,6 +128,7 @@ export default function Show({
                     h="100%"
                     radius="md"
                     src={post.cover_main_variant!}
+                    alt={post.name!}
                   />
                 </AspectRatio>
                 <MarkdownViewer components={components} allowHtml>

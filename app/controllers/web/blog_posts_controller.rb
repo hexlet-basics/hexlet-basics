@@ -30,7 +30,17 @@ class Web::BlogPostsController < Web::ApplicationController
 
     seo_tags = {
       title: blog_post.name,
-      canonical: blog_post_url(blog_post.slug)
+      description: blog_post.description,
+      canonical: blog_post_url(blog_post.slug),
+      twitter: {
+        card: "summary",
+        site: "@hexlethq"
+      },
+      og: {
+        title: blog_post.name,
+        description: blog_post.description,
+        image: view_context.rails_representation_url(blog_post.cover.variant(:main))
+      }
     }
     set_meta_tags seo_tags
 
