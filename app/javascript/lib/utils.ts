@@ -207,3 +207,5 @@ export function fromWindow<K extends keyof Window>(
   }
   return;
 }
+
+export const boolText = (v?: boolean | null) => (v ? 'Yes' : 'No');

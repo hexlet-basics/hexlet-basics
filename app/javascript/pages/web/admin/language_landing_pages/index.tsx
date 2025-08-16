@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import AppAnchor from '@/components/Elements/AppAnchor';
 import { enums } from '@/generated/enums';
 import useDataTableProps from '@/hooks/useDataTableProps';
+import { boolText } from '@/lib/utils';
 import AdminLayout from '@/pages/layouts/AdminLayout';
 import * as Routes from '@/routes.js';
 import type { Grid, LanguageLandingPage } from '@/types/serializers';
@@ -67,8 +68,8 @@ export default function Index({ grid, landingPages }: Props) {
         records={landingPages}
         columns={[
           { accessor: 'id' },
-          { accessor: 'main' },
-          { accessor: 'listed' },
+          { accessor: 'main', render: ({ main }) => boolText(main) },
+          { accessor: 'listed', render: ({ main }) => boolText(main) },
           { accessor: 'state', filter: filterState },
           { accessor: 'order' },
           { accessor: 'header' },
