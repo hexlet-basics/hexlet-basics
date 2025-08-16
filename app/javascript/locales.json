@@ -20,6 +20,14 @@
       },
       "errors": {
         "models": {
+          "remind_password_form": {
+            "attributes": {
+              "email": {
+                "blank": "Email can't be blank",
+                "user_does_not_exist": "User not found. Try signing up."
+              }
+            }
+          },
           "sign_in_form": {
             "attributes": {
               "email": {
@@ -1744,6 +1752,7 @@
           "remind_password_form": {
             "attributes": {
               "email": {
+                "blank": "Email не может быть пустым",
                 "user_does_not_exist": "Пользователь не найден. Попробуйте зарегистрироваться"
               }
             }
