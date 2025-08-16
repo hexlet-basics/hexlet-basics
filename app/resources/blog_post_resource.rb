@@ -40,6 +40,6 @@ class BlogPostResource < ApplicationResource
 
   typelize :number
   attribute :likes_count do |post|
-    post.id.digits.last
+    post.likes.count
   end
 end

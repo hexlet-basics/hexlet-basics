@@ -60,6 +60,7 @@ class BlogPost < ApplicationRecord
   belongs_to :language, optional: true
   has_one :category, through: :language, class_name: "Language::Category"
   belongs_to :creator, class_name: "User"
+  has_many :likes
 
   def to_s
     name

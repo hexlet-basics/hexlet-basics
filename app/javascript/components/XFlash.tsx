@@ -14,6 +14,7 @@ export default function XFlash() {
   const variants: FlashVariants = {
     error: 'red',
     notice: 'blue',
+    warning: 'yellow',
     success: 'green',
   };
 

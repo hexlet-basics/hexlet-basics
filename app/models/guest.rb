@@ -4,7 +4,8 @@ require "securerandom"
 
 class Guest
   def id
-    SecureRandom.uuid
+    # SecureRandom.uuid
+    nil
   end
 
   def tag_list

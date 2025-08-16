@@ -74,6 +74,13 @@ export default function Show({
     datePublished: blogPost.created_at,
     headline: blogPost.description!,
     image: blogPost.cover_main_variant!,
+    interactionStatistic: [
+      {
+        '@type': 'InteractionCounter',
+        interactionType: { '@type': 'LikeAction' },
+        userInteractionCount: blogPost.likes_count, // number of likes
+      },
+    ],
   };
 
   const loadNext = async (lastPostId: number): Promise<BlogPost> => {
@@ -127,62 +134,65 @@ export default function Show({
                   {post.body || ''}
                 </MarkdownViewer>
 
-                {index === 0 && (
-                  <Box>
-                    <Group mb="lg">
-                      <Group me="auto">
-                        <User size={18} />
-                        <Text fw="bold">{post.creator.name}</Text>
-                        <Text fw="bold">{dayjs().to(post.created_at)}</Text>
-                      </Group>
-                      <Group gap={0} me="lg">
-                        <AppAnchor href={postUrl} me="xs" display="flex">
-                          <ThumbsUp size={18} />
-                        </AppAnchor>
-                        {post.likes_count}
-                      </Group>
-                      <Center>
-                        <Center me="xs">
-                          <Clock7 size={18} />
-                        </Center>
-                        {tCommon('time.minutes', { count: 5 })}
-                      </Center>
+                <Box>
+                  <Group mb="lg">
+                    <Group me="auto">
+                      <User size={18} />
+                      <Text fw="bold">{post.creator.name}</Text>
+                      <Text fw="bold">{dayjs().to(post.created_at)}</Text>
                     </Group>
-
-                    {i18next.language === 'ru' && (
-                      <Alert
-                        radius="lg"
-                        p="xl"
-                        mb="xl"
-                        pos="relative"
-                        title={t('blog_posts.show.join_community')}
-                        icon={<MessageCircleMore />}
+                    <Group gap={0} me="lg">
+                      <AppAnchor
+                        href={Routes.blog_post_likes_url(post.slug!)}
+                        method="post"
+                        me="xs"
+                        display="flex"
                       >
-                        <Text fz="lg" lh="sm" mb="md">
-                          {t('blog_posts.show.discuss')}
-                        </Text>
-                        <Group gap={0}>
-                          <AppAnchor
-                            href="https://t.me/HexletLearningBot"
-                            className="after:absolute after:inset-0"
-                            external
-                          >
-                            <Text component="span" mr="sm">
-                              {t('blog_posts.show.link')}
-                            </Text>
-                          </AppAnchor>
-                          <MoveRight />
-                        </Group>
-                      </Alert>
-                    )}
+                        <ThumbsUp size={18} />
+                      </AppAnchor>
+                      {post.likes_count}
+                    </Group>
+                    <Center>
+                      <Center me="xs">
+                        <Clock7 size={18} />
+                      </Center>
+                      {tCommon('time.minutes', { count: 5 })}
+                    </Center>
+                  </Group>
 
-                    <SimpleGrid cols={{ base: 1, xs: 2 }}>
-                      {recommendedBlogPosts.map((post) => (
-                        <BlogPostBlock key={post.id} post={post} />
-                      ))}
-                    </SimpleGrid>
-                  </Box>
-                )}
+                  {i18next.language === 'ru' && (
+                    <Alert
+                      radius="lg"
+                      p="xl"
+                      mb="xl"
+                      pos="relative"
+                      title={t('blog_posts.show.join_community')}
+                      icon={<MessageCircleMore />}
+                    >
+                      <Text fz="lg" lh="sm" mb="md">
+                        {t('blog_posts.show.discuss')}
+                      </Text>
+                      <Group gap={0}>
+                        <AppAnchor
+                          href="https://t.me/HexletLearningBot"
+                          className="after:absolute after:inset-0"
+                          external
+                        >
+                          <Text component="span" mr="sm">
+                            {t('blog_posts.show.link')}
+                          </Text>
+                        </AppAnchor>
+                        <MoveRight />
+                      </Group>
+                    </Alert>
+                  )}
+
+                  <SimpleGrid cols={{ base: 1, xs: 2 }}>
+                    {recommendedBlogPosts.map((post) => (
+                      <BlogPostBlock key={post.id} post={post} />
+                    ))}
+                  </SimpleGrid>
+                </Box>
               </Stack>
             ))}
             <div ref={markerRef}></div>

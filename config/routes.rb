@@ -111,7 +111,11 @@ Rails.application.routes.draw do
       end
 
       resources :pages, only: %i[show]
-      resources :blog_posts, only: %i[index show]
+      resources :blog_posts, only: %i[index show] do
+        scope module: :blog_posts do
+          resources :likes, only: [ :create ]
+        end
+      end
       resources :reviews, only: %i[index]
       resources :language_categories, only: %i[index show]
       resource :session, only: %i[new create destroy]

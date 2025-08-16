@@ -15,7 +15,7 @@ export default function CoursesList({ landingPages, attributes }: Props) {
   }
   return (
     <Carousel
-      slideSize={{ base: '50%', xs: '50%' }}
+      slideSize={{ base: '80%', xs: '50%' }}
       slideGap={{ base: 'xs', xs: 'xl' }}
       emblaOptions={{
         loop: true,

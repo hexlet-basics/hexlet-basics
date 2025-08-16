@@ -1,6 +1,11 @@
 ru:
   flash:
     web:
+      blog_posts:
+        likes:
+          create:
+            success: Спасибо за лайк!
+            notice: Ваш лайк уже засчитан :)
       leads:
         create:
           success: Заявка отправлена! Свяжемся с вами в течение одного-двух рабочих дней. Или напишите нам в <a target="_blank" href="https://t.me/WelcomeCodebasicsBot">телеграм</a> чтобы получить помощь быстрее

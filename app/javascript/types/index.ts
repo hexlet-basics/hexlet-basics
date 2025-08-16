@@ -17,7 +17,7 @@ export type BreadcrumbItem = {
   url: string;
 };
 
-export type FlashKey = 'success' | 'notice' | 'error';
+export type FlashKey = 'success' | 'notice' | 'error' | 'warning';
 
 export type FlashVariant =
   | 'blue'
