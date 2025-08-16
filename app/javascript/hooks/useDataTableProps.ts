@@ -21,7 +21,7 @@ export default function useDataTableProps<
   const updateGrid = (extra: Record<string, unknown>) => {
     const params = {
       ...grid,
-      fields: cleanObject(filterValues), // 👈 ключевой момент
+      fields: cleanObject(filterValues),
       ...extra,
     };
     router.get(url!, params, { preserveScroll: true });

@@ -1,6 +1,6 @@
 // import the original type declarations
 import 'i18next';
-import type locales from '../locales.json';
+import type locales from '../generated/locales.json';
 
 const defaultNS = 'web' as const;
 

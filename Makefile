@@ -70,11 +70,12 @@ editor-setup:
 
 sync-types:
 	ENABLE_TYPELIZER=1 bin/rails typelizer:generate:refresh
+	bin/rails js:routes:typescript
+	bin/rails app:export_events_to_ts
+	bin/rails app:export_enums_to_ts
 
 
 sync: sync-i18n sync-fixtures sync-types
-	bin/rails js:routes:typescript
-	bin/rails app:export_events_to_ts
 
 coverage-open:
 	open coverage/index.html

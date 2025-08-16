@@ -2,7 +2,7 @@ import 'dayjs/locale/ru';
 
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import locales from './locales.json';
+import locales from './generated/locales.json';
 
 // import { gon } from "@/lib/gon";
 

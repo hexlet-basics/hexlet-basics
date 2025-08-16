@@ -7,7 +7,7 @@ import {
   TextInput,
 } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
-import { eventNames } from '@/event_names';
+import { eventNames } from '@/generated/event_names';
 import { useAppForm } from '@/hooks/useAppForm';
 import type {
   HttpRouterMethod,

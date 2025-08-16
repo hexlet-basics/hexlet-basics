@@ -1,12 +1,17 @@
 class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
   def index
-    q = ransack_params("sf" => "id", "so" => "desc")
+    default_params = { "sf" => "id", "so" => "desc" }
+    q = ransack_params(default_params)
     search = BlogPost.with_locale.includes([ :cover_attachment ]).ransack(q)
     pagy, records = pagy(search.result)
+    # raise q.inspect
+
+    grid = GridResource.new(grid_params(pagy, default_params))
+    blog_posts = BlogPostResource.new(records)
 
     render inertia: true, props: {
-      blogPosts: BlogPostResource.new(records),
-      grid: GridResource.new(grid_params(pagy))
+      blogPosts: blog_posts,
+      grid:
     }
   end
 

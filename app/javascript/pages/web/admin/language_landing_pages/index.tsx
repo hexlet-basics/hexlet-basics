@@ -5,6 +5,7 @@ import { DataTable } from 'mantine-datatable';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import AppAnchor from '@/components/Elements/AppAnchor';
+import { enums } from '@/generated/enums';
 import useDataTableProps from '@/hooks/useDataTableProps';
 import AdminLayout from '@/pages/layouts/AdminLayout';
 import * as Routes from '@/routes.js';
@@ -49,7 +50,7 @@ export default function Index({ grid, landingPages }: Props) {
 
   const filterState = (
     <Select
-      data={['published', 'archived']}
+      data={enums.languageLandingPageState}
       value={filters.values.state_eq}
       onChange={filters.getOnChange('state_eq')}
       leftSection={<Search size={16} />}

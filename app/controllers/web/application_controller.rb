@@ -57,12 +57,12 @@ class Web::ApplicationController < ApplicationController
   # end
 
   def ransack_params(defaults)
-    raw = params.permit(:sf, :so, fields: {}).with_defaults(fields: {}).to_h
+    raw = params.permit(:sf, :so, fields: {}).with_defaults(defaults).to_h
 
     sf = raw["sf"].presence || defaults["sf"]
     so = raw["so"].presence || defaults["so"]
 
-    ransack = raw["fields"]
+    ransack = raw["fields"] || {}
     ransack["s"] = "#{sf} #{so}" if sf && so
 
     ransack

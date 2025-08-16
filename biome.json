@@ -15,6 +15,7 @@
       "!test",
       "!public",
       "!app/assets/builds",
+      "!app/javascript/generated",
       "!app/javascript/routes.*",
       "!app/javascript/types/serializers"
     ]

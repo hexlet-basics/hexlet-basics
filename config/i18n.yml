@@ -2,7 +2,7 @@
 # <% group = "{en,ru,es}" %>
 
 translations:
-  - file: app/javascript/locales.json
+  - file: app/javascript/generated/locales.json
     patterns:
       - "{ru,en,es}.*"
       - "!*.faker.*"

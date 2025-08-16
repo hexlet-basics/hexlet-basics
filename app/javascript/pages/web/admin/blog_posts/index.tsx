@@ -1,10 +1,11 @@
-import { ActionIcon, Image } from '@mantine/core';
+import { ActionIcon, Image, Select, ThemeIcon } from '@mantine/core';
 import dayjs from 'dayjs';
-import { Edit, GraduationCap, Link } from 'lucide-react';
+import { Edit, GraduationCap, Link, Search } from 'lucide-react';
 import { DataTable } from 'mantine-datatable';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import AppAnchor from '@/components/Elements/AppAnchor';
+import { enums } from '@/generated/enums';
 import useDataTableProps from '@/hooks/useDataTableProps';
 import AdminLayout from '@/pages/layouts/AdminLayout';
 import * as Routes from '@/routes.js';
@@ -13,32 +14,39 @@ import Menu from './shared/menu';
 
 type Props = PropsWithChildren & {
   blogPosts: BlogPost[];
-  grid: Grid;
+  grid: Grid & {
+    fields: {
+      state_eq: string;
+    };
+  };
 };
 
 export default function Index({ grid, blogPosts }: Props) {
   const { t } = useTranslation();
-  const { gridProps } = useDataTableProps<BlogPost, {}>(grid);
+  const { gridProps, filters } = useDataTableProps<
+    BlogPost,
+    typeof grid.fields
+  >(grid);
 
   const renderActions = (item: BlogPost) => (
     <>
       <AppAnchor me="xs" href={Routes.edit_admin_blog_post_path(item.id)}>
-        <ActionIcon variant="default" size="xs">
+        <ThemeIcon variant="default" size="xs">
           <Edit />
-        </ActionIcon>
+        </ThemeIcon>
       </AppAnchor>
       <AppAnchor me="xs" external href={Routes.blog_post_path(item.slug!)}>
-        <ActionIcon variant="default" size="xs">
+        <ThemeIcon variant="default" size="xs">
           <Link />
-        </ActionIcon>
+        </ThemeIcon>
       </AppAnchor>
       <AppAnchor
         method="post"
         href={Routes.related_courses_admin_blog_post_path(item.id)}
       >
-        <ActionIcon variant="default" size="xs">
+        <ThemeIcon variant="default" size="xs">
           <GraduationCap />
-        </ActionIcon>
+        </ThemeIcon>
       </AppAnchor>
     </>
   );
@@ -54,6 +62,18 @@ export default function Index({ grid, blogPosts }: Props) {
     );
   };
 
+  const filterState = (
+    <Select
+      data={enums.blogPostState}
+      value={filters.values.state_eq}
+      onChange={filters.getOnChange('state_eq')}
+      leftSection={<Search size={16} />}
+      comboboxProps={{ withinPortal: false }}
+      clearable
+      searchable
+    />
+  );
+
   return (
     <AdminLayout header={t('admin.blog_posts.index.header')}>
       <Menu />
@@ -63,7 +83,7 @@ export default function Index({ grid, blogPosts }: Props) {
           { accessor: 'id' },
           { accessor: 'cover', title: 'cover', render: renderCover },
           { accessor: 'name', sortable: true },
-          { accessor: 'state', sortable: true },
+          { accessor: 'state', sortable: true, filter: filterState },
           {
             accessor: 'related_language_items_count',
             title: 'Related C',
