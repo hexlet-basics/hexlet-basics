@@ -1,5 +1,5 @@
 import { CodeHighlight, InlineCodeHighlight } from '@mantine/code-highlight';
-import { Typography } from '@mantine/core';
+import { Table, Typography } from '@mantine/core';
 // import rehypeShikiFromHighlighter from '@shikijs/rehype/core';
 import type { Directives } from 'mdast-util-directive';
 import type { ComponentPropsWithoutRef } from 'react';
@@ -78,6 +78,11 @@ export default function MarkdownViewer({
 }: MarkdownViewerProps) {
   const preparedComponents = {
     pre: (props: ComponentPropsWithoutRef<'pre'>) => <>{props.children}</>, // убираем обертку pre
+    table: (props: ComponentPropsWithoutRef<'table'>) => (
+      <Table.ScrollContainer minWidth={800}>
+        <table>{props.children}</table>
+      </Table.ScrollContainer>
+    ), // убираем обертку pre
     code: MarkdownCodeHighlight,
     ...components,
   };

@@ -10,7 +10,8 @@ class BlogPostResource < ApplicationResource
     :body,
     :state,
     :locale,
-    :created_at
+    :created_at,
+    :related_language_items_count
 
   typelize :string, nullable: true
   attribute :cover_thumb_variant do |post|
@@ -30,11 +31,6 @@ class BlogPostResource < ApplicationResource
   typelize :number
   attribute :reading_time do |post|
     (post.body.split.size / 260).ceil
-  end
-
-  typelize :number
-  attribute :related_courses_count do |post|
-    post.related_language_items.size
   end
 
   typelize :string

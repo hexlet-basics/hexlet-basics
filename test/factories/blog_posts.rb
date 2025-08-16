@@ -4,17 +4,18 @@
 #
 # Table name: blog_posts
 #
-#  id          :bigint           not null, primary key
-#  body        :text
-#  description :string
-#  locale      :string
-#  name        :string
-#  slug        :string
-#  state       :string
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  creator_id  :bigint           not null
-#  language_id :bigint
+#  id                           :bigint           not null, primary key
+#  body                         :text
+#  description                  :string
+#  locale                       :string
+#  name                         :string
+#  related_language_items_count :integer          default(0), not null
+#  slug                         :string
+#  state                        :string
+#  created_at                   :datetime         not null
+#  updated_at                   :datetime         not null
+#  creator_id                   :bigint           not null
+#  language_id                  :bigint
 #
 # Indexes
 #

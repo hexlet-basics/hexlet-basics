@@ -23,5 +23,7 @@ class BlogPost::RelatedLanguageItem < ApplicationRecord
   belongs_to :blog_post
   belongs_to :language
 
+  counter_culture :blog_post
+
   validates :blog_post, uniqueness: { scope: :language }
 end

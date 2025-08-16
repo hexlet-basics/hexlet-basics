@@ -64,7 +64,11 @@ export default function Index({ grid, blogPosts }: Props) {
           { accessor: 'cover', title: 'cover', render: renderCover },
           { accessor: 'name', sortable: true },
           { accessor: 'state', sortable: true },
-          { accessor: 'related_courses_count', title: 'Related C' },
+          {
+            accessor: 'related_language_items_count',
+            title: 'Related C',
+            sortable: true,
+          },
           {
             accessor: 'created_at',
             render: (r) => dayjs(r.created_at).format('LL'),
