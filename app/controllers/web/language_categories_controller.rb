@@ -7,7 +7,15 @@ class Web::LanguageCategoriesController < Web::ApplicationController
     seo_tags = {
       title: t(".header"),
       description: t(".meta.description"),
-      canonical: language_categories_url
+      canonical: language_categories_url,
+      og: {
+        title: t(".header"),
+        description: t(".meta.description")
+      },
+      twitter: {
+        card: "summary",
+        site: "@hexlethq"
+      }
     }
     set_meta_tags seo_tags
 
@@ -20,10 +28,20 @@ class Web::LanguageCategoriesController < Web::ApplicationController
     category = Language::Category.with_locale.find_by! slug: params[:id]
     landing_pages = category.language_landing_pages.web.where(listed: true).merge(Language.ordered)
 
+    title = t(".header", name: category.header)
+    description = t(".meta.description", name: category.header)
     seo_tags = {
-      title: t(".header", name: category.header),
-      description: t(".meta.description", name: category.header),
-      canonical: language_category_url(category.slug)
+      title:,
+      description:,
+      canonical: language_category_url(category.slug),
+      og: {
+        title:,
+        description:
+      },
+      twitter: {
+        card: "summary",
+        site: "@hexlethq"
+      }
     }
     set_meta_tags seo_tags
 

@@ -8,7 +8,15 @@ class Web::BlogPostsController < Web::ApplicationController
     seo_tags = {
       title: t(".header"),
       description: t(".meta.description"),
-      canonical: blog_posts_url
+      canonical: blog_posts_url,
+      og: {
+        title: t(".header"),
+        description: t(".meta.description")
+      },
+      twitter: {
+        card: "summary",
+        site: "@hexlethq"
+      }
     }
     set_meta_tags seo_tags
 

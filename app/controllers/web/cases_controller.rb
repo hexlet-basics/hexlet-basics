@@ -13,9 +13,20 @@ class Web::CasesController < Web::ApplicationController
   end
 
   def for_teachers
+    description = t(".meta.description").truncate(160)
+
     seo_tags = {
       title: t(".title"),
-      description: t(".meta.description")
+      description: description,
+      canonical: view_context.book_url,
+      og: {
+        title: t(".title"),
+        description:  description
+      },
+      twitter: {
+        card: "summary",
+        site: "@hexlethq"
+      }
     }
 
     set_meta_tags seo_tags

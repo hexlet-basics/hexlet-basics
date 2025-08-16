@@ -31,7 +31,9 @@ ru:
         freebook: Бесплатная электронная книга
         chapter: Глава %{number}
         toc: Содержание
-        header: "Профессия «Программист»"
+        header: |
+          Книга: Профессия программист. С нуля до трудоустройства
+
         download: Скачать книгу
         request: Запросить книгу
         description: |
@@ -55,7 +57,10 @@ ru:
           description: Бесплатные %{name} с практикой прямо в браузере. Короткие текстовые уроки и ИИ-помощник. От создателей Хекслета
     reviews:
       index:
-        header: Отзывы
+        header: Отзывы о Code Basics
+        meta:
+          description: |
+            Честные отзывы наших студентов о курсах, процессе обучения и платформе
         add_review: Попробовали наши курсы и хотите оставить отзыв? Это можно сделать <a target="_blank" rel="noopener noreferrer" href="https://taplink.cc/codebasics_reviews">тут</a>
         empty: Похоже, что тут пока ничего нет
         read_more: Читать далее
@@ -289,9 +294,9 @@ ru:
         discuss: Обсуждайте, помогайте и делитесь опытом
         link: Перейти в сообщество
       index:
-        header: Блог
+        header: Блог Code Basics
         meta:
-          description: ""
+          description: Статьи об it-профессиях и технологиях для начинающих программистов, аналитиков, тестировщиков и системных администраторов
         empty: Похоже, что тут пока ничего нет
     languages:
       success:

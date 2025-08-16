@@ -4,6 +4,22 @@ class Web::BooksController < Web::ApplicationController
   def show
     book_request = current_user.book_request
 
+    description = t(".description").truncate(160)
+    seo_tags = {
+      title: t(".header"),
+      description: description,
+      canonical: view_context.book_url,
+      og: {
+        title: t(".header"),
+        description: description
+      },
+      twitter: {
+        card: "summary",
+        site: "@hexlethq"
+      }
+    }
+    set_meta_tags seo_tags
+
     render inertia: true, props: {
       lead: LeadCrudResource.new(LeadForm.new),
       bookRequested: !!book_request

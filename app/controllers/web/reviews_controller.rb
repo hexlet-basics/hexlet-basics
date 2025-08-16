@@ -7,9 +7,19 @@ class Web::ReviewsController < Web::ApplicationController
       .order(id: :desc)
     pagy, records = pagy(scope)
 
+    description = t(".meta.description").truncate(160)
     seo_tags = {
       title: t(".header"),
-      canonical: reviews_url
+      description: description,
+      canonical: reviews_url,
+      og: {
+        title: t(".title"),
+        description:  description
+      },
+      twitter: {
+        card: "summary",
+        site: "@hexlethq"
+      }
     }
     set_meta_tags seo_tags
 

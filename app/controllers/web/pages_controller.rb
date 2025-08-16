@@ -17,9 +17,19 @@ class Web::PagesController < Web::ApplicationController
 
     title = t(".parts.#{params[:id]}.title")
 
+    description = t(".parts.#{params[:id]}.meta.description")
     seo_tags = {
       title:,
-      description: t(".parts.#{params[:id]}.meta.description")
+      description:,
+      canonical: page_url(params[:id]),
+      og: {
+        title:,
+        description:
+      },
+      twitter: {
+        card: "summary",
+        site: "@hexlethq"
+      }
     }
     if DISALLOWED_PAGES.exclude? page
       seo_tags[:canonical] = page_url(page)

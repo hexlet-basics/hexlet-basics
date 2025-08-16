@@ -37,7 +37,6 @@ class Web::LanguagesController < Web::ApplicationController
     image_url = language.cover.attached? && view_context.rails_representation_url(language.cover.variant(:list))
     seo_tags = {
       title: landing_page.meta_title,
-      # keywords: language_info.keywords.join(", "),
       description: landing_page.meta_description,
       canonical: language_url(language.slug),
       image_src: image_url,
@@ -48,6 +47,10 @@ class Web::LanguagesController < Web::ApplicationController
         url: language_url(landing_page.slug),
         image: image_url,
         locale: I18n.locale
+      },
+      twitter: {
+        card: "summary",
+        site: "@hexlethq"
       }
     }
     set_meta_tags seo_tags
