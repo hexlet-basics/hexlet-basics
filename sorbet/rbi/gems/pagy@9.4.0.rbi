@@ -198,36 +198,36 @@ module Pagy::I18n
 
   # Public method to configure the locales: overrides the default, build the DATA and freezes it
   #
-  # source://pagy//lib/pagy/i18n.rb#151
+  # source://pagy//lib/pagy/i18n.rb#152
   def load(*locales); end
 
   # Translate and pluralize the key with the locale DATA
   #
-  # source://pagy//lib/pagy/i18n.rb#164
+  # source://pagy//lib/pagy/i18n.rb#165
   def t(locale, key, **opts); end
 
   # Translate and pluralize the key with the locale DATA
   #
-  # source://pagy//lib/pagy/i18n.rb#158
+  # source://pagy//lib/pagy/i18n.rb#159
   def translate(locale, key, **opts); end
 
   private
 
   # Build the DATA hash out of the passed locales
   #
-  # source://pagy//lib/pagy/i18n.rb#134
+  # source://pagy//lib/pagy/i18n.rb#135
   def build(*locales); end
 
   # Create a flat hash with dotted notation keys
   #
-  # source://pagy//lib/pagy/i18n.rb#127
+  # source://pagy//lib/pagy/i18n.rb#128
   def flatten(initial, prefix = T.unsafe(nil)); end
 end
 
 # Stores the i18n DATA structure for each loaded locale
 # default on the first locale DATA
 #
-# source://pagy//lib/pagy/i18n.rb#122
+# source://pagy//lib/pagy/i18n.rb#123
 Pagy::I18n::DATA = T.let(T.unsafe(nil), Hash)
 
 # Pluralization rules

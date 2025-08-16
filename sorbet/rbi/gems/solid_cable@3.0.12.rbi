@@ -45,46 +45,56 @@ class ActionCable::SubscriptionAdapter::SolidCable::Listener < ::ActionCable::Su
   # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#44
   def initialize(event_loop); end
 
-  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#91
+  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#94
   def add_channel(channel, on_success); end
 
-  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#75
+  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#78
   def interruptible; end
 
-  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#100
+  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#103
   def invoke_callback(*_arg0); end
 
-  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#59
+  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#62
   def listen; end
 
-  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#96
+  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#99
   def remove_channel(channel); end
 
-  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#82
+  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#85
   def shutdown; end
 
   private
 
-  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#115
+  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#123
   def broadcast_messages; end
 
-  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#111
+  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#119
   def channels; end
 
   # Returns the value of attribute event_loop.
   #
-  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#105
+  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#108
   def event_loop; end
 
-  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#107
+  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#111
+  def last_id; end
+
+  # Sets the attribute last_id
+  #
+  # @param value the value to set the attribute last_id to.
+  #
+  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#109
+  def last_id=(_arg0); end
+
+  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#115
   def last_message_id; end
 
   # Returns the value of attribute thread.
   #
-  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#105
+  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#108
   def thread; end
 
-  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#130
+  # source://solid_cable//lib/action_cable/subscription_adapter/solid_cable.rb#142
   def with_polling_volume; end
 end
 
