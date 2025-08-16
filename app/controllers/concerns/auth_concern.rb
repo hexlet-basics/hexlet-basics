@@ -25,7 +25,11 @@ module AuthConcern
   end
 
   def current_user
-    @current_user ||= User.active.find_by(id: session[:user_id]) || Guest.new
+    return @current_user if @current_user
+
+    id = session[:user_id]
+    @current_user = User.active.find_by(id: id) if id.present?
+    @current_user ||= Guest.new
   end
 
   def authenticate_user!
