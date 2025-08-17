@@ -34,7 +34,7 @@
     "debug": "^4.4.1",
     "embla-carousel": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
-    "es-toolkit": "^1.39.9",
+    "es-toolkit": "^1.39.10",
     "html-react-parser": "^5.2.6",
     "i18next": "^25.3.6",
     "lucide-react": "^0.539.0",
