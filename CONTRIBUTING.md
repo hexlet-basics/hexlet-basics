@@ -47,3 +47,28 @@ git checkout -b fix/typo-python-variables
 git commit -m "docs: fix typo in Python variables lesson"
 ```
 7. Submit a Pull Request to the `main` branch
+
+## ✅ Contribution requirements
+
+- [Coding style](https://github.com/hexlet-basics/hexlet-basics/wiki/Style-Guide) compliance
+- Tests should pass
+- Commits in a [conventional style](https://www.conventionalcommits.org/ru/)
+- Descriptive PR names
+- Link to the related Issue in the PR
+
+## 🔗 Useful resources
+
+- [Internal documentation](https://bolder-gull-404.notion.site/code-basics-99e0c6274ab94fc1ae2ec2071bb5d260) - architecture and processes
+- [Slack-channel #code-basics](https://hexlet-ru.slack.com/archives/C0LN151B4) (registration required)
+- [Issues list](https://github.com/hexlet-basics/hexlet-basics/issues)
+- [Wiki проекта](https://github.com/hexlet-basics/hexlet-basics/wiki)
+
+## 🆘 Need help?
+
+Ask questions in:
+
+- Slack-channel #code-basics
+- GitHub Discussions
+- Comments on the relevant issues
+
+Thank you for contrubuting to the educational community! 🎉
