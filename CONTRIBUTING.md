@@ -58,10 +58,7 @@ git commit -m "docs: fix typo in Python variables lesson"
 
 ## 🔗 Useful resources
 
-- [Internal documentation](https://bolder-gull-404.notion.site/code-basics-99e0c6274ab94fc1ae2ec2071bb5d260) - architecture and processes
-- [Slack-channel #code-basics](https://hexlet-ru.slack.com/archives/C0LN151B4) (registration required)
-- [Issues list](https://github.com/hexlet-basics/hexlet-basics/issues)
-- [Wiki проекта](https://github.com/hexlet-basics/hexlet-basics/wiki)
+- [Internal documentation](AGENTS.md)
 
 ## 🆘 Need help?
 
