@@ -36,6 +36,7 @@ class Web::BlogPostsController < Web::ApplicationController
 
     related_landings = blog_post.related_main_language_landing_pages.merge(BlogPost::RelatedLanguageItem.order(order: :asc))
 
+    image_url = blog_post.cover.attached? && view_context.rails_representation_url(blog_post.cover.variant(:main))
     seo_tags = {
       title: blog_post.name,
       description: blog_post.description,
@@ -47,7 +48,7 @@ class Web::BlogPostsController < Web::ApplicationController
       og: {
         title: blog_post.name,
         description: blog_post.description,
-        image: view_context.rails_representation_url(blog_post.cover.variant(:main))
+        image: image_url
       }
     }
     set_meta_tags seo_tags
