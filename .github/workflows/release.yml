@@ -29,27 +29,11 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      -
-        name: Set up QEMU
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-      -
-        name: Set up Docker Buildx
+
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
-      # - name: Build App
-      #   uses: docker/build-push-action@v6
-      #   with:
-      #     # context: .
-      #     # file: Dockerfile.production
-      #     cache-from: type=registry,ref=${{ env.APP_IMAGE_NAME }}
-      #     cache-to: type=inline
-      #     push: true
-      #     tags: ${{ env.APP_IMAGE_NAME }}
-
-      # - name: Check
-      #   run: |
-      #     make ansible-generate-env
-      #     docker compose --file docker-compose.yml up --abort-on-container-exit
 
       - name: Build&Push App
         uses: docker/build-push-action@v6

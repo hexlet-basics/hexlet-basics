@@ -1,100 +1,84 @@
-data "twc_database_preset" "postgresql" {
-  location = var.location
+resource "yandex_mdb_postgresql_cluster" "code_basics_cluster" {
+  name                = "code-basics-postgresql-cluster"
+  environment         = "PRODUCTION"
+  network_id          = data.yandex_vpc_network.hexlet.id
+  deletion_protection = true
+  security_group_ids  = [yandex_vpc_security_group.code_basics_postgresql.id]
 
-  type = "postgres"
-  cpu = 2
-  ram = 4096
+  config {
+    version = 17
 
-  price_filter {
-    from = 1300
-    to   = 1600
+    resources {
+      resource_preset_id = "c3-c2-m4"
+      disk_type_id       = "network-ssd"
+      disk_size          = 40
+    }
+
+    backup_window_start {
+      hours   = 1
+      minutes = 0
+    }
+
+    access {
+      web_sql = false
+      data_lens = true
+    }
+
+    performance_diagnostics {
+      enabled                      = true
+      sessions_sampling_interval   = 60
+      statements_sampling_interval = 600
+    }
+  }
+
+  host {
+    name      = "code_basics_pg_host_b"
+    zone      = data.yandex_vpc_subnet.hexlet_b.zone
+    subnet_id = data.yandex_vpc_subnet.hexlet_b.id
+  }
+
+  host {
+    name      = "code_basics_pg_host_a"
+    zone      = data.yandex_vpc_subnet.hexlet_a.zone
+    subnet_id = data.yandex_vpc_subnet.hexlet_a.id
+  }
+
+  host {
+    name      = "code_basics_pg_host_d"
+    zone      = data.yandex_vpc_subnet.hexlet_d.zone
+    subnet_id = data.yandex_vpc_subnet.hexlet_d.id
+  }
+
+  maintenance_window {
+    type = "WEEKLY"
+    day  = "MON"
+    hour = 2
   }
 }
 
-resource "twc_database_cluster" "postgresql" {
-  name = "Hexlet basics PostgreSQL cluster"
-
-  project_id = twc_project.hexlet_basics.id
-  preset_id = data.twc_database_preset.postgresql.id
-
-  availability_zone = var.zone
-
-  network {
-    id = twc_vpc.hexlet_basics.id
-  }
-
-  # TODO: убрать после переноса и удалить IP
-  is_external_ip = true
-
-  type = "postgres16"
-
-  # NOTE: id пресетов меняются со временем в апи провайдера
-  lifecycle {
-    ignore_changes = [
-      preset_id,
-    ]
-  }
+resource "yandex_mdb_postgresql_user" "user" {
+  cluster_id = yandex_mdb_postgresql_cluster.code_basics_cluster.id
+  name       = local.data.secrets.code_basics.database.user.name
+  password   = local.data.secrets.code_basics.database.user.password
+  conn_limit = 100
 }
 
-resource "twc_database_backup_schedule" "postgresql" {
-  cluster_id = twc_database_cluster.postgresql.id
+resource "yandex_mdb_postgresql_database" "hexlet_basics" {
+  cluster_id = yandex_mdb_postgresql_cluster.code_basics_cluster.id
+  name       = local.data.secrets.code_basics.database.name
+  owner      = yandex_mdb_postgresql_user.user.name
 
-  copy_count = 7
-  creation_start_at = "2024-09-19T00:00:00.000Z"
-  interval = "day"
-  enabled = true
+  lc_collate = "en_US.UTF-8"
+  lc_type    = "en_US.UTF-8"
 }
 
-resource "twc_database_instance" "hexlet_basics" {
-  cluster_id = twc_database_cluster.postgresql.id
+# NOTE: Yandex не умеет в создание readonly юзеров, поэтому тут делаем пользователя, и уже ручками делаем ему доступ в readonly
+resource "yandex_mdb_postgresql_user" "readonly_user" {
+  cluster_id = yandex_mdb_postgresql_cluster.code_basics_cluster.id
+  name       = local.data.secrets.code_basics.database.readonly_user.name
+  password   = local.data.secrets.code_basics.database.readonly_user.password
 
-  name = var.postgres_db.name
-}
-
-resource "twc_database_user" "hexlet_basics_user" {
-  cluster_id = twc_database_cluster.postgresql.id
-
-  login = var.postgres_db.username
-  password = var.postgres_db.password
-
-  instance {
-    instance_id = twc_database_instance.hexlet_basics.id
-    privileges  = ["SELECT", "INSERT", "UPDATE", "DELETE", "ALTER", "REFERENCES", "CREATE", "DROP", "INDEX", "TRUNCATE"]
-  }
-}
-
-resource "twc_database_user" "hexlet_basics_user_readonly" {
-  cluster_id = twc_database_cluster.postgresql.id
-
-  login = var.postgres_db.readonly_username
-  password = var.postgres_db.readonly_password
-
-  instance {
-    instance_id = twc_database_instance.hexlet_basics.id
-    privileges  = ["SELECT"]
-  }
-}
-
-resource "twc_database_user" "datadog_user_readonly" {
-  cluster_id = twc_database_cluster.postgresql.id
-
-  login = var.postgres_db.datadog_username
-  password = var.postgres_db.datadog_password
-
-  instance {
-    instance_id = twc_database_instance.hexlet_basics.id
-    privileges  = ["SELECT"]
-  }
-}
-
-resource "twc_database_user" "hexlet_basics_user_2" {
-  cluster_id = twc_database_cluster.postgresql.id
-
-  login = var.postgres_db.username2
-  password = var.postgres_db.password
-
-  instance {
-    instance_id = twc_database_instance.hexlet_basics.id
-    privileges  = ["SELECT", "INSERT", "UPDATE", "DELETE", "ALTER", "REFERENCES", "CREATE", "DROP", "INDEX"]
+  permission {
+    database_name = local.data.secrets.code_basics.database.name
   }
 }

@@ -1,48 +1,54 @@
-data "twc_k8s_preset" "hexlet_basics_master" {
-  cpu = 2
-  type = "master"
+data "yandex_kubernetes_cluster" "kube_cluster_1" {
+  cluster_id = local.data.terraform.yc.kube_cluster_id
 }
 
-data "twc_k8s_preset" "hexlet_basics_worker" {
-  cpu = 2
-  ram = 4096
-  type = "worker"
-}
+resource "yandex_kubernetes_node_group" "code_basics_node_group_1" {
+  cluster_id = data.yandex_kubernetes_cluster.kube_cluster_1.id
+  name       = "code-basics-node-group-1"
+  version    = data.yandex_kubernetes_cluster.kube_cluster_1.master[0].version
 
-resource "twc_k8s_cluster" "hexlet_basics_3" {
-  name = "Hexlet basics k8s cluster 3"
-
-  project_id = twc_project.hexlet_basics.id
-
-  high_availability = false
-  version = "v1.33.1+k0s.0"
-  network_driver = "calico"
-  ingress = true
-
-  preset_id = data.twc_k8s_preset.hexlet_basics_master.id
-
-  lifecycle {
-    ignore_changes = [
-      preset_id,
-    ]
+  node_labels = {
+    "group" = "codebasics"
   }
-}
 
-resource "twc_k8s_node_group" "hexlet_basics_3" {
-  cluster_id = twc_k8s_cluster.hexlet_basics_3.id
-  name = "default"
+  instance_template {
+    platform_id = "standard-v3"
 
-  preset_id = data.twc_k8s_preset.hexlet_basics_worker.id
+    network_interface {
+      nat = false
+      subnet_ids = [
+        yandex_vpc_subnet.code_basics_b_1.id,
+      ]
+    }
 
-  node_count = 3
-  is_autoscaling = true
-  max_size = 3
-  min_size = 3
+    resources {
+      memory = 6
+      cores  = 2
+    }
 
-  # NOTE: баг таймвеб, выдаёт не актуальный preset_id. Создано с id = 443
-  lifecycle {
-    ignore_changes = [
-      preset_id,
-    ]
+    boot_disk {
+      type = "network-ssd-nonreplicated"
+      size = 93
+    }
+
+    container_runtime {
+      type = "containerd"
+    }
+  }
+
+  scale_policy {
+    fixed_scale {
+      size = 2
+    }
+  }
+
+  deploy_policy {
+    max_expansion   = 1
+    max_unavailable = 0
+  }
+
+  maintenance_policy {
+    auto_upgrade = true
+    auto_repair  = true
   }
 }

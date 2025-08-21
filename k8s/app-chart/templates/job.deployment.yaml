@@ -4,19 +4,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "{{ .Release.Name }}-job-deployment"
+  namespace: "{{ .Release.Namespace }}"
   labels:
-    app.kubernetes.io/name: "{{ .Release.Name }}-job-pod"
+    app.kubernetes.io/name: "{{ .Chart.Name }}"
     app.kubernetes.io/instance: "{{ .Release.Name }}"
     app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
     app.kubernetes.io/managed-by: "{{ .Release.Service }}"
-    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+
 spec:
   replicas: 1
+
   selector:
     matchLabels:
       app.kubernetes.io/name: "{{ .Release.Name }}-job-pod"
       app.kubernetes.io/instance: "{{ .Release.Name }}"
   strategy:
+    type: RollingUpdate
     rollingUpdate:
       maxUnavailable: 0
       maxSurge: 1
@@ -25,9 +28,15 @@ spec:
       labels:
         app.kubernetes.io/name: "{{ .Release.Name }}-job-pod"
         app.kubernetes.io/instance: "{{ .Release.Name }}"
-        code-basics/web-pod: "{{ .Release.Name }}-{{ .Values.version }}-job-pod"
-
+        helm.sh/chart: '{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}'
+        codebasics/pod: "{{ .Release.Name }}-{{ .Values.version }}-job-pod"
     spec:
+      nodeSelector:
+        group: "{{ .Release.Namespace }}"
+
+      imagePullSecrets:
+        - name: docker-config
+
       volumes:
         - name: users-code-path
           hostPath:
@@ -45,13 +54,13 @@ spec:
       containers:
         - name: jobs
           imagePullPolicy: Always
-          image: "{{ .Values.web.image.repository }}:{{ .Values.version }}"
+          image: "{{ .Values.app.image.repository }}:{{ .Values.version }}"
           resources:
             requests:
-              memory: 300Mi
-              cpu: 10m
+              memory: "300Mi"
+              cpu: "10m"
             limits:
-              memory: 600Mi
+              memory: '600Mi'
           command: ["bin/jobs"]
           volumeMounts:
             - mountPath: /tmp/hexlet-basics
@@ -62,7 +71,7 @@ spec:
               mountPath: /home/rails/.docker
           envFrom:
             - secretRef:
-                name: hexlet-basics-environment-secrets
+                name: codebasics-environment-secrets
           env:
             - name: HEXLET_BASICS_RELEASE_VERSION
               value: {{ .Values.version }}

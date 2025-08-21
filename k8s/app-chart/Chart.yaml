@@ -1,6 +1,6 @@
 apiVersion: v2
-name: app-chart
-description: Hexlet Basics Helm chart for Kubernetes
+name: codebasics
+description: A Helm chart for deploying codebasics
 type: application
+appVersion: "1.0"
 version: 0.1.0
-appVersion: "0.16.0"

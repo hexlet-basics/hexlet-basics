@@ -1,12 +1,12 @@
 ---
 
-version: v1244
+version: v1246
 
 nginx:
   image:
     repository: hexletbasics/services-nginx
 
-web:
+app:
   image:
     repository: hexletbasics/services-app
 

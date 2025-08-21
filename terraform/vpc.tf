@@ -1,65 +1,46 @@
-resource "twc_vpc" "hexlet_basics" {
-  name = "Hexlet basics network"
-  subnet_v4 = "10.3.1.0/24"
-  location = var.location
+data "yandex_vpc_network" "hexlet" {
+  network_id = local.data.terraform.yc.network_id
 }
 
-resource "twc_firewall" "databases" {
-  name = "Hexlet basic DB firewall"
-
-  # NOTE: timeweb terraform provider doesn't support linking database resources to firewall
-  # therefore databases were added manually from control panel
-  # link {
-  #   id = resource.twc_database_cluster.postgresql.id
-  #   type = "server"
-  # }
-
-  # link {
-  #   id = resource.twc_database_cluster.redis.id
-  #   type = "server"
-  # }
+data "yandex_vpc_route_table" "hexlet_b" {
+  route_table_id = local.data.terraform.yc.route_table_id
 }
 
-resource "twc_firewall_rule" "own_subnet" {
-  firewall_id = resource.twc_firewall.databases.id
-
-  direction = "ingress"
-  protocol = "tcp"
-  cidr = twc_vpc.hexlet_basics.subnet_v4
+data "yandex_vpc_subnet" "hexlet_a" {
+  subnet_id = local.data.terraform.yc.subnet_a_id
 }
 
-resource "twc_firewall_rule" "timeweb_monitoring" {
-  firewall_id = resource.twc_firewall.databases.id
-
-  direction = "ingress"
-  port = 10050
-  protocol = "tcp"
-  cidr = "92.53.116.0/24"
+data "yandex_vpc_subnet" "hexlet_b" {
+  subnet_id = local.data.terraform.yc.subnet_b_id
 }
 
-
-resource "twc_firewall_rule" "out_tcp" {
-  firewall_id = resource.twc_firewall.databases.id
-
-  direction = "egress"
-  protocol = "tcp"
-  cidr = "0.0.0.0/0"
+data "yandex_vpc_subnet" "hexlet_d" {
+  subnet_id = local.data.terraform.yc.subnet_d_id
 }
 
-resource "twc_firewall_rule" "datalens_connection_1" {
-  firewall_id = resource.twc_firewall.databases.id
-
-  direction = "ingress"
-  port = 5432
-  protocol = "tcp"
-  cidr = "178.154.242.0/24"
+resource "yandex_vpc_subnet" "code_basics_b_1" {
+  name           = "code-basics-subnet-b-1"
+  v4_cidr_blocks = ["10.21.0.0/16"]
+  zone           = local.data.terraform.yc.zone
+  network_id     = data.yandex_vpc_network.hexlet.id
+  route_table_id = data.yandex_vpc_route_table.hexlet_b.id
 }
 
-resource "twc_firewall_rule" "datalens_connection_2" {
-  firewall_id = resource.twc_firewall.databases.id
+resource "yandex_vpc_address" "code_basics_ingress_address_1" {
+  name = "code-basics-ingress-adress-1"
+  external_ipv4_address {
+    zone_id = local.data.terraform.yc.zone
+  }
+}
 
-  direction = "ingress"
-  port = 5432
-  protocol = "tcp"
-  cidr = "130.193.60.0/28"
+resource "yandex_vpc_security_group" "code_basics_postgresql" {
+  name        = "code-basics-postgresql"
+  network_id  = data.yandex_vpc_network.hexlet.id
+
+  ingress {
+    description       = "Permit access to k8s nodes"
+    protocol          = "TCP"
+    port              = 6432
+    v4_cidr_blocks    = yandex_vpc_subnet.code_basics_b_1.v4_cidr_blocks
+  }
 }

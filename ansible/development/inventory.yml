@@ -1,7 +1,0 @@
----
-
-all:
-  hosts:
-    localhost:
-      gather_facts: false
-      ansible_connection: local

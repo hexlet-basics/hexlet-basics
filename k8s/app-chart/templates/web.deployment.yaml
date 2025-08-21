@@ -4,6 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "{{ .Release.Name }}-web-deployment"
+  namespace: "{{ .Release.Namespace }}"
   labels:
     app.kubernetes.io/name: "{{ .Chart.Name }}"
     app.kubernetes.io/instance: "{{ .Release.Name }}"
@@ -11,34 +12,37 @@ metadata:
     app.kubernetes.io/managed-by: "{{ .Release.Service }}"
 
 spec:
-  replicas: 3
+  replicas: 2
 
   selector:
     matchLabels:
       app.kubernetes.io/name: "{{ .Release.Name }}-web-pod"
       app.kubernetes.io/instance: "{{ .Release.Name }}"
-
   strategy:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 1
-
   template:
     metadata:
       labels:
         app.kubernetes.io/name: "{{ .Release.Name }}-web-pod"
         app.kubernetes.io/instance: "{{ .Release.Name }}"
         helm.sh/chart: '{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}'
-        hexlet-basics/web-pod: "{{ .Release.Name }}-{{ .Values.version }}-web-pod"
-
+        codebasics/pod: "{{ .Release.Name }}-{{ .Values.version }}-web-pod"
     spec:
+      nodeSelector:
+        group: "{{ .Release.Namespace }}"
+
+      imagePullSecrets:
+        - name: docker-config
+
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
                 matchExpressions:
-                  - key: "hexlet-basics/web-pod"
+                  - key: "codebasics/pod"
                     operator: In
                     values:
                       - "{{ .Release.Name }}-{{ .Values.version }}-web-pod"
@@ -51,6 +55,12 @@ spec:
         - name: docker-sock
           hostPath:
             path: /var/run/docker.sock
+        - name: docker-secret
+          secret:
+            secretName: docker-config
+            items:
+              - key: .dockerconfigjson
+                path: config.json
 
       # TODO: нужно только при первом деплое для смены прав. Закомментировать после первого деплоя
       # initContainers:
@@ -60,6 +70,10 @@ spec:
       #     volumeMounts:
       #       - mountPath: /tmp/hexlet-basics
       #         name: users-code-path
+
+      # NOTE: по умолчанию, если контейнеры не завершили свою работу за 30с, они будут завершены принудительно
+      # увеличиваем время ожидания с дефолтных 30с на 45с, так как дефолтного времени может уже быть недостаточно
+      terminationGracePeriodSeconds: 45
 
       containers:
         - name: nginx
@@ -75,25 +89,25 @@ spec:
             httpGet:
               path: /health
               port: 8080
-            initialDelaySeconds: 15
+            initialDelaySeconds: 8
             periodSeconds: 8
-            timeoutSeconds: 2
             failureThreshold: 3
           livenessProbe:
             httpGet:
               path: /health
               port: 8080
-            initialDelaySeconds: 15
-            periodSeconds: 3
+            initialDelaySeconds: 60
+            periodSeconds: 60
             failureThreshold: 3
           ports:
             - containerPort: 8080
           resources:
             requests:
-              memory: 30Mi
+              memory: '30Mi'
               cpu: 15m
-            limits:
-              memory: 100Mi
+
+          # NOTE: перед закрытием контейнера ждём ответы для открытых соединений
+          # все запросы которые с длительностью более 10с, получат ответы 503
           lifecycle:
             preStop:
               exec:
@@ -101,7 +115,9 @@ spec:
 
         - name: web
           imagePullPolicy: Always
-          image: "{{ .Values.web.image.repository }}:{{ .Values.version }}"
+          image: "{{ .Values.app.image.repository }}:{{ .Values.version }}"
+          ports:
+            - containerPort: 3000
           startupProbe:
             httpGet:
               path: /up
@@ -131,40 +147,81 @@ spec:
                   value: https
             initialDelaySeconds: 20
             periodSeconds: 20
-            # NOTE: при большом одновременном количестве запросов puma отвечает дольше таймаута
-            # в итоге контейнер перезапускается кубом из-за фейлов проб
-            # Кейс проявляетс при обходе сайта ботами
-            timeoutSeconds: 5
-          ports:
-            - containerPort: 3000
+            failureThreshold: 3
+
           resources:
             requests:
-              memory: 400Mi
-              cpu: 100m
+              memory: "500Mi"
+              cpu: "100m"
             limits:
-              memory: 1200Mi
+              memory: '1500Mi'
           volumeMounts:
             - mountPath: /tmp/hexlet-basics
               name: users-code-path
             - mountPath: /var/run/docker.sock
               name: docker-sock
+            - name: docker-secret
+              mountPath: /home/rails/.docker
           envFrom:
             - secretRef:
-                name: hexlet-basics-environment-secrets
+                name: codebasics-environment-secrets
           env:
             - name: HEXLET_BASICS_RELEASE_VERSION
               value: {{ .Values.version }}
+
+          # NOTE: приложение должно работать дольше чем nginx иначе будут поступать ответы 502
           lifecycle:
+            preStop:
+              exec:
+                command: ["sleep", "20"]
             postStart:
               exec:
                 command: {{ .Values.slack_notification }}
+
+        - name: cable
+          imagePullPolicy: Always
+          image: "{{ .Values.app.image.repository }}:{{ .Values.version }}"
+          command: ["make", "services-cable-run"]
+          startupProbe:
+            httpGet:
+              path: /up
+              port: 28080
+            periodSeconds: 10
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /up
+              port: 28080
+            initialDelaySeconds: 5
+            periodSeconds: 8
+            timeoutSeconds: 2
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /up
+              port: 28080
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            timeoutSeconds: 3
+          ports:
+            - containerPort: 28080
+          resources:
+            requests:
+              memory: 100Mi
+              cpu: 100m
+            limits:
+              memory: 500Mi
+          envFrom:
+            - secretRef:
+                name: codebasics-environment-secrets
+          lifecycle:
             preStop:
               exec:
                 command: ["sleep", "15"]
 
         - name: ssr
           imagePullPolicy: Always
-          image: "{{ .Values.web.image.repository }}:{{ .Values.version }}"
+          image: "{{ .Values.app.image.repository }}:{{ .Values.version }}"
           command: ["bin/vite", "ssr"]
           startupProbe:
             httpGet:
@@ -199,51 +256,10 @@ spec:
             - name: NODE_ENV
               valueFrom:
                 secretKeyRef:
-                  name: hexlet-basics-environment-secrets
+                  name: codebasics-environment-secrets
                   key: NODE_ENV
             - name: NODE_OPTIONS
               value: "--max-old-space-size=190"
-          lifecycle:
-            preStop:
-              exec:
-                command: ["sleep", "15"]
-
-        - name: cable
-          imagePullPolicy: Always
-          image: "{{ .Values.web.image.repository }}:{{ .Values.version }}"
-          command: ["make", "services-cable-run"]
-          startupProbe:
-            httpGet:
-              path: /up
-              port: 28080
-            periodSeconds: 10
-            failureThreshold: 30
-          readinessProbe:
-            httpGet:
-              path: /up
-              port: 28080
-            initialDelaySeconds: 5
-            periodSeconds: 8
-            timeoutSeconds: 2
-            failureThreshold: 3
-          livenessProbe:
-            httpGet:
-              path: /up
-              port: 28080
-            initialDelaySeconds: 20
-            periodSeconds: 20
-            timeoutSeconds: 3
-          ports:
-            - containerPort: 28080
-          resources:
-            requests:
-              memory: 100Mi
-              cpu: 100m
-            limits:
-              memory: 400Mi
-          envFrom:
-            - secretRef:
-                name: hexlet-basics-environment-secrets
           lifecycle:
             preStop:
               exec:

@@ -92,7 +92,6 @@ export TWC_TOKEN=<your token>
 1. theme switcher
 1. <https://github.com/DavidWells/analytics>
 1. auth: vk id, yandex id, google id (except ru)
-1. switch from ansible vault to helm secrets
 1. upload course image in admin interface (and remove devicon)
 1. configus => dotenv
 1. Check if yandex.market is used
