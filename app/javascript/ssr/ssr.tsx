@@ -55,5 +55,5 @@ createServer(
       },
     });
   },
-  { cluster: import.meta.env.PROD },
+  { cluster: false },
 );
