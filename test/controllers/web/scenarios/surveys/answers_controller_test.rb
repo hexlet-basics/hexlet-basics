@@ -41,7 +41,7 @@ class Web::Scenarios::Surveys::AnswersControllerTest < ActionDispatch::Integrati
     member.reload
     user.reload
 
-    assert { member.state == "finished" }
+    assert { member.state_finished? }
     assert { !member.next_survey }
     assert { user.survey_scenario_members.count == 1 }
   end
