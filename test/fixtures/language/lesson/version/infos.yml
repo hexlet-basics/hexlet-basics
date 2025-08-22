@@ -19,9 +19,10 @@
 #
 # Indexes
 #
-#  index_language_lesson_version_infos_on_language_id          (language_id)
-#  index_language_lesson_version_infos_on_language_lesson_id   (language_lesson_id)
-#  index_language_lesson_version_infos_on_language_version_id  (language_version_id)
+#  index_language_lesson_version_infos_on_language_id            (language_id)
+#  index_language_lesson_version_infos_on_language_lesson_id     (language_lesson_id)
+#  index_language_lesson_version_infos_on_language_version_id    (language_version_id)
+#  index_language_lesson_version_infos_on_version_id_and_locale  (version_id,locale)
 #
 # Foreign Keys
 #

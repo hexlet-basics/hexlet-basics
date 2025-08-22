@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_16_164107) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_22_095453) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -289,6 +289,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_16_164107) do
     t.index ["language_id"], name: "index_language_lesson_version_infos_on_language_id"
     t.index ["language_lesson_id"], name: "index_language_lesson_version_infos_on_language_lesson_id"
     t.index ["language_version_id"], name: "index_language_lesson_version_infos_on_language_version_id"
+    t.index ["version_id", "locale"], name: "index_language_lesson_version_infos_on_version_id_and_locale"
   end
 
   create_table "language_lesson_versions", force: :cascade do |t|
