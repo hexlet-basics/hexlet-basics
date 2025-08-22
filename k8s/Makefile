@@ -10,16 +10,16 @@ k8s-init:
 	kubectl config set-context --current --namespace=$(NAMESPACE)
 
 secrets-edit:
-	helm secrets edit secrets.yaml
+	helm secrets edit $(CURRENT_DIR)/secrets.yaml
 
 production-console:
 	kubectl exec -it $(shell kubectl get pod -l app.kubernetes.io/name=$(NAMESPACE)-console-pod -o custom-columns=:metadata.name --no-headers) -- bin/rails c -s
 
 helm-install-app:
-	helm secrets install codebasics $(CURRENT_DIR)/app-chart -f secrets.yaml
+	helm secrets install codebasics $(CURRENT_DIR)/app-chart -f $(CURRENT_DIR)/secrets.yaml
 
 helm-upgrade-app:
-	helm secrets upgrade codebasics $(CURRENT_DIR)/app-chart -f secrets.yaml
+	helm secrets upgrade codebasics $(CURRENT_DIR)/app-chart -f $(CURRENT_DIR)/secrets.yaml
 	git reset HEAD
 	git add $(CURRENT_DIR)/app-chart/values.yaml
 	git commit --no-verify -m ":rocket: deploy"
