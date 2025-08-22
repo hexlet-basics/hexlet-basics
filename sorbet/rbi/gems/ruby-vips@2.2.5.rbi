@@ -104,13 +104,13 @@ GLib::LOG_LEVEL_WARNING = T.let(T.unsafe(nil), Integer)
 module GObject
   extend ::FFI::Library
 
-  # source://ruby-vips//lib/vips/gvalue.rb#285
+  # source://ruby-vips//lib/vips/gvalue.rb#323
   def g_object_get_property(*_arg0); end
 
   # source://ruby-vips//lib/vips/gobject.rb#126
   def g_object_ref(*_arg0); end
 
-  # source://ruby-vips//lib/vips/gvalue.rb#283
+  # source://ruby-vips//lib/vips/gvalue.rb#321
   def g_object_set_property(*_arg0); end
 
   # source://ruby-vips//lib/vips/gobject.rb#127
@@ -134,68 +134,68 @@ module GObject
   # source://ruby-vips//lib/vips.rb#179
   def g_type_name(*_arg0); end
 
-  # source://ruby-vips//lib/vips/gvalue.rb#273
+  # source://ruby-vips//lib/vips/gvalue.rb#311
   def g_value_get_boolean(*_arg0); end
 
-  # source://ruby-vips//lib/vips/gvalue.rb#276
+  # source://ruby-vips//lib/vips/gvalue.rb#314
   def g_value_get_double(*_arg0); end
 
-  # source://ruby-vips//lib/vips/gvalue.rb#277
+  # source://ruby-vips//lib/vips/gvalue.rb#315
   def g_value_get_enum(*_arg0); end
 
-  # source://ruby-vips//lib/vips/gvalue.rb#278
+  # source://ruby-vips//lib/vips/gvalue.rb#316
   def g_value_get_flags(*_arg0); end
 
-  # source://ruby-vips//lib/vips/gvalue.rb#274
+  # source://ruby-vips//lib/vips/gvalue.rb#312
   def g_value_get_int(*_arg0); end
 
-  # source://ruby-vips//lib/vips/gvalue.rb#280
+  # source://ruby-vips//lib/vips/gvalue.rb#318
   def g_value_get_object(*_arg0); end
 
-  # source://ruby-vips//lib/vips/gvalue.rb#279
+  # source://ruby-vips//lib/vips/gvalue.rb#317
   def g_value_get_string(*_arg0); end
 
-  # source://ruby-vips//lib/vips/gvalue.rb#275
+  # source://ruby-vips//lib/vips/gvalue.rb#313
   def g_value_get_uint64(*_arg0); end
 
-  # source://ruby-vips//lib/vips/gvalue.rb#258
+  # source://ruby-vips//lib/vips/gvalue.rb#296
   def g_value_init(*_arg0); end
 
-  # source://ruby-vips//lib/vips/gvalue.rb#264
+  # source://ruby-vips//lib/vips/gvalue.rb#302
   def g_value_set_boolean(*_arg0); end
 
-  # source://ruby-vips//lib/vips/gvalue.rb#267
+  # source://ruby-vips//lib/vips/gvalue.rb#305
   def g_value_set_double(*_arg0); end
 
-  # source://ruby-vips//lib/vips/gvalue.rb#268
+  # source://ruby-vips//lib/vips/gvalue.rb#306
   def g_value_set_enum(*_arg0); end
 
-  # source://ruby-vips//lib/vips/gvalue.rb#269
+  # source://ruby-vips//lib/vips/gvalue.rb#307
   def g_value_set_flags(*_arg0); end
 
-  # source://ruby-vips//lib/vips/gvalue.rb#265
+  # source://ruby-vips//lib/vips/gvalue.rb#303
   def g_value_set_int(*_arg0); end
 
-  # source://ruby-vips//lib/vips/gvalue.rb#271
+  # source://ruby-vips//lib/vips/gvalue.rb#309
   def g_value_set_object(*_arg0); end
 
-  # source://ruby-vips//lib/vips/gvalue.rb#270
+  # source://ruby-vips//lib/vips/gvalue.rb#308
   def g_value_set_string(*_arg0); end
 
-  # source://ruby-vips//lib/vips/gvalue.rb#266
+  # source://ruby-vips//lib/vips/gvalue.rb#304
   def g_value_set_uint64(*_arg0); end
 
-  # source://ruby-vips//lib/vips/gvalue.rb#262
+  # source://ruby-vips//lib/vips/gvalue.rb#300
   def g_value_unset(*_arg0); end
 
   class << self
-    # source://ruby-vips//lib/vips/gvalue.rb#285
+    # source://ruby-vips//lib/vips/gvalue.rb#323
     def g_object_get_property(*_arg0); end
 
     # source://ruby-vips//lib/vips/gobject.rb#126
     def g_object_ref(*_arg0); end
 
-    # source://ruby-vips//lib/vips/gvalue.rb#283
+    # source://ruby-vips//lib/vips/gvalue.rb#321
     def g_object_set_property(*_arg0); end
 
     # source://ruby-vips//lib/vips/gobject.rb#127
@@ -219,58 +219,58 @@ module GObject
     # source://ruby-vips//lib/vips.rb#179
     def g_type_name(*_arg0); end
 
-    # source://ruby-vips//lib/vips/gvalue.rb#273
+    # source://ruby-vips//lib/vips/gvalue.rb#311
     def g_value_get_boolean(*_arg0); end
 
-    # source://ruby-vips//lib/vips/gvalue.rb#276
+    # source://ruby-vips//lib/vips/gvalue.rb#314
     def g_value_get_double(*_arg0); end
 
-    # source://ruby-vips//lib/vips/gvalue.rb#277
+    # source://ruby-vips//lib/vips/gvalue.rb#315
     def g_value_get_enum(*_arg0); end
 
-    # source://ruby-vips//lib/vips/gvalue.rb#278
+    # source://ruby-vips//lib/vips/gvalue.rb#316
     def g_value_get_flags(*_arg0); end
 
-    # source://ruby-vips//lib/vips/gvalue.rb#274
+    # source://ruby-vips//lib/vips/gvalue.rb#312
     def g_value_get_int(*_arg0); end
 
-    # source://ruby-vips//lib/vips/gvalue.rb#280
+    # source://ruby-vips//lib/vips/gvalue.rb#318
     def g_value_get_object(*_arg0); end
 
-    # source://ruby-vips//lib/vips/gvalue.rb#279
+    # source://ruby-vips//lib/vips/gvalue.rb#317
     def g_value_get_string(*_arg0); end
 
-    # source://ruby-vips//lib/vips/gvalue.rb#275
+    # source://ruby-vips//lib/vips/gvalue.rb#313
     def g_value_get_uint64(*_arg0); end
 
-    # source://ruby-vips//lib/vips/gvalue.rb#258
+    # source://ruby-vips//lib/vips/gvalue.rb#296
     def g_value_init(*_arg0); end
 
-    # source://ruby-vips//lib/vips/gvalue.rb#264
+    # source://ruby-vips//lib/vips/gvalue.rb#302
     def g_value_set_boolean(*_arg0); end
 
-    # source://ruby-vips//lib/vips/gvalue.rb#267
+    # source://ruby-vips//lib/vips/gvalue.rb#305
     def g_value_set_double(*_arg0); end
 
-    # source://ruby-vips//lib/vips/gvalue.rb#268
+    # source://ruby-vips//lib/vips/gvalue.rb#306
     def g_value_set_enum(*_arg0); end
 
-    # source://ruby-vips//lib/vips/gvalue.rb#269
+    # source://ruby-vips//lib/vips/gvalue.rb#307
     def g_value_set_flags(*_arg0); end
 
-    # source://ruby-vips//lib/vips/gvalue.rb#265
+    # source://ruby-vips//lib/vips/gvalue.rb#303
     def g_value_set_int(*_arg0); end
 
-    # source://ruby-vips//lib/vips/gvalue.rb#271
+    # source://ruby-vips//lib/vips/gvalue.rb#309
     def g_value_set_object(*_arg0); end
 
-    # source://ruby-vips//lib/vips/gvalue.rb#270
+    # source://ruby-vips//lib/vips/gvalue.rb#308
     def g_value_set_string(*_arg0); end
 
-    # source://ruby-vips//lib/vips/gvalue.rb#266
+    # source://ruby-vips//lib/vips/gvalue.rb#304
     def g_value_set_uint64(*_arg0); end
 
-    # source://ruby-vips//lib/vips/gvalue.rb#262
+    # source://ruby-vips//lib/vips/gvalue.rb#300
     def g_value_unset(*_arg0); end
   end
 end
@@ -436,14 +436,14 @@ class GObject::GValue < ::FFI::ManagedStruct
   #
   # @return [Any] the value held by the GValue
   #
-  # source://ruby-vips//lib/vips/gvalue.rb#171
+  # source://ruby-vips//lib/vips/gvalue.rb#209
   def get; end
 
   # Set the type of thing a gvalue can hold.
   #
   # @param gtype [GType] the type of thing this GValue can hold.
   #
-  # source://ruby-vips//lib/vips/gvalue.rb#79
+  # source://ruby-vips//lib/vips/gvalue.rb#116
   def init(gtype); end
 
   # Set the value of a GValue. The value is converted to the type of the
@@ -451,7 +451,7 @@ class GObject::GValue < ::FFI::ManagedStruct
   #
   # @param value [Any] The value to set
   #
-  # source://ruby-vips//lib/vips/gvalue.rb#87
+  # source://ruby-vips//lib/vips/gvalue.rb#124
   def set(value); end
 
   # Clear the thing held by a GValue.
@@ -459,7 +459,7 @@ class GObject::GValue < ::FFI::ManagedStruct
   # This happens automatically when a GValue is GCed, but this method can be
   # handy if you need to drop a reference explicitly for some reason.
   #
-  # source://ruby-vips//lib/vips/gvalue.rb#253
+  # source://ruby-vips//lib/vips/gvalue.rb#291
   def unset; end
 
   class << self
@@ -469,20 +469,32 @@ class GObject::GValue < ::FFI::ManagedStruct
     #
     # @return [GValue] a new gvalue set to 0
     #
-    # source://ruby-vips//lib/vips/gvalue.rb#63
+    # source://ruby-vips//lib/vips/gvalue.rb#100
     def alloc; end
 
     # convert an enum value (str/symb/int) into an int ready for libvips
     #
     # source://ruby-vips//lib/vips/gvalue.rb#28
+    def enum_from_nick(gtype, value); end
+
+    # convert an flags value (array[str/symb/int] | str/symb/int) into an
+    # int ready for libvips
+    #
+    # source://ruby-vips//lib/vips/gvalue.rb#51
+    def flags_from_nick(gtype, value); end
+
+    # compatibility ... we used to call it this, perhaps someone has used this
+    # internal method
+    #
+    # source://ruby-vips//lib/vips/gvalue.rb#45
     def from_nick(gtype, value); end
 
-    # source://ruby-vips//lib/vips/gvalue.rb#53
+    # source://ruby-vips//lib/vips/gvalue.rb#90
     def release(ptr); end
 
     # convert an int enum back into a symbol
     #
-    # source://ruby-vips//lib/vips/gvalue.rb#44
+    # source://ruby-vips//lib/vips/gvalue.rb#81
     def to_nick(gtype, enum_value); end
   end
 end
@@ -743,7 +755,7 @@ end
 # It examines libvips and writes a summary of each operation and the arguments
 # and options that that operation expects.
 #
-# Use the [C API # docs](https://libvips.github.io/libvips/API/current)
+# Use the [C API docs](https://www.libvips.org/API/current/)
 # for more detail.
 #
 # # Enums
@@ -751,6 +763,19 @@ end
 # The libvips enums, such as `VipsBandFormat` appear in ruby-vips as Symbols
 # like `:uchar`. They are documented as a set of classes for convenience, see
 # {Vips::BandFormat}, for example.
+#
+# # Flags
+#
+# Some operations take a set of flags as an argument, for example
+# {Image#pngsave} can be given a set of filters to use. These are documented
+# as a set of classes, see {Vips::ForeignPngFilter}, for
+# example.
+#
+# You can set flag arguments with an array of symbols, perhaps:
+#
+# ```ruby
+# image.pngsave "x.png", filter: [:sub, :up]
+# ```
 #
 # # Draw operations
 #
@@ -909,13 +934,13 @@ module Vips
   # source://ruby-vips//lib/vips/image.rb#62
   def nickname_find(*_arg0); end
 
-  # source://ruby-vips//lib/vips/object.rb#160
+  # source://ruby-vips//lib/vips/object.rb#161
   def type_find(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#801
+  # source://ruby-vips//lib/vips.rb#814
   def version(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#802
+  # source://ruby-vips//lib/vips.rb#815
   def version_string(*_arg0); end
 
   # source://ruby-vips//lib/vips/image.rb#50
@@ -936,43 +961,43 @@ module Vips
   # source://ruby-vips//lib/vips/object.rb#33
   def vips_blend_mode_get_type(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#813
+  # source://ruby-vips//lib/vips.rb#826
   def vips_block_untrusted_set(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#689
+  # source://ruby-vips//lib/vips.rb#702
   def vips_cache_drop_all(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#682
+  # source://ruby-vips//lib/vips.rb#695
   def vips_cache_get_max(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#684
+  # source://ruby-vips//lib/vips.rb#697
   def vips_cache_get_max_files(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#683
+  # source://ruby-vips//lib/vips.rb#696
   def vips_cache_get_max_mem(*_arg0); end
 
   # source://ruby-vips//lib/vips/operation.rb#20
   def vips_cache_operation_build(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#688
+  # source://ruby-vips//lib/vips.rb#701
   def vips_cache_print(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#685
+  # source://ruby-vips//lib/vips.rb#698
   def vips_cache_set_max(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#687
+  # source://ruby-vips//lib/vips.rb#700
   def vips_cache_set_max_files(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#686
+  # source://ruby-vips//lib/vips.rb#699
   def vips_cache_set_max_mem(*_arg0); end
 
   # source://ruby-vips//lib/vips/object.rb#16
   def vips_coding_get_type(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#660
+  # source://ruby-vips//lib/vips.rb#673
   def vips_concurrency_get(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#659
+  # source://ruby-vips//lib/vips.rb#672
   def vips_concurrency_set(*_arg0); end
 
   # source://ruby-vips//lib/vips/connection.rb#11
@@ -987,16 +1012,16 @@ module Vips
   # source://ruby-vips//lib/vips/object.rb#127
   def vips_enum_nick(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#615
+  # source://ruby-vips//lib/vips.rb#628
   def vips_error_buffer(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#616
+  # source://ruby-vips//lib/vips.rb#629
   def vips_error_clear(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#617
+  # source://ruby-vips//lib/vips.rb#630
   def vips_error_freeze(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#618
+  # source://ruby-vips//lib/vips.rb#631
   def vips_error_thaw(*_arg0); end
 
   # source://ruby-vips//lib/vips/image.rb#20
@@ -1004,6 +1029,9 @@ module Vips
 
   # source://ruby-vips//lib/vips/image.rb#21
   def vips_filename_get_options(*_arg0); end
+
+  # source://ruby-vips//lib/vips/object.rb#128
+  def vips_flags_from_nick(*_arg0); end
 
   # source://ruby-vips//lib/vips/image.rb#23
   def vips_foreign_find_load(*_arg0); end
@@ -1023,7 +1051,7 @@ module Vips
   # source://ruby-vips//lib/vips/image.rb#30
   def vips_foreign_find_save_target(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#667
+  # source://ruby-vips//lib/vips.rb#680
   def vips_foreign_get_suffixes(*_arg0); end
 
   # source://ruby-vips//lib/vips/image.rb#15
@@ -1074,7 +1102,7 @@ module Vips
   # source://ruby-vips//lib/vips/image.rb#33
   def vips_image_write_to_memory(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#647
+  # source://ruby-vips//lib/vips.rb#660
   def vips_init(*_arg0); end
 
   # source://ruby-vips//lib/vips/interpolate.rb#2
@@ -1083,25 +1111,25 @@ module Vips
   # source://ruby-vips//lib/vips/object.rb#15
   def vips_interpretation_get_type(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#656
+  # source://ruby-vips//lib/vips.rb#669
   def vips_leak_set(*_arg0); end
 
-  # source://ruby-vips//lib/vips/object.rb#331
+  # source://ruby-vips//lib/vips/object.rb#332
   def vips_object_get_argument(*_arg0); end
 
-  # source://ruby-vips//lib/vips/object.rb#345
+  # source://ruby-vips//lib/vips/object.rb#346
   def vips_object_get_description(*_arg0); end
 
-  # source://ruby-vips//lib/vips/object.rb#338
+  # source://ruby-vips//lib/vips/object.rb#339
   def vips_object_print_all(*_arg0); end
 
-  # source://ruby-vips//lib/vips/object.rb#340
+  # source://ruby-vips//lib/vips/object.rb#341
   def vips_object_set_from_string(*_arg0); end
 
   # source://ruby-vips//lib/vips/operation.rb#22
   def vips_object_unref_outputs(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#814
+  # source://ruby-vips//lib/vips.rb#827
   def vips_operation_block_set(*_arg0); end
 
   # source://ruby-vips//lib/vips/operation.rb#43
@@ -1146,55 +1174,55 @@ module Vips
   # source://ruby-vips//lib/vips/target.rb#13
   def vips_target_new_to_memory(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#680
+  # source://ruby-vips//lib/vips.rb#693
   def vips_tracked_get_allocs(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#681
+  # source://ruby-vips//lib/vips.rb#694
   def vips_tracked_get_files(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#678
+  # source://ruby-vips//lib/vips.rb#691
   def vips_tracked_get_mem(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#679
+  # source://ruby-vips//lib/vips.rb#692
   def vips_tracked_get_mem_highwater(*_arg0); end
 
-  # source://ruby-vips//lib/vips/object.rb#343
+  # source://ruby-vips//lib/vips/object.rb#344
   def vips_type_map(*_arg0); end
 
-  # source://ruby-vips//lib/vips/object.rb#151
+  # source://ruby-vips//lib/vips/object.rb#152
   def vips_value_get_array_double(*_arg0); end
 
-  # source://ruby-vips//lib/vips/object.rb#155
+  # source://ruby-vips//lib/vips/object.rb#156
   def vips_value_get_array_image(*_arg0); end
 
-  # source://ruby-vips//lib/vips/object.rb#153
+  # source://ruby-vips//lib/vips/object.rb#154
   def vips_value_get_array_int(*_arg0); end
 
-  # source://ruby-vips//lib/vips/object.rb#157
+  # source://ruby-vips//lib/vips/object.rb#158
   def vips_value_get_blob(*_arg0); end
 
-  # source://ruby-vips//lib/vips/object.rb#149
+  # source://ruby-vips//lib/vips/object.rb#150
   def vips_value_get_ref_string(*_arg0); end
 
-  # source://ruby-vips//lib/vips/object.rb#131
+  # source://ruby-vips//lib/vips/object.rb#132
   def vips_value_set_array_double(*_arg0); end
 
-  # source://ruby-vips//lib/vips/object.rb#135
+  # source://ruby-vips//lib/vips/object.rb#136
   def vips_value_set_array_image(*_arg0); end
 
-  # source://ruby-vips//lib/vips/object.rb#133
+  # source://ruby-vips//lib/vips/object.rb#134
   def vips_value_set_array_int(*_arg0); end
 
-  # source://ruby-vips//lib/vips/object.rb#138
+  # source://ruby-vips//lib/vips/object.rb#139
   def vips_value_set_blob(*_arg0); end
 
-  # source://ruby-vips//lib/vips/object.rb#129
+  # source://ruby-vips//lib/vips/object.rb#130
   def vips_value_set_ref_string(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#658
+  # source://ruby-vips//lib/vips.rb#671
   def vips_vector_isenabled(*_arg0); end
 
-  # source://ruby-vips//lib/vips.rb#657
+  # source://ruby-vips//lib/vips.rb#670
   def vips_vector_set_enabled(*_arg0); end
 
   class << self
@@ -1202,7 +1230,7 @@ module Vips
     #
     # @return [Boolean]
     #
-    # source://ruby-vips//lib/vips.rb#805
+    # source://ruby-vips//lib/vips.rb#818
     def at_least_libvips?(x, y); end
 
     # Block/unblock all operations in the libvips class hierarchy at specified *operation_name* and below.
@@ -1215,74 +1243,74 @@ module Vips
     # Use `vips -l` at the command-line to see the class hierarchy.
     # This call does nothing if the named operation is not found.
     #
-    # source://ruby-vips//lib/vips.rb#832
+    # source://ruby-vips//lib/vips.rb#845
     def block(operation_name, state); end
 
     # Block/unblock all untrusted operations from running.
     # Use `vips -l` at the command-line to see the class hierarchy and which operations are marked as untrusted.
     #
-    # source://ruby-vips//lib/vips.rb#818
+    # source://ruby-vips//lib/vips.rb#831
     def block_untrusted(state); end
 
     # Drop the libvips operation cache. Handy for leak tracking.
     #
-    # source://ruby-vips//lib/vips.rb#754
+    # source://ruby-vips//lib/vips.rb#767
     def cache_drop_all; end
 
     # Get the maximum number of operations that libvips should cache.
     #
-    # source://ruby-vips//lib/vips.rb#712
+    # source://ruby-vips//lib/vips.rb#725
     def cache_max; end
 
     # Get the maximum number of files libvips keeps open in the operation cache.
     #
-    # source://ruby-vips//lib/vips.rb#722
+    # source://ruby-vips//lib/vips.rb#735
     def cache_max_files; end
 
     # Get the maximum amount of memory that libvips uses for the operation cache.
     #
-    # source://ruby-vips//lib/vips.rb#717
+    # source://ruby-vips//lib/vips.rb#730
     def cache_max_mem; end
 
     # Print the libvips operation cache to stdout. Handy for debugging.
     #
-    # source://ruby-vips//lib/vips.rb#749
+    # source://ruby-vips//lib/vips.rb#762
     def cache_print; end
 
     # Set the maximum number of operations that libvips should cache. Set 0 to
     # disable the operation cache. The default is 1000.
     #
-    # source://ruby-vips//lib/vips.rb#728
+    # source://ruby-vips//lib/vips.rb#741
     def cache_set_max(size); end
 
     # Set the maximum number of files libvips should keep open in the
     # operation cache. Set 0 to disable the operation cache. The default is
     # 100.
     #
-    # source://ruby-vips//lib/vips.rb#743
+    # source://ruby-vips//lib/vips.rb#756
     def cache_set_max_files(size); end
 
     # Set the maximum amount of memory that libvips should use for the operation
     # cache. Set 0 to disable the operation cache. The default is 100mb.
     #
-    # source://ruby-vips//lib/vips.rb#735
+    # source://ruby-vips//lib/vips.rb#748
     def cache_set_max_mem(size); end
 
     # Get the size of libvips worker pools. Defaults to the VIPS_CONCURRENCY env
     # var or the number of hardware threads on your computer.
     #
-    # source://ruby-vips//lib/vips.rb#760
+    # source://ruby-vips//lib/vips.rb#773
     def concurrency; end
 
     # Get the default size of libvips worker pools.
     #
-    # source://ruby-vips//lib/vips.rb#765
+    # source://ruby-vips//lib/vips.rb#778
     def concurrency_default; end
 
     # Set the size of each libvips worker pool. Max 1024 threads. Set to 1 to
     # disable threading. Set to 0 or nil to reset to default.
     #
-    # source://ruby-vips//lib/vips.rb#771
+    # source://ruby-vips//lib/vips.rb#784
     def concurrency_set(n); end
 
     # source://ruby-vips//lib/vips.rb#49
@@ -1292,13 +1320,13 @@ module Vips
     #
     # @return [[String]] array of supported suffixes
     #
-    # source://ruby-vips//lib/vips.rb#840
+    # source://ruby-vips//lib/vips.rb#853
     def get_suffixes; end
 
     # Turn libvips leak testing on and off. Handy for debugging ruby-vips, not
     # very useful for user code.
     #
-    # source://ruby-vips//lib/vips.rb#674
+    # source://ruby-vips//lib/vips.rb#687
     def leak_set(leak); end
 
     # source://ruby-vips//lib/vips/image.rb#62
@@ -1313,30 +1341,30 @@ module Vips
     #
     # Don't use this, instead change GLib::logger.level.
     #
-    # source://ruby-vips//lib/vips.rb#795
+    # source://ruby-vips//lib/vips.rb#808
     def set_debug(debug); end
 
     # Get the number of active allocations.
     #
-    # source://ruby-vips//lib/vips.rb#702
+    # source://ruby-vips//lib/vips.rb#715
     def tracked_allocs; end
 
     # Get the number of open files.
     #
-    # source://ruby-vips//lib/vips.rb#707
+    # source://ruby-vips//lib/vips.rb#720
     def tracked_files; end
 
     # Get the number of bytes currently allocated via vips_malloc.
     #
-    # source://ruby-vips//lib/vips.rb#692
+    # source://ruby-vips//lib/vips.rb#705
     def tracked_mem; end
 
     # Get the greatest number of bytes ever actively allocated via vips_malloc.
     #
-    # source://ruby-vips//lib/vips.rb#697
+    # source://ruby-vips//lib/vips.rb#710
     def tracked_mem_highwater; end
 
-    # source://ruby-vips//lib/vips/object.rb#160
+    # source://ruby-vips//lib/vips/object.rb#161
     def type_find(*_arg0); end
 
     # @return [Boolean]
@@ -1350,20 +1378,20 @@ module Vips
     #
     # @return [Boolean]
     #
-    # source://ruby-vips//lib/vips.rb#780
+    # source://ruby-vips//lib/vips.rb#793
     def vector?; end
 
     # Enable or disable SIMD and the run-time compiler. This can give a nice
     # speed-up, but can also be unstable on some systems or with some versions
     # of the run-time compiler.
     #
-    # source://ruby-vips//lib/vips.rb#787
+    # source://ruby-vips//lib/vips.rb#800
     def vector_set(enabled); end
 
-    # source://ruby-vips//lib/vips.rb#801
+    # source://ruby-vips//lib/vips.rb#814
     def version(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#802
+    # source://ruby-vips//lib/vips.rb#815
     def version_string(*_arg0); end
 
     # source://ruby-vips//lib/vips/image.rb#50
@@ -1384,43 +1412,43 @@ module Vips
     # source://ruby-vips//lib/vips/object.rb#33
     def vips_blend_mode_get_type(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#813
+    # source://ruby-vips//lib/vips.rb#826
     def vips_block_untrusted_set(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#689
+    # source://ruby-vips//lib/vips.rb#702
     def vips_cache_drop_all(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#682
+    # source://ruby-vips//lib/vips.rb#695
     def vips_cache_get_max(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#684
+    # source://ruby-vips//lib/vips.rb#697
     def vips_cache_get_max_files(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#683
+    # source://ruby-vips//lib/vips.rb#696
     def vips_cache_get_max_mem(*_arg0); end
 
     # source://ruby-vips//lib/vips/operation.rb#20
     def vips_cache_operation_build(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#688
+    # source://ruby-vips//lib/vips.rb#701
     def vips_cache_print(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#685
+    # source://ruby-vips//lib/vips.rb#698
     def vips_cache_set_max(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#687
+    # source://ruby-vips//lib/vips.rb#700
     def vips_cache_set_max_files(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#686
+    # source://ruby-vips//lib/vips.rb#699
     def vips_cache_set_max_mem(*_arg0); end
 
     # source://ruby-vips//lib/vips/object.rb#16
     def vips_coding_get_type(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#660
+    # source://ruby-vips//lib/vips.rb#673
     def vips_concurrency_get(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#659
+    # source://ruby-vips//lib/vips.rb#672
     def vips_concurrency_set(*_arg0); end
 
     # source://ruby-vips//lib/vips/connection.rb#11
@@ -1435,16 +1463,16 @@ module Vips
     # source://ruby-vips//lib/vips/object.rb#127
     def vips_enum_nick(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#615
+    # source://ruby-vips//lib/vips.rb#628
     def vips_error_buffer(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#616
+    # source://ruby-vips//lib/vips.rb#629
     def vips_error_clear(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#617
+    # source://ruby-vips//lib/vips.rb#630
     def vips_error_freeze(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#618
+    # source://ruby-vips//lib/vips.rb#631
     def vips_error_thaw(*_arg0); end
 
     # source://ruby-vips//lib/vips/image.rb#20
@@ -1452,6 +1480,9 @@ module Vips
 
     # source://ruby-vips//lib/vips/image.rb#21
     def vips_filename_get_options(*_arg0); end
+
+    # source://ruby-vips//lib/vips/object.rb#128
+    def vips_flags_from_nick(*_arg0); end
 
     # source://ruby-vips//lib/vips/image.rb#23
     def vips_foreign_find_load(*_arg0); end
@@ -1471,7 +1502,7 @@ module Vips
     # source://ruby-vips//lib/vips/image.rb#30
     def vips_foreign_find_save_target(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#667
+    # source://ruby-vips//lib/vips.rb#680
     def vips_foreign_get_suffixes(*_arg0); end
 
     # source://ruby-vips//lib/vips/image.rb#15
@@ -1522,7 +1553,7 @@ module Vips
     # source://ruby-vips//lib/vips/image.rb#33
     def vips_image_write_to_memory(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#647
+    # source://ruby-vips//lib/vips.rb#660
     def vips_init(*_arg0); end
 
     # source://ruby-vips//lib/vips/interpolate.rb#2
@@ -1531,25 +1562,25 @@ module Vips
     # source://ruby-vips//lib/vips/object.rb#15
     def vips_interpretation_get_type(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#656
+    # source://ruby-vips//lib/vips.rb#669
     def vips_leak_set(*_arg0); end
 
-    # source://ruby-vips//lib/vips/object.rb#331
+    # source://ruby-vips//lib/vips/object.rb#332
     def vips_object_get_argument(*_arg0); end
 
-    # source://ruby-vips//lib/vips/object.rb#345
+    # source://ruby-vips//lib/vips/object.rb#346
     def vips_object_get_description(*_arg0); end
 
-    # source://ruby-vips//lib/vips/object.rb#338
+    # source://ruby-vips//lib/vips/object.rb#339
     def vips_object_print_all(*_arg0); end
 
-    # source://ruby-vips//lib/vips/object.rb#340
+    # source://ruby-vips//lib/vips/object.rb#341
     def vips_object_set_from_string(*_arg0); end
 
     # source://ruby-vips//lib/vips/operation.rb#22
     def vips_object_unref_outputs(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#814
+    # source://ruby-vips//lib/vips.rb#827
     def vips_operation_block_set(*_arg0); end
 
     # source://ruby-vips//lib/vips/operation.rb#43
@@ -1594,86 +1625,86 @@ module Vips
     # source://ruby-vips//lib/vips/target.rb#13
     def vips_target_new_to_memory(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#680
+    # source://ruby-vips//lib/vips.rb#693
     def vips_tracked_get_allocs(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#681
+    # source://ruby-vips//lib/vips.rb#694
     def vips_tracked_get_files(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#678
+    # source://ruby-vips//lib/vips.rb#691
     def vips_tracked_get_mem(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#679
+    # source://ruby-vips//lib/vips.rb#692
     def vips_tracked_get_mem_highwater(*_arg0); end
 
-    # source://ruby-vips//lib/vips/object.rb#343
+    # source://ruby-vips//lib/vips/object.rb#344
     def vips_type_map(*_arg0); end
 
-    # source://ruby-vips//lib/vips/object.rb#151
+    # source://ruby-vips//lib/vips/object.rb#152
     def vips_value_get_array_double(*_arg0); end
 
-    # source://ruby-vips//lib/vips/object.rb#155
+    # source://ruby-vips//lib/vips/object.rb#156
     def vips_value_get_array_image(*_arg0); end
 
-    # source://ruby-vips//lib/vips/object.rb#153
+    # source://ruby-vips//lib/vips/object.rb#154
     def vips_value_get_array_int(*_arg0); end
 
-    # source://ruby-vips//lib/vips/object.rb#157
+    # source://ruby-vips//lib/vips/object.rb#158
     def vips_value_get_blob(*_arg0); end
 
-    # source://ruby-vips//lib/vips/object.rb#149
+    # source://ruby-vips//lib/vips/object.rb#150
     def vips_value_get_ref_string(*_arg0); end
 
-    # source://ruby-vips//lib/vips/object.rb#131
+    # source://ruby-vips//lib/vips/object.rb#132
     def vips_value_set_array_double(*_arg0); end
 
-    # source://ruby-vips//lib/vips/object.rb#135
+    # source://ruby-vips//lib/vips/object.rb#136
     def vips_value_set_array_image(*_arg0); end
 
-    # source://ruby-vips//lib/vips/object.rb#133
+    # source://ruby-vips//lib/vips/object.rb#134
     def vips_value_set_array_int(*_arg0); end
 
-    # source://ruby-vips//lib/vips/object.rb#138
+    # source://ruby-vips//lib/vips/object.rb#139
     def vips_value_set_blob(*_arg0); end
 
-    # source://ruby-vips//lib/vips/object.rb#129
+    # source://ruby-vips//lib/vips/object.rb#130
     def vips_value_set_ref_string(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#658
+    # source://ruby-vips//lib/vips.rb#671
     def vips_vector_isenabled(*_arg0); end
 
-    # source://ruby-vips//lib/vips.rb#657
+    # source://ruby-vips//lib/vips.rb#670
     def vips_vector_set_enabled(*_arg0); end
   end
 end
 
-# source://ruby-vips//lib/vips/object.rb#294
+# source://ruby-vips//lib/vips/object.rb#295
 Vips::ARGUMENT_CONSTRUCT = T.let(T.unsafe(nil), Integer)
 
-# source://ruby-vips//lib/vips/object.rb#299
+# source://ruby-vips//lib/vips/object.rb#300
 Vips::ARGUMENT_DEPRECATED = T.let(T.unsafe(nil), Integer)
 
-# source://ruby-vips//lib/vips/object.rb#302
+# source://ruby-vips//lib/vips/object.rb#303
 Vips::ARGUMENT_FLAGS = T.let(T.unsafe(nil), Hash)
 
-# source://ruby-vips//lib/vips/object.rb#297
+# source://ruby-vips//lib/vips/object.rb#298
 Vips::ARGUMENT_INPUT = T.let(T.unsafe(nil), Integer)
 
-# source://ruby-vips//lib/vips/object.rb#300
+# source://ruby-vips//lib/vips/object.rb#301
 Vips::ARGUMENT_MODIFY = T.let(T.unsafe(nil), Integer)
 
-# source://ruby-vips//lib/vips/object.rb#298
+# source://ruby-vips//lib/vips/object.rb#299
 Vips::ARGUMENT_OUTPUT = T.let(T.unsafe(nil), Integer)
 
 # enum VipsArgumentFlags
 #
-# source://ruby-vips//lib/vips/object.rb#293
+# source://ruby-vips//lib/vips/object.rb#294
 Vips::ARGUMENT_REQUIRED = T.let(T.unsafe(nil), Integer)
 
-# source://ruby-vips//lib/vips/object.rb#296
+# source://ruby-vips//lib/vips/object.rb#297
 Vips::ARGUMENT_SET_ALWAYS = T.let(T.unsafe(nil), Integer)
 
-# source://ruby-vips//lib/vips/object.rb#295
+# source://ruby-vips//lib/vips/object.rb#296
 Vips::ARGUMENT_SET_ONCE = T.let(T.unsafe(nil), Integer)
 
 # source://ruby-vips//lib/vips/object.rb#23
@@ -1685,19 +1716,19 @@ Vips::ARRAY_IMAGE_TYPE = T.let(T.unsafe(nil), Integer)
 # source://ruby-vips//lib/vips/object.rb#22
 Vips::ARRAY_INT_TYPE = T.let(T.unsafe(nil), Integer)
 
-# source://ruby-vips//lib/vips/object.rb#283
+# source://ruby-vips//lib/vips/object.rb#284
 class Vips::Argument < ::FFI::Struct; end
 
-# source://ruby-vips//lib/vips/object.rb#313
+# source://ruby-vips//lib/vips/object.rb#314
 class Vips::ArgumentClass < ::Vips::Argument; end
 
-# source://ruby-vips//lib/vips/object.rb#321
+# source://ruby-vips//lib/vips/object.rb#322
 class Vips::ArgumentClassPtr < ::FFI::Struct; end
 
-# source://ruby-vips//lib/vips/object.rb#287
+# source://ruby-vips//lib/vips/object.rb#288
 class Vips::ArgumentInstance < ::Vips::Argument; end
 
-# source://ruby-vips//lib/vips/object.rb#325
+# source://ruby-vips//lib/vips/object.rb#326
 class Vips::ArgumentInstancePtr < ::FFI::Struct; end
 
 # source://ruby-vips//lib/vips/object.rb#28
@@ -1752,25 +1783,25 @@ end
 
 # Track the original default concurrency so we can reset to it.
 #
-# source://ruby-vips//lib/vips.rb#663
+# source://ruby-vips//lib/vips.rb#676
 Vips::DEFAULT_CONCURRENCY = T.let(T.unsafe(nil), Integer)
 
 # The ruby-vips error class.
 #
-# source://ruby-vips//lib/vips.rb#621
+# source://ruby-vips//lib/vips.rb#634
 class Vips::Error < ::RuntimeError
   # @param msg [String] The error message. If this is not supplied, grab
   #   and clear the vips error buffer and use that.
   # @return [Error] a new instance of Error
   #
-  # source://ruby-vips//lib/vips.rb#624
+  # source://ruby-vips//lib/vips.rb#637
   def initialize(msg = T.unsafe(nil)); end
 
   # Pretty-print a {Vips::Error}.
   #
   # @return [String] The error message
   #
-  # source://ruby-vips//lib/vips.rb#638
+  # source://ruby-vips//lib/vips.rb#651
   def to_s; end
 end
 
@@ -2729,6 +2760,8 @@ class Vips::Image < ::Vips::Object
     # source://ruby-vips//lib/vips/image.rb#121
     def float?(format); end
 
+    # @raise [Vips::Error]
+    #
     # source://ruby-vips//lib/vips/image.rb#471
     def matrix_from_array(width, height, array); end
 
@@ -2762,10 +2795,9 @@ class Vips::Image < ::Vips::Object
     # @param array [Array] the pixel data as an array of numbers
     # @param scale [Real] the convolution scale
     # @param offset [Real] the convolution offset
-    # @raise [Vips::Error]
     # @return [Image] the image
     #
-    # source://ruby-vips//lib/vips/image.rb#505
+    # source://ruby-vips//lib/vips/image.rb#506
     def new_from_array(array, scale = T.unsafe(nil), offset = T.unsafe(nil)); end
 
     # Create a new {Image} for an image encoded in a format such as
@@ -2994,7 +3026,7 @@ end
 # source://ruby-vips//lib/vips/image.rb#83
 Vips::Image::UNKNOWN_POINTER_SIZE = T.let(T.unsafe(nil), Integer)
 
-# source://ruby-vips//lib/vips/object.rb#145
+# source://ruby-vips//lib/vips/object.rb#146
 class Vips::IntStruct < ::FFI::Struct; end
 
 # An interpolator. One of these can be given to operations like
@@ -3152,12 +3184,12 @@ class Vips::Introspect
   end
 end
 
-# source://ruby-vips//lib/vips.rb#859
+# source://ruby-vips//lib/vips.rb#872
 Vips::LIBRARY_VERSION = T.let(T.unsafe(nil), String)
 
 # we've already opened the libvips library
 #
-# source://ruby-vips//lib/vips.rb#605
+# source://ruby-vips//lib/vips.rb#618
 Vips::LOG_DOMAIN = T.let(T.unsafe(nil), String)
 
 # map signal name to marshal proc
@@ -3194,7 +3226,7 @@ Vips::MARSHAL_WRITE = T.let(T.unsafe(nil), Proc)
 # libvips has this arbitrary number as a sanity-check upper bound on image
 # size. It's sometimes useful to know when calculating scale factors.
 #
-# source://ruby-vips//lib/vips.rb#863
+# source://ruby-vips//lib/vips.rb#876
 Vips::MAX_COORD = T.let(T.unsafe(nil), Integer)
 
 # This class represents a libvips image which can be modified. See
@@ -3386,69 +3418,69 @@ Vips::OPERATION_NOCACHE = T.let(T.unsafe(nil), Integer)
 # source://ruby-vips//lib/vips/operation.rb#33
 Vips::OPERATION_SEQUENTIAL = T.let(T.unsafe(nil), Integer)
 
-# source://ruby-vips//lib/vips/object.rb#162
+# source://ruby-vips//lib/vips/object.rb#163
 class Vips::Object < ::GObject::GObject
-  # source://ruby-vips//lib/vips/object.rb#230
+  # source://ruby-vips//lib/vips/object.rb#231
   def get(name); end
 
   # return a pspec, or nil ... nil wil leave a message in the error log
   # which you must clear
   #
-  # source://ruby-vips//lib/vips/object.rb#199
+  # source://ruby-vips//lib/vips/object.rb#200
   def get_pspec(name); end
 
   # return a gtype, 0 on not found
   #
-  # source://ruby-vips//lib/vips/object.rb#220
+  # source://ruby-vips//lib/vips/object.rb#221
   def get_typeof(name); end
 
   # return a gtype, raise an error on not found
   #
   # @raise [Vips::Error]
   #
-  # source://ruby-vips//lib/vips/object.rb#212
+  # source://ruby-vips//lib/vips/object.rb#213
   def get_typeof_error(name); end
 
-  # source://ruby-vips//lib/vips/object.rb#243
+  # source://ruby-vips//lib/vips/object.rb#244
   def set(name, value); end
 
   # @raise [Vips::Error]
   #
-  # source://ruby-vips//lib/vips/object.rb#254
+  # source://ruby-vips//lib/vips/object.rb#255
   def signal_connect(name, handler = T.unsafe(nil), &block); end
 
   class << self
     # print all active VipsObjects, with their reference counts. Handy for
     # debugging ruby-vips.
     #
-    # source://ruby-vips//lib/vips/object.rb#165
+    # source://ruby-vips//lib/vips/object.rb#166
     def print_all; end
   end
 end
 
-# source://ruby-vips//lib/vips/object.rb#193
+# source://ruby-vips//lib/vips/object.rb#194
 class Vips::Object::ManagedStruct < ::GObject::GObject::ManagedStruct
   include ::Vips::Object::ObjectLayout
 end
 
 # the layout of the VipsObject struct
 #
-# source://ruby-vips//lib/vips/object.rb#171
+# source://ruby-vips//lib/vips/object.rb#172
 module Vips::Object::ObjectLayout
   class << self
     # @private
     #
-    # source://ruby-vips//lib/vips/object.rb#172
+    # source://ruby-vips//lib/vips/object.rb#173
     def included(base); end
   end
 end
 
-# source://ruby-vips//lib/vips/object.rb#189
+# source://ruby-vips//lib/vips/object.rb#190
 class Vips::Object::Struct < ::GObject::GObject::Struct
   include ::Vips::Object::ObjectLayout
 end
 
-# source://ruby-vips//lib/vips/object.rb#279
+# source://ruby-vips//lib/vips/object.rb#280
 class Vips::ObjectClass < ::FFI::Struct; end
 
 # source://ruby-vips//lib/vips/operation.rb#194
@@ -3636,7 +3668,7 @@ class Vips::Region::Struct < ::Vips::Object::Struct
   include ::Vips::Region::RegionLayout
 end
 
-# source://ruby-vips//lib/vips/object.rb#141
+# source://ruby-vips//lib/vips/object.rb#142
 class Vips::SizeStruct < ::FFI::Struct; end
 
 # A source. For example:
