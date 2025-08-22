@@ -70,6 +70,10 @@ resource "yandex_mdb_postgresql_database" "hexlet_basics" {
 
   lc_collate = "en_US.UTF-8"
   lc_type    = "en_US.UTF-8"
+
+  extension {
+    name = "pg_repack"
+  }
 }
 
 # NOTE: Yandex не умеет в создание readonly юзеров, поэтому тут делаем пользователя, и уже ручками делаем ему доступ в readonly
