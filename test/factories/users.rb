@@ -27,7 +27,8 @@
 #
 # Indexes
 #
-#  index_users_on_email  (email) UNIQUE
+#  index_users_on_LOWER_email  (lower((email)::text)) UNIQUE
+#  index_users_on_email        (email) UNIQUE
 #
 FactoryBot.define do
   factory :user do
