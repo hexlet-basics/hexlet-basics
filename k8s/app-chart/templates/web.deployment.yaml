@@ -251,7 +251,7 @@ spec:
               memory: 300Mi
               cpu: 100m
             limits:
-              memory: 900Mi
+              memory: 1100Mi
           env:
             - name: NODE_ENV
               valueFrom:
@@ -259,7 +259,7 @@ spec:
                   name: codebasics-environment-secrets
                   key: NODE_ENV
             - name: NODE_OPTIONS
-              value: "--max-old-space-size=190"
+              value: "--max-old-space-size=800"
           lifecycle:
             preStop:
               exec:
