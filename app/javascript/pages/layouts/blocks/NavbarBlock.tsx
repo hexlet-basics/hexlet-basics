@@ -149,7 +149,7 @@ function CourseMenu({
                 src={lp.language.cover_thumb_variant}
                 alt={lp.header}
               />
-              <Text fz="sm">{lp.header}</Text>
+              <Text fz="sm">{lp.name}</Text>
               <AppAnchor
                 href={Routes.language_path(lp.slug)}
                 inset={0}
