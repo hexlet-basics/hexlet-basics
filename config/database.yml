@@ -7,7 +7,7 @@
 default: &default
   adapter: postgresql
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  timeout: 5000
+  # timeout: 5000
 
 development: &development
   primary:
@@ -69,6 +69,7 @@ production:
     <<: *default
     url: <%= ENV['DATABASE_URL'] %>
   primary_replica:
+    <<: *default
     url: <%= ENV['DATABASE_REPLICA_URL'] %>
     replica: true
     # database: storage/production.sqlite3
