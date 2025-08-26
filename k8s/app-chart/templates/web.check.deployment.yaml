@@ -151,10 +151,10 @@ spec:
 
           resources:
             requests:
-              memory: "500Mi"
+              memory: "300Mi"
               cpu: "100m"
             limits:
-              memory: '1500Mi'
+              memory: '900Mi'
           volumeMounts:
             - mountPath: /tmp/hexlet-basics
               name: users-code-path

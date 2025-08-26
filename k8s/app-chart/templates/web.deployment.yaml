@@ -168,6 +168,10 @@ spec:
           env:
             - name: HEXLET_BASICS_RELEASE_VERSION
               value: {{ .Values.version }}
+            - name: RAILS_MAX_THREADS
+              value: "7"
+            - name: DB_POOL
+              value: "7"
 
           # NOTE: приложение должно работать дольше чем nginx иначе будут поступать ответы 502
           lifecycle:
@@ -252,7 +256,7 @@ spec:
               memory: 200Mi
               cpu: 100m
             limits:
-              memory: 400Mi
+              memory: 600Mi
           env:
             - name: NODE_ENV
               valueFrom:
@@ -260,7 +264,7 @@ spec:
                   name: codebasics-environment-secrets
                   key: NODE_ENV
             - name: NODE_OPTIONS
-              value: "--max-old-space-size=256"
+              value: "--max-old-space-size=384"
           lifecycle:
             preStop:
               exec:
