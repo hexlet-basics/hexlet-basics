@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ .Release.Name }}-web-deployment"
+  name: "{{ .Release.Name }}-web-check-deployment"
   namespace: "{{ .Release.Namespace }}"
   labels:
     app.kubernetes.io/name: "{{ .Chart.Name }}"
@@ -12,24 +12,24 @@ metadata:
     app.kubernetes.io/managed-by: "{{ .Release.Service }}"
 
 spec:
-  replicas: 2
+  replicas: 1
 
   selector:
     matchLabels:
-      app.kubernetes.io/name: "{{ .Release.Name }}-web-pod"
+      app.kubernetes.io/name: "{{ .Release.Name }}-web-check-pod"
       app.kubernetes.io/instance: "{{ .Release.Name }}"
   strategy:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 1
-      maxUnavailable: 1
+      maxUnavailable: 0
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: "{{ .Release.Name }}-web-pod"
+        app.kubernetes.io/name: "{{ .Release.Name }}-web-check-pod"
         app.kubernetes.io/instance: "{{ .Release.Name }}"
         helm.sh/chart: '{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}'
-        codebasics/pod: "{{ .Release.Name }}-{{ .Values.version }}-web-pod"
+        codebasics/pod: "{{ .Release.Name }}-{{ .Values.version }}-web-check-pod"
     spec:
       nodeSelector:
         group: "{{ .Release.Namespace }}"
@@ -45,7 +45,7 @@ spec:
                   - key: "codebasics/pod"
                     operator: In
                     values:
-                      - "{{ .Release.Name }}-{{ .Values.version }}-web-pod"
+                      - "{{ .Release.Name }}-{{ .Values.version }}-job-pod"
               topologyKey: "kubernetes.io/hostname"
 
       volumes:
@@ -174,94 +174,3 @@ spec:
             preStop:
               exec:
                 command: ["sleep", "20"]
-            postStart:
-              exec:
-                command: {{ .Values.slack_notification }}
-
-        - name: cable
-          imagePullPolicy: Always
-          image: "{{ .Values.app.image.repository }}:{{ .Values.version }}"
-          command: ["make", "services-cable-run"]
-          startupProbe:
-            httpGet:
-              path: /up
-              port: 28080
-            periodSeconds: 10
-            failureThreshold: 30
-          readinessProbe:
-            httpGet:
-              path: /up
-              port: 28080
-            initialDelaySeconds: 5
-            periodSeconds: 8
-            timeoutSeconds: 2
-            failureThreshold: 3
-          livenessProbe:
-            httpGet:
-              path: /up
-              port: 28080
-            initialDelaySeconds: 20
-            periodSeconds: 20
-            timeoutSeconds: 3
-          ports:
-            - containerPort: 28080
-          resources:
-            requests:
-              memory: 100Mi
-              cpu: 100m
-            limits:
-              memory: 500Mi
-          envFrom:
-            - secretRef:
-                name: codebasics-environment-secrets
-
-          lifecycle:
-            preStop:
-              exec:
-                command: ["sleep", "15"]
-
-        - name: ssr
-          imagePullPolicy: Always
-          image: "{{ .Values.app.image.repository }}:{{ .Values.version }}"
-          command: ["bin/vite", "ssr"]
-          startupProbe:
-            httpGet:
-              path: /health
-              port: 13714
-            periodSeconds: 10
-            failureThreshold: 30
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 13714
-            initialDelaySeconds: 5
-            periodSeconds: 8
-            timeoutSeconds: 2
-            failureThreshold: 3
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 13714
-            initialDelaySeconds: 20
-            periodSeconds: 20
-            timeoutSeconds: 3
-          ports:
-            - containerPort: 13714
-          resources:
-            requests:
-              memory: 200Mi
-              cpu: 100m
-            limits:
-              memory: 400Mi
-          env:
-            - name: NODE_ENV
-              valueFrom:
-                secretKeyRef:
-                  name: codebasics-environment-secrets
-                  key: NODE_ENV
-            - name: NODE_OPTIONS
-              value: "--max-old-space-size=256"
-          lifecycle:
-            preStop:
-              exec:
-                command: ["sleep", "15"]

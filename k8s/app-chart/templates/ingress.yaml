@@ -21,6 +21,20 @@ spec:
     - host: "*.code-basics.com"
       http:
         paths:
+          - path: "/ru/api/lessons/"
+            pathType: Prefix
+            backend:
+              service:
+                name: "{{.Release.Name }}-web-check-service"
+                port:
+                  number: 80
+          - path: "/api/lessons/"
+            pathType: Prefix
+            backend:
+              service:
+                name: "{{.Release.Name }}-web-check-service"
+                port:
+                  number: 80
           - path: "/"
             pathType: Prefix
             backend:
@@ -45,6 +59,20 @@ spec:
     - host: "code-basics.com"
       http:
         paths:
+          - path: "/ru/api/lessons/"
+            pathType: Prefix
+            backend:
+              service:
+                name: "{{.Release.Name }}-web-check-service"
+                port:
+                  number: 80
+          - path: "/api/lessons/"
+            pathType: Prefix
+            backend:
+              service:
+                name: "{{.Release.Name }}-web-check-service"
+                port:
+                  number: 80
           - path: "/"
             pathType: Prefix
             backend:
