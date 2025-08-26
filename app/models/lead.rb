@@ -32,8 +32,6 @@ class Lead < ApplicationRecord
   serialize :survey_answers_data
   serialize :courses_data
 
-  enum :contact_method, { telegram: "telegram", telephone: "telephone", whatsapp: "whatsapp", maxru: "maxru" }
-
   def self.ransackable_attributes(auth_object = nil)
     [ "created_at", "email", "id", "phone", "state", "telegram", "updated_at", "user_id", "whatsapp" ]
   end
