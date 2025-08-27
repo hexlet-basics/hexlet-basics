@@ -6,6 +6,7 @@ class Web::Admin::LanguageLessonReviewsController < Web::Admin::ApplicationContr
 
     render inertia: true, props: {
       reviews: Language::Lesson::ReviewResource.new(records),
+      language_slugs: Language.pluck(:slug),
       grid: GridResource.new(grid_params(pagy))
     }
   end

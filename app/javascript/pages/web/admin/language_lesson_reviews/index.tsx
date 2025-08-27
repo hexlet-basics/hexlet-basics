@@ -1,6 +1,6 @@
-import { ActionIcon, Button, Modal } from '@mantine/core';
+import { ActionIcon, Button, Modal, Select } from '@mantine/core';
 import dayjs from 'dayjs';
-import { Link } from 'lucide-react';
+import { Link, Search } from 'lucide-react';
 import { DataTable } from 'mantine-datatable';
 import type { PropsWithChildren } from 'react';
 import { useState } from 'react';
@@ -14,7 +14,12 @@ import type { Grid, LanguageLessonReview } from '@/types';
 
 type Props = PropsWithChildren & {
   reviews: LanguageLessonReview[];
-  grid: Grid;
+  language_slugs: Array<string>;
+  grid: Grid & {
+    fields: {
+      language_slug_eq: string;
+    };
+  };
 };
 
 function DataBox({
@@ -37,9 +42,12 @@ function DataBox({
   );
 }
 
-export default function Index({ grid, reviews }: Props) {
+export default function Index({ grid, reviews, language_slugs }: Props) {
   const { t } = useTranslation();
-  const { gridProps } = useDataTableProps<LanguageLessonReview, {}>(grid);
+  const { gridProps, filters } = useDataTableProps<
+    LanguageLessonReview,
+    typeof grid.fields
+  >(grid);
 
   const renderActions = (item: LanguageLessonReview) => {
     return (
@@ -77,13 +85,25 @@ export default function Index({ grid, reviews }: Props) {
     );
   };
 
+  const filterLanguageSlug = (
+    <Select
+      data={language_slugs}
+      value={filters.values.language_slug_eq}
+      onChange={filters.getOnChange('language_slug_eq')}
+      leftSection={<Search size={16} />}
+      comboboxProps={{ withinPortal: false }}
+      clearable
+      searchable
+    />
+  );
+
   return (
     <AdminLayout header={t('admin.language_lesson_reviews.index.header')}>
       <DataTable
         records={reviews}
         columns={[
           { accessor: 'id' },
-          { accessor: 'language_slug' },
+          { accessor: 'language_slug', filter: filterLanguageSlug },
           { accessor: 'slug' },
           {
             accessor: 'review',
