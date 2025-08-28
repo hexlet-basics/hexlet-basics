@@ -172,6 +172,8 @@ spec:
               value: "7"
             - name: DB_POOL
               value: "7"
+            - name: INERTIA_SSR_URL
+              value: "http://{{ .Release.Name }}-ssr-service:13714"
 
           # NOTE: приложение должно работать дольше чем nginx иначе будут поступать ответы 502
           lifecycle:
@@ -224,48 +226,49 @@ spec:
               exec:
                 command: ["sleep", "15"]
 
-        - name: ssr
-          imagePullPolicy: Always
-          image: "{{ .Values.app.image.repository }}:{{ .Values.version }}"
-          command: ["bin/vite", "ssr"]
-          startupProbe:
-            httpGet:
-              path: /health
-              port: 13714
-            periodSeconds: 10
-            failureThreshold: 30
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 13714
-            initialDelaySeconds: 5
-            periodSeconds: 8
-            timeoutSeconds: 2
-            failureThreshold: 3
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 13714
-            initialDelaySeconds: 20
-            periodSeconds: 20
-            timeoutSeconds: 3
-          ports:
-            - containerPort: 13714
-          resources:
-            requests:
-              memory: 200Mi
-              cpu: 100m
-            limits:
-              memory: 600Mi
-          env:
-            - name: NODE_ENV
-              valueFrom:
-                secretKeyRef:
-                  name: codebasics-environment-secrets
-                  key: NODE_ENV
-            - name: NODE_OPTIONS
-              value: "--max-old-space-size=384"
-          lifecycle:
-            preStop:
-              exec:
-                command: ["sleep", "15"]
+        # - name: ssr
+        #   imagePullPolicy: Always
+        #   image: "{{ .Values.app.image.repository }}:{{ .Values.version }}"
+        #   command: ["bin/vite", "ssr"]
+        #   startupProbe:
+        #     httpGet:
+        #       path: /health
+        #       port: 13714
+        #     periodSeconds: 5
+        #     failureThreshold: 12
+        #   readinessProbe:
+        #     httpGet:
+        #       path: /health
+        #       port: 13714
+        #     initialDelaySeconds: 5
+        #     periodSeconds: 5
+        #     timeoutSeconds: 1
+        #     failureThreshold: 2
+        #   livenessProbe:
+        #     httpGet:
+        #       path: /health
+        #       port: 13714
+        #     initialDelaySeconds: 20
+        #     periodSeconds: 12
+        #     timeoutSeconds: 3
+        #     failureThreshold: 3
+        #   ports:
+        #     - containerPort: 13714
+        #   resources:
+        #     requests:
+        #       memory: 200Mi
+        #       cpu: 100m
+        #     limits:
+        #       memory: 400Mi
+        #   env:
+        #     - name: NODE_ENV
+        #       valueFrom:
+        #         secretKeyRef:
+        #           name: codebasics-environment-secrets
+        #           key: NODE_ENV
+        #     # - name: NODE_OPTIONS
+        #     #   value: "--max-old-space-size=256"
+        #   lifecycle:
+        #     preStop:
+        #       exec:
+        #         command: ["sleep", "15"]

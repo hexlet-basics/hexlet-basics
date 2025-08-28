@@ -5,6 +5,7 @@ provider "registry.terraform.io/cloudflare/cloudflare" {
   version = "5.8.4"
   hashes = [
     "h1:KKDkASiiJZ0z35eJYZz1rxDm1nRuHzQko7+np5eMI0k=",
+    "h1:ihbA9kw+RRkVjCts0NLwt+eQhrJloCH4JDfXYYCkNlA=",
     "zh:0e3ffc026d07699189406d7471f6a65e66a35065ee26b7cded6dfff0f5c22fba",
     "zh:2819e632d8f5437ee8cafbd35a0b44b9ea685aabae95536da345f012b2cbd193",
     "zh:3ec56bd9e5bcc8bb2012651fa3ad837934603aacdbbb06c2d579681398e993b2",
@@ -20,6 +21,7 @@ provider "registry.terraform.io/cloudflare/cloudflare" {
 provider "registry.terraform.io/hashicorp/external" {
   version = "2.3.5"
   hashes = [
+    "h1:FnUk98MI5nOh3VJ16cHf8mchQLewLfN1qZG/MqNgPrI=",
     "h1:smKSos4zs57pJjQrNuvGBpSWth2el9SgePPbPHo0aps=",
     "zh:6e89509d056091266532fa64de8c06950010498adf9070bf6ff85bc485a82562",
     "zh:78d5eefdd9e494defcb3c68d282b8f96630502cac21d1ea161f53cfe9bb483b3",
@@ -40,6 +42,7 @@ provider "registry.terraform.io/yandex-cloud/yandex" {
   version = "0.151.0"
   hashes = [
     "h1:ALPEbs0Yu/4DFbXdjkTdpCar8egzKEinlUkwf4lga6A=",
+    "h1:HO7CSAFcv/DFtn+iW9OmG0swPslx6rYDT1TGp4pvsx8=",
     "zh:01c0d0d5b66390deab449aa9f96b37d718808aaaa05de5395aaf83c1da793931",
     "zh:27b7d94ed71df3ff80cccc27b776376c31e61c914f8209baee38dcddf414ca6c",
     "zh:31b28e42130bf0604b52509626640ef3e0bb2979301a8efffcd4dfcbf21138c4",
