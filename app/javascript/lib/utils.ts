@@ -208,4 +208,15 @@ export function fromWindow<K extends keyof Window>(
   return;
 }
 
+export function arrayToSelectData<T>(
+  list: T[],
+  valueField: keyof T,
+  labelField: keyof T,
+) {
+  return list.map((item) => ({
+    value: String(item[valueField]),
+    label: String(item[labelField]),
+  }));
+}
+
 export const boolText = (v?: boolean | null) => (v ? 'Yes' : 'No');
