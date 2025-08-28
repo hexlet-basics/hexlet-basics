@@ -10,11 +10,11 @@ import MarkdownViewer from '@/components/MarkdownViewer';
 import useDataTableProps from '@/hooks/useDataTableProps';
 import AdminLayout from '@/pages/layouts/AdminLayout';
 import * as Routes from '@/routes.js';
-import type { Grid, LanguageLessonReview } from '@/types';
+import type { Grid, Language, LanguageLessonReview } from '@/types';
 
 type Props = PropsWithChildren & {
+  languages: Language[];
   reviews: LanguageLessonReview[];
-  language_slugs: Array<string>;
   grid: Grid & {
     fields: {
       language_slug_eq: string;
@@ -42,7 +42,7 @@ function DataBox({
   );
 }
 
-export default function Index({ grid, reviews, language_slugs }: Props) {
+export default function Index({ grid, reviews, languages }: Props) {
   const { t } = useTranslation();
   const { gridProps, filters } = useDataTableProps<
     LanguageLessonReview,
@@ -85,9 +85,11 @@ export default function Index({ grid, reviews, language_slugs }: Props) {
     );
   };
 
-  const filterLanguageSlug = (
+  const languageSlugFilterSelect = (
     <Select
-      data={language_slugs}
+      data={languages
+        .map((l) => l.slug)
+        .filter((slug): slug is string => slug !== null)}
       value={filters.values.language_slug_eq}
       onChange={filters.getOnChange('language_slug_eq')}
       leftSection={<Search size={16} />}
@@ -103,7 +105,7 @@ export default function Index({ grid, reviews, language_slugs }: Props) {
         records={reviews}
         columns={[
           { accessor: 'id' },
-          { accessor: 'language_slug', filter: filterLanguageSlug },
+          { accessor: 'language_slug', filter: languageSlugFilterSelect },
           { accessor: 'slug' },
           {
             accessor: 'review',
