@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import AppAnchor from '@/components/Elements/AppAnchor';
 import MarkdownViewer from '@/components/MarkdownViewer';
 import useDataTableProps from '@/hooks/useDataTableProps';
+import { arrayToSelectData } from '@/lib/utils.ts';
 import AdminLayout from '@/pages/layouts/AdminLayout';
 import * as Routes from '@/routes.js';
 import type { Grid, Language, LanguageLessonReview } from '@/types';
@@ -87,9 +88,7 @@ export default function Index({ grid, reviews, languages }: Props) {
 
   const languageSlugFilterSelect = (
     <Select
-      data={languages
-        .map((l) => l.slug)
-        .filter((slug): slug is string => slug !== null)}
+      data={arrayToSelectData(languages, 'slug', 'slug')}
       value={filters.values.language_slug_eq}
       onChange={filters.getOnChange('language_slug_eq')}
       leftSection={<Search size={16} />}
