@@ -1,6 +1,10 @@
 en:
   flash:
     web:
+      application:
+        base:
+          error: Please check errors
+          success: Action completed successfully
       admin:
         languages:
           update:
