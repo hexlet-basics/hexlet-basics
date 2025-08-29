@@ -1,13 +1,13 @@
+import { Select } from '@mantine/core';
 import dayjs from 'dayjs';
+import { Search } from 'lucide-react';
 import { DataTable } from 'mantine-datatable';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import useDataTableProps from '@/hooks/useDataTableProps';
+import { arrayToSelectData } from '@/lib/utils';
 import AdminLayout from '@/pages/layouts/AdminLayout';
 import type { Grid, Survey, SurveyAnswer } from '@/types';
-import { arrayToSelectData } from '@/lib/utils';
-import { Search } from 'lucide-react';
-import { Select } from '@mantine/core';
 
 type Props = PropsWithChildren & {
   surveyAnswers: SurveyAnswer[];
@@ -28,7 +28,7 @@ export default function Index({ grid, surveyAnswers, surveys }: Props) {
 
   const surveyFilterSlug = (
     <Select
-      data={arrayToSelectData(surveys, 'slug', "question")}
+      data={arrayToSelectData(surveys, 'slug', 'question')}
       value={filters.values.survey_slug_eq}
       onChange={filters.getOnChange('survey_slug_eq')}
       leftSection={<Search size={16} />}
