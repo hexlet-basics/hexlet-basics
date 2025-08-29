@@ -1,6 +1,10 @@
 ru:
   flash:
     web:
+      application:
+        base:
+          error: Пожалуйста проверьте ошибки
+          success: Действие завершено успешно
       blog_posts:
         likes:
           create:
