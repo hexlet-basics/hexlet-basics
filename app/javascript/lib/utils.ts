@@ -219,4 +219,11 @@ export function arrayToSelectData<T>(
   }));
 }
 
+export function enumToSelectData(list: readonly string[]) {
+  return list.map((item) => ({
+    value: item,
+    label: item,
+  }));
+}
+
 export const boolText = (v?: boolean | null) => (v ? 'Yes' : 'No');

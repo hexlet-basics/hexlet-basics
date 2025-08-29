@@ -7,7 +7,9 @@ import {
   TextInput,
 } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
+import { enums } from '@/generated/enums';
 import { useAppForm } from '@/hooks/useAppForm';
+import { enumToSelectData } from '@/lib/utils';
 import type { HttpRouterMethod, SurveyCrud, SurveyItemCrud } from '@/types';
 
 type Props = {
@@ -59,9 +61,9 @@ export default function Form({ data, url, method }: Props) {
             <Select
               {...getSelectProps(
                 `items_attributes.${index}.state`,
-                data.meta.item_states,
+                enumToSelectData(enums.surveyItemState),
                 'value',
-                'key',
+                'label',
               )}
             />
             <TextInput {...getInputProps(`items_attributes.${index}.order`)} />
