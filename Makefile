@@ -152,7 +152,7 @@ services-db-stop:
 services-remove: services-db-remove
 
 services-db-remove: services-db-stop
-	docker rm code_basics_postgres
+	docker rm code_basics_postgres || true
 	docker volume remove code_basics_pgdata
 
 services-db-down: service-db-remove

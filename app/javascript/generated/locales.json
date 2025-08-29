@@ -492,6 +492,12 @@
             }
           }
         },
+        "application": {
+          "base": {
+            "error": "Please check errors",
+            "success": "Action completed successfully"
+          }
+        },
         "auth": {
           "callback": {
             "success": "You have signed in successfully. You can start learning now."
@@ -2324,6 +2330,12 @@
               "error": "Что-то пошло не так",
               "success": "Отзыв успешно обновлен!"
             }
+          }
+        },
+        "application": {
+          "base": {
+            "error": "Пожалуйста проверьте ошибки",
+            "success": "Действие завершено успешно"
           }
         },
         "auth": {
