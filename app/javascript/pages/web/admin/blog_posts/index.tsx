@@ -62,7 +62,7 @@ export default function Index({ grid, blogPosts }: Props) {
     );
   };
 
-  const filterState = (
+  const stateFilterSelect = (
     <Select
       data={enums.blogPostState}
       value={filters.values.state_eq}
@@ -83,7 +83,7 @@ export default function Index({ grid, blogPosts }: Props) {
           { accessor: 'id' },
           { accessor: 'cover', title: 'cover', render: renderCover },
           { accessor: 'name', sortable: true },
-          { accessor: 'state', sortable: true, filter: filterState },
+          { accessor: 'state', sortable: true, filter: stateFilterSelect },
           {
             accessor: 'related_language_items_count',
             title: 'Related C',
