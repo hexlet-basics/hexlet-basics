@@ -6,6 +6,7 @@ class Web::Admin::SurveyAnswersController < Web::Admin::ApplicationController
 
     render inertia: true, props: {
       surveyAnswers: Survey::AnswerResource.new(records),
+      surveys: SurveyResource.new(Survey.all),
       grid: GridResource.new(grid_params(pagy))
     }
   end
