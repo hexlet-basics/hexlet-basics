@@ -30,17 +30,6 @@ spec:
       imagePullSecrets:
         - name: docker-config
 
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: "codebasics/pod"
-                    operator: In
-                    values:
-                      - "{{ .Release.Name }}-{{ .Values.version }}-web-check-pod"
-              topologyKey: "kubernetes.io/hostname"
-
       volumes:
         - name: users-code-path
           hostPath:
