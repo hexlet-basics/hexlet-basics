@@ -38,7 +38,7 @@ resource "yandex_kubernetes_node_group" "code_basics_node_group_1" {
 
   scale_policy {
     fixed_scale {
-      size = 3
+      size = 2
     }
   }
 
