@@ -38,7 +38,7 @@ spec:
                   - key: "codebasics/pod"
                     operator: In
                     values:
-                      - "{{ .Release.Name }}-{{ .Values.version }}-web-pod"
+                      - "{{ .Release.Name }}-{{ .Values.version }}-web-check-pod"
               topologyKey: "kubernetes.io/hostname"
 
       volumes:
@@ -80,5 +80,5 @@ spec:
           env:
             - name: HEXLET_BASICS_RELEASE_VERSION
               value: {{ .Values.version }}
-            - name: DB_POOL
+            - name: RAILS_MAX_THREADS
               value: "2"
