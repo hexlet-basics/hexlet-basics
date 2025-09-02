@@ -12,13 +12,13 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     end
 
     lesson_version = resource_language.current_lesson_versions.find_by!(lesson: lesson)
-    lesson_info = lesson_version.infos.find_by!(locale: I18n.locale)
+    lesson_info = lesson_version.infos.includes(language: :current_version).find_by!(locale: I18n.locale)
     # language_info = resource_language.current_version.infos.find_by!(locale: I18n.locale)
 
     next_lesson = lesson_version.next_lesson
-    next_lesson_info = next_lesson ? next_lesson.infos.find_by!(locale: I18n.locale) : nil
+    next_lesson_info = next_lesson ? next_lesson.infos.includes(language: :current_version).find_by!(locale: I18n.locale) : nil
     prev_lesson_version = lesson_version.prev_lesson
-    prev_lesson_info = prev_lesson_version ? prev_lesson_version.infos.find_by!(locale: I18n.locale) : nil
+    prev_lesson_info = prev_lesson_version ? prev_lesson_version.infos.includes(language: :current_version).find_by!(locale: I18n.locale) : nil
 
     lesson_member = nil
 
@@ -90,7 +90,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     # end
 
     lessons_infos = resource_language.current_lesson_infos.with_locale
-      .includes(:lesson, :version)
+      .includes(:language, :lesson, :version)
       .order(language_lesson_versions: { natural_order: :asc })
 
     can_create_assistant_message = Language::Lesson::Member::MessagePolicy.new(
