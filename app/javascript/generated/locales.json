@@ -1078,13 +1078,9 @@
           }
         },
         "show": {
-          "blog_posts": "Blog Posts",
-          "header": "%{name} courses\n",
+          "header": "Courses in the %{name} category",
           "meta": {
-            "category_descriptions": {
-              "layouting": "Learn web development with free HTML and CSS courses on Code-basics.com.\nMaster the essentials of building responsive websites with step-by-step lessons and interactive exercises.\nPerfect for beginners.\n",
-              "programming": "Access free programming courses covering a wide range of modern languages, including Python, PHP, JavaScript, and more.\nStart coding at your own pace with practical exercises and expert-led tutorials at Code-basics.com.\n"
-            }
+            "description": "Choose a suitable free course in the %{name} category and learn for free right in your browser with hands-on practice and help from an AI assistant"
           }
         }
       },
@@ -3101,9 +3097,9 @@
           }
         },
         "show": {
-          "header": "%{name} | Курсы по программированию\n",
+          "header": "Курсы в категории %{name}\n",
           "meta": {
-            "description": "Бесплатные %{name} с практикой прямо в браузере. Короткие текстовые уроки и ИИ-помощник. От создателей Хекслета"
+            "description": "Выберите подходящий бесплатный курс из категории %{name} и учитесь бесплатно прямо в браузере с практикой и помощью от ИИ-ассистента"
           }
         }
       },
