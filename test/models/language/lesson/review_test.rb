@@ -4,7 +4,7 @@
 #
 #  id                              :bigint           not null, primary key
 #  locale                          :string           not null
-#  summary                         :text             not null
+#  summary                         :text
 #  created_at                      :datetime         not null
 #  updated_at                      :datetime         not null
 #  language_id                     :bigint           not null

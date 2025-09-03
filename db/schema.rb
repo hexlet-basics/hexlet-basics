@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_22_103309) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_03_174056) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -262,7 +262,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_22_103309) do
     t.bigint "language_lesson_id", null: false
     t.bigint "language_lesson_version_id", null: false
     t.bigint "language_lesson_version_info_id", null: false
-    t.text "summary", null: false
+    t.text "summary"
     t.string "locale", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
