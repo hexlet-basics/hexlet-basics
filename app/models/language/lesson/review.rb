@@ -32,7 +32,7 @@ class Language::Lesson::Review < ApplicationRecord
   belongs_to :lesson_version, foreign_key: "language_lesson_version_id", class_name: "Language::Lesson::Version"
   belongs_to :lesson_version_info, foreign_key: "language_lesson_version_info_id", class_name: "Language::Lesson::Version::Info"
 
-  validates :summary, presence: true
+  # validates :summary, presence: true
   validates :lesson, presence: true, uniqueness: { scope: :locale }
 
   def self.ransackable_attributes(auth_object = nil)

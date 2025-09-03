@@ -1,4 +1,5 @@
-import { ActionIcon, Button, Modal, Select } from '@mantine/core';
+import { ActionIcon, Box, Button, Modal, Select } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import dayjs from 'dayjs';
 import { Link, Search } from 'lucide-react';
 import { DataTable } from 'mantine-datatable';
@@ -28,18 +29,21 @@ function DataBox({
   col,
 }: {
   review: LanguageLessonReview;
-  col: string;
+  col: keyof LanguageLessonReview;
 }) {
-  const [visible, setVisible] = useState(false);
+  const [opened, handlers] = useDisclosure(false);
+  if (!review[col]) {
+    return <Box ta="center">-</Box>;
+  }
   return (
-    <>
-      <Button variant="subtle" onClick={() => setVisible(true)}>
+    <Box ta="center">
+      <Button variant="subtle" onClick={handlers.open}>
         data
       </Button>
-      <Modal opened={visible} onClose={() => setVisible(false)} size="50vw">
+      <Modal opened={opened} onClose={handlers.close} size="50vw">
         <MarkdownViewer>{review.summary}</MarkdownViewer>
       </Modal>
-    </>
+    </Box>
   );
 }
 
@@ -110,7 +114,7 @@ export default function Index({ grid, reviews, languages }: Props) {
           {
             accessor: 'review',
             title: 'review',
-            render: (rec) => <DataBox review={rec} col="review" />,
+            render: (rec) => <DataBox review={rec} col="summary" />,
           },
           {
             accessor: 'created_at',
