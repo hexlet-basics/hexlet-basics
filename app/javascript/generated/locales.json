@@ -585,9 +585,6 @@
         ]
       }
     },
-    "inputs": {
-      "current_state": "Current state:"
-    },
     "layouts": {
       "shared": {
         "footer": {
@@ -829,25 +826,6 @@
       "search": "search",
       "sort": "sort",
       "value": "value"
-    },
-    "simple_form": {
-      "error_notification": {
-        "default_message": "Please review the problems below:"
-      },
-      "labels": {
-        "sign_in_form": {
-          "new": {
-            "email": "Email",
-            "password": "Password"
-          }
-        }
-      },
-      "no": "No",
-      "required": {
-        "mark": "",
-        "text": "required"
-      },
-      "yes": "Yes"
     },
     "support": {
       "array": {
@@ -2459,9 +2437,6 @@
       },
       "transliterate": {}
     },
-    "inputs": {
-      "current_state": "Текущий стейт:"
-    },
     "layouts": {
       "shared": {
         "contact_method_requesting": {
@@ -2758,21 +2733,6 @@
       "search": "Поиск",
       "sort": "сортировка",
       "value": "значение"
-    },
-    "simple_form": {
-      "labels": {
-        "sign_in_form": {
-          "new": {
-            "email": "Email",
-            "password": "Пароль"
-          }
-        }
-      },
-      "placeholders": null,
-      "required": {
-        "mark": "",
-        "text": "required"
-      }
     },
     "support": {
       "array": {
