@@ -73,6 +73,10 @@ class Language::Lesson < ApplicationRecord
     [ "created_at", "id", "language_id", "module_id", "natural_order", "order", "original_code", "path_to_code", "prepared_code", "review", "slug", "state", "test_code", "updated_at", "upload_id" ]
   end
 
+  def self.ransackable_associations(auth_object = nil)
+    [ "infos", "language", "members", "messages", "module", "reviews", "versions" ]
+  end
+
   def to_s
     slug
   end

@@ -50,16 +50,19 @@ pre-course-javascript-module1-lesson1:
 
 typescript-module1-lesson1:
   slug: $LABEL
+  natural_order: 100
   language: typescript
   module: typescript-module1
 
 typescript-module1-lesson2:
   slug: $LABEL
+  natural_order: 200
   language: typescript
   module: typescript-module1
 
 typescript-module1-lesson3:
   slug: $LABEL
+  natural_order: 300
   language: typescript
   module: typescript-module1
 

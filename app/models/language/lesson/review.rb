@@ -40,6 +40,6 @@ class Language::Lesson::Review < ApplicationRecord
   end
 
   def self.ransackable_associations(auth_object = nil)
-    [ "language" ]
+    [ "language", "lesson" ]
   end
 end

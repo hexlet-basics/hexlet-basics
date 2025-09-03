@@ -104,6 +104,7 @@ export default function Index({ grid, reviews, languages }: Props) {
         records={reviews}
         columns={[
           { accessor: 'id' },
+          { accessor: 'lesson_natural_order', title: 'Order', sortable: true },
           { accessor: 'language_slug', filter: languageSlugFilterSelect },
           { accessor: 'slug' },
           {

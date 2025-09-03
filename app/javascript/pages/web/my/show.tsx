@@ -61,7 +61,7 @@ function StartedCourse({
             <Title order={3}>{lp.header}</Title>
           </AppAnchor>
 
-          {cm.next_lesson && <Text>{cm.next_lesson.name} →</Text>}
+          {cm.next_lesson_name && <Text>{cm.next_lesson_name} →</Text>}
 
           <Progress.Root mt="auto">
             <Progress.Section

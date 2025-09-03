@@ -1,0 +1,18 @@
+DEFAULTS: &DEFAULTS
+  summary: summary-$LABEL 
+  locale: ru
+
+typescript1-lesson1_version1-ru:
+  <<: *DEFAULTS
+  lesson: typescript-module1-lesson1
+  lesson_version: typescript1-module1_version1-lesson1_version1
+  lesson_version_info: typescript1-module1_version1-lesson1_version1-ru
+  language: typescript
+
+typescript1-lesson2_version1-ru:
+  <<: *DEFAULTS
+  lesson: typescript-module1-lesson2
+  lesson_version: typescript1-module1_version1-lesson2_version1
+  lesson_version_info: typescript1-module1_version1-lesson2_version1-ru
+  language: typescript
+

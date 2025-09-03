@@ -15,6 +15,11 @@ class Language::Lesson::ReviewResource < ApplicationResource
     review.lesson.slug
   end
 
+  typelize :number
+  attribute :lesson_natural_order do |review|
+    review.lesson.natural_order
+  end
+
   typelize :string
   attribute :language_slug do |review|
     review.language.slug

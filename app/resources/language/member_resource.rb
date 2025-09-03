@@ -1,8 +1,8 @@
 class Language::MemberResource < ApplicationResource
-  # TODO: make it nullable
-  has_one :next_lesson_info, key: :next_lesson, resource: Language::LessonForListsResource
-
   typelize_from Language::Member
+  # TODO: make it nullable
+  # one :next_lesson_info, resource: Language::LessonResource
+  # has_one :language, resource: LanguageResource
   # root_key :user
 
   attributes :id, :user_id, :language_id, :state
@@ -21,5 +21,10 @@ class Language::MemberResource < ApplicationResource
     else
       0
     end
+  end
+
+  typelize :string, nullable: true
+  attribute :next_lesson_name do |obj|
+    obj.next_lesson_info&.name
   end
 end
