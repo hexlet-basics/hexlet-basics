@@ -22,6 +22,7 @@ import i18next from 'i18next';
 import { Clock, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type {
+  Course,
   ItemAvailability,
   MerchantReturnEnumeration,
   MerchantReturnPolicy,
@@ -87,62 +88,90 @@ export default function Show({
     locale,
   } = usePage<SharedProps>().props;
 
-  // enums/typed IRIs
-  const availability: ItemAvailability = 'https://schema.org/InStock';
-  const noReturn: MerchantReturnEnumeration =
-    'https://schema.org/MerchantReturnNotPermitted';
+  // // enums/typed IRIs
+  // const availability: ItemAvailability = 'https://schema.org/InStock';
+  // const noReturn: MerchantReturnEnumeration =
+  //   'https://schema.org/MerchantReturnNotPermitted';
 
-  // typed pieces
-  const returnPolicy: MerchantReturnPolicy = {
-    '@type': 'MerchantReturnPolicy',
-    returnPolicyCategory: noReturn,
-  };
+  // // typed pieces
+  // const returnPolicy: MerchantReturnPolicy = {
+  //   '@type': 'MerchantReturnPolicy',
+  //   returnPolicyCategory: noReturn,
+  // };
 
-  const shippingDetails: OfferShippingDetails = {
-    '@type': 'OfferShippingDetails',
-    shippingRate: {
-      '@type': 'MonetaryAmount',
-      value: '0',
-      currency: 'RUB',
-    },
-    shippingDestination: {
-      '@type': 'DefinedRegion',
-      addressCountry: 'RU',
-    },
-    deliveryTime: {
-      '@type': 'ShippingDeliveryTime',
-      handlingTime: {
-        '@type': 'QuantitativeValue',
-        minValue: 0,
-        maxValue: 0,
-        unitCode: 'DAY',
-      },
-      transitTime: {
-        '@type': 'QuantitativeValue',
-        minValue: 0,
-        maxValue: 0,
-        unitCode: 'DAY',
-      },
-    },
-  };
+  // const shippingDetails: OfferShippingDetails = {
+  //   '@type': 'OfferShippingDetails',
+  //   shippingRate: {
+  //     '@type': 'MonetaryAmount',
+  //     value: '0',
+  //     currency: 'RUB',
+  //   },
+  //   shippingDestination: {
+  //     '@type': 'DefinedRegion',
+  //     addressCountry: 'RU',
+  //   },
+  //   deliveryTime: {
+  //     '@type': 'ShippingDeliveryTime',
+  //     handlingTime: {
+  //       '@type': 'QuantitativeValue',
+  //       minValue: 0,
+  //       maxValue: 0,
+  //       unitCode: 'DAY',
+  //     },
+  //     transitTime: {
+  //       '@type': 'QuantitativeValue',
+  //       minValue: 0,
+  //       maxValue: 0,
+  //       unitCode: 'DAY',
+  //     },
+  //   },
+  // };
 
-  const offers: Offer = {
-    '@type': 'Offer',
-    price: '0',
-    priceCurrency: 'RUB',
-    availability,
-    priceValidUntil: dayjs().add(1, 'month').format('YYYY-MM-DD'),
-    hasMerchantReturnPolicy: returnPolicy,
-    shippingDetails,
-  };
+  // const offers: Offer = {
+  //   '@type': 'Offer',
+  //   price: '0',
+  //   priceCurrency: 'RUB',
+  //   availability,
+  //   priceValidUntil: dayjs().add(1, 'month').format('YYYY-MM-DD'),
+  //   hasMerchantReturnPolicy: returnPolicy,
+  //   shippingDetails,
+  // };
 
-  const productSchema: WithContext<Product> = {
+  // const productSchema: WithContext<Product> = {
+  //   '@context': 'https://schema.org',
+  //   '@type': 'Product',
+  //   name: courseLandingPage.header,
+  //   description: courseLandingPage.description,
+  //   image: course.cover_list_variant,
+  //   offers,
+  //   aggregateRating: {
+  //     '@type': 'AggregateRating',
+  //     ratingValue: course.rating_value,
+  //     ratingCount: course.rating_count,
+  //   },
+  // };
+
+  const courseSchema: WithContext<Course> = {
     '@context': 'https://schema.org',
-    '@type': 'Product',
+    '@type': 'Course',
     name: courseLandingPage.header,
     description: courseLandingPage.description,
     image: course.cover_list_variant,
-    offers,
+    provider: {
+      '@type': 'Organization',
+      name: 'Code Basics',
+      sameAs: 'https://code-basics.com',
+    },
+    hasCourseInstance: {
+      '@type': 'CourseInstance',
+      name: courseLandingPage.header,
+      courseMode: 'online',
+      inLanguage: locale,
+      location: {
+        '@type': 'VirtualLocation',
+        url: Routes.language_path(courseLandingPage.slug),
+      },
+    },
     aggregateRating: {
       '@type': 'AggregateRating',
       ratingValue: course.rating_value,
@@ -167,7 +196,7 @@ export default function Show({
     <ApplicationLayout items={breadcrumbItems}>
       <Head>
         <script type="application/ld+json">
-          {JSON.stringify(productSchema)}
+          {JSON.stringify(courseSchema)}
         </script>
       </Head>
 
