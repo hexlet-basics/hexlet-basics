@@ -21,7 +21,15 @@ import dayjs from 'dayjs';
 import i18next from 'i18next';
 import { Clock, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import type { Product, WithContext } from 'schema-dts';
+import type {
+  ItemAvailability,
+  MerchantReturnEnumeration,
+  MerchantReturnPolicy,
+  Offer,
+  OfferShippingDetails,
+  Product,
+  WithContext,
+} from 'schema-dts';
 import AppAnchor from '@/components/Elements/AppAnchor';
 import LeadFormBlock from '@/components/LeadFormBlock';
 import MarkdownViewer from '@/components/MarkdownViewer';
@@ -79,23 +87,67 @@ export default function Show({
     locale,
   } = usePage<SharedProps>().props;
 
+  // enums/typed IRIs
+  const availability: ItemAvailability = 'https://schema.org/InStock';
+  const noReturn: MerchantReturnEnumeration =
+    'https://schema.org/MerchantReturnNotPermitted';
+
+  // typed pieces
+  const returnPolicy: MerchantReturnPolicy = {
+    '@type': 'MerchantReturnPolicy',
+    returnPolicyCategory: noReturn,
+  };
+
+  const shippingDetails: OfferShippingDetails = {
+    '@type': 'OfferShippingDetails',
+    shippingRate: {
+      '@type': 'MonetaryAmount',
+      value: '0',
+      currency: 'RUB',
+    },
+    shippingDestination: {
+      '@type': 'DefinedRegion',
+      addressCountry: 'RU',
+    },
+    deliveryTime: {
+      '@type': 'ShippingDeliveryTime',
+      handlingTime: {
+        '@type': 'QuantitativeValue',
+        minValue: 0,
+        maxValue: 0,
+        unitCode: 'DAY',
+      },
+      transitTime: {
+        '@type': 'QuantitativeValue',
+        minValue: 0,
+        maxValue: 0,
+        unitCode: 'DAY',
+      },
+    },
+  };
+
+  const offers: Offer = {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'RUB',
+    availability,
+    priceValidUntil: dayjs().add(1, 'month').format('YYYY-MM-DD'),
+    hasMerchantReturnPolicy: returnPolicy,
+    shippingDetails,
+  };
+
   const productSchema: WithContext<Product> = {
     '@context': 'https://schema.org',
     '@type': 'Product',
+    name: courseLandingPage.header,
     description: courseLandingPage.description,
     image: course.cover_list_variant,
-    offers: {
-      '@type': 'Offer',
-      price: '0',
-      priceCurrency: 'RUB',
-      availability: 'https://schema.org/InStock',
-    },
+    offers,
     aggregateRating: {
       '@type': 'AggregateRating',
       ratingValue: course.rating_value,
       ratingCount: course.rating_count,
     },
-    name: courseLandingPage.header,
   };
 
   const breadcrumbItems: BreadcrumbItem[] = [
