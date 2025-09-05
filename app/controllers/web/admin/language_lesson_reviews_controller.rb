@@ -6,7 +6,7 @@ class Web::Admin::LanguageLessonReviewsController < Web::Admin::ApplicationContr
 
     render inertia: true, props: {
       reviews: Language::Lesson::ReviewResource.new(records),
-      languages: LanguageResource.new(Language.ordered),
+      languages: LanguageResource.new(Language.web.order(slug: :asc)),
       grid: GridResource.new(grid_params(pagy))
     }
   end
