@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { Button, Grid, Group, Title } from '@mantine/core';
+import { Box, Button, Grid, Group, SimpleGrid, Title } from '@mantine/core';
 import dayjs from 'dayjs';
 import { DataTable } from 'mantine-datatable';
 import { useTranslation } from 'react-i18next';
@@ -31,15 +31,15 @@ export default function Edit({
       header={t('admin.languages.edit.header', { id: courseDto.meta.slug })}
     >
       <Menu data={courseDto} landingPage={landingPage} />
-      <Grid>
-        <Grid.Col span={4}>
+      <SimpleGrid cols={{ base: 1, sm: 2 }}>
+        <Box>
           <Form
             method="patch"
             data={courseDto}
             url={Routes.admin_language_path(courseDto.data.id)}
           />
-        </Grid.Col>
-        <Grid.Col>
+        </Box>
+        <Box>
           <Group justify="space-between" mb="xs">
             <Title order={2}>Versions</Title>
             <Button
@@ -64,8 +64,8 @@ export default function Edit({
               },
             ]}
           />
-        </Grid.Col>
-      </Grid>
+        </Box>
+      </SimpleGrid>
     </AdminLayout>
   );
 }
