@@ -16,10 +16,10 @@ import {
   Text,
   Title,
 } from '@mantine/core';
+import { useId } from '@mantine/hooks';
 import i18next from 'i18next';
 import { BookOpenCheck, Bot, Github, Send } from 'lucide-react';
 import type { PropsWithChildren } from 'react';
-import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { FAQPage, Question, WithContext } from 'schema-dts';
 import BlogPostBlock from '@/components/BlogPostBlock';
@@ -98,7 +98,7 @@ export default function Index({
 }: Props) {
   const { t } = useTranslation();
   const { t: tFaq } = useTranslation('faq');
-  const baseId = useId();
+  const baseId = useId('courses');
 
   const {
     locale,
@@ -177,7 +177,7 @@ export default function Index({
         </XssContent>
 
         <Center>
-          <Button component="a" href={`#${baseId}-courses`} size="lg" me="sm">
+          <Button component="a" href={`#${baseId}`} size="lg" me="sm">
             {t('home.index.hero.try')}
           </Button>
           {user.guest && (
@@ -229,11 +229,9 @@ export default function Index({
       </Container>
 
       <Container size="lg" my="xl">
-        <Anchor id={`${baseId}-courses`} href={`#${baseId}-courses`}>
-          <Title order={2} mb="xl">
-            {t('home.languages.courses')}
-          </Title>
-        </Anchor>
+        <Title id={baseId} order={2} mb="xl">
+          {t('home.languages.courses')}
+        </Title>
 
         <SimpleGrid spacing="md" cols={{ base: 2, xs: 3, md: 4 }}>
           {landingPagesForLists.map((lp) => (
