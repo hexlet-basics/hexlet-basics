@@ -6,6 +6,7 @@ class Web::SessionsController < Web::ApplicationController
 
     seo_tags = {
       title: t(".title"),
+      canonical: new_session_url,
       description: t(".meta.description")
     }
     set_meta_tags seo_tags
