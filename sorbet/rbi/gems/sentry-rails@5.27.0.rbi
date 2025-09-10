@@ -25,11 +25,11 @@ module Sentry
   end
 end
 
-# source://sentry-rails//lib/sentry/rails/configuration.rb#10
+# source://sentry-rails//lib/sentry/rails/configuration.rb#13
 class Sentry::Configuration
   # Returns the value of attribute rails.
   #
-  # source://sentry-rails//lib/sentry/rails/configuration.rb#11
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#14
   def rails; end
 end
 
@@ -41,7 +41,7 @@ module Sentry::Rails
   extend ::Sentry::Integrable
 end
 
-# source://sentry-rails//lib/sentry/rails/configuration.rb#53
+# source://sentry-rails//lib/sentry/rails/configuration.rb#56
 Sentry::Rails::ACTIVE_SUPPORT_LOGGER_SUBSCRIPTION_ITEMS_DEFAULT = T.let(T.unsafe(nil), Hash)
 
 # source://sentry-rails//lib/sentry/rails/backtrace_cleaner.rb#8
@@ -91,35 +91,35 @@ Sentry::Rails::CaptureExceptions::RAILS_7_1 = T.let(T.unsafe(nil), TrueClass)
 # source://sentry-rails//lib/sentry/rails/capture_exceptions.rb#7
 Sentry::Rails::CaptureExceptions::SPAN_ORIGIN = T.let(T.unsafe(nil), String)
 
-# source://sentry-rails//lib/sentry/rails/configuration.rb#113
+# source://sentry-rails//lib/sentry/rails/configuration.rb#116
 class Sentry::Rails::Configuration
   # @return [Configuration] a new instance of Configuration
   #
-  # source://sentry-rails//lib/sentry/rails/configuration.rb#162
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#169
   def initialize; end
 
   # Set this option to true if you want Sentry to capture each retry failure
   #
-  # source://sentry-rails//lib/sentry/rails/configuration.rb#160
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#163
   def active_job_report_on_retry_error; end
 
   # Set this option to true if you want Sentry to capture each retry failure
   #
-  # source://sentry-rails//lib/sentry/rails/configuration.rb#160
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#163
   def active_job_report_on_retry_error=(_arg0); end
 
   # Hash of subscription items that will be shown in breadcrumbs active support logger.
   #
   # @return [Hash<String, Array<Symbol>>]
   #
-  # source://sentry-rails//lib/sentry/rails/configuration.rb#157
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#160
   def active_support_logger_subscription_items; end
 
   # Hash of subscription items that will be shown in breadcrumbs active support logger.
   #
   # @return [Hash<String, Array<Symbol>>]
   #
-  # source://sentry-rails//lib/sentry/rails/configuration.rb#157
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#160
   def active_support_logger_subscription_items=(_arg0); end
 
   # sentry-rails by default skips asset request' transactions by checking if the path matches
@@ -136,7 +136,7 @@ class Sentry::Rails::Configuration
   # end
   # ```
   #
-  # source://sentry-rails//lib/sentry/rails/configuration.rb#153
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#156
   def assets_regexp; end
 
   # sentry-rails by default skips asset request' transactions by checking if the path matches
@@ -153,31 +153,31 @@ class Sentry::Rails::Configuration
   # end
   # ```
   #
-  # source://sentry-rails//lib/sentry/rails/configuration.rb#153
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#156
   def assets_regexp=(_arg0); end
 
   # The threshold in milliseconds for the ActiveRecordSubscriber to capture the source location of the query
   # in the span data. Default is 100ms.
   #
-  # source://sentry-rails//lib/sentry/rails/configuration.rb#138
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#141
   def db_query_source_threshold_ms; end
 
   # The threshold in milliseconds for the ActiveRecordSubscriber to capture the source location of the query
   # in the span data. Default is 100ms.
   #
-  # source://sentry-rails//lib/sentry/rails/configuration.rb#138
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#141
   def db_query_source_threshold_ms=(_arg0); end
 
   # When the ActiveRecordSubscriber is enabled, capture the source location of the query in the span data.
   # This is enabled by default, but can be disabled by setting this to false.
   #
-  # source://sentry-rails//lib/sentry/rails/configuration.rb#134
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#137
   def enable_db_query_source; end
 
   # When the ActiveRecordSubscriber is enabled, capture the source location of the query in the span data.
   # This is enabled by default, but can be disabled by setting this to false.
   #
-  # source://sentry-rails//lib/sentry/rails/configuration.rb#134
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#137
   def enable_db_query_source=(_arg0); end
 
   # Rails 7.0 introduced a new error reporter feature, which the SDK once opted-in by default.
@@ -185,7 +185,7 @@ class Sentry::Rails::Configuration
   # So the integration is now controlled by this configuration, which is disabled (false) by default.
   # More information can be found from: https://github.com/rails/rails/pull/43625#issuecomment-1072514175
   #
-  # source://sentry-rails//lib/sentry/rails/configuration.rb#118
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#121
   def register_error_subscriber; end
 
   # Rails 7.0 introduced a new error reporter feature, which the SDK once opted-in by default.
@@ -193,7 +193,7 @@ class Sentry::Rails::Configuration
   # So the integration is now controlled by this configuration, which is disabled (false) by default.
   # More information can be found from: https://github.com/rails/rails/pull/43625#issuecomment-1072514175
   #
-  # source://sentry-rails//lib/sentry/rails/configuration.rb#118
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#121
   def register_error_subscriber=(_arg0); end
 
   # Rails catches exceptions in the ActionDispatch::ShowExceptions or
@@ -201,7 +201,7 @@ class Sentry::Rails::Configuration
   # When `report_rescued_exceptions` is true (it is by default), Sentry will
   # report exceptions even when they are rescued by these middlewares.
   #
-  # source://sentry-rails//lib/sentry/rails/configuration.rb#124
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#127
   def report_rescued_exceptions; end
 
   # Rails catches exceptions in the ActionDispatch::ShowExceptions or
@@ -209,35 +209,42 @@ class Sentry::Rails::Configuration
   # When `report_rescued_exceptions` is true (it is by default), Sentry will
   # report exceptions even when they are rescued by these middlewares.
   #
-  # source://sentry-rails//lib/sentry/rails/configuration.rb#124
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#127
   def report_rescued_exceptions=(_arg0); end
 
   # Some adapters, like sidekiq, already have their own sentry integration.
   # In those cases, we should skip ActiveJob's reporting to avoid duplicated reports.
   #
-  # source://sentry-rails//lib/sentry/rails/configuration.rb#128
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#131
   def skippable_job_adapters; end
 
   # Some adapters, like sidekiq, already have their own sentry integration.
   # In those cases, we should skip ActiveJob's reporting to avoid duplicated reports.
   #
-  # source://sentry-rails//lib/sentry/rails/configuration.rb#128
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#131
   def skippable_job_adapters=(_arg0); end
+
+  # Configuration for structured logging feature
+  #
+  # @return [StructuredLoggingConfiguration]
+  #
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#167
+  def structured_logging; end
 
   # Returns the value of attribute tracing_subscribers.
   #
-  # source://sentry-rails//lib/sentry/rails/configuration.rb#130
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#133
   def tracing_subscribers; end
 
   # Sets the attribute tracing_subscribers
   #
   # @param value the value to set the attribute tracing_subscribers to.
   #
-  # source://sentry-rails//lib/sentry/rails/configuration.rb#130
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#133
   def tracing_subscribers=(_arg0); end
 end
 
-# source://sentry-rails//lib/sentry/rails/configuration.rb#36
+# source://sentry-rails//lib/sentry/rails/configuration.rb#39
 Sentry::Rails::IGNORE_DEFAULT = T.let(T.unsafe(nil), Array)
 
 # source://sentry-rails//lib/sentry/rails/instrument_payload_cleanup_helper.rb#5
@@ -248,6 +255,253 @@ end
 
 # source://sentry-rails//lib/sentry/rails/instrument_payload_cleanup_helper.rb#6
 Sentry::Rails::InstrumentPayloadCleanupHelper::IGNORED_DATA_TYPES = T.let(T.unsafe(nil), Array)
+
+# Base class for Sentry log subscribers that extends ActiveSupport::LogSubscriber
+# to provide structured logging capabilities for Rails components.
+#
+# This class follows Rails' LogSubscriber pattern and provides common functionality
+# for capturing Rails instrumentation events and logging them through Sentry's
+# structured logging system.
+#
+# @example Creating a custom log subscriber
+#   class MySubscriber < Sentry::Rails::LogSubscriber
+#   attach_to :my_component
+#
+#   def my_event(event)
+#   log_structured_event(
+#   message: "My event occurred",
+#   level: :info,
+#   attributes: {
+#   duration_ms: event.duration,
+#   custom_data: event.payload[:custom_data]
+#   }
+#   )
+#   end
+#   end
+#
+# source://sentry-rails//lib/sentry/rails/log_subscriber.rb#29
+class Sentry::Rails::LogSubscriber < ::ActiveSupport::LogSubscriber
+  protected
+
+  # Calculate duration in milliseconds from an event
+  #
+  # @param event [ActiveSupport::Notifications::Event] The event
+  # @return [Float] Duration in milliseconds
+  #
+  # source://sentry-rails//lib/sentry/rails/log_subscriber.rb#65
+  def duration_ms(event); end
+
+  # Log a structured event using Sentry's structured logger
+  #
+  # @param message [String] The log message
+  # @param level [Symbol] The log level (:trace, :debug, :info, :warn, :error, :fatal)
+  # @param attributes [Hash] Additional structured attributes to include
+  #
+  # source://sentry-rails//lib/sentry/rails/log_subscriber.rb#54
+  def log_structured_event(message:, level: T.unsafe(nil), attributes: T.unsafe(nil)); end
+end
+
+# source://sentry-rails//lib/sentry/rails/log_subscribers/parameter_filter.rb#5
+module Sentry::Rails::LogSubscribers; end
+
+# LogSubscriber for ActionController events that captures HTTP request processing
+# and logs them using Sentry's structured logging system.
+#
+# This subscriber captures process_action.action_controller events and formats them
+# with relevant request information including controller, action, HTTP status,
+# request parameters, and performance metrics.
+#
+# @example Usage
+#   # Enable structured logging for ActionController
+#   Sentry.init do |config|
+#   config.enable_logs = true
+#   config.rails.structured_logging = true
+#   config.rails.structured_logging.subscribers = { action_controller: Sentry::Rails::LogSubscribers::ActionControllerSubscriber }
+#   end
+#
+# source://sentry-rails//lib/sentry/rails/log_subscribers/action_controller_subscriber.rb#23
+class Sentry::Rails::LogSubscribers::ActionControllerSubscriber < ::Sentry::Rails::LogSubscriber
+  include ::Sentry::Rails::LogSubscribers::ParameterFilter
+
+  # Handle process_action.action_controller events
+  #
+  # @param event [ActiveSupport::Notifications::Event] The controller action event
+  #
+  # source://sentry-rails//lib/sentry/rails/log_subscribers/action_controller_subscriber.rb#29
+  def process_action(event); end
+
+  private
+
+  # source://sentry-rails//lib/sentry/rails/log_subscribers/action_controller_subscriber.rb#73
+  def extract_status(payload); end
+
+  # source://sentry-rails//lib/sentry/rails/log_subscribers/action_controller_subscriber.rb#88
+  def level_for_request(payload); end
+end
+
+# LogSubscriber for ActionMailer events that captures email delivery
+# and processing events using Sentry's structured logging system.
+#
+# This subscriber captures deliver.action_mailer and process.action_mailer events
+# and formats them with relevant email information while respecting PII settings.
+#
+# @example Usage
+#   # Enable structured logging for ActionMailer
+#   Sentry.init do |config|
+#   config.enable_logs = true
+#   config.rails.structured_logging = true
+#   config.rails.structured_logging.subscribers = { action_mailer: Sentry::Rails::LogSubscribers::ActionMailerSubscriber }
+#   end
+#
+# source://sentry-rails//lib/sentry/rails/log_subscribers/action_mailer_subscriber.rb#22
+class Sentry::Rails::LogSubscribers::ActionMailerSubscriber < ::Sentry::Rails::LogSubscriber
+  include ::Sentry::Rails::LogSubscribers::ParameterFilter
+
+  # Handle deliver.action_mailer events
+  #
+  # @param event [ActiveSupport::Notifications::Event] The email delivery event
+  #
+  # source://sentry-rails//lib/sentry/rails/log_subscribers/action_mailer_subscriber.rb#28
+  def deliver(event); end
+
+  # Handle process.action_mailer events
+  #
+  # @param event [ActiveSupport::Notifications::Event] The email processing event
+  #
+  # source://sentry-rails//lib/sentry/rails/log_subscribers/action_mailer_subscriber.rb#59
+  def process(event); end
+end
+
+# LogSubscriber for ActiveJob events that captures background job execution
+# and logs them using Sentry's structured logging system.
+#
+# This subscriber captures various ActiveJob events including job execution,
+# enqueueing, retries, and failures with relevant job information.
+#
+# @example Usage
+#   # Enable structured logging for ActiveJob
+#   Sentry.init do |config|
+#   config.enable_logs = true
+#   config.rails.structured_logging = true
+#   config.rails.structured_logging.subscribers = { active_job: Sentry::Rails::LogSubscribers::ActiveJobSubscriber }
+#   end
+#
+# source://sentry-rails//lib/sentry/rails/log_subscribers/active_job_subscriber.rb#22
+class Sentry::Rails::LogSubscribers::ActiveJobSubscriber < ::Sentry::Rails::LogSubscriber
+  include ::Sentry::Rails::LogSubscribers::ParameterFilter
+
+  # source://sentry-rails//lib/sentry/rails/log_subscribers/active_job_subscriber.rb#113
+  def discard(event); end
+
+  # Handle enqueue.active_job events
+  #
+  # @param event [ActiveSupport::Notifications::Event] The job enqueue event
+  #
+  # source://sentry-rails//lib/sentry/rails/log_subscribers/active_job_subscriber.rb#65
+  def enqueue(event); end
+
+  # Handle perform.active_job events
+  #
+  # @param event [ActiveSupport::Notifications::Event] The job performance event
+  #
+  # source://sentry-rails//lib/sentry/rails/log_subscribers/active_job_subscriber.rb#28
+  def perform(event); end
+
+  # source://sentry-rails//lib/sentry/rails/log_subscribers/active_job_subscriber.rb#91
+  def retry_stopped(event); end
+
+  private
+
+  # source://sentry-rails//lib/sentry/rails/log_subscribers/active_job_subscriber.rb#138
+  def filter_sensitive_arguments(arguments); end
+end
+
+# LogSubscriber for ActiveRecord events that captures database queries
+# and logs them using Sentry's structured logging system.
+#
+# This subscriber captures sql.active_record events and formats them
+# with relevant database information including SQL queries, duration,
+# database configuration, and caching information.
+#
+# @example Usage
+#   # Automatically attached when structured logging is enabled for :active_record
+#   Sentry.init do |config|
+#   config.enable_logs = true
+#   config.rails.structured_logging = true
+#   config.rails.structured_logging.subscribers = { active_record: Sentry::Rails::LogSubscribers::ActiveRecordSubscriber }
+#   end
+#
+# source://sentry-rails//lib/sentry/rails/log_subscribers/active_record_subscriber.rb#23
+class Sentry::Rails::LogSubscribers::ActiveRecordSubscriber < ::Sentry::Rails::LogSubscriber
+  include ::Sentry::Rails::LogSubscribers::ParameterFilter
+
+  # Handle sql.active_record events
+  #
+  # @param event [ActiveSupport::Notifications::Event] The SQL event
+  #
+  # source://sentry-rails//lib/sentry/rails/log_subscribers/active_record_subscriber.rb#31
+  def sql(event); end
+
+  private
+
+  # source://sentry-rails//lib/sentry/rails/log_subscribers/active_record_subscriber.rb#81
+  def add_db_config_attributes(attributes, db_config); end
+
+  # source://sentry-rails//lib/sentry/rails/log_subscribers/active_record_subscriber.rb#65
+  def build_log_message(statement_name); end
+
+  # source://sentry-rails//lib/sentry/rails/log_subscribers/active_record_subscriber.rb#73
+  def extract_db_config(payload); end
+
+  # source://sentry-rails//lib/sentry/rails/log_subscribers/active_record_subscriber.rb#128
+  def extract_db_config_fallback(connection); end
+
+  # Rails 6.0 and earlier use spec API
+  #
+  # source://sentry-rails//lib/sentry/rails/log_subscribers/active_record_subscriber.rb#102
+  def extract_db_config_from_connection(connection); end
+end
+
+# source://sentry-rails//lib/sentry/rails/log_subscribers/active_record_subscriber.rb#26
+Sentry::Rails::LogSubscribers::ActiveRecordSubscriber::EXCLUDED_NAMES = T.let(T.unsafe(nil), Array)
+
+# Shared utility module for filtering sensitive parameters in log subscribers.
+#
+# This module provides consistent parameter filtering across all Sentry Rails
+# log subscribers, leveraging Rails' built-in parameter filtering when available.
+# It automatically detects the correct Rails parameter filtering API based on
+# the Rails version and includes the appropriate implementation module.
+#
+# @example Usage in a log subscriber
+#   class MySubscriber < Sentry::Rails::LogSubscriber
+#   include Sentry::Rails::LogSubscribers::ParameterFilter
+#
+#   def my_event(event)
+#   if Sentry.configuration.send_default_pii && event.payload[:params]
+#   filtered_params = filter_sensitive_params(event.payload[:params])
+#   attributes[:params] = filtered_params unless filtered_params.empty?
+#   end
+#   end
+#   end
+#
+# source://sentry-rails//lib/sentry/rails/log_subscribers/parameter_filter.rb#24
+module Sentry::Rails::LogSubscribers::ParameterFilter
+  # Filter sensitive parameters from a hash, respecting Rails configuration.
+  #
+  # @param params [Hash] The parameters to filter
+  # @return [Hash] Filtered parameters with sensitive data removed
+  #
+  # source://sentry-rails//lib/sentry/rails/log_subscribers/parameter_filter.rb#41
+  def filter_sensitive_params(params); end
+
+  class << self
+    # source://sentry-rails//lib/sentry/rails/log_subscribers/parameter_filter.rb#28
+    def backend; end
+  end
+end
+
+# source://sentry-rails//lib/sentry/rails/log_subscribers/parameter_filter.rb#25
+Sentry::Rails::LogSubscribers::ParameterFilter::EMPTY_HASH = T.let(T.unsafe(nil), Hash)
 
 # source://sentry-rails//lib/sentry/rails/rescued_exception_interceptor.rb#5
 class Sentry::Rails::RescuedExceptionInterceptor
@@ -264,6 +518,56 @@ class Sentry::Rails::RescuedExceptionInterceptor
   # source://sentry-rails//lib/sentry/rails/rescued_exception_interceptor.rb#21
   def report_rescued_exceptions?; end
 end
+
+# source://sentry-rails//lib/sentry/rails/structured_logging.rb#11
+module Sentry::Rails::StructuredLogging
+  class << self
+    # source://sentry-rails//lib/sentry/rails/structured_logging.rb#13
+    def attach(config); end
+
+    # source://sentry-rails//lib/sentry/rails/structured_logging.rb#22
+    def detach(config); end
+  end
+end
+
+# source://sentry-rails//lib/sentry/rails/configuration.rb#190
+class Sentry::Rails::StructuredLoggingConfiguration
+  # @return [StructuredLoggingConfiguration] a new instance of StructuredLoggingConfiguration
+  #
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#204
+  def initialize; end
+
+  # Enable or disable structured logging
+  #
+  # @return [Boolean]
+  #
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#193
+  def enabled; end
+
+  # Enable or disable structured logging
+  #
+  # @return [Boolean]
+  #
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#193
+  def enabled=(_arg0); end
+
+  # Hash of components to subscriber classes for structured logging
+  #
+  # @return [Hash<Symbol, Class>]
+  #
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#197
+  def subscribers; end
+
+  # Hash of components to subscriber classes for structured logging
+  #
+  # @return [Hash<Symbol, Class>]
+  #
+  # source://sentry-rails//lib/sentry/rails/configuration.rb#197
+  def subscribers=(_arg0); end
+end
+
+# source://sentry-rails//lib/sentry/rails/configuration.rb#199
+Sentry::Rails::StructuredLoggingConfiguration::DEFAULT_SUBSCRIBERS = T.let(T.unsafe(nil), Hash)
 
 # source://sentry-rails//lib/sentry/rails/tracing.rb#5
 module Sentry::Rails::Tracing
@@ -460,34 +764,37 @@ Sentry::Rails::VERSION = T.let(T.unsafe(nil), String)
 
 # source://sentry-rails//lib/sentry/rails/railtie.rb#8
 class Sentry::Railtie < ::Rails::Railtie
-  # source://sentry-rails//lib/sentry/rails/railtie.rb#132
+  # source://sentry-rails//lib/sentry/rails/railtie.rb#142
+  def activate_structured_logging; end
+
+  # source://sentry-rails//lib/sentry/rails/railtie.rb#133
   def activate_tracing; end
 
-  # source://sentry-rails//lib/sentry/rails/railtie.rb#81
+  # source://sentry-rails//lib/sentry/rails/railtie.rb#82
   def configure_cron_timezone; end
 
-  # source://sentry-rails//lib/sentry/rails/railtie.rb#73
+  # source://sentry-rails//lib/sentry/rails/railtie.rb#74
   def configure_project_root; end
 
-  # source://sentry-rails//lib/sentry/rails/railtie.rb#77
+  # source://sentry-rails//lib/sentry/rails/railtie.rb#78
   def configure_trusted_proxies; end
 
-  # source://sentry-rails//lib/sentry/rails/railtie.rb#86
+  # source://sentry-rails//lib/sentry/rails/railtie.rb#87
   def extend_controller_methods; end
 
-  # source://sentry-rails//lib/sentry/rails/railtie.rb#102
+  # source://sentry-rails//lib/sentry/rails/railtie.rb#103
   def inject_breadcrumbs_logger; end
 
-  # source://sentry-rails//lib/sentry/rails/railtie.rb#124
+  # source://sentry-rails//lib/sentry/rails/railtie.rb#125
   def override_streaming_reporter; end
 
-  # source://sentry-rails//lib/sentry/rails/railtie.rb#98
+  # source://sentry-rails//lib/sentry/rails/railtie.rb#99
   def patch_background_worker; end
 
-  # source://sentry-rails//lib/sentry/rails/railtie.rb#141
+  # source://sentry-rails//lib/sentry/rails/railtie.rb#148
   def register_error_subscriber(app); end
 
-  # source://sentry-rails//lib/sentry/rails/railtie.rb#116
+  # source://sentry-rails//lib/sentry/rails/railtie.rb#117
   def setup_backtrace_cleanup_callback; end
 end
 

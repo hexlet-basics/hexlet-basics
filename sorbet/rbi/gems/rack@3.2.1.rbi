@@ -918,12 +918,13 @@ Rack::EXPIRES = T.let(T.unsafe(nil), String)
 #
 # * on_send(request, response)
 #
-#   The webserver has started iterating over the response body and presumably
-#   has started sending data over the wire. This method is always called with
-#   a request object and the response object.  The response object is
-#   constructed from the rack triple that the application returned.  Changes
-#   SHOULD NOT be made to the response object as the webserver has already
-#   started sending data.  Any mutations will likely result in an exception.
+#   The webserver has started iterating over the response body, or has called
+#   the streaming body, and presumably has started sending data over the
+#   wire. This method is always called with a request object and the response
+#   object. The response object is constructed from the rack triple that the
+#   application returned.  Changes SHOULD NOT be made to the response object
+#   as the webserver has already started sending data.  Any mutations will
+#   likely result in an exception.
 #
 # * on_finish(request, response)
 #
@@ -947,89 +948,97 @@ Rack::EXPIRES = T.let(T.unsafe(nil), String)
 # raises an exception.  If something raises an exception in a `on_finish`
 # method, then nothing is guaranteed.
 #
-# source://rack//lib/rack/events.rb#61
+# source://rack//lib/rack/events.rb#62
 class Rack::Events
   # @return [Events] a new instance of Events
   #
-  # source://rack//lib/rack/events.rb#106
+  # source://rack//lib/rack/events.rb#121
   def initialize(app, handlers); end
 
-  # source://rack//lib/rack/events.rb#111
+  # source://rack//lib/rack/events.rb#126
   def call(env); end
 
   private
 
-  # source://rack//lib/rack/events.rb#149
+  # source://rack//lib/rack/events.rb#164
   def make_request(env); end
 
-  # source://rack//lib/rack/events.rb#153
+  # source://rack//lib/rack/events.rb#168
   def make_response(status, headers, body); end
 
-  # source://rack//lib/rack/events.rb#137
+  # source://rack//lib/rack/events.rb#152
   def on_commit(request, response); end
 
-  # source://rack//lib/rack/events.rb#133
+  # source://rack//lib/rack/events.rb#148
   def on_error(request, response, e); end
 
-  # source://rack//lib/rack/events.rb#145
+  # source://rack//lib/rack/events.rb#160
   def on_finish(request, response); end
 
-  # source://rack//lib/rack/events.rb#141
+  # source://rack//lib/rack/events.rb#156
   def on_start(request, response); end
 end
 
-# source://rack//lib/rack/events.rb#62
+# source://rack//lib/rack/events.rb#63
 module Rack::Events::Abstract
-  # source://rack//lib/rack/events.rb#66
+  # source://rack//lib/rack/events.rb#67
   def on_commit(req, res); end
 
-  # source://rack//lib/rack/events.rb#75
+  # source://rack//lib/rack/events.rb#76
   def on_error(req, res, e); end
 
-  # source://rack//lib/rack/events.rb#72
+  # source://rack//lib/rack/events.rb#73
   def on_finish(req, res); end
 
-  # source://rack//lib/rack/events.rb#69
+  # source://rack//lib/rack/events.rb#70
   def on_send(req, res); end
 
-  # source://rack//lib/rack/events.rb#63
+  # source://rack//lib/rack/events.rb#64
   def on_start(req, res); end
 end
 
-# source://rack//lib/rack/events.rb#95
+# source://rack//lib/rack/events.rb#110
 class Rack::Events::BufferedResponse < ::Rack::Response::Raw
   # @return [BufferedResponse] a new instance of BufferedResponse
   #
-  # source://rack//lib/rack/events.rb#98
+  # source://rack//lib/rack/events.rb#113
   def initialize(status, headers, body); end
 
   # Returns the value of attribute body.
   #
-  # source://rack//lib/rack/events.rb#96
+  # source://rack//lib/rack/events.rb#111
   def body; end
 
-  # source://rack//lib/rack/events.rb#103
+  # source://rack//lib/rack/events.rb#118
   def to_a; end
 end
 
-# source://rack//lib/rack/events.rb#79
+# source://rack//lib/rack/events.rb#80
 class Rack::Events::EventedBodyProxy < ::Rack::BodyProxy
   # @return [EventedBodyProxy] a new instance of EventedBodyProxy
   #
-  # source://rack//lib/rack/events.rb#82
+  # source://rack//lib/rack/events.rb#83
   def initialize(body, request, response, handlers, &block); end
 
-  # source://rack//lib/rack/events.rb#89
+  # source://rack//lib/rack/events.rb#95
+  def call(stream); end
+
+  # source://rack//lib/rack/events.rb#90
   def each; end
 
   # Returns the value of attribute request.
   #
-  # source://rack//lib/rack/events.rb#80
+  # source://rack//lib/rack/events.rb#81
   def request; end
+
+  # @return [Boolean]
+  #
+  # source://rack//lib/rack/events.rb#100
+  def respond_to?(method_name, include_all = T.unsafe(nil)); end
 
   # Returns the value of attribute response.
   #
-  # source://rack//lib/rack/events.rb#80
+  # source://rack//lib/rack/events.rb#81
   def response; end
 end
 

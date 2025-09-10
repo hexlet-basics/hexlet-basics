@@ -7585,7 +7585,7 @@ end
 #
 #     # Other inputs are normalized
 #     set = Net::IMAP::SequenceSet([1, 2, [3..7, 5], 6..10, 2048, 1024])
-#     set.valid_string  #=> "1:10,55,1024:2048"
+#     set.valid_string  #=> "1:10,1024,2048"
 #     set.frozen?       #=> false
 #
 #     unfrozen = set
@@ -7608,7 +7608,7 @@ end
 #
 #     # Other inputs are normalized
 #     set = Net::IMAP::SequenceSet[1, 2, [3..7, 5], 6..10, 2048, 1024]
-#     set.valid_string  #=> "1:10,55,1024:2048"
+#     set.valid_string  #=> "1:10,1024,2048"
 #     set.frozen?       #=> true
 #
 #     frozen   = set
@@ -7904,7 +7904,7 @@ class Net::IMAP::SequenceSet
   #     set = Net::IMAP::SequenceSet.new("1,2,3:7,5,6:10,2048,1024")
   #     set.valid_string  #=> "1,2,3:7,5,6:10,2048,1024"
   #     set = Net::IMAP::SequenceSet.new(1, 2, 3..7, 5, 6..10, 2048, 1024)
-  #     set.valid_string  #=> "1:10,55,1024:2048"
+  #     set.valid_string  #=> "1:10,1024,2048"
   #
   # With no arguments (or +nil+) creates an empty sequence set.  Note that
   # an empty sequence set is invalid in the \IMAP grammar.
@@ -7956,7 +7956,7 @@ class Net::IMAP::SequenceSet
   #
   # @return [SequenceSet] a new instance of SequenceSet
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#517
+  # source://net-imap//lib/net/imap/sequence_set.rb#534
   def initialize(input = T.unsafe(nil)); end
 
   # :call-seq:
@@ -7983,7 +7983,7 @@ class Net::IMAP::SequenceSet
   # * <tt>lhs - (lhs ^ rhs)</tt>
   # * <tt>lhs ^ (lhs - rhs)</tt>
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#854
+  # source://net-imap//lib/net/imap/sequence_set.rb#876
   def &(other); end
 
   # :call-seq:
@@ -8008,7 +8008,7 @@ class Net::IMAP::SequenceSet
   # * <tt>~(~lhs & ~rhs)</tt> (De Morgan's Law)
   # * <tt>(lhs & rhs) ^ (lhs ^ rhs)</tt>
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#802
+  # source://net-imap//lib/net/imap/sequence_set.rb#824
   def +(other); end
 
   # :call-seq:
@@ -8035,7 +8035,7 @@ class Net::IMAP::SequenceSet
   # * <tt>lhs ^ (lhs & rhs)</tt>
   # * <tt>rhs ^ (lhs | rhs)</tt>
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#828
+  # source://net-imap//lib/net/imap/sequence_set.rb#850
   def -(other); end
 
   # :call-seq:
@@ -8051,7 +8051,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #add?, #merge, #union, #append
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#924
+  # source://net-imap//lib/net/imap/sequence_set.rb#946
   def <<(element); end
 
   # :call-seq: self == other -> true or false
@@ -8071,7 +8071,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #eql?, #normalize
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#620
+  # source://net-imap//lib/net/imap/sequence_set.rb#642
   def ==(other); end
 
   # :call-seq: self === other -> true | false | nil
@@ -8082,7 +8082,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #cover?, #include?, #include_star?
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#651
+  # source://net-imap//lib/net/imap/sequence_set.rb#673
   def ===(other); end
 
   # :call-seq:
@@ -8125,7 +8125,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #at
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1442
+  # source://net-imap//lib/net/imap/sequence_set.rb#1464
   def [](index, length = T.unsafe(nil)); end
 
   # :call-seq:
@@ -8151,7 +8151,7 @@ class Net::IMAP::SequenceSet
   # * <tt>(lhs - rhs) | (rhs - lhs)</tt>
   # * <tt>(lhs ^ other) ^ (other ^ rhs)</tt>
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#881
+  # source://net-imap//lib/net/imap/sequence_set.rb#903
   def ^(other); end
 
   # Returns a copy of +self+ which only contains the numbers above +num+.
@@ -8170,7 +8170,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #above, #-, #&
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1497
+  # source://net-imap//lib/net/imap/sequence_set.rb#1519
   def above(num); end
 
   # :call-seq:
@@ -8186,7 +8186,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #add?, #merge, #union, #append
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#919
+  # source://net-imap//lib/net/imap/sequence_set.rb#941
   def add(element); end
 
   # :call-seq: add?(element) -> self or nil
@@ -8200,7 +8200,7 @@ class Net::IMAP::SequenceSet
   #
   # @return [Boolean]
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#952
+  # source://net-imap//lib/net/imap/sequence_set.rb#974
   def add?(element); end
 
   # Adds a range or number to the set and returns +self+.
@@ -8212,7 +8212,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #add, #merge, #union
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#934
+  # source://net-imap//lib/net/imap/sequence_set.rb#956
   def append(entry); end
 
   # :call-seq: at(index) -> integer or nil
@@ -8225,7 +8225,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #[], #slice, #ordered_at
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1372
+  # source://net-imap//lib/net/imap/sequence_set.rb#1394
   def at(index); end
 
   # Returns a copy of +self+ which only contains numbers below +num+.
@@ -8254,12 +8254,12 @@ class Net::IMAP::SequenceSet
   #
   # Related: #above, #-, #&, #limit
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1528
+  # source://net-imap//lib/net/imap/sequence_set.rb#1550
   def below(num); end
 
   # Removes all elements and returns self.
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#520
+  # source://net-imap//lib/net/imap/sequence_set.rb#537
   def clear; end
 
   # :call-seq:
@@ -8283,7 +8283,7 @@ class Net::IMAP::SequenceSet
   # <tt>~set</tt> is equivalent to:
   # * <tt>full - set</tt>, where "full" is Net::IMAP::SequenceSet.full
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#905
+  # source://net-imap//lib/net/imap/sequence_set.rb#927
   def complement; end
 
   # :call-seq: complement! -> self
@@ -8293,7 +8293,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #complement
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1580
+  # source://net-imap//lib/net/imap/sequence_set.rb#1602
   def complement!; end
 
   # Returns the count of #numbers in the set.
@@ -8303,7 +8303,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #count_with_duplicates
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1267
+  # source://net-imap//lib/net/imap/sequence_set.rb#1289
   def count; end
 
   # Returns the count of repeated numbers in the ordered #entries, the
@@ -8313,7 +8313,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #entries, #count_with_duplicates, #has_duplicates?
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1296
+  # source://net-imap//lib/net/imap/sequence_set.rb#1318
   def count_duplicates; end
 
   # Returns the count of numbers in the ordered #entries, including any
@@ -8326,7 +8326,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #entries, #count_duplicates, #has_duplicates?
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1283
+  # source://net-imap//lib/net/imap/sequence_set.rb#1305
   def count_with_duplicates; end
 
   # :call-seq: cover?(other) -> true | false | nil
@@ -8338,13 +8338,13 @@ class Net::IMAP::SequenceSet
   #
   # @return [Boolean]
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#663
+  # source://net-imap//lib/net/imap/sequence_set.rb#685
   def cover?(other); end
 
   # Returns an array with #normalized_string when valid and an empty array
   # otherwise.
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#567
+  # source://net-imap//lib/net/imap/sequence_set.rb#587
   def deconstruct; end
 
   # :call-seq: delete(element) -> self
@@ -8356,7 +8356,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #delete?, #delete_at, #subtract, #difference
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#965
+  # source://net-imap//lib/net/imap/sequence_set.rb#987
   def delete(element); end
 
   # :call-seq:
@@ -8394,7 +8394,7 @@ class Net::IMAP::SequenceSet
   #
   # @return [Boolean]
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1003
+  # source://net-imap//lib/net/imap/sequence_set.rb#1025
   def delete?(element); end
 
   # :call-seq: delete_at(index) -> number or :* or nil
@@ -8406,7 +8406,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #delete, #delete?, #slice!, #subtract, #difference
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1027
+  # source://net-imap//lib/net/imap/sequence_set.rb#1049
   def delete_at(index); end
 
   # :call-seq:
@@ -8433,7 +8433,7 @@ class Net::IMAP::SequenceSet
   # * <tt>lhs ^ (lhs & rhs)</tt>
   # * <tt>rhs ^ (lhs | rhs)</tt>
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#829
+  # source://net-imap//lib/net/imap/sequence_set.rb#851
   def difference(other); end
 
   # Returns +true+ if the set and a given object have no common elements,
@@ -8446,7 +8446,7 @@ class Net::IMAP::SequenceSet
   #
   # @return [Boolean]
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#718
+  # source://net-imap//lib/net/imap/sequence_set.rb#740
   def disjoint?(other); end
 
   # Yields each number or range (or <tt>:*</tt>) in #elements to the block
@@ -8457,7 +8457,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #elements, #each_entry
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1173
+  # source://net-imap//lib/net/imap/sequence_set.rb#1195
   def each_element; end
 
   # Yields each number or range in #string to the block and returns +self+.
@@ -8471,7 +8471,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #entries, #each_element
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1161
+  # source://net-imap//lib/net/imap/sequence_set.rb#1183
   def each_entry(&block); end
 
   # Yields each number in #numbers to the block and returns self.
@@ -8484,7 +8484,7 @@ class Net::IMAP::SequenceSet
   #
   # @raise [RangeError]
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1223
+  # source://net-imap//lib/net/imap/sequence_set.rb#1245
   def each_number(&block); end
 
   # Yields each number in #entries to the block and returns self.
@@ -8497,7 +8497,7 @@ class Net::IMAP::SequenceSet
   #
   # @raise [RangeError]
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1237
+  # source://net-imap//lib/net/imap/sequence_set.rb#1259
   def each_ordered_number(&block); end
 
   # Yields each range in #ranges to the block and returns self.
@@ -8505,7 +8505,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #ranges
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1205
+  # source://net-imap//lib/net/imap/sequence_set.rb#1227
   def each_range; end
 
   # Returns an array of ranges and integers and <tt>:*</tt>.
@@ -8523,19 +8523,19 @@ class Net::IMAP::SequenceSet
   #
   # Related: #each_element, #ranges, #numbers
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1102
+  # source://net-imap//lib/net/imap/sequence_set.rb#1124
   def elements; end
 
   # Returns true if the set contains no elements
   #
   # @return [Boolean]
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#775
+  # source://net-imap//lib/net/imap/sequence_set.rb#797
   def empty?; end
 
   # For YAML serialization
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1664
+  # source://net-imap//lib/net/imap/sequence_set.rb#1725
   def encode_with(coder); end
 
   # Returns an array of ranges and integers and <tt>:*</tt>.
@@ -8550,7 +8550,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #each_entry, #elements
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1086
+  # source://net-imap//lib/net/imap/sequence_set.rb#1108
   def entries; end
 
   # :call-seq: eql?(other) -> true or false
@@ -8570,7 +8570,7 @@ class Net::IMAP::SequenceSet
   #
   # @return [Boolean]
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#639
+  # source://net-imap//lib/net/imap/sequence_set.rb#661
   def eql?(other); end
 
   # Returns the (sorted and deduplicated) index of +number+ in the set, or
@@ -8578,7 +8578,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #[], #at, #find_ordered_index
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1317
+  # source://net-imap//lib/net/imap/sequence_set.rb#1339
   def find_index(number); end
 
   # Returns the first index of +number+ in the ordered #entries, or
@@ -8586,19 +8586,19 @@ class Net::IMAP::SequenceSet
   #
   # Related: #find_index
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1330
+  # source://net-imap//lib/net/imap/sequence_set.rb#1352
   def find_ordered_index(number); end
 
   # Freezes and returns the set.  A frozen SequenceSet is Ractor-safe.
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#597
+  # source://net-imap//lib/net/imap/sequence_set.rb#619
   def freeze; end
 
   # Returns true if the set contains every possible element.
   #
   # @return [Boolean]
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#778
+  # source://net-imap//lib/net/imap/sequence_set.rb#800
   def full?; end
 
   # :call-seq: has_duplicates? -> true | false
@@ -8611,12 +8611,12 @@ class Net::IMAP::SequenceSet
   #
   # @return [Boolean]
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1308
+  # source://net-imap//lib/net/imap/sequence_set.rb#1330
   def has_duplicates?; end
 
   # See #eql?
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#642
+  # source://net-imap//lib/net/imap/sequence_set.rb#664
   def hash; end
 
   # Returns +true+ when a given number or range is in +self+, and +false+
@@ -8646,22 +8646,46 @@ class Net::IMAP::SequenceSet
   #
   # @return [Boolean]
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#689
+  # source://net-imap//lib/net/imap/sequence_set.rb#711
   def include?(element); end
 
   # Returns +true+ when the set contains <tt>*</tt>.
   #
   # @return [Boolean]
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#697
+  # source://net-imap//lib/net/imap/sequence_set.rb#719
   def include_star?; end
 
   # For YAML deserialization
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1670
+  # source://net-imap//lib/net/imap/sequence_set.rb#1731
   def init_with(coder); end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1631
+  # Returns an inspection string for the SequenceSet.
+  #
+  #   Net::IMAP::SequenceSet.new.inspect
+  #   #=> "Net::IMAP::SequenceSet()"
+  #
+  #   Net::IMAP::SequenceSet(1..5, 1024, 15, 2000).inspect
+  #   #=> 'Net::IMAP::SequenceSet("1:5,15,1024,2000")'
+  #
+  # Frozen sets have slightly different output:
+  #
+  #   Net::IMAP::SequenceSet.empty.inspect
+  #   #=> "Net::IMAP::SequenceSet.empty"
+  #
+  #   Net::IMAP::SequenceSet[1..5, 1024, 15, 2000].inspect
+  #   #=> 'Net::IMAP::SequenceSet["1:5,15,1024,2000"]'
+  #
+  # Large sets (by number of #entries) have abridged output, with only the
+  # first and last entries:
+  #
+  #   Net::IMAP::SequenceSet(((1..5000) % 2).to_a).inspect
+  #   #=> #<Net::IMAP::SequenceSet 2500 entries "1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,...(2468 entries omitted)...,4969,4971,4973,4975,4977,4979,4981,4983,4985,4987,4989,4991,4993,4995,4997,4999">
+  #
+  # Related: #to_s, #string
+  #
+  # source://net-imap//lib/net/imap/sequence_set.rb#1676
   def inspect; end
 
   # Returns +true+ if the set and a given object have any common elements,
@@ -8674,7 +8698,7 @@ class Net::IMAP::SequenceSet
   #
   # @return [Boolean]
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#706
+  # source://net-imap//lib/net/imap/sequence_set.rb#728
   def intersect?(other); end
 
   # :call-seq:
@@ -8701,7 +8725,7 @@ class Net::IMAP::SequenceSet
   # * <tt>lhs - (lhs ^ rhs)</tt>
   # * <tt>lhs ^ (lhs - rhs)</tt>
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#857
+  # source://net-imap//lib/net/imap/sequence_set.rb#879
   def intersection(other); end
 
   # Returns a frozen SequenceSet with <tt>*</tt> converted to +max+, numbers
@@ -8723,7 +8747,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #limit!
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1552
+  # source://net-imap//lib/net/imap/sequence_set.rb#1574
   def limit(max:); end
 
   # Removes all members over +max+ and returns self.  If <tt>*</tt> is a
@@ -8731,7 +8755,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #limit
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1565
+  # source://net-imap//lib/net/imap/sequence_set.rb#1587
   def limit!(max:); end
 
   # :call-seq:
@@ -8747,7 +8771,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #min, #minmax, #slice
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#734
+  # source://net-imap//lib/net/imap/sequence_set.rb#756
   def max(count = T.unsafe(nil), star: T.unsafe(nil)); end
 
   # Returns +true+ when a given number or range is in +self+, and +false+
@@ -8777,7 +8801,7 @@ class Net::IMAP::SequenceSet
   #
   # @return [Boolean]
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#694
+  # source://net-imap//lib/net/imap/sequence_set.rb#716
   def member?(element); end
 
   # Merges all of the elements that appear in any of the +sets+ into the
@@ -8789,7 +8813,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #add, #add?, #union
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1058
+  # source://net-imap//lib/net/imap/sequence_set.rb#1080
   def merge(*sets); end
 
   # :call-seq:
@@ -8805,7 +8829,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #max, #minmax, #slice
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#754
+  # source://net-imap//lib/net/imap/sequence_set.rb#776
   def min(count = T.unsafe(nil), star: T.unsafe(nil)); end
 
   # :call-seq: minmax(star: :*) => [min, max] or nil
@@ -8816,7 +8840,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #min, #max
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#769
+  # source://net-imap//lib/net/imap/sequence_set.rb#791
   def minmax(star: T.unsafe(nil)); end
 
   # Returns a new SequenceSet with a normalized string representation.
@@ -8830,7 +8854,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #normalize!, #normalized_string
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1601
+  # source://net-imap//lib/net/imap/sequence_set.rb#1623
   def normalize; end
 
   # Resets #string to be sorted, deduplicated, and coalesced.  Returns
@@ -8838,7 +8862,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #normalize, #normalized_string
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1611
+  # source://net-imap//lib/net/imap/sequence_set.rb#1633
   def normalize!; end
 
   # Returns a normalized +sequence-set+ string representation, sorted
@@ -8850,9 +8874,9 @@ class Net::IMAP::SequenceSet
   #
   # Returns +nil+ when the set is empty.
   #
-  # Related: #normalize!, #normalize
+  # Related: #normalize!, #normalize, #string, #to_s
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1627
+  # source://net-imap//lib/net/imap/sequence_set.rb#1649
   def normalized_string; end
 
   # Returns a sorted array of all of the number values in the sequence set.
@@ -8882,7 +8906,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #elements, #ranges, #to_set
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1149
+  # source://net-imap//lib/net/imap/sequence_set.rb#1171
   def numbers; end
 
   # :call-seq: ordered_at(index) -> integer or nil
@@ -8895,7 +8919,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #[], #slice, #ordered_at
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1385
+  # source://net-imap//lib/net/imap/sequence_set.rb#1407
   def ordered_at(index); end
 
   # Returns +true+ if the set and a given object have any common elements,
@@ -8908,7 +8932,7 @@ class Net::IMAP::SequenceSet
   #
   # @return [Boolean]
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#709
+  # source://net-imap//lib/net/imap/sequence_set.rb#731
   def overlap?(other); end
 
   # Returns an array of ranges
@@ -8928,7 +8952,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #each_range, #elements, #numbers, #to_set
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1121
+  # source://net-imap//lib/net/imap/sequence_set.rb#1143
   def ranges; end
 
   # Replace the contents of the set with the contents of +other+ and returns
@@ -8937,12 +8961,12 @@ class Net::IMAP::SequenceSet
   # +other+ may be another SequenceSet or any other object that would be
   # accepted by ::new.
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#531
+  # source://net-imap//lib/net/imap/sequence_set.rb#548
   def replace(other); end
 
   # Unstable API: for internal use only (Net::IMAP#send_data)
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1659
+  # source://net-imap//lib/net/imap/sequence_set.rb#1720
   def send_data(imap, tag); end
 
   # Returns the count of #numbers in the set.
@@ -8952,7 +8976,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #count_with_duplicates
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1272
+  # source://net-imap//lib/net/imap/sequence_set.rb#1294
   def size; end
 
   # :call-seq:
@@ -8995,7 +9019,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #at
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1449
+  # source://net-imap//lib/net/imap/sequence_set.rb#1471
   def slice(index, length = T.unsafe(nil)); end
 
   # :call-seq:
@@ -9012,7 +9036,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #slice, #delete_at, #delete, #delete?, #subtract, #difference
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1044
+  # source://net-imap//lib/net/imap/sequence_set.rb#1066
   def slice!(index, length = T.unsafe(nil)); end
 
   # Returns the \IMAP +sequence-set+ string representation, or +nil+ when
@@ -9025,21 +9049,22 @@ class Net::IMAP::SequenceSet
   # If the set was created from a single string, it is not normalized.  If
   # the set is updated the string will be normalized.
   #
-  # Related: #valid_string, #normalized_string, #to_s
+  # Related: #valid_string, #normalized_string, #to_s, #inspect
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#563
+  # source://net-imap//lib/net/imap/sequence_set.rb#583
   def string; end
 
-  # Assigns a new string to #string and resets #elements to match.  It
-  # cannot be set to an empty string—assign +nil+ or use #clear instead.
-  # The string is validated but not normalized.
+  # Assigns a new string to #string and resets #elements to match.
+  # Assigning +nil+ or an empty string are equivalent to calling #clear.
   #
-  # Use #add or #merge to add a string to an existing set.
+  # Non-empty strings are validated but not normalized.
+  #
+  # Use #add, #merge, or #append to add a string to an existing set.
   #
   # Related: #replace, #clear
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#576
-  def string=(str); end
+  # source://net-imap//lib/net/imap/sequence_set.rb#597
+  def string=(input); end
 
   # Removes all of the elements that appear in any of the given +sets+ from
   # the set, and returns +self+.
@@ -9048,7 +9073,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #difference
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1070
+  # source://net-imap//lib/net/imap/sequence_set.rb#1092
   def subtract(*sets); end
 
   # Returns an array of ranges and integers and <tt>:*</tt>.
@@ -9066,19 +9091,19 @@ class Net::IMAP::SequenceSet
   #
   # Related: #each_element, #ranges, #numbers
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1103
+  # source://net-imap//lib/net/imap/sequence_set.rb#1125
   def to_a; end
 
   # Returns the \IMAP +sequence-set+ string representation, or an empty
   # string when the set is empty.  Note that an empty set is invalid in the
   # \IMAP syntax.
   #
-  # Related: #valid_string, #normalized_string, #to_s
+  # Related: #string, #valid_string, #normalized_string, #inspect
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#594
+  # source://net-imap//lib/net/imap/sequence_set.rb#616
   def to_s; end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1650
+  # source://net-imap//lib/net/imap/sequence_set.rb#1711
   def to_sequence_set; end
 
   # Returns a Set with all of the #numbers in the sequence set.
@@ -9089,7 +9114,7 @@ class Net::IMAP::SequenceSet
   #
   # Related: #elements, #ranges, #numbers
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1259
+  # source://net-imap//lib/net/imap/sequence_set.rb#1281
   def to_set; end
 
   # :call-seq:
@@ -9114,14 +9139,14 @@ class Net::IMAP::SequenceSet
   # * <tt>~(~lhs & ~rhs)</tt> (De Morgan's Law)
   # * <tt>(lhs & rhs) ^ (lhs ^ rhs)</tt>
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#803
+  # source://net-imap//lib/net/imap/sequence_set.rb#825
   def union(other); end
 
   # Returns false when the set is empty.
   #
   # @return [Boolean]
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#772
+  # source://net-imap//lib/net/imap/sequence_set.rb#794
   def valid?; end
 
   # Returns the \IMAP +sequence-set+ string representation, or raises a
@@ -9134,12 +9159,12 @@ class Net::IMAP::SequenceSet
   #
   # @raise [DataFormatError]
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#547
+  # source://net-imap//lib/net/imap/sequence_set.rb#567
   def valid_string; end
 
   # Unstable API: currently for internal use only (Net::IMAP#validate_data)
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1653
+  # source://net-imap//lib/net/imap/sequence_set.rb#1714
   def validate; end
 
   # :call-seq:
@@ -9165,7 +9190,7 @@ class Net::IMAP::SequenceSet
   # * <tt>(lhs - rhs) | (rhs - lhs)</tt>
   # * <tt>(lhs ^ other) ^ (other ^ rhs)</tt>
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#882
+  # source://net-imap//lib/net/imap/sequence_set.rb#904
   def xor(other); end
 
   # :call-seq:
@@ -9190,7 +9215,7 @@ class Net::IMAP::SequenceSet
   # * <tt>~(~lhs & ~rhs)</tt> (De Morgan's Law)
   # * <tt>(lhs & rhs) ^ (lhs ^ rhs)</tt>
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#801
+  # source://net-imap//lib/net/imap/sequence_set.rb#823
   def |(other); end
 
   # :call-seq:
@@ -9214,99 +9239,108 @@ class Net::IMAP::SequenceSet
   # <tt>~set</tt> is equivalent to:
   # * <tt>full - set</tt>, where "full" is Net::IMAP::SequenceSet.full
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#904
+  # source://net-imap//lib/net/imap/sequence_set.rb#926
   def ~; end
 
   protected
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1677
+  # source://net-imap//lib/net/imap/sequence_set.rb#1740
+  def deep_copy_tuples; end
+
+  # source://net-imap//lib/net/imap/sequence_set.rb#1738
   def tuples; end
 
   private
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1181
+  # source://net-imap//lib/net/imap/sequence_set.rb#1698
+  def count_entries; end
+
+  # source://net-imap//lib/net/imap/sequence_set.rb#1203
   def each_entry_tuple(&block); end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1243
+  # source://net-imap//lib/net/imap/sequence_set.rb#1265
   def each_number_in_tuple(min, max, &block); end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1342
+  # source://net-imap//lib/net/imap/sequence_set.rb#1364
   def each_tuple_with_index(tuples); end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1742
+  # source://net-imap//lib/net/imap/sequence_set.rb#1806
+  def export_string_entries(entries); end
+
+  # source://net-imap//lib/net/imap/sequence_set.rb#1804
   def from_tuple_int(num); end
 
   # @return [Boolean]
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1751
+  # source://net-imap//lib/net/imap/sequence_set.rb#1817
   def include_tuple?(_arg0); end
 
   # frozen clones are shallow copied
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1685
+  # source://net-imap//lib/net/imap/sequence_set.rb#1748
   def initialize_clone(other); end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1689
+  # source://net-imap//lib/net/imap/sequence_set.rb#1753
   def initialize_dup(other); end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1696
+  # source://net-imap//lib/net/imap/sequence_set.rb#1758
   def input_to_tuple(entry); end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1707
+  # source://net-imap//lib/net/imap/sequence_set.rb#1769
   def input_to_tuples(set); end
 
   # unlike SequenceSet#try_convert, this returns an Integer, Range,
   # String, Set, Array, or... any type of object.
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1724
+  # source://net-imap//lib/net/imap/sequence_set.rb#1786
   def input_try_convert(input); end
 
   # @return [Boolean]
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1753
+  # source://net-imap//lib/net/imap/sequence_set.rb#1819
   def intersect_tuple?(_arg0); end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1389
+  # source://net-imap//lib/net/imap/sequence_set.rb#1411
   def lookup_number_by_tuple_index(tuples, index); end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1758
+  # source://net-imap//lib/net/imap/sequence_set.rb#1824
   def modifying!; end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1855
+  # source://net-imap//lib/net/imap/sequence_set.rb#1921
   def nz_number(num); end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1850
+  # source://net-imap//lib/net/imap/sequence_set.rb#1916
   def range_gte_to(num); end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1731
+  # source://net-imap//lib/net/imap/sequence_set.rb#1793
   def range_to_tuple(range); end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1681
+  # source://net-imap//lib/net/imap/sequence_set.rb#1744
   def remain_frozen(set); end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1682
+  # source://net-imap//lib/net/imap/sequence_set.rb#1745
   def remain_frozen_empty; end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1352
+  # source://net-imap//lib/net/imap/sequence_set.rb#1374
   def reverse_each_tuple_with_index(tuples); end
 
   # @raise [ArgumentError]
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1453
+  # source://net-imap//lib/net/imap/sequence_set.rb#1475
   def slice_length(start, length); end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1461
+  # source://net-imap//lib/net/imap/sequence_set.rb#1483
   def slice_range(range); end
 
   # @raise [DataFormatError]
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1746
+  # source://net-imap//lib/net/imap/sequence_set.rb#1812
   def str_to_tuple(str); end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1745
+  # source://net-imap//lib/net/imap/sequence_set.rb#1811
   def str_to_tuples(str); end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1741
+  # source://net-imap//lib/net/imap/sequence_set.rb#1803
   def to_tuple_int(obj); end
 
   # --|=====| |=====new tuple=====|                 append
@@ -9319,13 +9353,13 @@ class Net::IMAP::SequenceSet
   #   ---------??===lower==|--|==|----|===upper===|-- join until upper
   #   ---------??===lower==|--|==|--|=====upper===|-- join to upper
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1777
+  # source://net-imap//lib/net/imap/sequence_set.rb#1843
   def tuple_add(tuple); end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1787
+  # source://net-imap//lib/net/imap/sequence_set.rb#1853
   def tuple_coalesce(lower, lower_idx, min, max); end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1846
+  # source://net-imap//lib/net/imap/sequence_set.rb#1912
   def tuple_gte_with_index(num); end
 
   # |====tuple================|
@@ -9342,25 +9376,25 @@ class Net::IMAP::SequenceSet
   # -------??=====lower====|--|====|---|====upper====|-- 7. delete until
   # -------??=====lower====|--|====|--|=====upper====|-- 8. delete and trim
   #
-  # source://net-imap//lib/net/imap/sequence_set.rb#1814
+  # source://net-imap//lib/net/imap/sequence_set.rb#1880
   def tuple_subtract(tuple); end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1191
+  # source://net-imap//lib/net/imap/sequence_set.rb#1213
   def tuple_to_entry(_arg0); end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1744
+  # source://net-imap//lib/net/imap/sequence_set.rb#1810
   def tuple_to_str(tuple); end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1825
+  # source://net-imap//lib/net/imap/sequence_set.rb#1891
   def tuple_trim_or_split(lower, idx, tmin, tmax); end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1764
+  # source://net-imap//lib/net/imap/sequence_set.rb#1830
   def tuples_add(tuples); end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1765
+  # source://net-imap//lib/net/imap/sequence_set.rb#1831
   def tuples_subtract(tuples); end
 
-  # source://net-imap//lib/net/imap/sequence_set.rb#1832
+  # source://net-imap//lib/net/imap/sequence_set.rb#1898
   def tuples_trim_or_delete(lower, lower_idx, tmin, tmax); end
 
   class << self
@@ -9378,18 +9412,18 @@ class Net::IMAP::SequenceSet
     #
     # Related: ::new, Net::IMAP::SequenceSet(), ::try_convert
     #
-    # source://net-imap//lib/net/imap/sequence_set.rb#414
+    # source://net-imap//lib/net/imap/sequence_set.rb#431
     def [](first, *rest); end
 
     # Returns a frozen empty set singleton.  Note that valid \IMAP sequence
     # sets cannot be empty, so this set is _invalid_.
     #
-    # source://net-imap//lib/net/imap/sequence_set.rb#444
+    # source://net-imap//lib/net/imap/sequence_set.rb#461
     def empty; end
 
     # Returns a frozen full set singleton: <tt>"1:*"</tt>
     #
-    # source://net-imap//lib/net/imap/sequence_set.rb#447
+    # source://net-imap//lib/net/imap/sequence_set.rb#464
     def full; end
 
     # :call-seq:
@@ -9406,18 +9440,30 @@ class Net::IMAP::SequenceSet
     #
     # @raise [DataFormatError]
     #
-    # source://net-imap//lib/net/imap/sequence_set.rb#434
+    # source://net-imap//lib/net/imap/sequence_set.rb#451
     def try_convert(obj); end
   end
 end
 
 # intentionally defined after the class implementation
 #
-# source://net-imap//lib/net/imap/sequence_set.rb#1865
+# source://net-imap//lib/net/imap/sequence_set.rb#1931
 Net::IMAP::SequenceSet::EMPTY = T.let(T.unsafe(nil), Net::IMAP::SequenceSet)
 
-# source://net-imap//lib/net/imap/sequence_set.rb#1866
+# source://net-imap//lib/net/imap/sequence_set.rb#1932
 Net::IMAP::SequenceSet::FULL = T.let(T.unsafe(nil), Net::IMAP::SequenceSet)
+
+# source://net-imap//lib/net/imap/sequence_set.rb#412
+Net::IMAP::SequenceSet::INSPECT_ABRIDGED_HEAD_RE = T.let(T.unsafe(nil), Regexp)
+
+# source://net-imap//lib/net/imap/sequence_set.rb#413
+Net::IMAP::SequenceSet::INSPECT_ABRIDGED_TAIL_RE = T.let(T.unsafe(nil), Regexp)
+
+# source://net-imap//lib/net/imap/sequence_set.rb#399
+Net::IMAP::SequenceSet::INSPECT_MAX_LEN = T.let(T.unsafe(nil), Integer)
+
+# source://net-imap//lib/net/imap/sequence_set.rb#400
+Net::IMAP::SequenceSet::INSPECT_TRUNCATE_LEN = T.let(T.unsafe(nil), Integer)
 
 # valid inputs for "*"
 #

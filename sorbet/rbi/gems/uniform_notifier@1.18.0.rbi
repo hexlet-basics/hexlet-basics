@@ -44,7 +44,7 @@ class UniformNotifier
     # source://uniform_notifier//lib/uniform_notifier.rb#62
     def customized_logger; end
 
-    # source://uniform_notifier//lib/uniform_notifier.rb#74
+    # source://uniform_notifier//lib/uniform_notifier.rb#62
     def customized_logger=(logdev); end
 
     # source://uniform_notifier//lib/uniform_notifier.rb#62
@@ -68,7 +68,7 @@ class UniformNotifier
     # source://uniform_notifier//lib/uniform_notifier.rb#62
     def raise; end
 
-    # source://uniform_notifier//lib/uniform_notifier.rb#84
+    # source://uniform_notifier//lib/uniform_notifier.rb#62
     def raise=(exception_class); end
 
     # source://uniform_notifier//lib/uniform_notifier.rb#62
@@ -86,7 +86,7 @@ class UniformNotifier
     # source://uniform_notifier//lib/uniform_notifier.rb#62
     def slack; end
 
-    # source://uniform_notifier//lib/uniform_notifier.rb#79
+    # source://uniform_notifier//lib/uniform_notifier.rb#62
     def slack=(slack); end
 
     # source://uniform_notifier//lib/uniform_notifier.rb#62
@@ -98,7 +98,7 @@ class UniformNotifier
     # source://uniform_notifier//lib/uniform_notifier.rb#62
     def xmpp; end
 
-    # source://uniform_notifier//lib/uniform_notifier.rb#69
+    # source://uniform_notifier//lib/uniform_notifier.rb#62
     def xmpp=(xmpp); end
   end
 end

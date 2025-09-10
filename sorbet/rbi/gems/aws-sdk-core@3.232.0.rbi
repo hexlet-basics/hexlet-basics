@@ -13815,7 +13815,7 @@ class Aws::SharedConfig
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#377
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#386
   def assume_role_process_credentials_from_config(profile); end
 
   # @api private
@@ -13825,17 +13825,17 @@ class Aws::SharedConfig
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#396
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#405
   def credentials_from_config(profile, _opts); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#463
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#472
   def credentials_from_profile(prof_config); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#390
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#399
   def credentials_from_shared(profile, _opts); end
 
   # @api private
@@ -13845,22 +13845,22 @@ class Aws::SharedConfig
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#492
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#501
   def default_shared_config_path(file); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#488
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#497
   def determine_config_path; end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#484
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#493
   def determine_credentials_path; end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#508
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#517
   def determine_profile(options); end
 
   # Get a config value from from shared credential/config files.
@@ -13874,12 +13874,12 @@ class Aws::SharedConfig
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#480
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#489
   def load_config_file; end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#474
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#483
   def load_credentials_file; end
 
   # @api private
@@ -13897,12 +13897,12 @@ class Aws::SharedConfig
   #
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#404
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#413
   def sso_credentials_from_profile(cfg, profile); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#515
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#524
   def sso_session(cfg, profile, sso_session_name); end
 
   # If the required sso_ profile values are present, attempt to construct
@@ -13910,17 +13910,17 @@ class Aws::SharedConfig
   #
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#448
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#457
   def sso_token_from_profile(cfg, profile); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#499
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#508
   def validate_profile_exists(profile); end
 
   # @api private
   #
-  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#532
+  # source://aws-sdk-core//lib/aws-sdk-core/shared_config.rb#541
   def with_metrics(metrics, &block); end
 
   class << self

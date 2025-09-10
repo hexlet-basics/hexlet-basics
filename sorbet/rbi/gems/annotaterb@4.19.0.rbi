@@ -229,11 +229,6 @@ class AnnotateRb::ModelAnnotator::Annotation::AnnotationBuilder
 
   # source://annotaterb//lib/annotate_rb/model_annotator/annotation/annotation_builder.rb#61
   def build; end
-
-  private
-
-  # source://annotaterb//lib/annotate_rb/model_annotator/annotation/annotation_builder.rb#74
-  def migration_version_for_model(model); end
 end
 
 # source://annotaterb//lib/annotate_rb/model_annotator/annotation/annotation_builder.rb#7
@@ -408,7 +403,7 @@ class AnnotateRb::ModelAnnotator::AnnotationDecider
 
   private
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/annotation_decider.rb#37
+  # source://annotaterb//lib/annotate_rb/model_annotator/annotation_decider.rb#46
   def file_contains_skip_annotation; end
 end
 
@@ -1394,7 +1389,7 @@ class AnnotateRb::ModelAnnotator::ModelFilesGetter
 
     private
 
-    # source://annotaterb//lib/annotate_rb/model_annotator/model_files_getter.rb#42
+    # source://annotaterb//lib/annotate_rb/model_annotator/model_files_getter.rb#41
     def list_model_files_from_argument(options); end
   end
 end
@@ -1449,6 +1444,9 @@ class AnnotateRb::ModelAnnotator::ModelWrapper
   #
   # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#89
   def max_schema_info_width; end
+
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#225
+  def migration_version; end
 
   # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#83
   def model_name; end
