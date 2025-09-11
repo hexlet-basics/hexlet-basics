@@ -123,6 +123,7 @@ GEM
     brakeman (7.1.0)
       racc
     browser (6.2.0)
+    browserslist (0.1.0)
     builder (3.3.0)
     bullet (8.0.8)
       activesupport (>= 3.0.0)
@@ -606,6 +607,7 @@ DEPENDENCIES
   bootsnap
   brakeman
   browser
+  browserslist
   bullet
   capybara
   configus

@@ -3,6 +3,7 @@ class Web::ApplicationController < ApplicationController
   include SurveyConcern
   include RedirectConcern
 
+  allow_browser versions: Browserslist.browsers
   inertia_share flash: -> { flash.to_hash }
 
   include FlashConcern
