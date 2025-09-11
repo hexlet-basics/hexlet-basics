@@ -687,7 +687,7 @@ class Typelizer::ModelPlugins::ActiveRecord
   # source://typelizer//lib/typelizer/model_plugins/active_record.rb#34
   def infer_types_for_association(prop); end
 
-  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#88
+  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#87
   def infer_types_for_attribute(prop); end
 
   # source://typelizer//lib/typelizer/model_plugins/active_record.rb#62

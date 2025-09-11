@@ -4,7 +4,6 @@ import dayjs from 'dayjs';
 import { Link, Search } from 'lucide-react';
 import { DataTable } from 'mantine-datatable';
 import type { PropsWithChildren } from 'react';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AppAnchor from '@/components/Elements/AppAnchor';
 import MarkdownViewer from '@/components/MarkdownViewer';
@@ -41,7 +40,7 @@ function DataBox({
         data
       </Button>
       <Modal opened={opened} onClose={handlers.close} size="50vw">
-        <MarkdownViewer>{review.summary}</MarkdownViewer>
+        <MarkdownViewer>{review.summary ?? ''}</MarkdownViewer>
       </Modal>
     </Box>
   );

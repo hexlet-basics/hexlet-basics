@@ -1041,7 +1041,7 @@ class REXML::Document < ::REXML::Element
   #   d.add(REXML::Element.new('foo'))
   #   d.to_s # => "<foo/>"
   #
-  # source://rexml//lib/rexml/document.rb#203
+  # source://rexml//lib/rexml/document.rb#205
   def <<(child); end
 
   # :call-seq:
@@ -1078,7 +1078,7 @@ class REXML::Document < ::REXML::Element
   #   d.add(REXML::Element.new('foo'))
   #   d.to_s # => "<foo/>"
   #
-  # source://rexml//lib/rexml/document.rb#172
+  # source://rexml//lib/rexml/document.rb#174
   def add(child); end
 
   # :call-seq:
@@ -1088,7 +1088,7 @@ class REXML::Document < ::REXML::Element
   #
   #   REXML::Element.add_element(name_or_element, attributes)
   #
-  # source://rexml//lib/rexml/document.rb#211
+  # source://rexml//lib/rexml/document.rb#213
   def add_element(arg = T.unsafe(nil), arg2 = T.unsafe(nil)); end
 
   # :call-seq:
@@ -1097,7 +1097,7 @@ class REXML::Document < ::REXML::Element
   # Returns the new document resulting from executing
   # <tt>Document.new(self)</tt>.  See Document.new.
   #
-  # source://rexml//lib/rexml/document.rb#122
+  # source://rexml//lib/rexml/document.rb#124
   def clone; end
 
   # :call-seq:
@@ -1110,10 +1110,10 @@ class REXML::Document < ::REXML::Element
   #   d = REXML::Document.new('')
   #   d.doctype.class # => nil
   #
-  # source://rexml//lib/rexml/document.rb#243
+  # source://rexml//lib/rexml/document.rb#245
   def doctype; end
 
-  # source://rexml//lib/rexml/document.rb#446
+  # source://rexml//lib/rexml/document.rb#448
   def document; end
 
   # :call-seq:
@@ -1126,31 +1126,31 @@ class REXML::Document < ::REXML::Element
   #   d = REXML::Document.new('')
   #   d.encoding # => "UTF-8"
   #
-  # source://rexml//lib/rexml/document.rb#292
+  # source://rexml//lib/rexml/document.rb#294
   def encoding; end
 
   # Returns the value of attribute entity_expansion_count.
   #
-  # source://rexml//lib/rexml/document.rb#435
+  # source://rexml//lib/rexml/document.rb#437
   def entity_expansion_count; end
 
   # Sets the attribute entity_expansion_limit
   #
   # @param value the value to set the attribute entity_expansion_limit to.
   #
-  # source://rexml//lib/rexml/document.rb#436
+  # source://rexml//lib/rexml/document.rb#438
   def entity_expansion_limit=(_arg0); end
 
   # Returns the value of attribute entity_expansion_text_limit.
   #
-  # source://rexml//lib/rexml/document.rb#437
+  # source://rexml//lib/rexml/document.rb#439
   def entity_expansion_text_limit; end
 
   # Sets the attribute entity_expansion_text_limit
   #
   # @param value the value to set the attribute entity_expansion_text_limit to.
   #
-  # source://rexml//lib/rexml/document.rb#437
+  # source://rexml//lib/rexml/document.rb#439
   def entity_expansion_text_limit=(_arg0); end
 
   # :call-seq:
@@ -1158,7 +1158,7 @@ class REXML::Document < ::REXML::Element
   #
   # Returns an empty string.
   #
-  # source://rexml//lib/rexml/document.rb#131
+  # source://rexml//lib/rexml/document.rb#133
   def expanded_name; end
 
   # :call-seq:
@@ -1168,7 +1168,7 @@ class REXML::Document < ::REXML::Element
   # d = doc_type
   # d ? d.name : "UNDEFINED"
   #
-  # source://rexml//lib/rexml/document.rb#136
+  # source://rexml//lib/rexml/document.rb#138
   def name; end
 
   # :call-seq:
@@ -1176,10 +1176,10 @@ class REXML::Document < ::REXML::Element
   #
   # Returns the symbol +:document+.
   #
-  # source://rexml//lib/rexml/document.rb#112
+  # source://rexml//lib/rexml/document.rb#114
   def node_type; end
 
-  # source://rexml//lib/rexml/document.rb#439
+  # source://rexml//lib/rexml/document.rb#441
   def record_entity_expansion; end
 
   # :call-seq:
@@ -1192,7 +1192,7 @@ class REXML::Document < ::REXML::Element
   #   d = REXML::Document.new('')
   #   d.root # => nil
   #
-  # source://rexml//lib/rexml/document.rb#227
+  # source://rexml//lib/rexml/document.rb#229
   def root; end
 
   # :call-seq:
@@ -1208,7 +1208,7 @@ class REXML::Document < ::REXML::Element
   #
   # @return [Boolean]
   #
-  # source://rexml//lib/rexml/document.rb#307
+  # source://rexml//lib/rexml/document.rb#309
   def stand_alone?; end
 
   # :call-seq:
@@ -1222,7 +1222,7 @@ class REXML::Document < ::REXML::Element
   #   d = REXML::Document.new('')
   #   d.version # => "1.0"
   #
-  # source://rexml//lib/rexml/document.rb#277
+  # source://rexml//lib/rexml/document.rb#279
   def version; end
 
   # :call-seq:
@@ -1281,7 +1281,7 @@ class REXML::Document < ::REXML::Element
   #   instead of encoding in XML declaration.
   #   Defaults to nil. It means encoding in XML declaration is used.
   #
-  # source://rexml//lib/rexml/document.rb#367
+  # source://rexml//lib/rexml/document.rb#369
   def write(*arguments); end
 
   # :call-seq:
@@ -1297,30 +1297,30 @@ class REXML::Document < ::REXML::Element
   #   d.xml_decl.class # => REXML::XMLDecl
   #   d.xml_decl.to_s  # => ""
   #
-  # source://rexml//lib/rexml/document.rb#260
+  # source://rexml//lib/rexml/document.rb#262
   def xml_decl; end
 
   private
 
-  # source://rexml//lib/rexml/document.rb#465
+  # source://rexml//lib/rexml/document.rb#467
   def build(source); end
 
   # New document level cache is created and available in this block.
   # This API is thread unsafe. Users can't change this document in this block.
   #
-  # source://rexml//lib/rexml/document.rb#456
+  # source://rexml//lib/rexml/document.rb#458
   def enable_cache; end
 
   # Returns the value of attribute namespaces_cache.
   #
-  # source://rexml//lib/rexml/document.rb#452
+  # source://rexml//lib/rexml/document.rb#454
   def namespaces_cache; end
 
   # Sets the attribute namespaces_cache
   #
   # @param value the value to set the attribute namespaces_cache to.
   #
-  # source://rexml//lib/rexml/document.rb#452
+  # source://rexml//lib/rexml/document.rb#454
   def namespaces_cache=(_arg0); end
 
   class << self
@@ -1328,31 +1328,31 @@ class REXML::Document < ::REXML::Element
     #
     # Deprecated. Use REXML::Security.entity_expansion_limit= instead.
     #
-    # source://rexml//lib/rexml/document.rb#417
+    # source://rexml//lib/rexml/document.rb#419
     def entity_expansion_limit; end
 
     # Set the entity expansion limit. By default the limit is set to 10000.
     #
     # Deprecated. Use REXML::Security.entity_expansion_limit= instead.
     #
-    # source://rexml//lib/rexml/document.rb#410
+    # source://rexml//lib/rexml/document.rb#412
     def entity_expansion_limit=(val); end
 
     # Get the entity expansion limit. By default the limit is set to 10240.
     #
     # Deprecated. Use REXML::Security.entity_expansion_text_limit instead.
     #
-    # source://rexml//lib/rexml/document.rb#431
+    # source://rexml//lib/rexml/document.rb#433
     def entity_expansion_text_limit; end
 
     # Set the entity expansion limit. By default the limit is set to 10240.
     #
     # Deprecated. Use REXML::Security.entity_expansion_text_limit= instead.
     #
-    # source://rexml//lib/rexml/document.rb#424
+    # source://rexml//lib/rexml/document.rb#426
     def entity_expansion_text_limit=(val); end
 
-    # source://rexml//lib/rexml/document.rb#403
+    # source://rexml//lib/rexml/document.rb#405
     def parse_stream(source, listener); end
   end
 end

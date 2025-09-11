@@ -29,46 +29,46 @@ module Term::ANSIColor
 
   # Returns an array of all Term::ANSIColor attributes as symbols.
   #
-  # source://term-ansicolor//lib/term/ansicolor.rb#122
+  # source://term-ansicolor//lib/term/ansicolor.rb#126
   def attributes; end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color8.rb#5
   def black(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/text.rb#13
   def blink(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color8.rb#9
   def blue(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/text.rb#9
   def bold(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#6
   def bright_black(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#14
   def bright_blue(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#18
   def bright_cyan(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#10
   def bright_green(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#16
   def bright_magenta(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#8
   def bright_red(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#20
   def bright_white(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#12
   def bright_yellow(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/text.rb#7
   def clear(string = T.unsafe(nil), &block); end
 
   # Return +string+ or the result string of the given +block+ colored with
@@ -78,853 +78,853 @@ module Term::ANSIColor
   # source://term-ansicolor//lib/term/ansicolor.rb#97
   def color(name, string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#5
   def color0(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#6
   def color1(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#16
   def color10(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color100(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color101(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color102(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color103(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color104(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color105(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color106(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color107(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color108(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color109(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#17
   def color11(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color110(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color111(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color112(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color113(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color114(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color115(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color116(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color117(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color118(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color119(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#18
   def color12(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color120(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color121(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color122(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color123(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color124(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color125(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color126(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color127(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color128(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color129(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#19
   def color13(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color130(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color131(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color132(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color133(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color134(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color135(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color136(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color137(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color138(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color139(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#20
   def color14(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color140(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color141(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color142(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color143(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color144(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color145(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color146(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color147(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color148(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color149(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#21
   def color15(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color150(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color151(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color152(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color153(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color154(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color155(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color156(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color157(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color158(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color159(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color16(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color160(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color161(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color162(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color163(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color164(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color165(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color166(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color167(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color168(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color169(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color17(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color170(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color171(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color172(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color173(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color174(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color175(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color176(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color177(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color178(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color179(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color18(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color180(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color181(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color182(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color183(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color184(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color185(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color186(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color187(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color188(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color189(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color19(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color190(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color191(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color192(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color193(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color194(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color195(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color196(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color197(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color198(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color199(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#7
   def color2(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color20(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color200(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color201(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color202(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color203(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color204(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color205(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color206(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color207(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color208(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color209(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color21(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color210(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color211(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color212(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color213(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color214(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color215(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color216(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color217(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color218(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color219(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color22(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color220(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color221(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color222(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color223(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color224(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color225(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color226(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color227(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color228(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color229(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color23(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color230(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color231(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#32
   def color232(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#32
   def color233(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#32
   def color234(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#32
   def color235(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#32
   def color236(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#32
   def color237(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#32
   def color238(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#32
   def color239(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color24(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#32
   def color240(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#32
   def color241(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#32
   def color242(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#32
   def color243(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#32
   def color244(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#32
   def color245(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#32
   def color246(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#32
   def color247(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#32
   def color248(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#32
   def color249(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color25(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#32
   def color250(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#32
   def color251(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#32
   def color252(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#32
   def color253(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#32
   def color254(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#32
   def color255(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color26(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color27(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color28(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color29(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#8
   def color3(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color30(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color31(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color32(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color33(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color34(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color35(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color36(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color37(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color38(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color39(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#9
   def color4(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color40(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color41(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color42(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color43(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color44(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color45(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color46(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color47(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color48(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color49(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#10
   def color5(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color50(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color51(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color52(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color53(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color54(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color55(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color56(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color57(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color58(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color59(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#11
   def color6(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color60(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color61(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color62(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color63(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color64(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color65(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color66(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color67(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color68(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color69(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#12
   def color7(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color70(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color71(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color72(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color73(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color74(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color75(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color76(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color77(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color78(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color79(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#14
   def color8(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color80(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color81(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color82(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color83(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color84(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color85(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color86(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color87(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color88(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color89(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#15
   def color9(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color90(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color91(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color92(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color93(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color94(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color95(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color96(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color97(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color98(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#27
   def color99(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/text.rb#18
   def conceal(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/text.rb#17
   def concealed(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color8.rb#11
   def cyan(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/text.rb#10
   def dark(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/text.rb#11
   def faint(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color8.rb#7
   def green(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#5
   def intense_black(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#13
   def intense_blue(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#17
   def intense_cyan(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#9
   def intense_green(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#15
   def intense_magenta(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#7
   def intense_red(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#19
   def intense_white(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#11
   def intense_yellow(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/text.rb#12
   def italic(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color8.rb#10
   def magenta(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/text.rb#16
   def negative(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color8.rb#14
   def on_black(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color8.rb#18
   def on_blue(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#23
   def on_bright_black(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#31
   def on_bright_blue(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#35
   def on_bright_cyan(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#27
   def on_bright_green(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#33
   def on_bright_magenta(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#25
   def on_bright_red(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#37
   def on_bright_white(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#29
   def on_bright_yellow(string = T.unsafe(nil), &block); end
 
   # Return +string+ or the result string of the given +block+ with a
@@ -934,832 +934,832 @@ module Term::ANSIColor
   # source://term-ansicolor//lib/term/ansicolor.rb#104
   def on_color(name, string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#36
   def on_color0(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#37
   def on_color1(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#47
   def on_color10(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color100(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color101(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color102(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color103(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color104(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color105(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color106(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color107(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color108(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color109(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#48
   def on_color11(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color110(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color111(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color112(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color113(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color114(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color115(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color116(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color117(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color118(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color119(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#49
   def on_color12(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color120(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color121(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color122(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color123(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color124(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color125(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color126(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color127(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color128(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color129(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#50
   def on_color13(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color130(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color131(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color132(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color133(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color134(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color135(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color136(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color137(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color138(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color139(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#51
   def on_color14(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color140(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color141(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color142(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color143(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color144(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color145(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color146(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color147(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color148(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color149(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#52
   def on_color15(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color150(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color151(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color152(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color153(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color154(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color155(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color156(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color157(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color158(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color159(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color16(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color160(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color161(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color162(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color163(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color164(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color165(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color166(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color167(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color168(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color169(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color17(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color170(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color171(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color172(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color173(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color174(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color175(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color176(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color177(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color178(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color179(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color18(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color180(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color181(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color182(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color183(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color184(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color185(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color186(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color187(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color188(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color189(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color19(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color190(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color191(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color192(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color193(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color194(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color195(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color196(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color197(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color198(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color199(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#38
   def on_color2(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color20(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color200(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color201(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color202(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color203(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color204(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color205(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color206(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color207(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color208(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color209(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color21(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color210(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color211(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color212(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color213(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color214(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color215(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color216(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color217(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color218(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color219(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color22(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color220(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color221(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color222(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color223(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color224(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color225(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color226(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color227(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color228(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color229(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color23(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color230(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color231(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#64
   def on_color232(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#64
   def on_color233(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#64
   def on_color234(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#64
   def on_color235(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#64
   def on_color236(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#64
   def on_color237(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#64
   def on_color238(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#64
   def on_color239(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color24(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#64
   def on_color240(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#64
   def on_color241(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#64
   def on_color242(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#64
   def on_color243(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#64
   def on_color244(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#64
   def on_color245(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#64
   def on_color246(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#64
   def on_color247(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#64
   def on_color248(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#64
   def on_color249(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color25(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#64
   def on_color250(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#64
   def on_color251(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#64
   def on_color252(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#64
   def on_color253(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#64
   def on_color254(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#64
   def on_color255(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color26(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color27(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color28(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color29(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#39
   def on_color3(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color30(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color31(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color32(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color33(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color34(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color35(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color36(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color37(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color38(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color39(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#40
   def on_color4(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color40(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color41(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color42(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color43(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color44(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color45(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color46(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color47(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color48(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color49(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#41
   def on_color5(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color50(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color51(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color52(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color53(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color54(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color55(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color56(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color57(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color58(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color59(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#42
   def on_color6(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color60(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color61(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color62(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color63(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color64(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color65(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color66(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color67(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color68(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color69(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#43
   def on_color7(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color70(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color71(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color72(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color73(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color74(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color75(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color76(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color77(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color78(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color79(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#45
   def on_color8(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color80(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color81(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color82(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color83(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color84(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color85(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color86(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color87(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color88(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color89(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#46
   def on_color9(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color90(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color91(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color92(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color93(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color94(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color95(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color96(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color97(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color98(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color256.rb#58
   def on_color99(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color8.rb#20
   def on_cyan(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color8.rb#16
   def on_green(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#22
   def on_intense_black(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#30
   def on_intense_blue(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#34
   def on_intense_cyan(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#26
   def on_intense_green(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#32
   def on_intense_magenta(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#24
   def on_intense_red(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#36
   def on_intense_white(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/intense_color8.rb#28
   def on_intense_yellow(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color8.rb#19
   def on_magenta(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color8.rb#15
   def on_red(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color8.rb#21
   def on_white(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color8.rb#17
   def on_yellow(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/text.rb#20
   def overline(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/text.rb#14
   def rapid_blink(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color8.rb#6
   def red(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/text.rb#8
   def reset(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/text.rb#15
   def reverse(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/text.rb#19
   def strikethrough(string = T.unsafe(nil), &block); end
 
   # Returns an array of all Term::ANSIColor attributes as symbols.
@@ -1776,19 +1776,19 @@ module Term::ANSIColor
   # Returns an uncolored version of the string, that is all ANSI-Attributes
   # are stripped from the string.
   #
-  # source://term-ansicolor//lib/term/ansicolor.rb#58
+  # source://term-ansicolor//lib/term/ansicolor.rb#70
   def uncolored(string = T.unsafe(nil)); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color8.rb#12
   def white(string = T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute.rb#11
+  # source://term-ansicolor//lib/term/ansicolor/attribute/color8.rb#8
   def yellow(string = T.unsafe(nil), &block); end
 
   class << self
     # Returns an array of all Term::ANSIColor attributes as symbols.
     #
-    # source://term-ansicolor//lib/term/ansicolor.rb#114
+    # source://term-ansicolor//lib/term/ansicolor.rb#118
     def attributes; end
 
     # Turns the coloring on or off globally, so you can easily do
@@ -1950,7 +1950,7 @@ module Term::ANSIColor::Attribute::Underline
   # source://term-ansicolor//lib/term/ansicolor/attribute/underline.rb#8
   def underline(string = T.unsafe(nil), color: T.unsafe(nil), type: T.unsafe(nil), &block); end
 
-  # source://term-ansicolor//lib/term/ansicolor/attribute/underline.rb#8
+  # source://term-ansicolor//lib/term/ansicolor/attribute/underline.rb#30
   def underscore(string = T.unsafe(nil), color: T.unsafe(nil), type: T.unsafe(nil), &block); end
 end
 
