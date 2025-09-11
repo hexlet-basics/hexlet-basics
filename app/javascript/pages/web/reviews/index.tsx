@@ -59,7 +59,11 @@ export default function New({ reviews, pagy }: Props) {
             </Card>
           ))}
         </SimpleGrid>
-        <XPaging pagy={pagy} />
+        <XPaging
+          pagy={pagy}
+          path={(page) => Routes.reviews_path({ page })}
+          only={['reviews', 'pagy']}
+        />
       </Container>
     </ApplicationLayout>
   );
