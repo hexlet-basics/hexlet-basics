@@ -134,6 +134,7 @@ gem "ahoy_matey"
 
 # gem "strong_migrations"
 gem "browser"
+gem "browserslist"
 #
 gem "meta-tags"
 #

@@ -62,6 +62,9 @@ sync-i18n:
 sync-fixtures:
 	bin/rails db:fixtures:load
 
+sync-browserlist:
+	bundle exec browserslist generate
+
 editor-setup:
 	-bin/tapioca gems --verify
 	-bin/tapioca dsl --verify
@@ -75,7 +78,7 @@ sync-types:
 	bin/rails app:export_enums_to_ts
 
 
-sync: sync-i18n sync-fixtures sync-types
+sync: sync-i18n sync-fixtures sync-types sync-browserlist
 
 coverage-open:
 	open coverage/index.html
