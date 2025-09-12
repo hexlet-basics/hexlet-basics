@@ -45,7 +45,7 @@ spec:
                   - key: "codebasics/pod"
                     operator: In
                     values:
-                      - "{{ .Release.Name }}-{{ .Values.version }}-job-pod"
+                      - "{{ .Release.Name }}-{{ .Values.version }}-web-pod"
               topologyKey: "kubernetes.io/hostname"
 
       volumes:
@@ -61,15 +61,6 @@ spec:
             items:
               - key: .dockerconfigjson
                 path: config.json
-
-      # TODO: нужно только при первом деплое для смены прав. Закомментировать после первого деплоя
-      # initContainers:
-      #   - name: volume-permissions
-      #     image: busybox
-      #     command: ['sh', '-c', 'chown -R 1000:1000 /tmp/hexlet-basics']
-      #     volumeMounts:
-      #       - mountPath: /tmp/hexlet-basics
-      #         name: users-code-path
 
       # NOTE: по умолчанию, если контейнеры не завершили свою работу за 30с, они будут завершены принудительно
       # увеличиваем время ожидания с дефолтных 30с на 45с, так как дефолтного времени может уже быть недостаточно

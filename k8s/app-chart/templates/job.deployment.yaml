@@ -45,7 +45,7 @@ spec:
                   - key: "codebasics/pod"
                     operator: In
                     values:
-                      - "{{ .Release.Name }}-{{ .Values.version }}-web-check-pod"
+                      - "{{ .Release.Name }}-{{ .Values.version }}-web-pod"
               topologyKey: "kubernetes.io/hostname"
 
       volumes:
