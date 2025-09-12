@@ -47,6 +47,14 @@ spec:
                     values:
                       - "{{ .Release.Name }}-{{ .Values.version }}-web-pod"
               topologyKey: "kubernetes.io/hostname"
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: role
+                    operator: In
+                    values:
+                      - web
 
       volumes:
         - name: users-code-path
@@ -207,7 +215,7 @@ spec:
                 name: codebasics-environment-secrets
           env:
             - name: RAILS_MAX_THREADS
-              value: "5"
+              value: "6"
 
           lifecycle:
             preStop:

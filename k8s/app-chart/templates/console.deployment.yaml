@@ -31,15 +31,14 @@ spec:
         - name: docker-config
 
       affinity:
-        podAntiAffinity:
+        nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: "codebasics/pod"
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: role
                     operator: In
                     values:
-                      - "{{ .Release.Name }}-{{ .Values.version }}-web-pod"
-              topologyKey: "kubernetes.io/hostname"
+                      - service
 
       volumes:
         - name: users-code-path
