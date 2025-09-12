@@ -26,9 +26,9 @@ class DockerExerciseClient < DockerExerciseClientInterface
     system("docker rm exercises-#{lang_name}")
   end
 
-  def self.run_exercise(created_code_file_path:, exercise_file_path:, docker_image:, image_tag:, path_to_code:)
+  def self.run_exercise(created_code_file_path:, exercise_file_path:, full_image_name:, path_to_code:)
     volume = "-v #{created_code_file_path}:#{exercise_file_path}"
-    command = "docker run --rm --memory=512m --memory-swap=-1 --network none #{volume} #{docker_image}:#{image_tag} timeout 6 make --silent -C #{path_to_code} test"
+    command = "docker run --rm --memory=512m --memory-swap=-1 --network none #{volume} #{full_image_name} timeout 6 make --silent -C #{path_to_code} test"
     Rails.logger.debug(command)
 
     output = []
@@ -45,5 +45,16 @@ class DockerExerciseClient < DockerExerciseClientInterface
 
     push_command = "docker push #{image_name(lang_name)}:release"
     raise "Docker push error" unless system(push_command)
+  end
+
+  def self.ensure_image(image_name:, image_tag:, lang_name:, lang_version:)
+    full_image_name = "#{image_name(lang_name)}:v#{lang_version}"
+
+    unless system("docker image inspect #{full_image_name} > /dev/null 2>&1")
+      system("docker pull #{image_name}:#{image_tag}")
+      system("docker tag #{image_name}:#{image_tag} #{full_image_name}")
+    end
+
+    full_image_name
   end
 end

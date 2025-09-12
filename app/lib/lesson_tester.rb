@@ -14,11 +14,17 @@ class LessonTester
     exercise_file_path = File.join(lesson_version.path_to_code, language_version.exercise_filename)
     Rails.logger.debug(exercise_file_path)
 
+    full_image_name = docker_exercise_client.ensure_image(
+      image_name: language_version.docker_image,
+      image_tag: language_version.image_tag,
+      lang_name:  language_version.language.slug,
+      lang_version: language_version.id
+    )
+
     output, process_status = docker_exercise_client.run_exercise(
       created_code_file_path: created_code_file_path,
       exercise_file_path: exercise_file_path,
-      docker_image: language_version.docker_image,
-      image_tag: language_version.image_tag,
+      full_image_name: full_image_name,
       path_to_code: lesson_version.path_to_code
     )
     exitstatus = process_status.exitstatus
