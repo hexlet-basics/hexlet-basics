@@ -270,6 +270,7 @@ GEM
     minitest-power_assert (0.3.1)
       minitest
       power_assert (>= 1.1)
+    mize (0.6.1)
     msgpack (1.8.0)
     multi_json (1.17.0)
     multipart-post (2.4.1)
@@ -316,7 +317,7 @@ GEM
     pp (0.6.2)
       prettyprint
     prettyprint (0.2.0)
-    prism (1.4.0)
+    prism (1.5.0)
     psych (5.2.6)
       date
       stringio
@@ -535,8 +536,9 @@ GEM
     thruster (0.1.15-x86_64-darwin)
     thruster (0.1.15-x86_64-linux)
     timeout (0.4.3)
-    tins (1.43.0)
+    tins (1.44.0)
       bigdecimal
+      mize (~> 0.6)
       sync
     typelizer (0.5.1)
       railties (>= 6.0.0)
