@@ -67,6 +67,7 @@ ru:
         useful: Полезное
         blog: Блог
         community: Сообщество
+        codebasics: Code Basics (от Хекслет)
         reviews: Отзывы
         authors: Автору
         sitemap: Карта сайта
@@ -81,7 +82,7 @@ ru:
         information: Информация
         about: О проекте
         categories: Категории
-        courses: Курсы
+        courses: Курсы %{number}
         tos: Условия использования
         privacy: Политика конфиденциальности
         cookie_policy: Cookie Policy

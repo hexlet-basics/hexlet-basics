@@ -6,11 +6,13 @@ import {
   Divider,
   Grid,
   Group,
+  SimpleGrid,
   Stack,
   Text,
 } from '@mantine/core';
+import { chunk } from 'es-toolkit';
 import i18next from 'i18next';
-import { Github, Send } from 'lucide-react';
+import { Github, Send, Youtube } from 'lucide-react';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Organization, WithContext } from 'schema-dts';
@@ -28,7 +30,13 @@ function FooterLink(
   const { href, children, external = false, pseudo = false } = props;
 
   return (
-    <AppAnchor c="dimmed" href={href} external={external} pseudo={pseudo}>
+    <AppAnchor
+      fz="sm"
+      // c="dimmed"
+      href={href}
+      external={external}
+      pseudo={pseudo}
+    >
       {children}
     </AppAnchor>
   );
@@ -48,6 +56,11 @@ export default function FooterBlock() {
     telephone: tCommon('organization.phone'),
   };
 
+  const landingGroups = chunk(
+    landingPagesForFooter,
+    Math.ceil(landingPagesForFooter.length / 2),
+  );
+
   return (
     <>
       <Head>
@@ -56,43 +69,40 @@ export default function FooterBlock() {
         </script>
       </Head>
 
-      <Box bg="gray.0" mt={100} pt="lg">
+      <Box bg="gray.0" mt={100} py="lg" fz="sm">
         <Container size="lg" pt="lg">
           <footer>
-            <Grid justify="space-b">
-              {i18next.language === 'ru' && (
-                <Grid.Col span={{ base: 12, xs: 6, md: 3 }}>
-                  <Stack gap="sm">
-                    <Anchor href="tel:+78001002247" fz="h3">
-                      8 800 100 22 47
-                    </Anchor>
-                    <Anchor href="tel:+74950852162" fz="h3">
-                      +7 495 085 21 62
-                    </Anchor>
-                    <Anchor href="mailto:support@hexlet.io">
-                      support@hexlet.io
-                    </Anchor>
-                  </Stack>
-                  <Stack mt="sm" gap={0}>
-                    <AppAnchor href="https://ru.hexlet.io" external mb="xs">
-                      ООО «Хекслет Рус»
-                    </AppAnchor>
-                    <Text>
-                      108813 г. Москва, вн.тер.г. поселение Московский, г.
-                      Московский
-                    </Text>
-                    <Text mb="xs">
-                      ул. Солнечная, д. 3А, стр. 1, помещ. 10/3
-                    </Text>
-                    <Text>ОГРН 1217300010476</Text>
-                  </Stack>
-                </Grid.Col>
-              )}
+            <SimpleGrid cols={{ base: 4 }}>
+              <Stack gap="sm">
+                <Text fz="sm" fw="bold">
+                  {tLayouts('shared.footer.codebasics')}
+                </Text>
+                {i18next.language === 'ru' && (
+                  <FooterLink href={Routes.map_path()}>
+                    {tLayouts('shared.footer.sitemap')}
+                  </FooterLink>
+                )}
+                <FooterLink href={Routes.page_path('about')} pseudo>
+                  {tLayouts('shared.footer.about')}
+                </FooterLink>
+                <FooterLink href={Routes.blog_posts_path()} pseudo>
+                  {tLayouts('shared.footer.blog')}
+                </FooterLink>
+                <FooterLink href={Routes.reviews_path()}>
+                  {tLayouts('shared.footer.reviews')}
+                </FooterLink>
+                <FooterLink pseudo href={Routes.page_path('authors')}>
+                  {tLayouts('shared.footer.authors')}
+                </FooterLink>
+              </Stack>
 
-              <Grid.Col span={{ base: 12, xs: 6, md: 3 }}>
-                <Text fw="bold">{tLayouts('shared.footer.courses')}</Text>
-                <Stack gap={3}>
-                  {landingPagesForFooter.map((lp) => (
+              {landingGroups.map((group, index) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: -
+                <Stack key={index} gap="sm">
+                  <Text fw="bold" fz="sm">
+                    {tLayouts('shared.footer.courses', { number: index + 1 })}
+                  </Text>
+                  {group.map((lp) => (
                     <FooterLink
                       key={lp.id}
                       href={Routes.language_path(lp.slug)}
@@ -101,80 +111,93 @@ export default function FooterBlock() {
                     </FooterLink>
                   ))}
                 </Stack>
-              </Grid.Col>
+              ))}
 
-              <Grid.Col span={{ base: 12, xs: 6, md: 3 }}>
-                <Stack gap={3}>
-                  <Text fw="bold">{tLayouts('shared.footer.categories')}</Text>
-                  {courseCategories.map((category) => (
-                    <FooterLink
-                      key={category.id}
-                      href={Routes.language_category_path(category.slug!)}
-                    >
-                      {category.header}
-                    </FooterLink>
-                  ))}
-                </Stack>
-              </Grid.Col>
-
-              <Grid.Col
-                span={{ base: 12, xs: 6, md: 3 }}
-                order={{ base: 1, lg: 0 }}
-              >
-                <Stack gap={3}>
-                  {i18next.language === 'ru' && (
-                    <FooterLink href={Routes.map_path()}>
-                      {tLayouts('shared.footer.sitemap')}
-                    </FooterLink>
-                  )}
-                  <FooterLink href={Routes.page_path('about')} pseudo>
-                    {tLayouts('shared.footer.about')}
+              <Stack gap="sm">
+                <Text fw="bold" fz="sm">
+                  {tLayouts('shared.footer.categories')}
+                </Text>
+                {courseCategories.map((category) => (
+                  <FooterLink
+                    key={category.id}
+                    href={Routes.language_category_path(category.slug!)}
+                  >
+                    {category.header}
                   </FooterLink>
-                  <FooterLink href={Routes.blog_posts_path()} pseudo>
-                    {tLayouts('shared.footer.blog')}
-                  </FooterLink>
-                  <FooterLink href={Routes.reviews_path()}>
-                    {tLayouts('shared.footer.reviews')}
-                  </FooterLink>
-                  <FooterLink pseudo href={Routes.page_path('authors')}>
-                    {tLayouts('shared.footer.authors')}
-                  </FooterLink>
-                  <FooterLink pseudo href={Routes.page_path('tos')}>
-                    {tLayouts('shared.footer.tos')}
-                  </FooterLink>
-                  <FooterLink pseudo href={Routes.page_path('privacy')}>
-                    {tLayouts('shared.footer.privacy')}
-                  </FooterLink>
-                  <FooterLink pseudo href={Routes.page_path('cookie_policy')}>
-                    {tLayouts('shared.footer.cookie_policy')}
-                  </FooterLink>
-                </Stack>
-              </Grid.Col>
-            </Grid>
+                ))}
+              </Stack>
+            </SimpleGrid>
 
             <Divider my="xl" />
 
-            <Group justify="space-between" align="center">
-              <Text>{`© ${new Date().getFullYear()}`}</Text>
-              <Group gap="md">
-                <AppAnchor
-                  href="https://ttttt.me/hexlet_ru"
-                  external
-                  underline="never"
-                  aria-label="Hexlet Telegram Channel"
-                >
-                  <Send />
-                </AppAnchor>
-                <AppAnchor
-                  href="https://github.com/hexlet-basics"
-                  external
-                  underline="never"
-                  aria-label="Project Repository On Github"
-                >
-                  <Github />
-                </AppAnchor>
-              </Group>
-            </Group>
+            <SimpleGrid cols={{ base: 4 }}>
+              <Stack>
+                <Group align="top">
+                  <AppAnchor
+                    href="https://github.com/hexlet-basics"
+                    external
+                    underline="never"
+                    aria-label="Project Repository On Github"
+                  >
+                    <Github />
+                  </AppAnchor>
+                  <AppAnchor
+                    href="https://ttttt.me/hexlet_ru"
+                    external
+                    underline="never"
+                    aria-label="Hexlet Telegram Channel"
+                  >
+                    <Send />
+                  </AppAnchor>
+                  <AppAnchor
+                    href="https://www.youtube.com/@HexletOrg"
+                    external
+                    underline="never"
+                    aria-label="Youtbe Channel"
+                  >
+                    <Youtube />
+                  </AppAnchor>
+                </Group>
+                <Anchor href="mailto:support@hexlet.io">
+                  support@hexlet.io
+                </Anchor>
+              </Stack>
+
+              <Stack gap="xs">
+                <Anchor href="tel:+78001002247">8 800 100 22 47</Anchor>
+                <Anchor href="tel:+74950852162">+7 495 085 21 62</Anchor>
+              </Stack>
+
+              <Stack gap="xs">
+                <FooterLink pseudo href={Routes.page_path('tos')}>
+                  {tLayouts('shared.footer.tos')}
+                </FooterLink>
+                <FooterLink pseudo href={Routes.page_path('privacy')}>
+                  {tLayouts('shared.footer.privacy')}
+                </FooterLink>
+                <FooterLink pseudo href={Routes.page_path('cookie_policy')}>
+                  {tLayouts('shared.footer.cookie_policy')}
+                </FooterLink>
+              </Stack>
+
+              {i18next.language === 'ru' && (
+                <Stack gap={0}>
+                  <AppAnchor
+                    href="https://ru.hexlet.io"
+                    fz="sm"
+                    external
+                    mb="xs"
+                  >
+                    ООО «Хекслет Рус»
+                  </AppAnchor>
+                  <Text fz="sm">
+                    108813 г. Москва, вн.тер.г. поселение Московский, г.
+                    Московский, ул. Солнечная, д. 3А, стр. 1, помещ. 10/3
+                  </Text>
+                  <Text fz="sm">ОГРН 1217300010476</Text>
+                </Stack>
+              )}
+            </SimpleGrid>
           </footer>
         </Container>
       </Box>
