@@ -62,15 +62,17 @@ export default function FooterBlock() {
             <Grid justify="space-b">
               {i18next.language === 'ru' && (
                 <Grid.Col span={{ base: 12, xs: 6, md: 3 }}>
-                  <Text fz="h3" mb="sm">
-                    8 800 100 22 47
-                  </Text>
-                  <Text fz="h3" mb="sm">
-                    +7 495 085 21 62
-                  </Text>
-                  <Anchor href="mailto:support@hexlet.io">
-                    support@hexlet.io
-                  </Anchor>
+                  <Stack gap="sm">
+                    <Anchor href="tel:+78001002247" fz="h3">
+                      8 800 100 22 47
+                    </Anchor>
+                    <Anchor href="tel:+74950852162" fz="h3">
+                      +7 495 085 21 62
+                    </Anchor>
+                    <Anchor href="mailto:support@hexlet.io">
+                      support@hexlet.io
+                    </Anchor>
+                  </Stack>
                   <Stack mt="sm" gap={0}>
                     <AppAnchor href="https://ru.hexlet.io" external mb="xs">
                       ООО «Хекслет Рус»
