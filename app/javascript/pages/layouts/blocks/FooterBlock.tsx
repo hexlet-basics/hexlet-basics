@@ -72,7 +72,7 @@ export default function FooterBlock() {
                     support@hexlet.io
                   </Anchor>
                   <Stack mt="sm" gap={0}>
-                    <AppAnchor href={Routes.root_path()} mb="xs">
+                    <AppAnchor href="https://ru.hexlet.io" external mb="xs">
                       ООО «Хекслет Рус»
                     </AppAnchor>
                     <Text>
