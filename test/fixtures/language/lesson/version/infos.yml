@@ -35,6 +35,10 @@ DEFAULTS: &DEFAULTS
   theory: |
     <%= Faker::Lorem.paragraph_by_chars(number: 400) %>
 
+    * Переменные
+    * Что-то Еще
+    * И конец
+
     Тут какой-то текст с инлайн кодом `const a = 5` на js
 
     ```html
