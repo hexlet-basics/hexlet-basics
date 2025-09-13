@@ -72,7 +72,7 @@ export default function FooterBlock() {
       <Box bg="gray.0" mt={100} py="lg" fz="sm">
         <Container size="lg" pt="lg">
           <footer>
-            <SimpleGrid cols={{ base: 4 }}>
+            <SimpleGrid cols={{ base: 2, xs: 4 }}>
               <Stack gap="sm">
                 <Text fz="sm" fw="bold">
                   {tLayouts('shared.footer.codebasics')}
@@ -130,7 +130,7 @@ export default function FooterBlock() {
 
             <Divider my="xl" />
 
-            <SimpleGrid cols={{ base: 4 }}>
+            <SimpleGrid cols={{ base: 2, sm: 4 }}>
               <Stack>
                 <Group align="top">
                   <AppAnchor
