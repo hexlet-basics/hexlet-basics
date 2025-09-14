@@ -59,7 +59,7 @@ export default function New({ reviews, pagy }: Props) {
             </Card>
           ))}
         </SimpleGrid>
-        <XPaging pagy={pagy} only={['reviews']} />
+        <XPaging pagy={pagy} />
       </Container>
     </ApplicationLayout>
   );

@@ -6,13 +6,11 @@ import type { Pagy, SharedProps } from '@/types';
 
 type Props = PropsWithChildren & {
   pagy: Pagy;
-  only?: string[];
 };
 
-export default function XPaging({ pagy, only }: Props) {
+export default function XPaging({ pagy }: Props) {
   const { url } = usePage<SharedProps>();
   const origin = fromWindow('location')?.origin;
-  const only_props = only && only.length > 0 ? [...only, 'pagy'] : undefined;
 
   const handleChange = (page: number) => {
     if (!origin) return;
@@ -23,7 +21,6 @@ export default function XPaging({ pagy, only }: Props) {
     router.visit(u.toString(), {
       replace: true,
       preserveState: true,
-      only: only_props,
     });
   };
 
