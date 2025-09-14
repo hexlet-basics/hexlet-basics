@@ -1,20 +1,29 @@
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { Center, Pagination } from '@mantine/core';
 import type { PropsWithChildren } from 'react';
-import type { Pagy } from '@/types';
+import { fromWindow } from '@/lib/utils.ts';
+import type { Pagy, SharedProps } from '@/types';
 
 type Props = PropsWithChildren & {
   pagy: Pagy;
-  path: (page: number) => string;
   only?: string[];
 };
 
-export default function XPaging({ pagy, path, only }: Props) {
+export default function XPaging({ pagy, only }: Props) {
+  const { url } = usePage<SharedProps>();
+  const origin = fromWindow('location')?.origin;
+  const only_props = only && only.length > 0 ? [...only, 'pagy'] : undefined;
+
   const handleChange = (page: number) => {
-    router.visit(path(page), {
+    if (!origin) return;
+
+    const u = new URL(url, origin);
+    u.searchParams.set('page', String(page));
+
+    router.visit(u.toString(), {
       replace: true,
       preserveState: true,
-      only,
+      only: only_props,
     });
   };
 
