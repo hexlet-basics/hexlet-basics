@@ -1,4 +1,4 @@
-import { router, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { Center, Pagination } from '@mantine/core';
 import type { PropsWithChildren } from 'react';
 import { fromWindow } from '@/lib/utils.ts';
@@ -8,20 +8,50 @@ type Props = PropsWithChildren & {
   pagy: Pagy;
 };
 
+const defaultInertiaLinkOptions = {
+  replace: true,
+  preserveState: true,
+};
+
 export default function XPaging({ pagy }: Props) {
   const { url } = usePage<SharedProps>();
   const origin = fromWindow('location')?.origin;
 
-  const handleChange = (page: number) => {
-    if (!origin) return;
-
+  const paginationUrl = (page: number) => {
     const u = new URL(url, origin);
     u.searchParams.set('page', String(page));
+    return u.toString();
+  };
 
-    router.visit(u.toString(), {
-      replace: true,
-      preserveState: true,
-    });
+  const linkComponent = (page: number) => {
+    return {
+      component: Link,
+      href: paginationUrl(page),
+      ...defaultInertiaLinkOptions,
+    };
+  };
+
+  const controlUrl = (control: string) => {
+    switch (control) {
+      case 'next':
+        return pagy.page < pagy.last
+          ? {
+              component: Link,
+              href: paginationUrl(pagy.page + 1),
+              ...defaultInertiaLinkOptions,
+            }
+          : {};
+      case 'previous':
+        return pagy.page > 1
+          ? {
+              component: Link,
+              href: paginationUrl(pagy.page - 1),
+              ...defaultInertiaLinkOptions,
+            }
+          : {};
+      default:
+        return {};
+    }
   };
 
   return (
@@ -30,7 +60,8 @@ export default function XPaging({ pagy }: Props) {
         my="xl"
         total={pagy.last}
         value={pagy.page}
-        onChange={handleChange}
+        getItemProps={(page) => linkComponent(page)}
+        getControlProps={(control) => controlUrl(control)}
         boundaries={1}
         siblings={1}
       />
