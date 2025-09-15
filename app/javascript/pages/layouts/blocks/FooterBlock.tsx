@@ -107,7 +107,7 @@ export default function FooterBlock() {
                       key={lp.id}
                       href={Routes.language_path(lp.slug)}
                     >
-                      {lp.header}
+                      {lp.name}
                     </FooterLink>
                   ))}
                 </Stack>
@@ -122,7 +122,7 @@ export default function FooterBlock() {
                     key={category.id}
                     href={Routes.language_category_path(category.slug!)}
                   >
-                    {category.header}
+                    {category.name}
                   </FooterLink>
                 ))}
               </Stack>
