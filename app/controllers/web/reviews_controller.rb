@@ -25,7 +25,7 @@ class Web::ReviewsController < Web::ApplicationController
 
     render inertia: true, props: {
       reviews: ReviewResource.new(records),
-      pagy:
+      pagy: PagyResource.new(pagy)
     }
   end
 end
