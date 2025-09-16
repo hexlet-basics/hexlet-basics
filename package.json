@@ -77,7 +77,7 @@
     "@types/react": "^19.1.13",
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^5.0.2",
-    "browserslist": "^4.26.0",
+    "browserslist": "^4.26.2",
     "browserslist-config-baseline": "^0.5.0",
     "globals": "^16.4.0",
     "lightningcss": "^1.30.1",
