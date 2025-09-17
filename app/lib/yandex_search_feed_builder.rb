@@ -27,7 +27,7 @@ module YandexSearchFeedBuilder
 
           xml.offers do
             landingPages.each do |lp|
-              module_infos = lp.language.current_module_infos.with_locale
+              module_infos = lp.language.current_module_infos.with_locale.includes(version: { lesson_versions: :lesson })
 
               if module_infos.size < 3
                 next
@@ -68,6 +68,10 @@ module YandexSearchFeedBuilder
                     xml.cdata <<-CDATA
                     #{mi.description}
                     CDATA
+                  end
+
+                  mi.version.lesson_versions.sort_by(&:natural_order) .each do |lv|
+                    xml.param(name: "Ссылка на контент курса") { xml.text urls.language_lesson_url(lp.language.slug, lv.lesson.slug, suffix: :ru) }
                   end
                 end
               end
