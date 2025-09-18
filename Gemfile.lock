@@ -245,7 +245,7 @@ GEM
     js-routes (2.3.5)
       railties (>= 5)
       sorbet-runtime
-    json (2.14.0)
+    json (2.14.1)
     jwt (3.1.2)
       base64
     language_server-protocol (3.17.0.5)
