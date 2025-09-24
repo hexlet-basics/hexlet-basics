@@ -1236,10 +1236,8 @@
         }
       },
       "my": {
-        "show": {
-          "finished": "Finished Courses",
-          "started": "Started Courses"
-        }
+        "finished": "Finished Courses",
+        "started": "Started Courses"
       },
       "pages": {
         "parts": {
