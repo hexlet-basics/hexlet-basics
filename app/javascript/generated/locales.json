@@ -593,6 +593,7 @@
           "authors": "For the author",
           "blog": "Blog",
           "categories": "Categories",
+          "codebasics": "Code Basics (by Hexlet)",
           "cookie_policy": "Cookie Policy",
           "courses": "Courses",
           "free_call": "Calls within Russia are toll free",
@@ -1225,7 +1226,7 @@
           "try": "Try It",
           "try_without_registration": "Try it without registering",
           "typescript_description": "TypeScript is a JavaScript-based programming language. Includes a typing system",
-          "updated_at": "updated",
+          "updated_at": "updated %{date}",
           "without_registration": "Start learning right away - first lessons are available without an account. If you like the format, you can register to save your progress"
         },
         "success": {
