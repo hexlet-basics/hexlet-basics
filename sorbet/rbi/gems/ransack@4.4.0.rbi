@@ -18,72 +18,13 @@ class ActionView::Helpers::Tags::Base
   include ::ActionView::Helpers::OutputSafetyHelper
   include ::ActionView::Helpers::ContentExfiltrationPreventionHelper
 
-  # source://actionview/8.0.2/lib/action_view/helpers/tags/base.rb#11
-  def initialize(object_name, method_name, template_object, options = T.unsafe(nil)); end
-
-  # source://actionview/8.0.2/lib/action_view/helpers/tags/base.rb#9
-  def object; end
-
-  # source://actionview/8.0.2/lib/action_view/helpers/tags/base.rb#31
-  def render; end
-
   private
-
-  # source://actionview/8.0.2/lib/action_view/helpers/tags/base.rb#96
-  def add_default_name_and_id(options); end
-
-  # source://actionview/8.0.2/lib/action_view/helpers/tags/base.rb#83
-  def add_default_name_and_id_for_value(tag_value, options); end
-
-  # source://actionview/8.0.2/lib/action_view/helpers/tags/base.rb#132
-  def generate_ids?; end
-
-  # source://actionview/8.0.2/lib/action_view/helpers/tags/base.rb#124
-  def name_and_id_index(options); end
-
-  # source://actionview/8.0.2/lib/action_view/helpers/tags/base.rb#74
-  def retrieve_autoindex(pre_match); end
-
-  # source://actionview/8.0.2/lib/action_view/helpers/tags/base.rb#63
-  def retrieve_object(object); end
-
-  # source://actionview/8.0.2/lib/action_view/helpers/tags/base.rb#116
-  def sanitized_method_name; end
-
-  # source://actionview/8.0.2/lib/action_view/helpers/tags/base.rb#120
-  def sanitized_value(value); end
-
-  # source://actionview/8.0.2/lib/action_view/helpers/tags/base.rb#112
-  def tag_id(index = T.unsafe(nil), namespace = T.unsafe(nil)); end
-
-  # source://actionview/8.0.2/lib/action_view/helpers/tags/base.rb#108
-  def tag_name(multiple = T.unsafe(nil), index = T.unsafe(nil)); end
 
   # source://ransack//lib/ransack/helpers/form_builder.rb#10
   def value; end
-
-  # source://actionview/8.0.2/lib/action_view/helpers/tags/base.rb#46
-  def value_before_type_cast; end
-
-  # source://actionview/8.0.2/lib/action_view/helpers/tags/base.rb#58
-  def value_came_from_user?; end
 end
 
-class ActiveRecord::Associations::JoinDependency
-  include ::Polyamorous::JoinDependencyExtensions
-  extend ::Polyamorous::JoinDependencyExtensions::ClassMethods
-end
-
-class ActiveRecord::Associations::JoinDependency::JoinAssociation < ::ActiveRecord::Associations::JoinDependency::JoinPart
-  include ::Polyamorous::SwappingReflectionClass
-  include ::Polyamorous::JoinAssociationExtensions
-end
-
-class ActiveRecord::Reflection::AbstractReflection
-  include ::Polyamorous::ReflectionExtensions
-end
-
-# source://ransack//lib/polyamorous/polyamorous.rb#2
+# source://ransack//lib/polyamorous/tree_node.rb#1
 module Polyamorous; end
 
 # source://ransack//lib/polyamorous/polyamorous.rb#3
@@ -100,7 +41,7 @@ class Polyamorous::Join
 
   # @return [Boolean]
   #
-  # source://ransack//lib/polyamorous/join.rb#26
+  # source://ransack//lib/polyamorous/join.rb#33
   def ==(other); end
 
   # source://ransack//lib/polyamorous/join.rb#35
@@ -228,7 +169,7 @@ module Polyamorous::TreeNode
   def add_to_tree(hash); end
 end
 
-# source://ransack//lib/ransack/helpers/form_builder.rb#21
+# source://ransack//lib/ransack/helpers/form_builder.rb#20
 RANSACK_FORM_BUILDER = T.let(T.unsafe(nil), String)
 
 # source://ransack//lib/ransack/constants.rb#1
@@ -331,12 +272,12 @@ end
 
 # source://ransack//lib/ransack/adapters/active_record/context.rb#7
 class Ransack::Adapters::ActiveRecord::Context < ::Ransack::Context
-  # source://ransack//lib/ransack/adapters/active_record/context.rb#127
+  # source://ransack//lib/ransack/adapters/active_record/context.rb#128
   def alias_tracker; end
 
   # @return [Boolean]
   #
-  # source://ransack//lib/ransack/adapters/active_record/context.rb#65
+  # source://ransack//lib/ransack/adapters/active_record/context.rb#66
   def attribute_method?(str, klass = T.unsafe(nil)); end
 
   # Build an Arel subquery that selects keys for the top query,
@@ -357,10 +298,10 @@ class Ransack::Adapters::ActiveRecord::Context < ::Ransack::Context
   # The WHERE condition on this query makes it invalid by itself,
   # because it is correlated to the primary key on the outer query.
   #
-  # source://ransack//lib/ransack/adapters/active_record/context.rb#164
+  # source://ransack//lib/ransack/adapters/active_record/context.rb#165
   def build_correlated_subquery(association); end
 
-  # source://ransack//lib/ransack/adapters/active_record/context.rb#25
+  # source://ransack//lib/ransack/adapters/active_record/context.rb#26
   def evaluate(search, opts = T.unsafe(nil)); end
 
   # All dependent Arel::Join nodes used in the search query.
@@ -370,25 +311,25 @@ class Ransack::Adapters::ActiveRecord::Context < ::Ransack::Context
   # This extracts what we need to access the joins using our existing
   # JoinDependency to track table aliases.
   #
-  # source://ransack//lib/ransack/adapters/active_record/context.rb#111
+  # source://ransack//lib/ransack/adapters/active_record/context.rb#112
   def join_sources; end
 
-  # source://ransack//lib/ransack/adapters/active_record/context.rb#92
+  # source://ransack//lib/ransack/adapters/active_record/context.rb#93
   def klassify(obj); end
 
-  # source://ransack//lib/ransack/adapters/active_record/context.rb#131
+  # source://ransack//lib/ransack/adapters/active_record/context.rb#132
   def lock_association(association); end
 
-  # source://ransack//lib/ransack/adapters/active_record/context.rb#177
+  # source://ransack//lib/ransack/adapters/active_record/context.rb#196
   def primary_key; end
 
   # source://ransack//lib/ransack/adapters/active_record/context.rb#9
   def relation_for(object); end
 
-  # source://ransack//lib/ransack/adapters/active_record/context.rb#135
+  # source://ransack//lib/ransack/adapters/active_record/context.rb#136
   def remove_association(association); end
 
-  # source://ransack//lib/ransack/adapters/active_record/context.rb#88
+  # source://ransack//lib/ransack/adapters/active_record/context.rb#89
   def table_for(parent); end
 
   # source://ransack//lib/ransack/adapters/active_record/context.rb#13
@@ -396,37 +337,37 @@ class Ransack::Adapters::ActiveRecord::Context < ::Ransack::Context
 
   private
 
-  # source://ransack//lib/ransack/adapters/active_record/context.rb#308
+  # source://ransack//lib/ransack/adapters/active_record/context.rb#335
   def build_association(name, parent = T.unsafe(nil), klass = T.unsafe(nil)); end
 
   # Checkout active_record/relation/query_methods.rb +build_joins+ for
   # reference. Lots of duplicated code maybe we can avoid it
   #
-  # source://ransack//lib/ransack/adapters/active_record/context.rb#255
+  # source://ransack//lib/ransack/adapters/active_record/context.rb#282
   def build_joins(relation); end
 
-  # source://ransack//lib/ransack/adapters/active_record/context.rb#296
+  # source://ransack//lib/ransack/adapters/active_record/context.rb#323
   def build_or_find_association(name, parent = T.unsafe(nil), klass = T.unsafe(nil)); end
 
-  # source://ransack//lib/ransack/adapters/active_record/context.rb#290
+  # source://ransack//lib/ransack/adapters/active_record/context.rb#317
   def convert_join_strings_to_ast(table, joins); end
 
-  # source://ransack//lib/ransack/adapters/active_record/context.rb#183
+  # source://ransack//lib/ransack/adapters/active_record/context.rb#202
   def extract_correlated_key(join_root); end
 
-  # source://ransack//lib/ransack/adapters/active_record/context.rb#331
+  # source://ransack//lib/ransack/adapters/active_record/context.rb#358
   def extract_joins(association); end
 
-  # source://ransack//lib/ransack/adapters/active_record/context.rb#300
+  # source://ransack//lib/ransack/adapters/active_record/context.rb#327
   def find_association(name, parent = T.unsafe(nil), klass = T.unsafe(nil)); end
 
-  # source://ransack//lib/ransack/adapters/active_record/context.rb#239
+  # source://ransack//lib/ransack/adapters/active_record/context.rb#266
   def get_association(str, parent = T.unsafe(nil)); end
 
-  # source://ransack//lib/ransack/adapters/active_record/context.rb#212
+  # source://ransack//lib/ransack/adapters/active_record/context.rb#239
   def get_parent_and_attribute_name(str, parent = T.unsafe(nil)); end
 
-  # source://ransack//lib/ransack/adapters/active_record/context.rb#245
+  # source://ransack//lib/ransack/adapters/active_record/context.rb#272
   def join_dependency(relation); end
 end
 
@@ -758,10 +699,10 @@ class Ransack::Context
 
   # Returns the value of attribute arel_visitor.
   #
-  # source://ransack//lib/ransack/context.rb#7
+  # source://ransack//lib/ransack/context.rb#5
   def arel_visitor; end
 
-  # source://ransack//lib/ransack/context.rb#123
+  # source://ransack//lib/ransack/context.rb#126
   def association_path(str, base = T.unsafe(nil)); end
 
   # Returns the value of attribute auth_object.
@@ -781,7 +722,7 @@ class Ransack::Context
   # source://ransack//lib/ransack/context.rb#5
   def base; end
 
-  # source://ransack//lib/ransack/context.rb#89
+  # source://ransack//lib/ransack/context.rb#92
   def bind(object, str); end
 
   # source://ransack//lib/ransack/context.rb#50
@@ -814,30 +755,30 @@ class Ransack::Context
   # source://ransack//lib/ransack/context.rb#5
   def object; end
 
-  # source://ransack//lib/ransack/context.rb#154
+  # source://ransack//lib/ransack/context.rb#157
   def ransackable_alias(str); end
 
   # @return [Boolean]
   #
-  # source://ransack//lib/ransack/context.rb#163
+  # source://ransack//lib/ransack/context.rb#166
   def ransackable_association?(str, klass); end
 
   # @return [Boolean]
   #
-  # source://ransack//lib/ransack/context.rb#158
+  # source://ransack//lib/ransack/context.rb#161
   def ransackable_attribute?(str, klass); end
 
   # @return [Boolean]
   #
-  # source://ransack//lib/ransack/context.rb#167
+  # source://ransack//lib/ransack/context.rb#170
   def ransackable_scope?(str, klass); end
 
   # @return [Boolean]
   #
-  # source://ransack//lib/ransack/context.rb#171
+  # source://ransack//lib/ransack/context.rb#174
   def ransackable_scope_skip_sanitize_args?(str, klass); end
 
-  # source://ransack//lib/ransack/context.rb#85
+  # source://ransack//lib/ransack/context.rb#88
   def scope_arity(scope); end
 
   # Returns the value of attribute search.
@@ -857,19 +798,19 @@ class Ransack::Context
   # source://ransack//lib/ransack/context.rb#6
   def search_key=(_arg0); end
 
-  # source://ransack//lib/ransack/context.rb#183
+  # source://ransack//lib/ransack/context.rb#186
   def searchable_associations(str = T.unsafe(nil)); end
 
-  # source://ransack//lib/ransack/context.rb#175
+  # source://ransack//lib/ransack/context.rb#178
   def searchable_attributes(str = T.unsafe(nil)); end
 
-  # source://ransack//lib/ransack/context.rb#179
+  # source://ransack//lib/ransack/context.rb#182
   def sortable_attributes(str = T.unsafe(nil)); end
 
-  # source://ransack//lib/ransack/context.rb#94
+  # source://ransack//lib/ransack/context.rb#97
   def traverse(str, base = T.unsafe(nil)); end
 
-  # source://ransack//lib/ransack/context.rb#146
+  # source://ransack//lib/ransack/context.rb#149
   def unpolymorphize_association(str); end
 
   class << self
@@ -884,108 +825,108 @@ class Ransack::Context
   end
 end
 
-# source://ransack//lib/ransack/helpers/form_builder.rb#27
+# source://ransack//lib/ransack/helpers/form_builder.rb#26
 module Ransack::Helpers; end
 
-# source://ransack//lib/ransack/helpers/form_builder.rb#29
+# source://ransack//lib/ransack/helpers/form_builder.rb#28
 class Ransack::Helpers::FormBuilder < ::ActionView::Helpers::FormBuilder
-  # source://ransack//lib/ransack/helpers/form_builder.rb#104
+  # source://ransack//lib/ransack/helpers/form_builder.rb#103
   def attribute_fields(*args, &block); end
 
   # @raise [ArgumentError]
   #
-  # source://ransack//lib/ransack/helpers/form_builder.rb#47
+  # source://ransack//lib/ransack/helpers/form_builder.rb#46
   def attribute_select(options = T.unsafe(nil), html_options = T.unsafe(nil), action = T.unsafe(nil)); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#157
+  # source://ransack//lib/ransack/helpers/form_builder.rb#156
   def combinator_select(options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#96
+  # source://ransack//lib/ransack/helpers/form_builder.rb#95
   def condition_fields(*args, &block); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#100
+  # source://ransack//lib/ransack/helpers/form_builder.rb#99
   def grouping_fields(*args, &block); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#31
+  # source://ransack//lib/ransack/helpers/form_builder.rb#30
   def label(method, *args, &block); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#108
+  # source://ransack//lib/ransack/helpers/form_builder.rb#107
   def predicate_fields(*args, &block); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#131
+  # source://ransack//lib/ransack/helpers/form_builder.rb#130
   def predicate_select(options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#116
+  # source://ransack//lib/ransack/helpers/form_builder.rb#115
   def search_fields(name, args, block); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#71
+  # source://ransack//lib/ransack/helpers/form_builder.rb#70
   def sort_direction_select(options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#84
+  # source://ransack//lib/ransack/helpers/form_builder.rb#83
   def sort_fields(*args, &block); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#88
+  # source://ransack//lib/ransack/helpers/form_builder.rb#87
   def sort_link(attribute, *args); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#79
+  # source://ransack//lib/ransack/helpers/form_builder.rb#78
   def sort_select(options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#92
+  # source://ransack//lib/ransack/helpers/form_builder.rb#91
   def sort_url(attribute, *args); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#41
+  # source://ransack//lib/ransack/helpers/form_builder.rb#40
   def submit(value = T.unsafe(nil), options = T.unsafe(nil)); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#112
+  # source://ransack//lib/ransack/helpers/form_builder.rb#111
   def value_fields(*args, &block); end
 
   private
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#208
+  # source://ransack//lib/ransack/helpers/form_builder.rb#207
   def association_array(obj, prefix = T.unsafe(nil)); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#225
+  # source://ransack//lib/ransack/helpers/form_builder.rb#224
   def association_hash(obj); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#214
+  # source://ransack//lib/ransack/helpers/form_builder.rb#213
   def association_object(obj); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#267
+  # source://ransack//lib/ransack/helpers/form_builder.rb#266
   def attr_from_base_and_column(base, column); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#251
+  # source://ransack//lib/ransack/helpers/form_builder.rb#250
   def attribute_collection_for_base(attributes, base = T.unsafe(nil)); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#236
+  # source://ransack//lib/ransack/helpers/form_builder.rb#235
   def attribute_collection_for_bases(action, bases); end
 
   # @return [Boolean]
   #
-  # source://ransack//lib/ransack/helpers/form_builder.rb#178
+  # source://ransack//lib/ransack/helpers/form_builder.rb#177
   def can_use_default?(default, attribute, values); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#262
+  # source://ransack//lib/ransack/helpers/form_builder.rb#261
   def collection_for_base(action, base); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#194
+  # source://ransack//lib/ransack/helpers/form_builder.rb#193
   def combinator_choices; end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#271
+  # source://ransack//lib/ransack/helpers/form_builder.rb#270
   def formbuilder_error_message(action); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#240
+  # source://ransack//lib/ransack/helpers/form_builder.rb#239
   def get_attribute_element(action, base); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#183
+  # source://ransack//lib/ransack/helpers/form_builder.rb#182
   def mapped_values(values); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#187
+  # source://ransack//lib/ransack/helpers/form_builder.rb#186
   def sort_array; end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#171
+  # source://ransack//lib/ransack/helpers/form_builder.rb#170
   def template_collection_select(name, collection, options, html_options); end
 
-  # source://ransack//lib/ransack/helpers/form_builder.rb#164
+  # source://ransack//lib/ransack/helpers/form_builder.rb#163
   def template_grouped_collection_select(collection, options, html_options); end
 end
 
@@ -998,6 +939,13 @@ module Ransack::Helpers::FormHelper
   # source://ransack//lib/ransack/helpers/form_helper.rb#9
   def search_form_for(record, options = T.unsafe(nil), &proc); end
 
+  # +search_form_with+
+  #
+  #   <%= search_form_with(model: @q) do |f| %>
+  #
+  # source://ransack//lib/ransack/helpers/form_helper.rb#21
+  def search_form_with(record_or_options = T.unsafe(nil), options = T.unsafe(nil), &proc); end
+
   # +sort_link+
   #
   #   <%= sort_link(@q, :name, [:name, 'kind ASC'], 'Player Name') %>
@@ -1008,105 +956,131 @@ module Ransack::Helpers::FormHelper
   #     <strong>Player Name</strong>
   #   <% end %>
   #
-  # source://ransack//lib/ransack/helpers/form_helper.rb#47
+  # source://ransack//lib/ransack/helpers/form_helper.rb#65
   def sort_link(search_object, attribute, *args, &block); end
 
   # +sort_url+
   # <%= sort_url(@q, :created_at, default_order: :desc) %>
   #
-  # source://ransack//lib/ransack/helpers/form_helper.rb#60
+  # source://ransack//lib/ransack/helpers/form_helper.rb#78
   def sort_url(search_object, attribute, *args); end
+
+  # +turbo_search_form_for+
+  #
+  #   <%= turbo_search_form_for(@q) do |f| %>
+  #
+  # This is a turbo-enabled version of search_form_for that submits via turbo streams
+  # instead of traditional HTML GET requests. Useful for seamless integration with
+  # paginated results and other turbo-enabled components.
+  #
+  # source://ransack//lib/ransack/helpers/form_helper.rb#45
+  def turbo_search_form_for(record, options = T.unsafe(nil), &proc); end
 
   private
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#85
+  # source://ransack//lib/ransack/helpers/form_helper.rb#117
+  def build_html_options(search, options, method); end
+
+  # source://ransack//lib/ransack/helpers/form_helper.rb#108
+  def build_turbo_options(options); end
+
+  # source://ransack//lib/ransack/helpers/form_helper.rb#151
   def extract_search_and_routing_proxy(search); end
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#80
+  # source://ransack//lib/ransack/helpers/form_helper.rb#89
+  def extract_search_and_set_url(record, options, method_name); end
+
+  # source://ransack//lib/ransack/helpers/form_helper.rb#125
+  def finalize_form_options(options, html_options); end
+
+  # source://ransack//lib/ransack/helpers/form_helper.rb#131
+  def finalize_form_with_options(options, html_options); end
+
+  # source://ransack//lib/ransack/helpers/form_helper.rb#146
   def html_option_for(option, search); end
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#71
+  # source://ransack//lib/ransack/helpers/form_helper.rb#137
   def options_for(record); end
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#75
+  # source://ransack//lib/ransack/helpers/form_helper.rb#141
   def parse_record(object); end
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#90
+  # source://ransack//lib/ransack/helpers/form_helper.rb#156
   def url(routing_proxy, options_for_url); end
 end
 
-# source://ransack//lib/ransack/helpers/form_helper.rb#98
+# source://ransack//lib/ransack/helpers/form_helper.rb#164
 class Ransack::Helpers::FormHelper::SortLink
   # @return [SortLink] a new instance of SortLink
   #
-  # source://ransack//lib/ransack/helpers/form_helper.rb#99
+  # source://ransack//lib/ransack/helpers/form_helper.rb#165
   def initialize(search, attribute, args, params); end
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#120
+  # source://ransack//lib/ransack/helpers/form_helper.rb#186
   def default_arrow; end
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#116
+  # source://ransack//lib/ransack/helpers/form_helper.rb#182
   def down_arrow; end
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#137
+  # source://ransack//lib/ransack/helpers/form_helper.rb#203
   def html_options(args); end
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#124
+  # source://ransack//lib/ransack/helpers/form_helper.rb#190
   def name; end
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#112
+  # source://ransack//lib/ransack/helpers/form_helper.rb#178
   def up_arrow; end
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#131
+  # source://ransack//lib/ransack/helpers/form_helper.rb#197
   def url_options; end
 
   private
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#219
+  # source://ransack//lib/ransack/helpers/form_helper.rb#285
   def default_sort_order(attr_name); end
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#206
+  # source://ransack//lib/ransack/helpers/form_helper.rb#272
   def detect_previous_sort_direction_and_invert_it(attr_name); end
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#238
+  # source://ransack//lib/ransack/helpers/form_helper.rb#304
   def direction_text(dir); end
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#214
+  # source://ransack//lib/ransack/helpers/form_helper.rb#280
   def existing_sort_direction(f = T.unsafe(nil)); end
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#168
+  # source://ransack//lib/ransack/helpers/form_helper.rb#234
   def extract_label_and_mutate_args!(args); end
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#173
+  # source://ransack//lib/ransack/helpers/form_helper.rb#239
   def extract_options_and_mutate_args!(args); end
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#163
+  # source://ransack//lib/ransack/helpers/form_helper.rb#229
   def extract_sort_fields_and_mutate_args!(args); end
 
   # @return [Boolean]
   #
-  # source://ransack//lib/ransack/helpers/form_helper.rb#234
+  # source://ransack//lib/ransack/helpers/form_helper.rb#300
   def no_sort_direction_specified?(dir = T.unsafe(nil)); end
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#224
+  # source://ransack//lib/ransack/helpers/form_helper.rb#290
   def order_indicator; end
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#155
+  # source://ransack//lib/ransack/helpers/form_helper.rb#221
   def parameters_hash(params); end
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#198
+  # source://ransack//lib/ransack/helpers/form_helper.rb#264
   def parse_sort(field); end
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#193
+  # source://ransack//lib/ransack/helpers/form_helper.rb#259
   def recursive_sort_params_build(fields); end
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#178
+  # source://ransack//lib/ransack/helpers/form_helper.rb#244
   def search_and_sort_params; end
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#182
+  # source://ransack//lib/ransack/helpers/form_helper.rb#248
   def search_params; end
 
-  # source://ransack//lib/ransack/helpers/form_helper.rb#187
+  # source://ransack//lib/ransack/helpers/form_helper.rb#253
   def sort_params; end
 end
 
@@ -1122,7 +1096,7 @@ class Ransack::Name < ::String
 
   # Returns the value of attribute collection.
   #
-  # source://ransack//lib/ransack/naming.rb#30
+  # source://ransack//lib/ransack/naming.rb#32
   def cache_key; end
 
   # Returns the value of attribute collection.
@@ -1214,7 +1188,7 @@ class Ransack::Nodes::Attribute < ::Ransack::Nodes::Node
 
   # @return [Boolean]
   #
-  # source://ransack//lib/ransack/nodes/attribute.rb#39
+  # source://ransack//lib/ransack/nodes/attribute.rb#43
   def ==(other); end
 
   # @return [Boolean]
@@ -1271,7 +1245,7 @@ end
 
 # source://ransack//lib/ransack/nodes/bindable.rb#3
 module Ransack::Nodes::Bindable
-  # source://ransack//lib/ransack/nodes/bindable.rb#7
+  # source://ransack//lib/ransack/nodes/bindable.rb#10
   def arel_attribute; end
 
   # source://ransack//lib/ransack/nodes/bindable.rb#7
@@ -1333,22 +1307,22 @@ end
 class Ransack::Nodes::Condition < ::Ransack::Nodes::Node
   # @return [Boolean]
   #
-  # source://ransack//lib/ransack/nodes/condition.rb#193
+  # source://ransack//lib/ransack/nodes/condition.rb#200
   def ==(other); end
 
-  # source://ransack//lib/ransack/nodes/condition.rb#76
+  # source://ransack//lib/ransack/nodes/condition.rb#79
   def a; end
 
-  # source://ransack//lib/ransack/nodes/condition.rb#81
+  # source://ransack//lib/ransack/nodes/condition.rb#96
   def a=(args); end
 
-  # source://ransack//lib/ransack/nodes/condition.rb#288
+  # source://ransack//lib/ransack/nodes/condition.rb#220
   def arel_predicate; end
 
-  # source://ransack//lib/ransack/nodes/condition.rb#247
+  # source://ransack//lib/ransack/nodes/condition.rb#250
   def arel_predicate_for_attribute(attr); end
 
-  # source://ransack//lib/ransack/nodes/condition.rb#259
+  # source://ransack//lib/ransack/nodes/condition.rb#262
   def attr_value_for_attribute(attr); end
 
   # source://ransack//lib/ransack/nodes/condition.rb#76
@@ -1393,7 +1367,7 @@ class Ransack::Nodes::Condition < ::Ransack::Nodes::Node
   # source://ransack//lib/ransack/nodes/condition.rb#126
   def combinator=(val); end
 
-  # source://ransack//lib/ransack/nodes/condition.rb#267
+  # source://ransack//lib/ransack/nodes/condition.rb#270
   def default_type; end
 
   # @return [Boolean]
@@ -1407,27 +1381,30 @@ class Ransack::Nodes::Condition < ::Ransack::Nodes::Node
   # source://ransack//lib/ransack/nodes/condition.rb#202
   def hash; end
 
-  # source://ransack//lib/ransack/nodes/condition.rb#271
+  # source://ransack//lib/ransack/nodes/condition.rb#274
   def inspect; end
 
   # source://ransack//lib/ransack/nodes/condition.rb#188
   def key; end
 
-  # source://ransack//lib/ransack/nodes/condition.rb#122
+  # source://ransack//lib/ransack/nodes/condition.rb#130
   def m; end
 
-  # source://ransack//lib/ransack/nodes/condition.rb#126
+  # source://ransack//lib/ransack/nodes/condition.rb#129
   def m=(val); end
 
   # @return [Boolean]
   #
-  # source://ransack//lib/ransack/nodes/condition.rb#284
+  # source://ransack//lib/ransack/nodes/condition.rb#287
   def negative?; end
 
-  # source://ransack//lib/ransack/nodes/condition.rb#215
+  # source://ransack//lib/ransack/nodes/condition.rb#333
+  def not_nested_condition(attribute, parent_table); end
+
+  # source://ransack//lib/ransack/nodes/condition.rb#218
   def p; end
 
-  # source://ransack//lib/ransack/nodes/condition.rb#206
+  # source://ransack//lib/ransack/nodes/condition.rb#213
   def p=(name); end
 
   # @return [Boolean]
@@ -1453,10 +1430,10 @@ class Ransack::Nodes::Condition < ::Ransack::Nodes::Node
   # source://ransack//lib/ransack/nodes/condition.rb#206
   def predicate_name=(name); end
 
-  # source://ransack//lib/ransack/nodes/condition.rb#98
+  # source://ransack//lib/ransack/nodes/condition.rb#101
   def v; end
 
-  # source://ransack//lib/ransack/nodes/condition.rb#103
+  # source://ransack//lib/ransack/nodes/condition.rb#120
   def v=(args); end
 
   # @return [Boolean]
@@ -1485,31 +1462,36 @@ class Ransack::Nodes::Condition < ::Ransack::Nodes::Node
 
   # @return [Boolean]
   #
-  # source://ransack//lib/ransack/nodes/condition.rb#343
+  # source://ransack//lib/ransack/nodes/condition.rb#373
   def casted_array?(predicate); end
 
-  # source://ransack//lib/ransack/nodes/condition.rb#320
+  # source://ransack//lib/ransack/nodes/condition.rb#339
   def combinator_method; end
 
-  # source://ransack//lib/ransack/nodes/condition.rb#324
+  # source://ransack//lib/ransack/nodes/condition.rb#343
   def format_predicate(attribute); end
 
-  # source://ransack//lib/ransack/nodes/condition.rb#347
+  # source://ransack//lib/ransack/nodes/condition.rb#377
   def format_values_for(predicate); end
 
   # @return [Boolean]
   #
-  # source://ransack//lib/ransack/nodes/condition.rb#338
+  # source://ransack//lib/ransack/nodes/condition.rb#364
   def in_predicate?(predicate); end
 
   # @return [Boolean]
   #
-  # source://ransack//lib/ransack/nodes/condition.rb#353
+  # source://ransack//lib/ransack/nodes/condition.rb#369
+  def like_predicate?(arel_predicate); end
+
+  # @return [Boolean]
+  #
+  # source://ransack//lib/ransack/nodes/condition.rb#383
   def replace_right_node?(predicate); end
 
   # @return [Boolean]
   #
-  # source://ransack//lib/ransack/nodes/condition.rb#364
+  # source://ransack//lib/ransack/nodes/condition.rb#394
   def valid_combinator?; end
 
   class << self
@@ -1518,10 +1500,10 @@ class Ransack::Nodes::Condition < ::Ransack::Nodes::Node
 
     private
 
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#15
+    # source://ransack//lib/ransack/nodes/condition.rb#6
     def __class_attr_i18n_words; end
 
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#17
+    # source://ransack//lib/ransack/nodes/condition.rb#6
     def __class_attr_i18n_words=(new_value); end
 
     # source://ransack//lib/ransack/nodes/condition.rb#37
@@ -1558,10 +1540,10 @@ class Ransack::Nodes::Grouping < ::Ransack::Nodes::Node
 
   # Returns the value of attribute conditions.
   #
-  # source://ransack//lib/ransack/nodes/grouping.rb#29
+  # source://ransack//lib/ransack/nodes/grouping.rb#32
   def c; end
 
-  # source://ransack//lib/ransack/nodes/grouping.rb#34
+  # source://ransack//lib/ransack/nodes/grouping.rb#49
   def c=(conditions); end
 
   # Returns the value of attribute combinator.
@@ -1578,7 +1560,7 @@ class Ransack::Nodes::Grouping < ::Ransack::Nodes::Node
 
   # Returns the value of attribute conditions.
   #
-  # source://ransack//lib/ransack/nodes/grouping.rb#29
+  # source://ransack//lib/ransack/nodes/grouping.rb#4
   def conditions; end
 
   # source://ransack//lib/ransack/nodes/grouping.rb#34
@@ -1587,10 +1569,10 @@ class Ransack::Nodes::Grouping < ::Ransack::Nodes::Node
   # source://ransack//lib/ransack/nodes/grouping.rb#12
   def each(*_arg0, **_arg1, &_arg2); end
 
-  # source://ransack//lib/ransack/nodes/grouping.rb#86
+  # source://ransack//lib/ransack/nodes/grouping.rb#89
   def g; end
 
-  # source://ransack//lib/ransack/nodes/grouping.rb#91
+  # source://ransack//lib/ransack/nodes/grouping.rb#108
   def g=(groupings); end
 
   # source://ransack//lib/ransack/nodes/grouping.rb#86
@@ -1604,14 +1586,14 @@ class Ransack::Nodes::Grouping < ::Ransack::Nodes::Node
 
   # Returns the value of attribute combinator.
   #
-  # source://ransack//lib/ransack/nodes/grouping.rb#5
+  # source://ransack//lib/ransack/nodes/grouping.rb#6
   def m; end
 
   # Sets the attribute combinator
   #
   # @param value the value to set the attribute combinator to.
   #
-  # source://ransack//lib/ransack/nodes/grouping.rb#5
+  # source://ransack//lib/ransack/nodes/grouping.rb#7
   def m=(_arg0); end
 
   # source://ransack//lib/ransack/nodes/grouping.rb#110
@@ -1656,10 +1638,10 @@ class Ransack::Nodes::Grouping < ::Ransack::Nodes::Node
   class << self
     private
 
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#15
+    # source://ransack//lib/ransack/nodes/grouping.rb#9
     def __class_attr_i18n_words; end
 
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#17
+    # source://ransack//lib/ransack/nodes/grouping.rb#9
     def __class_attr_i18n_words=(new_value); end
   end
 end
@@ -1727,16 +1709,16 @@ class Ransack::Nodes::Node
 
     private
 
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#15
+    # source://ransack//lib/ransack/nodes/node.rb#7
     def __class_attr_i18n_aliases; end
 
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#17
+    # source://ransack//lib/ransack/nodes/node.rb#7
     def __class_attr_i18n_aliases=(new_value); end
 
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#15
+    # source://ransack//lib/ransack/nodes/node.rb#6
     def __class_attr_i18n_words; end
 
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#17
+    # source://ransack//lib/ransack/nodes/node.rb#6
     def __class_attr_i18n_words=(new_value); end
   end
 end
@@ -1783,10 +1765,10 @@ class Ransack::Nodes::Sort < ::Ransack::Nodes::Node
 
     private
 
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#15
+    # source://ransack//lib/ransack/nodes/sort.rb#7
     def __class_attr_i18n_words; end
 
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#17
+    # source://ransack//lib/ransack/nodes/sort.rb#7
     def __class_attr_i18n_words=(new_value); end
   end
 end
@@ -1800,12 +1782,12 @@ class Ransack::Nodes::Value < ::Ransack::Nodes::Node
 
   # @return [Boolean]
   #
-  # source://ransack//lib/ransack/nodes/value.rb#16
+  # source://ransack//lib/ransack/nodes/value.rb#19
   def ==(other); end
 
   # @return [Boolean]
   #
-  # source://ransack//lib/ransack/nodes/value.rb#110
+  # source://ransack//lib/ransack/nodes/value.rb#118
   def array_of_arrays?(val); end
 
   # source://ransack//lib/ransack/nodes/value.rb#5
@@ -1814,28 +1796,31 @@ class Ransack::Nodes::Value < ::Ransack::Nodes::Node
   # source://ransack//lib/ransack/nodes/value.rb#25
   def cast(type); end
 
-  # source://ransack//lib/ransack/nodes/value.rb#68
+  # source://ransack//lib/ransack/nodes/value.rb#46
+  def cast_array; end
+
+  # source://ransack//lib/ransack/nodes/value.rb#76
   def cast_to_boolean(val); end
 
-  # source://ransack//lib/ransack/nodes/value.rb#46
+  # source://ransack//lib/ransack/nodes/value.rb#54
   def cast_to_date(val); end
 
-  # source://ransack//lib/ransack/nodes/value.rb#90
+  # source://ransack//lib/ransack/nodes/value.rb#98
   def cast_to_decimal(val); end
 
-  # source://ransack//lib/ransack/nodes/value.rb#86
+  # source://ransack//lib/ransack/nodes/value.rb#94
   def cast_to_float(val); end
 
-  # source://ransack//lib/ransack/nodes/value.rb#82
+  # source://ransack//lib/ransack/nodes/value.rb#90
   def cast_to_integer(val); end
 
-  # source://ransack//lib/ransack/nodes/value.rb#102
+  # source://ransack//lib/ransack/nodes/value.rb#110
   def cast_to_money(val); end
 
-  # source://ransack//lib/ransack/nodes/value.rb#78
+  # source://ransack//lib/ransack/nodes/value.rb#86
   def cast_to_string(val); end
 
-  # source://ransack//lib/ransack/nodes/value.rb#57
+  # source://ransack//lib/ransack/nodes/value.rb#65
   def cast_to_time(val); end
 
   # @return [Boolean]
@@ -1846,7 +1831,7 @@ class Ransack::Nodes::Value < ::Ransack::Nodes::Node
   # source://ransack//lib/ransack/nodes/value.rb#21
   def hash; end
 
-  # source://ransack//lib/ransack/nodes/value.rb#106
+  # source://ransack//lib/ransack/nodes/value.rb#114
   def inspect; end
 
   # @return [Boolean]
@@ -1879,7 +1864,7 @@ class Ransack::Predicate
 
   # @return [Boolean]
   #
-  # source://ransack//lib/ransack/predicate.rb#48
+  # source://ransack//lib/ransack/predicate.rb#52
   def ==(other); end
 
   # Returns the value of attribute arel_predicate.
@@ -2049,10 +2034,10 @@ class Ransack::Search
   # source://ransack//lib/ransack/search.rb#44
   def result(opts = T.unsafe(nil)); end
 
-  # source://ransack//lib/ransack/search.rb#88
+  # source://ransack//lib/ransack/search.rb#91
   def s; end
 
-  # source://ransack//lib/ransack/search.rb#63
+  # source://ransack//lib/ransack/search.rb#86
   def s=(args); end
 
   # source://ransack//lib/ransack/search.rb#88
@@ -2131,7 +2116,7 @@ module Ransack::Translate
   end
 end
 
-# source://ransack//lib/ransack.rb#7
+# source://ransack//lib/ransack.rb#15
 class Ransack::UntraversableAssociationError < ::StandardError; end
 
 # source://ransack//lib/ransack/version.rb#2

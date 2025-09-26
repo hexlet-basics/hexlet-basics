@@ -23,7 +23,7 @@ module ActionView
     # source://actionview//lib/action_view/deprecator.rb#4
     def deprecator; end
 
-    # source://actionview//lib/action_view.rb#93
+    # source://actionview//lib/action_view.rb#94
     def eager_load!; end
 
     # Returns the currently loaded version of Action View as a +Gem::Version+.
@@ -2571,7 +2571,7 @@ class ActionView::Helpers::AtomFeedHelper::AtomFeedBuilder < ::ActionView::Helpe
 
   # Creates an entry tag for a specific record and prefills the id using class and id.
   #
-  # Options:
+  # ==== Options
   #
   # * <tt>:published</tt>: Time first published. Defaults to the created_at attribute on the record if one such exists.
   # * <tt>:updated</tt>: Time of update. Defaults to the updated_at attribute on the record if one such exists.
@@ -3379,7 +3379,7 @@ module ActionView::Helpers::DateHelper
   # Note: If the day is not included as an option but the month is, the day will be set to the 1st to ensure that
   # all month choices are valid.
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#290
+  # source://actionview//lib/action_view/helpers/date_helper.rb#297
   def date_select(object_name, method, options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
   # Returns a set of select tags (one for year, month, day, hour, and minute) pre-selected for accessing a
@@ -3414,7 +3414,7 @@ module ActionView::Helpers::DateHelper
   #
   # The selects are prepared for multi-parameter assignment to an Active Record object.
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#366
+  # source://actionview//lib/action_view/helpers/date_helper.rb#373
   def datetime_select(object_name, method, options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
   # Reports the approximate distance in time between two Time, Date, or DateTime objects or integers as seconds.
@@ -3503,7 +3503,7 @@ module ActionView::Helpers::DateHelper
   #
   # Note that you cannot pass a <tt>Numeric</tt> value to <tt>time_ago_in_words</tt>.
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#180
+  # source://actionview//lib/action_view/helpers/date_helper.rb#187
   def distance_of_time_in_words_to_now(from_time, options = T.unsafe(nil)); end
 
   # Returns a set of HTML select-tags (one for year, month, and day) pre-selected with the +date+.
@@ -3542,7 +3542,7 @@ module ActionView::Helpers::DateHelper
   #   select_date(my_date, prompt: { hour: true }) # generic prompt for hours
   #   select_date(my_date, prompt: true) # generic prompts for all
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#454
+  # source://actionview//lib/action_view/helpers/date_helper.rb#461
   def select_date(date = T.unsafe(nil), options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
   # Returns a set of HTML select-tags (one for year, month, day, hour, minute, and second) pre-selected with the
@@ -3591,7 +3591,7 @@ module ActionView::Helpers::DateHelper
   #   select_datetime(my_date_time, prompt: { hour: true }) # generic prompt for hours
   #   select_datetime(my_date_time, prompt: true) # generic prompts for all
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#415
+  # source://actionview//lib/action_view/helpers/date_helper.rb#422
   def select_datetime(datetime = T.unsafe(nil), options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
   # Returns a select tag with options for each of the days 1 through 31 with the current day selected.
@@ -3618,7 +3618,7 @@ module ActionView::Helpers::DateHelper
   #   # generic prompt.
   #   select_day(5, prompt: 'Choose day')
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#597
+  # source://actionview//lib/action_view/helpers/date_helper.rb#604
   def select_day(date, options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
   # Returns a select tag with options for each of the hours 0 through 23 with the current hour selected.
@@ -3647,7 +3647,7 @@ module ActionView::Helpers::DateHelper
   #   # Generates a select field that includes options for hours from 2 to 14.
   #   select_hour(my_time, start_hour: 2, end_hour: 14)
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#570
+  # source://actionview//lib/action_view/helpers/date_helper.rb#577
   def select_hour(datetime, options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
   # Returns a select tag with options for each of the minutes 0 through 59 with the current minute selected.
@@ -3671,7 +3671,7 @@ module ActionView::Helpers::DateHelper
   #   # generic prompt.
   #   select_minute(14, prompt: 'Choose minutes')
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#541
+  # source://actionview//lib/action_view/helpers/date_helper.rb#548
   def select_minute(datetime, options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
   # Returns a select tag with options for each of the months January through December with the current month
@@ -3716,7 +3716,7 @@ module ActionView::Helpers::DateHelper
   #   # generic prompt.
   #   select_month(14, prompt: 'Choose month')
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#642
+  # source://actionview//lib/action_view/helpers/date_helper.rb#649
   def select_month(date, options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
   # Returns a select tag with options for each of the seconds 0 through 59 with the current second selected.
@@ -3739,7 +3739,7 @@ module ActionView::Helpers::DateHelper
   #   # generic prompt.
   #   select_second(14, prompt: 'Choose seconds')
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#517
+  # source://actionview//lib/action_view/helpers/date_helper.rb#524
   def select_second(datetime, options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
   # Returns a set of HTML select-tags (one for hour and minute).
@@ -3779,7 +3779,7 @@ module ActionView::Helpers::DateHelper
   #   select_time(my_time, prompt: { hour: true }) # generic prompt for hours
   #   select_time(my_time, prompt: true) # generic prompts for all
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#494
+  # source://actionview//lib/action_view/helpers/date_helper.rb#501
   def select_time(datetime = T.unsafe(nil), options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
   # Returns a select tag with options for each of the five years on each side of the current, which is selected.
@@ -3808,7 +3808,7 @@ module ActionView::Helpers::DateHelper
   #   # generic prompt.
   #   select_year(14, prompt: 'Choose year')
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#671
+  # source://actionview//lib/action_view/helpers/date_helper.rb#678
   def select_year(date, options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
   # Like <tt>distance_of_time_in_words</tt>, but where <tt>to_time</tt> is fixed to <tt>Time.now</tt>.
@@ -3827,7 +3827,7 @@ module ActionView::Helpers::DateHelper
   #
   # Note that you cannot pass a <tt>Numeric</tt> value to <tt>time_ago_in_words</tt>.
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#176
+  # source://actionview//lib/action_view/helpers/date_helper.rb#183
   def time_ago_in_words(from_time, options = T.unsafe(nil)); end
 
   # Returns a set of select tags (one for hour, minute, and optionally second) pre-selected for accessing a
@@ -3868,7 +3868,7 @@ module ActionView::Helpers::DateHelper
   # Note: If the day is not included as an option but the month is, the day will be set to the 1st to ensure that
   # all month choices are valid.
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#331
+  # source://actionview//lib/action_view/helpers/date_helper.rb#338
   def time_select(object_name, method, options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
   # Returns an HTML time tag for the given date or time.
@@ -3887,12 +3887,12 @@ module ActionView::Helpers::DateHelper
   #   <% end %>
   #   # => <time datetime="2010-11-04T17:55:45+01:00"><span>Right now</span></time>
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#690
+  # source://actionview//lib/action_view/helpers/date_helper.rb#697
   def time_tag(date_or_time, *args, &block); end
 
   private
 
-  # source://actionview//lib/action_view/helpers/date_helper.rb#699
+  # source://actionview//lib/action_view/helpers/date_helper.rb#706
   def normalize_distance_of_time_argument_to_time(value); end
 end
 
@@ -3905,7 +3905,7 @@ ActionView::Helpers::DateHelper::MINUTES_IN_THREE_QUARTERS_YEAR = T.let(T.unsafe
 # source://actionview//lib/action_view/helpers/date_helper.rb#25
 ActionView::Helpers::DateHelper::MINUTES_IN_YEAR = T.let(T.unsafe(nil), Integer)
 
-# source://actionview//lib/action_view/helpers/date_helper.rb#710
+# source://actionview//lib/action_view/helpers/date_helper.rb#717
 class ActionView::Helpers::DateTimeSelector
   include ::ActionView::Helpers::CaptureHelper
   include ::ActionView::Helpers::OutputSafetyHelper
@@ -3913,34 +3913,34 @@ class ActionView::Helpers::DateTimeSelector
 
   # @return [DateTimeSelector] a new instance of DateTimeSelector
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#727
+  # source://actionview//lib/action_view/helpers/date_helper.rb#734
   def initialize(datetime, options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
-  # source://actionview//lib/action_view/helpers/date_helper.rb#756
+  # source://actionview//lib/action_view/helpers/date_helper.rb#763
   def select_date; end
 
-  # source://actionview//lib/action_view/helpers/date_helper.rb#735
+  # source://actionview//lib/action_view/helpers/date_helper.rb#742
   def select_datetime; end
 
-  # source://actionview//lib/action_view/helpers/date_helper.rb#818
+  # source://actionview//lib/action_view/helpers/date_helper.rb#825
   def select_day; end
 
-  # source://actionview//lib/action_view/helpers/date_helper.rb#806
+  # source://actionview//lib/action_view/helpers/date_helper.rb#813
   def select_hour; end
 
-  # source://actionview//lib/action_view/helpers/date_helper.rb#798
+  # source://actionview//lib/action_view/helpers/date_helper.rb#805
   def select_minute; end
 
-  # source://actionview//lib/action_view/helpers/date_helper.rb#826
+  # source://actionview//lib/action_view/helpers/date_helper.rb#833
   def select_month; end
 
-  # source://actionview//lib/action_view/helpers/date_helper.rb#790
+  # source://actionview//lib/action_view/helpers/date_helper.rb#797
   def select_second; end
 
-  # source://actionview//lib/action_view/helpers/date_helper.rb#774
+  # source://actionview//lib/action_view/helpers/date_helper.rb#781
   def select_time; end
 
-  # source://actionview//lib/action_view/helpers/date_helper.rb#840
+  # source://actionview//lib/action_view/helpers/date_helper.rb#847
   def select_year; end
 
   private
@@ -3966,7 +3966,7 @@ class ActionView::Helpers::DateTimeSelector
   #       <option value="2" selected="selected">02</option>
   #       <option value="3">03</option>..."
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#1070
+  # source://actionview//lib/action_view/helpers/date_helper.rb#1077
   def build_day_options(selected); end
 
   # Builds hidden input tag for date part and value.
@@ -3974,7 +3974,7 @@ class ActionView::Helpers::DateTimeSelector
   #   build_hidden(:year, 2008)
   #   => "<input type="hidden" id="date_year" name="date[year]" value="2008" autocomplete="off" />"
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#1165
+  # source://actionview//lib/action_view/helpers/date_helper.rb#1172
   def build_hidden(type, value); end
 
   # Build select option HTML from date value and options.
@@ -3998,12 +3998,12 @@ class ActionView::Helpers::DateTimeSelector
   #       <option value="3">3</option>
   #       <option value="5">5</option>..."
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#1027
+  # source://actionview//lib/action_view/helpers/date_helper.rb#1034
   def build_options(selected, options = T.unsafe(nil)); end
 
   # Build full select tag from date type and options.
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#1003
+  # source://actionview//lib/action_view/helpers/date_helper.rb#1010
   def build_options_and_select(type, selected, options = T.unsafe(nil)); end
 
   # Builds select tag from date type and HTML select options.
@@ -4013,13 +4013,13 @@ class ActionView::Helpers::DateTimeSelector
   #         <option value="1">January</option>...
   #       </select>"
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#1110
+  # source://actionview//lib/action_view/helpers/date_helper.rb#1117
   def build_select(type, select_options_as_html); end
 
   # Given an ordering of datetime components, create the selection HTML
   # and join them with their appropriate separators.
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#1203
+  # source://actionview//lib/action_view/helpers/date_helper.rb#1210
   def build_selects_from_types(order); end
 
   # Build select option HTML for year.
@@ -4029,7 +4029,7 @@ class ActionView::Helpers::DateTimeSelector
   #       <option value="1999">1999</option>
   #       <option value="2000">2000</option>"
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#1088
+  # source://actionview//lib/action_view/helpers/date_helper.rb#1095
   def build_year_options(selected, options = T.unsafe(nil)); end
 
   # Builds the CSS class value for the select element.
@@ -4037,13 +4037,13 @@ class ActionView::Helpers::DateTimeSelector
   #   css_class_attribute(:year, 'date optional', { year: 'my-year' })
   #   => "date optional my-year"
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#1130
+  # source://actionview//lib/action_view/helpers/date_helper.rb#1137
   def css_class_attribute(type, html_options_class, options); end
 
-  # source://actionview//lib/action_view/helpers/date_helper.rb#985
+  # source://actionview//lib/action_view/helpers/date_helper.rb#992
   def date_order; end
 
-  # source://actionview//lib/action_view/helpers/date_helper.rb#868
+  # source://actionview//lib/action_view/helpers/date_helper.rb#875
   def day; end
 
   # Looks up day names by number.
@@ -4058,28 +4058,28 @@ class ActionView::Helpers::DateTimeSelector
   #
   #   day_name(1) # => "1st"
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#925
+  # source://actionview//lib/action_view/helpers/date_helper.rb#932
   def day_name(number); end
 
-  # source://actionview//lib/action_view/helpers/date_helper.rb#868
+  # source://actionview//lib/action_view/helpers/date_helper.rb#875
   def hour; end
 
   # Returns the id attribute for the input tag.
   #  => "post_written_on_1i"
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#1194
+  # source://actionview//lib/action_view/helpers/date_helper.rb#1201
   def input_id_from_type(type); end
 
   # Returns the name attribute for the input tag.
   #  => post[written_on(1i)]
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#1180
+  # source://actionview//lib/action_view/helpers/date_helper.rb#1187
   def input_name_from_type(type); end
 
-  # source://actionview//lib/action_view/helpers/date_helper.rb#868
+  # source://actionview//lib/action_view/helpers/date_helper.rb#875
   def min; end
 
-  # source://actionview//lib/action_view/helpers/date_helper.rb#868
+  # source://actionview//lib/action_view/helpers/date_helper.rb#875
   def month; end
 
   # Looks up month names by number (1-based):
@@ -4104,13 +4104,13 @@ class ActionView::Helpers::DateTimeSelector
   #
   # depending on the format string.
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#956
+  # source://actionview//lib/action_view/helpers/date_helper.rb#963
   def month_name(number); end
 
   # Returns translated month names, but also ensures that a custom month
   # name array has a leading +nil+ element.
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#892
+  # source://actionview//lib/action_view/helpers/date_helper.rb#899
   def month_names; end
 
   # Builds a prompt option tag with supplied options or from default options.
@@ -4118,27 +4118,27 @@ class ActionView::Helpers::DateTimeSelector
   #   prompt_option_tag(:month, prompt: 'Select month')
   #   => "<option value="">Select month</option>"
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#1146
+  # source://actionview//lib/action_view/helpers/date_helper.rb#1153
   def prompt_option_tag(type, options); end
 
-  # source://actionview//lib/action_view/helpers/date_helper.rb#878
+  # source://actionview//lib/action_view/helpers/date_helper.rb#885
   def prompt_text(prompt, type); end
 
-  # source://actionview//lib/action_view/helpers/date_helper.rb#868
+  # source://actionview//lib/action_view/helpers/date_helper.rb#875
   def sec; end
 
   # Returns the separator for a given datetime component.
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#1214
+  # source://actionview//lib/action_view/helpers/date_helper.rb#1221
   def separator(type); end
 
   # If the day is hidden, the day should be set to the 1st so all month and year choices are
   # valid. Otherwise, February 31st or February 29th, 2011 can be selected, which are invalid.
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#884
+  # source://actionview//lib/action_view/helpers/date_helper.rb#891
   def set_day_if_discarded; end
 
-  # source://actionview//lib/action_view/helpers/date_helper.rb#989
+  # source://actionview//lib/action_view/helpers/date_helper.rb#996
   def translated_date_order; end
 
   # Returns translated month names.
@@ -4151,10 +4151,10 @@ class ActionView::Helpers::DateTimeSelector
   #  => [nil, "Jan", "Feb", "Mar", "Apr", "May", "Jun",
   #           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#909
+  # source://actionview//lib/action_view/helpers/date_helper.rb#916
   def translated_month_names; end
 
-  # source://actionview//lib/action_view/helpers/date_helper.rb#868
+  # source://actionview//lib/action_view/helpers/date_helper.rb#875
   def year; end
 
   # Looks up year names by number.
@@ -4165,17 +4165,17 @@ class ActionView::Helpers::DateTimeSelector
   #
   #   year_name(1998) # => "Heisei 10"
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#977
+  # source://actionview//lib/action_view/helpers/date_helper.rb#984
   def year_name(number); end
 end
 
-# source://actionview//lib/action_view/helpers/date_helper.rb#718
+# source://actionview//lib/action_view/helpers/date_helper.rb#725
 ActionView::Helpers::DateTimeSelector::AMPM_TRANSLATION = T.let(T.unsafe(nil), Hash)
 
-# source://actionview//lib/action_view/helpers/date_helper.rb#713
+# source://actionview//lib/action_view/helpers/date_helper.rb#720
 ActionView::Helpers::DateTimeSelector::DEFAULT_PREFIX = T.let(T.unsafe(nil), String)
 
-# source://actionview//lib/action_view/helpers/date_helper.rb#714
+# source://actionview//lib/action_view/helpers/date_helper.rb#721
 ActionView::Helpers::DateTimeSelector::POSITION = T.let(T.unsafe(nil), Hash)
 
 # = Action View Debug \Helpers
@@ -4259,13 +4259,13 @@ end
 # The standard set of helper methods for form building are located in the
 # +field_helpers+ class attribute.
 #
-# source://actionview//lib/action_view/helpers/date_helper.rb#1228
+# source://actionview//lib/action_view/helpers/date_helper.rb#1235
 class ActionView::Helpers::FormBuilder
   include ::ActionView::ModelNaming
 
   # @return [FormBuilder] a new instance of FormBuilder
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1720
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1721
   def initialize(object_name, object, template, options); end
 
   # Add the submit button for the given form. When no value is given, it checks
@@ -4322,7 +4322,7 @@ class ActionView::Helpers::FormBuilder
   #   #       <strong>Save as draft</strong>
   #   #     </button>
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2649
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2650
   def button(value = T.unsafe(nil), options = T.unsafe(nil), &block); end
 
   # Returns a checkbox tag tailored for accessing a specified attribute (identified by +method+) on an object
@@ -4391,7 +4391,7 @@ class ActionView::Helpers::FormBuilder
   #   # => <input name="eula[accepted]" type="hidden" value="no" />
   #   #    <input type="checkbox" class="eula_check" id="eula_accepted" name="eula[accepted]" value="yes" />
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2476
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2477
   def check_box(method, options = T.unsafe(nil), checked_value = T.unsafe(nil), unchecked_value = T.unsafe(nil)); end
 
   # Returns a checkbox tag tailored for accessing a specified attribute (identified by +method+) on an object
@@ -4460,7 +4460,7 @@ class ActionView::Helpers::FormBuilder
   #   # => <input name="eula[accepted]" type="hidden" value="no" />
   #   #    <input type="checkbox" class="eula_check" id="eula_accepted" name="eula[accepted]" value="yes" />
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2473
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2474
   def checkbox(method, options = T.unsafe(nil), checked_value = T.unsafe(nil), unchecked_value = T.unsafe(nil)); end
 
   # Wraps ActionView::Helpers::FormOptionsHelper#collection_checkboxes for form builders:
@@ -4472,7 +4472,7 @@ class ActionView::Helpers::FormBuilder
   #
   # Please refer to the documentation of the base helper for details.
   #
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#912
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#916
   def collection_check_boxes(method, collection, value_method, text_method, options = T.unsafe(nil), html_options = T.unsafe(nil), &block); end
 
   # Wraps ActionView::Helpers::FormOptionsHelper#collection_checkboxes for form builders:
@@ -4484,7 +4484,7 @@ class ActionView::Helpers::FormBuilder
   #
   # Please refer to the documentation of the base helper for details.
   #
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#909
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#913
   def collection_checkboxes(method, collection, value_method, text_method, options = T.unsafe(nil), html_options = T.unsafe(nil), &block); end
 
   # Wraps ActionView::Helpers::FormOptionsHelper#collection_radio_buttons for form builders:
@@ -4496,7 +4496,7 @@ class ActionView::Helpers::FormBuilder
   #
   # Please refer to the documentation of the base helper for details.
   #
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#922
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#926
   def collection_radio_buttons(method, collection, value_method, text_method, options = T.unsafe(nil), html_options = T.unsafe(nil), &block); end
 
   # Wraps ActionView::Helpers::FormOptionsHelper#collection_select for form builders:
@@ -4508,13 +4508,13 @@ class ActionView::Helpers::FormBuilder
   #
   # Please refer to the documentation of the base helper for details.
   #
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#861
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#865
   def collection_select(method, collection, value_method, text_method, options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2024
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2025
   def color_field(method, options = T.unsafe(nil)); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2024
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2025
   def date_field(method, options = T.unsafe(nil)); end
 
   # Wraps ActionView::Helpers::DateHelper#date_select for form builders:
@@ -4526,13 +4526,13 @@ class ActionView::Helpers::FormBuilder
   #
   # Please refer to the documentation of the base helper for details.
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#1237
+  # source://actionview//lib/action_view/helpers/date_helper.rb#1244
   def date_select(method, options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2024
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2025
   def datetime_field(method, options = T.unsafe(nil)); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2024
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2025
   def datetime_local_field(method, options = T.unsafe(nil)); end
 
   # Wraps ActionView::Helpers::DateHelper#datetime_select for form builders:
@@ -4544,24 +4544,24 @@ class ActionView::Helpers::FormBuilder
   #
   # Please refer to the documentation of the base helper for details.
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#1261
+  # source://actionview//lib/action_view/helpers/date_helper.rb#1268
   def datetime_select(method, options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2024
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2025
   def email_field(method, options = T.unsafe(nil)); end
 
   # @return [Boolean]
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2670
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2671
   def emitted_hidden_id?; end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1685
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1686
   def field_helpers; end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1685
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1686
   def field_helpers=(_arg0); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1685
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1686
   def field_helpers?; end
 
   # Generate an HTML <tt>id</tt> attribute value for the given field
@@ -4581,7 +4581,7 @@ class ActionView::Helpers::FormBuilder
   # element, sharing a common <tt>id</tt> root (<tt>article_title</tt>, in this
   # case).
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1777
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1778
   def field_id(method, *suffixes, namespace: T.unsafe(nil), index: T.unsafe(nil)); end
 
   # Generate an HTML <tt>name</tt> attribute value for the given name and
@@ -4600,12 +4600,12 @@ class ActionView::Helpers::FormBuilder
   #     <%# => <input type="text" name="article[tag][]"> %>
   #   <% end %>
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1797
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1798
   def field_name(method, *methods, multiple: T.unsafe(nil), index: T.unsafe(nil)); end
 
   # See the docs for the ActionView::Helpers::FormHelper#fields helper method.
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2327
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2328
   def fields(scope = T.unsafe(nil), model: T.unsafe(nil), **options, &block); end
 
   # Creates a scope around a specific model object like #form_with, but
@@ -4862,7 +4862,7 @@ class ActionView::Helpers::FormBuilder
   # hidden field is not needed and you can pass <tt>include_id: false</tt>
   # to prevent +fields_for+ from rendering it automatically.
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2289
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2290
   def fields_for(record_name, record_object = T.unsafe(nil), fields_options = T.unsafe(nil), &block); end
 
   # Returns a file upload input tag tailored for accessing a specified attribute (identified by +method+) on an object
@@ -4900,7 +4900,7 @@ class ActionView::Helpers::FormBuilder
   #   file_field(:file, class: 'file_input')
   #   # => <input type="file" id="attachment_file" name="attachment[file]" class="file_input" />
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2557
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2558
   def file_field(method, options = T.unsafe(nil)); end
 
   # Wraps ActionView::Helpers::FormOptionsHelper#grouped_collection_select for form builders:
@@ -4912,7 +4912,7 @@ class ActionView::Helpers::FormBuilder
   #
   # Please refer to the documentation of the base helper for details.
   #
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#873
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#877
   def grouped_collection_select(method, collection, group_method, group_label_method, option_key_method, option_value_method, options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
   # Returns a hidden input tag tailored for accessing a specified attribute (identified by +method+) on an object
@@ -4933,7 +4933,7 @@ class ActionView::Helpers::FormBuilder
   #   hidden_field(:token)
   #   # => <input type="hidden" id="user_token" name="user[token]" value="abcde" />
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2518
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2519
   def hidden_field(method, options = T.unsafe(nil)); end
 
   # Generate an HTML <tt>id</tt> attribute value.
@@ -4954,12 +4954,12 @@ class ActionView::Helpers::FormBuilder
   # <tt><button></tt> element should be treated as the <tt><form></tt>
   # element's submit button, regardless of where it exists in the DOM.
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1757
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1758
   def id; end
 
   # Returns the value of attribute index.
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1697
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1698
   def index; end
 
   # Returns a label tag tailored for labelling an input field for a specified attribute (identified by +method+) on an object
@@ -5031,68 +5031,68 @@ class ActionView::Helpers::FormBuilder
   #   end
   #   # => <label for="article_terms">Accept <a href="/terms">Terms</a>.</label>
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2404
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2405
   def label(method, text = T.unsafe(nil), options = T.unsafe(nil), &block); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2024
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2025
   def month_field(method, options = T.unsafe(nil)); end
 
   # Returns the value of attribute multipart.
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1697
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1698
   def multipart; end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1700
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1701
   def multipart=(multipart); end
 
   # Returns the value of attribute multipart.
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1698
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1699
   def multipart?; end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2024
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2025
   def number_field(method, options = T.unsafe(nil)); end
 
   # Returns the value of attribute object.
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1695
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1696
   def object; end
 
   # Sets the attribute object
   #
   # @param value the value to set the attribute object to.
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1695
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1696
   def object=(_arg0); end
 
   # Returns the value of attribute object_name.
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1695
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1696
   def object_name; end
 
   # Sets the attribute object_name
   #
   # @param value the value to set the attribute object_name to.
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1695
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1696
   def object_name=(_arg0); end
 
   # Returns the value of attribute options.
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1695
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1696
   def options; end
 
   # Sets the attribute options
   #
   # @param value the value to set the attribute options to.
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1695
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1696
   def options=(_arg0); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2024
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2025
   def password_field(method, options = T.unsafe(nil)); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2024
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2025
   def phone_field(method, options = T.unsafe(nil)); end
 
   # Returns a radio button tag for accessing a specified attribute (identified by +method+) on an object
@@ -5114,13 +5114,13 @@ class ActionView::Helpers::FormBuilder
   #   # => <input type="radio" id="user_receive_newsletter_yes" name="user[receive_newsletter]" value="yes" />
   #   #    <input type="radio" id="user_receive_newsletter_no" name="user[receive_newsletter]" value="no" checked="checked" />
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2496
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2497
   def radio_button(method, tag_value, options = T.unsafe(nil)); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2024
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2025
   def range_field(method, options = T.unsafe(nil)); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2024
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2025
   def search_field(method, options = T.unsafe(nil)); end
 
   # Wraps ActionView::Helpers::FormOptionsHelper#select for form builders:
@@ -5132,7 +5132,7 @@ class ActionView::Helpers::FormBuilder
   #
   # Please refer to the documentation of the base helper for details.
   #
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#849
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#853
   def select(method, choices = T.unsafe(nil), options = T.unsafe(nil), html_options = T.unsafe(nil), &block); end
 
   # Add the submit button for the given form. When no value is given, it checks
@@ -5162,22 +5162,22 @@ class ActionView::Helpers::FormBuilder
   #         article:
   #           create: "Add %{model}"
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2589
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2590
   def submit(value = T.unsafe(nil), options = T.unsafe(nil)); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2024
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2025
   def telephone_field(method, options = T.unsafe(nil)); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2034
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2035
   def text_area(method, options = T.unsafe(nil)); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2024
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2025
   def text_field(method, options = T.unsafe(nil)); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2024
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2025
   def textarea(method, options = T.unsafe(nil)); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2024
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2025
   def time_field(method, options = T.unsafe(nil)); end
 
   # Wraps ActionView::Helpers::DateHelper#time_select for form builders:
@@ -5189,7 +5189,7 @@ class ActionView::Helpers::FormBuilder
   #
   # Please refer to the documentation of the base helper for details.
   #
-  # source://actionview//lib/action_view/helpers/date_helper.rb#1249
+  # source://actionview//lib/action_view/helpers/date_helper.rb#1256
   def time_select(method, options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
   # Wraps ActionView::Helpers::FormOptionsHelper#time_zone_select for form builders:
@@ -5201,19 +5201,19 @@ class ActionView::Helpers::FormBuilder
   #
   # Please refer to the documentation of the base helper for details.
   #
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#885
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#889
   def time_zone_select(method, priority_zones = T.unsafe(nil), options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1716
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1717
   def to_model; end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1712
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1713
   def to_partial_path; end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2024
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2025
   def url_field(method, options = T.unsafe(nil)); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2024
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2025
   def week_field(method, options = T.unsafe(nil)); end
 
   # Wraps ActionView::Helpers::FormOptionsHelper#weekday_select for form builders:
@@ -5225,53 +5225,53 @@ class ActionView::Helpers::FormBuilder
   #
   # Please refer to the documentation of the base helper for details.
   #
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#897
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#901
   def weekday_select(method, options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
   private
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2755
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2756
   def convert_to_legacy_options(options); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2737
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2738
   def fields_for_nested_model(name, object, fields_options, block); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2708
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2709
   def fields_for_with_nested_attributes(association_name, association, options, block); end
 
   # @return [Boolean]
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2704
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2705
   def nested_attributes_association?(association_name); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2750
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2751
   def nested_child_index(name); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2675
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2676
   def objectify_options(options); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#2681
+  # source://actionview//lib/action_view/helpers/form_helper.rb#2682
   def submit_default_value; end
 
   class << self
-    # source://actionview//lib/action_view/helpers/form_helper.rb#1708
+    # source://actionview//lib/action_view/helpers/form_helper.rb#1709
     def _to_partial_path; end
 
-    # source://actionview//lib/action_view/helpers/form_helper.rb#1685
+    # source://actionview//lib/action_view/helpers/form_helper.rb#1686
     def field_helpers; end
 
-    # source://actionview//lib/action_view/helpers/form_helper.rb#1685
+    # source://actionview//lib/action_view/helpers/form_helper.rb#1686
     def field_helpers=(value); end
 
-    # source://actionview//lib/action_view/helpers/form_helper.rb#1685
+    # source://actionview//lib/action_view/helpers/form_helper.rb#1686
     def field_helpers?; end
 
     private
 
-    # source://actionview//lib/action_view/helpers/form_helper.rb#1685
+    # source://actionview//lib/action_view/helpers/form_helper.rb#1686
     def __class_attr_field_helpers; end
 
-    # source://actionview//lib/action_view/helpers/form_helper.rb#1685
+    # source://actionview//lib/action_view/helpers/form_helper.rb#1686
     def __class_attr_field_helpers=(new_value); end
   end
 end
@@ -5373,7 +5373,7 @@ end
 #
 # That's how you typically work with resources.
 #
-# source://actionview//lib/action_view/helpers/form_helper.rb#114
+# source://actionview//lib/action_view/helpers/form_helper.rb#115
 module ActionView::Helpers::FormHelper
   include ::ActionView::ModelNaming
   include ::ActionView::RecordIdentifier
@@ -5386,7 +5386,7 @@ module ActionView::Helpers::FormHelper
   mixes_in_class_methods ::ActionView::Helpers::UrlHelper::ClassMethods
   mixes_in_class_methods ::ActionView::Helpers::SanitizeHelper::ClassMethods
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1591
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1592
   def _object_for_form_builder(object); end
 
   # Returns a checkbox tag tailored for accessing a specified attribute (identified by +method+) on an object
@@ -5454,7 +5454,7 @@ module ActionView::Helpers::FormHelper
   #   # => <input name="eula[accepted]" type="hidden" value="no" />
   #   #    <input type="checkbox" class="eula_check" id="eula_accepted" name="eula[accepted]" value="yes" />
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1350
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1351
   def check_box(object_name, method, options = T.unsafe(nil), checked_value = T.unsafe(nil), unchecked_value = T.unsafe(nil)); end
 
   # Returns a checkbox tag tailored for accessing a specified attribute (identified by +method+) on an object
@@ -5522,7 +5522,7 @@ module ActionView::Helpers::FormHelper
   #   # => <input name="eula[accepted]" type="hidden" value="no" />
   #   #    <input type="checkbox" class="eula_check" id="eula_accepted" name="eula[accepted]" value="yes" />
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1347
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1348
   def checkbox(object_name, method, options = T.unsafe(nil), checked_value = T.unsafe(nil), unchecked_value = T.unsafe(nil)); end
 
   # Returns a text_field of type "color".
@@ -5530,7 +5530,7 @@ module ActionView::Helpers::FormHelper
   #   color_field("car", "color")
   #   # => <input id="car_color" name="car[color]" type="color" value="#000000" />
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1378
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1379
   def color_field(object_name, method, options = T.unsafe(nil)); end
 
   # Returns a text_field of type "date".
@@ -5559,7 +5559,7 @@ module ActionView::Helpers::FormHelper
   #   date_field("user", "born_on", min: "2014-05-20")
   #   # => <input id="user_born_on" name="user[born_on]" type="date" min="2014-05-20" />
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1442
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1443
   def date_field(object_name, method, options = T.unsafe(nil)); end
 
   # Returns a text_field of type "datetime-local".
@@ -5594,7 +5594,7 @@ module ActionView::Helpers::FormHelper
   #   datetime_field("user", "born_on", include_seconds: false)
   #   # => <input id="user_born_on" name="user[born_on]" type="datetime-local" value="2014-05-20T14:35" />
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1515
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1516
   def datetime_field(object_name, method, options = T.unsafe(nil)); end
 
   # Returns a text_field of type "datetime-local".
@@ -5629,13 +5629,13 @@ module ActionView::Helpers::FormHelper
   #   datetime_field("user", "born_on", include_seconds: false)
   #   # => <input id="user_born_on" name="user[born_on]" type="datetime-local" value="2014-05-20T14:35" />
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1519
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1520
   def datetime_local_field(object_name, method, options = T.unsafe(nil)); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#122
+  # source://actionview//lib/action_view/helpers/form_helper.rb#123
   def default_form_builder; end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#122
+  # source://actionview//lib/action_view/helpers/form_helper.rb#123
   def default_form_builder=(_arg0); end
 
   # Returns a text_field of type "email".
@@ -5643,7 +5643,7 @@ module ActionView::Helpers::FormHelper
   #   email_field("user", "address")
   #   # => <input id="user_address" name="user[address]" type="email" />
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1569
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1570
   def email_field(object_name, method, options = T.unsafe(nil)); end
 
   # Scopes input fields with either an explicit scope or model.
@@ -5692,7 +5692,7 @@ module ActionView::Helpers::FormHelper
   # to work with an object as a base, like
   # FormOptionsHelper#collection_select and DateHelper#datetime_select.
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1080
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1081
   def fields(scope = T.unsafe(nil), model: T.unsafe(nil), **options, &block); end
 
   # Creates a scope around a specific model object like #form_with, but
@@ -5938,7 +5938,7 @@ module ActionView::Helpers::FormHelper
   # can pass <tt>include_id: false</tt> to prevent +fields_for+ from
   # rendering it automatically.
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1029
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1030
   def fields_for(record_name, record_object = T.unsafe(nil), options = T.unsafe(nil), &block); end
 
   # Returns a file upload input tag tailored for accessing a specified attribute (identified by +method+) on an object
@@ -5971,7 +5971,7 @@ module ActionView::Helpers::FormHelper
   #   file_field(:attachment, :file, class: 'file_input')
   #   # => <input type="file" id="attachment_file" name="attachment[file]" class="file_input" />
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1248
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1249
   def file_field(object_name, method, options = T.unsafe(nil)); end
 
   # Creates a form that allows the user to create or update the attributes
@@ -6289,7 +6289,7 @@ module ActionView::Helpers::FormHelper
   #
   # @raise [ArgumentError]
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#436
+  # source://actionview//lib/action_view/helpers/form_helper.rb#437
   def form_for(record, options = T.unsafe(nil), &block); end
 
   # Creates a form tag based on mixing URLs, scopes, or models.
@@ -6565,19 +6565,19 @@ module ActionView::Helpers::FormHelper
   #
   # @raise [ArgumentError]
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#756
+  # source://actionview//lib/action_view/helpers/form_helper.rb#757
   def form_with(model: T.unsafe(nil), scope: T.unsafe(nil), url: T.unsafe(nil), format: T.unsafe(nil), **options, &block); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#482
+  # source://actionview//lib/action_view/helpers/form_helper.rb#483
   def form_with_generates_ids; end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#482
+  # source://actionview//lib/action_view/helpers/form_helper.rb#483
   def form_with_generates_ids=(val); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#480
+  # source://actionview//lib/action_view/helpers/form_helper.rb#481
   def form_with_generates_remote_forms; end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#480
+  # source://actionview//lib/action_view/helpers/form_helper.rb#481
   def form_with_generates_remote_forms=(val); end
 
   # Returns a hidden input tag tailored for accessing a specified attribute (identified by +method+) on an object
@@ -6595,7 +6595,7 @@ module ActionView::Helpers::FormHelper
   #   hidden_field(:user, :token)
   #   # => <input type="hidden" id="user_token" name="user[token]" value="#{@user.token}" />
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1215
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1216
   def hidden_field(object_name, method, options = T.unsafe(nil)); end
 
   # Returns a label tag tailored for labelling an input field for a specified attribute (identified by +method+) on an object
@@ -6659,7 +6659,7 @@ module ActionView::Helpers::FormHelper
   #   end
   #   # => <label for="article_terms">Accept <a href="/terms">Terms</a>.</label>
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1152
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1153
   def label(object_name, method, content_or_options = T.unsafe(nil), options = T.unsafe(nil), &block); end
 
   # Returns a text_field of type "month".
@@ -6675,13 +6675,13 @@ module ActionView::Helpers::FormHelper
   #   month_field("user", "born_on")
   #   # => <input id="user_born_on" name="user[born_on]" type="date" value="1984-01" />
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1534
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1535
   def month_field(object_name, method, options = T.unsafe(nil)); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#484
+  # source://actionview//lib/action_view/helpers/form_helper.rb#485
   def multiple_file_field_include_hidden; end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#484
+  # source://actionview//lib/action_view/helpers/form_helper.rb#485
   def multiple_file_field_include_hidden=(val); end
 
   # Returns an input tag of type "number".
@@ -6690,7 +6690,7 @@ module ActionView::Helpers::FormHelper
   #
   # Supports the same options as FormTagHelper#number_field_tag.
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1578
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1579
   def number_field(object_name, method, options = T.unsafe(nil)); end
 
   # Returns an input tag of the "password" type tailored for accessing a specified attribute (identified by +method+) on an object
@@ -6711,7 +6711,7 @@ module ActionView::Helpers::FormHelper
   #   password_field(:account, :pin, size: 20, class: 'form_input')
   #   # => <input type="password" id="account_pin" name="account[pin]" size="20" class="form_input" />
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1197
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1198
   def password_field(object_name, method, options = T.unsafe(nil)); end
 
   # Returns a text_field of type "tel".
@@ -6720,7 +6720,7 @@ module ActionView::Helpers::FormHelper
   #   # => <input id="user_phone" name="user[phone]" type="tel" />
   # aliases telephone_field
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1414
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1415
   def phone_field(object_name, method, options = T.unsafe(nil)); end
 
   # Returns a radio button tag for accessing a specified attribute (identified by +method+) on an object
@@ -6742,7 +6742,7 @@ module ActionView::Helpers::FormHelper
   #   # => <input type="radio" id="user_receive_newsletter_yes" name="user[receive_newsletter]" value="yes" />
   #   #    <input type="radio" id="user_receive_newsletter_no" name="user[receive_newsletter]" value="no" checked="checked" />
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1370
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1371
   def radio_button(object_name, method, tag_value, options = T.unsafe(nil)); end
 
   # Returns an input tag of type "range".
@@ -6751,7 +6751,7 @@ module ActionView::Helpers::FormHelper
   #
   # Supports the same options as FormTagHelper#range_field_tag.
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1587
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1588
   def range_field(object_name, method, options = T.unsafe(nil)); end
 
   # Returns an input of type "search" for accessing a specified attribute (identified by +method+) on an object
@@ -6774,7 +6774,7 @@ module ActionView::Helpers::FormHelper
   #   search_field(:user, :name, autosave: true, onsearch: true)
   #   # => <input autosave="com.example.www" id="user_name" incremental="true" name="user[name]" onsearch="true" results="10" type="search" />
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1401
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1402
   def search_field(object_name, method, options = T.unsafe(nil)); end
 
   # Returns a text_field of type "tel".
@@ -6782,7 +6782,7 @@ module ActionView::Helpers::FormHelper
   #   telephone_field("user", "phone")
   #   # => <input id="user_phone" name="user[phone]" type="tel" />
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1410
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1411
   def telephone_field(object_name, method, options = T.unsafe(nil)); end
 
   # Returns a textarea opening and closing tag set tailored for accessing a specified attribute (identified by +method+)
@@ -6810,7 +6810,7 @@ module ActionView::Helpers::FormHelper
   #   #      #{@entry.body}
   #   #    </textarea>
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1281
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1282
   def text_area(object_name, method, options = T.unsafe(nil)); end
 
   # Returns an input tag of the "text" type tailored for accessing a specified attribute (identified by +method+) on an object
@@ -6834,7 +6834,7 @@ module ActionView::Helpers::FormHelper
   #   text_field(:snippet, :code, size: 20, class: 'code_input')
   #   # => <input type="text" id="snippet_code" name="snippet[code]" size="20" value="#{@snippet.code}" class="code_input" />
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1176
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1177
   def text_field(object_name, method, options = T.unsafe(nil)); end
 
   # Returns a textarea opening and closing tag set tailored for accessing a specified attribute (identified by +method+)
@@ -6862,7 +6862,7 @@ module ActionView::Helpers::FormHelper
   #   #      #{@entry.body}
   #   #    </textarea>
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1278
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1279
   def textarea(object_name, method, options = T.unsafe(nil)); end
 
   # Returns a text_field of type "time".
@@ -6900,7 +6900,7 @@ module ActionView::Helpers::FormHelper
   #   time_field("task", "started_at", value: Time.now, include_seconds: false)
   #   # => <input id="task_started_at" name="task[started_at]" type="time" value="01:00" />
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1480
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1481
   def time_field(object_name, method, options = T.unsafe(nil)); end
 
   # Returns a text_field of type "url".
@@ -6908,7 +6908,7 @@ module ActionView::Helpers::FormHelper
   #   url_field("user", "homepage")
   #   # => <input id="user_homepage" name="user[homepage]" type="url" />
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1560
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1561
   def url_field(object_name, method, options = T.unsafe(nil)); end
 
   # Returns a text_field of type "week".
@@ -6924,40 +6924,40 @@ module ActionView::Helpers::FormHelper
   #   week_field("user", "born_on")
   #   # => <input id="user_born_on" name="user[born_on]" type="date" value="1984-W19" />
   #
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1551
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1552
   def week_field(object_name, method, options = T.unsafe(nil)); end
 
   private
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#466
+  # source://actionview//lib/action_view/helpers/form_helper.rb#467
   def apply_form_for_options!(object, options); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1625
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1626
   def default_form_builder_class; end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1596
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1597
   def html_options_for_form_with(url_for_options = T.unsafe(nil), model = T.unsafe(nil), html: T.unsafe(nil), local: T.unsafe(nil), skip_enforcing_utf8: T.unsafe(nil), **options); end
 
-  # source://actionview//lib/action_view/helpers/form_helper.rb#1611
+  # source://actionview//lib/action_view/helpers/form_helper.rb#1612
   def instantiate_builder(record_name, record_object, options); end
 
   class << self
-    # source://actionview//lib/action_view/helpers/form_helper.rb#482
+    # source://actionview//lib/action_view/helpers/form_helper.rb#483
     def form_with_generates_ids; end
 
-    # source://actionview//lib/action_view/helpers/form_helper.rb#482
+    # source://actionview//lib/action_view/helpers/form_helper.rb#483
     def form_with_generates_ids=(val); end
 
-    # source://actionview//lib/action_view/helpers/form_helper.rb#480
+    # source://actionview//lib/action_view/helpers/form_helper.rb#481
     def form_with_generates_remote_forms; end
 
-    # source://actionview//lib/action_view/helpers/form_helper.rb#480
+    # source://actionview//lib/action_view/helpers/form_helper.rb#481
     def form_with_generates_remote_forms=(val); end
 
-    # source://actionview//lib/action_view/helpers/form_helper.rb#484
+    # source://actionview//lib/action_view/helpers/form_helper.rb#485
     def multiple_file_field_include_hidden; end
 
-    # source://actionview//lib/action_view/helpers/form_helper.rb#484
+    # source://actionview//lib/action_view/helpers/form_helper.rb#485
     def multiple_file_field_include_hidden=(val); end
   end
 end
@@ -7045,7 +7045,7 @@ end
 #       <option value="4">Poems</option>
 #     </select>
 #
-# source://actionview//lib/action_view/helpers/form_options_helper.rb#94
+# source://actionview//lib/action_view/helpers/form_options_helper.rb#95
 module ActionView::Helpers::FormOptionsHelper
   include ::ActionView::Helpers::SanitizeHelper
   include ::ActionView::Helpers::CaptureHelper
@@ -7135,7 +7135,7 @@ module ActionView::Helpers::FormOptionsHelper
   # In the rare case you don't want this hidden field, you can pass the
   # <tt>include_hidden: false</tt> option to the helper method.
   #
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#785
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#789
   def collection_check_boxes(object, method, collection, value_method, text_method, options = T.unsafe(nil), html_options = T.unsafe(nil), &block); end
 
   # Returns check box tags for the collection of existing return values of
@@ -7219,7 +7219,7 @@ module ActionView::Helpers::FormOptionsHelper
   # In the rare case you don't want this hidden field, you can pass the
   # <tt>include_hidden: false</tt> option to the helper method.
   #
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#782
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#786
   def collection_checkboxes(object, method, collection, value_method, text_method, options = T.unsafe(nil), html_options = T.unsafe(nil), &block); end
 
   # Returns radio button tags for the collection of existing return values
@@ -7302,7 +7302,7 @@ module ActionView::Helpers::FormOptionsHelper
   # In case if you don't want the helper to generate this hidden field you can specify
   # <tt>include_hidden: false</tt> option.
   #
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#698
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#702
   def collection_radio_buttons(object, method, collection, value_method, text_method, options = T.unsafe(nil), html_options = T.unsafe(nil), &block); end
 
   # Returns <tt><select></tt> and <tt><option></tt> tags for the collection of existing return values of
@@ -7342,7 +7342,7 @@ module ActionView::Helpers::FormOptionsHelper
   #     <option value="3">M. Clark</option>
   #   </select>
   #
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#199
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#200
   def collection_select(object, method, collection, value_method, text_method, options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
   # Returns <tt><select></tt>, <tt><optgroup></tt> and <tt><option></tt> tags for the collection of existing return values of
@@ -7401,7 +7401,7 @@ module ActionView::Helpers::FormOptionsHelper
   #     </optgroup>
   #   </select>
   #
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#258
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#259
   def grouped_collection_select(object, method, collection, group_method, group_label_method, option_key_method, option_value_method, options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
   # Returns a string of <tt><option></tt> tags, like <tt>options_for_select</tt>, but
@@ -7432,7 +7432,8 @@ module ActionView::Helpers::FormOptionsHelper
   #     <option value="France">France</option>
   #   </optgroup>
   #
-  # Parameters:
+  # ==== Parameters
+  #
   # * +grouped_options+ - Accepts a nested array or hash of strings. The first value serves as the
   #   <tt><optgroup></tt> label while the second value must be an array of options. The second value can be a
   #   nested array of text-value pairs. See <tt>options_for_select</tt> for more info.
@@ -7443,7 +7444,8 @@ module ActionView::Helpers::FormOptionsHelper
   #   which will have the +selected+ attribute set. Note: It is possible for this value to match multiple options
   #   as you might have the same option in multiple groups. Each will then get <tt>selected="selected"</tt>.
   #
-  # Options:
+  # ==== Options
+  #
   # * <tt>:prompt</tt> - set to true or a prompt string. When the select element doesn't have a value yet, this
   #   prepends an option with a generic prompt - "Please select" - or the given prompt string.
   # * <tt>:divider</tt> - the divider for the options groups.
@@ -7468,7 +7470,7 @@ module ActionView::Helpers::FormOptionsHelper
   # <b>Note:</b> Only the <tt><optgroup></tt> and <tt><option></tt> tags are returned, so you still have to
   # wrap the output in an appropriate <tt><select></tt> tag.
   #
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#534
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#537
   def grouped_options_for_select(grouped_options, selected_key = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # Returns a string of <tt><option></tt> tags, like <tt>options_from_collection_for_select</tt>, but
@@ -7520,7 +7522,7 @@ module ActionView::Helpers::FormOptionsHelper
   # <b>Note:</b> Only the <tt><optgroup></tt> and <tt><option></tt> tags are returned, so you still have to
   # wrap the output in an appropriate <tt><select></tt> tag.
   #
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#462
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#463
   def option_groups_from_collection_for_select(collection, group_method, group_label_method, option_key_method, option_value_method, selected_key = T.unsafe(nil)); end
 
   # Accepts a container (hash, array, enumerable, your type) and returns a string of option tags. Given a container
@@ -7580,7 +7582,7 @@ module ActionView::Helpers::FormOptionsHelper
   #
   # NOTE: Only the option tags are returned, you have to wrap this call in a regular HTML select tag.
   #
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#358
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#359
   def options_for_select(container, selected = T.unsafe(nil)); end
 
   # Returns a string of option tags that have been compiled by iterating over the +collection+ and assigning
@@ -7608,7 +7610,7 @@ module ActionView::Helpers::FormOptionsHelper
   #   options_from_collection_for_select(@people, 'id', 'name', 1)
   # should produce the desired results.
   #
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#401
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#402
   def options_from_collection_for_select(collection, value_method, text_method, selected = T.unsafe(nil)); end
 
   # Create a select tag and a series of contained option tags for the provided object and method.
@@ -7673,7 +7675,7 @@ module ActionView::Helpers::FormOptionsHelper
   # In case if you don't want the helper to generate this hidden field you can specify
   # <tt>include_hidden: false</tt> option.
   #
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#159
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#160
   def select(object, method, choices = T.unsafe(nil), options = T.unsafe(nil), html_options = T.unsafe(nil), &block); end
 
   # Returns a string of option tags for pretty much any time zone in the
@@ -7696,7 +7698,7 @@ module ActionView::Helpers::FormOptionsHelper
   # NOTE: Only the option tags are returned, you have to wrap this call in
   # a regular HTML select tag.
   #
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#579
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#582
   def time_zone_options_for_select(selected = T.unsafe(nil), priority_zones = T.unsafe(nil), model = T.unsafe(nil)); end
 
   # Returns select and option tags for the given object and method, using
@@ -7730,12 +7732,13 @@ module ActionView::Helpers::FormOptionsHelper
   #
   #   time_zone_select(:user, :time_zone, ActiveSupport::TimeZone.all.sort, model: ActiveSupport::TimeZone)
   #
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#292
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#293
   def time_zone_select(object, method, priority_zones = T.unsafe(nil), options = T.unsafe(nil), html_options = T.unsafe(nil)); end
 
   # Returns a string of option tags for the days of the week.
   #
-  # Options:
+  # ====Options
+  #
   # * <tt>:index_as_value</tt> - Defaults to false, set to true to use the indexes from
   #   <tt>I18n.translate("date.day_names")</tt> as the values. By default, Sunday is always 0.
   # * <tt>:day_format</tt> - The I18n key of the array to use for the weekday options.
@@ -7745,38 +7748,38 @@ module ActionView::Helpers::FormOptionsHelper
   # NOTE: Only the option tags are returned, you have to wrap this call in
   # a regular HTML select tag.
   #
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#611
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#615
   def weekday_options_for_select(selected = T.unsafe(nil), index_as_value: T.unsafe(nil), day_format: T.unsafe(nil), beginning_of_week: T.unsafe(nil)); end
 
   # Returns select and option tags for the given object and method, using
   # <tt>weekday_options_for_select</tt> to generate the list of option tags.
   #
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#298
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#299
   def weekday_select(object, method, options = T.unsafe(nil), html_options = T.unsafe(nil), &block); end
 
   private
 
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#810
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#814
   def extract_selected_and_disabled(selected); end
 
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#821
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#825
   def extract_values_from_collection(collection, value_method, selected); end
 
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#788
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#792
   def option_html_attributes(element); end
 
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#796
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#800
   def option_text_and_value(option); end
 
   # @return [Boolean]
   #
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#806
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#810
   def option_value_selected?(value, selected); end
 
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#835
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#839
   def prompt_text(prompt); end
 
-  # source://actionview//lib/action_view/helpers/form_options_helper.rb#831
+  # source://actionview//lib/action_view/helpers/form_options_helper.rb#835
   def value_for_collection(item, value); end
 end
 
@@ -7788,7 +7791,7 @@ end
 # NOTE: The HTML options <tt>disabled</tt>, <tt>readonly</tt>, and <tt>multiple</tt> can all be treated as booleans. So specifying
 # <tt>disabled: true</tt> will give <tt>disabled="disabled"</tt>.
 #
-# source://actionview//lib/action_view/helpers/form_tag_helper.rb#19
+# source://actionview//lib/action_view/helpers/form_tag_helper.rb#20
 module ActionView::Helpers::FormTagHelper
   include ::ActionView::Helpers::ContentExfiltrationPreventionHelper
   extend ::ActiveSupport::Concern
@@ -7833,7 +7836,7 @@ module ActionView::Helpers::FormTagHelper
   #   #     <strong>Ask me!</strong>
   #   #    </button>
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#568
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#569
   def button_tag(content_or_options = T.unsafe(nil), options = T.unsafe(nil), &block); end
 
   # :call-seq:
@@ -7865,7 +7868,7 @@ module ActionView::Helpers::FormTagHelper
   #   checkbox_tag 'eula', 'accepted', false, disabled: true
   #   # => <input disabled="disabled" id="eula" name="eula" type="checkbox" value="accepted" />
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#466
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#467
   def check_box_tag(name, *args); end
 
   # :call-seq:
@@ -7897,7 +7900,7 @@ module ActionView::Helpers::FormTagHelper
   #   checkbox_tag 'eula', 'accepted', false, disabled: true
   #   # => <input disabled="disabled" id="eula" name="eula" type="checkbox" value="accepted" />
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#456
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#457
   def checkbox_tag(name, *args); end
 
   # Creates a text field of type "color".
@@ -7920,7 +7923,7 @@ module ActionView::Helpers::FormTagHelper
   #   color_field_tag 'color', '#DEF726', class: 'special_input', disabled: true
   #   # => <input disabled="disabled" class="special_input" id="color" name="color" type="color" value="#DEF726" />
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#668
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#669
   def color_field_tag(name, value = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # Creates a text field of type "date".
@@ -7943,7 +7946,7 @@ module ActionView::Helpers::FormTagHelper
   #   date_field_tag 'date', '2014-12-31', class: 'special_input', disabled: true
   #   # => <input disabled="disabled" class="special_input" id="date" name="date" type="date" value="2014-12-31" />
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#738
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#739
   def date_field_tag(name, value = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # Creates a text field of type "datetime-local".
@@ -7971,7 +7974,7 @@ module ActionView::Helpers::FormTagHelper
   #   datetime_field_tag 'datetime', '2014-01-01T01:01', class: 'special_input', disabled: true
   #   # => <input disabled="disabled" class="special_input" id="datetime" name="datetime" type="datetime-local" value="2014-01-01T01:01" />
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#797
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#798
   def datetime_field_tag(name, value = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # Creates a text field of type "datetime-local".
@@ -7999,13 +8002,13 @@ module ActionView::Helpers::FormTagHelper
   #   datetime_field_tag 'datetime', '2014-01-01T01:01', class: 'special_input', disabled: true
   #   # => <input disabled="disabled" class="special_input" id="datetime" name="datetime" type="datetime-local" value="2014-01-01T01:01" />
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#801
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#802
   def datetime_local_field_tag(name, value = T.unsafe(nil), options = T.unsafe(nil)); end
 
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#29
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#30
   def default_enforce_utf8; end
 
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#29
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#30
   def default_enforce_utf8=(val); end
 
   # Creates a text field of type "email".
@@ -8028,13 +8031,13 @@ module ActionView::Helpers::FormTagHelper
   #   email_field_tag 'email', 'email@example.com', class: 'special_input', disabled: true
   #   # => <input disabled="disabled" class="special_input" id="email" name="email" type="email" value="email@example.com" />
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#899
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#900
   def email_field_tag(name, value = T.unsafe(nil), options = T.unsafe(nil)); end
 
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#26
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#27
   def embed_authenticity_token_in_remote_forms; end
 
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#26
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#27
   def embed_authenticity_token_in_remote_forms=(val); end
 
   # Generate an HTML <tt>id</tt> attribute value for the given name and
@@ -8053,7 +8056,7 @@ module ActionView::Helpers::FormTagHelper
   # element, sharing a common <tt>id</tt> root (<tt>post_title</tt>, in this
   # case).
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#102
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#103
   def field_id(object_name, method_name, *suffixes, index: T.unsafe(nil), namespace: T.unsafe(nil)); end
 
   # Generate an HTML <tt>name</tt> attribute value for the given name and
@@ -8068,7 +8071,7 @@ module ActionView::Helpers::FormTagHelper
   #   <%= text_field :post, :tag, name: field_name(:post, :tag, multiple: true) %>
   #   <%# => <input type="text" name="post[tag][]"> %>
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#132
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#133
   def field_name(object_name, method_name, *method_names, multiple: T.unsafe(nil), index: T.unsafe(nil)); end
 
   # Creates a field set for grouping HTML form elements.
@@ -8092,7 +8095,7 @@ module ActionView::Helpers::FormTagHelper
   #   <% end %>
   #   # => <fieldset class="format"><p><input id="name" name="name" type="text" /></p></fieldset>
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#640
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#641
   def field_set_tag(legend = T.unsafe(nil), options = T.unsafe(nil), &block); end
 
   # Creates a field set for grouping HTML form elements.
@@ -8116,7 +8119,7 @@ module ActionView::Helpers::FormTagHelper
   #   <% end %>
   #   # => <fieldset class="format"><p><input id="name" name="name" type="text" /></p></fieldset>
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#647
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#648
   def fieldset_tag(legend = T.unsafe(nil), options = T.unsafe(nil), &block); end
 
   # Creates a file upload field. If you are using file uploads then you will also need
@@ -8155,7 +8158,7 @@ module ActionView::Helpers::FormTagHelper
   #   file_field_tag 'file', accept: 'text/html', class: 'upload', value: 'index.html'
   #   # => <input accept="text/html" class="upload" id="file" name="file" type="file" value="index.html" />
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#347
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#348
   def file_field_tag(name, options = T.unsafe(nil)); end
 
   # Starts a form tag that points the action to a URL configured with <tt>url_for_options</tt> just like
@@ -8205,7 +8208,7 @@ module ActionView::Helpers::FormTagHelper
   #   form_tag('http://far.away.com/form', authenticity_token: "cf50faa3fe97702ca1ae")
   #   # form with custom authenticity token
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#78
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#79
   def form_tag(url_for_options = T.unsafe(nil), options = T.unsafe(nil), &block); end
 
   # Creates a hidden form input field used to transmit data that would be lost due to HTTP's statelessness or
@@ -8225,7 +8228,7 @@ module ActionView::Helpers::FormTagHelper
   #   # => <input type="hidden" name="collected_input" id="collected_input"
   #        value="" onchange="alert(&#39;Input collected!&#39;)" autocomplete="off" />
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#308
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#309
   def hidden_field_tag(name, value = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # Displays an image which when clicked will submit the form.
@@ -8259,7 +8262,7 @@ module ActionView::Helpers::FormTagHelper
   #   image_submit_tag("save.png", data: { confirm: "Are you sure?" })
   #   # => <input src="/assets/save.png" data-confirm="Are you sure?" type="image" />
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#614
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#615
   def image_submit_tag(source, options = T.unsafe(nil)); end
 
   # Creates a label element. Accepts a block.
@@ -8277,7 +8280,7 @@ module ActionView::Helpers::FormTagHelper
   #   label_tag 'name', nil, class: 'small_label'
   #   # => <label for="name" class="small_label">Name</label>
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#281
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#282
   def label_tag(name = T.unsafe(nil), content_or_options = T.unsafe(nil), options = T.unsafe(nil), &block); end
 
   # Creates a text field of type "month".
@@ -8304,7 +8307,7 @@ module ActionView::Helpers::FormTagHelper
   #   month_field_tag 'month', '2014-01', class: 'special_input', disabled: true
   #   # => <input disabled="disabled" class="special_input" id="month" name="month" type="month" value="2014-01" />
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#826
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#827
   def month_field_tag(name, value = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # Creates a number field.
@@ -8352,7 +8355,7 @@ module ActionView::Helpers::FormTagHelper
   #   number_field_tag 'quantity', '1', class: 'special_input', disabled: true
   #   # => <input disabled="disabled" class="special_input" id="quantity" name="quantity" type="number" value="1" />
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#947
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#948
   def number_field_tag(name, value = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # Creates a password field, a masked text field that will hide the users input behind a mask character.
@@ -8385,7 +8388,7 @@ module ActionView::Helpers::FormTagHelper
   #   password_field_tag 'pin', '1234', maxlength: 4, size: 6, class: "pin_input"
   #   # => <input class="pin_input" id="pin" maxlength="4" name="pin" size="6" type="password" value="1234" />
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#380
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#381
   def password_field_tag(name = T.unsafe(nil), value = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # Creates a text field of type "tel".
@@ -8408,7 +8411,7 @@ module ActionView::Helpers::FormTagHelper
   #   telephone_field_tag 'tel', '0123456789', class: 'special_input', disabled: true
   #   # => <input disabled="disabled" class="special_input" id="tel" name="tel" type="tel" value="0123456789" />
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#717
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#718
   def phone_field_tag(name, value = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # :call-seq:
@@ -8436,7 +8439,7 @@ module ActionView::Helpers::FormTagHelper
   #   radio_button_tag 'color', "green", true, class: "color_input"
   #   # => <input checked="checked" class="color_input" id="color_green" name="color" type="radio" value="green" />
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#493
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#494
   def radio_button_tag(name, value, *args); end
 
   # Creates a range form element.
@@ -8456,7 +8459,7 @@ module ActionView::Helpers::FormTagHelper
   #   range_field_tag 'quantity', min: 1, max: 10, step: 2
   #   # => <input id="quantity" name="quantity" min="1" max="10" step="2" type="range"
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#972
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#973
   def range_field_tag(name, value = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # Creates a text field of type "search".
@@ -8479,7 +8482,7 @@ module ActionView::Helpers::FormTagHelper
   #   search_field_tag 'search', 'Enter your search query here', class: 'special_input', disabled: true
   #   # => <input disabled="disabled" class="special_input" id="search" name="search" type="search" value="Enter your search query here" />
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#691
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#692
   def search_field_tag(name, value = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # Creates a dropdown selection box, or if the <tt>:multiple</tt> option is set to true, a multiple
@@ -8538,7 +8541,7 @@ module ActionView::Helpers::FormTagHelper
   #   # => <select id="credit_card" name="credit_card"><option>VISA</option>
   #   #    <option selected="selected">MasterCard</option></select>
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#201
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#202
   def select_tag(name, option_tags = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # Creates a submit button with the text <tt>value</tt> as the caption.
@@ -8564,7 +8567,7 @@ module ActionView::Helpers::FormTagHelper
   #   submit_tag "Edit", class: "edit_button"
   #   # => <input class="edit_button" data-disable-with="Edit" name="commit" type="submit" value="Edit" />
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#527
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#528
   def submit_tag(value = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # Creates a text field of type "tel".
@@ -8587,7 +8590,7 @@ module ActionView::Helpers::FormTagHelper
   #   telephone_field_tag 'tel', '0123456789', class: 'special_input', disabled: true
   #   # => <input disabled="disabled" class="special_input" id="tel" name="tel" type="tel" value="0123456789" />
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#714
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#715
   def telephone_field_tag(name, value = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # Creates a text input area; use a textarea for longer text inputs such as blog posts or descriptions.
@@ -8620,7 +8623,7 @@ module ActionView::Helpers::FormTagHelper
   #   textarea_tag 'comment', nil, class: 'comment_input'
   #   # => <textarea class="comment_input" id="comment" name="comment"></textarea>
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#425
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#426
   def text_area_tag(name, content = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # Creates a standard text field; use these text fields to input smaller chunks of text like a username
@@ -8660,7 +8663,7 @@ module ActionView::Helpers::FormTagHelper
   #   text_field_tag 'ip', '0.0.0.0', maxlength: 15, size: 20, class: "ip-input"
   #   # => <input class="ip-input" id="ip" maxlength="15" name="ip" size="20" type="text" value="0.0.0.0" />
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#263
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#264
   def text_field_tag(name, value = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # Creates a text input area; use a textarea for longer text inputs such as blog posts or descriptions.
@@ -8693,7 +8696,7 @@ module ActionView::Helpers::FormTagHelper
   #   textarea_tag 'comment', nil, class: 'comment_input'
   #   # => <textarea class="comment_input" id="comment" name="comment"></textarea>
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#413
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#414
   def textarea_tag(name, content = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # Creates a text field of type "time".
@@ -8724,7 +8727,7 @@ module ActionView::Helpers::FormTagHelper
   #   time_field_tag 'time', '01:01', min: '00:00', max: '23:59', step: 1
   #   # => <input id="time" max="23:59" min="00:00" name="time" step="1" type="time" value="01:01" />
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#769
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#770
   def time_field_tag(name, value = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # Creates a text field of type "url".
@@ -8747,13 +8750,13 @@ module ActionView::Helpers::FormTagHelper
   #   url_field_tag 'url', 'http://rubyonrails.org', class: 'special_input', disabled: true
   #   # => <input disabled="disabled" class="special_input" id="url" name="url" type="url" value="http://rubyonrails.org" />
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#876
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#877
   def url_field_tag(name, value = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # Creates the hidden UTF-8 enforcer tag. Override this method in a helper
   # to customize the tag.
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#978
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#979
   def utf8_enforcer_tag; end
 
   # Creates a text field of type "week".
@@ -8780,45 +8783,45 @@ module ActionView::Helpers::FormTagHelper
   #   week_field_tag 'week', '2014-W01', class: 'special_input', disabled: true
   #   # => <input disabled="disabled" class="special_input" id="week" name="week" type="week" value="2014-W01" />
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#853
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#854
   def week_field_tag(name, value = T.unsafe(nil), options = T.unsafe(nil)); end
 
   private
 
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#1075
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#1076
   def convert_direct_upload_option_to_url(options); end
 
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#1013
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#1014
   def extra_tags_for_form(html_options); end
 
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#1043
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#1044
   def form_tag_html(html_options); end
 
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#1049
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#1050
   def form_tag_with_body(html_options, content); end
 
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#986
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#987
   def html_options_for_form(url_for_options, options); end
 
   # see http://www.w3.org/TR/html4/types.html#type-name
   #
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#1056
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#1057
   def sanitize_to_id(name); end
 
-  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#1060
+  # source://actionview//lib/action_view/helpers/form_tag_helper.rb#1061
   def set_default_disable_with(value, tag_options); end
 
   class << self
-    # source://actionview//lib/action_view/helpers/form_tag_helper.rb#29
+    # source://actionview//lib/action_view/helpers/form_tag_helper.rb#30
     def default_enforce_utf8; end
 
-    # source://actionview//lib/action_view/helpers/form_tag_helper.rb#29
+    # source://actionview//lib/action_view/helpers/form_tag_helper.rb#30
     def default_enforce_utf8=(val); end
 
-    # source://actionview//lib/action_view/helpers/form_tag_helper.rb#26
+    # source://actionview//lib/action_view/helpers/form_tag_helper.rb#27
     def embed_authenticity_token_in_remote_forms; end
 
-    # source://actionview//lib/action_view/helpers/form_tag_helper.rb#26
+    # source://actionview//lib/action_view/helpers/form_tag_helper.rb#27
     def embed_authenticity_token_in_remote_forms=(val); end
   end
 end
@@ -10257,10 +10260,10 @@ class ActionView::Helpers::Tags::Base
   private
 
   # source://actionview//lib/action_view/helpers/tags/base.rb#96
-  def add_default_name_and_id(options); end
+  def add_default_name_and_field(options, field = T.unsafe(nil)); end
 
   # source://actionview//lib/action_view/helpers/tags/base.rb#83
-  def add_default_name_and_id_for_value(tag_value, options); end
+  def add_default_name_and_field_for_value(tag_value, options, field = T.unsafe(nil)); end
 
   # @return [Boolean]
   #
@@ -10583,7 +10586,7 @@ class ActionView::Helpers::Tags::Label < ::ActionView::Helpers::Tags::Base
 
   private
 
-  # source://actionview//lib/action_view/helpers/tags/label.rb#78
+  # source://actionview//lib/action_view/helpers/tags/label.rb#71
   def render_component(builder); end
 end
 
@@ -10896,7 +10899,7 @@ module ActionView::Helpers::TextHelper
   #     </div>
   #   <% end %>
   #
-  # source://actionview//lib/action_view/helpers/text_helper.rb#454
+  # source://actionview//lib/action_view/helpers/text_helper.rb#461
   def current_cycle(name = T.unsafe(nil)); end
 
   # Creates a Cycle object whose +to_s+ method cycles through elements of an
@@ -10939,7 +10942,7 @@ module ActionView::Helpers::TextHelper
   #    </tr>
   #  <% end %>
   #
-  # source://actionview//lib/action_view/helpers/text_helper.rb#430
+  # source://actionview//lib/action_view/helpers/text_helper.rb#437
   def cycle(first_value, *values); end
 
   # Extracts the first occurrence of +phrase+ plus surrounding text from
@@ -11037,7 +11040,7 @@ module ActionView::Helpers::TextHelper
   #
   # The word will be pluralized using rules defined for the locale
   # (you must define your own inflection rules for languages other than English).
-  # See ActiveSupport::Inflector.pluralize
+  # See ActiveSupport::Inflector.pluralize.
   #
   #   pluralize(1, 'person')
   #   # => "1 person"
@@ -11054,7 +11057,7 @@ module ActionView::Helpers::TextHelper
   #   pluralize(2, 'Person', locale: :de)
   #   # => "2 Personen"
   #
-  # source://actionview//lib/action_view/helpers/text_helper.rb#290
+  # source://actionview//lib/action_view/helpers/text_helper.rb#297
   def pluralize(count, singular, plural_arg = T.unsafe(nil), plural: T.unsafe(nil), locale: T.unsafe(nil)); end
 
   # Resets a cycle so that it starts from the first element the next time
@@ -11076,7 +11079,7 @@ module ActionView::Helpers::TextHelper
   #   <% end %>
   #   </table>
   #
-  # source://actionview//lib/action_view/helpers/text_helper.rb#477
+  # source://actionview//lib/action_view/helpers/text_helper.rb#484
   def reset_cycle(name = T.unsafe(nil)); end
 
   # source://actionview//lib/action_view/helpers/text_helper.rb#67
@@ -11095,7 +11098,7 @@ module ActionView::Helpers::TextHelper
   # ==== Options
   # * <tt>:sanitize</tt> - If +false+, does not sanitize +text+.
   # * <tt>:sanitize_options</tt> - Any extra options you want appended to the sanitize.
-  # * <tt>:wrapper_tag</tt> - String representing the wrapper tag, defaults to <tt>"p"</tt>
+  # * <tt>:wrapper_tag</tt> - String representing the wrapper tag, defaults to <tt>"p"</tt>.
   #
   # ==== Examples
   #   my_text = "Here is some basic text...\n...with a line break."
@@ -11123,7 +11126,7 @@ module ActionView::Helpers::TextHelper
   #   simple_format("<a target=\"_blank\" href=\"http://example.com\">Continue</a>", {}, { sanitize_options: { attributes: %w[target href] } })
   #   # => "<p><a target=\"_blank\" href=\"http://example.com\">Continue</a></p>"
   #
-  # source://actionview//lib/action_view/helpers/text_helper.rb#376
+  # source://actionview//lib/action_view/helpers/text_helper.rb#383
   def simple_format(text, html_options = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # Truncates +text+ if it is longer than a specified +:length+. If +text+
@@ -11202,58 +11205,58 @@ module ActionView::Helpers::TextHelper
   #   word_wrap('Once upon a time', line_width: 1, break_sequence: "\r\n")
   #   # => "Once\r\nupon\r\na\r\ntime"
   #
-  # source://actionview//lib/action_view/helpers/text_helper.rb#320
+  # source://actionview//lib/action_view/helpers/text_helper.rb#327
   def word_wrap(text, line_width: T.unsafe(nil), break_sequence: T.unsafe(nil)); end
 
   private
 
-  # source://actionview//lib/action_view/helpers/text_helper.rb#540
+  # source://actionview//lib/action_view/helpers/text_helper.rb#547
   def cut_excerpt_part(part_position, part, separator, options); end
 
   # The cycle helpers need to store the cycles in a place that is
   # guaranteed to be reset every time a page is rendered, so it
   # uses an instance variable of ActionView::Base.
   #
-  # source://actionview//lib/action_view/helpers/text_helper.rb#522
+  # source://actionview//lib/action_view/helpers/text_helper.rb#529
   def get_cycle(name); end
 
-  # source://actionview//lib/action_view/helpers/text_helper.rb#527
+  # source://actionview//lib/action_view/helpers/text_helper.rb#534
   def set_cycle(name, cycle_object); end
 
-  # source://actionview//lib/action_view/helpers/text_helper.rb#532
+  # source://actionview//lib/action_view/helpers/text_helper.rb#539
   def split_paragraphs(text); end
 end
 
-# source://actionview//lib/action_view/helpers/text_helper.rb#482
+# source://actionview//lib/action_view/helpers/text_helper.rb#489
 class ActionView::Helpers::TextHelper::Cycle
   # @return [Cycle] a new instance of Cycle
   #
-  # source://actionview//lib/action_view/helpers/text_helper.rb#485
+  # source://actionview//lib/action_view/helpers/text_helper.rb#492
   def initialize(first_value, *values); end
 
-  # source://actionview//lib/action_view/helpers/text_helper.rb#494
+  # source://actionview//lib/action_view/helpers/text_helper.rb#501
   def current_value; end
 
-  # source://actionview//lib/action_view/helpers/text_helper.rb#490
+  # source://actionview//lib/action_view/helpers/text_helper.rb#497
   def reset; end
 
-  # source://actionview//lib/action_view/helpers/text_helper.rb#498
+  # source://actionview//lib/action_view/helpers/text_helper.rb#505
   def to_s; end
 
   # Returns the value of attribute values.
   #
-  # source://actionview//lib/action_view/helpers/text_helper.rb#483
+  # source://actionview//lib/action_view/helpers/text_helper.rb#490
   def values; end
 
   private
 
-  # source://actionview//lib/action_view/helpers/text_helper.rb#505
+  # source://actionview//lib/action_view/helpers/text_helper.rb#512
   def next_index; end
 
-  # source://actionview//lib/action_view/helpers/text_helper.rb#509
+  # source://actionview//lib/action_view/helpers/text_helper.rb#516
   def previous_index; end
 
-  # source://actionview//lib/action_view/helpers/text_helper.rb#513
+  # source://actionview//lib/action_view/helpers/text_helper.rb#520
   def step_index(n); end
 end
 
@@ -14011,12 +14014,12 @@ class ActionView::StreamingTemplateRenderer < ::ActionView::TemplateRenderer
   # object that responds to each. This object is initialized with a block
   # that knows how to render the template.
   #
-  # source://actionview//lib/action_view/renderer/streaming_template_renderer.rb#44
+  # source://actionview//lib/action_view/renderer/streaming_template_renderer.rb#51
   def render_template(view, template, layout_name = T.unsafe(nil), locals = T.unsafe(nil)); end
 
   private
 
-  # source://actionview//lib/action_view/renderer/streaming_template_renderer.rb#56
+  # source://actionview//lib/action_view/renderer/streaming_template_renderer.rb#63
   def delayed_render(buffer, template, layout, view, locals); end
 end
 
@@ -14031,6 +14034,11 @@ class ActionView::StreamingTemplateRenderer::Body
   # source://actionview//lib/action_view/renderer/streaming_template_renderer.rb#14
   def initialize(&start); end
 
+  # Returns the complete body as a string.
+  #
+  # source://actionview//lib/action_view/renderer/streaming_template_renderer.rb#29
+  def body; end
+
   # source://actionview//lib/action_view/renderer/streaming_template_renderer.rb#18
   def each(&block); end
 
@@ -14038,7 +14046,7 @@ class ActionView::StreamingTemplateRenderer::Body
 
   # This is the same logging logic as in ShowExceptions middleware.
   #
-  # source://actionview//lib/action_view/renderer/streaming_template_renderer.rb#30
+  # source://actionview//lib/action_view/renderer/streaming_template_renderer.rb#37
   def log_error(exception); end
 end
 
@@ -14676,6 +14684,11 @@ class ActionView::Template::RawFile
   # source://actionview//lib/action_view/template/raw_file.rb#20
   def render(*args); end
 
+  # @return [Boolean]
+  #
+  # source://actionview//lib/action_view/template/raw_file.rb#24
+  def supports_streaming?; end
+
   # source://actionview//lib/action_view/template/raw_file.rb#7
   def type; end
 
@@ -15081,32 +15094,32 @@ class ActionView::TestCase < ::ActiveSupport::TestCase
   extend ::ActiveSupport::Testing::ConstantLookup::ClassMethods
   extend ::ActionView::TestCase::Behavior::ClassMethods
 
-  # source://actionview//lib/action_view/test_case.rb#447
+  # source://actionview//lib/action_view/test_case.rb#446
   def _helper_methods; end
 
-  # source://actionview//lib/action_view/test_case.rb#447
+  # source://actionview//lib/action_view/test_case.rb#446
   def _helper_methods=(_arg0); end
 
-  # source://actionview//lib/action_view/test_case.rb#447
+  # source://actionview//lib/action_view/test_case.rb#446
   def _helper_methods?; end
 
-  # source://actionview//lib/action_view/test_case.rb#447
+  # source://actionview//lib/action_view/test_case.rb#446
   def debug_missing_translation; end
 
-  # source://actionview//lib/action_view/test_case.rb#447
+  # source://actionview//lib/action_view/test_case.rb#446
   def debug_missing_translation=(val); end
 
   class << self
-    # source://actionview//lib/action_view/test_case.rb#447
+    # source://actionview//lib/action_view/test_case.rb#446
     def _helper_methods; end
 
-    # source://actionview//lib/action_view/test_case.rb#447
+    # source://actionview//lib/action_view/test_case.rb#446
     def _helper_methods=(value); end
 
-    # source://actionview//lib/action_view/test_case.rb#447
+    # source://actionview//lib/action_view/test_case.rb#446
     def _helper_methods?; end
 
-    # source://actionview//lib/action_view/test_case.rb#447
+    # source://actionview//lib/action_view/test_case.rb#446
     def _helpers; end
 
     # source://actionview//lib/action_view/test_case.rb#200
@@ -15118,10 +15131,10 @@ class ActionView::TestCase < ::ActiveSupport::TestCase
     # source://actionview//lib/action_view/test_case.rb#200
     def content_class?; end
 
-    # source://actionview//lib/action_view/test_case.rb#447
+    # source://actionview//lib/action_view/test_case.rb#446
     def debug_missing_translation; end
 
-    # source://actionview//lib/action_view/test_case.rb#447
+    # source://actionview//lib/action_view/test_case.rb#446
     def debug_missing_translation=(val); end
 
     private
@@ -15132,10 +15145,10 @@ class ActionView::TestCase < ::ActiveSupport::TestCase
     # source://actionview//lib/action_view/test_case.rb#202
     def __class_attr___callbacks=(new_value); end
 
-    # source://actionview//lib/action_view/test_case.rb#447
+    # source://actionview//lib/action_view/test_case.rb#446
     def __class_attr__helper_methods; end
 
-    # source://actionview//lib/action_view/test_case.rb#447
+    # source://actionview//lib/action_view/test_case.rb#446
     def __class_attr__helper_methods=(new_value); end
 
     # source://actionview//lib/action_view/test_case.rb#200
@@ -15300,30 +15313,30 @@ module ActionView::TestCase::Behavior
 
   private
 
-  # source://actionview//lib/action_view/test_case.rb#404
+  # source://actionview//lib/action_view/test_case.rb#403
   def _user_defined_ivars; end
 
   # The instance of ActionView::Base that is used by +render+.
   #
-  # source://actionview//lib/action_view/test_case.rb#367
+  # source://actionview//lib/action_view/test_case.rb#366
   def _view; end
 
   # Need to experiment if this priority is the best one: rendered => output_buffer
   #
-  # source://actionview//lib/action_view/test_case.rb#332
+  # source://actionview//lib/action_view/test_case.rb#331
   def document_root_element; end
 
-  # source://actionview//lib/action_view/test_case.rb#418
+  # source://actionview//lib/action_view/test_case.rb#417
   def method_missing(selector, *_arg1, **_arg2, &_arg3); end
 
   # @return [Boolean]
   #
-  # source://actionview//lib/action_view/test_case.rb#434
+  # source://actionview//lib/action_view/test_case.rb#433
   def respond_to_missing?(name, include_private = T.unsafe(nil)); end
 
   # The instance of ActionView::Base that is used by +render+.
   #
-  # source://actionview//lib/action_view/test_case.rb#356
+  # source://actionview//lib/action_view/test_case.rb#355
   def view; end
 
   # Returns a Hash of instance variables and their values, as defined by
@@ -15331,7 +15344,7 @@ module ActionView::TestCase::Behavior
   # rendered. This is generally intended for internal use and extension
   # frameworks.
   #
-  # source://actionview//lib/action_view/test_case.rb#412
+  # source://actionview//lib/action_view/test_case.rb#411
   def view_assigns; end
 
   module GeneratedClassMethods
@@ -15456,24 +15469,24 @@ module ActionView::TestCase::Behavior::ClassMethods
   def include_helper_modules!; end
 end
 
-# source://actionview//lib/action_view/test_case.rb#369
+# source://actionview//lib/action_view/test_case.rb#368
 ActionView::TestCase::Behavior::INTERNAL_IVARS = T.let(T.unsafe(nil), Array)
 
-# source://actionview//lib/action_view/test_case.rb#336
+# source://actionview//lib/action_view/test_case.rb#335
 module ActionView::TestCase::Behavior::Locals
-  # source://actionview//lib/action_view/test_case.rb#339
+  # source://actionview//lib/action_view/test_case.rb#338
   def render(options = T.unsafe(nil), local_assigns = T.unsafe(nil)); end
 
   # Returns the value of attribute rendered_views.
   #
-  # source://actionview//lib/action_view/test_case.rb#337
+  # source://actionview//lib/action_view/test_case.rb#336
   def rendered_views; end
 
   # Sets the attribute rendered_views
   #
   # @param value the value to set the attribute rendered_views to.
   #
-  # source://actionview//lib/action_view/test_case.rb#337
+  # source://actionview//lib/action_view/test_case.rb#336
   def rendered_views=(_arg0); end
 end
 
@@ -15486,31 +15499,29 @@ class ActionView::TestCase::Behavior::RenderedViewContent < ::String
   def json; end
 end
 
-# Need to experiment if this priority is the best one: rendered => output_buffer
-#
-# source://actionview//lib/action_view/test_case.rb#305
+# source://actionview//lib/action_view/test_case.rb#304
 class ActionView::TestCase::Behavior::RenderedViewsCollection
   # @return [RenderedViewsCollection] a new instance of RenderedViewsCollection
   #
-  # source://actionview//lib/action_view/test_case.rb#306
+  # source://actionview//lib/action_view/test_case.rb#305
   def initialize; end
 
-  # source://actionview//lib/action_view/test_case.rb#310
+  # source://actionview//lib/action_view/test_case.rb#309
   def add(view, locals); end
 
-  # source://actionview//lib/action_view/test_case.rb#315
+  # source://actionview//lib/action_view/test_case.rb#314
   def locals_for(view); end
 
-  # source://actionview//lib/action_view/test_case.rb#319
+  # source://actionview//lib/action_view/test_case.rb#318
   def rendered_views; end
 
   # @return [Boolean]
   #
-  # source://actionview//lib/action_view/test_case.rb#323
+  # source://actionview//lib/action_view/test_case.rb#322
   def view_rendered?(view, expected_locals); end
 end
 
-# source://actionview//lib/action_view/test_case.rb#447
+# source://actionview//lib/action_view/test_case.rb#446
 module ActionView::TestCase::HelperMethods
   # source://actionview//lib/action_view/test_case.rb#214
   def _test_case; end
@@ -15651,7 +15662,7 @@ ActionView::VERSION::MAJOR = T.let(T.unsafe(nil), Integer)
 ActionView::VERSION::MINOR = T.let(T.unsafe(nil), Integer)
 
 # source://actionview//lib/action_view/gem_version.rb#13
-ActionView::VERSION::PRE = T.let(T.unsafe(nil), String)
+ActionView::VERSION::PRE = T.let(T.unsafe(nil), T.untyped)
 
 # source://actionview//lib/action_view/gem_version.rb#15
 ActionView::VERSION::STRING = T.let(T.unsafe(nil), String)

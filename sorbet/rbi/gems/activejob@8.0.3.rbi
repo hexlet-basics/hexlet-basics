@@ -152,7 +152,7 @@ ActiveJob::Arguments::WITH_INDIFFERENT_ACCESS_KEY = T.let(T.unsafe(nil), String)
 #   end
 #
 # Records that are passed in are serialized/deserialized using Global
-# ID. More information can be found in Arguments.
+# ID. More information can be found in ActiveJob::Arguments.
 #
 # To enqueue a job to be performed as soon as the queuing system is free:
 #
@@ -162,7 +162,7 @@ ActiveJob::Arguments::WITH_INDIFFERENT_ACCESS_KEY = T.let(T.unsafe(nil), String)
 #
 #   ProcessPhotoJob.set(wait_until: Date.tomorrow.noon).perform_later(photo)
 #
-# More information can be found in ActiveJob::Core::ClassMethods#set
+# More information can be found in ActiveJob::Core::ClassMethods#set.
 #
 # A job can also be processed immediately without sending to the queue:
 #
@@ -749,9 +749,6 @@ class ActiveJob::ConfiguredJob
   # source://activejob//lib/active_job/configured_job.rb#5
   def initialize(job_class, options = T.unsafe(nil)); end
 
-  # source://activejob//lib/active_job/configured_job.rb#18
-  def perform_all_later(multi_args); end
-
   # source://activejob//lib/active_job/configured_job.rb#14
   def perform_later(*_arg0, **_arg1, &_arg2); end
 
@@ -963,6 +960,9 @@ module ActiveJob::Core
   # source://activejob//lib/active_job/core.rb#183
   def deserialize_arguments_if_needed; end
 
+  # source://activejob//lib/active_job/core.rb#202
+  def deserialize_time(time); end
+
   # source://activejob//lib/active_job/core.rb#190
   def serialize_arguments(arguments); end
 
@@ -1146,16 +1146,16 @@ module ActiveJob::Exceptions
 
   private
 
-  # source://activejob//lib/active_job/exceptions.rb#161
+  # source://activejob//lib/active_job/exceptions.rb#162
   def determine_delay(seconds_or_duration_or_algorithm:, executions:, jitter: T.unsafe(nil)); end
 
-  # source://activejob//lib/active_job/exceptions.rb#182
+  # source://activejob//lib/active_job/exceptions.rb#183
   def determine_jitter_for_delay(delay, jitter); end
 
-  # source://activejob//lib/active_job/exceptions.rb#187
+  # source://activejob//lib/active_job/exceptions.rb#188
   def executions_for(exceptions); end
 
-  # source://activejob//lib/active_job/exceptions.rb#196
+  # source://activejob//lib/active_job/exceptions.rb#197
   def run_after_discard_procs(exception); end
 
   module GeneratedClassMethods
@@ -1267,7 +1267,7 @@ module ActiveJob::Exceptions::ClassMethods
   def retry_on(*exceptions, wait: T.unsafe(nil), attempts: T.unsafe(nil), queue: T.unsafe(nil), priority: T.unsafe(nil), jitter: T.unsafe(nil)); end
 end
 
-# source://activejob//lib/active_job/exceptions.rb#158
+# source://activejob//lib/active_job/exceptions.rb#159
 ActiveJob::Exceptions::JITTER_DEFAULT = T.let(T.unsafe(nil), Object)
 
 # = Active Job \Execution
@@ -2959,7 +2959,7 @@ ActiveJob::VERSION::MAJOR = T.let(T.unsafe(nil), Integer)
 ActiveJob::VERSION::MINOR = T.let(T.unsafe(nil), Integer)
 
 # source://activejob//lib/active_job/gem_version.rb#13
-ActiveJob::VERSION::PRE = T.let(T.unsafe(nil), String)
+ActiveJob::VERSION::PRE = T.let(T.unsafe(nil), T.untyped)
 
 # source://activejob//lib/active_job/gem_version.rb#15
 ActiveJob::VERSION::STRING = T.let(T.unsafe(nil), String)

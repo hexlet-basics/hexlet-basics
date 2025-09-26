@@ -24385,64 +24385,64 @@ class Aws::S3::FileDownloader
   # @api private
   # @raise [ArgumentError]
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#89
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#94
   def compute_chunk(file_size); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#79
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#84
   def compute_mode(file_size, count, etag); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#118
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#123
   def download_in_threads(pending, total_size); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#151
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#158
   def extract_range(value); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#58
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#63
   def multipart_download; end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#111
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#116
   def multithreaded_get_by_parts(n_parts, total_size, etag); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#95
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#100
   def multithreaded_get_by_ranges(file_size, etag); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#175
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#183
   def single_part_progress; end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#165
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#173
   def single_request; end
 
   # @api private
   # @raise [ArgumentError]
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#52
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#57
   def validate!; end
 
   # @api private
   # @raise [MultipartDownloadError]
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#155
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#162
   def validate_range(actual, expected); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#161
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#168
   def write(body, range); end
 end
 
@@ -24458,57 +24458,57 @@ Aws::S3::FileDownloader::MIN_CHUNK_SIZE = T.let(T.unsafe(nil), Integer)
 
 # @api private
 #
-# source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#212
+# source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#220
 class Aws::S3::FileDownloader::MultipartProgress
   # @api private
   # @return [MultipartProgress] a new instance of MultipartProgress
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#213
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#221
   def initialize(parts, total_size, progress_callback); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#220
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#228
   def call(part_number, bytes_received, total); end
 end
 
 # @api private
 #
-# source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#182
+# source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#190
 class Aws::S3::FileDownloader::Part < ::Struct
   include ::Aws::Structure
 end
 
 # @api private
 #
-# source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#187
+# source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#195
 class Aws::S3::FileDownloader::PartList
   include ::Enumerable
 
   # @api private
   # @return [PartList] a new instance of PartList
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#189
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#197
   def initialize(parts = T.unsafe(nil)); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#202
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#210
   def clear!; end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#206
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#214
   def each(&block); end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#194
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#202
   def shift; end
 
   # @api private
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#198
+  # source://aws-sdk-s3//lib/aws-sdk-s3/file_downloader.rb#206
   def size; end
 end
 
@@ -26158,7 +26158,7 @@ class Aws::S3::Object
   # source://aws-sdk-s3//lib/aws-sdk-s3/object.rb#53
   def delete_marker; end
 
-  # source://aws-sdk-s3//lib/aws-sdk-s3/customizations/object.rb#539
+  # source://aws-sdk-s3//lib/aws-sdk-s3/customizations/object.rb#548
   def deprecated_download_file(destination, options = T.unsafe(nil)); end
 
   # source://aws-sdk-s3//lib/aws-sdk-s3/object.rb#3447
@@ -26197,14 +26197,22 @@ class Aws::S3::Object
   # @option options
   # @option options
   # @option options
-  # @param destination [String] Where to download the file to.
+  # @param destination [String, Pathname, File, Tempfile] Where to download the file to. This can either be a String or Pathname to the file, an open File object,
+  #   or an open Tempfile object. If you pass an open File or Tempfile object, then you are responsible for
+  #   closing it after the download completes. Download behavior varies by destination type:
+  #
+  #   * **String/Pathname paths**: Downloads to a temporary file first, then atomically moves to the final
+  #   destination. This prevents corruption of any existing file if the download fails.
+  #   * **File/Tempfile objects**: Downloads directly to the file object without using temporary files.
+  #   You are responsible for managing the file object's state and closing it after the download completes.
+  #   If the download fails, the file object may contain partial data.
   # @param options [Hash] Additional options for {Client#get_object} and #{Client#head_object} may be provided.
   # @raise [MultipartDownloadError] Raised when an object validation fails outside of service errors.
   # @return [Boolean] Returns `true` when the file is downloaded without any errors.
   # @see Client#get_object
   # @see Client#head_object
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/customizations/object.rb#532
+  # source://aws-sdk-s3//lib/aws-sdk-s3/customizations/object.rb#541
   def download_file(*args, &block); end
 
   # An entity tag (ETag) is an opaque identifier assigned by a web server
@@ -27358,10 +27366,10 @@ class Aws::S3::Object::Collection < ::Aws::Resources::Collection
   # source://aws-sdk-s3//lib/aws-sdk-s3/object.rb#3600
   def batch_delete!(options = T.unsafe(nil)); end
 
-  # source://aws-sdk-s3//lib/aws-sdk-s3/customizations/object.rb#542
+  # source://aws-sdk-s3//lib/aws-sdk-s3/customizations/object.rb#551
   def delete(*args, &block); end
 
-  # source://aws-sdk-s3//lib/aws-sdk-s3/customizations/object.rb#544
+  # source://aws-sdk-s3//lib/aws-sdk-s3/customizations/object.rb#553
   def deprecated_delete(options = T.unsafe(nil)); end
 end
 
@@ -28048,7 +28056,15 @@ class Aws::S3::ObjectSummary
   # source://aws-sdk-s3//lib/aws-sdk-s3/object_summary.rb#2854
   def deprecated_identifiers; end
 
-  # @param destination [String] Where to download the file to.
+  # @param destination [String, Pathname, File, Tempfile] Where to download the file to. This can either be a String or Pathname to the file, an open File object,
+  #   or an open Tempfile object. If you pass an open File or Tempfile object, then you are responsible for
+  #   closing it after the download completes. Download behavior varies by destination type:
+  #
+  #   * **String/Pathname paths**: Downloads to a temporary file first, then atomically moves to the final
+  #   destination. This prevents corruption of any existing file if the download fails.
+  #   * **File/Tempfile objects**: Downloads directly to the file object without using temporary files.
+  #   You are responsible for managing the file object's state and closing it after the download completes.
+  #   If the download fails, the file object may contain partial data.
   # @param options [Hash] Additional options for {Client#get_object} and #{Client#head_object} may be provided.
   # @return [Boolean] Returns `true` when the file is downloaded without any errors.
   # @see Object#download_file
@@ -30712,7 +30728,15 @@ class Aws::S3::TransferManager
   # @option options
   # @option options
   # @option options
-  # @param destination [String] Where to download the file to.
+  # @param destination [String, Pathname, File, Tempfile] Where to download the file to. This can either be a String or Pathname to the file, an open File object,
+  #   or an open Tempfile object. If you pass an open File or Tempfile object, then you are responsible for
+  #   closing it after the download completes. Download behavior varies by destination type:
+  #
+  #   * **String/Pathname paths**: Downloads to a temporary file first, then atomically moves to the final
+  #   destination. This prevents corruption of any existing file if the download fails.
+  #   * **File/Tempfile objects**: Downloads directly to the file object without using temporary files.
+  #   You are responsible for managing the file object's state and closing it after the download completes.
+  #   If the download fails, the file object may contain partial data.
   # @param bucket [String] The name of the S3 bucket to upload to.
   # @param key [String] The object key name in S3 bucket.
   # @param options [Hash] Additional options for {Client#get_object} and #{Client#head_object} may be provided.
@@ -30721,7 +30745,7 @@ class Aws::S3::TransferManager
   # @see Client#get_object
   # @see Client#head_object
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/transfer_manager.rb#96
+  # source://aws-sdk-s3//lib/aws-sdk-s3/transfer_manager.rb#104
   def download_file(destination, bucket:, key:, **options); end
 
   # Uploads a file from disk to S3.
@@ -30774,7 +30798,7 @@ class Aws::S3::TransferManager
   # @see Client#upload_part
   # @yield [response]
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/transfer_manager.rb#169
+  # source://aws-sdk-s3//lib/aws-sdk-s3/transfer_manager.rb#177
   def upload_file(source, bucket:, key:, **options); end
 
   # Uploads a stream in a streaming fashion to S3.
@@ -30812,7 +30836,7 @@ class Aws::S3::TransferManager
   # @see Client#complete_multipart_upload
   # @see Client#upload_part
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/transfer_manager.rb#231
+  # source://aws-sdk-s3//lib/aws-sdk-s3/transfer_manager.rb#239
   def upload_stream(bucket:, key:, **options, &block); end
 end
 

@@ -228,6 +228,11 @@ class ActionCable::Channel::Base
   # source://actioncable//lib/action_cable/channel/base.rb#150
   def unsubscribe_from_channel; end
 
+  # @return [Boolean]
+  #
+  # source://actioncable//lib/action_cable/channel/base.rb#150
+  def unsubscribed?; end
+
   private
 
   # source://actioncable//lib/action_cable/channel/base.rb#150
@@ -754,22 +759,22 @@ end
 module ActionCable::Channel::Streams
   extend ::ActiveSupport::Concern
 
-  # source://actioncable//lib/action_cable/channel/streams.rb#153
+  # source://actioncable//lib/action_cable/channel/streams.rb#155
   def pubsub(*_arg0, **_arg1, &_arg2); end
 
   # Unsubscribes all streams associated with this channel from the pubsub queue.
   #
-  # source://actioncable//lib/action_cable/channel/streams.rb#135
+  # source://actioncable//lib/action_cable/channel/streams.rb#137
   def stop_all_streams; end
 
   # Unsubscribes streams for the `model`.
   #
-  # source://actioncable//lib/action_cable/channel/streams.rb#130
+  # source://actioncable//lib/action_cable/channel/streams.rb#132
   def stop_stream_for(model); end
 
   # Unsubscribes streams from the named `broadcasting`.
   #
-  # source://actioncable//lib/action_cable/channel/streams.rb#121
+  # source://actioncable//lib/action_cable/channel/streams.rb#123
   def stop_stream_from(broadcasting); end
 
   # Start streaming the pubsub queue for the `model` in this channel. Optionally,
@@ -780,7 +785,7 @@ module ActionCable::Channel::Streams
   # the callback. Defaults to `coder: nil` which does no decoding, passes raw
   # messages.
   #
-  # source://actioncable//lib/action_cable/channel/streams.rb#116
+  # source://actioncable//lib/action_cable/channel/streams.rb#118
   def stream_for(model, callback = T.unsafe(nil), coder: T.unsafe(nil), &block); end
 
   # Start streaming from the named `broadcasting` pubsub queue. Optionally, you
@@ -796,7 +801,7 @@ module ActionCable::Channel::Streams
   # Calls stream_for with the given `model` if it's present to start streaming,
   # otherwise rejects the subscription.
   #
-  # source://actioncable//lib/action_cable/channel/streams.rb#144
+  # source://actioncable//lib/action_cable/channel/streams.rb#146
   def stream_or_reject_for(model); end
 
   private
@@ -810,13 +815,13 @@ module ActionCable::Channel::Streams
   # no-op when pubsub and connection are both JSON-encoded. Then we can skip
   # decode+encode if we're just proxying messages.
   #
-  # source://actioncable//lib/action_cable/channel/streams.rb#189
+  # source://actioncable//lib/action_cable/channel/streams.rb#191
   def default_stream_handler(broadcasting, coder:); end
 
-  # source://actioncable//lib/action_cable/channel/streams.rb#210
+  # source://actioncable//lib/action_cable/channel/streams.rb#212
   def identity_handler; end
 
-  # source://actioncable//lib/action_cable/channel/streams.rb#194
+  # source://actioncable//lib/action_cable/channel/streams.rb#196
   def stream_decoder(handler = T.unsafe(nil), coder:); end
 
   # May be overridden to add instrumentation, logging, specialized error handling,
@@ -824,19 +829,19 @@ module ActionCable::Channel::Streams
   #
   # TODO: Tests demonstrating this.
   #
-  # source://actioncable//lib/action_cable/channel/streams.rb#173
+  # source://actioncable//lib/action_cable/channel/streams.rb#175
   def stream_handler(broadcasting, user_handler, coder: T.unsafe(nil)); end
 
-  # source://actioncable//lib/action_cable/channel/streams.rb#202
+  # source://actioncable//lib/action_cable/channel/streams.rb#204
   def stream_transmitter(handler = T.unsafe(nil), broadcasting:); end
 
-  # source://actioncable//lib/action_cable/channel/streams.rb#155
+  # source://actioncable//lib/action_cable/channel/streams.rb#157
   def streams; end
 
   # Always wrap the outermost handler to invoke the user handler on the worker
   # pool rather than blocking the event loop.
   #
-  # source://actioncable//lib/action_cable/channel/streams.rb#161
+  # source://actioncable//lib/action_cable/channel/streams.rb#163
   def worker_pool_stream_handler(broadcasting, user_handler, coder: T.unsafe(nil)); end
 end
 
@@ -3188,7 +3193,7 @@ ActionCable::VERSION::MAJOR = T.let(T.unsafe(nil), Integer)
 ActionCable::VERSION::MINOR = T.let(T.unsafe(nil), Integer)
 
 # source://actioncable//lib/action_cable/gem_version.rb#15
-ActionCable::VERSION::PRE = T.let(T.unsafe(nil), String)
+ActionCable::VERSION::PRE = T.let(T.unsafe(nil), T.untyped)
 
 # source://actioncable//lib/action_cable/gem_version.rb#17
 ActionCable::VERSION::STRING = T.let(T.unsafe(nil), String)

@@ -5,8 +5,6 @@
 # Please instead update this file by running `bin/tapioca gem aws-sdk-core`.
 
 
-# utility classes
-#
 # source://aws-sdk-core//lib/aws-sdk-core/deprecations.rb#3
 module Aws
   class << self
@@ -9673,7 +9671,7 @@ class Aws::SSOOIDC::Client < ::Seahorse::Client::Base
   # @api private
   # @param params [{}]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/client.rb#1057
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/client.rb#1070
   def build_request(operation_name, params = T.unsafe(nil)); end
 
   # Creates and returns access and refresh tokens for clients that are
@@ -9756,14 +9754,28 @@ class Aws::SSOOIDC::Client < ::Seahorse::Client::Base
   #   * {Types::CreateTokenResponse#id_token #id_token} => String
   # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/CreateToken AWS API Documentation
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/client.rb#613
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/client.rb#612
   def create_token(params = T.unsafe(nil), options = T.unsafe(nil)); end
 
-  # Creates and returns access and refresh tokens for clients and
-  # applications that are authenticated using IAM entities. The access
+  # Creates and returns access and refresh tokens for authorized client
+  # applications that are authenticated using any IAM entity, such as a
+  # service role or user. These tokens might contain defined scopes that
+  # specify permissions such as `read:profile` or `write:data`. Through
+  # downscoping, you can use the scopes parameter to request tokens with
+  # reduced permissions compared to the original client application's
+  # permissions or, if applicable, the refresh token's scopes. The access
   # token can be used to fetch short-lived credentials for the assigned
   # Amazon Web Services accounts or to access application APIs using
   # `bearer` authentication.
+  #
+  # <note markdown="1"> This API is used with Signature Version 4. For more information, see
+  # [Amazon Web Services Signature Version 4 for API Requests][1].
+  #
+  #  </note>
+  #
+  #
+  #
+  # [1]: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html
   #
   # @example Response structure
   #
@@ -9919,7 +9931,7 @@ class Aws::SSOOIDC::Client < ::Seahorse::Client::Base
   #   * {Types::CreateTokenWithIAMResponse#aws_additional_details #aws_additional_details} => Types::AwsAdditionalDetails
   # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/CreateTokenWithIAM AWS API Documentation
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/client.rb#859
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/client.rb#872
   def create_token_with_iam(params = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # Registers a public client with IAM Identity Center. This allows
@@ -9992,7 +10004,7 @@ class Aws::SSOOIDC::Client < ::Seahorse::Client::Base
   #   * {Types::RegisterClientResponse#token_endpoint #token_endpoint} => String
   # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/RegisterClient AWS API Documentation
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/client.rb#973
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/client.rb#986
   def register_client(params = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # Initiates device authorization by requesting a pair of verification
@@ -10045,24 +10057,24 @@ class Aws::SSOOIDC::Client < ::Seahorse::Client::Base
   #   * {Types::StartDeviceAuthorizationResponse#interval #interval} => Integer
   # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/StartDeviceAuthorization AWS API Documentation
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/client.rb#1048
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/client.rb#1061
   def start_device_authorization(params = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # @api private
   # @deprecated
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/client.rb#1077
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/client.rb#1090
   def waiter_names; end
 
   class << self
     # @api private
     #
-    # source://aws-sdk-core//lib/aws-sdk-ssooidc/client.rb#1087
+    # source://aws-sdk-core//lib/aws-sdk-ssooidc/client.rb#1100
     def errors_module; end
 
     # @api private
     #
-    # source://aws-sdk-core//lib/aws-sdk-ssooidc/client.rb#1084
+    # source://aws-sdk-core//lib/aws-sdk-ssooidc/client.rb#1097
     def identifier; end
   end
 end
@@ -10076,7 +10088,7 @@ end
 
 # @api private
 #
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#211
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#215
 Aws::SSOOIDC::ClientApi::API = T.let(T.unsafe(nil), Seahorse::Model::Api)
 
 # @api private
@@ -10087,261 +10099,271 @@ Aws::SSOOIDC::ClientApi::AccessDeniedException = T.let(T.unsafe(nil), Seahorse::
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#18
-Aws::SSOOIDC::ClientApi::AccessToken = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
+Aws::SSOOIDC::ClientApi::AccessDeniedExceptionReason = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#19
-Aws::SSOOIDC::ClientApi::ArnType = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
+Aws::SSOOIDC::ClientApi::AccessToken = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#20
-Aws::SSOOIDC::ClientApi::Assertion = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
+Aws::SSOOIDC::ClientApi::ArnType = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#21
-Aws::SSOOIDC::ClientApi::AuthCode = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
+Aws::SSOOIDC::ClientApi::Assertion = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#22
-Aws::SSOOIDC::ClientApi::AuthorizationPendingException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
+Aws::SSOOIDC::ClientApi::AuthCode = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#23
-Aws::SSOOIDC::ClientApi::AwsAdditionalDetails = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
+Aws::SSOOIDC::ClientApi::AuthorizationPendingException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#24
-Aws::SSOOIDC::ClientApi::ClientId = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
+Aws::SSOOIDC::ClientApi::AwsAdditionalDetails = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#25
-Aws::SSOOIDC::ClientApi::ClientName = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
+Aws::SSOOIDC::ClientApi::ClientId = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#26
-Aws::SSOOIDC::ClientApi::ClientSecret = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
+Aws::SSOOIDC::ClientApi::ClientName = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#27
-Aws::SSOOIDC::ClientApi::ClientType = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
+Aws::SSOOIDC::ClientApi::ClientSecret = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#28
-Aws::SSOOIDC::ClientApi::CodeVerifier = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
+Aws::SSOOIDC::ClientApi::ClientType = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#29
-Aws::SSOOIDC::ClientApi::CreateTokenRequest = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
+Aws::SSOOIDC::ClientApi::CodeVerifier = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#30
-Aws::SSOOIDC::ClientApi::CreateTokenResponse = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
+Aws::SSOOIDC::ClientApi::CreateTokenRequest = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#31
-Aws::SSOOIDC::ClientApi::CreateTokenWithIAMRequest = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
+Aws::SSOOIDC::ClientApi::CreateTokenResponse = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#32
-Aws::SSOOIDC::ClientApi::CreateTokenWithIAMResponse = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
+Aws::SSOOIDC::ClientApi::CreateTokenWithIAMRequest = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#33
-Aws::SSOOIDC::ClientApi::DeviceCode = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
+Aws::SSOOIDC::ClientApi::CreateTokenWithIAMResponse = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#34
-Aws::SSOOIDC::ClientApi::Error = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
+Aws::SSOOIDC::ClientApi::DeviceCode = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#35
-Aws::SSOOIDC::ClientApi::ErrorDescription = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
+Aws::SSOOIDC::ClientApi::Error = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#36
-Aws::SSOOIDC::ClientApi::ExpirationInSeconds = T.let(T.unsafe(nil), Seahorse::Model::Shapes::IntegerShape)
+Aws::SSOOIDC::ClientApi::ErrorDescription = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#37
-Aws::SSOOIDC::ClientApi::ExpiredTokenException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
+Aws::SSOOIDC::ClientApi::ExpirationInSeconds = T.let(T.unsafe(nil), Seahorse::Model::Shapes::IntegerShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#38
-Aws::SSOOIDC::ClientApi::GrantType = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
+Aws::SSOOIDC::ClientApi::ExpiredTokenException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#39
-Aws::SSOOIDC::ClientApi::GrantTypes = T.let(T.unsafe(nil), Seahorse::Model::Shapes::ListShape)
+Aws::SSOOIDC::ClientApi::GrantType = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#40
-Aws::SSOOIDC::ClientApi::IdToken = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
+Aws::SSOOIDC::ClientApi::GrantTypes = T.let(T.unsafe(nil), Seahorse::Model::Shapes::ListShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#41
-Aws::SSOOIDC::ClientApi::IdentityContext = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
+Aws::SSOOIDC::ClientApi::IdToken = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#42
-Aws::SSOOIDC::ClientApi::InternalServerException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
+Aws::SSOOIDC::ClientApi::IdentityContext = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#43
-Aws::SSOOIDC::ClientApi::IntervalInSeconds = T.let(T.unsafe(nil), Seahorse::Model::Shapes::IntegerShape)
+Aws::SSOOIDC::ClientApi::InternalServerException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#44
-Aws::SSOOIDC::ClientApi::InvalidClientException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
+Aws::SSOOIDC::ClientApi::IntervalInSeconds = T.let(T.unsafe(nil), Seahorse::Model::Shapes::IntegerShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#45
-Aws::SSOOIDC::ClientApi::InvalidClientMetadataException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
+Aws::SSOOIDC::ClientApi::InvalidClientException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#46
-Aws::SSOOIDC::ClientApi::InvalidGrantException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
+Aws::SSOOIDC::ClientApi::InvalidClientMetadataException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#47
-Aws::SSOOIDC::ClientApi::InvalidRedirectUriException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
+Aws::SSOOIDC::ClientApi::InvalidGrantException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#48
-Aws::SSOOIDC::ClientApi::InvalidRequestException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
+Aws::SSOOIDC::ClientApi::InvalidRedirectUriException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#49
-Aws::SSOOIDC::ClientApi::InvalidRequestRegionException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
+Aws::SSOOIDC::ClientApi::InvalidRequestException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#50
-Aws::SSOOIDC::ClientApi::InvalidScopeException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
+Aws::SSOOIDC::ClientApi::InvalidRequestExceptionReason = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#51
-Aws::SSOOIDC::ClientApi::Location = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
+Aws::SSOOIDC::ClientApi::InvalidRequestRegionException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#52
-Aws::SSOOIDC::ClientApi::LongTimeStampType = T.let(T.unsafe(nil), Seahorse::Model::Shapes::IntegerShape)
+Aws::SSOOIDC::ClientApi::InvalidScopeException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#53
-Aws::SSOOIDC::ClientApi::RedirectUris = T.let(T.unsafe(nil), Seahorse::Model::Shapes::ListShape)
+Aws::SSOOIDC::ClientApi::Location = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#54
-Aws::SSOOIDC::ClientApi::RefreshToken = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
+Aws::SSOOIDC::ClientApi::LongTimeStampType = T.let(T.unsafe(nil), Seahorse::Model::Shapes::IntegerShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#55
-Aws::SSOOIDC::ClientApi::Region = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
+Aws::SSOOIDC::ClientApi::RedirectUris = T.let(T.unsafe(nil), Seahorse::Model::Shapes::ListShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#56
-Aws::SSOOIDC::ClientApi::RegisterClientRequest = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
+Aws::SSOOIDC::ClientApi::RefreshToken = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#57
-Aws::SSOOIDC::ClientApi::RegisterClientResponse = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
+Aws::SSOOIDC::ClientApi::Region = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#58
-Aws::SSOOIDC::ClientApi::Scope = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
+Aws::SSOOIDC::ClientApi::RegisterClientRequest = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#59
-Aws::SSOOIDC::ClientApi::Scopes = T.let(T.unsafe(nil), Seahorse::Model::Shapes::ListShape)
+Aws::SSOOIDC::ClientApi::RegisterClientResponse = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#60
-Aws::SSOOIDC::ClientApi::SlowDownException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
+Aws::SSOOIDC::ClientApi::Scope = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#61
-Aws::SSOOIDC::ClientApi::StartDeviceAuthorizationRequest = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
+Aws::SSOOIDC::ClientApi::Scopes = T.let(T.unsafe(nil), Seahorse::Model::Shapes::ListShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#62
-Aws::SSOOIDC::ClientApi::StartDeviceAuthorizationResponse = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
+Aws::SSOOIDC::ClientApi::SlowDownException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#63
-Aws::SSOOIDC::ClientApi::SubjectToken = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
+Aws::SSOOIDC::ClientApi::StartDeviceAuthorizationRequest = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#64
-Aws::SSOOIDC::ClientApi::TokenType = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
+Aws::SSOOIDC::ClientApi::StartDeviceAuthorizationResponse = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#65
-Aws::SSOOIDC::ClientApi::TokenTypeURI = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
+Aws::SSOOIDC::ClientApi::SubjectToken = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#66
-Aws::SSOOIDC::ClientApi::URI = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
+Aws::SSOOIDC::ClientApi::TokenType = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#67
-Aws::SSOOIDC::ClientApi::UnauthorizedClientException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
+Aws::SSOOIDC::ClientApi::TokenTypeURI = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#68
-Aws::SSOOIDC::ClientApi::UnsupportedGrantTypeException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
+Aws::SSOOIDC::ClientApi::URI = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # @api private
 #
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#69
+Aws::SSOOIDC::ClientApi::UnauthorizedClientException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
+
+# @api private
+#
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#70
+Aws::SSOOIDC::ClientApi::UnsupportedGrantTypeException = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StructureShape)
+
+# @api private
+#
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/client_api.rb#71
 Aws::SSOOIDC::ClientApi::UserCode = T.let(T.unsafe(nil), Seahorse::Model::Shapes::StringShape)
 
 # Endpoint parameters used to influence endpoints per request.
@@ -10510,293 +10532,303 @@ class Aws::SSOOIDC::Errors::AccessDeniedException < ::Aws::SSOOIDC::Errors::Serv
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#66
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#71
   def error_description; end
+
+  # @return [String]
+  #
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#66
+  def reason; end
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#71
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#76
 class Aws::SSOOIDC::Errors::AuthorizationPendingException < ::Aws::SSOOIDC::Errors::ServiceError
   # @param context [Seahorse::Client::RequestContext]
   # @param message [String]
   # @param data [Aws::SSOOIDC::Types::AuthorizationPendingException]
   # @return [AuthorizationPendingException] a new instance of AuthorizationPendingException
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#76
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#81
   def initialize(context, message, data = T.unsafe(nil)); end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#81
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#86
   def error; end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#86
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#91
   def error_description; end
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#91
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#96
 class Aws::SSOOIDC::Errors::ExpiredTokenException < ::Aws::SSOOIDC::Errors::ServiceError
   # @param context [Seahorse::Client::RequestContext]
   # @param message [String]
   # @param data [Aws::SSOOIDC::Types::ExpiredTokenException]
   # @return [ExpiredTokenException] a new instance of ExpiredTokenException
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#96
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#101
   def initialize(context, message, data = T.unsafe(nil)); end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#101
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#106
   def error; end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#106
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#111
   def error_description; end
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#111
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#116
 class Aws::SSOOIDC::Errors::InternalServerException < ::Aws::SSOOIDC::Errors::ServiceError
   # @param context [Seahorse::Client::RequestContext]
   # @param message [String]
   # @param data [Aws::SSOOIDC::Types::InternalServerException]
   # @return [InternalServerException] a new instance of InternalServerException
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#116
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#121
   def initialize(context, message, data = T.unsafe(nil)); end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#121
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#126
   def error; end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#126
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#131
   def error_description; end
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#131
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#136
 class Aws::SSOOIDC::Errors::InvalidClientException < ::Aws::SSOOIDC::Errors::ServiceError
   # @param context [Seahorse::Client::RequestContext]
   # @param message [String]
   # @param data [Aws::SSOOIDC::Types::InvalidClientException]
   # @return [InvalidClientException] a new instance of InvalidClientException
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#136
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#141
   def initialize(context, message, data = T.unsafe(nil)); end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#141
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#146
   def error; end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#146
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#151
   def error_description; end
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#151
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#156
 class Aws::SSOOIDC::Errors::InvalidClientMetadataException < ::Aws::SSOOIDC::Errors::ServiceError
   # @param context [Seahorse::Client::RequestContext]
   # @param message [String]
   # @param data [Aws::SSOOIDC::Types::InvalidClientMetadataException]
   # @return [InvalidClientMetadataException] a new instance of InvalidClientMetadataException
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#156
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#161
   def initialize(context, message, data = T.unsafe(nil)); end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#161
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#166
   def error; end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#166
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#171
   def error_description; end
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#171
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#176
 class Aws::SSOOIDC::Errors::InvalidGrantException < ::Aws::SSOOIDC::Errors::ServiceError
   # @param context [Seahorse::Client::RequestContext]
   # @param message [String]
   # @param data [Aws::SSOOIDC::Types::InvalidGrantException]
   # @return [InvalidGrantException] a new instance of InvalidGrantException
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#176
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#181
   def initialize(context, message, data = T.unsafe(nil)); end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#181
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#186
   def error; end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#186
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#191
   def error_description; end
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#191
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#196
 class Aws::SSOOIDC::Errors::InvalidRedirectUriException < ::Aws::SSOOIDC::Errors::ServiceError
   # @param context [Seahorse::Client::RequestContext]
   # @param message [String]
   # @param data [Aws::SSOOIDC::Types::InvalidRedirectUriException]
   # @return [InvalidRedirectUriException] a new instance of InvalidRedirectUriException
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#196
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#201
   def initialize(context, message, data = T.unsafe(nil)); end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#201
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#206
   def error; end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#206
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#211
   def error_description; end
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#211
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#216
 class Aws::SSOOIDC::Errors::InvalidRequestException < ::Aws::SSOOIDC::Errors::ServiceError
   # @param context [Seahorse::Client::RequestContext]
   # @param message [String]
   # @param data [Aws::SSOOIDC::Types::InvalidRequestException]
   # @return [InvalidRequestException] a new instance of InvalidRequestException
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#216
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#221
   def initialize(context, message, data = T.unsafe(nil)); end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#221
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#226
   def error; end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#226
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#236
   def error_description; end
+
+  # @return [String]
+  #
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#231
+  def reason; end
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#231
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#241
 class Aws::SSOOIDC::Errors::InvalidRequestRegionException < ::Aws::SSOOIDC::Errors::ServiceError
   # @param context [Seahorse::Client::RequestContext]
   # @param message [String]
   # @param data [Aws::SSOOIDC::Types::InvalidRequestRegionException]
   # @return [InvalidRequestRegionException] a new instance of InvalidRequestRegionException
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#236
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#246
   def initialize(context, message, data = T.unsafe(nil)); end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#251
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#261
   def endpoint; end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#241
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#251
   def error; end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#246
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#256
   def error_description; end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#256
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#266
   def region; end
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#261
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#271
 class Aws::SSOOIDC::Errors::InvalidScopeException < ::Aws::SSOOIDC::Errors::ServiceError
   # @param context [Seahorse::Client::RequestContext]
   # @param message [String]
   # @param data [Aws::SSOOIDC::Types::InvalidScopeException]
   # @return [InvalidScopeException] a new instance of InvalidScopeException
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#266
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#276
   def initialize(context, message, data = T.unsafe(nil)); end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#271
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#281
   def error; end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#276
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#286
   def error_description; end
 end
 
 # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#49
 class Aws::SSOOIDC::Errors::ServiceError < ::Aws::Errors::ServiceError; end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#281
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#291
 class Aws::SSOOIDC::Errors::SlowDownException < ::Aws::SSOOIDC::Errors::ServiceError
   # @param context [Seahorse::Client::RequestContext]
   # @param message [String]
   # @param data [Aws::SSOOIDC::Types::SlowDownException]
   # @return [SlowDownException] a new instance of SlowDownException
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#286
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#296
   def initialize(context, message, data = T.unsafe(nil)); end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#291
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#301
   def error; end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#296
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#306
   def error_description; end
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#301
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#311
 class Aws::SSOOIDC::Errors::UnauthorizedClientException < ::Aws::SSOOIDC::Errors::ServiceError
   # @param context [Seahorse::Client::RequestContext]
   # @param message [String]
   # @param data [Aws::SSOOIDC::Types::UnauthorizedClientException]
   # @return [UnauthorizedClientException] a new instance of UnauthorizedClientException
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#306
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#316
   def initialize(context, message, data = T.unsafe(nil)); end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#311
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#321
   def error; end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#316
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#326
   def error_description; end
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#321
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#331
 class Aws::SSOOIDC::Errors::UnsupportedGrantTypeException < ::Aws::SSOOIDC::Errors::ServiceError
   # @param context [Seahorse::Client::RequestContext]
   # @param message [String]
   # @param data [Aws::SSOOIDC::Types::UnsupportedGrantTypeException]
   # @return [UnsupportedGrantTypeException] a new instance of UnsupportedGrantTypeException
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#326
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#336
   def initialize(context, message, data = T.unsafe(nil)); end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#331
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#341
   def error; end
 
   # @return [String]
   #
-  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#336
+  # source://aws-sdk-core//lib/aws-sdk-ssooidc/errors.rb#346
   def error_description; end
 end
 
@@ -10856,12 +10888,12 @@ module Aws::SSOOIDC::Types; end
 #
 # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/AccessDeniedException AWS API Documentation
 #
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#29
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#34
 class Aws::SSOOIDC::Types::AccessDeniedException < ::Struct
   include ::Aws::Structure
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#30
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#35
 Aws::SSOOIDC::Types::AccessDeniedException::SENSITIVE = T.let(T.unsafe(nil), Array)
 
 # Indicates that a request to authorize a client with an access user
@@ -10869,66 +10901,69 @@ Aws::SSOOIDC::Types::AccessDeniedException::SENSITIVE = T.let(T.unsafe(nil), Arr
 #
 # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/AuthorizationPendingException AWS API Documentation
 #
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#51
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#56
 class Aws::SSOOIDC::Types::AuthorizationPendingException < ::Struct
   include ::Aws::Structure
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#52
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#57
 Aws::SSOOIDC::Types::AuthorizationPendingException::SENSITIVE = T.let(T.unsafe(nil), Array)
 
 # This structure contains Amazon Web Services-specific parameter
-# extensions for the token endpoint responses and includes the identity
-# context.
+# extensions and the [identity context][1].
+#
+#
+#
+# [1]: https://docs.aws.amazon.com/singlesignon/latest/userguide/trustedidentitypropagation-overview.html
 #
 # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/AwsAdditionalDetails AWS API Documentation
 #
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#70
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#81
 class Aws::SSOOIDC::Types::AwsAdditionalDetails < ::Struct
   include ::Aws::Structure
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#71
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#82
 Aws::SSOOIDC::Types::AwsAdditionalDetails::SENSITIVE = T.let(T.unsafe(nil), Array)
 
 # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/CreateTokenRequest AWS API Documentation
 #
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#156
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#165
 class Aws::SSOOIDC::Types::CreateTokenRequest < ::Struct
   include ::Aws::Structure
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#157
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#166
 Aws::SSOOIDC::Types::CreateTokenRequest::SENSITIVE = T.let(T.unsafe(nil), Array)
 
 # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/CreateTokenResponse AWS API Documentation
 #
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#210
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#219
 class Aws::SSOOIDC::Types::CreateTokenResponse < ::Struct
   include ::Aws::Structure
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#211
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#220
 Aws::SSOOIDC::Types::CreateTokenResponse::SENSITIVE = T.let(T.unsafe(nil), Array)
 
 # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/CreateTokenWithIAMRequest AWS API Documentation
 #
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#326
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#335
 class Aws::SSOOIDC::Types::CreateTokenWithIAMRequest < ::Struct
   include ::Aws::Structure
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#327
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#336
 Aws::SSOOIDC::Types::CreateTokenWithIAMRequest::SENSITIVE = T.let(T.unsafe(nil), Array)
 
 # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/CreateTokenWithIAMResponse AWS API Documentation
 #
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#395
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#402
 class Aws::SSOOIDC::Types::CreateTokenWithIAMResponse < ::Struct
   include ::Aws::Structure
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#396
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#403
 Aws::SSOOIDC::Types::CreateTokenWithIAMResponse::SENSITIVE = T.let(T.unsafe(nil), Array)
 
 # Indicates that the token issued by the service is expired and is no
@@ -10936,12 +10971,12 @@ Aws::SSOOIDC::Types::CreateTokenWithIAMResponse::SENSITIVE = T.let(T.unsafe(nil)
 #
 # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/ExpiredTokenException AWS API Documentation
 #
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#417
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#424
 class Aws::SSOOIDC::Types::ExpiredTokenException < ::Struct
   include ::Aws::Structure
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#418
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#425
 Aws::SSOOIDC::Types::ExpiredTokenException::SENSITIVE = T.let(T.unsafe(nil), Array)
 
 # Indicates that an error from the service occurred while trying to
@@ -10949,12 +10984,12 @@ Aws::SSOOIDC::Types::ExpiredTokenException::SENSITIVE = T.let(T.unsafe(nil), Arr
 #
 # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/InternalServerException AWS API Documentation
 #
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#439
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#446
 class Aws::SSOOIDC::Types::InternalServerException < ::Struct
   include ::Aws::Structure
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#440
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#447
 Aws::SSOOIDC::Types::InternalServerException::SENSITIVE = T.let(T.unsafe(nil), Array)
 
 # Indicates that the `clientId` or `clientSecret` in the request is
@@ -10963,12 +10998,12 @@ Aws::SSOOIDC::Types::InternalServerException::SENSITIVE = T.let(T.unsafe(nil), A
 #
 # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/InvalidClientException AWS API Documentation
 #
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#462
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#469
 class Aws::SSOOIDC::Types::InvalidClientException < ::Struct
   include ::Aws::Structure
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#463
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#470
 Aws::SSOOIDC::Types::InvalidClientException::SENSITIVE = T.let(T.unsafe(nil), Array)
 
 # Indicates that the client information sent in the request during
@@ -10976,12 +11011,12 @@ Aws::SSOOIDC::Types::InvalidClientException::SENSITIVE = T.let(T.unsafe(nil), Ar
 #
 # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/InvalidClientMetadataException AWS API Documentation
 #
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#484
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#491
 class Aws::SSOOIDC::Types::InvalidClientMetadataException < ::Struct
   include ::Aws::Structure
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#485
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#492
 Aws::SSOOIDC::Types::InvalidClientMetadataException::SENSITIVE = T.let(T.unsafe(nil), Array)
 
 # Indicates that a request contains an invalid grant. This can occur if
@@ -10989,12 +11024,12 @@ Aws::SSOOIDC::Types::InvalidClientMetadataException::SENSITIVE = T.let(T.unsafe(
 #
 # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/InvalidGrantException AWS API Documentation
 #
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#506
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#513
 class Aws::SSOOIDC::Types::InvalidGrantException < ::Struct
   include ::Aws::Structure
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#507
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#514
 Aws::SSOOIDC::Types::InvalidGrantException::SENSITIVE = T.let(T.unsafe(nil), Array)
 
 # Indicates that one or more redirect URI in the request is not
@@ -11002,12 +11037,12 @@ Aws::SSOOIDC::Types::InvalidGrantException::SENSITIVE = T.let(T.unsafe(nil), Arr
 #
 # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/InvalidRedirectUriException AWS API Documentation
 #
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#528
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#535
 class Aws::SSOOIDC::Types::InvalidRedirectUriException < ::Struct
   include ::Aws::Structure
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#529
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#536
 Aws::SSOOIDC::Types::InvalidRedirectUriException::SENSITIVE = T.let(T.unsafe(nil), Array)
 
 # Indicates that something is wrong with the input to the request. For
@@ -11015,12 +11050,12 @@ Aws::SSOOIDC::Types::InvalidRedirectUriException::SENSITIVE = T.let(T.unsafe(nil
 #
 # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/InvalidRequestException AWS API Documentation
 #
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#550
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#562
 class Aws::SSOOIDC::Types::InvalidRequestException < ::Struct
   include ::Aws::Structure
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#551
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#563
 Aws::SSOOIDC::Types::InvalidRequestException::SENSITIVE = T.let(T.unsafe(nil), Array)
 
 # Indicates that a token provided as input to the request was issued by
@@ -11029,44 +11064,44 @@ Aws::SSOOIDC::Types::InvalidRequestException::SENSITIVE = T.let(T.unsafe(nil), A
 #
 # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/InvalidRequestRegionException AWS API Documentation
 #
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#584
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#596
 class Aws::SSOOIDC::Types::InvalidRequestRegionException < ::Struct
   include ::Aws::Structure
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#585
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#597
 Aws::SSOOIDC::Types::InvalidRequestRegionException::SENSITIVE = T.let(T.unsafe(nil), Array)
 
 # Indicates that the scope provided in the request is invalid.
 #
 # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/InvalidScopeException AWS API Documentation
 #
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#605
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#617
 class Aws::SSOOIDC::Types::InvalidScopeException < ::Struct
   include ::Aws::Structure
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#606
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#618
 Aws::SSOOIDC::Types::InvalidScopeException::SENSITIVE = T.let(T.unsafe(nil), Array)
 
 # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/RegisterClientRequest AWS API Documentation
 #
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#667
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#679
 class Aws::SSOOIDC::Types::RegisterClientRequest < ::Struct
   include ::Aws::Structure
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#668
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#680
 Aws::SSOOIDC::Types::RegisterClientRequest::SENSITIVE = T.let(T.unsafe(nil), Array)
 
 # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/RegisterClientResponse AWS API Documentation
 #
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#708
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#720
 class Aws::SSOOIDC::Types::RegisterClientResponse < ::Struct
   include ::Aws::Structure
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#709
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#721
 Aws::SSOOIDC::Types::RegisterClientResponse::SENSITIVE = T.let(T.unsafe(nil), Array)
 
 # Indicates that the client is making the request too frequently and is
@@ -11074,32 +11109,32 @@ Aws::SSOOIDC::Types::RegisterClientResponse::SENSITIVE = T.let(T.unsafe(nil), Ar
 #
 # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/SlowDownException AWS API Documentation
 #
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#729
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#741
 class Aws::SSOOIDC::Types::SlowDownException < ::Struct
   include ::Aws::Structure
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#730
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#742
 Aws::SSOOIDC::Types::SlowDownException::SENSITIVE = T.let(T.unsafe(nil), Array)
 
 # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/StartDeviceAuthorizationRequest AWS API Documentation
 #
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#760
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#772
 class Aws::SSOOIDC::Types::StartDeviceAuthorizationRequest < ::Struct
   include ::Aws::Structure
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#761
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#773
 Aws::SSOOIDC::Types::StartDeviceAuthorizationRequest::SENSITIVE = T.let(T.unsafe(nil), Array)
 
 # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/StartDeviceAuthorizationResponse AWS API Documentation
 #
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#804
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#816
 class Aws::SSOOIDC::Types::StartDeviceAuthorizationResponse < ::Struct
   include ::Aws::Structure
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#805
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#817
 Aws::SSOOIDC::Types::StartDeviceAuthorizationResponse::SENSITIVE = T.let(T.unsafe(nil), Array)
 
 # Indicates that the client is not currently authorized to make the
@@ -11108,12 +11143,12 @@ Aws::SSOOIDC::Types::StartDeviceAuthorizationResponse::SENSITIVE = T.let(T.unsaf
 #
 # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/UnauthorizedClientException AWS API Documentation
 #
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#827
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#839
 class Aws::SSOOIDC::Types::UnauthorizedClientException < ::Struct
   include ::Aws::Structure
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#828
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#840
 Aws::SSOOIDC::Types::UnauthorizedClientException::SENSITIVE = T.let(T.unsafe(nil), Array)
 
 # Indicates that the grant type in the request is not supported by the
@@ -11121,12 +11156,12 @@ Aws::SSOOIDC::Types::UnauthorizedClientException::SENSITIVE = T.let(T.unsafe(nil
 #
 # @see http://docs.aws.amazon.com/goto/WebAPI/sso-oidc-2019-06-10/UnsupportedGrantTypeException AWS API Documentation
 #
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#849
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#861
 class Aws::SSOOIDC::Types::UnsupportedGrantTypeException < ::Struct
   include ::Aws::Structure
 end
 
-# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#850
+# source://aws-sdk-core//lib/aws-sdk-ssooidc/types.rb#862
 Aws::SSOOIDC::Types::UnsupportedGrantTypeException::SENSITIVE = T.let(T.unsafe(nil), Array)
 
 # source://aws-sdk-core//lib/aws-sdk-core/sso_token_provider.rb#4
