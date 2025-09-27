@@ -71,12 +71,12 @@ class User < ApplicationRecord
   has_many :language_members, class_name: "Language::Member", dependent: :destroy
   has_many :accounts, dependent: :destroy
   has_many :reviews, dependent: :destroy
-  has_many :blog_posts, dependent: :destroy
+  has_many :blog_posts, foreign_key: "creator_id", dependent: :destroy
 
-  has_many :survey_answers, class_name: "Survey::Answer"
+  has_many :survey_answers, class_name: "Survey::Answer", dependent: :destroy
   has_many :survey_answers_surveys, through: :survey_answers, source: :survey
   has_many :survey_answers_survey_items, through: :survey_answers, source: :survey_item
-  has_many :survey_scenario_members, class_name: "Survey::Scenario::Member"
+  has_many :survey_scenario_members, class_name: "Survey::Scenario::Member", dependent: :destroy
   has_many :survey_scenarios, through: :survey_scenario_members, source: :scenario
 
   has_many :assistant_messages, class_name: "Language::Lesson::Member::Message"
