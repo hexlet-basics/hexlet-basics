@@ -18,6 +18,11 @@ Configus.build Rails.env do
       app_secret ENV.fetch("FACEBOOK_CLIENT_SECRET", nil)
     end
 
+    vk do
+      app_id ENV.fetch("VITE_VK_APP_ID", nil)
+      redirect_url ENV.fetch("VITE_VK_APP_REDIRECT_URL", nil)
+    end
+
     disqus do
       ru "hexlet-basics"
       en "hexlet-basics-en"

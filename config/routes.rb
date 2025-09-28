@@ -10,7 +10,8 @@ Rails.application.routes.draw do
 
   scope module: :web do
     # post "/auth/:provider", to: "auth#request", as: :auth_request
-    # get "/auth/:provider/callback", to: "auth#callback", as: :callback_auth
+    get "/auth/:provider/callback", to: "auth#callback", as: :callback_auth
+    get "/auth/failure", to: "auth#failure", as: :failure_auth
     # post "/google/callback", to: "google_auth#one_tap", as: :google_onetap_callback
 
     # match "/403", to: "errors#forbidden", via: :all
