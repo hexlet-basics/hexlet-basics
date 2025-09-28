@@ -73,6 +73,8 @@ ru:
       auth:
         callback:
           success: Добро пожаловать! Пора немного поучиться -)
+        failure:
+          error: "Что-то пошло не так: %{text}"
       remind_passwords:
         create:
           success: Мы отправили вам письмо с инструкциями по восстановлению пароля

@@ -49,6 +49,9 @@ en:
       auth:
         callback:
           success: You have signed in successfully. You can start learning now.
+        failure:
+          error: "Something went wrong: %{text}"
+
       remind_passwords:
         create:
           success: A password recovery instruction was sent to your email.

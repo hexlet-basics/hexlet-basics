@@ -44,6 +44,7 @@ gem "image_processing"
 
 # gem 'http_accept_language'
 gem "pagy"
+gem "omniauth-oauth2"
 # gem 'omniauth-facebook'
 # gem 'omniauth-github'
 # gem 'omniauth-rails_csrf_protection'

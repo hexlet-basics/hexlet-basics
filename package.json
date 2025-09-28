@@ -25,6 +25,7 @@
     "@sentry/react": "^10.21.0",
     "@sentry/tracing": "^7.120.4",
     "@tailwindcss/postcss": "^4.1.15",
+    "@vkid/sdk": "^2.6.1",
     "analytics": "0.8.19",
     "ansi_up": "^6.0.6",
     "axios": "^1.12.2",

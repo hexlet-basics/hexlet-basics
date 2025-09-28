@@ -9,6 +9,7 @@ import {
 } from '@mantine/core';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
+import VkAuth from '@/components/auth/VkAuth.tsx';
 import AppAnchor from '@/components/Elements/AppAnchor';
 import { useAppForm } from '@/hooks/useAppForm';
 import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
@@ -65,6 +66,7 @@ export default function New({ signInForm }: Props) {
                 {tHelpers('submit.user_sign_in_form.create')}
               </Button>
             </form>
+            <VkAuth />
           </Card>
 
           <Text mt="xs">
