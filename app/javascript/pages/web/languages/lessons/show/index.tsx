@@ -399,23 +399,26 @@ function AssistantTabContent({ focusesCount }: { focusesCount: number }) {
 }
 
 function NavigationTabContent() {
-  const { lessons, landingPage } = usePage<LessonSharedProps>().props;
-
+  const { lesson, lessons, landingPage } = usePage<LessonSharedProps>().props;
   return (
     <Box p="lg">
       <List type="ordered">
-        {lessons.map((l) => (
-          <List.Item key={l.id}>
-            <AppAnchor
-              href={Routes.language_lesson_path(
-                landingPage.language.slug!,
-                l.slug!,
-              )}
-            >
-              {l.name}
-            </AppAnchor>
-          </List.Item>
-        ))}
+        {lessons.map((l) => {
+          const lessonItemFontWeight = l.id === lesson.id ? 'bold' : 'normal';
+          return (
+            <List.Item key={l.id}>
+              <AppAnchor
+                href={Routes.language_lesson_path(
+                  landingPage.language.slug!,
+                  l.slug!,
+                )}
+                fw={lessonItemFontWeight}
+              >
+                {l.name}
+              </AppAnchor>
+            </List.Item>
+          );
+        })}
       </List>
     </Box>
   );
