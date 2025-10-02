@@ -50,7 +50,7 @@ export default function AppAnchor({
       <Anchor
         component="button"
         style={{
-          'text-align': 'unset',
+          textAlign: 'unset',
           cursor: 'pointer',
         }}
         onClick={(e) => {
