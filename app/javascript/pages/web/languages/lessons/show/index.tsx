@@ -412,11 +412,6 @@ function NavigationTabContent() {
           )}
           label={l.name}
           active={l.id === lesson.id}
-          py={2}
-          px="xs"
-          styles={(theme) => ({
-            label: { fontSize: theme.fontSizes.md },
-          })}
         />
       ))}
     </Box>
