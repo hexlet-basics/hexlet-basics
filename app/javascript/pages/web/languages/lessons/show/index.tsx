@@ -1,4 +1,4 @@
-import { usePage } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import {
   Accordion,
   Alert,
@@ -9,6 +9,7 @@ import {
   Divider,
   Group,
   List,
+  NavLink,
   Paper,
   ScrollArea,
   Stack,
@@ -25,7 +26,6 @@ import { useTranslation } from 'react-i18next';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { XBreadcrumb } from '@/components/breadcrumbs.tsx';
 import Chat from '@/components/Chat.tsx';
-import AppAnchor from '@/components/Elements/AppAnchor.tsx';
 import MarkdownViewer from '@/components/MarkdownViewer.tsx';
 import XssContent from '@/components/XssContent.tsx';
 import { useIsMobile } from '@/hooks/useIsMobile.ts';
@@ -399,24 +399,21 @@ function AssistantTabContent({ focusesCount }: { focusesCount: number }) {
 }
 
 function NavigationTabContent() {
-  const { lessons, landingPage } = usePage<LessonSharedProps>().props;
-
+  const { lesson, lessons, landingPage } = usePage<LessonSharedProps>().props;
   return (
     <Box p="lg">
-      <List type="ordered">
-        {lessons.map((l) => (
-          <List.Item key={l.id}>
-            <AppAnchor
-              href={Routes.language_lesson_path(
-                landingPage.language.slug!,
-                l.slug!,
-              )}
-            >
-              {l.name}
-            </AppAnchor>
-          </List.Item>
-        ))}
-      </List>
+      {lessons.map((l) => (
+        <NavLink
+          component={Link}
+          key={l.id}
+          href={Routes.language_lesson_path(
+            landingPage.language.slug!,
+            l.slug!,
+          )}
+          label={l.name}
+          active={l.id === lesson.id}
+        />
+      ))}
     </Box>
   );
 }
