@@ -9,6 +9,7 @@ import {
   Divider,
   Group,
   List,
+  NavLink,
   Paper,
   ScrollArea,
   Stack,
@@ -25,7 +26,6 @@ import { useTranslation } from 'react-i18next';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { XBreadcrumb } from '@/components/breadcrumbs.tsx';
 import Chat from '@/components/Chat.tsx';
-import AppAnchor from '@/components/Elements/AppAnchor.tsx';
 import MarkdownViewer from '@/components/MarkdownViewer.tsx';
 import XssContent from '@/components/XssContent.tsx';
 import { useIsMobile } from '@/hooks/useIsMobile.ts';
@@ -402,24 +402,21 @@ function NavigationTabContent() {
   const { lesson, lessons, landingPage } = usePage<LessonSharedProps>().props;
   return (
     <Box p="lg">
-      <List type="ordered">
-        {lessons.map((l) => {
-          const lessonItemFontWeight = l.id === lesson.id ? 'bold' : 'normal';
-          return (
-            <List.Item key={l.id}>
-              <AppAnchor
-                href={Routes.language_lesson_path(
-                  landingPage.language.slug!,
-                  l.slug!,
-                )}
-                fw={lessonItemFontWeight}
-              >
-                {l.name}
-              </AppAnchor>
-            </List.Item>
-          );
-        })}
-      </List>
+      {lessons.map((l) => (
+        <NavLink
+          key={l.id}
+          href={Routes.language_lesson_path(
+            landingPage.language.slug!,
+            l.slug!,
+          )}
+          label={l.name}
+          active={l.id === lesson.id}
+          p={'2px var(--mantine-spacing-xs)'}
+          styles={{
+            label: { fontSize: 'var(--mantine-font-size-md)' },
+          }}
+        />
+      ))}
     </Box>
   );
 }
