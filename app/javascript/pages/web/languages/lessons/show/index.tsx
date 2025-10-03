@@ -1,4 +1,4 @@
-import { usePage } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import {
   Accordion,
   Alert,
@@ -404,6 +404,7 @@ function NavigationTabContent() {
     <Box p="lg">
       {lessons.map((l) => (
         <NavLink
+          component={Link}
           key={l.id}
           href={Routes.language_lesson_path(
             landingPage.language.slug!,
@@ -411,10 +412,11 @@ function NavigationTabContent() {
           )}
           label={l.name}
           active={l.id === lesson.id}
-          p={'2px var(--mantine-spacing-xs)'}
-          styles={{
-            label: { fontSize: 'var(--mantine-font-size-md)' },
-          }}
+          py={2}
+          px="xs"
+          styles={(theme) => ({
+            label: { fontSize: theme.fontSizes.md },
+          })}
         />
       ))}
     </Box>
