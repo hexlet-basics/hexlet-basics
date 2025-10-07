@@ -902,7 +902,7 @@ Faraday::Connection::USER_AGENT = T.let(T.unsafe(nil), String)
 
 # A unified error for failed connections.
 #
-# source://faraday//lib/faraday/error.rb#185
+# source://faraday//lib/faraday/error.rb#188
 class Faraday::ConnectionFailed < ::Faraday::Error; end
 
 # ConnectionOptions contains the configurable properties for a Faraday
@@ -1434,7 +1434,7 @@ class Faraday::ForbiddenError < ::Faraday::ClientError; end
 
 # Raised by Faraday::Middleware and subclasses when invalid default_options are used
 #
-# source://faraday//lib/faraday/error.rb#197
+# source://faraday//lib/faraday/error.rb#200
 class Faraday::InitializationError < ::Faraday::Error; end
 
 # source://faraday//lib/faraday/logging/formatter.rb#6
@@ -1692,11 +1692,11 @@ end
 
 # Raised by Faraday::Response::RaiseError in case of a nil status in response.
 #
-# source://faraday//lib/faraday/error.rb#177
+# source://faraday//lib/faraday/error.rb#180
 class Faraday::NilStatusError < ::Faraday::ServerError
   # @return [NilStatusError] a new instance of NilStatusError
   #
-  # source://faraday//lib/faraday/error.rb#178
+  # source://faraday//lib/faraday/error.rb#181
   def initialize(exc, response = T.unsafe(nil)); end
 end
 
@@ -1855,7 +1855,7 @@ end
 
 # Raised by middlewares that parse the response, like the JSON response middleware.
 #
-# source://faraday//lib/faraday/error.rb#193
+# source://faraday//lib/faraday/error.rb#196
 class Faraday::ParsingError < ::Faraday::Error; end
 
 # Raised by Faraday::Response::RaiseError in case of a 407 response.
@@ -2602,7 +2602,7 @@ class Faraday::Response
   # Expand the env with more properties, without overriding existing ones.
   # Useful for applying request params after restoring a marshalled Response.
   #
-  # source://faraday//lib/faraday/response.rb#80
+  # source://faraday//lib/faraday/response.rb#84
   def apply_request(request_env); end
 
   # source://faraday//lib/faraday/response.rb#32
@@ -2613,12 +2613,12 @@ class Faraday::Response
   # source://faraday//lib/faraday/response.rb#16
   def env; end
 
-  # source://faraday//lib/faraday/response.rb#49
+  # source://faraday//lib/faraday/response.rb#53
   def finish(env); end
 
   # @return [Boolean]
   #
-  # source://faraday//lib/faraday/response.rb#36
+  # source://faraday//lib/faraday/response.rb#40
   def finished?; end
 
   # source://faraday//lib/faraday/response.rb#26
@@ -2626,13 +2626,13 @@ class Faraday::Response
 
   # because @on_complete_callbacks cannot be marshalled
   #
-  # source://faraday//lib/faraday/response.rb#70
+  # source://faraday//lib/faraday/response.rb#74
   def marshal_dump; end
 
-  # source://faraday//lib/faraday/response.rb#74
+  # source://faraday//lib/faraday/response.rb#78
   def marshal_load(env); end
 
-  # source://faraday//lib/faraday/response.rb#40
+  # source://faraday//lib/faraday/response.rb#44
   def on_complete(&block); end
 
   # source://faraday//lib/faraday/response.rb#22
@@ -2643,11 +2643,14 @@ class Faraday::Response
 
   # @return [Boolean]
   #
-  # source://faraday//lib/faraday/response.rb#57
+  # source://faraday//lib/faraday/response.rb#61
   def success?; end
 
-  # source://faraday//lib/faraday/response.rb#61
+  # source://faraday//lib/faraday/response.rb#65
   def to_hash; end
+
+  # source://faraday//lib/faraday/response.rb#36
+  def url; end
 end
 
 # Parse response bodies as JSON.
@@ -2750,7 +2753,7 @@ Faraday::Response::RaiseError::ServerErrorStatuses = T.let(T.unsafe(nil), Range)
 
 # A unified client error for SSL errors.
 #
-# source://faraday//lib/faraday/error.rb#189
+# source://faraday//lib/faraday/error.rb#192
 class Faraday::SSLError < ::Faraday::Error; end
 
 # SSL-related options.
@@ -2948,22 +2951,22 @@ end
 
 # Faraday server error class. Represents 5xx status responses.
 #
-# source://faraday//lib/faraday/error.rb#166
+# source://faraday//lib/faraday/error.rb#169
 class Faraday::ServerError < ::Faraday::Error; end
 
 # A unified client error for timeouts.
 #
-# source://faraday//lib/faraday/error.rb#170
+# source://faraday//lib/faraday/error.rb#173
 class Faraday::TimeoutError < ::Faraday::ServerError
   # @return [TimeoutError] a new instance of TimeoutError
   #
-  # source://faraday//lib/faraday/error.rb#171
+  # source://faraday//lib/faraday/error.rb#174
   def initialize(exc = T.unsafe(nil), response = T.unsafe(nil)); end
 end
 
 # Raised by Faraday::Response::RaiseError in case of a 429 response.
 #
-# source://faraday//lib/faraday/error.rb#162
+# source://faraday//lib/faraday/error.rb#165
 class Faraday::TooManyRequestsError < ::Faraday::ClientError; end
 
 # Raised by Faraday::Response::RaiseError in case of a 401 response.
@@ -2974,7 +2977,12 @@ class Faraday::UnauthorizedError < ::Faraday::ClientError; end
 # Raised by Faraday::Response::RaiseError in case of a 422 response.
 #
 # source://faraday//lib/faraday/error.rb#158
-class Faraday::UnprocessableEntityError < ::Faraday::ClientError; end
+class Faraday::UnprocessableContentError < ::Faraday::ClientError; end
+
+# Used to provide compatibility with legacy error name.
+#
+# source://faraday//lib/faraday/error.rb#162
+Faraday::UnprocessableEntityError = Faraday::UnprocessableContentError
 
 # Utils contains various static helper methods.
 #

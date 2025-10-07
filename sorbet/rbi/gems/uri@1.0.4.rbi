@@ -35,7 +35,7 @@ module Kernel
     #   URI(uri)
     #   # => #<URI::HTTP http://github.com/ruby/ruby>
     #
-    # source://uri//lib/uri/common.rb#869
+    # source://uri//lib/uri/common.rb#879
     def URI(uri); end
   end
 end
@@ -703,79 +703,7 @@ URI::File::COMPONENT = T.let(T.unsafe(nil), Array)
 # source://uri//lib/uri/file.rb#12
 URI::File::DEFAULT_PORT = T.let(T.unsafe(nil), T.untyped)
 
-class URI::GID < ::URI::Generic
-  # source://uri//lib/uri/generic.rb#243
-  def app; end
-
-  # source://globalid/1.2.1/lib/global_id/uri/gid.rb#107
-  def deconstruct_keys(_keys); end
-
-  # source://globalid/1.2.1/lib/global_id/uri/gid.rb#29
-  def model_id; end
-
-  # source://globalid/1.2.1/lib/global_id/uri/gid.rb#29
-  def model_name; end
-
-  # source://globalid/1.2.1/lib/global_id/uri/gid.rb#29
-  def params; end
-
-  # source://globalid/1.2.1/lib/global_id/uri/gid.rb#102
-  def to_s; end
-
-  protected
-
-  # source://globalid/1.2.1/lib/global_id/uri/gid.rb#118
-  def query=(query); end
-
-  # source://globalid/1.2.1/lib/global_id/uri/gid.rb#129
-  def set_params(params); end
-
-  # source://globalid/1.2.1/lib/global_id/uri/gid.rb#112
-  def set_path(path); end
-
-  # source://globalid/1.2.1/lib/global_id/uri/gid.rb#124
-  def set_query(query); end
-
-  private
-
-  # source://globalid/1.2.1/lib/global_id/uri/gid.rb#136
-  def check_host(host); end
-
-  # source://globalid/1.2.1/lib/global_id/uri/gid.rb#141
-  def check_path(path); end
-
-  # source://globalid/1.2.1/lib/global_id/uri/gid.rb#146
-  def check_scheme(scheme); end
-
-  # source://globalid/1.2.1/lib/global_id/uri/gid.rb#195
-  def parse_query_params(query); end
-
-  # source://globalid/1.2.1/lib/global_id/uri/gid.rb#154
-  def set_model_components(path, validate = T.unsafe(nil)); end
-
-  # source://globalid/1.2.1/lib/global_id/uri/gid.rb#174
-  def validate_component(component); end
-
-  # source://globalid/1.2.1/lib/global_id/uri/gid.rb#188
-  def validate_model_id(model_id_part); end
-
-  # source://globalid/1.2.1/lib/global_id/uri/gid.rb#181
-  def validate_model_id_section(model_id, model_name); end
-
-  class << self
-    # source://globalid/1.2.1/lib/global_id/uri/gid.rb#88
-    def build(args); end
-
-    # source://globalid/1.2.1/lib/global_id/uri/gid.rb#72
-    def create(app, model, params = T.unsafe(nil)); end
-
-    # source://globalid/1.2.1/lib/global_id/uri/gid.rb#64
-    def parse(uri); end
-
-    # source://globalid/1.2.1/lib/global_id/uri/gid.rb#48
-    def validate_app(app); end
-  end
-end
+class URI::GID < ::URI::Generic; end
 
 # Base class for all URI classes.
 # Implements generic URI syntax as per RFC 2396.
@@ -836,7 +764,7 @@ class URI::Generic
   #   # => "http://my.example.com/main.rbx?page=1"
   # merge
   #
-  # source://uri//lib/uri/generic.rb#1109
+  # source://uri//lib/uri/generic.rb#1164
   def +(oth); end
 
   # == Args
@@ -856,27 +784,33 @@ class URI::Generic
   #   uri.route_from('http://my.example.com')
   #   #=> #<URI::Generic /main.rbx?page=1>
   #
-  # source://uri//lib/uri/generic.rb#1261
+  # source://uri//lib/uri/generic.rb#1294
   def -(oth); end
 
   # Compares two URIs.
   #
-  # source://uri//lib/uri/generic.rb#1386
+  # source://uri//lib/uri/generic.rb#1399
   def ==(oth); end
 
   # Returns true if URI has a scheme (e.g. http:// or https://) specified.
   #
   # @return [Boolean]
   #
-  # source://uri//lib/uri/generic.rb#972
+  # source://uri//lib/uri/generic.rb#994
   def absolute; end
 
   # Returns true if URI has a scheme (e.g. http:// or https://) specified.
   #
   # @return [Boolean]
   #
-  # source://uri//lib/uri/generic.rb#972
+  # source://uri//lib/uri/generic.rb#987
   def absolute?; end
+
+  # Returns the authority info (array of user, password, host and
+  # port), if any is set.  Or returns +nil+.
+  #
+  # source://uri//lib/uri/generic.rb#579
+  def authority; end
 
   # == Args
   #
@@ -896,7 +830,7 @@ class URI::Generic
   #   uri.coerce("http://foo.com")
   #   #=> [#<URI::HTTP http://foo.com>, #<URI::HTTP http://my.example.com>]
   #
-  # source://uri//lib/uri/generic.rb#1465
+  # source://uri//lib/uri/generic.rb#1478
   def coerce(oth); end
 
   # Components of the URI in the order.
@@ -906,12 +840,12 @@ class URI::Generic
 
   # Returns the password component after URI decoding.
   #
-  # source://uri//lib/uri/generic.rb#583
+  # source://uri//lib/uri/generic.rb#589
   def decoded_password; end
 
   # Returns the user component after URI decoding.
   #
-  # source://uri//lib/uri/generic.rb#578
+  # source://uri//lib/uri/generic.rb#584
   def decoded_user; end
 
   # Returns default port.
@@ -923,7 +857,7 @@ class URI::Generic
   #
   # @return [Boolean]
   #
-  # source://uri//lib/uri/generic.rb#1400
+  # source://uri//lib/uri/generic.rb#1413
   def eql?(oth); end
 
   # Returns a proxy URI.
@@ -944,7 +878,7 @@ class URI::Generic
   #
   # @raise [BadURIError]
   #
-  # source://uri//lib/uri/generic.rb#1491
+  # source://uri//lib/uri/generic.rb#1504
   def find_proxy(env = T.unsafe(nil)); end
 
   # Returns the fragment component of the URI.
@@ -975,12 +909,12 @@ class URI::Generic
   #   uri.fragment = "time=1305212086"
   #   uri.to_s  #=> "http://my.example.com/?id=25#time=1305212086"
   #
-  # source://uri//lib/uri/generic.rb#929
+  # source://uri//lib/uri/generic.rb#944
   def fragment=(v); end
 
   # Returns the hash value.
   #
-  # source://uri//lib/uri/generic.rb#1395
+  # source://uri//lib/uri/generic.rb#1408
   def hash; end
 
   # Returns true if URI is hierarchical.
@@ -1003,7 +937,7 @@ class URI::Generic
   #
   # @return [Boolean]
   #
-  # source://uri//lib/uri/generic.rb#961
+  # source://uri//lib/uri/generic.rb#976
   def hierarchical?; end
 
   # Returns the host component of the URI.
@@ -1049,7 +983,7 @@ class URI::Generic
   #   uri.host = "foo.com"
   #   uri.to_s  #=> "http://foo.com"
   #
-  # source://uri//lib/uri/generic.rb#639
+  # source://uri//lib/uri/generic.rb#652
   def host=(v); end
 
   # Extract the host part of the URI and unwrap brackets for IPv6 addresses.
@@ -1061,7 +995,7 @@ class URI::Generic
   #   uri.hostname      #=> "::1"
   #   uri.host          #=> "[::1]"
   #
-  # source://uri//lib/uri/generic.rb#654
+  # source://uri//lib/uri/generic.rb#668
   def hostname; end
 
   # Sets the host part of the URI as the argument with brackets for IPv6 addresses.
@@ -1076,10 +1010,10 @@ class URI::Generic
   # If the argument seems to be an IPv6 address,
   # it is wrapped with brackets.
   #
-  # source://uri//lib/uri/generic.rb#671
+  # source://uri//lib/uri/generic.rb#685
   def hostname=(v); end
 
-  # source://uri//lib/uri/generic.rb#1442
+  # source://uri//lib/uri/generic.rb#1455
   def inspect; end
 
   # == Args
@@ -1099,7 +1033,7 @@ class URI::Generic
   #   uri.merge("/main.rbx?page=1")
   #   # => "http://my.example.com/main.rbx?page=1"
   #
-  # source://uri//lib/uri/generic.rb#1109
+  # source://uri//lib/uri/generic.rb#1124
   def merge(oth); end
 
   # == Args
@@ -1119,7 +1053,7 @@ class URI::Generic
   #   uri.merge!("/main.rbx?page=1")
   #   uri.to_s  # => "http://my.example.com/main.rbx?page=1"
   #
-  # source://uri//lib/uri/generic.rb#1081
+  # source://uri//lib/uri/generic.rb#1096
   def merge!(oth); end
 
   # Returns normalized URI.
@@ -1134,12 +1068,12 @@ class URI::Generic
   # * scheme and host are converted to lowercase,
   # * an empty path component is set to "/".
   #
-  # source://uri//lib/uri/generic.rb#1318
+  # source://uri//lib/uri/generic.rb#1331
   def normalize; end
 
   # Destructive version of #normalize.
   #
-  # source://uri//lib/uri/generic.rb#1327
+  # source://uri//lib/uri/generic.rb#1340
   def normalize!; end
 
   # Returns the opaque part of the URI.
@@ -1166,7 +1100,7 @@ class URI::Generic
   #
   # See also URI::Generic.check_opaque.
   #
-  # source://uri//lib/uri/generic.rb#901
+  # source://uri//lib/uri/generic.rb#916
   def opaque=(v); end
 
   # Returns the parser to be used.
@@ -1231,7 +1165,7 @@ class URI::Generic
   #   uri.path = "/faq/"
   #   uri.to_s  #=> "http://my.example.com/faq/"
   #
-  # source://uri//lib/uri/generic.rb#815
+  # source://uri//lib/uri/generic.rb#830
   def path=(v); end
 
   # Returns the port component of the URI.
@@ -1262,7 +1196,7 @@ class URI::Generic
   #   uri.port = 8080
   #   uri.to_s  #=> "http://my.example.com:8080"
   #
-  # source://uri//lib/uri/generic.rb#729
+  # source://uri//lib/uri/generic.rb#743
   def port=(v); end
 
   # Returns the query component of the URI.
@@ -1291,7 +1225,7 @@ class URI::Generic
   #
   # @raise [InvalidURIError]
   #
-  # source://uri//lib/uri/generic.rb#839
+  # source://uri//lib/uri/generic.rb#854
   def query=(v); end
 
   # source://uri//lib/uri/generic.rb#252
@@ -1299,14 +1233,14 @@ class URI::Generic
 
   # @raise [InvalidURIError]
   #
-  # source://uri//lib/uri/generic.rb#745
+  # source://uri//lib/uri/generic.rb#760
   def registry=(v); end
 
   # Returns true if URI does not have a scheme (e.g. http:// or https://) specified.
   #
   # @return [Boolean]
   #
-  # source://uri//lib/uri/generic.rb#984
+  # source://uri//lib/uri/generic.rb#999
   def relative?; end
 
   # == Args
@@ -1326,7 +1260,7 @@ class URI::Generic
   #   uri.route_from('http://my.example.com')
   #   #=> #<URI::Generic /main.rbx?page=1>
   #
-  # source://uri//lib/uri/generic.rb#1261
+  # source://uri//lib/uri/generic.rb#1274
   def route_from(oth); end
 
   # == Args
@@ -1346,7 +1280,7 @@ class URI::Generic
   #   uri.route_to('http://my.example.com/main.rbx?page=1')
   #   #=> #<URI::Generic /main.rbx?page=1>
   #
-  # source://uri//lib/uri/generic.rb#1301
+  # source://uri//lib/uri/generic.rb#1314
   def route_to(oth); end
 
   # Returns the scheme component of the URI.
@@ -1396,17 +1330,17 @@ class URI::Generic
   #   uri.select(:userinfo, :host, :path)
   #   # => ["myuser:mypass", "my.example.com", "/test.rbx"]
   #
-  # source://uri//lib/uri/generic.rb#1431
+  # source://uri//lib/uri/generic.rb#1444
   def select(*components); end
 
   # Constructs String from URI.
   #
-  # source://uri//lib/uri/generic.rb#1342
+  # source://uri//lib/uri/generic.rb#1355
   def to_s; end
 
   # Constructs String from URI.
   #
-  # source://uri//lib/uri/generic.rb#1342
+  # source://uri//lib/uri/generic.rb#1394
   def to_str; end
 
   # Returns the user component (without URI decoding).
@@ -1451,21 +1385,27 @@ class URI::Generic
 
   # Returns an Array of the components defined from the COMPONENT Array.
   #
-  # source://uri//lib/uri/generic.rb#1407
+  # source://uri//lib/uri/generic.rb#1420
   def component_ary; end
+
+  # Protected setter for the authority info (+user+, +password+, +host+
+  # and +port+).  If +port+ is +nil+, +default_port+ will be set.
+  #
+  # source://uri//lib/uri/generic.rb#627
+  def set_authority(user, password, host, port = T.unsafe(nil)); end
 
   # Protected setter for the host component +v+.
   #
   # See also URI::Generic.host=.
   #
-  # source://uri//lib/uri/generic.rb#613
+  # source://uri//lib/uri/generic.rb#619
   def set_host(v); end
 
   # Protected setter for the opaque component +v+.
   #
   # See also URI::Generic.opaque=.
   #
-  # source://uri//lib/uri/generic.rb#883
+  # source://uri//lib/uri/generic.rb#898
   def set_opaque(v); end
 
   # Protected setter for the password component +v+.
@@ -1479,19 +1419,19 @@ class URI::Generic
   #
   # See also URI::Generic.path=.
   #
-  # source://uri//lib/uri/generic.rb#789
+  # source://uri//lib/uri/generic.rb#804
   def set_path(v); end
 
   # Protected setter for the port component +v+.
   #
   # See also URI::Generic.port=.
   #
-  # source://uri//lib/uri/generic.rb#702
+  # source://uri//lib/uri/generic.rb#716
   def set_port(v); end
 
   # @raise [InvalidURIError]
   #
-  # source://uri//lib/uri/generic.rb#740
+  # source://uri//lib/uri/generic.rb#755
   def set_registry(v); end
 
   # Protected setter for the scheme component +v+.
@@ -1524,7 +1464,7 @@ class URI::Generic
   # Can not have a registry or opaque component defined,
   # with a host component defined.
   #
-  # source://uri//lib/uri/generic.rb#594
+  # source://uri//lib/uri/generic.rb#600
   def check_host(v); end
 
   # Checks the opaque +v+ component for RFC2396 compliance and
@@ -1533,7 +1473,7 @@ class URI::Generic
   # Can not have a host, port, user, or path component defined,
   # with an opaque component defined.
   #
-  # source://uri//lib/uri/generic.rb#861
+  # source://uri//lib/uri/generic.rb#876
   def check_opaque(v); end
 
   # Checks the password +v+ component for RFC2396 compliance
@@ -1552,7 +1492,7 @@ class URI::Generic
   # Can not have a opaque component defined,
   # with a path component defined.
   #
-  # source://uri//lib/uri/generic.rb#757
+  # source://uri//lib/uri/generic.rb#772
   def check_path(v); end
 
   # Checks the port +v+ component for RFC2396 compliance
@@ -1561,12 +1501,12 @@ class URI::Generic
   # Can not have a registry or opaque component defined,
   # with a port component defined.
   #
-  # source://uri//lib/uri/generic.rb#683
+  # source://uri//lib/uri/generic.rb#697
   def check_port(v); end
 
   # @raise [InvalidURIError]
   #
-  # source://uri//lib/uri/generic.rb#735
+  # source://uri//lib/uri/generic.rb#750
   def check_registry(v); end
 
   # Checks the scheme +v+ component against the URI::Parser Regexp for :SCHEME.
@@ -1602,7 +1542,7 @@ class URI::Generic
   # Merges a base path +base+, with relative path +rel+,
   # returns a modified base path.
   #
-  # source://uri//lib/uri/generic.rb#1000
+  # source://uri//lib/uri/generic.rb#1015
   def merge_path(base, rel); end
 
   # Replaces self by other URI object.
@@ -1612,17 +1552,17 @@ class URI::Generic
 
   # :stopdoc:
   #
-  # source://uri//lib/uri/generic.rb#1193
+  # source://uri//lib/uri/generic.rb#1206
   def route_from0(oth); end
 
   # :stopdoc:
   #
-  # source://uri//lib/uri/generic.rb#1154
+  # source://uri//lib/uri/generic.rb#1167
   def route_from_path(src, dst); end
 
   # Returns an Array of the path split on '/'.
   #
-  # source://uri//lib/uri/generic.rb#991
+  # source://uri//lib/uri/generic.rb#1006
   def split_path(path); end
 
   # Returns the userinfo +ui+ as <code>[user, password]</code>
@@ -1671,7 +1611,7 @@ class URI::Generic
 
     # @return [Boolean]
     #
-    # source://uri//lib/uri/generic.rb#1557
+    # source://uri//lib/uri/generic.rb#1570
     def use_proxy?(hostname, addr, port, no_proxy); end
 
     # source://uri//lib/uri/generic.rb#63
@@ -1987,7 +1927,7 @@ class URI::MailTo < ::URI::Generic
   #   uri.to_mailtext
   #   # => "To: ruby-list@ruby-lang.org\nSubject: subscribe\nCc: myaddr\n\n\n"
   #
-  # source://uri//lib/uri/mailto.rb#268
+  # source://uri//lib/uri/mailto.rb#289
   def to_rfc822text; end
 
   # Constructs String from URI.
@@ -2357,7 +2297,7 @@ module URI::Util
   def make_components_hash(klass, array_hash); end
 
   class << self
-    # source://uri//lib/uri/common.rb#63
+    # source://uri//lib/uri/common.rb#91
     def make_components_hash(klass, array_hash); end
   end
 end

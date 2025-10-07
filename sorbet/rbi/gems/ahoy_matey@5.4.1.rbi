@@ -430,17 +430,7 @@ class Ahoy::DatabaseStore < ::Ahoy::BaseStore
 end
 
 # source://ahoy_matey//lib/ahoy/engine.rb#2
-class Ahoy::Engine < ::Rails::Engine
-  class << self
-    private
-
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#15
-    def __class_attr___callbacks; end
-
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#17
-    def __class_attr___callbacks=(new_value); end
-  end
-end
+class Ahoy::Engine < ::Rails::Engine; end
 
 # source://ahoy_matey//lib/ahoy/engine.rb#12
 Ahoy::Engine::AHOY_PREFIX = T.let(T.unsafe(nil), String)
@@ -453,10 +443,10 @@ class Ahoy::GeocodeV2Job < ::ActiveJob::Base
   class << self
     private
 
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#15
+    # source://ahoy_matey//lib/ahoy/geocode_v2_job.rb#3
     def __class_attr_queue_name; end
 
-    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#17
+    # source://ahoy_matey//lib/ahoy/geocode_v2_job.rb#3
     def __class_attr_queue_name=(new_value); end
   end
 end
@@ -493,7 +483,7 @@ module Ahoy::QueryMethods::ClassMethods
   # source://ahoy_matey//lib/ahoy/query_methods.rb#6
   def where_event(name, properties = T.unsafe(nil)); end
 
-  # source://ahoy_matey//lib/ahoy/query_methods.rb#10
+  # source://ahoy_matey//lib/ahoy/query_methods.rb#46
   def where_properties(properties); end
 
   # source://ahoy_matey//lib/ahoy/query_methods.rb#10
@@ -564,7 +554,7 @@ class Ahoy::Tracker
   # source://ahoy_matey//lib/ahoy/tracker.rb#93
   def visit; end
 
-  # source://ahoy_matey//lib/ahoy/tracker.rb#127
+  # source://ahoy_matey//lib/ahoy/tracker.rb#130
   def visit_id; end
 
   # source://ahoy_matey//lib/ahoy/tracker.rb#97
@@ -576,7 +566,7 @@ class Ahoy::Tracker
   # source://ahoy_matey//lib/ahoy/tracker.rb#127
   def visit_token; end
 
-  # source://ahoy_matey//lib/ahoy/tracker.rb#132
+  # source://ahoy_matey//lib/ahoy/tracker.rb#135
   def visitor_id; end
 
   # source://ahoy_matey//lib/ahoy/tracker.rb#132

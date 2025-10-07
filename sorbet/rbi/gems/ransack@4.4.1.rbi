@@ -1787,7 +1787,7 @@ class Ransack::Nodes::Value < ::Ransack::Nodes::Node
 
   # @return [Boolean]
   #
-  # source://ransack//lib/ransack/nodes/value.rb#118
+  # source://ransack//lib/ransack/nodes/value.rb#110
   def array_of_arrays?(val); end
 
   # source://ransack//lib/ransack/nodes/value.rb#5
@@ -1796,31 +1796,28 @@ class Ransack::Nodes::Value < ::Ransack::Nodes::Node
   # source://ransack//lib/ransack/nodes/value.rb#25
   def cast(type); end
 
-  # source://ransack//lib/ransack/nodes/value.rb#46
-  def cast_array; end
-
-  # source://ransack//lib/ransack/nodes/value.rb#76
+  # source://ransack//lib/ransack/nodes/value.rb#68
   def cast_to_boolean(val); end
 
-  # source://ransack//lib/ransack/nodes/value.rb#54
+  # source://ransack//lib/ransack/nodes/value.rb#46
   def cast_to_date(val); end
 
-  # source://ransack//lib/ransack/nodes/value.rb#98
+  # source://ransack//lib/ransack/nodes/value.rb#90
   def cast_to_decimal(val); end
 
-  # source://ransack//lib/ransack/nodes/value.rb#94
+  # source://ransack//lib/ransack/nodes/value.rb#86
   def cast_to_float(val); end
 
-  # source://ransack//lib/ransack/nodes/value.rb#90
+  # source://ransack//lib/ransack/nodes/value.rb#82
   def cast_to_integer(val); end
 
-  # source://ransack//lib/ransack/nodes/value.rb#110
+  # source://ransack//lib/ransack/nodes/value.rb#102
   def cast_to_money(val); end
 
-  # source://ransack//lib/ransack/nodes/value.rb#86
+  # source://ransack//lib/ransack/nodes/value.rb#78
   def cast_to_string(val); end
 
-  # source://ransack//lib/ransack/nodes/value.rb#65
+  # source://ransack//lib/ransack/nodes/value.rb#57
   def cast_to_time(val); end
 
   # @return [Boolean]
@@ -1831,7 +1828,7 @@ class Ransack::Nodes::Value < ::Ransack::Nodes::Node
   # source://ransack//lib/ransack/nodes/value.rb#21
   def hash; end
 
-  # source://ransack//lib/ransack/nodes/value.rb#114
+  # source://ransack//lib/ransack/nodes/value.rb#106
   def inspect; end
 
   # @return [Boolean]
@@ -2116,7 +2113,7 @@ module Ransack::Translate
   end
 end
 
-# source://ransack//lib/ransack.rb#15
+# source://ransack//lib/ransack.rb#11
 class Ransack::UntraversableAssociationError < ::StandardError; end
 
 # source://ransack//lib/ransack/version.rb#2

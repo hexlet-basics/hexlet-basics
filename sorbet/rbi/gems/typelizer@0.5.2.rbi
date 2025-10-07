@@ -663,7 +663,7 @@ class Typelizer::ModelPlugins::ActiveRecord
   # source://typelizer//lib/typelizer/model_plugins/active_record.rb#4
   def initialize(model_class:, config:); end
 
-  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#19
+  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#20
   def comment_for(prop); end
 
   # Returns the value of attribute config.
@@ -671,7 +671,7 @@ class Typelizer::ModelPlugins::ActiveRecord
   # source://typelizer//lib/typelizer/model_plugins/active_record.rb#9
   def config; end
 
-  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#26
+  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#27
   def enum_for(prop); end
 
   # source://typelizer//lib/typelizer/model_plugins/active_record.rb#11
@@ -684,13 +684,16 @@ class Typelizer::ModelPlugins::ActiveRecord
 
   private
 
-  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#34
+  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#35
   def infer_types_for_association(prop); end
 
-  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#87
+  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#88
+  def infer_types_for_association_ids(prop); end
+
+  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#101
   def infer_types_for_attribute(prop); end
 
-  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#62
+  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#63
   def infer_types_for_column(prop); end
 end
 
