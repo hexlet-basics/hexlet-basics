@@ -1,4 +1,4 @@
-import { Link, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import {
   Accordion,
   Alert,
@@ -26,6 +26,7 @@ import { useTranslation } from 'react-i18next';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { XBreadcrumb } from '@/components/breadcrumbs.tsx';
 import Chat from '@/components/Chat.tsx';
+import AppAnchor from '@/components/Elements/AppAnchor.tsx';
 import MarkdownViewer from '@/components/MarkdownViewer.tsx';
 import XssContent from '@/components/XssContent.tsx';
 import { useIsMobile } from '@/hooks/useIsMobile.ts';
@@ -404,7 +405,7 @@ function NavigationTabContent() {
     <Box p="lg">
       {lessons.map((l) => (
         <NavLink
-          component={Link}
+          component={AppAnchor}
           key={l.id}
           href={Routes.language_lesson_path(
             landingPage.language.slug!,
@@ -412,6 +413,7 @@ function NavigationTabContent() {
           )}
           label={l.name}
           active={l.id === lesson.id}
+          underline="never"
         />
       ))}
     </Box>
