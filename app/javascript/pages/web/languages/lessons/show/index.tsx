@@ -9,6 +9,7 @@ import {
   Divider,
   Group,
   List,
+  NavLink,
   Paper,
   ScrollArea,
   Stack,
@@ -399,24 +400,22 @@ function AssistantTabContent({ focusesCount }: { focusesCount: number }) {
 }
 
 function NavigationTabContent() {
-  const { lessons, landingPage } = usePage<LessonSharedProps>().props;
-
+  const { lesson, lessons, landingPage } = usePage<LessonSharedProps>().props;
   return (
     <Box p="lg">
-      <List type="ordered">
-        {lessons.map((l) => (
-          <List.Item key={l.id}>
-            <AppAnchor
-              href={Routes.language_lesson_path(
-                landingPage.language.slug!,
-                l.slug!,
-              )}
-            >
-              {l.name}
-            </AppAnchor>
-          </List.Item>
-        ))}
-      </List>
+      {lessons.map((l) => (
+        <NavLink
+          component={AppAnchor}
+          key={l.id}
+          href={Routes.language_lesson_path(
+            landingPage.language.slug!,
+            l.slug!,
+          )}
+          label={l.name}
+          active={l.id === lesson.id}
+          underline="never"
+        />
+      ))}
     </Box>
   );
 }
