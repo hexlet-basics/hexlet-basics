@@ -91,7 +91,7 @@
     "svgo": "^4.0.0",
     "terser": "^5.44.0",
     "typescript": "^5.9.3",
-    "vite": "^7.1.9",
+    "vite": "^7.1.11",
     "vite-bundle-analyzer": "^1.2.3",
     "vite-css-modules": "^1.11.1",
     "vite-imagetools": "^9.0.0",
