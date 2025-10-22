@@ -24,10 +24,9 @@ function FooterLink(
   props: {
     href: string;
     external?: boolean;
-    pseudo?: boolean;
   } & PropsWithChildren,
 ) {
-  const { href, children, external = false, pseudo = false } = props;
+  const { href, children, external = false } = props;
 
   return (
     <AppAnchor
@@ -35,7 +34,6 @@ function FooterLink(
       // c="dimmed"
       href={href}
       external={external}
-      pseudo={pseudo}
     >
       {children}
     </AppAnchor>
@@ -82,16 +80,16 @@ export default function FooterBlock() {
                     {tLayouts('shared.footer.sitemap')}
                   </FooterLink>
                 )}
-                <FooterLink href={Routes.page_path('about')} pseudo>
+                <FooterLink href={Routes.page_path('about')}>
                   {tLayouts('shared.footer.about')}
                 </FooterLink>
-                <FooterLink href={Routes.blog_posts_path()} pseudo>
+                <FooterLink href={Routes.blog_posts_path()}>
                   {tLayouts('shared.footer.blog')}
                 </FooterLink>
                 <FooterLink href={Routes.reviews_path()}>
                   {tLayouts('shared.footer.reviews')}
                 </FooterLink>
-                <FooterLink pseudo href={Routes.page_path('authors')}>
+                <FooterLink href={Routes.page_path('authors')}>
                   {tLayouts('shared.footer.authors')}
                 </FooterLink>
               </Stack>
@@ -169,13 +167,13 @@ export default function FooterBlock() {
               </Stack>
 
               <Stack gap="xs">
-                <FooterLink pseudo href={Routes.page_path('tos')}>
+                <FooterLink href={Routes.page_path('tos')}>
                   {tLayouts('shared.footer.tos')}
                 </FooterLink>
-                <FooterLink pseudo href={Routes.page_path('privacy')}>
+                <FooterLink href={Routes.page_path('privacy')}>
                   {tLayouts('shared.footer.privacy')}
                 </FooterLink>
-                <FooterLink pseudo href={Routes.page_path('cookie_policy')}>
+                <FooterLink href={Routes.page_path('cookie_policy')}>
                   {tLayouts('shared.footer.cookie_policy')}
                 </FooterLink>
               </Stack>
