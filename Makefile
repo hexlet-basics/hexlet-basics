@@ -177,5 +177,7 @@ setup-ubuntu:
 	curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
 	sudo apt-get update && sudo apt-get install -yq caddy libpq-dev libvips
 	gem install overmind
+	# run caddy on port 443 without sudo
+	# sudo setcap CAP_NET_BIND_SERVICE=+ep $(which caddy)
 
 .PHONY: test
