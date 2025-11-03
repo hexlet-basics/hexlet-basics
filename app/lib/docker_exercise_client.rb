@@ -19,6 +19,7 @@ class DockerExerciseClient < DockerExerciseClientInterface
     end
 
     system("rm -rf #{repo_dest(lang_name)}")
+    system("mkdir -p #{repo_dest(lang_name)}")
 
     # FIXME docker in docker volume
     system("docker run --name exercises-#{lang_name} -v #{repo_dest(lang_name)}:/out #{image_name(lang_name)}")
