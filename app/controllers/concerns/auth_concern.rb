@@ -12,7 +12,10 @@ module AuthConcern
       last_name: user.last_name
     }
     event = UserSignedInEvent.new(data: event_data)
-    publish_event(event, user)
+
+    event_store.within do
+      publish_event(event, user)
+    end.subscribe(to: UserSignedInEvent) { |ev| event_to_js(ev) }.call
   end
 
   def sign_out

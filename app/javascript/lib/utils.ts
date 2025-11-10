@@ -227,3 +227,24 @@ export function enumToSelectData(list: readonly string[]) {
 }
 
 export const boolText = (v?: boolean | null) => (v ? 'Yes' : 'No');
+
+export function generateCodeVerifier(length = 64) {
+  const charset =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+  let result = '';
+  const array = new Uint8Array(length);
+  crypto.getRandomValues(array);
+  for (let i = 0; i < array.length; i++) {
+    result += charset[array[i] % charset.length];
+  }
+  return result;
+}
+
+export async function generateCodeChallenge(codeVerifier: string) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(codeVerifier);
+  const hash = await crypto.subtle.digest('SHA-256', data);
+  const bytes = new Uint8Array(hash);
+  const str = btoa(String.fromCharCode(...bytes));
+  return str.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}

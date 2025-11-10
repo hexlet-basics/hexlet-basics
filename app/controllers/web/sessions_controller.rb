@@ -20,9 +20,7 @@ class Web::SessionsController < Web::ApplicationController
     sign_in_form = SignInForm.new(params[:user])
 
     if sign_in_form.valid?
-      event_store.within { sign_in sign_in_form.user }
-        .subscribe(to: UserSignedInEvent) { |event| event_to_js(event) }
-        .call
+      sign_in(sign_in_form.user)
 
       f(:success)
       redirect_to root_path
