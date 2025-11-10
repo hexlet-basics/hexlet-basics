@@ -233,7 +233,7 @@ export function generateCodeVerifier(length = 64) {
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
   let result = '';
   const array = new Uint8Array(length);
-  window.crypto.getRandomValues(array);
+  crypto.getRandomValues(array);
   for (let i = 0; i < array.length; i++) {
     result += charset[array[i] % charset.length];
   }

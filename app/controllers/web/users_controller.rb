@@ -1,4 +1,6 @@
 class Web::UsersController < Web::ApplicationController
+  include EventEmitterConcern
+
   before_action :guests_only!
 
   def new
@@ -23,9 +25,9 @@ class Web::UsersController < Web::ApplicationController
     begin
       user.save!
 
-      sign_up(user)
+      sign_up_event(user)
       sign_in(user)
-      fill_guests_data(user)
+      sign_up_progress_events(user)
 
       f(:success)
       redirect_to params[:from].presence || root_path
