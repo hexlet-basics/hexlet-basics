@@ -1,7 +1,6 @@
 import { Head, usePage } from '@inertiajs/react';
 import {
   Accordion,
-  Anchor,
   Badge,
   Box,
   Button,
@@ -22,6 +21,7 @@ import { BookOpenCheck, Bot, Github, Send } from 'lucide-react';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { FAQPage, Question, WithContext } from 'schema-dts';
+import { Banner } from '@/components/Banner';
 import BlogPostBlock from '@/components/BlogPostBlock';
 import CourseBlock from '@/components/CourseBlock';
 import LeadFormBlock from '@/components/LeadFormBlock';
@@ -132,6 +132,8 @@ export default function Index({
           <script type="application/ld+json">{JSON.stringify(qaSchema)}</script>
         )}
       </Head>
+
+      <Banner />
 
       <Container
         ta="center"
