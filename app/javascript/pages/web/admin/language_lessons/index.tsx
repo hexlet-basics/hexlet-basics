@@ -1,6 +1,6 @@
 import { ActionIcon, Group } from '@mantine/core';
 import dayjs from 'dayjs';
-import { Github, Link } from 'lucide-react';
+import { Github, Link, TextSearch } from 'lucide-react';
 import { DataTable } from 'mantine-datatable';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -43,6 +43,13 @@ export default function Index({ grid, lessons }: Props) {
             <Github />
           </ActionIcon>
         </AppAnchor>
+        <AppAnchor
+          method="post"
+          href={Routes.review_admin_language_lesson_path(item.id)}
+        >
+          <TextSearch size={14} />
+        </AppAnchor>
+
         {/* <Link */}
         {/*   onClick={confirmDeleting} */}
         {/*   className="btn btn-link link-body-emphasis p-0 m-0" */}

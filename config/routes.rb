@@ -138,7 +138,11 @@ Rails.application.routes.draw do
         resources :language_lesson_members, only: [ :index ]
         resources :language_lesson_reviews, only: [ :index ]
         resources :language_categories
-        resources :language_lessons, only: [ :index ]
+        resources :language_lessons, only: [ :index ] do
+          member do
+            post :review
+          end
+        end
         resources :blog_posts do
           member do
             post :related_courses
