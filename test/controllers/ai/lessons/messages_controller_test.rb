@@ -6,7 +6,7 @@ class Ai::Lessons::MessagesControllerTest < ActionDispatch::IntegrationTest
     @lesson = language_lessons("elixir-variables")
   end
 
-  test "create" do
+  def test_create
     sign_in_as(:full)
 
     VCR.use_cassette("ai-lessons-messages-create") do

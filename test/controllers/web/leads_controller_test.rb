@@ -1,14 +1,14 @@
 require "test_helper"
 
 class Web::LeadsControllerTest < ActionDispatch::IntegrationTest
-  test "new" do
+  def test_new
     sign_in_as(:full)
 
     get new_lead_url
     assert_response :success
   end
 
-  test "create" do
+  def test_create
     user = sign_in_as(:should_add_contact_method)
 
     assert { user.tag_list.include?("should_be_lead") }

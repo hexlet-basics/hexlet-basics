@@ -1,12 +1,12 @@
 require "test_helper"
 
 class Web::BlogPostsControllerTest < ActionDispatch::IntegrationTest
-  test "should get index" do
+  def test_should_get_index
     get blog_posts_url
     assert_response :success
   end
 
-  test "should get show" do
+  def test_should_get_show
     post = blog_posts("from-full")
     get blog_post_url(post.slug)
     assert_response :success

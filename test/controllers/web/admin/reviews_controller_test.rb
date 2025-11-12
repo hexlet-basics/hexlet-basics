@@ -7,17 +7,17 @@ class Web::Admin::ReviewsControllerTest < ActionDispatch::IntegrationTest
     @user = sign_in_as(:admin)
   end
 
-  test "index" do
+  def test_index
     get admin_reviews_url
     assert_response :success
   end
 
-  test "new" do
+  def test_new
     get new_admin_review_url
     assert_response :success
   end
 
-  test "create" do
+  def test_create
     lang = languages(:php)
 
     attrs = attributes_for(:review, language_id: lang.id, user_id: @user.id, locale: I18n.locale)
@@ -27,14 +27,14 @@ class Web::Admin::ReviewsControllerTest < ActionDispatch::IntegrationTest
     assert { lang.reviews.find_by body: attrs[:body] }
   end
 
-  test "edit" do
+  def test_edit
     review = reviews("full-javascript")
 
     get edit_admin_review_url(review)
     assert_response :success
   end
 
-  test "update" do
+  def test_update
     review = reviews("full-javascript")
 
     assert { review.published_state? }

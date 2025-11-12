@@ -8,7 +8,7 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     @lesson = @language.lessons.first
   end
 
-  test "check lesson finished if exercise is correct" do
+  def test_check_lesson_finished_if_exercise_is_correct
     user = sign_in_as(:one)
 
     language_member = @language.members.find_or_create_by!(user: user)
@@ -32,7 +32,7 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     assert { language_member.finished? }
   end
 
-  test "lesson result failed with incorrect solution" do
+  def test_lesson_result_failed_with_incorrect_solution
     expected = {
       passed: false,
       result: "failed"
@@ -47,7 +47,7 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     assert { body[:result] == expected[:result] }
   end
 
-  test "add new surveys" do
+  def test_add_new_surveys
     code = file_fixture("exercise/correct.rb").read
 
     user = sign_in_as(:ready_to_start_learning)

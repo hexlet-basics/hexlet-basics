@@ -6,7 +6,7 @@ class Web::MyControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(:full)
   end
 
-  test "should get index" do
+  def test_should_get_index
     get my_url
     assert_response :success
   end

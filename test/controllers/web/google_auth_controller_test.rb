@@ -3,14 +3,14 @@
 require "test_helper"
 
 class Web::GoogleAuthControllerTest < ActionDispatch::IntegrationTest
-  test "check google auth" do
+  def test_check_google_auth
     skip
 
     post google_onetap_callback_path
     assert_redirected_to root_path
   end
 
-  test "create user" do
+  def test_create_user
     skip
 
     headers = { "Cookie" => "g_csrf_token=g_csrf_token_test;" }

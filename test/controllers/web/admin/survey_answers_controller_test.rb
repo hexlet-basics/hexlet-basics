@@ -5,7 +5,7 @@ class Web::Admin::SurveyAnswersControllerTest < ActionDispatch::IntegrationTest
     @user = sign_in_as(:admin)
   end
 
-  test "index" do
+  def test_index
     get admin_survey_answers_url
     assert_response :success
   end

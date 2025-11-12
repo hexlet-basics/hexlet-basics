@@ -3,12 +3,12 @@
 require "test_helper"
 
 class Web::SessionsControllerTest < ActionDispatch::IntegrationTest
-  test "new" do
+  def test_new
     get new_session_url
     assert_response :success
   end
 
-  test "create" do
+  def test_create
     user = users(:one)
 
     post session_url, params: { user: { email: user.email, password: "password" } }
@@ -17,7 +17,7 @@ class Web::SessionsControllerTest < ActionDispatch::IntegrationTest
     assert { signed_in? }
   end
 
-  test "destroy" do
+  def test_destroy
     sign_in_as(:one)
     assert { signed_in? }
 

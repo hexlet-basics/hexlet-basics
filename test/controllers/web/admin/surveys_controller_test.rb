@@ -5,17 +5,17 @@ class Web::Admin::SurveysControllerTest < ActionDispatch::IntegrationTest
     @user = sign_in_as(:admin)
   end
 
-  test "index" do
+  def test_index
     get admin_surveys_url
     assert_response :success
   end
 
-  test "new" do
+  def test_new
     get new_admin_survey_url
     assert_response :success
   end
 
-  test "create" do
+  def test_create
     attrs = attributes_for(:survey, locale: I18n.locale)
     attrs[:items_attributes] = [
       attributes_for("survey/item"),
@@ -27,14 +27,14 @@ class Web::Admin::SurveysControllerTest < ActionDispatch::IntegrationTest
     assert { Survey.find_by question: attrs[:question] }
   end
 
-  test "edit" do
+  def test_edit
     survey = surveys("goal")
 
     get edit_admin_survey_url(survey)
     assert_response :success
   end
 
-  test "update" do
+  def test_update
     survey = surveys("goal")
 
     attrs = { question: "another-question" }

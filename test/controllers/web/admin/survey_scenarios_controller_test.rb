@@ -5,12 +5,12 @@ class Web::Admin::SurveyScenariosControllerTest < ActionDispatch::IntegrationTes
     @user = sign_in_as(:admin)
   end
 
-  test "index" do
+  def test_index
     get admin_survey_scenarios_url
     assert_response :success
   end
 
-  test "new" do
+  def test_new
     get new_admin_survey_scenario_url
     assert_response :success
   end

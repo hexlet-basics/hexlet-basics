@@ -5,17 +5,17 @@ class Web::Admin::LanguageCategoriesControllerTest < ActionDispatch::Integration
     sign_in_as(:admin)
   end
 
-  test "index" do
+  def test_index
     get admin_language_categories_url
     assert_response :success
   end
 
-  test "new" do
+  def test_new
     get new_admin_language_category_url
     assert_response :success
   end
 
-  test "create" do
+  def test_create
     slug = "web-development"
 
     params = { language_category: {
@@ -27,14 +27,14 @@ class Web::Admin::LanguageCategoriesControllerTest < ActionDispatch::Integration
     assert { Language::Category.find_by(slug: slug) }
   end
 
-  test "edit" do
+  def test_edit
     language_category = language_categories("frontend-ru")
 
     get edit_admin_language_category_url(language_category)
     assert_response :success
   end
 
-  test "update" do
+  def test_update
     language_category = language_categories("frontend-ru")
 
     items_attributes = [

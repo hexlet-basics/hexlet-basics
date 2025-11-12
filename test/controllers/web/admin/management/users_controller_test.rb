@@ -7,13 +7,13 @@ class Web::Admin::Management::UsersControllerTest < ActionDispatch::IntegrationT
     sign_in_as(:admin)
   end
 
-  test "index" do
+  def test_index
     get admin_management_users_url
 
     assert_response :success
   end
 
-  test "edit" do
+  def test_edit
     user = users(:one)
 
     get edit_admin_management_user_url(user)
@@ -21,7 +21,7 @@ class Web::Admin::Management::UsersControllerTest < ActionDispatch::IntegrationT
     assert_response :success
   end
 
-  test "update" do
+  def test_update
     user = users(:one)
 
     attrs = {

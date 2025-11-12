@@ -5,7 +5,7 @@ class Web::Admin::LanguageLessonMembersControllerTest < ActionDispatch::Integrat
     @user = sign_in_as(:admin)
   end
 
-  test "index" do
+  def test_index
     get admin_language_lesson_members_path
     assert_response :success
   end

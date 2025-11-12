@@ -5,7 +5,7 @@ class Web::Admin::HomeControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(:admin)
   end
 
-  test "index" do
+  def test_index
     get admin_root_url
     assert_response :success
   end

@@ -3,12 +3,12 @@
 require "test_helper"
 
 class Web::CasesControllerTest < ActionDispatch::IntegrationTest
-  test "index" do
+  def test_index
     get cases_url
     assert_response :success
   end
 
-  test "for teachers cases" do
+  def test_for_teachers_cases
     get for_teachers_cases_url
     assert_response :success
   end

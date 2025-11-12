@@ -1,12 +1,12 @@
 require "test_helper"
 
 class Web::UsersControllerTest < ActionDispatch::IntegrationTest
-  test "new" do
+  def test_new
     get new_user_url
     assert_response :success
   end
 
-  test "create" do
+  def test_create
     user_params = FactoryBot.attributes_for(:user)
 
     post users_url, params: { user: user_params }
@@ -20,7 +20,7 @@ class Web::UsersControllerTest < ActionDispatch::IntegrationTest
     # assert { user.survey_answers.requested.count == 2 }
   end
 
-  test "create (with demo)" do
+  def test_create_with_demo
     user_params = FactoryBot.attributes_for(:user)
 
     language = languages(:ruby)

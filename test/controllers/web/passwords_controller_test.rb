@@ -3,14 +3,14 @@
 require "test_helper"
 
 class Web::PasswordsControllerTest < ActionDispatch::IntegrationTest
-  test "edit" do
+  def test_edit
     user = users(:full)
 
     get edit_password_url(reset_password_token: user.reset_password_token)
     assert_response :success
   end
 
-  test "update" do
+  def test_update
     user = users(:full)
     before_password_digest = user.password_digest
 

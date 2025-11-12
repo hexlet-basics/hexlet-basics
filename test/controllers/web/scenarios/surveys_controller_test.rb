@@ -1,7 +1,7 @@
 require "test_helper"
 
 class Web::Scenarios::SurveysControllerTest < ActionDispatch::IntegrationTest
-  test "show new scenario" do
+  def test_show_new_scenario
     user = sign_in_as(:just_signed_up)
 
     base_scenario = survey_scenarios("base")
@@ -11,7 +11,7 @@ class Web::Scenarios::SurveysControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "show inside scenario" do
+  def test_show_inside_scenario
     user = sign_in_as(:inside_base_survey_scenario)
 
     base_scenario = survey_scenarios("base")
@@ -21,7 +21,7 @@ class Web::Scenarios::SurveysControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "show without member" do
+  def test_show_without_member
     user = sign_in_as(:admin)
 
     members = user.survey_scenario_members
@@ -33,7 +33,7 @@ class Web::Scenarios::SurveysControllerTest < ActionDispatch::IntegrationTest
     assert_response :redirect
   end
 
-  test "show if answered" do
+  def test_show_if_answered
     sign_in_as(:full)
 
     base_scenario = survey_scenarios("base")

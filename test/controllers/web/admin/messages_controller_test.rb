@@ -5,7 +5,7 @@ class Web::Admin::MessagesControllerTest < ActionDispatch::IntegrationTest
     @user = sign_in_as(:admin)
   end
 
-  test "index" do
+  def test_index
     get admin_messages_url
     assert_response :success
   end

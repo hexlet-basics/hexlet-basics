@@ -1,19 +1,19 @@
 require "test_helper"
 
 class Web::BooksControllerTest < ActionDispatch::IntegrationTest
-  test "show" do
+  def test_show
     get book_path
     assert_response :success
   end
 
-  test "show (sign in)" do
+  def test_show_sign_in
     sign_in_as(:full)
 
     get book_path
     assert_response :success
   end
 
-  test "create_request" do
+  def test_create_request
     user = sign_in_as(:ready_to_start_learning)
     assert { user.book_request.nil? }
 
@@ -26,7 +26,7 @@ class Web::BooksControllerTest < ActionDispatch::IntegrationTest
     assert { user.survey_scenario_members.count == 3 }
   end
 
-  test "download" do
+  def test_download
     user = sign_in_as(:full)
 
     get download_book_path

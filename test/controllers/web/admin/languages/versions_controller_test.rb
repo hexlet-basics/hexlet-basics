@@ -7,7 +7,7 @@ class Web::Admin::Languages::VersionsControllerTest < ActionDispatch::Integratio
     sign_in_as(:admin)
   end
 
-  test "index" do
+  def test_index
     skip
     language = languages(:php)
 
@@ -16,7 +16,7 @@ class Web::Admin::Languages::VersionsControllerTest < ActionDispatch::Integratio
     assert_response :success
   end
 
-  test "create" do
+  def test_create
     skip
     language = languages(:php)
 

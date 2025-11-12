@@ -7,7 +7,7 @@ class Web::Admin::Api::UsersControllerTest < ActionDispatch::IntegrationTest
     @user = sign_in_as(:admin)
   end
 
-  test "#search" do
+  def test_search
     get search_admin_api_users_url(format: :json)
     assert_response :success
   end

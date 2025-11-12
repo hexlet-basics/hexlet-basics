@@ -3,7 +3,7 @@
 require "test_helper"
 
 class ReviewsControllerTest < ActionDispatch::IntegrationTest
-  test "#index" do
+  def test_index
     get reviews_url
     assert_response :success
   end

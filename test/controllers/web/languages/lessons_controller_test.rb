@@ -10,26 +10,26 @@ class Web::Languages::LessonsControllerTest < ActionDispatch::IntegrationTest
     @user = users(:full)
   end
 
-  test "show" do
+  def test_show
     get language_lesson_url(@language.slug, @lesson.slug)
     assert_response :success
   end
 
-  test "show (signed in)" do
+  def test_show_signed_in
     sign_in_as(:full)
 
     get language_lesson_url(@language.slug, @lesson.slug)
     assert_response :success
   end
 
-  test "show first lesson (signed in)" do
+  def test_show_first_lesson_signed_in
     # TODO add fixtures
     sign_in_as(:full)
     get language_lesson_url(@language.slug, @lesson.slug)
     assert_response :success
   end
 
-  test "show last lesson (signed in)" do
+  def test_show_last_lesson_signed_in
     # TODO add fixtures
     sign_in_as(:full)
     get language_lesson_url(@language.slug, @lesson.slug)

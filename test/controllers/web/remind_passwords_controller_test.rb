@@ -3,12 +3,12 @@
 require "test_helper"
 
 class Web::RemindPasswordsControllerTest < ActionDispatch::IntegrationTest
-  test "new" do
+  def test_new
     get new_remind_password_url
     assert_response :success
   end
 
-  test "create" do
+  def test_create
     user = users(:full)
     before_token = user.reset_password_token
 

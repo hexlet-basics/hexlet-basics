@@ -1,7 +1,7 @@
 require "test_helper"
 
 class Web::Scenarios::Surveys::AnswersControllerTest < ActionDispatch::IntegrationTest
-  test "create" do
+  def test_create
     user = sign_in_as(:just_signed_up)
 
     base_scenario = survey_scenarios("base")
@@ -22,7 +22,7 @@ class Web::Scenarios::Surveys::AnswersControllerTest < ActionDispatch::Integrati
     assert { survey != member.next_survey }
   end
 
-  test "create last survey" do
+  def test_create_last_survey
     user = sign_in_as(:inside_base_survey_scenario)
 
     base_scenario = survey_scenarios("base")

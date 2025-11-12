@@ -1,19 +1,19 @@
 require "test_helper"
 
 class Web::HomeControllerTest < ActionDispatch::IntegrationTest
-  test "index" do
+  def test_index
     get root_url
     assert_response :success
   end
 
-  test "index (sign in)" do
+  def test_index_sign_in
     sign_in_as(:full)
 
     get root_url
     assert_response :success
   end
 
-  test "#index with stored locale" do
+  def test_index_with_stored_locale
     open_session do |s|
       s.get s.root_url(suffix: :ru)
       s.assert_response :success
@@ -23,7 +23,7 @@ class Web::HomeControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "#map" do
+  def test_map
     get map_url
     assert_response :success
   end

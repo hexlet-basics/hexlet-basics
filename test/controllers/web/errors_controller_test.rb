@@ -1,7 +1,7 @@
 require "test_helper"
 
 class Web::ErrorsControllerTest < ActionDispatch::IntegrationTest
-  test "404" do
+  def test_404
     get "/unknownpage"
     assert_response :not_found
   end

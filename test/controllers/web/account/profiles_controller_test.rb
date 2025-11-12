@@ -3,14 +3,14 @@
 require "test_helper"
 
 class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
-  test "edit" do
+  def test_edit
     sign_in_as(:full)
 
     get edit_account_profile_url
     assert_response :success
   end
 
-  test "update" do
+  def test_update
     user = sign_in_as(:full)
     new_name = "new first name"
 
@@ -26,7 +26,7 @@ class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
     assert { user.first_name == new_name }
   end
 
-  test "destroy" do
+  def test_destroy
     user = sign_in_as(:full)
     delete account_profile_url
     assert_response :redirect

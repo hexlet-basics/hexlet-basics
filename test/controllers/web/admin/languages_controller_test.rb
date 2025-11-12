@@ -7,17 +7,17 @@ class Web::Admin::LanguagesControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(:admin)
   end
 
-  test "index" do
+  def test_index
     get admin_languages_url
     assert_response :success
   end
 
-  test "new" do
+  def test_new
     get new_admin_language_url
     assert_response :success
   end
 
-  test "review" do
+  def test_review
     language = languages(:php)
 
     VCR.use_cassette("ai-lessons-reviews-create") do
@@ -26,7 +26,7 @@ class Web::Admin::LanguagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :redirect
   end
 
-  test "create" do
+  def test_create
     slug = "racket"
 
     params = { language: { slug: slug } }
@@ -36,14 +36,14 @@ class Web::Admin::LanguagesControllerTest < ActionDispatch::IntegrationTest
     assert { Language.find_by(slug: slug) }
   end
 
-  test "edit" do
+  def test_edit
     language = languages(:php)
 
     get edit_admin_language_url(language)
     assert_response :success
   end
 
-  test "update" do
+  def test_update
     language = languages(:php)
 
     params = { language: { progress: "in_development" } }
