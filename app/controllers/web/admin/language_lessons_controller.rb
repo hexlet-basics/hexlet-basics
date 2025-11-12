@@ -9,4 +9,15 @@ class Web::Admin::LanguageLessonsController < Web::Admin::ApplicationController
       grid: GridResource.new(grid_params(pagy))
     }
   end
+
+  def review
+    lesson = Language::Lesson.find(params[:id])
+    lesson.infos.find_each do |info|
+      ReviewLessonJob.perform_later(info.id)
+    end
+
+    f(:success)
+
+    redirect_to admin_language_lessons_path
+  end
 end
