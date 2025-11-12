@@ -20,5 +20,4 @@ class Web::Admin::LanguageLessonsController < Web::Admin::ApplicationController
 
     redirect_to admin_language_lessons_path
   end
-
 end
