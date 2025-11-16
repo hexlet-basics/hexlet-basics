@@ -3,3 +3,5 @@ Disallow: */assets/
 
 User-agent: Yandex
 Disallow: */assets/
+
+Clean-param: demo&from
