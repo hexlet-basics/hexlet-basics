@@ -168,8 +168,9 @@ resource "cloudflare_dns_record" "facebook_domain_verification" {
 resource "cloudflare_dns_record" "code_basics_com_cert_validation" {
   zone_id = cloudflare_zone.hexlet_basics_zone.id
   name    = "_acme-challenge.${local.data.terraform.domain}"
-  content = "\"HpcWZh5HI3f98UIvG1A6TErvb9vvCxAz-hJkZ-nFraY\""
-  type    = "TXT"
+  content = "fpqgjl11q387a86d42kn.cm.yandexcloud.net"
+  type    = "CNAME"
+  proxied = false
   ttl     = 1
 }
 

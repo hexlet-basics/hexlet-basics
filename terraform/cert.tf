@@ -4,6 +4,6 @@ resource "yandex_cm_certificate" "code_basics_com" {
   deletion_protection = true
 
   managed {
-    challenge_type  = "DNS_TXT"
+    challenge_type  = "DNS_CNAME"
   }
 }
