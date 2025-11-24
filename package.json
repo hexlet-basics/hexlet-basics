@@ -21,7 +21,7 @@
     "@rails/actioncable": "^8.1.100",
     "@redux-devtools/extension": "^3.3.0",
     "@sentry/browser": "^10.25.0",
-    "@sentry/node": "^10.25.0",
+    "@sentry/node": "^10.27.0",
     "@sentry/react": "^10.25.0",
     "@sentry/tracing": "^7.120.4",
     "@tailwindcss/postcss": "^4.1.17",
