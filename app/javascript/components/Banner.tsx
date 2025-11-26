@@ -20,7 +20,7 @@ export function Banner() {
             href="https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=blackfriday2025"
           >
             Курсы с наставником и гарантией трудоустройства со{' '}
-            <b>скидкой -25%</b> → Подробнее
+            <b>скидкой -30%</b> → Подробнее
           </Anchor>
         </Box>
       )}
