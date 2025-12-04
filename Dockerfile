@@ -28,9 +28,9 @@ ENV RAILS_ENV="production" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT="development"
 
-ARG DOCKER_VERSION=27.3.1
+ARG DOCKER_VERSION=28.5.2
 RUN curl -fsSL https://get.docker.com -o get-docker.sh \
-    && bash get-docker.sh --version "$DOCKER_VERSION" \
+    && sh get-docker.sh --version $DOCKER_VERSION \
     && rm get-docker.sh
 
 # TODO: delete after success installation docker
