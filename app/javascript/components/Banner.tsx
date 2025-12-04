@@ -17,9 +17,9 @@ export function Banner() {
         >
           <Anchor
             target="_blank"
-            href="https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=blackfriday2025"
+            href="https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=newyear2025"
           >
-            Курсы с наставником и гарантией трудоустройства со{' '}
+            Курсы с наставником и опытом работы во время учебы со{' '}
             <b>скидкой -30%</b> → Подробнее
           </Anchor>
         </Box>
