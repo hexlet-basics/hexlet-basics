@@ -28,12 +28,16 @@ ENV RAILS_ENV="production" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT="development"
 
-ARG DOCKER_CHANNEL=stable
 ARG DOCKER_VERSION=27.3.1
-# NOTE: Жестко указан gid группы docker на нодах. Надо подумать как переделать лучше
-RUN groupadd --gid 998 docker
-RUN curl -fsSL "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/x86_64/docker-${DOCKER_VERSION}.tgz" \
-  | tar -xzC /usr/local/bin --strip=1 docker/docker
+RUN sh <(curl -fsSL https://get.docker.com) --version $DOCKER_VERSION
+
+# TODO: delete after success installation docker
+# ARG DOCKER_CHANNEL=stable
+# ARG DOCKER_VERSION=27.3.1
+# # NOTE: Жестко указан gid группы docker на нодах. Надо подумать как переделать лучше
+# RUN groupadd --gid 999 docker
+# RUN curl -fsSL "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/x86_64/docker-${DOCKER_VERSION}.tgz" \
+#   | tar -xzC /usr/local/bin --strip=1 docker/docker
 
 # Throw-away build stage to reduce size of final image
 FROM base AS build
