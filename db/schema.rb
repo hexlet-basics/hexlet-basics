@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_03_174056) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_12_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -190,7 +190,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_03_174056) do
   end
 
   create_table "language_landing_page_qna_items", force: :cascade do |t|
-    t.integer "language_landing_page_id", null: false
+    t.bigint "language_landing_page_id", null: false
     t.string "question"
     t.string "answer"
     t.datetime "created_at", null: false
@@ -199,8 +199,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_03_174056) do
   end
 
   create_table "language_landing_pages", force: :cascade do |t|
-    t.integer "language_id", null: false
-    t.integer "language_category_id"
+    t.bigint "language_id", null: false
+    t.bigint "language_category_id"
     t.string "meta_title"
     t.string "locale"
     t.string "header"
@@ -227,9 +227,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_03_174056) do
   end
 
   create_table "language_lesson_member_messages", force: :cascade do |t|
-    t.integer "language_id", null: false
-    t.integer "language_lesson_id", null: false
-    t.integer "language_lesson_member_id", null: false
+    t.bigint "language_id", null: false
+    t.bigint "language_lesson_id", null: false
+    t.bigint "language_lesson_member_id", null: false
     t.string "role"
     t.text "body"
     t.datetime "created_at", null: false
@@ -248,7 +248,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_03_174056) do
     t.string "state"
     t.bigint "language_id", null: false
     t.datetime "created_at", null: false
-    t.integer "language_member_id", null: false
+    t.bigint "language_member_id", null: false
     t.string "openai_thread_id"
     t.integer "messages_count", default: 0
     t.index ["language_member_id"], name: "index_language_lesson_members_on_language_member_id"
@@ -622,9 +622,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_03_174056) do
   end
 
   create_table "survey_answers", force: :cascade do |t|
-    t.integer "survey_id", null: false
-    t.integer "survey_item_id"
-    t.integer "user_id", null: false
+    t.bigint "survey_id", null: false
+    t.bigint "survey_item_id"
+    t.bigint "user_id", null: false
     t.string "state"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -635,7 +635,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_03_174056) do
   end
 
   create_table "survey_items", force: :cascade do |t|
-    t.integer "survey_id", null: false
+    t.bigint "survey_id", null: false
     t.integer "order", null: false
     t.string "value"
     t.string "state"

@@ -23,8 +23,8 @@
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
 #  landing_page_to_redirect_id :bigint
-#  language_category_id        :integer
-#  language_id                 :integer          not null
+#  language_category_id        :bigint
+#  language_id                 :bigint           not null
 #
 # Indexes
 #

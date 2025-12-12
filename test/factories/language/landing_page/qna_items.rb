@@ -7,7 +7,7 @@
 #  question                 :string
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
-#  language_landing_page_id :integer          not null
+#  language_landing_page_id :bigint           not null
 #
 # Indexes
 #

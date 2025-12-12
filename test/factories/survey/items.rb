@@ -9,7 +9,7 @@
 #  value      :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  survey_id  :integer          not null
+#  survey_id  :bigint           not null
 #
 # Indexes
 #
