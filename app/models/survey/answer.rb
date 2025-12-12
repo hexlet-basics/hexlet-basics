@@ -6,9 +6,9 @@
 #  state          :string
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
-#  survey_id      :integer          not null
-#  survey_item_id :integer
-#  user_id        :integer          not null
+#  survey_id      :bigint           not null
+#  survey_item_id :bigint
+#  user_id        :bigint           not null
 #
 # Indexes
 #
