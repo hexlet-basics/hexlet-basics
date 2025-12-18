@@ -13,8 +13,4 @@ class RemindPasswordForm
   def user
     @user ||= User.find_by(email: email)
   end
-
-  def email=(value)
-    @email = value.downcase
-  end
 end

@@ -38,6 +38,8 @@ class User < ApplicationRecord
 
   has_secure_password validations: false
 
+  normalizes :email, with: ->(email) { email.strip.downcase }
+
   def self.ransackable_attributes(_auth_object = nil)
     %w[id email first_name last_name created_at]
   end

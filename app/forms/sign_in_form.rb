@@ -20,8 +20,4 @@ class SignInForm
   def user
     @user ||= User.active.find_by(email: email) if email.present?
   end
-
-  def email=(value)
-    @email = value.downcase
-  end
 end
