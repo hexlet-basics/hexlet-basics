@@ -7,9 +7,9 @@
 #  role                      :string
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null
-#  language_id               :integer          not null
-#  language_lesson_id        :integer          not null
-#  language_lesson_member_id :integer          not null
+#  language_id               :bigint           not null
+#  language_lesson_id        :bigint           not null
+#  language_lesson_member_id :bigint           not null
 #  user_id                   :bigint
 #
 # Indexes
