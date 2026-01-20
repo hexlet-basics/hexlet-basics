@@ -147,7 +147,7 @@ services-db-start:
 		-e POSTGRES_DB=code_basics_development \
 		-e POSTGRES_PASSWORD=postgres \
 		-v code_basics_pgdata:/var/lib/postgresql/data \
-		postgres
+		postgres:17
 
 services-db-stop:
 	docker stop code_basics_postgres
