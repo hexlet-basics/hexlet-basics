@@ -6,7 +6,7 @@ setup:
 	bin/setup --skip-server
 	bin/rails db:fixtures:load
 	pnpm install
-	pnpm simple-git-hooks
+	pnpm exec simple-git-hooks
 
 test-all: test test-frontend test-system
 
