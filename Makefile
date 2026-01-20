@@ -5,8 +5,8 @@ setup:
 	cp -n .env.sample .env || exit 0
 	bin/setup --skip-server
 	bin/rails db:fixtures:load
-	npm install
-	npx simple-git-hooks
+	pnpm install
+	pnpm simple-git-hooks
 
 test-all: test test-frontend test-system
 
@@ -14,10 +14,10 @@ test:
 	bin/rails test
 
 test-frontend:
-	npx vitest run
+	pnpm vitest run
 
 test-frontend-watch:
-	npx vitest
+	pnpm vitest
 
 test-system:
 	bin/rails test:system
@@ -91,16 +91,16 @@ language-load:
 
 check-types:
 	# bundle exec srb tc
-	npm run check
+	pnpm run check
 
 lint:
-	npx @biomejs/biome check
-	npx tsc --build
+	pnpm exec biome check
+	pnpm tsc --build
 	bin/rubocop
 
 lint-fix:
 	bin/rubocop -x
-	npx @biomejs/biome check --fix
+	pnpm exec biome check --fix
 
 clear:
 	rm -rf ./.overmind.sock

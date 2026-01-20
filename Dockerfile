@@ -9,7 +9,7 @@
 # For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
-FROM docker.io/library/ruby:4.0.0-slim AS base
+FROM docker.io/library/ruby:4.0.1-slim AS base
 
 # Rails app lives here
 WORKDIR /rails
@@ -37,7 +37,7 @@ RUN curl -fsSL "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/x86_6
 # Throw-away build stage to reduce size of final image
 FROM base AS build
 
-RUN curl -sL https://deb.nodesource.com/setup_24.x | sh -
+RUN curl -sL https://deb.nodesource.com/setup_25.x | sh -
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
@@ -50,8 +50,8 @@ RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile
 
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY package.json pnpm-lock.json ./
+RUN pnpm install
 
 # Copy application code
 COPY . .
