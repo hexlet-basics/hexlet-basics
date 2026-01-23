@@ -8,6 +8,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@hexlet/analytics-plugin-yandex-metrika": "^1.0.10",
+    "@inertiajs/core": "^2.3.11",
     "@inertiajs/progress": "^0.2.7",
     "@inertiajs/react": "^2.3.11",
     "@mantine/carousel": "^8.3.13",
@@ -24,6 +25,8 @@
     "@sentry/node": "^10.35.0",
     "@sentry/react": "^10.35.0",
     "@sentry/tracing": "^7.120.4",
+    "@shikijs/langs": "^3.21.0",
+    "@shikijs/themes": "^3.21.0",
     "@tailwindcss/postcss": "^4.1.18",
     "analytics": "0.8.19",
     "ansi_up": "^6.0.6",
@@ -39,6 +42,8 @@
     "i18next": "^25.8.0",
     "lucide-react": "^0.562.0",
     "mantine-datatable": "^8.3.13",
+    "mdast-util-directive": "^3.1.0",
+    "monaco-editor": "^0.55.1",
     "react": "^19.2.3",
     "react-countdown": "^2.3.6",
     "react-dom": "^19.2.3",
@@ -64,6 +69,7 @@
     "tailwind-preset-mantine": "^3.0.3",
     "tailwindcss": "^4.1.18",
     "unified": "^11.0.5",
+    "unist-util-visit": "^5.1.0",
     "vanilla-cookieconsent": "^3.1.0",
     "zustand": "^5.0.10"
   },

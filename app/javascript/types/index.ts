@@ -1,4 +1,4 @@
-import type { PageProps } from '@inertiajs/inertia';
+import type { PageProps } from '@inertiajs/core';
 import type { router } from '@inertiajs/react';
 import type { i18n } from 'i18next';
 import type { SetupOptions } from 'node_modules/@inertiajs/react/types/createInertiaApp';
