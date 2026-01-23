@@ -133,7 +133,7 @@ export default function Index({
         )}
       </Head>
 
-      <Banner />
+      {/*<Banner />*/}
 
       <Container
         ta="center"
