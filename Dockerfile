@@ -44,6 +44,8 @@ RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential git pkg-config nodejs && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
+RUN npm i -g pnpm@10
+
 # Install application gems
 COPY .ruby-version Gemfile Gemfile.lock ./
 RUN bundle install && \
