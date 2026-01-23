@@ -37,7 +37,8 @@ jobs:
         with:
           node-version-file: .node-version
           cache: "pnpm"
-      - run: npm ci
+
+      - run: pnpm install
 
       - uses: ruby/setup-ruby@v1
         with:
