@@ -216,6 +216,8 @@ spec:
           env:
             - name: RAILS_MAX_THREADS
               value: "6"
+            - name: WEB_CONCURRENCY
+              value: "0"
 
           lifecycle:
             preStop:
