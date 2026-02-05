@@ -45,18 +45,24 @@
     },
     "activerecord": {
       "attributes": {
+        "base": {
+          "_destroy": "Удалить",
+          "answer": "Ответ",
+          "created_at": "Создание",
+          "description": "Описание",
+          "header": "Заголовок",
+          "name": "Имя",
+          "question": "Вопрос",
+          "slug": "Слаг",
+          "updated_at": "Обновление"
+        },
         "blog_post": {
           "body": "Content",
           "cover": "Image",
           "creator": "Author",
-          "description": "Description",
-          "locale": "Language",
-          "name": "Title",
-          "slug": "Slug",
           "state": "State",
           "state/archived": "Archived",
-          "state/published": "Published",
-          "state_event": "Change state"
+          "state/published": "Published"
         },
         "language": {
           "category_id": "Category",
@@ -72,6 +78,9 @@
           "header": "Header",
           "name": "Name",
           "slug": "Slug"
+        },
+        "language_category_item": {
+          "language_landing_page_id": "Лендинг"
         },
         "language_landing_page": {
           "_destroy": "Destroy",
@@ -97,6 +106,20 @@
           "used_in_description": "Used In (Description)",
           "used_in_header": "Used In (Header)"
         },
+        "lead": {
+          "contact_method": "Способ связи",
+          "contact_value": "Телефон / Имя пользователя"
+        },
+        "qna_item": {
+          "answer": "Ответ",
+          "footer": "Выводить в футере",
+          "footer_name": "Имя в футере",
+          "listed": "Отображать в списках",
+          "main": "Основной",
+          "order": "Order",
+          "question": "Вопрос",
+          "slug": "Slug"
+        },
         "review": {
           "body": "Review",
           "first_name": "First name",
@@ -107,8 +130,24 @@
           "state": "State",
           "user_id": "User"
         },
+        "survey": {
+          "run_always": "Запускать всегда",
+          "slug": "Слаг"
+        },
+        "survey_scenario": {
+          "_destroy": "Удалить",
+          "name": "Название",
+          "survey_item_id": "Ответ триггер (Начало воронки)"
+        },
         "user": {
           "admin": "Admin?",
+          "contact_method": "Способ связи",
+          "contact_method/values": {
+            "phone": "Телефон",
+            "telegram": "Telegram",
+            "whatsapp": "WhatsApp"
+          },
+          "contact_value": "Номер для связи (или имя пользователя)",
           "email": "Email",
           "first_name": "First name",
           "last_name": "Last name",
@@ -125,10 +164,10 @@
           }
         },
         "models": {
-          "user/sign_up_form": {
+          "sign_up_form": {
             "attributes": {
               "password": {
-                "too_short": "must be at least 6 characters"
+                "too_short": "должен быть не меньше 6 символов"
               }
             }
           }
@@ -167,6 +206,7 @@
           "message": "Yippee! Well done! Compare your answer with the teacher’s one and move to the next lesson"
         }
       },
+      "community_url": "https://t.me/HexletLearningBot\n",
       "confirm": "You want to reset the exercise progress. The current code version will not be saved. We hope you’ve already copied it. Continue resetting?",
       "current_state": "Current state",
       "discuss": "AI Assistent",
@@ -176,15 +216,12 @@
         "network": "There was a network problem. Please try again. If it doesn’t work, make sure you have good internet and no blockers.",
         "server": "Error on server. Maybe it’ll let go soon, but maybe not. Try to find out what happened in https://slack.hexlet.io/"
       },
-      "help": {
-        "controls": {
-          "body": "Reset progress. If something breaks and cannot be fixed click this button to return to the beginning of the exercises. The current code won’t be saved. If you'll need it, copy it before resetting. For example, to the notepads",
-          "header": "Help"
-        }
-      },
+      "export": "Экспорт",
+      "hello": "Привет мир",
       "hours": {
-        "one": "%{count} hour",
-        "other": "%{count} hours"
+        "few": "%{count} часа",
+        "many": "%{count} часов",
+        "one": "%{count} hour"
       },
       "instructions": "Instructions",
       "language_icon": "%{language} icon",
@@ -194,24 +231,44 @@
       },
       "lesson": "Lesson",
       "lessons": {
-        "one": "%{count} lesson",
-        "other": "%{count} lessons"
+        "few": "%{count} урока",
+        "many": "%{count} уроков",
+        "one": "%{count} lesson"
       },
       "loading": "Loading...",
       "nextLesson": "Next",
       "organization": {
         "address": "The Republic of Kazakhstan, Almaty, Auezova St., 14A",
+        "description": "Автоматизированная система для обучения программированию в браузере. Текстовые курсы + удобный тренажер.",
         "email": "support@hexlet.io",
-        "legal_name": "TOO \"Hexlet\""
+        "legal_name": "TOO \"Hexlet\"",
+        "name": "Code Basics",
+        "phone": "+7 (495) 085 21 62",
+        "phones": [
+          "+7 (495) 085 21 62",
+          "8 800 100 22 47"
+        ],
+        "site": "https://ru.hexlet.io"
       },
       "output": "Output",
-      "phones": [
-        "+7 717 272 76 70"
-      ],
+      "pages": {
+        "about": "О проекте"
+      },
       "prevLesson": "Previous",
       "reset": "Reset",
       "resetCode": "Reset code",
       "run": "Run",
+      "sentryFeedbackWidget": {
+        "addScreenshotButtonLabel": "Добавить скриншот",
+        "cancelButtonLabel": "Отмена",
+        "formTitle": "Сообщить об ошибке",
+        "isRequiredLabel": "(обязательно)",
+        "messageLabel": "Описание",
+        "messagePlaceholder": "Опишите ошибку и ожидаемое поведение",
+        "nameLabel": "Имя",
+        "namePlaceholder": "Ваше имя",
+        "submitButtonLabel": "Отправить сообщение"
+      },
       "showSolution": "Show solution",
       "signInSuggestion": "<a href=\"/users/new\">Create an account</a> to save your progress",
       "solution": "Solution",
@@ -219,15 +276,35 @@
       "solutionNotice": "It's best to solve the problem yourself, but if you're stuck for a long time, feel free to check out the solution. But make sure to study it thoroughly to truly understand it.",
       "state_events": "State Events",
       "students": {
-        "one": "%{count} student",
-        "other": "%{count} students"
+        "few": "%{count} студента",
+        "many": "%{count} студентов",
+        "one": "%{count} student"
       },
       "teacherSolution": "Teacher's solution:",
       "testForExercise": "Tests",
       "testInstructions": "Your exercise will be checked with these tests:",
+      "time": {
+        "minutes_few": "%{count} минуты",
+        "minutes_many": "%{count} минут",
+        "minutes_one": "%{count} минута",
+        "minutes_other": "%{count} минут",
+        "minutes_two": "%{count} минуты",
+        "minutes_zero": "%{count} минут"
+      },
       "tos": "Table Of Content",
       "userCode": "Your solution:",
-      "userCodeInstructions": "(start writing in Editor, your code will appear here and you'll be able to compare it to the teacher's solution)"
+      "userCodeInstructions": "(start writing in Editor, your code will appear here and you'll be able to compare it to the teacher's solution)",
+      "views": {
+        "pagination": {
+          "first": "&laquo;",
+          "last": "&raquo;",
+          "next": "&rsaquo;",
+          "next_text": "Дальше &rsaquo;",
+          "previous": "&lsaquo;",
+          "previous_text": "&lsaquo; Назад",
+          "truncate": "&hellip;"
+        }
+      }
     },
     "date": {
       "abbr_day_names": [
@@ -240,7 +317,7 @@
         "Sat"
       ],
       "abbr_month_names": [
-        null,
+        "",
         "Jan",
         "Feb",
         "Mar",
@@ -269,7 +346,7 @@
         "short": "%b %d"
       },
       "month_names": [
-        null,
+        "",
         "January",
         "February",
         "March",
@@ -292,51 +369,75 @@
     "datetime": {
       "distance_in_words": {
         "about_x_hours": {
+          "few": "около %{count} часов",
+          "many": "около %{count} часов",
           "one": "about %{count} hour",
           "other": "about %{count} hours"
         },
         "about_x_months": {
+          "few": "около %{count} месяцев",
+          "many": "около %{count} месяцев",
           "one": "about %{count} month",
           "other": "about %{count} months"
         },
         "about_x_years": {
+          "few": "около %{count} лет",
+          "many": "около %{count} лет",
           "one": "about %{count} year",
           "other": "about %{count} years"
         },
         "almost_x_years": {
+          "few": "почти %{count} года",
+          "many": "почти %{count} лет",
           "one": "almost %{count} year",
           "other": "almost %{count} years"
         },
         "half_a_minute": "half a minute",
         "less_than_x_minutes": {
+          "few": "меньше %{count} минут",
+          "many": "меньше %{count} минут",
           "one": "less than a minute",
           "other": "less than %{count} minutes"
         },
         "less_than_x_seconds": {
+          "few": "меньше %{count} секунд",
+          "many": "меньше %{count} секунд",
           "one": "less than %{count} second",
           "other": "less than %{count} seconds"
         },
         "over_x_years": {
+          "few": "больше %{count} лет",
+          "many": "больше %{count} лет",
           "one": "over %{count} year",
           "other": "over %{count} years"
         },
         "x_days": {
+          "few": "%{count} дня",
+          "many": "%{count} дней",
           "one": "%{count} day",
           "other": "%{count} days"
         },
         "x_minutes": {
+          "few": "%{count} минуты",
+          "many": "%{count} минут",
           "one": "%{count} minute",
           "other": "%{count} minutes"
         },
         "x_months": {
+          "few": "%{count} месяца",
+          "many": "%{count} месяцев",
           "one": "%{count} month",
           "other": "%{count} months"
         },
         "x_seconds": {
+          "few": "%{count} секунды",
+          "many": "%{count} секунд",
           "one": "%{count} second",
           "other": "%{count} seconds"
         },
         "x_years": {
+          "few": "%{count} года",
+          "many": "%{count} лет",
           "one": "%{count} year",
           "other": "%{count} years"
         }
@@ -348,10 +449,6 @@
         "month": "Month",
         "second": "Seconds",
         "year": "Year"
-      },
-      "relative": {
-        "future": "in %{time}",
-        "past": "%{time} ago"
       }
     },
     "enumerize": {
@@ -368,7 +465,6 @@
       }
     },
     "errors": {
-      "connection_refused": "Oops! Failed to connect to the Web Console middleware.\nPlease make sure a rails development server is running.\n",
       "format": "%{attribute} %{message}",
       "messages": {
         "accepted": "must be accepted",
@@ -390,19 +486,24 @@
         "not_an_integer": "must be an integer",
         "odd": "must be odd",
         "other_than": "must be other than %{count}",
-        "password_too_long": "is too long",
         "present": "must be blank",
         "required": "must exist",
         "taken": "has already been taken",
         "too_long": {
+          "few": "слишком большой длины (не может быть больше чем %{count} символа)",
+          "many": "слишком большой длины (не может быть больше чем %{count} символов)",
           "one": "is too long (maximum is %{count} character)",
           "other": "is too long (maximum is %{count} characters)"
         },
         "too_short": {
+          "few": "недостаточной длины (не может быть меньше %{count} символов)",
+          "many": "недостаточной длины (не может быть меньше %{count} символов)",
           "one": "is too short (minimum is %{count} character)",
           "other": "is too short (minimum is %{count} characters)"
         },
         "wrong_length": {
+          "few": "неверной длины (может быть длиной ровно %{count} символа)",
+          "many": "неверной длины (может быть длиной ровно %{count} символов)",
           "one": "is the wrong length (should be %{count} character)",
           "other": "is the wrong length (should be %{count} characters)"
         }
@@ -410,12 +511,12 @@
       "template": {
         "body": "There were problems with the following fields:",
         "header": {
+          "few": "%{model}: сохранение не удалось из-за %{count} ошибок",
+          "many": "%{model}: сохранение не удалось из-за %{count} ошибок",
           "one": "%{count} error prohibited this %{model} from being saved",
           "other": "%{count} errors prohibited this %{model} from being saved"
         }
-      },
-      "unacceptable_request": "A supported version is expected in the Accept header.\n",
-      "unavailable_session": "Session %{id} is no longer available in memory.\n\nIf you happen to run on a multi-process server (like Unicorn or Puma) the process\nthis request hit doesn't store %{id} in memory. Consider turning the number of\nprocesses/workers to one (1) or using a different server in development.\n"
+      }
     },
     "faq": {
       "header": "Frequently Asked Questions",
@@ -455,19 +556,19 @@
       }
     },
     "flash": {
-      "actions": {
-        "create": {
-          "notice": "%{resource_name} was successfully created."
-        },
-        "destroy": {
-          "alert": "%{resource_name} could not be destroyed.",
-          "notice": "%{resource_name} was successfully destroyed."
-        },
-        "update": {
-          "notice": "%{resource_name} was successfully updated."
-        }
-      },
       "web": {
+        "account": {
+          "profiles": {
+            "destroy": {
+              "error": "Возникла ошибка при удалении аккаунта",
+              "success": "Аккаунт успешно удален"
+            },
+            "update": {
+              "error": "Ошибка обновления",
+              "success": "Данные успешно обновлены"
+            }
+          }
+        },
         "admin": {
           "blog_posts": {
             "create": {
@@ -507,9 +608,22 @@
             "success": "You have signed in successfully. You can start learning now."
           }
         },
+        "blog_posts": {
+          "likes": {
+            "create": {
+              "notice": "Ваш лайк уже засчитан :)",
+              "success": "Спасибо за лайк!"
+            }
+          }
+        },
+        "books": {
+          "create_request": {
+            "success": "Ура, теперь книга доступна для скачивания! Нажмите на кнопку и книга скачается"
+          }
+        },
         "google_auth": {
           "one_tap": {
-            "failure": "We couldn't get data from Google! Requires setting up your Google account!",
+            "error": "Мы не смогли получить данные из Google! Проверьте настройки вашего аккаунта Google!",
             "success": "You have signed in successfully. You can start learning now."
           }
         },
@@ -523,6 +637,15 @@
             "empty_language_current_version": "Language is under development, please check back later or try any other available language",
             "language_in_development_html": "Language %{language} is under development.\nYou can help send a pull request with new lessons or\nsupplement those that already exist <a href=\"%{link_to_repo}\" target=\"_blank\" rel=\"noopener\">%{link_to_repo}</a>.\nWe have prepared guidelines for writing <a href=\"%{link_to_recommendations}\" target=\"_blank\" rel=\"noopener\">at the link</a>\n",
             "warning": "The Language has lessons only in russian. Switch locale if you can read it :)"
+          },
+          "success": {
+            "error": "В этом курсе есть уроки, которые вы не завершили"
+          }
+        },
+        "leads": {
+          "create": {
+            "error": "Проверьте ошибки в форме",
+            "success": "Заявка отправлена! Свяжемся с вами в течение одного-двух рабочих дней. Или напишите нам в <a target=\"_blank\" href=\"https://t.me/WelcomeCodebasicsBot\">телеграм</a> чтобы получить помощь быстрее"
           }
         },
         "passwords": {
@@ -532,16 +655,24 @@
         },
         "remind_passwords": {
           "create": {
+            "error": "В форме есть ошибки",
             "success": "A password recovery instruction was sent to your email."
           }
         },
         "sessions": {
           "create": {
+            "error": "В форме есть ошибки",
             "success": "You have signed in successfully. You can start learning now."
+          }
+        },
+        "surveys": {
+          "show": {
+            "success": "Вы уже отвечали на этот опрос. Возвращаемся обратно"
           }
         },
         "users": {
           "create": {
+            "error": "Упс, кажется в форме есть ошибки",
             "success": "You have signed in successfully. You can start learning now."
           }
         }
@@ -553,7 +684,8 @@
         "add": "Add",
         "adding": "Addmin",
         "editing": "Editing",
-        "list": "List"
+        "list": "List",
+        "remove": "Удалить"
       },
       "read": "Read",
       "reset": "Reset",
@@ -585,12 +717,19 @@
       "plural": {
         "keys": [
           "one",
+          "other",
+          "many",
           "other"
         ]
-      }
+      },
+      "transliterate": {}
     },
     "layouts": {
       "shared": {
+        "contact_method_requesting": {
+          "description_html": "Чтобы мы могли связаться с вами, укажите предпочительный способ связи\n",
+          "go": "Заполнить&nbsp;→"
+        },
         "footer": {
           "about": "About Platform",
           "all_courses": "All Courses",
@@ -598,10 +737,14 @@
           "blog": "Blog",
           "categories": "Categories",
           "codebasics": "Code Basics (by Hexlet)",
+          "community": "Сообщество",
           "cookie_policy": "Cookie Policy",
           "courses": "Courses",
+          "english_links": "English links",
           "free_call": "Calls within Russia are toll free",
           "hexlet": "Hexlet",
+          "hexlet-cv": "Хекслет.Карьера",
+          "hexlet-sicp": "Хекслет.SICP",
           "hexlet_address": "TOO \"Hexlet\", The Republic of Kazakhstan, Almaty, Auezova St., 14A",
           "hexlet_blog": "Blog",
           "hexlet_number": "BIN 230340043714",
@@ -628,12 +771,23 @@
           "about_platform": "About Platform",
           "admin": "Admins",
           "blog": "Blog",
+          "book": "Книга для начинающих",
+          "business": "Обучение для бизнеса",
+          "business_description": "Прокачаем ваших сотрудников и дадим аналитику",
+          "career": "Центр Карьеры",
+          "career_description": "Доведем до собеседования и научим их проходить",
           "cases": "Cases",
           "categories": "Categories",
           "community": "Community",
           "courses": "Courses",
+          "courses_with_employement": "Курсы с трудоустройством",
+          "courses_with_employement_description": "Обучим программированию, аналитике и тестированию",
           "for_authors": "For authors",
           "for_teachers": "For school teachers",
+          "for_teachers_description": "Организуем обучение школьников и студентов",
+          "for_whom": "Школа программирования Хекслет",
+          "hexly": "Хекслет Колледж",
+          "hexly_description": "Дадим качественное образование (СПО)",
           "my": "My learning",
           "profile": "Settings",
           "registration": "Sign up",
@@ -642,7 +796,9 @@
           "sign_out": "Sign out",
           "success_stories": "Why CodeBasics?",
           "toggle_navigation": "Toggle navigation",
-          "toggle_user_menu": "Toggle the display of user menu"
+          "toggle_user_menu": "Toggle the display of user menu",
+          "upskilling": "Повышение квалификации",
+          "upskilling_description": "Обучим новым навыкам в программировании"
         },
         "unsupported_browser_warning": {
           "unsupported_browser_warning": "Browser is not supported. Some features may be disabled."
@@ -655,10 +811,20 @@
             "dashboard": "Dashboard",
             "language_categories": "Categories",
             "language_landing_pages": "Landing Pages",
+            "language_lesson_members": "Прохождение уроков",
+            "language_lesson_reviews": "Ревью уроков",
+            "language_lessons": "Уроки",
             "languages": "Courses",
+            "leads": "Лиды",
             "messages": "Conversations with AI",
             "reviews": "Reviews",
-            "users": "Users"
+            "survey_answers": "Ответы на опросы",
+            "survey_scenarios": "Сценарии",
+            "surveys": "Опросы",
+            "surveys_analytics": "Аналитика опросов",
+            "users": "Users",
+            "authentication": "Authentication",
+            "menu": "Menu"
           }
         },
         "root": {
@@ -671,6 +837,10 @@
     },
     "links": {
       "hexlet": "https://hexlet.io/?promo_name=main&promo_position=body&promo_type=link",
+      "hexlet_author_school_course": "https://ru.hexlet.io/courses/author-school-hexlet?promo_name=course-author-school-hexlet&promo_position=body&promo_type=link",
+      "hexlet_authors_school": "https://making.hexlet.io/authors?promo_name=school-of-authors&promo_position=body&promo_type=link",
+      "hexlet_awesome_text": "https://ru.hexlet.io/courses/awesome-text?promo_name=course-awesome-text&promo_position=body&promo_type=link",
+      "hexlet_awesome_text_structure": "https://ru.hexlet.io/courses/awesome-text-structure?promo_name=course-awesome-text-structure&promo_position=body&promo_type=link",
       "hexlet_blog": "https://hexlet.io/blog?promo_name=blog&promo_position=body&promo_type=link",
       "hexlet_courses": "https://hexlet.io/courses",
       "hexlet_facebook": "https://www.facebook.com/hexlethq",
@@ -684,9 +854,7 @@
       "hexlet_python": "https://hexlet.io/programs/python?promo_name=prof-python&promo_position=body&promo_type=link",
       "hexlet_rails": "https://hexlet.io/programs/rails?promo_name=prof-rails&promo_position=body&promo_type=link",
       "hexlet_recommended_books": "https://hexlet.io/pages/recommended-books?promo_name=books&promo_position=body&promo_type=link",
-      "hexlet_slack": "https://slack.hexlet.io/",
       "hexlet_success_stories": "https://hexlet.io/blog/categories/success?promo_name=blog-success&promo_position=body&promo_type=link",
-      "hexlet_support_mail": "support@hexlet.io",
       "hexlet_telegram": "https://ttttt.me/hexlet_ru",
       "hexlet_telegram_volunteers": "https://ttttt.me/hexletcommunity/12",
       "hexlet_twitter": "https://twitter.com/hexlet_io",
@@ -697,7 +865,6 @@
         "format": {
           "delimiter": ",",
           "format": "%u%n",
-          "negative_format": "-%u%n",
           "precision": 2,
           "separator": ".",
           "significant": false,
@@ -735,6 +902,8 @@
           "format": "%n %u",
           "units": {
             "byte": {
+              "few": "байта",
+              "many": "байт",
               "one": "Byte",
               "other": "Bytes"
             },
@@ -743,12 +912,10 @@
             "kb": "KB",
             "mb": "MB",
             "pb": "PB",
-            "tb": "TB",
-            "zb": "ZB"
+            "tb": "TB"
           }
         }
       },
-      "nth": {},
       "percentage": {
         "format": {
           "delimiter": "",
@@ -845,21 +1012,28 @@
         "date_time": "%Y-%m-%d %H:%M",
         "default": "%a, %d %b %Y %H:%M:%S %z",
         "long": "%B %d, %Y %H:%M",
-        "short": "%d %b %H:%M",
-        "us": "%m/%d/%Y %I:%M %p"
+        "short": "%d %b %H:%M"
       },
       "pm": "pm"
+    },
+    "user_mailer": {
+      "reset_password": {
+        "change_password": "Сменить пароль",
+        "link": "Ссылка для изменения пароля на сайте code-basics.com",
+        "requested_to_change_password": "Вы запросили ссылку для изменения вашего пароля на code-basics.com. Чтобы изменить пароль – перейдите по этой ссылке или нажмите на кнопку ниже.",
+        "subject": "Смена пароля",
+        "you_dont_want_to_change": "Если вы не запрашивали изменения пароля, просто проигнорируйте это письмо. Ваш пароль не изменится пока вы не перейдете по ссылке и не введете новый пароль."
+      }
     },
     "web": {
       "account": {
         "profiles": {
-          "destroy": {
-            "success": "Account successfully deleted"
-          },
           "edit": {
             "confirm_delete": "Are you sure you want to delete your account?",
             "delete": "Delete account",
-            "meta_description": "Profile",
+            "meta": {
+              "description": "Здесь меняются личные данные"
+            },
             "title": "Profile editing"
           }
         }
@@ -882,23 +1056,82 @@
             "dashboard": "Dashboard"
           }
         },
+        "language_categories": {
+          "edit": {
+            "header": "Редактирование %{id}"
+          },
+          "index": {
+            "add_new_language": "Добавить категорию",
+            "header": "Категории"
+          },
+          "new": {
+            "header": "Новая категория"
+          },
+          "form": {
+            "main": "Main",
+            "items": "Items",
+            "qna_items": "Q&A Items"
+          }
+        },
+        "language_landing_pages": {
+          "edit": {
+            "header": "Редактирование %{id}"
+          },
+          "index": {
+            "add_new_language": "Добавить лендинг",
+            "header": "Лендинги"
+          },
+          "new": {
+            "header": "Новый лендинг"
+          }
+        },
+        "language_lesson_members": {
+          "index": {
+            "header": "Прохождение уроков"
+          }
+        },
+        "language_lesson_reviews": {
+          "index": {
+            "header": "Ревью уроков",
+            "data": "Data"
+          }
+        },
+        "language_lessons": {
+          "index": {
+            "header": "Уроки"
+          }
+        },
         "languages": {
           "edit": {
-            "header": "Edit Language"
+            "header": "Edit Language",
+            "versions": "Versions",
+            "load_new_version": "Load new version",
+            "id": "ID",
+            "result": "Result"
           },
           "index": {
             "add_new_language": "Add new language",
-            "header": "Languages",
-            "languages": "Languages"
+            "header": "Languages"
           },
           "new": {
             "header": "New Language"
           }
         },
+        "leads": {
+          "index": {
+            "header": "Лиды",
+            "data": "Data",
+            "answers": "Answers",
+            "courses": "Courses"
+          }
+        },
         "management": {
           "users": {
             "edit": {
-              "header": "Edit User"
+              "header": "Edit User",
+              "progress": "Progress",
+              "language": "Language",
+              "count": "Count"
             },
             "filter": {
               "from": "From"
@@ -908,6 +1141,11 @@
               "header": "Users",
               "search_by_email": "Search by email"
             }
+          }
+        },
+        "messages": {
+          "index": {
+            "header": "Разговоры с AI"
           }
         },
         "reviews": {
@@ -921,6 +1159,40 @@
           "new": {
             "header": "New Review"
           }
+        },
+        "survey_answers": {
+          "index": {
+            "header": "Ответы на опросы"
+          }
+        },
+        "survey_scenarios": {
+          "edit": {
+            "header": "Редактирование сценария"
+          },
+          "index": {
+            "header": "Сценарии"
+          },
+          "new": {
+            "header": "Новый сценарий"
+          }
+        },
+        "surveys": {
+          "edit": {
+            "header": "Редактирование опроса"
+          },
+          "index": {
+            "header": "Опросы"
+          },
+          "new": {
+            "header": "Новый опрос"
+          }
+        },
+        "title": "Админка Code-Basics"
+      },
+      "blocks": {
+        "lead_form_block": {
+          "description1": "Ответим в течение дня",
+          "description2": "Нам можно написать в <a target=\"_blank\" href=\"https://t.me/WelcomeCodebasicsBot\">телеграм</a>"
         }
       },
       "blog_posts": {
@@ -935,16 +1207,100 @@
           "blog_posts": "Recommended Posts",
           "breadcrumbs": "Breadcrumbs",
           "courses": "Recommended Courses",
+          "discuss": "Обсуждайте, помогайте и делитесь опытом",
+          "join_community": "Присоединяйтесь к сообществу Хекслет",
+          "link": "Перейти в сообщество",
           "to_home_title": "To home"
         }
       },
+      "books": {
+        "show": {
+          "chapter": "Глава %{number}",
+          "description": "С нуля до трудоустройства. Этот учебник — ваш путеводитель в профессию программиста. Он создан для тех, кто хочет начать с нуля и шаг за шагом дойти до трудоустройства в одной из самых востребованных и перспективных областей\n",
+          "download": "Скачать книгу",
+          "features": {
+            "direction": "Направление",
+            "direction_explanation": "Узнаете какие бывают виды разработки и языки. Куда стоит идти и почему",
+            "interview": "Интервью",
+            "interview_explanation": "Подготовитесь к прохождению собеседований и испытательного срока",
+            "plan": "План",
+            "plan_explanation": "Получите готовый план обучения, с темами, ресурсами для изучения и проектами",
+            "resume": "Резюме",
+            "resume_explanation": "Научитесь правильно оформлять резюме и находить подходящие вакансии"
+          },
+          "freebook": "Бесплатная электронная книга",
+          "header": "Книга: Профессия программист. С нуля до трудоустройства\n",
+          "request": "Запросить книгу",
+          "toc": "Содержание"
+        }
+      },
       "cases": {
-        "for_teachers": "For school teachers",
-        "link": "Go to",
-        "meta": {
-          "description": "Examples of using Code Basics in different areas"
+        "for_teachers": {
+          "description": "Бесплатные курсы с тренажером прямо в браузере. Много практики и ИИ-ассистент",
+          "early_career_guidance": "Стимулируем раннюю профориентацию:",
+          "early_career_guidance_list": [
+            "Показываем программирование изнутри, чтобы принять взвешенное решение об изучении будущей профессии",
+            "Даем возможность быстро погрузиться в язык программирования и понять, нравится ли он ученику",
+            "Помогаем увидеть базовые примеры реальных задач, чтобы присмотреться к профессиональной рутине"
+          ],
+          "header": "Эффективное обучение школьников и студентов программированию",
+          "how_to_learn_programming": "Как пользователи изучают программирование в CodeBasics?",
+          "how_to_learn_programming_cards": [
+            {
+              "title": "Интеграция без интеграции: чтобы внедрить CodeBasics в образовательный процесс, потребуется ПК с доступом в интернет",
+              "subtitle": "Нужно открыть браузер, зарегистрироваться и начать проходить интересующий курс",
+              "img": "integration-icon"
+            },
+            {
+              "title": "Теория, подкрепленная практикой: на платформе уже сейчас доступны тренажеры по PHP, Java, JS, Python, Ruby, HTML, CSS, Racket, Elixir и Go",
+              "subtitle": "Можно проходить несколько курсов одновременно",
+              "img": "practice-icon"
+            },
+            {
+              "title": "Интерактивный формат: система автоматически проверяет выполненные задания, показывает ошибки и правильное решение, а также детальный вывод",
+              "subtitle": "Если что-то не получается, можно воспользоваться Решением учителя",
+              "img": "interactive-format-icon"
+            },
+            {
+              "title": "Пользователям доступен Виртуальный наставник на основе Искусственного интеллекта",
+              "subtitle": "",
+              "img": "discussion-icon"
+            }
+          ],
+          "integrate_into_education": "Зачем интегрировать CodeBasics в обучение?",
+          "integrate_now": "Интегрируйте CodeBasics в учебную программу сейчас!",
+          "interactive_approach": "Ориентируемся на практику и интерактивный подход:",
+          "interactive_approach_list": [
+            "Сопровождаем теоретические материалы курса практическими заданиями прямо в браузере",
+            "Даем мгновенную обратную связь: показываем правильное решение, даем вывод по каждому тесту",
+            "Подключаем ИИ-наставника, который объясняет ученикам теорию или суть задания"
+          ],
+          "lay_programming_foundations": "CodeBasics закладывает основы программирования в интерактивной форме, за что получил 3-е место в номинации «Лучший внеплатформенный онлайн-курс» в 2020 году на Международном конкурсе открытых онлайн-курсов EdCrunch Award OOC",
+          "meta": {
+            "description": "Курсы программирования для детей и подростков от онлайн-школы Хекслет. Все занятия разработаны опытными педагогами и программистами, с учетом возрастных особенностей детей. Обучение программированию онлайн"
+          },
+          "open_browser_and_sign_up": "Просто откройте браузер и зарегистрируйтесь",
+          "programming_basic_list": [
+            "Объясняем, как функционируют системы в общем, а не специфику технологий на старте",
+            "Обучаем начинающих программистов лучшим стандартам кодирования, например правильному именованию функций",
+            "Охватываем основные языки программирования и продолжаем добавлять курсы по современным технологиям"
+          ],
+          "programming_competently": "Закладываем основы программирования грамотно:",
+          "quotes_icon": "Ковычки",
+          "select_course": "Выбрать курс",
+          "sign_up": "Зарегистрироваться",
+          "sign_up_and_start_learning": "Зарегистрируйтесь и начните обучать ваших учеников программированию прямо сейчас",
+          "title": "Обучение программированию школьников и студентов",
+          "try": "Попробовать"
         },
-        "title": "Cases"
+        "index": {
+          "for_teachers": "Для учителей и преподавателей",
+          "link": "Перейти",
+          "meta": {
+            "description": "Примеры использования Code Basics в разных сферах"
+          },
+          "title": "Кейсы"
+        }
       },
       "errors": {
         "show": {
@@ -968,72 +1324,13 @@
           }
         }
       },
-      "for_teachers": {
-        "description": "Free courses with a simulator right in your browser. Practice during each lesson",
-        "early_career_guidance": "Stimulate early career guidance:",
-        "early_career_guidance_list": [
-          "We show programming from the inside out to make an informed decision about studying your future profession",
-          "We give you the opportunity to quickly immerse yourself in a programming language and see if the student likes it",
-          "We help you to see basic examples of real-life tasks to take a closer look at your professional routine"
-        ],
-        "header": "The fastest way to teach students programming",
-        "how_to_learn_programming": "How do students learn programming in CodeBasics?",
-        "how_to_learn_programming_cards": [
-          {
-            "title": "Integration without integration: to implement CodeBasics in the educational process, you will need a PC with Internet access",
-            "subtitle": "You need to open your browser, register and start taking the course you are interested in",
-            "img": "integration-icon"
-          },
-          {
-            "title": "Theory backed by practice: PHP, Java, JS, Python, Ruby, HTML, CSS, Racket, Elixir and Go simulators are available on the platform now",
-            "subtitle": "It is possible to take several courses at the same time",
-            "img": "practice-icon"
-          },
-          {
-            "title": "Interactive format: the system automatically checks the completed tasks, shows errors and correct solution, as well as a detailed output",
-            "subtitle": "If something doesn't work out, you can use the Teacher's Solution",
-            "img": "interactive-format-icon"
-          },
-          {
-            "title": "Discussing complex issues: pupils can clarify unclear details in the “Discussion” section, where they will be answered by tech support or other pupils",
-            "subtitle": "An Artificial Intelligence based Virtual Mentor is also available to them",
-            "img": "discussion-icon"
-          }
-        ],
-        "integrate_into_education": "Why integrate CodeBasics into the education of school children?",
-        "integrate_now": "Integrate CodeBasics into your school curriculum now!",
-        "interactive_approach": "We focus on practice and an interactive approach:",
-        "interactive_approach_list": [
-          "Accompany theoretical course materials with practical assignments directly in the browser",
-          "Give instant feedback: show the correct solution, give a conclusion for each test",
-          "Connect an AI tutor who explains theory or the essence of a task to students"
-        ],
-        "lay_programming_foundations": "CodeBasics lays the foundations of programming in an interactive way, for which it won 3rd place in the Best Off-Platform Online Course category in the 2020 EdCrunch Award OOC International Open Online Courses Competition",
-        "meta": {
-          "description": "Programming courses for children and teenagers from Hexlet online school. All classes are designed by experienced teachers and programmers, taking into account the age characteristics of children. Teaching programming to schoolchildren online"
-        },
-        "open_browser_and_sign_up": "Just open your browser and sign up",
-        "programming_basic_list": [
-          "Explain how systems function in general, rather than the specifics of technology at the startup",
-          "We teach novice programmers the best coding standards, such as proper function naming",
-          "We cover the major programming languages and continue to add courses on modern technology"
-        ],
-        "programming_competently": "Laying the foundations of programming intelligently:",
-        "quotes_icon": "Quotes",
-        "select_course": "Select a course",
-        "sign_up": "Sign up",
-        "sign_up_and_start_learning": "Sign up and start teaching programming to your students now",
-        "title": "Online programming courses for high school students - Hexlet",
-        "try": "try"
-      },
       "home": {
-        "hero": null,
         "index": {
           "all_blog_posts": "All Blog Posts",
           "all_reviews": "All Reviews",
           "blog_posts": "Posts",
           "categories": "Categories",
-          "header": "Learn to code. Online. For free.",
+          "consultation": "Нужна помощь? Оставьте заявку, мы поможем",
           "hero": {
             "ai_count": "AI Assistant",
             "ai_count_description": "Hints and code analysis",
@@ -1058,7 +1355,6 @@
           },
           "reviews": "Reviews",
           "sign_up": "Sign Up",
-          "start": "Start",
           "subheader": "For those who start from scratch. From the creators of ",
           "title": "Free Online Programming Courses: HTML, CSS, JavaScript\n"
         },
@@ -1072,6 +1368,9 @@
         "sitemap": {
           "home": "Home",
           "title": "Sitemap"
+        },
+        "stats": {
+          "trusted_by": "Присоединись к %{count} изующих программирование с помощью Code Basics\n"
         }
       },
       "language_categories": {
@@ -1090,33 +1389,12 @@
         }
       },
       "languages": {
-        "complete_language": {
-          "apps": "Write the first complete applications that will be part of your developer portfolio",
-          "certificate": "Get the Hexlet Certificate and employment assistance at the end of your study",
-          "continue": "Continue Learning",
-          "enter_profession": "Join the profession on Hexlet. You will:",
-          "first_courses_free": "First courses in the profession are available for free. All you need to start learning is register and join the profession.",
-          "first_step": "This is the first step into the world of professional development. What’s next?",
-          "grats": "Congratulations",
-          "hexlet_profs": "Other professions on Hexlet",
-          "knowledge": "Get the fundamental programming knowledge",
-          "likely": {
-            "share_fb_text": "I've completed this course! #hexlet",
-            "share_in_fb": "Share on Facebook",
-            "share_in_telegram": "Send via Telegram",
-            "share_in_twitter": "Tweet",
-            "share_in_vk": "Share on VK",
-            "share_twitter_text": "I've completed this course! #hexlet",
-            "share_vk_text": "I've completed this course! #hexlet",
-            "twitter": "Hexlet_IO"
-          },
-          "tasks": "Learn how to solve practical problems",
-          "title": "You have successfully completed the basic course on Code Basics."
-        },
         "lessons": {
           "show": {
             "breadcrumb": "breadcrumb",
             "chat": {
+              "community": "Живые люди",
+              "disabled_html": "Чат временно отключен, так как вы достигли суточного лимита. А наше <a href=\"https://t.me/HexletLearningBot\" traget=\"_blank\">телеграм-сообещство</a> работает круглосуточно, подключайтесь :)",
               "guest": "Hi! I'm Tota, and my job is to help you learn. To activate me, please sign up or log in if you already have an account",
               "hi": "Hi! My name is Tota, and I'm here to help you with any questions about theory or practice. Just ask — I'm always here for you!\n\nP.S. You can send up to 7 messages per day, so try to ask only the most important questions\n",
               "not_available": "Our AI assistant will be here soon — we're setting things up right now"
@@ -1137,8 +1415,13 @@
               {
                 "question": "I've read the lessons but nothing is clear 🙄",
                 "answer": "It's hard to make educational materials that will suit everyone. We do our best but there is always something to improve. If you see a material that is not clear to you, describe the problem in “Discussions”. It will be great if you'll write unclear points in the question form. Usually, we need a few days for corrections.\n\nBy the way, you can participate in courses improvement. There is a link below to the lessons course code which you can edit right in your browser.\n"
+              },
+              {
+                "question": "Прочитал урок — ничего не понятно 🙄",
+                "answer": "Создавать обучающие материалы, понятные для всех без исключения, довольно сложно. Мы очень стараемся, но всегда есть что улучшать. Если вы встретили материал, который вам непонятен, опишите проблему в обратной связи нашего [сообщества](https://t.me/HexletLearningBot)\n"
               }
             ],
+            "confirm": "Вы хотите сбросить прогресс упражнения. Текущая версия кода не сохранится — надеемся, вы уже скопировали его. Продолжаем сброс?",
             "controls": {
               "body": "Reset Progress\n",
               "header": "Help",
@@ -1147,6 +1430,8 @@
             "definitions": "Definitions",
             "discuss": "AI Assistent",
             "editor": "Editor",
+            "finish": "Завершить",
+            "if_stuck_html": "Если вы столкнулись с трудностями и не знаете, что делать, задайте вопрос в нашем большом и дружном <a href=\"%{url}\" target=\"_blank\" rel=\"noopener\">телеграм-сообществе</a>\n",
             "instructions": "Instructions",
             "issues": "Found a bug? Have something to add? Pull requests are welcome!",
             "lesson": "Lesson",
@@ -1156,7 +1441,9 @@
             "output": "Output",
             "please_sign_in": "Please sign in with your GitHub account, this is necessary to track the progress of the lessons. If you do not have an account yet, now is the time to create an account on GitHub.",
             "prev": "← Previous",
+            "profession_description": "Коммерческий опыт и Трудоустройство",
             "separator": " ",
+            "show_full_version": "Реактор кода доступен в основной версии →",
             "sign_in": "Sign In",
             "sign_up_for_tracking_progress_html": "Be sure to <a href=\"%{link}\" class=\"text-decoration-none\" target=\"_blank\">register</a> to ensure you don't lose the results you've achieved\n",
             "solution": "Solution",
@@ -1170,56 +1457,33 @@
           "about_developer_community": "We know how hard it is to start in IT, so we've created a developer community where you're always ready to help. Here you can ask questions, get support, communicate with experienced specialists and get into the profession faster",
           "about_learning": "How the training is organised",
           "ai_explanation": "AI explains topics, tells you how to solve assignments, and helps you at any time - like a personal tutor 24/7",
-          "ai_learning": "Ready to innovate your learning? Start learning with AI now",
           "ai_without_limits": "AI assistance without limits",
-          "bash_description": "Bash is command language",
           "blog_posts": "Blog Posts",
           "breadcrumbs": "Breadcrumbs",
           "browser_practice": "Practice in the browser",
-          "clang_description": "C is a universal programming language with a compact way of writing expressions, modern mechanisms for managing data structures, and a rich set of operators.",
           "community_image_preview": "Developer community",
+          "completed_html": "Поздравляем! Вы успешно завершили базовый курс на Code Basics. Это первый шаг в мир <b>профессиональной разработки</b>.\nЧто дальше? Посмотрите <a class=\"link-body-emphasis\" href=\"https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=course_landing_page\" target=\"_blank\">продолжение на Хекслете</a>\n",
           "continue": "Continue Learning",
           "convenient format": "Convenient format",
           "course_graduates": "Join 74,761 students who have successfully completed courses",
           "cover_image": "Course cover",
-          "cpp_description": "C++ is a general-purpose programming language",
-          "crystal_description": "Crystal is a general-purpose object-oriented programming language designed and developed by Arie Borenzweig, Juan Weinerman, and Brian Cardiff.",
-          "csharp_description": "C# is a modern object-oriented and type-safe programming language. Application development language for the Microsoft .NET Framework. It is used in the creation of sites, applications and games",
-          "css_description": "Cascading Style Sheets (CSS) cascading style sheets that allow you to design the content of the page in accordance with the described rules. Text styles, block layout on a page, animation - everything is described using cascading style sheets.",
-          "dart_description": "Dart is a general purpose, strongly typed compiled language. Used to develop mobile and web applications.",
           "demo_description": "Try a demo lesson without signing up. Practice included",
           "demo_start": "Start",
-          "dlang_description": "D is a multi-paradigm, statically typed, compiled language. Has built-in error prevention - contracts and unittests",
-          "elixir_description": "Elixir is a programming language that runs on top of Erlang. How this happens is a functional language with rigorous computations, unambiguous assignment and dynamic typing, creation to support distributed, fault-tolerant, non-stop, hot-swappable applications.",
-          "fortran_description": "Fortran is a general-purpose, compiled imperative programming language that is especially suited to numeric computation and scientific computing",
           "free_course": "Free course for beginners",
-          "go_description": "Go is a general-purpose language with rich features and clear syntax. Thanks to its multi-platform, reliable, well-documented standard library and focus on convenient approaches to the development itself, Go is an ideal language for the first steps in programming.",
-          "haskell_description": "Haskell is a standardized pure functional general-purpose programming language. The main control structure is function. A distinctive feature is a serious attitude to typing",
-          "html_description": "To standardize the output of text inside the browser, an HTML standard was created that describes the rules for formatting text data for correct output. This course is devoted to the basics of HTML markup, working with typography, outputting media documents and working with forms.",
-          "java_description": "The study of programming is a difficult and lengthy process. Learning the syntax of the language it is impossible to start without it. This The course is devoted to the basics of writing programs for a Java. He is preparing a springboard for writing meaningful programs.",
-          "javascript_description": "Programming learning is an interesting and exciting process. The syntax of the language is the simplest and shortest path, without which it is impossible to start. This free online JavaScript course will introduce you to the basic concepts of the language. Learn the basics and write your first JS programs.",
+          "hexlet_program_link": "Профессия и Трудоустройство",
           "join": "Join",
-          "kotlin_description": "Kotlin is a cross-platform, statically typed, general-purpose programming language with type inference",
           "learning_conveniently": "Everything you need to master new topics is on one screen. Theory, practice and live examples go hand in hand. The clear structure helps you to learn in a consistent manner and not to miss important details",
           "learning_preview": "Learning preview",
           "learning_program": "Learning program",
           "lessons": "%{lessons_count} with practice in the browser",
           "more_than_support": "More than Support",
           "no_registration": "Registration is not required",
-          "ocaml_description": "OCaml is a general-purpose, industrial-strength programming language with an emphasis on expressiveness and safety",
-          "perl_description": "Perl is a highly capable, feature-rich programming language with over 30 years of development",
-          "php_description": "The study of programming is a difficult and lengthy process. Learning the syntax of the language it is impossible to start without it. This The course is devoted to the basics of writing programs for a PHP. He is preparing a springboard for writing meaningful programs.",
-          "powershell_description": "PowerShell is a cross-platform task automation solution that includes a command line shell, a scripting language, and a configuration management platform.",
-          "prolog_description": "Prolog is a logic programming language associated with artificial intelligence and computational linguistics",
-          "python_description": "The study of programming is a difficult and lengthy process. Learning the syntax of the language it is impossible to start without it. This The course is devoted to the basics of writing programs for a racket. He is preparing a springboard for writing meaningful programs.",
-          "racket_description": "The racket belongs to the Lisp language family. These programmers should learn them from the very beginning. This module is about introducing the syntax and concepts underlying any lisp.",
           "ready": "Are you ready?",
           "real_life_challenges": "You don't need to install anything - all tasks are performed right in your browser. Built-in code editor, console and automatic tests make learning comfortable. And if something fails, you can always see the teacher's solution",
           "registration": "Sign Up",
           "registration_description": "Let's get started",
+          "restart": "Начать заново",
           "reviews": "Reviews",
-          "ruby_description": "Ruby is a language designed to make programmers happy. He took from himself the best of Lisp, Smalltalk and Perl he is object-oriented, but at the same time his declarative nature allows writing in a procedural and functional paradigm.",
-          "rust_description": "Rust is a multi-paradigm, general-purpose programming language. Rust emphasizes performance, type safety, and concurrency",
           "see_all_courses_in_category": "See all courses in %{name}",
           "sign_up": "Sign Up",
           "similar_courses": "Similar courses",
@@ -1229,19 +1493,38 @@
           "to_home_title": "Home",
           "try": "Try It",
           "try_without_registration": "Try it without registering",
-          "typescript_description": "TypeScript is a JavaScript-based programming language. Includes a typing system",
           "updated_at": "updated %{date}",
           "without_registration": "Start learning right away - first lessons are available without an account. If you like the format, you can register to save your progress"
         },
         "success": {
-          "choose_profession": "Choose course",
+          "add_review": "Не забудьте оставить отзыв, авторам курсов будет приятно (или не очень хехе). Это можно сделать <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://taplink.cc/codebasics_reviews\">тут</a>",
+          "changing_career_html": "<a target=\"_blank\" class=\"link-body-emphasis\" href=\"https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=finished_course_page\">Карьера</a>: если вы хотите обучиться новой профессии\n",
+          "choose_your_path": "🔍 Выберите свой путь:\n",
           "description": "Now you have new knowledge and skills, but that's just the beginning - there are more opportunities ahead. It's time to choose your IT career and move on with your life\n",
+          "getting_new_skill_html": "<a target=\"_blank\" class=\"link-body-emphasis\" href=\"https://ru.hexlet.io/courses_for_programmers?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=finished_course_page\">Навыки и Инструменты</a>: если вы хотите прокачаться в новых для вас технологиях \n",
           "header": "Congratulations, you completed the course!",
-          "home": "Home"
+          "home": "Home",
+          "leave_request": "Оставьте заявку на бесплатную консультацию — наш специалист поможет вам определиться и ответит на все вопросы. 👉",
+          "struggle_choosing": "💬 Не уверены, что выбрать?"
+        }
+      },
+      "leads": {
+        "new": {
+          "description": "Понимаем, что выбрать направление и план обучения непросто. Заполните форму — мы подскажем, с чего начать и как двигаться дальше, учитывая ваши интересы и цели",
+          "do_it": "📝 <b>Оставьте заявку</b> — наш специалист свяжется с вами, выслушает ваши потребности и поможет подобрать оптимальный план обучения.",
+          "header": "Консультация со специалистом",
+          "help_items": [
+            "Обсудить ваши цели и интересы, чтобы понять, в каком направлении двигаться дальше",
+            "Подобрать подходящие материалы и ресурсы, которые помогут вам разобраться в теме",
+            "Поделиться вариантами развития, которые будут актуальны и интересны в вашей ситуации"
+          ],
+          "how_can_we_help": "💡 Чем мы можем помочь?",
+          "return": "Вернуться"
         }
       },
       "my": {
         "show": {
+          "add_review": "Мы будем очень признательны, если вы оставите отзывы по пройденным курсам. Это можно сделать <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://taplink.cc/codebasics_reviews\">тут</a>",
           "finished": "Finished Courses",
           "started": "Started Courses"
         }
@@ -1300,9 +1583,13 @@
       },
       "reviews": {
         "index": {
+          "add_review": "Попробовали наши курсы и хотите оставить отзыв? Это можно сделать <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://taplink.cc/codebasics_reviews\">тут</a>",
           "course": "Course %{language}",
           "empty": "Looks like there is noting yet",
           "header": "Reviews",
+          "meta": {
+            "description": "Честные отзывы наших студентов о курсах, процессе обучения и платформе\n"
+          },
           "read_more": "Read more"
         }
       },
@@ -1311,7 +1598,9 @@
           "dont_have_account": "New to Code-Basics?",
           "email": "Email",
           "forgot_password": "Forgot password?",
-          "meta_description": "Sign in to Code Basics",
+          "meta": {
+            "description": "Войти на Code Basics"
+          },
           "password": "Password",
           "register": "Sign up",
           "reset_password": "Reset Password",
@@ -1331,8 +1620,11 @@
       "users": {
         "new": {
           "confirmation_html": "By clicking Sign up, you agree to our <a href=\"%{url}\" class=\"text-decoration-none\" target=\"_blank\">service conditions</a>",
+          "demo_html": "<b>Зарегистрируйтесь</b> для продолжения бесплатного обучения. Так мы сможем сохранить ваш прогресс и открыть доступ к нашему ассистенту",
           "have_account": "Already have an account?",
-          "meta_description": "Sign up on Code Basics",
+          "meta": {
+            "description": "Зарегистрироваться на Code Basics"
+          },
           "sign_in": "Sign in",
           "sign_up": "Sign up",
           "title": "Registration"
@@ -1341,7 +1633,161 @@
     }
   },
   "es": {
+    "activemodel": {
+      "attributes": {
+        "remind_password_form": {
+          "email": "Email"
+        },
+        "user_password_form": {
+          "password": "Новый пароль"
+        },
+        "user_sign_in_form": {
+          "email": "Email",
+          "password": "Пароль"
+        },
+        "user_sign_up_form": {
+          "email": "Email",
+          "first_name": "Имя",
+          "password": "Пароль"
+        }
+      },
+      "errors": {
+        "models": {
+          "remind_password_form": {
+            "attributes": {
+              "email": {
+                "blank": "Email не может быть пустым",
+                "user_does_not_exist": "Пользователь не найден. Попробуйте зарегистрироваться"
+              }
+            }
+          },
+          "sign_in_form": {
+            "attributes": {
+              "email": {
+                "blank": "Email не может быть пустым",
+                "user_does_not_exist_html": "Пользователь не найден. Попробуйте зарегистрироваться"
+              },
+              "password": {
+                "blank": "Пароль не может быть пустым",
+                "cannot_sign_in": "Пароль не подходит. Проверьте раскладку"
+              }
+            }
+          }
+        }
+      }
+    },
     "activerecord": {
+      "attributes": {
+        "base": {
+          "_destroy": "Удалить",
+          "answer": "Ответ",
+          "created_at": "Создание",
+          "description": "Описание",
+          "header": "Заголовок",
+          "name": "Имя",
+          "question": "Вопрос",
+          "slug": "Слаг",
+          "updated_at": "Обновление"
+        },
+        "blog_post": {
+          "body": "Контент",
+          "cover": "Изображение",
+          "creator": "Автор",
+          "state": "Состояние",
+          "state/archived": "Архив",
+          "state/published": "Опубликован"
+        },
+        "language": {
+          "category_id": "Категория",
+          "cover": "Обложка",
+          "hexlet_program_landing_page": "Hexlet Program Landing Page",
+          "learn_as": "Учить как",
+          "openai_assistant_id": "Assistent ID (OpenAI)",
+          "progress": "Прогресс",
+          "slug": "Slug"
+        },
+        "language_category": {
+          "description": "Описание",
+          "header": "Заголовок",
+          "name": "Название",
+          "slug": "Slug"
+        },
+        "language_category_item": {
+          "language_landing_page_id": "Лендинг"
+        },
+        "language_landing_page": {
+          "_destroy": "Удалить",
+          "answer": "Ответ",
+          "description": "Описание",
+          "footer": "Выводить в футере",
+          "footer_name": "Имя в футере",
+          "header": "Заголовок",
+          "landing_page_to_redirect_id": "Перенаправление на страницу",
+          "language_id": "Курс",
+          "listed": "Отображать в списках",
+          "main": "Основной",
+          "meta_description": "Meta Description",
+          "meta_title": "Meta Title",
+          "name": "Название",
+          "order": "Сортировка",
+          "outcomes_description": "Результаты обучения (Описание)",
+          "outcomes_header": "Результаты обучения (Заголовок)",
+          "outcomes_image": "Результаты обучения (Картинка)",
+          "question": "Вопрос",
+          "slug": "Slug",
+          "state": "Состояние",
+          "used_in_description": "Где используется (Описание)",
+          "used_in_header": "Где используется (Заголовок)"
+        },
+        "lead": {
+          "contact_method": "Способ связи",
+          "contact_value": "Телефон / Имя пользователя"
+        },
+        "qna_item": {
+          "answer": "Ответ",
+          "footer": "Выводить в футере",
+          "footer_name": "Имя в футере",
+          "listed": "Отображать в списках",
+          "main": "Основной",
+          "order": "Order",
+          "question": "Вопрос",
+          "slug": "Slug"
+        },
+        "review": {
+          "body": "Отзыв",
+          "first_name": "Имя",
+          "language_id": "Курс",
+          "last_name": "Фамилия",
+          "locale": "Локаль",
+          "pinned": "Закрепленный (Показывается сверху списка)",
+          "state": "Состояние",
+          "user_id": "Пользователь"
+        },
+        "survey": {
+          "run_always": "Запускать всегда",
+          "slug": "Слаг"
+        },
+        "survey_scenario": {
+          "_destroy": "Удалить",
+          "name": "Название",
+          "survey_item_id": "Ответ триггер (Начало воронки)"
+        },
+        "user": {
+          "admin": "Администратор",
+          "contact_method": "Способ связи",
+          "contact_method/values": {
+            "phone": "Телефон",
+            "telegram": "Telegram",
+            "whatsapp": "WhatsApp"
+          },
+          "contact_value": "Номер для связи (или имя пользователя)",
+          "email": "Email",
+          "first_name": "Имя",
+          "last_name": "Фамилия",
+          "nickname": "Никнейм",
+          "password": "Пароль"
+        }
+      },
       "errors": {
         "messages": {
           "record_invalid": "La validación falló: %{errors}",
@@ -1349,6 +1795,147 @@
             "has_many": "No se puede eliminar el registro porque existen %{record} dependientes",
             "has_one": "No se puede eliminar el registro porque existe un %{record} dependiente"
           }
+        },
+        "models": {
+          "sign_up_form": {
+            "attributes": {
+              "password": {
+                "too_short": "должен быть не меньше 6 символов"
+              }
+            }
+          }
+        }
+      }
+    },
+    "api": {
+      "partners": {
+        "yandex_market": {
+          "languages": {
+            "index": {
+              "category": "Фримиум",
+              "company": "ООО \"Хекслет Рус\"",
+              "title": "Образовательные программы"
+            }
+          }
+        }
+      }
+    },
+    "common": {
+      "check": {
+        "error": {
+          "headline": "Упс!",
+          "message": "Что-то пошло не так. Попробуйте ещё раз"
+        },
+        "failed": {
+          "headline": "Тесты не прошли",
+          "message": "В вашем коде есть ошибки. Прочитайте внимательно вывод тестов, найдите и попробуйте исправить их. <a href=\"https://help.hexlet.io/article/20623\" target=\"_blank\">Как искать ошибки в коде</a>. Если не получается, поговорите с нашим ассистентом Тота во вкладке \"ИИ-помощник\".\n"
+        },
+        "failed-infinity": {
+          "headline": "Долгое выполнение",
+          "message": "Возможно, тесты работали слишком долго или в вашем решении есть бесконечный цикл. Убедитесь, что в цикле верное условие остановки, и вы учитываете пограничные случаи. Если с циклом всё в порядке, попробуйте отправить код на проверку снова через 5 минут"
+        },
+        "passed": {
+          "headline": "Тесты пройдены",
+          "message": "Ура! Всё получилось! Сравните своё решение с решением учителя и переходите к следующему уроку"
+        }
+      },
+      "community_url": "https://t.me/HexletLearningBot\n",
+      "confirm": "Убеждаемся, что мы делаем то что действительно хотим. Хотим?",
+      "current_state": "Текущее состояние",
+      "discuss": "ИИ-помощник",
+      "editor": "Редактор",
+      "empty": "Пусто",
+      "errors": {
+        "network": "Возникла сетевая проблема. Попробуйте повторить ещё раз. Если не получилось, убедитесь, что с интернетом всё в порядке, и отключите блокировщики рекламы",
+        "server": "Ошибка на сервере. Возможно, скоро отпустит, а возможно — нет. Попробуйте узнать, что произошло в https://ttttt.me/hexletcommunity/12"
+      },
+      "export": "Экспорт",
+      "hello": "Привет мир",
+      "hours": {
+        "few": "%{count} часа",
+        "many": "%{count} часов",
+        "one": "%{count} час"
+      },
+      "instructions": "Инструкции",
+      "language_icon": "Иконка %{language}",
+      "languages": {
+        "en": "Английский",
+        "ru": "Русский"
+      },
+      "lesson": "Урок",
+      "lessons": {
+        "few": "%{count} урока",
+        "many": "%{count} уроков",
+        "one": "%{count} урок"
+      },
+      "loading": "Загрузка...",
+      "nextLesson": "Следующий",
+      "organization": {
+        "address": "108813, г. Москва, вн.тер.г. поселение Московский, г. Московский, ул. Солнечная, д. 3А, стр. 1, помещ. 10/3",
+        "description": "Автоматизированная система для обучения программированию в браузере. Текстовые курсы + удобный тренажер.",
+        "email": "support@hexlet.io",
+        "legal_name": "ООО «Хекслет Рус»",
+        "name": "Code Basics",
+        "phone": "+7 (495) 085 21 62",
+        "phones": [
+          "+7 (495) 085 21 62",
+          "8 800 100 22 47"
+        ],
+        "site": "https://ru.hexlet.io"
+      },
+      "output": "Вывод",
+      "pages": {
+        "about": "О проекте"
+      },
+      "prevLesson": "Предыдущий",
+      "reset": "Сброс",
+      "resetCode": "Сбросить код",
+      "run": "Проверить",
+      "sentryFeedbackWidget": {
+        "addScreenshotButtonLabel": "Добавить скриншот",
+        "cancelButtonLabel": "Отмена",
+        "formTitle": "Сообщить об ошибке",
+        "isRequiredLabel": "(обязательно)",
+        "messageLabel": "Описание",
+        "messagePlaceholder": "Опишите ошибку и ожидаемое поведение",
+        "nameLabel": "Имя",
+        "namePlaceholder": "Ваше имя",
+        "submitButtonLabel": "Отправить сообщение"
+      },
+      "showSolution": "Показать решение",
+      "signInSuggestion": "<a href=\"%{url}\">Создайте аккаунт</a> для сохранения прогресса",
+      "solution": "Решение",
+      "solutionInstructions": "Решение учителя откроется через:",
+      "solutionNotice": "Желательно решить задачу самостоятельно, но если вы застряли и долгое время ничего не получается, посмотрите решение учителя. Но обязательно разберитесь в нём и повторите по памяти",
+      "state_events": "Варианты действий",
+      "students": {
+        "few": "%{count} студента",
+        "many": "%{count} студентов",
+        "one": "%{count} студент"
+      },
+      "teacherSolution": "Решение учителя:",
+      "testForExercise": "Тесты",
+      "testInstructions": "Ваше упражнение проверяется по этим тестам",
+      "time": {
+        "minutes_few": "%{count} минуты",
+        "minutes_many": "%{count} минут",
+        "minutes_one": "%{count} минута",
+        "minutes_other": "%{count} минут",
+        "minutes_two": "%{count} минуты",
+        "minutes_zero": "%{count} минут"
+      },
+      "tos": "Содержание",
+      "userCode": "Ваше решение:",
+      "userCodeInstructions": "Когда вы начнёте писать решение в Редакторе, оно появится тут для сравнения с учительским",
+      "views": {
+        "pagination": {
+          "first": "&laquo;",
+          "last": "&raquo;",
+          "next": "&rsaquo;",
+          "next_text": "Дальше &rsaquo;",
+          "previous": "&lsaquo;",
+          "previous_text": "&lsaquo; Назад",
+          "truncate": "&hellip;"
         }
       }
     },
@@ -1363,7 +1950,7 @@
         "sáb"
       ],
       "abbr_month_names": [
-        null,
+        "",
         "ene",
         "feb",
         "mar",
@@ -1392,7 +1979,7 @@
         "short": "%-d de %b"
       },
       "month_names": [
-        null,
+        "",
         "enero",
         "febrero",
         "marzo",
@@ -1415,51 +2002,75 @@
     "datetime": {
       "distance_in_words": {
         "about_x_hours": {
+          "few": "около %{count} часов",
+          "many": "около %{count} часов",
           "one": "alrededor de %{count} hora",
           "other": "alrededor de %{count} horas"
         },
         "about_x_months": {
+          "few": "около %{count} месяцев",
+          "many": "около %{count} месяцев",
           "one": "alrededor de %{count} mes",
           "other": "alrededor de %{count} meses"
         },
         "about_x_years": {
+          "few": "около %{count} лет",
+          "many": "около %{count} лет",
           "one": "alrededor de %{count} año",
           "other": "alrededor de %{count} años"
         },
         "almost_x_years": {
+          "few": "почти %{count} года",
+          "many": "почти %{count} лет",
           "one": "casi %{count} año",
           "other": "casi %{count} años"
         },
         "half_a_minute": "medio minuto",
         "less_than_x_minutes": {
+          "few": "меньше %{count} минут",
+          "many": "меньше %{count} минут",
           "one": "menos de %{count} minuto",
           "other": "menos de %{count} minutos"
         },
         "less_than_x_seconds": {
+          "few": "меньше %{count} секунд",
+          "many": "меньше %{count} секунд",
           "one": "menos de %{count} segundo",
           "other": "menos de %{count} segundos"
         },
         "over_x_years": {
+          "few": "больше %{count} лет",
+          "many": "больше %{count} лет",
           "one": "más de %{count} año",
           "other": "más de %{count} años"
         },
         "x_days": {
+          "few": "%{count} дня",
+          "many": "%{count} дней",
           "one": "%{count} día",
           "other": "%{count} días"
         },
         "x_minutes": {
+          "few": "%{count} минуты",
+          "many": "%{count} минут",
           "one": "%{count} minuto",
           "other": "%{count} minutos"
         },
         "x_months": {
+          "few": "%{count} месяца",
+          "many": "%{count} месяцев",
           "one": "%{count} mes",
           "other": "%{count} meses"
         },
         "x_seconds": {
+          "few": "%{count} секунды",
+          "many": "%{count} секунд",
           "one": "%{count} segundo",
           "other": "%{count} segundos"
         },
         "x_years": {
+          "few": "%{count} года",
+          "many": "%{count} лет",
           "one": "%{count} año",
           "other": "%{count} años"
         }
@@ -1471,6 +2082,19 @@
         "month": "Mes",
         "second": "Segundo",
         "year": "Año"
+      }
+    },
+    "enumerize": {
+      "language": {
+        "learn_as": {
+          "first_language": "для начинающих",
+          "second_language": "как второй язык"
+        },
+        "progress": {
+          "completed": "Завершенный",
+          "draft": "Черновик",
+          "in_development": "В разработке"
+        }
       }
     },
     "errors": {
@@ -1499,14 +2123,20 @@
         "required": "debe existir",
         "taken": "ya está en uso",
         "too_long": {
+          "few": "слишком большой длины (не может быть больше чем %{count} символа)",
+          "many": "слишком большой длины (не может быть больше чем %{count} символов)",
           "one": "es demasiado largo (%{count} carácter máximo)",
           "other": "es demasiado largo (%{count} caracteres máximo)"
         },
         "too_short": {
+          "few": "недостаточной длины (не может быть меньше %{count} символов)",
+          "many": "недостаточной длины (не может быть меньше %{count} символов)",
           "one": "es demasiado corto (%{count} carácter mínimo)",
           "other": "es demasiado corto (%{count} caracteres mínimo)"
         },
         "wrong_length": {
+          "few": "неверной длины (может быть длиной ровно %{count} символа)",
+          "many": "неверной длины (может быть длиной ровно %{count} символов)",
           "one": "no tiene la longitud correcta (%{count} carácter exactos)",
           "other": "no tiene la longitud correcta (%{count} caracteres exactos)"
         }
@@ -1514,46 +2144,354 @@
       "template": {
         "body": "Se encontraron problemas con los siguientes campos:",
         "header": {
+          "few": "%{model}: сохранение не удалось из-за %{count} ошибок",
+          "many": "%{model}: сохранение не удалось из-за %{count} ошибок",
           "one": "No se pudo guardar este/a %{model} porque se encontró %{count} error",
           "other": "No se pudo guardar este/a %{model} porque se encontraron %{count} errores"
         }
       }
     },
+    "faq": {
+      "header": "Вопросы и Ответы",
+      "main": {
+        "about-project": {
+          "answer": "Это полностью бесплатная платформа для обучения it (айти) с нуля. Code Basics был создан разработчиками и сообществом школы программирования Хекслет для того, чтобы любой желающий мог попробовать себя в программировании и заложить правильный фундамент для новой профессии, основанный не на запоминании специфики, а на понимании системы в целом. Одна из ключевых фишек проекта это тренажер по программированию\n",
+          "question": "Что такое Code Basics?"
+        },
+        "for-whom": {
+          "answer": "Курсы Code Basics подходят для всех, кто начинает изучать программирование с нуля и хочет стать профессиональным программистом. Возраст, профессия – не имеют значения. На Code Basics занимаются взрослые и подростки, технари и чистые гуманитарии.\n",
+          "question": "Для кого курсы?"
+        },
+        "how-it-works": {
+          "answer": "Code Basics – полностью автоматизированная онлайн платформа. Поэтому вы можете заниматься в любое удобное время, когда захотите.\n\nКурсы программирования состоят из тематических блоков, в каждом есть несколько уроков. Проходите уроки последовательно: сначала изучите теорию, потом выполните практическое упражнение прямо в браузере – система проверит его автоматически.\n",
+          "question": "Как проходит обучение программированию?"
+        },
+        "how-much": {
+          "answer": "Code Basics создавался как проект для обучения программированию с нуля бесплатно. Таким он, был, есть и будет. Более того, Code Basics это открытый проект, код которого можно не только найти на Github, но и принять участие в его разработке\n",
+          "question": "Сколько стоят курсы на платформе?"
+        },
+        "how-to-start": {
+          "answer": "Достаточно просто зарегистрироваться. Регистрация на платформе бесплатная, после регистрации вы получите доступ ко всем курсам Code Basics. Выбирайте любой – и проходите.\n",
+          "question": "Как начать пользоваться платформой?"
+        },
+        "if-something-goes-wrong": {
+          "answer": "Спрашивайте! В каждом уроке есть раздел «ИИ-помощник» в котором вы можете чатится с нашим ассистентом Tota AI. Здесь можно задать вопрос, уточнить условие задания, если оно кажется вам непонятным.\n\nПри выполнении практики также советуем внимательно читать вывод тестов – в нем содержится информация о том, почему решение не проходит. А еще вы можете сравнить свой результат с готовым решением. Впрочем, не советуем обращаться к нему до тех пор, пока успешно не выполните задание. Помните – вы учитесь, а не повторяете.\n",
+          "question": "А если что-то не получается?"
+        },
+        "possibilities": {
+          "answer": "Code Basics – проект с открытым исходным кодом. Участвовать в его развитии может любой практикующий разработчик. Исходный код доступен на [GitHub](https://github.com/hexlet-basics). Вы можете помочь в создании новых курсов и уроков, улучшать существующие, исправлять неточности и опечатки, переводить курсы на английский язык.\n",
+          "question": "Какие возможности есть для практикующих разработчиков?"
+        },
+        "what-type-of-courses": {
+          "answer": "Изначально CodeBasics был ориентирован только на изучение программирования, но мы думаем о том чтобы расширить возможности платформы и добавить сюда курсы более широкого профиля, так что платформа превратится в бесплатные айти (it) курсы с нуля\n",
+          "question": "Вы учите только программированию?"
+        }
+      }
+    },
+    "flash": {
+      "web": {
+        "account": {
+          "profiles": {
+            "destroy": {
+              "error": "Возникла ошибка при удалении аккаунта",
+              "success": "Аккаунт успешно удален"
+            },
+            "update": {
+              "error": "Ошибка обновления",
+              "success": "Данные успешно обновлены"
+            }
+          }
+        },
+        "admin": {
+          "blog_posts": {
+            "create": {
+              "error": "Что-то пошло не так",
+              "success": "Пост успешно созданн"
+            },
+            "update": {
+              "error": "Что-то пошло не так",
+              "success": "Пост успешно обновлен!"
+            }
+          },
+          "languages": {
+            "update": {
+              "error": "Что-то пошло не так",
+              "success": "Язык успешно сохранен"
+            }
+          },
+          "reviews": {
+            "create": {
+              "error": "Что-то пошло не так",
+              "success": "Отзыв успешно добавлен"
+            },
+            "update": {
+              "error": "Что-то пошло не так",
+              "success": "Отзыв успешно обновлен!"
+            }
+          }
+        },
+        "application": {
+          "base": {
+            "error": "Пожалуйста проверьте ошибки",
+            "success": "Действие завершено успешно"
+          }
+        },
+        "auth": {
+          "callback": {
+            "success": "Добро пожаловать! Пора немного поучиться -)"
+          }
+        },
+        "blog_posts": {
+          "likes": {
+            "create": {
+              "notice": "Ваш лайк уже засчитан :)",
+              "success": "Спасибо за лайк!"
+            }
+          }
+        },
+        "books": {
+          "create_request": {
+            "success": "Ура, теперь книга доступна для скачивания! Нажмите на кнопку и книга скачается"
+          }
+        },
+        "google_auth": {
+          "one_tap": {
+            "error": "Мы не смогли получить данные из Google! Проверьте настройки вашего аккаунта Google!",
+            "success": "Добро пожаловать! Пора немного поучиться -)"
+          }
+        },
+        "languages": {
+          "lessons": {
+            "show": {
+              "lesson_not_found": "Урок не найден, но вы можете начать другие!"
+            }
+          },
+          "show": {
+            "empty_language_current_version": "Язык находится в разработке, пожалуйсте, зайдите позже или попробуйте любой другой доступный язык",
+            "language_in_development_html": "Курс по языку %{language} еще в разработке.\nВы можете помочь и отправить пулл-реквест с новыми уроками или дополнить те,\nкоторые уже есть <a href=\"%{link_to_repo}\" target=\"_blank\" rel=\"noopener\">%{link_to_repo}</a>.\nМы подготовили рекомендации по написанию текстов <a href=\"%{link_to_recommendations}\" target=\"_blank\" rel=\"noopener\">по ссылке</a>\n",
+            "warning": "Попробуйте переключить язык, возможно там найдется нужный урок! :)"
+          },
+          "success": {
+            "error": "В этом курсе есть уроки, которые вы не завершили"
+          }
+        },
+        "leads": {
+          "create": {
+            "error": "Проверьте ошибки в форме",
+            "success": "Заявка отправлена! Свяжемся с вами в течение одного-двух рабочих дней. Или напишите нам в <a target=\"_blank\" href=\"https://t.me/WelcomeCodebasicsBot\">телеграм</a> чтобы получить помощь быстрее"
+          }
+        },
+        "passwords": {
+          "update": {
+            "success": "Пароль изменен. Можете входить с вашим новым паролем."
+          }
+        },
+        "remind_passwords": {
+          "create": {
+            "error": "В форме есть ошибки",
+            "success": "Мы отправили вам письмо с инструкциями по восстановлению пароля"
+          }
+        },
+        "sessions": {
+          "create": {
+            "error": "В форме есть ошибки",
+            "success": "Внутри лучше чем снаружи. Запоминаем прогресс и ведем к свету"
+          }
+        },
+        "surveys": {
+          "show": {
+            "success": "Вы уже отвечали на этот опрос. Возвращаемся обратно"
+          }
+        },
+        "users": {
+          "create": {
+            "error": "Упс, кажется в форме есть ошибки",
+            "success": "Добро пожаловать! Учитесь, практикуйтесь, кайфуйте"
+          }
+        }
+      }
+    },
     "helpers": {
+      "continue": "Продолжить",
+      "crud": {
+        "add": "Добавить",
+        "adding": "Добавление",
+        "editing": "Редактирование",
+        "list": "Список",
+        "remove": "Удалить"
+      },
+      "read": "Читать",
+      "reset": "Сбросить",
       "select": {
         "prompt": "Por favor seleccione"
       },
+      "send": "Отправить",
       "submit": {
         "create": "Crear %{model}",
+        "q": {
+          "create": "Поиск"
+        },
+        "remind_password_form": {
+          "create": "Восстановить"
+        },
+        "replace": "Сменить",
+        "save": "Сохранить",
         "submit": "Guardar %{model}",
-        "update": "Actualizar %{model}"
+        "update": "Actualizar %{model}",
+        "user_sign_in_form": {
+          "create": "Войти"
+        },
+        "user_sign_up_form": {
+          "create": "Создать аккаунт"
+        }
       }
     },
     "i18n": {
       "plural": {
         "keys": [
           "one",
+          "other",
+          "many",
           "other"
         ]
       },
-      "transliterate": {
-        "rule": {
-          "Á": "A",
-          "É": "E",
-          "Í": "I",
-          "Ñ": "N",
-          "Ó": "O",
-          "Ú": "U",
-          "Ü": "U",
-          "á": "a",
-          "é": "e",
-          "í": "i",
-          "ñ": "n",
-          "ó": "o",
-          "ú": "u",
-          "ü": "u"
+      "transliterate": {}
+    },
+    "layouts": {
+      "shared": {
+        "contact_method_requesting": {
+          "description_html": "Чтобы мы могли связаться с вами, укажите предпочительный способ связи\n",
+          "go": "Заполнить&nbsp;→"
+        },
+        "footer": {
+          "about": "О проекте",
+          "all_courses": "Все курсы",
+          "authors": "Автору",
+          "blog": "Блог",
+          "categories": "Категории",
+          "codebasics": "Code Basics (от Хекслет)",
+          "community": "Сообщество",
+          "cookie_policy": "Cookie Policy",
+          "courses": "Курсы %{number}",
+          "english_links": "English links",
+          "free_call": "Звонок по РФ бесплатный",
+          "hexlet": "Хекслет",
+          "hexlet-cv": "Хекслет.Карьера",
+          "hexlet-sicp": "Хекслет.SICP",
+          "hexlet_address": "ООО «Хекслет Рус», 108813, г. Москва, вн.тер.г. поселение Московский, г. Московский, ул. Солнечная, д. 3А, стр. 1, помещ. 10/3",
+          "hexlet_blog": "Блог",
+          "hexlet_number": "ОГРН 1217300010476",
+          "hexlet_title_html": "© <a href=\"%{link}\" class=\"text-decoration-none text-light\" target=\"_blank\" rel=\"noopener\">Хекслет</a>, %{year}",
+          "information": "Информация",
+          "language_categories": "Направления обучения",
+          "matrix": "Матрица компетентности",
+          "privacy": "Политика конфиденциальности",
+          "recommended_books": "Рекомендуемые книги",
+          "resources": "Ресурсы",
+          "reviews": "Отзывы",
+          "sitemap": "Карта сайта",
+          "social_networks": "Социальные сети",
+          "source_code": "Исходный код",
+          "tos": "Условия использования",
+          "useful": "Полезное"
+        },
+        "language_menu": {
+          "in_development": "В разработке"
+        },
+        "nav": {
+          "about": "О проекте",
+          "about_code_basics": "О Code Basics",
+          "about_platform": "О платформе",
+          "admin": "Админство",
+          "blog": "Блог",
+          "book": "Книга для начинающих",
+          "business": "Обучение для бизнеса",
+          "business_description": "Прокачаем ваших сотрудников и дадим аналитику",
+          "career": "Центр Карьеры",
+          "career_description": "Доведем до собеседования и научим их проходить",
+          "cases": "Решения",
+          "categories": "Категории",
+          "community": "Сообщество",
+          "courses": "Курсы",
+          "courses_with_employement": "Курсы с трудоустройством",
+          "courses_with_employement_description": "Обучим программированию, аналитике и тестированию",
+          "for_authors": "Авторам",
+          "for_teachers": "Для преподавателей",
+          "for_teachers_description": "Организуем обучение школьников и студентов",
+          "for_whom": "Школа программирования Хекслет",
+          "hexly": "Хекслет Колледж",
+          "hexly_description": "Дадим качественное образование (СПО)",
+          "my": "Мой прогресс",
+          "profile": "Настройки",
+          "registration": "Регистрация",
+          "reviews": "Отзывы",
+          "sign_in": "Вход",
+          "sign_out": "Выйти",
+          "success_stories": "Истории успеха",
+          "toggle_navigation": "Переключить навигацию",
+          "toggle_user_menu": "Показать/скрыть меню пользователя",
+          "upskilling": "Повышение квалификации",
+          "upskilling_description": "Обучим новым навыкам в программировании"
+        },
+        "unsupported_browser_warning": {
+          "unsupported_browser_warning": "Ваш браузер устарел :( Некоторые возможности отключены."
+        }
+      },
+      "web": {
+        "admin": {
+          "application": {
+            "blog_posts": "Посты в блоге",
+            "dashboard": "Кабинет",
+            "language_categories": "Категории",
+            "language_landing_pages": "Лендинги",
+            "language_lesson_members": "Прохождение уроков",
+            "language_lesson_reviews": "Ревью уроков",
+            "language_lessons": "Уроки",
+            "languages": "Курсы",
+            "leads": "Лиды",
+            "messages": "Соообщения (AI)",
+            "reviews": "Отзывы",
+            "survey_answers": "Ответы на опросы",
+            "survey_scenarios": "Сценарии",
+            "surveys": "Опросы",
+            "surveys_analytics": "Аналитика опросов",
+            "users": "Пользователи",
+            "authentication": "Autenticacion",
+            "menu": "Menu"
+          }
+        },
+        "root": {
+          "fallback": {
+            "description": "Опс, что-то случилось на фронтенде. Попробуйте перезагрузить страницу.\nЕсли не получится, посмотрите сработает ли в другом браузере (иногда это проблема расширений) или даже с другим интернетом, например, мобильным. Ну и на крайний вариант почистите куки, если вы знаете что это такое :)\nА ошибку мы уже получили и смотрим, если она на нашей стороне, то разработчики не получат свой утренний кофе.\n",
+            "header": "Вызывайте санитаров!"
+          }
         }
       }
+    },
+    "links": {
+      "hexlet": "https://ru.hexlet.io/?utm_source=code-basics&utm_medium=referral&utm_campaign=general&utm_content=mainpage",
+      "hexlet_author_school_course": "https://ru.hexlet.io/courses/author-school-hexlet?promo_name=course-author-school-hexlet&promo_position=body&promo_type=link",
+      "hexlet_authors_school": "https://making.hexlet.io/authors?promo_name=school-of-authors&promo_position=body&promo_type=link",
+      "hexlet_awesome_text": "https://ru.hexlet.io/courses/awesome-text?promo_name=course-awesome-text&promo_position=body&promo_type=link",
+      "hexlet_awesome_text_structure": "https://ru.hexlet.io/courses/awesome-text-structure?promo_name=course-awesome-text-structure&promo_position=body&promo_type=link",
+      "hexlet_blog": "https://ru.hexlet.io/blog?promo_name=blog&promo_position=body&promo_type=link&utm_source=code-basics&utm_medium=referral&utm_campaign=blog&utm_content=lesson",
+      "hexlet_courses": "https://ru.hexlet.io/courses",
+      "hexlet_facebook": "https://www.facebook.com/codebasicsru",
+      "hexlet_frontend": "https://ru.hexlet.io/programs/frontend?promo_name=prof-frontend&promo_position=body&promo_type=link&utm_source=code-basics&utm_medium=referral&utm_campaign=programs&utm_content=frontend-course",
+      "hexlet_instagram": "https://www.instagram.com/hexlethq",
+      "hexlet_java": "https://ru.hexlet.io/programs/java?promo_name=prof-java&promo_position=body&promo_type=link&utm_source=code-basics&utm_medium=referral&utm_campaign=programs&utm_content=java-course",
+      "hexlet_layout_designer": "https://ru.hexlet.io/programs/layout-designer?promo_name=prof-layout-designer&promo_position=body&promo_type=link&utm_source=code-basics&utm_medium=referral&utm_campaign=programs&utm_content=lesson",
+      "hexlet_matrix": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSr58Xg4DVX2WdmAkv3hE2ITJ3fPeNUmRFe0Ekro53U-ACFrhcUkV8PlUm4ddcn53Uh-5UIezZtZZgc/pubhtml",
+      "hexlet_php": "https://ru.hexlet.io/programs/php?promo_name=prof-php&promo_position=body&promo_type=link",
+      "hexlet_profession": "https://ru.hexlet.io/programs?promo_name=programs&promo_position=body&promo_type=link&utm_source=code-basics&utm_medium=referral&utm_campaign=programs&utm_content=professions",
+      "hexlet_python": "https://ru.hexlet.io/programs/python?promo_name=prof-python&promo_position=body&promo_type=link",
+      "hexlet_rails": "https://ru.hexlet.io/programs/rails?promo_name=prof-rails&promo_position=body&promo_type=link",
+      "hexlet_recommended_books": "https://ru.hexlet.io/pages/recommended-books?promo_name=books&promo_position=body&promo_type=link&utm_medium=referral&utm_campaign=resources&utm_content=books",
+      "hexlet_success_stories": "https://ru.hexlet.io/blog/categories/success?promo_name=blog-success&promo_position=body&promo_type=link&utm_source=code-basics&utm_medium=referral&utm_campaign=blog&utm_content=lesson",
+      "hexlet_telegram": "https://ttttt.me/hexlet_ru",
+      "hexlet_telegram_volunteers": "https://ttttt.me/hexletcommunity/12",
+      "hexlet_twitter": "https://twitter.com/HexletHQ",
+      "hexlet_youtube": "https://www.youtube.com/user/HexletUniversity"
     },
     "number": {
       "currency": {
@@ -1581,12 +2519,16 @@
           "units": {
             "billion": "mil millones",
             "million": {
+              "few": "миллионов",
+              "many": "миллионов",
               "one": "millón",
               "other": "millones"
             },
             "quadrillion": "mil billones",
             "thousand": "mil",
             "trillion": {
+              "few": "триллионов",
+              "many": "триллионов",
               "one": "billón",
               "other": "billones"
             },
@@ -1603,6 +2545,8 @@
           "format": "%n %u",
           "units": {
             "byte": {
+              "few": "байта",
+              "many": "байт",
               "one": "Byte",
               "other": "Bytes"
             },
@@ -1708,11 +2652,627 @@
     "time": {
       "am": "am",
       "formats": {
+        "date_time": "%Y-%m-%d %H:%M",
         "default": "%A, %-d de %B de %Y %H:%M:%S %z",
         "long": "%-d de %B de %Y %H:%M",
         "short": "%-d de %b %H:%M"
       },
       "pm": "pm"
+    },
+    "user_mailer": {
+      "reset_password": {
+        "change_password": "Сменить пароль",
+        "link": "Ссылка для изменения пароля на сайте code-basics.com",
+        "requested_to_change_password": "Вы запросили ссылку для изменения вашего пароля на code-basics.com. Чтобы изменить пароль – перейдите по этой ссылке или нажмите на кнопку ниже.",
+        "subject": "Смена пароля",
+        "you_dont_want_to_change": "Если вы не запрашивали изменения пароля, просто проигнорируйте это письмо. Ваш пароль не изменится пока вы не перейдете по ссылке и не введете новый пароль."
+      }
+    },
+    "web": {
+      "account": {
+        "profiles": {
+          "edit": {
+            "confirm_delete": "Вы уверены, что хотите удалить свой аккаунт?",
+            "delete": "Удалить аккаунт",
+            "meta": {
+              "description": "Здесь меняются личные данные"
+            },
+            "title": "Редактирование профиля"
+          }
+        }
+      },
+      "admin": {
+        "blog_posts": {
+          "edit": {
+            "header": "Редактирование %{id}"
+          },
+          "index": {
+            "add_new_blog_post": "Добавить новый пост",
+            "header": "Посты в блоге"
+          },
+          "new": {
+            "header": "Новый пост"
+          }
+        },
+        "home": {
+          "index": {
+            "dashboard": "Кабинет"
+          }
+        },
+        "language_categories": {
+          "edit": {
+            "header": "Редактирование %{id}"
+          },
+          "index": {
+            "add_new_language": "Добавить категорию",
+            "header": "Категории"
+          },
+          "new": {
+            "header": "Новая категория"
+          },
+          "form": {
+            "main": "Principal",
+            "items": "Elementos",
+            "qna_items": "Preguntas y respuestas"
+          }
+        },
+        "language_landing_pages": {
+          "edit": {
+            "header": "Редактирование %{id}"
+          },
+          "index": {
+            "add_new_language": "Добавить лендинг",
+            "header": "Лендинги"
+          },
+          "new": {
+            "header": "Новый лендинг"
+          }
+        },
+        "language_lesson_members": {
+          "index": {
+            "header": "Прохождение уроков"
+          }
+        },
+        "language_lesson_reviews": {
+          "index": {
+            "header": "Ревью уроков",
+            "data": "Datos"
+          }
+        },
+        "language_lessons": {
+          "index": {
+            "header": "Уроки"
+          }
+        },
+        "languages": {
+          "edit": {
+            "header": "Редактирование %{id}",
+            "versions": "Versiones",
+            "load_new_version": "Cargar nueva version",
+            "id": "ID",
+            "result": "Resultado"
+          },
+          "index": {
+            "add_new_language": "Добавить курс",
+            "header": "Курсы"
+          },
+          "new": {
+            "header": "Новый курс"
+          }
+        },
+        "leads": {
+          "index": {
+            "header": "Лиды",
+            "data": "Datos",
+            "answers": "Respuestas",
+            "courses": "Cursos"
+          }
+        },
+        "management": {
+          "users": {
+            "edit": {
+              "header": "Редактирование пользователя",
+              "progress": "Progreso",
+              "language": "Idioma",
+              "count": "Cantidad"
+            },
+            "filter": {
+              "from": "Начал прохождение с"
+            },
+            "index": {
+              "finished_lessons": "Завершенные уроки",
+              "header": "Пользователи",
+              "search_by_email": "Поиск по email"
+            }
+          }
+        },
+        "messages": {
+          "index": {
+            "header": "Разговоры с AI"
+          }
+        },
+        "reviews": {
+          "edit": {
+            "header": "Редактирование %{id}"
+          },
+          "index": {
+            "add_new_review": "Добавить новый отзыв",
+            "header": "Отзывы"
+          },
+          "new": {
+            "header": "Новый отзыв"
+          }
+        },
+        "survey_answers": {
+          "index": {
+            "header": "Ответы на опросы"
+          }
+        },
+        "survey_scenarios": {
+          "edit": {
+            "header": "Редактирование сценария"
+          },
+          "index": {
+            "header": "Сценарии"
+          },
+          "new": {
+            "header": "Новый сценарий"
+          }
+        },
+        "surveys": {
+          "edit": {
+            "header": "Редактирование опроса"
+          },
+          "index": {
+            "header": "Опросы"
+          },
+          "new": {
+            "header": "Новый опрос"
+          }
+        },
+        "title": "Админка Code-Basics"
+      },
+      "blocks": {
+        "lead_form_block": {
+          "description1": "Ответим в течение дня",
+          "description2": "Нам можно написать в <a target=\"_blank\" href=\"https://t.me/WelcomeCodebasicsBot\">телеграм</a>"
+        }
+      },
+      "blog_posts": {
+        "index": {
+          "empty": "Похоже, что тут пока ничего нет",
+          "header": "Блог Code Basics",
+          "meta": {
+            "description": "Статьи об it-профессиях и технологиях для начинающих программистов, аналитиков, тестировщиков и системных администраторов"
+          }
+        },
+        "show": {
+          "blog_posts": "Рекомендованные статьи",
+          "breadcrumbs": "Хлебные крошки",
+          "courses": "Рекомендованные курсы",
+          "discuss": "Обсуждайте, помогайте и делитесь опытом",
+          "join_community": "Присоединяйтесь к сообществу Хекслет",
+          "link": "Перейти в сообщество",
+          "to_home_title": "Домой"
+        }
+      },
+      "books": {
+        "show": {
+          "chapter": "Глава %{number}",
+          "description": "С нуля до трудоустройства. Этот учебник — ваш путеводитель в профессию программиста. Он создан для тех, кто хочет начать с нуля и шаг за шагом дойти до трудоустройства в одной из самых востребованных и перспективных областей\n",
+          "download": "Скачать книгу",
+          "features": {
+            "direction": "Направление",
+            "direction_explanation": "Узнаете какие бывают виды разработки и языки. Куда стоит идти и почему",
+            "interview": "Интервью",
+            "interview_explanation": "Подготовитесь к прохождению собеседований и испытательного срока",
+            "plan": "План",
+            "plan_explanation": "Получите готовый план обучения, с темами, ресурсами для изучения и проектами",
+            "resume": "Резюме",
+            "resume_explanation": "Научитесь правильно оформлять резюме и находить подходящие вакансии"
+          },
+          "freebook": "Бесплатная электронная книга",
+          "header": "Книга: Профессия программист. С нуля до трудоустройства\n",
+          "request": "Запросить книгу",
+          "toc": "Содержание"
+        }
+      },
+      "cases": {
+        "for_teachers": {
+          "description": "Бесплатные курсы с тренажером прямо в браузере. Много практики и ИИ-ассистент",
+          "early_career_guidance": "Стимулируем раннюю профориентацию:",
+          "early_career_guidance_list": [
+            "Показываем программирование изнутри, чтобы принять взвешенное решение об изучении будущей профессии",
+            "Даем возможность быстро погрузиться в язык программирования и понять, нравится ли он ученику",
+            "Помогаем увидеть базовые примеры реальных задач, чтобы присмотреться к профессиональной рутине"
+          ],
+          "header": "Эффективное обучение школьников и студентов программированию",
+          "how_to_learn_programming": "Как пользователи изучают программирование в CodeBasics?",
+          "how_to_learn_programming_cards": [
+            {
+              "title": "Интеграция без интеграции: чтобы внедрить CodeBasics в образовательный процесс, потребуется ПК с доступом в интернет",
+              "subtitle": "Нужно открыть браузер, зарегистрироваться и начать проходить интересующий курс",
+              "img": "integration-icon"
+            },
+            {
+              "title": "Теория, подкрепленная практикой: на платформе уже сейчас доступны тренажеры по PHP, Java, JS, Python, Ruby, HTML, CSS, Racket, Elixir и Go",
+              "subtitle": "Можно проходить несколько курсов одновременно",
+              "img": "practice-icon"
+            },
+            {
+              "title": "Интерактивный формат: система автоматически проверяет выполненные задания, показывает ошибки и правильное решение, а также детальный вывод",
+              "subtitle": "Если что-то не получается, можно воспользоваться Решением учителя",
+              "img": "interactive-format-icon"
+            },
+            {
+              "title": "Пользователям доступен Виртуальный наставник на основе Искусственного интеллекта",
+              "subtitle": "",
+              "img": "discussion-icon"
+            }
+          ],
+          "integrate_into_education": "Зачем интегрировать CodeBasics в обучение?",
+          "integrate_now": "Интегрируйте CodeBasics в учебную программу сейчас!",
+          "interactive_approach": "Ориентируемся на практику и интерактивный подход:",
+          "interactive_approach_list": [
+            "Сопровождаем теоретические материалы курса практическими заданиями прямо в браузере",
+            "Даем мгновенную обратную связь: показываем правильное решение, даем вывод по каждому тесту",
+            "Подключаем ИИ-наставника, который объясняет ученикам теорию или суть задания"
+          ],
+          "lay_programming_foundations": "CodeBasics закладывает основы программирования в интерактивной форме, за что получил 3-е место в номинации «Лучший внеплатформенный онлайн-курс» в 2020 году на Международном конкурсе открытых онлайн-курсов EdCrunch Award OOC",
+          "meta": {
+            "description": "Курсы программирования для детей и подростков от онлайн-школы Хекслет. Все занятия разработаны опытными педагогами и программистами, с учетом возрастных особенностей детей. Обучение программированию онлайн"
+          },
+          "open_browser_and_sign_up": "Просто откройте браузер и зарегистрируйтесь",
+          "programming_basic_list": [
+            "Объясняем, как функционируют системы в общем, а не специфику технологий на старте",
+            "Обучаем начинающих программистов лучшим стандартам кодирования, например правильному именованию функций",
+            "Охватываем основные языки программирования и продолжаем добавлять курсы по современным технологиям"
+          ],
+          "programming_competently": "Закладываем основы программирования грамотно:",
+          "quotes_icon": "Ковычки",
+          "select_course": "Выбрать курс",
+          "sign_up": "Зарегистрироваться",
+          "sign_up_and_start_learning": "Зарегистрируйтесь и начните обучать ваших учеников программированию прямо сейчас",
+          "title": "Обучение программированию школьников и студентов",
+          "try": "Попробовать"
+        },
+        "index": {
+          "for_teachers": "Для учителей и преподавателей",
+          "link": "Перейти",
+          "meta": {
+            "description": "Примеры использования Code Basics в разных сферах"
+          },
+          "title": "Кейсы"
+        }
+      },
+      "errors": {
+        "show": {
+          "codes": {
+            "403": {
+              "description": "Скорее всего это административный доступ, поэтому нини :)",
+              "header": "Доступ к странице закрыт"
+            },
+            "404": {
+              "description": "Возможно страница была удалена. Попробуйте перейти на нужную страницу через верхнее меню",
+              "header": "Страница не найдена"
+            },
+            "500": {
+              "description": "Что-то пошло не так. Программистам уже пришла смс и они бегут к компьютеру, чтобы быстрее выкатить исправление",
+              "header": "Ошибка сервера"
+            },
+            "other": {
+              "description": "Что-то пошло не так. Мы получили уведомление и внимательно разбираемся с проблемой",
+              "header": "Ошибка"
+            }
+          }
+        }
+      },
+      "home": {
+        "index": {
+          "all_blog_posts": "Все статьи",
+          "all_reviews": "Все отзывы",
+          "blog_posts": "Блог",
+          "categories": "Направления",
+          "consultation": "Нужна помощь? Оставьте заявку, мы поможем",
+          "hero": {
+            "ai_count": "ИИ-ассистент",
+            "ai_count_description": "Подсказки и анализ кода",
+            "community_count": "Сообщество",
+            "community_count_description": "Более 8 000 тысяч человек",
+            "courses_count": "Текстовые курсы",
+            "courses_count_description": "теория, тренажер, решение учителя",
+            "fastest_way_to_start_coding": "С практикой в тренажере и ассистентом на базе ChatGPT",
+            "free_programming_courses": "Бесплатные курсы по программированию с нуля",
+            "how_coding_works": "Как работает обучение на code-basics",
+            "learn": "Изучи",
+            "learn_xs": "Научись программировать",
+            "source_code": "Исходный код",
+            "try": "К курсам →"
+          },
+          "hexlet": "Хекслета",
+          "in_development": "Курсы в разработке",
+          "in_development_description": "Данные курсы находятся в разработке и не являются финальной версией. Вы можете помочь в разработке, прислав Pull Request в репозиторий GitHub",
+          "join": "Зарегистрируйтесь и начните учиться прямо сейчас",
+          "meta": {
+            "description": "Быстрый способ изучить основы языков программирования Go, PHP, Java, JavaScript, Python, Typescript, Ruby, C# и многих других.\n"
+          },
+          "reviews": "Отзывы",
+          "sign_up": "Регистрация",
+          "subheader": "Для тех, кто начинает с нуля. От создателей ",
+          "title": "Школа программирования для детей и взрослых"
+        },
+        "languages": {
+          "courses": "Курсы по программированию"
+        },
+        "reviews": {
+          "course_html": "Курс %{link}",
+          "reviews": "Отзывы"
+        },
+        "sitemap": {
+          "home": "Главная",
+          "title": "Карта сайта"
+        },
+        "stats": {
+          "trusted_by": "Присоединись к %{count} изующих программирование с помощью Code Basics\n"
+        }
+      },
+      "language_categories": {
+        "index": {
+          "header": "Категории курсов по программированию",
+          "link": "Перейти",
+          "meta": {
+            "description": "Направления обучения программированию на CodeBasics. Выберите категорию, курсы которой вы бы хотели посмотреть"
+          }
+        },
+        "show": {
+          "header": "Курсы в категории %{name}\n",
+          "meta": {
+            "description": "Выберите подходящий бесплатный курс из категории %{name} и учитесь бесплатно прямо в браузере с практикой и помощью от ИИ-ассистента"
+          }
+        }
+      },
+      "languages": {
+        "lessons": {
+          "show": {
+            "breadcrumb": "Хлебные крошки",
+            "chat": {
+              "community": "Живые люди",
+              "disabled_html": "Чат временно отключен, так как вы достигли суточного лимита. А наше <a href=\"https://t.me/HexletLearningBot\" traget=\"_blank\">телеграм-сообещство</a> работает круглосуточно, подключайтесь :)",
+              "guest": "Привет! Я Тота и моя задача помочь в обучении. Чтобы активировать меня, нужно зарегистрироваться или залогиниться, если у вас уже есть аккаунт",
+              "hi": "Привет! Меня зовут Тота и я здесь чтобы вам помочь по любым вопросам теории и практики. Спрашивайте, я всегда на связи!\n\np.s. В день доступно 7 сообщений, поэтому старайтесь задавать вопросы, только по самым важным вещам\n",
+              "not_available": "Скоро здесь будет наш ИИ помощник. Занимаемся настройкой прямо сейчас"
+            },
+            "common_questions": [
+              {
+                "question": "Как с вами связаться? 🙃",
+                "answer": "Команда проекта находится в <a target=\"_blank\" href=\"https://t.me/HexletLearningBot\">телеграм-сообществе</a>. Там можно задать любой вопрос и повлиять на проект\n"
+              },
+              {
+                "question": "Упражнение не проходит проверку — что делать? 😶",
+                "answer": "Если вы зашли в тупик, то самое время поговорить с нашим асситентом Тота во вкладке \"ИИ-помощник\":\n"
+              },
+              {
+                "question": "В моей среде код работает, а здесь нет 🤨",
+                "answer": "Тесты устроены таким образом, что они проверяют решение разными способами и на разных данных. Часто решение работает с одними входными данными, но не работает с другими. Чтобы разобраться с этим моментом, изучите вкладку «Тесты» и внимательно посмотрите на вывод ошибок, в котором есть подсказки.\n"
+              },
+              {
+                "question": "Мой код отличается от решения учителя 🤔",
+                "answer": "Это нормально 🙆, в программировании одну задачу можно выполнить множеством способов. Если ваш код прошел проверку, то он соответствует условиям задачи. В редких случаях бывает, что решение подогнано под тесты, но это видно сразу.\n"
+              },
+              {
+                "question": "Прочитал урок — ничего не понятно 🙄",
+                "answer": "Создавать обучающие материалы, понятные для всех без исключения, довольно сложно. Мы очень стараемся, но всегда есть что улучшать. Если вы встретили материал, который вам непонятен, опишите проблему в обратной связи нашего [сообщества](https://t.me/HexletLearningBot)\n"
+              }
+            ],
+            "confirm": "Вы хотите сбросить прогресс упражнения. Текущая версия кода не сохранится — надеемся, вы уже скопировали его. Продолжаем сброс?",
+            "controls": {
+              "body": "Сбросить прогресс. По этой кнопке можно вернуться в начало упражнения, если что-то сломалось и не чинится. Текущий код не сохранится. Если он вам еще потребуется, скопируйте его перед сбросом — например, в блокнот\n",
+              "header": "Справка",
+              "run": "Запустить"
+            },
+            "definitions": "Определения",
+            "discuss": "ИИ-помощник",
+            "editor": "Редактор",
+            "finish": "Завершить",
+            "if_stuck_html": "Если вы столкнулись с трудностями и не знаете, что делать, задайте вопрос в нашем большом и дружном <a href=\"%{url}\" target=\"_blank\" rel=\"noopener\">телеграм-сообществе</a>\n",
+            "instructions": "Задание",
+            "issues": "Нашли ошибку? Есть что добавить? Пулреквесты приветствуются",
+            "lesson": "Урок",
+            "navigation": "Навигация",
+            "next": "Следующий →",
+            "only_for_signed_in_users": "Упражнение доступно только авторизованным пользователям.",
+            "output": "Вывод",
+            "please_sign_in": "Пожалуйста, авторизуйтесь, это необходимо для отслеживания прогресса выполнения уроков. Если у вас ещё нет учётной записи, то сейчас самое время создать аккаунт.",
+            "prev": "← Предыдущий",
+            "profession_description": "Коммерческий опыт и Трудоустройство",
+            "separator": " — ",
+            "show_full_version": "Реактор кода доступен в основной версии →",
+            "sign_in": "Войти",
+            "sign_up_for_tracking_progress_html": "Чтобы не потерять достигнутые результаты, обязательно <a href=\"%{link}\" class=\"text-decoration-none\" target=\"_blank\">зарегистрируйтесь</a>\n",
+            "solution": "Решение",
+            "tests": "Тесты",
+            "tips": "Полезное",
+            "title": "%{lesson_name} | Уроки %{language_name}\n",
+            "to_home_title": "Домой"
+          }
+        },
+        "show": {
+          "about_developer_community": "Мы знаем, как непросто начинать в IT, поэтому создали сообщество разработчиков, где вам всегда готовы помочь. Здесь можно задавать вопросы, получать поддержку, общаться с опытными специалистами и быстрее влиться в профессию",
+          "about_learning": "Платформа: Теория, Практика, ИИ\n",
+          "ai_explanation": "AI объясняет темы, подсказывает, как решить задания, и помогает в любой момент — как личный наставник 24/7",
+          "ai_without_limits": "Помощь AI без ограничений",
+          "blog_posts": "Посты в блоге",
+          "breadcrumbs": "Хлебные крошки",
+          "browser_practice": "Практика в браузере",
+          "community_image_preview": "Сообщество разработчиков",
+          "completed_html": "Поздравляем! Вы успешно завершили базовый курс на Code Basics. Это первый шаг в мир <b>профессиональной разработки</b>.\nЧто дальше? Посмотрите <a class=\"link-body-emphasis\" href=\"https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=course_landing_page\" target=\"_blank\">продолжение на Хекслете</a>\n",
+          "continue": "Продолжить обучение",
+          "convenient format": "Удобный формат",
+          "course_graduates": "Присоединяйтесь к более чем 80 000 студентов",
+          "cover_image": "Обложка курса",
+          "demo_description": "Попробуйте демо-урок без регистрации. Практика включена",
+          "demo_start": "Демо-урок",
+          "free_course": "Бесплатный курс для начинающих с нуля",
+          "hexlet_program_link": "Профессия и Трудоустройство",
+          "join": "Присоединиться",
+          "learning_conveniently": "Всё, что нужно для освоения новых тем, — на одном экране. Теория, практика и живые примеры идут рука об руку. Чёткая структура помогает учиться последовательно и не упускать важные детали",
+          "learning_preview": "Предварительный просмотр обучения",
+          "learning_program": "Программа обучения %{name}",
+          "lessons": "%{lessons_count} с практикой в браузере",
+          "more_than_support": "Больше чем Поддержка",
+          "no_registration": "Регистрация не требуется",
+          "ready": "Готовы попробовать?",
+          "real_life_challenges": "Вам не нужно ничего устанавливать — все задания выполняются прямо в браузере. Встроенный редактор кода, консоль и автоматические тесты делают обучение комфортным. А если что-то не получается, всегда можно посмотреть решение учителя",
+          "registration": "Зарегистрироваться",
+          "registration_description": "Начните прямо сейчас",
+          "restart": "Начать заново",
+          "reviews": "Отзывы",
+          "see_all_courses_in_category": "Все курсы \"%{name}\"",
+          "sign_up": "Зарегистрироваться",
+          "similar_courses": "Похожие курсы",
+          "sort_questions": "Разбираем вопросы",
+          "start": "Начать обучение %{name}",
+          "start_demo_lesson": "Демо урок",
+          "to_home_title": "Главная",
+          "try": "Начать обучение",
+          "try_without_registration": "Попробуйте без регистрации",
+          "updated_at": "Обновлен %{date}",
+          "without_registration": "Начните обучение сразу — первые уроки доступны без аккаунта. Понравится формат — зарегистрируетесь, чтобы сохранить прогресс"
+        },
+        "success": {
+          "add_review": "Не забудьте оставить отзыв, авторам курсов будет приятно (или не очень хехе). Это можно сделать <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://taplink.cc/codebasics_reviews\">тут</a>",
+          "changing_career_html": "<a target=\"_blank\" class=\"link-body-emphasis\" href=\"https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=finished_course_page\">Карьера</a>: если вы хотите обучиться новой профессии\n",
+          "choose_your_path": "🔍 Выберите свой путь:\n",
+          "description": "Теперь у вас есть новые знания и навыки. Для кого-то это первый шаг в новую профессию, для кого-то — повышение квалификации. Что дальше?\n",
+          "getting_new_skill_html": "<a target=\"_blank\" class=\"link-body-emphasis\" href=\"https://ru.hexlet.io/courses_for_programmers?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=finished_course_page\">Навыки и Инструменты</a>: если вы хотите прокачаться в новых для вас технологиях \n",
+          "header": "Поздравляем, вы завершили курс «%{name}»!",
+          "home": "На главную",
+          "leave_request": "Оставьте заявку на бесплатную консультацию — наш специалист поможет вам определиться и ответит на все вопросы. 👉",
+          "struggle_choosing": "💬 Не уверены, что выбрать?"
+        }
+      },
+      "leads": {
+        "new": {
+          "description": "Понимаем, что выбрать направление и план обучения непросто. Заполните форму — мы подскажем, с чего начать и как двигаться дальше, учитывая ваши интересы и цели",
+          "do_it": "📝 <b>Оставьте заявку</b> — наш специалист свяжется с вами, выслушает ваши потребности и поможет подобрать оптимальный план обучения.",
+          "header": "Консультация со специалистом",
+          "help_items": [
+            "Обсудить ваши цели и интересы, чтобы понять, в каком направлении двигаться дальше",
+            "Подобрать подходящие материалы и ресурсы, которые помогут вам разобраться в теме",
+            "Поделиться вариантами развития, которые будут актуальны и интересны в вашей ситуации"
+          ],
+          "how_can_we_help": "💡 Чем мы можем помочь?",
+          "return": "Вернуться"
+        }
+      },
+      "my": {
+        "show": {
+          "add_review": "Мы будем очень признательны, если вы оставите отзывы по пройденным курсам. Это можно сделать <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://taplink.cc/codebasics_reviews\">тут</a>",
+          "finished": "Завершенные курсы",
+          "started": "Начатые курсы"
+        }
+      },
+      "pages": {
+        "parts": {
+          "about": {
+            "meta": {
+              "description": "Code Basics — качественные интерактивные уроки по программированию бесплатно и онлайн, для всех.\n"
+            },
+            "title": "О проекте"
+          },
+          "authors": {
+            "meta": {
+              "description": "Code Basics открытый проект, в котором любой человек может стать автором курсов. Вот список шагов, которые нужно выполнить для этого.\n"
+            },
+            "title": "Автору"
+          },
+          "cookie_policy": {
+            "meta": {
+              "description": "Условия использования Cookie-файлов"
+            },
+            "title": "Условия использования Cookie-файлов"
+          },
+          "privacy": {
+            "meta": {
+              "description": "Политика конфиденциальности Code Basics"
+            },
+            "title": "Политика конфиденциальности"
+          },
+          "tos": {
+            "meta": {
+              "description": "Условия использования образовательной платформы Code Basics"
+            },
+            "title": "Условия использования образовательной платформы"
+          }
+        }
+      },
+      "passwords": {
+        "edit": {
+          "meta_description": "Установить новый пароль на Code Basics",
+          "new_password": "Новый пароль",
+          "title": "Смена пароля"
+        }
+      },
+      "remind_passwords": {
+        "new": {
+          "dont_have_account": "Нет аккаунта?",
+          "forgot_password": "Забыли пароль",
+          "login": "Войти",
+          "meta_description": "Восстановить пароль на Code Basics",
+          "register": "Регистрация",
+          "title": "Восстановление пароля",
+          "trying_to_login": "Пытаетесь войти?"
+        }
+      },
+      "reviews": {
+        "index": {
+          "add_review": "Попробовали наши курсы и хотите оставить отзыв? Это можно сделать <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://taplink.cc/codebasics_reviews\">тут</a>",
+          "course": "Курс %{language}",
+          "empty": "Похоже, что тут пока ничего нет",
+          "header": "Отзывы о Code Basics",
+          "meta": {
+            "description": "Честные отзывы наших студентов о курсах, процессе обучения и платформе\n"
+          },
+          "read_more": "Читать далее"
+        }
+      },
+      "sessions": {
+        "new": {
+          "dont_have_account": "Первый раз на сайте?",
+          "email": "Email",
+          "forgot_password": "Забыли пароль?",
+          "meta": {
+            "description": "Войти на Code Basics"
+          },
+          "password": "Пароль",
+          "register": "Регистрация",
+          "reset_password": "Восстановить",
+          "sign_in": "Вход",
+          "sign_in_with_github": "Войти через GitHub",
+          "title": "Вход"
+        }
+      },
+      "shared": {
+        "languages": {
+          "course_finished": "Курс пройден!"
+        },
+        "via_social_networks": {
+          "via_social_networks": "С помощью социальных сетей"
+        }
+      },
+      "users": {
+        "new": {
+          "confirmation_html": "Регистрируясь, вы соглашаетесь с <a href=\"%{url}\" class=\"text-decoration-none\" target=\"_blank\">условиями использования</a>",
+          "demo_html": "<b>Зарегистрируйтесь</b> для продолжения бесплатного обучения. Так мы сможем сохранить ваш прогресс и открыть доступ к нашему ассистенту",
+          "have_account": "Есть аккаунт?",
+          "meta": {
+            "description": "Зарегистрироваться на Code Basics"
+          },
+          "sign_in": "Войти",
+          "sign_up": "Регистрация",
+          "title": "Регистрация"
+        }
+      }
     }
   },
   "ru": {
@@ -2538,7 +4098,9 @@
             "survey_scenarios": "Сценарии",
             "surveys": "Опросы",
             "surveys_analytics": "Аналитика опросов",
-            "users": "Пользователи"
+            "users": "Пользователи",
+            "authentication": "Аутентификация",
+            "menu": "Меню"
           }
         },
         "root": {
@@ -2805,6 +4367,11 @@
           },
           "new": {
             "header": "Новая категория"
+          },
+          "form": {
+            "main": "Основное",
+            "items": "Элементы",
+            "qna_items": "Вопросы и ответы"
           }
         },
         "language_landing_pages": {
@@ -2826,7 +4393,8 @@
         },
         "language_lesson_reviews": {
           "index": {
-            "header": "Ревью уроков"
+            "header": "Ревью уроков",
+            "data": "Данные"
           }
         },
         "language_lessons": {
@@ -2836,7 +4404,11 @@
         },
         "languages": {
           "edit": {
-            "header": "Редактирование %{id}"
+            "header": "Редактирование %{id}",
+            "versions": "Версии",
+            "load_new_version": "Загрузить новую версию",
+            "id": "ID",
+            "result": "Результат"
           },
           "index": {
             "add_new_language": "Добавить курс",
@@ -2848,13 +4420,19 @@
         },
         "leads": {
           "index": {
-            "header": "Лиды"
+            "header": "Лиды",
+            "data": "Данные",
+            "answers": "Ответы",
+            "courses": "Курсы"
           }
         },
         "management": {
           "users": {
             "edit": {
-              "header": "Редактирование пользователя"
+              "header": "Редактирование пользователя",
+              "progress": "Прогресс",
+              "language": "Язык",
+              "count": "Количество"
             },
             "filter": {
               "from": "Начал прохождение с"

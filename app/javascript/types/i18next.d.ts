@@ -8,5 +8,8 @@ declare module 'i18next' {
     resources: Resources;
   }
 
-  type TFunction = (key: string, options?: Record<string, unknown>) => string;
+  interface TFunction {
+    // biome-ignore lint/style/useShorthandFunctionType: Augment i18next's interface type.
+    (key: string, options?: Record<string, unknown>): string;
+  }
 }

@@ -19,6 +19,7 @@ export default defineConfig({
     output: 'app/javascript/locales/{{language}}/{{namespace}}.ts',
     outputFormat: 'ts',
     removeUnusedKeys: false,
+    defaultNS: 'web',
     primaryLanguage: 'ru',
   },
 

@@ -30,6 +30,7 @@ function DataBox({
   review: LanguageLessonReview;
   col: keyof LanguageLessonReview;
 }) {
+  const { t } = useTranslation();
   const [opened, handlers] = useDisclosure(false);
   if (!review[col]) {
     return <Box ta="center">-</Box>;
@@ -37,7 +38,7 @@ function DataBox({
   return (
     <Box ta="center">
       <Button variant="subtle" onClick={handlers.open}>
-        data
+        {t(($) => $.admin.language_lesson_reviews.index.data)}
       </Button>
       <Modal opened={opened} onClose={handlers.close} size="50vw">
         <MarkdownViewer>{review.summary ?? ''}</MarkdownViewer>

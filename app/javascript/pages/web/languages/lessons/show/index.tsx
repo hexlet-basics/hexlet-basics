@@ -45,6 +45,7 @@ import { useLessonStore } from './store.tsx';
 import type { LessonSharedProps } from './types.ts';
 
 function HtmlPreviewBlock() {
+  const { t: tCommon } = useTranslation('common');
   const { course } = usePage<LessonSharedProps>().props;
   const currentTab = useLessonStore((state) => state.currentTab);
   const content = useLessonStore((state) => state.content);
@@ -57,7 +58,7 @@ function HtmlPreviewBlock() {
   }
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>{tCommon(($) => $.loading)}</div>}>
       <HTMLPreview html={content} />
     </Suspense>
   );

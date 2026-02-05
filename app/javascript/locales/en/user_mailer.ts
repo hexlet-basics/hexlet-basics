@@ -1,9 +1,11 @@
 export default {
   reset_password: {
-    change_password: '',
-    link: '',
-    requested_to_change_password: '',
-    subject: '',
-    you_dont_want_to_change: '',
+    change_password: 'Сменить пароль',
+    link: 'Ссылка для изменения пароля на сайте code-basics.com',
+    requested_to_change_password:
+      'Вы запросили ссылку для изменения вашего пароля на code-basics.com. Чтобы изменить пароль – перейдите по этой ссылке или нажмите на кнопку ниже.',
+    subject: 'Смена пароля',
+    you_dont_want_to_change:
+      'Если вы не запрашивали изменения пароля, просто проигнорируйте это письмо. Ваш пароль не изменится пока вы не перейдете по ссылке и не введете новый пароль.',
   },
 } as const;

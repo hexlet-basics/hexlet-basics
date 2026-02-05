@@ -1,51 +1,75 @@
 export default {
   distance_in_words: {
     about_x_hours: {
+      few: 'около %{count} часов',
+      many: 'около %{count} часов',
       one: 'alrededor de %{count} hora',
       other: 'alrededor de %{count} horas',
     },
     about_x_months: {
+      few: 'около %{count} месяцев',
+      many: 'около %{count} месяцев',
       one: 'alrededor de %{count} mes',
       other: 'alrededor de %{count} meses',
     },
     about_x_years: {
+      few: 'около %{count} лет',
+      many: 'около %{count} лет',
       one: 'alrededor de %{count} año',
       other: 'alrededor de %{count} años',
     },
     almost_x_years: {
+      few: 'почти %{count} года',
+      many: 'почти %{count} лет',
       one: 'casi %{count} año',
       other: 'casi %{count} años',
     },
     half_a_minute: 'medio minuto',
     less_than_x_minutes: {
+      few: 'меньше %{count} минут',
+      many: 'меньше %{count} минут',
       one: 'menos de %{count} minuto',
       other: 'menos de %{count} minutos',
     },
     less_than_x_seconds: {
+      few: 'меньше %{count} секунд',
+      many: 'меньше %{count} секунд',
       one: 'menos de %{count} segundo',
       other: 'menos de %{count} segundos',
     },
     over_x_years: {
+      few: 'больше %{count} лет',
+      many: 'больше %{count} лет',
       one: 'más de %{count} año',
       other: 'más de %{count} años',
     },
     x_days: {
+      few: '%{count} дня',
+      many: '%{count} дней',
       one: '%{count} día',
       other: '%{count} días',
     },
     x_minutes: {
+      few: '%{count} минуты',
+      many: '%{count} минут',
       one: '%{count} minuto',
       other: '%{count} minutos',
     },
     x_months: {
+      few: '%{count} месяца',
+      many: '%{count} месяцев',
       one: '%{count} mes',
       other: '%{count} meses',
     },
     x_seconds: {
+      few: '%{count} секунды',
+      many: '%{count} секунд',
       one: '%{count} segundo',
       other: '%{count} segundos',
     },
     x_years: {
+      few: '%{count} года',
+      many: '%{count} лет',
       one: '%{count} año',
       other: '%{count} años',
     },

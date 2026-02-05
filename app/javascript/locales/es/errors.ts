@@ -24,14 +24,20 @@ export default {
     required: 'debe existir',
     taken: 'ya está en uso',
     too_long: {
+      few: 'слишком большой длины (не может быть больше чем %{count} символа)',
+      many: 'слишком большой длины (не может быть больше чем %{count} символов)',
       one: 'es demasiado largo (%{count} carácter máximo)',
       other: 'es demasiado largo (%{count} caracteres máximo)',
     },
     too_short: {
+      few: 'недостаточной длины (не может быть меньше %{count} символов)',
+      many: 'недостаточной длины (не может быть меньше %{count} символов)',
       one: 'es demasiado corto (%{count} carácter mínimo)',
       other: 'es demasiado corto (%{count} caracteres mínimo)',
     },
     wrong_length: {
+      few: 'неверной длины (может быть длиной ровно %{count} символа)',
+      many: 'неверной длины (может быть длиной ровно %{count} символов)',
       one: 'no tiene la longitud correcta (%{count} carácter exactos)',
       other: 'no tiene la longitud correcta (%{count} caracteres exactos)',
     },
@@ -39,6 +45,8 @@ export default {
   template: {
     body: 'Se encontraron problemas con los siguientes campos:',
     header: {
+      few: '%{model}: сохранение не удалось из-за %{count} ошибок',
+      many: '%{model}: сохранение не удалось из-за %{count} ошибок',
       one: 'No se pudo guardar este/a %{model} porque se encontró %{count} error',
       other:
         'No se pudo guardar este/a %{model} porque se encontraron %{count} errores',

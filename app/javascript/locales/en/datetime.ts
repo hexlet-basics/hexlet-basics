@@ -1,51 +1,75 @@
 export default {
   distance_in_words: {
     about_x_hours: {
+      few: 'около %{count} часов',
+      many: 'около %{count} часов',
       one: 'about %{count} hour',
       other: 'about %{count} hours',
     },
     about_x_months: {
+      few: 'около %{count} месяцев',
+      many: 'около %{count} месяцев',
       one: 'about %{count} month',
       other: 'about %{count} months',
     },
     about_x_years: {
+      few: 'около %{count} лет',
+      many: 'около %{count} лет',
       one: 'about %{count} year',
       other: 'about %{count} years',
     },
     almost_x_years: {
+      few: 'почти %{count} года',
+      many: 'почти %{count} лет',
       one: 'almost %{count} year',
       other: 'almost %{count} years',
     },
     half_a_minute: 'half a minute',
     less_than_x_minutes: {
+      few: 'меньше %{count} минут',
+      many: 'меньше %{count} минут',
       one: 'less than a minute',
       other: 'less than %{count} minutes',
     },
     less_than_x_seconds: {
+      few: 'меньше %{count} секунд',
+      many: 'меньше %{count} секунд',
       one: 'less than %{count} second',
       other: 'less than %{count} seconds',
     },
     over_x_years: {
+      few: 'больше %{count} лет',
+      many: 'больше %{count} лет',
       one: 'over %{count} year',
       other: 'over %{count} years',
     },
     x_days: {
+      few: '%{count} дня',
+      many: '%{count} дней',
       one: '%{count} day',
       other: '%{count} days',
     },
     x_minutes: {
+      few: '%{count} минуты',
+      many: '%{count} минут',
       one: '%{count} minute',
       other: '%{count} minutes',
     },
     x_months: {
+      few: '%{count} месяца',
+      many: '%{count} месяцев',
       one: '%{count} month',
       other: '%{count} months',
     },
     x_seconds: {
+      few: '%{count} секунды',
+      many: '%{count} секунд',
       one: '%{count} second',
       other: '%{count} seconds',
     },
     x_years: {
+      few: '%{count} года',
+      many: '%{count} лет',
       one: '%{count} year',
       other: '%{count} years',
     },
@@ -57,9 +81,5 @@ export default {
     month: 'Month',
     second: 'Seconds',
     year: 'Year',
-  },
-  relative: {
-    future: 'in %{time}',
-    past: '%{time} ago',
   },
 } as const;

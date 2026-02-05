@@ -144,12 +144,16 @@ export default function AdminLayout({ children, header }: Props) {
       >
         <AppShell.Header>
           <NavbarBlock onToggle={toggleNavbar} opened={navbarOpened} />
-          <Drawer opened={opened} onClose={close} title="Authentication">
+          <Drawer
+            opened={opened}
+            onClose={close}
+            title={tLayouts(($) => $.web.admin.application.authentication)}
+          >
             <NavbarMenu />
           </Drawer>
           <Group justify="end">
             <Button m="xs" variant="default" onClick={open} hiddenFrom="sm">
-              Menu
+              {tLayouts(($) => $.web.admin.application.menu)}
             </Button>
           </Group>
         </AppShell.Header>

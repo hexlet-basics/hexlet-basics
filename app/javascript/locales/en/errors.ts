@@ -1,6 +1,4 @@
 export default {
-  connection_refused:
-    'Oops! Failed to connect to the Web Console middleware.\nPlease make sure a rails development server is running.\n',
   format: '%{attribute} %{message}',
   messages: {
     accepted: 'must be accepted',
@@ -22,19 +20,24 @@ export default {
     not_an_integer: 'must be an integer',
     odd: 'must be odd',
     other_than: 'must be other than %{count}',
-    password_too_long: 'is too long',
     present: 'must be blank',
     required: 'must exist',
     taken: 'has already been taken',
     too_long: {
+      few: 'слишком большой длины (не может быть больше чем %{count} символа)',
+      many: 'слишком большой длины (не может быть больше чем %{count} символов)',
       one: 'is too long (maximum is %{count} character)',
       other: 'is too long (maximum is %{count} characters)',
     },
     too_short: {
+      few: 'недостаточной длины (не может быть меньше %{count} символов)',
+      many: 'недостаточной длины (не может быть меньше %{count} символов)',
       one: 'is too short (minimum is %{count} character)',
       other: 'is too short (minimum is %{count} characters)',
     },
     wrong_length: {
+      few: 'неверной длины (может быть длиной ровно %{count} символа)',
+      many: 'неверной длины (может быть длиной ровно %{count} символов)',
       one: 'is the wrong length (should be %{count} character)',
       other: 'is the wrong length (should be %{count} characters)',
     },
@@ -42,12 +45,10 @@ export default {
   template: {
     body: 'There were problems with the following fields:',
     header: {
+      few: '%{model}: сохранение не удалось из-за %{count} ошибок',
+      many: '%{model}: сохранение не удалось из-за %{count} ошибок',
       one: '%{count} error prohibited this %{model} from being saved',
       other: '%{count} errors prohibited this %{model} from being saved',
     },
   },
-  unacceptable_request:
-    'A supported version is expected in the Accept header.\n',
-  unavailable_session:
-    "Session %{id} is no longer available in memory.\n\nIf you happen to run on a multi-process server (like Unicorn or Puma) the process\nthis request hit doesn't store %{id} in memory. Consider turning the number of\nprocesses/workers to one (1) or using a different server in development.\n",
 } as const;

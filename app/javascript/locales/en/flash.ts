@@ -1,17 +1,17 @@
 export default {
-  actions: {
-    create: {
-      notice: '%{resource_name} was successfully created.',
-    },
-    destroy: {
-      alert: '%{resource_name} could not be destroyed.',
-      notice: '%{resource_name} was successfully destroyed.',
-    },
-    update: {
-      notice: '%{resource_name} was successfully updated.',
-    },
-  },
   web: {
+    account: {
+      profiles: {
+        destroy: {
+          error: 'Возникла ошибка при удалении аккаунта',
+          success: 'Аккаунт успешно удален',
+        },
+        update: {
+          error: 'Ошибка обновления',
+          success: 'Данные успешно обновлены',
+        },
+      },
+    },
     admin: {
       blog_posts: {
         create: {
@@ -51,10 +51,24 @@ export default {
         success: 'You have signed in successfully. You can start learning now.',
       },
     },
+    blog_posts: {
+      likes: {
+        create: {
+          notice: 'Ваш лайк уже засчитан :)',
+          success: 'Спасибо за лайк!',
+        },
+      },
+    },
+    books: {
+      create_request: {
+        success:
+          'Ура, теперь книга доступна для скачивания! Нажмите на кнопку и книга скачается',
+      },
+    },
     google_auth: {
       one_tap: {
-        failure:
-          "We couldn't get data from Google! Requires setting up your Google account!",
+        error:
+          'Мы не смогли получить данные из Google! Проверьте настройки вашего аккаунта Google!',
         success: 'You have signed in successfully. You can start learning now.',
       },
     },
@@ -72,6 +86,16 @@ export default {
         warning:
           'The Language has lessons only in russian. Switch locale if you can read it :)',
       },
+      success: {
+        error: 'В этом курсе есть уроки, которые вы не завершили',
+      },
+    },
+    leads: {
+      create: {
+        error: 'Проверьте ошибки в форме',
+        success:
+          'Заявка отправлена! Свяжемся с вами в течение одного-двух рабочих дней. Или напишите нам в <a target="_blank" href="https://t.me/WelcomeCodebasicsBot">телеграм</a> чтобы получить помощь быстрее',
+      },
     },
     passwords: {
       update: {
@@ -81,16 +105,24 @@ export default {
     },
     remind_passwords: {
       create: {
+        error: 'В форме есть ошибки',
         success: 'A password recovery instruction was sent to your email.',
       },
     },
     sessions: {
       create: {
+        error: 'В форме есть ошибки',
         success: 'You have signed in successfully. You can start learning now.',
+      },
+    },
+    surveys: {
+      show: {
+        success: 'Вы уже отвечали на этот опрос. Возвращаемся обратно',
       },
     },
     users: {
       create: {
+        error: 'Упс, кажется в форме есть ошибки',
         success: 'You have signed in successfully. You can start learning now.',
       },
     },

@@ -3,120 +3,128 @@ export default {
     account: {
       profiles: {
         destroy: {
-          error: '',
-          success: '',
+          error: 'Возникла ошибка при удалении аккаунта',
+          success: 'Аккаунт успешно удален',
         },
         update: {
-          error: '',
-          success: '',
+          error: 'Ошибка обновления',
+          success: 'Данные успешно обновлены',
         },
       },
     },
     admin: {
       blog_posts: {
         create: {
-          error: '',
-          success: '',
+          error: 'Что-то пошло не так',
+          success: 'Пост успешно созданн',
         },
         update: {
-          error: '',
-          success: '',
+          error: 'Что-то пошло не так',
+          success: 'Пост успешно обновлен!',
         },
       },
       languages: {
         update: {
-          error: '',
-          success: '',
+          error: 'Что-то пошло не так',
+          success: 'Язык успешно сохранен',
         },
       },
       reviews: {
         create: {
-          error: '',
-          success: '',
+          error: 'Что-то пошло не так',
+          success: 'Отзыв успешно добавлен',
         },
         update: {
-          error: '',
-          success: '',
+          error: 'Что-то пошло не так',
+          success: 'Отзыв успешно обновлен!',
         },
       },
     },
     application: {
       base: {
-        error: '',
-        success: '',
+        error: 'Пожалуйста проверьте ошибки',
+        success: 'Действие завершено успешно',
       },
     },
     auth: {
       callback: {
-        success: '',
+        success: 'Добро пожаловать! Пора немного поучиться -)',
       },
     },
     blog_posts: {
       likes: {
         create: {
-          notice: '',
-          success: '',
+          notice: 'Ваш лайк уже засчитан :)',
+          success: 'Спасибо за лайк!',
         },
       },
     },
     books: {
       create_request: {
-        success: '',
+        success:
+          'Ура, теперь книга доступна для скачивания! Нажмите на кнопку и книга скачается',
       },
     },
     google_auth: {
       one_tap: {
-        error: '',
-        success: '',
+        error:
+          'Мы не смогли получить данные из Google! Проверьте настройки вашего аккаунта Google!',
+        success: 'Добро пожаловать! Пора немного поучиться -)',
       },
     },
     languages: {
       lessons: {
         show: {
-          lesson_not_found: '',
+          lesson_not_found: 'Урок не найден, но вы можете начать другие!',
         },
       },
       show: {
-        empty_language_current_version: '',
-        language_in_development_html: '',
-        warning: '',
+        empty_language_current_version:
+          'Язык находится в разработке, пожалуйсте, зайдите позже или попробуйте любой другой доступный язык',
+        language_in_development_html:
+          'Курс по языку %{language} еще в разработке.\nВы можете помочь и отправить пулл-реквест с новыми уроками или дополнить те,\nкоторые уже есть <a href="%{link_to_repo}" target="_blank" rel="noopener">%{link_to_repo}</a>.\nМы подготовили рекомендации по написанию текстов <a href="%{link_to_recommendations}" target="_blank" rel="noopener">по ссылке</a>\n',
+        warning:
+          'Попробуйте переключить язык, возможно там найдется нужный урок! :)',
       },
       success: {
-        error: '',
+        error: 'В этом курсе есть уроки, которые вы не завершили',
       },
     },
     leads: {
       create: {
-        error: '',
-        success: '',
+        error: 'Проверьте ошибки в форме',
+        success:
+          'Заявка отправлена! Свяжемся с вами в течение одного-двух рабочих дней. Или напишите нам в <a target="_blank" href="https://t.me/WelcomeCodebasicsBot">телеграм</a> чтобы получить помощь быстрее',
       },
     },
     passwords: {
       update: {
-        success: '',
+        success: 'Пароль изменен. Можете входить с вашим новым паролем.',
       },
     },
     remind_passwords: {
       create: {
-        error: '',
-        success: '',
+        error: 'В форме есть ошибки',
+        success:
+          'Мы отправили вам письмо с инструкциями по восстановлению пароля',
       },
     },
     sessions: {
       create: {
-        error: '',
-        success: '',
+        error: 'В форме есть ошибки',
+        success:
+          'Внутри лучше чем снаружи. Запоминаем прогресс и ведем к свету',
       },
     },
     surveys: {
       show: {
-        success: '',
+        success: 'Вы уже отвечали на этот опрос. Возвращаемся обратно',
       },
     },
     users: {
       create: {
-        error: '',
-        success: '',
+        error: 'Упс, кажется в форме есть ошибки',
+        success: 'Добро пожаловать! Учитесь, практикуйтесь, кайфуйте',
       },
     },
   },

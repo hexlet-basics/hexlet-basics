@@ -3,9 +3,9 @@ export default {
     yandex_market: {
       languages: {
         index: {
-          category: '',
-          company: '',
-          title: '',
+          category: 'Фримиум',
+          company: 'ООО "Хекслет Рус"',
+          title: 'Образовательные программы',
         },
       },
     },

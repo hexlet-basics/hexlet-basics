@@ -3,7 +3,6 @@ export default {
     format: {
       delimiter: ',',
       format: '%u%n',
-      negative_format: '-%u%n',
       precision: 2,
       separator: '.',
       significant: false,
@@ -41,6 +40,8 @@ export default {
       format: '%n %u',
       units: {
         byte: {
+          few: 'байта',
+          many: 'байт',
           one: 'Byte',
           other: 'Bytes',
         },
@@ -50,11 +51,9 @@ export default {
         mb: 'MB',
         pb: 'PB',
         tb: 'TB',
-        zb: 'ZB',
       },
     },
   },
-  nth: {},
   percentage: {
     format: {
       delimiter: '',

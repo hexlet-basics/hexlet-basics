@@ -5,6 +5,7 @@ export default {
     adding: 'Addmin',
     editing: 'Editing',
     list: 'List',
+    remove: 'Удалить',
   },
   read: 'Read',
   reset: 'Reset',

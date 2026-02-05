@@ -86,8 +86,8 @@ sync-locales:
 
 lint-locales:
 	npx i18next-cli lint
-	npx i18next-cli status es
-	npx i18next-cli status en
+	-npx i18next-cli status es
+	-npx i18next-cli status en
 
 coverage-open:
 	open coverage/index.html

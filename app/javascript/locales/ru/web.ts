@@ -40,6 +40,11 @@ export default {
       'new': {
         header: 'Новая категория',
       },
+      form: {
+        main: 'Основное',
+        items: 'Элементы',
+        qna_items: 'Вопросы и ответы',
+      },
     },
     language_landing_pages: {
       edit: {
@@ -61,6 +66,7 @@ export default {
     language_lesson_reviews: {
       index: {
         header: 'Ревью уроков',
+        data: 'Данные',
       },
     },
     language_lessons: {
@@ -71,6 +77,10 @@ export default {
     languages: {
       edit: {
         header: 'Редактирование %{id}',
+        versions: 'Версии',
+        load_new_version: 'Загрузить новую версию',
+        id: 'ID',
+        result: 'Результат',
       },
       index: {
         add_new_language: 'Добавить курс',
@@ -83,12 +93,18 @@ export default {
     leads: {
       index: {
         header: 'Лиды',
+        data: 'Данные',
+        answers: 'Ответы',
+        courses: 'Курсы',
       },
     },
     management: {
       users: {
         edit: {
           header: 'Редактирование пользователя',
+          progress: 'Прогресс',
+          language: 'Язык',
+          count: 'Количество',
         },
         filter: {
           from: 'Начал прохождение с',

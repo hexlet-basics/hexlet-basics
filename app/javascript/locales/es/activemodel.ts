@@ -1,19 +1,19 @@
 export default {
   attributes: {
     remind_password_form: {
-      email: '',
+      email: 'Email',
     },
     user_password_form: {
-      password: '',
+      password: 'Новый пароль',
     },
     user_sign_in_form: {
-      email: '',
-      password: '',
+      email: 'Email',
+      password: 'Пароль',
     },
     user_sign_up_form: {
-      email: '',
-      first_name: '',
-      password: '',
+      email: 'Email',
+      first_name: 'Имя',
+      password: 'Пароль',
     },
   },
   errors: {
@@ -21,20 +21,22 @@ export default {
       remind_password_form: {
         attributes: {
           email: {
-            blank: '',
-            user_does_not_exist: '',
+            blank: 'Email не может быть пустым',
+            user_does_not_exist:
+              'Пользователь не найден. Попробуйте зарегистрироваться',
           },
         },
       },
       sign_in_form: {
         attributes: {
           email: {
-            blank: '',
-            user_does_not_exist_html: '',
+            blank: 'Email не может быть пустым',
+            user_does_not_exist_html:
+              'Пользователь не найден. Попробуйте зарегистрироваться',
           },
           password: {
-            blank: '',
-            cannot_sign_in: '',
+            blank: 'Пароль не может быть пустым',
+            cannot_sign_in: 'Пароль не подходит. Проверьте раскладку',
           },
         },
       },

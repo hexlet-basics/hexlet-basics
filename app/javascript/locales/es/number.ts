@@ -24,12 +24,16 @@ export default {
       units: {
         billion: 'mil millones',
         million: {
+          few: 'миллионов',
+          many: 'миллионов',
           one: 'millón',
           other: 'millones',
         },
         quadrillion: 'mil billones',
         thousand: 'mil',
         trillion: {
+          few: 'триллионов',
+          many: 'триллионов',
           one: 'billón',
           other: 'billones',
         },
@@ -46,6 +50,8 @@ export default {
       format: '%n %u',
       units: {
         byte: {
+          few: 'байта',
+          many: 'байт',
           one: 'Byte',
           other: 'Bytes',
         },

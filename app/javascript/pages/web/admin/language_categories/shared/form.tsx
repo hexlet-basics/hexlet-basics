@@ -64,14 +64,14 @@ export default function Form({ data, url, method }: Props) {
   return (
     <form onSubmit={submit}>
       <Fieldset p="lg" mb="xl">
-        <legend>Main</legend>
+        <legend>{t(($) => $.admin.language_categories.form.main)}</legend>
         <TextInput {...getInputProps('name')} autoFocus />
         <TextInput {...getInputProps('header')} />
         <TextInput {...getInputProps('slug')} />
         <Textarea {...getInputProps('description')} rows={5} />
       </Fieldset>
       <Fieldset p="lg" mb="xl">
-        <legend>Items</legend>
+        <legend>{t(($) => $.admin.language_categories.form.items)}</legend>
         {itemsField.fields.map((field, index) => (
           <Box key={field._internalId} mb="xl">
             <input
@@ -110,7 +110,7 @@ export default function Form({ data, url, method }: Props) {
         </Button>
       </Fieldset>
       <Fieldset p="lg" mb="xl">
-        <legend>QNAItems</legend>
+        <legend>{t(($) => $.admin.language_categories.form.qna_items)}</legend>
         {qnaItemsField.fields.map((field, index) => (
           <Box key={field._internalId} mb="xl">
             <input

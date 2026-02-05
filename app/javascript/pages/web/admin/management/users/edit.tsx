@@ -47,12 +47,20 @@ export default function Edit({ user, progress }: Props) {
         </Grid.Col>
         <Grid.Col>
           <Stack>
-            <Title order={2}>Progress</Title>
+            <Title order={2}>
+              {t(($) => $.admin.management.users.edit.progress)}
+            </Title>
             <DataTable
               records={progress}
               columns={[
-                { accessor: 'language', title: 'Language' },
-                { accessor: 'count', title: 'Count' },
+                {
+                  accessor: 'language',
+                  title: t(($) => $.admin.management.users.edit.language),
+                },
+                {
+                  accessor: 'count',
+                  title: t(($) => $.admin.management.users.edit.count),
+                },
               ]}
             />
           </Stack>

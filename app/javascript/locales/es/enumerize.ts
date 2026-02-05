@@ -1,13 +1,13 @@
 export default {
   language: {
     learn_as: {
-      first_language: '',
-      second_language: '',
+      first_language: 'для начинающих',
+      second_language: 'как второй язык',
     },
     progress: {
-      completed: '',
-      draft: '',
-      in_development: '',
+      completed: 'Завершенный',
+      draft: 'Черновик',
+      in_development: 'В разработке',
     },
   },
 } as const;

@@ -1,13 +1,12 @@
 export default {
   account: {
     profiles: {
-      destroy: {
-        success: 'Account successfully deleted',
-      },
       edit: {
         confirm_delete: 'Are you sure you want to delete your account?',
         delete: 'Delete account',
-        meta_description: 'Profile',
+        meta: {
+          description: 'Здесь меняются личные данные',
+        },
         title: 'Profile editing',
       },
     },
@@ -30,23 +29,82 @@ export default {
         dashboard: 'Dashboard',
       },
     },
+    language_categories: {
+      edit: {
+        header: 'Редактирование %{id}',
+      },
+      index: {
+        add_new_language: 'Добавить категорию',
+        header: 'Категории',
+      },
+      'new': {
+        header: 'Новая категория',
+      },
+      form: {
+        main: 'Main',
+        items: 'Items',
+        qna_items: 'Q&A Items',
+      },
+    },
+    language_landing_pages: {
+      edit: {
+        header: 'Редактирование %{id}',
+      },
+      index: {
+        add_new_language: 'Добавить лендинг',
+        header: 'Лендинги',
+      },
+      'new': {
+        header: 'Новый лендинг',
+      },
+    },
+    language_lesson_members: {
+      index: {
+        header: 'Прохождение уроков',
+      },
+    },
+    language_lesson_reviews: {
+      index: {
+        header: 'Ревью уроков',
+        data: 'Data',
+      },
+    },
+    language_lessons: {
+      index: {
+        header: 'Уроки',
+      },
+    },
     languages: {
       edit: {
         header: 'Edit Language',
+        versions: 'Versions',
+        load_new_version: 'Load new version',
+        id: 'ID',
+        result: 'Result',
       },
       index: {
         add_new_language: 'Add new language',
         header: 'Languages',
-        languages: 'Languages',
       },
       'new': {
         header: 'New Language',
+      },
+    },
+    leads: {
+      index: {
+        header: 'Лиды',
+        data: 'Data',
+        answers: 'Answers',
+        courses: 'Courses',
       },
     },
     management: {
       users: {
         edit: {
           header: 'Edit User',
+          progress: 'Progress',
+          language: 'Language',
+          count: 'Count',
         },
         filter: {
           from: 'From',
@@ -56,6 +114,11 @@ export default {
           header: 'Users',
           search_by_email: 'Search by email',
         },
+      },
+    },
+    messages: {
+      index: {
+        header: 'Разговоры с AI',
       },
     },
     reviews: {
@@ -69,6 +132,41 @@ export default {
       'new': {
         header: 'New Review',
       },
+    },
+    survey_answers: {
+      index: {
+        header: 'Ответы на опросы',
+      },
+    },
+    survey_scenarios: {
+      edit: {
+        header: 'Редактирование сценария',
+      },
+      index: {
+        header: 'Сценарии',
+      },
+      'new': {
+        header: 'Новый сценарий',
+      },
+    },
+    surveys: {
+      edit: {
+        header: 'Редактирование опроса',
+      },
+      index: {
+        header: 'Опросы',
+      },
+      'new': {
+        header: 'Новый опрос',
+      },
+    },
+    title: 'Админка Code-Basics',
+  },
+  blocks: {
+    lead_form_block: {
+      description1: 'Ответим в течение дня',
+      description2:
+        'Нам можно написать в <a target="_blank" href="https://t.me/WelcomeCodebasicsBot">телеграм</a>',
     },
   },
   blog_posts: {
@@ -84,16 +182,116 @@ export default {
       blog_posts: 'Recommended Posts',
       breadcrumbs: 'Breadcrumbs',
       courses: 'Recommended Courses',
+      discuss: 'Обсуждайте, помогайте и делитесь опытом',
+      join_community: 'Присоединяйтесь к сообществу Хекслет',
+      link: 'Перейти в сообщество',
       to_home_title: 'To home',
     },
   },
-  cases: {
-    for_teachers: 'For school teachers',
-    link: 'Go to',
-    meta: {
-      description: 'Examples of using Code Basics in different areas',
+  books: {
+    show: {
+      chapter: 'Глава %{number}',
+      description:
+        'С нуля до трудоустройства. Этот учебник — ваш путеводитель в профессию программиста. Он создан для тех, кто хочет начать с нуля и шаг за шагом дойти до трудоустройства в одной из самых востребованных и перспективных областей\n',
+      download: 'Скачать книгу',
+      features: {
+        direction: 'Направление',
+        direction_explanation:
+          'Узнаете какие бывают виды разработки и языки. Куда стоит идти и почему',
+        interview: 'Интервью',
+        interview_explanation:
+          'Подготовитесь к прохождению собеседований и испытательного срока',
+        plan: 'План',
+        plan_explanation:
+          'Получите готовый план обучения, с темами, ресурсами для изучения и проектами',
+        resume: 'Резюме',
+        resume_explanation:
+          'Научитесь правильно оформлять резюме и находить подходящие вакансии',
+      },
+      freebook: 'Бесплатная электронная книга',
+      header: 'Книга: Профессия программист. С нуля до трудоустройства\n',
+      request: 'Запросить книгу',
+      toc: 'Содержание',
     },
-    title: 'Cases',
+  },
+  cases: {
+    for_teachers: {
+      description:
+        'Бесплатные курсы с тренажером прямо в браузере. Много практики и ИИ-ассистент',
+      early_career_guidance: 'Стимулируем раннюю профориентацию:',
+      early_career_guidance_list: [
+        'Показываем программирование изнутри, чтобы принять взвешенное решение об изучении будущей профессии',
+        'Даем возможность быстро погрузиться в язык программирования и понять, нравится ли он ученику',
+        'Помогаем увидеть базовые примеры реальных задач, чтобы присмотреться к профессиональной рутине',
+      ],
+      header: 'Эффективное обучение школьников и студентов программированию',
+      how_to_learn_programming:
+        'Как пользователи изучают программирование в CodeBasics?',
+      how_to_learn_programming_cards: [
+        {
+          title:
+            'Интеграция без интеграции: чтобы внедрить CodeBasics в образовательный процесс, потребуется ПК с доступом в интернет',
+          subtitle:
+            'Нужно открыть браузер, зарегистрироваться и начать проходить интересующий курс',
+          img: 'integration-icon',
+        },
+        {
+          title:
+            'Теория, подкрепленная практикой: на платформе уже сейчас доступны тренажеры по PHP, Java, JS, Python, Ruby, HTML, CSS, Racket, Elixir и Go',
+          subtitle: 'Можно проходить несколько курсов одновременно',
+          img: 'practice-icon',
+        },
+        {
+          title:
+            'Интерактивный формат: система автоматически проверяет выполненные задания, показывает ошибки и правильное решение, а также детальный вывод',
+          subtitle:
+            'Если что-то не получается, можно воспользоваться Решением учителя',
+          img: 'interactive-format-icon',
+        },
+        {
+          title:
+            'Пользователям доступен Виртуальный наставник на основе Искусственного интеллекта',
+          subtitle: '',
+          img: 'discussion-icon',
+        },
+      ],
+      integrate_into_education: 'Зачем интегрировать CodeBasics в обучение?',
+      integrate_now: 'Интегрируйте CodeBasics в учебную программу сейчас!',
+      interactive_approach: 'Ориентируемся на практику и интерактивный подход:',
+      interactive_approach_list: [
+        'Сопровождаем теоретические материалы курса практическими заданиями прямо в браузере',
+        'Даем мгновенную обратную связь: показываем правильное решение, даем вывод по каждому тесту',
+        'Подключаем ИИ-наставника, который объясняет ученикам теорию или суть задания',
+      ],
+      lay_programming_foundations:
+        'CodeBasics закладывает основы программирования в интерактивной форме, за что получил 3-е место в номинации «Лучший внеплатформенный онлайн-курс» в 2020 году на Международном конкурсе открытых онлайн-курсов EdCrunch Award OOC',
+      meta: {
+        description:
+          'Курсы программирования для детей и подростков от онлайн-школы Хекслет. Все занятия разработаны опытными педагогами и программистами, с учетом возрастных особенностей детей. Обучение программированию онлайн',
+      },
+      open_browser_and_sign_up: 'Просто откройте браузер и зарегистрируйтесь',
+      programming_basic_list: [
+        'Объясняем, как функционируют системы в общем, а не специфику технологий на старте',
+        'Обучаем начинающих программистов лучшим стандартам кодирования, например правильному именованию функций',
+        'Охватываем основные языки программирования и продолжаем добавлять курсы по современным технологиям',
+      ],
+      programming_competently: 'Закладываем основы программирования грамотно:',
+      quotes_icon: 'Ковычки',
+      select_course: 'Выбрать курс',
+      sign_up: 'Зарегистрироваться',
+      sign_up_and_start_learning:
+        'Зарегистрируйтесь и начните обучать ваших учеников программированию прямо сейчас',
+      title: 'Обучение программированию школьников и студентов',
+      try: 'Попробовать',
+    },
+    index: {
+      for_teachers: 'Для учителей и преподавателей',
+      link: 'Перейти',
+      meta: {
+        description: 'Примеры использования Code Basics в разных сферах',
+      },
+      title: 'Кейсы',
+    },
   },
   errors: {
     show: {
@@ -120,86 +318,13 @@ export default {
       },
     },
   },
-  for_teachers: {
-    description:
-      'Free courses with a simulator right in your browser. Practice during each lesson',
-    early_career_guidance: 'Stimulate early career guidance:',
-    early_career_guidance_list: [
-      'We show programming from the inside out to make an informed decision about studying your future profession',
-      'We give you the opportunity to quickly immerse yourself in a programming language and see if the student likes it',
-      'We help you to see basic examples of real-life tasks to take a closer look at your professional routine',
-    ],
-    header: 'The fastest way to teach students programming',
-    how_to_learn_programming:
-      'How do students learn programming in CodeBasics?',
-    how_to_learn_programming_cards: [
-      {
-        title:
-          'Integration without integration: to implement CodeBasics in the educational process, you will need a PC with Internet access',
-        subtitle:
-          'You need to open your browser, register and start taking the course you are interested in',
-        img: 'integration-icon',
-      },
-      {
-        title:
-          'Theory backed by practice: PHP, Java, JS, Python, Ruby, HTML, CSS, Racket, Elixir and Go simulators are available on the platform now',
-        subtitle: 'It is possible to take several courses at the same time',
-        img: 'practice-icon',
-      },
-      {
-        title:
-          'Interactive format: the system automatically checks the completed tasks, shows errors and correct solution, as well as a detailed output',
-        subtitle:
-          "If something doesn't work out, you can use the Teacher's Solution",
-        img: 'interactive-format-icon',
-      },
-      {
-        title:
-          'Discussing complex issues: pupils can clarify unclear details in the “Discussion” section, where they will be answered by tech support or other pupils',
-        subtitle:
-          'An Artificial Intelligence based Virtual Mentor is also available to them',
-        img: 'discussion-icon',
-      },
-    ],
-    integrate_into_education:
-      'Why integrate CodeBasics into the education of school children?',
-    integrate_now: 'Integrate CodeBasics into your school curriculum now!',
-    interactive_approach: 'We focus on practice and an interactive approach:',
-    interactive_approach_list: [
-      'Accompany theoretical course materials with practical assignments directly in the browser',
-      'Give instant feedback: show the correct solution, give a conclusion for each test',
-      'Connect an AI tutor who explains theory or the essence of a task to students',
-    ],
-    lay_programming_foundations:
-      'CodeBasics lays the foundations of programming in an interactive way, for which it won 3rd place in the Best Off-Platform Online Course category in the 2020 EdCrunch Award OOC International Open Online Courses Competition',
-    meta: {
-      description:
-        'Programming courses for children and teenagers from Hexlet online school. All classes are designed by experienced teachers and programmers, taking into account the age characteristics of children. Teaching programming to schoolchildren online',
-    },
-    open_browser_and_sign_up: 'Just open your browser and sign up',
-    programming_basic_list: [
-      'Explain how systems function in general, rather than the specifics of technology at the startup',
-      'We teach novice programmers the best coding standards, such as proper function naming',
-      'We cover the major programming languages and continue to add courses on modern technology',
-    ],
-    programming_competently:
-      'Laying the foundations of programming intelligently:',
-    quotes_icon: 'Quotes',
-    select_course: 'Select a course',
-    sign_up: 'Sign up',
-    sign_up_and_start_learning:
-      'Sign up and start teaching programming to your students now',
-    title: 'Online programming courses for high school students - Hexlet',
-    try: 'try',
-  },
   home: {
-    hero: null,
     index: {
       all_blog_posts: 'All Blog Posts',
       all_reviews: 'All Reviews',
       blog_posts: 'Posts',
       categories: 'Categories',
-      header: 'Learn to code. Online. For free.',
+      consultation: 'Нужна помощь? Оставьте заявку, мы поможем',
       hero: {
         ai_count: 'AI Assistant',
         ai_count_description: 'Hints and code analysis',
@@ -227,7 +352,6 @@ export default {
       },
       reviews: 'Reviews',
       sign_up: 'Sign Up',
-      start: 'Start',
       subheader: 'For those who start from scratch. From the creators of ',
       title: 'Free Online Programming Courses: HTML, CSS, JavaScript\n',
     },
@@ -241,6 +365,10 @@ export default {
     sitemap: {
       home: 'Home',
       title: 'Sitemap',
+    },
+    stats: {
+      trusted_by:
+        'Присоединись к %{count} изующих программирование с помощью Code Basics\n',
     },
   },
   language_categories: {
@@ -261,36 +389,13 @@ export default {
     },
   },
   languages: {
-    complete_language: {
-      apps: 'Write the first complete applications that will be part of your developer portfolio',
-      certificate:
-        'Get the Hexlet Certificate and employment assistance at the end of your study',
-      continue: 'Continue Learning',
-      enter_profession: 'Join the profession on Hexlet. You will:',
-      first_courses_free:
-        'First courses in the profession are available for free. All you need to start learning is register and join the profession.',
-      first_step:
-        'This is the first step into the world of professional development. What’s next?',
-      grats: 'Congratulations',
-      hexlet_profs: 'Other professions on Hexlet',
-      knowledge: 'Get the fundamental programming knowledge',
-      likely: {
-        share_fb_text: "I've completed this course! #hexlet",
-        share_in_fb: 'Share on Facebook',
-        share_in_telegram: 'Send via Telegram',
-        share_in_twitter: 'Tweet',
-        share_in_vk: 'Share on VK',
-        share_twitter_text: "I've completed this course! #hexlet",
-        share_vk_text: "I've completed this course! #hexlet",
-        twitter: 'Hexlet_IO',
-      },
-      tasks: 'Learn how to solve practical problems',
-      title: 'You have successfully completed the basic course on Code Basics.',
-    },
     lessons: {
       show: {
         breadcrumb: 'breadcrumb',
         chat: {
+          community: 'Живые люди',
+          disabled_html:
+            'Чат временно отключен, так как вы достигли суточного лимита. А наше <a href="https://t.me/HexletLearningBot" traget="_blank">телеграм-сообещство</a> работает круглосуточно, подключайтесь :)',
           guest:
             "Hi! I'm Tota, and my job is to help you learn. To activate me, please sign up or log in if you already have an account",
           hi: "Hi! My name is Tota, and I'm here to help you with any questions about theory or practice. Just ask — I'm always here for you!\n\nP.S. You can send up to 7 messages per day, so try to ask only the most important questions\n",
@@ -318,7 +423,14 @@ export default {
             answer:
               "It's hard to make educational materials that will suit everyone. We do our best but there is always something to improve. If you see a material that is not clear to you, describe the problem in “Discussions”. It will be great if you'll write unclear points in the question form. Usually, we need a few days for corrections.\n\nBy the way, you can participate in courses improvement. There is a link below to the lessons course code which you can edit right in your browser.\n",
           },
+          {
+            question: 'Прочитал урок — ничего не понятно 🙄',
+            answer:
+              'Создавать обучающие материалы, понятные для всех без исключения, довольно сложно. Мы очень стараемся, но всегда есть что улучшать. Если вы встретили материал, который вам непонятен, опишите проблему в обратной связи нашего [сообщества](https://t.me/HexletLearningBot)\n',
+          },
         ],
+        confirm:
+          'Вы хотите сбросить прогресс упражнения. Текущая версия кода не сохранится — надеемся, вы уже скопировали его. Продолжаем сброс?',
         controls: {
           body: 'Reset Progress\n',
           header: 'Help',
@@ -327,6 +439,9 @@ export default {
         definitions: 'Definitions',
         discuss: 'AI Assistent',
         editor: 'Editor',
+        finish: 'Завершить',
+        if_stuck_html:
+          'Если вы столкнулись с трудностями и не знаете, что делать, задайте вопрос в нашем большом и дружном <a href="%{url}" target="_blank" rel="noopener">телеграм-сообществе</a>\n',
         instructions: 'Instructions',
         issues:
           'Found a bug? Have something to add? Pull requests are welcome!',
@@ -338,7 +453,9 @@ export default {
         please_sign_in:
           'Please sign in with your GitHub account, this is necessary to track the progress of the lessons. If you do not have an account yet, now is the time to create an account on GitHub.',
         prev: '← Previous',
+        profession_description: 'Коммерческий опыт и Трудоустройство',
         separator: ' ',
+        show_full_version: 'Реактор кода доступен в основной версии →',
         sign_in: 'Sign In',
         sign_up_for_tracking_progress_html:
           'Be sure to <a href="%{link}" class="text-decoration-none" target="_blank">register</a> to ensure you don\'t lose the results you\'ve achieved\n',
@@ -355,53 +472,24 @@ export default {
       about_learning: 'How the training is organised',
       ai_explanation:
         'AI explains topics, tells you how to solve assignments, and helps you at any time - like a personal tutor 24/7',
-      ai_learning:
-        'Ready to innovate your learning? Start learning with AI now',
       ai_without_limits: 'AI assistance without limits',
-      bash_description: 'Bash is command language',
       blog_posts: 'Blog Posts',
       breadcrumbs: 'Breadcrumbs',
       browser_practice: 'Practice in the browser',
-      clang_description:
-        'C is a universal programming language with a compact way of writing expressions, modern mechanisms for managing data structures, and a rich set of operators.',
       community_image_preview: 'Developer community',
+      completed_html:
+        'Поздравляем! Вы успешно завершили базовый курс на Code Basics. Это первый шаг в мир <b>профессиональной разработки</b>.\nЧто дальше? Посмотрите <a class="link-body-emphasis" href="https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=course_landing_page" target="_blank">продолжение на Хекслете</a>\n',
       continue: 'Continue Learning',
       'convenient format': 'Convenient format',
       course_graduates:
         'Join 74,761 students who have successfully completed courses',
       cover_image: 'Course cover',
-      cpp_description: 'C++ is a general-purpose programming language',
-      crystal_description:
-        'Crystal is a general-purpose object-oriented programming language designed and developed by Arie Borenzweig, Juan Weinerman, and Brian Cardiff.',
-      csharp_description:
-        'C# is a modern object-oriented and type-safe programming language. Application development language for the Microsoft .NET Framework. It is used in the creation of sites, applications and games',
-      css_description:
-        'Cascading Style Sheets (CSS) cascading style sheets that allow you to design the content of the page in accordance with the described rules. Text styles, block layout on a page, animation - everything is described using cascading style sheets.',
-      dart_description:
-        'Dart is a general purpose, strongly typed compiled language. Used to develop mobile and web applications.',
       demo_description:
         'Try a demo lesson without signing up. Practice included',
       demo_start: 'Start',
-      dlang_description:
-        'D is a multi-paradigm, statically typed, compiled language. Has built-in error prevention - contracts and unittests',
-      elixir_description:
-        'Elixir is a programming language that runs on top of Erlang. How this happens is a functional language with rigorous computations, unambiguous assignment and dynamic typing, creation to support distributed, fault-tolerant, non-stop, hot-swappable applications.',
-      fortran_description:
-        'Fortran is a general-purpose, compiled imperative programming language that is especially suited to numeric computation and scientific computing',
       free_course: 'Free course for beginners',
-      go_description:
-        'Go is a general-purpose language with rich features and clear syntax. Thanks to its multi-platform, reliable, well-documented standard library and focus on convenient approaches to the development itself, Go is an ideal language for the first steps in programming.',
-      haskell_description:
-        'Haskell is a standardized pure functional general-purpose programming language. The main control structure is function. A distinctive feature is a serious attitude to typing',
-      html_description:
-        'To standardize the output of text inside the browser, an HTML standard was created that describes the rules for formatting text data for correct output. This course is devoted to the basics of HTML markup, working with typography, outputting media documents and working with forms.',
-      java_description:
-        'The study of programming is a difficult and lengthy process. Learning the syntax of the language it is impossible to start without it. This The course is devoted to the basics of writing programs for a Java. He is preparing a springboard for writing meaningful programs.',
-      javascript_description:
-        'Programming learning is an interesting and exciting process. The syntax of the language is the simplest and shortest path, without which it is impossible to start. This free online JavaScript course will introduce you to the basic concepts of the language. Learn the basics and write your first JS programs.',
+      hexlet_program_link: 'Профессия и Трудоустройство',
       join: 'Join',
-      kotlin_description:
-        'Kotlin is a cross-platform, statically typed, general-purpose programming language with type inference',
       learning_conveniently:
         'Everything you need to master new topics is on one screen. Theory, practice and live examples go hand in hand. The clear structure helps you to learn in a consistent manner and not to miss important details',
       learning_preview: 'Learning preview',
@@ -409,30 +497,13 @@ export default {
       lessons: '%{lessons_count} with practice in the browser',
       more_than_support: 'More than Support',
       no_registration: 'Registration is not required',
-      ocaml_description:
-        'OCaml is a general-purpose, industrial-strength programming language with an emphasis on expressiveness and safety',
-      perl_description:
-        'Perl is a highly capable, feature-rich programming language with over 30 years of development',
-      php_description:
-        'The study of programming is a difficult and lengthy process. Learning the syntax of the language it is impossible to start without it. This The course is devoted to the basics of writing programs for a PHP. He is preparing a springboard for writing meaningful programs.',
-      powershell_description:
-        'PowerShell is a cross-platform task automation solution that includes a command line shell, a scripting language, and a configuration management platform.',
-      prolog_description:
-        'Prolog is a logic programming language associated with artificial intelligence and computational linguistics',
-      python_description:
-        'The study of programming is a difficult and lengthy process. Learning the syntax of the language it is impossible to start without it. This The course is devoted to the basics of writing programs for a racket. He is preparing a springboard for writing meaningful programs.',
-      racket_description:
-        'The racket belongs to the Lisp language family. These programmers should learn them from the very beginning. This module is about introducing the syntax and concepts underlying any lisp.',
       ready: 'Are you ready?',
       real_life_challenges:
         "You don't need to install anything - all tasks are performed right in your browser. Built-in code editor, console and automatic tests make learning comfortable. And if something fails, you can always see the teacher's solution",
       registration: 'Sign Up',
       registration_description: "Let's get started",
+      restart: 'Начать заново',
       reviews: 'Reviews',
-      ruby_description:
-        'Ruby is a language designed to make programmers happy. He took from himself the best of Lisp, Smalltalk and Perl he is object-oriented, but at the same time his declarative nature allows writing in a procedural and functional paradigm.',
-      rust_description:
-        'Rust is a multi-paradigm, general-purpose programming language. Rust emphasizes performance, type safety, and concurrency',
       see_all_courses_in_category: 'See all courses in %{name}',
       sign_up: 'Sign Up',
       similar_courses: 'Similar courses',
@@ -442,22 +513,47 @@ export default {
       to_home_title: 'Home',
       try: 'Try It',
       try_without_registration: 'Try it without registering',
-      typescript_description:
-        'TypeScript is a JavaScript-based programming language. Includes a typing system',
       updated_at: 'updated %{date}',
       without_registration:
         'Start learning right away - first lessons are available without an account. If you like the format, you can register to save your progress',
     },
     success: {
-      choose_profession: 'Choose course',
+      add_review:
+        'Не забудьте оставить отзыв, авторам курсов будет приятно (или не очень хехе). Это можно сделать <a target="_blank" rel="noopener noreferrer" href="https://taplink.cc/codebasics_reviews">тут</a>',
+      changing_career_html:
+        '<a target="_blank" class="link-body-emphasis" href="https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=finished_course_page">Карьера</a>: если вы хотите обучиться новой профессии\n',
+      choose_your_path: '🔍 Выберите свой путь:\n',
       description:
         "Now you have new knowledge and skills, but that's just the beginning - there are more opportunities ahead. It's time to choose your IT career and move on with your life\n",
+      getting_new_skill_html:
+        '<a target="_blank" class="link-body-emphasis" href="https://ru.hexlet.io/courses_for_programmers?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=finished_course_page">Навыки и Инструменты</a>: если вы хотите прокачаться в новых для вас технологиях \n',
       header: 'Congratulations, you completed the course!',
       home: 'Home',
+      leave_request:
+        'Оставьте заявку на бесплатную консультацию — наш специалист поможет вам определиться и ответит на все вопросы. 👉',
+      struggle_choosing: '💬 Не уверены, что выбрать?',
+    },
+  },
+  leads: {
+    'new': {
+      description:
+        'Понимаем, что выбрать направление и план обучения непросто. Заполните форму — мы подскажем, с чего начать и как двигаться дальше, учитывая ваши интересы и цели',
+      do_it:
+        '📝 <b>Оставьте заявку</b> — наш специалист свяжется с вами, выслушает ваши потребности и поможет подобрать оптимальный план обучения.',
+      header: 'Консультация со специалистом',
+      help_items: [
+        'Обсудить ваши цели и интересы, чтобы понять, в каком направлении двигаться дальше',
+        'Подобрать подходящие материалы и ресурсы, которые помогут вам разобраться в теме',
+        'Поделиться вариантами развития, которые будут актуальны и интересны в вашей ситуации',
+      ],
+      how_can_we_help: '💡 Чем мы можем помочь?',
+      return: 'Вернуться',
     },
   },
   my: {
     show: {
+      add_review:
+        'Мы будем очень признательны, если вы оставите отзывы по пройденным курсам. Это можно сделать <a target="_blank" rel="noopener noreferrer" href="https://taplink.cc/codebasics_reviews">тут</a>',
       finished: 'Finished Courses',
       started: 'Started Courses',
     },
@@ -518,9 +614,15 @@ export default {
   },
   reviews: {
     index: {
+      add_review:
+        'Попробовали наши курсы и хотите оставить отзыв? Это можно сделать <a target="_blank" rel="noopener noreferrer" href="https://taplink.cc/codebasics_reviews">тут</a>',
       course: 'Course %{language}',
       empty: 'Looks like there is noting yet',
       header: 'Reviews',
+      meta: {
+        description:
+          'Честные отзывы наших студентов о курсах, процессе обучения и платформе\n',
+      },
       read_more: 'Read more',
     },
   },
@@ -529,7 +631,9 @@ export default {
       dont_have_account: 'New to Code-Basics?',
       email: 'Email',
       forgot_password: 'Forgot password?',
-      meta_description: 'Sign in to Code Basics',
+      meta: {
+        description: 'Войти на Code Basics',
+      },
       password: 'Password',
       register: 'Sign up',
       reset_password: 'Reset Password',
@@ -550,8 +654,12 @@ export default {
     'new': {
       confirmation_html:
         'By clicking Sign up, you agree to our <a href="%{url}" class="text-decoration-none" target="_blank">service conditions</a>',
+      demo_html:
+        '<b>Зарегистрируйтесь</b> для продолжения бесплатного обучения. Так мы сможем сохранить ваш прогресс и открыть доступ к нашему ассистенту',
       have_account: 'Already have an account?',
-      meta_description: 'Sign up on Code Basics',
+      meta: {
+        description: 'Зарегистрироваться на Code Basics',
+      },
       sign_in: 'Sign in',
       sign_up: 'Sign up',
       title: 'Registration',

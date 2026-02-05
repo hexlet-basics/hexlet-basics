@@ -1,17 +1,23 @@
 export default {
   attributes: {
+    base: {
+      _destroy: 'Удалить',
+      answer: 'Ответ',
+      created_at: 'Создание',
+      description: 'Описание',
+      header: 'Заголовок',
+      name: 'Имя',
+      question: 'Вопрос',
+      slug: 'Слаг',
+      updated_at: 'Обновление',
+    },
     blog_post: {
       body: 'Content',
       cover: 'Image',
       creator: 'Author',
-      description: 'Description',
-      locale: 'Language',
-      name: 'Title',
-      slug: 'Slug',
       state: 'State',
       'state/archived': 'Archived',
       'state/published': 'Published',
-      state_event: 'Change state',
     },
     language: {
       category_id: 'Category',
@@ -27,6 +33,9 @@ export default {
       header: 'Header',
       name: 'Name',
       slug: 'Slug',
+    },
+    language_category_item: {
+      language_landing_page_id: 'Лендинг',
     },
     language_landing_page: {
       _destroy: 'Destroy',
@@ -52,6 +61,20 @@ export default {
       used_in_description: 'Used In (Description)',
       used_in_header: 'Used In (Header)',
     },
+    lead: {
+      contact_method: 'Способ связи',
+      contact_value: 'Телефон / Имя пользователя',
+    },
+    qna_item: {
+      answer: 'Ответ',
+      footer: 'Выводить в футере',
+      footer_name: 'Имя в футере',
+      listed: 'Отображать в списках',
+      main: 'Основной',
+      order: 'Order',
+      question: 'Вопрос',
+      slug: 'Slug',
+    },
     review: {
       body: 'Review',
       first_name: 'First name',
@@ -62,8 +85,24 @@ export default {
       state: 'State',
       user_id: 'User',
     },
+    survey: {
+      run_always: 'Запускать всегда',
+      slug: 'Слаг',
+    },
+    survey_scenario: {
+      _destroy: 'Удалить',
+      name: 'Название',
+      survey_item_id: 'Ответ триггер (Начало воронки)',
+    },
     user: {
       admin: 'Admin?',
+      contact_method: 'Способ связи',
+      'contact_method/values': {
+        phone: 'Телефон',
+        telegram: 'Telegram',
+        whatsapp: 'WhatsApp',
+      },
+      contact_value: 'Номер для связи (или имя пользователя)',
       email: 'Email',
       first_name: 'First name',
       last_name: 'Last name',
@@ -80,10 +119,10 @@ export default {
       },
     },
     models: {
-      'user/sign_up_form': {
+      sign_up_form: {
         attributes: {
           password: {
-            too_short: 'must be at least 6 characters',
+            too_short: 'должен быть не меньше 6 символов',
           },
         },
       },

@@ -44,7 +44,7 @@ export default function Edit({
         </Box>
         <Box>
           <Group justify="space-between" mb="xs">
-            <Title order={2}>Versions</Title>
+            <Title order={2}>{t(($) => $.admin.languages.edit.versions)}</Title>
             <Button
               component={Link}
               method="post"
@@ -52,14 +52,17 @@ export default function Edit({
               size="sm"
               href={Routes.admin_language_versions_path(courseDto.data.id)}
             >
-              Load New Version
+              {t(($) => $.admin.languages.edit.load_new_version)}
             </Button>
           </Group>
           <DataTable
             records={courseVersions}
             columns={[
-              { accessor: 'id', title: 'id' },
-              { accessor: 'result', title: 'result' },
+              { accessor: 'id', title: t(($) => $.admin.languages.edit.id) },
+              {
+                accessor: 'result',
+                title: t(($) => $.admin.languages.edit.result),
+              },
               {
                 accessor: 'created_at',
                 sortable: true,

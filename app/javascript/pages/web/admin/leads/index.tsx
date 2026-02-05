@@ -15,11 +15,12 @@ type Props = PropsWithChildren & {
 };
 
 function DataBox({ lead, col }: { lead: Lead; col: string }) {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
   return (
     <>
       <Button variant="subtle" onClick={() => setVisible(true)}>
-        data
+        {t(($) => $.admin.leads.index.data)}
       </Button>
       <Modal opened={visible} onClose={() => setVisible(false)} size="50vw">
         <Code block>{JSON.stringify(lead[col as keyof Lead], null, 2)}</Code>
@@ -46,12 +47,12 @@ export default function Index({ grid, leads }: Props) {
           { accessor: 'whatsapp' },
           {
             accessor: 'survey_answers_data',
-            title: 'answers',
+            title: t(($) => $.admin.leads.index.answers),
             render: (rec) => <DataBox lead={rec} col="survey_answers_data" />,
           },
           {
             accessor: 'courses_data',
-            title: 'courses',
+            title: t(($) => $.admin.leads.index.courses),
             render: (rec) => <DataBox lead={rec} col="course_data" />,
           },
           {

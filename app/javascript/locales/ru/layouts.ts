@@ -102,6 +102,8 @@ export default {
         surveys: 'Опросы',
         surveys_analytics: 'Аналитика опросов',
         users: 'Пользователи',
+        authentication: 'Аутентификация',
+        menu: 'Меню',
       },
     },
     root: {
