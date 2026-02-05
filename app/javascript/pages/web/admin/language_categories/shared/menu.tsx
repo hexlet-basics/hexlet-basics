@@ -17,18 +17,18 @@ export function Menu({ data }: Props) {
   const items: CrudHorizontalMenuItem[] = [
     {
       href: Routes.admin_language_categories_path(),
-      label: tHelpers('crud.list'),
+      label: tHelpers(($) => $.crud.list),
     },
     {
       href: Routes.new_admin_language_category_path(),
-      label: tHelpers('crud.add'),
+      label: tHelpers(($) => $.crud.add),
     },
   ];
 
   if (data) {
     items.push({
       href: Routes.edit_admin_language_category_path(data.data.id),
-      label: tHelpers('crud.editing'),
+      label: tHelpers(($) => $.crud.editing),
     });
     items.push({
       href: Routes.language_category_path(data.data.slug!),

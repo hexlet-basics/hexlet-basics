@@ -26,7 +26,7 @@ export default function New({ passwordReminder }: Props) {
   });
 
   return (
-    <ApplicationLayout center header={t('remind_passwords.new.title')}>
+    <ApplicationLayout center header={t(($) => $.remind_passwords.new.title)}>
       <Container>
         <Center>
           <Card
@@ -43,13 +43,13 @@ export default function New({ passwordReminder }: Props) {
                 autoComplete="email"
               />
               <Box my="lg" ta="right">
-                {t('users.new.have_account')}{' '}
+                {t(($) => $.users.new.have_account)}{' '}
                 <AppAnchor fw="bold" href={Routes.new_session_path()}>
-                  {t('users.new.sign_in')}
+                  {t(($) => $.users.new.sign_in)}
                 </AppAnchor>
               </Box>
               <Button fullWidth type="submit" loading={isSubmitting}>
-                {tHelpers('submit.remind_password_form.create')}
+                {tHelpers(($) => $.submit.remind_password_form.create)}
               </Button>
             </form>
           </Card>

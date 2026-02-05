@@ -34,7 +34,7 @@ export default function ControlBox() {
     if (!result) {
       notifications.show({
         // title: 'Default notification',
-        message: tCommon('errors.network'),
+        message: tCommon(($) => $.errors.network),
       });
     }
   };
@@ -43,7 +43,7 @@ export default function ControlBox() {
   // const confirmResetting = useConfirmation({ callback: resetContent });
   const openModal = () =>
     modals.openConfirmModal({
-      title: tCommon('confirm'),
+      title: tCommon(($) => $.confirm),
       labels: { confirm: <ThumbsUp />, cancel: <ThumbsDown /> },
       onCancel: noop,
       onConfirm: resetContent,
@@ -54,7 +54,7 @@ export default function ControlBox() {
   useHotkeys('ctrl+enter', handleRunCheck);
 
   const renderRunButtonContent = () => {
-    const text = t('languages.lessons.show.controls.run');
+    const text = t(($) => $.languages.lessons.show.controls.run);
     if (isCodeChecking) {
       return (
         <Group gap={4} align="center">
@@ -104,7 +104,7 @@ export default function ControlBox() {
             me="xs"
             href={Routes.language_lesson_path(course.slug!, prevLesson.slug!)}
           >
-            {t('languages.lessons.show.prev')}
+            {t(($) => $.languages.lessons.show.prev)}
           </Button>
         )}
 
@@ -131,7 +131,7 @@ export default function ControlBox() {
             disabled={nextButtonDisabled}
             href={Routes.new_user_path({ demo: true, from: url })}
           >
-            {t('languages.lessons.show.next')}
+            {t(($) => $.languages.lessons.show.next)}
           </Button>
         )}
 
@@ -145,7 +145,7 @@ export default function ControlBox() {
             disabled={nextButtonDisabled}
             href={Routes.language_lesson_path(course.slug!, nextLesson.slug!)}
           >
-            {t('languages.lessons.show.next')}
+            {t(($) => $.languages.lessons.show.next)}
           </Button>
         )}
 
@@ -159,7 +159,7 @@ export default function ControlBox() {
             disabled={nextButtonDisabled}
             href={Routes.success_language_url(landingPage.slug!)}
           >
-            {t('languages.lessons.show.finish')}
+            {t(($) => $.languages.lessons.show.finish)}
           </Button>
         )}
       </Group>

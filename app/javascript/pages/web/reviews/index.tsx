@@ -20,7 +20,7 @@ type Props = PropsWithChildren & {
 export default function New({ reviews, pagy }: Props) {
   const { suffix } = usePage<SharedProps>().props;
   const { t } = useTranslation();
-  const header = t('reviews.index.header');
+  const header = t(($) => $.reviews.index.header);
 
   const items: BreadcrumbItem[] = [
     {
@@ -34,7 +34,7 @@ export default function New({ reviews, pagy }: Props) {
       <Container>
         {i18next.language === 'ru' && (
           <Alert mb="xl">
-            <XssContent>{t('reviews.index.add_review')}</XssContent>
+            <XssContent>{t(($) => $.reviews.index.add_review)}</XssContent>
           </Alert>
         )}
         <SimpleGrid cols={{ base: 1, xs: 2 }}>

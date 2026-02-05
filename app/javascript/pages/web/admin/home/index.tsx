@@ -19,7 +19,7 @@ export default function Index({ admins, grid }: Props) {
   const { gridProps } = useDataTableProps<User, {}>(grid);
 
   return (
-    <AdminLayout header={t('admin.home.index.dashboard')}>
+    <AdminLayout header={t(($) => $.admin.home.index.dashboard)}>
       <DataTable
         records={admins}
         columns={[

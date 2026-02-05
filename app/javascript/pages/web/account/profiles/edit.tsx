@@ -26,7 +26,7 @@ export default function Edit({ form }: Props) {
   });
 
   return (
-    <ApplicationLayout center header={t('account.profiles.edit.title')}>
+    <ApplicationLayout center header={t(($) => $.account.profiles.edit.title)}>
       <Container mt="xl">
         <Center>
           <Card
@@ -39,7 +39,7 @@ export default function Edit({ form }: Props) {
               <TextInput {...getInputProps('first_name')} autoComplete="name" />
               <TextInput {...getInputProps('last_name')} autoComplete="name" />
               <Button type="submit" fullWidth mt="xl" loading={isSubmitting}>
-                {tHelpers('submit.save')}
+                {tHelpers(($) => $.submit.save)}
               </Button>
             </form>
 
@@ -51,7 +51,7 @@ export default function Edit({ form }: Props) {
                 method="delete"
                 c="red"
               >
-                {t('account.profiles.edit.delete')}
+                {t(($) => $.account.profiles.edit.delete)}
               </AppAnchor>
             </Box>
           </Card>

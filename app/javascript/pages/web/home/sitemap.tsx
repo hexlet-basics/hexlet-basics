@@ -43,7 +43,9 @@ export default function SiteMap({
           <Stack gap="xs">
             <Text fw={500} size="lg">
               <AppAnchor href={Routes.root_path({ suffix: getSuffix(locale) })}>
-                {t('home.sitemap.home', { lng: locale })}
+                {t(($) => $.home.sitemap.home, {
+                  lng: locale,
+                })}
               </AppAnchor>
             </Text>
 
@@ -51,7 +53,9 @@ export default function SiteMap({
               {/* Курсы */}
               <Accordion.Item value="courses">
                 <Accordion.Control>
-                  {t('home.languages.courses', { lng: locale })}
+                  {t(($) => $.home.languages.courses, {
+                    lng: locale,
+                  })}
                 </Accordion.Control>
                 <Accordion.Panel>
                   {landingPagesByLocale[locale]
@@ -102,7 +106,9 @@ export default function SiteMap({
               {/* Блог */}
               <Accordion.Item value="blog">
                 <Accordion.Control>
-                  {t('blog_posts.index.header', { lng: locale })}
+                  {t(($) => $.blog_posts.index.header, {
+                    lng: locale,
+                  })}
                 </Accordion.Control>
                 <Accordion.Panel>
                   <List listStyleType="none" spacing="xs" pl="md">
@@ -124,7 +130,9 @@ export default function SiteMap({
               {/* Категории */}
               <Accordion.Item value="categories">
                 <Accordion.Control>
-                  {t('language_categories.index.header', { lng: locale })}
+                  {t(($) => $.language_categories.index.header, {
+                    lng: locale,
+                  })}
                 </Accordion.Control>
                 <Accordion.Panel>
                   <List listStyleType="none" spacing="xs" pl="md">

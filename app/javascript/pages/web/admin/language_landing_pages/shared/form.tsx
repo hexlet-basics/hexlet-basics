@@ -19,11 +19,22 @@ import type {
 } from '@/types';
 
 type Props = {
-  data: LanguageLandingPageCrud;
+  data: LanguageLandingPageCrudWithMeta;
   url: string;
   method?: HttpRouterMethod;
   languages: Language[];
   landingPages: LanguageLandingPage[];
+};
+
+type StateEventOption = {
+  key: string;
+  value: string;
+};
+
+type LanguageLandingPageCrudWithMeta = LanguageLandingPageCrud & {
+  meta?: {
+    state_events?: StateEventOption[];
+  };
 };
 
 // const locales = [
@@ -52,6 +63,7 @@ export default function Form({
     method: method ?? 'post',
     container: data,
   });
+  const stateEvents = data.meta?.state_events ?? [];
 
   const qnaField = useArrayField('qna_items_attributes');
   const defaultQna: LanguageLandingPageQnaItemCrud = {
@@ -66,10 +78,7 @@ export default function Form({
       <Checkbox {...getInputProps('main')} />
       <Checkbox {...getInputProps('listed')} />
       <Checkbox {...getInputProps('footer')} />
-
-      <Select
-        {...getSelectProps('state', data.meta.state_events, 'key', 'value')}
-      />
+      <Select {...getSelectProps('state', stateEvents, 'key', 'value')} />
       <Select {...getSelectProps('language_id', languages, 'id', 'slug')} />
       <Select
         {...getSelectProps(
@@ -86,14 +95,11 @@ export default function Form({
       <TextInput {...getInputProps('name')} />
       <TextInput {...getInputProps('header')} />
       <Textarea {...getInputProps('description')} rows={5} />
-
       <TextInput {...getInputProps('used_in_header')} />
       <Textarea {...getInputProps('used_in_description')} rows={5} />
-
       <FileInput {...getFileInputProps('outcomes_image')} />
       <TextInput {...getInputProps('outcomes_header')} />
       <Textarea {...getInputProps('outcomes_description')} rows={5} />
-
       <Fieldset>
         {qnaField.fields.map((field, index) => (
           <Box key={field._internalId}>
@@ -118,7 +124,7 @@ export default function Form({
                 mt="xs"
                 onClick={() => qnaField.remove(index)}
               >
-                {tHelpers('crud.remove')}
+                {tHelpers(($) => $.crud.remove)}
               </Button>
             )}
           </Box>
@@ -128,12 +134,11 @@ export default function Form({
           mt="sm"
           onClick={() => qnaField.append(defaultQna)}
         >
-          {tHelpers('crud.add')}
+          {tHelpers(($) => $.crud.add)}
         </Button>
       </Fieldset>
-
       <Button type="submit" loading={isSubmitting}>
-        {tHelpers('submit.save')}
+        {tHelpers(($) => $.submit.save)}
       </Button>
     </form>
   );

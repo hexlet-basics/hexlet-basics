@@ -16,14 +16,14 @@ export function Menu({ data }: Props) {
   const items: CrudHorizontalMenuItem[] = [
     {
       href: Routes.admin_management_users_path(),
-      label: tHelpers('crud.list'),
+      label: tHelpers(($) => $.crud.list),
     },
   ];
 
   if (data) {
     items.push({
       href: Routes.edit_admin_management_user_path(data.data.id),
-      label: tHelpers('crud.editing'),
+      label: tHelpers(($) => $.crud.editing),
     });
   }
 

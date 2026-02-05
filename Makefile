@@ -56,9 +56,6 @@ staging:
 dev-ssr:
 	bin/vite ssr
 
-sync-i18n:
-	bundle exec i18n export
-
 sync-fixtures:
 	bin/rails db:fixtures:load
 
@@ -78,13 +75,22 @@ sync-types:
 	bin/rails app:export_enums_to_ts
 
 
-sync: sync-i18n sync-fixtures sync-types sync-browserlist
+sync: sync-locales sync-fixtures sync-types sync-browserlist
+
+sync-locales:
+	npx i18next-cli extract --sync-all
+	npx i18next-cli sync
+	npx i18next-cli types
+	pnpm exec biome check --write ./app/javascript/types
+	pnpm exec biome check --write ./app/javascript/locales
+
+lint-locales:
+	npx i18next-cli lint
+	npx i18next-cli status es
+	npx i18next-cli status en
 
 coverage-open:
 	open coverage/index.html
-
-app-lint-staged:
-	echo 'disabled'
 
 language-load:
 	bin/rails app:load_exercises[${L}]
@@ -93,7 +99,7 @@ check-types:
 	# bundle exec srb tc
 	pnpm run check
 
-lint:
+lint: lint-locales
 	pnpm exec biome check
 	pnpm tsc --build
 	bin/rubocop

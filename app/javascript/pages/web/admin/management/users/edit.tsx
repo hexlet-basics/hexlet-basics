@@ -27,7 +27,7 @@ export default function Edit({ user, progress }: Props) {
   });
 
   return (
-    <AdminLayout header={t('admin.management.users.edit.header')}>
+    <AdminLayout header={t(($) => $.admin.management.users.edit.header)}>
       <Menu data={user} />
       <Grid>
         <Grid.Col span={5}>
@@ -41,7 +41,7 @@ export default function Edit({ user, progress }: Props) {
             <TextInput {...getInputProps('first_name')} autoComplete="name" />
             <TextInput {...getInputProps('last_name')} autoComplete="name" />
             <Button type="submit" loading={isSubmitting}>
-              {tHelpers('submit.save')}
+              {tHelpers(($) => $.submit.save)}
             </Button>
           </form>
         </Grid.Col>

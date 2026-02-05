@@ -1,5 +1,4 @@
 import { Alert, Card, Container, Grid, List, Stack, Text } from '@mantine/core';
-import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import LeadFormBlock from '@/components/LeadFormBlock';
 import XssContent from '@/components/XssContent';
@@ -15,7 +14,7 @@ export default function Success(props: Props) {
   const { t: tViews } = useTranslation('web');
   const { courseLandingPage, lead } = props;
 
-  const header = tViews('languages.success.header', {
+  const header = tViews(($) => $.languages.success.header, {
     name: courseLandingPage.header,
   });
 
@@ -23,31 +22,33 @@ export default function Success(props: Props) {
     <ApplicationLayout header={header} center>
       <Container>
         <Alert mb="xl">
-          <XssContent>{t('languages.success.add_review')}</XssContent>
+          <XssContent>
+            {tViews(($) => $.languages.success.add_review)}
+          </XssContent>
         </Alert>
         <Grid gutter="xl">
           <Grid.Col span={{ base: 12, sm: 7 }} mb="xl">
             <Stack>
-              <Text>{tViews('languages.success.description')}</Text>
+              <Text>{tViews(($) => $.languages.success.description)}</Text>
               <Text fw="bold">
-                {tViews('languages.success.choose_your_path')}
+                {tViews(($) => $.languages.success.choose_your_path)}
               </Text>
               <List>
                 <List.Item>
                   <XssContent>
-                    {tViews('languages.success.changing_career_html')}
+                    {tViews(($) => $.languages.success.changing_career_html)}
                   </XssContent>
                 </List.Item>
                 <List.Item>
                   <XssContent>
-                    {tViews('languages.success.getting_new_skill_html')}
+                    {tViews(($) => $.languages.success.getting_new_skill_html)}
                   </XssContent>
                 </List.Item>
               </List>
               <Text fw="bold">
-                {tViews('languages.success.struggle_choosing')}
+                {tViews(($) => $.languages.success.struggle_choosing)}
               </Text>
-              <Text>{tViews('languages.success.leave_request')}</Text>
+              <Text>{tViews(($) => $.languages.success.leave_request)}</Text>
             </Stack>
           </Grid.Col>
           <Grid.Col span={{ base: 12, sm: 5 }}>

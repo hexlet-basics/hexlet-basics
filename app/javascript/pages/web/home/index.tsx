@@ -28,6 +28,7 @@ import LeadFormBlock from '@/components/LeadFormBlock';
 import MarkdownViewer from '@/components/MarkdownViewer';
 import SignUpFormBlock from '@/components/SignUpFormBlock';
 import XssContent from '@/components/XssContent';
+import { hasObjectKey } from '@/lib/utils';
 import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
 import { getResourceUrl } from '@/resources';
 import * as Routes from '@/routes.js';
@@ -49,7 +50,13 @@ type Props = PropsWithChildren & {
 };
 
 // TODO: move to locales
-const reviews = {
+type ReviewItem = {
+  name: string;
+  avatar: string;
+  body: string;
+};
+
+const reviews: Record<string, ReviewItem[]> = {
   ru: [
     {
       name: 'Александр Авдошкин',
@@ -106,7 +113,9 @@ export default function Index({
     auth: { user },
   } = usePage<SharedProps>().props;
 
-  const faq = tFaq('main', { returnObjects: true });
+  const faq = tFaq(($) => $.main, {
+    returnObjects: true,
+  });
 
   const entities: Question[] = Object.values(faq).map((item) => {
     return {
@@ -132,9 +141,7 @@ export default function Index({
           <script type="application/ld+json">{JSON.stringify(qaSchema)}</script>
         )}
       </Head>
-
       {/*<Banner />*/}
-
       <Container
         ta="center"
         size="sm"
@@ -157,7 +164,7 @@ export default function Index({
           size="sm"
           variant="default"
         >
-          {t('home.index.hero.source_code')}
+          {t(($) => $.home.index.hero.source_code)}
         </Badge>
 
         <Title
@@ -171,16 +178,16 @@ export default function Index({
             md: 50,
           }}
         >
-          {t('home.index.hero.free_programming_courses')}
+          {t(($) => $.home.index.hero.free_programming_courses)}
         </Title>
 
         <XssContent c="gray" fz="xl" mb="xl">
-          {t('home.index.hero.fastest_way_to_start_coding')}
+          {t(($) => $.home.index.hero.fastest_way_to_start_coding)}
         </XssContent>
 
         <Center>
           <Button component="a" href={`#${baseId}`} size="lg" me="sm">
-            {t('home.index.hero.try')}
+            {t(($) => $.home.index.hero.try)}
           </Button>
           {user.guest && (
             <Button
@@ -189,12 +196,11 @@ export default function Index({
               size="lg"
               variant="outline"
             >
-              {t('home.index.sign_up')}
+              {t(($) => $.home.index.sign_up)}
             </Button>
           )}
         </Center>
       </Container>
-
       <Container
         size="lg"
         my={{
@@ -209,30 +215,29 @@ export default function Index({
           <Card bg="blue.0" p="xl" c="blue.9">
             <BookOpenCheck />
             <Text fw="bold" fz="h2">
-              {t('home.index.hero.courses_count')}
+              {t(($) => $.home.index.hero.courses_count)}
             </Text>
-            {t('home.index.hero.courses_count_description')}
+            {t(($) => $.home.index.hero.courses_count_description)}
           </Card>
           <Card bg="green.0" p="xl" c="green.9">
             <Send />
             <Text fw="bold" fz="h2">
-              {t('home.index.hero.community_count')}
+              {t(($) => $.home.index.hero.community_count)}
             </Text>
-            {t('home.index.hero.community_count_description')}
+            {t(($) => $.home.index.hero.community_count_description)}
           </Card>
           <Card bg="violet.0" p="xl" c="violet.9">
             <Bot />
             <Text fw="bold" fz="h2">
-              {t('home.index.hero.ai_count')}
+              {t(($) => $.home.index.hero.ai_count)}
             </Text>
-            {t('home.index.hero.ai_count_description')}
+            {t(($) => $.home.index.hero.ai_count_description)}
           </Card>
         </SimpleGrid>
       </Container>
-
       <Container size="lg" my="xl">
         <Title id={baseId} order={2} mb="xl">
-          {t('home.languages.courses')}
+          {t(($) => $.home.languages.courses)}
         </Title>
 
         <SimpleGrid spacing="md" cols={{ base: 2, xs: 3, md: 4 }}>
@@ -246,40 +251,40 @@ export default function Index({
           ))}
         </SimpleGrid>
       </Container>
-
       <Container size="lg" my="xl">
         <Box mb="xl">
-          <Title order={2}>{t('home.index.reviews')}</Title>
+          <Title order={2}>{t(($) => $.home.index.reviews)}</Title>
           <Divider />
         </Box>
 
         <SimpleGrid spacing="md" cols={{ base: 1, xs: 2, md: 3 }}>
-          {reviews[locale].map((review) => (
-            <Box key={review.name}>
-              <Group mb="lg">
-                <Image
-                  src={review.avatar}
-                  fit="contain"
-                  radius="xl"
-                  loading="lazy"
-                  w={40}
-                  // width={50}
-                  // height={50}
-                  alt={`Аватар пользователя ${review.name}`}
-                />
-                <Text fw="bold">{review.name}</Text>
-              </Group>
+          {reviews[hasObjectKey(reviews, locale) ? locale : 'ru'].map(
+            (review) => (
+              <Box key={review.name}>
+                <Group mb="lg">
+                  <Image
+                    src={review.avatar}
+                    fit="contain"
+                    radius="xl"
+                    loading="lazy"
+                    w={40}
+                    // width={50}
+                    // height={50}
+                    alt={`Аватар пользователя ${review.name}`}
+                  />
+                  <Text fw="bold">{review.name}</Text>
+                </Group>
 
-              <Text fs="italic">{review.body}</Text>
-            </Box>
-          ))}
+                <Text fs="italic">{review.body}</Text>
+              </Box>
+            ),
+          )}
         </SimpleGrid>
       </Container>
-
       {blogPosts.length > 0 && (
         <Container size="lg">
           <Box mb="xl">
-            <Title order={2}>{t('home.index.blog_posts')}</Title>
+            <Title order={2}>{t(($) => $.home.index.blog_posts)}</Title>
             <Divider />
           </Box>
           <SimpleGrid spacing="md" cols={{ base: 1, xs: 2, md: 3 }}>
@@ -289,10 +294,9 @@ export default function Index({
           </SimpleGrid>
         </Container>
       )}
-
       <Container size="lg" my="xl">
         <Box mb="xl">
-          <Title order={2}>{tFaq('header')}</Title>
+          <Title order={2}>{tFaq(($) => $.header)}</Title>
           <Divider />
         </Box>
         <Accordion defaultValue={Object.keys(faq)[0]}>
@@ -308,7 +312,6 @@ export default function Index({
           ))}
         </Accordion>
       </Container>
-
       {user.guest && (
         <Container size="lg" mt={100}>
           <Grid align="center" justify="space-between" gutter={0}>
@@ -323,7 +326,7 @@ export default function Index({
                   }}
                   fw="bold"
                 >
-                  {t('home.index.join')}
+                  {t(($) => $.home.index.join)}
                 </Text>
               </Center>
             </Grid.Col>
@@ -335,14 +338,13 @@ export default function Index({
           </Grid>
         </Container>
       )}
-
       {!user.guest && i18next.language === 'ru' && (
         <Container size="lg" mt={100}>
           <Grid align="center" justify="space-between" gutter={0}>
             <Grid.Col span={{ base: 12, md: 6 }}>
               <Center>
                 <Text fz={40} fw="bold">
-                  {t('home.index.consultation')}
+                  {t(($) => $.home.index.consultation)}
                 </Text>
               </Center>
             </Grid.Col>

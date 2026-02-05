@@ -38,7 +38,7 @@ import AppAnchor from '@/components/Elements/AppAnchor';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import logoImg from '@/images/logo.svg';
 import defaultAvatarImg from '@/images/user-avatar.webp';
-import { localesByCode } from '@/lib/utils';
+import { hasObjectKey, localesByCode } from '@/lib/utils';
 import * as Routes from '@/routes.js';
 import type { SharedProps } from '@/types';
 
@@ -99,7 +99,9 @@ function MyLink() {
 
   if (auth.user.guest) return null;
 
-  return <AppAnchor href={Routes.my_path()}>{t('shared.nav.my')}</AppAnchor>;
+  return (
+    <AppAnchor href={Routes.my_path()}>{t(($) => $.shared.nav.my)}</AppAnchor>
+  );
 }
 
 function CourseMenu({
@@ -128,12 +130,11 @@ function CourseMenu({
           onMouseLeave={!isMobile ? close : undefined}
         >
           <Center inline>
-            <Text me={5}>{t('shared.nav.courses')}</Text>
+            <Text me={5}>{t(($) => $.shared.nav.courses)}</Text>
             <ChevronDown size={16} />
           </Center>
         </UnstyledButton>
       </Popover.Target>
-
       <Popover.Dropdown
         onMouseEnter={!isMobile ? open : undefined}
         onMouseLeave={!isMobile ? close : undefined}
@@ -167,7 +168,7 @@ function BookLink() {
   const { t } = useTranslation('layouts');
   return i18next.language === 'ru' ? (
     <AppAnchor pseudo href={Routes.book_path()}>
-      {t('shared.nav.book')}
+      {t(($) => $.shared.nav.book)}
     </AppAnchor>
   ) : null;
 }
@@ -180,10 +181,10 @@ function AuthLinks({ avatar }: { avatar: string }) {
     return (
       <>
         <AppAnchor pseudo href={Routes.new_session_path()}>
-          {t('shared.nav.sign_in')}
+          {t(($) => $.shared.nav.sign_in)}
         </AppAnchor>
         <AppAnchor pseudo href={Routes.new_user_path()}>
-          {t('shared.nav.registration')}
+          {t(($) => $.shared.nav.registration)}
         </AppAnchor>
       </>
     );
@@ -218,7 +219,7 @@ function AuthLinks({ avatar }: { avatar: string }) {
           component={Link}
           href={Routes.edit_account_profile_path()}
         >
-          {t('shared.nav.profile')}
+          {t(($) => $.shared.nav.profile)}
         </Menu.Item>
         {auth.user.admin && (
           <Menu.Item
@@ -226,7 +227,7 @@ function AuthLinks({ avatar }: { avatar: string }) {
             component={Link}
             href={Routes.admin_root_path()}
           >
-            {t('shared.nav.admin')}
+            {t(($) => $.shared.nav.admin)}
           </Menu.Item>
         )}
         <Menu.Item
@@ -235,7 +236,7 @@ function AuthLinks({ avatar }: { avatar: string }) {
           method="delete"
           href={Routes.session_path()}
         >
-          {t('shared.nav.sign_out')}
+          {t(($) => $.shared.nav.sign_out)}
         </Menu.Item>
       </Menu.Dropdown>
     </Menu>
@@ -243,13 +244,16 @@ function AuthLinks({ avatar }: { avatar: string }) {
 }
 
 function LocaleSwitcher() {
+  const localeKey = hasObjectKey(localesByCode, i18next.language)
+    ? i18next.language
+    : 'ru';
+
   return (
     <Menu shadow="md" width={200}>
       <Menu.Target>
         <UnstyledButton>
           <Center>
-            {localesByCode[i18next.language || 'ru'].icon}{' '}
-            <ChevronDown size={14} />
+            {localesByCode[localeKey].icon} <ChevronDown size={14} />
           </Center>
         </UnstyledButton>
       </Menu.Target>
@@ -297,38 +301,40 @@ function SolutionsMenu() {
   const solutionMenuData = [
     {
       icon: Target,
-      title: tLayouts('shared.nav.courses_with_employement'),
-      description: tLayouts('shared.nav.courses_with_employement_description'),
+      title: tLayouts(($) => $.shared.nav.courses_with_employement),
+      description: tLayouts(
+        ($) => $.shared.nav.courses_with_employement_description,
+      ),
       href: 'https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral',
     },
     {
       icon: Rocket,
-      title: tLayouts('shared.nav.career'),
-      description: tLayouts('shared.nav.career_description'),
+      title: tLayouts(($) => $.shared.nav.career),
+      description: tLayouts(($) => $.shared.nav.career_description),
       href: 'https://career.hexlet.io?utm_source=code-basics&utm_medium=referral',
     },
     {
       icon: GitGraph,
-      title: tLayouts('shared.nav.upskilling'),
-      description: tLayouts('shared.nav.upskilling_description'),
+      title: tLayouts(($) => $.shared.nav.upskilling),
+      description: tLayouts(($) => $.shared.nav.upskilling_description),
       href: 'https://ru.hexlet.io/courses_for_programmers?utm_source=code-basics&utm_medium=referral',
     },
     {
       icon: Handshake,
-      title: tLayouts('shared.nav.business'),
-      description: tLayouts('shared.nav.business_description'),
+      title: tLayouts(($) => $.shared.nav.business),
+      description: tLayouts(($) => $.shared.nav.business_description),
       href: 'https://b2b.hexlet.io?utm_source=code-basics&utm_medium=referral',
     },
     {
       icon: Blocks,
-      title: tLayouts('shared.nav.for_teachers'),
-      description: tLayouts('shared.nav.for_teachers_description'),
+      title: tLayouts(($) => $.shared.nav.for_teachers),
+      description: tLayouts(($) => $.shared.nav.for_teachers_description),
       href: Routes.for_teachers_cases_path(),
     },
     {
       icon: GraduationCap,
-      title: tLayouts('shared.nav.hexly'),
-      description: tLayouts('shared.nav.hexly_description'),
+      title: tLayouts(($) => $.shared.nav.hexly),
+      description: tLayouts(($) => $.shared.nav.hexly_description),
       href: 'https://hexly.ru?utm_source=code-basics&utm_medium=referral',
     },
   ];
@@ -362,21 +368,20 @@ function SolutionsMenu() {
       <HoverCard.Target>
         <UnstyledButton>
           <Center inline>
-            <Text mr={5}>{tLayouts('shared.nav.cases')}</Text>
+            <Text mr={5}>{tLayouts(($) => $.shared.nav.cases)}</Text>
             <ChevronDown size={16} />
           </Center>
         </UnstyledButton>
       </HoverCard.Target>
-
       <HoverCard.Dropdown>
         <Group justify="space-between" px="md" mb="sm">
-          <Text fw={500}>{tLayouts('shared.nav.for_whom')}</Text>
+          <Text fw={500}>{tLayouts(($) => $.shared.nav.for_whom)}</Text>
           <Anchor
             target="_blank"
-            href={`${tCommon('organization.site')}?utm_source=code-basics&utm_medium=referral`}
+            href={`${tCommon(($) => $.organization.site)}?utm_source=code-basics&utm_medium=referral`}
             fz="xs"
           >
-            {tCommon('organization.site')}
+            {tCommon(($) => $.organization.site)}
           </Anchor>
         </Group>
 

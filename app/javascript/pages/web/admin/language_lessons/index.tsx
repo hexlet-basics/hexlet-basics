@@ -63,7 +63,7 @@ export default function Index({ grid, lessons }: Props) {
   };
 
   return (
-    <AdminLayout header={t('admin.language_lessons.index.header')}>
+    <AdminLayout header={t(($) => $.admin.language_lessons.index.header)}>
       <DataTable
         records={lessons}
         columns={[

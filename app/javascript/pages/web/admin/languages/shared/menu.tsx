@@ -16,14 +16,21 @@ export function Menu({ data, landingPage }: Props) {
   const { t: tHelpers } = useTranslation('helpers');
 
   const items: CrudHorizontalMenuItem[] = [
-    { href: Routes.admin_languages_path(), label: tHelpers('crud.list') },
-    { href: Routes.new_admin_language_path(), label: tHelpers('crud.add') },
+    {
+      href: Routes.admin_languages_path(),
+      label: tHelpers(($) => $.crud.list),
+    },
+    {
+      href: Routes.new_admin_language_path(),
+      label: tHelpers(($) => $.crud.add),
+    },
   ];
 
   if (data) {
+    const meta = (data as { meta?: { repository_url?: string } }).meta ?? {};
     items.push({
       href: Routes.edit_admin_language_path(data.data.id),
-      label: tHelpers('crud.editing'),
+      label: tHelpers(($) => $.crud.editing),
     });
     if (landingPage) {
       items.push({
@@ -33,7 +40,7 @@ export function Menu({ data, landingPage }: Props) {
       });
     }
     items.push({
-      href: data.meta.repository_url,
+      href: meta.repository_url ?? '',
       external: true,
       label: <i className="bi bi-github" />,
     });

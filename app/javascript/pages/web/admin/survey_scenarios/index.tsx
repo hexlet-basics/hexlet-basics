@@ -27,7 +27,7 @@ export default function Index({ grid, surveyScenarios }: Props) {
   );
 
   return (
-    <AdminLayout header={t('admin.survey_scenarios.index.header')}>
+    <AdminLayout header={t(($) => $.admin.survey_scenarios.index.header)}>
       <Menu />
       <DataTable
         records={surveyScenarios}

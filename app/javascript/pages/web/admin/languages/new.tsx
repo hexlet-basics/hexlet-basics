@@ -15,7 +15,7 @@ export default function New({ courseDto }: Props) {
   const { t } = useTranslation();
 
   return (
-    <AdminLayout header={t('admin.languages.new.header')}>
+    <AdminLayout header={t(($) => $.admin.languages.new.header)}>
       <Menu />
       <Grid>
         <Grid.Col span={7}>

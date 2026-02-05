@@ -17,9 +17,12 @@ export default function LeadFormBlock({ leadDto, autoFocus = false }: Props) {
   const { t: tHelpers } = useTranslation('helpers');
   const { t: tViews } = useTranslation();
 
-  const contactMethodEnum = tAr('attributes.user.contact_method/values', {
-    returnObjects: true,
-  });
+  const contactMethodEnum = tAr(
+    ($) => $.attributes.user['contact_method/values'],
+    {
+      returnObjects: true,
+    },
+  );
   const contactMethodOptions = enumToOptions(contactMethodEnum);
 
   const preparedLeadDto = toMerged(leadDto, {
@@ -44,7 +47,6 @@ export default function LeadFormBlock({ leadDto, autoFocus = false }: Props) {
     <form onSubmit={submit}>
       {/* Поле ym_client_id передаём скрыто */}
       <input type="hidden" {...getInputProps('ym_client_id')} />
-
       <Select
         {...getSelectProps(
           'contact_method',
@@ -54,20 +56,21 @@ export default function LeadFormBlock({ leadDto, autoFocus = false }: Props) {
         )}
         required
       />
-
       <TextInput
         {...getInputProps('contact_value')}
         required
         autoFocus={autoFocus}
       />
-
       <Box fz="sm" my="lg">
-        <XssContent>{tViews('blocks.lead_form_block.description1')}</XssContent>
-        <XssContent>{tViews('blocks.lead_form_block.description2')}</XssContent>
+        <XssContent>
+          {tViews(($) => $.blocks.lead_form_block.description1)}
+        </XssContent>
+        <XssContent>
+          {tViews(($) => $.blocks.lead_form_block.description2)}
+        </XssContent>
       </Box>
-
       <Button type="submit" fullWidth loading={isSubmitting}>
-        {tHelpers('send')}
+        {tHelpers(($) => $.send)}
       </Button>
     </form>
   );

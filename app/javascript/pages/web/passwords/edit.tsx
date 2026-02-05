@@ -38,7 +38,7 @@ export default function New({ userPassword, resetPasswordToken }: Props) {
       <Container>
         <Stack align="center" gap="md">
           <Title order={1} ta="center" mb="md">
-            {t('passwords.edit.title')}
+            {t(($) => $.passwords.edit.title)}
           </Title>
           <Card
             withBorder
@@ -54,7 +54,7 @@ export default function New({ userPassword, resetPasswordToken }: Props) {
               />
               <Box mt="lg" ta="right">
                 <Button type="submit" loading={isSubmitting}>
-                  {tHelpers('submit.replace')}
+                  {tHelpers(($) => $.submit.replace)}
                 </Button>
               </Box>
             </form>

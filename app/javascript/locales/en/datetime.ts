@@ -1,0 +1,65 @@
+export default {
+  distance_in_words: {
+    about_x_hours: {
+      one: 'about %{count} hour',
+      other: 'about %{count} hours',
+    },
+    about_x_months: {
+      one: 'about %{count} month',
+      other: 'about %{count} months',
+    },
+    about_x_years: {
+      one: 'about %{count} year',
+      other: 'about %{count} years',
+    },
+    almost_x_years: {
+      one: 'almost %{count} year',
+      other: 'almost %{count} years',
+    },
+    half_a_minute: 'half a minute',
+    less_than_x_minutes: {
+      one: 'less than a minute',
+      other: 'less than %{count} minutes',
+    },
+    less_than_x_seconds: {
+      one: 'less than %{count} second',
+      other: 'less than %{count} seconds',
+    },
+    over_x_years: {
+      one: 'over %{count} year',
+      other: 'over %{count} years',
+    },
+    x_days: {
+      one: '%{count} day',
+      other: '%{count} days',
+    },
+    x_minutes: {
+      one: '%{count} minute',
+      other: '%{count} minutes',
+    },
+    x_months: {
+      one: '%{count} month',
+      other: '%{count} months',
+    },
+    x_seconds: {
+      one: '%{count} second',
+      other: '%{count} seconds',
+    },
+    x_years: {
+      one: '%{count} year',
+      other: '%{count} years',
+    },
+  },
+  prompts: {
+    day: 'Day',
+    hour: 'Hour',
+    minute: 'Minute',
+    month: 'Month',
+    second: 'Seconds',
+    year: 'Year',
+  },
+  relative: {
+    future: 'in %{time}',
+    past: '%{time} ago',
+  },
+} as const;

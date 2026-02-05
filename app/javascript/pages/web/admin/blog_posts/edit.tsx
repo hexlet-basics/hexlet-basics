@@ -16,7 +16,7 @@ export default function Edit({ blogPostDto, relatedCourses }: Props) {
 
   return (
     <AdminLayout
-      header={t('admin.blog_posts.edit.header', {
+      header={t(($) => $.admin.blog_posts.edit.header, {
         id: blogPostDto.data.name,
       })}
     >

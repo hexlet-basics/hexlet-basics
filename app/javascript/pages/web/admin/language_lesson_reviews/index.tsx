@@ -102,7 +102,9 @@ export default function Index({ grid, reviews, languages }: Props) {
   );
 
   return (
-    <AdminLayout header={t('admin.language_lesson_reviews.index.header')}>
+    <AdminLayout
+      header={t(($) => $.admin.language_lesson_reviews.index.header)}
+    >
       <DataTable
         records={reviews}
         columns={[

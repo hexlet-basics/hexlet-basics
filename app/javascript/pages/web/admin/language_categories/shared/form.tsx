@@ -17,9 +17,20 @@ import type {
 } from '@/types';
 
 type Props = {
-  data: LanguageCategoryCrud;
+  data: LanguageCategoryCrudWithMeta;
   url: string;
   method?: HttpRouterMethod;
+};
+
+type LandingPageOption = {
+  id: number;
+  header: string | null;
+};
+
+type LanguageCategoryCrudWithMeta = LanguageCategoryCrud & {
+  meta?: {
+    landingPagesForCategories?: LandingPageOption[];
+  };
 };
 
 export default function Form({ data, url, method }: Props) {
@@ -32,6 +43,7 @@ export default function Form({ data, url, method }: Props) {
       method: method ?? 'post',
       container: data, // передаём контейнер целиком
     });
+  const landingPagesForCategories = data.meta?.landingPagesForCategories ?? [];
 
   const itemsField = useArrayField('items_attributes');
   const qnaItemsField = useArrayField('qna_items_attributes');
@@ -58,7 +70,6 @@ export default function Form({ data, url, method }: Props) {
         <TextInput {...getInputProps('slug')} />
         <Textarea {...getInputProps('description')} rows={5} />
       </Fieldset>
-
       <Fieldset p="lg" mb="xl">
         <legend>Items</legend>
         {itemsField.fields.map((field, index) => (
@@ -70,7 +81,7 @@ export default function Form({ data, url, method }: Props) {
             <Select
               {...getSelectProps(
                 `items_attributes.${index}.language_landing_page_id`,
-                data.meta.landingPagesForCategories,
+                landingPagesForCategories,
                 'id',
                 'header',
               )}
@@ -85,7 +96,7 @@ export default function Form({ data, url, method }: Props) {
                 mt="xs"
                 onClick={() => itemsField.remove(index)}
               >
-                {tHelpers('crud.remove')}
+                {tHelpers(($) => $.crud.remove)}
               </Button>
             )}
           </Box>
@@ -95,10 +106,9 @@ export default function Form({ data, url, method }: Props) {
           mt="sm"
           onClick={() => itemsField.append(defaultItemValues)}
         >
-          {tHelpers('crud.add')}
+          {tHelpers(($) => $.crud.add)}
         </Button>
       </Fieldset>
-
       <Fieldset p="lg" mb="xl">
         <legend>QNAItems</legend>
         {qnaItemsField.fields.map((field, index) => (
@@ -124,7 +134,7 @@ export default function Form({ data, url, method }: Props) {
                 mt="xs"
                 onClick={() => qnaItemsField.remove(index)}
               >
-                {tHelpers('crud.remove')}
+                {tHelpers(($) => $.crud.remove)}
               </Button>
             )}
           </Box>
@@ -134,12 +144,11 @@ export default function Form({ data, url, method }: Props) {
           mt="sm"
           onClick={() => qnaItemsField.append(defaultQnaValues)}
         >
-          {tHelpers('crud.add')}
+          {tHelpers(($) => $.crud.add)}
         </Button>
       </Fieldset>
-
       <Button type="submit" mt="xl" loading={formState.isSubmitting}>
-        {tHelpers('submit.save')}
+        {tHelpers(($) => $.submit.save)}
       </Button>
     </form>
   );

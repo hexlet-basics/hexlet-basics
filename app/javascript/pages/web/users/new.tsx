@@ -15,11 +15,11 @@ export default function New({ user, demo }: Props) {
   const { t } = useTranslation();
 
   return (
-    <ApplicationLayout header={t('users.new.sign_up')} center>
+    <ApplicationLayout header={t(($) => $.users.new.sign_up)} center>
       <Container>
         {demo && (
           <Alert color="blue" mb="md">
-            <XssContent>{t('users.new.demo_html')}</XssContent>
+            <XssContent>{t(($) => $.users.new.demo_html)}</XssContent>
           </Alert>
         )}
         <Center>

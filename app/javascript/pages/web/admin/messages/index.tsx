@@ -50,7 +50,7 @@ export default function Index({ grid, messages }: Props) {
   );
 
   return (
-    <AdminLayout header={t('admin.messages.index.header')}>
+    <AdminLayout header={t(($) => $.admin.messages.index.header)}>
       <DataTable
         records={messages}
         columns={[

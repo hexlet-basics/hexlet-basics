@@ -35,7 +35,7 @@ export default function Index({ grid, courses }: Props) {
   );
 
   return (
-    <AdminLayout header={t('admin.languages.index.header')}>
+    <AdminLayout header={t(($) => $.admin.languages.index.header)}>
       <Menu />
       <DataTable
         records={courses}

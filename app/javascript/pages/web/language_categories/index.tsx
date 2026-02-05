@@ -13,7 +13,7 @@ type Props = PropsWithChildren & {
 
 export default function Index({ categories }: Props) {
   const { t } = useTranslation();
-  const header = t('language_categories.index.header');
+  const header = t(($) => $.language_categories.index.header);
 
   const items = [
     {
@@ -45,7 +45,7 @@ export default function Index({ categories }: Props) {
                   </Text>
                 </AppAnchor>
                 <Group mt="auto" c="blue">
-                  <Text>{t('language_categories.index.link')}</Text>
+                  <Text>{t(($) => $.language_categories.index.link)}</Text>
                   <ArrowRight size={16} />
                 </Group>
               </Stack>

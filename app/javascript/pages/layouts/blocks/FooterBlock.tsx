@@ -51,9 +51,9 @@ export default function FooterBlock() {
   const organization: WithContext<Organization> = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    email: tCommon('organization.email'),
-    name: tCommon('organization.legal_name'),
-    telephone: tCommon('organization.phone'),
+    email: tCommon(($) => $.organization.email),
+    name: tCommon(($) => $.organization.legal_name),
+    telephone: tCommon(($) => $.organization.phone),
   };
 
   const landingGroups = chunk(
@@ -68,31 +68,30 @@ export default function FooterBlock() {
           {JSON.stringify(organization)}
         </script>
       </Head>
-
       <Box bg="gray.0" mt={100} py="lg" fz="sm">
         <Container size="lg" pt="lg">
           <footer>
             <SimpleGrid cols={{ base: 2, xs: 4 }}>
               <Stack gap="sm">
                 <Text fz="sm" fw="bold">
-                  {tLayouts('shared.footer.codebasics')}
+                  {tLayouts(($) => $.shared.footer.codebasics)}
                 </Text>
                 {i18next.language === 'ru' && (
                   <FooterLink href={Routes.map_path()}>
-                    {tLayouts('shared.footer.sitemap')}
+                    {tLayouts(($) => $.shared.footer.sitemap)}
                   </FooterLink>
                 )}
                 <FooterLink href={Routes.page_path('about')} pseudo>
-                  {tLayouts('shared.footer.about')}
+                  {tLayouts(($) => $.shared.footer.about)}
                 </FooterLink>
                 <FooterLink href={Routes.blog_posts_path()} pseudo>
-                  {tLayouts('shared.footer.blog')}
+                  {tLayouts(($) => $.shared.footer.blog)}
                 </FooterLink>
                 <FooterLink href={Routes.reviews_path()}>
-                  {tLayouts('shared.footer.reviews')}
+                  {tLayouts(($) => $.shared.footer.reviews)}
                 </FooterLink>
                 <FooterLink pseudo href={Routes.page_path('authors')}>
-                  {tLayouts('shared.footer.authors')}
+                  {tLayouts(($) => $.shared.footer.authors)}
                 </FooterLink>
               </Stack>
 
@@ -100,7 +99,9 @@ export default function FooterBlock() {
                 // biome-ignore lint/suspicious/noArrayIndexKey: -
                 <Stack key={index} gap="sm">
                   <Text fw="bold" fz="sm">
-                    {tLayouts('shared.footer.courses', { number: index + 1 })}
+                    {tLayouts(($) => $.shared.footer.courses, {
+                      number: index + 1,
+                    })}
                   </Text>
                   {group.map((lp) => (
                     <FooterLink
@@ -115,7 +116,7 @@ export default function FooterBlock() {
 
               <Stack gap="sm">
                 <Text fw="bold" fz="sm">
-                  {tLayouts('shared.footer.categories')}
+                  {tLayouts(($) => $.shared.footer.categories)}
                 </Text>
                 {courseCategories.map((category) => (
                   <FooterLink
@@ -170,13 +171,13 @@ export default function FooterBlock() {
 
               <Stack gap="xs">
                 <FooterLink pseudo href={Routes.page_path('tos')}>
-                  {tLayouts('shared.footer.tos')}
+                  {tLayouts(($) => $.shared.footer.tos)}
                 </FooterLink>
                 <FooterLink pseudo href={Routes.page_path('privacy')}>
-                  {tLayouts('shared.footer.privacy')}
+                  {tLayouts(($) => $.shared.footer.privacy)}
                 </FooterLink>
                 <FooterLink pseudo href={Routes.page_path('cookie_policy')}>
-                  {tLayouts('shared.footer.cookie_policy')}
+                  {tLayouts(($) => $.shared.footer.cookie_policy)}
                 </FooterLink>
               </Stack>
 

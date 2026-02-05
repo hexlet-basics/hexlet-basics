@@ -32,94 +32,92 @@ function NavbarMenu() {
       <NavLink
         component={Link}
         href={Routes.admin_root_path()}
-        label={tLayouts('web.admin.application.dashboard')}
+        label={tLayouts(($) => $.web.admin.application.dashboard)}
         leftSection={<i className="bi bi-house" />}
       />
       <NavLink
         component={Link}
         href={Routes.admin_language_categories_path()}
-        label={tLayouts('web.admin.application.language_categories')}
+        label={tLayouts(($) => $.web.admin.application.language_categories)}
         leftSection={<i className="bi bi-file-text" />}
       />
       <NavLink
         component={Link}
         href={Routes.admin_language_lessons_path()}
-        label={tLayouts('web.admin.application.language_lessons')}
+        label={tLayouts(($) => $.web.admin.application.language_lessons)}
         leftSection={<i className="bi bi-file-text" />}
       />
       <NavLink
         component={Link}
         href={Routes.admin_language_lesson_reviews_path()}
-        label={tLayouts('web.admin.application.language_lesson_reviews')}
+        label={tLayouts(($) => $.web.admin.application.language_lesson_reviews)}
         leftSection={<i className="bi bi-file-text" />}
       />
       <NavLink
         component={Link}
         href={Routes.admin_languages_path()}
-        label={tLayouts('web.admin.application.languages')}
+        label={tLayouts(($) => $.web.admin.application.languages)}
         leftSection={<i className="bi bi-terminal" />}
       />
       <NavLink
         component={Link}
         href={Routes.admin_language_landing_pages_path()}
-        label={tLayouts('web.admin.application.language_landing_pages')}
+        label={tLayouts(($) => $.web.admin.application.language_landing_pages)}
         leftSection={<i className="bi bi-terminal" />}
       />
       <NavLink
         component={Link}
         href={Routes.admin_reviews_path()}
-        label={tLayouts('web.admin.application.reviews')}
+        label={tLayouts(($) => $.web.admin.application.reviews)}
         leftSection={<i className="bi bi-chat-left-quote" />}
       />
       <NavLink
         component={Link}
         href={Routes.admin_blog_posts_path()}
-        label={tLayouts('web.admin.application.blog_posts')}
+        label={tLayouts(($) => $.web.admin.application.blog_posts)}
         leftSection={<i className="bi bi-file-text" />}
       />
       <NavLink
         component={Link}
         href={Routes.admin_messages_path()}
-        label={tLayouts('web.admin.application.messages')}
+        label={tLayouts(($) => $.web.admin.application.messages)}
         leftSection={<i className="bi bi-file-text" />}
       />
       <NavLink
         component={Link}
         href={Routes.admin_language_lesson_members_path()}
-        label={tLayouts('web.admin.application.language_lesson_members')}
+        label={tLayouts(($) => $.web.admin.application.language_lesson_members)}
         leftSection={<i className="bi bi-file-text" />}
       />
       <NavLink
         component={Link}
         href={Routes.admin_surveys_path()}
-        label={tLayouts('web.admin.application.surveys')}
+        label={tLayouts(($) => $.web.admin.application.surveys)}
         leftSection={<i className="bi bi-patch-question" />}
       />
       <NavLink
         component={Link}
         href={Routes.admin_survey_scenarios_path()}
-        label={tLayouts('web.admin.application.survey_scenarios')}
+        label={tLayouts(($) => $.web.admin.application.survey_scenarios)}
         leftSection={<i className="bi bi-collection" />}
       />
       <NavLink
         component={Link}
         href={Routes.admin_survey_answers_path()}
-        label={tLayouts('web.admin.application.survey_answers')}
+        label={tLayouts(($) => $.web.admin.application.survey_answers)}
         leftSection={<i className="bi bi-signpost-2" />}
       />
       <NavLink
         component={Link}
         href={Routes.admin_leads_url()}
-        label={tLayouts('web.admin.application.leads')}
+        label={tLayouts(($) => $.web.admin.application.leads)}
         leftSection={<i className="bi bi-person-check" />}
       />
-
       <Divider />
-
       <NavLink
         component={Link}
         href={Routes.admin_management_users_path()}
-        label={tLayouts('web.admin.application.users')}
+        label={tLayouts(($) => $.web.admin.application.users)}
         leftSection={<i className="bi bi-people" />}
       />
     </>

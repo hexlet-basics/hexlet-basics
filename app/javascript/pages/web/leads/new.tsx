@@ -25,8 +25,10 @@ export default function New({ lead, from }: Props) {
   // const { t: tAr } = useTranslation("activerecord");
   // const { t: tHelpers } = useTranslation("helpers");
   const { t: tViews } = useTranslation('web');
-  const helpItems = tViews('leads.new.help_items', { returnObjects: true });
-  const header = tViews('leads.new.header');
+  const helpItemsList = tViews(($) => $.leads.new.help_items, {
+    returnObjects: true,
+  });
+  const header = tViews(($) => $.leads.new.header);
 
   console.log(from);
   return (
@@ -35,16 +37,16 @@ export default function New({ lead, from }: Props) {
         <Grid gutter="xl">
           <Grid.Col span={{ base: 12, lg: 7 }} mb="xl">
             <Stack gap="md">
-              <Text>{tViews('leads.new.description')}</Text>
-              <Text fw={500}>{tViews('leads.new.how_can_we_help')}</Text>
+              <Text>{tViews(($) => $.leads.new.description)}</Text>
+              <Text fw={500}>{tViews(($) => $.leads.new.how_can_we_help)}</Text>
               <List>
-                {helpItems.map((item, index) => (
+                {helpItemsList.map((item, index) => (
                   <List.Item key={item}>
                     <XssContent>{item}</XssContent>
                   </List.Item>
                 ))}
               </List>
-              <XssContent>{tViews('leads.new.do_it')}</XssContent>
+              <XssContent>{tViews(($) => $.leads.new.do_it)}</XssContent>
             </Stack>
           </Grid.Col>
           <Grid.Col span={{ base: 12, lg: 5 }}>
@@ -55,7 +57,7 @@ export default function New({ lead, from }: Props) {
               <Center mt="xl">
                 <AppAnchor href={from} c="grey">
                   <Text component="span" me="xs">
-                    {tViews('leads.new.return')}
+                    {tViews(($) => $.leads.new.return)}
                   </Text>
                   <Undo2 size={14} />
                 </AppAnchor>

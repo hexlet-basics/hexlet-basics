@@ -75,7 +75,7 @@ export default function Index({ grid, blogPosts }: Props) {
   );
 
   return (
-    <AdminLayout header={t('admin.blog_posts.index.header')}>
+    <AdminLayout header={t(($) => $.admin.blog_posts.index.header)}>
       <Menu />
       <DataTable
         records={blogPosts}

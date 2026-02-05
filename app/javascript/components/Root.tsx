@@ -18,8 +18,8 @@ function FallbackComponent() {
     <Container>
       <Center h="100vh">
         <Stack align="center">
-          <Title order={1}>{tLayouts('web.root.fallback.header')}</Title>
-          <Text>{tLayouts('web.root.fallback.description')}</Text>
+          <Title order={1}>{tLayouts(($) => $.web.root.fallback.header)}</Title>
+          <Text>{tLayouts(($) => $.web.root.fallback.description)}</Text>
         </Stack>
       </Center>
     </Container>

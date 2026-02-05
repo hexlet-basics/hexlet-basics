@@ -34,7 +34,7 @@ export default function New({ signInForm }: Props) {
   });
 
   return (
-    <ApplicationLayout center header={t('sessions.new.title')}>
+    <ApplicationLayout center header={t(($) => $.sessions.new.title)}>
       <Container>
         <Stack align="center">
           <Card
@@ -56,21 +56,21 @@ export default function New({ signInForm }: Props) {
                 autoComplete="current-password"
               />
               <Box my="lg" ta="right">
-                {t('sessions.new.forgot_password')}{' '}
+                {t(($) => $.sessions.new.forgot_password)}{' '}
                 <AppAnchor fw="bold" href={Routes.new_remind_password_path()}>
-                  {t('sessions.new.reset_password')}
+                  {t(($) => $.sessions.new.reset_password)}
                 </AppAnchor>
               </Box>
               <Button type="submit" fullWidth loading={isSubmitting}>
-                {tHelpers('submit.user_sign_in_form.create')}
+                {tHelpers(($) => $.submit.user_sign_in_form.create)}
               </Button>
             </form>
           </Card>
 
           <Text mt="xs">
-            {t('sessions.new.dont_have_account')}{' '}
+            {t(($) => $.sessions.new.dont_have_account)}{' '}
             <AppAnchor href={Routes.new_user_path()} fw="bold">
-              {t('sessions.new.register')}
+              {t(($) => $.sessions.new.register)}
             </AppAnchor>
           </Text>
         </Stack>

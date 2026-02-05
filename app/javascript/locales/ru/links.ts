@@ -1,0 +1,41 @@
+export default {
+  hexlet:
+    'https://ru.hexlet.io/?utm_source=code-basics&utm_medium=referral&utm_campaign=general&utm_content=mainpage',
+  hexlet_author_school_course:
+    'https://ru.hexlet.io/courses/author-school-hexlet?promo_name=course-author-school-hexlet&promo_position=body&promo_type=link',
+  hexlet_authors_school:
+    'https://making.hexlet.io/authors?promo_name=school-of-authors&promo_position=body&promo_type=link',
+  hexlet_awesome_text:
+    'https://ru.hexlet.io/courses/awesome-text?promo_name=course-awesome-text&promo_position=body&promo_type=link',
+  hexlet_awesome_text_structure:
+    'https://ru.hexlet.io/courses/awesome-text-structure?promo_name=course-awesome-text-structure&promo_position=body&promo_type=link',
+  hexlet_blog:
+    'https://ru.hexlet.io/blog?promo_name=blog&promo_position=body&promo_type=link&utm_source=code-basics&utm_medium=referral&utm_campaign=blog&utm_content=lesson',
+  hexlet_courses: 'https://ru.hexlet.io/courses',
+  hexlet_facebook: 'https://www.facebook.com/codebasicsru',
+  hexlet_frontend:
+    'https://ru.hexlet.io/programs/frontend?promo_name=prof-frontend&promo_position=body&promo_type=link&utm_source=code-basics&utm_medium=referral&utm_campaign=programs&utm_content=frontend-course',
+  hexlet_instagram: 'https://www.instagram.com/hexlethq',
+  hexlet_java:
+    'https://ru.hexlet.io/programs/java?promo_name=prof-java&promo_position=body&promo_type=link&utm_source=code-basics&utm_medium=referral&utm_campaign=programs&utm_content=java-course',
+  hexlet_layout_designer:
+    'https://ru.hexlet.io/programs/layout-designer?promo_name=prof-layout-designer&promo_position=body&promo_type=link&utm_source=code-basics&utm_medium=referral&utm_campaign=programs&utm_content=lesson',
+  hexlet_matrix:
+    'https://docs.google.com/spreadsheets/d/e/2PACX-1vSr58Xg4DVX2WdmAkv3hE2ITJ3fPeNUmRFe0Ekro53U-ACFrhcUkV8PlUm4ddcn53Uh-5UIezZtZZgc/pubhtml',
+  hexlet_php:
+    'https://ru.hexlet.io/programs/php?promo_name=prof-php&promo_position=body&promo_type=link',
+  hexlet_profession:
+    'https://ru.hexlet.io/programs?promo_name=programs&promo_position=body&promo_type=link&utm_source=code-basics&utm_medium=referral&utm_campaign=programs&utm_content=professions',
+  hexlet_python:
+    'https://ru.hexlet.io/programs/python?promo_name=prof-python&promo_position=body&promo_type=link',
+  hexlet_rails:
+    'https://ru.hexlet.io/programs/rails?promo_name=prof-rails&promo_position=body&promo_type=link',
+  hexlet_recommended_books:
+    'https://ru.hexlet.io/pages/recommended-books?promo_name=books&promo_position=body&promo_type=link&utm_medium=referral&utm_campaign=resources&utm_content=books',
+  hexlet_success_stories:
+    'https://ru.hexlet.io/blog/categories/success?promo_name=blog-success&promo_position=body&promo_type=link&utm_source=code-basics&utm_medium=referral&utm_campaign=blog&utm_content=lesson',
+  hexlet_telegram: 'https://ttttt.me/hexlet_ru',
+  hexlet_telegram_volunteers: 'https://ttttt.me/hexletcommunity/12',
+  hexlet_twitter: 'https://twitter.com/HexletHQ',
+  hexlet_youtube: 'https://www.youtube.com/user/HexletUniversity',
+} as const;

@@ -64,12 +64,12 @@ export default function Show({ bookRequested, lead }: Props) {
         <Grid>
           <Grid.Col span={{ base: 12, md: 7 }}>
             <Text c="dimmed" fz="lg">
-              {t('books.show.freebook')}
+              {t(($) => $.books.show.freebook)}
             </Text>
             <Title order={1} mb="lg">
-              {t('books.show.header')}
+              {t(($) => $.books.show.header)}
             </Title>
-            <Text fz="lg">{t('books.show.description')}</Text>
+            <Text fz="lg">{t(($) => $.books.show.description)}</Text>
 
             {!bookRequested ? (
               <Button
@@ -80,7 +80,7 @@ export default function Show({ bookRequested, lead }: Props) {
                 variant="outline"
                 size="lg"
               >
-                {t('books.show.request')}
+                {t(($) => $.books.show.request)}
               </Button>
             ) : (
               <Button
@@ -91,7 +91,7 @@ export default function Show({ bookRequested, lead }: Props) {
                 variant="outline"
                 size="lg"
               >
-                {t('books.show.download')}
+                {t(($) => $.books.show.download)}
               </Button>
             )}
 
@@ -123,7 +123,7 @@ export default function Show({ bookRequested, lead }: Props) {
         </Grid>
 
         <Title order={2} mt={40} mb={20}>
-          {t('books.show.toc')}
+          {t(($) => $.books.show.toc)}
         </Title>
 
         {bookToc.map((item, index) => (
@@ -131,7 +131,9 @@ export default function Show({ bookRequested, lead }: Props) {
             <Grid align="start">
               <Grid.Col span={{ base: 12, md: 2 }}>
                 <Text fw={700}>
-                  {t('books.show.chapter', { number: index + 1 })}
+                  {t(($) => $.books.show.chapter, {
+                    number: index + 1,
+                  })}
                 </Text>
               </Grid.Col>
               <Grid.Col span={{ base: 12, md: 4 }}>{item.title}</Grid.Col>
@@ -150,7 +152,7 @@ export default function Show({ bookRequested, lead }: Props) {
         {!auth.user.guest && i18next.language === 'ru' && (
           <Grid align="center" mt={60}>
             <Grid.Col span={{ base: 12, lg: 7 }}>
-              <Title order={2}>{t('home.index.consultation')}</Title>
+              <Title order={2}>{t(($) => $.home.index.consultation)}</Title>
             </Grid.Col>
             <Grid.Col span={{ base: 12, lg: 5 }}>
               <Paper p="lg" radius="md" withBorder>

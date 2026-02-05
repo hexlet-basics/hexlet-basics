@@ -19,7 +19,7 @@ export default function Edit({
   const { t } = useTranslation();
 
   return (
-    <AdminLayout header={t('admin.survey_scenarios.edit.header')}>
+    <AdminLayout header={t(($) => $.admin.survey_scenarios.edit.header)}>
       <Menu surveyScenarioCrud={surveyScenarioDto} />
       <Form
         surveys={surveys}

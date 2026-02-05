@@ -14,14 +14,17 @@ export function Menu({ data }: Props) {
   const { t: tHelpers } = useTranslation('helpers');
 
   const items: CrudHorizontalMenuItem[] = [
-    { href: Routes.admin_surveys_path(), label: tHelpers('crud.list') },
-    { href: Routes.new_admin_survey_path(), label: tHelpers('crud.add') },
+    { href: Routes.admin_surveys_path(), label: tHelpers(($) => $.crud.list) },
+    {
+      href: Routes.new_admin_survey_path(),
+      label: tHelpers(($) => $.crud.add),
+    },
   ];
 
   if (data) {
     items.push({
       href: Routes.edit_admin_survey_path(data.data.id),
-      label: tHelpers('crud.editing'),
+      label: tHelpers(($) => $.crud.editing),
     });
   }
 

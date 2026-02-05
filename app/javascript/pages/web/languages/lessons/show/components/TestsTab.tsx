@@ -12,7 +12,7 @@ export default function TestsTab() {
   return (
     <Stack>
       <Center>
-        <Text>{tCommon('testInstructions')}</Text>
+        <Text>{tCommon(($) => $.testInstructions)}</Text>
       </Center>
       <CodeHighlight
         language={getEditorLanguage(course.slug!)}

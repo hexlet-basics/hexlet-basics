@@ -33,7 +33,7 @@ export default function Index({ grid, leads }: Props) {
   const { gridProps } = useDataTableProps<Lead, {}>(grid);
 
   return (
-    <AdminLayout header={t('admin.leads.index.header')}>
+    <AdminLayout header={t(($) => $.admin.leads.index.header)}>
       <DataTable
         records={leads}
         columns={[

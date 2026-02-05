@@ -25,7 +25,7 @@ export default function New({
   const { t } = useTranslation();
 
   return (
-    <AdminLayout header={t('admin.language_landing_pages.new.header')}>
+    <AdminLayout header={t(($) => $.admin.language_landing_pages.new.header)}>
       <Menu />
       <Grid>
         <Grid.Col span={7}>

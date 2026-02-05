@@ -14,7 +14,7 @@ export default function useConfirmation(
   const { t: tCommon } = useTranslation('common');
 
   const requestConfirmation = (event: React.MouseEvent<Element>) => {
-    const message = options?.message ?? tCommon('confirm');
+    const message = options?.message ?? tCommon(($) => $.confirm);
     const isConfirmed = window.confirm(`${message}`);
     if (!isConfirmed) {
       event.preventDefault();

@@ -1,0 +1,47 @@
+export default {
+  format: '%{attribute} %{message}',
+  messages: {
+    accepted: 'debe ser aceptado',
+    blank: 'no puede estar en blanco',
+    confirmation: 'no coincide',
+    empty: 'no puede estar vacío',
+    equal_to: 'debe ser igual a %{count}',
+    even: 'debe ser par',
+    exclusion: 'está reservado',
+    greater_than: 'debe ser mayor que %{count}',
+    greater_than_or_equal_to: 'debe ser mayor que o igual a %{count}',
+    in: 'debe estar en %{count}',
+    inclusion: 'no está incluido en la lista',
+    invalid: 'no es válido',
+    less_than: 'debe ser menor que %{count}',
+    less_than_or_equal_to: 'debe ser menor que o igual a %{count}',
+    model_invalid: 'La validación falló: %{errors}',
+    not_a_number: 'no es un número',
+    not_an_integer: 'debe ser un entero',
+    odd: 'debe ser impar',
+    other_than: 'debe ser distinto de %{count}',
+    present: 'debe estar en blanco',
+    required: 'debe existir',
+    taken: 'ya está en uso',
+    too_long: {
+      one: 'es demasiado largo (%{count} carácter máximo)',
+      other: 'es demasiado largo (%{count} caracteres máximo)',
+    },
+    too_short: {
+      one: 'es demasiado corto (%{count} carácter mínimo)',
+      other: 'es demasiado corto (%{count} caracteres mínimo)',
+    },
+    wrong_length: {
+      one: 'no tiene la longitud correcta (%{count} carácter exactos)',
+      other: 'no tiene la longitud correcta (%{count} caracteres exactos)',
+    },
+  },
+  template: {
+    body: 'Se encontraron problemas con los siguientes campos:',
+    header: {
+      one: 'No se pudo guardar este/a %{model} porque se encontró %{count} error',
+      other:
+        'No se pudo guardar este/a %{model} porque se encontraron %{count} errores',
+    },
+  },
+} as const;

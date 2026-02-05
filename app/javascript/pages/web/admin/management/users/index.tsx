@@ -28,7 +28,7 @@ export default function Index({ grid, users }: Props) {
   );
 
   return (
-    <AdminLayout header={t('admin.management.users.index.header')}>
+    <AdminLayout header={t(($) => $.admin.management.users.index.header)}>
       <Menu />
       <DataTable
         records={users}

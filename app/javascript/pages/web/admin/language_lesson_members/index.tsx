@@ -52,7 +52,9 @@ export default function Index({
   const { gridProps } = useDataTableProps<LanguageLessonMember, {}>(grid);
 
   return (
-    <AdminLayout header={t('admin.language_lesson_members.index.header')}>
+    <AdminLayout
+      header={t(($) => $.admin.language_lesson_members.index.header)}
+    >
       <DataTable
         records={languageLessonMembers}
         columns={[

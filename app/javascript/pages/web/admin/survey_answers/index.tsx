@@ -39,7 +39,7 @@ export default function Index({ grid, surveyAnswers, surveys }: Props) {
   );
 
   return (
-    <AdminLayout header={t('admin.survey_answers.index.header')}>
+    <AdminLayout header={t(($) => $.admin.survey_answers.index.header)}>
       <DataTable
         records={surveyAnswers}
         columns={[

@@ -21,13 +21,13 @@ export default function Index() {
           <Grid.Col>
             <Card className="bg-body-tertiary p-4 rounded-4 shadow-sm h-100 d-flex">
               <div className="h4 fw-bold mb-2">
-                <span>{t('cases.index.for_teachers')}</span>
+                <span>{t(($) => $.cases.index.for_teachers)}</span>
               </div>
               <a
                 className="text-decoration-none stretched-link icon-link icon-link-hover mt-auto"
                 href={Routes.for_teachers_cases_path()}
               >
-                <span>{t('cases.index.link')}</span>
+                <span>{t(($) => $.cases.index.link)}</span>
                 <i className="bi bi-arrow-right lh-1" />
               </a>
             </Card>

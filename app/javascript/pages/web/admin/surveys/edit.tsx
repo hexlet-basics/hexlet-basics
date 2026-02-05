@@ -14,7 +14,9 @@ export default function Edit({ surveyDto }: Props) {
 
   return (
     <AdminLayout
-      header={t('admin.surveys.edit.header', { id: surveyDto.data.id })}
+      header={t(($) => $.admin.surveys.edit.header, {
+        id: surveyDto.data.id,
+      })}
     >
       <Menu data={surveyDto} />
       <Form

@@ -19,12 +19,12 @@ type Props = {
 export default function Form({ data, url, method }: Props) {
   const { t: tHelpers } = useTranslation('helpers');
   const { t: tEnums } = useTranslation('enumerize');
-  const languageProgressEnum = tEnums('language.progress', {
+  const languageProgressEnum = tEnums(($) => $.language.progress, {
     returnObjects: true,
   });
   const languageProgressEnumOptions = enumToOptions(languageProgressEnum);
 
-  const languageLearnAsEnum = tEnums('language.learn_as', {
+  const languageLearnAsEnum = tEnums(($) => $.language.learn_as, {
     returnObjects: true,
   });
   const languageLearnAsEnumOptions = enumToOptions(languageLearnAsEnum);
@@ -63,9 +63,8 @@ export default function Form({ data, url, method }: Props) {
       <TextInput {...getInputProps('hexlet_program_landing_page')} />
       <TextInput {...getInputProps('openai_assistant_id')} />
       <FileInput {...getFileInputProps('cover')} name="cover" />
-
       <Button type="submit" loading={isSubmitting}>
-        {tHelpers('submit.save')}
+        {tHelpers(($) => $.submit.save)}
       </Button>
     </form>
   );

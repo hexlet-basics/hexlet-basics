@@ -14,7 +14,7 @@ import {
   Text,
   Title,
 } from '@mantine/core';
-import i18next, { t } from 'i18next';
+import i18next from 'i18next';
 import { MessageSquareDiff } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import CourseBlock from '@/components/CourseBlock';
@@ -88,9 +88,9 @@ export default function My(props: Props) {
     <ApplicationLayout>
       <Container>
         <Title order={2} my="xl">
-          {tViews('my.show.started')}
+          {tViews(($) => $.my.show.started)}
         </Title>
-        {startedCourseMembers.length === 0 && <p>{tCommon('empty')}</p>}
+        {startedCourseMembers.length === 0 && <p>{tCommon(($) => $.empty)}</p>}
 
         <SimpleGrid cols={{ base: 1, xs: 2 }}>
           {startedCourseMembers.map((cm) => (
@@ -103,16 +103,16 @@ export default function My(props: Props) {
         </SimpleGrid>
 
         <Title my="xl" order={2}>
-          {tViews('my.show.finished')}
+          {tViews(($) => $.my.show.finished)}
         </Title>
 
         {finishedCourseMembers.length > 0 && i18next.language === 'ru' && (
           <Alert icon={<MessageSquareDiff />} mb="xl" px="xl">
-            <XssContent>{t('my.show.add_review')}</XssContent>
+            <XssContent>{tViews(($) => $.my.show.add_review)}</XssContent>
           </Alert>
         )}
 
-        {finishedCourseMembers.length === 0 && <p>{tCommon('empty')}</p>}
+        {finishedCourseMembers.length === 0 && <p>{tCommon(($) => $.empty)}</p>}
 
         <SimpleGrid cols={{ base: 2, xs: 3, sm: 4 }}>
           {finishedCourseMembers.map((cm) => (

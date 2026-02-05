@@ -26,7 +26,7 @@ export default function Edit({
 
   return (
     <AdminLayout
-      header={t('admin.language_landing_pages.edit.header', {
+      header={t(($) => $.admin.language_landing_pages.edit.header, {
         id: landingPageDto.data.header,
       })}
     >

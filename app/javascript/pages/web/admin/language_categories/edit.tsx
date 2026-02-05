@@ -15,7 +15,7 @@ export default function Edit({ categoryDto }: Props) {
 
   return (
     <AdminLayout
-      header={t('admin.language_categories.edit.header', {
+      header={t(($) => $.admin.language_categories.edit.header, {
         id: categoryDto.data.name,
       })}
     >

@@ -19,7 +19,7 @@ export default function New({
   const { t } = useTranslation();
 
   return (
-    <AdminLayout header={t('admin.survey_scenarios.new.header')}>
+    <AdminLayout header={t(($) => $.admin.survey_scenarios.new.header)}>
       <Menu />
       <Form
         surveys={surveys}

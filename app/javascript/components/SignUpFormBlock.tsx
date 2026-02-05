@@ -41,17 +41,16 @@ export default function SignUpFormBlock({ userDto, autoFocus = false }: Props) {
         autoComplete="current-password"
       />
       <Box my="lg" ta="right">
-        {t('users.new.have_account')}{' '}
+        {t(($) => $.users.new.have_account)}{' '}
         <AppAnchor fw="bold" href={Routes.new_session_path()}>
-          {t('users.new.sign_in')}
+          {t(($) => $.users.new.sign_in)}
         </AppAnchor>
       </Box>
       <Button type="submit" fullWidth loading={isSubmitting}>
-        {tHelpers('submit.user_sign_up_form.create')}
+        {tHelpers(($) => $.submit.user_sign_up_form.create)}
       </Button>
-
       <XssContent fz="sm" mt="xs">
-        {t('users.new.confirmation_html', {
+        {t(($) => $.users.new.confirmation_html, {
           url: Routes.page_path('tos'),
         })}
       </XssContent>

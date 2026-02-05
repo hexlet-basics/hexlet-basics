@@ -199,12 +199,11 @@ export default function Show({
           {JSON.stringify(courseSchema)}
         </script>
       </Head>
-
       <Container size="lg">
         <Grid>
           <Grid.Col span={{ base: 12, sm: 7 }}>
             <Text size="sm" c="dimmed">
-              {t('languages.show.free_course', {
+              {t(($) => $.languages.show.free_course, {
                 name: courseLandingPage.header,
               })}
             </Text>
@@ -224,7 +223,7 @@ export default function Show({
               </Group>
               <Group>
                 <Clock size={16} />
-                {t('languages.show.updated_at', {
+                {t(($) => $.languages.show.updated_at, {
                   date: dayjs(course.current_version!.created_at).format('LL'),
                 })}
               </Group>
@@ -240,7 +239,7 @@ export default function Show({
                     firstLesson.slug,
                   )}
                 >
-                  {t('languages.show.try')}
+                  {t(($) => $.languages.show.try)}
                 </Button>
               )}
               {courseMember && nextLesson && (
@@ -252,7 +251,7 @@ export default function Show({
                     nextLesson.slug!,
                   )}
                 >
-                  {t('languages.show.continue')}
+                  {t(($) => $.languages.show.continue)}
                 </Button>
               )}
               {courseMember?.state === 'finished' && !nextLesson && (
@@ -265,7 +264,7 @@ export default function Show({
                     firstLesson.slug!,
                   )}
                 >
-                  {t('languages.show.restart')}
+                  {t(($) => $.languages.show.restart)}
                 </Button>
               )}
               {courseMember?.state === 'finished' &&
@@ -277,7 +276,7 @@ export default function Show({
                     target="_blank"
                     href={`${course.hexlet_program_landing_page}?utm_source=code-basics&utm_medium=referral`}
                   >
-                    {t('languages.show.hexlet_program_link')}
+                    {t(($) => $.languages.show.hexlet_program_link)}
                   </Button>
                 )}
             </Group>
@@ -287,7 +286,7 @@ export default function Show({
               src={codeIllustration}
               // w="auto"
               fit="cover"
-              alt={t('languages.show.cover_image')}
+              alt={t(($) => $.languages.show.cover_image)}
             />
           </Grid.Col>
         </Grid>
@@ -308,7 +307,7 @@ export default function Show({
               width="100%"
               height="auto"
               loading="lazy"
-              alt={t('languages.show.learning_preview')}
+              alt={t(($) => $.languages.show.learning_preview)}
               style={{
                 borderRadius: 'var(--mantine-radius-xl)',
                 boxShadow: 'var(--mantine-shadow-lg)',
@@ -327,7 +326,7 @@ export default function Show({
         <Card bg="indigo.0" my={{ base: 'lg', sm: 80 }} p="xl">
           <Group>
             <Text responsive="3rem">
-              {t('languages.show.course_graduates')}
+              {t(($) => $.languages.show.course_graduates)}
             </Text>
             <Button
               bg="dark"
@@ -335,14 +334,16 @@ export default function Show({
               component={Link}
               href={Routes.language_lesson_path(course.slug!, firstLesson.slug)}
             >
-              {t('languages.show.start', { name: courseLandingPage.name })}
+              {t(($) => $.languages.show.start, {
+                name: courseLandingPage.name,
+              })}
             </Button>
           </Group>
         </Card>
 
         <Box>
           <Title order={2} size="h1" my="xl" responsive>
-            {t('languages.show.learning_program', {
+            {t(($) => $.languages.show.learning_program, {
               name: courseLandingPage.name,
             })}
           </Title>
@@ -384,21 +385,27 @@ export default function Show({
 
         <Box my={{ base: 'lg', sm: 80 }}>
           <Title order={2} fz="h1" mb="xl" responsive>
-            {t('languages.show.about_learning')}
+            {t(($) => $.languages.show.about_learning)}
           </Title>
           <SimpleGrid cols={{ base: 1, lg: 2 }}>
             <Box>
-              <Text fw="bold">{t('languages.show.convenient format')}</Text>
+              <Text fw="bold">
+                {t(($) => $.languages.show['convenient format'])}
+              </Text>
               <XssContent mb="md">
-                {t('languages.show.learning_conveniently')}
+                {t(($) => $.languages.show.learning_conveniently)}
               </XssContent>
-              <Text fw="bold">{t('languages.show.browser_practice')}</Text>
+              <Text fw="bold">
+                {t(($) => $.languages.show.browser_practice)}
+              </Text>
               <XssContent mb="md">
-                {t('languages.show.real_life_challenges')}
+                {t(($) => $.languages.show.real_life_challenges)}
               </XssContent>
-              <Text fw="bold">{t('languages.show.ai_without_limits')}</Text>
+              <Text fw="bold">
+                {t(($) => $.languages.show.ai_without_limits)}
+              </Text>
               <XssContent mb="md">
-                {t('languages.show.ai_explanation')}
+                {t(($) => $.languages.show.ai_explanation)}
               </XssContent>
             </Box>
 
@@ -421,7 +428,7 @@ export default function Show({
           <Grid>
             <Grid.Col span={{ base: 12, sm: 8 }} display="flex">
               <Text responsive="3rem">
-                {t('languages.show.demo_description')}
+                {t(($) => $.languages.show.demo_description)}
               </Text>
             </Grid.Col>
             <Grid.Col span={{ base: 12, sm: 4 }}>
@@ -435,7 +442,7 @@ export default function Show({
                     firstLesson.slug,
                   )}
                 >
-                  {t('languages.show.demo_start')}
+                  {t(($) => $.languages.show.demo_start)}
                 </Button>
               </Flex>
             </Grid.Col>
@@ -475,7 +482,7 @@ export default function Show({
         {qnaItems.length > 0 && (
           <Box my="xl" py="xl">
             <Text fz="h1" fw="bold" mb="xl">
-              {t('languages.show.sort_questions')}
+              {t(($) => $.languages.show.sort_questions)}
             </Text>
             <SimpleGrid cols={{ base: 1, xs: 2 }}>
               {qnaItems.map((item) => (
@@ -494,7 +501,7 @@ export default function Show({
               <Grid.Col span={{ base: 12, md: 6 }}>
                 <Center mb="xl">
                   <Text fz={40} fw="bold">
-                    {t('home.index.consultation')}
+                    {t(($) => $.home.index.consultation)}
                   </Text>
                 </Center>
               </Grid.Col>
@@ -513,7 +520,7 @@ export default function Show({
               <Grid.Col span={{ base: 12, md: 6 }}>
                 <Center mb="lg">
                   <Text fw="bold" responsive="3rem">
-                    {t('home.index.join')}
+                    {t(($) => $.home.index.join)}
                   </Text>
                 </Center>
               </Grid.Col>

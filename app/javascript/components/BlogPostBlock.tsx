@@ -40,7 +40,6 @@ export default function BlogPostBlock({ post, lazy }: Props) {
           </AspectRatio>
         </Card.Section>
       )}
-
       <AppAnchor
         className="after:absolute after:inset-0"
         href={Routes.blog_post_path(post.slug!, { suffix })}
@@ -50,7 +49,6 @@ export default function BlogPostBlock({ post, lazy }: Props) {
         </Title>
       </AppAnchor>
       <Text mb="xs">{post.description}</Text>
-
       <Group gap="xs" c="dimmed" mt="auto">
         <Text>{dayjs().to(post.created_at)}</Text>
         <Group gap="xs">
@@ -59,7 +57,12 @@ export default function BlogPostBlock({ post, lazy }: Props) {
         </Group>
         <Group gap="xs">
           <i className="bi bi-clock" />
-          <Text>~{tCommon('time.minutes', { count: 5 })}</Text>
+          <Text>
+            ~
+            {tCommon(($) => $.time.minutes, {
+              count: 5,
+            })}
+          </Text>
         </Group>
       </Group>
     </Card>

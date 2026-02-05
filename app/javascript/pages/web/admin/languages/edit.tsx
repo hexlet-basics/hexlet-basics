@@ -25,10 +25,13 @@ export default function Edit({
   landingPage,
 }: Props) {
   const { t } = useTranslation();
+  const courseMeta = (courseDto as { meta?: { slug?: string } }).meta ?? {};
 
   return (
     <AdminLayout
-      header={t('admin.languages.edit.header', { id: courseDto.meta.slug })}
+      header={t(($) => $.admin.languages.edit.header, {
+        id: courseMeta.slug ?? courseDto.data.id,
+      })}
     >
       <Menu data={courseDto} landingPage={landingPage} />
       <SimpleGrid cols={{ base: 1, sm: 2 }}>

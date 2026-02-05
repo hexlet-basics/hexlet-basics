@@ -22,7 +22,7 @@ export default function OutputTab() {
     return null;
   }
 
-  const message = tCommon(`check.${result!}.message`);
+  const message = tCommon(($) => $.check[result!].message);
   // const messageForGuest = tCommon("signInSuggestion", {
   //   url: Routes.new_user_path(),
   // });

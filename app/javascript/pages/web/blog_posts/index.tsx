@@ -15,7 +15,7 @@ type Props = PropsWithChildren & {
 
 export default function Index({ blogPosts, pagy }: Props) {
   const { t } = useTranslation();
-  const header = t('blog_posts.index.header');
+  const header = t(($) => $.blog_posts.index.header);
   const { suffix } = usePage<SharedProps>().props;
 
   const items: BreadcrumbItem[] = [

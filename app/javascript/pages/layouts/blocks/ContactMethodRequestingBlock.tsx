@@ -11,13 +11,16 @@ export default function ContactMethodRequestingBlock() {
     <Alert color="gray" variant="light">
       <Group justify="space-between" align="center">
         <XssContent>
-          {tLayouts('shared.contact_method_requesting.description_html', {
-            url: Routes.edit_account_profile_url(),
-          })}
+          {tLayouts(
+            ($) => $.shared.contact_method_requesting.description_html,
+            {
+              url: Routes.edit_account_profile_url(),
+            },
+          )}
         </XssContent>
         <Link href={Routes.new_lead_path()} style={{ textDecoration: 'none' }}>
           <XssContent>
-            {tLayouts('shared.contact_method_requesting.go')}
+            {tLayouts(($) => $.shared.contact_method_requesting.go)}
           </XssContent>
         </Link>
       </Group>

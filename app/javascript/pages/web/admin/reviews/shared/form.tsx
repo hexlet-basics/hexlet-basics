@@ -4,8 +4,19 @@ import { useAppForm } from '@/hooks/useAppForm';
 import * as Routes from '@/routes.js';
 import type { HttpRouterMethod, Language, ReviewCrud } from '@/types';
 
+type StateOption = {
+  key: string;
+  value: string;
+};
+
+type ReviewCrudWithMeta = ReviewCrud & {
+  meta?: {
+    states?: StateOption[];
+  };
+};
+
 type Props = {
-  data: ReviewCrud;
+  data: ReviewCrudWithMeta;
   url: string;
   courses: Language[];
   method?: HttpRouterMethod;
@@ -25,10 +36,11 @@ export default function Form({ courses, data, url, method }: Props) {
     method: method ?? 'post',
     container: data, // передаем контейнер целиком
   });
+  const states = data.meta?.states ?? [];
 
   return (
     <form onSubmit={submit}>
-      <Select {...getSelectProps('state', data.meta.states, 'key', 'value')} />
+      <Select {...getSelectProps('state', states, 'key', 'value')} />
       <Checkbox {...getInputProps('pinned')} />
       <Select {...getSelectProps('language_id', courses, 'id', 'slug')} />
       {/* Для XAutocomplete пока ставим TextInput (можно позже сделать кастомный autocomplete-хук) */}
@@ -37,7 +49,7 @@ export default function Form({ courses, data, url, method }: Props) {
       <TextInput {...getInputProps('last_name')} autoComplete="name" />
       <Textarea {...getInputProps('body')} rows={8} />
       <Button type="submit" loading={isSubmitting}>
-        {tHelpers('submit.save')}
+        {tHelpers(($) => $.submit.save)}
       </Button>
     </form>
   );

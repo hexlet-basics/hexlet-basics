@@ -16,7 +16,9 @@ export default function Edit({ reviewDto, courses }: Props) {
 
   return (
     <AdminLayout
-      header={t('admin.reviews.edit.header', { id: reviewDto.data.id })}
+      header={t(($) => $.admin.reviews.edit.header, {
+        id: reviewDto.data.id,
+      })}
     >
       <Menu data={reviewDto} />
       <Form

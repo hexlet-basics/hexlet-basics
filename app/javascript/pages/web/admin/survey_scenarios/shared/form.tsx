@@ -79,7 +79,6 @@ export default function Form({
           'value_for_select',
         )}
       />
-
       <Fieldset>
         {triggersField.fields.map((field, index) => (
           <Box key={field._internalId}>
@@ -107,7 +106,7 @@ export default function Form({
                 mt="xs"
                 onClick={() => triggersField.remove(index)}
               >
-                {tHelpers('crud.remove')}
+                {tHelpers(($) => $.crud.remove)}
               </Button>
             )}
           </Box>
@@ -117,10 +116,9 @@ export default function Form({
           mt="sm"
           onClick={() => triggersField.append(defaultTrigger)}
         >
-          {tHelpers('crud.add')}
+          {tHelpers(($) => $.crud.add)}
         </Button>
       </Fieldset>
-
       <Fieldset>
         {itemsField.fields.map((field, index) => (
           <Box key={field._internalId}>
@@ -146,7 +144,7 @@ export default function Form({
                 mt="xs"
                 onClick={() => itemsField.remove(index)}
               >
-                {tHelpers('crud.remove')}
+                {tHelpers(($) => $.crud.remove)}
               </Button>
             )}
           </Box>
@@ -156,12 +154,11 @@ export default function Form({
           mt="sm"
           onClick={() => itemsField.append(defaultItem)}
         >
-          {tHelpers('crud.add')}
+          {tHelpers(($) => $.crud.add)}
         </Button>
       </Fieldset>
-
       <Button type="submit" loading={isSubmitting}>
-        {tHelpers('submit.save')}
+        {tHelpers(($) => $.submit.save)}
       </Button>
     </form>
   );

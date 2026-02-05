@@ -59,11 +59,11 @@ export default function Chat({
     let content = '';
 
     if (!lessonMember) {
-      content = tViews('languages.lessons.show.chat.guest');
+      content = tViews(($) => $.languages.lessons.show.chat.guest);
     } else if (!enabled) {
-      content = tViews('languages.lessons.show.chat.disabled_html');
+      content = tViews(($) => $.languages.lessons.show.chat.disabled_html);
     } else if (!course.openai_assistant_id) {
-      content = tViews('languages.lessons.show.chat.not_available');
+      content = tViews(($) => $.languages.lessons.show.chat.not_available);
     }
 
     const disabledMessage: AssistantMessage = {
@@ -76,7 +76,7 @@ export default function Chat({
 
   const initMessage: AssistantMessage = {
     role: 'assistant',
-    content: tViews('languages.lessons.show.chat.hi'),
+    content: tViews(($) => $.languages.lessons.show.chat.hi),
   };
 
   return (
@@ -88,7 +88,6 @@ export default function Chat({
       {messages.map((m: AssistantMessage) => (
         <MessagePresenter key={m.id} message={m} />
       ))}
-
       <form onSubmit={submitMessage}>
         <Textarea
           ref={inputRef}
@@ -102,15 +101,15 @@ export default function Chat({
             <Button
               component="a"
               variant="light"
-              href={tCommon('community_url')}
+              href={tCommon(($) => $.community_url)}
               target="_blank"
             >
-              {tViews('languages.lessons.show.chat.community')}
+              {tViews(($) => $.languages.lessons.show.chat.community)}
             </Button>
           )}
           <Button disabled={status !== 'awaiting_message'} type="submit">
             {status === 'in_progress' && <Loader size="sm" mr="xs" />}
-            {tHelpers('send')}
+            {tHelpers(($) => $.send)}
           </Button>
         </Group>
       </form>

@@ -15,7 +15,7 @@ export default function New({ reviewDto, courses }: Props) {
   const { t } = useTranslation();
 
   return (
-    <AdminLayout header={t('admin.reviews.new.header')}>
+    <AdminLayout header={t(($) => $.admin.reviews.new.header)}>
       <Menu />
       <Form
         courses={courses}

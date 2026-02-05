@@ -50,7 +50,7 @@ export default function Show({
 
   const items = [
     {
-      name: t('language_categories.index.header'),
+      name: t(($) => $.language_categories.index.header),
       url: Routes.language_categories_path(),
     },
     {
@@ -81,7 +81,7 @@ export default function Show({
             <Grid.Col span={{ base: 12, xs: 7 }}>
               <Center>
                 <Text fz={40} mb="xs" fw="bold">
-                  {t('home.index.consultation')}
+                  {t(($) => $.home.index.consultation)}
                 </Text>
               </Center>
             </Grid.Col>
@@ -95,7 +95,7 @@ export default function Show({
 
         {qnaItems.length > 0 && (
           <Stack py="xl">
-            <Title order={2}>{t('languages.show.sort_questions')}</Title>
+            <Title order={2}>{t(($) => $.languages.show.sort_questions)}</Title>
             <SimpleGrid cols={{ base: 1, xs: 2 }}>
               {qnaItems.map((item) => (
                 <Box key={item.id}>

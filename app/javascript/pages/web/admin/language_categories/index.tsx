@@ -52,7 +52,7 @@ export default function Index({ grid, categories }: Props) {
   };
 
   return (
-    <AdminLayout header={t('admin.language_categories.index.header')}>
+    <AdminLayout header={t(($) => $.admin.language_categories.index.header)}>
       <Menu />
       <DataTable
         records={categories}

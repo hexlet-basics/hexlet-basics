@@ -62,7 +62,7 @@ export default function Index({ grid, landingPages }: Props) {
   );
 
   return (
-    <AdminLayout header={t('admin.language_landing_pages.index.header')}>
+    <AdminLayout header={t(($) => $.admin.language_landing_pages.index.header)}>
       <Menu />
       <DataTable
         records={landingPages}

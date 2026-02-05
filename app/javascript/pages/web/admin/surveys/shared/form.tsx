@@ -50,7 +50,6 @@ export default function Form({ data, url, method }: Props) {
       <TextInput {...getInputProps('question')} />
       <TextInput {...getInputProps('slug')} />
       <Textarea {...getInputProps('description')} rows={8} />
-
       <Fieldset>
         {itemsField.fields.map((field, index) => (
           <Box key={field._internalId}>
@@ -73,7 +72,7 @@ export default function Form({ data, url, method }: Props) {
               mt="xs"
               onClick={() => itemsField.remove(index)}
             >
-              {tHelpers('crud.remove')}
+              {tHelpers(($) => $.crud.remove)}
             </Button>
           </Box>
         ))}
@@ -82,12 +81,11 @@ export default function Form({ data, url, method }: Props) {
           mt="sm"
           onClick={() => itemsField.append(defaultItem)}
         >
-          {tHelpers('crud.add')}
+          {tHelpers(($) => $.crud.add)}
         </Button>
       </Fieldset>
-
       <Button type="submit" loading={isSubmitting}>
-        {tHelpers('submit.save')}
+        {tHelpers(($) => $.submit.save)}
       </Button>
     </form>
   );

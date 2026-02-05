@@ -27,27 +27,33 @@ export default function ForTeachersBlock() {
   } = usePage<SharedProps>().props;
   const { t } = useTranslation();
 
-  const interactiveApproachList = t(
-    'cases.for_teachers.interactive_approach_list',
-    { returnObjects: true },
+  const interactiveApproachItems = t(
+    ($) => $.cases.for_teachers.interactive_approach_list,
+    {
+      returnObjects: true,
+    },
   );
-  const earlyCareerGuidanceList = t(
-    'cases.for_teachers.early_career_guidance_list',
-    { returnObjects: true },
+  const earlyCareerGuidanceItems = t(
+    ($) => $.cases.for_teachers.early_career_guidance_list,
+    {
+      returnObjects: true,
+    },
   );
   const howToLearnCards = t(
-    'cases.for_teachers.how_to_learn_programming_cards',
-    { returnObjects: true },
+    ($) => $.cases.for_teachers.how_to_learn_programming_cards,
+    {
+      returnObjects: true,
+    },
   );
 
   return (
     <ApplicationLayout>
       <Container py="md" size="lg">
         <Title order={1} mb="sm">
-          {t('cases.for_teachers.header')}
+          {t(($) => $.cases.for_teachers.header)}
         </Title>
         <Text size="lg" c="dimmed" mb="xl">
-          {t('cases.for_teachers.description')}
+          {t(($) => $.cases.for_teachers.description)}
         </Text>
         <Button
           component={Link}
@@ -57,35 +63,35 @@ export default function ForTeachersBlock() {
           px="xl"
           mb={50}
         >
-          {t('cases.for_teachers.try')}
+          {t(($) => $.cases.for_teachers.try)}
         </Button>
 
         <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="xl" my="xl">
           <Title order={2} pe="xl">
-            {t('cases.for_teachers.integrate_into_education')}
+            {t(($) => $.cases.for_teachers.integrate_into_education)}
           </Title>
           <Text size="lg" c="dimmed">
-            {t('cases.for_teachers.lay_programming_foundations')}
+            {t(($) => $.cases.for_teachers.lay_programming_foundations)}
           </Text>
         </SimpleGrid>
 
         <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="xl" my="xl">
           <Stack>
             <Text fw="bold" fz="h4">
-              {t('cases.for_teachers.interactive_approach')}
+              {t(($) => $.cases.for_teachers.interactive_approach)}
             </Text>
             <List>
-              {interactiveApproachList.map((item) => (
+              {interactiveApproachItems.map((item) => (
                 <List.Item mb="sm" key={item}>
                   {item}
                 </List.Item>
               ))}
             </List>
             <Text fw="bold" fz="h4">
-              {t('cases.for_teachers.early_career_guidance')}
+              {t(($) => $.cases.for_teachers.early_career_guidance)}
             </Text>
             <List>
-              {earlyCareerGuidanceList.map((item) => (
+              {earlyCareerGuidanceItems.map((item) => (
                 <List.Item mb="sm" key={item}>
                   {item}
                 </List.Item>
@@ -113,7 +119,7 @@ export default function ForTeachersBlock() {
 
         <Card my="xl" radius="lg" bg="dark" c="white">
           <Title order={2} mb="xl">
-            {t('cases.for_teachers.integrate_now')}
+            {t(($) => $.cases.for_teachers.integrate_now)}
           </Title>
           <Group
             justify="space-between"
@@ -123,7 +129,7 @@ export default function ForTeachersBlock() {
             wrap="wrap"
           >
             <Text c="gray.5">
-              {t('cases.for_teachers.open_browser_and_sign_up')}
+              {t(($) => $.cases.for_teachers.open_browser_and_sign_up)}
             </Text>
             {user.guest ? (
               <Button
@@ -134,7 +140,7 @@ export default function ForTeachersBlock() {
                 size="lg"
                 px="xl"
               >
-                {t('cases.for_teachers.sign_up')}
+                {t(($) => $.cases.for_teachers.sign_up)}
               </Button>
             ) : (
               <Button
@@ -145,7 +151,7 @@ export default function ForTeachersBlock() {
                 size="lg"
                 px="xl"
               >
-                {t('cases.for_teachers.select_course')}
+                {t(($) => $.cases.for_teachers.select_course)}
               </Button>
             )}
           </Group>
@@ -153,7 +159,7 @@ export default function ForTeachersBlock() {
 
         <Box my="xl">
           <Title order={2} mb="xl">
-            {t('cases.for_teachers.how_to_learn_programming')}
+            {t(($) => $.cases.for_teachers.how_to_learn_programming)}
           </Title>
           <SimpleGrid cols={{ base: 1, md: 2, xl: 4 }} spacing="lg">
             {howToLearnCards.map((item, index) => (

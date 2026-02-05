@@ -13,7 +13,7 @@ export default function New({ surveyDto }: Props) {
   const { t } = useTranslation();
 
   return (
-    <AdminLayout header={t('admin.surveys.new.header')}>
+    <AdminLayout header={t(($) => $.admin.surveys.new.header)}>
       <Menu />
       <Form data={surveyDto} url={Routes.admin_surveys_path()} />
     </AdminLayout>

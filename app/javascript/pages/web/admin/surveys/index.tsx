@@ -26,7 +26,7 @@ export default function Index({ grid, surveys }: Props) {
   );
 
   return (
-    <AdminLayout header={t('admin.surveys.index.header')}>
+    <AdminLayout header={t(($) => $.admin.surveys.index.header)}>
       <Menu />
       <DataTable
         records={surveys}

@@ -16,18 +16,18 @@ export function Menu({ surveyScenarioCrud }: Props) {
   const items: CrudHorizontalMenuItem[] = [
     {
       href: Routes.admin_survey_scenarios_path(),
-      label: tHelpers('crud.list'),
+      label: tHelpers(($) => $.crud.list),
     },
     {
       href: Routes.new_admin_survey_scenario_path(),
-      label: tHelpers('crud.add'),
+      label: tHelpers(($) => $.crud.add),
     },
   ];
 
   if (surveyScenarioCrud) {
     items.push({
       href: Routes.edit_admin_survey_scenario_path(surveyScenarioCrud.data.id),
-      label: tHelpers('crud.editing'),
+      label: tHelpers(($) => $.crud.editing),
     });
   }
 

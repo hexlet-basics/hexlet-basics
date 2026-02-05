@@ -41,7 +41,7 @@ function Countdown({
   return (
     <Stack align="center">
       <Text size="lg" fw={500}>
-        {tCommon('solutionInstructions')}
+        {tCommon(($) => $.solutionInstructions)}
       </Text>
       <Text fz={50}>{remainingTime}</Text>
       <Image
@@ -71,7 +71,7 @@ export default function SolutionTab() {
 
   const renderUserCode = () => {
     if (content === '') {
-      return <Alert>{tCommon('userCodeInstructions')}</Alert>;
+      return <Alert>{tCommon(($) => $.userCodeInstructions)}</Alert>;
     }
 
     return (
@@ -87,7 +87,7 @@ export default function SolutionTab() {
       <>
         <Stack mb="xl">
           <Title order={2} mb="lg">
-            {tCommon('teacherSolution')}
+            {tCommon(($) => $.teacherSolution)}
           </Title>
           <CodeHighlight
             code={lesson.original_code!}
@@ -96,7 +96,7 @@ export default function SolutionTab() {
         </Stack>
         <Stack>
           <Title order={2} mb="lg">
-            {tCommon('userCode')}
+            {tCommon(($) => $.userCode)}
           </Title>
           {renderUserCode()}
         </Stack>
@@ -110,10 +110,10 @@ export default function SolutionTab() {
 
   const renderShowButton = () => (
     <>
-      <Text>{tCommon('solutionNotice')}</Text>
+      <Text>{tCommon(($) => $.solutionNotice)}</Text>
       <Center>
         <Button variant="light" onClick={handleShowSolution} px="xl">
-          {tCommon('showSolution')}
+          {tCommon(($) => $.showSolution)}
         </Button>
       </Center>
     </>

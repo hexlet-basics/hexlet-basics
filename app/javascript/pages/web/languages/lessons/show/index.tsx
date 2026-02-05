@@ -23,7 +23,7 @@ import i18next from 'i18next';
 import { BookOpenText, Github, GripVertical, Info, Rocket } from 'lucide-react'; // TODO: the current github icon is deprecated, need to update from a new lib
 import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
+import { Panel, Group as PanelGroup, Separator } from 'react-resizable-panels';
 import { XBreadcrumb } from '@/components/breadcrumbs.tsx';
 import Chat from '@/components/Chat.tsx';
 import AppAnchor from '@/components/Elements/AppAnchor.tsx';
@@ -74,7 +74,7 @@ export default function Index() {
       <LessonLayout>
         <Box
           component={PanelGroup}
-          direction="horizontal"
+          orientation="horizontal"
           pt={headerHeight}
           h="100%"
         >
@@ -83,11 +83,11 @@ export default function Index() {
               <LessonLeftBlock />
             </Box>
           </Panel>
-          <PanelResizeHandle>
+          <Separator>
             <Center h="100%" w={10} bg={theme.colors.gray[2]}>
               <GripVertical size={10} color={theme.colors.gray[6]} />
             </Center>
-          </PanelResizeHandle>
+          </Separator>
           <Panel minSize={30} defaultSize={55}>
             <Box h="100%">
               <LessonRightBlock />
@@ -128,15 +128,16 @@ function LessonLeftBlock() {
       style={{ flexDirection: 'column' }}
     >
       <Tabs.List grow>
-        <Tabs.Tab value="lesson">{t('languages.lessons.show.lesson')}</Tabs.Tab>
+        <Tabs.Tab value="lesson">
+          {t(($) => $.languages.lessons.show.lesson)}
+        </Tabs.Tab>
         <Tabs.Tab value="assistant">
-          {t('languages.lessons.show.discuss')}
+          {t(($) => $.languages.lessons.show.discuss)}
         </Tabs.Tab>
         <Tabs.Tab value="navigation">
-          {t('languages.lessons.show.navigation')}
+          {t(($) => $.languages.lessons.show.navigation)}
         </Tabs.Tab>
       </Tabs.List>
-
       <AppShell.Section grow mih={0}>
         <Tabs.Panel value="lesson" h="100%">
           <ScrollArea h="100%">
@@ -180,14 +181,19 @@ function LessonRightBlock() {
             <BookOpenText size={14} />
           </Center>
         </Tabs.Tab>
-        <Tabs.Tab value="editor">{t('languages.lessons.show.editor')}</Tabs.Tab>
-        <Tabs.Tab value="output">{t('languages.lessons.show.output')}</Tabs.Tab>
-        <Tabs.Tab value="tests">{t('languages.lessons.show.tests')}</Tabs.Tab>
+        <Tabs.Tab value="editor">
+          {t(($) => $.languages.lessons.show.editor)}
+        </Tabs.Tab>
+        <Tabs.Tab value="output">
+          {t(($) => $.languages.lessons.show.output)}
+        </Tabs.Tab>
+        <Tabs.Tab value="tests">
+          {t(($) => $.languages.lessons.show.tests)}
+        </Tabs.Tab>
         <Tabs.Tab value="solution">
-          {t('languages.lessons.show.solution')}
+          {t(($) => $.languages.lessons.show.solution)}
         </Tabs.Tab>
       </Tabs.List>
-
       <AppShell.Section grow mih={0}>
         <Tabs.Panel value="lesson" h="100%" hiddenFrom="sm">
           <Stack h="100%" gap={0}>
@@ -260,9 +266,9 @@ function LessonTabContent() {
     shouldAddContactMethod,
   } = usePage<LessonSharedProps>().props;
 
-  const commonQuestions = t('languages.lessons.show.common_questions', {
+  const commonQuestions = t(($) => $.languages.lessons.show.common_questions, {
     returnObjects: true,
-  }) as Array<{ question: string; answer: string }>;
+  });
 
   const items: BreadcrumbItem[] = [
     {
@@ -285,20 +291,16 @@ function LessonTabContent() {
     <Box p="lg">
       <XBreadcrumb items={items} />
       <Title my="sm">{`${landingPage.name}: ${lesson.name}`}</Title>
-
       {shouldAddContactMethod && (
         <Paper withBorder shadow="sm" p="md" mt="md">
           <ContactMethodRequestingBlock />
         </Paper>
       )}
-
       <MarkdownViewer allowHtml>{lesson.theory || ''}</MarkdownViewer>
-
       <Title order={2} my="md">
-        {t('languages.lessons.show.instructions')}
+        {t(($) => $.languages.lessons.show.instructions)}
       </Title>
       <MarkdownViewer allowHtml>{lesson.instructions || ''}</MarkdownViewer>
-
       {course.hexlet_program_landing_page && (
         <Alert variant="primary" my="xl" radius="lg">
           <Group justify="center" gap={6}>
@@ -307,16 +309,15 @@ function LessonTabContent() {
               target="_blank"
               href={`${course.hexlet_program_landing_page}?utm_source=code-basics&utm_medium=referral`}
             >
-              {t('languages.lessons.show.profession_description')}
+              {t(($) => $.languages.lessons.show.profession_description)}
             </Anchor>
           </Group>
         </Alert>
       )}
-
       {lesson.tips.length > 0 && (
         <>
           <Title order={2} my="md">
-            {t('languages.lessons.show.tips')}
+            {t(($) => $.languages.lessons.show.tips)}
           </Title>
           <ul>
             {lesson.tips.map((tip) => (
@@ -327,9 +328,7 @@ function LessonTabContent() {
           </ul>
         </>
       )}
-
       <Divider my="xl" c="gray" />
-
       <Accordion mb="xs" defaultValue={commonQuestions[0]?.question}>
         {commonQuestions.map((v) => (
           <Accordion.Item key={v.question} value={v.question}>
@@ -342,10 +341,9 @@ function LessonTabContent() {
           </Accordion.Item>
         ))}
       </Accordion>
-
       <Center>
         <Text fz="sm" me="sm" component="span">
-          {t('languages.lessons.show.issues')}
+          {t(($) => $.languages.lessons.show.issues)}
         </Text>
         <a
           href={lesson.source_code_url!}
@@ -379,8 +377,8 @@ function AssistantTabContent({ focusesCount }: { focusesCount: number }) {
       {i18next.language === 'ru' && (
         <Alert icon={<Info />} mb="lg">
           <XssContent>
-            {t('languages.lessons.show.if_stuck_html', {
-              url: tCommon('community_url'),
+            {t(($) => $.languages.lessons.show.if_stuck_html, {
+              url: tCommon(($) => $.community_url),
             })}
           </XssContent>
         </Alert>

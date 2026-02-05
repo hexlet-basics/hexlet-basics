@@ -20,7 +20,7 @@ import type { HttpRouterMethod } from '@/types';
 
 interface Container<TForm> {
   data: DefaultValues<TForm>;
-  meta: { modelName: string };
+  meta?: { modelName: string };
 }
 
 interface UseAppFormOptions<
@@ -68,7 +68,10 @@ export function useAppForm<
   onSuccess,
   ...options
 }: UseAppFormOptions<TForm, TContainer>) {
-  const modelName = container.meta.modelName;
+  const modelName = container.meta?.modelName ?? '';
+  if (!modelName) {
+    throw new Error('Missing container.meta.modelName');
+  }
   const { errors = {} } = usePage().props;
 
   const { t: tAr } = useTranslation('activerecord');
@@ -84,7 +87,7 @@ export function useAppForm<
       const message = Array.isArray(messages) ? messages[0] : messages;
       form.setError(field as Path<TForm>, { message });
     }
-  }, [errors, form.setError]);
+  }, [errors, form]);
 
   const submit = form.handleSubmit((data) => {
     router[method](url, { [modelName]: data }, { onSuccess });
@@ -100,16 +103,18 @@ export function useAppForm<
       modelName,
       name as string,
     );
-    // @ts-expect-error -
-    const mainFallback = tAm(mainPath, { defaultValue: false });
+    const mainFallback = tAm(mainPath, {
+      defaultValue: '',
+    });
     // console.log(mainFallback)
     const value = tAr(mainPath, { defaultValue: mainFallback });
     if (value) {
       return value;
     }
 
-    // @ts-expect-error -
-    const baseFallback = tAm(fallbackPath, { defaultValue: false });
+    const baseFallback = tAm(fallbackPath, {
+      defaultValue: '',
+    });
     // console.log(baseFallback);
     const baseValue = tAr(fallbackPath, { defaultValue: baseFallback });
     if (baseValue) {

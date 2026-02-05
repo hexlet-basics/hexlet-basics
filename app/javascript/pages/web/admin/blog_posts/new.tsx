@@ -13,7 +13,7 @@ export default function New({ blogPostDto }: Props) {
   const { t } = useTranslation();
 
   return (
-    <AdminLayout header={t('admin.blog_posts.new.header')}>
+    <AdminLayout header={t(($) => $.admin.blog_posts.new.header)}>
       <Menu />
       <Form data={blogPostDto} url={Routes.admin_blog_posts_path()} />
     </AdminLayout>

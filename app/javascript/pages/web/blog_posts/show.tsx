@@ -57,7 +57,7 @@ export default function Show({
   const postUrl = Routes.blog_post_url(blogPost.slug!);
   const items: BreadcrumbItem[] = [
     {
-      name: t('blog_posts.index.header'),
+      name: t(($) => $.blog_posts.index.header),
       url: Routes.blog_posts_url(),
     },
     {
@@ -105,7 +105,6 @@ export default function Show({
       <Head>
         <script type="application/ld+json">{JSON.stringify(article)}</script>
       </Head>
-
       <ApplicationLayout items={items} center header={blogPost.name!}>
         <CodeHighlightAdapterProvider adapter={shikiAdapter}>
           <Container size="sm">
@@ -157,7 +156,9 @@ export default function Show({
                       <Center me="xs">
                         <Clock7 size={18} />
                       </Center>
-                      {tCommon('time.minutes', { count: 5 })}
+                      {tCommon(($) => $.time.minutes, {
+                        count: 5,
+                      })}
                     </Center>
                   </Group>
 
@@ -167,11 +168,11 @@ export default function Show({
                       p="xl"
                       mb="xl"
                       pos="relative"
-                      title={t('blog_posts.show.join_community')}
+                      title={t(($) => $.blog_posts.show.join_community)}
                       icon={<MessageCircleMore />}
                     >
                       <Text fz="lg" lh="sm" mb="md">
-                        {t('blog_posts.show.discuss')}
+                        {t(($) => $.blog_posts.show.discuss)}
                       </Text>
                       <Group gap={0}>
                         <AppAnchor
@@ -180,7 +181,7 @@ export default function Show({
                           external
                         >
                           <Text component="span" mr="sm">
-                            {t('blog_posts.show.link')}
+                            {t(($) => $.blog_posts.show.link)}
                           </Text>
                         </AppAnchor>
                         <MoveRight />
