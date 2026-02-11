@@ -8,10 +8,12 @@
 
 - make
 - docker
-- ruby = 3.4.5
+- ruby = 4.0.1
 - node >= 21
 
 ### Run
+
+> **⚠️ Important:** Make sure VPN is enabled before installing dependencies
 
 1. Install system deps
 
