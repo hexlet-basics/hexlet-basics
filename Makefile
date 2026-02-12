@@ -147,7 +147,6 @@ services-cable-run:
 	bundle exec puma -p 28080 cable/config.ru
 
 services-db-start:
-	brew services list | grep postgres | awk '{print $$1}' | xargs brew services stop
 	docker run -d -it --rm \
 		-p 5432:5432 \
 		--name code_basics_postgres \

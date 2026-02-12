@@ -13,7 +13,7 @@
 
 ### Run
 
-> **⚠️ Important:** Make sure VPN is enabled before installing dependencies
+> **⚠️ Optional for Russia:** Make sure VPN is enabled before installing dependencies
 
 1. Install system deps
 
