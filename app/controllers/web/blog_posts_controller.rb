@@ -22,7 +22,7 @@ class Web::BlogPostsController < Web::ApplicationController
 
     render inertia: true, props: {
       blogPosts: BlogPostResource.new(records),
-      pagy:
+      pagy: PagyResource.new(pagy)
     }
   end
 
