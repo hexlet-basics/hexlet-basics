@@ -30,7 +30,7 @@
     "@tailwindcss/postcss": "^4.1.18",
     "analytics": "0.8.19",
     "ansi_up": "^6.0.6",
-    "axios": "^1.13.4",
+    "axios": "^1.13.5",
     "classnames": "^2.5.1",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.19",
