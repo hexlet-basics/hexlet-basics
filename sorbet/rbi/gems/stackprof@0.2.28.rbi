@@ -130,119 +130,119 @@ end
 class StackProf::Report
   # @return [Report] a new instance of Report
   #
-  # source://stackprof//lib/stackprof/report.rb#42
+  # source://stackprof//lib/stackprof/report.rb#46
   def initialize(data); end
 
   # @raise [ArgumentError]
   #
-  # source://stackprof//lib/stackprof/report.rb#618
+  # source://stackprof//lib/stackprof/report.rb#622
   def +(other); end
 
-  # source://stackprof//lib/stackprof/report.rb#92
+  # source://stackprof//lib/stackprof/report.rb#96
   def add_lines(a, b); end
 
-  # source://stackprof//lib/stackprof/report.rb#212
+  # source://stackprof//lib/stackprof/report.rb#216
   def convert_to_d3_flame_graph_format(name, stacks, depth); end
 
   # Returns the value of attribute data.
   #
-  # source://stackprof//lib/stackprof/report.rb#45
+  # source://stackprof//lib/stackprof/report.rb#49
   def data; end
 
-  # source://stackprof//lib/stackprof/report.rb#80
+  # source://stackprof//lib/stackprof/report.rb#84
   def files; end
 
-  # source://stackprof//lib/stackprof/report.rb#205
+  # source://stackprof//lib/stackprof/report.rb#209
   def flamegraph_row(f, x, y, weight, addr); end
 
-  # source://stackprof//lib/stackprof/report.rb#187
+  # source://stackprof//lib/stackprof/report.rb#191
   def flamegraph_stacks(raw); end
 
-  # source://stackprof//lib/stackprof/report.rb#47
+  # source://stackprof//lib/stackprof/report.rb#51
   def frames(sort_by_total = T.unsafe(nil)); end
 
-  # source://stackprof//lib/stackprof/report.rb#76
+  # source://stackprof//lib/stackprof/report.rb#80
   def max_samples; end
 
-  # source://stackprof//lib/stackprof/report.rb#68
+  # source://stackprof//lib/stackprof/report.rb#72
   def modeline; end
 
-  # source://stackprof//lib/stackprof/report.rb#52
+  # source://stackprof//lib/stackprof/report.rb#56
   def normalized_frames; end
 
-  # source://stackprof//lib/stackprof/report.rb#72
+  # source://stackprof//lib/stackprof/report.rb#76
   def overall_samples; end
 
-  # source://stackprof//lib/stackprof/report.rb#128
+  # source://stackprof//lib/stackprof/report.rb#132
   def print_alphabetical_flamegraph(f = T.unsafe(nil), skip_common = T.unsafe(nil)); end
 
-  # source://stackprof//lib/stackprof/report.rb#495
+  # source://stackprof//lib/stackprof/report.rb#499
   def print_callgrind(f = T.unsafe(nil)); end
 
-  # source://stackprof//lib/stackprof/report.rb#242
+  # source://stackprof//lib/stackprof/report.rb#246
   def print_d3_flamegraph(f = T.unsafe(nil), skip_common = T.unsafe(nil)); end
 
-  # source://stackprof//lib/stackprof/report.rb#99
+  # source://stackprof//lib/stackprof/report.rb#103
   def print_debug; end
 
-  # source://stackprof//lib/stackprof/report.rb#103
+  # source://stackprof//lib/stackprof/report.rb#107
   def print_dump(f = T.unsafe(nil)); end
 
-  # source://stackprof//lib/stackprof/report.rb#610
+  # source://stackprof//lib/stackprof/report.rb#614
   def print_file(filter, f = T.unsafe(nil)); end
 
-  # source://stackprof//lib/stackprof/report.rb#600
+  # source://stackprof//lib/stackprof/report.rb#604
   def print_files(sort_by_total = T.unsafe(nil), limit = T.unsafe(nil), f = T.unsafe(nil)); end
 
-  # source://stackprof//lib/stackprof/report.rb#132
+  # source://stackprof//lib/stackprof/report.rb#136
   def print_flamegraph(f, skip_common, alphabetical = T.unsafe(nil)); end
 
-  # source://stackprof//lib/stackprof/report.rb#414
+  # source://stackprof//lib/stackprof/report.rb#418
   def print_graphviz(options = T.unsafe(nil), f = T.unsafe(nil)); end
 
-  # source://stackprof//lib/stackprof/report.rb#107
+  # source://stackprof//lib/stackprof/report.rb#111
   def print_json(f = T.unsafe(nil)); end
 
-  # source://stackprof//lib/stackprof/report.rb#526
+  # source://stackprof//lib/stackprof/report.rb#530
   def print_method(name, f = T.unsafe(nil)); end
 
-  # source://stackprof//lib/stackprof/report.rb#112
+  # source://stackprof//lib/stackprof/report.rb#116
   def print_stackcollapse; end
 
-  # source://stackprof//lib/stackprof/report.rb#476
+  # source://stackprof//lib/stackprof/report.rb#480
   def print_text(sort_by_total = T.unsafe(nil), limit = T.unsafe(nil), select_files = T.unsafe(nil), reject_files = T.unsafe(nil), select_names = T.unsafe(nil), reject_names = T.unsafe(nil), f = T.unsafe(nil)); end
 
-  # source://stackprof//lib/stackprof/report.rb#124
+  # source://stackprof//lib/stackprof/report.rb#128
   def print_timeline_flamegraph(f = T.unsafe(nil), skip_common = T.unsafe(nil)); end
 
-  # source://stackprof//lib/stackprof/report.rb#64
+  # source://stackprof//lib/stackprof/report.rb#68
   def version; end
 
   # Walk up and down the stack from a given starting point (name).  Loops
   # until `:exit` is selected
   #
-  # source://stackprof//lib/stackprof/report.rb#561
+  # source://stackprof//lib/stackprof/report.rb#565
   def walk_method(name); end
 
   private
 
-  # source://stackprof//lib/stackprof/report.rb#669
+  # source://stackprof//lib/stackprof/report.rb#673
   def callers_for(addr); end
 
-  # source://stackprof//lib/stackprof/report.rb#665
+  # source://stackprof//lib/stackprof/report.rb#669
   def root_frames; end
 
-  # source://stackprof//lib/stackprof/report.rb#674
+  # source://stackprof//lib/stackprof/report.rb#678
   def source_display(f, file, lines, range = T.unsafe(nil)); end
 
   class << self
     # source://stackprof//lib/stackprof/report.rb#12
     def from_file(file); end
 
-    # source://stackprof//lib/stackprof/report.rb#20
+    # source://stackprof//lib/stackprof/report.rb#24
     def from_json(json); end
 
-    # source://stackprof//lib/stackprof/report.rb#24
+    # source://stackprof//lib/stackprof/report.rb#28
     def parse_json(json); end
   end
 end

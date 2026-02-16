@@ -128,6 +128,9 @@ module Sentry
     # source://sentry-ruby//lib/sentry-ruby.rb#454
     def capture_message(message, **options, &block); end
 
+    # source://sentry-ruby//lib/sentry-ruby.rb#697
+    def clear_external_propagation_context; end
+
     # Clones the main thread's active hub and stores it to the current thread.
     #
     # @return [void]
@@ -182,7 +185,7 @@ module Sentry
 
     # @return [Boolean]
     #
-    # source://sentry-ruby//lib/sentry-ruby.rb#675
+    # source://sentry-ruby//lib/sentry-ruby.rb#707
     def dependency_installed?(name); end
 
     # Checks if the exception object has been captured by the SDK.
@@ -225,6 +228,13 @@ module Sentry
     #
     # source://sentry-ruby//lib/sentry-ruby.rb#348
     def get_current_scope; end
+
+    # Returns the external propagation context (trace_id, span_id) if a callback is registered.
+    #
+    # @return [Array<String>, nil] A tuple of [trace_id, span_id] or nil if no context is available
+    #
+    # source://sentry-ruby//lib/sentry-ruby.rb#688
+    def get_external_propagation_context; end
 
     # Returns the main thread's active hub.
     #
@@ -323,6 +333,21 @@ module Sentry
     # source://sentry-ruby//lib/sentry-ruby.rb#645
     def metrics; end
 
+    # Registers a callback function that retrieves the current external propagation context.
+    # This is used by OpenTelemetry integration to provide trace_id and span_id from OTel context.
+    #
+    # @example
+    #   Sentry.register_external_propagation_context do
+    #   span_context = OpenTelemetry::Trace.current_span.context
+    #   return nil unless span_context.valid?
+    #   [span_context.hex_trace_id, span_context.hex_span_id]
+    #   end
+    # @param callback [Proc, nil] A callable that returns [trace_id, span_id] or nil
+    # @return [void]
+    #
+    # source://sentry-ruby//lib/sentry-ruby.rb#681
+    def register_external_propagation_context(&callback); end
+
     # Registers the SDK integration with its name and version.
     #
     # @param name [String] name of the integration
@@ -373,7 +398,7 @@ module Sentry
     # source://sentry-ruby//lib/sentry-ruby.rb#652
     def sys_command(command); end
 
-    # source://sentry-ruby//lib/sentry-ruby.rb#670
+    # source://sentry-ruby//lib/sentry-ruby.rb#702
     def utc_now; end
 
     # Records the block's execution as a child of the current span.
@@ -4233,6 +4258,9 @@ class Sentry::Rack::CaptureExceptions
   # source://sentry-ruby//lib/sentry/rack/capture_exceptions.rb#66
   def start_transaction(env, scope); end
 
+  # source://sentry-ruby//lib/sentry/rack/capture_exceptions.rb#90
+  def status_code_for_exception(exception); end
+
   # source://sentry-ruby//lib/sentry/rack/capture_exceptions.rb#56
   def transaction_op; end
 end
@@ -4527,7 +4555,7 @@ class Sentry::Scope
 
   # Add a new attachment to the scope.
   #
-  # source://sentry-ruby//lib/sentry/scope.rb#332
+  # source://sentry-ruby//lib/sentry/scope.rb#337
   def add_attachment(**opts); end
 
   # Adds the breadcrumb to the scope's breadcrumbs buffer.
@@ -4535,7 +4563,7 @@ class Sentry::Scope
   # @param breadcrumb [Breadcrumb]
   # @return [void]
   #
-  # source://sentry-ruby//lib/sentry/scope.rb#122
+  # source://sentry-ruby//lib/sentry/scope.rb#113
   def add_breadcrumb(breadcrumb); end
 
   # Adds a new event processor [Proc] to the scope.
@@ -4543,7 +4571,7 @@ class Sentry::Scope
   # @param block [Proc]
   # @return [void]
   #
-  # source://sentry-ruby//lib/sentry/scope.rb#320
+  # source://sentry-ruby//lib/sentry/scope.rb#325
   def add_event_processor(&block); end
 
   # Applies stored attributes and event processors to the given event.
@@ -4563,7 +4591,7 @@ class Sentry::Scope
   # @param telemetry [MetricEvent, LogEvent] the telemetry event to apply scope context to
   # @return [MetricEvent, LogEvent] the telemetry event with scope context applied
   #
-  # source://sentry-ruby//lib/sentry/scope.rb#95
+  # source://sentry-ruby//lib/sentry/scope.rb#86
   def apply_to_telemetry(telemetry); end
 
   # source://sentry-ruby//lib/sentry/scope.rb#30
@@ -4583,7 +4611,7 @@ class Sentry::Scope
   #
   # @return [void]
   #
-  # source://sentry-ruby//lib/sentry/scope.rb#128
+  # source://sentry-ruby//lib/sentry/scope.rb#119
   def clear_breadcrumbs; end
 
   # source://sentry-ruby//lib/sentry/scope.rb#30
@@ -4591,7 +4619,7 @@ class Sentry::Scope
 
   # @return [Scope]
   #
-  # source://sentry-ruby//lib/sentry/scope.rb#133
+  # source://sentry-ruby//lib/sentry/scope.rb#124
   def dup; end
 
   # source://sentry-ruby//lib/sentry/scope.rb#30
@@ -4608,21 +4636,29 @@ class Sentry::Scope
   # @param env [Hash, nil]
   # @return [void]
   #
-  # source://sentry-ruby//lib/sentry/scope.rb#327
+  # source://sentry-ruby//lib/sentry/scope.rb#332
   def generate_propagation_context(env = T.unsafe(nil)); end
 
   # Returns the associated Span object.
   #
   # @return [Span, nil]
   #
-  # source://sentry-ruby//lib/sentry/scope.rb#304
+  # source://sentry-ruby//lib/sentry/scope.rb#295
   def get_span; end
+
+  # Returns the trace context for this scope.
+  # Prioritizes external propagation context (from OTel) over local propagation context.
+  #
+  # @return [Hash]
+  #
+  # source://sentry-ruby//lib/sentry/scope.rb#302
+  def get_trace_context; end
 
   # Returns the associated Transaction object.
   #
   # @return [Transaction, nil]
   #
-  # source://sentry-ruby//lib/sentry/scope.rb#298
+  # source://sentry-ruby//lib/sentry/scope.rb#289
   def get_transaction; end
 
   # source://sentry-ruby//lib/sentry/scope.rb#30
@@ -4637,7 +4673,7 @@ class Sentry::Scope
   # source://sentry-ruby//lib/sentry/scope.rb#30
   def session; end
 
-  # source://sentry-ruby//lib/sentry/scope.rb#262
+  # source://sentry-ruby//lib/sentry/scope.rb#253
   def set_context(key, value); end
 
   # Updates the scope's contexts attribute by merging with the old value.
@@ -4645,7 +4681,7 @@ class Sentry::Scope
   # @param contexts [Hash]
   # @return [Hash]
   #
-  # source://sentry-ruby//lib/sentry/scope.rb#250
+  # source://sentry-ruby//lib/sentry/scope.rb#241
   def set_contexts(contexts_hash); end
 
   # Adds a new key-value pair to current extras.
@@ -4654,10 +4690,10 @@ class Sentry::Scope
   # @param value [Object]
   # @return [Hash]
   #
-  # source://sentry-ruby//lib/sentry/scope.rb#229
+  # source://sentry-ruby//lib/sentry/scope.rb#220
   def set_extra(key, value); end
 
-  # source://sentry-ruby//lib/sentry/scope.rb#220
+  # source://sentry-ruby//lib/sentry/scope.rb#211
   def set_extras(extras_hash); end
 
   # Sets the scope's fingerprint attribute.
@@ -4665,7 +4701,7 @@ class Sentry::Scope
   # @param fingerprint [Array]
   # @return [Array]
   #
-  # source://sentry-ruby//lib/sentry/scope.rb#311
+  # source://sentry-ruby//lib/sentry/scope.rb#316
   def set_fingerprint(fingerprint); end
 
   # Sets the scope's level attribute.
@@ -4673,7 +4709,7 @@ class Sentry::Scope
   # @param level [String, Symbol]
   # @return [void]
   #
-  # source://sentry-ruby//lib/sentry/scope.rb#270
+  # source://sentry-ruby//lib/sentry/scope.rb#261
   def set_level(level); end
 
   # Sets the scope's rack_env attribute.
@@ -4681,7 +4717,7 @@ class Sentry::Scope
   # @param env [Hash]
   # @return [Hash]
   #
-  # source://sentry-ruby//lib/sentry/scope.rb#200
+  # source://sentry-ruby//lib/sentry/scope.rb#191
   def set_rack_env(env); end
 
   # Sets the currently active session on the scope.
@@ -4689,7 +4725,7 @@ class Sentry::Scope
   # @param session [Session, nil]
   # @return [void]
   #
-  # source://sentry-ruby//lib/sentry/scope.rb#286
+  # source://sentry-ruby//lib/sentry/scope.rb#277
   def set_session(session); end
 
   # Sets the scope's span attribute.
@@ -4697,7 +4733,7 @@ class Sentry::Scope
   # @param span [Span]
   # @return [Span]
   #
-  # source://sentry-ruby//lib/sentry/scope.rb#208
+  # source://sentry-ruby//lib/sentry/scope.rb#199
   def set_span(span); end
 
   # Adds a new key-value pair to current tags.
@@ -4706,10 +4742,10 @@ class Sentry::Scope
   # @param value [Object]
   # @return [Hash]
   #
-  # source://sentry-ruby//lib/sentry/scope.rb#243
+  # source://sentry-ruby//lib/sentry/scope.rb#234
   def set_tag(key, value); end
 
-  # source://sentry-ruby//lib/sentry/scope.rb#234
+  # source://sentry-ruby//lib/sentry/scope.rb#225
   def set_tags(tags_hash); end
 
   # Appends a new transaction name to the scope.
@@ -4718,10 +4754,10 @@ class Sentry::Scope
   # @param transaction_name [String]
   # @return [void]
   #
-  # source://sentry-ruby//lib/sentry/scope.rb#278
+  # source://sentry-ruby//lib/sentry/scope.rb#269
   def set_transaction_name(transaction_name, source: T.unsafe(nil)); end
 
-  # source://sentry-ruby//lib/sentry/scope.rb#214
+  # source://sentry-ruby//lib/sentry/scope.rb#205
   def set_user(user_hash); end
 
   # source://sentry-ruby//lib/sentry/scope.rb#30
@@ -4740,7 +4776,7 @@ class Sentry::Scope
   #
   # @return [Boolean]
   #
-  # source://sentry-ruby//lib/sentry/scope.rb#292
+  # source://sentry-ruby//lib/sentry/scope.rb#283
   def transaction_source_low_quality?; end
 
   # Updates the scope's data from the given options.
@@ -4754,7 +4790,7 @@ class Sentry::Scope
   # @param user [Hash]
   # @return [Array]
   #
-  # source://sentry-ruby//lib/sentry/scope.rb#176
+  # source://sentry-ruby//lib/sentry/scope.rb#167
   def update_from_options(contexts: T.unsafe(nil), extra: T.unsafe(nil), tags: T.unsafe(nil), user: T.unsafe(nil), level: T.unsafe(nil), fingerprint: T.unsafe(nil), attachments: T.unsafe(nil), **options); end
 
   # Updates the scope's data from a given scope.
@@ -4762,7 +4798,7 @@ class Sentry::Scope
   # @param scope [Scope]
   # @return [void]
   #
-  # source://sentry-ruby//lib/sentry/scope.rb#153
+  # source://sentry-ruby//lib/sentry/scope.rb#144
   def update_from_scope(scope); end
 
   # source://sentry-ruby//lib/sentry/scope.rb#30
@@ -4770,57 +4806,57 @@ class Sentry::Scope
 
   protected
 
-  # source://sentry-ruby//lib/sentry/scope.rb#340
+  # source://sentry-ruby//lib/sentry/scope.rb#345
   def attachments=(_arg0); end
 
-  # source://sentry-ruby//lib/sentry/scope.rb#340
+  # source://sentry-ruby//lib/sentry/scope.rb#345
   def breadcrumbs=(_arg0); end
 
-  # source://sentry-ruby//lib/sentry/scope.rb#340
+  # source://sentry-ruby//lib/sentry/scope.rb#345
   def contexts=(_arg0); end
 
-  # source://sentry-ruby//lib/sentry/scope.rb#340
+  # source://sentry-ruby//lib/sentry/scope.rb#345
   def event_processors=(_arg0); end
 
-  # source://sentry-ruby//lib/sentry/scope.rb#340
+  # source://sentry-ruby//lib/sentry/scope.rb#345
   def extra=(_arg0); end
 
-  # source://sentry-ruby//lib/sentry/scope.rb#340
+  # source://sentry-ruby//lib/sentry/scope.rb#345
   def fingerprint=(_arg0); end
 
-  # source://sentry-ruby//lib/sentry/scope.rb#340
+  # source://sentry-ruby//lib/sentry/scope.rb#345
   def level=(_arg0); end
 
-  # source://sentry-ruby//lib/sentry/scope.rb#340
+  # source://sentry-ruby//lib/sentry/scope.rb#345
   def propagation_context=(_arg0); end
 
-  # source://sentry-ruby//lib/sentry/scope.rb#340
+  # source://sentry-ruby//lib/sentry/scope.rb#345
   def rack_env=(_arg0); end
 
-  # source://sentry-ruby//lib/sentry/scope.rb#340
+  # source://sentry-ruby//lib/sentry/scope.rb#345
   def session=(_arg0); end
 
-  # source://sentry-ruby//lib/sentry/scope.rb#340
+  # source://sentry-ruby//lib/sentry/scope.rb#345
   def span=(_arg0); end
 
-  # source://sentry-ruby//lib/sentry/scope.rb#340
+  # source://sentry-ruby//lib/sentry/scope.rb#345
   def tags=(_arg0); end
 
-  # source://sentry-ruby//lib/sentry/scope.rb#340
+  # source://sentry-ruby//lib/sentry/scope.rb#345
   def transaction_name=(_arg0); end
 
-  # source://sentry-ruby//lib/sentry/scope.rb#340
+  # source://sentry-ruby//lib/sentry/scope.rb#345
   def transaction_source=(_arg0); end
 
-  # source://sentry-ruby//lib/sentry/scope.rb#340
+  # source://sentry-ruby//lib/sentry/scope.rb#345
   def user=(_arg0); end
 
   private
 
-  # source://sentry-ruby//lib/sentry/scope.rb#344
+  # source://sentry-ruby//lib/sentry/scope.rb#349
   def set_default_value; end
 
-  # source://sentry-ruby//lib/sentry/scope.rb#362
+  # source://sentry-ruby//lib/sentry/scope.rb#367
   def set_new_breadcrumb_buffer; end
 
   class << self
@@ -4831,24 +4867,24 @@ class Sentry::Scope
     # @param block [Proc]
     # @return [void]
     #
-    # source://sentry-ruby//lib/sentry/scope.rb#402
+    # source://sentry-ruby//lib/sentry/scope.rb#407
     def add_global_event_processor(&block); end
 
     # Returns the global event processors array.
     #
     # @return [Array<Proc>]
     #
-    # source://sentry-ruby//lib/sentry/scope.rb#392
+    # source://sentry-ruby//lib/sentry/scope.rb#397
     def global_event_processors; end
 
     # @return [Hash]
     #
-    # source://sentry-ruby//lib/sentry/scope.rb#368
+    # source://sentry-ruby//lib/sentry/scope.rb#373
     def os_context; end
 
     # @return [Hash]
     #
-    # source://sentry-ruby//lib/sentry/scope.rb#383
+    # source://sentry-ruby//lib/sentry/scope.rb#388
     def runtime_context; end
   end
 end

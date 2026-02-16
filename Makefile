@@ -10,6 +10,11 @@ setup:
 
 test-all: test test-frontend test-system
 
+deps-update:
+	npx ncu -u
+	pnpm update
+	bundle update
+
 test:
 	bin/rails test
 

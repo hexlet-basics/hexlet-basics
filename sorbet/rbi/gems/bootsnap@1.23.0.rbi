@@ -16,7 +16,7 @@ module Bootsnap
 
   private
 
-  # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#65
+  # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#37
   def instrumentation_enabled=(_arg0); end
 
   class << self
@@ -37,7 +37,7 @@ module Bootsnap
     # source://bootsnap//lib/bootsnap.rb#35
     def instrumentation=(callback); end
 
-    # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#65
+    # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#37
     def instrumentation_enabled=(_arg0); end
 
     # source://bootsnap//lib/bootsnap.rb#22
@@ -144,35 +144,35 @@ end
 module Bootsnap::CompileCache::Native
   private
 
-  # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#65
+  # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#37
   def compile_option_crc32=(_arg0); end
 
-  # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#65
+  # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#37
   def fetch(_arg0, _arg1, _arg2, _arg3); end
 
-  # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#65
+  # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#37
   def precompile(_arg0, _arg1, _arg2); end
 
-  # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#65
+  # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#37
   def readonly=(_arg0); end
 
-  # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#65
+  # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#37
   def revalidation=(_arg0); end
 
   class << self
-    # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#65
+    # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#37
     def compile_option_crc32=(_arg0); end
 
-    # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#65
+    # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#37
     def fetch(_arg0, _arg1, _arg2, _arg3); end
 
-    # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#65
+    # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#37
     def precompile(_arg0, _arg1, _arg2); end
 
-    # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#65
+    # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#37
     def readonly=(_arg0); end
 
-    # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#65
+    # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#37
     def revalidation=(_arg0); end
   end
 end
@@ -705,7 +705,7 @@ Bootsnap::LoadPathCache::LoadedFeaturesIndex::STRIP_EXTENSION = T.let(T.unsafe(n
 
 module Bootsnap::LoadPathCache::Native
   class << self
-    # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#65
+    # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#37
     def scan_dir(_arg0); end
   end
 end
@@ -798,7 +798,7 @@ Bootsnap::LoadPathCache::Path::VOLATILE = T.let(T.unsafe(nil), Symbol)
 # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#7
 module Bootsnap::LoadPathCache::PathScanner
   class << self
-    # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#106
+    # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#80
     def call(root_path); end
 
     # Returns the value of attribute ignored_directories.
@@ -813,14 +813,19 @@ module Bootsnap::LoadPathCache::PathScanner
     # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#19
     def ignored_directories=(_arg0); end
 
-    # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#69
+    # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#41
     def native_call(root_path); end
 
     # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#21
-    def ruby_call(path); end
+    def ruby_call(root_path); end
 
-    # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#45
-    def walk(absolute_dir_path, relative_dir_path, &block); end
+    private
+
+    # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#87
+    def prepare_scan(root_path); end
+
+    # source://bootsnap//lib/bootsnap/load_path_cache/path_scanner.rb#106
+    def walk(absolute_dir_path, relative_dir_path, ignored_abs_paths, ignored_dir_names, &block); end
   end
 end
 
@@ -895,6 +900,8 @@ Bootsnap::VERSION = T.let(T.unsafe(nil), String)
 module Kernel
   private
 
+  # Avoid method redefinition warnings
+  #
   # source://bootsnap//lib/bootsnap/load_path_cache/core_ext/kernel_require.rb#6
   def require(path); end
 

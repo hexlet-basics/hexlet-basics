@@ -1470,16 +1470,16 @@ class AnnotateRb::ModelAnnotator::ModelWrapper
   # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#11
   def initialize(klass, options); end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#149
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#142
   def _retrieve_indexes_from_table; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#133
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#126
   def built_attributes; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#184
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#177
   def classified_sort(cols, grouped_polymorphic); end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#67
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#71
   def column_defaults; end
 
   # Gets the columns of the ActiveRecord model, processes them, and then returns them.
@@ -1490,73 +1490,71 @@ class AnnotateRb::ModelAnnotator::ModelWrapper
   # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#37
   def connection; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#41
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#45
   def database_name; end
 
   # @return [Boolean]
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#62
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#66
   def has_table_comments?; end
 
   # These are the columns that the globalize gem needs to work but
   # are not necessary for the models to be displayed as annotations.
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#219
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#212
   def ignored_translation_table_columns; end
 
-  # TODO: Simplify this conditional
-  #
   # @return [Boolean]
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#117
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#120
   def is_column_primary_key?(column_name); end
 
   # Calculates the max width of the schema for the model by looking at the columns, schema comments, with respect
   # to the options.
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#93
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#97
   def max_schema_info_width; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#229
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#222
   def migration_version; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#87
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#91
   def model_name; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#180
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#173
   def position_of_column_comment; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#50
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#54
   def primary_key; end
 
   # Returns the unmodified model columns
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#46
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#50
   def raw_columns; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#145
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#138
   def retrieve_indexes_from_table; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#58
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#62
   def table_comments; end
 
   # @return [Boolean]
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#54
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#58
   def table_exists?; end
 
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#83
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#87
   def table_name; end
 
   # Add columns managed by the globalize gem if this gem is being used.
   # TODO: Audit if this is still needed, it seems like Globalize gem is no longer maintained
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#73
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#77
   def translated_columns; end
 
   # @return [Boolean]
   #
-  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#170
+  # source://annotaterb//lib/annotate_rb/model_annotator/model_wrapper.rb#163
   def with_comments?; end
 end
 

@@ -760,44 +760,44 @@ class Rack::Directory
   # source://rack//lib/rack/directory.rb#83
   def initialize(root, app = T.unsafe(nil)); end
 
-  # source://rack//lib/rack/directory.rb#89
+  # source://rack//lib/rack/directory.rb#90
   def call(env); end
 
   # Rack response to use for requests with invalid paths, or nil if path is valid.
   #
-  # source://rack//lib/rack/directory.rb#109
+  # source://rack//lib/rack/directory.rb#110
   def check_bad_request(path_info); end
 
   # Rack response to use for requests with paths outside the root, or nil if path is inside the root.
   #
-  # source://rack//lib/rack/directory.rb#119
+  # source://rack//lib/rack/directory.rb#120
   def check_forbidden(path_info); end
 
   # Rack response to use for unreadable and non-file, non-directory entries.
   #
-  # source://rack//lib/rack/directory.rb#181
+  # source://rack//lib/rack/directory.rb#184
   def entity_not_found(path_info); end
 
   # Provide human readable file sizes
   #
-  # source://rack//lib/rack/directory.rb#197
+  # source://rack//lib/rack/directory.rb#200
   def filesize_format(int); end
 
   # Internals of request handling.  Similar to call but does
   # not remove body for HEAD requests.
   #
-  # source://rack//lib/rack/directory.rb#96
+  # source://rack//lib/rack/directory.rb#97
   def get(env); end
 
   # Rack response to use for directories under the root.
   #
-  # source://rack//lib/rack/directory.rb#130
+  # source://rack//lib/rack/directory.rb#133
   def list_directory(path_info, path, script_name); end
 
   # Rack response to use for files and directories under the root.
   # Unreadable and non-file, non-directory entries will get a 404 response.
   #
-  # source://rack//lib/rack/directory.rb#171
+  # source://rack//lib/rack/directory.rb#174
   def list_path(env, path, path_info, script_name); end
 
   # The root of the directory hierarchy.  Only requests for files and
@@ -808,7 +808,7 @@ class Rack::Directory
 
   # File::Stat for the given path, but return nil for missing/bad entries.
   #
-  # source://rack//lib/rack/directory.rb#163
+  # source://rack//lib/rack/directory.rb#166
   def stat(path); end
 end
 
@@ -843,7 +843,7 @@ end
 
 # Stolen from Ramaze
 #
-# source://rack//lib/rack/directory.rb#189
+# source://rack//lib/rack/directory.rb#192
 Rack::Directory::FILESIZE_FORMAT = T.let(T.unsafe(nil), Array)
 
 # source://rack//lib/rack/constants.rb#22
@@ -1922,102 +1922,102 @@ class Rack::MockRequest::FatalWarning < ::RuntimeError; end
 # Usually, you don't create the MockResponse on your own, but use
 # MockRequest.
 #
-# source://rack//lib/rack/mock_response.rb#12
+# source://rack//lib/rack/mock_response.rb#13
 class Rack::MockResponse < ::Rack::Response
   # @return [MockResponse] a new instance of MockResponse
   #
-  # source://rack//lib/rack/mock_response.rb#47
+  # source://rack//lib/rack/mock_response.rb#48
   def initialize(status, headers, body, errors = T.unsafe(nil)); end
 
-  # source://rack//lib/rack/mock_response.rb#62
+  # source://rack//lib/rack/mock_response.rb#63
   def =~(other); end
 
-  # source://rack//lib/rack/mock_response.rb#70
+  # source://rack//lib/rack/mock_response.rb#71
   def body; end
 
-  # source://rack//lib/rack/mock_response.rb#96
+  # source://rack//lib/rack/mock_response.rb#105
   def cookie(name); end
 
   # Headers
   #
-  # source://rack//lib/rack/mock_response.rb#42
+  # source://rack//lib/rack/mock_response.rb#43
   def cookies; end
 
   # @return [Boolean]
   #
-  # source://rack//lib/rack/mock_response.rb#92
+  # source://rack//lib/rack/mock_response.rb#101
   def empty?; end
 
   # Errors
   #
-  # source://rack//lib/rack/mock_response.rb#45
+  # source://rack//lib/rack/mock_response.rb#46
   def errors; end
 
   # Errors
   #
-  # source://rack//lib/rack/mock_response.rb#45
+  # source://rack//lib/rack/mock_response.rb#46
   def errors=(_arg0); end
 
-  # source://rack//lib/rack/mock_response.rb#66
+  # source://rack//lib/rack/mock_response.rb#67
   def match(other); end
 
   # Headers
   #
-  # source://rack//lib/rack/mock_response.rb#42
+  # source://rack//lib/rack/mock_response.rb#43
   def original_headers; end
 
   private
 
-  # source://rack//lib/rack/mock_response.rb#123
+  # source://rack//lib/rack/mock_response.rb#132
   def identify_cookie_attributes(cookie_filling); end
 
-  # source://rack//lib/rack/mock_response.rb#102
+  # source://rack//lib/rack/mock_response.rb#111
   def parse_cookies_from_header; end
 
   class << self
-    # source://rack//lib/rack/mock_response.rb#38
+    # source://rack//lib/rack/mock_response.rb#39
     def [](*_arg0); end
   end
 end
 
-# source://rack//lib/rack/mock_response.rb#13
+# source://rack//lib/rack/mock_response.rb#14
 class Rack::MockResponse::Cookie
   # @return [Cookie] a new instance of Cookie
   #
-  # source://rack//lib/rack/mock_response.rb#16
+  # source://rack//lib/rack/mock_response.rb#17
   def initialize(args); end
 
   # Returns the value of attribute domain.
   #
-  # source://rack//lib/rack/mock_response.rb#14
+  # source://rack//lib/rack/mock_response.rb#15
   def domain; end
 
   # Returns the value of attribute expires.
   #
-  # source://rack//lib/rack/mock_response.rb#14
+  # source://rack//lib/rack/mock_response.rb#15
   def expires; end
 
-  # source://rack//lib/rack/mock_response.rb#25
+  # source://rack//lib/rack/mock_response.rb#26
   def method_missing(method_name, *args, **_arg2, &block); end
 
   # Returns the value of attribute name.
   #
-  # source://rack//lib/rack/mock_response.rb#14
+  # source://rack//lib/rack/mock_response.rb#15
   def name; end
 
   # Returns the value of attribute path.
   #
-  # source://rack//lib/rack/mock_response.rb#14
+  # source://rack//lib/rack/mock_response.rb#15
   def path; end
 
   # Returns the value of attribute secure.
   #
-  # source://rack//lib/rack/mock_response.rb#14
+  # source://rack//lib/rack/mock_response.rb#15
   def secure; end
 
   # Returns the value of attribute value.
   #
-  # source://rack//lib/rack/mock_response.rb#14
+  # source://rack//lib/rack/mock_response.rb#15
   def value; end
 
   private
@@ -2026,7 +2026,7 @@ class Rack::MockResponse::Cookie
   #
   # @return [Boolean]
   #
-  # source://rack//lib/rack/mock_response.rb#32
+  # source://rack//lib/rack/mock_response.rb#33
   def respond_to_missing?(method_name, include_all = T.unsafe(nil)); end
 end
 

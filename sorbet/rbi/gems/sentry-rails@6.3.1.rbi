@@ -81,6 +81,9 @@ class Sentry::Rails::CaptureExceptions < ::Sentry::Rack::CaptureExceptions
   # source://sentry-rails//lib/sentry/rails/capture_exceptions.rb#38
   def start_transaction(env, scope); end
 
+  # source://sentry-rails//lib/sentry/rails/capture_exceptions.rb#64
+  def status_code_for_exception(exception); end
+
   # source://sentry-rails//lib/sentry/rails/capture_exceptions.rb#24
   def transaction_op; end
 end

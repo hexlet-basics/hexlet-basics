@@ -29,7 +29,11 @@ function renderLesson(item: LanguageLessonMemberMessage) {
   );
 }
 
-function renderBody(item: LanguageLessonMemberMessage) {
+type MessageBodyCellProps = {
+  item: LanguageLessonMemberMessage;
+};
+
+function MessageBodyCell({ item }: MessageBodyCellProps) {
   const [visible, setVisible] = useState(false);
   return (
     <>
@@ -58,7 +62,11 @@ export default function Index({ grid, messages }: Props) {
           { accessor: 'role' },
           { accessor: 'user_id' },
           { accessor: 'lesson', title: 'Lesson Url', render: renderLesson },
-          { accessor: 'body', title: 'body', render: renderBody },
+          {
+            accessor: 'body',
+            title: 'body',
+            render: (item) => <MessageBodyCell item={item} />,
+          },
           {
             accessor: 'created_at',
             sortable: true,

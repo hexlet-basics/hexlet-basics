@@ -163,9 +163,9 @@ class HTTP2::Connection
 
   # Allocates new stream for current connection.
   #
+  # @param parent [Stream]
   # @param priority [Integer]
   # @param window [Integer]
-  # @param parent [Stream]
   # @raise [ConnectionClosed]
   #
   # source://http-2//lib/http/2/connection.rb#125
@@ -179,8 +179,8 @@ class HTTP2::Connection
 
   # Sends PING frame to the peer.
   #
-  # @param payload [String] optional payload must be 8 bytes long
   # @param blk [Proc] callback to execute when PONG is received
+  # @param payload [String] optional payload must be 8 bytes long
   #
   # source://http-2//lib/http/2/connection.rb#143
   def ping(payload, &blk); end
@@ -220,7 +220,7 @@ class HTTP2::Connection
   # Size of current connection flow control window (by default, set to
   # infinity, but is automatically updated on receipt of peer settings).
   #
-  # source://http-2//lib/http/2/connection.rb#66
+  # source://http-2//lib/http/2/connection.rb#68
   def window; end
 
   # Sends a WINDOW_UPDATE frame to the peer.
@@ -232,19 +232,19 @@ class HTTP2::Connection
 
   private
 
-  # source://http-2//lib/http/2/connection.rb#804
+  # source://http-2//lib/http/2/connection.rb#805
   def _verify_pseudo_headers(frame, mandatory_headers); end
 
   # Activates new incoming or outgoing stream and registers appropriate
   # connection managemet callbacks.
   #
   # @param id [Integer]
+  # @param parent [Stream]
   # @param priority [Integer]
   # @param window [Integer]
-  # @param parent [Stream]
   # @raise [StreamLimitExceeded]
   #
-  # source://http-2//lib/http/2/connection.rb#762
+  # source://http-2//lib/http/2/connection.rb#763
   def activate_stream(id:, **args); end
 
   # Emit GOAWAY error indicating to peer that the connection is being
@@ -260,7 +260,7 @@ class HTTP2::Connection
   # @param msg [String]
   # @raise []
   #
-  # source://http-2//lib/http/2/connection.rb#830
+  # source://http-2//lib/http/2/connection.rb#831
   def connection_error(error = T.unsafe(nil), msg: T.unsafe(nil), e: T.unsafe(nil)); end
 
   # Check if frame is a connection frame: SETTINGS, PING, GOAWAY, and any
@@ -287,7 +287,7 @@ class HTTP2::Connection
   #
   # @param frame [Hash]
   #
-  # source://http-2//lib/http/2/connection.rb#602
+  # source://http-2//lib/http/2/connection.rb#603
   def connection_settings(frame); end
 
   # Decode headers payload and update connection decompressor state.
@@ -299,7 +299,7 @@ class HTTP2::Connection
   #
   # @param frame [Hash]
   #
-  # source://http-2//lib/http/2/connection.rb#699
+  # source://http-2//lib/http/2/connection.rb#700
   def decode_headers(frame); end
 
   # Applies HTTP 2.0 binary encoding to the frame.
@@ -313,7 +313,7 @@ class HTTP2::Connection
   #
   # @param headers_frame [Hash]
   #
-  # source://http-2//lib/http/2/connection.rb#712
+  # source://http-2//lib/http/2/connection.rb#713
   def encode_headers(headers_frame); end
 
   # Emit GOAWAY error indicating to peer that the connection is being
@@ -329,13 +329,13 @@ class HTTP2::Connection
   # @param msg [String]
   # @raise []
   #
-  # source://http-2//lib/http/2/connection.rb#830
+  # source://http-2//lib/http/2/connection.rb#840
   def error(error = T.unsafe(nil), msg: T.unsafe(nil), e: T.unsafe(nil)); end
 
-  # source://http-2//lib/http/2/connection.rb#841
+  # source://http-2//lib/http/2/connection.rb#842
   def manage_state(_); end
 
-  # source://http-2//lib/http/2/connection.rb#539
+  # source://http-2//lib/http/2/connection.rb#540
   def ping_management(frame); end
 
   # Send an outgoing frame. DATA frames are subject to connection flow
@@ -353,10 +353,10 @@ class HTTP2::Connection
   # @param role [Symbol] The sender's role: :client or :server
   # @return nil if no error.  Exception object in case of any error.
   #
-  # source://http-2//lib/http/2/connection.rb#552
+  # source://http-2//lib/http/2/connection.rb#553
   def validate_settings(role, settings); end
 
-  # source://http-2//lib/http/2/connection.rb#797
+  # source://http-2//lib/http/2/connection.rb#798
   def verify_stream_order(id); end
 end
 
@@ -393,17 +393,17 @@ HTTP2::EMPTY = T.let(T.unsafe(nil), Array)
 module HTTP2::Emitter
   # Emit event with provided arguments.
   #
-  # @param event [Symbol]
   # @param args [Array] arguments to be passed to the callbacks
   # @param block [Proc] callback function
+  # @param event [Symbol]
   #
   # source://http-2//lib/http/2/emitter.rb#34
   def emit(event, *args, &block); end
 
   # Subscribe to all future events for specified type.
   #
-  # @param event [Symbol]
   # @param block [Proc] callback function
+  # @param event [Symbol]
   # @raise [ArgumentError]
   #
   # source://http-2//lib/http/2/emitter.rb#12
@@ -411,8 +411,8 @@ module HTTP2::Emitter
 
   # Subscribe to next event (at most once) for specified type.
   #
-  # @param event [Symbol]
   # @param block [Proc] callback function
+  # @param event [Symbol]
   #
   # source://http-2//lib/http/2/emitter.rb#22
   def once(event, &block); end
@@ -531,8 +531,8 @@ module HTTP2::FlowBuffer
   #
   # Buffered DATA frames are emitted in FIFO order.
   #
-  # @param frame [Hash]
   # @param encode [Boolean] set to true by connection
+  # @param frame [Hash]
   #
   # source://http-2//lib/http/2/flow_buffer.rb#69
   def send_data(frame = T.unsafe(nil), encode = T.unsafe(nil)); end
@@ -589,8 +589,8 @@ class HTTP2::Framer
   # Generates common 9-byte frame header.
   # - http://tools.ietf.org/html/draft-ietf-httpbis-http2-16#section-4.1
   #
-  # @param frame [Hash]
   # @param buffer [String] buffer to pack bytes into
+  # @param frame [Hash]
   # @raise [CompressionError]
   # @return [String]
   #
@@ -753,8 +753,8 @@ class HTTP2::Header::Compressor
 
   # Encodes header command with appropriate header representation.
   #
-  # @param h [Hash] header command
   # @param buffer [String]
+  # @param h [Hash] header command
   # @return [Buffer]
   #
   # source://http-2//lib/http/2/header/compressor.rb#99
@@ -772,9 +772,9 @@ class HTTP2::Header::Compressor
   #           I = I / 128
   #      encode (I) on 8 bits
   #
+  # @param buffer [String] buffer to pack bytes into
   # @param i [Integer] value to encode
   # @param n [Integer] number of available bits
-  # @param buffer [String] buffer to pack bytes into
   # @param offset [Integer] offset to insert packed bytes in buffer
   # @return [String] binary string
   #
@@ -798,8 +798,8 @@ class HTTP2::Header::Compressor
   #  :always  Always use Huffman encoding
   #  :shorter Use Huffman when the result is strictly shorter
   #
-  # @param str [String]
   # @param buffer [String]
+  # @param str [String]
   # @return [String] binary string
   #
   # source://http-2//lib/http/2/header/compressor.rb#76
@@ -814,15 +814,15 @@ class HTTP2::Header::Compressor
 
   private
 
-  # @param str [String]
   # @param buffer [String]
+  # @param str [String]
   # @return [String] binary string
   #
   # source://http-2//lib/http/2/header/compressor.rb#148
   def huffman_string(str, buffer = T.unsafe(nil)); end
 
-  # @param str [String]
   # @param buffer [String]
+  # @param str [String]
   # @return [String] binary string
   #
   # source://http-2//lib/http/2/header/compressor.rb#157
@@ -1008,14 +1008,17 @@ class HTTP2::Header::EncodingContext
 
   private
 
+  # source://http-2//lib/http/2/header/encoding_context.rb#316
+  def resize_table(cmdsize); end
+
   # To keep the dynamic table size lower than or equal to @limit,
   # remove one or more entries at the end of the dynamic table.
   #
   # @param cmdsize [Integer]
   # @return [Boolean] whether +cmd+ fits in the dynamic table.
   #
-  # source://http-2//lib/http/2/header/encoding_context.rb#321
-  def size_check(cmdsize); end
+  # source://http-2//lib/http/2/header/encoding_context.rb#333
+  def size_check?(cmdsize); end
 end
 
 # source://http-2//lib/http/2/header/encoding_context.rb#89
@@ -1071,8 +1074,8 @@ module HTTP2::Header::Huffman
   # Encodes provided value via huffman encoding.
   # Length is not encoded in this method.
   #
-  # @param str [String]
   # @param buffer [String]
+  # @param str [String]
   # @return [String] binary string
   #
   # source://http-2//lib/http/2/header/huffman.rb#29
@@ -1091,8 +1094,8 @@ module HTTP2::Header::Huffman
     # Encodes provided value via huffman encoding.
     # Length is not encoded in this method.
     #
-    # @param str [String]
     # @param buffer [String]
+    # @param str [String]
     # @return [String] binary string
     #
     # source://http-2//lib/http/2/header/huffman.rb#29
@@ -1252,10 +1255,10 @@ class HTTP2::Server < ::HTTP2::Connection
 
   # Handle locally initiated server-push event emitted by the stream.
   #
-  # @param parent [Stream]
-  # @param headers [Enumerable[String, String]]
-  # @param flags [Array[Symbol]]
   # @param callback [Proc]
+  # @param flags [Array[Symbol]]
+  # @param headers [Enumerable[String, String]]
+  # @param parent [Stream]
   # @yield [promise]
   #
   # source://http-2//lib/http/2/server.rb#153
@@ -1312,13 +1315,13 @@ class HTTP2::Stream
   # client initiated stream, use Connection#new_stream. Similarly, Connection
   # will emit new stream objects, when new stream frames are received.
   #
-  # @param id [Integer]
-  # @param weight [Integer]
   # @param dependency [Integer]
   # @param exclusive [Boolean]
-  # @param window [Integer]
+  # @param id [Integer]
   # @param parent [Stream]
   # @param state [Symbol]
+  # @param weight [Integer]
+  # @param window [Integer]
   # @return [Stream] a new instance of Stream
   #
   # source://http-2//lib/http/2/stream.rb#78
@@ -1328,7 +1331,7 @@ class HTTP2::Stream
   #
   # @param frame [Hash]
   #
-  # source://http-2//lib/http/2/stream.rb#114
+  # source://http-2//lib/http/2/stream.rb#169
   def <<(frame); end
 
   # source://http-2//lib/http/2/stream.rb#185
@@ -1364,8 +1367,8 @@ class HTTP2::Stream
 
   # Sends DATA frame containing response payload.
   #
-  # @param payload [String]
   # @param end_stream [Boolean] indicates last response DATA frame
+  # @param payload [String]
   #
   # source://http-2//lib/http/2/stream.rb#250
   def data(payload, end_stream: T.unsafe(nil)); end
@@ -1378,9 +1381,9 @@ class HTTP2::Stream
   # Sends a HEADERS frame containing HTTP response headers.
   # All pseudo-header fields MUST appear in the header block before regular header fields.
   #
-  # @param headers [Array or Hash] Array of key-value pairs or Hash
   # @param end_headers [Boolean] indicates that no more headers will be sent
   # @param end_stream [Boolean] indicates that no payload will be sent
+  # @param headers [Array or Hash] Array of key-value pairs or Hash
   #
   # source://http-2//lib/http/2/stream.rb#221
   def headers(headers, end_headers: T.unsafe(nil), end_stream: T.unsafe(nil)); end
@@ -1426,8 +1429,8 @@ class HTTP2::Stream
   # Sends a PRIORITY frame with new stream priority value (can only be
   # performed by the client).
   #
-  # @param weight [Integer] new stream weight value
   # @param dependency [Integer] new stream dependency stream
+  # @param weight [Integer] new stream weight value
   #
   # source://http-2//lib/http/2/stream.rb#241
   def reprioritize(weight: T.unsafe(nil), dependency: T.unsafe(nil), exclusive: T.unsafe(nil)); end
@@ -1456,7 +1459,7 @@ class HTTP2::Stream
 
   # Size of current stream flow control window.
   #
-  # source://http-2//lib/http/2/stream.rb#59
+  # source://http-2//lib/http/2/stream.rb#60
   def window; end
 
   # Sends a WINDOW_UPDATE frame to the peer.
@@ -1488,7 +1491,7 @@ class HTTP2::Stream
 
   # @raise []
   #
-  # source://http-2//lib/http/2/stream.rb#671
+  # source://http-2//lib/http/2/stream.rb#679
   def error(error = T.unsafe(nil), msg: T.unsafe(nil)); end
 
   # source://http-2//lib/http/2/stream.rb#599
@@ -1516,24 +1519,6 @@ class HTTP2::Stream
   #       +----------+          |           +----------+
   #       |          |          | send H/   |          |
   # ,-----| reserved |          | recv H    | reserved |-----.
-  # |     | (local)  |          |           | (remote) |     |
-  # |     +----------+          v           +----------+     |
-  # |         |             +--------+             |         |
-  # |         |     recv ES |        | send ES     |         |
-  # |  send H |     ,-------|  open  |-------.     | recv H  |
-  # |         |    /        |        |        \    |         |
-  # |         v   v         +--------+         v   v         |
-  # |     +----------+          |           +----------+     |
-  # |     |   half   |          |           |   half   |     |
-  # |     |  closed  |          | send R/   |  closed  |     |
-  # |     | (remote) |          | recv R    | (local)  |     |
-  # |     +----------+          |           +----------+     |
-  # |          |                |                 |          |
-  # |          | send ES/       |        recv ES/ |          |
-  # |          | send R/        v         send R/ |          |
-  # |          | recv R     +--------+    recv R  |          |
-  # | send R/  `----------->|        |<-----------'  send R/ |
-  # | recv R                | closed |               recv R  |
   # `---------------------->|        |<----------------------'
   #                         +--------+
   #
