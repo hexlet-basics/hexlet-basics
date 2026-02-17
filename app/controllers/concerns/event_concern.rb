@@ -1,55 +1,40 @@
+
+# typed: true
+# frozen_string_literal: true
+
 module EventConcern
+  extend T::Sig
+  extend T::Helpers
+
+  requires_ancestor { ApplicationController }
   extend ActiveSupport::Concern
 
-  included do |base|
-    if base == Web::ApplicationController
-      after_action :clean_js_events
-
-      inertia_share do
-        happened_event_ids = session[:happened_event_ids] || []
-        events = event_store.read.events(happened_event_ids)
-
-        {
-          happendEvents: events.map do |event|
-            {
-              id: event.event_id,
-              type: event.event_type,
-              data: event.data
-            }
-          end
-        }
-      end
-    end
+  # included do
+  #   T.bind(self, T.any(
+  #     T.class_of(Web::ApplicationController),
+  #     T.class_of(Api::LeadsController)
+  #   ))
+  # end
+  sig { params(event: ApplicationEvent).void }
+  def js_event_now(event)
+    return if I18n.locale == :es
+    flash.now.inertia[:events] ||= []
+    flash.now.inertia[:events] << event
   end
 
-  def event_to_js(event)
-    session[:happened_event_ids] ||= []
-    session[:happened_event_ids] << event.event_id
+  sig { params(event: ApplicationEvent).void }
+  def js_event(event)
+    return if I18n.locale == :es
+    flash.inertia[:events] ||= []
+    flash.inertia[:events] << event
   end
 
-  def clean_js_events
-    # Стираем только при HTML-ответе (не API)
-    if response.successful?
-      session[:happened_event_ids] = nil
-    end
+  sig { params(events: T::Array[ApplicationEvent]).void }
+  def js_events(events)
+    events.each { js_event(it) }
   end
 
-  def publish_event(event, user)
-    if user.guest?
-      event_store.publish(event)
-    else
-      event_store.with_metadata(user_id: user.id) do
-        event_store.publish(
-          event,
-          stream_name: "user-#{user.id}",
-        )
-      end
-    end
-
-    event_to_js(event)
-  end
-
-  def event_store
-    Rails.configuration.event_store
+  def publish_event(...)
+    EventSender.publish_event(...)
   end
 end

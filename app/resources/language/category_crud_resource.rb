@@ -1,6 +1,23 @@
 class Language::CategoryCrudResource < ApplicationResource
+  class MetaResource < ApplicationResource
+    typelize_from Language::Category
+
+    typelize model: :string
+    typelize relations: "Record<string, string>"
+    typelize landing_pages_for_categories: "LanguageLandingPageForLists[]"
+
+    attribute(:model) { it.class.superclass.form_key }
+    attribute(:relations) do
+      it.class.respond_to?(:nested_attributes_mapping) ? it.class.nested_attributes_mapping : {}
+    end
+    attribute(:landing_pages_for_categories) do
+      landing_pages_for_categories = Language::LandingPage.web
+        .merge(Language.ordered)
+      Language::LandingPageForListsResource.new(landing_pages_for_categories)
+    end
+  end
+
   typelize_from Language::Category
-  root_key :data
 
   attributes :id, :slug, :name, :header, :description
 
@@ -8,15 +25,5 @@ class Language::CategoryCrudResource < ApplicationResource
 
   has_many :qna_items, resource: Language::CategoryQnaItemCrudResource, key: "qna_items_attributes"
 
-  typelize_meta meta: "{ modelName: string, landingPagesForCategories: LanguageCategoryCrudData[] }"
-  meta do
-    landing_pages_for_categories = Language::LandingPage.web
-      # .where(listed: true)
-      .merge(Language.ordered)
-
-    {
-      modelName: object.class.superclass.form_key,
-      landingPagesForCategories: Language::LandingPageForListsResource.new(landing_pages_for_categories)
-    }
-  end
+  has_one :meta, source: proc { |_params| self }, resource: MetaResource
 end

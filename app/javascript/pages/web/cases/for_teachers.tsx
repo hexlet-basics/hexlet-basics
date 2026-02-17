@@ -1,4 +1,4 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link, usePage } from "@inertiajs/react";
 import {
   Box,
   Button,
@@ -11,20 +11,19 @@ import {
   Stack,
   Text,
   Title,
-} from '@mantine/core';
-import i18next from 'i18next';
-import { useTranslation } from 'react-i18next';
-import learningEnVideo from '@/images/course-landing-page/learning_en.mp4';
-import learningRuVideo from '@/images/course-landing-page/learning_ru.mp4';
-import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
-import { getResourceUrl } from '@/resources';
-import * as Routes from '@/routes.js';
-import type { SharedProps } from '@/types';
+} from "@mantine/core";
+import i18next from "i18next";
+import { useTranslation } from "react-i18next";
+import learningEnVideo from "@/images/course-landing-page/learning_en.mp4";
+import learningRuVideo from "@/images/course-landing-page/learning_ru.mp4";
+import ApplicationLayout from "@/layouts/ApplicationLayout";
+import { getResourceUrl } from "@/resources";
+import * as Routes from "@/routes.js";
 
 export default function ForTeachersBlock() {
   const {
     auth: { user },
-  } = usePage<SharedProps>().props;
+  } = usePage().props;
   const { t } = useTranslation();
 
   const interactiveApproachItems = t(
@@ -101,17 +100,17 @@ export default function ForTeachersBlock() {
           <Box>
             <video
               src={
-                i18next.language === 'en' ? learningEnVideo : learningRuVideo
+                i18next.language === "en" ? learningEnVideo : learningRuVideo
               }
               autoPlay
               loop
               muted
               playsInline
               style={{
-                width: '100%',
-                height: '60%',
-                objectFit: 'cover', // or 'contain' depending on the desired behavior
-                borderRadius: 'var(--mantine-radius-md)', // optional
+                width: "100%",
+                height: "60%",
+                objectFit: "cover", // or 'contain' depending on the desired behavior
+                borderRadius: "var(--mantine-radius-md)", // optional
               }}
             />
           </Box>

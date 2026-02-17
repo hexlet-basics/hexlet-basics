@@ -2,8 +2,15 @@ require "fileutils"
 require "json"
 
 namespace :app do
-  desc "Export event names to TypeScript file"
+  desc "Export event data types to TypeScript file"
   task export_events_to_ts: :environment do
+    Rails.application.eager_load!
+    output_path = Rails.root.join("app/javascript/types/events.ts")
+    EventsTypesExporter.new(output_path: output_path).call
+  end
+
+  desc "Export event names to TypeScript file"
+  task export_event_names_to_ts: :environment do
     event_registry = DepsLocator.current.event_registry
     events = event_registry.all.sort
 

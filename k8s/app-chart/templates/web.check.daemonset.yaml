@@ -4,7 +4,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: "{{ .Release.Name }}-prepare-users-code-path-pod"
-  namespace: default
+  namespace: "{{ .Release.Namespace }}"
   labels:
     app.kubernetes.io/instance: "{{ .Release.Name }}"
     app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
@@ -45,3 +45,8 @@ spec:
       containers:
         - name: pause
           image: registry.k8s.io/pause:3.10.1
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL

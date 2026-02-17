@@ -1,16 +1,16 @@
-import { Accordion, Container, List, Stack, Text } from '@mantine/core';
-import type { PropsWithChildren } from 'react';
-import { useTranslation } from 'react-i18next';
-import AppAnchor from '@/components/Elements/AppAnchor';
-import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
-import * as Routes from '@/routes.js';
-import type { Locale } from '@/types';
+import { Accordion, Container, List, Stack, Text } from "@mantine/core";
+import type { PropsWithChildren } from "react";
+import { useTranslation } from "react-i18next";
+import AppAnchor from "@/components/Elements/AppAnchor";
+import ApplicationLayout from "@/layouts/ApplicationLayout";
+import * as Routes from "@/routes.js";
+import type { Locale } from "@/types";
 import type {
   LanguageCategory,
   LanguageSitemapLandingPage,
   LanguageSitemapLesson,
   SitemapBlogPost,
-} from '@/types/serializers';
+} from "@/types/serializers";
 
 type Props = PropsWithChildren & {
   title: string;
@@ -24,7 +24,7 @@ type Props = PropsWithChildren & {
   categoriesByLocale: Record<Locale, LanguageCategory[]>;
 };
 
-const getSuffix = (locale: Locale) => (locale === 'en' ? null : locale);
+const getSuffix = (locale: Locale) => (locale === "en" ? null : locale);
 
 export default function SiteMap({
   title,

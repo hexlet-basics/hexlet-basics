@@ -1,8 +1,11 @@
 # typed: strict
 
-class LeadCreatedEvent < TypedEvent
+class LeadCreatedEvent < ApplicationEvent
+  NAME = "lead_created"
+
   DataShape = T.type_alias {
     {
+      lead_id: Integer,
       user_id: Integer,
       user_name: String,
       first_name: T.nilable(String),
@@ -25,5 +28,10 @@ class LeadCreatedEvent < TypedEvent
   sig { params(data: DataShape, kwargs: T.untyped).void }
   def initialize(data:, **kwargs)
     super
+  end
+
+  sig { returns(Integer) }
+  def lead_id
+    data.fetch(:lead_id)
   end
 end

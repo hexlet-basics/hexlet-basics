@@ -1,4 +1,4 @@
-import { usePage } from '@inertiajs/react';
+import { usePage } from "@inertiajs/react";
 import {
   Accordion,
   Alert,
@@ -17,40 +17,45 @@ import {
   Text,
   Title,
   useMantineTheme,
-} from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
-import i18next from 'i18next';
-import { BookOpenText, Github, GripVertical, Info, Rocket } from 'lucide-react'; // TODO: the current github icon is deprecated, need to update from a new lib
-import { Suspense, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Panel, Group as PanelGroup, Separator } from 'react-resizable-panels';
-import { XBreadcrumb } from '@/components/breadcrumbs.tsx';
-import Chat from '@/components/Chat.tsx';
-import AppAnchor from '@/components/Elements/AppAnchor.tsx';
-import MarkdownViewer from '@/components/MarkdownViewer.tsx';
-import XssContent from '@/components/XssContent.tsx';
-import { useIsMobile } from '@/hooks/useIsMobile.ts';
-import { neededPreview } from '@/lib/utils.ts';
-import ContactMethodRequestingBlock from '@/pages/layouts/blocks/ContactMethodRequestingBlock.tsx';
-import LessonLayout from '@/pages/layouts/LessonLayout.tsx';
-import * as Routes from '@/routes.js';
-import type { BreadcrumbItem } from '@/types/index.ts';
-import ControlBox from './components/ControlBox.tsx';
-import EditorTab from './components/EditorTab.tsx';
-import HTMLPreview from './components/HTMLPreview.tsx';
-import OutputTab from './components/OutputTab.tsx';
-import SolutionTab from './components/SolutionTab.tsx';
-import TestsTab from './components/TestsTab.tsx';
-import { useLessonStore } from './store.tsx';
-import type { LessonSharedProps } from './types.ts';
+} from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
+import {
+  IconBook,
+  IconBrandGithub,
+  IconGripVertical,
+  IconInfoCircle,
+  IconRocket,
+} from "@tabler/icons-react"; // TODO: the current github icon is deprecated, need to update from a new lib
+import i18next from "i18next";
+import { Suspense, useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
+import { Panel, Group as PanelGroup, Separator } from "react-resizable-panels";
+import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
+import Chat from "@/components/Chat.tsx";
+import AppAnchor from "@/components/Elements/AppAnchor.tsx";
+import MarkdownViewer from "@/components/MarkdownViewer.tsx";
+import { useIsMobile } from "@/hooks/useIsMobile.ts";
+import ContactMethodRequestingBlock from "@/layouts/blocks/ContactMethodRequestingBlock.tsx";
+import LessonLayout from "@/layouts/LessonLayout.tsx";
+import { neededPreview } from "@/lib/utils.ts";
+import * as Routes from "@/routes.js";
+import type { BreadcrumbItem, LessonSharedProps } from "@/types";
+import ControlBox from "./components/ControlBox.tsx";
+import EditorTab from "./components/EditorTab.tsx";
+import HTMLPreview from "./components/HTMLPreview.tsx";
+import OutputTab from "./components/OutputTab.tsx";
+import SolutionTab from "./components/SolutionTab.tsx";
+import TestsTab from "./components/TestsTab.tsx";
+import { useLessonStore } from "./store.tsx";
 
 function HtmlPreviewBlock() {
-  const { t: tCommon } = useTranslation('common');
+  const { t } = useTranslation();
+
   const { course } = usePage<LessonSharedProps>().props;
   const currentTab = useLessonStore((state) => state.currentTab);
   const content = useLessonStore((state) => state.content);
 
-  if (currentTab !== 'editor') {
+  if (currentTab !== "editor") {
     return null;
   }
   if (!neededPreview(course.slug!)) {
@@ -58,7 +63,7 @@ function HtmlPreviewBlock() {
   }
 
   return (
-    <Suspense fallback={<div>{tCommon(($) => $.loading)}</div>}>
+    <Suspense fallback={<div>{t(($) => $.common.loading)}</div>}>
       <HTMLPreview html={content} />
     </Suspense>
   );
@@ -86,7 +91,7 @@ export default function Index() {
           </Panel>
           <Separator>
             <Center h="100%" w={10} bg={theme.colors.gray[2]}>
-              <GripVertical size={10} color={theme.colors.gray[6]} />
+              <IconGripVertical size={10} color={theme.colors.gray[6]} />
             </Center>
           </Separator>
           <Panel minSize={30} defaultSize={55}>
@@ -115,7 +120,7 @@ function LessonLeftBlock() {
   const { t } = useTranslation();
   const [focusesCount, setFocusCount] = useState(0);
   const handleSelect = (selectedKey: string | null) => {
-    if (selectedKey === 'assistant') {
+    if (selectedKey === "assistant") {
       setFocusCount((count) => count + 1);
     }
   };
@@ -126,7 +131,7 @@ function LessonLeftBlock() {
       onChange={handleSelect}
       h="100%"
       display="flex"
-      style={{ flexDirection: 'column' }}
+      style={{ flexDirection: "column" }}
     >
       <Tabs.List grow>
         <Tabs.Tab value="lesson">
@@ -148,7 +153,7 @@ function LessonLeftBlock() {
 
         <Tabs.Panel value="assistant" h="100%">
           <ScrollArea h="100%">
-            <AssistantTabContent focusesCount={focusesCount} />
+            <AssistantTabContent />
           </ScrollArea>
         </Tabs.Panel>
 
@@ -171,7 +176,7 @@ function LessonRightBlock() {
     <Tabs
       h="100%"
       display="flex"
-      style={{ flexDirection: 'column' }}
+      style={{ flexDirection: "column" }}
       value={currentTab}
       onChange={(key) => changeTab(key as typeof currentTab)}
       // keepMounted={false}
@@ -179,7 +184,7 @@ function LessonRightBlock() {
       <Tabs.List grow>
         <Tabs.Tab value="lesson" hiddenFrom="sm">
           <Center>
-            <BookOpenText size={14} />
+            <IconBook size={14} />
           </Center>
         </Tabs.Tab>
         <Tabs.Tab value="editor">
@@ -273,10 +278,10 @@ function LessonTabContent() {
 
   const items: BreadcrumbItem[] = [
     {
-      name: courseCategory?.name ?? '-',
+      name: courseCategory?.name ?? "-",
       url: courseCategory
         ? Routes.language_category_url(courseCategory.slug!)
-        : '#',
+        : "#",
     },
     {
       name: landingPage.header!,
@@ -297,15 +302,15 @@ function LessonTabContent() {
           <ContactMethodRequestingBlock />
         </Paper>
       )}
-      <MarkdownViewer allowHtml>{lesson.theory || ''}</MarkdownViewer>
+      <MarkdownViewer allowHtml>{lesson.theory || ""}</MarkdownViewer>
       <Title order={2} my="md">
         {t(($) => $.languages.lessons.show.instructions)}
       </Title>
-      <MarkdownViewer allowHtml>{lesson.instructions || ''}</MarkdownViewer>
+      <MarkdownViewer allowHtml>{lesson.instructions || ""}</MarkdownViewer>
       {course.hexlet_program_landing_page && (
         <Alert variant="primary" my="xl" radius="lg">
           <Group justify="center" gap={6}>
-            <Rocket size={15} />
+            <IconRocket size={15} />
             <Anchor
               target="_blank"
               href={`${course.hexlet_program_landing_page}?utm_source=code-basics&utm_medium=referral`}
@@ -351,42 +356,36 @@ function LessonTabContent() {
           target="_blank"
           rel="noreferrer noopener"
         >
-          <Github size={12} />
+          <IconBrandGithub size={12} />
         </a>
       </Center>
     </Box>
   );
 }
 
-function AssistantTabContent({ focusesCount }: { focusesCount: number }) {
+function AssistantTabContent() {
   const { t } = useTranslation();
-  const { t: tCommon } = useTranslation('common');
 
-  const {
-    previousMessages,
-    canCreateAssistantMessage,
-    course,
-    lesson,
-    lessonMember,
-  } = usePage<LessonSharedProps>().props;
+  const { canCreateAssistantMessage, course, lesson, lessonMember } =
+    usePage<LessonSharedProps>().props;
 
   const userCode = useLessonStore((state) => state.content);
   const output = useLessonStore((state) => state.output);
 
   return (
     <Box p="lg">
-      {i18next.language === 'ru' && (
-        <Alert icon={<Info />} mb="lg">
-          <XssContent>
-            {t(($) => $.languages.lessons.show.if_stuck_html, {
-              url: tCommon(($) => $.community_url),
-            })}
-          </XssContent>
+      {i18next.language === "ru" && (
+        <Alert icon={<IconInfoCircle />} mb="lg">
+          <Trans
+            t={t}
+            i18nKey={($) => $.languages.lessons.show.if_stuck_html}
+            components={{
+              a: <AppAnchor external href={t(($) => $.common.community_url)} />,
+            }}
+          />
         </Alert>
       )}
       <Chat
-        focusesCount={focusesCount}
-        previousMessages={previousMessages}
         enabled={canCreateAssistantMessage}
         userCode={userCode}
         output={output}

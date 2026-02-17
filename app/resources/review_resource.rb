@@ -11,8 +11,8 @@ class ReviewResource
   attributes :id, :body, :state, :first_name, :last_name, :language_id, :user_id, :created_at, :locale
 
   typelize :string, nullable: true
-  attribute :full_name do |review|
-    [ review.first_name, review.last_name ].join " "
+  attribute :full_name do
+    [ it.first_name, it.last_name ].join " "
   end
 
   # typelize :Array, nullable: true

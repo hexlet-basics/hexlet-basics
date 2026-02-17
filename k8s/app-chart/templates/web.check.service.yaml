@@ -8,7 +8,7 @@ metadata:
 spec:
   selector:
     app.kubernetes.io/name: "{{ .Release.Name }}-web-check-pod"
-  type: NodePort
+  type: ClusterIP
   ports:
     - protocol: TCP
       port: 80

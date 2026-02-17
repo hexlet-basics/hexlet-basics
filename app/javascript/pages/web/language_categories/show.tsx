@@ -1,4 +1,4 @@
-import { usePage } from '@inertiajs/react';
+import { usePage } from "@inertiajs/react";
 import {
   Box,
   Card,
@@ -9,24 +9,23 @@ import {
   Stack,
   Text,
   Title,
-} from '@mantine/core';
-import i18next from 'i18next';
-import type { PropsWithChildren } from 'react';
-import { useTranslation } from 'react-i18next';
+} from "@mantine/core";
+import i18next from "i18next";
+import type { PropsWithChildren } from "react";
+import { useTranslation } from "react-i18next";
 
-import CourseBlock from '@/components/CourseBlock';
-import LeadFormBlock from '@/components/LeadFormBlock';
-import MarkdownViewer from '@/components/MarkdownViewer';
-import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
-import * as Routes from '@/routes.js';
+import CourseBlock from "@/components/CourseBlock";
+import LeadFormBlock from "@/components/LeadFormBlock";
+import MarkdownViewer from "@/components/MarkdownViewer";
+import ApplicationLayout from "@/layouts/ApplicationLayout";
+import * as Routes from "@/routes.js";
 import type {
   LanguageCategory,
   LanguageLandingPage,
   LanguageLandingPageForLists,
   LanguageLandingPageQnaItem,
   LeadCrud,
-  SharedProps,
-} from '@/types';
+} from "@/types";
 
 type Props = PropsWithChildren & {
   categoryLandingPages: LanguageLandingPageForLists[];
@@ -46,7 +45,7 @@ export default function Show({
 
   const {
     auth: { user },
-  } = usePage<SharedProps>().props;
+  } = usePage().props;
 
   const items = [
     {
@@ -76,7 +75,7 @@ export default function Show({
           ))}
         </SimpleGrid>
 
-        {!user.guest && i18next.language === 'ru' && (
+        {!user.guest && i18next.language === "ru" && (
           <Grid align="center" justify="space-between" gutter={0}>
             <Grid.Col span={{ base: 12, xs: 7 }}>
               <Center>

@@ -1,15 +1,15 @@
-import { renderToString } from 'react-dom/server';
-import { expect, test } from 'vitest';
-import configure from '@/lib/configure';
+import { renderToString } from "react-dom/server";
+import { expect, test } from "vitest";
+import configure from "@/lib/configure";
 
-import '@/init.ts';
-import { MantineProvider } from '@mantine/core';
-import MarkdownViewer from '@/components/MarkdownViewer';
+import "@/init.ts";
+import { MantineProvider } from "@mantine/core";
+import MarkdownViewer from "@/components/MarkdownViewer";
 
-configure('ru', 'ru');
+configure("ru", "ru");
 
-test('renders to string without errors', () => {
-  const content = 'JOPA';
+test("renders to string without errors", () => {
+  const content = "JOPA";
   const vdom = (
     <MantineProvider>
       <MarkdownViewer>{content}</MarkdownViewer>

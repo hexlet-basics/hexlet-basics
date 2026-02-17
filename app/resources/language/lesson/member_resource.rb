@@ -6,19 +6,19 @@ class Language::Lesson::MemberResource < ApplicationResource
   typelize state: [ enum: [ "started", "finished" ] ]
 
   typelize :string
-  attribute :language_lesson_slug do |obj|
-    obj.lesson.slug
+  attribute :language_lesson_slug do
+    it.lesson.slug
   end
 
 
    typelize :string
-   attribute :language_slug do |obj|
-     obj.language.slug
+   attribute :language_slug do
+     it.language.slug
    end
 
   typelize :string
-  attribute :language_lesson_name do |obj|
-    info = obj.lesson.localed_info
+  attribute :language_lesson_name do
+    info = it.lesson.localed_info
     info&.name
   end
 end

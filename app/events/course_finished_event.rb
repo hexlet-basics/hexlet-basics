@@ -1,6 +1,8 @@
 # typed: strict
 
-class CourseFinishedEvent < TypedEvent
+class CourseFinishedEvent < ApplicationEvent
+  NAME = "course_finished"
+
   DataShape = T.type_alias {
     {
       occurrence_count: Integer,

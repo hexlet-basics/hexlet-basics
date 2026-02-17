@@ -1,39 +1,39 @@
-import { LogIn } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { IconLogin2 } from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
 import {
   CrudHorizontalMenu,
   type CrudHorizontalMenuItem,
-} from '@/components/CrudHorizontalMenu';
-import * as Routes from '@/routes.js';
-import type { LanguageCategoryCrud } from '@/types';
+} from "@/components/CrudHorizontalMenu";
+import * as Routes from "@/routes.js";
+import type { LanguageCategoryCrud } from "@/types";
 
 type Props = {
   data?: LanguageCategoryCrud;
 };
 
 export function Menu({ data }: Props) {
-  const { t: tHelpers } = useTranslation('helpers');
+  const { t } = useTranslation();
 
   const items: CrudHorizontalMenuItem[] = [
     {
       href: Routes.admin_language_categories_path(),
-      label: tHelpers(($) => $.crud.list),
+      label: t(($) => $.helpers.crud.list),
     },
     {
       href: Routes.new_admin_language_category_path(),
-      label: tHelpers(($) => $.crud.add),
+      label: t(($) => $.helpers.crud.add),
     },
   ];
 
   if (data) {
     items.push({
-      href: Routes.edit_admin_language_category_path(data.data.id),
-      label: tHelpers(($) => $.crud.editing),
+      href: Routes.edit_admin_language_category_path(data.id),
+      label: t(($) => $.helpers.crud.editing),
     });
     items.push({
-      href: Routes.language_category_path(data.data.slug!),
+      href: Routes.language_category_path(data.slug!),
       external: true,
-      label: <LogIn size={15} />,
+      label: <IconLogin2 size={15} />,
     });
   }
 

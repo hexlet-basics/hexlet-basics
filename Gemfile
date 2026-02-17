@@ -5,8 +5,10 @@ source "https://rubygems.org"
 gem "rails"
 # Use sqlite3 as the database for Active Record
 gem "sqlite3"
-# Use the Puma web server [https://github.com/puma/puma]
-gem "puma"
+# Use Falcon web server [https://github.com/socketry/falcon-rails]
+group :development, :staging, :production do
+  gem "falcon-rails"
+end
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
 
@@ -63,10 +65,16 @@ gem "stackprof"
 gem "sentry-ruby"
 gem "sentry-rails"
 
+gem "amocrm"
+
 # gem 'stimulus-rails'
 # gem 'turbo-rails'
 
 gem "js-routes"
+
+gem "sorbet"
+gem "sorbet-schema"
+gem "sorbet-result"
 
 group :development, :test, :staging do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
@@ -145,5 +153,5 @@ gem "configus"
 gem "rails_event_store"
 
 gem "pundit"
-gem "faraday"
-gem "httpx"
+# gem "faraday"
+# gem "httpx"

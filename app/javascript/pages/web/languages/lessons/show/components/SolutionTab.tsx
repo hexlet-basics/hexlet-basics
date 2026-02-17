@@ -1,5 +1,5 @@
-import { usePage } from '@inertiajs/react';
-import { CodeHighlight } from '@mantine/code-highlight';
+import { usePage } from "@inertiajs/react";
+import { CodeHighlight } from "@mantine/code-highlight";
 import {
   Alert,
   Box,
@@ -9,15 +9,15 @@ import {
   Stack,
   Text,
   Title,
-} from '@mantine/core';
-import dayjs from 'dayjs';
-import type { ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useTimer } from 'react-timer-hook';
-import waitingClock from '@/images/waiting_clock.webp';
-import { getEditorLanguage } from '@/lib/utils.ts';
-import { useLessonStore } from '../store.tsx';
-import type { LessonSharedProps } from '../types.ts';
+} from "@mantine/core";
+import dayjs from "dayjs";
+import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
+import { useTimer } from "react-timer-hook";
+import waitingClock from "@/images/waiting_clock.webp";
+import { getEditorLanguage } from "@/lib/utils.ts";
+import type { LessonSharedProps } from "@/types";
+import { useLessonStore } from "../store.tsx";
 
 const waitingTime = 20 * 60 * 1000; // 20 min
 // const waitingTime = 3000;
@@ -33,7 +33,8 @@ function Countdown({
   remainingTime,
   renderShowButton,
 }: CountdownProps) {
-  const { t: tCommon } = useTranslation('common');
+  const { t } = useTranslation();
+
   if (showButton) {
     return renderShowButton();
   }
@@ -41,7 +42,7 @@ function Countdown({
   return (
     <Stack align="center">
       <Text size="lg" fw={500}>
-        {tCommon(($) => $.solutionInstructions)}
+        {t(($) => $.common.solutionInstructions)}
       </Text>
       <Text fz={50}>{remainingTime}</Text>
       <Image
@@ -55,12 +56,13 @@ function Countdown({
 }
 
 export default function SolutionTab() {
+  const { t } = useTranslation();
   const { course, lesson } = usePage<LessonSharedProps>().props;
   const content = useLessonStore((state) => state.content);
   const finished = useLessonStore((state) => state.finished);
   const solutionState = useLessonStore((state) => state.solutionState);
   const startTime = useLessonStore((state) => state.startTime);
-  const { t: tCommon } = useTranslation('common');
+
   const changeSolutionState = useLessonStore(
     (state) => state.changeSolutionState,
   );
@@ -70,8 +72,8 @@ export default function SolutionTab() {
   // console.log(timerData.isRunning, timerData.totalSeconds, expiryTimestamp)
 
   const renderUserCode = () => {
-    if (content === '') {
-      return <Alert>{tCommon(($) => $.userCodeInstructions)}</Alert>;
+    if (content === "") {
+      return <Alert>{t(($) => $.common.userCodeInstructions)}</Alert>;
     }
 
     return (
@@ -87,7 +89,7 @@ export default function SolutionTab() {
       <>
         <Stack mb="xl">
           <Title order={2} mb="lg">
-            {tCommon(($) => $.teacherSolution)}
+            {t(($) => $.common.teacherSolution)}
           </Title>
           <CodeHighlight
             code={lesson.original_code!}
@@ -96,7 +98,7 @@ export default function SolutionTab() {
         </Stack>
         <Stack>
           <Title order={2} mb="lg">
-            {tCommon(($) => $.userCode)}
+            {t(($) => $.common.userCode)}
           </Title>
           {renderUserCode()}
         </Stack>
@@ -105,15 +107,15 @@ export default function SolutionTab() {
   };
 
   const handleShowSolution = () => {
-    changeSolutionState('shown');
+    changeSolutionState("shown");
   };
 
   const renderShowButton = () => (
     <>
-      <Text>{tCommon(($) => $.solutionNotice)}</Text>
+      <Text>{t(($) => $.common.solutionNotice)}</Text>
       <Center>
         <Button variant="light" onClick={handleShowSolution} px="xl">
-          {tCommon(($) => $.showSolution)}
+          {t(($) => $.common.showSolution)}
         </Button>
       </Center>
     </>
@@ -121,14 +123,14 @@ export default function SolutionTab() {
 
   return (
     <Box>
-      {finished || solutionState === 'shown' ? (
+      {finished || solutionState === "shown" ? (
         renderSolution()
       ) : (
         <Countdown
-          showButton={!timerData.isRunning || solutionState === 'canBeShown'}
+          showButton={!timerData.isRunning || solutionState === "canBeShown"}
           remainingTime={dayjs
-            .duration(timerData.totalSeconds, 'seconds')
-            .format('mm:ss')}
+            .duration(timerData.totalSeconds, "seconds")
+            .format("mm:ss")}
           renderShowButton={renderShowButton}
         />
       )}

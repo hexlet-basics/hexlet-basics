@@ -1,23 +1,23 @@
-import { Container, Grid, Title, Typography } from '@mantine/core';
-import i18next from 'i18next';
-import type { PropsWithChildren } from 'react';
-import { typographyStyles } from '@/lib/mantine';
-import { hasObjectKey } from '@/lib/utils';
-import ApplicationLayout from '@/pages/layouts/ApplicationLayout.tsx';
-import type { User } from '@/types/serializers';
-import AboutEn from './parts/about.en';
-import AboutRu from './parts/about.ru';
-import AuthorsEn from './parts/authors.en';
-import AuthorsRu from './parts/authors.ru';
-import CookiePolicyEn from './parts/cookie_policy.en';
-import CookiePolicyRu from './parts/cookie_policy.ru';
-import PrivacyEn from './parts/privacy.en';
-import PrivaryRu from './parts/privacy.ru';
-import TosEn from './parts/tos.en';
-import TosRu from './parts/tos.ru';
+import { Container, Grid, Title, Typography } from "@mantine/core";
+import i18next from "i18next";
+import type { PropsWithChildren } from "react";
+import ApplicationLayout from "@/layouts/ApplicationLayout.tsx";
+import { typographyStyles } from "@/lib/mantine";
+import { hasObjectKey } from "@/lib/utils";
+import type { User } from "@/types/serializers";
+import AboutEn from "./parts/about.en";
+import AboutRu from "./parts/about.ru";
+import AuthorsEn from "./parts/authors.en";
+import AuthorsRu from "./parts/authors.ru";
+import CookiePolicyEn from "./parts/cookie_policy.en";
+import CookiePolicyRu from "./parts/cookie_policy.ru";
+import PrivacyEn from "./parts/privacy.en";
+import PrivaryRu from "./parts/privacy.ru";
+import TosEn from "./parts/tos.en";
+import TosRu from "./parts/tos.ru";
 
 type Props = PropsWithChildren & {
-  page: 'about' | 'tos' | 'privacy' | 'cookie_policy' | 'authors';
+  page: "about" | "tos" | "privacy" | "cookie_policy" | "authors";
   title: string;
   user: User;
 };
@@ -42,7 +42,7 @@ const mapping = {
 export default function New({ page, title }: Props) {
   const locale = hasObjectKey(mapping, i18next.language)
     ? i18next.language
-    : 'ru';
+    : "ru";
   const Component = mapping[locale][page];
   return (
     <ApplicationLayout header={title} center>

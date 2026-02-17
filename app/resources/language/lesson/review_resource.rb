@@ -11,17 +11,17 @@ class Language::Lesson::ReviewResource < ApplicationResource
     :created_at
 
   typelize :string
-  attribute :slug do |review|
-    review.lesson.slug
+  attribute :slug do
+    it.lesson.slug
   end
 
   typelize :number
-  attribute :lesson_natural_order do |review|
-    review.lesson.natural_order
+  attribute :lesson_natural_order do
+    it.lesson.natural_order
   end
 
   typelize :string
-  attribute :language_slug do |review|
-    review.language.slug
+  attribute :language_slug do
+    it.language.slug
   end
 end

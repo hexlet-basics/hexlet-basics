@@ -1,11 +1,11 @@
-import { Card, Container, Group, SimpleGrid, Stack, Text } from '@mantine/core';
-import { ArrowRight } from 'lucide-react';
-import type { PropsWithChildren } from 'react';
-import { useTranslation } from 'react-i18next';
-import AppAnchor from '@/components/Elements/AppAnchor';
-import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
-import * as Routes from '@/routes.js';
-import type { LanguageCategory } from '@/types/serializers';
+import { Card, Container, Group, SimpleGrid, Stack, Text } from "@mantine/core";
+import { IconArrowRight } from "@tabler/icons-react";
+import type { PropsWithChildren } from "react";
+import { useTranslation } from "react-i18next";
+import AppAnchor from "@/components/Elements/AppAnchor";
+import ApplicationLayout from "@/layouts/ApplicationLayout";
+import * as Routes from "@/routes.js";
+import type { LanguageCategory } from "@/types/serializers";
 
 type Props = PropsWithChildren & {
   categories: LanguageCategory[];
@@ -46,7 +46,7 @@ export default function Index({ categories }: Props) {
                 </AppAnchor>
                 <Group mt="auto" c="blue">
                   <Text>{t(($) => $.language_categories.index.link)}</Text>
-                  <ArrowRight size={16} />
+                  <IconArrowRight size={16} />
                 </Group>
               </Stack>
             </Card>

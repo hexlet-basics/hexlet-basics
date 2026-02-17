@@ -1,29 +1,40 @@
-import type React from 'react';
-import { useTranslation } from 'react-i18next';
+// @ts-nocheck
+import { openConfirmModal } from "@mantine/modals";
+import type React from "react";
+import { useTranslation } from "react-i18next";
 
-interface ConfirmationOptions {
+type UseConfirmationCallback<T = unknown> = (
+  event: React.MouseEvent<Element>,
+  data?: T,
+) => void;
+
+interface ConfirmationOptions<T = unknown> {
   message?: string;
-  callback?: UseConfirmationCallback;
+  callback?: UseConfirmationCallback<T>;
 }
 
-type UseConfirmationCallback = (event: React.MouseEvent<Element>) => void;
+export default function useConfirmation<T = unknown>(
+  options?: ConfirmationOptions<T>,
+): UseConfirmationCallback<T> {
+  const { t } = useTranslation();
 
-export default function useConfirmation(
-  options?: ConfirmationOptions,
-): UseConfirmationCallback {
-  const { t: tCommon } = useTranslation('common');
+  const requestConfirmation: UseConfirmationCallback<T> = (event, data) => {
+    event.preventDefault();
+    const title = options?.message ?? t(($) => $.common.confirm);
 
-  const requestConfirmation = (event: React.MouseEvent<Element>) => {
-    const message = options?.message ?? tCommon(($) => $.confirm);
-    const isConfirmed = window.confirm(`${message}`);
-    if (!isConfirmed) {
-      event.preventDefault();
-    } else {
-      if (options?.callback) {
-        event.preventDefault();
-        return options.callback(event);
-      }
-    }
+    openConfirmModal({
+      centered: true,
+      title: title,
+      labels: {
+        confirm: t(($) => $.common.boolean.yes),
+        cancel: t(($) => $.common.boolean.no),
+      },
+      onConfirm: () => {
+        if (options?.callback) {
+          options.callback(event, data);
+        }
+      },
+    });
   };
 
   return requestConfirmation;

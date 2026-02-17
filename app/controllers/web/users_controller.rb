@@ -24,15 +24,16 @@ class Web::UsersController < Web::ApplicationController
       user.save!
 
       signed_up_event_data = {
-        id: user.id,
+        user_id: user.id,
         email: user.email,
         first_name: user.first_name,
-        last_name: user.last_name
+        last_name: user.last_name,
+        locale: I18n.locale
       }
       user_signed_up = UserSignedUpEvent.new(data: signed_up_event_data)
 
       publish_event(user_signed_up, user)
-      event_to_js(user_signed_up)
+      js_event(user_signed_up)
 
       sign_in user
 
@@ -51,7 +52,7 @@ class Web::UsersController < Web::ApplicationController
           }
           course_started_event = CourseStartedEvent.new(data: course_started_event_data)
           publish_event(course_started_event, user)
-          event_to_js(course_started_event)
+          js_event(course_started_event)
         end
 
         lesson_member = language_member.lesson_members.build(
@@ -71,12 +72,12 @@ class Web::UsersController < Web::ApplicationController
         started_event = LessonStartedEvent.new(data: lesson_started_and_finished_event_data)
 
         publish_event(started_event, user)
-        event_to_js(started_event)
+        js_event(started_event)
 
         finished_event = LessonFinishedEvent.new(data: lesson_started_and_finished_event_data)
 
         publish_event(finished_event, user)
-        event_to_js(finished_event)
+        js_event(finished_event)
       end
 
       f(:success)

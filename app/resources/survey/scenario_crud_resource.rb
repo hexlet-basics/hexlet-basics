@@ -1,6 +1,17 @@
 class Survey::ScenarioCrudResource < ApplicationResource
+  class MetaResource < ApplicationResource
+    typelize_from Survey::Scenario
+
+    typelize model: :string
+    typelize relations: "Record<string, string>"
+
+    attribute(:model) { it.class.superclass.form_key }
+    attribute(:relations) do
+      it.class.respond_to?(:nested_attributes_mapping) ? it.class.nested_attributes_mapping : {}
+    end
+  end
+
   typelize_from Survey::Scenario
-  root_key :data
 
   has_many :items, proc { |items, params, user|
     items.order(order: :asc)
@@ -15,17 +26,12 @@ class Survey::ScenarioCrudResource < ApplicationResource
     # :event_threshold_count,
     :survey_item_id
 
-  # typelize :state, nullabe: false
+  # typelize :state, nullable: false
 
   typelize :string, nullable: true
-  attribute :survey_item_value do |obj|
-    obj.survey_item&.value
+  attribute :survey_item_value do
+    it.survey_item&.value
   end
 
-  typelize_meta meta: "{ modelName: string }"
-  meta do
-    {
-      modelName: object.class.superclass.form_key
-    }
-  end
+  has_one :meta, source: proc { |_params| self }, resource: MetaResource
 end

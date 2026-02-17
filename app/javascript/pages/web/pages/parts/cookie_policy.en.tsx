@@ -1,4 +1,4 @@
-import * as Routes from '@/routes.js';
+import * as Routes from "@/routes.js";
 
 export default function CookiePolicyEn() {
   return (
@@ -9,10 +9,10 @@ export default function CookiePolicyEn() {
         This Cookie Policy explains how TOO "Hexlet" (
         <strong>"Company," "we," "us,"</strong> and
         <strong>"our"</strong>) uses cookies and similar technologies to
-        recognize you when you visit our website at{' '}
+        recognize you when you visit our website at{" "}
         <a href={Routes.root_path()} target="_blank" rel="noreferrer">
           https://code-basics.com
-        </a>{' '}
+        </a>{" "}
         (<strong>"Website"</strong>). It explains what these technologies are
         and why we use them, as well as your rights to control our use of them.
       </p>
@@ -112,9 +112,9 @@ export default function CookiePolicyEn() {
             <tr>
               <td>Service:</td>
               <td>
-                Advertiser's website domain{' '}
+                Advertiser's website domain{" "}
                 <a
-                  href={Routes.page_path('cookie_policy')}
+                  href={Routes.page_path("cookie_policy")}
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -199,7 +199,7 @@ export default function CookiePolicyEn() {
             <tr>
               <td>Service:</td>
               <td>
-                Metrica{' '}
+                Metrica{" "}
                 <a
                   href="https://yandex.com/legal/confidential/?lang=en"
                   target="_blank"
@@ -242,7 +242,7 @@ export default function CookiePolicyEn() {
             <tr>
               <td>Service:</td>
               <td>
-                Google Analytics{' '}
+                Google Analytics{" "}
                 <a
                   href="https://business.safety.google/privacy/"
                   target="_blank"
@@ -319,7 +319,7 @@ export default function CookiePolicyEn() {
             <tr>
               <td>Service:</td>
               <td>
-                Metrica{' '}
+                Metrica{" "}
                 <a
                   href="https://yandex.com/legal/confidential/?lang=en"
                   target="_blank"
@@ -498,7 +498,7 @@ export default function CookiePolicyEn() {
             <tr>
               <td>Service:</td>
               <td>
-                VK{' '}
+                VK{" "}
                 <a
                   href="https://vk.com/privacy"
                   target="_blank"
@@ -598,7 +598,7 @@ export default function CookiePolicyEn() {
             <tr>
               <td>Service:</td>
               <td>
-                Metrica{' '}
+                Metrica{" "}
                 <a
                   href="https://yandex.com/legal/confidential/?lang=en"
                   target="_blank"
@@ -641,7 +641,7 @@ export default function CookiePolicyEn() {
             <tr>
               <td>Service:</td>
               <td>
-                Metrica{' '}
+                Metrica{" "}
                 <a
                   href="https://yandex.com/legal/confidential/?lang=en"
                   target="_blank"
@@ -745,7 +745,7 @@ export default function CookiePolicyEn() {
             <tr>
               <td>Service:</td>
               <td>
-                Yandex Metrica{' '}
+                Yandex Metrica{" "}
                 <a
                   href="https://yandex.com/legal/confidential/?lang=en"
                   target="_blank"
@@ -789,7 +789,7 @@ export default function CookiePolicyEn() {
             <tr>
               <td>Service:</td>
               <td>
-                Google Analytics{' '}
+                Google Analytics{" "}
                 <a
                   href="https://business.safety.google/privacy/"
                   target="_blank"
@@ -878,7 +878,7 @@ export default function CookiePolicyEn() {
             <tr>
               <td>Service:</td>
               <td>
-                DoubleClick{' '}
+                DoubleClick{" "}
                 <a
                   href="https://business.safety.google/privacy/"
                   target="_blank"
@@ -921,7 +921,7 @@ export default function CookiePolicyEn() {
             <tr>
               <td>Service:</td>
               <td>
-                DoubleClick{' '}
+                DoubleClick{" "}
                 <a
                   href="https://business.safety.google/privacy/"
                   target="_blank"
@@ -975,7 +975,7 @@ export default function CookiePolicyEn() {
             <tr>
               <td>Service:</td>
               <td>
-                VK{' '}
+                VK{" "}
                 <a
                   href="https://vk.com/privacy"
                   target="_blank"
@@ -1018,7 +1018,7 @@ export default function CookiePolicyEn() {
             <tr>
               <td>Service:</td>
               <td>
-                VK{' '}
+                VK{" "}
                 <a
                   href="https://vk.com/privacy"
                   target="_blank"
@@ -1593,7 +1593,7 @@ export default function CookiePolicyEn() {
       <p>
         If you do not want Flash Cookies stored on your computer, you can adjust
         the settings of your Flash player to block Flash Cookies storage using
-        the tools contained in the{' '}
+        the tools contained in the{" "}
         <a
           href="https://www.macromedia.com/support/documentation/en/flashplayer/help/settings_manager07.html"
           target="_blank"
@@ -1601,14 +1601,14 @@ export default function CookiePolicyEn() {
         >
           Website Storage Settings Panel
         </a>
-        . You can also control Flash Cookies by going to the{' '}
+        . You can also control Flash Cookies by going to the{" "}
         <a
           href="https://www.macromedia.com/support/documentation/en/flashplayer/help/settings_manager03.html"
           target="_blank"
           rel="noreferrer"
         >
           Global Storage Settings Panel
-        </a>{' '}
+        </a>{" "}
         and following the instructions (which may include instructions that
         explain, for example, how to delete existing Flash Cookies (referred to
         "information" on the Macromedia site), how to prevent Flash LSOs from
@@ -1660,7 +1660,7 @@ export default function CookiePolicyEn() {
 
       <p>
         If you have any questions about our use of cookies or other
-        technologies, please email us at{' '}
+        technologies, please email us at{" "}
         <a href="mailto:support@hexlet.io">support@hexlet.io</a> or by post to:
         <ul className="fw-medium list-unstyled mt-3">
           <li>TOO "Hexlet"</li>

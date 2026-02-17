@@ -27,6 +27,10 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Lead < ApplicationRecord
+  extend T::Sig
+
+  visitable :ahoy_visit
+
   belongs_to :user
   belongs_to :ahoy_visit, optional: true, class_name: "Ahoy::Visit"
   serialize :survey_answers_data

@@ -1,6 +1,6 @@
-import '@mantine/core';
+import "@mantine/core";
 
-declare module '@mantine/core' {
+declare module "@mantine/core" {
   export interface TitleProps {
     /** Делает размер заголовка адаптивным (clamp на основе size/order) */
     responsive?: boolean;

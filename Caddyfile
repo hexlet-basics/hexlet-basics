@@ -18,7 +18,7 @@ https://code-basics.localhost {
 
 	reverse_proxy /vite-dev/* http://127.0.0.1:3036
 	reverse_proxy /cable http://127.0.0.1:28080
-	reverse_proxy http://127.0.0.1:3000
+	reverse_proxy h2c://127.0.0.1:3000
 
 	# # Redirect Vite HMR requests
 	# @vite_hmr {

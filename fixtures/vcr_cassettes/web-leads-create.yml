@@ -1,0 +1,21 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://hexlet.amocrm.ru/api/v4/leads/unsorted/forms
+    body:
+      encoding: UTF-8
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"_total_items":1}'
+  recorded_at: Tue, 17 Feb 2026 00:00:00 GMT
+recorded_with: VCR 6.3.1

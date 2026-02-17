@@ -1,11 +1,11 @@
-import { Grid } from '@mantine/core';
-import { useTranslation } from 'react-i18next';
+import { Grid } from "@mantine/core";
+import { useTranslation } from "react-i18next";
 
-import AdminLayout from '@/pages/layouts/AdminLayout';
-import * as Routes from '@/routes.js';
-import type LanguageCrud from '@/types/serializers/LanguageCrud';
-import Form from './shared/form';
-import { Menu } from './shared/menu';
+import AdminLayout from "@/layouts/AdminLayout";
+import * as Routes from "@/routes.js";
+import type LanguageCrud from "@/types/serializers/LanguageCrud";
+import Form from "./shared/form";
+import { Menu } from "./shared/menu";
 
 type Props = {
   courseDto: LanguageCrud;

@@ -1,0 +1,30 @@
+---
+
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: "{{ .Release.Name }}-gateway"
+  namespace: "{{ .Release.Namespace }}"
+spec:
+  gatewayClassName: "{{ .Values.gateway.className }}"
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: Same
+    - name: https
+      protocol: HTTPS
+      port: 443
+      allowedRoutes:
+        namespaces:
+          from: Same
+      tls:
+        certificateRefs:
+          - group: gwin.yandex.cloud
+            kind: YCCertificate
+            name: "{{ .Release.Name }}-yc-certificate"
+  addresses:
+    - type: "{{ .Values.gateway.address.type }}"
+      value: "{{ .Values.gateway.address.value }}"

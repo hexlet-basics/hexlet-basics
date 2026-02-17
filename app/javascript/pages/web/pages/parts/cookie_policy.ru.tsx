@@ -1,13 +1,13 @@
-import * as Routes from '@/routes.js';
+import * as Routes from "@/routes.js";
 
 export default function CookiePolicyEn() {
   return (
     <>
       <p>
-        На посещаемом Сайте{' '}
+        На посещаемом Сайте{" "}
         <a href={Routes.root_path()} target="_blank" rel="noreferrer">
           https://code-basics.com
-        </a>{' '}
+        </a>{" "}
         и его поддоменах (далее – Сайт) используются файлы cookie.
       </p>
 
@@ -53,7 +53,7 @@ export default function CookiePolicyEn() {
           Сбор аналитических данных с помощью сервисов:
           <ul>
             <li>
-              статистики Яндекс.Метрика{' '}
+              статистики Яндекс.Метрика{" "}
               <a
                 href="https://metrika.yandex.ru/"
                 target="_blank"
@@ -64,14 +64,14 @@ export default function CookiePolicyEn() {
               ;
             </li>
             <li>
-              статистики{' '}
+              статистики{" "}
               <a href="https://top.mail.ru/" target="_blank" rel="noreferrer">
                 https://top.mail.ru/
               </a>
               ;
             </li>
             <li>
-              статистики Roistat{' '}
+              статистики Roistat{" "}
               <a
                 href="https://roistat.com/ru/"
                 target="_blank"
@@ -82,14 +82,14 @@ export default function CookiePolicyEn() {
               ;
             </li>
             <li>
-              рекламной сети adv.cake{' '}
+              рекламной сети adv.cake{" "}
               <a href="https://advcake.ru/" target="_blank" rel="noreferrer">
                 https://advcake.ru/
               </a>
               ;
             </li>
             <li>
-              рекламной сети Admitad{' '}
+              рекламной сети Admitad{" "}
               <a
                 href="https://www.admitad.ru/"
                 target="_blank"
@@ -100,7 +100,7 @@ export default function CookiePolicyEn() {
               ;
             </li>
             <li>
-              рекламной сети ВКонтакте{' '}
+              рекламной сети ВКонтакте{" "}
               <a href="https://vk.com/" target="_blank" rel="noreferrer">
                 https://vk.com/
               </a>

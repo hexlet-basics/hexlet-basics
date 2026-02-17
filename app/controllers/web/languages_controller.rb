@@ -14,7 +14,7 @@ class Web::LanguagesController < Web::ApplicationController
     language_lessons_infos = language.current_lesson_infos.with_locale
       .includes(:lesson, version: [ :module, :module_version, :lesson ])
       .order(language_lesson_versions: { natural_order: :asc })
-    language_lessons_info_resources = language_lessons_infos.map { |info| Language::LessonResource.new(info) }
+    language_lessons_info_resources = language_lessons_infos.map { Language::LessonResource.new(it) }
     lesson_resources_by_module_id = language_lessons_info_resources.group_by do |resource|
       resource.object.version.module.id
     end

@@ -1,4 +1,4 @@
-import { Link } from '@inertiajs/react';
+import { Link } from "@inertiajs/react";
 import {
   Alert,
   Anchor,
@@ -13,19 +13,18 @@ import {
   Stack,
   Text,
   Title,
-} from '@mantine/core';
-import i18next from 'i18next';
-import { MessageSquareDiff } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import CourseBlock from '@/components/CourseBlock';
-import AppAnchor from '@/components/Elements/AppAnchor';
-import XssContent from '@/components/XssContent';
-import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
-import * as Routes from '@/routes.js';
+} from "@mantine/core";
+import { IconMessage2 } from "@tabler/icons-react";
+import i18next from "i18next";
+import { Trans, useTranslation } from "react-i18next";
+import CourseBlock from "@/components/CourseBlock";
+import AppAnchor from "@/components/Elements/AppAnchor";
+import ApplicationLayout from "@/layouts/ApplicationLayout";
+import * as Routes from "@/routes.js";
 import type {
   LanguageLandingPageForLists,
   LanguageMember,
-} from '@/types/serializers';
+} from "@/types/serializers";
 
 type Props = {
   startedCourseMembers: LanguageMember[];
@@ -81,16 +80,15 @@ export default function My(props: Props) {
     finishedCourseMembers,
     landingPageResourcesByCourseId,
   } = props;
-  const { t: tViews } = useTranslation('web');
-  const { t: tCommon } = useTranslation('common');
+  const { t } = useTranslation();
 
   return (
     <ApplicationLayout>
       <Container>
         <Title order={2} my="xl">
-          {tViews(($) => $.my.show.started)}
+          {t(($) => $.my.show.started)}
         </Title>
-        {startedCourseMembers.length === 0 && <p>{tCommon(($) => $.empty)}</p>}
+        {startedCourseMembers.length === 0 && <p>{t(($) => $.common.empty)}</p>}
 
         <SimpleGrid cols={{ base: 1, xs: 2 }}>
           {startedCourseMembers.map((cm) => (
@@ -103,16 +101,29 @@ export default function My(props: Props) {
         </SimpleGrid>
 
         <Title my="xl" order={2}>
-          {tViews(($) => $.my.show.finished)}
+          {t(($) => $.my.show.finished)}
         </Title>
 
-        {finishedCourseMembers.length > 0 && i18next.language === 'ru' && (
-          <Alert icon={<MessageSquareDiff />} mb="xl" px="xl">
-            <XssContent>{tViews(($) => $.my.show.add_review)}</XssContent>
+        {finishedCourseMembers.length > 0 && i18next.language === "ru" && (
+          <Alert icon={<IconMessage2 />} mb="xl" px="xl">
+            <Trans
+              t={t}
+              i18nKey={($) => $.my.show.add_review}
+              components={{
+                a: (
+                  <AppAnchor
+                    external
+                    href="https://taplink.cc/codebasics_reviews"
+                  />
+                ),
+              }}
+            />
           </Alert>
         )}
 
-        {finishedCourseMembers.length === 0 && <p>{tCommon(($) => $.empty)}</p>}
+        {finishedCourseMembers.length === 0 && (
+          <p>{t(($) => $.common.empty)}</p>
+        )}
 
         <SimpleGrid cols={{ base: 2, xs: 3, sm: 4 }}>
           {finishedCourseMembers.map((cm) => (

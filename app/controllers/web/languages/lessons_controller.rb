@@ -34,7 +34,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
         }
         course_started_event = CourseStartedEvent.new(data: event_data)
         publish_event(course_started_event, current_user)
-        event_to_js(course_started_event)
+        js_event(course_started_event)
       end
       lesson_member = language_member.lesson_members.find_or_create_by!(
         language: resource_language,
@@ -53,7 +53,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
         lesson_started_event = LessonStartedEvent.new(data: event_data)
 
         publish_event(lesson_started_event, current_user)
-        event_to_js(lesson_started_event)
+        js_event(lesson_started_event)
       end
     end
 

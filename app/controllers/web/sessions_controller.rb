@@ -1,3 +1,5 @@
+# typed: true
+
 class Web::SessionsController < Web::ApplicationController
   before_action :guests_only!, only: [ :new, :create ]
 
@@ -20,9 +22,17 @@ class Web::SessionsController < Web::ApplicationController
     sign_in_form = SignInForm.new(params[:user])
 
     if sign_in_form.valid?
-      event_store.within { sign_in sign_in_form.user }
-        .subscribe(to: UserSignedInEvent) { |event| event_to_js(event) }
-        .call
+      user = sign_in_form.user
+      sign_in user
+
+      data = {
+        user_id: user.id,
+        occurrence_count: -1,
+        email: T.must(user.email),
+        locale: I18n.locale
+      }
+      event = UserSignedInEvent.new(data:)
+      EventSender.publish_event(event, user)
 
       f(:success)
       redirect_to root_path

@@ -1,9 +1,9 @@
-import { useTranslation } from 'react-i18next';
-import AdminLayout from '@/pages/layouts/AdminLayout';
-import * as Routes from '@/routes.js';
-import type { LanguageCategoryCrud } from '@/types';
-import Form from './shared/form';
-import { Menu } from './shared/menu';
+import { useTranslation } from "react-i18next";
+import AdminLayout from "@/layouts/AdminLayout";
+import * as Routes from "@/routes.js";
+import type { LanguageCategoryCrud } from "@/types";
+import Form from "./shared/form";
+import { Menu } from "./shared/menu";
 
 type Props = {
   categoryDto: LanguageCategoryCrud;
@@ -16,14 +16,14 @@ export default function Edit({ categoryDto }: Props) {
   return (
     <AdminLayout
       header={t(($) => $.admin.language_categories.edit.header, {
-        id: categoryDto.data.name,
+        id: categoryDto.name,
       })}
     >
       <Menu data={categoryDto} />
       <Form
         method="patch"
         data={categoryDto}
-        url={Routes.admin_language_category_path(categoryDto.data.id)}
+        url={Routes.admin_language_category_path(categoryDto.id)}
       />
     </AdminLayout>
   );

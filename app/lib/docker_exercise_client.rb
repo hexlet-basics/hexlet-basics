@@ -12,7 +12,9 @@ class DockerExerciseClient < DockerExerciseClientInterface
   end
 
   def self.download(lang_name)
-    _stdout, stderr, status = Open3.capture3("docker pull #{image_name(lang_name)}")
+    cmd = "docker pull #{image_name(lang_name)}"
+    Rails.logger.debug(cmd)
+    _stdout, stderr, status = Open3.capture3(cmd)
 
     unless status.success?
       raise "Docker command failed: #{stderr.strip}"

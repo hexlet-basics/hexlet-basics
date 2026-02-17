@@ -1,56 +1,46 @@
-import { Button, FileInput, Select, Textarea, TextInput } from '@mantine/core';
-import { useTranslation } from 'react-i18next';
-import { useAppForm } from '@/hooks/useAppForm';
-import type { BlogPostCrud, HttpRouterMethod } from '@/types';
+import type { Method } from "@inertiajs/core";
+import { Button, FileInput, Select, Textarea, TextInput } from "@mantine/core";
+import { useTranslation } from "react-i18next";
+import { useAppForm } from "@/hooks/useAppForm";
+import { arrayToSelectData } from "@/lib/utils";
+import type { BlogPostCrud } from "@/types";
 
 type Props = {
-  data: BlogPostCrudWithMeta;
+  data: BlogPostCrud;
   url: string;
-  method?: HttpRouterMethod;
-};
-
-type StateOption = {
-  key: string;
-  value: string;
-};
-
-type BlogPostCrudWithMeta = BlogPostCrud & {
-  meta?: {
-    states?: StateOption[];
-  };
+  method?: Method;
 };
 
 const locales = [
-  { name: 'Russian', code: 'ru' },
-  { name: 'English', code: 'en' },
+  { name: "Russian", code: "ru" },
+  { name: "English", code: "en" },
 ];
 
 export default function Form({ data, url, method }: Props) {
-  const { t: tHelpers } = useTranslation('helpers');
+  const { t } = useTranslation();
 
-  const {
-    getInputProps,
-    getSelectProps,
-    getFileInputProps,
-    submit,
-    formState: { isSubmitting },
-  } = useAppForm<BlogPostCrud>({
+  const payload = data;
+  const statesSelectData = arrayToSelectData(
+    data.meta?.states ?? [],
+    "key",
+    "value",
+  );
+
+  const { onSubmit, processing, form } = useAppForm(payload, {
     url,
-    method: method ?? 'post',
-    container: data,
+    method: method ?? "post",
   });
-  const states = data.meta?.states ?? [];
 
   return (
-    <form onSubmit={submit}>
-      <Select {...getSelectProps('state', states, 'key', 'value')} />
-      <TextInput {...getInputProps('name')} />
-      <FileInput {...getFileInputProps('cover')} name="cover" />
-      <TextInput {...getInputProps('slug')} />
-      <Textarea {...getInputProps('description')} rows={5} />
-      <Textarea {...getInputProps('body')} rows={12} />
-      <Button type="submit" mt="xl" loading={isSubmitting}>
-        {tHelpers(($) => $.submit.save)}
+    <form onSubmit={onSubmit}>
+      <Select {...form.getSelectProps("state", statesSelectData)} />
+      <TextInput {...form.getInputProps("name")} />
+      <FileInput {...form.getFileInputProps("cover")} name="cover" />
+      <TextInput {...form.getInputProps("slug")} />
+      <Textarea {...form.getInputProps("description")} rows={5} />
+      <Textarea {...form.getInputProps("body")} rows={12} />
+      <Button type="submit" mt="xl" loading={processing}>
+        {t(($) => $.helpers.submit.save)}
       </Button>
     </form>
   );

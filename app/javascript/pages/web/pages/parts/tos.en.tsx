@@ -1,5 +1,5 @@
-import { useId } from 'react';
-import * as Routes from '@/routes.js';
+import { useId } from "react";
+import * as Routes from "@/routes.js";
 
 export default function TosEn() {
   const baseId = useId();
@@ -13,17 +13,17 @@ export default function TosEn() {
         in Kazakhstan at Auezov St 14 A, Almaty, Almaty 050000.
       </p>
       <p>
-        We operate the website{' '}
+        We operate the website{" "}
         <a href={Routes.root_path()} target="_blank" rel="noreferrer">
           https://code-basics.com
-        </a>{' '}
+        </a>{" "}
         (the "Site"), as well as any other related products and services that
         refer or link to these legal terms (the "Legal Terms") (collectively,
         the "Services").
       </p>
 
       <p>
-        You can contact us by phone at (+1)8 800 100 22 47, email at{' '}
+        You can contact us by phone at (+1)8 800 100 22 47, email at{" "}
         <a href="mailto:support@hexlet.io">support@hexlet.io</a>, or by mail to
         Auezov St 14 A, Almaty, Almaty 050000, Kazakhstan.
       </p>
@@ -33,7 +33,7 @@ export default function TosEn() {
         you, whether personally or on behalf of an entity ("you"), and TOO
         "Hexlet", concerning your access to and use of the Services. You agree
         that by accessing the Services, you have read, understood, and agreed to
-        be bound by all of these Legal Terms.{' '}
+        be bound by all of these Legal Terms.{" "}
         <span>
           IF YOU DO NOT AGREE WITH ALL OF THESE LEGAL TERMS, THEN YOU ARE
           EXPRESSLY PROHIBITED FROM USING THE SERVICES AND YOU MUST DISCONTINUE
@@ -212,8 +212,8 @@ export default function TosEn() {
       <h4>Your use of our Services</h4>
 
       <p>
-        Subject to your compliance with these Legal Terms, including the{' '}
-        <a href={`#${baseId}-prohibited-activities`}>"PROHIBITED ACTIVITIES"</a>{' '}
+        Subject to your compliance with these Legal Terms, including the{" "}
+        <a href={`#${baseId}-prohibited-activities`}>"PROHIBITED ACTIVITIES"</a>{" "}
         section below, we grant you a non-exclusive, non-transferable, revocable
         license to:
         <ul>
@@ -261,8 +261,8 @@ export default function TosEn() {
       <h4>Your submissions and contributions</h4>
 
       <p>
-        Please review this section and the{' '}
-        <a href={`#${baseId}-prohibited-activities`}>"PROHIBITED ACTIVITIES"</a>{' '}
+        Please review this section and the{" "}
+        <a href={`#${baseId}-prohibited-activities`}>"PROHIBITED ACTIVITIES"</a>{" "}
         section carefully prior to using our Services to understand the (a)
         rights you give us and (b) obligations you have when you post or upload
         any content through the Services.
@@ -299,7 +299,7 @@ export default function TosEn() {
         <strong>
           When you post Contributions, you grant us a license (including use of
           your name, trademarks, and logos):
-        </strong>{' '}
+        </strong>{" "}
         By posting any Contributions, you grant us an unrestricted, unlimited,
         irrevocable, perpetual, non-exclusive, transferable, royalty-free,
         fully-paid, worldwide right, and license to: use, copy, reproduce,
@@ -327,10 +327,10 @@ export default function TosEn() {
         networking accounts, you:
         <ul>
           <li>
-            confirm that you have read and agree with our{' '}
+            confirm that you have read and agree with our{" "}
             <a href={`#${baseId}-prohibited-activities`}>
               "PROHIBITED ACTIVITIES"
-            </a>{' '}
+            </a>{" "}
             and will not post, send, publish, upload, or transmit through the
             Services any Submission nor post any Contribution that is illegal,
             harassing, hateful, harmful, defamatory, obscene, bullying, abusive,
@@ -760,8 +760,8 @@ export default function TosEn() {
 
       <p>
         We care about data privacy and security. Please review our Privacy
-        Policy:{' '}
-        <a href={Routes.page_path('privacy')} target="_blank" rel="noreferrer">
+        Policy:{" "}
+        <a href={Routes.page_path("privacy")} target="_blank" rel="noreferrer">
           https://codebasics.com/pages/privacy
         </a>
         . By using the Services, you agree to be bound by our Privacy Policy,

@@ -102,8 +102,8 @@ USER rails
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
 # TODO: разобраться с использованием Thrust
-# Start server via Thruster by default, this can be overwritten at runtime
+# Start server via Falcon by default, this can be overwritten at runtime
 # EXPOSE 80
 # CMD ["./bin/thrust", "./bin/rails", "server"]
 
-CMD ["./bin/rails", "server"]
+CMD ["bundle", "exec", "falcon", "host"]

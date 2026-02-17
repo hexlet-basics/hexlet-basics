@@ -1,0 +1,13 @@
+---
+
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: "{{ .Release.Name }}-web-pdb"
+  namespace: "{{ .Release.Namespace }}"
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: "{{ .Release.Name }}-web-pod"
+      app.kubernetes.io/instance: "{{ .Release.Name }}"

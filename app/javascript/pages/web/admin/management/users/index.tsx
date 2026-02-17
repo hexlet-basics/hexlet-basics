@@ -1,14 +1,14 @@
-import { TextInput } from '@mantine/core';
-import dayjs from 'dayjs';
-import { Edit } from 'lucide-react';
-import { DataTable } from 'mantine-datatable';
-import { useTranslation } from 'react-i18next';
-import AppAnchor from '@/components/Elements/AppAnchor';
-import useDataTableProps from '@/hooks/useDataTableProps';
-import AdminLayout from '@/pages/layouts/AdminLayout';
-import * as Routes from '@/routes.js';
-import type { Grid, User } from '@/types/serializers';
-import { Menu } from './shared/menu';
+import { TextInput } from "@mantine/core";
+import { IconEdit } from "@tabler/icons-react";
+import dayjs from "dayjs";
+import { DataTable } from "mantine-datatable";
+import { useTranslation } from "react-i18next";
+import AppAnchor from "@/components/Elements/AppAnchor";
+import useDataTableProps from "@/hooks/useDataTableProps";
+import AdminLayout from "@/layouts/AdminLayout";
+import * as Routes from "@/routes.js";
+import type { Grid, User } from "@/types/serializers";
+import { Menu } from "./shared/menu";
 
 type Props = {
   users: User[];
@@ -23,7 +23,7 @@ export default function Index({ grid, users }: Props) {
 
   const renderActions = (item: User) => (
     <AppAnchor href={Routes.edit_admin_management_user_path(item.id)}>
-      <Edit size={14} />
+      <IconEdit size={14} />
     </AppAnchor>
   );
 
@@ -33,12 +33,12 @@ export default function Index({ grid, users }: Props) {
       <DataTable
         records={users}
         columns={[
-          { accessor: 'id' },
-          { accessor: 'admin', title: 'Admin?' },
-          { accessor: 'assistant_messages_count', title: 'Messages' },
-          { accessor: 'name', sortable: true },
+          { accessor: "id" },
+          { accessor: "admin", title: "Admin?" },
+          { accessor: "assistant_messages_count", title: "Messages" },
+          { accessor: "name", sortable: true },
           {
-            accessor: 'email',
+            accessor: "email",
             sortable: true,
             // filter: (
             //   <TextInput
@@ -49,11 +49,11 @@ export default function Index({ grid, users }: Props) {
             // ),
           },
           {
-            accessor: 'created_at',
+            accessor: "created_at",
             sortable: true,
-            render: (r) => dayjs(r.created_at).format('LL'),
+            render: (r) => dayjs(r.created_at).format("LL"),
           },
-          { accessor: 'actions', title: 'actions', render: renderActions },
+          { accessor: "actions", title: "actions", render: renderActions },
         ]}
         {...gridProps}
       />

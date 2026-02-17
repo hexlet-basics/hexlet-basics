@@ -1,12 +1,12 @@
-import { Link, usePage } from '@inertiajs/react';
-import { Group, NavLink } from '@mantine/core';
-import type { HttpRouterMethod } from '@/types';
+import type { Method } from "@inertiajs/core";
+import { Link, usePage } from "@inertiajs/react";
+import { Group, NavLink } from "@mantine/core";
 
 export type CrudHorizontalMenuItem = {
   label: string | React.ReactNode;
   href: string;
   external?: boolean;
-  method?: HttpRouterMethod;
+  method?: Method;
 };
 
 type Props = {
@@ -16,7 +16,7 @@ type Props = {
 export function CrudHorizontalMenu({ items }: Props) {
   const { url } = usePage();
 
-  const getCurrentArea = (href: string) => (url === href ? 'page' : undefined);
+  const getCurrentArea = (href: string) => (url === href ? "page" : undefined);
 
   return (
     <Group mb="md" gap={0}>

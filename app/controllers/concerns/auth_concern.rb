@@ -4,15 +4,6 @@ module AuthConcern
   def sign_in(user)
     session[:user_id] = user.id
     ahoy.authenticate(user)
-
-    event_data = {
-      id: user.id,
-      email: user.email,
-      first_name: user.first_name,
-      last_name: user.last_name
-    }
-    event = UserSignedInEvent.new(data: event_data)
-    publish_event(event, user)
   end
 
   def sign_out

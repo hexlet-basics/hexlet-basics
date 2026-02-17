@@ -1,0 +1,17 @@
+---
+
+apiVersion: gwin.yandex.cloud/v1
+kind: GatewayPolicy
+metadata:
+  name: "{{ .Release.Name }}-gateway-policy"
+  namespace: "{{ .Release.Namespace }}"
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: "{{ .Release.Name }}-gateway"
+  policy:
+    subnets:
+      {{- range .Values.gateway.subnets }}
+      - "{{ . }}"
+      {{- end }}

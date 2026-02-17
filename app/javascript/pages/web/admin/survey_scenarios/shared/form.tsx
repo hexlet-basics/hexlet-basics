@@ -1,3 +1,4 @@
+import type { Method } from "@inertiajs/core";
 import {
   Box,
   Button,
@@ -5,25 +6,25 @@ import {
   Fieldset,
   Select,
   TextInput,
-} from '@mantine/core';
-import { useTranslation } from 'react-i18next';
-import { eventNames } from '@/generated/event_names';
-import { useAppForm } from '@/hooks/useAppForm';
+} from "@mantine/core";
+import { useTranslation } from "react-i18next";
+import { eventNames } from "@/generated/event_names";
+import { useAppForm } from "@/hooks/useAppForm";
+import { arrayToSelectData } from "@/lib/utils";
 import type {
-  HttpRouterMethod,
   Survey,
   SurveyItemCrud,
   SurveyScenarioCrud,
   SurveyScenarioItemCrud,
   SurveyScenarioTriggerCrud,
-} from '@/types';
+} from "@/types";
 
 type Props = {
   data: SurveyScenarioCrud;
   surveys: Survey[];
   surveysItems: SurveyItemCrud[];
   url: string;
-  method?: HttpRouterMethod;
+  method?: Method;
 };
 
 export default function Form({
@@ -33,27 +34,32 @@ export default function Form({
   surveys,
   surveysItems,
 }: Props) {
-  const { t: tHelpers } = useTranslation('helpers');
+  const { t } = useTranslation();
 
-  const {
-    getInputProps,
-    getSelectProps,
-    submit,
-    useArrayField,
-    formState: { isSubmitting },
-  } = useAppForm<SurveyScenarioCrud>({
+  const payload = data;
+  const surveysItemsSelectData = arrayToSelectData(
+    surveysItems,
+    "id",
+    "value_for_select",
+  );
+  const surveysSelectData = arrayToSelectData(surveys, "id", "question");
+
+  const { onSubmit, processing, form } = useAppForm(payload, {
     url,
-    method: method ?? 'post',
-    container: data,
+    method: method ?? "post",
   });
 
-  const triggersField = useArrayField('triggers_attributes');
-  const itemsField = useArrayField('items_attributes');
+  const triggersCollection = form.useCollection<SurveyScenarioTriggerCrud>(
+    "triggers_attributes",
+  );
+  const itemsCollection =
+    form.useCollection<SurveyScenarioItemCrud>("items_attributes");
   const defaultTrigger: SurveyScenarioTriggerCrud = {
     id: null,
     event_name: null,
     event_threshold_count: null,
     _destroy: false,
+    meta: { model: "", relations: {} },
   };
   const defaultItem: SurveyScenarioItemCrud = {
     id: null,
@@ -61,6 +67,7 @@ export default function Form({
     // survey: null,
     order: null,
     _destroy: false,
+    meta: { model: "", relations: {} },
   };
 
   const eventNameOptions = eventNames.map((event) => ({
@@ -69,96 +76,76 @@ export default function Form({
   }));
 
   return (
-    <form onSubmit={submit}>
-      <TextInput {...getInputProps('name')} />
+    <form onSubmit={onSubmit}>
+      <TextInput {...form.getInputProps("name")} />
       <Select
-        {...getSelectProps(
-          'survey_item_id',
-          surveysItems,
-          'id',
-          'value_for_select',
-        )}
+        {...form.getSelectProps("survey_item_id", surveysItemsSelectData)}
       />
       <Fieldset>
-        {triggersField.fields.map((field, index) => (
-          <Box key={field._internalId}>
+        {triggersCollection.forms.map((triggerForm) => (
+          <Box key={`${triggerForm.index}-${triggerForm.data.id ?? "new"}`}>
             <Select
-              {...getSelectProps(
-                `triggers_attributes.${index}.event_name`,
-                eventNameOptions,
-                'value',
-                'label',
-              )}
+              {...triggerForm.getSelectProps("event_name", eventNameOptions)}
             />
             <TextInput
-              {...getInputProps(
-                `triggers_attributes.${index}.event_threshold_count`,
-              )}
+              {...triggerForm.getInputProps("event_threshold_count")}
               type="number"
             />
-            <Checkbox
-              {...getInputProps(`triggers_attributes.${index}._destroy`)}
-            />
-            {!field.id && (
+            <Checkbox {...triggerForm.getCheckboxProps("_destroy")} />
+            {!triggerForm.data.id && (
               <Button
+                type="button"
                 variant="outline"
                 color="red"
                 mt="xs"
-                onClick={() => triggersField.remove(index)}
+                onClick={() => triggersCollection.remove(triggerForm.index)}
               >
-                {tHelpers(($) => $.crud.remove)}
+                {t(($) => $.helpers.crud.remove)}
               </Button>
             )}
           </Box>
         ))}
         <Button
+          type="button"
           variant="light"
           mt="sm"
-          onClick={() => triggersField.append(defaultTrigger)}
+          onClick={() => triggersCollection.add(defaultTrigger)}
         >
-          {tHelpers(($) => $.crud.add)}
+          {t(($) => $.helpers.crud.add)}
         </Button>
       </Fieldset>
       <Fieldset>
-        {itemsField.fields.map((field, index) => (
-          <Box key={field._internalId}>
+        {itemsCollection.forms.map((itemForm) => (
+          <Box key={`${itemForm.index}-${itemForm.data.id ?? "new"}`}>
             <Select
-              {...getSelectProps(
-                `items_attributes.${index}.survey_id`,
-                surveys,
-                'id',
-                'question',
-              )}
+              {...itemForm.getSelectProps("survey_id", surveysSelectData)}
             />
-            <TextInput
-              {...getInputProps(`items_attributes.${index}.order`)}
-              type="number"
-            />
-            <Checkbox
-              {...getInputProps(`items_attributes.${index}._destroy`)}
-            />
-            {!field.id && (
+            <TextInput {...itemForm.getInputProps("order")} type="number" />
+            <Checkbox {...itemForm.getCheckboxProps("_destroy")} />
+            {!itemForm.data.id && (
               <Button
+                type="button"
                 variant="outline"
                 color="red"
                 mt="xs"
-                onClick={() => itemsField.remove(index)}
+                onClick={() => itemsCollection.remove(itemForm.index)}
               >
-                {tHelpers(($) => $.crud.remove)}
+                {t(($) => $.helpers.crud.remove)}
               </Button>
             )}
           </Box>
         ))}
         <Button
+          type="button"
           variant="light"
           mt="sm"
-          onClick={() => itemsField.append(defaultItem)}
+          onClick={() => itemsCollection.add(defaultItem)}
         >
-          {tHelpers(($) => $.crud.add)}
+          {t(($) => $.helpers.crud.add)}
         </Button>
       </Fieldset>
-      <Button type="submit" loading={isSubmitting}>
-        {tHelpers(($) => $.submit.save)}
+      <Button type="submit" loading={processing}>
+        {t(($) => $.helpers.submit.save)}
       </Button>
     </form>
   );

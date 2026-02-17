@@ -7,14 +7,7 @@ class Language::CategoryQnaItemCrudResource < ApplicationResource
   typelize id: [ :number, nullable: true ]
 
   typelize :boolean
-  attribute :_destroy do |category|
+  attribute :_destroy do
     false
   end
-
-  # typelize_meta meta: "{ modelName: string }"
-  # meta do
-  #   {
-  #     modelName: object.class.superclass.form_key,
-  #   }
-  # end
 end

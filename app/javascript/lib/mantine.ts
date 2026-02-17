@@ -1,71 +1,139 @@
-import { CodeHighlight } from '@mantine/code-highlight';
+import { CodeHighlight } from "@mantine/code-highlight";
+import { generateColors } from "@mantine/colors-generator";
 import {
   Anchor,
   type CSSVariablesResolver,
   createTheme,
-  type MantineFontSize,
-  type MantineTheme,
-  type StyleProp,
-  Text,
-  type TextProps,
-  Title,
-  type TitleProps,
-} from '@mantine/core';
+  DEFAULT_THEME,
+  getGradient,
+  mergeMantineTheme,
+  type TypographyProps,
+} from "@mantine/core";
 
-export type TitleHeader = keyof MantineTheme['headings']['sizes'];
+const VIEWPORT_MIN_PX = 320;
+const VIEWPORT_MAX_PX = 1200;
+function normalizeStandardFontSize(value: string): string {
+  const match = value.match(/^calc\(([^*]+)\s*\*\s*var\(--mantine-scale\)\)$/);
 
-function responsiveClamp(
-  fontSize: StyleProp<
-    MantineFontSize | `h${1 | 2 | 3 | 4 | 5 | 6}` | number | (string & {})
-  >,
-): string {
-  return `clamp(${fontSize} * 0.6, 1rem + 2vw, ${fontSize})`;
+  if (match) {
+    return match[1].trim();
+  }
+
+  return value;
 }
 
-export const theme = createTheme({
+const STANDARD_FONT_SIZE = normalizeStandardFontSize(
+  DEFAULT_THEME.fontSizes.md,
+);
+
+function fontSizeToPx(fontSize: string): number | null {
+  const value = fontSize.trim();
+
+  if (value.endsWith("rem")) {
+    const parsed = Number.parseFloat(value);
+    return Number.isNaN(parsed) ? null : parsed * 16;
+  }
+
+  if (value.endsWith("px")) {
+    const parsed = Number.parseFloat(value);
+    return Number.isNaN(parsed) ? null : parsed;
+  }
+
+  if (/^[\d.]+$/.test(value)) {
+    const parsed = Number.parseFloat(value);
+    return Number.isNaN(parsed) ? null : parsed;
+  }
+
+  return null;
+}
+
+function responsiveClamp(fontSize: string, minSize: string): string {
+  const basePx = fontSizeToPx(fontSize);
+  const minPx = fontSizeToPx(minSize);
+
+  if (basePx == null || minPx == null) {
+    return fontSize;
+  }
+
+  if (minPx >= basePx) {
+    return fontSize;
+  }
+
+  const rangePx = VIEWPORT_MAX_PX - VIEWPORT_MIN_PX;
+  const slope = (basePx - minPx) / rangePx;
+  const intercept = minPx - slope * VIEWPORT_MIN_PX;
+  const preferred = `calc(${intercept.toFixed(4)}px + ${(slope * 100).toFixed(4)}vw)`;
+
+  return `clamp(${minPx.toFixed(4)}px, ${preferred}, ${basePx.toFixed(4)}px)`;
+}
+
+function responsiveFontSize(
+  value: string,
+  minSize = STANDARD_FONT_SIZE,
+): string {
+  return responsiveClamp(value, minSize);
+}
+
+const HEXLET_BASE = "#3B37E0";
+const HEXLET_VIOLET = "#D16FFF"; // additional
+const HEXLET_CYAN = "#00C2FF"; // additional
+
+// семантические (не из brand-assets, но нужны системе)
+const HEXLET_GREEN = "#2FB344";
+const HEXLET_YELLOW = "#F59F00";
+const HEXLET_RED = "#E03131";
+
+const myTheme = createTheme({
+  colors: {
+    indigo: generateColors(HEXLET_BASE),
+    violet: generateColors(HEXLET_VIOLET),
+    cyan: generateColors(HEXLET_CYAN),
+    green: generateColors(HEXLET_GREEN),
+    yellow: generateColors(HEXLET_YELLOW),
+    red: generateColors(HEXLET_RED),
+  },
+  primaryColor: "indigo",
+  primaryShade: { light: 6, dark: 5 },
+  defaultRadius: 0,
+  spacing: {
+    xxl: "calc(4rem * var(--mantine-scale))",
+  },
+  headings: {
+    fontWeight: "normal",
+    sizes: {
+      h1: { fontSize: responsiveFontSize("2.5rem", "1.75rem") }, // 40px
+      h2: { fontSize: responsiveFontSize("2rem", "1.5rem") }, // 32px
+      h3: { fontSize: responsiveFontSize("1.75rem", "1.25rem") }, // 28px
+      h4: { fontSize: responsiveFontSize("1.5rem") }, // 24px
+      h5: { fontSize: responsiveFontSize("1.25rem") }, // 20px
+      h6: { fontSize: responsiveFontSize("1rem") }, // 16px
+    },
+  },
+  fontFamily: "Arial, sans-serif",
+  fontSizes: {
+    xs: responsiveFontSize("12px"),
+    sm: responsiveFontSize("14px"),
+    md: responsiveFontSize("16px"),
+    lg: responsiveFontSize("18px"),
+    xl: responsiveFontSize("20px"),
+    "display-3": responsiveFontSize("3rem", "2rem"), // 48px
+    "display-2": responsiveFontSize("4rem", "2.25rem"), // 56px
+    "display-1": responsiveFontSize("5rem", "2.5rem"), // 64px
+    h1: responsiveFontSize("2.5rem", "1.75rem"), // 40px
+    h2: responsiveFontSize("2rem", "1.5rem"), // 32px
+    h3: responsiveFontSize("1.75rem", "1.25rem"), // 28px
+    h4: responsiveFontSize("1.5rem"), // 24px
+    h5: responsiveFontSize("1.25rem"), // 20px
+    h6: responsiveFontSize("1rem"), // 16px
+  },
+  // lineHeights: {
+  //   xs: '1.4',
+  //   sm: '1.45',
+  //   md: '1.5', // line-height как в Bootstrap
+  //   lg: '1.6',
+  //   xl: '1.65',
+  // },
   components: {
-    Title: Title.extend({
-      vars: (
-        theme: MantineTheme,
-        params: TitleProps & { responsive?: boolean },
-      ) => {
-        if (params.responsive) {
-          const order = params.order || 1;
-          const key = (params.size || `h${order}`) as TitleHeader;
-          const baseFontSize = theme.headings.sizes[key].fontSize;
-          const fz = responsiveClamp(baseFontSize);
-          return {
-            root: {
-              '--title-fz': fz,
-            },
-          };
-        }
-        return { root: { '--title-fz': undefined } };
-      },
-    }),
-    Text: Text.extend({
-      vars: (_theme: MantineTheme, params: TextProps) => {
-        if (params.responsive) {
-          // `params.fz` может быть 'sm', 'md', 'lg' или конкретным rem
-          const baseFontSize = '1rem'; // fallback
-          const fz = params.responsive || baseFontSize;
-          // if (typeof params.fz === 'string') {
-          //   const fontSizeValue = theme.fontSizes[params.fz as keyof typeof theme.fontSizes];
-          //   baseFontSize = fontSizeValue
-          //     ? `${fontSizeValue / 16}rem`
-          //     : params.fz.endsWith('rem')
-          //       ? params.fz
-          //       : '1rem';
-          // }
-          return {
-            root: {
-              '--text-fz': responsiveClamp(fz),
-            },
-          };
-        }
-        return { root: {} };
-      },
-    }),
     CodeHighlight: CodeHighlight.extend({
       styles: {
         pre: {
@@ -73,7 +141,7 @@ export const theme = createTheme({
         },
       },
       defaultProps: {
-        mb: 'lg',
+        mb: "lg",
         // withBorder: true,
         // withExpandButton: false,
         // withCopyButton: false,
@@ -82,47 +150,61 @@ export const theme = createTheme({
         // p: 'sm'
       },
     }),
-    Anchor: Anchor.extend({
-      defaultProps: {
-        c: 'dark',
-      },
-    }),
+    // Anchor: Anchor.extend({
+    //   defaultProps: {
+    //     c: 'light-dark(var(--mantine-color-dark-9), var(--mantine-color-gray-0))',
+    //   },
+    // }),
   },
 });
+
+export const theme = mergeMantineTheme(DEFAULT_THEME, myTheme);
 
 export const resolver: CSSVariablesResolver = () => ({
   variables: {},
 
   // светлая тема: фон = gray-0
   light: {
+    "--mantine-color-dimmed": theme.colors.gray[7],
     // '--mantine-color-body': 'var(--mantine-color-gray-0)',
-    '--mantine-color-anchor': 'var(--mantine-color-text)',
-    // '--app-color-surface': theme.colors.gray[0],
-    '--app-cta-gradient':
-      'linear-gradient(135deg, var(--mantine-color-yellow-2), var(--mantine-color-red-2))',
+    "--mantine-color-anchor": "var(--mantine-color-text)",
+    "--app-color-surface": theme.colors.gray[1],
+    // '--app-cta-gradient':
+    //   'linear-gradient(135deg, var(--mantine-color-yellow-2), var(--mantine-color-red-2))',
+    // "--app-cta-gradient": "linear-gradient(to right, rgba(46, 42, 223, 0.90), rgba(46, 42, 223, 1.00), rgba(46, 42, 223, 0.90))",
+    "--app-cta-gradient": getGradient(
+      { deg: 90, from: "blue", to: "cyan.5" },
+      theme,
+    ),
     // '--mantine-color-body': 'var(--mantine-color-gray-0)',
     // '--mantine-color-default-hover': 'var(--mantine-color-gray-1)',
   },
 
   // тёмная тема: фон = dark-7 (или что тебе нужно)
   dark: {
+    "--mantine-color-dimmed": theme.colors.gray[7],
     // '--mantine-color-body': 'var(--mantine-color-dark-7)',
-    '--app-cta-gradient':
-      'linear-gradient(135deg, var(--mantine-color-yellow-9), var(--mantine-color-red-9))',
-    // '--app-color-surface': theme.colors.dark[7],
-    '--mantine-color-anchor': 'var(--mantine-color-text)',
+    // '--app-cta-gradient':
+    //   'linear-gradient(135deg, var(--mantine-color-yellow-9), var(--mantine-color-red-9))',
+    "--app-cta-gradient": getGradient(
+      { deg: 90, from: "blue.9", to: "cyan.7" },
+      theme,
+    ),
+    "--app-color-surface": theme.colors.dark[6],
+    "--mantine-color-anchor": "var(--mantine-color-text)",
   },
 });
 
-export const typographyStyles = (t: MantineTheme) => ({
+export const typographyStyles: TypographyProps["styles"] = (theme) => ({
   root: {
-    fontSize: t.fontSizes.md,
-    // lineHeight: t.lineHeights.lg,
+    overflowWrap: "break-word",
+    // fontSize: theme.fontSizes.lg,
+    lineHeight: theme.lineHeights.lg,
     // h1: t.headings.sizes.h1,
-    // h2: t.headings.sizes.h2,
-    // h3: t.headings.sizes.h3,
-    // h4: t.headings.sizes.h4,
-    // h5: t.headings.sizes.h5,
-    // h6: t.headings.sizes.h6,
+    h2: theme.headings.sizes.h5,
+    h3: theme.headings.sizes.h6,
+    h4: theme.headings.sizes.h6,
+    h5: theme.headings.sizes.h6,
+    h6: theme.headings.sizes.h6,
   },
 });

@@ -2,6 +2,7 @@
   "browsers": [
     "and_chr 144",
     "and_ff 147",
+    "chrome 145",
     "chrome 144",
     "chrome 143",
     "chrome 142",
@@ -94,6 +95,7 @@
     "firefox 118",
     "firefox 117",
     "firefox 116",
+    "ios_saf 26.3",
     "ios_saf 26.2",
     "ios_saf 26.1",
     "ios_saf 26.0",
@@ -113,6 +115,7 @@
     "ios_saf 16.6-16.7",
     "ios_saf 16.5",
     "ios_saf 16.4",
+    "safari 26.3",
     "safari 26.2",
     "safari 26.1",
     "safari 26.0",

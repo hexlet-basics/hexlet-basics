@@ -1,13 +1,13 @@
-import { Button, Code, Modal } from '@mantine/core';
-import dayjs from 'dayjs';
-import { DataTable } from 'mantine-datatable';
-import type { PropsWithChildren } from 'react';
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import useDataTableProps from '@/hooks/useDataTableProps';
-import AdminLayout from '@/pages/layouts/AdminLayout';
-import * as Routes from '@/routes.js';
-import type { Grid, Lead } from '@/types';
+import { Button, Code, Modal } from "@mantine/core";
+import dayjs from "dayjs";
+import { DataTable } from "mantine-datatable";
+import type { PropsWithChildren } from "react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import useDataTableProps from "@/hooks/useDataTableProps";
+import AdminLayout from "@/layouts/AdminLayout";
+import * as Routes from "@/routes.js";
+import type { Grid, Lead } from "@/types";
 
 type Props = PropsWithChildren & {
   leads: Lead[];
@@ -38,26 +38,26 @@ export default function Index({ grid, leads }: Props) {
       <DataTable
         records={leads}
         columns={[
-          { accessor: 'id' },
-          { accessor: 'email' },
-          { accessor: 'user_id' },
-          { accessor: 'full_name' },
-          { accessor: 'phone' },
-          { accessor: 'telegram' },
-          { accessor: 'whatsapp' },
+          { accessor: "id" },
+          { accessor: "email" },
+          { accessor: "user_id" },
+          { accessor: "full_name" },
+          { accessor: "phone" },
+          { accessor: "telegram" },
+          { accessor: "whatsapp" },
           {
-            accessor: 'survey_answers_data',
+            accessor: "survey_answers_data",
             title: t(($) => $.admin.leads.index.answers),
             render: (rec) => <DataBox lead={rec} col="survey_answers_data" />,
           },
           {
-            accessor: 'courses_data',
+            accessor: "courses_data",
             title: t(($) => $.admin.leads.index.courses),
             render: (rec) => <DataBox lead={rec} col="course_data" />,
           },
           {
-            accessor: 'created_at',
-            render: (r) => dayjs(r.created_at).format('LL'),
+            accessor: "created_at",
+            render: (r) => dayjs(r.created_at).format("LL"),
             sortable: true,
           },
         ]}

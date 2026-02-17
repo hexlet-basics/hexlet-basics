@@ -1,12 +1,28 @@
 class Language::LandingPageCrudResource < ApplicationResource
-  urls = Rails.application.routes.url_helpers
+  class MetaResource < ApplicationResource
+    typelize_from Language::LandingPage
+
+    typelize model: :string
+    typelize relations: "Record<string, string>"
+    typelize outcomes_image_thumb_url: [ :string, nullable: true ]
+    typelize state_events: "Record<string, unknown>[]"
+
+    attribute(:model) { it.class.superclass.form_key }
+    attribute(:relations) do
+      it.class.respond_to?(:nested_attributes_mapping) ? it.class.nested_attributes_mapping : {}
+    end
+    attribute(:outcomes_image_thumb_url) do
+      urls = Rails.application.routes.url_helpers
+      it.outcomes_image.attached? ? urls.rails_representation_url(it.outcomes_image.variant(:thumb)) : nil
+    end
+    attribute(:state_events) { it.class.enum_as_hashes(:states) }
+  end
 
   typelize_from Language::LandingPage
-  root_key :data
 
   has_many :qna_items, resource: Language::LandingPageQnaItemCrudResource, key: "qna_items_attributes"
   has_one :language, resource: LanguageCrudResource
-  has_one :landing_page_to_redirect, resource: Language::LandingPageCrudResource
+  has_one :landing_page_to_redirect, resource: Language::LandingPageForListsResource
 
   attributes :id,
     :slug,
@@ -29,13 +45,5 @@ class Language::LandingPageCrudResource < ApplicationResource
     :outcomes_image,
     :outcomes_description
 
-  typelize_meta meta: "{ modelName: string, outcomes_image_thumb_url: string, state_events: Record<string, unknown>[] }"
-  meta do
-    {
-      outcomes_image_thumb_url: object.outcomes_image.attached? ?
-      urls.rails_representation_url(object.outcomes_image.variant(:thumb)) : nil,
-      state_events: object.class.enum_as_hashes(:states),
-      modelName: object.class.superclass.form_key
-    }
-  end
+  has_one :meta, source: proc { |_params| self }, resource: MetaResource
 end

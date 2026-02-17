@@ -1,19 +1,19 @@
 // NOTE: используется для предотвращения дополнительной загрузки с cdn.jsdelivr.net
-import '@/lib/monacoLoader.ts';
+import "@/lib/monacoLoader.ts";
 
-import { usePage } from '@inertiajs/react';
-import MonacoEditor from '@monaco-editor/react';
-import type { editor } from 'monaco-editor';
+import { usePage } from "@inertiajs/react";
+import MonacoEditor from "@monaco-editor/react";
+import type { editor } from "monaco-editor";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   getEditorLanguage,
   // getKeyForStoringLessonCode,
   getTabSize,
   shouldReplaceTabsWithSpaces,
-} from '@/lib/utils.ts';
-import { useLessonStore } from '../store.tsx';
-import type { LessonSharedProps } from '../types.ts';
+} from "@/lib/utils.ts";
+import type { LessonSharedProps } from "@/types";
+import { useLessonStore } from "../store.tsx";
 
 export default function EditorTab() {
   const { course, mobileBrowser } = usePage<LessonSharedProps>().props;
@@ -29,7 +29,7 @@ export default function EditorTab() {
     hover: {
       delay: 500,
     },
-    renderWhitespace: 'trailing',
+    renderWhitespace: "trailing",
     formatOnPaste: true,
     // renderLineHighlight: false,
     fixedOverflowWidgets: true,
@@ -68,7 +68,7 @@ export default function EditorTab() {
   }, [focusesCount, editorInstance, mobileBrowser]);
 
   const handleEditorChange = (value: string | undefined) => {
-    const newContent = value || '';
+    const newContent = value || "";
     // setCode(newContent);
     changeContent(newContent);
   };

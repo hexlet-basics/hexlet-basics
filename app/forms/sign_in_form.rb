@@ -1,7 +1,10 @@
 # frozen_string_literal: true
+# typed: true
 
 class SignInForm
   include ActiveFormModel::Virtual
+
+  extend T::Sig
 
   fields :email, :password
 
@@ -17,6 +20,7 @@ class SignInForm
     errors.add(:email, :user_does_not_exist_html) unless user
   end
 
+  sig { returns(T.nilable(User)) }
   def user
     @user ||= User.active.find_by(email: email) if email.present?
   end

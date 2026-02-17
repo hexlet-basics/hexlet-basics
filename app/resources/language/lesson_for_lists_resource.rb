@@ -6,7 +6,7 @@ class Language::LessonForListsResource < ApplicationResource
   attributes :id, :name, :description
 
   typelize :string
-  attribute :slug do |info|
-    info.lesson.slug
+  attribute :slug do
+    it.lesson.slug
   end
 end

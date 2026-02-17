@@ -1,3 +1,4 @@
+import type { Method } from "@inertiajs/core";
 import {
   Box,
   Button,
@@ -5,87 +6,82 @@ import {
   Select,
   Textarea,
   TextInput,
-} from '@mantine/core';
-import { useTranslation } from 'react-i18next';
-import { enums } from '@/generated/enums';
-import { useAppForm } from '@/hooks/useAppForm';
-import { enumToSelectData } from '@/lib/utils';
-import type { HttpRouterMethod, SurveyCrud, SurveyItemCrud } from '@/types';
+} from "@mantine/core";
+import { useTranslation } from "react-i18next";
+import { enums } from "@/generated/enums";
+import { useAppForm } from "@/hooks/useAppForm";
+import { enumToSelectData } from "@/lib/utils";
+import type { SurveyCrud, SurveyItemCrud } from "@/types";
 
 type Props = {
   data: SurveyCrud;
   url: string;
-  method?: HttpRouterMethod;
+  method?: Method;
 };
 
 export default function Form({ data, url, method }: Props) {
-  const { t: tHelpers } = useTranslation('helpers');
+  const { t } = useTranslation();
 
-  const {
-    getInputProps,
-    getSelectProps,
-    submit,
-    useArrayField,
-    formState: { isSubmitting },
-  } = useAppForm<SurveyCrud>({
+  const payload = data;
+
+  const { onSubmit, processing, form } = useAppForm(payload, {
     url,
-    method: method ?? 'post',
-    container: data, // передаем контейнер целиком
+    method: method ?? "post",
   });
 
-  const itemsField = useArrayField('items_attributes');
+  const itemsCollection =
+    form.useCollection<SurveyItemCrud>("items_attributes");
   const defaultItem: SurveyItemCrud = {
     id: null,
     survey_id: null,
-    value: '',
-    tag_list: '',
+    value: "",
+    tag_list: "",
     state: null,
     order: null,
     value_for_select: null,
     _destroy: false,
+    meta: { model: "", relations: {} },
   };
 
   return (
-    <form onSubmit={submit}>
-      <TextInput {...getInputProps('question')} />
-      <TextInput {...getInputProps('slug')} />
-      <Textarea {...getInputProps('description')} rows={8} />
+    <form onSubmit={onSubmit}>
+      <TextInput {...form.getInputProps("question")} />
+      <TextInput {...form.getInputProps("slug")} />
+      <Textarea {...form.getInputProps("description")} rows={8} />
       <Fieldset>
-        {itemsField.fields.map((field, index) => (
-          <Box key={field._internalId}>
-            <TextInput {...getInputProps(`items_attributes.${index}.value`)} />
-            <TextInput
-              {...getInputProps(`items_attributes.${index}.tag_list`)}
-            />
+        {itemsCollection.forms.map((itemForm) => (
+          <Box key={`${itemForm.index}-${itemForm.data.id ?? "new"}`}>
+            <TextInput {...itemForm.getInputProps("value")} />
+            <TextInput {...itemForm.getInputProps("tag_list")} />
             <Select
-              {...getSelectProps(
-                `items_attributes.${index}.state`,
+              {...itemForm.getSelectProps(
+                "state",
                 enumToSelectData(enums.surveyItemState),
-                'value',
-                'label',
               )}
             />
-            <TextInput {...getInputProps(`items_attributes.${index}.order`)} />
+            <TextInput {...itemForm.getInputProps("order")} />
             <Button
+              type="button"
               variant="outline"
               color="red"
               mt="xs"
-              onClick={() => itemsField.remove(index)}
+              onClick={() => itemsCollection.remove(itemForm.index)}
             >
-              {tHelpers(($) => $.crud.remove)}
+              {t(($) => $.helpers.crud.remove)}
             </Button>
           </Box>
         ))}
         <Button
+          type="button"
           variant="light"
           mt="sm"
-          onClick={() => itemsField.append(defaultItem)}
+          onClick={() => itemsCollection.add(defaultItem)}
         >
-          {tHelpers(($) => $.crud.add)}
+          {t(($) => $.helpers.crud.add)}
         </Button>
       </Fieldset>
-      <Button type="submit" loading={isSubmitting}>
-        {tHelpers(($) => $.submit.save)}
+      <Button type="submit" loading={processing}>
+        {t(($) => $.helpers.submit.save)}
       </Button>
     </form>
   );

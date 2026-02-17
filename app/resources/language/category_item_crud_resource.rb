@@ -9,7 +9,7 @@ class Language::CategoryItemCrudResource < ApplicationResource
   typelize language_landing_page_id: [ :number, nullable: true ]
 
   typelize :boolean
-  attribute :_destroy do |category|
+  attribute :_destroy do
     false
   end
 end

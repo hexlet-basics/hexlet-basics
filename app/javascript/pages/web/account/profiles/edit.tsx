@@ -1,11 +1,11 @@
-import { Box, Button, Card, Center, Container, TextInput } from '@mantine/core';
-import type { PropsWithChildren } from 'react';
-import { useTranslation } from 'react-i18next';
-import AppAnchor from '@/components/Elements/AppAnchor';
-import { useAppForm } from '@/hooks/useAppForm';
-import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
-import * as Routes from '@/routes.js';
-import type { UserProfileForm } from '@/types/serializers';
+import { Box, Button, Card, Center, Container, TextInput } from "@mantine/core";
+import type { PropsWithChildren } from "react";
+import { useTranslation } from "react-i18next";
+import AppAnchor from "@/components/Elements/AppAnchor";
+import { useAppForm } from "@/hooks/useAppForm";
+import ApplicationLayout from "@/layouts/ApplicationLayout";
+import * as Routes from "@/routes.js";
+import type { UserProfileForm } from "@/types/serializers";
 
 type Props = PropsWithChildren & {
   form: UserProfileForm;
@@ -13,16 +13,16 @@ type Props = PropsWithChildren & {
 
 export default function Edit({ form }: Props) {
   const { t } = useTranslation();
-  const { t: tHelpers } = useTranslation('helpers');
+
+  const payload = form;
 
   const {
-    getInputProps,
-    submit,
-    formState: { isSubmitting },
-  } = useAppForm<UserProfileForm>({
+    onSubmit,
+    processing,
+    form: appForm,
+  } = useAppForm(payload, {
     url: Routes.account_profile_path(),
-    method: 'patch',
-    container: form,
+    method: "patch",
   });
 
   return (
@@ -33,13 +33,19 @@ export default function Edit({ form }: Props) {
             shadow="sm"
             withBorder
             p="xl"
-            w={{ base: '100%', xs: '70%', sm: '50%' }}
+            w={{ base: "100%", xs: "70%", sm: "50%" }}
           >
-            <form onSubmit={submit}>
-              <TextInput {...getInputProps('first_name')} autoComplete="name" />
-              <TextInput {...getInputProps('last_name')} autoComplete="name" />
-              <Button type="submit" fullWidth mt="xl" loading={isSubmitting}>
-                {tHelpers(($) => $.submit.save)}
+            <form onSubmit={onSubmit}>
+              <TextInput
+                {...appForm.getInputProps("first_name")}
+                autoComplete="name"
+              />
+              <TextInput
+                {...appForm.getInputProps("last_name")}
+                autoComplete="name"
+              />
+              <Button type="submit" fullWidth mt="xl" loading={processing}>
+                {t(($) => $.helpers.submit.save)}
               </Button>
             </form>
 

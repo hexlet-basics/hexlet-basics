@@ -1,11 +1,11 @@
-import { Head } from '@inertiajs/react';
-import { Breadcrumbs, Center, Text } from '@mantine/core';
-import { Home } from 'lucide-react';
-import type { HTMLAttributes, PropsWithChildren, ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
-import type { BreadcrumbList, ListItem, WithContext } from 'schema-dts';
-import type { BreadcrumbItem } from '@/types';
-import AppAnchor from './Elements/AppAnchor';
+import { Head } from "@inertiajs/react";
+import { Breadcrumbs, Center, Text } from "@mantine/core";
+import { IconHome } from "@tabler/icons-react";
+import type { HTMLAttributes, PropsWithChildren, ReactNode } from "react";
+import { useTranslation } from "react-i18next";
+import type { BreadcrumbList, ListItem, WithContext } from "schema-dts";
+import type { BreadcrumbItem } from "@/types";
+import AppAnchor from "./Elements/AppAnchor";
 
 type Props = PropsWithChildren & {
   items: BreadcrumbItem[];
@@ -23,17 +23,17 @@ export function XBreadcrumb({ items = [] }: Props) {
   const itemListElement: ListItem[] = items.map((item, index) => {
     return {
       position: index + 1,
-      '@type': 'ListItem',
+      "@type": "ListItem",
       item: {
-        '@id': item.url,
+        "@id": item.url,
         name: item.name,
       },
     };
   });
 
   const breadcrumbList: WithContext<BreadcrumbList> = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
     itemListElement,
   };
 
@@ -41,10 +41,10 @@ export function XBreadcrumb({ items = [] }: Props) {
     {
       title: (
         <Center c="dimmed">
-          <Home size={15} />
+          <IconHome size={15} />
         </Center>
       ),
-      href: '/',
+      href: "/",
     },
     ...items.map((item, index) => ({
       title: item.name,
@@ -62,7 +62,7 @@ export function XBreadcrumb({ items = [] }: Props) {
       </Head>
       <Breadcrumbs
         styles={{
-          breadcrumb: { whiteSpace: 'normal' },
+          breadcrumb: { whiteSpace: "normal" },
         }}
       >
         {breadcrumbs.map((item) =>

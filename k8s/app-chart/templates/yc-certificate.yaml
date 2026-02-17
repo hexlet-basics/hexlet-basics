@@ -1,0 +1,10 @@
+---
+
+apiVersion: gwin.yandex.cloud/v1
+kind: YCCertificate
+metadata:
+  name: "{{ .Release.Name }}-yc-certificate"
+  namespace: "{{ .Release.Namespace }}"
+spec:
+  certificateRef:
+    certificateID: "{{ .Values.gateway.certificateId }}"

@@ -15,14 +15,14 @@ export default function AuthorsRu() {
       </p>
       <ol>
         <li>
-          Найти интересующий вас язык тут:{' '}
+          Найти интересующий вас язык тут:{" "}
           <a href="https://github.com/hexlet-basics">
             https://github.com/hexlet-basics
           </a>
         </li>
         <li>
-          Разобраться в структуре репозитория на примере выложенных на{' '}
-          <a href="https://code-basics.com/ru">https://code-basics.com/ru</a>{' '}
+          Разобраться в структуре репозитория на примере выложенных на{" "}
+          <a href="https://code-basics.com/ru">https://code-basics.com/ru</a>{" "}
           курсов
         </li>
         <li>Начать отсылать пулреквесты</li>
@@ -44,7 +44,7 @@ export default function AuthorsRu() {
       <h3>Перед началом работы над текстом</h3>
       <ul>
         <li>
-          Мы ориентируемся на инфостиль, о котором можно почитать{' '}
+          Мы ориентируемся на инфостиль, о котором можно почитать{" "}
           <a href="https://glvrd.ru">здесь</a>
         </li>
         <li>Пройти текстовый курс «Как писать классные тексты»</li>

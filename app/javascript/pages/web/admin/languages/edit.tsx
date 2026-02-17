@@ -1,17 +1,17 @@
-import { Link } from '@inertiajs/react';
-import { Box, Button, Grid, Group, SimpleGrid, Title } from '@mantine/core';
-import dayjs from 'dayjs';
-import { DataTable } from 'mantine-datatable';
-import { useTranslation } from 'react-i18next';
-import AdminLayout from '@/pages/layouts/AdminLayout';
-import * as Routes from '@/routes.js';
+import { Link } from "@inertiajs/react";
+import { Box, Button, Grid, Group, SimpleGrid, Title } from "@mantine/core";
+import dayjs from "dayjs";
+import { DataTable } from "mantine-datatable";
+import { useTranslation } from "react-i18next";
+import AdminLayout from "@/layouts/AdminLayout";
+import * as Routes from "@/routes.js";
 import type {
   LanguageCrud,
   LanguageLandingPage,
   LanguageVersion,
-} from '@/types/serializers';
-import Form from './shared/form';
-import { Menu } from './shared/menu';
+} from "@/types/serializers";
+import Form from "./shared/form";
+import { Menu } from "./shared/menu";
 
 type Props = {
   courseDto: LanguageCrud;
@@ -30,7 +30,7 @@ export default function Edit({
   return (
     <AdminLayout
       header={t(($) => $.admin.languages.edit.header, {
-        id: courseMeta.slug ?? courseDto.data.id,
+        id: courseMeta.slug ?? courseDto.id,
       })}
     >
       <Menu data={courseDto} landingPage={landingPage} />
@@ -39,7 +39,7 @@ export default function Edit({
           <Form
             method="patch"
             data={courseDto}
-            url={Routes.admin_language_path(courseDto.data.id)}
+            url={Routes.admin_language_path(courseDto.id)}
           />
         </Box>
         <Box>
@@ -50,7 +50,7 @@ export default function Edit({
               method="post"
               variant="outline"
               size="sm"
-              href={Routes.admin_language_versions_path(courseDto.data.id)}
+              href={Routes.admin_language_versions_path(courseDto.id)}
             >
               {t(($) => $.admin.languages.edit.load_new_version)}
             </Button>
@@ -58,15 +58,15 @@ export default function Edit({
           <DataTable
             records={courseVersions}
             columns={[
-              { accessor: 'id', title: t(($) => $.admin.languages.edit.id) },
+              { accessor: "id", title: t(($) => $.admin.languages.edit.id) },
               {
-                accessor: 'result',
+                accessor: "result",
                 title: t(($) => $.admin.languages.edit.result),
               },
               {
-                accessor: 'created_at',
+                accessor: "created_at",
                 sortable: true,
-                render: (r) => dayjs(r.created_at).format('LL'),
+                render: (r) => dayjs(r.created_at).format("LL"),
               },
             ]}
           />

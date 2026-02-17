@@ -1,12 +1,12 @@
-import { usePage } from '@inertiajs/react';
-import { Container, Grid, Group, SimpleGrid, Stack } from '@mantine/core';
-import type { PropsWithChildren } from 'react';
-import { useTranslation } from 'react-i18next';
-import BlogPostBlock from '@/components/BlogPostBlock';
-import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
-import * as Routes from '@/routes.js';
-import type { BreadcrumbItem, SharedProps } from '@/types';
-import type { BlogPost, Pagy } from '@/types/serializers';
+import { usePage } from "@inertiajs/react";
+import { Container, Grid, Group, SimpleGrid, Stack } from "@mantine/core";
+import type { PropsWithChildren } from "react";
+import { useTranslation } from "react-i18next";
+import BlogPostBlock from "@/components/BlogPostBlock";
+import ApplicationLayout from "@/layouts/ApplicationLayout";
+import * as Routes from "@/routes.js";
+import type { BreadcrumbItem } from "@/types";
+import type { BlogPost, Pagy } from "@/types/serializers";
 
 type Props = PropsWithChildren & {
   blogPosts: BlogPost[];
@@ -16,7 +16,7 @@ type Props = PropsWithChildren & {
 export default function Index({ blogPosts, pagy }: Props) {
   const { t } = useTranslation();
   const header = t(($) => $.blog_posts.index.header);
-  const { suffix } = usePage<SharedProps>().props;
+  const { suffix } = usePage().props;
 
   const items: BreadcrumbItem[] = [
     {

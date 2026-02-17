@@ -1,8 +1,8 @@
-import { Link, usePage } from '@inertiajs/react';
-import { Center, Pagination } from '@mantine/core';
-import type { PropsWithChildren } from 'react';
-import { fromWindow } from '@/lib/utils.ts';
-import type { Pagy, SharedProps } from '@/types';
+import { Link, usePage } from "@inertiajs/react";
+import { Center, Pagination } from "@mantine/core";
+import type { PropsWithChildren } from "react";
+import { fromWindow } from "@/lib/utils.ts";
+import type { Pagy } from "@/types";
 
 type Props = PropsWithChildren & {
   pagy: Pagy;
@@ -14,13 +14,13 @@ const defaultInertiaLinkOptions = {
 };
 
 const paginationUrl = (page: number, url: string) => {
-  const origin = fromWindow('location')?.origin;
+  const origin = fromWindow("location")?.origin;
   if (!origin) {
     return;
   }
 
   const u = new URL(url, origin);
-  u.searchParams.set('page', String(page));
+  u.searchParams.set("page", String(page));
   return u.toString();
 };
 
@@ -37,7 +37,7 @@ const linkComponent = (page: number, url: string) => {
 };
 
 export default function XPaging({ pagy }: Props) {
-  const { url } = usePage<SharedProps>();
+  const { url } = usePage();
 
   return (
     <Center>

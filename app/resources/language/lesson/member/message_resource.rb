@@ -13,33 +13,33 @@ class Language::Lesson::Member::MessageResource < ApplicationResource
     :created_at
 
   typelize :string
-  attribute :language_slug do |obj|
-    obj.language.slug
+  attribute :language_slug do
+    it.language.slug
   end
 
   typelize :string
-  attribute :content do |obj|
-    obj.body
+  attribute :content do
+    it.body
   end
 
   typelize :string
-  attribute :language_lesson_slug do |obj|
-    obj.language_lesson.slug
+  attribute :language_lesson_slug do
+    it.language_lesson.slug
   end
 
   typelize :number
-  attribute :user_id do |obj|
-    obj.language_lesson_member.user_id
+  attribute :user_id do
+    it.language_lesson_member.user_id
   end
 
   typelize :string
-  attribute :language_lesson_slug do |obj|
-    obj.language_lesson.slug
+  attribute :language_lesson_slug do
+    it.language_lesson.slug
   end
 
   typelize :string
-  attribute :language_lesson_name do |obj|
-    info = obj.language_lesson.localed_info
+  attribute :language_lesson_name do
+    info = it.language_lesson.localed_info
     info.name
   end
 end

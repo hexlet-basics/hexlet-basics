@@ -1,55 +1,46 @@
-import { Button, Checkbox, Select, Textarea, TextInput } from '@mantine/core';
-import { useTranslation } from 'react-i18next';
-import { useAppForm } from '@/hooks/useAppForm';
-import * as Routes from '@/routes.js';
-import type { HttpRouterMethod, Language, ReviewCrud } from '@/types';
-
-type StateOption = {
-  key: string;
-  value: string;
-};
-
-type ReviewCrudWithMeta = ReviewCrud & {
-  meta?: {
-    states?: StateOption[];
-  };
-};
+import type { Method } from "@inertiajs/core";
+import { Button, Checkbox, Select, Textarea, TextInput } from "@mantine/core";
+import { useTranslation } from "react-i18next";
+import { useAppForm } from "@/hooks/useAppForm";
+import { arrayToSelectData } from "@/lib/utils";
+import * as Routes from "@/routes.js";
+import type { Language, ReviewCrud } from "@/types";
 
 type Props = {
-  data: ReviewCrudWithMeta;
+  data: ReviewCrud;
   url: string;
   courses: Language[];
-  method?: HttpRouterMethod;
+  method?: Method;
 };
 
 export default function Form({ courses, data, url, method }: Props) {
   const { t } = useTranslation();
-  const { t: tHelpers } = useTranslation('helpers');
 
-  const {
-    getInputProps,
-    getSelectProps,
-    submit,
-    formState: { isSubmitting },
-  } = useAppForm<ReviewCrud>({
+  const payload = data;
+  const statesSelectData = arrayToSelectData(
+    data.meta?.states ?? [],
+    "key",
+    "value",
+  );
+  const coursesSelectData = arrayToSelectData(courses, "id", "slug");
+
+  const { onSubmit, processing, form } = useAppForm(payload, {
     url,
-    method: method ?? 'post',
-    container: data, // передаем контейнер целиком
+    method: method ?? "post",
   });
-  const states = data.meta?.states ?? [];
 
   return (
-    <form onSubmit={submit}>
-      <Select {...getSelectProps('state', states, 'key', 'value')} />
-      <Checkbox {...getInputProps('pinned')} />
-      <Select {...getSelectProps('language_id', courses, 'id', 'slug')} />
+    <form onSubmit={onSubmit}>
+      <Select {...form.getSelectProps("state", statesSelectData)} />
+      <Checkbox {...form.getCheckboxProps("pinned")} />
+      <Select {...form.getSelectProps("language_id", coursesSelectData)} />
       {/* Для XAutocomplete пока ставим TextInput (можно позже сделать кастомный autocomplete-хук) */}
-      <TextInput {...getInputProps('user_id')} />
-      <TextInput {...getInputProps('first_name')} autoComplete="name" />
-      <TextInput {...getInputProps('last_name')} autoComplete="name" />
-      <Textarea {...getInputProps('body')} rows={8} />
-      <Button type="submit" loading={isSubmitting}>
-        {tHelpers(($) => $.submit.save)}
+      <TextInput {...form.getInputProps("user_id")} />
+      <TextInput {...form.getInputProps("first_name")} autoComplete="name" />
+      <TextInput {...form.getInputProps("last_name")} autoComplete="name" />
+      <Textarea {...form.getInputProps("body")} rows={8} />
+      <Button type="submit" loading={processing}>
+        {t(($) => $.helpers.submit.save)}
       </Button>
     </form>
   );

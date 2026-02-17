@@ -36,6 +36,11 @@ spec:
 
       imagePullSecrets:
         - name: docker-config
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
 
       affinity:
         nodeAffinity:
@@ -69,6 +74,11 @@ spec:
         - name: nginx
           imagePullPolicy: Always
           image: "{{ .Values.nginx.image.repository }}:{{ .Values.version }}"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           startupProbe:
             httpGet:
               path: /health
@@ -106,6 +116,11 @@ spec:
         - name: web
           imagePullPolicy: Always
           image: "{{ .Values.app.image.repository }}:{{ .Values.version }}"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           ports:
             - containerPort: 3000
           startupProbe:

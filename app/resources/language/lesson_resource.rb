@@ -17,44 +17,44 @@ class Language::LessonResource < ApplicationResource
   typelize tips: "string[]", definitions: "Array<{ name: string, description: string }>"
 
   typelize :number
-  attribute :id do |info|
-    info.language_lesson_id
+  attribute :id do
+    it.language_lesson_id
   end
 
   # typelize :number, nullable: true
 
   typelize :string, nullable: true
-  attribute :prepared_code do |info|
-    info.version.prepared_code
+  attribute :prepared_code do
+    it.version.prepared_code
   end
 
   typelize :string, nullable: true
-  attribute :original_code do |info|
-    info.version.original_code
+  attribute :original_code do
+    it.version.original_code
   end
 
   typelize :string, nullable: true
-  attribute :test_code do |info|
-    info.version.test_code
+  attribute :test_code do
+    it.version.test_code
   end
 
   typelize :number, nullable: true
-  attribute :version do |info|
-    info.version.id
+  attribute :version do
+    it.version.id
   end
 
   typelize :string
-  attribute :slug do |info|
-    info.lesson.slug
+  attribute :slug do
+    it.lesson.slug
   end
 
   typelize :number
-  attribute :natural_order do |info|
-    info.version.natural_order
+  attribute :natural_order do
+    it.version.natural_order
   end
 
   typelize :string, nullable: true
-  attribute :source_code_url do |info|
-    ExternalLinks.lesson_source_code_curl(info.version.path_to_code, info.locale)
+  attribute :source_code_url do
+    ExternalLinks.lesson_source_code_curl(it.version.path_to_code, it.locale)
   end
 end

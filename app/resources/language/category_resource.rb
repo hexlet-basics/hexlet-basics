@@ -10,7 +10,7 @@ class Language::CategoryResource < ApplicationResource
   # end
 
   typelize "Locale"
-  attribute :locale do |category|
-    category.locale
+  attribute :locale do
+    it.locale
   end
 end

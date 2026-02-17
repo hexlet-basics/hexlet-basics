@@ -1,16 +1,16 @@
-import { ActionIcon } from '@mantine/core';
-import dayjs from 'dayjs';
-import { Edit, Link } from 'lucide-react';
-import { DataTable } from 'mantine-datatable';
-import type { PropsWithChildren } from 'react';
-import { useTranslation } from 'react-i18next';
-import AppAnchor from '@/components/Elements/AppAnchor';
+import { ActionIcon } from "@mantine/core";
+import { IconEdit, IconLink } from "@tabler/icons-react";
+import dayjs from "dayjs";
+import { DataTable } from "mantine-datatable";
+import type { PropsWithChildren } from "react";
+import { useTranslation } from "react-i18next";
+import AppAnchor from "@/components/Elements/AppAnchor";
 // import useConfirmation from '@/hooks/useConfirmation';
-import useDataTableProps from '@/hooks/useDataTableProps';
-import AdminLayout from '@/pages/layouts/AdminLayout';
-import * as Routes from '@/routes.js';
-import type { Grid, LanguageCategory } from '@/types';
-import { Menu } from './shared/menu';
+import useDataTableProps from "@/hooks/useDataTableProps";
+import AdminLayout from "@/layouts/AdminLayout";
+import * as Routes from "@/routes.js";
+import type { Grid, LanguageCategory } from "@/types";
+import { Menu } from "./shared/menu";
 
 type Props = PropsWithChildren & {
   categories: LanguageCategory[];
@@ -31,22 +31,22 @@ export default function Index({ grid, categories }: Props) {
           href={Routes.edit_admin_language_category_path(item.id)}
         >
           <ActionIcon variant="default" size="xs">
-            <Edit />
+            <IconEdit />
           </ActionIcon>
         </AppAnchor>
         <AppAnchor external href={Routes.language_category_path(item.slug!)}>
           <ActionIcon variant="default" size="xs">
-            <Link />
+            <IconLink />
           </ActionIcon>
         </AppAnchor>
-        {/* <Link */}
+        {/* <IconLink */}
         {/*   onClick={confirmDeleting} */}
         {/*   className="btn btn-link link-body-emphasis p-0 m-0" */}
         {/*   method="delete" */}
         {/*   href={Routes.admin_language_category_path(data.id)} */}
         {/* > */}
-        {/*   {<i className="bi bi-file-x" />} */}
-        {/* </Link> */}
+        {/*   {<IconFileX />} */}
+        {/* </IconLink> */}
       </>
     );
   };
@@ -57,17 +57,17 @@ export default function Index({ grid, categories }: Props) {
       <DataTable
         records={categories}
         columns={[
-          { accessor: 'id' },
-          { accessor: 'name', sortable: true },
-          { accessor: 'slug' },
+          { accessor: "id" },
+          { accessor: "name", sortable: true },
+          { accessor: "slug" },
           {
-            accessor: 'created_at',
+            accessor: "created_at",
             sortable: true,
-            render: (r) => dayjs(r.created_at).format('LL'),
+            render: (r) => dayjs(r.created_at).format("LL"),
           },
           {
-            accessor: 'actions',
-            title: 'actions',
+            accessor: "actions",
+            title: "actions",
             render: renderActions,
           },
         ]}

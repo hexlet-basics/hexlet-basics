@@ -11,3 +11,30 @@ app:
     repository: hexletbasics/services-app
 
 slack_notification: ['/rails/deploy-notify.sh']
+
+gateway:
+  className: gwin-default
+  address:
+    type: gwin.yandex.cloud/staticIPv4
+    value: 89.169.182.43
+  subnets:
+    - e2lfircmrq1atgmlg7ib
+  certificateId: fpqgjl11q387a86d42kn
+  hosts:
+    primary: code-basics.com
+    wildcard: "*.code-basics.com"
+    secondary: code-basics.ru
+  backend:
+    useHttp2: true
+    upgradeTypes: websocket
+
+autoscaling:
+  web:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 75
+    targetMemoryUtilizationPercentage: 80
+
+networkPolicy:
+  enabled: true

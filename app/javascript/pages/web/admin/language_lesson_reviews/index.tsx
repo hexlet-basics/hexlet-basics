@@ -1,17 +1,17 @@
-import { ActionIcon, Box, Button, Modal, Select } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import dayjs from 'dayjs';
-import { Link, Search } from 'lucide-react';
-import { DataTable } from 'mantine-datatable';
-import type { PropsWithChildren } from 'react';
-import { useTranslation } from 'react-i18next';
-import AppAnchor from '@/components/Elements/AppAnchor';
-import MarkdownViewer from '@/components/MarkdownViewer';
-import useDataTableProps from '@/hooks/useDataTableProps';
-import { arrayToSelectData } from '@/lib/utils.ts';
-import AdminLayout from '@/pages/layouts/AdminLayout';
-import * as Routes from '@/routes.js';
-import type { Grid, Language, LanguageLessonReview } from '@/types';
+import { ActionIcon, Box, Button, Modal, Select } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { IconLink, IconSearch } from "@tabler/icons-react";
+import dayjs from "dayjs";
+import { DataTable } from "mantine-datatable";
+import type { PropsWithChildren } from "react";
+import { useTranslation } from "react-i18next";
+import AppAnchor from "@/components/Elements/AppAnchor";
+import MarkdownViewer from "@/components/MarkdownViewer";
+import useDataTableProps from "@/hooks/useDataTableProps";
+import AdminLayout from "@/layouts/AdminLayout";
+import { arrayToSelectData } from "@/lib/utils.ts";
+import * as Routes from "@/routes.js";
+import type { Grid, Language, LanguageLessonReview } from "@/types";
 
 type Props = PropsWithChildren & {
   languages: Language[];
@@ -41,7 +41,7 @@ function DataBox({
         {t(($) => $.admin.language_lesson_reviews.index.data)}
       </Button>
       <Modal opened={opened} onClose={handlers.close} size="50vw">
-        <MarkdownViewer>{review.summary ?? ''}</MarkdownViewer>
+        <MarkdownViewer>{review.summary ?? ""}</MarkdownViewer>
       </Modal>
     </Box>
   );
@@ -70,7 +70,7 @@ export default function Index({ grid, reviews, languages }: Props) {
           href={Routes.language_lesson_path(item.language_slug!, item.slug!)}
         >
           <ActionIcon variant="default" size="xs">
-            <Link />
+            <IconLink />
           </ActionIcon>
         </AppAnchor>
         {/* <AppAnchor external href={item.source_code_url}> */}
@@ -78,24 +78,24 @@ export default function Index({ grid, reviews, languages }: Props) {
         {/*     <Github /> */}
         {/*   </ActionIcon> */}
         {/* </AppAnchor> */}
-        {/* <Link */}
+        {/* <IconLink */}
         {/*   onClick={confirmDeleting} */}
         {/*   className="btn btn-link link-body-emphasis p-0 m-0" */}
         {/*   method="delete" */}
         {/*   href={Routes.admin_language_category_path(data.id)} */}
         {/* > */}
-        {/*   {<i className="bi bi-file-x" />} */}
-        {/* </Link> */}
+        {/*   {<IconFileX />} */}
+        {/* </IconLink> */}
       </>
     );
   };
 
   const languageSlugFilterSelect = (
     <Select
-      data={arrayToSelectData(languages, 'slug', 'slug')}
+      data={arrayToSelectData(languages, "slug", "slug")}
       value={filters.values.language_slug_eq}
-      onChange={filters.getOnChange('language_slug_eq')}
-      leftSection={<Search size={16} />}
+      onChange={filters.getOnChange("language_slug_eq")}
+      leftSection={<IconSearch size={16} />}
       comboboxProps={{ withinPortal: false }}
       clearable
       searchable
@@ -109,22 +109,22 @@ export default function Index({ grid, reviews, languages }: Props) {
       <DataTable
         records={reviews}
         columns={[
-          { accessor: 'id' },
-          { accessor: 'lesson_natural_order', title: 'Order', sortable: true },
-          { accessor: 'language_slug', filter: languageSlugFilterSelect },
-          { accessor: 'slug' },
+          { accessor: "id" },
+          { accessor: "lesson_natural_order", title: "Order", sortable: true },
+          { accessor: "language_slug", filter: languageSlugFilterSelect },
+          { accessor: "slug" },
           {
-            accessor: 'review',
-            title: 'review',
+            accessor: "review",
+            title: "review",
             render: (rec) => <DataBox review={rec} col="summary" />,
           },
           {
-            accessor: 'created_at',
-            render: (r) => dayjs(r.created_at).format('LL'),
+            accessor: "created_at",
+            render: (r) => dayjs(r.created_at).format("LL"),
           },
           {
-            accessor: 'actions',
-            title: 'actions',
+            accessor: "actions",
+            title: "actions",
             render: renderActions,
           },
         ]}

@@ -36,6 +36,11 @@ spec:
 
       imagePullSecrets:
         - name: docker-config
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
 
       affinity:
         podAntiAffinity:
@@ -78,6 +83,11 @@ spec:
         - name: nginx
           imagePullPolicy: Always
           image: "{{ .Values.nginx.image.repository }}:{{ .Values.version }}"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           startupProbe:
             httpGet:
               path: /health
@@ -115,6 +125,11 @@ spec:
         - name: web
           imagePullPolicy: Always
           image: "{{ .Values.app.image.repository }}:{{ .Values.version }}"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           ports:
             - containerPort: 3000
           startupProbe:
@@ -180,6 +195,11 @@ spec:
         - name: cable
           imagePullPolicy: Always
           image: "{{ .Values.app.image.repository }}:{{ .Values.version }}"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           command: ["make", "services-cable-run"]
           startupProbe:
             httpGet:
@@ -227,6 +247,11 @@ spec:
         - name: ssr
           imagePullPolicy: Always
           image: "{{ .Values.app.image.repository }}:{{ .Values.version }}"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           command: ["bin/vite", "ssr"]
           startupProbe:
             httpGet:

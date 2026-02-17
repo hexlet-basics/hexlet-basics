@@ -1,15 +1,16 @@
 # typed: strict
 
-class BookRequestedEvent < TypedEvent
-  # DataShape = T.type_alias {
-  #   {
-  #     slug: String,
-  #     locale: Symbol
-  #   }
-  # }
-  #
-  # sig { params(data: DataShape, kwargs: T.untyped).void }
-  # def initialize(data:, **kwargs)
-  #   super
-  # end
+class BookRequestedEvent < ApplicationEvent
+  NAME = "book_requested"
+
+  DataShape = T.type_alias {
+    {
+      locale: Symbol
+    }
+  }
+
+  sig { params(data: DataShape, kwargs: T.untyped).void }
+  def initialize(data:, **kwargs)
+    super
+  end
 end

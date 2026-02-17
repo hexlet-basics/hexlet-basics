@@ -7,7 +7,7 @@ class Language::SitemapLandingPageResource < ApplicationResource
   typelize header: :string
 
   typelize "Locale"
-  attribute :locale do |info|
-    info.locale
+  attribute :locale do
+    it.locale
   end
 end

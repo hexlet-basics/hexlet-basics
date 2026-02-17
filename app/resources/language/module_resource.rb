@@ -5,7 +5,7 @@ class Language::ModuleResource < ApplicationResource
   attributes :locale, :description, :name
 
   typelize :number
-  attribute :id do |info|
-    info.version.module.id
+  attribute :id do
+    it.version.module.id
   end
 end

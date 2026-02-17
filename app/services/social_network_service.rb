@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# typed: true
 
 class SocialNetworkService
   def self.authenticate_user(auth)
@@ -13,7 +14,14 @@ class SocialNetworkService
     ActiveRecord::Base.transaction do
       if user.new_record?
         user.save!
-        event = UserSignedUpEvent.new(data: user.slice(:id, :email))
+        signed_up_event_data = {
+          user_id: user.id,
+          email: T.must(user.email),
+          first_name: user.first_name,
+          last_name: user.last_name,
+          locale: I18n.locale
+        }
+        event = UserSignedUpEvent.new(data: signed_up_event_data)
         publish_event(event, user)
       end
 

@@ -1,14 +1,14 @@
-import { Button, FileInput, Select, TextInput } from '@mantine/core';
-import { useTranslation } from 'react-i18next';
-import { useAppForm } from '@/hooks/useAppForm';
-import { enumToOptions } from '@/lib/utils';
-import type { HttpRouterMethod } from '@/types';
-import type LanguageCrud from '@/types/serializers/LanguageCrud';
+import type { Method } from "@inertiajs/core";
+import { Button, FileInput, Select, TextInput } from "@mantine/core";
+import { useTranslation } from "react-i18next";
+import { useAppForm } from "@/hooks/useAppForm";
+import { arrayToSelectData, enumToOptions } from "@/lib/utils";
+import type LanguageCrud from "@/types/serializers/LanguageCrud";
 
 type Props = {
   data: LanguageCrud;
   url: string;
-  method?: HttpRouterMethod;
+  method?: Method;
 };
 
 // const locales = [
@@ -17,54 +17,46 @@ type Props = {
 // ];
 
 export default function Form({ data, url, method }: Props) {
-  const { t: tHelpers } = useTranslation('helpers');
-  const { t: tEnums } = useTranslation('enumerize');
-  const languageProgressEnum = tEnums(($) => $.language.progress, {
+  const { t } = useTranslation();
+
+  const languageProgressEnum = t(($) => $.enums.language.progress, {
     returnObjects: true,
   });
   const languageProgressEnumOptions = enumToOptions(languageProgressEnum);
 
-  const languageLearnAsEnum = tEnums(($) => $.language.learn_as, {
+  const languageLearnAsEnum = t(($) => $.enums.language.learn_as, {
     returnObjects: true,
   });
   const languageLearnAsEnumOptions = enumToOptions(languageLearnAsEnum);
+  const payload = data;
+  const languageProgressSelectData = arrayToSelectData(
+    languageProgressEnumOptions,
+    "id",
+    "name",
+  );
+  const languageLearnAsSelectData = arrayToSelectData(
+    languageLearnAsEnumOptions,
+    "id",
+    "name",
+  );
 
-  const {
-    getInputProps,
-    getSelectProps,
-    getFileInputProps,
-    submit,
-    formState: { isSubmitting },
-  } = useAppForm<LanguageCrud>({
+  const { onSubmit, processing, form } = useAppForm(payload, {
     url,
-    method: method ?? 'post',
-    container: data,
+    method: method ?? "post",
   });
 
   return (
-    <form onSubmit={submit}>
+    <form onSubmit={onSubmit}>
       <Select
-        {...getSelectProps(
-          'progress',
-          languageProgressEnumOptions,
-          'id',
-          'name',
-        )}
+        {...form.getSelectProps("progress", languageProgressSelectData)}
       />
-      <Select
-        {...getSelectProps(
-          'learn_as',
-          languageLearnAsEnumOptions,
-          'id',
-          'name',
-        )}
-      />
-      <TextInput {...getInputProps('slug')} />
-      <TextInput {...getInputProps('hexlet_program_landing_page')} />
-      <TextInput {...getInputProps('openai_assistant_id')} />
-      <FileInput {...getFileInputProps('cover')} name="cover" />
-      <Button type="submit" loading={isSubmitting}>
-        {tHelpers(($) => $.submit.save)}
+      <Select {...form.getSelectProps("learn_as", languageLearnAsSelectData)} />
+      <TextInput {...form.getInputProps("slug")} />
+      <TextInput {...form.getInputProps("hexlet_program_landing_page")} />
+      <TextInput {...form.getInputProps("openai_assistant_id")} />
+      <FileInput {...form.getFileInputProps("cover")} name="cover" />
+      <Button type="submit" loading={processing}>
+        {t(($) => $.helpers.submit.save)}
       </Button>
     </form>
   );

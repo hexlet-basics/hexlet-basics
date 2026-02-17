@@ -10,29 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_12_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_18_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "active_storage_attachments", force: :cascade do |t|
-    t.string "name", null: false
-    t.string "record_type", null: false
-    t.bigint "record_id", null: false
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.bigint "record_id", null: false
+    t.string "record_type", null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
 
   create_table "active_storage_blobs", force: :cascade do |t|
-    t.string "key", null: false
-    t.string "filename", null: false
-    t.string "content_type"
-    t.text "metadata"
-    t.string "service_name", null: false
     t.bigint "byte_size", null: false
     t.string "checksum"
+    t.string "content_type"
     t.datetime "created_at", null: false
+    t.string "filename", null: false
+    t.string "key", null: false
+    t.text "metadata"
+    t.string "service_name", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
@@ -43,11 +43,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_12_120000) do
   end
 
   create_table "ahoy_events", force: :cascade do |t|
-    t.bigint "visit_id"
-    t.bigint "user_id"
     t.string "name"
     t.jsonb "properties"
     t.datetime "time"
+    t.bigint "user_id"
+    t.bigint "visit_id"
     t.index ["name", "time"], name: "index_ahoy_events_on_name_and_time"
     t.index ["properties"], name: "index_ahoy_events_on_properties", opclass: :jsonb_path_ops, using: :gin
     t.index ["user_id"], name: "index_ahoy_events_on_user_id"
@@ -55,31 +55,31 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_12_120000) do
   end
 
   create_table "ahoy_visits", force: :cascade do |t|
-    t.string "visit_token"
-    t.string "visitor_token"
-    t.bigint "user_id"
-    t.string "ip"
-    t.text "user_agent"
-    t.text "referrer"
-    t.string "referring_domain"
-    t.text "landing_page"
+    t.string "app_version"
     t.string "browser"
-    t.string "os"
-    t.string "device_type"
-    t.string "country"
-    t.string "region"
     t.string "city"
+    t.string "country"
+    t.string "device_type"
+    t.string "ip"
+    t.text "landing_page"
     t.float "latitude"
     t.float "longitude"
-    t.string "utm_source"
-    t.string "utm_medium"
-    t.string "utm_term"
-    t.string "utm_content"
-    t.string "utm_campaign"
-    t.string "app_version"
+    t.string "os"
     t.string "os_version"
     t.string "platform"
+    t.text "referrer"
+    t.string "referring_domain"
+    t.string "region"
     t.datetime "started_at"
+    t.text "user_agent"
+    t.bigint "user_id"
+    t.string "utm_campaign"
+    t.string "utm_content"
+    t.string "utm_medium"
+    t.string "utm_source"
+    t.string "utm_term"
+    t.string "visit_token"
+    t.string "visitor_token"
     t.index ["user_id"], name: "index_ahoy_visits_on_user_id"
     t.index ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true
     t.index ["visitor_token", "started_at"], name: "index_ahoy_visits_on_visitor_token_and_started_at"
@@ -87,60 +87,60 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_12_120000) do
 
   create_table "blog_post_likes", force: :cascade do |t|
     t.bigint "blog_post_id", null: false
-    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
     t.index ["blog_post_id"], name: "index_blog_post_likes_on_blog_post_id"
     t.index ["user_id"], name: "index_blog_post_likes_on_user_id"
   end
 
   create_table "blog_post_related_language_items", force: :cascade do |t|
     t.bigint "blog_post_id", null: false
-    t.bigint "language_id", null: false
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.bigint "language_id", null: false
     t.integer "order"
+    t.datetime "updated_at", null: false
     t.index ["blog_post_id"], name: "index_blog_post_related_language_items_on_blog_post_id"
     t.index ["language_id"], name: "index_blog_post_related_language_items_on_language_id"
   end
 
   create_table "blog_posts", force: :cascade do |t|
-    t.bigint "language_id"
-    t.string "locale"
-    t.string "state"
-    t.string "slug"
-    t.string "name"
     t.text "body"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.bigint "creator_id", null: false
     t.string "description"
+    t.bigint "language_id"
+    t.string "locale"
+    t.string "name"
     t.integer "related_language_items_count", default: 0, null: false
+    t.string "slug"
+    t.string "state"
+    t.datetime "updated_at", null: false
     t.index ["creator_id"], name: "index_blog_posts_on_creator_id"
     t.index ["language_id"], name: "index_blog_posts_on_language_id"
     t.index ["slug"], name: "index_blog_posts_on_slug", unique: true
   end
 
   create_table "book_requests", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.string "state"
     t.datetime "created_at", null: false
+    t.string "state"
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_book_requests_on_user_id", unique: true
   end
 
   create_table "course_categories", force: :cascade do |t|
-    t.string "name"
     t.datetime "created_at", null: false
+    t.string "name"
     t.datetime "updated_at", null: false
   end
 
   create_table "event_store_events", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.binary "data", null: false
     t.string "event_id", limit: 36, null: false
     t.string "event_type", null: false
     t.binary "metadata"
-    t.binary "data", null: false
-    t.datetime "created_at", null: false
     t.datetime "valid_at"
     t.index ["created_at"], name: "index_event_store_events_on_created_at"
     t.index ["event_id"], name: "index_event_store_events_on_event_id", unique: true
@@ -149,10 +149,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_12_120000) do
   end
 
   create_table "event_store_events_in_streams", force: :cascade do |t|
-    t.string "stream", null: false
-    t.integer "position"
-    t.string "event_id", limit: 36, null: false
     t.datetime "created_at", null: false
+    t.string "event_id", limit: 36, null: false
+    t.integer "position"
+    t.string "stream", null: false
     t.index ["created_at"], name: "index_event_store_events_in_streams_on_created_at"
     t.index ["event_id"], name: "index_event_store_events_in_streams_on_event_id"
     t.index ["stream", "event_id"], name: "index_event_store_events_in_streams_on_stream_and_event_id", unique: true
@@ -160,79 +160,79 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_12_120000) do
   end
 
   create_table "language_categories", force: :cascade do |t|
-    t.string "name_ru"
-    t.string "name_en"
-    t.string "slug"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "name"
-    t.string "locale"
-    t.string "header"
     t.string "description"
+    t.string "header"
+    t.string "locale"
+    t.string "name"
+    t.string "name_en"
+    t.string "name_ru"
+    t.string "slug"
+    t.datetime "updated_at", null: false
   end
 
   create_table "language_category_items", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.bigint "language_category_id", null: false
     t.bigint "language_landing_page_id", null: false
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["language_category_id"], name: "index_language_category_items_on_language_category_id"
     t.index ["language_landing_page_id"], name: "index_language_category_items_on_language_landing_page_id"
   end
 
   create_table "language_category_qna_items", force: :cascade do |t|
-    t.bigint "language_category_id", null: false
-    t.string "question"
     t.string "answer"
     t.datetime "created_at", null: false
+    t.bigint "language_category_id", null: false
+    t.string "question"
     t.datetime "updated_at", null: false
     t.index ["language_category_id"], name: "index_language_category_qna_items_on_language_category_id"
   end
 
   create_table "language_landing_page_qna_items", force: :cascade do |t|
-    t.bigint "language_landing_page_id", null: false
-    t.string "question"
     t.string "answer"
     t.datetime "created_at", null: false
+    t.bigint "language_landing_page_id", null: false
+    t.string "question"
     t.datetime "updated_at", null: false
     t.index ["language_landing_page_id"], name: "idx_on_language_landing_page_id_98023e1f90"
   end
 
   create_table "language_landing_pages", force: :cascade do |t|
-    t.bigint "language_id", null: false
-    t.bigint "language_category_id"
-    t.string "meta_title"
-    t.string "locale"
-    t.string "header"
-    t.string "slug"
-    t.string "order"
-    t.boolean "main"
-    t.string "state"
-    t.string "description"
-    t.string "meta_description"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.boolean "listed"
-    t.string "used_in_header"
-    t.string "used_in_description"
-    t.string "outcomes_header"
-    t.string "outcomes_description"
+    t.string "description"
     t.boolean "footer"
     t.string "footer_name"
-    t.string "name"
+    t.string "header"
     t.bigint "landing_page_to_redirect_id"
+    t.bigint "language_category_id"
+    t.bigint "language_id", null: false
+    t.boolean "listed"
+    t.string "locale"
+    t.boolean "main"
+    t.string "meta_description"
+    t.string "meta_title"
+    t.string "name"
+    t.string "order"
+    t.string "outcomes_description"
+    t.string "outcomes_header"
+    t.string "slug"
+    t.string "state"
+    t.datetime "updated_at", null: false
+    t.string "used_in_description"
+    t.string "used_in_header"
     t.index ["landing_page_to_redirect_id"], name: "index_language_landing_pages_on_landing_page_to_redirect_id"
     t.index ["language_category_id"], name: "index_language_landing_pages_on_language_category_id"
     t.index ["language_id"], name: "index_language_landing_pages_on_language_id"
   end
 
   create_table "language_lesson_member_messages", force: :cascade do |t|
+    t.text "body"
+    t.datetime "created_at", null: false
     t.bigint "language_id", null: false
     t.bigint "language_lesson_id", null: false
     t.bigint "language_lesson_member_id", null: false
     t.string "role"
-    t.text "body"
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["language_id"], name: "index_language_lesson_member_messages_on_language_id"
@@ -242,15 +242,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_12_120000) do
   end
 
   create_table "language_lesson_members", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "lesson_id", null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.string "state"
-    t.bigint "language_id", null: false
     t.datetime "created_at", null: false
+    t.bigint "language_id", null: false
     t.bigint "language_member_id", null: false
-    t.string "openai_thread_id"
+    t.bigint "lesson_id", null: false
     t.integer "messages_count", default: 0
+    t.string "openai_thread_id"
+    t.string "state"
+    t.datetime "updated_at", precision: nil, null: false
+    t.bigint "user_id", null: false
     t.index ["language_member_id"], name: "index_language_lesson_members_on_language_member_id"
     t.index ["lesson_id"], name: "user_finished_lessons_language_module_lesson_id_index"
     t.index ["user_id", "lesson_id"], name: "user_finished_lessons_user_id_language_module_lesson_id_index", unique: true
@@ -258,13 +258,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_12_120000) do
   end
 
   create_table "language_lesson_reviews", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.bigint "language_id", null: false
     t.bigint "language_lesson_id", null: false
     t.bigint "language_lesson_version_id", null: false
     t.bigint "language_lesson_version_info_id", null: false
-    t.text "summary"
     t.string "locale", null: false
-    t.datetime "created_at", null: false
+    t.text "summary"
     t.datetime "updated_at", null: false
     t.index ["language_id"], name: "index_language_lesson_reviews_on_language_id"
     t.index ["language_lesson_id"], name: "index_language_lesson_reviews_on_language_lesson_id"
@@ -273,19 +273,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_12_120000) do
   end
 
   create_table "language_lesson_version_infos", force: :cascade do |t|
-    t.string "name"
-    t.string "description"
-    t.string "locale"
-    t.string "theory"
-    t.string "tips"
+    t.datetime "created_at", null: false
     t.string "definitions"
+    t.string "description"
     t.string "instructions"
     t.bigint "language_id", null: false
-    t.bigint "language_version_id", null: false
-    t.bigint "version_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.bigint "language_lesson_id", null: false
+    t.bigint "language_version_id", null: false
+    t.string "locale"
+    t.string "name"
+    t.string "theory"
+    t.string "tips"
+    t.datetime "updated_at", null: false
+    t.bigint "version_id", null: false
     t.index ["language_id"], name: "index_language_lesson_version_infos_on_language_id"
     t.index ["language_lesson_id"], name: "index_language_lesson_version_infos_on_language_lesson_id"
     t.index ["language_version_id"], name: "index_language_lesson_version_infos_on_language_version_id"
@@ -293,17 +293,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_12_120000) do
   end
 
   create_table "language_lesson_versions", force: :cascade do |t|
-    t.integer "order"
-    t.string "original_code"
-    t.string "prepared_code"
-    t.string "test_code"
-    t.integer "natural_order"
-    t.string "path_to_code"
-    t.bigint "language_version_id", null: false
+    t.datetime "created_at", null: false
     t.bigint "language_id", null: false
+    t.bigint "language_version_id", null: false
     t.bigint "lesson_id", null: false
     t.bigint "module_version_id", null: false
-    t.datetime "created_at", null: false
+    t.integer "natural_order"
+    t.integer "order"
+    t.string "original_code"
+    t.string "path_to_code"
+    t.string "prepared_code"
+    t.string "test_code"
     t.datetime "updated_at", null: false
     t.index ["language_id"], name: "index_language_lesson_versions_on_language_id"
     t.index ["language_version_id"], name: "index_language_lesson_versions_on_language_version_id"
@@ -312,19 +312,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_12_120000) do
   end
 
   create_table "language_lessons", force: :cascade do |t|
-    t.string "slug", limit: 255
-    t.string "state", limit: 255
+    t.datetime "created_at", null: false
+    t.bigint "language_id"
+    t.bigint "module_id"
+    t.integer "natural_order"
     t.integer "order"
     t.text "original_code"
-    t.text "prepared_code"
-    t.text "test_code"
     t.string "path_to_code", limit: 255
-    t.bigint "module_id"
-    t.bigint "language_id"
-    t.bigint "upload_id"
+    t.text "prepared_code"
+    t.string "slug", limit: 255
+    t.string "state", limit: 255
+    t.text "test_code"
     t.datetime "updated_at", precision: nil, null: false
-    t.integer "natural_order"
-    t.datetime "created_at", null: false
+    t.bigint "upload_id"
     t.index ["language_id", "slug"], name: "index_language_lessons_on_language_id_and_slug", unique: true
     t.index ["language_id"], name: "language_module_lessons_language_id_index"
     t.index ["module_id"], name: "language_module_lessons_module_id_index"
@@ -332,46 +332,46 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_12_120000) do
   end
 
   create_table "language_members", force: :cascade do |t|
-    t.bigint "language_id", null: false
-    t.bigint "user_id", null: false
-    t.string "state"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.integer "finished_lessons_count", default: 0, null: false
+    t.bigint "language_id", null: false
+    t.string "state"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.index ["language_id"], name: "index_language_members_on_language_id"
     t.index ["user_id"], name: "index_language_members_on_user_id"
   end
 
   create_table "language_module_descriptions", force: :cascade do |t|
-    t.string "name", limit: 255
     t.text "description"
+    t.datetime "inserted_at", precision: nil, null: false
+    t.bigint "language_id"
     t.string "locale", limit: 255
     t.bigint "module_id"
-    t.datetime "inserted_at", precision: nil, null: false
+    t.string "name", limit: 255
     t.datetime "updated_at", precision: nil, null: false
-    t.bigint "language_id"
     t.index ["module_id"], name: "language_module_descriptions_module_id_index"
   end
 
   create_table "language_module_version_infos", force: :cascade do |t|
-    t.string "name"
-    t.string "description"
-    t.string "locale"
-    t.bigint "language_id", null: false
-    t.bigint "version_id", null: false
-    t.bigint "language_version_id", null: false
     t.datetime "created_at", null: false
+    t.string "description"
+    t.bigint "language_id", null: false
+    t.bigint "language_version_id", null: false
+    t.string "locale"
+    t.string "name"
     t.datetime "updated_at", null: false
+    t.bigint "version_id", null: false
     t.index ["language_id"], name: "index_language_module_version_infos_on_language_id"
     t.index ["language_version_id"], name: "index_language_module_version_infos_on_language_version_id"
   end
 
   create_table "language_module_versions", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.bigint "language_id", null: false
     t.bigint "language_version_id", null: false
     t.bigint "module_id", null: false
     t.integer "order"
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["language_id"], name: "index_language_module_versions_on_language_id"
     t.index ["language_version_id"], name: "index_language_module_versions_on_language_version_id"
@@ -379,68 +379,68 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_12_120000) do
   end
 
   create_table "language_modules", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "language_id"
+    t.integer "order"
     t.string "slug", limit: 255
     t.string "state", limit: 255
-    t.integer "order"
-    t.bigint "language_id"
-    t.bigint "upload_id"
     t.datetime "updated_at", precision: nil, null: false
-    t.datetime "created_at", null: false
+    t.bigint "upload_id"
     t.index ["language_id"], name: "language_modules_language_id_index"
     t.index ["upload_id"], name: "language_modules_upload_id_index"
   end
 
   create_table "language_version_infos", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "description"
+    t.string "header"
+    t.string "keywords"
     t.bigint "language_id", null: false
     t.bigint "language_version_id", null: false
     t.string "locale"
-    t.string "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "title"
     t.text "seo_description"
-    t.string "header"
-    t.string "keywords"
+    t.string "title"
+    t.datetime "updated_at", null: false
     t.index ["language_id"], name: "index_language_version_infos_on_language_id"
     t.index ["language_version_id"], name: "index_language_version_infos_on_language_version_id"
   end
 
   create_table "language_versions", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.string "docker_image"
     t.string "exercise_filename"
     t.string "exercise_test_filename"
     t.string "extension"
-    t.string "name"
-    t.string "state"
-    t.string "result"
     t.bigint "language_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.string "learn_as"
+    t.string "name"
     t.string "progress"
+    t.string "result"
+    t.string "state"
+    t.datetime "updated_at", null: false
     t.index ["language_id"], name: "index_language_versions_on_language_id"
   end
 
   create_table "languages", force: :cascade do |t|
-    t.string "name", limit: 255
-    t.string "slug", limit: 255
-    t.string "extension", limit: 255
+    t.bigint "category_id"
+    t.datetime "created_at", null: false
+    t.bigint "current_version_id"
     t.string "docker_image", limit: 255
     t.string "exercise_filename", limit: 255
     t.string "exercise_test_filename", limit: 255
-    t.string "state", limit: 255
-    t.bigint "upload_id"
-    t.datetime "updated_at", precision: nil, null: false
-    t.string "progress"
-    t.bigint "current_version_id"
-    t.datetime "created_at", null: false
+    t.string "extension", limit: 255
+    t.string "hexlet_program_landing_page"
     t.string "learn_as"
     t.integer "lessons_count", default: 0, null: false
     t.integer "members_count", default: 0, null: false
-    t.integer "order"
-    t.bigint "category_id"
+    t.string "name", limit: 255
     t.string "openai_assistant_id"
-    t.string "hexlet_program_landing_page"
+    t.integer "order"
+    t.string "progress"
+    t.string "slug", limit: 255
+    t.string "state", limit: 255
+    t.datetime "updated_at", precision: nil, null: false
+    t.bigint "upload_id"
     t.index ["category_id"], name: "index_languages_on_category_id"
     t.index ["current_version_id"], name: "index_languages_on_current_version_id"
     t.index ["slug"], name: "languages_slug_index", unique: true
@@ -448,95 +448,95 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_12_120000) do
   end
 
   create_table "leads", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.string "state"
+    t.bigint "ahoy_visit_id"
+    t.text "courses_data"
+    t.datetime "created_at", null: false
     t.string "email"
     t.string "phone"
-    t.string "telegram"
-    t.string "whatsapp"
+    t.string "state"
     t.text "survey_answers_data"
-    t.datetime "created_at", null: false
+    t.string "telegram"
     t.datetime "updated_at", null: false
-    t.text "courses_data"
+    t.bigint "user_id", null: false
+    t.string "whatsapp"
     t.string "ym_client_id"
-    t.bigint "ahoy_visit_id"
     t.index ["ahoy_visit_id"], name: "index_leads_on_ahoy_visit_id"
     t.index ["user_id"], name: "index_leads_on_user_id"
   end
 
   create_table "reviews", force: :cascade do |t|
-    t.bigint "language_id", null: false
-    t.bigint "user_id", null: false
-    t.string "state"
     t.text "body"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "locale"
     t.string "first_name"
+    t.bigint "language_id", null: false
     t.string "last_name"
+    t.string "locale"
     t.boolean "pinned"
+    t.string "state"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.index ["language_id"], name: "index_reviews_on_language_id"
     t.index ["user_id"], name: "index_reviews_on_user_id"
   end
 
   create_table "solid_cable_messages", force: :cascade do |t|
     t.binary "channel", null: false
-    t.binary "payload", null: false
-    t.datetime "created_at", null: false
     t.bigint "channel_hash", null: false
+    t.datetime "created_at", null: false
+    t.binary "payload", null: false
     t.index ["channel"], name: "index_solid_cable_messages_on_channel"
     t.index ["channel_hash"], name: "index_solid_cable_messages_on_channel_hash"
     t.index ["created_at"], name: "index_solid_cable_messages_on_created_at"
   end
 
   create_table "solid_cache_entries", force: :cascade do |t|
-    t.binary "key", null: false
-    t.binary "value", null: false
-    t.datetime "created_at", null: false
-    t.bigint "key_hash", null: false
     t.integer "byte_size", null: false
+    t.datetime "created_at", null: false
+    t.binary "key", null: false
+    t.bigint "key_hash", null: false
+    t.binary "value", null: false
     t.index ["byte_size"], name: "index_solid_cache_entries_on_byte_size"
     t.index ["key_hash", "byte_size"], name: "index_solid_cache_entries_on_key_hash_and_byte_size"
     t.index ["key_hash"], name: "index_solid_cache_entries_on_key_hash", unique: true
   end
 
   create_table "solid_queue_blocked_executions", force: :cascade do |t|
-    t.bigint "job_id", null: false
-    t.string "queue_name", null: false
-    t.integer "priority", default: 0, null: false
     t.string "concurrency_key", null: false
-    t.datetime "expires_at", null: false
     t.datetime "created_at", null: false
+    t.datetime "expires_at", null: false
+    t.bigint "job_id", null: false
+    t.integer "priority", default: 0, null: false
+    t.string "queue_name", null: false
     t.index ["concurrency_key", "priority", "job_id"], name: "index_solid_queue_blocked_executions_for_release"
     t.index ["expires_at", "concurrency_key"], name: "index_solid_queue_blocked_executions_for_maintenance"
     t.index ["job_id"], name: "index_solid_queue_blocked_executions_on_job_id", unique: true
   end
 
   create_table "solid_queue_claimed_executions", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.bigint "job_id", null: false
     t.bigint "process_id"
-    t.datetime "created_at", null: false
     t.index ["job_id"], name: "index_solid_queue_claimed_executions_on_job_id", unique: true
     t.index ["process_id", "job_id"], name: "index_solid_queue_claimed_executions_on_process_id_and_job_id"
   end
 
   create_table "solid_queue_failed_executions", force: :cascade do |t|
-    t.bigint "job_id", null: false
-    t.text "error"
     t.datetime "created_at", null: false
+    t.text "error"
+    t.bigint "job_id", null: false
     t.index ["job_id"], name: "index_solid_queue_failed_executions_on_job_id", unique: true
   end
 
   create_table "solid_queue_jobs", force: :cascade do |t|
-    t.string "queue_name", null: false
-    t.string "class_name", null: false
-    t.text "arguments"
-    t.integer "priority", default: 0, null: false
     t.string "active_job_id"
-    t.datetime "scheduled_at"
-    t.datetime "finished_at"
+    t.text "arguments"
+    t.string "class_name", null: false
     t.string "concurrency_key"
     t.datetime "created_at", null: false
+    t.datetime "finished_at"
+    t.integer "priority", default: 0, null: false
+    t.string "queue_name", null: false
+    t.datetime "scheduled_at"
     t.datetime "updated_at", null: false
     t.index ["active_job_id"], name: "index_solid_queue_jobs_on_active_job_id"
     t.index ["class_name"], name: "index_solid_queue_jobs_on_class_name"
@@ -546,88 +546,88 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_12_120000) do
   end
 
   create_table "solid_queue_pauses", force: :cascade do |t|
-    t.string "queue_name", null: false
     t.datetime "created_at", null: false
+    t.string "queue_name", null: false
     t.index ["queue_name"], name: "index_solid_queue_pauses_on_queue_name", unique: true
   end
 
   create_table "solid_queue_processes", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "hostname"
     t.string "kind", null: false
     t.datetime "last_heartbeat_at", null: false
-    t.bigint "supervisor_id"
-    t.integer "pid", null: false
-    t.string "hostname"
     t.text "metadata"
-    t.datetime "created_at", null: false
     t.string "name", null: false
+    t.integer "pid", null: false
+    t.bigint "supervisor_id"
     t.index ["last_heartbeat_at"], name: "index_solid_queue_processes_on_last_heartbeat_at"
     t.index ["name", "supervisor_id"], name: "index_solid_queue_processes_on_name_and_supervisor_id", unique: true
     t.index ["supervisor_id"], name: "index_solid_queue_processes_on_supervisor_id"
   end
 
   create_table "solid_queue_ready_executions", force: :cascade do |t|
-    t.bigint "job_id", null: false
-    t.string "queue_name", null: false
-    t.integer "priority", default: 0, null: false
     t.datetime "created_at", null: false
+    t.bigint "job_id", null: false
+    t.integer "priority", default: 0, null: false
+    t.string "queue_name", null: false
     t.index ["job_id"], name: "index_solid_queue_ready_executions_on_job_id", unique: true
     t.index ["priority", "job_id"], name: "index_solid_queue_poll_all"
     t.index ["queue_name", "priority", "job_id"], name: "index_solid_queue_poll_by_queue"
   end
 
   create_table "solid_queue_recurring_executions", force: :cascade do |t|
-    t.bigint "job_id", null: false
-    t.string "task_key", null: false
-    t.datetime "run_at", null: false
     t.datetime "created_at", null: false
+    t.bigint "job_id", null: false
+    t.datetime "run_at", null: false
+    t.string "task_key", null: false
     t.index ["job_id"], name: "index_solid_queue_recurring_executions_on_job_id", unique: true
     t.index ["task_key", "run_at"], name: "index_solid_queue_recurring_executions_on_task_key_and_run_at", unique: true
   end
 
   create_table "solid_queue_recurring_tasks", force: :cascade do |t|
-    t.string "key", null: false
-    t.string "schedule", null: false
-    t.string "command", limit: 2048
-    t.string "class_name"
     t.text "arguments"
-    t.string "queue_name"
-    t.integer "priority", default: 0
-    t.boolean "static", default: true, null: false
-    t.text "description"
+    t.string "class_name"
+    t.string "command", limit: 2048
     t.datetime "created_at", null: false
+    t.text "description"
+    t.string "key", null: false
+    t.integer "priority", default: 0
+    t.string "queue_name"
+    t.string "schedule", null: false
+    t.boolean "static", default: true, null: false
     t.datetime "updated_at", null: false
     t.index ["key"], name: "index_solid_queue_recurring_tasks_on_key", unique: true
     t.index ["static"], name: "index_solid_queue_recurring_tasks_on_static"
   end
 
   create_table "solid_queue_scheduled_executions", force: :cascade do |t|
-    t.bigint "job_id", null: false
-    t.string "queue_name", null: false
-    t.integer "priority", default: 0, null: false
-    t.datetime "scheduled_at", null: false
     t.datetime "created_at", null: false
+    t.bigint "job_id", null: false
+    t.integer "priority", default: 0, null: false
+    t.string "queue_name", null: false
+    t.datetime "scheduled_at", null: false
     t.index ["job_id"], name: "index_solid_queue_scheduled_executions_on_job_id", unique: true
     t.index ["scheduled_at", "priority", "job_id"], name: "index_solid_queue_dispatch_all"
   end
 
   create_table "solid_queue_semaphores", force: :cascade do |t|
-    t.string "key", null: false
-    t.integer "value", default: 1, null: false
-    t.datetime "expires_at", null: false
     t.datetime "created_at", null: false
+    t.datetime "expires_at", null: false
+    t.string "key", null: false
     t.datetime "updated_at", null: false
+    t.integer "value", default: 1, null: false
     t.index ["expires_at"], name: "index_solid_queue_semaphores_on_expires_at"
     t.index ["key", "value"], name: "index_solid_queue_semaphores_on_key_and_value"
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
   end
 
   create_table "survey_answers", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "state"
     t.bigint "survey_id", null: false
     t.bigint "survey_item_id"
-    t.bigint "user_id", null: false
-    t.string "state"
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.index ["survey_id", "user_id"], name: "index_survey_answers_on_survey_id_and_user_id", unique: true
     t.index ["survey_id"], name: "index_survey_answers_on_survey_id"
     t.index ["survey_item_id"], name: "index_survey_answers_on_survey_item_id"
@@ -635,83 +635,83 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_12_120000) do
   end
 
   create_table "survey_items", force: :cascade do |t|
-    t.bigint "survey_id", null: false
-    t.integer "order", null: false
-    t.string "value"
-    t.string "state"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.integer "order", null: false
     t.string "slug"
+    t.string "state"
+    t.bigint "survey_id", null: false
+    t.datetime "updated_at", null: false
+    t.string "value"
     t.index ["survey_id"], name: "index_survey_items_on_survey_id"
   end
 
   create_table "survey_scenario_items", force: :cascade do |t|
-    t.bigint "survey_id", null: false
-    t.bigint "scenario_id", null: false
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.integer "order"
+    t.bigint "scenario_id", null: false
+    t.bigint "survey_id", null: false
+    t.datetime "updated_at", null: false
     t.index ["scenario_id"], name: "index_survey_scenario_items_on_scenario_id"
     t.index ["survey_id", "scenario_id"], name: "index_survey_scenario_items_on_survey_id_and_scenario_id", unique: true
     t.index ["survey_id"], name: "index_survey_scenario_items_on_survey_id"
   end
 
   create_table "survey_scenario_members", force: :cascade do |t|
-    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.string "event_name"
     t.bigint "scenario_id", null: false
     t.string "state"
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "event_name"
+    t.bigint "user_id", null: false
     t.index ["scenario_id"], name: "index_survey_scenario_members_on_scenario_id"
     t.index ["user_id"], name: "index_survey_scenario_members_on_user_id"
   end
 
   create_table "survey_scenario_triggers", force: :cascade do |t|
-    t.bigint "scenario_id", null: false
+    t.datetime "created_at", null: false
     t.string "event_name"
     t.integer "event_threshold_count"
-    t.datetime "created_at", null: false
+    t.bigint "scenario_id", null: false
     t.datetime "updated_at", null: false
     t.index ["event_name", "scenario_id"], name: "index_survey_scenario_triggers_on_event_name_and_scenario_id", unique: true
     t.index ["scenario_id"], name: "index_survey_scenario_triggers_on_scenario_id"
   end
 
   create_table "survey_scenarios", force: :cascade do |t|
-    t.bigint "survey_item_id"
+    t.datetime "created_at", null: false
+    t.string "locale"
     t.string "name"
     t.string "state"
-    t.string "locale"
-    t.datetime "created_at", null: false
+    t.bigint "survey_item_id"
     t.datetime "updated_at", null: false
     t.index ["survey_item_id"], name: "index_survey_scenarios_on_survey_item_id"
   end
 
   create_table "surveys", force: :cascade do |t|
-    t.string "question"
-    t.string "state"
-    t.string "slug"
-    t.string "locale"
-    t.string "description"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "parent_survey_item_id"
+    t.string "description"
+    t.string "locale"
     t.bigint "parent_survey_id"
-    t.boolean "run_always", default: false
+    t.bigint "parent_survey_item_id"
+    t.string "question"
     t.integer "run_after_finishing_lessons_count", default: 0
+    t.boolean "run_always", default: false
+    t.string "slug"
+    t.string "state"
+    t.datetime "updated_at", null: false
     t.index ["parent_survey_id"], name: "index_surveys_on_parent_survey_id"
     t.index ["parent_survey_item_id"], name: "index_surveys_on_parent_survey_item_id"
     t.index ["slug", "locale"], name: "index_surveys_on_slug_and_locale", unique: true
   end
 
   create_table "taggings", force: :cascade do |t|
-    t.bigint "tag_id"
-    t.string "taggable_type"
-    t.bigint "taggable_id"
-    t.string "tagger_type"
-    t.bigint "tagger_id"
     t.string "context", limit: 128
     t.datetime "created_at", precision: nil
+    t.bigint "tag_id"
+    t.bigint "taggable_id"
+    t.string "taggable_type"
+    t.bigint "tagger_id"
+    t.string "tagger_type"
     t.string "tenant", limit: 128
     t.index ["context"], name: "index_taggings_on_context"
     t.index ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true
@@ -728,34 +728,34 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_12_120000) do
   end
 
   create_table "tags", force: :cascade do |t|
-    t.string "name"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string "name"
     t.integer "taggings_count", default: 0
+    t.datetime "updated_at", null: false
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
   create_table "uploads", force: :cascade do |t|
-    t.string "language_name", limit: 255
     t.datetime "inserted_at", precision: nil, null: false
+    t.string "language_name", limit: 255
     t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "user_accounts", force: :cascade do |t|
-    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
     t.string "provider", limit: 255, null: false
     t.string "uid", limit: 255, null: false
     t.datetime "updated_at", precision: 0, null: false
-    t.datetime "created_at", null: false
+    t.bigint "user_id", null: false
   end
 
   create_table "user_survey_pivots", force: :cascade do |t|
-    t.bigint "user_id", null: false
     t.bigint "coding_experience_item_id"
+    t.datetime "created_at", null: false
     t.bigint "goal_item_id"
     t.bigint "study_plan_item_id"
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.index ["coding_experience_item_id"], name: "index_user_survey_pivots_on_coding_experience_item_id"
     t.index ["goal_item_id"], name: "index_user_survey_pivots_on_goal_item_id"
     t.index ["study_plan_item_id"], name: "index_user_survey_pivots_on_study_plan_item_id"
@@ -763,25 +763,25 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_12_120000) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "first_name", limit: 255
-    t.string "last_name", limit: 255
-    t.string "email", limit: 255
-    t.string "nickname", limit: 255
-    t.integer "github_uid"
-    t.datetime "updated_at", precision: nil, null: false
-    t.string "facebook_uid", limit: 255
-    t.string "password_digest", limit: 255
+    t.boolean "admin"
+    t.integer "assistant_messages_count", default: 0
     t.string "confirmation_token", limit: 255
+    t.string "contact_method"
+    t.string "contact_value"
+    t.datetime "created_at", null: false
+    t.string "email", limit: 255
+    t.string "email_delivery_state", limit: 255
+    t.string "facebook_uid", limit: 255
+    t.string "first_name", limit: 255
+    t.integer "github_uid"
+    t.boolean "help"
+    t.string "last_name", limit: 255
+    t.string "locale", limit: 255
+    t.string "nickname", limit: 255
+    t.string "password_digest", limit: 255
     t.string "reset_password_token", limit: 255
     t.string "state", limit: 255
-    t.string "locale", limit: 255
-    t.string "email_delivery_state", limit: 255
-    t.boolean "admin"
-    t.datetime "created_at", null: false
-    t.boolean "help"
-    t.integer "assistant_messages_count", default: 0
-    t.string "contact_value"
-    t.string "contact_method"
+    t.datetime "updated_at", precision: nil, null: false
     t.index "lower((email)::text)", name: "index_users_on_LOWER_email", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
   end

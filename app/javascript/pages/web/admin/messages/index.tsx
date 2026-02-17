@@ -1,15 +1,15 @@
-import { Button, Modal } from '@mantine/core';
-import dayjs from 'dayjs';
-import { DataTable } from 'mantine-datatable';
-import type { PropsWithChildren } from 'react';
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import AppAnchor from '@/components/Elements/AppAnchor';
-import MarkdownViewer from '@/components/MarkdownViewer';
-import useDataTableProps from '@/hooks/useDataTableProps';
-import AdminLayout from '@/pages/layouts/AdminLayout';
-import * as Routes from '@/routes.js';
-import type { Grid, LanguageLessonMemberMessage } from '@/types';
+import { Button, Modal } from "@mantine/core";
+import dayjs from "dayjs";
+import { DataTable } from "mantine-datatable";
+import type { PropsWithChildren } from "react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import AppAnchor from "@/components/Elements/AppAnchor";
+import MarkdownViewer from "@/components/MarkdownViewer";
+import useDataTableProps from "@/hooks/useDataTableProps";
+import AdminLayout from "@/layouts/AdminLayout";
+import * as Routes from "@/routes.js";
+import type { Grid, LanguageLessonMemberMessage } from "@/types";
 
 type Props = PropsWithChildren & {
   messages: LanguageLessonMemberMessage[];
@@ -58,19 +58,19 @@ export default function Index({ grid, messages }: Props) {
       <DataTable
         records={messages}
         columns={[
-          { accessor: 'id' },
-          { accessor: 'role' },
-          { accessor: 'user_id' },
-          { accessor: 'lesson', title: 'Lesson Url', render: renderLesson },
+          { accessor: "id" },
+          { accessor: "role" },
+          { accessor: "user_id" },
+          { accessor: "lesson", title: "Lesson Url", render: renderLesson },
           {
-            accessor: 'body',
-            title: 'body',
+            accessor: "body",
+            title: "body",
             render: (item) => <MessageBodyCell item={item} />,
           },
           {
-            accessor: 'created_at',
+            accessor: "created_at",
             sortable: true,
-            render: (r) => dayjs(r.created_at).format('LL'),
+            render: (r) => dayjs(r.created_at).format("LL"),
           },
         ]}
         {...gridProps}

@@ -1,4 +1,4 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link, usePage } from "@inertiajs/react";
 import {
   Accordion,
   Box,
@@ -16,11 +16,11 @@ import {
   Stack,
   Text,
   Title,
-} from '@mantine/core';
-import dayjs from 'dayjs';
-import i18next from 'i18next';
-import { Clock, Users } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+} from "@mantine/core";
+import { IconClock, IconUsers } from "@tabler/icons-react";
+import dayjs from "dayjs";
+import i18next from "i18next";
+import { useTranslation } from "react-i18next";
 import type {
   Course,
   ItemAvailability,
@@ -30,17 +30,17 @@ import type {
   OfferShippingDetails,
   Product,
   WithContext,
-} from 'schema-dts';
-import AppAnchor from '@/components/Elements/AppAnchor';
-import LeadFormBlock from '@/components/LeadFormBlock';
-import MarkdownViewer from '@/components/MarkdownViewer';
-import SignUpFormBlock from '@/components/SignUpFormBlock';
-import XssContent from '@/components/XssContent';
-import codeIllustration from '@/images/code.svg';
-import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
-import { getResourceUrl } from '@/resources';
-import * as Routes from '@/routes.js';
-import type { BreadcrumbItem, Language, LeadCrud, SharedProps } from '@/types';
+} from "schema-dts";
+import AppAnchor from "@/components/Elements/AppAnchor";
+import LeadFormBlock from "@/components/LeadFormBlock";
+import MarkdownViewer from "@/components/MarkdownViewer";
+import SignUpFormBlock from "@/components/SignUpFormBlock";
+import XssContent from "@/components/XssContent";
+import codeIllustration from "@/images/code.svg";
+import ApplicationLayout from "@/layouts/ApplicationLayout";
+import { getResourceUrl } from "@/resources";
+import * as Routes from "@/routes.js";
+import type { BreadcrumbItem, Language, LeadCrud } from "@/types";
 import type {
   LanguageCategory,
   LanguageLandingPage,
@@ -50,7 +50,7 @@ import type {
   LanguageModule,
   Review,
   UserSignUpForm,
-} from '@/types/serializers';
+} from "@/types/serializers";
 
 type Props = {
   lead: LeadCrud;
@@ -86,7 +86,7 @@ export default function Show({
   const {
     auth: { user },
     locale,
-  } = usePage<SharedProps>().props;
+  } = usePage().props;
 
   // // enums/typed IRIs
   // const availability: ItemAvailability = 'https://schema.org/InStock';
@@ -152,28 +152,28 @@ export default function Show({
   // };
 
   const courseSchema: WithContext<Course> = {
-    '@context': 'https://schema.org',
-    '@type': 'Course',
+    "@context": "https://schema.org",
+    "@type": "Course",
     name: courseLandingPage.header,
     description: courseLandingPage.description,
     image: course.cover_list_variant,
     provider: {
-      '@type': 'Organization',
-      name: 'Code Basics',
-      sameAs: 'https://code-basics.com',
+      "@type": "Organization",
+      name: "Code Basics",
+      sameAs: "https://code-basics.com",
     },
     hasCourseInstance: {
-      '@type': 'CourseInstance',
+      "@type": "CourseInstance",
       name: courseLandingPage.header,
-      courseMode: 'online',
+      courseMode: "online",
       inLanguage: locale,
       location: {
-        '@type': 'VirtualLocation',
+        "@type": "VirtualLocation",
         url: Routes.language_path(courseLandingPage.slug),
       },
     },
     aggregateRating: {
-      '@type': 'AggregateRating',
+      "@type": "AggregateRating",
       ratingValue: course.rating_value,
       ratingCount: course.rating_count,
     },
@@ -181,10 +181,10 @@ export default function Show({
 
   const breadcrumbItems: BreadcrumbItem[] = [
     {
-      name: courseCategory?.name ?? '-',
+      name: courseCategory?.name ?? "-",
       url: courseCategory
         ? Routes.language_category_url(courseCategory.slug!)
-        : '#',
+        : "#",
     },
     {
       name: courseLandingPage.header,
@@ -215,16 +215,16 @@ export default function Show({
             </Text>
             <Group mb="xl">
               <Group me="lg">
-                <Users size={16} />
+                <IconUsers size={16} />
                 <NumberFormatter
                   thousandSeparator
                   value={course.members_count}
                 />
               </Group>
               <Group>
-                <Clock size={16} />
+                <IconClock size={16} />
                 {t(($) => $.languages.show.updated_at, {
-                  date: dayjs(course.current_version!.created_at).format('LL'),
+                  date: dayjs(course.current_version!.created_at).format("LL"),
                 })}
               </Group>
             </Group>
@@ -254,7 +254,7 @@ export default function Show({
                   {t(($) => $.languages.show.continue)}
                 </Button>
               )}
-              {courseMember?.state === 'finished' && !nextLesson && (
+              {courseMember?.state === "finished" && !nextLesson && (
                 <Button
                   size="lg"
                   variant="outline"
@@ -267,7 +267,7 @@ export default function Show({
                   {t(($) => $.languages.show.restart)}
                 </Button>
               )}
-              {courseMember?.state === 'finished' &&
+              {courseMember?.state === "finished" &&
                 !nextLesson &&
                 course.hexlet_program_landing_page && (
                   <Button
@@ -309,8 +309,8 @@ export default function Show({
               loading="lazy"
               alt={t(($) => $.languages.show.learning_preview)}
               style={{
-                borderRadius: 'var(--mantine-radius-xl)',
-                boxShadow: 'var(--mantine-shadow-lg)',
+                borderRadius: "var(--mantine-radius-xl)",
+                boxShadow: "var(--mantine-shadow-lg)",
               }}
             />
           )}
@@ -323,7 +323,7 @@ export default function Show({
           </Box>
         </SimpleGrid>
 
-        <Card bg="indigo.0" my={{ base: 'lg', sm: 80 }} p="xl">
+        <Card bg="indigo.0" my={{ base: "lg", sm: 80 }} p="xl">
           <Group>
             <Text responsive="3rem">
               {t(($) => $.languages.show.course_graduates)}
@@ -383,14 +383,14 @@ export default function Show({
           </Accordion>
         </Box>
 
-        <Box my={{ base: 'lg', sm: 80 }}>
+        <Box my={{ base: "lg", sm: 80 }}>
           <Title order={2} fz="h1" mb="xl" responsive>
             {t(($) => $.languages.show.about_learning)}
           </Title>
           <SimpleGrid cols={{ base: 1, lg: 2 }}>
             <Box>
               <Text fw="bold">
-                {t(($) => $.languages.show['convenient format'])}
+                {t(($) => $.languages.show["convenient format"])}
               </Text>
               <XssContent mb="md">
                 {t(($) => $.languages.show.learning_conveniently)}
@@ -495,7 +495,7 @@ export default function Show({
           </Box>
         )}
 
-        {!user.guest && i18next.language === 'ru' && (
+        {!user.guest && i18next.language === "ru" && (
           <Container size="lg">
             <Grid align="center" justify="space-between" gutter={0}>
               <Grid.Col span={{ base: 12, md: 6 }}>

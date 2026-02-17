@@ -35,6 +35,7 @@ Rails.application.routes.draw do
       end
     end
     namespace :api do
+      resource :chatkit, only: [ :create ]
       resources :feeds, only: [] do
         collection do
           get :yandex_courses

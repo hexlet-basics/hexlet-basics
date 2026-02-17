@@ -1,16 +1,11 @@
-class Ahoy::Store < Ahoy::DatabaseStore
-end
-
 # set to true for JavaScript tracking
-Ahoy.api = false
-Ahoy.track_bots = Rails.env.development?
-
-Ahoy.exclude_method = ->(_controller, request) do
-  # NOTE игнорируем все запросы к любым эндпоинтам Active Storage
-  request.path.start_with?("/rails/active_storage")
-end
+Ahoy.api = true
+Ahoy.server_side_visits = :when_needed
+Ahoy.cookie_domain = :all
 
 # set to true for geocoding (and add the geocoder gem to your Gemfile)
 # we recommend configuring local geocoding as well
 # see https://github.com/ankane/ahoy#geocoding
 Ahoy.geocode = false
+
+Safely.report_exception_method = ->(e) { Sentry.capture_exception(e) }

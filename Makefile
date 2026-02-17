@@ -75,9 +75,11 @@ editor-setup:
 
 sync-types:
 	ENABLE_TYPELIZER=1 bin/rails typelizer:generate:refresh
-	bin/rails js:routes:typescript
+	bin/rails js:routes
 	bin/rails app:export_events_to_ts
+	bin/rails app:export_event_names_to_ts
 	bin/rails app:export_enums_to_ts
+	# bin/rails app:export_model_names_to_ts
 
 
 sync: sync-locales sync-fixtures sync-types sync-browserlist
@@ -91,8 +93,8 @@ sync-locales:
 
 lint-locales:
 	npx i18next-cli lint
-	-npx i18next-cli status es
-	-npx i18next-cli status en
+	npx i18next-cli status es
+	npx i18next-cli status en
 
 coverage-open:
 	open coverage/index.html
@@ -110,7 +112,7 @@ lint: lint-locales
 	bin/rubocop
 
 lint-fix:
-	bin/rubocop -x
+	bin/rubocop -A
 	pnpm exec biome check --fix
 
 clear:
@@ -140,7 +142,7 @@ services-frontend-ssr-run:
 	bin/vite ssr
 
 services-app-run:
-	bin/rails s -p 3000
+	bundle exec falcon host
 
 services-jobs-run:
 	bin/jobs
@@ -149,7 +151,7 @@ services-webserver-run:
 	caddy run # --config ./services/webserver/caddy/conf/Caddyfile --envfile=.env
 
 services-cable-run:
-	bundle exec puma -p 28080 cable/config.ru
+	bundle exec falcon serve -b http://0.0.0.0:28080 -c cable/config.ru -n 1
 
 services-db-start:
 	docker run -d -it --rm \

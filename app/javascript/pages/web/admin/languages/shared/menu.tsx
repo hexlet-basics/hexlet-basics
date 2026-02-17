@@ -1,11 +1,11 @@
-import { LogIn } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { IconBrandGithub, IconLogin2 } from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
 import {
   CrudHorizontalMenu,
   type CrudHorizontalMenuItem,
-} from '@/components/CrudHorizontalMenu';
-import * as Routes from '@/routes.js';
-import type { LanguageCrud, LanguageLandingPage } from '@/types/serializers';
+} from "@/components/CrudHorizontalMenu";
+import * as Routes from "@/routes.js";
+import type { LanguageCrud, LanguageLandingPage } from "@/types/serializers";
 
 type Props = {
   data?: LanguageCrud;
@@ -13,36 +13,36 @@ type Props = {
 };
 
 export function Menu({ data, landingPage }: Props) {
-  const { t: tHelpers } = useTranslation('helpers');
+  const { t } = useTranslation();
 
   const items: CrudHorizontalMenuItem[] = [
     {
       href: Routes.admin_languages_path(),
-      label: tHelpers(($) => $.crud.list),
+      label: t(($) => $.helpers.crud.list),
     },
     {
       href: Routes.new_admin_language_path(),
-      label: tHelpers(($) => $.crud.add),
+      label: t(($) => $.helpers.crud.add),
     },
   ];
 
   if (data) {
     const meta = (data as { meta?: { repository_url?: string } }).meta ?? {};
     items.push({
-      href: Routes.edit_admin_language_path(data.data.id),
-      label: tHelpers(($) => $.crud.editing),
+      href: Routes.edit_admin_language_path(data.id),
+      label: t(($) => $.helpers.crud.editing),
     });
     if (landingPage) {
       items.push({
         href: Routes.language_path(landingPage.slug),
         external: true,
-        label: <LogIn size={15} />,
+        label: <IconLogin2 size={15} />,
       });
     }
     items.push({
-      href: meta.repository_url ?? '',
+      href: meta.repository_url ?? "",
       external: true,
-      label: <i className="bi bi-github" />,
+      label: <IconBrandGithub size={15} />,
     });
   }
 

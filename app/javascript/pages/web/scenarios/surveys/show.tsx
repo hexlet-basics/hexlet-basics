@@ -1,4 +1,4 @@
-import { router, usePage } from '@inertiajs/react';
+import { router, usePage } from "@inertiajs/react";
 import {
   Button,
   Card,
@@ -7,13 +7,13 @@ import {
   Stack,
   Text,
   Title,
-} from '@mantine/core';
-import type { PropsWithChildren } from 'react';
-import { useTranslation } from 'react-i18next';
+} from "@mantine/core";
+import type { PropsWithChildren } from "react";
+import { useTranslation } from "react-i18next";
 
-import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
-import * as Routes from '@/routes.js';
-import type { Survey, SurveyItem, SurveyScenario } from '@/types';
+import ApplicationLayout from "@/layouts/ApplicationLayout";
+import * as Routes from "@/routes.js";
+import type { Survey, SurveyItem, SurveyScenario } from "@/types";
 
 type Props = PropsWithChildren & {
   survey: Survey;
@@ -26,13 +26,13 @@ export default function Show({ scenario, survey, surveyItems }: Props) {
 
   const page = usePage();
   // is there a better way?
-  const queryParams = new URLSearchParams(page.url.split('?')[1]);
+  const queryParams = new URLSearchParams(page.url.split("?")[1]);
 
   const handleAnswer = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const id = Number((e.currentTarget as HTMLButtonElement).dataset.id);
     router.post(Routes.scenario_survey_answers_url(scenario.id, survey.id), {
-      from: queryParams.get('from'),
+      from: queryParams.get("from"),
       survey_answer: { survey_item_id: id },
     });
   };
@@ -45,7 +45,7 @@ export default function Show({ scenario, survey, surveyItems }: Props) {
             withBorder
             radius="lg"
             p="xl"
-            w={{ base: '100%', sm: '90%', md: '80%', lg: '70%' }}
+            w={{ base: "100%", sm: "90%", md: "80%", lg: "70%" }}
           >
             <Stack gap="md">
               <Title order={1} mb="lg">

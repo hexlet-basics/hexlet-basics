@@ -1,14 +1,20 @@
 class PasswordReminderFormResource < ApplicationResource
+  class MetaResource < ApplicationResource
+    typelize_from RemindPasswordForm
+
+    typelize model: :string
+    typelize relations: "Record<string, string>"
+
+    attribute(:model) { it.class.to_s.underscore }
+    attribute(:relations) do
+      it.class.respond_to?(:nested_attributes_mapping) ? it.class.nested_attributes_mapping : {}
+    end
+  end
+
   typelize_from RemindPasswordForm
-  root_key :data
 
   attributes :email
   typelize email: :string
 
-  typelize_meta meta: "{ modelName: string }"
-  meta do
-    {
-      modelName: object.class.to_s.underscore
-    }
-  end
+  has_one :meta, source: proc { |_params| self }, resource: MetaResource
 end

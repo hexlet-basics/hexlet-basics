@@ -1,4 +1,4 @@
-export const resources = import.meta.glob<ResourceModule>('./images/**/*', {
+export const resources = import.meta.glob<ResourceModule>("./images/**/*", {
   eager: true,
 });
 

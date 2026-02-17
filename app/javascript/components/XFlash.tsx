@@ -1,21 +1,21 @@
-import { usePage } from '@inertiajs/react';
-import { Alert } from '@mantine/core';
-import { useState } from 'react';
-import { hasObjectKey } from '@/lib/utils';
-import type { FlashKey, FlashVariants, SharedProps } from '@/types';
-import XssContent from './XssContent';
+import { usePage } from "@inertiajs/react";
+import { Alert } from "@mantine/core";
+import { useState } from "react";
+import { hasObjectKey } from "@/lib/utils";
+import type { FlashKey, FlashVariants } from "@/types";
+import XssContent from "./XssContent";
 
 export default function XFlash() {
-  const { flash } = usePage<SharedProps>().props;
+  const { flash } = usePage().props;
 
   const [dismissed, setDismissed] = useState(false);
   const handleClose = () => setDismissed(true);
 
   const variants: FlashVariants = {
-    error: 'red',
-    notice: 'blue',
-    warning: 'yellow',
-    success: 'green',
+    error: "red",
+    notice: "blue",
+    warning: "yellow",
+    success: "green",
   };
 
   const flashEntry = (Object.entries(variants) as [FlashKey, string][]).find(

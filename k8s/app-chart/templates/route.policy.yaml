@@ -1,0 +1,23 @@
+---
+
+apiVersion: gwin.yandex.cloud/v1
+kind: RoutePolicy
+metadata:
+  name: "{{ .Release.Name }}-route-policy"
+  namespace: "{{ .Release.Namespace }}"
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: "{{ .Release.Name }}-main-httproute"
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: "{{ .Release.Name }}-secondary-httproute"
+  policy:
+    rules:
+      http:
+        upgradeTypes:
+          - "{{ .Values.gateway.backend.upgradeTypes }}"
+      backends:
+        http:
+          useHTTP2: {{ .Values.gateway.backend.useHttp2 }}

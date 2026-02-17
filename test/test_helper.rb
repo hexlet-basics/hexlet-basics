@@ -1,4 +1,5 @@
 ENV["RAILS_ENV"] ||= "test"
+ENV["CONSOLE_LEVEL"] ||= "error"
 
 # require "simplecov"
 # SimpleCov.start

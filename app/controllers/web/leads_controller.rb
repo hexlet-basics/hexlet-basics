@@ -51,6 +51,7 @@ class Web::LeadsController < Web::ApplicationController
       current_user.save!
 
       lead_created_event_data = {
+        lead_id: lead.id,
         user_id: current_user.id,
         first_name: current_user.first_name,
         last_name: current_user.last_name,
@@ -71,7 +72,7 @@ class Web::LeadsController < Web::ApplicationController
       lead_created_event = LeadCreatedEvent.new(data: lead_created_event_data)
 
       publish_event(lead_created_event, current_user)
-      event_to_js(lead_created_event)
+      js_event(lead_created_event)
 
       f(:success)
       redirect_to params[:from].presence || root_path

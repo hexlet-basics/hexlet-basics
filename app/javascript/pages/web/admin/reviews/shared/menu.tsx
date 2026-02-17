@@ -1,36 +1,39 @@
-import { LogIn } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { IconLogin2 } from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
 import {
   CrudHorizontalMenu,
   type CrudHorizontalMenuItem,
-} from '@/components/CrudHorizontalMenu';
-import * as Routes from '@/routes.js';
-import type ReviewCrud from '@/types/serializers/ReviewCrud';
+} from "@/components/CrudHorizontalMenu";
+import * as Routes from "@/routes.js";
+import type ReviewCrud from "@/types/serializers/ReviewCrud";
 
 type Props = {
   data?: ReviewCrud;
 };
 
 export function Menu({ data }: Props) {
-  const { t: tHelpers } = useTranslation('helpers');
+  const { t } = useTranslation();
 
   const items: CrudHorizontalMenuItem[] = [
-    { href: Routes.admin_reviews_path(), label: tHelpers(($) => $.crud.list) },
+    {
+      href: Routes.admin_reviews_path(),
+      label: t(($) => $.helpers.crud.list),
+    },
     {
       href: Routes.new_admin_review_path(),
-      label: tHelpers(($) => $.crud.add),
+      label: t(($) => $.helpers.crud.add),
     },
   ];
 
   if (data) {
     items.push({
-      href: Routes.edit_admin_review_path(data.data.id),
-      label: tHelpers(($) => $.crud.editing),
+      href: Routes.edit_admin_review_path(data.id),
+      label: t(($) => $.helpers.crud.editing),
     });
     items.push({
       href: Routes.reviews_path(),
       external: true,
-      label: <LogIn size={15} />,
+      label: <IconLogin2 size={15} />,
     });
   }
 

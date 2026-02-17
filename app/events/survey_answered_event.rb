@@ -1,6 +1,8 @@
 # typed: strict
 
-class SurveyAnsweredEvent < TypedEvent
+class SurveyAnsweredEvent < ApplicationEvent
+  NAME = "survey_answered"
+
   DataShape = T.type_alias {
     {
       survey_answer_id: Integer,

@@ -51,6 +51,7 @@ class Web::ApplicationController < ApplicationController
     gon.env = Rails.env
     gon.locale = I18n.locale
     gon.suffix = I18n.locale == :en ? nil : I18n.locale
+    gon.ym_counter = 54648685
   end
 
   private
@@ -98,7 +99,7 @@ class Web::ApplicationController < ApplicationController
       if tag.is_a?(Hash)
         escape_meta_tags(tag)
       elsif tag.is_a?(Array)
-        tag.map! { |item| Rack::Utils.escape_html(item) }
+        tag.map! { Rack::Utils.escape_html(it) }
       else
         Rack::Utils.escape_html(tag)
       end

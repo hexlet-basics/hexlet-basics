@@ -6,10 +6,11 @@ import {
   Stack,
   Text,
   Title,
-} from '@mantine/core';
-import { useTranslation } from 'react-i18next';
-import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
-import * as Routes from '@/routes.js';
+} from "@mantine/core";
+import { IconArrowRight } from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
+import ApplicationLayout from "@/layouts/ApplicationLayout";
+import * as Routes from "@/routes.js";
 
 export default function Index() {
   const { t } = useTranslation();
@@ -28,7 +29,7 @@ export default function Index() {
                 href={Routes.for_teachers_cases_path()}
               >
                 <span>{t(($) => $.cases.index.link)}</span>
-                <i className="bi bi-arrow-right lh-1" />
+                <IconArrowRight className="lh-1" size={16} />
               </a>
             </Card>
           </Grid.Col>

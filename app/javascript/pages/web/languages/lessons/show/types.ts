@@ -1,32 +1,15 @@
-import type { AssistantMessage } from '@/hooks/useAssistantStream';
 import type {
   Language,
-  LanguageCategory,
-  LanguageLandingPageForLists,
   LanguageLesson,
   LanguageLessonMember,
   LessonCheckingResponse,
-  SharedProps,
-} from '@/types';
+} from "@/types";
 
-export type LessonSharedProps = SharedProps & {
-  canCreateAssistantMessage: boolean;
-  course: Language;
-  courseCategory?: LanguageCategory;
-  landingPage: LanguageLandingPageForLists;
-  prevLesson?: LanguageLesson;
-  nextLesson?: LanguageLesson;
-  lessonMember?: LanguageLessonMember;
-  lesson: LanguageLesson;
-  lessons: LanguageLesson[];
-  previousMessages: AssistantMessage[];
-};
+type CheckingResult = LessonCheckingResponse["result"] | "error" | null;
 
-type CheckingResult = LessonCheckingResponse['result'] | 'error' | null;
-
-type TabName = 'editor' | 'output' | 'tests' | 'solution';
-type SolutionState = 'shown' | 'canBeShown' | 'notAllowedToBeShown';
-type ProcessState = 'checked' | 'unchecked' | 'checking';
+type TabName = "editor" | "output" | "tests" | "solution";
+type SolutionState = "shown" | "canBeShown" | "notAllowedToBeShown";
+type ProcessState = "checked" | "unchecked" | "checking";
 
 export interface LessonProps {
   lessonMember?: LanguageLessonMember;

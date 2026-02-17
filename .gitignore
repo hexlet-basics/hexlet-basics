@@ -57,3 +57,4 @@ terraform/*.json
 .vscode
 stats.html
 .idea/
+.npm-cache

@@ -7,17 +7,17 @@ class SitemapBlogPostResource
   attributes :id
 
   typelize :string
-  attribute :name do |post|
-    post.name
+  attribute :name do
+    it.name
   end
 
   typelize :string
-  attribute :slug do |post|
-    post.slug
+  attribute :slug do
+    it.slug
   end
 
   typelize "Locale"
-  attribute :locale do |post|
-    post.locale
+  attribute :locale do
+    it.locale
   end
 end

@@ -1,17 +1,17 @@
-import { CodeHighlight, InlineCodeHighlight } from '@mantine/code-highlight';
-import { Table, Typography } from '@mantine/core';
+import { CodeHighlight, InlineCodeHighlight } from "@mantine/code-highlight";
+import { Table, Typography } from "@mantine/core";
 // import rehypeShikiFromHighlighter from '@shikijs/rehype/core';
-import type { Directives } from 'mdast-util-directive';
-import type { ComponentPropsWithoutRef } from 'react';
-import Markdown from 'react-markdown';
-import rehypeExternalLinks from 'rehype-external-links';
-import rehypeRaw from 'rehype-raw';
-import remarkDirective from 'remark-directive';
-import remarkGfm from 'remark-gfm';
-import type { PluggableList } from 'unified';
-import type { Node } from 'unist';
-import { visit } from 'unist-util-visit';
-import { typographyStyles } from '@/lib/mantine';
+import type { Directives } from "mdast-util-directive";
+import type { ComponentPropsWithoutRef } from "react";
+import Markdown from "react-markdown";
+import rehypeExternalLinks from "rehype-external-links";
+import rehypeRaw from "rehype-raw";
+import remarkDirective from "remark-directive";
+import remarkGfm from "remark-gfm";
+import type { PluggableList } from "unified";
+import type { Node } from "unist";
+import { visit } from "unist-util-visit";
+import { typographyStyles } from "@/lib/mantine";
 
 type DirectiveComponents = Record<
   string,
@@ -29,9 +29,9 @@ type MarkdownViewerProps = {
 
 function isDirective(node: Node): node is Directives {
   return (
-    node.type === 'containerDirective' ||
-    node.type === 'leafDirective' ||
-    node.type === 'textDirective'
+    node.type === "containerDirective" ||
+    node.type === "leafDirective" ||
+    node.type === "textDirective"
   );
 }
 
@@ -58,10 +58,10 @@ function createDirectivePlugin(components: DirectiveComponents) {
 function MarkdownCodeHighlight({
   className,
   children,
-}: ComponentPropsWithoutRef<'code'>) {
+}: ComponentPropsWithoutRef<"code">) {
   const code = String(children).trim();
   const match = className?.match(/language-(\w+)/);
-  const language = match ? match[1] : 'plaintext';
+  const language = match ? match[1] : "plaintext";
   const isInline = !match;
 
   if (isInline) {
@@ -77,19 +77,19 @@ export default function MarkdownViewer({
   components = {},
 }: MarkdownViewerProps) {
   const preparedComponents = {
-    pre: (props: ComponentPropsWithoutRef<'pre'>) => <>{props.children}</>, // убираем обертку pre
-    table: (props: ComponentPropsWithoutRef<'table'>) => (
+    pre: (props: ComponentPropsWithoutRef<"pre">) => <>{props.children}</>, // убираем обертку pre
+    table: (props: ComponentPropsWithoutRef<"table">) => (
       <Table.ScrollContainer minWidth={800}>
         <table>{props.children}</table>
       </Table.ScrollContainer>
     ), // убираем обертку pre
-    ul: (props: ComponentPropsWithoutRef<'ul'>) => (
+    ul: (props: ComponentPropsWithoutRef<"ul">) => (
       <ul className="list-disc ml-6">{props.children}</ul>
     ),
-    ol: (props: ComponentPropsWithoutRef<'ol'>) => (
+    ol: (props: ComponentPropsWithoutRef<"ol">) => (
       <ol className="list-decimal ml-6">{props.children}</ol>
     ),
-    li: (props: ComponentPropsWithoutRef<'li'>) => (
+    li: (props: ComponentPropsWithoutRef<"li">) => (
       <li className="my-1">{props.children}</li>
     ),
     code: MarkdownCodeHighlight,
@@ -100,8 +100,8 @@ export default function MarkdownViewer({
     [
       rehypeExternalLinks,
       {
-        target: '_blank',
-        rel: ['noopener', 'noreferrer'],
+        target: "_blank",
+        rel: ["noopener", "noreferrer"],
       },
     ],
   ];

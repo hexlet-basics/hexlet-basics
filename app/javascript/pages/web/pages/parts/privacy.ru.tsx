@@ -3,7 +3,7 @@ export default function PrivaryRu() {
     <>
       <p>
         Эта Политика конфиденциальности описывает, как ваша личная информация
-        собирается, используется и передается при посещении{' '}
+        собирается, используется и передается при посещении{" "}
         <a href="https://code-basics.com">https://code-basics.com</a> («Сайт»).
       </p>
 
@@ -27,7 +27,7 @@ export default function PrivaryRu() {
           <strong>Cookies</strong> — это файлы данных, которые размещаются на
           вашем устройстве или компьютере и часто содержат анонимный уникальный
           идентификатор. Для получения дополнительной информации о файлах cookie
-          и о том, как отключить файлы cookie, посетите сайт{' '}
+          и о том, как отключить файлы cookie, посетите сайт{" "}
           <a href="http://www.allaboutcookies.org">
             http://www.allaboutcookies.org
           </a>
@@ -39,7 +39,7 @@ export default function PrivaryRu() {
           интернет-провайдера, страницы перехода/выхода и отметки даты/времени.
         </li>
         <li>
-          <strong>Веб-маяки</strong>, <strong>теги</strong> и{' '}
+          <strong>Веб-маяки</strong>, <strong>теги</strong> и{" "}
           <strong>пиксели</strong> — это электронные файлы, используемые для
           записи информации о том, как вы просматриваете Сайт.
         </li>
@@ -76,10 +76,10 @@ export default function PrivaryRu() {
         Мы передаем вашу личную информацию третьим лицам, которые помогают нам
         использовать эти данные, как это было описано выше. Например, сервис
         Rollbar отслеживает работоспособность нашего сайта и наличие ошибок.
-        Здесь{' '}
+        Здесь{" "}
         <a href="https://docs.rollbar.com/docs/privacy-policy">
           https://docs.rollbar.com/docs/privacy-policy
-        </a>{' '}
+        </a>{" "}
         вы можете узнать о том, как Rollbar использует вашу личную информацию.
       </p>
       <p>
@@ -95,7 +95,7 @@ export default function PrivaryRu() {
         рекламу или маркетинговые сообщения, которые, по нашему мнению, могут
         вас заинтересовать. Для получения дополнительной информации о том, как
         работает целевая реклама, вы можете посетить образовательную страницу
-        «Инициативы сетевой рекламы» (NAI) по адресу{' '}
+        «Инициативы сетевой рекламы» (NAI) по адресу{" "}
         <a href="http://www.networkadvertising.org/understanding-online-advertising/how-does-it-work">
           http://www.networkadvertising.org/understanding-online-advertising/how-does-it-work
         </a>
@@ -104,19 +104,19 @@ export default function PrivaryRu() {
       <p>Вы можете отказаться от целевой рекламы:</p>
       <ul>
         <li>
-          FACEBOOK -{' '}
+          FACEBOOK -{" "}
           <a href="https://www.facebook.com/settings/?tab=ads">
             https://www.facebook.com/settings/?tab=ads
           </a>
         </li>
         <li>
-          GOOGLE -{' '}
+          GOOGLE -{" "}
           <a href="https://www.google.com/settings/ads/anonymous">
             https://www.google.com/settings/ads/anonymous
           </a>
         </li>
         <li>
-          BING -{' '}
+          BING -{" "}
           <a href="https://advertise.bingads.microsoft.com/en-us/resources/policies/personalized-ads">
             https://advertise.bingads.microsoft.com/en-us/resources/policies/personalized-ads
           </a>
@@ -124,7 +124,7 @@ export default function PrivaryRu() {
       </ul>
       <p>
         Кроме того, вы можете отказаться от некоторых из этих услуг, посетив
-        портал отказа от участия в Digital Advertising Alliance по адресу:{' '}
+        портал отказа от участия в Digital Advertising Alliance по адресу:{" "}
         <a href="http://optout.aboutads.info/">http://optout.aboutads.info/</a>.
       </p>
 
@@ -163,7 +163,7 @@ export default function PrivaryRu() {
       <p>
         Для получения дополнительной информации о нашей политике
         конфиденциальности, а также если у вас есть вопросы, либо вы хотите
-        подать жалобу, пожалуйста, свяжитесь с нами по электронной почте{' '}
+        подать жалобу, пожалуйста, свяжитесь с нами по электронной почте{" "}
         <a href="mailto:support@hexlet.io">support@hexlet.io</a> или по почте,
         используя эти данные:
       </p>

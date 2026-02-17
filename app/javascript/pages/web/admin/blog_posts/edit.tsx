@@ -1,10 +1,10 @@
-import { List } from '@mantine/core';
-import { useTranslation } from 'react-i18next';
-import AdminLayout from '@/pages/layouts/AdminLayout';
-import * as Routes from '@/routes.js';
-import type { BlogPostCrud, Language } from '@/types/serializers';
-import Form from './shared/form';
-import Menu from './shared/menu';
+import { List } from "@mantine/core";
+import { useTranslation } from "react-i18next";
+import AdminLayout from "@/layouts/AdminLayout";
+import * as Routes from "@/routes.js";
+import type { BlogPostCrud, Language } from "@/types/serializers";
+import Form from "./shared/form";
+import Menu from "./shared/menu";
 
 type Props = {
   blogPostDto: BlogPostCrud;
@@ -17,7 +17,7 @@ export default function Edit({ blogPostDto, relatedCourses }: Props) {
   return (
     <AdminLayout
       header={t(($) => $.admin.blog_posts.edit.header, {
-        id: blogPostDto.data.name,
+        id: blogPostDto.name,
       })}
     >
       <Menu data={blogPostDto} />
@@ -30,7 +30,7 @@ export default function Edit({ blogPostDto, relatedCourses }: Props) {
       <Form
         method="patch"
         data={blogPostDto}
-        url={Routes.admin_blog_post_path(blogPostDto.data.id)}
+        url={Routes.admin_blog_post_path(blogPostDto.id)}
       />
     </AdminLayout>
   );

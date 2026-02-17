@@ -1,22 +1,37 @@
-import type { Method } from '@inertiajs/core';
-import { Link, router } from '@inertiajs/react';
-import { Anchor, type AnchorProps, useMantineTheme } from '@mantine/core';
-import { noop } from 'es-toolkit';
-import type { PropsWithChildren } from 'react';
-import useConfirmation from '@/hooks/useConfirmation';
+import { type Method, shouldIntercept } from "@inertiajs/core";
+import { Link, router } from "@inertiajs/react";
+import {
+  Anchor,
+  type AnchorProps,
+  Button,
+  type ButtonProps,
+  type ElementProps,
+} from "@mantine/core";
+import type { MouseEventHandler, PropsWithChildren } from "react";
+import useConfirmation from "@/hooks/useConfirmation";
+import { getCurrentUrl } from "@/lib/utils";
 
 type AppAnchorProps = AnchorProps &
-  React.AriaAttributes &
+  Partial<ButtonProps> &
+  Omit<
+    ElementProps<"a", keyof AnchorProps>,
+    | "onClick"
+    | "onError"
+    | "onProgress"
+    | "onSuccess"
+    | "onCancel"
+    | "onStart"
+    | "onFinish"
+  > &
   PropsWithChildren & {
-    /**
-     * If true, disables href and renders a pseudo-link (SEO-unfriendly).
-     */
-    pseudo?: boolean;
+    activeProps?: AnchorProps;
 
     /**
      * If true, opens in a new tab and disables referrer
      */
     external?: boolean;
+    toInertia?: boolean;
+    inertiaElement?: "link" | "button";
     withConfirmation?: boolean;
 
     /**
@@ -28,47 +43,63 @@ type AppAnchorProps = AnchorProps &
      * Always required
      */
     href: string;
+
+    target?: string;
+    onClick?: MouseEventHandler<Element>;
   };
 
 export default function AppAnchor({
-  pseudo,
   external,
-  method = 'get',
+  toInertia,
+  inertiaElement = "link",
+  method = "get",
   withConfirmation,
+  activeProps,
   href,
+  onClick,
   ...props
 }: AppAnchorProps) {
-  const confirmDeleting = useConfirmation();
-  const theme = useMantineTheme();
+  const visit = () => {
+    router.visit(href, { method });
+  };
 
-  if (pseudo) {
-    const openInNewTab = () =>
-      window.open(href, '_blank', 'noopener,noreferrer');
-    const openNormally = () => router.visit(href);
+  const confirmDeleting = useConfirmation({
+    callback: () => {
+      visit();
+    },
+  });
 
-    return (
-      <Anchor
-        component="button"
-        style={{
-          textAlign: 'unset',
-          cursor: 'pointer',
-        }}
-        onClick={(e) => {
-          if (e.metaKey || e.ctrlKey || e.button === 1) {
-            openInNewTab();
-            return;
-          }
+  const handleInertiaLinkClick: MouseEventHandler<Element> = (event) => {
+    onClick?.(event);
 
-          openNormally();
-        }}
-        onAuxClick={(e) => {
-          if (e.button === 1) {
-            openInNewTab();
-          }
-        }}
-        {...props}
-      />
-    );
+    if (!shouldIntercept(event)) {
+      return;
+    }
+
+    event.preventDefault();
+    if (withConfirmation) {
+      confirmDeleting(event);
+      return;
+    }
+
+    visit();
+  };
+
+  const handleInertiaButtonClick: MouseEventHandler<Element> = (event) => {
+    onClick?.(event);
+
+    if (!withConfirmation) {
+      return;
+    }
+
+    event.preventDefault();
+    confirmDeleting(event);
+  };
+
+  let additionalProps = {};
+  if (activeProps) {
+    const active = getCurrentUrl({ onlyPath: true }) === href;
+    additionalProps = active ? activeProps : {};
   }
 
   if (external) {
@@ -76,19 +107,37 @@ export default function AppAnchor({
       <Anchor
         href={href}
         target="_blank"
-        rel="noreferrer nofollow"
+        rel="noopener noreferrer nofollow"
         {...props}
+        onClick={onClick}
       />
     );
   }
 
+  if (!toInertia) {
+    return <Anchor href={href} {...props} {...additionalProps} />;
+  }
+
+  if (inertiaElement === "button") {
+    return (
+      <Button
+        component={Link}
+        href={href}
+        method={method}
+        onClick={handleInertiaButtonClick}
+        {...props}
+        {...additionalProps}
+      />
+    );
+  }
+
+  // default: Inertia-powered as regular link
   return (
     <Anchor
-      component={Link}
       href={href}
-      method={method}
-      onClick={withConfirmation ? confirmDeleting : noop}
+      onClick={handleInertiaLinkClick}
       {...props}
+      {...additionalProps}
     />
   );
 }

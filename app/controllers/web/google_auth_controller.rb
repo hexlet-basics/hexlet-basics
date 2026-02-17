@@ -10,10 +10,15 @@ class Web::GoogleAuthController < Web::ApplicationController
     if user.persisted?
       sign_in user
       f(:success)
-      js_event_options = {
-        user: user
-      }
-      js_event(:signed_up, js_event_options) unless existing_user
+      unless existing_user
+        signed_up_event_data = {
+          user_id: user.id,
+          email: user.email,
+          first_name: user.first_name,
+          last_name: user.last_name
+        }
+        js_event(UserSignedUpEvent.new(data: signed_up_event_data))
+      end
       redirect_to root_path
     else
       redirect_to new_user_path

@@ -1,0 +1,57 @@
+---
+
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: "{{ .Release.Name }}-main-httproute"
+  namespace: "{{ .Release.Namespace }}"
+spec:
+  hostnames:
+    - "{{ .Values.gateway.hosts.primary }}"
+    - "{{ .Values.gateway.hosts.wildcard }}"
+  parentRefs:
+    - name: "{{ .Release.Name }}-gateway"
+      sectionName: https
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /ru/api/lessons/
+      backendRefs:
+        - name: "{{ .Release.Name }}-web-check-service"
+          port: 80
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /api/lessons/
+      backendRefs:
+        - name: "{{ .Release.Name }}-web-check-service"
+          port: 80
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: "{{ .Release.Name }}-web-service"
+          port: 80
+---
+
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: "{{ .Release.Name }}-secondary-httproute"
+  namespace: "{{ .Release.Namespace }}"
+spec:
+  hostnames:
+    - "{{ .Values.gateway.hosts.secondary }}"
+  parentRefs:
+    - name: "{{ .Release.Name }}-gateway"
+      sectionName: https
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: "{{ .Release.Name }}-web-service"
+          port: 80

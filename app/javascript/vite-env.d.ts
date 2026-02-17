@@ -15,7 +15,7 @@ type ResourceModule = {
 //   readonly env: ImportMetaEnv;
 // }
 
-declare module '*?format=webp' {
+declare module "*?format=webp" {
   const src: string;
   export default src;
 }

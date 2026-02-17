@@ -4,13 +4,13 @@ class LeadResource < ApplicationResource
   attributes :id, :user_id, :phone, :whatsapp, :telegram, :survey_answers_data, :courses_data, :created_at
 
   typelize :string, nullable: true
-  attribute :full_name do |obj|
-    [ obj.user.first_name, obj.user.last_name ].join " "
+  attribute :full_name do
+    [ it.user.first_name, it.user.last_name ].join " "
   end
 
   typelize :string, nullable: true
-  attribute :email do |obj|
-    obj.user.email
+  attribute :email do
+    it.user.email
   end
 
   # typelize "Array<[string, string]>"

@@ -1,3 +1,4 @@
+import type { Method } from "@inertiajs/core";
 import {
   Box,
   Button,
@@ -6,47 +7,42 @@ import {
   Select,
   Textarea,
   TextInput,
-} from '@mantine/core';
-import { useTranslation } from 'react-i18next';
-import { useAppForm } from '@/hooks/useAppForm';
+} from "@mantine/core";
+import { useTranslation } from "react-i18next";
+import { useAppForm } from "@/hooks/useAppForm";
+import { arrayToSelectData } from "@/lib/utils";
 import type {
-  HttpRouterMethod,
   LanguageCategoryCrud,
   LanguageCategoryItemCrud,
   LanguageCategoryQnaItemCrud,
-} from '@/types';
+} from "@/types";
 
 type Props = {
-  data: LanguageCategoryCrudWithMeta;
+  data: LanguageCategoryCrud;
   url: string;
-  method?: HttpRouterMethod;
-};
-
-type LandingPageOption = {
-  id: number;
-  header: string | null;
-};
-
-type LanguageCategoryCrudWithMeta = LanguageCategoryCrud & {
-  meta?: {
-    landingPagesForCategories?: LandingPageOption[];
-  };
+  method?: Method;
 };
 
 export default function Form({ data, url, method }: Props) {
   const { t } = useTranslation();
-  const { t: tHelpers } = useTranslation('helpers');
 
-  const { getInputProps, getSelectProps, submit, useArrayField, formState } =
-    useAppForm<LanguageCategoryCrud>({
-      url,
-      method: method ?? 'post',
-      container: data, // передаём контейнер целиком
-    });
-  const landingPagesForCategories = data.meta?.landingPagesForCategories ?? [];
+  const payload = data;
+  const landingPagesSelectData = arrayToSelectData(
+    data.meta?.landing_pages_for_categories ?? [],
+    "id",
+    "header",
+  );
 
-  const itemsField = useArrayField('items_attributes');
-  const qnaItemsField = useArrayField('qna_items_attributes');
+  const { onSubmit, processing, form } = useAppForm(payload, {
+    url,
+    method: method ?? "post",
+  });
+
+  const itemsCollection =
+    form.useCollection<LanguageCategoryItemCrud>("items_attributes");
+  const qnaItemsCollection = form.useCollection<LanguageCategoryQnaItemCrud>(
+    "qna_items_attributes",
+  );
 
   const defaultItemValues: LanguageCategoryItemCrud = {
     id: null,
@@ -56,99 +52,89 @@ export default function Form({ data, url, method }: Props) {
   };
   const defaultQnaValues: LanguageCategoryQnaItemCrud = {
     id: null,
-    question: '',
-    answer: '',
+    question: "",
+    answer: "",
     _destroy: false,
   };
 
   return (
-    <form onSubmit={submit}>
+    <form onSubmit={onSubmit}>
       <Fieldset p="lg" mb="xl">
         <legend>{t(($) => $.admin.language_categories.form.main)}</legend>
-        <TextInput {...getInputProps('name')} autoFocus />
-        <TextInput {...getInputProps('header')} />
-        <TextInput {...getInputProps('slug')} />
-        <Textarea {...getInputProps('description')} rows={5} />
+        <TextInput {...form.getInputProps("name")} autoFocus />
+        <TextInput {...form.getInputProps("header")} />
+        <TextInput {...form.getInputProps("slug")} />
+        <Textarea {...form.getInputProps("description")} rows={5} />
       </Fieldset>
       <Fieldset p="lg" mb="xl">
         <legend>{t(($) => $.admin.language_categories.form.items)}</legend>
-        {itemsField.fields.map((field, index) => (
-          <Box key={field._internalId} mb="xl">
-            <input
-              type="hidden"
-              {...getInputProps(`items_attributes.${index}.id`)}
-            />
+        {itemsCollection.forms.map((itemForm) => (
+          <Box key={`${itemForm.index}-${itemForm.data.id ?? "new"}`} mb="xl">
+            <input type="hidden" {...itemForm.getInputProps("id")} />
             <Select
-              {...getSelectProps(
-                `items_attributes.${index}.language_landing_page_id`,
-                landingPagesForCategories,
-                'id',
-                'header',
+              {...itemForm.getSelectProps(
+                "language_landing_page_id",
+                landingPagesSelectData,
               )}
             />
-            <Checkbox
-              {...getInputProps(`items_attributes.${index}._destroy`)}
-            />
-            {!field.id && (
+            <Checkbox {...itemForm.getCheckboxProps("_destroy")} />
+            {!itemForm.data.id && (
               <Button
+                type="button"
                 variant="outline"
                 color="red"
                 mt="xs"
-                onClick={() => itemsField.remove(index)}
+                onClick={() => itemsCollection.remove(itemForm.index)}
               >
-                {tHelpers(($) => $.crud.remove)}
+                {t(($) => $.helpers.crud.remove)}
               </Button>
             )}
           </Box>
         ))}
         <Button
+          type="button"
           variant="light"
           mt="sm"
-          onClick={() => itemsField.append(defaultItemValues)}
+          onClick={() => itemsCollection.add(defaultItemValues)}
         >
-          {tHelpers(($) => $.crud.add)}
+          {t(($) => $.helpers.crud.add)}
         </Button>
       </Fieldset>
       <Fieldset p="lg" mb="xl">
         <legend>{t(($) => $.admin.language_categories.form.qna_items)}</legend>
-        {qnaItemsField.fields.map((field, index) => (
-          <Box key={field._internalId} mb="xl">
-            <input
-              type="hidden"
-              {...getInputProps(`qna_items_attributes.${index}.id`)}
-            />
-            <TextInput
-              {...getInputProps(`qna_items_attributes.${index}.question`)}
-            />
-            <Textarea
-              {...getInputProps(`qna_items_attributes.${index}.answer`)}
-              rows={5}
-            />
-            <Checkbox
-              {...getInputProps(`qna_items_attributes.${index}._destroy`)}
-            />
-            {!field.id && (
+        {qnaItemsCollection.forms.map((qnaItemForm) => (
+          <Box
+            key={`${qnaItemForm.index}-${qnaItemForm.data.id ?? "new"}`}
+            mb="xl"
+          >
+            <input type="hidden" {...qnaItemForm.getInputProps("id")} />
+            <TextInput {...qnaItemForm.getInputProps("question")} />
+            <Textarea {...qnaItemForm.getInputProps("answer")} rows={5} />
+            <Checkbox {...qnaItemForm.getCheckboxProps("_destroy")} />
+            {!qnaItemForm.data.id && (
               <Button
+                type="button"
                 variant="outline"
                 color="red"
                 mt="xs"
-                onClick={() => qnaItemsField.remove(index)}
+                onClick={() => qnaItemsCollection.remove(qnaItemForm.index)}
               >
-                {tHelpers(($) => $.crud.remove)}
+                {t(($) => $.helpers.crud.remove)}
               </Button>
             )}
           </Box>
         ))}
         <Button
+          type="button"
           variant="light"
           mt="sm"
-          onClick={() => qnaItemsField.append(defaultQnaValues)}
+          onClick={() => qnaItemsCollection.add(defaultQnaValues)}
         >
-          {tHelpers(($) => $.crud.add)}
+          {t(($) => $.helpers.crud.add)}
         </Button>
       </Fieldset>
-      <Button type="submit" mt="xl" loading={formState.isSubmitting}>
-        {tHelpers(($) => $.submit.save)}
+      <Button type="submit" mt="xl" loading={processing}>
+        {t(($) => $.helpers.submit.save)}
       </Button>
     </form>
   );

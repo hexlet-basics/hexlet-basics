@@ -1,4 +1,5 @@
 # typed: strict
 
-class EmailConfirmedEvent < TypedEvent
+class EmailConfirmedEvent < ApplicationEvent
+  NAME = "email_confirmed"
 end

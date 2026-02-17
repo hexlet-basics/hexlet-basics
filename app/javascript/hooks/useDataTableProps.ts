@@ -1,12 +1,12 @@
-import { router } from '@inertiajs/react';
-import type { DataTableSortStatus } from 'mantine-datatable';
-import { useMemo, useState } from 'react';
-import { getCurrentUrl } from '@/lib/utils';
-import type { Grid } from '@/types';
+import { router } from "@inertiajs/react";
+import type { DataTableSortStatus } from "mantine-datatable";
+import { useMemo, useState } from "react";
+import { getCurrentUrl } from "@/lib/utils";
+import type { Grid } from "@/types";
 
 function cleanObject<T extends Record<string, unknown>>(obj: T): Partial<T> {
   return Object.fromEntries(
-    Object.entries(obj).filter(([, v]) => v != null && v !== ''),
+    Object.entries(obj).filter(([, v]) => v != null && v !== ""),
   ) as Partial<T>;
 }
 

@@ -7,13 +7,13 @@ class LanguageResource < ApplicationResource
   has_one :current_version, resource: Language::VersionResource
 
   typelize :string, nullable: true
-  attribute :hexlet_program_landing_page do |obj|
-    obj.hexlet_program_landing_page.presence
+  attribute :hexlet_program_landing_page do
+    it.hexlet_program_landing_page.presence
   end
 
   typelize :string, nullable: true
-  attribute :repository_url do |obj|
-    obj.repository_url
+  attribute :repository_url do
+    it.repository_url
   end
 
   # typelize :string, nullable: true
@@ -22,28 +22,28 @@ class LanguageResource < ApplicationResource
   # end
 
   typelize :string
-  attribute :cover_list_variant do |obj|
-    urls.rails_representation_url(obj.cover.variant(:list)) if obj.cover.attached?
+  attribute :cover_list_variant do
+    urls.rails_representation_url(it.cover.variant(:list)) if it.cover.attached?
   end
 
   typelize :string
-  attribute :cover_thumb_variant do |obj|
-    urls.rails_representation_url(obj.cover.variant(:thumb)) if obj.cover.attached?
+  attribute :cover_thumb_variant do
+    urls.rails_representation_url(it.cover.variant(:thumb)) if it.cover.attached?
   end
 
   # TODO: хаха, вот я злодей. Реализовать нормальный подсчет рейтинга
   typelize :number
-  attribute :rating_count do |obj|
+  attribute :rating_count do
     89
   end
 
   typelize :number
-  attribute :members_count do |obj|
-    obj.members_count
+  attribute :members_count do
+    it.members_count
   end
 
   typelize :number
-  attribute :rating_value do |obj|
-    obj.id.even? ? 4 : 5
+  attribute :rating_value do
+    it.id.even? ? 4 : 5
   end
 end

@@ -6,13 +6,13 @@ import {
   Stack,
   TextInput,
   Title,
-} from '@mantine/core';
-import type { PropsWithChildren } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useAppForm } from '@/hooks/useAppForm';
-import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
-import * as Routes from '@/routes.js';
-import type { UserPassword } from '@/types/serializers';
+} from "@mantine/core";
+import type { PropsWithChildren } from "react";
+import { useTranslation } from "react-i18next";
+import { useAppForm } from "@/hooks/useAppForm";
+import ApplicationLayout from "@/layouts/ApplicationLayout";
+import * as Routes from "@/routes.js";
+import type { UserPassword } from "@/types/serializers";
 
 type Props = PropsWithChildren & {
   userPassword: UserPassword;
@@ -21,16 +21,12 @@ type Props = PropsWithChildren & {
 
 export default function New({ userPassword, resetPasswordToken }: Props) {
   const { t } = useTranslation();
-  const { t: tHelpers } = useTranslation('helpers');
 
-  const {
-    getInputProps,
-    submit,
-    formState: { isSubmitting },
-  } = useAppForm<UserPassword>({
+  const payload = userPassword;
+
+  const { onSubmit, processing, form } = useAppForm(payload, {
     url: Routes.password_path({ reset_password_token: resetPasswordToken }),
-    method: 'patch',
-    container: userPassword,
+    method: "patch",
   });
 
   return (
@@ -43,18 +39,18 @@ export default function New({ userPassword, resetPasswordToken }: Props) {
           <Card
             withBorder
             p="xl"
-            w={{ base: '100%', sm: '80%', md: '70%', lg: '50%' }}
+            w={{ base: "100%", sm: "80%", md: "70%", lg: "50%" }}
           >
-            <form onSubmit={submit}>
+            <form onSubmit={onSubmit}>
               <TextInput
-                {...getInputProps('password')}
+                {...form.getInputProps("password")}
                 type="password"
                 autoComplete="new-password"
                 required
               />
               <Box mt="lg" ta="right">
-                <Button type="submit" loading={isSubmitting}>
-                  {tHelpers(($) => $.submit.replace)}
+                <Button type="submit" loading={processing}>
+                  {t(($) => $.helpers.submit.replace)}
                 </Button>
               </Box>
             </form>

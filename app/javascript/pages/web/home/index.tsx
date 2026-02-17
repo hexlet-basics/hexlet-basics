@@ -1,4 +1,4 @@
-import { Head, usePage } from '@inertiajs/react';
+import { Head, usePage } from "@inertiajs/react";
 import {
   Accordion,
   Badge,
@@ -14,32 +14,36 @@ import {
   SimpleGrid,
   Text,
   Title,
-} from '@mantine/core';
-import { useId } from '@mantine/hooks';
-import i18next from 'i18next';
-import { BookOpenCheck, Bot, Github, Send } from 'lucide-react';
-import type { PropsWithChildren } from 'react';
-import { useTranslation } from 'react-i18next';
-import type { FAQPage, Question, WithContext } from 'schema-dts';
-import { Banner } from '@/components/Banner';
-import BlogPostBlock from '@/components/BlogPostBlock';
-import CourseBlock from '@/components/CourseBlock';
-import LeadFormBlock from '@/components/LeadFormBlock';
-import MarkdownViewer from '@/components/MarkdownViewer';
-import SignUpFormBlock from '@/components/SignUpFormBlock';
-import XssContent from '@/components/XssContent';
-import { hasObjectKey } from '@/lib/utils';
-import ApplicationLayout from '@/pages/layouts/ApplicationLayout';
-import { getResourceUrl } from '@/resources';
-import * as Routes from '@/routes.js';
+} from "@mantine/core";
+import { useId } from "@mantine/hooks";
+import {
+  IconBook2,
+  IconBrandGithub,
+  IconRobot,
+  IconSend,
+} from "@tabler/icons-react";
+import i18next from "i18next";
+import type { PropsWithChildren } from "react";
+import { useTranslation } from "react-i18next";
+import type { FAQPage, Question, WithContext } from "schema-dts";
+import { Banner } from "@/components/Banner";
+import BlogPostBlock from "@/components/BlogPostBlock";
+import CourseBlock from "@/components/CourseBlock";
+import LeadFormBlock from "@/components/LeadFormBlock";
+import MarkdownViewer from "@/components/MarkdownViewer";
+import SignUpFormBlock from "@/components/SignUpFormBlock";
+import XssContent from "@/components/XssContent";
+import ApplicationLayout from "@/layouts/ApplicationLayout";
+import { hasObjectKey } from "@/lib/utils";
+import { getResourceUrl } from "@/resources";
+import * as Routes from "@/routes.js";
 import type {
   BlogPost,
   LanguageMember,
   LeadCrud,
   Review,
-  SharedProps,
   UserSignUpForm,
-} from '@/types';
+} from "@/types";
 
 type Props = PropsWithChildren & {
   blogPosts: BlogPost[];
@@ -59,38 +63,38 @@ type ReviewItem = {
 const reviews: Record<string, ReviewItem[]> = {
   ru: [
     {
-      name: 'Александр Авдошкин',
-      avatar: getResourceUrl('avdoshkin.jpg'),
+      name: "Александр Авдошкин",
+      avatar: getResourceUrl("avdoshkin.jpg"),
       body: `Если бы не коронавирус, выполнил бы всё в заход (в смысле каждый день по несколько пунктов в теме).
 Изучаю с нуля, ваш портал очень ориентирован на новичков. Спасибо вам большое!`,
     },
     {
-      name: 'Сергей Тюрин',
-      avatar: getResourceUrl('tyrin.jpg'),
+      name: "Сергей Тюрин",
+      avatar: getResourceUrl("tyrin.jpg"),
       body: `Очень всё доступно даже для полного профана вроде меня. Эта вводная по JS вошла в мой туговатый ум,
 складно как недостающий пазл. Всем кидаю линк на эту страничку.`,
     },
     {
-      name: 'Элиях Клейман',
-      avatar: getResourceUrl('user-avatar.png'),
+      name: "Элиях Клейман",
+      avatar: getResourceUrl("user-avatar.png"),
       body: `Для меня это первый курс для новичка. Понравилось тем, что вся информация структурирована
 и дана по мере изучения материала в иерархичном порядке, что значительно повышает и желание к обучению`,
     },
   ],
   en: [
     {
-      name: 'Aleksandr Avdoshkin',
-      avatar: getResourceUrl('avdoshkin.jpg'),
+      name: "Aleksandr Avdoshkin",
+      avatar: getResourceUrl("avdoshkin.jpg"),
       body: "As someone with zero coding skills, I'd say that CodeBasics is focused on newcomers. Thank you very much!",
     },
     {
-      name: 'Sergei Tyurin',
-      avatar: getResourceUrl('tyrin.jpg'),
-      body: 'This is all very approachable even for a dummy like me. Now I show people this platform when I get the chance.',
+      name: "Sergei Tyurin",
+      avatar: getResourceUrl("tyrin.jpg"),
+      body: "This is all very approachable even for a dummy like me. Now I show people this platform when I get the chance.",
     },
     {
-      name: 'Eliyah Kleyman',
-      avatar: getResourceUrl('user-avatar.png'),
+      name: "Eliyah Kleyman",
+      avatar: getResourceUrl("user-avatar.png"),
       body: `For me, it was my very first programming course. I liked it because all the information is very well
 structured and given in a clear hierarchical order. It motivated me a lot to move forward in my studies.`,
     },
@@ -104,33 +108,33 @@ export default function Index({
   courseMembersByCourseId,
 }: Props) {
   const { t } = useTranslation();
-  const { t: tFaq } = useTranslation('faq');
-  const baseId = useId('courses');
+
+  const baseId = useId("courses");
 
   const {
     locale,
     landingPagesForLists,
     auth: { user },
-  } = usePage<SharedProps>().props;
+  } = usePage().props;
 
-  const faq = tFaq(($) => $.main, {
+  const faq = t(($) => $.faq.main, {
     returnObjects: true,
   });
 
   const entities: Question[] = Object.values(faq).map((item) => {
     return {
-      '@type': 'Question',
+      "@type": "Question",
       name: item.question,
       acceptedAnswer: {
-        '@type': 'Answer',
+        "@type": "Answer",
         text: item.answer,
       },
     };
   });
   // https://developers.google.com/search/docs/appearance/structured-data/faqpage
   const qaSchema: WithContext<FAQPage> = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
     mainEntity: entities,
   };
 
@@ -146,7 +150,7 @@ export default function Index({
         ta="center"
         size="sm"
         my={{
-          base: 'xl',
+          base: "xl",
           xs: 60,
           sm: 70,
           md: 80,
@@ -157,9 +161,9 @@ export default function Index({
           component="a"
           target="_blank"
           c="gray"
-          style={{ cursor: 'pointer' }}
+          style={{ cursor: "pointer" }}
           href="https://github.com/orgs/hexlet-basics/repositories"
-          leftSection={<Github size={10} />}
+          leftSection={<IconBrandGithub size={10} />}
           // autoContrast
           size="sm"
           variant="default"
@@ -204,7 +208,7 @@ export default function Index({
       <Container
         size="lg"
         my={{
-          base: 'xl',
+          base: "xl",
           xs: 60,
           sm: 70,
           md: 80,
@@ -213,21 +217,21 @@ export default function Index({
       >
         <SimpleGrid cols={{ base: 1, xs: 2, md: 3 }} my="xl">
           <Card bg="blue.0" p="xl" c="blue.9">
-            <BookOpenCheck />
+            <IconBook2 />
             <Text fw="bold" fz="h2">
               {t(($) => $.home.index.hero.courses_count)}
             </Text>
             {t(($) => $.home.index.hero.courses_count_description)}
           </Card>
           <Card bg="green.0" p="xl" c="green.9">
-            <Send />
+            <IconSend />
             <Text fw="bold" fz="h2">
               {t(($) => $.home.index.hero.community_count)}
             </Text>
             {t(($) => $.home.index.hero.community_count_description)}
           </Card>
           <Card bg="violet.0" p="xl" c="violet.9">
-            <Bot />
+            <IconRobot />
             <Text fw="bold" fz="h2">
               {t(($) => $.home.index.hero.ai_count)}
             </Text>
@@ -258,7 +262,7 @@ export default function Index({
         </Box>
 
         <SimpleGrid spacing="md" cols={{ base: 1, xs: 2, md: 3 }}>
-          {reviews[hasObjectKey(reviews, locale) ? locale : 'ru'].map(
+          {reviews[hasObjectKey(reviews, locale) ? locale : "ru"].map(
             (review) => (
               <Box key={review.name}>
                 <Group mb="lg">
@@ -296,7 +300,7 @@ export default function Index({
       )}
       <Container size="lg" my="xl">
         <Box mb="xl">
-          <Title order={2}>{tFaq(($) => $.header)}</Title>
+          <Title order={2}>{t(($) => $.faq.header)}</Title>
           <Divider />
         </Box>
         <Accordion defaultValue={Object.keys(faq)[0]}>
@@ -338,7 +342,7 @@ export default function Index({
           </Grid>
         </Container>
       )}
-      {!user.guest && i18next.language === 'ru' && (
+      {!user.guest && i18next.language === "ru" && (
         <Container size="lg" mt={100}>
           <Grid align="center" justify="space-between" gutter={0}>
             <Grid.Col span={{ base: 12, md: 6 }}>

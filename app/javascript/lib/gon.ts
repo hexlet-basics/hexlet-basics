@@ -1,17 +1,18 @@
-import type { Locale } from '@/types';
-import { BackendEvent } from '@/types/events';
+import type { Locale } from "@/types";
+import { fromWindow } from "./utils";
 
-type GonData = {
+export type GonData = {
   // biome-ignore lint/suspicious/noExplicitAny: false positive
   [key: string]: any;
-  suffix: 'ru' | null;
+  suffix: "ru" | null;
   locale: Locale;
 };
 
-// @ts-expect-error not defined
-if (!window.gon) {
-  throw new Error('gon is not initialized');
+const isBrowser = typeof window !== "undefined";
+const gonData = fromWindow("gon");
+
+if (isBrowser && !gonData) {
+  throw new Error("gon is not initialized");
 }
 
-// @ts-expect-error not defined
 export const gon = window.gon as GonData;

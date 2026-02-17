@@ -1,15 +1,15 @@
-import { Grid } from '@mantine/core';
-import { useTranslation } from 'react-i18next';
+import { Grid } from "@mantine/core";
+import { useTranslation } from "react-i18next";
 
-import AdminLayout from '@/pages/layouts/AdminLayout';
-import * as Routes from '@/routes.js';
+import AdminLayout from "@/layouts/AdminLayout";
+import * as Routes from "@/routes.js";
 import type {
   Language,
   LanguageLandingPage,
   LanguageLandingPageCrud,
-} from '@/types';
-import Form from './shared/form';
-import { Menu } from './shared/menu';
+} from "@/types";
+import Form from "./shared/form";
+import { Menu } from "./shared/menu";
 
 type Props = {
   landingPageDto: LanguageLandingPageCrud;

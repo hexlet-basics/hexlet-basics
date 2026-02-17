@@ -1,14 +1,19 @@
-import { Link, usePage } from '@inertiajs/react';
-import { Box, Button, Group, Loader, Text } from '@mantine/core';
-import { modals } from '@mantine/modals';
-import { notifications } from '@mantine/notifications';
-import { noop } from 'es-toolkit';
-import { Play, Repeat, ThumbsDown, ThumbsUp } from 'lucide-react';
-import { useHotkeys } from 'react-hotkeys-hook';
-import { useTranslation } from 'react-i18next';
-import * as Routes from '@/routes.js';
-import { useLessonStore } from '../store.tsx';
-import type { LessonSharedProps } from '../types.ts';
+import { Link, usePage } from "@inertiajs/react";
+import { Box, Button, Group, Loader, Text } from "@mantine/core";
+import { modals } from "@mantine/modals";
+import { notifications } from "@mantine/notifications";
+import {
+  IconPlayerPlay,
+  IconRepeat,
+  IconThumbDown,
+  IconThumbUp,
+} from "@tabler/icons-react";
+import { noop } from "es-toolkit";
+import { useHotkeys } from "react-hotkeys-hook";
+import { useTranslation } from "react-i18next";
+import * as Routes from "@/routes.js";
+import type { LessonSharedProps } from "@/types";
+import { useLessonStore } from "../store.tsx";
 
 export default function ControlBox() {
   const { props: sharedProps, url } = usePage<LessonSharedProps>();
@@ -23,7 +28,6 @@ export default function ControlBox() {
   } = sharedProps;
 
   const { t } = useTranslation();
-  const { t: tCommon } = useTranslation('common');
 
   const processState = useLessonStore((state) => state.processState);
   const finished = useLessonStore((state) => state.finished);
@@ -34,7 +38,7 @@ export default function ControlBox() {
     if (!result) {
       notifications.show({
         // title: 'Default notification',
-        message: tCommon(($) => $.errors.network),
+        message: t(($) => $.common.errors.network),
       });
     }
   };
@@ -43,15 +47,15 @@ export default function ControlBox() {
   // const confirmResetting = useConfirmation({ callback: resetContent });
   const openModal = () =>
     modals.openConfirmModal({
-      title: tCommon(($) => $.confirm),
-      labels: { confirm: <ThumbsUp />, cancel: <ThumbsDown /> },
+      title: t(($) => $.common.confirm),
+      labels: { confirm: <IconThumbUp />, cancel: <IconThumbDown /> },
       onCancel: noop,
       onConfirm: resetContent,
     });
 
-  const isCodeChecking = processState === 'checking';
+  const isCodeChecking = processState === "checking";
 
-  useHotkeys('ctrl+enter', handleRunCheck);
+  useHotkeys("ctrl+enter", handleRunCheck);
 
   const renderRunButtonContent = () => {
     const text = t(($) => $.languages.lessons.show.controls.run);
@@ -66,7 +70,7 @@ export default function ControlBox() {
 
     return (
       <Group gap={4} align="center">
-        <Play size={18} />
+        <IconPlayerPlay size={18} />
         <Text size="xs">{text}</Text>
       </Group>
     );
@@ -78,7 +82,7 @@ export default function ControlBox() {
     <Box py="sm" className="border-t border-gray-400">
       <Group justify="center">
         <Button size="xs" me="xs" onClick={openModal}>
-          <Repeat size={18} />
+          <IconRepeat size={18} />
         </Button>
         {/* <Popover width={200} position="top" withArrow shadow="md"> */}
         {/*   <Popover.Target> */}

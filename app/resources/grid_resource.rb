@@ -9,7 +9,7 @@ class GridResource < ApplicationResource
     fields: "Record<string, string | number | undefined>"
 
   typelize :number
-  attribute :first do |obj|
-    (obj.page - 1) * obj.per
+  attribute :first do
+    (it.page - 1) * it.per
   end
 end

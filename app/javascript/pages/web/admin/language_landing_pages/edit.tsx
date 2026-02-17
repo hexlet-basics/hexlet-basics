@@ -1,14 +1,14 @@
-import { useTranslation } from 'react-i18next';
-import AdminLayout from '@/pages/layouts/AdminLayout';
-import * as Routes from '@/routes.js';
+import { useTranslation } from "react-i18next";
+import AdminLayout from "@/layouts/AdminLayout";
+import * as Routes from "@/routes.js";
 import type {
   Language,
   LanguageLandingPage,
   LanguageLandingPageCrud,
-} from '@/types';
+} from "@/types";
 
-import Form from './shared/form';
-import { Menu } from './shared/menu';
+import Form from "./shared/form";
+import { Menu } from "./shared/menu";
 
 type Props = {
   landingPageDto: LanguageLandingPageCrud;
@@ -27,7 +27,7 @@ export default function Edit({
   return (
     <AdminLayout
       header={t(($) => $.admin.language_landing_pages.edit.header, {
-        id: landingPageDto.data.header,
+        id: landingPageDto.header,
       })}
     >
       <Menu data={landingPageDto} />
@@ -36,7 +36,7 @@ export default function Edit({
         landingPages={landingPages}
         method="patch"
         data={landingPageDto}
-        url={Routes.admin_language_landing_page_path(landingPageDto.data.id)}
+        url={Routes.admin_language_landing_page_path(landingPageDto.id)}
       />
     </AdminLayout>
   );

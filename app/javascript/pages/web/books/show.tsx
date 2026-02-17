@@ -1,4 +1,4 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link, usePage } from "@inertiajs/react";
 import {
   Box,
   Button,
@@ -10,17 +10,22 @@ import {
   Stack,
   Text,
   Title,
-} from '@mantine/core';
-import i18next from 'i18next';
-import { Compass, FileText, List, Users } from 'lucide-react';
-import type { PropsWithChildren } from 'react';
-import { useTranslation } from 'react-i18next';
-import LeadFormBlock from '@/components/LeadFormBlock';
-import bookCoverImg from '@/images/profession-developer-book-cover.webp';
-import bookToc from '@/lib/book.ts';
-import ApplicationLayout from '@/pages/layouts/ApplicationLayout.tsx';
-import * as Routes from '@/routes.js';
-import type { LeadCrud, SharedProps } from '@/types';
+} from "@mantine/core";
+import {
+  IconCompass,
+  IconFileText,
+  IconList,
+  IconUsers,
+} from "@tabler/icons-react";
+import i18next from "i18next";
+import type { PropsWithChildren } from "react";
+import { useTranslation } from "react-i18next";
+import LeadFormBlock from "@/components/LeadFormBlock";
+import bookCoverImg from "@/images/profession-developer-book-cover.webp";
+import ApplicationLayout from "@/layouts/ApplicationLayout.tsx";
+import bookToc from "@/lib/book.ts";
+import * as Routes from "@/routes.js";
+import type { LeadCrud } from "@/types";
 
 interface Props extends PropsWithChildren {
   bookRequested: boolean;
@@ -29,32 +34,32 @@ interface Props extends PropsWithChildren {
 
 export default function Show({ bookRequested, lead }: Props) {
   const { t } = useTranslation();
-  const { auth } = usePage<SharedProps>().props;
+  const { auth } = usePage().props;
 
   const features = [
     {
-      key: 'direction',
-      title: 'books.show.features.direction',
-      explanation: 'books.show.features.direction_explanation',
-      icon: Compass,
+      key: "direction",
+      title: t(($) => $.books.show.features.direction),
+      explanation: t(($) => $.books.show.features.direction_explanation),
+      icon: IconCompass,
     },
     {
-      key: 'plan',
-      title: 'books.show.features.plan',
-      explanation: 'books.show.features.plan_explanation',
-      icon: List,
+      key: "plan",
+      title: t(($) => $.books.show.features.plan),
+      explanation: t(($) => $.books.show.features.plan_explanation),
+      icon: IconList,
     },
     {
-      key: 'resume',
-      title: 'books.show.features.resume',
-      explanation: 'books.show.features.resume_explanation',
-      icon: FileText,
+      key: "resume",
+      title: t(($) => $.books.show.features.resume),
+      explanation: t(($) => $.books.show.features.resume_explanation),
+      icon: IconFileText,
     },
     {
-      key: 'interview',
-      title: 'books.show.features.interview',
-      explanation: 'books.show.features.interview_explanation',
-      icon: Users,
+      key: "interview",
+      title: t(($) => $.books.show.features.interview),
+      explanation: t(($) => $.books.show.features.interview_explanation),
+      icon: IconUsers,
     },
   ] as const;
 
@@ -99,13 +104,13 @@ export default function Show({ bookRequested, lead }: Props) {
               {features.map(({ key, title, explanation, icon: Icon }) => (
                 <Grid.Col span={{ base: 12, md: 6 }} key={key}>
                   <Stack gap={4}>
-                    <Box style={{ display: 'flex', alignItems: 'center' }}>
+                    <Box style={{ display: "flex", alignItems: "center" }}>
                       <Icon size={20} style={{ marginRight: 8 }} />
                       <Text fw={700} fz="lg">
-                        {t(title)}
+                        {title}
                       </Text>
                     </Box>
-                    <Text>{t(explanation)}</Text>
+                    <Text>{explanation}</Text>
                   </Stack>
                 </Grid.Col>
               ))}
@@ -149,7 +154,7 @@ export default function Show({ bookRequested, lead }: Props) {
           </Box>
         ))}
 
-        {!auth.user.guest && i18next.language === 'ru' && (
+        {!auth.user.guest && i18next.language === "ru" && (
           <Grid align="center" mt={60}>
             <Grid.Col span={{ base: 12, lg: 7 }}>
               <Title order={2}>{t(($) => $.home.index.consultation)}</Title>

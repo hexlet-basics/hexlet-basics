@@ -1,6 +1,8 @@
 # typed: strict
 
-class SolutionCheckedEvent < TypedEvent
+class SolutionCheckedEvent < ApplicationEvent
+  NAME = "solution_checked"
+
   DataShape = T.type_alias {
     {
       lesson_slug: String,

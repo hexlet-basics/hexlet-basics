@@ -1,11 +1,13 @@
-import { createInertiaApp } from '@inertiajs/react';
-import createServer from '@inertiajs/react/server';
-import * as Sentry from '@sentry/node';
-import ReactDOMServer from 'react-dom/server';
-import Root from '@/components/Root.tsx';
-import type { ResolvedComponent, RootProps } from '@/types';
-import '@/init.ts';
-import configure from '@/lib/configure';
+import { createInertiaApp } from "@inertiajs/react";
+import createServer from "@inertiajs/react/server";
+import * as Sentry from "@sentry/node";
+import type { ReactNode } from "react";
+import ReactDOMServer from "react-dom/server";
+import { inertiaDefaults } from "@/lib/inertiaDefaults";
+import "@/init.ts";
+import RootLayout from "@/layouts/RootLayout.tsx";
+import configure from "@/lib/configure";
+import type { InertiaPageModule } from "@/types";
 
 Sentry.init({
   debug: import.meta.env.DEV,
@@ -19,12 +21,13 @@ createServer(
     // console.log(`Memory stats: ${JSON.stringify(process.memoryUsage(), null, 2)}`);
 
     return createInertiaApp({
+      defaults: inertiaDefaults,
       page,
       render: (...args) => {
         try {
           return ReactDOMServer.renderToString(...args);
         } catch (error) {
-          Sentry.setContext('page', {
+          Sentry.setContext("page", {
             url: page.url,
             component: page.component,
           });
@@ -36,18 +39,19 @@ createServer(
       },
       resolve: (name) => {
         // const pages = import.meta.glob("../pages/**/*.jsx", { eager: true });
-        const pages = import.meta.glob<ResolvedComponent>('../pages/**/*.tsx', {
+        const pages = import.meta.glob<InertiaPageModule>("../pages/**/*.tsx", {
           eager: true,
         });
         const page = pages[`../pages/${name}.tsx`];
 
-        page.default.layout ??= (page) => <Root>{page}</Root>;
+        page.default.layout ??= (page: ReactNode) => (
+          <RootLayout>{page}</RootLayout>
+        );
 
         return page;
       },
       setup: ({ App, props }) => {
-        const typedProps = props as RootProps;
-        const { locale, suffix } = typedProps.initialPage.props;
+        const { locale, suffix } = props.initialPage.props;
 
         configure(locale, suffix);
         const vdom = <App {...props} />;

@@ -83,7 +83,7 @@ class Web::HomeController < Web::ApplicationController
       .in_order_of(:locale, ordered_locales)
       .order(id: :asc)
       .group_by(&:locale)
-      .transform_values { |pages| Language::SitemapLandingPageResource.new(pages) }
+      .transform_values { Language::SitemapLandingPageResource.new(it) }
 
     lesson_infos_by_locale = Language::Lesson::Version::Info
       .with_locale(ordered_locales)
@@ -106,18 +106,18 @@ class Web::HomeController < Web::ApplicationController
         .transform_values { |infos| infos.group_by(&:language_id) }
 
     lesson_resources_by_locale_and_language_id = lesson_infos_by_locale.transform_values do |infos_by_language_id|
-      infos_by_language_id.transform_values { |infos| Language::SitemapLessonResource.new(infos) }
+      infos_by_language_id.transform_values { Language::SitemapLessonResource.new(it) }
     end
 
     blog_post_resources_by_locale = BlogPost.published_state
       .select(:id, :slug, :name, :locale)
       .order(id: :desc)
       .group_by(&:locale)
-      .transform_values { |posts| SitemapBlogPostResource.new(posts) }
+      .transform_values { SitemapBlogPostResource.new(it) }
 
     language_category_resources_by_locale = Language::Category.all
       .group_by(&:locale)
-      .transform_values { |categories| Language::CategoryResource.new(categories) }
+      .transform_values { Language::CategoryResource.new(it) }
 
     title = t(".title")
 

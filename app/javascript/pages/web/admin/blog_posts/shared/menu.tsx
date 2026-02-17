@@ -1,45 +1,45 @@
-import { ActionIcon } from '@mantine/core';
-import { GraduationCap, LogIn } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { ActionIcon } from "@mantine/core";
+import { IconLogin2, IconSchool } from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
 import {
   CrudHorizontalMenu,
   type CrudHorizontalMenuItem,
-} from '@/components/CrudHorizontalMenu';
-import * as Routes from '@/routes.js';
-import type { BlogPostCrud } from '@/types';
+} from "@/components/CrudHorizontalMenu";
+import * as Routes from "@/routes.js";
+import type { BlogPostCrud } from "@/types";
 
 type Props = {
   data?: BlogPostCrud;
 };
 
 export default function Menu({ data }: Props) {
-  const { t: tHelpers } = useTranslation('helpers');
+  const { t } = useTranslation();
 
   const items: CrudHorizontalMenuItem[] = [
     {
       href: Routes.admin_blog_posts_path(),
-      label: tHelpers(($) => $.crud.list),
+      label: t(($) => $.helpers.crud.list),
     },
     {
       href: Routes.new_admin_blog_post_path(),
-      label: tHelpers(($) => $.crud.add),
+      label: t(($) => $.helpers.crud.add),
     },
   ];
 
-  if (data?.data) {
+  if (data) {
     items.push({
-      href: Routes.edit_admin_blog_post_path(data.data.id),
-      label: tHelpers(($) => $.crud.editing),
+      href: Routes.edit_admin_blog_post_path(data.id),
+      label: t(($) => $.helpers.crud.editing),
     });
     items.push({
-      href: Routes.related_courses_admin_blog_post_path(data.data.id),
-      method: 'post',
-      label: <GraduationCap size={15} />,
+      href: Routes.related_courses_admin_blog_post_path(data.id),
+      method: "post",
+      label: <IconSchool size={15} />,
     });
     items.push({
-      href: Routes.blog_post_path(data.data.slug!),
+      href: Routes.blog_post_path(data.slug!),
       external: true,
-      label: <LogIn size={15} />,
+      label: <IconLogin2 size={15} />,
     });
   }
 

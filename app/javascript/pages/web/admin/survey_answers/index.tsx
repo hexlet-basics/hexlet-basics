@@ -1,13 +1,13 @@
-import { Select } from '@mantine/core';
-import dayjs from 'dayjs';
-import { Search } from 'lucide-react';
-import { DataTable } from 'mantine-datatable';
-import type { PropsWithChildren } from 'react';
-import { useTranslation } from 'react-i18next';
-import useDataTableProps from '@/hooks/useDataTableProps';
-import { arrayToSelectData } from '@/lib/utils';
-import AdminLayout from '@/pages/layouts/AdminLayout';
-import type { Grid, Survey, SurveyAnswer } from '@/types';
+import { Select } from "@mantine/core";
+import { IconSearch } from "@tabler/icons-react";
+import dayjs from "dayjs";
+import { DataTable } from "mantine-datatable";
+import type { PropsWithChildren } from "react";
+import { useTranslation } from "react-i18next";
+import useDataTableProps from "@/hooks/useDataTableProps";
+import AdminLayout from "@/layouts/AdminLayout";
+import { arrayToSelectData } from "@/lib/utils";
+import type { Grid, Survey, SurveyAnswer } from "@/types";
 
 type Props = PropsWithChildren & {
   surveyAnswers: SurveyAnswer[];
@@ -28,10 +28,10 @@ export default function Index({ grid, surveyAnswers, surveys }: Props) {
 
   const surveyFilterSlug = (
     <Select
-      data={arrayToSelectData(surveys, 'slug', 'question')}
+      data={arrayToSelectData(surveys, "slug", "question")}
       value={filters.values.survey_slug_eq}
-      onChange={filters.getOnChange('survey_slug_eq')}
-      leftSection={<Search size={16} />}
+      onChange={filters.getOnChange("survey_slug_eq")}
+      leftSection={<IconSearch size={16} />}
       comboboxProps={{ withinPortal: false }}
       clearable
       searchable
@@ -43,14 +43,14 @@ export default function Index({ grid, surveyAnswers, surveys }: Props) {
       <DataTable
         records={surveyAnswers}
         columns={[
-          { accessor: 'id' },
-          { accessor: 'user_id' },
-          { accessor: 'survey_slug', filter: surveyFilterSlug },
-          { accessor: 'survey_item_value' },
+          { accessor: "id" },
+          { accessor: "user_id" },
+          { accessor: "survey_slug", filter: surveyFilterSlug },
+          { accessor: "survey_item_value" },
           {
-            accessor: 'created_at',
+            accessor: "created_at",
             sortable: true,
-            render: (r) => dayjs(r.created_at).format('LL'),
+            render: (r) => dayjs(r.created_at).format("LL"),
           },
         ]}
         {...gridProps}

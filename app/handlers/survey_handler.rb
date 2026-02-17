@@ -1,4 +1,9 @@
+# typed: true
+
 class SurveyHandler
+  extend T::Sig
+
+  sig { params(event: ApplicationEvent).void }
   def call(event)
     # locale = event.metadata[:locale]
     return if I18n.locale != :ru
@@ -6,37 +11,51 @@ class SurveyHandler
     return unless user_id
     user = User.find(user_id)
 
-    case event
-    when SurveyAnsweredEvent
-      member_id = event.data.fetch(:survey_scenario_member_id, 0)
-      member = user.survey_scenario_members.find member_id
-      unless member.next_survey
-        member.state = :finished
-        member.save!
-      end
-    else
-      count = event.data.fetch(:occurrence_count, 1)
-      survey_item_arel = Survey::Scenario.arel_table[:survey_item_id]
-      scenarios = Survey::Scenario
-        .where(survey_item_arel.eq(nil).or(survey_item_arel.in(user.survey_answers_survey_items.pluck(:id))))
-        .joins(:triggers)
-        .merge(
-          Survey::Scenario::Trigger
-            .where(event_name: event.class.name)
-            .with_event_threshold_met(count)
-        )
+    count = event.data.fetch(:occurrence_count, 1)
+    survey_item_arel = Survey::Scenario.arel_table[:survey_item_id]
+    scenarios = Survey::Scenario
+      .where(survey_item_arel.eq(nil).or(survey_item_arel.in(user.survey_answers_survey_items.pluck(:id))))
+      .joins(:triggers)
+      .merge(
+        Survey::Scenario::Trigger
+          .where(event_name: event.class.name)
+          .with_event_threshold_met(count)
+      )
 
-      scenarios.each do |scenario|
-        maybe_new_member = scenario.members.find_or_initialize_by user: user
-        if maybe_new_member.new_record?
-          maybe_new_member.event_name = event.class.name
-          maybe_new_member.save!
-        end
-      end
+    scenarios.each do |scenario|
+      maybe_new_member = scenario.members.find_or_initialize_by user: user
+      if maybe_new_member.new_record?
+        locale = event.data.fetch(:locale)
+        maybe_new_member.event_name = event.class.name
+        maybe_new_member.save!
 
-      # if event.class == LessonFinishedEvent
-      #   binding.irb
-      # end
+        survey_scenario_started_event = SurveyScenarioStartedEvent.new(data: {
+          user_id: user.id,
+          email: user.email,
+          occurrence_count: user.survey_scenario_members.count,
+          survey_scenario_id: scenario.id,
+          survey_scenario_member_id: maybe_new_member.id,
+          locale: locale
+        })
+        EventSender.publish_event(survey_scenario_started_event, user)
+
+        next_survey = maybe_new_member.next_survey
+        next unless next_survey
+
+        survey_started_event = SurveyStartedEvent.new(data: {
+          user_id: user.id,
+          email: user.email,
+          occurrence_count: 1,
+          survey_id: next_survey.id,
+          survey_scenario_member_id: maybe_new_member.id,
+          locale: locale
+        })
+        EventSender.publish_event(survey_started_event, user)
+      end
     end
+
+    # if event.class == LessonFinishedEvent
+    #   binding.irb
+    # end
   end
 end

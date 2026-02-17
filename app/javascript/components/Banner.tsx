@@ -1,5 +1,5 @@
-import { usePage } from '@inertiajs/react';
-import { Alert, Anchor, Box, Card } from '@mantine/core';
+import { usePage } from "@inertiajs/react";
+import { Alert, Anchor, Box, Card } from "@mantine/core";
 
 export function Banner() {
   const { locale } = usePage().props;
@@ -7,7 +7,7 @@ export function Banner() {
 
   return (
     <>
-      {locale === 'ru' && (
+      {locale === "ru" && (
         <Box
           variant="gradient"
           bg="var(--app-cta-gradient)"
@@ -19,7 +19,7 @@ export function Banner() {
             target="_blank"
             href="https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=newyear2025"
           >
-            Курсы с наставником и опытом работы во время учебы со{' '}
+            Курсы с наставником и опытом работы во время учебы со{" "}
             <b>скидкой -30%</b> → Подробнее
           </Anchor>
         </Box>

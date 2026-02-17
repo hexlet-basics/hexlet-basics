@@ -1,3 +1,4 @@
+import type { Method } from "@inertiajs/core";
 import {
   Box,
   Button,
@@ -7,34 +8,23 @@ import {
   Select,
   Textarea,
   TextInput,
-} from '@mantine/core';
-import { useTranslation } from 'react-i18next';
-import { useAppForm } from '@/hooks/useAppForm';
+} from "@mantine/core";
+import { useTranslation } from "react-i18next";
+import { useAppForm } from "@/hooks/useAppForm";
+import { arrayToSelectData } from "@/lib/utils";
 import type {
-  HttpRouterMethod,
   Language,
   LanguageLandingPage,
   LanguageLandingPageCrud,
   LanguageLandingPageQnaItemCrud,
-} from '@/types';
+} from "@/types";
 
 type Props = {
-  data: LanguageLandingPageCrudWithMeta;
+  data: LanguageLandingPageCrud;
   url: string;
-  method?: HttpRouterMethod;
+  method?: Method;
   languages: Language[];
   landingPages: LanguageLandingPage[];
-};
-
-type StateEventOption = {
-  key: string;
-  value: string;
-};
-
-type LanguageLandingPageCrudWithMeta = LanguageLandingPageCrud & {
-  meta?: {
-    state_events?: StateEventOption[];
-  };
 };
 
 // const locales = [
@@ -49,96 +39,93 @@ export default function Form({
   method,
   languages,
 }: Props) {
-  const { t: tHelpers } = useTranslation('helpers');
+  const { t } = useTranslation();
 
-  const {
-    getInputProps,
-    getFileInputProps,
-    getSelectProps,
-    submit,
-    useArrayField,
-    formState: { isSubmitting },
-  } = useAppForm<LanguageLandingPageCrud>({
+  const payload = data;
+  const stateEventsSelectData = arrayToSelectData(
+    data.meta?.state_events ?? [],
+    "key",
+    "value",
+  );
+  const languagesSelectData = arrayToSelectData(languages, "id", "slug");
+  const landingPagesSelectData = arrayToSelectData(
+    landingPages,
+    "id",
+    "header",
+  );
+
+  const { onSubmit, processing, form } = useAppForm(payload, {
     url,
-    method: method ?? 'post',
-    container: data,
+    method: method ?? "post",
   });
-  const stateEvents = data.meta?.state_events ?? [];
 
-  const qnaField = useArrayField('qna_items_attributes');
+  const qnaCollection = form.useCollection<LanguageLandingPageQnaItemCrud>(
+    "qna_items_attributes",
+  );
   const defaultQna: LanguageLandingPageQnaItemCrud = {
     id: null,
-    question: '',
-    answer: '',
+    question: "",
+    answer: "",
     _destroy: false,
+    meta: { model: "", relations: {} },
   };
 
   return (
-    <form onSubmit={submit}>
-      <Checkbox {...getInputProps('main')} />
-      <Checkbox {...getInputProps('listed')} />
-      <Checkbox {...getInputProps('footer')} />
-      <Select {...getSelectProps('state', stateEvents, 'key', 'value')} />
-      <Select {...getSelectProps('language_id', languages, 'id', 'slug')} />
+    <form onSubmit={onSubmit}>
+      <Checkbox {...form.getCheckboxProps("main")} />
+      <Checkbox {...form.getCheckboxProps("listed")} />
+      <Checkbox {...form.getCheckboxProps("footer")} />
+      <Select {...form.getSelectProps("state", stateEventsSelectData)} />
+      <Select {...form.getSelectProps("language_id", languagesSelectData)} />
       <Select
-        {...getSelectProps(
-          'landing_page_to_redirect_id',
-          landingPages,
-          'id',
-          'header',
+        {...form.getSelectProps(
+          "landing_page_to_redirect_id",
+          landingPagesSelectData,
         )}
       />
-      <TextInput {...getInputProps('slug')} />
-      <TextInput {...getInputProps('order')} />
-      <TextInput {...getInputProps('meta_title')} />
-      <Textarea {...getInputProps('meta_description')} rows={3} />
-      <TextInput {...getInputProps('name')} />
-      <TextInput {...getInputProps('header')} />
-      <Textarea {...getInputProps('description')} rows={5} />
-      <TextInput {...getInputProps('used_in_header')} />
-      <Textarea {...getInputProps('used_in_description')} rows={5} />
-      <FileInput {...getFileInputProps('outcomes_image')} />
-      <TextInput {...getInputProps('outcomes_header')} />
-      <Textarea {...getInputProps('outcomes_description')} rows={5} />
+      <TextInput {...form.getInputProps("slug")} />
+      <TextInput {...form.getInputProps("order")} />
+      <TextInput {...form.getInputProps("meta_title")} />
+      <Textarea {...form.getInputProps("meta_description")} rows={3} />
+      <TextInput {...form.getInputProps("name")} />
+      <TextInput {...form.getInputProps("header")} />
+      <Textarea {...form.getInputProps("description")} rows={5} />
+      <TextInput {...form.getInputProps("used_in_header")} />
+      <Textarea {...form.getInputProps("used_in_description")} rows={5} />
+      <FileInput {...form.getFileInputProps("outcomes_image")} />
+      <TextInput {...form.getInputProps("outcomes_header")} />
+      <Textarea {...form.getInputProps("outcomes_description")} rows={5} />
       <Fieldset>
-        {qnaField.fields.map((field, index) => (
-          <Box key={field._internalId}>
-            <input
-              type="hidden"
-              {...getInputProps(`qna_items_attributes.${index}.id`)}
-            />
-            <TextInput
-              {...getInputProps(`qna_items_attributes.${index}.question`)}
-            />
-            <Textarea
-              {...getInputProps(`qna_items_attributes.${index}.answer`)}
-              rows={5}
-            />
-            <Checkbox
-              {...getInputProps(`qna_items_attributes.${index}._destroy`)}
-            />
-            {!field.id && (
+        {qnaCollection.forms.map((qnaForm) => (
+          <Box key={`${qnaForm.index}-${qnaForm.data.id ?? "new"}`}>
+            <input type="hidden" {...qnaForm.getInputProps("id")} />
+            <TextInput {...qnaForm.getInputProps("question")} />
+            <Textarea {...qnaForm.getInputProps("answer")} rows={5} />
+            <Checkbox {...qnaForm.getCheckboxProps("_destroy")} />
+            {!qnaForm.data.id && (
               <Button
+                type="button"
                 variant="outline"
                 color="red"
                 mt="xs"
-                onClick={() => qnaField.remove(index)}
+                onClick={() => qnaCollection.remove(qnaForm.index)}
               >
-                {tHelpers(($) => $.crud.remove)}
+                {t(($) => $.helpers.crud.remove)}
               </Button>
             )}
           </Box>
         ))}
         <Button
+          type="button"
           variant="light"
           mt="sm"
-          onClick={() => qnaField.append(defaultQna)}
+          onClick={() => qnaCollection.add(defaultQna)}
         >
-          {tHelpers(($) => $.crud.add)}
+          {t(($) => $.helpers.crud.add)}
         </Button>
       </Fieldset>
-      <Button type="submit" loading={isSubmitting}>
-        {tHelpers(($) => $.submit.save)}
+      <Button type="submit" loading={processing}>
+        {t(($) => $.helpers.submit.save)}
       </Button>
     </form>
   );

@@ -6,7 +6,7 @@ class Language::CategoryQnaItemResource < ApplicationResource
     :answer
 
   typelize :boolean
-  attribute :_destroy do |category|
+  attribute :_destroy do
     false
   end
 end

@@ -1,6 +1,19 @@
 class SurveyCrudResource < ApplicationResource
   typelize_from Survey
-  root_key :data
+
+  class MetaResource < ApplicationResource
+    typelize_from Survey
+
+    typelize model: :string
+    typelize relations: "Record<string, string>"
+    typelize item_states: "Record<string, unknown>[]"
+
+    attribute(:model) { it.class.superclass.form_key }
+    attribute(:relations) do
+      it.class.respond_to?(:nested_attributes_mapping) ? it.class.nested_attributes_mapping : {}
+    end
+    attribute(:item_states) { Survey::Item.states }
+  end
 
   # one :user, resource: UserResource
   # has_one :user
@@ -13,18 +26,12 @@ class SurveyCrudResource < ApplicationResource
     :description,
     :slug
 
-  typelize :state, nullabe: false
+  # typelize :state, nullable: false
 
   # typelize :string, nullable: true
   # attribute :parent_survey_item_value do |obj|
   #   obj.parent_survey_item&.value
   # end
 
-  typelize_meta meta: "{ modelName: string, item_states: Record<string, unknown>[] }"
-  meta do
-    {
-      modelName: object.class.superclass.form_key,
-      item_states: Survey::Item.states
-    }
-  end
+  has_one :meta, source: proc { |_params| self }, resource: MetaResource
 end

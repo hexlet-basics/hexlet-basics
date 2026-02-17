@@ -29,6 +29,11 @@ spec:
 
       imagePullSecrets:
         - name: docker-config
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
 
       affinity:
         nodeAffinity:
@@ -58,6 +63,11 @@ spec:
         - name: console
           imagePullPolicy: Always
           image: "{{ .Values.app.image.repository }}:{{ .Values.version }}"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           command: [ "/bin/bash", "-c", "--" ]
           args: [ "while true; do sleep 30; done;"  ]
           resources:

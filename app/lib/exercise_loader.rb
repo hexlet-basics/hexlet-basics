@@ -66,7 +66,7 @@ class ExerciseLoader
     files = Dir.glob("#{dest}/*")
 
     files
-      .filter { |file| File.directory?(file) }
+      .filter { File.directory?(it) }
       .map do |directory|
         filename = File.basename(directory)
         order, slug = filename.split("-", 2)
@@ -119,7 +119,7 @@ class ExerciseLoader
     files = Dir.glob(wildcard_path)
 
     files
-      .filter { |file| File.directory?(file) }
+      .filter { File.directory?(it) }
       .map do |directory|
         filename = File.basename(directory)
         order, slug = filename.split("-", 2)

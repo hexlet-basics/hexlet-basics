@@ -1,14 +1,14 @@
-import dayjs from 'dayjs';
-import { Edit } from 'lucide-react';
-import { DataTable } from 'mantine-datatable';
-import type { PropsWithChildren } from 'react';
-import { useTranslation } from 'react-i18next';
-import AppAnchor from '@/components/Elements/AppAnchor';
-import useDataTableProps from '@/hooks/useDataTableProps';
-import AdminLayout from '@/pages/layouts/AdminLayout';
-import * as Routes from '@/routes.js';
-import type { Grid, Survey } from '@/types';
-import { Menu } from './shared/menu';
+import { IconEdit } from "@tabler/icons-react";
+import dayjs from "dayjs";
+import { DataTable } from "mantine-datatable";
+import type { PropsWithChildren } from "react";
+import { useTranslation } from "react-i18next";
+import AppAnchor from "@/components/Elements/AppAnchor";
+import useDataTableProps from "@/hooks/useDataTableProps";
+import AdminLayout from "@/layouts/AdminLayout";
+import * as Routes from "@/routes.js";
+import type { Grid, Survey } from "@/types";
+import { Menu } from "./shared/menu";
 
 type Props = PropsWithChildren & {
   surveys: Survey[];
@@ -21,7 +21,7 @@ export default function Index({ grid, surveys }: Props) {
 
   const renderActions = (item: Survey) => (
     <AppAnchor href={Routes.edit_admin_survey_path(item.id)}>
-      <Edit size={14} />
+      <IconEdit size={14} />
     </AppAnchor>
   );
 
@@ -31,16 +31,16 @@ export default function Index({ grid, surveys }: Props) {
       <DataTable
         records={surveys}
         columns={[
-          { accessor: 'id' },
-          { accessor: 'slug' },
-          { accessor: 'state', sortable: true },
-          { accessor: 'question' },
+          { accessor: "id" },
+          { accessor: "slug" },
+          { accessor: "state", sortable: true },
+          { accessor: "question" },
           {
-            accessor: 'created_at',
+            accessor: "created_at",
             sortable: true,
-            render: (r) => dayjs(r.created_at).format('LL'),
+            render: (r) => dayjs(r.created_at).format("LL"),
           },
-          { accessor: 'actions', title: 'actions', render: renderActions },
+          { accessor: "actions", title: "actions", render: renderActions },
         ]}
         {...gridProps}
       />

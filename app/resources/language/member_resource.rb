@@ -10,9 +10,9 @@ class Language::MemberResource < ApplicationResource
   # typelize state: [ enum: [ "started", "finished" ] ]
 
   typelize :number
-  attribute :progress do |obj|
-    lessons_count = obj.language.current_lessons.size
-    finished_lessons_count = obj.lesson_members.finished.size
+  attribute :progress do
+    lessons_count = it.language.current_lessons.size
+    finished_lessons_count = it.lesson_members.finished.size
     if lessons_count != 0
       result = ((finished_lessons_count.to_f / lessons_count) * 100).ceil
       # NOTE: Такая ситуация возможна, когда в новой версии курса уроков меньше
@@ -24,7 +24,7 @@ class Language::MemberResource < ApplicationResource
   end
 
   typelize :string, nullable: true
-  attribute :next_lesson_name do |obj|
-    obj.next_lesson_info&.name
+  attribute :next_lesson_name do
+    it.next_lesson_info&.name
   end
 end

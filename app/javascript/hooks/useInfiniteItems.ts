@@ -1,6 +1,6 @@
-import { usePage } from '@inertiajs/react';
-import { useEffect, useRef, useState } from 'react';
-import type { BlogPost } from '@/types';
+import { usePage } from "@inertiajs/react";
+import { useEffect, useRef, useState } from "react";
+import type { BlogPost } from "@/types";
 
 interface Return<T> {
   items: T[];
@@ -42,8 +42,8 @@ export default function useInfiniteItems<T extends BlogPost>(
 
         const url = lastVisible.post!.url;
         if (window.location.pathname !== new URL(url).pathname) {
-          console.log('🔁 Switched to post:', url);
-          window.history.replaceState({}, '', url);
+          console.log("🔁 Switched to post:", url);
+          window.history.replaceState({}, "", url);
         }
       },
       {
@@ -66,12 +66,12 @@ export default function useInfiniteItems<T extends BlogPost>(
         if (entry.isIntersecting) {
           const lastPost = items[items.length - 1];
           const newPost = await loadNext(lastPost.id);
-          console.log('🟢 Loaded new post:', newPost.url);
+          console.log("🟢 Loaded new post:", newPost.url);
           setItems((prev) => [...prev, newPost]);
         }
       },
       {
-        rootMargin: '600px 0px 0px 0px',
+        rootMargin: "600px 0px 0px 0px",
         threshold: 0,
       },
     );
