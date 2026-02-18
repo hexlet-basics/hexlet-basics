@@ -15,80 +15,80 @@ class Pagy
 
   # Returns the value of attribute in.
   #
-  # source://pagy//lib/pagy.rb#37
+  # source://pagy//lib/pagy.rb#41
   def in; end
 
   # Returns the value of attribute limit.
   #
-  # source://pagy//lib/pagy.rb#37
+  # source://pagy//lib/pagy.rb#41
   def limit; end
 
   # Returns the value of attribute next.
   #
-  # source://pagy//lib/pagy.rb#37
+  # source://pagy//lib/pagy.rb#41
   def next; end
 
   # Returns the value of attribute options.
   #
-  # source://pagy//lib/pagy.rb#37
+  # source://pagy//lib/pagy.rb#41
   def options; end
 
   # Returns the value of attribute page.
   #
-  # source://pagy//lib/pagy.rb#37
+  # source://pagy//lib/pagy.rb#41
   def page; end
 
   protected
 
   # Validates and assign the passed options: they must be present and value.to_i must be >= min
   #
-  # source://pagy//lib/pagy.rb#50
+  # source://pagy//lib/pagy.rb#54
   def assign_and_check(name_min); end
 
   # Merge all the DEFAULT constants of the class hierarchy with the options
   #
-  # source://pagy//lib/pagy.rb#63
+  # source://pagy//lib/pagy.rb#67
   def assign_options(**options); end
 
   # @return [Boolean]
   #
-  # source://pagy//lib/pagy.rb#44
+  # source://pagy//lib/pagy.rb#48
   def calendar?; end
 
   # @return [Boolean]
   #
-  # source://pagy//lib/pagy.rb#43
+  # source://pagy//lib/pagy.rb#47
   def countless?; end
 
   # @return [Boolean]
   #
-  # source://pagy//lib/pagy.rb#47
+  # source://pagy//lib/pagy.rb#51
   def keynav?; end
 
   # @return [Boolean]
   #
-  # source://pagy//lib/pagy.rb#46
+  # source://pagy//lib/pagy.rb#50
   def keyset?; end
 
   # Define the hierarchical identity methods, overridden by the respective classes
   #
   # @return [Boolean]
   #
-  # source://pagy//lib/pagy.rb#42
+  # source://pagy//lib/pagy.rb#46
   def offset?; end
 
   # @return [Boolean]
   #
-  # source://pagy//lib/pagy.rb#45
+  # source://pagy//lib/pagy.rb#49
   def search?; end
 
   class << self
-    # source://pagy//lib/pagy.rb#31
+    # source://pagy//lib/pagy.rb#35
     def options; end
   end
 end
 
-# source://pagy//lib/pagy.rb#17
+# source://pagy//lib/pagy.rb#19
 Pagy::A_TAG = T.let(T.unsafe(nil), String)
 
 # Cheap Base64 specialized methods to avoid dependencies
@@ -519,7 +519,7 @@ module Pagy::CountlessPaginator
   end
 end
 
-# source://pagy//lib/pagy.rb#13
+# source://pagy//lib/pagy.rb#15
 Pagy::DEFAULT = T.let(T.unsafe(nil), Hash)
 
 # source://pagy//lib/pagy/classes/offset/search.rb#25
@@ -988,10 +988,10 @@ module Pagy::KeysetPaginator
   end
 end
 
-# source://pagy//lib/pagy.rb#16
+# source://pagy//lib/pagy.rb#18
 Pagy::LABEL_TOKEN = T.let(T.unsafe(nil), String)
 
-# source://pagy//lib/pagy.rb#15
+# source://pagy//lib/pagy.rb#17
 Pagy::LIMIT_TOKEN = T.let(T.unsafe(nil), Pagy::EscapedValue)
 
 # Provide the helpers to handle the url and anchor
@@ -1133,6 +1133,11 @@ module Pagy::Method
   # source://pagy//lib/pagy/toolbox/paginators/method.rb#23
   def pagy(paginator = T.unsafe(nil), collection, **options); end
 end
+
+# Define a thread-safe hash at the class level
+#
+# source://pagy//lib/pagy.rb#34
+Pagy::OPTIONS = T.let(T.unsafe(nil), Concurrent::Hash)
 
 # Implements Offset Pagination
 #
@@ -1305,10 +1310,10 @@ class Pagy::OptionError < ::ArgumentError
   def value; end
 end
 
-# source://pagy//lib/pagy.rb#14
+# source://pagy//lib/pagy.rb#16
 Pagy::PAGE_TOKEN = T.let(T.unsafe(nil), Pagy::EscapedValue)
 
-# source://pagy//lib/pagy.rb#12
+# source://pagy//lib/pagy.rb#14
 Pagy::ROOT = T.let(T.unsafe(nil), Pathname)
 
 # I18n localization error
@@ -1458,5 +1463,5 @@ module Pagy::Shiftable
   def assign_previous_and_next; end
 end
 
-# source://pagy//lib/pagy.rb#11
+# source://pagy//lib/pagy.rb#13
 Pagy::VERSION = T.let(T.unsafe(nil), String)

@@ -13,8 +13,6 @@
 
 ### Run
 
-> **⚠️ Optional for Russia:** Make sure VPN is enabled before installing dependencies
-
 1. Install system deps
 
 ```bash
@@ -59,10 +57,6 @@ make language-load L=php
 
 make sync # sync locales, types, fixtures
 ```
-
-### Dev Tools
-
-- <https://chromewebstore.google.com/detail/inertiajs-devtools/golilfffgehhabacoaoilfgjelagablo?hl=en>
 
 ### Production
 
