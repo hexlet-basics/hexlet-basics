@@ -1,0 +1,10 @@
+Thank you for installing {{ .Chart.Name }}.
+
+Release:
+  Name: {{ .Release.Name }}
+  Namespace: {{ .Release.Namespace }}
+
+Useful commands:
+  helm status {{ .Release.Name }} -n {{ .Release.Namespace }}
+  helm get values {{ .Release.Name }} -n {{ .Release.Namespace }}
+  helm get manifest {{ .Release.Name }} -n {{ .Release.Namespace }}

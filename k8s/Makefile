@@ -1,9 +1,14 @@
 CURRENT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 NAMESPACE := codebasics
+CHART_DIR := $(CURRENT_DIR)/app-chart
+RELEASE_NAME := codebasics
 
-k8s-utils-install:
+# https://github.com/jkroepke/helm-secrets/wiki/Installation
+install:
 	brew install helm kubectl sops age
-	helm plugin install https://github.com/jkroepke/helm-secrets --version v4.6.5 || true
+	helm plugin install --verify=false https://github.com/jkroepke/helm-secrets/releases/download/v4.7.4/secrets-4.7.4.tgz
+	helm plugin install --verify=false https://github.com/jkroepke/helm-secrets/releases/download/v4.7.4/secrets-getter-4.7.4.tgz
+	helm plugin install --verify=false https://github.com/jkroepke/helm-secrets/releases/download/v4.7.4/secrets-post-renderer-4.7.4.tgz
 
 k8s-init:
 	kubectl create namespace $(NAMESPACE)
@@ -16,11 +21,21 @@ production-console:
 	kubectl exec -it $(shell kubectl get pod -l app.kubernetes.io/name=$(NAMESPACE)-console-pod -o custom-columns=:metadata.name --no-headers) -- bin/rails c -s
 
 helm-install-app:
-	helm secrets install codebasics $(CURRENT_DIR)/app-chart -f $(CURRENT_DIR)/secrets.yaml
+	helm secrets install $(RELEASE_NAME) $(CHART_DIR) -f $(CURRENT_DIR)/secrets.yaml
 
 helm-upgrade-app:
-	helm secrets upgrade codebasics $(CURRENT_DIR)/app-chart -f $(CURRENT_DIR)/secrets.yaml
+	helm secrets upgrade $(RELEASE_NAME) $(CHART_DIR) -f $(CURRENT_DIR)/secrets.yaml
 	git reset HEAD
-	git add $(CURRENT_DIR)/app-chart/values.yaml
+	git add $(CHART_DIR)/values.yaml
 	git commit --no-verify -m ":rocket: deploy"
 	git push --no-verify
+
+helm-lint:
+	helm lint $(CHART_DIR)
+
+helm-template:
+	helm template $(RELEASE_NAME) $(CHART_DIR) -n $(NAMESPACE) > /tmp/hexlet-basics-helm-render.yaml
+
+helm-check: helm-lint helm-template
+
+.PHONY: install k8s-init secrets-edit production-console helm-install-app helm-upgrade-app helm-lint helm-template helm-check

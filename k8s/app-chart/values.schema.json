@@ -1,0 +1,201 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "codebasics values",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "nameOverride": {
+      "type": "string"
+    },
+    "fullnameOverride": {
+      "type": "string"
+    },
+    "slackNotification": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "nginx": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": ["repository"]
+        }
+      },
+      "required": ["image"]
+    },
+    "app": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": ["repository"]
+        }
+      },
+      "required": ["image"]
+    },
+    "gateway": {
+      "type": "object",
+      "properties": {
+        "className": {
+          "type": "string",
+          "minLength": 1
+        },
+        "address": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "minLength": 1
+            },
+            "value": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": ["type", "value"]
+        },
+        "subnets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "certificateId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hosts": {
+          "type": "object",
+          "properties": {
+            "primary": {
+              "type": "string",
+              "minLength": 1
+            },
+            "wildcard": {
+              "type": "string",
+              "minLength": 1
+            },
+            "secondary": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": ["primary", "wildcard", "secondary"]
+        },
+        "backend": {
+          "type": "object",
+          "properties": {
+            "useHttp2": {
+              "type": "boolean"
+            },
+            "upgradeTypes": {
+              "type": "string"
+            }
+          },
+          "required": ["useHttp2", "upgradeTypes"]
+        }
+      },
+      "required": ["className", "address", "subnets", "certificateId", "hosts", "backend"]
+    },
+    "autoscaling": {
+      "type": "object",
+      "properties": {
+        "web": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "minReplicas": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "maxReplicas": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "targetCpuUtilizationPercentage": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "targetMemoryUtilizationPercentage": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          "required": [
+            "enabled",
+            "minReplicas",
+            "maxReplicas",
+            "targetCpuUtilizationPercentage",
+            "targetMemoryUtilizationPercentage"
+          ]
+        }
+      },
+      "required": ["web"]
+    },
+    "networkPolicy": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": ["enabled"]
+    },
+    "secrets": {
+      "type": "object",
+      "properties": {
+        "docker": {
+          "type": "object",
+          "properties": {
+            "config": {
+              "type": "string"
+            }
+          }
+        },
+        "codeBasics": {
+          "type": "object",
+          "properties": {
+            "env": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "version",
+    "nginx",
+    "app",
+    "gateway",
+    "autoscaling",
+    "networkPolicy",
+    "secrets"
+  ]
+}

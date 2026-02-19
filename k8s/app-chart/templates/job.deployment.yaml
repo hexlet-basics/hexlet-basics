@@ -3,20 +3,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ .Release.Name }}-job-deployment"
+  name: "{{ include "codebasics.fullname" . }}-job-deployment"
   namespace: "{{ .Release.Namespace }}"
   labels:
     app.kubernetes.io/name: "{{ .Chart.Name }}"
-    app.kubernetes.io/instance: "{{ .Release.Name }}"
-    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
-    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    {{- include "codebasics.labels" . | nindent 4 }}
 
 spec:
   replicas: 1
 
   selector:
     matchLabels:
-      app.kubernetes.io/name: "{{ .Release.Name }}-job-pod"
+      app.kubernetes.io/name: "{{ include "codebasics.fullname" . }}-job-pod"
       app.kubernetes.io/instance: "{{ .Release.Name }}"
   strategy:
     type: RollingUpdate
@@ -26,10 +24,9 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: "{{ .Release.Name }}-job-pod"
-        app.kubernetes.io/instance: "{{ .Release.Name }}"
-        helm.sh/chart: '{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}'
-        codebasics/pod: "{{ .Release.Name }}-{{ .Values.version }}-job-pod"
+        app.kubernetes.io/name: "{{ include "codebasics.fullname" . }}-job-pod"
+        {{- include "codebasics.labels" . | nindent 8 }}
+        codebasics/pod: "{{ include "codebasics.fullname" . }}-{{ .Values.version }}-job-pod"
     spec:
       nodeSelector:
         group: "{{ .Release.Namespace }}"
@@ -94,6 +91,6 @@ spec:
                 name: codebasics-environment-secrets
           env:
             - name: HEXLET_BASICS_RELEASE_VERSION
-              value: {{ .Values.version }}
+              value: {{ .Values.version | quote }}
             - name: RAILS_MAX_THREADS
               value: "5"

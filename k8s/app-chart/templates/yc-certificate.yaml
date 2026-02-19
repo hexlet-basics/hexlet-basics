@@ -3,8 +3,11 @@
 apiVersion: gwin.yandex.cloud/v1
 kind: YCCertificate
 metadata:
-  name: "{{ .Release.Name }}-yc-certificate"
+  name: "{{ include "codebasics.fullname" . }}-yc-certificate"
   namespace: "{{ .Release.Namespace }}"
+  labels:
+    app.kubernetes.io/name: "{{ .Chart.Name }}"
+    {{- include "codebasics.labels" . | nindent 4 }}
 spec:
   certificateRef:
     certificateID: "{{ .Values.gateway.certificateId }}"

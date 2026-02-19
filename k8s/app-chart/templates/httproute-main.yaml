@@ -3,14 +3,17 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: "{{ .Release.Name }}-main-httproute"
+  name: "{{ include "codebasics.fullname" . }}-main-httproute"
   namespace: "{{ .Release.Namespace }}"
+  labels:
+    app.kubernetes.io/name: "{{ .Chart.Name }}"
+    {{- include "codebasics.labels" . | nindent 4 }}
 spec:
   hostnames:
     - "{{ .Values.gateway.hosts.primary }}"
     - "{{ .Values.gateway.hosts.wildcard }}"
   parentRefs:
-    - name: "{{ .Release.Name }}-gateway"
+    - name: "{{ include "codebasics.fullname" . }}-gateway"
       sectionName: https
   rules:
     - matches:
@@ -18,34 +21,37 @@ spec:
             type: PathPrefix
             value: /ru/api/lessons/
       backendRefs:
-        - name: "{{ .Release.Name }}-web-check-service"
+        - name: "{{ include "codebasics.fullname" . }}-web-check-service"
           port: 80
     - matches:
         - path:
             type: PathPrefix
             value: /api/lessons/
       backendRefs:
-        - name: "{{ .Release.Name }}-web-check-service"
+        - name: "{{ include "codebasics.fullname" . }}-web-check-service"
           port: 80
     - matches:
         - path:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: "{{ .Release.Name }}-web-service"
+        - name: "{{ include "codebasics.fullname" . }}-web-service"
           port: 80
 ---
 
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: "{{ .Release.Name }}-secondary-httproute"
+  name: "{{ include "codebasics.fullname" . }}-secondary-httproute"
   namespace: "{{ .Release.Namespace }}"
+  labels:
+    app.kubernetes.io/name: "{{ .Chart.Name }}"
+    {{- include "codebasics.labels" . | nindent 4 }}
 spec:
   hostnames:
     - "{{ .Values.gateway.hosts.secondary }}"
   parentRefs:
-    - name: "{{ .Release.Name }}-gateway"
+    - name: "{{ include "codebasics.fullname" . }}-gateway"
       sectionName: https
   rules:
     - matches:
@@ -53,5 +59,5 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: "{{ .Release.Name }}-web-service"
+        - name: "{{ include "codebasics.fullname" . }}-web-service"
           port: 80

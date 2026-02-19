@@ -4,16 +4,19 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: "{{ .Release.Name }}-web-network-policy"
+  name: "{{ include "codebasics.fullname" . }}-web-network-policy"
   namespace: "{{ .Release.Namespace }}"
+  labels:
+    app.kubernetes.io/name: "{{ .Chart.Name }}"
+    {{- include "codebasics.labels" . | nindent 4 }}
 spec:
   podSelector:
     matchExpressions:
       - key: app.kubernetes.io/name
         operator: In
         values:
-          - "{{ .Release.Name }}-web-pod"
-          - "{{ .Release.Name }}-web-check-pod"
+          - "{{ include "codebasics.fullname" . }}-web-pod"
+          - "{{ include "codebasics.fullname" . }}-web-check-pod"
   policyTypes:
     - Ingress
     - Egress

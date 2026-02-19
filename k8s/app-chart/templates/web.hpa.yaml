@@ -4,13 +4,16 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: "{{ .Release.Name }}-web-hpa"
+  name: "{{ include "codebasics.fullname" . }}-web-hpa"
   namespace: "{{ .Release.Namespace }}"
+  labels:
+    app.kubernetes.io/name: "{{ .Chart.Name }}"
+    {{- include "codebasics.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: "{{ .Release.Name }}-web-deployment"
+    name: "{{ include "codebasics.fullname" . }}-web-deployment"
   minReplicas: {{ .Values.autoscaling.web.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.web.maxReplicas }}
   metrics:
@@ -19,7 +22,7 @@ spec:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: {{ .Values.autoscaling.web.targetCPUUtilizationPercentage }}
+          averageUtilization: {{ .Values.autoscaling.web.targetCpuUtilizationPercentage }}
     - type: Resource
       resource:
         name: memory

@@ -3,20 +3,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ .Release.Name }}-web-deployment"
+  name: "{{ include "codebasics.fullname" . }}-web-deployment"
   namespace: "{{ .Release.Namespace }}"
   labels:
     app.kubernetes.io/name: "{{ .Chart.Name }}"
-    app.kubernetes.io/instance: "{{ .Release.Name }}"
-    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
-    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    {{- include "codebasics.labels" . | nindent 4 }}
 
 spec:
   replicas: 2
 
   selector:
     matchLabels:
-      app.kubernetes.io/name: "{{ .Release.Name }}-web-pod"
+      app.kubernetes.io/name: "{{ include "codebasics.fullname" . }}-web-pod"
       app.kubernetes.io/instance: "{{ .Release.Name }}"
   strategy:
     type: RollingUpdate
@@ -26,10 +24,9 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: "{{ .Release.Name }}-web-pod"
-        app.kubernetes.io/instance: "{{ .Release.Name }}"
-        helm.sh/chart: '{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}'
-        codebasics/pod: "{{ .Release.Name }}-{{ .Values.version }}-web-pod"
+        app.kubernetes.io/name: "{{ include "codebasics.fullname" . }}-web-pod"
+        {{- include "codebasics.labels" . | nindent 8 }}
+        codebasics/pod: "{{ include "codebasics.fullname" . }}-{{ .Values.version }}-web-pod"
     spec:
       nodeSelector:
         group: "{{ .Release.Namespace }}"
@@ -50,7 +47,7 @@ spec:
                   - key: "codebasics/pod"
                     operator: In
                     values:
-                      - "{{ .Release.Name }}-{{ .Values.version }}-web-pod"
+                      - "{{ include "codebasics.fullname" . }}-{{ .Values.version }}-web-pod"
               topologyKey: "kubernetes.io/hostname"
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -181,7 +178,7 @@ spec:
                 name: codebasics-environment-secrets
           env:
             - name: HEXLET_BASICS_RELEASE_VERSION
-              value: {{ .Values.version }}
+              value: {{ .Values.version | quote }}
 
           # NOTE: приложение должно работать дольше чем nginx иначе будут поступать ответы 502
           lifecycle:
@@ -190,7 +187,7 @@ spec:
                 command: ["sleep", "15"]
             postStart:
               exec:
-                command: {{ .Values.slack_notification }}
+                command: {{ .Values.slackNotification }}
 
         - name: cable
           imagePullPolicy: Always

@@ -3,8 +3,11 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: "{{ .Release.Name }}-gateway"
+  name: "{{ include "codebasics.fullname" . }}-gateway"
   namespace: "{{ .Release.Namespace }}"
+  labels:
+    app.kubernetes.io/name: "{{ .Chart.Name }}"
+    {{- include "codebasics.labels" . | nindent 4 }}
 spec:
   gatewayClassName: "{{ .Values.gateway.className }}"
   listeners:
@@ -24,7 +27,7 @@ spec:
         certificateRefs:
           - group: gwin.yandex.cloud
             kind: YCCertificate
-            name: "{{ .Release.Name }}-yc-certificate"
+            name: "{{ include "codebasics.fullname" . }}-yc-certificate"
   addresses:
     - type: "{{ .Values.gateway.address.type }}"
       value: "{{ .Values.gateway.address.value }}"

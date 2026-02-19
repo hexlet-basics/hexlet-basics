@@ -1,40 +1,74 @@
 ---
 
-version: v1275
+# version is the application image tag used by all workloads.
+version: "v1275"
+
+# nameOverride overrides the chart name part in generated resource names.
+nameOverride: ""
+
+# fullnameOverride fully overrides generated resource names.
+fullnameOverride: ""
 
 nginx:
   image:
-    repository: hexletbasics/services-nginx
+    # repository is the nginx image repository.
+    repository: "hexletbasics/services-nginx"
 
 app:
   image:
-    repository: hexletbasics/services-app
+    # repository is the app image repository.
+    repository: "hexletbasics/services-app"
 
-slack_notification: ['/rails/deploy-notify.sh']
+# slackNotification is the command executed in web container postStart hook.
+slackNotification: ["/rails/deploy-notify.sh"]
 
 gateway:
-  className: gwin-default
+  # className is the GatewayClass name.
+  className: "gwin-default"
   address:
-    type: gwin.yandex.cloud/staticIPv4
-    value: 89.169.182.43
+    # type is the gateway address type.
+    type: "gwin.yandex.cloud/staticIPv4"
+    # value is the gateway address value.
+    value: "89.169.182.43"
+  # subnets is the list of subnet IDs used by gateway policy.
   subnets:
-    - e2lfircmrq1atgmlg7ib
-  certificateId: fpqgjl11q387a86d42kn
+    - "e2lfircmrq1atgmlg7ib"
+  # certificateId is the ID of TLS certificate in provider.
+  certificateId: "fpqgjl11q387a86d42kn"
   hosts:
-    primary: code-basics.com
+    # primary is the main host.
+    primary: "code-basics.com"
+    # wildcard is the wildcard host.
     wildcard: "*.code-basics.com"
-    secondary: code-basics.ru
+    # secondary is the secondary host.
+    secondary: "code-basics.ru"
   backend:
+    # useHttp2 enables HTTP/2 to backend services.
     useHttp2: true
-    upgradeTypes: websocket
+    # upgradeTypes is the allowed upgrade type for HTTP routes.
+    upgradeTypes: "websocket"
 
 autoscaling:
   web:
+    # enabled toggles HPA for web deployment.
     enabled: true
+    # minReplicas is the minimum number of pods.
     minReplicas: 2
+    # maxReplicas is the maximum number of pods.
     maxReplicas: 6
-    targetCPUUtilizationPercentage: 75
+    # targetCpuUtilizationPercentage is the target CPU utilization percentage.
+    targetCpuUtilizationPercentage: 75
+    # targetMemoryUtilizationPercentage is the target memory utilization percentage.
     targetMemoryUtilizationPercentage: 80
 
 networkPolicy:
+  # enabled toggles network policy resource.
   enabled: true
+
+secrets:
+  docker:
+    # config is base64 source content for .dockerconfigjson (raw, chart encodes it).
+    config: ""
+  codeBasics:
+    # env is key-value map for application secret environment variables.
+    env: {}

@@ -3,16 +3,19 @@
 apiVersion: gwin.yandex.cloud/v1
 kind: ServicePolicy
 metadata:
-  name: "{{ .Release.Name }}-service-policy"
+  name: "{{ include "codebasics.fullname" . }}-service-policy"
   namespace: "{{ .Release.Namespace }}"
+  labels:
+    app.kubernetes.io/name: "{{ .Chart.Name }}"
+    {{- include "codebasics.labels" . | nindent 4 }}
 spec:
   targetRefs:
     - group: ""
       kind: Service
-      name: "{{ .Release.Name }}-web-service"
+      name: "{{ include "codebasics.fullname" . }}-web-service"
     - group: ""
       kind: Service
-      name: "{{ .Release.Name }}-web-check-service"
+      name: "{{ include "codebasics.fullname" . }}-web-check-service"
   policy:
     targets:
       type: Pod
