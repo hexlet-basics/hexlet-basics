@@ -8,7 +8,116 @@
 # source://solid_queue//lib/active_job/concurrency_controls.rb#3
 module ActiveJob; end
 
-class ActiveJob::Base; end
+class ActiveJob::Base
+  include ::ActiveJob::ConcurrencyControls
+  extend ::ActiveJob::ConcurrencyControls::ClassMethods
+
+  # source://solid_queue//lib/solid_queue/engine.rb#37
+  def concurrency_duration; end
+
+  # source://solid_queue//lib/solid_queue/engine.rb#37
+  def concurrency_duration=(_arg0); end
+
+  # source://solid_queue//lib/solid_queue/engine.rb#37
+  def concurrency_duration?; end
+
+  # source://solid_queue//lib/solid_queue/engine.rb#37
+  def concurrency_limit; end
+
+  # source://solid_queue//lib/solid_queue/engine.rb#37
+  def concurrency_limit=(_arg0); end
+
+  # source://solid_queue//lib/solid_queue/engine.rb#37
+  def concurrency_limit?; end
+
+  # source://solid_queue//lib/solid_queue/engine.rb#37
+  def concurrency_on_conflict; end
+
+  # source://solid_queue//lib/solid_queue/engine.rb#37
+  def concurrency_on_conflict=(_arg0); end
+
+  # source://solid_queue//lib/solid_queue/engine.rb#37
+  def concurrency_on_conflict?; end
+
+  class << self
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def concurrency_duration; end
+
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def concurrency_duration=(value); end
+
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def concurrency_duration?; end
+
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def concurrency_group; end
+
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def concurrency_group=(value); end
+
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def concurrency_group?; end
+
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def concurrency_key; end
+
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def concurrency_key=(value); end
+
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def concurrency_key?; end
+
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def concurrency_limit; end
+
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def concurrency_limit=(value); end
+
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def concurrency_limit?; end
+
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def concurrency_on_conflict; end
+
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def concurrency_on_conflict=(value); end
+
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def concurrency_on_conflict?; end
+
+    private
+
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def __class_attr_concurrency_duration; end
+
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def __class_attr_concurrency_duration=(new_value); end
+
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def __class_attr_concurrency_group; end
+
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def __class_attr_concurrency_group=(new_value); end
+
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def __class_attr_concurrency_key; end
+
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def __class_attr_concurrency_key=(new_value); end
+
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def __class_attr_concurrency_limit; end
+
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def __class_attr_concurrency_limit=(new_value); end
+
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def __class_attr_concurrency_on_conflict; end
+
+    # source://solid_queue//lib/solid_queue/engine.rb#37
+    def __class_attr_concurrency_on_conflict=(new_value); end
+  end
+end
 
 # source://solid_queue//lib/active_job/concurrency_controls.rb#4
 module ActiveJob::ConcurrencyControls
@@ -393,20 +502,20 @@ class SolidQueue::AsyncSupervisor < ::SolidQueue::Supervisor
 
   # @return [Boolean]
   #
-  # source://solid_queue//lib/solid_queue/async_supervisor.rb#46
+  # source://solid_queue//lib/solid_queue/async_supervisor.rb#48
   def all_processes_terminated?; end
 
   # source://solid_queue//lib/solid_queue/async_supervisor.rb#20
   def check_and_replace_terminated_processes; end
 
-  # source://solid_queue//lib/solid_queue/async_supervisor.rb#36
+  # source://solid_queue//lib/solid_queue/async_supervisor.rb#38
   def perform_graceful_termination; end
 
-  # source://solid_queue//lib/solid_queue/async_supervisor.rb#42
+  # source://solid_queue//lib/solid_queue/async_supervisor.rb#44
   def perform_immediate_termination; end
 
   # source://solid_queue//lib/solid_queue/async_supervisor.rb#25
-  def replace_thread(thread_id, instance); end
+  def replace_thread(thread_id); end
 
   # source://solid_queue//lib/solid_queue/async_supervisor.rb#13
   def supervise; end
@@ -939,7 +1048,6 @@ class SolidQueue::FailedExecution < ::SolidQueue::Execution
   include ::SolidQueue::Execution::Dispatching
   extend ::SolidQueue::Execution::Dispatching::ClassMethods
 
-  def _run_create_callbacks(&block); end
   def backtrace; end
   def exception; end
   def exception=(_arg0); end
@@ -2045,11 +2153,11 @@ class SolidQueue::RecurringTask < ::SolidQueue::Record
   def enqueue_and_record(run_at:); end
   def enqueue_options; end
   def ensure_command_or_class_present; end
-  def existing_job_class; end
+  def ensure_existing_job_class; end
+  def ensure_schedule_supported; end
   def job_class; end
   def parsed_schedule; end
   def perform_later; end
-  def supported_schedule; end
   def using_solid_queue_adapter?; end
 
   class << self

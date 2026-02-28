@@ -6,6 +6,7 @@
 
 
 # Top superclass: it defines only what's common to all the subclasses
+# noinspection RubyMismatchedArgumentType
 #
 # source://pagy//lib/pagy/classes/exceptions.rb#3
 class Pagy
@@ -124,16 +125,16 @@ module Pagy::B64
   end
 end
 
-# source://pagy//lib/pagy/classes/calendar/calendar.rb#11
+# source://pagy//lib/pagy/classes/calendar/calendar.rb#12
 class Pagy::Calendar < ::Hash
   # Return the current time of the smallest time unit shown
   #
-  # source://pagy//lib/pagy/classes/calendar/calendar.rb#43
+  # source://pagy//lib/pagy/classes/calendar/calendar.rb#44
   def showtime; end
 
   # Return the url for the calendar (shortest unit) page at time
   #
-  # source://pagy//lib/pagy/classes/calendar/calendar.rb#46
+  # source://pagy//lib/pagy/classes/calendar/calendar.rb#47
   def url_at(time, **_arg1); end
 
   private
@@ -142,12 +143,12 @@ class Pagy::Calendar < ::Hash
   #
   # @raise [InternalError]
   #
-  # source://pagy//lib/pagy/classes/calendar/calendar.rb#94
+  # source://pagy//lib/pagy/classes/calendar/calendar.rb#95
   def create(unit, **_arg1); end
 
   # Create the calendar
   #
-  # source://pagy//lib/pagy/classes/calendar/calendar.rb#64
+  # source://pagy//lib/pagy/classes/calendar/calendar.rb#65
   def init(conf, period, params); end
 
   class << self
@@ -155,14 +156,14 @@ class Pagy::Calendar < ::Hash
     #
     # @raise [RailsI18nLoadError]
     #
-    # source://pagy//lib/pagy/classes/calendar/calendar.rb#25
+    # source://pagy//lib/pagy/classes/calendar/calendar.rb#26
     def localize_with_rails_i18n_gem(*locales); end
 
     private
 
     # Return calendar, from, to
     #
-    # source://pagy//lib/pagy/classes/calendar/calendar.rb#39
+    # source://pagy//lib/pagy/classes/calendar/calendar.rb#40
     def init(*_arg0, **_arg1, &_arg2); end
   end
 end
@@ -242,7 +243,7 @@ Pagy::Calendar::Quarter::DEFAULT = T.let(T.unsafe(nil), Hash)
 
 # List of units in desc order of duration. It can be used for custom units.
 #
-# source://pagy//lib/pagy/classes/calendar/calendar.rb#21
+# source://pagy//lib/pagy/classes/calendar/calendar.rb#22
 Pagy::Calendar::UNITS = T.let(T.unsafe(nil), Array)
 
 # Base class for time units subclasses (Year, Quarter, Month, Week, Day)
@@ -1126,18 +1127,16 @@ end
 
 # Pagy::Method defines the #pagy method to be included in the app controller/view.
 #
-# source://pagy//lib/pagy/toolbox/paginators/method.rb#20
+# source://pagy//lib/pagy/toolbox/paginators/method.rb#21
 module Pagy::Method
   protected
 
-  # source://pagy//lib/pagy/toolbox/paginators/method.rb#23
+  # source://pagy//lib/pagy/toolbox/paginators/method.rb#24
   def pagy(paginator = T.unsafe(nil), collection, **options); end
 end
 
-# Define a thread-safe hash at the class level
-#
 # source://pagy//lib/pagy.rb#34
-Pagy::OPTIONS = T.let(T.unsafe(nil), Concurrent::Hash)
+Pagy::OPTIONS = T.let(T.unsafe(nil), Hash)
 
 # Implements Offset Pagination
 #
@@ -1386,7 +1385,7 @@ module Pagy::Search
   # Collect the search arguments to pass to the actual search
   #
   # source://pagy//lib/pagy/classes/offset/search.rb#12
-  def pagy_search(term = T.unsafe(nil), **options, &block); end
+  def pagy_search(*arguments, **options, &block); end
 end
 
 # source://pagy//lib/pagy/classes/offset/search.rb#5
@@ -1461,6 +1460,26 @@ module Pagy::Shiftable
 
   # source://pagy//lib/pagy/modules/abilities/shiftable.rb#7
   def assign_previous_and_next; end
+end
+
+# source://pagy//lib/pagy/classes/offset/search.rb#33
+class Pagy::TypesenseRails < ::Pagy::SearchBase; end
+
+# source://pagy//lib/pagy/toolbox/paginators/typesense_rails.rb#6
+module Pagy::TypesenseRailsPaginator
+  private
+
+  # Paginate from the search object
+  #
+  # source://pagy//lib/pagy/toolbox/paginators/typesense_rails.rb#10
+  def paginate(search, options); end
+
+  class << self
+    # Paginate from the search object
+    #
+    # source://pagy//lib/pagy/toolbox/paginators/typesense_rails.rb#10
+    def paginate(search, options); end
+  end
 end
 
 # source://pagy//lib/pagy.rb#13

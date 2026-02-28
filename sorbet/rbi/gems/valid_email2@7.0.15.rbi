@@ -204,41 +204,62 @@ class ValidEmail2::Dns::CacheEntry < ::Struct
   # Returns the value of attribute cached_at
   #
   # @return [Object] the current value of cached_at
+  #
+  # source://valid_email2//lib/valid_email2/dns.rb#8
   def cached_at; end
 
   # Sets the attribute cached_at
   #
   # @param value [Object] the value to set the attribute cached_at to.
   # @return [Object] the newly set value
+  #
+  # source://valid_email2//lib/valid_email2/dns.rb#8
   def cached_at=(_); end
 
   # Returns the value of attribute records
   #
   # @return [Object] the current value of records
+  #
+  # source://valid_email2//lib/valid_email2/dns.rb#8
   def records; end
 
   # Sets the attribute records
   #
   # @param value [Object] the value to set the attribute records to.
   # @return [Object] the newly set value
+  #
+  # source://valid_email2//lib/valid_email2/dns.rb#8
   def records=(_); end
 
   # Returns the value of attribute ttl
   #
   # @return [Object] the current value of ttl
+  #
+  # source://valid_email2//lib/valid_email2/dns.rb#8
   def ttl; end
 
   # Sets the attribute ttl
   #
   # @param value [Object] the value to set the attribute ttl to.
   # @return [Object] the newly set value
+  #
+  # source://valid_email2//lib/valid_email2/dns.rb#8
   def ttl=(_); end
 
   class << self
+    # source://valid_email2//lib/valid_email2/dns.rb#8
     def [](*_arg0); end
+
+    # source://valid_email2//lib/valid_email2/dns.rb#8
     def inspect; end
+
+    # source://valid_email2//lib/valid_email2/dns.rb#8
     def keyword_init?; end
+
+    # source://valid_email2//lib/valid_email2/dns.rb#8
     def members; end
+
+    # source://valid_email2//lib/valid_email2/dns.rb#8
     def new(*_arg0); end
   end
 end

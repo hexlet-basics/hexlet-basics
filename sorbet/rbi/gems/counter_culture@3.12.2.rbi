@@ -507,7 +507,7 @@ class CounterCulture::Reconciler::Reconciliation
   # source://counter_culture//lib/counter_culture/reconciler.rb#189
   def log_without_newline(message); end
 
-  # source://counter_culture//lib/counter_culture/reconciler.rb#349
+  # source://counter_culture//lib/counter_culture/reconciler.rb#350
   def parameterize(string); end
 
   # source://counter_culture//lib/counter_culture/reconciler.rb#228
@@ -517,7 +517,7 @@ class CounterCulture::Reconciler::Reconciliation
   # using Postgres with schema-namespaced tables. But then it's required,
   # and otherwise it's just a no-op, so why not do it?
   #
-  # source://counter_culture//lib/counter_culture/reconciler.rb#343
+  # source://counter_culture//lib/counter_culture/reconciler.rb#344
   def quote_table_name(table_name); end
 
   # source://counter_culture//lib/counter_culture/reconciler.rb#239
@@ -531,10 +531,10 @@ class CounterCulture::Reconciler::Reconciliation
   # source://counter_culture//lib/counter_culture/reconciler.rb#150
   def update_count_for_batch(column_name, records); end
 
-  # source://counter_culture//lib/counter_culture/reconciler.rb#357
+  # source://counter_culture//lib/counter_culture/reconciler.rb#358
   def with_reading_db_connection(&block); end
 
-  # source://counter_culture//lib/counter_culture/reconciler.rb#367
+  # source://counter_culture//lib/counter_culture/reconciler.rb#368
   def with_writing_db_connection(&block); end
 end
 

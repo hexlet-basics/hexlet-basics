@@ -8,16 +8,16 @@
 # source://brakeman//lib/brakeman/logger.rb#1
 module Brakeman
   class << self
-    # source://brakeman//lib/brakeman.rb#630
+    # source://brakeman//lib/brakeman.rb#644
     def add_external_checks(options); end
 
-    # source://brakeman//lib/brakeman.rb#530
+    # source://brakeman//lib/brakeman.rb#544
     def alert(message); end
 
-    # source://brakeman//lib/brakeman.rb#526
+    # source://brakeman//lib/brakeman.rb#540
     def announce(message); end
 
-    # source://brakeman//lib/brakeman.rb#636
+    # source://brakeman//lib/brakeman.rb#650
     def check_for_missing_checks(included_checks, excluded_checks, enabled_checks); end
 
     # source://brakeman//lib/brakeman.rb#122
@@ -27,52 +27,58 @@ module Brakeman
     #
     # @raise [ArgumentError]
     #
-    # source://brakeman//lib/brakeman.rb#539
+    # source://brakeman//lib/brakeman.rb#553
     def compare(options); end
 
-    # source://brakeman//lib/brakeman.rb#220
+    # source://brakeman//lib/brakeman.rb#218
     def config_file(custom_location, app_path); end
 
-    # source://brakeman//lib/brakeman.rb#534
+    # source://brakeman//lib/brakeman.rb#548
     def debug(message); end
 
-    # source://brakeman//lib/brakeman.rb#646
+    # source://brakeman//lib/brakeman.rb#660
     def debug=(val); end
 
     # Default set of options
     #
-    # source://brakeman//lib/brakeman.rb#227
+    # source://brakeman//lib/brakeman.rb#225
     def default_options; end
 
     # Output configuration to YAML
     #
-    # source://brakeman//lib/brakeman.rb#386
+    # source://brakeman//lib/brakeman.rb#384
     def dump_config(options); end
 
-    # source://brakeman//lib/brakeman.rb#419
-    def ensure_latest; end
+    # Returns quit message unless the latest version
+    # of Brakeman matches the current version.
+    #
+    # Optionally checks that the latest version is at least
+    # the specified number of days old.
+    #
+    # source://brakeman//lib/brakeman.rb#422
+    def ensure_latest(days_old: T.unsafe(nil)); end
 
-    # source://brakeman//lib/brakeman.rb#600
+    # source://brakeman//lib/brakeman.rb#614
     def filter_warnings(tracker, options); end
 
     # Determine output formats based on options[:output_formats]
     # or options[:output_files]
     #
-    # source://brakeman//lib/brakeman.rb#258
+    # source://brakeman//lib/brakeman.rb#256
     def get_output_formats(options); end
 
     # Returns an array of alert fingerprints for any ignored warnings without
     # notes found in the specified ignore file (if it exists).
     #
-    # source://brakeman//lib/brakeman.rb#590
+    # source://brakeman//lib/brakeman.rb#604
     def ignore_file_entries_with_empty_notes(file); end
 
     # Output list of checks (for `-k` option)
     #
-    # source://brakeman//lib/brakeman.rb#364
+    # source://brakeman//lib/brakeman.rb#362
     def list_checks(options); end
 
-    # source://brakeman//lib/brakeman.rb#562
+    # source://brakeman//lib/brakeman.rb#576
     def load_brakeman_dependency(name, allow_fail = T.unsafe(nil)); end
 
     # Load options from YAML file
@@ -86,10 +92,10 @@ module Brakeman
     # source://brakeman//lib/brakeman.rb#114
     def logger=(log); end
 
-    # source://brakeman//lib/brakeman.rb#654
+    # source://brakeman//lib/brakeman.rb#668
     def process_step(description, &_arg1); end
 
-    # source://brakeman//lib/brakeman.rb#650
+    # source://brakeman//lib/brakeman.rb#664
     def quiet=(val); end
 
     # Rescan a subset of files in a Rails application.
@@ -104,7 +110,7 @@ module Brakeman
     # This method returns a RescanReport object with information about the scan.
     # However, the Tracker object will also be modified as the scan is run.
     #
-    # source://brakeman//lib/brakeman.rb#515
+    # source://brakeman//lib/brakeman.rb#529
     def rescan(tracker, files, options = T.unsafe(nil)); end
 
     # Run Brakeman scan. Returns Tracker object.
@@ -156,7 +162,7 @@ module Brakeman
 
     # Run a scan. Generally called from Brakeman.run instead of directly.
     #
-    # source://brakeman//lib/brakeman.rb#428
+    # source://brakeman//lib/brakeman.rb#442
     def scan(options); end
 
     # source://brakeman//lib/brakeman.rb#118
@@ -169,27 +175,27 @@ module Brakeman
 
     private
 
-    # source://brakeman//lib/brakeman.rb#311
+    # source://brakeman//lib/brakeman.rb#309
     def get_formats_from_output_files(output_files); end
 
-    # source://brakeman//lib/brakeman.rb#277
+    # source://brakeman//lib/brakeman.rb#275
     def get_formats_from_output_format(output_format); end
 
-    # source://brakeman//lib/brakeman.rb#347
+    # source://brakeman//lib/brakeman.rb#345
     def get_github_url(options); end
 
-    # source://brakeman//lib/brakeman.rb#468
+    # source://brakeman//lib/brakeman.rb#482
     def write_report_to_files(tracker, output_files); end
 
-    # source://brakeman//lib/brakeman.rb#487
+    # source://brakeman//lib/brakeman.rb#501
     def write_report_to_formats(tracker, output_formats); end
   end
 end
 
-# source://brakeman//lib/brakeman.rb#208
+# source://brakeman//lib/brakeman.rb#206
 Brakeman::CONFIG_FILES = T.let(T.unsafe(nil), Array)
 
-# source://brakeman//lib/brakeman.rb#658
+# source://brakeman//lib/brakeman.rb#672
 class Brakeman::DependencyError < ::RuntimeError; end
 
 # Exit code returned when an ignored warning has no note and
@@ -383,7 +389,7 @@ class Brakeman::Logger::Quiet < ::Brakeman::Logger::Base
   def initialize(*_arg0); end
 end
 
-# source://brakeman//lib/brakeman.rb#661
+# source://brakeman//lib/brakeman.rb#675
 class Brakeman::MissingChecksError < ::RuntimeError; end
 
 # Exit code returned when user requests non-existent checks
@@ -391,10 +397,10 @@ class Brakeman::MissingChecksError < ::RuntimeError; end
 # source://brakeman//lib/brakeman.rb#18
 Brakeman::Missing_Checks_Exit_Code = T.let(T.unsafe(nil), Integer)
 
-# source://brakeman//lib/brakeman.rb#660
+# source://brakeman//lib/brakeman.rb#674
 class Brakeman::NoApplication < ::RuntimeError; end
 
-# source://brakeman//lib/brakeman.rb#659
+# source://brakeman//lib/brakeman.rb#673
 class Brakeman::NoBrakemanError < ::RuntimeError; end
 
 # Exit code returned when no Rails application is detected

@@ -1,6 +1,6 @@
 {
   "browsers": [
-    "and_chr 144",
+    "and_chr 145",
     "and_ff 147",
     "chrome 145",
     "chrome 144",
@@ -33,6 +33,7 @@
     "chrome 117",
     "chrome 116",
     "chrome 115",
+    "edge 145",
     "edge 144",
     "edge 143",
     "edge 142",

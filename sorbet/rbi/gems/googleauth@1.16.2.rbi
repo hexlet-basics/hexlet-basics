@@ -3579,7 +3579,7 @@ class Google::Auth::UserRefreshCredentials < ::Signet::OAuth2::Client
   # @param required_scope [Array<String>, String] Scope to verify
   # @return [Boolean] True if scope is granted
   #
-  # source://googleauth//lib/googleauth/user_refresh.rb#158
+  # source://googleauth//lib/googleauth/user_refresh.rb#160
   def includes_scope?(required_scope); end
 
   # Returns the client ID as the principal for user refresh credentials
@@ -3587,7 +3587,7 @@ class Google::Auth::UserRefreshCredentials < ::Signet::OAuth2::Client
   # @private
   # @return [String, Symbol] the client ID or :user_refresh if not available
   #
-  # source://googleauth//lib/googleauth/user_refresh.rb#190
+  # source://googleauth//lib/googleauth/user_refresh.rb#192
   def principal; end
 
   # Returns the value of attribute project_id.
@@ -3621,7 +3621,7 @@ class Google::Auth::UserRefreshCredentials < ::Signet::OAuth2::Client
   #   during the authentication
   # @return [Google::Auth::UserRefreshCredentials]
   #
-  # source://googleauth//lib/googleauth/user_refresh.rb#175
+  # source://googleauth//lib/googleauth/user_refresh.rb#177
   def update!(options = T.unsafe(nil)); end
 
   class << self
@@ -3983,15 +3983,15 @@ class Signet::OAuth2::Client
   # source://googleauth//lib/googleauth/signet.rb#192
   def expires_at_from_id_token(id_token); end
 
-  # source://googleauth//lib/googleauth/signet.rb#219
+  # source://googleauth//lib/googleauth/signet.rb#221
   def log_auth_error(err); end
 
   # source://googleauth//lib/googleauth/signet.rb#203
   def log_response(token_response); end
 
-  # source://googleauth//lib/googleauth/signet.rb#237
+  # source://googleauth//lib/googleauth/signet.rb#239
   def log_retries_exhausted(err); end
 
-  # source://googleauth//lib/googleauth/signet.rb#228
+  # source://googleauth//lib/googleauth/signet.rb#230
   def log_transient_error(err); end
 end

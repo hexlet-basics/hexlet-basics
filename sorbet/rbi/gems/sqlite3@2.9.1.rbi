@@ -8,7 +8,6 @@
 module Process
   extend ::FFI::ModernForkTracking
   extend ::SQLite3::ForkSafety::CoreExt
-  extend ::HTTPX::Session::ForkTracker
   extend ::ActiveSupport::ForkTracker::CoreExt
 end
 

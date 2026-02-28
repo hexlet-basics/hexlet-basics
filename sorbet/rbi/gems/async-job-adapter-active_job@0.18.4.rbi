@@ -5,31 +5,31 @@
 # Please instead update this file by running `bin/tapioca gem async-job-adapter-active_job`.
 
 
-# source://async-job-adapter-active_job//lib/active_job/queue_adapters/async_job_adapter.rb#11
+# source://async-job-adapter-active_job//lib/active_job/queue_adapters/async_job_adapter.rb#12
 module ActiveJob; end
 
-# source://async-job-adapter-active_job//lib/active_job/queue_adapters/async_job_adapter.rb#13
+# source://async-job-adapter-active_job//lib/active_job/queue_adapters/async_job_adapter.rb#14
 module ActiveJob::QueueAdapters; end
 
 # ActiveJob adapter for async-job, providing asynchronous job processing capabilities.
 #
-# source://async-job-adapter-active_job//lib/active_job/queue_adapters/async_job_adapter.rb#15
+# source://async-job-adapter-active_job//lib/active_job/queue_adapters/async_job_adapter.rb#16
 class ActiveJob::QueueAdapters::AsyncJobAdapter < ::ActiveJob::QueueAdapters::AbstractAdapter
   # Initialize the adapter with a dispatcher.
   #
   # @return [AsyncJobAdapter] a new instance of AsyncJobAdapter
   #
-  # source://async-job-adapter-active_job//lib/active_job/queue_adapters/async_job_adapter.rb#18
+  # source://async-job-adapter-active_job//lib/active_job/queue_adapters/async_job_adapter.rb#19
   def initialize(dispatcher = T.unsafe(nil)); end
 
   # Enqueue a job for processing.
   #
-  # source://async-job-adapter-active_job//lib/active_job/queue_adapters/async_job_adapter.rb#24
+  # source://async-job-adapter-active_job//lib/active_job/queue_adapters/async_job_adapter.rb#25
   def enqueue(job); end
 
   # Enqueue a job for processing at a specific time.
   #
-  # source://async-job-adapter-active_job//lib/active_job/queue_adapters/async_job_adapter.rb#33
+  # source://async-job-adapter-active_job//lib/active_job/queue_adapters/async_job_adapter.rb#34
   def enqueue_at(job, timestamp); end
 end
 

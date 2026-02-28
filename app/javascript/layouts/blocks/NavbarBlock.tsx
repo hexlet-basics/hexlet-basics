@@ -53,7 +53,7 @@ export default function NavbarBlock({ opened, onToggle }: NavbarBlockProps) {
   return (
     <>
       <Group h="100%" px="md">
-        <AppAnchor href={Routes.root_path()} className="me-lg">
+        <AppAnchor href={Routes.root_path()}>
           <Image src={logoImg} w={30} h={30} fit="contain" alt="Logo" />
         </AppAnchor>
 
