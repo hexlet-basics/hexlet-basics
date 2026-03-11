@@ -21184,6 +21184,386 @@ Aws::S3::DefaultExecutor::SHUTDOWN = T.let(T.unsafe(nil), Symbol)
 # source://aws-sdk-s3//lib/aws-sdk-s3/default_executor.rb#9
 Aws::S3::DefaultExecutor::SHUTTING_DOWN = T.let(T.unsafe(nil), Symbol)
 
+# Raised when DirectoryDownloader fails to download objects from S3 bucket
+#
+# source://aws-sdk-s3//lib/aws-sdk-s3/directory_download_error.rb#6
+class Aws::S3::DirectoryDownloadError < ::StandardError
+  # @return [DirectoryDownloadError] a new instance of DirectoryDownloadError
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_download_error.rb#7
+  def initialize(message, errors = T.unsafe(nil)); end
+
+  # @return [Array<StandardError>] The list of errors encountered when downloading objects
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_download_error.rb#13
+  def errors; end
+end
+
+# This is a one-shot class that downloads objects from a bucket to a local directory.
+# This works as follows:
+# * ObjectProducer runs in a background thread, calling `list_objects_v2` and
+#   pushing entries into a SizedQueue (max: 100).
+# * An internal executor pulls from that queue and posts work. Each task uses
+#   FileDownloader to download objects then signals completion via `completion_queue`.
+#
+# We track how many tasks we posted, then pop that many times from `completion_queue`
+# to wait for everything to finish.
+#
+# Errors are collected in a mutex-protected array. On failure (unless ignore_failure is set),
+# we call abort which closes the queue - the producer catches ClosedQueueError and exits cleanly.
+#
+# @api private
+#
+# source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#18
+class Aws::S3::DirectoryDownloader
+  # @api private
+  # @return [DirectoryDownloader] a new instance of DirectoryDownloader
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#19
+  def initialize(options = T.unsafe(nil)); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#29
+  def abort; end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#27
+  def client; end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#33
+  def download(destination, bucket:, **options); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#27
+  def executor; end
+
+  private
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#49
+  def build_download_opts(destination, opts); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#56
+  def build_producer_opts(destination, bucket, opts); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#68
+  def build_result(download_count, errors); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#81
+  def download_object(entry, downloader, errors, opts); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#93
+  def process_download_queue(downloader, opts); end
+end
+
+# @api private
+#
+# source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#120
+class Aws::S3::DirectoryDownloader::ObjectProducer
+  include ::Enumerable
+
+  # @api private
+  # @return [ObjectProducer] a new instance of ObjectProducer
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#126
+  def initialize(opts = T.unsafe(nil)); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#141
+  def close; end
+
+  # @api private
+  # @return [Boolean]
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#137
+  def closed?; end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#146
+  def each; end
+
+  private
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#166
+  def apply_request_callback(key, params); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#173
+  def build_object_entry(key); end
+
+  # @api private
+  # @return [Boolean]
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#189
+  def directory_marker?(obj); end
+
+  # @api private
+  # @return [Boolean]
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#183
+  def include_object?(obj); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#193
+  def normalize_path(path); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#199
+  def stream_objects(continuation_token: T.unsafe(nil)); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#210
+  def validate_key(key); end
+end
+
+# @api private
+#
+# source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#123
+Aws::S3::DirectoryDownloader::ObjectProducer::DEFAULT_QUEUE_SIZE = T.let(T.unsafe(nil), Integer)
+
+# @api private
+#
+# source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#124
+Aws::S3::DirectoryDownloader::ObjectProducer::DONE_MARKER = T.let(T.unsafe(nil), Symbol)
+
+# @api private
+#
+# source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#218
+class Aws::S3::DirectoryDownloader::ObjectProducer::DownloadEntry
+  # @api private
+  # @return [DownloadEntry] a new instance of DownloadEntry
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#219
+  def initialize(opts = T.unsafe(nil)); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#225
+  def error; end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#225
+  def params; end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_downloader.rb#225
+  def path; end
+end
+
+# Raised when DirectoryUploader fails to upload files to S3 bucket
+#
+# source://aws-sdk-s3//lib/aws-sdk-s3/directory_upload_error.rb#6
+class Aws::S3::DirectoryUploadError < ::StandardError
+  # @return [DirectoryUploadError] a new instance of DirectoryUploadError
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_upload_error.rb#7
+  def initialize(message, errors = T.unsafe(nil)); end
+
+  # @return [Array<StandardError>] The list of errors encountered when uploading files
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_upload_error.rb#13
+  def errors; end
+end
+
+# This is a one-shot class that uploads files from a local directory to a bucket.
+# This works as follows:
+# * FileProducer runs in a background thread, scanning the directory and
+#   pushing entries into a SizedQueue (max: 100).
+# * An internal executor pulls from that queue and posts work. Each task uses
+#   FileUploader to upload files then signals completion via `completion_queue`.
+#
+# We track how many tasks we posted, then pop that many times from `completion_queue`
+# to wait for everything to finish.
+#
+# Errors are collected in a mutex-protected array. On failure (unless ignore_failure is set),
+# we call abort which closes the queue - the producer catches ClosedQueueError and exits cleanly.
+#
+# @api private
+#
+# source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#20
+class Aws::S3::DirectoryUploader
+  # @api private
+  # @return [DirectoryUploader] a new instance of DirectoryUploader
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#21
+  def initialize(options = T.unsafe(nil)); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#31
+  def abort; end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#29
+  def client; end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#29
+  def executor; end
+
+  # @api private
+  # @raise [ArgumentError]
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#35
+  def upload(source_directory, bucket, **opts); end
+
+  private
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#56
+  def build_producer_opts(source_directory, bucket, opts); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#69
+  def build_result(upload_count, errors); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#52
+  def build_upload_opts(opts); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#82
+  def process_upload_queue(uploader, opts); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#108
+  def upload_file(entry, uploader, errors, opts); end
+end
+
+# @api private
+#
+# source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#118
+class Aws::S3::DirectoryUploader::FileProducer
+  include ::Enumerable
+
+  # @api private
+  # @return [FileProducer] a new instance of FileProducer
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#124
+  def initialize(opts = T.unsafe(nil)); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#140
+  def close; end
+
+  # @api private
+  # @return [Boolean]
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#136
+  def closed?; end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#145
+  def each; end
+
+  private
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#170
+  def apply_request_callback(file_path, params); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#177
+  def build_upload_entry(file_path, key); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#183
+  def find_directly; end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#203
+  def find_recursively; end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#236
+  def get_file_stat(full_path); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#245
+  def handle_directory(dir_path, dir_name, key_prefix, ancestors); end
+
+  # @api private
+  # @return [Boolean]
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#213
+  def include_file?(file_path, file_name); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#219
+  def scan_directory(dir_path, key_prefix: T.unsafe(nil), ancestors: T.unsafe(nil)); end
+end
+
+# @api private
+#
+# source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#121
+Aws::S3::DirectoryUploader::FileProducer::DEFAULT_QUEUE_SIZE = T.let(T.unsafe(nil), Integer)
+
+# @api private
+#
+# source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#122
+Aws::S3::DirectoryUploader::FileProducer::DONE_MARKER = T.let(T.unsafe(nil), Symbol)
+
+# @api private
+#
+# source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#259
+class Aws::S3::DirectoryUploader::FileProducer::UploadEntry
+  # @api private
+  # @return [UploadEntry] a new instance of UploadEntry
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#260
+  def initialize(opts = T.unsafe(nil)); end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#265
+  def params; end
+
+  # @api private
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/directory_uploader.rb#265
+  def path; end
+end
+
 # source://aws-sdk-s3//lib/aws-sdk-s3/encryption.rb#21
 Aws::S3::EC_USER_AGENT = T.let(T.unsafe(nil), String)
 
@@ -33038,7 +33418,9 @@ Aws::S3::SUPPORTED_SECURITY_PROFILES = T.let(T.unsafe(nil), Array)
 #
 # * upload a file with multipart upload
 # * upload a stream with multipart upload
-# * download a S3 object with multipart download
+# * upload all files in a directory to an S3 bucket recursively or non-recursively
+# * download an S3 object with multipart download
+# * download all objects in an S3 bucket with same prefix to a local directory
 # * track transfer progress by using progress listener
 #
 # ## Executor Management
@@ -33078,20 +33460,80 @@ Aws::S3::SUPPORTED_SECURITY_PROFILES = T.let(T.unsafe(nil), Array)
 #   # DefaultExecutor created, used, and shutdown automatically
 #   tm.download_file('/path/to/file', bucket: 'bucket', key: 'key')
 #
-# source://aws-sdk-s3//lib/aws-sdk-s3/transfer_manager.rb#51
+# source://aws-sdk-s3//lib/aws-sdk-s3/transfer_manager.rb#53
 class Aws::S3::TransferManager
+  # @option options
   # @option options
   # @option options
   # @param options [Hash]
   # @return [TransferManager] a new instance of TransferManager
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/transfer_manager.rb#62
+  # source://aws-sdk-s3//lib/aws-sdk-s3/transfer_manager.rb#65
   def initialize(options = T.unsafe(nil)); end
 
   # @return [S3::Client]
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/transfer_manager.rb#68
+  # source://aws-sdk-s3//lib/aws-sdk-s3/transfer_manager.rb#72
   def client; end
+
+  # Downloads objects in a S3 bucket to a local directory.
+  #
+  # The downloaded directory structure will match the provided S3 virtual bucket. For example,
+  # assume that you have the following keys in your bucket:
+  #
+  # * sample.jpg
+  # * photos/2022/January/sample.jpg
+  # * photos/2022/February/sample1.jpg
+  # * photos/2022/February/sample2.jpg
+  # * photos/2022/February/sample3.jpg
+  #
+  # Given a request to download bucket to a destination with path of `/test`, the downloaded
+  # directory would look like this:
+  #
+  # ```
+  # |- test
+  #   |- sample.jpg
+  #   |- photos
+  #      |- 2022
+  #          |- January
+  #             |- sample.jpg
+  #          |- February
+  #             |- sample1.jpg
+  #             |- sample2.jpg
+  #             |- sample3.jpg
+  # ```
+  #
+  # Directory markers (zero-byte objects ending with `/`) are skipped during download.
+  # Existing files with same name as downloaded objects will be overwritten.
+  #
+  # Object keys containing path traversal sequences (`..` or `.`) will raise an error.
+  #
+  # @example Downloading buckets to a local directory
+  #   tm = TransferManager.new
+  #   tm.download_directory('/local/path', bucket: 'my-bucket')
+  #   # => {completed_downloads: 7, failed_downloads: 0, errors: 0}
+  # @note On case-insensitive filesystems (e.g., Windows, macOS default), S3 object keys that
+  #   differ only by case (e.g., "File.txt" and "file.txt") may overwrite each other when
+  #   downloaded. This condition is not automatically detected. Use the `:filter_callback`
+  #   option to handle such conflicts if needed.
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @param bucket [String] The name of the bucket to download from.
+  # @param destination [String] The location directory path to download objects to. Created if it doesn't exist.
+  #   If files with the same names already exist in the destination, they will be overwritten.
+  # @param options [Hash]
+  # @raise [DirectoryDownloadError] Raised when download fails with `ignore_failure: false` (default)
+  # @return [Hash] Returns a hash with download statistics:
+  #
+  #   * `:completed_downloads` - Number of objects successfully downloaded
+  #   * `:failed_downloads` - Number of objects that failed to download
+  #   * `:errors` - Array of errors for failed downloads (only present when failures occur)
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/transfer_manager.rb#161
+  def download_directory(destination, bucket:, **options); end
 
   # Downloads a file in S3 to a path on disk.
   #
@@ -33138,13 +33580,89 @@ class Aws::S3::TransferManager
   # @see Client#get_object
   # @see Client#head_object
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/transfer_manager.rb#147
+  # source://aws-sdk-s3//lib/aws-sdk-s3/transfer_manager.rb#246
   def download_file(destination, bucket:, key:, **options); end
 
   # @return [Object]
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/transfer_manager.rb#71
+  # source://aws-sdk-s3//lib/aws-sdk-s3/transfer_manager.rb#75
   def executor; end
+
+  # @return [Logger]
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/transfer_manager.rb#78
+  def logger; end
+
+  # Uploads all files under the given directory to the provided S3 bucket.
+  # The key name transformation depends on the optional prefix.
+  #
+  # By default, all subdirectories will be uploaded non-recursively and symbolic links are not
+  # followed automatically. Assume you have a local directory `/test` with the following structure:
+  #
+  # ```
+  # |- test
+  #   |- sample.jpg
+  #   |- photos
+  #      |- 2022
+  #          |- January
+  #             |- sample.jpg
+  #          |- February
+  #             |- sample1.jpg
+  #             |- sample2.jpg
+  #             |- sample3.jpg
+  # ```
+  #
+  # Give a request to upload directory `/test` to an S3 bucket on default setting, the target bucket will have the
+  # following S3 objects:
+  #
+  # * sample.jpg
+  #
+  # If `:recursive` set to `true`, the target bucket will have the following S3 buckets:
+  #
+  # * sample.jpg
+  # * photos/2022/January/sample.jpg
+  # * photos/2022/February/sample1.jpg
+  # * photos/2022/February/sample2.jpg
+  # * photos/2022/February/sample3.jpg
+  #
+  # Only regular files are uploaded; special files (sockets, pipes, devices) are skipped.
+  # Symlink cycles are detected and skipped when following symlinks.
+  # Empty directories are not represented in S3. Existing S3 objects with the same key are
+  # overwritten.
+  #
+  # @example Uploading a directory
+  #   tm = TransferManager.new
+  #   tm.upload_directory('/path/to/directory', bucket: 'bucket')
+  #   # => {completed_uploads: 7, failed_uploads: 0}
+  # @example Using filter callback to upload only text files
+  #   tm = TransferManager.new
+  #   filter = proc do |file_path, file_name|
+  #   File.extname(file_name) == '.txt'  # Only upload .txt files
+  #   end
+  #   tm.upload_directory('/path/to/directory', bucket: 'bucket', filter_callback: filter)
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @option options
+  # @param bucket [String] The name of the bucket to upload objects to.
+  # @param options [Hash]
+  # @param source [String, Pathname, File, Tempfile] The source directory to upload.
+  # @raise [DirectoryUploadError] Raised when:
+  #
+  #   * Upload failure with `ignore_failure: false` (default)
+  #   * Directory traversal failure (permission denied, broken symlink, etc.)
+  # @return [Hash] Returns a hash with upload statistics:
+  #
+  #   * `:completed_uploads` - Number of files successfully uploaded
+  #   * `:failed_uploads` - Number of files that failed to upload
+  #   * `:errors` - Array of error objects for failed uploads (only present when failures occur)
+  #
+  # source://aws-sdk-s3//lib/aws-sdk-s3/transfer_manager.rb#361
+  def upload_directory(source, bucket:, **options); end
 
   # Uploads a file from disk to S3.
   #
@@ -33198,7 +33716,7 @@ class Aws::S3::TransferManager
   # @see Client#upload_part
   # @yield [response]
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/transfer_manager.rb#227
+  # source://aws-sdk-s3//lib/aws-sdk-s3/transfer_manager.rb#443
   def upload_file(source, bucket:, key:, **options); end
 
   # Uploads a stream in a streaming fashion to S3.
@@ -33236,8 +33754,13 @@ class Aws::S3::TransferManager
   # @see Client#create_multipart_upload
   # @see Client#upload_part
   #
-  # source://aws-sdk-s3//lib/aws-sdk-s3/transfer_manager.rb#306
+  # source://aws-sdk-s3//lib/aws-sdk-s3/transfer_manager.rb#512
   def upload_stream(bucket:, key:, **options, &block); end
+
+  private
+
+  # source://aws-sdk-s3//lib/aws-sdk-s3/transfer_manager.rb#528
+  def resolve_http_chunk_size(opts); end
 end
 
 # source://aws-sdk-s3//lib/aws-sdk-s3/types.rb#11

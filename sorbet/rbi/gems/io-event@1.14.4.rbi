@@ -114,115 +114,120 @@ IO::EWOULDBLOCKWaitWritable = IO::EAGAINWaitWritable
 # source://io-event//lib/io/event/version.rb#9
 module IO::Event; end
 
-# source://io-event//lib/io/event/debug/selector.rb#10
+# source://io-event//lib/io/event/debug/selector.rb#8
 module IO::Event::Debug; end
 
 # Enforces the selector interface and delegates operations to a wrapped selector instance.
 #
 # You can enable this in the default selector by setting the `IO_EVENT_DEBUG_SELECTOR` environment variable. In addition, you can log all selector operations to a file by setting the `IO_EVENT_DEBUG_SELECTOR_LOG` environment variable. This is useful for debugging and understanding the behavior of the event loop.
 #
-# source://io-event//lib/io/event/debug/selector.rb#14
+# source://io-event//lib/io/event/debug/selector.rb#12
 class IO::Event::Debug::Selector
   # Initialize the debug selector with the given selector and optional log.
   #
   # @return [Selector] a new instance of Selector
   #
-  # source://io-event//lib/io/event/debug/selector.rb#33
+  # source://io-event//lib/io/event/debug/selector.rb#31
   def initialize(selector, log: T.unsafe(nil)); end
+
+  # Run the given blocking operation and wait for its completion.
+  #
+  # source://io-event//lib/io/event/debug/selector.rb#130
+  def blocking_operation_wait(operation); end
 
   # Close the selector.
   #
-  # source://io-event//lib/io/event/debug/selector.rb#78
+  # source://io-event//lib/io/event/debug/selector.rb#76
   def close; end
 
   # The idle duration of the underlying selector.
   #
-  # source://io-event//lib/io/event/debug/selector.rb#50
+  # source://io-event//lib/io/event/debug/selector.rb#48
   def idle_duration; end
 
   # Read from the given IO, forwarded to the underlying selector.
   #
-  # source://io-event//lib/io/event/debug/selector.rb#144
+  # source://io-event//lib/io/event/debug/selector.rb#148
   def io_read(fiber, io, buffer, length, offset = T.unsafe(nil)); end
 
   # Wait for the given IO, forwarded to the underlying selector.
   #
-  # source://io-event//lib/io/event/debug/selector.rb#138
+  # source://io-event//lib/io/event/debug/selector.rb#142
   def io_wait(fiber, io, events); end
 
   # Write to the given IO, forwarded to the underlying selector.
   #
-  # source://io-event//lib/io/event/debug/selector.rb#150
+  # source://io-event//lib/io/event/debug/selector.rb#154
   def io_write(fiber, io, buffer, length, offset = T.unsafe(nil)); end
 
   # Log the given message.
   #
-  # source://io-event//lib/io/event/debug/selector.rb#64
+  # source://io-event//lib/io/event/debug/selector.rb#62
   def log(message); end
 
   # The current time.
   #
-  # source://io-event//lib/io/event/debug/selector.rb#57
+  # source://io-event//lib/io/event/debug/selector.rb#55
   def now; end
 
   # Wait for the given process, forwarded to the underlying selector.
   #
-  # source://io-event//lib/io/event/debug/selector.rb#132
+  # source://io-event//lib/io/event/debug/selector.rb#136
   def process_wait(*arguments); end
 
   # Push the given fiber to the selector ready list, such that it will be resumed on the next call to {select}.
   #
-  # source://io-event//lib/io/event/debug/selector.rb#110
+  # source://io-event//lib/io/event/debug/selector.rb#108
   def push(fiber); end
 
   # Raise the given exception on the given fiber.
   #
-  # source://io-event//lib/io/event/debug/selector.rb#119
+  # source://io-event//lib/io/event/debug/selector.rb#117
   def raise(fiber, *arguments, **options); end
 
   # Check if the selector is ready.
   #
   # @return [Boolean]
   #
-  # source://io-event//lib/io/event/debug/selector.rb#127
+  # source://io-event//lib/io/event/debug/selector.rb#125
   def ready?; end
 
   # Forward the given method to the underlying selector.
   #
   # @return [Boolean]
   #
-  # source://io-event//lib/io/event/debug/selector.rb#156
+  # source://io-event//lib/io/event/debug/selector.rb#160
   def respond_to?(name, include_private = T.unsafe(nil)); end
 
   # Resume the given fiber with the given arguments.
   #
-  # source://io-event//lib/io/event/debug/selector.rb#96
+  # source://io-event//lib/io/event/debug/selector.rb#94
   def resume(*arguments); end
 
   # Select for the given duration, forwarded to the underlying selector.
   #
-  # source://io-event//lib/io/event/debug/selector.rb#161
+  # source://io-event//lib/io/event/debug/selector.rb#165
   def select(duration = T.unsafe(nil)); end
 
   # Transfer from the calling fiber to the selector.
   #
-  # source://io-event//lib/io/event/debug/selector.rb#90
+  # source://io-event//lib/io/event/debug/selector.rb#88
   def transfer; end
 
   # Wakeup the the selector.
   #
-  # source://io-event//lib/io/event/debug/selector.rb#73
+  # source://io-event//lib/io/event/debug/selector.rb#71
   def wakeup; end
 
   # Yield to the selector.
   #
-  # source://io-event//lib/io/event/debug/selector.rb#102
+  # source://io-event//lib/io/event/debug/selector.rb#100
   def yield; end
 
   class << self
     # Wrap the given selector with debugging.
     #
-    # source://io-event//lib/io/event/debug/selector.rb#19
+    # source://io-event//lib/io/event/debug/selector.rb#17
     def wrap(selector, env = T.unsafe(nil)); end
   end
 end
@@ -338,17 +343,17 @@ class IO::Event::PriorityHeap
   def heapify!; end
 end
 
-# source://io-event//lib/io/event/selector/select.rb#11
+# source://io-event//lib/io/event/selector/select.rb#10
 module IO::Event::Selector
   class << self
     # The default selector implementation, which is chosen based on the environment and available implementations.
     #
-    # source://io-event//lib/io/event/selector.rb#17
+    # source://io-event//lib/io/event/selector.rb#16
     def default(env = T.unsafe(nil)); end
 
     # Create a new selector instance, according to the best available implementation.
     #
-    # source://io-event//lib/io/event/selector.rb#38
+    # source://io-event//lib/io/event/selector.rb#37
     def new(loop, env = T.unsafe(nil)); end
 
     # Execute the given block in non-blocking mode.
@@ -410,93 +415,93 @@ end
 
 # A pure-Ruby implementation of the event selector.
 #
-# source://io-event//lib/io/event/selector/select.rb#13
+# source://io-event//lib/io/event/selector/select.rb#12
 class IO::Event::Selector::Select
   # Initialize the selector with the given event loop fiber.
   #
   # @return [Select] a new instance of Select
   #
-  # source://io-event//lib/io/event/selector/select.rb#15
+  # source://io-event//lib/io/event/selector/select.rb#14
   def initialize(loop); end
 
   # Close the selector and release any resources.
   #
-  # source://io-event//lib/io/event/selector/select.rb#49
+  # source://io-event//lib/io/event/selector/select.rb#48
   def close; end
 
   # Returns the value of attribute idle_duration.
   #
-  # source://io-event//lib/io/event/selector/select.rb#35
+  # source://io-event//lib/io/event/selector/select.rb#34
   def idle_duration; end
 
-  # Ruby 3.2, most IO::Buffer support, but slightly clunky read/write methods.
+  # Read from the given IO to the buffer.
   #
-  # source://io-event//lib/io/event/selector/select.rb#194
+  # source://io-event//lib/io/event/selector/select.rb#190
   def io_read(fiber, io, buffer, length, offset = T.unsafe(nil)); end
 
   # Wait for multiple IO objects to become readable or writable.
   #
-  # source://io-event//lib/io/event/selector/select.rb#173
+  # source://io-event//lib/io/event/selector/select.rb#172
   def io_select(readable, writable, priority, timeout); end
 
   # Wait for the given IO to become readable or writable.
   #
-  # source://io-event//lib/io/event/selector/select.rb#160
+  # source://io-event//lib/io/event/selector/select.rb#159
   def io_wait(fiber, io, events); end
 
   # Write to the given IO from the buffer.
   #
-  # source://io-event//lib/io/event/selector/select.rb#224
+  # source://io-event//lib/io/event/selector/select.rb#220
   def io_write(fiber, io, buffer, length, offset = T.unsafe(nil)); end
 
   # Returns the value of attribute loop.
   #
-  # source://io-event//lib/io/event/selector/select.rb#32
+  # source://io-event//lib/io/event/selector/select.rb#31
   def loop; end
 
   # Wait for a process to change state.
   #
-  # source://io-event//lib/io/event/selector/select.rb#316
+  # source://io-event//lib/io/event/selector/select.rb#252
   def process_wait(fiber, pid, flags); end
 
   # Append the given fiber into the ready list.
   #
-  # source://io-event//lib/io/event/selector/select.rb#96
+  # source://io-event//lib/io/event/selector/select.rb#95
   def push(fiber); end
 
   # Transfer to the given fiber and raise an exception. Put the current fiber into the ready list.
   #
-  # source://io-event//lib/io/event/selector/select.rb#101
+  # source://io-event//lib/io/event/selector/select.rb#100
   def raise(fiber, *arguments, **options); end
 
   # @return [Boolean]
   #
-  # source://io-event//lib/io/event/selector/select.rb#111
+  # source://io-event//lib/io/event/selector/select.rb#110
   def ready?; end
 
   # Transfer from the current fiber to the specified fiber. Put the current fiber into the ready list.
   #
-  # source://io-event//lib/io/event/selector/select.rb#76
+  # source://io-event//lib/io/event/selector/select.rb#75
   def resume(fiber, *arguments); end
 
   # Wait for IO events or a timeout.
   #
-  # source://io-event//lib/io/event/selector/select.rb#339
+  # source://io-event//lib/io/event/selector/select.rb#275
   def select(duration = T.unsafe(nil)); end
 
   # Transfer from the current fiber to the event loop.
   #
-  # source://io-event//lib/io/event/selector/select.rb#71
+  # source://io-event//lib/io/event/selector/select.rb#70
   def transfer; end
 
   # Wake up the event loop if it is currently sleeping.
   #
-  # source://io-event//lib/io/event/selector/select.rb#38
+  # source://io-event//lib/io/event/selector/select.rb#37
   def wakeup; end
 
   # Yield from the current fiber back to the event loop. Put the current fiber into the ready list.
   #
-  # source://io-event//lib/io/event/selector/select.rb#86
+  # source://io-event//lib/io/event/selector/select.rb#85
   def yield; end
 
   protected
@@ -505,33 +510,33 @@ class IO::Event::Selector::Select
   #
   # @return [Boolean]
   #
-  # source://io-event//lib/io/event/selector/select.rb#183
+  # source://io-event//lib/io/event/selector/select.rb#182
   def again?(errno); end
 
   private
 
-  # source://io-event//lib/io/event/selector/select.rb#322
+  # source://io-event//lib/io/event/selector/select.rb#258
   def pop_ready; end
 end
 
-# source://io-event//lib/io/event/selector/select.rb#179
+# source://io-event//lib/io/event/selector/select.rb#178
 IO::Event::Selector::Select::EAGAIN = T.let(T.unsafe(nil), Integer)
 
-# source://io-event//lib/io/event/selector/select.rb#180
+# source://io-event//lib/io/event/selector/select.rb#179
 IO::Event::Selector::Select::EWOULDBLOCK = T.let(T.unsafe(nil), Integer)
 
-# source://io-event//lib/io/event/selector/select.rb#56
+# source://io-event//lib/io/event/selector/select.rb#55
 class IO::Event::Selector::Select::Optional < ::Struct
   # @return [Boolean]
   #
-  # source://io-event//lib/io/event/selector/select.rb#61
+  # source://io-event//lib/io/event/selector/select.rb#60
   def alive?; end
 
   # Returns the value of attribute fiber
   #
   # @return [Object] the current value of fiber
   #
-  # source://io-event//lib/io/event/selector/select.rb#56
+  # source://io-event//lib/io/event/selector/select.rb#55
   def fiber; end
 
   # Sets the attribute fiber
@@ -539,53 +544,53 @@ class IO::Event::Selector::Select::Optional < ::Struct
   # @param value [Object] the value to set the attribute fiber to.
   # @return [Object] the newly set value
   #
-  # source://io-event//lib/io/event/selector/select.rb#56
+  # source://io-event//lib/io/event/selector/select.rb#55
   def fiber=(_); end
 
-  # source://io-event//lib/io/event/selector/select.rb#65
+  # source://io-event//lib/io/event/selector/select.rb#64
   def nullify; end
 
-  # source://io-event//lib/io/event/selector/select.rb#57
+  # source://io-event//lib/io/event/selector/select.rb#56
   def transfer(*arguments); end
 
   class << self
-    # source://io-event//lib/io/event/selector/select.rb#56
+    # source://io-event//lib/io/event/selector/select.rb#55
     def [](*_arg0); end
 
-    # source://io-event//lib/io/event/selector/select.rb#56
+    # source://io-event//lib/io/event/selector/select.rb#55
     def inspect; end
 
-    # source://io-event//lib/io/event/selector/select.rb#56
+    # source://io-event//lib/io/event/selector/select.rb#55
     def keyword_init?; end
 
-    # source://io-event//lib/io/event/selector/select.rb#56
+    # source://io-event//lib/io/event/selector/select.rb#55
     def members; end
 
-    # source://io-event//lib/io/event/selector/select.rb#56
+    # source://io-event//lib/io/event/selector/select.rb#55
     def new(*_arg0); end
   end
 end
 
-# source://io-event//lib/io/event/selector/select.rb#115
+# source://io-event//lib/io/event/selector/select.rb#114
 class IO::Event::Selector::Select::Waiter < ::Struct
   # @return [Boolean]
   #
-  # source://io-event//lib/io/event/selector/select.rb#116
+  # source://io-event//lib/io/event/selector/select.rb#115
   def alive?; end
 
   # Dispatch the given events to the list of waiting fibers. If the fiber was not waiting for the given events, it is reactivated by calling the given block.
   #
-  # source://io-event//lib/io/event/selector/select.rb#121
+  # source://io-event//lib/io/event/selector/select.rb#120
   def dispatch(events, &reactivate); end
 
-  # source://io-event//lib/io/event/selector/select.rb#146
+  # source://io-event//lib/io/event/selector/select.rb#145
   def each(&block); end
 
   # Returns the value of attribute events
   #
   # @return [Object] the current value of events
   #
-  # source://io-event//lib/io/event/selector/select.rb#115
+  # source://io-event//lib/io/event/selector/select.rb#114
   def events; end
 
   # Sets the attribute events
@@ -593,14 +598,14 @@ class IO::Event::Selector::Select::Waiter < ::Struct
   # @param value [Object] the value to set the attribute events to.
   # @return [Object] the newly set value
   #
-  # source://io-event//lib/io/event/selector/select.rb#115
+  # source://io-event//lib/io/event/selector/select.rb#114
   def events=(_); end
 
   # Returns the value of attribute fiber
   #
   # @return [Object] the current value of fiber
   #
-  # source://io-event//lib/io/event/selector/select.rb#115
+  # source://io-event//lib/io/event/selector/select.rb#114
   def fiber; end
 
   # Sets the attribute fiber
@@ -608,17 +613,17 @@ class IO::Event::Selector::Select::Waiter < ::Struct
   # @param value [Object] the value to set the attribute fiber to.
   # @return [Object] the newly set value
   #
-  # source://io-event//lib/io/event/selector/select.rb#115
+  # source://io-event//lib/io/event/selector/select.rb#114
   def fiber=(_); end
 
-  # source://io-event//lib/io/event/selector/select.rb#142
+  # source://io-event//lib/io/event/selector/select.rb#141
   def invalidate; end
 
   # Returns the value of attribute tail
   #
   # @return [Object] the current value of tail
   #
-  # source://io-event//lib/io/event/selector/select.rb#115
+  # source://io-event//lib/io/event/selector/select.rb#114
   def tail; end
 
   # Sets the attribute tail
@@ -626,56 +631,36 @@ class IO::Event::Selector::Select::Waiter < ::Struct
   # @param value [Object] the value to set the attribute tail to.
   # @return [Object] the newly set value
   #
-  # source://io-event//lib/io/event/selector/select.rb#115
+  # source://io-event//lib/io/event/selector/select.rb#114
   def tail=(_); end
 
   class << self
-    # source://io-event//lib/io/event/selector/select.rb#115
+    # source://io-event//lib/io/event/selector/select.rb#114
     def [](*_arg0); end
 
-    # source://io-event//lib/io/event/selector/select.rb#115
+    # source://io-event//lib/io/event/selector/select.rb#114
     def inspect; end
 
-    # source://io-event//lib/io/event/selector/select.rb#115
+    # source://io-event//lib/io/event/selector/select.rb#114
     def keyword_init?; end
 
-    # source://io-event//lib/io/event/selector/select.rb#115
+    # source://io-event//lib/io/event/selector/select.rb#114
     def members; end
 
-    # source://io-event//lib/io/event/selector/select.rb#115
+    # source://io-event//lib/io/event/selector/select.rb#114
     def new(*_arg0); end
   end
 end
 
-# Helper methods for detecting support for various features.
-#
 # source://io-event//lib/io/event/support.rb#9
 module IO::Event::Support
   class << self
-    # Some features are only availble if the IO::Buffer class is available.
+    # Check if the `IO::Buffer` class is available.
     #
     # @return [Boolean]
     #
-    # source://io-event//lib/io/event/support.rb#13
+    # source://io-event//lib/io/event/support.rb#11
     def buffer?; end
-
-    # More advanced read/write methods and blocking controls were introduced in Ruby 3.2.
-    #
-    # To be removed on 31 Mar 2026.
-    #
-    # @return [Boolean]
-    #
-    # source://io-event//lib/io/event/support.rb#20
-    def fiber_scheduler_v2?; end
-
-    # Updated inferfaces for read/write and IO::Buffer were introduced in Ruby 3.3, including pread/pwrite.
-    #
-    # To become the default 31 Mar 2026.
-    #
-    # @return [Boolean]
-    #
-    # source://io-event//lib/io/event/support.rb#35
-    def fiber_scheduler_v3?; end
   end
 end
 

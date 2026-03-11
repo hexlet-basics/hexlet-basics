@@ -607,11 +607,8 @@ module Typelizer::DSL::ClassMethods
   # source://typelizer//lib/typelizer/dsl.rb#84
   def assign_type_information(attribute_name, attributes); end
 
-  # source://typelizer//lib/typelizer/dsl.rb#95
+  # source://typelizer//lib/typelizer/dsl.rb#94
   def ensure_type_store(attribute_name); end
-
-  # source://typelizer//lib/typelizer/dsl.rb#116
-  def parse_type_declaration(attrs); end
 end
 
 # source://typelizer//lib/typelizer/dsl/hooks.rb#5
@@ -1651,21 +1648,29 @@ end
 # source://typelizer//lib/typelizer/type_parser.rb#4
 module Typelizer::TypeParser
   class << self
-    # source://typelizer//lib/typelizer/type_parser.rb#13
+    # source://typelizer//lib/typelizer/type_parser.rb#24
     def parse(type_def, **options); end
+
+    # source://typelizer//lib/typelizer/type_parser.rb#13
+    def parse_declaration(attrs, **options); end
 
     # @return [Boolean]
     #
-    # source://typelizer//lib/typelizer/type_parser.rb#34
+    # source://typelizer//lib/typelizer/type_parser.rb#45
     def shortcut?(type_def); end
 
     private
 
-    # source://typelizer//lib/typelizer/type_parser.rb#43
+    # @raise [ArgumentError]
+    #
+    # source://typelizer//lib/typelizer/type_parser.rb#54
     def parse_array(type_defs, **options); end
 
-    # source://typelizer//lib/typelizer/type_parser.rb#62
+    # source://typelizer//lib/typelizer/type_parser.rb#79
     def parse_union(type_str, **options); end
+
+    # source://typelizer//lib/typelizer/type_parser.rb#74
+    def wrap_type(types, **options); end
   end
 end
 

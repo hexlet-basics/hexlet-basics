@@ -5,176 +5,176 @@
 # Please instead update this file by running `bin/tapioca gem async-pool`.
 
 
-# source://async-pool//lib/async/pool/controller.rb#16
+# source://async-pool//lib/async/pool/controller.rb#17
 module Async; end
 
-# source://async-pool//lib/async/pool/controller.rb#17
+# source://async-pool//lib/async/pool/controller.rb#18
 module Async::Pool; end
 
 # A resource pool controller.
 #
-# source://async-pool//lib/async/pool/controller.rb#19
+# source://async-pool//lib/async/pool/controller.rb#20
 class Async::Pool::Controller
   # Create a new resource pool.
   #
   # @return [Controller] a new instance of Controller
   #
-  # source://async-pool//lib/async/pool/controller.rb#31
+  # source://async-pool//lib/async/pool/controller.rb#32
   def initialize(constructor, limit: T.unsafe(nil), concurrency: T.unsafe(nil), policy: T.unsafe(nil), tags: T.unsafe(nil)); end
 
   # Acquire a resource from the pool. If a block is provided, the resource will be released after the block has been executed.
   #
-  # source://async-pool//lib/async/pool/controller.rb#154
+  # source://async-pool//lib/async/pool/controller.rb#155
   def acquire; end
 
   # Whether the pool has any active resources.
   #
   # @return [Boolean]
   #
-  # source://async-pool//lib/async/pool/controller.rb#110
+  # source://async-pool//lib/async/pool/controller.rb#111
   def active?; end
 
   # Generate a JSON representation of the pool.
   #
-  # source://async-pool//lib/async/pool/controller.rb#71
+  # source://async-pool//lib/async/pool/controller.rb#72
   def as_json(*_arg0, **_arg1, &_arg2); end
 
   # Whether there are available resources, i.e. whether {#acquire} can reuse an existing resource.
   #
   # @return [Boolean]
   #
-  # source://async-pool//lib/async/pool/controller.rb#124
+  # source://async-pool//lib/async/pool/controller.rb#125
   def available?; end
 
   # Whether there are resources which are currently in use.
   #
   # @return [Boolean]
   #
-  # source://async-pool//lib/async/pool/controller.rb#115
+  # source://async-pool//lib/async/pool/controller.rb#116
   def busy?; end
 
   # Drain the pool, clear all resources, and stop the gardener.
   #
-  # source://async-pool//lib/async/pool/controller.rb#191
+  # source://async-pool//lib/async/pool/controller.rb#192
   def close; end
 
-  # source://async-pool//lib/async/pool/controller.rb#86
+  # source://async-pool//lib/async/pool/controller.rb#87
   def concurrency; end
 
   # Set the maximum number of concurrent tasks that can be creating a new resource.
   #
-  # source://async-pool//lib/async/pool/controller.rb#91
+  # source://async-pool//lib/async/pool/controller.rb#92
   def concurrency=(value); end
 
   # Returns the value of attribute constructor.
   #
-  # source://async-pool//lib/async/pool/controller.rb#56
+  # source://async-pool//lib/async/pool/controller.rb#57
   def constructor; end
 
   # Drain the pool, closing all resources.
   #
-  # source://async-pool//lib/async/pool/controller.rb#181
+  # source://async-pool//lib/async/pool/controller.rb#182
   def drain; end
 
   # Whether the pool is empty.
   #
   # @return [Boolean]
   #
-  # source://async-pool//lib/async/pool/controller.rb#149
+  # source://async-pool//lib/async/pool/controller.rb#150
   def empty?; end
 
   # Returns the value of attribute limit.
   #
-  # source://async-pool//lib/async/pool/controller.rb#59
+  # source://async-pool//lib/async/pool/controller.rb#60
   def limit; end
 
   # Sets the attribute limit
   #
   # @param value the value to set the attribute limit to.
   #
-  # source://async-pool//lib/async/pool/controller.rb#59
+  # source://async-pool//lib/async/pool/controller.rb#60
   def limit=(_arg0); end
 
   # Returns the value of attribute policy.
   #
-  # source://async-pool//lib/async/pool/controller.rb#96
+  # source://async-pool//lib/async/pool/controller.rb#97
   def policy; end
 
   # Sets the attribute policy
   #
   # @param value the value to set the attribute policy to.
   #
-  # source://async-pool//lib/async/pool/controller.rb#96
+  # source://async-pool//lib/async/pool/controller.rb#97
   def policy=(_arg0); end
 
   # Retire (and close) all unused resources. If a block is provided, it should implement the desired functionality for unused resources.
   #
-  # source://async-pool//lib/async/pool/controller.rb#201
+  # source://async-pool//lib/async/pool/controller.rb#202
   def prune(retain = T.unsafe(nil)); end
 
   # Make the resource resources and let waiting tasks know that there is something resources.
   #
-  # source://async-pool//lib/async/pool/controller.rb#167
+  # source://async-pool//lib/async/pool/controller.rb#168
   def release(resource); end
 
   # Returns the value of attribute resources.
   #
-  # source://async-pool//lib/async/pool/controller.rb#99
+  # source://async-pool//lib/async/pool/controller.rb#100
   def resources; end
 
   # Retire a specific resource.
   #
-  # source://async-pool//lib/async/pool/controller.rb#234
+  # source://async-pool//lib/async/pool/controller.rb#235
   def retire(resource); end
 
   # The number of resources in the pool.
   #
-  # source://async-pool//lib/async/pool/controller.rb#105
+  # source://async-pool//lib/async/pool/controller.rb#106
   def size; end
 
   # Returns the value of attribute tags.
   #
-  # source://async-pool//lib/async/pool/controller.rb#102
+  # source://async-pool//lib/async/pool/controller.rb#103
   def tags; end
 
   # Sets the attribute tags
   #
   # @param value the value to set the attribute tags to.
   #
-  # source://async-pool//lib/async/pool/controller.rb#102
+  # source://async-pool//lib/async/pool/controller.rb#103
   def tags=(_arg0); end
 
   # Generate a JSON representation of the pool.
   #
-  # source://async-pool//lib/async/pool/controller.rb#81
+  # source://async-pool//lib/async/pool/controller.rb#82
   def to_json(*_arg0, **_arg1, &_arg2); end
 
   # Generate a human-readable representation of the pool.
   #
-  # source://async-pool//lib/async/pool/controller.rb#62
+  # source://async-pool//lib/async/pool/controller.rb#63
   def to_s; end
 
   # Wait until a pool resource has been freed.
   #
   # @deprecated Use {wait_until_free} instead.
   #
-  # source://async-pool//lib/async/pool/controller.rb#130
+  # source://async-pool//lib/async/pool/controller.rb#131
   def wait; end
 
   # Wait until the pool is not busy (no resources in use).
   #
-  # source://async-pool//lib/async/pool/controller.rb#137
+  # source://async-pool//lib/async/pool/controller.rb#138
   def wait_until_free; end
 
   protected
 
-  # source://async-pool//lib/async/pool/controller.rb#270
+  # source://async-pool//lib/async/pool/controller.rb#271
   def availability_summary; end
 
-  # source://async-pool//lib/async/pool/controller.rb#334
+  # source://async-pool//lib/async/pool/controller.rb#339
   def available_resource; end
 
-  # source://async-pool//lib/async/pool/controller.rb#315
+  # source://async-pool//lib/async/pool/controller.rb#320
   def create_resource; end
 
   # def usage
@@ -185,16 +185,16 @@ class Async::Pool::Controller
   # 	@resources.count{|resource, usage| usage == 0}
   # end
   #
-  # source://async-pool//lib/async/pool/controller.rb#284
+  # source://async-pool//lib/async/pool/controller.rb#285
   def reuse(resource); end
 
-  # source://async-pool//lib/async/pool/controller.rb#248
+  # source://async-pool//lib/async/pool/controller.rb#249
   def start_gardener; end
 
-  # source://async-pool//lib/async/pool/controller.rb#266
+  # source://async-pool//lib/async/pool/controller.rb#267
   def usage_string; end
 
-  # source://async-pool//lib/async/pool/controller.rb#305
+  # source://async-pool//lib/async/pool/controller.rb#310
   def wait_for_resource; end
 
   private
@@ -202,16 +202,16 @@ class Async::Pool::Controller
   # Acquire an existing resource with zero usage.
   # If there are resources that are in use, wait until they are released.
   #
-  # source://async-pool//lib/async/pool/controller.rb#351
+  # source://async-pool//lib/async/pool/controller.rb#356
   def acquire_existing_resource; end
 
-  # source://async-pool//lib/async/pool/controller.rb#364
+  # source://async-pool//lib/async/pool/controller.rb#369
   def acquire_or_create_resource; end
 
   class << self
     # Create a new resource pool, using the given block to create new resources.
     #
-    # source://async-pool//lib/async/pool/controller.rb#21
+    # source://async-pool//lib/async/pool/controller.rb#22
     def wrap(**options, &block); end
   end
 end

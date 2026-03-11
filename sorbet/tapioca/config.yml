@@ -1,8 +1,10 @@
 gem:
   # Add your `gem` command parameters here:
   #
-  # exclude:
-  # - gem_name
+  # Falcon currently crashes under `tapioca gem` on this stack because its
+  # auto-require path is incompatible with the resolved async-service version.
+  exclude:
+  - falcon
   # doc: true
   # workers: 5
 dsl:

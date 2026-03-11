@@ -220,45 +220,6 @@ class Protocol::HTTP::Body::Deflate < ::Protocol::HTTP::Body::ZStream
   end
 end
 
-# Invokes a callback once the body has finished reading.
-#
-# source://protocol-http//lib/protocol/http/body/digestable.rb#14
-class Protocol::HTTP::Body::Digestable < ::Protocol::HTTP::Body::Wrapper
-  # Initialize the digestable body with a callback.
-  #
-  # @return [Digestable] a new instance of Digestable
-  #
-  # source://protocol-http//lib/protocol/http/body/digestable.rb#31
-  def initialize(body, digest = T.unsafe(nil), callback = T.unsafe(nil)); end
-
-  # Convert the body to a hash suitable for serialization.
-  #
-  # source://protocol-http//lib/protocol/http/body/digestable.rb#71
-  def as_json(*_arg0, **_arg1, &_arg2); end
-
-  # Returns the value of attribute digest.
-  #
-  # source://protocol-http//lib/protocol/http/body/digestable.rb#39
-  def digest; end
-
-  # Generate an appropriate ETag for the digest, assuming it is complete. If you call this method before the body is fully read, the ETag will be incorrect.
-  #
-  # source://protocol-http//lib/protocol/http/body/digestable.rb#45
-  def etag(weak: T.unsafe(nil)); end
-
-  # Read the body and update the digest. When the body is fully read, the callback is invoked with `self` as the argument.
-  #
-  # source://protocol-http//lib/protocol/http/body/digestable.rb#56
-  def read; end
-
-  class << self
-    # Wrap a message body with a callback. If the body is empty, the callback is not invoked, as there is no data to digest.
-    #
-    # source://protocol-http//lib/protocol/http/body/digestable.rb#20
-    def wrap(message, digest = T.unsafe(nil), &block); end
-  end
-end
-
 # A body which reads from a file.
 #
 # source://protocol-http//lib/protocol/http/body/file.rb#12
@@ -1028,31 +989,36 @@ class Protocol::HTTP::Body::Writable < ::Protocol::HTTP::Body::Readable
 
   # Stop generating output; cause the next call to write to fail with the given error. Does not prevent existing chunks from being read. In other words, this indicates both that no more data will be or should be written to the body.
   #
-  # source://protocol-http//lib/protocol/http/body/writable.rb#34
+  # source://protocol-http//lib/protocol/http/body/writable.rb#37
   def close(error = T.unsafe(nil)); end
 
   # Signal that no more data will be written to the body.
   #
-  # source://protocol-http//lib/protocol/http/body/writable.rb#98
+  # source://protocol-http//lib/protocol/http/body/writable.rb#101
   def close_write(error = T.unsafe(nil)); end
 
   # Whether the body is closed. A closed body can not be written to or read from.
   #
   # @return [Boolean]
   #
-  # source://protocol-http//lib/protocol/http/body/writable.rb#46
+  # source://protocol-http//lib/protocol/http/body/writable.rb#49
   def closed?; end
+
+  # Returns the value of attribute count.
+  #
+  # source://protocol-http//lib/protocol/http/body/writable.rb#32
+  def count; end
 
   # Indicates whether the body is empty. This can occur if the body has been closed, or if the producer has invoked {close_write} and the reader has consumed all available chunks.
   #
   # @return [Boolean]
   #
-  # source://protocol-http//lib/protocol/http/body/writable.rb#58
+  # source://protocol-http//lib/protocol/http/body/writable.rb#61
   def empty?; end
 
   # Inspect the body.
   #
-  # source://protocol-http//lib/protocol/http/body/writable.rb#167
+  # source://protocol-http//lib/protocol/http/body/writable.rb#170
   def inspect; end
 
   # Returns the value of attribute length.
@@ -1064,27 +1030,27 @@ class Protocol::HTTP::Body::Writable < ::Protocol::HTTP::Body::Readable
   #
   # If a block is given, and the block raises an error, the error will used to close the body by invoking {close} with the error.
   #
-  # source://protocol-http//lib/protocol/http/body/writable.rb#148
+  # source://protocol-http//lib/protocol/http/body/writable.rb#151
   def output; end
 
   # Read the next available chunk.
   #
-  # source://protocol-http//lib/protocol/http/body/writable.rb#66
+  # source://protocol-http//lib/protocol/http/body/writable.rb#69
   def read; end
 
   # @return [Boolean]
   #
-  # source://protocol-http//lib/protocol/http/body/writable.rb#51
+  # source://protocol-http//lib/protocol/http/body/writable.rb#54
   def ready?; end
 
   # Write a single chunk to the body. Signal completion by calling {close_write}.
   #
-  # source://protocol-http//lib/protocol/http/body/writable.rb#86
+  # source://protocol-http//lib/protocol/http/body/writable.rb#89
   def write(chunk); end
 
   private
 
-  # source://protocol-http//lib/protocol/http/body/writable.rb#178
+  # source://protocol-http//lib/protocol/http/body/writable.rb#181
   def status; end
 end
 
@@ -1095,35 +1061,35 @@ class Protocol::HTTP::Body::Writable::Closed < ::StandardError; end
 
 # The output interface for writing chunks to the body.
 #
-# source://protocol-http//lib/protocol/http/body/writable.rb#104
+# source://protocol-http//lib/protocol/http/body/writable.rb#107
 class Protocol::HTTP::Body::Writable::Output
   # Initialize the output with the given writable body.
   #
   # @return [Output] a new instance of Output
   #
-  # source://protocol-http//lib/protocol/http/body/writable.rb#108
+  # source://protocol-http//lib/protocol/http/body/writable.rb#111
   def initialize(writable); end
 
   # Write a chunk to the body.
   #
-  # source://protocol-http//lib/protocol/http/body/writable.rb#123
+  # source://protocol-http//lib/protocol/http/body/writable.rb#126
   def <<(chunk); end
 
   # Close the output stream.
   #
   # If an error is given, the error will be used to close the body by invoking {close} with the error. Otherwise, only the write side of the body will be closed.
   #
-  # source://protocol-http//lib/protocol/http/body/writable.rb#130
+  # source://protocol-http//lib/protocol/http/body/writable.rb#133
   def close(error = T.unsafe(nil)); end
 
   # @return [Boolean]
   #
-  # source://protocol-http//lib/protocol/http/body/writable.rb#114
+  # source://protocol-http//lib/protocol/http/body/writable.rb#117
   def closed?; end
 
   # Write a chunk to the body.
   #
-  # source://protocol-http//lib/protocol/http/body/writable.rb#119
+  # source://protocol-http//lib/protocol/http/body/writable.rb#122
   def write(chunk); end
 end
 
@@ -1193,33 +1159,6 @@ Protocol::HTTP::Body::ZStream::ENCODINGS = T.let(T.unsafe(nil), Hash)
 #
 # source://protocol-http//lib/protocol/http/body/deflate.rb#22
 Protocol::HTTP::Body::ZStream::GZIP = T.let(T.unsafe(nil), Integer)
-
-# Encode a response according the the request's acceptable encodings.
-#
-# source://protocol-http//lib/protocol/http/content_encoding.rb#14
-class Protocol::HTTP::ContentEncoding < ::Protocol::HTTP::Middleware
-  # Initialize the content encoding middleware.
-  #
-  # @return [ContentEncoding] a new instance of ContentEncoding
-  #
-  # source://protocol-http//lib/protocol/http/content_encoding.rb#28
-  def initialize(delegate, content_types = T.unsafe(nil), wrappers = T.unsafe(nil)); end
-
-  # Encode the response body according to the request's acceptable encodings.
-  #
-  # source://protocol-http//lib/protocol/http/content_encoding.rb#39
-  def call(request); end
-end
-
-# The default content types to apply encoding to.
-#
-# source://protocol-http//lib/protocol/http/content_encoding.rb#21
-Protocol::HTTP::ContentEncoding::DEFAULT_CONTENT_TYPES = T.let(T.unsafe(nil), Regexp)
-
-# The default wrappers to use for encoding content.
-#
-# source://protocol-http//lib/protocol/http/content_encoding.rb#16
-Protocol::HTTP::ContentEncoding::DEFAULT_WRAPPERS = T.let(T.unsafe(nil), Hash)
 
 # Represents an individual cookie key-value pair.
 #
@@ -3222,57 +3161,12 @@ class Protocol::HTTP::Middleware < ::Protocol::HTTP::Methods
   def delegate; end
 
   class << self
-    # Build a middleware application using the given block.
-    #
-    # source://protocol-http//lib/protocol/http/middleware/builder.rb#63
-    def build(*arguments, &block); end
-
     # Convert a block to a middleware delegate.
     #
     # source://protocol-http//lib/protocol/http/middleware.rb#28
     def for(&block); end
-
-    # Load a middleware application from the given path.
-    #
-    # source://protocol-http//lib/protocol/http/middleware/builder.rb#77
-    def load(path, *arguments, &block); end
   end
 end
-
-# A convenient interface for constructing middleware stacks.
-#
-# source://protocol-http//lib/protocol/http/middleware/builder.rb#12
-class Protocol::HTTP::Middleware::Builder
-  # Initialize the builder with the given default application.
-  #
-  # @return [Builder] a new instance of Builder
-  #
-  # source://protocol-http//lib/protocol/http/middleware/builder.rb#16
-  def initialize(default_app = T.unsafe(nil)); end
-
-  # Build the middleware application using the given block.
-  #
-  # source://protocol-http//lib/protocol/http/middleware/builder.rb#25
-  def build(&block); end
-
-  # Specify the (default) middleware application to use.
-  #
-  # source://protocol-http//lib/protocol/http/middleware/builder.rb#50
-  def run(app); end
-
-  # Convert the builder to an application by chaining the middleware together.
-  #
-  # source://protocol-http//lib/protocol/http/middleware/builder.rb#57
-  def to_app; end
-
-  # Use the given middleware with the given arguments and options.
-  #
-  # source://protocol-http//lib/protocol/http/middleware/builder.rb#43
-  def use(middleware, *arguments, **options, &block); end
-end
-
-# source://protocol-http//lib/protocol/http/middleware/builder.rb#93
-Protocol::HTTP::Middleware::Builder::TOPLEVEL_BINDING = T.let(T.unsafe(nil), Proc)
 
 # A simple middleware that always returns "Hello World!".
 #

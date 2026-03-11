@@ -11,7 +11,7 @@
 # source://pagy//lib/pagy/classes/exceptions.rb#3
 class Pagy
   include ::Pagy::Linkable
-  include ::Pagy::Loader
+  include ::Pagy::HelperLoader
   extend ::Pagy::Configurable
 
   # Returns the value of attribute in.
@@ -257,83 +257,85 @@ Pagy::Calendar::UNITS = T.let(T.unsafe(nil), Array)
 class Pagy::Calendar::Unit < ::Pagy
   include ::Pagy::Rangeable
   include ::Pagy::Shiftable
+  include ::Pagy::NumericHelperLoader
+  include ::Pagy::NumericHelpers
 
   # @return [Unit] a new instance of Unit
   #
-  # source://pagy//lib/pagy/classes/calendar/unit.rb#20
+  # source://pagy//lib/pagy/classes/calendar/unit.rb#21
   def initialize(**_arg0); end
 
   # Returns the value of attribute from.
   #
-  # source://pagy//lib/pagy/classes/calendar/unit.rb#32
+  # source://pagy//lib/pagy/classes/calendar/unit.rb#33
   def from; end
 
   # Returns the value of attribute last.
   #
-  # source://pagy//lib/pagy/classes/calendar/unit.rb#32
+  # source://pagy//lib/pagy/classes/calendar/unit.rb#33
   def last; end
 
   # Returns the value of attribute order.
   #
-  # source://pagy//lib/pagy/classes/calendar/unit.rb#32
+  # source://pagy//lib/pagy/classes/calendar/unit.rb#33
   def order; end
 
   # Returns the value of attribute last.
   #
-  # source://pagy//lib/pagy/classes/calendar/unit.rb#33
+  # source://pagy//lib/pagy/classes/calendar/unit.rb#34
   def pages; end
 
   # Returns the value of attribute previous.
   #
-  # source://pagy//lib/pagy/classes/calendar/unit.rb#32
+  # source://pagy//lib/pagy/classes/calendar/unit.rb#33
   def previous; end
 
   # Returns the value of attribute to.
   #
-  # source://pagy//lib/pagy/classes/calendar/unit.rb#32
+  # source://pagy//lib/pagy/classes/calendar/unit.rb#33
   def to; end
 
   protected
 
   # Period of the active page (used internally for nested units)
   #
-  # source://pagy//lib/pagy/classes/calendar/unit.rb#87
+  # source://pagy//lib/pagy/classes/calendar/unit.rb#88
   def active_period; end
 
   # Called by false in_range?
   #
-  # source://pagy//lib/pagy/classes/calendar/unit.rb#40
+  # source://pagy//lib/pagy/classes/calendar/unit.rb#41
   def assign_empty_page_variables; end
 
   # Base class method for the setup of the unit variables (subclasses must implement it and call super)
   #
   # @raise [OptionError]
   #
-  # source://pagy//lib/pagy/classes/calendar/unit.rb#63
+  # source://pagy//lib/pagy/classes/calendar/unit.rb#64
   def assign_unit_variables; end
 
   # @return [Boolean]
   #
-  # source://pagy//lib/pagy/classes/calendar/unit.rb#37
+  # source://pagy//lib/pagy/classes/calendar/unit.rb#38
   def calendar?; end
 
   # Apply the strftime format to the time.
   # Localization other than :en, requires the rails-I18n gem.
   #
-  # source://pagy//lib/pagy/classes/calendar/unit.rb#73
+  # source://pagy//lib/pagy/classes/calendar/unit.rb#74
   def localize(time, **options); end
 
   # The page that includes time
   # In case of time out of range, the :fit_time option avoids the RangeError
   # and returns the closest page to the passed time argument (first or last page)
   #
-  # source://pagy//lib/pagy/classes/calendar/unit.rb#50
+  # source://pagy//lib/pagy/classes/calendar/unit.rb#51
   def page_at(time, **options); end
 
   # The number of time units to offset from the @initial time, in order to get the ordered starting time for the page.
   # Used in starting_time_for(page) where page starts from 1 (e.g. page to starting_time means subtracting 1)
   #
-  # source://pagy//lib/pagy/classes/calendar/unit.rb#82
+  # source://pagy//lib/pagy/classes/calendar/unit.rb#83
   def time_offset_for(page); end
 end
 
@@ -568,6 +570,39 @@ end
 # source://pagy//lib/pagy/modules/abilities/linkable.rb#7
 class Pagy::EscapedValue < ::String; end
 
+# source://pagy//lib/pagy/toolbox/helpers/loaders.rb#27
+module Pagy::HelperLoader
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#13
+  def _pagy_loader_for_data_hash(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#13
+  def _pagy_loader_for_headers_hash(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#13
+  def _pagy_loader_for_next_tag(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#13
+  def _pagy_loader_for_page_url(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#13
+  def _pagy_loader_for_urls_hash(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#20
+  def data_hash(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#20
+  def headers_hash(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#20
+  def next_tag(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#20
+  def page_url(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#20
+  def urls_hash(*args, **kwargs); end
+end
+
 # Pagy i18n implementation, compatible with the I18n gem, just a lot faster and lighter
 #
 # source://pagy//lib/pagy/modules/i18n/p11n.rb#4
@@ -595,11 +630,11 @@ module Pagy::I18n
 
   private
 
-  # Create a flat hash with dotted notation keys
+  # Flatten a nested hash by "dotifying" its keys
   # e.g. { 'a' => { 'b' => {'c' => 3, 'd' => 4 }}} -> { 'a.b.c' => 3, 'a.b.d' => 4 }
   #
   # source://pagy//lib/pagy/modules/i18n/i18n.rb#60
-  def flatten_to_dot_keys(initial, prefix = T.unsafe(nil)); end
+  def dotify_keys(initial, prefix = T.unsafe(nil)); end
 
   # @raise [KeyError]
   #
@@ -899,53 +934,56 @@ end
 #
 # source://pagy//lib/pagy/classes/keyset/keynav.rb#6
 class Pagy::Keyset::Keynav < ::Pagy::Keyset
+  include ::Pagy::NumericHelperLoader
+  include ::Pagy::NumericHelpers
+
   # Finalize the instance variables needed for the UI
   #
   # @return [Keynav] a new instance of Keynav
   #
-  # source://pagy//lib/pagy/classes/keyset/keynav.rb#17
+  # source://pagy//lib/pagy/classes/keyset/keynav.rb#19
   def initialize(set, **_arg1); end
 
   # Returns the value of attribute last.
   #
-  # source://pagy//lib/pagy/classes/keyset/keynav.rb#25
+  # source://pagy//lib/pagy/classes/keyset/keynav.rb#27
   def last; end
 
   # Prepare the @update for the client when it's a new page, and return the next page number
   #
-  # source://pagy//lib/pagy/classes/keyset/keynav.rb#29
+  # source://pagy//lib/pagy/classes/keyset/keynav.rb#31
   def next; end
 
   # Returns the value of attribute last.
   #
-  # source://pagy//lib/pagy/classes/keyset/keynav.rb#26
+  # source://pagy//lib/pagy/classes/keyset/keynav.rb#28
   def pages; end
 
   # Returns the value of attribute previous.
   #
-  # source://pagy//lib/pagy/classes/keyset/keynav.rb#25
+  # source://pagy//lib/pagy/classes/keyset/keynav.rb#27
   def previous; end
 
   # Returns the value of attribute update.
   #
-  # source://pagy//lib/pagy/classes/keyset/keynav.rb#25
+  # source://pagy//lib/pagy/classes/keyset/keynav.rb#27
   def update; end
 
   protected
 
   # Process the page array
   #
-  # source://pagy//lib/pagy/classes/keyset/keynav.rb#49
+  # source://pagy//lib/pagy/classes/keyset/keynav.rb#51
   def assign_page; end
 
   # Use a compound predicate to fetch the records
   #
-  # source://pagy//lib/pagy/classes/keyset/keynav.rb#60
+  # source://pagy//lib/pagy/classes/keyset/keynav.rb#62
   def fetch_records; end
 
   # @return [Boolean]
   #
-  # source://pagy//lib/pagy/classes/keyset/keynav.rb#46
+  # source://pagy//lib/pagy/classes/keyset/keynav.rb#48
   def keynav?; end
 end
 
@@ -1040,68 +1078,6 @@ module Pagy::Linkable::QueryUtils
   end
 end
 
-# source://pagy//lib/pagy/toolbox/helpers/loader.rb#4
-module Pagy::Loader
-  # source://pagy//lib/pagy/toolbox/helpers/loader.rb#33
-  def data_hash(*args, **kwargs); end
-
-  # source://pagy//lib/pagy/toolbox/helpers/loader.rb#33
-  def headers_hash(*args, **kwargs); end
-
-  # source://pagy//lib/pagy/toolbox/helpers/loader.rb#33
-  def info_tag(*args, **kwargs); end
-
-  # source://pagy//lib/pagy/toolbox/helpers/loader.rb#33
-  def input_nav_js(*args, **kwargs); end
-
-  # source://pagy//lib/pagy/toolbox/helpers/loader.rb#33
-  def limit_tag_js(*args, **kwargs); end
-
-  # source://pagy//lib/pagy/toolbox/helpers/loader.rb#26
-  def load_public(*args, **kwargs); end
-
-  # source://pagy//lib/pagy/toolbox/helpers/loader.rb#33
-  def next_tag(*args, **kwargs); end
-
-  # source://pagy//lib/pagy/toolbox/helpers/loader.rb#33
-  def page_url(*args, **kwargs); end
-
-  # source://pagy//lib/pagy/toolbox/helpers/loader.rb#33
-  def previous_tag(*args, **kwargs); end
-
-  # source://pagy//lib/pagy/toolbox/helpers/loader.rb#33
-  def series_nav(*args, **kwargs); end
-
-  # source://pagy//lib/pagy/toolbox/helpers/loader.rb#33
-  def series_nav_js(*args, **kwargs); end
-
-  # source://pagy//lib/pagy/toolbox/helpers/loader.rb#33
-  def urls_hash(*args, **kwargs); end
-
-  protected
-
-  # source://pagy//lib/pagy/toolbox/helpers/loader.rb#33
-  def bootstrap_input_nav_js(*args, **kwargs); end
-
-  # source://pagy//lib/pagy/toolbox/helpers/loader.rb#33
-  def bootstrap_series_nav(*args, **kwargs); end
-
-  # source://pagy//lib/pagy/toolbox/helpers/loader.rb#33
-  def bootstrap_series_nav_js(*args, **kwargs); end
-
-  # source://pagy//lib/pagy/toolbox/helpers/loader.rb#33
-  def bulma_input_nav_js(*args, **kwargs); end
-
-  # source://pagy//lib/pagy/toolbox/helpers/loader.rb#33
-  def bulma_series_nav(*args, **kwargs); end
-
-  # source://pagy//lib/pagy/toolbox/helpers/loader.rb#33
-  def bulma_series_nav_js(*args, **kwargs); end
-
-  # source://pagy//lib/pagy/toolbox/helpers/loader.rb#26
-  def load_protected(*args, **kwargs); end
-end
-
 # source://pagy//lib/pagy/classes/offset/search.rb#27
 class Pagy::Meilisearch < ::Pagy::SearchBase; end
 
@@ -1135,6 +1111,90 @@ module Pagy::Method
   def pagy(paginator = T.unsafe(nil), collection, **options); end
 end
 
+# source://pagy//lib/pagy/toolbox/helpers/loaders.rb#38
+module Pagy::NumericHelperLoader
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#13
+  def _pagy_loader_for_bootstrap_input_nav_js(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#13
+  def _pagy_loader_for_bootstrap_series_nav(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#13
+  def _pagy_loader_for_bootstrap_series_nav_js(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#13
+  def _pagy_loader_for_bulma_input_nav_js(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#13
+  def _pagy_loader_for_bulma_series_nav(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#13
+  def _pagy_loader_for_bulma_series_nav_js(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#13
+  def _pagy_loader_for_info_tag(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#13
+  def _pagy_loader_for_input_nav_js(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#13
+  def _pagy_loader_for_limit_tag_js(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#13
+  def _pagy_loader_for_previous_tag(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#13
+  def _pagy_loader_for_series_nav(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#13
+  def _pagy_loader_for_series_nav_js(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#20
+  def info_tag(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#20
+  def input_nav_js(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#20
+  def limit_tag_js(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#20
+  def previous_tag(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#20
+  def series_nav(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#20
+  def series_nav_js(*args, **kwargs); end
+
+  protected
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#20
+  def bootstrap_input_nav_js(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#20
+  def bootstrap_series_nav(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#20
+  def bootstrap_series_nav_js(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#20
+  def bulma_input_nav_js(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#20
+  def bulma_series_nav(*args, **kwargs); end
+
+  # source://pagy//lib/pagy/toolbox/helpers/loaders.rb#20
+  def bulma_series_nav_js(*args, **kwargs); end
+end
+
+# Hook module for numeric UI helpers
+#
+# source://pagy//lib/pagy.rb#83
+module Pagy::NumericHelpers
+  include ::Pagy::NumericHelperLoader
+end
+
 # source://pagy//lib/pagy.rb#34
 Pagy::OPTIONS = T.let(T.unsafe(nil), Hash)
 
@@ -1144,71 +1204,78 @@ Pagy::OPTIONS = T.let(T.unsafe(nil), Hash)
 class Pagy::Offset < ::Pagy
   include ::Pagy::Rangeable
   include ::Pagy::Shiftable
+  include ::Pagy::NumericHelperLoader
+  include ::Pagy::NumericHelpers
 
   # @return [Offset] a new instance of Offset
   #
-  # source://pagy//lib/pagy/classes/offset/offset.rb#17
+  # source://pagy//lib/pagy/classes/offset/offset.rb#18
   def initialize(**_arg0); end
 
   # Returns the value of attribute count.
   #
-  # source://pagy//lib/pagy/classes/offset/offset.rb#35
+  # source://pagy//lib/pagy/classes/offset/offset.rb#36
   def count; end
 
   # Returns the value of attribute from.
   #
-  # source://pagy//lib/pagy/classes/offset/offset.rb#35
+  # source://pagy//lib/pagy/classes/offset/offset.rb#36
   def from; end
 
   # Returns the value of attribute in.
   #
-  # source://pagy//lib/pagy/classes/offset/offset.rb#35
+  # source://pagy//lib/pagy/classes/offset/offset.rb#36
   def in; end
 
   # Returns the value of attribute last.
   #
-  # source://pagy//lib/pagy/classes/offset/offset.rb#35
+  # source://pagy//lib/pagy/classes/offset/offset.rb#36
   def last; end
+
+  # Returns the value of attribute next.
+  #
+  # source://pagy//lib/pagy/classes/offset/offset.rb#36
+  def next; end
 
   # Returns the value of attribute offset.
   #
-  # source://pagy//lib/pagy/classes/offset/offset.rb#35
+  # source://pagy//lib/pagy/classes/offset/offset.rb#36
   def offset; end
 
   # Returns the value of attribute last.
   #
-  # source://pagy//lib/pagy/classes/offset/offset.rb#36
+  # source://pagy//lib/pagy/classes/offset/offset.rb#37
   def pages; end
 
   # Returns the value of attribute previous.
   #
-  # source://pagy//lib/pagy/classes/offset/offset.rb#35
+  # source://pagy//lib/pagy/classes/offset/offset.rb#36
   def previous; end
 
-  # source://pagy//lib/pagy/classes/offset/offset.rb#38
+  # source://pagy//lib/pagy/classes/offset/offset.rb#39
   def records(collection); end
 
   # Returns the value of attribute to.
   #
-  # source://pagy//lib/pagy/classes/offset/offset.rb#35
+  # source://pagy//lib/pagy/classes/offset/offset.rb#36
   def to; end
 
   protected
 
   # Called by false in_range?
   #
-  # source://pagy//lib/pagy/classes/offset/offset.rb#56
+  # source://pagy//lib/pagy/classes/offset/offset.rb#57
   def assign_empty_page_variables; end
 
-  # source://pagy//lib/pagy/classes/offset/offset.rb#46
+  # source://pagy//lib/pagy/classes/offset/offset.rb#47
   def assign_last; end
 
-  # source://pagy//lib/pagy/classes/offset/offset.rb#51
+  # source://pagy//lib/pagy/classes/offset/offset.rb#52
   def assign_offset; end
 
   # @return [Boolean]
   #
-  # source://pagy//lib/pagy/classes/offset/offset.rb#44
+  # source://pagy//lib/pagy/classes/offset/offset.rb#45
   def offset?; end
 end
 

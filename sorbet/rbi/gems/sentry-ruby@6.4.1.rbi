@@ -4258,6 +4258,9 @@ class Sentry::Rack::CaptureExceptions
 
   private
 
+  # source://sentry-ruby//lib/sentry/rack/capture_exceptions.rb#80
+  def attach_queue_time(transaction, env); end
+
   # source://sentry-ruby//lib/sentry/rack/capture_exceptions.rb#60
   def capture_exception(exception, env); end
 
@@ -4275,13 +4278,13 @@ class Sentry::Rack::CaptureExceptions
   # @param env [Hash] Rack env
   # @return [Float, nil] queue time in milliseconds or nil
   #
-  # source://sentry-ruby//lib/sentry/rack/capture_exceptions.rb#107
+  # source://sentry-ruby//lib/sentry/rack/capture_exceptions.rb#109
   def extract_queue_time(env); end
 
-  # source://sentry-ruby//lib/sentry/rack/capture_exceptions.rb#86
+  # source://sentry-ruby//lib/sentry/rack/capture_exceptions.rb#88
   def finish_transaction(transaction, status_code); end
 
-  # source://sentry-ruby//lib/sentry/rack/capture_exceptions.rb#93
+  # source://sentry-ruby//lib/sentry/rack/capture_exceptions.rb#95
   def mechanism; end
 
   # Parses X-Request-Start header value to extract a timestamp.
@@ -4294,13 +4297,13 @@ class Sentry::Rack::CaptureExceptions
   # @param header_value [String] The X-Request-Start header value
   # @return [Float, nil] Timestamp in seconds since epoch or nil
   #
-  # source://sentry-ruby//lib/sentry/rack/capture_exceptions.rb#142
+  # source://sentry-ruby//lib/sentry/rack/capture_exceptions.rb#144
   def parse_request_start_header(header_value); end
 
   # source://sentry-ruby//lib/sentry/rack/capture_exceptions.rb#66
   def start_transaction(env, scope); end
 
-  # source://sentry-ruby//lib/sentry/rack/capture_exceptions.rb#172
+  # source://sentry-ruby//lib/sentry/rack/capture_exceptions.rb#174
   def status_code_for_exception(exception); end
 
   # source://sentry-ruby//lib/sentry/rack/capture_exceptions.rb#56

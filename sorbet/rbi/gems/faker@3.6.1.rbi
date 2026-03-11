@@ -732,7 +732,7 @@ class Faker::Base
     # source://faker//lib/faker.rb#66
     def bothify(string); end
 
-    # source://faker//lib/faker.rb#268
+    # source://faker//lib/faker.rb#269
     def disable_enforce_available_locales; end
 
     # Helper for the common approach of grabbing a translation
@@ -747,7 +747,7 @@ class Faker::Base
     # source://faker//lib/faker.rb#121
     def fetch_all(key); end
 
-    # source://faker//lib/faker.rb#191
+    # source://faker//lib/faker.rb#192
     def flexible(key); end
 
     # Returns the value of attribute flexible_key.
@@ -767,7 +767,7 @@ class Faker::Base
     #     girls_name: ["Alice", "Cheryl", "Tatiana"]
     # Then you can call Faker::Name.girls_name and it will act like #first_name
     #
-    # source://faker//lib/faker.rb#200
+    # source://faker//lib/faker.rb#201
     def method_missing(mth, *args, &_arg2); end
 
     # by default numerify results do not start with a zero
@@ -782,12 +782,12 @@ class Faker::Base
     # source://faker//lib/faker.rb#134
     def parse(key); end
 
-    # source://faker//lib/faker.rb#258
+    # source://faker//lib/faker.rb#259
     def rand(max = T.unsafe(nil)); end
 
     # Generates a random value between the interval
     #
-    # source://faker//lib/faker.rb#215
+    # source://faker//lib/faker.rb#216
     def rand_in_range(from, to); end
 
     # Given a regular expression, attempt to generate a string
@@ -815,27 +815,27 @@ class Faker::Base
     # If an array or range is passed, a random value will be selected.
     # All other values are simply returned.
     #
-    # source://faker//lib/faker.rb#222
+    # source://faker//lib/faker.rb#223
     def resolve(value); end
 
     # @return [Boolean]
     #
-    # source://faker//lib/faker.rb#210
+    # source://faker//lib/faker.rb#211
     def respond_to_missing?(method_name, include_private = T.unsafe(nil)); end
 
-    # source://faker//lib/faker.rb#238
+    # source://faker//lib/faker.rb#239
     def sample(list, num = T.unsafe(nil)); end
 
-    # source://faker//lib/faker.rb#250
+    # source://faker//lib/faker.rb#251
     def shuffle(list); end
 
-    # source://faker//lib/faker.rb#254
+    # source://faker//lib/faker.rb#255
     def shuffle!(list); end
 
     # Call I18n.translate with our configured locale if no
     # locale is specified
     #
-    # source://faker//lib/faker.rb#164
+    # source://faker//lib/faker.rb#165
     def translate(*args, **opts); end
 
     # Return unique values from the generator every time.
@@ -843,12 +843,12 @@ class Faker::Base
     # @param max_retries [Integer] The max number of retries that should be done before giving up.
     # @return [self]
     #
-    # source://faker//lib/faker.rb#234
+    # source://faker//lib/faker.rb#235
     def unique(max_retries = T.unsafe(nil)); end
 
     # Executes block with given locale set.
     #
-    # source://faker//lib/faker.rb#180
+    # source://faker//lib/faker.rb#181
     def with_locale(tmp_locale = T.unsafe(nil), &block); end
   end
 end
@@ -13444,6 +13444,7 @@ class Faker::UniqueGenerator
   end
 end
 
+# source://faker//lib/helpers/unique_generator.rb#33
 class Faker::UniqueGenerator::RetryLimitExceeded < ::StandardError; end
 
 # source://faker//lib/faker/default/university.rb#4
