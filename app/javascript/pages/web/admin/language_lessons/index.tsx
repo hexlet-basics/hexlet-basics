@@ -49,15 +49,6 @@ export default function Index({ grid, lessons }: Props) {
         >
           <IconFileSearch size={14} />
         </AppAnchor>
-
-        {/* <IconLink */}
-        {/*   onClick={confirmDeleting} */}
-        {/*   className="btn btn-link link-body-emphasis p-0 m-0" */}
-        {/*   method="delete" */}
-        {/*   href={Routes.admin_language_category_path(data.id)} */}
-        {/* > */}
-        {/*   {<IconFileX />} */}
-        {/* </IconLink> */}
       </Group>
     );
   };

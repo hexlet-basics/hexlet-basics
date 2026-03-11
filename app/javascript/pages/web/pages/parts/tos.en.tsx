@@ -5,7 +5,7 @@ export default function TosEn() {
   const baseId = useId();
   return (
     <>
-      <p className="fw-medium">Last updated March 28, 2025</p>
+      <p>Last updated March 28, 2025</p>
 
       <h3>AGREEMENT TO OUR LEGAL TERMS</h3>
       <p>
@@ -70,7 +70,7 @@ export default function TosEn() {
 
       <h3>TABLE OF CONTENTS</h3>
 
-      <ul className="list-unstyled">
+      <ul>
         <li>
           <a href={`#${baseId}-service`}>1. OUR SERVICES</a>
         </li>
@@ -1001,7 +1001,7 @@ export default function TosEn() {
         further information regarding use of the Services, please contact us at:
       </p>
 
-      <ul className="fw-medium list-unstyled">
+      <ul>
         <li>TOO "Hexlet"</li>
         <li>Auezov St 14 A</li>
         <li>Almaty, Almaty 050000</li>

@@ -12,6 +12,10 @@ import { useTranslation } from "react-i18next";
 import AppAnchor from "@/components/Elements/AppAnchor";
 import { useAppForm } from "@/hooks/useAppForm";
 import ApplicationLayout from "@/layouts/ApplicationLayout";
+import {
+  currentPasswordInputProps,
+  loginEmailInputProps,
+} from "@/lib/authFieldProps";
 import * as Routes from "@/routes.js";
 import type { SignInForm } from "@/types/serializers";
 
@@ -38,18 +42,17 @@ export default function New({ signInForm }: Props) {
             p="xl"
             w={{ base: "100%", sm: "80%", md: "70%", lg: "50%" }}
           >
-            <form onSubmit={onSubmit} className="d-flex flex-column">
+            <Stack component="form" onSubmit={onSubmit}>
               <TextInput
                 {...form.getInputProps("email")}
                 required
                 autoFocus
-                autoComplete="email"
+                {...loginEmailInputProps}
               />
               <TextInput
                 {...form.getInputProps("password")}
                 required
-                type="password"
-                autoComplete="current-password"
+                {...currentPasswordInputProps}
               />
               <Box my="lg" ta="right">
                 {t(($) => $.sessions.new.forgot_password)}{" "}
@@ -60,7 +63,7 @@ export default function New({ signInForm }: Props) {
               <Button type="submit" fullWidth loading={processing}>
                 {t(($) => $.helpers.submit.user_sign_in_form.create)}
               </Button>
-            </form>
+            </Stack>
           </Card>
 
           <Text mt="xs">

@@ -284,7 +284,7 @@ export default function Show({
 
         <Grid my="xl">
           <Grid.Col span={{ base: 12, lg: 9 }}>
-            <Title order={2} size="h1" mb="md" responsive>
+            <Title order={2} size="h1" mb="md">
               {courseLandingPage.used_in_header}
             </Title>
             <Text>{courseLandingPage.used_in_description}</Text>
@@ -307,22 +307,16 @@ export default function Show({
           )}
 
           <Box>
-            <Title order={2} size="h1" mb="md" responsive>
+            <Title order={2} size="h1" mb="md">
               {courseLandingPage.outcomes_header}
             </Title>
             <Text>{courseLandingPage.outcomes_description}</Text>
           </Box>
         </SimpleGrid>
 
-        <Card
-          withBorder
-          my={{ base: "lg", sm: "xxl" }}
-          p="xl"
-        >
+        <Card withBorder my={{ base: "lg", sm: "xxl" }} p="xl">
           <Group justify="space-between">
-            <Text fz="h3">
-              {t(($) => $.languages.show.course_graduates)}
-            </Text>
+            <Text fz="h3">{t(($) => $.languages.show.course_graduates)}</Text>
             <Button
               bg="dark"
               size="xl"
@@ -337,7 +331,7 @@ export default function Show({
         </Card>
 
         <Box>
-          <Title order={2} size="h1" my="xl" responsive>
+          <Title order={2} size="h1" my="xl">
             {t(($) => $.languages.show.learning_program, {
               name: courseLandingPage.name,
             })}
@@ -346,25 +340,14 @@ export default function Show({
             {courseModules.map((m, index) => (
               <Accordion.Item key={m.id} value={index.toString()} py="lg">
                 <Accordion.Control>
-                  <Title order={3} responsive>
-                    {m.name!}
-                  </Title>
+                  <Title order={3}>{m.name!}</Title>
                 </Accordion.Control>
                 <Accordion.Panel>
                   <Grid>
                     <Grid.Col span={{ base: 12, xs: 4 }}>
                       <List>
                         {(lessonsByModuleId[m.id] ?? []).map((l) => (
-                          <List.Item key={l.id}>
-                            <AppAnchor
-                              href={Routes.language_lesson_path(
-                                course.slug!,
-                                l.slug!,
-                              )}
-                            >
-                              {l.name}
-                            </AppAnchor>
-                          </List.Item>
+                          <List.Item key={l.id}>{l.name}</List.Item>
                         ))}
                       </List>
                     </Grid.Col>
@@ -379,7 +362,7 @@ export default function Show({
         </Box>
 
         <Box my={{ base: "lg", sm: "xxl" }}>
-          <Title order={2} fz="h1" mb="xl" responsive>
+          <Title order={2} fz="h1" mb="xl">
             {t(($) => $.languages.show.about_learning)}
           </Title>
           <SimpleGrid cols={{ base: 1, lg: 2 }}>
@@ -404,75 +387,37 @@ export default function Show({
               </XssContent>
             </Box>
 
-            <Box h="100%" w="100%">
-              <video
-                className="w-full h-full object-cover"
-                src={getResourceUrl(
-                  `course-landing-page/learning_${locale}.mp4`,
-                )}
-                autoPlay
-                loop
-                muted
-                playsInline
-              />
-            </Box>
+            <Box
+              component="video"
+              h="100%"
+              w="100%"
+              src={getResourceUrl(`course-landing-page/learning_${locale}.mp4`)}
+              autoPlay
+              loop
+              muted
+              playsInline
+            />
           </SimpleGrid>
         </Box>
 
         <Card bg="indigo.0" p="xl">
-          <Grid>
-            <Grid.Col span={{ base: 12, sm: 8 }} display="flex">
-              <Text responsive="3rem">
-                {t(($) => $.languages.show.demo_description)}
-              </Text>
-            </Grid.Col>
-            <Grid.Col span={{ base: 12, sm: 4 }}>
-              <Flex h="100%" justify="end">
-                <Button
-                  my="auto"
-                  size="xl"
-                  component={Link}
-                  href={Routes.language_lesson_path(
-                    course.slug!,
-                    firstLesson.slug,
-                  )}
-                >
-                  {t(($) => $.languages.show.demo_start)}
-                </Button>
-              </Flex>
-            </Grid.Col>
-          </Grid>
+          <Group justify="space-between">
+            <Text fz="h3">{t(($) => $.languages.show.demo_description)}</Text>
+            <Flex h="100%" justify="end">
+              <Button
+                my="auto"
+                size="xl"
+                component={Link}
+                href={Routes.language_lesson_path(
+                  course.slug!,
+                  firstLesson.slug,
+                )}
+              >
+                {t(($) => $.languages.show.demo_start)}
+              </Button>
+            </Flex>
+          </Group>
         </Card>
-
-        {/* {i18next.language === "ru" && ( */}
-        {/*   <Box> */}
-        {/*     <Grid> */}
-        {/*       <Grid.Col className="position-relative p-0"> */}
-        {/*         <div className="hexlet-basics-community-image" /> */}
-        {/*       </Grid.Col> */}
-        {/*       <Grid.Col className="col-lg-7 col-xl-6 p-4 p-md-5"> */}
-        {/*         <div className="d-flex flex-column justify-content-center py-3 py-lg-4"> */}
-        {/*           <div className="display-5 fw-semibold lh-1 mb-4"> */}
-        {/*             {t("languages.show.more_than_support")} */}
-        {/*           </div> */}
-        {/*           <div className="pe-lg-5"> */}
-        {/*             <div className="mb-5 pe-xl-4"> */}
-        {/*               {t("languages.show.about_developer_community")} */}
-        {/*             </div> */}
-        {/*             <a */}
-        {/*               className="btn btn-secondary" */}
-        {/*               href="https://t.me/HexletLearningBot" */}
-        {/*               target="_blank" */}
-        {/*               rel="noopener noreferrer" */}
-        {/*             > */}
-        {/*               <span>{t("languages.show.join")}</span> */}
-        {/*             </a> */}
-        {/*           </div> */}
-        {/*         </div> */}
-        {/*       </Grid.Col> */}
-        {/*     </Grid> */}
-        {/*   </Box> */}
-        {/* )} */}
 
         {qnaItems.length > 0 && (
           <Box my="xl" py="xl">
@@ -514,7 +459,7 @@ export default function Show({
             <Grid align="center" justify="space-between" gutter={0}>
               <Grid.Col span={{ base: 12, md: 6 }}>
                 <Center mb="lg">
-                  <Text fw="bold" responsive="3rem">
+                  <Text fw="bold" fz="h2">
                     {t(($) => $.home.index.join)}
                   </Text>
                 </Center>

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import AppAnchor from "@/components/Elements/AppAnchor";
 import { useAppForm } from "@/hooks/useAppForm";
 import ApplicationLayout from "@/layouts/ApplicationLayout";
+import { emailInputProps } from "@/lib/authFieldProps";
 import * as Routes from "@/routes.js";
 import type { PasswordReminderForm } from "@/types";
 
@@ -36,7 +37,8 @@ export default function New({ passwordReminder }: Props) {
                 {...form.getInputProps("email")}
                 required
                 autoFocus
-                autoComplete="email"
+                enterKeyHint="send"
+                {...emailInputProps}
               />
               <Box my="lg" ta="right">
                 {t(($) => $.users.new.have_account)}{" "}

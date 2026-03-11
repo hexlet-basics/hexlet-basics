@@ -17,8 +17,8 @@ import {
   Space,
   Stack,
   Text,
-  Tooltip,
   ThemeIcon,
+  Tooltip,
   UnstyledButton,
   useComputedColorScheme,
   useMantineColorScheme,
@@ -325,7 +325,11 @@ export function ThemeSwitcher() {
         size="sm"
         variant="default"
       >
-        {isDark ? <IconSun stroke={1.2} size={14} /> : <IconMoon stroke={1.2} size={14} />}
+        {isDark ? (
+          <IconSun stroke={1.2} size={14} />
+        ) : (
+          <IconMoon stroke={1.2} size={14} />
+        )}
       </ActionIcon>
     </Tooltip>
   );

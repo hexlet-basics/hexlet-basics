@@ -2,7 +2,7 @@ class Web::UsersController < Web::ApplicationController
   before_action :guests_only!
 
   def new
-    user = User::SignUpForm.new
+    user = User::SignUpForm.new(sign_up_form_data)
 
     seo_tags = {
       title: t(".title"),
@@ -18,7 +18,7 @@ class Web::UsersController < Web::ApplicationController
   end
 
   def create
-    user = User::SignUpForm.new(params[:user])
+    user = User::SignUpForm.new(params[:data])
 
     begin
       user.save!
@@ -84,8 +84,16 @@ class Web::UsersController < Web::ApplicationController
       redirect_to params[:from].presence || root_path
     rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => _e
       f(:error)
+      flash.inertia[:sign_up_form] = sign_up_form_data(user)
       redirect_to_inertia new_user_url, user
       # raise user.errors.full_messages.inspect
     end
+  end
+
+  private
+
+  def sign_up_form_data(user = nil)
+    source = user ? { first_name: user.first_name, email: user.email } : flash.inertia[:sign_up_form]
+    source.presence || {}
   end
 end

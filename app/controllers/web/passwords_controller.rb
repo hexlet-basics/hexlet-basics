@@ -18,7 +18,7 @@ class Web::PasswordsController < Web::ApplicationController
   def update
     user_password_form = User::PasswordForm.find_by!(reset_password_token: params[:reset_password_token])
 
-    if user_password_form.update(params[:user])
+    if user_password_form.update(params[:data])
       f(:success)
       redirect_to root_path
     else

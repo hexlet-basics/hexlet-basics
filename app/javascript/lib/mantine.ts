@@ -11,66 +11,37 @@ import {
 
 const VIEWPORT_MIN_PX = 320;
 const VIEWPORT_MAX_PX = 1200;
-function normalizeStandardFontSize(value: string): string {
-  const match = value.match(/^calc\(([^*]+)\s*\*\s*var\(--mantine-scale\)\)$/);
+function fontSizeToPx(value: `${number}rem` | `${number}px`): number {
+  const size = value.trim();
 
-  if (match) {
-    return match[1].trim();
+  if (size.endsWith("rem")) {
+    return Number.parseFloat(size) * 16;
   }
 
-  return value;
+  if (size.endsWith("px")) {
+    return Number.parseFloat(size);
+  }
+
+  return Number.NaN;
 }
 
-const STANDARD_FONT_SIZE = normalizeStandardFontSize(
-  DEFAULT_THEME.fontSizes.md,
-);
-
-function fontSizeToPx(fontSize: string): number | null {
-  const value = fontSize.trim();
-
-  if (value.endsWith("rem")) {
-    const parsed = Number.parseFloat(value);
-    return Number.isNaN(parsed) ? null : parsed * 16;
-  }
-
-  if (value.endsWith("px")) {
-    const parsed = Number.parseFloat(value);
-    return Number.isNaN(parsed) ? null : parsed;
-  }
-
-  if (/^[\d.]+$/.test(value)) {
-    const parsed = Number.parseFloat(value);
-    return Number.isNaN(parsed) ? null : parsed;
-  }
-
-  return null;
-}
-
-function responsiveClamp(fontSize: string, minSize: string): string {
-  const basePx = fontSizeToPx(fontSize);
+function fluidHeading(
+  minSize: `${number}rem` | `${number}px`,
+  maxSize: `${number}rem` | `${number}px`,
+): string {
   const minPx = fontSizeToPx(minSize);
+  const maxPx = fontSizeToPx(maxSize);
 
-  if (basePx == null || minPx == null) {
-    return fontSize;
-  }
-
-  if (minPx >= basePx) {
-    return fontSize;
+  if (Number.isNaN(minPx) || Number.isNaN(maxPx) || minPx >= maxPx) {
+    return maxSize;
   }
 
   const rangePx = VIEWPORT_MAX_PX - VIEWPORT_MIN_PX;
-  const slope = (basePx - minPx) / rangePx;
+  const slope = (maxPx - minPx) / rangePx;
   const intercept = minPx - slope * VIEWPORT_MIN_PX;
   const preferred = `calc(${intercept.toFixed(4)}px + ${(slope * 100).toFixed(4)}vw)`;
 
-  return `clamp(${minPx.toFixed(4)}px, ${preferred}, ${basePx.toFixed(4)}px)`;
-}
-
-function responsiveFontSize(
-  value: string,
-  minSize = STANDARD_FONT_SIZE,
-): string {
-  return responsiveClamp(value, minSize);
+  return `clamp(${minSize}, ${preferred}, ${maxSize})`;
 }
 
 const HEXLET_BASE = "#3B37E0";
@@ -100,31 +71,15 @@ const myTheme = createTheme({
   headings: {
     fontWeight: "normal",
     sizes: {
-      h1: { fontSize: responsiveFontSize("2.5rem", "1.75rem") }, // 40px
-      h2: { fontSize: responsiveFontSize("2rem", "1.5rem") }, // 32px
-      h3: { fontSize: responsiveFontSize("1.75rem", "1.25rem") }, // 28px
-      h4: { fontSize: responsiveFontSize("1.5rem") }, // 24px
-      h5: { fontSize: responsiveFontSize("1.25rem") }, // 20px
-      h6: { fontSize: responsiveFontSize("1rem") }, // 16px
+      h1: { fontSize: fluidHeading("1.75rem", "2.5rem") }, // 28-40px
+      h2: { fontSize: fluidHeading("1.5rem", "2rem") }, // 24-32px
+      h3: { fontSize: fluidHeading("1.25rem", "1.75rem") }, // 20-28px
+      h4: { fontSize: fluidHeading("1rem", "1.5rem") }, // 16-24px
+      h5: { fontSize: fluidHeading("1rem", "1.25rem") }, // 16-20px
+      h6: { fontSize: "1rem" }, // 16px
     },
   },
   fontFamily: "Arial, sans-serif",
-  fontSizes: {
-    xs: responsiveFontSize("12px"),
-    sm: responsiveFontSize("14px"),
-    md: responsiveFontSize("16px"),
-    lg: responsiveFontSize("18px"),
-    xl: responsiveFontSize("20px"),
-    "display-3": responsiveFontSize("3rem", "2rem"), // 48px
-    "display-2": responsiveFontSize("4rem", "2.25rem"), // 56px
-    "display-1": responsiveFontSize("5rem", "2.5rem"), // 64px
-    h1: responsiveFontSize("2.5rem", "1.75rem"), // 40px
-    h2: responsiveFontSize("2rem", "1.5rem"), // 32px
-    h3: responsiveFontSize("1.75rem", "1.25rem"), // 28px
-    h4: responsiveFontSize("1.5rem"), // 24px
-    h5: responsiveFontSize("1.25rem"), // 20px
-    h6: responsiveFontSize("1rem"), // 16px
-  },
   // lineHeights: {
   //   xs: '1.4',
   //   sm: '1.45',
@@ -134,11 +89,6 @@ const myTheme = createTheme({
   // },
   components: {
     CodeHighlight: CodeHighlight.extend({
-      styles: {
-        pre: {
-          padding: 0,
-        },
-      },
       defaultProps: {
         mb: "lg",
         // withBorder: true,

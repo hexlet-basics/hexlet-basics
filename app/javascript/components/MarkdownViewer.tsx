@@ -83,15 +83,9 @@ export default function MarkdownViewer({
         <table>{props.children}</table>
       </Table.ScrollContainer>
     ), // убираем обертку pre
-    ul: (props: ComponentPropsWithoutRef<"ul">) => (
-      <ul className="list-disc ml-6">{props.children}</ul>
-    ),
-    ol: (props: ComponentPropsWithoutRef<"ol">) => (
-      <ol className="list-decimal ml-6">{props.children}</ol>
-    ),
-    li: (props: ComponentPropsWithoutRef<"li">) => (
-      <li className="my-1">{props.children}</li>
-    ),
+    ul: (props: ComponentPropsWithoutRef<"ul">) => <ul>{props.children}</ul>,
+    ol: (props: ComponentPropsWithoutRef<"ol">) => <ol>{props.children}</ol>,
+    li: (props: ComponentPropsWithoutRef<"li">) => <li>{props.children}</li>,
     code: MarkdownCodeHighlight,
     ...components,
   };
@@ -111,7 +105,7 @@ export default function MarkdownViewer({
   }
 
   return (
-    <Typography styles={typographyStyles} className="prose max-w-none">
+    <Typography styles={typographyStyles}>
       <Markdown
         skipHtml={!allowHtml}
         remarkPlugins={[

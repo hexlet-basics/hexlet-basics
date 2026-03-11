@@ -19,7 +19,7 @@ class Web::SessionsController < Web::ApplicationController
   end
 
   def create
-    sign_in_form = SignInForm.new(params[:user])
+    sign_in_form = SignInForm.new(params[:data])
 
     if sign_in_form.valid?
       user = sign_in_form.user

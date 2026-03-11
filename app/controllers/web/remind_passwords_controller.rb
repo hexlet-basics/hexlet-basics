@@ -13,7 +13,7 @@ class Web::RemindPasswordsController < Web::ApplicationController
   end
 
   def create
-    remind_password_form = RemindPasswordForm.new(params[:remind_password_form])
+    remind_password_form = RemindPasswordForm.new(params[:data])
 
     if remind_password_form.valid?
       user = remind_password_form.user

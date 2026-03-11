@@ -1,5 +1,13 @@
 import { Link, usePage } from "@inertiajs/react";
-import { Box, Button, Group, Loader, Text } from "@mantine/core";
+import {
+  Box,
+  Button,
+  Divider,
+  Group,
+  Loader,
+  Stack,
+  Text,
+} from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import {
@@ -79,94 +87,97 @@ export default function ControlBox() {
   const nextButtonDisabled = !finished;
 
   return (
-    <Box py="sm" className="border-t border-gray-400">
-      <Group justify="center">
-        <Button size="xs" me="xs" onClick={openModal}>
-          <IconRepeat size={18} />
-        </Button>
-        {/* <Popover width={200} position="top" withArrow shadow="md"> */}
-        {/*   <Popover.Target> */}
-        {/*     <Button size="xs" onClick={openModal}> */}
-        {/*       <IconRepeat size={18} /> */}
-        {/*     </Button> */}
-        {/*   </Popover.Target> */}
-        {/*   <Popover.Dropdown> */}
-        {/*     <Text size="sm" fw={500}> */}
-        {/*       {t('languages.lessons.show.controls.header')} */}
-        {/*     </Text> */}
-        {/*     <Text size="xs">{t('languages.lessons.show.controls.body')}</Text> */}
-        {/*   </Popover.Dropdown> */}
-        {/* </Popover> */}
+    <Stack gap={0}>
+      <Divider color="gray.4" />
+      <Box py="sm">
+        <Group justify="center">
+          <Button size="xs" me="xs" onClick={openModal}>
+            <IconRepeat size={18} />
+          </Button>
+          {/* <Popover width={200} position="top" withArrow shadow="md"> */}
+          {/*   <Popover.Target> */}
+          {/*     <Button size="xs" onClick={openModal}> */}
+          {/*       <IconRepeat size={18} /> */}
+          {/*     </Button> */}
+          {/*   </Popover.Target> */}
+          {/*   <Popover.Dropdown> */}
+          {/*     <Text size="sm" fw={500}> */}
+          {/*       {t('languages.lessons.show.controls.header')} */}
+          {/*     </Text> */}
+          {/*     <Text size="xs">{t('languages.lessons.show.controls.body')}</Text> */}
+          {/*   </Popover.Dropdown> */}
+          {/* </Popover> */}
 
-        {prevLesson && (
+          {prevLesson && (
+            <Button
+              component={Link}
+              size="xs"
+              variant="outline"
+              color="green"
+              radius="sm"
+              me="xs"
+              href={Routes.language_lesson_path(course.slug!, prevLesson.slug!)}
+            >
+              {t(($) => $.languages.lessons.show.prev)}
+            </Button>
+          )}
+
           <Button
-            component={Link}
             size="xs"
             variant="outline"
-            color="green"
+            color="blue"
             radius="sm"
             me="xs"
-            href={Routes.language_lesson_path(course.slug!, prevLesson.slug!)}
+            disabled={isCodeChecking}
+            onClick={handleRunCheck}
           >
-            {t(($) => $.languages.lessons.show.prev)}
+            {renderRunButtonContent()}
           </Button>
-        )}
 
-        <Button
-          size="xs"
-          variant="outline"
-          color="blue"
-          radius="sm"
-          me="xs"
-          disabled={isCodeChecking}
-          onClick={handleRunCheck}
-        >
-          {renderRunButtonContent()}
-        </Button>
+          {user.guest && (
+            <Button
+              component={Link}
+              size="xs"
+              variant="outline"
+              color="green"
+              radius="sm"
+              me="xs"
+              disabled={nextButtonDisabled}
+              href={Routes.new_user_path({ demo: true, from: url })}
+            >
+              {t(($) => $.languages.lessons.show.next)}
+            </Button>
+          )}
 
-        {user.guest && (
-          <Button
-            component={Link}
-            size="xs"
-            variant="outline"
-            color="green"
-            radius="sm"
-            me="xs"
-            disabled={nextButtonDisabled}
-            href={Routes.new_user_path({ demo: true, from: url })}
-          >
-            {t(($) => $.languages.lessons.show.next)}
-          </Button>
-        )}
+          {!user.guest && nextLesson && (
+            <Button
+              component={Link}
+              size="xs"
+              variant="outline"
+              color="green"
+              radius="sm"
+              disabled={nextButtonDisabled}
+              href={Routes.language_lesson_path(course.slug!, nextLesson.slug!)}
+            >
+              {t(($) => $.languages.lessons.show.next)}
+            </Button>
+          )}
 
-        {!user.guest && nextLesson && (
-          <Button
-            component={Link}
-            size="xs"
-            variant="outline"
-            color="green"
-            radius="sm"
-            disabled={nextButtonDisabled}
-            href={Routes.language_lesson_path(course.slug!, nextLesson.slug!)}
-          >
-            {t(($) => $.languages.lessons.show.next)}
-          </Button>
-        )}
-
-        {!user.guest && !nextLesson && (
-          <Button
-            component={Link}
-            size="xs"
-            variant="outline"
-            color="green"
-            radius="sm"
-            disabled={nextButtonDisabled}
-            href={Routes.success_language_url(landingPage.slug!)}
-          >
-            {t(($) => $.languages.lessons.show.finish)}
-          </Button>
-        )}
-      </Group>
-    </Box>
+          {!user.guest && !nextLesson && (
+            <Button
+              component={Link}
+              size="xs"
+              variant="outline"
+              color="green"
+              radius="sm"
+              disabled={nextButtonDisabled}
+              href={Routes.success_language_url(landingPage.slug!)}
+            >
+              {t(($) => $.languages.lessons.show.finish)}
+            </Button>
+          )}
+        </Group>
+      </Box>
+    </Stack>
   );
 }

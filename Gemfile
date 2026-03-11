@@ -7,7 +7,8 @@ gem "rails"
 gem "sqlite3"
 # Use Falcon web server [https://github.com/socketry/falcon-rails]
 group :development, :staging, :production do
-  gem "falcon-rails"
+  gem "falcon", "0.54.3"
+  gem "falcon-rails", "0.2.3"
 end
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"

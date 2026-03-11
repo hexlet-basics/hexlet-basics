@@ -5,7 +5,7 @@ export default function PrivacyEn() {
   const baseId = useId();
   return (
     <>
-      <p className="fw-medium">Last updated March 28, 2025</p>
+      <p>Last updated March 28, 2025</p>
 
       <p>
         This Privacy Notice for TOO "Hexlet" ("we," "us," or "our"), describes
@@ -38,7 +38,7 @@ export default function PrivacyEn() {
 
       <h3>SUMMARY OF KEY POINTS</h3>
 
-      <p className="fst-italic fw-medium">
+      <p>
         This summary provides key points from our Privacy Notice, but you can
         find out more details about any of these topics by clicking the link
         following each key point or by using our{" "}
@@ -147,7 +147,7 @@ export default function PrivacyEn() {
 
       <h3 id={`${baseId}-table-of-contents`}>TABLE OF CONTENTS</h3>
 
-      <ul className="list-unstyled">
+      <ul>
         <li>
           <a href={`#${baseId}-personal-information`}>
             1. WHAT INFORMATION DO WE COLLECT?
@@ -238,7 +238,7 @@ export default function PrivacyEn() {
 
       <h4>Personal information you disclose to us</h4>
 
-      <p className="fst-italic">
+      <p>
         <strong>In Short:</strong> We collect personal information that you
         provide to us.
       </p>
@@ -276,7 +276,7 @@ export default function PrivacyEn() {
 
       <h4>Information automatically collected</h4>
 
-      <p className="fst-italic">
+      <p>
         <strong>In Short:</strong> Some information — such as your Internet
         Protocol (IP) address and/or browser and device characteristics — is
         collected automatically when you visit our Services.
@@ -352,7 +352,7 @@ export default function PrivacyEn() {
         Information collected from other sources
       </h4>
 
-      <p className="fst-italic">
+      <p>
         <strong>In Short:</strong> We may collect limited data from public
         databases, marketing partners, and other outside sources.
       </p>
@@ -373,20 +373,20 @@ export default function PrivacyEn() {
         2. HOW DO WE PROCESS YOUR INFORMATION?
       </h3>
 
-      <p className="fst-italic">
+      <p>
         <strong>In Short:</strong> We process your information to provide,
         improve, and administer our Services, communicate with you, for security
         and fraud prevention, and to comply with law. We may also process your
         information for other purposes with your consent.
       </p>
 
-      <p className="fw-medium">
+      <p>
         We process your personal information for a variety of reasons, depending
         on how you interact with our Services, including:
       </p>
       <ul>
         <li>
-          <span className="fw-medium">
+          <span>
             To facilitate account creation and authentication and otherwise
             manage user accounts.
           </span>{" "}
@@ -394,10 +394,8 @@ export default function PrivacyEn() {
           account, as well as keep your account in working order.
         </li>
         <li>
-          <span className="fw-medium">
-            To save or protect an individual's vital interest.
-          </span>{" "}
-          We may process your information when necessary to save or protect an
+          <span>To save or protect an individual's vital interest.</span> We may
+          process your information when necessary to save or protect an
           individual’s vital interest, such as to prevent harm.
         </li>
       </ul>
@@ -406,7 +404,7 @@ export default function PrivacyEn() {
         3. WHAT LEGAL BASES DO WE RELY ON TO PROCESS YOUR INFORMATION?
       </h3>
 
-      <p className="fst-italic">
+      <p>
         <strong>In Short: </strong>We only process your personal information
         when we believe it is necessary and we have a valid legal reason (i.e.,
         legal basis) to do so under applicable law, like with your consent, to
@@ -415,9 +413,7 @@ export default function PrivacyEn() {
         legitimate business interests.
       </p>
 
-      <p className="fw-medium text-decoration-underline">
-        If you are located in the EU or UK, this section applies to you.
-      </p>
+      <p>If you are located in the EU or UK, this section applies to you.</p>
 
       <p>
         The General Data Protection Regulation (GDPR) and UK GDPR require us to
@@ -428,34 +424,31 @@ export default function PrivacyEn() {
 
       <ul>
         <li>
-          <span className="fw-medium">Consent.</span> We may process your
-          information if you have given us permission (i.e., consent) to use
-          your personal information for a specific purpose. You can withdraw
-          your consent at any time. Learn more about
+          <span>Consent.</span> We may process your information if you have
+          given us permission (i.e., consent) to use your personal information
+          for a specific purpose. You can withdraw your consent at any time.
+          Learn more about
           <a href={`#${baseId}-withdrawing-consent`}>
             {" "}
             withdrawing your consent.
           </a>
         </li>
         <li>
-          <span className="fw-medium">Legal Obligations.</span> We may process
-          your information where we believe it is necessary for compliance with
-          our legal obligations, such as to cooperate with a law enforcement
-          body or regulatory agency, exercise or defend our legal rights, or
-          disclose your information as evidence in litigation in which we are
-          involved.
+          <span>Legal Obligations.</span> We may process your information where
+          we believe it is necessary for compliance with our legal obligations,
+          such as to cooperate with a law enforcement body or regulatory agency,
+          exercise or defend our legal rights, or disclose your information as
+          evidence in litigation in which we are involved.
         </li>
         <li>
-          <span className="fw-medium">Vital Interests.</span> We may process
-          your information where we believe it is necessary to protect your
-          vital interests or the vital interests of a third party, such as
-          situations involving potential threats to the safety of any person.
+          <span>Vital Interests.</span> We may process your information where we
+          believe it is necessary to protect your vital interests or the vital
+          interests of a third party, such as situations involving potential
+          threats to the safety of any person.
         </li>
       </ul>
 
-      <p className="fw-medium text-decoration-underline">
-        If you are located in Canada, this section applies to you.
-      </p>
+      <p>If you are located in Canada, this section applies to you.</p>
 
       <p>
         We may process your information if you have given us specific permission
@@ -520,7 +513,7 @@ export default function PrivacyEn() {
         4. WHEN AND WITH WHOM DO WE SHARE YOUR PERSONAL INFORMATION?
       </h3>
 
-      <p className="fst-italic">
+      <p>
         <strong>In Short: </strong>We may share information in specific
         situations described in this section and/or with the following third
         parties.
@@ -550,7 +543,7 @@ export default function PrivacyEn() {
         5. DO WE USE COOKIES AND OTHER TRACKING TECHNOLOGIES?
       </h3>
 
-      <p className="fst-italic">
+      <p>
         <strong>In Short: </strong> We may use cookies and other tracking
         technologies to collect and store your information.
       </p>
@@ -650,7 +643,7 @@ export default function PrivacyEn() {
         6. DO WE OFFER ARTIFICIAL INTELLIGENCE-BASED PRODUCTS?
       </h3>
 
-      <p className="fst-italic">
+      <p>
         <strong>In Short: </strong>We offer products, features, or tools powered
         by artificial intelligence, machine learning, or similar technologies.
       </p>
@@ -701,7 +694,7 @@ export default function PrivacyEn() {
         7. HOW LONG DO WE KEEP YOUR INFORMATION?
       </h3>
 
-      <p className="fst-italic">
+      <p>
         <strong>In Short:</strong> We keep your information for as long as
         necessary to fulfill the purposes outlined in this Privacy Notice unless
         otherwise required by law.
@@ -729,7 +722,7 @@ export default function PrivacyEn() {
         8. HOW DO WE KEEP YOUR INFORMATION SAFE?
       </h3>
 
-      <p className="fst-italic">
+      <p>
         <strong>In Short: </strong>We aim to protect your personal information
         through a system of organizational and technical security measures.
       </p>
@@ -753,7 +746,7 @@ export default function PrivacyEn() {
         9. DO WE COLLECT INFORMATION FROM MINORS?
       </h3>
 
-      <p className="fst-italic">
+      <p>
         <strong>In Short: </strong>We do not knowingly collect data from or
         market to children under 18 years of age.
       </p>
@@ -773,7 +766,7 @@ export default function PrivacyEn() {
 
       <h3 id={`${baseId}-privacy-rights`}>10. WHAT ARE YOUR PRIVACY RIGHTS?</h3>
 
-      <p className="fst-italic">
+      <p>
         <strong>In Short: </strong>Depending on your state of residence in the
         US or in some regions, such as the European Economic Area (EEA), United
         Kingdom (UK), Switzerland, and Canada, you have rights that allow you
@@ -942,7 +935,7 @@ export default function PrivacyEn() {
         12. DO UNITED STATES RESIDENTS HAVE SPECIFIC PRIVACY RIGHTS?
       </h3>
 
-      <p className="fst-italic">
+      <p>
         <strong>In Short: </strong>If you are a resident of California,
         Colorado, Connecticut, Delaware, Florida, Indiana, Iowa, Kentucky,
         Maryland, Minnesota, Montana, Nebraska, New Hampshire, New Jersey,
@@ -962,13 +955,13 @@ export default function PrivacyEn() {
         the past twelve (12) months:
       </p>
 
-      <div className="table-responsive">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
-              <th className="text-center">Category</th>
-              <th className="text-center">Examples</th>
-              <th className="text-center">Collected</th>
+              <th>Category</th>
+              <th>Examples</th>
+              <th>Collected</th>
             </tr>
             <tr>
               <td>A. Identifiers</td>
@@ -1279,7 +1272,7 @@ export default function PrivacyEn() {
         13. DO OTHER REGIONS HAVE SPECIFIC PRIVACY RIGHTS?
       </h3>
 
-      <p className="fst-italic">
+      <p>
         <strong>In Short: </strong>You may have additional rights based on the
         country you reside in.
       </p>
@@ -1359,7 +1352,7 @@ export default function PrivacyEn() {
         If you are unsatisfied with the manner in which we address any complaint
         with regard to our processing of personal information, you can contact
         the office of the regulator, the details of which are:
-        <ul className="list-unstyled">
+        <ul>
           <li>
             <a
               href="https://inforegulator.org.za/"
@@ -1392,7 +1385,7 @@ export default function PrivacyEn() {
         14. DO WE MAKE UPDATES TO THIS NOTICE?
       </h3>
 
-      <p className="fst-italic">
+      <p>
         <strong>In Short: </strong>Yes, we will update this notice as necessary
         to stay compliant with relevant laws
       </p>
@@ -1415,7 +1408,7 @@ export default function PrivacyEn() {
         If you have questions or comments about this notice, you may email us at{" "}
         <a href="mailto:support@hexlet.io">support@hexlet.io</a> or contact us
         by post at:
-        <ul className="list-unstyled">
+        <ul>
           <li>TOO "Hexlet"</li>
           <li>Auezov St 14 A</li>
           <li>Almaty, Almaty 050000</li>
@@ -1447,7 +1440,7 @@ export default function PrivacyEn() {
         .
       </p>
 
-      <ul className="fw-medium list-unstyled">
+      <ul>
         <li>TOO "Hexlet"</li>
         <li>Auezov St 14 A</li>
         <li>Almaty, Almaty 050000</li>

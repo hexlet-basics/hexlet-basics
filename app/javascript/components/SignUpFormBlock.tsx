@@ -2,6 +2,11 @@ import { Box, Button, Text, TextInput } from "@mantine/core";
 import type { PropsWithChildren } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useAppForm } from "@/hooks/useAppForm";
+import {
+  firstNameInputProps,
+  newPasswordInputProps,
+  registrationEmailInputProps,
+} from "@/lib/authFieldProps";
 import * as Routes from "@/routes.js";
 import type { UserSignUpForm } from "@/types";
 import AppAnchor from "./Elements/AppAnchor";
@@ -25,19 +30,18 @@ export default function SignUpFormBlock({ userDto, autoFocus = false }: Props) {
     <form onSubmit={onSubmit}>
       <TextInput
         {...form.getInputProps("first_name")}
-        autoComplete="name"
         autoFocus={autoFocus}
+        {...firstNameInputProps}
       />
       <TextInput
         {...form.getInputProps("email")}
         required
-        autoComplete="email"
+        {...registrationEmailInputProps}
       />
       <TextInput
         {...form.getInputProps("password")}
         required
-        type="password"
-        autoComplete="current-password"
+        {...newPasswordInputProps}
       />
       <Box my="lg" ta="right">
         {t(($) => $.pages.users.new.have_account)}{" "}

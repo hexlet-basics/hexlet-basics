@@ -2,8 +2,8 @@
 import "@/lib/monacoLoader.ts";
 
 import { usePage } from "@inertiajs/react";
-import MonacoEditor from "@monaco-editor/react";
 import { useComputedColorScheme } from "@mantine/core";
+import MonacoEditor from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
 
 import { useEffect, useState } from "react";
@@ -87,8 +87,6 @@ export default function EditorTab() {
       value={content}
       onChange={handleEditorChange}
       language={getEditorLanguage(course.slug!)}
-      // defaultLanguage={course.slug!}
-      // className="w-100 h-100"
     />
   );
 }

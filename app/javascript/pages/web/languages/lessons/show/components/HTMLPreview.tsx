@@ -1,4 +1,4 @@
-import { Box } from "@mantine/core";
+import { Box, Divider, Stack } from "@mantine/core";
 import { useEffect, useState } from "react";
 import type { FrameComponentProps } from "react-frame-component";
 import XssContent from "@/components/XssContent.tsx";
@@ -15,10 +15,13 @@ export default function HTMLPreview({ html }: { html: string }) {
   if (!Frame) return null;
 
   return (
-    <Box className="border-t border-gray-400">
-      <Frame className="border-none w-full">
-        <XssContent>{html}</XssContent>
-      </Frame>
-    </Box>
+    <Stack gap={0}>
+      <Divider color="gray.4" />
+      <Box>
+        <Frame frameBorder="0" width="100%">
+          <XssContent>{html}</XssContent>
+        </Frame>
+      </Box>
+    </Stack>
   );
 }

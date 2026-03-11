@@ -58,3 +58,4 @@ terraform/*.json
 stats.html
 .idea/
 .npm-cache
+.playwright-cli

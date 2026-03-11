@@ -1,8 +1,9 @@
 import {
+  Anchor,
   Card,
   Container,
-  Grid,
   Group,
+  SimpleGrid,
   Stack,
   Text,
   Title,
@@ -17,23 +18,26 @@ export default function Index() {
 
   return (
     <ApplicationLayout>
-      <Container className="h-100 py-3">
-        <Grid className="row row-cols-1 row-cols-md-2 row-cols-lg-3 py-3">
-          <Grid.Col>
-            <Card className="bg-body-tertiary p-4 rounded-4 shadow-sm h-100 d-flex">
-              <div className="h4 fw-bold mb-2">
-                <span>{t(($) => $.cases.index.for_teachers)}</span>
-              </div>
-              <a
-                className="text-decoration-none stretched-link icon-link icon-link-hover mt-auto"
+      <Container py="md" mih="100%">
+        <SimpleGrid cols={{ base: 1, md: 2, lg: 3 }} py="md">
+          <Card bg="gray.0" p="xl" radius="xl" shadow="sm" h="100%">
+            <Stack h="100%">
+              <Title order={4} mb="xs" fw="bold">
+                {t(($) => $.cases.index.for_teachers)}
+              </Title>
+              <Anchor
                 href={Routes.for_teachers_cases_path()}
+                td="none"
+                mt="auto"
               >
-                <span>{t(($) => $.cases.index.link)}</span>
-                <IconArrowRight className="lh-1" size={16} />
-              </a>
-            </Card>
-          </Grid.Col>
-        </Grid>
+                <Group gap={6}>
+                  <Text>{t(($) => $.cases.index.link)}</Text>
+                  <IconArrowRight size={16} />
+                </Group>
+              </Anchor>
+            </Stack>
+          </Card>
+        </SimpleGrid>
       </Container>
     </ApplicationLayout>
   );

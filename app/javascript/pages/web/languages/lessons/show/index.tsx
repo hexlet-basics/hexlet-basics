@@ -149,7 +149,7 @@ function LessonLeftBlock() {
 
         <Tabs.Panel value="assistant" h="100%">
           <ScrollArea h="100%">
-            <AssistantTabContent />
+            <AssistantTabContent focusesCount={focusesCount} />
           </ScrollArea>
         </Tabs.Panel>
 
@@ -359,11 +359,16 @@ function LessonTabContent() {
   );
 }
 
-function AssistantTabContent() {
+function AssistantTabContent({ focusesCount }: { focusesCount: number }) {
   const { t } = useTranslation();
 
-  const { canCreateAssistantMessage, course, lesson, lessonMember } =
-    usePage<LessonSharedProps>().props;
+  const {
+    previousMessages,
+    canCreateAssistantMessage,
+    course,
+    lesson,
+    lessonMember,
+  } = usePage<LessonSharedProps>().props;
 
   const userCode = useLessonStore((state) => state.content);
   const output = useLessonStore((state) => state.output);
@@ -382,6 +387,8 @@ function AssistantTabContent() {
         </Alert>
       )}
       <Chat
+        focusesCount={focusesCount}
+        previousMessages={previousMessages}
         enabled={canCreateAssistantMessage}
         userCode={userCode}
         output={output}

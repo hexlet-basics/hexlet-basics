@@ -3,7 +3,7 @@ import * as Routes from "@/routes.js";
 export default function CookiePolicyEn() {
   return (
     <>
-      <p className="fw-medium">Last updated March 28, 2025</p>
+      <p>Last updated March 28, 2025</p>
 
       <p>
         This Cookie Policy explains how TOO "Hexlet" (
@@ -81,9 +81,7 @@ export default function CookiePolicyEn() {
         specific Online Properties you visit):
       </p>
 
-      <strong className="text-decoration-underline">
-        Performance and functionality cookies:
-      </strong>
+      <strong>Performance and functionality cookies:</strong>
 
       <p>
         These cookies are used to enhance the performance and functionality of
@@ -91,8 +89,8 @@ export default function CookiePolicyEn() {
         cookies, certain functionality (like videos) may become unavailable.
       </p>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -134,9 +132,7 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <strong className="text-decoration-underline">
-        Analytics and customization cookies:
-      </strong>
+      <strong>Analytics and customization cookies:</strong>
 
       <p>
         These cookies collect information that is used either in aggregate form
@@ -144,8 +140,8 @@ export default function CookiePolicyEn() {
         marketing campaigns are, or to help us customize our Website for you.
       </p>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -178,8 +174,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -221,8 +217,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -264,8 +260,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -298,8 +294,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -341,8 +337,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -375,8 +371,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -409,8 +405,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -443,8 +439,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -477,8 +473,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -520,8 +516,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -543,8 +539,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -577,8 +573,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -620,8 +616,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -663,8 +659,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -690,8 +686,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -724,8 +720,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -767,8 +763,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -811,8 +807,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -845,9 +841,7 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <strong className="text-decoration-underline">
-        Advertising cookies:
-      </strong>
+      <strong>Advertising cookies:</strong>
 
       <p>
         These cookies are used to make advertising messages more relevant to
@@ -857,8 +851,8 @@ export default function CookiePolicyEn() {
         on your interests.
       </p>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -900,8 +894,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -943,9 +937,7 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <strong className="text-decoration-underline">
-        Social networking cookies:
-      </strong>
+      <strong>Social networking cookies:</strong>
 
       <p>
         These cookies are used to enable you to share pages and content that you
@@ -954,8 +946,8 @@ export default function CookiePolicyEn() {
         purposes.
       </p>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -997,8 +989,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -1040,17 +1032,15 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <strong className="text-decoration-underline">
-        Unclassified cookies:
-      </strong>
+      <strong>Unclassified cookies:</strong>
 
       <p>
         These are cookies that have not yet been categorized. We are in the
         process of classifying these cookies with the help of their providers.
       </p>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -1072,8 +1062,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -1095,8 +1085,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -1118,8 +1108,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -1141,8 +1131,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -1164,8 +1154,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -1187,8 +1177,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -1210,8 +1200,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -1233,8 +1223,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -1256,8 +1246,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -1279,8 +1269,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -1302,8 +1292,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -1325,8 +1315,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -1350,8 +1340,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -1373,8 +1363,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -1396,8 +1386,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -1419,8 +1409,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -1442,8 +1432,8 @@ export default function CookiePolicyEn() {
         </table>
       </div>
 
-      <div className="table-responsive mb-3">
-        <table className="table table-bordered">
+      <div>
+        <table>
           <tbody>
             <tr>
               <td>Name:</td>
@@ -1662,7 +1652,7 @@ export default function CookiePolicyEn() {
         If you have any questions about our use of cookies or other
         technologies, please email us at{" "}
         <a href="mailto:support@hexlet.io">support@hexlet.io</a> or by post to:
-        <ul className="fw-medium list-unstyled mt-3">
+        <ul>
           <li>TOO "Hexlet"</li>
           <li>Auezov St 14 A</li>
           <li>Almaty, Almaty 050000</li>

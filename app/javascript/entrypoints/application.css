@@ -7,11 +7,11 @@
 @import '@mantine/notifications/styles.css';
 @import "vanilla-cookieconsent/dist/cookieconsent.css";
 
-// .markdown-viewer pre,
-// .markdown-viewer code {
-//   font-size: var(--mantine-font-size-sm);
-//   tab-size: 2;
-// }
+/* .markdown-viewer pre,
+.markdown-viewer code {
+  font-size: var(--mantine-font-size-sm);
+  tab-size: 2;
+} */
 
 html,
 body,

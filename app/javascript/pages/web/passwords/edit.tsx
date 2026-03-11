@@ -11,6 +11,7 @@ import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppForm } from "@/hooks/useAppForm";
 import ApplicationLayout from "@/layouts/ApplicationLayout";
+import { newPasswordInputProps } from "@/lib/authFieldProps";
 import * as Routes from "@/routes.js";
 import type { UserPassword } from "@/types/serializers";
 
@@ -44,9 +45,8 @@ export default function New({ userPassword, resetPasswordToken }: Props) {
             <form onSubmit={onSubmit}>
               <TextInput
                 {...form.getInputProps("password")}
-                type="password"
-                autoComplete="new-password"
                 required
+                {...newPasswordInputProps}
               />
               <Box mt="lg" ta="right">
                 <Button type="submit" loading={processing}>

@@ -70,7 +70,6 @@ sync-browserlist:
 editor-setup:
 	-bin/tapioca gems --verify
 	-bin/tapioca dsl --verify
-	-bin/tapioca require
 	-bin/tapioca gem
 
 sync-types:

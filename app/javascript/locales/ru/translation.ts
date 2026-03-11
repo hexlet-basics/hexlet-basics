@@ -3,8 +3,8 @@ export default {
     account: {
       profiles: {
         edit: {
-          delete: "",
-          title: "",
+          delete: "Удалить аккаунт",
+          title: "Редактирование профиля",
         },
       },
     },
@@ -479,8 +479,8 @@ export default {
     },
     common: {
       boolean: {
-        no: "",
-        yes: "",
+        no: "Нет",
+        yes: "Да",
       },
       check: {
         error: {
