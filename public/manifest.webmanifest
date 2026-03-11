@@ -1,5 +1,10 @@
 {
   "name": "Code Basics",
+  "short_name": "Code Basics",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#4da7b7",
+  "background_color": "#ffffff",
   "icons": [
     { "src": "/icon-192.png", "type": "image/png", "sizes": "192x192" },
     { "src": "/icon-512.png", "type": "image/png", "sizes": "512x512" }

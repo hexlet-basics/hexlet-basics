@@ -1247,6 +1247,7 @@ export default {
         },
       },
       shared: {
+        all_courses: "All Courses",
         contact_method_requesting: {
           description_html:
             "Чтобы мы могли связаться с вами, укажите предпочительный способ связи\n",
@@ -1323,6 +1324,8 @@ export default {
           success_stories: "Why CodeBasics?",
           toggle_navigation: "Toggle navigation",
           toggle_user_menu: "Toggle the display of user menu",
+          enable_dark_theme: "Enable dark theme",
+          enable_light_theme: "Enable light theme",
           upskilling: "Повышение квалификации",
           upskilling_description: "Обучим новым навыкам в программировании",
         },
@@ -1891,6 +1894,24 @@ export default {
         },
       },
       languages: {
+        index: {
+          categories: "Categories",
+          courses: "All courses",
+          header: "Programming language courses",
+          hexlet: {
+            analytics: "Data analyst",
+            description:
+              "Code Basics is a project by Hexlet programming school. Here you build a foundation and understand how programming works. If you want to study seriously and grow to a professional level, continue with Hexlet paid programs: mentors, practice on real projects, and a portfolio.",
+            devops: "DevOps engineer from scratch",
+            frontend: "Frontend developer",
+            go: "Go developer",
+            java: "Java developer",
+            programs: "Popular Hexlet programs",
+            python: "Python developer",
+            title: "From free basics to a profession: Hexlet programs",
+          },
+          reviews: "Reviews",
+        },
         lessons: {
           show: {
             chat: {
@@ -2220,6 +2241,20 @@ export default {
     shared: {
       languages: {
         course_finished: "Course finished!",
+      },
+      reviews_showcase: {
+        avdoshkin: {
+          body: "As someone with zero coding skills, I'd say that CodeBasics is focused on newcomers. Thank you very much!",
+          name: "Aleksandr Avdoshkin",
+        },
+        kleyman: {
+          body: "For me, it was my very first programming course. I liked it because all the information is very well\nstructured and given in a clear hierarchical order. It motivated me a lot to move forward in my studies.",
+          name: "Eliyah Kleyman",
+        },
+        tyurin: {
+          body: "This is all very approachable even for a dummy like me. Now I show people this platform when I get the chance.",
+          name: "Sergei Tyurin",
+        },
       },
       via_social_networks: {
         via_social_networks: "With GitHub",

@@ -1,6 +1,41 @@
 class Web::LanguagesController < Web::ApplicationController
   before_action :authenticate_user!, only: [ :success ]
-  before_action :redirect_archived_language
+  before_action :redirect_archived_language, only: [ :show, :success ]
+
+  def index
+    catalog_landing_pages = Language::LandingPage.web
+      .where(listed: true)
+      .merge(Language.ordered)
+
+    categories = Language::Category.with_locale
+
+    seo_tags = {
+      title: t(".title"),
+      description: t(".meta.description"),
+      canonical: languages_url,
+      alternate: {
+        ru: view_context.languages_url(suffix: :ru),
+        en: view_context.languages_url(suffix: nil),
+        es: view_context.languages_url(suffix: :es)
+      },
+      og: {
+        title: t(".title"),
+        description: t(".meta.description"),
+        type: "website",
+        url: languages_url
+      },
+      twitter: {
+        card: "summary",
+        site: "@hexlethq"
+      }
+    }
+    set_meta_tags seo_tags
+
+    render inertia: true, props: {
+      catalogLandingPages: Language::LandingPageForListsResource.new(catalog_landing_pages),
+      categories: Language::CategoryResource.new(categories)
+    }
+  end
 
   def show
     language = T.must(landing_page.language)

@@ -1,6 +1,7 @@
 import type { PageProps } from "@inertiajs/core";
 import { Link, usePage } from "@inertiajs/react";
 import {
+  ActionIcon,
   Anchor,
   Box,
   Burger,
@@ -11,23 +12,28 @@ import {
   HoverCard,
   Image,
   Menu,
-  Popover,
+  NavLink,
   SimpleGrid,
   Space,
   Stack,
   Text,
+  Tooltip,
   ThemeIcon,
   UnstyledButton,
+  useComputedColorScheme,
+  useMantineColorScheme,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
 import {
   IconBlocks,
   IconChevronDown,
+  IconChevronRight,
   IconGitBranch,
   IconHeartHandshake,
   IconLogout2,
+  IconMoon,
   IconRocket,
   IconSchool,
+  IconSun,
   IconTarget,
   IconUser,
   IconUserCog,
@@ -36,7 +42,6 @@ import {
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 import AppAnchor from "@/components/Elements/AppAnchor";
-import { useIsMobile } from "@/hooks/useIsMobile";
 import logoImg from "@/images/logo.svg";
 import defaultAvatarImg from "@/images/user-avatar.webp";
 import { hasObjectKey, localesByCode } from "@/lib/utils";
@@ -71,6 +76,7 @@ export default function NavbarBlock({ opened, onToggle }: NavbarBlockProps) {
         <Group ms="auto" visibleFrom="sm">
           <AuthLinks avatar={defaultAvatarImg} />
           <LocaleSwitcher />
+          <ThemeSwitcher />
         </Group>
 
         <Burger
@@ -112,57 +118,58 @@ function CourseMenu({
   landingPages: PageProps["landingPagesForLists"];
 }) {
   const { t } = useTranslation();
-  const isMobile = useIsMobile();
-  const [opened, { open, close, toggle }] = useDisclosure(false);
 
   return (
-    <Popover
+    <Menu
       width={320}
-      position="bottom-start"
-      withArrow
       shadow="md"
-      opened={opened}
-      onDismiss={close}
+      position="bottom-start"
+      trigger="hover"
+      openDelay={100}
+      closeDelay={150}
       withinPortal
     >
-      <Popover.Target>
-        <UnstyledButton
-          onClick={isMobile ? toggle : undefined}
-          onMouseEnter={!isMobile ? open : undefined}
-          onMouseLeave={!isMobile ? close : undefined}
-        >
+      <Menu.Target>
+        <UnstyledButton>
           <Center inline>
             <Text me={5}>{t(($) => $.layouts.shared.nav.courses)}</Text>
             <IconChevronDown size={16} />
           </Center>
         </UnstyledButton>
-      </Popover.Target>
-      <Popover.Dropdown
-        onMouseEnter={!isMobile ? open : undefined}
-        onMouseLeave={!isMobile ? close : undefined}
-      >
+      </Menu.Target>
+      <Menu.Dropdown>
+        <NavLink
+          component={Link}
+          href={Routes.languages_path()}
+          fw="bold"
+          label={t(($) => $.layouts.shared.all_courses)}
+          rightSection={<IconChevronRight size={14} />}
+        />
+        <Divider mb="xs" />
+
         <SimpleGrid cols={2} spacing="sm" p="xs">
           {landingPages.map((lp) => (
-            <Group key={lp.id} wrap="nowrap" pos="relative">
-              <Image
-                w="auto"
-                radius="sm"
-                fit="contain"
-                loading="lazy"
-                src={lp.language.cover_thumb_variant}
-                alt={lp.header}
-              />
+            <Menu.Item
+              key={lp.id}
+              component={Link}
+              href={Routes.language_path(lp.slug)}
+              leftSection={
+                <Image
+                  w={18}
+                  radius="sm"
+                  fit="contain"
+                  loading="lazy"
+                  src={lp.language.cover_thumb_variant}
+                  alt={lp.header}
+                />
+              }
+            >
               <Text fz="sm">{lp.name}</Text>
-              <AppAnchor
-                href={Routes.language_path(lp.slug)}
-                inset={0}
-                pos="absolute"
-              />
-            </Group>
+            </Menu.Item>
           ))}
         </SimpleGrid>
-      </Popover.Dropdown>
-    </Popover>
+      </Menu.Dropdown>
+    </Menu>
   );
 }
 
@@ -292,7 +299,35 @@ function MobileMenu({
       <BookLink />
       <AuthLinks avatar={avatar} />
       <LocaleSwitcher />
+      <ThemeSwitcher />
     </Stack>
+  );
+}
+
+export function ThemeSwitcher() {
+  const { t } = useTranslation();
+  const computedColorScheme = useComputedColorScheme("light", {
+    getInitialValueInEffect: false,
+  });
+  const { setColorScheme } = useMantineColorScheme();
+
+  const isDark = computedColorScheme === "dark";
+  const nextColorScheme = isDark ? "light" : "dark";
+  const label = isDark
+    ? t(($) => $.layouts.shared.nav.enable_light_theme)
+    : t(($) => $.layouts.shared.nav.enable_dark_theme);
+
+  return (
+    <Tooltip label={label} withArrow>
+      <ActionIcon
+        aria-label={label}
+        onClick={() => setColorScheme(nextColorScheme)}
+        size="sm"
+        variant="default"
+      >
+        {isDark ? <IconSun stroke={1.2} size={14} /> : <IconMoon stroke={1.2} size={14} />}
+      </ActionIcon>
+    </Tooltip>
   );
 }
 
@@ -347,12 +382,8 @@ function SolutionsMenu() {
           <item.icon size={22} />
         </ThemeIcon>
         <Box>
-          <AppAnchor
-            external
-            href={item.href}
-            className="after:absolute after:inset-0"
-          >
-            <Text fz="sm" fw={500}>
+          <AppAnchor external href={item.href}>
+            <Text fz="sm" fw="bold">
               {item.title}
             </Text>
           </AppAnchor>
@@ -376,7 +407,7 @@ function SolutionsMenu() {
       </HoverCard.Target>
       <HoverCard.Dropdown>
         <Group justify="space-between" px="md" mb="sm">
-          <Text fw={500}>{t(($) => $.layouts.shared.nav.for_whom)}</Text>
+          <Text fw="bold">{t(($) => $.layouts.shared.nav.for_whom)}</Text>
           <Anchor
             target="_blank"
             href={`${t(($) => $.common.organization.site)}?utm_source=code-basics&utm_medium=referral`}

@@ -58,6 +58,17 @@ export default function SiteMap({
                   })}
                 </Accordion.Control>
                 <Accordion.Panel>
+                  <Text fw={500} size="sm" mb="sm">
+                    <AppAnchor
+                      href={Routes.languages_path({
+                        suffix: getSuffix(locale),
+                      })}
+                    >
+                      {t(($) => $.pages.languages.index.header, {
+                        lng: locale,
+                      })}
+                    </AppAnchor>
+                  </Text>
                   {landingPagesByLocale[locale]
                     .filter(
                       (landingPage) =>

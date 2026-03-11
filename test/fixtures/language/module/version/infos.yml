@@ -25,9 +25,9 @@
 #
 DEFAULTS: &DEFAULTS
   description: |
-    $LABEL
+    Название модуля
     <%= Faker::Lorem.paragraph %>
-  name: $LABEL
+  name: Модуль курса
 
 one:
   <<: *DEFAULTS
@@ -42,6 +42,7 @@ pre-course-javascript1-module1-version1-ru:
   language: pre-course-javascript
   version: pre-course-javascript1-module1_version1
   language_version: pre-course-javascript1
+  name: Введение в JavaScript
 
 javascript1-module1-version1-ru:
   <<: *DEFAULTS
@@ -49,6 +50,7 @@ javascript1-module1-version1-ru:
   language: javascript
   version: javascript1-module1_version1
   language_version: javascript1
+  name: Основы синтаксиса
 
 # javascript1-module1-version2-ru:
 #   <<: *DEFAULTS
@@ -63,6 +65,7 @@ javascript1-module2-version1-ru:
   language: javascript
   version: javascript1-module2_version1
   language_version: javascript1
+  name: Функции и выражения
 
 javascript1-module1-version1-en:
   <<: *DEFAULTS
@@ -70,6 +73,7 @@ javascript1-module1-version1-en:
   language: javascript
   version: javascript1-module1_version1
   language_version: javascript1
+  name: Syntax Basics
 
 javascript2-module1-version2-ru:
   <<: *DEFAULTS
@@ -77,6 +81,7 @@ javascript2-module1-version2-ru:
   language: javascript
   version: javascript2-module1_version2
   language_version: javascript2
+  name: Основы JavaScript
 
 javascript2-module2-version2-ru:
   <<: *DEFAULTS
@@ -84,6 +89,7 @@ javascript2-module2-version2-ru:
   language: javascript
   version: javascript2-module2_version2
   language_version: javascript2
+  name: Условия и логика
 
 javascript2-module3-version1-ru:
   <<: *DEFAULTS
@@ -91,6 +97,7 @@ javascript2-module3-version1-ru:
   language: javascript
   version: javascript2-module3_version1
   language_version: javascript2
+  name: Циклы и коллекции
 
 variables_one:
   name: Переменные
@@ -106,6 +113,7 @@ elixir-basics-ru:
   language: elixir
   version: elixir-basics
   language_version: elixir
+  name: Основы Elixir
 
 ruby-basics-ru:
   <<: *DEFAULTS
@@ -113,6 +121,7 @@ ruby-basics-ru:
   language: ruby
   version: ruby-basics
   language_version: ruby
+  name: Основы Ruby
 
 one-ru:
   <<: *DEFAULTS
@@ -120,6 +129,7 @@ one-ru:
   language: php
   version: one
   language_version: php
+  name: Введение в PHP
 
 php-basics-ru:
   <<: *DEFAULTS
@@ -127,6 +137,7 @@ php-basics-ru:
   language: php
   version: two
   language_version: php
+  name: Основы PHP
 
 variables-one-ru:
   <<: *DEFAULTS
@@ -134,6 +145,7 @@ variables-one-ru:
   language: php
   version: variables_one
   language_version: php
+  name: Переменные
 
 php-basics-en:
   <<: *DEFAULTS
@@ -141,3 +153,4 @@ php-basics-en:
   language: php
   version: two
   language_version: php
+  name: PHP Basics

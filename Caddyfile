@@ -16,6 +16,9 @@ https://code-basics.localhost {
 	# Enable gzip and other compression
 	encode gzip zstd
 
+	@webmanifest path /manifest.webmanifest
+	header @webmanifest Content-Type application/manifest+json
+
 	reverse_proxy /vite-dev/* http://127.0.0.1:3036
 	reverse_proxy /cable http://127.0.0.1:28080
 	reverse_proxy h2c://127.0.0.1:3000

@@ -1,0 +1,27 @@
+es:
+  web:
+    home:
+      index:
+        title: Cursos gratuitos de programación desde cero, simulador y asistente de IA | Code Basics
+        meta:
+          description: |
+            Aprende programación gratis: Python, JavaScript, Java y 11 lenguajes más. Teoría, práctica en el navegador y asistente de IA. Desde cero para niños y adultos.
+    languages:
+      index:
+        title: Catálogo de cursos, Python, JavaScript, Java, HTML y más | Code Basics
+        header: Cursos de lenguajes de programación
+        courses: Todos los cursos
+        categories: Categorías
+        reviews: Opiniones
+        hexlet:
+          title: "De las bases gratuitas a la profesión: programas de Hexlet"
+          description: "Code Basics es un proyecto de la escuela de programación Hexlet. Aquí construyes una base y entiendes cómo funciona la programación. Si quieres estudiar en serio y llegar al nivel profesional, continúa con los programas de pago de Hexlet: mentores, práctica en proyectos reales y portafolio."
+          programs: Programas populares de Hexlet
+          python: Desarrollador Python
+          frontend: Desarrollador Frontend
+          java: Desarrollador Java
+          go: Desarrollador Go
+          devops: Ingeniero DevOps desde cero
+          analytics: Analista de datos
+        meta:
+          description: "Catálogo gratuito de cursos de programación: Python, JavaScript, Java, HTML, PHP, Go y más. Aprende desde cero en un simulador con asistente de IA."

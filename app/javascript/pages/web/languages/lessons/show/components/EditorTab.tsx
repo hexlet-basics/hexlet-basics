@@ -3,6 +3,7 @@ import "@/lib/monacoLoader.ts";
 
 import { usePage } from "@inertiajs/react";
 import MonacoEditor from "@monaco-editor/react";
+import { useComputedColorScheme } from "@mantine/core";
 import type { editor } from "monaco-editor";
 
 import { useEffect, useState } from "react";
@@ -17,6 +18,9 @@ import { useLessonStore } from "../store.tsx";
 
 export default function EditorTab() {
   const { course, mobileBrowser } = usePage<LessonSharedProps>().props;
+  const colorScheme = useComputedColorScheme("light", {
+    getInitialValueInEffect: false,
+  });
 
   const editorOptions: editor.IStandaloneEditorConstructionOptions = {
     tabSize: getTabSize(course.slug!),
@@ -73,9 +77,11 @@ export default function EditorTab() {
     changeContent(newContent);
   };
 
+  const editorTheme = colorScheme === "dark" ? "vs-dark" : "vs";
+
   return (
     <MonacoEditor
-      theme="github-light"
+      theme={editorTheme}
       options={editorOptions}
       onMount={handleEditorDidMount}
       value={content}

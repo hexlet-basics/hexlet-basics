@@ -27,29 +27,23 @@ export default function Index({ categories }: Props) {
       <Container size="lg">
         <SimpleGrid py="md" cols={{ base: 1, md: 2, lg: 3 }}>
           {categories.map((category) => (
-            <Card
+            <AppAnchor
               key={category.id}
-              padding="xl"
-              radius="md"
-              withBorder
-              h="100%"
-              pos="relative"
+              href={Routes.language_category_path(category.slug!)}
+              td="none"
             >
-              <Stack h="100%">
-                <AppAnchor
-                  href={Routes.language_category_path(category.slug!)}
-                  className="after:absolute after:inset-0"
-                >
+              <Card padding="xl" radius="md" withBorder h="100%">
+                <Stack h="100%">
                   <Text size="xl" fw={700}>
                     {category.header}
                   </Text>
-                </AppAnchor>
-                <Group mt="auto" c="blue">
-                  <Text>{t(($) => $.language_categories.index.link)}</Text>
-                  <IconArrowRight size={16} />
-                </Group>
-              </Stack>
-            </Card>
+                  <Group mt="auto" c="blue">
+                    <Text>{t(($) => $.language_categories.index.link)}</Text>
+                    <IconArrowRight size={16} />
+                  </Group>
+                </Stack>
+              </Card>
+            </AppAnchor>
           ))}
         </SimpleGrid>
       </Container>

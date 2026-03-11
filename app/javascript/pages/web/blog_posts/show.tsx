@@ -173,18 +173,18 @@ export default function Show({
                       <Text fz="lg" lh="sm" mb="md">
                         {t(($) => $.blog_posts.show.discuss)}
                       </Text>
-                      <Group gap={0}>
-                        <AppAnchor
-                          href="https://t.me/HexletLearningBot"
-                          className="after:absolute after:inset-0"
-                          external
-                        >
+                      <AppAnchor
+                        href="https://t.me/HexletLearningBot"
+                        external
+                        td="none"
+                      >
+                        <Group gap={0}>
                           <Text component="span" mr="sm">
                             {t(($) => $.blog_posts.show.link)}
                           </Text>
-                        </AppAnchor>
-                        <IconArrowRight />
-                      </Group>
+                          <IconArrowRight />
+                        </Group>
+                      </AppAnchor>
                     </Alert>
                   )}
 

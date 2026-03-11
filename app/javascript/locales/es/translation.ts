@@ -1247,6 +1247,7 @@ export default {
         },
       },
       shared: {
+        all_courses: "Todos los cursos",
         contact_method_requesting: {
           description_html:
             "Чтобы мы могли связаться с вами, укажите предпочительный способ связи\n",
@@ -1254,7 +1255,7 @@ export default {
         },
         footer: {
           about: "About Platform",
-          all_courses: "All Courses",
+          all_courses: "Todos los cursos",
           authors: "For the author",
           blog: "Blog",
           categories: "Categories",
@@ -1891,6 +1892,24 @@ export default {
         },
       },
       languages: {
+        index: {
+          categories: "Categorías",
+          courses: "Todos los cursos",
+          header: "Cursos de lenguajes de programación",
+          hexlet: {
+            analytics: "Analista de datos",
+            description:
+              "Code Basics es un proyecto de la escuela de programación Hexlet. Aquí construyes una base y entiendes cómo funciona la programación. Si quieres estudiar en serio y llegar al nivel profesional, continúa con los programas de pago de Hexlet: mentores, práctica en proyectos reales y portafolio.",
+            devops: "Ingeniero DevOps desde cero",
+            frontend: "Desarrollador Frontend",
+            go: "Desarrollador Go",
+            java: "Desarrollador Java",
+            programs: "Programas populares de Hexlet",
+            python: "Desarrollador Python",
+            title: "De las bases gratuitas a la profesión: programas de Hexlet",
+          },
+          reviews: "Opiniones",
+        },
         lessons: {
           show: {
             chat: {
@@ -2220,6 +2239,20 @@ export default {
     shared: {
       languages: {
         course_finished: "Course finished!",
+      },
+      reviews_showcase: {
+        avdoshkin: {
+          body: "Como persona sin conocimientos de programación, diría que CodeBasics está orientado a quienes empiezan desde cero. ¡Muchas gracias!",
+          name: "Aleksandr Avdoshkin",
+        },
+        kleyman: {
+          body: "Para mí fue mi primer curso de programación. Me gustó porque la información está bien estructurada\ny presentada en un orden claro, lo que me motivó mucho a seguir estudiando.",
+          name: "Eliyah Kleyman",
+        },
+        tyurin: {
+          body: "Todo es muy accesible incluso para alguien tan novato como yo. Ahora comparto esta plataforma cada vez que puedo.",
+          name: "Sergei Tyurin",
+        },
       },
       via_social_networks: {
         via_social_networks: "With GitHub",

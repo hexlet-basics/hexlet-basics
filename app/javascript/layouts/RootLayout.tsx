@@ -1,7 +1,9 @@
 import { Head, router, usePage } from "@inertiajs/react";
 import {
   Center,
+  ColorSchemeScript,
   Container,
+  localStorageColorSchemeManager,
   MantineProvider,
   Stack,
   Text,
@@ -9,7 +11,6 @@ import {
 } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 import * as Sentry from "@sentry/react";
-// import { ColorSchemeScript } from '@mantine/core';
 import parseHtml from "html-react-parser";
 import { type PropsWithChildren, useEffect } from "react";
 import { useTranslation } from "react-i18next";
@@ -20,6 +21,10 @@ import { resolver, theme } from "@/lib/mantine";
 import { fromWindow } from "@/lib/utils";
 
 type Props = PropsWithChildren & {};
+export const colorSchemeStorageKey = "codebasics-color-scheme";
+const colorSchemeManager = localStorageColorSchemeManager({
+  key: colorSchemeStorageKey,
+});
 
 function FallbackComponent() {
   const { t } = useTranslation();
@@ -68,10 +73,21 @@ function RootLayout(props: Props) {
   }, [flash.events]);
 
   return (
-    <MantineProvider cssVariablesResolver={resolver} theme={theme}>
+    <MantineProvider
+      colorSchemeManager={colorSchemeManager}
+      cssVariablesResolver={resolver}
+      defaultColorScheme="auto"
+      theme={theme}
+    >
       <ModalsProvider>
         <Sentry.ErrorBoundary fallback={FallbackComponent} showDialog>
-          <Head>{parseHtml(metaTagsHTMLString, { trim: true })}</Head>
+          <Head>
+            <ColorSchemeScript
+              defaultColorScheme="auto"
+              localStorageKey={colorSchemeStorageKey}
+            />
+            {parseHtml(metaTagsHTMLString, { trim: true })}
+          </Head>
           {import.meta.env.DEV && <DebugAppData />}
           {props.children}
         </Sentry.ErrorBoundary>

@@ -105,7 +105,7 @@ Rails.application.routes.draw do
       resource :remind_password, only: %i[new create]
       resource :password, only: %i[edit update]
 
-      resources :languages, only: [ :show ] do
+      resources :languages, only: %i[index show] do
         member do
           get :success
         end

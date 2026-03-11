@@ -34,8 +34,10 @@ import MarkdownViewer from "@/components/MarkdownViewer";
 import SignUpFormBlock from "@/components/SignUpFormBlock";
 import XssContent from "@/components/XssContent";
 import ApplicationLayout from "@/layouts/ApplicationLayout";
-import { hasObjectKey } from "@/lib/utils";
-import { getResourceUrl } from "@/resources";
+import {
+  reviewShowcaseAvatars,
+  reviewShowcaseOrder,
+} from "@/pages/web/shared/reviews";
 import * as Routes from "@/routes.js";
 import type {
   BlogPost,
@@ -53,54 +55,6 @@ type Props = PropsWithChildren & {
   lead: LeadCrud;
 };
 
-// TODO: move to locales
-type ReviewItem = {
-  name: string;
-  avatar: string;
-  body: string;
-};
-
-const reviews: Record<string, ReviewItem[]> = {
-  ru: [
-    {
-      name: "Александр Авдошкин",
-      avatar: getResourceUrl("avdoshkin.jpg"),
-      body: `Если бы не коронавирус, выполнил бы всё в заход (в смысле каждый день по несколько пунктов в теме).
-Изучаю с нуля, ваш портал очень ориентирован на новичков. Спасибо вам большое!`,
-    },
-    {
-      name: "Сергей Тюрин",
-      avatar: getResourceUrl("tyrin.jpg"),
-      body: `Очень всё доступно даже для полного профана вроде меня. Эта вводная по JS вошла в мой туговатый ум,
-складно как недостающий пазл. Всем кидаю линк на эту страничку.`,
-    },
-    {
-      name: "Элиях Клейман",
-      avatar: getResourceUrl("user-avatar.png"),
-      body: `Для меня это первый курс для новичка. Понравилось тем, что вся информация структурирована
-и дана по мере изучения материала в иерархичном порядке, что значительно повышает и желание к обучению`,
-    },
-  ],
-  en: [
-    {
-      name: "Aleksandr Avdoshkin",
-      avatar: getResourceUrl("avdoshkin.jpg"),
-      body: "As someone with zero coding skills, I'd say that CodeBasics is focused on newcomers. Thank you very much!",
-    },
-    {
-      name: "Sergei Tyurin",
-      avatar: getResourceUrl("tyrin.jpg"),
-      body: "This is all very approachable even for a dummy like me. Now I show people this platform when I get the chance.",
-    },
-    {
-      name: "Eliyah Kleyman",
-      avatar: getResourceUrl("user-avatar.png"),
-      body: `For me, it was my very first programming course. I liked it because all the information is very well
-structured and given in a clear hierarchical order. It motivated me a lot to move forward in my studies.`,
-    },
-  ],
-};
-
 export default function Index({
   blogPosts,
   newUser,
@@ -112,12 +66,14 @@ export default function Index({
   const baseId = useId("courses");
 
   const {
-    locale,
     landingPagesForLists,
     auth: { user },
   } = usePage().props;
 
   const faq = t(($) => $.faq.main, {
+    returnObjects: true,
+  });
+  const reviewTexts = t(($) => $.shared.reviews_showcase, {
     returnObjects: true,
   });
 
@@ -146,15 +102,13 @@ export default function Index({
         )}
       </Head>
       {/*<Banner />*/}
+
       <Container
         ta="center"
         size="sm"
         my={{
           base: "xl",
-          xs: 60,
-          sm: 70,
-          md: 80,
-          lg: 120,
+          sm: "xxl",
         }}
       >
         <Badge
@@ -205,14 +159,12 @@ export default function Index({
           )}
         </Center>
       </Container>
+
       <Container
         size="lg"
         my={{
           base: "xl",
-          xs: 60,
-          sm: 70,
-          md: 80,
-          lg: 100,
+          sm: "xxl",
         }}
       >
         <SimpleGrid cols={{ base: 1, xs: 2, md: 3 }} my="xl">
@@ -239,7 +191,13 @@ export default function Index({
           </Card>
         </SimpleGrid>
       </Container>
-      <Container size="lg" my="xl">
+      <Container
+        size="lg"
+        my={{
+          base: "xl",
+          sm: "xxl",
+        }}
+      >
         <Title id={baseId} order={2} mb="xl">
           {t(($) => $.home.languages.courses)}
         </Title>
@@ -255,19 +213,27 @@ export default function Index({
           ))}
         </SimpleGrid>
       </Container>
-      <Container size="lg" my="xl">
+      <Container
+        size="lg"
+        my={{
+          base: "xl",
+          sm: "xxl",
+        }}
+      >
         <Box mb="xl">
           <Title order={2}>{t(($) => $.home.index.reviews)}</Title>
           <Divider />
         </Box>
 
         <SimpleGrid spacing="md" cols={{ base: 1, xs: 2, md: 3 }}>
-          {reviews[hasObjectKey(reviews, locale) ? locale : "ru"].map(
-            (review) => (
+          {reviewShowcaseOrder.map((reviewId) => {
+            const review = reviewTexts[reviewId];
+
+            return (
               <Box key={review.name}>
                 <Group mb="lg">
                   <Image
-                    src={review.avatar}
+                    src={reviewShowcaseAvatars[reviewId]}
                     fit="contain"
                     radius="xl"
                     loading="lazy"
@@ -281,8 +247,8 @@ export default function Index({
 
                 <Text fs="italic">{review.body}</Text>
               </Box>
-            ),
-          )}
+            );
+          })}
         </SimpleGrid>
       </Container>
       {blogPosts.length > 0 && (
@@ -298,7 +264,13 @@ export default function Index({
           </SimpleGrid>
         </Container>
       )}
-      <Container size="lg" my="xl">
+      <Container
+        size="lg"
+        my={{
+          base: "xl",
+          sm: "xxl",
+        }}
+      >
         <Box mb="xl">
           <Title order={2}>{t(($) => $.faq.header)}</Title>
           <Divider />
@@ -343,7 +315,13 @@ export default function Index({
         </Container>
       )}
       {!user.guest && i18next.language === "ru" && (
-        <Container size="lg" mt={100}>
+        <Container
+          size="lg"
+          my={{
+            base: "xl",
+            sm: "xxl",
+          }}
+        >
           <Grid align="center" justify="space-between" gutter={0}>
             <Grid.Col span={{ base: 12, md: 6 }}>
               <Center>

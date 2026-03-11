@@ -82,10 +82,10 @@ en:
           try: Courses →
           how_coding_works: How Learning Works on Code Basics
         title: |
-          Free Online Programming Courses: HTML, CSS, JavaScript
+          Free programming courses for beginners, simulator and AI assistant | Code Basics
         meta:
           description: |
-            Learn the Code Basics of HTML, CSS and JavaScript with Interactive Coding Environment right in your Browser! Perfect for Beginners & 100% for Free | Join our Online Programming Courses
+            Learn programming for free: Python, JavaScript, Java, and 11 more languages. Theory, browser-based practice, and an AI assistant. From scratch for kids and adults.
         sign_up: Sign Up
         reviews: Reviews
         all_reviews: All Reviews
@@ -156,6 +156,24 @@ en:
             from beginners to advanced topics in various programming languages.
         empty: Looks like there is noting yet
     languages:
+      index:
+        title: Course catalog, Python, JavaScript, Java, HTML, and more | Code Basics
+        header: Programming language courses
+        courses: All courses
+        categories: Categories
+        reviews: Reviews
+        hexlet:
+          title: "From free basics to a profession: Hexlet programs"
+          description: "Code Basics is a project by Hexlet programming school. Here you build a foundation and understand how programming works. If you want to study seriously and grow to a professional level, continue with Hexlet paid programs: mentors, practice on real projects, and a portfolio."
+          programs: Popular Hexlet programs
+          python: Python developer
+          frontend: Frontend developer
+          java: Java developer
+          go: Go developer
+          devops: DevOps engineer from scratch
+          analytics: Data analyst
+        meta:
+          description: "Free programming course catalog: Python, JavaScript, Java, HTML, PHP, Go, and more. Learn from scratch in a simulator with an AI assistant."
       show:
         blog_posts: Blog Posts
         try: Try It

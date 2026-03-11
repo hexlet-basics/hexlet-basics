@@ -21,16 +21,7 @@ import { IconClock, IconUsers } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
-import type {
-  Course,
-  ItemAvailability,
-  MerchantReturnEnumeration,
-  MerchantReturnPolicy,
-  Offer,
-  OfferShippingDetails,
-  Product,
-  WithContext,
-} from "schema-dts";
+import type { Course, WithContext } from "schema-dts";
 import AppAnchor from "@/components/Elements/AppAnchor";
 import LeadFormBlock from "@/components/LeadFormBlock";
 import MarkdownViewer from "@/components/MarkdownViewer";
@@ -323,9 +314,13 @@ export default function Show({
           </Box>
         </SimpleGrid>
 
-        <Card bg="indigo.0" my={{ base: "lg", sm: 80 }} p="xl">
-          <Group>
-            <Text responsive="3rem">
+        <Card
+          withBorder
+          my={{ base: "lg", sm: "xxl" }}
+          p="xl"
+        >
+          <Group justify="space-between">
+            <Text fz="h3">
               {t(($) => $.languages.show.course_graduates)}
             </Text>
             <Button
@@ -383,7 +378,7 @@ export default function Show({
           </Accordion>
         </Box>
 
-        <Box my={{ base: "lg", sm: 80 }}>
+        <Box my={{ base: "lg", sm: "xxl" }}>
           <Title order={2} fz="h1" mb="xl" responsive>
             {t(($) => $.languages.show.about_learning)}
           </Title>

@@ -2,7 +2,6 @@ import { AppShell } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import type { PropsWithChildren } from "react";
 import NavbarBlock from "./blocks/NavbarBlock.tsx";
-import RootLayout from "./RootLayout.tsx";
 
 type Props = PropsWithChildren & {};
 

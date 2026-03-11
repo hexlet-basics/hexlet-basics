@@ -39,89 +39,129 @@
 #  fk_rails_...  (language_id => languages.id)
 #
 DEFAULTS: &DEFAULTS
-  description: Изучите язык программирования $LABEL в интерактивной онлайн среде. Десятки заданий прямо в браузере с поддержкой ИИ-ассистента
-  meta_description: $LABEL - Бесплатное обучение программированию от сообщества Хекслет. Онлайн курс посвящен азам написания программ на Javascript с нуля
-  meta_title: $LABEL
+  description: Изучите язык программирования в интерактивной онлайн-среде. Десятки заданий прямо в браузере с поддержкой ИИ-ассистента.
+  meta_description: Бесплатный онлайн-курс по программированию от сообщества Хекслет для старта с нуля.
+  meta_title: Курс программирования
   state: published
   listed: true
   footer: true
-  outcomes_header: Чему научитесь на курсе “Основы $LABEL”
+  outcomes_header: Чему научитесь на курсе
   outcomes_description: |
-    Разберётесь в базовом синтаксисе $LABEL — это фундаментальный навык, который позволит понимать чужой код и писать собственные программы. После курса сможете создавать простые скрипты, например, калькулятор
-  used_in_header: Где используется язык программирования $LABEL?
+    Разберётесь в базовом синтаксисе языка, научитесь читать чужой код и писать собственные программы. После курса сможете создавать простые приложения и уверенно продолжить обучение.
+  used_in_header: Где используется этот язык программирования?
   used_in_description: |
-    $LABEL – это универсальный и востребованный язык программирования, который работает во всех браузерах и на сервере. С его помощью ты освоишь веб-разработку, научишься создавать интерактивные сайты, мобильные приложения и серверные сервисы. $LABEL легко изучать, он популярен в IT, а большое сообщество и множество вакансий помогут тебе быстро построить карьеру
-  footer_name: $LABEL
+    Этот язык программирования используют в реальных проектах: от веб-разработки и автоматизации до серверных приложений и внутренних сервисов. Большое сообщество и обилие практических задач помогают быстрее войти в профессию.
+  footer_name: Курс программирования
   slug: $LABEL
-  header: Курс $LABEL
-  name: $LABEL
+  header: Курс программирования
+  name: Курс программирования
 
 javascript-ru:
   <<: *DEFAULTS
   header: Курс JavaScript
   language: javascript
   main: true
+  name: JavaScript
+  meta_title: Курс JavaScript
   footer_name: Основы JavaScript
+  outcomes_header: Чему научитесь на курсе «Основы JavaScript»
+  used_in_header: Где используется JavaScript?
   locale: ru
 
 javascript-ru-archived:
   <<: *DEFAULTS
-  header: JavaScript (Archived)
+  header: Архивный курс JavaScript
   language: javascript
   state: archived
-  footer_name: Основы JavaScript (Archived)
+  name: JavaScript (архив)
+  meta_title: Архивный курс JavaScript
+  footer_name: Основы JavaScript (архив)
+  outcomes_header: Чему научитесь на курсе «Основы JavaScript»
+  used_in_header: Где используется JavaScript?
   locale: ru
 
 nodejs-ru:
   <<: *DEFAULTS
-  header: Node.JS
+  header: Курс Node.js
+  name: Node.js
+  meta_title: Курс Node.js
   language: javascript
   state: draft
+  footer_name: Основы Node.js
+  outcomes_header: Чему научитесь на курсе «Основы Node.js»
+  used_in_header: Где используется Node.js?
   locale: ru
 
 python-ru:
   <<: *DEFAULTS
-  header: Python
+  header: Курс Python
   name: Python
   language: python
   main: true
+  meta_title: Курс Python
+  footer_name: Основы Python
+  outcomes_header: Чему научитесь на курсе «Основы Python»
+  used_in_header: Где используется Python?
   state: published
   locale: ru
 
 1c-ru:
   <<: *DEFAULTS
-  header: 1C
+  header: Курс 1C
+  name: 1C
+  meta_title: Курс 1C
   language: 1c
   main: true
   footer: false
+  outcomes_header: Чему научитесь на курсе «Основы 1C»
+  used_in_header: Где используется 1C?
   locale: ru
 
 frontend-ru:
   <<: *DEFAULTS
-  header: Фронтенд
+  header: Курс «Фронтенд»
+  name: Фронтенд
+  meta_title: Курс «Фронтенд»
   language: javascript
+  footer_name: Фронтенд
+  outcomes_header: Чему научитесь на курсе «Фронтенд»
+  used_in_header: Где используется фронтенд-разработка?
   locale: ru
 
 frontend-en:
   <<: *DEFAULTS
-  header: Frontend
+  header: Frontend Course
+  name: Frontend
+  meta_title: Frontend Course
   language: javascript
   description: Programming learning is an interesting and exciting process. The syntax of the language is the simplest and shortest path, without which it is impossible to start. This free online JavaScript course will introduce you to the basic concepts of the language. Learn the basics and write your first JS programs
+  footer_name: Frontend
+  outcomes_header: What you will learn on the Frontend course
+  used_in_header: Where is frontend development used?
   locale: en
 
 elixir-ru:
   <<: *DEFAULTS
-  header: Elixir
+  header: Курс Elixir
+  name: Elixir
+  meta_title: Курс Elixir
   language: elixir
   main: true
+  footer_name: Основы Elixir
+  outcomes_header: Чему научитесь на курсе «Основы Elixir»
+  used_in_header: Где используется Elixir?
   locale: ru
 
 typescript-ru:
   <<: *DEFAULTS
-  header: TypeScript
+  header: Курс TypeScript
+  name: TypeScript
+  meta_title: Курс TypeScript
   language: typescript
   footer_name: Основы TypeScript
   main: true
+  outcomes_header: Чему научитесь на курсе «Основы TypeScript»
+  used_in_header: Где используется TypeScript?
   locale: ru
 
 php-ru:
@@ -131,17 +171,33 @@ php-ru:
   locale: ru
   name: PHP
   header: Курс PHP
+  meta_title: Курс PHP
+  footer_name: Основы PHP
+  outcomes_header: Чему научитесь на курсе «Основы PHP»
+  used_in_header: Где используется PHP?
 
 php-en:
   <<: *DEFAULTS
   main: true
   language: php
+  name: PHP
+  header: PHP Course
+  meta_title: PHP Course
+  footer_name: PHP Basics
+  outcomes_header: What you will learn on the PHP Basics course
+  used_in_header: Where is PHP used?
   locale: en
 
 ruby-ru:
   <<: *DEFAULTS
   main: true
   language: ruby
+  name: Ruby
+  header: Курс Ruby
+  meta_title: Курс Ruby
+  footer_name: Основы Ruby
+  outcomes_header: Чему научитесь на курсе «Основы Ruby»
+  used_in_header: Где используется Ruby?
   locale: ru
 
 
@@ -149,12 +205,24 @@ ruby-en:
   <<: *DEFAULTS
   main: true
   language: ruby
+  name: Ruby
+  header: Ruby Course
+  meta_title: Ruby Course
+  footer_name: Ruby Basics
+  outcomes_header: What you will learn on the Ruby Basics course
+  used_in_header: Where is Ruby used?
   locale: en
 
 go-ru:
   <<: *DEFAULTS
   main: true
   language: go
+  name: Go
+  header: Курс Go
+  meta_title: Курс Go
+  footer_name: Основы Go
+  outcomes_header: Чему научитесь на курсе «Основы Go»
+  used_in_header: Где используется Go?
   locale: ru
 
 
@@ -162,13 +230,24 @@ go-en:
   <<: *DEFAULTS
   main: true
   language: go
+  name: Go
+  header: Go Course
+  meta_title: Go Course
+  footer_name: Go Basics
+  outcomes_header: What you will learn on the Go Basics course
+  used_in_header: Where is Go used?
   locale: en
 
 java-ru:
   <<: *DEFAULTS
-  header: Java
+  header: Курс Java
   main: true
   language: java
+  name: Java
+  meta_title: Курс Java
+  footer_name: Основы Java
+  outcomes_header: Чему научитесь на курсе «Основы Java»
+  used_in_header: Где используется Java?
   locale: ru
 
 
@@ -176,34 +255,70 @@ java-en:
   <<: *DEFAULTS
   main: true
   language: java
+  name: Java
+  header: Java Course
+  meta_title: Java Course
+  footer_name: Java Basics
+  outcomes_header: What you will learn on the Java Basics course
+  used_in_header: Where is Java used?
   locale: en
 
 csharp-ru:
   <<: *DEFAULTS
   main: true
   language: csharp
+  name: C#
+  header: Курс C#
+  meta_title: Курс C#
+  footer_name: Основы C#
+  outcomes_header: Чему научитесь на курсе «Основы C#»
+  used_in_header: Где используется C#?
   locale: ru
 
 csharp-en:
   <<: *DEFAULTS
   main: true
   language: csharp
+  name: C#
+  header: C# Course
+  meta_title: C# Course
+  footer_name: C# Basics
+  outcomes_header: What you will learn on the C# Basics course
+  used_in_header: Where is C# used?
   locale: en
 
 css-en:
   <<: *DEFAULTS
   main: true
   language: css
+  name: CSS
+  header: CSS Course
+  meta_title: CSS Course
+  footer_name: CSS Basics
+  outcomes_header: What you will learn on the CSS Basics course
+  used_in_header: Where is CSS used?
   locale: en
 
 css-ru:
   <<: *DEFAULTS
   main: true
   language: css
+  name: CSS
+  header: Курс CSS
+  meta_title: Курс CSS
+  footer_name: Основы CSS
+  outcomes_header: Чему научитесь на курсе «Основы CSS»
+  used_in_header: Где используется CSS?
   locale: ru
 
 html-ru:
   <<: *DEFAULTS
   main: true
   language: html
+  name: HTML
+  header: Курс HTML
+  meta_title: Курс HTML
+  footer_name: Основы HTML
+  outcomes_header: Чему научитесь на курсе «Основы HTML»
+  used_in_header: Где используется HTML?
   locale: ru

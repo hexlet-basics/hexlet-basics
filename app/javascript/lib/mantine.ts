@@ -1,7 +1,6 @@
 import { CodeHighlight } from "@mantine/code-highlight";
 import { generateColors } from "@mantine/colors-generator";
 import {
-  Anchor,
   type CSSVariablesResolver,
   createTheme,
   DEFAULT_THEME,
@@ -94,7 +93,7 @@ const myTheme = createTheme({
   },
   primaryColor: "indigo",
   primaryShade: { light: 6, dark: 5 },
-  defaultRadius: 0,
+  // defaultRadius: 0,
   spacing: {
     xxl: "calc(4rem * var(--mantine-scale))",
   },
@@ -165,7 +164,7 @@ export const resolver: CSSVariablesResolver = () => ({
 
   // светлая тема: фон = gray-0
   light: {
-    "--mantine-color-dimmed": theme.colors.gray[7],
+    "--mantine-color-dimmed": theme.colors.gray[8],
     // '--mantine-color-body': 'var(--mantine-color-gray-0)',
     "--mantine-color-anchor": "var(--mantine-color-text)",
     "--app-color-surface": theme.colors.gray[1],
@@ -182,7 +181,7 @@ export const resolver: CSSVariablesResolver = () => ({
 
   // тёмная тема: фон = dark-7 (или что тебе нужно)
   dark: {
-    "--mantine-color-dimmed": theme.colors.gray[7],
+    "--mantine-color-dimmed": theme.colors.gray[5],
     // '--mantine-color-body': 'var(--mantine-color-dark-7)',
     // '--app-cta-gradient':
     //   'linear-gradient(135deg, var(--mantine-color-yellow-9), var(--mantine-color-red-9))',

@@ -1,3 +1,4 @@
+import { Split } from "@gfazioli/mantine-split-pane";
 import { usePage } from "@inertiajs/react";
 import {
   Accordion,
@@ -22,14 +23,12 @@ import { useMediaQuery } from "@mantine/hooks";
 import {
   IconBook,
   IconBrandGithub,
-  IconGripVertical,
   IconInfoCircle,
   IconRocket,
 } from "@tabler/icons-react"; // TODO: the current github icon is deprecated, need to update from a new lib
 import i18next from "i18next";
 import { Suspense, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import { Panel, Group as PanelGroup, Separator } from "react-resizable-panels";
 import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
 import Chat from "@/components/Chat.tsx";
 import AppAnchor from "@/components/Elements/AppAnchor.tsx";
@@ -78,28 +77,25 @@ export default function Index() {
   if (isTabletUp) {
     return (
       <LessonLayout>
-        <Box
-          component={PanelGroup}
-          orientation="horizontal"
+        <Split
+          orientation="vertical"
           pt={headerHeight}
           h="100%"
+          autoResizers
+          size="sm"
+          knobAlwaysOn
         >
-          <Panel minSize={20} defaultSize={45}>
+          <Split.Pane initialWidth="45%" minWidth="20%">
             <Box h="100%">
               <LessonLeftBlock />
             </Box>
-          </Panel>
-          <Separator>
-            <Center h="100%" w={10} bg={theme.colors.gray[2]}>
-              <IconGripVertical size={10} color={theme.colors.gray[6]} />
-            </Center>
-          </Separator>
-          <Panel minSize={30} defaultSize={55}>
+          </Split.Pane>
+          <Split.Pane initialWidth="55%" minWidth="30%" grow>
             <Box h="100%">
               <LessonRightBlock />
             </Box>
-          </Panel>
-        </Box>
+          </Split.Pane>
+        </Split>
       </LessonLayout>
     );
   }

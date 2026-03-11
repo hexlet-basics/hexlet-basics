@@ -23,7 +23,6 @@ import ContactMethodRequestingBlock from "./blocks/ContactMethodRequestingBlock.
 // import TgContestBanner from "./banners/tg_contest_banner/TgContestBanner.tsx";
 import FooterBlock from "./blocks/FooterBlock.tsx";
 import NavbarBlock from "./blocks/NavbarBlock.tsx";
-import RootLayout from "./RootLayout.tsx";
 
 type Props = PropsWithChildren & {
   header?: string;

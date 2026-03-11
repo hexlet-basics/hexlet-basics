@@ -33,60 +33,74 @@ DEFAULTS: &DEFAULTS
   state: created
   exercise_test_filename: test_filename_$LABEL
   language: $LABEL
-  name: $LABEL
+  name: Базовый курс
 
 php:
   <<: *DEFAULTS
+  name: Основы PHP
 
 go:
   <<: *DEFAULTS
+  name: Основы Go
 
 java:
   <<: *DEFAULTS
+  name: Основы Java
 
 csharp:
   <<: *DEFAULTS
+  name: Основы C#
 
 1c:
   <<: *DEFAULTS
+  name: Основы 1C
 
 elixir:
   <<: *DEFAULTS
+  name: Основы Elixir
 
 typescript1:
   <<: *DEFAULTS
   language: typescript
   docker_image: hexletbasics/exercises-typescript
+  name: Основы TypeScript
 
 javascript1:
   <<: *DEFAULTS
   language: javascript
   extension: rb
   docker_image: hexletbasics/exercises-javascript
+  name: JavaScript для начинающих
 
 javascript2:
   <<: *DEFAULTS
   language: javascript
   extension: rb
   docker_image: hexletbasics/exercises-javascript
+  name: Основы JavaScript
 
 pre-course-javascript1:
   <<: *DEFAULTS
   language: pre-course-javascript
   docker_image: hexletbasics/exercises-javascript
+  name: Подготовительный курс JavaScript
 
 css:
   <<: *DEFAULTS
+  name: Основы CSS
 
 python:
   <<: *DEFAULTS
+  name: Основы Python
 
 html1:
   <<: *DEFAULTS
   language: html
   docker_image: hexletbasics/exercises-html
+  name: Основы HTML
 
 ruby:
   <<: *DEFAULTS
   exercise_test_filename: 'test.rb'
   extension: 'rb'
+  name: Основы Ruby

@@ -68,7 +68,8 @@ export default function FooterBlock() {
           {JSON.stringify(organization)}
         </script>
       </Head>
-      <Box bg="gray.0" mt={100} py="lg" fz="sm">
+      <Box mt={100} py="lg" fz="sm">
+        <Divider mb="xl" />
         <Container size="lg" pt="lg">
           <footer>
             <SimpleGrid cols={{ base: 2, xs: 4 }}>

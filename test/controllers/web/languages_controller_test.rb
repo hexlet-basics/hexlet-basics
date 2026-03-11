@@ -1,6 +1,11 @@
 require "test_helper"
 
 class Web::LanguagesControllerTest < ActionDispatch::IntegrationTest
+  def test_index
+    get languages_url
+    assert_response :success
+  end
+
   def test_show
     landing_page = language_landing_pages("javascript-ru")
 

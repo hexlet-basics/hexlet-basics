@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html data-bs-theme="light" lang="<%= I18n.locale %>">
+<html lang="<%= I18n.locale %>">
   <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="/favicon.ico" sizes="any">
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <%= favicon_link_tag "favicon.ico" %>
+    <%= favicon_link_tag "favicon.svg", type: "image/svg+xml" %>
+    <%= favicon_link_tag "apple-touch-icon.png", rel: "apple-touch-icon" %>
     <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#4da7b7">
     <%= include_gon %>
 
     <script>

@@ -40,37 +40,34 @@ function StartedCourse({
   cm: LanguageMember;
 }) {
   return (
-    <Card p={0} radius="md" withBorder pos="relative">
-      <Group wrap="nowrap" align="stretch">
-        <Image
-          visibleFrom="sm"
-          alt={lp.header}
-          // w="100%"
-          maw={150}
-          w="auto"
-          fit="contain"
-          src={lp.language.cover_list_variant}
-        />
+    <AppAnchor href={Routes.language_url(lp.slug!)} td="none">
+      <Card p={0} radius="md" withBorder>
+        <Group wrap="nowrap" align="stretch">
+          <Image
+            visibleFrom="sm"
+            alt={lp.header}
+            // w="100%"
+            maw={150}
+            w="auto"
+            fit="contain"
+            src={lp.language.cover_list_variant}
+          />
 
-        <Stack w="100%" p="sm" gap="xs">
-          <AppAnchor
-            className="after:absolute after:inset-0"
-            href={Routes.language_url(lp.slug!)}
-          >
+          <Stack w="100%" p="sm" gap="xs">
             <Title order={3}>{lp.header}</Title>
-          </AppAnchor>
 
-          {cm.next_lesson_name && <Text>{cm.next_lesson_name} →</Text>}
+            {cm.next_lesson_name && <Text>{cm.next_lesson_name} →</Text>}
 
-          <Progress.Root mt="auto">
-            <Progress.Section
-              aria-label={`${cm.progress}%`}
-              value={cm.progress}
-            />
-          </Progress.Root>
-        </Stack>
-      </Group>
-    </Card>
+            <Progress.Root mt="auto">
+              <Progress.Section
+                aria-label={`${cm.progress}%`}
+                value={cm.progress}
+              />
+            </Progress.Root>
+          </Stack>
+        </Group>
+      </Card>
+    </AppAnchor>
   );
 }
 
