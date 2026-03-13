@@ -1,0 +1,46 @@
+# Code Basics
+
+> Code Basics is a free platform for learning programming from scratch. It combines theory, an interactive in-browser trainer, and an AI assistant for hints and code analysis. The project was created by the Hexlet community. For profession-oriented and advanced learning, see Hexlet at https://ru.hexlet.io.
+
+## Contact
+
+- Support: support@hexlet.io
+- Phone (Russia, toll-free): 8 800 100 22 47
+- Phone (Moscow): +7 495 085 21 62
+- Site (EN): https://code-basics.com
+- Site (RU): https://code-basics.com/ru
+
+## Services
+
+- [Home](https://code-basics.com): free programming courses from scratch
+- [Languages catalog](https://code-basics.com/languages): all available programming and markup courses
+- [Sign up](https://code-basics.com/users/new): free access after registration
+- [Platform source code](https://github.com/hexlet-basics/hexlet-basics): open-source Code Basics repository
+
+## Programming and Markup Courses
+
+- [JavaScript](https://code-basics.com/languages/javascript): JavaScript course from scratch
+- [Python](https://code-basics.com/languages/python): Python course from scratch
+- [Java](https://code-basics.com/languages/java): Java course from scratch
+- [HTML](https://code-basics.com/languages/html): HTML and markup from scratch
+- [CSS](https://code-basics.com/languages/css): CSS course from scratch
+- [PHP](https://code-basics.com/languages/php): PHP course from scratch
+- [C#](https://code-basics.com/languages/csharp): C# course from scratch
+- [Go](https://code-basics.com/languages/go): Go course from scratch
+- [Ruby](https://code-basics.com/languages/ruby): Ruby course from scratch
+- [Elixir](https://code-basics.com/languages/elixir): Elixir course from scratch
+
+## Key Information
+
+- [About](https://code-basics.com/pages/about): what Code Basics is, who the platform is for, and how learning works
+- [Blog](https://code-basics.com/blog_posts): articles about programming languages and learning
+- [FAQ](https://code-basics.com/pages/faq): frequently asked questions about the platform and courses
+- [Terms of service](https://code-basics.com/pages/tos): terms of use
+
+## Relation to Hexlet
+
+Code Basics is a Hexlet project focused on a free entry point into programming. For profession tracks, internships, and advanced courses, continue on [Hexlet](https://ru.hexlet.io).
+
+## Optional
+
+- [Site map](https://code-basics.com/map): site structure and key pages

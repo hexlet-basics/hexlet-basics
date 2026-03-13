@@ -1,0 +1,50 @@
+# Code Basics
+
+> Code Basics — бесплатная платформа для обучения программированию с нуля. Здесь есть теория, интерактивный тренажер в браузере и ИИ-ассистент с подсказками и разбором кода. Проект создан сообществом Хекслета. Для профессий и углубленного обучения используйте Хекслет: https://ru.hexlet.io.
+
+## Contact
+
+- Поддержка: support@hexlet.io
+- Телефон (бесплатно по РФ): 8 800 100 22 47
+- Телефон (Москва): +7 495 085 21 62
+- Сайт (RU): https://code-basics.com/ru
+- Сайт (EN): https://code-basics.com
+
+## Services
+
+- [Главная](https://code-basics.com/ru): бесплатные курсы по программированию с нуля
+- [Каталог языков](https://code-basics.com/ru/languages): все курсы по языкам программирования и верстке
+- [Регистрация](https://code-basics.com/ru/users/new): бесплатный доступ после регистрации
+- [Исходный код платформы](https://github.com/hexlet-basics/hexlet-basics): открытый репозиторий Code Basics
+
+## Programming and Markup Courses
+
+- [Python](https://code-basics.com/ru/languages/python): курс Python с нуля
+- [JavaScript](https://code-basics.com/ru/languages/javascript): курс JavaScript с нуля
+- [Java](https://code-basics.com/ru/languages/java): курс Java с нуля
+- [HTML](https://code-basics.com/ru/languages/html): курс HTML и верстки с нуля
+- [CSS](https://code-basics.com/ru/languages/css): курс CSS с нуля
+- [PHP](https://code-basics.com/ru/languages/php): курс PHP с нуля
+- [C](https://code-basics.com/ru/languages/c): курс C с нуля
+- [C#](https://code-basics.com/ru/languages/csharp): курс C# с нуля
+- [TypeScript](https://code-basics.com/ru/languages/typescript): курс TypeScript с нуля
+- [Racket](https://code-basics.com/ru/languages/racket): курс Racket с нуля
+- [Ruby](https://code-basics.com/ru/languages/ruby): курс Ruby с нуля
+- [Elixir](https://code-basics.com/ru/languages/elixir): курс Elixir с нуля
+- [Go](https://code-basics.com/ru/languages/go): курс Go с нуля
+- [Clojure](https://code-basics.com/ru/languages/clojure): курс Clojure с нуля
+
+## Key Information
+
+- [О проекте](https://code-basics.com/ru/pages/about): что такое Code Basics, для кого платформа и как устроено обучение
+- [Блог](https://code-basics.com/ru/blog_posts): статьи о языках программирования и обучении
+- [FAQ](https://code-basics.com/ru/pages/faq): ответы на частые вопросы о платформе и курсах
+- [Условия использования](https://code-basics.com/ru/pages/tos): правила использования сервиса
+
+## Relation to Hexlet
+
+Code Basics — проект Хекслета и бесплатный вход в программирование. Для профессий, стажировок и продвинутых курсов переходите на [Хекслет](https://ru.hexlet.io).
+
+## Optional
+
+- [Карта сайта](https://code-basics.com/ru/map): структура сайта и основные разделы
