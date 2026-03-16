@@ -1,6 +1,7 @@
 import debug from "debug";
 
 const log = debug("app");
+
 export { log };
 
 const editorMapping: Record<string, string> = {

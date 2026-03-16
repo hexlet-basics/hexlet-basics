@@ -37,7 +37,7 @@ export default function Index({ grid, landingPages }: Props) {
       >
         <IconEdit size={14} />
       </AppAnchor>
-      <a href={Routes.language_path(item.slug!)} target="_blank">
+      <a href={Routes.language_path(item.slug!)} target="_blank" rel="noopener">
         <IconLink size={14} />
       </a>
     </>
