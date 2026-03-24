@@ -6,7 +6,7 @@ import XssContent from "@/components/XssContent.tsx";
 
 export default function HTMLPreview({ html }: { html: string }) {
   const [Frame, setFrame] =
-    useState<React.ForwardRefExoticComponent<FrameComponentProps> | null>(null);
+    useState<React.ComponentType<FrameComponentProps> | null>(null);
 
   useEffect(() => {
     import("react-frame-component").then((mod) => setFrame(() => mod.default));

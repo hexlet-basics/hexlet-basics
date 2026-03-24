@@ -3,7 +3,6 @@
     "types": [
       "vite/client"
     ],
-    "baseUrl": ".",
     "paths": {
       "@/*": [
         "./app/javascript/*"
