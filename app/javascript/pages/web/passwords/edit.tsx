@@ -17,16 +17,16 @@ import type { UserPassword } from "@/types/serializers";
 
 type Props = PropsWithChildren & {
   userPassword: UserPassword;
-  resetPasswordToken: string;
+  token: string;
 };
 
-export default function New({ userPassword, resetPasswordToken }: Props) {
+export default function New({ userPassword, token }: Props) {
   const { t } = useTranslation();
 
   const payload = userPassword;
 
   const { onSubmit, processing, form } = useAppForm(payload, {
-    url: Routes.password_path({ reset_password_token: resetPasswordToken }),
+    url: Routes.password_path(token),
     method: "patch",
   });
 

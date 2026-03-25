@@ -20,7 +20,6 @@
 #  locale                   :string(255)
 #  nickname                 :string(255)
 #  password_digest          :string(255)
-#  reset_password_token     :string(255)
 #  state                    :string(255)
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null

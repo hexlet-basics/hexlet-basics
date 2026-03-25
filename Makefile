@@ -2,7 +2,7 @@ include k8s/Makefile
 
 setup:
 	# brew install vips
-	cp -n .env.sample .env || exit 0
+	cp -n .env.sample .env.local || exit 0
 	bin/setup --skip-server
 	bin/rails db:fixtures:load
 	pnpm install

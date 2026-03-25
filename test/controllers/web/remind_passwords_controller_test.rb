@@ -10,12 +10,12 @@ class Web::RemindPasswordsControllerTest < ActionDispatch::IntegrationTest
 
   def test_create
     user = users(:full)
-    before_token = user.reset_password_token
+    before_token = user.password_reset_token
 
     post remind_password_url, params: { data: { email: user.email } }
     assert_response :redirect
 
     user.reload
-    assert { before_token != user.reset_password_token }
+    assert { before_token != user.password_reset_token }
   end
 end

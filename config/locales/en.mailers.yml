@@ -1,0 +1,8 @@
+en:
+  user_mailer:
+    reset_password:
+      subject: Reset password
+      change_password: Change password
+      requested_to_change_password: You requested a password reset link for code-basics.com. Follow this link or use the button below to set a new password.
+      you_dont_want_to_change: If you did not request a password reset, ignore this email. Your password will stay the same until you open the link and choose a new one.
+      link: Password reset link for code-basics.com

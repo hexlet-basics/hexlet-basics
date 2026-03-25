@@ -103,7 +103,8 @@ Rails.application.routes.draw do
       end
       resources :users, only: %i[new create]
       resource :remind_password, only: %i[new create]
-      resource :password, only: %i[edit update]
+      get "/password/:token/edit", to: "passwords#edit", as: :edit_password
+      patch "/password/:token", to: "passwords#update", as: :password
 
       resources :languages, only: %i[index show] do
         member do

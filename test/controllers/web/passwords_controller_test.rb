@@ -6,7 +6,7 @@ class Web::PasswordsControllerTest < ActionDispatch::IntegrationTest
   def test_edit
     user = users(:full)
 
-    get edit_password_url(reset_password_token: user.reset_password_token)
+    get edit_password_url(user.password_reset_token)
     assert_response :success
   end
 
@@ -14,7 +14,7 @@ class Web::PasswordsControllerTest < ActionDispatch::IntegrationTest
     user = users(:full)
     before_password_digest = user.password_digest
 
-    patch password_url(reset_password_token: user.reset_password_token), params: { data: { password: "new_password" } }
+    patch password_url(user.password_reset_token), params: { data: { password: "new_password" } }
     assert_response :redirect
 
     user.reload

@@ -21,6 +21,7 @@ require "rails/test_unit/railtie"
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
+Dotenv::Rails.files.unshift(".env.local") if ENV["RAILS_ENV"] == "test"
 
 load File.expand_path("../app/lib/configus.rb", __dir__)
 load File.expand_path("../app/lib/app_host.rb", __dir__)

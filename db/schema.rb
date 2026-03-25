@@ -788,7 +788,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_24_234540) do
     t.string "locale", limit: 255
     t.string "nickname", limit: 255
     t.string "password_digest", limit: 255
-    t.string "reset_password_token", limit: 255
     t.string "state", limit: 255
     t.datetime "updated_at", precision: nil, null: false
     t.index "lower((email)::text)", name: "index_users_on_LOWER_email", unique: true

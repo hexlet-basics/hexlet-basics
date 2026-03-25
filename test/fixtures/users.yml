@@ -18,7 +18,6 @@
 #  locale                   :string(255)
 #  nickname                 :string(255)
 #  password_digest          :string(255)
-#  reset_password_token     :string(255)
 #  state                    :string(255)
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
@@ -40,7 +39,6 @@ full:
   admin: true
   first_name: <%= Faker::Name.first_name %>
   last_name: <%= Faker::Name.last_name %>
-  reset_password_token: <%= SecureHelper.generate_token %>
 
 just_signed_up:
   <<: *DEFAULTS

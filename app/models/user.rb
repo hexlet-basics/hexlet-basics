@@ -20,7 +20,6 @@
 #  locale                   :string(255)
 #  nickname                 :string(255)
 #  password_digest          :string(255)
-#  reset_password_token     :string(255)
 #  state                    :string(255)
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
@@ -36,7 +35,7 @@ class User < ApplicationRecord
 
   acts_as_taggable_on :tags
 
-  has_secure_password validations: false
+  has_secure_password validations: false, reset_token: { expires_in: 15.minutes }
 
   normalizes :email, with: ->(email) { email.strip.downcase }
 
@@ -132,7 +131,6 @@ class User < ApplicationRecord
       last_name
       nickname
       password_digest
-      reset_password_token
       confirmation_token
       email
     ]
