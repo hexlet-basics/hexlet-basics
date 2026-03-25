@@ -1,12 +1,9 @@
 import { Link } from "@inertiajs/react";
 import {
   AppShell,
-  Box,
   Button,
-  Container,
   Divider,
   Drawer,
-  Grid,
   Group,
   NavLink,
   Title,
@@ -27,7 +24,6 @@ import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import XFlash from "@/components/XFlash.tsx";
 import * as Routes from "@/routes.js";
-import FooterBlock from "./blocks/FooterBlock.tsx";
 import NavbarBlock from "./blocks/NavbarBlock.tsx";
 import RootLayout from "./RootLayout.tsx";
 

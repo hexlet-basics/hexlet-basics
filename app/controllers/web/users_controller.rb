@@ -20,13 +20,14 @@ class Web::UsersController < Web::ApplicationController
 
   def create
     user = User::SignUpForm.new(params[:data])
+    user.locale = I18n.locale.to_s
 
     begin
       user.save!
 
       signed_up_event_data = {
         user_id: user.id,
-        email: user.email,
+        email: T.must(user.email),
         first_name: user.first_name,
         last_name: user.last_name,
         locale: I18n.locale

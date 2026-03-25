@@ -49,21 +49,21 @@ class User < ApplicationRecord
   end
 
   validates :email, presence: true,
-                    uniqueness: { case_sensitive: false },
-                    'valid_email_2/email': { mx: true },
-                    unless: :removed?
+    uniqueness: { case_sensitive: false },
+    'valid_email_2/email': { mx: true },
+    unless: :removed?
 
   validates :first_name, length: { maximum: 40 },
-                         format: { with: UsefulRegexp.without_spec_chars },
-                         allow_blank: true
+    format: { with: UsefulRegexp.without_spec_chars },
+    allow_blank: true
 
   validates :last_name, length: { maximum: 40 },
-                        format: { with: UsefulRegexp.without_spec_chars },
-                        allow_blank: true
+    format: { with: UsefulRegexp.without_spec_chars },
+    allow_blank: true
 
   validates :nickname, length: { maximum: 40 },
-                       format: { with: UsefulRegexp.without_spec_chars },
-                       allow_blank: true
+    format: { with: UsefulRegexp.without_spec_chars },
+    allow_blank: true
 
   has_many :visits, class_name: "Ahoy::Visit"
   has_many :events, through: :visits, class_name: "Ahoy::Event"
@@ -106,14 +106,6 @@ class User < ApplicationRecord
         remove_accounts
       end
     end
-  end
-
-  def initialize(attrs = nil)
-    defaults = {
-      locale: I18n.locale
-    }
-    attrs_with_defaults = attrs ? defaults.merge(attrs) : defaults
-    super(attrs_with_defaults)
   end
 
   def guest?

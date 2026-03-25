@@ -10,7 +10,6 @@ class ApplicationController < ActionController::Base
   # rescue_from Pagy::VariableError, with: :redirect_to_last_page
 
   include AuthConcern
-  include AhoyConcern
 
   def default_url_options
     { suffix: params[:suffix] }
