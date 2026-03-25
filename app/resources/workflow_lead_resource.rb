@@ -126,7 +126,7 @@ class WorkflowLeadResource < ApplicationResource
       name: contact_name(user, email),
       first_name: user&.first_name.to_s,
       last_name: user&.last_name.to_s,
-      custom_fields_values: build_contact_fields(email, object.phone_number)
+      custom_fields_values: build_contact_fields(email, object.phone)
     }
   end
 
