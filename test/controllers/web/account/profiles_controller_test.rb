@@ -34,6 +34,6 @@ class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
     user.reload
 
     assert { user.removed? }
-    assert { !signed_in? }
+    assert { !authenticated? }
   end
 end

@@ -1,4 +1,5 @@
 class Web::LanguagesController < Web::ApplicationController
+  allow_unauthenticated_access except: [ :success ]
   before_action :authenticate_user!, only: [ :success ]
   before_action :redirect_archived_language, only: [ :show, :success ]
 

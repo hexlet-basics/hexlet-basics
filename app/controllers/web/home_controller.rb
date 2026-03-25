@@ -1,4 +1,6 @@
 class Web::HomeController < Web::ApplicationController
+  allow_unauthenticated_access
+
   def index
     language_member_resources = current_user.language_members.includes([ language: :current_version ])
       .map { Language::MemberResource.new(it) }

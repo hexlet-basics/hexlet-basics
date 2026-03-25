@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Web::LanguageCategoriesController < Web::ApplicationController
+  allow_unauthenticated_access
+
   def index
     categories = Language::Category.with_locale
 

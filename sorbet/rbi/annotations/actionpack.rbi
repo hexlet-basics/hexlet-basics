@@ -69,8 +69,8 @@ class ActionController::Parameters
   sig { params(keys: T.any(String, Symbol)).returns(T.untyped) }
   def extract!(*keys); end
 
-  sig { params(key: T.any(String, Symbol), args: T.untyped).returns(T.untyped) }
-  def fetch(key, *args); end
+  sig { params(key: T.any(String, Symbol), args: T.untyped, block: T.nilable(T.proc.params(key: T.any(String, Symbol)).returns(T.untyped))).returns(T.untyped) }
+  def fetch(key, *args, &block); end
 
   sig { returns(String) }
   def inspect; end
@@ -110,13 +110,13 @@ class ActionController::Parameters
   sig { params(key: T.any(String, Symbol)).returns(T.untyped) }
   def [](key); end
 
-  sig { params(key: T.any(String, Symbol)).returns(ActionController::Parameters) }
-  sig { params(key: T::Array[T.any(String, Symbol)]).returns(T::Array[ActionController::Parameters]) }
+  sig { params(key: T.any(String, Symbol)).returns(T.untyped) }
+  sig { params(key: T::Array[T.any(String, Symbol)]).returns(T::Array[T.untyped]) }
   def require(key); end
 
   # required is an alias of require
-  sig { params(key: T.any(String, Symbol)).returns(ActionController::Parameters) }
-  sig { params(key: T::Array[T.any(String, Symbol)]).returns(T::Array[ActionController::Parameters]) }
+  sig { params(key: T.any(String, Symbol)).returns(T.untyped) }
+  sig { params(key: T::Array[T.any(String, Symbol)]).returns(T::Array[T.untyped]) }
   def required(key); end
 
   sig { params(other_hash: T.untyped).returns(ActionController::Parameters) }
@@ -175,11 +175,11 @@ class ActionController::Parameters
   sig { params(block: T.untyped).returns(ActionController::Parameters) }
   def transform_keys(&block); end
 
-  sig { returns(ActionController::Parameters) }
-  def transform_values!; end
+  sig { params(block: T.nilable(T.proc.params(value: T.untyped).returns(T.untyped))).returns(ActionController::Parameters) }
+  def transform_values!(&block); end
 
-  sig { returns(ActionController::Parameters) }
-  def transform_values; end
+  sig { params(block: T.nilable(T.proc.params(value: T.untyped).returns(T.untyped))).returns(ActionController::Parameters) }
+  def transform_values(&block); end
 
   sig { params(keys: T.any(String, Symbol)).returns(T.untyped) }
   def values_at(*keys); end

@@ -2,6 +2,10 @@ class ApplicationController < ActionController::Base
   include ActiveStorage::SetCurrent
   include Pundit::Authorization
   include Pagy::Method
+  include Authentication
+  include LocaleConcern
+  include EventConcern
+
   # rescue_from Pagy::OverflowError, with: :redirect_to_last_page
   # rescue_from Pagy::VariableError, with: :redirect_to_last_page
 

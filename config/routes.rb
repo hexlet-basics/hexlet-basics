@@ -34,8 +34,8 @@ Rails.application.routes.draw do
         end
       end
     end
-    namespace :api do
-      resource :chatkit, only: [ :create ]
+    namespace :api, defaults: { format: :json } do
+      # resource :chatkit, only: [ :create ]
       resources :feeds, only: [] do
         collection do
           get :yandex_courses

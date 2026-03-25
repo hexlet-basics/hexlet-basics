@@ -4,15 +4,18 @@
 
 # typed: false
 
-module BreadcrumbListSchema::Jbuilder; end
+module ::HTTPX::Session::ForkTracker; end
+module ::LanguageCategoriesHelper; end
 module CountryInfo::ISO3166::Country; end
-module CourseSchema::Jbuilder; end
-module FaqSchema::Jbuilder; end
-module ItemListSchema::Jbuilder; end
-module Parser::Builders::Default; end
-module Parser::Diagnostic; end
-module Parser::Source::Range; end
-module ProviderSchema::Jbuilder; end
-module ReviewSchema::Jbuilder; end
+module Falcon::Environment::Rack; end
+module Sentry::Rails::ActiveJobExtensions; end
+module Set::SubclassCompatible; end
+module Set::SubclassCompatible::ClassMethods; end
+module Survey::Scenario::Member::PrivateCollectionProxy; end
+module Survey::Scenario::PrivateCollectionProxy; end
+module T::Private::Types::SimplePairUnion; end
+module Tapioca::SourceURI; end
+module Web::Admin::LanguageLandingPagesHelper; end
 module Web::AuthControllerTest::OmniAuth; end
 module Web::AuthControllerTest::OmniAuth::AuthHash::InfoHash; end
+module Web::GoogleAuthController::ApplicationContainer; end

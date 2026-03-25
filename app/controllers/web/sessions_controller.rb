@@ -1,6 +1,7 @@
 # typed: true
 
 class Web::SessionsController < Web::ApplicationController
+  allow_unauthenticated_access only: [ :new, :create ]
   before_action :guests_only!, only: [ :new, :create ]
 
   def new

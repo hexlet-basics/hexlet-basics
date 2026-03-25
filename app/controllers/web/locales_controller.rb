@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Web::LocalesController < Web::ApplicationController
+  allow_unauthenticated_access
   skip_before_action :prepare_locale_settings, only: [ :switch ]
 
   def switch

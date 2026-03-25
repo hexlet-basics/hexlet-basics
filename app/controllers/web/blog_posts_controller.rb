@@ -1,4 +1,6 @@
 class Web::BlogPostsController < Web::ApplicationController
+  allow_unauthenticated_access
+
   def index
     scope = BlogPost.published_state.with_locale
       .includes([ :creator, { cover_attachment: :blob } ])

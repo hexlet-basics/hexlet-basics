@@ -1,4 +1,6 @@
 class Web::Languages::LessonsController < Web::Languages::ApplicationController
+  allow_unauthenticated_access
+
   # before_action :authenticate_user!, only: [ :next_lesson ]
   # before_action :redirect_archived_language
 

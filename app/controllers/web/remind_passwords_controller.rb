@@ -1,4 +1,6 @@
 class Web::RemindPasswordsController < Web::ApplicationController
+  allow_unauthenticated_access
+
   def new
     remind_password_form = RemindPasswordForm.new
 

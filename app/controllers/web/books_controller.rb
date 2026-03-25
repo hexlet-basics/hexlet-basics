@@ -1,4 +1,5 @@
 class Web::BooksController < Web::ApplicationController
+  allow_unauthenticated_access only: [ :show ]
   before_action :authenticate_user!, only: [ :create_request, :download ]
 
   def show

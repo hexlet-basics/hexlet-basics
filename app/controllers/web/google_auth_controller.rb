@@ -1,4 +1,5 @@
 class Web::GoogleAuthController < Web::ApplicationController
+  allow_unauthenticated_access
   before_action :validate_google_csrf
 
   def one_tap

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Web::PagesController < Web::ApplicationController
+  allow_unauthenticated_access
+
   PAGES = %w[about
              cookie_policy
              privacy

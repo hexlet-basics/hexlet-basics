@@ -6,6 +6,7 @@ ENV["CONSOLE_LEVEL"] ||= "error"
 
 require_relative "../config/environment"
 require "rails/test_help"
+require_relative "test_helpers/session_test_helper"
 # require "vcr"
 
 I18n.locale = "ru"
@@ -63,19 +64,23 @@ end
 #   end
 # end
 
-module SignInHelper
-  def sign_in_as(name, extra = {})
-    user = users(name)
-
-    post session_url, params: extra.merge(data: { email: user.email, password: "password" })
-    assert_redirected_to root_path
-    user
-  end
-end
+# module SignInHelper
+#   def sign_in_as(name, extra = {})
+#     user = users(name)
+#
+#     if extra.empty?
+#       super(user)
+#     else
+#       post session_url, params: extra.merge(data: { email: user.email, password: "password" })
+#       assert_redirected_to root_path
+#     end
+#
+#     user
+#   end
+# end
 
 class ActionDispatch::IntegrationTest
-  include AuthConcern
-  include SignInHelper
+  include SessionTestHelper
 
   # parallelize_setup do |i|
   #   ActiveStorage::Blob.service.root = "#{ActiveStorage::Blob.service.root}-#{i}"

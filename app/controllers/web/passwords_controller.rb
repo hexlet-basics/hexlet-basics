@@ -1,4 +1,5 @@
 class Web::PasswordsController < Web::ApplicationController
+  allow_unauthenticated_access
   before_action :assert_reset_token_passed
 
   def edit

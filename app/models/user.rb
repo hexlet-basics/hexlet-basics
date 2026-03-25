@@ -71,6 +71,7 @@ class User < ApplicationRecord
   has_many :lesson_members, class_name: "Language::Lesson::Member", dependent: :destroy
   has_many :lessons, through: :lesson_members, class_name: "Language::Lesson"
   has_many :language_members, class_name: "Language::Member", dependent: :destroy
+  has_many :sessions, dependent: :destroy
   has_many :accounts, dependent: :destroy
   has_many :reviews, dependent: :destroy
   has_many :blog_posts, foreign_key: "creator_id", dependent: :destroy

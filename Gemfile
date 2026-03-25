@@ -10,6 +10,10 @@ group :development, :staging, :production do
   gem "falcon", "0.54.3"
   gem "falcon-rails", "0.2.3"
 end
+
+  # Audits gems for known security defects (use config/bundler-audit.yml to ignore issues)
+  gem "bundler-audit", require: false
+
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
 

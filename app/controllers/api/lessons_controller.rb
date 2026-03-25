@@ -1,4 +1,6 @@
 class Api::LessonsController < Api::ApplicationController
+  allow_unauthenticated_access
+
   def check
     lesson = Language::Lesson.find(params[:id])
     language = lesson.language
@@ -68,6 +70,6 @@ class Api::LessonsController < Api::ApplicationController
       language_has_been_finished:
     })
 
-    render json: LessonCheckingResponseResource.new(response_data), status: :ok
+    render json: LessonCheckingResponseResource.new(response_data)
   end
 end

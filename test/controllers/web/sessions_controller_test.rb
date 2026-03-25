@@ -14,16 +14,16 @@ class Web::SessionsControllerTest < ActionDispatch::IntegrationTest
     post session_url, params: { data: { email: user.email, password: "password" } }
     assert_response :redirect
 
-    assert { signed_in? }
+    assert { authenticated? }
   end
 
   def test_destroy
     sign_in_as(:one)
-    assert { signed_in? }
+    assert { authenticated? }
 
     delete session_url
     assert_response :redirect
 
-    # assert { !signed_in? }
+    # assert { !authenticated? }
   end
 end

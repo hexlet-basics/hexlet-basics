@@ -88,6 +88,10 @@ class Hash
 
   sig { returns(T::Boolean) }
   def extractable_options?; end
+
+  # @version >= 6.1.0
+  sig { returns(T.self_type) }
+  def compact_blank; end
 end
 
 class Array
@@ -191,6 +195,32 @@ class DateTime
   # @shim: since `blank?` is always false, `present?` always returns `true`
   sig { returns(TrueClass) }
   def present?; end
+end
+
+module Enumerable
+  sig { type_parameters(:Block).params(block: T.proc.params(arg0: Elem).returns(T.type_parameter(:Block))).returns(T::Hash[T.type_parameter(:Block), Elem]) }
+  sig { returns(T::Enumerable[T.untyped]) }
+  def index_by(&block); end
+
+  sig { type_parameters(:Block).params(block: T.proc.params(arg0: Elem).returns(T.type_parameter(:Block))).returns(T::Hash[Elem, T.type_parameter(:Block)]) }
+  sig { returns(T::Enumerable[T.untyped]) }
+  sig { type_parameters(:Default).params(default: T.type_parameter(:Default)).returns(T::Hash[Elem, T.type_parameter(:Default)]) }
+  def index_with(default = nil, &block); end
+
+  sig { params(block: T.proc.params(arg0: Elem).returns(BasicObject)).returns(T::Boolean) }
+  sig { returns(T::Boolean) }
+  def many?(&block); end
+
+  sig { params(object: BasicObject).returns(T::Boolean) }
+  def exclude?(object); end
+
+  # @version >= 6.1.0
+  sig { returns(T::Array[Elem]) }
+  def compact_blank; end
+
+  # @version >= 7.0.0
+  sig { returns(Elem) }
+  def sole; end
 end
 
 class NilClass
@@ -454,4 +484,12 @@ class ActiveSupport::ErrorReporter
   # @version >= 7.2.0.beta1
   sig { params(error: T.any(Exception, String), severity: T.nilable(Symbol), context: T::Hash[Symbol, T.untyped], source: T.nilable(String)).void }
   def unexpected(error, severity: T.unsafe(nil), context: T.unsafe(nil), source: T.unsafe(nil)); end
+end
+
+module ActiveSupport::Testing::Assertions
+  sig { type_parameters(:Block).params(block: T.proc.returns(T.type_parameter(:Block))).returns(T.type_parameter(:Block)) }
+  def assert_nothing_raised(&block); end
+
+  sig { type_parameters(:TResult).params(expression: T.any(Proc, Kernel), message: Kernel, from: T.anything, to: T.anything, block: T.proc.returns(T.type_parameter(:TResult))).returns(T.type_parameter(:TResult)) }
+  def assert_changes(expression, message = T.unsafe(nil), from: T.unsafe(nil), to: T.unsafe(nil), &block); end
 end

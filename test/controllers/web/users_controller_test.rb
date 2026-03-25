@@ -15,7 +15,7 @@ class Web::UsersControllerTest < ActionDispatch::IntegrationTest
     user = User.find_by email: user_params[:email].downcase
 
     assert { user.present? }
-    assert { signed_in? }
+    assert { authenticated? }
     assert { user.survey_scenario_members.started.count == 1 }
     # assert { user.survey_answers.requested.count == 2 }
   end
@@ -34,6 +34,6 @@ class Web::UsersControllerTest < ActionDispatch::IntegrationTest
     assert { language.members.exists? user: user }
     assert { lesson.members.finished.exists? user: user }
     assert { user.present? }
-    assert { signed_in? }
+    assert { authenticated? }
   end
 end

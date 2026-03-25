@@ -2,45 +2,45 @@
 
 module AuthConcern
   def sign_in(user)
-    session[:user_id] = user.id
+    start_new_session_for(user)
     ahoy.authenticate(user)
   end
 
   def sign_out
-    session.delete(:user_id)
+    terminate_session
     session.clear
   end
 
   def signed_in?
-    !current_user.guest?
+    authenticated?
   end
 
   def current_user
-    id = session[:user_id]
-    @current_user ||= id && User.active.find_by(id: id) || Guest.new
+    resume_session
+
+    Current.user || Guest.new
   end
 
   def authenticate_user!
-    return if signed_in?
-
-    redirect_to new_session_path
+    require_authentication
   end
 
   def guests_only!
-    return if !signed_in?
+    return unless authenticated?
 
     redirect_to root_path
   end
 
   def authenticate_admin!
+    require_authentication
     redirect_to root_path unless current_user.admin?
   end
 
   def require_api_auth!
-    head :forbidden unless signed_in?
+    head :forbidden unless authenticated?
   end
 
   def require_admin_api_auth!
-    head :forbidden unless current_user.admin?
+    head :forbidden unless authenticated? && current_user.admin?
   end
 end

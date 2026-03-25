@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Web::AuthController < Web::ApplicationController
+  allow_unauthenticated_access
+
   def callback
     result = SocialNetworkService.authenticate_user(auth)
 

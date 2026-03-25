@@ -1,4 +1,5 @@
 class Web::UsersController < Web::ApplicationController
+  allow_unauthenticated_access
   before_action :guests_only!
 
   def new

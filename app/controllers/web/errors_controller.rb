@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Web::ErrorsController < Web::ApplicationController
+  allow_unauthenticated_access
+
   # NOTE: for error pages locale from route params is undefined
   around_action :use_locale
 
