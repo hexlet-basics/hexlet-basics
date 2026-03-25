@@ -1,6 +1,6 @@
 class Web::UsersController < Web::ApplicationController
   allow_unauthenticated_access
-  before_action :guests_only!
+  before_action :redirect_if_authenticated
 
   def new
     user = User::SignUpForm.new(sign_up_form_data)
@@ -37,7 +37,7 @@ class Web::UsersController < Web::ApplicationController
       publish_event(user_signed_up, user)
       js_event(user_signed_up)
 
-      sign_in user
+      sign_in(user)
 
       lesson_ids = session.fetch(:finished_as_guest, {}).keys
       lesson_ids.each do |id|
@@ -93,7 +93,6 @@ class Web::UsersController < Web::ApplicationController
   end
 
   private
-
   def sign_up_form_data(user = nil)
     source = user ? { first_name: user.first_name, email: user.email } : flash.inertia[:sign_up_form]
     source.presence || {}

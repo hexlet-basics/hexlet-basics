@@ -1,5 +1,5 @@
 class Web::MyController < Web::ApplicationController
-  before_action :authenticate_user!
+  before_action :require_authentication
 
   def show
     started_language_members = current_user.language_members

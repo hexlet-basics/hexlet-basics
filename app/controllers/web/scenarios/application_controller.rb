@@ -1,5 +1,5 @@
 class Web::Scenarios::ApplicationController < Web::ApplicationController
-  before_action :authenticate_user!
+  before_action :require_authentication
 
   def resource_scenario
     @resource_scenario ||= Survey::Scenario.find(params[:scenario_id])

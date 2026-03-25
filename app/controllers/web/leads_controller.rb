@@ -1,5 +1,5 @@
 class Web::LeadsController < Web::ApplicationController
-  before_action :authenticate_user!
+  before_action :require_authentication
 
   def new
     seo_tags = {

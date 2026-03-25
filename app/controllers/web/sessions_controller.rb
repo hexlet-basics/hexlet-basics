@@ -2,7 +2,7 @@
 
 class Web::SessionsController < Web::ApplicationController
   allow_unauthenticated_access only: [ :new, :create ]
-  before_action :guests_only!, only: [ :new, :create ]
+  before_action :redirect_if_authenticated, only: [ :new, :create ]
 
   def new
     sign_in_form = SignInForm.new
@@ -24,7 +24,7 @@ class Web::SessionsController < Web::ApplicationController
 
     if sign_in_form.valid?
       user = sign_in_form.user
-      sign_in user
+      sign_in(user)
 
       data = {
         user_id: user.id,
@@ -36,7 +36,7 @@ class Web::SessionsController < Web::ApplicationController
       EventSender.publish_event(event, user)
 
       f(:success)
-      redirect_to root_path
+      redirect_to after_authentication_url
     else
       f(:error)
       redirect_to_inertia new_session_path, sign_in_form
@@ -44,7 +44,7 @@ class Web::SessionsController < Web::ApplicationController
   end
 
   def destroy
-    sign_out
+    terminate_session
     redirect_to root_path
   end
 end

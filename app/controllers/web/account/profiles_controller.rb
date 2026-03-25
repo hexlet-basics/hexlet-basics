@@ -29,7 +29,7 @@ class Web::Account::ProfilesController < Web::Account::ApplicationController
 
   def destroy
     current_user.mark_as_removed!
-    sign_out
+    terminate_session
 
     f(:success)
 

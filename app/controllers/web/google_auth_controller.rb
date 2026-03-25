@@ -9,7 +9,7 @@ class Web::GoogleAuthController < Web::ApplicationController
     user = GoogleAuthService.authenticate_user(payload)
 
     if user.persisted?
-      sign_in user
+      sign_in(user)
       f(:success)
       unless existing_user
         signed_up_event_data = {

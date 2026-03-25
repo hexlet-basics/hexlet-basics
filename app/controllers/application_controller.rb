@@ -9,8 +9,6 @@ class ApplicationController < ActionController::Base
   # rescue_from Pagy::OverflowError, with: :redirect_to_last_page
   # rescue_from Pagy::VariableError, with: :redirect_to_last_page
 
-  include AuthConcern
-
   def default_url_options
     { suffix: params[:suffix] }
   end
