@@ -112,12 +112,6 @@ class User < ApplicationRecord
     false
   end
 
-  def valid_password?(password)
-    return false if password_digest.nil?
-
-    authenticate(password)
-  end
-
   def to_s
     if first_name? || last_name?
       return "#{first_name} #{last_name}"

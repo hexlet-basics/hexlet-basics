@@ -40,7 +40,6 @@ export default {
             attributes: {
               email: {
                 blank: "Email can't be blank",
-                user_does_not_exist_html: "User not found. Try signing up.",
               },
               password: {
                 blank: "Password can't be blank",

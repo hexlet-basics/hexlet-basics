@@ -10,18 +10,29 @@ class SignInForm
 
   validates :email, presence: true
   validates :password, presence: true
-  validate :user_exists, :user_can_sign_in
+  validate :authenticate_user
 
-  def user_can_sign_in
-    errors.add(:password, :cannot_sign_in) if password.present? && user && !user.valid_password?(password)
-  end
+  def authenticate_user
+    return if email.blank? || password.blank?
 
-  def user_exists
-    errors.add(:email, :user_does_not_exist_html) unless user
+    @user = User.authenticate_by(email: normalized_email, password:)&.then do |authenticated_user|
+      authenticated_user if authenticated_user.active?
+    end
+
+    return if @user
+
+    errors.add(:password, :cannot_sign_in)
   end
 
   sig { returns(T.nilable(User)) }
   def user
-    @user ||= User.active.find_by(email: email) if email.present?
+    @user
   end
+
+  private
+
+    sig { returns(String) }
+    def normalized_email
+      email.to_s.strip.downcase
+    end
 end

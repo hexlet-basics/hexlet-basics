@@ -41,7 +41,6 @@ interface Resources {
             attributes: {
               email: {
                 blank: "Email не может быть пустым";
-                user_does_not_exist_html: "Пользователь не найден. Попробуйте зарегистрироваться";
               };
               password: {
                 blank: "Пароль не может быть пустым";
