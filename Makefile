@@ -32,8 +32,9 @@ db-reset:
 	bin/rails db:fixtures:load
 
 dev:
+	overmind start -f Procfile.dev
 	# rm -rf dist
-	bin/dev
+	# bin/dev
 
 log-mails:
 	 tail -n 30 log/mailer.log | base64 --decode
