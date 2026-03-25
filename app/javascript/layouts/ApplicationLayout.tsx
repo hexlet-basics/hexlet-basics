@@ -11,9 +11,9 @@ import {
 import { useDisclosure, useWindowEvent } from "@mantine/hooks";
 import { IconSend } from "@tabler/icons-react";
 import type { PropsWithChildren } from "react";
+import { useTranslation } from "react-i18next";
 import * as CookieConsent from "vanilla-cookieconsent";
 import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
-import AppAnchor from "@/components/Elements/AppAnchor.tsx";
 import XFlash from "@/components/XFlash.tsx";
 import { isCurrentUrl } from "@/lib/utils.ts";
 import cookieTranslations from "@/locales/cookie_consent.ts";
@@ -36,6 +36,7 @@ export default function ApplicationLayout({
   items,
   center = false,
 }: Props) {
+  const { t } = useTranslation();
   const page = usePage();
   const {
     props: { shouldAddContactMethod },
@@ -69,11 +70,20 @@ export default function ApplicationLayout({
   return (
     <>
       <Affix position={{ bottom: 20, right: 20 }}>
-        <AppAnchor external href="https://t.me/WelcomeCodebasicsBot">
-          <ActionIcon variant="filled" size="xl" radius="xl">
-            <IconSend />
-          </ActionIcon>
-        </AppAnchor>
+        <ActionIcon
+          component="a"
+          href="https://t.me/WelcomeCodebasicsBot"
+          target="_blank"
+          rel="noopener noreferrer nofollow"
+          aria-label={t(
+            ($) => $.models.attributes.user["contact_method/values"].telegram,
+          )}
+          variant="filled"
+          size="xl"
+          radius="xl"
+        >
+          <IconSend aria-hidden="true" />
+        </ActionIcon>
       </Affix>
       <AppShell header={{ height: 60 }}>
         <AppShell.Header>
