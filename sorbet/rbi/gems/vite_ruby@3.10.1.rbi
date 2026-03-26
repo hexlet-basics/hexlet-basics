@@ -558,16 +558,16 @@ class ViteRuby::CLI::Install < ::Dry::CLI::Command
   private
 
   # pkg:gem/vite_ruby#lib/vite_ruby/cli/install.rb:65
-  def append(*args); end
+  def append(*args, **kwargs, &block); end
 
   # pkg:gem/vite_ruby#lib/vite_ruby/cli/install.rb:65
-  def append_unless_present(*args); end
+  def append_unless_present(*args, **kwargs, &block); end
 
   # pkg:gem/vite_ruby#lib/vite_ruby/cli/install.rb:72
   def copy_template(path, to:); end
 
   # pkg:gem/vite_ruby#lib/vite_ruby/cli/install.rb:65
-  def cp(*args); end
+  def cp(*args, **kwargs, &block); end
 
   # Internal: Creates the Vite and vite-plugin-ruby configuration files.
   #
@@ -575,13 +575,13 @@ class ViteRuby::CLI::Install < ::Dry::CLI::Command
   def create_configuration_files; end
 
   # pkg:gem/vite_ruby#lib/vite_ruby/cli/install.rb:65
-  def inject_line_after(*args); end
+  def inject_line_after(*args, **kwargs, &block); end
 
   # pkg:gem/vite_ruby#lib/vite_ruby/cli/install.rb:65
-  def inject_line_after_last(*args); end
+  def inject_line_after_last(*args, **kwargs, &block); end
 
   # pkg:gem/vite_ruby#lib/vite_ruby/cli/install.rb:65
-  def inject_line_before(*args); end
+  def inject_line_before(*args, **kwargs, &block); end
 
   # Internal: Adds compilation output dirs to git ignore.
   #
@@ -597,7 +597,7 @@ class ViteRuby::CLI::Install < ::Dry::CLI::Command
   def install_js_packages(deps); end
 
   # pkg:gem/vite_ruby#lib/vite_ruby/cli/install.rb:65
-  def replace_first_line(*args); end
+  def replace_first_line(*args, **kwargs, &block); end
 
   # Internal: The root path for the Ruby application.
   #
@@ -616,7 +616,7 @@ class ViteRuby::CLI::Install < ::Dry::CLI::Command
   def silent_warnings; end
 
   # pkg:gem/vite_ruby#lib/vite_ruby/cli/install.rb:65
-  def write(*args); end
+  def write(*args, **kwargs, &block); end
 end
 
 # pkg:gem/vite_ruby#lib/vite_ruby/cli/install.rb:70

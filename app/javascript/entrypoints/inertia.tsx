@@ -2,7 +2,7 @@ import { createInertiaApp } from "@inertiajs/react";
 import configure from "@/configure";
 import RootLayout from "@/layouts/RootLayout.tsx";
 
-import "@/init.ts";
+// import "@/init.ts";
 
 createInertiaApp({
   defaults: {

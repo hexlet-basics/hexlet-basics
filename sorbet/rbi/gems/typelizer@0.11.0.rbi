@@ -5,64 +5,64 @@
 # Please instead update this file by running `bin/tapioca gem typelizer`.
 
 
-# source://typelizer//lib/typelizer/version.rb#3
+# pkg:gem/typelizer#lib/typelizer/version.rb:3
 module Typelizer
   class << self
     # @private
     #
-    # source://typelizer//lib/typelizer.rb#56
+    # pkg:gem/typelizer#lib/typelizer.rb:56
     def base_classes; end
 
-    # source://typelizer//lib/typelizer.rb#58
+    # pkg:gem/typelizer#lib/typelizer.rb:58
     def configuration; end
 
     # @yield [configuration]
     #
-    # source://typelizer//lib/typelizer.rb#62
+    # pkg:gem/typelizer#lib/typelizer.rb:62
     def configure; end
 
-    # source://typelizer//lib/typelizer.rb#42
+    # pkg:gem/typelizer#lib/typelizer.rb:42
     def dirs(*_arg0, **_arg1, &_arg2); end
 
-    # source://typelizer//lib/typelizer.rb#45
+    # pkg:gem/typelizer#lib/typelizer.rb:45
     def dirs=(*_arg0, **_arg1, &_arg2); end
 
     # @return [Boolean]
     #
-    # source://typelizer//lib/typelizer.rb#47
+    # pkg:gem/typelizer#lib/typelizer.rb:47
     def enabled?; end
 
-    # source://typelizer//lib/typelizer.rb#66
+    # pkg:gem/typelizer#lib/typelizer.rb:66
     def interfaces(writer_name: T.unsafe(nil)); end
 
-    # source://typelizer//lib/typelizer.rb#42
+    # pkg:gem/typelizer#lib/typelizer.rb:42
     def listen(*_arg0, **_arg1, &_arg2); end
 
-    # source://typelizer//lib/typelizer.rb#45
+    # pkg:gem/typelizer#lib/typelizer.rb:45
     def listen=(*_arg0, **_arg1, &_arg2); end
 
     # Returns the value of attribute logger.
     #
-    # source://typelizer//lib/typelizer.rb#53
+    # pkg:gem/typelizer#lib/typelizer.rb:53
     def logger; end
 
     # Sets the attribute logger
     #
     # @param value the value to set the attribute logger to.
     #
-    # source://typelizer//lib/typelizer.rb#53
+    # pkg:gem/typelizer#lib/typelizer.rb:53
     def logger=(_arg0); end
 
-    # source://typelizer//lib/typelizer.rb#74
+    # pkg:gem/typelizer#lib/typelizer.rb:74
     def openapi_schemas(writer_name: T.unsafe(nil), openapi_version: T.unsafe(nil)); end
 
-    # source://typelizer//lib/typelizer.rb#42
+    # pkg:gem/typelizer#lib/typelizer.rb:42
     def reject_class(*_arg0, **_arg1, &_arg2); end
 
-    # source://typelizer//lib/typelizer.rb#45
+    # pkg:gem/typelizer#lib/typelizer.rb:45
     def reject_class=(*_arg0, **_arg1, &_arg2); end
 
-    # source://typelizer//lib/typelizer.rb#42
+    # pkg:gem/typelizer#lib/typelizer.rb:42
     def writer(*_arg0, **_arg1, &_arg2); end
 
     private
@@ -71,44 +71,44 @@ module Typelizer
     #
     # @param value the value to set the attribute base_classes to.
     #
-    # source://typelizer//lib/typelizer.rb#105
+    # pkg:gem/typelizer#lib/typelizer.rb:105
     def base_classes=(_arg0); end
 
-    # source://typelizer//lib/typelizer.rb#87
+    # pkg:gem/typelizer#lib/typelizer.rb:87
     def load_serializers; end
 
-    # source://typelizer//lib/typelizer.rb#91
+    # pkg:gem/typelizer#lib/typelizer.rb:91
     def target_serializers(reject_class); end
   end
 end
 
 # Subset of CONFIGS_AFFECTING_OUTPUT that specifically affect index.ts output.
 #
-# source://typelizer//lib/typelizer/config.rb#35
+# pkg:gem/typelizer#lib/typelizer/config.rb:35
 Typelizer::CONFIGS_AFFECTING_INDEX_OUTPUT = T.let(T.unsafe(nil), Array)
 
 # Config keys that affect generated file content and must be included in fingerprints.
 # When adding a new config, add it here if it affects output, or to CONFIGS_NOT_AFFECTING_OUTPUT.
 #
-# source://typelizer//lib/typelizer/config.rb#24
+# pkg:gem/typelizer#lib/typelizer/config.rb:24
 Typelizer::CONFIGS_AFFECTING_OUTPUT = T.let(T.unsafe(nil), Array)
 
 # Config keys that don't affect file content (runtime behavior, or effects captured via properties).
 #
-# source://typelizer//lib/typelizer/config.rb#42
+# pkg:gem/typelizer#lib/typelizer/config.rb:42
 Typelizer::CONFIGS_NOT_AFFECTING_OUTPUT = T.let(T.unsafe(nil), Array)
 
 # Immutable configuration object for a single writer
 #
 # Use .build to construct from defaults, and #with_overrides to copy with overrides.
 #
-# source://typelizer//lib/typelizer/config.rb#57
+# pkg:gem/typelizer#lib/typelizer/config.rb:58
 class Typelizer::Config < ::Struct
   # Returns the value of attribute associations_strategy
   #
   # @return [Object] the current value of associations_strategy
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def associations_strategy; end
 
   # Sets the attribute associations_strategy
@@ -116,14 +116,14 @@ class Typelizer::Config < ::Struct
   # @param value [Object] the value to set the attribute associations_strategy to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def associations_strategy=(_); end
 
   # Returns the value of attribute comments
   #
   # @return [Object] the current value of comments
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def comments; end
 
   # Sets the attribute comments
@@ -131,14 +131,29 @@ class Typelizer::Config < ::Struct
   # @param value [Object] the value to set the attribute comments to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def comments=(_); end
+
+  # Returns the value of attribute filename_mapper
+  #
+  # @return [Object] the current value of filename_mapper
+  #
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
+  def filename_mapper; end
+
+  # Sets the attribute filename_mapper
+  #
+  # @param value [Object] the value to set the attribute filename_mapper to.
+  # @return [Object] the newly set value
+  #
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
+  def filename_mapper=(_); end
 
   # Returns the value of attribute imports_sort_order
   #
   # @return [Object] the current value of imports_sort_order
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def imports_sort_order; end
 
   # Sets the attribute imports_sort_order
@@ -146,14 +161,14 @@ class Typelizer::Config < ::Struct
   # @param value [Object] the value to set the attribute imports_sort_order to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def imports_sort_order=(_); end
 
   # Returns the value of attribute inheritance_strategy
   #
   # @return [Object] the current value of inheritance_strategy
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def inheritance_strategy; end
 
   # Sets the attribute inheritance_strategy
@@ -161,14 +176,14 @@ class Typelizer::Config < ::Struct
   # @param value [Object] the value to set the attribute inheritance_strategy to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def inheritance_strategy=(_); end
 
   # Returns the value of attribute model_plugin
   #
   # @return [Object] the current value of model_plugin
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def model_plugin; end
 
   # Sets the attribute model_plugin
@@ -176,14 +191,14 @@ class Typelizer::Config < ::Struct
   # @param value [Object] the value to set the attribute model_plugin to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def model_plugin=(_); end
 
   # Returns the value of attribute null_strategy
   #
   # @return [Object] the current value of null_strategy
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def null_strategy; end
 
   # Sets the attribute null_strategy
@@ -191,14 +206,14 @@ class Typelizer::Config < ::Struct
   # @param value [Object] the value to set the attribute null_strategy to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def null_strategy=(_); end
 
   # Returns the value of attribute output_dir
   #
   # @return [Object] the current value of output_dir
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def output_dir; end
 
   # Sets the attribute output_dir
@@ -206,14 +221,14 @@ class Typelizer::Config < ::Struct
   # @param value [Object] the value to set the attribute output_dir to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def output_dir=(_); end
 
   # Returns the value of attribute plugin_configs
   #
   # @return [Object] the current value of plugin_configs
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def plugin_configs; end
 
   # Sets the attribute plugin_configs
@@ -221,14 +236,14 @@ class Typelizer::Config < ::Struct
   # @param value [Object] the value to set the attribute plugin_configs to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def plugin_configs=(_); end
 
   # Returns the value of attribute prefer_double_quotes
   #
   # @return [Object] the current value of prefer_double_quotes
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def prefer_double_quotes; end
 
   # Sets the attribute prefer_double_quotes
@@ -236,14 +251,14 @@ class Typelizer::Config < ::Struct
   # @param value [Object] the value to set the attribute prefer_double_quotes to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def prefer_double_quotes=(_); end
 
   # Returns the value of attribute properties_sort_order
   #
   # @return [Object] the current value of properties_sort_order
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def properties_sort_order; end
 
   # Sets the attribute properties_sort_order
@@ -251,14 +266,14 @@ class Typelizer::Config < ::Struct
   # @param value [Object] the value to set the attribute properties_sort_order to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def properties_sort_order=(_); end
 
   # Returns the value of attribute properties_transformer
   #
   # @return [Object] the current value of properties_transformer
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def properties_transformer; end
 
   # Sets the attribute properties_transformer
@@ -266,14 +281,14 @@ class Typelizer::Config < ::Struct
   # @param value [Object] the value to set the attribute properties_transformer to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def properties_transformer=(_); end
 
   # Returns the value of attribute reject_class
   #
   # @return [Object] the current value of reject_class
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def reject_class; end
 
   # Sets the attribute reject_class
@@ -281,14 +296,14 @@ class Typelizer::Config < ::Struct
   # @param value [Object] the value to set the attribute reject_class to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def reject_class=(_); end
 
   # Returns the value of attribute serializer_model_mapper
   #
   # @return [Object] the current value of serializer_model_mapper
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def serializer_model_mapper; end
 
   # Sets the attribute serializer_model_mapper
@@ -296,14 +311,14 @@ class Typelizer::Config < ::Struct
   # @param value [Object] the value to set the attribute serializer_model_mapper to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def serializer_model_mapper=(_); end
 
   # Returns the value of attribute serializer_name_mapper
   #
   # @return [Object] the current value of serializer_name_mapper
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def serializer_name_mapper; end
 
   # Sets the attribute serializer_name_mapper
@@ -311,14 +326,14 @@ class Typelizer::Config < ::Struct
   # @param value [Object] the value to set the attribute serializer_name_mapper to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def serializer_name_mapper=(_); end
 
   # Returns the value of attribute serializer_plugin
   #
   # @return [Object] the current value of serializer_plugin
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def serializer_plugin; end
 
   # Sets the attribute serializer_plugin
@@ -326,14 +341,14 @@ class Typelizer::Config < ::Struct
   # @param value [Object] the value to set the attribute serializer_plugin to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def serializer_plugin=(_); end
 
   # Returns the value of attribute type_mapping
   #
   # @return [Object] the current value of type_mapping
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def type_mapping; end
 
   # Sets the attribute type_mapping
@@ -341,14 +356,14 @@ class Typelizer::Config < ::Struct
   # @param value [Object] the value to set the attribute type_mapping to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def type_mapping=(_); end
 
   # Returns the value of attribute types_global
   #
   # @return [Object] the current value of types_global
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def types_global; end
 
   # Sets the attribute types_global
@@ -356,14 +371,14 @@ class Typelizer::Config < ::Struct
   # @param value [Object] the value to set the attribute types_global to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def types_global=(_); end
 
   # Returns the value of attribute types_import_path
   #
   # @return [Object] the current value of types_import_path
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def types_import_path; end
 
   # Sets the attribute types_import_path
@@ -371,14 +386,14 @@ class Typelizer::Config < ::Struct
   # @param value [Object] the value to set the attribute types_import_path to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def types_import_path=(_); end
 
   # Returns the value of attribute verbatim_module_syntax
   #
   # @return [Object] the current value of verbatim_module_syntax
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def verbatim_module_syntax; end
 
   # Sets the attribute verbatim_module_syntax
@@ -386,39 +401,39 @@ class Typelizer::Config < ::Struct
   # @param value [Object] the value to set the attribute verbatim_module_syntax to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/config.rb#57
+  # pkg:gem/typelizer#lib/typelizer/config.rb:58
   def verbatim_module_syntax=(_); end
 
-  # source://typelizer//lib/typelizer/config.rb#136
+  # pkg:gem/typelizer#lib/typelizer/config.rb:140
   def with_overrides(**overrides); end
 
   class << self
-    # source://typelizer//lib/typelizer/config.rb#57
+    # pkg:gem/typelizer#lib/typelizer/config.rb:58
     def [](*_arg0); end
 
-    # source://typelizer//lib/typelizer/config.rb#125
+    # pkg:gem/typelizer#lib/typelizer/config.rb:129
     def build(**overrides); end
 
-    # source://typelizer//lib/typelizer/config.rb#129
+    # pkg:gem/typelizer#lib/typelizer/config.rb:133
     def default_output_dir; end
 
     # Returns library defaults (built-in) for building a Config.
     # This method creates a fresh Hash each time to avoid sharing mutable state
     # across builds
     #
-    # source://typelizer//lib/typelizer/config.rb#87
+    # pkg:gem/typelizer#lib/typelizer/config.rb:89
     def defaults; end
 
-    # source://typelizer//lib/typelizer/config.rb#57
+    # pkg:gem/typelizer#lib/typelizer/config.rb:58
     def inspect; end
 
-    # source://typelizer//lib/typelizer/config.rb#57
+    # pkg:gem/typelizer#lib/typelizer/config.rb:58
     def keyword_init?; end
 
-    # source://typelizer//lib/typelizer/config.rb#57
+    # pkg:gem/typelizer#lib/typelizer/config.rb:58
     def members; end
 
-    # source://typelizer//lib/typelizer/config.rb#57
+    # pkg:gem/typelizer#lib/typelizer/config.rb:58
     def new(*_arg0); end
   end
 end
@@ -435,45 +450,45 @@ end
 # - WriterContext merges in order: library defaults < global_settings < writer < DSL inheritance
 # - global_settings are only updated by flat setters, not by writer(:default) blocks
 #
-# source://typelizer//lib/typelizer/configuration.rb#18
+# pkg:gem/typelizer#lib/typelizer/configuration.rb:18
 class Typelizer::Configuration
   # @return [Configuration] a new instance of Configuration
   #
-  # source://typelizer//lib/typelizer/configuration.rb#24
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:24
   def initialize; end
 
   # Returns the value of attribute dirs.
   #
-  # source://typelizer//lib/typelizer/configuration.rb#21
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:21
   def dirs; end
 
   # Sets the attribute dirs
   #
   # @param value the value to set the attribute dirs to.
   #
-  # source://typelizer//lib/typelizer/configuration.rb#21
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:21
   def dirs=(_arg0); end
 
   # Returns the value of attribute global_settings.
   #
-  # source://typelizer//lib/typelizer/configuration.rb#22
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:22
   def global_settings; end
 
   # Returns the value of attribute listen.
   #
-  # source://typelizer//lib/typelizer/configuration.rb#21
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:21
   def listen; end
 
   # Sets the attribute listen
   #
   # @param value the value to set the attribute listen to.
   #
-  # source://typelizer//lib/typelizer/configuration.rb#21
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:21
   def listen=(_arg0); end
 
   # Reset writers and keep only `default` writer
   #
-  # source://typelizer//lib/typelizer/configuration.rb#71
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:71
   def reset_writers!; end
 
   # Defines or updates a writer configuration.
@@ -482,22 +497,22 @@ class Typelizer::Configuration
   # then freezes and stores it. output_dir is unique and mandatory
   # Also accepts "from" argument, which allows us to inherit configuration from any writer
   #
-  # source://typelizer//lib/typelizer/configuration.rb#42
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:42
   def writer(name = T.unsafe(nil), from: T.unsafe(nil), &block); end
 
-  # source://typelizer//lib/typelizer/configuration.rb#66
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:66
   def writer_config(name = T.unsafe(nil)); end
 
   # Returns the value of attribute writers.
   #
-  # source://typelizer//lib/typelizer/configuration.rb#22
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:22
   def writers; end
 
   private
 
   # @return [Boolean]
   #
-  # source://typelizer//lib/typelizer/configuration.rb#154
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:154
   def config_attribute?(name); end
 
   # Setters and readers to Writer(:default) config
@@ -505,474 +520,482 @@ class Typelizer::Configuration
   #   config.output_dir = ...
   #   config.prefer_double_quotes = true
   #
-  # source://typelizer//lib/typelizer/configuration.rb#87
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:87
   def method_missing(name, *args, &block); end
 
-  # source://typelizer//lib/typelizer/configuration.rb#150
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:150
   def normalize_method_name(name); end
 
-  # source://typelizer//lib/typelizer/configuration.rb#146
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:146
   def normalize_path(dir); end
 
   # Normalizes and validates writer name
   #
   # @raise [ArgumentError]
   #
-  # source://typelizer//lib/typelizer/configuration.rb#118
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:118
   def normalize_writer_name(name); end
 
   # Validates and registers output directory for uniqueness across writers
   #
   # @raise [ArgumentError]
   #
-  # source://typelizer//lib/typelizer/configuration.rb#127
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:127
   def register_output_dir!(writer_name, dir); end
 
   # @return [Boolean]
   #
-  # source://typelizer//lib/typelizer/configuration.rb#111
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:111
   def respond_to_missing?(name, include_private = T.unsafe(nil)); end
 end
 
-# source://typelizer//lib/typelizer/configuration.rb#19
+# pkg:gem/typelizer#lib/typelizer/configuration.rb:19
 Typelizer::Configuration::DEFAULT_WRITER_NAME = T.let(T.unsafe(nil), Symbol)
 
-# source://typelizer//lib/typelizer/config.rb#20
+# pkg:gem/typelizer#lib/typelizer/config.rb:20
 Typelizer::DEFAULT_TYPES_GLOBAL = T.let(T.unsafe(nil), Array)
 
-# source://typelizer//lib/typelizer/dsl/hooks.rb#4
+# pkg:gem/typelizer#lib/typelizer/dsl/hooks.rb:4
 module Typelizer::DSL
   mixes_in_class_methods ::Typelizer::DSL::ClassMethods
 
   class << self
     # @private
     #
-    # source://typelizer//lib/typelizer/dsl.rb#15
+    # pkg:gem/typelizer#lib/typelizer/dsl.rb:15
     def extended(base); end
 
     # typelize_from Model
     # typelize attribute_name: ["string", "Date", optional: true, nullable: true, multi: true]
     #
-    # source://typelizer//lib/typelizer/dsl.rb#9
+    # pkg:gem/typelizer#lib/typelizer/dsl.rb:9
     def included(base); end
   end
 end
 
-# source://typelizer//lib/typelizer/dsl.rb#21
+# pkg:gem/typelizer#lib/typelizer/dsl.rb:21
 module Typelizer::DSL::ClassMethods
   # Returns own Set (initializing if needed) for writing
   #
-  # source://typelizer//lib/typelizer/dsl.rb#68
+  # pkg:gem/typelizer#lib/typelizer/dsl.rb:68
   def _own_typelizer_multi_attributes; end
 
   # Returns union of own + ancestors' multi attributes
   #
-  # source://typelizer//lib/typelizer/dsl.rb#58
+  # pkg:gem/typelizer#lib/typelizer/dsl.rb:58
   def _typelizer_multi_attributes; end
 
   # Returns the value of attribute keyless_type.
   #
-  # source://typelizer//lib/typelizer/dsl.rb#55
+  # pkg:gem/typelizer#lib/typelizer/dsl.rb:55
   def keyless_type; end
 
   # Sets the attribute keyless_type
   #
   # @param value the value to set the attribute keyless_type to.
   #
-  # source://typelizer//lib/typelizer/dsl.rb#55
+  # pkg:gem/typelizer#lib/typelizer/dsl.rb:55
   def keyless_type=(_arg0); end
 
-  # source://typelizer//lib/typelizer/dsl.rb#76
+  # pkg:gem/typelizer#lib/typelizer/dsl.rb:76
   def store_type(attribute_name, name, options); end
 
   # save association of serializer attributes to type
   # can be invoked multiple times
   #
-  # source://typelizer//lib/typelizer/dsl.rb#43
+  # pkg:gem/typelizer#lib/typelizer/dsl.rb:43
   def typelize(type = T.unsafe(nil), type_params = T.unsafe(nil), **attributes); end
 
   # save association of serializer to model
   #
-  # source://typelizer//lib/typelizer/dsl.rb#35
+  # pkg:gem/typelizer#lib/typelizer/dsl.rb:35
   def typelize_from(model); end
 
-  # source://typelizer//lib/typelizer/dsl.rb#72
+  # pkg:gem/typelizer#lib/typelizer/dsl.rb:72
   def typelize_meta(**attributes); end
 
-  # source://typelizer//lib/typelizer/dsl.rb#22
+  # pkg:gem/typelizer#lib/typelizer/dsl.rb:22
   def typelizer_config(&block); end
 
   private
 
-  # source://typelizer//lib/typelizer/dsl.rb#84
+  # pkg:gem/typelizer#lib/typelizer/dsl.rb:84
   def assign_type_information(attribute_name, attributes); end
 
-  # source://typelizer//lib/typelizer/dsl.rb#94
+  # pkg:gem/typelizer#lib/typelizer/dsl.rb:94
   def ensure_type_store(attribute_name); end
 end
 
-# source://typelizer//lib/typelizer/dsl/hooks.rb#5
+# pkg:gem/typelizer#lib/typelizer/dsl/hooks.rb:5
 module Typelizer::DSL::Hooks
   class << self
-    # source://typelizer//lib/typelizer/dsl/hooks.rb#6
+    # pkg:gem/typelizer#lib/typelizer/dsl/hooks.rb:6
     def install(base); end
   end
 end
 
 # DSL for defining hooks with less boilerplate
 #
-# source://typelizer//lib/typelizer/dsl/hooks.rb#42
+# pkg:gem/typelizer#lib/typelizer/dsl/hooks.rb:42
 module Typelizer::DSL::Hooks::Builder
-  # source://typelizer//lib/typelizer/dsl/hooks.rb#43
+  # pkg:gem/typelizer#lib/typelizer/dsl/hooks.rb:43
   def hook(*methods, multi: T.unsafe(nil)); end
 
-  # source://typelizer//lib/typelizer/dsl/hooks.rb#55
+  # pkg:gem/typelizer#lib/typelizer/dsl/hooks.rb:55
   def hook_method_added; end
 end
 
 # Shared methods available to all hook modules
 #
-# source://typelizer//lib/typelizer/dsl/hooks.rb#25
+# pkg:gem/typelizer#lib/typelizer/dsl/hooks.rb:25
 module Typelizer::DSL::Hooks::Methods
   private
 
-  # source://typelizer//lib/typelizer/dsl/hooks.rb#28
+  # pkg:gem/typelizer#lib/typelizer/dsl/hooks.rb:28
   def consume_keyless_type(name); end
 
-  # source://typelizer//lib/typelizer/dsl/hooks.rb#36
+  # pkg:gem/typelizer#lib/typelizer/dsl/hooks.rb:36
   def record_multi(name); end
 end
 
-# source://typelizer//lib/typelizer/delegate_tracker.rb#4
+# pkg:gem/typelizer#lib/typelizer/delegate_tracker.rb:4
 module Typelizer::DelegateTracker
   class << self
-    # source://typelizer//lib/typelizer/delegate_tracker.rb#10
+    # pkg:gem/typelizer#lib/typelizer/delegate_tracker.rb:10
     def [](klass, method); end
 
     # Returns the value of attribute registry.
     #
-    # source://typelizer//lib/typelizer/delegate_tracker.rb#8
+    # pkg:gem/typelizer#lib/typelizer/delegate_tracker.rb:8
     def registry; end
   end
 end
 
-# source://typelizer//lib/typelizer/delegate_tracker.rb#15
+# pkg:gem/typelizer#lib/typelizer/delegate_tracker.rb:15
 module Typelizer::DelegateTracker::Hook
-  # source://typelizer//lib/typelizer/delegate_tracker.rb#16
+  # pkg:gem/typelizer#lib/typelizer/delegate_tracker.rb:16
   def delegate(*methods, to:, allow_nil: T.unsafe(nil), prefix: T.unsafe(nil), **_arg4); end
 end
 
-# source://typelizer//lib/typelizer/generator.rb#4
+# pkg:gem/typelizer#lib/typelizer/generator.rb:4
 class Typelizer::Generator
-  # source://typelizer//lib/typelizer/generator.rb#9
+  # pkg:gem/typelizer#lib/typelizer/generator.rb:9
   def call(force: T.unsafe(nil)); end
 
   class << self
-    # source://typelizer//lib/typelizer/generator.rb#5
+    # pkg:gem/typelizer#lib/typelizer/generator.rb:5
     def call(**args); end
   end
 end
 
-# source://typelizer//lib/typelizer/import_sorter.rb#4
+# pkg:gem/typelizer#lib/typelizer/import_sorter.rb:4
 module Typelizer::ImportSorter
   class << self
-    # source://typelizer//lib/typelizer/import_sorter.rb#5
+    # pkg:gem/typelizer#lib/typelizer/import_sorter.rb:5
     def sort(imports, sort_order); end
   end
 end
 
-# source://typelizer//lib/typelizer/interface.rb#4
+# pkg:gem/typelizer#lib/typelizer/interface.rb:4
 class Typelizer::Interface
   include ::Typelizer::TypeInference
 
   # @return [Interface] a new instance of Interface
   #
-  # source://typelizer//lib/typelizer/interface.rb#9
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:9
   def initialize(serializer:, context:); end
 
-  # source://typelizer//lib/typelizer/interface.rb#14
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:14
   def config; end
 
   # Returns the value of attribute context.
   #
-  # source://typelizer//lib/typelizer/interface.rb#7
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:7
   def context; end
 
   # @return [Boolean]
   #
-  # source://typelizer//lib/typelizer/interface.rb#46
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:59
   def empty?; end
 
-  # source://typelizer//lib/typelizer/interface.rb#65
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:78
   def enum_types; end
 
-  # source://typelizer//lib/typelizer/interface.rb#38
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:38
   def filename; end
 
-  # source://typelizer//lib/typelizer/interface.rb#147
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:160
   def fingerprint; end
 
-  # source://typelizer//lib/typelizer/interface.rb#109
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:122
   def imports; end
+
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:46
+  def index_path(index_dir); end
 
   # @return [Boolean]
   #
-  # source://typelizer//lib/typelizer/interface.rb#26
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:26
   def inline?; end
 
-  # source://typelizer//lib/typelizer/interface.rb#143
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:156
   def inspect; end
 
-  # source://typelizer//lib/typelizer/interface.rb#50
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:63
   def meta_fields; end
 
-  # source://typelizer//lib/typelizer/interface.rb#30
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:30
   def name; end
 
-  # source://typelizer//lib/typelizer/interface.rb#83
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:96
   def overwritten_properties; end
 
-  # source://typelizer//lib/typelizer/interface.rb#89
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:102
   def own_properties; end
 
-  # source://typelizer//lib/typelizer/interface.rb#97
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:110
   def parent_interface; end
 
-  # source://typelizer//lib/typelizer/interface.rb#74
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:87
   def properties; end
 
-  # source://typelizer//lib/typelizer/interface.rb#93
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:106
   def properties_to_print; end
 
-  # source://typelizer//lib/typelizer/interface.rb#159
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:172
   def quote(str); end
 
-  # source://typelizer//lib/typelizer/interface.rb#42
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:55
   def root_key; end
 
   # Returns the value of attribute serializer.
   #
-  # source://typelizer//lib/typelizer/interface.rb#7
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:7
   def serializer; end
 
-  # source://typelizer//lib/typelizer/interface.rb#18
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:18
   def serializer_plugin; end
 
-  # source://typelizer//lib/typelizer/interface.rb#59
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:72
   def trait_interfaces; end
 
   private
 
-  # source://typelizer//lib/typelizer/interface.rb#207
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:222
   def apply_dsl_type(prop, dsl_attrs); end
 
-  # source://typelizer//lib/typelizer/interface.rb#245
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:260
   def apply_multi_flag(prop, multi_attrs); end
 
-  # source://typelizer//lib/typelizer/interface.rb#165
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:178
   def collect_all_properties(props); end
 
-  # source://typelizer//lib/typelizer/interface.rb#203
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:218
   def dsl_attrs_for(prop, dsl_attrs); end
 
-  # source://typelizer//lib/typelizer/interface.rb#179
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:194
   def extract_typescript_types(type); end
 
   # @return [Boolean]
   #
-  # source://typelizer//lib/typelizer/interface.rb#183
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:198
   def global_type?(type); end
 
-  # source://typelizer//lib/typelizer/interface.rb#187
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:202
   def infer_types(props, hash_name = T.unsafe(nil)); end
 
-  # source://typelizer//lib/typelizer/interface.rb#215
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:230
   def resolve_class_type(attrs); end
 
-  # source://typelizer//lib/typelizer/interface.rb#228
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:243
   def resolve_single_class_type(attrs); end
 
-  # source://typelizer//lib/typelizer/interface.rb#238
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:253
   def resolve_type_part(part); end
 
-  # source://typelizer//lib/typelizer/interface.rb#232
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:247
   def resolve_union_class_types(attrs); end
 
-  # source://typelizer//lib/typelizer/interface.rb#175
+  # pkg:gem/typelizer#lib/typelizer/interface.rb:190
   def self_type_name; end
 end
 
-# source://typelizer//lib/typelizer/model_plugins/auto.rb#2
+# pkg:gem/typelizer#lib/typelizer/model_plugins/auto.rb:2
 module Typelizer::ModelPlugins; end
 
-# source://typelizer//lib/typelizer/model_plugins/active_record.rb#3
+# pkg:gem/typelizer#lib/typelizer/model_plugins/active_record.rb:3
 class Typelizer::ModelPlugins::ActiveRecord
   # @return [ActiveRecord] a new instance of ActiveRecord
   #
-  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#4
+  # pkg:gem/typelizer#lib/typelizer/model_plugins/active_record.rb:4
   def initialize(model_class:, config:); end
 
-  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#21
+  # pkg:gem/typelizer#lib/typelizer/model_plugins/active_record.rb:21
   def comment_for(prop); end
 
   # Returns the value of attribute config.
   #
-  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#9
+  # pkg:gem/typelizer#lib/typelizer/model_plugins/active_record.rb:9
   def config; end
 
-  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#28
+  # pkg:gem/typelizer#lib/typelizer/model_plugins/active_record.rb:28
   def enum_for(prop); end
 
-  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#11
+  # pkg:gem/typelizer#lib/typelizer/model_plugins/active_record.rb:11
   def infer_types(prop); end
 
   # Returns the value of attribute model_class.
   #
-  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#9
+  # pkg:gem/typelizer#lib/typelizer/model_plugins/active_record.rb:9
   def model_class; end
 
   private
 
-  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#45
+  # pkg:gem/typelizer#lib/typelizer/model_plugins/active_record.rb:45
   def attribute_types; end
 
-  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#38
+  # pkg:gem/typelizer#lib/typelizer/model_plugins/active_record.rb:38
   def columns_hash; end
 
-  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#52
+  # pkg:gem/typelizer#lib/typelizer/model_plugins/active_record.rb:52
   def infer_types_for_association(prop); end
 
-  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#106
+  # pkg:gem/typelizer#lib/typelizer/model_plugins/active_record.rb:106
   def infer_types_for_association_ids(prop); end
 
-  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#138
+  # pkg:gem/typelizer#lib/typelizer/model_plugins/active_record.rb:138
   def infer_types_for_attribute(prop); end
 
-  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#80
+  # pkg:gem/typelizer#lib/typelizer/model_plugins/active_record.rb:80
   def infer_types_for_column(prop); end
 
-  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#119
+  # pkg:gem/typelizer#lib/typelizer/model_plugins/active_record.rb:119
   def infer_types_for_delegate(prop); end
 
-  # source://typelizer//lib/typelizer/model_plugins/active_record.rb#158
+  # pkg:gem/typelizer#lib/typelizer/model_plugins/active_record.rb:158
   def infer_types_for_serialized(prop, type_obj); end
 end
 
-# source://typelizer//lib/typelizer/model_plugins/auto.rb#3
+# pkg:gem/typelizer#lib/typelizer/model_plugins/auto.rb:3
 module Typelizer::ModelPlugins::Auto
   class << self
-    # source://typelizer//lib/typelizer/model_plugins/auto.rb#5
+    # pkg:gem/typelizer#lib/typelizer/model_plugins/auto.rb:5
     def new(model_class:, config:); end
 
-    # source://typelizer//lib/typelizer/model_plugins/auto.rb#9
+    # pkg:gem/typelizer#lib/typelizer/model_plugins/auto.rb:9
     def plugin(model_class); end
   end
 end
 
-# source://typelizer//lib/typelizer/model_plugins/poro.rb#3
+# pkg:gem/typelizer#lib/typelizer/model_plugins/poro.rb:3
 class Typelizer::ModelPlugins::Poro
   # We don't care about initialization
   #
   # @return [Poro] a new instance of Poro
   #
-  # source://typelizer//lib/typelizer/model_plugins/poro.rb#5
+  # pkg:gem/typelizer#lib/typelizer/model_plugins/poro.rb:5
   def initialize(*_arg0, **_arg1, &_arg2); end
 
-  # source://typelizer//lib/typelizer/model_plugins/poro.rb#12
+  # pkg:gem/typelizer#lib/typelizer/model_plugins/poro.rb:12
   def comment_for(prop); end
 
-  # source://typelizer//lib/typelizer/model_plugins/poro.rb#16
+  # pkg:gem/typelizer#lib/typelizer/model_plugins/poro.rb:16
   def enum_for(prop); end
 
-  # source://typelizer//lib/typelizer/model_plugins/poro.rb#8
+  # pkg:gem/typelizer#lib/typelizer/model_plugins/poro.rb:8
   def infer_types(prop); end
 end
 
-# source://typelizer//lib/typelizer/openapi.rb#4
+# pkg:gem/typelizer#lib/typelizer/openapi.rb:4
 module Typelizer::OpenAPI
   class << self
-    # source://typelizer//lib/typelizer/openapi.rb#43
-    def property_schema(property, openapi_version: T.unsafe(nil)); end
+    # pkg:gem/typelizer#lib/typelizer/openapi.rb:44
+    def property_schema(property, openapi_version: T.unsafe(nil), type_mapping: T.unsafe(nil)); end
 
-    # source://typelizer//lib/typelizer/openapi.rb#31
+    # pkg:gem/typelizer#lib/typelizer/openapi.rb:31
     def schema_for(interface, openapi_version: T.unsafe(nil)); end
 
     private
 
-    # source://typelizer//lib/typelizer/openapi.rb#146
+    # pkg:gem/typelizer#lib/typelizer/openapi.rb:147
     def apply_metadata(definition, property); end
 
-    # source://typelizer//lib/typelizer/openapi.rb#151
+    # pkg:gem/typelizer#lib/typelizer/openapi.rb:152
     def apply_nullable(definition, property, openapi_version:); end
 
-    # source://typelizer//lib/typelizer/openapi.rb#174
-    def base_type(property, openapi_version:); end
+    # pkg:gem/typelizer#lib/typelizer/openapi.rb:175
+    def base_type(property, openapi_version:, type_mapping:); end
 
-    # source://typelizer//lib/typelizer/openapi.rb#79
+    # pkg:gem/typelizer#lib/typelizer/openapi.rb:80
     def inline_schema(definition, property, openapi_version:); end
 
-    # source://typelizer//lib/typelizer/openapi.rb#197
-    def nested_schema(property, openapi_version:); end
+    # pkg:gem/typelizer#lib/typelizer/openapi.rb:199
+    def nested_schema(property, openapi_version:, type_mapping:); end
 
-    # source://typelizer//lib/typelizer/openapi.rb#63
+    # pkg:gem/typelizer#lib/typelizer/openapi.rb:64
     def ref_schema(ref, property, openapi_version:); end
 
     # @return [Boolean]
     #
-    # source://typelizer//lib/typelizer/openapi.rb#215
+    # pkg:gem/typelizer#lib/typelizer/openapi.rb:221
     def string_literal?(type); end
 
     # @return [Boolean]
     #
-    # source://typelizer//lib/typelizer/openapi.rb#211
+    # pkg:gem/typelizer#lib/typelizer/openapi.rb:217
     def ts_only_type?(type_str); end
 
-    # source://typelizer//lib/typelizer/openapi.rb#106
+    # @return [Boolean]
+    #
+    # pkg:gem/typelizer#lib/typelizer/openapi.rb:209
+    def type_mapping_overridden?(property, type_mapping); end
+
+    # pkg:gem/typelizer#lib/typelizer/openapi.rb:107
     def union_member_schema(type); end
 
-    # source://typelizer//lib/typelizer/openapi.rb#91
+    # pkg:gem/typelizer#lib/typelizer/openapi.rb:92
     def union_schema(property, openapi_version:); end
 
-    # source://typelizer//lib/typelizer/openapi.rb#221
+    # pkg:gem/typelizer#lib/typelizer/openapi.rb:227
     def unquote_string_literal(type); end
 
     # @return [Boolean]
     #
-    # source://typelizer//lib/typelizer/openapi.rb#207
+    # pkg:gem/typelizer#lib/typelizer/openapi.rb:213
     def v31?(openapi_version); end
 
     # @raise [ArgumentError]
     #
-    # source://typelizer//lib/typelizer/openapi.rb#225
+    # pkg:gem/typelizer#lib/typelizer/openapi.rb:231
     def validate_version!(openapi_version); end
 
-    # source://typelizer//lib/typelizer/openapi.rb#163
+    # pkg:gem/typelizer#lib/typelizer/openapi.rb:164
     def wrap_multi(definition, property, openapi_version:); end
 
-    # source://typelizer//lib/typelizer/openapi.rb#121
+    # pkg:gem/typelizer#lib/typelizer/openapi.rb:122
     def wrap_traits(definition, property, openapi_version:); end
   end
 end
 
-# source://typelizer//lib/typelizer/openapi.rb#10
+# pkg:gem/typelizer#lib/typelizer/openapi.rb:10
 Typelizer::OpenAPI::COLUMN_TYPE_MAP = T.let(T.unsafe(nil), Hash)
 
-# source://typelizer//lib/typelizer/openapi.rb#7
+# pkg:gem/typelizer#lib/typelizer/openapi.rb:7
 Typelizer::OpenAPI::OPENAPI_TYPES = T.let(T.unsafe(nil), Array)
 
-# source://typelizer//lib/typelizer/openapi.rb#5
+# pkg:gem/typelizer#lib/typelizer/openapi.rb:5
 Typelizer::OpenAPI::SUPPORTED_VERSIONS = T.let(T.unsafe(nil), Array)
 
-# source://typelizer//lib/typelizer/openapi.rb#8
+# pkg:gem/typelizer#lib/typelizer/openapi.rb:8
 Typelizer::OpenAPI::TS_OBJECT_TYPES = T.let(T.unsafe(nil), Array)
 
-# source://typelizer//lib/typelizer/property.rb#2
+# pkg:gem/typelizer#lib/typelizer/property.rb:2
 class Typelizer::Property < ::Struct
   # Returns the value of attribute column_name
   #
   # @return [Object] the current value of column_name
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def column_name; end
 
   # Sets the attribute column_name
@@ -980,14 +1003,14 @@ class Typelizer::Property < ::Struct
   # @param value [Object] the value to set the attribute column_name to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def column_name=(_); end
 
   # Returns the value of attribute column_type
   #
   # @return [Object] the current value of column_type
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def column_type; end
 
   # Sets the attribute column_type
@@ -995,14 +1018,14 @@ class Typelizer::Property < ::Struct
   # @param value [Object] the value to set the attribute column_type to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def column_type=(_); end
 
   # Returns the value of attribute comment
   #
   # @return [Object] the current value of comment
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def comment; end
 
   # Sets the attribute comment
@@ -1010,14 +1033,14 @@ class Typelizer::Property < ::Struct
   # @param value [Object] the value to set the attribute comment to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def comment=(_); end
 
   # Returns the value of attribute deprecated
   #
   # @return [Object] the current value of deprecated
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def deprecated; end
 
   # Sets the attribute deprecated
@@ -1025,14 +1048,14 @@ class Typelizer::Property < ::Struct
   # @param value [Object] the value to set the attribute deprecated to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def deprecated=(_); end
 
   # Returns the value of attribute enum
   #
   # @return [Object] the current value of enum
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def enum; end
 
   # Sets the attribute enum
@@ -1040,7 +1063,7 @@ class Typelizer::Property < ::Struct
   # @param value [Object] the value to set the attribute enum to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def enum=(_); end
 
   # Generates a TypeScript type definition for named enums
@@ -1049,14 +1072,14 @@ class Typelizer::Property < ::Struct
   # @param sort_order [Symbol, Proc, nil] Sort order for enum values (:none, :alphabetical, or Proc)
   # @return [String, nil] The type definition like "type UserRole = 'admin' | 'user'"
   #
-  # source://typelizer//lib/typelizer/property.rb#69
+  # pkg:gem/typelizer#lib/typelizer/property.rb:69
   def enum_definition(sort_order: T.unsafe(nil), prefer_double_quotes: T.unsafe(nil)); end
 
   # Returns the value of attribute enum_type_name
   #
   # @return [Object] the current value of enum_type_name
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def enum_type_name; end
 
   # Sets the attribute enum_type_name
@@ -1064,25 +1087,25 @@ class Typelizer::Property < ::Struct
   # @param value [Object] the value to set the attribute enum_type_name to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def enum_type_name=(_); end
 
   # @return [Boolean]
   #
-  # source://typelizer//lib/typelizer/property.rb#17
+  # pkg:gem/typelizer#lib/typelizer/property.rb:17
   def eql?(other); end
 
-  # source://typelizer//lib/typelizer/property.rb#52
+  # pkg:gem/typelizer#lib/typelizer/property.rb:52
   def fingerprint; end
 
-  # source://typelizer//lib/typelizer/property.rb#12
+  # pkg:gem/typelizer#lib/typelizer/property.rb:12
   def inspect; end
 
   # Returns the value of attribute multi
   #
   # @return [Object] the current value of multi
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def multi; end
 
   # Sets the attribute multi
@@ -1090,14 +1113,14 @@ class Typelizer::Property < ::Struct
   # @param value [Object] the value to set the attribute multi to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def multi=(_); end
 
   # Returns the value of attribute name
   #
   # @return [Object] the current value of name
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def name; end
 
   # Sets the attribute name
@@ -1105,14 +1128,14 @@ class Typelizer::Property < ::Struct
   # @param value [Object] the value to set the attribute name to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def name=(_); end
 
   # Returns the value of attribute nested_properties
   #
   # @return [Object] the current value of nested_properties
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def nested_properties; end
 
   # Sets the attribute nested_properties
@@ -1120,14 +1143,14 @@ class Typelizer::Property < ::Struct
   # @param value [Object] the value to set the attribute nested_properties to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def nested_properties=(_); end
 
   # Returns the value of attribute nested_typelizes
   #
   # @return [Object] the current value of nested_typelizes
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def nested_typelizes; end
 
   # Sets the attribute nested_typelizes
@@ -1135,14 +1158,14 @@ class Typelizer::Property < ::Struct
   # @param value [Object] the value to set the attribute nested_typelizes to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def nested_typelizes=(_); end
 
   # Returns the value of attribute nullable
   #
   # @return [Object] the current value of nullable
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def nullable; end
 
   # Sets the attribute nullable
@@ -1150,14 +1173,14 @@ class Typelizer::Property < ::Struct
   # @param value [Object] the value to set the attribute nullable to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def nullable=(_); end
 
   # Returns the value of attribute optional
   #
   # @return [Object] the current value of optional
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def optional; end
 
   # Sets the attribute optional
@@ -1165,7 +1188,7 @@ class Typelizer::Property < ::Struct
   # @param value [Object] the value to set the attribute optional to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def optional=(_); end
 
   # Renders the property as a TypeScript property string
@@ -1174,19 +1197,19 @@ class Typelizer::Property < ::Struct
   # @param sort_order [Symbol, Proc, nil] Sort order for union types (:none, :alphabetical, or Proc)
   # @return [String] The property string like "name?: Type1 | Type2"
   #
-  # source://typelizer//lib/typelizer/property.rb#32
+  # pkg:gem/typelizer#lib/typelizer/property.rb:32
   def render(sort_order: T.unsafe(nil), prefer_double_quotes: T.unsafe(nil)); end
 
   # Default to_s for backward compatibility (no sorting)
   #
-  # source://typelizer//lib/typelizer/property.rb#24
+  # pkg:gem/typelizer#lib/typelizer/property.rb:24
   def to_s; end
 
   # Returns the value of attribute type
   #
   # @return [Object] the current value of type
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def type; end
 
   # Sets the attribute type
@@ -1194,17 +1217,17 @@ class Typelizer::Property < ::Struct
   # @param value [Object] the value to set the attribute type to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def type=(_); end
 
-  # source://typelizer//lib/typelizer/property.rb#8
+  # pkg:gem/typelizer#lib/typelizer/property.rb:8
   def with(**attrs); end
 
   # Returns the value of attribute with_traits
   #
   # @return [Object] the current value of with_traits
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def with_traits; end
 
   # Sets the attribute with_traits
@@ -1212,12 +1235,12 @@ class Typelizer::Property < ::Struct
   # @param value [Object] the value to set the attribute with_traits to.
   # @return [Object] the newly set value
   #
-  # source://typelizer//lib/typelizer/property.rb#2
+  # pkg:gem/typelizer#lib/typelizer/property.rb:2
   def with_traits=(_); end
 
   private
 
-  # source://typelizer//lib/typelizer/property.rb#79
+  # pkg:gem/typelizer#lib/typelizer/property.rb:79
   def quote_string(str, prefer_double_quotes); end
 
   # Returns the type name, optionally sorting union members
@@ -1226,63 +1249,63 @@ class Typelizer::Property < ::Struct
   # @param sort_order [Symbol, Proc, nil] Sort order for union types
   # @return [String] The type name
   #
-  # source://typelizer//lib/typelizer/property.rb#87
+  # pkg:gem/typelizer#lib/typelizer/property.rb:87
   def type_name(sort_order: T.unsafe(nil), prefer_double_quotes: T.unsafe(nil)); end
 
   class << self
-    # source://typelizer//lib/typelizer/property.rb#2
+    # pkg:gem/typelizer#lib/typelizer/property.rb:2
     def [](*_arg0); end
 
-    # source://typelizer//lib/typelizer/property.rb#2
+    # pkg:gem/typelizer#lib/typelizer/property.rb:2
     def inspect; end
 
-    # source://typelizer//lib/typelizer/property.rb#2
+    # pkg:gem/typelizer#lib/typelizer/property.rb:2
     def keyword_init?; end
 
-    # source://typelizer//lib/typelizer/property.rb#2
+    # pkg:gem/typelizer#lib/typelizer/property.rb:2
     def members; end
 
-    # source://typelizer//lib/typelizer/property.rb#2
+    # pkg:gem/typelizer#lib/typelizer/property.rb:2
     def new(*_arg0); end
   end
 end
 
-# source://typelizer//lib/typelizer/property_sorter.rb#4
+# pkg:gem/typelizer#lib/typelizer/property_sorter.rb:4
 module Typelizer::PropertySorter
   class << self
-    # source://typelizer//lib/typelizer/property_sorter.rb#5
+    # pkg:gem/typelizer#lib/typelizer/property_sorter.rb:5
     def sort(props, sort_order); end
   end
 end
 
-# source://typelizer//lib/typelizer/railtie.rb#2
+# pkg:gem/typelizer#lib/typelizer/railtie.rb:2
 class Typelizer::Railtie < ::Rails::Railtie; end
 
-# source://typelizer//lib/typelizer/renderer.rb#6
+# pkg:gem/typelizer#lib/typelizer/renderer.rb:6
 class Typelizer::Renderer
   # @return [Renderer] a new instance of Renderer
   #
-  # source://typelizer//lib/typelizer/renderer.rb#11
+  # pkg:gem/typelizer#lib/typelizer/renderer.rb:11
   def initialize(template); end
 
-  # source://typelizer//lib/typelizer/renderer.rb#15
+  # pkg:gem/typelizer#lib/typelizer/renderer.rb:15
   def call(**context); end
 
   private
 
   # Returns the value of attribute erb.
   #
-  # source://typelizer//lib/typelizer/renderer.rb#25
+  # pkg:gem/typelizer#lib/typelizer/renderer.rb:25
   def erb; end
 
-  # source://typelizer//lib/typelizer/renderer.rb#27
+  # pkg:gem/typelizer#lib/typelizer/renderer.rb:27
   def indent(content, multiplier = T.unsafe(nil)); end
 
-  # source://typelizer//lib/typelizer/renderer.rb#32
+  # pkg:gem/typelizer#lib/typelizer/renderer.rb:32
   def render(template, **context); end
 
   class << self
-    # source://typelizer//lib/typelizer/renderer.rb#7
+    # pkg:gem/typelizer#lib/typelizer/renderer.rb:7
     def call(template, **context); end
   end
 end
@@ -1299,377 +1322,377 @@ end
 # Rationale: we don't allocate another Config here; this layer is merged on top of
 # library/global/writer settings when computing the effective config.
 #
-# source://typelizer//lib/typelizer/serializer_config_layer.rb#15
+# pkg:gem/typelizer#lib/typelizer/serializer_config_layer.rb:15
 class Typelizer::SerializerConfigLayer
   # @return [SerializerConfigLayer] a new instance of SerializerConfigLayer
   #
-  # source://typelizer//lib/typelizer/serializer_config_layer.rb#18
+  # pkg:gem/typelizer#lib/typelizer/serializer_config_layer.rb:18
   def initialize(target_hash); end
 
-  # source://typelizer//lib/typelizer/serializer_config_layer.rb#22
+  # pkg:gem/typelizer#lib/typelizer/serializer_config_layer.rb:22
   def to_h; end
 
   private
 
   # @raise [NoMethodError]
   #
-  # source://typelizer//lib/typelizer/serializer_config_layer.rb#28
+  # pkg:gem/typelizer#lib/typelizer/serializer_config_layer.rb:28
   def method_missing(name, *args); end
 
   # @return [Boolean]
   #
-  # source://typelizer//lib/typelizer/serializer_config_layer.rb#41
+  # pkg:gem/typelizer#lib/typelizer/serializer_config_layer.rb:41
   def respond_to_missing?(name, include_private = T.unsafe(nil)); end
 end
 
-# source://typelizer//lib/typelizer/serializer_config_layer.rb#16
+# pkg:gem/typelizer#lib/typelizer/serializer_config_layer.rb:16
 Typelizer::SerializerConfigLayer::VALID_KEYS = T.let(T.unsafe(nil), Set)
 
-# source://typelizer//lib/typelizer/serializer_plugins/auto.rb#2
+# pkg:gem/typelizer#lib/typelizer/serializer_plugins/auto.rb:2
 module Typelizer::SerializerPlugins; end
 
-# source://typelizer//lib/typelizer/serializer_plugins/ams.rb#5
+# pkg:gem/typelizer#lib/typelizer/serializer_plugins/ams.rb:5
 class Typelizer::SerializerPlugins::AMS < ::Typelizer::SerializerPlugins::Base
-  # source://typelizer//lib/typelizer/serializer_plugins/ams.rb#6
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/ams.rb:6
   def properties; end
 end
 
-# source://typelizer//lib/typelizer/serializer_plugins/alba.rb#5
+# pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba.rb:5
 class Typelizer::SerializerPlugins::Alba < ::Typelizer::SerializerPlugins::Base
-  # source://typelizer//lib/typelizer/serializer_plugins/alba.rb#61
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba.rb:61
   def build_collected_property(name, attr); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba.rb#94
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba.rb:95
   def infer_resource_from_name(name); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba.rb#29
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba.rb:29
   def meta_fields; end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba.rb#14
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba.rb:14
   def properties; end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba.rb#20
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba.rb:20
   def root_key; end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba.rb#110
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba.rb:111
   def trait_interfaces; end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba.rb#46
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba.rb:46
   def trait_properties(trait_name); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba.rb#40
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba.rb:40
   def traits; end
 
   private
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba.rb#123
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba.rb:124
   def build_property(name, attr, **options); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba.rb#216
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba.rb:217
   def collect_nested_block(block); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba.rb#208
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba.rb:209
   def fetch_key(serializer, key); end
 
   # @return [Boolean]
   #
-  # source://typelizer//lib/typelizer/serializer_plugins/alba.rb#200
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba.rb:201
   def has_transform_key?(serializer); end
 
   # @return [Boolean]
   #
-  # source://typelizer//lib/typelizer/serializer_plugins/alba.rb#204
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba.rb:205
   def should_transform_root_key?(serializer); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba.rb#212
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba.rb:213
   def ts_mapper; end
 end
 
-# source://typelizer//lib/typelizer/serializer_plugins/alba.rb#6
+# pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba.rb:6
 Typelizer::SerializerPlugins::Alba::ALBA_TS_MAPPER = T.let(T.unsafe(nil), Hash)
 
-# source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#5
+# pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:5
 class Typelizer::SerializerPlugins::Alba::BlockAttributeCollector
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#8
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:8
   def initialize; end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#85
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:85
   def association(name, **options, &block); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#20
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:20
   def attribute(name, **options, &block); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#14
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:14
   def attributes(*names, **options); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#6
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:6
   def collected_attributes; end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#6
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:6
   def collected_typelizes; end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#100
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:100
   def has_many(name, **options, &block); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#84
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:84
   def has_one(name, **options, &block); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#87
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:87
   def many(name, **options, &block); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#103
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:103
   def method_missing(method_name, *args, **kwargs, &block); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#68
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:68
   def nested(name, **options, &block); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#62
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:62
   def nested_attribute(name, **options, &block); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#71
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:71
   def one(name, **options, &block); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#33
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:33
   def typelize(type_or_hash = T.unsafe(nil), **options); end
 
   private
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#113
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:113
   def normalize_typelize(type_def, **options); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#107
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:107
   def respond_to_missing?(method_name, include_private = T.unsafe(nil)); end
 end
 
-# source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#57
+# pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:57
 class Typelizer::SerializerPlugins::Alba::BlockAttributeCollector::BlockAssociation < ::Struct
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#57
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:57
   def key; end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#57
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:57
   def key=(_); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#57
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:57
   def multi; end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#57
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:57
   def multi=(_); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#57
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:57
   def name; end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#57
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:57
   def name=(_); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#57
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:57
   def resource; end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#57
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:57
   def resource=(_); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#57
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:57
   def with_traits; end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#57
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:57
   def with_traits=(_); end
 
   class << self
-    # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#57
+    # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:57
     def [](*_arg0); end
 
-    # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#57
+    # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:57
     def inspect; end
 
-    # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#57
+    # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:57
     def keyword_init?; end
 
-    # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#57
+    # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:57
     def members; end
 
-    # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#57
+    # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:57
     def new(*_arg0); end
   end
 end
 
-# source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#60
+# pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:60
 class Typelizer::SerializerPlugins::Alba::BlockAttributeCollector::BlockNestedAttribute < ::Struct
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#60
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:60
   def block; end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#60
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:60
   def block=(_); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#60
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:60
   def name; end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#60
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:60
   def name=(_); end
 
   class << self
-    # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#60
+    # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:60
     def [](*_arg0); end
 
-    # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#60
+    # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:60
     def inspect; end
 
-    # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#60
+    # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:60
     def keyword_init?; end
 
-    # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#60
+    # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:60
     def members; end
 
-    # source://typelizer//lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb#60
+    # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/block_attribute_collector.rb:60
     def new(*_arg0); end
   end
 end
 
-# source://typelizer//lib/typelizer/serializer_plugins/alba/trait_interface.rb#7
+# pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/trait_interface.rb:7
 class Typelizer::SerializerPlugins::Alba::TraitInterface
   include ::Typelizer::TypeInference
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/trait_interface.rb#12
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/trait_interface.rb:12
   def initialize(serializer:, trait_name:, context:, plugin:); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/trait_interface.rb#19
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/trait_interface.rb:19
   def config; end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/trait_interface.rb#10
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/trait_interface.rb:10
   def context; end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/trait_interface.rb#23
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/trait_interface.rb:23
   def name; end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/trait_interface.rb#10
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/trait_interface.rb:10
   def plugin; end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/trait_interface.rb#28
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/trait_interface.rb:28
   def properties; end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/trait_interface.rb#10
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/trait_interface.rb:10
   def serializer; end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/trait_interface.rb#10
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/trait_interface.rb:10
   def trait_name; end
 
   private
 
-  # source://typelizer//lib/typelizer/serializer_plugins/alba/trait_interface.rb#38
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/alba/trait_interface.rb:38
   def infer_types(props, typelizes); end
 end
 
-# source://typelizer//lib/typelizer/serializer_plugins/auto.rb#3
+# pkg:gem/typelizer#lib/typelizer/serializer_plugins/auto.rb:3
 module Typelizer::SerializerPlugins::Auto
   class << self
-    # source://typelizer//lib/typelizer/serializer_plugins/auto.rb#5
+    # pkg:gem/typelizer#lib/typelizer/serializer_plugins/auto.rb:5
     def new(serializer:, config:, context:); end
 
-    # source://typelizer//lib/typelizer/serializer_plugins/auto.rb#9
+    # pkg:gem/typelizer#lib/typelizer/serializer_plugins/auto.rb:9
     def plugin(serializer); end
   end
 end
 
-# source://typelizer//lib/typelizer/serializer_plugins/base.rb#3
+# pkg:gem/typelizer#lib/typelizer/serializer_plugins/base.rb:3
 class Typelizer::SerializerPlugins::Base
   # @return [Base] a new instance of Base
   #
-  # source://typelizer//lib/typelizer/serializer_plugins/base.rb#4
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/base.rb:4
   def initialize(serializer:, config:, context:); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/base.rb#14
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/base.rb:14
   def meta_fields; end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/base.rb#18
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/base.rb:18
   def properties; end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/base.rb#10
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/base.rb:10
   def root_key; end
 
   private
 
   # Returns the value of attribute config.
   #
-  # source://typelizer//lib/typelizer/serializer_plugins/base.rb#24
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/base.rb:24
   def config; end
 
   # Returns the value of attribute context.
   #
-  # source://typelizer//lib/typelizer/serializer_plugins/base.rb#24
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/base.rb:24
   def context; end
 
   # Returns the value of attribute serializer.
   #
-  # source://typelizer//lib/typelizer/serializer_plugins/base.rb#24
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/base.rb:24
   def serializer; end
 end
 
-# source://typelizer//lib/typelizer/serializer_plugins/oj_serializers.rb#5
+# pkg:gem/typelizer#lib/typelizer/serializer_plugins/oj_serializers.rb:5
 class Typelizer::SerializerPlugins::OjSerializers < ::Typelizer::SerializerPlugins::Base
-  # source://typelizer//lib/typelizer/serializer_plugins/oj_serializers.rb#6
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/oj_serializers.rb:6
   def properties; end
 end
 
-# source://typelizer//lib/typelizer/serializer_plugins/panko.rb#5
+# pkg:gem/typelizer#lib/typelizer/serializer_plugins/panko.rb:5
 class Typelizer::SerializerPlugins::Panko < ::Typelizer::SerializerPlugins::Base
-  # source://typelizer//lib/typelizer/serializer_plugins/panko.rb#6
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/panko.rb:6
   def properties; end
 
   private
 
-  # source://typelizer//lib/typelizer/serializer_plugins/panko.rb#36
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/panko.rb:36
   def association_property(assoc, multi: T.unsafe(nil)); end
 
-  # source://typelizer//lib/typelizer/serializer_plugins/panko.rb#26
+  # pkg:gem/typelizer#lib/typelizer/serializer_plugins/panko.rb:26
   def attribute_property(att); end
 end
 
-# source://typelizer//lib/typelizer/config.rb#6
+# pkg:gem/typelizer#lib/typelizer/config.rb:6
 Typelizer::TYPE_MAPPING = T.let(T.unsafe(nil), Hash)
 
-# source://typelizer//lib/typelizer/type_inference.rb#4
+# pkg:gem/typelizer#lib/typelizer/type_inference.rb:4
 module Typelizer::TypeInference
   private
 
-  # source://typelizer//lib/typelizer/type_inference.rb#11
+  # pkg:gem/typelizer#lib/typelizer/type_inference.rb:11
   def apply_metadata(prop); end
 
-  # source://typelizer//lib/typelizer/type_inference.rb#7
+  # pkg:gem/typelizer#lib/typelizer/type_inference.rb:7
   def apply_model_inference(prop); end
 
-  # source://typelizer//lib/typelizer/type_inference.rb#18
+  # pkg:gem/typelizer#lib/typelizer/type_inference.rb:18
   def infer_nested_property_types(prop); end
 
-  # source://typelizer//lib/typelizer/type_inference.rb#33
+  # pkg:gem/typelizer#lib/typelizer/type_inference.rb:33
   def model_class; end
 
-  # source://typelizer//lib/typelizer/type_inference.rb#43
+  # pkg:gem/typelizer#lib/typelizer/type_inference.rb:43
   def model_plugin; end
 end
 
-# source://typelizer//lib/typelizer/type_parser.rb#4
+# pkg:gem/typelizer#lib/typelizer/type_parser.rb:4
 module Typelizer::TypeParser
   class << self
-    # source://typelizer//lib/typelizer/type_parser.rb#24
+    # pkg:gem/typelizer#lib/typelizer/type_parser.rb:24
     def parse(type_def, **options); end
 
-    # source://typelizer//lib/typelizer/type_parser.rb#13
+    # pkg:gem/typelizer#lib/typelizer/type_parser.rb:13
     def parse_declaration(attrs, **options); end
 
     # @return [Boolean]
     #
-    # source://typelizer//lib/typelizer/type_parser.rb#45
+    # pkg:gem/typelizer#lib/typelizer/type_parser.rb:45
     def shortcut?(type_def); end
 
     private
 
     # @raise [ArgumentError]
     #
-    # source://typelizer//lib/typelizer/type_parser.rb#54
+    # pkg:gem/typelizer#lib/typelizer/type_parser.rb:54
     def parse_array(type_defs, **options); end
 
-    # source://typelizer//lib/typelizer/type_parser.rb#79
+    # pkg:gem/typelizer#lib/typelizer/type_parser.rb:79
     def parse_union(type_str, **options); end
 
-    # source://typelizer//lib/typelizer/type_parser.rb#74
+    # pkg:gem/typelizer#lib/typelizer/type_parser.rb:74
     def wrap_type(types, **options); end
   end
 end
@@ -1680,14 +1703,14 @@ end
 # - Optional `[]` modifier
 # Order of ? and [] can be either way
 #
-# source://typelizer//lib/typelizer/type_parser.rb#10
+# pkg:gem/typelizer#lib/typelizer/type_parser.rb:10
 Typelizer::TypeParser::TYPE_PATTERN = T.let(T.unsafe(nil), Regexp)
 
 # Sorts union type members within TypeScript type strings.
 # Handles types like "Type3 | Type1 | Type2" -> "Type1 | Type2 | Type3"
 # Also handles complex nested types like "Array<Type3 | Type1>" -> "Array<Type1 | Type3>"
 #
-# source://typelizer//lib/typelizer/union_type_sorter.rb#7
+# pkg:gem/typelizer#lib/typelizer/union_type_sorter.rb:7
 module Typelizer::UnionTypeSorter
   class << self
     # Checks if brackets are balanced in the string
@@ -1695,7 +1718,7 @@ module Typelizer::UnionTypeSorter
     # @param str [String] The string to check
     # @return [Boolean] True if brackets are balanced
     #
-    # source://typelizer//lib/typelizer/union_type_sorter.rb#126
+    # pkg:gem/typelizer#lib/typelizer/union_type_sorter.rb:126
     def balanced_brackets?(str); end
 
     # Sorts union type members in a type string
@@ -1704,7 +1727,7 @@ module Typelizer::UnionTypeSorter
     # @param type_str [String] The type string potentially containing unions
     # @return [String] The type string with sorted union members
     #
-    # source://typelizer//lib/typelizer/union_type_sorter.rb#12
+    # pkg:gem/typelizer#lib/typelizer/union_type_sorter.rb:12
     def sort(type_str, sort_order); end
 
     # Sorts a simple union string (no nested generics)
@@ -1712,7 +1735,7 @@ module Typelizer::UnionTypeSorter
     # @param union_str [String] String like "Type3 | Type1 | Type2"
     # @return [String] Sorted string like "Type1 | Type2 | Type3"
     #
-    # source://typelizer//lib/typelizer/union_type_sorter.rb#60
+    # pkg:gem/typelizer#lib/typelizer/union_type_sorter.rb:60
     def sort_simple_union(union_str); end
 
     # Sorts top-level union (handles cases where unions aren't inside generics)
@@ -1720,7 +1743,7 @@ module Typelizer::UnionTypeSorter
     # @param type_str [String] The type string
     # @return [String] The sorted type string
     #
-    # source://typelizer//lib/typelizer/union_type_sorter.rb#78
+    # pkg:gem/typelizer#lib/typelizer/union_type_sorter.rb:78
     def sort_top_level_union(type_str); end
 
     # Sorts union members alphabetically while preserving structure
@@ -1728,7 +1751,7 @@ module Typelizer::UnionTypeSorter
     # @param type_str [String] The type string to sort
     # @return [String] The sorted type string
     #
-    # source://typelizer//lib/typelizer/union_type_sorter.rb#34
+    # pkg:gem/typelizer#lib/typelizer/union_type_sorter.rb:34
     def sort_unions_alphabetically(type_str); end
 
     # Splits union members while respecting nested brackets
@@ -1736,65 +1759,68 @@ module Typelizer::UnionTypeSorter
     # @param str [String] The string to split
     # @return [Array<String>] Array of union members
     #
-    # source://typelizer//lib/typelizer/union_type_sorter.rb#94
+    # pkg:gem/typelizer#lib/typelizer/union_type_sorter.rb:94
     def split_union_members(str); end
   end
 end
 
-# source://typelizer//lib/typelizer/version.rb#4
+# pkg:gem/typelizer#lib/typelizer/version.rb:4
 Typelizer::VERSION = T.let(T.unsafe(nil), String)
 
-# source://typelizer//lib/typelizer/writer.rb#6
+# pkg:gem/typelizer#lib/typelizer/writer.rb:6
 class Typelizer::Writer
   # @return [Writer] a new instance of Writer
   #
-  # source://typelizer//lib/typelizer/writer.rb#9
+  # pkg:gem/typelizer#lib/typelizer/writer.rb:9
   def initialize(config); end
 
-  # source://typelizer//lib/typelizer/writer.rb#14
+  # pkg:gem/typelizer#lib/typelizer/writer.rb:14
   def call(interfaces, force:); end
 
   private
 
-  # source://typelizer//lib/typelizer/writer.rb#107
-  def cleanup_output_dir; end
+  # pkg:gem/typelizer#lib/typelizer/writer.rb:108
+  def cleanup_output_dir(interfaces); end
 
-  # source://typelizer//lib/typelizer/writer.rb#111
+  # pkg:gem/typelizer#lib/typelizer/writer.rb:118
   def cleanup_partial_writes(partial_files); end
 
-  # source://typelizer//lib/typelizer/writer.rb#46
-  def cleanup_stale_files(written_files); end
+  # pkg:gem/typelizer#lib/typelizer/writer.rb:46
+  def cleanup_stale_files(written_files, interfaces); end
 
-  # source://typelizer//lib/typelizer/writer.rb#55
+  # pkg:gem/typelizer#lib/typelizer/writer.rb:55
   def collect_enums(interfaces); end
 
   # Returns the value of attribute config.
   #
-  # source://typelizer//lib/typelizer/writer.rb#44
+  # pkg:gem/typelizer#lib/typelizer/writer.rb:44
   def config; end
 
-  # source://typelizer//lib/typelizer/writer.rb#102
+  # pkg:gem/typelizer#lib/typelizer/writer.rb:112
+  def output_dirs_for(interfaces); end
+
+  # pkg:gem/typelizer#lib/typelizer/writer.rb:103
   def render_template(template, **context); end
 
   # Returns the value of attribute template_cache.
   #
-  # source://typelizer//lib/typelizer/writer.rb#44
+  # pkg:gem/typelizer#lib/typelizer/writer.rb:44
   def template_cache; end
 
-  # source://typelizer//lib/typelizer/writer.rb#62
+  # pkg:gem/typelizer#lib/typelizer/writer.rb:62
   def write_enums(enums); end
 
-  # source://typelizer//lib/typelizer/writer.rb#87
-  def write_file(filename, fingerprint); end
+  # pkg:gem/typelizer#lib/typelizer/writer.rb:88
+  def write_file(filename, fingerprint, output_dir: T.unsafe(nil)); end
 
-  # source://typelizer//lib/typelizer/writer.rb#69
+  # pkg:gem/typelizer#lib/typelizer/writer.rb:69
   def write_index(interfaces, enums: T.unsafe(nil)); end
 
-  # source://typelizer//lib/typelizer/writer.rb#81
+  # pkg:gem/typelizer#lib/typelizer/writer.rb:81
   def write_interface(interface); end
 end
 
-# source://typelizer//lib/typelizer/writer.rb#7
+# pkg:gem/typelizer#lib/typelizer/writer.rb:7
 class Typelizer::Writer::WriterError < ::StandardError; end
 
 # Context for a single writer during a generation pass.
@@ -1802,11 +1828,11 @@ class Typelizer::Writer::WriterError < ::StandardError; end
 # - Computes per-serializer effective Config:
 #   library defaults < global (flat setters) < writer < DSL (parent → child)
 #
-# source://typelizer//lib/typelizer/contexts/writer_context.rb#8
+# pkg:gem/typelizer#lib/typelizer/contexts/writer_context.rb:8
 class Typelizer::WriterContext
   # @return [WriterContext] a new instance of WriterContext
   #
-  # source://typelizer//lib/typelizer/contexts/writer_context.rb#11
+  # pkg:gem/typelizer#lib/typelizer/contexts/writer_context.rb:11
   def initialize(writer_name: T.unsafe(nil), configuration: T.unsafe(nil)); end
 
   # Resolves the effective configuration for a serializer class by merging
@@ -1818,7 +1844,7 @@ class Typelizer::WriterContext
   #
   # @raise [ArgumentError]
   #
-  # source://typelizer//lib/typelizer/contexts/writer_context.rb#42
+  # pkg:gem/typelizer#lib/typelizer/contexts/writer_context.rb:42
   def config_for(serializer_class); end
 
   # Returns a memoized Interface for the given serializer class within this writer context
@@ -1830,29 +1856,29 @@ class Typelizer::WriterContext
   #
   # @raise [ArgumentError]
   #
-  # source://typelizer//lib/typelizer/contexts/writer_context.rb#27
+  # pkg:gem/typelizer#lib/typelizer/contexts/writer_context.rb:27
   def interface_for(serializer_class); end
 
   # Returns the value of attribute writer_config.
   #
-  # source://typelizer//lib/typelizer/contexts/writer_context.rb#9
+  # pkg:gem/typelizer#lib/typelizer/contexts/writer_context.rb:9
   def writer_config; end
 
   # Returns the value of attribute writer_name.
   #
-  # source://typelizer//lib/typelizer/contexts/writer_context.rb#9
+  # pkg:gem/typelizer#lib/typelizer/contexts/writer_context.rb:9
   def writer_name; end
 
   private
 
   # Builds the correct configuration by merging all configuration layers
   #
-  # source://typelizer//lib/typelizer/contexts/writer_context.rb#51
+  # pkg:gem/typelizer#lib/typelizer/contexts/writer_context.rb:51
   def build_config(serializer_class); end
 
-  # source://typelizer//lib/typelizer/contexts/writer_context.rb#76
+  # pkg:gem/typelizer#lib/typelizer/contexts/writer_context.rb:76
   def deep_merge(hash_one, hash_two); end
 
-  # source://typelizer//lib/typelizer/contexts/writer_context.rb#63
+  # pkg:gem/typelizer#lib/typelizer/contexts/writer_context.rb:63
   def dsl_config_for(klass); end
 end

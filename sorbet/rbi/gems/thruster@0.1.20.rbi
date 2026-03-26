@@ -5,8 +5,8 @@
 # Please instead update this file by running `bin/tapioca gem thruster`.
 
 
-# source://thruster//lib/thruster.rb#1
+# pkg:gem/thruster#lib/thruster.rb:1
 module Thruster; end
 
-# source://thruster//lib/thruster/version.rb#2
+# pkg:gem/thruster#lib/thruster/version.rb:2
 Thruster::VERSION = T.let(T.unsafe(nil), String)

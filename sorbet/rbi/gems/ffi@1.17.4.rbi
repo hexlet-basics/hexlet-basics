@@ -5,15 +5,15 @@
 # Please instead update this file by running `bin/tapioca gem ffi`.
 
 
-# source://ffi//lib/ffi/compat.rb#32
+# pkg:gem/ffi#lib/ffi.rb:3
 module FFI
   private
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def custom_typedefs; end
 
   class << self
-    # source://ffi//lib/ffi.rb#3
+    # pkg:gem/ffi#lib/ffi.rb:3
     def _async_cb_dispatcher_atfork_child; end
 
     # Add a definition type to type definitions.
@@ -24,17 +24,17 @@ module FFI
     # @param old [Type, DataConverter, Symbol] type definition used by {FFI.find_type}
     # @return [Type]
     #
-    # source://ffi//lib/ffi/types.rb#62
+    # pkg:gem/ffi#lib/ffi/types.rb:62
     def add_typedef(old, add); end
 
     # @see FFI::LastError.error
     #
-    # source://ffi//lib/ffi/errno.rb#34
+    # pkg:gem/ffi#lib/ffi/errno.rb:34
     def errno; end
 
     # @see FFI::LastError.error=
     #
-    # source://ffi//lib/ffi/errno.rb#40
+    # pkg:gem/ffi#lib/ffi/errno.rb:40
     def errno=(error); end
 
     # Find a type in +type_map+ ({FFI::TypeDefs}, by default) from
@@ -45,12 +45,12 @@ module FFI
     # @param type_map [Hash] if nil, {FFI::TypeDefs} is used
     # @return [Type]
     #
-    # source://ffi//lib/ffi/types.rb#76
+    # pkg:gem/ffi#lib/ffi/types.rb:76
     def find_type(name, type_map = T.unsafe(nil)); end
 
     # This is for FFI internal use only.
     #
-    # source://ffi//lib/ffi/compat.rb#35
+    # pkg:gem/ffi#lib/ffi/compat.rb:35
     def make_shareable(obj); end
 
     # Transform a generic library name to a platform library name
@@ -65,12 +65,12 @@ module FFI
     # @param lib [String, FFI::LibraryPath] library name or LibraryPath object
     # @return [String] library name formatted for current platform
     #
-    # source://ffi//lib/ffi/library.rb#46
+    # pkg:gem/ffi#lib/ffi/library.rb:46
     def map_library_name(lib); end
 
     # This is for FFI internal use only.
     #
-    # source://ffi//lib/ffi/compat.rb#46
+    # pkg:gem/ffi#lib/ffi/compat.rb:46
     def shareable_proc(**kwargs, &block); end
 
     # Get +type+ size, in bytes.
@@ -78,7 +78,7 @@ module FFI
     # @param type +type+ is an instance of class accepted by {FFI.find_type}
     # @return [Integer]
     #
-    # source://ffi//lib/ffi/types.rb#101
+    # pkg:gem/ffi#lib/ffi/types.rb:101
     def type_size(type); end
 
     # Add a definition type to type definitions.
@@ -89,626 +89,627 @@ module FFI
     # @param old [Type, DataConverter, Symbol] type definition used by {FFI.find_type}
     # @return [Type]
     #
-    # source://ffi//lib/ffi/types.rb#56
+    # pkg:gem/ffi#lib/ffi/types.rb:56
     def typedef(old, add); end
 
     private
 
-    # source://ffi//lib/ffi/types.rb#66
+    # pkg:gem/ffi#lib/ffi/types.rb:66
     def __typedef(old, add); end
 
     # Truffleruby and JRuby don't support Ractor so far.
     # So they don't need separation between builtin and custom types.
     #
-    # source://ffi//lib/ffi.rb#3
+    # pkg:gem/ffi#lib/ffi.rb:3
     def custom_typedefs; end
   end
 end
 
-# source://ffi//lib/ffi/abstract_memory.rb#33
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::AbstractMemory
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def [](_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def __copy_from__(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def clear; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def freeze; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_array_of_char(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_array_of_double(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_array_of_float(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_array_of_float32(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_array_of_float64(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_array_of_int(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_array_of_int16(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_array_of_int32(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_array_of_int64(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_array_of_int8(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_array_of_long(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_array_of_long_long(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_array_of_pointer(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_array_of_short(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_array_of_string(*_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_array_of_uchar(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_array_of_uint(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_array_of_uint16(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_array_of_uint32(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_array_of_uint64(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_array_of_uint8(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_array_of_ulong(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_array_of_ulong_long(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_array_of_ushort(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_bytes(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_char(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_double(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_float(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_float32(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_float64(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_int(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_int16(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_int32(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_int64(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_int8(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_long(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_long_long(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_pointer(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_short(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_string(*_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_uchar(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_uint(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_uint16(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_uint32(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_uint64(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_uint8(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_ulong(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_ulong_long(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get_ushort(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put(_arg0, _arg1, _arg2); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_array_of_char(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_array_of_double(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_array_of_float(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_array_of_float32(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_array_of_float64(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_array_of_int(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_array_of_int16(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_array_of_int32(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_array_of_int64(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_array_of_int8(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_array_of_long(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_array_of_long_long(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_array_of_pointer(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_array_of_short(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_array_of_uchar(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_array_of_uint(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_array_of_uint16(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_array_of_uint32(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_array_of_uint64(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_array_of_uint8(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_array_of_ulong(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_array_of_ulong_long(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_array_of_ushort(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_bytes(*_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_char(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_double(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_float(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_float32(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_float64(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_int(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_int16(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_int32(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_int64(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_int8(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_long(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_long_long(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_pointer(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_short(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_string(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_uchar(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_uint(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_uint16(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_uint32(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_uint64(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_uint8(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_ulong(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_ulong_long(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put_ushort(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_array_of_char(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_array_of_double(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_array_of_float(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_array_of_int(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_array_of_int16(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_array_of_int32(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_array_of_int64(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_array_of_int8(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_array_of_long(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_array_of_long_long(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_array_of_pointer(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_array_of_short(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_array_of_string(*_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_array_of_uchar(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_array_of_uint(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_array_of_uint16(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_array_of_uint32(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_array_of_uint64(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_array_of_uint8(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_array_of_ulong(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_array_of_ulong_long(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_array_of_ushort(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_bytes(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_char; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_double; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_float; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_int; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_int16; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_int32; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_int64; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_int8; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_long; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_long_long; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_pointer; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_short; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_uchar; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_uint; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_uint16; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_uint32; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_uint64; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_uint8; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_ulong; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_ulong_long; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def read_ushort; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def size; end
 
   # Return +true+ if +self+ has a size limit.
   #
   # @return [Boolean]
   #
-  # source://ffi//lib/ffi/abstract_memory.rb#40
+  # pkg:gem/ffi#lib/ffi/abstract_memory.rb:40
   def size_limit?; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def total; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def type_size; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_array_of_char(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_array_of_double(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_array_of_float(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_array_of_int(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_array_of_int16(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_array_of_int32(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_array_of_int64(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_array_of_int8(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_array_of_long(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_array_of_long_long(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_array_of_pointer(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_array_of_short(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_array_of_uchar(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_array_of_uint(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_array_of_uint16(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_array_of_uint32(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_array_of_uint64(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_array_of_uint8(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_array_of_ulong(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_array_of_ulong_long(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_array_of_ushort(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_bytes(*_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_char(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_double(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_float(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_int(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_int16(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_int32(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_int64(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_int8(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_long(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_long_long(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_pointer(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_short(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_uchar(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_uint(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_uint16(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_uint32(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_uint64(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_uint8(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_ulong(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_ulong_long(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def write_ushort(_arg0); end
 end
 
-# source://ffi//lib/ffi/abstract_memory.rb#34
+# pkg:gem/ffi#lib/ffi/abstract_memory.rb:34
 FFI::AbstractMemory::LONG_MAX = T.let(T.unsafe(nil), Integer)
 
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::ArrayType < ::FFI::Type
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def initialize(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def elem_type; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def length; end
 end
 
-# source://ffi//lib/ffi/autopointer.rb#33
+# pkg:gem/ffi#lib/ffi/autopointer.rb:33
 class FFI::AutoPointer < ::FFI::Pointer
   extend ::FFI::DataConverter
 
@@ -733,7 +734,7 @@ class FFI::AutoPointer < ::FFI::Pointer
   # @raise [TypeError]
   # @return [AutoPointer] a new instance of AutoPointer
   #
-  # source://ffi//lib/ffi/autopointer.rb#70
+  # pkg:gem/ffi#lib/ffi/autopointer.rb:70
   def initialize(ptr, proc = T.unsafe(nil)); end
 
   # Set +autorelease+ property. See {Pointer Autorelease section at Pointer}.
@@ -742,31 +743,31 @@ class FFI::AutoPointer < ::FFI::Pointer
   # @raise [FrozenError]
   # @return [Boolean] +autorelease+
   #
-  # source://ffi//lib/ffi/autopointer.rb#107
+  # pkg:gem/ffi#lib/ffi/autopointer.rb:107
   def autorelease=(autorelease); end
 
   # Get +autorelease+ property. See {Pointer Autorelease section at Pointer}.
   #
   # @return [Boolean] +autorelease+
   #
-  # source://ffi//lib/ffi/autopointer.rb#114
+  # pkg:gem/ffi#lib/ffi/autopointer.rb:114
   def autorelease?; end
 
   # @raise [RuntimeError]
   #
-  # source://ffi//lib/ffi/autopointer.rb#96
+  # pkg:gem/ffi#lib/ffi/autopointer.rb:96
   def clone; end
 
   # @raise [RuntimeError]
   #
-  # source://ffi//lib/ffi/autopointer.rb#92
+  # pkg:gem/ffi#lib/ffi/autopointer.rb:92
   def dup; end
 
   # Free the pointer.
   #
   # @return [nil]
   #
-  # source://ffi//lib/ffi/autopointer.rb#100
+  # pkg:gem/ffi#lib/ffi/autopointer.rb:100
   def free; end
 
   class << self
@@ -777,7 +778,7 @@ class FFI::AutoPointer < ::FFI::Pointer
     # @overload self.from_native
     # @return [AutoPointer]
     #
-    # source://ffi//lib/ffi/autopointer.rb#181
+    # pkg:gem/ffi#lib/ffi/autopointer.rb:181
     def from_native(val, ctx); end
 
     # Return native type of AutoPointer.
@@ -787,7 +788,7 @@ class FFI::AutoPointer < ::FFI::Pointer
     # @raise [RuntimeError] if class does not implement a +#release+ method
     # @return [Type::POINTER]
     #
-    # source://ffi//lib/ffi/autopointer.rb#167
+    # pkg:gem/ffi#lib/ffi/autopointer.rb:167
     def native_type; end
   end
 end
@@ -798,7 +799,7 @@ end
 #
 #   All subclasses of Releaser should define a +#release(ptr)+ method.
 #
-# source://ffi//lib/ffi/autopointer.rb#122
+# pkg:gem/ffi#lib/ffi/autopointer.rb:122
 class FFI::AutoPointer::Releaser
   # A new instance of Releaser.
   #
@@ -806,33 +807,33 @@ class FFI::AutoPointer::Releaser
   # @param ptr [Pointer]
   # @return [nil]
   #
-  # source://ffi//lib/ffi/autopointer.rb#129
+  # pkg:gem/ffi#lib/ffi/autopointer.rb:129
   def initialize(ptr, proc); end
 
   # Returns the value of attribute autorelease.
   #
-  # source://ffi//lib/ffi/autopointer.rb#123
+  # pkg:gem/ffi#lib/ffi/autopointer.rb:123
   def autorelease; end
 
   # Sets the attribute autorelease
   #
   # @param value the value to set the attribute autorelease to.
   #
-  # source://ffi//lib/ffi/autopointer.rb#123
+  # pkg:gem/ffi#lib/ffi/autopointer.rb:123
   def autorelease=(_arg0); end
 
   # Release pointer if +autorelease+ is set.
   #
   # @param args
   #
-  # source://ffi//lib/ffi/autopointer.rb#148
+  # pkg:gem/ffi#lib/ffi/autopointer.rb:148
   def call(*args); end
 
   # Free pointer.
   #
   # @return [nil]
   #
-  # source://ffi//lib/ffi/autopointer.rb#137
+  # pkg:gem/ffi#lib/ffi/autopointer.rb:137
   def free; end
 
   # Release +ptr+ by using Proc or Method defined at +ptr+
@@ -841,7 +842,7 @@ class FFI::AutoPointer::Releaser
   # @param ptr [Pointer]
   # @return [nil]
   #
-  # source://ffi//lib/ffi/autopointer.rb#157
+  # pkg:gem/ffi#lib/ffi/autopointer.rb:157
   def release(ptr); end
 end
 
@@ -857,13 +858,13 @@ end
 #   blue = (1<<2)
 #   }
 #
-# source://ffi//lib/ffi/enum.rb#183
+# pkg:gem/ffi#lib/ffi/enum.rb:183
 class FFI::Bitmask < ::FFI::Enum
   # @overload initialize
   # @overload initialize
   # @return [Bitmask] a new instance of Bitmask
   #
-  # source://ffi//lib/ffi/enum.rb#192
+  # pkg:gem/ffi#lib/ffi/enum.rb:192
   def initialize(*args); end
 
   # Get a symbol list or a value from the bitmask
@@ -874,14 +875,14 @@ class FFI::Bitmask < ::FFI::Enum
   # @overload []
   # @raise [ArgumentError]
   #
-  # source://ffi//lib/ffi/enum.rb#236
+  # pkg:gem/ffi#lib/ffi/enum.rb:236
   def [](*query); end
 
   # @param ctx unused
   # @param val [Integer]
   # @return [Array<Symbol, Integer>] list of symbol names corresponding to val, plus an optional remainder if some bits don't match any constant
   #
-  # source://ffi//lib/ffi/enum.rb#288
+  # pkg:gem/ffi#lib/ffi/enum.rb:288
   def from_native(val, ctx); end
 
   # Get the native value of a bitmask
@@ -889,56 +890,57 @@ class FFI::Bitmask < ::FFI::Enum
   # @overload to_native
   # @overload to_native
   #
-  # source://ffi//lib/ffi/enum.rb#260
+  # pkg:gem/ffi#lib/ffi/enum.rb:260
   def to_native(query, ctx); end
 end
 
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::Buffer < ::FFI::AbstractMemory
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def initialize(*_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def +(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def inspect; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def length; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def order(*_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def slice(_arg0, _arg1); end
 
   private
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def initialize_copy(_arg0); end
 
   class << self
-    # source://ffi//lib/ffi.rb#3
+    # pkg:gem/ffi#lib/ffi.rb:3
     def alloc_in(*_arg0); end
 
-    # source://ffi//lib/ffi.rb#3
+    # pkg:gem/ffi#lib/ffi.rb:3
     def alloc_inout(*_arg0); end
 
-    # source://ffi//lib/ffi.rb#3
+    # pkg:gem/ffi#lib/ffi.rb:3
     def alloc_out(*_arg0); end
 
-    # source://ffi//lib/ffi.rb#3
+    # pkg:gem/ffi#lib/ffi.rb:3
     def new_in(*_arg0); end
 
-    # source://ffi//lib/ffi.rb#3
+    # pkg:gem/ffi#lib/ffi.rb:3
     def new_inout(*_arg0); end
 
-    # source://ffi//lib/ffi.rb#3
+    # pkg:gem/ffi#lib/ffi.rb:3
     def new_out(*_arg0); end
   end
 end
 
-# source://ffi//lib/ffi/library.rb#34
+# pkg:gem/ffi#lib/ffi/library.rb:34
 FFI::CURRENT_PROCESS = T.let(T.unsafe(nil), Object)
 
 FFI::CallbackInfo = FFI::FunctionType
@@ -947,11 +949,11 @@ FFI::CallbackInfo = FFI::FunctionType
 #
 # Most of methods defined here must be overridden.
 #
-# source://ffi//lib/ffi/data_converter.rb#35
+# pkg:gem/ffi#lib/ffi/data_converter.rb:35
 module FFI::DataConverter
   # Convert from a native type.
   #
-  # source://ffi//lib/ffi/data_converter.rb#63
+  # pkg:gem/ffi#lib/ffi/data_converter.rb:63
   def from_native(value, ctx); end
 
   # Get native type.
@@ -959,48 +961,48 @@ module FFI::DataConverter
   # @overload native_type
   # @overload native_type
   #
-  # source://ffi//lib/ffi/data_converter.rb#45
+  # pkg:gem/ffi#lib/ffi/data_converter.rb:45
   def native_type(type = T.unsafe(nil)); end
 
   # Convert to a native type.
   #
-  # source://ffi//lib/ffi/data_converter.rb#58
+  # pkg:gem/ffi#lib/ffi/data_converter.rb:58
   def to_native(value, ctx); end
 end
 
-# source://ffi//lib/ffi/dynamic_library.rb#32
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::DynamicLibrary
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def initialize(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def find_function(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def find_symbol(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def find_variable(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def last_error; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def name; end
 
   class << self
-    # source://ffi//lib/ffi.rb#3
+    # pkg:gem/ffi#lib/ffi.rb:3
     def last_error; end
 
-    # source://ffi//lib/ffi.rb#3
+    # pkg:gem/ffi#lib/ffi.rb:3
     def open(_arg0, _arg1); end
 
     private
 
-    # source://ffi//lib/ffi/dynamic_library.rb#69
+    # pkg:gem/ffi#lib/ffi/dynamic_library.rb:69
     def load_library(name, flags); end
 
-    # source://ffi//lib/ffi/dynamic_library.rb#99
+    # pkg:gem/ffi#lib/ffi/dynamic_library.rb:99
     def try_load(libname, flags, errors); end
   end
 end
@@ -1018,19 +1020,20 @@ FFI::DynamicLibrary::RTLD_NODELETE = T.let(T.unsafe(nil), Integer)
 FFI::DynamicLibrary::RTLD_NOLOAD = T.let(T.unsafe(nil), Integer)
 FFI::DynamicLibrary::RTLD_NOW = T.let(T.unsafe(nil), Integer)
 
-# source://ffi//lib/ffi/dynamic_library.rb#33
+# pkg:gem/ffi#lib/ffi/dynamic_library.rb:33
 FFI::DynamicLibrary::SEARCH_PATH = T.let(T.unsafe(nil), Array)
 
-# source://ffi//lib/ffi/dynamic_library.rb#67
+# pkg:gem/ffi#lib/ffi/dynamic_library.rb:67
 FFI::DynamicLibrary::SEARCH_PATH_MESSAGE = T.let(T.unsafe(nil), String)
 
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::DynamicLibrary::Symbol < ::FFI::Pointer
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def inspect; end
 
   private
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def initialize_copy(_arg0); end
 end
 
@@ -1047,7 +1050,7 @@ end
 # * a _symbol_ is a word from the enumeration (ie. _apple_, by example);
 # * a _value_ is the value of a symbol in the enumeration (by example, apple has value _0_ and banana _1_).
 #
-# source://ffi//lib/ffi/enum.rb#83
+# pkg:gem/ffi#lib/ffi/enum.rb:83
 class FFI::Enum
   include ::FFI::DataConverter
 
@@ -1055,7 +1058,7 @@ class FFI::Enum
   # @overload initialize
   # @return [Enum] a new instance of Enum
   #
-  # source://ffi//lib/ffi/enum.rb#96
+  # pkg:gem/ffi#lib/ffi/enum.rb:96
   def initialize(*args); end
 
   # Get a symbol or a value from the enum.
@@ -1063,7 +1066,7 @@ class FFI::Enum
   # @overload []
   # @overload []
   #
-  # source://ffi//lib/ffi/enum.rb#133
+  # pkg:gem/ffi#lib/ffi/enum.rb:133
   def [](query); end
 
   # Get a symbol or a value from the enum.
@@ -1071,79 +1074,79 @@ class FFI::Enum
   # @overload []
   # @overload []
   #
-  # source://ffi//lib/ffi/enum.rb#141
+  # pkg:gem/ffi#lib/ffi/enum.rb:141
   def find(query); end
 
   # @param val
   # @return symbol name if it exists for +val+.
   #
-  # source://ffi//lib/ffi/enum.rb#167
+  # pkg:gem/ffi#lib/ffi/enum.rb:167
   def from_native(val, ctx); end
 
   # Returns the value of attribute native_type.
   #
-  # source://ffi//lib/ffi/enum.rb#87
+  # pkg:gem/ffi#lib/ffi/enum.rb:87
   def native_type; end
 
   # Get the symbol map.
   #
   # @return [Hash]
   #
-  # source://ffi//lib/ffi/enum.rb#145
+  # pkg:gem/ffi#lib/ffi/enum.rb:145
   def symbol_map; end
 
   # @return [Array] enum symbol names
   #
-  # source://ffi//lib/ffi/enum.rb#120
+  # pkg:gem/ffi#lib/ffi/enum.rb:120
   def symbols; end
 
   # Returns the value of attribute tag.
   #
-  # source://ffi//lib/ffi/enum.rb#86
+  # pkg:gem/ffi#lib/ffi/enum.rb:86
   def tag; end
 
   # Get the symbol map.
   #
   # @return [Hash]
   #
-  # source://ffi//lib/ffi/enum.rb#149
+  # pkg:gem/ffi#lib/ffi/enum.rb:149
   def to_h; end
 
   # Get the symbol map.
   #
   # @return [Hash]
   #
-  # source://ffi//lib/ffi/enum.rb#150
+  # pkg:gem/ffi#lib/ffi/enum.rb:150
   def to_hash; end
 
   # @param ctx unused
   # @param val [Symbol, Integer, #to_int]
   # @return [Integer] value of a enum symbol
   #
-  # source://ffi//lib/ffi/enum.rb#155
+  # pkg:gem/ffi#lib/ffi/enum.rb:155
   def to_native(val, ctx); end
 end
 
 # An instance of this class permits to manage {Enum}s. In fact, Enums is a collection of {Enum}s.
 #
-# source://ffi//lib/ffi/enum.rb#36
+# pkg:gem/ffi#lib/ffi/enum.rb:36
 class FFI::Enums
   # @return [Enums] a new instance of Enums
   #
-  # source://ffi//lib/ffi/enum.rb#38
+  # pkg:gem/ffi#lib/ffi/enum.rb:38
   def initialize; end
 
   # Add an {Enum} to the collection.
   #
   # @param enum [Enum]
   #
-  # source://ffi//lib/ffi/enum.rb#46
+  # pkg:gem/ffi#lib/ffi/enum.rb:46
   def <<(enum); end
 
   # @param symbol a symbol to find in merge symbol maps of all enums.
   # @return a symbol
   #
-  # source://ffi//lib/ffi/enum.rb#65
+  # pkg:gem/ffi#lib/ffi/enum.rb:65
   def __map_symbol(symbol); end
 
   # Find a {Enum} in collection.
@@ -1151,35 +1154,35 @@ class FFI::Enums
   # @param query enum tag or part of an enum name
   # @return [Enum]
   #
-  # source://ffi//lib/ffi/enum.rb#55
+  # pkg:gem/ffi#lib/ffi/enum.rb:55
   def find(query); end
 end
 
-# source://ffi//lib/ffi/function.rb#32
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::Function < ::FFI::Pointer
   include ::FFI::Function::RegisterAttach
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def initialize(*_arg0); end
 
   # Use a workaround for https://github.com/libffi/libffi/issues/905
   #
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def attach(mod, name); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def autorelease; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def autorelease=(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def autorelease?; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def call(*_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def free; end
 
   # Retrieve Array of parameter types
@@ -1188,7 +1191,7 @@ class FFI::Function < ::FFI::Pointer
   #
   # @return [Array<FFI::Type>]
   #
-  # source://ffi//lib/ffi/function.rb#49
+  # pkg:gem/ffi#lib/ffi/function.rb:49
   def param_types; end
 
   # Retrieve the return type of the function
@@ -1197,43 +1200,44 @@ class FFI::Function < ::FFI::Pointer
   #
   # @return [FFI::Type]
   #
-  # source://ffi//lib/ffi/function.rb#40
+  # pkg:gem/ffi#lib/ffi/function.rb:40
   def return_type; end
 
   private
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def initialize_copy(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def type; end
 end
 
 # Stash the Function in a module variable so it can be inspected by attached_functions.
 # On CRuby it also ensures that it does not get garbage collected.
 #
-# source://ffi//lib/ffi/function.rb#79
+# pkg:gem/ffi#lib/ffi/function.rb:79
 module FFI::Function::RegisterAttach
-  # source://ffi//lib/ffi/function.rb#80
+  # pkg:gem/ffi#lib/ffi/function.rb:80
   def attach(mod, name); end
 end
 
 FFI::FunctionInfo = FFI::FunctionType
 
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::FunctionType < ::FFI::Type
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def initialize(*_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def param_types; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def return_type; end
 end
 
 # This module implements a couple of class methods to play with IO.
 #
-# source://ffi//lib/ffi/io.rb#34
+# pkg:gem/ffi#lib/ffi/io.rb:34
 module FFI::IO
   class << self
     # Synonym for IO::for_fd.
@@ -1242,7 +1246,7 @@ module FFI::IO
     # @param mode [String] mode string
     # @return [::IO]
     #
-    # source://ffi//lib/ffi/io.rb#39
+    # pkg:gem/ffi#lib/ffi/io.rb:39
     def for_fd(fd, mode = T.unsafe(nil)); end
 
     # A version of IO#read that reads data from an IO and put then into a native buffer.
@@ -1255,51 +1259,52 @@ module FFI::IO
     #   read until end of file.
     # @return [Integer] length really read, in bytes
     #
-    # source://ffi//lib/ffi/io.rb#53
+    # pkg:gem/ffi#lib/ffi/io.rb:53
     def native_read(io, buf, len); end
   end
 end
 
+# pkg:gem/ffi#lib/ffi.rb:3
 module FFI::LastError
   private
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def error; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def error=(_arg0); end
 
   class << self
-    # source://ffi//lib/ffi.rb#3
+    # pkg:gem/ffi#lib/ffi.rb:3
     def error; end
 
-    # source://ffi//lib/ffi.rb#3
+    # pkg:gem/ffi#lib/ffi.rb:3
     def error=(_arg0); end
   end
 end
 
-# source://ffi//lib/ffi/ffi.rb#63
+# pkg:gem/ffi#lib/ffi/ffi.rb:63
 module FFI::LegacyForkTracking; end
 
-# source://ffi//lib/ffi/ffi.rb#84
+# pkg:gem/ffi#lib/ffi/ffi.rb:84
 module FFI::LegacyForkTracking::IOExt
-  # source://ffi//lib/ffi/ffi.rb#85
+  # pkg:gem/ffi#lib/ffi/ffi.rb:85
   def popen(*args); end
 end
 
-# source://ffi//lib/ffi/ffi.rb#64
+# pkg:gem/ffi#lib/ffi/ffi.rb:64
 module FFI::LegacyForkTracking::KernelExt
-  # source://ffi//lib/ffi/ffi.rb#65
+  # pkg:gem/ffi#lib/ffi/ffi.rb:65
   def fork; end
 end
 
-# source://ffi//lib/ffi/ffi.rb#79
+# pkg:gem/ffi#lib/ffi/ffi.rb:79
 module FFI::LegacyForkTracking::KernelExtPrivate
   include ::FFI::LegacyForkTracking::KernelExt
 
   private
 
-  # source://ffi//lib/ffi/ffi.rb#81
+  # pkg:gem/ffi#lib/ffi/ffi.rb:81
   def fork; end
 end
 
@@ -1316,7 +1321,7 @@ end
 #
 #  Hello.puts("Hello, World")
 #
-# source://ffi//lib/ffi/library.rb#72
+# pkg:gem/ffi#lib/ffi/library.rb:72
 module FFI::Library
   # Attach C function +func+ to this module.
   #
@@ -1334,7 +1339,7 @@ module FFI::Library
   # @raise [FFI::NotFoundError] if +func+ cannot be found in the attached libraries (see {#ffi_lib})
   # @return [FFI::VariadicInvoker]
   #
-  # source://ffi//lib/ffi/library.rb#177
+  # pkg:gem/ffi#lib/ffi/library.rb:177
   def attach_function(name, func, args, returns = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # Attach C variable +cname+ to this module.
@@ -1344,7 +1349,7 @@ module FFI::Library
   # @raise [FFI::NotFoundError] if +cname+ cannot be found in libraries
   # @return [DynamicLibrary::Symbol]
   #
-  # source://ffi//lib/ffi/library.rb#274
+  # pkg:gem/ffi#lib/ffi/library.rb:274
   def attach_variable(mname, a1, a2 = T.unsafe(nil)); end
 
   # Retrieve all attached functions and their function signature
@@ -1354,7 +1359,7 @@ module FFI::Library
   #
   # @return [Hash< Symbol => [FFI::Function, FFI::VariadicInvoker] >]
   #
-  # source://ffi//lib/ffi/library.rb#544
+  # pkg:gem/ffi#lib/ffi/library.rb:544
   def attached_functions; end
 
   # Retrieve all attached variables and their type
@@ -1363,7 +1368,7 @@ module FFI::Library
   #
   # @return [Hash< Symbol => ffi_type >]
   #
-  # source://ffi//lib/ffi/library.rb#553
+  # pkg:gem/ffi#lib/ffi/library.rb:553
   def attached_variables; end
 
   # Create a new FFI::Bitmask
@@ -1376,7 +1381,7 @@ module FFI::Library
   # @overload bitmask
   # @return [FFI::Bitmask]
   #
-  # source://ffi//lib/ffi/library.rb#520
+  # pkg:gem/ffi#lib/ffi/library.rb:520
   def bitmask(*args); end
 
   # @overload callback
@@ -1384,7 +1389,7 @@ module FFI::Library
   # @raise [ArgumentError]
   # @return [FFI::CallbackInfo]
   #
-  # source://ffi//lib/ffi/library.rb#330
+  # pkg:gem/ffi#lib/ffi/library.rb:330
   def callback(*args); end
 
   # Create a new {FFI::Enum}.
@@ -1397,7 +1402,7 @@ module FFI::Library
   # @overload enum
   # @return [FFI::Enum]
   #
-  # source://ffi//lib/ffi/library.rb#477
+  # pkg:gem/ffi#lib/ffi/library.rb:477
   def enum(*args); end
 
   # Find an enum by name.
@@ -1405,7 +1410,7 @@ module FFI::Library
   # @param name
   # @return [FFI::Enum]
   #
-  # source://ffi//lib/ffi/library.rb#527
+  # pkg:gem/ffi#lib/ffi/library.rb:527
   def enum_type(name); end
 
   # Find an enum by a symbol it contains.
@@ -1413,7 +1418,7 @@ module FFI::Library
   # @param symbol
   # @return [FFI::Enum]
   #
-  # source://ffi//lib/ffi/library.rb#534
+  # pkg:gem/ffi#lib/ffi/library.rb:534
   def enum_value(symbol); end
 
   # Set the calling convention for {#attach_function} and {#callback}
@@ -1423,7 +1428,7 @@ module FFI::Library
   # @return [Symbol] the new calling convention
   # @see http://en.wikipedia.org/wiki/Stdcall#stdcall
   #
-  # source://ffi//lib/ffi/library.rb#106
+  # pkg:gem/ffi#lib/ffi/library.rb:106
   def ffi_convention(convention = T.unsafe(nil)); end
 
   # Load native libraries.
@@ -1432,7 +1437,7 @@ module FFI::Library
   # @raise [LoadError] if a library cannot be opened
   # @return [Array<DynamicLibrary>]
   #
-  # source://ffi//lib/ffi/library.rb#89
+  # pkg:gem/ffi#lib/ffi/library.rb:89
   def ffi_lib(*names); end
 
   # Sets library flags for {#ffi_lib}.
@@ -1442,7 +1447,7 @@ module FFI::Library
   # @param flags [Symbol, …] (see {FlagsMap})
   # @return [Integer] the new value
   #
-  # source://ffi//lib/ffi/library.rb#139
+  # pkg:gem/ffi#lib/ffi/library.rb:139
   def ffi_lib_flags(*flags); end
 
   # Get FFI libraries loaded using {#ffi_lib}.
@@ -1451,7 +1456,7 @@ module FFI::Library
   # @return [Array<FFI::DynamicLibrary>] array of currently loaded FFI libraries
   # @see #ffi_lib
   #
-  # source://ffi//lib/ffi/library.rb#116
+  # pkg:gem/ffi#lib/ffi/library.rb:116
   def ffi_libraries; end
 
   # Find a type definition.
@@ -1459,7 +1464,7 @@ module FFI::Library
   # @param t [DataConverter, Type, Struct, Symbol] type to find
   # @return [Type]
   #
-  # source://ffi//lib/ffi/library.rb#401
+  # pkg:gem/ffi#lib/ffi/library.rb:401
   def find_type(t); end
 
   # Freeze all definitions of the module
@@ -1467,7 +1472,7 @@ module FFI::Library
   # This freezes the module's definitions, so that it can be used in a Ractor.
   # No further functions or variables can be attached and no further enums or typedefs can be created in this module afterwards.
   #
-  # source://ffi//lib/ffi/library.rb#568
+  # pkg:gem/ffi#lib/ffi/library.rb:568
   def freeze; end
 
   # This function returns a list of possible names to lookup.
@@ -1482,7 +1487,7 @@ module FFI::Library
   # @param name [#to_s] function name
   # @return [Array<String>]
   #
-  # source://ffi//lib/ffi/library.rb#232
+  # pkg:gem/ffi#lib/ffi/library.rb:232
   def function_names(name, arg_types); end
 
   # Register or get an already registered type definition.
@@ -1503,7 +1508,7 @@ module FFI::Library
   # @param old [DataConverter, Symbol, Type]
   # @return [FFI::Enum, FFI::Type]
   #
-  # source://ffi//lib/ffi/library.rb#374
+  # pkg:gem/ffi#lib/ffi/library.rb:374
   def typedef(old, add, info = T.unsafe(nil)); end
 
   private
@@ -1512,7 +1517,7 @@ module FFI::Library
   #  @param [Class] klass can be one of FFI::Enum or FFI::Bitmask
   #  @param args (see #enum or #bitmask)
   #
-  # source://ffi//lib/ffi/library.rb#422
+  # pkg:gem/ffi#lib/ffi/library.rb:422
   def generic_enum(klass, *args); end
 
   class << self
@@ -1522,12 +1527,12 @@ module FFI::Library
     # @raise [RuntimeError] if +mod+ is not a Module
     # @return [nil]
     #
-    # source://ffi//lib/ffi/library.rb#80
+    # pkg:gem/ffi#lib/ffi/library.rb:80
     def extended(mod); end
   end
 end
 
-# source://ffi//lib/ffi/library.rb#73
+# pkg:gem/ffi#lib/ffi/library.rb:73
 FFI::Library::CURRENT_PROCESS = T.let(T.unsafe(nil), Object)
 
 # Flags used in {#ffi_lib}.
@@ -1535,10 +1540,10 @@ FFI::Library::CURRENT_PROCESS = T.let(T.unsafe(nil), Object)
 # This map allows you to supply symbols to {#ffi_lib_flags} instead of
 # the actual constants.
 #
-# source://ffi//lib/ffi/library.rb#125
+# pkg:gem/ffi#lib/ffi/library.rb:125
 FFI::Library::FlagsMap = T.let(T.unsafe(nil), Hash)
 
-# source://ffi//lib/ffi/library.rb#74
+# pkg:gem/ffi#lib/ffi/library.rb:74
 FFI::Library::LIBC = T.let(T.unsafe(nil), String)
 
 # Transform a generic library name and ABI number to a platform library name
@@ -1556,7 +1561,7 @@ FFI::Library::LIBC = T.let(T.unsafe(nil), String)
 #
 # See https://packaging.ubuntu.com/html/libraries.html for more information about library naming.
 #
-# source://ffi//lib/ffi/library_path.rb#46
+# pkg:gem/ffi#lib/ffi/library_path.rb:46
 class FFI::LibraryPath
   # Build a new library path
   #
@@ -1566,32 +1571,32 @@ class FFI::LibraryPath
   #
   # @return [LibraryPath] a new instance of LibraryPath
   #
-  # source://ffi//lib/ffi/library_path.rb#56
+  # pkg:gem/ffi#lib/ffi/library_path.rb:56
   def initialize(name, abi_number: T.unsafe(nil), root: T.unsafe(nil)); end
 
   # Returns the value of attribute abi_number.
   #
-  # source://ffi//lib/ffi/library_path.rb#48
+  # pkg:gem/ffi#lib/ffi/library_path.rb:48
   def abi_number; end
 
-  # source://ffi//lib/ffi/library_path.rb#78
+  # pkg:gem/ffi#lib/ffi/library_path.rb:78
   def full_name; end
 
   # Returns the value of attribute name.
   #
-  # source://ffi//lib/ffi/library_path.rb#47
+  # pkg:gem/ffi#lib/ffi/library_path.rb:47
   def name; end
 
   # Returns the value of attribute root.
   #
-  # source://ffi//lib/ffi/library_path.rb#49
+  # pkg:gem/ffi#lib/ffi/library_path.rb:49
   def root; end
 
-  # source://ffi//lib/ffi/library_path.rb#100
+  # pkg:gem/ffi#lib/ffi/library_path.rb:100
   def to_s; end
 
   class << self
-    # source://ffi//lib/ffi/library_path.rb#62
+    # pkg:gem/ffi#lib/ffi/library_path.rb:62
     def wrap(value); end
   end
 end
@@ -1633,7 +1638,7 @@ end
 #   end
 #   # struct is out of scope, and will be GC'd using DoublyLinkedList#release
 #
-# source://ffi//lib/ffi/managedstruct.rb#70
+# pkg:gem/ffi#lib/ffi/managedstruct.rb:70
 class FFI::ManagedStruct < ::FFI::Struct
   # A new instance of FFI::ManagedStruct.
   #
@@ -1642,28 +1647,32 @@ class FFI::ManagedStruct < ::FFI::Struct
   # @raise [NoMethodError]
   # @return [ManagedStruct] a new instance of ManagedStruct
   #
-  # source://ffi//lib/ffi/managedstruct.rb#77
+  # pkg:gem/ffi#lib/ffi/managedstruct.rb:77
   def initialize(pointer = T.unsafe(nil)); end
 end
 
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::MemoryPointer < ::FFI::Pointer
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def initialize(*_arg0); end
 
   class << self
-    # source://ffi//lib/ffi.rb#3
+    # pkg:gem/ffi#lib/ffi.rb:3
     def from_string(_arg0); end
   end
 end
 
-# source://ffi//lib/ffi/ffi.rb#53
+# pkg:gem/ffi#lib/ffi/ffi.rb:53
 module FFI::ModernForkTracking
-  # source://ffi//lib/ffi/ffi.rb#54
+  # pkg:gem/ffi#lib/ffi/ffi.rb:54
   def _fork; end
 end
 
 FFI::NativeLibrary = FFI::DynamicLibrary
+
+# pkg:gem/ffi#lib/ffi.rb:3
 module FFI::NativeType; end
+
 FFI::NativeType::BOOL = T.let(T.unsafe(nil), FFI::Type::Builtin)
 FFI::NativeType::BUFFER_IN = T.let(T.unsafe(nil), FFI::Type::Builtin)
 FFI::NativeType::BUFFER_INOUT = T.let(T.unsafe(nil), FFI::Type::Builtin)
@@ -1688,27 +1697,28 @@ FFI::NativeType::VOID = T.let(T.unsafe(nil), FFI::Type::Builtin)
 
 # Exception raised when a function is not found in libraries
 #
-# source://ffi//lib/ffi/library.rb#52
+# pkg:gem/ffi#lib/ffi/library.rb:52
 class FFI::NotFoundError < ::LoadError
   # @return [NotFoundError] a new instance of NotFoundError
   #
-  # source://ffi//lib/ffi/library.rb#53
+  # pkg:gem/ffi#lib/ffi/library.rb:53
   def initialize(function, *libraries); end
 end
 
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::NullPointerError < ::RuntimeError; end
 
 # This module defines different constants and class methods to play with
 # various platforms.
 #
-# source://ffi//lib/ffi/platform.rb#39
+# pkg:gem/ffi#lib/ffi.rb:3
 module FFI::Platform
   class << self
     # Test if current OS is a *BSD (include MAC)
     #
     # @return [Boolean]
     #
-    # source://ffi//lib/ffi/platform.rb#158
+    # pkg:gem/ffi#lib/ffi/platform.rb:158
     def bsd?; end
 
     # Test if current OS is +os+.
@@ -1716,35 +1726,35 @@ module FFI::Platform
     # @param os [String]
     # @return [Boolean]
     #
-    # source://ffi//lib/ffi/platform.rb#92
+    # pkg:gem/ffi#lib/ffi/platform.rb:92
     def is_os(os); end
 
     # Test if current OS is Mac OS
     #
     # @return [Boolean]
     #
-    # source://ffi//lib/ffi/platform.rb#170
+    # pkg:gem/ffi#lib/ffi/platform.rb:170
     def mac?; end
 
     # Test if current OS is Solaris (Sun OS)
     #
     # @return [Boolean]
     #
-    # source://ffi//lib/ffi/platform.rb#176
+    # pkg:gem/ffi#lib/ffi/platform.rb:176
     def solaris?; end
 
     # Test if current OS is a unix OS
     #
     # @return [Boolean]
     #
-    # source://ffi//lib/ffi/platform.rb#182
+    # pkg:gem/ffi#lib/ffi/platform.rb:182
     def unix?; end
 
     # Test if current OS is Windows
     #
     # @return [Boolean]
     #
-    # source://ffi//lib/ffi/platform.rb#164
+    # pkg:gem/ffi#lib/ffi/platform.rb:164
     def windows?; end
   end
 end
@@ -1752,16 +1762,16 @@ end
 FFI::Platform::ADDRESS_ALIGN = T.let(T.unsafe(nil), Integer)
 FFI::Platform::ADDRESS_SIZE = T.let(T.unsafe(nil), Integer)
 
-# source://ffi//lib/ffi/platform.rb#65
+# pkg:gem/ffi#lib/ffi/platform.rb:65
 FFI::Platform::ARCH = T.let(T.unsafe(nil), String)
 
 FFI::Platform::BIG_ENDIAN = T.let(T.unsafe(nil), Integer)
 FFI::Platform::BYTE_ORDER = T.let(T.unsafe(nil), Integer)
 
-# source://ffi//lib/ffi/platform.rb#111
+# pkg:gem/ffi#lib/ffi/platform.rb:111
 FFI::Platform::CONF_DIR = T.let(T.unsafe(nil), String)
 
-# source://ffi//lib/ffi/platform.rb#63
+# pkg:gem/ffi#lib/ffi/platform.rb:63
 FFI::Platform::CPU = T.let(T.unsafe(nil), String)
 
 FFI::Platform::DOUBLE_ALIGN = T.let(T.unsafe(nil), Integer)
@@ -1777,43 +1787,43 @@ FFI::Platform::INT64_SIZE = T.let(T.unsafe(nil), Integer)
 FFI::Platform::INT8_ALIGN = T.let(T.unsafe(nil), Integer)
 FFI::Platform::INT8_SIZE = T.let(T.unsafe(nil), Integer)
 
-# source://ffi//lib/ffi/platform.rb#105
+# pkg:gem/ffi#lib/ffi/platform.rb:105
 FFI::Platform::IS_BSD = T.let(T.unsafe(nil), TrueClass)
 
-# source://ffi//lib/ffi/platform.rb#102
+# pkg:gem/ffi#lib/ffi/platform.rb:102
 FFI::Platform::IS_DRAGONFLYBSD = T.let(T.unsafe(nil), FalseClass)
 
-# source://ffi//lib/ffi/platform.rb#99
+# pkg:gem/ffi#lib/ffi/platform.rb:99
 FFI::Platform::IS_FREEBSD = T.let(T.unsafe(nil), FalseClass)
 
-# source://ffi//lib/ffi/platform.rb#96
+# pkg:gem/ffi#lib/ffi/platform.rb:96
 FFI::Platform::IS_GNU = T.let(T.unsafe(nil), T.untyped)
 
-# source://ffi//lib/ffi/platform.rb#97
+# pkg:gem/ffi#lib/ffi/platform.rb:97
 FFI::Platform::IS_LINUX = T.let(T.unsafe(nil), FalseClass)
 
-# source://ffi//lib/ffi/platform.rb#98
+# pkg:gem/ffi#lib/ffi/platform.rb:98
 FFI::Platform::IS_MAC = T.let(T.unsafe(nil), TrueClass)
 
-# source://ffi//lib/ffi/platform.rb#100
+# pkg:gem/ffi#lib/ffi/platform.rb:100
 FFI::Platform::IS_NETBSD = T.let(T.unsafe(nil), FalseClass)
 
-# source://ffi//lib/ffi/platform.rb#101
+# pkg:gem/ffi#lib/ffi/platform.rb:101
 FFI::Platform::IS_OPENBSD = T.let(T.unsafe(nil), FalseClass)
 
-# source://ffi//lib/ffi/platform.rb#103
+# pkg:gem/ffi#lib/ffi/platform.rb:103
 FFI::Platform::IS_SOLARIS = T.let(T.unsafe(nil), FalseClass)
 
-# source://ffi//lib/ffi/platform.rb#104
+# pkg:gem/ffi#lib/ffi/platform.rb:104
 FFI::Platform::IS_WINDOWS = T.let(T.unsafe(nil), FalseClass)
 
-# source://ffi//lib/ffi/platform.rb#136
+# pkg:gem/ffi#lib/ffi/platform.rb:136
 FFI::Platform::LIBC = T.let(T.unsafe(nil), String)
 
-# source://ffi//lib/ffi/platform.rb#115
+# pkg:gem/ffi#lib/ffi/platform.rb:115
 FFI::Platform::LIBPREFIX = T.let(T.unsafe(nil), String)
 
-# source://ffi//lib/ffi/platform.rb#124
+# pkg:gem/ffi#lib/ffi/platform.rb:124
 FFI::Platform::LIBSUFFIX = T.let(T.unsafe(nil), String)
 
 FFI::Platform::LITTLE_ENDIAN = T.let(T.unsafe(nil), Integer)
@@ -1824,48 +1834,48 @@ FFI::Platform::LONG_SIZE = T.let(T.unsafe(nil), Integer)
 
 # 64-bit inodes
 #
-# source://ffi//lib/ffi/platform.rb#110
+# pkg:gem/ffi#lib/ffi/platform.rb:110
 FFI::Platform::NAME = T.let(T.unsafe(nil), String)
 
-# source://ffi//lib/ffi/platform.rb#40
+# pkg:gem/ffi#lib/ffi/platform.rb:40
 FFI::Platform::OS = T.let(T.unsafe(nil), String)
 
-# source://ffi//lib/ffi/platform.rb#61
+# pkg:gem/ffi#lib/ffi/platform.rb:61
 FFI::Platform::OSVERSION = T.let(T.unsafe(nil), Integer)
 
-# source://ffi//lib/ffi/platform.rb#35
+# pkg:gem/ffi#lib/ffi/platform.rb:35
 class FFI::PlatformError < ::LoadError; end
 
-# source://ffi//lib/ffi/pointer.rb#42
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::Pointer < ::FFI::AbstractMemory
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def initialize(*_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def +(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def ==(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def address; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def autorelease=(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def autorelease?; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def free; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def inspect; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def null?; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def order(*_arg0); end
 
   # Read pointer's contents as +type+
@@ -1876,7 +1886,7 @@ class FFI::Pointer < ::FFI::AbstractMemory
   # @param type [Symbol, Type] of data to read
   # @return [Object]
   #
-  # source://ffi//lib/ffi/pointer.rb#152
+  # pkg:gem/ffi#lib/ffi/pointer.rb:152
   def read(type); end
 
   # Read an array of +type+ of length +length+.
@@ -1888,7 +1898,7 @@ class FFI::Pointer < ::FFI::AbstractMemory
   # @param type [Type] type of data to read from pointer's contents
   # @return [Array]
   #
-  # source://ffi//lib/ffi/pointer.rb#114
+  # pkg:gem/ffi#lib/ffi/pointer.rb:114
   def read_array_of_type(type, reader, length); end
 
   # Read pointer's contents as a string, or the first +len+ bytes of the
@@ -1897,7 +1907,7 @@ class FFI::Pointer < ::FFI::AbstractMemory
   # @param len [nil, Integer] length of string to return
   # @return [String]
   #
-  # source://ffi//lib/ffi/pointer.rb#57
+  # pkg:gem/ffi#lib/ffi/pointer.rb:57
   def read_string(len = T.unsafe(nil)); end
 
   # Read the first +len+ bytes of pointer's contents as a string.
@@ -1908,7 +1918,7 @@ class FFI::Pointer < ::FFI::AbstractMemory
   # @param len [Integer] length of string to return
   # @return [String]
   #
-  # source://ffi//lib/ffi/pointer.rb#72
+  # pkg:gem/ffi#lib/ffi/pointer.rb:72
   def read_string_length(len); end
 
   # Read pointer's contents as a string.
@@ -1918,24 +1928,24 @@ class FFI::Pointer < ::FFI::AbstractMemory
   #
   # @return [String]
   #
-  # source://ffi//lib/ffi/pointer.rb#81
+  # pkg:gem/ffi#lib/ffi/pointer.rb:81
   def read_string_to_null; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def slice(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def to_i; end
 
   # @return [self]
   #
-  # source://ffi//lib/ffi/pointer.rb#142
+  # pkg:gem/ffi#lib/ffi/pointer.rb:142
   def to_ptr; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def to_s; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def type_size; end
 
   # Write +value+ of type +type+ to pointer's content
@@ -1947,7 +1957,7 @@ class FFI::Pointer < ::FFI::AbstractMemory
   # @param value [Object] to write
   # @return [nil]
   #
-  # source://ffi//lib/ffi/pointer.rb#163
+  # pkg:gem/ffi#lib/ffi/pointer.rb:163
   def write(type, value); end
 
   # Write +ary+ in pointer's contents as +type+.
@@ -1959,7 +1969,7 @@ class FFI::Pointer < ::FFI::AbstractMemory
   # @param writer [Symbol] method to send to +self+ to write +type+
   # @return [self]
   #
-  # source://ffi//lib/ffi/pointer.rb#132
+  # pkg:gem/ffi#lib/ffi/pointer.rb:132
   def write_array_of_type(type, writer, ary); end
 
   # Write +str+ in pointer's contents, or first +len+ bytes if
@@ -1969,7 +1979,7 @@ class FFI::Pointer < ::FFI::AbstractMemory
   # @param str [String] string to write
   # @return [self]
   #
-  # source://ffi//lib/ffi/pointer.rb#101
+  # pkg:gem/ffi#lib/ffi/pointer.rb:101
   def write_string(str, len = T.unsafe(nil)); end
 
   # Write +len+ first bytes of +str+ in pointer's contents.
@@ -1981,12 +1991,12 @@ class FFI::Pointer < ::FFI::AbstractMemory
   # @param str [String] string to write
   # @return [self]
   #
-  # source://ffi//lib/ffi/pointer.rb#92
+  # pkg:gem/ffi#lib/ffi/pointer.rb:92
   def write_string_length(str, len); end
 
   private
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def initialize_copy(_arg0); end
 
   class << self
@@ -1994,7 +2004,7 @@ class FFI::Pointer < ::FFI::AbstractMemory
     #
     # @return [Integer]
     #
-    # source://ffi//lib/ffi/pointer.rb#49
+    # pkg:gem/ffi#lib/ffi/pointer.rb:49
     def size; end
   end
 end
@@ -2003,7 +2013,7 @@ FFI::Pointer::NULL = T.let(T.unsafe(nil), FFI::Pointer)
 
 # Pointer size
 #
-# source://ffi//lib/ffi/pointer.rb#45
+# pkg:gem/ffi#lib/ffi/pointer.rb:45
 FFI::Pointer::SIZE = T.let(T.unsafe(nil), Integer)
 
 # This will convert a pointer to a Ruby string (just like `:string`), but
@@ -2014,7 +2024,7 @@ FFI::Pointer::SIZE = T.let(T.unsafe(nil), Integer)
 #
 # It's {typedef}'d as +:strptr+.
 #
-# source://ffi//lib/ffi/types.rb#191
+# pkg:gem/ffi#lib/ffi/types.rb:191
 class FFI::StrPtrConverter
   extend ::FFI::DataConverter
 
@@ -2025,171 +2035,171 @@ class FFI::StrPtrConverter
     # @param val [Pointer]
     # @return [Array(String, Pointer)]
     #
-    # source://ffi//lib/ffi/types.rb#199
+    # pkg:gem/ffi#lib/ffi/types.rb:199
     def from_native(val, ctx); end
   end
 end
 
-# source://ffi//lib/ffi/struct.rb#41
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::Struct
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def initialize(*_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def [](_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def []=(_arg0, _arg1); end
 
   # @return [Integer] Struct alignment
   #
-  # source://ffi//lib/ffi/struct.rb#53
+  # pkg:gem/ffi#lib/ffi/struct.rb:53
   def align; end
 
   # @return [Integer] Struct alignment
   #
-  # source://ffi//lib/ffi/struct.rb#50
+  # pkg:gem/ffi#lib/ffi/struct.rb:50
   def alignment; end
 
   # Clear the struct content.
   #
   # @return [self]
   #
-  # source://ffi//lib/ffi/struct.rb#78
+  # pkg:gem/ffi#lib/ffi/struct.rb:78
   def clear; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def layout; end
 
-  # source://ffi//lib/ffi/struct.rb#61
+  # pkg:gem/ffi#lib/ffi/struct.rb:61
   def members; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def null?; end
 
   # Get the offset of a field.
   #
   # @return [Integer]
   #
-  # source://ffi//lib/ffi/struct.rb#56
+  # pkg:gem/ffi#lib/ffi/struct.rb:56
   def offset_of(name); end
 
   # Get an array of tuples (field name, offset of the field).
   #
   # @return [Array<Array(Symbol, Integer)>] Array<Array(Symbol, Integer)>
   #
-  # source://ffi//lib/ffi/struct.rb#72
+  # pkg:gem/ffi#lib/ffi/struct.rb:72
   def offsets; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def order(*_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def pointer; end
 
   # Get struct size
   #
   # @return [Integer]
   #
-  # source://ffi//lib/ffi/struct.rb#45
+  # pkg:gem/ffi#lib/ffi/struct.rb:45
   def size; end
 
   # Get {Pointer} to struct content.
   #
   # @return [AbstractMemory]
   #
-  # source://ffi//lib/ffi/struct.rb#85
+  # pkg:gem/ffi#lib/ffi/struct.rb:85
   def to_ptr; end
 
   # Get array of values from Struct fields.
   #
   # @return [Array]
   #
-  # source://ffi//lib/ffi/struct.rb#67
+  # pkg:gem/ffi#lib/ffi/struct.rb:67
   def values; end
 
   private
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def initialize_copy(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def layout=(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def pointer=(_arg0); end
 
   class << self
     # @return [Integer] Struct alignment
     #
-    # source://ffi//lib/ffi/struct.rb#104
+    # pkg:gem/ffi#lib/ffi/struct.rb:104
     def alignment; end
 
-    # source://ffi//lib/ffi.rb#3
+    # pkg:gem/ffi#lib/ffi.rb:3
     def alloc_in(*_arg0); end
 
-    # source://ffi//lib/ffi.rb#3
+    # pkg:gem/ffi#lib/ffi.rb:3
     def alloc_inout(*_arg0); end
 
-    # source://ffi//lib/ffi.rb#3
+    # pkg:gem/ffi#lib/ffi.rb:3
     def alloc_out(*_arg0); end
 
-    # source://ffi//lib/ffi/struct.rb#165
+    # pkg:gem/ffi#lib/ffi/struct.rb:165
     def auto_ptr; end
 
-    # source://ffi//lib/ffi/struct.rb#143
+    # pkg:gem/ffi#lib/ffi/struct.rb:143
     def by_ref(flags = T.unsafe(nil)); end
 
-    # source://ffi//lib/ffi/struct.rb#139
+    # pkg:gem/ffi#lib/ffi/struct.rb:139
     def by_value; end
 
-    # source://ffi//lib/ffi/struct.rb#123
+    # pkg:gem/ffi#lib/ffi/struct.rb:123
     def in; end
 
     # @overload layout
     # @overload layout
     # @return [StructLayout]
     #
-    # source://ffi//lib/ffi/struct.rb#205
+    # pkg:gem/ffi#lib/ffi/struct.rb:205
     def layout(*spec); end
 
-    # source://ffi//lib/ffi/struct.rb#109
+    # pkg:gem/ffi#lib/ffi/struct.rb:109
     def members; end
 
-    # source://ffi//lib/ffi.rb#3
+    # pkg:gem/ffi#lib/ffi.rb:3
     def new_in(*_arg0); end
 
-    # source://ffi//lib/ffi.rb#3
+    # pkg:gem/ffi#lib/ffi.rb:3
     def new_inout(*_arg0); end
 
-    # source://ffi//lib/ffi.rb#3
+    # pkg:gem/ffi#lib/ffi.rb:3
     def new_out(*_arg0); end
 
     # Get the offset of a field.
     #
     # @return [Integer]
     #
-    # source://ffi//lib/ffi/struct.rb#119
+    # pkg:gem/ffi#lib/ffi/struct.rb:119
     def offset_of(name); end
 
     # Get an array of tuples (field name, offset of the field).
     #
     # @return [Array<Array(Symbol, Integer)>] Array<Array(Symbol, Integer)>
     #
-    # source://ffi//lib/ffi/struct.rb#114
+    # pkg:gem/ffi#lib/ffi/struct.rb:114
     def offsets; end
 
-    # source://ffi//lib/ffi/struct.rb#127
+    # pkg:gem/ffi#lib/ffi/struct.rb:127
     def out; end
 
-    # source://ffi//lib/ffi/struct.rb#131
+    # pkg:gem/ffi#lib/ffi/struct.rb:131
     def ptr(flags = T.unsafe(nil)); end
 
     # Get struct size
     #
     # @return [Integer]
     #
-    # source://ffi//lib/ffi/struct.rb#91
+    # pkg:gem/ffi#lib/ffi/struct.rb:91
     def size; end
 
     # set struct size
@@ -2198,36 +2208,36 @@ class FFI::Struct
     # @raise [ArgumentError]
     # @return [size]
     #
-    # source://ffi//lib/ffi/struct.rb#98
+    # pkg:gem/ffi#lib/ffi/struct.rb:98
     def size=(size); end
 
-    # source://ffi//lib/ffi/struct.rb#135
+    # pkg:gem/ffi#lib/ffi/struct.rb:135
     def val; end
 
     protected
 
-    # source://ffi//lib/ffi/struct.rb#247
+    # pkg:gem/ffi#lib/ffi/struct.rb:247
     def align(alignment = T.unsafe(nil)); end
 
-    # source://ffi//lib/ffi/struct.rb#244
+    # pkg:gem/ffi#lib/ffi/struct.rb:244
     def aligned(alignment = T.unsafe(nil)); end
 
-    # source://ffi//lib/ffi/struct.rb#230
+    # pkg:gem/ffi#lib/ffi/struct.rb:230
     def callback(params, ret); end
 
-    # source://ffi//lib/ffi/struct.rb#249
+    # pkg:gem/ffi#lib/ffi/struct.rb:249
     def enclosing_module; end
 
-    # source://ffi//lib/ffi/struct.rb#261
+    # pkg:gem/ffi#lib/ffi/struct.rb:261
     def find_field_type(type, mod = T.unsafe(nil)); end
 
-    # source://ffi//lib/ffi/struct.rb#276
+    # pkg:gem/ffi#lib/ffi/struct.rb:276
     def find_type(type, mod = T.unsafe(nil)); end
 
-    # source://ffi//lib/ffi/struct.rb#242
+    # pkg:gem/ffi#lib/ffi/struct.rb:242
     def pack(packed = T.unsafe(nil)); end
 
-    # source://ffi//lib/ffi/struct.rb#239
+    # pkg:gem/ffi#lib/ffi/struct.rb:239
     def packed(packed = T.unsafe(nil)); end
 
     private
@@ -2238,7 +2248,7 @@ class FFI::Struct
     # @param spec [Array<Symbol, Integer>]
     # @return [builder]
     #
-    # source://ffi//lib/ffi/struct.rb#298
+    # pkg:gem/ffi#lib/ffi/struct.rb:298
     def array_layout(builder, spec); end
 
     # Add hash +spec+ to +builder+.
@@ -2247,63 +2257,64 @@ class FFI::Struct
     # @param spec [Hash]
     # @return [builder]
     #
-    # source://ffi//lib/ffi/struct.rb#288
+    # pkg:gem/ffi#lib/ffi/struct.rb:288
     def hash_layout(builder, spec); end
   end
 end
 
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::Struct::InlineArray
   include ::Enumerable
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def initialize(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def [](_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def []=(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def each; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def size; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def to_a; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def to_ptr; end
 end
 
-# source://ffi//lib/ffi/struct.rb#147
+# pkg:gem/ffi#lib/ffi/struct.rb:147
 class FFI::Struct::ManagedStructConverter < ::FFI::StructByReference
   # @param struct_class [Struct]
   # @raise [NoMethodError]
   # @return [ManagedStructConverter] a new instance of ManagedStructConverter
   #
-  # source://ffi//lib/ffi/struct.rb#150
+  # pkg:gem/ffi#lib/ffi/struct.rb:150
   def initialize(struct_class); end
 
   # @param ctx [nil]
   # @param ptr [Pointer]
   # @return [Struct]
   #
-  # source://ffi//lib/ffi/struct.rb#160
+  # pkg:gem/ffi#lib/ffi/struct.rb:160
   def from_native(ptr, ctx); end
 end
 
 # This class includes the {FFI::DataConverter} module.
 #
-# source://ffi//lib/ffi/struct_by_reference.rb#33
+# pkg:gem/ffi#lib/ffi/struct_by_reference.rb:33
 class FFI::StructByReference
   include ::FFI::DataConverter
 
   # @param struct_class [Struct]
   # @return [StructByReference] a new instance of StructByReference
   #
-  # source://ffi//lib/ffi/struct_by_reference.rb#39
+  # pkg:gem/ffi#lib/ffi/struct_by_reference.rb:39
   def initialize(struct_class); end
 
   # Create a struct from content of memory +value+.
@@ -2312,99 +2323,102 @@ class FFI::StructByReference
   # @param value [AbstractMemory]
   # @return [Struct]
   #
-  # source://ffi//lib/ffi/struct_by_reference.rb#68
+  # pkg:gem/ffi#lib/ffi/struct_by_reference.rb:68
   def from_native(value, ctx); end
 
   # Always get {FFI::Type}::POINTER.
   #
-  # source://ffi//lib/ffi/struct_by_reference.rb#47
+  # pkg:gem/ffi#lib/ffi/struct_by_reference.rb:47
   def native_type(_type = T.unsafe(nil)); end
 
   # Returns the value of attribute struct_class.
   #
-  # source://ffi//lib/ffi/struct_by_reference.rb#36
+  # pkg:gem/ffi#lib/ffi/struct_by_reference.rb:36
   def struct_class; end
 
   # @param ctx [nil]
   # @param value [nil, Struct]
   # @return [AbstractMemory] Pointer on +value+.
   #
-  # source://ffi//lib/ffi/struct_by_reference.rb#54
+  # pkg:gem/ffi#lib/ffi/struct_by_reference.rb:54
   def to_native(value, ctx); end
 end
 
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::StructByValue < ::FFI::Type
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def initialize(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def layout; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def struct_class; end
 end
 
-# source://ffi//lib/ffi/struct_layout.rb#36
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::StructLayout < ::FFI::Type
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def initialize(_arg0, _arg1, _arg2); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def [](_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def __union!; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def fields; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def members; end
 
   # Get the offset of a field.
   #
   # @return [Integer]
   #
-  # source://ffi//lib/ffi/struct_layout.rb#46
+  # pkg:gem/ffi#lib/ffi/struct_layout.rb:46
   def offset_of(field_name); end
 
   # Get an array of tuples (field name, offset of the field).
   #
   # @return [Array<Array(Symbol, Integer)>] Array<Array(Symbol, Integer)>
   #
-  # source://ffi//lib/ffi/struct_layout.rb#40
+  # pkg:gem/ffi#lib/ffi/struct_layout.rb:40
   def offsets; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def to_a; end
 end
 
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::StructLayout::Array < ::FFI::StructLayout::Field
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put(_arg0, _arg1); end
 end
 
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::StructLayout::CharArray < ::FFI::Struct::InlineArray
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def to_s; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def to_str; end
 end
 
 # An enum {Field} in a {StructLayout}.
 #
-# source://ffi//lib/ffi/struct_layout.rb#51
+# pkg:gem/ffi#lib/ffi/struct_layout.rb:51
 class FFI::StructLayout::Enum < ::FFI::StructLayout::Field
   # Get an object of type {#type} from memory pointed by +ptr+.
   #
   # @param ptr [AbstractMemory] pointer on a {Struct}
   # @return [Object]
   #
-  # source://ffi//lib/ffi/struct_layout.rb#56
+  # pkg:gem/ffi#lib/ffi/struct_layout.rb:56
   def get(ptr); end
 
   # Set +value+ into memory pointed by +ptr+.
@@ -2413,80 +2427,87 @@ class FFI::StructLayout::Enum < ::FFI::StructLayout::Field
   # @param value
   # @return [nil]
   #
-  # source://ffi//lib/ffi/struct_layout.rb#64
+  # pkg:gem/ffi#lib/ffi/struct_layout.rb:64
   def put(ptr, value); end
 end
 
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::StructLayout::Field
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def initialize(*_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def alignment; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def name; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def offset; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put(_arg0, _arg1); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def size; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def type; end
 end
 
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::StructLayout::Function < ::FFI::StructLayout::Field
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def get(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def put(_arg0, _arg1); end
 end
 
-# source://ffi//lib/ffi/struct_layout.rb#70
+# pkg:gem/ffi#lib/ffi/struct_layout.rb:70
 class FFI::StructLayout::InnerStruct < ::FFI::StructLayout::Field
-  # source://ffi//lib/ffi/struct_layout.rb#71
+  # pkg:gem/ffi#lib/ffi/struct_layout.rb:71
   def get(ptr); end
 
   # @raise [TypeError]
   #
-  # source://ffi//lib/ffi/struct_layout.rb#75
+  # pkg:gem/ffi#lib/ffi/struct_layout.rb:75
   def put(ptr, value); end
 end
 
-# source://ffi//lib/ffi/struct_layout.rb#81
+# pkg:gem/ffi#lib/ffi/struct_layout.rb:81
 class FFI::StructLayout::Mapped < ::FFI::StructLayout::Field
   # @return [Mapped] a new instance of Mapped
   #
-  # source://ffi//lib/ffi/struct_layout.rb#82
+  # pkg:gem/ffi#lib/ffi/struct_layout.rb:82
   def initialize(name, offset, type, orig_field); end
 
-  # source://ffi//lib/ffi/struct_layout.rb#87
+  # pkg:gem/ffi#lib/ffi/struct_layout.rb:87
   def get(ptr); end
 
-  # source://ffi//lib/ffi/struct_layout.rb#91
+  # pkg:gem/ffi#lib/ffi/struct_layout.rb:91
   def put(ptr, value); end
 end
 
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::StructLayout::Number < ::FFI::StructLayout::Field; end
+
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::StructLayout::Pointer < ::FFI::StructLayout::Field; end
+
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::StructLayout::String < ::FFI::StructLayout::Field; end
 
 # Build a {StructLayout struct layout}.
 #
-# source://ffi//lib/ffi/struct_layout_builder.rb#35
+# pkg:gem/ffi#lib/ffi/struct_layout_builder.rb:35
 class FFI::StructLayoutBuilder
   # @return [StructLayoutBuilder] a new instance of StructLayoutBuilder
   #
-  # source://ffi//lib/ffi/struct_layout_builder.rb#39
+  # pkg:gem/ffi#lib/ffi/struct_layout_builder.rb:39
   def initialize; end
 
   # Add a field to the builder.
@@ -2497,7 +2518,7 @@ class FFI::StructLayoutBuilder
   # @param type [Array, DataConverter, Struct, StructLayout::Field, Symbol, Type] type of the field
   # @return [self]
   #
-  # source://ffi//lib/ffi/struct_layout_builder.rb#123
+  # pkg:gem/ffi#lib/ffi/struct_layout_builder.rb:123
   def add(name, type, offset = T.unsafe(nil)); end
 
   # Add an array as a field to the builder.
@@ -2508,7 +2529,7 @@ class FFI::StructLayoutBuilder
   # @param type [Array, DataConverter, Struct, StructLayout::Field, Symbol, Type] type of the field
   # @return [self]
   #
-  # source://ffi//lib/ffi/struct_layout_builder.rb#161
+  # pkg:gem/ffi#lib/ffi/struct_layout_builder.rb:161
   def add_array(name, type, count, offset = T.unsafe(nil)); end
 
   # Same as {#add}.
@@ -2519,7 +2540,7 @@ class FFI::StructLayoutBuilder
   # @return [self]
   # @see #add
   #
-  # source://ffi//lib/ffi/struct_layout_builder.rb#144
+  # pkg:gem/ffi#lib/ffi/struct_layout_builder.rb:144
   def add_field(name, type, offset = T.unsafe(nil)); end
 
   # Add a struct as a field to the builder.
@@ -2529,26 +2550,26 @@ class FFI::StructLayoutBuilder
   # @param type [Array, DataConverter, Struct, StructLayout::Field, Symbol, Type] type of the field
   # @return [self]
   #
-  # source://ffi//lib/ffi/struct_layout_builder.rb#151
+  # pkg:gem/ffi#lib/ffi/struct_layout_builder.rb:151
   def add_struct(name, type, offset = T.unsafe(nil)); end
 
   # Returns the value of attribute alignment.
   #
-  # source://ffi//lib/ffi/struct_layout_builder.rb#37
+  # pkg:gem/ffi#lib/ffi/struct_layout_builder.rb:37
   def alignment; end
 
   # Set alignment attribute with +align+ only if it is greater than attribute value.
   #
   # @param align [Integer]
   #
-  # source://ffi//lib/ffi/struct_layout_builder.rb#56
+  # pkg:gem/ffi#lib/ffi/struct_layout_builder.rb:56
   def alignment=(align); end
 
   # Build and return the struct layout.
   #
   # @return [StructLayout]
   #
-  # source://ffi//lib/ffi/struct_layout_builder.rb#167
+  # pkg:gem/ffi#lib/ffi/struct_layout_builder.rb:167
   def build; end
 
   # Set packed attribute
@@ -2556,19 +2577,19 @@ class FFI::StructLayoutBuilder
   # @overload packed=
   # @overload packed=
   #
-  # source://ffi//lib/ffi/struct_layout_builder.rb#89
+  # pkg:gem/ffi#lib/ffi/struct_layout_builder.rb:89
   def packed=(packed); end
 
   # Returns the value of attribute size.
   #
-  # source://ffi//lib/ffi/struct_layout_builder.rb#36
+  # pkg:gem/ffi#lib/ffi/struct_layout_builder.rb:36
   def size; end
 
   # Set size attribute with +size+ only if +size+ is greater than attribute value.
   #
   # @param size [Integer]
   #
-  # source://ffi//lib/ffi/struct_layout_builder.rb#50
+  # pkg:gem/ffi#lib/ffi/struct_layout_builder.rb:50
   def size=(size); end
 
   # Set union attribute.
@@ -2577,14 +2598,14 @@ class FFI::StructLayoutBuilder
   # @param is_union [Boolean]
   # @return [is_union]
   #
-  # source://ffi//lib/ffi/struct_layout_builder.rb#65
+  # pkg:gem/ffi#lib/ffi/struct_layout_builder.rb:65
   def union=(is_union); end
 
   # Building a {Union} or a {Struct} ?
   #
   # @return [Boolean]
   #
-  # source://ffi//lib/ffi/struct_layout_builder.rb#73
+  # pkg:gem/ffi#lib/ffi/struct_layout_builder.rb:73
   def union?; end
 
   private
@@ -2593,7 +2614,7 @@ class FFI::StructLayoutBuilder
   # @param offset [Integer]
   # @return [Integer]
   #
-  # source://ffi//lib/ffi/struct_layout_builder.rb#181
+  # pkg:gem/ffi#lib/ffi/struct_layout_builder.rb:181
   def align(offset, align); end
 
   # @param name [String, Symbol] name of the field
@@ -2601,13 +2622,13 @@ class FFI::StructLayoutBuilder
   # @param type [Array, DataConverter, Struct, StructLayout::Field, Symbol, Type] type of the field
   # @return [StructLayout::Field]
   #
-  # source://ffi//lib/ffi/struct_layout_builder.rb#187
+  # pkg:gem/ffi#lib/ffi/struct_layout_builder.rb:187
   def field_for_type(name, offset, type); end
 end
 
 # List of number types
 #
-# source://ffi//lib/ffi/struct_layout_builder.rb#100
+# pkg:gem/ffi#lib/ffi/struct_layout_builder.rb:100
 FFI::StructLayoutBuilder::NUMBER_TYPES = T.let(T.unsafe(nil), Array)
 
 FFI::TYPE_BOOL = T.let(T.unsafe(nil), FFI::Type::Builtin)
@@ -2632,17 +2653,18 @@ FFI::TYPE_ULONG = T.let(T.unsafe(nil), FFI::Type::Builtin)
 FFI::TYPE_VARARGS = T.let(T.unsafe(nil), FFI::Type::Builtin)
 FFI::TYPE_VOID = T.let(T.unsafe(nil), FFI::Type::Builtin)
 
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::Type
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def initialize(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def alignment; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def inspect; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def size; end
 end
 
@@ -2652,8 +2674,9 @@ FFI::Type::BUFFER_IN = T.let(T.unsafe(nil), FFI::Type::Builtin)
 FFI::Type::BUFFER_INOUT = T.let(T.unsafe(nil), FFI::Type::Builtin)
 FFI::Type::BUFFER_OUT = T.let(T.unsafe(nil), FFI::Type::Builtin)
 
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::Type::Builtin < ::FFI::Type
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def inspect; end
 end
 
@@ -2672,23 +2695,24 @@ FFI::Type::LONG = T.let(T.unsafe(nil), FFI::Type::Builtin)
 FFI::Type::LONGDOUBLE = T.let(T.unsafe(nil), FFI::Type::Builtin)
 FFI::Type::LONG_LONG = T.let(T.unsafe(nil), FFI::Type::Builtin)
 
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::Type::Mapped < ::FFI::Type
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def initialize(_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def converter; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def from_native(*_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def native_type; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def to_native(*_arg0); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def type; end
 end
 
@@ -2714,34 +2738,34 @@ FFI::Type::VARARGS = T.let(T.unsafe(nil), FFI::Type::Builtin)
 FFI::Type::VOID = T.let(T.unsafe(nil), FFI::Type::Builtin)
 FFI::TypeDefs = T.let(T.unsafe(nil), Hash)
 
-# source://ffi//lib/ffi/library.rb#34
+# pkg:gem/ffi#lib/ffi/library.rb:34
 FFI::USE_THIS_PROCESS_AS_LIBRARY = T.let(T.unsafe(nil), Object)
 
-# source://ffi//lib/ffi/union.rb#36
+# pkg:gem/ffi#lib/ffi/union.rb:36
 class FFI::Union < ::FFI::Struct
   class << self
-    # source://ffi//lib/ffi/union.rb#37
+    # pkg:gem/ffi#lib/ffi/union.rb:37
     def builder; end
   end
 end
 
-# source://ffi//lib/ffi/version.rb#2
+# pkg:gem/ffi#lib/ffi/version.rb:2
 FFI::VERSION = T.let(T.unsafe(nil), String)
 
-# source://ffi//lib/ffi/variadic.rb#34
+# pkg:gem/ffi#lib/ffi.rb:3
 class FFI::VariadicInvoker
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def initialize(_arg0, _arg1, _arg2, _arg3); end
 
   # Attach the invoker to module +mod+ as +mname+
   #
-  # source://ffi//lib/ffi/variadic.rb#53
+  # pkg:gem/ffi#lib/ffi/variadic.rb:53
   def attach(mod, mname); end
 
-  # source://ffi//lib/ffi/variadic.rb#35
+  # pkg:gem/ffi#lib/ffi/variadic.rb:35
   def call(*args, &block); end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def invoke(_arg0, _arg1); end
 
   # Retrieve Array of parameter types
@@ -2750,16 +2774,15 @@ class FFI::VariadicInvoker
   #
   # @return [Array<FFI::Type>]
   #
-  # source://ffi//lib/ffi/variadic.rb#76
+  # pkg:gem/ffi#lib/ffi/variadic.rb:76
   def param_types; end
 
-  # source://ffi//lib/ffi.rb#3
+  # pkg:gem/ffi#lib/ffi.rb:3
   def return_type; end
 end
 
 module Process
   extend ::FFI::ModernForkTracking
   extend ::SQLite3::ForkSafety::CoreExt
-  extend ::HTTPX::Session::ForkTracker
   extend ::ActiveSupport::ForkTracker::CoreExt
 end

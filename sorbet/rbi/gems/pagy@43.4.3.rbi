@@ -1197,7 +1197,7 @@ end
 
 # Hook module for numeric UI helpers
 #
-# pkg:gem/pagy#lib/pagy.rb:89
+# pkg:gem/pagy#lib/pagy.rb:94
 module Pagy::NumericHelpers
   include ::Pagy::NumericHelperLoader
 end
