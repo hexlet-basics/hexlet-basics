@@ -8,6 +8,7 @@ import {
   Text,
   TextInput,
 } from "@mantine/core";
+import type { Errors } from "@inertiajs/core";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppForm } from "@/hooks/useAppForm";
@@ -28,9 +29,12 @@ export default function New({ signInForm }: Props) {
 
   const payload = signInForm;
 
-  const { onSubmit, processing, form } = useAppForm(payload, {
+  const { onSubmit, processing, form, reset } = useAppForm(payload, {
     url: Routes.session_path(),
     method: "post",
+    onError: (_errors: Errors) => {
+      reset("password");
+    },
   });
 
   return (
