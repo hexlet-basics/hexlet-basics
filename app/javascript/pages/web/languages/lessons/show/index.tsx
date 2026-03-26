@@ -1,4 +1,3 @@
-import { Split } from "@gfazioli/mantine-split-pane";
 import { Link, usePage } from "@inertiajs/react";
 import {
   Accordion,
@@ -17,9 +16,7 @@ import {
   Tabs,
   Text,
   Title,
-  useMantineTheme,
 } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
 import {
   IconBook,
   IconBrandGithub,
@@ -32,7 +29,6 @@ import { Trans, useTranslation } from "react-i18next";
 import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
 import Chat from "@/components/Chat.tsx";
 import MarkdownViewer from "@/components/MarkdownViewer.tsx";
-import { useIsMobile } from "@/hooks/useIsMobile.ts";
 import ContactMethodRequestingBlock from "@/layouts/blocks/ContactMethodRequestingBlock.tsx";
 import LessonLayout from "@/layouts/LessonLayout.tsx";
 import { neededPreview, propsForExternalLink } from "@/lib/utils.ts";
@@ -68,44 +64,15 @@ function HtmlPreviewBlock() {
 }
 
 export default function Index() {
-  const theme = useMantineTheme();
-  const isTabletUp = !useIsMobile();
-  const headerHeight =
-    theme.components?.AppShell?.defaultProps?.header?.height ?? 60;
-
-  if (isTabletUp) {
-    return (
-      <LessonLayout>
-        <Split
-          orientation="vertical"
-          pt={headerHeight}
-          h="100%"
-          autoResizers
-          size="sm"
-          knobAlwaysOn
-        >
-          <Split.Pane initialWidth="45%" minWidth="20%">
-            <Box h="100%">
-              <LessonLeftBlock />
-            </Box>
-          </Split.Pane>
-          <Split.Pane initialWidth="55%" minWidth="30%" grow>
-            <Box h="100%">
-              <LessonRightBlock />
-            </Box>
-          </Split.Pane>
-        </Split>
-      </LessonLayout>
-    );
-  }
-
   return (
     <LessonLayout>
-      <AppShell.Navbar>
+      <AppShell.Navbar p={0}>
         <LessonLeftBlock />
       </AppShell.Navbar>
       <AppShell.Main h="100%">
-        <LessonRightBlock />
+        <Box h="100%" mih={0}>
+          <LessonRightBlock />
+        </Box>
       </AppShell.Main>
     </LessonLayout>
   );
