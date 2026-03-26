@@ -1,63 +1,14 @@
 import { createInertiaApp } from "@inertiajs/react";
-import createServer from "@inertiajs/react/server";
-import * as Sentry from "@sentry/node";
-import type { ReactNode } from "react";
-import ReactDOMServer from "react-dom/server";
-import { inertiaDefaults } from "@/lib/inertiaDefaults";
-import "@/init.ts";
+import configure from "@/configure";
 import RootLayout from "@/layouts/RootLayout.tsx";
-import configure from "@/lib/configure";
-import type { InertiaPageModule } from "@/types";
 
-Sentry.init({
-  debug: import.meta.env.DEV,
-  dsn: import.meta.env.VITE_SENTRY_DSN,
-});
+import "@/init.ts";
 
-createServer(
-  (page) => {
-    // NOTE: используется для просмотра последних попыток рендера перед падением контейнера ssr на проде (дебаг)
-    console.log(page.url);
-    // console.log(`Memory stats: ${JSON.stringify(process.memoryUsage(), null, 2)}`);
+createInertiaApp({
+  layout: (_component, page) => {
+    configure(page.props.locale, page.props.suffix);
 
-    return createInertiaApp({
-      defaults: inertiaDefaults,
-      page,
-      render: (...args) => {
-        try {
-          return ReactDOMServer.renderToString(...args);
-        } catch (error) {
-          Sentry.setContext("page", {
-            url: page.url,
-            component: page.component,
-          });
-
-          Sentry.captureException(error);
-
-          throw error;
-        }
-      },
-      resolve: (name) => {
-        // const pages = import.meta.glob("../pages/**/*.jsx", { eager: true });
-        const pages = import.meta.glob<InertiaPageModule>("../pages/**/*.tsx", {
-          eager: true,
-        });
-        const page = pages[`../pages/${name}.tsx`];
-
-        page.default.layout ??= (page: ReactNode) => (
-          <RootLayout>{page}</RootLayout>
-        );
-
-        return page;
-      },
-      setup: ({ App, props }) => {
-        const { locale, suffix } = props.initialPage.props;
-
-        configure(locale, suffix);
-        const vdom = <App {...props} />;
-        return vdom;
-      },
-    });
+    return RootLayout;
   },
-  { cluster: false },
-);
+  pages: "../pages",
+});

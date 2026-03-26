@@ -1,4 +1,5 @@
 import path from "node:path";
+import inertia from "@inertiajs/vite";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 // import legacy from '@vitejs/plugin-legacy';
 import react from "@vitejs/plugin-react";
@@ -59,6 +60,9 @@ export default defineConfig(({ mode, isSsrBuild }) => {
         generateSourceTypes: true,
       }),
       react(),
+      inertia({
+        entry: "entrypoints/inertia.tsx",
+      }),
       ViteRails({
         compress: false,
       }),

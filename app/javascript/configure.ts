@@ -3,10 +3,10 @@ import duration from "dayjs/plugin/duration";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import relativeTime from "dayjs/plugin/relativeTime";
 import i18next from "i18next";
+import * as Routes from "@/routes.js";
 import type { Locale } from "@/types";
-// import { configure as configureRoutes } from "../routes.js";
 
-export default function configure(locale: Locale, host?: string) {
+export default function configure(locale: Locale, suffix: string | null) {
   if (i18next.language !== locale) {
     i18next.changeLanguage(locale);
   }
@@ -17,12 +17,11 @@ export default function configure(locale: Locale, host?: string) {
   dayjs.extend(relativeTime);
   dayjs.extend(duration);
 
-  // if (host) {
-  //   configureRoutes({
-  //     default_url_options: {
-  //       host: host,
-  //       protocol: "https",
-  //     },
-  //   });
-  // }
+  Routes.configure({
+    default_url_options: {
+      suffix,
+      protocol: "https",
+      host: import.meta.env.VITE_APP_HOST,
+    },
+  });
 }

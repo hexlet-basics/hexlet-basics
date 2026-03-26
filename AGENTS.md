@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 - Backend: Ruby on Rails in `app/` (models, controllers, jobs, views, policies).
-- Frontend: InertiaJS/React/TypeScript via Vite in `app/javascript/`.
+- Frontend: InertiaJS 3/React 19/TypeScript 6 via Vite in `app/javascript/`.
 - Tests: Ruby tests in `test/` (unit, integration, system); frontend tests use Vitest.
 - Config & ops: `config/`, `k8s/`, `ansible/`, `terraform/`, `Procfile.*`.
 - Assets/Public: `public/`; built assets via Vite and Rails assets pipeline.
