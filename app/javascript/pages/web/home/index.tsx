@@ -26,12 +26,12 @@ import i18next from "i18next";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import type { FAQPage, Question, WithContext } from "schema-dts";
-import { Banner } from "@/components/Banner";
 import BlogPostBlock from "@/components/BlogPostBlock";
 import CourseBlock from "@/components/CourseBlock";
 import LeadFormBlock from "@/components/LeadFormBlock";
 import MarkdownViewer from "@/components/MarkdownViewer";
 import SignUpFormBlock from "@/components/SignUpFormBlock";
+import { Surface } from "@/components/Surface";
 import XssContent from "@/components/XssContent";
 import ApplicationLayout from "@/layouts/ApplicationLayout";
 import { propsForExternalLink } from "@/lib/utils";
@@ -169,27 +169,27 @@ export default function Index({
         }}
       >
         <SimpleGrid cols={{ base: 1, xs: 2, md: 3 }} my="xl">
-          <Card bg="blue.0" p="xl" c="blue.9">
+          <Surface color="blue" p="xl">
             <IconBook2 />
             <Text fw="bold" fz="h2">
               {t(($) => $.home.index.hero.courses_count)}
             </Text>
             {t(($) => $.home.index.hero.courses_count_description)}
-          </Card>
-          <Card bg="green.0" p="xl" c="green.9">
+          </Surface>
+          <Surface color="green" p="xl">
             <IconSend />
             <Text fw="bold" fz="h2">
               {t(($) => $.home.index.hero.community_count)}
             </Text>
             {t(($) => $.home.index.hero.community_count_description)}
-          </Card>
-          <Card bg="violet.0" p="xl" c="violet.9">
+          </Surface>
+          <Surface color="violet" p="xl">
             <IconRobot />
             <Text fw="bold" fz="h2">
               {t(($) => $.home.index.hero.ai_count)}
             </Text>
             {t(($) => $.home.index.hero.ai_count_description)}
-          </Card>
+          </Surface>
         </SimpleGrid>
       </Container>
       <Container
