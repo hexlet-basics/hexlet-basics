@@ -82,10 +82,10 @@ function RootLayout(props: Props) {
       <ModalsProvider>
         <Sentry.ErrorBoundary fallback={FallbackComponent} showDialog>
           <Head>
-            <ColorSchemeScript
-              defaultColorScheme="auto"
-              localStorageKey={colorSchemeStorageKey}
-            />
+            {/* <ColorSchemeScript */}
+            {/*   defaultColorScheme="auto" */}
+            {/*   localStorageKey={colorSchemeStorageKey} */}
+            {/* /> */}
             {parseHtml(metaTagsHTMLString, { trim: true })}
           </Head>
           {import.meta.env.DEV && <DebugAppData />}

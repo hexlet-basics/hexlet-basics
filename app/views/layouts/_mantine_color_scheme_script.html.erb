@@ -1,0 +1,21 @@
+<script data-mantine-script>
+  (function () {
+    var key = 'codebasics-color-scheme';
+    var value = 'auto';
+
+    try {
+      var stored = window.localStorage.getItem(key);
+      if (stored === 'light' || stored === 'dark' || stored === 'auto') {
+        value = stored;
+      }
+    } catch (e) {}
+
+    var resolved = value;
+    if (value === 'auto') {
+      var media = window.matchMedia('(prefers-color-scheme: dark)');
+      resolved = media.matches ? 'dark' : 'light';
+    }
+
+    document.documentElement.setAttribute('data-mantine-color-scheme', resolved);
+  })();
+</script>
