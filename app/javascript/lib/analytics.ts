@@ -6,29 +6,27 @@ import { log } from "./utils";
 
 // import googleAnalytics from "@analytics/google-analytics"
 
-const plugins = [];
+const enabled = import.meta.env.PROD && !import.meta.env.SSR;
 
-if (!import.meta.env.SSR && !import.meta.env.DEV) {
-  plugins.push(
-    // googleAnalytics({
-    //   measurementIds: ['G-5GVCBLE773'],
-    // }),
-    yandexMetrika({
-      counterId: import.meta.env.VITE_YANDEX_METRIKA_COUNTER_ID,
-      // enabled,
-      mapEvents: {
-        signed_up: "ym-register",
-        signed_in: "ym-login",
-        course_started: "ym-start-course",
-        lead_created: "ym-submit-leadform",
-        // purchase: 'ym-purchase',
-        // begin_checkout: 'ym-begin-checkout',
-        // add_to_wishlist: 'ym-add-to-wishlist',
-        // ...добавляй любые кастомные события
-      },
-    }),
-  );
-}
+const plugins = [
+  // googleAnalytics({
+  //   measurementIds: ['G-5GVCBLE773'],
+  // }),
+  yandexMetrika({
+    counterId: import.meta.env.VITE_YANDEX_METRIKA_COUNTER_ID,
+    enabled,
+    mapEvents: {
+      signed_up: "ym-register",
+      signed_in: "ym-login",
+      course_started: "ym-start-course",
+      lead_created: "ym-submit-leadform",
+      // purchase: 'ym-purchase',
+      // begin_checkout: 'ym-begin-checkout',
+      // add_to_wishlist: 'ym-add-to-wishlist',
+      // ...добавляй любые кастомные события
+    },
+  }),
+];
 
 /* Initialize analytics */
 const analytics = Analytics({

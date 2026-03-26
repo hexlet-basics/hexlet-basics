@@ -15,4 +15,4 @@ if (isBrowser && !gonData) {
   throw new Error("gon is not initialized");
 }
 
-export const gon = (isBrowser ? window.gon : {}) as GonData;
+export const gon = (gonData ?? {}) as GonData;

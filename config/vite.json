@@ -10,6 +10,7 @@
     "ssrBuildEnabled": true
   },
   "development": {
+    "ssrBuildEnabled": true,
     "skipProxy": false,
     "host": "127.0.0.1",
     "autoBuild": true,
