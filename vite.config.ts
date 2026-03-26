@@ -3,13 +3,17 @@ import inertia from "@inertiajs/vite";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 // import legacy from '@vitejs/plugin-legacy';
 import react from "@vitejs/plugin-react";
-import { visualizer } from "rollup-plugin-visualizer";
-import { defineConfig, loadEnv, type PluginOption } from "vite";
-import { patchCssModules } from "vite-css-modules";
+// import { visualizer } from "rollup-plugin-visualizer";
+import { defineConfig, loadEnv } from "vite";
+// import { patchCssModules } from "vite-css-modules";
 import { imagetools } from "vite-imagetools";
-import { beasties } from "vite-plugin-beasties";
+// import { beasties } from "vite-plugin-beasties";
 import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 import ViteRails from "vite-plugin-rails";
+
+function resolvePath(relativePath: string) {
+  return path.resolve(`${__dirname}/app/javascript`, relativePath);
+}
 
 export default defineConfig(({ mode, isSsrBuild }) => {
   const env = loadEnv(mode, process.cwd(), "VITE_");
@@ -38,30 +42,33 @@ export default defineConfig(({ mode, isSsrBuild }) => {
     },
     plugins: [
       imagetools(),
-      visualizer() as PluginOption,
-      beasties({
-        // Plugin options
-        options: {
-          // Beasties library options
-          preload: "swap",
-          pruneSource: true, // Enable pruning CSS files
-          inlineThreshold: 4000, // Inline stylesheets smaller than 4kb
-        },
-        // Filter to apply beasties only to specific HTML files
-        filter: (path) => path.endsWith(".html"),
-      }),
+      // visualizer() as PluginOption,
+      // beasties({
+      //   // Plugin options
+      //   options: {
+      //     // Beasties library options
+      //     preload: "swap",
+      //     pruneSource: true, // Enable pruning CSS files
+      //     inlineThreshold: 4000, // Inline stylesheets smaller than 4kb
+      //   },
+      //   // Filter to apply beasties only to specific HTML files
+      //   filter: (path) => path.endsWith(".html"),
+      // }),
       ViteImageOptimizer({
         /* pass your config */
       }),
       // legacy({
       //   targets: ['defaults', 'not IE 11'],
       // }),
-      patchCssModules({
-        generateSourceTypes: true,
-      }),
+      // patchCssModules({
+      //   generateSourceTypes: true,
+      // }),
       react(),
       inertia({
-        entry: "entrypoints/inertia.tsx",
+        // entry: "entrypoints/inertia.tsx",
+        ssr: {
+          entry: "entrypoints/inertia.tsx",
+        },
       }),
       ViteRails({
         compress: false,
@@ -103,12 +110,12 @@ export default defineConfig(({ mode, isSsrBuild }) => {
     },
     resolve: {
       alias: {
-        // "~bootstrap": path.resolve(__dirname, "node_modules/bootstrap"),
-        // NOTE: код модуля monacoLoader.ts не должен выполнятся в ssr режиме
-        "@/lib/monacoLoader.ts": isSsrBuild
-          ? path.resolve(__dirname, "./app/javascript/lib/emptyModule.ts")
-          : path.resolve(__dirname, "./app/javascript/lib/monacoLoader.ts"),
-        "@": path.resolve(__dirname, "./app/javascript"),
+        "@": resolvePath("."),
+        ...(isSsrBuild
+          ? {
+              "@/lib/monacoLoader": resolvePath("lib/emptyModule.ts"),
+            }
+          : {}),
       },
     },
   };

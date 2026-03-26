@@ -1,3 +1,4 @@
+import type { Errors } from "@inertiajs/core";
 import { Link } from "@inertiajs/react";
 import {
   Box,
@@ -8,7 +9,6 @@ import {
   Text,
   TextInput,
 } from "@mantine/core";
-import type { Errors } from "@inertiajs/core";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppForm } from "@/hooks/useAppForm";

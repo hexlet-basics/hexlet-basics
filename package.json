@@ -92,7 +92,7 @@
     "i18next-cli": "^1.51.2",
     "lightningcss": "^1.32.0",
     "node-gyp": "^12.2.0",
-    "npm-check-updates": "^19.6.5",
+    "npm-check-updates": "^19.6.6",
     "postcss": "^8.5.8",
     "postcss-preset-mantine": "^1.18.0",
     "rollup-plugin-visualizer": "^7.0.1",
@@ -108,7 +108,7 @@
     "vite-plugin-image-optimizer": "^2.0.3",
     "vite-plugin-rails": "^0.6.0",
     "vite-plugin-ruby": "^5.2.1",
-    "vitest": "^4.1.1"
+    "vitest": "^4.1.2"
   },
   "browserslist": [
     "extends browserslist-config-baseline, not iOS < 16.4, not Safari < 16.4"

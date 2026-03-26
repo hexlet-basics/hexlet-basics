@@ -13,7 +13,7 @@ import {
 import dayjs from "dayjs";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { useTimer } from "react-timer-hook";
+import useCountdown from "@/hooks/useCountdown.ts";
 import waitingClock from "@/images/waiting_clock.webp";
 import { getEditorLanguage } from "@/lib/utils.ts";
 import type { LessonSharedProps } from "@/types";
@@ -68,8 +68,7 @@ export default function SolutionTab() {
   );
 
   const expiryTimestamp = new Date(startTime + waitingTime);
-  const timerData = useTimer({ expiryTimestamp });
-  // console.log(timerData.isRunning, timerData.totalSeconds, expiryTimestamp)
+  const countdown = useCountdown(expiryTimestamp);
 
   const renderUserCode = () => {
     if (content === "") {
@@ -127,9 +126,9 @@ export default function SolutionTab() {
         renderSolution()
       ) : (
         <Countdown
-          showButton={!timerData.isRunning || solutionState === "canBeShown"}
+          showButton={!countdown.isRunning || solutionState === "canBeShown"}
           remainingTime={dayjs
-            .duration(timerData.totalSeconds, "seconds")
+            .duration(countdown.remainingSeconds, "seconds")
             .format("mm:ss")}
           renderShowButton={renderShowButton}
         />

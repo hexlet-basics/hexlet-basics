@@ -1,3 +1,4 @@
+// NOTE: используется для предотвращения дополнительной загрузки с cdn.jsdelivr.net
 // NOTE: https://www.npmjs.com/package/@monaco-editor/react#loader-config
 
 import { loader } from "@monaco-editor/react";

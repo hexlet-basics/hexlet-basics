@@ -1,12 +1,10 @@
-// NOTE: используется для предотвращения дополнительной загрузки с cdn.jsdelivr.net
-import "@/lib/monacoLoader.ts";
-
 import { usePage } from "@inertiajs/react";
-import { useComputedColorScheme } from "@mantine/core";
+import { Box, useComputedColorScheme } from "@mantine/core";
 import MonacoEditor from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import useAsyncModule from "@/hooks/useAsyncModule.ts";
 import {
   getEditorLanguage,
   // getKeyForStoringLessonCode,
@@ -21,6 +19,9 @@ export default function EditorTab() {
   const colorScheme = useComputedColorScheme("light", {
     getInitialValueInEffect: false,
   });
+  const loadMonaco = useCallback(() => import("@/lib/monacoLoader"), []);
+  const { isLoading: isMonacoLoading, error: monacoError } =
+    useAsyncModule(loadMonaco);
 
   const editorOptions: editor.IStandaloneEditorConstructionOptions = {
     tabSize: getTabSize(course.slug!),
@@ -78,6 +79,10 @@ export default function EditorTab() {
   };
 
   const editorTheme = colorScheme === "dark" ? "vs-dark" : "vs";
+
+  if (isMonacoLoading || monacoError) {
+    return <Box h="100%" />;
+  }
 
   return (
     <MonacoEditor
