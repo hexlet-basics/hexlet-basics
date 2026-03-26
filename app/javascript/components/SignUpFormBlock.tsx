@@ -21,9 +21,12 @@ export default function SignUpFormBlock({ userDto, autoFocus = false }: Props) {
 
   const payload = userDto;
 
-  const { onSubmit, processing, form } = useAppForm(payload, {
+  const { onSubmit, processing, form, reset } = useAppForm(payload, {
     url: Routes.users_path(),
     method: "post",
+    onError: () => {
+      reset("password");
+    },
   });
 
   return (
