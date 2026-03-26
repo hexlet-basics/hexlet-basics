@@ -34,6 +34,7 @@ import MarkdownViewer from "@/components/MarkdownViewer";
 import SignUpFormBlock from "@/components/SignUpFormBlock";
 import XssContent from "@/components/XssContent";
 import ApplicationLayout from "@/layouts/ApplicationLayout";
+import { propsForExternalLink } from "@/lib/utils";
 import {
   reviewShowcaseAvatars,
   reviewShowcaseOrder,
@@ -113,7 +114,6 @@ export default function Index({
       >
         <Badge
           component="a"
-          target="_blank"
           c="gray"
           style={{ cursor: "pointer" }}
           href="https://github.com/orgs/hexlet-basics/repositories"
@@ -121,6 +121,7 @@ export default function Index({
           // autoContrast
           size="sm"
           variant="default"
+          {...propsForExternalLink()}
         >
           {t(($) => $.home.index.hero.source_code)}
         </Badge>

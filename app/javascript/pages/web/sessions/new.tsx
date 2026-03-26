@@ -1,3 +1,4 @@
+import { Link } from "@inertiajs/react";
 import {
   Box,
   Button,
@@ -9,7 +10,6 @@ import {
 } from "@mantine/core";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
-import AppAnchor from "@/components/Elements/AppAnchor";
 import { useAppForm } from "@/hooks/useAppForm";
 import ApplicationLayout from "@/layouts/ApplicationLayout";
 import {
@@ -56,9 +56,14 @@ export default function New({ signInForm }: Props) {
               />
               <Box my="lg" ta="right">
                 {t(($) => $.sessions.new.forgot_password)}{" "}
-                <AppAnchor fw="bold" href={Routes.new_remind_password_path()}>
+                <Text
+                  component={Link}
+                  fw="bold"
+                  href={Routes.new_remind_password_path()}
+                  span
+                >
                   {t(($) => $.sessions.new.reset_password)}
-                </AppAnchor>
+                </Text>
               </Box>
               <Button type="submit" fullWidth loading={processing}>
                 {t(($) => $.helpers.submit.user_sign_in_form.create)}
@@ -68,9 +73,9 @@ export default function New({ signInForm }: Props) {
 
           <Text mt="xs">
             {t(($) => $.sessions.new.dont_have_account)}{" "}
-            <AppAnchor href={Routes.new_user_path()} fw="bold">
+            <Text component={Link} href={Routes.new_user_path()} fw="bold" span>
               {t(($) => $.sessions.new.register)}
-            </AppAnchor>
+            </Text>
           </Text>
         </Stack>
       </Container>

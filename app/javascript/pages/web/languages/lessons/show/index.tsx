@@ -1,5 +1,5 @@
 import { Split } from "@gfazioli/mantine-split-pane";
-import { usePage } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import {
   Accordion,
   Alert,
@@ -31,12 +31,11 @@ import { Suspense, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
 import Chat from "@/components/Chat.tsx";
-import AppAnchor from "@/components/Elements/AppAnchor.tsx";
 import MarkdownViewer from "@/components/MarkdownViewer.tsx";
 import { useIsMobile } from "@/hooks/useIsMobile.ts";
 import ContactMethodRequestingBlock from "@/layouts/blocks/ContactMethodRequestingBlock.tsx";
 import LessonLayout from "@/layouts/LessonLayout.tsx";
-import { neededPreview } from "@/lib/utils.ts";
+import { neededPreview, propsForExternalLink } from "@/lib/utils.ts";
 import * as Routes from "@/routes.js";
 import type { BreadcrumbItem, LessonSharedProps } from "@/types";
 import ControlBox from "./components/ControlBox.tsx";
@@ -308,8 +307,8 @@ function LessonTabContent() {
           <Group justify="center" gap={6}>
             <IconRocket size={15} />
             <Anchor
-              target="_blank"
               href={`${course.hexlet_program_landing_page}?utm_source=code-basics&utm_medium=referral`}
+              {...propsForExternalLink()}
             >
               {t(($) => $.languages.lessons.show.profession_description)}
             </Anchor>
@@ -347,11 +346,7 @@ function LessonTabContent() {
         <Text fz="sm" me="sm" component="span">
           {t(($) => $.languages.lessons.show.issues)}
         </Text>
-        <a
-          href={lesson.source_code_url!}
-          target="_blank"
-          rel="noreferrer noopener"
-        >
+        <a href={lesson.source_code_url!} {...propsForExternalLink()}>
           <IconBrandGithub size={12} />
         </a>
       </Center>
@@ -381,7 +376,12 @@ function AssistantTabContent({ focusesCount }: { focusesCount: number }) {
             t={t}
             i18nKey={($) => $.languages.lessons.show.if_stuck_html}
             components={{
-              a: <AppAnchor external href={t(($) => $.common.community_url)} />,
+              a: (
+                <a
+                  href={t(($) => $.common.community_url)}
+                  {...propsForExternalLink()}
+                />
+              ),
             }}
           />
         </Alert>
@@ -406,7 +406,7 @@ function NavigationTabContent() {
     <Box p="lg">
       {lessons.map((l) => (
         <NavLink
-          component={AppAnchor}
+          component={Link}
           key={l.id}
           href={Routes.language_lesson_path(
             landingPage.language.slug!,
@@ -414,7 +414,6 @@ function NavigationTabContent() {
           )}
           label={l.name}
           active={l.id === lesson.id}
-          underline="never"
         />
       ))}
     </Box>

@@ -1,9 +1,9 @@
+import { Link } from "@inertiajs/react";
 import { IconEdit } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { DataTable } from "mantine-datatable";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
-import AppAnchor from "@/components/Elements/AppAnchor";
 import useDataTableProps from "@/hooks/useDataTableProps";
 import AdminLayout from "@/layouts/AdminLayout";
 import * as Routes from "@/routes.js";
@@ -21,9 +21,9 @@ export default function Index({ grid, surveyScenarios }: Props) {
   console.log(surveyScenarios);
 
   const renderActions = (item: SurveyScenario) => (
-    <AppAnchor href={Routes.edit_admin_survey_scenario_path(item.id)}>
+    <Link href={Routes.edit_admin_survey_scenario_path(item.id)}>
       <IconEdit size={14} />
-    </AppAnchor>
+    </Link>
   );
 
   return (

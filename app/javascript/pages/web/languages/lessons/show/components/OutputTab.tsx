@@ -2,7 +2,7 @@ import { CodeHighlight } from "@mantine/code-highlight";
 import { Alert } from "@mantine/core";
 import { IconAlertTriangle, IconCheck } from "@tabler/icons-react";
 import { Trans, useTranslation } from "react-i18next";
-import AppAnchor from "@/components/Elements/AppAnchor";
+import { propsForExternalLink } from "@/lib/utils";
 import { useLessonStore } from "../store.tsx";
 
 export default function OutputTab() {
@@ -35,7 +35,10 @@ export default function OutputTab() {
           i18nKey={($) => $.common.check[result!].message}
           components={{
             a: (
-              <AppAnchor external href="https://help.hexlet.io/article/20623" />
+              <a
+                href="https://help.hexlet.io/article/20623"
+                {...propsForExternalLink()}
+              />
             ),
           }}
         />

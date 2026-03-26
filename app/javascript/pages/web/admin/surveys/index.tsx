@@ -1,9 +1,9 @@
+import { Link } from "@inertiajs/react";
 import { IconEdit } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { DataTable } from "mantine-datatable";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
-import AppAnchor from "@/components/Elements/AppAnchor";
 import useDataTableProps from "@/hooks/useDataTableProps";
 import AdminLayout from "@/layouts/AdminLayout";
 import * as Routes from "@/routes.js";
@@ -20,9 +20,9 @@ export default function Index({ grid, surveys }: Props) {
   const { gridProps } = useDataTableProps<Survey, {}>(grid);
 
   const renderActions = (item: Survey) => (
-    <AppAnchor href={Routes.edit_admin_survey_path(item.id)}>
+    <Link href={Routes.edit_admin_survey_path(item.id)}>
       <IconEdit size={14} />
-    </AppAnchor>
+    </Link>
   );
 
   return (

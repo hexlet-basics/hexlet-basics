@@ -1,8 +1,8 @@
 import { Alert, Card, Container, Grid, List, Stack, Text } from "@mantine/core";
 import { Trans, useTranslation } from "react-i18next";
-import AppAnchor from "@/components/Elements/AppAnchor";
 import LeadFormBlock from "@/components/LeadFormBlock";
 import ApplicationLayout from "@/layouts/ApplicationLayout";
+import { propsForExternalLink } from "@/lib/utils";
 import type { LanguageLandingPage, LeadCrud } from "@/types";
 
 type Props = {
@@ -28,9 +28,9 @@ export default function Success(props: Props) {
             i18nKey={($) => $.languages.success.add_review}
             components={{
               a: (
-                <AppAnchor
-                  external
+                <a
                   href="https://taplink.cc/codebasics_reviews"
+                  {...propsForExternalLink()}
                 />
               ),
             }}
@@ -50,9 +50,9 @@ export default function Success(props: Props) {
                     i18nKey={($) => $.languages.success.changing_career_html}
                     components={{
                       a: (
-                        <AppAnchor
-                          external
+                        <a
                           href="https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=finished_course_page"
+                          {...propsForExternalLink()}
                         />
                       ),
                     }}
@@ -64,9 +64,9 @@ export default function Success(props: Props) {
                     i18nKey={($) => $.languages.success.getting_new_skill_html}
                     components={{
                       a: (
-                        <AppAnchor
-                          external
+                        <a
                           href="https://ru.hexlet.io/courses_for_programmers?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=finished_course_page"
+                          {...propsForExternalLink()}
                         />
                       ),
                     }}

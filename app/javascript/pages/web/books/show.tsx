@@ -24,6 +24,7 @@ import LeadFormBlock from "@/components/LeadFormBlock";
 import bookCoverImg from "@/images/profession-developer-book-cover.webp";
 import ApplicationLayout from "@/layouts/ApplicationLayout.tsx";
 import bookToc from "@/lib/book.ts";
+import { propsForExternalLink } from "@/lib/utils";
 import * as Routes from "@/routes.js";
 import type { LeadCrud } from "@/types";
 
@@ -91,10 +92,10 @@ export default function Show({ bookRequested, lead }: Props) {
               <Button
                 component="a"
                 href={Routes.download_book_url()}
-                target="_blank"
                 mt="md"
                 variant="outline"
                 size="lg"
+                {...propsForExternalLink()}
               >
                 {t(($) => $.books.show.download)}
               </Button>

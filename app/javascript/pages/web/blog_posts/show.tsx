@@ -1,4 +1,4 @@
-import { Head } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import { CodeHighlightAdapterProvider } from "@mantine/code-highlight";
 import {
   Alert,
@@ -27,12 +27,12 @@ import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import type { Article, WithContext } from "schema-dts";
 import BlogPostBlock from "@/components/BlogPostBlock";
-import AppAnchor from "@/components/Elements/AppAnchor";
 import MarkdownViewer from "@/components/MarkdownViewer.tsx";
 import CoursesList from "@/components/ProgramsList";
 import useInfiniteItems from "@/hooks/useInfiniteItems";
 import ApplicationLayout from "@/layouts/ApplicationLayout";
 import shikiAdapter from "@/lib/shiki";
+import { propsForExternalLink } from "@/lib/utils";
 import * as Routes from "@/routes.js";
 import type {
   BlogPost,
@@ -141,14 +141,16 @@ export default function Show({
                       <Text fw="bold">{dayjs().to(post.created_at)}</Text>
                     </Group>
                     <Group gap={0} me="lg">
-                      <AppAnchor
+                      <Text
+                        component={Link}
                         href={Routes.blog_post_likes_url(post.slug!)}
                         method="post"
                         me="xs"
                         display="flex"
+                        span
                       >
                         <IconThumbUp size={18} />
-                      </AppAnchor>
+                      </Text>
                       {post.likes_count}
                     </Group>
                     <Center>
@@ -173,10 +175,10 @@ export default function Show({
                       <Text fz="lg" lh="sm" mb="md">
                         {t(($) => $.blog_posts.show.discuss)}
                       </Text>
-                      <AppAnchor
+                      <a
                         href="https://t.me/HexletLearningBot"
-                        external
-                        td="none"
+                        {...propsForExternalLink()}
+                        style={{ textDecoration: "none" }}
                       >
                         <Group gap={0}>
                           <Text component="span" mr="sm">
@@ -184,7 +186,7 @@ export default function Show({
                           </Text>
                           <IconArrowRight />
                         </Group>
-                      </AppAnchor>
+                      </a>
                     </Alert>
                   )}
 

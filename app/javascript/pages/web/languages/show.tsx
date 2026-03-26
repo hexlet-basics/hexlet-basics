@@ -22,13 +22,13 @@ import dayjs from "dayjs";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 import type { Course, WithContext } from "schema-dts";
-import AppAnchor from "@/components/Elements/AppAnchor";
 import LeadFormBlock from "@/components/LeadFormBlock";
 import MarkdownViewer from "@/components/MarkdownViewer";
 import SignUpFormBlock from "@/components/SignUpFormBlock";
 import XssContent from "@/components/XssContent";
 import codeIllustration from "@/images/code.svg";
 import ApplicationLayout from "@/layouts/ApplicationLayout";
+import { propsForExternalLink } from "@/lib/utils";
 import { getResourceUrl } from "@/resources";
 import * as Routes from "@/routes.js";
 import type { BreadcrumbItem, Language, LeadCrud } from "@/types";
@@ -264,8 +264,8 @@ export default function Show({
                   <Button
                     size="lg"
                     component="a"
-                    target="_blank"
                     href={`${course.hexlet_program_landing_page}?utm_source=code-basics&utm_medium=referral`}
+                    {...propsForExternalLink()}
                   >
                     {t(($) => $.languages.show.hexlet_program_link)}
                   </Button>

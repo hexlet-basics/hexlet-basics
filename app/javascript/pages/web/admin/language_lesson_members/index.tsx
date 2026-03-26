@@ -1,9 +1,9 @@
+import { Link } from "@inertiajs/react";
 import { Stack, Text } from "@mantine/core";
 import dayjs from "dayjs";
 import { DataTable } from "mantine-datatable";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
-import AppAnchor from "@/components/Elements/AppAnchor";
 import useDataTableProps from "@/hooks/useDataTableProps";
 import AdminLayout from "@/layouts/AdminLayout";
 import * as Routes from "@/routes.js";
@@ -16,27 +16,27 @@ type Props = {
 
 function renderMessages(member: LanguageLessonMember) {
   return (
-    <AppAnchor
+    <Link
       href={Routes.admin_messages_path({
         fields: { language_lesson_member_id_eq: member.id },
       })}
     >
       {member.messages_count}
-    </AppAnchor>
+    </Link>
   );
 }
 
 function renderLesson(member: LanguageLessonMember) {
   return (
     <Stack>
-      <AppAnchor
+      <Link
         href={Routes.language_lesson_path(
           member.language_slug,
           member.language_lesson_slug,
         )}
       >
         {member.language_lesson_name}
-      </AppAnchor>
+      </Link>
       <Text c="dimmed" size="sm">
         {member.language_slug}
       </Text>

@@ -1,6 +1,7 @@
 import type { Method } from "@inertiajs/core";
 import { Link, usePage } from "@inertiajs/react";
 import { Group, NavLink } from "@mantine/core";
+import { propsForExternalLink } from "@/lib/utils";
 
 export type CrudHorizontalMenuItem = {
   label: string | React.ReactNode;
@@ -26,10 +27,10 @@ export function CrudHorizontalMenu({ items }: Props) {
             key={href}
             w="auto"
             href={href}
-            target="_blank"
             component="a"
             aria-current={getCurrentArea(href)}
             label={label}
+            {...propsForExternalLink()}
           />
         ) : (
           <NavLink

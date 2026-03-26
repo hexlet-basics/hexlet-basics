@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 import * as CookieConsent from "vanilla-cookieconsent";
 import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
 import XFlash from "@/components/XFlash.tsx";
-import { isCurrentUrl } from "@/lib/utils.ts";
+import { isCurrentUrl, propsForExternalLink } from "@/lib/utils.ts";
 import cookieTranslations from "@/locales/cookie_consent.ts";
 import * as Routes from "@/routes.js";
 import type { BreadcrumbItem } from "@/types/index.js";
@@ -73,14 +73,13 @@ export default function ApplicationLayout({
         <ActionIcon
           component="a"
           href="https://t.me/WelcomeCodebasicsBot"
-          target="_blank"
-          rel="noopener noreferrer nofollow"
           aria-label={t(
             ($) => $.models.attributes.user["contact_method/values"].telegram,
           )}
           variant="filled"
           size="xl"
           radius="xl"
+          {...propsForExternalLink()}
         >
           <IconSend aria-hidden="true" />
         </ActionIcon>

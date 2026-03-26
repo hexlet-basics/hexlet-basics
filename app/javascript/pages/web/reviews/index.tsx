@@ -5,9 +5,9 @@ import dayjs from "dayjs";
 import i18next from "i18next";
 import type { PropsWithChildren } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import AppAnchor from "@/components/Elements/AppAnchor";
 import XPaging from "@/components/XPaging";
 import ApplicationLayout from "@/layouts/ApplicationLayout";
+import { propsForExternalLink } from "@/lib/utils";
 import * as Routes from "@/routes.js";
 import type { BreadcrumbItem } from "@/types";
 import type { Pagy, Review } from "@/types/serializers";
@@ -39,9 +39,9 @@ export default function New({ reviews, pagy }: Props) {
               i18nKey={($) => $.reviews.index.add_review}
               components={{
                 a: (
-                  <AppAnchor
-                    external
+                  <a
                     href="https://taplink.cc/codebasics_reviews"
+                    {...propsForExternalLink()}
                   />
                 ),
               }}

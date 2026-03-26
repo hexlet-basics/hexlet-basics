@@ -1,7 +1,7 @@
+import { Link } from "@inertiajs/react";
 import { Accordion, Container, List, Stack, Text } from "@mantine/core";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
-import AppAnchor from "@/components/Elements/AppAnchor";
 import ApplicationLayout from "@/layouts/ApplicationLayout";
 import * as Routes from "@/routes.js";
 import type { Locale } from "@/types";
@@ -42,11 +42,15 @@ export default function SiteMap({
         <Container key={locale} mb="xl">
           <Stack gap="xs">
             <Text fw={500} size="lg">
-              <AppAnchor href={Routes.root_path({ suffix: getSuffix(locale) })}>
+              <Text
+                component={Link}
+                href={Routes.root_path({ suffix: getSuffix(locale) })}
+                span
+              >
                 {t(($) => $.home.sitemap.home, {
                   lng: locale,
                 })}
-              </AppAnchor>
+              </Text>
             </Text>
 
             <Accordion multiple variant="separated">
@@ -59,15 +63,17 @@ export default function SiteMap({
                 </Accordion.Control>
                 <Accordion.Panel>
                   <Text fw={500} size="sm" mb="sm">
-                    <AppAnchor
+                    <Text
+                      component={Link}
                       href={Routes.languages_path({
                         suffix: getSuffix(locale),
                       })}
+                      span
                     >
                       {t(($) => $.pages.languages.index.header, {
                         lng: locale,
                       })}
-                    </AppAnchor>
+                    </Text>
                   </Text>
                   {landingPagesByLocale[locale]
                     .filter(
@@ -85,13 +91,15 @@ export default function SiteMap({
                       return (
                         <div key={landingPage.id}>
                           <Text fw={500} size="sm" mt="sm">
-                            <AppAnchor
+                            <Text
+                              component={Link}
                               href={Routes.language_path(landingPage.slug, {
                                 suffix: getSuffix(locale),
                               })}
+                              span
                             >
                               {landingPage.header}
-                            </AppAnchor>
+                            </Text>
                           </Text>
                           {/* <List listStyleType="none" spacing="xs" pl="md"> */}
                           {/*   {lessons.map((lesson) => ( */}
@@ -125,13 +133,15 @@ export default function SiteMap({
                   <List listStyleType="none" spacing="xs" pl="md">
                     {blogPostsByLocale[locale].map((post) => (
                       <List.Item key={post.id}>
-                        <AppAnchor
+                        <Text
+                          component={Link}
                           href={Routes.blog_post_path(post.slug, {
                             suffix: getSuffix(post.locale),
                           })}
+                          span
                         >
                           {post.name}
-                        </AppAnchor>
+                        </Text>
                       </List.Item>
                     ))}
                   </List>
@@ -149,13 +159,15 @@ export default function SiteMap({
                   <List listStyleType="none" spacing="xs" pl="md">
                     {categoriesByLocale[locale].map((category) => (
                       <List.Item key={category.id}>
-                        <AppAnchor
+                        <Text
+                          component={Link}
                           href={Routes.language_category_path(category.slug!, {
                             suffix: getSuffix(category.locale),
                           })}
+                          span
                         >
                           {category.name}
-                        </AppAnchor>
+                        </Text>
                       </List.Item>
                     ))}
                   </List>

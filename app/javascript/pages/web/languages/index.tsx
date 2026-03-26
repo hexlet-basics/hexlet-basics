@@ -1,3 +1,4 @@
+import { Link } from "@inertiajs/react";
 import {
   Box,
   Card,
@@ -13,9 +14,9 @@ import {
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import CourseBlock from "@/components/CourseBlock";
-import AppAnchor from "@/components/Elements/AppAnchor";
 import { HoverLift } from "@/components/HoverLift";
 import ApplicationLayout from "@/layouts/ApplicationLayout";
+import { propsForExternalLink } from "@/lib/utils";
 import {
   reviewShowcaseAvatars,
   reviewShowcaseOrder,
@@ -62,20 +63,24 @@ export default function Index({ catalogLandingPages, categories }: Props) {
               const href = Routes.language_category_path(category.slug!);
 
               return (
-                <AppAnchor key={category.id} href={href} td="none">
+                <Card
+                  component={Link}
+                  key={category.id}
+                  href={href}
+                  withBorder
+                  radius="md"
+                  p="lg"
+                  td="none"
+                >
                   <HoverLift h="100%">
-                    <Card withBorder radius="md" p="lg">
-                      <Stack gap="xs">
-                        <Text fw="bold">
-                          {category.header ?? category.name}
-                        </Text>
-                        {category.description && (
-                          <Text c="dimmed">{category.description}</Text>
-                        )}
-                      </Stack>
-                    </Card>
+                    <Stack gap="xs">
+                      <Text fw="bold">{category.header ?? category.name}</Text>
+                      {category.description && (
+                        <Text c="dimmed">{category.description}</Text>
+                      )}
+                    </Stack>
                   </HoverLift>
-                </AppAnchor>
+                </Card>
               );
             })}
           </SimpleGrid>
@@ -125,49 +130,52 @@ export default function Index({ catalogLandingPages, categories }: Props) {
                 </Text>
                 <List spacing="xs">
                   <List.Item>
-                    <AppAnchor
-                      external
+                    <a
                       href="https://ru.hexlet.io/programs/python"
+                      {...propsForExternalLink()}
                     >
                       {t(($) => $.pages.languages.index.hexlet.python)}
-                    </AppAnchor>
+                    </a>
                   </List.Item>
                   <List.Item>
-                    <AppAnchor
-                      external
+                    <a
                       href="https://ru.hexlet.io/programs/frontend"
+                      {...propsForExternalLink()}
                     >
                       {t(($) => $.pages.languages.index.hexlet.frontend)}
-                    </AppAnchor>
+                    </a>
                   </List.Item>
                   <List.Item>
-                    <AppAnchor
-                      external
+                    <a
                       href="https://ru.hexlet.io/programs/java"
+                      {...propsForExternalLink()}
                     >
                       {t(($) => $.pages.languages.index.hexlet.java)}
-                    </AppAnchor>
+                    </a>
                   </List.Item>
                   <List.Item>
-                    <AppAnchor external href="https://ru.hexlet.io/programs/go">
+                    <a
+                      href="https://ru.hexlet.io/programs/go"
+                      {...propsForExternalLink()}
+                    >
                       {t(($) => $.pages.languages.index.hexlet.go)}
-                    </AppAnchor>
+                    </a>
                   </List.Item>
                   <List.Item>
-                    <AppAnchor
-                      external
+                    <a
                       href="https://ru.hexlet.io/programs/devops-engineer-from-scratch"
+                      {...propsForExternalLink()}
                     >
                       {t(($) => $.pages.languages.index.hexlet.devops)}
-                    </AppAnchor>
+                    </a>
                   </List.Item>
                   <List.Item>
-                    <AppAnchor
-                      external
+                    <a
                       href="https://ru.hexlet.io/programs/data-analytics"
+                      {...propsForExternalLink()}
                     >
                       {t(($) => $.pages.languages.index.hexlet.analytics)}
-                    </AppAnchor>
+                    </a>
                   </List.Item>
                 </List>
               </Box>

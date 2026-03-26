@@ -1,14 +1,14 @@
+import { Link } from "@inertiajs/react";
 import { Select } from "@mantine/core";
 import { IconEdit, IconLink, IconSearch } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { DataTable } from "mantine-datatable";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
-import AppAnchor from "@/components/Elements/AppAnchor";
 import { enums } from "@/generated/enums";
 import useDataTableProps from "@/hooks/useDataTableProps";
 import AdminLayout from "@/layouts/AdminLayout";
-import { boolText } from "@/lib/utils";
+import { boolText, propsForExternalLink } from "@/lib/utils";
 import * as Routes from "@/routes.js";
 import type { Grid, LanguageLandingPage } from "@/types/serializers";
 import { Menu } from "./shared/menu";
@@ -31,22 +31,19 @@ export default function Index({ grid, landingPages }: Props) {
 
   const renderActions = (item: LanguageLandingPage) => (
     <>
-      <AppAnchor
-        me="xs"
-        href={Routes.edit_admin_language_landing_page_path(item.id)}
-      >
+      <Link href={Routes.edit_admin_language_landing_page_path(item.id)}>
         <IconEdit size={14} />
-      </AppAnchor>
-      <a href={Routes.language_path(item.slug!)} target="_blank" rel="noopener">
+      </Link>
+      <a href={Routes.language_path(item.slug!)} {...propsForExternalLink()}>
         <IconLink size={14} />
       </a>
     </>
   );
 
   const renderLanguage = (item: LanguageLandingPage) => (
-    <AppAnchor href={Routes.edit_admin_language_path(item.language_id)}>
+    <Link href={Routes.edit_admin_language_path(item.language_id)}>
       {item.language_slug}
-    </AppAnchor>
+    </Link>
   );
 
   const filterState = (

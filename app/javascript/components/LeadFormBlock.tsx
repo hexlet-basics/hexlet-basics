@@ -2,10 +2,14 @@ import { Box, Button, Select, TextInput } from "@mantine/core";
 import { toMerged } from "es-toolkit";
 import { Trans, useTranslation } from "react-i18next";
 import { useAppForm } from "@/hooks/useAppForm";
-import { arrayToSelectData, enumToOptions, fromWindow } from "@/lib/utils";
+import {
+  arrayToSelectData,
+  enumToOptions,
+  fromWindow,
+  propsForExternalLink,
+} from "@/lib/utils";
 import * as Routes from "@/routes.js";
 import type { LeadCrud } from "@/types";
-import AppAnchor from "./Elements/AppAnchor";
 
 type Props = {
   leadDto: LeadCrud;
@@ -57,7 +61,12 @@ export default function LeadFormBlock({ leadDto, autoFocus = false }: Props) {
           t={t}
           i18nKey={($) => $.blocks.lead_form_block.description2}
           components={{
-            a: <AppAnchor external href="https://t.me/WelcomeCodebasicsBot" />,
+            a: (
+              <a
+                href="https://t.me/WelcomeCodebasicsBot"
+                {...propsForExternalLink()}
+              />
+            ),
           }}
         />
       </Box>

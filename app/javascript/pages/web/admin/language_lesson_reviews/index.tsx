@@ -1,3 +1,4 @@
+import { Link } from "@inertiajs/react";
 import { ActionIcon, Box, Button, Modal, Select } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconLink, IconSearch } from "@tabler/icons-react";
@@ -5,11 +6,10 @@ import dayjs from "dayjs";
 import { DataTable } from "mantine-datatable";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
-import AppAnchor from "@/components/Elements/AppAnchor";
 import MarkdownViewer from "@/components/MarkdownViewer";
 import useDataTableProps from "@/hooks/useDataTableProps";
 import AdminLayout from "@/layouts/AdminLayout";
-import { arrayToSelectData } from "@/lib/utils.ts";
+import { arrayToSelectData, propsForExternalLink } from "@/lib/utils.ts";
 import * as Routes from "@/routes.js";
 import type { Grid, Language, LanguageLessonReview } from "@/types";
 
@@ -65,14 +65,14 @@ export default function Index({ grid, reviews, languages }: Props) {
         {/*     <Edit /> */}
         {/*   </ActionIcon> */}
         {/* </AppAnchor> */}
-        <AppAnchor
-          external
+        <a
           href={Routes.language_lesson_path(item.language_slug!, item.slug!)}
+          {...propsForExternalLink()}
         >
           <ActionIcon variant="default" size="xs">
             <IconLink />
           </ActionIcon>
-        </AppAnchor>
+        </a>
         {/* <AppAnchor external href={item.source_code_url}> */}
         {/*   <ActionIcon variant="default" size="xs"> */}
         {/*     <Github /> */}

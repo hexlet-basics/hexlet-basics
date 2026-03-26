@@ -1,7 +1,7 @@
+import { Link } from "@inertiajs/react";
 import { Box, Button, Card, Center, Container, TextInput } from "@mantine/core";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
-import AppAnchor from "@/components/Elements/AppAnchor";
 import { useAppForm } from "@/hooks/useAppForm";
 import ApplicationLayout from "@/layouts/ApplicationLayout";
 import { emailInputProps } from "@/lib/authFieldProps";
@@ -42,9 +42,13 @@ export default function New({ passwordReminder }: Props) {
               />
               <Box my="lg" ta="right">
                 {t(($) => $.users.new.have_account)}{" "}
-                <AppAnchor fw="bold" href={Routes.new_session_path()}>
+                <Box
+                  component={Link}
+                  fw="bold"
+                  href={Routes.new_session_path()}
+                >
                   {t(($) => $.users.new.sign_in)}
-                </AppAnchor>
+                </Box>
               </Box>
               <Button fullWidth type="submit" loading={processing}>
                 {t(($) => $.helpers.submit.remind_password_form.create)}

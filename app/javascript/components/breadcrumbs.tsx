@@ -1,11 +1,10 @@
-import { Head } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import { Breadcrumbs, Center, Text } from "@mantine/core";
 import { IconHome } from "@tabler/icons-react";
 import type { HTMLAttributes, PropsWithChildren, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { BreadcrumbList, ListItem, WithContext } from "schema-dts";
 import type { BreadcrumbItem } from "@/types";
-import AppAnchor from "./Elements/AppAnchor";
 
 type Props = PropsWithChildren & {
   items: BreadcrumbItem[];
@@ -71,9 +70,9 @@ export function XBreadcrumb({ items = [] }: Props) {
               {item.title}
             </Text>
           ) : (
-            <AppAnchor key={item.href} href={item.href} size="sm">
+            <Text component={Link} key={item.href} href={item.href} size="sm">
               {item.title}
-            </AppAnchor>
+            </Text>
           ),
         )}
       </Breadcrumbs>

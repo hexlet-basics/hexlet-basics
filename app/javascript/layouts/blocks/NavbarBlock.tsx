@@ -41,10 +41,9 @@ import {
 } from "@tabler/icons-react";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
-import AppAnchor from "@/components/Elements/AppAnchor";
 import logoImg from "@/images/logo.svg";
 import defaultAvatarImg from "@/images/user-avatar.webp";
-import { hasObjectKey, localesByCode } from "@/lib/utils";
+import { hasObjectKey, localesByCode, propsForExternalLink } from "@/lib/utils";
 import * as Routes from "@/routes.js";
 
 export type NavbarBlockProps = {
@@ -58,9 +57,9 @@ export default function NavbarBlock({ opened, onToggle }: NavbarBlockProps) {
   return (
     <>
       <Group h="100%" px="md">
-        <AppAnchor href={Routes.root_path()}>
+        <Anchor component={Link} href={Routes.root_path()}>
           <Image src={logoImg} w={30} h={30} fit="contain" alt="Logo" />
-        </AppAnchor>
+        </Anchor>
 
         <MyLink />
         <CourseMenu landingPages={landingPagesForLists} />
@@ -106,9 +105,9 @@ function MyLink() {
   if (auth.user.guest) return null;
 
   return (
-    <AppAnchor href={Routes.my_path()}>
+    <Anchor component={Link} href={Routes.my_path()}>
       {t(($) => $.layouts.shared.nav.my)}
-    </AppAnchor>
+    </Anchor>
   );
 }
 
@@ -176,9 +175,9 @@ function CourseMenu({
 function BookLink() {
   const { t } = useTranslation();
   return i18next.language === "ru" ? (
-    <AppAnchor href={Routes.book_path()}>
+    <Anchor component={Link} href={Routes.book_path()}>
       {t(($) => $.layouts.shared.nav.book)}
-    </AppAnchor>
+    </Anchor>
   ) : null;
 }
 
@@ -189,12 +188,12 @@ function AuthLinks({ avatar }: { avatar: string }) {
   if (auth.user.guest) {
     return (
       <>
-        <AppAnchor href={Routes.new_session_path()}>
+        <Anchor component={Link} href={Routes.new_session_path()}>
           {t(($) => $.layouts.shared.nav.sign_in)}
-        </AppAnchor>
-        <AppAnchor href={Routes.new_user_path()}>
+        </Anchor>
+        <Anchor component={Link} href={Routes.new_user_path()}>
           {t(($) => $.layouts.shared.nav.registration)}
-        </AppAnchor>
+        </Anchor>
       </>
     );
   }
@@ -386,11 +385,11 @@ function SolutionsMenu() {
           <item.icon size={22} />
         </ThemeIcon>
         <Box>
-          <AppAnchor external href={item.href}>
+          <Anchor href={item.href} {...propsForExternalLink()}>
             <Text fz="sm" fw="bold">
               {item.title}
             </Text>
-          </AppAnchor>
+          </Anchor>
           <Text fz="xs" c="dimmed">
             {item.description}
           </Text>
@@ -413,9 +412,9 @@ function SolutionsMenu() {
         <Group justify="space-between" px="md" mb="sm">
           <Text fw="bold">{t(($) => $.layouts.shared.nav.for_whom)}</Text>
           <Anchor
-            target="_blank"
             href={`${t(($) => $.common.organization.site)}?utm_source=code-basics&utm_medium=referral`}
             fz="xs"
+            {...propsForExternalLink()}
           >
             {t(($) => $.common.organization.site)}
           </Anchor>

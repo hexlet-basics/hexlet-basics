@@ -1,4 +1,4 @@
-import { Head, usePage } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import {
   Anchor,
   Box,
@@ -19,7 +19,7 @@ import i18next from "i18next";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import type { Organization, WithContext } from "schema-dts";
-import AppAnchor from "@/components/Elements/AppAnchor";
+import { propsForExternalLink } from "@/lib/utils";
 import * as Routes from "@/routes.js";
 
 function FooterLink(
@@ -31,15 +31,18 @@ function FooterLink(
 ) {
   const { href, children, external = false } = props;
 
+  if (external) {
+    return (
+      <Anchor fz="sm" href={href} {...propsForExternalLink()}>
+        {children}
+      </Anchor>
+    );
+  }
+
   return (
-    <AppAnchor
-      fz="sm"
-      // c="dimmed"
-      href={href}
-      external={external}
-    >
+    <Anchor component={Link} fz="sm" href={href}>
       {children}
-    </AppAnchor>
+    </Anchor>
   );
 }
 
@@ -135,30 +138,30 @@ export default function FooterBlock() {
             <SimpleGrid cols={{ base: 2, sm: 4 }}>
               <Stack>
                 <Group align="top">
-                  <AppAnchor
+                  <Anchor
                     href="https://github.com/hexlet-basics"
-                    external
                     underline="never"
                     aria-label="Project Repository On IconBrandGithub"
+                    {...propsForExternalLink()}
                   >
                     <IconBrandGithub />
-                  </AppAnchor>
-                  <AppAnchor
+                  </Anchor>
+                  <Anchor
                     href="https://ttttt.me/hexlet_ru"
-                    external
                     underline="never"
                     aria-label="Hexlet Telegram Channel"
+                    {...propsForExternalLink()}
                   >
                     <IconSend />
-                  </AppAnchor>
-                  <AppAnchor
+                  </Anchor>
+                  <Anchor
                     href="https://www.youtube.com/@HexletOrg"
-                    external
                     underline="never"
                     aria-label="Youtbe Channel"
+                    {...propsForExternalLink()}
                   >
                     <IconBrandYoutube />
-                  </AppAnchor>
+                  </Anchor>
                 </Group>
                 <Anchor href="mailto:support@hexlet.io">
                   support@hexlet.io
@@ -184,14 +187,14 @@ export default function FooterBlock() {
 
               {i18next.language === "ru" && (
                 <Stack gap={0}>
-                  <AppAnchor
+                  <Anchor
                     href="https://ru.hexlet.io"
                     fz="sm"
-                    external
                     mb="xs"
+                    {...propsForExternalLink()}
                   >
                     ООО «Хекслет Рус»
-                  </AppAnchor>
+                  </Anchor>
                   <Text fz="sm">
                     108813 г. Москва, вн.тер.г. поселение Московский, г.
                     Московский, ул. Солнечная, д. 3А, стр. 1, помещ. 10/3

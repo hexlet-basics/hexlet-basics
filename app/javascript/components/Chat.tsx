@@ -3,6 +3,7 @@ import i18next from "i18next";
 import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useAssistantStream } from "@/hooks/useAssistantStream";
+import { propsForExternalLink } from "@/lib/utils";
 import type { AssistantMessage } from "@/types/assistantMessage";
 import type {
   Language,
@@ -94,7 +95,7 @@ export default function Chat({
               component="a"
               variant="light"
               href={t(($) => $.common.community_url)}
-              target="_blank"
+              {...propsForExternalLink()}
             >
               {t(($) => $.languages.lessons.show.chat.community)}
             </Button>

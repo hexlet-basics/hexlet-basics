@@ -18,8 +18,8 @@ import { IconMessage2 } from "@tabler/icons-react";
 import i18next from "i18next";
 import { Trans, useTranslation } from "react-i18next";
 import CourseBlock from "@/components/CourseBlock";
-import AppAnchor from "@/components/Elements/AppAnchor";
 import ApplicationLayout from "@/layouts/ApplicationLayout";
+import { propsForExternalLink } from "@/lib/utils";
 import * as Routes from "@/routes.js";
 import type {
   LanguageLandingPageForLists,
@@ -40,34 +40,39 @@ function StartedCourse({
   cm: LanguageMember;
 }) {
   return (
-    <AppAnchor href={Routes.language_url(lp.slug!)} td="none">
-      <Card p={0} radius="md" withBorder>
-        <Group wrap="nowrap" align="stretch">
-          <Image
-            visibleFrom="sm"
-            alt={lp.header}
-            // w="100%"
-            maw={150}
-            w="auto"
-            fit="contain"
-            src={lp.language.cover_list_variant}
-          />
+    <Card
+      component={Link}
+      href={Routes.language_url(lp.slug!)}
+      p={0}
+      radius="md"
+      withBorder
+      td="none"
+    >
+      <Group wrap="nowrap" align="stretch">
+        <Image
+          visibleFrom="sm"
+          alt={lp.header}
+          // w="100%"
+          maw={150}
+          w="auto"
+          fit="contain"
+          src={lp.language.cover_list_variant}
+        />
 
-          <Stack w="100%" p="sm" gap="xs">
-            <Title order={3}>{lp.header}</Title>
+        <Stack w="100%" p="sm" gap="xs">
+          <Title order={3}>{lp.header}</Title>
 
-            {cm.next_lesson_name && <Text>{cm.next_lesson_name} →</Text>}
+          {cm.next_lesson_name && <Text>{cm.next_lesson_name} →</Text>}
 
-            <Progress.Root mt="auto">
-              <Progress.Section
-                aria-label={`${cm.progress}%`}
-                value={cm.progress}
-              />
-            </Progress.Root>
-          </Stack>
-        </Group>
-      </Card>
-    </AppAnchor>
+          <Progress.Root mt="auto">
+            <Progress.Section
+              aria-label={`${cm.progress}%`}
+              value={cm.progress}
+            />
+          </Progress.Root>
+        </Stack>
+      </Group>
+    </Card>
   );
 }
 
@@ -108,9 +113,9 @@ export default function My(props: Props) {
               i18nKey={($) => $.my.show.add_review}
               components={{
                 a: (
-                  <AppAnchor
-                    external
+                  <a
                     href="https://taplink.cc/codebasics_reviews"
+                    {...propsForExternalLink()}
                   />
                 ),
               }}

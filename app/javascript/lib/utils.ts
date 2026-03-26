@@ -245,3 +245,10 @@ export function objectToSelectData(obj: Record<string, string>) {
     value: k,
   }));
 }
+
+export function propsForExternalLink() {
+  return {
+    target: "_blank",
+    rel: "noopener noreferrer",
+  };
+}

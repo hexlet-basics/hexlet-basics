@@ -1,9 +1,9 @@
+import { Link } from "@inertiajs/react";
 import { IconPencil } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import type { PropsWithChildren } from "react";
 
 import { useTranslation } from "react-i18next";
-import AppAnchor from "@/components/Elements/AppAnchor";
 import useDataTableProps from "@/hooks/useDataTableProps";
 import AdminLayout from "@/layouts/AdminLayout";
 import * as Routes from "@/routes.js";
@@ -29,9 +29,9 @@ export default function Index({ admins, grid }: Props) {
           {
             accessor: "Actions",
             render: (r) => (
-              <AppAnchor href={Routes.edit_admin_management_user_path(r)}>
+              <Link href={Routes.edit_admin_management_user_path(r)}>
                 <IconPencil size={14} />
-              </AppAnchor>
+              </Link>
             ),
           },
         ]}

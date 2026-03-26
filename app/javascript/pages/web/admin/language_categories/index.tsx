@@ -1,13 +1,14 @@
+import { Link } from "@inertiajs/react";
 import { ActionIcon } from "@mantine/core";
 import { IconEdit, IconLink } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { DataTable } from "mantine-datatable";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
-import AppAnchor from "@/components/Elements/AppAnchor";
 // import useConfirmation from '@/hooks/useConfirmation';
 import useDataTableProps from "@/hooks/useDataTableProps";
 import AdminLayout from "@/layouts/AdminLayout";
+import { propsForExternalLink } from "@/lib/utils";
 import * as Routes from "@/routes.js";
 import type { Grid, LanguageCategory } from "@/types";
 import { Menu } from "./shared/menu";
@@ -26,19 +27,19 @@ export default function Index({ grid, categories }: Props) {
   const renderActions = (item: LanguageCategory) => {
     return (
       <>
-        <AppAnchor
-          me="xs"
-          href={Routes.edit_admin_language_category_path(item.id)}
-        >
+        <Link href={Routes.edit_admin_language_category_path(item.id)}>
           <ActionIcon variant="default" size="xs">
             <IconEdit />
           </ActionIcon>
-        </AppAnchor>
-        <AppAnchor external href={Routes.language_category_path(item.slug!)}>
+        </Link>
+        <a
+          href={Routes.language_category_path(item.slug!)}
+          {...propsForExternalLink()}
+        >
           <ActionIcon variant="default" size="xs">
             <IconLink />
           </ActionIcon>
-        </AppAnchor>
+        </a>
       </>
     );
   };

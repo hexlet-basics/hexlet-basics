@@ -1,10 +1,10 @@
+import { Link } from "@inertiajs/react";
 import { Button, Modal } from "@mantine/core";
 import dayjs from "dayjs";
 import { DataTable } from "mantine-datatable";
 import type { PropsWithChildren } from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import AppAnchor from "@/components/Elements/AppAnchor";
 import MarkdownViewer from "@/components/MarkdownViewer";
 import useDataTableProps from "@/hooks/useDataTableProps";
 import AdminLayout from "@/layouts/AdminLayout";
@@ -18,14 +18,16 @@ type Props = PropsWithChildren & {
 
 function renderLesson(item: LanguageLessonMemberMessage) {
   return (
-    <AppAnchor
+    <Button
+      component={Link}
+      variant="subtle"
       href={Routes.language_lesson_path(
         item.language_slug,
         item.language_lesson_slug,
       )}
     >
       {item.language_lesson_name}
-    </AppAnchor>
+    </Button>
   );
 }
 

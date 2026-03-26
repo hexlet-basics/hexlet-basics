@@ -1,3 +1,4 @@
+import { Link } from "@inertiajs/react";
 import { Box, Button, Text, TextInput } from "@mantine/core";
 import type { PropsWithChildren } from "react";
 import { Trans, useTranslation } from "react-i18next";
@@ -9,7 +10,6 @@ import {
 } from "@/lib/authFieldProps";
 import * as Routes from "@/routes.js";
 import type { UserSignUpForm } from "@/types";
-import AppAnchor from "./Elements/AppAnchor";
 
 type Props = PropsWithChildren & {
   userDto: UserSignUpForm;
@@ -45,9 +45,9 @@ export default function SignUpFormBlock({ userDto, autoFocus = false }: Props) {
       />
       <Box my="lg" ta="right">
         {t(($) => $.pages.users.new.have_account)}{" "}
-        <AppAnchor fw="bold" href={Routes.new_session_path()}>
+        <Text component={Link} fw="bold" href={Routes.new_session_path()} span>
           {t(($) => $.pages.users.new.sign_in)}
-        </AppAnchor>
+        </Text>
       </Box>
       <Button type="submit" fullWidth loading={processing}>
         {t(($) => $.helpers.submit.user_sign_up_form.create)}
@@ -57,7 +57,14 @@ export default function SignUpFormBlock({ userDto, autoFocus = false }: Props) {
           t={t}
           i18nKey={($) => $.pages.users.new.confirmation_html}
           components={{
-            a: <AppAnchor fz="inherit" href={Routes.page_path("tos")} />,
+            a: (
+              <Text
+                component={Link}
+                fz="inherit"
+                href={Routes.page_path("tos")}
+                span
+              />
+            ),
           }}
         />
       </Text>

@@ -1,3 +1,4 @@
+import { Link } from "@inertiajs/react";
 import {
   Card,
   Center,
@@ -10,7 +11,6 @@ import {
 import { IconArrowBackUp } from "@tabler/icons-react";
 import type { PropsWithChildren } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import AppAnchor from "@/components/Elements/AppAnchor";
 import LeadFormBlock from "@/components/LeadFormBlock";
 import ApplicationLayout from "@/layouts/ApplicationLayout";
 import type { LeadCrud } from "@/types";
@@ -56,12 +56,12 @@ export default function New({ lead, from }: Props) {
             </Card>
             {from && (
               <Center mt="xl">
-                <AppAnchor href={from} c="grey">
+                <Text component={Link} href={from} c="grey" span>
                   <Text component="span" me="xs">
                     {t(($) => $.leads.new.return)}
                   </Text>
                   <IconArrowBackUp size={14} />
-                </AppAnchor>
+                </Text>
               </Center>
             )}
           </Grid.Col>

@@ -1,10 +1,10 @@
+import { Link } from "@inertiajs/react";
 import { Group } from "@mantine/core";
 import { IconEdit, IconFileSearch } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { DataTable } from "mantine-datatable";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
-import AppAnchor from "@/components/Elements/AppAnchor";
 import useDataTableProps from "@/hooks/useDataTableProps";
 import AdminLayout from "@/layouts/AdminLayout";
 import * as Routes from "@/routes.js";
@@ -22,15 +22,12 @@ export default function Index({ grid, courses }: Props) {
 
   const renderActions = (item: Language) => (
     <Group gap={5}>
-      <AppAnchor href={Routes.edit_admin_language_path(item.id)}>
+      <Link href={Routes.edit_admin_language_path(item.id)}>
         <IconEdit size={14} />
-      </AppAnchor>
-      <AppAnchor
-        method="post"
-        href={Routes.review_admin_language_path(item.id)}
-      >
+      </Link>
+      <Link href={Routes.review_admin_language_path(item.id)} method="post">
         <IconFileSearch size={14} />
-      </AppAnchor>
+      </Link>
     </Group>
   );
 

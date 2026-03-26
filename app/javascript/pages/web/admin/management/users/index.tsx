@@ -1,9 +1,9 @@
+import { Link } from "@inertiajs/react";
 import { TextInput } from "@mantine/core";
 import { IconEdit } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
-import AppAnchor from "@/components/Elements/AppAnchor";
 import useDataTableProps from "@/hooks/useDataTableProps";
 import AdminLayout from "@/layouts/AdminLayout";
 import * as Routes from "@/routes.js";
@@ -22,9 +22,9 @@ export default function Index({ grid, users }: Props) {
   );
 
   const renderActions = (item: User) => (
-    <AppAnchor href={Routes.edit_admin_management_user_path(item.id)}>
+    <Link href={Routes.edit_admin_management_user_path(item.id)}>
       <IconEdit size={14} />
-    </AppAnchor>
+    </Link>
   );
 
   return (

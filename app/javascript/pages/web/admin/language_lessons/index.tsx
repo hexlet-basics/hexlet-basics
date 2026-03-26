@@ -1,12 +1,13 @@
+import { Link } from "@inertiajs/react";
 import { ActionIcon, Group } from "@mantine/core";
 import { IconBrandGithub, IconFileSearch, IconLink } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { DataTable } from "mantine-datatable";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
-import AppAnchor from "@/components/Elements/AppAnchor";
 import useDataTableProps from "@/hooks/useDataTableProps";
 import AdminLayout from "@/layouts/AdminLayout";
+import { propsForExternalLink } from "@/lib/utils";
 import * as Routes from "@/routes.js";
 import type { Grid, LanguageLesson } from "@/types";
 
@@ -30,25 +31,27 @@ export default function Index({ grid, lessons }: Props) {
         {/*     <Edit /> */}
         {/*   </ActionIcon> */}
         {/* </AppAnchor> */}
-        <AppAnchor
-          external
+        <a
           href={Routes.language_lesson_path(item.language!.slug!, item.slug!)}
+          {...propsForExternalLink()}
         >
           <ActionIcon variant="default" size="xs">
             <IconLink />
           </ActionIcon>
-        </AppAnchor>
-        <AppAnchor external href={item.source_code_url!}>
+        </a>
+        <a href={item.source_code_url!} {...propsForExternalLink()}>
           <ActionIcon variant="default" size="xs">
             <IconBrandGithub />
           </ActionIcon>
-        </AppAnchor>
-        <AppAnchor
-          method="post"
+        </a>
+        <ActionIcon
+          component={Link}
           href={Routes.review_admin_language_lesson_path(item.id)}
+          method="post"
+          variant="subtle"
         >
           <IconFileSearch size={14} />
-        </AppAnchor>
+        </ActionIcon>
       </Group>
     );
   };

@@ -1,3 +1,4 @@
+import { Link } from "@inertiajs/react";
 import { ActionIcon, Image, Select, ThemeIcon } from "@mantine/core";
 import {
   IconEdit,
@@ -9,10 +10,10 @@ import dayjs from "dayjs";
 import { DataTable } from "mantine-datatable";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
-import AppAnchor from "@/components/Elements/AppAnchor";
 import { enums } from "@/generated/enums";
 import useDataTableProps from "@/hooks/useDataTableProps";
 import AdminLayout from "@/layouts/AdminLayout";
+import { propsForExternalLink } from "@/lib/utils";
 import * as Routes from "@/routes.js";
 import type { BlogPost, Grid } from "@/types";
 import Menu from "./shared/menu";
@@ -35,24 +36,24 @@ export default function Index({ grid, blogPosts }: Props) {
 
   const renderActions = (item: BlogPost) => (
     <>
-      <AppAnchor me="xs" href={Routes.edit_admin_blog_post_path(item.id)}>
+      <Link href={Routes.edit_admin_blog_post_path(item.id)}>
         <ThemeIcon variant="default" size="xs">
           <IconEdit />
         </ThemeIcon>
-      </AppAnchor>
-      <AppAnchor me="xs" external href={Routes.blog_post_path(item.slug!)}>
+      </Link>
+      <a href={Routes.blog_post_path(item.slug!)} {...propsForExternalLink()}>
         <ThemeIcon variant="default" size="xs">
           <IconLink />
         </ThemeIcon>
-      </AppAnchor>
-      <AppAnchor
-        method="post"
+      </a>
+      <Link
         href={Routes.related_courses_admin_blog_post_path(item.id)}
+        method="post"
       >
         <ThemeIcon variant="default" size="xs">
           <IconSchool />
         </ThemeIcon>
-      </AppAnchor>
+      </Link>
     </>
   );
 

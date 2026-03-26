@@ -1,3 +1,4 @@
+import { Link } from "@inertiajs/react";
 import {
   AspectRatio,
   Card,
@@ -16,7 +17,6 @@ import type {
   LanguageLandingPageForLists,
   LanguageMember,
 } from "@/types/serializers";
-import AppAnchor from "./Elements/AppAnchor";
 import { HoverLift } from "./HoverLift";
 
 type Props = PropsWithChildren &
@@ -35,43 +35,47 @@ export default function CourseBlock({
   ...props
 }: Props) {
   return (
-    <AppAnchor href={Routes.language_url(landingPage.slug)} td="none">
+    <Card
+      component={Link}
+      href={Routes.language_url(landingPage.slug)}
+      shadow="sm"
+      td="none"
+      {...props}
+    >
       <HoverLift h="100%">
-        <Card shadow="sm" {...props}>
-          <Card.Section>
-            <AspectRatio ratio={4 / 3}>
-              <Image
-                fit="cover"
-                loading={lazy ? "lazy" : "eager"}
-                src={landingPage.language.cover_list_variant}
-                alt={landingPage.header}
-              />
-            </AspectRatio>
-          </Card.Section>
+        <Card.Section>
+          <AspectRatio ratio={4 / 3}>
+            <Image
+              fit="cover"
+              loading={lazy ? "lazy" : "eager"}
+              src={landingPage.language.cover_list_variant}
+              alt={landingPage.header}
+            />
+          </AspectRatio>
+        </Card.Section>
 
-          <Stack pt="md" h="100%">
-            <Title fw="bold" order={2} mb="md">
-              {landingPage.name}
-            </Title>
-            <Group c="dimmed" mt="auto">
-              <Group gap="xs">
-                <IconClock size="15" />
-                <Text size="sm">{landingPage.duration}</Text>
-              </Group>
-              <Group gap="xs">
-                <IconUsers size="15" />
-                <Text size="sm">
-                  <NumberFormatter
-                    thousandSeparator
-                    value={landingPage.members_count}
-                  />
-                </Text>
-              </Group>
+        <Stack pt="md" h="100%">
+          <Title fw="bold" order={2} mb="md">
+            {landingPage.name}
+          </Title>
+          <Group c="dimmed" mt="auto">
+            <Group gap="xs">
+              <IconClock size="15" />
+              <Text size="sm">{landingPage.duration}</Text>
             </Group>
-          </Stack>
-        </Card>
+            <Group gap="xs">
+              <IconUsers size="15" />
+              <Text size="sm">
+                <NumberFormatter
+                  thousandSeparator
+                  value={landingPage.members_count}
+                />
+              </Text>
+            </Group>
+          </Group>
+        </Stack>
       </HoverLift>
-    </AppAnchor>
+    </Card>
     //     {
     //   continueButton && (
     //     <Button variant="light" fullWidth>
