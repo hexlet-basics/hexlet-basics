@@ -2,13 +2,13 @@ import { List } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import AdminLayout from "@/layouts/AdminLayout";
 import * as Routes from "@/routes.js";
-import type { BlogPostCrud, Language } from "@/types/serializers";
+import type { BlogPostCrud, Locale } from "@/types/serializers";
 import Form from "./shared/form";
 import Menu from "./shared/menu";
 
 type Props = {
   blogPostDto: BlogPostCrud;
-  relatedCourses: Language[];
+  relatedCourses: Locale[];
 };
 
 export default function Edit({ blogPostDto, relatedCourses }: Props) {

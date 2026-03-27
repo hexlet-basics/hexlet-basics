@@ -1,13 +1,36 @@
 <!DOCTYPE html>
-<html lang="<%= I18n.locale %>">
+<html prefix="og: https://ogp.me/ns#" lang="<%= I18n.locale %>">
   <head>
-    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
     <%= favicon_link_tag "favicon.ico" %>
     <%= favicon_link_tag "favicon.svg", type: "image/svg+xml" %>
     <%= favicon_link_tag "apple-touch-icon.png", rel: "apple-touch-icon" %>
     <link rel="manifest" href="/manifest.webmanifest">
-    <meta name="theme-color" content="#4da7b7">
-    <%= include_gon %>
+
+    <%= display_meta_tags charset: "utf-8" %>
+
+    <% if System.language == :ru %>
+      <link rel="preconnect" href="https://mc.yandex.ru">
+    <% end %>
+
+    <%= include_gon(init: true, nonce: content_security_policy_nonce) %>
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= vite_stylesheet_tag "application.css" %>
+
+    <%= render "layouts/mantine_color_scheme_script" %>
+
+    <%= inertia_ssr_head %>
+
+    <%= vite_client_tag %>
+    <%= vite_react_refresh_tag %>
+    <% if inertia_rendering? %>
+      <%= vite_typescript_tag "inertia.tsx" %>
+    <% end %>
 
     <script>
       window.addEventListener("vite:preloadError", (event) => {
@@ -51,19 +74,6 @@
       <!-- End Google Tag Manager -->
     <% end %>
 
-    <%#= display_meta_tags reverse: true %>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-
-    <%#= vite_typescript_tag "analytics.ts" %>
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
-    <%= render "layouts/mantine_color_scheme_script" %>
-    <%= inertia_ssr_head %>
-
-    <%= vite_client_tag %>
-    <%= vite_react_refresh_tag %>
-    <%= vite_typescript_tag "inertia.tsx" %>
-    <%= vite_stylesheet_tag "application.css" %>
   </head>
 
   <body>

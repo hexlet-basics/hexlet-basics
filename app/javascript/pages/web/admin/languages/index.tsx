@@ -8,19 +8,19 @@ import { useTranslation } from "react-i18next";
 import useDataTableProps from "@/hooks/useDataTableProps";
 import AdminLayout from "@/layouts/AdminLayout";
 import * as Routes from "@/routes.js";
-import type { Grid, Language } from "@/types";
+import type { Grid, Locale } from "@/types";
 import { Menu } from "./shared/menu";
 
 type Props = PropsWithChildren & {
-  courses: Language[];
+  courses: Locale[];
   grid: Grid;
 };
 
 export default function Index({ grid, courses }: Props) {
   const { t } = useTranslation();
-  const { gridProps } = useDataTableProps<Language, {}>(grid);
+  const { gridProps } = useDataTableProps<Locale, {}>(grid);
 
-  const renderActions = (item: Language) => (
+  const renderActions = (item: Locale) => (
     <Group gap={5}>
       <Link href={Routes.edit_admin_language_path(item.id)}>
         <IconEdit size={14} />

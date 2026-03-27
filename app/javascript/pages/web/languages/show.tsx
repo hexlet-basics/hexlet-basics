@@ -31,7 +31,7 @@ import ApplicationLayout from "@/layouts/ApplicationLayout";
 import { propsForExternalLink } from "@/lib/utils";
 import { getResourceUrl } from "@/resources";
 import * as Routes from "@/routes.js";
-import type { BreadcrumbItem, Language, LeadCrud } from "@/types";
+import type { BreadcrumbItem, LeadCrud, Locale } from "@/types";
 import type {
   LanguageCategory,
   LanguageLandingPage,
@@ -45,7 +45,7 @@ import type {
 
 type Props = {
   lead: LeadCrud;
-  course: Language;
+  course: Locale;
   courseMember?: LanguageMember;
   courseCategory?: LanguageCategory;
   courseLandingPage: LanguageLandingPage;

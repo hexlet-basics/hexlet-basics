@@ -4,12 +4,12 @@ import { useTranslation } from "react-i18next";
 import { useAppForm } from "@/hooks/useAppForm";
 import { arrayToSelectData } from "@/lib/utils";
 import * as Routes from "@/routes.js";
-import type { Language, ReviewCrud } from "@/types";
+import type { Locale, ReviewCrud } from "@/types";
 
 type Props = {
   data: ReviewCrud;
   url: string;
-  courses: Language[];
+  courses: Locale[];
   method?: Method;
 };
 

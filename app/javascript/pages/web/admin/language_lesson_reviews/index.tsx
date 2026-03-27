@@ -11,10 +11,10 @@ import useDataTableProps from "@/hooks/useDataTableProps";
 import AdminLayout from "@/layouts/AdminLayout";
 import { arrayToSelectData, propsForExternalLink } from "@/lib/utils.ts";
 import * as Routes from "@/routes.js";
-import type { Grid, Language, LanguageLessonReview } from "@/types";
+import type { Grid, LanguageLessonReview, Locale } from "@/types";
 
 type Props = PropsWithChildren & {
-  languages: Language[];
+  languages: Locale[];
   reviews: LanguageLessonReview[];
   grid: Grid & {
     fields: {

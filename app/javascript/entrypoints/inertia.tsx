@@ -1,11 +1,8 @@
 import { createInertiaApp } from "@inertiajs/react";
-import dayjs from "dayjs";
-import i18next from "i18next";
-import configure from "@/configure";
 import RootLayout from "@/layouts/RootLayout.tsx";
-import * as Routes from "@/routes.js";
+import I18nAppProvider from "@/lib/I18nAppProvider.tsx";
 
-configure();
+import "@/init.ts";
 
 createInertiaApp({
   defaults: {
@@ -14,17 +11,10 @@ createInertiaApp({
     },
   },
   layout: (_component, page) => {
-    i18next.changeLanguage(page.props.locale);
-    Routes.configure({
-      default_url_options: {
-        suffix: page.props.suffix,
-        protocol: "https",
-        host: import.meta.env.VITE_APP_HOST,
-      },
-    });
-    dayjs.locale(page.props.locale);
-
     return RootLayout;
   },
   pages: "../pages",
+  withApp(app, { ssr }) {
+    return <I18nAppProvider app={app} ssr={ssr} />;
+  },
 });

@@ -2,9 +2,9 @@ import { useTranslation } from "react-i18next";
 import AdminLayout from "@/layouts/AdminLayout";
 import * as Routes from "@/routes.js";
 import type {
-  Language,
   LanguageLandingPage,
   LanguageLandingPageCrud,
+  Locale,
 } from "@/types";
 
 import Form from "./shared/form";
@@ -13,7 +13,7 @@ import { Menu } from "./shared/menu";
 type Props = {
   landingPageDto: LanguageLandingPageCrud;
   landingPages: LanguageLandingPage[];
-  languages: Language[];
+  languages: Locale[];
   // courseVersions: LanguageVersion[];
 };
 
