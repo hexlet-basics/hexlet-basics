@@ -29,7 +29,7 @@
     "@sentry/tracing": "^7.120.4",
     "@shikijs/langs": "^4.0.2",
     "@shikijs/themes": "^4.0.2",
-    "@tabler/icons-react": "^3.40.0",
+    "@tabler/icons-react": "^3.41.0",
     "ahoy.js": "^0.4.5",
     "analytics": "0.8.19",
     "axios": "^1.13.6",
