@@ -53,11 +53,11 @@ export default function Show({
 }: Props) {
   const { t } = useTranslation();
 
-  const postUrl = Routes.blog_post_url(blogPost.slug!);
+  const postUrl = Routes.blog_post_path(blogPost.slug!);
   const items: BreadcrumbItem[] = [
     {
       name: t(($) => $.blog_posts.index.header),
-      url: Routes.blog_posts_url(),
+      url: Routes.blog_posts_path(),
     },
     {
       name: blogPost.name!,
@@ -143,7 +143,7 @@ export default function Show({
                     <Group gap={0} me="lg">
                       <Text
                         component={Link}
-                        href={Routes.blog_post_likes_url(post.slug!)}
+                        href={Routes.blog_post_likes_path(post.slug!)}
                         method="post"
                         me="xs"
                         display="flex"

@@ -1190,6 +1190,7 @@ export default {
           sign_in: "Sign in",
           sign_out: "Sign out",
           success_stories: "Why CodeBasics?",
+          switch_theme: "Switch theme",
           toggle_navigation: "Toggle navigation",
           toggle_user_menu: "Toggle the display of user menu",
           upskilling: "Повышение квалификации",

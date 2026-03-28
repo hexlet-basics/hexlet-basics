@@ -174,12 +174,12 @@ export default function Show({
     {
       name: courseCategory?.name ?? "-",
       url: courseCategory
-        ? Routes.language_category_url(courseCategory.slug!)
+        ? Routes.language_category_path(courseCategory.slug!)
         : "#",
     },
     {
       name: courseLandingPage.header,
-      url: Routes.language_url(courseLandingPage.slug),
+      url: Routes.language_path(courseLandingPage.slug),
     },
   ];
 

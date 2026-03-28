@@ -31,7 +31,7 @@ export default function Show({ scenario, survey, surveyItems }: Props) {
   const handleAnswer = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const id = Number((e.currentTarget as HTMLButtonElement).dataset.id);
-    router.post(Routes.scenario_survey_answers_url(scenario.id, survey.id), {
+    router.post(Routes.scenario_survey_answers_path(scenario.id, survey.id), {
       from: queryParams.get("from"),
       survey_answer: { survey_item_id: id },
     });

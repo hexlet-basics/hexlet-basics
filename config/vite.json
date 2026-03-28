@@ -1,6 +1,7 @@
 {
   "all": {
     "sourceCodeDir": "app/javascript",
+    "ssrEntrypoint": "~/entrypoints/inertia.tsx",
     "watchAdditionalPaths": []
   },
   "production": {

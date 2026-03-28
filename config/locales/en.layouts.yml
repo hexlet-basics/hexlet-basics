@@ -37,6 +37,7 @@ en:
         categories: Categories
         toggle_navigation: Toggle navigation
         toggle_user_menu: Toggle the display of user menu
+        switch_theme: Switch theme
         enable_dark_theme: Enable dark theme
         enable_light_theme: Enable light theme
         admin: Admins

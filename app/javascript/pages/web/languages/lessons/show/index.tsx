@@ -242,16 +242,16 @@ function LessonTabContent() {
     {
       name: courseCategory?.name ?? "-",
       url: courseCategory
-        ? Routes.language_category_url(courseCategory.slug!)
+        ? Routes.language_category_path(courseCategory.slug!)
         : "#",
     },
     {
       name: landingPage.header!,
-      url: Routes.language_url(landingPage.slug!),
+      url: Routes.language_path(landingPage.slug!),
     },
     {
       name: lesson.name!,
-      url: Routes.language_lesson_url(landingPage.slug!, lesson.slug!),
+      url: Routes.language_lesson_path(landingPage.slug!, lesson.slug!),
     },
   ];
 

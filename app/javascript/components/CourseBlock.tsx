@@ -37,7 +37,7 @@ export default function CourseBlock({
   return (
     <Card
       component={Link}
-      href={Routes.language_url(landingPage.slug)}
+      href={Routes.language_path(landingPage.slug)}
       shadow="sm"
       td="none"
       {...props}

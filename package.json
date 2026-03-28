@@ -114,6 +114,9 @@
     "extends browserslist-config-baseline, not iOS < 16.4, not Safari < 16.4"
   ],
   "scripts": {
+    "build": "pnpm run build:client && pnpm run build:ssr",
+    "build:client": "vite build",
+    "build:ssr": "vite build --ssr",
     "check": "tsc --build"
   }
 }

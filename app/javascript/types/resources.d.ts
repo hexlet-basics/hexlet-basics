@@ -1105,6 +1105,7 @@ interface Resources {
           sign_in: "Вход";
           sign_out: "Выйти";
           success_stories: "Истории успеха";
+          switch_theme: "Переключить тему";
           toggle_navigation: "Переключить навигацию";
           toggle_user_menu: "Показать/скрыть меню пользователя";
           upskilling: "Повышение квалификации";

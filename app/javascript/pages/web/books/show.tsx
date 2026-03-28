@@ -80,7 +80,7 @@ export default function Show({ bookRequested, lead }: Props) {
             {!bookRequested ? (
               <Button
                 component={Link}
-                href={Routes.create_request_book_url()}
+                href={Routes.create_request_book_path()}
                 mt="md"
                 method="post"
                 variant="outline"
@@ -91,7 +91,7 @@ export default function Show({ bookRequested, lead }: Props) {
             ) : (
               <Button
                 component="a"
-                href={Routes.download_book_url()}
+                href={Routes.download_book_path()}
                 mt="md"
                 variant="outline"
                 size="lg"

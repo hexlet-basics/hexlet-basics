@@ -27,13 +27,13 @@ function I18nHydrator({ app, locale }: { app: ReactNode; locale: Locale }) {
 
 export default function I18nAppProvider({ app, ssr }: Props) {
   const pageProps = (app.props as InertiaAppElementProps).initialPage.props;
-  const { language } = pageProps;
+  const locale = pageProps.locale ?? "ru";
 
-  const i18n = ssr ? createServerI18n(language) : getClientI18n(language);
+  const i18n = ssr ? createServerI18n(locale) : getClientI18n(locale);
 
   return (
     <I18nextProvider i18n={i18n}>
-      {ssr ? app : <I18nHydrator app={app} locale={language} />}
+      {ssr ? app : <I18nHydrator app={app} locale={locale} />}
     </I18nextProvider>
   );
 }

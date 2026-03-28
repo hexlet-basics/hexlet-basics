@@ -21,7 +21,7 @@ export default function Index({ blogPosts, pagy }: Props) {
   const items: BreadcrumbItem[] = [
     {
       name: header,
-      url: Routes.blog_posts_url({ suffix }),
+      url: Routes.blog_posts_path({ suffix }),
     },
   ];
 

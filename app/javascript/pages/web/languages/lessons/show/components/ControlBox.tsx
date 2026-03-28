@@ -171,7 +171,7 @@ export default function ControlBox() {
               color="green"
               radius="sm"
               disabled={nextButtonDisabled}
-              href={Routes.success_language_url(landingPage.slug!)}
+              href={Routes.success_language_path(landingPage.slug!)}
             >
               {t(($) => $.languages.lessons.show.finish)}
             </Button>

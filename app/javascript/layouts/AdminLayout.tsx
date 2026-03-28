@@ -116,7 +116,7 @@ function NavbarMenu() {
       />
       <NavLink
         component={Link}
-        href={Routes.admin_leads_url()}
+        href={Routes.admin_leads_path()}
         label={t(($) => $.layouts.admin.application.leads)}
         leftSection={<IconUserCheck size={16} />}
       />

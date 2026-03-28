@@ -6,9 +6,9 @@ import ru from "@/locales/ru/translation.ts";
 import type { Locale } from "@/types";
 
 const resources = {
-  en: { translation: en },
-  es: { translation: es },
-  ru: { translation: ru },
+  en,
+  es,
+  ru,
 } as const satisfies Resource;
 
 let clientI18n: I18n | null = null;
@@ -27,7 +27,6 @@ function initI18n(instance: I18n, locale: Locale, resourceStore: Resource) {
     react: {
       useSuspense: false,
     },
-    initImmediate: false,
     resources: resourceStore,
   });
 

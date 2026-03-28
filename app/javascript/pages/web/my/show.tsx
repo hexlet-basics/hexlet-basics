@@ -42,7 +42,7 @@ function StartedCourse({
   return (
     <Card
       component={Link}
-      href={Routes.language_url(lp.slug!)}
+      href={Routes.language_path(lp.slug!)}
       p={0}
       radius="md"
       withBorder

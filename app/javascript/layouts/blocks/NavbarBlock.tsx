@@ -23,6 +23,7 @@ import {
   useComputedColorScheme,
   useMantineColorScheme,
 } from "@mantine/core";
+import { useMounted } from "@mantine/hooks";
 import {
   IconBlocks,
   IconChevronDown,
@@ -305,22 +306,20 @@ function MobileMenu({
 
 export function ThemeSwitcher() {
   const { t } = useTranslation();
+  const mounted = useMounted();
   const computedColorScheme = useComputedColorScheme("light", {
     getInitialValueInEffect: false,
   });
-  const { setColorScheme } = useMantineColorScheme();
+  const { toggleColorScheme } = useMantineColorScheme();
 
-  const isDark = computedColorScheme === "dark";
-  const nextColorScheme = isDark ? "light" : "dark";
-  const label = isDark
-    ? t(($) => $.layouts.shared.nav.enable_light_theme)
-    : t(($) => $.layouts.shared.nav.enable_dark_theme);
+  const isDark = mounted && computedColorScheme === "dark";
+  const label = t(($) => $.layouts.shared.nav.switch_theme);
 
   return (
     <Tooltip label={label} withArrow>
       <ActionIcon
         aria-label={label}
-        onClick={() => setColorScheme(nextColorScheme)}
+        onClick={toggleColorScheme}
         size="sm"
         variant="default"
       >

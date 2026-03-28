@@ -48,6 +48,7 @@ ru:
         about: О проекте
         toggle_navigation: Переключить навигацию
         toggle_user_menu: Показать/скрыть меню пользователя
+        switch_theme: Переключить тему
         enable_dark_theme: Включить тёмную тему
         enable_light_theme: Включить светлую тему
         admin: Админство

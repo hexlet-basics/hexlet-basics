@@ -16,7 +16,7 @@ export default function ContactMethodRequestingBlock() {
             $.layouts.shared.contact_method_requesting.description_html
           }
           values={{
-            url: Routes.edit_account_profile_url(),
+            url: Routes.edit_account_profile_path(),
           }}
           components={{
             a: <Link href={Routes.edit_account_profile_path()} />,
