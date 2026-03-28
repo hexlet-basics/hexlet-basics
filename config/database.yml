@@ -16,12 +16,14 @@ development: &development
     username: postgres
     password: postgres
     host: 127.0.0.1
+    port: <%= ENV.fetch("DATABASE_PORT", 5433) %>
   primary_replica:
     <<: *default
     database: code_basics_development
     username: postgres
     password: postgres
     host: 127.0.0.1
+    port: <%= ENV.fetch("DATABASE_PORT", 5433) %>
     replica: true
   # queue:
   #   <<: *default
@@ -38,12 +40,14 @@ test:
     username: postgres
     password: postgres
     host: <%= ENV["DATABASE_TEST_HOST"] || "127.0.0.1" %>
+    port: <%= ENV["DATABASE_TEST_PORT"] || ENV.fetch("DATABASE_PORT", 5433) %>
   primary_replica:
     <<: *default
     database: code_basics_test
     username: postgres
     password: postgres
     host: <%= ENV["DATABASE_TEST_HOST"] || "127.0.0.1" %>
+    port: <%= ENV["DATABASE_TEST_PORT"] || ENV.fetch("DATABASE_PORT", 5433) %>
     replica: true
 
 
@@ -56,12 +60,14 @@ staging:
     username: postgres
     password: postgres
     host: 127.0.0.1
+    port: <%= ENV.fetch("DATABASE_PORT", 5433) %>
   primary_replica:
     <<: *default
     database: code_basics_staging
     username: postgres
     password: postgres
     host: 127.0.0.1
+    port: <%= ENV.fetch("DATABASE_PORT", 5433) %>
     replica: true
 
 production:

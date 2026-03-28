@@ -1,5 +1,7 @@
 include k8s/Makefile
 
+DATABASE_PORT ?= 5433
+
 setup:
 	# brew install vips
 	cp -n .env.sample .env.local || exit 0
@@ -155,7 +157,7 @@ services-cable-run:
 
 services-db-start:
 	docker run -d -it --rm \
-		-p 5432:5432 \
+		-p $(DATABASE_PORT):5432 \
 		--name code_basics_postgres \
 		-e POSTGRES_DB=code_basics_development \
 		-e POSTGRES_PASSWORD=postgres \

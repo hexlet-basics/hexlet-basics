@@ -29,6 +29,8 @@ make setup-macos
 make services-start
 ```
 
+By default the local Postgres is published on port `5433`, so it does not conflict with another local database on `5432`.
+
 
 3. Setup app
 
