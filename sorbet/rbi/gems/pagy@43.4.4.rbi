@@ -859,12 +859,12 @@ module Pagy::Keyset::Adapters; end
 module Pagy::Keyset::Adapters::ActiveRecord
   # Apply the where predicate to the set
   #
-  # pkg:gem/pagy#lib/pagy/classes/keyset/adapters/active_record.rb:40
+  # pkg:gem/pagy#lib/pagy/classes/keyset/adapters/active_record.rb:44
   def apply_where(predicate, arguments); end
 
   # Append the missing keyset keys, if the set is restricted by select
   #
-  # pkg:gem/pagy#lib/pagy/classes/keyset/adapters/active_record.rb:33
+  # pkg:gem/pagy#lib/pagy/classes/keyset/adapters/active_record.rb:37
   def ensure_select; end
 
   # Extract the keyset from the set
@@ -890,7 +890,7 @@ module Pagy::Keyset::Adapters::ActiveRecord
   class << self
     # @private
     #
-    # pkg:gem/pagy#lib/pagy/classes/keyset/adapters/active_record.rb:44
+    # pkg:gem/pagy#lib/pagy/classes/keyset/adapters/active_record.rb:48
     def included(including); end
   end
 end
@@ -901,12 +901,12 @@ end
 module Pagy::Keyset::Adapters::Sequel
   # Apply the where predicate to the set
   #
-  # pkg:gem/pagy#lib/pagy/classes/keyset/adapters/sequel.rb:53
+  # pkg:gem/pagy#lib/pagy/classes/keyset/adapters/sequel.rb:56
   def apply_where(predicate, arguments); end
 
   # Append the missing keyset keys, if the set is restricted by select
   #
-  # pkg:gem/pagy#lib/pagy/classes/keyset/adapters/sequel.rb:45
+  # pkg:gem/pagy#lib/pagy/classes/keyset/adapters/sequel.rb:48
   def ensure_select; end
 
   # Extract the keyset from the set
@@ -932,7 +932,7 @@ module Pagy::Keyset::Adapters::Sequel
   class << self
     # @private
     #
-    # pkg:gem/pagy#lib/pagy/classes/keyset/adapters/sequel.rb:57
+    # pkg:gem/pagy#lib/pagy/classes/keyset/adapters/sequel.rb:60
     def included(including); end
   end
 end

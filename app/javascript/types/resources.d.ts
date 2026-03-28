@@ -4,8 +4,8 @@ interface Resources {
     account: {
       profiles: {
         edit: {
-          delete: "";
-          title: "";
+          delete: "Удалить аккаунт";
+          title: "Редактирование профиля";
         };
       };
     };
@@ -457,8 +457,8 @@ interface Resources {
     };
     common: {
       boolean: {
-        no: "";
-        yes: "";
+        no: "Нет";
+        yes: "Да";
       };
       check: {
         error: {
@@ -574,139 +574,6 @@ interface Resources {
           previous_text: "&lsaquo; Назад";
           truncate: "&hellip;";
         };
-      };
-    };
-    date: {
-      abbr_day_names: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
-      abbr_month_names: [
-        "",
-        "янв.",
-        "февр.",
-        "марта",
-        "апр.",
-        "мая",
-        "июня",
-        "июля",
-        "авг.",
-        "сент.",
-        "окт.",
-        "нояб.",
-        "дек.",
-      ];
-      day_names: [
-        "воскресенье",
-        "понедельник",
-        "вторник",
-        "среда",
-        "четверг",
-        "пятница",
-        "суббота",
-      ];
-      formats: {
-        default: "%d.%m.%Y";
-        long: "%-d %B %Y";
-        short: "%-d %b";
-      };
-      month_names: [
-        "",
-        "января",
-        "февраля",
-        "марта",
-        "апреля",
-        "мая",
-        "июня",
-        "июля",
-        "августа",
-        "сентября",
-        "октября",
-        "ноября",
-        "декабря",
-      ];
-      order: ["day", "month", "year"];
-    };
-    datetime: {
-      distance_in_words: {
-        about_x_hours: {
-          few: "около %{count} часов";
-          many: "около %{count} часов";
-          one: "около %{count} часа";
-          other: "около %{count} часов";
-        };
-        about_x_months: {
-          few: "около %{count} месяцев";
-          many: "около %{count} месяцев";
-          one: "около %{count} месяца";
-          other: "около %{count} месяцев";
-        };
-        about_x_years: {
-          few: "около %{count} лет";
-          many: "около %{count} лет";
-          one: "около %{count} года";
-          other: "около %{count} лет";
-        };
-        almost_x_years: {
-          few: "почти %{count} года";
-          many: "почти %{count} лет";
-          one: "почти %{count} год";
-          other: "почти %{count} лет";
-        };
-        half_a_minute: "полминуты";
-        less_than_x_minutes: {
-          few: "меньше %{count} минут";
-          many: "меньше %{count} минут";
-          one: "меньше %{count} минуты";
-          other: "меньше %{count} минут";
-        };
-        less_than_x_seconds: {
-          few: "меньше %{count} секунд";
-          many: "меньше %{count} секунд";
-          one: "меньше %{count} секунды";
-          other: "меньше %{count} секунд";
-        };
-        over_x_years: {
-          few: "больше %{count} лет";
-          many: "больше %{count} лет";
-          one: "больше %{count} года";
-          other: "больше %{count} лет";
-        };
-        x_days: {
-          few: "%{count} дня";
-          many: "%{count} дней";
-          one: "%{count} день";
-          other: "%{count} дней";
-        };
-        x_minutes: {
-          few: "%{count} минуты";
-          many: "%{count} минут";
-          one: "%{count} минута";
-          other: "%{count} минут";
-        };
-        x_months: {
-          few: "%{count} месяца";
-          many: "%{count} месяцев";
-          one: "%{count} месяц";
-          other: "%{count} месяцев";
-        };
-        x_seconds: {
-          few: "%{count} секунды";
-          many: "%{count} секунд";
-          one: "%{count} секунда";
-          other: "%{count} секунд";
-        };
-        x_years: {
-          few: "%{count} года";
-          many: "%{count} лет";
-          one: "%{count} год";
-          other: "%{count} лет";
-        };
-      };
-      prompts: {
-        day: "День";
-        hour: "Час";
-        minute: "Минута";
-        month: "Месяц";
-        second: "Секунда";
-        year: "Год";
       };
     };
     enums: {
@@ -1223,6 +1090,8 @@ interface Resources {
           courses: "Курсы";
           courses_with_employement: "Курсы с трудоустройством";
           courses_with_employement_description: "Обучим программированию, аналитике и тестированию";
+          enable_dark_theme: "Включить тёмную тему";
+          enable_light_theme: "Включить светлую тему";
           for_authors: "Авторам";
           for_teachers: "Для преподавателей";
           for_teachers_description: "Организуем обучение школьников и студентов";
@@ -1238,8 +1107,6 @@ interface Resources {
           success_stories: "Истории успеха";
           toggle_navigation: "Переключить навигацию";
           toggle_user_menu: "Показать/скрыть меню пользователя";
-          enable_dark_theme: "Включить тёмную тему";
-          enable_light_theme: "Включить светлую тему";
           upskilling: "Повышение квалификации";
           upskilling_description: "Обучим новым навыкам в программировании";
         };
@@ -1420,99 +1287,6 @@ interface Resources {
         add_review: "Мы будем очень признательны, если вы оставите отзывы по пройденным курсам. Это можно сделать <a>тут</a>";
         finished: "Завершенные курсы";
         started: "Начатые курсы";
-      };
-    };
-    number: {
-      currency: {
-        format: {
-          delimiter: " ";
-          format: "%n %u";
-          precision: 2;
-          separator: ",";
-          significant: false;
-          strip_insignificant_zeros: false;
-          unit: "руб.";
-        };
-      };
-      format: {
-        delimiter: " ";
-        precision: 3;
-        round_mode: "default";
-        separator: ",";
-        significant: false;
-        strip_insignificant_zeros: false;
-      };
-      human: {
-        decimal_units: {
-          format: "%n %u";
-          units: {
-            billion: {
-              few: "миллиардов";
-              many: "миллиардов";
-              one: "миллиард";
-              other: "миллиардов";
-            };
-            million: {
-              few: "миллионов";
-              many: "миллионов";
-              one: "миллион";
-              other: "миллионов";
-            };
-            quadrillion: {
-              few: "квадриллионов";
-              many: "квадриллионов";
-              one: "квадриллион";
-              other: "квадриллионов";
-            };
-            thousand: {
-              few: "тысяч";
-              many: "тысяч";
-              one: "тысяча";
-              other: "тысяч";
-            };
-            trillion: {
-              few: "триллионов";
-              many: "триллионов";
-              one: "триллион";
-              other: "триллионов";
-            };
-            unit: "";
-          };
-        };
-        format: {
-          delimiter: "";
-          precision: 1;
-          significant: false;
-          strip_insignificant_zeros: false;
-        };
-        storage_units: {
-          format: "%n %u";
-          units: {
-            byte: {
-              few: "байта";
-              many: "байт";
-              one: "байт";
-              other: "байта";
-            };
-            eb: "ЭБ";
-            gb: "ГБ";
-            kb: "КБ";
-            mb: "МБ";
-            pb: "ПБ";
-            tb: "ТБ";
-          };
-        };
-      };
-      percentage: {
-        format: {
-          delimiter: "";
-          format: "%n%";
-        };
-      };
-      precision: {
-        format: {
-          delimiter: "";
-        };
       };
     };
     pages: {
@@ -2104,13 +1878,6 @@ interface Resources {
       };
       via_social_networks: {
         via_social_networks: "С помощью социальных сетей";
-      };
-    };
-    support: {
-      array: {
-        last_word_connector: " и ";
-        two_words_connector: " и ";
-        words_connector: ", ";
       };
     };
     time: {

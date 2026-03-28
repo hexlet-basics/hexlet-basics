@@ -179,7 +179,7 @@ GEM
     base64 (0.3.0)
     bcrypt (3.1.22)
     benchmark (0.5.0)
-    bigdecimal (4.0.1)
+    bigdecimal (4.1.0)
     bindex (0.8.1)
     bootsnap (1.23.0)
       msgpack (~> 1.2)
@@ -629,22 +629,22 @@ GEM
       fugit (~> 1.11)
       railties (>= 7.1)
       thor (>= 1.3.1)
-    sorbet (0.6.13066)
-      sorbet-static (= 0.6.13066)
+    sorbet (0.6.13067)
+      sorbet-static (= 0.6.13067)
     sorbet-result (1.4.0)
       sorbet-runtime (~> 0.5)
-    sorbet-runtime (0.6.13066)
+    sorbet-runtime (0.6.13067)
     sorbet-schema (0.9.3)
       sorbet-result (~> 1.1)
       sorbet-runtime (~> 0.5)
       sorbet-struct-comparable (~> 1.3)
       zeitwerk (~> 2.6)
-    sorbet-static (0.6.13066-aarch64-linux)
-    sorbet-static (0.6.13066-universal-darwin)
-    sorbet-static (0.6.13066-x86_64-linux)
-    sorbet-static-and-runtime (0.6.13066)
-      sorbet (= 0.6.13066)
-      sorbet-runtime (= 0.6.13066)
+    sorbet-static (0.6.13067-aarch64-linux)
+    sorbet-static (0.6.13067-universal-darwin)
+    sorbet-static (0.6.13067-x86_64-linux)
+    sorbet-static-and-runtime (0.6.13067)
+      sorbet (= 0.6.13067)
+      sorbet-runtime (= 0.6.13067)
     sorbet-struct-comparable (1.3.0)
       sorbet-runtime (>= 0.5)
     spoom (1.7.11)
@@ -866,7 +866,7 @@ CHECKSUMS
   base64 (0.3.0) sha256=27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b
   bcrypt (3.1.22) sha256=1f0072e88c2d705d94aff7f2c5cb02eb3f1ec4b8368671e19112527489f29032
   benchmark (0.5.0) sha256=465df122341aedcb81a2a24b4d3bd19b6c67c1530713fd533f3ff034e419236c
-  bigdecimal (4.0.1) sha256=8b07d3d065a9f921c80ceaea7c9d4ae596697295b584c296fe599dd0ad01c4a7
+  bigdecimal (4.1.0) sha256=6dc07767aa3dc456ccd48e7ae70a07b474e9afd7c5bc576f80bd6da5c8dd6cae
   bindex (0.8.1) sha256=7b1ecc9dc539ed8bccfc8cb4d2732046227b09d6f37582ff12e50a5047ceb17e
   bootsnap (1.23.0) sha256=c1254f458d58558b58be0f8eb8f6eec2821456785b7cdd1e16248e2020d3f214
   brakeman (8.0.4) sha256=7bf921fa9638544835df9aa7b3e720a9a72c0267f34f92135955edd80d4dcf6f
@@ -1051,14 +1051,14 @@ CHECKSUMS
   solid_cable (3.0.12) sha256=a168a54731a455d5627af48d8441ea3b554b8c1f6e6cd6074109de493e6b0460
   solid_cache (1.0.10) sha256=bc05a2fb3ac78a6f43cbb5946679cf9db67dd30d22939ededc385cb93e120d41
   solid_queue (1.4.0) sha256=e6a18d196f0b27cb6e3c77c5b31258b05fb634f8ed64fb1866ed164047216c2a
-  sorbet (0.6.13066) sha256=01ce6141490dfc1363e49db1aeb376c5290e9324047cb321df6a1f0fc7fe0752
+  sorbet (0.6.13067) sha256=0b7be339a0ef10a7296badf0c70dfcebfcbed179c7aac469019fbfad4fe01e26
   sorbet-result (1.4.0) sha256=194eededbcb78cf04ee2db8bd3b19e76f305dc043062ed90c56b4b9eac268ccd
-  sorbet-runtime (0.6.13066) sha256=f11fd181b013ea00e7faa071be61e6ec472a4413267e6aca1e10b90651a808a9
+  sorbet-runtime (0.6.13067) sha256=23a46f9abd3e18a91aba1a2a545cf71c9e1dd1fcc94d4e6f52b99b346e6b37fd
   sorbet-schema (0.9.3) sha256=ef87356e82c9dff6671e11372a0515f736504e81b2d9753e01c3b79d2530a84b
-  sorbet-static (0.6.13066-aarch64-linux) sha256=4010112f893c359d6621ff9db63d19d469ef8d86dc01e3ffdba529113adad3e9
-  sorbet-static (0.6.13066-universal-darwin) sha256=8c6eabc97641cd37b41715ddaf99d0bbc87843cdb29f891fb2e350ebb49b4fc1
-  sorbet-static (0.6.13066-x86_64-linux) sha256=f1153a44c03fce427e1ffdf017e88500fdc14599dec8cbcaa82c6c996eb2d3af
-  sorbet-static-and-runtime (0.6.13066) sha256=e1f25047efc3eb002207d74c1843851e3f7ad6732e9123a2ddf672d16933efac
+  sorbet-static (0.6.13067-aarch64-linux) sha256=f644792e0bf27705c6b5f90d0c1e492f6b24f2c2294d4fda1dd6fedf65955ca5
+  sorbet-static (0.6.13067-universal-darwin) sha256=8af1b7f243272b5e7549d3d8a21954722397bc722ed1b3c8fc427e5dd8d1bf04
+  sorbet-static (0.6.13067-x86_64-linux) sha256=0a20402e292cd672046ccd9385fb9c65e3a17fa1ed5597b96ac908adc272a395
+  sorbet-static-and-runtime (0.6.13067) sha256=a6442a39d664e9e03573577d3087ef5a7d0525dc7670724a44ffdb01c28c20e4
   sorbet-struct-comparable (1.3.0) sha256=337aff31c4eda80554485f9a30201067bf54fcd76bd992494a0d8c32fb04036b
   spoom (1.7.11) sha256=4e27384af6d3fde5aadc0287c51e6f76c0802259cbb3b6a67603bf718352f4cf
   sqlite3 (2.9.2-aarch64-linux-gnu) sha256=eeb86db55645b85327ba75129e3614658d974bf4da8fdc87018a0d42c59f6e42

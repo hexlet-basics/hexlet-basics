@@ -603,139 +603,6 @@ export default {
         },
       },
     },
-    date: {
-      abbr_day_names: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-      abbr_month_names: [
-        "",
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
-      day_names: [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-      ],
-      formats: {
-        default: "%Y-%m-%d",
-        long: "%B %d, %Y",
-        short: "%b %d",
-      },
-      month_names: [
-        "",
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-      ],
-      order: ["year", "month", "day"],
-    },
-    datetime: {
-      distance_in_words: {
-        about_x_hours: {
-          few: "около %{count} часов",
-          many: "около %{count} часов",
-          one: "about %{count} hour",
-          other: "about %{count} hours",
-        },
-        about_x_months: {
-          few: "около %{count} месяцев",
-          many: "около %{count} месяцев",
-          one: "about %{count} month",
-          other: "about %{count} months",
-        },
-        about_x_years: {
-          few: "около %{count} лет",
-          many: "около %{count} лет",
-          one: "about %{count} year",
-          other: "about %{count} years",
-        },
-        almost_x_years: {
-          few: "почти %{count} года",
-          many: "почти %{count} лет",
-          one: "almost %{count} year",
-          other: "almost %{count} years",
-        },
-        half_a_minute: "half a minute",
-        less_than_x_minutes: {
-          few: "меньше %{count} минут",
-          many: "меньше %{count} минут",
-          one: "less than a minute",
-          other: "less than %{count} minutes",
-        },
-        less_than_x_seconds: {
-          few: "меньше %{count} секунд",
-          many: "меньше %{count} секунд",
-          one: "less than %{count} second",
-          other: "less than %{count} seconds",
-        },
-        over_x_years: {
-          few: "больше %{count} лет",
-          many: "больше %{count} лет",
-          one: "over %{count} year",
-          other: "over %{count} years",
-        },
-        x_days: {
-          few: "%{count} дня",
-          many: "%{count} дней",
-          one: "%{count} day",
-          other: "%{count} days",
-        },
-        x_minutes: {
-          few: "%{count} минуты",
-          many: "%{count} минут",
-          one: "%{count} minute",
-          other: "%{count} minutes",
-        },
-        x_months: {
-          few: "%{count} месяца",
-          many: "%{count} месяцев",
-          one: "%{count} month",
-          other: "%{count} months",
-        },
-        x_seconds: {
-          few: "%{count} секунды",
-          many: "%{count} секунд",
-          one: "%{count} second",
-          other: "%{count} seconds",
-        },
-        x_years: {
-          few: "%{count} года",
-          many: "%{count} лет",
-          one: "%{count} year",
-          other: "%{count} years",
-        },
-      },
-      prompts: {
-        day: "Day",
-        hour: "Hour",
-        minute: "Minute",
-        month: "Month",
-        second: "Seconds",
-        year: "Year",
-      },
-    },
     enums: {
       language: {
         learn_as: {
@@ -1307,6 +1174,8 @@ export default {
           courses_with_employement: "Курсы с трудоустройством",
           courses_with_employement_description:
             "Обучим программированию, аналитике и тестированию",
+          enable_dark_theme: "Enable dark theme",
+          enable_light_theme: "Enable light theme",
           for_authors: "For authors",
           for_teachers: "For school teachers",
           for_teachers_description:
@@ -1321,8 +1190,6 @@ export default {
           sign_in: "Sign in",
           sign_out: "Sign out",
           success_stories: "Why CodeBasics?",
-          enable_dark_theme: "Enable dark theme",
-          enable_light_theme: "Enable light theme",
           toggle_navigation: "Toggle navigation",
           toggle_user_menu: "Toggle the display of user menu",
           upskilling: "Повышение квалификации",
@@ -1526,99 +1393,6 @@ export default {
           "Мы будем очень признательны, если вы оставите отзывы по пройденным курсам. Это можно сделать <a>тут</a>",
         finished: "Finished Courses",
         started: "Started Courses",
-      },
-    },
-    number: {
-      currency: {
-        format: {
-          delimiter: ",",
-          format: "%u%n",
-          precision: 2,
-          separator: ".",
-          significant: false,
-          strip_insignificant_zeros: false,
-          unit: "$",
-        },
-      },
-      format: {
-        delimiter: ",",
-        precision: 3,
-        round_mode: "default",
-        separator: ".",
-        significant: false,
-        strip_insignificant_zeros: false,
-      },
-      human: {
-        decimal_units: {
-          format: "%n %u",
-          units: {
-            billion: {
-              few: "",
-              many: "",
-              one: "",
-              other: "",
-            },
-            million: {
-              few: "",
-              many: "",
-              one: "",
-              other: "",
-            },
-            quadrillion: {
-              few: "",
-              many: "",
-              one: "",
-              other: "",
-            },
-            thousand: {
-              few: "",
-              many: "",
-              one: "",
-              other: "",
-            },
-            trillion: {
-              few: "",
-              many: "",
-              one: "",
-              other: "",
-            },
-            unit: "",
-          },
-        },
-        format: {
-          delimiter: "",
-          precision: 3,
-          significant: true,
-          strip_insignificant_zeros: true,
-        },
-        storage_units: {
-          format: "%n %u",
-          units: {
-            byte: {
-              few: "байта",
-              many: "байт",
-              one: "Byte",
-              other: "Bytes",
-            },
-            eb: "EB",
-            gb: "GB",
-            kb: "KB",
-            mb: "MB",
-            pb: "PB",
-            tb: "TB",
-          },
-        },
-      },
-      percentage: {
-        format: {
-          delimiter: "",
-          format: "%n%",
-        },
-      },
-      precision: {
-        format: {
-          delimiter: "",
-        },
       },
     },
     pages: {
@@ -2257,13 +2031,6 @@ export default {
       },
       via_social_networks: {
         via_social_networks: "With GitHub",
-      },
-    },
-    support: {
-      array: {
-        last_word_connector: ", and ",
-        two_words_connector: " and ",
-        words_connector: ", ",
       },
     },
     time: {
