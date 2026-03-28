@@ -13,17 +13,17 @@ import { useTranslation } from "react-i18next";
 import { useAppForm } from "@/hooks/useAppForm";
 import { arrayToSelectData } from "@/lib/utils";
 import type {
+  Language,
   LanguageLandingPage,
   LanguageLandingPageCrud,
   LanguageLandingPageQnaItemCrud,
-  Locale,
 } from "@/types";
 
 type Props = {
   data: LanguageLandingPageCrud;
   url: string;
   method?: Method;
-  languages: Locale[];
+  languages: Language[];
   landingPages: LanguageLandingPage[];
 };
 

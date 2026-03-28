@@ -1,8 +1,8 @@
 import type {
+  Language,
   LanguageLesson,
   LanguageLessonMember,
   LessonCheckingResponse,
-  Locale,
 } from "@/types";
 
 type CheckingResult = LessonCheckingResponse["result"] | "error" | null;
@@ -35,7 +35,7 @@ export interface LessonState {
   setStartTime: (startTime: number) => void;
   changeSolutionState: (solutionState: SolutionState) => void;
   runCheck: (params: {
-    course: Locale;
+    course: Language;
     lesson: LanguageLesson;
   }) => Promise<boolean>;
 }

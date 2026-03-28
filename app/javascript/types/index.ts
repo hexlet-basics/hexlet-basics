@@ -3,6 +3,7 @@ import type { ResolvedComponent } from "@inertiajs/react";
 import type { i18n } from "i18next";
 import type { AssistantMessage } from "./assistantMessage";
 import type {
+  Language,
   LanguageCategory,
   LanguageLandingPageForLists,
   LanguageLesson,
@@ -44,7 +45,7 @@ export type InertiaPageModule = {
 
 export type LessonSharedProps = PageProps & {
   canCreateAssistantMessage: boolean;
-  course: Locale;
+  course: Language;
   courseCategory?: LanguageCategory;
   landingPage: LanguageLandingPageForLists;
   prevLesson?: LanguageLesson;

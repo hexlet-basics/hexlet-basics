@@ -6,9 +6,9 @@ import { useAssistantStream } from "@/hooks/useAssistantStream";
 import { propsForExternalLink } from "@/lib/utils";
 import type { AssistantMessage } from "@/types/assistantMessage";
 import type {
+  Language,
   LanguageLesson,
   LanguageLessonMember,
-  Locale,
 } from "@/types/serializers";
 import MarkdownViewer from "./MarkdownViewer";
 
@@ -16,7 +16,7 @@ type Props = {
   enabled: boolean;
   lesson: LanguageLesson;
   focusesCount: number;
-  course: Locale;
+  course: Language;
   userCode: string;
   output: string;
   previousMessages: AssistantMessage[];
