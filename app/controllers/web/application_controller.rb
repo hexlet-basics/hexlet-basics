@@ -1,5 +1,6 @@
 class Web::ApplicationController < ApplicationController
   include BrowserConcern
+  include ColorSchemeConcern
   include SurveyConcern
   include RedirectConcern
 
@@ -32,6 +33,7 @@ class Web::ApplicationController < ApplicationController
     {
       shouldAddContactMethod: current_user.should_be_lead?,
       courseCategories: Language::CategoryResource.new(language_categories),
+      colorScheme: current_color_scheme,
       railsDirectUploadsUrl: view_context.rails_direct_uploads_url,
       landingPagesForLists: Language::LandingPageForListsResource.new(landing_pages_for_lists),
       landingPagesForFooter: Language::LandingPageForListsResource.new(landing_pages_for_footer),

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html prefix="og: https://ogp.me/ns#" lang="<%= I18n.locale %>">
+<html prefix="og: https://ogp.me/ns#" lang="<%= I18n.locale %>" data-mantine-color-scheme="<%= current_color_scheme %>">
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
@@ -21,8 +21,6 @@
     <%= csp_meta_tag %>
 
     <%= vite_stylesheet_tag "application.css" %>
-
-    <%= render "layouts/mantine_color_scheme_script" %>
 
     <%= inertia_ssr_head %>
 

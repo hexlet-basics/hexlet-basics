@@ -692,7 +692,7 @@ GEM
       sync
     traces (0.18.2)
     tsort (0.2.0)
-    typelizer (0.11.0)
+    typelizer (0.12.0)
       benchmark
       railties (>= 6.0.0)
     tzinfo (2.0.6)
@@ -1082,7 +1082,7 @@ CHECKSUMS
   tins (1.52.0) sha256=d1dc69fb108a51a264a2f464fd48f4c32dd5de576c48b75e685b6b9ae29405a4
   traces (0.18.2) sha256=80f1649cb4daace1d7174b81f3b3b7427af0b93047759ba349960cb8f315e214
   tsort (0.2.0) sha256=9650a793f6859a43b6641671278f79cfead60ac714148aabe4e3f0060480089f
-  typelizer (0.11.0) sha256=6f4bc70c4d4110bae8055d5fe88175f61e2da910c87fc70110f9c9fff5b5c587
+  typelizer (0.12.0) sha256=84f8f6cb9cf583e11dc3bf91a66c3e010d159cf9ec0d8d81c6908dfea3227860
   tzinfo (2.0.6) sha256=8daf828cc77bcf7d63b0e3bdb6caa47e2272dcfaf4fbfe46f8c3a9df087a829b
   unicode-display_width (3.2.0) sha256=0cdd96b5681a5949cdbc2c55e7b420facae74c4aaf9a9815eee1087cb1853c42
   unicode-emoji (4.2.0) sha256=519e69150f75652e40bf736106cfbc8f0f73aa3fb6a65afe62fefa7f80b0f80f

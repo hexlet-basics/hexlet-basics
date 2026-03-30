@@ -1,9 +1,8 @@
+import type { PageProps } from "@inertiajs/core";
 import { Head, router, usePage } from "@inertiajs/react";
 import {
   Center,
-  ColorSchemeScript,
   Container,
-  localStorageColorSchemeManager,
   MantineProvider,
   Stack,
   Text,
@@ -18,13 +17,11 @@ import { useDebugAppData } from "@/hooks/useDebugAppData";
 import ahoy from "@/lib/ahoy";
 import analytics, { processHappendEvents } from "@/lib/analytics";
 import { resolver, theme } from "@/lib/mantine";
+import { cookieColorSchemeManager } from "@/lib/mantineColorSchemeManager";
 import { fromWindow } from "@/lib/utils";
 
 type Props = PropsWithChildren & {};
-export const colorSchemeStorageKey = "codebasics-color-scheme";
-const colorSchemeManager = localStorageColorSchemeManager({
-  key: colorSchemeStorageKey,
-});
+const colorSchemeManager = cookieColorSchemeManager();
 
 function FallbackComponent() {
   const { t } = useTranslation();
@@ -49,9 +46,9 @@ function DebugAppData() {
 
 function RootLayout(props: Props) {
   const {
-    props: { metaTagsHTMLString },
+    props: { colorScheme, metaTagsHTMLString },
     flash,
-  } = usePage();
+  } = usePage<PageProps>();
 
   useEffect(() => {
     const ymClientId = fromWindow("ymClientId");
@@ -76,18 +73,12 @@ function RootLayout(props: Props) {
     <MantineProvider
       colorSchemeManager={colorSchemeManager}
       cssVariablesResolver={resolver}
-      defaultColorScheme="auto"
+      defaultColorScheme={colorScheme}
       theme={theme}
     >
       <ModalsProvider>
         <Sentry.ErrorBoundary fallback={FallbackComponent} showDialog>
-          <Head>
-            {/* <ColorSchemeScript */}
-            {/*   defaultColorScheme="auto" */}
-            {/*   localStorageKey={colorSchemeStorageKey} */}
-            {/* /> */}
-            {parseHtml(metaTagsHTMLString, { trim: true })}
-          </Head>
+          <Head>{parseHtml(metaTagsHTMLString, { trim: true })}</Head>
           {import.meta.env.DEV && <DebugAppData />}
           {props.children}
         </Sentry.ErrorBoundary>

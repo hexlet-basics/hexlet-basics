@@ -23,7 +23,6 @@ import {
   useComputedColorScheme,
   useMantineColorScheme,
 } from "@mantine/core";
-import { useMounted } from "@mantine/hooks";
 import {
   IconBlocks,
   IconChevronDown,
@@ -306,13 +305,13 @@ function MobileMenu({
 
 export function ThemeSwitcher() {
   const { t } = useTranslation();
-  const mounted = useMounted();
-  const computedColorScheme = useComputedColorScheme("light", {
+  const { colorScheme } = usePage<PageProps>().props;
+  const computedColorScheme = useComputedColorScheme(colorScheme, {
     getInitialValueInEffect: false,
   });
   const { toggleColorScheme } = useMantineColorScheme();
 
-  const isDark = mounted && computedColorScheme === "dark";
+  const isDark = computedColorScheme === "dark";
   const label = t(($) => $.layouts.shared.nav.switch_theme);
 
   return (
