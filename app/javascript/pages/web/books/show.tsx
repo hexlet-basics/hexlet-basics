@@ -101,7 +101,7 @@ export default function Show({ bookRequested, lead }: Props) {
               </Button>
             )}
 
-            <Grid mt={40} gutter="md">
+            <Grid mt={40} gap="md">
               {features.map(({ key, title, explanation, icon: Icon }) => (
                 <Grid.Col span={{ base: 12, md: 6 }} key={key}>
                   <Stack gap={4}>

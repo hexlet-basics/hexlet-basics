@@ -36,7 +36,7 @@ export default function Success(props: Props) {
             }}
           />
         </Alert>
-        <Grid gutter="xl">
+        <Grid gap="xl">
           <Grid.Col span={{ base: 12, sm: 7 }} mb="xl">
             <Stack>
               <Text>{t(($) => $.languages.success.description)}</Text>

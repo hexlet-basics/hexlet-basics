@@ -7,6 +7,7 @@ import {
   getGradient,
   mergeMantineTheme,
   type TypographyProps,
+  v8CssVariablesResolver,
 } from "@mantine/core";
 
 const VIEWPORT_MIN_PX = 320;
@@ -109,40 +110,48 @@ const myTheme = createTheme({
 
 export const theme = mergeMantineTheme(DEFAULT_THEME, myTheme);
 
-export const resolver: CSSVariablesResolver = () => ({
-  variables: {},
+export const resolver: CSSVariablesResolver = (currentTheme) => {
+  const baseResolver = v8CssVariablesResolver(currentTheme);
 
-  // светлая тема: фон = gray-0
-  light: {
-    "--mantine-color-dimmed": theme.colors.gray[8],
-    // '--mantine-color-body': 'var(--mantine-color-gray-0)',
-    "--mantine-color-anchor": "var(--mantine-color-text)",
-    "--app-color-surface": theme.colors.gray[1],
-    // '--app-cta-gradient':
-    //   'linear-gradient(135deg, var(--mantine-color-yellow-2), var(--mantine-color-red-2))',
-    // "--app-cta-gradient": "linear-gradient(to right, rgba(46, 42, 223, 0.90), rgba(46, 42, 223, 1.00), rgba(46, 42, 223, 0.90))",
-    "--app-cta-gradient": getGradient(
-      { deg: 90, from: "blue", to: "cyan.5" },
-      theme,
-    ),
-    // '--mantine-color-body': 'var(--mantine-color-gray-0)',
-    // '--mantine-color-default-hover': 'var(--mantine-color-gray-1)',
-  },
+  return {
+    variables: {
+      ...baseResolver.variables,
+    },
 
-  // тёмная тема: фон = dark-7 (или что тебе нужно)
-  dark: {
-    "--mantine-color-dimmed": theme.colors.gray[5],
-    // '--mantine-color-body': 'var(--mantine-color-dark-7)',
-    // '--app-cta-gradient':
-    //   'linear-gradient(135deg, var(--mantine-color-yellow-9), var(--mantine-color-red-9))',
-    "--app-cta-gradient": getGradient(
-      { deg: 90, from: "blue.9", to: "cyan.7" },
-      theme,
-    ),
-    "--app-color-surface": theme.colors.dark[6],
-    "--mantine-color-anchor": "var(--mantine-color-text)",
-  },
-});
+    // светлая тема: фон = gray-0
+    light: {
+      ...baseResolver.light,
+      "--mantine-color-dimmed": currentTheme.colors.gray[8],
+      // '--mantine-color-body': 'var(--mantine-color-gray-0)',
+      "--mantine-color-anchor": "var(--mantine-color-text)",
+      "--app-color-surface": currentTheme.colors.gray[1],
+      // '--app-cta-gradient':
+      //   'linear-gradient(135deg, var(--mantine-color-yellow-2), var(--mantine-color-red-2))',
+      // "--app-cta-gradient": "linear-gradient(to right, rgba(46, 42, 223, 0.90), rgba(46, 42, 223, 1.00), rgba(46, 42, 223, 0.90))",
+      "--app-cta-gradient": getGradient(
+        { deg: 90, from: "blue", to: "cyan.5" },
+        currentTheme,
+      ),
+      // '--mantine-color-body': 'var(--mantine-color-gray-0)',
+      // '--mantine-color-default-hover': 'var(--mantine-color-gray-1)',
+    },
+
+    // тёмная тема: фон = dark-7 (или что тебе нужно)
+    dark: {
+      ...baseResolver.dark,
+      "--mantine-color-dimmed": currentTheme.colors.gray[5],
+      // '--mantine-color-body': 'var(--mantine-color-dark-7)',
+      // '--app-cta-gradient':
+      //   'linear-gradient(135deg, var(--mantine-color-yellow-9), var(--mantine-color-red-9))',
+      "--app-cta-gradient": getGradient(
+        { deg: 90, from: "blue.9", to: "cyan.7" },
+        currentTheme,
+      ),
+      "--app-color-surface": currentTheme.colors.dark[6],
+      "--mantine-color-anchor": "var(--mantine-color-text)",
+    },
+  };
+};
 
 export const typographyStyles: TypographyProps["styles"] = (theme) => ({
   root: {

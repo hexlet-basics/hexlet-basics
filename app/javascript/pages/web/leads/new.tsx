@@ -31,7 +31,7 @@ export default function New({ lead, from }: Props) {
   return (
     <ApplicationLayout header={header} center>
       <Container py="xl">
-        <Grid gutter="xl">
+        <Grid gap="xl">
           <Grid.Col span={{ base: 12, lg: 7 }} mb="xl">
             <Stack gap="md">
               <Text>{t(($) => $.leads.new.description)}</Text>

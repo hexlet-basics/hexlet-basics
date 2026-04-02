@@ -437,7 +437,7 @@ export default function Show({
 
         {!user.guest && i18next.language === "ru" && (
           <Container size="lg">
-            <Grid align="center" justify="space-between" gutter={0}>
+            <Grid align="center" justify="space-between" gap={0}>
               <Grid.Col span={{ base: 12, md: 6 }}>
                 <Center mb="xl">
                   <Text fz={40} fw="bold">
@@ -456,7 +456,7 @@ export default function Show({
 
         {user.guest && (
           <Container size="lg" mt={100}>
-            <Grid align="center" justify="space-between" gutter={0}>
+            <Grid align="center" justify="space-between" gap={0}>
               <Grid.Col span={{ base: 12, md: 6 }}>
                 <Center mb="lg">
                   <Text fw="bold" fz="h2">
