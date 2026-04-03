@@ -156,7 +156,7 @@ GEM
       protocol-rack (~> 0.7)
       protocol-websocket (~> 0.17)
     aws-eventstream (1.4.0)
-    aws-partitions (1.1233.0)
+    aws-partitions (1.1234.0)
     aws-sdk-core (3.244.0)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
@@ -420,7 +420,7 @@ GEM
       json
       uri
       yaml
-    parallel (1.27.0)
+    parallel (1.28.0)
     parser (3.3.11.1)
       ast (~> 2.4.1)
       racc
@@ -591,7 +591,7 @@ GEM
     ruby_event_store-browser (2.18.0)
       rack
       ruby_event_store (= 2.18.0)
-    safely_block (0.5.0)
+    safely_block (1.0.0)
     samovar (2.4.1)
       console (~> 1.0)
       mapping (~> 1.0)
@@ -630,22 +630,22 @@ GEM
       fugit (~> 1.11)
       railties (>= 7.1)
       thor (>= 1.3.1)
-    sorbet (0.6.13073)
-      sorbet-static (= 0.6.13073)
+    sorbet (0.6.13082)
+      sorbet-static (= 0.6.13082)
     sorbet-result (1.4.0)
       sorbet-runtime (~> 0.5)
-    sorbet-runtime (0.6.13073)
+    sorbet-runtime (0.6.13082)
     sorbet-schema (0.9.3)
       sorbet-result (~> 1.1)
       sorbet-runtime (~> 0.5)
       sorbet-struct-comparable (~> 1.3)
       zeitwerk (~> 2.6)
-    sorbet-static (0.6.13073-aarch64-linux)
-    sorbet-static (0.6.13073-universal-darwin)
-    sorbet-static (0.6.13073-x86_64-linux)
-    sorbet-static-and-runtime (0.6.13073)
-      sorbet (= 0.6.13073)
-      sorbet-runtime (= 0.6.13073)
+    sorbet-static (0.6.13082-aarch64-linux)
+    sorbet-static (0.6.13082-universal-darwin)
+    sorbet-static (0.6.13082-x86_64-linux)
+    sorbet-static-and-runtime (0.6.13082)
+      sorbet (= 0.6.13082)
+      sorbet-runtime (= 0.6.13082)
     sorbet-struct-comparable (1.3.0)
       sorbet-runtime (>= 0.5)
     spoom (1.7.12)
@@ -858,7 +858,7 @@ CHECKSUMS
   async-service (0.22.0) sha256=84616488145654d42f994c2097eef39811a21548bf0da18d20a7b61813e63b61
   async-websocket (0.30.0) sha256=55739954528ad8f87f7792d0452e1268d1ef2aa5b3719f79400a05a1a6202cdf
   aws-eventstream (1.4.0) sha256=116bf85c436200d1060811e6f5d2d40c88f65448f2125bc77ffce5121e6e183b
-  aws-partitions (1.1233.0) sha256=928d3486082db11659397eb4c957f41e33fac8848bf87eb42fd921bbb96213c2
+  aws-partitions (1.1234.0) sha256=8f74aa6ca2e945fa50d83a23fc10f5406cb0becd32ac9f8940001ba8b04dcf8a
   aws-sdk-core (3.244.0) sha256=3e458c078b0c5bdee95bc370c3a483374b3224cf730c1f9f0faf849a5d9a18ea
   aws-sdk-kms (1.123.0) sha256=d405f37e82f8fa32045ca8980be266c0b45b37aaf2012afe0254321a1e811f20
   aws-sdk-s3 (1.218.0) sha256=5672a5f32107f2adfa8ca1ff33188fb534a6fd7560c52e8817458698c7c9988c
@@ -978,7 +978,7 @@ CHECKSUMS
   os (1.1.4) sha256=57816d6a334e7bd6aed048f4b0308226c5fb027433b67d90a9ab435f35108d3f
   ostruct (0.6.3) sha256=95a2ed4a4bd1d190784e666b47b2d3f078e4a9efda2fccf18f84ddc6538ed912
   pagy (43.4.4) sha256=b41a57328a0aabfd222266a89e9de3dc3a735c17bd57f8113829c95fece5bef6
-  parallel (1.27.0) sha256=4ac151e1806b755fb4e2dc2332cbf0e54f2e24ba821ff2d3dcf86bf6dc4ae130
+  parallel (1.28.0) sha256=33e6de1484baf2524792d178b0913fc8eb94c628d6cfe45599ad4458c638c970
   parser (3.3.11.1) sha256=d17ace7aabe3e72c3cc94043714be27cc6f852f104d81aa284c2281aecc65d54
   pg (1.6.3-aarch64-linux) sha256=0698ad563e02383c27510b76bf7d4cd2de19cd1d16a5013f375dd473e4be72ea
   pg (1.6.3-aarch64-linux-musl) sha256=06a75f4ea04b05140146f2a10550b8e0d9f006a79cdaf8b5b130cde40e3ecc2c
@@ -1040,7 +1040,7 @@ CHECKSUMS
   ruby_event_store (2.18.0) sha256=ffda63232044e2cbb4c510bf59793eb248d2b4107a7b8af97dc2424591b1fa91
   ruby_event_store-active_record (2.18.0) sha256=f9277b3cbf894c360de2bc578193e7922fa4f9e24a7abb10cadd8a20885253d4
   ruby_event_store-browser (2.18.0) sha256=76fc40ce27bc038e9ac8dddb1375ea3e78b36f8565626cb1bdf0d2ae523b592d
-  safely_block (0.5.0) sha256=782c342bc400a79c1233c40cf8c379da6116c6cfd1d7c1f17f0ef2ef11090103
+  safely_block (1.0.0) sha256=bea80e084e620adeada62fd98cf461bbb9888d40dc0f06d337df9d01e1a658e5
   samovar (2.4.1) sha256=c3b91dd0580771e3bc600621c1111f29542529dcffafaac3b6bf068b3f309e80
   securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1
   sentry-rails (6.5.0) sha256=ebf9d4d82c740c3e0e4a0840f11f7bbd0cf648a30afd9c67e5b50bb07018a0e4
@@ -1052,14 +1052,14 @@ CHECKSUMS
   solid_cable (3.0.12) sha256=a168a54731a455d5627af48d8441ea3b554b8c1f6e6cd6074109de493e6b0460
   solid_cache (1.0.10) sha256=bc05a2fb3ac78a6f43cbb5946679cf9db67dd30d22939ededc385cb93e120d41
   solid_queue (1.4.0) sha256=e6a18d196f0b27cb6e3c77c5b31258b05fb634f8ed64fb1866ed164047216c2a
-  sorbet (0.6.13073) sha256=0007d4bd5e0fbeca227c7ded558a48658e48a38a30ca2607da38fea5923b4a82
+  sorbet (0.6.13082) sha256=643162647005703875d8cf31a9eede9dff4e3233097aae36648944b0e412b998
   sorbet-result (1.4.0) sha256=194eededbcb78cf04ee2db8bd3b19e76f305dc043062ed90c56b4b9eac268ccd
-  sorbet-runtime (0.6.13073) sha256=e88c02c1b00e6d927b3689fa666044a983b31d7fa15f5cebf86b6060dc9f613a
+  sorbet-runtime (0.6.13082) sha256=e0821d6407631f5842d9cbf6a8e64cbf4f5e719279fec8655b6e2af75aa5c50e
   sorbet-schema (0.9.3) sha256=ef87356e82c9dff6671e11372a0515f736504e81b2d9753e01c3b79d2530a84b
-  sorbet-static (0.6.13073-aarch64-linux) sha256=011b847d1fca97695b188bd90e219a3883436931d37edb5ebc3f0a2f252fa028
-  sorbet-static (0.6.13073-universal-darwin) sha256=7da714abdbdc035656db8d1bed0369b307f37b8178ee61f13ed85ba98293dbb2
-  sorbet-static (0.6.13073-x86_64-linux) sha256=14b11fd3b4e2cb91e066fcea9595c2b8f891ba026723437274f7f236b026f81d
-  sorbet-static-and-runtime (0.6.13073) sha256=a0721083aa9b766195c77b7027e2b07258e4e62a29c555b0a223c1ea15ce79c8
+  sorbet-static (0.6.13082-aarch64-linux) sha256=123e781551c38999c896605ae1c01dd988c098b5fab906fc29cd2ac11514b556
+  sorbet-static (0.6.13082-universal-darwin) sha256=172018ed4c86221b3ffd6941730f810a1e9680c4794991c0dbebf33b2ce67c02
+  sorbet-static (0.6.13082-x86_64-linux) sha256=261a12c4d588aa3e8309c94b9c2e73e910d354055a137759034e965ceda61752
+  sorbet-static-and-runtime (0.6.13082) sha256=d2973058e6b2a0df86150c0b38f0644bd143ad0b9ffc4402a3a12b224b154c52
   sorbet-struct-comparable (1.3.0) sha256=337aff31c4eda80554485f9a30201067bf54fcd76bd992494a0d8c32fb04036b
   spoom (1.7.12) sha256=67f0b1f835158dba4f19c03ff75b7b7e285dce9165b7b77c2c78cbf54ebf3013
   sqlite3 (2.9.2-aarch64-linux-gnu) sha256=eeb86db55645b85327ba75129e3614658d974bf4da8fdc87018a0d42c59f6e42
