@@ -184,7 +184,7 @@ services-start: services-db-start
 # 	bin/rails analytics:refresh_user_survey_pivot
 
 setup-macos:
-	brew install caddy libpq vips watchman pnpm
+	brew install overmind caddy libpq vips watchman pnpm
 	brew link --force libpq
 
 setup-ubuntu:

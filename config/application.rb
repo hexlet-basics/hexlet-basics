@@ -1,6 +1,6 @@
 require_relative "boot"
 
-ENV["DISABLE_TYPELIZER"] = !ENV.fetch("ENABLE_TYPELIZER", "0").to_i.positive? ? "1" : "0"
+ENV["TYPELIZER"] = "false"
 
 # require "rails/all"
 require "rails"
