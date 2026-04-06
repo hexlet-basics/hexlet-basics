@@ -26,7 +26,7 @@ class Async::Barrier
 
   # Cancel all tasks held by the barrier.
   #
-  # pkg:gem/async#lib/async/barrier.rb:109
+  # pkg:gem/async#lib/async/barrier.rb:118
   def cancel; end
 
   # Whether there are any tasks being held by the barrier.
@@ -45,7 +45,7 @@ class Async::Barrier
   #
   # @deprecated Use {#cancel} instead.
   #
-  # pkg:gem/async#lib/async/barrier.rb:119
+  # pkg:gem/async#lib/async/barrier.rb:128
   def stop; end
 
   # All tasks which have been invoked into the barrier.
@@ -55,7 +55,7 @@ class Async::Barrier
 
   # Wait for all tasks to complete by invoking {Task#wait} on each waiting task, which may raise an error. As long as the task has completed, it will be removed from the barrier.
   #
-  # pkg:gem/async#lib/async/barrier.rb:86
+  # pkg:gem/async#lib/async/barrier.rb:87
   def wait; end
 end
 
@@ -1653,20 +1653,20 @@ class Async::Task < ::Async::Node
 
   private
 
-  # pkg:gem/async#lib/async/task.rb:505
+  # pkg:gem/async#lib/async/task.rb:508
   def cancel!; end
 
-  # pkg:gem/async#lib/async/task.rb:479
+  # pkg:gem/async#lib/async/task.rb:482
   def cancelled!; end
 
   # State transition into the completed state.
   #
-  # pkg:gem/async#lib/async/task.rb:468
+  # pkg:gem/async#lib/async/task.rb:471
   def completed!(result); end
 
   # State transition into the failed state.
   #
-  # pkg:gem/async#lib/async/task.rb:474
+  # pkg:gem/async#lib/async/task.rb:477
   def failed!(exception = T.unsafe(nil)); end
 
   # Finish the current task, moving any children to the parent.
@@ -1674,13 +1674,13 @@ class Async::Task < ::Async::Node
   # pkg:gem/async#lib/async/task.rb:458
   def finish!; end
 
-  # pkg:gem/async#lib/async/task.rb:515
+  # pkg:gem/async#lib/async/task.rb:518
   def schedule(&block); end
 
-  # pkg:gem/async#lib/async/task.rb:511
+  # pkg:gem/async#lib/async/task.rb:514
   def stop!; end
 
-  # pkg:gem/async#lib/async/task.rb:501
+  # pkg:gem/async#lib/async/task.rb:504
   def stopped!; end
 
   # pkg:gem/async#lib/async/task.rb:453

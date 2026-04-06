@@ -10,59 +10,64 @@ module Typelizer
   class << self
     # @private
     #
-    # pkg:gem/typelizer#lib/typelizer.rb:56
+    # pkg:gem/typelizer#lib/typelizer.rb:66
     def base_classes; end
 
-    # pkg:gem/typelizer#lib/typelizer.rb:58
+    # pkg:gem/typelizer#lib/typelizer.rb:68
     def configuration; end
 
     # @yield [configuration]
     #
-    # pkg:gem/typelizer#lib/typelizer.rb:62
+    # pkg:gem/typelizer#lib/typelizer.rb:72
     def configure; end
 
-    # pkg:gem/typelizer#lib/typelizer.rb:42
+    # pkg:gem/typelizer#lib/typelizer.rb:45
     def dirs(*_arg0, **_arg1, &_arg2); end
 
-    # pkg:gem/typelizer#lib/typelizer.rb:45
+    # pkg:gem/typelizer#lib/typelizer.rb:48
     def dirs=(*_arg0, **_arg1, &_arg2); end
 
+    # Is Typelizer active?
+    #
+    # Precedence: TYPELIZER env var > development? detection
+    # Legacy DISABLE_TYPELIZER is mapped to TYPELIZER with a deprecation warning.
+    #
     # @return [Boolean]
     #
-    # pkg:gem/typelizer#lib/typelizer.rb:47
+    # pkg:gem/typelizer#lib/typelizer.rb:54
     def enabled?; end
 
-    # pkg:gem/typelizer#lib/typelizer.rb:66
+    # pkg:gem/typelizer#lib/typelizer.rb:76
     def interfaces(writer_name: T.unsafe(nil)); end
 
-    # pkg:gem/typelizer#lib/typelizer.rb:42
+    # pkg:gem/typelizer#lib/typelizer.rb:45
     def listen(*_arg0, **_arg1, &_arg2); end
 
-    # pkg:gem/typelizer#lib/typelizer.rb:45
+    # pkg:gem/typelizer#lib/typelizer.rb:48
     def listen=(*_arg0, **_arg1, &_arg2); end
 
     # Returns the value of attribute logger.
     #
-    # pkg:gem/typelizer#lib/typelizer.rb:53
+    # pkg:gem/typelizer#lib/typelizer.rb:63
     def logger; end
 
     # Sets the attribute logger
     #
     # @param value the value to set the attribute logger to.
     #
-    # pkg:gem/typelizer#lib/typelizer.rb:53
+    # pkg:gem/typelizer#lib/typelizer.rb:63
     def logger=(_arg0); end
 
-    # pkg:gem/typelizer#lib/typelizer.rb:74
+    # pkg:gem/typelizer#lib/typelizer.rb:84
     def openapi_schemas(writer_name: T.unsafe(nil), openapi_version: T.unsafe(nil)); end
 
-    # pkg:gem/typelizer#lib/typelizer.rb:42
+    # pkg:gem/typelizer#lib/typelizer.rb:45
     def reject_class(*_arg0, **_arg1, &_arg2); end
 
-    # pkg:gem/typelizer#lib/typelizer.rb:45
+    # pkg:gem/typelizer#lib/typelizer.rb:48
     def reject_class=(*_arg0, **_arg1, &_arg2); end
 
-    # pkg:gem/typelizer#lib/typelizer.rb:42
+    # pkg:gem/typelizer#lib/typelizer.rb:45
     def writer(*_arg0, **_arg1, &_arg2); end
 
     private
@@ -71,13 +76,24 @@ module Typelizer
     #
     # @param value the value to set the attribute base_classes to.
     #
-    # pkg:gem/typelizer#lib/typelizer.rb:105
+    # pkg:gem/typelizer#lib/typelizer.rb:135
     def base_classes=(_arg0); end
 
-    # pkg:gem/typelizer#lib/typelizer.rb:87
+    # @return [Boolean]
+    #
+    # pkg:gem/typelizer#lib/typelizer.rb:97
+    def development?; end
+
+    # pkg:gem/typelizer#lib/typelizer.rb:117
     def load_serializers; end
 
-    # pkg:gem/typelizer#lib/typelizer.rb:91
+    # Maps legacy DISABLE_TYPELIZER to TYPELIZER with a deprecation warning.
+    # Only takes effect if TYPELIZER is not already set.
+    #
+    # pkg:gem/typelizer#lib/typelizer.rb:103
+    def migrate_legacy_env!; end
+
+    # pkg:gem/typelizer#lib/typelizer.rb:121
     def target_serializers(reject_class); end
   end
 end
@@ -454,7 +470,7 @@ end
 class Typelizer::Configuration
   # @return [Configuration] a new instance of Configuration
   #
-  # pkg:gem/typelizer#lib/typelizer/configuration.rb:24
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:28
   def initialize; end
 
   # Returns the value of attribute dirs.
@@ -488,8 +504,11 @@ class Typelizer::Configuration
 
   # Reset writers and keep only `default` writer
   #
-  # pkg:gem/typelizer#lib/typelizer/configuration.rb:71
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:75
   def reset_writers!; end
+
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:24
+  def routes; end
 
   # Defines or updates a writer configuration.
   #
@@ -497,10 +516,10 @@ class Typelizer::Configuration
   # then freezes and stores it. output_dir is unique and mandatory
   # Also accepts "from" argument, which allows us to inherit configuration from any writer
   #
-  # pkg:gem/typelizer#lib/typelizer/configuration.rb:42
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:46
   def writer(name = T.unsafe(nil), from: T.unsafe(nil), &block); end
 
-  # pkg:gem/typelizer#lib/typelizer/configuration.rb:66
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:70
   def writer_config(name = T.unsafe(nil)); end
 
   # Returns the value of attribute writers.
@@ -512,7 +531,7 @@ class Typelizer::Configuration
 
   # @return [Boolean]
   #
-  # pkg:gem/typelizer#lib/typelizer/configuration.rb:154
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:158
   def config_attribute?(name); end
 
   # Setters and readers to Writer(:default) config
@@ -520,32 +539,32 @@ class Typelizer::Configuration
   #   config.output_dir = ...
   #   config.prefer_double_quotes = true
   #
-  # pkg:gem/typelizer#lib/typelizer/configuration.rb:87
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:91
   def method_missing(name, *args, &block); end
 
-  # pkg:gem/typelizer#lib/typelizer/configuration.rb:150
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:154
   def normalize_method_name(name); end
 
-  # pkg:gem/typelizer#lib/typelizer/configuration.rb:146
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:150
   def normalize_path(dir); end
 
   # Normalizes and validates writer name
   #
   # @raise [ArgumentError]
   #
-  # pkg:gem/typelizer#lib/typelizer/configuration.rb:118
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:122
   def normalize_writer_name(name); end
 
   # Validates and registers output directory for uniqueness across writers
   #
   # @raise [ArgumentError]
   #
-  # pkg:gem/typelizer#lib/typelizer/configuration.rb:127
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:131
   def register_output_dir!(writer_name, dir); end
 
   # @return [Boolean]
   #
-  # pkg:gem/typelizer#lib/typelizer/configuration.rb:111
+  # pkg:gem/typelizer#lib/typelizer/configuration.rb:115
   def respond_to_missing?(name, include_private = T.unsafe(nil)); end
 end
 
@@ -680,7 +699,7 @@ end
 # pkg:gem/typelizer#lib/typelizer/generator.rb:4
 class Typelizer::Generator
   # pkg:gem/typelizer#lib/typelizer/generator.rb:9
-  def call(force: T.unsafe(nil)); end
+  def call(force: T.unsafe(nil), skip_check: T.unsafe(nil)); end
 
   class << self
     # pkg:gem/typelizer#lib/typelizer/generator.rb:5
@@ -1309,6 +1328,231 @@ class Typelizer::Renderer
     def call(template, **context); end
   end
 end
+
+# pkg:gem/typelizer#lib/typelizer/route_config.rb:4
+class Typelizer::RouteConfig < ::Struct
+  # Returns the value of attribute camel_case
+  #
+  # @return [Object] the current value of camel_case
+  #
+  # pkg:gem/typelizer#lib/typelizer/route_config.rb:4
+  def camel_case; end
+
+  # Sets the attribute camel_case
+  #
+  # @param value [Object] the value to set the attribute camel_case to.
+  # @return [Object] the newly set value
+  #
+  # pkg:gem/typelizer#lib/typelizer/route_config.rb:4
+  def camel_case=(_); end
+
+  # Returns the value of attribute enabled
+  #
+  # @return [Object] the current value of enabled
+  #
+  # pkg:gem/typelizer#lib/typelizer/route_config.rb:4
+  def enabled; end
+
+  # Sets the attribute enabled
+  #
+  # @param value [Object] the value to set the attribute enabled to.
+  # @return [Object] the newly set value
+  #
+  # pkg:gem/typelizer#lib/typelizer/route_config.rb:4
+  def enabled=(_); end
+
+  # Returns the value of attribute exclude
+  #
+  # @return [Object] the current value of exclude
+  #
+  # pkg:gem/typelizer#lib/typelizer/route_config.rb:4
+  def exclude; end
+
+  # Sets the attribute exclude
+  #
+  # @param value [Object] the value to set the attribute exclude to.
+  # @return [Object] the newly set value
+  #
+  # pkg:gem/typelizer#lib/typelizer/route_config.rb:4
+  def exclude=(_); end
+
+  # pkg:gem/typelizer#lib/typelizer/route_config.rb:34
+  def file_ext; end
+
+  # Returns the value of attribute format
+  #
+  # @return [Object] the current value of format
+  #
+  # pkg:gem/typelizer#lib/typelizer/route_config.rb:4
+  def format; end
+
+  # Sets the attribute format
+  #
+  # @param value [Object] the value to set the attribute format to.
+  # @return [Object] the newly set value
+  #
+  # pkg:gem/typelizer#lib/typelizer/route_config.rb:4
+  def format=(_); end
+
+  # Returns the value of attribute include
+  #
+  # @return [Object] the current value of include
+  #
+  # pkg:gem/typelizer#lib/typelizer/route_config.rb:4
+  def include; end
+
+  # Sets the attribute include
+  #
+  # @param value [Object] the value to set the attribute include to.
+  # @return [Object] the newly set value
+  #
+  # pkg:gem/typelizer#lib/typelizer/route_config.rb:4
+  def include=(_); end
+
+  # @return [Boolean]
+  #
+  # pkg:gem/typelizer#lib/typelizer/route_config.rb:30
+  def js?; end
+
+  # Returns the value of attribute output_dir
+  #
+  # @return [Object] the current value of output_dir
+  #
+  # pkg:gem/typelizer#lib/typelizer/route_config.rb:4
+  def output_dir; end
+
+  # Sets the attribute output_dir
+  #
+  # @param value [Object] the value to set the attribute output_dir to.
+  # @return [Object] the newly set value
+  #
+  # pkg:gem/typelizer#lib/typelizer/route_config.rb:4
+  def output_dir=(_); end
+
+  # @return [Boolean]
+  #
+  # pkg:gem/typelizer#lib/typelizer/route_config.rb:26
+  def ts?; end
+
+  class << self
+    # pkg:gem/typelizer#lib/typelizer/route_config.rb:4
+    def [](*_arg0); end
+
+    # pkg:gem/typelizer#lib/typelizer/route_config.rb:38
+    def build(**overrides); end
+
+    # pkg:gem/typelizer#lib/typelizer/route_config.rb:15
+    def defaults; end
+
+    # pkg:gem/typelizer#lib/typelizer/route_config.rb:4
+    def inspect; end
+
+    # pkg:gem/typelizer#lib/typelizer/route_config.rb:4
+    def keyword_init?; end
+
+    # pkg:gem/typelizer#lib/typelizer/route_config.rb:4
+    def members; end
+
+    # pkg:gem/typelizer#lib/typelizer/route_config.rb:4
+    def new(*_arg0); end
+  end
+end
+
+# pkg:gem/typelizer#lib/typelizer/route_generator.rb:6
+class Typelizer::RouteGenerator
+  # pkg:gem/typelizer#lib/typelizer/route_generator.rb:13
+  def call(force: T.unsafe(nil), skip_check: T.unsafe(nil)); end
+
+  private
+
+  # pkg:gem/typelizer#lib/typelizer/route_generator.rb:64
+  def build_name_lookups(named_routes, path_prefix: T.unsafe(nil), name_prefix: T.unsafe(nil)); end
+
+  # pkg:gem/typelizer#lib/typelizer/route_generator.rb:86
+  def build_route_info(route, name_by_action, name_by_path); end
+
+  # pkg:gem/typelizer#lib/typelizer/route_generator.rb:123
+  def collect_engine_routes(mount_route, engine); end
+
+  # pkg:gem/typelizer#lib/typelizer/route_generator.rb:28
+  def collect_routes; end
+
+  # pkg:gem/typelizer#lib/typelizer/route_generator.rb:24
+  def config; end
+
+  # pkg:gem/typelizer#lib/typelizer/route_generator.rb:142
+  def extract_verb(route); end
+
+  # pkg:gem/typelizer#lib/typelizer/route_generator.rb:82
+  def strip_format(path); end
+
+  class << self
+    # pkg:gem/typelizer#lib/typelizer/route_generator.rb:9
+    def call(**args); end
+  end
+end
+
+# pkg:gem/typelizer#lib/typelizer/route_generator.rb:7
+Typelizer::RouteGenerator::FORMAT_SUFFIX = T.let(T.unsafe(nil), Regexp)
+
+# pkg:gem/typelizer#lib/typelizer/route_writer.rb:6
+class Typelizer::RouteWriter
+  # @return [RouteWriter] a new instance of RouteWriter
+  #
+  # pkg:gem/typelizer#lib/typelizer/route_writer.rb:7
+  def initialize(config); end
+
+  # pkg:gem/typelizer#lib/typelizer/route_writer.rb:12
+  def call(routes, force:); end
+
+  private
+
+  # pkg:gem/typelizer#lib/typelizer/route_writer.rb:126
+  def build_named_routes(routes, controllers); end
+
+  # pkg:gem/typelizer#lib/typelizer/route_writer.rb:152
+  def camelize_key(key); end
+
+  # pkg:gem/typelizer#lib/typelizer/route_writer.rb:114
+  def cleanup_stale_files(written_files); end
+
+  # Returns the value of attribute config.
+  #
+  # pkg:gem/typelizer#lib/typelizer/route_writer.rb:37
+  def config; end
+
+  # pkg:gem/typelizer#lib/typelizer/route_writer.rb:156
+  def controller_filename(controller); end
+
+  # pkg:gem/typelizer#lib/typelizer/route_writer.rb:166
+  def controller_namespace_name(controller); end
+
+  # pkg:gem/typelizer#lib/typelizer/route_writer.rb:121
+  def render_template(template, **context); end
+
+  # pkg:gem/typelizer#lib/typelizer/route_writer.rb:147
+  def route_key(route, controller_routes); end
+
+  # Returns the value of attribute template_cache.
+  #
+  # pkg:gem/typelizer#lib/typelizer/route_writer.rb:37
+  def template_cache; end
+
+  # pkg:gem/typelizer#lib/typelizer/route_writer.rb:39
+  def write_controller(controller, routes); end
+
+  # pkg:gem/typelizer#lib/typelizer/route_writer.rb:95
+  def write_file(filename, fingerprint); end
+
+  # pkg:gem/typelizer#lib/typelizer/route_writer.rb:66
+  def write_index(controllers, named); end
+
+  # pkg:gem/typelizer#lib/typelizer/route_writer.rb:87
+  def write_runtime; end
+end
+
+# pkg:gem/typelizer#lib/typelizer/route_writer.rb:82
+Typelizer::RouteWriter::RUNTIME_TEMPLATES = T.let(T.unsafe(nil), Hash)
 
 # SerializerConfigLayer
 #

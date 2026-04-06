@@ -25,7 +25,7 @@ class BigDecimal < ::Numeric
   #
   #  Related: BigDecimal#power.
   #
-  # pkg:gem/bigdecimal#lib/bigdecimal.rb:120
+  # pkg:gem/bigdecimal#lib/bigdecimal.rb:129
   def **(y); end
 
   # pkg:gem/bigdecimal#lib/bigdecimal.rb:10
@@ -144,7 +144,7 @@ class BigDecimal < ::Numeric
   #
   # Also available as the operator **.
   #
-  # pkg:gem/bigdecimal#lib/bigdecimal.rb:140
+  # pkg:gem/bigdecimal#lib/bigdecimal.rb:149
   def power(y, prec = T.unsafe(nil)); end
 
   # pkg:gem/bigdecimal#lib/bigdecimal.rb:10
@@ -177,7 +177,7 @@ class BigDecimal < ::Numeric
   #
   # @raise [FloatDomainError]
   #
-  # pkg:gem/bigdecimal#lib/bigdecimal.rb:255
+  # pkg:gem/bigdecimal#lib/bigdecimal.rb:264
   def sqrt(prec); end
 
   # pkg:gem/bigdecimal#lib/bigdecimal.rb:10
@@ -272,9 +272,18 @@ module BigDecimal::Internal
     # pkg:gem/bigdecimal#lib/bigdecimal.rb:33
     def coerce_validate_prec(prec, method_name, accept_zero: T.unsafe(nil)); end
 
+    # Fast and rough conversion to float for mathematical calculations.
+    # Bigdecimal#to_f is slow when n_significant_digits is large.
+    # This is because to_f internally converts BigDecimal to String
+    # to get the exact nearest float representation.
+    # TODO: Remove this workaround when BigDecimal#to_f is optimized.
+    #
+    # pkg:gem/bigdecimal#lib/bigdecimal.rb:84
+    def fast_to_f(x); end
+
     # Calculates Math.log(x.to_f) considering large or small exponent
     #
-    # pkg:gem/bigdecimal#lib/bigdecimal.rb:80
+    # pkg:gem/bigdecimal#lib/bigdecimal.rb:89
     def float_log(x); end
 
     # pkg:gem/bigdecimal#lib/bigdecimal.rb:53
@@ -292,7 +301,7 @@ module BigDecimal::Internal
     # Calculates f(x) = (x/d0)*(1+(x/d1)*(1+(x/d2)*(1+(x/d3)*(1+...))))
     # x.n_significant_digits or ds.size must be small to be performant.
     #
-    # pkg:gem/bigdecimal#lib/bigdecimal.rb:87
+    # pkg:gem/bigdecimal#lib/bigdecimal.rb:96
     def taylor_sum_binary_splitting(x, ds, prec); end
   end
 end
@@ -308,11 +317,11 @@ BigDecimal::VERSION = T.let(T.unsafe(nil), String)
 # Core BigMath methods for BigDecimal (log, exp) are defined here.
 # Other methods (sin, cos, atan) are defined in 'bigdecimal/math.rb'.
 #
-# pkg:gem/bigdecimal#lib/bigdecimal.rb:281
+# pkg:gem/bigdecimal#lib/bigdecimal.rb:290
 module BigMath
   private
 
-  # pkg:gem/bigdecimal#lib/bigdecimal.rb:329
+  # pkg:gem/bigdecimal#lib/bigdecimal.rb:338
   def _exp_binary_splitting(x, prec); end
 
   # call-seq:
@@ -325,7 +334,7 @@ module BigMath
   #
   # If +decimal+ is NaN, returns NaN.
   #
-  # pkg:gem/bigdecimal#lib/bigdecimal.rb:349
+  # pkg:gem/bigdecimal#lib/bigdecimal.rb:358
   def exp(x, prec); end
 
   # call-seq:
@@ -340,7 +349,7 @@ module BigMath
   #
   # If +decimal+ is NaN, returns NaN.
   #
-  # pkg:gem/bigdecimal#lib/bigdecimal.rb:296
+  # pkg:gem/bigdecimal#lib/bigdecimal.rb:305
   def log(x, prec); end
 
   class << self
@@ -354,7 +363,7 @@ module BigMath
     #
     # If +decimal+ is NaN, returns NaN.
     #
-    # pkg:gem/bigdecimal#lib/bigdecimal.rb:349
+    # pkg:gem/bigdecimal#lib/bigdecimal.rb:358
     def exp(x, prec); end
 
     # call-seq:
@@ -371,12 +380,12 @@ module BigMath
     #
     # @raise [Math::DomainError]
     #
-    # pkg:gem/bigdecimal#lib/bigdecimal.rb:296
+    # pkg:gem/bigdecimal#lib/bigdecimal.rb:305
     def log(x, prec); end
 
     private
 
-    # pkg:gem/bigdecimal#lib/bigdecimal.rb:329
+    # pkg:gem/bigdecimal#lib/bigdecimal.rb:338
     def _exp_binary_splitting(x, prec); end
   end
 end

@@ -20,22 +20,22 @@ module Protocol::Rack; end
 # response = adapter.call(request)
 # ```
 #
-# pkg:gem/protocol-rack#lib/protocol/rack/adapter.rb:18
+# pkg:gem/protocol-rack#lib/protocol/rack/adapter/version.rb:10
 module Protocol::Rack::Adapter
   class << self
     # Converts a Rack response into a {Protocol::HTTP::Response}.
     #
-    # pkg:gem/protocol-rack#lib/protocol/rack/adapter.rb:46
+    # pkg:gem/protocol-rack#lib/protocol/rack/adapter.rb:43
     def make_response(env, response); end
 
     # Creates a new adapter instance for the given Rack application.
     #
-    # pkg:gem/protocol-rack#lib/protocol/rack/adapter.rb:37
+    # pkg:gem/protocol-rack#lib/protocol/rack/adapter.rb:34
     def new(app); end
 
     # Parses a Rackup file and returns the application.
     #
-    # pkg:gem/protocol-rack#lib/protocol/rack/adapter.rb:54
+    # pkg:gem/protocol-rack#lib/protocol/rack/adapter.rb:51
     def parse_file(*_arg0, **_arg1, &_arg2); end
   end
 end
@@ -124,7 +124,7 @@ class Protocol::Rack::Adapter::Generic
   end
 end
 
-# pkg:gem/protocol-rack#lib/protocol/rack/adapter.rb:24
+# pkg:gem/protocol-rack#lib/protocol/rack/adapter.rb:21
 Protocol::Rack::Adapter::IMPLEMENTATION = Protocol::Rack::Adapter::Rack31
 
 # The Rack 3 adapter provides compatibility with Rack 3.x applications.
@@ -187,7 +187,7 @@ end
 
 # The version of Rack being used. Can be overridden using the PROTOCOL_RACK_ADAPTER_VERSION environment variable.
 #
-# pkg:gem/protocol-rack#lib/protocol/rack/adapter.rb:20
+# pkg:gem/protocol-rack#lib/protocol/rack/adapter/version.rb:12
 Protocol::Rack::Adapter::VERSION = T.let(T.unsafe(nil), String)
 
 # The Body module provides functionality for handling Rack response bodies.
@@ -233,37 +233,37 @@ Protocol::Rack::Body::CONTENT_LENGTH = T.let(T.unsafe(nil), String)
 # The body must only yield `String` values and may optionally respond to `close`.
 # This class provides both streaming and buffered access to the response body.
 #
-# pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:16
+# pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:18
 class Protocol::Rack::Body::Enumerable < ::Protocol::HTTP::Body::Readable
   # Initialize the enumerable body wrapper.
   #
   # @return [Enumerable] a new instance of Enumerable
   #
-  # pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:39
+  # pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:53
   def initialize(body, length); end
 
   # Returns the value of attribute body.
   #
-  # pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:47
+  # pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:61
   def body; end
 
   # Stream the response body to the given stream.
   # The body is automatically closed after streaming.
   #
-  # pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:111
+  # pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:125
   def call(stream); end
 
   # Close the response body.
   # If the body responds to `close`, it will be called.
   #
-  # pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:72
+  # pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:86
   def close(error = T.unsafe(nil)); end
 
   # Enumerate the response body.
   # Each chunk yielded must be a String.
   # The body is automatically closed after enumeration.
   #
-  # pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:91
+  # pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:105
   def each(&block); end
 
   # Check if the response body is empty.
@@ -271,23 +271,23 @@ class Protocol::Rack::Body::Enumerable < ::Protocol::HTTP::Body::Readable
   #
   # @return [Boolean]
   #
-  # pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:56
+  # pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:70
   def empty?; end
 
   # Get a string representation of the body.
   #
-  # pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:134
+  # pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:148
   def inspect; end
 
   # Returns the value of attribute length.
   #
-  # pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:50
+  # pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:64
   def length; end
 
   # Read the next chunk from the response body.
   # Returns nil when there are no more chunks.
   #
-  # pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:123
+  # pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:137
   def read; end
 
   # Check if the response body can be read immediately.
@@ -295,7 +295,7 @@ class Protocol::Rack::Body::Enumerable < ::Protocol::HTTP::Body::Readable
   #
   # @return [Boolean]
   #
-  # pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:64
+  # pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:78
   def ready?; end
 
   # Check if the body is a streaming response.
@@ -303,21 +303,21 @@ class Protocol::Rack::Body::Enumerable < ::Protocol::HTTP::Body::Readable
   #
   # @return [Boolean]
   #
-  # pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:103
+  # pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:117
   def stream?; end
 
   class << self
     # Wraps a Rack response body into an {Enumerable} instance.
     # If the body is an Array, its total size is calculated automatically.
     #
-    # pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:26
+    # pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:29
     def wrap(body, length = T.unsafe(nil)); end
   end
 end
 
 # The content-length header key.
 #
-# pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:18
+# pkg:gem/protocol-rack#lib/protocol/rack/body/enumerable.rb:20
 Protocol::Rack::Body::Enumerable::CONTENT_LENGTH = T.let(T.unsafe(nil), String)
 
 # Wraps a Rack input object into a readable body.

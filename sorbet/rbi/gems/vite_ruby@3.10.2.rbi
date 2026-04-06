@@ -1143,14 +1143,20 @@ class ViteRuby::Manifest
   # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:13
   def initialize(vite_ruby); end
 
-  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:102
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:119
   def builder(*_arg0, **_arg1, &_arg2); end
 
-  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:102
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:119
   def config(*_arg0, **_arg1, &_arg2); end
 
-  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:102
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:119
   def dev_server_running?(*_arg0, **_arg1, &_arg2); end
+
+  # Internal: Recursively collects all imported chunks for a given entry.
+  # Returns chunks in dependency-first order (deepest imports first), deduped.
+  #
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:27
+  def import_chunks_for(entry, seen_filenames: T.unsafe(nil)); end
 
   # Public: Returns the path for the specified Vite entrypoint file.
   #
@@ -1161,28 +1167,28 @@ class ViteRuby::Manifest
 
   # Public: Source script for the React Refresh plugin.
   #
-  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:61
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:78
   def react_preamble_code; end
 
   # Public: The content of the preamble needed by the React Refresh plugin.
   #
-  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:50
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:67
   def react_refresh_preamble; end
 
   # Public: Refreshes the cached mappings by reading the updated manifest files.
   #
-  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:40
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:57
   def refresh; end
 
   # Public: Returns scripts, imported modules, and stylesheets for the specified
   # entrypoint files.
   #
-  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:27
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:44
   def resolve_entries(*names, **options); end
 
   # Public: The path from where the browser can download the Vite HMR client.
   #
-  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:45
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:62
   def vite_client_src; end
 
   protected
@@ -1195,31 +1201,31 @@ class ViteRuby::Manifest
   #   manifest.lookup('calendar.js')
   #   => { "file" => "/vite/assets/calendar-1016838bab065ae1e122.js", "imports" => [] }
   #
-  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:89
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:106
   def lookup(name, **options); end
 
   # Internal: Strict version of lookup.
   #
   # Returns a relative path for the asset, or raises an error if not found.
   #
-  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:78
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:95
   def lookup!(name, **options); end
 
   private
 
   # Internal: Allows to receive :javascript and :stylesheet as :type in helpers.
   #
-  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:206
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:223
   def extension_for_type(entry_type); end
 
   # Internal: Finds the specified entry in the manifest.
   #
-  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:111
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:128
   def find_manifest_entry(name); end
 
   # Internal: Loads and merges the manifest files, resolving the asset paths.
   #
-  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:130
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:147
   def load_manifest; end
 
   # Internal: The parsed data from manifest.json.
@@ -1227,48 +1233,48 @@ class ViteRuby::Manifest
   # NOTE: When using build-on-demand in development and testing, the manifest
   # is reloaded automatically before each lookup, to ensure it's always fresh.
   #
-  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:123
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:140
   def manifest; end
 
   # Internal: Raises a detailed message when an entry is missing in the manifest.
   #
   # @raise [ViteRuby::MissingEntrypointError]
   #
-  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:216
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:233
   def missing_entry_error(name, **options); end
 
   # Internal: Prefixes an asset with the `asset_host` for tags that do not use
   # the framework tag helpers.
   #
-  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:144
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:161
   def prefix_asset_with_host(path); end
 
   # Internal: Scopes an asset to the output folder in public, as a path.
   #
-  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:138
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:155
   def prefix_vite_asset(path); end
 
   # Internal: Entry names in the manifest are relative to the Vite.js.
   # During develoment, files outside the root must be requested explicitly.
   #
-  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:183
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:200
   def resolve_absolute_entry(name); end
 
   # Internal: Resolves the manifest entry name for the specified resource.
   #
   # @raise [ArgumentError]
   #
-  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:165
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:182
   def resolve_entry_name(name, type: T.unsafe(nil)); end
 
   # Internal: Resolves the paths that reference a manifest entry.
   #
-  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:154
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:171
   def resolve_references(manifest); end
 
   # Internal: Resolves a virtual entry by walking all the manifest keys.
   #
-  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:192
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:209
   def resolve_virtual_entry(name); end
 
   # NOTE: Auto compilation is convenient when running tests, when the developer
@@ -1276,23 +1282,23 @@ class ViteRuby::Manifest
   #
   # @return [Boolean]
   #
-  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:106
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:123
   def should_build?; end
 
   # Internal: The origin of assets managed by Vite.
   #
-  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:149
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:166
   def vite_asset_origin; end
 
   # Internal: Adds a file extension to the file name, unless it already has one.
   #
-  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:197
+  # pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:214
   def with_file_extension(name, entry_type); end
 end
 
 # Internal: The prefix used by Vite.js to request files with an absolute path.
 #
-# pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:98
+# pkg:gem/vite_ruby#lib/vite_ruby/manifest.rb:115
 ViteRuby::Manifest::FS_PREFIX = T.let(T.unsafe(nil), String)
 
 # Internal: Raised when an entry is not found in the build manifest.
