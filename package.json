@@ -9,9 +9,9 @@
     "@emotion/react": "^11.14.0",
     "@gfazioli/mantine-split-pane": "^4.0.7",
     "@hexlet/analytics-plugin-yandex-metrika": "^1.0.10",
-    "@inertiajs/core": "^3.0.2",
-    "@inertiajs/react": "^3.0.2",
-    "@inertiajs/vite": "^3.0.2",
+    "@inertiajs/core": "^3.0.3",
+    "@inertiajs/react": "^3.0.3",
+    "@inertiajs/vite": "^3.0.3",
     "@mantine/carousel": "^9.0.1",
     "@mantine/code-highlight": "^9.0.1",
     "@mantine/colors-generator": "^9.0.1",
@@ -91,7 +91,7 @@
     "browserslist": "^4.28.2",
     "browserslist-config-baseline": "^0.5.0",
     "globals": "^17.4.0",
-    "i18next-cli": "^1.51.6",
+    "i18next-cli": "^1.51.7",
     "lightningcss": "^1.32.0",
     "node-gyp": "^12.2.0",
     "npm-check-updates": "^20.0.0",
@@ -102,7 +102,7 @@
     "svgo": "^4.0.1",
     "terser": "^5.46.1",
     "typescript": "^6.0.2",
-    "vite": "^8.0.5",
+    "vite": "^8.0.7",
     "vite-bundle-analyzer": "^1.3.7",
     "vite-css-modules": "^1.15.0",
     "vite-imagetools": "^10.0.0",
@@ -110,7 +110,7 @@
     "vite-plugin-image-optimizer": "^2.0.3",
     "vite-plugin-rails": "^0.6.0",
     "vite-plugin-ruby": "^5.2.1",
-    "vitest": "^4.1.2"
+    "vitest": "^4.1.3"
   },
   "browserslist": [
     "extends browserslist-config-baseline, not iOS < 16.4, not Safari < 16.4"
