@@ -32,7 +32,7 @@
     "@tabler/icons-react": "^3.41.1",
     "ahoy.js": "^0.4.5",
     "analytics": "0.8.19",
-    "axios": "^1.14.0",
+    "axios": "^1.15.0",
     "classnames": "^2.5.1",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.20",
