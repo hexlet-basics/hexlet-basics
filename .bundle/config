@@ -1,2 +1,4 @@
-BUNDLE_PATH: ./vendor/bundle
+---
+BUNDLE_PATH: "/home/runner/work/hexlet-basics/hexlet-basics/vendor/bundle"
 BUNDLE_BUILD__NOKOGIRI: "--use-system-libraries"
+BUNDLE_DEPLOYMENT: "true"
