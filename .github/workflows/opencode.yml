@@ -12,8 +12,6 @@ jobs:
       contains(github.event.comment.body, ' /oc') ||
       startsWith(github.event.comment.body, '/oc')
     runs-on: ubuntu-latest
-    env:
-      BUNDLE_APP_CONFIG: ${{ runner.temp }}/bundler
     permissions:
       id-token: write
       contents: read
@@ -38,6 +36,8 @@ jobs:
       - run: pnpm install
 
       - uses: ruby/setup-ruby@v1
+        env:
+          BUNDLE_APP_CONFIG: ${{ runner.temp }}/bundler
         with:
           bundler-cache: true
 
