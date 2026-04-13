@@ -14,6 +14,8 @@ env:
 
 jobs:
   build:
+    env:
+      BUNDLE_APP_CONFIG: ${{ runner.temp }}/bundler
     services:
       postgres:
         image: postgres:17-alpine
@@ -43,8 +45,6 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-
-      - run: bundle install
 
       - run: make lint
 
