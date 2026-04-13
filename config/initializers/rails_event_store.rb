@@ -22,7 +22,7 @@ Rails.configuration.to_prepare do
     store.subscribe_to_all_events(RailsEventStore::LinkByCausationId.new)
 
     store.subscribe_to_all_events(SurveyHandler.new)
-    store.subscribe(AmocrmHandler, to: [ LeadCreatedEvent ])
+    store.subscribe(AmocrmHandler, to: [ LeadCreatedEvent ]) unless Rails.env.test?
   end
 
   # Register command handlers below
