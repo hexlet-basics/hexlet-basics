@@ -1,6 +1,6 @@
 require_relative "boot"
 
-ENV["TYPELIZER"] = "false"
+ENV["TYPELIZER"] ||= "false"
 
 # require "rails/all"
 require "rails"

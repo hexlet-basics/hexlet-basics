@@ -256,8 +256,8 @@ importers:
         specifier: ^17.5.0
         version: 17.5.0
       i18next-cli:
-        specifier: ^1.51.8
-        version: 1.51.8(@types/node@25.6.0)(i18next@26.0.4(typescript@6.0.2))(react-dom@19.2.5(react@19.2.5))(typescript@6.0.2)
+        specifier: ^1.52.0
+        version: 1.52.0(@types/node@25.6.0)(i18next@26.0.4(typescript@6.0.2))(react-dom@19.2.5(react@19.2.5))(typescript@6.0.2)
       lightningcss:
         specifier: ^1.32.0
         version: 1.32.0
@@ -3145,8 +3145,8 @@ packages:
     resolution: {integrity: sha512-eKCa6bwnJhvxj14kZk5NCPc6Hb6BdsU9DZcOnmQKSnO1VKrfV0zCvtttPZUsBvjmNDn8rpcJfpwSYnHBjc95MQ==}
     engines: {node: '>=18.18.0'}
 
-  i18next-cli@1.51.8:
-    resolution: {integrity: sha512-Z/KvWi8wKlnefiu8qV6vpAHhXzAHQFhw7UFTzAJMKQVjTpmFq+mE8A95ROvlYV6epzK8B0xJTKD6/PEByQTacQ==}
+  i18next-cli@1.52.0:
+    resolution: {integrity: sha512-Wh1sl50YMv1sVuogtkwOthzjwfJsfWrjZxGerzdTve4sveMVrp4uvTIB2bsHQy/6rcmE8dkpS9zFtqwFBR2qVg==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -7815,7 +7815,7 @@ snapshots:
 
   human-signals@8.0.1: {}
 
-  i18next-cli@1.51.8(@types/node@25.6.0)(i18next@26.0.4(typescript@6.0.2))(react-dom@19.2.5(react@19.2.5))(typescript@6.0.2):
+  i18next-cli@1.52.0(@types/node@25.6.0)(i18next@26.0.4(typescript@6.0.2))(react-dom@19.2.5(react@19.2.5))(typescript@6.0.2):
     dependencies:
       '@croct/json5-parser': 0.2.2
       '@swc/core': 1.15.24

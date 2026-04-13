@@ -76,7 +76,7 @@ editor-setup:
 	-bin/tapioca gem
 
 sync-types:
-	ENABLE_TYPELIZER=1 bin/rails typelizer:generate:refresh
+	TYPELIZER=true bin/rails typelizer:generate:refresh
 	bin/rails js:routes
 	bin/rails app:export_events_to_ts
 	bin/rails app:export_event_names_to_ts

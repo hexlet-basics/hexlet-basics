@@ -36,8 +36,8 @@ jobs:
       - run: pnpm install
 
       - uses: ruby/setup-ruby@v1
-        env:
-          BUNDLE_APP_CONFIG: ${{ runner.temp }}/bundler
+        # env:
+        #   BUNDLE_APP_CONFIG: ${{ runner.temp }}/bundler
         with:
           bundler-cache: true
 

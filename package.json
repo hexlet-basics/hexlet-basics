@@ -91,7 +91,7 @@
     "browserslist": "^4.28.2",
     "browserslist-config-baseline": "^0.5.0",
     "globals": "^17.5.0",
-    "i18next-cli": "^1.51.8",
+    "i18next-cli": "^1.52.0",
     "lightningcss": "^1.32.0",
     "node-gyp": "^12.2.0",
     "npm-check-updates": "^20.0.1",
