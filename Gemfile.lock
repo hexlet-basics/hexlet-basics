@@ -735,7 +735,7 @@ GEM
       nokogiri (~> 1.8)
     xrb (0.11.2)
     yaml (0.4.0)
-    yard (0.9.40)
+    yard (0.9.42)
     yard-sorbet (0.9.0)
       sorbet-runtime
       yard
@@ -1103,7 +1103,7 @@ CHECKSUMS
   xpath (3.2.0) sha256=6dfda79d91bb3b949b947ecc5919f042ef2f399b904013eb3ef6d20dd3a4082e
   xrb (0.11.2) sha256=1e682acd8b7b58bbe3dc3dd0e5d3c1a6dbc7ff67d009abc50d94fac43b9f0870
   yaml (0.4.0) sha256=240e69d1e6ce3584d6085978719a0faa6218ae426e034d8f9b02fb54d3471942
-  yard (0.9.40) sha256=a4a205449b5d6de9292affb4fefccbd316678568b5d2df8182b7c77047a8c4a7
+  yard (0.9.42) sha256=4e2be01f8623556093497731d44c801e600d7c9759ec7a35a2dd5dd83bbbba68
   yard-sorbet (0.9.0) sha256=03d1aa461b9e9c82b886919a13aa3e09fcf4d1852239d2967ed97e92723ffe21
   zeitwerk (2.7.5) sha256=d8da92128c09ea6ec62c949011b00ed4a20242b255293dd66bf41545398f73dd
 
