@@ -10,7 +10,9 @@ jobs:
   opencode:
     if: |
       contains(github.event.comment.body, ' /oc') ||
-      startsWith(github.event.comment.body, '/oc')
+      startsWith(github.event.comment.body, '/oc') ||
+      contains(github.event.comment.body, ' /opencode') ||
+      startsWith(github.event.comment.body, '/opencode')
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -18,28 +20,10 @@ jobs:
       pull-requests: read
       issues: read
     steps:
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: .node-version
-          cache: "pnpm"
-
-      - run: pnpm install
-
-      - uses: ruby/setup-ruby@v1
-        # env:
-        #   BUNDLE_APP_CONFIG: ${{ runner.temp }}/bundler
-        with:
-          bundler-cache: true
 
       - name: Run opencode
         uses: anomalyco/opencode/github@latest

@@ -74,6 +74,7 @@ function RootLayout(props: Props) {
       colorSchemeManager={colorSchemeManager}
       cssVariablesResolver={resolver}
       defaultColorScheme={colorScheme}
+      deduplicateInlineStyles
       theme={theme}
     >
       <ModalsProvider>
