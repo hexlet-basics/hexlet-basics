@@ -94,8 +94,9 @@ group :development, :test, :staging do
   gem "factory_bot_rails"
   gem "faker"
 
-  gem "tapioca", ">= 0.17.0", require: false
-  gem "bullet"
+  gem "tapioca"
+  # gem "bullet"
+  gem "goldiloader"
 end
 
 group :development, :staging do
