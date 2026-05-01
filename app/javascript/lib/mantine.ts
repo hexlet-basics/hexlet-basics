@@ -55,6 +55,7 @@ const HEXLET_YELLOW = "#F59F00";
 const HEXLET_RED = "#E03131";
 
 const myTheme = createTheme({
+  defaultRadius: 0,
   colors: {
     indigo: generateColors(HEXLET_BASE),
     violet: generateColors(HEXLET_VIOLET),

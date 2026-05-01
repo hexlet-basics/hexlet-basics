@@ -134,8 +134,34 @@ class SolidQueue::ScheduledExecution
     end
     def create_or_find_by!(attributes, &block); end
 
+    sig do
+      params(
+        records: T.any(::SolidQueue::ScheduledExecution, Integer, String, T::Enumerable[T.any(::SolidQueue::ScheduledExecution, Integer, String, T::Enumerable[::SolidQueue::ScheduledExecution])])
+      ).returns(Integer)
+    end
+    def delete(*records); end
+
+    sig { returns(Integer) }
+    def delete_all; end
+
+    sig { params(args: T.untyped).returns(Integer) }
+    def delete_by(*args); end
+
+    sig do
+      params(
+        records: T.any(::SolidQueue::ScheduledExecution, Integer, String, T::Enumerable[T.any(::SolidQueue::ScheduledExecution, Integer, String, T::Enumerable[::SolidQueue::ScheduledExecution])])
+      ).returns(T::Array[::SolidQueue::ScheduledExecution])
+    end
+    def destroy(*records); end
+
     sig { returns(T::Array[::SolidQueue::ScheduledExecution]) }
     def destroy_all; end
+
+    sig { returns(T::Array[::SolidQueue::ScheduledExecution]) }
+    def destroy_all; end
+
+    sig { params(args: T.untyped).returns(T::Array[::SolidQueue::ScheduledExecution]) }
+    def destroy_by(*args); end
 
     sig { params(conditions: T.untyped).returns(T::Boolean) }
     def exists?(conditions = :none); end
@@ -176,7 +202,8 @@ class SolidQueue::ScheduledExecution
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         block: T.proc.params(object: ::SolidQueue::ScheduledExecution).void
       ).void
     end
@@ -186,10 +213,11 @@ class SolidQueue::ScheduledExecution
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol])
       ).returns(T::Enumerator[::SolidQueue::ScheduledExecution])
     end
-    def find_each(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, order: :asc, &block); end
+    def find_each(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, cursor: primary_key, order: :asc, &block); end
 
     sig do
       params(
@@ -197,7 +225,8 @@ class SolidQueue::ScheduledExecution
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         block: T.proc.params(object: T::Array[::SolidQueue::ScheduledExecution]).void
       ).void
     end
@@ -207,10 +236,11 @@ class SolidQueue::ScheduledExecution
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol
-      ).returns(T::Enumerator[T::Enumerator[::SolidQueue::ScheduledExecution]])
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol])
+      ).returns(T::Enumerator[T::Array[::SolidQueue::ScheduledExecution]])
     end
-    def find_in_batches(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, order: :asc, &block); end
+    def find_in_batches(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, cursor: primary_key, order: :asc, &block); end
 
     sig do
       params(
@@ -282,7 +312,7 @@ class SolidQueue::ScheduledExecution
     sig { returns(::SolidQueue::ScheduledExecution) }
     def fourth!; end
 
-    sig { returns(Array) }
+    sig { returns(T::Array[::Integer]) }
     def ids; end
 
     sig do
@@ -292,7 +322,8 @@ class SolidQueue::ScheduledExecution
         finish: T.untyped,
         load: T.untyped,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         use_ranges: T.untyped,
         block: T.proc.params(object: PrivateRelation).void
       ).void
@@ -304,11 +335,12 @@ class SolidQueue::ScheduledExecution
         finish: T.untyped,
         load: T.untyped,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         use_ranges: T.untyped
       ).returns(::ActiveRecord::Batches::BatchEnumerator)
     end
-    def in_batches(of: 1000, start: nil, finish: nil, load: false, error_on_ignore: nil, order: :asc, use_ranges: nil, &block); end
+    def in_batches(of: 1000, start: nil, finish: nil, load: false, error_on_ignore: nil, cursor: primary_key, order: :asc, use_ranges: nil, &block); end
 
     sig { params(record: T.untyped).returns(T::Boolean) }
     def include?(record); end
@@ -587,6 +619,10 @@ class SolidQueue::ScheduledExecution
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def unscope(*args, &blk); end
 
+    sig { returns(PrivateAssociationRelation) }
+    sig { type_parameters(:U).params(block: T.proc.returns(T.type_parameter(:U))).returns(T.type_parameter(:U)) }
+    def unscoped(&block); end
+
     sig { returns(PrivateAssociationRelationWhereChain) }
     sig { params(args: T.untyped).returns(PrivateAssociationRelation) }
     def where(*args); end
@@ -626,7 +662,7 @@ class SolidQueue::ScheduledExecution
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def created_at_change_to_be_saved; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def created_at_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -635,7 +671,7 @@ class SolidQueue::ScheduledExecution
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def created_at_previous_change; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def created_at_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -671,7 +707,7 @@ class SolidQueue::ScheduledExecution
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_change_to_be_saved; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -680,7 +716,7 @@ class SolidQueue::ScheduledExecution
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_previous_change; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -710,7 +746,7 @@ class SolidQueue::ScheduledExecution
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_value_change_to_be_saved; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_value_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -719,7 +755,7 @@ class SolidQueue::ScheduledExecution
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_value_previous_change; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_value_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -761,7 +797,7 @@ class SolidQueue::ScheduledExecution
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def job_id_change_to_be_saved; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def job_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -770,7 +806,7 @@ class SolidQueue::ScheduledExecution
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def job_id_previous_change; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def job_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -806,7 +842,7 @@ class SolidQueue::ScheduledExecution
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def priority_change_to_be_saved; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def priority_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -815,7 +851,7 @@ class SolidQueue::ScheduledExecution
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def priority_previous_change; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def priority_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -851,7 +887,7 @@ class SolidQueue::ScheduledExecution
     sig { returns(T.nilable([::String, ::String])) }
     def queue_name_change_to_be_saved; end
 
-    sig { params(from: ::String, to: ::String).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def queue_name_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -860,7 +896,7 @@ class SolidQueue::ScheduledExecution
     sig { returns(T.nilable([::String, ::String])) }
     def queue_name_previous_change; end
 
-    sig { params(from: ::String, to: ::String).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def queue_name_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -896,44 +932,44 @@ class SolidQueue::ScheduledExecution
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def saved_change_to_created_at; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_created_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_id; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_id_value; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_id_value?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_id_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_job_id; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_job_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_job_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_priority; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_priority?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_priority?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_queue_name; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_queue_name?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_queue_name?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def saved_change_to_scheduled_at; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_scheduled_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_scheduled_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(::ActiveSupport::TimeWithZone) }
     def scheduled_at; end
@@ -959,7 +995,7 @@ class SolidQueue::ScheduledExecution
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def scheduled_at_change_to_be_saved; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def scheduled_at_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -968,7 +1004,7 @@ class SolidQueue::ScheduledExecution
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def scheduled_at_previous_change; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def scheduled_at_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -980,26 +1016,26 @@ class SolidQueue::ScheduledExecution
     sig { void }
     def scheduled_at_will_change!; end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_created_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_id_value?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_id_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_job_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_job_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_priority?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_priority?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_queue_name?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_queue_name?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_scheduled_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_scheduled_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
   end
 
   module GeneratedRelationMethods
@@ -1145,6 +1181,10 @@ class SolidQueue::ScheduledExecution
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def unscope(*args, &blk); end
+
+    sig { returns(PrivateRelation) }
+    sig { type_parameters(:U).params(block: T.proc.returns(T.type_parameter(:U))).returns(T.type_parameter(:U)) }
+    def unscoped(&block); end
 
     sig { returns(PrivateRelationWhereChain) }
     sig { params(args: T.untyped).returns(PrivateRelation) }

@@ -11,9 +11,6 @@ export const eventNames = [
   'LessonFinishedEvent',
   'LessonStartedEvent',
   'SolutionCheckedEvent',
-  'SurveyAnsweredEvent',
-  'SurveyScenarioStartedEvent',
-  'SurveyStartedEvent',
   'UserSignedInEvent',
   'UserSignedUpEvent',
 ] as const;

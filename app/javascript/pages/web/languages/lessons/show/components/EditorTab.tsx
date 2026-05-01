@@ -69,6 +69,7 @@ export default function EditorTab() {
   useEffect(() => {
     if (mobileBrowser) return;
 
+    editorInstance?.layout();
     editorInstance?.focus();
   }, [focusesCount, editorInstance, mobileBrowser]);
 

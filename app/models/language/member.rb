@@ -23,6 +23,13 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Language::Member < ApplicationRecord
+  class State < T::Enum
+    enums do
+      Started = new("started")
+      Finished = new("finished")
+    end
+  end
+
   include AASM
 
   def self.ransackable_attributes(_auth_object = nil)
@@ -35,7 +42,7 @@ class Language::Member < ApplicationRecord
 
   counter_culture :language
 
-  enum :state, { started: "started", finished: "finished" }
+  typed_enum :state, State
   aasm :state, enum: true do
     state :started, initial: true
     state :finished

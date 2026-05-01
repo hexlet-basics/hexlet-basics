@@ -2,7 +2,6 @@ import { usePage } from "@inertiajs/react";
 import { Alert, Card, Container, Group, SimpleGrid, Text } from "@mantine/core";
 import { IconUserCircle } from "@tabler/icons-react";
 import dayjs from "dayjs";
-import i18next from "i18next";
 import type { PropsWithChildren } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import XPaging from "@/components/XPaging";
@@ -19,7 +18,7 @@ type Props = PropsWithChildren & {
 
 export default function New({ reviews, pagy }: Props) {
   const { suffix } = usePage().props;
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const header = t(($) => $.reviews.index.header);
 
   const items: BreadcrumbItem[] = [
@@ -32,7 +31,7 @@ export default function New({ reviews, pagy }: Props) {
   return (
     <ApplicationLayout items={items} header={header}>
       <Container>
-        {i18next.language === "ru" && (
+        {i18n.language === "ru" && (
           <Alert mb="xl">
             <Trans
               t={t}

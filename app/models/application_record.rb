@@ -1,4 +1,6 @@
 class ApplicationRecord < ActiveRecord::Base
+  include TypedEnumSupport
+
   self.abstract_class = true
 
   def self.enum_as_hashes(enum_name)

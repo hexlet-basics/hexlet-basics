@@ -1,9 +1,8 @@
 # typed: strict
 
-class WorkflowLeadResource < ApplicationResource
+class WorkflowLeadResource
+  include Alba::Resource
   extend T::Sig
-
-  typelize_from Lead
 
   attributes :lead, :note
 

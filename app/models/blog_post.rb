@@ -29,6 +29,14 @@
 #  fk_rails_...  (language_id => languages.id)
 #
 class BlogPost < ApplicationRecord
+  class State < T::Enum
+    enums do
+      Draft = new("draft")
+      Published = new("published")
+      Archived = new("archived")
+    end
+  end
+
   include BlogPostRepository
 
   has_many :related_language_items, dependent: :delete_all
@@ -49,7 +57,7 @@ class BlogPost < ApplicationRecord
     []
   end
 
-  enum :state, { draft: "draft", published: "published", archived: "archived" }, suffix: true, validate: true, default: "draft"
+  typed_enum :state, State, suffix: true, validate: true, default: State::Draft
 
   validates :name, presence: true
   validates :slug, presence: true, uniqueness: true, format: { with: /\A[\w-]+\z/ }

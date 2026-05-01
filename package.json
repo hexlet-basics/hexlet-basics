@@ -6,6 +6,8 @@
   },
   "type": "module",
   "dependencies": {
+    "@dnd-kit/helpers": "^0.4.0",
+    "@dnd-kit/react": "^0.4.0",
     "@emotion/react": "^11.14.0",
     "@gfazioli/mantine-split-pane": "^4.1.0",
     "@hexlet/analytics-plugin-yandex-metrika": "^1.0.10",

@@ -70,6 +70,11 @@ export default {
           state: "State",
           "state/archived": "Archived",
           "state/published": "Published",
+          "state/values": {
+            archived: "Archived",
+            draft: "Draft",
+            published: "Published",
+          },
         },
         language: {
           category_id: "Category",
@@ -110,6 +115,11 @@ export default {
           question: "Question",
           slug: "Slug",
           state: "State",
+          "state/values": {
+            archived: "Archived",
+            draft: "Draft",
+            published: "Published",
+          },
           used_in_description: "Used In (Description)",
           used_in_header: "Used In (Header)",
         },
@@ -135,6 +145,11 @@ export default {
           locale: "Locale",
           pinned: "Pinned (Shown at the top of the list)",
           state: "State",
+          "state/values": {
+            archived: "Archived",
+            draft: "Draft",
+            published: "Published",
+          },
           user_id: "User",
         },
         survey: {
@@ -159,11 +174,11 @@ export default {
       },
       errors: {
         messages: {
-          record_invalid: "Validation failed: %{errors}",
+          record_invalid: "Validation failed: {{errors}}",
           restrict_dependent_destroy: {
             has_one:
-              "Cannot delete record because a dependent %{record} exists",
-            has_many: "Cannot delete record because dependent %{record} exist",
+              "Cannot delete record because a dependent {{record}} exists",
+            has_many: "Cannot delete record because dependent {{record}} exist",
           },
         },
         models: {
@@ -197,7 +212,7 @@ export default {
       },
       language_categories: {
         edit: {
-          header: "Редактирование %{id}",
+          header: "Редактирование {{id}}",
         },
         form: {
           items: "Items",
@@ -214,7 +229,7 @@ export default {
       },
       language_landing_pages: {
         edit: {
-          header: "Редактирование %{id}",
+          header: "Редактирование {{id}}",
         },
         index: {
           add_new_language: "Добавить лендинг",
@@ -259,7 +274,7 @@ export default {
       leads: {
         index: {
           answers: "Answers",
-          courses: "Courses",
+          courses: "Courses {{group}}",
           data: "Data",
           header: "Лиды",
         },
@@ -368,7 +383,7 @@ export default {
     },
     books: {
       show: {
-        chapter: "Глава %{number}",
+        chapter: "Глава {{chapter}}",
         description:
           "С нуля до трудоустройства. Этот учебник — ваш путеводитель в профессию программиста. Он создан для тех, кто хочет начать с нуля и шаг за шагом дойти до трудоустройства в одной из самых востребованных и перспективных областей\n",
         download: "Скачать книгу",
@@ -515,23 +530,24 @@ export default {
       export: "Экспорт",
       hello: "Привет мир",
       hours: {
-        few: "%{count} часа",
-        many: "%{count} часов",
-        one: "%{count} hour",
+        few: "{{count}} часа",
+        many: "{{count}} часов",
+        one: "{{count}} hour",
       },
       instructions: "Instructions",
-      language_icon: "%{language} icon",
+      language_icon: "{{language}} icon",
       languages: {
         en: "English",
         ru: "Russian",
       },
       lesson: "Lesson",
       lessons: {
-        few: "%{count} урока",
-        many: "%{count} уроков",
-        one: "%{count} lesson",
+        few: "{{count}} урока",
+        many: "{{count}} уроков",
+        one: "{{count}} lesson",
       },
       loading: "Loading...",
+      network_error: "Network error. Please try again.",
       nextLesson: "Next",
       organization: {
         address: "The Republic of Kazakhstan, Almaty, Auezova St., 14A",
@@ -572,22 +588,24 @@ export default {
         "It's best to solve the problem yourself, but if you're stuck for a long time, feel free to check out the solution. But make sure to study it thoroughly to truly understand it.",
       state_events: "State Events",
       students: {
-        few: "%{count} студента",
-        many: "%{count} студентов",
-        one: "%{count} student",
+        few: "{{count}} студента",
+        many: "{{count}} студентов",
+        one: "{{count}} student",
       },
+      success_message: "Operation completed successfully.",
       teacherSolution: "Teacher's solution:",
       testForExercise: "Tests",
       testInstructions: "Your exercise will be checked with these tests:",
       time: {
-        minutes_zero: "%{count} минут",
-        minutes_one: "%{count} минута",
-        minutes_two: "%{count} минуты",
-        minutes_few: "%{count} минуты",
-        minutes_many: "%{count} минут",
-        minutes_other: "%{count} минут",
+        minutes_zero: "{{count}} минут",
+        minutes_one: "{{count}} минута",
+        minutes_two: "{{count}} минуты",
+        minutes_few: "{{count}} минуты",
+        minutes_many: "{{count}} минут",
+        minutes_other: "{{count}} минут",
       },
       tos: "Table Of Content",
+      unexpected_error: "Something went wrong. Please try again.",
       userCode: "Your solution:",
       userCodeInstructions:
         "(start writing in Editor, your code will appear here and you'll be able to compare it to the teacher's solution)",
@@ -771,7 +789,7 @@ export default {
           empty_language_current_version:
             "Language is under development, please check back later or try any other available language",
           language_in_development_html:
-            'Language %{language} is under development.\nYou can help send a pull request with new lessons or\nsupplement those that already exist <a href="%{link_to_repo}" target="_blank" rel="noopener">%{link_to_repo}</a>.\nWe have prepared guidelines for writing <a href="%{link_to_recommendations}" target="_blank" rel="noopener">at the link</a>\n',
+            'Language {{language}} is under development.\nYou can help send a pull request with new lessons or\nsupplement those that already exist <a href="{{link_to_repo}}" target="_blank" rel="noopener">{{link_to_repo}}</a>.\nWe have prepared guidelines for writing <a href="{{link_to_recommendations}}" target="_blank" rel="noopener">at the link</a>\n',
           warning:
             "The Language has lessons only in russian. Switch locale if you can read it :)",
         },
@@ -843,7 +861,7 @@ export default {
         },
         replace: "Change",
         save: "Save",
-        submit: "Save %{model}",
+        submit: "Save {{model}}",
         update: "Update",
         user_sign_in_form: {
           create: "Sign In",
@@ -894,7 +912,7 @@ export default {
         courses: "Courses",
       },
       reviews: {
-        course_html: "Course %{link}",
+        course_html: "Course {{link}}",
         reviews: "Reviews",
       },
       sitemap: {
@@ -903,7 +921,7 @@ export default {
       },
       stats: {
         trusted_by:
-          "Присоединись к %{count} изующих программирование с помощью Code Basics\n",
+          "Присоединись к {{count}} изующих программирование с помощью Code Basics\n",
       },
     },
     i18n: {
@@ -929,10 +947,10 @@ export default {
         },
       },
       show: {
-        header: "Courses in the %{name} category",
+        header: "Courses in the {{name}} category",
         meta: {
           description:
-            "Choose a suitable free course in the %{name} category and learn for free right in your browser with hands-on practice and help from an AI assistant",
+            "Choose a suitable free course in the {{name}} category and learn for free right in your browser with hands-on practice and help from an AI assistant",
         },
       },
     },
@@ -1006,11 +1024,11 @@ export default {
           show_full_version: "Реактор кода доступен в основной версии →",
           sign_in: "Sign In",
           sign_up_for_tracking_progress_html:
-            'Be sure to <a href="%{link}" class="text-decoration-none" target="_blank">register</a> to ensure you don\'t lose the results you\'ve achieved\n',
+            'Be sure to <a href="{{link}}" class="text-decoration-none" target="_blank">register</a> to ensure you don\'t lose the results you\'ve achieved\n',
           solution: "Solution",
           tests: "Tests",
           tips: "Tips",
-          title: "%{lesson_name} | %{language_name}\n",
+          title: "{{lesson_name}} | {{language_name}}\n",
           to_home_title: "Home",
         },
       },
@@ -1042,7 +1060,7 @@ export default {
           "Everything you need to master new topics is on one screen. Theory, practice and live examples go hand in hand. The clear structure helps you to learn in a consistent manner and not to miss important details",
         learning_preview: "Learning preview",
         learning_program: "Learning program",
-        lessons: "%{lessons_count} with practice in the browser",
+        lessons: "{{lessons_count}} with practice in the browser",
         more_than_support: "More than Support",
         no_registration: "Registration is not required",
         ready: "Are you ready?",
@@ -1052,7 +1070,7 @@ export default {
         registration_description: "Let's get started",
         restart: "Начать заново",
         reviews: "Reviews",
-        see_all_courses_in_category: "See all courses in %{name}",
+        see_all_courses_in_category: "See all courses in {{name}}",
         sign_up: "Sign Up",
         similar_courses: "Similar courses",
         sort_questions: "Sorting out the questions",
@@ -1061,7 +1079,7 @@ export default {
         to_home_title: "Home",
         try: "Try It",
         try_without_registration: "Try it without registering",
-        updated_at: "updated %{date}",
+        updated_at: "updated {{date}}",
         without_registration:
           "Start learning right away - first lessons are available without an account. If you like the format, you can register to save your progress",
       },
@@ -1137,7 +1155,7 @@ export default {
           hexlet_blog: "Blog",
           hexlet_number: "BIN 230340043714",
           hexlet_title_html:
-            '© <a href="%{link}" class="text-decoration-none text-light" target="_blank" rel="noopener">Hexlet</a>, %{year}',
+            '© <a href="{{link}}" class="text-decoration-none text-light" target="_blank" rel="noopener">Hexlet</a>, {{year}}',
           "hexlet-cv": "Хекслет.Карьера",
           "hexlet-sicp": "Хекслет.SICP",
           information: "Information",
@@ -1280,6 +1298,11 @@ export default {
           state: "State",
           "state/archived": "Archived",
           "state/published": "Published",
+          "state/values": {
+            archived: "Archived",
+            draft: "Draft",
+            published: "Published",
+          },
         },
         language: {
           category_id: "Category",
@@ -1320,6 +1343,11 @@ export default {
           question: "Question",
           slug: "Slug",
           state: "State",
+          "state/values": {
+            archived: "Archived",
+            draft: "Draft",
+            published: "Published",
+          },
           used_in_description: "Used In (Description)",
           used_in_header: "Used In (Header)",
         },
@@ -1348,6 +1376,11 @@ export default {
           locale: "Locale",
           pinned: "Pinned (Shown at the top of the list)",
           state: "State",
+          "state/values": {
+            archived: "Archived",
+            draft: "Draft",
+            published: "Published",
+          },
           user_id: "User",
         },
         survey: {
@@ -1424,7 +1457,7 @@ export default {
         },
         language_categories: {
           edit: {
-            header: "Редактирование %{id}",
+            header: "Редактирование {{id}}",
           },
           form: {
             items: "Items",
@@ -1440,7 +1473,7 @@ export default {
         },
         language_landing_pages: {
           edit: {
-            header: "Редактирование %{id}",
+            header: "Редактирование {{id}}",
           },
           index: {
             header: "Лендинги",
@@ -1558,7 +1591,7 @@ export default {
       },
       books: {
         show: {
-          chapter: "Глава %{number}",
+          chapter: "Глава {{chapter}}",
           description:
             "С нуля до трудоустройства. Этот учебник — ваш путеводитель в профессию программиста. Он создан для тех, кто хочет начать с нуля и шаг за шагом дойти до трудоустройства в одной из самых востребованных и перспективных областей\n",
           download: "Скачать книгу",
@@ -1779,7 +1812,7 @@ export default {
           sort_questions: "Sorting out the questions",
           start: "Start Learning",
           try: "Try It",
-          updated_at: "updated %{date}",
+          updated_at: "updated {{date}}",
         },
         success: {
           add_review:
@@ -1986,7 +2019,7 @@ export default {
       index: {
         add_review:
           "Попробовали наши курсы и хотите оставить отзыв? Это можно сделать <a>тут</a>",
-        course: "Course %{language}",
+        course: "Course {{language}}",
         empty: "Looks like there is noting yet",
         header: "Reviews",
         meta: {

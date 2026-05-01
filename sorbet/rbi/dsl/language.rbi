@@ -96,8 +96,34 @@ class Language
     sig { params(attributes: T.untyped, block: T.nilable(T.proc.params(object: ::Language).void)).returns(::Language) }
     def create_or_find_by!(attributes, &block); end
 
+    sig do
+      params(
+        records: T.any(::Language, Integer, String, T::Enumerable[T.any(::Language, Integer, String, T::Enumerable[::Language])])
+      ).returns(Integer)
+    end
+    def delete(*records); end
+
+    sig { returns(Integer) }
+    def delete_all; end
+
+    sig { params(args: T.untyped).returns(Integer) }
+    def delete_by(*args); end
+
+    sig do
+      params(
+        records: T.any(::Language, Integer, String, T::Enumerable[T.any(::Language, Integer, String, T::Enumerable[::Language])])
+      ).returns(T::Array[::Language])
+    end
+    def destroy(*records); end
+
     sig { returns(T::Array[::Language]) }
     def destroy_all; end
+
+    sig { returns(T::Array[::Language]) }
+    def destroy_all; end
+
+    sig { params(args: T.untyped).returns(T::Array[::Language]) }
+    def destroy_by(*args); end
 
     sig { params(conditions: T.untyped).returns(T::Boolean) }
     def exists?(conditions = :none); end
@@ -133,7 +159,8 @@ class Language
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         block: T.proc.params(object: ::Language).void
       ).void
     end
@@ -143,10 +170,11 @@ class Language
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol])
       ).returns(T::Enumerator[::Language])
     end
-    def find_each(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, order: :asc, &block); end
+    def find_each(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, cursor: primary_key, order: :asc, &block); end
 
     sig do
       params(
@@ -154,7 +182,8 @@ class Language
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         block: T.proc.params(object: T::Array[::Language]).void
       ).void
     end
@@ -164,10 +193,11 @@ class Language
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol
-      ).returns(T::Enumerator[T::Enumerator[::Language]])
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol])
+      ).returns(T::Enumerator[T::Array[::Language]])
     end
-    def find_in_batches(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, order: :asc, &block); end
+    def find_in_batches(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, cursor: primary_key, order: :asc, &block); end
 
     sig do
       params(
@@ -224,7 +254,7 @@ class Language
     sig { returns(::Language) }
     def fourth!; end
 
-    sig { returns(Array) }
+    sig { returns(T::Array[::Integer]) }
     def ids; end
 
     sig do
@@ -234,7 +264,8 @@ class Language
         finish: T.untyped,
         load: T.untyped,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         use_ranges: T.untyped,
         block: T.proc.params(object: PrivateRelation).void
       ).void
@@ -246,11 +277,12 @@ class Language
         finish: T.untyped,
         load: T.untyped,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         use_ranges: T.untyped
       ).returns(::ActiveRecord::Batches::BatchEnumerator)
     end
-    def in_batches(of: 1000, start: nil, finish: nil, load: false, error_on_ignore: nil, order: :asc, use_ranges: nil, &block); end
+    def in_batches(of: 1000, start: nil, finish: nil, load: false, error_on_ignore: nil, cursor: primary_key, order: :asc, use_ranges: nil, &block); end
 
     sig { params(record: T.untyped).returns(T::Boolean) }
     def include?(record); end
@@ -400,6 +432,9 @@ class Language
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language::Version) }
     def build_current_version(*args, &blk); end
 
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Language::LandingPage) }
+    def build_main_landing_page(*args, &blk); end
+
     sig { returns(T.nilable(::Language::Category)) }
     def category; end
 
@@ -447,6 +482,12 @@ class Language
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language::Version) }
     def create_current_version!(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Language::LandingPage) }
+    def create_main_landing_page(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Language::LandingPage) }
+    def create_main_landing_page!(*args, &blk); end
 
     sig { returns(T::Array[T.untyped]) }
     def current_lesson_ids; end
@@ -558,6 +599,12 @@ class Language
     sig { params(value: T::Enumerable[::Language::Lesson]).void }
     def lessons=(value); end
 
+    sig { returns(T.nilable(::Language::LandingPage)) }
+    def main_landing_page; end
+
+    sig { params(value: T.nilable(::Language::LandingPage)).void }
+    def main_landing_page=(value); end
+
     sig { returns(T::Array[T.untyped]) }
     def member_ids; end
 
@@ -598,6 +645,9 @@ class Language
     sig { returns(T.nilable(::Language::Version)) }
     def reload_current_version; end
 
+    sig { returns(T.nilable(::Language::LandingPage)) }
+    def reload_main_landing_page; end
+
     sig { void }
     def reset_category; end
 
@@ -609,6 +659,9 @@ class Language
 
     sig { void }
     def reset_current_version; end
+
+    sig { void }
+    def reset_main_landing_page; end
 
     sig { returns(T::Array[T.untyped]) }
     def review_ids; end
@@ -803,6 +856,10 @@ class Language
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def unscope(*args, &blk); end
 
+    sig { returns(PrivateAssociationRelation) }
+    sig { type_parameters(:U).params(block: T.proc.returns(T.type_parameter(:U))).returns(T.type_parameter(:U)) }
+    def unscoped(&block); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def web(*args, &blk); end
 
@@ -851,7 +908,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
     def category_id_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::Integer), to: T.nilable(::Integer)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def category_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -860,7 +917,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
     def category_id_previous_change; end
 
-    sig { params(from: T.nilable(::Integer), to: T.nilable(::Integer)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def category_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -896,7 +953,7 @@ class Language
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def created_at_change_to_be_saved; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def created_at_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -905,7 +962,7 @@ class Language
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def created_at_previous_change; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def created_at_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -941,7 +998,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
     def current_version_id_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::Integer), to: T.nilable(::Integer)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def current_version_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -950,7 +1007,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
     def current_version_id_previous_change; end
 
-    sig { params(from: T.nilable(::Integer), to: T.nilable(::Integer)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def current_version_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -986,7 +1043,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def docker_image_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def docker_image_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -995,7 +1052,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def docker_image_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def docker_image_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1031,7 +1088,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def exercise_filename_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def exercise_filename_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1040,7 +1097,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def exercise_filename_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def exercise_filename_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1076,7 +1133,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def exercise_test_filename_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def exercise_test_filename_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1085,7 +1142,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def exercise_test_filename_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def exercise_test_filename_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1121,7 +1178,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def extension_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def extension_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1130,7 +1187,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def extension_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def extension_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1141,6 +1198,51 @@ class Language
 
     sig { void }
     def extension_will_change!; end
+
+    sig { returns(T.nilable(::String)) }
+    def hexlet_program_landing_page; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def hexlet_program_landing_page=(value); end
+
+    sig { returns(T::Boolean) }
+    def hexlet_program_landing_page?; end
+
+    sig { returns(T.nilable(::String)) }
+    def hexlet_program_landing_page_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def hexlet_program_landing_page_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def hexlet_program_landing_page_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def hexlet_program_landing_page_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def hexlet_program_landing_page_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def hexlet_program_landing_page_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def hexlet_program_landing_page_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def hexlet_program_landing_page_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def hexlet_program_landing_page_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def hexlet_program_landing_page_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def hexlet_program_landing_page_was; end
+
+    sig { void }
+    def hexlet_program_landing_page_will_change!; end
 
     sig { returns(::Integer) }
     def id; end
@@ -1166,7 +1268,7 @@ class Language
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_change_to_be_saved; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -1175,7 +1277,7 @@ class Language
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_previous_change; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -1205,7 +1307,7 @@ class Language
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_value_change_to_be_saved; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_value_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -1214,7 +1316,7 @@ class Language
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_value_previous_change; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_value_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -1256,12 +1358,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def learn_as_change_to_be_saved; end
 
-    sig do
-      params(
-        from: T.nilable(T.any(::String, ::Symbol)),
-        to: T.nilable(T.any(::String, ::Symbol))
-      ).returns(T::Boolean)
-    end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def learn_as_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1270,12 +1367,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def learn_as_previous_change; end
 
-    sig do
-      params(
-        from: T.nilable(T.any(::String, ::Symbol)),
-        to: T.nilable(T.any(::String, ::Symbol))
-      ).returns(T::Boolean)
-    end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def learn_as_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1311,7 +1403,7 @@ class Language
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def lessons_count_change_to_be_saved; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def lessons_count_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -1320,7 +1412,7 @@ class Language
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def lessons_count_previous_change; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def lessons_count_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -1356,7 +1448,7 @@ class Language
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def members_count_change_to_be_saved; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def members_count_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -1365,7 +1457,7 @@ class Language
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def members_count_previous_change; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def members_count_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -1401,7 +1493,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def name_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def name_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1410,7 +1502,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def name_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def name_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1446,7 +1538,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def openai_assistant_id_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def openai_assistant_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1455,7 +1547,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def openai_assistant_id_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def openai_assistant_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1491,7 +1583,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
     def order_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::Integer), to: T.nilable(::Integer)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def order_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -1500,7 +1592,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
     def order_previous_change; end
 
-    sig { params(from: T.nilable(::Integer), to: T.nilable(::Integer)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def order_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -1536,12 +1628,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def progress_change_to_be_saved; end
 
-    sig do
-      params(
-        from: T.nilable(T.any(::String, ::Symbol)),
-        to: T.nilable(T.any(::String, ::Symbol))
-      ).returns(T::Boolean)
-    end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def progress_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1550,12 +1637,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def progress_previous_change; end
 
-    sig do
-      params(
-        from: T.nilable(T.any(::String, ::Symbol)),
-        to: T.nilable(T.any(::String, ::Symbol))
-      ).returns(T::Boolean)
-    end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def progress_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1587,6 +1669,9 @@ class Language
 
     sig { void }
     def restore_extension!; end
+
+    sig { void }
+    def restore_hexlet_program_landing_page!; end
 
     sig { void }
     def restore_id!; end
@@ -1630,122 +1715,128 @@ class Language
     sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
     def saved_change_to_category_id; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_category_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_category_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def saved_change_to_created_at; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_created_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
     def saved_change_to_current_version_id; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_current_version_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_current_version_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_docker_image; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_docker_image?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_docker_image?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_exercise_filename; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_exercise_filename?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_exercise_filename?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_exercise_test_filename; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_exercise_test_filename?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_exercise_test_filename?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_extension; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_extension?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_extension?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_hexlet_program_landing_page; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_hexlet_program_landing_page?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_id; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_id_value; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_id_value?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_id_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_learn_as; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_learn_as?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_learn_as?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_lessons_count; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_lessons_count?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_lessons_count?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_members_count; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_members_count?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_members_count?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_name; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_name?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_name?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_openai_assistant_id; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_openai_assistant_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_openai_assistant_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
     def saved_change_to_order; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_order?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_order?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_progress; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_progress?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_progress?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_slug; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_slug?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_slug?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_state; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_state?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_state?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def saved_change_to_updated_at; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_updated_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_updated_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
     def saved_change_to_upload_id; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_upload_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_upload_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
     def slug; end
@@ -1771,7 +1862,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def slug_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def slug_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1780,7 +1871,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def slug_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def slug_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1816,7 +1907,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def state_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def state_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1825,7 +1916,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def state_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def state_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1861,7 +1952,7 @@ class Language
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def updated_at_change_to_be_saved; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def updated_at_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -1870,7 +1961,7 @@ class Language
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def updated_at_previous_change; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def updated_at_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -1906,7 +1997,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
     def upload_id_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::Integer), to: T.nilable(::Integer)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def upload_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -1915,7 +2006,7 @@ class Language
     sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
     def upload_id_previous_change; end
 
-    sig { params(from: T.nilable(::Integer), to: T.nilable(::Integer)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def upload_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -1927,65 +2018,68 @@ class Language
     sig { void }
     def upload_id_will_change!; end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_category_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_category_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_created_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_current_version_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_current_version_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_docker_image?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_docker_image?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_exercise_filename?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_exercise_filename?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_exercise_test_filename?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_exercise_test_filename?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_extension?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_extension?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_hexlet_program_landing_page?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_id_value?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_learn_as?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_id_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_lessons_count?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_learn_as?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_members_count?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_lessons_count?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_name?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_members_count?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_openai_assistant_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_name?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_order?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_openai_assistant_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_progress?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_order?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_slug?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_progress?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_state?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_slug?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_updated_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_state?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_upload_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_updated_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_upload_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
   end
 
   module GeneratedRelationMethods
@@ -2151,6 +2245,10 @@ class Language
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def unscope(*args, &blk); end
+
+    sig { returns(PrivateRelation) }
+    sig { type_parameters(:U).params(block: T.proc.returns(T.type_parameter(:U))).returns(T.type_parameter(:U)) }
+    def unscoped(&block); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def web(*args, &blk); end

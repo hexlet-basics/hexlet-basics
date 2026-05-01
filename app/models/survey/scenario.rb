@@ -19,6 +19,13 @@
 #  fk_rails_...  (survey_item_id => survey_items.id)
 #
 class Survey::Scenario < ApplicationRecord
+  class State < T::Enum
+    enums do
+      Active = new("active")
+      Archived = new("archived")
+    end
+  end
+
   belongs_to :survey_item, class_name: "Survey::Item", optional: true
   has_many :items, class_name: "Survey::Scenario::Item"
   has_many :surveys, through: :items
@@ -29,7 +36,7 @@ class Survey::Scenario < ApplicationRecord
   validates :locale, presence: true
   validates :name, presence: true
 
-  enum :state, { active: "active", archived: "archived" }, suffix: true
+  typed_enum :state, State, suffix: true
 
   def self.ransackable_attributes(auth_object = nil)
     [ "created_at", "id", "locale", "name", "state", "survey_item_id", "updated_at" ]

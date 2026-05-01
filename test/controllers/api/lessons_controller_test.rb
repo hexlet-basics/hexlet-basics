@@ -47,10 +47,11 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     assert { body[:result] == expected[:result] }
   end
 
-  def test_add_new_surveys
+  def test_check_finishes_multiple_lessons_without_creating_survey_state
     code = file_fixture("exercise/correct.rb").read
 
     user = sign_in_as(:ready_to_start_learning)
+    initial_survey_scenarios_count = user.survey_scenarios.count
     language = languages(:javascript)
     language_member = language.members.create!(user: user)
 
@@ -78,11 +79,6 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert { response.parsed_body["passed"] }
 
-    # _lesson_member = @lesson.members.find_or_create_by!(language: @lesson.language, user: user, language_member: language_member)
-    # code = file_fixture("exercise/correct.rb").read
-
-    scenario = survey_scenarios("career-change2")
-    assert { user.survey_scenarios.include? scenario }
-    assert { user.survey_scenarios.count === 3 }
+    assert { user.survey_scenarios.count == initial_survey_scenarios_count }
   end
 end

@@ -8,41 +8,9 @@
 class Review
   include GeneratedAssociationMethods
   include GeneratedAttributeMethods
+  include EnumMethodsModule
   extend CommonRelationMethods
   extend GeneratedRelationMethods
-
-  sig { params(opts: T.untyped).returns(T.untyped) }
-  def archive(*opts); end
-
-  sig { params(opts: T.untyped).returns(T.untyped) }
-  def archive!(*opts); end
-
-  sig { params(opts: T.untyped).returns(T.untyped) }
-  def archive_without_validation!(*opts); end
-
-  sig { returns(T::Boolean) }
-  def archived?; end
-
-  sig { returns(T::Boolean) }
-  def draft?; end
-
-  sig { returns(T::Boolean) }
-  def may_archive?; end
-
-  sig { returns(T::Boolean) }
-  def may_publish?; end
-
-  sig { params(opts: T.untyped).returns(T.untyped) }
-  def publish(*opts); end
-
-  sig { params(opts: T.untyped).returns(T.untyped) }
-  def publish!(*opts); end
-
-  sig { params(opts: T.untyped).returns(T.untyped) }
-  def publish_without_validation!(*opts); end
-
-  sig { returns(T::Boolean) }
-  def published?; end
 
   private
 
@@ -50,11 +18,14 @@ class Review
   def to_ary; end
 
   class << self
-    sig { params(args: T.untyped, block: T.nilable(T.proc.bind(PrivateAASMMachine).void)).returns(PrivateAASMMachine) }
-    def aasm(*args, &block); end
+    sig { returns(T::Hash[T.any(String, Symbol), String]) }
+    def locales; end
 
     sig { params(attributes: T.untyped, block: T.nilable(T.proc.params(object: ::Review).void)).returns(::Review) }
     def new(attributes = nil, &block); end
+
+    sig { returns(T::Hash[T.any(String, Symbol), String]) }
+    def states; end
   end
 
   module CommonRelationMethods
@@ -119,8 +90,34 @@ class Review
     sig { params(attributes: T.untyped, block: T.nilable(T.proc.params(object: ::Review).void)).returns(::Review) }
     def create_or_find_by!(attributes, &block); end
 
+    sig do
+      params(
+        records: T.any(::Review, Integer, String, T::Enumerable[T.any(::Review, Integer, String, T::Enumerable[::Review])])
+      ).returns(Integer)
+    end
+    def delete(*records); end
+
+    sig { returns(Integer) }
+    def delete_all; end
+
+    sig { params(args: T.untyped).returns(Integer) }
+    def delete_by(*args); end
+
+    sig do
+      params(
+        records: T.any(::Review, Integer, String, T::Enumerable[T.any(::Review, Integer, String, T::Enumerable[::Review])])
+      ).returns(T::Array[::Review])
+    end
+    def destroy(*records); end
+
     sig { returns(T::Array[::Review]) }
     def destroy_all; end
+
+    sig { returns(T::Array[::Review]) }
+    def destroy_all; end
+
+    sig { params(args: T.untyped).returns(T::Array[::Review]) }
+    def destroy_by(*args); end
 
     sig { params(conditions: T.untyped).returns(T::Boolean) }
     def exists?(conditions = :none); end
@@ -156,7 +153,8 @@ class Review
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         block: T.proc.params(object: ::Review).void
       ).void
     end
@@ -166,10 +164,11 @@ class Review
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol])
       ).returns(T::Enumerator[::Review])
     end
-    def find_each(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, order: :asc, &block); end
+    def find_each(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, cursor: primary_key, order: :asc, &block); end
 
     sig do
       params(
@@ -177,7 +176,8 @@ class Review
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         block: T.proc.params(object: T::Array[::Review]).void
       ).void
     end
@@ -187,10 +187,11 @@ class Review
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol
-      ).returns(T::Enumerator[T::Enumerator[::Review]])
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol])
+      ).returns(T::Enumerator[T::Array[::Review]])
     end
-    def find_in_batches(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, order: :asc, &block); end
+    def find_in_batches(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, cursor: primary_key, order: :asc, &block); end
 
     sig do
       params(
@@ -247,7 +248,7 @@ class Review
     sig { returns(::Review) }
     def fourth!; end
 
-    sig { returns(Array) }
+    sig { returns(T::Array[::Integer]) }
     def ids; end
 
     sig do
@@ -257,7 +258,8 @@ class Review
         finish: T.untyped,
         load: T.untyped,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         use_ranges: T.untyped,
         block: T.proc.params(object: PrivateRelation).void
       ).void
@@ -269,11 +271,12 @@ class Review
         finish: T.untyped,
         load: T.untyped,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         use_ranges: T.untyped
       ).returns(::ActiveRecord::Batches::BatchEnumerator)
     end
-    def in_batches(of: 1000, start: nil, finish: nil, load: false, error_on_ignore: nil, order: :asc, use_ranges: nil, &block); end
+    def in_batches(of: 1000, start: nil, finish: nil, load: false, error_on_ignore: nil, cursor: primary_key, order: :asc, use_ranges: nil, &block); end
 
     sig { params(record: T.untyped).returns(T::Boolean) }
     def include?(record); end
@@ -364,6 +367,38 @@ class Review
     def third_to_last!; end
   end
 
+  module EnumMethodsModule
+    sig { void }
+    def archived_state!; end
+
+    sig { returns(T::Boolean) }
+    def archived_state?; end
+
+    sig { void }
+    def draft_state!; end
+
+    sig { returns(T::Boolean) }
+    def draft_state?; end
+
+    sig { void }
+    def en_locale!; end
+
+    sig { returns(T::Boolean) }
+    def en_locale?; end
+
+    sig { void }
+    def published_state!; end
+
+    sig { returns(T::Boolean) }
+    def published_state?; end
+
+    sig { void }
+    def ru_locale!; end
+
+    sig { returns(T::Boolean) }
+    def ru_locale?; end
+  end
+
   module GeneratedAssociationMethods
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language) }
     def build_language(*args, &blk); end
@@ -431,7 +466,7 @@ class Review
     def annotate(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
-    def archived(*args, &blk); end
+    def archived_state(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def arel_columns(*args, &blk); end
@@ -443,10 +478,13 @@ class Review
     def distinct(value = true); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
-    def draft(*args, &blk); end
+    def draft_state(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def eager_load(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def en_locale(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def except(*args, &blk); end
@@ -500,6 +538,21 @@ class Review
     def none(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def not_archived_state(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def not_draft_state(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def not_en_locale(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def not_published_state(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def not_ru_locale(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def null_relation?(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
@@ -521,7 +574,7 @@ class Review
     def preload(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
-    def published(*args, &blk); end
+    def published_state(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def readonly(*args, &blk); end
@@ -544,6 +597,9 @@ class Review
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def rewhere(*args, &blk); end
 
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def ru_locale(*args, &blk); end
+
     sig { params(args: T.untyped).returns(PrivateAssociationRelation) }
     sig { params(blk: T.proc.params(record: ::Review).returns(BasicObject)).returns(T::Array[::Review]) }
     def select(*args, &blk); end
@@ -559,6 +615,10 @@ class Review
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def unscope(*args, &blk); end
+
+    sig { returns(PrivateAssociationRelation) }
+    sig { type_parameters(:U).params(block: T.proc.returns(T.type_parameter(:U))).returns(T.type_parameter(:U)) }
+    def unscoped(&block); end
 
     sig { returns(PrivateAssociationRelationWhereChain) }
     sig { params(args: T.untyped).returns(PrivateAssociationRelation) }
@@ -602,7 +662,7 @@ class Review
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def body_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def body_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -611,7 +671,7 @@ class Review
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def body_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def body_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -647,7 +707,7 @@ class Review
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def created_at_change_to_be_saved; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def created_at_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -656,7 +716,7 @@ class Review
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def created_at_previous_change; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def created_at_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -692,7 +752,7 @@ class Review
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def first_name_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def first_name_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -701,7 +761,7 @@ class Review
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def first_name_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def first_name_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -737,7 +797,7 @@ class Review
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_change_to_be_saved; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -746,7 +806,7 @@ class Review
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_previous_change; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -776,7 +836,7 @@ class Review
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_value_change_to_be_saved; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_value_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -785,7 +845,7 @@ class Review
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_value_previous_change; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_value_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -827,7 +887,7 @@ class Review
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def language_id_change_to_be_saved; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def language_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -836,7 +896,7 @@ class Review
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def language_id_previous_change; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def language_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -872,7 +932,7 @@ class Review
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def last_name_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def last_name_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -881,7 +941,7 @@ class Review
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def last_name_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def last_name_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -893,16 +953,16 @@ class Review
     sig { void }
     def last_name_will_change!; end
 
-    sig { returns(T.untyped) }
+    sig { returns(T.nilable(::String)) }
     def locale; end
 
-    sig { params(value: T.untyped).returns(T.untyped) }
+    sig { params(value: T.nilable(T.any(::String, ::Symbol))).returns(T.nilable(T.any(::String, ::Symbol))) }
     def locale=(value); end
 
     sig { returns(T::Boolean) }
     def locale?; end
 
-    sig { returns(T.untyped) }
+    sig { returns(T.nilable(::String)) }
     def locale_before_last_save; end
 
     sig { returns(T.untyped) }
@@ -911,28 +971,28 @@ class Review
     sig { returns(T::Boolean) }
     def locale_came_from_user?; end
 
-    sig { returns(T.nilable([T.untyped, T.untyped])) }
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def locale_change; end
 
-    sig { returns(T.nilable([T.untyped, T.untyped])) }
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def locale_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def locale_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.untyped) }
+    sig { returns(T.nilable(::String)) }
     def locale_in_database; end
 
-    sig { returns(T.nilable([T.untyped, T.untyped])) }
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def locale_previous_change; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def locale_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.untyped) }
+    sig { returns(T.nilable(::String)) }
     def locale_previously_was; end
 
-    sig { returns(T.untyped) }
+    sig { returns(T.nilable(::String)) }
     def locale_was; end
 
     sig { void }
@@ -962,7 +1022,7 @@ class Review
     sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
     def pinned_change_to_be_saved; end
 
-    sig { params(from: T.nilable(T::Boolean), to: T.nilable(T::Boolean)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def pinned_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(T::Boolean)) }
@@ -971,7 +1031,7 @@ class Review
     sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
     def pinned_previous_change; end
 
-    sig { params(from: T.nilable(T::Boolean), to: T.nilable(T::Boolean)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def pinned_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(T::Boolean)) }
@@ -1014,9 +1074,6 @@ class Review
     def restore_state!; end
 
     sig { void }
-    def restore_state_event!; end
-
-    sig { void }
     def restore_updated_at!; end
 
     sig { void }
@@ -1025,85 +1082,79 @@ class Review
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_body; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_body?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_body?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def saved_change_to_created_at; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_created_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_first_name; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_first_name?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_first_name?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_id; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_id_value; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_id_value?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_id_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_language_id; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_language_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_language_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_last_name; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_last_name?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_last_name?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable([T.untyped, T.untyped])) }
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_locale; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_locale?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_locale?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
     def saved_change_to_pinned; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_pinned?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_pinned?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_state; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_state?; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def saved_change_to_state_event; end
-
-    sig { returns(T::Boolean) }
-    def saved_change_to_state_event?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_state?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def saved_change_to_updated_at; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_updated_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_updated_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_user_id; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_user_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_user_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
     def state; end
 
-    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    sig { params(value: T.nilable(T.any(::String, ::Symbol))).returns(T.nilable(T.any(::String, ::Symbol))) }
     def state=(value); end
 
     sig { returns(T::Boolean) }
@@ -1124,53 +1175,8 @@ class Review
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def state_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def state_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(::String) }
-    def state_event; end
-
-    sig { params(value: ::String).returns(::String) }
-    def state_event=(value); end
-
-    sig { returns(T::Boolean) }
-    def state_event?; end
-
-    sig { returns(T.nilable(::String)) }
-    def state_event_before_last_save; end
-
-    sig { returns(T.untyped) }
-    def state_event_before_type_cast; end
-
-    sig { returns(T::Boolean) }
-    def state_event_came_from_user?; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def state_event_change; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def state_event_change_to_be_saved; end
-
-    sig { params(from: ::String, to: ::String).returns(T::Boolean) }
-    def state_event_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(::String)) }
-    def state_event_in_database; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def state_event_previous_change; end
-
-    sig { params(from: ::String, to: ::String).returns(T::Boolean) }
-    def state_event_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(::String)) }
-    def state_event_previously_was; end
-
-    sig { returns(T.nilable(::String)) }
-    def state_event_was; end
-
-    sig { void }
-    def state_event_will_change!; end
 
     sig { returns(T.nilable(::String)) }
     def state_in_database; end
@@ -1178,7 +1184,7 @@ class Review
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def state_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def state_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1214,7 +1220,7 @@ class Review
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def updated_at_change_to_be_saved; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def updated_at_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -1223,7 +1229,7 @@ class Review
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def updated_at_previous_change; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def updated_at_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -1259,7 +1265,7 @@ class Review
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def user_id_change_to_be_saved; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def user_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -1268,7 +1274,7 @@ class Review
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def user_id_previous_change; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def user_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -1280,44 +1286,41 @@ class Review
     sig { void }
     def user_id_will_change!; end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_body?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_body?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_created_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_first_name?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_first_name?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_id_value?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_id_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_language_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_language_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_last_name?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_last_name?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_locale?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_locale?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_pinned?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_pinned?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_state?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_state?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_state_event?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_updated_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_updated_at?; end
-
-    sig { returns(T::Boolean) }
-    def will_save_change_to_user_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_user_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
   end
 
   module GeneratedRelationMethods
@@ -1331,7 +1334,7 @@ class Review
     def annotate(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
-    def archived(*args, &blk); end
+    def archived_state(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def arel_columns(*args, &blk); end
@@ -1343,10 +1346,13 @@ class Review
     def distinct(value = true); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
-    def draft(*args, &blk); end
+    def draft_state(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def eager_load(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def en_locale(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def except(*args, &blk); end
@@ -1400,6 +1406,21 @@ class Review
     def none(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def not_archived_state(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def not_draft_state(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def not_en_locale(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def not_published_state(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def not_ru_locale(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def null_relation?(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
@@ -1421,7 +1442,7 @@ class Review
     def preload(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
-    def published(*args, &blk); end
+    def published_state(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def readonly(*args, &blk); end
@@ -1444,6 +1465,9 @@ class Review
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def rewhere(*args, &blk); end
 
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def ru_locale(*args, &blk); end
+
     sig { params(args: T.untyped).returns(PrivateRelation) }
     sig { params(blk: T.proc.params(record: ::Review).returns(BasicObject)).returns(T::Array[::Review]) }
     def select(*args, &blk); end
@@ -1460,6 +1484,10 @@ class Review
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def unscope(*args, &blk); end
 
+    sig { returns(PrivateRelation) }
+    sig { type_parameters(:U).params(block: T.proc.returns(T.type_parameter(:U))).returns(T.type_parameter(:U)) }
+    def unscoped(&block); end
+
     sig { returns(PrivateRelationWhereChain) }
     sig { params(args: T.untyped).returns(PrivateRelation) }
     def where(*args); end
@@ -1475,163 +1503,6 @@ class Review
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def without(*args, &blk); end
-  end
-
-  class PrivateAASMMachine < AASM::Base
-    sig do
-      params(
-        callbacks: T.any(String, Symbol, T::Class[T.anything], Proc),
-        block: T.nilable(T.proc.bind(Review).void)
-      ).returns(T.untyped)
-    end
-    def after_all_events(*callbacks, &block); end
-
-    sig do
-      params(
-        callbacks: T.any(String, Symbol, T::Class[T.anything], Proc),
-        block: T.nilable(T.proc.bind(Review).void)
-      ).returns(T.untyped)
-    end
-    def after_all_transactions(*callbacks, &block); end
-
-    sig do
-      params(
-        callbacks: T.any(String, Symbol, T::Class[T.anything], Proc),
-        block: T.nilable(T.proc.bind(Review).void)
-      ).returns(T.untyped)
-    end
-    def after_all_transitions(*callbacks, &block); end
-
-    sig do
-      params(
-        callbacks: T.any(String, Symbol, T::Class[T.anything], Proc),
-        block: T.nilable(T.proc.bind(Review).void)
-      ).returns(T.untyped)
-    end
-    def before_all_events(*callbacks, &block); end
-
-    sig do
-      params(
-        callbacks: T.any(String, Symbol, T::Class[T.anything], Proc),
-        block: T.nilable(T.proc.bind(Review).void)
-      ).returns(T.untyped)
-    end
-    def before_all_transactions(*callbacks, &block); end
-
-    sig do
-      params(
-        callbacks: T.any(String, Symbol, T::Class[T.anything], Proc),
-        block: T.nilable(T.proc.bind(Review).void)
-      ).returns(T.untyped)
-    end
-    def ensure_on_all_events(*callbacks, &block); end
-
-    sig do
-      params(
-        callbacks: T.any(String, Symbol, T::Class[T.anything], Proc),
-        block: T.nilable(T.proc.bind(Review).void)
-      ).returns(T.untyped)
-    end
-    def error_on_all_events(*callbacks, &block); end
-
-    sig { params(name: T.untyped, options: T.untyped, block: T.proc.bind(PrivateAASMEvent).void).returns(T.untyped) }
-    def event(name, options = nil, &block); end
-
-    class PrivateAASMEvent < AASM::Core::Event
-      sig do
-        params(
-          symbol: T.nilable(Symbol),
-          block: T.nilable(T.proc.bind(Review).params(opts: T.untyped).void)
-        ).returns(T.untyped)
-      end
-      def after(symbol = nil, &block); end
-
-      sig do
-        params(
-          symbol: T.nilable(Symbol),
-          block: T.nilable(T.proc.bind(Review).params(opts: T.untyped).void)
-        ).returns(T.untyped)
-      end
-      def after_commit(symbol = nil, &block); end
-
-      sig do
-        params(
-          symbol: T.nilable(Symbol),
-          block: T.nilable(T.proc.bind(Review).params(opts: T.untyped).void)
-        ).returns(T.untyped)
-      end
-      def after_transaction(symbol = nil, &block); end
-
-      sig do
-        params(
-          symbol: T.nilable(Symbol),
-          block: T.nilable(T.proc.bind(Review).params(opts: T.untyped).void)
-        ).returns(T.untyped)
-      end
-      def before(symbol = nil, &block); end
-
-      sig do
-        params(
-          symbol: T.nilable(Symbol),
-          block: T.nilable(T.proc.bind(Review).params(opts: T.untyped).void)
-        ).returns(T.untyped)
-      end
-      def before_success(symbol = nil, &block); end
-
-      sig do
-        params(
-          symbol: T.nilable(Symbol),
-          block: T.nilable(T.proc.bind(Review).params(opts: T.untyped).void)
-        ).returns(T.untyped)
-      end
-      def before_transaction(symbol = nil, &block); end
-
-      sig do
-        params(
-          symbol: T.nilable(Symbol),
-          block: T.nilable(T.proc.bind(Review).params(opts: T.untyped).void)
-        ).returns(T.untyped)
-      end
-      def ensure(symbol = nil, &block); end
-
-      sig do
-        params(
-          symbol: T.nilable(Symbol),
-          block: T.nilable(T.proc.bind(Review).params(opts: T.untyped).void)
-        ).returns(T.untyped)
-      end
-      def error(symbol = nil, &block); end
-
-      sig do
-        params(
-          symbol: T.nilable(Symbol),
-          block: T.nilable(T.proc.bind(Review).params(opts: T.untyped).void)
-        ).returns(T.untyped)
-      end
-      def success(symbol = nil, &block); end
-
-      sig do
-        params(
-          definitions: T.untyped,
-          block: T.nilable(T.proc.bind(PrivateAASMTransition).void)
-        ).returns(T.untyped)
-      end
-      def transitions(definitions = nil, &block); end
-    end
-
-    class PrivateAASMTransition < AASM::Core::Transition
-      sig { params(block: T.nilable(T.proc.bind(Review).params(opts: T.untyped).void)).returns(T.untyped) }
-      def after(&block); end
-
-      sig { params(block: T.nilable(T.proc.bind(Review).params(opts: T.untyped).void)).returns(T::Boolean) }
-      def guard(&block); end
-
-      sig { params(block: T.nilable(T.proc.bind(Review).params(opts: T.untyped).void)).returns(T.untyped) }
-      def on_transition(&block); end
-
-      sig { params(block: T.nilable(T.proc.bind(Review).params(opts: T.untyped).void)).returns(T.untyped) }
-      def success(&block); end
-    end
   end
 
   class PrivateAssociationRelation < ::ActiveRecord::AssociationRelation
@@ -1828,8 +1699,4 @@ class Review
     sig { params(opts: T.untyped, rest: T.untyped).returns(PrivateRelation) }
     def not(opts, *rest); end
   end
-
-  STATE_ARCHIVED = T.let(T.unsafe(nil), Symbol)
-  STATE_DRAFT = T.let(T.unsafe(nil), Symbol)
-  STATE_PUBLISHED = T.let(T.unsafe(nil), Symbol)
 end

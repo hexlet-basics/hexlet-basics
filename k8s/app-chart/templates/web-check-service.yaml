@@ -1,0 +1,15 @@
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ include "codebasics.fullname" . }}-web-check-service"
+  labels:
+    {{- include "codebasics.labels" . | nindent 4 }}
+    app.kubernetes.io/component: "web-check"
+spec:
+  selector:
+    {{- include "codebasics.selectorLabels" (dict "context" . "component" "web-check") | nindent 4 }}
+  ports:
+    - port: 80
+      targetPort: 8080

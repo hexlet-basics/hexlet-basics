@@ -5,4 +5,8 @@ class ApplicationResource
   meta do
     {}
   end
+
+  def to_model
+    object
+  end
 end

@@ -6,6 +6,16 @@
 
 
 class ActiveSupport::TestCase
+  sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[BlogPost::RelatedLanguageItem]) }
+  sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(BlogPost::RelatedLanguageItem) }
+  sig do
+    params(
+      fixture_name: T.any(String, Symbol),
+      other_fixtures: T.any(String, Symbol)
+    ).returns(T::Array[BlogPost::RelatedLanguageItem])
+  end
+  def blog_post_related_language_items(fixture_name = nil, *other_fixtures); end
+
   sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[BlogPost]) }
   sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(BlogPost) }
   sig do
@@ -100,6 +110,16 @@ class ActiveSupport::TestCase
     ).returns(T::Array[Language::Lesson::Member])
   end
   def language_lesson_members(fixture_name = nil, *other_fixtures); end
+
+  sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[Language::Lesson::Review]) }
+  sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(Language::Lesson::Review) }
+  sig do
+    params(
+      fixture_name: T.any(String, Symbol),
+      other_fixtures: T.any(String, Symbol)
+    ).returns(T::Array[Language::Lesson::Review])
+  end
+  def language_lesson_reviews(fixture_name = nil, *other_fixtures); end
 
   sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[Language::Lesson::Version::Info]) }
   sig do

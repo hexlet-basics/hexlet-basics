@@ -24,6 +24,7 @@
 
 {{/* Common labels for all resources. */}}
 {{- define "codebasics.labels" -}}
+app.kubernetes.io/name: {{ include "codebasics.name" . }}
 helm.sh/chart: {{ include "codebasics.chart" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
@@ -32,6 +33,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 
 {{/* Selector labels for a logical workload name. */}}
 {{- define "codebasics.selectorLabels" -}}
-app.kubernetes.io/name: {{ .name | quote }}
+app.kubernetes.io/name: {{ include "codebasics.name" .context | quote }}
 app.kubernetes.io/instance: {{ .context.Release.Name | quote }}
+app.kubernetes.io/component: {{ .component | quote }}
 {{- end -}}

@@ -47,6 +47,8 @@ make dev # run server
 
 Open https://code-basics.localhost
 
+Port `3000` is the internal Puma app port. Do not open `https://localhost:3000` directly; local HTTPS goes through Caddy on `https://code-basics.localhost`.
+
 Admin Access: (login: `full@test.io`, password: `password`)
 
 5. Development And Testing

@@ -22,7 +22,6 @@ import {
   IconRobot,
   IconSend,
 } from "@tabler/icons-react";
-import i18next from "i18next";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import type { FAQPage, Question, WithContext } from "schema-dts";
@@ -62,7 +61,7 @@ export default function Index({
   lead,
   courseMembersByCourseId,
 }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const baseId = useId("courses");
 
@@ -315,7 +314,7 @@ export default function Index({
           </Grid>
         </Container>
       )}
-      {!user.guest && i18next.language === "ru" && (
+      {!user.guest && i18n.language === "ru" && (
         <Container
           size="lg"
           my={{

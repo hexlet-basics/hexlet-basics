@@ -6,15 +6,15 @@ import { useTranslation } from "react-i18next";
 import AdminLayout from "@/layouts/AdminLayout";
 import * as Routes from "@/routes.js";
 import type {
-  LanguageCrud,
   LanguageLandingPage,
+  LanguageUpdate,
   LanguageVersion,
 } from "@/types/serializers";
 import Form from "./shared/form";
 import { Menu } from "./shared/menu";
 
 type Props = {
-  courseDto: LanguageCrud;
+  courseDto: LanguageUpdate;
   landingPage?: LanguageLandingPage;
   courseVersions: LanguageVersion[];
 };
@@ -25,12 +25,10 @@ export default function Edit({
   landingPage,
 }: Props) {
   const { t } = useTranslation();
-  const courseMeta = (courseDto as { meta?: { slug?: string } }).meta ?? {};
-
   return (
     <AdminLayout
       header={t(($) => $.admin.languages.edit.header, {
-        id: courseMeta.slug ?? courseDto.id,
+        id: courseDto.slug,
       })}
     >
       <Menu data={courseDto} landingPage={landingPage} />

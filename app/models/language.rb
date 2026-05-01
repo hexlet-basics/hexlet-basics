@@ -39,6 +39,21 @@
 #  fk_rails_...  (upload_id => uploads.id)
 #
 class Language < ApplicationRecord
+  class Progress < T::Enum
+    enums do
+      Completed = new("completed")
+      InDevelopment = new("in_development")
+      Draft = new("draft")
+    end
+  end
+
+  class LearnAs < T::Enum
+    enums do
+      FirstLanguage = new("first_language")
+      SecondLanguage = new("second_language")
+    end
+  end
+
   # TODO: remove name
   include LanguageRepository
 
@@ -57,8 +72,8 @@ class Language < ApplicationRecord
     [ "id", "created_at", "learn_as", "progress", "slug" ]
   end
 
-  enum :progress, { completed: "completed", in_development: "in_development", draft: "draft" }, default: "draft", suffix: true, validate: true
-  enum :learn_as, { first_language: "first_language", second_language: "second_language" }, default: "first_language", suffix: true, validate: true
+  typed_enum :progress, Progress, default: Progress::Draft, suffix: true, validate: true
+  typed_enum :learn_as, LearnAs, default: LearnAs::FirstLanguage, suffix: true, validate: true
   # enumerize :progress, in: %i[completed in_development draft], default: :draft, scope: true, predicates: { prefix: true }
   # enumerize :learn_as, in: %i[first_language second_language], default: :first_language
 

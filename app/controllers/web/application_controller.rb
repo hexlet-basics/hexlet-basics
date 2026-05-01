@@ -1,7 +1,6 @@
 class Web::ApplicationController < ApplicationController
   include BrowserConcern
   include ColorSchemeConcern
-  include SurveyConcern
   include RedirectConcern
 
   allow_browser versions: Browserslist.browsers
@@ -12,7 +11,6 @@ class Web::ApplicationController < ApplicationController
   include LocaleConcern
 
   before_action :prepare_locale_settings
-  before_action :run_survey_if_needed
 
   before_action do
     set_meta_tags site: "CodeBasics"
@@ -87,13 +85,6 @@ class Web::ApplicationController < ApplicationController
     end
 
     OpenStruct.new(result)
-  end
-
-  def redirect_to_inertia(url, model)
-    # if model.errors.any? && Rails.env.test?
-    #   raise model.errors.full_messages.inspect
-    # end
-    redirect_to url, inertia: { errors: model.errors }
   end
 
   def escape_meta_tags(tags)

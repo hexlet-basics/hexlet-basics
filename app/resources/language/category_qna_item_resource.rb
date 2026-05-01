@@ -5,6 +5,9 @@ class Language::CategoryQnaItemResource < ApplicationResource
     :question,
     :answer
 
+  typelize question: :string
+  typelize answer: :string
+
   typelize :boolean
   attribute :_destroy do
     false

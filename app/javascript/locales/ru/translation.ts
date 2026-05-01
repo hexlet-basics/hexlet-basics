@@ -71,6 +71,11 @@ export default {
           state: "Состояние",
           "state/archived": "Архив",
           "state/published": "Опубликован",
+          "state/values": {
+            archived: "Архив",
+            draft: "Черновик",
+            published: "Опубликован",
+          },
         },
         language: {
           category_id: "Категория",
@@ -111,6 +116,11 @@ export default {
           question: "Вопрос",
           slug: "Slug",
           state: "Состояние",
+          "state/values": {
+            archived: "Архив",
+            draft: "Черновик",
+            published: "Опубликован",
+          },
           used_in_description: "Где используется (Описание)",
           used_in_header: "Где используется (Заголовок)",
         },
@@ -136,6 +146,11 @@ export default {
           locale: "Локаль",
           pinned: "Закрепленный (Показывается сверху списка)",
           state: "Состояние",
+          "state/values": {
+            archived: "Архив",
+            draft: "Черновик",
+            published: "Опубликован",
+          },
           user_id: "Пользователь",
         },
         survey: {
@@ -160,12 +175,12 @@ export default {
       },
       errors: {
         messages: {
-          record_invalid: "Возникли ошибки: %{errors}",
+          record_invalid: "Возникли ошибки: {{errors}}",
           restrict_dependent_destroy: {
             has_one:
-              "Невозможно удалить запись, так как существует зависимость: %{record}",
+              "Невозможно удалить запись, так как существует зависимость: {{record}}",
             has_many:
-              "Невозможно удалить запись, так как существуют зависимости: %{record}",
+              "Невозможно удалить запись, так как существуют зависимости: {{record}}",
           },
         },
         models: {
@@ -182,7 +197,7 @@ export default {
     admin: {
       blog_posts: {
         edit: {
-          header: "Редактирование %{id}",
+          header: "Редактирование {{id}}",
         },
         index: {
           add_new_blog_post: "Добавить новый пост",
@@ -199,7 +214,7 @@ export default {
       },
       language_categories: {
         edit: {
-          header: "Редактирование %{id}",
+          header: "Редактирование {{id}}",
         },
         form: {
           items: "Элементы",
@@ -216,7 +231,7 @@ export default {
       },
       language_landing_pages: {
         edit: {
-          header: "Редактирование %{id}",
+          header: "Редактирование {{id}}",
         },
         index: {
           add_new_language: "Добавить лендинг",
@@ -244,7 +259,7 @@ export default {
       },
       languages: {
         edit: {
-          header: "Редактирование %{id}",
+          header: "Редактирование {{id}}",
           id: "ID",
           load_new_version: "Загрузить новую версию",
           result: "Результат",
@@ -291,7 +306,7 @@ export default {
       },
       reviews: {
         edit: {
-          header: "Редактирование %{id}",
+          header: "Редактирование {{id}}",
         },
         index: {
           add_new_review: "Добавить новый отзыв",
@@ -370,7 +385,7 @@ export default {
     },
     books: {
       show: {
-        chapter: "Глава %{number}",
+        chapter: "Глава {{chapter}}",
         description:
           "С нуля до трудоустройства. Этот учебник — ваш путеводитель в профессию программиста. Он создан для тех, кто хочет начать с нуля и шаг за шагом дойти до трудоустройства в одной из самых востребованных и перспективных областей\n",
         download: "Скачать книгу",
@@ -516,23 +531,24 @@ export default {
       export: "Экспорт",
       hello: "Привет мир",
       hours: {
-        few: "%{count} часа",
-        many: "%{count} часов",
-        one: "%{count} час",
+        few: "{{count}} часа",
+        many: "{{count}} часов",
+        one: "{{count}} час",
       },
       instructions: "Инструкции",
-      language_icon: "Иконка %{language}",
+      language_icon: "Иконка {{language}}",
       languages: {
         en: "Английский",
         ru: "Русский",
       },
       lesson: "Урок",
       lessons: {
-        few: "%{count} урока",
-        many: "%{count} уроков",
-        one: "%{count} урок",
+        few: "{{count}} урока",
+        many: "{{count}} уроков",
+        one: "{{count}} урок",
       },
       loading: "Загрузка...",
+      network_error: "Ошибка сети. Попробуйте еще раз.",
       nextLesson: "Следующий",
       organization: {
         address:
@@ -573,22 +589,24 @@ export default {
         "Желательно решить задачу самостоятельно, но если вы застряли и долгое время ничего не получается, посмотрите решение учителя. Но обязательно разберитесь в нём и повторите по памяти",
       state_events: "Варианты действий",
       students: {
-        few: "%{count} студента",
-        many: "%{count} студентов",
-        one: "%{count} студент",
+        few: "{{count}} студента",
+        many: "{{count}} студентов",
+        one: "{{count}} студент",
       },
+      success_message: "Операция выполнена успешно.",
       teacherSolution: "Решение учителя:",
       testForExercise: "Тесты",
       testInstructions: "Ваше упражнение проверяется по этим тестам",
       time: {
-        minutes_zero: "%{count} минут",
-        minutes_one: "%{count} минута",
-        minutes_two: "%{count} минуты",
-        minutes_few: "%{count} минуты",
-        minutes_many: "%{count} минут",
-        minutes_other: "%{count} минут",
+        minutes_zero: "{{count}} минут",
+        minutes_one: "{{count}} минута",
+        minutes_two: "{{count}} минуты",
+        minutes_few: "{{count}} минуты",
+        minutes_many: "{{count}} минут",
+        minutes_other: "{{count}} минут",
       },
       tos: "Содержание",
+      unexpected_error: "Что-то пошло не так. Попробуйте еще раз.",
       userCode: "Ваше решение:",
       userCodeInstructions:
         "Когда вы начнёте писать решение в Редакторе, оно появится тут для сравнения с учительским",
@@ -771,7 +789,7 @@ export default {
           empty_language_current_version:
             "Язык находится в разработке, пожалуйсте, зайдите позже или попробуйте любой другой доступный язык",
           language_in_development_html:
-            'Курс по языку %{language} еще в разработке.\nВы можете помочь и отправить пулл-реквест с новыми уроками или дополнить те,\nкоторые уже есть <a href="%{link_to_repo}" target="_blank" rel="noopener">%{link_to_repo}</a>.\nМы подготовили рекомендации по написанию текстов <a href="%{link_to_recommendations}" target="_blank" rel="noopener">по ссылке</a>\n',
+            'Курс по языку {{language}} еще в разработке.\nВы можете помочь и отправить пулл-реквест с новыми уроками или дополнить те,\nкоторые уже есть <a href="{{link_to_repo}}" target="_blank" rel="noopener">{{link_to_repo}}</a>.\nМы подготовили рекомендации по написанию текстов <a href="{{link_to_recommendations}}" target="_blank" rel="noopener">по ссылке</a>\n',
           warning:
             "Попробуйте переключить язык, возможно там найдется нужный урок! :)",
         },
@@ -842,7 +860,7 @@ export default {
         },
         replace: "Сменить",
         save: "Сохранить",
-        submit: "Сохранить %{model}",
+        submit: "Сохранить {{model}}",
         update: "Изменить",
         user_sign_in_form: {
           create: "Войти",
@@ -894,7 +912,7 @@ export default {
         courses: "Курсы по программированию",
       },
       reviews: {
-        course_html: "Курс %{link}",
+        course_html: "Курс {{link}}",
         reviews: "Отзывы",
       },
       sitemap: {
@@ -903,7 +921,7 @@ export default {
       },
       stats: {
         trusted_by:
-          "Присоединись к %{count} изующих программирование с помощью Code Basics\n",
+          "Присоединись к {{count}} изующих программирование с помощью Code Basics\n",
       },
     },
     i18n: {
@@ -913,12 +931,12 @@ export default {
       transliterate: {},
     },
     js: {
-      hour_zero: "%{count} часов",
-      hour_one: "%{count} час",
-      hour_two: "%{count} часа",
-      hour_few: "%{count} часов",
-      hour_many: "%{count} часов",
-      hour_other: "%{count} часов",
+      hour_zero: "{{count}} часов",
+      hour_one: "{{count}} час",
+      hour_two: "{{count}} часа",
+      hour_few: "{{count}} часов",
+      hour_many: "{{count}} часов",
+      hour_other: "{{count}} часов",
     },
     language_categories: {
       index: {
@@ -930,10 +948,10 @@ export default {
         },
       },
       show: {
-        header: "Курсы в категории %{name}\n",
+        header: "Курсы в категории {{name}}\n",
         meta: {
           description:
-            "Выберите подходящий бесплатный курс из категории %{name} и учитесь бесплатно прямо в браузере с практикой и помощью от ИИ-ассистента",
+            "Выберите подходящий бесплатный курс из категории {{name}} и учитесь бесплатно прямо в браузере с практикой и помощью от ИИ-ассистента",
         },
       },
     },
@@ -1007,11 +1025,11 @@ export default {
           show_full_version: "Реактор кода доступен в основной версии →",
           sign_in: "Войти",
           sign_up_for_tracking_progress_html:
-            'Чтобы не потерять достигнутые результаты, обязательно <a href="%{link}" class="text-decoration-none" target="_blank">зарегистрируйтесь</a>\n',
+            'Чтобы не потерять достигнутые результаты, обязательно <a href="{{link}}" class="text-decoration-none" target="_blank">зарегистрируйтесь</a>\n',
           solution: "Решение",
           tests: "Тесты",
           tips: "Полезное",
-          title: "%{lesson_name} | Уроки %{language_name}\n",
+          title: "{{lesson_name}} | Уроки {{language_name}}\n",
           to_home_title: "Домой",
         },
       },
@@ -1041,8 +1059,8 @@ export default {
         learning_conveniently:
           "Всё, что нужно для освоения новых тем, — на одном экране. Теория, практика и живые примеры идут рука об руку. Чёткая структура помогает учиться последовательно и не упускать важные детали",
         learning_preview: "Предварительный просмотр обучения",
-        learning_program: "Программа обучения %{name}",
-        lessons: "%{lessons_count} с практикой в браузере",
+        learning_program: "Программа обучения {{name}}",
+        lessons: "{{lessons_count}} с практикой в браузере",
         more_than_support: "Больше чем Поддержка",
         no_registration: "Регистрация не требуется",
         ready: "Готовы попробовать?",
@@ -1052,16 +1070,16 @@ export default {
         registration_description: "Начните прямо сейчас",
         restart: "Начать заново",
         reviews: "Отзывы",
-        see_all_courses_in_category: 'Все курсы "%{name}"',
+        see_all_courses_in_category: 'Все курсы "{{name}}"',
         sign_up: "Зарегистрироваться",
         similar_courses: "Похожие курсы",
         sort_questions: "Разбираем вопросы",
-        start: "Начать обучение %{name}",
+        start: "Начать обучение {{name}}",
         start_demo_lesson: "Демо урок",
         to_home_title: "Главная",
         try: "Начать обучение",
         try_without_registration: "Попробуйте без регистрации",
-        updated_at: "Обновлен %{date}",
+        updated_at: "Обновлен {{date}}",
         without_registration:
           "Начните обучение сразу — первые уроки доступны без аккаунта. Понравится формат — зарегистрируетесь, чтобы сохранить прогресс",
       },
@@ -1075,7 +1093,7 @@ export default {
           "Теперь у вас есть новые знания и навыки. Для кого-то это первый шаг в новую профессию, для кого-то — повышение квалификации. Что дальше?\n",
         getting_new_skill_html:
           "<a>Навыки и Инструменты</a>: если вы хотите прокачаться в новых для вас технологиях \n",
-        header: "Поздравляем, вы завершили курс «%{name}»!",
+        header: "Поздравляем, вы завершили курс «{{name}}»!",
         home: "На главную",
         leave_request:
           "Оставьте заявку на бесплатную консультацию — наш специалист поможет вам определиться и ответит на все вопросы. 👉",
@@ -1128,7 +1146,7 @@ export default {
           codebasics: "Code Basics (от Хекслет)",
           community: "Сообщество",
           cookie_policy: "Cookie Policy",
-          courses: "Курсы %{number}",
+          courses: "Курсы {{group}}",
           english_links: "English links",
           free_call: "Звонок по РФ бесплатный",
           hexlet: "Хекслет",
@@ -1137,7 +1155,7 @@ export default {
           hexlet_blog: "Блог",
           hexlet_number: "ОГРН 1217300010476",
           hexlet_title_html:
-            '© <a href="%{link}" class="text-decoration-none text-light" target="_blank" rel="noopener">Хекслет</a>, %{year}',
+            '© <a href="{{link}}" class="text-decoration-none text-light" target="_blank" rel="noopener">Хекслет</a>, {{year}}',
           "hexlet-cv": "Хекслет.Карьера",
           "hexlet-sicp": "Хекслет.SICP",
           information: "Информация",
@@ -1279,6 +1297,11 @@ export default {
           state: "Состояние",
           "state/archived": "Архив",
           "state/published": "Опубликован",
+          "state/values": {
+            archived: "Архив",
+            draft: "Черновик",
+            published: "Опубликован",
+          },
         },
         language: {
           category_id: "Категория",
@@ -1319,6 +1342,11 @@ export default {
           question: "Вопрос",
           slug: "Slug",
           state: "Состояние",
+          "state/values": {
+            archived: "Архив",
+            draft: "Черновик",
+            published: "Опубликован",
+          },
           used_in_description: "Где используется (Описание)",
           used_in_header: "Где используется (Заголовок)",
         },
@@ -1347,6 +1375,11 @@ export default {
           locale: "Локаль",
           pinned: "Закрепленный (Показывается сверху списка)",
           state: "Состояние",
+          "state/values": {
+            archived: "Архив",
+            draft: "Черновик",
+            published: "Опубликован",
+          },
           user_id: "Пользователь",
         },
         survey: {
@@ -1407,7 +1440,7 @@ export default {
       admin: {
         blog_posts: {
           edit: {
-            header: "Редактирование %{id}",
+            header: "Редактирование {{id}}",
           },
           index: {
             header: "Посты в блоге",
@@ -1423,7 +1456,7 @@ export default {
         },
         language_categories: {
           edit: {
-            header: "Редактирование %{id}",
+            header: "Редактирование {{id}}",
           },
           form: {
             items: "Элементы",
@@ -1439,7 +1472,7 @@ export default {
         },
         language_landing_pages: {
           edit: {
-            header: "Редактирование %{id}",
+            header: "Редактирование {{id}}",
           },
           index: {
             header: "Лендинги",
@@ -1466,7 +1499,7 @@ export default {
         },
         languages: {
           edit: {
-            header: "Редактирование %{id}",
+            header: "Редактирование {{id}}",
             id: "ID",
             load_new_version: "Загрузить новую версию",
             result: "Результат",
@@ -1508,7 +1541,7 @@ export default {
         },
         reviews: {
           edit: {
-            header: "Редактирование %{id}",
+            header: "Редактирование {{id}}",
           },
           index: {
             header: "Отзывы",
@@ -1557,7 +1590,7 @@ export default {
       },
       books: {
         show: {
-          chapter: "Глава %{number}",
+          chapter: "Глава {{chapter}}",
           description:
             "С нуля до трудоустройства. Этот учебник — ваш путеводитель в профессию программиста. Он создан для тех, кто хочет начать с нуля и шаг за шагом дойти до трудоустройства в одной из самых востребованных и перспективных областей\n",
           download: "Скачать книгу",
@@ -1770,15 +1803,15 @@ export default {
           learning_conveniently:
             "Всё, что нужно для освоения новых тем, — на одном экране. Теория, практика и живые примеры идут рука об руку. Чёткая структура помогает учиться последовательно и не упускать важные детали",
           learning_preview: "Предварительный просмотр обучения",
-          learning_program: "Программа обучения %{name}",
+          learning_program: "Программа обучения {{name}}",
           more_than_support: "Больше чем Поддержка",
           real_life_challenges:
             "Вам не нужно ничего устанавливать — все задания выполняются прямо в браузере. Встроенный редактор кода, консоль и автоматические тесты делают обучение комфортным. А если что-то не получается, всегда можно посмотреть решение учителя",
           restart: "Начать заново",
           sort_questions: "Разбираем вопросы",
-          start: "Начать обучение %{name}",
+          start: "Начать обучение {{name}}",
           try: "Начать обучение",
-          updated_at: "Обновлен %{date}",
+          updated_at: "Обновлен {{date}}",
         },
         success: {
           add_review:
@@ -1790,7 +1823,7 @@ export default {
             "Теперь у вас есть новые знания и навыки. Для кого-то это первый шаг в новую профессию, для кого-то — повышение квалификации. Что дальше?\n",
           getting_new_skill_html:
             "<a>Навыки и Инструменты</a>: если вы хотите прокачаться в новых для вас технологиях \n",
-          header: "Поздравляем, вы завершили курс «%{name}»!",
+          header: "Поздравляем, вы завершили курс «{{name}}»!",
           leave_request:
             "Оставьте заявку на бесплатную консультацию — наш специалист поможет вам определиться и ответит на все вопросы. 👉",
           struggle_choosing: "💬 Не уверены, что выбрать?",
@@ -1986,7 +2019,7 @@ export default {
       index: {
         add_review:
           "Попробовали наши курсы и хотите оставить отзыв? Это можно сделать <a>тут</a>",
-        course: "Курс %{language}",
+        course: "Курс {{language}}",
         empty: "Похоже, что тут пока ничего нет",
         header: "Отзывы о Code Basics",
         meta: {

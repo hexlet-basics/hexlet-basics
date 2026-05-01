@@ -14,6 +14,9 @@ module ActionController::Renderers
     def _renderers; end
     def _renderers=(value); end
     def _renderers?; end
+    def escape_json_responses; end
+    def escape_json_responses=(value); end
+    def escape_json_responses?; end
   end
 
   module GeneratedInstanceMethods

@@ -102,8 +102,8 @@ USER rails
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
 # TODO: разобраться с использованием Thrust
-# Start server via Falcon by default, this can be overwritten at runtime
+# Start the app server with Puma; local HTTPS/HTTP2 is terminated by the proxy layer.
 # EXPOSE 80
 # CMD ["./bin/thrust", "./bin/rails", "server"]
 
-CMD ["bundle", "exec", "falcon", "host"]
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]

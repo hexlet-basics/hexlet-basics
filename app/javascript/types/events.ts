@@ -108,48 +108,6 @@ export interface SolutionCheckedEvent {
   };
 }
 
-export interface SurveyAnsweredEvent {
-  type: "SurveyAnsweredEvent";
-  name: "survey_answered";
-  event_id: string;
-  metadata: { name: string };
-  data: {
-    survey_answer_id: number;
-    survey_scenario_member_id: number;
-    next_survey_id: number | undefined;
-  };
-}
-
-export interface SurveyScenarioStartedEvent {
-  type: "SurveyScenarioStartedEvent";
-  name: "survey_scenario_started";
-  event_id: string;
-  metadata: { name: string };
-  data: {
-    user_id: number;
-    email: string;
-    occurrence_count: number;
-    survey_scenario_id: number;
-    survey_scenario_member_id: number;
-    locale: string;
-  };
-}
-
-export interface SurveyStartedEvent {
-  type: "SurveyStartedEvent";
-  name: "survey_started";
-  event_id: string;
-  metadata: { name: string };
-  data: {
-    user_id: number;
-    email: string;
-    occurrence_count: number;
-    survey_id: number;
-    survey_scenario_member_id: number;
-    locale: string;
-  };
-}
-
 export interface UserSignedInEvent {
   type: "UserSignedInEvent";
   name: "user_signed_in";
@@ -186,8 +144,5 @@ export type ApplicationEvent =
   | LessonFinishedEvent
   | LessonStartedEvent
   | SolutionCheckedEvent
-  | SurveyAnsweredEvent
-  | SurveyScenarioStartedEvent
-  | SurveyStartedEvent
   | UserSignedInEvent
   | UserSignedUpEvent;

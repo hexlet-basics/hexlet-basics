@@ -18,9 +18,10 @@ class Web::Admin::LanguageLandingPagesController < Web::Admin::ApplicationContro
     languages = Language.all
 
     render inertia: true, props: {
-      landingPageDto: Language::LandingPageCrudResource.new(landing_page),
+      landingPageDto: Language::LandingPageCreateResource.new(landing_page),
       landingPages: Language::LandingPageResource.new(landing_pages),
-      languages: LanguageResource.new(languages)
+      languages: LanguageResource.new(languages),
+      qnaItems: Language::LandingPageQnaItemResource.new([])
     }
   end
 
@@ -30,14 +31,15 @@ class Web::Admin::LanguageLandingPagesController < Web::Admin::ApplicationContro
     landing_pages = Language::LandingPage.published
 
     render inertia: true, props: {
-      landingPageDto: Language::LandingPageCrudResource.new(landing_page),
+      landingPageDto: Language::LandingPageUpdateResource.new(landing_page),
       landingPages: Language::LandingPageResource.new(landing_pages),
-      languages: LanguageResource.new(languages)
+      languages: LanguageResource.new(languages),
+      qnaItems: Language::LandingPageQnaItemResource.new(landing_page.qna_items.order(:id))
     }
   end
 
   def create
-    landing_page = Admin::LanguageLandingPageForm.new(params[:language_landing_page])
+    landing_page = Admin::LanguageLandingPageForm.new(params[:data])
     landing_page.locale = I18n.locale
 
     if landing_page.save
@@ -45,7 +47,7 @@ class Web::Admin::LanguageLandingPagesController < Web::Admin::ApplicationContro
       redirect_to admin_language_landing_pages_path
     else
       f(:error)
-      redirect_to_inertia new_admin_language_landing_page_path, landing_page
+      redirect_to new_admin_language_landing_page_path, inertia: { errors: landing_page.errors }
     end
   end
 
@@ -53,13 +55,13 @@ class Web::Admin::LanguageLandingPagesController < Web::Admin::ApplicationContro
     landing_page = Admin::LanguageLandingPageForm.with_locale.find(params[:id])
     # raise params.inspect
 
-    if landing_page.update(params[:language_landing_page])
+    if landing_page.update(params[:data])
       f(:success)
     else
       # raise landing_page.qna_items.inspect
       # raise landing_page.errors.full_messages.inspect
       f(:error)
     end
-    redirect_to_inertia edit_admin_language_landing_page_path(landing_page), landing_page
+    redirect_to edit_admin_language_landing_page_path(landing_page), inertia: { errors: landing_page.errors }
   end
 end

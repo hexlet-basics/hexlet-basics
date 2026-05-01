@@ -35,14 +35,14 @@ export default function CourseBlock({
   ...props
 }: Props) {
   return (
-    <Card
-      component={Link}
-      href={Routes.language_path(landingPage.slug)}
-      shadow="sm"
-      td="none"
-      {...props}
-    >
-      <HoverLift h="100%">
+    <HoverLift h="100%">
+      <Card
+        component={Link}
+        href={Routes.language_path(landingPage.slug)}
+        shadow="sm"
+        td="none"
+        {...props}
+      >
         <Card.Section>
           <AspectRatio ratio={4 / 3}>
             <Image
@@ -74,8 +74,8 @@ export default function CourseBlock({
             </Group>
           </Group>
         </Stack>
-      </HoverLift>
-    </Card>
+      </Card>
+    </HoverLift>
     //     {
     //   continueButton && (
     //     <Button variant="light" fullWidth>

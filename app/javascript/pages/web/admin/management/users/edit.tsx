@@ -29,16 +29,22 @@ export default function Edit({ user, progress }: Props) {
         <Grid.Col span={5}>
           <form onSubmit={onSubmit}>
             <TextInput
+              label={t(($) => $.models.attributes.user.email)}
               {...form.getInputProps("email")}
               autoComplete="email"
               disabled
             />
-            <Checkbox {...form.getCheckboxProps("admin")} />
+            <Checkbox
+              label={t(($) => $.models.attributes.user.admin)}
+              {...form.getCheckboxProps("admin")}
+            />
             <TextInput
+              label={t(($) => $.models.attributes.user.first_name)}
               {...form.getInputProps("first_name")}
               autoComplete="name"
             />
             <TextInput
+              label={t(($) => $.models.attributes.user.last_name)}
               {...form.getInputProps("last_name")}
               autoComplete="name"
             />

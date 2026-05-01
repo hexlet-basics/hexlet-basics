@@ -9,66 +9,52 @@ nameOverride: ""
 # fullnameOverride fully overrides generated resource names.
 fullnameOverride: ""
 
-nginx:
-  image:
-    # repository is the nginx image repository.
-    repository: "hexletbasics/services-nginx"
+# nginxImageRepository is the nginx image repository.
+nginxImageRepository: "hexletbasics/services-nginx"
 
-app:
-  image:
-    # repository is the app image repository.
-    repository: "hexletbasics/services-app"
+# appImageRepository is the app image repository.
+appImageRepository: "hexletbasics/services-app"
 
 # slackNotification is the command executed in web container postStart hook.
 slackNotification: ["/rails/deploy-notify.sh"]
 
-gateway:
-  # className is the GatewayClass name.
-  className: "gwin-default"
-  address:
-    # type is the gateway address type.
-    type: "gwin.yandex.cloud/staticIPv4"
-    # value is the gateway address value.
-    value: "89.169.182.43"
-  # subnets is the list of subnet IDs used by gateway policy.
-  subnets:
-    - "e2lfircmrq1atgmlg7ib"
-  # certificateId is the ID of TLS certificate in provider.
-  certificateId: "fpqgjl11q387a86d42kn"
-  hosts:
-    # primary is the main host.
-    primary: "code-basics.com"
-    # wildcard is the wildcard host.
-    wildcard: "*.code-basics.com"
-    # secondary is the secondary host.
-    secondary: "code-basics.ru"
-  backend:
-    # useHttp2 enables HTTP/2 to backend services.
-    useHttp2: true
-    # upgradeTypes is the allowed upgrade type for HTTP routes.
-    upgradeTypes: "websocket"
+# gatewayClassName is the GatewayClass name.
+gatewayClassName: "gwin-default"
+# gatewayAddressType is the gateway address type.
+gatewayAddressType: "gwin.yandex.cloud/staticIPv4"
+# gatewayAddressValue is the gateway address value.
+gatewayAddressValue: "89.169.182.43"
+# gatewaySubnetIds is the list of subnet IDs used by gateway policy.
+gatewaySubnetIds:
+  - "e2lfircmrq1atgmlg7ib"
+# gatewayCertificateId is the ID of TLS certificate in provider.
+gatewayCertificateId: "fpqgjl11q387a86d42kn"
+# primaryHost is the main host.
+primaryHost: "code-basics.com"
+# wildcardHost is the wildcard host.
+wildcardHost: "*.code-basics.com"
+# secondaryHost is the secondary host.
+secondaryHost: "code-basics.ru"
+# gatewayBackendUseHttp2 enables HTTP/2 to backend services.
+gatewayBackendUseHttp2: true
+# gatewayBackendUpgradeType is the allowed upgrade type for HTTP routes.
+gatewayBackendUpgradeType: "websocket"
 
-autoscaling:
-  web:
-    # enabled toggles HPA for web deployment.
-    enabled: true
-    # minReplicas is the minimum number of pods.
-    minReplicas: 2
-    # maxReplicas is the maximum number of pods.
-    maxReplicas: 6
-    # targetCpuUtilizationPercentage is the target CPU utilization percentage.
-    targetCpuUtilizationPercentage: 75
-    # targetMemoryUtilizationPercentage is the target memory utilization percentage.
-    targetMemoryUtilizationPercentage: 80
+# webAutoscalingEnabled toggles HPA for web deployment.
+webAutoscalingEnabled: true
+# webAutoscalingMinReplicas is the minimum number of pods.
+webAutoscalingMinReplicas: 2
+# webAutoscalingMaxReplicas is the maximum number of pods.
+webAutoscalingMaxReplicas: 6
+# webAutoscalingTargetCpuUtilizationPercentage is the target CPU utilization percentage.
+webAutoscalingTargetCpuUtilizationPercentage: 75
+# webAutoscalingTargetMemoryUtilizationPercentage is the target memory utilization percentage.
+webAutoscalingTargetMemoryUtilizationPercentage: 80
 
-networkPolicy:
-  # enabled toggles network policy resource.
-  enabled: true
+# networkPolicyEnabled toggles network policy resource.
+networkPolicyEnabled: true
 
-secrets:
-  docker:
-    # config is base64 source content for .dockerconfigjson (raw, chart encodes it).
-    config: ""
-  codeBasics:
-    # env is key-value map for application secret environment variables.
-    env: {}
+# dockerConfig is base64 source content for .dockerconfigjson (raw, chart encodes it).
+dockerConfig: ""
+# appEnv is key-value map for application secret environment variables.
+appEnv: {}

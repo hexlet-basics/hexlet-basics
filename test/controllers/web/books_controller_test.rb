@@ -15,6 +15,7 @@ class Web::BooksControllerTest < ActionDispatch::IntegrationTest
 
   def test_create_request
     user = sign_in_as(:ready_to_start_learning)
+    initial_survey_scenario_members_count = user.survey_scenario_members.count
     assert { user.book_request.nil? }
 
     post create_request_book_path
@@ -23,7 +24,7 @@ class Web::BooksControllerTest < ActionDispatch::IntegrationTest
     user.reload
 
     assert { user.book_request }
-    assert { user.survey_scenario_members.count == 3 }
+    assert { user.survey_scenario_members.count == initial_survey_scenario_members_count }
   end
 
   def test_download

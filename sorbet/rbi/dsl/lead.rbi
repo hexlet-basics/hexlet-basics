@@ -83,8 +83,34 @@ class Lead
     sig { params(attributes: T.untyped, block: T.nilable(T.proc.params(object: ::Lead).void)).returns(::Lead) }
     def create_or_find_by!(attributes, &block); end
 
+    sig do
+      params(
+        records: T.any(::Lead, Integer, String, T::Enumerable[T.any(::Lead, Integer, String, T::Enumerable[::Lead])])
+      ).returns(Integer)
+    end
+    def delete(*records); end
+
+    sig { returns(Integer) }
+    def delete_all; end
+
+    sig { params(args: T.untyped).returns(Integer) }
+    def delete_by(*args); end
+
+    sig do
+      params(
+        records: T.any(::Lead, Integer, String, T::Enumerable[T.any(::Lead, Integer, String, T::Enumerable[::Lead])])
+      ).returns(T::Array[::Lead])
+    end
+    def destroy(*records); end
+
     sig { returns(T::Array[::Lead]) }
     def destroy_all; end
+
+    sig { returns(T::Array[::Lead]) }
+    def destroy_all; end
+
+    sig { params(args: T.untyped).returns(T::Array[::Lead]) }
+    def destroy_by(*args); end
 
     sig { params(conditions: T.untyped).returns(T::Boolean) }
     def exists?(conditions = :none); end
@@ -120,7 +146,8 @@ class Lead
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         block: T.proc.params(object: ::Lead).void
       ).void
     end
@@ -130,10 +157,11 @@ class Lead
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol])
       ).returns(T::Enumerator[::Lead])
     end
-    def find_each(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, order: :asc, &block); end
+    def find_each(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, cursor: primary_key, order: :asc, &block); end
 
     sig do
       params(
@@ -141,7 +169,8 @@ class Lead
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         block: T.proc.params(object: T::Array[::Lead]).void
       ).void
     end
@@ -151,10 +180,11 @@ class Lead
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol
-      ).returns(T::Enumerator[T::Enumerator[::Lead]])
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol])
+      ).returns(T::Enumerator[T::Array[::Lead]])
     end
-    def find_in_batches(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, order: :asc, &block); end
+    def find_in_batches(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, cursor: primary_key, order: :asc, &block); end
 
     sig do
       params(
@@ -211,7 +241,7 @@ class Lead
     sig { returns(::Lead) }
     def fourth!; end
 
-    sig { returns(Array) }
+    sig { returns(T::Array[::Integer]) }
     def ids; end
 
     sig do
@@ -221,7 +251,8 @@ class Lead
         finish: T.untyped,
         load: T.untyped,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         use_ranges: T.untyped,
         block: T.proc.params(object: PrivateRelation).void
       ).void
@@ -233,11 +264,12 @@ class Lead
         finish: T.untyped,
         load: T.untyped,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         use_ranges: T.untyped
       ).returns(::ActiveRecord::Batches::BatchEnumerator)
     end
-    def in_batches(of: 1000, start: nil, finish: nil, load: false, error_on_ignore: nil, order: :asc, use_ranges: nil, &block); end
+    def in_batches(of: 1000, start: nil, finish: nil, load: false, error_on_ignore: nil, cursor: primary_key, order: :asc, use_ranges: nil, &block); end
 
     sig { params(record: T.untyped).returns(T::Boolean) }
     def include?(record); end
@@ -329,8 +361,29 @@ class Lead
   end
 
   module GeneratedAssociationMethods
+    sig { returns(T.nilable(::Ahoy::Visit)) }
+    def ahoy_visit; end
+
+    sig { params(value: T.nilable(::Ahoy::Visit)).void }
+    def ahoy_visit=(value); end
+
+    sig { returns(T::Boolean) }
+    def ahoy_visit_changed?; end
+
+    sig { returns(T::Boolean) }
+    def ahoy_visit_previously_changed?; end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Ahoy::Visit) }
+    def build_ahoy_visit(*args, &blk); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def build_user(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Ahoy::Visit) }
+    def create_ahoy_visit(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Ahoy::Visit) }
+    def create_ahoy_visit!(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_user(*args, &blk); end
@@ -338,8 +391,14 @@ class Lead
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_user!(*args, &blk); end
 
+    sig { returns(T.nilable(::Ahoy::Visit)) }
+    def reload_ahoy_visit; end
+
     sig { returns(T.nilable(::User)) }
     def reload_user; end
+
+    sig { void }
+    def reset_ahoy_visit; end
 
     sig { void }
     def reset_user; end
@@ -488,6 +547,10 @@ class Lead
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def unscope(*args, &blk); end
 
+    sig { returns(PrivateAssociationRelation) }
+    sig { type_parameters(:U).params(block: T.proc.returns(T.type_parameter(:U))).returns(T.type_parameter(:U)) }
+    def unscoped(&block); end
+
     sig { returns(PrivateAssociationRelationWhereChain) }
     sig { params(args: T.untyped).returns(PrivateAssociationRelation) }
     def where(*args); end
@@ -503,6 +566,51 @@ class Lead
   end
 
   module GeneratedAttributeMethods
+    sig { returns(T.nilable(::Integer)) }
+    def ahoy_visit_id; end
+
+    sig { params(value: T.nilable(::Integer)).returns(T.nilable(::Integer)) }
+    def ahoy_visit_id=(value); end
+
+    sig { returns(T::Boolean) }
+    def ahoy_visit_id?; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def ahoy_visit_id_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def ahoy_visit_id_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def ahoy_visit_id_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
+    def ahoy_visit_id_change; end
+
+    sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
+    def ahoy_visit_id_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def ahoy_visit_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::Integer)) }
+    def ahoy_visit_id_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
+    def ahoy_visit_id_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def ahoy_visit_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::Integer)) }
+    def ahoy_visit_id_previously_was; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def ahoy_visit_id_was; end
+
+    sig { void }
+    def ahoy_visit_id_will_change!; end
+
     sig { returns(T.untyped) }
     def courses_data; end
 
@@ -572,7 +680,7 @@ class Lead
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def created_at_change_to_be_saved; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def created_at_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -581,7 +689,7 @@ class Lead
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def created_at_previous_change; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def created_at_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -617,7 +725,7 @@ class Lead
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def email_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def email_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -626,7 +734,7 @@ class Lead
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def email_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def email_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -662,7 +770,7 @@ class Lead
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_change_to_be_saved; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -671,7 +779,7 @@ class Lead
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_previous_change; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -701,7 +809,7 @@ class Lead
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_value_change_to_be_saved; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_value_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -710,7 +818,7 @@ class Lead
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_value_previous_change; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_value_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -752,7 +860,7 @@ class Lead
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def phone_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def phone_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -761,7 +869,7 @@ class Lead
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def phone_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def phone_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -772,6 +880,9 @@ class Lead
 
     sig { void }
     def phone_will_change!; end
+
+    sig { void }
+    def restore_ahoy_visit_id!; end
 
     sig { void }
     def restore_courses_data!; end
@@ -809,77 +920,92 @@ class Lead
     sig { void }
     def restore_whatsapp!; end
 
+    sig { void }
+    def restore_ym_client_id!; end
+
+    sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
+    def saved_change_to_ahoy_visit_id; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_ahoy_visit_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
     sig { returns(T.nilable([T.untyped, T.untyped])) }
     def saved_change_to_courses_data; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_courses_data?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_courses_data?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def saved_change_to_created_at; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_created_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_email; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_email?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_email?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_id; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_id_value; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_id_value?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_id_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_phone; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_phone?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_phone?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_state; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_state?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_state?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.untyped, T.untyped])) }
     def saved_change_to_survey_answers_data; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_survey_answers_data?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_survey_answers_data?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_telegram; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_telegram?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_telegram?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def saved_change_to_updated_at; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_updated_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_updated_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_user_id; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_user_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_user_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_whatsapp; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_whatsapp?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_whatsapp?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_ym_client_id; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_ym_client_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
     def state; end
@@ -905,7 +1031,7 @@ class Lead
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def state_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def state_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -914,7 +1040,7 @@ class Lead
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def state_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def state_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -995,7 +1121,7 @@ class Lead
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def telegram_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def telegram_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1004,7 +1130,7 @@ class Lead
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def telegram_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def telegram_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1040,7 +1166,7 @@ class Lead
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def updated_at_change_to_be_saved; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def updated_at_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -1049,7 +1175,7 @@ class Lead
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def updated_at_previous_change; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def updated_at_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -1085,7 +1211,7 @@ class Lead
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def user_id_change_to_be_saved; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def user_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -1094,7 +1220,7 @@ class Lead
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def user_id_previous_change; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def user_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -1130,7 +1256,7 @@ class Lead
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def whatsapp_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def whatsapp_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1139,7 +1265,7 @@ class Lead
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def whatsapp_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def whatsapp_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1151,41 +1277,92 @@ class Lead
     sig { void }
     def whatsapp_will_change!; end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_courses_data?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_ahoy_visit_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_courses_data?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_email?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_id_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_phone?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_state?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_survey_answers_data?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_telegram?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_updated_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_user_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_whatsapp?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_ym_client_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def ym_client_id; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def ym_client_id=(value); end
 
     sig { returns(T::Boolean) }
-    def will_save_change_to_created_at?; end
+    def ym_client_id?; end
+
+    sig { returns(T.nilable(::String)) }
+    def ym_client_id_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def ym_client_id_before_type_cast; end
 
     sig { returns(T::Boolean) }
-    def will_save_change_to_email?; end
+    def ym_client_id_came_from_user?; end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_id?; end
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def ym_client_id_change; end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_id_value?; end
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def ym_client_id_change_to_be_saved; end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_phone?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def ym_client_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_state?; end
+    sig { returns(T.nilable(::String)) }
+    def ym_client_id_in_database; end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_survey_answers_data?; end
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def ym_client_id_previous_change; end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_telegram?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def ym_client_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_updated_at?; end
+    sig { returns(T.nilable(::String)) }
+    def ym_client_id_previously_was; end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_user_id?; end
+    sig { returns(T.nilable(::String)) }
+    def ym_client_id_was; end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_whatsapp?; end
+    sig { void }
+    def ym_client_id_will_change!; end
   end
 
   module GeneratedRelationMethods
@@ -1318,6 +1495,10 @@ class Lead
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def unscope(*args, &blk); end
+
+    sig { returns(PrivateRelation) }
+    sig { type_parameters(:U).params(block: T.proc.returns(T.type_parameter(:U))).returns(T.type_parameter(:U)) }
+    def unscoped(&block); end
 
     sig { returns(PrivateRelationWhereChain) }
     sig { params(args: T.untyped).returns(PrivateRelation) }

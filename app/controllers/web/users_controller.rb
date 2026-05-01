@@ -87,7 +87,7 @@ class Web::UsersController < Web::ApplicationController
     rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => _e
       f(:error)
       flash.inertia[:sign_up_form] = sign_up_form_data(user)
-      redirect_to_inertia new_user_url, user
+      redirect_to new_user_url, inertia: { errors: user.errors }
       # raise user.errors.full_messages.inspect
     end
   end

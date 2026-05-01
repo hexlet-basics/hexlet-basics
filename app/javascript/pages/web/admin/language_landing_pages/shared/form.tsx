@@ -1,6 +1,5 @@
 import type { Method } from "@inertiajs/core";
 import {
-  Box,
   Button,
   Checkbox,
   Fieldset,
@@ -11,26 +10,24 @@ import {
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useAppForm } from "@/hooks/useAppForm";
-import { arrayToSelectData } from "@/lib/utils";
+import { arrayToSelectData, enumToOptions } from "@/lib/utils";
 import type {
   Language,
   LanguageLandingPage,
-  LanguageLandingPageCrud,
-  LanguageLandingPageQnaItemCrud,
+  LanguageLandingPageCreate,
+  LanguageLandingPageQnaItem,
+  LanguageLandingPageUpdate,
 } from "@/types";
+import QnaItemsModal from "./qna_items_modal";
 
 type Props = {
-  data: LanguageLandingPageCrud;
+  data: LanguageLandingPageCreate | LanguageLandingPageUpdate;
+  qnaItems: LanguageLandingPageQnaItem[];
   url: string;
   method?: Method;
   languages: Language[];
   landingPages: LanguageLandingPage[];
 };
-
-// const locales = [
-//   { name: "Russian", code: "ru" },
-//   { name: "English", code: "en" },
-// ];
 
 export default function Form({
   data,
@@ -38,14 +35,18 @@ export default function Form({
   url,
   method,
   languages,
+  qnaItems,
 }: Props) {
   const { t } = useTranslation();
 
-  const payload = data;
+  const stateEventsEnum = t(
+    ($) => $.models.attributes.language_landing_page["state/values"],
+    { returnObjects: true },
+  );
   const stateEventsSelectData = arrayToSelectData(
-    data.meta?.state_events ?? [],
-    "key",
-    "value",
+    enumToOptions(stateEventsEnum),
+    "id",
+    "name",
   );
   const languagesSelectData = arrayToSelectData(languages, "id", "slug");
   const landingPagesSelectData = arrayToSelectData(
@@ -54,76 +55,111 @@ export default function Form({
     "header",
   );
 
-  const { onSubmit, processing, form } = useAppForm(payload, {
+  const { onSubmit, processing, form } = useAppForm(data, {
     url,
     method: method ?? "post",
   });
 
-  const qnaCollection = form.useCollection<LanguageLandingPageQnaItemCrud>(
-    "qna_items_attributes",
-  );
-  const defaultQna: LanguageLandingPageQnaItemCrud = {
-    id: null,
-    question: "",
-    answer: "",
-    _destroy: false,
-    meta: { model: "", relations: {} },
-  };
-
   return (
     <form onSubmit={onSubmit}>
-      <Checkbox {...form.getCheckboxProps("main")} />
-      <Checkbox {...form.getCheckboxProps("listed")} />
-      <Checkbox {...form.getCheckboxProps("footer")} />
-      <Select {...form.getSelectProps("state", stateEventsSelectData)} />
-      <Select {...form.getSelectProps("language_id", languagesSelectData)} />
+      <Checkbox
+        label={t(($) => $.models.attributes.language_landing_page.main)}
+        {...form.getCheckboxProps("main")}
+      />
+      <Checkbox
+        label={t(($) => $.models.attributes.language_landing_page.listed)}
+        {...form.getCheckboxProps("listed")}
+      />
+      <Checkbox
+        label={t(($) => $.models.attributes.language_landing_page.footer)}
+        {...form.getCheckboxProps("footer")}
+      />
       <Select
+        label={t(($) => $.models.attributes.language_landing_page.state)}
+        {...form.getSelectProps("state", stateEventsSelectData)}
+      />
+      <Select
+        label={t(($) => $.models.attributes.language_landing_page.language_id)}
+        {...form.getSelectProps("language_id", languagesSelectData)}
+      />
+      <Select
+        label={t(
+          ($) =>
+            $.models.attributes.language_landing_page
+              .landing_page_to_redirect_id,
+        )}
         {...form.getSelectProps(
           "landing_page_to_redirect_id",
           landingPagesSelectData,
         )}
       />
-      <TextInput {...form.getInputProps("slug")} />
-      <TextInput {...form.getInputProps("order")} />
-      <TextInput {...form.getInputProps("meta_title")} />
-      <Textarea {...form.getInputProps("meta_description")} rows={3} />
-      <TextInput {...form.getInputProps("name")} />
-      <TextInput {...form.getInputProps("header")} />
-      <Textarea {...form.getInputProps("description")} rows={5} />
-      <TextInput {...form.getInputProps("used_in_header")} />
-      <Textarea {...form.getInputProps("used_in_description")} rows={5} />
-      <FileInput {...form.getFileInputProps("outcomes_image")} />
-      <TextInput {...form.getInputProps("outcomes_header")} />
-      <Textarea {...form.getInputProps("outcomes_description")} rows={5} />
-      <Fieldset>
-        {qnaCollection.forms.map((qnaForm) => (
-          <Box key={`${qnaForm.index}-${qnaForm.data.id ?? "new"}`}>
-            <input type="hidden" {...qnaForm.getInputProps("id")} />
-            <TextInput {...qnaForm.getInputProps("question")} />
-            <Textarea {...qnaForm.getInputProps("answer")} rows={5} />
-            <Checkbox {...qnaForm.getCheckboxProps("_destroy")} />
-            {!qnaForm.data.id && (
-              <Button
-                type="button"
-                variant="outline"
-                color="red"
-                mt="xs"
-                onClick={() => qnaCollection.remove(qnaForm.index)}
-              >
-                {t(($) => $.helpers.crud.remove)}
-              </Button>
-            )}
-          </Box>
-        ))}
-        <Button
-          type="button"
-          variant="light"
-          mt="sm"
-          onClick={() => qnaCollection.add(defaultQna)}
-        >
-          {t(($) => $.helpers.crud.add)}
-        </Button>
-      </Fieldset>
+      <TextInput
+        label={t(($) => $.models.attributes.base.slug)}
+        {...form.getInputProps("slug")}
+      />
+      <TextInput
+        label={t(($) => $.models.attributes.language_landing_page.order)}
+        {...form.getInputProps("order")}
+      />
+      <TextInput
+        label={t(($) => $.models.attributes.language_landing_page.meta_title)}
+        {...form.getInputProps("meta_title")}
+      />
+      <Textarea
+        label={t(
+          ($) => $.models.attributes.language_landing_page.meta_description,
+        )}
+        {...form.getInputProps("meta_description")}
+        rows={3}
+      />
+      <TextInput
+        label={t(($) => $.models.attributes.base.name)}
+        {...form.getInputProps("name")}
+      />
+      <TextInput
+        label={t(($) => $.models.attributes.base.header)}
+        {...form.getInputProps("header")}
+      />
+      <Textarea
+        label={t(($) => $.models.attributes.base.description)}
+        {...form.getInputProps("description")}
+        rows={5}
+      />
+      <TextInput
+        label={t(
+          ($) => $.models.attributes.language_landing_page.used_in_header,
+        )}
+        {...form.getInputProps("used_in_header")}
+      />
+      <Textarea
+        label={t(
+          ($) => $.models.attributes.language_landing_page.used_in_description,
+        )}
+        {...form.getInputProps("used_in_description")}
+        rows={5}
+      />
+      <FileInput
+        label={t(
+          ($) => $.models.attributes.language_landing_page.outcomes_image,
+        )}
+        {...form.getFileInputProps("outcomes_image")}
+      />
+      <TextInput
+        label={t(
+          ($) => $.models.attributes.language_landing_page.outcomes_header,
+        )}
+        {...form.getInputProps("outcomes_header")}
+      />
+      <Textarea
+        label={t(
+          ($) => $.models.attributes.language_landing_page.outcomes_description,
+        )}
+        {...form.getInputProps("outcomes_description")}
+        rows={5}
+      />
+      {data.id && (
+        <QnaItemsModal landingPageId={data.id} initialItems={qnaItems} />
+      )}
       <Button type="submit" loading={processing}>
         {t(($) => $.helpers.submit.save)}
       </Button>

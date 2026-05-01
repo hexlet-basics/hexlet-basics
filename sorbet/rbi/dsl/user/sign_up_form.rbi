@@ -8,17 +8,18 @@
 class User::SignUpForm
   include GeneratedAssociationMethods
   include GeneratedAttributeMethods
+  include EnumMethodsModule
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
-  sig { params(opts: T.untyped).returns(T.untyped) }
-  def activate(*opts); end
+  sig { params(opts: T.untyped, block: T.nilable(T.proc.void)).returns(T.untyped) }
+  def activate(*opts, &block); end
 
-  sig { params(opts: T.untyped).returns(T.untyped) }
-  def activate!(*opts); end
+  sig { params(opts: T.untyped, block: T.nilable(T.proc.void)).returns(T.untyped) }
+  def activate!(*opts, &block); end
 
-  sig { params(opts: T.untyped).returns(T.untyped) }
-  def activate_without_validation!(*opts); end
+  sig { params(opts: T.untyped, block: T.nilable(T.proc.void)).returns(T.untyped) }
+  def activate_without_validation!(*opts, &block); end
 
   sig { returns(T::Boolean) }
   def active?; end
@@ -29,14 +30,14 @@ class User::SignUpForm
   sig { params(unencrypted_password: T.untyped).returns(T.any(User::SignUpForm, FalseClass)) }
   def authenticate_password(unencrypted_password); end
 
-  sig { params(opts: T.untyped).returns(T.untyped) }
-  def mark_as_removed(*opts); end
+  sig { params(opts: T.untyped, block: T.nilable(T.proc.void)).returns(T.untyped) }
+  def mark_as_removed(*opts, &block); end
 
-  sig { params(opts: T.untyped).returns(T.untyped) }
-  def mark_as_removed!(*opts); end
+  sig { params(opts: T.untyped, block: T.nilable(T.proc.void)).returns(T.untyped) }
+  def mark_as_removed!(*opts, &block); end
 
-  sig { params(opts: T.untyped).returns(T.untyped) }
-  def mark_as_removed_without_validation!(*opts); end
+  sig { params(opts: T.untyped, block: T.nilable(T.proc.void)).returns(T.untyped) }
+  def mark_as_removed_without_validation!(*opts, &block); end
 
   sig { returns(T::Boolean) }
   def may_activate?; end
@@ -82,6 +83,9 @@ class User::SignUpForm
   class << self
     sig { params(args: T.untyped, block: T.nilable(T.proc.bind(PrivateAASMMachine).void)).returns(PrivateAASMMachine) }
     def aasm(*args, &block); end
+
+    sig { returns(T::Hash[T.any(String, Symbol), String]) }
+    def contact_methods; end
 
     sig do
       params(
@@ -179,8 +183,34 @@ class User::SignUpForm
     end
     def create_or_find_by!(attributes, &block); end
 
+    sig do
+      params(
+        records: T.any(::User::SignUpForm, Integer, String, T::Enumerable[T.any(::User::SignUpForm, Integer, String, T::Enumerable[::User::SignUpForm])])
+      ).returns(Integer)
+    end
+    def delete(*records); end
+
+    sig { returns(Integer) }
+    def delete_all; end
+
+    sig { params(args: T.untyped).returns(Integer) }
+    def delete_by(*args); end
+
+    sig do
+      params(
+        records: T.any(::User::SignUpForm, Integer, String, T::Enumerable[T.any(::User::SignUpForm, Integer, String, T::Enumerable[::User::SignUpForm])])
+      ).returns(T::Array[::User::SignUpForm])
+    end
+    def destroy(*records); end
+
     sig { returns(T::Array[::User::SignUpForm]) }
     def destroy_all; end
+
+    sig { returns(T::Array[::User::SignUpForm]) }
+    def destroy_all; end
+
+    sig { params(args: T.untyped).returns(T::Array[::User::SignUpForm]) }
+    def destroy_by(*args); end
 
     sig { params(conditions: T.untyped).returns(T::Boolean) }
     def exists?(conditions = :none); end
@@ -221,7 +251,8 @@ class User::SignUpForm
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         block: T.proc.params(object: ::User::SignUpForm).void
       ).void
     end
@@ -231,10 +262,11 @@ class User::SignUpForm
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol])
       ).returns(T::Enumerator[::User::SignUpForm])
     end
-    def find_each(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, order: :asc, &block); end
+    def find_each(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, cursor: primary_key, order: :asc, &block); end
 
     sig do
       params(
@@ -242,7 +274,8 @@ class User::SignUpForm
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         block: T.proc.params(object: T::Array[::User::SignUpForm]).void
       ).void
     end
@@ -252,10 +285,11 @@ class User::SignUpForm
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol
-      ).returns(T::Enumerator[T::Enumerator[::User::SignUpForm]])
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol])
+      ).returns(T::Enumerator[T::Array[::User::SignUpForm]])
     end
-    def find_in_batches(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, order: :asc, &block); end
+    def find_in_batches(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, cursor: primary_key, order: :asc, &block); end
 
     sig do
       params(
@@ -327,7 +361,7 @@ class User::SignUpForm
     sig { returns(::User::SignUpForm) }
     def fourth!; end
 
-    sig { returns(Array) }
+    sig { returns(T::Array[::Integer]) }
     def ids; end
 
     sig do
@@ -337,7 +371,8 @@ class User::SignUpForm
         finish: T.untyped,
         load: T.untyped,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         use_ranges: T.untyped,
         block: T.proc.params(object: PrivateRelation).void
       ).void
@@ -349,11 +384,12 @@ class User::SignUpForm
         finish: T.untyped,
         load: T.untyped,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         use_ranges: T.untyped
       ).returns(::ActiveRecord::Batches::BatchEnumerator)
     end
-    def in_batches(of: 1000, start: nil, finish: nil, load: false, error_on_ignore: nil, order: :asc, use_ranges: nil, &block); end
+    def in_batches(of: 1000, start: nil, finish: nil, load: false, error_on_ignore: nil, cursor: primary_key, order: :asc, use_ranges: nil, &block); end
 
     sig { params(record: T.untyped).returns(T::Boolean) }
     def include?(record); end
@@ -449,6 +485,8 @@ class User::SignUpForm
     def third_to_last!; end
   end
 
+  module EnumMethodsModule; end
+
   module GeneratedAssociationMethods
     sig { returns(T::Array[T.untyped]) }
     def account_ids; end
@@ -479,6 +517,20 @@ class User::SignUpForm
     def assistant_messages=(value); end
 
     sig { returns(T::Array[T.untyped]) }
+    def base_tag_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def base_tag_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :base_tags, through: :taggings`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::ActsAsTaggableOn::Tag::PrivateCollectionProxy) }
+    def base_tags; end
+
+    sig { params(value: T::Enumerable[::ActsAsTaggableOn::Tag]).void }
+    def base_tags=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
     def blog_post_ids; end
 
     sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
@@ -491,6 +543,35 @@ class User::SignUpForm
 
     sig { params(value: T::Enumerable[::BlogPost]).void }
     def blog_posts=(value); end
+
+    sig { returns(T.nilable(::BookRequest)) }
+    def book_request; end
+
+    sig { params(value: T.nilable(::BookRequest)).void }
+    def book_request=(value); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::BookRequest) }
+    def build_book_request(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::BookRequest) }
+    def create_book_request(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::BookRequest) }
+    def create_book_request!(*args, &blk); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def event_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def event_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :events, through: :visits`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::Ahoy::Event::PrivateCollectionProxy) }
+    def events; end
+
+    sig { params(value: T::Enumerable[::Ahoy::Event]).void }
+    def events=(value); end
 
     sig { returns(T::Array[T.untyped]) }
     def language_member_ids; end
@@ -505,6 +586,20 @@ class User::SignUpForm
 
     sig { params(value: T::Enumerable[::Language::Member]).void }
     def language_members=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def lead_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def lead_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :leads`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::Lead::PrivateCollectionProxy) }
+    def leads; end
+
+    sig { params(value: T::Enumerable[::Lead]).void }
+    def leads=(value); end
 
     sig { returns(T::Array[T.untyped]) }
     def lesson_ids; end
@@ -534,6 +629,12 @@ class User::SignUpForm
     sig { params(value: T::Enumerable[::Language::Lesson]).void }
     def lessons=(value); end
 
+    sig { returns(T.nilable(::BookRequest)) }
+    def reload_book_request; end
+
+    sig { void }
+    def reset_book_request; end
+
     sig { returns(T::Array[T.untyped]) }
     def review_ids; end
 
@@ -549,6 +650,20 @@ class User::SignUpForm
     def reviews=(value); end
 
     sig { returns(T::Array[T.untyped]) }
+    def session_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def session_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :sessions`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::Session::PrivateCollectionProxy) }
+    def sessions; end
+
+    sig { params(value: T::Enumerable[::Session]).void }
+    def sessions=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
     def survey_answer_ids; end
 
     sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
@@ -561,6 +676,118 @@ class User::SignUpForm
 
     sig { params(value: T::Enumerable[::Survey::Answer]).void }
     def survey_answers=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def survey_answers_survey_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def survey_answers_survey_ids=(ids); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def survey_answers_survey_item_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def survey_answers_survey_item_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :survey_answers_survey_items, through: :survey_answers`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::Survey::Item::PrivateCollectionProxy) }
+    def survey_answers_survey_items; end
+
+    sig { params(value: T::Enumerable[::Survey::Item]).void }
+    def survey_answers_survey_items=(value); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :survey_answers_surveys, through: :survey_answers`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::Survey::PrivateCollectionProxy) }
+    def survey_answers_surveys; end
+
+    sig { params(value: T::Enumerable[::Survey]).void }
+    def survey_answers_surveys=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def survey_scenario_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def survey_scenario_ids=(ids); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def survey_scenario_member_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def survey_scenario_member_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :survey_scenario_members`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::Survey::Scenario::Member::PrivateCollectionProxy) }
+    def survey_scenario_members; end
+
+    sig { params(value: T::Enumerable[::Survey::Scenario::Member]).void }
+    def survey_scenario_members=(value); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :survey_scenarios, through: :survey_scenario_members`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::Survey::Scenario::PrivateCollectionProxy) }
+    def survey_scenarios; end
+
+    sig { params(value: T::Enumerable[::Survey::Scenario]).void }
+    def survey_scenarios=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def tag_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def tag_ids=(ids); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def tag_tagging_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def tag_tagging_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :tag_taggings`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::ActsAsTaggableOn::Tagging::PrivateCollectionProxy) }
+    def tag_taggings; end
+
+    sig { params(value: T::Enumerable[::ActsAsTaggableOn::Tagging]).void }
+    def tag_taggings=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def tagging_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def tagging_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :taggings`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::ActsAsTaggableOn::Tagging::PrivateCollectionProxy) }
+    def taggings; end
+
+    sig { params(value: T::Enumerable[::ActsAsTaggableOn::Tagging]).void }
+    def taggings=(value); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :tags, through: :tag_taggings`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::ActsAsTaggableOn::Tag::PrivateCollectionProxy) }
+    def tags; end
+
+    sig { params(value: T::Enumerable[::ActsAsTaggableOn::Tag]).void }
+    def tags=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def visit_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def visit_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :visits`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::Ahoy::Visit::PrivateCollectionProxy) }
+    def visits; end
+
+    sig { params(value: T::Enumerable[::Ahoy::Visit]).void }
+    def visits=(value); end
   end
 
   module GeneratedAssociationRelationMethods
@@ -643,6 +870,15 @@ class User::SignUpForm
     def none(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def not_phone_contact_method(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def not_telegram_contact_method(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def not_whatsapp_contact_method(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def null_relation?(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
@@ -659,6 +895,9 @@ class User::SignUpForm
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def order(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def phone_contact_method(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def preload(*args, &blk); end
@@ -702,13 +941,23 @@ class User::SignUpForm
     def structurally_compatible?(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def telegram_contact_method(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def uniq!(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def unscope(*args, &blk); end
 
+    sig { returns(PrivateAssociationRelation) }
+    sig { type_parameters(:U).params(block: T.proc.returns(T.type_parameter(:U))).returns(T.type_parameter(:U)) }
+    def unscoped(&block); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def waiting_confirmation(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def whatsapp_contact_method(*args, &blk); end
 
     sig { returns(PrivateAssociationRelationWhereChain) }
     sig { params(args: T.untyped).returns(PrivateAssociationRelation) }
@@ -749,7 +998,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
     def admin_change_to_be_saved; end
 
-    sig { params(from: T.nilable(T::Boolean), to: T.nilable(T::Boolean)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def admin_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(T::Boolean)) }
@@ -758,7 +1007,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
     def admin_previous_change; end
 
-    sig { params(from: T.nilable(T::Boolean), to: T.nilable(T::Boolean)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def admin_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(T::Boolean)) }
@@ -794,7 +1043,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
     def assistant_messages_count_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::Integer), to: T.nilable(::Integer)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def assistant_messages_count_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -803,7 +1052,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
     def assistant_messages_count_previous_change; end
 
-    sig { params(from: T.nilable(::Integer), to: T.nilable(::Integer)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def assistant_messages_count_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -839,7 +1088,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def confirmation_token_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def confirmation_token_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -848,7 +1097,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def confirmation_token_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def confirmation_token_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -859,6 +1108,96 @@ class User::SignUpForm
 
     sig { void }
     def confirmation_token_will_change!; end
+
+    sig { returns(T.nilable(::String)) }
+    def contact_method; end
+
+    sig { params(value: T.nilable(T.any(::String, ::Symbol))).returns(T.nilable(T.any(::String, ::Symbol))) }
+    def contact_method=(value); end
+
+    sig { returns(T::Boolean) }
+    def contact_method?; end
+
+    sig { returns(T.nilable(::String)) }
+    def contact_method_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def contact_method_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def contact_method_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def contact_method_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def contact_method_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def contact_method_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def contact_method_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def contact_method_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def contact_method_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def contact_method_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def contact_method_was; end
+
+    sig { void }
+    def contact_method_will_change!; end
+
+    sig { returns(T.nilable(::String)) }
+    def contact_value; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def contact_value=(value); end
+
+    sig { returns(T::Boolean) }
+    def contact_value?; end
+
+    sig { returns(T.nilable(::String)) }
+    def contact_value_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def contact_value_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def contact_value_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def contact_value_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def contact_value_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def contact_value_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def contact_value_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def contact_value_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def contact_value_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def contact_value_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def contact_value_was; end
+
+    sig { void }
+    def contact_value_will_change!; end
 
     sig { returns(::ActiveSupport::TimeWithZone) }
     def created_at; end
@@ -884,7 +1223,7 @@ class User::SignUpForm
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def created_at_change_to_be_saved; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def created_at_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -893,7 +1232,7 @@ class User::SignUpForm
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def created_at_previous_change; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def created_at_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -929,7 +1268,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def email_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def email_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -956,7 +1295,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def email_delivery_state_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def email_delivery_state_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -965,7 +1304,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def email_delivery_state_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def email_delivery_state_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -983,7 +1322,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def email_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def email_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1019,7 +1358,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def facebook_uid_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def facebook_uid_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1028,7 +1367,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def facebook_uid_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def facebook_uid_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1064,7 +1403,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def first_name_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def first_name_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1073,7 +1412,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def first_name_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def first_name_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1109,7 +1448,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
     def github_uid_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::Integer), to: T.nilable(::Integer)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def github_uid_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -1118,7 +1457,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
     def github_uid_previous_change; end
 
-    sig { params(from: T.nilable(::Integer), to: T.nilable(::Integer)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def github_uid_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -1154,7 +1493,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
     def help_change_to_be_saved; end
 
-    sig { params(from: T.nilable(T::Boolean), to: T.nilable(T::Boolean)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def help_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(T::Boolean)) }
@@ -1163,7 +1502,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
     def help_previous_change; end
 
-    sig { params(from: T.nilable(T::Boolean), to: T.nilable(T::Boolean)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def help_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(T::Boolean)) }
@@ -1199,7 +1538,7 @@ class User::SignUpForm
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_change_to_be_saved; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -1208,7 +1547,7 @@ class User::SignUpForm
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_previous_change; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -1238,7 +1577,7 @@ class User::SignUpForm
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_value_change_to_be_saved; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_value_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -1247,7 +1586,7 @@ class User::SignUpForm
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_value_previous_change; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_value_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -1289,7 +1628,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def last_name_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def last_name_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1298,7 +1637,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def last_name_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def last_name_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1334,7 +1673,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def locale_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def locale_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1343,7 +1682,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def locale_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def locale_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1379,7 +1718,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def nickname_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def nickname_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1388,7 +1727,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def nickname_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def nickname_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1424,7 +1763,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def password_digest_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def password_digest_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1433,7 +1772,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def password_digest_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def password_digest_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1445,51 +1784,6 @@ class User::SignUpForm
     sig { void }
     def password_digest_will_change!; end
 
-    sig { returns(T.nilable(::String)) }
-    def reset_password_token; end
-
-    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
-    def reset_password_token=(value); end
-
-    sig { returns(T::Boolean) }
-    def reset_password_token?; end
-
-    sig { returns(T.nilable(::String)) }
-    def reset_password_token_before_last_save; end
-
-    sig { returns(T.untyped) }
-    def reset_password_token_before_type_cast; end
-
-    sig { returns(T::Boolean) }
-    def reset_password_token_came_from_user?; end
-
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
-    def reset_password_token_change; end
-
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
-    def reset_password_token_change_to_be_saved; end
-
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
-    def reset_password_token_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(::String)) }
-    def reset_password_token_in_database; end
-
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
-    def reset_password_token_previous_change; end
-
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
-    def reset_password_token_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(::String)) }
-    def reset_password_token_previously_was; end
-
-    sig { returns(T.nilable(::String)) }
-    def reset_password_token_was; end
-
-    sig { void }
-    def reset_password_token_will_change!; end
-
     sig { void }
     def restore_admin!; end
 
@@ -1498,6 +1792,12 @@ class User::SignUpForm
 
     sig { void }
     def restore_confirmation_token!; end
+
+    sig { void }
+    def restore_contact_method!; end
+
+    sig { void }
+    def restore_contact_value!; end
 
     sig { void }
     def restore_created_at!; end
@@ -1539,13 +1839,13 @@ class User::SignUpForm
     def restore_password_digest!; end
 
     sig { void }
-    def restore_reset_password_token!; end
-
-    sig { void }
     def restore_state!; end
 
     sig { void }
     def restore_state_event!; end
+
+    sig { void }
+    def restore_tag_list!; end
 
     sig { void }
     def restore_updated_at!; end
@@ -1553,122 +1853,134 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
     def saved_change_to_admin; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_admin?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_admin?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
     def saved_change_to_assistant_messages_count; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_assistant_messages_count?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_assistant_messages_count?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_confirmation_token; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_confirmation_token?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_confirmation_token?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_contact_method; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_contact_method?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_contact_value; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_contact_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def saved_change_to_created_at; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_created_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_email; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_email?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_email?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_email_delivery_state; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_email_delivery_state?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_email_delivery_state?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_facebook_uid; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_facebook_uid?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_facebook_uid?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_first_name; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_first_name?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_first_name?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
     def saved_change_to_github_uid; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_github_uid?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_github_uid?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
     def saved_change_to_help; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_help?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_help?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_id; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_id_value; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_id_value?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_id_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_last_name; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_last_name?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_last_name?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_locale; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_locale?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_locale?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_nickname; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_nickname?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_nickname?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_password_digest; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_password_digest?; end
-
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
-    def saved_change_to_reset_password_token; end
-
-    sig { returns(T::Boolean) }
-    def saved_change_to_reset_password_token?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_password_digest?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_state; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_state?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_state?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_state_event; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_state_event?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_state_event?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([T.untyped, T.untyped])) }
+    def saved_change_to_tag_list; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_tag_list?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def saved_change_to_updated_at; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_updated_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_updated_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
     def state; end
@@ -1694,7 +2006,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def state_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def state_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(::String) }
@@ -1721,7 +2033,7 @@ class User::SignUpForm
     sig { returns(T.nilable([::String, ::String])) }
     def state_event_change_to_be_saved; end
 
-    sig { params(from: ::String, to: ::String).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def state_event_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1730,7 +2042,7 @@ class User::SignUpForm
     sig { returns(T.nilable([::String, ::String])) }
     def state_event_previous_change; end
 
-    sig { params(from: ::String, to: ::String).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def state_event_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1748,7 +2060,7 @@ class User::SignUpForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def state_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def state_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1759,6 +2071,51 @@ class User::SignUpForm
 
     sig { void }
     def state_will_change!; end
+
+    sig { returns(T.untyped) }
+    def tag_list; end
+
+    sig { params(value: T.untyped).returns(T.untyped) }
+    def tag_list=(value); end
+
+    sig { returns(T::Boolean) }
+    def tag_list?; end
+
+    sig { returns(T.untyped) }
+    def tag_list_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def tag_list_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def tag_list_came_from_user?; end
+
+    sig { returns(T.nilable([T.untyped, T.untyped])) }
+    def tag_list_change; end
+
+    sig { returns(T.nilable([T.untyped, T.untyped])) }
+    def tag_list_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def tag_list_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.untyped) }
+    def tag_list_in_database; end
+
+    sig { returns(T.nilable([T.untyped, T.untyped])) }
+    def tag_list_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def tag_list_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.untyped) }
+    def tag_list_previously_was; end
+
+    sig { returns(T.untyped) }
+    def tag_list_was; end
+
+    sig { void }
+    def tag_list_will_change!; end
 
     sig { returns(::ActiveSupport::TimeWithZone) }
     def updated_at; end
@@ -1784,7 +2141,7 @@ class User::SignUpForm
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def updated_at_change_to_be_saved; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def updated_at_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -1793,7 +2150,7 @@ class User::SignUpForm
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def updated_at_previous_change; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def updated_at_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -1805,65 +2162,71 @@ class User::SignUpForm
     sig { void }
     def updated_at_will_change!; end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_admin?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_admin?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_assistant_messages_count?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_assistant_messages_count?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_confirmation_token?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_confirmation_token?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_created_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_contact_method?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_email?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_contact_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_email_delivery_state?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_facebook_uid?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_email?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_first_name?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_email_delivery_state?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_github_uid?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_facebook_uid?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_help?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_first_name?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_github_uid?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_id_value?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_help?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_last_name?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_locale?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_id_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_nickname?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_last_name?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_password_digest?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_locale?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_reset_password_token?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_nickname?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_state?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_password_digest?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_state_event?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_state?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_updated_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_state_event?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_tag_list?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_updated_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
   end
 
   module GeneratedRelationMethods
@@ -1946,6 +2309,15 @@ class User::SignUpForm
     def none(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def not_phone_contact_method(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def not_telegram_contact_method(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def not_whatsapp_contact_method(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def null_relation?(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
@@ -1962,6 +2334,9 @@ class User::SignUpForm
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def order(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def phone_contact_method(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def preload(*args, &blk); end
@@ -2005,13 +2380,23 @@ class User::SignUpForm
     def structurally_compatible?(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def telegram_contact_method(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def uniq!(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def unscope(*args, &blk); end
 
+    sig { returns(PrivateRelation) }
+    sig { type_parameters(:U).params(block: T.proc.returns(T.type_parameter(:U))).returns(T.type_parameter(:U)) }
+    def unscoped(&block); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def waiting_confirmation(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def whatsapp_contact_method(*args, &blk); end
 
     sig { returns(PrivateRelationWhereChain) }
     sig { params(args: T.untyped).returns(PrivateRelation) }

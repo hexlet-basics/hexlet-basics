@@ -18,7 +18,7 @@ class Web::Admin::LanguageLandingPagesControllerTest < ActionDispatch::Integrati
   def test_create
     slug = "racket"
 
-    params = { language_landing_page: { slug: slug } }
+    params = { data: { slug: slug } }
     post admin_language_landing_pages_url, params: params
     assert_response :redirect
 
@@ -35,7 +35,7 @@ class Web::Admin::LanguageLandingPagesControllerTest < ActionDispatch::Integrati
   def test_update
     landing_page = language_landing_pages("php-ru")
 
-    params = { language_landing_page: { description: "new description" } }
+    params = { data: { description: "new description" } }
     patch admin_language_landing_page_url(landing_page), params: params
     assert_response :redirect
 

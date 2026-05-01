@@ -6,6 +6,17 @@
 
 
 module ActiveStorage::Streaming
+  include GeneratedInstanceMethods
+
   mixes_in_class_methods ::ActionController::Rendering::ClassMethods
   mixes_in_class_methods ::ActionController::Live::ClassMethods
+  mixes_in_class_methods GeneratedClassMethods
+
+  module GeneratedClassMethods
+    def live_streaming_excluded_keys; end
+    def live_streaming_excluded_keys=(value); end
+    def live_streaming_excluded_keys?; end
+  end
+
+  module GeneratedInstanceMethods; end
 end

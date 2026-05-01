@@ -1,12 +1,12 @@
 import { useTranslation } from "react-i18next";
 import AdminLayout from "@/layouts/AdminLayout";
 import * as Routes from "@/routes.js";
-import type BlogPostCrud from "@/types/serializers/BlogPostCrud";
+import type BlogPostCreate from "@/types/serializers/BlogPostCreate";
 import Form from "./shared/form";
 import Menu from "./shared/menu";
 
 type Props = {
-  blogPostDto: BlogPostCrud;
+  blogPostDto: BlogPostCreate;
 };
 
 export default function New({ blogPostDto }: Props) {

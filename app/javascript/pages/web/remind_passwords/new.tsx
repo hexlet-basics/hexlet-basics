@@ -34,6 +34,7 @@ export default function New({ passwordReminder }: Props) {
           >
             <form onSubmit={onSubmit}>
               <TextInput
+                label={t(($) => $.models.attributes.user.email)}
                 {...form.getInputProps("email")}
                 required
                 autoFocus

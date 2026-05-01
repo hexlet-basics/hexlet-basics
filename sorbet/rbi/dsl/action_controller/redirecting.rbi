@@ -12,6 +12,10 @@ module ActionController::Redirecting
   mixes_in_class_methods GeneratedClassMethods
 
   module GeneratedClassMethods
+    def _allowed_redirect_hosts; end
+    def _allowed_redirect_hosts=(value); end
+    def allowed_redirect_hosts_permissions; end
+    def allowed_redirect_hosts_permissions=(value); end
     def default_url_options; end
     def default_url_options=(value); end
     def default_url_options?; end

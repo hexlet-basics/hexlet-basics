@@ -1,0 +1,93 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ include "codebasics.fullname" . }}-job-deployment"
+  labels:
+    {{- include "codebasics.labels" . | nindent 4 }}
+    app.kubernetes.io/component: "job"
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      {{- include "codebasics.selectorLabels" (dict "context" . "component" "job") | nindent 6 }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        {{- include "codebasics.labels" . | nindent 8 }}
+        app.kubernetes.io/component: "job"
+    spec:
+      nodeSelector:
+        group: "{{ .Release.Namespace }}"
+
+      imagePullSecrets:
+        - name: docker-config
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: role
+                    operator: In
+                    values:
+                      - service
+
+      volumes:
+        - name: users-code-path
+          hostPath:
+            path: /tmp/hexlet-basics
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+        - name: docker-secret
+          secret:
+            secretName: docker-config
+            items:
+              - key: .dockerconfigjson
+                path: config.json
+
+      containers:
+        - name: jobs
+          imagePullPolicy: Always
+          image: "{{ .Values.appImageRepository }}:{{ .Values.version }}"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              memory: "300Mi"
+              cpu: "10m"
+            limits:
+              memory: '600Mi'
+          command: ["bin/jobs"]
+          volumeMounts:
+            - mountPath: /tmp/hexlet-basics
+              name: users-code-path
+            - mountPath: /var/run/docker.sock
+              name: docker-sock
+            - name: docker-secret
+              mountPath: /home/rails/.docker
+          envFrom:
+            - secretRef:
+                name: codebasics-environment-secrets
+          env:
+            - name: HEXLET_BASICS_RELEASE_VERSION
+              value: {{ .Values.version | quote }}
+            - name: RAILS_MAX_THREADS
+              value: "5"

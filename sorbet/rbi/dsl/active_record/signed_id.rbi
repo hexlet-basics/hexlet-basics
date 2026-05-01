@@ -11,6 +11,8 @@ module ActiveRecord::SignedId
   mixes_in_class_methods GeneratedClassMethods
 
   module GeneratedClassMethods
+    def _signed_id_verifier; end
+    def _signed_id_verifier=(value); end
     def signed_id_verifier_secret; end
     def signed_id_verifier_secret=(value); end
     def signed_id_verifier_secret?; end

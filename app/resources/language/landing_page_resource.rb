@@ -24,9 +24,10 @@ class Language::LandingPageResource < ApplicationResource
     :outcomes_description
 
   typelize slug: :string
-  typelize header: :string
+  typelize name: :string
   typelize meta_title: :string
   typelize meta_description: :string
+  typelize header: :string
   typelize description: :string
 
   typelize :number

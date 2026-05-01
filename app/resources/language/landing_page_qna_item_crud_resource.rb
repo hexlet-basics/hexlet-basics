@@ -1,16 +1,4 @@
 class Language::LandingPageQnaItemCrudResource < ApplicationResource
-  class MetaResource < ApplicationResource
-    typelize_from Language::LandingPage::QnaItem
-
-    typelize model: :string
-    typelize relations: "Record<string, string>"
-
-    attribute(:model) { it.class.superclass.form_key }
-    attribute(:relations) do
-      it.class.respond_to?(:nested_attributes_mapping) ? it.class.nested_attributes_mapping : {}
-    end
-  end
-
   typelize_from Language::LandingPage::QnaItem
   # root_key :data
 
@@ -24,6 +12,4 @@ class Language::LandingPageQnaItemCrudResource < ApplicationResource
   attribute :_destroy do
     false
   end
-
-  has_one :meta, source: proc { |_params| self }, resource: MetaResource
 end

@@ -20,182 +20,110 @@
         "type": "string"
       }
     },
-    "nginx": {
-      "type": "object",
-      "properties": {
-        "image": {
-          "type": "object",
-          "properties": {
-            "repository": {
-              "type": "string",
-              "minLength": 1
-            }
-          },
-          "required": ["repository"]
-        }
-      },
-      "required": ["image"]
+    "nginxImageRepository": {
+      "type": "string",
+      "minLength": 1
     },
-    "app": {
-      "type": "object",
-      "properties": {
-        "image": {
-          "type": "object",
-          "properties": {
-            "repository": {
-              "type": "string",
-              "minLength": 1
-            }
-          },
-          "required": ["repository"]
-        }
-      },
-      "required": ["image"]
+    "appImageRepository": {
+      "type": "string",
+      "minLength": 1
     },
-    "gateway": {
-      "type": "object",
-      "properties": {
-        "className": {
-          "type": "string",
-          "minLength": 1
-        },
-        "address": {
-          "type": "object",
-          "properties": {
-            "type": {
-              "type": "string",
-              "minLength": 1
-            },
-            "value": {
-              "type": "string",
-              "minLength": 1
-            }
-          },
-          "required": ["type", "value"]
-        },
-        "subnets": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "certificateId": {
-          "type": "string",
-          "minLength": 1
-        },
-        "hosts": {
-          "type": "object",
-          "properties": {
-            "primary": {
-              "type": "string",
-              "minLength": 1
-            },
-            "wildcard": {
-              "type": "string",
-              "minLength": 1
-            },
-            "secondary": {
-              "type": "string",
-              "minLength": 1
-            }
-          },
-          "required": ["primary", "wildcard", "secondary"]
-        },
-        "backend": {
-          "type": "object",
-          "properties": {
-            "useHttp2": {
-              "type": "boolean"
-            },
-            "upgradeTypes": {
-              "type": "string"
-            }
-          },
-          "required": ["useHttp2", "upgradeTypes"]
-        }
-      },
-      "required": ["className", "address", "subnets", "certificateId", "hosts", "backend"]
+    "gatewayClassName": {
+      "type": "string",
+      "minLength": 1
     },
-    "autoscaling": {
-      "type": "object",
-      "properties": {
-        "web": {
-          "type": "object",
-          "properties": {
-            "enabled": {
-              "type": "boolean"
-            },
-            "minReplicas": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "maxReplicas": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "targetCpuUtilizationPercentage": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 100
-            },
-            "targetMemoryUtilizationPercentage": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 100
-            }
-          },
-          "required": [
-            "enabled",
-            "minReplicas",
-            "maxReplicas",
-            "targetCpuUtilizationPercentage",
-            "targetMemoryUtilizationPercentage"
-          ]
-        }
-      },
-      "required": ["web"]
+    "gatewayAddressType": {
+      "type": "string",
+      "minLength": 1
     },
-    "networkPolicy": {
-      "type": "object",
-      "properties": {
-        "enabled": {
-          "type": "boolean"
-        }
-      },
-      "required": ["enabled"]
+    "gatewayAddressValue": {
+      "type": "string",
+      "minLength": 1
     },
-    "secrets": {
+    "gatewaySubnetIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "gatewayCertificateId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "primaryHost": {
+      "type": "string",
+      "minLength": 1
+    },
+    "wildcardHost": {
+      "type": "string",
+      "minLength": 1
+    },
+    "secondaryHost": {
+      "type": "string",
+      "minLength": 1
+    },
+    "gatewayBackendUseHttp2": {
+      "type": "boolean"
+    },
+    "gatewayBackendUpgradeType": {
+      "type": "string",
+      "minLength": 1
+    },
+    "webAutoscalingEnabled": {
+      "type": "boolean"
+    },
+    "webAutoscalingMinReplicas": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "webAutoscalingMaxReplicas": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "webAutoscalingTargetCpuUtilizationPercentage": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100
+    },
+    "webAutoscalingTargetMemoryUtilizationPercentage": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100
+    },
+    "networkPolicyEnabled": {
+      "type": "boolean"
+    },
+    "dockerConfig": {
+      "type": "string"
+    },
+    "appEnv": {
       "type": "object",
-      "properties": {
-        "docker": {
-          "type": "object",
-          "properties": {
-            "config": {
-              "type": "string"
-            }
-          }
-        },
-        "codeBasics": {
-          "type": "object",
-          "properties": {
-            "env": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "string"
-              }
-            }
-          }
-        }
+      "additionalProperties": {
+        "type": "string"
       }
     }
   },
   "required": [
     "version",
-    "nginx",
-    "app",
-    "gateway",
-    "autoscaling",
-    "networkPolicy",
-    "secrets"
+    "nginxImageRepository",
+    "appImageRepository",
+    "gatewayClassName",
+    "gatewayAddressType",
+    "gatewayAddressValue",
+    "gatewaySubnetIds",
+    "gatewayCertificateId",
+    "primaryHost",
+    "wildcardHost",
+    "secondaryHost",
+    "gatewayBackendUseHttp2",
+    "gatewayBackendUpgradeType",
+    "webAutoscalingEnabled",
+    "webAutoscalingMinReplicas",
+    "webAutoscalingMaxReplicas",
+    "webAutoscalingTargetCpuUtilizationPercentage",
+    "webAutoscalingTargetMemoryUtilizationPercentage",
+    "networkPolicyEnabled",
+    "dockerConfig",
+    "appEnv"
   ]
 }

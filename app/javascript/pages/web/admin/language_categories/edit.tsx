@@ -1,16 +1,25 @@
 import { useTranslation } from "react-i18next";
 import AdminLayout from "@/layouts/AdminLayout";
 import * as Routes from "@/routes.js";
-import type { LanguageCategoryCrud } from "@/types";
+import type {
+  LanguageCategoryQnaItem,
+  LanguageCategoryUpdate,
+  LanguageLandingPageForLists,
+} from "@/types";
 import Form from "./shared/form";
 import { Menu } from "./shared/menu";
 
 type Props = {
-  categoryDto: LanguageCategoryCrud;
-  // courseVersions: LanguageVersion[];
+  categoryDto: LanguageCategoryUpdate;
+  qnaItems: LanguageCategoryQnaItem[];
+  landingPagesForCategories: LanguageLandingPageForLists[];
 };
 
-export default function Edit({ categoryDto }: Props) {
+export default function Edit({
+  categoryDto,
+  qnaItems,
+  landingPagesForCategories,
+}: Props) {
   const { t } = useTranslation();
 
   return (
@@ -23,6 +32,8 @@ export default function Edit({ categoryDto }: Props) {
       <Form
         method="patch"
         data={categoryDto}
+        qnaItems={qnaItems}
+        landingPagesForCategories={landingPagesForCategories}
         url={Routes.admin_language_category_path(categoryDto.id)}
       />
     </AdminLayout>

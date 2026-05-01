@@ -134,8 +134,34 @@ class Admin::LanguageCategoryForm
     end
     def create_or_find_by!(attributes, &block); end
 
+    sig do
+      params(
+        records: T.any(::Admin::LanguageCategoryForm, Integer, String, T::Enumerable[T.any(::Admin::LanguageCategoryForm, Integer, String, T::Enumerable[::Admin::LanguageCategoryForm])])
+      ).returns(Integer)
+    end
+    def delete(*records); end
+
+    sig { returns(Integer) }
+    def delete_all; end
+
+    sig { params(args: T.untyped).returns(Integer) }
+    def delete_by(*args); end
+
+    sig do
+      params(
+        records: T.any(::Admin::LanguageCategoryForm, Integer, String, T::Enumerable[T.any(::Admin::LanguageCategoryForm, Integer, String, T::Enumerable[::Admin::LanguageCategoryForm])])
+      ).returns(T::Array[::Admin::LanguageCategoryForm])
+    end
+    def destroy(*records); end
+
     sig { returns(T::Array[::Admin::LanguageCategoryForm]) }
     def destroy_all; end
+
+    sig { returns(T::Array[::Admin::LanguageCategoryForm]) }
+    def destroy_all; end
+
+    sig { params(args: T.untyped).returns(T::Array[::Admin::LanguageCategoryForm]) }
+    def destroy_by(*args); end
 
     sig { params(conditions: T.untyped).returns(T::Boolean) }
     def exists?(conditions = :none); end
@@ -176,7 +202,8 @@ class Admin::LanguageCategoryForm
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         block: T.proc.params(object: ::Admin::LanguageCategoryForm).void
       ).void
     end
@@ -186,10 +213,11 @@ class Admin::LanguageCategoryForm
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol])
       ).returns(T::Enumerator[::Admin::LanguageCategoryForm])
     end
-    def find_each(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, order: :asc, &block); end
+    def find_each(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, cursor: primary_key, order: :asc, &block); end
 
     sig do
       params(
@@ -197,7 +225,8 @@ class Admin::LanguageCategoryForm
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         block: T.proc.params(object: T::Array[::Admin::LanguageCategoryForm]).void
       ).void
     end
@@ -207,10 +236,11 @@ class Admin::LanguageCategoryForm
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol
-      ).returns(T::Enumerator[T::Enumerator[::Admin::LanguageCategoryForm]])
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol])
+      ).returns(T::Enumerator[T::Array[::Admin::LanguageCategoryForm]])
     end
-    def find_in_batches(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, order: :asc, &block); end
+    def find_in_batches(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, cursor: primary_key, order: :asc, &block); end
 
     sig do
       params(
@@ -282,7 +312,7 @@ class Admin::LanguageCategoryForm
     sig { returns(::Admin::LanguageCategoryForm) }
     def fourth!; end
 
-    sig { returns(Array) }
+    sig { returns(T::Array[::Integer]) }
     def ids; end
 
     sig do
@@ -292,7 +322,8 @@ class Admin::LanguageCategoryForm
         finish: T.untyped,
         load: T.untyped,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         use_ranges: T.untyped,
         block: T.proc.params(object: PrivateRelation).void
       ).void
@@ -304,11 +335,12 @@ class Admin::LanguageCategoryForm
         finish: T.untyped,
         load: T.untyped,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         use_ranges: T.untyped
       ).returns(::ActiveRecord::Batches::BatchEnumerator)
     end
-    def in_batches(of: 1000, start: nil, finish: nil, load: false, error_on_ignore: nil, order: :asc, use_ranges: nil, &block); end
+    def in_batches(of: 1000, start: nil, finish: nil, load: false, error_on_ignore: nil, cursor: primary_key, order: :asc, use_ranges: nil, &block); end
 
     sig { params(record: T.untyped).returns(T::Boolean) }
     def include?(record); end
@@ -436,6 +468,20 @@ class Admin::LanguageCategoryForm
     def blog_posts=(value); end
 
     sig { returns(T::Array[T.untyped]) }
+    def item_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def item_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Language::Category` class because it declared `has_many :items`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::Language::Category::Item::PrivateCollectionProxy) }
+    def items; end
+
+    sig { params(value: T::Enumerable[::Language::Category::Item]).void }
+    def items=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
     def language_ids; end
 
     sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
@@ -447,8 +493,8 @@ class Admin::LanguageCategoryForm
     sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
     def language_landing_page_ids=(ids); end
 
-    # This method is created by ActiveRecord on the `Language::Category` class because it declared `has_many :language_landing_pages`.
-    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    # This method is created by ActiveRecord on the `Language::Category` class because it declared `has_many :language_landing_pages, through: :items`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
     sig { returns(::Language::LandingPage::PrivateCollectionProxy) }
     def language_landing_pages; end
 
@@ -490,6 +536,20 @@ class Admin::LanguageCategoryForm
 
     sig { params(value: T::Enumerable[::Language]).void }
     def languages=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def qna_item_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def qna_item_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Language::Category` class because it declared `has_many :qna_items`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::Language::Category::QnaItem::PrivateCollectionProxy) }
+    def qna_items; end
+
+    sig { params(value: T::Enumerable[::Language::Category::QnaItem]).void }
+    def qna_items=(value); end
   end
 
   module GeneratedAssociationRelationMethods
@@ -627,6 +687,10 @@ class Admin::LanguageCategoryForm
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def unscope(*args, &blk); end
 
+    sig { returns(PrivateAssociationRelation) }
+    sig { type_parameters(:U).params(block: T.proc.returns(T.type_parameter(:U))).returns(T.type_parameter(:U)) }
+    def unscoped(&block); end
+
     sig { returns(PrivateAssociationRelationWhereChain) }
     sig { params(args: T.untyped).returns(PrivateAssociationRelation) }
     def where(*args); end
@@ -669,7 +733,7 @@ class Admin::LanguageCategoryForm
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def created_at_change_to_be_saved; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def created_at_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -678,7 +742,7 @@ class Admin::LanguageCategoryForm
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def created_at_previous_change; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def created_at_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -689,6 +753,96 @@ class Admin::LanguageCategoryForm
 
     sig { void }
     def created_at_will_change!; end
+
+    sig { returns(T.nilable(::String)) }
+    def description; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def description=(value); end
+
+    sig { returns(T::Boolean) }
+    def description?; end
+
+    sig { returns(T.nilable(::String)) }
+    def description_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def description_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def description_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def description_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def description_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def description_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def description_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def description_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def description_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def description_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def description_was; end
+
+    sig { void }
+    def description_will_change!; end
+
+    sig { returns(T.nilable(::String)) }
+    def header; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def header=(value); end
+
+    sig { returns(T::Boolean) }
+    def header?; end
+
+    sig { returns(T.nilable(::String)) }
+    def header_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def header_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def header_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def header_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def header_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def header_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def header_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def header_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def header_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def header_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def header_was; end
+
+    sig { void }
+    def header_will_change!; end
 
     sig { returns(::Integer) }
     def id; end
@@ -714,7 +868,7 @@ class Admin::LanguageCategoryForm
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_change_to_be_saved; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -723,7 +877,7 @@ class Admin::LanguageCategoryForm
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_previous_change; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -753,7 +907,7 @@ class Admin::LanguageCategoryForm
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_value_change_to_be_saved; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_value_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -762,7 +916,7 @@ class Admin::LanguageCategoryForm
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_value_previous_change; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_value_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -804,7 +958,7 @@ class Admin::LanguageCategoryForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def locale_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def locale_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -813,7 +967,7 @@ class Admin::LanguageCategoryForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def locale_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def locale_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -849,7 +1003,7 @@ class Admin::LanguageCategoryForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def name_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def name_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -876,7 +1030,7 @@ class Admin::LanguageCategoryForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def name_en_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def name_en_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -885,7 +1039,7 @@ class Admin::LanguageCategoryForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def name_en_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def name_en_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -903,7 +1057,7 @@ class Admin::LanguageCategoryForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def name_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def name_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -933,7 +1087,7 @@ class Admin::LanguageCategoryForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def name_ru_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def name_ru_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -942,7 +1096,7 @@ class Admin::LanguageCategoryForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def name_ru_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def name_ru_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -962,6 +1116,12 @@ class Admin::LanguageCategoryForm
 
     sig { void }
     def restore_created_at!; end
+
+    sig { void }
+    def restore_description!; end
+
+    sig { void }
+    def restore_header!; end
 
     sig { void }
     def restore_id!; end
@@ -990,56 +1150,68 @@ class Admin::LanguageCategoryForm
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def saved_change_to_created_at; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_created_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_description; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_description?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_header; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_header?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_id; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_id_value; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_id_value?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_id_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_locale; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_locale?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_locale?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_name; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_name?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_name?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_name_en; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_name_en?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_name_en?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_name_ru; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_name_ru?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_name_ru?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_slug; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_slug?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_slug?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def saved_change_to_updated_at; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_updated_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_updated_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
     def slug; end
@@ -1065,7 +1237,7 @@ class Admin::LanguageCategoryForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def slug_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def slug_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1074,7 +1246,7 @@ class Admin::LanguageCategoryForm
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def slug_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def slug_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1110,7 +1282,7 @@ class Admin::LanguageCategoryForm
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def updated_at_change_to_be_saved; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def updated_at_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -1119,7 +1291,7 @@ class Admin::LanguageCategoryForm
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def updated_at_previous_change; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def updated_at_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -1131,32 +1303,38 @@ class Admin::LanguageCategoryForm
     sig { void }
     def updated_at_will_change!; end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_created_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_description?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_id_value?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_header?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_locale?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_name?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_id_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_name_en?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_locale?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_name_ru?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_name?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_slug?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_name_en?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_updated_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_name_ru?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_slug?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_updated_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
   end
 
   module GeneratedRelationMethods
@@ -1293,6 +1471,10 @@ class Admin::LanguageCategoryForm
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def unscope(*args, &blk); end
+
+    sig { returns(PrivateRelation) }
+    sig { type_parameters(:U).params(block: T.proc.returns(T.type_parameter(:U))).returns(T.type_parameter(:U)) }
+    def unscoped(&block); end
 
     sig { returns(PrivateRelationWhereChain) }
     sig { params(args: T.untyped).returns(PrivateRelation) }

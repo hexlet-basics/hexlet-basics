@@ -1,0 +1,22 @@
+---
+
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: "{{ include "codebasics.fullname" . }}-secondary-httproute"
+  labels:
+    {{- include "codebasics.labels" . | nindent 4 }}
+spec:
+  hostnames:
+    - "{{ .Values.secondaryHost }}"
+  parentRefs:
+    - name: "{{ include "codebasics.fullname" . }}-gateway"
+      sectionName: https
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: "{{ include "codebasics.fullname" . }}-web-service"
+          port: 80

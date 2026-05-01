@@ -5,10 +5,10 @@ import {
   type CrudHorizontalMenuItem,
 } from "@/components/CrudHorizontalMenu";
 import * as Routes from "@/routes.js";
-import type { LanguageCrud, LanguageLandingPage } from "@/types/serializers";
+import type { LanguageLandingPage, LanguageUpdate } from "@/types/serializers";
 
 type Props = {
-  data?: LanguageCrud;
+  data?: LanguageUpdate;
   landingPage?: LanguageLandingPage | null;
 };
 
@@ -27,7 +27,6 @@ export function Menu({ data, landingPage }: Props) {
   ];
 
   if (data) {
-    const meta = (data as { meta?: { repository_url?: string } }).meta ?? {};
     items.push({
       href: Routes.edit_admin_language_path(data.id),
       label: t(($) => $.helpers.crud.editing),
@@ -40,7 +39,7 @@ export function Menu({ data, landingPage }: Props) {
       });
     }
     items.push({
-      href: meta.repository_url ?? "",
+      href: data.repository_url ?? "",
       external: true,
       label: <IconBrandGithub size={15} />,
     });

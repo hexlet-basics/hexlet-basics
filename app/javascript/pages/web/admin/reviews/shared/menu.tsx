@@ -5,10 +5,10 @@ import {
   type CrudHorizontalMenuItem,
 } from "@/components/CrudHorizontalMenu";
 import * as Routes from "@/routes.js";
-import type ReviewCrud from "@/types/serializers/ReviewCrud";
+import type ReviewUpdate from "@/types/serializers/ReviewUpdate";
 
 type Props = {
-  data?: ReviewCrud;
+  data?: ReviewUpdate;
 };
 
 export function Menu({ data }: Props) {

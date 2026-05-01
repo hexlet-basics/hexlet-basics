@@ -32,16 +32,19 @@ export default function SignUpFormBlock({ userDto, autoFocus = false }: Props) {
   return (
     <form onSubmit={onSubmit}>
       <TextInput
+        label={t(($) => $.models.attributes.user.first_name)}
         {...form.getInputProps("first_name")}
         autoFocus={autoFocus}
         {...firstNameInputProps}
       />
       <TextInput
+        label={t(($) => $.models.attributes.user.email)}
         {...form.getInputProps("email")}
         required
         {...registrationEmailInputProps}
       />
       <TextInput
+        label={t(($) => $.models.attributes.user.password)}
         {...form.getInputProps("password")}
         required
         {...newPasswordInputProps}

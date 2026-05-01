@@ -10,7 +10,6 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import i18next from "i18next";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -41,7 +40,7 @@ export default function Show({
   categoryLandingPages,
   lead,
 }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const {
     auth: { user },
@@ -75,7 +74,7 @@ export default function Show({
           ))}
         </SimpleGrid>
 
-        {!user.guest && i18next.language === "ru" && (
+        {!user.guest && i18n.language === "ru" && (
           <Grid align="center" justify="space-between" gap={0}>
             <Grid.Col span={{ base: 12, xs: 7 }}>
               <Center>

@@ -15,7 +15,6 @@ import {
   IconSend,
 } from "@tabler/icons-react";
 import { chunk } from "es-toolkit";
-import i18next from "i18next";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import type { Organization, WithContext } from "schema-dts";
@@ -47,7 +46,7 @@ function FooterLink(
 }
 
 export default function FooterBlock() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const { landingPagesForFooter, courseCategories } = usePage().props;
 
@@ -80,7 +79,7 @@ export default function FooterBlock() {
                 <Text fz="sm" fw="bold">
                   {t(($) => $.layouts.shared.footer.codebasics)}
                 </Text>
-                {i18next.language === "ru" && (
+                {i18n.language === "ru" && (
                   <FooterLink href={Routes.map_path()}>
                     {t(($) => $.layouts.shared.footer.sitemap)}
                   </FooterLink>
@@ -104,7 +103,7 @@ export default function FooterBlock() {
                 <Stack key={index} gap="sm">
                   <Text fw="bold" fz="sm">
                     {t(($) => $.layouts.shared.footer.courses, {
-                      number: index + 1,
+                      group: String(index + 1),
                     })}
                   </Text>
                   {group.map((lp) => (
@@ -185,7 +184,7 @@ export default function FooterBlock() {
                 </FooterLink>
               </Stack>
 
-              {i18next.language === "ru" && (
+              {i18n.language === "ru" && (
                 <Stack gap={0}>
                   <Anchor
                     href="https://ru.hexlet.io"

@@ -14,31 +14,37 @@ class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationControll
   def new
     category = Admin::LanguageCategoryForm.new
     category.locale = I18n.locale
+    landing_pages = Language::LandingPage.web.merge(Language.ordered)
 
     render inertia: true, props: {
-      categoryDto: Language::CategoryCrudResource.new(category)
+      categoryDto: Language::CategoryCreateResource.new(category),
+      qnaItems: Language::CategoryQnaItemResource.new([]),
+      landingPagesForCategories: Language::LandingPageForListsResource.new(landing_pages)
     }
   end
 
   def edit
     category = Admin::LanguageCategoryForm.find(params[:id])
     category.locale = I18n.locale
+    landing_pages = Language::LandingPage.web.merge(Language.ordered)
 
     render inertia: true, props: {
-      categoryDto: Language::CategoryCrudResource.new(category)
+      categoryDto: Language::CategoryUpdateResource.new(category),
+      qnaItems: Language::CategoryQnaItemResource.new(category.qna_items.order(:id)),
+      landingPagesForCategories: Language::LandingPageForListsResource.new(landing_pages)
     }
   end
 
   def create
-    category = Admin::LanguageCategoryForm.new(params[:language_category])
+    category = Admin::LanguageCategoryForm.new(params[:data])
     category.locale = I18n.locale
 
     if category.save
       f(:success)
-      redirect_to_inertia edit_admin_language_category_path(category), category
+      redirect_to edit_admin_language_category_path(category), inertia: { errors: category.errors }
     else
       f(:error)
-      redirect_to_inertia new_admin_language_category_url, category
+      redirect_to new_admin_language_category_url, inertia: { errors: category.errors }
     end
   end
 
@@ -46,13 +52,13 @@ class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationControll
     category = Admin::LanguageCategoryForm.find(params[:id])
     category.locale = I18n.locale
 
-    if category.update(params[:language_category])
+    if category.update(params[:data])
       f(:success)
     else
       f(:error)
     end
 
-      redirect_to_inertia edit_admin_language_category_path(category), category
+      redirect_to edit_admin_language_category_path(category), inertia: { errors: category.errors }
   end
 
   def destroy

@@ -71,9 +71,11 @@ sync-browserlist:
 	bundle exec browserslist generate
 
 editor-setup:
-	-bin/tapioca gems --verify
-	-bin/tapioca dsl --verify
-	-bin/tapioca gem
+	-bin/tapioca require
+	-bin/tapioca gems
+	-bin/tapioca annotations
+	-bin/tapioca check-shims
+	-bin/tapioca dsl
 
 sync-types:
 	TYPELIZER=true bin/rails typelizer:generate:refresh
@@ -144,7 +146,7 @@ services-frontend-ssr-run:
 	bin/vite ssr
 
 services-app-run:
-	bundle exec falcon host
+	bin/rails s -p 3000
 
 services-jobs-run:
 	bin/jobs
@@ -153,7 +155,7 @@ services-webserver-run:
 	caddy run # --config ./services/webserver/caddy/conf/Caddyfile --envfile=.env
 
 services-cable-run:
-	bundle exec falcon serve -b http://0.0.0.0:28080 -c cable/config.ru -n 1
+	bundle exec puma -p 28080 cable/config.ru
 
 services-db-start:
 	docker run -d -it --rm \

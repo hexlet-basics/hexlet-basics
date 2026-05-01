@@ -12,7 +12,6 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 import learningEnVideo from "@/images/course-landing-page/learning_en.mp4";
 import learningRuVideo from "@/images/course-landing-page/learning_ru.mp4";
@@ -24,7 +23,7 @@ export default function ForTeachersBlock() {
   const {
     auth: { user },
   } = usePage().props;
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const interactiveApproachItems = t(
     ($) => $.cases.for_teachers.interactive_approach_list,
@@ -99,9 +98,7 @@ export default function ForTeachersBlock() {
           </Stack>
           <Box>
             <video
-              src={
-                i18next.language === "en" ? learningEnVideo : learningRuVideo
-              }
+              src={i18n.language === "en" ? learningEnVideo : learningRuVideo}
               autoPlay
               loop
               muted

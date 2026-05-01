@@ -12,21 +12,12 @@ class Survey::Item
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
-  sig { returns(T::Boolean) }
-  def active?; end
-
-  sig { returns(T::Boolean) }
-  def archived?; end
-
   private
 
   sig { returns(NilClass) }
   def to_ary; end
 
   class << self
-    sig { params(args: T.untyped, block: T.nilable(T.proc.bind(PrivateAASMMachine).void)).returns(PrivateAASMMachine) }
-    def aasm(*args, &block); end
-
     sig do
       params(
         attributes: T.untyped,
@@ -126,8 +117,34 @@ class Survey::Item
     end
     def create_or_find_by!(attributes, &block); end
 
+    sig do
+      params(
+        records: T.any(::Survey::Item, Integer, String, T::Enumerable[T.any(::Survey::Item, Integer, String, T::Enumerable[::Survey::Item])])
+      ).returns(Integer)
+    end
+    def delete(*records); end
+
+    sig { returns(Integer) }
+    def delete_all; end
+
+    sig { params(args: T.untyped).returns(Integer) }
+    def delete_by(*args); end
+
+    sig do
+      params(
+        records: T.any(::Survey::Item, Integer, String, T::Enumerable[T.any(::Survey::Item, Integer, String, T::Enumerable[::Survey::Item])])
+      ).returns(T::Array[::Survey::Item])
+    end
+    def destroy(*records); end
+
     sig { returns(T::Array[::Survey::Item]) }
     def destroy_all; end
+
+    sig { returns(T::Array[::Survey::Item]) }
+    def destroy_all; end
+
+    sig { params(args: T.untyped).returns(T::Array[::Survey::Item]) }
+    def destroy_by(*args); end
 
     sig { params(conditions: T.untyped).returns(T::Boolean) }
     def exists?(conditions = :none); end
@@ -168,7 +185,8 @@ class Survey::Item
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         block: T.proc.params(object: ::Survey::Item).void
       ).void
     end
@@ -178,10 +196,11 @@ class Survey::Item
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol])
       ).returns(T::Enumerator[::Survey::Item])
     end
-    def find_each(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, order: :asc, &block); end
+    def find_each(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, cursor: primary_key, order: :asc, &block); end
 
     sig do
       params(
@@ -189,7 +208,8 @@ class Survey::Item
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         block: T.proc.params(object: T::Array[::Survey::Item]).void
       ).void
     end
@@ -199,10 +219,11 @@ class Survey::Item
         finish: T.untyped,
         batch_size: Integer,
         error_on_ignore: T.untyped,
-        order: Symbol
-      ).returns(T::Enumerator[T::Enumerator[::Survey::Item]])
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol])
+      ).returns(T::Enumerator[T::Array[::Survey::Item]])
     end
-    def find_in_batches(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, order: :asc, &block); end
+    def find_in_batches(start: nil, finish: nil, batch_size: 1000, error_on_ignore: nil, cursor: primary_key, order: :asc, &block); end
 
     sig do
       params(
@@ -274,7 +295,7 @@ class Survey::Item
     sig { returns(::Survey::Item) }
     def fourth!; end
 
-    sig { returns(Array) }
+    sig { returns(T::Array[::Integer]) }
     def ids; end
 
     sig do
@@ -284,7 +305,8 @@ class Survey::Item
         finish: T.untyped,
         load: T.untyped,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         use_ranges: T.untyped,
         block: T.proc.params(object: PrivateRelation).void
       ).void
@@ -296,11 +318,12 @@ class Survey::Item
         finish: T.untyped,
         load: T.untyped,
         error_on_ignore: T.untyped,
-        order: Symbol,
+        cursor: T.untyped,
+        order: T.any(Symbol, T::Array[Symbol]),
         use_ranges: T.untyped
       ).returns(::ActiveRecord::Batches::BatchEnumerator)
     end
-    def in_batches(of: 1000, start: nil, finish: nil, load: false, error_on_ignore: nil, order: :asc, use_ranges: nil, &block); end
+    def in_batches(of: 1000, start: nil, finish: nil, load: false, error_on_ignore: nil, cursor: primary_key, order: :asc, use_ranges: nil, &block); end
 
     sig { params(record: T.untyped).returns(T::Boolean) }
     def include?(record); end
@@ -411,6 +434,20 @@ class Survey::Item
   end
 
   module GeneratedAssociationMethods
+    sig { returns(T::Array[T.untyped]) }
+    def base_tag_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def base_tag_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Survey::Item` class because it declared `has_many :base_tags, through: :taggings`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::ActsAsTaggableOn::Tag::PrivateCollectionProxy) }
+    def base_tags; end
+
+    sig { params(value: T::Enumerable[::ActsAsTaggableOn::Tag]).void }
+    def base_tags=(value); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(::Survey) }
     def build_survey(*args, &blk); end
 
@@ -437,6 +474,48 @@ class Survey::Item
 
     sig { returns(T::Boolean) }
     def survey_previously_changed?; end
+
+    sig { returns(T::Array[T.untyped]) }
+    def tag_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def tag_ids=(ids); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def tag_tagging_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def tag_tagging_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Survey::Item` class because it declared `has_many :tag_taggings`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::ActsAsTaggableOn::Tagging::PrivateCollectionProxy) }
+    def tag_taggings; end
+
+    sig { params(value: T::Enumerable[::ActsAsTaggableOn::Tagging]).void }
+    def tag_taggings=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def tagging_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def tagging_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Survey::Item` class because it declared `has_many :taggings`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::ActsAsTaggableOn::Tagging::PrivateCollectionProxy) }
+    def taggings; end
+
+    sig { params(value: T::Enumerable[::ActsAsTaggableOn::Tagging]).void }
+    def taggings=(value); end
+
+    # This method is created by ActiveRecord on the `Survey::Item` class because it declared `has_many :tags, through: :tag_taggings`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::ActsAsTaggableOn::Tag::PrivateCollectionProxy) }
+    def tags; end
+
+    sig { params(value: T::Enumerable[::ActsAsTaggableOn::Tag]).void }
+    def tags=(value); end
   end
 
   module GeneratedAssociationRelationMethods
@@ -582,6 +661,10 @@ class Survey::Item
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def unscope(*args, &blk); end
 
+    sig { returns(PrivateAssociationRelation) }
+    sig { type_parameters(:U).params(block: T.proc.returns(T.type_parameter(:U))).returns(T.type_parameter(:U)) }
+    def unscoped(&block); end
+
     sig { returns(PrivateAssociationRelationWhereChain) }
     sig { params(args: T.untyped).returns(PrivateAssociationRelation) }
     def where(*args); end
@@ -621,7 +704,7 @@ class Survey::Item
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def created_at_change_to_be_saved; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def created_at_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -630,7 +713,7 @@ class Survey::Item
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def created_at_previous_change; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def created_at_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -666,7 +749,7 @@ class Survey::Item
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_change_to_be_saved; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -675,7 +758,7 @@ class Survey::Item
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_previous_change; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -705,7 +788,7 @@ class Survey::Item
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_value_change_to_be_saved; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_value_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -714,7 +797,7 @@ class Survey::Item
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def id_value_previous_change; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def id_value_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -756,7 +839,7 @@ class Survey::Item
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def order_change_to_be_saved; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def order_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -765,7 +848,7 @@ class Survey::Item
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def order_previous_change; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def order_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -790,13 +873,16 @@ class Survey::Item
     def restore_order!; end
 
     sig { void }
+    def restore_slug!; end
+
+    sig { void }
     def restore_state!; end
 
     sig { void }
-    def restore_state_event!; end
+    def restore_survey_id!; end
 
     sig { void }
-    def restore_survey_id!; end
+    def restore_tag_list!; end
 
     sig { void }
     def restore_updated_at!; end
@@ -807,56 +893,107 @@ class Survey::Item
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def saved_change_to_created_at; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_created_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_id; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_id_value; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_id_value?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_id_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_order; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_order?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_order?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_slug; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_slug?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_state; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_state?; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def saved_change_to_state_event; end
-
-    sig { returns(T::Boolean) }
-    def saved_change_to_state_event?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_state?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_survey_id; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_survey_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_survey_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([T.untyped, T.untyped])) }
+    def saved_change_to_tag_list; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_tag_list?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def saved_change_to_updated_at; end
 
-    sig { returns(T::Boolean) }
-    def saved_change_to_updated_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_updated_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_value; end
 
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def slug; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def slug=(value); end
+
     sig { returns(T::Boolean) }
-    def saved_change_to_value?; end
+    def slug?; end
+
+    sig { returns(T.nilable(::String)) }
+    def slug_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def slug_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def slug_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def slug_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def slug_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def slug_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def slug_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def slug_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def slug_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def slug_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def slug_was; end
+
+    sig { void }
+    def slug_will_change!; end
 
     sig { returns(T.nilable(::String)) }
     def state; end
@@ -882,58 +1019,8 @@ class Survey::Item
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def state_change_to_be_saved; end
 
-    sig do
-      params(
-        from: T.nilable(T.any(::String, ::Symbol)),
-        to: T.nilable(T.any(::String, ::Symbol))
-      ).returns(T::Boolean)
-    end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def state_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(::String) }
-    def state_event; end
-
-    sig { params(value: ::String).returns(::String) }
-    def state_event=(value); end
-
-    sig { returns(T::Boolean) }
-    def state_event?; end
-
-    sig { returns(T.nilable(::String)) }
-    def state_event_before_last_save; end
-
-    sig { returns(T.untyped) }
-    def state_event_before_type_cast; end
-
-    sig { returns(T::Boolean) }
-    def state_event_came_from_user?; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def state_event_change; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def state_event_change_to_be_saved; end
-
-    sig { params(from: ::String, to: ::String).returns(T::Boolean) }
-    def state_event_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(::String)) }
-    def state_event_in_database; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def state_event_previous_change; end
-
-    sig { params(from: ::String, to: ::String).returns(T::Boolean) }
-    def state_event_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(::String)) }
-    def state_event_previously_was; end
-
-    sig { returns(T.nilable(::String)) }
-    def state_event_was; end
-
-    sig { void }
-    def state_event_will_change!; end
 
     sig { returns(T.nilable(::String)) }
     def state_in_database; end
@@ -941,12 +1028,7 @@ class Survey::Item
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def state_previous_change; end
 
-    sig do
-      params(
-        from: T.nilable(T.any(::String, ::Symbol)),
-        to: T.nilable(T.any(::String, ::Symbol))
-      ).returns(T::Boolean)
-    end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def state_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -982,7 +1064,7 @@ class Survey::Item
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def survey_id_change_to_be_saved; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def survey_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -991,7 +1073,7 @@ class Survey::Item
     sig { returns(T.nilable([::Integer, ::Integer])) }
     def survey_id_previous_change; end
 
-    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def survey_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::Integer)) }
@@ -1002,6 +1084,51 @@ class Survey::Item
 
     sig { void }
     def survey_id_will_change!; end
+
+    sig { returns(T.untyped) }
+    def tag_list; end
+
+    sig { params(value: T.untyped).returns(T.untyped) }
+    def tag_list=(value); end
+
+    sig { returns(T::Boolean) }
+    def tag_list?; end
+
+    sig { returns(T.untyped) }
+    def tag_list_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def tag_list_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def tag_list_came_from_user?; end
+
+    sig { returns(T.nilable([T.untyped, T.untyped])) }
+    def tag_list_change; end
+
+    sig { returns(T.nilable([T.untyped, T.untyped])) }
+    def tag_list_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def tag_list_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.untyped) }
+    def tag_list_in_database; end
+
+    sig { returns(T.nilable([T.untyped, T.untyped])) }
+    def tag_list_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def tag_list_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.untyped) }
+    def tag_list_previously_was; end
+
+    sig { returns(T.untyped) }
+    def tag_list_was; end
+
+    sig { void }
+    def tag_list_will_change!; end
 
     sig { returns(::ActiveSupport::TimeWithZone) }
     def updated_at; end
@@ -1027,7 +1154,7 @@ class Survey::Item
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def updated_at_change_to_be_saved; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def updated_at_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -1036,7 +1163,7 @@ class Survey::Item
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def updated_at_previous_change; end
 
-    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def updated_at_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
@@ -1072,7 +1199,7 @@ class Survey::Item
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def value_change_to_be_saved; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def value_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1081,7 +1208,7 @@ class Survey::Item
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def value_previous_change; end
 
-    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def value_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
@@ -1093,32 +1220,35 @@ class Survey::Item
     sig { void }
     def value_will_change!; end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_created_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_id_value?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_id_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_order?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_order?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_state?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_slug?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_state_event?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_state?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_survey_id?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_survey_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_updated_at?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_tag_list?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T::Boolean) }
-    def will_save_change_to_value?; end
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_updated_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
   end
 
   module GeneratedRelationMethods
@@ -1264,6 +1394,10 @@ class Survey::Item
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def unscope(*args, &blk); end
 
+    sig { returns(PrivateRelation) }
+    sig { type_parameters(:U).params(block: T.proc.returns(T.type_parameter(:U))).returns(T.type_parameter(:U)) }
+    def unscoped(&block); end
+
     sig { returns(PrivateRelationWhereChain) }
     sig { params(args: T.untyped).returns(PrivateRelation) }
     def where(*args); end
@@ -1276,163 +1410,6 @@ class Survey::Item
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def without(*args, &blk); end
-  end
-
-  class PrivateAASMMachine < AASM::Base
-    sig do
-      params(
-        callbacks: T.any(String, Symbol, T::Class[T.anything], Proc),
-        block: T.nilable(T.proc.bind(Survey::Item).void)
-      ).returns(T.untyped)
-    end
-    def after_all_events(*callbacks, &block); end
-
-    sig do
-      params(
-        callbacks: T.any(String, Symbol, T::Class[T.anything], Proc),
-        block: T.nilable(T.proc.bind(Survey::Item).void)
-      ).returns(T.untyped)
-    end
-    def after_all_transactions(*callbacks, &block); end
-
-    sig do
-      params(
-        callbacks: T.any(String, Symbol, T::Class[T.anything], Proc),
-        block: T.nilable(T.proc.bind(Survey::Item).void)
-      ).returns(T.untyped)
-    end
-    def after_all_transitions(*callbacks, &block); end
-
-    sig do
-      params(
-        callbacks: T.any(String, Symbol, T::Class[T.anything], Proc),
-        block: T.nilable(T.proc.bind(Survey::Item).void)
-      ).returns(T.untyped)
-    end
-    def before_all_events(*callbacks, &block); end
-
-    sig do
-      params(
-        callbacks: T.any(String, Symbol, T::Class[T.anything], Proc),
-        block: T.nilable(T.proc.bind(Survey::Item).void)
-      ).returns(T.untyped)
-    end
-    def before_all_transactions(*callbacks, &block); end
-
-    sig do
-      params(
-        callbacks: T.any(String, Symbol, T::Class[T.anything], Proc),
-        block: T.nilable(T.proc.bind(Survey::Item).void)
-      ).returns(T.untyped)
-    end
-    def ensure_on_all_events(*callbacks, &block); end
-
-    sig do
-      params(
-        callbacks: T.any(String, Symbol, T::Class[T.anything], Proc),
-        block: T.nilable(T.proc.bind(Survey::Item).void)
-      ).returns(T.untyped)
-    end
-    def error_on_all_events(*callbacks, &block); end
-
-    sig { params(name: T.untyped, options: T.untyped, block: T.proc.bind(PrivateAASMEvent).void).returns(T.untyped) }
-    def event(name, options = nil, &block); end
-
-    class PrivateAASMEvent < AASM::Core::Event
-      sig do
-        params(
-          symbol: T.nilable(Symbol),
-          block: T.nilable(T.proc.bind(Survey::Item).params(opts: T.untyped).void)
-        ).returns(T.untyped)
-      end
-      def after(symbol = nil, &block); end
-
-      sig do
-        params(
-          symbol: T.nilable(Symbol),
-          block: T.nilable(T.proc.bind(Survey::Item).params(opts: T.untyped).void)
-        ).returns(T.untyped)
-      end
-      def after_commit(symbol = nil, &block); end
-
-      sig do
-        params(
-          symbol: T.nilable(Symbol),
-          block: T.nilable(T.proc.bind(Survey::Item).params(opts: T.untyped).void)
-        ).returns(T.untyped)
-      end
-      def after_transaction(symbol = nil, &block); end
-
-      sig do
-        params(
-          symbol: T.nilable(Symbol),
-          block: T.nilable(T.proc.bind(Survey::Item).params(opts: T.untyped).void)
-        ).returns(T.untyped)
-      end
-      def before(symbol = nil, &block); end
-
-      sig do
-        params(
-          symbol: T.nilable(Symbol),
-          block: T.nilable(T.proc.bind(Survey::Item).params(opts: T.untyped).void)
-        ).returns(T.untyped)
-      end
-      def before_success(symbol = nil, &block); end
-
-      sig do
-        params(
-          symbol: T.nilable(Symbol),
-          block: T.nilable(T.proc.bind(Survey::Item).params(opts: T.untyped).void)
-        ).returns(T.untyped)
-      end
-      def before_transaction(symbol = nil, &block); end
-
-      sig do
-        params(
-          symbol: T.nilable(Symbol),
-          block: T.nilable(T.proc.bind(Survey::Item).params(opts: T.untyped).void)
-        ).returns(T.untyped)
-      end
-      def ensure(symbol = nil, &block); end
-
-      sig do
-        params(
-          symbol: T.nilable(Symbol),
-          block: T.nilable(T.proc.bind(Survey::Item).params(opts: T.untyped).void)
-        ).returns(T.untyped)
-      end
-      def error(symbol = nil, &block); end
-
-      sig do
-        params(
-          symbol: T.nilable(Symbol),
-          block: T.nilable(T.proc.bind(Survey::Item).params(opts: T.untyped).void)
-        ).returns(T.untyped)
-      end
-      def success(symbol = nil, &block); end
-
-      sig do
-        params(
-          definitions: T.untyped,
-          block: T.nilable(T.proc.bind(PrivateAASMTransition).void)
-        ).returns(T.untyped)
-      end
-      def transitions(definitions = nil, &block); end
-    end
-
-    class PrivateAASMTransition < AASM::Core::Transition
-      sig { params(block: T.nilable(T.proc.bind(Survey::Item).params(opts: T.untyped).void)).returns(T.untyped) }
-      def after(&block); end
-
-      sig { params(block: T.nilable(T.proc.bind(Survey::Item).params(opts: T.untyped).void)).returns(T::Boolean) }
-      def guard(&block); end
-
-      sig { params(block: T.nilable(T.proc.bind(Survey::Item).params(opts: T.untyped).void)).returns(T.untyped) }
-      def on_transition(&block); end
-
-      sig { params(block: T.nilable(T.proc.bind(Survey::Item).params(opts: T.untyped).void)).returns(T.untyped) }
-      def success(&block); end
-    end
   end
 
   class PrivateAssociationRelation < ::ActiveRecord::AssociationRelation
@@ -1629,7 +1606,4 @@ class Survey::Item
     sig { params(opts: T.untyped, rest: T.untyped).returns(PrivateRelation) }
     def not(opts, *rest); end
   end
-
-  STATE_ACTIVE = T.let(T.unsafe(nil), Symbol)
-  STATE_ARCHIVED = T.let(T.unsafe(nil), Symbol)
 end

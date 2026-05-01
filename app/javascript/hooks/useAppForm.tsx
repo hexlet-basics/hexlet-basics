@@ -1,5 +1,4 @@
 import type {
-  Errors,
   FormDataKeys,
   FormDataType,
   Method,
@@ -11,317 +10,173 @@ import {
 } from "@inertiajs/react";
 import { type ComboboxData, Loader } from "@mantine/core";
 import { useDebouncedValue, useDidUpdate, useFetch } from "@mantine/hooks";
-import dayjs from "dayjs";
-import { isNil, isPlainObject } from "es-toolkit";
+import { isNil } from "es-toolkit";
 import { get } from "es-toolkit/compat";
-import type { TFunction } from "i18next";
-import { type BaseSyntheticEvent, type ReactNode, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { type BaseSyntheticEvent, useState } from "react";
 
-// type AttributeArrayKeys<T> = {
-//   [K in keyof T]: K extends `${string}_attributes`
-//     ? T[K] extends unknown[]
-//       ? K
-//       : never
-//     : never;
-// }[keyof T];
-
-// Тип массива по найденному ключу
-// type AttributeArray<T> = T[AttributeArrayKeys<T>];
-
-type UseAppFormOptions<TPayload extends PayloadWithMeta> = {
+type UseAppFormOptions = {
   url: string;
   method?: Method;
-  onSuccess?: () => void;
-  onError?: (errors: Errors) => void;
+  rememberKey?: string;
+  onSuccess?: UseFormSubmitOptions["onSuccess"];
+  onError?: UseFormSubmitOptions["onError"];
+  onFinish?: UseFormSubmitOptions["onFinish"];
   onFlash?: UseFormSubmitOptions["onFlash"];
 };
 
-type ResourceMeta = {
-  labels?: Record<string, string | null>;
-  model?: string;
-  relations?: Record<string, string>;
-  [key: string]: unknown;
-};
-
-const stripMeta = (value: unknown): unknown => {
+const toErrorMessage = (value: unknown): string => {
   if (Array.isArray(value)) {
-    return value.map(stripMeta);
+    return value.filter(Boolean).map(String).join(", ");
   }
 
-  if (isPlainObject(value)) {
-    const { meta, ...rest } = value;
-    return Object.fromEntries(
-      Object.entries(rest).map(([key, child]) => [key, stripMeta(child)]),
-    );
+  if (typeof value === "string") {
+    return value;
   }
 
-  return value;
+  if (isNil(value)) {
+    return "";
+  }
+
+  return String(value);
 };
 
-type ParentChanged<
-  T extends object,
-  TForm extends FormDataType<TForm>,
-  TKey extends keyof T & string,
-> = (f: FormContext<T, TForm, TKey>) => void;
+const isDateObject = (value: unknown): value is Date => value instanceof Date;
+
+function useManagedInertiaForm<TForm extends FormDataType<TForm>>(
+  data: TForm,
+): InertiaFormProps<TForm>;
+function useManagedInertiaForm<TForm extends FormDataType<TForm>>(
+  data: TForm,
+  rememberKey: string,
+): InertiaFormProps<TForm>;
+function useManagedInertiaForm<TForm extends FormDataType<TForm>>(
+  data: TForm,
+  rememberKey?: string,
+): InertiaFormProps<TForm>;
+function useManagedInertiaForm<TForm extends FormDataType<TForm>>(
+  data: TForm,
+  rememberKey?: string,
+): InertiaFormProps<TForm> {
+  // Inertia exposes useForm via overloads: useForm(data) and
+  // useForm(rememberKey, data). We keep a single top-level hook call here to
+  // satisfy React hooks rules without spreading a union tuple into useForm,
+  // which TypeScript rejects.
+  const args = rememberKey == null ? [data] : [rememberKey, data];
+
+  return Reflect.apply(useInertiaForm, null, args) as InertiaFormProps<TForm>;
+}
 
 export class FormContext<
   T extends object,
   TForm extends FormDataType<TForm>,
   TKey extends keyof T & string,
 > {
-  index: number;
-  data: T;
   private inertiaForm: InertiaFormProps<TForm>;
-  private model: string;
-  private relation?: string;
-  // basePath — строковый префикс к ключам текущей (под)формы,
-  // например: 'learning_modules_attributes.0'. Нужен, когда сабформа
-  // создаётся для элемента коллекции уже с известным полным путём в data:
-  // он позволяет корректно собирать имена полей/ошибок в getPrefix/fullKeyOf
-  // независимо от связки relation/index и адресовать вложенные коллекции.
-  private basePath?: string;
-  private meta?: ResourceMeta;
-  private t: TFunction;
-  private relations: Record<string, string>;
-
-  private deps = new Map<
-    string,
-    Map<string, ParentChanged<T, TForm, TKey> | undefined>
-  >();
 
   constructor({
-    model,
-    index,
-    data,
-    relation,
-    basePath,
-    relations,
     inertiaForm,
-    t,
-    meta,
-    // subform,
   }: {
-    model: string;
-    relation?: string;
-    basePath?: string;
-    index?: number;
-    data: T;
-    t: TFunction;
-    relations?: Record<string, string>;
     inertiaForm: InertiaFormProps<TForm>;
-    meta?: ResourceMeta;
-    // subform: Subform;
   }) {
-    this.data = data;
-    this.meta = meta;
-    this.model = model;
-    this.relation = relation;
-    this.basePath = basePath;
-    this.index = index ?? -1;
-    this.relations = relations ?? {};
     this.inertiaForm = inertiaForm;
-    this.t = t;
   }
 
-  getMetaLabel(key: TKey): string | null | undefined {
-    const labels = this.meta?.labels as
-      | Record<string, string | null>
-      | undefined;
-    return labels?.[String(key)] ?? null;
-  }
-
-  getInputProps(key: TKey) {
-    const fullKey = this.fullKeyOf(key);
-    const raw = this.getValue(fullKey);
+  private input(key: TKey) {
+    const fullKey = this.keyOf(key);
+    const raw = this.valueOf(fullKey);
     const value = isNil(raw) ? "" : String(raw);
 
     return {
       name: fullKey,
       value,
-      error: this.getError(fullKey),
-      label: this.getLabel(key),
-      onChange: (e: React.BaseSyntheticEvent) => {
-        this.setValue(fullKey, e.currentTarget.value);
+      error: this.errorOf(fullKey),
+      onChange: (e: BaseSyntheticEvent) => {
+        const nextValue = String(e.currentTarget.value);
+        this.setValue(fullKey, nextValue as unknown);
       },
-      // label: getLabel(name, explicitLabel),
       mb: "sm",
     };
   }
 
-  getSelectProps(
-    key: TKey,
-    data: ComboboxData,
-    opts?: {
-      parent?: TKey; // базовое имя родителя в том же scope (например 'resource_type')
-      parentChanged?: (f: FormContext<T, TForm, TKey>) => void;
-    },
-  ) {
-    const fullKey = this.fullKeyOf(key);
-    const raw = this.getValue(fullKey);
-    const value = isNil(raw) ? null : String(raw);
+  getInputProps(key: TKey) {
+    return this.input(key);
+  }
 
-    if (opts?.parent) {
-      this.registerDep(opts.parent, fullKey, opts.parentChanged);
-    }
+  private phone(key: TKey) {
+    const fullKey = this.keyOf(key);
+    const rawValue = this.valueOf(fullKey);
+
+    return {
+      name: fullKey,
+      value: isNil(rawValue) ? "" : String(rawValue),
+      error: this.errorOf(fullKey),
+      onChange: (nextValue: string) => {
+        this.setValue(fullKey, nextValue);
+      },
+      mb: "sm",
+    };
+  }
+
+  getPhoneInputProps(key: TKey) {
+    return this.phone(key);
+  }
+
+  private select(key: TKey, data: ComboboxData) {
+    const fullKey = this.keyOf(key);
+    const raw = this.valueOf(fullKey);
+    const value = isNil(raw) ? null : String(raw);
 
     return {
       name: fullKey,
       value,
       data,
-      error: this.getError(fullKey),
-      label: this.getLabel(key),
+      error: this.errorOf(fullKey),
       onChange: (val: string | null) => {
         this.setValue(fullKey, val);
-        this.notify(fullKey);
       },
       mb: "sm",
     };
   }
 
-  private registerDep(
-    parentBaseKey: TKey,
-    childFullKey: string,
-    cb?: ParentChanged<T, TForm, TKey>,
-  ) {
-    const parentFullKey = this.fullKeyOf(parentBaseKey);
-    if (!this.deps.has(parentFullKey)) this.deps.set(parentFullKey, new Map());
-    this.deps.get(parentFullKey)!.set(childFullKey, cb);
+  getSelectProps(key: TKey, data: ComboboxData) {
+    return this.select(key, data);
   }
 
-  private notify(parentFullKey: string) {
-    const children = this.deps.get(parentFullKey);
-    if (!children) return;
-    for (const [childFullKey, cb] of children) {
-      // 1) по умолчанию — сбросить в null
-      this.inertiaForm.setData(childFullKey as never, null as never);
-      // 2) если нужно — кастомная логика внутри колбэка (он сам делает f.set(...))
-      cb?.(this);
-    }
+  private keyOf(key: TKey & string): FormDataKeys<TForm> {
+    return key as FormDataKeys<TForm>;
   }
 
-  private fullKeyOf(key: TKey & string): FormDataKeys<TForm> {
-    let result: string;
-    if (this.basePath) {
-      result = `${this.basePath}.${key}` as FormDataKeys<TForm>;
-    } else if (this.relation) {
-      result = `${this.relation}.${this.index}.${key}`;
-    } else {
-      result = key;
+  private errorOf(fullKey: FormDataKeys<TForm>) {
+    const directError = get(this.inertiaForm.errors, fullKey);
+
+    if (!isNil(directError) && directError !== "") {
+      return toErrorMessage(directError);
     }
 
-    return result as FormDataKeys<TForm>;
+    const associationKey =
+      typeof fullKey === "string" && fullKey.endsWith("_id")
+        ? fullKey.slice(0, -3)
+        : null;
+
+    if (associationKey == null) {
+      return "";
+    }
+
+    return toErrorMessage(get(this.inertiaForm.errors, associationKey));
   }
 
-  // private getPrefix(key: TKey) {
-  //   const prefix = this.basePath
-  //     ? `${this.basePath}.${String(key)}`
-  //     : this.relation
-  //       ? `${this.relation}.${this.index}.${key}`
-  //       : key;
-  //   return prefix as FormDataKeys<TForm>;
-  // }
-
-  private getError(fullKey: FormDataKeys<TForm>) {
-    const errors = get(this.inertiaForm.errors, fullKey);
-    return Array(errors).flat().join(", ");
-  }
-
-  private getValue(fullKey: FormDataKeys<TForm>) {
-    const value = get(this.inertiaForm.data, fullKey);
-    return value;
+  private valueOf(fullKey: FormDataKeys<TForm>) {
+    return get(this.inertiaForm.data, fullKey);
   }
 
   private setValue(fullKey: FormDataKeys<TForm>, value: unknown) {
     this.inertiaForm.setData(fullKey, value as never);
   }
-
-  private getLabel(
-    key: TKey,
-    explicitLabel?: ReactNode | string | null,
-  ): string | ReactNode | undefined {
-    if (explicitLabel) return explicitLabel;
-
-    const modelsPath = `models.attributes.${this.model}.${key}`;
-    const baseModelsPath = `models.attributes.base.${key}`;
-
-    const baseTranslation = this.t(
-      (resources) => get(resources, baseModelsPath) as string,
-      { defaultValue: modelsPath },
-    );
-    const modelTranslation = this.t(
-      (resources) => get(resources, modelsPath) as string,
-      { defaultValue: baseTranslation },
-    );
-    return modelTranslation;
-  }
-
-  private deriveChildModelName(relationKey: string): string | undefined {
-    if (!this.model) return;
-
-    return `${this.model}_${relationKey}`;
-  }
-
-  // narrow to collections
-  useCollection<N extends { _destroy: boolean }>(relation: TKey) {
-    const fullKey = this.fullKeyOf(relation);
-    const items = (this.getValue(fullKey) as Array<N>) || [];
-    const activeItems = items
-      .map((item, rawIndex) => ({ item, rawIndex }))
-      .filter(({ item }) => !item._destroy);
-    const forms = activeItems.map(({ item, rawIndex }) => {
-      const childMeta = isPlainObject(item)
-        ? (item as { meta?: ResourceMeta }).meta
-        : undefined;
-      const childModel =
-        (this.relations[relation] as unknown as string) ??
-        this.deriveChildModelName(String(relation));
-      const form = new FormContext({
-        data: item,
-        model: childModel as string,
-        index: rawIndex,
-        relation,
-        basePath: `${fullKey}.${rawIndex}` as string,
-        relations: this.relations,
-        t: this.t,
-        inertiaForm: this.inertiaForm,
-        meta: childMeta,
-      });
-
-      return form;
-    });
-
-    const add = (item: N): void => {
-      const curRaw = this.getValue(fullKey) as N[] | undefined;
-      const cur = Array.isArray(curRaw) ? curRaw : [];
-      const next = [...cur, item];
-      this.inertiaForm.setData(fullKey, next as never);
-    };
-
-    const remove = (index: number): void => {
-      const curRaw = this.getValue(fullKey) as N[] | undefined;
-      const cur = Array.isArray(curRaw) ? curRaw : [];
-      if (index < 0 || index >= cur.length) return;
-      const next = cur.map((it, i) =>
-        i === index ? { ...it, _destroy: true } : it,
-      );
-      this.inertiaForm.setData(fullKey, next as never);
-    };
-
-    return { forms, add, remove };
-  }
-
-  getCheckboxProps(key: TKey) {
-    const fullKey = this.fullKeyOf(key);
-    const value = this.getValue(fullKey);
+  private checkbox(key: TKey) {
+    const fullKey = this.keyOf(key);
+    const value = this.valueOf(fullKey);
     const isUnset = isNil(value);
     const checked = Boolean(value);
-
-    // if (!isNil(value) && typeof value !== 'boolean') {
-    //   throw new Error(
-    //     `getCheckboxProps supports boolean fields only, got ${typeof value}`,
-    //   );
-    // }
 
     if (isUnset) {
       this.setValue(fullKey, false);
@@ -330,18 +185,21 @@ export class FormContext<
     return {
       name: fullKey,
       checked,
-      error: this.getError(fullKey),
-      label: this.getLabel(key),
-      onChange: (e: React.BaseSyntheticEvent) => {
-        this.setValue(fullKey, e.currentTarget.checked);
+      error: this.errorOf(fullKey),
+      onChange: (e: BaseSyntheticEvent) => {
+        this.setValue(fullKey, e.currentTarget.checked as unknown);
       },
       mb: "sm",
     };
   }
 
-  getTagsInputProps(key: TKey) {
-    const fullKey = this.fullKeyOf(key);
-    const raw = this.getValue(fullKey);
+  getCheckboxProps(key: TKey) {
+    return this.checkbox(key);
+  }
+
+  private tags(key: TKey) {
+    const fullKey = this.keyOf(key);
+    const raw = this.valueOf(fullKey);
     const value: string[] = Array.isArray(raw)
       ? (raw as string[])
       : isNil(raw)
@@ -354,8 +212,28 @@ export class FormContext<
     return {
       name: fullKey,
       value,
-      error: this.getError(fullKey),
-      label: this.getLabel(key),
+      error: this.errorOf(fullKey),
+      onChange: (next: string[]) => {
+        this.setValue(fullKey, next);
+      },
+      mb: "sm",
+    };
+  }
+
+  getTagsInputProps(key: TKey) {
+    return this.tags(key);
+  }
+
+  private multiSelect(key: TKey, data: ComboboxData) {
+    const fullKey = this.keyOf(key);
+    const raw = this.valueOf(fullKey);
+    const value = Array.isArray(raw) ? raw.map((item) => String(item)) : [];
+
+    return {
+      name: fullKey,
+      value,
+      data,
+      error: this.errorOf(fullKey),
       onChange: (next: string[]) => {
         this.setValue(fullKey, next);
       },
@@ -364,39 +242,15 @@ export class FormContext<
   }
 
   getMultiSelectProps(key: TKey, data: ComboboxData) {
-    const fullKey = this.fullKeyOf(key);
-    const raw = this.getValue(fullKey) as unknown[];
-    const value = raw.map((item) => String(item));
-    // const value = isNil(raw) ? null : String(raw);
-    // const value: string[] = Array.isArray(raw)
-    //   ? (raw as string[])
-    //   : isNil(raw)
-    //     ? []
-    //     : String(raw)
-    //         .split(',')
-    //         .map((s) => s.trim())
-    //         .filter((s) => s.length > 0);
-
-    return {
-      name: fullKey,
-      value,
-      data,
-      error: this.getError(fullKey),
-      label: this.getLabel(key),
-      onChange: (next: string[]) => {
-        this.setValue(fullKey, next);
-      },
-      mb: "sm",
-    };
+    return this.multiSelect(key, data);
   }
 
-  getFileInputProps(key: TKey) {
-    const fullKey = this.fullKeyOf(key);
+  private file(key: TKey) {
+    const fullKey = this.keyOf(key);
     return {
       name: fullKey,
-      value: this.getValue(fullKey) as File | null,
-      error: this.getError(fullKey),
-      label: this.getLabel(key),
+      value: this.valueOf(fullKey) as File | null,
+      error: this.errorOf(fullKey),
       onChange: (file: File | null) => {
         this.setValue(fullKey, file);
       },
@@ -404,83 +258,84 @@ export class FormContext<
     };
   }
 
-  getDateInputProps(key: TKey) {
-    const fullKey = this.fullKeyOf(key);
-    const raw = this.getValue(fullKey);
-    const value = raw ? dayjs(raw as string).toDate() : null;
+  getFileInputProps(key: TKey) {
+    return this.file(key);
+  }
+
+  private date(key: TKey) {
+    const fullKey = this.keyOf(key);
+    const raw = this.valueOf(fullKey);
+    const value =
+      isNil(raw) || raw === "" ? null : isDateObject(raw) ? raw : String(raw);
 
     return {
       name: fullKey,
       value,
-      error: this.getError(fullKey),
-      label: this.getLabel(key),
-      onChange: (dateStr: string | null) => {
-        this.setValue(fullKey, dateStr);
+      error: this.errorOf(fullKey),
+      onChange: (nextDate: string | null) => {
+        this.setValue(fullKey, nextDate);
       },
       mb: "sm",
     };
   }
+
+  getDateInputProps(key: TKey) {
+    return this.date(key);
+  }
 }
 
-type PayloadWithMeta = Record<string, unknown> & { meta?: ResourceMeta };
+type Payload = Record<string, unknown>;
 
-export function useAppForm<TPayload extends PayloadWithMeta>(
+export function useAppForm<TPayload extends Payload>(
   payload: TPayload,
   {
     url,
     method = "post",
+    rememberKey,
     onSuccess,
     onError,
+    onFinish,
     onFlash,
-  }: UseAppFormOptions<TPayload>,
+  }: UseAppFormOptions,
 ) {
-  const inertiaForm = useInertiaForm(payload as FormDataType<TPayload>);
+  const formData = payload as FormDataType<TPayload>;
+  const inertiaForm = useManagedInertiaForm(formData, rememberKey);
 
   // Заворачиваем в data ключ перед отправкой. Соглашение по работе с беком
   inertiaForm.transform((formData) => {
-    return { data: stripMeta(formData) };
+    return { data: formData as Record<string, unknown> };
   });
-
-  const { t } = useTranslation();
 
   const onSubmit = (e: BaseSyntheticEvent) => {
     e.preventDefault();
-    const submitOptions =
-      onSuccess || onError || onFlash
-        ? {
-            onFinish: onSuccess,
-            onError,
-            onFlash,
-          }
-        : undefined;
+    const submitOptions = {
+      ...(onSuccess ? { onSuccess } : {}),
+      ...(onError ? { onError } : {}),
+      ...(onFinish ? { onFinish } : {}),
+      ...(onFlash ? { onFlash } : {}),
+    };
 
     return inertiaForm.submit(method, url, submitOptions);
   };
 
-  const meta = payload.meta;
-  const form = new FormContext({
-    data: payload,
-    meta,
-    model: meta?.model ?? "",
-    relations: meta?.relations ?? {},
+  const form = new FormContext<
+    TPayload,
+    FormDataType<TPayload>,
+    Extract<keyof TPayload, string>
+  >({
     inertiaForm,
-    t,
   });
 
   return {
     processing: inertiaForm.processing,
     onSubmit,
+    submit: onSubmit,
     form,
     reset: inertiaForm.reset,
     errors: inertiaForm.errors,
     inertiaForm,
   };
 }
-
-export type CollectionFormContext<
-  TParent extends Record<string, unknown>,
-  TChild extends Record<string, unknown>,
-> = FormContext<TChild, FormDataType<TParent>, Extract<keyof TChild, string>>;
 
 export function useAjaxSelectProps<
   T extends object,
@@ -495,26 +350,26 @@ export function useAjaxSelectProps<
     debounceMs?: number;
     clearable?: boolean;
     allowDeselect?: boolean;
+    initialValueText?: string;
   },
 ) {
   const selectProps = form.getSelectProps(key, []);
   const value = selectProps.value;
-  const metaLabel = form.getMetaLabel(key);
-  const resolvedLabel =
-    typeof metaLabel === "string" && metaLabel.length > 0
-      ? metaLabel
+  const resolvedValueText =
+    opts?.initialValueText && opts.initialValueText.length > 0
+      ? opts.initialValueText
       : typeof value === "string"
         ? value
         : "";
   const defaultData =
     typeof value === "string" && value.length > 0
-      ? [{ label: resolvedLabel, value }]
+      ? [{ label: resolvedValueText, value }]
       : [];
 
   const delay = opts?.debounceMs ?? 250;
   const minLen = opts?.minLength ?? 2;
 
-  const [search, setSearch] = useState(resolvedLabel);
+  const [search, setSearch] = useState(resolvedValueText);
   const [q] = useDebouncedValue(search, delay);
   const { data, loading, refetch } = useFetch<ComboboxData>(
     `${url}?term=${encodeURIComponent(q)}`,

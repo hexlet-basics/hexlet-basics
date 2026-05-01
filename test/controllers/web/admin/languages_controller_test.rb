@@ -19,17 +19,24 @@ class Web::Admin::LanguagesControllerTest < ActionDispatch::IntegrationTest
 
   def test_review
     language = languages(:php)
+    infos_count = language.current_lesson_infos.count
 
-    VCR.use_cassette("ai-lessons-reviews-create") do
+    original_queue_adapter = ActiveJob::Base.queue_adapter
+    ActiveJob::Base.queue_adapter = :test
+
+    assert_enqueued_jobs infos_count, only: ReviewLessonJob do
       post review_admin_language_url(language.id)
     end
+
     assert_response :redirect
+  ensure
+    ActiveJob::Base.queue_adapter = original_queue_adapter
   end
 
   def test_create
     slug = "racket"
 
-    params = { language: { slug: slug } }
+    params = { data: { slug: slug } }
     post admin_languages_url, params: params
     assert_response :redirect
 
@@ -46,7 +53,7 @@ class Web::Admin::LanguagesControllerTest < ActionDispatch::IntegrationTest
   def test_update
     language = languages(:php)
 
-    params = { language: { progress: "in_development" } }
+    params = { data: { progress: "in_development" } }
     patch admin_language_url(language), params: params
     assert_response :redirect
 

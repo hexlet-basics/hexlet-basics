@@ -1,5 +1,4 @@
 import { Button, Group, Loader, Stack, Textarea } from "@mantine/core";
-import i18next from "i18next";
 import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useAssistantStream } from "@/hooks/useAssistantStream";
@@ -37,7 +36,7 @@ export default function Chat({
   lessonMember,
   previousMessages,
 }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: focus is intentionally retriggered by tab selection count
@@ -90,7 +89,7 @@ export default function Chat({
           rows={5}
         />
         <Group justify="flex-end" pt="md">
-          {i18next.language === "ru" && (
+          {i18n.language === "ru" && (
             <Button
               component="a"
               variant="light"

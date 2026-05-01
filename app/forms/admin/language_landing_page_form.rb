@@ -20,10 +20,7 @@ class Admin::LanguageLandingPageForm < Language::LandingPage
     :used_in_header,
     :used_in_description,
     :outcomes_header,
-    :outcomes_description,
-    qna_items_attributes: [ :id, :question, :answer, :_destroy ]
+    :outcomes_description
 
   skip_if_empty :outcomes_image
-
-  accepts_nested_attributes_for :qna_items, allow_destroy: true
 end

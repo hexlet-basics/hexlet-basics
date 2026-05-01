@@ -20,11 +20,18 @@
 #  fk_rails_...  (survey_id => surveys.id)
 #
 class Survey::Item < ApplicationRecord
+  class State < T::Enum
+    enums do
+      Active = new("active")
+      Archived = new("archived")
+    end
+  end
+
   acts_as_taggable_on :tags
 
   belongs_to :survey
 
   validates :value, presence: true, if: :active?
 
-  enum :state, { active: "active", archived: "archived" }, default: "active"
+  typed_enum :state, State, default: State::Active
 end

@@ -17,8 +17,6 @@ class ApplicationController
     include ::Ransack::Helpers::FormHelper
     include ::ViteRails::TagHelpers
     include ::ActionController::Base::HelperMethods
-    include ::LanguageCategoriesHelper
-    include ::Web::Admin::LanguageLandingPagesHelper
     include ::Pundit::Helper
 
     sig { params(record: T.untyped).returns(T.untyped) }

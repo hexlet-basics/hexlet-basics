@@ -21,12 +21,8 @@
 class Survey::Scenario::Trigger < ApplicationRecord
   include Survey::Scenario::TriggerRepository
 
-  event_registry = DepsLocator.current.event_registry
-
   belongs_to :scenario
 
-  enum :event_name, event_registry.all.index_with(&:to_s), suffix: true
-
   validates :event_threshold_count, numericality: { greater_than_or_equal_to: 1 }, allow_nil: true
-  validates :event_name, uniqueness: { scope: :scenario }, inclusion: { in: ->(_) { event_registry.all } }, allow_nil: true
+  validates :event_name, uniqueness: { scope: :scenario }, allow_nil: true
 end

@@ -14,7 +14,7 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   def new
     language = Admin::LanguageForm.new
     render inertia: true, props: {
-      courseDto: LanguageCrudResource.new(language)
+      courseDto: LanguageCreateResource.new(language)
     }
   end
 
@@ -24,21 +24,21 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
     landing_page = language.landing_pages.published.find_by(locale: I18n.locale, main: true)
 
     render inertia: true, props: {
-      courseDto: LanguageCrudResource.new(language),
+      courseDto: LanguageUpdateResource.new(language),
       landingPage: landing_page && Language::LandingPageResource.new(landing_page),
       courseVersions: Language::VersionResource.new(versions)
     }
   end
 
   def create
-    language = Admin::LanguageForm.new(params[:language])
+    language = Admin::LanguageForm.new(params[:data])
 
     if language.save
       f(:success)
       redirect_to admin_languages_path
     else
       f(:error)
-      redirect_to_inertia new_admin_language_path, language
+      redirect_to new_admin_language_path, inertia: { errors: language.errors }
     end
   end
 
@@ -56,11 +56,11 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   def update
     language = Admin::LanguageForm.find(params[:id])
 
-    if language.update(params[:language])
+    if language.update(params[:data])
       f(:success)
     else
       f(:error)
     end
-    redirect_to_inertia edit_admin_language_path(language), language
+    redirect_to edit_admin_language_path(language), inertia: { errors: language.errors }
   end
 end

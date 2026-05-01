@@ -31,6 +31,14 @@
 #  fk_rails_...  (upload_id => uploads.id)
 #
 class Language::Lesson < ApplicationRecord
+  class State < T::Enum
+    enums do
+      Created = new("created")
+      Active = new("active")
+      Archived = new("archived")
+    end
+  end
+
   include AASM
   include Language::LessonRepository
 
@@ -54,7 +62,7 @@ class Language::Lesson < ApplicationRecord
   # has_one :localed_info, -> { merge(Language::Lesson::Version::Info.with_locale) },
   #   class_name: "Language::Lesson::Version::Info", through: :versions, source: :infos
 
-  enum :state, { created: "created", active: "active", archived: "archived" }, suffix: true
+  typed_enum :state, State, suffix: true
   aasm :state, enum: true do
    state :created, initial: true
    state :active

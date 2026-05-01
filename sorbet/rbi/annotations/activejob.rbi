@@ -42,3 +42,9 @@ class ActiveJob::Base
   sig { params(priority: T.untyped, block: T.nilable(T.proc.bind(T.attached_class).returns(T.untyped))).void }
   def self.queue_with_priority(priority = nil, &block); end
 end
+
+# @version >= 8.1.0.beta1
+module ActiveJob::Continuable
+  sig { params(step_name: Symbol, start: T.untyped, isolated: T::Boolean, block: T.nilable(T.proc.params(step: ActiveJob::Continuation::Step).void)).void }
+  def step(step_name, start: nil, isolated: false, &block); end
+end

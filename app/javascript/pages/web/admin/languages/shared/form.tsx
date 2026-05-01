@@ -3,10 +3,10 @@ import { Button, FileInput, Select, TextInput } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useAppForm } from "@/hooks/useAppForm";
 import { arrayToSelectData, enumToOptions } from "@/lib/utils";
-import type LanguageCrud from "@/types/serializers/LanguageCrud";
+import type { LanguageCreate, LanguageUpdate } from "@/types/serializers";
 
 type Props = {
-  data: LanguageCrud;
+  data: LanguageCreate | LanguageUpdate;
   url: string;
   method?: Method;
 };
@@ -48,13 +48,32 @@ export default function Form({ data, url, method }: Props) {
   return (
     <form onSubmit={onSubmit}>
       <Select
+        label={t(($) => $.models.attributes.language.progress)}
         {...form.getSelectProps("progress", languageProgressSelectData)}
       />
-      <Select {...form.getSelectProps("learn_as", languageLearnAsSelectData)} />
-      <TextInput {...form.getInputProps("slug")} />
-      <TextInput {...form.getInputProps("hexlet_program_landing_page")} />
-      <TextInput {...form.getInputProps("openai_assistant_id")} />
-      <FileInput {...form.getFileInputProps("cover")} name="cover" />
+      <Select
+        label={t(($) => $.models.attributes.language.learn_as)}
+        {...form.getSelectProps("learn_as", languageLearnAsSelectData)}
+      />
+      <TextInput
+        label={t(($) => $.models.attributes.language.slug)}
+        {...form.getInputProps("slug")}
+      />
+      <TextInput
+        label={t(
+          ($) => $.models.attributes.language.hexlet_program_landing_page,
+        )}
+        {...form.getInputProps("hexlet_program_landing_page")}
+      />
+      <TextInput
+        label={t(($) => $.models.attributes.language.openai_assistant_id)}
+        {...form.getInputProps("openai_assistant_id")}
+      />
+      <FileInput
+        label={t(($) => $.models.attributes.language.cover)}
+        {...form.getFileInputProps("cover")}
+        name="cover"
+      />
       <Button type="submit" loading={processing}>
         {t(($) => $.helpers.submit.save)}
       </Button>

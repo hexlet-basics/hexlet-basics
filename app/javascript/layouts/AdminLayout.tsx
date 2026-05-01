@@ -11,11 +11,8 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import {
   IconFileText,
-  IconHelpHexagon,
   IconHome,
-  IconLayoutGrid,
   IconMessageCircle,
-  IconRoadSign,
   IconTerminal2,
   IconUserCheck,
   IconUsers,
@@ -95,24 +92,6 @@ function NavbarMenu() {
         href={Routes.admin_language_lesson_members_path()}
         label={t(($) => $.layouts.admin.application.language_lesson_members)}
         leftSection={<IconFileText size={16} />}
-      />
-      <NavLink
-        component={Link}
-        href={Routes.admin_surveys_path()}
-        label={t(($) => $.layouts.admin.application.surveys)}
-        leftSection={<IconHelpHexagon size={16} />}
-      />
-      <NavLink
-        component={Link}
-        href={Routes.admin_survey_scenarios_path()}
-        label={t(($) => $.layouts.admin.application.survey_scenarios)}
-        leftSection={<IconLayoutGrid size={16} />}
-      />
-      <NavLink
-        component={Link}
-        href={Routes.admin_survey_answers_path()}
-        label={t(($) => $.layouts.admin.application.survey_answers)}
-        leftSection={<IconRoadSign size={16} />}
       />
       <NavLink
         component={Link}

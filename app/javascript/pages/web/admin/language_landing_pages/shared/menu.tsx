@@ -5,10 +5,10 @@ import {
   type CrudHorizontalMenuItem,
 } from "@/components/CrudHorizontalMenu";
 import * as Routes from "@/routes.js";
-import type { LanguageLandingPageCrud } from "@/types/serializers";
+import type { LanguageLandingPageUpdate } from "@/types/serializers";
 
 type Props = {
-  data?: LanguageLandingPageCrud;
+  data?: LanguageLandingPageUpdate;
 };
 
 export function Menu({ data }: Props) {

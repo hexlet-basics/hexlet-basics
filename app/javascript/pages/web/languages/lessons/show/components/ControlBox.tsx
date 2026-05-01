@@ -1,13 +1,5 @@
 import { Link, usePage } from "@inertiajs/react";
-import {
-  Box,
-  Button,
-  Divider,
-  Group,
-  Loader,
-  Stack,
-  Text,
-} from "@mantine/core";
+import { Box, Button, Divider, Group, Stack, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import {
@@ -65,33 +57,14 @@ export default function ControlBox() {
 
   useHotkeys("ctrl+enter", handleRunCheck);
 
-  const renderRunButtonContent = () => {
-    const text = t(($) => $.languages.lessons.show.controls.run);
-    if (isCodeChecking) {
-      return (
-        <Group gap={4} align="center">
-          <Loader size="xs" />
-          <Text size="xs">{text}</Text>
-        </Group>
-      );
-    }
-
-    return (
-      <Group gap={4} align="center">
-        <IconPlayerPlay size={18} />
-        <Text size="xs">{text}</Text>
-      </Group>
-    );
-  };
-
   const nextButtonDisabled = !finished;
 
   return (
     <Stack gap={0}>
-      <Divider color="gray.4" />
+      <Divider />
       <Box py="sm">
         <Group justify="center">
-          <Button size="xs" me="xs" onClick={openModal}>
+          <Button size="xs" me="xs" variant="light" onClick={openModal}>
             <IconRepeat size={18} />
           </Button>
           {/* <Popover width={200} position="top" withArrow shadow="md"> */}
@@ -108,30 +81,37 @@ export default function ControlBox() {
           {/*   </Popover.Dropdown> */}
           {/* </Popover> */}
 
-          {prevLesson && (
-            <Button
-              component={Link}
-              size="xs"
-              variant="outline"
-              color="green"
-              radius="sm"
-              me="xs"
-              href={Routes.language_lesson_path(course.slug!, prevLesson.slug!)}
-            >
-              {t(($) => $.languages.lessons.show.prev)}
-            </Button>
-          )}
+          <Button
+            component={Link}
+            disabled={!prevLesson}
+            size="xs"
+            variant="outline"
+            color="green"
+            me="xs"
+            href={
+              prevLesson
+                ? Routes.language_lesson_path(course.slug!, prevLesson.slug!)
+                : "#"
+            }
+          >
+            {t(($) => $.languages.lessons.show.prev)}
+          </Button>
 
           <Button
             size="xs"
-            variant="outline"
-            color="blue"
-            radius="sm"
+            // variant="outline"
+            // color="blue"
             me="xs"
+            loading={isCodeChecking}
             disabled={isCodeChecking}
             onClick={handleRunCheck}
           >
-            {renderRunButtonContent()}
+            <Group gap={4} align="center">
+              <IconPlayerPlay size={18} />
+              <Text size="xs">
+                {t(($) => $.languages.lessons.show.controls.run)}
+              </Text>
+            </Group>
           </Button>
 
           {user.guest && (
@@ -140,7 +120,6 @@ export default function ControlBox() {
               size="xs"
               variant="outline"
               color="green"
-              radius="sm"
               me="xs"
               disabled={nextButtonDisabled}
               href={Routes.new_user_path({ demo: true, from: url })}
@@ -155,7 +134,6 @@ export default function ControlBox() {
               size="xs"
               variant="outline"
               color="green"
-              radius="sm"
               disabled={nextButtonDisabled}
               href={Routes.language_lesson_path(course.slug!, nextLesson.slug!)}
             >
@@ -169,7 +147,6 @@ export default function ControlBox() {
               size="xs"
               variant="outline"
               color="green"
-              radius="sm"
               disabled={nextButtonDisabled}
               href={Routes.success_language_path(landingPage.slug!)}
             >

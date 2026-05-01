@@ -17,7 +17,6 @@ import {
   IconList,
   IconUsers,
 } from "@tabler/icons-react";
-import i18next from "i18next";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import LeadFormBlock from "@/components/LeadFormBlock";
@@ -34,7 +33,7 @@ interface Props extends PropsWithChildren {
 }
 
 export default function Show({ bookRequested, lead }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { auth } = usePage().props;
 
   const features = [
@@ -138,7 +137,7 @@ export default function Show({ bookRequested, lead }: Props) {
               <Grid.Col span={{ base: 12, md: 2 }}>
                 <Text fw={700}>
                   {t(($) => $.books.show.chapter, {
-                    number: index + 1,
+                    chapter: String(index + 1),
                   })}
                 </Text>
               </Grid.Col>
@@ -155,7 +154,7 @@ export default function Show({ bookRequested, lead }: Props) {
           </Box>
         ))}
 
-        {!auth.user.guest && i18next.language === "ru" && (
+        {!auth.user.guest && i18n.language === "ru" && (
           <Grid align="center" mt={60}>
             <Grid.Col span={{ base: 12, lg: 7 }}>
               <Title order={2}>{t(($) => $.home.index.consultation)}</Title>

@@ -62,15 +62,6 @@ Rails.application.routes.draw do
       resource :my, only: [ :show ]
 
       resources :leads
-      resources :scenarios, only: [ :show ] do
-        scope module: :scenarios do
-          resources :surveys, only: [ :show ] do
-            scope module: :surveys do
-              resources :answers, only: [ :create ]
-            end
-          end
-        end
-      end
 
       constraints(RuSuffixConstraint) do
         resource :book do
@@ -128,11 +119,13 @@ Rails.application.routes.draw do
               get :search
             end
           end
+          resources :language_categories, only: [] do
+            resources :qna_items, only: %i[index create update destroy], module: :language_categories
+          end
+          resources :language_landing_pages, only: [] do
+            resources :qna_items, only: %i[index create update destroy], module: :language_landing_pages
+          end
         end
-
-        resources :surveys
-        resources :survey_scenarios
-        resources :survey_answers, only: [ :index ]
 
         resources :reviews
         resources :leads, only: [ :index ]

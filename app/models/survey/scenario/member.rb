@@ -21,15 +21,19 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Survey::Scenario::Member < ApplicationRecord
+  class State < T::Enum
+    enums do
+      Started = new("started")
+      Finished = new("finished")
+    end
+  end
+
   belongs_to :user
   belongs_to :scenario, class_name: "Survey::Scenario"
 
-  event_registry = DepsLocator.current.event_registry
-
   validates :scenario, uniqueness: { scope: :user }
 
-  enum :event_name, event_registry.all.index_with(&:to_s), suffix: true
-  enum :state, { started: "started", finished: "finished" }, default: "started"
+  typed_enum :state, State, default: State::Started
 
   def next_survey
     scenario.surveys.order(order: :asc).where.not(id: user.survey_answers_surveys).first

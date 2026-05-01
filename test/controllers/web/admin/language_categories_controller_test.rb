@@ -18,7 +18,7 @@ class Web::Admin::LanguageCategoriesControllerTest < ActionDispatch::Integration
   def test_create
     slug = "web-development"
 
-    params = { language_category: {
+    params = { data: {
       slug: slug, name: slug, header: slug
     } }
     post admin_language_categories_url, params: params
@@ -36,16 +36,17 @@ class Web::Admin::LanguageCategoriesControllerTest < ActionDispatch::Integration
 
   def test_update
     language_category = language_categories("frontend-ru")
+    landing_page = language_landing_pages("php-ru")
 
-    items_attributes = [
-      { language_landing_page_id: Language::LandingPage.first.id }
-    ]
-
-    params = { language_category: { name: "new description", items_attributes: } }
+    params = {
+      data: {
+        name: "new description",
+        language_landing_page_ids: [ landing_page.id ]
+      }
+    }
     patch admin_language_category_url(language_category), params: params
     assert_response :redirect
 
-    # language.reload
-    # assert { language_category.progress.in_development? }
+    assert_equal [ landing_page.id ], language_category.items.reload.pluck(:language_landing_page_id)
   end
 end

@@ -1,5 +1,6 @@
 InertiaRails.configure do |config|
   # Example: force a full-reload if the deployed assets change.
+  config.version = ViteRuby.digest
   config.flash_keys = %i[notice alert error success]
   config.always_include_errors_hash = true
   config.use_data_inertia_head_attribute = true

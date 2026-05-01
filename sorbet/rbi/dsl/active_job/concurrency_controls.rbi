@@ -23,6 +23,9 @@ module ActiveJob::ConcurrencyControls
     def concurrency_limit; end
     def concurrency_limit=(value); end
     def concurrency_limit?; end
+    def concurrency_on_conflict; end
+    def concurrency_on_conflict=(value); end
+    def concurrency_on_conflict?; end
   end
 
   module GeneratedInstanceMethods
@@ -32,5 +35,8 @@ module ActiveJob::ConcurrencyControls
     def concurrency_limit; end
     def concurrency_limit=(value); end
     def concurrency_limit?; end
+    def concurrency_on_conflict; end
+    def concurrency_on_conflict=(value); end
+    def concurrency_on_conflict?; end
   end
 end

@@ -3,12 +3,12 @@ import { useTranslation } from "react-i18next";
 
 import AdminLayout from "@/layouts/AdminLayout";
 import * as Routes from "@/routes.js";
-import type LanguageCrud from "@/types/serializers/LanguageCrud";
+import type LanguageCreate from "@/types/serializers/LanguageCreate";
 import Form from "./shared/form";
 import { Menu } from "./shared/menu";
 
 type Props = {
-  courseDto: LanguageCrud;
+  courseDto: LanguageCreate;
 };
 
 export default function New({ courseDto }: Props) {

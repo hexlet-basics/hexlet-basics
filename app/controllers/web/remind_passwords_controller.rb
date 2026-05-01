@@ -25,7 +25,7 @@ class Web::RemindPasswordsController < Web::ApplicationController
       redirect_to root_path
     else
       f(:error)
-      redirect_to_inertia new_remind_password_url, remind_password_form
+      redirect_to new_remind_password_url, inertia: { errors: remind_password_form.errors }
     end
   end
 end

@@ -63,24 +63,23 @@ export default function Index({ catalogLandingPages, categories }: Props) {
               const href = Routes.language_category_path(category.slug!);
 
               return (
-                <Card
-                  component={Link}
-                  key={category.id}
-                  href={href}
-                  withBorder
-                  radius="md"
-                  p="lg"
-                  td="none"
-                >
-                  <HoverLift h="100%">
+                <HoverLift h="100%" key={category.id}>
+                  <Card
+                    component={Link}
+                    href={href}
+                    withBorder
+                    radius="md"
+                    p="lg"
+                    td="none"
+                  >
                     <Stack gap="xs">
                       <Text fw="bold">{category.header ?? category.name}</Text>
                       {category.description && (
                         <Text c="dimmed">{category.description}</Text>
                       )}
                     </Stack>
-                  </HoverLift>
-                </Card>
+                  </Card>
+                </HoverLift>
               );
             })}
           </SimpleGrid>

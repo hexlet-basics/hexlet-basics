@@ -16,7 +16,7 @@ class Web::LeadsController < Web::ApplicationController
   end
 
   def create
-    lead = LeadForm.new(params[:lead])
+    lead = LeadForm.new(params[:data])
     lead.user = current_user
 
     courses_data = []
@@ -31,17 +31,7 @@ class Web::LeadsController < Web::ApplicationController
 
     lead.courses_data = courses_data
 
-    survey_answers_data = []
-    current_user.survey_answers.each do |answer|
-      answer_data = {
-        question: answer.survey.question,
-        answer: answer.survey_item.value
-      }
-
-      survey_answers_data << answer_data
-    end
-
-    lead.survey_answers_data = survey_answers_data
+    lead.survey_answers_data = []
 
     lead.ahoy_visit = current_user.visits.last
 
@@ -78,7 +68,7 @@ class Web::LeadsController < Web::ApplicationController
       redirect_to params[:from].presence || root_path
     else
       f(:error)
-      redirect_to_inertia new_lead_path, lead
+      redirect_to new_lead_path, inertia: { errors: lead.errors }
     end
   end
 end

@@ -6,5 +6,34 @@
 
 
 module ActiveRecord::Attributes
+  include GeneratedInstanceMethods
+
   mixes_in_class_methods ::ActiveModel::AttributeRegistration::ClassMethods
+  mixes_in_class_methods ::ActiveModel::Attributes::Normalization::ClassMethods
+  mixes_in_class_methods GeneratedClassMethods
+
+  module GeneratedClassMethods
+    def __callbacks; end
+    def __callbacks=(value); end
+    def attribute_aliases; end
+    def attribute_aliases=(value); end
+    def attribute_aliases?; end
+    def attribute_method_patterns; end
+    def attribute_method_patterns=(value); end
+    def attribute_method_patterns?; end
+    def normalized_attributes; end
+    def normalized_attributes=(value); end
+    def normalized_attributes?; end
+  end
+
+  module GeneratedInstanceMethods
+    def __callbacks; end
+    def attribute_aliases; end
+    def attribute_aliases?; end
+    def attribute_method_patterns; end
+    def attribute_method_patterns?; end
+    def normalized_attributes; end
+    def normalized_attributes=(value); end
+    def normalized_attributes?; end
+  end
 end

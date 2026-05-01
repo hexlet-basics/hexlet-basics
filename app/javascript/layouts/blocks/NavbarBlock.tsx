@@ -39,7 +39,6 @@ import {
   IconUserCog,
   IconUserShield,
 } from "@tabler/icons-react";
-import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 import logoImg from "@/images/logo.svg";
 import defaultAvatarImg from "@/images/user-avatar.webp";
@@ -52,6 +51,7 @@ export type NavbarBlockProps = {
 };
 
 export default function NavbarBlock({ opened, onToggle }: NavbarBlockProps) {
+  const { i18n } = useTranslation();
   const { landingPagesForLists } = usePage().props;
 
   return (
@@ -63,7 +63,7 @@ export default function NavbarBlock({ opened, onToggle }: NavbarBlockProps) {
 
         <MyLink />
         <CourseMenu landingPages={landingPagesForLists} />
-        {i18next.language === "ru" && (
+        {i18n.language === "ru" && (
           <Group visibleFrom="sm">
             <SolutionsMenu />
           </Group>
@@ -173,8 +173,8 @@ function CourseMenu({
 }
 
 function BookLink() {
-  const { t } = useTranslation();
-  return i18next.language === "ru" ? (
+  const { t, i18n } = useTranslation();
+  return i18n.language === "ru" ? (
     <Anchor component={Link} href={Routes.book_path()}>
       {t(($) => $.layouts.shared.nav.book)}
     </Anchor>
@@ -252,8 +252,9 @@ function AuthLinks({ avatar }: { avatar: string }) {
 }
 
 function LocaleSwitcher() {
-  const localeKey = hasObjectKey(localesByCode, i18next.language)
-    ? i18next.language
+  const { i18n } = useTranslation();
+  const localeKey = hasObjectKey(localesByCode, i18n.language)
+    ? i18n.language
     : "ru";
 
   return (
@@ -315,20 +316,18 @@ export function ThemeSwitcher() {
   const label = t(($) => $.layouts.shared.nav.switch_theme);
 
   return (
-    <Tooltip label={label} withArrow>
-      <ActionIcon
-        aria-label={label}
-        onClick={toggleColorScheme}
-        size="sm"
-        variant="default"
-      >
-        {isDark ? (
-          <IconSun stroke={1.2} size={14} />
-        ) : (
-          <IconMoon stroke={1.2} size={14} />
-        )}
-      </ActionIcon>
-    </Tooltip>
+    <ActionIcon
+      aria-label={label}
+      onClick={toggleColorScheme}
+      size="sm"
+      variant="transparent"
+    >
+      {isDark ? (
+        <IconSun stroke={1.2} size={14} />
+      ) : (
+        <IconMoon stroke={1.2} size={14} />
+      )}
+    </ActionIcon>
   );
 }
 

@@ -5,14 +5,10 @@ source "https://rubygems.org"
 gem "rails"
 # Use sqlite3 as the database for Active Record
 gem "sqlite3"
-# Use Falcon web server [https://github.com/socketry/falcon-rails]
-group :development, :staging, :production do
-  gem "falcon", "0.54.3"
-  gem "falcon-rails", "0.2.3"
-end
+gem "puma"
 
-  # Audits gems for known security defects (use config/bundler-audit.yml to ignore issues)
-  gem "bundler-audit", require: false
+# Audits gems for known security defects (use config/bundler-audit.yml to ignore issues)
+gem "bundler-audit", require: false
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
@@ -111,7 +107,6 @@ group :development, :staging do
 end
 
 group :test do
-  gem "vcr"
   gem "capybara"
   gem "cuprite"
   gem "minitest-power_assert"

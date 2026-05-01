@@ -15,7 +15,6 @@ import {
   Title,
 } from "@mantine/core";
 import { IconMessage2 } from "@tabler/icons-react";
-import i18next from "i18next";
 import { Trans, useTranslation } from "react-i18next";
 import CourseBlock from "@/components/CourseBlock";
 import ApplicationLayout from "@/layouts/ApplicationLayout";
@@ -82,7 +81,7 @@ export default function My(props: Props) {
     finishedCourseMembers,
     landingPageResourcesByCourseId,
   } = props;
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   return (
     <ApplicationLayout>
@@ -106,7 +105,7 @@ export default function My(props: Props) {
           {t(($) => $.my.show.finished)}
         </Title>
 
-        {finishedCourseMembers.length > 0 && i18next.language === "ru" && (
+        {finishedCourseMembers.length > 0 && i18n.language === "ru" && (
           <Alert icon={<IconMessage2 />} mb="xl" px="xl">
             <Trans
               t={t}

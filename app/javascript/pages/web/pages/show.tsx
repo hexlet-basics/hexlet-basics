@@ -1,6 +1,6 @@
 import { Container, Grid, Title, Typography } from "@mantine/core";
-import i18next from "i18next";
 import type { PropsWithChildren } from "react";
+import { useTranslation } from "react-i18next";
 import ApplicationLayout from "@/layouts/ApplicationLayout.tsx";
 import { typographyStyles } from "@/lib/mantine";
 import { hasObjectKey } from "@/lib/utils";
@@ -40,9 +40,8 @@ const mapping = {
 };
 
 export default function New({ page, title }: Props) {
-  const locale = hasObjectKey(mapping, i18next.language)
-    ? i18next.language
-    : "ru";
+  const { i18n } = useTranslation();
+  const locale = hasObjectKey(mapping, i18n.language) ? i18n.language : "ru";
   const Component = mapping[locale][page];
   return (
     <ApplicationLayout header={title} center>

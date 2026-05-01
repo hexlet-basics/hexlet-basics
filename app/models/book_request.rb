@@ -17,9 +17,16 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class BookRequest < ApplicationRecord
+  class State < T::Enum
+    enums do
+      Requested = new("requested")
+      Downloaded = new("downloaded")
+    end
+  end
+
   include AASM
 
   belongs_to :user
 
-  enum :state, { requested: "requested", downloaded: "downloaded" }, default: "requested", suffix: true, validate: true
+  typed_enum :state, State, default: State::Requested, suffix: true, validate: true
 end

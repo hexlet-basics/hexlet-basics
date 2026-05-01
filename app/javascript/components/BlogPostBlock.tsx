@@ -18,15 +18,15 @@ export default function BlogPostBlock({ post, lazy }: Props) {
   const { t } = useTranslation();
 
   return (
-    <Card
-      component={Link}
-      href={Routes.blog_post_path(post.slug!, { suffix })}
-      shadow="sm"
-      radius="md"
-      h="100%"
-      td="none"
-    >
-      <HoverLift h="100%">
+    <HoverLift h="100%">
+      <Card
+        component={Link}
+        href={Routes.blog_post_path(post.slug!, { suffix })}
+        shadow="sm"
+        radius="md"
+        h="100%"
+        td="none"
+      >
         {post.cover_list_variant && (
           <Card.Section>
             <AspectRatio ratio={2 / 1}>
@@ -61,7 +61,7 @@ export default function BlogPostBlock({ post, lazy }: Props) {
             </Text>
           </Group>
         </Group>
-      </HoverLift>
-    </Card>
+      </Card>
+    </HoverLift>
   );
 }

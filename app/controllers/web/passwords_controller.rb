@@ -22,7 +22,7 @@ class Web::PasswordsController < Web::ApplicationController
       f(:success)
       redirect_to root_path
     else
-      redirect_to_inertia edit_password_path(token), @user_password_form
+      redirect_to edit_password_path(token), inertia: { errors: @user_password_form.errors }
     end
   end
 

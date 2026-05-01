@@ -56,12 +56,12 @@ class Web::Admin::Management::UsersController < Web::Admin::Management::Applicat
   def update
     user = Admin::UserForm.find params[:id]
 
-    if user.update(params[:user])
+    if user.update(params[:data])
       f(:success)
     else
       f(:error)
     end
 
-    redirect_to_inertia edit_admin_management_user_url(user), user
+    redirect_to edit_admin_management_user_url(user), inertia: { errors: user.errors }
   end
 end

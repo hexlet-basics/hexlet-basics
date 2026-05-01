@@ -17,7 +17,7 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
     languages = Language.all
 
     render inertia: true, props: {
-      reviewDto: ReviewCrudResource.new(review),
+      reviewDto: ReviewCreateResource.new(review),
       courses: LanguageResource.new(languages)
     }
   end
@@ -27,13 +27,13 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
     languages = Language.all
 
     render inertia: true, props: {
-      reviewDto: ReviewCrudResource.new(review),
+      reviewDto: ReviewUpdateResource.new(review),
       courses: LanguageResource.new(languages)
     }
   end
 
   def create
-    review = Admin::ReviewForm.new(params[:review])
+    review = Admin::ReviewForm.new(params[:data])
     review.locale = I18n.locale
 
     if review.save
@@ -41,7 +41,7 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
       redirect_to edit_admin_review_url(review)
     else
       f(:error)
-      redirect_to_inertia new_admin_review_url, review
+      redirect_to new_admin_review_url, inertia: { errors: review.errors }
     end
   end
 
@@ -49,12 +49,12 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
     review = Admin::ReviewForm.find(params[:id])
     review.locale = I18n.locale
 
-    if review.update(params[:review])
+    if review.update(params[:data])
       f(:success)
     else
       f(:error)
     end
 
-    redirect_to_inertia edit_admin_review_url(review), review
+    redirect_to edit_admin_review_url(review), inertia: { errors: review.errors }
   end
 end

@@ -19,7 +19,6 @@ import {
 } from "@mantine/core";
 import { IconClock, IconUsers } from "@tabler/icons-react";
 import dayjs from "dayjs";
-import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 import type { Course, WithContext } from "schema-dts";
 import LeadFormBlock from "@/components/LeadFormBlock";
@@ -73,7 +72,7 @@ export default function Show({
   newUser,
   lead,
 }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const {
     auth: { user },
     locale,
@@ -435,7 +434,7 @@ export default function Show({
           </Box>
         )}
 
-        {!user.guest && i18next.language === "ru" && (
+        {!user.guest && i18n.language === "ru" && (
           <Container size="lg">
             <Grid align="center" justify="space-between" gap={0}>
               <Grid.Col span={{ base: 12, md: 6 }}>

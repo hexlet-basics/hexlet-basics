@@ -1,13 +1,12 @@
 import { useTranslation } from "react-i18next";
 import AdminLayout from "@/layouts/AdminLayout";
 import * as Routes from "@/routes.js";
-import type { Language, Review } from "@/types/serializers";
-import type ReviewCrud from "@/types/serializers/ReviewCrud";
+import type { Language, ReviewCreate } from "@/types/serializers";
 import Form from "./shared/form";
 import { Menu } from "./shared/menu";
 
 type Props = {
-  reviewDto: ReviewCrud;
+  reviewDto: ReviewCreate;
   courses: Language[];
 };
 

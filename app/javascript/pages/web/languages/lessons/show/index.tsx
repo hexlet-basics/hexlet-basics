@@ -23,7 +23,6 @@ import {
   IconInfoCircle,
   IconRocket,
 } from "@tabler/icons-react"; // TODO: the current github icon is deprecated, need to update from a new lib
-import i18next from "i18next";
 import { Suspense, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
@@ -139,6 +138,7 @@ function LessonRightBlock() {
       h="100%"
       display="flex"
       style={{ flexDirection: "column" }}
+      keepMountedMode="display-none"
       value={currentTab}
       onChange={(key) => changeTab(key as typeof currentTab)}
       // keepMounted={false}
@@ -322,7 +322,7 @@ function LessonTabContent() {
 }
 
 function AssistantTabContent({ focusesCount }: { focusesCount: number }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const {
     previousMessages,
@@ -337,7 +337,7 @@ function AssistantTabContent({ focusesCount }: { focusesCount: number }) {
 
   return (
     <Box p="lg">
-      {i18next.language === "ru" && (
+      {i18n.language === "ru" && (
         <Alert icon={<IconInfoCircle />} mb="lg">
           <Trans
             t={t}

@@ -4,12 +4,10 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: "{{ include "codebasics.fullname" . }}-gateway"
-  namespace: "{{ .Release.Namespace }}"
   labels:
-    app.kubernetes.io/name: "{{ .Chart.Name }}"
     {{- include "codebasics.labels" . | nindent 4 }}
 spec:
-  gatewayClassName: "{{ .Values.gateway.className }}"
+  gatewayClassName: "{{ .Values.gatewayClassName }}"
   listeners:
     - name: http
       protocol: HTTP
@@ -29,5 +27,5 @@ spec:
             kind: YCCertificate
             name: "{{ include "codebasics.fullname" . }}-yc-certificate"
   addresses:
-    - type: "{{ .Values.gateway.address.type }}"
-      value: "{{ .Values.gateway.address.value }}"
+    - type: "{{ .Values.gatewayAddressType }}"
+      value: "{{ .Values.gatewayAddressValue }}"

@@ -6,21 +6,24 @@ import * as Routes from "@/routes.js";
 import type {
   Language,
   LanguageLandingPage,
-  LanguageLandingPageCrud,
+  LanguageLandingPageCreate,
+  LanguageLandingPageQnaItem,
 } from "@/types";
 import Form from "./shared/form";
 import { Menu } from "./shared/menu";
 
 type Props = {
-  landingPageDto: LanguageLandingPageCrud;
+  landingPageDto: LanguageLandingPageCreate;
   landingPages: LanguageLandingPage[];
   languages: Language[];
+  qnaItems: LanguageLandingPageQnaItem[];
 };
 
 export default function New({
   landingPageDto,
   landingPages,
   languages,
+  qnaItems,
 }: Props) {
   const { t } = useTranslation();
 
@@ -33,6 +36,7 @@ export default function New({
             data={landingPageDto}
             landingPages={landingPages}
             languages={languages}
+            qnaItems={qnaItems}
             url={Routes.admin_language_landing_pages_path()}
           />
         </Grid.Col>

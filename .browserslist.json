@@ -1,7 +1,7 @@
 {
   "browsers": [
     "and_chr 147",
-    "and_ff 149",
+    "and_ff 150",
     "chrome 147",
     "chrome 146",
     "chrome 145",
@@ -32,6 +32,7 @@
     "chrome 120",
     "chrome 119",
     "chrome 118",
+    "edge 147",
     "edge 146",
     "edge 145",
     "edge 144",
@@ -61,6 +62,7 @@
     "edge 120",
     "edge 119",
     "edge 118",
+    "firefox 150",
     "firefox 149",
     "firefox 148",
     "firefox 147",
@@ -92,7 +94,6 @@
     "firefox 121",
     "firefox 120",
     "firefox 119",
-    "firefox 118",
     "ios_saf 26.4",
     "ios_saf 26.3",
     "ios_saf 26.2",

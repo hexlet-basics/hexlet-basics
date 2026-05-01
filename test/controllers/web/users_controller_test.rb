@@ -16,8 +16,7 @@ class Web::UsersControllerTest < ActionDispatch::IntegrationTest
 
     assert { user.present? }
     assert { authenticated? }
-    assert { user.survey_scenario_members.started.count == 1 }
-    # assert { user.survey_answers.requested.count == 2 }
+    assert { user.survey_scenario_members.empty? }
   end
 
   def test_create_with_demo

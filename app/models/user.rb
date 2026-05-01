@@ -30,6 +30,14 @@
 #  index_users_on_email        (email) UNIQUE
 #
 class User < ApplicationRecord
+  class ContactMethod < T::Enum
+    enums do
+      Telegram = new("telegram")
+      Phone = new("phone")
+      Whatsapp = new("whatsapp")
+    end
+  end
+
   include UserRepository
   include AASM
 
@@ -86,7 +94,7 @@ class User < ApplicationRecord
   has_one :book_request
   has_many :leads
 
-  enum :contact_method, { telegram: "telegram", phone: "phone", whatsapp: "whatsapp" }, suffix: true
+  typed_enum :contact_method, ContactMethod, suffix: true
 
   aasm :state do
     state :active, initial: true

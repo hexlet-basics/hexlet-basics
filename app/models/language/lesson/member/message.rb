@@ -27,6 +27,13 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Language::Lesson::Member::Message < ApplicationRecord
+  class Role < T::Enum
+    enums do
+      User = new("user")
+      Assistant = new("assistant")
+    end
+  end
+
   # TODO: add locale
   belongs_to :language, class_name: "Language"
   belongs_to :language_lesson, class_name: "Language::Lesson"
@@ -39,7 +46,7 @@ class Language::Lesson::Member::Message < ApplicationRecord
   counter_culture :language_lesson_member, column_name: "messages_count"
   counter_culture :user, column_name: "assistant_messages_count"
 
-  enum :role, { user: "user", assistant: "assistant" }, suffix: true, validate: true
+  typed_enum :role, Role, suffix: true, validate: true
 
   def self.ransackable_attributes(auth_object = nil)
     [ "id", "created_at", "language_lesson_member_id" ]

@@ -20,7 +20,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
     blog_post.creator = current_user
 
     render inertia: true, props: {
-      blogPostDto: BlogPostCrudResource.new(blog_post)
+      blogPostDto: BlogPostCreateResource.new(blog_post)
     }
   end
 
@@ -28,7 +28,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
     blog_post = Admin::BlogPostForm.find(params[:id])
 
     render inertia: true, props: {
-      blogPostDto: BlogPostCrudResource.new(blog_post),
+      blogPostDto: BlogPostUpdateResource.new(blog_post),
       relatedCourses: LanguageResource.new(blog_post.related_languages)
     }
   end
@@ -41,16 +41,16 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
   end
 
   def create
-    blog_post = Admin::BlogPostForm.new(params[:blog_post])
+    blog_post = Admin::BlogPostForm.new(params[:data])
     blog_post.locale = I18n.locale
     blog_post.creator = current_user
 
     if blog_post.save
       f(:success)
-      redirect_to_inertia edit_admin_blog_post_path(blog_post), blog_post
+      redirect_to edit_admin_blog_post_path(blog_post), inertia: { errors: blog_post.errors }
     else
       f(:error)
-      redirect_to_inertia new_admin_blog_post_url, blog_post
+      redirect_to new_admin_blog_post_url, inertia: { errors: blog_post.errors }
     end
   end
 
@@ -58,12 +58,12 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
     blog_post = Admin::BlogPostForm.find(params[:id])
     blog_post.locale = I18n.locale
 
-    if blog_post.update(params[:blog_post])
+    if blog_post.update(params[:data])
       f(:success)
     else
       f(:error)
     end
 
-      redirect_to_inertia edit_admin_blog_post_path(blog_post), blog_post
+      redirect_to edit_admin_blog_post_path(blog_post), inertia: { errors: blog_post.errors }
   end
 end

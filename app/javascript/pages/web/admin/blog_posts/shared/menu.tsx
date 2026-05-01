@@ -6,10 +6,10 @@ import {
   type CrudHorizontalMenuItem,
 } from "@/components/CrudHorizontalMenu";
 import * as Routes from "@/routes.js";
-import type { BlogPostCrud } from "@/types";
+import type { BlogPostUpdate } from "@/types";
 
 type Props = {
-  data?: BlogPostCrud;
+  data?: BlogPostUpdate;
 };
 
 export default function Menu({ data }: Props) {

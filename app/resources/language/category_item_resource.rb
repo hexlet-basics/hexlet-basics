@@ -3,4 +3,6 @@ class Language::CategoryItemResource < ApplicationResource
   # root_key :user
 
   attributes :id, :language_category_id, :language_landing_page_id, :_destroy
+
+  typelize _destroy: :boolean
 end

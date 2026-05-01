@@ -44,6 +44,7 @@ export default function New({ userPassword, token }: Props) {
           >
             <form onSubmit={onSubmit}>
               <TextInput
+                label={t(($) => $.models.attributes.user.password)}
                 {...form.getInputProps("password")}
                 required
                 {...newPasswordInputProps}

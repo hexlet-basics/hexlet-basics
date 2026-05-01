@@ -27,10 +27,25 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Review < ApplicationRecord
+  class State < T::Enum
+    enums do
+      Draft = new("draft")
+      Published = new("published")
+      Archived = new("archived")
+    end
+  end
+
+  class Locale < T::Enum
+    enums do
+      Ru = new("ru")
+      En = new("en")
+    end
+  end
+
   include ReviewRepository
 
-  enum :state, { draft: "draft", published: "published", archived: "archived" }, suffix: true, validate: true, default: "draft"
-  enum :locale, { ru: "ru", en: "en" }, suffix: true, validate: true
+  typed_enum :state, State, suffix: true, validate: true, default: State::Draft
+  typed_enum :locale, Locale, suffix: true, validate: true
 
   def self.ransackable_attributes(_auth_object = nil)
     [ "id", "created_at" ]

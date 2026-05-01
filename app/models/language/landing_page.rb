@@ -39,6 +39,14 @@
 #  fk_rails_...  (language_id => languages.id)
 #
 class Language::LandingPage < ApplicationRecord
+  class State < T::Enum
+    enums do
+      Draft = new("draft")
+      Archived = new("archived")
+      Published = new("published")
+    end
+  end
+
   include Language::LandingPageRepository
 
   belongs_to :language
@@ -71,7 +79,7 @@ class Language::LandingPage < ApplicationRecord
     [ "id", "created_at", "language_slug", "state" ]
   end
 
-  enum :state, { draft: "draft", archived: "archived", published: "published" }, default: "draft"
+  typed_enum :state, State, default: State::Draft
 
   def to_s
     header

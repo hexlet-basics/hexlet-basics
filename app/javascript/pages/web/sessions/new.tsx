@@ -48,12 +48,14 @@ export default function New({ signInForm }: Props) {
           >
             <Stack component="form" onSubmit={onSubmit}>
               <TextInput
+                label={t(($) => $.models.attributes.user.email)}
                 {...form.getInputProps("email")}
                 required
                 autoFocus
                 {...loginEmailInputProps}
               />
               <TextInput
+                label={t(($) => $.models.attributes.user.password)}
                 {...form.getInputProps("password")}
                 required
                 {...currentPasswordInputProps}

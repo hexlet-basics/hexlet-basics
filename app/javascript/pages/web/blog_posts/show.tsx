@@ -22,7 +22,6 @@ import {
 } from "@tabler/icons-react";
 import axios from "axios";
 import dayjs from "dayjs";
-import i18next from "i18next";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import type { Article, WithContext } from "schema-dts";
@@ -51,7 +50,7 @@ export default function Show({
   recommendedBlogPosts,
   relatedLandingPages,
 }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const postUrl = Routes.blog_post_path(blogPost.slug!);
   const items: BreadcrumbItem[] = [
@@ -163,7 +162,7 @@ export default function Show({
                     </Center>
                   </Group>
 
-                  {i18next.language === "ru" && (
+                  {i18n.language === "ru" && (
                     <Alert
                       radius="lg"
                       p="xl"

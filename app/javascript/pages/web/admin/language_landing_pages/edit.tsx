@@ -4,16 +4,18 @@ import * as Routes from "@/routes.js";
 import type {
   Language,
   LanguageLandingPage,
-  LanguageLandingPageCrud,
+  LanguageLandingPageQnaItem,
+  LanguageLandingPageUpdate,
 } from "@/types";
 
 import Form from "./shared/form";
 import { Menu } from "./shared/menu";
 
 type Props = {
-  landingPageDto: LanguageLandingPageCrud;
+  landingPageDto: LanguageLandingPageUpdate;
   landingPages: LanguageLandingPage[];
   languages: Language[];
+  qnaItems: LanguageLandingPageQnaItem[];
   // courseVersions: LanguageVersion[];
 };
 
@@ -21,6 +23,7 @@ export default function Edit({
   landingPageDto,
   landingPages,
   languages,
+  qnaItems,
 }: Props) {
   const { t } = useTranslation();
 
@@ -36,6 +39,7 @@ export default function Edit({
         landingPages={landingPages}
         method="patch"
         data={landingPageDto}
+        qnaItems={qnaItems}
         url={Routes.admin_language_landing_page_path(landingPageDto.id)}
       />
     </AdminLayout>

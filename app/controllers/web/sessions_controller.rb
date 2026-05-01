@@ -39,7 +39,7 @@ class Web::SessionsController < Web::ApplicationController
       redirect_to after_authentication_url
     else
       f(:error)
-      redirect_to_inertia new_session_path, sign_in_form
+      redirect_to new_session_path, inertia: { errors: sign_in_form.errors }
     end
   end
 

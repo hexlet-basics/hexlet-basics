@@ -45,6 +45,22 @@ export function createServerI18n(locale: Locale) {
 
 export function getClientI18n(locale: Locale) {
   if (clientI18n) {
+    const namespace = resources[locale].translation;
+
+    if (!clientI18n.hasResourceBundle(locale, "translation")) {
+      clientI18n.addResourceBundle(
+        locale,
+        "translation",
+        namespace,
+        true,
+        true,
+      );
+    }
+
+    if (clientI18n.language !== locale) {
+      void clientI18n.changeLanguage(locale);
+    }
+
     return clientI18n;
   }
 
