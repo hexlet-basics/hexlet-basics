@@ -5,12 +5,12 @@ import dayjs from "dayjs";
 import { DataTable } from "mantine-datatable";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
-import { enums } from "@/generated/enums";
 import useDataTableProps from "@/hooks/useDataTableProps";
 import AdminLayout from "@/layouts/AdminLayout";
 import { boolText, propsForExternalLink } from "@/lib/utils";
 import * as Routes from "@/routes.js";
 import type { Grid, LanguageLandingPage } from "@/types/serializers";
+import { LandingPageState } from "@/types/serializers";
 import { Menu } from "./shared/menu";
 
 type Props = PropsWithChildren & {
@@ -48,7 +48,7 @@ export default function Index({ grid, landingPages }: Props) {
 
   const filterState = (
     <Select
-      data={enums.languageLandingPageState}
+      data={Object.values(LandingPageState)}
       value={filters.values.state_eq}
       onChange={filters.getOnChange("state_eq")}
       leftSection={<IconSearch size={16} />}

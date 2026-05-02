@@ -1,7 +1,5 @@
 require_relative "boot"
 
-ENV["TYPELIZER"] ||= "false"
-
 # require "rails/all"
 require "rails"
 # Pick the frameworks you want:

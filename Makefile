@@ -78,11 +78,10 @@ editor-setup:
 	-bin/tapioca dsl
 
 sync-types:
-	TYPELIZER=true bin/rails typelizer:generate:refresh
+	bin/rails typelizer:generate:refresh
 	bin/rails js:routes
 	bin/rails app:export_events_to_ts
 	bin/rails app:export_event_names_to_ts
-	bin/rails app:export_enums_to_ts
 	# bin/rails app:export_model_names_to_ts
 
 
