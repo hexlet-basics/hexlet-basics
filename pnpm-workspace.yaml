@@ -1,3 +1,8 @@
+allowBuilds:
+  '@sentry/cli': true
+  '@swc/core': true
+  sharp: true
+  simple-git-hooks: true
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@sentry/cli'
