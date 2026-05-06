@@ -175,7 +175,7 @@ export default function Show({
                         {t(($) => $.blog_posts.show.discuss)}
                       </Text>
                       <a
-                        href="https://t.me/HexletLearningBot"
+                        href={t(($) => $.common.community_url)}
                         {...propsForExternalLink()}
                         style={{ textDecoration: "none" }}
                       >

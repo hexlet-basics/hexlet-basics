@@ -235,6 +235,7 @@ function LessonTabContent() {
   } = usePage<LessonSharedProps>().props;
 
   const commonQuestions = t(($) => $.languages.lessons.show.common_questions, {
+    community_url: t(($) => $.common.community_url),
     returnObjects: true,
   });
 

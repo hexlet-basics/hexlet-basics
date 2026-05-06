@@ -119,7 +119,9 @@ export function useAssistantStream(
 
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 429) {
-          const message = t(($) => $.languages.lessons.show.chat.disabled_html);
+          const message = t(($) => $.languages.lessons.show.chat.disabled_html, {
+            community_url: t(($) => $.common.community_url),
+          });
           setMessages((prev) => [
             ...prev,
             {

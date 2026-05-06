@@ -53,7 +53,9 @@ export default function Chat({
     if (!lessonMember) {
       content = t(($) => $.languages.lessons.show.chat.guest);
     } else if (!enabled) {
-      content = t(($) => $.languages.lessons.show.chat.disabled_html);
+      content = t(($) => $.languages.lessons.show.chat.disabled_html, {
+        community_url: t(($) => $.common.community_url),
+      });
     } else if (!course.openai_assistant_id) {
       content = t(($) => $.languages.lessons.show.chat.not_available);
     }

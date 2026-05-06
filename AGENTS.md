@@ -73,7 +73,6 @@ Prefer these instructions over generic Rails or React defaults.
 
 ## Ruby And Rails Style
 - Follow RuboCop Rails Omakase; the repo inherits `rubocop-rails-omakase`.
-- Ruby target version is 4.0.2.
 - Most Ruby files use double-quoted strings and `# frozen_string_literal: true` when present; preserve existing style in each file.
 - Use small controller actions that prepare data, set flash/meta, and delegate domain work to models, services, handlers, or events.
 - Keep business logic out of views.

@@ -6,8 +6,7 @@ ru:
     current_state: Текущее состояние
     state_events: Варианты действий
     tos: Содержание
-    community_url: |
-      https://t.me/HexletLearningBot
+    community_url: "https://t.me/hexletcommunity"
     confirm: "Убеждаемся, что мы делаем то что действительно хотим. Хотим?"
     organization:
       site: "https://ru.hexlet.io"
