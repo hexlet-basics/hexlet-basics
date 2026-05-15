@@ -3,7 +3,7 @@ name: build
 on:
   push:
     branches:
-      - main
+      - tmp-main-1
   pull_request:
     branches:
       - main
