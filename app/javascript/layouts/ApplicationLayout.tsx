@@ -13,6 +13,7 @@ import { IconSend } from "@tabler/icons-react";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import * as CookieConsent from "vanilla-cookieconsent";
+import { Banner } from "@/components/Banner";
 import { XBreadcrumb } from "@/components/breadcrumbs.tsx";
 import XFlash from "@/components/XFlash.tsx";
 import { isCurrentUrl, propsForExternalLink } from "@/lib/utils.ts";
@@ -28,6 +29,7 @@ type Props = PropsWithChildren & {
   header?: string;
   center?: boolean;
   items?: BreadcrumbItem[];
+  showBanner?: boolean;
 };
 
 export default function ApplicationLayout({
@@ -35,6 +37,7 @@ export default function ApplicationLayout({
   header,
   items,
   center = false,
+  showBanner = false,
 }: Props) {
   const { t } = useTranslation();
   const page = usePage();
@@ -96,6 +99,7 @@ export default function ApplicationLayout({
               <ContactMethodRequestingBlock />
             </Box>
           )}
+          {showBanner && <Banner />}
           {(items || header) && (
             <Container size="lg" my="xl">
               <Stack>

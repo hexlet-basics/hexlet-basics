@@ -95,13 +95,12 @@ export default function Index({
   };
 
   return (
-    <ApplicationLayout>
+    <ApplicationLayout showBanner>
       <Head>
         {Object.keys(faq).length > 0 && (
           <script type="application/ld+json">{JSON.stringify(qaSchema)}</script>
         )}
       </Head>
-      {/*<Banner />*/}
 
       <Container
         ta="center"
