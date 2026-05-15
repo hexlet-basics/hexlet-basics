@@ -17,10 +17,10 @@ export function Banner() {
         >
           <Anchor
             target="_blank"
-            href="https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=newyear2025"
+            href="https://special.hexlet.io/vibecode_webinar?utm_source=codebasics&utm_medium=banner&utm_campaign=vibecode_webinar"
           >
-            Курсы с наставником и опытом работы во время учебы со{' '}
-            <b>скидкой -30%</b> → Подробнее
+            Бесплатный воркшоп по Claude Code →{' '}
+            <b>Соберите своё первое AI-приложение</b>
           </Anchor>
         </Box>
       )}
