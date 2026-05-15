@@ -1,7 +1,7 @@
 ---
 
 # version is the application image tag used by all workloads.
-version: "v1275"
+version: "v1276"
 
 # nameOverride overrides the chart name part in generated resource names.
 nameOverride: ""
