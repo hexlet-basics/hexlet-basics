@@ -193,7 +193,7 @@ export default function Show({
   ];
 
   return (
-    <ApplicationLayout items={breadcrumbItems}>
+    <ApplicationLayout items={breadcrumbItems} showBanner>
       <Head>
         <script type="application/ld+json">
           {JSON.stringify(courseSchema)}

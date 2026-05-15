@@ -12,6 +12,7 @@ import { useDisclosure, useWindowEvent } from '@mantine/hooks';
 import { Send } from 'lucide-react';
 import type { PropsWithChildren } from 'react';
 import * as CookieConsent from 'vanilla-cookieconsent';
+import { Banner } from '@/components/Banner';
 import { XBreadcrumb } from '@/components/breadcrumbs.tsx';
 import AppAnchor from '@/components/Elements/AppAnchor.tsx';
 import XFlash from '@/components/XFlash.tsx';
@@ -29,6 +30,7 @@ type Props = PropsWithChildren & {
   header?: string;
   center?: boolean;
   items?: BreadcrumbItem[];
+  showBanner?: boolean;
 };
 
 export default function ApplicationLayout({
@@ -36,6 +38,7 @@ export default function ApplicationLayout({
   header,
   items,
   center = false,
+  showBanner = false,
 }: Props) {
   const page = usePage<SharedProps>();
   const {
@@ -88,6 +91,7 @@ export default function ApplicationLayout({
               <ContactMethodRequestingBlock />
             </Box>
           )}
+          {showBanner && <Banner />}
           {(items || header) && (
             <Container size="lg" my="xl">
               <Stack>
