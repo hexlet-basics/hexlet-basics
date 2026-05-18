@@ -59,3 +59,4 @@ stats.html
 .idea/
 .npm-cache
 .playwright-cli
+npm-cache
