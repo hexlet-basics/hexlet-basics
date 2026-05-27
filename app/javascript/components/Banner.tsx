@@ -17,11 +17,10 @@ export function Banner() {
           ta="center"
         >
           <Anchor
-            href="https://special.hexlet.io/vibecode_webinar?utm_source=codebasics&utm_medium=banner&utm_campaign=vibecode_webinar"
+            href="https://ru.hexlet.io/programs/vibecoding-claudecode?utm_source=codebasics&utm_medium=banner&utm_campaign=vibecoding_course"
             {...propsForExternalLink()}
           >
-            Бесплатный воркшоп по Claude Code →{" "}
-            <b>Соберите своё первое AI-приложение</b>
+            Курс по вайбкодингу <b>со скидкой 17%</b> • только до 7 июня
           </Anchor>
         </Box>
       )}
