@@ -2,7 +2,10 @@ require "test_helper"
 require "capybara/cuprite"
 
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
-  driven_by :cuprite
+  driven_by :cuprite, options: { pending_connection_errors: false }
+
+  setup { WebMock.disable_net_connect!(allow_localhost: true) }
+  teardown { WebMock.disable_net_connect! }
 
   # https://guides.rubyonrails.org/active_storage_overview.html#serving-files
   # parallelize_setup do |i|
