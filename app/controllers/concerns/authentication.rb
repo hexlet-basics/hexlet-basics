@@ -50,11 +50,24 @@ module Authentication
     end
 
     def resume_session
-      Current.session ||= find_session_by_cookie
+      Current.session ||= find_session_by_cookie || migrate_legacy_session
     end
 
     def find_session_by_cookie
       Session.find_by(id: cookies.signed[:session_id]) if cookies.signed[:session_id]
+    end
+
+    # TODO: удалить после 10 июля — миграция старых сессий из cookie_store в Session
+    def migrate_legacy_session
+      user_id = session[:user_id]
+      return if user_id.blank?
+
+      user = User.find_by(id: user_id)
+      return unless user
+
+      auth_session = start_new_session_for(user)
+      session.delete(:user_id)
+      auth_session
     end
 
     def request_authentication
