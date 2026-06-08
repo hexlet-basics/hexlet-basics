@@ -4,6 +4,31 @@
 # This file was pulled from a central RBI files repository.
 # Please run `bin/tapioca annotations` to update it.
 
+module ActiveRecord::AttributeMethods::ClassMethods
+  sig { returns(T::Array[String]) }
+  def attribute_names; end
+end
+
+module ActiveRecord::AttributeMethods::Dirty
+  sig { returns(ActiveSupport::HashWithIndifferentAccess) }
+  def attributes_in_database; end
+
+  sig { returns(T::Array[String]) }
+  def changed_attribute_names_to_save; end
+
+  sig { returns(ActiveSupport::HashWithIndifferentAccess) }
+  def changes_to_save; end
+
+  sig { returns(T::Boolean) }
+  def has_changes_to_save?; end
+
+  sig { returns(ActiveSupport::HashWithIndifferentAccess) }
+  def saved_changes; end
+
+  sig { returns(T::Boolean) }
+  def saved_changes?; end
+end
+
 class ActiveRecord::Schema
   sig { params(info: T::Hash[T.untyped, T.untyped], blk: T.proc.bind(ActiveRecord::Schema).void).void }
   def self.define(info = nil, &blk); end
@@ -100,4 +125,27 @@ end
 module ActiveRecord::Core
   sig { params(comparison_object: T.anything).returns(T::Boolean) }
   def ==(comparison_object); end
+end
+
+module ActiveRecord::Persistence
+  sig { type_parameters(:Klass).params(klass: T::Class[T.type_parameter(:Klass)]).returns(T.type_parameter(:Klass)) }
+  def becomes(klass); end
+
+  sig { type_parameters(:Klass).params(klass: T::Class[T.type_parameter(:Klass)]).returns(T.type_parameter(:Klass)) }
+  def becomes!(klass); end
+
+  sig { returns(T::Boolean) }
+  def destroyed?; end
+
+  sig { returns(T::Boolean) }
+  def new_record?; end
+
+  sig { returns(T::Boolean) }
+  def persisted?; end
+
+  sig { returns(T::Boolean) }
+  def previously_new_record?; end
+
+  sig { returns(T::Boolean) }
+  def previously_persisted?; end
 end

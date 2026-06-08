@@ -24,6 +24,37 @@ class ActiveSupport::EnvironmentInquirer
   def local?; end
 end
 
+class ActiveSupport::HashWithIndifferentAccess < Hash
+  K = type_member { {fixed: T.any(String, Symbol)} }
+  V = type_member { {fixed: T.untyped} }
+  Elem = type_member { {fixed: T.untyped} }
+
+  sig { returns(ActiveSupport::HashWithIndifferentAccess) }
+  def with_indifferent_access; end
+
+  sig { type_parameters(:V2, :ConflictRes).params(other_hash: T::Hash[T.untyped, T.type_parameter(:V2)], block: T.nilable(
+        T.proc.params(
+          key: String,
+          old_val: T.untyped,
+          new_val: T.type_parameter(:V2),
+        ).returns(T.type_parameter(:ConflictRes))
+      )).returns(ActiveSupport::HashWithIndifferentAccess) }
+  def deep_merge(other_hash, &block); end
+
+  sig { type_parameters(:V2, :ConflictRes).params(other_hash: T::Hash[T.untyped, T.type_parameter(:V2)], block: T.nilable(
+        T.proc.params(
+          key: String,
+          old_val: T.untyped,
+          new_val: T.type_parameter(:V2),
+        ).returns(T.type_parameter(:ConflictRes))
+      )).returns(ActiveSupport::HashWithIndifferentAccess) }
+  def deep_merge!(other_hash, &block); end
+
+  # @version >= 7.2
+  sig { params(other: T.untyped).returns(T::Boolean) }
+  def deep_merge?(other); end
+end
+
 module ActiveSupport::Testing::SetupAndTeardown::ClassMethods
   sig { params(args: T.untyped, block: T.nilable(T.proc.bind(T.untyped).void)).void }
   def setup(*args, &block); end
@@ -92,6 +123,31 @@ class Hash
   # @version >= 6.1.0
   sig { returns(T.self_type) }
   def compact_blank; end
+
+  sig { returns(ActiveSupport::HashWithIndifferentAccess) }
+  def with_indifferent_access; end
+
+  sig { type_parameters(:K2, :V2, :ConflictRes).params(other_hash: T::Hash[T.type_parameter(:K2), T.type_parameter(:V2)], block: T.nilable(
+        T.proc.params(
+          key: T.any(K, T.type_parameter(:K2)),
+          old_val: V,
+          new_val: T.type_parameter(:V2),
+        ).returns(T.type_parameter(:ConflictRes))
+      )).returns(T::Hash[T.any(K, T.type_parameter(:K2)), T.any(V, T.type_parameter(:V2), T.type_parameter(:ConflictRes))]) }
+  def deep_merge(other_hash, &block); end
+
+  sig { type_parameters(:K2, :V2, :ConflictRes).params(other_hash: T::Hash[T.type_parameter(:K2), T.type_parameter(:V2)], block: T.nilable(
+        T.proc.params(
+          key: T.any(K, T.type_parameter(:K2)),
+          old_val: V,
+          new_val: T.type_parameter(:V2),
+        ).returns(T.type_parameter(:ConflictRes))
+      )).returns(T::Hash[T.any(K, T.type_parameter(:K2)), T.any(V, T.type_parameter(:V2), T.type_parameter(:ConflictRes))]) }
+  def deep_merge!(other_hash, &block); end
+
+  # @version >= 7.2
+  sig { params(other: T.untyped).returns(T::Boolean) }
+  def deep_merge?(other); end
 end
 
 class Array
@@ -492,4 +548,14 @@ module ActiveSupport::Testing::Assertions
 
   sig { type_parameters(:TResult).params(expression: T.any(Proc, Kernel), message: Kernel, from: T.anything, to: T.anything, block: T.proc.returns(T.type_parameter(:TResult))).returns(T.type_parameter(:TResult)) }
   def assert_changes(expression, message = T.unsafe(nil), from: T.unsafe(nil), to: T.unsafe(nil), &block); end
+end
+
+module ActiveSupport::Testing::ErrorReporterAssertions
+  # @version >= 7.1.0.rc1
+  sig { params(error_class: T.class_of(Exception), block: T.proc.void).returns(ActiveSupport::Testing::ErrorReporterAssertions::ErrorCollector::Report) }
+  def assert_error_reported(error_class = T.unsafe(nil), &block); end
+
+  # @version >= 8.1.0.beta1
+  sig { params(error_class: T.class_of(Exception), block: T.proc.void).returns(T::Array[ActiveSupport::Testing::ErrorReporterAssertions::ErrorCollector::Report]) }
+  def capture_error_reports(error_class = T.unsafe(nil), &block); end
 end
