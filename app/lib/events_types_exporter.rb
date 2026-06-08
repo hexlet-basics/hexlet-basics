@@ -153,6 +153,6 @@ class EventsTypesExporter
     events.each do |event|
       lines << "  | #{event[:class_name]}"
     end
-    "#{lines.join("\n")};"
+    "#{lines.join("\n")};\n"
   end
 end

@@ -3,11 +3,12 @@ class BlogPostCreateResource < ApplicationResource
 
   attributes :state,
     :cover,
-    id: [ Integer, true ],
+    :id,
     name: [ String, true ],
     slug: [ String, true ],
     description: [ String, true ],
     body: [ String, true ]
 
   typelize cover: "File | null"
+  typelize id: [ :number, nullable: true ]
 end

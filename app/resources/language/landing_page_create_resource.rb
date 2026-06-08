@@ -6,15 +6,15 @@ class Language::LandingPageCreateResource < ApplicationResource
     :listed,
     :main,
     :outcomes_image,
-    id: [ Integer, true ],
+    :id,
+    :language_id,
+    :landing_page_to_redirect_id,
     slug: [ String, true ],
     footer_name: [ String, true ],
     name: [ String, true ],
     order: [ String, true ],
     meta_title: [ String, true ],
     meta_description: [ String, true ],
-    language_id: [ Integer, true ],
-    landing_page_to_redirect_id: [ Integer, true ],
     header: [ String, true ],
     description: [ String, true ],
     used_in_header: [ String, true ],
@@ -23,4 +23,7 @@ class Language::LandingPageCreateResource < ApplicationResource
     outcomes_description: [ String, true ]
 
   typelize outcomes_image: "File | null"
+  typelize id: [ :number, nullable: true ]
+  typelize language_id: [ :number, nullable: true ]
+  typelize landing_page_to_redirect_id: [ :number, nullable: true ]
 end

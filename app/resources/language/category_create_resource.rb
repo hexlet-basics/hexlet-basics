@@ -1,7 +1,8 @@
 class Language::CategoryCreateResource < ApplicationResource
   typelize_from Language::Category
 
-  attributes id: [ Integer, true ],
+  typelize id: [ :number, nullable: true ]
+  attributes :id,
     slug: [ String, true ],
     name: [ String, true ],
     header: [ String, true ],
