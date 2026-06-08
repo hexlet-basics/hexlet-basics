@@ -40,5 +40,10 @@
         "noNonNullAssertion": "off"
       }
     }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "double"
+    }
   }
 }
