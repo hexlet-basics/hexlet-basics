@@ -42,7 +42,7 @@ log-mails:
 	 tail -n 30 log/mailer.log | base64 --decode
 
 build-assets:
-	bin/rails assets:precompile
+	pnpm run build
 
 analyze-bundle:
 	bin/vite build
