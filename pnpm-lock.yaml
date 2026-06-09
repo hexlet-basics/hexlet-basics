@@ -137,6 +137,9 @@ importers:
       motion:
         specifier: ^12.39.0
         version: 12.39.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      postcss-simple-vars:
+        specifier: ^7.0.1
+        version: 7.0.1(postcss@8.5.14)
       react:
         specifier: ^19.2.6
         version: 19.2.6
