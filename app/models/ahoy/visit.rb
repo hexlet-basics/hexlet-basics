@@ -28,6 +28,7 @@
 #  visit_token      :string
 #  visitor_token    :string
 #  user_id          :bigint
+#  ym_client_id     :string
 #
 # Indexes
 #
