@@ -67,8 +67,8 @@ class Language::LandingPage < ApplicationRecord
   has_many :language_categories, through: :language_category_items, source: "language_category"
 
   has_one_attached :outcomes_image do |attachable|
-    attachable.variant :thumb, resize_to_limit: [ 39, 32 ], preprocessed: true
-    attachable.variant :main, resize_to_limit: [ 640, 360 ], preprocessed: true
+    attachable.variant :thumb, resize_to_limit: [ 39, 32 ], preprocessed: PREPROCESS_VARIANTS
+    attachable.variant :main, resize_to_limit: [ 640, 360 ], preprocessed: PREPROCESS_VARIANTS
   end
 
   def self.ransackable_associations(auth_object = nil)

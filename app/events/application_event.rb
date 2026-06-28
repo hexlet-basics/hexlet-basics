@@ -1,6 +1,6 @@
 # typed: strict
 
-class ApplicationEvent < RailsEventStore::Event
+class ApplicationEvent < RubyEventStore::Event
   extend T::Sig
   extend T::Helpers
   abstract!

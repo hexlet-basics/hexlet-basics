@@ -58,8 +58,8 @@ class Language < ApplicationRecord
   include LanguageRepository
 
   has_one_attached :cover do |attachable|
-    attachable.variant :list, resize_to_limit: [ 400, 300 ], preprocessed: true
-    attachable.variant :thumb, resize_to_limit: [ 40, 30 ], preprocessed: true
+    attachable.variant :list, resize_to_limit: [ 400, 300 ], preprocessed: PREPROCESS_VARIANTS
+    attachable.variant :thumb, resize_to_limit: [ 40, 30 ], preprocessed: PREPROCESS_VARIANTS
   end
 
   # extend Enumerize

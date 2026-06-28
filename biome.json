@@ -12,6 +12,7 @@
       "!**/*.json",
       "!**/*.css",
       "!**/*.scss",
+      "!**/*.svg",
       "!test",
       "!public",
       "!app/assets/builds",

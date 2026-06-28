@@ -10,7 +10,7 @@ class AmocrmHandler < ApplicationJob
     call(event)
   end
 
-  sig { params(event: RailsEventStore::Event).void }
+  sig { params(event: RubyEventStore::Event).void }
   def call(event)
     case event
     when LeadCreatedEvent

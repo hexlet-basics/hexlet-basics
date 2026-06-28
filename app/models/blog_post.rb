@@ -44,9 +44,9 @@ class BlogPost < ApplicationRecord
   has_many :related_main_language_landing_pages, through: :related_languages, source: :main_landing_page
 
   has_one_attached :cover do |attachable| # 800 x 400
-    attachable.variant :main, resize_and_pad: [ 688, 344 ], preprocessed: true, format: :webp, saver: { quality: 90 }
-    attachable.variant :list, resize_and_pad: [ 546, 273 ], preprocessed: true, format: :webp, saver: { quality: 90 }
-    attachable.variant :thumb, resize_to_limit: [ 200, 100 ], preprocessed: true, format: :webp, saver: { quality: 90 }
+    attachable.variant :main, resize_and_pad: [ 688, 344 ], preprocessed: PREPROCESS_VARIANTS, format: :webp, saver: { quality: 90 }
+    attachable.variant :list, resize_and_pad: [ 546, 273 ], preprocessed: PREPROCESS_VARIANTS, format: :webp, saver: { quality: 90 }
+    attachable.variant :thumb, resize_to_limit: [ 200, 100 ], preprocessed: PREPROCESS_VARIANTS, format: :webp, saver: { quality: 90 }
   end
 
   def self.ransackable_attributes(_auth_object = nil)

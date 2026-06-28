@@ -1,6 +1,6 @@
 include k8s/Makefile
 
-DATABASE_PORT ?= 5433
+DATABASE_PORT ?= 54330
 
 setup:
 	# brew install vips
