@@ -270,6 +270,9 @@ ru:
         reset_password: Восстановить
         password: Пароль
         email: Email
+    magic_links:
+      new:
+        title: Вход по ссылке на email
     phone_auth:
       new:
         title: Вход по телефону

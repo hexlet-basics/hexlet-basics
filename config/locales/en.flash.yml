@@ -53,6 +53,12 @@ en:
         confirm:
           success: You have signed in successfully. You can start learning now.
           error: The code is invalid or has expired.
+      magic_links:
+        create:
+          success: If an account exists for this email, we've sent a sign-in link.
+        show:
+          success: You have signed in successfully. You can start learning now.
+          error: This sign-in link is invalid or has expired.
       auth:
         callback:
           success: You have signed in successfully. You can start learning now.

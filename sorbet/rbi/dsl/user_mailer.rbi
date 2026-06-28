@@ -8,6 +8,9 @@
 class UserMailer
   class << self
     sig { returns(::ActionMailer::MessageDelivery) }
+    def magic_link; end
+
+    sig { returns(::ActionMailer::MessageDelivery) }
     def reset_password; end
   end
 end

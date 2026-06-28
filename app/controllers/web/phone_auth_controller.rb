@@ -13,50 +13,42 @@ class Web::PhoneAuthController < Web::ApplicationController
 
   sig { returns(T.untyped) }
   def create
-    struct = ApplicationParamsStruct.from_params(PhoneRequestStruct, params.require(:data))
-    return redirect_to(new_phone_auth_path, inertia: { errors: struct.errors }) unless struct.valid?
-
+    struct = ApplicationParamsStruct.from_params!(PhoneRequestStruct, params.require(:data))
     result = PhoneAuthService.request_code(T.must(struct.phone), ip: request.remote_ip)
 
     case result
-    when Typed::Failure
-      f(:error, type: :alert, values: { reason: result.error })
-      redirect_to new_phone_auth_path, inertia: { errors: { phone: phone_error(result.error) } }
-    else
+    when Typed::Success
       f(:success)
       redirect_to verify_phone_auth_path(phone: result.payload)
+    when Typed::Failure
+      f(:error, type: :alert)
+      redirect_to new_phone_auth_path, inertia: { errors: { phone: t("phone_auth.errors.#{result.error}") } }
     end
   end
 
   sig { returns(T.untyped) }
   def verify
-    phone = params[:phone].to_s
-    return redirect_to(new_phone_auth_path) if phone.blank?
-
     set_meta_tags title: t(".title")
-    render inertia: true, props: { phone: }
+    render inertia: true, props: { phone: params[:phone].to_s }
   end
 
   sig { returns(T.untyped) }
   def confirm
-    struct = ApplicationParamsStruct.from_params(PhoneVerifyStruct, params.require(:data))
-    phone = struct.phone.to_s
-    return redirect_to(verify_phone_auth_path(phone:), inertia: { errors: struct.errors }) unless struct.valid?
-
+    struct = ApplicationParamsStruct.from_params!(PhoneVerifyStruct, params.require(:data))
+    phone = T.must(struct.phone)
     result = PhoneAuthService.verify_code(phone, T.must(struct.code))
 
     case result
+    when Typed::Success
+      user = result.payload
+      publish_auth_events(user)
+      sign_in(user)
+      f(:success)
+      redirect_to after_authentication_url
     when Typed::Failure
       f(:error, type: :alert)
-      return redirect_to verify_phone_auth_path(phone:), inertia: { errors: { code: code_error(result.error) } }
+      redirect_to verify_phone_auth_path(phone:), inertia: { errors: { code: t("phone_auth.errors.#{result.error}") } }
     end
-
-    user = result.payload
-    publish_auth_events(user)
-    sign_in(user)
-
-    f(:success)
-    redirect_to after_authentication_url
   end
 
   private
@@ -77,10 +69,4 @@ class Web::PhoneAuthController < Web::ApplicationController
     publish_event(event, user)
     js_event(event)
   end
-
-  sig { params(reason: Symbol).returns(String) }
-  def phone_error(reason) = t("phone_auth.errors.#{reason}", default: t("phone_auth.errors.invalid_phone"))
-
-  sig { params(reason: Symbol).returns(String) }
-  def code_error(reason) = t("phone_auth.errors.#{reason}", default: t("phone_auth.errors.invalid_code"))
 end

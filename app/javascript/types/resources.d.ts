@@ -1173,6 +1173,13 @@ export default interface Resources {
       hexlet_twitter: "https://twitter.com/HexletHQ";
       hexlet_youtube: "https://www.youtube.com/user/HexletUniversity";
     };
+    magic_links: {
+      "new": {
+        other_methods: "magic_links.new.other_methods";
+        submit: "magic_links.new.submit";
+        title: "magic_links.new.title";
+      };
+    };
     models: {
       attributes: {
         base: {
@@ -1904,6 +1911,7 @@ export default interface Resources {
         reset_password: "Восстановить";
         sign_in: "Вход";
         sign_in_with_github: "Войти через GitHub";
+        sign_in_with_magic_link: "sessions.new.sign_in_with_magic_link";
         sign_in_with_phone: "Войти по телефону";
         title: "Вход";
       };

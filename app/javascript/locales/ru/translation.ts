@@ -1277,6 +1277,13 @@ export default {
       hexlet_twitter: "https://twitter.com/HexletHQ",
       hexlet_youtube: "https://www.youtube.com/user/HexletUniversity",
     },
+    magic_links: {
+      "new": {
+        other_methods: "Другие способы входа",
+        submit: "Отправить ссылку",
+        title: "Вход по ссылке на email",
+      },
+    },
     models: {
       attributes: {
         base: {
@@ -2057,6 +2064,7 @@ export default {
         reset_password: "Восстановить",
         sign_in: "Вход",
         sign_in_with_github: "Войти через GitHub",
+        sign_in_with_magic_link: "Вход по ссылке на email",
         sign_in_with_phone: "Войти по телефону",
         title: "Вход",
       },

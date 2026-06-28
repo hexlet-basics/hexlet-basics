@@ -181,6 +181,12 @@ module GeneratedPathHelpersModule
   def leads_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def magic_link_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def magic_links_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def map_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -209,6 +215,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def new_lead_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_magic_link_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_phone_auth_path(*args); end

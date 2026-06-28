@@ -127,6 +127,9 @@ en:
         reset_password: Reset Password
         password: Password
         email: Email
+    magic_links:
+      new:
+        title: Sign in by email link
     phone_auth:
       new:
         title: Sign in by phone

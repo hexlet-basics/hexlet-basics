@@ -6,3 +6,9 @@ en:
       requested_to_change_password: You requested a password reset link for code-basics.com. Follow this link or use the button below to set a new password.
       you_dont_want_to_change: If you did not request a password reset, ignore this email. Your password will stay the same until you open the link and choose a new one.
       link: Password reset link for code-basics.com
+    magic_link:
+      subject: Your sign-in link
+      sign_in: Sign in
+      requested_to_sign_in: You requested a sign-in link for code-basics.com. Follow this link or use the button below to sign in.
+      you_dont_want_to_sign_in: If you did not request this, just ignore this email.
+      link: Sign-in link for code-basics.com

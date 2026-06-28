@@ -181,6 +181,12 @@ module GeneratedUrlHelpersModule
   def leads_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def magic_link_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def magic_links_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def map_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -209,6 +215,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def new_lead_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_magic_link_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_phone_auth_url(*args); end

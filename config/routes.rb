@@ -97,6 +97,7 @@ Rails.application.routes.draw do
         end
       end
       resources :users, only: %i[new create]
+      resources :magic_links, only: %i[new create show]
       resource :remind_password, only: %i[new create]
       get "/password/:token/edit", to: "passwords#edit", as: :edit_password
       patch "/password/:token", to: "passwords#update", as: :password

@@ -49,6 +49,12 @@ class User < ApplicationRecord
 
   has_secure_password validations: false, reset_token: { expires_in: 15.minutes }
 
+  # Passwordless email sign-in. Bound to email so the link dies if the email changes.
+  generates_token_for :magic_link, expires_in: 15.minutes do
+    T.bind(self, User)
+    email
+  end
+
   normalizes :email, with: ->(email) { email.strip.downcase.presence }
   normalizes :phone, with: ->(phone) { Phonelib.parse(phone).e164.presence }
 

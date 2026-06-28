@@ -1278,6 +1278,13 @@ export default {
       hexlet_youtube:
         "https://www.youtube.com/channel/UCMGJqXOa4m37IdmDLO-n-eQ",
     },
+    magic_links: {
+      "new": {
+        other_methods: "Other sign-in options",
+        submit: "Send the link",
+        title: "Sign in by email link",
+      },
+    },
     models: {
       attributes: {
         base: {
@@ -2057,6 +2064,7 @@ export default {
         reset_password: "Reset Password",
         sign_in: "Sign in",
         sign_in_with_github: "Log in with GitHub",
+        sign_in_with_magic_link: "Sign in by email link",
         sign_in_with_phone: "Sign in by phone",
         title: "Sign In",
       },

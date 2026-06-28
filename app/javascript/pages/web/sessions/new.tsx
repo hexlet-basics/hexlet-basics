@@ -80,6 +80,14 @@ export default function New(_props: Props) {
               >
                 {t(($) => $.sessions.new.sign_in_with_phone)}
               </Button>
+              <Button
+                component={Link}
+                href={Routes.new_magic_link_path()}
+                variant="default"
+                fullWidth
+              >
+                {t(($) => $.sessions.new.sign_in_with_magic_link)}
+              </Button>
             </Stack>
           </Card>
 

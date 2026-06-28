@@ -15,4 +15,16 @@ class UserMailer < ApplicationMailer
       mail(to: user.email)
     end
   end
+
+  sig { void }
+  def magic_link
+    user = T.cast(params[:user], User)
+    @user = T.let(user, T.nilable(User))
+    @suffix = T.let(params[:suffix], T.nilable(String))
+    @magic_link_token = T.let(user.generate_token_for(:magic_link), T.untyped)
+
+    I18n.with_locale(@suffix.presence || I18n.default_locale) do
+      mail(to: user.email)
+    end
+  end
 end
