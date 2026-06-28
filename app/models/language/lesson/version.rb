@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 # == Schema Information
@@ -44,6 +44,7 @@ class Language::Lesson::Version < ApplicationRecord
 
   validates :natural_order, presence: true
 
+  sig { returns(T.untyped) }
   def next_lesson
     T.must(language_version)
       .lesson_versions.order(:natural_order)
@@ -52,6 +53,7 @@ class Language::Lesson::Version < ApplicationRecord
       .find_by("natural_order > ?", natural_order)&.lesson
   end
 
+  sig { returns(T.untyped) }
   def prev_lesson
     T.must(language_version)
       .lesson_versions.order(natural_order: :desc)
@@ -60,6 +62,7 @@ class Language::Lesson::Version < ApplicationRecord
       .find_by("natural_order < ?", natural_order)&.lesson
   end
 
+  sig { returns(String) }
   def to_s
     # NOTE: previously referenced `name`, which this model has never had (no such
     # column/method) — to_s always raised. Use the present natural_order instead.

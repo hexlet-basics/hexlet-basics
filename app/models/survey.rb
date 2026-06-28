@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 # == Schema Information
 #
@@ -41,6 +41,7 @@ class Survey < ApplicationRecord
   validates :slug, presence: true, uniqueness: { scope: :locale }
   validates :items, length: { minimum: 2 }
 
+  sig { params(auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_attributes(auth_object = nil)
     [ "created_at", "description", "id", "locale", "question", "slug", "state", "updated_at" ]
   end

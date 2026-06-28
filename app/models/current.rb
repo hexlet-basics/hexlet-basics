@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class Current < ActiveSupport::CurrentAttributes
   attribute :session

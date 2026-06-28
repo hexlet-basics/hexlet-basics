@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 # == Schema Information
 #
@@ -50,15 +50,17 @@ class Language::Lesson::Member::Message < ApplicationRecord
 
   typed_enum :role, Role, suffix: true, validate: true
 
+  sig { params(auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_attributes(auth_object = nil)
     [ "id", "created_at", "language_lesson_member_id" ]
   end
 
+  sig { params(auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_associations(auth_object = nil)
     []
   end
 
+  sig { returns(String) }
   def to_s
-    body
-  end
+    body.to_s  end
 end

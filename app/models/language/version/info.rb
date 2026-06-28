@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 # == Schema Information
@@ -38,7 +38,7 @@ class Language::Version::Info < ApplicationRecord
   belongs_to :language
   belongs_to :language_version, class_name: "Language::Version"
 
+  sig { returns(String) }
   def to_s
-    header
-  end
+    header.to_s  end
 end

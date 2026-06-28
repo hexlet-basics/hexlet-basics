@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 # == Schema Information
 #
@@ -73,17 +73,19 @@ class Language::LandingPage < ApplicationRecord
     attachable.variant :main, resize_to_limit: [ 640, 360 ], preprocessed: PREPROCESS_VARIANTS
   end
 
+  sig { params(auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_associations(auth_object = nil)
     [ "language" ]
   end
 
+  sig { params(_auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_attributes(_auth_object = nil)
     [ "id", "created_at", "language_slug", "state" ]
   end
 
   typed_enum :state, State, default: State::Draft
 
+  sig { returns(String) }
   def to_s
-    header
-  end
+    header.to_s  end
 end

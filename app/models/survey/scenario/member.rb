@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 # == Schema Information
 #
@@ -37,6 +37,7 @@ class Survey::Scenario::Member < ApplicationRecord
 
   typed_enum :state, State, default: State::Started
 
+  sig { returns(T.untyped) }
   def next_survey
     T.must(scenario).surveys.order(order: :asc).where.not(id: T.must(user).survey_answers_surveys).first
   end

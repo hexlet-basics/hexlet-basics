@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 # == Schema Information
@@ -33,7 +33,7 @@ class Language::Module::Version::Info < ApplicationRecord
   belongs_to :language_version, class_name: "Language::Version"
   belongs_to :version
 
+  sig { returns(String) }
   def to_s
-    name
-  end
+    name.to_s  end
 end

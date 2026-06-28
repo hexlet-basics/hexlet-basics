@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 # == Schema Information
 #
@@ -32,15 +32,17 @@ class Language::Category < ApplicationRecord
   has_many :language_version_infos, through: :language_versions, source: :infos, class_name: "Language::Version::Info"
   has_many :blog_posts, through: :languages, dependent: :restrict_with_exception
 
+  sig { params(auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_attributes(auth_object = nil)
     [ "id", "created_at", "name", "slug" ]
   end
 
+  sig { params(auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_associations(auth_object = nil)
     []
   end
 
+  sig { returns(String) }
   def to_s
-    name
-  end
+    name.to_s  end
 end

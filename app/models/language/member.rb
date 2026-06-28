@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 # == Schema Information
@@ -33,6 +33,7 @@ class Language::Member < ApplicationRecord
 
   include AASM
 
+  sig { params(_auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_attributes(_auth_object = nil)
     %w[id created_at language_id]
   end
@@ -53,12 +54,14 @@ class Language::Member < ApplicationRecord
     end
   end
 
+  sig { returns(T::Boolean) }
   def all_lessons_finished?
     not_finished_lessons = T.must(user).not_finished_lessons_for_language(T.must(language))
 
     not_finished_lessons.empty?
   end
 
+  sig { returns(T.untyped) }
   def next_lesson_info
     finished_lesson_ids = T.must(user).finished_lessons_for_language(T.must(language)).pluck(:id)
     not_finished_infos = T.must(language).current_lesson_infos.with_locale.where.not(language_lesson_id: finished_lesson_ids)

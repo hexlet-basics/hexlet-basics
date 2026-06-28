@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 # == Schema Information
@@ -50,10 +50,12 @@ class BlogPost < ApplicationRecord
     attachable.variant :thumb, resize_to_limit: [ 200, 100 ], preprocessed: PREPROCESS_VARIANTS, format: :webp, saver: { quality: 90 }
   end
 
+  sig { params(_auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_attributes(_auth_object = nil)
     [ "id", "created_at", "related_language_items_count", "state" ]
   end
 
+  sig { params(_auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_associations(_auth_object = nil)
     []
   end
@@ -71,7 +73,7 @@ class BlogPost < ApplicationRecord
   belongs_to :creator, class_name: "User"
   has_many :likes
 
+  sig { returns(String) }
   def to_s
-    name
-  end
+    name.to_s  end
 end

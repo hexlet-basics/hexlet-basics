@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 # == Schema Information
@@ -48,10 +48,12 @@ class User < ApplicationRecord
 
   normalizes :email, with: ->(email) { email.strip.downcase }
 
+  sig { params(_auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_attributes(_auth_object = nil)
     %w[id email first_name last_name created_at]
   end
 
+  sig { params(_auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_associations(_auth_object = nil)
     [ "language_members" ]
   end
@@ -117,20 +119,21 @@ class User < ApplicationRecord
   end
 
 
+  sig { returns(String) }
   def to_s
     if first_name? || last_name?
       return "#{first_name} #{last_name}"
     end
+    email.to_s  end
 
-    email
-  end
-
+  sig { returns(T::Boolean) }
   def should_be_lead?
     tag_list.include?("should_be_lead")
   end
 
   private
 
+  sig { returns(T.untyped) }
   def clean_fields
     fields = %w[
       first_name
@@ -148,6 +151,7 @@ class User < ApplicationRecord
     save!
   end
 
+  sig { returns(T.untyped) }
   def remove_accounts
     accounts.clear
   end

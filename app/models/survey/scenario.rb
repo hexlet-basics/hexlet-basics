@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 # == Schema Information
 #
@@ -40,6 +40,7 @@ class Survey::Scenario < ApplicationRecord
 
   typed_enum :state, State, suffix: true
 
+  sig { params(auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_attributes(auth_object = nil)
     [ "created_at", "id", "locale", "name", "state", "survey_item_id", "updated_at" ]
   end

@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 module TypedEnumSupport
@@ -23,6 +23,7 @@ module TypedEnumSupport
       @typed_enum_definitions ||= T.let({}, T.nilable(T::Hash[String, TypedEnumMetadata]))
     end
 
+    sig { params(name: T.untyped, enum_class: T.untyped, options: T.untyped).returns(T.untyped) }
     def typed_enum(name, enum_class, **options)
       Kernel.raise ArgumentError, "#{enum_class} is not a T::Enum" unless enum_class.is_a?(Class) && enum_class < T::Enum
 

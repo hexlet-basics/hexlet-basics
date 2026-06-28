@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 # == Schema Information
@@ -30,6 +30,7 @@
 class Language::Version < ApplicationRecord
   include AASM
 
+  sig { params(_auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_attributes(_auth_object = nil)
     [ "id", "created_at" ]
   end
@@ -76,12 +77,13 @@ class Language::Version < ApplicationRecord
     end
   end
 
+  sig { returns(String) }
   def to_s
-    name
-  end
+    name.to_s  end
 
   # TODO: после пересборки всех языков удалить метод и его использование
   # для run_exercise использовать тег release
+  sig { returns(T.untyped) }
   def image_tag
     if Rails.env.production?
       return docker_image&.start_with?("hexletbasics") ? "lv#{id}" : "release"
@@ -90,6 +92,7 @@ class Language::Version < ApplicationRecord
     :latest
   end
 
+  sig { returns(T.untyped) }
   def locales
     infos.pluck(:locale).uniq
   end

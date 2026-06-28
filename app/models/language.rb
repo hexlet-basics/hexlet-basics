@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 # == Schema Information
@@ -65,10 +65,12 @@ class Language < ApplicationRecord
 
   # extend Enumerize
 
+  sig { params(_: T.untyped).returns(T.untyped) }
   def self.ransackable_associations(_)
     []
   end
 
+  sig { params(_auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_attributes(_auth_object = nil)
     [ "id", "created_at", "learn_as", "progress", "slug" ]
   end
@@ -101,11 +103,13 @@ class Language < ApplicationRecord
   has_many :current_module_versions, through: :current_version, source: :module_versions
   has_many :current_lessons, through: :current_version, source: :lessons
 
+  sig { returns(T.untyped) }
   def duration
     # TODO Пересадить на counter_culture от Language::Version
     lessons_count * 15 / 60
   end
 
+  sig { returns(T.untyped) }
   def repository_url
     "https://github.com/hexlet-basics/exercises-#{slug}"
   end

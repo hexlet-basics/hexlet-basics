@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 # == Schema Information
@@ -52,10 +52,12 @@ class Language::Lesson::Member < ApplicationRecord
     end
   end
 
+  sig { params(auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_attributes(auth_object = nil)
     [ "id", "created_at" ]
   end
 
+  sig { params(auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_associations(auth_object = nil)
     []
   end

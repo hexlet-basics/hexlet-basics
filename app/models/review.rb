@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 # == Schema Information
@@ -48,10 +48,12 @@ class Review < ApplicationRecord
   typed_enum :state, State, suffix: true, validate: true, default: State::Draft
   typed_enum :locale, Locale, suffix: true, validate: true
 
+  sig { params(_auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_attributes(_auth_object = nil)
     [ "id", "created_at" ]
   end
 
+  sig { params(_auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_associations(_auth_object = nil)
     []
   end
@@ -63,6 +65,7 @@ class Review < ApplicationRecord
   belongs_to :language
   belongs_to :user
 
+  sig { returns(String) }
   def to_s
     "#{first_name} #{last_name}"
   end

@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 # == Schema Information
 #
@@ -79,19 +79,22 @@ class Language::Lesson < ApplicationRecord
    end
  end
 
+  sig { params(auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_attributes(auth_object = nil)
     [ "created_at", "id", "language_id", "module_id", "natural_order", "order", "original_code", "path_to_code", "prepared_code", "review", "slug", "state", "test_code", "updated_at", "upload_id" ]
   end
 
+  sig { params(auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_associations(auth_object = nil)
     [ "infos", "language", "members", "messages", "module", "reviews", "versions" ]
   end
 
+  sig { returns(String) }
   def to_s
-    slug
-  end
+    slug.to_s  end
 
   # work when joined using with_localed_info
+  sig { returns(T.untyped) }
   def localed_info
     infos.first
   end

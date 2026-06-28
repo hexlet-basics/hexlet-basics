@@ -1,7 +1,9 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 module StateConcern
+  extend T::Sig
+  sig { params(base: T.untyped).returns(T.untyped) }
   def self.included(base)
     base.send :include, AASM
     base.send :include, InstanceMethods
@@ -12,6 +14,8 @@ module StateConcern
   end
 
   module InstanceMethods
+    extend T::Sig
+    sig { returns(T.untyped) }
     def set_state
       # mixed into AASM models with a dynamically-added `state_event` attribute,
       # neither of which Sorbet can see on this bare module — escape via T.unsafe.

@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 # == Schema Information
 #
@@ -37,10 +37,12 @@ class Language::Lesson::Review < ApplicationRecord
   # validates :summary, presence: true
   validates :lesson, presence: true, uniqueness: { scope: :locale }
 
+  sig { params(auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_attributes(auth_object = nil)
     [ "created_at", "id", "language_id", "language_lesson_id", "language_lesson_version_id", "language_lesson_version_info_id", "summary", "updated_at" ]
   end
 
+  sig { params(auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_associations(auth_object = nil)
     [ "language", "lesson" ]
   end
