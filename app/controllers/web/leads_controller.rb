@@ -51,7 +51,7 @@ class Web::LeadsController < Web::ApplicationController
       last_name: user.last_name,
       ym_client_id: lead.ym_client_id,
       user_name: user.to_s,
-      email: T.must(user.email),
+      email: user.email,
       utm_source: lead.ahoy_visit&.utm_source,
       utm_medium: lead.ahoy_visit&.utm_medium,
       utm_campaign: lead.ahoy_visit&.utm_campaign,

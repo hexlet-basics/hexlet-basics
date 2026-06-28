@@ -20,6 +20,8 @@
 #  locale                   :string(255)
 #  nickname                 :string(255)
 #  password_digest          :string(255)
+#  phone                    :string
+#  phone_verified_at        :datetime
 #  state                    :string(255)
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
@@ -28,6 +30,7 @@
 #
 #  index_users_on_LOWER_email  (lower((email)::text)) UNIQUE
 #  index_users_on_email        (email) UNIQUE
+#  index_users_on_phone        (phone) UNIQUE WHERE (phone IS NOT NULL)
 #
 FactoryBot.define do
   factory :user do

@@ -21,6 +21,8 @@
 #  locale                   :string(255)
 #  nickname                 :string(255)
 #  password_digest          :string(255)
+#  phone                    :string
+#  phone_verified_at        :datetime
 #  state                    :string(255)
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
@@ -29,6 +31,7 @@
 #
 #  index_users_on_LOWER_email  (lower((email)::text)) UNIQUE
 #  index_users_on_email        (email) UNIQUE
+#  index_users_on_phone        (phone) UNIQUE WHERE (phone IS NOT NULL)
 #
 class User < ApplicationRecord
   class ContactMethod < T::Enum
@@ -46,7 +49,8 @@ class User < ApplicationRecord
 
   has_secure_password validations: false, reset_token: { expires_in: 15.minutes }
 
-  normalizes :email, with: ->(email) { email.strip.downcase }
+  normalizes :email, with: ->(email) { email.strip.downcase.presence }
+  normalizes :phone, with: ->(phone) { Phonelib.parse(phone).e164.presence }
 
   sig { params(_auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_attributes(_auth_object = nil)
@@ -58,10 +62,17 @@ class User < ApplicationRecord
     [ "language_members" ]
   end
 
-  validates :email, presence: true,
+  # Email is optional: users can sign in by phone or a linked social account.
+  # Postgres unique indexes treat multiple NULLs as distinct, so blank email is normalized to nil.
+  validates :email,
     uniqueness: { case_sensitive: false },
     'valid_email_2/email': { mx: true },
+    allow_blank: true,
     unless: :removed?
+
+  validates :phone, uniqueness: true, allow_blank: true, unless: :removed?
+
+  validate :identifier_present, unless: :removed?
 
   validates :first_name, length: { maximum: 40 },
     format: { with: UsefulRegexp.without_spec_chars },
@@ -124,7 +135,8 @@ class User < ApplicationRecord
     if first_name? || last_name?
       return "#{first_name} #{last_name}"
     end
-    email.to_s  end
+    email.presence || phone.presence || "User ##{id}"
+  end
 
   sig { returns(T::Boolean) }
   def should_be_lead?
@@ -132,6 +144,15 @@ class User < ApplicationRecord
   end
 
   private
+
+  # A user must be reachable/identifiable by at least one credential:
+  # email, phone, or a linked social account (built in memory or persisted).
+  sig { void }
+  def identifier_present
+    return if email.present? || phone.present? || accounts.any?
+
+    errors.add(:base, :identifier_required)
+  end
 
   sig { returns(T.untyped) }
   def clean_fields
@@ -142,6 +163,7 @@ class User < ApplicationRecord
       password_digest
       confirmation_token
       email
+      phone
     ]
 
     fields.each do |field|

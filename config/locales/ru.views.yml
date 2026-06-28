@@ -270,6 +270,11 @@ ru:
         reset_password: Восстановить
         password: Пароль
         email: Email
+    phone_auth:
+      new:
+        title: Вход по телефону
+      verify:
+        title: Введите код
     passwords:
       edit:
         meta_description: Установить новый пароль на Code Basics

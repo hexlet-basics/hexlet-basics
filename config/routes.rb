@@ -87,6 +87,10 @@ Rails.application.routes.draw do
       resources :reviews, only: %i[index]
       resources :language_categories, only: %i[index show]
       resource :session, only: %i[new create destroy]
+      resource :phone_auth, only: %i[new create] do
+        get :verify
+        post :confirm
+      end
       resource :locale, only: [] do
         member do
           get :switch

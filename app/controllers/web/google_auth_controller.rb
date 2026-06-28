@@ -17,7 +17,7 @@ class Web::GoogleAuthController < Web::ApplicationController
       unless existing_user
         signed_up_event_data = {
           user_id: user.id,
-          email: T.must(user.email),
+          email: user.email,
           first_name: user.first_name,
           last_name: user.last_name,
           locale: I18n.locale

@@ -12,6 +12,10 @@
 #  updated_at :datetime         not null
 #  user_id    :bigint           not null
 #
+# Indexes
+#
+#  index_user_accounts_on_provider_and_uid  (provider,uid) UNIQUE
+#
 # Foreign Keys
 #
 #  fk_rails_...  (user_id => users.id)

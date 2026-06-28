@@ -16,7 +16,7 @@ class LeadCreatedEvent < ApplicationEvent
       utm_campaign: T.nilable(String),
       utm_term: T.nilable(String),
       utm_content: T.nilable(String),
-      email: String,
+      email: T.nilable(String),
       phone: T.nilable(String),
       telegram: T.nilable(String),
       whatsapp: T.nilable(String),

@@ -1933,6 +1933,21 @@ export default {
         title: "Change password",
       },
     },
+    phone_auth: {
+      "new": {
+        hint: "We'll text you a one-time code to sign in.",
+        other_methods: "Other sign-in options",
+        phone: "Phone number",
+        submit: "Get the code",
+        title: "Sign in by phone",
+      },
+      verify: {
+        change_phone: "Change phone number",
+        hint: "Enter the code we sent to {{phone}}",
+        submit: "Sign in",
+        title: "Enter the code",
+      },
+    },
     ransack: {
       all: "all",
       and: "and",
@@ -2042,6 +2057,7 @@ export default {
         reset_password: "Reset Password",
         sign_in: "Sign in",
         sign_in_with_github: "Log in with GitHub",
+        sign_in_with_phone: "Sign in by phone",
         title: "Sign In",
       },
     },

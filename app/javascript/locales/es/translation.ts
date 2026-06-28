@@ -1933,6 +1933,21 @@ export default {
         title: "Change password",
       },
     },
+    phone_auth: {
+      "new": {
+        hint: "Te enviaremos un código de un solo uso por SMS.",
+        other_methods: "Otras opciones de inicio de sesión",
+        phone: "Número de teléfono",
+        submit: "Recibir el código",
+        title: "Iniciar sesión por teléfono",
+      },
+      verify: {
+        change_phone: "Cambiar el número",
+        hint: "Introduce el código que enviamos a {{phone}}",
+        submit: "Iniciar sesión",
+        title: "Introduce el código",
+      },
+    },
     ransack: {
       all: "all",
       and: "and",
@@ -2042,6 +2057,7 @@ export default {
         reset_password: "Reset Password",
         sign_in: "Sign in",
         sign_in_with_github: "Log in with GitHub",
+        sign_in_with_phone: "Iniciar sesión por teléfono",
         title: "Sign In",
       },
     },

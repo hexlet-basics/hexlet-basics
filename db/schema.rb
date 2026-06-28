@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_09_091820) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_28_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -757,6 +757,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_09_091820) do
     t.string "uid", limit: 255, null: false
     t.datetime "updated_at", precision: 0, null: false
     t.bigint "user_id", null: false
+    t.index ["provider", "uid"], name: "index_user_accounts_on_provider_and_uid", unique: true
   end
 
   create_table "user_survey_pivots", force: :cascade do |t|
@@ -789,10 +790,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_09_091820) do
     t.string "locale", limit: 255
     t.string "nickname", limit: 255
     t.string "password_digest", limit: 255
+    t.string "phone"
+    t.datetime "phone_verified_at"
     t.string "state", limit: 255
     t.datetime "updated_at", precision: nil, null: false
     t.index "lower((email)::text)", name: "index_users_on_LOWER_email", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["phone"], name: "index_users_on_phone", unique: true, where: "(phone IS NOT NULL)"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

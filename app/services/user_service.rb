@@ -7,6 +7,8 @@ class UserService < ApplicationService
 
     sig { params(user: User, suffix: T.untyped).void }
     def reset_password!(user, suffix)
+      return if user.email.blank?
+
       UserMailer.with(user:, suffix:).reset_password.deliver_later
     end
 

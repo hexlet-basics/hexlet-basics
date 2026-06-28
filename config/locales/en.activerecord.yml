@@ -67,6 +67,10 @@ en:
         email: Email
     errors:
       models:
+        user:
+          attributes:
+            base:
+              identifier_required: must have an email, phone, or a linked social account
         user/sign_up_form:
           attributes:
             password:

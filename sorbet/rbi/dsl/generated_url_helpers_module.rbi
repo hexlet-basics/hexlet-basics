@@ -115,6 +115,9 @@ module GeneratedUrlHelpersModule
   def check_api_lesson_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def confirm_phone_auth_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def create_request_book_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -208,6 +211,9 @@ module GeneratedUrlHelpersModule
   def new_lead_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def new_phone_auth_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_remind_password_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -224,6 +230,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def password_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def phone_auth_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def rails_blob_representation_proxy_url(*args); end
@@ -326,6 +335,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def users_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def verify_phone_auth_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def yandex_courses_api_feeds_url(*args); end

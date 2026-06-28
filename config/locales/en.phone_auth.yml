@@ -1,0 +1,13 @@
+---
+en:
+  phone_auth:
+    errors:
+      invalid_phone: Enter a valid phone number
+      too_frequent: A code was just sent. Please wait a minute before retrying.
+      ip_rate_limited: Too many attempts. Please try again later.
+      expired: The code has expired. Request a new one.
+      too_many_attempts: Too many incorrect attempts. Request a new code.
+      invalid_code: The code is incorrect
+  sms:
+    phone_auth:
+      code: "Your CodeBasics login code: %{code}"

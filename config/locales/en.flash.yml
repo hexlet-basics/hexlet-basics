@@ -46,6 +46,13 @@ en:
       sessions:
         create:
           success: You have signed in successfully. You can start learning now.
+      phone_auth:
+        create:
+          success: We've sent you a code by SMS.
+          error: Couldn't send the code. Please check the phone number.
+        confirm:
+          success: You have signed in successfully. You can start learning now.
+          error: The code is invalid or has expired.
       auth:
         callback:
           success: You have signed in successfully. You can start learning now.

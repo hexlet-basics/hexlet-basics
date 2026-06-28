@@ -118,6 +118,10 @@ ru:
         creator: Автор
     errors:
       models:
+        user:
+          attributes:
+            base:
+              identifier_required: должен иметь email, телефон или привязанный аккаунт соцсети
         sign_up_form:
           attributes:
             password:

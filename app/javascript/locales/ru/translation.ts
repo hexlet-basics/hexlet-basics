@@ -1933,6 +1933,21 @@ export default {
         title: "Смена пароля",
       },
     },
+    phone_auth: {
+      "new": {
+        hint: "Пришлём одноразовый код для входа по SMS.",
+        other_methods: "Другие способы входа",
+        phone: "Номер телефона",
+        submit: "Получить код",
+        title: "Вход по телефону",
+      },
+      verify: {
+        change_phone: "Изменить номер",
+        hint: "Введите код, отправленный на {{phone}}",
+        submit: "Войти",
+        title: "Введите код",
+      },
+    },
     ransack: {
       all: "все",
       and: "и",
@@ -2042,6 +2057,7 @@ export default {
         reset_password: "Восстановить",
         sign_in: "Вход",
         sign_in_with_github: "Войти через GitHub",
+        sign_in_with_phone: "Войти по телефону",
         title: "Вход",
       },
     },

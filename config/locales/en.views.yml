@@ -127,6 +127,11 @@ en:
         reset_password: Reset Password
         password: Password
         email: Email
+    phone_auth:
+      new:
+        title: Sign in by phone
+      verify:
+        title: Enter the code
     passwords:
       edit:
         meta_description: Set a new password on Code Basics

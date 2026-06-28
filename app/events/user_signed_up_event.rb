@@ -6,7 +6,7 @@ class UserSignedUpEvent < ApplicationEvent
   DataShape = T.type_alias do
     {
       user_id: Integer,
-      email: String,
+      email: T.nilable(String),
       first_name: T.nilable(String),
       last_name: T.nilable(String),
       locale: Symbol

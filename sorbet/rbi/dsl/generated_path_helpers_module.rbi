@@ -115,6 +115,9 @@ module GeneratedPathHelpersModule
   def check_api_lesson_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def confirm_phone_auth_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def create_request_book_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -208,6 +211,9 @@ module GeneratedPathHelpersModule
   def new_lead_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def new_phone_auth_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_remind_password_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -224,6 +230,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def password_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def phone_auth_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def rails_blob_path(*args); end
@@ -326,6 +335,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def users_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def verify_phone_auth_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def yandex_courses_api_feeds_path(*args); end

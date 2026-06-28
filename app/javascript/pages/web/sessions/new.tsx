@@ -72,6 +72,14 @@ export default function New(_props: Props) {
               <Button type="submit" fullWidth loading={processing}>
                 {t(($) => $.helpers.submit.user_sign_in_form.create)}
               </Button>
+              <Button
+                component={Link}
+                href={Routes.new_phone_auth_path()}
+                variant="default"
+                fullWidth
+              >
+                {t(($) => $.sessions.new.sign_in_with_phone)}
+              </Button>
             </Stack>
           </Card>
 
