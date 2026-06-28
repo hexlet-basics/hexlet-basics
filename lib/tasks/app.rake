@@ -11,8 +11,8 @@ namespace :app do
 
   desc "Export event names to TypeScript file"
   task export_event_names_to_ts: :environment do
-    event_registry = DepsLocator.current.event_registry
-    events = event_registry.all.sort
+    Rails.application.eager_load!
+    events = ApplicationEvent.descendants.map { |klass| klass.name.gsub("::", "") }.sort
 
     vite_root = ViteRuby.config.root # обычно app/frontend
     output_path = vite_root.join(ViteRuby.config.source_code_dir, "generated", "event_names.ts")

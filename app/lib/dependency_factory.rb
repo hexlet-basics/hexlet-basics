@@ -14,7 +14,6 @@ module DependencyFactory
           end
         end
       end,
-      event_registry: EventRegistry.new,
       docker_exercise_client: Rails.env.test? ? DockerExerciseClientStub : DockerExerciseClient,
       google_one_tap: Rails.env.test? ? GoogleAuthStub : Google::Auth::IDTokens,
       amocrm: Amocrm::Client.new()

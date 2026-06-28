@@ -2,7 +2,6 @@
 // Run `bin/rails app:export_events_to_ts` to update.
 
 export const eventNames = [
-  'ApplicationEvent',
   'BookRequestedEvent',
   'CourseFinishedEvent',
   'CourseStartedEvent',
