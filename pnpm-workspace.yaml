@@ -1,3 +1,7 @@
+overrides:
+  # patch transitive vulns: undici via release-it (dev), dompurify via monaco-editor
+  undici: ^6.27.0
+  dompurify: ^3.4.11
 allowBuilds:
   '@sentry/cli': true
   '@swc/core': true
