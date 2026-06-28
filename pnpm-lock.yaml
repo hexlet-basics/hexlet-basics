@@ -24,6 +24,9 @@ importers:
       '@gfazioli/mantine-split-pane':
         specifier: ^4.1.8
         version: 4.1.8(@mantine/core@9.4.0(@mantine/hooks@9.4.0(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.0(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@github/webauthn-json':
+        specifier: ^2.1.1
+        version: 2.1.1
       '@hexlet/analytics-plugin-yandex-metrika':
         specifier: ^1.0.10
         version: 1.0.10(@types/node@26.0.1)(analytics@0.8.19(@types/dlv@1.1.5))
@@ -602,6 +605,11 @@ packages:
       '@mantine/hooks': '>=9.0.0'
       react: ^18.x || ^19.x
       react-dom: ^18.x || ^19.x
+
+  '@github/webauthn-json@2.1.1':
+    resolution: {integrity: sha512-XrftRn4z75SnaJOmZQbt7Mk+IIjqVHw+glDGOxuHwXkZBZh/MBoRS7MHjSZMDaLhT4RjN2VqiEU7EOYleuJWSQ==}
+    deprecated: 'Deprecated: Modern browsers support built-in WebAuthn JSON methods. Please use native browser methods instead. For more information, visit https://github.com/github/webauthn-json'
+    hasBin: true
 
   '@hexlet/analytics-plugin-yandex-metrika@1.0.10':
     resolution: {integrity: sha512-cufx3L6HxjwazXNIQvLc8pRB8z9UcRavs8PwwP1NrEKdrNOQuNpII4p/+vAr0OKF31m3y8sKKlUp02fwZn7aDA==}
@@ -4636,6 +4644,8 @@ snapshots:
       '@mantine/hooks': 9.4.0(react@19.2.7)
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
+
+  '@github/webauthn-json@2.1.1': {}
 
   '@hexlet/analytics-plugin-yandex-metrika@1.0.10(@types/node@26.0.1)(analytics@0.8.19(@types/dlv@1.1.5))':
     dependencies:

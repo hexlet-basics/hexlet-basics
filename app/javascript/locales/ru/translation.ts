@@ -4,6 +4,13 @@ export default {
       profiles: {
         edit: {
           delete: "Удалить аккаунт",
+          passkeys: {
+            add: "Добавить passkey",
+            delete: "Удалить",
+            empty: "У вас пока нет passkey.",
+            title: "Passkeys",
+            unnamed: "Passkey",
+          },
           title: "Редактирование профиля",
         },
       },
@@ -195,6 +202,21 @@ export default {
       },
     },
     admin: {
+      banners: {
+        edit: {
+          header: "Редактирование баннера",
+        },
+        form: {
+          body_hint:
+            "Поддерживается Markdown (например, **жирный**). Весь баннер ведёт на ссылку из поля ниже.",
+        },
+        index: {
+          header: "Баннеры",
+        },
+        "new": {
+          header: "Новый баннер",
+        },
+      },
       blog_posts: {
         edit: {
           header: "Редактирование {{id}}",
@@ -1104,6 +1126,7 @@ export default {
       admin: {
         application: {
           authentication: "Аутентификация",
+          banners: "Баннеры",
           blog_posts: "Посты в блоге",
           dashboard: "Кабинет",
           language_categories: "Категории",
@@ -1286,6 +1309,29 @@ export default {
     },
     models: {
       attributes: {
+        banner: {
+          background: "Фон",
+          "background/values": {
+            blue: "Синий",
+            cta_gradient: "CTA градиент",
+            dark: "Тёмный",
+          },
+          body: "Текст (Markdown)",
+          finishes_at: "Показывать до",
+          locale: "Локаль",
+          "locale/values": {
+            en: "Английский",
+            ru: "Русский",
+          },
+          starts_at: "Показывать с",
+          state: "Состояние",
+          "state/values": {
+            archived: "Архив",
+            draft: "Черновик",
+            published: "Опубликован",
+          },
+          url: "Ссылка (URL)",
+        },
         base: {
           _destroy: "Удалить",
           answer: "Ответ",
@@ -2065,6 +2111,7 @@ export default {
         sign_in: "Вход",
         sign_in_with_github: "Войти через GitHub",
         sign_in_with_magic_link: "Вход по ссылке на email",
+        sign_in_with_passkey: "Войти по passkey",
         sign_in_with_phone: "Войти по телефону",
         title: "Вход",
       },

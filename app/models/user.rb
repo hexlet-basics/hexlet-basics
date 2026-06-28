@@ -26,12 +26,14 @@
 #  state                    :string(255)
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
+#  webauthn_id              :string
 #
 # Indexes
 #
 #  index_users_on_LOWER_email  (lower((email)::text)) UNIQUE
 #  index_users_on_email        (email) UNIQUE
 #  index_users_on_phone        (phone) UNIQUE WHERE (phone IS NOT NULL)
+#  index_users_on_webauthn_id  (webauthn_id) UNIQUE WHERE (webauthn_id IS NOT NULL)
 #
 class User < ApplicationRecord
   class ContactMethod < T::Enum
@@ -100,6 +102,7 @@ class User < ApplicationRecord
   has_many :language_members, class_name: "Language::Member", dependent: :destroy
   has_many :sessions, dependent: :destroy
   has_many :accounts, dependent: :destroy
+  has_many :credentials, dependent: :destroy
   has_many :reviews, dependent: :destroy
   has_many :blog_posts, foreign_key: "creator_id", dependent: :destroy
 

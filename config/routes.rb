@@ -91,6 +91,7 @@ Rails.application.routes.draw do
         get :verify
         post :confirm
       end
+      resource :passkey_session, only: %i[new create]
       resource :locale, only: [] do
         member do
           get :switch
@@ -133,6 +134,7 @@ Rails.application.routes.draw do
         end
 
         resources :reviews
+        resources :banners
         resources :leads, only: [ :index ]
         resources :messages, only: [ :index ]
         resources :language_lesson_members, only: [ :index ]
@@ -165,6 +167,7 @@ Rails.application.routes.draw do
 
       namespace :account do
         resource :profile, only: %i[edit update destroy]
+        resources :passkeys, only: %i[new create destroy]
       end
     end
   end

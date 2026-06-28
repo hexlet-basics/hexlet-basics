@@ -523,6 +523,20 @@ class User
     def create_book_request!(*args, &blk); end
 
     sig { returns(T::Array[T.untyped]) }
+    def credential_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def credential_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :credentials`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::User::Credential::PrivateCollectionProxy) }
+    def credentials; end
+
+    sig { params(value: T::Enumerable[::User::Credential]).void }
+    def credentials=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
     def event_ids; end
 
     sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
@@ -1905,6 +1919,9 @@ class User
     sig { void }
     def restore_updated_at!; end
 
+    sig { void }
+    def restore_webauthn_id!; end
+
     sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
     def saved_change_to_admin; end
 
@@ -2048,6 +2065,12 @@ class User
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_updated_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_webauthn_id; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_webauthn_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
     def state; end
@@ -2229,6 +2252,51 @@ class User
     sig { void }
     def updated_at_will_change!; end
 
+    sig { returns(T.nilable(::String)) }
+    def webauthn_id; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def webauthn_id=(value); end
+
+    sig { returns(T::Boolean) }
+    def webauthn_id?; end
+
+    sig { returns(T.nilable(::String)) }
+    def webauthn_id_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def webauthn_id_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def webauthn_id_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def webauthn_id_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def webauthn_id_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def webauthn_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def webauthn_id_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def webauthn_id_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def webauthn_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def webauthn_id_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def webauthn_id_was; end
+
+    sig { void }
+    def webauthn_id_will_change!; end
+
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_admin?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
@@ -2300,6 +2368,9 @@ class User
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_updated_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_webauthn_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
   end
 
   module GeneratedRelationMethods

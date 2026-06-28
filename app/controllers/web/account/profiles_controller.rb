@@ -10,7 +10,8 @@ class Web::Account::ProfilesController < Web::Account::ApplicationController
     set_meta_tags seo_tags
 
     render inertia: true, props: {
-      form: UserProfileFormResource.new(T.must(current_user))
+      form: UserProfileFormResource.new(T.must(current_user)),
+      passkeys: User::CredentialResource.new(T.must(current_user).credentials)
     }
   end
 

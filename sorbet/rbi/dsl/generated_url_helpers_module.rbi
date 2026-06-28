@@ -10,6 +10,12 @@ module GeneratedUrlHelpersModule
   include ::ActionDispatch::Routing::PolymorphicRoutes
 
   sig { params(args: T.untyped).returns(String) }
+  def account_passkey_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def account_passkeys_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def account_profile_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -29,6 +35,12 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def admin_api_users_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_banner_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_banners_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def admin_blog_post_url(*args); end
@@ -130,6 +142,9 @@ module GeneratedUrlHelpersModule
   def edit_admin_api_user_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def edit_admin_banner_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def edit_admin_blog_post_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -193,7 +208,13 @@ module GeneratedUrlHelpersModule
   def my_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def new_account_passkey_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_admin_api_user_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_admin_banner_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_admin_blog_post_url(*args); end
@@ -220,6 +241,9 @@ module GeneratedUrlHelpersModule
   def new_magic_link_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def new_passkey_session_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_phone_auth_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -236,6 +260,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def page_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def passkey_session_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def password_url(*args); end

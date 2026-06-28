@@ -56,6 +56,7 @@ gem "ransack"
 # gem 'redis'
 gem "term-ansicolor"
 gem "valid_email2"
+gem "webauthn"
 
 # gem 'bootstrap'
 # gem 'jquery-rails'

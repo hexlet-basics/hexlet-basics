@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_28_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_28_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -84,6 +84,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_28_120000) do
     t.index ["user_id"], name: "index_ahoy_visits_on_user_id"
     t.index ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true
     t.index ["visitor_token", "started_at"], name: "index_ahoy_visits_on_visitor_token_and_started_at"
+  end
+
+  create_table "banners", force: :cascade do |t|
+    t.string "background", default: "cta_gradient", null: false
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.datetime "finishes_at"
+    t.string "locale", null: false
+    t.datetime "starts_at"
+    t.string "state", default: "draft", null: false
+    t.datetime "updated_at", null: false
+    t.string "url"
+    t.index ["locale", "state"], name: "index_banners_on_locale_and_state"
   end
 
   create_table "blog_post_likes", force: :cascade do |t|
@@ -760,6 +773,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_28_120000) do
     t.index ["provider", "uid"], name: "index_user_accounts_on_provider_and_uid", unique: true
   end
 
+  create_table "user_credentials", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "external_id", null: false
+    t.string "nickname"
+    t.string "public_key", null: false
+    t.bigint "sign_count", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["external_id"], name: "index_user_credentials_on_external_id", unique: true
+    t.index ["user_id"], name: "index_user_credentials_on_user_id"
+  end
+
   create_table "user_survey_pivots", force: :cascade do |t|
     t.bigint "coding_experience_item_id"
     t.datetime "created_at", null: false
@@ -794,9 +819,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_28_120000) do
     t.datetime "phone_verified_at"
     t.string "state", limit: 255
     t.datetime "updated_at", precision: nil, null: false
+    t.string "webauthn_id"
     t.index "lower((email)::text)", name: "index_users_on_LOWER_email", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["phone"], name: "index_users_on_phone", unique: true, where: "(phone IS NOT NULL)"
+    t.index ["webauthn_id"], name: "index_users_on_webauthn_id", unique: true, where: "(webauthn_id IS NOT NULL)"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
@@ -881,6 +908,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_28_120000) do
   add_foreign_key "surveys", "surveys", column: "parent_survey_id"
   add_foreign_key "taggings", "tags"
   add_foreign_key "user_accounts", "users"
+  add_foreign_key "user_credentials", "users"
   add_foreign_key "user_survey_pivots", "survey_items", column: "coding_experience_item_id"
   add_foreign_key "user_survey_pivots", "survey_items", column: "goal_item_id"
   add_foreign_key "user_survey_pivots", "survey_items", column: "study_plan_item_id"

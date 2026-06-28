@@ -10,6 +10,12 @@ module GeneratedPathHelpersModule
   include ::ActionDispatch::Routing::PolymorphicRoutes
 
   sig { params(args: T.untyped).returns(String) }
+  def account_passkey_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def account_passkeys_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def account_profile_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -29,6 +35,12 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def admin_api_users_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_banner_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_banners_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def admin_blog_post_path(*args); end
@@ -130,6 +142,9 @@ module GeneratedPathHelpersModule
   def edit_admin_api_user_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def edit_admin_banner_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def edit_admin_blog_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -193,7 +208,13 @@ module GeneratedPathHelpersModule
   def my_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def new_account_passkey_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_admin_api_user_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_admin_banner_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_admin_blog_post_path(*args); end
@@ -220,6 +241,9 @@ module GeneratedPathHelpersModule
   def new_magic_link_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def new_passkey_session_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_phone_auth_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -236,6 +260,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def page_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def passkey_session_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def password_path(*args); end

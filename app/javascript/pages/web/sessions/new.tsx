@@ -17,6 +17,7 @@ import {
   currentPasswordInputProps,
   loginEmailInputProps,
 } from "@/lib/authFieldProps";
+import { loginWithPasskey, passkeySupported } from "@/lib/passkey";
 import * as Routes from "@/routes.js";
 
 type Props = PropsWithChildren;
@@ -88,6 +89,11 @@ export default function New(_props: Props) {
               >
                 {t(($) => $.sessions.new.sign_in_with_magic_link)}
               </Button>
+              {passkeySupported() ? (
+                <Button variant="default" fullWidth onClick={loginWithPasskey}>
+                  {t(($) => $.sessions.new.sign_in_with_passkey)}
+                </Button>
+              ) : null}
             </Stack>
           </Card>
 

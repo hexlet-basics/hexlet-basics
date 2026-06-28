@@ -4,6 +4,13 @@ export default {
       profiles: {
         edit: {
           delete: "Delete account",
+          passkeys: {
+            add: "Añadir una passkey",
+            delete: "Eliminar",
+            empty: "Aún no tienes passkeys.",
+            title: "Passkeys",
+            unnamed: "Passkey",
+          },
           title: "Profile editing",
         },
       },
@@ -193,6 +200,21 @@ export default {
       },
     },
     admin: {
+      banners: {
+        edit: {
+          header: "Editar banner",
+        },
+        form: {
+          body_hint:
+            "Se admite Markdown (por ejemplo, **negrita**). Todo el banner enlaza a la URL de abajo.",
+        },
+        index: {
+          header: "Banners",
+        },
+        "new": {
+          header: "Nuevo banner",
+        },
+      },
       blog_posts: {
         edit: {
           header: "Edit Blog Post",
@@ -1104,6 +1126,7 @@ export default {
       admin: {
         application: {
           authentication: "Authentication",
+          banners: "",
           blog_posts: "Blog Posts",
           dashboard: "Dashboard",
           language_categories: "Categories",
@@ -1287,6 +1310,29 @@ export default {
     },
     models: {
       attributes: {
+        banner: {
+          background: "Fondo",
+          "background/values": {
+            blue: "Azul",
+            cta_gradient: "Degradado CTA",
+            dark: "Oscuro",
+          },
+          body: "Texto (Markdown)",
+          finishes_at: "Mostrar hasta",
+          locale: "Idioma",
+          "locale/values": {
+            en: "Inglés",
+            ru: "Ruso",
+          },
+          starts_at: "Mostrar desde",
+          state: "Estado",
+          "state/values": {
+            archived: "Archivado",
+            draft: "Borrador",
+            published: "Publicado",
+          },
+          url: "Enlace (URL)",
+        },
         base: {
           _destroy: "Удалить",
           answer: "Ответ",
@@ -2065,6 +2111,7 @@ export default {
         sign_in: "Sign in",
         sign_in_with_github: "Log in with GitHub",
         sign_in_with_magic_link: "Iniciar sesión con enlace por email",
+        sign_in_with_passkey: "Iniciar sesión con passkey",
         sign_in_with_phone: "Iniciar sesión por teléfono",
         title: "Sign In",
       },
