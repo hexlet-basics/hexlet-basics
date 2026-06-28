@@ -9,11 +9,11 @@ class EventSender
 
     sig { params(
       event: ApplicationEvent,
-      user: T.any(User, Guest),
+      user: T.nilable(User),
       request: T.nilable(ActionDispatch::Request)
     ).void }
     def publish_event(event, user, request = nil)
-      if user.guest?
+      if user.nil?
         event_store.publish(event)
       else
         event_with_metadata = event.class.new(

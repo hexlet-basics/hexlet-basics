@@ -3,14 +3,21 @@
 
 class ApplicationPolicy
   extend T::Sig
+  extend T::Generic
 
-  sig { returns(T.untyped) }
-  attr_reader :user, :record
+  Record = type_member
 
-  sig { params(user: T.untyped, record: T.untyped).void }
+  # nil when the request is unauthenticated (Current.user)
+  sig { returns(T.nilable(User)) }
+  attr_reader :user
+
+  sig { returns(Record) }
+  attr_reader :record
+
+  sig { params(user: T.nilable(User), record: Record).void }
   def initialize(user, record)
-    @user = T.let(user, T.untyped)
-    @record = T.let(record, T.untyped)
+    @user = user
+    @record = record
   end
 
   sig { returns(T::Boolean) }
@@ -51,10 +58,16 @@ class ApplicationPolicy
   class Scope
     extend T::Sig
 
-    sig { params(user: T.untyped, scope: T.untyped).void }
+    sig { returns(T.nilable(User)) }
+    attr_reader :user
+
+    sig { returns(T.untyped) }
+    attr_reader :scope
+
+    sig { params(user: T.nilable(User), scope: T.untyped).void }
     def initialize(user, scope)
-      @user = T.let(user, T.untyped)
-      @scope = T.let(scope, T.untyped)
+      @user = user
+      @scope = scope
     end
 
     sig { returns(T.untyped) }
@@ -64,7 +77,6 @@ class ApplicationPolicy
 
     private
 
-    sig { returns(T.untyped) }
     attr_reader :user, :scope
   end
 end

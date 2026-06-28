@@ -14,9 +14,9 @@ class Web::LocalesController < Web::ApplicationController
       return
     end
 
-    unless current_user.guest?
-      current_user.locale = locale
-      current_user.save!
+    if current_user.present?
+      T.must(current_user).locale = locale
+      T.must(current_user).save!
     end
 
     session[:locale] = locale

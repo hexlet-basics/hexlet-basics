@@ -434,7 +434,7 @@ export default function Show({
           </Box>
         )}
 
-        {!user.guest && i18n.language === "ru" && (
+        {user && i18n.language === "ru" && (
           <Container size="lg">
             <Grid align="center" justify="space-between" gap={0}>
               <Grid.Col span={{ base: 12, md: 6 }}>
@@ -453,7 +453,7 @@ export default function Show({
           </Container>
         )}
 
-        {user.guest && (
+        {!user && (
           <Container size="lg" mt={100}>
             <Grid align="center" justify="space-between" gap={0}>
               <Grid.Col span={{ base: 12, md: 6 }}>

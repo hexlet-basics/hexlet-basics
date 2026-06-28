@@ -4,7 +4,7 @@ class Web::HomeController < Web::ApplicationController
   allow_unauthenticated_access
 
   def index
-    language_member_resources = current_user.language_members.includes([ language: :current_version ])
+    language_member_resources = (current_user&.language_members&.includes([ language: :current_version ]) || Language::Member.none)
       .map { Language::MemberResource.new(it) }
     language_member_resources_by_language = language_member_resources.index_by { it.object.language_id }
 

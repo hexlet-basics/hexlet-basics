@@ -6,7 +6,7 @@ class Web::BlogPosts::LikesController < Web::BlogPosts::ApplicationController
 
     key = resource_blog_post.id.to_s
     if !session[:blog_post_likes][key]
-      like = resource_blog_post.likes.build user_id: current_user.id
+      like = resource_blog_post.likes.build user_id: T.must(current_user).id
       like.save!
       session[:blog_post_likes][key] = true
       f(:success)

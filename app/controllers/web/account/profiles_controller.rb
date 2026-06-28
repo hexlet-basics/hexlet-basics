@@ -2,7 +2,7 @@
 
 class Web::Account::ProfilesController < Web::Account::ApplicationController
   def edit
-    form = current_user.becomes(User::ProfileForm)
+    form = T.must(current_user).becomes(User::ProfileForm)
 
     seo_tags = {
       title: t(".title"),
@@ -16,7 +16,7 @@ class Web::Account::ProfilesController < Web::Account::ApplicationController
   end
 
   def update
-    form = current_user.becomes(User::ProfileForm)
+    form = T.must(current_user).becomes(User::ProfileForm)
 
     if form.update(params[:user])
       f(:success)
@@ -30,7 +30,7 @@ class Web::Account::ProfilesController < Web::Account::ApplicationController
   end
 
   def destroy
-    current_user.mark_as_removed!
+    T.must(current_user).mark_as_removed!
     terminate_session
 
     f(:success)

@@ -146,7 +146,7 @@ export default function Index({
           <Button component="a" href={`#${baseId}`} size="lg" me="sm">
             {t(($) => $.home.index.hero.try)}
           </Button>
-          {user.guest && (
+          {!user && (
             <Button
               component="a"
               href={Routes.new_user_path()}
@@ -287,7 +287,7 @@ export default function Index({
           ))}
         </Accordion>
       </Container>
-      {user.guest && (
+      {!user && (
         <Container size="lg" mt={100}>
           <Grid align="center" justify="space-between" gap={0}>
             <Grid.Col span={{ base: 12, md: 6 }} mb="lg">
@@ -313,7 +313,7 @@ export default function Index({
           </Grid>
         </Container>
       )}
-      {!user.guest && i18n.language === "ru" && (
+      {user && i18n.language === "ru" && (
         <Container
           size="lg"
           my={{

@@ -4,12 +4,12 @@ class Web::MyController < Web::ApplicationController
   before_action :require_authentication
 
   def show
-    started_language_members = current_user.language_members
+    started_language_members = T.must(current_user).language_members
       .joins(language: :landing_pages)
       .merge(Language::LandingPage.web.where(main: true))
       .started
 
-    finished_language_members = current_user.language_members
+    finished_language_members = T.must(current_user).language_members
       .joins(language: :landing_pages)
       .merge(Language::LandingPage.web.where(main: true))
       .finished
@@ -17,7 +17,7 @@ class Web::MyController < Web::ApplicationController
     landing_pages = Language::LandingPage.web
       .where(main: true)
       .joins(language: :members)
-      .merge(current_user.language_members)
+      .merge(T.must(current_user).language_members)
 
     landing_page_resources_by_language_id = landing_pages
       .index_by { it.language_id }

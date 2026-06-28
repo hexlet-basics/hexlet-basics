@@ -102,7 +102,7 @@ function MyLink() {
   const { auth } = usePage().props;
   const { t } = useTranslation();
 
-  if (auth.user.guest) return null;
+  if (!auth.user) return null;
 
   return (
     <Anchor component={Link} href={Routes.my_path()}>
@@ -185,7 +185,7 @@ function AuthLinks({ avatar }: { avatar: string }) {
   const { auth } = usePage().props;
   const { t } = useTranslation();
 
-  if (auth.user.guest) {
+  if (!auth.user) {
     return (
       <>
         <Anchor component={Link} href={Routes.new_session_path()}>

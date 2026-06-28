@@ -5,7 +5,7 @@ class Web::BooksController < Web::ApplicationController
   before_action :require_authentication, only: [ :create_request, :download ]
 
   def show
-    book_request = current_user.book_request
+    book_request = current_user&.book_request
 
     description = t(".description").truncate(160)
     seo_tags = {
@@ -42,7 +42,7 @@ class Web::BooksController < Web::ApplicationController
   end
 
   def download
-    book_request = current_user.book_request
+    book_request = current_user&.book_request
     unless book_request
       redirect_to view_context.book_path
       return

@@ -27,7 +27,7 @@ declare module "@inertiajs/core" {
   }
   export interface PageProps {
     auth: {
-      user: User;
+      user: User | null;
     };
     colorScheme: "dark" | "light";
     lead?: LeadCrud;

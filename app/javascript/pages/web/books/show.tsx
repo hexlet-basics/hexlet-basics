@@ -154,7 +154,7 @@ export default function Show({ bookRequested, lead }: Props) {
           </Box>
         ))}
 
-        {!auth.user.guest && i18n.language === "ru" && (
+        {auth.user && i18n.language === "ru" && (
           <Grid align="center" mt={60}>
             <Grid.Col span={{ base: 12, lg: 7 }}>
               <Title order={2}>{t(($) => $.home.index.consultation)}</Title>

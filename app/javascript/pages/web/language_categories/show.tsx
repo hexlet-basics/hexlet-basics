@@ -74,7 +74,7 @@ export default function Show({
           ))}
         </SimpleGrid>
 
-        {!user.guest && i18n.language === "ru" && (
+        {user && i18n.language === "ru" && (
           <Grid align="center" justify="space-between" gap={0}>
             <Grid.Col span={{ base: 12, xs: 7 }}>
               <Center>

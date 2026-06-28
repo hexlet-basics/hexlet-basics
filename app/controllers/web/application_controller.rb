@@ -33,7 +33,7 @@ class Web::ApplicationController < ApplicationController
       .includes(:language)
 
     {
-      shouldAddContactMethod: current_user.should_be_lead?,
+      shouldAddContactMethod: current_user&.should_be_lead? || false,
       courseCategories: Language::CategoryResource.new(language_categories),
       colorScheme: current_color_scheme,
       railsDirectUploadsUrl: view_context.rails_direct_uploads_url,
@@ -42,7 +42,7 @@ class Web::ApplicationController < ApplicationController
       locale: I18n.locale,
       suffix: I18n.locale == :en ? nil : I18n.locale,
       auth: {
-        user: UserResource.new(current_user)
+        user: current_user && UserResource.new(current_user)
       },
       mobileBrowser: mobile_browser?,
       # carrotQuestUserHash: signed_in? ? OpenSSL::HMAC.hexdigest("SHA256", configus.carrotquest_user_auth_key, current_user.id.to_s) : nil,
@@ -52,7 +52,7 @@ class Web::ApplicationController < ApplicationController
 
   before_action do
     T.bind(self, Web::ApplicationController)
-    gon.current_user = UserResource.new(current_user)
+    gon.current_user = current_user && UserResource.new(current_user)
     gon.env = Rails.env
     gon.locale = I18n.locale.to_s
     gon.suffix = I18n.locale == :en ? nil : I18n.locale

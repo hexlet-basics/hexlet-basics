@@ -114,7 +114,7 @@ export default function ControlBox() {
             </Group>
           </Button>
 
-          {user.guest && (
+          {!user && (
             <Button
               component={Link}
               size="xs"
@@ -128,7 +128,7 @@ export default function ControlBox() {
             </Button>
           )}
 
-          {!user.guest && nextLesson && (
+          {user && nextLesson && (
             <Button
               component={Link}
               size="xs"
@@ -141,7 +141,7 @@ export default function ControlBox() {
             </Button>
           )}
 
-          {!user.guest && !nextLesson && (
+          {user && !nextLesson && (
             <Button
               component={Link}
               size="xs"

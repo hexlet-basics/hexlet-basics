@@ -11,11 +11,6 @@ class UserResource < ApplicationResource
     :admin,
     :assistant_messages_count
 
-  typelize :boolean, nullable: true
-  attribute :guest do
-    it.guest?
-  end
-
   typelize :string, nullable: true
   attribute :name do
     [ it.first_name, it.last_name ].join " "

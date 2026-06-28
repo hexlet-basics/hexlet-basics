@@ -116,9 +116,6 @@ class User < ApplicationRecord
     end
   end
 
-  def guest?
-    false
-  end
 
   def to_s
     if first_name? || last_name?

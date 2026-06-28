@@ -28,7 +28,7 @@ class Api::LessonsController < Api::ApplicationController
     lesson_has_been_finished = false
     language_has_been_finished = false
 
-    if passed && !current_user.guest?
+    if passed && current_user.present?
       language_member = language.members.find_by!(user: current_user)
       lesson_member = lesson.members.find_by!(user: current_user)
 
@@ -52,7 +52,7 @@ class Api::LessonsController < Api::ApplicationController
         language_has_been_finished = true
 
         course_finished_event_data = {
-          occurrence_count: current_user.language_members.finished.count,
+          occurrence_count: T.must(current_user).language_members.finished.count,
           slug: T.must(language.slug),
           locale: I18n.locale
         }
@@ -61,7 +61,7 @@ class Api::LessonsController < Api::ApplicationController
       end
     end
 
-    if passed && current_user.guest?
+    if passed && current_user.nil?
       session[:finished_as_guest] ||= {}
       session[:finished_as_guest][lesson.id] = true
     end

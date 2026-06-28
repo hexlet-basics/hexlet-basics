@@ -18,13 +18,14 @@ class Web::LeadsController < Web::ApplicationController
   end
 
   def create
+    user = T.must(current_user)
     lead = LeadForm.new(params[:data])
-    lead.user = current_user
+    lead.user = user
 
     courses_data = []
-    current_user.language_members.each do |member|
+    user.language_members.each do |member|
       course_data = {
-        slug: member.language.slug,
+        slug: T.must(member.language).slug,
         lessons_finished_count: member.lesson_members.finished.count
       }
 
@@ -35,21 +36,21 @@ class Web::LeadsController < Web::ApplicationController
 
     lead.survey_answers_data = []
 
-    lead.ahoy_visit = current_user.visits.last
+    lead.ahoy_visit = user.visits.last
 
     if lead.save
 
-      current_user.tag_list.remove("should_be_lead")
-      current_user.save!
+      user.tag_list.remove("should_be_lead")
+      user.save!
 
       lead_created_event_data = {
         lead_id: lead.id,
-        user_id: current_user.id,
-        first_name: current_user.first_name,
-        last_name: current_user.last_name,
+        user_id: user.id,
+        first_name: user.first_name,
+        last_name: user.last_name,
         ym_client_id: lead.ym_client_id,
-        user_name: current_user.to_s,
-        email: current_user.email,
+        user_name: user.to_s,
+        email: T.must(user.email),
         utm_source: lead.ahoy_visit&.utm_source,
         utm_medium: lead.ahoy_visit&.utm_medium,
         utm_campaign: lead.ahoy_visit&.utm_campaign,

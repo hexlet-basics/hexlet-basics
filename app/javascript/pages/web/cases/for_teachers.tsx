@@ -127,7 +127,7 @@ export default function ForTeachersBlock() {
             <Text c="gray.5">
               {t(($) => $.cases.for_teachers.open_browser_and_sign_up)}
             </Text>
-            {user.guest ? (
+            {!user ? (
               <Button
                 component={Link}
                 href={Routes.new_user_path()}

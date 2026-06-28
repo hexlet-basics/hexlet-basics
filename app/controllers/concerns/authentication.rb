@@ -28,15 +28,16 @@ module Authentication
     redirect_to root_path if authenticated?
   end
 
+  sig { returns(T.nilable(User)) }
   def current_user
     resume_session
 
-    Current.user || Guest.new
+    Current.user
   end
 
   def authenticate_admin!
     require_authentication
-    redirect_to root_path unless current_user.admin?
+    redirect_to root_path unless current_user&.admin?
   end
 
   def require_api_auth!
@@ -44,7 +45,7 @@ module Authentication
   end
 
   def require_admin_api_auth!
-    head :forbidden unless authenticated? && current_user.admin?
+    head :forbidden unless authenticated? && current_user&.admin?
   end
 
   private
