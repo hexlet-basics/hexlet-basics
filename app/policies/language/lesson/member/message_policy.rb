@@ -1,6 +1,9 @@
-# typed: true
+# typed: strict
 
 class Language::Lesson::Member::MessagePolicy < ApplicationPolicy
+  extend T::Sig
+
+  sig { returns(T::Boolean) }
   def create?
     return false if user.guest?
     messages_count = user.assistant_messages
