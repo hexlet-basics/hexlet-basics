@@ -51,11 +51,13 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
     struct = ApplicationParamsStruct.from_params(ReviewStruct, params.require(:data))
     result = ReviewService.update(params[:id], struct, locale: I18n.locale.to_s)
 
-    review = case result
-    when Typed::Success then result.payload
-    else result.error
+    case result
+    when Typed::Success
+      f(:success)
+      redirect_to edit_admin_review_url(result.payload)
+    when Typed::Failure
+      f(:error)
+      redirect_to edit_admin_review_url(result.error), inertia: { errors: result.error.errors }
     end
-    f(result.success? ? :success : :error)
-    redirect_to edit_admin_review_url(review), inertia: { errors: review.errors }
   end
 end
