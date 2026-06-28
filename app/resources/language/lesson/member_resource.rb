@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class Language::Lesson::MemberResource < ApplicationResource
   typelize_from Language::Lesson::Member

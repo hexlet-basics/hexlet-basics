@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class LessonCheckingResponseResource < ApplicationResource
   attributes :passed, :output, :result, :status, :lesson_has_been_finished, :language_has_been_finished

@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class Language::CategoryCreateResource < ApplicationResource
   typelize_from Language::Category

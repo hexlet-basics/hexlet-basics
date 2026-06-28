@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class UserResource < ApplicationResource
   typelize_from User

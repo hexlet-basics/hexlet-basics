@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 # Language::Module::Version::Info
 class Language::ModuleResource < ApplicationResource

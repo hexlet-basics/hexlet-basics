@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class Language::VersionResource < ApplicationResource
   typelize_from Language::Version

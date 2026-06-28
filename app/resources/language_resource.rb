@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class LanguageResource < ApplicationResource
   urls = Rails.application.routes.url_helpers

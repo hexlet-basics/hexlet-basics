@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class LeadResource < ApplicationResource
   typelize_from Lead

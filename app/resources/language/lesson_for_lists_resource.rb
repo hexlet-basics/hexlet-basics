@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class Language::LessonForListsResource < ApplicationResource
   # include Rails.application.routes.url_helpers

@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class Language::CategoryItemCrudResource < ApplicationResource
   typelize_from Language::Category::Item

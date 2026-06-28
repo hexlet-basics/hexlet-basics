@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class BlogPostCreateResource < ApplicationResource
   typelize_from BlogPost

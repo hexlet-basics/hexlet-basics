@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class Language::LessonResource < ApplicationResource
   typelize_from Language::Lesson::Version::Info

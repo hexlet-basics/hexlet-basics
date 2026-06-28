@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class BlogPostResource < ApplicationResource
   urls = Rails.application.routes.url_helpers

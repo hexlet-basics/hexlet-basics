@@ -1,6 +1,7 @@
-# typed: true
+# typed: strict
 
 class ApplicationResource
+  extend T::Sig
   include Alba::Resource
   include Typelizer::DSL
 
@@ -8,6 +9,7 @@ class ApplicationResource
     {}
   end
 
+  sig { returns(T.untyped) }
   def to_model
     object
   end

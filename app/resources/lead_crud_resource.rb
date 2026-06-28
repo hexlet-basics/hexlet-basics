@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class LeadCrudResource < ApplicationResource
   typelize_from LeadStruct

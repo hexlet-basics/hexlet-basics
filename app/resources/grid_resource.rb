@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class GridResource < ApplicationResource
   # sf = sort field, so = sort order, tr = total records

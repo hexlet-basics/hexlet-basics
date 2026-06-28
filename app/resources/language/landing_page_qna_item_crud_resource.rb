@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class Language::LandingPageQnaItemCrudResource < ApplicationResource
   typelize_from Language::LandingPage::QnaItem

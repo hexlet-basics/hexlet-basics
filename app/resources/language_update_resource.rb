@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class LanguageUpdateResource < ApplicationResource
   typelize_from Language

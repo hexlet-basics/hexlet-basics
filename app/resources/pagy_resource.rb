@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class PagyResource < ApplicationResource
   attributes :count, :page, :last, :next, :from, :previous

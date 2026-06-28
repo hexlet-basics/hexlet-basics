@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class UserPasswordResource < ApplicationResource
   typelize_from User

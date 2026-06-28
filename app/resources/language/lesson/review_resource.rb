@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class Language::Lesson::ReviewResource < ApplicationResource
   typelize_from Language::Lesson::Review

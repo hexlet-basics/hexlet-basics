@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class SitemapBlogPostResource
   include Alba::Resource

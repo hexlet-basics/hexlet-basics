@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class UserSignUpFormResource < ApplicationResource
   typelize_from User

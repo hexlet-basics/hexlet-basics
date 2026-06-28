@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class Language::LandingPageResource < ApplicationResource
   urls = Rails.application.routes.url_helpers

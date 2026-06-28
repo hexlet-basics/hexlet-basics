@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class ReviewCreateResource < ApplicationResource
   typelize_from Review

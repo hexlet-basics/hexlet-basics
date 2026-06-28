@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class Language::LandingPageUpdateResource < ApplicationResource
   typelize_from Language::LandingPage

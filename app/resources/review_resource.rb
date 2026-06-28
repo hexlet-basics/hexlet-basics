@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class ReviewResource
   include Alba::Resource
