@@ -62,7 +62,7 @@ class Web::HomeController < Web::ApplicationController
       courseMembersByCourseId: language_member_resources_by_language,
       blogPosts: BlogPostResource.new(blog_posts),
       newUser: UserSignUpFormResource.new(user),
-      lead: LeadCrudResource.new(LeadForm.new)
+      lead: LeadCrudResource.new(LeadStruct.new)
     }
   end
 
@@ -137,7 +137,7 @@ class Web::HomeController < Web::ApplicationController
       lessonsByLocaleAndLanguageId: lesson_resources_by_locale_and_language_id,
       blogPostsByLocale: blog_post_resources_by_locale,
       categoriesByLocale: language_category_resources_by_locale,
-      lead: LeadCrudResource.new(LeadForm.new)
+      lead: LeadCrudResource.new(LeadStruct.new)
     }
   end
 end

@@ -52,7 +52,7 @@ class Web::LanguageCategoriesController < Web::ApplicationController
       courseCategory: Language::CategoryResource.new(category),
       qnaItems: Language::CategoryQnaItemResource.new(category.qna_items),
       categoryLandingPages: Language::LandingPageForListsResource.new(landing_pages),
-      lead: LeadCrudResource.new(LeadForm.new)
+      lead: LeadCrudResource.new(LeadStruct.new)
     }
   end
 end

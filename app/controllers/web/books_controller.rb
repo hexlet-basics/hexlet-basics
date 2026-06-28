@@ -24,7 +24,7 @@ class Web::BooksController < Web::ApplicationController
     set_meta_tags seo_tags
 
     render inertia: true, props: {
-      lead: LeadCrudResource.new(LeadForm.new),
+      lead: LeadCrudResource.new(LeadStruct.new),
       bookRequested: !!book_request
     }
   end

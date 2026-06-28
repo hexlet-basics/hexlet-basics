@@ -13,65 +13,67 @@ class Web::LeadsController < Web::ApplicationController
     render inertia: true, props: {
       from: params[:from],
       # courseLandingPage: Language::LandingPageResource.new(landing_page)
-      lead: LeadCrudResource.new(LeadForm.new)
+      lead: LeadCrudResource.new(LeadStruct.new)
     }
   end
 
   def create
     user = T.must(current_user)
-    lead = LeadForm.new(params[:data])
-    lead.user = user
+    struct = ApplicationParamsStruct.from_params(LeadStruct, params.require(:data))
 
-    courses_data = []
-    user.language_members.each do |member|
-      course_data = {
+    return fail_create(struct.errors) unless struct.valid?
+
+    courses_data = user.language_members.map do |member|
+      {
         slug: T.must(member.language).slug,
         lessons_finished_count: member.lesson_members.finished.count
       }
-
-      courses_data << course_data
     end
 
-    lead.courses_data = courses_data
+    result = LeadService.create(struct, user:, courses_data:, ahoy_visit: user.visits.last)
 
-    lead.survey_answers_data = []
-
-    lead.ahoy_visit = user.visits.last
-
-    if lead.save
-
-      user.tag_list.remove("should_be_lead")
-      user.save!
-
-      lead_created_event_data = {
-        lead_id: lead.id,
-        user_id: user.id,
-        first_name: user.first_name,
-        last_name: user.last_name,
-        ym_client_id: lead.ym_client_id,
-        user_name: user.to_s,
-        email: T.must(user.email),
-        utm_source: lead.ahoy_visit&.utm_source,
-        utm_medium: lead.ahoy_visit&.utm_medium,
-        utm_campaign: lead.ahoy_visit&.utm_campaign,
-        utm_content: lead.ahoy_visit&.utm_content,
-        utm_term: lead.ahoy_visit&.utm_term,
-        phone: lead.phone,
-        telegram: lead.telegram,
-        whatsapp: lead.whatsapp,
-        survey_answers_data: lead.survey_answers_data,
-        courses_data: lead.courses_data
-      }
-      lead_created_event = LeadCreatedEvent.new(data: lead_created_event_data)
-
-      publish_event(lead_created_event, current_user)
-      js_event(lead_created_event)
-
-      f(:success)
-      redirect_to params[:from].presence || root_path
-    else
-      f(:error)
-      redirect_to new_lead_path, inertia: { errors: lead.errors }
+    case result
+    when Typed::Failure
+      return fail_create(result.error.errors)
     end
+
+    lead = result.payload
+
+    user.tag_list.remove("should_be_lead")
+    user.save!
+
+    lead_created_event_data = {
+      lead_id: lead.id,
+      user_id: user.id,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      ym_client_id: lead.ym_client_id,
+      user_name: user.to_s,
+      email: T.must(user.email),
+      utm_source: lead.ahoy_visit&.utm_source,
+      utm_medium: lead.ahoy_visit&.utm_medium,
+      utm_campaign: lead.ahoy_visit&.utm_campaign,
+      utm_content: lead.ahoy_visit&.utm_content,
+      utm_term: lead.ahoy_visit&.utm_term,
+      phone: lead.phone,
+      telegram: lead.telegram,
+      whatsapp: lead.whatsapp,
+      survey_answers_data: lead.survey_answers_data,
+      courses_data: lead.courses_data
+    }
+    lead_created_event = LeadCreatedEvent.new(data: lead_created_event_data)
+
+    publish_event(lead_created_event, user)
+    js_event(lead_created_event)
+
+    f(:success)
+    redirect_to params[:from].presence || root_path
+  end
+
+  private
+
+  def fail_create(errors)
+    f(:error)
+    redirect_to new_lead_path, inertia: { errors: }
   end
 end

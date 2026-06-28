@@ -119,7 +119,7 @@ class Web::LanguagesController < Web::ApplicationController
       nextLesson: next_lesson_info && Language::LessonResource.new(next_lesson_info),
       courseModules: Language::ModuleResource.new(language_modules_infos),
       lessonsByModuleId: lesson_resources_by_module_id,
-      lead: LeadCrudResource.new(LeadForm.new),
+      lead: LeadCrudResource.new(LeadStruct.new),
       courseMember: language_member && Language::MemberResource.new(language_member)
       # reviews: ReviewResource.new(reviews)
     }
@@ -135,7 +135,7 @@ class Web::LanguagesController < Web::ApplicationController
 
     render inertia: true, props: {
       courseLandingPage: Language::LandingPageResource.new(landing_page),
-      lead: LeadCrudResource.new(LeadForm.new)
+      lead: LeadCrudResource.new(LeadStruct.new)
     }
   end
 
