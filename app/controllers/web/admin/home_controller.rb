@@ -1,7 +1,8 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class Web::Admin::HomeController < Web::Admin::ApplicationController
+  sig { returns(T.untyped) }
   def index
     q = ransack_params("sf" => "id", "so" => "desc")
     search = User.admin.ransack(q)

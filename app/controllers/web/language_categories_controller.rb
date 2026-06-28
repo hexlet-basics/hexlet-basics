@@ -1,9 +1,10 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class Web::LanguageCategoriesController < Web::ApplicationController
   allow_unauthenticated_access
 
+  sig { returns(T.untyped) }
   def index
     categories = Language::Category.with_locale
 
@@ -27,6 +28,7 @@ class Web::LanguageCategoriesController < Web::ApplicationController
     }
   end
 
+  sig { returns(T.untyped) }
   def show
     category = Language::Category.with_locale.find_by! slug: params[:id]
     landing_pages = category.language_landing_pages.web.where(listed: true).merge(Language.ordered)

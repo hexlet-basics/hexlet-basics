@@ -1,8 +1,9 @@
-# typed: true
+# typed: strict
 
 class Web::BlogPostsController < Web::ApplicationController
   allow_unauthenticated_access
 
+  sig { returns(T.untyped) }
   def index
     scope = BlogPost.published_state.with_locale
       .includes([ :creator, { cover_attachment: :blob } ])
@@ -30,6 +31,7 @@ class Web::BlogPostsController < Web::ApplicationController
     }
   end
 
+  sig { returns(T.untyped) }
   def show
     blog_post = BlogPost.with_locale.published_state.find_by!(slug: params[:id])
 

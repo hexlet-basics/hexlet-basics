@@ -1,9 +1,10 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class Web::ReviewsController < Web::ApplicationController
   allow_unauthenticated_access
 
+  sig { returns(T.untyped) }
   def index
     scope = Review.published_state.with_locale
       .includes([ :user, :language ])

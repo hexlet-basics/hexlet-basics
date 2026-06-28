@@ -1,16 +1,18 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class Web::Admin::Api::LanguageCategories::QnaItemsController < Web::Admin::Api::ApplicationController
   before_action :set_language_category
   before_action :set_qna_item, only: %i[update destroy]
 
+  sig { returns(T.untyped) }
   def index
     resource = Language::CategoryQnaItemResource.new(@language_category.qna_items.order(:id))
 
     respond_with resource
   end
 
+  sig { returns(T.untyped) }
   def create
     qna_item = @language_category.qna_items.build(qna_item_params)
     qna_item.save
@@ -19,6 +21,7 @@ class Web::Admin::Api::LanguageCategories::QnaItemsController < Web::Admin::Api:
     respond_with resource, location: admin_api_language_category_qna_item_url(@language_category, qna_item)
   end
 
+  sig { returns(T.untyped) }
   def update
     @qna_item.update(qna_item_params)
     resource = Language::CategoryQnaItemResource.new(@qna_item)
@@ -26,6 +29,7 @@ class Web::Admin::Api::LanguageCategories::QnaItemsController < Web::Admin::Api:
     respond_with resource
   end
 
+  sig { returns(T.untyped) }
   def destroy
     @qna_item.destroy
     resource = Language::CategoryQnaItemResource.new(@qna_item)
@@ -35,14 +39,17 @@ class Web::Admin::Api::LanguageCategories::QnaItemsController < Web::Admin::Api:
 
   private
 
+  sig { returns(T.untyped) }
   def set_language_category
-    @language_category = Language::Category.find(params[:language_category_id])
+    @language_category = T.let(Language::Category.find(params[:language_category_id]), T.untyped)
   end
 
+  sig { returns(T.untyped) }
   def set_qna_item
-    @qna_item = @language_category.qna_items.find(params[:id])
+    @qna_item = T.let(@language_category.qna_items.find(params[:id]), T.untyped)
   end
 
+  sig { returns(T.untyped) }
   def qna_item_params
     params.fetch(:data, {}).permit(:question, :answer)
   end

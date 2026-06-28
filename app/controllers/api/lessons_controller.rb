@@ -1,8 +1,9 @@
-# typed: true
+# typed: strict
 
 class Api::LessonsController < Api::ApplicationController
   allow_unauthenticated_access
 
+  sig { returns(T.untyped) }
   def check
     lesson = Language::Lesson.find(params[:id])
     language = T.must(lesson.language)

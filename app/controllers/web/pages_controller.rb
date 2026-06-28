@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class Web::PagesController < Web::ApplicationController
@@ -12,6 +12,7 @@ class Web::PagesController < Web::ApplicationController
 
   DISALLOWED_PAGES = %w[cookie_policy privacy tos].freeze
 
+  sig { returns(T.untyped) }
   def show
     page = params[:id]
     unless PAGES.include? page

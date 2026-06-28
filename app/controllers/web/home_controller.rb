@@ -1,8 +1,9 @@
-# typed: true
+# typed: strict
 
 class Web::HomeController < Web::ApplicationController
   allow_unauthenticated_access
 
+  sig { returns(T.untyped) }
   def index
     language_member_resources = (current_user&.language_members&.includes([ language: :current_version ]) || Language::Member.none)
       .map { Language::MemberResource.new(it) }
@@ -66,6 +67,7 @@ class Web::HomeController < Web::ApplicationController
     }
   end
 
+  sig { returns(T.untyped) }
   def sitemap
     if I18n.locale != :ru
       throw ActionController::RoutingError, "works only for ru"

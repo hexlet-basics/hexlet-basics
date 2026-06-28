@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class Ai::ApplicationController < ApplicationController
   skip_before_action :verify_authenticity_token

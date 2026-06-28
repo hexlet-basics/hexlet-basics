@@ -1,9 +1,10 @@
-# typed: true
+# typed: strict
 
 class Web::GoogleAuthController < Web::ApplicationController
   allow_unauthenticated_access
   before_action :validate_google_csrf
 
+  sig { returns(T.untyped) }
   def one_tap
     payload = T.unsafe(ApplicationContainer)[:google_one_tap].verify_oidc(params[:credential], aud: configus.google.client.id)
     email = payload["email"]
@@ -34,6 +35,7 @@ class Web::GoogleAuthController < Web::ApplicationController
 
   private
 
+  sig { returns(T.untyped) }
   def validate_google_csrf
     if cookies["g_csrf_token"].blank? || params["g_csrf_token"].blank? ||
        cookies["g_csrf_token"] != params["g_csrf_token"]

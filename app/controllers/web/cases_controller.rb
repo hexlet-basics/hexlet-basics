@@ -1,9 +1,10 @@
-# typed: true
+# typed: strict
 
 class Web::CasesController < Web::ApplicationController
   allow_unauthenticated_access
   before_action :require_russian_locale
 
+  sig { returns(T.untyped) }
   def index
     seo_tags = {
       title: t(".title"),
@@ -15,6 +16,7 @@ class Web::CasesController < Web::ApplicationController
     render inertia: true, props: {}
   end
 
+  sig { returns(T.untyped) }
   def for_teachers
     description = t(".meta.description").truncate(160)
 

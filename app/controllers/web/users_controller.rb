@@ -1,9 +1,10 @@
-# typed: true
+# typed: strict
 
 class Web::UsersController < Web::ApplicationController
   allow_unauthenticated_access
   before_action :redirect_if_authenticated
 
+  sig { returns(T.untyped) }
   def new
     user = User.new(sign_up_form_data)
 
@@ -20,6 +21,7 @@ class Web::UsersController < Web::ApplicationController
     }
   end
 
+  sig { returns(T.untyped) }
   def create
     struct = ApplicationParamsStruct.from_params(SignUpStruct, params.require(:data))
 
@@ -98,12 +100,14 @@ class Web::UsersController < Web::ApplicationController
 
   private
 
+  sig { params(first_name: T.untyped, email: T.untyped, errors: T.untyped).returns(T.untyped) }
   def fail_sign_up(first_name, email, errors)
     f(:error)
     flash.inertia[:sign_up_form] = { first_name:, email: }
     redirect_to new_user_url, inertia: { errors: }
   end
 
+  sig { returns(T.untyped) }
   def sign_up_form_data
     flash.inertia[:sign_up_form].presence || {}
   end

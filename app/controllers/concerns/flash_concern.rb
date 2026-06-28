@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 module FlashConcern
@@ -6,6 +6,7 @@ module FlashConcern
   extend T::Helpers
   requires_ancestor { ApplicationController }
 
+  sig { params(key: T.untyped, options: T.untyped).returns(T.untyped) }
   def f(key, options = {})
     controller = self.class
     values = options[:values] || {}
@@ -25,6 +26,7 @@ module FlashConcern
 
   private
 
+  sig { params(key: T.untyped, scope: T.untyped, controller: T.untyped, action: T.untyped, values: T.untyped, errors: T.untyped).returns(T.untyped) }
   def translate(key, scope, controller, action, values, errors = nil)
     keys = []
     lookup_controller = controller

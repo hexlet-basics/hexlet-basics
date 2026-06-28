@@ -1,6 +1,7 @@
-# typed: true
+# typed: strict
 
 class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
+  sig { returns(T.untyped) }
   def index
     default_params = { "sf" => "id", "so" => "desc" }
     q = ransack_params(default_params)
@@ -17,6 +18,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
     }
   end
 
+  sig { returns(T.untyped) }
   def new
     blog_post = BlogPost.new
     blog_post.creator = current_user
@@ -26,6 +28,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
     }
   end
 
+  sig { returns(T.untyped) }
   def edit
     blog_post = BlogPost.find(params[:id])
 
@@ -35,6 +38,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
     }
   end
 
+  sig { returns(T.untyped) }
   def related_courses
     FindRelatedCoursesForBlogPostJob.perform_later(params[:id])
 
@@ -42,6 +46,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
     redirect_back_or_to admin_blog_posts_path
   end
 
+  sig { returns(T.untyped) }
   def create
     struct = ApplicationParamsStruct.from_params(BlogPostStruct, params.require(:data))
     result = BlogPostService.create(struct, creator: T.must(current_user), locale: I18n.locale.to_s, cover: params.dig(:data, :cover))
@@ -56,6 +61,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
     end
   end
 
+  sig { returns(T.untyped) }
   def update
     struct = ApplicationParamsStruct.from_params(BlogPostStruct, params.require(:data))
     result = BlogPostService.update(params[:id], struct, locale: I18n.locale.to_s, cover: params.dig(:data, :cover))

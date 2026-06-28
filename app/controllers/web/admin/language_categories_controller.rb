@@ -1,6 +1,7 @@
-# typed: true
+# typed: strict
 
 class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationController
+  sig { returns(T.untyped) }
   def index
     default_params = { "sf" => "id", "so" => "desc" }
     q = ransack_params(default_params)
@@ -13,6 +14,7 @@ class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationControll
     }
   end
 
+  sig { returns(T.untyped) }
   def new
     category = Language::Category.new
     landing_pages = Language::LandingPage.web.merge(Language.ordered)
@@ -24,6 +26,7 @@ class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationControll
     }
   end
 
+  sig { returns(T.untyped) }
   def edit
     category = Language::Category.find(params[:id])
     landing_pages = Language::LandingPage.web.merge(Language.ordered)
@@ -35,6 +38,7 @@ class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationControll
     }
   end
 
+  sig { returns(T.untyped) }
   def create
     struct = ApplicationParamsStruct.from_params(LanguageCategoryStruct, params.require(:data))
     result = LanguageCategoryService.create(struct, locale: I18n.locale.to_s)
@@ -49,6 +53,7 @@ class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationControll
     end
   end
 
+  sig { returns(T.untyped) }
   def update
     struct = ApplicationParamsStruct.from_params(LanguageCategoryStruct, params.require(:data))
     result = LanguageCategoryService.update(params[:id], struct, locale: I18n.locale.to_s)
@@ -63,6 +68,7 @@ class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationControll
     end
   end
 
+  sig { returns(T.untyped) }
   def destroy
     category = Language::Category.find(params[:id])
 

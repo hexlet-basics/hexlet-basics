@@ -1,9 +1,10 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class Web::AuthController < Web::ApplicationController
   allow_unauthenticated_access
 
+  sig { returns(T.untyped) }
   def callback
     result = SocialNetworkService.authenticate_user(auth)
 
@@ -22,6 +23,7 @@ class Web::AuthController < Web::ApplicationController
 
   private
 
+  sig { returns(T.untyped) }
   def auth
     request.env["omniauth.auth"]
   end

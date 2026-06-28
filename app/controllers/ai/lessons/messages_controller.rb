@@ -1,8 +1,9 @@
-# typed: true
+# typed: strict
 
 class Ai::Lessons::MessagesController < Ai::ApplicationController
   # include Import["openai_api"]
 
+  sig { returns(T.untyped) }
   def index
     lesson = Language::Lesson.find(params[:lesson_id])
     # language = lesson_info.language
@@ -29,6 +30,7 @@ class Ai::Lessons::MessagesController < Ai::ApplicationController
     render json: messages
   end
 
+  sig { returns(T.untyped) }
   def create
     can_create_assistant_message = Language::Lesson::Member::MessagePolicy.new(
       current_user,

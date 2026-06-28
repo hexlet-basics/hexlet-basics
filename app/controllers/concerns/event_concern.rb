@@ -34,7 +34,8 @@ module EventConcern
     events.each { js_event(it) }
   end
 
-  def publish_event(...)
-    EventSender.publish_event(...)
+  sig { params(event: T.untyped, user: T.untyped, request: T.untyped).void }
+  def publish_event(event, user, request = nil)
+    EventSender.publish_event(event, user, request)
   end
 end

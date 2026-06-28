@@ -1,7 +1,8 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class Web::Admin::Api::UsersController < Web::Admin::Api::ApplicationController
+  sig { returns(T.untyped) }
   def search
     if !params[:q]
       render json: []

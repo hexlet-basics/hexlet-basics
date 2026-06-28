@@ -1,10 +1,11 @@
-# typed: true
+# typed: strict
 
 class Web::LanguagesController < Web::ApplicationController
   allow_unauthenticated_access except: [ :success ]
   before_action :require_authentication, only: [ :success ]
   before_action :redirect_archived_language, only: [ :show, :success ]
 
+  sig { returns(T.untyped) }
   def index
     catalog_landing_pages = Language::LandingPage.web
       .where(listed: true)
@@ -40,8 +41,9 @@ class Web::LanguagesController < Web::ApplicationController
     }
   end
 
+  sig { returns(T.untyped) }
   def show
-    language = T.must(landing_page.language)
+    language = landing_page.language
     # language_info = language.current_version.infos.find_by!(locale: I18n.locale)
     #
     # @builder = CourseSchema.to_builder(@language, @language_version_info)
@@ -125,6 +127,7 @@ class Web::LanguagesController < Web::ApplicationController
     }
   end
 
+  sig { returns(T.untyped) }
   def success
     language_member = landing_page.language.members.find_by(user: current_user)
     unless language_member.finished?
@@ -141,7 +144,8 @@ class Web::LanguagesController < Web::ApplicationController
 
   private
 
+  sig { returns(T.untyped) }
   def landing_page
-    @language_page ||= Language::LandingPage.with_locale.find_by!(slug: params[:id])
+    @language_page ||= T.let(Language::LandingPage.with_locale.find_by!(slug: params[:id]), T.untyped)
   end
 end

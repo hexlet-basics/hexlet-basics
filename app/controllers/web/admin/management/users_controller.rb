@@ -1,9 +1,10 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class Web::Admin::Management::UsersController < Web::Admin::Management::ApplicationController
   # include ActionController::Live
 
+  sig { returns(T.untyped) }
   def index
     q = ransack_params("sf" => "id", "so" => "desc")
     search = User.ransack(q)
@@ -41,6 +42,7 @@ class Web::Admin::Management::UsersController < Web::Admin::Management::Applicat
     # end
   end
 
+  sig { returns(T.untyped) }
   def edit
     user = User.find params[:id]
     progressByLanguage = user.lesson_members.group(:language).count
@@ -54,6 +56,7 @@ class Web::Admin::Management::UsersController < Web::Admin::Management::Applicat
     }
   end
 
+  sig { returns(T.untyped) }
   def update
     struct = ApplicationParamsStruct.from_params(UserStruct, params.require(:data))
     result = UserService.update(params[:id], struct)

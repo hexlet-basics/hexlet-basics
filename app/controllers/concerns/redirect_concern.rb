@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 module RedirectConcern
@@ -7,6 +7,7 @@ module RedirectConcern
   extend T::Helpers
   requires_ancestor { ApplicationController }
 
+  sig { returns(T.untyped) }
   def redirect_archived_language
     # landing_page is defined on the concrete controller (Web::LanguagesController),
     # not ApplicationController, so it isn't visible here — reach it via T.unsafe.

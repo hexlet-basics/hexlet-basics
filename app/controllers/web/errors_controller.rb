@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class Web::ErrorsController < Web::ApplicationController
@@ -12,6 +12,7 @@ class Web::ErrorsController < Web::ApplicationController
     request.format = :html
   end
 
+  sig { returns(T.untyped) }
   def show
     code = params[:code].to_i
     header = t(".codes.#{code}.header", default: t(".codes.other.header"))
@@ -32,11 +33,12 @@ class Web::ErrorsController < Web::ApplicationController
 
   private
 
-  def use_locale(&)
+  sig { params(blk: T.untyped).returns(T.untyped) }
+  def use_locale(&blk)
     path = T.must(URI.parse(request.original_url).path)
     locale = path.split("/").second || ""
     locale = I18n.default_locale unless I18n.available_locales.include?(locale.to_sym)
 
-    I18n.with_locale(locale, &)
+    I18n.with_locale(locale, &blk)
   end
 end

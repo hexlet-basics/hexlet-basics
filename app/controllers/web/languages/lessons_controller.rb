@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class Web::Languages::LessonsController < Web::Languages::ApplicationController
   allow_unauthenticated_access
@@ -6,6 +6,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
   # before_action :authenticate_user!, only: [ :next_lesson ]
   # before_action :redirect_archived_language
 
+  sig { returns(T.untyped) }
   def show
     lesson = resource_language.lessons.find_by(slug: params[:id])
 

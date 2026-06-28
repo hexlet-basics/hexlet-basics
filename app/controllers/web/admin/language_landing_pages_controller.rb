@@ -1,6 +1,7 @@
-# typed: true
+# typed: strict
 
 class Web::Admin::LanguageLandingPagesController < Web::Admin::ApplicationController
+  sig { returns(T.untyped) }
   def index
     q = ransack_params("sf" => "id", "so" => "desc", fields: { "state_eq" => "published" })
     search = Language::LandingPage.with_locale.joins(:language).ransack(q)
@@ -12,6 +13,7 @@ class Web::Admin::LanguageLandingPagesController < Web::Admin::ApplicationContro
     }
   end
 
+  sig { returns(T.untyped) }
   def new
     landing_page = Language::LandingPage.new
     landing_pages = Language::LandingPage.published
@@ -26,6 +28,7 @@ class Web::Admin::LanguageLandingPagesController < Web::Admin::ApplicationContro
     }
   end
 
+  sig { returns(T.untyped) }
   def edit
     landing_page = Language::LandingPage.with_locale.find(params[:id])
     languages = Language.all
@@ -39,6 +42,7 @@ class Web::Admin::LanguageLandingPagesController < Web::Admin::ApplicationContro
     }
   end
 
+  sig { returns(T.untyped) }
   def create
     struct = ApplicationParamsStruct.from_params(LandingPageStruct, params.require(:data))
     result = LandingPageService.create(struct, locale: I18n.locale.to_s, outcomes_image: params.dig(:data, :outcomes_image))
@@ -53,6 +57,7 @@ class Web::Admin::LanguageLandingPagesController < Web::Admin::ApplicationContro
     end
   end
 
+  sig { returns(T.untyped) }
   def update
     struct = ApplicationParamsStruct.from_params(LandingPageStruct, params.require(:data))
     result = LandingPageService.update(params[:id], struct, outcomes_image: params.dig(:data, :outcomes_image))

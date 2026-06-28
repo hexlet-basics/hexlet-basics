@@ -1,6 +1,7 @@
-# typed: true
+# typed: strict
 
 class Web::Admin::LeadsController < Web::Admin::ApplicationController
+  sig { returns(T.untyped) }
   def index
     q = ransack_params("sf" => "id", "so" => "desc")
     search = Lead.includes([ :user ]).ransack(q)

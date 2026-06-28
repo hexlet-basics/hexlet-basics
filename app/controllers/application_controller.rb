@@ -1,6 +1,8 @@
-# typed: true
+# typed: strict
 
 class ApplicationController < ActionController::Base
+  extend T::Sig
+
   # meta-tags includes this into ActionController::Base via its Railtie on_load
   # hook (which tapioca can't see); state it explicitly so set_meta_tags resolves
   # for typed controllers without an RBI shim. Idempotent at runtime.
@@ -19,6 +21,7 @@ class ApplicationController < ActionController::Base
   # rescue_from Pagy::OverflowError, with: :redirect_to_last_page
   # rescue_from Pagy::VariableError, with: :redirect_to_last_page
 
+  sig { returns(T.untyped) }
   def default_url_options
     { suffix: params[:suffix] }
   end

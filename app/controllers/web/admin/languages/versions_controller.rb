@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class Web::Admin::Languages::VersionsController < Web::Admin::Languages::ApplicationController
@@ -10,8 +10,9 @@ class Web::Admin::Languages::VersionsController < Web::Admin::Languages::Applica
   #   render inertia: true, props: {}
   # end
 
+  sig { returns(T.untyped) }
   def create
-    @version = resource_language.versions.build
+    @version = T.let(resource_language.versions.build, T.untyped)
 
     if @version.save
       ExerciseLoaderJob.perform_later(@version.id)

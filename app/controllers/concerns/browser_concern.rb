@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 module BrowserConcern
@@ -40,10 +40,12 @@ module BrowserConcern
   #   ].any?
   # end
 
+  sig { returns(T::Boolean) }
   def mobile_browser?
     browser.device.mobile?
   end
 
+  sig { returns(T::Boolean) }
   def browser_bot?
     browser.bot?
   end

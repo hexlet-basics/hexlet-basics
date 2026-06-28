@@ -1,6 +1,7 @@
-# typed: true
+# typed: strict
 
 class Web::Admin::MessagesController < Web::Admin::ApplicationController
+  sig { returns(T.untyped) }
   def index
     q = ransack_params("sf" => "id", "so" => "desc")
     search = Language::Lesson::Member::Message
@@ -16,6 +17,7 @@ class Web::Admin::MessagesController < Web::Admin::ApplicationController
     }
   end
 
+  sig { returns(T.untyped) }
   def by_lesson_member
     scope = Language::Lesson::Member.order(id: :desc)
     pagy, records = T.unsafe(self).pagy(scope)

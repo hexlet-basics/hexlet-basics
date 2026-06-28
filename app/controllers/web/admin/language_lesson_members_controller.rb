@@ -1,6 +1,7 @@
-# typed: true
+# typed: strict
 
 class Web::Admin::LanguageLessonMembersController < Web::Admin::ApplicationController
+  sig { returns(T.untyped) }
   def index
     q = ransack_params("sf" => "id", "so" => "desc")
     search = Language::Lesson::Member

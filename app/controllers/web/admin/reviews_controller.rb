@@ -1,7 +1,8 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class Web::Admin::ReviewsController < Web::Admin::ApplicationController
+  sig { returns(T.untyped) }
   def index
     q = ransack_params("sf" => "id", "so" => "desc")
     search = Review.with_locale.includes([ :user ]).ransack(q)
@@ -13,6 +14,7 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
     }
   end
 
+  sig { returns(T.untyped) }
   def new
     review = Review.new
     languages = Language.all
@@ -23,6 +25,7 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
     }
   end
 
+  sig { returns(T.untyped) }
   def edit
     review = Review.find(params[:id])
     languages = Language.all
@@ -33,6 +36,7 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
     }
   end
 
+  sig { returns(T.untyped) }
   def create
     struct = ApplicationParamsStruct.from_params(ReviewStruct, params.require(:data))
     result = ReviewService.create(struct, locale: I18n.locale.to_s)
@@ -47,6 +51,7 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
     end
   end
 
+  sig { returns(T.untyped) }
   def update
     struct = ApplicationParamsStruct.from_params(ReviewStruct, params.require(:data))
     result = ReviewService.update(params[:id], struct, locale: I18n.locale.to_s)

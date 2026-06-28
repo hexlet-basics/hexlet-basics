@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 module LocaleConcern
@@ -12,17 +12,20 @@ module LocaleConcern
     around_action :setup_locale
   end
 
+  sig { returns(T.untyped) }
   def require_russian_locale
     raise ActionController::RoutingError, "Not Found" unless I18n.locale == :ru
   end
 
   private
 
-  def setup_locale(&)
+  sig { params(blk: T.untyped).returns(T.untyped) }
+  def setup_locale(&blk)
     locale = params[:suffix].presence || I18n.default_locale
-    I18n.with_locale(locale, &)
+    I18n.with_locale(locale, &blk)
   end
 
+  sig { returns(T.untyped) }
   def prepare_locale_settings
     # NOTE: never redirect bots
     return if send(:browser_bot?)
@@ -47,6 +50,7 @@ module LocaleConcern
     end
   end
 
+  sig { returns(T.untyped) }
   def locale_from_header
     return unless request.env["HTTP_ACCEPT_LANGUAGE"]
 
@@ -58,7 +62,8 @@ module LocaleConcern
     parsed_locales.find { |locale| I18n.available_locales.map(&:to_s).include?(locale) }
   end
 
+  sig { returns(T.untyped) }
   def country_by_ip
-    @country_by_ip ||= Geocoder.search(request.remote_ip).first&.country_code || "EN"
+    @country_by_ip ||= T.let(Geocoder.search(request.remote_ip).first&.country_code || "EN", T.untyped)
   end
 end

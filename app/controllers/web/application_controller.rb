@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class Web::ApplicationController < ApplicationController
   include BrowserConcern
@@ -70,6 +70,7 @@ class Web::ApplicationController < ApplicationController
   #   raise ActiveRecord::RecordNotFound if value.nil?
   # end
 
+  sig { params(defaults: T.untyped).returns(T.untyped) }
   def ransack_params(defaults)
     raw = params.permit(:sf, :so, fields: {}).with_defaults(defaults).to_h
 
@@ -82,6 +83,7 @@ class Web::ApplicationController < ApplicationController
     ransack
   end
 
+  sig { params(pagy: T.untyped, defaults: T.untyped).returns(T.untyped) }
   def grid_params(pagy = nil, defaults = {})
     result = params.permit(:sf, :so, fields: {}).with_defaults(defaults)
     if pagy
@@ -97,6 +99,7 @@ class Web::ApplicationController < ApplicationController
     OpenStruct.new(result)
   end
 
+  sig { params(tags: T.untyped).returns(T.untyped) }
   def escape_meta_tags(tags)
     tags.transform_values! do |tag|
       if tag.is_a?(Hash)
@@ -109,8 +112,9 @@ class Web::ApplicationController < ApplicationController
     end
   end
 
-  def display_escaped_meta_tags(...)
+  sig { params(opts: T.untyped).returns(T.untyped) }
+  def display_escaped_meta_tags(**opts)
     escape_meta_tags(meta_tags.instance_values["meta_tags"])
-    helpers.display_meta_tags(...)
+    T.unsafe(helpers).display_meta_tags(**opts)
   end
 end

@@ -1,10 +1,11 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class Web::LocalesController < Web::ApplicationController
   allow_unauthenticated_access
   skip_before_action :prepare_locale_settings, only: [ :switch ]
 
+  sig { returns(T.untyped) }
   def switch
     locale = params[:new_locale]
     # redirect_path = requst.referer || root_path
