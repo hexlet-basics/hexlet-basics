@@ -4,18 +4,17 @@
 
 # typed: false
 
-module ::HTTPX::Session::ForkTracker; end
-module ::LanguageCategoriesHelper; end
+module ::FFI::ModernForkTracking; end
+module ActionCable::Channel::Base; end
+module ActionCable::Channel::TestCase; end
+module ActionCable::Connection::Base; end
+module ActionCable::Helpers::ActionCableHelper; end
+module Bundler::FetchMetadata; end
+module Bundler::MatchMetadata; end
 module CountryInfo::ISO3166::Country; end
-module Falcon::Environment::Rack; end
 module Sentry::Rails::ActiveJobExtensions; end
-module Set::SubclassCompatible; end
-module Set::SubclassCompatible::ClassMethods; end
-module Survey::Scenario::Member::PrivateCollectionProxy; end
-module Survey::Scenario::PrivateCollectionProxy; end
 module T::Private::Types::SimplePairUnion; end
 module Tapioca::SourceURI; end
-module Web::Admin::LanguageLandingPagesHelper; end
 module Web::AuthControllerTest::OmniAuth; end
 module Web::AuthControllerTest::OmniAuth::AuthHash::InfoHash; end
 module Web::GoogleAuthController::ApplicationContainer; end

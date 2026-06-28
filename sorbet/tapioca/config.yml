@@ -3,10 +3,23 @@ gem:
   #
   # Falcon currently crashes under `tapioca gem` on this stack because its
   # auto-require path is incompatible with the resolved async-service version.
-  # exclude:
-  # - falcon
   # doc: true
   # workers: 5
+  exclude:
+    # net-imap is a transitive dep we don't use directly; its tapioca-generated
+    # RBI conflicts with Sorbet's bundled stdlib RBIs (Net::IMAP::Literal etc.
+    # parent class redefinitions, srb 5012). Skip generation and rely on stdlib.
+    - net-imap
+    # js-routes' auto-RBI uses `T.nilable(T.untyped)` in several signatures
+    # (srb 5070). We only use `JsRoutes.setup`, so instead of a hand-pruned gem
+    # RBI (which tapioca deletes as an orphan on every run), the constant is
+    # shimmed in sorbet/rbi/shims/js_routes.rbi.
+    - js-routes
+    # solid_cable's auto-RBI declares an adapter whose super class
+    # (ActionCable::SubscriptionAdapter::Base) resolves to a non-Class constant,
+    # which Sorbet reports as 5067 regardless of strictness. It isn't referenced
+    # from typed code (wired via config), so skip generating its RBI.
+    - solid_cable
 dsl:
   # Add your `dsl` command parameters here:
   #

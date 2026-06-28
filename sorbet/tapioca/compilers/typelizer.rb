@@ -13,7 +13,7 @@ module Tapioca
 
         ConstantType = type_member { { fixed: T.class_of(::ApplicationResource) } }
 
-        sig { override.returns(T::Enumerable[Module]) }
+        sig { override.returns(T::Enumerable[T::Module[T.anything]]) }
         def self.gather_constants
           all_classes.select do |klass|
             klass < ::ApplicationResource && klass.respond_to?(:_typelizer_model_name)
@@ -24,7 +24,7 @@ module Tapioca
         def decorate
           return unless constant.respond_to?(:_typelizer_model_name)
 
-          model_class = constant._typelizer_model_name
+          model_class = T.unsafe(constant)._typelizer_model_name
           return unless model_class
 
           model_name = model_class.name

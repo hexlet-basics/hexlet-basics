@@ -23,9 +23,6 @@
 #  fk_rails_...  (survey_item_id => survey_items.id)
 #  fk_rails_...  (user_id => users.id)
 #
-#  fk_rails_...  (survey_id => surveys.id)
-#  fk_rails_...  (survey_item_id => survey_items.id)
-#  fk_rails_...  (user_id => users.id)
 
 # just_signed_up__goal:
 #   state: requested

@@ -24,8 +24,6 @@
 #  fk_rails_...  (language_id => languages.id)
 #  fk_rails_...  (user_id => users.id)
 #
-#  fk_rails_...  (language_id => languages.id)
-#  fk_rails_...  (user_id => users.id)
 
 ---
 
