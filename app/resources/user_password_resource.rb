@@ -1,7 +1,7 @@
 # typed: true
 
 class UserPasswordResource < ApplicationResource
-  typelize_from User::PasswordForm
+  typelize_from User
 
   attributes :password
 

@@ -24,5 +24,12 @@ class UserService < ApplicationService
 
       success_with(user)
     end
+
+    sig { params(user: User, struct: PasswordStruct).returns(Typed::Result[User, User]) }
+    def update_password(user, struct)
+      return fail_with(user) unless user.update(password: struct.password)
+
+      success_with(user)
+    end
   end
 end

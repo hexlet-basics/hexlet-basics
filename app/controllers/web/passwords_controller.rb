@@ -14,17 +14,22 @@ class Web::PasswordsController < Web::ApplicationController
     set_meta_tags seo_tags
 
     render inertia: true, props: {
-      userPassword: UserPasswordResource.new(@user_password_form),
+      userPassword: UserPasswordResource.new(@user),
       token: token
     }
   end
 
   def update
-    if @user_password_form.update(params[:data])
+    struct = ApplicationParamsStruct.from_params!(PasswordStruct, params.require(:data))
+    result = UserService.update_password(T.must(@user), struct)
+
+    case result
+    when Typed::Success
       f(:success)
       redirect_to root_path
-    else
-      redirect_to edit_password_path(token), inertia: { errors: @user_password_form.errors }
+    when Typed::Failure
+      f(:error)
+      redirect_to edit_password_path(token), inertia: { errors: result.error.errors }
     end
   end
 
@@ -37,7 +42,7 @@ class Web::PasswordsController < Web::ApplicationController
   end
 
   def set_user_password_form
-    @user_password_form = T.unsafe(User).find_by_password_reset_token!(token).becomes(User::PasswordForm)
+    @user = T.let(T.unsafe(User).find_by_password_reset_token!(token), T.nilable(User))
   end
 
   def handle_invalid_token

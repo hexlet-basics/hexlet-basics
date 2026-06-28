@@ -1,10 +1,10 @@
 # typed: strict
 # frozen_string_literal: true
 
-class User::PasswordForm < User
-  include ActiveFormModel
+class PasswordStruct < T::Struct
+  include ApplicationParamsStruct::Base
 
-  permit :password
+  const :password, T.nilable(String)
 
   validates :password, presence: true, length: { minimum: 6 }
 end
