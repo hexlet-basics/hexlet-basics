@@ -17,11 +17,11 @@ module MetaTags
 
     # Configures MetaTags gem.
     #
+    # @yield [Configuration] configuration object.
     # @example
     #   MetaTags.configure do |config|
-    #   # config.title_limit = 100
+    #     # config.title_limit = 100
     #   end
-    # @yield [Configuration] configuration object.
     #
     # pkg:gem/meta-tags#lib/meta_tags.rb:20
     def configure; end
@@ -33,8 +33,6 @@ end
 # pkg:gem/meta-tags#lib/meta_tags/configuration.rb:5
 class MetaTags::Configuration
   # Initializes a new instance of Configuration class.
-  #
-  # @return [Configuration] a new instance of Configuration
   #
   # pkg:gem/meta-tags#lib/meta_tags/configuration.rb:50
   def initialize; end
@@ -233,9 +231,8 @@ module MetaTags::ControllerHelper
 
   # Set meta tags for the page.
   #
-  # See <tt>MetaTags::ViewHelper#set_meta_tags</tt> for details.
-  #
   # @param meta_tags [Hash] list of meta tags to merge into the page state.
+  # See <tt>MetaTags::ViewHelper#set_meta_tags</tt> for details.
   #
   # pkg:gem/meta-tags#lib/meta_tags/controller_helper.rb:31
   def set_meta_tags(meta_tags); end
@@ -247,8 +244,6 @@ end
 # pkg:gem/meta-tags#lib/meta_tags/meta_tags_collection.rb:6
 class MetaTags::MetaTagsCollection
   # Initializes a new instance of MetaTagsCollection.
-  #
-  # @return [MetaTagsCollection] a new instance of MetaTagsCollection
   #
   # pkg:gem/meta-tags#lib/meta_tags/meta_tags_collection.rb:10
   def initialize; end
@@ -321,8 +316,6 @@ class MetaTags::MetaTagsCollection
   # pkg:gem/meta-tags#lib/meta_tags/meta_tags_collection.rb:63
   def full_title(defaults = T.unsafe(nil)); end
 
-  # Returns the value of attribute meta_tags.
-  #
   # pkg:gem/meta-tags#lib/meta_tags/meta_tags_collection.rb:7
   def meta_tags; end
 
@@ -356,10 +349,10 @@ class MetaTags::MetaTagsCollection
 
   # Records a robots directive unless it has already been set for the same key.
   #
-  # @param name [String, Symbol] robots tag name.
-  # @param processed [Set<String>] names already recorded in this pass.
   # @param result [Hash{String => Array<String>}] robots directives grouped by tag name.
+  # @param name [String, Symbol] robots tag name.
   # @param value [String] robots directive value.
+  # @param processed [Set<String>] names already recorded in this pass.
   # @return [void]
   #
   # pkg:gem/meta-tags#lib/meta_tags/meta_tags_collection.rb:220
@@ -367,8 +360,8 @@ class MetaTags::MetaTagsCollection
 
   # Appends resolved robots directives while preserving first-write priority.
   #
-  # @param attributes [Symbol, Array<Symbol>] robots attributes to resolve.
   # @param result [Hash{String => Array<String>}] robots directives grouped by tag name.
+  # @param attributes [Symbol, Array<Symbol>] robots attributes to resolve.
   # @return [void]
   #
   # pkg:gem/meta-tags#lib/meta_tags/meta_tags_collection.rb:199
@@ -385,8 +378,8 @@ class MetaTags::MetaTagsCollection
   # Extracts separator segment without deleting it from meta tags list.
   # If the value is false, an empty string will be returned.
   #
-  # @param default [String] default value.
   # @param name [Symbol, String] separator segment name.
+  # @param default [String] default value.
   # @return [String] separator segment value.
   #
   # pkg:gem/meta-tags#lib/meta_tags/meta_tags_collection.rb:178
@@ -413,18 +406,13 @@ class MetaTags::Renderer
   # Initializes a new instance of Renderer.
   #
   # @param meta_tags [MetaTagsCollection] meta tags object to render.
-  # @return [Renderer] a new instance of Renderer
   #
   # pkg:gem/meta-tags#lib/meta_tags/renderer.rb:11
   def initialize(meta_tags); end
 
-  # Returns the value of attribute meta_tags.
-  #
   # pkg:gem/meta-tags#lib/meta_tags/renderer.rb:6
   def meta_tags; end
 
-  # Returns the value of attribute normalized_meta_tags.
-  #
   # pkg:gem/meta-tags#lib/meta_tags/renderer.rb:6
   def normalized_meta_tags; end
 
@@ -448,31 +436,31 @@ class MetaTags::Renderer
 
   # Recursive method to process an array of meta tags.
   #
+  # @param tags [Array<Tag>] a buffer object to store tags in.
+  # @param property [String, Symbol] the meta tag property name.
   # @param content [Array] array of nested meta tag attributes or values.
   # @param itemprop [String, Symbol, nil] value of the itemprop attribute.
-  # @param property [String, Symbol] the meta tag property name.
-  # @param tags [Array<Tag>] a buffer object to store tags in.
   #
   # pkg:gem/meta-tags#lib/meta_tags/renderer.rb:253
   def process_array(tags, property, content, itemprop: T.unsafe(nil)); end
 
   # Recursive method to process a hash of meta tags.
   #
+  # @param tags [Array<Tag>] a buffer object to store tags in.
+  # @param property [String, Symbol] the meta tag property name.
   # @param content [Hash] nested meta tag attributes.
   # @param itemprop [String, Symbol, nil] inherited itemprop value.
-  # @param property [String, Symbol] the meta tag property name.
-  # @param tags [Array<Tag>] a buffer object to store tags in.
   #
   # pkg:gem/meta-tags#lib/meta_tags/renderer.rb:227
   def process_hash(tags, property, content, itemprop: T.unsafe(nil)); end
 
   # Recursive method to process all hashes and arrays in meta tags.
   #
+  # @param tags [Array<Tag>] a buffer object to store tags in.
+  # @param property [String, Symbol] the meta tag property name.
   # @param content [Hash, Array, String, Symbol] text content or a symbol
   #   reference to a top-level meta tag.
   # @param itemprop [String, Symbol, nil] value of the itemprop attribute.
-  # @param property [String, Symbol] the meta tag property name.
-  # @param tags [Array<Tag>] a buffer object to store tags in.
   #
   # pkg:gem/meta-tags#lib/meta_tags/renderer.rb:210
   def process_tree(tags, property, content, itemprop: T.unsafe(nil)); end
@@ -517,8 +505,8 @@ class MetaTags::Renderer
 
   # Renders a complex hash object by key.
   #
-  # @param key [String, Symbol] top-level meta tag key.
   # @param tags [Array<Tag>] a buffer object to store tags in.
+  # @param key [String, Symbol] top-level meta tag key.
   #
   # pkg:gem/meta-tags#lib/meta_tags/renderer.rb:183
   def render_hash(tags, key); end
@@ -567,11 +555,11 @@ class MetaTags::Renderer
 
   # Renders a single meta tag.
   #
-  # @param itemprop [String, Symbol, nil] value of the itemprop attribute.
-  # @param name [String, Symbol] the meta tag name.
   # @param tags [Array<Tag>] a buffer object to store tags in.
+  # @param name [String, Symbol] the meta tag name.
   # @param value [String, Symbol] text content or a symbol reference to a
   #   top-level meta tag.
+  # @param itemprop [String, Symbol, nil] value of the itemprop attribute.
   #
   # pkg:gem/meta-tags#lib/meta_tags/renderer.rb:264
   def render_tag(tags, name, value, itemprop: T.unsafe(nil)); end
@@ -586,8 +574,8 @@ class MetaTags::Renderer
   # Renders meta tag with normalization (should have a corresponding normalize_
   # method in TextNormalizer).
   #
-  # @param name [Symbol] meta tag name to normalize and render.
   # @param tags [Array<Tag>] a buffer object to store tags in.
+  # @param name [Symbol] meta tag name to normalize and render.
   # @see TextNormalizer
   #
   # pkg:gem/meta-tags#lib/meta_tags/renderer.rb:90
@@ -600,20 +588,15 @@ end
 class MetaTags::Tag
   # Initializes a new instance of Tag class.
   #
-  # @param attributes [Hash] list of HTML tag attributes.
   # @param name [String, Symbol] HTML tag name.
-  # @return [Tag] a new instance of Tag
+  # @param attributes [Hash] list of HTML tag attributes.
   #
   # pkg:gem/meta-tags#lib/meta_tags/tag.rb:12
   def initialize(name, attributes = T.unsafe(nil)); end
 
-  # Returns the value of attribute attributes.
-  #
   # pkg:gem/meta-tags#lib/meta_tags/tag.rb:6
   def attributes; end
 
-  # Returns the value of attribute name.
-  #
   # pkg:gem/meta-tags#lib/meta_tags/tag.rb:6
   def name; end
 
@@ -646,7 +629,6 @@ module MetaTags::TextNormalizer
   #
   # @param string [String, nil] input string.
   # @param strip [Boolean] whether to trim leading and trailing whitespace.
-  # @raise [ArgumentError]
   # @return [String] input string with no HTML tags and consecutive
   #   whitespace characters squashed into a single space.
   #
@@ -689,10 +671,10 @@ module MetaTags::TextNormalizer
 
   # Normalize title value.
   #
-  # @param reverse [Boolean] whether title should be reversed.
-  # @param separator [String] a string to join title parts with.
   # @param site_title [String] site title.
   # @param title [Array<String>] title segments.
+  # @param separator [String] a string to join title parts with.
+  # @param reverse [Boolean] whether title should be reversed.
   # @return [String] title with HTML tags removed.
   #
   # pkg:gem/meta-tags#lib/meta_tags/text_normalizer.rb:15
@@ -721,8 +703,8 @@ module MetaTags::TextNormalizer
   # Truncates a string to a specific limit. Returns the string without
   # truncation when the limit is 0 or nil.
   #
-  # @param limit [Integer, nil] number of characters to truncate to.
   # @param string [String] input string.
+  # @param limit [Integer, nil] number of characters to truncate to.
   # @return [String] truncated string.
   #
   # pkg:gem/meta-tags#lib/meta_tags/text_normalizer.rb:133
@@ -730,9 +712,9 @@ module MetaTags::TextNormalizer
 
   # Truncates an array of strings to a specific limit.
   #
+  # @param string_array [Array<String>] input strings.
   # @param limit [Integer, nil] number of characters to truncate to.
   # @param separator [String] separator that will be used to join the array later.
-  # @param string_array [Array<String>] input strings.
   # @return [Array<String>] truncated array of strings.
   #
   # pkg:gem/meta-tags#lib/meta_tags/text_normalizer.rb:151
@@ -742,8 +724,8 @@ module MetaTags::TextNormalizer
 
   # Calculates how many characters are left for the next segment.
   #
-  # @param length [Integer] current accumulated length.
   # @param limit [Integer] total truncation limit.
+  # @param length [Integer] current accumulated length.
   # @param result [Array<String>] accumulated string segments.
   # @param separator [String] separator inserted between segments.
   # @return [Integer] remaining number of characters.
@@ -753,10 +735,10 @@ module MetaTags::TextNormalizer
 
   # Calculates the title length limits for the site title and page title.
   #
-  # @param global_limit [Integer] total allowed title length.
-  # @param separator [String] separator used between segments.
   # @param site_title [String] site title.
   # @param title [Array<String>] page title segments.
+  # @param separator [String] separator used between segments.
+  # @param global_limit [Integer] total allowed title length.
   # @return [Array<Integer>] site title limit and page title limit.
   #
   # pkg:gem/meta-tags#lib/meta_tags/text_normalizer.rb:215
@@ -764,9 +746,9 @@ module MetaTags::TextNormalizer
 
   # Truncates the site title and page title segments to the configured limit.
   #
-  # @param separator [String] separator used between segments.
   # @param site_title [String] site title.
   # @param title [Array<String>] page title segments.
+  # @param separator [String] separator used between segments.
   # @return [Array] truncated site title and title segments.
   #
   # pkg:gem/meta-tags#lib/meta_tags/text_normalizer.rb:194
@@ -784,14 +766,14 @@ MetaTags::VERSION = T.let(T.unsafe(nil), String)
 module MetaTags::ViewHelper
   # Set the page description.
   #
-  # @example
-  #   description 'This is login page'
   # @param description [String] page description to be set in the HEAD section
   #   of the HTML document. Please note that any HTML tags will be stripped
   #   from the output string, and the string will be truncated to the
   #   configured description limit.
   # @return [String] passed value.
   # @see #display_meta_tags
+  # @example
+  #   description 'This is login page'
   #
   # pkg:gem/meta-tags#lib/meta_tags/view_helper.rb:84
   def description(description); end
@@ -799,36 +781,39 @@ module MetaTags::ViewHelper
   # Set default meta tag values and display meta tags. This method
   # should be used in the layout file.
   #
-  # @example ERB layout usage
-  #   <<~ERB
-  #   <head>
-  #   <%= display_meta_tags site: 'My website' %>
-  #   </head>
-  #   ERB
-  # @example Render meta tags in a layout
-  #   display_meta_tags site: 'My website'
-  # @option default
-  # @option default
-  # @option default
-  # @option default
-  # @option default
-  # @option default
-  # @option default
-  # @option default
-  # @option default
-  # @option default
-  # @option default
-  # @option default
-  # @option default
-  # @option default
-  # @option default
-  # @option default
-  # @option default
-  # @option default
-  # @param default [Hash] a customizable set of options
   # @param defaults [Hash] default meta tag values.
+  # @option default [String] :site (nil) site title;
+  # @option default [String] :title ("") page title;
+  # @option default [String] :description (nil) page description;
+  # @option default [String] :keywords (nil) legacy page keywords;
+  # @option default [String, Boolean] :prefix (" ") text between site name and separator;
+  #                                   when +false+, no prefix will be rendered;
+  # @option default [String] :separator ("|") text used to separate website name from page title;
+  # @option default [String, Boolean] :suffix (" ") text between separator and page title;
+  #                                   when +false+, no suffix will be rendered;
+  # @option default [Boolean] :lowercase (false) when true, the page title will be lowercase;
+  # @option default [Boolean] :reverse (false) when true, the page and site names will be reversed;
+  # @option default [Boolean, String] :noindex (false) add noindex meta tag; when true, 'robots' will be used,
+  #                                   otherwise the string will be used;
+  # @option default [Boolean, String] :nofollow (false) add nofollow meta tag; when true, 'robots' will be used,
+  #                                   otherwise the string will be used;
+  # @option default [String] :canonical (nil) add canonical link tag.
+  # @option default [Hash] :alternate ({}) add alternate link tag.
+  # @option default [String] :prev (nil) add legacy prev pagination link tag;
+  # @option default [String] :next (nil) add legacy next pagination link tag.
+  # @option default [String, Integer] :refresh (nil) meta refresh tag;
+  # @option default [Hash] :open_graph ({}) add Open Graph meta tags.
+  # @option default [Hash] :open_search ({}) add Open Search link tag.
   # @return [String] HTML meta tags to render in HEAD section of the
   #   HTML document.
+  # @example Render meta tags in a layout
+  #   display_meta_tags site: 'My website'
+  # @example ERB layout usage
+  #   <<~ERB
+  #     <head>
+  #       <%= display_meta_tags site: 'My website' %>
+  #     </head>
+  #   ERB
   #
   # pkg:gem/meta-tags#lib/meta_tags/view_helper.rb:164
   def display_meta_tags(defaults = T.unsafe(nil)); end
@@ -840,22 +825,23 @@ module MetaTags::ViewHelper
   # so you have to pass default arguments such as the site title here. You probably
   # want to define a helper with default options to minimize code duplication.
   #
+  # @param defaults [Hash] list of meta tags.
+  # @option default [String] :site (nil) site title;
+  # @option default [String] :title ("") page title;
+  # @option default [String, Boolean] :prefix (" ") text between site name and separator; when +false+,
+  #                                   no prefix will be rendered;
+  # @option default [String] :separator ("|") text used to separate website name from page title;
+  # @option default [String, Boolean] :suffix (" ") text between separator and page title; when +false+,
+  #                                   no suffix will be rendered;
+  # @option default [Boolean] :lowercase (false) when true, the page title will be lowercase;
+  # @option default [Boolean] :reverse (false) when true, the page and site names will be reversed;
   # @example Build a PJAX-compatible title string
   #   display_title title: 'My Page', site: 'PJAX Site'
   # @example ERB PJAX container usage
   #   <<~ERB
-  #   <div data-page-container="true" title="<%= display_title title: 'My Page', site: 'PJAX Site' %>">
-  #   </div>
+  #     <div data-page-container="true" title="<%= display_title title: 'My Page', site: 'PJAX Site' %>">
+  #     </div>
   #   ERB
-  # @option default
-  # @option default
-  # @option default
-  # @option default
-  # @option default
-  # @option default
-  # @option default
-  # @param default [Hash] a customizable set of options
-  # @param defaults [Hash] list of meta tags.
   #
   # pkg:gem/meta-tags#lib/meta_tags/view_helper.rb:192
   def display_title(defaults = T.unsafe(nil)); end
@@ -865,13 +851,13 @@ module MetaTags::ViewHelper
   # Modern search engines ignore this tag, but some older integrations and
   # internal systems may still read it.
   #
-  # @example
-  #   keywords 'keyword1, keyword2'
-  #   keywords %w(keyword1 keyword2)
   # @param keywords [String, Array] keywords meta tag value to render in the HEAD
   #   section of the HTML document.
   # @return [String, Array] passed value.
   # @see #display_meta_tags
+  # @example
+  #   keywords 'keyword1, keyword2'
+  #   keywords %w(keyword1 keyword2)
   #
   # pkg:gem/meta-tags#lib/meta_tags/view_helper.rb:69
   def keywords(keywords); end
@@ -883,36 +869,36 @@ module MetaTags::ViewHelper
 
   # Set the nofollow meta tag.
   #
-  # @example
-  #   nofollow true
-  #   nofollow 'googlebot'
   # @param nofollow [Boolean, String, Array<String>] a nofollow value.
   # @return [Boolean, String, Array<String>] passed value.
   # @see #display_meta_tags
+  # @example
+  #   nofollow true
+  #   nofollow 'googlebot'
   #
   # pkg:gem/meta-tags#lib/meta_tags/view_helper.rb:110
   def nofollow(nofollow = T.unsafe(nil)); end
 
   # Set the noindex meta tag.
   #
-  # @example
-  #   noindex true
-  #   noindex 'googlebot'
   # @param noindex [Boolean, String, Array<String>] a noindex value.
   # @return [Boolean, String, Array<String>] passed value.
   # @see #display_meta_tags
+  # @example
+  #   noindex true
+  #   noindex 'googlebot'
   #
   # pkg:gem/meta-tags#lib/meta_tags/view_helper.rb:97
   def noindex(noindex = T.unsafe(nil)); end
 
   # Set the refresh meta tag.
   #
-  # @example
-  #   refresh 5
-  #   refresh "5;url=http://www.example.com/"
   # @param refresh [Integer, String] a refresh value.
   # @return [Integer, String] passed value.
   # @see #display_meta_tags
+  # @example
+  #   refresh 5
+  #   refresh "5;url=http://www.example.com/"
   #
   # pkg:gem/meta-tags#lib/meta_tags/view_helper.rb:123
   def refresh(refresh); end
@@ -927,12 +913,12 @@ module MetaTags::ViewHelper
   # {#title}, {#description}, {#noindex}, and {#canonical} for daily tasks.
   # {#keywords} remains available for legacy compatibility.
   #
-  # @example
-  #   set_meta_tags title: 'Login Page', description: 'Here you can login'
-  #   set_meta_tags canonical: 'https://example.com/login'
   # @param meta_tags [Hash] list of meta tags. See {#display_meta_tags}
   #   for allowed options.
   # @see #display_meta_tags
+  # @example
+  #   set_meta_tags title: 'Login Page', description: 'Here you can login'
+  #   set_meta_tags canonical: 'https://example.com/login'
   #
   # pkg:gem/meta-tags#lib/meta_tags/view_helper.rb:27
   def set_meta_tags(meta_tags = T.unsafe(nil)); end
@@ -942,22 +928,22 @@ module MetaTags::ViewHelper
   # This method is best suited for use in helpers. It sets the page title
   # and returns it (or +headline+ if specified).
   #
-  # @example Get current title
-  #   title
+  # @param title [nil, String, Array] page title. When passed as an
+  #   +Array+, parts will be joined using configured separator value
+  #   (see {#display_meta_tags}). When nil, current title will be returned.
+  # @param headline [String] the value to return from the method. Useful
+  #   for using this method in views to set both page title
+  #   and the content of the heading tag.
+  # @return [String] returns +title+ value or +headline+ if passed.
+  # @see #display_meta_tags
   # @example Set HTML title to "Login Page", return "Login Page"
   #   title 'Login Page'
   # @example Set HTML title to "Login Page", return "Please login"
   #   title 'Login Page', 'Please login'
   # @example Set title as array of strings
   #   title ['part1', 'part2'] # => "part1 | part2"
-  # @param headline [String] the value to return from the method. Useful
-  #   for using this method in views to set both page title
-  #   and the content of the heading tag.
-  # @param title [nil, String, Array] page title. When passed as an
-  #   +Array+, parts will be joined using configured separator value
-  #   (see {#display_meta_tags}). When nil, current title will be returned.
-  # @return [String] returns +title+ value or +headline+ if passed.
-  # @see #display_meta_tags
+  # @example Get current title
+  #   title
   #
   # pkg:gem/meta-tags#lib/meta_tags/view_helper.rb:52
   def title(title = T.unsafe(nil), headline = T.unsafe(nil)); end

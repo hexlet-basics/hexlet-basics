@@ -1,4 +1,9 @@
 class ApplicationController < ActionController::Base
+  # meta-tags includes this into ActionController::Base via its Railtie on_load
+  # hook (which tapioca can't see); state it explicitly so set_meta_tags resolves
+  # for typed controllers without an RBI shim. Idempotent at runtime.
+  include MetaTags::ControllerHelper
+
   include ActiveStorage::SetCurrent
   include Pundit::Authorization
   include Pagy::Method
