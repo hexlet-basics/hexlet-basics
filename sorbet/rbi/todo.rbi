@@ -5,9 +5,6 @@
 # typed: false
 
 module ::FFI::ModernForkTracking; end
-module ActionCable::Channel::Base; end
-module ActionCable::Channel::TestCase; end
-module ActionCable::Connection::Base; end
 module ActionCable::Helpers::ActionCableHelper; end
 module Bundler::FetchMetadata; end
 module Bundler::MatchMetadata; end

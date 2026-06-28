@@ -2,6 +2,11 @@
 
 module SessionTestHelper
   extend T::Sig
+  extend T::Helpers
+
+  # Mixed into integration tests; pull in request helpers (post, cookies,
+  # assert_redirected_to), URL helpers and fixture accessors.
+  requires_ancestor { ActionDispatch::IntegrationTest }
 
   sig { params(user_or_fixture: T.any(User, Symbol)).returns(User) }
   def sign_in_as(user_or_fixture)

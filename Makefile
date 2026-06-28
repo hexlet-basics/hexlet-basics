@@ -113,6 +113,7 @@ lint: lint-locales
 	pnpm exec biome check
 	pnpm tsc --build
 	bin/rubocop
+	bundle exec srb tc
 
 lint-fix:
 	bin/rubocop -A

@@ -6,7 +6,8 @@ class SocialNetworkService
     existing_account = User::Account.find_by(uid: auth[:uid])
     email = auth[:info][:email].downcase
     user = if existing_account
-      existing_account.user
+      # user_id is NOT NULL, so an existing account always has a user
+      T.must(existing_account.user)
     else
       User.find_or_initialize_by(email: email)
     end
@@ -22,7 +23,7 @@ class SocialNetworkService
           locale: I18n.locale
         }
         event = UserSignedUpEvent.new(data: signed_up_event_data)
-        publish_event(event, user)
+        EventSender.publish_event(event, user)
       end
 
       account = user.accounts.find_or_initialize_by(provider: auth[:provider])
