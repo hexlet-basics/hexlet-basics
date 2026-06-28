@@ -2,8 +2,6 @@
 
 class Web::Account::ProfilesController < Web::Account::ApplicationController
   def edit
-    form = T.must(current_user).becomes(User::ProfileForm)
-
     seo_tags = {
       title: t(".title"),
       description: t(".meta.description")
@@ -11,21 +9,21 @@ class Web::Account::ProfilesController < Web::Account::ApplicationController
     set_meta_tags seo_tags
 
     render inertia: true, props: {
-      form: UserProfileFormResource.new(form)
+      form: UserProfileFormResource.new(T.must(current_user))
     }
   end
 
   def update
-    form = T.must(current_user).becomes(User::ProfileForm)
+    struct = ApplicationParamsStruct.from_params(ProfileStruct, params.require(:user))
+    result = UserService.update_profile(T.must(current_user), struct)
 
-    if form.update(params[:user])
+    case result
+    when Typed::Success
       f(:success)
-
       redirect_to edit_account_profile_path
-    else
+    when Typed::Failure
       f(:error)
-
-      redirect_to edit_account_profile_path, inertia: { errors: form.errors }
+      redirect_to edit_account_profile_path, inertia: { errors: result.error.errors }
     end
   end
 

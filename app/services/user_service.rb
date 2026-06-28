@@ -17,5 +17,12 @@ class UserService < ApplicationService
 
       success_with(user)
     end
+
+    sig { params(user: User, struct: ProfileStruct).returns(Typed::Result[User, User]) }
+    def update_profile(user, struct)
+      return fail_with(user) unless user.update(struct.attributes)
+
+      success_with(user)
+    end
   end
 end
