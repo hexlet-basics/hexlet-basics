@@ -1,3 +1,5 @@
+# typed: true
+
 class LanguageResource < ApplicationResource
   urls = Rails.application.routes.url_helpers
 
@@ -25,12 +27,12 @@ class LanguageResource < ApplicationResource
 
   typelize :string
   attribute :cover_list_variant do
-    urls.rails_representation_url(it.cover.variant(:list)) if it.cover.attached?
+    urls.rails_representation_url(T.unsafe(it.cover).variant(:list)) if it.cover.attached?
   end
 
   typelize :string
   attribute :cover_thumb_variant do
-    urls.rails_representation_url(it.cover.variant(:thumb)) if it.cover.attached?
+    urls.rails_representation_url(T.unsafe(it.cover).variant(:thumb)) if it.cover.attached?
   end
 
   # TODO: хаха, вот я злодей. Реализовать нормальный подсчет рейтинга

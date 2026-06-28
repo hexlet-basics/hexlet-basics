@@ -1,3 +1,5 @@
+# typed: true
+
 class GridResource < ApplicationResource
   # sf = sort field, so = sort order, tr = total records
   attributes :sf, :so, :page, :fields, :tr, :per

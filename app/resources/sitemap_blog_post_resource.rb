@@ -1,3 +1,5 @@
+# typed: true
+
 class SitemapBlogPostResource
   include Alba::Resource
   include Typelizer::DSL

@@ -1,3 +1,5 @@
+# typed: true
+
 class Language::LessonForListsResource < ApplicationResource
   # include Rails.application.routes.url_helpers
   typelize_from Language::Lesson::Version::Info
@@ -7,6 +9,6 @@ class Language::LessonForListsResource < ApplicationResource
 
   typelize :string
   attribute :slug do
-    it.lesson.slug
+    T.must(it.lesson).slug
   end
 end

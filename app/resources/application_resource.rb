@@ -1,3 +1,5 @@
+# typed: true
+
 class ApplicationResource
   include Alba::Resource
   include Typelizer::DSL

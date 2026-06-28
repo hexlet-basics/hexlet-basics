@@ -1,3 +1,5 @@
+# typed: true
+
 class Language::SitemapLandingPageResource < ApplicationResource
   typelize_from Language::LandingPage
 

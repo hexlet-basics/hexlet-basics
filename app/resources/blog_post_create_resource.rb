@@ -1,3 +1,5 @@
+# typed: true
+
 class BlogPostCreateResource < ApplicationResource
   typelize_from BlogPost
 

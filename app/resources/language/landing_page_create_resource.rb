@@ -1,3 +1,5 @@
+# typed: true
+
 class Language::LandingPageCreateResource < ApplicationResource
   typelize_from Language::LandingPage
 

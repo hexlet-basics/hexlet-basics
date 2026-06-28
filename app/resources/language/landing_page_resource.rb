@@ -1,3 +1,5 @@
+# typed: true
+
 class Language::LandingPageResource < ApplicationResource
   urls = Rails.application.routes.url_helpers
 
@@ -42,7 +44,7 @@ class Language::LandingPageResource < ApplicationResource
 
   typelize :string, nullable: true
   attribute :outcomes_image do
-    urls.rails_representation_url(it.outcomes_image.variant(:main)) if it.outcomes_image.attached?
+    urls.rails_representation_url(T.unsafe(it.outcomes_image).variant(:main)) if it.outcomes_image.attached?
   end
 
   typelize :string

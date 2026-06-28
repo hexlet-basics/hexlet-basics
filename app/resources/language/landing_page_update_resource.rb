@@ -1,3 +1,5 @@
+# typed: true
+
 class Language::LandingPageUpdateResource < ApplicationResource
   typelize_from Language::LandingPage
 
@@ -31,6 +33,6 @@ class Language::LandingPageUpdateResource < ApplicationResource
   typelize outcomes_image_thumb_url: [ :string, nullable: true ]
   attribute(:outcomes_image_thumb_url) do
     urls = Rails.application.routes.url_helpers
-    it.outcomes_image.attached? ? urls.rails_representation_url(it.outcomes_image.variant(:thumb)) : nil
+    it.outcomes_image.attached? ? urls.rails_representation_url(T.unsafe(it.outcomes_image).variant(:thumb)) : nil
   end
 end

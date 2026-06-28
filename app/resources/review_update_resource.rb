@@ -1,3 +1,5 @@
+# typed: true
+
 class ReviewUpdateResource < ApplicationResource
   typelize_from Review
 

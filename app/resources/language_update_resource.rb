@@ -1,3 +1,5 @@
+# typed: true
+
 class LanguageUpdateResource < ApplicationResource
   typelize_from Language
 
@@ -9,7 +11,7 @@ class LanguageUpdateResource < ApplicationResource
   typelize cover_thumb_url: [ :string, nullable: true ]
   attribute(:cover_thumb_url) do
     urls = Rails.application.routes.url_helpers
-    it.cover.attached? ? urls.rails_representation_url(it.cover.variant(:thumb)) : nil
+    it.cover.attached? ? urls.rails_representation_url(T.unsafe(it.cover).variant(:thumb)) : nil
   end
 
   typelize repository_url: [ :string, nullable: true ]

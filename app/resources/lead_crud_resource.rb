@@ -1,3 +1,5 @@
+# typed: true
+
 class LeadCrudResource < ApplicationResource
   typelize_from LeadForm
 

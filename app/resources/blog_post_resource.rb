@@ -1,3 +1,5 @@
+# typed: true
+
 class BlogPostResource < ApplicationResource
   urls = Rails.application.routes.url_helpers
 
@@ -35,7 +37,7 @@ class BlogPostResource < ApplicationResource
 
   typelize :string
   attribute :url do
-    urls.blog_post_url(it.slug, suffix: I18n.locale == "en" ? "" : I18n.locale)
+    urls.blog_post_url(it.slug, suffix: I18n.locale == :en ? "" : I18n.locale)
   end
 
   typelize :number

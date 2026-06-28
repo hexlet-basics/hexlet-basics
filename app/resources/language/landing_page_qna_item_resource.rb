@@ -1,3 +1,5 @@
+# typed: true
+
 class  Language::LandingPageQnaItemResource < ApplicationResource
   typelize_from Language::LandingPage::QnaItem
 

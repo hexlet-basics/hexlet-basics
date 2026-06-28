@@ -1,3 +1,5 @@
+# typed: true
+
 class Language::Lesson::ReviewResource < ApplicationResource
   typelize_from Language::Lesson::Review
 
@@ -12,16 +14,16 @@ class Language::Lesson::ReviewResource < ApplicationResource
 
   typelize :string
   attribute :slug do
-    it.lesson.slug
+    T.must(it.lesson).slug
   end
 
   typelize :number
   attribute :lesson_natural_order do
-    it.lesson.natural_order
+    T.must(it.lesson).natural_order
   end
 
   typelize :string
   attribute :language_slug do
-    it.language.slug
+    T.must(it.language).slug
   end
 end

@@ -1,3 +1,5 @@
+# typed: true
+
 class LanguageCreateResource < ApplicationResource
   typelize_from Language
 

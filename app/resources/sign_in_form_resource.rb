@@ -1,3 +1,5 @@
+# typed: true
+
 class SignInFormResource < ApplicationResource
   typelize_from SignInForm
 

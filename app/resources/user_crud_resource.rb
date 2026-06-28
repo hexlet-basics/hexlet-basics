@@ -1,3 +1,5 @@
+# typed: true
+
 class UserCrudResource < ApplicationResource
   typelize_from Admin::UserForm
 

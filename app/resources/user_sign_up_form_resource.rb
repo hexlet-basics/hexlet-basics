@@ -1,3 +1,5 @@
+# typed: true
+
 class UserSignUpFormResource < ApplicationResource
   typelize_from User::SignUpForm
 

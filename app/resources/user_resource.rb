@@ -1,3 +1,5 @@
+# typed: true
+
 class UserResource < ApplicationResource
   typelize_from User
 

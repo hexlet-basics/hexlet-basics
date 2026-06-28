@@ -1,3 +1,5 @@
+# typed: true
+
 class Language::OriginalLessonResource < ApplicationResource
   typelize_from Language::Lesson
 

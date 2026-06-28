@@ -1,3 +1,5 @@
+# typed: true
+
 class Language::CategoryUpdateResource < ApplicationResource
   typelize_from Language::Category
 

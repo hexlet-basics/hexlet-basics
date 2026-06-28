@@ -1,3 +1,5 @@
+# typed: true
+
 class Language::VersionResource < ApplicationResource
   typelize_from Language::Version
 

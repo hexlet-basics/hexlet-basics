@@ -1,3 +1,5 @@
+# typed: true
+
 class Language::LandingPageForListsResource < ApplicationResource
   # include Rails.application.routes.url_helpers
 

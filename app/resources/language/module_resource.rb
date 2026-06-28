@@ -1,3 +1,5 @@
+# typed: true
+
 # Language::Module::Version::Info
 class Language::ModuleResource < ApplicationResource
   typelize_from Language::Module::Version::Info
@@ -6,6 +8,6 @@ class Language::ModuleResource < ApplicationResource
 
   typelize :number
   attribute :id do
-    it.version.module.id
+    T.must(T.must(it.version).module).id
   end
 end

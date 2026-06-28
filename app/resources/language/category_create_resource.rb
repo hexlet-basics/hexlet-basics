@@ -1,3 +1,5 @@
+# typed: true
+
 class Language::CategoryCreateResource < ApplicationResource
   typelize_from Language::Category
 

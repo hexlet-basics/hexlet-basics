@@ -1,3 +1,5 @@
+# typed: true
+
 class Language::SitemapLessonResource < ApplicationResource
   typelize_from Language::Lesson::Version::Info
 
@@ -18,12 +20,12 @@ class Language::SitemapLessonResource < ApplicationResource
 
   typelize :string
   attribute :slug do
-    it.lesson.slug
+    T.must(it.lesson).slug
   end
 
   typelize :number
   attribute :natural_order do
-    it.version.natural_order
+    T.must(it.version).natural_order
   end
 
   typelize :number

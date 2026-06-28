@@ -1,3 +1,5 @@
+# typed: true
+
 class Language::CategoryItemCrudResource < ApplicationResource
   typelize_from Language::Category::Item
   # root_key :data

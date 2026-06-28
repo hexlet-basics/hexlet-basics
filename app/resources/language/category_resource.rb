@@ -1,3 +1,5 @@
+# typed: true
+
 class Language::CategoryResource < ApplicationResource
   typelize_from Language::Category
   # root_key :user

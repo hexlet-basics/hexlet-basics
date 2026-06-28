@@ -1,3 +1,5 @@
+# typed: true
+
 class PasswordReminderFormResource < ApplicationResource
   typelize_from RemindPasswordForm
 

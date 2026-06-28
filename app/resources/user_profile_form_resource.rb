@@ -1,3 +1,5 @@
+# typed: true
+
 class UserProfileFormResource < ApplicationResource
   typelize_from User::ProfileForm
 

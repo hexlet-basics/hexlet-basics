@@ -1,3 +1,5 @@
+# typed: true
+
 class ReviewResource
   include Alba::Resource
   include Typelizer::DSL

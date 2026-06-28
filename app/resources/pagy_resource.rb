@@ -1,3 +1,5 @@
+# typed: true
+
 class PagyResource < ApplicationResource
   attributes :count, :page, :last, :next, :from, :previous
   typelize count: :number, page: :number, last: :number, previous: :number

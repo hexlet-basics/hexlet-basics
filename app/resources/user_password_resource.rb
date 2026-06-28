@@ -1,3 +1,5 @@
+# typed: true
+
 class UserPasswordResource < ApplicationResource
   typelize_from User::PasswordForm
 

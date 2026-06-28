@@ -1,3 +1,5 @@
+# typed: true
+
 class Language::CategoryQnaItemCrudResource < ApplicationResource
   typelize_from Language::Category::QnaItem
   # root_key :data

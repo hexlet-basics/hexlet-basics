@@ -1,3 +1,5 @@
+# typed: true
+
 class Language::LandingPageQnaItemCrudResource < ApplicationResource
   typelize_from Language::LandingPage::QnaItem
   # root_key :data

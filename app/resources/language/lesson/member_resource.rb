@@ -1,3 +1,5 @@
+# typed: true
+
 class Language::Lesson::MemberResource < ApplicationResource
   typelize_from Language::Lesson::Member
 
@@ -7,18 +9,18 @@ class Language::Lesson::MemberResource < ApplicationResource
 
   typelize :string
   attribute :language_lesson_slug do
-    it.lesson.slug
+    T.must(it.lesson).slug
   end
 
 
    typelize :string
    attribute :language_slug do
-     it.language.slug
+     T.must(it.language).slug
    end
 
   typelize :string
   attribute :language_lesson_name do
-    info = it.lesson.localed_info
+    info = T.must(it.lesson).localed_info
     info&.name
   end
 end

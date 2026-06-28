@@ -1,3 +1,5 @@
+# typed: true
+
 class LeadResource < ApplicationResource
   typelize_from Lead
 
@@ -5,12 +7,12 @@ class LeadResource < ApplicationResource
 
   typelize :string, nullable: true
   attribute :full_name do
-    [ it.user.first_name, it.user.last_name ].join " "
+    [ T.must(it.user).first_name, T.must(it.user).last_name ].join " "
   end
 
   typelize :string, nullable: true
   attribute :email do
-    it.user.email
+    T.must(it.user).email
   end
 
   # typelize "Array<[string, string]>"
