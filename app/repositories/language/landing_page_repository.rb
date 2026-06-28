@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 module Language::LandingPageRepository
   extend ActiveSupport::Concern

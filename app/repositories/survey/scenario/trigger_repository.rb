@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 module Survey::Scenario::TriggerRepository
   extend ActiveSupport::Concern
