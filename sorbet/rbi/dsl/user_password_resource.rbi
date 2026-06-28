@@ -6,7 +6,7 @@
 
 
 class UserPasswordResource
-  sig { returns(User::PasswordForm) }
+  sig { returns(User) }
   def object; end
 
   class << self
@@ -14,7 +14,7 @@ class UserPasswordResource
       params(
         name: T.any(Symbol, String),
         options: T.untyped,
-        block: T.proc.bind(UserPasswordResource).params(it: User::PasswordForm).returns(T.untyped)
+        block: T.proc.bind(UserPasswordResource).params(it: User).returns(T.untyped)
       ).void
     end
     def attribute(name = nil, **options, &block); end

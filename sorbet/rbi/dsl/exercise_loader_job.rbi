@@ -9,13 +9,13 @@ class ExerciseLoaderJob
   class << self
     sig do
       params(
-        language_version_id: T.untyped,
+        language_version_id: ::Integer,
         block: T.nilable(T.proc.params(job: ExerciseLoaderJob).void)
       ).returns(T.any(ExerciseLoaderJob, FalseClass))
     end
     def perform_later(language_version_id, &block); end
 
-    sig { params(language_version_id: T.untyped).returns(T.untyped) }
+    sig { params(language_version_id: ::Integer).void }
     def perform_now(language_version_id); end
   end
 end

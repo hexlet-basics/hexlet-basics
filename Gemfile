@@ -122,7 +122,6 @@ end
 gem "aasm"
 gem "acts-as-taggable-on"
 gem "webmock"
-gem "active_form_model"
 gem "aws-sdk-s3"
 gem "bcrypt"
 # gem "enumerize"

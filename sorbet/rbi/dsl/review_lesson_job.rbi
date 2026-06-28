@@ -9,13 +9,13 @@ class ReviewLessonJob
   class << self
     sig do
       params(
-        lesson_info_id: T.untyped,
+        lesson_info_id: ::Integer,
         block: T.nilable(T.proc.params(job: ReviewLessonJob).void)
       ).returns(T.any(ReviewLessonJob, FalseClass))
     end
     def perform_later(lesson_info_id, &block); end
 
-    sig { params(lesson_info_id: T.untyped).returns(T.untyped) }
+    sig { params(lesson_info_id: ::Integer).void }
     def perform_now(lesson_info_id); end
   end
 end

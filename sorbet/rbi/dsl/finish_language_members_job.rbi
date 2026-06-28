@@ -9,14 +9,14 @@ class FinishLanguageMembersJob
   class << self
     sig do
       params(
-        offset: T.untyped,
-        limit: T.untyped,
+        offset: ::Integer,
+        limit: ::Integer,
         block: T.nilable(T.proc.params(job: FinishLanguageMembersJob).void)
       ).returns(T.any(FinishLanguageMembersJob, FalseClass))
     end
     def perform_later(offset = T.unsafe(nil), limit = T.unsafe(nil), &block); end
 
-    sig { params(offset: T.untyped, limit: T.untyped).returns(T.untyped) }
+    sig { params(offset: ::Integer, limit: ::Integer).void }
     def perform_now(offset = T.unsafe(nil), limit = T.unsafe(nil)); end
   end
 end

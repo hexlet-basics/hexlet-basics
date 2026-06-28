@@ -9,13 +9,13 @@ class FindRelatedCoursesForBlogPostJob
   class << self
     sig do
       params(
-        blog_post_id: T.untyped,
+        blog_post_id: ::Integer,
         block: T.nilable(T.proc.params(job: FindRelatedCoursesForBlogPostJob).void)
       ).returns(T.any(FindRelatedCoursesForBlogPostJob, FalseClass))
     end
     def perform_later(blog_post_id, &block); end
 
-    sig { params(blog_post_id: T.untyped).returns(T.untyped) }
+    sig { params(blog_post_id: ::Integer).void }
     def perform_now(blog_post_id); end
   end
 end

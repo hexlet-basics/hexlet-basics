@@ -6,7 +6,7 @@
 
 
 class UserSignUpFormResource
-  sig { returns(User::SignUpForm) }
+  sig { returns(User) }
   def object; end
 
   class << self
@@ -14,7 +14,7 @@ class UserSignUpFormResource
       params(
         name: T.any(Symbol, String),
         options: T.untyped,
-        block: T.proc.bind(UserSignUpFormResource).params(it: User::SignUpForm).returns(T.untyped)
+        block: T.proc.bind(UserSignUpFormResource).params(it: User).returns(T.untyped)
       ).void
     end
     def attribute(name = nil, **options, &block); end

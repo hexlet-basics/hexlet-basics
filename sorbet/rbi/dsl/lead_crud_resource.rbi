@@ -6,7 +6,7 @@
 
 
 class LeadCrudResource
-  sig { returns(LeadForm) }
+  sig { returns(LeadStruct) }
   def object; end
 
   class << self
@@ -14,7 +14,7 @@ class LeadCrudResource
       params(
         name: T.any(Symbol, String),
         options: T.untyped,
-        block: T.proc.bind(LeadCrudResource).params(it: LeadForm).returns(T.untyped)
+        block: T.proc.bind(LeadCrudResource).params(it: LeadStruct).returns(T.untyped)
       ).void
     end
     def attribute(name = nil, **options, &block); end

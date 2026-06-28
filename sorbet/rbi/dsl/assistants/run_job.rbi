@@ -9,7 +9,7 @@ class Assistants::RunJob
   class << self
     sig do
       params(
-        lesson_member_id: T.untyped,
+        lesson_member_id: ::Integer,
         message: T.untyped,
         user_code: T.untyped,
         output: T.untyped,
@@ -18,14 +18,7 @@ class Assistants::RunJob
     end
     def perform_later(lesson_member_id:, message:, user_code:, output:, &block); end
 
-    sig do
-      params(
-        lesson_member_id: T.untyped,
-        message: T.untyped,
-        user_code: T.untyped,
-        output: T.untyped
-      ).returns(T.untyped)
-    end
+    sig { params(lesson_member_id: ::Integer, message: T.untyped, user_code: T.untyped, output: T.untyped).void }
     def perform_now(lesson_member_id:, message:, user_code:, output:); end
   end
 end
