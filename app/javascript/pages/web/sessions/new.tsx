@@ -18,24 +18,22 @@ import {
   loginEmailInputProps,
 } from "@/lib/authFieldProps";
 import * as Routes from "@/routes.js";
-import type { SignInForm } from "@/types/serializers";
 
-type Props = PropsWithChildren & {
-  signInForm: SignInForm;
-};
+type Props = PropsWithChildren;
 
-export default function New({ signInForm }: Props) {
+export default function New(_props: Props) {
   const { t } = useTranslation();
 
-  const payload = signInForm;
-
-  const { onSubmit, processing, form, reset } = useAppForm(payload, {
-    url: Routes.session_path(),
-    method: "post",
-    onError: (_errors: Errors) => {
-      reset("password");
+  const { onSubmit, processing, form, reset } = useAppForm(
+    { email: "", password: "" },
+    {
+      url: Routes.session_path(),
+      method: "post",
+      onError: (_errors: Errors) => {
+        reset("password");
+      },
     },
-  });
+  );
 
   return (
     <ApplicationLayout center header={t(($) => $.sessions.new.title)}>

@@ -5,8 +5,6 @@ class Web::SessionsController < Web::ApplicationController
   before_action :redirect_if_authenticated, only: [ :new, :create ]
 
   def new
-    sign_in_form = SignInForm.new
-
     seo_tags = {
       title: t(".title"),
       canonical: new_session_url,
@@ -14,33 +12,36 @@ class Web::SessionsController < Web::ApplicationController
     }
     set_meta_tags seo_tags
 
-    render inertia: true, props: {
-      signInForm: SignInFormResource.new(sign_in_form)
-    }
+    render inertia: true, props: {}
   end
 
   def create
-    sign_in_form = SignInForm.new(params[:data])
+    struct = ApplicationParamsStruct.from_params!(SignInStruct, params.require(:data))
 
-    if sign_in_form.valid?
-      user = sign_in_form.user
-      sign_in(user)
-
-      data = {
-        user_id: user.id,
-        occurrence_count: -1,
-        email: T.must(user.email),
-        locale: I18n.locale
-      }
-      event = UserSignedInEvent.new(data:)
-      EventSender.publish_event(event, user)
-
-      f(:success)
-      redirect_to after_authentication_url
-    else
-      f(:error)
-      redirect_to new_session_path, inertia: { errors: sign_in_form.errors }
+    email = struct.email.to_s.strip.downcase
+    user = User.authenticate_by(email:, password: struct.password)&.then do |authenticated_user|
+      authenticated_user if authenticated_user.active?
     end
+
+    unless user
+      struct.errors.add(:password, :cannot_sign_in)
+      f(:error)
+      return redirect_to new_session_path, inertia: { errors: struct.errors }
+    end
+
+    sign_in(user)
+
+    data = {
+      user_id: user.id,
+      occurrence_count: -1,
+      email: T.must(user.email),
+      locale: I18n.locale
+    }
+    event = UserSignedInEvent.new(data:)
+    EventSender.publish_event(event, user)
+
+    f(:success)
+    redirect_to after_authentication_url
   end
 
   def destroy

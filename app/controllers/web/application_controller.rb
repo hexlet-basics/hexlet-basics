@@ -12,6 +12,11 @@ class Web::ApplicationController < ApplicationController
   include EventConcern
   include LocaleConcern
 
+  rescue_from ApplicationParamsStruct::InvalidParams do |exception|
+    T.bind(self, Web::ApplicationController)
+    redirect_back_or_to(root_path, inertia: { errors: exception.errors })
+  end
+
   before_action :prepare_locale_settings
 
   before_action do
