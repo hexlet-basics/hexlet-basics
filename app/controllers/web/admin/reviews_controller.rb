@@ -14,7 +14,7 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
   end
 
   def new
-    review = Admin::ReviewForm.new
+    review = Review.new
     languages = Language.all
 
     render inertia: true, props: {
@@ -24,7 +24,7 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
   end
 
   def edit
-    review = Admin::ReviewForm.find(params[:id])
+    review = Review.find(params[:id])
     languages = Language.all
 
     render inertia: true, props: {
@@ -34,28 +34,28 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
   end
 
   def create
-    review = Admin::ReviewForm.new(params[:data])
-    review.locale = I18n.locale.to_s
+    struct = ApplicationParamsStruct.from_params(ReviewStruct, params.require(:data))
+    result = ReviewService.create(struct, locale: I18n.locale.to_s)
 
-    if review.save
+    case result
+    when Typed::Success
       f(:success)
-      redirect_to edit_admin_review_url(review)
+      redirect_to edit_admin_review_url(result.payload)
     else
       f(:error)
-      redirect_to new_admin_review_url, inertia: { errors: review.errors }
+      redirect_to new_admin_review_url, inertia: { errors: result.error.errors }
     end
   end
 
   def update
-    review = Admin::ReviewForm.find(params[:id])
-    review.locale = I18n.locale.to_s
+    struct = ApplicationParamsStruct.from_params(ReviewStruct, params.require(:data))
+    result = ReviewService.update(params[:id], struct, locale: I18n.locale.to_s)
 
-    if review.update(params[:data])
-      f(:success)
-    else
-      f(:error)
+    review = case result
+    when Typed::Success then result.payload
+    else result.error
     end
-
+    f(result.success? ? :success : :error)
     redirect_to edit_admin_review_url(review), inertia: { errors: review.errors }
   end
 end
