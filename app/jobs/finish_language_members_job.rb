@@ -1,7 +1,10 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class FinishLanguageMembersJob < ApplicationJob
+  extend T::Sig
+
+  sig { params(offset: Integer, limit: Integer).void }
   def perform(offset = 0, limit = 10_000)
     started_lesson_members = Language::Member.started
       .limit(limit)

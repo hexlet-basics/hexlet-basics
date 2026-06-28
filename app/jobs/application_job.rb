@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class ApplicationJob < ActiveJob::Base
   include Sentry::Rails::ActiveJobExtensions

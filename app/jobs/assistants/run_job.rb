@@ -1,6 +1,9 @@
-# typed: true
+# typed: strict
 
 class Assistants::RunJob < ApplicationJob
+  extend T::Sig
+
+  sig { params(lesson_member_id: Integer, message: T.untyped, user_code: T.untyped, output: T.untyped).void }
   def perform(lesson_member_id:, message:, user_code:, output:)
     lesson_member = Language::Lesson::Member.find(lesson_member_id)
     lesson = T.must(lesson_member.lesson)

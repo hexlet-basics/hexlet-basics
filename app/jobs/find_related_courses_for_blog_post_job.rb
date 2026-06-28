@@ -1,6 +1,9 @@
-# typed: true
+# typed: strict
 
 class FindRelatedCoursesForBlogPostJob < ApplicationJob
+  extend T::Sig
+
+  sig { params(blog_post_id: Integer).void }
   def perform(blog_post_id)
     blog_post = BlogPost.find(blog_post_id)
     landing_pages = Language::LandingPage.published.where(main: true).with_locale(blog_post.locale).includes(:language)

@@ -1,6 +1,9 @@
-# typed: true
+# typed: strict
 
 class ReviewLessonJob < ApplicationJob
+  extend T::Sig
+
+  sig { params(lesson_info_id: Integer).void }
   def perform(lesson_info_id)
     info = Language::Lesson::Version::Info.find(lesson_info_id)
     review = Language::Lesson::Review.find_or_initialize_by language: info.language,
