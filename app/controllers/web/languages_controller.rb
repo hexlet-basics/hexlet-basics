@@ -11,8 +11,6 @@ class Web::LanguagesController < Web::ApplicationController
       .where(listed: true)
       .merge(Language.ordered)
 
-    categories = Language::Category.with_locale
-
     seo_tags = {
       title: t(".title"),
       description: t(".meta.description"),
@@ -36,8 +34,7 @@ class Web::LanguagesController < Web::ApplicationController
     set_meta_tags seo_tags
 
     render inertia: true, props: {
-      catalogLandingPages: Language::LandingPageForListsResource.new(catalog_landing_pages),
-      categories: Language::CategoryResource.new(categories)
+      catalogLandingPages: Language::LandingPageForListsResource.new(catalog_landing_pages)
     }
   end
 

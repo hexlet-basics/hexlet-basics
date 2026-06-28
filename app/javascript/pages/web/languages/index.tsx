@@ -1,11 +1,7 @@
-import { Link } from "@inertiajs/react";
 import {
   Box,
   Card,
   Container,
-  Divider,
-  Group,
-  Image,
   List,
   SimpleGrid,
   Stack,
@@ -14,27 +10,17 @@ import {
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import CourseBlock from "@/components/CourseBlock";
-import { HoverLift } from "@/components/HoverLift";
 import ApplicationLayout from "@/layouts/ApplicationLayout";
 import { propsForExternalLink } from "@/lib/utils";
-import {
-  reviewShowcaseAvatars,
-  reviewShowcaseOrder,
-} from "@/pages/web/shared/reviews";
-import * as Routes from "@/routes.js";
-import type { LanguageCategory, LanguageLandingPageForLists } from "@/types";
+import type { LanguageLandingPageForLists } from "@/types";
 
 type Props = {
   catalogLandingPages: LanguageLandingPageForLists[];
-  categories: LanguageCategory[];
 };
 
-export default function Index({ catalogLandingPages, categories }: Props) {
+export default function Index({ catalogLandingPages }: Props) {
   const { t, i18n } = useTranslation();
   const isRuLocale = i18n.language === "ru";
-  const reviewTexts = t(($) => $.shared.reviews_showcase, {
-    returnObjects: true,
-  });
 
   return (
     <ApplicationLayout header={t(($) => $.pages.languages.index.header)}>
@@ -48,69 +34,6 @@ export default function Index({ catalogLandingPages, categories }: Props) {
                 landingPage={landingPage}
               />
             ))}
-          </SimpleGrid>
-        </Box>
-
-        <Box mb="xxl">
-          <Box mb="xl">
-            <Title order={2}>
-              {t(($) => $.pages.languages.index.categories)}
-            </Title>
-            <Divider />
-          </Box>
-          <SimpleGrid cols={{ base: 1, md: 3 }} spacing="md">
-            {categories.map((category) => {
-              const href = Routes.language_category_path(category.slug!);
-
-              return (
-                <HoverLift h="100%" key={category.id}>
-                  <Card
-                    component={Link}
-                    href={href}
-                    withBorder
-                    radius="md"
-                    p="lg"
-                    td="none"
-                  >
-                    <Stack gap="xs">
-                      <Text fw="bold">{category.header ?? category.name}</Text>
-                      {category.description && (
-                        <Text c="dimmed">{category.description}</Text>
-                      )}
-                    </Stack>
-                  </Card>
-                </HoverLift>
-              );
-            })}
-          </SimpleGrid>
-        </Box>
-
-        <Box mb="xxl">
-          <Box mb="xl">
-            <Title order={2}>{t(($) => $.pages.languages.index.reviews)}</Title>
-            <Divider />
-          </Box>
-          <SimpleGrid spacing="md" cols={{ base: 1, xs: 2, md: 3 }}>
-            {reviewShowcaseOrder.map((reviewId) => {
-              const review = reviewTexts[reviewId];
-
-              return (
-                <Box key={review.name}>
-                  <Group mb="lg">
-                    <Image
-                      src={reviewShowcaseAvatars[reviewId]}
-                      fit="contain"
-                      radius="xl"
-                      loading="lazy"
-                      w={40}
-                      alt={review.name}
-                    />
-                    <Text fw="bold">{review.name}</Text>
-                  </Group>
-                  <Text fs="italic">{review.body}</Text>
-                </Box>
-              );
-            })}
           </SimpleGrid>
         </Box>
 
