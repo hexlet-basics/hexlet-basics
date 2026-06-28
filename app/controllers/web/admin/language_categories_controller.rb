@@ -14,8 +14,7 @@ class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationControll
   end
 
   def new
-    category = Admin::LanguageCategoryForm.new
-    category.locale = I18n.locale.to_s
+    category = Language::Category.new
     landing_pages = Language::LandingPage.web.merge(Language.ordered)
 
     render inertia: true, props: {
@@ -26,8 +25,7 @@ class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationControll
   end
 
   def edit
-    category = Admin::LanguageCategoryForm.find(params[:id])
-    category.locale = I18n.locale.to_s
+    category = Language::Category.find(params[:id])
     landing_pages = Language::LandingPage.web.merge(Language.ordered)
 
     render inertia: true, props: {
@@ -38,29 +36,31 @@ class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationControll
   end
 
   def create
-    category = Admin::LanguageCategoryForm.new(params[:data])
-    category.locale = I18n.locale.to_s
+    struct = ApplicationParamsStruct.from_params(LanguageCategoryStruct, params.require(:data))
+    result = LanguageCategoryService.create(struct, locale: I18n.locale.to_s)
 
-    if category.save
+    case result
+    when Typed::Success
       f(:success)
-      redirect_to edit_admin_language_category_path(category), inertia: { errors: category.errors }
-    else
+      redirect_to edit_admin_language_category_path(result.payload)
+    when Typed::Failure
       f(:error)
-      redirect_to new_admin_language_category_url, inertia: { errors: category.errors }
+      redirect_to new_admin_language_category_url, inertia: { errors: result.error.errors }
     end
   end
 
   def update
-    category = Admin::LanguageCategoryForm.find(params[:id])
-    category.locale = I18n.locale.to_s
+    struct = ApplicationParamsStruct.from_params(LanguageCategoryStruct, params.require(:data))
+    result = LanguageCategoryService.update(params[:id], struct, locale: I18n.locale.to_s)
 
-    if category.update(params[:data])
+    case result
+    when Typed::Success
       f(:success)
-    else
+      redirect_to edit_admin_language_category_path(result.payload)
+    when Typed::Failure
       f(:error)
+      redirect_to edit_admin_language_category_path(result.error), inertia: { errors: result.error.errors }
     end
-
-      redirect_to edit_admin_language_category_path(category), inertia: { errors: category.errors }
   end
 
   def destroy
