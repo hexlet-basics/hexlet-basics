@@ -18,7 +18,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
   end
 
   def new
-    blog_post = Admin::BlogPostForm.new
+    blog_post = BlogPost.new
     blog_post.creator = current_user
 
     render inertia: true, props: {
@@ -27,7 +27,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
   end
 
   def edit
-    blog_post = Admin::BlogPostForm.find(params[:id])
+    blog_post = BlogPost.find(params[:id])
 
     render inertia: true, props: {
       blogPostDto: BlogPostUpdateResource.new(blog_post),
@@ -43,29 +43,30 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
   end
 
   def create
-    blog_post = Admin::BlogPostForm.new(params[:data])
-    blog_post.locale = I18n.locale.to_s
-    blog_post.creator = current_user
+    struct = ApplicationParamsStruct.from_params(BlogPostStruct, params.require(:data))
+    result = BlogPostService.create(struct, creator: T.must(current_user), locale: I18n.locale.to_s, cover: params.dig(:data, :cover))
 
-    if blog_post.save
+    case result
+    when Typed::Success
       f(:success)
-      redirect_to edit_admin_blog_post_path(blog_post), inertia: { errors: blog_post.errors }
-    else
+      redirect_to edit_admin_blog_post_path(result.payload)
+    when Typed::Failure
       f(:error)
-      redirect_to new_admin_blog_post_url, inertia: { errors: blog_post.errors }
+      redirect_to new_admin_blog_post_url, inertia: { errors: result.error.errors }
     end
   end
 
   def update
-    blog_post = Admin::BlogPostForm.find(params[:id])
-    blog_post.locale = I18n.locale.to_s
+    struct = ApplicationParamsStruct.from_params(BlogPostStruct, params.require(:data))
+    result = BlogPostService.update(params[:id], struct, locale: I18n.locale.to_s, cover: params.dig(:data, :cover))
 
-    if blog_post.update(params[:data])
+    case result
+    when Typed::Success
       f(:success)
-    else
+      redirect_to edit_admin_blog_post_path(result.payload)
+    when Typed::Failure
       f(:error)
+      redirect_to edit_admin_blog_post_path(result.error), inertia: { errors: result.error.errors }
     end
-
-      redirect_to edit_admin_blog_post_path(blog_post), inertia: { errors: blog_post.errors }
   end
 end
