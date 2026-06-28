@@ -1,5 +1,6 @@
 import type { GonData } from "@/lib/gon";
 import type {
+  Banner,
   FlashKey,
   LanguageCategory,
   LanguageLandingPageForLists,
@@ -39,6 +40,7 @@ declare module "@inertiajs/core" {
     yandexIdClientId: string;
     formAuthToken: string;
     shouldAddContactMethod: boolean;
+    activeBanner: Banner | null;
     railsDirectUploadsUrl: string;
     courseCategories: LanguageCategory[];
     suffix: "ru" | null;

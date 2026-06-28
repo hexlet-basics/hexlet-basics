@@ -1126,7 +1126,7 @@ export default {
       admin: {
         application: {
           authentication: "Authentication",
-          banners: "",
+          banners: "Banners",
           blog_posts: "Blog Posts",
           dashboard: "Dashboard",
           language_categories: "Categories",

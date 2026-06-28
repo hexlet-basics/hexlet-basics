@@ -77,6 +77,12 @@ function NavbarMenu() {
       />
       <NavLink
         component={Link}
+        href={Routes.admin_banners_path()}
+        label={t(($) => $.layouts.admin.application.banners)}
+        leftSection={<IconFileText size={16} />}
+      />
+      <NavLink
+        component={Link}
         href={Routes.admin_blog_posts_path()}
         label={t(($) => $.layouts.admin.application.blog_posts)}
         leftSection={<IconFileText size={16} />}

@@ -1,6 +1,14 @@
 ru:
   activerecord:
     attributes:
+      banner:
+        background: Фон
+        body: Текст (Markdown)
+        finishes_at: Показывать до
+        locale: Локаль
+        starts_at: Показывать с
+        state: Состояние
+        url: Ссылка (URL)
       blog_post:
         body: Контент
         creator: Автор

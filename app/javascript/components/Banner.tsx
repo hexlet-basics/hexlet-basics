@@ -1,29 +1,56 @@
 import { usePage } from "@inertiajs/react";
-import { Alert, Anchor, Box, Card } from "@mantine/core";
+import { Anchor, Box } from "@mantine/core";
+import type { ComponentPropsWithoutRef } from "react";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { propsForExternalLink } from "@/lib/utils";
+import type { BannerBackground } from "@/types/serializers";
+
+// Пресеты фона. Ключи синхронизированы с Banner::Background (бэкенд).
+const backgroundStyles: Record<BannerBackground, string> = {
+  cta_gradient: "var(--app-cta-gradient)",
+  dark: "var(--mantine-color-dark-6)",
+  blue: "var(--mantine-color-blue-6)",
+};
+
+// Инлайн-рендер markdown: убираем блочную обёртку <p> и ссылки
+// (ссылка задаётся целиком полем url на уровне всего баннера).
+const inlineComponents = {
+  p: ({ children }: ComponentPropsWithoutRef<"p">) => <>{children}</>,
+  a: ({ children }: ComponentPropsWithoutRef<"a">) => <>{children}</>,
+};
 
 export function Banner() {
-  const { locale } = usePage().props;
-  // const { t } = useTranslation();
+  const { activeBanner } = usePage().props;
+
+  if (!activeBanner) {
+    return null;
+  }
+
+  const background =
+    backgroundStyles[activeBanner.background] ?? backgroundStyles.cta_gradient;
+
+  const content = (
+    <Markdown
+      skipHtml
+      remarkPlugins={[remarkGfm]}
+      disallowedElements={["a"]}
+      unwrapDisallowed
+      components={inlineComponents}
+    >
+      {activeBanner.body}
+    </Markdown>
+  );
 
   return (
-    <>
-      {locale === "ru" && (
-        <Box
-          variant="gradient"
-          bg="var(--app-cta-gradient)"
-          p="xs"
-          my="xl"
-          ta="center"
-        >
-          <Anchor
-            href="https://ru.hexlet.io/programs/vibecoding-claudecode?utm_source=codebasics&utm_medium=banner&utm_campaign=vibecoding_course"
-            {...propsForExternalLink()}
-          >
-            Курс по вайбкодингу <b>со скидкой 17%</b> • только до 7 июня
-          </Anchor>
-        </Box>
+    <Box bg={background} p="xs" my="xl" ta="center">
+      {activeBanner.url ? (
+        <Anchor href={activeBanner.url} {...propsForExternalLink()}>
+          {content}
+        </Anchor>
+      ) : (
+        content
       )}
-    </>
+    </Box>
   );
 }

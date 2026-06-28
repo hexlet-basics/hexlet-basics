@@ -1,6 +1,14 @@
 en:
   activerecord:
     attributes:
+      banner:
+        background: Background
+        body: Text (Markdown)
+        finishes_at: Show until
+        locale: Locale
+        starts_at: Show from
+        state: State
+        url: Link (URL)
       blog_post:
         body: Content
         creator: Author

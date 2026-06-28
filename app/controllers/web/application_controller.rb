@@ -37,8 +37,11 @@ class Web::ApplicationController < ApplicationController
       .merge(Language.ordered)
       .includes(:language)
 
+    active_banner = Banner.active.first
+
     {
       shouldAddContactMethod: current_user&.should_be_lead? || false,
+      activeBanner: active_banner && BannerResource.new(active_banner),
       courseCategories: Language::CategoryResource.new(language_categories),
       colorScheme: current_color_scheme,
       railsDirectUploadsUrl: view_context.rails_direct_uploads_url,
