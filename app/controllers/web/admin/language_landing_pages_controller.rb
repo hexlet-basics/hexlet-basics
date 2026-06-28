@@ -13,8 +13,7 @@ class Web::Admin::LanguageLandingPagesController < Web::Admin::ApplicationContro
   end
 
   def new
-    landing_page = Admin::LanguageLandingPageForm.new
-    landing_page.locale = I18n.locale.to_s
+    landing_page = Language::LandingPage.new
     landing_pages = Language::LandingPage.published
 
     languages = Language.all
@@ -28,7 +27,7 @@ class Web::Admin::LanguageLandingPagesController < Web::Admin::ApplicationContro
   end
 
   def edit
-    landing_page = Admin::LanguageLandingPageForm.with_locale.find(params[:id])
+    landing_page = Language::LandingPage.with_locale.find(params[:id])
     languages = Language.all
     landing_pages = Language::LandingPage.published
 
@@ -41,29 +40,30 @@ class Web::Admin::LanguageLandingPagesController < Web::Admin::ApplicationContro
   end
 
   def create
-    landing_page = Admin::LanguageLandingPageForm.new(params[:data])
-    landing_page.locale = I18n.locale.to_s
+    struct = ApplicationParamsStruct.from_params(LandingPageStruct, params.require(:data))
+    result = LandingPageService.create(struct, locale: I18n.locale.to_s, outcomes_image: params.dig(:data, :outcomes_image))
 
-    if landing_page.save
+    case result
+    when Typed::Success
       f(:success)
       redirect_to admin_language_landing_pages_path
-    else
+    when Typed::Failure
       f(:error)
-      redirect_to new_admin_language_landing_page_path, inertia: { errors: landing_page.errors }
+      redirect_to new_admin_language_landing_page_path, inertia: { errors: result.error.errors }
     end
   end
 
   def update
-    landing_page = Admin::LanguageLandingPageForm.with_locale.find(params[:id])
-    # raise params.inspect
+    struct = ApplicationParamsStruct.from_params(LandingPageStruct, params.require(:data))
+    result = LandingPageService.update(params[:id], struct, outcomes_image: params.dig(:data, :outcomes_image))
 
-    if landing_page.update(params[:data])
+    case result
+    when Typed::Success
       f(:success)
-    else
-      # raise landing_page.qna_items.inspect
-      # raise landing_page.errors.full_messages.inspect
+      redirect_to edit_admin_language_landing_page_path(result.payload)
+    when Typed::Failure
       f(:error)
+      redirect_to edit_admin_language_landing_page_path(result.error), inertia: { errors: result.error.errors }
     end
-    redirect_to edit_admin_language_landing_page_path(landing_page), inertia: { errors: landing_page.errors }
   end
 end
