@@ -56,7 +56,7 @@ class Web::HomeController < Web::ApplicationController
     }
     set_meta_tags seo_tags
 
-    user = User::SignUpForm.new
+    user = User.new
 
     render inertia: true, props: {
       courseMembersByCourseId: language_member_resources_by_language,

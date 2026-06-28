@@ -107,7 +107,7 @@ class Web::LanguagesController < Web::ApplicationController
     #     id: :desc
     #   ).limit(6)
 
-    user = User::SignUpForm.new
+    user = User.new
 
     render inertia: true, props: {
       courseLandingPage: Language::LandingPageResource.new(landing_page),
