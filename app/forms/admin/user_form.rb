@@ -1,3 +1,5 @@
+# typed: true
+
 class Admin::UserForm < User
   include ActiveFormModel
 

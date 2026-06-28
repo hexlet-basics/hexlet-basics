@@ -1,3 +1,5 @@
+# typed: true
+
 class Admin::ReviewForm < Review
   include ActiveFormModel
 

@@ -1,3 +1,4 @@
+# typed: true
 # frozen_string_literal: true
 
 class Admin::BlogPostForm < BlogPost

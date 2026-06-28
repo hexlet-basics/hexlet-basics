@@ -1,3 +1,5 @@
+# typed: true
+
 class Admin::LanguageLandingPageForm < Language::LandingPage
   include ActiveFormModel
 

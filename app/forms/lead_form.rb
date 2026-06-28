@@ -1,3 +1,5 @@
+# typed: true
+
 class LeadForm < Lead
   include ActiveFormModel
 

@@ -1,3 +1,5 @@
+# typed: true
+
 class User::SignUpForm < User
   include ActiveFormModel
 

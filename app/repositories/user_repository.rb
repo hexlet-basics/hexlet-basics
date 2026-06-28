@@ -1,9 +1,13 @@
+# typed: true
 # frozen_string_literal: true
 
 module UserRepository
   extend ActiveSupport::Concern
+  extend T::Helpers
+  requires_ancestor { User }
 
   included do
+    T.bind(self, T.class_of(ActiveRecord::Base))
     scope :admin, -> { where(admin: true) }
   end
 

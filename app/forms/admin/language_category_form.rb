@@ -1,3 +1,5 @@
+# typed: true
+
 class Admin::LanguageCategoryForm < Language::Category
   include ActiveFormModel
 
@@ -11,7 +13,7 @@ class Admin::LanguageCategoryForm < Language::Category
   end
 
   def save(...)
-    persisted = nil
+    persisted = T.let(nil, T.untyped)
 
     transaction do
       persisted = super
@@ -27,7 +29,7 @@ class Admin::LanguageCategoryForm < Language::Category
     attrs = attributes.to_unsafe_h
     self.language_landing_page_ids = attrs["language_landing_page_ids"] || attrs[:language_landing_page_ids]
 
-    updated = nil
+    updated = T.let(nil, T.untyped)
 
     transaction do
       updated = super(attrs.except("language_landing_page_ids", :language_landing_page_ids))

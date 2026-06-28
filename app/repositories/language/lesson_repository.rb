@@ -1,9 +1,13 @@
+# typed: true
 # frozen_string_literal: true
 
 module Language::LessonRepository
   extend ActiveSupport::Concern
+  extend T::Helpers
+  requires_ancestor { ActiveRecord::Base }
 
   included do
+    T.bind(self, T.class_of(Language::Lesson))
     scope :web, -> { active }
 
     scope :left_join_lesson_member_and_user, ->(user) {

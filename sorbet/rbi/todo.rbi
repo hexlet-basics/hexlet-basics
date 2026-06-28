@@ -5,7 +5,6 @@
 # typed: false
 
 module ::FFI::ModernForkTracking; end
-module ActionCable::Helpers::ActionCableHelper; end
 module Bundler::FetchMetadata; end
 module Bundler::MatchMetadata; end
 module CountryInfo::ISO3166::Country; end

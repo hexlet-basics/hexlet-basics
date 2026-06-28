@@ -1,10 +1,14 @@
+# typed: true
 # frozen_string_literal: true
 
 module Language::Lesson::Version::InfoRepository
   extend ActiveSupport::Concern
+  extend T::Helpers
+  requires_ancestor { ActiveRecord::Base }
   include LocaleRepository
 
   included do
+    T.bind(self, T.class_of(ActiveRecord::Base))
     # scope :left_join_lesson_member_and_user, ->(user) { joins("LEFT OUTER JOIN language_lesson_members ON language_lesson_members.lesson_id = language_lesson_version_infos.language_lesson_id AND language_lesson_members.user_id = #{user.id}") }
     scope :current, -> {
       joins(:language)

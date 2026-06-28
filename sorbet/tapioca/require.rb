@@ -3,6 +3,15 @@
 
 require "English"
 require "action_cable/engine"
+# ActionCable's Channel::Base / Connection::Base are autoloaded by the engine and
+# otherwise absent when tapioca reflects the gem, leaving an empty actioncable RBI
+# (and our channels' superclasses unresolved). Force-load them so tapioca captures
+# them as real classes.
+require "action_cable/channel/base"
+require "action_cable/connection/base"
+# Load every ActiveSupport core extension so tapioca captures methods like
+# TimeWithZone#beginning_of_day that are otherwise autoloaded and missing.
+require "active_support/all"
 require "action_controller/railtie"
 require "action_mailer/railtie"
 require "action_view/railtie"

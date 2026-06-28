@@ -1,3 +1,5 @@
+# typed: true
+
 class FindRelatedCoursesForBlogPostJob < ApplicationJob
   def perform(blog_post_id)
     blog_post = BlogPost.find(blog_post_id)

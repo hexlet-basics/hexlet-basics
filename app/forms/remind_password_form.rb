@@ -1,3 +1,5 @@
+# typed: true
+
 class RemindPasswordForm
   include ActiveFormModel::Virtual
 

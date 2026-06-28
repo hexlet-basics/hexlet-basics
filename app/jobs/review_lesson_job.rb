@@ -1,3 +1,5 @@
+# typed: true
+
 class ReviewLessonJob < ApplicationJob
   def perform(lesson_info_id)
     info = Language::Lesson::Version::Info.find(lesson_info_id)
@@ -5,7 +7,7 @@ class ReviewLessonJob < ApplicationJob
       lesson: info.lesson,
       locale: info.locale
 
-    messages = info.lesson.messages.user_role.order(id: :desc).limit(100)
+    messages = T.must(info.lesson).messages.user_role.order(id: :desc).limit(100)
 
     raw_output = nil
     if !messages.empty?

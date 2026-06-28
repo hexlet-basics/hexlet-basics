@@ -1,10 +1,14 @@
+# typed: true
 # frozen_string_literal: true
 
 module Language::Version::InfoRepository
   extend ActiveSupport::Concern
+  extend T::Helpers
+  requires_ancestor { ActiveRecord::Base }
   include LocaleRepository
 
   included do
+    T.bind(self, T.class_of(ActiveRecord::Base))
     scope :completed, -> { merge(Language.completed_progress) }
     scope :incompleted, -> { merge(Language.in_development_progress) }
     scope :ordered, -> { order("language.order asc") }
