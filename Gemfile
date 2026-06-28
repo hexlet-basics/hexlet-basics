@@ -43,6 +43,7 @@ gem "ostruct"
 # gem "configus"
 gem "geocoder"
 gem "image_processing"
+gem "ruby-vips", "~> 2.0", require: false
 # gem 'responders'
 
 # gem 'http_accept_language'
@@ -50,6 +51,7 @@ gem "pagy"
 # gem 'omniauth-facebook'
 # gem 'omniauth-github'
 # gem 'omniauth-rails_csrf_protection'
+gem "phonelib"
 gem "ransack"
 # gem 'redis'
 gem "term-ansicolor"
