@@ -6,21 +6,19 @@ import { useAppForm } from "@/hooks/useAppForm";
 import ApplicationLayout from "@/layouts/ApplicationLayout";
 import { emailInputProps } from "@/lib/authFieldProps";
 import * as Routes from "@/routes.js";
-import type { PasswordReminderForm } from "@/types";
 
-type Props = PropsWithChildren & {
-  passwordReminder: PasswordReminderForm;
-};
+type Props = PropsWithChildren;
 
-export default function New({ passwordReminder }: Props) {
+export default function New(_props: Props) {
   const { t } = useTranslation();
 
-  const payload = passwordReminder;
-
-  const { onSubmit, processing, form } = useAppForm(payload, {
-    url: Routes.remind_password_path(),
-    method: "post",
-  });
+  const { onSubmit, processing, form } = useAppForm(
+    { email: "" },
+    {
+      url: Routes.remind_password_path(),
+      method: "post",
+    },
+  );
 
   return (
     <ApplicationLayout center header={t(($) => $.remind_passwords.new.title)}>

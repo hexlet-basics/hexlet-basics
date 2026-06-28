@@ -4,30 +4,28 @@ class Web::RemindPasswordsController < Web::ApplicationController
   allow_unauthenticated_access
 
   def new
-    remind_password_form = RemindPasswordForm.new
-
     seo_tags = {
       title: t(".title")
     }
     set_meta_tags seo_tags
 
-    render inertia: true, props: {
-      passwordReminder: PasswordReminderFormResource.new(remind_password_form)
-    }
+    render inertia: true, props: {}
   end
 
   def create
-    remind_password_form = RemindPasswordForm.new(params[:data])
+    struct = ApplicationParamsStruct.from_params!(RemindPasswordStruct, params.require(:data))
 
-    if remind_password_form.valid?
-      user = remind_password_form.user
-      UserService.reset_password!(user, params[:suffix])
+    user = User.find_by(email: struct.email)
 
-      f(:success)
-      redirect_to root_path
-    else
+    unless user
+      struct.errors.add(:email, :user_does_not_exist)
       f(:error)
-      redirect_to new_remind_password_url, inertia: { errors: remind_password_form.errors }
+      return redirect_to new_remind_password_url, inertia: { errors: struct.errors }
     end
+
+    UserService.reset_password!(user, params[:suffix])
+
+    f(:success)
+    redirect_to root_path
   end
 end
