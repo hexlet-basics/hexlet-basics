@@ -14,14 +14,14 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   end
 
   def new
-    language = Admin::LanguageForm.new
+    language = Language.new
     render inertia: true, props: {
       courseDto: LanguageCreateResource.new(language)
     }
   end
 
   def edit
-    language = Admin::LanguageForm.find(params[:id])
+    language = Language.find(params[:id])
     versions = language.versions.limit(5).order(created_at: :desc)
     landing_page = language.landing_pages.published.find_by(locale: I18n.locale, main: true)
 
@@ -33,14 +33,16 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   end
 
   def create
-    language = Admin::LanguageForm.new(params[:data])
+    struct = ApplicationParamsStruct.from_params(LanguageStruct, params.require(:data))
+    result = LanguageService.create(struct, cover: params.dig(:data, :cover))
 
-    if language.save
+    case result
+    when Typed::Success
       f(:success)
       redirect_to admin_languages_path
-    else
+    when Typed::Failure
       f(:error)
-      redirect_to new_admin_language_path, inertia: { errors: language.errors }
+      redirect_to new_admin_language_path, inertia: { errors: result.error.errors }
     end
   end
 
@@ -56,13 +58,16 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   end
 
   def update
-    language = Admin::LanguageForm.find(params[:id])
+    struct = ApplicationParamsStruct.from_params(LanguageStruct, params.require(:data))
+    result = LanguageService.update(params[:id], struct, cover: params.dig(:data, :cover))
 
-    if language.update(params[:data])
+    case result
+    when Typed::Success
       f(:success)
-    else
+      redirect_to edit_admin_language_path(result.payload)
+    when Typed::Failure
       f(:error)
+      redirect_to edit_admin_language_path(result.error), inertia: { errors: result.error.errors }
     end
-    redirect_to edit_admin_language_path(language), inertia: { errors: language.errors }
   end
 end
