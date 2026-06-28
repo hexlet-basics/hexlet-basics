@@ -1,9 +1,16 @@
+# typed: true
 # frozen_string_literal: true
 
 module RedirectConcern
   extend ActiveSupport::Concern
+  extend T::Sig
+  extend T::Helpers
+  requires_ancestor { ApplicationController }
 
   def redirect_archived_language
+    # landing_page is defined on the concrete controller (Web::LanguagesController),
+    # not ApplicationController, so it isn't visible here — reach it via T.unsafe.
+    landing_page = send(:landing_page)
     if landing_page.archived?
       next_landing_page = landing_page.landing_page_to_redirect
       main_landing_page = landing_page.language.landing_pages.find_by(main: true)

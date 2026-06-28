@@ -1164,6 +1164,9 @@ class Language::Category::Item
 
     Elem = type_member { { fixed: ::Language::Category::Item } }
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig { returns(T::Array[::Language::Category::Item]) }
     def to_a; end
 
@@ -1269,6 +1272,9 @@ class Language::Category::Item
     end
     def push(*records); end
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig do
       params(
         other_array: T.any(::Language::Category::Item, T::Enumerable[T.any(::Language::Category::Item, T::Enumerable[::Language::Category::Item])])
@@ -1294,6 +1300,9 @@ class Language::Category::Item
     include GeneratedRelationMethods
 
     Elem = type_member { { fixed: ::Language::Category::Item } }
+
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
 
     sig { returns(T::Array[::Language::Category::Item]) }
     def to_a; end

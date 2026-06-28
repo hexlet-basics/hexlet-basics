@@ -1660,6 +1660,9 @@ class BlogPost
 
     Elem = type_member { { fixed: ::BlogPost } }
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig { returns(T::Array[::BlogPost]) }
     def to_a; end
 
@@ -1765,6 +1768,9 @@ class BlogPost
     end
     def push(*records); end
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig do
       params(
         other_array: T.any(::BlogPost, T::Enumerable[T.any(::BlogPost, T::Enumerable[::BlogPost])])
@@ -1790,6 +1796,9 @@ class BlogPost
     include GeneratedRelationMethods
 
     Elem = type_member { { fixed: ::BlogPost } }
+
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
 
     sig { returns(T::Array[::BlogPost]) }
     def to_a; end

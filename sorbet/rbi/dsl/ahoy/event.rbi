@@ -1171,6 +1171,9 @@ class Ahoy::Event
 
     Elem = type_member { { fixed: ::Ahoy::Event } }
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig { returns(T::Array[::Ahoy::Event]) }
     def to_a; end
 
@@ -1276,6 +1279,9 @@ class Ahoy::Event
     end
     def push(*records); end
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig do
       params(
         other_array: T.any(::Ahoy::Event, T::Enumerable[T.any(::Ahoy::Event, T::Enumerable[::Ahoy::Event])])
@@ -1301,6 +1307,9 @@ class Ahoy::Event
     include GeneratedRelationMethods
 
     Elem = type_member { { fixed: ::Ahoy::Event } }
+
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
 
     sig { returns(T::Array[::Ahoy::Event]) }
     def to_a; end

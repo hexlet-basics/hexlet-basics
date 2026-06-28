@@ -1,3 +1,5 @@
+# typed: true
+
 class Ai::Lessons::MessagesController < Ai::ApplicationController
   # include Import["openai_api"]
 

@@ -1,3 +1,5 @@
+# typed: true
+
 class Web::Admin::MessagesController < Web::Admin::ApplicationController
   def index
     q = ransack_params("sf" => "id", "so" => "desc")
@@ -16,7 +18,7 @@ class Web::Admin::MessagesController < Web::Admin::ApplicationController
 
   def by_lesson_member
     scope = Language::Lesson::Member.order(id: :desc)
-    pagy, records = pagy(scope)
+    pagy, records = T.unsafe(self).pagy(scope)
 
     render inertia: true, props: {
       members: Language::Lesson::MemberResource.new(records),

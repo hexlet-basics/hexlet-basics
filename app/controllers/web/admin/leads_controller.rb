@@ -1,3 +1,5 @@
+# typed: true
+
 class Web::Admin::LeadsController < Web::Admin::ApplicationController
   def index
     q = ransack_params("sf" => "id", "so" => "desc")

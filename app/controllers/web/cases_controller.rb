@@ -1,3 +1,5 @@
+# typed: true
+
 class Web::CasesController < Web::ApplicationController
   allow_unauthenticated_access
   before_action :require_russian_locale

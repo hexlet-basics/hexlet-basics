@@ -1,3 +1,5 @@
+# typed: true
+
 class Web::LanguagesController < Web::ApplicationController
   allow_unauthenticated_access except: [ :success ]
   before_action :require_authentication, only: [ :success ]

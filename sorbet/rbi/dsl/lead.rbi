@@ -1520,6 +1520,9 @@ class Lead
 
     Elem = type_member { { fixed: ::Lead } }
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig { returns(T::Array[::Lead]) }
     def to_a; end
 
@@ -1625,6 +1628,9 @@ class Lead
     end
     def push(*records); end
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig do
       params(
         other_array: T.any(::Lead, T::Enumerable[T.any(::Lead, T::Enumerable[::Lead])])
@@ -1650,6 +1656,9 @@ class Lead
     include GeneratedRelationMethods
 
     Elem = type_member { { fixed: ::Lead } }
+
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
 
     sig { returns(T::Array[::Lead]) }
     def to_a; end

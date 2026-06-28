@@ -1,8 +1,13 @@
+# typed: true
+
 class ApplicationController < ActionController::Base
   # meta-tags includes this into ActionController::Base via its Railtie on_load
   # hook (which tapioca can't see); state it explicitly so set_meta_tags resolves
   # for typed controllers without an RBI shim. Idempotent at runtime.
   include MetaTags::ControllerHelper
+  # browser gem also mixes this in via its Railtie on_load hook (invisible to
+  # tapioca); state it explicitly so `browser` resolves on controllers. Idempotent.
+  include Browser::ActionController
 
   include ActiveStorage::SetCurrent
   include Pundit::Authorization

@@ -1,3 +1,4 @@
+# typed: true
 # frozen_string_literal: true
 
 class Web::Admin::Api::UsersController < Web::Admin::Api::ApplicationController

@@ -2530,6 +2530,9 @@ class User
 
     Elem = type_member { { fixed: ::User } }
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig { returns(T::Array[::User]) }
     def to_a; end
 
@@ -2635,6 +2638,9 @@ class User
     end
     def push(*records); end
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig do
       params(
         other_array: T.any(::User, T::Enumerable[T.any(::User, T::Enumerable[::User])])
@@ -2660,6 +2666,9 @@ class User
     include GeneratedRelationMethods
 
     Elem = type_member { { fixed: ::User } }
+
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
 
     sig { returns(T::Array[::User]) }
     def to_a; end

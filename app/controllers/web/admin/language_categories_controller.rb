@@ -1,3 +1,5 @@
+# typed: true
+
 class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationController
   def index
     default_params = { "sf" => "id", "so" => "desc" }
@@ -13,7 +15,7 @@ class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationControll
 
   def new
     category = Admin::LanguageCategoryForm.new
-    category.locale = I18n.locale
+    category.locale = I18n.locale.to_s
     landing_pages = Language::LandingPage.web.merge(Language.ordered)
 
     render inertia: true, props: {
@@ -25,7 +27,7 @@ class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationControll
 
   def edit
     category = Admin::LanguageCategoryForm.find(params[:id])
-    category.locale = I18n.locale
+    category.locale = I18n.locale.to_s
     landing_pages = Language::LandingPage.web.merge(Language.ordered)
 
     render inertia: true, props: {
@@ -37,7 +39,7 @@ class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationControll
 
   def create
     category = Admin::LanguageCategoryForm.new(params[:data])
-    category.locale = I18n.locale
+    category.locale = I18n.locale.to_s
 
     if category.save
       f(:success)
@@ -50,7 +52,7 @@ class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationControll
 
   def update
     category = Admin::LanguageCategoryForm.find(params[:id])
-    category.locale = I18n.locale
+    category.locale = I18n.locale.to_s
 
     if category.update(params[:data])
       f(:success)

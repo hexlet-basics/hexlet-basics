@@ -1,7 +1,10 @@
+# typed: true
+
 class Web::Admin::ApplicationController < Web::ApplicationController
   before_action :authenticate_admin!
 
   before_action do
+    T.bind(self, Web::Admin::ApplicationController)
     seo_tags = {
       title: t(".title")
     }

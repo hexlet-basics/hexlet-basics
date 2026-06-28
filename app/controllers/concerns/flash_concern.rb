@@ -1,6 +1,11 @@
+# typed: true
 # frozen_string_literal: true
 
 module FlashConcern
+  extend T::Sig
+  extend T::Helpers
+  requires_ancestor { ApplicationController }
+
   def f(key, options = {})
     controller = self.class
     values = options[:values] || {}
@@ -32,7 +37,7 @@ module FlashConcern
       keys << lookup_key.join(".").to_sym
     else
       while lookup_controller.superclass.name != "ActionController::Base"
-        lookup_key = []
+        lookup_key = T.let([], T::Array[T.untyped])
         lookup_key << lookup_controller.controller_path.tr("/", ".")
         lookup_key << lookup_action
         lookup_key << key

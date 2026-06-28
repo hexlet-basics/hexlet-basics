@@ -1,3 +1,4 @@
+# typed: true
 # frozen_string_literal: true
 
 module ColorSchemeConcern
@@ -6,7 +7,14 @@ module ColorSchemeConcern
 
   extend ActiveSupport::Concern
 
+  extend T::Sig
+
+  extend T::Helpers
+
+  requires_ancestor { ApplicationController }
+
   included do
+    T.bind(self, T.class_of(ApplicationController))
     helper_method :current_color_scheme
   end
 

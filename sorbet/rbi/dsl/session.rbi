@@ -1094,6 +1094,9 @@ class Session
 
     Elem = type_member { { fixed: ::Session } }
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig { returns(T::Array[::Session]) }
     def to_a; end
 
@@ -1199,6 +1202,9 @@ class Session
     end
     def push(*records); end
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig do
       params(
         other_array: T.any(::Session, T::Enumerable[T.any(::Session, T::Enumerable[::Session])])
@@ -1224,6 +1230,9 @@ class Session
     include GeneratedRelationMethods
 
     Elem = type_member { { fixed: ::Session } }
+
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
 
     sig { returns(T::Array[::Session]) }
     def to_a; end

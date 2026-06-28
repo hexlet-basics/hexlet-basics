@@ -2353,6 +2353,9 @@ class Language::LandingPage
 
     Elem = type_member { { fixed: ::Language::LandingPage } }
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig { returns(T::Array[::Language::LandingPage]) }
     def to_a; end
 
@@ -2458,6 +2461,9 @@ class Language::LandingPage
     end
     def push(*records); end
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig do
       params(
         other_array: T.any(::Language::LandingPage, T::Enumerable[T.any(::Language::LandingPage, T::Enumerable[::Language::LandingPage])])
@@ -2483,6 +2489,9 @@ class Language::LandingPage
     include GeneratedRelationMethods
 
     Elem = type_member { { fixed: ::Language::LandingPage } }
+
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
 
     sig { returns(T::Array[::Language::LandingPage]) }
     def to_a; end

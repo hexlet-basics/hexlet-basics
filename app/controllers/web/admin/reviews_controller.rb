@@ -1,3 +1,4 @@
+# typed: true
 # frozen_string_literal: true
 
 class Web::Admin::ReviewsController < Web::Admin::ApplicationController
@@ -34,7 +35,7 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
 
   def create
     review = Admin::ReviewForm.new(params[:data])
-    review.locale = I18n.locale
+    review.locale = I18n.locale.to_s
 
     if review.save
       f(:success)
@@ -47,7 +48,7 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
 
   def update
     review = Admin::ReviewForm.find(params[:id])
-    review.locale = I18n.locale
+    review.locale = I18n.locale.to_s
 
     if review.update(params[:data])
       f(:success)

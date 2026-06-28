@@ -1129,6 +1129,9 @@ class BookRequest
 
     Elem = type_member { { fixed: ::BookRequest } }
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig { returns(T::Array[::BookRequest]) }
     def to_a; end
 
@@ -1234,6 +1237,9 @@ class BookRequest
     end
     def push(*records); end
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig do
       params(
         other_array: T.any(::BookRequest, T::Enumerable[T.any(::BookRequest, T::Enumerable[::BookRequest])])
@@ -1259,6 +1265,9 @@ class BookRequest
     include GeneratedRelationMethods
 
     Elem = type_member { { fixed: ::BookRequest } }
+
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
 
     sig { returns(T::Array[::BookRequest]) }
     def to_a; end

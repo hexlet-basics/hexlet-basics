@@ -1149,6 +1149,9 @@ class User::Account
 
     Elem = type_member { { fixed: ::User::Account } }
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig { returns(T::Array[::User::Account]) }
     def to_a; end
 
@@ -1254,6 +1257,9 @@ class User::Account
     end
     def push(*records); end
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig do
       params(
         other_array: T.any(::User::Account, T::Enumerable[T.any(::User::Account, T::Enumerable[::User::Account])])
@@ -1279,6 +1285,9 @@ class User::Account
     include GeneratedRelationMethods
 
     Elem = type_member { { fixed: ::User::Account } }
+
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
 
     sig { returns(T::Array[::User::Account]) }
     def to_a; end

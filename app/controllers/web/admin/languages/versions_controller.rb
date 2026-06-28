@@ -1,3 +1,4 @@
+# typed: true
 # frozen_string_literal: true
 
 class Web::Admin::Languages::VersionsController < Web::Admin::Languages::ApplicationController

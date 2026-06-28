@@ -1,3 +1,5 @@
+# typed: true
+
 class Web::BlogPosts::LikesController < Web::BlogPosts::ApplicationController
   def create
     session[:blog_post_likes] ||= {}

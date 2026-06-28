@@ -1492,6 +1492,9 @@ class Survey
 
     Elem = type_member { { fixed: ::Survey } }
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig { returns(T::Array[::Survey]) }
     def to_a; end
 
@@ -1597,6 +1600,9 @@ class Survey
     end
     def push(*records); end
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig do
       params(
         other_array: T.any(::Survey, T::Enumerable[T.any(::Survey, T::Enumerable[::Survey])])
@@ -1622,6 +1628,9 @@ class Survey
     include GeneratedRelationMethods
 
     Elem = type_member { { fixed: ::Survey } }
+
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
 
     sig { returns(T::Array[::Survey]) }
     def to_a; end

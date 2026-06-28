@@ -1,3 +1,5 @@
+# typed: true
+
 class Web::Languages::LessonsController < Web::Languages::ApplicationController
   allow_unauthenticated_access
 

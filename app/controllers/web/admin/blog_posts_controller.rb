@@ -1,3 +1,5 @@
+# typed: true
+
 class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
   def index
     default_params = { "sf" => "id", "so" => "desc" }
@@ -42,7 +44,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
 
   def create
     blog_post = Admin::BlogPostForm.new(params[:data])
-    blog_post.locale = I18n.locale
+    blog_post.locale = I18n.locale.to_s
     blog_post.creator = current_user
 
     if blog_post.save
@@ -56,7 +58,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
 
   def update
     blog_post = Admin::BlogPostForm.find(params[:id])
-    blog_post.locale = I18n.locale
+    blog_post.locale = I18n.locale.to_s
 
     if blog_post.update(params[:data])
       f(:success)

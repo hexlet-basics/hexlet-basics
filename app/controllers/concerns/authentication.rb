@@ -1,13 +1,20 @@
+# typed: true
+
 module Authentication
   extend ActiveSupport::Concern
+  extend T::Sig
+  extend T::Helpers
+  requires_ancestor { ApplicationController }
 
   included do
+    T.bind(self, T.class_of(ApplicationController))
     before_action :require_authentication
     # helper_method :authenticated?
   end
 
   class_methods do
     def allow_unauthenticated_access(**options)
+        T.bind(self, T.class_of(ApplicationController))
       skip_before_action :require_authentication, **options
     end
   end

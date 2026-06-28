@@ -1,3 +1,4 @@
+# typed: true
 # frozen_string_literal: true
 
 class Web::ReviewsController < Web::ApplicationController
@@ -7,7 +8,7 @@ class Web::ReviewsController < Web::ApplicationController
     scope = Review.published_state.with_locale
       .includes([ :user, :language ])
       .order(id: :desc)
-    pagy, records = pagy(scope)
+    pagy, records = T.unsafe(self).pagy(scope)
 
     description = t(".meta.description").truncate(160)
     seo_tags = {

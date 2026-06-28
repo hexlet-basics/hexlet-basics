@@ -1,3 +1,4 @@
+# typed: true
 # frozen_string_literal: true
 
 class Web::Admin::Api::LanguageCategories::QnaItemsController < Web::Admin::Api::ApplicationController

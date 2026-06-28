@@ -1,3 +1,5 @@
+# typed: true
+
 class Web::Admin::LanguageLandingPagesController < Web::Admin::ApplicationController
   def index
     q = ransack_params("sf" => "id", "so" => "desc", fields: { "state_eq" => "published" })
@@ -12,7 +14,7 @@ class Web::Admin::LanguageLandingPagesController < Web::Admin::ApplicationContro
 
   def new
     landing_page = Admin::LanguageLandingPageForm.new
-    landing_page.locale = I18n.locale
+    landing_page.locale = I18n.locale.to_s
     landing_pages = Language::LandingPage.published
 
     languages = Language.all
@@ -40,7 +42,7 @@ class Web::Admin::LanguageLandingPagesController < Web::Admin::ApplicationContro
 
   def create
     landing_page = Admin::LanguageLandingPageForm.new(params[:data])
-    landing_page.locale = I18n.locale
+    landing_page.locale = I18n.locale.to_s
 
     if landing_page.save
       f(:success)

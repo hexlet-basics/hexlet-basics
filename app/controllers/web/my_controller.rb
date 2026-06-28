@@ -1,3 +1,5 @@
+# typed: true
+
 class Web::MyController < Web::ApplicationController
   before_action :require_authentication
 

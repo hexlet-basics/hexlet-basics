@@ -1,3 +1,5 @@
+# typed: true
+
 class Web::BlogPostsController < Web::ApplicationController
   allow_unauthenticated_access
 
@@ -5,7 +7,7 @@ class Web::BlogPostsController < Web::ApplicationController
     scope = BlogPost.published_state.with_locale
       .includes([ :creator, { cover_attachment: :blob } ])
       .order(id: :desc)
-    pagy, records = pagy(scope)
+    pagy, records = T.unsafe(self).pagy(scope)
 
     seo_tags = {
       title: t(".header"),
@@ -38,7 +40,7 @@ class Web::BlogPostsController < Web::ApplicationController
 
     related_landings = blog_post.related_main_language_landing_pages.merge(BlogPost::RelatedLanguageItem.order(order: :asc))
 
-    image_url = blog_post.cover.attached? && view_context.rails_representation_url(blog_post.cover.variant(:main))
+    image_url = blog_post.cover.attached? && view_context.rails_representation_url(T.unsafe(blog_post.cover).variant(:main))
     seo_tags = {
       title: blog_post.name,
       description: blog_post.description,

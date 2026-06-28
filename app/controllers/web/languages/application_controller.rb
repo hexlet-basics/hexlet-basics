@@ -1,3 +1,5 @@
+# typed: true
+
 class Web::Languages::ApplicationController < Web::ApplicationController
   def resource_language
     @resource_language ||= Language.find_by!(slug: params[:language_id])

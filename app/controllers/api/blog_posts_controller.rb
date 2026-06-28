@@ -1,3 +1,5 @@
+# typed: true
+
 class Api::BlogPostsController < Api::ApplicationController
   allow_unauthenticated_access
 

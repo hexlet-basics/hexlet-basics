@@ -1194,6 +1194,9 @@ class Language::Category::QnaItem
 
     Elem = type_member { { fixed: ::Language::Category::QnaItem } }
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig { returns(T::Array[::Language::Category::QnaItem]) }
     def to_a; end
 
@@ -1299,6 +1302,9 @@ class Language::Category::QnaItem
     end
     def push(*records); end
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig do
       params(
         other_array: T.any(::Language::Category::QnaItem, T::Enumerable[T.any(::Language::Category::QnaItem, T::Enumerable[::Language::Category::QnaItem])])
@@ -1324,6 +1330,9 @@ class Language::Category::QnaItem
     include GeneratedRelationMethods
 
     Elem = type_member { { fixed: ::Language::Category::QnaItem } }
+
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
 
     sig { returns(T::Array[::Language::Category::QnaItem]) }
     def to_a; end

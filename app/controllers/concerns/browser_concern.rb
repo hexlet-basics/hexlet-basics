@@ -1,7 +1,11 @@
+# typed: true
 # frozen_string_literal: true
 
 module BrowserConcern
   extend ActiveSupport::Concern
+  extend T::Sig
+  extend T::Helpers
+  requires_ancestor { ApplicationController }
 
   # class_methods do
   #   def allow_modern_browsers

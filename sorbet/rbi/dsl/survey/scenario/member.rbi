@@ -1320,6 +1320,9 @@ class Survey::Scenario::Member
 
     Elem = type_member { { fixed: ::Survey::Scenario::Member } }
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig { returns(T::Array[::Survey::Scenario::Member]) }
     def to_a; end
 
@@ -1425,6 +1428,9 @@ class Survey::Scenario::Member
     end
     def push(*records); end
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig do
       params(
         other_array: T.any(::Survey::Scenario::Member, T::Enumerable[T.any(::Survey::Scenario::Member, T::Enumerable[::Survey::Scenario::Member])])
@@ -1450,6 +1456,9 @@ class Survey::Scenario::Member
     include GeneratedRelationMethods
 
     Elem = type_member { { fixed: ::Survey::Scenario::Member } }
+
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
 
     sig { returns(T::Array[::Survey::Scenario::Member]) }
     def to_a; end

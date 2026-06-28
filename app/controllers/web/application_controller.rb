@@ -1,10 +1,12 @@
+# typed: true
+
 class Web::ApplicationController < ApplicationController
   include BrowserConcern
   include ColorSchemeConcern
   include RedirectConcern
 
   allow_browser versions: Browserslist.browsers
-  inertia_share flash: -> { flash.to_hash }
+  inertia_share flash: -> { T.bind(self, Web::ApplicationController); flash.to_hash }
 
   include FlashConcern
   include EventConcern
@@ -13,10 +15,12 @@ class Web::ApplicationController < ApplicationController
   before_action :prepare_locale_settings
 
   before_action do
+    T.bind(self, Web::ApplicationController)
     set_meta_tags site: "CodeBasics"
   end
 
   inertia_share do
+    T.bind(self, Web::ApplicationController)
     language_categories = Language::Category.with_locale
     landing_pages_for_lists = Language::LandingPage.web
       .where(main: true).where(listed: true)
@@ -47,9 +51,10 @@ class Web::ApplicationController < ApplicationController
   end
 
   before_action do
+    T.bind(self, Web::ApplicationController)
     gon.current_user = UserResource.new(current_user)
     gon.env = Rails.env
-    gon.locale = I18n.locale
+    gon.locale = I18n.locale.to_s
     gon.suffix = I18n.locale == :en ? nil : I18n.locale
     gon.ym_counter = 54648685
   end

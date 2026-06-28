@@ -1,3 +1,5 @@
+# typed: true
+
 class Web::HomeController < Web::ApplicationController
   allow_unauthenticated_access
 

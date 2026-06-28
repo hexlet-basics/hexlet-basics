@@ -1,3 +1,5 @@
+# typed: true
+
 class Web::LeadsController < Web::ApplicationController
   before_action :require_authentication
 

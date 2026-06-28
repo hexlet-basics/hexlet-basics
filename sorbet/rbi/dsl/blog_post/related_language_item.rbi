@@ -1221,6 +1221,9 @@ class BlogPost::RelatedLanguageItem
 
     Elem = type_member { { fixed: ::BlogPost::RelatedLanguageItem } }
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig { returns(T::Array[::BlogPost::RelatedLanguageItem]) }
     def to_a; end
 
@@ -1326,6 +1329,9 @@ class BlogPost::RelatedLanguageItem
     end
     def push(*records); end
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig do
       params(
         other_array: T.any(::BlogPost::RelatedLanguageItem, T::Enumerable[T.any(::BlogPost::RelatedLanguageItem, T::Enumerable[::BlogPost::RelatedLanguageItem])])
@@ -1351,6 +1357,9 @@ class BlogPost::RelatedLanguageItem
     include GeneratedRelationMethods
 
     Elem = type_member { { fixed: ::BlogPost::RelatedLanguageItem } }
+
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
 
     sig { returns(T::Array[::BlogPost::RelatedLanguageItem]) }
     def to_a; end

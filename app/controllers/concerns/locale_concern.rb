@@ -1,9 +1,14 @@
+# typed: true
 # frozen_string_literal: true
 
 module LocaleConcern
   extend ActiveSupport::Concern
+  extend T::Sig
+  extend T::Helpers
+  requires_ancestor { ApplicationController }
 
   included do
+    T.bind(self, T.class_of(ApplicationController))
     around_action :setup_locale
   end
 
@@ -20,7 +25,7 @@ module LocaleConcern
 
   def prepare_locale_settings
     # NOTE: never redirect bots
-    return if browser_bot?
+    return if send(:browser_bot?)
 
     if view_context.current_page?(root_path) && !params[:suffix]
       remembered_locale = session[:locale].presence

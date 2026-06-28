@@ -1,3 +1,5 @@
+# typed: true
+
 class Web::Account::ProfilesController < Web::Account::ApplicationController
   def edit
     form = current_user.becomes(User::ProfileForm)

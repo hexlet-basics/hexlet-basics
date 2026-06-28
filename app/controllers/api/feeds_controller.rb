@@ -1,3 +1,5 @@
+# typed: true
+
 class Api::FeedsController < Api::ApplicationController
   allow_unauthenticated_access
 

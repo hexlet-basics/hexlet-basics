@@ -1,3 +1,5 @@
+# typed: true
+
 class Web::PasswordsController < Web::ApplicationController
   allow_unauthenticated_access
   before_action :assert_token_passed
@@ -35,7 +37,7 @@ class Web::PasswordsController < Web::ApplicationController
   end
 
   def set_user_password_form
-    @user_password_form = User.find_by_password_reset_token!(token).becomes(User::PasswordForm)
+    @user_password_form = T.unsafe(User).find_by_password_reset_token!(token).becomes(User::PasswordForm)
   end
 
   def handle_invalid_token

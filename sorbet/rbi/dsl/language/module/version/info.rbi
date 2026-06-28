@@ -1425,6 +1425,9 @@ class Language::Module::Version::Info
 
     Elem = type_member { { fixed: ::Language::Module::Version::Info } }
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig { returns(T::Array[::Language::Module::Version::Info]) }
     def to_a; end
 
@@ -1530,6 +1533,9 @@ class Language::Module::Version::Info
     end
     def push(*records); end
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig do
       params(
         other_array: T.any(::Language::Module::Version::Info, T::Enumerable[T.any(::Language::Module::Version::Info, T::Enumerable[::Language::Module::Version::Info])])
@@ -1555,6 +1561,9 @@ class Language::Module::Version::Info
     include GeneratedRelationMethods
 
     Elem = type_member { { fixed: ::Language::Module::Version::Info } }
+
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
 
     sig { returns(T::Array[::Language::Module::Version::Info]) }
     def to_a; end

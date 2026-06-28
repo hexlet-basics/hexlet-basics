@@ -1511,6 +1511,9 @@ class Review
 
     Elem = type_member { { fixed: ::Review } }
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig { returns(T::Array[::Review]) }
     def to_a; end
 
@@ -1616,6 +1619,9 @@ class Review
     end
     def push(*records); end
 
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
+
     sig do
       params(
         other_array: T.any(::Review, T::Enumerable[T.any(::Review, T::Enumerable[::Review])])
@@ -1641,6 +1647,9 @@ class Review
     include GeneratedRelationMethods
 
     Elem = type_member { { fixed: ::Review } }
+
+    sig { params(params: T.untyped, options: T.untyped).returns(T.untyped) }
+    def ransack(params = nil, options = nil); end
 
     sig { returns(T::Array[::Review]) }
     def to_a; end
