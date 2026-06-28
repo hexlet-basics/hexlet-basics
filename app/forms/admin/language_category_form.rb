@@ -1,18 +1,22 @@
-# typed: true
+# typed: strict
 
 class Admin::LanguageCategoryForm < Language::Category
+  extend T::Sig
   include ActiveFormModel
 
+  sig { params(language_landing_page_ids: T.untyped).returns(T.untyped) }
   attr_writer :language_landing_page_ids
 
   permit :name, :slug, :header, :description,
     language_landing_page_ids: []
 
+  sig { returns(T.untyped) }
   def language_landing_page_ids
     @language_landing_page_ids || items.pluck(:language_landing_page_id)
   end
 
-  def save(...)
+  sig { params(args: T.untyped, opts: T.untyped, blk: T.untyped).returns(T.untyped) }
+  def save(*args, **opts, &blk)
     persisted = T.let(nil, T.untyped)
 
     transaction do
@@ -25,6 +29,7 @@ class Admin::LanguageCategoryForm < Language::Category
     persisted
   end
 
+  sig { params(attributes: T.untyped).returns(T.untyped) }
   def update(attributes)
     attrs = attributes.to_unsafe_h
     self.language_landing_page_ids = attrs["language_landing_page_ids"] || attrs[:language_landing_page_ids]
@@ -43,6 +48,7 @@ class Admin::LanguageCategoryForm < Language::Category
 
   private
 
+  sig { void }
   def sync_language_landing_page_ids!
     normalized_ids = language_landing_page_ids.filter_map do |id|
       next if id.blank?

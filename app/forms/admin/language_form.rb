@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class Admin::LanguageForm < Language
   include ActiveFormModel

@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class Admin::LanguageLandingPageForm < Language::LandingPage
   include ActiveFormModel

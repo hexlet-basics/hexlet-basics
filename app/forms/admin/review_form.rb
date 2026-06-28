@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class Admin::ReviewForm < Review
   include ActiveFormModel

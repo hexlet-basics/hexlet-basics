@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class Admin::UserForm < User
   include ActiveFormModel

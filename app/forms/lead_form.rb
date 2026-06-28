@@ -1,8 +1,10 @@
-# typed: true
+# typed: strict
 
 class LeadForm < Lead
+  extend T::Sig
   include ActiveFormModel
 
+  sig { returns(T.nilable(String)) }
   attr_accessor :contact_method, :contact_value
   permit :contact_method, :contact_value, :ym_client_id
 
