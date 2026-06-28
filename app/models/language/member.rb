@@ -1,3 +1,4 @@
+# typed: true
 # frozen_string_literal: true
 
 # == Schema Information
@@ -53,14 +54,14 @@ class Language::Member < ApplicationRecord
   end
 
   def all_lessons_finished?
-    not_finished_lessons = user.not_finished_lessons_for_language(language)
+    not_finished_lessons = T.must(user).not_finished_lessons_for_language(T.must(language))
 
     not_finished_lessons.empty?
   end
 
   def next_lesson_info
-    finished_lesson_ids = user.finished_lessons_for_language(language).pluck(:id)
-    not_finished_infos = language.current_lesson_infos.with_locale.where.not(language_lesson_id: finished_lesson_ids)
+    finished_lesson_ids = T.must(user).finished_lessons_for_language(T.must(language)).pluck(:id)
+    not_finished_infos = T.must(language).current_lesson_infos.with_locale.where.not(language_lesson_id: finished_lesson_ids)
       .joins(:lesson).merge(Language::Lesson.ordered)
 
     not_finished_infos.first

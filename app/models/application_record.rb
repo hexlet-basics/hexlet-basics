@@ -1,3 +1,5 @@
+# typed: true
+
 class ApplicationRecord < ActiveRecord::Base
   include TypedEnumSupport
 

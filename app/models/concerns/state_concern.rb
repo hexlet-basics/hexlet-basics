@@ -1,3 +1,4 @@
+# typed: true
 # frozen_string_literal: true
 
 module StateConcern
@@ -12,7 +13,10 @@ module StateConcern
 
   module InstanceMethods
     def set_state
-      aasm(:state).fire state_event.to_sym if state_event
+      # mixed into AASM models with a dynamically-added `state_event` attribute,
+      # neither of which Sorbet can see on this bare module — escape via T.unsafe.
+      record = T.unsafe(self)
+      record.aasm(:state).fire record.state_event.to_sym if record.state_event
     end
   end
 end

@@ -1,3 +1,4 @@
+# typed: true
 # frozen_string_literal: true
 
 # == Schema Information
@@ -44,7 +45,7 @@ class Language::Lesson::Version < ApplicationRecord
   validates :natural_order, presence: true
 
   def next_lesson
-    language_version
+    T.must(language_version)
       .lesson_versions.order(:natural_order)
       .joins(:infos)
       .merge(Language::Lesson::Version::Info.with_locale)
@@ -52,7 +53,7 @@ class Language::Lesson::Version < ApplicationRecord
   end
 
   def prev_lesson
-    language_version
+    T.must(language_version)
       .lesson_versions.order(natural_order: :desc)
       .joins(:infos)
       .merge(Language::Lesson::Version::Info.with_locale)
@@ -60,6 +61,8 @@ class Language::Lesson::Version < ApplicationRecord
   end
 
   def to_s
-    name
+    # NOTE: previously referenced `name`, which this model has never had (no such
+    # column/method) — to_s always raised. Use the present natural_order instead.
+    natural_order.to_s
   end
 end

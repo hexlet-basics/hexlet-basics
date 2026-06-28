@@ -1,3 +1,5 @@
+# typed: true
+
 # == Schema Information
 #
 # Table name: survey_answers

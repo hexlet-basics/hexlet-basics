@@ -1,3 +1,5 @@
+# typed: true
+
 # == Schema Information
 #
 # Table name: survey_scenario_members
@@ -36,6 +38,6 @@ class Survey::Scenario::Member < ApplicationRecord
   typed_enum :state, State, default: State::Started
 
   def next_survey
-    scenario.surveys.order(order: :asc).where.not(id: user.survey_answers_surveys).first
+    T.must(scenario).surveys.order(order: :asc).where.not(id: T.must(user).survey_answers_surveys).first
   end
 end

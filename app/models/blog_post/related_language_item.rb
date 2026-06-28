@@ -1,3 +1,5 @@
+# typed: true
+
 # == Schema Information
 #
 # Table name: blog_post_related_language_items
