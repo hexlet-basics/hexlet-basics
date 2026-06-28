@@ -1,6 +1,9 @@
-# typed: true
+# typed: strict
 
 module FakerExt
+  extend T::Sig
+
+  sig { returns(String) }
   def self.markdown
     [
       Faker::Markdown.headers,

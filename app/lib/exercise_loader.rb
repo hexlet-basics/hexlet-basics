@@ -1,11 +1,15 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class ExerciseLoader
+  extend T::Sig
+
+  sig { returns(T.untyped) }
   def docker_exercise_client
     DepsLocator.current.docker_exercise_client
   end
 
+  sig { params(language_version: T.untyped).returns(T.untyped) }
   def run(language_version)
     return unless language_version.may_build?
 
@@ -46,6 +50,7 @@ class ExerciseLoader
 
   private
 
+  sig { params(language_version: T.untyped).returns(T.untyped) }
   def create_modules(language_version)
     module_dest = "#{docker_exercise_client.repo_dest(language_version.language.slug)}/modules"
 
@@ -53,6 +58,7 @@ class ExerciseLoader
     modules_with_meta.map { |module_meta| create_module_hierachy(language_version, module_meta) }
   end
 
+  sig { params(language_version: T.untyped, language_modules_data: T.untyped).returns(T.untyped) }
   def create_lessons(language_version, language_modules_data)
     module_dest = "#{docker_exercise_client.repo_dest(language_version.language.slug)}/modules"
 
@@ -63,6 +69,7 @@ class ExerciseLoader
     lessons.each_with_index { |lesson, index| create_lesson_hierarchy(lesson, index) }
   end
 
+  sig { params(dest: T.untyped).returns(T.untyped) }
   def get_modules(dest)
     files = Dir.glob("#{dest}/*")
 
@@ -76,6 +83,7 @@ class ExerciseLoader
       end
   end
 
+  sig { params(path: T.untyped).returns(T.untyped) }
   def get_infos(path)
     files = Dir.glob("#{path}/description.*.yml")
 
@@ -88,6 +96,7 @@ class ExerciseLoader
     end
   end
 
+  sig { params(path: T.untyped).returns(T.untyped) }
   def get_lesson_infos(path)
     entries = Dir.glob("#{path}/*")
     entries
@@ -101,10 +110,12 @@ class ExerciseLoader
       end
   end
 
+  sig { params(directory: T.untyped).returns(T.untyped) }
   def locale_dir?(directory)
     File.directory?(directory) && File.exist?("#{directory}/data.yml")
   end
 
+  sig { params(directory: T.untyped).returns(T.untyped) }
   def get_lesson_info_data(directory)
     data = YAML.load_file("#{directory}/data.yml")
     data["theory"]       = File.read("#{directory}/README.md")
@@ -112,6 +123,7 @@ class ExerciseLoader
     data
   end
 
+  sig { params(dest: T.untyped, module_version: T.untyped, language_version: T.untyped).returns(T.untyped) }
   def get_lessons(dest, module_version, language_version)
     language_module = module_version.module
     module_dir = "#{module_version.order}-#{language_module.slug}"
@@ -141,6 +153,7 @@ class ExerciseLoader
       end
   end
 
+  sig { params(directory: T.untyped, language_version: T.untyped, module_version: T.untyped).returns(T.untyped) }
   def get_lesson_version(directory, language_version, module_version)
     language_module = module_version.module
     module_dir = "#{module_version.order}-#{language_module.slug}"
@@ -159,6 +172,7 @@ class ExerciseLoader
     }
   end
 
+  sig { params(language_version: T.untyped).returns(T.untyped) }
   def update_language(language_version)
     repo_dest = docker_exercise_client.repo_dest(language_version.language.slug)
     spec_filepath = File.join(repo_dest, "spec.yml")
@@ -189,6 +203,7 @@ class ExerciseLoader
     # end
   end
 
+  sig { params(language_version: T.untyped, data: T.untyped).returns(T.untyped) }
   def create_module_hierachy(language_version, data)
     order, slug, infos = data.values_at(:order, :slug, :infos)
     language = language_version.language
@@ -211,6 +226,7 @@ class ExerciseLoader
     { language_module: language_module, module_version: version, module_infos: module_infos }
   end
 
+  sig { params(language_version: T.untyped, module_version: T.untyped, info_data: T.untyped).returns(T.untyped) }
   def create_module_info(language_version, module_version, info_data)
     locale, data = info_data
     language = language_version.language
@@ -228,6 +244,7 @@ class ExerciseLoader
     info
   end
 
+  sig { params(data: T.untyped, index: T.untyped).returns(T.untyped) }
   def create_lesson_hierarchy(data, index)
     language = data[:language]
     language_module = data[:module]
@@ -269,6 +286,7 @@ class ExerciseLoader
     { lesson: lesson, lesson_version: version, lesson_infos: lesson_infos }
   end
 
+  sig { params(language_version: T.untyped, lesson_version: T.untyped, info_data: T.untyped).returns(T.untyped) }
   def create_lesson_info(language_version, lesson_version, info_data)
     data = info_data[:data]
 
@@ -299,6 +317,7 @@ class ExerciseLoader
     info
   end
 
+  sig { params(code: T.untyped).returns(T.untyped) }
   def prepare_code(code)
     reg = /(?<begin>^[^\n]*?BEGIN.*?$\s*)(?<content>.+?)(?<end>^[^\n]*?END.*?$)/msu
 

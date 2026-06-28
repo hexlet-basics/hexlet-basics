@@ -1,7 +1,10 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class LessonTester
+  extend T::Sig
+
+  sig { params(lesson_version: T.untyped, language_version: T.untyped, code: T.untyped, user: T.nilable(User)).returns(T::Hash[Symbol, T.untyped]) }
   def run(lesson_version, language_version, code, user)
     docker_exercise_client = DepsLocator.current.docker_exercise_client
 

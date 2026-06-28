@@ -1,6 +1,9 @@
-# typed: true
+# typed: strict
 
 module YandexSearchFeedBuilder
+  extend T::Sig
+
+  sig { params(landingPages: T.untyped, categories: T.untyped).returns(T.untyped) }
   def self.build(landingPages, categories)
     urls = Rails.application.routes.url_helpers
     builder = Nokogiri::XML::Builder.new do |xml|

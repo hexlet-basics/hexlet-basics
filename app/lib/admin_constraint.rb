@@ -1,7 +1,10 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class AdminConstraint
+  extend T::Sig
+
+  sig { params(request: T.untyped).returns(T.untyped) }
   def matches?(request)
     session_id = request.cookie_jar.signed[:session_id]
     return false unless session_id

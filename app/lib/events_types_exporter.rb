@@ -1,11 +1,15 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class EventsTypesExporter
+  extend T::Sig
+
+  sig { params(output_path: T.untyped).void }
   def initialize(output_path: Rails.root.join("app/javascript/types/events.ts"))
-    @output_path = output_path
+    @output_path = T.let(output_path, T.untyped)
   end
 
+  sig { void }
   def call
     events = build_events
     FileUtils.mkdir_p(@output_path.dirname)
@@ -15,6 +19,7 @@ class EventsTypesExporter
 
   private
 
+  sig { returns(T::Array[T::Hash[Symbol, T.untyped]]) }
   def build_events
     ApplicationEvent.descendants
       .sort_by(&:name)
@@ -32,6 +37,7 @@ class EventsTypesExporter
       .sort_by { |event| event[:event_type] }
   end
 
+  sig { params(klass: T.untyped).returns(T.untyped) }
   def data_shape_fields(klass)
     data_shape = klass.const_get(:DataShape)
     type = unwrap_type_alias(data_shape)
@@ -44,12 +50,14 @@ class EventsTypesExporter
     []
   end
 
+  sig { params(type: T.untyped).returns(T.untyped) }
   def unwrap_type_alias(type)
     return type.aliased_type if type.respond_to?(:aliased_type)
 
     type
   end
 
+  sig { params(type: T.untyped).returns(String) }
   def ts_type_for(type)
     type = unwrap_type_alias(type)
 
@@ -76,6 +84,7 @@ class EventsTypesExporter
     end
   end
 
+  sig { params(type: T.untyped).returns(String) }
   def ts_typed_class_type_for(type)
     raw_type = type.raw_type
 
@@ -86,6 +95,7 @@ class EventsTypesExporter
     end
   end
 
+  sig { params(enum_class: T.untyped).returns(String) }
   def ts_enum_type_for(enum_class)
     values = enum_class.values.map { |value| value.serialize.to_s }.uniq
     return "string" if values.empty?
@@ -93,6 +103,7 @@ class EventsTypesExporter
     values.map(&:inspect).join(" | ")
   end
 
+  sig { params(type: T.untyped).returns(String) }
   def ts_union_type_for(type)
     union_types = type.types.map { |inner| ts_type_for(inner) }.uniq
     return "unknown" if union_types.empty?
@@ -100,6 +111,7 @@ class EventsTypesExporter
     union_types.join(" | ")
   end
 
+  sig { params(type: T.untyped).returns(String) }
   def ts_simple_type_for(type)
     raw_type = type.raw_type
 
@@ -123,6 +135,7 @@ class EventsTypesExporter
     end
   end
 
+  sig { params(events: T.untyped).returns(String) }
   def render(events)
     lines = []
     lines << "// This file is auto-generated. Do not edit manually."

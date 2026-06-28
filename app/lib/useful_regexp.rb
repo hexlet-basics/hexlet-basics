@@ -1,8 +1,11 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class UsefulRegexp
   class << self
+    extend T::Sig
+
+    sig { returns(Regexp) }
     def without_spec_chars
       /\A[^`!@#$%\^&*+=]+\z/u
 

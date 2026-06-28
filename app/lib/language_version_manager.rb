@@ -1,7 +1,10 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class LanguageVersionManager
+  extend T::Sig
+
+  sig { params(slug: T.untyped).returns(Language::Version) }
   def find_or_create_language_with_version(slug)
     language = Language.find_or_create_by!(slug: slug)
 

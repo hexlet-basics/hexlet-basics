@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 module DepsLocator
   extend T::Sig

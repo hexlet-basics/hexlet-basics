@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class Dependencies < T::Struct
   const :openai_api, OpenAI::Client

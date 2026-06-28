@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 class ApplicationResponder < ActionController::Responder
   include Responders::FlashResponder

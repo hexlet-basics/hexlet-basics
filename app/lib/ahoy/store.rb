@@ -1,7 +1,10 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class Ahoy::Store < Ahoy::DatabaseStore
+  extend T::Sig
+
+  sig { params(data: T.untyped).returns(T.untyped) }
   def track_visit(data)
     ym_client_id = extract_ym_client_id(data)
 
@@ -11,6 +14,7 @@ class Ahoy::Store < Ahoy::DatabaseStore
     super(payload)
   end
 
+  sig { params(data: T.untyped).returns(T.untyped) }
   def track_event(data)
     super(data)
 
@@ -23,16 +27,19 @@ class Ahoy::Store < Ahoy::DatabaseStore
     current_visit.update!(ym_client_id:)
   end
 
+  sig { params(data: T.untyped).returns(T.untyped) }
   def geocode(data)
     super
   end
 
+  sig { params(data: T.untyped).returns(T.untyped) }
   def authenticate(data)
     super
   end
 
   private
 
+  sig { params(data: T.untyped).returns(T.untyped) }
   def extract_ym_client_id(data)
     value = data.dig(:properties, :ym_client_id) ||
       data.dig(:properties, "ym_client_id") ||

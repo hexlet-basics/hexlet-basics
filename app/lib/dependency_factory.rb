@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 
 module DependencyFactory
   extend T::Sig
