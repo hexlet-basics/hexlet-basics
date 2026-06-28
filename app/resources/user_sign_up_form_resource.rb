@@ -1,7 +1,7 @@
 # typed: true
 
 class UserSignUpFormResource < ApplicationResource
-  typelize_from User::SignUpForm
+  typelize_from User
 
   attributes :first_name, :email, :password
 

@@ -31,5 +31,17 @@ class UserService < ApplicationService
 
       success_with(user)
     end
+
+    sig { params(struct: SignUpStruct, locale: String).returns(Typed::Result[User, User]) }
+    def sign_up(struct, locale:)
+      user = User.new(struct.attributes.merge(locale:))
+
+      begin
+        user.save!
+        success_with(user)
+      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
+        fail_with(user)
+      end
+    end
   end
 end
