@@ -1,3 +1,4 @@
+# typed: true
 # frozen_string_literal: true
 
 class EventsTypesExporter
@@ -24,7 +25,7 @@ class EventsTypesExporter
         {
           class_name: klass.name.gsub("::", ""),
           event_type: event_type,
-          event_name: klass::NAME,
+          event_name: klass.const_get(:NAME),
           data_fields: data_fields
         }
       end

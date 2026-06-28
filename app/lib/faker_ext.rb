@@ -1,3 +1,5 @@
+# typed: true
+
 module FakerExt
   def self.markdown
     [

@@ -1,3 +1,5 @@
+# typed: true
+
 class MarkdownImageProcessor
   def self.process(markdown)
     markdown.gsub(/!\[([^\]]*)\]\(([^)]+)\)/) do |match|

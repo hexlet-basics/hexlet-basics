@@ -1,3 +1,5 @@
+# typed: true
+
 module AppHost
   def self.canonical
     ENV.fetch("APP_HOST", "code-basics.com")

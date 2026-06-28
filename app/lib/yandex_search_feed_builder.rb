@@ -1,3 +1,5 @@
+# typed: true
+
 module YandexSearchFeedBuilder
   def self.build(landingPages, categories)
     urls = Rails.application.routes.url_helpers

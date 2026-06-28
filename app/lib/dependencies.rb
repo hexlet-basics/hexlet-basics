@@ -1,3 +1,5 @@
+# typed: true
+
 class Dependencies < T::Struct
   const :openai_api, OpenAI::Client
   const :event_registry, EventRegistry

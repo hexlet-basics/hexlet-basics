@@ -1,3 +1,5 @@
+# typed: true
+
 module TestHelpers
   def self.read_fixture_file(name)
     content = Rails.root.join("test/fixtures/files", name)

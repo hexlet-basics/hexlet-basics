@@ -1,3 +1,5 @@
+# typed: true
+
 class EventRegistry
   EVENTS_PATH = Rails.root.join("app", "events")
 

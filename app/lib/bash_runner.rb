@@ -1,3 +1,5 @@
+# typed: true
+
 require "English" # NOTE Без явного указания $CHILD_STATUS nil
 require "pty"
 
