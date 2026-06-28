@@ -42,7 +42,7 @@ class Web::Admin::Management::UsersController < Web::Admin::Management::Applicat
   end
 
   def edit
-    user = Admin::UserForm.find params[:id]
+    user = User.find params[:id]
     progressByLanguage = user.lesson_members.group(:language).count
     progress = progressByLanguage.map do |language, count|
       { language: language.slug, count: }
@@ -55,14 +55,16 @@ class Web::Admin::Management::UsersController < Web::Admin::Management::Applicat
   end
 
   def update
-    user = Admin::UserForm.find params[:id]
+    struct = ApplicationParamsStruct.from_params(UserStruct, params.require(:data))
+    result = UserService.update(params[:id], struct)
 
-    if user.update(params[:data])
+    case result
+    when Typed::Success
       f(:success)
-    else
+      redirect_to edit_admin_management_user_url(result.payload)
+    when Typed::Failure
       f(:error)
+      redirect_to edit_admin_management_user_url(result.error), inertia: { errors: result.error.errors }
     end
-
-    redirect_to edit_admin_management_user_url(user), inertia: { errors: user.errors }
   end
 end

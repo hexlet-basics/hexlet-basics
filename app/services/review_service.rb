@@ -7,7 +7,8 @@ class ReviewService < ApplicationService
 
     sig { params(struct: ReviewStruct, locale: String).returns(Typed::Result[Review, Review]) }
     def create(struct, locale:)
-      review = Review.new(struct.attributes.merge(locale:))
+      attributes = struct.attributes.merge(locale:)
+      review = Review.new(attributes)
       return fail_with(review) unless review.save
 
       success_with(review)
@@ -16,8 +17,8 @@ class ReviewService < ApplicationService
     sig { params(id: T.untyped, struct: ReviewStruct, locale: String).returns(Typed::Result[Review, Review]) }
     def update(id, struct, locale:)
       review = Review.find(id)
-      review.assign_attributes(struct.attributes.merge(locale:))
-      return fail_with(review) unless review.save
+      attributes = struct.attributes.merge(locale:)
+      return fail_with(review) unless review.update(attributes)
 
       success_with(review)
     end

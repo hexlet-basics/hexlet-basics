@@ -7,7 +7,8 @@ class BlogPostService < ApplicationService
 
     sig { params(struct: BlogPostStruct, creator: User, locale: String, cover: T.untyped).returns(Typed::Result[BlogPost, BlogPost]) }
     def create(struct, creator:, locale:, cover: nil)
-      blog_post = BlogPost.new(attrs(struct, cover).merge(creator:, locale:))
+      attributes = attrs(struct, cover).merge(creator:, locale:)
+      blog_post = BlogPost.new(attributes)
       return fail_with(blog_post) unless blog_post.save
 
       success_with(blog_post)
@@ -16,8 +17,8 @@ class BlogPostService < ApplicationService
     sig { params(id: T.untyped, struct: BlogPostStruct, locale: String, cover: T.untyped).returns(Typed::Result[BlogPost, BlogPost]) }
     def update(id, struct, locale:, cover: nil)
       blog_post = BlogPost.find(id)
-      blog_post.assign_attributes(attrs(struct, cover).merge(locale:))
-      return fail_with(blog_post) unless blog_post.save
+      attributes = attrs(struct, cover).merge(locale:)
+      return fail_with(blog_post) unless blog_post.update(attributes)
 
       success_with(blog_post)
     end
