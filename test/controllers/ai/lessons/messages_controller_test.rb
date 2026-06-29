@@ -22,4 +22,20 @@ class Ai::Lessons::MessagesControllerTest < ActionDispatch::IntegrationTest
   ensure
     ActiveJob::Base.queue_adapter = original_queue_adapter
   end
+
+  def test_index_returns_history
+    user = sign_in_as(:full)
+    lesson_member = @lesson.members.find_by!(user:)
+    ai_chat = AiChat.create!(user:, language_lesson_member: lesson_member)
+    ai_chat.ai_messages.create!(role: "user", content: "question", user:)
+    ai_chat.ai_messages.create!(role: "assistant", content: "answer")
+
+    get ai_lesson_messages_path(@lesson)
+
+    assert_response :success
+    body = response.parsed_body
+    assert_equal 2, body.size
+    assert_equal %w[user assistant], body.map { it["role"] }
+    assert_equal %w[question answer], body.map { it["content"] }
+  end
 end

@@ -17,7 +17,7 @@ type StreamMessage = {
 };
 
 export function useAssistantStream(
-  lessonMemberId: number | undefined,
+  aiChatId: number | undefined,
   lessonId: number,
   userCode: string,
   output: string,
@@ -56,12 +56,12 @@ export function useAssistantStream(
   ).current;
 
   useEffect(() => {
-    if (!lessonMemberId) {
+    if (!aiChatId) {
       return;
     }
 
     const subscription = cableInstance.subscriptions.create(
-      { channel: "AssistantChannel", id: lessonMemberId },
+      { channel: "AssistantChannel", id: aiChatId },
       {
         disconnected() {
           setStatus("awaiting_message");
@@ -89,7 +89,7 @@ export function useAssistantStream(
       subscription.unsubscribe();
       scheduleUpdate.cancel();
     };
-  }, [lessonMemberId, scheduleUpdate]);
+  }, [aiChatId, scheduleUpdate]);
 
   const submitMessage = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

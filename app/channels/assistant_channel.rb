@@ -1,8 +1,7 @@
 class AssistantChannel < ApplicationCable::Channel
   def subscribed
-    lesson_member = Language::Lesson::Member.find(params[:id])
-    stream_for lesson_member
-    # stream_from "some_channel"
+    ai_chat = AiChat.find(params[:id])
+    stream_for ai_chat
   end
 
   def unsubscribed

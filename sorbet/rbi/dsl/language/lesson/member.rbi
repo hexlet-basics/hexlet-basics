@@ -476,6 +476,15 @@ class Language::Lesson::Member
   end
 
   module GeneratedAssociationMethods
+    sig { returns(T.nilable(::AiChat)) }
+    def ai_chat; end
+
+    sig { params(value: T.nilable(::AiChat)).void }
+    def ai_chat=(value); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::AiChat) }
+    def build_ai_chat(*args, &blk); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language) }
     def build_language(*args, &blk); end
 
@@ -487,6 +496,12 @@ class Language::Lesson::Member
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def build_user(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::AiChat) }
+    def create_ai_chat(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::AiChat) }
+    def create_ai_chat!(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language) }
     def create_language(*args, &blk); end
@@ -548,19 +563,8 @@ class Language::Lesson::Member
     sig { returns(T::Boolean) }
     def lesson_previously_changed?; end
 
-    sig { returns(T::Array[T.untyped]) }
-    def message_ids; end
-
-    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
-    def message_ids=(ids); end
-
-    # This method is created by ActiveRecord on the `Language::Lesson::Member` class because it declared `has_many :messages`.
-    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
-    sig { returns(::Language::Lesson::Member::Message::PrivateCollectionProxy) }
-    def messages; end
-
-    sig { params(value: T::Enumerable[::Language::Lesson::Member::Message]).void }
-    def messages=(value); end
+    sig { returns(T.nilable(::AiChat)) }
+    def reload_ai_chat; end
 
     sig { returns(::Language) }
     def reload_language; end
@@ -573,6 +577,9 @@ class Language::Lesson::Member
 
     sig { returns(::User) }
     def reload_user; end
+
+    sig { void }
+    def reset_ai_chat; end
 
     sig { void }
     def reset_language; end
@@ -1077,51 +1084,6 @@ class Language::Lesson::Member
     sig { void }
     def messages_count_will_change!; end
 
-    sig { returns(T.nilable(::String)) }
-    def openai_thread_id; end
-
-    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
-    def openai_thread_id=(value); end
-
-    sig { returns(T::Boolean) }
-    def openai_thread_id?; end
-
-    sig { returns(T.nilable(::String)) }
-    def openai_thread_id_before_last_save; end
-
-    sig { returns(T.untyped) }
-    def openai_thread_id_before_type_cast; end
-
-    sig { returns(T::Boolean) }
-    def openai_thread_id_came_from_user?; end
-
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
-    def openai_thread_id_change; end
-
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
-    def openai_thread_id_change_to_be_saved; end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def openai_thread_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(::String)) }
-    def openai_thread_id_in_database; end
-
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
-    def openai_thread_id_previous_change; end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def openai_thread_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(::String)) }
-    def openai_thread_id_previously_was; end
-
-    sig { returns(T.nilable(::String)) }
-    def openai_thread_id_was; end
-
-    sig { void }
-    def openai_thread_id_will_change!; end
-
     sig { void }
     def restore_created_at!; end
 
@@ -1142,9 +1104,6 @@ class Language::Lesson::Member
 
     sig { void }
     def restore_messages_count!; end
-
-    sig { void }
-    def restore_openai_thread_id!; end
 
     sig { void }
     def restore_state!; end
@@ -1199,12 +1158,6 @@ class Language::Lesson::Member
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_messages_count?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
-    def saved_change_to_openai_thread_id; end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def saved_change_to_openai_thread_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_state; end
@@ -1430,9 +1383,6 @@ class Language::Lesson::Member
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_messages_count?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def will_save_change_to_openai_thread_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_state?(from: T.unsafe(nil), to: T.unsafe(nil)); end

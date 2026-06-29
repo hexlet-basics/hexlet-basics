@@ -6,7 +6,7 @@
 #  background  :string           default("cta_gradient"), not null
 #  body        :text             not null
 #  finishes_at :datetime
-#  locale      :string
+#  locale      :string           not null
 #  starts_at   :datetime
 #  state       :string           default("draft"), not null
 #  url         :string

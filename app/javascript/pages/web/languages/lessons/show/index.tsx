@@ -328,9 +328,9 @@ function AssistantTabContent({ focusesCount }: { focusesCount: number }) {
   const {
     previousMessages,
     canCreateAssistantMessage,
-    course,
     lesson,
     lessonMember,
+    aiChat,
   } = usePage<LessonSharedProps>().props;
 
   const userCode = useLessonStore((state) => state.content);
@@ -360,9 +360,9 @@ function AssistantTabContent({ focusesCount }: { focusesCount: number }) {
         enabled={canCreateAssistantMessage}
         userCode={userCode}
         output={output}
-        course={course}
         lesson={lesson}
         lessonMember={lessonMember}
+        aiChat={aiChat}
       />
     </Box>
   );

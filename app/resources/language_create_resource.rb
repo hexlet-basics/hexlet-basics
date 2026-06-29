@@ -8,7 +8,6 @@ class LanguageCreateResource < ApplicationResource
     :cover,
     :id,
     slug: [ String, true ],
-    openai_assistant_id: [ String, true ],
     hexlet_program_landing_page: [ String, true ]
 
   typelize cover: "File | null"

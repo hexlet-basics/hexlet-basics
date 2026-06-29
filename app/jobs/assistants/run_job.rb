@@ -1,107 +1,73 @@
-# typed: strict
+# typed: false
 
 class Assistants::RunJob < ApplicationJob
-  extend T::Sig
+  def perform(ai_chat_id:, message:, user_code:, output:, locale:)
+    I18n.with_locale(locale) do
+      run(ai_chat_id:, message:, user_code:, output:)
+    end
+  end
 
-  sig { params(lesson_member_id: Integer, message: T.untyped, user_code: T.untyped, output: T.untyped).void }
-  def perform(lesson_member_id:, message:, user_code:, output:)
-    lesson_member = Language::Lesson::Member.find(lesson_member_id)
-    lesson = lesson_member.lesson
+  private
+
+  def run(ai_chat_id:, message:, user_code:, output:)
+    ai_chat = AiChat.find(ai_chat_id)
+    lesson = ai_chat.language_lesson_member.lesson
     lesson_info = lesson.infos.find_by!(locale: I18n.locale)
     language = lesson.language
 
-    unless language.openai_assistant_id
-      throw RuntimeError.new "#{language} without openai_assistant_id"
-    end
-
-    openai_api = DepsLocator.current.openai_api
-
-    # TODO: if guest
-
-    unless lesson_member.openai_thread_id
-      thread = openai_api.threads.create
-      lesson_member.openai_thread_id = thread["id"]
-      lesson_member.save!
-    end
-
-    # create message for the thread
-    created_message = openai_api.messages.create(
-      thread_id: lesson_member.openai_thread_id,
-      parameters: {
-        role: "user",
-        content: [
-          {
-            type: "text",
-            text: "Пользовательский код (решение практики): #{user_code}"
-          },
-          {
-            type: "text",
-            text: "Результат запуска пользовательского кода (используя тесты задания): #{output}"
-          },
-          {
-            type: "text",
-            text: "Вопрос пользователя: #{message}"
-          }
-        ]
-      }
-    )
-
     community_url = I18n.t("common.community_url")
+    answer_language = I18n.t(I18n.locale, scope: "common.languages")
 
-    instructions = "
-      Ты помогаешь изучать #{language.slug} на основе загруженного курса в файлах.
-      Этот тред посвящен уроку #{lesson_info.name}.
+    instructions = <<~PROMPT
+      Ты помогаешь изучать #{language.slug} в рамках курса на Hexlet.
+      Этот разговор посвящён уроку «#{lesson_info.name}».
       Курс состоит из теории, практики и тестов, которые выполняются прямо в браузере.
       Ты не показываешь решение практики, пользователь должен решить практику самостоятельно.
       Направляй, давай объяснения, помогай разобраться, предлагай шаги для решения, выдвигай гипотезы.
-      Отвечай на языке: #{I18n.t(I18n.locale, scope: 'common.languages')}. Отвечай коротко.
+      Отвечай на языке: #{answer_language}. Отвечай коротко.
 
       Если во время обсуждения обнаружится ошибка в теории или задании (описании, решении, тестах),
       то порекомендуй написать об этом в сообществе #{community_url}. Там сидит команда проекта.
-      "
 
-    m = lesson_member.messages.build
-    m.role = "assistant"
-    m.language_lesson = lesson
-    m.user = lesson_member.user
-    m.language = lesson.language
-    deltas = []
+      Теория урока:
+      #{lesson_info.theory}
 
-    chunk_index = 0
+      Задание урока:
+      #{lesson_info.instructions}
+    PROMPT
 
-    _run_response = openai_api.runs.create(
-      thread_id: lesson_member.openai_thread_id,
-      parameters: {
-        assistant_id: language.openai_assistant_id,
-        instructions:,
-        stream: proc do |chunk|
-          if chunk["object"] == "thread.message.delta"
-            content = chunk.dig("delta", "content") || []
-            texts = content.map { it.dig("text", "value") }
-            next if texts.blank?
-            # response.stream.write("0:#{text.to_json}\n")
-            AssistantChannel.broadcast_to(
-              lesson_member,
-              delta: texts,
-              message_id: created_message["id"],
-              index: chunk_index
-            )
+    ai_chat.with_instructions(instructions)
 
-            deltas << texts.join
+    prompt = <<~PROMPT
+      Пользовательский код (решение практики): #{user_code}
 
-            chunk_index += 1
-          end
-        end
-      }
-    )
+      Результат запуска пользовательского кода (используя тесты задания): #{output}
 
-    m.body = deltas.join
-    m.save!
+      Вопрос пользователя: #{message}
+    PROMPT
+
+    message_id = nil
+    index = 0
+
+    ai_chat.ask(prompt) do |chunk|
+      next if chunk.content.blank?
+
+      message_id ||= ai_chat.ai_messages.where(role: "assistant").order(:id).last&.id
+
+      AssistantChannel.broadcast_to(
+        ai_chat,
+        delta: [ chunk.content ],
+        message_id:,
+        index:
+      )
+
+      index += 1
+    end
 
     AssistantChannel.broadcast_to(
-      lesson_member,
+      ai_chat,
       delta: [ "DONE" ],
-      message_id: created_message["id"]
+      message_id:
     )
   end
 end

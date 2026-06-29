@@ -9,14 +9,14 @@ import MarkdownViewer from "@/components/MarkdownViewer";
 import useDataTableProps from "@/hooks/useDataTableProps";
 import AdminLayout from "@/layouts/AdminLayout";
 import * as Routes from "@/routes.js";
-import type { Grid, LanguageLessonMemberMessage } from "@/types";
+import type { AiMessage, Grid } from "@/types";
 
 type Props = PropsWithChildren & {
-  messages: LanguageLessonMemberMessage[];
+  messages: AiMessage[];
   grid: Grid;
 };
 
-function renderLesson(item: LanguageLessonMemberMessage) {
+function renderLesson(item: AiMessage) {
   return (
     <Button
       component={Link}
@@ -32,7 +32,7 @@ function renderLesson(item: LanguageLessonMemberMessage) {
 }
 
 type MessageBodyCellProps = {
-  item: LanguageLessonMemberMessage;
+  item: AiMessage;
 };
 
 function MessageBodyCell({ item }: MessageBodyCellProps) {
@@ -51,9 +51,7 @@ function MessageBodyCell({ item }: MessageBodyCellProps) {
 
 export default function Index({ grid, messages }: Props) {
   const { t } = useTranslation();
-  const { gridProps } = useDataTableProps<LanguageLessonMemberMessage, {}>(
-    grid,
-  );
+  const { gridProps } = useDataTableProps<AiMessage, {}>(grid);
 
   return (
     <AdminLayout header={t(($) => $.admin.messages.index.header)}>

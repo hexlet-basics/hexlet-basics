@@ -3,7 +3,7 @@
 class LanguageUpdateResource < ApplicationResource
   typelize_from Language
 
-  attributes :id, :progress, :learn_as, :slug, :openai_assistant_id, :hexlet_program_landing_page, :cover
+  attributes :id, :progress, :learn_as, :slug, :hexlet_program_landing_page, :cover
 
   typelize slug: :string
   typelize cover: "File | null"

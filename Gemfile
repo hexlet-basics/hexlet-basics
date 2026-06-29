@@ -17,7 +17,7 @@ gem "bundler-audit", require: false
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "alba"
 gem "typelizer"
-gem "ruby-openai"
+gem "ruby_llm"
 
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
 gem "solid_cache"

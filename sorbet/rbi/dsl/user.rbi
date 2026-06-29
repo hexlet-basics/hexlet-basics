@@ -468,18 +468,32 @@ class User
     def accounts=(value); end
 
     sig { returns(T::Array[T.untyped]) }
-    def assistant_message_ids; end
+    def ai_chat_ids; end
 
     sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
-    def assistant_message_ids=(ids); end
+    def ai_chat_ids=(ids); end
 
-    # This method is created by ActiveRecord on the `User` class because it declared `has_many :assistant_messages`.
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :ai_chats`.
     # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
-    sig { returns(::Language::Lesson::Member::Message::PrivateCollectionProxy) }
-    def assistant_messages; end
+    sig { returns(::AiChat::PrivateCollectionProxy) }
+    def ai_chats; end
 
-    sig { params(value: T::Enumerable[::Language::Lesson::Member::Message]).void }
-    def assistant_messages=(value); end
+    sig { params(value: T::Enumerable[::AiChat]).void }
+    def ai_chats=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def ai_message_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def ai_message_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :ai_messages`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::AiMessage::PrivateCollectionProxy) }
+    def ai_messages; end
+
+    sig { params(value: T::Enumerable[::AiMessage]).void }
+    def ai_messages=(value); end
 
     sig { returns(T::Array[T.untyped]) }
     def base_tag_ids; end

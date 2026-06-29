@@ -1,6 +1,6 @@
 # typed: strict
 
-class Language::Lesson::Member::MessagePolicy < ApplicationPolicy
+class AiMessagePolicy < ApplicationPolicy
   extend T::Sig
   extend T::Generic
 
@@ -11,8 +11,8 @@ class Language::Lesson::Member::MessagePolicy < ApplicationPolicy
     current = user
     return false if current.nil?
 
-    messages_count = current.assistant_messages
-      .user_role
+    messages_count = current.ai_messages
+      .role_user
       .where(created_at: Date.current.beginning_of_day..).count
     messages_count <= 7
   end
