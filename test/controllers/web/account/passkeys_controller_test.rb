@@ -20,7 +20,7 @@ class Web::Account::PasskeysControllerTest < ActionDispatch::IntegrationTest
       post account_passkeys_url, params: { credential: credential.to_json }
     end
     assert_redirected_to edit_account_profile_url
-    assert { @user.reload.webauthn_id.present? }
+    assert { @user.reload.webauthn_id? }
   end
 
   def test_destroy_passkey

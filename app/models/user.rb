@@ -158,7 +158,7 @@ class User < ApplicationRecord
   # email, phone, or a linked social account (built in memory or persisted).
   sig { void }
   def identifier_present
-    return if email.present? || phone.present? || accounts.any?
+    return if email? || phone? || accounts.any?
 
     errors.add(:base, :identifier_required)
   end
