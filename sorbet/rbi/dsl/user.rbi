@@ -12,6 +12,8 @@ class User
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   sig { params(opts: T.untyped, block: T.nilable(T.proc.void)).returns(T.untyped) }
   def activate(*opts, &block); end
 

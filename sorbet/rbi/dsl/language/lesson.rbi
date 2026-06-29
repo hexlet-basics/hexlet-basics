@@ -12,6 +12,8 @@ class Language::Lesson
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   sig { params(opts: T.untyped, block: T.nilable(T.proc.void)).returns(T.untyped) }
   def activate(*opts, &block); end
 
@@ -508,10 +510,10 @@ class Language::Lesson
     sig { params(value: T::Enumerable[::Language::Lesson::Version::Info]).void }
     def infos=(value); end
 
-    sig { returns(T.nilable(::Language)) }
+    sig { returns(::Language) }
     def language; end
 
-    sig { params(value: T.nilable(::Language)).void }
+    sig { params(value: ::Language).void }
     def language=(value); end
 
     sig { returns(T::Boolean) }
@@ -548,10 +550,10 @@ class Language::Lesson
     sig { params(value: T::Enumerable[::Language::Lesson::Member::Message]).void }
     def messages=(value); end
 
-    sig { returns(T.nilable(::Language::Module)) }
+    sig { returns(::Language::Module) }
     def module; end
 
-    sig { params(value: T.nilable(::Language::Module)).void }
+    sig { params(value: ::Language::Module).void }
     def module=(value); end
 
     sig { returns(T::Boolean) }
@@ -560,10 +562,10 @@ class Language::Lesson
     sig { returns(T::Boolean) }
     def module_previously_changed?; end
 
-    sig { returns(T.nilable(::Language)) }
+    sig { returns(::Language) }
     def reload_language; end
 
-    sig { returns(T.nilable(::Language::Module)) }
+    sig { returns(::Language::Module) }
     def reload_module; end
 
     sig { void }
@@ -1349,7 +1351,7 @@ class Language::Lesson
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_prepared_code?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_slug; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1385,10 +1387,10 @@ class Language::Lesson
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_upload_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable(::String)) }
+    sig { returns(::String) }
     def slug; end
 
-    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    sig { params(value: ::String).returns(::String) }
     def slug=(value); end
 
     sig { returns(T::Boolean) }
@@ -1403,10 +1405,10 @@ class Language::Lesson
     sig { returns(T::Boolean) }
     def slug_came_from_user?; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def slug_change; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def slug_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1415,7 +1417,7 @@ class Language::Lesson
     sig { returns(T.nilable(::String)) }
     def slug_in_database; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def slug_previous_change; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }

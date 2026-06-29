@@ -93,7 +93,8 @@ group :development, :test, :staging do
   gem "factory_bot_rails"
   gem "faker"
 
-  gem "tapioca"
+  gem "tapioca", "0.19.1" # capped by boba (<= 0.19.1)
+  gem "boba", require: false
   # gem "bullet"
   gem "goldiloader"
 end

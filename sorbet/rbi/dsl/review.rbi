@@ -12,6 +12,8 @@ class Review
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   private
 
   sig { returns(NilClass) }
@@ -418,10 +420,10 @@ class Review
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_user!(*args, &blk); end
 
-    sig { returns(T.nilable(::Language)) }
+    sig { returns(::Language) }
     def language; end
 
-    sig { params(value: T.nilable(::Language)).void }
+    sig { params(value: ::Language).void }
     def language=(value); end
 
     sig { returns(T::Boolean) }
@@ -430,10 +432,10 @@ class Review
     sig { returns(T::Boolean) }
     def language_previously_changed?; end
 
-    sig { returns(T.nilable(::Language)) }
+    sig { returns(::Language) }
     def reload_language; end
 
-    sig { returns(T.nilable(::User)) }
+    sig { returns(::User) }
     def reload_user; end
 
     sig { void }
@@ -442,10 +444,10 @@ class Review
     sig { void }
     def reset_user; end
 
-    sig { returns(T.nilable(::User)) }
+    sig { returns(::User) }
     def user; end
 
-    sig { params(value: T.nilable(::User)).void }
+    sig { params(value: ::User).void }
     def user=(value); end
 
     sig { returns(T::Boolean) }
@@ -638,10 +640,10 @@ class Review
   end
 
   module GeneratedAttributeMethods
-    sig { returns(T.nilable(::String)) }
+    sig { returns(::String) }
     def body; end
 
-    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    sig { params(value: ::String).returns(::String) }
     def body=(value); end
 
     sig { returns(T::Boolean) }
@@ -656,10 +658,10 @@ class Review
     sig { returns(T::Boolean) }
     def body_came_from_user?; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def body_change; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def body_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -668,7 +670,7 @@ class Review
     sig { returns(T.nilable(::String)) }
     def body_in_database; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def body_previous_change; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -728,10 +730,10 @@ class Review
     sig { void }
     def created_at_will_change!; end
 
-    sig { returns(T.nilable(::String)) }
+    sig { returns(::String) }
     def first_name; end
 
-    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    sig { params(value: ::String).returns(::String) }
     def first_name=(value); end
 
     sig { returns(T::Boolean) }
@@ -746,10 +748,10 @@ class Review
     sig { returns(T::Boolean) }
     def first_name_came_from_user?; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def first_name_change; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def first_name_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -758,7 +760,7 @@ class Review
     sig { returns(T.nilable(::String)) }
     def first_name_in_database; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def first_name_previous_change; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1079,7 +1081,7 @@ class Review
     sig { void }
     def restore_user_id!; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_body; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1091,7 +1093,7 @@ class Review
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_first_name; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }

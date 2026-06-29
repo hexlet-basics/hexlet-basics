@@ -54,14 +54,14 @@ class Web::UsersController < Web::ApplicationController
     lesson_ids = session.fetch(:finished_as_guest, {}).keys
     lesson_ids.each do |id|
       lesson = Language::Lesson.find(id)
-      language = T.must(lesson.language)
+      language = lesson.language
       language_member = language.members.find_or_initialize_by(user:)
       if language_member.new_record?
         language_member.save!
 
         course_started_event_data = {
           occurrence_count: 1,
-          slug: T.must(language.slug),
+          slug: language.slug,
           locale: I18n.locale
         }
         course_started_event = CourseStartedEvent.new(data: course_started_event_data)
@@ -78,8 +78,8 @@ class Web::UsersController < Web::ApplicationController
 
       lesson_started_and_finished_event_data = {
         occurrence_count: 1,
-        lesson_slug: T.must(lesson.slug),
-        course_slug: T.must(language.slug),
+        lesson_slug: lesson.slug,
+        course_slug: language.slug,
         locale: I18n.locale
       }
 

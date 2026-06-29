@@ -125,6 +125,8 @@ GEM
     bigdecimal (4.1.2)
     bindata (2.5.1)
     bindex (0.8.1)
+    boba (0.1.11)
+      tapioca (<= 0.19.1)
     bootsnap (1.24.6)
       msgpack (~> 1.2)
     brakeman (8.0.5)
@@ -544,7 +546,7 @@ GEM
     sqlite3 (2.9.5-x86_64-linux-musl)
     stackprof (0.2.28)
     sync (0.5.0)
-    tapioca (0.19.2)
+    tapioca (0.19.1)
       benchmark
       bundler (>= 2.2.25)
       netrc (>= 0.11.0)
@@ -553,7 +555,7 @@ GEM
       require-hooks (>= 0.2.2)
       rubydex (>= 0.1.0.beta10)
       sorbet-static-and-runtime (>= 0.6.12698)
-      spoom (>= 1.7.16)
+      spoom (>= 1.7.9)
       thor (>= 1.2.0)
       tsort
     term-ansicolor (1.11.3)
@@ -642,6 +644,7 @@ DEPENDENCIES
   annotaterb
   aws-sdk-s3
   bcrypt
+  boba
   bootsnap
   brakeman
   browser
@@ -692,7 +695,7 @@ DEPENDENCIES
   sorbet-schema
   sqlite3
   stackprof
-  tapioca
+  tapioca (= 0.19.1)
   term-ansicolor
   thruster
   typelizer
@@ -739,6 +742,7 @@ CHECKSUMS
   bigdecimal (4.1.2) sha256=53d217666027eab4280346fba98e7d5b66baaae1b9c3c1c0ffe89d48188a3fbd
   bindata (2.5.1) sha256=53186a1ec2da943d4cb413583d680644eb810aacbf8902497aac8f191fad9e58
   bindex (0.8.1) sha256=7b1ecc9dc539ed8bccfc8cb4d2732046227b09d6f37582ff12e50a5047ceb17e
+  boba (0.1.11) sha256=4c777661a4b8cad8609b11968cb43b3e7f1136642cc3bd741170076bc50c855d
   bootsnap (1.24.6) sha256=c60bab88c70332290f0a2636a288f675299eb4f804a02a3c085b42eca9da164a
   brakeman (8.0.5) sha256=03735f9690d3fd4b32d66aacbf0a6d15a84266bdd06b32c05c8ecc8f6021d2be
   browser (6.2.0) sha256=281d5295788825c9396427c292c2d2be0a5c91875c93c390fde6e5d61a5ace2d
@@ -923,7 +927,7 @@ CHECKSUMS
   sqlite3 (2.9.5-x86_64-linux-musl) sha256=e7d3a7474e8af0f96150c21abc203fbab5437206bfcdf11deab7741c0ca516f2
   stackprof (0.2.28) sha256=4ec2ace02f386012b40ca20ef80c030ad711831f59511da12e83b34efb0f9a04
   sync (0.5.0) sha256=668356cc07c59ac7ed9ecf34fec3929831f179c07adb1f3e1c3b7a1609a638fd
-  tapioca (0.19.2) sha256=938731b07811aee8d23871b1aee8861d464fbaf2cfffbf79a62b0c869a5120ec
+  tapioca (0.19.1) sha256=5de94d458950897ffe3d4e86a21eec48bb6a8775af85f80b1486b7ae7ba51823
   term-ansicolor (1.11.3) sha256=8c01ec3abd095eb94dca8aed5a127d36e594239eb525eb306259c9e930534603
   thor (1.5.0) sha256=e3a9e55fe857e44859ce104a84675ab6e8cd59c650a49106a05f55f136425e73
   thruster (0.1.21-aarch64-linux) sha256=f5aff78fb7a6431ed3d6ab4bde03a89c461e9a73981dbc97d6990d85c3db235c

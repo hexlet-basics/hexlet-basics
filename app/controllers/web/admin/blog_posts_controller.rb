@@ -21,7 +21,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
   sig { returns(T.untyped) }
   def new
     blog_post = BlogPost.new
-    blog_post.creator = current_user
+    blog_post.creator = T.must(current_user)
 
     render inertia: true, props: {
       blogPostDto: BlogPostCreateResource.new(blog_post)

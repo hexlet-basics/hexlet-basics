@@ -11,6 +11,8 @@ class Lead
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   private
 
   sig { returns(NilClass) }
@@ -394,7 +396,7 @@ class Lead
     sig { returns(T.nilable(::Ahoy::Visit)) }
     def reload_ahoy_visit; end
 
-    sig { returns(T.nilable(::User)) }
+    sig { returns(::User) }
     def reload_user; end
 
     sig { void }
@@ -403,10 +405,10 @@ class Lead
     sig { void }
     def reset_user; end
 
-    sig { returns(T.nilable(::User)) }
+    sig { returns(::User) }
     def user; end
 
-    sig { params(value: T.nilable(::User)).void }
+    sig { params(value: ::User).void }
     def user=(value); end
 
     sig { returns(T::Boolean) }

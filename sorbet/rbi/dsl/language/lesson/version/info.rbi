@@ -11,6 +11,8 @@ class Language::Lesson::Version::Info
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   sig { returns(ActiveStorage::Attached::Many) }
   def assets; end
 
@@ -532,19 +534,19 @@ class Language::Lesson::Version::Info
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language::Lesson::Version) }
     def create_version!(*args, &blk); end
 
-    sig { returns(T.nilable(::Language)) }
+    sig { returns(::Language) }
     def language; end
 
-    sig { params(value: T.nilable(::Language)).void }
+    sig { params(value: ::Language).void }
     def language=(value); end
 
     sig { returns(T::Boolean) }
     def language_changed?; end
 
-    sig { returns(T.nilable(::Language::Lesson)) }
+    sig { returns(::Language::Lesson) }
     def language_lesson; end
 
-    sig { params(value: T.nilable(::Language::Lesson)).void }
+    sig { params(value: ::Language::Lesson).void }
     def language_lesson=(value); end
 
     sig { returns(T::Boolean) }
@@ -556,10 +558,10 @@ class Language::Lesson::Version::Info
     sig { returns(T::Boolean) }
     def language_previously_changed?; end
 
-    sig { returns(T.nilable(::Language::Version)) }
+    sig { returns(::Language::Version) }
     def language_version; end
 
-    sig { params(value: T.nilable(::Language::Version)).void }
+    sig { params(value: ::Language::Version).void }
     def language_version=(value); end
 
     sig { returns(T::Boolean) }
@@ -574,19 +576,19 @@ class Language::Lesson::Version::Info
     sig { params(value: T.nilable(::Language::Lesson)).void }
     def lesson=(value); end
 
-    sig { returns(T.nilable(::Language)) }
+    sig { returns(::Language) }
     def reload_language; end
 
-    sig { returns(T.nilable(::Language::Lesson)) }
+    sig { returns(::Language::Lesson) }
     def reload_language_lesson; end
 
-    sig { returns(T.nilable(::Language::Version)) }
+    sig { returns(::Language::Version) }
     def reload_language_version; end
 
     sig { returns(T.nilable(::Language::Lesson)) }
     def reload_lesson; end
 
-    sig { returns(T.nilable(::Language::Lesson::Version)) }
+    sig { returns(::Language::Lesson::Version) }
     def reload_version; end
 
     sig { void }
@@ -604,10 +606,10 @@ class Language::Lesson::Version::Info
     sig { void }
     def reset_version; end
 
-    sig { returns(T.nilable(::Language::Lesson::Version)) }
+    sig { returns(::Language::Lesson::Version) }
     def version; end
 
-    sig { params(value: T.nilable(::Language::Lesson::Version)).void }
+    sig { params(value: ::Language::Lesson::Version).void }
     def version=(value); end
 
     sig { returns(T::Boolean) }

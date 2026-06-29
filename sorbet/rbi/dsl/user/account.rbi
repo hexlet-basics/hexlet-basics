@@ -11,6 +11,8 @@ class User::Account
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   private
 
   sig { returns(NilClass) }
@@ -425,16 +427,16 @@ class User::Account
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_user!(*args, &blk); end
 
-    sig { returns(T.nilable(::User)) }
+    sig { returns(::User) }
     def reload_user; end
 
     sig { void }
     def reset_user; end
 
-    sig { returns(T.nilable(::User)) }
+    sig { returns(::User) }
     def user; end
 
-    sig { params(value: T.nilable(::User)).void }
+    sig { params(value: ::User).void }
     def user=(value); end
 
     sig { returns(T::Boolean) }

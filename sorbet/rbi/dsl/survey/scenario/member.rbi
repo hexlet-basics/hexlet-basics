@@ -12,6 +12,8 @@ class Survey::Scenario::Member
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   private
 
   sig { returns(NilClass) }
@@ -489,10 +491,10 @@ class Survey::Scenario::Member
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_user!(*args, &blk); end
 
-    sig { returns(T.nilable(::Survey::Scenario)) }
+    sig { returns(::Survey::Scenario) }
     def reload_scenario; end
 
-    sig { returns(T.nilable(::User)) }
+    sig { returns(::User) }
     def reload_user; end
 
     sig { void }
@@ -501,10 +503,10 @@ class Survey::Scenario::Member
     sig { void }
     def reset_user; end
 
-    sig { returns(T.nilable(::Survey::Scenario)) }
+    sig { returns(::Survey::Scenario) }
     def scenario; end
 
-    sig { params(value: T.nilable(::Survey::Scenario)).void }
+    sig { params(value: ::Survey::Scenario).void }
     def scenario=(value); end
 
     sig { returns(T::Boolean) }
@@ -513,10 +515,10 @@ class Survey::Scenario::Member
     sig { returns(T::Boolean) }
     def scenario_previously_changed?; end
 
-    sig { returns(T.nilable(::User)) }
+    sig { returns(::User) }
     def user; end
 
-    sig { params(value: T.nilable(::User)).void }
+    sig { params(value: ::User).void }
     def user=(value); end
 
     sig { returns(T::Boolean) }

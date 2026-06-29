@@ -13,6 +13,6 @@ class AdminConstraint
     return false unless current_session
 
     user = current_session.user
-    user&.admin?
+    user.admin?
   end
 end

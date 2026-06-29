@@ -11,6 +11,8 @@ class Survey
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   private
 
   sig { returns(NilClass) }
@@ -775,10 +777,10 @@ class Survey
     sig { void }
     def id_will_change!; end
 
-    sig { returns(T.nilable(::String)) }
+    sig { returns(::String) }
     def locale; end
 
-    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    sig { params(value: ::String).returns(::String) }
     def locale=(value); end
 
     sig { returns(T::Boolean) }
@@ -793,10 +795,10 @@ class Survey
     sig { returns(T::Boolean) }
     def locale_came_from_user?; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def locale_change; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def locale_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -805,7 +807,7 @@ class Survey
     sig { returns(T.nilable(::String)) }
     def locale_in_database; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def locale_previous_change; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -910,10 +912,10 @@ class Survey
     sig { void }
     def parent_survey_item_id_will_change!; end
 
-    sig { returns(T.nilable(::String)) }
+    sig { returns(::String) }
     def question; end
 
-    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    sig { params(value: ::String).returns(::String) }
     def question=(value); end
 
     sig { returns(T::Boolean) }
@@ -928,10 +930,10 @@ class Survey
     sig { returns(T::Boolean) }
     def question_came_from_user?; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def question_change; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def question_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -940,7 +942,7 @@ class Survey
     sig { returns(T.nilable(::String)) }
     def question_in_database; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def question_previous_change; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1108,7 +1110,7 @@ class Survey
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_id_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_locale; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1126,7 +1128,7 @@ class Survey
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_parent_survey_item_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_question; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1144,7 +1146,7 @@ class Survey
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_run_always?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_slug; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1162,10 +1164,10 @@ class Survey
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_updated_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable(::String)) }
+    sig { returns(::String) }
     def slug; end
 
-    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    sig { params(value: ::String).returns(::String) }
     def slug=(value); end
 
     sig { returns(T::Boolean) }
@@ -1180,10 +1182,10 @@ class Survey
     sig { returns(T::Boolean) }
     def slug_came_from_user?; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def slug_change; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def slug_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1192,7 +1194,7 @@ class Survey
     sig { returns(T.nilable(::String)) }
     def slug_in_database; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def slug_previous_change; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }

@@ -11,6 +11,8 @@ class ActsAsTaggableOn::Tagging
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   private
 
   sig { returns(NilClass) }
@@ -462,7 +464,7 @@ class ActsAsTaggableOn::Tagging
     sig { params(args: T.untyped, blk: T.untyped).returns(::ActsAsTaggableOn::Tag) }
     def create_tag!(*args, &blk); end
 
-    sig { returns(T.nilable(::ActsAsTaggableOn::Tag)) }
+    sig { returns(::ActsAsTaggableOn::Tag) }
     def reload_tag; end
 
     sig { returns(T.untyped) }
@@ -480,10 +482,10 @@ class ActsAsTaggableOn::Tagging
     sig { void }
     def reset_tagger; end
 
-    sig { returns(T.nilable(::ActsAsTaggableOn::Tag)) }
+    sig { returns(::ActsAsTaggableOn::Tag) }
     def tag; end
 
-    sig { params(value: T.nilable(::ActsAsTaggableOn::Tag)).void }
+    sig { params(value: ::ActsAsTaggableOn::Tag).void }
     def tag=(value); end
 
     sig { returns(T::Boolean) }
@@ -686,10 +688,10 @@ class ActsAsTaggableOn::Tagging
   end
 
   module GeneratedAttributeMethods
-    sig { returns(T.nilable(::String)) }
+    sig { returns(::String) }
     def context; end
 
-    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    sig { params(value: ::String).returns(::String) }
     def context=(value); end
 
     sig { returns(T::Boolean) }
@@ -704,10 +706,10 @@ class ActsAsTaggableOn::Tagging
     sig { returns(T::Boolean) }
     def context_came_from_user?; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def context_change; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def context_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -716,7 +718,7 @@ class ActsAsTaggableOn::Tagging
     sig { returns(T.nilable(::String)) }
     def context_in_database; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def context_previous_change; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -896,7 +898,7 @@ class ActsAsTaggableOn::Tagging
     sig { void }
     def restore_tenant!; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_context; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -920,7 +922,7 @@ class ActsAsTaggableOn::Tagging
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_id_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
+    sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_tag_id; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -956,10 +958,10 @@ class ActsAsTaggableOn::Tagging
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_tenant?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable(::Integer)) }
+    sig { returns(::Integer) }
     def tag_id; end
 
-    sig { params(value: T.nilable(::Integer)).returns(T.nilable(::Integer)) }
+    sig { params(value: ::Integer).returns(::Integer) }
     def tag_id=(value); end
 
     sig { returns(T::Boolean) }
@@ -974,10 +976,10 @@ class ActsAsTaggableOn::Tagging
     sig { returns(T::Boolean) }
     def tag_id_came_from_user?; end
 
-    sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
+    sig { returns(T.nilable([::Integer, ::Integer])) }
     def tag_id_change; end
 
-    sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
+    sig { returns(T.nilable([::Integer, ::Integer])) }
     def tag_id_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -986,7 +988,7 @@ class ActsAsTaggableOn::Tagging
     sig { returns(T.nilable(::Integer)) }
     def tag_id_in_database; end
 
-    sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
+    sig { returns(T.nilable([::Integer, ::Integer])) }
     def tag_id_previous_change; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }

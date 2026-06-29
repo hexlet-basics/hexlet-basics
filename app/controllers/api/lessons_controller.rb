@@ -6,7 +6,7 @@ class Api::LessonsController < Api::ApplicationController
   sig { returns(T.untyped) }
   def check
     lesson = Language::Lesson.find(params[:id])
-    language = T.must(lesson.language)
+    language = lesson.language
     lesson_version = language.current_lesson_versions.find(params[:version_id])
     code = params[:data][:attributes][:code]
 
@@ -17,8 +17,8 @@ class Api::LessonsController < Api::ApplicationController
 
 
     solution_checking_event_data = {
-      lesson_slug: T.must(lesson.slug),
-      course_slug: T.must(language.slug),
+      lesson_slug: lesson.slug,
+      course_slug: language.slug,
       locale: I18n.locale,
       passed:
     }
@@ -39,8 +39,8 @@ class Api::LessonsController < Api::ApplicationController
 
         lesson_finished_event_data = {
           occurrence_count: language_member.lesson_members.count,
-          lesson_slug: T.must(lesson.slug),
-          course_slug: T.must(language.slug),
+          lesson_slug: lesson.slug,
+          course_slug: language.slug,
           locale: I18n.locale
         }
 
@@ -54,7 +54,7 @@ class Api::LessonsController < Api::ApplicationController
 
         course_finished_event_data = {
           occurrence_count: T.must(current_user).language_members.finished.count,
-          slug: T.must(language.slug),
+          slug: language.slug,
           locale: I18n.locale
         }
         event = CourseFinishedEvent.new(data: course_finished_event_data)

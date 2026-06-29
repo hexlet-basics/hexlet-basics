@@ -11,6 +11,8 @@ class Survey::Answer
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   private
 
   sig { returns(NilClass) }
@@ -443,13 +445,13 @@ class Survey::Answer
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_user!(*args, &blk); end
 
-    sig { returns(T.nilable(::Survey)) }
+    sig { returns(::Survey) }
     def reload_survey; end
 
     sig { returns(T.nilable(::Survey::Item)) }
     def reload_survey_item; end
 
-    sig { returns(T.nilable(::User)) }
+    sig { returns(::User) }
     def reload_user; end
 
     sig { void }
@@ -461,10 +463,10 @@ class Survey::Answer
     sig { void }
     def reset_user; end
 
-    sig { returns(T.nilable(::Survey)) }
+    sig { returns(::Survey) }
     def survey; end
 
-    sig { params(value: T.nilable(::Survey)).void }
+    sig { params(value: ::Survey).void }
     def survey=(value); end
 
     sig { returns(T::Boolean) }
@@ -485,10 +487,10 @@ class Survey::Answer
     sig { returns(T::Boolean) }
     def survey_previously_changed?; end
 
-    sig { returns(T.nilable(::User)) }
+    sig { returns(::User) }
     def user; end
 
-    sig { params(value: T.nilable(::User)).void }
+    sig { params(value: ::User).void }
     def user=(value); end
 
     sig { returns(T::Boolean) }

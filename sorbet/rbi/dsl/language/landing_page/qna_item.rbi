@@ -11,6 +11,8 @@ class Language::LandingPage::QnaItem
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   private
 
   sig { returns(NilClass) }
@@ -462,10 +464,10 @@ class Language::LandingPage::QnaItem
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language::LandingPage) }
     def create_language_landing_page!(*args, &blk); end
 
-    sig { returns(T.nilable(::Language::LandingPage)) }
+    sig { returns(::Language::LandingPage) }
     def language_landing_page; end
 
-    sig { params(value: T.nilable(::Language::LandingPage)).void }
+    sig { params(value: ::Language::LandingPage).void }
     def language_landing_page=(value); end
 
     sig { returns(T::Boolean) }
@@ -474,7 +476,7 @@ class Language::LandingPage::QnaItem
     sig { returns(T::Boolean) }
     def language_landing_page_previously_changed?; end
 
-    sig { returns(T.nilable(::Language::LandingPage)) }
+    sig { returns(::Language::LandingPage) }
     def reload_language_landing_page; end
 
     sig { void }
@@ -635,10 +637,10 @@ class Language::LandingPage::QnaItem
   end
 
   module GeneratedAttributeMethods
-    sig { returns(T.nilable(::String)) }
+    sig { returns(::String) }
     def answer; end
 
-    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    sig { params(value: ::String).returns(::String) }
     def answer=(value); end
 
     sig { returns(T::Boolean) }
@@ -653,10 +655,10 @@ class Language::LandingPage::QnaItem
     sig { returns(T::Boolean) }
     def answer_came_from_user?; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def answer_change; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def answer_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -665,7 +667,7 @@ class Language::LandingPage::QnaItem
     sig { returns(T.nilable(::String)) }
     def answer_in_database; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def answer_previous_change; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -860,10 +862,10 @@ class Language::LandingPage::QnaItem
     sig { void }
     def language_landing_page_id_will_change!; end
 
-    sig { returns(T.nilable(::String)) }
+    sig { returns(::String) }
     def question; end
 
-    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    sig { params(value: ::String).returns(::String) }
     def question=(value); end
 
     sig { returns(T::Boolean) }
@@ -878,10 +880,10 @@ class Language::LandingPage::QnaItem
     sig { returns(T::Boolean) }
     def question_came_from_user?; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def question_change; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def question_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -890,7 +892,7 @@ class Language::LandingPage::QnaItem
     sig { returns(T.nilable(::String)) }
     def question_in_database; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def question_previous_change; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -926,7 +928,7 @@ class Language::LandingPage::QnaItem
     sig { void }
     def restore_updated_at!; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_answer; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -956,7 +958,7 @@ class Language::LandingPage::QnaItem
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_language_landing_page_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_question; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }

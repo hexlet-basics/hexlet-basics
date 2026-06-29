@@ -16,7 +16,7 @@ class Language::Lesson::Member::MessageResource < ApplicationResource
 
   typelize :string
   attribute :language_slug do
-    T.must(it.language).slug
+    it.language.slug
   end
 
   typelize :string
@@ -26,22 +26,22 @@ class Language::Lesson::Member::MessageResource < ApplicationResource
 
   typelize :string
   attribute :language_lesson_slug do
-    T.must(it.language_lesson).slug
+    it.language_lesson.slug
   end
 
   typelize :number
   attribute :user_id do
-    T.must(it.language_lesson_member).user_id
+    it.language_lesson_member.user_id
   end
 
   typelize :string
   attribute :language_lesson_slug do
-    T.must(it.language_lesson).slug
+    it.language_lesson.slug
   end
 
   typelize :string
   attribute :language_lesson_name do
-    info = T.must(it.language_lesson).localed_info
+    info = it.language_lesson.localed_info
     info.name
   end
 end

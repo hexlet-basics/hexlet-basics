@@ -39,6 +39,6 @@ class Survey::Scenario::Member < ApplicationRecord
 
   sig { returns(T.untyped) }
   def next_survey
-    T.must(scenario).surveys.order(order: :asc).where.not(id: T.must(user).survey_answers_surveys).first
+    scenario.surveys.order(order: :asc).where.not(id: user.survey_answers_surveys).first
   end
 end

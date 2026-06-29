@@ -13,7 +13,7 @@ class Language::MemberResource < ApplicationResource
 
   typelize :number
   attribute :progress do
-    lessons_count = T.must(it.language).current_lessons.size
+    lessons_count = it.language.current_lessons.size
     finished_lessons_count = it.lesson_members.finished.size
     if lessons_count != 0
       result = ((finished_lessons_count.to_f / lessons_count) * 100).ceil

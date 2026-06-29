@@ -11,6 +11,8 @@ class BlogPost::RelatedLanguageItem
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   private
 
   sig { returns(NilClass) }
@@ -453,10 +455,10 @@ class BlogPost::RelatedLanguageItem
   end
 
   module GeneratedAssociationMethods
-    sig { returns(T.nilable(::BlogPost)) }
+    sig { returns(::BlogPost) }
     def blog_post; end
 
-    sig { params(value: T.nilable(::BlogPost)).void }
+    sig { params(value: ::BlogPost).void }
     def blog_post=(value); end
 
     sig { returns(T::Boolean) }
@@ -483,10 +485,10 @@ class BlogPost::RelatedLanguageItem
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language) }
     def create_language!(*args, &blk); end
 
-    sig { returns(T.nilable(::Language)) }
+    sig { returns(::Language) }
     def language; end
 
-    sig { params(value: T.nilable(::Language)).void }
+    sig { params(value: ::Language).void }
     def language=(value); end
 
     sig { returns(T::Boolean) }
@@ -495,10 +497,10 @@ class BlogPost::RelatedLanguageItem
     sig { returns(T::Boolean) }
     def language_previously_changed?; end
 
-    sig { returns(T.nilable(::BlogPost)) }
+    sig { returns(::BlogPost) }
     def reload_blog_post; end
 
-    sig { returns(T.nilable(::Language)) }
+    sig { returns(::Language) }
     def reload_language; end
 
     sig { void }

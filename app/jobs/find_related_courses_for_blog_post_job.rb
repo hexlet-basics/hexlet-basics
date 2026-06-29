@@ -19,10 +19,10 @@ class FindRelatedCoursesForBlogPostJob < ApplicationJob
     PROMPT
 
     languages_data = landing_pages.map do |lp|
-      { id: lp.language&.id, name: lp.header }
+      { id: lp.language.id, name: lp.header }
     end
 
-    content = blog_post.body || ""
+    content = blog_post.body
     chat_completion = openai_api.chat(
       parameters: {
         model: :"gpt-4.1",

@@ -14,16 +14,16 @@ class Language::Lesson::ReviewResource < ApplicationResource
 
   typelize :string
   attribute :slug do
-    T.must(it.lesson).slug
+    it.lesson.slug
   end
 
   typelize :number
   attribute :lesson_natural_order do
-    T.must(it.lesson).natural_order
+    it.lesson.natural_order
   end
 
   typelize :string
   attribute :language_slug do
-    T.must(it.language).slug
+    it.language.slug
   end
 end

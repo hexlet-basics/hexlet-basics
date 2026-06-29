@@ -12,6 +12,8 @@ class Language::Lesson::Member::Message
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   private
 
   sig { returns(NilClass) }
@@ -507,28 +509,28 @@ class Language::Lesson::Member::Message
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_user!(*args, &blk); end
 
-    sig { returns(T.nilable(::Language)) }
+    sig { returns(::Language) }
     def language; end
 
-    sig { params(value: T.nilable(::Language)).void }
+    sig { params(value: ::Language).void }
     def language=(value); end
 
     sig { returns(T::Boolean) }
     def language_changed?; end
 
-    sig { returns(T.nilable(::Language::Lesson)) }
+    sig { returns(::Language::Lesson) }
     def language_lesson; end
 
-    sig { params(value: T.nilable(::Language::Lesson)).void }
+    sig { params(value: ::Language::Lesson).void }
     def language_lesson=(value); end
 
     sig { returns(T::Boolean) }
     def language_lesson_changed?; end
 
-    sig { returns(T.nilable(::Language::Lesson::Member)) }
+    sig { returns(::Language::Lesson::Member) }
     def language_lesson_member; end
 
-    sig { params(value: T.nilable(::Language::Lesson::Member)).void }
+    sig { params(value: ::Language::Lesson::Member).void }
     def language_lesson_member=(value); end
 
     sig { returns(T::Boolean) }
@@ -543,16 +545,16 @@ class Language::Lesson::Member::Message
     sig { returns(T::Boolean) }
     def language_previously_changed?; end
 
-    sig { returns(T.nilable(::Language)) }
+    sig { returns(::Language) }
     def reload_language; end
 
-    sig { returns(T.nilable(::Language::Lesson)) }
+    sig { returns(::Language::Lesson) }
     def reload_language_lesson; end
 
-    sig { returns(T.nilable(::Language::Lesson::Member)) }
+    sig { returns(::Language::Lesson::Member) }
     def reload_language_lesson_member; end
 
-    sig { returns(T.nilable(::User)) }
+    sig { returns(::User) }
     def reload_user; end
 
     sig { void }
@@ -567,10 +569,10 @@ class Language::Lesson::Member::Message
     sig { void }
     def reset_user; end
 
-    sig { returns(T.nilable(::User)) }
+    sig { returns(::User) }
     def user; end
 
-    sig { params(value: T.nilable(::User)).void }
+    sig { params(value: ::User).void }
     def user=(value); end
 
     sig { returns(T::Boolean) }
@@ -1091,10 +1093,10 @@ class Language::Lesson::Member::Message
     sig { void }
     def restore_user_id!; end
 
-    sig { returns(T.nilable(::String)) }
+    sig { returns(::String) }
     def role; end
 
-    sig { params(value: T.nilable(T.any(::String, ::Symbol))).returns(T.nilable(T.any(::String, ::Symbol))) }
+    sig { params(value: T.any(::String, ::Symbol)).returns(T.any(::String, ::Symbol)) }
     def role=(value); end
 
     sig { returns(T::Boolean) }
@@ -1109,10 +1111,10 @@ class Language::Lesson::Member::Message
     sig { returns(T::Boolean) }
     def role_came_from_user?; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def role_change; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def role_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1121,7 +1123,7 @@ class Language::Lesson::Member::Message
     sig { returns(T.nilable(::String)) }
     def role_in_database; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def role_previous_change; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1178,7 +1180,7 @@ class Language::Lesson::Member::Message
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_language_lesson_member_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_role; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }

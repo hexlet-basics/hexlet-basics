@@ -11,6 +11,8 @@ class Language::Module::Version
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   private
 
   sig { returns(NilClass) }
@@ -494,10 +496,10 @@ class Language::Module::Version
     sig { params(value: T::Enumerable[::Language::Module::Version::Info]).void }
     def infos=(value); end
 
-    sig { returns(T.nilable(::Language)) }
+    sig { returns(::Language) }
     def language; end
 
-    sig { params(value: T.nilable(::Language)).void }
+    sig { params(value: ::Language).void }
     def language=(value); end
 
     sig { returns(T::Boolean) }
@@ -506,10 +508,10 @@ class Language::Module::Version
     sig { returns(T::Boolean) }
     def language_previously_changed?; end
 
-    sig { returns(T.nilable(::Language::Version)) }
+    sig { returns(::Language::Version) }
     def language_version; end
 
-    sig { params(value: T.nilable(::Language::Version)).void }
+    sig { params(value: ::Language::Version).void }
     def language_version=(value); end
 
     sig { returns(T::Boolean) }
@@ -532,10 +534,10 @@ class Language::Module::Version
     sig { params(value: T::Enumerable[::Language::Lesson::Version]).void }
     def lesson_versions=(value); end
 
-    sig { returns(T.nilable(::Language::Module)) }
+    sig { returns(::Language::Module) }
     def module; end
 
-    sig { params(value: T.nilable(::Language::Module)).void }
+    sig { params(value: ::Language::Module).void }
     def module=(value); end
 
     sig { returns(T::Boolean) }
@@ -544,13 +546,13 @@ class Language::Module::Version
     sig { returns(T::Boolean) }
     def module_previously_changed?; end
 
-    sig { returns(T.nilable(::Language)) }
+    sig { returns(::Language) }
     def reload_language; end
 
-    sig { returns(T.nilable(::Language::Version)) }
+    sig { returns(::Language::Version) }
     def reload_language_version; end
 
-    sig { returns(T.nilable(::Language::Module)) }
+    sig { returns(::Language::Module) }
     def reload_module; end
 
     sig { void }

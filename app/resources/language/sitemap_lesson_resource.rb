@@ -25,7 +25,7 @@ class Language::SitemapLessonResource < ApplicationResource
 
   typelize :number
   attribute :natural_order do
-    T.must(it.version).natural_order
+    it.version.natural_order
   end
 
   typelize :number

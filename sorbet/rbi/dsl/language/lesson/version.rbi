@@ -11,6 +11,8 @@ class Language::Lesson::Version
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   private
 
   sig { returns(NilClass) }
@@ -512,10 +514,10 @@ class Language::Lesson::Version
     sig { params(value: T::Enumerable[::Language::Lesson::Version::Info]).void }
     def infos=(value); end
 
-    sig { returns(T.nilable(::Language)) }
+    sig { returns(::Language) }
     def language; end
 
-    sig { params(value: T.nilable(::Language)).void }
+    sig { params(value: ::Language).void }
     def language=(value); end
 
     sig { returns(T::Boolean) }
@@ -524,10 +526,10 @@ class Language::Lesson::Version
     sig { returns(T::Boolean) }
     def language_previously_changed?; end
 
-    sig { returns(T.nilable(::Language::Version)) }
+    sig { returns(::Language::Version) }
     def language_version; end
 
-    sig { params(value: T.nilable(::Language::Version)).void }
+    sig { params(value: ::Language::Version).void }
     def language_version=(value); end
 
     sig { returns(T::Boolean) }
@@ -536,10 +538,10 @@ class Language::Lesson::Version
     sig { returns(T::Boolean) }
     def language_version_previously_changed?; end
 
-    sig { returns(T.nilable(::Language::Lesson)) }
+    sig { returns(::Language::Lesson) }
     def lesson; end
 
-    sig { params(value: T.nilable(::Language::Lesson)).void }
+    sig { params(value: ::Language::Lesson).void }
     def lesson=(value); end
 
     sig { returns(T::Boolean) }
@@ -554,10 +556,10 @@ class Language::Lesson::Version
     sig { params(value: T.nilable(::Language::Module)).void }
     def module=(value); end
 
-    sig { returns(T.nilable(::Language::Module::Version)) }
+    sig { returns(::Language::Module::Version) }
     def module_version; end
 
-    sig { params(value: T.nilable(::Language::Module::Version)).void }
+    sig { params(value: ::Language::Module::Version).void }
     def module_version=(value); end
 
     sig { returns(T::Boolean) }
@@ -566,19 +568,19 @@ class Language::Lesson::Version
     sig { returns(T::Boolean) }
     def module_version_previously_changed?; end
 
-    sig { returns(T.nilable(::Language)) }
+    sig { returns(::Language) }
     def reload_language; end
 
-    sig { returns(T.nilable(::Language::Version)) }
+    sig { returns(::Language::Version) }
     def reload_language_version; end
 
-    sig { returns(T.nilable(::Language::Lesson)) }
+    sig { returns(::Language::Lesson) }
     def reload_lesson; end
 
     sig { returns(T.nilable(::Language::Module)) }
     def reload_module; end
 
-    sig { returns(T.nilable(::Language::Module::Version)) }
+    sig { returns(::Language::Module::Version) }
     def reload_module_version; end
 
     sig { void }
@@ -1066,10 +1068,10 @@ class Language::Lesson::Version
     sig { void }
     def module_version_id_will_change!; end
 
-    sig { returns(T.nilable(::Integer)) }
+    sig { returns(::Integer) }
     def natural_order; end
 
-    sig { params(value: T.nilable(::Integer)).returns(T.nilable(::Integer)) }
+    sig { params(value: ::Integer).returns(::Integer) }
     def natural_order=(value); end
 
     sig { returns(T::Boolean) }
@@ -1084,10 +1086,10 @@ class Language::Lesson::Version
     sig { returns(T::Boolean) }
     def natural_order_came_from_user?; end
 
-    sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
+    sig { returns(T.nilable([::Integer, ::Integer])) }
     def natural_order_change; end
 
-    sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
+    sig { returns(T.nilable([::Integer, ::Integer])) }
     def natural_order_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1096,7 +1098,7 @@ class Language::Lesson::Version
     sig { returns(T.nilable(::Integer)) }
     def natural_order_in_database; end
 
-    sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
+    sig { returns(T.nilable([::Integer, ::Integer])) }
     def natural_order_previous_change; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1375,7 +1377,7 @@ class Language::Lesson::Version
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_module_version_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
+    sig { returns(T.nilable([::Integer, ::Integer])) }
     def saved_change_to_natural_order; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }

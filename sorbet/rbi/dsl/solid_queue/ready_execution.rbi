@@ -11,6 +11,8 @@ class SolidQueue::ReadyExecution
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   private
 
   sig { returns(NilClass) }
@@ -462,13 +464,13 @@ class SolidQueue::ReadyExecution
     sig { params(args: T.untyped, blk: T.untyped).returns(::SolidQueue::Job) }
     def create_job!(*args, &blk); end
 
-    sig { returns(T.nilable(::SolidQueue::Job)) }
+    sig { returns(::SolidQueue::Job) }
     def job; end
 
-    sig { params(value: T.nilable(::SolidQueue::Job)).void }
+    sig { params(value: ::SolidQueue::Job).void }
     def job=(value); end
 
-    sig { returns(T.nilable(::SolidQueue::Job)) }
+    sig { returns(::SolidQueue::Job) }
     def reload_job; end
 
     sig { void }

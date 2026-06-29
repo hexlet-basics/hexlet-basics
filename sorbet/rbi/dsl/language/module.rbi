@@ -11,6 +11,8 @@ class Language::Module
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   private
 
   sig { returns(NilClass) }
@@ -425,10 +427,10 @@ class Language::Module
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language) }
     def create_language!(*args, &blk); end
 
-    sig { returns(T.nilable(::Language)) }
+    sig { returns(::Language) }
     def language; end
 
-    sig { params(value: T.nilable(::Language)).void }
+    sig { params(value: ::Language).void }
     def language=(value); end
 
     sig { returns(T::Boolean) }
@@ -451,7 +453,7 @@ class Language::Module
     sig { params(value: T::Enumerable[::Language::Lesson]).void }
     def lessons=(value); end
 
-    sig { returns(T.nilable(::Language)) }
+    sig { returns(::Language) }
     def reload_language; end
 
     sig { void }

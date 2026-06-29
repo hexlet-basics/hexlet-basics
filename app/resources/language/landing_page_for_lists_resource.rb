@@ -14,11 +14,11 @@ class Language::LandingPageForListsResource < ApplicationResource
 
   typelize :number
   attribute :duration do
-    I18n.t("common.hours", count: it.language&.duration || 0)
+    I18n.t("common.hours", count: it.language.duration || 0)
   end
 
   typelize :number
   attribute :members_count do
-    it.language&.members_count || 0
+    it.language.members_count
   end
 end

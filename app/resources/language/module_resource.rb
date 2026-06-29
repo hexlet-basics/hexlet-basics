@@ -8,6 +8,6 @@ class Language::ModuleResource < ApplicationResource
 
   typelize :number
   attribute :id do
-    T.must(T.must(it.version).module).id
+    it.version.module.id
   end
 end

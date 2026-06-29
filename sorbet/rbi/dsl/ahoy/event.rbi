@@ -11,6 +11,8 @@ class Ahoy::Event
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   private
 
   sig { returns(NilClass) }
@@ -432,7 +434,7 @@ class Ahoy::Event
     sig { returns(T.nilable(::User)) }
     def reload_user; end
 
-    sig { returns(T.nilable(::Ahoy::Visit)) }
+    sig { returns(::Ahoy::Visit) }
     def reload_visit; end
 
     sig { void }
@@ -453,10 +455,10 @@ class Ahoy::Event
     sig { returns(T::Boolean) }
     def user_previously_changed?; end
 
-    sig { returns(T.nilable(::Ahoy::Visit)) }
+    sig { returns(::Ahoy::Visit) }
     def visit; end
 
-    sig { params(value: T.nilable(::Ahoy::Visit)).void }
+    sig { params(value: ::Ahoy::Visit).void }
     def visit=(value); end
 
     sig { returns(T::Boolean) }

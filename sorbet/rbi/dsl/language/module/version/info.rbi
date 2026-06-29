@@ -11,6 +11,8 @@ class Language::Module::Version::Info
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   private
 
   sig { returns(NilClass) }
@@ -480,10 +482,10 @@ class Language::Module::Version::Info
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language::Module::Version) }
     def create_version!(*args, &blk); end
 
-    sig { returns(T.nilable(::Language)) }
+    sig { returns(::Language) }
     def language; end
 
-    sig { params(value: T.nilable(::Language)).void }
+    sig { params(value: ::Language).void }
     def language=(value); end
 
     sig { returns(T::Boolean) }
@@ -492,10 +494,10 @@ class Language::Module::Version::Info
     sig { returns(T::Boolean) }
     def language_previously_changed?; end
 
-    sig { returns(T.nilable(::Language::Version)) }
+    sig { returns(::Language::Version) }
     def language_version; end
 
-    sig { params(value: T.nilable(::Language::Version)).void }
+    sig { params(value: ::Language::Version).void }
     def language_version=(value); end
 
     sig { returns(T::Boolean) }
@@ -504,13 +506,13 @@ class Language::Module::Version::Info
     sig { returns(T::Boolean) }
     def language_version_previously_changed?; end
 
-    sig { returns(T.nilable(::Language)) }
+    sig { returns(::Language) }
     def reload_language; end
 
-    sig { returns(T.nilable(::Language::Version)) }
+    sig { returns(::Language::Version) }
     def reload_language_version; end
 
-    sig { returns(T.nilable(::Language::Module::Version)) }
+    sig { returns(::Language::Module::Version) }
     def reload_version; end
 
     sig { void }
@@ -522,10 +524,10 @@ class Language::Module::Version::Info
     sig { void }
     def reset_version; end
 
-    sig { returns(T.nilable(::Language::Module::Version)) }
+    sig { returns(::Language::Module::Version) }
     def version; end
 
-    sig { params(value: T.nilable(::Language::Module::Version)).void }
+    sig { params(value: ::Language::Module::Version).void }
     def version=(value); end
 
     sig { returns(T::Boolean) }

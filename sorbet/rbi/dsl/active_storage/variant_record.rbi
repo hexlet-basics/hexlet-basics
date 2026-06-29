@@ -11,6 +11,8 @@ class ActiveStorage::VariantRecord
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   sig { returns(ActiveStorage::Attached::One) }
   def image; end
 
@@ -459,10 +461,10 @@ class ActiveStorage::VariantRecord
   end
 
   module GeneratedAssociationMethods
-    sig { returns(T.nilable(::ActiveStorage::Blob)) }
+    sig { returns(::ActiveStorage::Blob) }
     def blob; end
 
-    sig { params(value: T.nilable(::ActiveStorage::Blob)).void }
+    sig { params(value: ::ActiveStorage::Blob).void }
     def blob=(value); end
 
     sig { returns(T::Boolean) }
@@ -510,7 +512,7 @@ class ActiveStorage::VariantRecord
     sig { params(value: T.nilable(::ActiveStorage::Blob)).void }
     def image_blob=(value); end
 
-    sig { returns(T.nilable(::ActiveStorage::Blob)) }
+    sig { returns(::ActiveStorage::Blob) }
     def reload_blob; end
 
     sig { returns(T.nilable(::ActiveStorage::Attachment)) }

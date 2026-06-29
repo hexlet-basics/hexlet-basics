@@ -9,18 +9,18 @@ class Language::Lesson::MemberResource < ApplicationResource
 
   typelize :string
   attribute :language_lesson_slug do
-    T.must(it.lesson).slug
+    it.lesson.slug
   end
 
 
    typelize :string
    attribute :language_slug do
-     T.must(it.language).slug
+     it.language.slug
    end
 
   typelize :string
   attribute :language_lesson_name do
-    info = T.must(it.lesson).localed_info
+    info = it.lesson.localed_info
     info&.name
   end
 end

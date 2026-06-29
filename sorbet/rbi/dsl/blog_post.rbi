@@ -12,6 +12,8 @@ class BlogPost
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   sig { returns(ActiveStorage::Attached::One) }
   def cover; end
 
@@ -454,10 +456,10 @@ class BlogPost
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language) }
     def create_language!(*args, &blk); end
 
-    sig { returns(T.nilable(::User)) }
+    sig { returns(::User) }
     def creator; end
 
-    sig { params(value: T.nilable(::User)).void }
+    sig { params(value: ::User).void }
     def creator=(value); end
 
     sig { returns(T::Boolean) }
@@ -543,7 +545,7 @@ class BlogPost
     sig { returns(T.nilable(::ActiveStorage::Blob)) }
     def reload_cover_blob; end
 
-    sig { returns(T.nilable(::User)) }
+    sig { returns(::User) }
     def reload_creator; end
 
     sig { returns(T.nilable(::Language)) }
@@ -739,10 +741,10 @@ class BlogPost
   end
 
   module GeneratedAttributeMethods
-    sig { returns(T.nilable(::String)) }
+    sig { returns(::String) }
     def body; end
 
-    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    sig { params(value: ::String).returns(::String) }
     def body=(value); end
 
     sig { returns(T::Boolean) }
@@ -757,10 +759,10 @@ class BlogPost
     sig { returns(T::Boolean) }
     def body_came_from_user?; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def body_change; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def body_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -769,7 +771,7 @@ class BlogPost
     sig { returns(T.nilable(::String)) }
     def body_in_database; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def body_previous_change; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -874,10 +876,10 @@ class BlogPost
     sig { void }
     def creator_id_will_change!; end
 
-    sig { returns(T.nilable(::String)) }
+    sig { returns(::String) }
     def description; end
 
-    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    sig { params(value: ::String).returns(::String) }
     def description=(value); end
 
     sig { returns(T::Boolean) }
@@ -892,10 +894,10 @@ class BlogPost
     sig { returns(T::Boolean) }
     def description_came_from_user?; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def description_change; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def description_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -904,7 +906,7 @@ class BlogPost
     sig { returns(T.nilable(::String)) }
     def description_in_database; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def description_previous_change; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1054,10 +1056,10 @@ class BlogPost
     sig { void }
     def language_id_will_change!; end
 
-    sig { returns(T.nilable(::String)) }
+    sig { returns(::String) }
     def locale; end
 
-    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    sig { params(value: ::String).returns(::String) }
     def locale=(value); end
 
     sig { returns(T::Boolean) }
@@ -1072,10 +1074,10 @@ class BlogPost
     sig { returns(T::Boolean) }
     def locale_came_from_user?; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def locale_change; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def locale_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1084,7 +1086,7 @@ class BlogPost
     sig { returns(T.nilable(::String)) }
     def locale_in_database; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def locale_previous_change; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1099,10 +1101,10 @@ class BlogPost
     sig { void }
     def locale_will_change!; end
 
-    sig { returns(T.nilable(::String)) }
+    sig { returns(::String) }
     def name; end
 
-    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    sig { params(value: ::String).returns(::String) }
     def name=(value); end
 
     sig { returns(T::Boolean) }
@@ -1117,10 +1119,10 @@ class BlogPost
     sig { returns(T::Boolean) }
     def name_came_from_user?; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def name_change; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def name_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1129,7 +1131,7 @@ class BlogPost
     sig { returns(T.nilable(::String)) }
     def name_in_database; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def name_previous_change; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1228,7 +1230,7 @@ class BlogPost
     sig { void }
     def restore_updated_at!; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_body; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1246,7 +1248,7 @@ class BlogPost
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_creator_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_description; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1270,13 +1272,13 @@ class BlogPost
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_language_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_locale; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_locale?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_name; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1288,7 +1290,7 @@ class BlogPost
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_related_language_items_count?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_slug; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1306,10 +1308,10 @@ class BlogPost
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_updated_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable(::String)) }
+    sig { returns(::String) }
     def slug; end
 
-    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    sig { params(value: ::String).returns(::String) }
     def slug=(value); end
 
     sig { returns(T::Boolean) }
@@ -1324,10 +1326,10 @@ class BlogPost
     sig { returns(T::Boolean) }
     def slug_came_from_user?; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def slug_change; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def slug_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1336,7 +1338,7 @@ class BlogPost
     sig { returns(T.nilable(::String)) }
     def slug_in_database; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def slug_previous_change; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }

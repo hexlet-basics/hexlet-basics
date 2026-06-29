@@ -11,6 +11,8 @@ class RubyEventStore::ActiveRecord::EventInStream
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   private
 
   sig { returns(NilClass) }
@@ -467,10 +469,10 @@ class RubyEventStore::ActiveRecord::EventInStream
     sig { params(args: T.untyped, blk: T.untyped).returns(::RubyEventStore::ActiveRecord::Event) }
     def create_event!(*args, &blk); end
 
-    sig { returns(T.nilable(::RubyEventStore::ActiveRecord::Event)) }
+    sig { returns(::RubyEventStore::ActiveRecord::Event) }
     def event; end
 
-    sig { params(value: T.nilable(::RubyEventStore::ActiveRecord::Event)).void }
+    sig { params(value: ::RubyEventStore::ActiveRecord::Event).void }
     def event=(value); end
 
     sig { returns(T::Boolean) }
@@ -479,7 +481,7 @@ class RubyEventStore::ActiveRecord::EventInStream
     sig { returns(T::Boolean) }
     def event_previously_changed?; end
 
-    sig { returns(T.nilable(::RubyEventStore::ActiveRecord::Event)) }
+    sig { returns(::RubyEventStore::ActiveRecord::Event) }
     def reload_event; end
 
     sig { void }

@@ -27,22 +27,22 @@ class Language::LessonResource < ApplicationResource
 
   typelize :string, nullable: true
   attribute :prepared_code do
-    T.must(it.version).prepared_code
+    it.version.prepared_code
   end
 
   typelize :string, nullable: true
   attribute :original_code do
-    T.must(it.version).original_code
+    it.version.original_code
   end
 
   typelize :string, nullable: true
   attribute :test_code do
-    T.must(it.version).test_code
+    it.version.test_code
   end
 
   typelize :number, nullable: true
   attribute :version do
-    T.must(it.version).id
+    it.version.id
   end
 
   typelize :string
@@ -52,11 +52,11 @@ class Language::LessonResource < ApplicationResource
 
   typelize :number
   attribute :natural_order do
-    T.must(it.version).natural_order
+    it.version.natural_order
   end
 
   typelize :string, nullable: true
   attribute :source_code_url do
-    ExternalLinks.lesson_source_code_curl(T.must(it.version).path_to_code, it.locale)
+    ExternalLinks.lesson_source_code_curl(it.version.path_to_code, it.locale)
   end
 end

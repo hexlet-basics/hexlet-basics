@@ -29,7 +29,7 @@ class Web::PasskeySessionsController < Web::ApplicationController
     )
     stored.update!(sign_count: webauthn_credential.sign_count)
 
-    user = T.must(stored.user)
+    user = stored.user
     publish_signed_in_event(user)
     sign_in(user)
 

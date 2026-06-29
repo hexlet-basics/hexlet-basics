@@ -11,6 +11,8 @@ class Language::Category::Item
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   private
 
   sig { returns(NilClass) }
@@ -471,10 +473,10 @@ class Language::Category::Item
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language::LandingPage) }
     def create_language_landing_page!(*args, &blk); end
 
-    sig { returns(T.nilable(::Language::Category)) }
+    sig { returns(::Language::Category) }
     def language_category; end
 
-    sig { params(value: T.nilable(::Language::Category)).void }
+    sig { params(value: ::Language::Category).void }
     def language_category=(value); end
 
     sig { returns(T::Boolean) }
@@ -483,10 +485,10 @@ class Language::Category::Item
     sig { returns(T::Boolean) }
     def language_category_previously_changed?; end
 
-    sig { returns(T.nilable(::Language::LandingPage)) }
+    sig { returns(::Language::LandingPage) }
     def language_landing_page; end
 
-    sig { params(value: T.nilable(::Language::LandingPage)).void }
+    sig { params(value: ::Language::LandingPage).void }
     def language_landing_page=(value); end
 
     sig { returns(T::Boolean) }
@@ -495,10 +497,10 @@ class Language::Category::Item
     sig { returns(T::Boolean) }
     def language_landing_page_previously_changed?; end
 
-    sig { returns(T.nilable(::Language::Category)) }
+    sig { returns(::Language::Category) }
     def reload_language_category; end
 
-    sig { returns(T.nilable(::Language::LandingPage)) }
+    sig { returns(::Language::LandingPage) }
     def reload_language_landing_page; end
 
     sig { void }

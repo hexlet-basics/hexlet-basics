@@ -6,9 +6,9 @@ class Assistants::RunJob < ApplicationJob
   sig { params(lesson_member_id: Integer, message: T.untyped, user_code: T.untyped, output: T.untyped).void }
   def perform(lesson_member_id:, message:, user_code:, output:)
     lesson_member = Language::Lesson::Member.find(lesson_member_id)
-    lesson = T.must(lesson_member.lesson)
+    lesson = lesson_member.lesson
     lesson_info = lesson.infos.find_by!(locale: I18n.locale)
-    language = T.must(lesson.language)
+    language = lesson.language
 
     unless language.openai_assistant_id
       throw RuntimeError.new "#{language} without openai_assistant_id"

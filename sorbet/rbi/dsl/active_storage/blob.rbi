@@ -13,6 +13,8 @@ class ActiveStorage::Blob
   include GeneratedSecureTokenMethods
   include GeneratedStoredAttributesMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   sig { returns(ActiveStorage::Attached::One) }
   def preview_image; end
 

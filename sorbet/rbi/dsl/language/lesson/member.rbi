@@ -11,6 +11,8 @@ class Language::Lesson::Member
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   sig { params(opts: T.untyped, block: T.nilable(T.proc.void)).returns(T.untyped) }
   def finish(*opts, &block); end
 
@@ -510,19 +512,19 @@ class Language::Lesson::Member
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_user!(*args, &blk); end
 
-    sig { returns(T.nilable(::Language)) }
+    sig { returns(::Language) }
     def language; end
 
-    sig { params(value: T.nilable(::Language)).void }
+    sig { params(value: ::Language).void }
     def language=(value); end
 
     sig { returns(T::Boolean) }
     def language_changed?; end
 
-    sig { returns(T.nilable(::Language::Member)) }
+    sig { returns(::Language::Member) }
     def language_member; end
 
-    sig { params(value: T.nilable(::Language::Member)).void }
+    sig { params(value: ::Language::Member).void }
     def language_member=(value); end
 
     sig { returns(T::Boolean) }
@@ -534,10 +536,10 @@ class Language::Lesson::Member
     sig { returns(T::Boolean) }
     def language_previously_changed?; end
 
-    sig { returns(T.nilable(::Language::Lesson)) }
+    sig { returns(::Language::Lesson) }
     def lesson; end
 
-    sig { params(value: T.nilable(::Language::Lesson)).void }
+    sig { params(value: ::Language::Lesson).void }
     def lesson=(value); end
 
     sig { returns(T::Boolean) }
@@ -560,16 +562,16 @@ class Language::Lesson::Member
     sig { params(value: T::Enumerable[::Language::Lesson::Member::Message]).void }
     def messages=(value); end
 
-    sig { returns(T.nilable(::Language)) }
+    sig { returns(::Language) }
     def reload_language; end
 
-    sig { returns(T.nilable(::Language::Member)) }
+    sig { returns(::Language::Member) }
     def reload_language_member; end
 
-    sig { returns(T.nilable(::Language::Lesson)) }
+    sig { returns(::Language::Lesson) }
     def reload_lesson; end
 
-    sig { returns(T.nilable(::User)) }
+    sig { returns(::User) }
     def reload_user; end
 
     sig { void }
@@ -584,10 +586,10 @@ class Language::Lesson::Member
     sig { void }
     def reset_user; end
 
-    sig { returns(T.nilable(::User)) }
+    sig { returns(::User) }
     def user; end
 
-    sig { params(value: T.nilable(::User)).void }
+    sig { params(value: ::User).void }
     def user=(value); end
 
     sig { returns(T::Boolean) }

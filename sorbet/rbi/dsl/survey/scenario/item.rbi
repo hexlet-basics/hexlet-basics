@@ -11,6 +11,8 @@ class Survey::Scenario::Item
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   private
 
   sig { returns(NilClass) }
@@ -466,10 +468,10 @@ class Survey::Scenario::Item
     sig { params(args: T.untyped, blk: T.untyped).returns(::Survey) }
     def create_survey!(*args, &blk); end
 
-    sig { returns(T.nilable(::Survey::Scenario)) }
+    sig { returns(::Survey::Scenario) }
     def reload_scenario; end
 
-    sig { returns(T.nilable(::Survey)) }
+    sig { returns(::Survey) }
     def reload_survey; end
 
     sig { void }
@@ -478,10 +480,10 @@ class Survey::Scenario::Item
     sig { void }
     def reset_survey; end
 
-    sig { returns(T.nilable(::Survey::Scenario)) }
+    sig { returns(::Survey::Scenario) }
     def scenario; end
 
-    sig { params(value: T.nilable(::Survey::Scenario)).void }
+    sig { params(value: ::Survey::Scenario).void }
     def scenario=(value); end
 
     sig { returns(T::Boolean) }
@@ -490,10 +492,10 @@ class Survey::Scenario::Item
     sig { returns(T::Boolean) }
     def scenario_previously_changed?; end
 
-    sig { returns(T.nilable(::Survey)) }
+    sig { returns(::Survey) }
     def survey; end
 
-    sig { params(value: T.nilable(::Survey)).void }
+    sig { params(value: ::Survey).void }
     def survey=(value); end
 
     sig { returns(T::Boolean) }

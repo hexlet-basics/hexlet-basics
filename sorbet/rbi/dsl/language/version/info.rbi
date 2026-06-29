@@ -11,6 +11,8 @@ class Language::Version::Info
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   private
 
   sig { returns(NilClass) }
@@ -471,10 +473,10 @@ class Language::Version::Info
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language::Version) }
     def create_language_version!(*args, &blk); end
 
-    sig { returns(T.nilable(::Language)) }
+    sig { returns(::Language) }
     def language; end
 
-    sig { params(value: T.nilable(::Language)).void }
+    sig { params(value: ::Language).void }
     def language=(value); end
 
     sig { returns(T::Boolean) }
@@ -483,10 +485,10 @@ class Language::Version::Info
     sig { returns(T::Boolean) }
     def language_previously_changed?; end
 
-    sig { returns(T.nilable(::Language::Version)) }
+    sig { returns(::Language::Version) }
     def language_version; end
 
-    sig { params(value: T.nilable(::Language::Version)).void }
+    sig { params(value: ::Language::Version).void }
     def language_version=(value); end
 
     sig { returns(T::Boolean) }
@@ -495,10 +497,10 @@ class Language::Version::Info
     sig { returns(T::Boolean) }
     def language_version_previously_changed?; end
 
-    sig { returns(T.nilable(::Language)) }
+    sig { returns(::Language) }
     def reload_language; end
 
-    sig { returns(T.nilable(::Language::Version)) }
+    sig { returns(::Language::Version) }
     def reload_language_version; end
 
     sig { void }
@@ -722,10 +724,10 @@ class Language::Version::Info
     sig { void }
     def created_at_will_change!; end
 
-    sig { returns(T.nilable(::String)) }
+    sig { returns(::String) }
     def description; end
 
-    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    sig { params(value: ::String).returns(::String) }
     def description=(value); end
 
     sig { returns(T::Boolean) }
@@ -740,10 +742,10 @@ class Language::Version::Info
     sig { returns(T::Boolean) }
     def description_came_from_user?; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def description_change; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def description_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -752,7 +754,7 @@ class Language::Version::Info
     sig { returns(T.nilable(::String)) }
     def description_in_database; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def description_previous_change; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -767,10 +769,10 @@ class Language::Version::Info
     sig { void }
     def description_will_change!; end
 
-    sig { returns(T.nilable(::String)) }
+    sig { returns(::String) }
     def header; end
 
-    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    sig { params(value: ::String).returns(::String) }
     def header=(value); end
 
     sig { returns(T::Boolean) }
@@ -785,10 +787,10 @@ class Language::Version::Info
     sig { returns(T::Boolean) }
     def header_came_from_user?; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def header_change; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def header_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -797,7 +799,7 @@ class Language::Version::Info
     sig { returns(T.nilable(::String)) }
     def header_in_database; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def header_previous_change; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1124,13 +1126,13 @@ class Language::Version::Info
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_description; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_description?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_header; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }

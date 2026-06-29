@@ -27,7 +27,7 @@ class Web::LeadsController < Web::ApplicationController
 
     courses_data = user.language_members.map do |member|
       {
-        slug: T.must(member.language).slug,
+        slug: member.language.slug,
         lessons_finished_count: member.lesson_members.finished.count
       }
     end

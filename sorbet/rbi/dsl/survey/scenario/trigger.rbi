@@ -11,6 +11,8 @@ class Survey::Scenario::Trigger
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   private
 
   sig { returns(NilClass) }
@@ -462,16 +464,16 @@ class Survey::Scenario::Trigger
     sig { params(args: T.untyped, blk: T.untyped).returns(::Survey::Scenario) }
     def create_scenario!(*args, &blk); end
 
-    sig { returns(T.nilable(::Survey::Scenario)) }
+    sig { returns(::Survey::Scenario) }
     def reload_scenario; end
 
     sig { void }
     def reset_scenario; end
 
-    sig { returns(T.nilable(::Survey::Scenario)) }
+    sig { returns(::Survey::Scenario) }
     def scenario; end
 
-    sig { params(value: T.nilable(::Survey::Scenario)).void }
+    sig { params(value: ::Survey::Scenario).void }
     def scenario=(value); end
 
     sig { returns(T::Boolean) }

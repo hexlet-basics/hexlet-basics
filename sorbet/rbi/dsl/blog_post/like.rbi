@@ -11,6 +11,8 @@ class BlogPost::Like
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   private
 
   sig { returns(NilClass) }
@@ -416,10 +418,10 @@ class BlogPost::Like
   end
 
   module GeneratedAssociationMethods
-    sig { returns(T.nilable(::BlogPost)) }
+    sig { returns(::BlogPost) }
     def blog_post; end
 
-    sig { params(value: T.nilable(::BlogPost)).void }
+    sig { params(value: ::BlogPost).void }
     def blog_post=(value); end
 
     sig { returns(T::Boolean) }
@@ -446,7 +448,7 @@ class BlogPost::Like
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_user!(*args, &blk); end
 
-    sig { returns(T.nilable(::BlogPost)) }
+    sig { returns(::BlogPost) }
     def reload_blog_post; end
 
     sig { returns(T.nilable(::User)) }

@@ -46,7 +46,7 @@ class Language::Lesson::Version < ApplicationRecord
 
   sig { returns(T.untyped) }
   def next_lesson
-    T.must(language_version)
+    language_version
       .lesson_versions.order(:natural_order)
       .joins(:infos)
       .merge(Language::Lesson::Version::Info.with_locale)
@@ -55,7 +55,7 @@ class Language::Lesson::Version < ApplicationRecord
 
   sig { returns(T.untyped) }
   def prev_lesson
-    T.must(language_version)
+    language_version
       .lesson_versions.order(natural_order: :desc)
       .joins(:infos)
       .merge(Language::Lesson::Version::Info.with_locale)

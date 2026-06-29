@@ -11,6 +11,8 @@ class Language::Lesson::Review
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   private
 
   sig { returns(NilClass) }
@@ -489,10 +491,10 @@ class Language::Lesson::Review
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language::Lesson::Version::Info) }
     def create_lesson_version_info!(*args, &blk); end
 
-    sig { returns(T.nilable(::Language)) }
+    sig { returns(::Language) }
     def language; end
 
-    sig { params(value: T.nilable(::Language)).void }
+    sig { params(value: ::Language).void }
     def language=(value); end
 
     sig { returns(T::Boolean) }
@@ -501,10 +503,10 @@ class Language::Lesson::Review
     sig { returns(T::Boolean) }
     def language_previously_changed?; end
 
-    sig { returns(T.nilable(::Language::Lesson)) }
+    sig { returns(::Language::Lesson) }
     def lesson; end
 
-    sig { params(value: T.nilable(::Language::Lesson)).void }
+    sig { params(value: ::Language::Lesson).void }
     def lesson=(value); end
 
     sig { returns(T::Boolean) }
@@ -513,19 +515,19 @@ class Language::Lesson::Review
     sig { returns(T::Boolean) }
     def lesson_previously_changed?; end
 
-    sig { returns(T.nilable(::Language::Lesson::Version)) }
+    sig { returns(::Language::Lesson::Version) }
     def lesson_version; end
 
-    sig { params(value: T.nilable(::Language::Lesson::Version)).void }
+    sig { params(value: ::Language::Lesson::Version).void }
     def lesson_version=(value); end
 
     sig { returns(T::Boolean) }
     def lesson_version_changed?; end
 
-    sig { returns(T.nilable(::Language::Lesson::Version::Info)) }
+    sig { returns(::Language::Lesson::Version::Info) }
     def lesson_version_info; end
 
-    sig { params(value: T.nilable(::Language::Lesson::Version::Info)).void }
+    sig { params(value: ::Language::Lesson::Version::Info).void }
     def lesson_version_info=(value); end
 
     sig { returns(T::Boolean) }
@@ -537,16 +539,16 @@ class Language::Lesson::Review
     sig { returns(T::Boolean) }
     def lesson_version_previously_changed?; end
 
-    sig { returns(T.nilable(::Language)) }
+    sig { returns(::Language) }
     def reload_language; end
 
-    sig { returns(T.nilable(::Language::Lesson)) }
+    sig { returns(::Language::Lesson) }
     def reload_lesson; end
 
-    sig { returns(T.nilable(::Language::Lesson::Version)) }
+    sig { returns(::Language::Lesson::Version) }
     def reload_lesson_version; end
 
-    sig { returns(T.nilable(::Language::Lesson::Version::Info)) }
+    sig { returns(::Language::Lesson::Version::Info) }
     def reload_lesson_version_info; end
 
     sig { void }

@@ -21,8 +21,11 @@ gem:
     # from typed code (wired via config), so skip generating its RBI.
     - solid_cable
 dsl:
-  # Add your `dsl` command parameters here:
-  #
-  # exclude:
-  # - SomeGeneratorName
-  # workers: 5
+  # boba's ActiveRecord*Persisted compilers type associations/columns as present
+  # (non-nilable) for persisted records, replacing the built-in nilable ones.
+  compiler_options:
+    ActiveRecordAssociationTypes: persisted
+    ActiveRecordColumnTypes: persisted
+  exclude:
+    - ActiveRecordAssociations
+    - ActiveRecordColumns

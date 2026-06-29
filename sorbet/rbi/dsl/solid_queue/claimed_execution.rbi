@@ -11,6 +11,8 @@ class SolidQueue::ClaimedExecution
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  RelationType = T.type_alias { T.any(PrivateRelation, PrivateAssociationRelation, PrivateCollectionProxy) }
+
   private
 
   sig { returns(NilClass) }
@@ -471,16 +473,16 @@ class SolidQueue::ClaimedExecution
     sig { params(args: T.untyped, blk: T.untyped).returns(::SolidQueue::Process) }
     def create_process!(*args, &blk); end
 
-    sig { returns(T.nilable(::SolidQueue::Job)) }
+    sig { returns(::SolidQueue::Job) }
     def job; end
 
-    sig { params(value: T.nilable(::SolidQueue::Job)).void }
+    sig { params(value: ::SolidQueue::Job).void }
     def job=(value); end
 
-    sig { returns(T.nilable(::SolidQueue::Process)) }
+    sig { returns(::SolidQueue::Process) }
     def process; end
 
-    sig { params(value: T.nilable(::SolidQueue::Process)).void }
+    sig { params(value: ::SolidQueue::Process).void }
     def process=(value); end
 
     sig { returns(T::Boolean) }
@@ -489,10 +491,10 @@ class SolidQueue::ClaimedExecution
     sig { returns(T::Boolean) }
     def process_previously_changed?; end
 
-    sig { returns(T.nilable(::SolidQueue::Job)) }
+    sig { returns(::SolidQueue::Job) }
     def reload_job; end
 
-    sig { returns(T.nilable(::SolidQueue::Process)) }
+    sig { returns(::SolidQueue::Process) }
     def reload_process; end
 
     sig { void }
