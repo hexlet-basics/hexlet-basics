@@ -2,6 +2,7 @@
   "name": "hexlet_basics",
   "private": true,
   "simple-git-hooks": {
+    "commit-msg": "npx --no -- commitlint --edit ${1}",
     "pre-push": "make lint"
   },
   "type": "module",
@@ -80,6 +81,8 @@
   "version": "0.1.0",
   "devDependencies": {
     "@biomejs/biome": "2.5.1",
+    "@commitlint/cli": "^21.1.0",
+    "@commitlint/config-conventional": "^21.1.0",
     "@sentry/vite-plugin": "^5.3.0",
     "@shikijs/monaco": "^4.3.0",
     "@types/ahoy.js": "^0.4.2",
