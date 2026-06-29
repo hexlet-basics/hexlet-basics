@@ -19,9 +19,7 @@ class LeadCreatedEvent < ApplicationEvent
       email: T.nilable(String),
       phone: T.nilable(String),
       telegram: T.nilable(String),
-      whatsapp: T.nilable(String),
-      survey_answers_data: T::Array[T::Hash[String, T.untyped]],
-      courses_data: T::Array[T::Hash[String, T.untyped]]
+      whatsapp: T.nilable(String)
     }
   }
 

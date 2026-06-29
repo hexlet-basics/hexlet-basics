@@ -60,12 +60,10 @@ export interface LeadCreatedEvent {
     utm_campaign: string | undefined;
     utm_term: string | undefined;
     utm_content: string | undefined;
-    email: string;
+    email: string | undefined;
     phone: string | undefined;
     telegram: string | undefined;
     whatsapp: string | undefined;
-    survey_answers_data: Record<string, unknown>[];
-    courses_data: Record<string, unknown>[];
   };
 }
 
@@ -116,7 +114,7 @@ export interface UserSignedInEvent {
   data: {
     user_id: number;
     occurrence_count: number;
-    email: string;
+    email: string | undefined;
     locale: string;
   };
 }
@@ -128,7 +126,7 @@ export interface UserSignedUpEvent {
   metadata: { name: string };
   data: {
     user_id: number;
-    email: string;
+    email: string | undefined;
     first_name: string | undefined;
     last_name: string | undefined;
     locale: string;

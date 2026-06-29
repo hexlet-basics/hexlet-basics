@@ -59,9 +59,7 @@ class Web::LeadsController < Web::ApplicationController
       utm_term: lead.ahoy_visit&.utm_term,
       phone: lead.phone,
       telegram: lead.telegram,
-      whatsapp: lead.whatsapp,
-      survey_answers_data: lead.survey_answers_data,
-      courses_data: lead.courses_data
+      whatsapp: lead.whatsapp
     }
     lead_created_event = LeadCreatedEvent.new(data: lead_created_event_data)
 
