@@ -48,9 +48,8 @@ class Web::PhoneAuthControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_url
     assert { authenticated? }
 
-    user = User.find_by(phone: @phone)
-    assert { user.present? }
-    assert { T.must(user).phone_verified_at.present? }
+    user = User.find_by!(phone: @phone)
+    assert { user.phone_verified_at? }
   end
 
   def test_existing_user_signs_in_without_duplicate

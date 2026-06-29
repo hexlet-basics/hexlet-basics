@@ -4,6 +4,8 @@ require "test_helper"
 require "capybara/cuprite"
 
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
+  extend T::Sig
+
   driven_by :cuprite, options: { pending_connection_errors: false }
 
   setup { WebMock.disable_net_connect!(allow_localhost: true) }
@@ -19,8 +21,9 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   #   FileUtils.rm_rf(ActiveStorage::Blob.service.root)
   # end
 
+  sig { params(name: Symbol).void }
   def sign_in_as(name)
-    user = T.cast(users(name), User)
+    user = users(name)
 
     visit new_session_url
     email_element = find('[data-testid="email"]')

@@ -3,14 +3,27 @@
 require "test_helper"
 
 class Web::Admin::Api::LanguageLandingPages::QnaItemsControllerTest < ActionDispatch::IntegrationTest
+  extend T::Sig
+
+  class SetupContext < T::Struct
+    const :landing_page, Language::LandingPage
+    const :qna_item, Language::LandingPage::QnaItem
+  end
+
+  sig { returns(SetupContext) }
+  def context
+    SetupContext.new(
+      landing_page: language_landing_pages("javascript-ru"),
+      qna_item: language_landing_page_qna_items("javascript-ru-1"),
+    )
+  end
+
   setup do
     sign_in_as(:admin)
   end
 
   def test_index
-    landing_page = language_landing_pages("javascript-ru")
-
-    get admin_api_language_landing_page_qna_items_url(landing_page), as: :json
+    get admin_api_language_landing_page_qna_items_url(context.landing_page), as: :json
 
     assert_response :success
   end
@@ -25,28 +38,26 @@ class Web::Admin::Api::LanguageLandingPages::QnaItemsControllerTest < ActionDisp
     end
 
     assert_response :created
-    assert_equal "New question", T.must(landing_page.qna_items.order(:id).last).question
+    assert_equal "New question", landing_page.qna_items.order(:id).last!.question
   end
 
   def test_update
-    landing_page = language_landing_pages("javascript-ru")
-    qna_item = language_landing_page_qna_items("javascript-ru-1")
+    ctx = context
 
-    patch admin_api_language_landing_page_qna_item_url(landing_page, qna_item),
+    patch admin_api_language_landing_page_qna_item_url(ctx.landing_page, ctx.qna_item),
       params: { data: { question: "Updated question", answer: "Updated answer" } },
       as: :json
 
     assert_response :success
-    assert_equal "Updated question", qna_item.reload.question
-    assert_equal "Updated answer", qna_item.answer
+    assert_equal "Updated question", ctx.qna_item.reload.question
+    assert_equal "Updated answer", ctx.qna_item.answer
   end
 
   def test_destroy
-    landing_page = language_landing_pages("javascript-ru")
-    qna_item = language_landing_page_qna_items("javascript-ru-1")
+    ctx = context
 
-    assert_difference -> { landing_page.qna_items.count }, -1 do
-      delete admin_api_language_landing_page_qna_item_url(landing_page, qna_item), as: :json
+    assert_difference -> { ctx.landing_page.qna_items.count }, -1 do
+      delete admin_api_language_landing_page_qna_item_url(ctx.landing_page, ctx.qna_item), as: :json
     end
 
     assert_response :success

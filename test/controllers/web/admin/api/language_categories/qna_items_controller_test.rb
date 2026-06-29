@@ -3,14 +3,27 @@
 require "test_helper"
 
 class Web::Admin::Api::LanguageCategories::QnaItemsControllerTest < ActionDispatch::IntegrationTest
+  extend T::Sig
+
+  class SetupContext < T::Struct
+    const :category, Language::Category
+    const :qna_item, Language::Category::QnaItem
+  end
+
+  sig { returns(SetupContext) }
+  def context
+    SetupContext.new(
+      category: language_categories("programming-ru"),
+      qna_item: language_category_qna_items("programming-ru-1"),
+    )
+  end
+
   setup do
     sign_in_as(:admin)
   end
 
   def test_index
-    category = language_categories("programming-ru")
-
-    get admin_api_language_category_qna_items_url(category), as: :json
+    get admin_api_language_category_qna_items_url(context.category), as: :json
 
     assert_response :success
   end
@@ -25,28 +38,26 @@ class Web::Admin::Api::LanguageCategories::QnaItemsControllerTest < ActionDispat
     end
 
     assert_response :created
-    assert_equal "New question", T.must(category.qna_items.order(:id).last).question
+    assert_equal "New question", category.qna_items.order(:id).last!.question
   end
 
   def test_update
-    category = language_categories("programming-ru")
-    qna_item = language_category_qna_items("programming-ru-1")
+    ctx = context
 
-    patch admin_api_language_category_qna_item_url(category, qna_item),
+    patch admin_api_language_category_qna_item_url(ctx.category, ctx.qna_item),
       params: { data: { question: "Updated question", answer: "Updated answer" } },
       as: :json
 
     assert_response :success
-    assert_equal "Updated question", qna_item.reload.question
-    assert_equal "Updated answer", qna_item.answer
+    assert_equal "Updated question", ctx.qna_item.reload.question
+    assert_equal "Updated answer", ctx.qna_item.answer
   end
 
   def test_destroy
-    category = language_categories("programming-ru")
-    qna_item = language_category_qna_items("programming-ru-1")
+    ctx = context
 
-    assert_difference -> { category.qna_items.count }, -1 do
-      delete admin_api_language_category_qna_item_url(category, qna_item), as: :json
+    assert_difference -> { ctx.category.qna_items.count }, -1 do
+      delete admin_api_language_category_qna_item_url(ctx.category, ctx.qna_item), as: :json
     end
 
     assert_response :success
