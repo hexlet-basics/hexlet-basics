@@ -1,3 +1,4 @@
+# typed: true
 # frozen_string_literal: true
 
 require "test_helper"
@@ -49,7 +50,7 @@ class Web::PhoneAuthControllerTest < ActionDispatch::IntegrationTest
 
     user = User.find_by(phone: @phone)
     assert { user.present? }
-    assert { user.phone_verified_at.present? }
+    assert { T.must(user).phone_verified_at.present? }
   end
 
   def test_existing_user_signs_in_without_duplicate

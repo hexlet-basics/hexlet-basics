@@ -1,3 +1,4 @@
+# typed: true
 # frozen_string_literal: true
 
 require "test_helper"
@@ -6,7 +7,7 @@ class Web::GoogleAuthControllerTest < ActionDispatch::IntegrationTest
   def test_check_google_auth
     skip
 
-    post google_onetap_callback_path
+    post T.unsafe(self).google_onetap_callback_path
     assert_redirected_to root_path
   end
 

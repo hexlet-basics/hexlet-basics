@@ -1,3 +1,5 @@
+# typed: true
+
 require "test_helper"
 
 class Web::Admin::Api::LanguageLandingPages::QnaItemsControllerTest < ActionDispatch::IntegrationTest
@@ -23,7 +25,7 @@ class Web::Admin::Api::LanguageLandingPages::QnaItemsControllerTest < ActionDisp
     end
 
     assert_response :created
-    assert_equal "New question", landing_page.qna_items.order(:id).last.question
+    assert_equal "New question", T.must(landing_page.qna_items.order(:id).last).question
   end
 
   def test_update

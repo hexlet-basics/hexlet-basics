@@ -1,3 +1,5 @@
+# typed: true
+
 # == Schema Information
 #
 # Table name: language_landing_page_qna_items

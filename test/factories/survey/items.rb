@@ -1,3 +1,5 @@
+# typed: false
+
 # == Schema Information
 #
 # Table name: survey_items

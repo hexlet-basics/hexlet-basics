@@ -1,3 +1,5 @@
+# typed: true
+
 require "test_helper"
 
 class Web::BooksControllerTest < ActionDispatch::IntegrationTest
@@ -33,6 +35,6 @@ class Web::BooksControllerTest < ActionDispatch::IntegrationTest
     get download_book_path
     assert_response :success
 
-    assert { user.book_request.downloaded_state? }
+    assert { T.must(user.book_request).downloaded_state? }
   end
 end

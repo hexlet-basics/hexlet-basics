@@ -1,3 +1,5 @@
+# typed: true
+
 require "test_helper"
 
 class Web::UsersControllerTest < ActionDispatch::IntegrationTest
@@ -16,7 +18,7 @@ class Web::UsersControllerTest < ActionDispatch::IntegrationTest
 
     assert { user.present? }
     assert { authenticated? }
-    assert { user.survey_scenario_members.empty? }
+    assert { T.must(user).survey_scenario_members.empty? }
   end
 
   def test_create_with_demo
@@ -25,13 +27,13 @@ class Web::UsersControllerTest < ActionDispatch::IntegrationTest
     language = languages(:ruby)
     lesson = language.lessons.first
     code = file_fixture("exercise/correct.rb").read
-    post check_api_lesson_url(lesson), params: { version_id: lesson.versions.first.id, data: { attributes: { code: code } } }
+    post check_api_lesson_url(lesson), params: { version_id: T.must(T.must(lesson).versions.first).id, data: { attributes: { code: code } } }
 
     post users_url, params: { data: user_params }
     user = User.find_by email: user_params[:email].downcase
 
     assert { language.members.exists? user: user }
-    assert { lesson.members.finished.exists? user: user }
+    assert { T.must(lesson).members.finished.exists? user: user }
     assert { user.present? }
     assert { authenticated? }
   end

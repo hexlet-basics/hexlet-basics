@@ -1,3 +1,5 @@
+# typed: false
+
 # == Schema Information
 #
 # Table name: language_category_qna_items

@@ -1,3 +1,5 @@
+# typed: true
+
 require "test_helper"
 
 class Assistants::RunJobTest < ActiveJob::TestCase

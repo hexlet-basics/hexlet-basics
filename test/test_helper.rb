@@ -1,3 +1,5 @@
+# typed: true
+
 ENV["RAILS_ENV"] ||= "test"
 ENV["CONSOLE_LEVEL"] ||= "error"
 

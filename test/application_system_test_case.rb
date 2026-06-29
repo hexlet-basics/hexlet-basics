@@ -1,3 +1,5 @@
+# typed: true
+
 require "test_helper"
 require "capybara/cuprite"
 
@@ -18,7 +20,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   # end
 
   def sign_in_as(name)
-    user = users(name)
+    user = T.cast(users(name), User)
 
     visit new_session_url
     email_element = find('[data-testid="email"]')
