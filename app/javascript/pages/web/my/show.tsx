@@ -4,6 +4,7 @@ import {
   Anchor,
   Card,
   Container,
+  EmptyState,
   Grid,
   Group,
   Image,
@@ -14,7 +15,7 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import { IconMessage2 } from "@tabler/icons-react";
+import { IconBooks, IconMessage2 } from "@tabler/icons-react";
 import { Trans, useTranslation } from "react-i18next";
 import CourseBlock from "@/components/CourseBlock";
 import ApplicationLayout from "@/layouts/ApplicationLayout";
@@ -89,7 +90,9 @@ export default function My(props: Props) {
         <Title order={2} my="xl">
           {t(($) => $.my.show.started)}
         </Title>
-        {startedCourseMembers.length === 0 && <p>{t(($) => $.common.empty)}</p>}
+        {startedCourseMembers.length === 0 && (
+          <EmptyState icon={<IconBooks />} title={t(($) => $.common.empty)} />
+        )}
 
         <SimpleGrid cols={{ base: 1, xs: 2 }}>
           {startedCourseMembers.map((cm) => (
@@ -123,7 +126,7 @@ export default function My(props: Props) {
         )}
 
         {finishedCourseMembers.length === 0 && (
-          <p>{t(($) => $.common.empty)}</p>
+          <EmptyState icon={<IconBooks />} title={t(($) => $.common.empty)} />
         )}
 
         <SimpleGrid cols={{ base: 2, xs: 3, sm: 4 }}>

@@ -1,6 +1,7 @@
 import { router } from "@inertiajs/react";
 import type { DataTableSortStatus } from "mantine-datatable";
 import { useMemo, useState } from "react";
+import AdminTableEmptyState from "@/components/AdminTableEmptyState";
 import { getCurrentUrl } from "@/lib/utils";
 import type { Grid } from "@/types";
 
@@ -73,6 +74,7 @@ export default function useDataTableProps<
     onPageChange: (page: number) => updateGrid({ page }),
     recordsPerPage: grid.per,
     totalRecords: grid.tr,
+    emptyState: <AdminTableEmptyState />,
   };
 
   return { gridProps, filters };

@@ -6,11 +6,13 @@ import {
   Center,
   Container,
   Divider,
+  EmptyState,
   Group,
   Stack,
   Text,
   TextInput,
 } from "@mantine/core";
+import { IconKey } from "@tabler/icons-react";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppForm } from "@/hooks/useAppForm";
@@ -79,9 +81,10 @@ export default function Edit({ form, passkeys }: Props) {
                 {t(($) => $.account.profiles.edit.passkeys.title)}
               </Text>
               {passkeys.length === 0 ? (
-                <Text c="dimmed" size="sm">
-                  {t(($) => $.account.profiles.edit.passkeys.empty)}
-                </Text>
+                <EmptyState
+                  icon={<IconKey />}
+                  title={t(($) => $.account.profiles.edit.passkeys.empty)}
+                />
               ) : (
                 passkeys.map((passkey) => (
                   <Group key={passkey.id} justify="space-between">
