@@ -27,39 +27,18 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
 
     lesson_member = nil
 
-    if current_user.present?
+    user = current_user
+    if user
       # Dynamic creation, because user can start from any lesson directly
-      language_member = resource_language.members.find_or_initialize_by(user: current_user)
-      if language_member.new_record?
-        language_member.save!
-        event_data = {
-          occurrence_count: T.must(current_user).language_members.started.count,
-          slug: resource_language.slug,
-          locale: resource_language_landing_page.locale.to_sym
-        }
-        course_started_event = CourseStartedEvent.new(data: event_data)
-        publish_event(course_started_event, current_user)
-        js_event(course_started_event)
-      end
-      lesson_member = language_member.lesson_members.find_or_create_by!(
-        language: resource_language,
-        lesson:,
-        user: current_user,
-      )
-      if lesson_member.previously_new_record?
-        lesson_member.save!
+      locale = resource_language_landing_page.locale.to_sym
 
-        event_data = {
-          occurrence_count: language_member.lesson_members.count,
-          lesson_slug: lesson.slug,
-          course_slug: resource_language.slug,
-          locale: resource_language_landing_page.locale.to_sym
-        }
-        lesson_started_event = LessonStartedEvent.new(data: event_data)
+      start_course = CourseProgressService.start_course(user, resource_language, locale:)
+      js_events(start_course.events)
 
-        publish_event(lesson_started_event, current_user)
-        js_event(lesson_started_event)
-      end
+      start_lesson = CourseProgressService.start_lesson(start_course.course_member, lesson, user, locale:)
+      js_events(start_lesson.events)
+
+      lesson_member = start_lesson.lesson_member
     end
 
     ai_chat = lesson_member && AiChat.find_or_create_by!(
