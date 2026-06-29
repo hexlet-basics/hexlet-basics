@@ -65,10 +65,6 @@ export default function Form({ data, url, method }: Props) {
         )}
         {...form.getInputProps("hexlet_program_landing_page")}
       />
-      <TextInput
-        label={t(($) => $.models.attributes.language.openai_assistant_id)}
-        {...form.getInputProps("openai_assistant_id")}
-      />
       <FileInput
         label={t(($) => $.models.attributes.language.cover)}
         {...form.getFileInputProps("cover")}

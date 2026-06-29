@@ -5,7 +5,7 @@ import { useAssistantStream } from "@/hooks/useAssistantStream";
 import { propsForExternalLink } from "@/lib/utils";
 import type { AssistantMessage } from "@/types/assistantMessage";
 import type {
-  Language,
+  AiChat,
   LanguageLesson,
   LanguageLessonMember,
 } from "@/types/serializers";
@@ -15,11 +15,11 @@ type Props = {
   enabled: boolean;
   lesson: LanguageLesson;
   focusesCount: number;
-  course: Language;
   userCode: string;
   output: string;
   previousMessages: AssistantMessage[];
   lessonMember?: LanguageLessonMember;
+  aiChat?: AiChat;
 };
 
 function MessagePresenter({ message }: { message: AssistantMessage }) {
@@ -31,10 +31,10 @@ export default function Chat({
   enabled,
   focusesCount,
   output,
-  course,
   lesson,
   lessonMember,
   previousMessages,
+  aiChat,
 }: Props) {
   const { t, i18n } = useTranslation();
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -45,9 +45,9 @@ export default function Chat({
   }, [focusesCount]);
 
   const { input, status, messages, submitMessage, handleInputChange } =
-    useAssistantStream(lessonMember?.id, lesson.id, userCode, output);
+    useAssistantStream(aiChat?.id, lesson.id, userCode, output);
 
-  if (!lessonMember || !course.openai_assistant_id || !enabled) {
+  if (!lessonMember || !enabled) {
     let content = "";
 
     if (!lessonMember) {
@@ -56,8 +56,6 @@ export default function Chat({
       content = t(($) => $.languages.lessons.show.chat.disabled_html, {
         community_url: t(($) => $.common.community_url),
       });
-    } else if (!course.openai_assistant_id) {
-      content = t(($) => $.languages.lessons.show.chat.not_available);
     }
 
     const disabledMessage: AssistantMessage = {

@@ -89,7 +89,6 @@ export default interface Resources {
           cover: "Обложка";
           hexlet_program_landing_page: "Hexlet Program Landing Page";
           learn_as: "Учить как";
-          openai_assistant_id: "Assistent ID (OpenAI)";
           progress: "Прогресс";
           slug: "Slug";
         };
@@ -1256,7 +1255,6 @@ export default interface Resources {
           cover: "Обложка";
           hexlet_program_landing_page: "Hexlet Program Landing Page";
           learn_as: "Учить как";
-          openai_assistant_id: "Assistent ID (OpenAI)";
           progress: "Прогресс";
           slug: "Slug";
         };

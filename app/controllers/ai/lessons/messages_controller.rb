@@ -1,63 +1,34 @@
 # typed: strict
 
 class Ai::Lessons::MessagesController < Ai::ApplicationController
-  # include Import["openai_api"]
-
   sig { returns(T.untyped) }
   def index
     lesson = Language::Lesson.find(params[:lesson_id])
-    # language = lesson_info.language
     lesson_member = lesson.members.find_by!(user: current_user)
+    ai_chat = lesson_member.ai_chat
 
-    messages = []
-    if lesson_member.openai_thread_id?
-      openai_api = OpenAI::Client.new do |f|
-        if configus.hexlet_proxy.url.present?
-          f.proxy = { uri: configus.hexlet_proxy.url }
-        end
-      end
-      result = openai_api.messages.list(thread_id: lesson_member.openai_thread_id)
-      messages = result["data"].map do
-        {
-          id: it["id"],
-          role: it["role"],
-          created_at: it["created_at"],
-          content: it["content"].map { it["text"]["value"] }.join
-        }
-      end.reverse
-    end
+    messages = ai_chat ? AiMessageResource.new(ai_chat.ai_messages.where(role: %w[user assistant]).order(:id)) : []
 
     render json: messages
   end
 
   sig { returns(T.untyped) }
   def create
-    can_create_assistant_message = Language::Lesson::Member::MessagePolicy.new(
-      current_user,
-      Language::Lesson::Member::Message
-    ).create?
-
-    unless can_create_assistant_message
+    unless AiMessagePolicy.new(current_user, AiMessage).create?
       head :too_many_requests
       return
     end
 
     lesson = Language::Lesson.find(params[:lesson_id])
     lesson_member = lesson.members.find_by!(user: current_user)
-
-    m = lesson_member.messages.build body: params[:message]
-
-    m.role = "user"
-    m.language_lesson = lesson
-    m.language = lesson.language
-    m.user = lesson_member.user
-    m.save!
+    ai_chat = AiChat.find_or_create_by!(user: lesson_member.user, language_lesson_member: lesson_member)
 
     Assistants::RunJob.perform_later(
-      lesson_member_id: lesson_member.id,
+      ai_chat_id: ai_chat.id,
       message: params[:message],
       output: params[:output],
-      user_code: params[:user_code]
+      user_code: params[:user_code],
+      locale: I18n.locale.to_s
     )
 
     head :created

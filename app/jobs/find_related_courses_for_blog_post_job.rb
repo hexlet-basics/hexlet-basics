@@ -8,8 +8,6 @@ class FindRelatedCoursesForBlogPostJob < ApplicationJob
     blog_post = BlogPost.find(blog_post_id)
     landing_pages = Language::LandingPage.published.where(main: true).with_locale(blog_post.locale).includes(:language)
 
-    openai_api = DepsLocator.current.openai_api
-
     instructions = <<~PROMPT
       Ты — ассистент, который помогает подобрать курсы.
       У тебя есть текст статьи блога и список курсов.
@@ -23,18 +21,14 @@ class FindRelatedCoursesForBlogPostJob < ApplicationJob
     end
 
     content = blog_post.body
-    chat_completion = openai_api.chat(
-      parameters: {
-        model: :"gpt-4.1",
-        messages: [
-          { role: "system", content: instructions },
-          { role: "user", content: "Текст статьи: #{content.truncate(2000)}" },
-          { role: "user", content: "Список курсов: #{languages_data.to_json}" }
-        ]
-      }
-    )
+    response = RubyLLM.chat
+      .with_instructions(instructions)
+      .ask([
+        "Текст статьи: #{content.truncate(2000)}",
+        "Список курсов: #{languages_data.to_json}"
+      ].join("\n\n"))
 
-    raw_output = chat_completion.dig("choices", 0, "message", "content")
+    raw_output = response.content.to_s.gsub(/\A```(?:json)?|```\z/, "").strip
     course_ids = JSON.parse(raw_output)
 
     Rails.logger.info "COURSES #{course_ids}"

@@ -3,6 +3,7 @@ import type { ResolvedComponent } from "@inertiajs/react";
 import type { i18n } from "i18next";
 import type { AssistantMessage } from "./assistantMessage";
 import type {
+  AiChat,
   Language,
   LanguageCategory,
   LanguageLandingPageForLists,
@@ -53,5 +54,6 @@ export type LessonSharedProps = PageProps & {
   lessonMember?: LanguageLessonMember;
   lesson: LanguageLesson;
   lessons: LanguageLesson[];
+  aiChat?: AiChat;
   previousMessages: AssistantMessage[];
 };

@@ -1516,51 +1516,6 @@ class Language
     sig { void }
     def name_will_change!; end
 
-    sig { returns(T.nilable(::String)) }
-    def openai_assistant_id; end
-
-    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
-    def openai_assistant_id=(value); end
-
-    sig { returns(T::Boolean) }
-    def openai_assistant_id?; end
-
-    sig { returns(T.nilable(::String)) }
-    def openai_assistant_id_before_last_save; end
-
-    sig { returns(T.untyped) }
-    def openai_assistant_id_before_type_cast; end
-
-    sig { returns(T::Boolean) }
-    def openai_assistant_id_came_from_user?; end
-
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
-    def openai_assistant_id_change; end
-
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
-    def openai_assistant_id_change_to_be_saved; end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def openai_assistant_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(::String)) }
-    def openai_assistant_id_in_database; end
-
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
-    def openai_assistant_id_previous_change; end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def openai_assistant_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(::String)) }
-    def openai_assistant_id_previously_was; end
-
-    sig { returns(T.nilable(::String)) }
-    def openai_assistant_id_was; end
-
-    sig { void }
-    def openai_assistant_id_will_change!; end
-
     sig { returns(T.nilable(::Integer)) }
     def order; end
 
@@ -1694,9 +1649,6 @@ class Language
     def restore_name!; end
 
     sig { void }
-    def restore_openai_assistant_id!; end
-
-    sig { void }
     def restore_order!; end
 
     sig { void }
@@ -1797,12 +1749,6 @@ class Language
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_name?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
-    def saved_change_to_openai_assistant_id; end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def saved_change_to_openai_assistant_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::Integer), T.nilable(::Integer)])) }
     def saved_change_to_order; end
@@ -2061,9 +2007,6 @@ class Language
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_name?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def will_save_change_to_openai_assistant_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_order?(from: T.unsafe(nil), to: T.unsafe(nil)); end

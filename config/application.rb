@@ -21,6 +21,10 @@ require "rails/test_unit/railtie"
 Bundler.require(*Rails.groups)
 Dotenv::Rails.files.unshift(".env.local") if ENV["RAILS_ENV"] == "test"
 
+RubyLLM.configure do |config|
+  config.use_new_acts_as = true
+end
+
 load File.expand_path("../app/lib/configus.rb", __dir__)
 load File.expand_path("../app/lib/app_host.rb", __dir__)
 

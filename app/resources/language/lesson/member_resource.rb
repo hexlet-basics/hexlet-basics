@@ -3,7 +3,7 @@
 class Language::Lesson::MemberResource < ApplicationResource
   typelize_from Language::Lesson::Member
 
-  attributes :id, :user_id, :state, :openai_thread_id, :messages_count, :created_at
+  attributes :id, :user_id, :state, :messages_count, :created_at
 
   typelize state: [ enum: [ "started", "finished" ] ]
 

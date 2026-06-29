@@ -478,6 +478,34 @@ class Language::Lesson
   end
 
   module GeneratedAssociationMethods
+    sig { returns(T::Array[T.untyped]) }
+    def ai_chat_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def ai_chat_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Language::Lesson` class because it declared `has_many :ai_chats, through: :members`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::AiChat::PrivateCollectionProxy) }
+    def ai_chats; end
+
+    sig { params(value: T::Enumerable[::AiChat]).void }
+    def ai_chats=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def ai_message_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def ai_message_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Language::Lesson` class because it declared `has_many :ai_messages, through: :ai_chats`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::AiMessage::PrivateCollectionProxy) }
+    def ai_messages; end
+
+    sig { params(value: T::Enumerable[::AiMessage]).void }
+    def ai_messages=(value); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language) }
     def build_language(*args, &blk); end
 
@@ -535,20 +563,6 @@ class Language::Lesson
 
     sig { params(value: T::Enumerable[::Language::Lesson::Member]).void }
     def members=(value); end
-
-    sig { returns(T::Array[T.untyped]) }
-    def message_ids; end
-
-    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
-    def message_ids=(ids); end
-
-    # This method is created by ActiveRecord on the `Language::Lesson` class because it declared `has_many :messages, through: :members`.
-    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
-    sig { returns(::Language::Lesson::Member::Message::PrivateCollectionProxy) }
-    def messages; end
-
-    sig { params(value: T::Enumerable[::Language::Lesson::Member::Message]).void }
-    def messages=(value); end
 
     sig { returns(::Language::Module) }
     def module; end

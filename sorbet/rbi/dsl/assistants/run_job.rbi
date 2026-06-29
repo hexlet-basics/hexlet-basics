@@ -9,16 +9,25 @@ class Assistants::RunJob
   class << self
     sig do
       params(
-        lesson_member_id: ::Integer,
+        ai_chat_id: T.untyped,
         message: T.untyped,
         user_code: T.untyped,
         output: T.untyped,
+        locale: T.untyped,
         block: T.nilable(T.proc.params(job: Assistants::RunJob).void)
       ).returns(T.any(Assistants::RunJob, FalseClass))
     end
-    def perform_later(lesson_member_id:, message:, user_code:, output:, &block); end
+    def perform_later(ai_chat_id:, message:, user_code:, output:, locale:, &block); end
 
-    sig { params(lesson_member_id: ::Integer, message: T.untyped, user_code: T.untyped, output: T.untyped).void }
-    def perform_now(lesson_member_id:, message:, user_code:, output:); end
+    sig do
+      params(
+        ai_chat_id: T.untyped,
+        message: T.untyped,
+        user_code: T.untyped,
+        output: T.untyped,
+        locale: T.untyped
+      ).returns(T.untyped)
+    end
+    def perform_now(ai_chat_id:, message:, user_code:, output:, locale:); end
   end
 end

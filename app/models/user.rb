@@ -112,7 +112,8 @@ class User < ApplicationRecord
   has_many :survey_scenario_members, class_name: "Survey::Scenario::Member", dependent: :destroy
   has_many :survey_scenarios, through: :survey_scenario_members, source: :scenario
 
-  has_many :assistant_messages, class_name: "Language::Lesson::Member::Message"
+  has_many :ai_chats, dependent: :destroy
+  has_many :ai_messages, dependent: :nullify
 
   has_one :book_request
   has_many :leads

@@ -20,7 +20,6 @@
 #  updated_at                  :datetime         not null
 #  category_id                 :bigint
 #  current_version_id          :bigint
-#  openai_assistant_id         :string
 #  upload_id                   :bigint
 #
 # Indexes
@@ -50,19 +49,16 @@ php:
 elixir:
   <<: *DEFAULTS
   current_version: elixir
-  openai_assistant_id: asst_BnPHo7ddQhnV3KfUtJV3PJVX
   hexlet_program_landing_page: https://ru.hexlet.io/courses
 
 typescript:
   <<: *DEFAULTS
   order: 1
   current_version: typescript1
-  openai_assistant_id: asst_BnPHo7ddQhnV3KfUtJV3PJVX
 
 javascript:
   <<: *DEFAULTS
   order: 2
-  openai_assistant_id: asst_BnPHo7ddQhnV3KfUtJV3PJVX
   current_version: javascript2
   hexlet_program_landing_page: https://ru.hexlet.io/courses
 

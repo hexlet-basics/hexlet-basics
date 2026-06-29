@@ -194,6 +194,8 @@ GEM
       multipart-post (~> 2.0)
     faraday-net_http (3.4.4)
       net-http (~> 0.5)
+    faraday-retry (2.4.0)
+      faraday (~> 2.0)
     ferrum (0.17.2)
       addressable (~> 2.5)
       base64 (~> 0.2)
@@ -455,10 +457,6 @@ GEM
       rbs (>= 3, < 5)
     ruby-lsp-rails (0.4.8)
       ruby-lsp (>= 0.26.0, < 0.27.0)
-    ruby-openai (8.3.0)
-      event_stream_parser (>= 0.3.0, < 2.0.0)
-      faraday (>= 1)
-      faraday-multipart (>= 1)
     ruby-progressbar (1.13.0)
     ruby-vips (2.3.0)
       ffi (~> 1.12)
@@ -471,6 +469,17 @@ GEM
     ruby_event_store-browser (3.0.0)
       rack
       ruby_event_store (= 3.0.0)
+    ruby_llm (1.16.0)
+      base64
+      event_stream_parser (~> 1)
+      faraday (>= 1.10.0)
+      faraday-multipart (>= 1)
+      faraday-net_http (>= 1)
+      faraday-retry (>= 1)
+      marcel (~> 1)
+      ruby_llm-schema (~> 0)
+      zeitwerk (~> 2)
+    ruby_llm-schema (0.4.0)
     rubydex (0.2.6-aarch64-linux)
     rubydex (0.2.6-arm64-darwin)
     rubydex (0.2.6-x86_64-darwin)
@@ -682,8 +691,8 @@ DEPENDENCIES
   rubocop-rails-omakase
   ruby-lsp
   ruby-lsp-rails
-  ruby-openai
   ruby-vips (~> 2.0)
+  ruby_llm
   sentry-rails
   sentry-ruby
   simplecov
@@ -778,6 +787,7 @@ CHECKSUMS
   faraday (2.14.3) sha256=1882247e6766615c8220b4392bf1d27f6ebb63d8e28267587cef1fb0bf37f278
   faraday-multipart (1.2.0) sha256=7d89a949693714176f612323ca13746a2ded204031a6ba528adee788694ef757
   faraday-net_http (3.4.4) sha256=0e78af151747ed1b00f33e25973b4bc220d7f16c00c39676817c8b12331eb588
+  faraday-retry (2.4.0) sha256=7b79c48fb7e56526faf247b12d94a680071ff40c9fda7cf1ec1549439ad11ebe
   ferrum (0.17.2) sha256=2c2540a850b211a46f4d81de21bfd62048f507e4c327d1807225c3823c17e6ee
   ffi (1.17.4-aarch64-linux-gnu) sha256=b208f06f91ffd8f5e1193da3cae3d2ccfc27fc36fba577baf698d26d91c080df
   ffi (1.17.4-aarch64-linux-musl) sha256=9286b7a615f2676245283aef0a0a3b475ae3aae2bb5448baace630bb77b91f39
@@ -887,12 +897,13 @@ CHECKSUMS
   rubocop-rails-omakase (1.1.0) sha256=2af73ac8ee5852de2919abbd2618af9c15c19b512c4cfc1f9a5d3b6ef009109d
   ruby-lsp (0.26.9) sha256=33a01c001c00a76b4e821efc04ed7572983430f31ca5d6f3e343d0b6ccab4129
   ruby-lsp-rails (0.4.8) sha256=f09d1f926d4063deeb2f3049311925c20dfe6c912371e3bcd04a265a865c44ae
-  ruby-openai (8.3.0) sha256=566dc279c42f4afed68a7a363dce2e594078abfc36b4e043102020b9a387ca69
   ruby-progressbar (1.13.0) sha256=80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33
   ruby-vips (2.3.0) sha256=e685ec02c13969912debbd98019e50492e12989282da5f37d05f5471442f5374
   ruby_event_store (3.0.0) sha256=d00509ad82e512218a0cda68e6999ceca6bea004b3e70159af7c00aac4959d34
   ruby_event_store-active_record (3.0.0) sha256=b901d75ff7d6da45852765315496969a3a33540c26a4c56780c7417d3c6b1bbc
   ruby_event_store-browser (3.0.0) sha256=1bb9de08340ab0e355bf332c1edc2f9a95c359d68d78a995a20bef30bf4ff436
+  ruby_llm (1.16.0) sha256=26bd5310cf2ce55f74a60f8aae0b0d0327b586ff4532c84828103c3b2b905a18
+  ruby_llm-schema (0.4.0) sha256=e930f5a5316f9301bff3fb7fe572e44727d05bb8e50621001bbb49a47d63b8da
   rubydex (0.2.6-aarch64-linux) sha256=431447309420ef75ac310ef45d11eed1652ff53e8d7b82cef003bf6309141ddf
   rubydex (0.2.6-arm64-darwin) sha256=ffc5bc493e17114228b88cf19fa828647fe1113d7ef690fa3a285e097c7c4fa6
   rubydex (0.2.6-x86_64-darwin) sha256=7533d6d8b9e40ee6fce78d6a94b134b98a00cb1a57a43c1317831966e86905c4

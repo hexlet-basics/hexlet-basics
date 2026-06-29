@@ -56,7 +56,8 @@ class Language::Lesson < ApplicationRecord
   has_many :reviews, foreign_key: "language_lesson_id", dependent: :destroy, class_name: "Language::Lesson::Review"
   has_many :versions, dependent: :destroy
   has_many :members, dependent: :destroy
-  has_many :messages, through: :members, dependent: :destroy
+  has_many :ai_chats, through: :members, source: :ai_chat
+  has_many :ai_messages, through: :ai_chats
 
   has_many :infos, through: :versions, class_name: "Language::Lesson::Version::Info"
   # has_one :localed_info, -> { merge(Language::Lesson::Version::Info.with_locale) },
@@ -86,7 +87,7 @@ class Language::Lesson < ApplicationRecord
 
   sig { params(auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_associations(auth_object = nil)
-    [ "infos", "language", "members", "messages", "module", "reviews", "versions" ]
+    [ "ai_messages", "infos", "language", "members", "module", "reviews", "versions" ]
   end
 
   sig { returns(String) }

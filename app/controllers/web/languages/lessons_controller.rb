@@ -62,6 +62,11 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
       end
     end
 
+    ai_chat = lesson_member && AiChat.find_or_create_by!(
+      user: lesson_member.user,
+      language_lesson_member: lesson_member
+    )
+
     title = t(
       ".title",
       lesson_name: lesson_info,
@@ -98,13 +103,16 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
       .includes(:language, :lesson, :version)
       .order(language_lesson_versions: { natural_order: :asc })
 
-    can_create_assistant_message = Language::Lesson::Member::MessagePolicy.new(
+    can_create_assistant_message = AiMessagePolicy.new(
       current_user,
-      Language::Lesson::Member::Message
+      AiMessage
     ).create?
 
+    previous_messages = ai_chat && ai_chat.ai_messages.where(role: %w[user assistant]).order(:id)
+
     render inertia: true, props: {
-      previousMessages: lesson_member && Language::Lesson::Member::MessageResource.new(lesson_member.messages.order(id: :asc)),
+      aiChat: ai_chat && AiChatResource.new(ai_chat),
+      previousMessages: previous_messages && AiMessageResource.new(previous_messages),
       canCreateAssistantMessage: can_create_assistant_message,
       course: LanguageResource.new(resource_language),
       landingPage: Language::LandingPageForListsResource.new(resource_language_landing_page),

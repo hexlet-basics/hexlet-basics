@@ -62,7 +62,6 @@ export default function Index({
           { accessor: "lesson", title: "Lesson Url", render: renderLesson },
           { accessor: "user_id" },
           { accessor: "state" },
-          { accessor: "openai_thread_id" },
           {
             accessor: "messages_count",
             title: "messages_count",

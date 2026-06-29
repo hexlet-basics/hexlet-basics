@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_28_140000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_29_073140) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -84,6 +84,77 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_28_140000) do
     t.index ["user_id"], name: "index_ahoy_visits_on_user_id"
     t.index ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true
     t.index ["visitor_token", "started_at"], name: "index_ahoy_visits_on_visitor_token_and_started_at"
+  end
+
+  create_table "ai_chats", force: :cascade do |t|
+    t.bigint "ai_model_id"
+    t.datetime "created_at", null: false
+    t.bigint "language_lesson_member_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["ai_model_id"], name: "index_ai_chats_on_ai_model_id"
+    t.index ["language_lesson_member_id"], name: "index_ai_chats_on_language_lesson_member_id"
+    t.index ["user_id", "language_lesson_member_id"], name: "index_ai_chats_on_user_id_and_language_lesson_member_id", unique: true
+    t.index ["user_id"], name: "index_ai_chats_on_user_id"
+  end
+
+  create_table "ai_messages", force: :cascade do |t|
+    t.bigint "ai_chat_id", null: false
+    t.bigint "ai_model_id"
+    t.bigint "ai_tool_call_id"
+    t.integer "cache_creation_tokens"
+    t.integer "cached_tokens"
+    t.text "content"
+    t.json "content_raw"
+    t.datetime "created_at", null: false
+    t.integer "input_tokens"
+    t.integer "output_tokens"
+    t.string "role", null: false
+    t.text "thinking_signature"
+    t.text "thinking_text"
+    t.integer "thinking_tokens"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["ai_chat_id"], name: "index_ai_messages_on_ai_chat_id"
+    t.index ["ai_model_id"], name: "index_ai_messages_on_ai_model_id"
+    t.index ["ai_tool_call_id"], name: "index_ai_messages_on_ai_tool_call_id"
+    t.index ["role"], name: "index_ai_messages_on_role"
+    t.index ["user_id"], name: "index_ai_messages_on_user_id"
+  end
+
+  create_table "ai_models", force: :cascade do |t|
+    t.jsonb "capabilities", default: []
+    t.integer "context_window"
+    t.datetime "created_at", null: false
+    t.string "family"
+    t.date "knowledge_cutoff"
+    t.integer "max_output_tokens"
+    t.jsonb "metadata", default: {}
+    t.jsonb "modalities", default: {}
+    t.datetime "model_created_at"
+    t.string "model_id", null: false
+    t.string "name", null: false
+    t.jsonb "pricing", default: {}
+    t.string "provider", null: false
+    t.datetime "updated_at", null: false
+    t.index ["capabilities"], name: "index_ai_models_on_capabilities", using: :gin
+    t.index ["family"], name: "index_ai_models_on_family"
+    t.index ["modalities"], name: "index_ai_models_on_modalities", using: :gin
+    t.index ["provider", "model_id"], name: "index_ai_models_on_provider_and_model_id", unique: true
+    t.index ["provider"], name: "index_ai_models_on_provider"
+  end
+
+  create_table "ai_tool_calls", force: :cascade do |t|
+    t.bigint "ai_message_id", null: false
+    t.jsonb "arguments", default: {}
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.text "thought_signature"
+    t.string "tool_call_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ai_message_id"], name: "index_ai_tool_calls_on_ai_message_id"
+    t.index ["name"], name: "index_ai_tool_calls_on_name"
+    t.index ["tool_call_id"], name: "index_ai_tool_calls_on_tool_call_id", unique: true
   end
 
   create_table "banners", force: :cascade do |t|
@@ -240,28 +311,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_28_140000) do
     t.index ["language_id"], name: "index_language_landing_pages_on_language_id"
   end
 
-  create_table "language_lesson_member_messages", force: :cascade do |t|
-    t.text "body"
-    t.datetime "created_at", null: false
-    t.bigint "language_id", null: false
-    t.bigint "language_lesson_id", null: false
-    t.bigint "language_lesson_member_id", null: false
-    t.string "role"
-    t.datetime "updated_at", null: false
-    t.bigint "user_id"
-    t.index ["language_id"], name: "index_language_lesson_member_messages_on_language_id"
-    t.index ["language_lesson_id"], name: "index_language_lesson_member_messages_on_language_lesson_id"
-    t.index ["language_lesson_member_id"], name: "idx_on_language_lesson_member_id_fe254654e9"
-    t.index ["user_id"], name: "index_language_lesson_member_messages_on_user_id"
-  end
-
   create_table "language_lesson_members", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "language_id", null: false
     t.bigint "language_member_id", null: false
     t.bigint "lesson_id", null: false
     t.integer "messages_count", default: 0
-    t.string "openai_thread_id"
     t.string "state"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id", null: false
@@ -448,7 +503,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_28_140000) do
     t.integer "lessons_count", default: 0, null: false
     t.integer "members_count", default: 0, null: false
     t.string "name", limit: 255
-    t.string "openai_assistant_id"
     t.integer "order"
     t.string "progress"
     t.string "slug", limit: 255
@@ -828,6 +882,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_28_140000) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "ai_chats", "ai_models"
+  add_foreign_key "ai_chats", "language_lesson_members"
+  add_foreign_key "ai_chats", "users"
+  add_foreign_key "ai_messages", "ai_chats"
+  add_foreign_key "ai_messages", "ai_models"
+  add_foreign_key "ai_messages", "ai_tool_calls"
+  add_foreign_key "ai_messages", "users"
+  add_foreign_key "ai_tool_calls", "ai_messages"
   add_foreign_key "blog_post_likes", "blog_posts"
   add_foreign_key "blog_post_likes", "users"
   add_foreign_key "blog_post_related_language_items", "blog_posts"
@@ -843,10 +905,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_28_140000) do
   add_foreign_key "language_landing_pages", "language_categories"
   add_foreign_key "language_landing_pages", "language_landing_pages", column: "landing_page_to_redirect_id"
   add_foreign_key "language_landing_pages", "languages"
-  add_foreign_key "language_lesson_member_messages", "language_lesson_members"
-  add_foreign_key "language_lesson_member_messages", "language_lessons"
-  add_foreign_key "language_lesson_member_messages", "languages"
-  add_foreign_key "language_lesson_member_messages", "users"
   add_foreign_key "language_lesson_members", "language_lessons", column: "lesson_id"
   add_foreign_key "language_lesson_members", "language_members"
   add_foreign_key "language_lesson_members", "users"
