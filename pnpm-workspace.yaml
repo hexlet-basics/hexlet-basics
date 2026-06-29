@@ -8,7 +8,17 @@ allowBuilds:
   sharp: true
   simple-git-hooks: true
 minimumReleaseAgeExclude:
-  - npm-check-updates@22.2.8
+  - npm-check-updates@22.2.8 || 22.2.9
+  - '@mantine/carousel@9.4.1'
+  - '@mantine/code-highlight@9.4.1'
+  - '@mantine/colors-generator@9.4.1'
+  - '@mantine/core@9.4.1'
+  - '@mantine/dates@9.4.1'
+  - '@mantine/hooks@9.4.1'
+  - '@mantine/modals@9.4.1'
+  - '@mantine/notifications@9.4.1'
+  - '@mantine/store@9.4.1'
+  - postcss@8.5.16
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@sentry/cli'

@@ -23,7 +23,7 @@ importers:
         version: 11.14.0(@types/react@19.2.17)(react@19.2.7)
       '@gfazioli/mantine-split-pane':
         specifier: ^4.1.8
-        version: 4.1.8(@mantine/core@9.4.0(@mantine/hooks@9.4.0(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.0(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 4.1.8(@mantine/core@9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.1(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@github/webauthn-json':
         specifier: ^2.1.1
         version: 2.1.1
@@ -38,31 +38,31 @@ importers:
         version: 3.5.0(axios@1.18.1(debug@4.4.3))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@inertiajs/vite':
         specifier: ^3.5.0
-        version: 3.5.0(axios@1.18.1(debug@4.4.3))(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0))
+        version: 3.5.0(axios@1.18.1(debug@4.4.3))(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0))
       '@mantine/carousel':
-        specifier: ^9.4.0
-        version: 9.4.0(@mantine/core@9.4.0(@mantine/hooks@9.4.0(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.0(react@19.2.7))(embla-carousel-react@8.6.0(react@19.2.7))(embla-carousel@8.6.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: ^9.4.1
+        version: 9.4.1(@mantine/core@9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.1(react@19.2.7))(embla-carousel-react@8.6.0(react@19.2.7))(embla-carousel@8.6.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@mantine/code-highlight':
-        specifier: ^9.4.0
-        version: 9.4.0(@mantine/core@9.4.0(@mantine/hooks@9.4.0(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.0(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: ^9.4.1
+        version: 9.4.1(@mantine/core@9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.1(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@mantine/colors-generator':
-        specifier: ^9.4.0
-        version: 9.4.0(chroma-js@3.2.0)
+        specifier: ^9.4.1
+        version: 9.4.1(chroma-js@3.2.0)
       '@mantine/core':
-        specifier: ^9.4.0
-        version: 9.4.0(@mantine/hooks@9.4.0(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: ^9.4.1
+        version: 9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@mantine/dates':
-        specifier: ^9.4.0
-        version: 9.4.0(@mantine/core@9.4.0(@mantine/hooks@9.4.0(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.0(react@19.2.7))(dayjs@1.11.21)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: ^9.4.1
+        version: 9.4.1(@mantine/core@9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.1(react@19.2.7))(dayjs@1.11.21)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@mantine/hooks':
-        specifier: ^9.4.0
-        version: 9.4.0(react@19.2.7)
+        specifier: ^9.4.1
+        version: 9.4.1(react@19.2.7)
       '@mantine/modals':
-        specifier: ^9.4.0
-        version: 9.4.0(@mantine/core@9.4.0(@mantine/hooks@9.4.0(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.0(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: ^9.4.1
+        version: 9.4.1(@mantine/core@9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.1(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@mantine/notifications':
-        specifier: ^9.4.0
-        version: 9.4.0(@mantine/core@9.4.0(@mantine/hooks@9.4.0(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.0(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: ^9.4.1
+        version: 9.4.1(@mantine/core@9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.1(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@monaco-editor/react':
         specifier: ^4.7.0
         version: 4.7.0(monaco-editor@0.55.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -134,7 +134,7 @@ importers:
         version: 3.0.8
       mantine-datatable:
         specifier: ^9.3.1
-        version: 9.3.1(@mantine/core@9.4.0(@mantine/hooks@9.4.0(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.0(react@19.2.7))(clsx@2.1.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 9.3.1(@mantine/core@9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.1(react@19.2.7))(clsx@2.1.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       mdast-util-directive:
         specifier: ^3.1.0
         version: 3.1.0
@@ -146,7 +146,7 @@ importers:
         version: 12.42.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       postcss-simple-vars:
         specifier: ^7.0.1
-        version: 7.0.1(postcss@8.5.15)
+        version: 7.0.1(postcss@8.5.16)
       react:
         specifier: ^19.2.7
         version: 19.2.7
@@ -261,7 +261,7 @@ importers:
         version: 3.0.3
       '@vitejs/plugin-react':
         specifier: ^6.0.3
-        version: 6.0.3(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0))
+        version: 6.0.3(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0))
       browserslist:
         specifier: ^4.28.4
         version: 4.28.4
@@ -284,14 +284,14 @@ importers:
         specifier: ^13.0.0
         version: 13.0.0
       npm-check-updates:
-        specifier: ^22.2.8
-        version: 22.2.8
+        specifier: ^22.2.9
+        version: 22.2.9
       postcss:
-        specifier: ^8.5.15
-        version: 8.5.15
+        specifier: ^8.5.16
+        version: 8.5.16
       postcss-preset-mantine:
         specifier: ^1.18.0
-        version: 1.18.0(postcss@8.5.15)
+        version: 1.18.0(postcss@8.5.16)
       rollup-plugin-visualizer:
         specifier: ^7.0.1
         version: 7.0.1(rolldown@1.1.3)
@@ -309,31 +309,31 @@ importers:
         version: 6.0.3
       vite:
         specifier: ^8.1.0
-        version: 8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)
+        version: 8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0)
       vite-bundle-analyzer:
         specifier: ^1.3.8
         version: 1.3.8
       vite-css-modules:
         specifier: ^1.16.0
-        version: 1.16.0(lightningcss@1.32.0)(postcss@8.5.15)(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0))
+        version: 1.16.0(lightningcss@1.32.0)(postcss@8.5.16)(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0))
       vite-imagetools:
         specifier: ^10.0.1
-        version: 10.0.1(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0))
+        version: 10.0.1(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0))
       vite-plugin-beasties:
         specifier: ^0.4.2
         version: 0.4.2
       vite-plugin-image-optimizer:
         specifier: ^2.0.3
-        version: 2.0.3(sharp@0.35.2)(svgo@4.0.1)(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0))
+        version: 2.0.3(sharp@0.35.2)(svgo@4.0.1)(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0))
       vite-plugin-rails:
         specifier: ^0.6.0
-        version: 0.6.0(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0))
+        version: 0.6.0(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0))
       vite-plugin-ruby:
         specifier: ^5.2.2
-        version: 5.2.2(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0))
+        version: 5.2.2(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0))
       vitest:
         specifier: ^4.1.9
-        version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@26.0.1)(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0))
+        version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@26.0.1)(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0))
 
 packages:
 
@@ -1088,68 +1088,68 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@mantine/carousel@9.4.0':
-    resolution: {integrity: sha512-kPXKO7+RWGFEt8OKPmii8JG0Dq4Pdrx1LzHlsHv12Zd39h/DZiO1MYia9DBt52n06V6xpb1sTJUCQ9mjGYdCfw==}
+  '@mantine/carousel@9.4.1':
+    resolution: {integrity: sha512-iHUsDgxMFL2BQDbMtY51IoDDYUWwG71QkRyW4cLCzDVRIHF48dOEjwOm3tYmGkehpw/hi4Nk7yVNru47Eek9pw==}
     peerDependencies:
-      '@mantine/core': 9.4.0
-      '@mantine/hooks': 9.4.0
+      '@mantine/core': 9.4.1
+      '@mantine/hooks': 9.4.1
       embla-carousel: '>=8.0.0'
       embla-carousel-react: '>=8.0.0'
       react: ^19.2.0
       react-dom: ^19.2.0
 
-  '@mantine/code-highlight@9.4.0':
-    resolution: {integrity: sha512-XZkz5Xy92h8icQEQETyAZ+tW/4u186yU52hFimLhZw044ca7Wlb+wTQ6C+9atpj8QoZrk0WMWehr6FAbrNMP2w==}
+  '@mantine/code-highlight@9.4.1':
+    resolution: {integrity: sha512-C6cMFf2LV+2r/oyn9hVhlMaeWWQ3vIV7zOti2kjdrXOU3ZQkE88c2tknFw8BLnZjO7teY2s+tL2HVDGOht1Y+Q==}
     peerDependencies:
-      '@mantine/core': 9.4.0
-      '@mantine/hooks': 9.4.0
+      '@mantine/core': 9.4.1
+      '@mantine/hooks': 9.4.1
       react: ^19.2.0
       react-dom: ^19.2.0
 
-  '@mantine/colors-generator@9.4.0':
-    resolution: {integrity: sha512-txytFAScaiQJhlF+cWN1am35f+ADx8ol9VOVSDv8MwgrmgBPUxau1IQNfLgttjBQy938U2v/xE92am6GSbBMWA==}
+  '@mantine/colors-generator@9.4.1':
+    resolution: {integrity: sha512-HEJAJACPfS5Y2XRf8ILOUpH7/nag7YN8v3SxGo+vTCyvWnNNqNM19V+weohrHSLnM+TLgHehFzHdG8CzmJkiXQ==}
     peerDependencies:
       chroma-js: '>=2.4.2'
 
-  '@mantine/core@9.4.0':
-    resolution: {integrity: sha512-BvTzaJ5Nut4ZiWLCcy1/cRXE8yjCgxsBhyAynY1pEg6XBw/fChEqSgbEB2dybOnkiAxvYt89TrnTrBBo9qJtmg==}
+  '@mantine/core@9.4.1':
+    resolution: {integrity: sha512-lZWEICrum4+vwKxzh/mk4RB1N6BqZ0Cshdl6lhm7OYLiQzmOaxKtOgyaWz+vr65G8mqTXjalZalB+wmMVBYK2Q==}
     peerDependencies:
-      '@mantine/hooks': 9.4.0
+      '@mantine/hooks': 9.4.1
       react: ^19.2.0
       react-dom: ^19.2.0
 
-  '@mantine/dates@9.4.0':
-    resolution: {integrity: sha512-15iCWxykutEVoFUPTq4z+An3YQZb7UH6Fwzb3stsVhTMLm6FyGLYSSB6PL+9sBV1TPllIJSm1IizY2SSTDGqQQ==}
+  '@mantine/dates@9.4.1':
+    resolution: {integrity: sha512-DoQDvQMAlIw6ohwhUwYuTYQevG9y5AQmYWkhOHUuavABFEZmtBglkwziBoATvxT09I/6I56UMPhproXcS6XUfg==}
     peerDependencies:
-      '@mantine/core': 9.4.0
-      '@mantine/hooks': 9.4.0
+      '@mantine/core': 9.4.1
+      '@mantine/hooks': 9.4.1
       dayjs: '>=1.0.0'
       react: ^19.2.0
       react-dom: ^19.2.0
 
-  '@mantine/hooks@9.4.0':
-    resolution: {integrity: sha512-SUkge8KlhyLoSSKhEHERx7jLotNu632kldhQPlLn5kbOuJixoEbU8fKcuwpXSsZTtzRgCCT2IkoN+rORhtZTHg==}
+  '@mantine/hooks@9.4.1':
+    resolution: {integrity: sha512-eTI8wmzPx3r98zgKIEuvukmoGTHBhmtI6+9E6o2DbTmEU2eM1bCdjE2vFdf0op2AlRO0KEYEcZhNQi4T/SJk0A==}
     peerDependencies:
       react: ^19.2.0
 
-  '@mantine/modals@9.4.0':
-    resolution: {integrity: sha512-XFili5IbS+sLV5n98VjKTMcPmgahsXva1VO4xS5kPM9UtlAmA8c1/KUQd+0lJd0JgwL7I6S2k6/rgPFVqZ94HA==}
+  '@mantine/modals@9.4.1':
+    resolution: {integrity: sha512-z5G3Biz7/5Ybz5Z8u5Xyvo9UBmFhAX/YXMf6U96ejvtAB11xVnCo8m37R5DJyzeFEqB4D1tvUgWiVVPBb+yadw==}
     peerDependencies:
-      '@mantine/core': 9.4.0
-      '@mantine/hooks': 9.4.0
-      react: ^19.2.0
-      react-dom: ^19.2.0
-
-  '@mantine/notifications@9.4.0':
-    resolution: {integrity: sha512-B7ZiuwGlb6lI97OgUeNdz77o/KifJqDMJBo7QyWpfmchbqf3Tp7mZMxfn4SnILQCtFmEg6qKji7lt9tgOA279g==}
-    peerDependencies:
-      '@mantine/core': 9.4.0
-      '@mantine/hooks': 9.4.0
+      '@mantine/core': 9.4.1
+      '@mantine/hooks': 9.4.1
       react: ^19.2.0
       react-dom: ^19.2.0
 
-  '@mantine/store@9.4.0':
-    resolution: {integrity: sha512-BiJXxIdCBtfcODunPpzAKLuiIpxDeGo1mRd2gmzgSStV5BMxWpM0zEL8S49rN+xuFARwzGp3t1ks7B6EqthH8Q==}
+  '@mantine/notifications@9.4.1':
+    resolution: {integrity: sha512-Sm1g8E8RkFmesxpNz9zFvOjkTVxOa7dJJjMGoHNIXH+9/wO0s9kInny4mVnxTbLJJsD6nTqIQlk1v8tq2C4Ftw==}
+    peerDependencies:
+      '@mantine/core': 9.4.1
+      '@mantine/hooks': 9.4.1
+      react: ^19.2.0
+      react-dom: ^19.2.0
+
+  '@mantine/store@9.4.1':
+    resolution: {integrity: sha512-/DCZq0aqqIdm03J0RJ7pbzoau2cwY8ndSOjskHOKHhTeWMnOBdCKXA3oMO5aIDldDqJ9T7Io4Boh4Pt461zNQw==}
     peerDependencies:
       react: ^19.2.0
 
@@ -3201,8 +3201,8 @@ packages:
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
     hasBin: true
 
-  npm-check-updates@22.2.8:
-    resolution: {integrity: sha512-jL2cs1TSDSj3ieDlMVFf0bZFVqLNtXt+ExvCMF1OYxR7PiVjFcmAP80rJFNOFrrt0KLyPqeRBZtD7xZu9emd8w==}
+  npm-check-updates@22.2.9:
+    resolution: {integrity: sha512-DVeZ0KirHfliSsHuR2o7cHE+tW439sVHfJjF6cGWeDiY0Wyl3BI/jS4zV0eixtcMOquFbcF1Su/FsxOvk5MoYA==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0, npm: '>=10.0.0'}
     hasBin: true
 
@@ -3422,6 +3422,10 @@ packages:
 
   postcss@8.5.15:
     resolution: {integrity: sha512-FfR8sjd4em2T6fb3I2MwAJU7HWVMr9zba+enmQeeWFfCbm+UOC/0X4DS8XtpUTMwWMGbjKYP7xjfNekzyGmB3A==}
+    engines: {node: ^10 || ^12 || >=14}
+
+  postcss@8.5.16:
+    resolution: {integrity: sha512-vuwillviilfKZsg0VGj5R/YwwcHx4SLsIOI/7K6mQkWx+l5cUHTjj5g0AasTBcyXsbfTgrwsUNmVUb5xVwyPwg==}
     engines: {node: ^10 || ^12 || >=14}
 
   powershell-utils@0.1.0:
@@ -3883,8 +3887,8 @@ packages:
     resolution: {integrity: sha512-yEFYrVhod+hdNyx7g5Bnkkb0G6si8HJurOoOEgC8B/O0uXLHlaey/65KRv6cuWBNhBgHKAROVpc7QyYqE5gFng==}
     engines: {node: '>=20'}
 
-  tar@7.5.17:
-    resolution: {integrity: sha512-wPEBwzapC+2PaTYPH6e2L+cNOEE227S47wUYFqlegcs8zlLLmeb9Fcff1HVZY4Fwku/1Eyv38n7GYwB2aaS71g==}
+  tar@7.5.19:
+    resolution: {integrity: sha512-4LeEWl96twnS2Q7Bz4MGqgazLqO+hJN63GZxXoIqh1T3VweYD997gbU1ItNsQafqqXTXd5WFyFdReLtwvRBNiw==}
     engines: {node: '>=18'}
 
   terminal-columns@2.0.0:
@@ -4638,10 +4642,10 @@ snapshots:
 
   '@floating-ui/utils@0.2.11': {}
 
-  '@gfazioli/mantine-split-pane@4.1.8(@mantine/core@9.4.0(@mantine/hooks@9.4.0(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.0(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@gfazioli/mantine-split-pane@4.1.8(@mantine/core@9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.1(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@mantine/core': 9.4.0(@mantine/hooks@9.4.0(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@mantine/hooks': 9.4.0(react@19.2.7)
+      '@mantine/core': 9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@mantine/hooks': 9.4.1(react@19.2.7)
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
 
@@ -4780,11 +4784,11 @@ snapshots:
     transitivePeerDependencies:
       - axios
 
-  '@inertiajs/vite@3.5.0(axios@1.18.1(debug@4.4.3))(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0))':
+  '@inertiajs/vite@3.5.0(axios@1.18.1(debug@4.4.3))(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0))':
     dependencies:
       '@inertiajs/core': 3.5.0(axios@1.18.1(debug@4.4.3))
       tinyglobby: 0.2.17
-      vite: 8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)
+      vite: 8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0)
     transitivePeerDependencies:
       - axios
 
@@ -5060,31 +5064,31 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@mantine/carousel@9.4.0(@mantine/core@9.4.0(@mantine/hooks@9.4.0(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.0(react@19.2.7))(embla-carousel-react@8.6.0(react@19.2.7))(embla-carousel@8.6.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@mantine/carousel@9.4.1(@mantine/core@9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.1(react@19.2.7))(embla-carousel-react@8.6.0(react@19.2.7))(embla-carousel@8.6.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@mantine/core': 9.4.0(@mantine/hooks@9.4.0(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@mantine/hooks': 9.4.0(react@19.2.7)
+      '@mantine/core': 9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@mantine/hooks': 9.4.1(react@19.2.7)
       embla-carousel: 8.6.0
       embla-carousel-react: 8.6.0(react@19.2.7)
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
 
-  '@mantine/code-highlight@9.4.0(@mantine/core@9.4.0(@mantine/hooks@9.4.0(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.0(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@mantine/code-highlight@9.4.1(@mantine/core@9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.1(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@mantine/core': 9.4.0(@mantine/hooks@9.4.0(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@mantine/hooks': 9.4.0(react@19.2.7)
+      '@mantine/core': 9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@mantine/hooks': 9.4.1(react@19.2.7)
       clsx: 2.1.1
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
 
-  '@mantine/colors-generator@9.4.0(chroma-js@3.2.0)':
+  '@mantine/colors-generator@9.4.1(chroma-js@3.2.0)':
     dependencies:
       chroma-js: 3.2.0
 
-  '@mantine/core@9.4.0(@mantine/hooks@9.4.0(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@mantine/core@9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
       '@floating-ui/react': 0.27.19(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@mantine/hooks': 9.4.0(react@19.2.7)
+      '@mantine/hooks': 9.4.1(react@19.2.7)
       clsx: 2.1.1
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
@@ -5094,36 +5098,36 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  '@mantine/dates@9.4.0(@mantine/core@9.4.0(@mantine/hooks@9.4.0(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.0(react@19.2.7))(dayjs@1.11.21)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@mantine/dates@9.4.1(@mantine/core@9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.1(react@19.2.7))(dayjs@1.11.21)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@mantine/core': 9.4.0(@mantine/hooks@9.4.0(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@mantine/hooks': 9.4.0(react@19.2.7)
+      '@mantine/core': 9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@mantine/hooks': 9.4.1(react@19.2.7)
       clsx: 2.1.1
       dayjs: 1.11.21
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
 
-  '@mantine/hooks@9.4.0(react@19.2.7)':
+  '@mantine/hooks@9.4.1(react@19.2.7)':
     dependencies:
       react: 19.2.7
 
-  '@mantine/modals@9.4.0(@mantine/core@9.4.0(@mantine/hooks@9.4.0(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.0(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@mantine/modals@9.4.1(@mantine/core@9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.1(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@mantine/core': 9.4.0(@mantine/hooks@9.4.0(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@mantine/hooks': 9.4.0(react@19.2.7)
+      '@mantine/core': 9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@mantine/hooks': 9.4.1(react@19.2.7)
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
 
-  '@mantine/notifications@9.4.0(@mantine/core@9.4.0(@mantine/hooks@9.4.0(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.0(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@mantine/notifications@9.4.1(@mantine/core@9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.1(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@mantine/core': 9.4.0(@mantine/hooks@9.4.0(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@mantine/hooks': 9.4.0(react@19.2.7)
-      '@mantine/store': 9.4.0(react@19.2.7)
+      '@mantine/core': 9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@mantine/hooks': 9.4.1(react@19.2.7)
+      '@mantine/store': 9.4.1(react@19.2.7)
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
       react-transition-group: 4.4.5(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
 
-  '@mantine/store@9.4.0(react@19.2.7)':
+  '@mantine/store@9.4.1(react@19.2.7)':
     dependencies:
       react: 19.2.7
 
@@ -5690,10 +5694,10 @@ snapshots:
 
   '@ungap/structured-clone@1.3.2': {}
 
-  '@vitejs/plugin-react@6.0.3(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0))':
+  '@vitejs/plugin-react@6.0.3(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0))':
     dependencies:
       '@rolldown/pluginutils': 1.0.1
-      vite: 8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)
+      vite: 8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0)
 
   '@vitest/expect@4.1.9':
     dependencies:
@@ -5704,13 +5708,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.0
 
-  '@vitest/mocker@4.1.9(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0))':
+  '@vitest/mocker@4.1.9(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0))':
     dependencies:
       '@vitest/spy': 4.1.9
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)
+      vite: 8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0)
 
   '@vitest/pretty-format@4.1.9':
     dependencies:
@@ -6590,9 +6594,9 @@ snapshots:
     dependencies:
       safer-buffer: 2.1.2
 
-  icss-utils@5.1.0(postcss@8.5.15):
+  icss-utils@5.1.0(postcss@8.5.16):
     dependencies:
-      postcss: 8.5.15
+      postcss: 8.5.16
 
   imagetools-core@10.0.0: {}
 
@@ -6812,10 +6816,10 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  mantine-datatable@9.3.1(@mantine/core@9.4.0(@mantine/hooks@9.4.0(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.0(react@19.2.7))(clsx@2.1.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
+  mantine-datatable@9.3.1(@mantine/core@9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.1(react@19.2.7))(clsx@2.1.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
     dependencies:
-      '@mantine/core': 9.4.0(@mantine/hooks@9.4.0(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@mantine/hooks': 9.4.0(react@19.2.7)
+      '@mantine/core': 9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@mantine/hooks': 9.4.1(react@19.2.7)
       clsx: 2.1.1
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
@@ -7289,7 +7293,7 @@ snapshots:
       nopt: 10.0.1
       proc-log: 7.0.0
       semver: 7.8.5
-      tar: 7.5.17
+      tar: 7.5.19
       tinyglobby: 0.2.17
       undici: 6.27.0
       which: 7.0.0
@@ -7300,7 +7304,7 @@ snapshots:
     dependencies:
       abbrev: 5.0.0
 
-  npm-check-updates@22.2.8: {}
+  npm-check-updates@22.2.9: {}
 
   npm-run-path@5.3.0:
     dependencies:
@@ -7480,52 +7484,52 @@ snapshots:
       exsolve: 1.1.0
       pathe: 2.0.3
 
-  postcss-js@4.1.0(postcss@8.5.15):
+  postcss-js@4.1.0(postcss@8.5.16):
     dependencies:
       camelcase-css: 2.0.1
-      postcss: 8.5.15
+      postcss: 8.5.16
 
   postcss-media-query-parser@0.2.3: {}
 
-  postcss-mixins@12.1.2(postcss@8.5.15):
+  postcss-mixins@12.1.2(postcss@8.5.16):
     dependencies:
-      postcss: 8.5.15
-      postcss-js: 4.1.0(postcss@8.5.15)
-      postcss-simple-vars: 7.0.1(postcss@8.5.15)
-      sugarss: 5.0.1(postcss@8.5.15)
+      postcss: 8.5.16
+      postcss-js: 4.1.0(postcss@8.5.16)
+      postcss-simple-vars: 7.0.1(postcss@8.5.16)
+      sugarss: 5.0.1(postcss@8.5.16)
       tinyglobby: 0.2.17
 
-  postcss-modules-extract-imports@3.1.0(postcss@8.5.15):
+  postcss-modules-extract-imports@3.1.0(postcss@8.5.16):
     dependencies:
-      postcss: 8.5.15
+      postcss: 8.5.16
 
-  postcss-modules-local-by-default@4.2.0(postcss@8.5.15):
+  postcss-modules-local-by-default@4.2.0(postcss@8.5.16):
     dependencies:
-      icss-utils: 5.1.0(postcss@8.5.15)
-      postcss: 8.5.15
+      icss-utils: 5.1.0(postcss@8.5.16)
+      postcss: 8.5.16
       postcss-selector-parser: 7.1.4
       postcss-value-parser: 4.2.0
 
-  postcss-modules-scope@3.2.1(postcss@8.5.15):
+  postcss-modules-scope@3.2.1(postcss@8.5.16):
     dependencies:
-      postcss: 8.5.15
+      postcss: 8.5.16
       postcss-selector-parser: 7.1.4
 
-  postcss-modules-values@4.0.0(postcss@8.5.15):
+  postcss-modules-values@4.0.0(postcss@8.5.16):
     dependencies:
-      icss-utils: 5.1.0(postcss@8.5.15)
-      postcss: 8.5.15
+      icss-utils: 5.1.0(postcss@8.5.16)
+      postcss: 8.5.16
 
-  postcss-nested@7.0.2(postcss@8.5.15):
+  postcss-nested@7.0.2(postcss@8.5.16):
     dependencies:
-      postcss: 8.5.15
+      postcss: 8.5.16
       postcss-selector-parser: 7.1.4
 
-  postcss-preset-mantine@1.18.0(postcss@8.5.15):
+  postcss-preset-mantine@1.18.0(postcss@8.5.16):
     dependencies:
-      postcss: 8.5.15
-      postcss-mixins: 12.1.2(postcss@8.5.15)
-      postcss-nested: 7.0.2(postcss@8.5.15)
+      postcss: 8.5.16
+      postcss-mixins: 12.1.2(postcss@8.5.16)
+      postcss-nested: 7.0.2(postcss@8.5.16)
 
   postcss-safe-parser@7.0.1(postcss@8.5.15):
     dependencies:
@@ -7536,13 +7540,19 @@ snapshots:
       cssesc: 3.0.0
       util-deprecate: 1.0.2
 
-  postcss-simple-vars@7.0.1(postcss@8.5.15):
+  postcss-simple-vars@7.0.1(postcss@8.5.16):
     dependencies:
-      postcss: 8.5.15
+      postcss: 8.5.16
 
   postcss-value-parser@4.2.0: {}
 
   postcss@8.5.15:
+    dependencies:
+      nanoid: 3.3.15
+      picocolors: 1.1.1
+      source-map-js: 1.2.1
+
+  postcss@8.5.16:
     dependencies:
       nanoid: 3.3.15
       picocolors: 1.1.1
@@ -8063,9 +8073,9 @@ snapshots:
 
   stylis@4.2.0: {}
 
-  sugarss@5.0.1(postcss@8.5.15):
+  sugarss@5.0.1(postcss@8.5.16):
     dependencies:
-      postcss: 8.5.15
+      postcss: 8.5.16
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
@@ -8083,7 +8093,7 @@ snapshots:
 
   tagged-tag@1.0.0: {}
 
-  tar@7.5.17:
+  tar@7.5.19:
     dependencies:
       '@isaacs/fs-minipass': 4.0.1
       chownr: 3.0.0
@@ -8223,7 +8233,7 @@ snapshots:
 
   vite-bundle-analyzer@1.3.8: {}
 
-  vite-css-modules@1.16.0(lightningcss@1.32.0)(postcss@8.5.15)(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)):
+  vite-css-modules@1.16.0(lightningcss@1.32.0)(postcss@8.5.16)(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0)):
     dependencies:
       '@jridgewell/remapping': 2.3.5
       '@jridgewell/sourcemap-codec': 1.5.5
@@ -8232,27 +8242,27 @@ snapshots:
       css-class-positions: 1.0.0
       generic-names: 4.0.0
       get-tsconfig: 4.14.0
-      icss-utils: 5.1.0(postcss@8.5.15)
+      icss-utils: 5.1.0(postcss@8.5.16)
       magic-string: 0.30.21
-      postcss: 8.5.15
-      postcss-modules-extract-imports: 3.1.0(postcss@8.5.15)
-      postcss-modules-local-by-default: 4.2.0(postcss@8.5.15)
-      postcss-modules-scope: 3.2.1(postcss@8.5.15)
-      postcss-modules-values: 4.0.0(postcss@8.5.15)
+      postcss: 8.5.16
+      postcss-modules-extract-imports: 3.1.0(postcss@8.5.16)
+      postcss-modules-local-by-default: 4.2.0(postcss@8.5.16)
+      postcss-modules-scope: 3.2.1(postcss@8.5.16)
+      postcss-modules-values: 4.0.0(postcss@8.5.16)
       postcss-selector-parser: 7.1.4
       tinyglobby: 0.2.17
-      vite: 8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)
+      vite: 8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0)
     optionalDependencies:
       lightningcss: 1.32.0
     transitivePeerDependencies:
       - rollup
 
-  vite-imagetools@10.0.1(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)):
+  vite-imagetools@10.0.1(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0)):
     dependencies:
       '@rollup/pluginutils': 5.4.0
       imagetools-core: 10.0.0
       sharp: 0.35.2
-      vite: 8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)
+      vite: 8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0)
     transitivePeerDependencies:
       - rollup
 
@@ -8260,44 +8270,44 @@ snapshots:
     dependencies:
       beasties: 0.4.2
 
-  vite-plugin-environment@1.1.3(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)):
+  vite-plugin-environment@1.1.3(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0)):
     dependencies:
-      vite: 8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)
+      vite: 8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0)
 
   vite-plugin-full-reload@1.2.0:
     dependencies:
       picocolors: 1.1.1
       picomatch: 2.3.2
 
-  vite-plugin-image-optimizer@2.0.3(sharp@0.35.2)(svgo@4.0.1)(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)):
+  vite-plugin-image-optimizer@2.0.3(sharp@0.35.2)(svgo@4.0.1)(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0)):
     dependencies:
       ansi-colors: 4.1.3
       pathe: 2.0.3
-      vite: 8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)
+      vite: 8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0)
     optionalDependencies:
       sharp: 0.35.2
       svgo: 4.0.1
 
   vite-plugin-manifest-sri@0.2.0: {}
 
-  vite-plugin-rails@0.6.0(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)):
+  vite-plugin-rails@0.6.0(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0)):
     dependencies:
       rollup-plugin-gzip: 4.2.0
-      vite: 8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)
-      vite-plugin-environment: 1.1.3(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0))
+      vite: 8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0)
+      vite-plugin-environment: 1.1.3(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0))
       vite-plugin-full-reload: 1.2.0
       vite-plugin-manifest-sri: 0.2.0
-      vite-plugin-ruby: 5.2.2(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0))
+      vite-plugin-ruby: 5.2.2(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0))
       vite-plugin-stimulus-hmr: 3.0.0
     transitivePeerDependencies:
       - rollup
       - supports-color
 
-  vite-plugin-ruby@5.2.2(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)):
+  vite-plugin-ruby@5.2.2(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0)):
     dependencies:
       obug: 2.1.3
       tinyglobby: 0.2.17
-      vite: 8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)
+      vite: 8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0)
 
   vite-plugin-stimulus-hmr@3.0.0:
     dependencies:
@@ -8306,7 +8316,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0):
+  vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0):
     dependencies:
       lightningcss: 1.32.0
       picomatch: 4.0.4
@@ -8317,14 +8327,14 @@ snapshots:
       '@types/node': 26.0.1
       fsevents: 2.3.3
       jiti: 2.7.0
-      sugarss: 5.0.1(postcss@8.5.15)
+      sugarss: 5.0.1(postcss@8.5.16)
       terser: 5.48.0
       yaml: 2.9.0
 
-  vitest@4.1.9(@opentelemetry/api@1.9.1)(@types/node@26.0.1)(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)):
+  vitest@4.1.9(@opentelemetry/api@1.9.1)(@types/node@26.0.1)(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0)):
     dependencies:
       '@vitest/expect': 4.1.9
-      '@vitest/mocker': 4.1.9(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0))
+      '@vitest/mocker': 4.1.9(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0))
       '@vitest/pretty-format': 4.1.9
       '@vitest/runner': 4.1.9
       '@vitest/snapshot': 4.1.9
@@ -8341,7 +8351,7 @@ snapshots:
       tinyexec: 1.2.4
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.0
-      vite: 8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15))(terser@5.48.0)(yaml@2.9.0)
+      vite: 8.1.0(@types/node@26.0.1)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.16))(terser@5.48.0)(yaml@2.9.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@opentelemetry/api': 1.9.1
