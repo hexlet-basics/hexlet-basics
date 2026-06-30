@@ -40,7 +40,7 @@ class Web::UsersControllerTest < ActionDispatch::IntegrationTest
     user_params = FactoryBot.attributes_for(:user)
 
     code = file_fixture("exercise/correct.rb").read
-    post check_api_lesson_url(ctx.lesson), params: { version_id: ctx.version.id, data: { attributes: { code: code } } }
+    post check_api_lesson_url(ctx.lesson), params: { data: { version_id: ctx.version.id, code: code } }
 
     post users_url, params: { data: user_params }
     user = User.find_by! email: user_params[:email].downcase
