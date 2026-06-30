@@ -20,7 +20,7 @@ class FindRelatedCoursesForBlogPostJob < ApplicationJob
       { id: lp.language.id, name: lp.header }
     end
 
-    content = blog_post.body
+    content = blog_post.content_for_plain_text
     response = RubyLLM.chat
       .with_instructions(instructions)
       .ask([

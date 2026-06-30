@@ -1280,6 +1280,7 @@ export default interface Resources {
           body: "Контент";
           cover: "Изображение";
           creator: "Автор";
+          rich_body: "";
           state: "Состояние";
           "state/archived": "Архив";
           "state/published": "Опубликован";

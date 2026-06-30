@@ -1,6 +1,7 @@
 import type { Method } from "@inertiajs/core";
 import { Button, FileInput, Select, Textarea, TextInput } from "@mantine/core";
 import { useTranslation } from "react-i18next";
+import BlogRichTextEditor from "@/components/BlogRichTextEditor";
 import { useAppForm } from "@/hooks/useAppForm";
 import { arrayToSelectData, enumToOptions } from "@/lib/utils";
 import type { BlogPostCreate, BlogPostUpdate } from "@/types";
@@ -52,10 +53,9 @@ export default function Form({ data, url, method }: Props) {
         {...form.getInputProps("description")}
         rows={5}
       />
-      <Textarea
-        label={t(($) => $.models.attributes.blog_post.body)}
-        {...form.getInputProps("body")}
-        rows={12}
+      <BlogRichTextEditor
+        label={t(($) => $.models.attributes.blog_post.rich_body)}
+        {...form.getInputProps("rich_body")}
       />
       <Button type="submit" mt="xl" loading={processing}>
         {t(($) => $.helpers.submit.save)}

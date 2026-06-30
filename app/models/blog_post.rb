@@ -6,7 +6,6 @@
 # Table name: blog_posts
 #
 #  id                           :bigint           not null, primary key
-#  body                         :text
 #  description                  :string
 #  locale                       :string
 #  name                         :string
@@ -40,6 +39,8 @@ class BlogPost < ApplicationRecord
 
   include BlogPostRepository
 
+  has_rich_text :rich_body
+
   has_many :related_language_items, dependent: :delete_all
   has_many :related_languages, through: :related_language_items, source: :language
   has_many :related_main_language_landing_pages, through: :related_languages, source: :main_landing_page
@@ -65,8 +66,10 @@ class BlogPost < ApplicationRecord
   validates :name, presence: true
   validates :slug, presence: true, uniqueness: true, format: { with: /\A[\w-]+\z/ }
   validates :locale, presence: true
-  validates :body, presence: true
   validates :description, presence: true
+  validate :validate_rich_body_presence
+
+  before_validation :canonicalize_rich_body_for_storage
 
   belongs_to :language, optional: true
   has_one :category, through: :language, class_name: "Language::Category"
@@ -75,5 +78,31 @@ class BlogPost < ApplicationRecord
 
   sig { returns(String) }
   def to_s
-    name.to_s  end
+    name.to_s
+  end
+
+  sig { returns(String) }
+  def content_for_plain_text
+    rich_body.to_plain_text.to_s
+  end
+
+  private
+
+  sig { void }
+  def validate_rich_body_presence
+    if rich_body.body.present?
+      fragment = Nokogiri::HTML5.fragment(rich_body.body.to_html)
+      return if fragment.css("action-text-attachment, img, iframe, table").any?
+      return if fragment.text.squish.present?
+    end
+
+    errors.add(:rich_body, :blank)
+  end
+
+  sig { void }
+  def canonicalize_rich_body_for_storage
+    return unless rich_body.body.present?
+
+    self.rich_body = BlogPostRichTextContent.from_editor_html(rich_body.body.to_html)
+  end
 end
