@@ -32,13 +32,10 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
       # Dynamic creation, because user can start from any lesson directly
       locale = resource_language_landing_page.locale.to_sym
 
-      start_course = CourseProgressService.start_course(user, resource_language, locale:)
-      js_events(start_course.events)
+      start = CourseProgressService.start_lesson(user:, language: resource_language, lesson:, locale:)
+      js_events(start.events)
 
-      start_lesson = CourseProgressService.start_lesson(start_course.course_member, lesson, user, locale:)
-      js_events(start_lesson.events)
-
-      lesson_member = start_lesson.lesson_member
+      lesson_member = start.lesson_member
     end
 
     ai_chat = lesson_member && AiChat.find_or_create_by!(

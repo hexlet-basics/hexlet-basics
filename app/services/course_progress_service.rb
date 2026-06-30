@@ -8,11 +8,6 @@
 # events to RES, and returns those events so callers can selectively forward
 # them to the frontend via js_event.
 class CourseProgressService < ApplicationService
-  class StartCoursePayload < T::Struct
-    const :course_member, Language::Member
-    const :events, T::Array[ApplicationEvent], default: []
-  end
-
   class StartLessonPayload < T::Struct
     const :lesson_member, Language::Lesson::Member
     const :events, T::Array[ApplicationEvent], default: []
@@ -25,38 +20,18 @@ class CourseProgressService < ApplicationService
   class << self
     extend T::Sig
 
-    sig { params(user: User, language: Language, locale: Symbol).returns(StartCoursePayload) }
-    def start_course(user, language, locale:)
-      course_member = language.members.find_or_initialize_by(user:)
-      return StartCoursePayload.new(course_member:) unless course_member.new_record?
+    # Starts the course for the user (idempotently) and then the lesson within
+    # it. Course enrollment is an internal step: callers ask only to start a
+    # lesson. Publishes CourseStartedEvent / LessonStartedEvent for the steps
+    # that actually transitioned and returns them for selective js_event.
+    sig { params(user: User, language: Language, lesson: Language::Lesson, locale: Symbol).returns(StartLessonPayload) }
+    def start_lesson(user:, language:, lesson:, locale:)
+      events = T.let([], T::Array[ApplicationEvent])
 
-      course_member.save!
+      course_member = start_course!(user, language, locale, events)
+      lesson_member = start_lesson!(course_member, lesson, user, locale, events)
 
-      event = CourseStartedEvent.new(data: {
-        occurrence_count: user.language_members.started.count,
-        slug: language.slug,
-        locale:
-      })
-      EventSender.publish_event(event, user)
-
-      StartCoursePayload.new(course_member:, events: [ event ])
-    end
-
-    sig { params(course_member: Language::Member, lesson: Language::Lesson, user: User, locale: Symbol).returns(StartLessonPayload) }
-    def start_lesson(course_member, lesson, user, locale:)
-      language = course_member.language
-      lesson_member = course_member.lesson_members.find_or_create_by!(language:, lesson:, user:)
-      return StartLessonPayload.new(lesson_member:) unless lesson_member.previously_new_record?
-
-      event = LessonStartedEvent.new(data: {
-        occurrence_count: course_member.lesson_members.count,
-        lesson_slug: lesson.slug,
-        course_slug: language.slug,
-        locale:
-      })
-      EventSender.publish_event(event, user)
-
-      StartLessonPayload.new(lesson_member:, events: [ event ])
+      StartLessonPayload.new(lesson_member:, events:)
     end
 
     # Always publishes SolutionCheckedEvent (guest-safe). On a passing check by a
@@ -91,6 +66,42 @@ class CourseProgressService < ApplicationService
     end
 
     private
+
+    sig { params(user: User, language: Language, locale: Symbol, events: T::Array[ApplicationEvent]).returns(Language::Member) }
+    def start_course!(user, language, locale, events)
+      course_member = language.members.find_or_initialize_by(user:)
+      return course_member unless course_member.new_record?
+
+      course_member.save!
+
+      event = CourseStartedEvent.new(data: {
+        occurrence_count: user.language_members.started.count,
+        slug: language.slug,
+        locale:
+      })
+      EventSender.publish_event(event, user)
+      events << event
+
+      course_member
+    end
+
+    sig { params(course_member: Language::Member, lesson: Language::Lesson, user: User, locale: Symbol, events: T::Array[ApplicationEvent]).returns(Language::Lesson::Member) }
+    def start_lesson!(course_member, lesson, user, locale, events)
+      language = course_member.language
+      lesson_member = course_member.lesson_members.find_or_create_by!(language:, lesson:, user:)
+      return lesson_member unless lesson_member.previously_new_record?
+
+      event = LessonStartedEvent.new(data: {
+        occurrence_count: course_member.lesson_members.count,
+        lesson_slug: lesson.slug,
+        course_slug: language.slug,
+        locale:
+      })
+      EventSender.publish_event(event, user)
+      events << event
+
+      lesson_member
+    end
 
     sig { params(course_member: Language::Member, lesson_member: Language::Lesson::Member, lesson: Language::Lesson, language: Language, user: User, locale: Symbol).returns(T.nilable(LessonFinishedEvent)) }
     def process_lesson!(course_member, lesson_member, lesson, language, user, locale)
