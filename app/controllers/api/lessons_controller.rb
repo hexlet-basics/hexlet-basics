@@ -8,7 +8,8 @@ class Api::LessonsController < Api::ApplicationController
     lesson = Language::Lesson.find(params[:id])
     struct = ApplicationParamsStruct.from_params!(LessonCheckStruct, params.require(:data))
 
-    lesson_version = lesson.language.current_lesson_versions.find(T.must(struct.version_id))
+    version_id = T.must(struct.version_id)
+    lesson_version = lesson.language.current_lesson_versions.find(version_id)
     language_version = lesson_version.language_version
 
     check = CourseProgressService.record_check(
