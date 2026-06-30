@@ -6,16 +6,17 @@ class Api::LessonsController < Api::ApplicationController
   sig { returns(T.untyped) }
   def check
     lesson = Language::Lesson.find(params[:id])
-    lesson_version = lesson.language.current_lesson_versions.find(params[:version_id])
+    struct = ApplicationParamsStruct.from_params!(LessonCheckStruct, params.require(:data))
+
+    lesson_version = lesson.language.current_lesson_versions.find(T.must(struct.version_id))
     language_version = lesson_version.language_version
-    code = params[:data][:attributes][:code]
 
     check = CourseProgressService.record_check(
       user: current_user,
       lesson:,
       lesson_version:,
       language_version:,
-      code:,
+      code: struct.code.to_s,
       locale: I18n.locale
     )
 

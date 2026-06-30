@@ -59,8 +59,7 @@ export function createLessonStore(
             const responsePromise = axios.post<LessonCheckingResponse>(
               checkLessonPath,
               {
-                version_id: lesson.version!,
-                data: { attributes: { code: content } },
+                data: { version_id: lesson.version!, code: content },
               },
             );
             let response: Awaited<typeof responsePromise> | null = null;

@@ -20,7 +20,7 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
       result: "passed"
     }
 
-    post check_api_lesson_url(@lesson), params: { version_id: @lesson.versions.first.id, data: { attributes: { code: code } } }
+    post check_api_lesson_url(@lesson), params: { data: { version_id: @lesson.versions.first.id, code: code } }
     assert_response :success
 
     body = response.parsed_body
@@ -40,7 +40,7 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     }
     code = file_fixture("exercise/incorrect.rb").read
 
-    post check_api_lesson_url(@lesson), params: { version_id: @lesson.versions.first.id, data: { attributes: { code: code } } }
+    post check_api_lesson_url(@lesson), params: { data: { version_id: @lesson.versions.first.id, code: code } }
     assert_response :success
 
     body = response.parsed_body
@@ -60,7 +60,7 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     lesson_version1 = language.current_lesson_versions.find_by!(lesson: lesson1)
     lesson1.members.create!(language:, user:, language_member:)
 
-    post check_api_lesson_url(lesson1), params: { version_id: lesson_version1.id, data: { attributes: { code: } } }
+    post check_api_lesson_url(lesson1), params: { data: { version_id: lesson_version1.id, code: } }
     assert_response :success
     assert { response.parsed_body["passed"] }
 
@@ -68,7 +68,7 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     lesson_version2 = language.current_lesson_versions.find_by!(lesson: lesson2)
     lesson2.members.create!(language:, user:, language_member:)
 
-    post check_api_lesson_url(lesson2), params: { version_id: lesson_version2.id, data: { attributes: { code: } } }
+    post check_api_lesson_url(lesson2), params: { data: { version_id: lesson_version2.id, code: } }
     assert_response :success
     assert { response.parsed_body["passed"] }
 
@@ -76,7 +76,7 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     lesson_version3 = language.current_lesson_versions.find_by!(lesson: lesson3)
     lesson3.members.create!(language:, user:, language_member:)
 
-    post check_api_lesson_url(lesson3), params: { version_id: lesson_version3.id, data: { attributes: { code: } } }
+    post check_api_lesson_url(lesson3), params: { data: { version_id: lesson_version3.id, code: } }
     assert_response :success
     assert { response.parsed_body["passed"] }
 
