@@ -1,6 +1,16 @@
 # typed: strict
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: staff_member_roles
+#
+#  id          :bigint           not null, primary key
+#  description :text
+#  name        :string           not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
 class StaffMember::Role < ApplicationRecord
   self.table_name = "staff_member_roles"
 

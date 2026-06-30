@@ -1,0 +1,36 @@
+# one:
+#   record: name_of_fixture (ClassOfFixture)
+#   name: content
+#   body: <p>In a <i>million</i> stars!</p>
+
+<% %w[
+  from-full
+  from-full-ru
+  full-python-ru
+  from-full-en
+  from-full-ru-js
+  from-full-en-js
+  from-full-php
+  from-full-ru-php
+  from-full-en-php
+].each do |label| %>
+blog_post_<%= label.tr("-", "_") %>:
+  record: <%= label %> (BlogPost)
+  name: rich_body
+  body: "<div><%= Faker::Lorem.paragraph_by_chars %></div>"
+<% end %>
+
+blog_post_from_full_js:
+  record: from-full-js (BlogPost)
+  name: rich_body
+  body: |
+    <div>
+      <h2>Header 2</h2>
+      <blockquote>Это цитата лала</blockquote>
+      <pre><code class="language-javascript">const name = 'kira';</code></pre>
+      <p><a href="https://ru.hexlet.io">внешняя ссылка</a></p>
+      <table>
+        <thead><tr><th>id</th><th>first name</th></tr></thead>
+        <tbody><tr><td>1</td><td>John</td></tr></tbody>
+      </table>
+    </div>

@@ -1382,9 +1382,9 @@ export default {
           updated_at: "Обновление",
         },
         blog_post: {
-          body: "Контент",
           cover: "Изображение",
           creator: "Автор",
+          rich_body: "Контент",
           state: "Состояние",
           "state/archived": "Архив",
           "state/published": "Опубликован",

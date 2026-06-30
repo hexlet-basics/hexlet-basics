@@ -10,7 +10,7 @@ en:
         state: State
         url: Link (URL)
       blog_post:
-        body: Content
+        rich_body: Content
         creator: Author
         cover: Image
         description: Description

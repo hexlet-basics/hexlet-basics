@@ -26,8 +26,8 @@ import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import type { Article, WithContext } from "schema-dts";
 import BlogPostBlock from "@/components/BlogPostBlock";
-import MarkdownViewer from "@/components/MarkdownViewer.tsx";
 import CoursesList from "@/components/ProgramsList";
+import XssContent from "@/components/XssContent";
 import useInfiniteItems from "@/hooks/useInfiniteItems";
 import ApplicationLayout from "@/layouts/ApplicationLayout";
 import shikiAdapter from "@/lib/shiki";
@@ -94,10 +94,6 @@ export default function Show({
     markerRef,
   } = useInfiniteItems<BlogPost>(blogPost, loadNext);
 
-  const components = {
-    "::courses": () => <CoursesList landingPages={relatedLandingPages} />,
-  };
-
   return (
     <>
       <Head>
@@ -128,9 +124,12 @@ export default function Show({
                     alt={post.name!}
                   />
                 </AspectRatio>
-                <MarkdownViewer components={components} allowHtml>
-                  {post.body || ""}
-                </MarkdownViewer>
+                <XssContent className="blog-post-content">
+                  {post.rich_body_html}
+                </XssContent>
+                {relatedLandingPages.length > 0 && (
+                  <CoursesList landingPages={relatedLandingPages} />
+                )}
 
                 <Box>
                   <Group mb="lg">

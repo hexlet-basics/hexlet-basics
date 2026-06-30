@@ -9,11 +9,15 @@ class BlogPostResource < ApplicationResource
     :name,
     :slug,
     :description,
-    :body,
     :state,
     :locale,
     :created_at,
     :related_language_items_count
+
+  typelize :string
+  attribute :rich_body_html do
+    BlogPostRichTextContent.to_display_html(it.rich_body.to_s)
+  end
 
   typelize :string, nullable: true
   attribute :cover_thumb_variant do
@@ -32,7 +36,7 @@ class BlogPostResource < ApplicationResource
 
   typelize :number
   attribute :reading_time do
-    (it.body.split.size / 260).ceil
+    (it.content_for_plain_text.split.size / 260).ceil
   end
 
   typelize :string

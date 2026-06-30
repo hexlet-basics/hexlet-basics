@@ -1,6 +1,27 @@
 # typed: strict
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: staff_members
+#
+#  id              :bigint           not null, primary key
+#  allowed_locales :string           default(["ru"]), not null, is an Array
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  role_id         :bigint           not null
+#  user_id         :bigint           not null
+#
+# Indexes
+#
+#  index_staff_members_on_role_id  (role_id)
+#  index_staff_members_on_user_id  (user_id) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (role_id => staff_member_roles.id)
+#  fk_rails_...  (user_id => users.id)
+#
 class StaffMember < ApplicationRecord
   belongs_to :user
   belongs_to :role, class_name: "StaffMember::Role"
