@@ -14,6 +14,7 @@ class CourseProgressService < ApplicationService
   end
 
   class CheckPayload < T::Struct
+    const :exercise_data, T::Hash[Symbol, T.untyped]
     const :events, T::Array[ApplicationEvent], default: []
   end
 
@@ -34,10 +35,16 @@ class CourseProgressService < ApplicationService
       StartLessonPayload.new(lesson_member:, events:)
     end
 
-    # Always publishes SolutionCheckedEvent (guest-safe). On a passing check by a
-    # signed-in user, finishes the lesson and, if it was the last one, the course.
-    sig { params(user: T.nilable(User), lesson: Language::Lesson, language: Language, passed: T::Boolean, locale: Symbol).returns(CheckPayload) }
-    def record_check(user:, lesson:, language:, passed:, locale:)
+    # Runs the lesson's exercise check and records its outcome. Always publishes
+    # SolutionCheckedEvent (guest-safe). On a passing check by a signed-in user,
+    # finishes the lesson and, if it was the last one, the course. Returns the
+    # exercise data alongside the produced events.
+    sig { params(user: T.nilable(User), lesson: Language::Lesson, lesson_version: T.untyped, language_version: T.untyped, code: T.untyped, locale: Symbol).returns(CheckPayload) }
+    def record_check(user:, lesson:, lesson_version:, language_version:, code:, locale:)
+      language = lesson.language
+      exercise_data = LessonTester.run(lesson_version, language_version, code, user)
+      passed = exercise_data[:passed]
+
       events = T.let([], T::Array[ApplicationEvent])
 
       solution_checked_event = SolutionCheckedEvent.new(data: {
@@ -62,7 +69,7 @@ class CourseProgressService < ApplicationService
         end
       end
 
-      CheckPayload.new(events:)
+      CheckPayload.new(exercise_data:, events:)
     end
 
     private

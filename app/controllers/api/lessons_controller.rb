@@ -6,33 +6,29 @@ class Api::LessonsController < Api::ApplicationController
   sig { returns(T.untyped) }
   def check
     lesson = Language::Lesson.find(params[:id])
-    language = lesson.language
-    lesson_version = language.current_lesson_versions.find(params[:version_id])
-    code = params[:data][:attributes][:code]
-
+    lesson_version = lesson.language.current_lesson_versions.find(params[:version_id])
     language_version = lesson_version.language_version
-
-    lesson_exercise_data = LessonTester.new.run(lesson_version, language_version, code, current_user)
-    passed = lesson_exercise_data[:passed]
+    code = params[:data][:attributes][:code]
 
     check = CourseProgressService.record_check(
       user: current_user,
       lesson:,
-      language:,
-      passed:,
+      lesson_version:,
+      language_version:,
+      code:,
       locale: I18n.locale
     )
 
     lesson_has_been_finished = check.events.any? { it.is_a?(LessonFinishedEvent) }
     language_has_been_finished = check.events.any? { it.is_a?(CourseFinishedEvent) }
 
-    if passed && current_user.nil?
+    if check.exercise_data[:passed] && current_user.nil?
       session[:finished_as_guest] ||= {}
       session[:finished_as_guest][lesson.id] = true
     end
 
     response_data = OpenStruct.new({
-      **lesson_exercise_data,
+      **check.exercise_data,
       lesson_has_been_finished:,
       language_has_been_finished:
     })
