@@ -4,8 +4,15 @@
 class LessonTester
   extend T::Sig
 
-  sig { params(lesson_version: T.untyped, language_version: T.untyped, code: T.untyped, user: T.nilable(User)).returns(T::Hash[Symbol, T.untyped]) }
-  def run(lesson_version, language_version, code, user)
+  class Result < T::Struct
+    const :passed, T::Boolean
+    const :output, String
+    const :result, String
+    const :status, Integer
+  end
+
+  sig { params(lesson_version: T.untyped, language_version: T.untyped, code: T.untyped, user: T.nilable(User)).returns(Result) }
+  def self.run(lesson_version, language_version, code, user)
     docker_exercise_client = DepsLocator.current.docker_exercise_client
 
     code_directory = "/tmp/hexlet-basics/code"
@@ -46,6 +53,6 @@ class LessonTester
     # NOTE: escapeURIComponent нужен для удаления недопустимых символов в UTF-8, которые могут быть в выводе упражнения
     sanitized_output = result == "failed-infinity" ? "" : Base64.strict_encode64(CGI.escapeURIComponent(output))
 
-    { passed: passed, output: sanitized_output, result: result, status: exitstatus }
+    Result.new(passed:, output: sanitized_output, result:, status: exitstatus || 1)
   end
 end

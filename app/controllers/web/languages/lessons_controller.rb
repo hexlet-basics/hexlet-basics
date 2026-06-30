@@ -25,42 +25,22 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     prev_lesson_version = lesson_version.prev_lesson
     prev_lesson_info = prev_lesson_version ? prev_lesson_version.infos.includes(language: :current_version).find_by!(locale: I18n.locale) : nil
 
-    lesson_member = nil
+    user = current_user
+    # Dynamic creation, because user can start from any lesson directly
+    lesson_member =
+      if user
+        locale = resource_language_landing_page.locale.to_sym
+        result = CourseProgressService.start_lesson(user:, language: resource_language, lesson:, locale:)
 
-    if current_user.present?
-      # Dynamic creation, because user can start from any lesson directly
-      language_member = resource_language.members.find_or_initialize_by(user: current_user)
-      if language_member.new_record?
-        language_member.save!
-        event_data = {
-          occurrence_count: T.must(current_user).language_members.started.count,
-          slug: resource_language.slug,
-          locale: resource_language_landing_page.locale.to_sym
-        }
-        course_started_event = CourseStartedEvent.new(data: event_data)
-        publish_event(course_started_event, current_user)
-        js_event(course_started_event)
+        case result
+        when Typed::Success
+          payload = result.payload
+          js_events(payload.events)
+          payload.lesson_member
+        when Typed::Failure
+          nil
+        end
       end
-      lesson_member = language_member.lesson_members.find_or_create_by!(
-        language: resource_language,
-        lesson:,
-        user: current_user,
-      )
-      if lesson_member.previously_new_record?
-        lesson_member.save!
-
-        event_data = {
-          occurrence_count: language_member.lesson_members.count,
-          lesson_slug: lesson.slug,
-          course_slug: resource_language.slug,
-          locale: resource_language_landing_page.locale.to_sym
-        }
-        lesson_started_event = LessonStartedEvent.new(data: event_data)
-
-        publish_event(lesson_started_event, current_user)
-        js_event(lesson_started_event)
-      end
-    end
 
     ai_chat = lesson_member && AiChat.find_or_create_by!(
       user: lesson_member.user,
