@@ -25,18 +25,22 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     prev_lesson_version = lesson_version.prev_lesson
     prev_lesson_info = prev_lesson_version ? prev_lesson_version.infos.includes(language: :current_version).find_by!(locale: I18n.locale) : nil
 
-    lesson_member = nil
-
     user = current_user
-    if user
-      # Dynamic creation, because user can start from any lesson directly
-      locale = resource_language_landing_page.locale.to_sym
+    # Dynamic creation, because user can start from any lesson directly
+    lesson_member =
+      if user
+        locale = resource_language_landing_page.locale.to_sym
+        result = CourseProgressService.start_lesson(user:, language: resource_language, lesson:, locale:)
 
-      start = CourseProgressService.start_lesson(user:, language: resource_language, lesson:, locale:)
-      js_events(start.events)
-
-      lesson_member = start.lesson_member
-    end
+        case result
+        when Typed::Success
+          payload = result.payload
+          js_events(payload.events)
+          payload.lesson_member
+        when Typed::Failure
+          nil
+        end
+      end
 
     ai_chat = lesson_member && AiChat.find_or_create_by!(
       user: lesson_member.user,

@@ -31,21 +31,21 @@ class CourseProgressService < ApplicationService
     # it. Course enrollment is an internal step: callers ask only to start a
     # lesson. Publishes CourseStartedEvent / LessonStartedEvent for the steps
     # that actually transitioned and returns them for selective js_event.
-    sig { params(user: User, language: Language, lesson: Language::Lesson, locale: Symbol).returns(StartLessonPayload) }
+    sig { params(user: User, language: Language, lesson: Language::Lesson, locale: Symbol).returns(Typed::Result[StartLessonPayload, NilClass]) }
     def start_lesson(user:, language:, lesson:, locale:)
       events = T.let([], T::Array[ApplicationEvent])
 
       course_member = start_course!(user, language, locale, events)
       lesson_member = start_lesson!(course_member, lesson, user, locale, events)
 
-      StartLessonPayload.new(lesson_member:, events:)
+      success_with(StartLessonPayload.new(lesson_member:, events:))
     end
 
     # Runs the lesson's exercise check and records its outcome. Always publishes
     # SolutionCheckedEvent (guest-safe). On a passing check by a signed-in user,
     # finishes the lesson and, if it was the last one, the course. Returns a
     # typed payload with the exercise outcome and the finished flags.
-    sig { params(user: T.nilable(User), lesson: Language::Lesson, lesson_version: T.untyped, language_version: T.untyped, code: T.untyped, locale: Symbol).returns(CheckPayload) }
+    sig { params(user: T.nilable(User), lesson: Language::Lesson, lesson_version: T.untyped, language_version: T.untyped, code: T.untyped, locale: Symbol).returns(Typed::Result[CheckPayload, NilClass]) }
     def record_check(user:, lesson:, lesson_version:, language_version:, code:, locale:)
       language = lesson.language
       exercise = LessonTester.run(lesson_version, language_version, code, user)
@@ -58,27 +58,27 @@ class CourseProgressService < ApplicationService
       })
       EventSender.publish_event(solution_checked_event, user)
 
-      lesson_finished = T.let(false, T::Boolean)
-      course_finished = T.let(false, T::Boolean)
+      lesson_finished, course_finished =
+        if exercise.passed && user
+          ActiveRecord::Base.transaction do
+            course_member = language.members.find_by!(user:)
+            lesson_member = lesson.members.find_by!(user:)
 
-      if exercise.passed && user
-        ActiveRecord::Base.transaction do
-          course_member = language.members.find_by!(user:)
-          lesson_member = lesson.members.find_by!(user:)
-
-          lesson_finished = finish_lesson!(course_member, lesson_member, lesson, language, user, locale)
-          course_finished = finish_course!(course_member, language, user, locale)
+            [ finish_lesson!(course_member, lesson_member, lesson, language, user, locale),
+             finish_course!(course_member, language, user, locale) ]
+          end
+        else
+          [ false, false ]
         end
-      end
 
-      CheckPayload.new(
+      success_with(CheckPayload.new(
         passed: exercise.passed,
         output: exercise.output,
         result: exercise.result,
         status: exercise.status,
         lesson_has_been_finished: lesson_finished,
         language_has_been_finished: course_finished
-      )
+      ))
     end
 
     private
