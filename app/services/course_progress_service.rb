@@ -13,9 +13,15 @@ class CourseProgressService < ApplicationService
     const :events, T::Array[ApplicationEvent], default: []
   end
 
+  # The result of a solution check, shaped for LessonCheckingResponseResource:
+  # the exercise outcome plus whether this check finished the lesson / course.
   class CheckPayload < T::Struct
-    const :exercise_data, T::Hash[Symbol, T.untyped]
-    const :events, T::Array[ApplicationEvent], default: []
+    const :passed, T::Boolean
+    const :output, String
+    const :result, String
+    const :status, Integer
+    const :lesson_has_been_finished, T::Boolean
+    const :language_has_been_finished, T::Boolean
   end
 
   class << self
@@ -37,39 +43,42 @@ class CourseProgressService < ApplicationService
 
     # Runs the lesson's exercise check and records its outcome. Always publishes
     # SolutionCheckedEvent (guest-safe). On a passing check by a signed-in user,
-    # finishes the lesson and, if it was the last one, the course. Returns the
-    # exercise data alongside the produced events.
+    # finishes the lesson and, if it was the last one, the course. Returns a
+    # typed payload with the exercise outcome and the finished flags.
     sig { params(user: T.nilable(User), lesson: Language::Lesson, lesson_version: T.untyped, language_version: T.untyped, code: T.untyped, locale: Symbol).returns(CheckPayload) }
     def record_check(user:, lesson:, lesson_version:, language_version:, code:, locale:)
       language = lesson.language
-      exercise_data = LessonTester.run(lesson_version, language_version, code, user)
-      passed = exercise_data[:passed]
-
-      events = T.let([], T::Array[ApplicationEvent])
+      exercise = LessonTester.run(lesson_version, language_version, code, user)
 
       solution_checked_event = SolutionCheckedEvent.new(data: {
         lesson_slug: lesson.slug,
         course_slug: language.slug,
         locale:,
-        passed:
+        passed: exercise.passed
       })
       EventSender.publish_event(solution_checked_event, user)
-      events << solution_checked_event
 
-      if passed && user
+      lesson_finished = T.let(false, T::Boolean)
+      course_finished = T.let(false, T::Boolean)
+
+      if exercise.passed && user
         ActiveRecord::Base.transaction do
           course_member = language.members.find_by!(user:)
           lesson_member = lesson.members.find_by!(user:)
 
-          lesson_finished_event = process_lesson!(course_member, lesson_member, lesson, language, user, locale)
-          events << lesson_finished_event if lesson_finished_event
-
-          course_finished_event = process_course!(course_member, language, user, locale)
-          events << course_finished_event if course_finished_event
+          lesson_finished = finish_lesson!(course_member, lesson_member, lesson, language, user, locale)
+          course_finished = finish_course!(course_member, language, user, locale)
         end
       end
 
-      CheckPayload.new(exercise_data:, events:)
+      CheckPayload.new(
+        passed: exercise.passed,
+        output: exercise.output,
+        result: exercise.result,
+        status: exercise.status,
+        lesson_has_been_finished: lesson_finished,
+        language_has_been_finished: course_finished
+      )
     end
 
     private
@@ -110,9 +119,11 @@ class CourseProgressService < ApplicationService
       lesson_member
     end
 
-    sig { params(course_member: Language::Member, lesson_member: Language::Lesson::Member, lesson: Language::Lesson, language: Language, user: User, locale: Symbol).returns(T.nilable(LessonFinishedEvent)) }
-    def process_lesson!(course_member, lesson_member, lesson, language, user, locale)
-      return unless lesson_member.may_finish?
+    # Finishes the lesson if the AASM guard allows it. Returns whether it
+    # transitioned, publishing LessonFinishedEvent when it does.
+    sig { params(course_member: Language::Member, lesson_member: Language::Lesson::Member, lesson: Language::Lesson, language: Language, user: User, locale: Symbol).returns(T::Boolean) }
+    def finish_lesson!(course_member, lesson_member, lesson, language, user, locale)
+      return false unless lesson_member.may_finish?
 
       lesson_member.finish!
 
@@ -124,12 +135,14 @@ class CourseProgressService < ApplicationService
       })
       EventSender.publish_event(event, user)
 
-      event
+      true
     end
 
-    sig { params(course_member: Language::Member, language: Language, user: User, locale: Symbol).returns(T.nilable(CourseFinishedEvent)) }
-    def process_course!(course_member, language, user, locale)
-      return unless course_member.may_finish?
+    # Finishes the course if every lesson is done (AASM guard). Returns whether
+    # it transitioned, publishing CourseFinishedEvent when it does.
+    sig { params(course_member: Language::Member, language: Language, user: User, locale: Symbol).returns(T::Boolean) }
+    def finish_course!(course_member, language, user, locale)
+      return false unless course_member.may_finish?
 
       course_member.finish!
 
@@ -140,7 +153,7 @@ class CourseProgressService < ApplicationService
       })
       EventSender.publish_event(event, user)
 
-      event
+      true
     end
   end
 end
