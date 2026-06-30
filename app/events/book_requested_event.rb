@@ -5,7 +5,7 @@ class BookRequestedEvent < ApplicationEvent
 
   DataShape = T.type_alias {
     {
-      locale: Symbol
+      locale: String
     }
   }
 

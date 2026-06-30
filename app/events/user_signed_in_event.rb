@@ -8,7 +8,7 @@ class UserSignedInEvent < ApplicationEvent
       user_id: Integer,
       occurrence_count: Integer,
       email: T.nilable(String),
-      locale: Symbol
+      locale: String
     }
   end
 

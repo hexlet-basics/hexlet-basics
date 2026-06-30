@@ -18,7 +18,7 @@ class Api::LessonsController < Api::ApplicationController
       lesson_version:,
       language_version:,
       code: struct.code.to_s,
-      locale: I18n.locale
+      locale: I18n.locale.to_s
     )
 
     case result

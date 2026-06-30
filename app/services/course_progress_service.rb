@@ -31,7 +31,7 @@ class CourseProgressService < ApplicationService
     # it. Course enrollment is an internal step: callers ask only to start a
     # lesson. Publishes CourseStartedEvent / LessonStartedEvent for the steps
     # that actually transitioned and returns them for selective js_event.
-    sig { params(user: User, language: Language, lesson: Language::Lesson, locale: Symbol).returns(Typed::Result[StartLessonPayload, NilClass]) }
+    sig { params(user: User, language: Language, lesson: Language::Lesson, locale: String).returns(Typed::Result[StartLessonPayload, NilClass]) }
     def start_lesson(user:, language:, lesson:, locale:)
       events = T.let([], T::Array[ApplicationEvent])
 
@@ -45,7 +45,7 @@ class CourseProgressService < ApplicationService
     # SolutionCheckedEvent (guest-safe). On a passing check by a signed-in user,
     # finishes the lesson and, if it was the last one, the course. Returns a
     # typed payload with the exercise outcome and the finished flags.
-    sig { params(user: T.nilable(User), lesson: Language::Lesson, lesson_version: T.untyped, language_version: T.untyped, code: T.untyped, locale: Symbol).returns(Typed::Result[CheckPayload, NilClass]) }
+    sig { params(user: T.nilable(User), lesson: Language::Lesson, lesson_version: T.untyped, language_version: T.untyped, code: T.untyped, locale: String).returns(Typed::Result[CheckPayload, NilClass]) }
     def record_check(user:, lesson:, lesson_version:, language_version:, code:, locale:)
       language = lesson.language
       exercise = LessonTester.run(lesson_version, language_version, code, user)
@@ -83,7 +83,7 @@ class CourseProgressService < ApplicationService
 
     private
 
-    sig { params(user: User, language: Language, locale: Symbol, events: T::Array[ApplicationEvent]).returns(Language::Member) }
+    sig { params(user: User, language: Language, locale: String, events: T::Array[ApplicationEvent]).returns(Language::Member) }
     def start_course!(user, language, locale, events)
       course_member = language.members.find_or_initialize_by(user:)
       return course_member unless course_member.new_record?
@@ -101,7 +101,7 @@ class CourseProgressService < ApplicationService
       course_member
     end
 
-    sig { params(course_member: Language::Member, lesson: Language::Lesson, user: User, locale: Symbol, events: T::Array[ApplicationEvent]).returns(Language::Lesson::Member) }
+    sig { params(course_member: Language::Member, lesson: Language::Lesson, user: User, locale: String, events: T::Array[ApplicationEvent]).returns(Language::Lesson::Member) }
     def start_lesson!(course_member, lesson, user, locale, events)
       language = course_member.language
       lesson_member = course_member.lesson_members.find_or_create_by!(language:, lesson:, user:)
@@ -121,7 +121,7 @@ class CourseProgressService < ApplicationService
 
     # Finishes the lesson if the AASM guard allows it. Returns whether it
     # transitioned, publishing LessonFinishedEvent when it does.
-    sig { params(course_member: Language::Member, lesson_member: Language::Lesson::Member, lesson: Language::Lesson, language: Language, user: User, locale: Symbol).returns(T::Boolean) }
+    sig { params(course_member: Language::Member, lesson_member: Language::Lesson::Member, lesson: Language::Lesson, language: Language, user: User, locale: String).returns(T::Boolean) }
     def finish_lesson!(course_member, lesson_member, lesson, language, user, locale)
       return false unless lesson_member.may_finish?
 
@@ -140,7 +140,7 @@ class CourseProgressService < ApplicationService
 
     # Finishes the course if every lesson is done (AASM guard). Returns whether
     # it transitioned, publishing CourseFinishedEvent when it does.
-    sig { params(course_member: Language::Member, language: Language, user: User, locale: Symbol).returns(T::Boolean) }
+    sig { params(course_member: Language::Member, language: Language, user: User, locale: String).returns(T::Boolean) }
     def finish_course!(course_member, language, user, locale)
       return false unless course_member.may_finish?
 

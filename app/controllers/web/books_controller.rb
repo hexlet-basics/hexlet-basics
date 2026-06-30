@@ -35,7 +35,7 @@ class Web::BooksController < Web::ApplicationController
     request = BookRequest.find_or_initialize_by user: current_user
     if request.new_record?
       request.save!
-      event = BookRequestedEvent.new(data: { locale: I18n.locale })
+      event = BookRequestedEvent.new(data: { locale: I18n.locale.to_s })
       publish_event(event, current_user)
     end
 

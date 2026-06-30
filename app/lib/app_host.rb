@@ -16,7 +16,7 @@ module AppHost
   # NOTE: for en dont use path /en but /
   sig { params(locale: T.untyped).returns(T.untyped) }
   def self.locale_for_url(locale = I18n.locale)
-    return nil if locale&.to_sym == I18n.default_locale
+    return nil if locale&.to_s == I18n.default_locale.to_s
 
     locale
   end

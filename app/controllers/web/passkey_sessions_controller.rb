@@ -42,7 +42,7 @@ class Web::PasskeySessionsController < Web::ApplicationController
   sig { params(user: User).void }
   def publish_signed_in_event(user)
     event = UserSignedInEvent.new(data: {
-      user_id: user.id, occurrence_count: -1, email: user.email, locale: I18n.locale
+      user_id: user.id, occurrence_count: -1, email: user.email, locale: I18n.locale.to_s
     })
     publish_event(event, user)
     js_event(event)

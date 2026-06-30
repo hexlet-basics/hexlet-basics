@@ -37,7 +37,7 @@ class Web::SessionsController < Web::ApplicationController
       user_id: user.id,
       occurrence_count: -1,
       email: user.email,
-      locale: I18n.locale
+      locale: I18n.locale.to_s
     }
     event = UserSignedInEvent.new(data:)
     EventSender.publish_event(event, user)

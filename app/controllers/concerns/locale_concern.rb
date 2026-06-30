@@ -34,19 +34,19 @@ module LocaleConcern
       remembered_locale = session[:locale].presence
       if remembered_locale
         # root page, no subdomain and no default locale -> redirect
-        if remembered_locale.to_sym != I18n.default_locale
+        if remembered_locale != I18n.default_locale.to_s
           redirect_to root_url(suffix: remembered_locale), allow_other_host: true
         end
       else
         # root page, no subdomain, never changed locale
         ru_country_codes = [ "RU" ]
-        if locale_from_header == :ru || ru_country_codes.include?(country_by_ip)
+        if locale_from_header == "ru" || ru_country_codes.include?(country_by_ip)
           redirect_to root_url(suffix: :ru), allow_other_host: true
         end
       end
     else
       # not root page or root with subdomain
-      session[:locale] = I18n.locale
+      session[:locale] = I18n.locale.to_s
     end
   end
 

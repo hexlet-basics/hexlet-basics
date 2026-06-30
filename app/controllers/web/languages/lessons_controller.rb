@@ -29,7 +29,7 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     # Dynamic creation, because user can start from any lesson directly
     lesson_member =
       if user
-        locale = resource_language_landing_page.locale.to_sym
+        locale = resource_language_landing_page.locale
         result = CourseProgressService.start_lesson(user:, language: resource_language, lesson:, locale:)
 
         case result

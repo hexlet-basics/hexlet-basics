@@ -42,7 +42,7 @@ class Web::UsersController < Web::ApplicationController
       email: user.email,
       first_name: user.first_name,
       last_name: user.last_name,
-      locale: I18n.locale
+      locale: I18n.locale.to_s
     }
     user_signed_up = UserSignedUpEvent.new(data: signed_up_event_data)
 
@@ -62,7 +62,7 @@ class Web::UsersController < Web::ApplicationController
         course_started_event_data = {
           occurrence_count: 1,
           slug: language.slug,
-          locale: I18n.locale
+          locale: I18n.locale.to_s
         }
         course_started_event = CourseStartedEvent.new(data: course_started_event_data)
         publish_event(course_started_event, user)
@@ -80,7 +80,7 @@ class Web::UsersController < Web::ApplicationController
         occurrence_count: 1,
         lesson_slug: lesson.slug,
         course_slug: language.slug,
-        locale: I18n.locale
+        locale: I18n.locale.to_s
       }
 
       started_event = LessonStartedEvent.new(data: lesson_started_and_finished_event_data)

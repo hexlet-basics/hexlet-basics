@@ -20,7 +20,7 @@ class Web::GoogleAuthController < Web::ApplicationController
           email: user.email,
           first_name: user.first_name,
           last_name: user.last_name,
-          locale: I18n.locale
+          locale: I18n.locale.to_s
         }
         js_event(UserSignedUpEvent.new(data: signed_up_event_data))
       end

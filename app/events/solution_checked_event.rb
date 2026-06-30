@@ -7,7 +7,7 @@ class SolutionCheckedEvent < ApplicationEvent
     {
       lesson_slug: String,
       course_slug: String,
-      locale: Symbol,
+      locale: String,
       passed: T::Boolean
     }
   }

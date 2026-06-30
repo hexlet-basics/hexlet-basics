@@ -8,7 +8,7 @@ class LessonStartedEvent < ApplicationEvent
       occurrence_count: Integer,
       lesson_slug: String,
       course_slug: String,
-      locale: Symbol
+      locale: String
     }
   }
 

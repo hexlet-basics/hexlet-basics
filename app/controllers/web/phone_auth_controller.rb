@@ -58,11 +58,11 @@ class Web::PhoneAuthController < Web::ApplicationController
     event = if user.previously_new_record?
       UserSignedUpEvent.new(data: {
         user_id: user.id, email: user.email,
-        first_name: user.first_name, last_name: user.last_name, locale: I18n.locale
+        first_name: user.first_name, last_name: user.last_name, locale: I18n.locale.to_s
       })
     else
       UserSignedInEvent.new(data: {
-        user_id: user.id, occurrence_count: -1, email: user.email, locale: I18n.locale
+        user_id: user.id, occurrence_count: -1, email: user.email, locale: I18n.locale.to_s
       })
     end
 

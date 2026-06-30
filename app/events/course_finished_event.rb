@@ -7,7 +7,7 @@ class CourseFinishedEvent < ApplicationEvent
     {
       occurrence_count: Integer,
       slug: String,
-      locale: Symbol
+      locale: String
     }
   }
 

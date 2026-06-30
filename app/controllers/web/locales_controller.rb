@@ -10,7 +10,7 @@ class Web::LocalesController < Web::ApplicationController
     locale = params[:new_locale]
     # redirect_path = requst.referer || root_path
 
-    unless I18n.available_locales.include?(locale&.to_sym)
+    unless I18n.available_locales.map(&:to_s).include?(locale)
       redirect_back fallback_location: root_path(suffix: AppHost.locale_for_url(I18n.default_locale))
       return
     end

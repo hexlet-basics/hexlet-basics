@@ -9,7 +9,7 @@ class UserSignedUpEvent < ApplicationEvent
       email: T.nilable(String),
       first_name: T.nilable(String),
       last_name: T.nilable(String),
-      locale: Symbol
+      locale: String
     }
   end
 
