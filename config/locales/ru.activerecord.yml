@@ -10,7 +10,7 @@ ru:
         state: Состояние
         url: Ссылка (URL)
       blog_post:
-        body: Контент
+        rich_body: Контент
         creator: Автор
         cover: Изображение
         description: Описание
@@ -117,7 +117,7 @@ ru:
         password: Пароль
         email: Email
       blog_post:
-        body: Контент
+        rich_body: Контент
         state: Состояние
         state/archived: Архив
         state/published: Опубликован

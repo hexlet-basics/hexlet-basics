@@ -133,6 +133,7 @@ gem "gon"
 gem "googleauth"
 gem "rails-i18n"
 # gem "redcarpet"
+gem "commonmarker"
 # gem "simple_form"
 
 # gem 'sitemap_generator'

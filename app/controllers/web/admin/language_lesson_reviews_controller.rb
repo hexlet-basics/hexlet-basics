@@ -1,6 +1,8 @@
 # typed: strict
 
 class Web::Admin::LanguageLessonReviewsController < Web::Admin::ApplicationController
+  STAFF_RESOURCE = StaffMember::Role::Permission::Resource::LanguageLessonReviews
+
   sig { returns(T.untyped) }
   def index
     q = ransack_params("sf" => "id", "so" => "desc")

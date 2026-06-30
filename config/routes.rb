@@ -162,6 +162,9 @@ Rails.application.routes.draw do
 
         namespace :management do
           resources :users, only: %i[index edit update]
+          resources :roles
+          resources :role_permissions, only: %i[show update]
+          resources :staff_members
         end
       end
 

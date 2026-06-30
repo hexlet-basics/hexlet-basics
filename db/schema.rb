@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_29_073140) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_30_084406) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "action_text_rich_texts", force: :cascade do |t|
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.bigint "record_id", null: false
+    t.string "record_type", null: false
+    t.datetime "updated_at", null: false
+    t.index ["record_type", "record_id", "name"], name: "index_action_text_rich_texts_uniqueness", unique: true
+  end
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
@@ -190,7 +200,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_29_073140) do
   end
 
   create_table "blog_posts", force: :cascade do |t|
-    t.text "body"
     t.datetime "created_at", null: false
     t.bigint "creator_id", null: false
     t.string "description"
@@ -698,6 +707,36 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_29_073140) do
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
   end
 
+  create_table "staff_member_role_permissions", force: :cascade do |t|
+    t.boolean "can_create", default: false, null: false
+    t.boolean "can_destroy", default: false, null: false
+    t.boolean "can_index", default: false, null: false
+    t.boolean "can_update", default: false, null: false
+    t.datetime "created_at", null: false
+    t.string "resource", null: false
+    t.bigint "role_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["role_id", "resource"], name: "index_staff_member_role_permissions_on_role_id_and_resource", unique: true
+    t.index ["role_id"], name: "index_staff_member_role_permissions_on_role_id"
+  end
+
+  create_table "staff_member_roles", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "staff_members", force: :cascade do |t|
+    t.string "allowed_locales", default: ["ru"], null: false, array: true
+    t.datetime "created_at", null: false
+    t.bigint "role_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["role_id"], name: "index_staff_members_on_role_id"
+    t.index ["user_id"], name: "index_staff_members_on_user_id", unique: true
+  end
+
   create_table "survey_answers", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "state"
@@ -952,6 +991,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_29_073140) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "staff_member_role_permissions", "staff_member_roles", column: "role_id"
+  add_foreign_key "staff_members", "staff_member_roles", column: "role_id"
+  add_foreign_key "staff_members", "users"
   add_foreign_key "survey_answers", "survey_items"
   add_foreign_key "survey_answers", "surveys"
   add_foreign_key "survey_answers", "users"

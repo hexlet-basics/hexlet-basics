@@ -3,7 +3,6 @@
 # Table name: blog_posts
 #
 #  id                           :bigint           not null, primary key
-#  body                         :text
 #  description                  :string
 #  locale                       :string
 #  name                         :string
@@ -29,24 +28,18 @@
 DEFAULTS: &DEFAULTS
   slug: $LABEL
   name: Что такое язык программирования $LABEL
-  body: $LABEL
   state: published
   creator: full
 
 from-full:
   <<: *DEFAULTS
   name: Что такое язык программирования $LABEL. Очень длинное название
-  body: |
-    <%= Faker::Lorem.paragraph_by_chars %>
-    ::courses
   description: |
     <%= Faker::Lorem.paragraph(sentence_count: 4) %>
   locale: ru
 
 from-full-ru:
   <<: *DEFAULTS
-  body: |
-    DRAFT
   description: |
     <%= Faker::Lorem.paragraph(sentence_count: 4) %>
     ::courses
@@ -64,8 +57,6 @@ full-python-ru:
 
 from-full-en:
   <<: *DEFAULTS
-  body: |
-    DRAFT
   name: What is $LABEL
   description: |
     <%= Faker::Lorem.paragraph(sentence_count: 4) %>
@@ -78,33 +69,10 @@ from-full-js:
   description: |
     <%= Faker::Lorem.paragraph(sentence_count: 4) %>
   language: javascript
-  body: |
-    <%= Faker::Markdown.headers %>
-    <%= Faker::Markdown.emphasis %>
-
-    ## Header 2
-
-    ::courses
-
-    > Это цитата лала
-
-    ```javascript
-    const name = 'kira';
-    const wow = `hello, ${name}`;
-    ```
-
-    [внешняя ссылка](https://ru.hexlet.io)
-
-    | id | first name | last name |
-    |--|--|--|
-    | 1 | John | Smith  |
-    | 2 | Ivan | Petrov  |
   locale: ru
 
 from-full-ru-js:
   <<: *DEFAULTS
-  body: |
-    <%= Faker::Lorem.paragraph_by_chars %>
   description: |
     <%= Faker::Lorem.paragraph(sentence_count: 4) %>
   language: javascript
@@ -115,23 +83,11 @@ from-full-en-js:
   name: What is $LABEL
   description: |
     <%= Faker::Lorem.paragraph(sentence_count: 4) %>
-  body: |
-    ## Header 2
-    <%= Faker::Lorem.paragraph_by_chars %>
-    ## Header 3
-    <%= Faker::Lorem.paragraph_by_chars %>
-    ## Header 4
-    <%= Faker::Lorem.paragraph_by_chars %>
-    ## Header 5
-    <%= Faker::Lorem.paragraph_by_chars %>
   language: javascript
   locale: en
 
 from-full-php:
   <<: *DEFAULTS
-  body: |
-    <%= Faker::Lorem.paragraph_by_chars %>
-    ::courses
   description: |
     <%= Faker::Lorem.paragraph(sentence_count: 4) %>
   language: php
@@ -139,9 +95,6 @@ from-full-php:
 
 from-full-ru-php:
   <<: *DEFAULTS
-  body: |
-    Эта статья посвящена языку PHP. Давайте говорить про него и посмотрим какие курсы порекомендуют здесь.
-    ::courses
   description: |
     <%= Faker::Lorem.paragraph(sentence_count: 4) %>
     ::courses
@@ -151,8 +104,6 @@ from-full-ru-php:
 from-full-en-php:
   <<: *DEFAULTS
   name: What is $LABEL
-  body: |
-    <%= Faker::Lorem.paragraph_by_chars %>
   description: |
     <%= Faker::Lorem.paragraph(sentence_count: 4) %>
   language: php

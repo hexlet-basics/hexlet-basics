@@ -20,6 +20,15 @@ class BlogPost
   sig { params(attachable: T.untyped).returns(T.untyped) }
   def cover=(attachable); end
 
+  sig { returns(ActionText::RichText) }
+  def rich_body; end
+
+  sig { params(value: T.nilable(T.any(ActionText::RichText, String))).returns(T.untyped) }
+  def rich_body=(value); end
+
+  sig { returns(T::Boolean) }
+  def rich_body?; end
+
   private
 
   sig { returns(NilClass) }
@@ -408,6 +417,9 @@ class BlogPost
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language) }
     def build_language(*args, &blk); end
 
+    sig { params(args: T.untyped, blk: T.untyped).returns(::ActionText::RichText) }
+    def build_rich_text_rich_body(*args, &blk); end
+
     sig { returns(T.nilable(::Language::Category)) }
     def category; end
 
@@ -455,6 +467,12 @@ class BlogPost
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Language) }
     def create_language!(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::ActionText::RichText) }
+    def create_rich_text_rich_body(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::ActionText::RichText) }
+    def create_rich_text_rich_body!(*args, &blk); end
 
     sig { returns(::User) }
     def creator; end
@@ -551,6 +569,9 @@ class BlogPost
     sig { returns(T.nilable(::Language)) }
     def reload_language; end
 
+    sig { returns(T.nilable(::ActionText::RichText)) }
+    def reload_rich_text_rich_body; end
+
     sig { void }
     def reset_category; end
 
@@ -565,6 +586,15 @@ class BlogPost
 
     sig { void }
     def reset_language; end
+
+    sig { void }
+    def reset_rich_text_rich_body; end
+
+    sig { returns(T.nilable(::ActionText::RichText)) }
+    def rich_text_rich_body; end
+
+    sig { params(value: T.nilable(::ActionText::RichText)).void }
+    def rich_text_rich_body=(value); end
   end
 
   module GeneratedAssociationRelationMethods
@@ -737,55 +767,16 @@ class BlogPost
     def with_recursive(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def with_rich_text_rich_body(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def with_rich_text_rich_body_and_embeds(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def without(*args, &blk); end
   end
 
   module GeneratedAttributeMethods
-    sig { returns(::String) }
-    def body; end
-
-    sig { params(value: ::String).returns(::String) }
-    def body=(value); end
-
-    sig { returns(T::Boolean) }
-    def body?; end
-
-    sig { returns(T.nilable(::String)) }
-    def body_before_last_save; end
-
-    sig { returns(T.untyped) }
-    def body_before_type_cast; end
-
-    sig { returns(T::Boolean) }
-    def body_came_from_user?; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def body_change; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def body_change_to_be_saved; end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def body_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(::String)) }
-    def body_in_database; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def body_previous_change; end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def body_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(::String)) }
-    def body_previously_was; end
-
-    sig { returns(T.nilable(::String)) }
-    def body_was; end
-
-    sig { void }
-    def body_will_change!; end
-
     sig { returns(::ActiveSupport::TimeWithZone) }
     def created_at; end
 
@@ -1192,9 +1183,6 @@ class BlogPost
     def related_language_items_count_will_change!; end
 
     sig { void }
-    def restore_body!; end
-
-    sig { void }
     def restore_created_at!; end
 
     sig { void }
@@ -1229,12 +1217,6 @@ class BlogPost
 
     sig { void }
     def restore_updated_at!; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def saved_change_to_body; end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def saved_change_to_body?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def saved_change_to_created_at; end
@@ -1444,9 +1426,6 @@ class BlogPost
     def updated_at_will_change!; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def will_save_change_to_body?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1651,6 +1630,12 @@ class BlogPost
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def with_recursive(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def with_rich_text_rich_body(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def with_rich_text_rich_body_and_embeds(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def without(*args, &blk); end

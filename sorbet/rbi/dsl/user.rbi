@@ -532,11 +532,20 @@ class User
     sig { params(args: T.untyped, blk: T.untyped).returns(::BookRequest) }
     def build_book_request(*args, &blk); end
 
+    sig { params(args: T.untyped, blk: T.untyped).returns(::StaffMember) }
+    def build_staff_member(*args, &blk); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(::BookRequest) }
     def create_book_request(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::BookRequest) }
     def create_book_request!(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::StaffMember) }
+    def create_staff_member(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::StaffMember) }
+    def create_staff_member!(*args, &blk); end
 
     sig { returns(T::Array[T.untyped]) }
     def credential_ids; end
@@ -625,8 +634,14 @@ class User
     sig { returns(T.nilable(::BookRequest)) }
     def reload_book_request; end
 
+    sig { returns(T.nilable(::StaffMember)) }
+    def reload_staff_member; end
+
     sig { void }
     def reset_book_request; end
+
+    sig { void }
+    def reset_staff_member; end
 
     sig { returns(T::Array[T.untyped]) }
     def review_ids; end
@@ -655,6 +670,12 @@ class User
 
     sig { params(value: T::Enumerable[::Session]).void }
     def sessions=(value); end
+
+    sig { returns(T.nilable(::StaffMember)) }
+    def staff_member; end
+
+    sig { params(value: T.nilable(::StaffMember)).void }
+    def staff_member=(value); end
 
     sig { returns(T::Array[T.untyped]) }
     def survey_answer_ids; end

@@ -6,7 +6,6 @@
 # Table name: blog_posts
 #
 #  id                           :bigint           not null, primary key
-#  body                         :text
 #  description                  :string
 #  locale                       :string
 #  name                         :string
@@ -34,7 +33,7 @@ FactoryBot.define do
     locale { I18n.locale }
     slug { Faker::Internet.slug }
     name { Faker::Name.first_name }
-    body { Faker::Lorem.paragraph_by_chars }
+    rich_body { "<div>#{Faker::Lorem.paragraph_by_chars}</div>" }
     description { Faker::Lorem.paragraph }
   end
 end
