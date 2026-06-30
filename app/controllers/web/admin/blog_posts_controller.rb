@@ -1,6 +1,8 @@
 # typed: strict
 
 class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
+  STAFF_RESOURCE = StaffMember::Role::Permission::Resource::BlogPosts
+
   sig { returns(T.untyped) }
   def index
     default_params = { "sf" => "id", "so" => "desc" }

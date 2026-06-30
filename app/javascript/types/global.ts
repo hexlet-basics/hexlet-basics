@@ -49,5 +49,15 @@ declare module "@inertiajs/core" {
     landingPagesForFooter: LanguageLandingPageForLists[];
     mobileBrowser: boolean;
     metaTagsHTMLString: string;
+    isAdmin?: boolean;
+    staffPermissions?: Record<
+      string,
+      {
+        can_index: boolean;
+        can_create: boolean;
+        can_update: boolean;
+        can_destroy: boolean;
+      }
+    >;
   }
 }

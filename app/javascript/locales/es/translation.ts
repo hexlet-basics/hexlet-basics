@@ -301,6 +301,45 @@ export default {
         },
       },
       management: {
+        role_permissions: {
+          show: {
+            all: "Todos",
+            header: "Permisos del rol: {{name}}",
+            link: "Permisos",
+            resource: "Recurso",
+          },
+        },
+        roles: {
+          edit: {
+            header: "Editar rol",
+          },
+          form: {
+            description: "Descripción",
+            name: "Nombre",
+          },
+          index: {
+            header: "Roles",
+          },
+          "new": {
+            header: "Nuevo rol",
+          },
+        },
+        staff_members: {
+          edit: {
+            header: "Editar miembro",
+          },
+          form: {
+            allowed_locales: "Idiomas permitidos",
+            role: "Rol",
+            user: "Usuario",
+          },
+          index: {
+            header: "Personal",
+          },
+          "new": {
+            header: "Nuevo miembro",
+          },
+        },
         users: {
           edit: {
             count: "Count",

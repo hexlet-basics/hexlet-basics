@@ -82,6 +82,21 @@ module GeneratedUrlHelpersModule
   def admin_leads_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def admin_management_role_permission_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_management_role_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_management_roles_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_management_staff_member_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_management_staff_members_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def admin_management_user_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -157,6 +172,12 @@ module GeneratedUrlHelpersModule
   def edit_admin_language_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def edit_admin_management_role_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def edit_admin_management_staff_member_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def edit_admin_management_user_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -227,6 +248,12 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def new_admin_language_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_admin_management_role_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_admin_management_staff_member_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_admin_review_url(*args); end

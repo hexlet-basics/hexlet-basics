@@ -1,6 +1,8 @@
 # typed: strict
 
 class Web::Admin::LanguageLandingPagesController < Web::Admin::ApplicationController
+  STAFF_RESOURCE = StaffMember::Role::Permission::Resource::LanguageLandingPages
+
   sig { returns(T.untyped) }
   def index
     q = ransack_params("sf" => "id", "so" => "desc", fields: { "state_eq" => "published" })

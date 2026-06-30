@@ -2,6 +2,8 @@
 # frozen_string_literal: true
 
 class Web::Admin::BannersController < Web::Admin::ApplicationController
+  STAFF_RESOURCE = StaffMember::Role::Permission::Resource::Banners
+
   sig { returns(T.untyped) }
   def index
     q = ransack_params("sf" => "id", "so" => "desc")

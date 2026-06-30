@@ -303,6 +303,45 @@ export default {
         },
       },
       management: {
+        role_permissions: {
+          show: {
+            all: "Все",
+            header: "Права роли: {{name}}",
+            link: "Права",
+            resource: "Ресурс",
+          },
+        },
+        roles: {
+          edit: {
+            header: "Редактирование роли",
+          },
+          form: {
+            description: "Описание",
+            name: "Название",
+          },
+          index: {
+            header: "Роли",
+          },
+          "new": {
+            header: "Новая роль",
+          },
+        },
+        staff_members: {
+          edit: {
+            header: "Редактирование сотрудника",
+          },
+          form: {
+            allowed_locales: "Доступные локали",
+            role: "Роль",
+            user: "Пользователь",
+          },
+          index: {
+            header: "Сотрудники",
+          },
+          "new": {
+            header: "Новый сотрудник",
+          },
+        },
         users: {
           edit: {
             count: "Количество",
