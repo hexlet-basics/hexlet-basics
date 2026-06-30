@@ -118,6 +118,8 @@ class User < ApplicationRecord
   has_one :book_request
   has_many :leads
 
+  has_one :staff_member, dependent: :destroy
+
   typed_enum :contact_method, ContactMethod, suffix: true
 
   aasm :state do
@@ -146,6 +148,11 @@ class User < ApplicationRecord
       return "#{first_name} #{last_name}"
     end
     email.presence || phone.presence || "User ##{id}"
+  end
+
+  sig { returns(T::Boolean) }
+  def staff?
+    admin? || staff_member.present?
   end
 
   sig { returns(T::Boolean) }

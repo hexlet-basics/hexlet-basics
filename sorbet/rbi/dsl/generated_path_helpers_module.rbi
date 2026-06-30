@@ -82,6 +82,21 @@ module GeneratedPathHelpersModule
   def admin_leads_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def admin_management_role_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_management_role_permission_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_management_roles_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_management_staff_member_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def admin_management_staff_members_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def admin_management_user_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -157,6 +172,12 @@ module GeneratedPathHelpersModule
   def edit_admin_language_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def edit_admin_management_role_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def edit_admin_management_staff_member_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def edit_admin_management_user_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -227,6 +248,12 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def new_admin_language_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_admin_management_role_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_admin_management_staff_member_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_admin_review_path(*args); end

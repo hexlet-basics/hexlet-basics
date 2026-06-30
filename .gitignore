@@ -60,3 +60,4 @@ stats.html
 .npm-cache
 .playwright-cli
 npm-cache
+.claude
