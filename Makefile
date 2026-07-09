@@ -12,10 +12,13 @@ setup:
 
 test-all: test test-frontend test-system
 
-deps-update:
+deps-update: update-skills
 	npx ncu -u
 	pnpm update
 	bundle update
+
+update-skills:
+	npx skills update --project --yes
 
 test:
 	bin/rails test
