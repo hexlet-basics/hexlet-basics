@@ -19,7 +19,6 @@ import analytics, { processHappendEvents } from "@/lib/analytics";
 import { resolver, theme } from "@/lib/mantine";
 import { cookieColorSchemeManager } from "@/lib/mantineColorSchemeManager";
 import { fromWindow } from "@/lib/utils";
-import * as Routes from "@/routes.js";
 
 type Props = PropsWithChildren & {};
 const colorSchemeManager = cookieColorSchemeManager();
@@ -47,18 +46,9 @@ function DebugAppData() {
 
 function RootLayout(props: Props) {
   const {
-    props: { colorScheme, metaTagsHTMLString, suffix },
+    props: { colorScheme, metaTagsHTMLString },
     flash,
   } = usePage<PageProps>();
-
-  useEffect(() => {
-    Routes.configure({
-      default_url_options: {
-        ...Routes.config().default_url_options,
-        suffix: suffix ?? undefined,
-      },
-    });
-  }, [suffix]);
 
   useEffect(() => {
     const ymClientId = fromWindow("ymClientId");

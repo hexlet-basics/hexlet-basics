@@ -1,8 +1,7 @@
 import { createInertiaApp } from "@inertiajs/react";
+import { configureRoutes } from "@/init.ts";
 import RootLayout from "@/layouts/RootLayout.tsx";
 import I18nAppProvider from "@/lib/I18nAppProvider.tsx";
-
-import "@/init.ts";
 
 createInertiaApp({
   defaults: {
@@ -11,6 +10,7 @@ createInertiaApp({
     },
   },
   layout: (_component, page) => {
+    configureRoutes(page.props.suffix);
     return RootLayout;
   },
   pages: "../pages",
