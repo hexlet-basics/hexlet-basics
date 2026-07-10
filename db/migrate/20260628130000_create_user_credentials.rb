@@ -4,8 +4,10 @@
 class CreateUserCredentials < ActiveRecord::Migration[8.0]
   def change
     # Stable per-user WebAuthn handle, generated on first passkey registration.
+    # The index on users.webauthn_id is created concurrently in the following
+    # migration (AddWebauthnIdIndexConcurrently) to avoid locking writes on the
+    # large users table.
     add_column :users, :webauthn_id, :string
-    add_index :users, :webauthn_id, unique: true, where: "webauthn_id IS NOT NULL"
 
     create_table :user_credentials do |t|
       t.references :user, null: false, foreign_key: true
