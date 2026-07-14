@@ -6,13 +6,7 @@ if [ -z "${LD_PRELOAD+x}" ]; then
     export LD_PRELOAD
 fi
 
-# If running the web server then create or migrate existing database.
-if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
-  ./bin/rails db:prepare
-fi
-
-if [ "${@: -3:1}" == "puma" ] && [ "${@: -2:1}" == "-C" ] && [ "${@: -1:1}" == "config/puma.rb" ]; then
-  ./bin/rails db:prepare
-fi
+# NOTE: миграции гоняет одноразовый Helm pre-upgrade Job (k8s/app-chart/templates/migrate.job.yaml),
+# а не каждый под на старте — иначе реплики дерутся за advisory-lock (ConcurrentMigrationError).
 
 exec "${@}"
