@@ -8,6 +8,16 @@
 class ActiveSupport::TestCase
   include ::ActiveRecord::TestFixtures
 
+  sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[ActionText::RichText]) }
+  sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(ActionText::RichText) }
+  sig do
+    params(
+      fixture_name: T.any(String, Symbol),
+      other_fixtures: T.any(String, Symbol)
+    ).returns(T::Array[ActionText::RichText])
+  end
+  def action_text_rich_texts(fixture_name = nil, *other_fixtures); end
+
   sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[Banner]) }
   sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(Banner) }
   sig { params(fixture_name: T.any(String, Symbol), other_fixtures: T.any(String, Symbol)).returns(T::Array[Banner]) }

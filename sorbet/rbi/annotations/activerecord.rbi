@@ -42,6 +42,27 @@ class ActiveRecord::Migration
   include ActiveRecord::ConnectionAdapters::DatabaseStatements
 end
 
+# @version >= 7.2.0
+module ActiveRecord::Assertions::QueryAssertions
+  sig { type_parameters(:R).params(count: T.nilable(Integer), include_schema: T::Boolean, block: T.proc.returns(T.type_parameter(:R))).returns(T.type_parameter(:R)) }
+  def assert_queries_count(count = nil, include_schema: false, &block); end
+
+  sig { type_parameters(:R).params(include_schema: T::Boolean, block: T.proc.returns(T.type_parameter(:R))).returns(T.type_parameter(:R)) }
+  def assert_no_queries(include_schema: false, &block); end
+
+  sig { type_parameters(:R).params(match: T.any(String, Regexp), count: T.nilable(Integer), include_schema: T::Boolean, block: T.proc.returns(T.type_parameter(:R))).returns(T.type_parameter(:R)) }
+  def assert_queries_match(match, count: nil, include_schema: false, &block); end
+
+  sig { type_parameters(:R).params(match: T.any(String, Regexp), include_schema: T::Boolean, block: T.proc.returns(T.type_parameter(:R))).returns(T.type_parameter(:R)) }
+  def assert_no_queries_match(match, include_schema: false, &block); end
+end
+
+# @version >= 7.2.0
+class ActiveSupport::TestCase
+  # @shim: Rails includes query assertions into ActiveSupport::TestCase from rails/test_help when ActiveRecord is loaded.
+  include ActiveRecord::Assertions::QueryAssertions
+end
+
 class ActiveRecord::Base
   sig { returns(FalseClass) }
   def blank?; end

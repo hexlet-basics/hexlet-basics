@@ -1,7 +1,8 @@
 {
   "browsers": [
-    "and_chr 148",
-    "and_ff 150",
+    "and_chr 149",
+    "and_ff 151",
+    "chrome 149",
     "chrome 148",
     "chrome 147",
     "chrome 146",
@@ -31,6 +32,7 @@
     "chrome 122",
     "chrome 121",
     "chrome 120",
+    "edge 149",
     "edge 148",
     "edge 147",
     "edge 146",
@@ -60,6 +62,7 @@
     "edge 122",
     "edge 121",
     "edge 120",
+    "firefox 151",
     "firefox 150",
     "firefox 149",
     "firefox 148",
@@ -90,7 +93,6 @@
     "firefox 123",
     "firefox 122",
     "firefox 121",
-    "firefox 120",
     "ios_saf 26.4",
     "ios_saf 26.3",
     "ios_saf 26.2",
@@ -107,8 +109,6 @@
     "ios_saf 17.4",
     "ios_saf 17.3",
     "ios_saf 17.2",
-    "ios_saf 17.1",
-    "ios_saf 17.0",
     "safari 26.4",
     "safari 26.3",
     "safari 26.2",
@@ -124,8 +124,6 @@
     "safari 17.5",
     "safari 17.4",
     "safari 17.3",
-    "safari 17.2",
-    "safari 17.1",
-    "safari 17.0"
+    "safari 17.2"
   ]
 }
