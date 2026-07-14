@@ -21,6 +21,14 @@ class UserResource < ApplicationResource
     it.admin?
   end
 
+  typelize :boolean, nullable: false
+  attribute :can_access_admin do
+    next true if it.admin?
+
+    staff = it.staff_member
+    staff.present? && staff.allowed_locales.include?(I18n.locale.to_s)
+  end
+
   typelize :string, nullable: true
   attribute :password do end
 

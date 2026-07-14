@@ -2,6 +2,7 @@
 
 class Web::Admin::ApplicationController < Web::ApplicationController
   before_action :authenticate_staff!
+  before_action :authorize_staff_locale!
   before_action :authorize_staff_resource!
 
   before_action do
@@ -29,6 +30,14 @@ class Web::Admin::ApplicationController < Web::ApplicationController
   def authenticate_staff!
     require_authentication
     redirect_to root_path unless current_user&.staff?
+  end
+
+  sig { void }
+  def authorize_staff_locale!
+    return if current_user&.admin?
+
+    staff = current_user&.staff_member
+    redirect_to root_path unless staff&.allowed_locales&.include?(I18n.locale.to_s)
   end
 
   # STAFF_RESOURCE семантика:

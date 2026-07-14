@@ -118,7 +118,7 @@ class User < ApplicationRecord
   has_one :book_request
   has_many :leads
 
-  has_one :staff_member, dependent: :destroy
+  has_one :staff_member, dependent: :destroy, inverse_of: :user
 
   typed_enum :contact_method, ContactMethod, suffix: true
 

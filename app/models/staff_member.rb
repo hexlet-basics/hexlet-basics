@@ -23,7 +23,7 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class StaffMember < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, inverse_of: :staff_member
   belongs_to :role, class_name: "StaffMember::Role"
 
   validates :user, uniqueness: true

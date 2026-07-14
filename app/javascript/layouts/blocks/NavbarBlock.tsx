@@ -229,7 +229,7 @@ function AuthLinks({ avatar }: { avatar: string }) {
         >
           {t(($) => $.layouts.shared.nav.profile)}
         </Menu.Item>
-        {auth.user.admin && (
+        {auth.user.can_access_admin && (
           <Menu.Item
             leftSection={<IconUserShield size={14} />}
             component={Link}

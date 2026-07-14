@@ -7,7 +7,7 @@ class Web::Admin::Management::UsersController < Web::Admin::Management::Applicat
   sig { returns(T.untyped) }
   def index
     q = ransack_params("sf" => "id", "so" => "desc")
-    search = User.ransack(q)
+    search = User.includes(:staff_member).ransack(q)
     pagy, records = pagy(search.result)
 
     render inertia: true, props: {
