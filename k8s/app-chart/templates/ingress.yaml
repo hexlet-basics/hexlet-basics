@@ -1,5 +1,11 @@
 ---
 
+# ROADMAP(Gateway API): в перспективе заменить Ingress на Gateway API
+# (gateway.networking.k8s.io/v1: Gateway + HTTPRoute; на 2026 актуальны релизы
+# 1.5/1.6). ВЫСОКИЙ риск — меняется весь путь трафика, мигрировать отдельной
+# задачей. Пути роутинга (/ru/api/lessons/, /api/lessons/, /) и хосты
+# (code-basics.com, *.code-basics.com, code-basics.ru) переносить 1:1.
+# Обязательно сверяться с актуальной докой Gateway API и провайдера (YC ALB).
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:

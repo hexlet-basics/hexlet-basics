@@ -12,6 +12,10 @@ metadata:
     app.kubernetes.io/managed-by: "{{ .Release.Service }}"
 
 spec:
+  # ROADMAP(HPA): при переходе на HorizontalPodAutoscaler (autoscaling/v2) этот
+  # статический `replicas` НУЖНО убрать — иначе каждый `helm upgrade` будет
+  # сбрасывать число реплик к 2 и конфликтовать с HPA. Требуется metrics-server
+  # в кластере. Сверяться с актуальной докой по autoscaling/v2. См. values.yaml.
   replicas: 2
 
   selector:
