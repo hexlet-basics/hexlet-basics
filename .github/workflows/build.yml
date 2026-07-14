@@ -27,11 +27,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
-          version: 10
+          # NOTE: pinned below 11.12 — action-setup's self-install of pnpm 11.12
+          # crashes with "Cannot use 'in' operator to search for 'integrity' in
+          # undefined". Bump back to a floating major once fixed upstream.
+          # https://github.com/pnpm/action-setup/issues/276
+          version: 11.11
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v6
         with:
