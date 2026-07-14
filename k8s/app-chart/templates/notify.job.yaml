@@ -1,0 +1,76 @@
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Release.Name }}-notify-{{ .Values.version }}"
+  namespace: "{{ .Release.Namespace }}"
+  labels:
+    app.kubernetes.io/name: "{{ .Chart.Name }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+  annotations:
+    # NOTE: регистрируем деплой в Sentry один раз за релиз, ПОСЛЕ успешной раскатки.
+    # Раньше это делал postStart-хук web-контейнера, из-за чего деплой слался на каждый
+    # старт пода (рескейл, drain, OOM) и по разу на каждую реплику.
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "5"
+    "helm.sh/hook-delete-policy": before-hook-creation
+
+spec:
+  backoffLimit: 1
+  activeDeadlineSeconds: 120
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: "{{ .Release.Name }}-notify-pod"
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
+        helm.sh/chart: '{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}'
+    spec:
+      restartPolicy: Never
+
+      nodeSelector:
+        group: "{{ .Release.Namespace }}"
+
+      imagePullSecrets:
+        - name: docker-config
+
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: role
+                    operator: In
+                    values:
+                      - service
+
+      containers:
+        - name: notify
+          image: {{ .Values.sentry.image }}
+          args:
+            - "deploys"
+            - "new"
+            - "--release"
+            - "{{ .Values.version }}"
+            - "-e"
+            - "{{ .Values.sentry.environment }}"
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "10m"
+            limits:
+              memory: '128Mi'
+          env:
+            # NOTE: self-hosted Sentry, иначе sentry-cli ходит в sentry.io.
+            - name: SENTRY_URL
+              value: "{{ .Values.sentry.url }}"
+            - name: SENTRY_ORG
+              value: "{{ .Values.sentry.org }}"
+            # NOTE: sentry-cli читает токен из SENTRY_AUTH_TOKEN; в секрете ключ SENTRY_API_TOKEN.
+            - name: SENTRY_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: codebasics-environment-secrets
+                  key: SENTRY_API_TOKEN

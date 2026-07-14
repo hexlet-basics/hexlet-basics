@@ -15,8 +15,16 @@ nginxImageRepository: "hexletbasics/services-nginx"
 # appImageRepository is the app image repository.
 appImageRepository: "hexletbasics/services-app"
 
-# slackNotification is the command executed in web container postStart hook.
-slackNotification: ["/rails/deploy-notify.sh"]
+# sentry configures deploy registration (see notify-job.yaml).
+sentry:
+  # image is the sentry-cli image used by the deploy-notify job.
+  image: "getsentry/sentry-cli:2"
+  # url is the (self-hosted) Sentry base URL.
+  url: "https://sentry.hexlet.io/"
+  # org is the Sentry organization slug.
+  org: "hexlet"
+  # environment is the Sentry deploy environment.
+  environment: "production"
 
 # gatewayClassName is the GatewayClass name.
 gatewayClassName: "gwin-default"

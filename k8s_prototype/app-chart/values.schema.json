@@ -14,12 +14,6 @@
     "fullnameOverride": {
       "type": "string"
     },
-    "slackNotification": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
     "nginxImageRepository": {
       "type": "string",
       "minLength": 1
@@ -27,6 +21,33 @@
     "appImageRepository": {
       "type": "string",
       "minLength": 1
+    },
+    "sentry": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1
+        },
+        "org": {
+          "type": "string",
+          "minLength": 1
+        },
+        "environment": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "image",
+        "url",
+        "org",
+        "environment"
+      ]
     },
     "gatewayClassName": {
       "type": "string",
@@ -107,6 +128,7 @@
     "version",
     "nginxImageRepository",
     "appImageRepository",
+    "sentry",
     "gatewayClassName",
     "gatewayAddressType",
     "gatewayAddressValue",

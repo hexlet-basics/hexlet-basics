@@ -10,4 +10,9 @@ app:
   image:
     repository: hexletbasics/services-app
 
-slack_notification: ['/rails/deploy-notify.sh']
+# sentry настраивает регистрацию деплоя (см. notify.job.yaml).
+sentry:
+  image: getsentry/sentry-cli:2
+  url: https://sentry.hexlet.io/
+  org: hexlet
+  environment: production

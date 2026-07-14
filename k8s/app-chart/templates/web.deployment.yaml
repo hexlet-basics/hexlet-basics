@@ -173,9 +173,6 @@ spec:
             preStop:
               exec:
                 command: ["sleep", "15"]
-            postStart:
-              exec:
-                command: {{ .Values.slack_notification }}
 
         - name: cable
           imagePullPolicy: Always
