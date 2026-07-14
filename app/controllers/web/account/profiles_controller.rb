@@ -17,7 +17,7 @@ class Web::Account::ProfilesController < Web::Account::ApplicationController
 
   sig { returns(T.untyped) }
   def update
-    struct = ApplicationParamsStruct.from_params(ProfileStruct, params.require(:user))
+    struct = ApplicationParamsStruct.from_params(ProfileStruct, params.require(:data))
     result = UserService.update_profile(T.must(current_user), struct)
 
     case result
