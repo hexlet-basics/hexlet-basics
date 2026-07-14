@@ -147,7 +147,11 @@
     "vitest": "^4.1.9"
   },
   "browserslist": [
-    "extends browserslist-config-baseline, not iOS < 16.4, not Safari < 16.4"
+    "chrome >= 111",
+    "edge >= 111",
+    "firefox >= 114",
+    "safari >= 16.4",
+    "ios_saf >= 16.4"
   ],
   "scripts": {
     "build": "pnpm run build:client && pnpm run build:ssr",
