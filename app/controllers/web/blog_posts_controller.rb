@@ -40,7 +40,9 @@ class Web::BlogPostsController < Web::ApplicationController
       .except(blog_post)
       .limit(2)
 
-    related_landings = blog_post.related_main_language_landing_pages.merge(BlogPost::RelatedLanguageItem.order(order: :asc))
+    related_landings = blog_post.related_main_language_landing_pages
+      .merge(BlogPost::RelatedLanguageItem.order(order: :asc))
+      .includes(language: [ :current_version, { cover_attachment: :blob } ])
 
     image_url = blog_post.cover.attached? && view_context.rails_representation_url(T.unsafe(blog_post.cover).variant(:main))
     seo_tags = {
