@@ -29,4 +29,9 @@ class Web::HomeControllerTest < ActionDispatch::IntegrationTest
     get map_url
     assert_response :success
   end
+
+  def test_map_not_found_for_non_russian_locale
+    get map_url(suffix: :es)
+    assert_response :not_found
+  end
 end
