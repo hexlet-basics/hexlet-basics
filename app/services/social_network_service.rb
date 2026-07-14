@@ -1,13 +1,19 @@
 # frozen_string_literal: true
 # typed: true
 
-class SocialNetworkService
+class SocialNetworkService < ApplicationService
+  sig { params(auth: T.untyped).returns(Typed::Success[User]) }
   def self.authenticate_user(auth)
-    existing_account = User::Account.find_by(uid: auth[:uid])
+    provider = auth[:provider]
+    uid = auth[:uid]
     email = auth[:info][:email].downcase
+
+    # A social identity is keyed by (provider, uid). Looking it up first also
+    # handles a changed provider email without creating a duplicate account.
+    existing_account = User::Account.find_by(provider: provider, uid: uid)
     user = if existing_account
       # user_id is NOT NULL, so an existing account always has a user
-      T.must(existing_account.user)
+      existing_account.user
     else
       User.find_or_initialize_by(email: email)
     end
@@ -26,10 +32,9 @@ class SocialNetworkService
         EventSender.publish_event(event, user)
       end
 
-      account = user.accounts.find_or_initialize_by(provider: auth[:provider])
-      account.uid = auth[:uid]
-      account.save!
+      user.accounts.find_or_create_by!(provider: provider, uid: uid)
     end
-    # ServiceResult.success user: user, is_new: is_new
+
+    success_with(user)
   end
 end

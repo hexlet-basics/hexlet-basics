@@ -1,20 +1,23 @@
 # typed: strict
 # frozen_string_literal: true
 
-class GoogleAuthService
+class GoogleAuthService < ApplicationService
   class << self
     extend T::Sig
 
-    sig { params(payload: T.untyped).returns(User) }
+    sig { params(payload: T.untyped).returns(Typed::Success[User]) }
     def authenticate_user(payload)
-      user = User.find_or_initialize_by(email: payload["email"])
-      user.save!
+      uid = payload["sub"]
 
-      account = user.accounts.find_or_initialize_by(provider: "google")
-      account.uid = payload["sub"]
-      account.save!
+      # A social identity is keyed by (provider, uid). Looking it up first also
+      # handles a changed Google email without creating a duplicate account.
+      existing_account = User::Account.find_by(provider: "google", uid: uid)
+      user = existing_account ? existing_account.user : User.find_or_initialize_by(email: payload["email"])
+      user.save! if user.new_record?
 
-      user
+      user.accounts.find_or_create_by!(provider: "google", uid: uid)
+
+      success_with(user)
     end
   end
 end

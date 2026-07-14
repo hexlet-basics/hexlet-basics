@@ -7,8 +7,9 @@ class Web::AuthController < Web::ApplicationController
   sig { returns(T.untyped) }
   def callback
     result = SocialNetworkService.authenticate_user(auth)
+    user = result.payload
 
-    sign_in(result.user)
+    sign_in(user)
     f(:success)
     # js_event_options = {
     #   user: result.user

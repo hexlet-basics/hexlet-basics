@@ -9,7 +9,8 @@ class Web::GoogleAuthController < Web::ApplicationController
     payload = T.unsafe(ApplicationContainer)[:google_one_tap].verify_oidc(params[:credential], aud: configus.google.client.id)
     email = payload["email"]
     existing_user = User.find_by(email: email)
-    user = GoogleAuthService.authenticate_user(payload)
+    result = GoogleAuthService.authenticate_user(payload)
+    user = result.payload
 
     if user.persisted?
       sign_in(user)
