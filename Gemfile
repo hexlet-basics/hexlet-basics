@@ -144,7 +144,7 @@ gem "ahoy_matey"
 # gem "country_select"
 # gem 'sorbet-rails' # Temp disable sorbet for memory optimization
 
-# gem "strong_migrations"
+gem "strong_migrations"
 gem "browser"
 gem "browserslist"
 #
