@@ -8,11 +8,13 @@ class Web::MyController < Web::ApplicationController
     started_language_members = T.must(current_user).language_members
       .joins(language: :landing_pages)
       .merge(Language::LandingPage.web.where(main: true))
+      .includes([ language: :current_version ])
       .started
 
     finished_language_members = T.must(current_user).language_members
       .joins(language: :landing_pages)
       .merge(Language::LandingPage.web.where(main: true))
+      .includes([ language: :current_version ])
       .finished
 
     landing_pages = Language::LandingPage.web
