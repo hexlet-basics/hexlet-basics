@@ -214,7 +214,9 @@ export default function Show({
               <Group>
                 <IconClock size={16} />
                 {t(($) => $.languages.show.updated_at, {
-                  date: dayjs(course.current_version!.created_at).format("LL"),
+                  date: dayjs(course.current_version!.created_at)
+                    .locale(locale)
+                    .format("LL"),
                 })}
               </Group>
             </Group>
@@ -458,7 +460,15 @@ export default function Show({
             <Grid align="center" justify="space-between" gap={0}>
               <Grid.Col span={{ base: 12, md: 6 }}>
                 <Center mb="lg">
-                  <Text fw="bold" fz="h2">
+                  <Text
+                    fz={{
+                      base: 25,
+                      xs: 30,
+                      sm: 40,
+                      md: 50,
+                    }}
+                    fw="bold"
+                  >
                     {t(($) => $.home.index.join)}
                   </Text>
                 </Center>
