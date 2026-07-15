@@ -23,7 +23,7 @@ jobs:
       # k8s/app-chart/Chart.yaml ($.version) and CHANGELOG.md.
       # Merging that PR cuts a vX.Y.Z tag + GitHub Release.
       # Config: release-please-config.json + .release-please-manifest.json.
-      - uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@v5
         id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
