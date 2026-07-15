@@ -82,7 +82,6 @@
     "react-countdown": "^2.3.6",
     "react-dom": "^19.2.7",
     "react-frame-component": "^5.3.2",
-    "react-hook-form": "^7.81.0",
     "react-hotkeys-hook": "^5.3.3",
     "react-i18next": "^17.0.9",
     "react-intersection-observer": "^10.1.0",

@@ -3,7 +3,6 @@ import AdminLayout from "@/layouts/AdminLayout";
 import * as Routes from "@/routes.js";
 import type {
   LanguageCategoryCreate,
-  LanguageCategoryQnaItem,
   LanguageLandingPageForLists,
 } from "@/types";
 import Form from "./shared/form";
@@ -11,15 +10,10 @@ import { Menu } from "./shared/menu";
 
 type Props = {
   categoryDto: LanguageCategoryCreate;
-  qnaItems: LanguageCategoryQnaItem[];
   landingPagesForCategories: LanguageLandingPageForLists[];
 };
 
-export default function New({
-  categoryDto,
-  qnaItems,
-  landingPagesForCategories,
-}: Props) {
+export default function New({ categoryDto, landingPagesForCategories }: Props) {
   const { t } = useTranslation();
 
   return (
@@ -27,7 +21,6 @@ export default function New({
       <Menu />
       <Form
         data={categoryDto}
-        qnaItems={qnaItems}
         landingPagesForCategories={landingPagesForCategories}
         url={Routes.admin_language_categories_path()}
       />

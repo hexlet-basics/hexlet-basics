@@ -15,14 +15,11 @@ import type {
   Language,
   LanguageLandingPage,
   LanguageLandingPageCreate,
-  LanguageLandingPageQnaItem,
   LanguageLandingPageUpdate,
 } from "@/types";
-import QnaItemsModal from "./qna_items_modal";
 
 type Props = {
   data: LanguageLandingPageCreate | LanguageLandingPageUpdate;
-  qnaItems: LanguageLandingPageQnaItem[];
   url: string;
   method?: Method;
   languages: Language[];
@@ -35,7 +32,6 @@ export default function Form({
   url,
   method,
   languages,
-  qnaItems,
 }: Props) {
   const { t } = useTranslation();
 
@@ -157,9 +153,6 @@ export default function Form({
         {...form.getInputProps("outcomes_description")}
         rows={5}
       />
-      {data.id && (
-        <QnaItemsModal landingPageId={data.id} initialItems={qnaItems} />
-      )}
       <Button type="submit" loading={processing}>
         {t(($) => $.helpers.submit.save)}
       </Button>

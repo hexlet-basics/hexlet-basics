@@ -10,6 +10,7 @@ import type {
 
 import Form from "./shared/form";
 import { Menu } from "./shared/menu";
+import QnaItemsSection from "./shared/qna_items_section";
 
 type Props = {
   landingPageDto: LanguageLandingPageUpdate;
@@ -39,9 +40,9 @@ export default function Edit({
         landingPages={landingPages}
         method="patch"
         data={landingPageDto}
-        qnaItems={qnaItems}
         url={Routes.admin_language_landing_page_path(landingPageDto.id)}
       />
+      <QnaItemsSection landingPageId={landingPageDto.id} items={qnaItems} />
     </AdminLayout>
   );
 }

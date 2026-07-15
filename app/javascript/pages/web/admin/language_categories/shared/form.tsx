@@ -11,15 +11,12 @@ import { useAppForm } from "@/hooks/useAppForm";
 import { arrayToSelectData } from "@/lib/utils";
 import type {
   LanguageCategoryCreate,
-  LanguageCategoryQnaItem,
   LanguageCategoryUpdate,
   LanguageLandingPageForLists,
 } from "@/types";
-import QnaItemsModal from "./qna_items_modal";
 
 type Props = {
   data: LanguageCategoryCreate | LanguageCategoryUpdate;
-  qnaItems: LanguageCategoryQnaItem[];
   landingPagesForCategories: LanguageLandingPageForLists[];
   url: string;
   method?: Method;
@@ -27,7 +24,6 @@ type Props = {
 
 export default function Form({
   data,
-  qnaItems,
   landingPagesForCategories,
   url,
   method,
@@ -84,9 +80,6 @@ export default function Form({
           clearable
         />
       </Fieldset>
-      {data.id && (
-        <QnaItemsModal categoryId={data.id} initialItems={qnaItems} />
-      )}
       <Button type="submit" mt="xl" loading={processing}>
         {t(($) => $.helpers.submit.save)}
       </Button>

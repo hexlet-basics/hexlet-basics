@@ -8,6 +8,7 @@ import type {
 } from "@/types";
 import Form from "./shared/form";
 import { Menu } from "./shared/menu";
+import QnaItemsSection from "./shared/qna_items_section";
 
 type Props = {
   categoryDto: LanguageCategoryUpdate;
@@ -32,10 +33,10 @@ export default function Edit({
       <Form
         method="patch"
         data={categoryDto}
-        qnaItems={qnaItems}
         landingPagesForCategories={landingPagesForCategories}
         url={Routes.admin_language_category_path(categoryDto.id)}
       />
+      <QnaItemsSection categoryId={categoryDto.id} items={qnaItems} />
     </AdminLayout>
   );
 }

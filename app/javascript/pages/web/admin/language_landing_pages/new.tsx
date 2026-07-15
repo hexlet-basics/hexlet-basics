@@ -7,7 +7,6 @@ import type {
   Language,
   LanguageLandingPage,
   LanguageLandingPageCreate,
-  LanguageLandingPageQnaItem,
 } from "@/types";
 import Form from "./shared/form";
 import { Menu } from "./shared/menu";
@@ -16,14 +15,12 @@ type Props = {
   landingPageDto: LanguageLandingPageCreate;
   landingPages: LanguageLandingPage[];
   languages: Language[];
-  qnaItems: LanguageLandingPageQnaItem[];
 };
 
 export default function New({
   landingPageDto,
   landingPages,
   languages,
-  qnaItems,
 }: Props) {
   const { t } = useTranslation();
 
@@ -36,7 +33,6 @@ export default function New({
             data={landingPageDto}
             landingPages={landingPages}
             languages={languages}
-            qnaItems={qnaItems}
             url={Routes.admin_language_landing_pages_path()}
           />
         </Grid.Col>

@@ -16,44 +16,44 @@ import { useTranslation } from "react-i18next";
 import useConfirmation from "@/hooks/useConfirmation";
 import { useHttpDestroy } from "@/hooks/useHttpDestroy";
 import { useHttpForm } from "@/hooks/useHttpForm";
-import { buildCategoryQnaItemFormState } from "@/lib/formBuilder";
+import { buildLandingPageQnaItemFormState } from "@/lib/formBuilder";
 import * as Routes from "@/routes.js";
-import type { LanguageCategoryQnaItem } from "@/types";
+import type { LanguageLandingPageQnaItem } from "@/types";
 
 type Props = {
-  categoryId: number;
-  initialItems: LanguageCategoryQnaItem[];
+  landingPageId: number;
+  items: LanguageLandingPageQnaItem[];
 };
 
-type CategoryQnaItemFormState = ReturnType<
-  typeof buildCategoryQnaItemFormState
+type LandingPageQnaItemFormState = ReturnType<
+  typeof buildLandingPageQnaItemFormState
 >;
 
-export default function QnaItemsModal({ categoryId, initialItems }: Props) {
+export default function QnaItemsSection({ landingPageId, items }: Props) {
   const { t } = useTranslation();
   const [createOpened, createHandlers] = useDisclosure(false);
   const [editOpened, editHandlers] = useDisclosure(false);
-  const [items, setItems] = useState<LanguageCategoryQnaItem[]>(initialItems);
   const [editingItem, setEditingItem] =
-    useState<LanguageCategoryQnaItem | null>(null);
+    useState<LanguageLandingPageQnaItem | null>(null);
   const createForm = useHttpForm<
-    CategoryQnaItemFormState,
-    LanguageCategoryQnaItem
-  >(buildCategoryQnaItemFormState);
+    LandingPageQnaItemFormState,
+    LanguageLandingPageQnaItem
+  >(buildLandingPageQnaItemFormState);
   const editForm = useHttpForm<
-    CategoryQnaItemFormState,
-    LanguageCategoryQnaItem
-  >(buildCategoryQnaItemFormState);
-  const destroyForm = useHttpDestroy<LanguageCategoryQnaItem>();
+    LandingPageQnaItemFormState,
+    LanguageLandingPageQnaItem
+  >(buildLandingPageQnaItemFormState);
+  const destroyForm = useHttpDestroy<LanguageLandingPageQnaItem, "qnaItems">();
 
-  const listUrl = Routes.admin_api_language_category_qna_items_path(categoryId);
+  const listUrl =
+    Routes.admin_api_language_landing_page_qna_items_path(landingPageId);
 
   const openCreateModal = () => {
-    createForm.request.setData(buildCategoryQnaItemFormState());
+    createForm.request.setData(buildLandingPageQnaItemFormState());
     createHandlers.open();
   };
 
-  const openEditModal = (item: LanguageCategoryQnaItem) => {
+  const openEditModal = (item: LanguageLandingPageQnaItem) => {
     setEditingItem(item);
     editForm.request.setData({
       question: item.question,
@@ -63,13 +63,13 @@ export default function QnaItemsModal({ categoryId, initialItems }: Props) {
   };
 
   const closeCreateModal = () => {
-    createForm.request.setData(buildCategoryQnaItemFormState());
+    createForm.request.setData(buildLandingPageQnaItemFormState());
     createHandlers.close();
   };
 
   const closeEditModal = () => {
     setEditingItem(null);
-    editForm.request.setData(buildCategoryQnaItemFormState());
+    editForm.request.setData(buildLandingPageQnaItemFormState());
     editHandlers.close();
   };
 
@@ -77,13 +77,8 @@ export default function QnaItemsModal({ categoryId, initialItems }: Props) {
     await createForm.onSubmit(event, {
       method: "post",
       url: listUrl,
-      onSuccess: (qnaItem) => {
-        setItems((currentItems) => {
-          if (!qnaItem) return currentItems;
-          return [...currentItems, qnaItem];
-        });
-        closeCreateModal();
-      },
+      reloadOnly: ["qnaItems"],
+      onSuccess: closeCreateModal,
     });
   };
 
@@ -92,43 +87,31 @@ export default function QnaItemsModal({ categoryId, initialItems }: Props) {
 
     await editForm.onSubmit(event, {
       method: "patch",
-      url: Routes.admin_api_language_category_qna_item_path(
-        categoryId,
+      url: Routes.admin_api_language_landing_page_qna_item_path(
+        landingPageId,
         editingItem.id,
       ),
-      onSuccess: (qnaItem) => {
-        setItems((currentItems) => {
-          if (!qnaItem) return currentItems;
-
-          return currentItems.map((item) =>
-            item.id === qnaItem.id ? qnaItem : item,
-          );
-        });
-        closeEditModal();
-      },
+      reloadOnly: ["qnaItems"],
+      onSuccess: closeEditModal,
     });
   };
 
-  const confirmDeleting = useConfirmation<LanguageCategoryQnaItem>({
+  const confirmDeleting = useConfirmation<LanguageLandingPageQnaItem>({
     callback: async (_event, item) => {
       if (!item) return;
 
       await destroyForm.destroy({
-        url: Routes.admin_api_language_category_qna_item_path(
-          categoryId,
+        url: Routes.admin_api_language_landing_page_qna_item_path(
+          landingPageId,
           item.id,
         ),
-        onSuccess: (qnaItem) => {
-          setItems((currentItems) =>
-            currentItems.filter((currentItem) => currentItem.id !== qnaItem.id),
-          );
-        },
+        reloadOnly: ["qnaItems"],
       });
     },
   });
 
   return (
-    <Fieldset p="lg" mb="xl">
+    <Fieldset>
       <legend>{t(($) => $.admin.language_categories.form.qna_items)}</legend>
       <Stack gap="sm">
         <Group justify="flex-end">
