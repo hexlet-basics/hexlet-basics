@@ -21,3 +21,33 @@ updates:
         update-types: [minor, patch]
       bundler-major:
         update-types: [major]
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    labels: [dependencies, automated, javascript]
+    groups:
+      npm-minor-patch:
+        update-types: [minor, patch]
+      npm-major:
+        update-types: [major]
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+    labels: [dependencies, automated, docker]
+    groups:
+      docker-minor-patch:
+        update-types: [minor, patch]
+      docker-major:
+        update-types: [major]
+  - package-ecosystem: terraform
+    directory: /terraform
+    schedule:
+      interval: weekly
+    labels: [dependencies, automated, terraform]
+    groups:
+      terraform-minor-patch:
+        update-types: [minor, patch]
+      terraform-major:
+        update-types: [major]
