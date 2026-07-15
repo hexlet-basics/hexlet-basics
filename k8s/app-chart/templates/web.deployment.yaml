@@ -80,7 +80,7 @@ spec:
 
       containers:
         - name: nginx
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           image: "{{ .Values.nginx.image.repository }}:{{ .Values.version }}"
           startupProbe:
             httpGet:
@@ -117,7 +117,7 @@ spec:
                 command: ["sleep", "10"]
 
         - name: web
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           image: "{{ .Values.app.image.repository }}:{{ .Values.version }}"
           ports:
             - containerPort: 3000
@@ -179,7 +179,7 @@ spec:
                 command: ["sleep", "15"]
 
         - name: cable
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           image: "{{ .Values.app.image.repository }}:{{ .Values.version }}"
           command: ["make", "services-cable-run"]
           startupProbe:
@@ -224,7 +224,7 @@ spec:
                 command: ["sleep", "15"]
 
         - name: ssr
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           image: "{{ .Values.app.image.repository }}:{{ .Values.version }}"
           command: ["bin/vite", "ssr"]
           startupProbe:

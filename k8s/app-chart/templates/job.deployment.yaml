@@ -63,7 +63,7 @@ spec:
 
       containers:
         - name: jobs
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           image: "{{ .Values.app.image.repository }}:{{ .Values.version }}"
           resources:
             requests:

@@ -67,7 +67,7 @@ spec:
 
       containers:
         - name: nginx
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           image: "{{ .Values.nginx.image.repository }}:{{ .Values.version }}"
           startupProbe:
             httpGet:
@@ -104,7 +104,7 @@ spec:
                 command: ["sleep", "10"]
 
         - name: web
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           image: "{{ .Values.app.image.repository }}:{{ .Values.version }}"
           ports:
             - containerPort: 3000

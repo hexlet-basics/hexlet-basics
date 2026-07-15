@@ -20,6 +20,9 @@ metadata:
 spec:
   backoffLimit: 3
   activeDeadlineSeconds: 600
+  # NOTE: детерминированная уборка отработавшей Job/пода через час (helm-хук
+  # before-hook-creation чистит только на следующем релизе).
+  ttlSecondsAfterFinished: 3600
   template:
     metadata:
       labels:
@@ -47,7 +50,7 @@ spec:
 
       containers:
         - name: migrate
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           image: "{{ .Values.app.image.repository }}:{{ .Values.version }}"
           command: ["./bin/rails", "db:prepare"]
           resources:

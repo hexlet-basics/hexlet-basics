@@ -21,6 +21,9 @@ metadata:
 spec:
   backoffLimit: 1
   activeDeadlineSeconds: 120
+  # NOTE: детерминированная уборка отработавшей Job/пода через час (helm-хук
+  # before-hook-creation чистит только на следующем релизе).
+  ttlSecondsAfterFinished: 3600
   template:
     metadata:
       labels:

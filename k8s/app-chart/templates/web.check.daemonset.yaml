@@ -36,7 +36,7 @@ spec:
 
       initContainers:
         - name: volume-permissions
-          image: busybox
+          image: busybox:1.36
           command: ['sh', '-c', 'chown -R 1000:1000 /tmp/hexlet-basics']
           volumeMounts:
             - mountPath: /tmp/hexlet-basics

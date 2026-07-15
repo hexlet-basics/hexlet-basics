@@ -56,7 +56,7 @@ spec:
 
       containers:
         - name: console
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           image: "{{ .Values.app.image.repository }}:{{ .Values.version }}"
           command: [ "/bin/bash", "-c", "--" ]
           args: [ "while true; do sleep 30; done;"  ]
