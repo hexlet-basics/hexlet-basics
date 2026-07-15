@@ -3,7 +3,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{ .Release.Name }}-notify-{{ .Values.version }}"
+  name: "{{ .Release.Name }}-notify-{{ include "codebasics.version" . }}"
   namespace: "{{ .Release.Namespace }}"
   labels:
     {{- include "codebasics.labels" . | nindent 4 }}
@@ -41,7 +41,7 @@ spec:
             - "deploys"
             - "new"
             - "--release"
-            - "{{ .Values.version }}"
+            - "{{ include "codebasics.version" . }}"
             - "-e"
             - "{{ .Values.sentry.environment }}"
           resources:

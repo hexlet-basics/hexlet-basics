@@ -1,7 +1,5 @@
 ---
 
-version: v1289
-
 nginx:
   image:
     repository: hexletbasics/services-nginx

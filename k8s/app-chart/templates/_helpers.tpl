@@ -4,11 +4,20 @@
 labels НЕ трогаем (иммутабельны у Deployment/DaemonSet).
 */}}
 
+{{/*
+Версия деплоя. Единственный источник — $.version в Chart.yaml (его бампает
+release-please). Префикс `v` совпадает с git-тегом, тегом Docker-образа
+(release.yml пушит образ под tag_name = vX.Y.Z) и Sentry-релизом.
+*/}}
+{{- define "codebasics.version" -}}
+v{{ .Chart.Version }}
+{{- end -}}
+
 {{/* Общие метки верхнего уровня (metadata.labels) ресурсов чарта. */}}
 {{- define "codebasics.labels" -}}
 app.kubernetes.io/name: "{{ .Chart.Name }}"
 app.kubernetes.io/instance: "{{ .Release.Name }}"
-app.kubernetes.io/version: "{{ .Values.version }}"
+app.kubernetes.io/version: "{{ include "codebasics.version" . }}"
 app.kubernetes.io/managed-by: "{{ .Release.Service }}"
 {{- end -}}
 

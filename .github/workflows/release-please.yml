@@ -17,7 +17,7 @@ jobs:
       tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
       # Maintains a "release PR" from conventional commits: bumps package.json,
-      # k8s/app-chart/Chart.yaml (version + appVersion) and CHANGELOG.md.
+      # k8s/app-chart/Chart.yaml ($.version) and CHANGELOG.md.
       # Merging that PR cuts a vX.Y.Z tag + GitHub Release.
       # Config: release-please-config.json + .release-please-manifest.json.
       - uses: googleapis/release-please-action@v4

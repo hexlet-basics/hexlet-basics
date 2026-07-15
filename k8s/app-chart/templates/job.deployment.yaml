@@ -26,7 +26,7 @@ spec:
         app.kubernetes.io/name: "{{ .Release.Name }}-job-pod"
         app.kubernetes.io/instance: "{{ .Release.Name }}"
         helm.sh/chart: '{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}'
-        codebasics/pod: "{{ .Release.Name }}-{{ .Values.version }}-job-pod"
+        codebasics/pod: "{{ .Release.Name }}-{{ include "codebasics.version" . }}-job-pod"
     spec:
       {{- include "codebasics.podScheduling" . | nindent 6 }}
 
@@ -37,7 +37,7 @@ spec:
       containers:
         - name: jobs
           imagePullPolicy: IfNotPresent
-          image: "{{ .Values.app.image.repository }}:{{ .Values.version }}"
+          image: "{{ .Values.app.image.repository }}:{{ include "codebasics.version" . }}"
           resources:
             requests:
               memory: "300Mi"
@@ -57,6 +57,6 @@ spec:
                 name: codebasics-environment-secrets
           env:
             - name: HEXLET_BASICS_RELEASE_VERSION
-              value: {{ .Values.version }}
+              value: {{ include "codebasics.version" . }}
             - name: RAILS_MAX_THREADS
               value: "5"

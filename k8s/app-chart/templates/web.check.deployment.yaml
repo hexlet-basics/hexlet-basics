@@ -26,7 +26,7 @@ spec:
         app.kubernetes.io/name: "{{ .Release.Name }}-web-check-pod"
         app.kubernetes.io/instance: "{{ .Release.Name }}"
         helm.sh/chart: '{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}'
-        codebasics/pod: "{{ .Release.Name }}-{{ .Values.version }}-web-check-pod"
+        codebasics/pod: "{{ .Release.Name }}-{{ include "codebasics.version" . }}-web-check-pod"
     spec:
       {{- include "codebasics.podScheduling" . | nindent 6 }}
 
@@ -41,7 +41,7 @@ spec:
       containers:
         - name: nginx
           imagePullPolicy: IfNotPresent
-          image: "{{ .Values.nginx.image.repository }}:{{ .Values.version }}"
+          image: "{{ .Values.nginx.image.repository }}:{{ include "codebasics.version" . }}"
           startupProbe:
             httpGet:
               path: /health
@@ -80,7 +80,7 @@ spec:
 
         - name: web
           imagePullPolicy: IfNotPresent
-          image: "{{ .Values.app.image.repository }}:{{ .Values.version }}"
+          image: "{{ .Values.app.image.repository }}:{{ include "codebasics.version" . }}"
           ports:
             - containerPort: 3000
           startupProbe:
@@ -132,7 +132,7 @@ spec:
                 name: codebasics-environment-secrets
           env:
             - name: HEXLET_BASICS_RELEASE_VERSION
-              value: {{ .Values.version }}
+              value: {{ include "codebasics.version" . }}
 
           # NOTE: приложение должно работать дольше чем nginx иначе будут поступать ответы 502
           lifecycle:

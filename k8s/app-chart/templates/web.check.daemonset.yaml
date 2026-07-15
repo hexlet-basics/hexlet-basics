@@ -7,7 +7,7 @@ metadata:
   namespace: "{{ .Release.Namespace }}"
   labels:
     app.kubernetes.io/instance: "{{ .Release.Name }}"
-    app.kubernetes.io/version: "{{ .Values.version }}"
+    app.kubernetes.io/version: "{{ include "codebasics.version" . }}"
     app.kubernetes.io/managed-by: "{{ .Release.Service }}"
 
 spec:
