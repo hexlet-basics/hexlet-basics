@@ -145,6 +145,21 @@ Prefer these instructions over generic Rails or React defaults.
 - Never commit secrets from `.env.local`, credentials files, or external service configs.
 - If you touch ops directories like `k8s/`, `ansible/`, or `terraform/`, call that out clearly in handoff notes.
 
+## Conventional Commits & Releases
+- Every commit follows [Conventional Commits](https://www.conventionalcommits.org/) (`<type>(<scope>?): <description>`); `commitlint` enforces the allowed types. Commit messages are in English.
+- Releases are cut by `release-please` from commit history: it maintains a release PR that bumps `package.json`, `k8s/app-chart/Chart.yaml` (`$.version`) and `CHANGELOG.md`; merging it tags `vX.Y.Z` and builds the image.
+- Type → semver bump (config: `release-please-config.json`). While the version is pre-1.0, `bump-patch-for-minor-pre-major` and `bump-minor-pre-major` shift bumps down one level:
+  - `feat` — user-visible feature. Pre-1.0: patch (post-1.0: minor).
+  - `fix` — user-visible bug fix. Patch.
+  - `perf` — user-visible speedup. Patch.
+  - `revert` — revert. Patch.
+  - `chore` — routine work with a side effect but no feature/fix goal. Patch (via `extra-release-commit-types`).
+  - `build` — build/Docker changes. Patch (via `extra-release-commit-types`).
+  - `refactor`, `test`, `docs`, `ci`, `style` — no release.
+  - Breaking change — `type!:` or `BREAKING CHANGE:` in the body. Pre-1.0: minor (post-1.0: major).
+- Changelog sections (`changelog-sections`): Features, Bug Fixes, Performance Improvements, Reverts, Miscellaneous (`chore`), Build System (`build`). Other types stay out of the changelog.
+- Commit body explains *why*, not *what* (the diff shows what).
+
 ## Practical Defaults For Agents
 - Use `make` targets first when a task maps cleanly to them.
 - Prefer minimal diffs over broad refactors.

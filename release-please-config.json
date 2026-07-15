@@ -7,6 +7,17 @@
       "package-name": "hexlet_basics",
       "changelog-path": "CHANGELOG.md",
       "include-v-in-tag": true,
+      "bump-minor-pre-major": true,
+      "bump-patch-for-minor-pre-major": true,
+      "extra-release-commit-types": ["chore", "build"],
+      "changelog-sections": [
+        { "type": "feat", "section": "Features" },
+        { "type": "fix", "section": "Bug Fixes" },
+        { "type": "perf", "section": "Performance Improvements" },
+        { "type": "revert", "section": "Reverts" },
+        { "type": "chore", "section": "Miscellaneous" },
+        { "type": "build", "section": "Build System" }
+      ],
       "extra-files": [
         {
           "type": "yaml",
