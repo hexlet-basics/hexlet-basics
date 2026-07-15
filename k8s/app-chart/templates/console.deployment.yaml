@@ -30,7 +30,7 @@ spec:
       containers:
         - name: console
           imagePullPolicy: IfNotPresent
-          image: "{{ .Values.app.image.repository }}:{{ include "codebasics.version" . }}"
+          image: "{{ .Values.app.image.repository }}:{{ .Chart.Version }}"
           command: [ "/bin/bash", "-c", "--" ]
           args: [ "while true; do sleep 30; done;"  ]
           resources:
@@ -51,6 +51,6 @@ spec:
                 name: codebasics-environment-secrets
           env:
             - name: HEXLET_BASICS_RELEASE_VERSION
-              value: {{ include "codebasics.version" . }}
+              value: {{ .Chart.Version }}
             - name: RAILS_MAX_THREADS
               value: "2"

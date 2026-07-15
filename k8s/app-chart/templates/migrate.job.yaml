@@ -3,7 +3,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{ .Release.Name }}-migrate-{{ include "codebasics.version" . }}"
+  name: "{{ .Release.Name }}-migrate-{{ .Chart.Version }}"
   namespace: "{{ .Release.Namespace }}"
   labels:
     {{- include "codebasics.labels" . | nindent 4 }}
@@ -36,7 +36,7 @@ spec:
       containers:
         - name: migrate
           imagePullPolicy: IfNotPresent
-          image: "{{ .Values.app.image.repository }}:{{ include "codebasics.version" . }}"
+          image: "{{ .Values.app.image.repository }}:{{ .Chart.Version }}"
           command: ["./bin/rails", "db:prepare"]
           resources:
             requests:
@@ -49,4 +49,4 @@ spec:
                 name: codebasics-environment-secrets
           env:
             - name: HEXLET_BASICS_RELEASE_VERSION
-              value: {{ include "codebasics.version" . }}
+              value: {{ .Chart.Version }}

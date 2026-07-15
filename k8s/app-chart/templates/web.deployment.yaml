@@ -30,7 +30,7 @@ spec:
         app.kubernetes.io/name: "{{ .Release.Name }}-web-pod"
         app.kubernetes.io/instance: "{{ .Release.Name }}"
         helm.sh/chart: '{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}'
-        codebasics/pod: "{{ .Release.Name }}-{{ include "codebasics.version" . }}-web-pod"
+        codebasics/pod: "{{ .Release.Name }}-{{ .Chart.Version }}-web-pod"
     spec:
       {{- include "codebasics.podScheduling" . | nindent 6 }}
 
@@ -42,7 +42,7 @@ spec:
                   - key: "codebasics/pod"
                     operator: In
                     values:
-                      - "{{ .Release.Name }}-{{ include "codebasics.version" . }}-web-pod"
+                      - "{{ .Release.Name }}-{{ .Chart.Version }}-web-pod"
               topologyKey: "kubernetes.io/hostname"
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -62,7 +62,7 @@ spec:
       containers:
         - name: nginx
           imagePullPolicy: IfNotPresent
-          image: "{{ .Values.nginx.image.repository }}:{{ include "codebasics.version" . }}"
+          image: "{{ .Values.nginx.image.repository }}:{{ .Chart.Version }}"
           startupProbe:
             httpGet:
               path: /health
@@ -101,7 +101,7 @@ spec:
 
         - name: web
           imagePullPolicy: IfNotPresent
-          image: "{{ .Values.app.image.repository }}:{{ include "codebasics.version" . }}"
+          image: "{{ .Values.app.image.repository }}:{{ .Chart.Version }}"
           ports:
             - containerPort: 3000
           startupProbe:
@@ -153,7 +153,7 @@ spec:
                 name: codebasics-environment-secrets
           env:
             - name: HEXLET_BASICS_RELEASE_VERSION
-              value: {{ include "codebasics.version" . }}
+              value: {{ .Chart.Version }}
 
           # NOTE: приложение должно работать дольше чем nginx иначе будут поступать ответы 502
           lifecycle:
@@ -163,7 +163,7 @@ spec:
 
         - name: cable
           imagePullPolicy: IfNotPresent
-          image: "{{ .Values.app.image.repository }}:{{ include "codebasics.version" . }}"
+          image: "{{ .Values.app.image.repository }}:{{ .Chart.Version }}"
           command: ["make", "services-cable-run"]
           startupProbe:
             httpGet:
@@ -208,7 +208,7 @@ spec:
 
         - name: ssr
           imagePullPolicy: IfNotPresent
-          image: "{{ .Values.app.image.repository }}:{{ include "codebasics.version" . }}"
+          image: "{{ .Values.app.image.repository }}:{{ .Chart.Version }}"
           command: ["bin/vite", "ssr"]
           startupProbe:
             httpGet:

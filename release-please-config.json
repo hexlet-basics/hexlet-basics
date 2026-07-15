@@ -9,8 +9,9 @@
       "include-v-in-tag": true,
       "extra-files": [
         {
-          "type": "generic",
-          "path": "k8s/app-chart/Chart.yaml"
+          "type": "yaml",
+          "path": "k8s/app-chart/Chart.yaml",
+          "jsonpath": "$.version"
         }
       ]
     }
