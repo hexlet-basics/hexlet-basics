@@ -6,10 +6,7 @@ metadata:
   name: "{{ .Release.Name }}-migrate-{{ .Values.version }}"
   namespace: "{{ .Release.Namespace }}"
   labels:
-    app.kubernetes.io/name: "{{ .Chart.Name }}"
-    app.kubernetes.io/instance: "{{ .Release.Name }}"
-    app.kubernetes.io/version: "{{ .Values.version }}"
-    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    {{- include "codebasics.labels" . | nindent 4 }}
   annotations:
     # NOTE: миграции один раз за релиз, до раскатки web-подов. Helm дождётся завершения
     # Job; при падении релиз откатывается и поды не поднимутся на un-migrated БД.
@@ -32,21 +29,9 @@ spec:
     spec:
       restartPolicy: Never
 
-      nodeSelector:
-        group: "{{ .Release.Namespace }}"
+      {{- include "codebasics.podScheduling" . | nindent 6 }}
 
-      imagePullSecrets:
-        - name: docker-config
-
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: role
-                    operator: In
-                    values:
-                      - service
+      {{- include "codebasics.nodeAffinityService" . | nindent 6 }}
 
       containers:
         - name: migrate

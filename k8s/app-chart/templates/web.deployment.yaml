@@ -6,10 +6,7 @@ metadata:
   name: "{{ .Release.Name }}-web-deployment"
   namespace: "{{ .Release.Namespace }}"
   labels:
-    app.kubernetes.io/name: "{{ .Chart.Name }}"
-    app.kubernetes.io/instance: "{{ .Release.Name }}"
-    app.kubernetes.io/version: "{{ .Values.version }}"
-    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    {{- include "codebasics.labels" . | nindent 4 }}
 
 spec:
   # ROADMAP(HPA): при переходе на HorizontalPodAutoscaler (autoscaling/v2) этот
@@ -35,11 +32,7 @@ spec:
         helm.sh/chart: '{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}'
         codebasics/pod: "{{ .Release.Name }}-{{ .Values.version }}-web-pod"
     spec:
-      nodeSelector:
-        group: "{{ .Release.Namespace }}"
-
-      imagePullSecrets:
-        - name: docker-config
+      {{- include "codebasics.podScheduling" . | nindent 6 }}
 
       affinity:
         podAntiAffinity:
@@ -60,19 +53,7 @@ spec:
                     values:
                       - web
 
-      volumes:
-        - name: users-code-path
-          hostPath:
-            path: /tmp/hexlet-basics
-        - name: docker-sock
-          hostPath:
-            path: /var/run/docker.sock
-        - name: docker-secret
-          secret:
-            secretName: docker-config
-            items:
-              - key: .dockerconfigjson
-                path: config.json
+      {{- include "codebasics.appVolumes" . | nindent 6 }}
 
       # NOTE: по умолчанию, если контейнеры не завершили свою работу за 30с, они будут завершены принудительно
       # увеличиваем время ожидания с дефолтных 30с на 45с, так как дефолтного времени может уже быть недостаточно

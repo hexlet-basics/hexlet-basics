@@ -6,10 +6,7 @@ metadata:
   name: "{{ .Release.Name }}-console-deployment"
   namespace: "{{ .Release.Namespace }}"
   labels:
-    app.kubernetes.io/name: "{{ .Chart.Name }}"
-    app.kubernetes.io/instance: "{{ .Release.Name }}"
-    app.kubernetes.io/version: "{{ .Values.version }}"
-    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    {{- include "codebasics.labels" . | nindent 4 }}
 
 spec:
   replicas: 1
@@ -24,35 +21,11 @@ spec:
         app.kubernetes.io/name: "{{ .Release.Name }}-console-pod"
         app.kubernetes.io/instance: "{{ .Release.Name }}"
     spec:
-      nodeSelector:
-        group: "{{ .Release.Namespace }}"
+      {{- include "codebasics.podScheduling" . | nindent 6 }}
 
-      imagePullSecrets:
-        - name: docker-config
+      {{- include "codebasics.nodeAffinityService" . | nindent 6 }}
 
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: role
-                    operator: In
-                    values:
-                      - service
-
-      volumes:
-        - name: users-code-path
-          hostPath:
-            path: /tmp/hexlet-basics
-        - name: docker-sock
-          hostPath:
-            path: /var/run/docker.sock
-        - name: docker-secret
-          secret:
-            secretName: docker-config
-            items:
-              - key: .dockerconfigjson
-                path: config.json
+      {{- include "codebasics.appVolumes" . | nindent 6 }}
 
       containers:
         - name: console
