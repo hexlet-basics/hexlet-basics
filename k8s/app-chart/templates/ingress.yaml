@@ -1,5 +1,42 @@
 ---
 
+{{/*
+Наборы путей ingress. Контекст — корень ($), поэтому доступен .Release.Name.
+full: роуты API уроков (→ web-check) + / (→ web); root: только / (→ web).
+*/}}
+{{- define "codebasics.ingressFullPaths" -}}
+- path: "/ru/api/lessons/"
+  pathType: Prefix
+  backend:
+    service:
+      name: "{{ .Release.Name }}-web-check-service"
+      port:
+        number: 80
+- path: "/api/lessons/"
+  pathType: Prefix
+  backend:
+    service:
+      name: "{{ .Release.Name }}-web-check-service"
+      port:
+        number: 80
+- path: "/"
+  pathType: Prefix
+  backend:
+    service:
+      name: "{{ .Release.Name }}-web-service"
+      port:
+        number: 80
+{{- end -}}
+{{- define "codebasics.ingressRootPath" -}}
+- path: "/"
+  pathType: Prefix
+  backend:
+    service:
+      name: "{{ .Release.Name }}-web-service"
+      port:
+        number: 80
+{{- end -}}
+
 # ROADMAP(Gateway API): в перспективе заменить Ingress на Gateway API
 # (gateway.networking.k8s.io/v1: Gateway + HTTPRoute; на 2026 актуальны релизы
 # 1.5/1.6). ВЫСОКИЙ риск — меняется весь путь трафика, мигрировать отдельной
@@ -9,80 +46,32 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: "{{.Release.Name }}-ingress"
+  name: "{{ .Release.Name }}-ingress"
   namespace: "{{ .Release.Namespace }}"
   annotations:
-    ingress.alb.yc.io/external-ipv4-address: '89.169.182.43'
-    ingress.alb.yc.io/subnets: 'e2lfircmrq1atgmlg7ib'
-    ingress.alb.yc.io/group-name: 'codebasics-ingress-group'
-    ingress.alb.yc.io/upgrade-types: 'websocket'
+    ingress.alb.yc.io/external-ipv4-address: '{{ .Values.ingress.externalIp }}'
+    ingress.alb.yc.io/subnets: '{{ .Values.ingress.subnets }}'
+    ingress.alb.yc.io/group-name: '{{ .Values.ingress.groupName }}'
+    ingress.alb.yc.io/upgrade-types: '{{ .Values.ingress.upgradeTypes }}'
 
 spec:
   tls:
     - hosts:
-        - code-basics.com
-      secretName: yc-certmgr-cert-id-fpqgjl11q387a86d42kn
+      {{- range .Values.ingress.tlsHosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .Values.ingress.tlsSecret | quote }}
 
   rules:
-    - host: "*.code-basics.com"
+    {{- range .Values.ingress.hosts }}
+    # NOTE: code-basics.com должен идти отдельной записью, несмотря на
+    # *.code-basics.com выше — иначе YC ALB не создаёт роут для tls.
+    - host: {{ .host | quote }}
       http:
         paths:
-          - path: "/ru/api/lessons/"
-            pathType: Prefix
-            backend:
-              service:
-                name: "{{.Release.Name }}-web-check-service"
-                port:
-                  number: 80
-          - path: "/api/lessons/"
-            pathType: Prefix
-            backend:
-              service:
-                name: "{{.Release.Name }}-web-check-service"
-                port:
-                  number: 80
-          - path: "/"
-            pathType: Prefix
-            backend:
-              service:
-                name: "{{.Release.Name }}-web-service"
-                port:
-                  number: 80
-
-    - host: "code-basics.ru"
-      http:
-        paths:
-          - path: "/"
-            pathType: Prefix
-            backend:
-              service:
-                name: "{{.Release.Name }}-web-service"
-                port:
-                  number: 80
-
-    # NOTE: должно быть отдельно, несмотря на то что выше есть *.code-basics.com
-    # так как иначе не будет создан роут в лоад балансере для tls
-    - host: "code-basics.com"
-      http:
-        paths:
-          - path: "/ru/api/lessons/"
-            pathType: Prefix
-            backend:
-              service:
-                name: "{{.Release.Name }}-web-check-service"
-                port:
-                  number: 80
-          - path: "/api/lessons/"
-            pathType: Prefix
-            backend:
-              service:
-                name: "{{.Release.Name }}-web-check-service"
-                port:
-                  number: 80
-          - path: "/"
-            pathType: Prefix
-            backend:
-              service:
-                name: "{{.Release.Name }}-web-service"
-                port:
-                  number: 80
+          {{- if .full }}
+          {{- include "codebasics.ingressFullPaths" $ | nindent 10 }}
+          {{- else }}
+          {{- include "codebasics.ingressRootPath" $ | nindent 10 }}
+          {{- end }}
+    {{- end }}

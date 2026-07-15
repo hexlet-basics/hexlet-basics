@@ -10,6 +10,28 @@ app:
   image:
     repository: hexletbasics/services-app
 
+# ingress описывает внешний доступ через Yandex Cloud ALB (см. ingress.yaml).
+ingress:
+  # инфраструктурные идентификаторы провайдера (YC ALB).
+  externalIp: "89.169.182.43"
+  subnets: "e2lfircmrq1atgmlg7ib"
+  groupName: "codebasics-ingress-group"
+  upgradeTypes: "websocket"
+  # TLS-сертификат в YC Certificate Manager (secretName вида yc-certmgr-cert-id-...).
+  tlsSecret: "yc-certmgr-cert-id-fpqgjl11q387a86d42kn"
+  tlsHosts:
+    - "code-basics.com"
+  # hosts: full=true рендерит роуты API уроков (→ web-check) + / (→ web);
+  # full=false — только / (→ web). code-basics.com дублирует *.code-basics.com
+  # намеренно: без отдельной записи YC ALB не создаёт TLS-роут (см. ingress.yaml).
+  hosts:
+    - host: "*.code-basics.com"
+      full: true
+    - host: "code-basics.ru"
+      full: false
+    - host: "code-basics.com"
+      full: true
+
 # sentry настраивает регистрацию деплоя (см. notify.job.yaml).
 sentry:
   image: getsentry/sentry-cli:2
