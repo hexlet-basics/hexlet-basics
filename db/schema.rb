@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_30_084406) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_15_043521) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -491,6 +491,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_30_084406) do
     t.string "extension"
     t.bigint "language_id", null: false
     t.string "learn_as"
+    t.integer "lessons_count", default: 0, null: false
     t.string "name"
     t.string "progress"
     t.string "result"

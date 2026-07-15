@@ -1173,6 +1173,51 @@ class Language::Version
     sig { void }
     def learn_as_will_change!; end
 
+    sig { returns(::Integer) }
+    def lessons_count; end
+
+    sig { params(value: ::Integer).returns(::Integer) }
+    def lessons_count=(value); end
+
+    sig { returns(T::Boolean) }
+    def lessons_count?; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def lessons_count_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def lessons_count_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def lessons_count_came_from_user?; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def lessons_count_change; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def lessons_count_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def lessons_count_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::Integer)) }
+    def lessons_count_in_database; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def lessons_count_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def lessons_count_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::Integer)) }
+    def lessons_count_previously_was; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def lessons_count_was; end
+
+    sig { void }
+    def lessons_count_will_change!; end
+
     sig { returns(T.nilable(::String)) }
     def name; end
 
@@ -1291,6 +1336,9 @@ class Language::Version
     def restore_learn_as!; end
 
     sig { void }
+    def restore_lessons_count!; end
+
+    sig { void }
     def restore_name!; end
 
     sig { void }
@@ -1406,6 +1454,12 @@ class Language::Version
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_learn_as?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def saved_change_to_lessons_count; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_lessons_count?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_name; end
@@ -1604,6 +1658,9 @@ class Language::Version
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_learn_as?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_lessons_count?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_name?(from: T.unsafe(nil), to: T.unsafe(nil)); end

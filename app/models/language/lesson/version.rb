@@ -40,6 +40,8 @@ class Language::Lesson::Version < ApplicationRecord
   belongs_to :module_version, class_name: "Language::Module::Version"
   has_one :module, through: :module_version
 
+  counter_culture :language_version, column_name: "lessons_count"
+
   has_many :infos, dependent: :destroy
 
   validates :natural_order, presence: true

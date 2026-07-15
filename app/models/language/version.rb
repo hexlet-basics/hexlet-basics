@@ -11,6 +11,7 @@
 #  exercise_test_filename :string
 #  extension              :string
 #  learn_as               :string
+#  lessons_count          :integer          default(0), not null
 #  name                   :string
 #  progress               :string
 #  result                 :string
