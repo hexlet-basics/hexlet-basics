@@ -7,19 +7,19 @@
 
 # Namespace of Google products
 #
-# source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#19
+# pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:19
 module Google; end
 
 # Namespace of Google Cloud products
 #
-# source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#20
+# pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:20
 module Google::Cloud
   class << self
     # Returns the global instance of {Google::Cloud::Env}.
     #
     # @return [Google::Cloud::Env]
     #
-    # source://google-cloud-env//lib/google/cloud/env.rb#530
+    # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:530
     def env; end
   end
 end
@@ -59,22 +59,20 @@ end
 # end
 # ```
 #
-# source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#21
+# pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:21
 class Google::Cloud::Env
   # Create a new instance of the environment information.
   # Most clients should not need to call this directly. Obtain a singleton
   # instance of the information from `Google::Cloud.env`.
   #
-  # @return [Env] a new instance of Env
-  #
-  # source://google-cloud-env//lib/google/cloud/env.rb#72
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:72
   def initialize; end
 
   # Determine whether the application is running on Google App Engine.
   #
   # @return [boolean]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#212
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:212
   def app_engine?; end
 
   # Determine whether the application is running on Google App Engine
@@ -82,39 +80,34 @@ class Google::Cloud::Env
   #
   # @return [boolean]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#222
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:222
   def app_engine_flexible?; end
 
   # Returns the amount of memory reserved for the current App Engine
   # instance, or `nil` if the current code is not running in App Engine.
   #
-  # @return [Integer, nil]
+  # @return [Integer,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#463
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:463
   def app_engine_memory_mb; end
 
   # Returns the name of the running App Engine service, or `nil` if the
   # current code is not running in App Engine.
   #
-  # @return [String, nil]
+  # @return [String,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#442
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:442
   def app_engine_service_id; end
 
-  # Returns the name of the running App Engine service, or `nil` if the
-  # current code is not running in App Engine.
-  #
-  # @return [String, nil]
-  #
-  # source://google-cloud-env//lib/google/cloud/env.rb#442
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:445
   def app_engine_service_name; end
 
   # Returns the version of the running App Engine service, or `nil` if the
   # current code is not running in App Engine.
   #
-  # @return [String, nil]
+  # @return [String,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#453
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:453
   def app_engine_service_version; end
 
   # Determine whether the application is running on Google App Engine
@@ -122,14 +115,14 @@ class Google::Cloud::Env
   #
   # @return [boolean]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#232
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:232
   def app_engine_standard?; end
 
   # Determine whether the application is running on Google Cloud Shell.
   #
   # @return [boolean]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#252
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:252
   def cloud_shell?; end
 
   # Determine whether the application is running on Google Compute Engine.
@@ -143,7 +136,7 @@ class Google::Cloud::Env
   #
   # @return [boolean]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#268
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:268
   def compute_engine?; end
 
   # The compute metadata access object. Use this to make direct calls to
@@ -152,7 +145,7 @@ class Google::Cloud::Env
   #
   # @return [Google::Cloud::Env::ComputeMetadata]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#113
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:113
   def compute_metadata; end
 
   # The compute SMBIOS access object. Use this to make direct queries for
@@ -160,33 +153,16 @@ class Google::Cloud::Env
   #
   # @return [Google::Cloud::Env::ComputeSMBIOS]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#104
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:104
   def compute_smbios; end
 
-  # Determine whether the application is running on Google Kubernetes
-  # Engine (GKE).
-  #
-  # @return [boolean]
-  #
-  # source://google-cloud-env//lib/google/cloud/env.rb#242
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:245
   def container_engine?; end
 
-  # Returns the name of the Kubernetes Engine cluster hosting the
-  # application, or `nil` if the current code is not running in
-  # Kubernetes Engine.
-  #
-  # @return [String, nil]
-  #
-  # source://google-cloud-env//lib/google/cloud/env.rb#475
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:480
   def container_engine_cluster_name; end
 
-  # Returns the name of the Kubernetes Engine namespace hosting the
-  # application, or `nil` if the current code is not running in
-  # Kubernetes Engine.
-  #
-  # @return [String, nil]
-  #
-  # source://google-cloud-env//lib/google/cloud/env.rb#489
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:498
   def container_engine_namespace_id; end
 
   # Assert that the Metadata Server should be present, and wait for a
@@ -198,14 +174,14 @@ class Google::Cloud::Env
   # for the Metadata Server to warm up and ensure that subsequent lookups
   # should succeed.
   #
-  # @param timeout [Numeric, nil] a timeout in seconds, or nil to wait
-  #   until we have conclusively decided one way or the other.
-  # @raise [MetadataServerNotResponding] if we were unable to confirm
-  #   connection with the Metadata Server, either because the timeout
-  #   expired or because the server seems to be down
+  # @param timeout [Numeric,nil] a timeout in seconds, or nil to wait
+  #     until we have conclusively decided one way or the other.
   # @return [:confirmed] if we were able to confirm connection.
+  # @raise [MetadataServerNotResponding] if we were unable to confirm
+  #     connection with the Metadata Server, either because the timeout
+  #     expired or because the server seems to be down
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#149
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:149
   def ensure_metadata(timeout: T.unsafe(nil)); end
 
   # The variables access object. Use this to make direct queries for
@@ -214,69 +190,69 @@ class Google::Cloud::Env
   #
   # @return [Google::Cloud::Env::FileSystem]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#96
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:96
   def file_system; end
 
   # Returns the value of the given instance attribute for the VM instance
   # hosting the application, or `nil` if the given key does not exist or
   # application is not running on Google Cloud.
   #
-  # @param key [String] Attribute key to look up.
-  # @return [String, nil]
+  # @param [String] key Attribute key to look up.
+  # @return [String,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#409
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:409
   def instance_attribute(key); end
 
   # Returns an array (which may be empty) of all attribute keys present
   # for the VM instance hosting the  application, or `nil` if the
   # application is not running on Google Cloud.
   #
-  # @return [Array<String>, nil]
+  # @return [Array<String>,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#394
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:394
   def instance_attribute_keys; end
 
   # Returns the description field (which may be the empty string) of the
   # VM instance hosting the application, or `nil` if the application is
   # not running on Google Cloud.
   #
-  # @return [String, nil]
+  # @return [String,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#340
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:340
   def instance_description; end
 
   # Returns the machine type of the VM instance hosting the application,
   # or `nil` if the application is not running on Google Cloud.
   #
-  # @return [String, nil]
+  # @return [String,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#366
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:366
   def instance_machine_type; end
 
   # Returns the name of the VM instance hosting the application, or `nil`
   # if the application is not running on Google Cloud.
   #
-  # @return [String, nil]
+  # @return [String,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#327
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:327
   def instance_name; end
 
   # Returns an array (which may be empty) of all tags set on the VM
   # instance hosting the  application, or `nil` if the application is not
   # running on Google Cloud.
   #
-  # @return [Array<String>, nil]
+  # @return [Array<String>,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#380
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:380
   def instance_tags; end
 
   # Returns the zone (for example "`us-central1-c`") in which the instance
   # hosting the application lives. Returns `nil` if the application is
   # not running on Google Cloud.
   #
-  # @return [String, nil]
+  # @return [String,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#353
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:353
   def instance_zone; end
 
   # Determine whether the application is running on a Knative-based
@@ -284,31 +260,26 @@ class Google::Cloud::Env
   #
   # @return [boolean]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#203
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:203
   def knative?; end
 
   # Returns the name of the running Knative service, or `nil` if the
   # current code is not running on Knative.
   #
-  # @return [String, nil]
+  # @return [String,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#421
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:421
   def knative_service_id; end
 
-  # Returns the name of the running Knative service, or `nil` if the
-  # current code is not running on Knative.
-  #
-  # @return [String, nil]
-  #
-  # source://google-cloud-env//lib/google/cloud/env.rb#421
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:424
   def knative_service_name; end
 
   # Returns the revision of the running Knative service, or `nil` if the
   # current code is not running on Knative.
   #
-  # @return [String, nil]
+  # @return [String,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#432
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:432
   def knative_service_revision; end
 
   # Determine whether the application is running on Google Kubernetes
@@ -316,25 +287,25 @@ class Google::Cloud::Env
   #
   # @return [boolean]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#242
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:242
   def kubernetes_engine?; end
 
   # Returns the name of the Kubernetes Engine cluster hosting the
   # application, or `nil` if the current code is not running in
   # Kubernetes Engine.
   #
-  # @return [String, nil]
+  # @return [String,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#475
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:475
   def kubernetes_engine_cluster_name; end
 
   # Returns the name of the Kubernetes Engine namespace hosting the
   # application, or `nil` if the current code is not running in
   # Kubernetes Engine.
   #
-  # @return [String, nil]
+  # @return [String,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#489
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:489
   def kubernetes_engine_namespace_id; end
 
   # Determine whether the application is running in an environment where a
@@ -345,25 +316,26 @@ class Google::Cloud::Env
   #
   # @return [boolean]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#509
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:509
   def logging_agent_expected?; end
 
   # Retrieve info from the Google Compute Engine Metadata Service.
   # Returns `nil` if the given data is not present.
   #
-  # @param type [String] Type of metadata to look up. Currently supported
-  #   values are "project" and "instance".
-  # @param entry [String] Metadata entry path to look up.
+  # @param [String] type Type of metadata to look up. Currently supported
+  #     values are "project" and "instance".
+  # @param [String] entry Metadata entry path to look up.
   # @param query [Hash{String => String}] Any additional query parameters
-  #   to send with the request.
-  # @raise [MetadataServerNotResponding] if the Metadata Server is not
-  #   responding. This could either be because the metadata service is
-  #   not present in the current environment, or if it is expected to be
-  #   present but is overloaded or has not finished initializing.
+  #     to send with the request.
+  #
   # @return [String] the data
   # @return [nil] if there is no data for the specified type and entry
+  # @raise [MetadataServerNotResponding] if the Metadata Server is not
+  #     responding. This could either be because the metadata service is
+  #     not present in the current environment, or if it is expected to be
+  #     present but is overloaded or has not finished initializing.
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#170
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:170
   def lookup_metadata(type, entry, query: T.unsafe(nil)); end
 
   # Retrieve an HTTP response from the Google Compute Engine Metadata
@@ -372,18 +344,19 @@ class Google::Cloud::Env
   # given entry is not present, or other HTTP result code for authorization
   # or other errors.
   #
-  # @param type [String] Type of metadata to look up. Currently supported
-  #   values are "project" and "instance".
-  # @param entry [String] Metadata entry path to look up.
+  # @param [String] type Type of metadata to look up. Currently supported
+  #     values are "project" and "instance".
+  # @param [String] entry Metadata entry path to look up.
   # @param query [Hash{String => String}] Any additional query parameters
-  #   to send with the request.
-  # @raise [MetadataServerNotResponding] if the Metadata Server is not
-  #   responding. This could either be because the metadata service is
-  #   not present in the current environment, or if it is expected to be
-  #   present but is overloaded or has not finished initializing.
-  # @return [Google::Cloud::Env::ComputeMetadata::Response] the response
+  #     to send with the request.
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#193
+  # @return [Google::Cloud::Env::ComputeMetadata::Response] the response
+  # @raise [MetadataServerNotResponding] if the Metadata Server is not
+  #     responding. This could either be because the metadata service is
+  #     not present in the current environment, or if it is expected to be
+  #     present but is overloaded or has not finished initializing.
+  #
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:193
   def lookup_metadata_response(type, entry, query: T.unsafe(nil)); end
 
   # Determine whether the Google Compute Engine Metadata Service is running.
@@ -398,7 +371,7 @@ class Google::Cloud::Env
   #
   # @return [boolean]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#128
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:128
   def metadata?; end
 
   # Returns the unique numeric ID of the project hosting the application,
@@ -406,17 +379,17 @@ class Google::Cloud::Env
   #
   # Caveat: this method does not work and returns `nil` on CloudShell.
   #
-  # @return [Integer, nil]
+  # @return [Integer,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#306
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:306
   def numeric_project_id; end
 
   # Returns the unique string ID of the project hosting the application,
   # or `nil` if the application is not running on Google Cloud.
   #
-  # @return [String, nil]
+  # @return [String,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#289
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:289
   def project_id; end
 
   # Determine whether the application is running on "raw" Google Compute
@@ -425,7 +398,7 @@ class Google::Cloud::Env
   #
   # @return [boolean]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#279
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:279
   def raw_compute_engine?; end
 
   # The variables access object. Use this to make direct queries for
@@ -434,7 +407,7 @@ class Google::Cloud::Env
   #
   # @return [Google::Cloud::Env::Variables]
   #
-  # source://google-cloud-env//lib/google/cloud/env.rb#87
+  # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:87
   def variables; end
 
   class << self
@@ -442,34 +415,32 @@ class Google::Cloud::Env
     #
     # @return [Google::Cloud::Env]
     #
-    # source://google-cloud-env//lib/google/cloud/env.rb#518
+    # pkg:gem/google-cloud-env#lib/google/cloud/env.rb:518
     def get; end
   end
 end
 
 # A client for the Google metadata service.
 #
-# source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#31
+# pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:31
 class Google::Cloud::Env::ComputeMetadata
   # Create a compute metadata access object.
   #
   # @param variables [Google::Cloud::Env::Variables] Access object for
-  #   environment variables. If not provided, a default is created.
+  #     environment variables. If not provided, a default is created.
   # @param compute_smbios [Google::Cloud::Env::ComputeSMBIOS] Access
-  #   object for SMBIOS information. If not provided, a default is
-  #   created.
-  # @return [ComputeMetadata] a new instance of ComputeMetadata
+  #     object for SMBIOS information. If not provided, a default is
+  #     created.
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#248
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:248
   def initialize(variables: T.unsafe(nil), compute_smbios: T.unsafe(nil)); end
 
+  # @private
   # The underlying LazyDict. Can be used to customize the cache for
   # testing.
-  #
-  # @private
   # @return [Google::Cloud::Env::LazyDict]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#611
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:611
   def cache; end
 
   # Return detailed information about whether we think Metadata is
@@ -478,41 +449,40 @@ class Google::Cloud::Env::ComputeMetadata
   # the given timeouts and retries.
   #
   # @param open_timeout [Numeric] Timeout for opening http connections.
-  #   Defaults to {#open_timeout}.
+  #     Defaults to {#open_timeout}.
   # @param request_timeout [Numeric] Timeout for entire http requests.
-  #   Defaults to {#request_timeout}.
-  # @param retry_count [Integer, nil] Number of times to retry. A value of
-  #   1 means 2 attempts (i.e. 1 retry). A value of nil indicates
-  #   retries are limited only by the timeout. Defaults to
-  #   {#retry_count}.
-  # @param retry_timeout [Numeric, nil] Total timeout for retries. A value
-  #   of nil indicates no time limit, and retries are limited only by
-  #   count. Defaults to {#retry_timeout}.
+  #     Defaults to {#request_timeout}.
+  # @param retry_count [Integer,nil] Number of times to retry. A value of
+  #     1 means 2 attempts (i.e. 1 retry). A value of nil indicates
+  #     retries are limited only by the timeout. Defaults to
+  #     {#retry_count}.
+  # @param retry_timeout [Numeric,nil] Total timeout for retries. A value
+  #     of nil indicates no time limit, and retries are limited only by
+  #     count. Defaults to {#retry_timeout}.
+  #
   # @return [:no] if we know the metadata server is not present
   # @return [:unconfirmed] if we believe metadata should be present but we
-  #   haven't gotten a confirmed response from it. This can happen if
-  #   SMBIOS says we're on GCE but we can't contact the Metadata Server
-  #   even through retries.
+  #     haven't gotten a confirmed response from it. This can happen if
+  #     SMBIOS says we're on GCE but we can't contact the Metadata Server
+  #     even through retries.
   # @return [:confirmed] if we have a confirmed response from metadata.
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#481
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:481
   def check_existence(open_timeout: T.unsafe(nil), request_timeout: T.unsafe(nil), retry_count: T.unsafe(nil), retry_timeout: T.unsafe(nil)); end
 
-  # The compute SMBIOS access object
-  #
   # @private
+  # The compute SMBIOS access object
   # @return [Google::Cloud::Env::ComputeSMBIOS]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#625
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:625
   def compute_smbios; end
 
+  # @private
   # The underlying Faraday connection. Can be used to customize the
   # connection for testing.
-  #
-  # @private
   # @return [Faraday::Connection]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#603
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:603
   def connection; end
 
   # Assert that the Metadata Server should be present, and wait for a
@@ -520,14 +490,14 @@ class Google::Cloud::Env::ComputeMetadata
   # at most {#warmup_time} seconds to wait out the expected maximum
   # warmup time, but a shorter timeout can be provided.
   #
-  # @param timeout [Numeric, nil] a timeout in seconds, or nil to wait
-  #   until we have conclusively decided one way or the other.
-  # @raise [MetadataServerNotResponding] if we were unable to confirm
-  #   connection with the Metadata Server, either because the timeout
-  #   expired or because the server seems to be down
+  # @param timeout [Numeric,nil] a timeout in seconds, or nil to wait
+  #     until we have conclusively decided one way or the other.
   # @return [:confirmed] if we were able to confirm connection.
+  # @raise [MetadataServerNotResponding] if we were unable to confirm
+  #     connection with the Metadata Server, either because the timeout
+  #     expired or because the server seems to be down
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#526
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:526
   def ensure_existence(timeout: T.unsafe(nil)); end
 
   # The current detailed existence status, without blocking on any
@@ -536,10 +506,10 @@ class Google::Cloud::Env::ComputeMetadata
   # @return [nil] if we have no information at all yet
   # @return [:no] if we know the metadata server is not present
   # @return [:unconfirmed] if we believe metadata should be present but we
-  #   haven't gotten a confirmed response from it.
+  #     haven't gotten a confirmed response from it.
   # @return [:confirmed] if we have a confirmed response from metadata.
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#509
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:509
   def existence_immediate; end
 
   # Get the expiration time for the given path. Returns the monotonic
@@ -547,23 +517,23 @@ class Google::Cloud::Env::ComputeMetadata
   # data has been retrieved but has no expiration, or false if the data
   # has not yet been retrieved.
   #
-  # @return [Numeric, nil, false]
+  # @return [Numeric,nil,false]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#542
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:542
   def expiration_time_of(path, query: T.unsafe(nil)); end
 
   # The host URL for the metadata server, including `http://`.
   #
   # @return [String]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#263
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:263
   def host; end
 
   # The host URL for the metadata server, including `http://`.
   #
   # @param new_host [String]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#270
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:270
   def host=(new_host); end
 
   # Look up a particular key from the metadata server and return the data
@@ -579,24 +549,25 @@ class Google::Cloud::Env::ComputeMetadata
   #
   # @param path [String] The key path (e.g. `project/project-id`)
   # @param query [Hash{String => String}] Any additional query parameters
-  #   to send with the request.
+  #     to send with the request.
   # @param open_timeout [Numeric] Timeout for opening http connections.
-  #   Defaults to {#open_timeout}.
+  #     Defaults to {#open_timeout}.
   # @param request_timeout [Numeric] Timeout for entire http requests.
-  #   Defaults to {#request_timeout}.
-  # @param retry_count [Integer, nil] Number of times to retry. A value of
-  #   1 means 2 attempts (i.e. 1 retry). A value of nil indicates
-  #   retries are limited only by the timeout. Defaults to
-  #   {#retry_count}.
-  # @param retry_timeout [Numeric, nil] Total timeout for retries. A value
-  #   of nil indicates no time limit, and retries are limited only by
-  #   count. Defaults to {#retry_timeout}.
-  # @raise [MetadataServerNotResponding] if the Metadata Server is not
-  #   responding
+  #     Defaults to {#request_timeout}.
+  # @param retry_count [Integer,nil] Number of times to retry. A value of
+  #     1 means 2 attempts (i.e. 1 retry). A value of nil indicates
+  #     retries are limited only by the timeout. Defaults to
+  #     {#retry_count}.
+  # @param retry_timeout [Numeric,nil] Total timeout for retries. A value
+  #     of nil indicates no time limit, and retries are limited only by
+  #     count. Defaults to {#retry_timeout}.
+  #
   # @return [String] the data from the metadata server
   # @return [nil] if the key is not present
+  # @raise [MetadataServerNotResponding] if the Metadata Server is not
+  #     responding
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#440
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:440
   def lookup(path, query: T.unsafe(nil), open_timeout: T.unsafe(nil), request_timeout: T.unsafe(nil), retry_count: T.unsafe(nil), retry_timeout: T.unsafe(nil)); end
 
   # Look up a particular key from the metadata server, and return a full
@@ -610,83 +581,82 @@ class Google::Cloud::Env::ComputeMetadata
   #
   # @param path [String] The key path (e.g. `project/project-id`)
   # @param query [Hash{String => String}] Any additional query parameters
-  #   to send with the request.
+  #     to send with the request.
   # @param open_timeout [Numeric] Timeout for opening http connections.
-  #   Defaults to {#open_timeout}.
+  #     Defaults to {#open_timeout}.
   # @param request_timeout [Numeric] Timeout for entire http requests.
-  #   Defaults to {#request_timeout}.
-  # @param retry_count [Integer, nil] Number of times to retry. A value of
-  #   1 means 2 attempts (i.e. 1 retry). A value of nil indicates
-  #   retries are limited only by the timeout. Defaults to
-  #   {#retry_count}.
-  # @param retry_timeout [Numeric, nil] Total timeout for retries. A value
-  #   of nil indicates no time limit, and retries are limited only by
-  #   count. Defaults to {#retry_timeout}.
-  # @raise [MetadataServerNotResponding] if the Metadata Server is not
-  #   responding
-  # @return [Response] the data from the metadata server
+  #     Defaults to {#request_timeout}.
+  # @param retry_count [Integer,nil] Number of times to retry. A value of
+  #     1 means 2 attempts (i.e. 1 retry). A value of nil indicates
+  #     retries are limited only by the timeout. Defaults to
+  #     {#retry_count}.
+  # @param retry_timeout [Numeric,nil] Total timeout for retries. A value
+  #     of nil indicates no time limit, and retries are limited only by
+  #     count. Defaults to {#retry_timeout}.
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#386
+  # @return [Response] the data from the metadata server
+  # @raise [MetadataServerNotResponding] if the Metadata Server is not
+  #     responding
+  #
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:386
   def lookup_response(path, query: T.unsafe(nil), open_timeout: T.unsafe(nil), request_timeout: T.unsafe(nil), retry_count: T.unsafe(nil), retry_timeout: T.unsafe(nil)); end
 
   # The timeout for opening http connections in seconds.
   #
   # @return [Numeric]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#326
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:326
   def open_timeout; end
 
   # The timeout for opening http connections in seconds.
   #
   # @param timeout [Numeric]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#335
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:335
   def open_timeout=(timeout); end
 
   # The overrides, or nil if overrides are not present.
   # If present, overrides will answer all metadata queries, and actual
   # calls to the metadata server will be blocked.
   #
-  # @return [Overrides, nil]
+  # @return [Overrides,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#555
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:555
   def overrides; end
 
   # Set the overrides. You can also set nil to disable overrides.
   # If present, overrides will answer all metadata queries, and actual
   # calls to the metadata server will be blocked.
   #
-  # @param new_overrides [Overrides, nil]
+  # @param new_overrides [Overrides,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#564
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:564
   def overrides=(new_overrides); end
 
   # The total timeout for an HTTP request in seconds.
   #
   # @return [Numeric]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#344
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:344
   def request_timeout; end
 
   # The total timeout for an HTTP request in seconds.
   #
   # @param timeout [Numeric]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#353
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:353
   def request_timeout=(timeout); end
 
+  # @private
   # Reset the cache, overrides, and all settings to default, for testing.
   #
-  # @private
-  #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#631
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:631
   def reset!; end
 
+  # @private
   # Clear the existence cache, for testing.
   #
-  # @private
-  #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#651
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:651
   def reset_existence!; end
 
   # The default maximum number of times to retry a query for a key.
@@ -696,9 +666,9 @@ class Google::Cloud::Env::ComputeMetadata
   #
   # Defaults to {DEFAULT_RETRY_COUNT}.
   #
-  # @return [Integer, nil]
+  # @return [Integer,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#286
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:286
   def retry_count; end
 
   # The default maximum number of times to retry a query for a key.
@@ -708,9 +678,9 @@ class Google::Cloud::Env::ComputeMetadata
   #
   # Defaults to {DEFAULT_RETRY_COUNT}.
   #
-  # @return [Integer, nil]
+  # @return [Integer,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#286
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:286
   def retry_count=(_arg0); end
 
   # The time in seconds between retries. This time includes the time
@@ -720,7 +690,7 @@ class Google::Cloud::Env::ComputeMetadata
   #
   # @return [Numeric]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#307
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:307
   def retry_interval; end
 
   # The time in seconds between retries. This time includes the time
@@ -730,7 +700,7 @@ class Google::Cloud::Env::ComputeMetadata
   #
   # @return [Numeric]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#307
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:307
   def retry_interval=(_arg0); end
 
   # The default overall timeout across all retries of a lookup, in
@@ -739,9 +709,9 @@ class Google::Cloud::Env::ComputeMetadata
   #
   # Defaults to {DEFAULT_RETRY_TIMEOUT}.
   #
-  # @return [Numeric, nil]
+  # @return [Numeric,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#297
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:297
   def retry_timeout; end
 
   # The default overall timeout across all retries of a lookup, in
@@ -750,17 +720,16 @@ class Google::Cloud::Env::ComputeMetadata
   #
   # Defaults to {DEFAULT_RETRY_TIMEOUT}.
   #
-  # @return [Numeric, nil]
+  # @return [Numeric,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#297
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:297
   def retry_timeout=(_arg0); end
 
-  # The variables access object
-  #
   # @private
+  # The variables access object
   # @return [Google::Cloud::Env::Variables]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#618
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:618
   def variables; end
 
   # A time in seconds allotted to environment warmup, during which
@@ -770,9 +739,9 @@ class Google::Cloud::Env::ComputeMetadata
   #
   # Defaults to {DEFAULT_WARMUP_TIME}.
   #
-  # @return [Numeric, nil]
+  # @return [Numeric,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#319
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:319
   def warmup_time; end
 
   # A time in seconds allotted to environment warmup, during which
@@ -782,9 +751,9 @@ class Google::Cloud::Env::ComputeMetadata
   #
   # Defaults to {DEFAULT_WARMUP_TIME}.
   #
-  # @return [Numeric, nil]
+  # @return [Numeric,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#319
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:319
   def warmup_time=(_arg0); end
 
   # Run the given block with the overrides replaced with the given set
@@ -792,152 +761,136 @@ class Google::Cloud::Env::ComputeMetadata
   # setting is restored at the end of the block. This is used for
   # debugging/testing/mocking.
   #
-  # @param temp_overrides [Overrides, nil]
+  # @param temp_overrides [Overrides,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#579
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:579
   def with_overrides(temp_overrides); end
 
   private
 
+  # @private
   # Extract the lifetime of an access token
   #
-  # @private
-  #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#810
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:810
   def access_token_lifetime(data); end
 
+  # @private
   # Stringify keys in a query hash
   #
-  # @private
-  #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#836
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:836
   def canonicalize_query(query); end
 
+  # @private
   # Create and return a new LazyDict cache for the metadata
   #
-  # @private
-  #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#740
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:740
   def create_cache; end
 
+  # @private
   # Compute the lifetime of data, given the path and data. Returns the
   # value in seconds, or nil for nonexpiring data.
   #
-  # @private
-  #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#797
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:797
   def determine_data_lifetime(path, data); end
 
+  # @private
+  #
   # Attempt to determine if we're on GCE (if we haven't previously), and
   # update the existence flag. Return true if we *could* be on GCE, or
   # false if we're definitely not.
   #
-  # @private
-  #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#707
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:707
   def gce_check; end
 
+  # @private
   # Extract the lifetime of an identity token
   #
-  # @private
-  #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#822
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:822
   def identity_token_lifetime(data); end
 
+  # @private
   # Look up the given path, without using the cache.
   #
-  # @private
-  #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#755
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:755
   def internal_lookup(path, query, open_timeout, request_timeout); end
 
+  # @private
   # Lookup from overrides and return the result or raise.
   # This must be called from within the mutex, and assumes that
   # overrides is non-nil.
   #
-  # @private
-  #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#846
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:846
   def lookup_override(path, query); end
 
   # @private
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#732
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:732
   def maybe_gae; end
 
   # @private
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#722
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:722
   def maybe_gcf; end
 
   # @private
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#727
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:727
   def maybe_gcr; end
 
+  # @private
   # Update existence based on a received result
   #
-  # @private
-  #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#780
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:780
   def post_update_existence(success, current_time = T.unsafe(nil)); end
 end
 
 # The default host for the metadata server
-#
 # @return [String]
 #
-# source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#36
+# pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:36
 Google::Cloud::Env::ComputeMetadata::DEFAULT_HOST = T.let(T.unsafe(nil), String)
 
 # The default timeout in seconds for opening http connections
-#
 # @return [Numeric]
 #
-# source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#42
+# pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:42
 Google::Cloud::Env::ComputeMetadata::DEFAULT_OPEN_TIMEOUT = T.let(T.unsafe(nil), Float)
 
 # The default timeout in seconds for request responses
-#
 # @return [Numeric]
 #
-# source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#48
+# pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:48
 Google::Cloud::Env::ComputeMetadata::DEFAULT_REQUEST_TIMEOUT = T.let(T.unsafe(nil), Float)
 
 # The default number of retries
-#
 # @return [Integer]
 #
-# source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#54
+# pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:54
 Google::Cloud::Env::ComputeMetadata::DEFAULT_RETRY_COUNT = T.let(T.unsafe(nil), Integer)
 
 # The default interval between retries, in seconds
-#
 # @return [Numeric]
 #
-# source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#66
+# pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:66
 Google::Cloud::Env::ComputeMetadata::DEFAULT_RETRY_INTERVAL = T.let(T.unsafe(nil), Float)
 
 # The default timeout across retries
-#
 # @return [nil]
 #
-# source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#60
+# pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:60
 Google::Cloud::Env::ComputeMetadata::DEFAULT_RETRY_TIMEOUT = T.let(T.unsafe(nil), T.untyped)
 
 # The default time in seconds to wait for environment warmup.
-#
 # @return [Numeric]
 #
-# source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#72
+# pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:72
 Google::Cloud::Env::ComputeMetadata::DEFAULT_WARMUP_TIME = T.let(T.unsafe(nil), Integer)
 
-# The standard set of headers
-#
 # @private
+# The standard set of headers
 # @return [Hash{String=>String}]
 #
-# source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#86
+# pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:86
 Google::Cloud::Env::ComputeMetadata::FLAVOR_HEADER = T.let(T.unsafe(nil), Hash)
 
 # A set of overrides for metadata access. This is used in
@@ -951,13 +904,11 @@ Google::Cloud::Env::ComputeMetadata::FLAVOR_HEADER = T.let(T.unsafe(nil), Hash)
 # responses are returned for specified queries, and any query not
 # explicitly set will result in a 404.
 #
-# source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#157
+# pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:157
 class Google::Cloud::Env::ComputeMetadata::Overrides
   # Create an empty overrides object.
   #
-  # @return [Overrides] a new instance of Overrides
-  #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#161
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:161
   def initialize; end
 
   # Add an override to the object, providing just a body string.
@@ -965,17 +916,18 @@ class Google::Cloud::Env::ComputeMetadata::Overrides
   # @param path [String] The key path (e.g. `project/project-id`)
   # @param string [String] The response string to return.
   # @param query [Hash{String => String}] Any additional query
-  #   parameters for the request.
+  #     parameters for the request.
+  #
   # @return [self] for chaining
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#190
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:190
   def add(path, string, query: T.unsafe(nil), headers: T.unsafe(nil)); end
 
   # Add an override for the ping request.
   #
   # @return [self] for chaining
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#201
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:201
   def add_ping; end
 
   # Add an override to the object, providing a full response.
@@ -983,44 +935,45 @@ class Google::Cloud::Env::ComputeMetadata::Overrides
   # @param path [String] The key path (e.g. `project/project-id`)
   # @param response [Response] The response object to return.
   # @param query [Hash{String => String}] Any additional query
-  #   parameters for the request.
+  #     parameters for the request.
+  #
   # @return [self] for chaining
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#175
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:175
   def add_response(path, response, query: T.unsafe(nil)); end
 
   # Clear all data from these overrides
   #
   # @return [self] for chaining
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#210
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:210
   def clear; end
 
   # Returns true if there is at least one override present
   #
   # @return [true, false]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#234
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:234
   def empty?; end
 
   # Look up a response from the override data.
   #
   # @param path [String] The key path (e.g. `project/project-id`)
   # @param query [Hash{String => String}] Any additional query
-  #   parameters for the request.
+  #     parameters for the request.
+  #
   # @return [String] The response
   # @return [nil] if there is no data for the given query
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#225
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:225
   def lookup(path, query: T.unsafe(nil)); end
 end
 
-# The base path of metadata server queries.
-#
 # @private
+# The base path of metadata server queries.
 # @return [String]
 #
-# source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#79
+# pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:79
 Google::Cloud::Env::ComputeMetadata::PATH_BASE = T.let(T.unsafe(nil), String)
 
 # Basic HTTP response object, returned by
@@ -1030,56 +983,52 @@ Google::Cloud::Env::ComputeMetadata::PATH_BASE = T.let(T.unsafe(nil), String)
 # `Faraday::Response`. It also includes the CLOCK_MONOTONIC time when
 # the data was retrieved.
 #
-# source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#96
+# pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:96
 class Google::Cloud::Env::ComputeMetadata::Response
   # Create a response object.
   #
   # @param status [Integer] The HTTP status, normally 200
   # @param body [String] The HTTP body as a string
   # @param headers [Hash{String=>String}] The HTTP response headers.
-  #   Normally, the `Metadata-Flavor` header must be set to the value
-  #   `Google`.
-  # @return [Response] a new instance of Response
+  #     Normally, the `Metadata-Flavor` header must be set to the value
+  #     `Google`.
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#106
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:106
   def initialize(status, body, headers); end
 
   # The HTTP response body
-  #
   # @return [String]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#123
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:123
   def body; end
 
   # Returns true if the metadata-flavor is correct for Google Cloud
-  #
   # @return [boolean]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#140
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:140
   def google_flavor?; end
 
   # The HTTP response headers
-  #
   # @return [Hash{String=>String}]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#129
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:129
   def headers; end
 
   # The CLOCK_MONOTONIC time at which this response was retrieved.
-  #
   # @return [Numeric]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#134
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:134
   def retrieval_monotonic_time; end
 
   # The HTTP status code
-  #
   # @return [Integer]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#117
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:117
   def status; end
 end
 
+# @private
+#
 # A buffer in seconds for token expiry. Our cache for the token will
 # expire approximately this many seconds before the declared expiry
 # time of the token itself.
@@ -1098,18 +1047,15 @@ end
 # request a new token, we actually want to receive a new token rather
 # than the previous old token. See internal issue b/311414224.
 #
-# @private
-#
-# source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#697
+# pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:697
 Google::Cloud::Env::ComputeMetadata::TOKEN_EXPIRY_BUFFER = T.let(T.unsafe(nil), Integer)
 
+# @private
 # A list of exceptions that are considered transient. They trigger a
 # retry if received from an HTTP attempt, and they are not cached (i.e.
 # the cache lifetime is set to 0.)
 #
-# @private
-#
-# source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#667
+# pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:667
 Google::Cloud::Env::ComputeMetadata::TRANSIENT_EXCEPTIONS = T.let(T.unsafe(nil), Array)
 
 # Access to the SMBIOS information needed to determine if this Ruby
@@ -1120,13 +1066,11 @@ Google::Cloud::Env::ComputeMetadata::TRANSIENT_EXCEPTIONS = T.let(T.unsafe(nil),
 #
 # You can provide an override to "mock out" the behavior of this object.
 #
-# source://google-cloud-env//lib/google/cloud/env/compute_smbios.rb#31
+# pkg:gem/google-cloud-env#lib/google/cloud/env/compute_smbios.rb:31
 class Google::Cloud::Env::ComputeSMBIOS
   # Create an SMBIOS access object
   #
-  # @return [ComputeSMBIOS] a new instance of ComputeSMBIOS
-  #
-  # source://google-cloud-env//lib/google/cloud/env/compute_smbios.rb#35
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_smbios.rb:35
   def initialize; end
 
   # Determine whether the SMBIOS state suggests that we are running on a
@@ -1136,25 +1080,25 @@ class Google::Cloud::Env::ComputeSMBIOS
   # Windows) the first time it is called, but it will cache the result
   # for subsequent calls.
   #
-  # @return [true, false]
+  # @return [true,false]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_smbios.rb#82
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_smbios.rb:82
   def google_compute?; end
 
   # The current override value for the product name, either a string
   # value, or nil to disable mocking.
   #
-  # @return [nil, String]
+  # @return [nil,String]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_smbios.rb#92
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_smbios.rb:92
   def override_product_name; end
 
   # The current override value for the product name, either a string
   # value, or nil to disable mocking.
   #
-  # @return [nil, String]
+  # @return [nil,String]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_smbios.rb#92
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_smbios.rb:92
   def override_product_name=(_arg0); end
 
   # Read the product name. On a Google compute platform, this should
@@ -1166,7 +1110,7 @@ class Google::Cloud::Env::ComputeSMBIOS
   #
   # @return [String] Product name, or the empty string if not found.
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_smbios.rb#50
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_smbios.rb:50
   def product_name; end
 
   # The source of the product name data. Will be one of the following:
@@ -1182,36 +1126,36 @@ class Google::Cloud::Env::ComputeSMBIOS
   #
   # @return [Symbol] The source
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_smbios.rb#68
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_smbios.rb:68
   def product_name_source; end
 
   # Run the given block with the product name mock modified. This is
   # generally used for debugging/testing/mocking.
   #
-  # @param override_name [nil, String]
+  # @param override_name [nil,String]
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_smbios.rb#100
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_smbios.rb:100
   def with_override_product_name(override_name); end
 
   private
 
-  # source://google-cloud-env//lib/google/cloud/env/compute_smbios.rb#121
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_smbios.rb:121
   def load_product_name; end
 end
 
 # @private The Linux file path
 #
-# source://google-cloud-env//lib/google/cloud/env/compute_smbios.rb#117
+# pkg:gem/google-cloud-env#lib/google/cloud/env/compute_smbios.rb:117
 Google::Cloud::Env::ComputeSMBIOS::LINUX_FILEPATH = T.let(T.unsafe(nil), String)
 
 # @private The Windows registry key name
 #
-# source://google-cloud-env//lib/google/cloud/env/compute_smbios.rb#115
+# pkg:gem/google-cloud-env#lib/google/cloud/env/compute_smbios.rb:115
 Google::Cloud::Env::ComputeSMBIOS::WINDOWS_KEYNAME = T.let(T.unsafe(nil), String)
 
 # @private The Windows registry key path
 #
-# source://google-cloud-env//lib/google/cloud/env/compute_smbios.rb#113
+# pkg:gem/google-cloud-env#lib/google/cloud/env/compute_smbios.rb:113
 Google::Cloud::Env::ComputeSMBIOS::WINDOWS_KEYPATH = T.let(T.unsafe(nil), String)
 
 # Access to file system contents.
@@ -1228,42 +1172,40 @@ Google::Cloud::Env::ComputeSMBIOS::WINDOWS_KEYPATH = T.let(T.unsafe(nil), String
 # large file, its contents will stay in memory for the lifetime of the
 # Ruby process.
 #
-# source://google-cloud-env//lib/google/cloud/env/file_system.rb#37
+# pkg:gem/google-cloud-env#lib/google/cloud/env/file_system.rb:37
 class Google::Cloud::Env::FileSystem
   # Create a file system access object with no overrides.
   #
-  # @return [FileSystem] a new instance of FileSystem
-  #
-  # source://google-cloud-env//lib/google/cloud/env/file_system.rb#41
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/file_system.rb:41
   def initialize; end
 
   # The overrides hash, or nil if overrides are not present.
   # The hash maps paths to contents of the file at that path.
   #
-  # @return [Hash{String => String}, nil]
+  # @return [Hash{String => String},nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env/file_system.rb#86
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/file_system.rb:86
   def overrides; end
 
   # Set the overrides hash. You can either provide a hash of file paths
   # to content, or nil to disable overrides. If overrides are present,
   # actual filesystem access is disabled; overrides are "all or nothing".
   #
-  # @param new_overrides [Hash{String => String}, nil]
+  # @param new_overrides [Hash{String => String},nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env/file_system.rb#95
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/file_system.rb:95
   def overrides=(new_overrides); end
 
   # Read the given file from the file system and return its contents.
   #
   # @param path [String] The path to the file.
   # @param binary [boolean] Whether to read in binary mode. Defaults to
-  #   false. This must be consistent across multiple requests for the
-  #   same path; if it is not, an error will be raised.
+  #     false. This must be consistent across multiple requests for the
+  #     same path; if it is not, an error will be raised.
   # @return [String] if the file exists.
   # @return [nil] if the file does not exist.
   #
-  # source://google-cloud-env//lib/google/cloud/env/file_system.rb#68
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/file_system.rb:68
   def read(path, binary: T.unsafe(nil)); end
 
   # Run the given block with the overrides replaced with the given hash
@@ -1271,12 +1213,14 @@ class Google::Cloud::Env::FileSystem
   # setting is restored at the end of the block. This is used for
   # debugging/testing/mocking.
   #
-  # @param temp_overrides [nil, Hash{String => String}]
+  # @param temp_overrides [nil,Hash{String => String}]
   #
-  # source://google-cloud-env//lib/google/cloud/env/file_system.rb#109
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/file_system.rb:109
   def with_overrides(temp_overrides); end
 end
 
+# @private
+#
 # This expands on {LazyValue} by providing a lazy key-value dictionary.
 # Each key uses a separate LazyValue; hence multiple keys can be in the
 # process of computation concurrently and independently.
@@ -1285,9 +1229,7 @@ end
 # it to be available to other libraries. Currently it should not be used
 # outside of Google::Cloud::Env.
 #
-# @private
-#
-# source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#677
+# pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:677
 class Google::Cloud::Env::LazyDict
   # Create a LazyDict.
   #
@@ -1303,32 +1245,16 @@ class Google::Cloud::Env::LazyDict
   # attempt fails with an exception. A retry manager should either be an
   # instance of {Retries} or an object that duck types it.
   #
-  # @param retries [Retries, Proc] A retry manager. The default is a retry
-  #   manager that tries only once. You can provide either a static
-  #   retry manager or a Proc that returns a retry manager.
+  # @param retries [Retries,Proc] A retry manager. The default is a retry
+  #     manager that tries only once. You can provide either a static
+  #     retry manager or a Proc that returns a retry manager.
   # @param block [Proc] A block that can be called to attempt to compute
-  #   the value given the key.
-  # @return [LazyDict] a new instance of LazyDict
+  #     the value given the key.
   #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#699
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:699
   def initialize(retries: T.unsafe(nil), &block); end
 
-  # Returns the value for the given key. This will either return the
-  # value or raise an error indicating failure to compute the value. If
-  # the value was previously cached, it will return that cached value,
-  # otherwise it will either run the computation to try to determine the
-  # value, or wait for another thread that is already running the
-  # computation.
-  #
-  # Any arguments beyond the initial key argument will be passed to the
-  # block if it is called, but are ignored if a cached value is returned.
-  #
-  # @param key [Object] the key
-  # @param extra_args [Array] extra arguments to pass to the block
-  # @raise [Exception] if an error happened while computing the value
-  # @return [Object] the value
-  #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#722
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:725
   def [](key, *extra_args); end
 
   # This method calls {#get} repeatedly until a final result is available
@@ -1341,21 +1267,22 @@ class Google::Cloud::Env::LazyDict
   # @param key [Object] the key
   # @param extra_args [Array] extra arguments to pass to the block
   # @param transient_errors [Array<Class>] An array of exception classes
-  #   that will be treated as transient and will allow await to
-  #   continue retrying. Exceptions omitted from this list will be
-  #   treated as fatal errors and abort the call. Default is
-  #   `[StandardError]`.
-  # @param max_tries [Integer, nil] The maximum number of times this will
-  #   call {#get} before giving up, or nil for a potentially unlimited
-  #   number of attempts. Default is 1.
-  # @param max_time [Numeric, nil] The maximum time in seconds this will
-  #   spend before giving up, or nil (the default) for a potentially
-  #   unlimited timeout.
-  # @raise [Exception] if a fatal error happened, or retries have been
-  #   exhausted.
-  # @return [Object] the value
+  #     that will be treated as transient and will allow await to
+  #     continue retrying. Exceptions omitted from this list will be
+  #     treated as fatal errors and abort the call. Default is
+  #     `[StandardError]`.
+  # @param max_tries [Integer,nil] The maximum number of times this will
+  #     call {#get} before giving up, or nil for a potentially unlimited
+  #     number of attempts. Default is 1.
+  # @param max_time [Numeric,nil] The maximum time in seconds this will
+  #     spend before giving up, or nil (the default) for a potentially
+  #     unlimited timeout.
   #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#753
+  # @return [Object] the value
+  # @raise [Exception] if a fatal error happened, or retries have been
+  #     exhausted.
+  #
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:753
   def await(key, *extra_args, transient_errors: T.unsafe(nil), max_tries: T.unsafe(nil), max_time: T.unsafe(nil)); end
 
   # Force the cache for the given key to expire immediately, if
@@ -1369,19 +1296,19 @@ class Google::Cloud::Env::LazyDict
   # not yet been exhausted.)
   #
   # @param key [Object] the key
-  # @return [true, false] whether the cache was expired
+  # @return [true,false] whether the cache was expired
   #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#785
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:785
   def expire!(key); end
 
   # Force the values for all keys to expire immediately.
   #
   # @return [Array<Object>] A list of keys that were expired. A key is
-  #   *not* included if its computation is not yet complete (i.e. if a
-  #   thread is currently computing, or if the last attempt failed and
-  #   retries have not yet been exhausted.)
+  #     *not* included if its computation is not yet complete (i.e. if a
+  #     thread is currently computing, or if the last attempt failed and
+  #     retries have not yet been exhausted.)
   #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#797
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:797
   def expire_all!; end
 
   # Returns the value for the given key. This will either return the
@@ -1396,10 +1323,10 @@ class Google::Cloud::Env::LazyDict
   #
   # @param key [Object] the key
   # @param extra_args [Array] extra arguments to pass to the block
-  # @raise [Exception] if an error happened while computing the value
   # @return [Object] the value
+  # @raise [Exception] if an error happened while computing the value
   #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#722
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:722
   def get(key, *extra_args); end
 
   # Returns the current low-level state for the given key. Does not block
@@ -1408,7 +1335,7 @@ class Google::Cloud::Env::LazyDict
   # @param key [Object] the key
   # @return [Array] the low-level state
   #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#767
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:767
   def internal_state(key); end
 
   # Set the cache value for the given key explicitly and immediately.
@@ -1418,23 +1345,24 @@ class Google::Cloud::Env::LazyDict
   # @param key [Object] the key
   # @param value [Object] the value to set
   # @param lifetime [Numeric] the lifetime until expiration in seconds,
-  #   or nil (the default) for no expiration.
+  #     or nil (the default) for no expiration.
   # @return [Object] the value
   #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#818
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:818
   def set!(key, value, lifetime: T.unsafe(nil)); end
 
   private
 
+  # @private
   # Ensures that exactly one LazyValue exists for the given key, and
   # returns it.
   #
-  # @private
-  #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#829
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:829
   def lookup_key(key); end
 end
 
+# @private
+#
 # A lazy value box with thread-safe memoization. The first time accessed
 # it will call a given block to compute its value, and will cache that
 # value. Subsequent requests will return the cached value.
@@ -1463,9 +1391,7 @@ end
 # it to be available to other libraries. Currently it should not be used
 # outside of Google::Cloud::Env.
 #
-# @private
-#
-# source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#53
+# pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:53
 class Google::Cloud::Env::LazyValue
   # Create a LazyValue.
   #
@@ -1481,13 +1407,11 @@ class Google::Cloud::Env::LazyValue
   # instance of {Retries} or an object that duck types it.
   #
   # @param retries [Retries] A retry manager. The default is a retry
-  #   manager that tries only once.
+  #     manager that tries only once.
   # @param block [Proc] A block that can be called to attempt to compute
-  #   the value.
-  # @raise [ArgumentError]
-  # @return [LazyValue] a new instance of LazyValue
+  #     the value.
   #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#118
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:118
   def initialize(retries: T.unsafe(nil), &block); end
 
   # This method calls {#get} repeatedly until a final result is available
@@ -1499,23 +1423,24 @@ class Google::Cloud::Env::LazyValue
   #
   # @param extra_args [Array] extra arguments to pass to the block
   # @param transient_errors [Array<Class>] An array of exception classes
-  #   that will be treated as transient and will allow await to
-  #   continue retrying. Exceptions omitted from this list will be
-  #   treated as fatal errors and abort the call. Default is
-  #   `[StandardError]`.
-  # @param max_tries [Integer, nil] The maximum number of times this will
-  #   call {#get} before giving up, or nil for a potentially unlimited
-  #   number of attempts. Default is 1.
-  # @param max_time [Numeric, nil] The maximum time in seconds this will
-  #   spend before giving up, or nil (the default) for a potentially
-  #   unlimited timeout.
+  #     that will be treated as transient and will allow await to
+  #     continue retrying. Exceptions omitted from this list will be
+  #     treated as fatal errors and abort the call. Default is
+  #     `[StandardError]`.
+  # @param max_tries [Integer,nil] The maximum number of times this will
+  #     call {#get} before giving up, or nil for a potentially unlimited
+  #     number of attempts. Default is 1.
+  # @param max_time [Numeric,nil] The maximum time in seconds this will
+  #     spend before giving up, or nil (the default) for a potentially
+  #     unlimited timeout.
   # @param delay_epsilon [Numeric] An extra delay in seconds to ensure
-  #   that retries happen after the retry delay period
-  # @raise [Exception] if a fatal error happened, or retries have been
-  #   exhausted.
-  # @return [Object] the value
+  #     that retries happen after the retry delay period
   #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#309
+  # @return [Object] the value
+  # @raise [Exception] if a fatal error happened, or retries have been
+  #     exhausted.
+  #
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:309
   def await(*extra_args, transient_errors: T.unsafe(nil), max_tries: T.unsafe(nil), max_time: T.unsafe(nil), delay_epsilon: T.unsafe(nil)); end
 
   # Force this cache to expire immediately, if computation is complete.
@@ -1526,9 +1451,9 @@ class Google::Cloud::Env::LazyValue
   # currently computing, or if the last attempt failed and retries have
   # not yet been exhausted.)
   #
-  # @return [true, false] whether the cache was expired
+  # @return [true,false] whether the cache was expired
   #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#393
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:393
   def expire!; end
 
   # Returns the value. This will either return the value or raise an
@@ -1542,10 +1467,10 @@ class Google::Cloud::Env::LazyValue
   # Any arguments passed will be forwarded to the block if called, but
   # are ignored if a cached value is returned.
   #
-  # @raise [Exception] if an error happened while computing the value
   # @return [Object] the value
+  # @raise [Exception] if an error happened while computing the value
   #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#252
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:252
   def get(*extra_args); end
 
   # Returns the current low-level state immediately without waiting for
@@ -1576,7 +1501,7 @@ class Google::Cloud::Env::LazyValue
   #
   # @return [Array]
   #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#366
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:366
   def internal_state; end
 
   # Set the cache value explicitly and immediately. If a computation is
@@ -1585,128 +1510,114 @@ class Google::Cloud::Env::LazyValue
   #
   # @param value [Object] the value to set
   # @param lifetime [Numeric] the lifetime until expiration in seconds,
-  #   or nil (the default) for no expiration.
+  #     or nil (the default) for no expiration.
   # @return [Object] the value
   #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#412
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:412
   def set!(value, lifetime: T.unsafe(nil)); end
 
   private
 
+  # @private
   # Either return the cached value or raise the cached error.
   # This must be called from within the mutex.
   #
-  # @private
-  # @raise [@error]
-  #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#477
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:477
   def cached_value; end
 
+  # @private
   # Determines the delay until the next retry during an await
   #
-  # @private
-  #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#639
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:639
   def determine_await_retry_delay(state, expiry_time, delay_epsilon); end
 
+  # @private
   # Determines the expires_at value in monotonic time, given a lifetime.
   #
-  # @private
-  #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#661
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:661
   def determine_expiry(lifetime); end
 
+  # @private
   # Reset this cache, transitioning to the Pending state and resetting
   # the retry count.
   # This must be called from within the mutex.
   #
-  # @private
-  #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#498
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:498
   def do_expire; end
 
+  # @private
   # Checks for any threads that need backfill, and if so triggers
   # backfill mode.
   # This must be called from within the mutex.
   #
-  # @private
-  #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#564
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:564
   def enter_backfill; end
 
+  # @private
   # Initializes compute mode.
   # This must be called from within the mutex.
   #
-  # @private
-  #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#540
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:540
   def enter_compute(cur_time); end
 
+  # @private
   # Sets state to reflect a failed computation (as long as this
   # computation wasn't interrupted by someone calling #set!).
   # Then raises the error.
   # This must be called from within the mutex.
   #
-  # @private
-  #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#612
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:612
   def handle_failure(error); end
 
+  # @private
   # Sets state to reflect a successful computation (as long as this
   # computation wasn't interrupted by someone calling #set!).
   # Then returns the computed value.
   # This must be called from within the mutex.
   #
-  # @private
-  #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#588
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:588
   def handle_success(value); end
 
+  # @private
   # Checks whether all threads are done with backfill, and if so notifies
   # threads waiting for backfill to finish.
   # This must be called from within the mutex.
   #
-  # @private
-  #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#575
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:575
   def leave_backfill; end
 
+  # @private
   # Finishes compute mode, notifying threads waiting on it.
   # This must be called from within the mutex.
   #
-  # @private
-  #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#552
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:552
   def leave_compute; end
 
+  # @private
   # Perform computation, and transition state on completion.
   # This must be called from outside the mutex.
   # Returns the final value, or raises the final error.
   #
-  # @private
-  #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#461
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:461
   def perform_compute(extra_args); end
 
+  # @private
   # Determine whether we should expire a cached value and compute a new
   # one. Happens in the Finished state if @expires_at is in the past.
   # This must be called from within the mutex.
   #
-  # @private
-  # @return [Boolean]
-  #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#488
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:488
   def should_expire?; end
 
+  # @private
   # Wait for backfill to complete if it is in progress, otherwise just
   # return immediately.
   # This must be called from within the mutex.
   #
-  # @private
-  #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#509
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:509
   def wait_backfill; end
 
+  # @private
   # Wait for computation to complete.
   # Also adds the current thread to the backfill list, ensuring that the
   # computing thread will enter the backfill phase on completion. Once
@@ -1714,9 +1625,7 @@ class Google::Cloud::Env::LazyValue
   # last one to backfill, and if so, turns off backfill mode.
   # This must be called from within the mutex.
   #
-  # @private
-  #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#522
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:522
   def wait_compute; end
 
   class << self
@@ -1727,7 +1636,7 @@ class Google::Cloud::Env::LazyValue
     # @param lifetime [Numeric] timeout in seconds
     # @param value [Object] the computation result
     #
-    # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#63
+    # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:63
     def expiring_value(lifetime, value); end
 
     # Raise an error that, if it is the final result (i.e. retries have
@@ -1741,76 +1650,63 @@ class Google::Cloud::Env::LazyValue
     # created, and passed any additional args given).
     #
     # @param lifetime [Numeric] timeout in seconds
-    # @param error [String, Exception, Class] the error to raise
+    # @param error [String,Exception,Class] the error to raise
     # @param args [Array] any arguments to pass to an error constructor
-    # @raise [ExpiringError]
     #
-    # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#83
+    # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:83
     def raise_expiring_error(lifetime, error, *args); end
   end
 end
 
+# @private
 # Internal type signaling an error with an expiration.
 #
-# @private
-#
-# source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#446
+# pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:446
 class Google::Cloud::Env::LazyValue::ExpiringError < ::StandardError
-  # @return [ExpiringError] a new instance of ExpiringError
-  #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#447
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:447
   def initialize(lifetime); end
 
-  # Returns the value of attribute lifetime.
-  #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#452
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:452
   def lifetime; end
 end
 
+# @private
 # Internal type signaling a value with an expiration
 #
-# @private
-#
-# source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#432
+# pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:432
 class Google::Cloud::Env::LazyValue::ExpiringValue
-  # @return [ExpiringValue] a new instance of ExpiringValue
-  #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#433
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:433
   def initialize(lifetime, value); end
 
-  # Returns the value of attribute lifetime.
-  #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#438
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:438
   def lifetime; end
 
-  # Returns the value of attribute value.
-  #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#439
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:439
   def value; end
 end
 
 # Error raised when the compute metadata server is expected to be
 # present in the current environment, but couldn't be contacted.
 #
-# source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#862
+# pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:862
 class Google::Cloud::Env::MetadataServerNotResponding < ::StandardError
   # Create a new MetadataServerNotResponding.
   #
   # @param message [String] Error message. If not provided, defaults to
-  #   {DEFAULT_MESSAGE}.
-  # @return [MetadataServerNotResponding] a new instance of MetadataServerNotResponding
+  #     {DEFAULT_MESSAGE}.
   #
-  # source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#879
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:879
   def initialize(message = T.unsafe(nil)); end
 end
 
 # Default message for the error
-#
 # @return [String]
 #
-# source://google-cloud-env//lib/google/cloud/env/compute_metadata.rb#867
+# pkg:gem/google-cloud-env#lib/google/cloud/env/compute_metadata.rb:867
 Google::Cloud::Env::MetadataServerNotResponding::DEFAULT_MESSAGE = T.let(T.unsafe(nil), String)
 
+# @private
+#
 # A simple retry manager with optional delay and backoff. It retries
 # until either a configured maximum number of attempts has been
 # reached, or a configurable total time has elapsed since the first
@@ -1823,46 +1719,42 @@ Google::Cloud::Env::MetadataServerNotResponding::DEFAULT_MESSAGE = T.let(T.unsaf
 # it to be available to other libraries. Currently it should not be used
 # outside of Google::Cloud::Env.
 #
-# @private
-#
-# source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#865
+# pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:865
 class Google::Cloud::Env::Retries
   # Create and initialize a retry manager.
   #
-  # @param max_tries [Integer, nil] Maximum number of attempts before we
-  #   give up altogether, or nil for no maximum. Default is 1,
-  #   indicating one attempt and no retries.
-  # @param max_time [Numeric, nil] The maximum amount of time in seconds
-  #   until we give up altogether, or nil for no maximum. Default is
-  #   nil.
+  # @param max_tries [Integer,nil] Maximum number of attempts before we
+  #     give up altogether, or nil for no maximum. Default is 1,
+  #     indicating one attempt and no retries.
+  # @param max_time [Numeric,nil] The maximum amount of time in seconds
+  #     until we give up altogether, or nil for no maximum. Default is
+  #     nil.
   # @param initial_delay [Numeric] Initial delay between attempts, in
-  #   seconds. Default is 0.
-  # @param max_delay [Numeric, nil] Maximum delay between attempts, in
-  #   seconds, or nil for no max. Default is nil.
+  #     seconds. Default is 0.
+  # @param max_delay [Numeric,nil] Maximum delay between attempts, in
+  #     seconds, or nil for no max. Default is nil.
   # @param delay_multiplier [Numeric] Multipler applied to the delay
-  #   between attempts. Default is 1 for no change.
+  #     between attempts. Default is 1 for no change.
   # @param delay_adder [Numeric] Value added to the delay between
-  #   attempts. Default is 0 for no change.
-  # @param delay_includes_time_elapsed [true, false] Whether to deduct any
-  #   time already elapsed from the retry delay. Default is false.
-  # @raise [ArgumentError]
-  # @return [Retries] a new instance of Retries
+  #     attempts. Default is 0 for no change.
+  # @param delay_includes_time_elapsed [true,false] Whether to deduct any
+  #     time already elapsed from the retry delay. Default is false.
   #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#886
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:886
   def initialize(max_tries: T.unsafe(nil), max_time: T.unsafe(nil), initial_delay: T.unsafe(nil), max_delay: T.unsafe(nil), delay_multiplier: T.unsafe(nil), delay_adder: T.unsafe(nil), delay_includes_time_elapsed: T.unsafe(nil)); end
 
   # Cause the retry limit to be reached immediately.
   #
   # @return [self]
   #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#946
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:946
   def finish!; end
 
   # Returns true if the retry limit has been reached.
   #
-  # @return [true, false]
+  # @return [true,false]
   #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#927
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:927
   def finished?; end
 
   # Advance to the next attempt.
@@ -1871,47 +1763,46 @@ class Google::Cloud::Env::Retries
   # the delay in seconds until the next retry (0 for no delay). Raises an
   # error if the previous call already returned nil.
   #
-  # @param start_time [Numeric, nil] Optional start time in monotonic time
-  #   units. Used if delay_includes_time_elapsed is set.
-  # @return [Numeric, nil]
+  # @param start_time [Numeric,nil] Optional start time in monotonic time
+  #     units. Used if delay_includes_time_elapsed is set.
+  # @return [Numeric,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#962
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:962
   def next(start_time: T.unsafe(nil)); end
 
   # Reset to the initial attempt.
   #
   # @return [self]
   #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#936
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:936
   def reset!; end
 
   # Create a duplicate in the reset state
   #
   # @return [Retries]
   #
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#912
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:912
   def reset_dup; end
 
   private
 
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#992
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:992
   def adjusted_delay(start_time, cur_time); end
 
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#982
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:982
   def advance_delay; end
 
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#987
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:987
   def advance_retry(cur_time); end
 
-  # source://google-cloud-env//lib/google/cloud/env/lazy_value.rb#976
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/lazy_value.rb:976
   def setup_first_retry(cur_time); end
 end
 
 # Library version
-#
 # @return [String]
 #
-# source://google-cloud-env//lib/google/cloud/env/version.rb#23
+# pkg:gem/google-cloud-env#lib/google/cloud/env/version.rb:23
 Google::Cloud::Env::VERSION = T.let(T.unsafe(nil), String)
 
 # Access to system environment variables.
@@ -1920,22 +1811,20 @@ Google::Cloud::Env::VERSION = T.let(T.unsafe(nil), String)
 # data. It supports temporarily changing the data source (i.e. swapping
 # ::ENV out for a different set of data) for mocking.
 #
-# source://google-cloud-env//lib/google/cloud/env/variables.rb#28
+# pkg:gem/google-cloud-env#lib/google/cloud/env/variables.rb:28
 class Google::Cloud::Env::Variables
   # Create an enviroment variables access object. This is initially
   # backed by the actual environment variables (i.e. ENV).
   #
-  # @return [Variables] a new instance of Variables
-  #
-  # source://google-cloud-env//lib/google/cloud/env/variables.rb#33
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/variables.rb:33
   def initialize; end
 
   # Fetch the given environment variable from the backing data.
   #
   # @param key [String]
-  # @return [String, nil]
+  # @return [String,nil]
   #
-  # source://google-cloud-env//lib/google/cloud/env/variables.rb#43
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/variables.rb:43
   def [](key); end
 
   # The backing data is a hash or hash-like object that represents the
@@ -1944,7 +1833,7 @@ class Google::Cloud::Env::Variables
   #
   # @return [Hash{String=>String}]
   #
-  # source://google-cloud-env//lib/google/cloud/env/variables.rb#55
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/variables.rb:55
   def backing_data; end
 
   # The backing data is a hash or hash-like object that represents the
@@ -1953,15 +1842,10 @@ class Google::Cloud::Env::Variables
   #
   # @return [Hash{String=>String}]
   #
-  # source://google-cloud-env//lib/google/cloud/env/variables.rb#55
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/variables.rb:55
   def backing_data=(_arg0); end
 
-  # Fetch the given environment variable from the backing data.
-  #
-  # @param key [String]
-  # @return [String, nil]
-  #
-  # source://google-cloud-env//lib/google/cloud/env/variables.rb#43
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/variables.rb:46
   def get(key); end
 
   # Run the given block with the backing data replaced with the given
@@ -1970,6 +1854,6 @@ class Google::Cloud::Env::Variables
   #
   # @param temp_backing_data [Hash{String=>String}]
   #
-  # source://google-cloud-env//lib/google/cloud/env/variables.rb#64
+  # pkg:gem/google-cloud-env#lib/google/cloud/env/variables.rb:64
   def with_backing_data(temp_backing_data); end
 end

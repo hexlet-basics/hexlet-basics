@@ -3256,6 +3256,5 @@ end
 
 module Process
   extend ::FFI::ModernForkTracking
-  extend ::SQLite3::ForkSafety::CoreExt
   extend ::ActiveSupport::ForkTracker::CoreExt
 end

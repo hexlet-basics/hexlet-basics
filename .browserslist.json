@@ -1,5 +1,6 @@
 {
   "browsers": [
+    "chrome 150",
     "chrome 149",
     "chrome 148",
     "chrome 147",
@@ -39,6 +40,7 @@
     "chrome 113",
     "chrome 112",
     "chrome 111",
+    "edge 150",
     "edge 149",
     "edge 148",
     "edge 147",
@@ -78,6 +80,7 @@
     "edge 113",
     "edge 112",
     "edge 111",
+    "firefox 152",
     "firefox 151",
     "firefox 150",
     "firefox 149",

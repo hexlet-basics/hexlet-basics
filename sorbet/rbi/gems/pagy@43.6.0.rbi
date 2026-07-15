@@ -523,8 +523,11 @@ module Pagy::Deprecated::Request
   def resolve_limit; end
 end
 
-# pkg:gem/pagy#lib/pagy/classes/offset/search.rb:25
+# pkg:gem/pagy#lib/pagy/classes/offset/search.rb:23
 class Pagy::ElasticsearchRails < ::Pagy::SearchBase; end
+
+# pkg:gem/pagy#lib/pagy/classes/offset/search.rb:24
+Pagy::ElasticsearchRails::DEFAULT = T.let(T.unsafe(nil), Hash)
 
 # pkg:gem/pagy#lib/pagy/toolbox/paginators/elasticsearch_rails.rb:6
 module Pagy::ElasticsearchRailsPaginator
@@ -535,13 +538,13 @@ module Pagy::ElasticsearchRailsPaginator
 
   # Support different versions of ElasticsearchRails
   #
-  # pkg:gem/pagy#lib/pagy/toolbox/paginators/elasticsearch_rails.rb:36
+  # pkg:gem/pagy#lib/pagy/toolbox/paginators/elasticsearch_rails.rb:38
   def pagination_params_from(response_object); end
 
   # Support different versions of ElasticsearchRails
   #
-  # pkg:gem/pagy#lib/pagy/toolbox/paginators/elasticsearch_rails.rb:48
-  def total_count_from(response_object); end
+  # pkg:gem/pagy#lib/pagy/toolbox/paginators/elasticsearch_rails.rb:50
+  def total_count_from(response_object, options); end
 
   class << self
     # pkg:gem/pagy#lib/pagy/toolbox/paginators/elasticsearch_rails.rb:9
@@ -549,13 +552,13 @@ module Pagy::ElasticsearchRailsPaginator
 
     # Support different versions of ElasticsearchRails
     #
-    # pkg:gem/pagy#lib/pagy/toolbox/paginators/elasticsearch_rails.rb:36
+    # pkg:gem/pagy#lib/pagy/toolbox/paginators/elasticsearch_rails.rb:38
     def pagination_params_from(response_object); end
 
     # Support different versions of ElasticsearchRails
     #
-    # pkg:gem/pagy#lib/pagy/toolbox/paginators/elasticsearch_rails.rb:48
-    def total_count_from(response_object); end
+    # pkg:gem/pagy#lib/pagy/toolbox/paginators/elasticsearch_rails.rb:50
+    def total_count_from(response_object, options); end
   end
 end
 
@@ -1045,10 +1048,10 @@ module Pagy::Linkable::QueryUtils
   end
 end
 
-# pkg:gem/pagy#lib/pagy/classes/offset/search.rb:27
+# pkg:gem/pagy#lib/pagy/classes/offset/search.rb:28
 class Pagy::Meilisearch < ::Pagy::SearchBase; end
 
-# pkg:gem/pagy#lib/pagy/classes/offset/search.rb:28
+# pkg:gem/pagy#lib/pagy/classes/offset/search.rb:29
 Pagy::Meilisearch::DEFAULT = T.let(T.unsafe(nil), Hash)
 
 # pkg:gem/pagy#lib/pagy/toolbox/paginators/meilisearch.rb:6
@@ -1385,12 +1388,9 @@ end
 #
 # pkg:gem/pagy#lib/pagy/classes/offset/search.rb:19
 class Pagy::SearchBase < ::Pagy::Offset
-  # pkg:gem/pagy#lib/pagy/classes/offset/search.rb:22
+  # pkg:gem/pagy#lib/pagy/classes/offset/search.rb:20
   def search?; end
 end
-
-# pkg:gem/pagy#lib/pagy/classes/offset/search.rb:20
-Pagy::SearchBase::DEFAULT = T.let(T.unsafe(nil), Hash)
 
 # pkg:gem/pagy#lib/pagy/modules/searcher.rb:4
 module Pagy::Searcher
@@ -1409,8 +1409,11 @@ module Pagy::Searcher
   end
 end
 
-# pkg:gem/pagy#lib/pagy/classes/offset/search.rb:31
+# pkg:gem/pagy#lib/pagy/classes/offset/search.rb:32
 class Pagy::Searchkick < ::Pagy::SearchBase; end
+
+# pkg:gem/pagy#lib/pagy/classes/offset/search.rb:33
+Pagy::Searchkick::DEFAULT = T.let(T.unsafe(nil), Hash)
 
 # pkg:gem/pagy#lib/pagy/toolbox/paginators/searchkick.rb:6
 module Pagy::SearchkickPaginator
@@ -1419,9 +1422,15 @@ module Pagy::SearchkickPaginator
   # pkg:gem/pagy#lib/pagy/toolbox/paginators/searchkick.rb:9
   def paginate(search, options); end
 
+  # pkg:gem/pagy#lib/pagy/toolbox/paginators/searchkick.rb:36
+  def total_count_from(response_object, options); end
+
   class << self
     # pkg:gem/pagy#lib/pagy/toolbox/paginators/searchkick.rb:9
     def paginate(search, options); end
+
+    # pkg:gem/pagy#lib/pagy/toolbox/paginators/searchkick.rb:36
+    def total_count_from(response_object, options); end
   end
 end
 
@@ -1441,8 +1450,11 @@ class Pagy::SyncTask < ::Rake::TaskLib
   def initialize(resource, destination, *targets); end
 end
 
-# pkg:gem/pagy#lib/pagy/classes/offset/search.rb:33
+# pkg:gem/pagy#lib/pagy/classes/offset/search.rb:37
 class Pagy::TypesenseRails < ::Pagy::SearchBase; end
+
+# pkg:gem/pagy#lib/pagy/classes/offset/search.rb:38
+Pagy::TypesenseRails::DEFAULT = T.let(T.unsafe(nil), Hash)
 
 # pkg:gem/pagy#lib/pagy/toolbox/paginators/typesense_rails.rb:6
 module Pagy::TypesenseRailsPaginator
