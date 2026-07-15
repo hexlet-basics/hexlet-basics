@@ -30,6 +30,8 @@ minimumReleaseAgeExclude:
   - '@biomejs/cli-win32-x64@2.5.4'
   - beasties@0.4.3
   - vite-plugin-beasties@0.4.3
+  - i18next-cli@1.66.0
+  - mantine-datatable@9.4.0
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@sentry/cli'

@@ -211,8 +211,8 @@ importers:
         specifier: ^3.3.0
         version: 3.3.0
       mantine-datatable:
-        specifier: ^9.3.1
-        version: 9.3.1(@mantine/core@9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.1(react@19.2.7))(clsx@2.1.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: ^9.4.0
+        version: 9.4.0(@mantine/core@9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.1(react@19.2.7))(clsx@2.1.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       mdast-util-directive:
         specifier: ^3.1.0
         version: 3.1.0
@@ -353,8 +353,8 @@ importers:
         specifier: ^17.7.0
         version: 17.7.0
       i18next-cli:
-        specifier: ^1.65.0
-        version: 1.65.0(@types/node@26.1.1)(react-dom@19.2.7(react@19.2.7))(typescript@7.0.2)
+        specifier: ^1.66.0
+        version: 1.66.0(@types/node@26.1.1)(react-dom@19.2.7(react@19.2.7))(typescript@7.0.2)
       lightningcss:
         specifier: ^1.32.0
         version: 1.32.0
@@ -3234,8 +3234,8 @@ packages:
     resolution: {integrity: sha512-eKCa6bwnJhvxj14kZk5NCPc6Hb6BdsU9DZcOnmQKSnO1VKrfV0zCvtttPZUsBvjmNDn8rpcJfpwSYnHBjc95MQ==}
     engines: {node: '>=18.18.0'}
 
-  i18next-cli@1.65.0:
-    resolution: {integrity: sha512-sak+2Ry4P7wtl7xMAZg2sWG2vup1lRHFBKA7h5IeEqFUog51QEgeYUhHxd2x85+MvS4BhVOZZs833clnd1WgYA==}
+  i18next-cli@1.66.0:
+    resolution: {integrity: sha512-mDB57y1dmMIyrlCIV/oazRcIQ6M5GcvBJDifeuD9T/wOjM+ThHzQGE8XbIE7Y4V4MWVmiSzji38OsgDUXnU1JQ==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -3578,8 +3578,8 @@ packages:
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
-  mantine-datatable@9.3.1:
-    resolution: {integrity: sha512-w+KtNCUcNypgmpwYlbYF9zDb0e5gNFE5YI3ZrgE+9ISJxg/8hpmWyprA4YVMbKY8mC80zwOwaKoew5lLx0esoA==}
+  mantine-datatable@9.4.0:
+    resolution: {integrity: sha512-yFym2vlboGaqSD1bqXVtADMWg8YJtdyc3USQUTSqcLgEWzRPQqK/9WBBU0+XVE2qvMHZfiunuJK+UZV4aa2KmA==}
     peerDependencies:
       '@mantine/core': '>=9.0'
       '@mantine/hooks': '>=9.0'
@@ -7812,7 +7812,7 @@ snapshots:
 
   human-signals@8.0.1: {}
 
-  i18next-cli@1.65.0(@types/node@26.1.1)(react-dom@19.2.7(react@19.2.7))(typescript@7.0.2):
+  i18next-cli@1.66.0(@types/node@26.1.1)(react-dom@19.2.7(react@19.2.7))(typescript@7.0.2):
     dependencies:
       '@croct/json5-parser': 0.2.2
       '@swc/core': 1.15.43
@@ -8100,7 +8100,7 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  mantine-datatable@9.3.1(@mantine/core@9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.1(react@19.2.7))(clsx@2.1.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
+  mantine-datatable@9.4.0(@mantine/core@9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.1(react@19.2.7))(clsx@2.1.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
     dependencies:
       '@mantine/core': 9.4.1(@mantine/hooks@9.4.1(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@mantine/hooks': 9.4.1(react@19.2.7)
