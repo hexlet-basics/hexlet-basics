@@ -2,7 +2,7 @@ apiVersion: v2
 name: codebasics
 description: A Helm chart for deploying codebasics
 type: application
-appVersion: "1.0"
-version: 0.1.0
+appVersion: "0.1.0" # x-release-please-version
+version: 0.1.0 # x-release-please-version
 # Чистая метадата, на рантайм не влияет; убирает [INFO] icon is recommended в helm lint.
 icon: https://code-basics.com/favicon.ico

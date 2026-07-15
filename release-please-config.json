@@ -1,0 +1,18 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "bootstrap-sha": "e54ef40aac18e84214be68a941907c7c1436177e",
+  "packages": {
+    ".": {
+      "release-type": "node",
+      "package-name": "hexlet_basics",
+      "changelog-path": "CHANGELOG.md",
+      "include-v-in-tag": true,
+      "extra-files": [
+        {
+          "type": "generic",
+          "path": "k8s/app-chart/Chart.yaml"
+        }
+      ]
+    }
+  }
+}

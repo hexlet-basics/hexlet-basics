@@ -1,0 +1,39 @@
+name: release-please
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+    steps:
+      # Maintains a "release PR" from conventional commits: bumps package.json,
+      # k8s/app-chart/Chart.yaml (version + appVersion) and CHANGELOG.md.
+      # Merging that PR cuts a vX.Y.Z tag + GitHub Release.
+      # Config: release-please-config.json + .release-please-manifest.json.
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  # Build & push the Docker images only when a release was just cut. Runs in this
+  # same workflow run (triggered by the real push to main), so the default
+  # GITHUB_TOKEN is fine — no PAT needed. A separate `release: published` trigger
+  # would NOT fire, because a Release published by GITHUB_TOKEN doesn't trigger
+  # other workflows (GitHub suppresses workflow-created events to avoid recursion).
+  build:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
+    uses: ./.github/workflows/release.yml
+    with:
+      release_tag: ${{ needs.release-please.outputs.tag_name }}
+    secrets: inherit

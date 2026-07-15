@@ -134,13 +134,11 @@ docker-build:
 docker-staging: docker-build
 	# TODO: implement starting server
 
+# Releases are cut by release-please (see .github/workflows/release-please.yml):
+# merge its release PR to bump versions + CHANGELOG and publish a vX.Y.Z release,
+# which triggers the Docker build in release.yml. Do not mint version tags by hand.
 tag:
 	git tag $(TAG) && git push --tags --no-verify
-
-next-tag:
-	@old_version=$(shell git fetch --tags && git tag -l 'v[0-9]*' | sort -V | tail -n 1 | sed 's/^v//'); \
-		new_version=$$((old_version + 1)); \
-		make tag TAG=v$$new_version
 
 services-frontend-run:
 	bin/vite dev
