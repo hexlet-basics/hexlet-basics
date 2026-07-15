@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { createInstance, type i18n as I18n, type Resource } from "i18next";
 import { initReactI18next } from "react-i18next";
 import en from "@/locales/en/translation.ts";
@@ -14,6 +15,7 @@ const resources = {
 let clientI18n: I18n | null = null;
 
 function initI18n(instance: I18n, locale: Locale, resourceStore: Resource) {
+  dayjs.locale(locale);
   instance.use(initReactI18next);
   void instance.init({
     lng: locale,
@@ -59,6 +61,7 @@ export function getClientI18n(locale: Locale) {
 
     if (clientI18n.language !== locale) {
       void clientI18n.changeLanguage(locale);
+      dayjs.locale(locale);
     }
 
     return clientI18n;

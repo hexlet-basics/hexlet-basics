@@ -44,9 +44,7 @@ export default function BlogPostBlock({ post, lazy }: Props) {
         </Title>
         <Text mb="xs">{post.description}</Text>
         <Group gap="xs" c="dimmed" mt="auto">
-          <Text me="auto" mb="xs">
-            {dayjs().to(post.created_at)}
-          </Text>
+          <Text me="auto">{dayjs().to(post.created_at)}</Text>
           <Group gap={5}>
             <IconThumbUp size={14} />
             <Text>{post.likes_count}</Text>
