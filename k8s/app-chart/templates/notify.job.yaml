@@ -13,7 +13,7 @@ metadata:
     # старт пода (рескейл, drain, OOM) и по разу на каждую реплику.
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-weight": "5"
-    "helm.sh/hook-delete-policy": before-hook-creation
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
 
 spec:
   backoffLimit: 1
