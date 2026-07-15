@@ -34,6 +34,24 @@
       window.addEventListener("vite:preloadError", (event) => {
         window.location.reload();
       });
+
+      // After a deploy, an open tab still runs the old bundle. When it navigates,
+      // Inertia's import.meta.glob resolver tries to load a hashed page chunk that
+      // the new build replaced. That surfaces as an unhandled rejection ("Failed to
+      // fetch dynamically imported module" / Inertia's "Page not found"), NOT a
+      // vite:preloadError, so the handler above misses it. Reload once to pull the
+      // fresh bundle; a short cooldown prevents a reload loop if it isn't skew.
+      window.addEventListener("unhandledrejection", (event) => {
+        var reason = event && event.reason;
+        var message = String((reason && reason.message) || reason || "");
+        var isStaleChunk = /Failed to fetch dynamically imported module|error loading dynamically imported module|Importing a module script failed|Page not found/i.test(message);
+        if (!isStaleChunk) return;
+
+        var last = Number(sessionStorage.getItem("staleChunkReloadAt") || 0);
+        if (Date.now() - last < 10000) return;
+        sessionStorage.setItem("staleChunkReloadAt", String(Date.now()));
+        window.location.reload();
+      });
     </script>
 
     <% if Rails.env.production? %>
