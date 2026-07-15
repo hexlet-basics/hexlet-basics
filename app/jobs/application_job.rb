@@ -1,8 +1,6 @@
 # typed: strict
 
 class ApplicationJob < ActiveJob::Base
-  include Sentry::Rails::ActiveJobExtensions
-
   if Rails.env.production?
     retry_on StandardError, wait: :polynomially_longer
   end
