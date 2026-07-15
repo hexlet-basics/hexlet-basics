@@ -96,7 +96,6 @@ group :development, :test, :staging do
   gem "tapioca", "0.19.1" # capped by boba (<= 0.19.1)
   gem "boba", require: false
   # gem "bullet"
-  gem "goldiloader"
 end
 
 group :development, :staging do
@@ -140,6 +139,9 @@ gem "commonmarker"
 # gem 'slim-rails'
 
 gem "counter_culture"
+# NOTE: было только в dev/test/staging — из-за этого N+1 маскировались локально, но
+# жили в проде. Включён во всех окружениях, чтобы авто-eager-load ассоциаций работал и на проде.
+gem "goldiloader"
 gem "ahoy_matey"
 # gem "country_select"
 # gem 'sorbet-rails' # Temp disable sorbet for memory optimization
