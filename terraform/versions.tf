@@ -4,17 +4,17 @@ terraform {
   required_providers {
     yandex = {
       source  = "yandex-cloud/yandex"
-      version = "~> 0.201.0"
+      version = "~> 0.215.0"
     }
 
     cloudflare = {
       source  = "cloudflare/cloudflare"
-      version = "~> 5.19.0"
+      version = "~> 5.22.0"
     }
 
     external = {
       source  = "hashicorp/external"
-      version = "~> 2.3.0"
+      version = "~> 2.4.0"
     }
   }
 }
