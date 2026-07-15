@@ -3,8 +3,6 @@ source "https://rubygems.org"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails"
-# Use sqlite3 as the database for Active Record
-gem "sqlite3"
 gem "puma"
 
 # Audits gems for known security defects (use config/bundler-audit.yml to ignore issues)
@@ -93,7 +91,7 @@ group :development, :test, :staging do
   gem "factory_bot_rails"
   gem "faker"
 
-  gem "tapioca", "0.19.1" # capped by boba (<= 0.19.1)
+  gem "tapioca"
   gem "boba", require: false
   # gem "bullet"
 end
