@@ -19,8 +19,6 @@ helm-install-app:
 	helm secrets install codebasics $(CURRENT_DIR)/app-chart -f $(CURRENT_DIR)/secrets.yaml
 
 helm-upgrade-app:
+	# Версия берётся из Chart.yaml (её коммитит release-please). Перед деплоем
+	# сделай `git pull` main, чтобы взять поднятую версию.
 	helm secrets upgrade codebasics $(CURRENT_DIR)/app-chart -f $(CURRENT_DIR)/secrets.yaml
-	git reset HEAD
-	git add $(CURRENT_DIR)/app-chart/values.yaml
-	git commit --no-verify -m ":rocket: deploy"
-	git push --no-verify
