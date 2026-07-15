@@ -63,7 +63,7 @@ export default function LeadFormBlock({ leadDto, autoFocus = false }: Props) {
           components={{
             a: (
               <a
-                href="https://t.me/WelcomeCodebasicsBot"
+                href={t(($) => $.common.community_url)}
                 {...propsForExternalLink()}
               />
             ),

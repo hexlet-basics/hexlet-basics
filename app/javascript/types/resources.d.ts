@@ -552,7 +552,7 @@ export default interface Resources {
           message: "Ура! Всё получилось! Сравните своё решение с решением учителя и переходите к следующему уроку";
         };
       };
-      community_url: "https://t.me/HexletLearningBot\n";
+      community_url: "https://t.me/hexletcommunity\n";
       confirm: "Убеждаемся, что мы делаем то что действительно хотим. Хотим?";
       current_state: "Текущее состояние";
       discuss: "ИИ-помощник";
@@ -560,7 +560,7 @@ export default interface Resources {
       empty: "Пусто";
       errors: {
         network: "Возникла сетевая проблема. Попробуйте повторить ещё раз. Если не получилось, убедитесь, что с интернетом всё в порядке, и отключите блокировщики рекламы";
-        server: "Ошибка на сервере. Возможно, скоро отпустит, а возможно — нет. Попробуйте узнать, что произошло в https://ttttt.me/hexletcommunity/12";
+        server: "Ошибка на сервере. Возможно, скоро отпустит, а возможно — нет. Попробуйте узнать, что произошло в https://t.me/hexletcommunity/12";
       };
       export: "Экспорт";
       hello: "Привет мир";
@@ -966,14 +966,14 @@ export default interface Resources {
           breadcrumb: "Хлебные крошки";
           chat: {
             community: "Живые люди";
-            disabled_html: 'Чат временно отключен, так как вы достигли суточного лимита. А наше <a href="https://t.me/HexletLearningBot" traget="_blank">телеграм-сообещство</a> работает круглосуточно, подключайтесь :)';
+            disabled_html: 'Чат временно отключен, так как вы достигли суточного лимита. А наше <a href="https://t.me/hexletcommunity" traget="_blank">телеграм-сообещство</a> работает круглосуточно, подключайтесь :)';
             guest: "Привет! Я Тота и моя задача помочь в обучении. Чтобы активировать меня, нужно зарегистрироваться или залогиниться, если у вас уже есть аккаунт";
             hi: "Привет! Меня зовут Тота и я здесь чтобы вам помочь по любым вопросам теории и практики. Спрашивайте, я всегда на связи!\n\np.s. В день доступно 7 сообщений, поэтому старайтесь задавать вопросы, только по самым важным вещам\n";
             not_available: "Скоро здесь будет наш ИИ помощник. Занимаемся настройкой прямо сейчас";
           };
           common_questions: [
             {
-              answer: 'Команда проекта находится в <a target="_blank" href="https://t.me/HexletLearningBot">телеграм-сообществе</a>. Там можно задать любой вопрос и повлиять на проект\n';
+              answer: 'Команда проекта находится в <a target="_blank" href="https://t.me/hexletcommunity">телеграм-сообществе</a>. Там можно задать любой вопрос и повлиять на проект\n';
               question: "Как с вами связаться? 🙃";
             },
             {
@@ -989,7 +989,7 @@ export default interface Resources {
               question: "Мой код отличается от решения учителя 🤔";
             },
             {
-              answer: "Создавать обучающие материалы, понятные для всех без исключения, довольно сложно. Мы очень стараемся, но всегда есть что улучшать. Если вы встретили материал, который вам непонятен, опишите проблему в обратной связи нашего [сообщества](https://t.me/HexletLearningBot)\n";
+              answer: "Создавать обучающие материалы, понятные для всех без исключения, довольно сложно. Мы очень стараемся, но всегда есть что улучшать. Если вы встретили материал, который вам непонятен, опишите проблему в обратной связи нашего [сообщества](https://t.me/hexletcommunity)\n";
               question: "Прочитал урок — ничего не понятно 🙄";
             },
           ];
@@ -1228,8 +1228,8 @@ export default interface Resources {
       hexlet_rails: "https://ru.hexlet.io/programs/rails?promo_name=prof-rails&promo_position=body&promo_type=link";
       hexlet_recommended_books: "https://ru.hexlet.io/pages/recommended-books?promo_name=books&promo_position=body&promo_type=link&utm_medium=referral&utm_campaign=resources&utm_content=books";
       hexlet_success_stories: "https://ru.hexlet.io/blog/categories/success?promo_name=blog-success&promo_position=body&promo_type=link&utm_source=code-basics&utm_medium=referral&utm_campaign=blog&utm_content=lesson";
-      hexlet_telegram: "https://ttttt.me/hexlet_ru";
-      hexlet_telegram_volunteers: "https://ttttt.me/hexletcommunity/12";
+      hexlet_telegram: "https://t.me/hexlet_ru";
+      hexlet_telegram_volunteers: "https://t.me/hexletcommunity/12";
       hexlet_twitter: "https://twitter.com/HexletHQ";
       hexlet_youtube: "https://www.youtube.com/user/HexletUniversity";
     };
@@ -1690,14 +1690,14 @@ export default interface Resources {
           show: {
             chat: {
               community: "Живые люди";
-              disabled_html: 'Чат временно отключен, так как вы достигли суточного лимита. А наше <a href="https://t.me/HexletLearningBot" traget="_blank">телеграм-сообещство</a> работает круглосуточно, подключайтесь :)';
+              disabled_html: 'Чат временно отключен, так как вы достигли суточного лимита. А наше <a href="https://t.me/hexletcommunity" traget="_blank">телеграм-сообещство</a> работает круглосуточно, подключайтесь :)';
               guest: "Привет! Я Тота и моя задача помочь в обучении. Чтобы активировать меня, нужно зарегистрироваться или залогиниться, если у вас уже есть аккаунт";
               hi: "Привет! Меня зовут Тота и я здесь чтобы вам помочь по любым вопросам теории и практики. Спрашивайте, я всегда на связи!\n\np.s. В день доступно 7 сообщений, поэтому старайтесь задавать вопросы, только по самым важным вещам\n";
               not_available: "Скоро здесь будет наш ИИ помощник. Занимаемся настройкой прямо сейчас";
             };
             common_questions: [
               {
-                answer: 'Команда проекта находится в <a target="_blank" href="https://t.me/HexletLearningBot">телеграм-сообществе</a>. Там можно задать любой вопрос и повлиять на проект\n';
+                answer: 'Команда проекта находится в <a target="_blank" href="https://t.me/hexletcommunity">телеграм-сообществе</a>. Там можно задать любой вопрос и повлиять на проект\n';
                 question: "Как с вами связаться? 🙃";
               },
               {
@@ -1713,7 +1713,7 @@ export default interface Resources {
                 question: "Мой код отличается от решения учителя 🤔";
               },
               {
-                answer: "Создавать обучающие материалы, понятные для всех без исключения, довольно сложно. Мы очень стараемся, но всегда есть что улучшать. Если вы встретили материал, который вам непонятен, опишите проблему в обратной связи нашего [сообщества](https://t.me/HexletLearningBot)\n";
+                answer: "Создавать обучающие материалы, понятные для всех без исключения, довольно сложно. Мы очень стараемся, но всегда есть что улучшать. Если вы встретили материал, который вам непонятен, опишите проблему в обратной связи нашего [сообщества](https://t.me/hexletcommunity)\n";
                 question: "Прочитал урок — ничего не понятно 🙄";
               },
             ];

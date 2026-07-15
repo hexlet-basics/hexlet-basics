@@ -75,7 +75,7 @@ export default function ApplicationLayout({
       <Affix position={{ bottom: 20, right: 20 }}>
         <ActionIcon
           component="a"
-          href="https://t.me/WelcomeCodebasicsBot"
+          href={t(($) => $.common.community_url)}
           aria-label={t(
             ($) => $.models.attributes.user["contact_method/values"].telegram,
           )}

@@ -146,7 +146,7 @@ export default function FooterBlock() {
                     <IconBrandGithub />
                   </Anchor>
                   <Anchor
-                    href="https://ttttt.me/hexlet_ru"
+                    href="https://t.me/hexlet_ru"
                     underline="never"
                     aria-label="Hexlet Telegram Channel"
                     {...propsForExternalLink()}

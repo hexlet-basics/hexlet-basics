@@ -12,7 +12,7 @@ ru:
             notice: Ваш лайк уже засчитан :)
       leads:
         create:
-          success: Заявка отправлена! Свяжемся с вами в течение одного-двух рабочих дней. Или напишите нам в <a target="_blank" href="https://t.me/WelcomeCodebasicsBot">телеграм</a> чтобы получить помощь быстрее
+          success: Заявка отправлена! Свяжемся с вами в течение одного-двух рабочих дней. Или напишите нам в <a target="_blank" href="https://t.me/hexletcommunity">телеграм</a> чтобы получить помощь быстрее
           error: Проверьте ошибки в форме
       books:
         create_request:

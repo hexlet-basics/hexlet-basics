@@ -574,7 +574,7 @@ export default {
             "Yippee! Well done! Compare your answer with the teacher’s one and move to the next lesson",
         },
       },
-      community_url: "https://t.me/HexletLearningBot\n",
+      community_url: "https://t.me/hexletcommunity\n",
       confirm:
         "You want to reset the exercise progress. The current code version will not be saved. We hope you’ve already copied it. Continue resetting?",
       current_state: "Current state",
@@ -1021,7 +1021,7 @@ export default {
           chat: {
             community: "Живые люди",
             disabled_html:
-              'Чат временно отключен, так как вы достигли суточного лимита. А наше <a href="https://t.me/HexletLearningBot" traget="_blank">телеграм-сообещство</a> работает круглосуточно, подключайтесь :)',
+              'Чат временно отключен, так как вы достигли суточного лимита. А наше <a href="https://t.me/hexletcommunity" traget="_blank">телеграм-сообещство</a> работает круглосуточно, подключайтесь :)',
             guest:
               "Hi! I'm Tota, and my job is to help you learn. To activate me, please sign up or log in if you already have an account",
             hi: "Hi! My name is Tota, and I'm here to help you with any questions about theory or practice. Just ask — I'm always here for you!\n\nP.S. You can send up to 7 messages per day, so try to ask only the most important questions\n",
@@ -1052,7 +1052,7 @@ export default {
             {
               question: "Прочитал урок — ничего не понятно 🙄",
               answer:
-                "Создавать обучающие материалы, понятные для всех без исключения, довольно сложно. Мы очень стараемся, но всегда есть что улучшать. Если вы встретили материал, который вам непонятен, опишите проблему в обратной связи нашего [сообщества](https://t.me/HexletLearningBot)\n",
+                "Создавать обучающие материалы, понятные для всех без исключения, довольно сложно. Мы очень стараемся, но всегда есть что улучшать. Если вы встретили материал, который вам непонятен, опишите проблему в обратной связи нашего [сообщества](https://t.me/hexletcommunity)\n",
             },
           ],
           confirm:
@@ -1333,8 +1333,8 @@ export default {
         "https://hexlet.io/pages/recommended-books?promo_name=books&promo_position=body&promo_type=link",
       hexlet_success_stories:
         "https://hexlet.io/blog/categories/success?promo_name=blog-success&promo_position=body&promo_type=link",
-      hexlet_telegram: "https://ttttt.me/hexlet_ru",
-      hexlet_telegram_volunteers: "https://ttttt.me/hexletcommunity/12",
+      hexlet_telegram: "https://t.me/hexlet_ru",
+      hexlet_telegram_volunteers: "https://t.me/hexletcommunity/12",
       hexlet_twitter: "https://twitter.com/hexlet_io",
       hexlet_youtube:
         "https://www.youtube.com/channel/UCMGJqXOa4m37IdmDLO-n-eQ",
@@ -1814,7 +1814,7 @@ export default {
             chat: {
               community: "Живые люди",
               disabled_html:
-                'Чат временно отключен, так как вы достигли суточного лимита. А наше <a href="https://t.me/HexletLearningBot" traget="_blank">телеграм-сообещство</a> работает круглосуточно, подключайтесь :)',
+                'Чат временно отключен, так как вы достигли суточного лимита. А наше <a href="https://t.me/hexletcommunity" traget="_blank">телеграм-сообещство</a> работает круглосуточно, подключайтесь :)',
               guest:
                 "Hi! I'm Tota, and my job is to help you learn. To activate me, please sign up or log in if you already have an account",
               hi: "Hi! My name is Tota, and I'm here to help you with any questions about theory or practice. Just ask — I'm always here for you!\n\nP.S. You can send up to 7 messages per day, so try to ask only the most important questions\n",
@@ -1845,7 +1845,7 @@ export default {
               {
                 question: "Прочитал урок — ничего не понятно 🙄",
                 answer:
-                  "Создавать обучающие материалы, понятные для всех без исключения, довольно сложно. Мы очень стараемся, но всегда есть что улучшать. Если вы встретили материал, который вам непонятен, опишите проблему в обратной связи нашего [сообщества](https://t.me/HexletLearningBot)\n",
+                  "Создавать обучающие материалы, понятные для всех без исключения, довольно сложно. Мы очень стараемся, но всегда есть что улучшать. Если вы встретили материал, который вам непонятен, опишите проблему в обратной связи нашего [сообщества](https://t.me/hexletcommunity)\n",
               },
             ],
             controls: {
