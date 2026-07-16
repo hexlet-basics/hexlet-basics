@@ -30,12 +30,10 @@ class Web::ApplicationController < ApplicationController
     landing_pages_for_lists = Language::LandingPage.web
       .where(main: true).where(listed: true)
       .merge(Language.ordered)
-      .includes(:language)
 
     landing_pages_for_footer = Language::LandingPage.web
       .where(footer: true)
       .merge(Language.ordered)
-      .includes(:language)
 
     active_banner = Banner.active.first
 
