@@ -50,6 +50,7 @@ const languageModules: Record<
   prolog: () => import("@shikijs/langs/prolog"),
   "1c": () => import("@shikijs/langs/1c"),
   md: () => import("@shikijs/langs/markdown"),
+  diff: () => import("@shikijs/langs/diff"),
   swift: () => import("@shikijs/langs/swift"),
   rust: () => import("@shikijs/langs/rust"),
 };
