@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.1.2](https://github.com/hexlet-basics/hexlet-basics/compare/hexlet_basics-v0.1.1...hexlet_basics-v0.1.2) (2026-07-16)
+
+
+### Bug Fixes
+
+* **api:** return 422 instead of 500 on lesson check without version_id ([2e0a4b8](https://github.com/hexlet-basics/hexlet-basics/commit/2e0a4b8270aeb6e89711e24895435e9d300512a5))
+* **blog:** trim card bottom spacing and localize post date ([d1c1e61](https://github.com/hexlet-basics/hexlet-basics/commit/d1c1e6156cff02f4d2eef94ac9c7b3755c866303))
+* **i18n:** load ru and es dayjs locales for date formatting ([e6637e2](https://github.com/hexlet-basics/hexlet-basics/commit/e6637e28e318ab732bff5af05ae5c84986214843))
+* **languages:** match registration heading size to home page ([b494433](https://github.com/hexlet-basics/hexlet-basics/commit/b494433844997f8d4edb17008688754680976fe7))
+* **shiki:** register diff language for code highlighting ([415ab1b](https://github.com/hexlet-basics/hexlet-basics/commit/415ab1baeea8d5c984969bff04e8798ff51dc931))
+* **telegram:** point bot links to community and dedupe via translation ([4c4de41](https://github.com/hexlet-basics/hexlet-basics/commit/4c4de41794f9b1663eb33589ee2defd5d54639c7))
+
+
+### Performance Improvements
+
+* **web:** drop redundant landing-page includes that broke eager loading ([28459ee](https://github.com/hexlet-basics/hexlet-basics/commit/28459ee1d4bbd863ab9830e5c69270e6341a195b))
+
+
+### Miscellaneous
+
+* **deps:** add bundler checksum to Gemfile.lock ([830c3c3](https://github.com/hexlet-basics/hexlet-basics/commit/830c3c37ac92fadcbc77ff74f680943fd00e9fd2))
+* **deps:** bump mantine-datatable to 9.4.0 and i18next-cli to 1.66.0 ([c00f2a4](https://github.com/hexlet-basics/hexlet-basics/commit/c00f2a4c8a8fe79aa44b1e4b9604bb3be01c2142))
+* **k8s:** delete migrate/notify hook pods on success ([88738d0](https://github.com/hexlet-basics/hexlet-basics/commit/88738d08fd2cb4d7c9462dfa985bbf608c8c772b))
+
 ## [0.1.1](https://github.com/hexlet-basics/hexlet-basics/compare/hexlet_basics-v0.1.0...hexlet_basics-v0.1.1) (2026-07-15)
 
 
