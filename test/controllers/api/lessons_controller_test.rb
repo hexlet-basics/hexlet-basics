@@ -48,6 +48,13 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     assert { body[:result] == expected[:result] }
   end
 
+  def test_check_returns_unprocessable_entity_without_version_id
+    code = file_fixture("exercise/correct.rb").read
+
+    post check_api_lesson_url(@lesson), params: { data: { code: code } }
+    assert_response :unprocessable_entity
+  end
+
   def test_check_finishes_multiple_lessons_without_creating_survey_state
     code = file_fixture("exercise/correct.rb").read
 

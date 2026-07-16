@@ -6,4 +6,6 @@ class LessonCheckStruct < T::Struct
 
   const :version_id, T.nilable(Integer)
   const :code, T.nilable(String)
+
+  validates :version_id, presence: true
 end
