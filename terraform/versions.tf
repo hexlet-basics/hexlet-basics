@@ -4,7 +4,7 @@ terraform {
   required_providers {
     yandex = {
       source  = "yandex-cloud/yandex"
-      version = "~> 0.215.0"
+      version = "~> 0.217.0"
     }
 
     cloudflare = {
