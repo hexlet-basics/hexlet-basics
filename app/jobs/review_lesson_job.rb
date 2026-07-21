@@ -12,7 +12,7 @@ class ReviewLessonJob < ApplicationJob
 
     messages = T.must(info.lesson).ai_messages.role_user.order(id: :desc).limit(100)
 
-    raw_output = nil
+    raw_output = ""
     if !messages.empty?
       instructions = <<~PROMPT
       Проанализируй вопросы, которые задают студенты ассистенту по уроку. Вопросы будут переданы ниже.

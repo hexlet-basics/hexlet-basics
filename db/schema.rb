@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_21_191956) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_22_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -355,7 +355,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_21_191956) do
     t.bigint "language_lesson_version_id", null: false
     t.bigint "language_lesson_version_info_id", null: false
     t.string "locale", null: false
-    t.text "summary"
+    t.text "summary", default: "", null: false
     t.datetime "updated_at", null: false
     t.index ["language_id"], name: "index_language_lesson_reviews_on_language_id"
     t.index ["language_lesson_id"], name: "index_language_lesson_reviews_on_language_lesson_id"

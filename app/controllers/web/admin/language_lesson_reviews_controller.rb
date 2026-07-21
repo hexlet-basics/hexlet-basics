@@ -6,7 +6,7 @@ class Web::Admin::LanguageLessonReviewsController < Web::Admin::ApplicationContr
   sig { void }
   def index
     q = ransack_params("sf" => "id", "so" => "desc")
-    search = Language::Lesson::Review.where(locale: I18n.locale).ransack(q)
+    search = Language::Lesson::Review.where(locale: I18n.locale).with_summary.ransack(q)
     pagy, records = pagy(search.result)
 
     render inertia: true, props: {

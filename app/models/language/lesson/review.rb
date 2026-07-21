@@ -6,7 +6,7 @@
 #
 #  id                              :bigint           not null, primary key
 #  locale                          :string           not null
-#  summary                         :text
+#  summary                         :text             default(""), not null
 #  created_at                      :datetime         not null
 #  updated_at                      :datetime         not null
 #  language_id                     :bigint           not null
@@ -37,6 +37,10 @@ class Language::Lesson::Review < ApplicationRecord
   # validates :summary, presence: true
   validates :lesson, presence: true, uniqueness: { scope: :locale }
   validates :locale, presence: true
+
+  # A summary is filled only when a lesson actually has student questions
+  # (see ReviewLessonJob), so a non-empty summary marks reviews worth looking at.
+  scope :with_summary, -> { where.not(summary: "") }
 
   sig { params(auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_attributes(auth_object = nil)
