@@ -22,7 +22,7 @@ Developer-facing docs, code comments, and commit messages are written in
   Rails `8.1`, PostgreSQL.
 - **Frontend**: Inertia.js + React 19 + TypeScript + Vite (`app/javascript/`),
   Mantine UI, Monaco editor.
-- **Package manager**: `pnpm` (Node `25.2.1`, see `.node-version`). Do not use
+- **Package manager**: `pnpm` (Node `26.5.0`, see `.node-version`). Do not use
   `npm`/`npx`.
 - **Tests**: Minitest (Ruby), Vitest (frontend).
 - **Lint/format**: RuboCop (Rails Omakase) + Sorbet for Ruby, Biome +
@@ -33,7 +33,7 @@ Developer-facing docs, code comments, and commit messages are written in
 
 ## Getting started
 
-Requirements: `make`, `docker`, Ruby `4.0.6`, Node `25.2.1`.
+Requirements: `make`, `docker`, Ruby `4.0.6`, Node `26.5.0`.
 
 1. Install system dependencies:
 

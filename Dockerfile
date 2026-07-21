@@ -37,7 +37,7 @@ RUN curl -fsSL "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/x86_6
 # Throw-away build stage to reduce size of final image
 FROM base AS build
 
-RUN curl -sL https://deb.nodesource.com/setup_25.x | sh -
+RUN curl -sL https://deb.nodesource.com/setup_26.x | sh -
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \

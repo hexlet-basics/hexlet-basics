@@ -9,7 +9,7 @@
 - make
 - docker
 - ruby = 4.0.6
-- node = 25.2.1
+- node = 26.5.0
 
 ### Run
 
