@@ -8,6 +8,7 @@ import {
   SimpleGrid,
   Stack,
   Text,
+  Tooltip,
 } from "@mantine/core";
 import {
   IconBrandGithub,
@@ -145,14 +146,16 @@ export default function FooterBlock() {
                   >
                     <IconBrandGithub />
                   </Anchor>
-                  <Anchor
-                    href="https://t.me/hexlet_ru"
-                    underline="never"
-                    aria-label="Hexlet Telegram Channel"
-                    {...propsForExternalLink()}
-                  >
-                    <IconSend />
-                  </Anchor>
+                  <Tooltip label={t(($) => $.common.telegram_channel)}>
+                    <Anchor
+                      href="https://t.me/hexlet_ru"
+                      underline="never"
+                      aria-label={t(($) => $.common.telegram_channel)}
+                      {...propsForExternalLink()}
+                    >
+                      <IconSend />
+                    </Anchor>
+                  </Tooltip>
                   <Anchor
                     href="https://www.youtube.com/@HexletOrg"
                     underline="never"

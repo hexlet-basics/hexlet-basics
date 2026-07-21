@@ -7,6 +7,7 @@ import {
   Container,
   Stack,
   Title,
+  Tooltip,
 } from "@mantine/core";
 import { useDisclosure, useWindowEvent } from "@mantine/hooks";
 import { IconSend } from "@tabler/icons-react";
@@ -73,19 +74,19 @@ export default function ApplicationLayout({
   return (
     <>
       <Affix position={{ bottom: 20, right: 20 }}>
-        <ActionIcon
-          component="a"
-          href={t(($) => $.common.community_url)}
-          aria-label={t(
-            ($) => $.models.attributes.user["contact_method/values"].telegram,
-          )}
-          variant="filled"
-          size="xl"
-          radius="xl"
-          {...propsForExternalLink()}
-        >
-          <IconSend aria-hidden="true" />
-        </ActionIcon>
+        <Tooltip label={t(($) => $.common.community_chat)}>
+          <ActionIcon
+            component="a"
+            href={t(($) => $.common.community_url)}
+            aria-label={t(($) => $.common.community_chat)}
+            variant="filled"
+            size="xl"
+            radius="xl"
+            {...propsForExternalLink()}
+          >
+            <IconSend aria-hidden="true" />
+          </ActionIcon>
+        </Tooltip>
       </Affix>
       <AppShell header={{ height: 60 }}>
         <AppShell.Header>

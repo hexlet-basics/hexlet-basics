@@ -574,7 +574,9 @@ export default {
             "Yippee! Well done! Compare your answer with the teacher’s one and move to the next lesson",
         },
       },
+      community_chat: "Chat de comunidad y soporte",
       community_url: "https://t.me/hexletcommunity\n",
+      telegram_channel: "Canal de Telegram de Hexlet",
       confirm:
         "You want to reset the exercise progress. The current code version will not be saved. We hope you’ve already copied it. Continue resetting?",
       current_state: "Current state",

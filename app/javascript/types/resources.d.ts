@@ -552,6 +552,7 @@ export default interface Resources {
           message: "Ура! Всё получилось! Сравните своё решение с решением учителя и переходите к следующему уроку";
         };
       };
+      community_chat: "Чат сообщества и поддержки";
       community_url: "https://t.me/hexletcommunity\n";
       confirm: "Убеждаемся, что мы делаем то что действительно хотим. Хотим?";
       current_state: "Текущее состояние";
@@ -626,6 +627,7 @@ export default interface Resources {
       };
       success_message: "Операция выполнена успешно.";
       teacherSolution: "Решение учителя:";
+      telegram_channel: "Телеграм-канал Хекслета";
       testForExercise: "Тесты";
       testInstructions: "Ваше упражнение проверяется по этим тестам";
       time: {
