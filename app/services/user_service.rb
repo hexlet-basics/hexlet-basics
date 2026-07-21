@@ -5,14 +5,14 @@ class UserService < ApplicationService
   class << self
     extend T::Sig
 
-    sig { params(user: User, suffix: T.untyped).void }
+    sig { params(user: User, suffix: T.nilable(String)).void }
     def reset_password!(user, suffix)
       return if user.email.blank?
 
       UserMailer.with(user:, suffix:).reset_password.deliver_later
     end
 
-    sig { params(id: T.untyped, struct: UserStruct).returns(Typed::Result[User, User]) }
+    sig { params(id: String, struct: UserStruct).returns(Typed::Result[User, User]) }
     def update(id, struct)
       user = User.find(id)
       return fail_with(user) unless user.update(struct.attributes)

@@ -1,8 +1,10 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class SocialNetworkService < ApplicationService
-  sig { params(auth: T.untyped).returns(Typed::Success[User]) }
+  extend T::Sig
+
+  sig { params(auth: OmniAuth::AuthHash).returns(Typed::Success[User]) }
   def self.authenticate_user(auth)
     provider = auth[:provider]
     uid = auth[:uid]

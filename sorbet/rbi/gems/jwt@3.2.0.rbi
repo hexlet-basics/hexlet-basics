@@ -1541,13 +1541,13 @@ class JWT::EncodedToken::ClaimsContext
   def initialize(token); end
 
   # pkg:gem/jwt#lib/jwt/encoded_token/claims_context.rb:12
-  def header(*args, **_arg1, &block); end
+  def header(*_arg0, **_arg1, &_arg2); end
 
   # pkg:gem/jwt#lib/jwt/encoded_token/claims_context.rb:18
   def payload; end
 
   # pkg:gem/jwt#lib/jwt/encoded_token/claims_context.rb:12
-  def unverified_payload(*args, **_arg1, &block); end
+  def unverified_payload(*_arg0, **_arg1, &_arg2); end
 end
 
 # pkg:gem/jwt#lib/jwt/encoded_token.rb:17
@@ -2341,13 +2341,13 @@ class JWT::JWK::Set
   def add(key); end
 
   # pkg:gem/jwt#lib/jwt/jwk/set.rb:37
-  def delete(*args, **_arg1, &block); end
+  def delete(*_arg0, **_arg1, &_arg2); end
 
   # pkg:gem/jwt#lib/jwt/jwk/set.rb:37
-  def dig(*args, **_arg1, &block); end
+  def dig(*_arg0, **_arg1, &_arg2); end
 
   # pkg:gem/jwt#lib/jwt/jwk/set.rb:37
-  def each(*args, **_arg1, &block); end
+  def each(*_arg0, **_arg1, &_arg2); end
 
   # pkg:gem/jwt#lib/jwt/jwk/set.rb:73
   def eql?(other); end
@@ -2362,7 +2362,7 @@ class JWT::JWK::Set
   def keys; end
 
   # pkg:gem/jwt#lib/jwt/jwk/set.rb:75
-  def length(*args, **_arg1, &block); end
+  def length(*_arg0, **_arg1, &_arg2); end
 
   # pkg:gem/jwt#lib/jwt/jwk/set.rb:55
   def merge(enum); end
@@ -2374,7 +2374,7 @@ class JWT::JWK::Set
   def select!(&block); end
 
   # pkg:gem/jwt#lib/jwt/jwk/set.rb:37
-  def size(*args, **_arg1, &block); end
+  def size(*_arg0, **_arg1, &_arg2); end
 
   # pkg:gem/jwt#lib/jwt/jwk/set.rb:60
   def union(enum); end

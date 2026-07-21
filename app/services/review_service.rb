@@ -14,7 +14,7 @@ class ReviewService < ApplicationService
       success_with(review)
     end
 
-    sig { params(id: T.untyped, struct: ReviewStruct, locale: String).returns(Typed::Result[Review, Review]) }
+    sig { params(id: String, struct: ReviewStruct, locale: String).returns(Typed::Result[Review, Review]) }
     def update(id, struct, locale:)
       review = Review.find(id)
       attributes = struct.attributes.merge(locale:)

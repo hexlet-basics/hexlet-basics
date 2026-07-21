@@ -18,7 +18,7 @@ class StaffRoleService < ApplicationService
       success_with(payload)
     end
 
-    sig { params(id: T.untyped, struct: StaffRoleUpdateStruct).returns(Typed::Result[Payload, Payload]) }
+    sig { params(id: String, struct: StaffRoleUpdateStruct).returns(Typed::Result[Payload, Payload]) }
     def update(id, struct)
       role = StaffMember::Role.find(id)
       payload = Payload.new(role:)

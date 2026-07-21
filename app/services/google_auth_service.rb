@@ -5,7 +5,7 @@ class GoogleAuthService < ApplicationService
   class << self
     extend T::Sig
 
-    sig { params(payload: T.untyped).returns(Typed::Success[User]) }
+    sig { params(payload: T::Hash[String, T.untyped]).returns(Typed::Success[User]) }
     def authenticate_user(payload)
       uid = payload["sub"]
 

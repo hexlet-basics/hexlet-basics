@@ -5,7 +5,7 @@ class LeadService < ApplicationService
   class << self
     extend T::Sig
 
-    sig { params(struct: LeadStruct, user: User, courses_data: T.untyped, ahoy_visit: T.untyped).returns(Typed::Result[Lead, Lead]) }
+    sig { params(struct: LeadStruct, user: User, courses_data: T::Array[T::Hash[Symbol, T.untyped]], ahoy_visit: T.nilable(Ahoy::Visit)).returns(Typed::Result[Lead, Lead]) }
     def create(struct, user:, courses_data:, ahoy_visit:)
       lead = Lead.new(
         ym_client_id: struct.ym_client_id,

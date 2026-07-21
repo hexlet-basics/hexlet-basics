@@ -16,7 +16,7 @@ class LandingPageService < ApplicationService
       success_with(landing_page)
     end
 
-    sig { params(id: T.untyped, struct: LandingPageStruct, outcomes_image: T.untyped).returns(Typed::Result[LandingPage, LandingPage]) }
+    sig { params(id: String, struct: LandingPageStruct, outcomes_image: T.untyped).returns(Typed::Result[LandingPage, LandingPage]) }
     def update(id, struct, outcomes_image: nil)
       landing_page = LandingPage.with_locale.find(id)
       attributes = attrs(struct, outcomes_image)

@@ -14,7 +14,7 @@ class BlogPostService < ApplicationService
       success_with(blog_post)
     end
 
-    sig { params(id: T.untyped, struct: BlogPostStruct, locale: String, cover: T.untyped).returns(Typed::Result[BlogPost, BlogPost]) }
+    sig { params(id: String, struct: BlogPostStruct, locale: String, cover: T.untyped).returns(Typed::Result[BlogPost, BlogPost]) }
     def update(id, struct, locale:, cover: nil)
       blog_post = BlogPost.find(id)
       attributes = attrs(struct, cover).merge(locale:)

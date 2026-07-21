@@ -14,7 +14,7 @@ class LanguageService < ApplicationService
       success_with(language)
     end
 
-    sig { params(id: T.untyped, struct: LanguageStruct, cover: T.untyped).returns(Typed::Result[Language, Language]) }
+    sig { params(id: String, struct: LanguageStruct, cover: T.untyped).returns(Typed::Result[Language, Language]) }
     def update(id, struct, cover: nil)
       language = Language.find(id)
       attributes = attrs(struct, cover)

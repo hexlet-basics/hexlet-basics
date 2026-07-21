@@ -13,7 +13,7 @@ class LanguageCategoryService < ApplicationService
       persist(category, struct)
     end
 
-    sig { params(id: T.untyped, struct: LanguageCategoryStruct, locale: String).returns(Typed::Result[Category, Category]) }
+    sig { params(id: String, struct: LanguageCategoryStruct, locale: String).returns(Typed::Result[Category, Category]) }
     def update(id, struct, locale:)
       category = Category.find(id)
       category.assign_attributes(category_attributes(struct).merge(locale:))

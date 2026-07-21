@@ -45,7 +45,7 @@ class CourseProgressService < ApplicationService
     # SolutionCheckedEvent (guest-safe). On a passing check by a signed-in user,
     # finishes the lesson and, if it was the last one, the course. Returns a
     # typed payload with the exercise outcome and the finished flags.
-    sig { params(user: T.nilable(User), lesson: Language::Lesson, lesson_version: T.untyped, language_version: T.untyped, code: T.untyped, locale: String).returns(Typed::Result[CheckPayload, NilClass]) }
+    sig { params(user: T.nilable(User), lesson: Language::Lesson, lesson_version: Language::Lesson::Version, language_version: Language::Version, code: String, locale: String).returns(Typed::Result[CheckPayload, NilClass]) }
     def record_check(user:, lesson:, lesson_version:, language_version:, code:, locale:)
       language = lesson.language
       exercise = LessonTester.run(lesson_version, language_version, code, user)

@@ -13,7 +13,7 @@ class BannerService < ApplicationService
       success_with(banner)
     end
 
-    sig { params(id: T.untyped, struct: BannerStruct).returns(Typed::Result[Banner, Banner]) }
+    sig { params(id: String, struct: BannerStruct).returns(Typed::Result[Banner, Banner]) }
     def update(id, struct)
       banner = Banner.find(id)
       return fail_with(banner) unless banner.update(struct.attributes)

@@ -24,7 +24,7 @@ class Web::AuthController < Web::ApplicationController
 
   private
 
-  sig { void }
+  sig { returns(OmniAuth::AuthHash) }
   def auth
     request.env["omniauth.auth"]
   end
