@@ -79,6 +79,7 @@ export default function SolutionTab() {
       <CodeHighlight
         code={content}
         language={getEditorLanguage(course.slug!)}
+        withCopyButton={false}
       />
     );
   };
@@ -93,6 +94,7 @@ export default function SolutionTab() {
           <CodeHighlight
             code={lesson.original_code!}
             language={getEditorLanguage(course.slug!)}
+            withCopyButton={false}
           />
         </Stack>
         <Stack>

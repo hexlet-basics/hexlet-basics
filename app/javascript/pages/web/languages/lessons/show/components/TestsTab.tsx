@@ -18,6 +18,7 @@ export default function TestsTab() {
       <CodeHighlight
         language={getEditorLanguage(course.slug!)}
         code={lesson.test_code ?? ""}
+        withCopyButton={false}
       />
     </Stack>
   );
