@@ -29,6 +29,9 @@ en:
           success: You have signed in successfully. You can start learning now.
           failure: We couldn't get data from Google! Requires setting up your Google account!
       languages:
+        success:
+          error: This course has lessons you haven't completed yet
+          warning: This course still has unfinished lessons. Complete them to finish the course!
         show:
           warning: The Language has lessons only in russian. Switch locale if you can read it :)
           empty_language_current_version: Language is under development, please check back later or try any other available language
