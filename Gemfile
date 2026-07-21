@@ -168,5 +168,6 @@ gem "configus"
 gem "rails_event_store"
 
 gem "pundit"
+gem "rack-attack"
 # gem "faraday"
 # gem "httpx"
