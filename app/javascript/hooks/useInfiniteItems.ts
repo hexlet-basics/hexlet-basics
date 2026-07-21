@@ -1,4 +1,3 @@
-import { usePage } from "@inertiajs/react";
 import { useEffect, useRef, useState } from "react";
 import type { BlogPost } from "@/types";
 
@@ -12,46 +11,60 @@ export default function useInfiniteItems<T extends BlogPost>(
   firstPost: T,
   loadNext: (lastPostId: number) => Promise<T>,
 ): Return<T> {
-  const { url: currentUrl } = usePage();
   const [items, setItems] = useState<T[]>([firstPost]);
   const postMapRef = useRef<Map<HTMLElement, T>>(new Map());
-  const observerRef = useRef<IntersectionObserver | null>(null);
 
   const setContainerRef = (ref: HTMLElement | null, post: T) => {
-    if (ref && observerRef.current && !postMapRef.current.has(ref)) {
+    if (ref && !postMapRef.current.has(ref)) {
       postMapRef.current.set(ref, post);
-      observerRef.current.observe(ref);
     }
   };
 
-  // IntersectionObserver — отслеживает появление поста в области видимости
+  // Синхронизируем URL с постом, который сейчас находится у верха экрана.
+  // Считаем геометрию по живому getBoundingClientRect на скролл, поэтому
+  // выбор поста детерминирован и симметричен при прокрутке вверх и вниз
+  // (старый вариант брал последний из массива пересечений и не возвращал
+  // URL при скролле вверх — issue #587).
   useEffect(() => {
-    if (observerRef.current) return;
+    let frame = 0;
 
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        const visibleEntries = entries
-          .filter((entry) => entry.isIntersecting)
-          .map((entry) => ({
-            entry,
-            post: postMapRef.current.get(entry.target as HTMLElement),
-          }));
+    const syncUrl = () => {
+      frame = 0;
+      // Опорная линия у верхней части вьюпорта — активен пост, который её пересекает.
+      const referenceLine = window.innerHeight * 0.25;
 
-        const lastVisible = visibleEntries.at(-1);
-        if (!lastVisible) return;
-
-        const url = lastVisible.post!.url;
-        if (window.location.pathname !== new URL(url).pathname) {
-          console.log("🔁 Switched to post:", url);
-          window.history.replaceState({}, "", url);
+      let active: { post: T; top: number } | null = null;
+      for (const [element, post] of postMapRef.current) {
+        const { top, bottom } = element.getBoundingClientRect();
+        if (top <= referenceLine && bottom > referenceLine) {
+          active = { post, top };
+          break;
         }
-      },
-      {
-        threshold: 0,
-      },
-    );
+        // Фолбэк на случай зазоров: ближайший пост над линией.
+        if (top <= referenceLine && (!active || top > active.top)) {
+          active = { post, top };
+        }
+      }
 
-    return () => observerRef.current?.disconnect();
+      if (!active) return;
+      const { url } = active.post;
+      if (window.location.pathname !== new URL(url).pathname) {
+        window.history.replaceState({}, "", url);
+      }
+    };
+
+    const onScroll = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(syncUrl);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    syncUrl();
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
   }, []);
 
   // Маркер загрузки следующих постов
