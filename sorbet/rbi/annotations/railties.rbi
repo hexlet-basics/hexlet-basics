@@ -69,9 +69,20 @@ end
 class Rails::Engine < ::Rails::Railtie
   class << self
     # @shim: delegated to the instance using `method_missing`
+    sig { void }
+    def load_seed; end
+
+    # @shim: delegated to the instance using `method_missing`
+    sig { returns(Pathname) }
+    def root; end
+
+    # @shim: delegated to the instance using `method_missing`
     sig { params(block: T.nilable(T.proc.bind(ActionDispatch::Routing::Mapper).void)).returns(ActionDispatch::Routing::RouteSet) }
     def routes(&block); end
   end
+
+  sig { void }
+  def load_seed; end
 
   sig { params(block: T.nilable(T.proc.bind(ActionDispatch::Routing::Mapper).void)).returns(ActionDispatch::Routing::RouteSet) }
   def routes(&block); end

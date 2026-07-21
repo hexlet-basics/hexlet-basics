@@ -193,6 +193,9 @@ module GeneratedPathHelpersModule
   def edit_password_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def flipper_ui_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def for_teachers_cases_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

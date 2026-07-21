@@ -193,6 +193,9 @@ module GeneratedUrlHelpersModule
   def edit_password_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def flipper_ui_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def for_teachers_cases_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
