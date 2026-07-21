@@ -1,0 +1,57 @@
+# i18n-tasks config — https://github.com/glebm/i18n-tasks
+# Scope: the Rails backend YAML locales in config/locales/*.yml only.
+# Frontend copy lives in app/javascript/locales/*/translation.ts and is managed
+# separately by i18next-cli (`make sync-locales`); it is NOT scanned here.
+
+base_locale: en
+locales: [en, ru, es]
+
+data:
+  # Locale files use a <locale>.<namespace>.yml naming scheme (e.g.
+  # en.phone_auth.yml) plus a few reversed ones (responders.en.yml), so the
+  # locale can't be derived from the filename via %{locale}. Read every YAML in
+  # the directory and let i18n-tasks group by each file's top-level locale key.
+  read:
+    - config/locales/*.yml
+  # Route added/normalized keys back to their namespaced file per locale.
+  write:
+    - ['{en,ru,es}.*', 'config/locales/%{locale}.%{key.0}.yml']
+    - config/locales/%{locale}.common.yml
+
+search:
+  # t() / I18n.t() calls live in Ruby, ERB and mailers — not in the React app.
+  paths:
+    - app/
+    - lib/
+    - config/locales/
+  exclude:
+    - app/javascript/**/*
+    - app/assets/**/*
+
+ignore_unused:
+  # Keys resolved implicitly by Rails rather than via a literal t() call.
+  - 'activerecord.*'
+  - 'activemodel.*'
+  - 'enumerize.*'
+  - 'helpers.*'
+  - 'mailers.*'
+  - 'number.*'
+  - 'date.*'
+  - 'time.*'
+  - 'times.*'
+  - 'errors.*'
+  - 'flash.*'
+
+ignore_missing:
+  # config.i18n.fallbacks = true, so a locale missing one of these implicit
+  # framework keys falls back to the base locale — not an actionable gap.
+  # This keeps `missing` focused on real content keys referenced in code.
+  - 'activerecord.*'
+  - 'activemodel.*'
+  - 'enumerize.*'
+  - 'helpers.*'
+  - 'number.*'
+  - 'date.*'
+  - 'time.*'
+  - 'times.*'
+  - 'faker.*'

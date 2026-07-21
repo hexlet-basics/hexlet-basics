@@ -102,11 +102,21 @@ lint-locales:
 	npx i18next-cli status es
 	npx i18next-cli status en
 
+# Backend (Rails) locale audit — config/locales/*.yml. Informational only;
+# not part of `make lint` yet (large pre-existing missing/unused backlog).
+i18n-check:
+	bundle exec i18n-tasks health
+
 coverage-open:
 	open coverage/index.html
 
 language-load:
 	bin/rails app:load_exercises[${L}]
+
+check: lint check-db-consistency
+
+check-db-consistency:
+	bundle exec database_consistency
 
 check-types:
 	# bundle exec srb tc
