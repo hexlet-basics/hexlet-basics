@@ -118,9 +118,6 @@ export default function MarkdownViewer({
         <table>{props.children}</table>
       </Table.ScrollContainer>
     ), // убираем обертку pre
-    ul: (props: ComponentPropsWithoutRef<"ul">) => <ul>{props.children}</ul>,
-    ol: (props: ComponentPropsWithoutRef<"ol">) => <ol>{props.children}</ol>,
-    li: (props: ComponentPropsWithoutRef<"li">) => <li>{props.children}</li>,
     code: MarkdownInlineCode,
     ...components,
   };
