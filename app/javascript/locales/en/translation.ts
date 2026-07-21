@@ -1116,7 +1116,7 @@ export default {
           "Try a demo lesson without signing up. Practice included",
         demo_start: "Start",
         free_course: "Free course for beginners",
-        hexlet_program_link: "Профессия и Трудоустройство",
+        hexlet_program_link: "Profession and employment",
         join: "Join",
         learning_conveniently:
           "Everything you need to master new topics is on one screen. Theory, practice and live examples go hand in hand. The clear structure helps you to learn in a consistent manner and not to miss important details",
@@ -1130,7 +1130,7 @@ export default {
           "You don't need to install anything - all tasks are performed right in your browser. Built-in code editor, console and automatic tests make learning comfortable. And if something fails, you can always see the teacher's solution",
         registration: "Sign Up",
         registration_description: "Let's get started",
-        restart: "Начать заново",
+        restart: "Start over",
         reviews: "Reviews",
         see_all_courses_in_category: "See all courses in {{name}}",
         sign_up: "Sign Up",
