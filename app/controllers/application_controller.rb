@@ -30,6 +30,16 @@ class ApplicationController < ActionController::Base
   #   redirect_to url_for(page: exception.pagy.last), notice: "Page ##{params[:page]} is overflowing. Showing page #{exception.pagy.last} instead."
   # end
 
+  # Enrich lograge's single-line request log with correlation fields that are
+  # otherwise dropped when lograge replaces the default request logger.
+  sig { params(payload: T::Hash[Symbol, T.untyped]).void }
+  def append_info_to_payload(payload)
+    super
+    payload[:request_id] = request.request_id
+    payload[:host] = request.host
+    payload[:user_id] = Current.user&.id
+  end
+
   private
 
   # Typed wrapper over Pagy::Method#pagy. The gem RBI types `pagy` as

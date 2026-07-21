@@ -46,9 +46,9 @@ gem "ruby-vips", "~> 2.0", require: false
 
 # gem 'http_accept_language'
 gem "pagy"
-# gem 'omniauth-facebook'
-# gem 'omniauth-github'
-# gem 'omniauth-rails_csrf_protection'
+gem "omniauth-facebook"
+gem "omniauth-github"
+gem "omniauth-rails_csrf_protection"
 gem "phonelib"
 gem "ransack"
 # gem 'redis'
@@ -66,6 +66,9 @@ gem "webauthn"
 gem "stackprof"
 gem "sentry-ruby"
 gem "sentry-rails"
+
+# Condense Rails' multi-line request logs into one structured line per request
+gem "lograge"
 
 gem "amocrm"
 
@@ -95,6 +98,8 @@ group :development, :test, :staging do
 
   gem "factory_bot_rails"
   gem "faker"
+
+  gem "database_consistency", require: false
 
   gem "tapioca"
   gem "boba", require: false
