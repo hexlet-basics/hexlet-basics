@@ -8,7 +8,6 @@ class Web::LocalesController < Web::ApplicationController
   sig { returns(T.untyped) }
   def switch
     locale = params[:new_locale]
-    # redirect_path = requst.referer || root_path
 
     unless I18n.available_locales.map(&:to_s).include?(locale)
       redirect_back fallback_location: root_path(suffix: AppHost.locale_for_url(I18n.default_locale))
@@ -22,6 +21,31 @@ class Web::LocalesController < Web::ApplicationController
 
     session[:locale] = locale
 
-    redirect_to root_url(suffix: AppHost.locale_for_url(locale)), allow_other_host: true
+    redirect_to localized_referer_path(locale)
+  end
+
+  private
+
+  # Keep the user on the page they came from, swapping the locale prefix in the
+  # path. Falls back to the localized root when there is no usable referer.
+  sig { params(locale: String).returns(String) }
+  def localized_referer_path(locale)
+    suffix = AppHost.locale_for_url(locale)
+    fallback = root_path(suffix: suffix)
+
+    referer = request.referer
+    return fallback if referer.blank?
+
+    uri = URI.parse(referer)
+    return fallback unless uri.host == request.host
+
+    stripped = uri.path.sub(%r{\A/(?:es|ru)(?=/|\z)}, "")
+    return fallback if stripped.blank? || stripped == "/"
+
+    prefix = suffix ? "/#{suffix}" : ""
+    query = uri.query.present? ? "?#{uri.query}" : ""
+    "#{prefix}#{stripped}#{query}"
+  rescue URI::InvalidURIError
+    fallback
   end
 end

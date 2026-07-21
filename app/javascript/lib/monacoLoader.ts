@@ -7,15 +7,15 @@ import { loader } from "@monaco-editor/react";
 import * as monaco from "monaco-editor";
 
 // oxlint-disable-next-line default
-import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
+import editorWorker from "monaco-editor/esm/vs/editor/editor.worker.js?worker";
 // oxlint-disable-next-line default
-import cssWorker from "monaco-editor/esm/vs/language/css/css.worker?worker";
+import cssWorker from "monaco-editor/esm/vs/language/css/css.worker.js?worker";
 // oxlint-disable-next-line default
-import htmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
+import htmlWorker from "monaco-editor/esm/vs/language/html/html.worker.js?worker";
 // oxlint-disable-next-line default
-import jsonWorker from "monaco-editor/esm/vs/language/json/json.worker?worker";
+import jsonWorker from "monaco-editor/esm/vs/language/json/json.worker.js?worker";
 // oxlint-disable-next-line default
-import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
+import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker.js?worker";
 
 self.MonacoEnvironment = {
   getWorker(_, label) {

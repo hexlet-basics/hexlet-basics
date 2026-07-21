@@ -23,6 +23,11 @@ export default defineConfig(({ mode, isSsrBuild }) => {
     //   transformer: 'lightningcss'
     // },
     build: {
+      // NOTE: Vite 8's default Oxc minifier corrupts monaco-editor's worker
+      // bundles, so they throw at runtime ("Cannot read properties of undefined
+      // (reading 'include')"). Force terser until upstream fixes it.
+      // https://github.com/vitejs/vite/issues/22009
+      minify: "terser",
       // sourcemap: "hidden",
       // sourcemap: false,
       // cssMinify: 'lightningcss',

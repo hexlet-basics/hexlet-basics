@@ -17,7 +17,13 @@ class Web::Languages::LessonsController < Web::Languages::ApplicationController
     end
 
     lesson_version = resource_language.current_lesson_versions.find_by!(lesson: lesson)
-    lesson_info = lesson_version.infos.includes(language: :current_version).find_by!(locale: I18n.locale)
+    lesson_info = lesson_version.infos.includes(language: :current_version).find_by(locale: I18n.locale)
+
+    unless lesson_info
+      f(:lesson_not_found, type: :info)
+      redirect_to language_path(resource_language.slug)
+      return
+    end
     # language_info = resource_language.current_version.infos.find_by!(locale: I18n.locale)
 
     next_lesson = lesson_version.next_lesson

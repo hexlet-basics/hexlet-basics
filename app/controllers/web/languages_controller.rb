@@ -3,6 +3,7 @@
 class Web::LanguagesController < Web::ApplicationController
   allow_unauthenticated_access except: [ :success ]
   before_action :require_authentication, only: [ :success ]
+  before_action :ensure_landing_page, only: [ :show, :success ]
   before_action :redirect_archived_language, only: [ :show, :success ]
 
   sig { returns(T.untyped) }
@@ -142,7 +143,14 @@ class Web::LanguagesController < Web::ApplicationController
   private
 
   sig { returns(T.untyped) }
+  def ensure_landing_page
+    return if landing_page
+
+    redirect_to languages_path
+  end
+
+  sig { returns(T.untyped) }
   def landing_page
-    @language_page ||= T.let(Language::LandingPage.with_locale.find_by!(slug: params[:id]), T.untyped)
+    @language_page ||= T.let(Language::LandingPage.with_locale.find_by(slug: params[:id]), T.untyped)
   end
 end

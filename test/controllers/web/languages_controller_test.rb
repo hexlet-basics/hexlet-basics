@@ -15,6 +15,15 @@ class Web::LanguagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  def test_show_missing_locale_redirects_to_catalog
+    # javascript course exists only in ru; requesting it under the en locale
+    # should degrade to the courses catalog instead of 404.
+    ru_landing_page = language_landing_pages("javascript-ru")
+
+    get language_url(ru_landing_page.slug, suffix: nil)
+    assert_redirected_to languages_path
+  end
+
   def test_show_archived
     archived_landing_page = language_landing_pages("javascript-ru-archived")
     landing_page = language_landing_pages("javascript-ru")

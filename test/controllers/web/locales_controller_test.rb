@@ -24,4 +24,22 @@ class Web::LocalesControllerTest < ActionDispatch::IntegrationTest
     }
     assert_response :redirect
   end
+
+  def test_switch_preserves_current_page
+    get switch_locale_url, params: { new_locale: :en },
+      headers: { "HTTP_REFERER" => languages_url(suffix: :ru) }
+    assert_redirected_to languages_path(suffix: nil)
+  end
+
+  def test_switch_preserves_current_page_to_ru
+    get switch_locale_url, params: { new_locale: :ru },
+      headers: { "HTTP_REFERER" => languages_url(suffix: nil) }
+    assert_redirected_to languages_path(suffix: :ru)
+  end
+
+  def test_switch_ignores_foreign_referer
+    get switch_locale_url, params: { new_locale: :ru },
+      headers: { "HTTP_REFERER" => "https://evil.example/ru/languages" }
+    assert_redirected_to root_url(suffix: :ru)
+  end
 end

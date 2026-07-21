@@ -24,7 +24,7 @@ test:
 	bin/rails test
 
 test-frontend:
-	# pnpm vitest run
+	pnpm vitest run --passWithNoTests
 
 test-frontend-watch:
 	pnpm vitest

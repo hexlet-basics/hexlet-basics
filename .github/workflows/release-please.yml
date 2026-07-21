@@ -35,7 +35,7 @@ jobs:
   # other workflows (GitHub suppresses workflow-created events to avoid recursion).
   build:
     needs: release-please
-    if: ${{ needs.release-please.outputs.release_created }}
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
     uses: ./.github/workflows/release.yml
     with:
       release_version: ${{ needs.release-please.outputs.version }}
