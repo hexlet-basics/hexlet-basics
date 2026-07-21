@@ -33,7 +33,10 @@ export function createLessonStore(
           focusesCount: 1,
           startTime: 0,
           solutionState: "notAllowedToBeShown",
+          mobileNavOpened: false,
           ...initProps,
+          toggleMobileNav: () =>
+            set((state) => ({ mobileNavOpened: !state.mobileNavOpened })),
           changeContent: (content) => set({ content }),
           resetContent: () =>
             set((state) => ({

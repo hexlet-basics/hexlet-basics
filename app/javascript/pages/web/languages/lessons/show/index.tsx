@@ -5,6 +5,7 @@ import {
   Anchor,
   AppShell,
   Box,
+  Burger,
   Center,
   Divider,
   Group,
@@ -79,6 +80,8 @@ export default function Index() {
 
 function LessonLeftBlock() {
   const { t } = useTranslation();
+  const mobileNavOpened = useLessonStore((state) => state.mobileNavOpened);
+  const toggleMobileNav = useLessonStore((state) => state.toggleMobileNav);
   const [focusesCount, setFocusCount] = useState(0);
   const handleSelect = (selectedKey: string | null) => {
     if (selectedKey === "assistant") {
@@ -95,6 +98,15 @@ function LessonLeftBlock() {
       style={{ flexDirection: "column" }}
     >
       <Tabs.List grow>
+        <Burger
+          opened={mobileNavOpened}
+          onClick={toggleMobileNav}
+          hiddenFrom="sm"
+          size="sm"
+          aria-label={t(($) => $.languages.lessons.show.navigation)}
+          style={{ flexGrow: 0, alignSelf: "center" }}
+          mx="xs"
+        />
         <Tabs.Tab value="lesson">
           {t(($) => $.languages.lessons.show.lesson)}
         </Tabs.Tab>
@@ -132,6 +144,8 @@ function LessonRightBlock() {
   const { t } = useTranslation();
   const changeTab = useLessonStore((state) => state.changeTab);
   const currentTab = useLessonStore((state) => state.currentTab);
+  const mobileNavOpened = useLessonStore((state) => state.mobileNavOpened);
+  const toggleMobileNav = useLessonStore((state) => state.toggleMobileNav);
 
   return (
     <Tabs
@@ -144,6 +158,15 @@ function LessonRightBlock() {
       // keepMounted={false}
     >
       <Tabs.List grow>
+        <Burger
+          opened={mobileNavOpened}
+          onClick={toggleMobileNav}
+          hiddenFrom="sm"
+          size="sm"
+          aria-label={t(($) => $.languages.lessons.show.navigation)}
+          style={{ flexGrow: 0, alignSelf: "center" }}
+          mx="xs"
+        />
         <Tabs.Tab value="lesson" hiddenFrom="sm">
           <Center>
             <IconBook size={14} />

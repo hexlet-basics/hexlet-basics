@@ -29,6 +29,8 @@ export interface LessonState {
   passed: boolean;
   content: string;
   focusesCount: number;
+  mobileNavOpened: boolean;
+  toggleMobileNav: () => void;
   changeContent: (content: string) => void;
   resetContent: () => void;
   changeTab: (tab: TabName) => void;
