@@ -73,7 +73,7 @@ sync-fixtures:
 sync-browserlist:
 	bundle exec browserslist generate
 
-editor-setup:
+sync-sorbet:
 	-bin/tapioca require
 	-bin/tapioca gems
 	-bin/tapioca annotations
@@ -88,7 +88,7 @@ sync-types:
 	# bin/rails app:export_model_names_to_ts
 
 
-sync: sync-locales sync-fixtures sync-types sync-browserlist
+sync: sync-locales sync-fixtures sync-types sync-browserlist sync-sorbet
 
 sync-locales:
 	npx i18next-cli extract --sync-all
