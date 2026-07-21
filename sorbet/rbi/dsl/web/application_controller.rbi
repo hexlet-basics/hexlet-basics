@@ -10,16 +10,16 @@ class Web::ApplicationController
   def helpers; end
 
   module HelperMethods
-    include ::Ransack::Helpers::FormHelper
     include ::ActionText::ContentHelper
     include ::ActionText::TagHelper
     include ::InertiaRails::Helper
+    include ::Ransack::Helpers::FormHelper
     include ::ViteRails::TagHelpers
     include ::ActionController::Base::HelperMethods
     include ::Pundit::Helper
     include ::ApplicationController::HelperMethods
 
-    sig { returns(::String) }
+    sig { returns(T.untyped) }
     def current_color_scheme; end
   end
 
