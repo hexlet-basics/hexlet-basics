@@ -42,46 +42,46 @@ end
 # pkg:gem/inertia_rails#lib/inertia_rails/version.rb:3
 module InertiaRails
   class << self
-    # pkg:gem/inertia_rails#lib/inertia_rails.rb:76
+    # pkg:gem/inertia_rails#lib/inertia_rails.rb:77
     def always(&block); end
 
-    # pkg:gem/inertia_rails#lib/inertia_rails.rb:92
+    # pkg:gem/inertia_rails#lib/inertia_rails.rb:93
     def cache(*_arg0, **_arg1, &_arg2); end
 
-    # pkg:gem/inertia_rails#lib/inertia_rails.rb:60
+    # pkg:gem/inertia_rails#lib/inertia_rails.rb:61
     def cache_store; end
 
-    # pkg:gem/inertia_rails#lib/inertia_rails.rb:56
+    # pkg:gem/inertia_rails#lib/inertia_rails.rb:57
     def configuration; end
 
-    # pkg:gem/inertia_rails#lib/inertia_rails.rb:52
+    # pkg:gem/inertia_rails#lib/inertia_rails.rb:53
     def configure; end
 
-    # pkg:gem/inertia_rails#lib/inertia_rails.rb:88
+    # pkg:gem/inertia_rails#lib/inertia_rails.rb:89
     def deep_merge(match_on: T.unsafe(nil), &block); end
 
-    # pkg:gem/inertia_rails#lib/inertia_rails.rb:96
+    # pkg:gem/inertia_rails#lib/inertia_rails.rb:97
     def defer(*_arg0, **_arg1, &_arg2); end
 
-    # pkg:gem/inertia_rails#lib/inertia_rails.rb:64
+    # pkg:gem/inertia_rails#lib/inertia_rails.rb:65
     def deprecator; end
 
-    # pkg:gem/inertia_rails#lib/inertia_rails.rb:68
+    # pkg:gem/inertia_rails#lib/inertia_rails.rb:69
     def lazy(value = T.unsafe(nil), &block); end
 
-    # pkg:gem/inertia_rails#lib/inertia_rails.rb:84
+    # pkg:gem/inertia_rails#lib/inertia_rails.rb:85
     def merge(*_arg0, **_arg1, &_arg2); end
 
-    # pkg:gem/inertia_rails#lib/inertia_rails.rb:80
+    # pkg:gem/inertia_rails#lib/inertia_rails.rb:81
     def once(*_arg0, **_arg1, &_arg2); end
 
-    # pkg:gem/inertia_rails#lib/inertia_rails.rb:72
+    # pkg:gem/inertia_rails#lib/inertia_rails.rb:73
     def optional(*_arg0, **_arg1, &_arg2); end
 
     # pkg:gem/inertia_rails#lib/inertia_rails/precognition.rb:59
     def precognition!(model_or_errors); end
 
-    # pkg:gem/inertia_rails#lib/inertia_rails.rb:100
+    # pkg:gem/inertia_rails#lib/inertia_rails.rb:101
     def scroll(metadata = T.unsafe(nil), **options, &block); end
   end
 end
@@ -110,200 +110,213 @@ end
 
 # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:4
 class InertiaRails::Configuration
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:102
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:106
   def initialize(controller: T.unsafe(nil), **attrs); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:154
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:169
   def always_include_errors_hash; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:158
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:173
   def always_include_errors_hash=(value); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:111
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:115
   def bind_controller(controller); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:148
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:152
   def cache_store; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:158
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:173
   def cache_store=(value); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:135
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:139
   def component_path_resolver(path:, action:); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:158
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:173
   def component_path_resolver=(value); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:154
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:169
   def deep_merge_shared_data; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:158
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:173
   def deep_merge_shared_data=(value); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:154
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:169
   def default_render; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:158
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:173
   def default_render=(value); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:154
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:169
   def encrypt_history; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:158
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:173
   def encrypt_history=(value); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:154
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:169
   def expose_shared_prop_keys; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:158
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:173
   def expose_shared_prop_keys=(value); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:154
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:169
   def flash_keys; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:158
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:173
   def flash_keys=(value); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:115
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:119
   def freeze; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:154
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:169
   def layout; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:158
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:173
   def layout=(value); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:125
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:129
   def merge(config); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:120
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:124
   def merge!(config); end
 
   # Returns the callable without evaluating it — called with (error, page) by the renderer.
   #
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:144
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:148
   def on_ssr_error; end
 
   # Returns the callable without evaluating it — called with (error, page) by the renderer.
   #
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:158
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:173
   def on_ssr_error=(value); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:154
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:169
   def parent_controller; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:158
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:173
   def parent_controller=(value); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:154
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:169
   def precognition_prevent_writes; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:158
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:173
   def precognition_prevent_writes=(value); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:139
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:143
   def prop_transformer(props:); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:158
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:173
   def prop_transformer=(value); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:154
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:169
   def root_dom_id; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:158
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:173
   def root_dom_id=(value); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:154
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:169
   def ssr_bundle; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:158
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:173
   def ssr_bundle=(value); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:154
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:169
   def ssr_cache; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:158
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:173
   def ssr_cache=(value); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:154
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:169
   def ssr_enabled; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:158
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:173
   def ssr_enabled=(value); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:154
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:169
   def ssr_raise_on_error; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:158
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:173
   def ssr_raise_on_error=(value); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:154
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:169
   def ssr_runtime; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:158
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:173
   def ssr_runtime=(value); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:154
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:169
   def ssr_url; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:158
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:173
   def ssr_url=(value); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:154
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:169
   def use_data_inertia_head_attribute; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:158
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:173
   def use_data_inertia_head_attribute=(value); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:154
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:169
   def use_script_element_for_initial_page; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:158
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:173
   def use_script_element_for_initial_page=(value); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:154
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:169
   def version; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:158
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:173
   def version=(value); end
 
   # Internal: Finalizes the configuration for a specific controller.
   #
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:130
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:134
   def with_defaults(config); end
+
+  # Normalized and validated at read time — ENV values arrive as strings, and callables are only evaluated here.
+  #
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:157
+  def xsrf_cookie_refresh; end
+
+  # Normalized and validated at read time — ENV values arrive as strings, and callables are only evaluated here.
+  #
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:173
+  def xsrf_cookie_refresh=(value); end
 
   protected
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:99
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:103
   def controller; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:100
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:104
   def options; end
 
   private
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:165
+  # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:180
   def evaluate_option(value); end
 
   class << self
-    # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:83
+    # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:87
     def default; end
 
     private
 
-    # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:89
+    # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:93
     def env_options; end
   end
 end
 
-# pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:7
+# pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:8
 InertiaRails::Configuration::DEFAULTS = T.let(T.unsafe(nil), Hash)
 
 # pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:5
 InertiaRails::Configuration::DEFAULT_SSR_URL = T.let(T.unsafe(nil), String)
 
-# pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:80
+# pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:84
 InertiaRails::Configuration::OPTION_NAMES = T.let(T.unsafe(nil), Array)
+
+# pkg:gem/inertia_rails#lib/inertia_rails/configuration.rb:6
+InertiaRails::Configuration::XSRF_COOKIE_REFRESH_OPTIONS = T.let(T.unsafe(nil), Array)
 
 # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:4
 module InertiaRails::Controller
@@ -311,18 +324,18 @@ module InertiaRails::Controller
 
   mixes_in_class_methods ::InertiaRails::Controller::ClassMethods
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:67
+  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:77
   def default_render; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:80
+  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:90
   def inertia_meta; end
 
   # Instance-level inertia_share for use in before_action callbacks
   #
-  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:61
+  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:71
   def inertia_share(**props, &block); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:75
+  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:85
   def redirect_to(options = T.unsafe(nil), response_options = T.unsafe(nil)); end
 
   private
@@ -331,49 +344,54 @@ module InertiaRails::Controller
   # making an explicit `layout: false` indistinguishable from "not provided".
   # Stash the original value so the renderer can tell the two apart.
   #
-  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:118
+  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:135
   def _normalize_options(options); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:170
+  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:187
   def capture_inertia_session_options(options); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:159
+  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:176
   def inertia_collect_flash_data; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:123
+  # nil for plain requests — compacted out of the ETag, so non-Inertia ETags are unchanged.
+  #
+  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:126
+  def inertia_conditional_get_variant; end
+
+  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:140
   def inertia_configuration; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:154
+  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:171
   def inertia_location(url); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:127
+  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:144
   def inertia_shared_data; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:109
+  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:119
   def inertia_view_assigns; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:90
+  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:100
   def precognition(model_or_errors); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:86
+  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:96
   def precognition!(model_or_errors); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:98
+  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:108
   def render_precognition(errors); end
 end
 
-# pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:23
+# pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:33
 module InertiaRails::Controller::ClassMethods
-  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:52
+  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:62
   def _inertia_configuration; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:35
+  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:45
   def inertia_config(**attrs); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:24
+  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:34
   def inertia_share(hash = T.unsafe(nil), **props, &block); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:45
+  # pkg:gem/inertia_rails#lib/inertia_rails/controller.rb:55
   def use_inertia_instance_props; end
 end
 
@@ -527,8 +545,14 @@ module InertiaRails::InertiaMapper
 
   private
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/extensions/mapper.rb:13
-  def extract_route_and_component(path); end
+  # The first hash pair is the route; any further String-keyed pairs are
+  # additional routes. Symbol-keyed leftovers are route options (`on:`, `as:`).
+  #
+  # pkg:gem/inertia_rails#lib/inertia_rails/extensions/mapper.rb:18
+  def extract_routes(args, options); end
+
+  # pkg:gem/inertia_rails#lib/inertia_rails/extensions/mapper.rb:27
+  def route_with_default_component(path); end
 end
 
 # pkg:gem/inertia_rails#lib/inertia_rails/extensions/request.rb:4
@@ -658,58 +682,67 @@ class InertiaRails::Middleware::InertiaRailsRequest
 
   private
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:82
+  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:90
   def client_version; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:98
+  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:106
   def coerce_version(version); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:74
+  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:82
   def controller; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:107
+  # Only 301/302 are rewritten to 303: a 303 already forces a GET on
+  # follow, and 307/308 preserve the request method by design.
+  #
+  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:62
+  def convertible_redirect_status?(status); end
+
+  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:115
   def copy_xsrf_to_csrf!; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:102
+  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:110
   def force_refresh(request); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:70
+  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:78
   def get?; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:62
+  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:70
   def inertia_non_post_redirect?(status); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:86
+  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:94
   def inertia_request?; end
 
   # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:46
   def keep_inertia_session_options?(status); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:58
+  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:66
   def non_get_redirectable_method?; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:111
+  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:119
   def precognition_request?; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:115
+  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:123
   def prevent_precognition_writes?; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:54
+  # Matches Rack::Response::Helpers#redirect? — Inertia session options
+  # must survive every redirect until a render consumes them.
+  #
+  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:56
   def redirect_status?(status); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:78
+  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:86
   def request_method; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:94
+  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:102
   def server_version; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:66
+  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:74
   def stale_inertia_get?; end
 
   # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:50
   def stale_inertia_request?; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:90
+  # pkg:gem/inertia_rails#lib/inertia_rails/middleware.rb:98
   def version_stale?; end
 end
 
@@ -977,10 +1010,10 @@ class InertiaRails::Renderer
 
   private
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/renderer.rb:105
+  # pkg:gem/inertia_rails#lib/inertia_rails/renderer.rb:103
   def extract_shared_keys(shared_props); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/renderer.rb:83
+  # pkg:gem/inertia_rails#lib/inertia_rails/renderer.rb:81
   def layout; end
 
   # Cast props to symbol keyed hash before merging so that we have a consistent data structure and
@@ -989,28 +1022,28 @@ class InertiaRails::Renderer
   # Functionally, this permits using either string or symbol keys in the controller. Since the results
   # is cast to json, we should treat string/symbol keys as identical.
   #
-  # pkg:gem/inertia_rails#lib/inertia_rails/renderer.rb:97
+  # pkg:gem/inertia_rails#lib/inertia_rails/renderer.rb:95
   def merge_props(shared_props, props, deep_merge); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/renderer.rb:161
+  # pkg:gem/inertia_rails#lib/inertia_rails/renderer.rb:159
   def meta_tags; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/renderer.rb:109
+  # pkg:gem/inertia_rails#lib/inertia_rails/renderer.rb:107
   def page; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/renderer.rb:172
+  # pkg:gem/inertia_rails#lib/inertia_rails/renderer.rb:170
   def parse_header(name); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/renderer.rb:153
+  # pkg:gem/inertia_rails#lib/inertia_rails/renderer.rb:151
   def resolve_component(component); end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/renderer.rb:88
+  # pkg:gem/inertia_rails#lib/inertia_rails/renderer.rb:86
   def shared_data; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/renderer.rb:79
+  # pkg:gem/inertia_rails#lib/inertia_rails/renderer.rb:77
   def ssr_render; end
 
-  # pkg:gem/inertia_rails#lib/inertia_rails/renderer.rb:165
+  # pkg:gem/inertia_rails#lib/inertia_rails/renderer.rb:163
   def wrap_errors_prop!(props); end
 end
 
@@ -1172,3 +1205,36 @@ end
 
 # pkg:gem/inertia_rails#lib/inertia_rails/version.rb:4
 InertiaRails::VERSION = T.let(T.unsafe(nil), String)
+
+# Decides whether the XSRF-TOKEN cookie rewrite can be skipped under the `:lazy` refresh policy.
+#
+# pkg:gem/inertia_rails#lib/inertia_rails/xsrf_cookie_refresh_policy.rb:5
+class InertiaRails::XsrfCookieRefreshPolicy
+  # pkg:gem/inertia_rails#lib/inertia_rails/xsrf_cookie_refresh_policy.rb:10
+  def initialize(controller); end
+
+  # pkg:gem/inertia_rails#lib/inertia_rails/xsrf_cookie_refresh_policy.rb:15
+  def skip?; end
+
+  private
+
+  # pkg:gem/inertia_rails#lib/inertia_rails/xsrf_cookie_refresh_policy.rb:33
+  def can_validate_without_loading_session?; end
+
+  # pkg:gem/inertia_rails#lib/inertia_rails/xsrf_cookie_refresh_policy.rb:29
+  def configuration; end
+
+  # pkg:gem/inertia_rails#lib/inertia_rails/xsrf_cookie_refresh_policy.rb:55
+  def csrf_token_env_key; end
+
+  # pkg:gem/inertia_rails#lib/inertia_rails/xsrf_cookie_refresh_policy.rb:51
+  def csrf_token_loaded_in_env?; end
+
+  # pkg:gem/inertia_rails#lib/inertia_rails/xsrf_cookie_refresh_policy.rb:38
+  def valid_for_session?(cookie); end
+
+  class << self
+    # pkg:gem/inertia_rails#lib/inertia_rails/xsrf_cookie_refresh_policy.rb:6
+    def skip?(controller); end
+  end
+end

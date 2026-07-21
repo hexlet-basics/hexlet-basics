@@ -35,17 +35,9 @@
 # pkg:gem/loofah#lib/loofah.rb:5
 module Loofah
   class << self
-    # Shortcut for Loofah::HTML4::Document.parse(*args, &block)
-    #
-    # This method accepts the same parameters as Nokogiri::HTML4::Document.parse
-    #
     # pkg:gem/loofah#lib/loofah.rb:139
     def document(*args, &block); end
 
-    # Shortcut for Loofah::HTML4::DocumentFragment.parse(*args, &block)
-    #
-    # This method accepts the same parameters as Nokogiri::HTML4::DocumentFragment.parse
-    #
     # pkg:gem/loofah#lib/loofah.rb:140
     def fragment(*args, &block); end
 
@@ -63,14 +55,20 @@ module Loofah
     # pkg:gem/loofah#lib/loofah.rb:83
     def html4_fragment(*args, &block); end
 
+    # Shortcut for Loofah::HTML5::Document.parse(*args, &block)
+    #
+    # This method accepts the same parameters as Nokogiri::HTML5::Document.parse
+    #
     # pkg:gem/loofah#lib/loofah.rb:101
     def html5_document(*args, &block); end
 
+    # Shortcut for Loofah::HTML5::DocumentFragment.parse(*args, &block)
+    #
+    # This method accepts the same parameters as Nokogiri::HTML5::DocumentFragment.parse
+    #
     # pkg:gem/loofah#lib/loofah.rb:108
     def html5_fragment(*args, &block); end
 
-    # @return [Boolean]
-    #
     # pkg:gem/loofah#lib/loofah.rb:7
     def html5_support?; end
 
@@ -79,13 +77,9 @@ module Loofah
     # pkg:gem/loofah#lib/loofah.rb:169
     def remove_extraneous_whitespace(string); end
 
-    # Shortcut for Loofah::HTML4::Document.parse(string_or_io).scrub!(method)
-    #
     # pkg:gem/loofah#lib/loofah.rb:141
     def scrub_document(string_or_io, method); end
 
-    # Shortcut for Loofah::HTML4::DocumentFragment.parse(string_or_io).scrub!(method)
-    #
     # pkg:gem/loofah#lib/loofah.rb:142
     def scrub_fragment(string_or_io, method); end
 
@@ -99,9 +93,13 @@ module Loofah
     # pkg:gem/loofah#lib/loofah.rb:93
     def scrub_html4_fragment(string_or_io, method); end
 
+    # Shortcut for Loofah::HTML5::Document.parse(string_or_io).scrub!(method)
+    #
     # pkg:gem/loofah#lib/loofah.rb:113
     def scrub_html5_document(string_or_io, method); end
 
+    # Shortcut for Loofah::HTML5::DocumentFragment.parse(string_or_io).scrub!(method)
+    #
     # pkg:gem/loofah#lib/loofah.rb:118
     def scrub_html5_fragment(string_or_io, method); end
 
@@ -176,7 +174,7 @@ Loofah::HTML = Loofah::HTML4
 # pkg:gem/loofah#lib/loofah/html4/document.rb:4
 module Loofah::HTML4; end
 
-# Subclass of Nokogiri::HTML4::Document.
+#  Subclass of Nokogiri::HTML4::Document.
 #
 #  See Loofah::ScrubBehavior and Loofah::TextBehavior for additional methods.
 #
@@ -189,7 +187,7 @@ class Loofah::HTML4::Document < ::Nokogiri::HTML4::Document
   extend ::Loofah::HtmlDocumentBehavior::ClassMethods
 end
 
-# Subclass of Nokogiri::HTML4::DocumentFragment.
+#  Subclass of Nokogiri::HTML4::DocumentFragment.
 #
 #  See Loofah::ScrubBehavior and Loofah::TextBehavior for additional methods.
 #
@@ -203,7 +201,7 @@ end
 # pkg:gem/loofah#lib/loofah/html5/safelist.rb:6
 module Loofah::HTML5; end
 
-# Subclass of Nokogiri::HTML5::Document.
+#  Subclass of Nokogiri::HTML5::Document.
 #
 #  See Loofah::ScrubBehavior and Loofah::TextBehavior for additional methods.
 #
@@ -216,7 +214,7 @@ class Loofah::HTML5::Document < ::Nokogiri::HTML5::Document
   extend ::Loofah::HtmlDocumentBehavior::ClassMethods
 end
 
-# Subclass of Nokogiri::HTML5::DocumentFragment.
+#  Subclass of Nokogiri::HTML5::DocumentFragment.
 #
 #  See Loofah::ScrubBehavior and Loofah::TextBehavior for additional methods.
 #
@@ -227,6 +225,48 @@ class Loofah::HTML5::DocumentFragment < ::Nokogiri::HTML5::DocumentFragment
   extend ::Loofah::HtmlFragmentBehavior::ClassMethods
 end
 
+#  HTML safelist lifted from HTML5lib sanitizer code:
+#
+#    http://code.google.com/p/html5lib/
+#
+# <html5_license>
+#
+#   Copyright (c) 2006-2008 The Authors
+#
+#   Contributors:
+#   James Graham - jg307@cam.ac.uk
+#   Anne van Kesteren - annevankesteren@gmail.com
+#   Lachlan Hunt - lachlan.hunt@lachy.id.au
+#   Matt McDonald - kanashii@kanashii.ca
+#   Sam Ruby - rubys@intertwingly.net
+#   Ian Hickson (Google) - ian@hixie.ch
+#   Thomas Broyer - t.broyer@ltgt.net
+#   Jacques Distler - distler@golem.ph.utexas.edu
+#   Henri Sivonen - hsivonen@iki.fi
+#   The Mozilla Foundation (contributions from Henri Sivonen since 2008)
+#
+#   Permission is hereby granted, free of charge, to any person
+#   obtaining a copy of this software and associated documentation
+#   files (the "Software"), to deal in the Software without
+#   restriction, including without limitation the rights to use, copy,
+#   modify, merge, publish, distribute, sublicense, and/or sell copies
+#   of the Software, and to permit persons to whom the Software is
+#   furnished to do so, subject to the following conditions:
+#
+#   The above copyright notice and this permission notice shall be
+#   included in all copies or substantial portions of the Software.
+#
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+#   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+#   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+#   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+#   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+#   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+#   DEALINGS IN THE SOFTWARE.
+#
+# </html5_license>
+#
 # pkg:gem/loofah#lib/loofah/html5/safelist.rb:49
 module Loofah::HTML5::SafeList; end
 
@@ -235,65 +275,65 @@ Loofah::HTML5::SafeList::ACCEPTABLE_ATTRIBUTES = T.let(T.unsafe(nil), Set)
 
 # https://www.w3.org/TR/css-color-3/#html4
 #
-# pkg:gem/loofah#lib/loofah/html5/safelist.rb:738
+# pkg:gem/loofah#lib/loofah/html5/safelist.rb:743
 Loofah::HTML5::SafeList::ACCEPTABLE_CSS_COLORS = T.let(T.unsafe(nil), Set)
 
 # https://www.w3.org/TR/css-color-3/#svg-color
 #
-# pkg:gem/loofah#lib/loofah/html5/safelist.rb:758
+# pkg:gem/loofah#lib/loofah/html5/safelist.rb:763
 Loofah::HTML5::SafeList::ACCEPTABLE_CSS_EXTENDED_COLORS = T.let(T.unsafe(nil), Set)
 
 # see https://www.quackit.com/css/functions/
 # omit `url` and `image` from that list
 #
-# pkg:gem/loofah#lib/loofah/html5/safelist.rb:910
+# pkg:gem/loofah#lib/loofah/html5/safelist.rb:915
 Loofah::HTML5::SafeList::ACCEPTABLE_CSS_FUNCTIONS = T.let(T.unsafe(nil), Set)
 
-# pkg:gem/loofah#lib/loofah/html5/safelist.rb:699
+# pkg:gem/loofah#lib/loofah/html5/safelist.rb:704
 Loofah::HTML5::SafeList::ACCEPTABLE_CSS_KEYWORDS = T.let(T.unsafe(nil), Set)
 
-# pkg:gem/loofah#lib/loofah/html5/safelist.rb:626
+# pkg:gem/loofah#lib/loofah/html5/safelist.rb:631
 Loofah::HTML5::SafeList::ACCEPTABLE_CSS_PROPERTIES = T.let(T.unsafe(nil), Set)
 
 # pkg:gem/loofah#lib/loofah/html5/safelist.rb:50
 Loofah::HTML5::SafeList::ACCEPTABLE_ELEMENTS = T.let(T.unsafe(nil), Set)
 
-# pkg:gem/loofah#lib/loofah/html5/safelist.rb:983
+# pkg:gem/loofah#lib/loofah/html5/safelist.rb:988
 Loofah::HTML5::SafeList::ACCEPTABLE_PROTOCOLS = T.let(T.unsafe(nil), Set)
 
-# pkg:gem/loofah#lib/loofah/html5/safelist.rb:970
+# pkg:gem/loofah#lib/loofah/html5/safelist.rb:975
 Loofah::HTML5::SafeList::ACCEPTABLE_SVG_PROPERTIES = T.let(T.unsafe(nil), Set)
 
-# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1014
+# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1018
 Loofah::HTML5::SafeList::ACCEPTABLE_URI_DATA_MEDIATYPES = T.let(T.unsafe(nil), Set)
 
-# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1024
+# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1028
 Loofah::HTML5::SafeList::ALLOWED_ATTRIBUTES = T.let(T.unsafe(nil), Set)
 
-# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1027
+# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1031
 Loofah::HTML5::SafeList::ALLOWED_CSS_FUNCTIONS = T.let(T.unsafe(nil), Set)
 
-# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1026
+# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1030
 Loofah::HTML5::SafeList::ALLOWED_CSS_KEYWORDS = T.let(T.unsafe(nil), Set)
 
-# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1025
+# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1029
 Loofah::HTML5::SafeList::ALLOWED_CSS_PROPERTIES = T.let(T.unsafe(nil), Set)
 
 # subclasses may define their own versions of these constants
 #
-# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1023
+# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1027
 Loofah::HTML5::SafeList::ALLOWED_ELEMENTS = T.let(T.unsafe(nil), Set)
 
-# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1048
+# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1052
 Loofah::HTML5::SafeList::ALLOWED_ELEMENTS_WITH_LIBXML2 = T.let(T.unsafe(nil), Set)
 
-# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1029
+# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1033
 Loofah::HTML5::SafeList::ALLOWED_PROTOCOLS = T.let(T.unsafe(nil), Set)
 
-# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1028
+# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1032
 Loofah::HTML5::SafeList::ALLOWED_SVG_PROPERTIES = T.let(T.unsafe(nil), Set)
 
-# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1030
+# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1034
 Loofah::HTML5::SafeList::ALLOWED_URI_DATA_MEDIATYPES = T.let(T.unsafe(nil), Set)
 
 # pkg:gem/loofah#lib/loofah/html5/safelist.rb:526
@@ -308,13 +348,13 @@ Loofah::HTML5::SafeList::MATHML_ATTRIBUTES = T.let(T.unsafe(nil), Set)
 # pkg:gem/loofah#lib/loofah/html5/safelist.rb:147
 Loofah::HTML5::SafeList::MATHML_ELEMENTS = T.let(T.unsafe(nil), Set)
 
-# pkg:gem/loofah#lib/loofah/html5/safelist.rb:981
+# pkg:gem/loofah#lib/loofah/html5/safelist.rb:986
 Loofah::HTML5::SafeList::PROTOCOL_SEPARATOR = T.let(T.unsafe(nil), Regexp)
 
-# pkg:gem/loofah#lib/loofah/html5/safelist.rb:963
+# pkg:gem/loofah#lib/loofah/html5/safelist.rb:968
 Loofah::HTML5::SafeList::SHORTHAND_CSS_PROPERTIES = T.let(T.unsafe(nil), Set)
 
-# pkg:gem/loofah#lib/loofah/html5/safelist.rb:608
+# pkg:gem/loofah#lib/loofah/html5/safelist.rb:613
 Loofah::HTML5::SafeList::SVG_ALLOW_LOCAL_HREF = T.let(T.unsafe(nil), Set)
 
 # pkg:gem/loofah#lib/loofah/html5/safelist.rb:367
@@ -326,68 +366,77 @@ Loofah::HTML5::SafeList::SVG_ATTR_VAL_ALLOWS_REF = T.let(T.unsafe(nil), Set)
 # pkg:gem/loofah#lib/loofah/html5/safelist.rb:183
 Loofah::HTML5::SafeList::SVG_ELEMENTS = T.let(T.unsafe(nil), Set)
 
+# pkg:gem/loofah#lib/loofah/html5/safelist.rb:608
+Loofah::HTML5::SafeList::SVG_HREF_ATTRIBUTES = T.let(T.unsafe(nil), Set)
+
 # additional tags we should consider safe since we have libxml2 fixing up our documents.
 #
-# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1043
+# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1047
 Loofah::HTML5::SafeList::TAGS_SAFE_WITH_LIBXML2 = T.let(T.unsafe(nil), Set)
 
 # TODO: remove VOID_ELEMENTS in a future major release
 # and put it in the tests (it is used only for testing, not for functional behavior)
 #
-# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1034
+# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1038
 Loofah::HTML5::SafeList::VOID_ELEMENTS = T.let(T.unsafe(nil), Set)
 
 # pkg:gem/loofah#lib/loofah/html5/scrub.rb:9
 module Loofah::HTML5::Scrub
   class << self
-    # @return [Boolean]
-    #
-    # pkg:gem/loofah#lib/loofah/html5/scrub.rb:20
+    # pkg:gem/loofah#lib/loofah/html5/scrub.rb:56
     def allowed_element?(element_name); end
 
-    # Returns true if the given URI string is safe, false otherwise.
-    # This method can be used to validate URI attribute values without
-    # requiring a Nokogiri DOM node.
+    # Returns true if the given URI string is safe, false otherwise. This method can be used to
+    # validate URI attribute values without requiring a Nokogiri DOM node.
     #
-    # @return [Boolean]
-    #
-    # pkg:gem/loofah#lib/loofah/html5/scrub.rb:147
+    # pkg:gem/loofah#lib/loofah/html5/scrub.rb:182
     def allowed_uri?(uri_string); end
 
-    # pkg:gem/loofah#lib/loofah/html5/scrub.rb:207
+    # pkg:gem/loofah#lib/loofah/html5/scrub.rb:266
     def cdata_escape(node); end
 
-    # @return [Boolean]
-    #
-    # pkg:gem/loofah#lib/loofah/html5/scrub.rb:202
+    # pkg:gem/loofah#lib/loofah/html5/scrub.rb:261
     def cdata_needs_escaping?(node); end
 
-    # pkg:gem/loofah#lib/loofah/html5/scrub.rb:222
+    # pkg:gem/loofah#lib/loofah/html5/scrub.rb:206
+    def decode_numeric_character_references(string); end
+
+    # pkg:gem/loofah#lib/loofah/html5/scrub.rb:281
     def escape_tags(string); end
 
-    # libxml2 >= 2.9.2 fails to escape comments within some attributes.
+    #  libxml2 >= 2.9.2 fails to escape comments within some attributes.
     #
     #  see comments about CVE-2018-8048 within the tests for more information
     #
-    # pkg:gem/loofah#lib/loofah/html5/scrub.rb:181
+    # pkg:gem/loofah#lib/loofah/html5/scrub.rb:240
     def force_correct_attribute_escaping!(node); end
 
-    # pkg:gem/loofah#lib/loofah/html5/scrub.rb:125
+    # pkg:gem/loofah#lib/loofah/html5/scrub.rb:161
     def scrub_attribute_that_allows_local_ref(attr_node); end
 
-    # alternative implementation of the html5lib attribute scrubbing algorithm
+    #  alternative implementation of the html5lib attribute scrubbing algorithm
     #
-    # pkg:gem/loofah#lib/loofah/html5/scrub.rb:25
+    # pkg:gem/loofah#lib/loofah/html5/scrub.rb:61
     def scrub_attributes(node); end
 
-    # pkg:gem/loofah#lib/loofah/html5/scrub.rb:74
+    # pkg:gem/loofah#lib/loofah/html5/scrub.rb:110
     def scrub_css(style); end
 
-    # pkg:gem/loofah#lib/loofah/html5/scrub.rb:69
+    # pkg:gem/loofah#lib/loofah/html5/scrub.rb:105
     def scrub_css_attribute(node); end
 
-    # pkg:gem/loofah#lib/loofah/html5/scrub.rb:167
+    # pkg:gem/loofah#lib/loofah/html5/scrub.rb:226
     def scrub_uri_attribute(attr_node); end
+
+    private
+
+    # Returns the mediatype of a data: URI per RFC 2397, or nil when the
+    # required comma is absent. allowed_uri? entity-decodes, downcases, and
+    # strips control characters before calling this. An omitted or malformed
+    # mediatype resolves to "text/plain", matching the WHATWG data: URL processor.
+    #
+    # pkg:gem/loofah#lib/loofah/html5/scrub.rb:307
+    def data_uri_mediatype(uri_string); end
   end
 end
 
@@ -412,12 +461,46 @@ Loofah::HTML5::Scrub::CSS_WHITESPACE = T.let(T.unsafe(nil), String)
 # pkg:gem/loofah#lib/loofah/html5/scrub.rb:16
 Loofah::HTML5::Scrub::DATA_ATTRIBUTE_NAME = T.let(T.unsafe(nil), Regexp)
 
-# RFC 3986
+# Matches a valid MIME type "essence" (type "/" subtype, no parameters), used to
+# decide whether a data: URI mediatype is well-formed; a non-match is not a valid
+# MIME type, which the data: URL processor treats as text/plain. Specs:
 #
-# pkg:gem/loofah#lib/loofah/html5/scrub.rb:17
+#   https://mimesniff.spec.whatwg.org/#valid-mime-type
+#   https://mimesniff.spec.whatwg.org/#mime-type-essence
+#   https://mimesniff.spec.whatwg.org/#http-token-code-point
+#
+# The character class below is the HTTP token set (tchar) from RFC 9110 section
+# 5.6.2, https://www.rfc-editor.org/rfc/rfc9110#name-tokens :
+#
+#   tchar = "!" / "#" / "$" / "%" / "&" / "'" / "*" / "+" / "-" / "." / "^"
+#         / "_" / "`" / "|" / "~" / DIGIT / ALPHA
+#
+# ALPHA is written a-z, not a-zA-Z, because allowed_uri? downcases the input first.
+#
+# pkg:gem/loofah#lib/loofah/html5/scrub.rb:43
+Loofah::HTML5::Scrub::DATA_URI_MEDIATYPE = T.let(T.unsafe(nil), Regexp)
+
+# Decimal (`&#58`) or hexadecimal (`&#x3a`) form, with or without the trailing semicolon that
+# CGI.unescapeHTML requires but browsers do not.
+#
+# pkg:gem/loofah#lib/loofah/html5/scrub.rb:20
+Loofah::HTML5::Scrub::NUMERIC_CHARACTER_REFERENCE = T.let(T.unsafe(nil), Regexp)
+
+# A scheme (RFC 3986) followed by a protocol separator. The separator must recognize the same
+# encoded-colon forms as PROTOCOL_SEPARATOR, otherwise a scheme split by an encoded colon (for
+# example "javascript&#58alert(1)") would not be recognized as having a scheme and would skip
+# protocol validation.
+#
+# pkg:gem/loofah#lib/loofah/html5/scrub.rb:26
 Loofah::HTML5::Scrub::URI_PROTOCOL_REGEX = T.let(T.unsafe(nil), Regexp)
 
-# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1051
+# HTML5 named character references for whitespace that browsers strip from
+# URIs. CGI.unescapeHTML does not decode these, so they are handled explicitly.
+#
+# pkg:gem/loofah#lib/loofah/html5/scrub.rb:53
+Loofah::HTML5::Scrub::WHITESPACE_CHARACTER_REFERENCES = T.let(T.unsafe(nil), Regexp)
+
+# pkg:gem/loofah#lib/loofah/html5/safelist.rb:1055
 Loofah::HTML5::WhiteList = Loofah::HTML5::SafeList
 
 # pkg:gem/loofah#lib/loofah/concerns.rb:133
@@ -428,8 +511,6 @@ module Loofah::HtmlDocumentBehavior
   def serialize_root; end
 
   class << self
-    # @private
-    #
     # pkg:gem/loofah#lib/loofah/concerns.rb:159
     def included(base); end
   end
@@ -470,8 +551,6 @@ module Loofah::HtmlFragmentBehavior
   def to_s; end
 
   class << self
-    # @private
-    #
     # pkg:gem/loofah#lib/loofah/concerns.rb:192
     def included(base); end
   end
@@ -486,14 +565,14 @@ module Loofah::HtmlFragmentBehavior::ClassMethods
   def parse(tags, encoding = T.unsafe(nil)); end
 end
 
-# constants related to working around unhelpful libxml2 behavior
+#  constants related to working around unhelpful libxml2 behavior
 #
 #  ಠ_ಠ
 #
 # pkg:gem/loofah#lib/loofah/html5/libxml2_workarounds.rb:12
 module Loofah::LibxmlWorkarounds; end
 
-# these attributes and qualifying parent tags are determined by the code at:
+#  these attributes and qualifying parent tags are determined by the code at:
 #
 #    https://git.gnome.org/browse/libxml2/tree/HTMLtree.c?h=v2.9.2#n714
 #
@@ -513,7 +592,7 @@ module Loofah::MetaHelpers
   end
 end
 
-# Mixes +scrub!+ into Document, DocumentFragment, Node and NodeSet.
+#  Mixes +scrub!+ into Document, DocumentFragment, Node and NodeSet.
 #
 #  Traverse the document or fragment, invoking the +scrubber+ on each node.
 #
@@ -558,7 +637,7 @@ module Loofah::ScrubBehavior::NodeSet
   def scrub!(scrubber); end
 end
 
-# A Scrubber wraps up a block (or method) that is run on an HTML node (element):
+#  A Scrubber wraps up a block (or method) that is run on an HTML node (element):
 #
 #    # change all <span> tags to <div> tags
 #    span2div = Loofah::Scrubber.new do |node|
@@ -585,7 +664,7 @@ end
 #
 # pkg:gem/loofah#lib/loofah/scrubber.rb:35
 class Loofah::Scrubber
-  # Options may include
+  #  Options may include
   #    :direction => :top_down (the default)
   #  or
   #    :direction => :bottom_up
@@ -597,8 +676,6 @@ class Loofah::Scrubber
   #  Alternatively, a Scrubber may inherit from Loofah::Scrubber,
   #  and implement +scrub+, which is slightly faster than using a
   #  block.
-  #
-  # @return [Scrubber] a new instance of Scrubber
   #
   # pkg:gem/loofah#lib/loofah/scrubber.rb:65
   def initialize(options = T.unsafe(nil), &block); end
@@ -622,15 +699,13 @@ class Loofah::Scrubber
   # pkg:gem/loofah#lib/loofah/scrubber.rb:44
   def direction; end
 
-  # When +new+ is not passed a block, the class may implement
+  #  When +new+ is not passed a block, the class may implement
   #  +scrub+, which will be called for each document node.
-  #
-  # @raise [ScrubberNotFound]
   #
   # pkg:gem/loofah#lib/loofah/scrubber.rb:88
   def scrub(node); end
 
-  # Calling +traverse+ will cause the document to be traversed by
+  #  Calling +traverse+ will cause the document to be traversed by
   #  either the lambda passed to the initializer or the +scrub+
   #  method, in the direction specified at +new+ time.
   #
@@ -659,12 +734,12 @@ Loofah::Scrubber::CONTINUE = T.let(T.unsafe(nil), Object)
 # pkg:gem/loofah#lib/loofah/scrubber.rb:40
 Loofah::Scrubber::STOP = T.let(T.unsafe(nil), Object)
 
-# A RuntimeError raised when Loofah could not find an appropriate scrubber.
+#  A RuntimeError raised when Loofah could not find an appropriate scrubber.
 #
 # pkg:gem/loofah#lib/loofah/scrubber.rb:7
 class Loofah::ScrubberNotFound < ::RuntimeError; end
 
-# Loofah provides some built-in scrubbers for sanitizing with
+#  Loofah provides some built-in scrubbers for sanitizing with
 #  HTML5lib's safelist and for accomplishing some common
 #  transformation tasks.
 #
@@ -766,14 +841,14 @@ class Loofah::ScrubberNotFound < ::RuntimeError; end
 # pkg:gem/loofah#lib/loofah/scrubbers.rb:104
 module Loofah::Scrubbers
   class << self
-    # Returns an array of symbols representing the built-in scrubbers
+    #  Returns an array of symbols representing the built-in scrubbers
     #
     # pkg:gem/loofah#lib/loofah/scrubbers.rb:425
     def scrubber_symbols; end
   end
 end
 
-# === scrub!(:double_breakpoint)
+#  === scrub!(:double_breakpoint)
 #
 #  +:double_breakpoint+ replaces double-break tags with closing/opening paragraph tags.
 #
@@ -783,8 +858,6 @@ end
 #
 # pkg:gem/loofah#lib/loofah/scrubbers.rb:362
 class Loofah::Scrubbers::DoubleBreakpoint < ::Loofah::Scrubber
-  # @return [DoubleBreakpoint] a new instance of DoubleBreakpoint
-  #
   # pkg:gem/loofah#lib/loofah/scrubbers.rb:363
   def initialize; end
 
@@ -797,7 +870,7 @@ class Loofah::Scrubbers::DoubleBreakpoint < ::Loofah::Scrubber
   def remove_blank_text_nodes(node); end
 end
 
-# === scrub!(:escape)
+#  === scrub!(:escape)
 #
 #  +:escape+ performs HTML entity escaping on the unknown/unsafe tags:
 #
@@ -807,8 +880,6 @@ end
 #
 # pkg:gem/loofah#lib/loofah/scrubbers.rb:159
 class Loofah::Scrubbers::Escape < ::Loofah::Scrubber
-  # @return [Escape] a new instance of Escape
-  #
   # pkg:gem/loofah#lib/loofah/scrubbers.rb:160
   def initialize; end
 
@@ -816,7 +887,7 @@ class Loofah::Scrubbers::Escape < ::Loofah::Scrubber
   def scrub(node); end
 end
 
-# A hash that maps a symbol (like +:prune+) to the appropriate Scrubber (Loofah::Scrubbers::Prune).
+#  A hash that maps a symbol (like +:prune+) to the appropriate Scrubber (Loofah::Scrubbers::Prune).
 #
 # pkg:gem/loofah#lib/loofah/scrubbers.rb:407
 Loofah::Scrubbers::MAP = T.let(T.unsafe(nil), Hash)
@@ -825,8 +896,6 @@ Loofah::Scrubbers::MAP = T.let(T.unsafe(nil), Hash)
 #
 # pkg:gem/loofah#lib/loofah/scrubbers.rb:307
 class Loofah::Scrubbers::NewlineBlockElements < ::Loofah::Scrubber
-  # @return [NewlineBlockElements] a new instance of NewlineBlockElements
-  #
   # pkg:gem/loofah#lib/loofah/scrubbers.rb:308
   def initialize; end
 
@@ -834,7 +903,7 @@ class Loofah::Scrubbers::NewlineBlockElements < ::Loofah::Scrubber
   def scrub(node); end
 end
 
-# === scrub!(:nofollow)
+#  === scrub!(:nofollow)
 #
 #  +:nofollow+ adds a rel="nofollow" attribute to all links
 #
@@ -844,8 +913,6 @@ end
 #
 # pkg:gem/loofah#lib/loofah/scrubbers.rb:220
 class Loofah::Scrubbers::NoFollow < ::Loofah::Scrubber
-  # @return [NoFollow] a new instance of NoFollow
-  #
   # pkg:gem/loofah#lib/loofah/scrubbers.rb:221
   def initialize; end
 
@@ -853,7 +920,7 @@ class Loofah::Scrubbers::NoFollow < ::Loofah::Scrubber
   def scrub(node); end
 end
 
-# === scrub!(:noopener)
+#  === scrub!(:noopener)
 #
 #  +:noopener+ adds a rel="noopener" attribute to all links
 #
@@ -863,8 +930,6 @@ end
 #
 # pkg:gem/loofah#lib/loofah/scrubbers.rb:271
 class Loofah::Scrubbers::NoOpener < ::Loofah::Scrubber
-  # @return [NoOpener] a new instance of NoOpener
-  #
   # pkg:gem/loofah#lib/loofah/scrubbers.rb:272
   def initialize; end
 
@@ -872,7 +937,7 @@ class Loofah::Scrubbers::NoOpener < ::Loofah::Scrubber
   def scrub(node); end
 end
 
-# === scrub!(:noreferrer)
+#  === scrub!(:noreferrer)
 #
 #  +:noreferrer+ adds a rel="noreferrer" attribute to all links
 #
@@ -882,8 +947,6 @@ end
 #
 # pkg:gem/loofah#lib/loofah/scrubbers.rb:293
 class Loofah::Scrubbers::NoReferrer < ::Loofah::Scrubber
-  # @return [NoReferrer] a new instance of NoReferrer
-  #
   # pkg:gem/loofah#lib/loofah/scrubbers.rb:294
   def initialize; end
 
@@ -891,7 +954,7 @@ class Loofah::Scrubbers::NoReferrer < ::Loofah::Scrubber
   def scrub(node); end
 end
 
-# === scrub!(:prune)
+#  === scrub!(:prune)
 #
 #  +:prune+ removes unknown/unsafe tags and their contents (including their subtrees):
 #
@@ -901,8 +964,6 @@ end
 #
 # pkg:gem/loofah#lib/loofah/scrubbers.rb:137
 class Loofah::Scrubbers::Prune < ::Loofah::Scrubber
-  # @return [Prune] a new instance of Prune
-  #
   # pkg:gem/loofah#lib/loofah/scrubbers.rb:138
   def initialize; end
 
@@ -910,7 +971,7 @@ class Loofah::Scrubbers::Prune < ::Loofah::Scrubber
   def scrub(node); end
 end
 
-# === scrub!(:strip)
+#  === scrub!(:strip)
 #
 #  +:strip+ removes unknown/unsafe tags, but leaves behind the pristine contents:
 #
@@ -920,8 +981,6 @@ end
 #
 # pkg:gem/loofah#lib/loofah/scrubbers.rb:114
 class Loofah::Scrubbers::Strip < ::Loofah::Scrubber
-  # @return [Strip] a new instance of Strip
-  #
   # pkg:gem/loofah#lib/loofah/scrubbers.rb:115
   def initialize; end
 
@@ -929,7 +988,7 @@ class Loofah::Scrubbers::Strip < ::Loofah::Scrubber
   def scrub(node); end
 end
 
-# === scrub!(:targetblank)
+#  === scrub!(:targetblank)
 #
 #  +:targetblank+ adds a target="_blank" attribute to all links.
 #  If there is a target already set, replaces it with target="_blank".
@@ -943,8 +1002,6 @@ end
 #
 # pkg:gem/loofah#lib/loofah/scrubbers.rb:246
 class Loofah::Scrubbers::TargetBlank < ::Loofah::Scrubber
-  # @return [TargetBlank] a new instance of TargetBlank
-  #
   # pkg:gem/loofah#lib/loofah/scrubbers.rb:247
   def initialize; end
 
@@ -952,7 +1009,7 @@ class Loofah::Scrubbers::TargetBlank < ::Loofah::Scrubber
   def scrub(node); end
 end
 
-# === scrub!(:unprintable)
+#  === scrub!(:unprintable)
 #
 #  +:unprintable+ removes unprintable Unicode characters.
 #
@@ -968,8 +1025,6 @@ end
 #
 # pkg:gem/loofah#lib/loofah/scrubbers.rb:340
 class Loofah::Scrubbers::Unprintable < ::Loofah::Scrubber
-  # @return [Unprintable] a new instance of Unprintable
-  #
   # pkg:gem/loofah#lib/loofah/scrubbers.rb:341
   def initialize; end
 
@@ -977,7 +1032,7 @@ class Loofah::Scrubbers::Unprintable < ::Loofah::Scrubber
   def scrub(node); end
 end
 
-# === scrub!(:whitewash)
+#  === scrub!(:whitewash)
 #
 #  +:whitewash+ removes all comments, styling and attributes in
 #  addition to doing markup-fixer-uppery and pruning unsafe tags. I
@@ -996,8 +1051,6 @@ end
 #
 # pkg:gem/loofah#lib/loofah/scrubbers.rb:191
 class Loofah::Scrubbers::Whitewash < ::Loofah::Scrubber
-  # @return [Whitewash] a new instance of Whitewash
-  #
   # pkg:gem/loofah#lib/loofah/scrubbers.rb:192
   def initialize; end
 
@@ -1005,33 +1058,14 @@ class Loofah::Scrubbers::Whitewash < ::Loofah::Scrubber
   def scrub(node); end
 end
 
-# Overrides +text+ in Document and DocumentFragment classes, and mixes in +to_text+.
+#  Overrides +text+ in Document and DocumentFragment classes, and mixes in +to_text+.
 #
 # pkg:gem/loofah#lib/loofah/concerns.rb:73
 module Loofah::TextBehavior
-  # Returns a plain-text version of the markup contained by the document, with HTML entities
-  #  encoded.
-  #
-  #  This method is significantly faster than #to_text, but isn't clever about whitespace around
-  #  block elements.
-  #
-  #    Loofah.html5_document("<h1>Title</h1><div>Content</div>").text
-  #    # => "TitleContent"
-  #
-  #  By default, the returned text will have HTML entities escaped. If you want unescaped
-  #  entities, and you understand that the result is unsafe to render in a browser, then you can
-  #  pass an argument as shown:
-  #
-  #    frag = Loofah.html5_fragment("&lt;script&gt;alert('EVIL');&lt;/script&gt;")
-  #    # ok for browser:
-  #    frag.text                                 # => "&lt;script&gt;alert('EVIL');&lt;/script&gt;"
-  #    # decidedly not ok for browser:
-  #    frag.text(:encode_special_chars => false) # => "<script>alert('EVIL');</script>"
-  #
   # pkg:gem/loofah#lib/loofah/concerns.rb:107
   def inner_text(options = T.unsafe(nil)); end
 
-  # Returns a plain-text version of the markup contained by the document, with HTML entities
+  #  Returns a plain-text version of the markup contained by the document, with HTML entities
   #  encoded.
   #
   #  This method is significantly faster than #to_text, but isn't clever about whitespace around
@@ -1053,29 +1087,10 @@ module Loofah::TextBehavior
   # pkg:gem/loofah#lib/loofah/concerns.rb:94
   def text(options = T.unsafe(nil)); end
 
-  # Returns a plain-text version of the markup contained by the document, with HTML entities
-  #  encoded.
-  #
-  #  This method is significantly faster than #to_text, but isn't clever about whitespace around
-  #  block elements.
-  #
-  #    Loofah.html5_document("<h1>Title</h1><div>Content</div>").text
-  #    # => "TitleContent"
-  #
-  #  By default, the returned text will have HTML entities escaped. If you want unescaped
-  #  entities, and you understand that the result is unsafe to render in a browser, then you can
-  #  pass an argument as shown:
-  #
-  #    frag = Loofah.html5_fragment("&lt;script&gt;alert('EVIL');&lt;/script&gt;")
-  #    # ok for browser:
-  #    frag.text                                 # => "&lt;script&gt;alert('EVIL');&lt;/script&gt;"
-  #    # decidedly not ok for browser:
-  #    frag.text(:encode_special_chars => false) # => "<script>alert('EVIL');</script>"
-  #
   # pkg:gem/loofah#lib/loofah/concerns.rb:108
   def to_str(options = T.unsafe(nil)); end
 
-  # Returns a plain-text version of the markup contained by the fragment, with HTML entities
+  #  Returns a plain-text version of the markup contained by the fragment, with HTML entities
   #  encoded.
   #
   #  This method is slower than #text, but is clever about whitespace around block elements and
@@ -1096,7 +1111,7 @@ Loofah::VERSION = T.let(T.unsafe(nil), String)
 # pkg:gem/loofah#lib/loofah/xml/document.rb:4
 module Loofah::XML; end
 
-# Subclass of Nokogiri::XML::Document.
+#  Subclass of Nokogiri::XML::Document.
 #
 #  See Loofah::ScrubBehavior and Loofah::DocumentDecorator for additional methods.
 #
@@ -1106,7 +1121,7 @@ class Loofah::XML::Document < ::Nokogiri::XML::Document
   include ::Loofah::DocumentDecorator
 end
 
-# Subclass of Nokogiri::XML::DocumentFragment.
+#  Subclass of Nokogiri::XML::DocumentFragment.
 #
 #  See Loofah::ScrubBehavior for additional methods.
 #
