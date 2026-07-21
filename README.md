@@ -8,8 +8,8 @@
 
 - make
 - docker
-- ruby = 4.0.1
-- node >= 21
+- ruby = 4.0.6
+- node = 25.2.1
 
 ### Run
 
@@ -29,7 +29,7 @@ make setup-macos
 make services-start
 ```
 
-By default the local Postgres is published on port `5433`, so it does not conflict with another local database on `5432`.
+By default the local Postgres is published on port `54330`, so it does not conflict with another local database on `5432`.
 
 
 3. Setup app
