@@ -429,6 +429,7 @@ ru:
           output: Вывод
           solution: Решение
           tests: Тесты
+          editor_aria_label: Редактор кода
           issues: Нашли ошибку? Есть что добавить? Пулреквесты приветствуются
           sign_up_for_tracking_progress_html: |
             Чтобы не потерять достигнутые результаты, обязательно <a href="%{link}" class="text-decoration-none" target="_blank">зарегистрируйтесь</a>

@@ -306,6 +306,7 @@ en:
           output: Output
           solution: Solution
           tests: Tests
+          editor_aria_label: Code editor
       complete_language:
         continue: Continue Learning
         grats: Congratulations

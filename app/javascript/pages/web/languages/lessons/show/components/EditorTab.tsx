@@ -4,6 +4,7 @@ import MonacoEditor from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
 
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import useAsyncModule from "@/hooks/useAsyncModule.ts";
 import {
   getEditorLanguage,
@@ -16,6 +17,7 @@ import { useLessonStore } from "../store.tsx";
 
 export default function EditorTab() {
   const { course, mobileBrowser } = usePage<LessonSharedProps>().props;
+  const { t } = useTranslation();
   const colorScheme = useComputedColorScheme("light", {
     getInitialValueInEffect: false,
   });
@@ -38,6 +40,13 @@ export default function EditorTab() {
     formatOnPaste: true,
     // renderLineHighlight: false,
     fixedOverflowWidgets: true,
+    // Force accessibility mode on so screen readers (e.g. NVDA) can read the
+    // code — Monaco's "auto" detection misses NVDA on Windows (#722).
+    accessibilitySupport: "on",
+    // Expose the whole exercise to the screen reader, not just the default 10
+    // lines, so longer solutions are fully readable.
+    accessibilityPageSize: 500,
+    ariaLabel: t(($) => $.languages.lessons.show.editor_aria_label),
   };
 
   const focusesCount = useLessonStore((state) => state.focusesCount);

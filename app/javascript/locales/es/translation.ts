@@ -1067,6 +1067,7 @@ export default {
           definitions: "Definitions",
           discuss: "AI Assistent",
           editor: "Editor",
+          editor_aria_label: "Editor de código",
           finish: "Завершить",
           if_stuck_html:
             "Если вы столкнулись с трудностями и не знаете, что делать, задайте вопрос в нашем большом и дружном <a>телеграм-сообществе</a>\n",
