@@ -1,3 +1,5 @@
+# typed: false
+
 # Mark existing migrations as safe
 StrongMigrations.start_after = 20260714194528
 

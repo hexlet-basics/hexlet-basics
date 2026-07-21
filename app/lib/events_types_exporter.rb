@@ -6,7 +6,7 @@ class EventsTypesExporter
 
   sig { params(output_path: T.untyped).void }
   def initialize(output_path: Rails.root.join("app/javascript/types/events.ts"))
-    @output_path = T.let(output_path, T.untyped)
+    @output_path = output_path
   end
 
   sig { void }
@@ -30,7 +30,7 @@ class EventsTypesExporter
         {
           class_name: klass.name.gsub("::", ""),
           event_type: event_type,
-          event_name: klass.const_get(:NAME),
+          event_name: klass.const_get(:NAME), # rubocop:disable Sorbet/ConstantsFromStrings -- рефлексия по event-классам
           data_fields: data_fields
         }
       end
@@ -39,7 +39,7 @@ class EventsTypesExporter
 
   sig { params(klass: T.untyped).returns(T.untyped) }
   def data_shape_fields(klass)
-    data_shape = klass.const_get(:DataShape)
+    data_shape = klass.const_get(:DataShape) # rubocop:disable Sorbet/ConstantsFromStrings -- рефлексия по event-классам
     type = unwrap_type_alias(data_shape)
     return [] unless type.is_a?(T::Types::FixedHash)
 

@@ -1,3 +1,5 @@
+# typed: false
+
 Browserslist.configure do |config|
   config.file_path = ".browserslist.json"
 

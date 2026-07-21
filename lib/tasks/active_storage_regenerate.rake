@@ -1,3 +1,5 @@
+# typed: false
+
 namespace :app do
   desc "Regenerate ActiveStorage variants"
   task regenerate_active_storage_variants: :environment do

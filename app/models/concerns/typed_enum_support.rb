@@ -99,9 +99,12 @@ module TypedEnumSupport
 
       return serialized_value.to_s if serialized_value.is_a?(Symbol)
 
+      # Перебираем константы enum-класса рефлексией, чтобы найти ключ по значению.
+      # rubocop:disable Sorbet/ConstantsFromStrings
       constant_name = enum_class.constants(false).find do |name|
         enum_class.const_get(name, false).equal?(enum_value)
       end
+      # rubocop:enable Sorbet/ConstantsFromStrings
 
       Kernel.raise ArgumentError, "unable to resolve enum key for #{enum_value.inspect}" if constant_name.nil?
 

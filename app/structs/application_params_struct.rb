@@ -85,7 +85,7 @@ module ApplicationParamsStruct
   end
   private_class_method :attach_attributes
 
-  BOOLEAN_CASTER = T.let(ActiveModel::Type::Boolean.new, ActiveModel::Type::Boolean)
+  BOOLEAN_CASTER = ActiveModel::Type::Boolean.new
   private_constant :BOOLEAN_CASTER
 
   sig { params(value: T.untyped, type_object: T.untyped).returns(T.untyped) }

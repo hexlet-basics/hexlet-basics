@@ -87,6 +87,11 @@ group :development, :test, :staging do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+  gem "rubocop-sorbet", require: false
+  gem "rubocop-minitest", require: false
+  gem "rubocop-capybara", require: false
+  gem "rubocop-factory_bot", require: false
+  gem "rubocop-rake", require: false
 
   gem "factory_bot_rails"
   gem "faker"

@@ -1,6 +1,13 @@
 # Omakase Ruby styling for Rails
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 
+plugins:
+  - rubocop-sorbet
+  - rubocop-minitest
+  - rubocop-capybara
+  - rubocop-factory_bot
+  - rubocop-rake
+
 # Overwrite or add rules to create your own house style
 #
 # # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
@@ -8,3 +15,31 @@ inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 #   Enabled: false
 AllCops:
   TargetRubyVersion: 3.4.4
+
+# Держим планку `# typed: strict` по умолчанию для app/.
+# Каждая строка Exclude — техдолг с понятной причиной.
+Sorbet/StrictSigil:
+  Enabled: true
+  Include:
+    - 'app/**/*.rb'
+  Exclude:
+    # RubyLLM acts_as_* DSL без RBI
+    - 'app/models/ai_chat.rb'
+    - 'app/models/ai_message.rb'
+    - 'app/models/ai_model.rb'
+    - 'app/models/ai_tool_call.rb'
+    - 'app/jobs/assistants/run_job.rb'
+    # DSL / заглушки
+    - 'app/lib/configus.rb'
+    - 'app/services/sms_sender_smsc.rb'
+    # намеренно # typed: true (кандидаты на подъём в будущем)
+    - 'app/lib/event_sender.rb'
+    - 'app/controllers/concerns/event_concern.rb'
+    - 'app/handlers/amocrm_handler.rb'
+    - 'app/services/social_network_service.rb'
+
+# Дешёвые correctness-проверки на весь проект
+Sorbet/EnforceSigilOrder:
+  Enabled: true
+Sorbet/ValidSigil:
+  Enabled: true

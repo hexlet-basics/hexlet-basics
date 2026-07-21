@@ -1,3 +1,5 @@
+# typed: false
+
 # Rails.application.config.middleware.use OmniAuth::Builder do
 #   setup = lambda { |env|
 #     request = ActionDispatch::Request.new(env)

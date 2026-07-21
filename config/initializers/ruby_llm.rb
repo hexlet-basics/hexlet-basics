@@ -1,3 +1,5 @@
+# typed: false
+
 unless HexletBasics::Application.assets_precompiling?
   RubyLLM.configure do |config|
     config.openai_api_key = ENV.fetch("OPENAI_ACCESS_TOKEN")

@@ -1,3 +1,5 @@
+# typed: false
+
 module AASM
   class InstanceBase
     def events_for_select

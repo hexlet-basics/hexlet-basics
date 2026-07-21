@@ -1,3 +1,5 @@
+# typed: false
+
 # get "*path.amp", to: redirect("/%{path}", status: 301)
 get "/*path.amp", to: redirect { |params, _|
   "/#{params[:path]}"

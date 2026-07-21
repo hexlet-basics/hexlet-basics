@@ -1,3 +1,5 @@
+# typed: false
+
 Rails.application.routes.draw do
   # Redirects
   draw :redirects

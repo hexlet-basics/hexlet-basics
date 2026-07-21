@@ -1,3 +1,5 @@
+# typed: false
+
 InertiaRails.configure do |config|
   # Example: force a full-reload if the deployed assets change.
   config.version = ViteRuby.digest

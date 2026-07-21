@@ -53,8 +53,9 @@ class Web::Admin::ApplicationController < Web::ApplicationController
       return
     end
 
+    # STAFF_RESOURCE объявляется в конкретных admin-контроллерах — читаем рефлексией.
     resource = T.cast(
-      self.class.const_get(:STAFF_RESOURCE, false),
+      self.class.const_get(:STAFF_RESOURCE, false), # rubocop:disable Sorbet/ConstantsFromStrings
       T.nilable(StaffMember::Role::Permission::Resource)
     )
     return if resource.nil?

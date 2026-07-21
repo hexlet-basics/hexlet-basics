@@ -1,3 +1,5 @@
+# typed: false
+
 namespace :app do
   desc "Load exercies"
   task :load_exercises, [ :lang ] => :environment do |_task, args|

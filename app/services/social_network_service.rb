@@ -1,5 +1,5 @@
-# frozen_string_literal: true
 # typed: true
+# frozen_string_literal: true
 
 class SocialNetworkService < ApplicationService
   sig { params(auth: T.untyped).returns(Typed::Success[User]) }

@@ -1,3 +1,5 @@
+# typed: false
+
 Sentry.init do |config|
   config.release = configus.hexlet_basics_release_version
 

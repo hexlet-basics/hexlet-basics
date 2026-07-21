@@ -17,7 +17,8 @@ class ApplicationEvent < RubyEventStore::Event
   def as_json
     {
       type: event_type,
-      name: T.cast(self.class.const_get(:NAME), String),
+      # NAME задаётся в каждом подклассе-событии — читаем рефлексией.
+      name: T.cast(self.class.const_get(:NAME), String), # rubocop:disable Sorbet/ConstantsFromStrings
       event_id: event_id,
       metadata: metadata.to_h,
       data: data
