@@ -172,5 +172,10 @@ gem "rails_event_store"
 
 gem "pundit"
 gem "rack-attack"
+
+# Feature flags with an Active Record backend and an admin-only web UI
+gem "flipper"
+gem "flipper-active_record"
+gem "flipper-ui"
 # gem "faraday"
 # gem "httpx"
