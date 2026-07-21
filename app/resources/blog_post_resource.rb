@@ -46,6 +46,6 @@ class BlogPostResource < ApplicationResource
 
   typelize :number
   attribute :likes_count do
-    it.likes.count
+    it.likes.size
   end
 end

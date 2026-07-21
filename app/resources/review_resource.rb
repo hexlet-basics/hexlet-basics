@@ -1,9 +1,6 @@
 # typed: strict
 
-class ReviewResource
-  include Alba::Resource
-  include Typelizer::DSL
-
+class ReviewResource < ApplicationResource
   typelize_from Review
 
   # one :user, resource: UserResource

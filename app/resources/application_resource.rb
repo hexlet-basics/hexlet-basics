@@ -5,10 +5,6 @@ class ApplicationResource
   include Alba::Resource
   include Typelizer::DSL
 
-  meta do
-    {}
-  end
-
   sig { returns(T.untyped) }
   def to_model
     object
