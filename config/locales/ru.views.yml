@@ -430,6 +430,8 @@ ru:
           solution: Решение
           tests: Тесты
           editor_aria_label: Редактор кода
+          autocomplete_hint: Редактор подсказывает команды по мере ввода. Нажмите Tab, чтобы принять подсказку, а клавишами ↑ и ↓ выбирайте нужную из списка.
+          hint_close: Скрыть
           issues: Нашли ошибку? Есть что добавить? Пулреквесты приветствуются
           sign_up_for_tracking_progress_html: |
             Чтобы не потерять достигнутые результаты, обязательно <a href="%{link}" class="text-decoration-none" target="_blank">зарегистрируйтесь</a>

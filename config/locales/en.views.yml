@@ -307,6 +307,8 @@ en:
           solution: Solution
           tests: Tests
           editor_aria_label: Code editor
+          autocomplete_hint: The editor suggests commands as you type. Press Tab to accept a suggestion and use the ↑ and ↓ keys to move through the list.
+          hint_close: Dismiss
       complete_language:
         continue: Continue Learning
         grats: Congratulations

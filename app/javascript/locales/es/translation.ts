@@ -1068,6 +1068,9 @@ export default {
           discuss: "AI Assistent",
           editor: "Editor",
           editor_aria_label: "Editor de código",
+          autocomplete_hint:
+            "El editor sugiere comandos mientras escribes. Pulsa Tab para aceptar una sugerencia y usa las teclas ↑ y ↓ para desplazarte por la lista.",
+          hint_close: "Cerrar",
           finish: "Завершить",
           if_stuck_html:
             "Если вы столкнулись с трудностями и не знаете, что делать, задайте вопрос в нашем большом и дружном <a>телеграм-сообществе</a>\n",

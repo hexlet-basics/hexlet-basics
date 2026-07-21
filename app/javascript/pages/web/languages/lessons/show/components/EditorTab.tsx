@@ -1,5 +1,6 @@
 import { usePage } from "@inertiajs/react";
-import { Box, useComputedColorScheme } from "@mantine/core";
+import { Alert, Box, Stack, useComputedColorScheme } from "@mantine/core";
+import { useLocalStorage } from "@mantine/hooks";
 import MonacoEditor from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
 
@@ -21,6 +22,11 @@ export default function EditorTab() {
   const colorScheme = useComputedColorScheme("light", {
     getInitialValueInEffect: false,
   });
+  const [autocompleteHintDismissed, setAutocompleteHintDismissed] =
+    useLocalStorage({
+      key: "lesson-editor-autocomplete-hint-dismissed",
+      defaultValue: false,
+    });
   const loadMonaco = useCallback(() => import("@/lib/monacoLoader"), []);
   const { isLoading: isMonacoLoading, error: monacoError } =
     useAsyncModule(loadMonaco);
@@ -94,14 +100,32 @@ export default function EditorTab() {
     return <Box h="100%" />;
   }
 
+  const showAutocompleteHint = !mobileBrowser && !autocompleteHintDismissed;
+
   return (
-    <MonacoEditor
-      theme={editorTheme}
-      options={editorOptions}
-      onMount={handleEditorDidMount}
-      value={content}
-      onChange={handleEditorChange}
-      language={getEditorLanguage(course.slug!)}
-    />
+    <Stack h="100%" gap={0}>
+      {showAutocompleteHint && (
+        <Alert
+          variant="light"
+          py="xs"
+          radius={0}
+          withCloseButton
+          closeButtonLabel={t(($) => $.languages.lessons.show.hint_close)}
+          onClose={() => setAutocompleteHintDismissed(true)}
+        >
+          {t(($) => $.languages.lessons.show.autocomplete_hint)}
+        </Alert>
+      )}
+      <Box style={{ flexGrow: 1, minHeight: 0 }}>
+        <MonacoEditor
+          theme={editorTheme}
+          options={editorOptions}
+          onMount={handleEditorDidMount}
+          value={content}
+          onChange={handleEditorChange}
+          language={getEditorLanguage(course.slug!)}
+        />
+      </Box>
+    </Stack>
   );
 }
