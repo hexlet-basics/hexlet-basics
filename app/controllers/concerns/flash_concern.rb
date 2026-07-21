@@ -6,51 +6,60 @@ module FlashConcern
   extend T::Helpers
   requires_ancestor { ApplicationController }
 
-  sig { params(key: T.untyped, options: T.untyped).returns(T.untyped) }
-  def f(key, options = {})
-    controller = self.class
-    values = options[:values] || {}
-    errors = options[:errors]
+  sig do
+    params(
+      key: T.any(String, Symbol),
+      scope: T.nilable(String),
+      values: T::Hash[Symbol, T.untyped],
+      errors: T.untyped,
+      type: T.nilable(T.any(String, Symbol)),
+      now: T::Boolean
+    ).void
+  end
+  def f(key, scope: nil, values: {}, errors: nil, type: nil, now: false)
+    controller = T.cast(self.class, T.class_of(ActionController::Base))
 
-    msg = translate(key, options[:scope], controller, params[:action], values, errors)
+    msg = translate(key, scope, controller, params[:action], values, errors)
 
     # NOTE color logging
     Rails.logger.debug(Term::ANSIColor.green("flash: #{msg}"))
-    type = options[:type] || key
-    if options[:now]
-      flash.now[type] = msg
+    flash_type = type || key
+    if now
+      flash.now[flash_type] = msg
     else
-      flash[type] = msg
+      flash[flash_type] = msg
     end
   end
 
   private
 
-  sig { params(key: T.untyped, scope: T.untyped, controller: T.untyped, action: T.untyped, values: T.untyped, errors: T.untyped).returns(T.untyped) }
+  sig do
+    params(
+      key: T.any(String, Symbol),
+      scope: T.nilable(String),
+      controller: T.class_of(ActionController::Base),
+      action: T.nilable(String),
+      values: T::Hash[Symbol, T.untyped],
+      errors: T.untyped
+    ).returns(String)
+  end
   def translate(key, scope, controller, action, values, errors = nil)
-    keys = []
-    lookup_controller = controller
-    lookup_action = action
+    keys = T.let([], T::Array[Symbol])
+    lookup_controller = T.let(controller, T.nilable(T.class_of(ActionController::Base)))
+    lookup_action = T.let(action, T.nilable(T.any(String, Symbol)))
 
     if scope
-      lookup_key =  scope.split("/")
-      lookup_key << key
-
-      keys << lookup_key.join(".").to_sym
+      keys << [ *scope.split("/"), key ].join(".").to_sym
     else
-      while lookup_controller.superclass.name != "ActionController::Base"
-        lookup_key = T.let([], T::Array[T.untyped])
-        lookup_key << lookup_controller.controller_path.tr("/", ".")
-        lookup_key << lookup_action
-        lookup_key << key
+      while lookup_controller && lookup_controller.superclass&.name != "ActionController::Base"
+        path = lookup_controller.controller_path.tr("/", ".")
+        keys << [ path, lookup_action, key ].join(".").to_sym
 
-        keys << lookup_key.join(".").to_sym
-
-        lookup_controller = lookup_controller.superclass
+        lookup_controller = T.cast(lookup_controller.superclass, T.nilable(T.class_of(ActionController::Base)))
         lookup_action = :base
       end
     end
 
-    I18n.t(keys.shift, scope: :flash, default: keys, **values, errors: errors)
+    I18n.t(T.must(keys.shift), scope: :flash, default: keys, **values, errors: errors)
   end
 end

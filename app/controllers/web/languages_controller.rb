@@ -6,7 +6,7 @@ class Web::LanguagesController < Web::ApplicationController
   before_action :ensure_landing_page, only: [ :show, :success ]
   before_action :redirect_archived_language, only: [ :show, :success ]
 
-  sig { returns(T.untyped) }
+  sig { void }
   def index
     catalog_landing_pages = Language::LandingPage.web
       .where(listed: true)
@@ -39,8 +39,9 @@ class Web::LanguagesController < Web::ApplicationController
     }
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def show
+    landing_page = T.must(self.landing_page)
     language = landing_page.language
     # language_info = language.current_version.infos.find_by!(locale: I18n.locale)
     #
@@ -54,7 +55,7 @@ class Web::LanguagesController < Web::ApplicationController
       .order(language_lesson_versions: { natural_order: :asc })
     language_lessons_info_resources = language_lessons_infos.map { Language::LessonResource.new(it) }
     lesson_resources_by_module_id = language_lessons_info_resources.group_by do |resource|
-      resource.object.version.module.id
+      T.must(resource.object.version.module).id
     end
 
     language_member = nil
@@ -125,10 +126,11 @@ class Web::LanguagesController < Web::ApplicationController
     }
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def success
+    landing_page = T.must(self.landing_page)
     language_member = landing_page.language.members.find_by(user: current_user)
-    unless language_member.finished?
+    unless T.must(language_member).finished?
       f("warning")
       redirect_to language_path(landing_page.slug)
       return
@@ -142,15 +144,15 @@ class Web::LanguagesController < Web::ApplicationController
 
   private
 
-  sig { returns(T.untyped) }
+  sig { void }
   def ensure_landing_page
     return if landing_page
 
     redirect_to languages_path
   end
 
-  sig { returns(T.untyped) }
+  sig { returns(T.nilable(Language::LandingPage)) }
   def landing_page
-    @language_page ||= T.let(Language::LandingPage.with_locale.find_by(slug: params[:id]), T.untyped)
+    @language_page ||= T.let(Language::LandingPage.with_locale.find_by(slug: params[:id]), T.nilable(Language::LandingPage))
   end
 end

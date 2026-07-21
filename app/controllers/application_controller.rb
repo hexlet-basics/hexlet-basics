@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
   # rescue_from Pagy::OverflowError, with: :redirect_to_last_page
   # rescue_from Pagy::VariableError, with: :redirect_to_last_page
 
-  sig { returns(T.untyped) }
+  sig { returns(T::Hash[Symbol, T.untyped]) }
   def default_url_options
     { suffix: params[:suffix] }
   end
@@ -29,4 +29,15 @@ class ApplicationController < ActionController::Base
   # def redirect_to_last_page(exception)
   #   redirect_to url_for(page: exception.pagy.last), notice: "Page ##{params[:page]} is overflowing. Showing page #{exception.pagy.last} instead."
   # end
+
+  private
+
+  # Typed wrapper over Pagy::Method#pagy. The gem RBI types `pagy` as
+  # `(paginator = :offset, collection, **options)`, so Sorbet rejects a
+  # single-argument call; pass the default `:offset` paginator explicitly and
+  # expose a real `[Pagy, records]` return so call sites stay fully typed.
+  sig { params(collection: T.untyped, options: T.untyped).returns([ Pagy::Offset, T.untyped ]) }
+  def paginate(collection, **options)
+    pagy(:offset, collection, **options)
+  end
 end

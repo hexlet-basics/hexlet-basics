@@ -7,7 +7,7 @@ module DependencyFactory
   def self.build
     Dependencies.new(
       docker_exercise_client: Rails.env.test? ? DockerExerciseClientStub : DockerExerciseClient,
-      google_one_tap: Rails.env.test? ? GoogleAuthStub : Google::Auth::IDTokens,
+      google_one_tap: Rails.env.test? ? GoogleAuthStub : GoogleOneTapClient,
       amocrm: Amocrm::Client.new(),
       # Until a real SMS provider is chosen, the stub logs codes everywhere.
       # Swap to SmsSenderSmsc (or another adapter) for production when ready.

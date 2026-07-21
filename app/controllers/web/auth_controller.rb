@@ -4,7 +4,7 @@
 class Web::AuthController < Web::ApplicationController
   allow_unauthenticated_access
 
-  sig { returns(T.untyped) }
+  sig { void }
   def callback
     result = SocialNetworkService.authenticate_user(auth)
     user = result.payload
@@ -24,7 +24,7 @@ class Web::AuthController < Web::ApplicationController
 
   private
 
-  sig { returns(T.untyped) }
+  sig { void }
   def auth
     request.env["omniauth.auth"]
   end

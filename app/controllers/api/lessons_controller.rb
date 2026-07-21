@@ -3,7 +3,7 @@
 class Api::LessonsController < Api::ApplicationController
   allow_unauthenticated_access
 
-  sig { returns(T.untyped) }
+  sig { void }
   def check
     lesson = Language::Lesson.find(params[:id])
     struct = ApplicationParamsStruct.from_params!(LessonCheckStruct, params.require(:data))

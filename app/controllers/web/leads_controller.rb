@@ -3,7 +3,7 @@
 class Web::LeadsController < Web::ApplicationController
   before_action :require_authentication
 
-  sig { returns(T.untyped) }
+  sig { void }
   def new
     seo_tags = {
       title: t(".header")
@@ -18,7 +18,7 @@ class Web::LeadsController < Web::ApplicationController
     }
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def create
     user = T.must(current_user)
     struct = ApplicationParamsStruct.from_params(LeadStruct, params.require(:data))
@@ -72,7 +72,7 @@ class Web::LeadsController < Web::ApplicationController
 
   private
 
-  sig { params(errors: T.untyped).returns(T.untyped) }
+  sig { params(errors: T.untyped).void }
   def fail_create(errors)
     f(:error)
     redirect_to new_lead_path, inertia: { errors: }

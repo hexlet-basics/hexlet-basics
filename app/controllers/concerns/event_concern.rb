@@ -1,5 +1,5 @@
 
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 module EventConcern
@@ -34,7 +34,13 @@ module EventConcern
     events.each { js_event(it) }
   end
 
-  sig { params(event: T.untyped, user: T.untyped, request: T.untyped).void }
+  sig do
+    params(
+      event: ApplicationEvent,
+      user: T.nilable(User),
+      request: T.nilable(ActionDispatch::Request)
+    ).void
+  end
   def publish_event(event, user, request = nil)
     EventSender.publish_event(event, user, request)
   end

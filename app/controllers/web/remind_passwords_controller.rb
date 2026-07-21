@@ -3,7 +3,7 @@
 class Web::RemindPasswordsController < Web::ApplicationController
   allow_unauthenticated_access
 
-  sig { returns(T.untyped) }
+  sig { void }
   def new
     seo_tags = {
       title: t(".title")
@@ -13,7 +13,7 @@ class Web::RemindPasswordsController < Web::ApplicationController
     render inertia: true, props: {}
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def create
     struct = ApplicationParamsStruct.from_params!(RemindPasswordStruct, params.require(:data))
 

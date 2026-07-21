@@ -5,7 +5,7 @@ class Web::LocalesController < Web::ApplicationController
   allow_unauthenticated_access
   skip_before_action :prepare_locale_settings, only: [ :switch ]
 
-  sig { returns(T.untyped) }
+  sig { void }
   def switch
     locale = params[:new_locale]
 

@@ -3,11 +3,11 @@
 class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
   STAFF_RESOURCE = StaffMember::Role::Permission::Resource::BlogPosts
 
-  sig { returns(T.untyped) }
+  sig { void }
   def index
     default_params = { "sf" => "id", "so" => "desc" }
     q = ransack_params(default_params)
-    search = BlogPost.with_locale.includes([ :cover_attachment ]).ransack(q)
+    search = BlogPost.with_locale.includes([ :likes, :cover_attachment ]).ransack(q)
     pagy, records = pagy(search.result)
     # raise q.inspect
 
@@ -20,7 +20,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
     }
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def new
     blog_post = BlogPost.new
     blog_post.creator = T.must(current_user)
@@ -30,7 +30,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
     }
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def edit
     blog_post = BlogPost.find(params[:id])
 
@@ -40,7 +40,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
     }
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def related_courses
     FindRelatedCoursesForBlogPostJob.perform_later(params[:id])
 
@@ -48,7 +48,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
     redirect_back_or_to admin_blog_posts_path
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def create
     struct = ApplicationParamsStruct.from_params(BlogPostStruct, params.require(:data))
     result = BlogPostService.create(struct, creator: T.must(current_user), locale: I18n.locale.to_s, cover: params.dig(:data, :cover))
@@ -63,7 +63,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
     end
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def update
     struct = ApplicationParamsStruct.from_params(BlogPostStruct, params.require(:data))
     result = BlogPostService.update(params[:id], struct, locale: I18n.locale.to_s, cover: params.dig(:data, :cover))

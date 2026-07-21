@@ -3,7 +3,7 @@
 class Web::Admin::MessagesController < Web::Admin::ApplicationController
   STAFF_RESOURCE = StaffMember::Role::Permission::Resource::Messages
 
-  sig { returns(T.untyped) }
+  sig { void }
   def index
     q = ransack_params("sf" => "id", "so" => "desc")
     search = AiMessage
@@ -17,10 +17,10 @@ class Web::Admin::MessagesController < Web::Admin::ApplicationController
     }
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def by_lesson_member
     scope = Language::Lesson::Member.order(id: :desc)
-    pagy, records = T.unsafe(self).pagy(scope)
+    pagy, records = paginate(scope)
 
     render inertia: true, props: {
       members: Language::Lesson::MemberResource.new(records),

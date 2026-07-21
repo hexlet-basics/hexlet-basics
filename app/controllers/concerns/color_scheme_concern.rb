@@ -18,7 +18,7 @@ module ColorSchemeConcern
     helper_method :current_color_scheme
   end
 
-  sig { returns(T.untyped) }
+  sig { returns(String) }
   def current_color_scheme
     color_scheme = cookies[COLOR_SCHEME_COOKIE_KEY]
 

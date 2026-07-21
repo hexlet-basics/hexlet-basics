@@ -5,13 +5,13 @@ class Web::MagicLinksController < Web::ApplicationController
   allow_unauthenticated_access
   before_action :redirect_if_authenticated, only: %i[new create]
 
-  sig { returns(T.untyped) }
+  sig { void }
   def new
     set_meta_tags title: t(".title")
     render inertia: true, props: {}
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def create
     struct = ApplicationParamsStruct.from_params!(MagicLinkStruct, params.require(:data))
     MagicLinkService.request!(T.must(struct.email), suffix: params[:suffix])
@@ -21,7 +21,7 @@ class Web::MagicLinksController < Web::ApplicationController
     redirect_to root_path
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def show
     user = User.find_by_token_for(:magic_link, params[:id])
 

@@ -3,7 +3,7 @@
 class Web::Admin::LanguagesController < Web::Admin::ApplicationController
   STAFF_RESOURCE = StaffMember::Role::Permission::Resource::Languages
 
-  sig { returns(T.untyped) }
+  sig { void }
   def index
     q = ransack_params("sf" => "id", "so" => "desc")
     search = Language.ransack(q)
@@ -16,7 +16,7 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
     }
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def new
     language = Language.new
     render inertia: true, props: {
@@ -24,7 +24,7 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
     }
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def edit
     language = Language.find(params[:id])
     versions = language.versions.limit(5).order(created_at: :desc)
@@ -37,7 +37,7 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
     }
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def create
     struct = ApplicationParamsStruct.from_params(LanguageStruct, params.require(:data))
     result = LanguageService.create(struct, cover: params.dig(:data, :cover))
@@ -52,7 +52,7 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
     end
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def review
     language = Language.find(params[:id])
     language.current_lesson_infos.find_each do |info|
@@ -64,7 +64,7 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
     redirect_to admin_languages_path
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def update
     struct = ApplicationParamsStruct.from_params(LanguageStruct, params.require(:data))
     result = LanguageService.update(params[:id], struct, cover: params.dig(:data, :cover))

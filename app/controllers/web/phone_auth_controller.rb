@@ -5,13 +5,13 @@ class Web::PhoneAuthController < Web::ApplicationController
   allow_unauthenticated_access
   before_action :redirect_if_authenticated
 
-  sig { returns(T.untyped) }
+  sig { void }
   def new
     set_meta_tags title: t(".title")
     render inertia: true, props: {}
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def create
     struct = ApplicationParamsStruct.from_params!(PhoneRequestStruct, params.require(:data))
     result = PhoneAuthService.request_code(T.must(struct.phone), ip: request.remote_ip)
@@ -26,13 +26,13 @@ class Web::PhoneAuthController < Web::ApplicationController
     end
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def verify
     set_meta_tags title: t(".title")
     render inertia: true, props: { phone: params[:phone].to_s }
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def confirm
     struct = ApplicationParamsStruct.from_params!(PhoneVerifyStruct, params.require(:data))
     phone = T.must(struct.phone)

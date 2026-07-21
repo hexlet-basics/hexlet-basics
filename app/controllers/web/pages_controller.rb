@@ -12,7 +12,7 @@ class Web::PagesController < Web::ApplicationController
 
   DISALLOWED_PAGES = %w[cookie_policy privacy tos].freeze
 
-  sig { returns(T.untyped) }
+  sig { void }
   def show
     page = params[:id]
     unless PAGES.include? page

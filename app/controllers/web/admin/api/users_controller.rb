@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 class Web::Admin::Api::UsersController < Web::Admin::Api::ApplicationController
-  sig { returns(T.untyped) }
+  sig { void }
   def search
     term = params[:term].presence || params[:q].presence
 

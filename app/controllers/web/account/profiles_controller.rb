@@ -1,7 +1,7 @@
 # typed: strict
 
 class Web::Account::ProfilesController < Web::Account::ApplicationController
-  sig { returns(T.untyped) }
+  sig { void }
   def edit
     seo_tags = {
       title: t(".title"),
@@ -15,7 +15,7 @@ class Web::Account::ProfilesController < Web::Account::ApplicationController
     }
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def update
     struct = ApplicationParamsStruct.from_params(ProfileStruct, params.require(:data))
     result = UserService.update_profile(T.must(current_user), struct)
@@ -30,13 +30,13 @@ class Web::Account::ProfilesController < Web::Account::ApplicationController
     end
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def destroy
     T.must(current_user).mark_as_removed!
     terminate_session
 
     f(:success)
 
-    redirect_to root_path
+    redirect_to root_path, inertia: { clear_history: true }
   end
 end

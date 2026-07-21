@@ -3,7 +3,7 @@
 class Web::Admin::LanguageLessonReviewsController < Web::Admin::ApplicationController
   STAFF_RESOURCE = StaffMember::Role::Permission::Resource::LanguageLessonReviews
 
-  sig { returns(T.untyped) }
+  sig { void }
   def index
     q = ransack_params("sf" => "id", "so" => "desc")
     search = Language::Lesson::Review.where(locale: I18n.locale).ransack(q)

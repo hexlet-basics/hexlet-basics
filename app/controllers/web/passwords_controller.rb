@@ -3,11 +3,10 @@
 class Web::PasswordsController < Web::ApplicationController
   allow_unauthenticated_access
   before_action :assert_token_passed
-  before_action :set_user_password_form
 
   rescue_from ActiveSupport::MessageVerifier::InvalidSignature, with: :handle_invalid_token
 
-  sig { returns(T.untyped) }
+  sig { void }
   def edit
     seo_tags = {
       title: t(".title")
@@ -15,15 +14,15 @@ class Web::PasswordsController < Web::ApplicationController
     set_meta_tags seo_tags
 
     render inertia: true, props: {
-      userPassword: UserPasswordResource.new(@user),
+      userPassword: UserPasswordResource.new(user),
       token: token
     }
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def update
     struct = ApplicationParamsStruct.from_params!(PasswordStruct, params.require(:data))
-    result = UserService.update_password(T.must(@user), struct)
+    result = UserService.update_password(T.must(user), struct)
 
     case result
     when Typed::Success
@@ -37,25 +36,25 @@ class Web::PasswordsController < Web::ApplicationController
 
   private
 
-  sig { returns(T.untyped) }
+  sig { void }
   def assert_token_passed
     return if token.present?
 
     handle_invalid_token
   end
 
-  sig { returns(T.untyped) }
-  def set_user_password_form
-    @user = T.let(T.unsafe(User).find_by_password_reset_token!(token), T.nilable(User))
+  sig { returns(T.nilable(User)) }
+  def user
+    @user ||= T.let(User.find_by_password_reset_token!(token), T.nilable(User))
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def handle_invalid_token
     f(:error)
     redirect_to root_path
   end
 
-  sig { returns(T.untyped) }
+  sig { returns(T.nilable(String)) }
   def token
     params[:token]
   end

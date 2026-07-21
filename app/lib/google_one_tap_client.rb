@@ -1,7 +1,9 @@
 # typed: strict
-# frozen_string_literal: true
 
-class GoogleAuthStub < GoogleOneTapInterface
+# Production adapter: delegates to the googleauth gem. Exists so the gem module
+# (which can't subclass GoogleOneTapInterface) is reachable through the typed
+# dependency contract.
+class GoogleOneTapClient < GoogleOneTapInterface
   extend T::Sig
 
   sig do
@@ -13,9 +15,6 @@ class GoogleAuthStub < GoogleOneTapInterface
     ).returns(T::Hash[String, T.untyped])
   end
   def self.verify_oidc(token, aud: nil, azp: nil, iss: nil)
-    {
-      "email" => "example@mail.com",
-      "sub" => "1144422255589998888"
-    }
+    Google::Auth::IDTokens.verify_oidc(token, aud:, azp:, iss:)
   end
 end

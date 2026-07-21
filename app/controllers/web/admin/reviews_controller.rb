@@ -4,7 +4,7 @@
 class Web::Admin::ReviewsController < Web::Admin::ApplicationController
   STAFF_RESOURCE = StaffMember::Role::Permission::Resource::Reviews
 
-  sig { returns(T.untyped) }
+  sig { void }
   def index
     q = ransack_params("sf" => "id", "so" => "desc")
     search = Review.with_locale.includes([ :user ]).ransack(q)
@@ -16,7 +16,7 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
     }
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def new
     review = Review.new
     languages = Language.all
@@ -27,7 +27,7 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
     }
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def edit
     review = Review.find(params[:id])
     languages = Language.all
@@ -38,7 +38,7 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
     }
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def create
     struct = ApplicationParamsStruct.from_params(ReviewStruct, params.require(:data))
     result = ReviewService.create(struct, locale: I18n.locale.to_s)
@@ -53,7 +53,7 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
     end
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def update
     struct = ApplicationParamsStruct.from_params(ReviewStruct, params.require(:data))
     result = ReviewService.update(params[:id], struct, locale: I18n.locale.to_s)

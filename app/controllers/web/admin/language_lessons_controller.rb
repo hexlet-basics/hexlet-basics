@@ -3,7 +3,7 @@
 class Web::Admin::LanguageLessonsController < Web::Admin::ApplicationController
   STAFF_RESOURCE = StaffMember::Role::Permission::Resource::LanguageLessons
 
-  sig { returns(T.untyped) }
+  sig { void }
   def index
     q = ransack_params("sf" => "id", "so" => "desc")
     search = Language::Lesson::Version::Info.current.with_locale.ransack(q)
@@ -15,7 +15,7 @@ class Web::Admin::LanguageLessonsController < Web::Admin::ApplicationController
     }
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def review
     lesson = Language::Lesson.find(params[:id])
     lesson.infos.find_each do |info|

@@ -4,7 +4,7 @@ class Web::BooksController < Web::ApplicationController
   allow_unauthenticated_access only: [ :show ]
   before_action :require_authentication, only: [ :create_request, :download ]
 
-  sig { returns(T.untyped) }
+  sig { void }
   def show
     book_request = current_user&.book_request
 
@@ -30,7 +30,7 @@ class Web::BooksController < Web::ApplicationController
     }
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def create_request
     request = BookRequest.find_or_initialize_by user: current_user
     if request.new_record?
@@ -43,7 +43,7 @@ class Web::BooksController < Web::ApplicationController
     redirect_to view_context.book_path
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def download
     book_request = current_user&.book_request
     unless book_request

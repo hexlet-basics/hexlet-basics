@@ -1,7 +1,7 @@
 # typed: strict
 
 class Ai::Lessons::MessagesController < Ai::ApplicationController
-  sig { returns(T.untyped) }
+  sig { void }
   def index
     lesson = Language::Lesson.find(params[:lesson_id])
     lesson_member = lesson.members.find_by!(user: current_user)
@@ -12,7 +12,7 @@ class Ai::Lessons::MessagesController < Ai::ApplicationController
     render json: messages
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def create
     unless AiMessagePolicy.new(current_user, AiMessage).create?
       head :too_many_requests

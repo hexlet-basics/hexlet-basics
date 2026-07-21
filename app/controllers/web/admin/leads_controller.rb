@@ -3,7 +3,7 @@
 class Web::Admin::LeadsController < Web::Admin::ApplicationController
   STAFF_RESOURCE = StaffMember::Role::Permission::Resource::Leads
 
-  sig { returns(T.untyped) }
+  sig { void }
   def index
     q = ransack_params("sf" => "id", "so" => "desc")
     search = Lead.includes([ :user ]).ransack(q)

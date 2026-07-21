@@ -3,7 +3,7 @@
 class Web::MyController < Web::ApplicationController
   before_action :require_authentication
 
-  sig { returns(T.untyped) }
+  sig { void }
   def show
     started_language_members = T.must(current_user).language_members
       .joins(language: :landing_pages)

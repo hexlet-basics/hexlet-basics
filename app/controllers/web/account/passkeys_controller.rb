@@ -6,7 +6,7 @@ class Web::Account::PasskeysController < Web::Account::ApplicationController
 
   # Returns WebAuthn creation options (JSON) for the signed-in user and stashes
   # the challenge in the session. Generates a stable webauthn_id on first use.
-  sig { returns(T.untyped) }
+  sig { void }
   def new
     user = T.must(current_user)
     user.update!(webauthn_id: WebAuthn.generate_user_id) if user.webauthn_id.blank?
@@ -21,7 +21,7 @@ class Web::Account::PasskeysController < Web::Account::ApplicationController
     render json: options
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def create
     user = T.must(current_user)
     webauthn_credential = WebAuthn::Credential.from_create(JSON.parse(params.require(:credential)))
@@ -38,7 +38,7 @@ class Web::Account::PasskeysController < Web::Account::ApplicationController
     redirect_to edit_account_profile_path
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def destroy
     T.must(current_user).credentials.find(params[:id]).destroy!
 
@@ -48,7 +48,7 @@ class Web::Account::PasskeysController < Web::Account::ApplicationController
 
   private
 
-  sig { returns(T.untyped) }
+  sig { void }
   def handle_failure
     f(:error, type: :alert)
     redirect_to edit_account_profile_path

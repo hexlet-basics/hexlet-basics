@@ -3,7 +3,7 @@
 class Web::Admin::LanguageLessonMembersController < Web::Admin::ApplicationController
   STAFF_RESOURCE = StaffMember::Role::Permission::Resource::LanguageLessonMembers
 
-  sig { returns(T.untyped) }
+  sig { void }
   def index
     q = ransack_params("sf" => "id", "so" => "desc")
     search = Language::Lesson::Member

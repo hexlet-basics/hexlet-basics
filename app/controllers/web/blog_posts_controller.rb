@@ -3,12 +3,12 @@
 class Web::BlogPostsController < Web::ApplicationController
   allow_unauthenticated_access
 
-  sig { returns(T.untyped) }
+  sig { void }
   def index
     scope = BlogPost.published_state.with_locale
-      .includes([ :creator, { cover_attachment: :blob } ])
+      .includes([ :creator, :likes, { cover_attachment: :blob } ])
       .order(id: :desc)
-    pagy, records = T.unsafe(self).pagy(scope)
+    pagy, records = paginate(scope)
 
     seo_tags = {
       title: t(".header"),
@@ -31,12 +31,12 @@ class Web::BlogPostsController < Web::ApplicationController
     }
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def show
     blog_post = BlogPost.with_locale.published_state.find_by!(slug: params[:id])
 
     blog_posts = BlogPost.published_state.with_locale
-      .includes([ :creator, { cover_attachment: :blob } ])
+      .includes([ :creator, :likes, { cover_attachment: :blob } ])
       .except(blog_post)
       .limit(2)
 
@@ -44,7 +44,7 @@ class Web::BlogPostsController < Web::ApplicationController
       .merge(BlogPost::RelatedLanguageItem.order(order: :asc))
       .includes(language: [ :current_version, { cover_attachment: :blob } ])
 
-    image_url = blog_post.cover.attached? && view_context.rails_representation_url(T.unsafe(blog_post.cover).variant(:main))
+    image_url = blog_post.cover.attached? && view_context.rails_representation_url(blog_post.cover.variant(:main))
     seo_tags = {
       title: blog_post.name,
       description: blog_post.description,

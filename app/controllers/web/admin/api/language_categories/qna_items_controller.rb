@@ -2,54 +2,54 @@
 # frozen_string_literal: true
 
 class Web::Admin::Api::LanguageCategories::QnaItemsController < Web::Admin::Api::ApplicationController
-  before_action :set_language_category
-  before_action :set_qna_item, only: %i[update destroy]
-
-  sig { returns(T.untyped) }
+  sig { void }
   def index
-    resource = Language::CategoryQnaItemResource.new(@language_category.qna_items.order(:id))
+    resource = Language::CategoryQnaItemResource.new(language_category.qna_items.order(:id))
 
     respond_with resource
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def create
-    qna_item = @language_category.qna_items.build(qna_item_params)
+    category = language_category
+    qna_item = category.qna_items.build(qna_item_params)
     qna_item.save
     resource = Language::CategoryQnaItemResource.new(qna_item)
 
-    respond_with resource, location: admin_api_language_category_qna_item_url(@language_category, qna_item)
+    respond_with resource, location: admin_api_language_category_qna_item_url(category, qna_item)
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def update
-    @qna_item.update(qna_item_params)
-    resource = Language::CategoryQnaItemResource.new(@qna_item)
+    item = qna_item
+    item.update(qna_item_params)
+    resource = Language::CategoryQnaItemResource.new(item)
 
     respond_with resource
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def destroy
-    @qna_item.destroy
-    resource = Language::CategoryQnaItemResource.new(@qna_item)
+    item = qna_item
+    item.destroy
+    resource = Language::CategoryQnaItemResource.new(item)
 
     respond_with resource
   end
 
   private
 
-  sig { returns(T.untyped) }
-  def set_language_category
-    @language_category = T.let(Language::Category.find(params[:language_category_id]), T.untyped)
+  sig { returns(Language::Category) }
+  def language_category
+    Language::Category.find(params[:language_category_id])
   end
 
-  sig { returns(T.untyped) }
-  def set_qna_item
-    @qna_item = T.let(@language_category.qna_items.find(params[:id]), T.untyped)
+  sig { returns(Language::Category::QnaItem) }
+  def qna_item
+    language_category.qna_items.find(params[:id])
   end
 
-  sig { returns(T.untyped) }
+  sig { returns(ActionController::Parameters) }
   def qna_item_params
     params.fetch(:data, {}).permit(:question, :answer)
   end

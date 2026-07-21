@@ -4,7 +4,7 @@ class Web::SessionsController < Web::ApplicationController
   allow_unauthenticated_access only: [ :new, :create ]
   before_action :redirect_if_authenticated, only: [ :new, :create ]
 
-  sig { returns(T.untyped) }
+  sig { void }
   def new
     seo_tags = {
       title: t(".title"),
@@ -16,7 +16,7 @@ class Web::SessionsController < Web::ApplicationController
     render inertia: true, props: {}
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def create
     struct = ApplicationParamsStruct.from_params!(SignInStruct, params.require(:data))
 
@@ -46,9 +46,9 @@ class Web::SessionsController < Web::ApplicationController
     redirect_to after_authentication_url
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def destroy
     terminate_session
-    redirect_to root_path
+    redirect_to root_path, inertia: { clear_history: true }
   end
 end

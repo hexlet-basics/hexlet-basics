@@ -10,12 +10,12 @@ class Web::Admin::Languages::VersionsController < Web::Admin::Languages::Applica
   #   render inertia: true, props: {}
   # end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def create
-    @version = T.let(resource_language.versions.build, T.untyped)
+    version = resource_language.versions.build
 
-    if @version.save
-      ExerciseLoaderJob.perform_later(@version.id)
+    if version.save
+      ExerciseLoaderJob.perform_later(version.id)
       f(:success)
     else
       f(:error)

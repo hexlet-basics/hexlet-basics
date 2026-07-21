@@ -4,12 +4,12 @@
 class Web::ReviewsController < Web::ApplicationController
   allow_unauthenticated_access
 
-  sig { returns(T.untyped) }
+  sig { void }
   def index
     scope = Review.published_state.with_locale
       .includes([ :user, :language ])
       .order(id: :desc)
-    pagy, records = T.unsafe(self).pagy(scope)
+    pagy, records = paginate(scope)
 
     description = t(".meta.description").truncate(160)
     seo_tags = {

@@ -1,7 +1,7 @@
 # typed: strict
 
 class Web::BlogPosts::LikesController < Web::BlogPosts::ApplicationController
-  sig { returns(T.untyped) }
+  sig { void }
   def create
     session[:blog_post_likes] ||= {}
 

@@ -4,7 +4,7 @@
 class Web::Admin::BannersController < Web::Admin::ApplicationController
   STAFF_RESOURCE = StaffMember::Role::Permission::Resource::Banners
 
-  sig { returns(T.untyped) }
+  sig { void }
   def index
     q = ransack_params("sf" => "id", "so" => "desc")
     search = Banner.ransack(q)
@@ -16,7 +16,7 @@ class Web::Admin::BannersController < Web::Admin::ApplicationController
     }
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def new
     banner = Banner.new
 
@@ -25,7 +25,7 @@ class Web::Admin::BannersController < Web::Admin::ApplicationController
     }
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def edit
     banner = Banner.find(params[:id])
 
@@ -34,7 +34,7 @@ class Web::Admin::BannersController < Web::Admin::ApplicationController
     }
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def create
     struct = ApplicationParamsStruct.from_params(BannerStruct, params.require(:data))
     result = BannerService.create(struct)
@@ -49,7 +49,7 @@ class Web::Admin::BannersController < Web::Admin::ApplicationController
     end
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def update
     struct = ApplicationParamsStruct.from_params(BannerStruct, params.require(:data))
     result = BannerService.update(params[:id], struct)
@@ -64,7 +64,7 @@ class Web::Admin::BannersController < Web::Admin::ApplicationController
     end
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def destroy
     banner = Banner.find(params[:id])
     banner.destroy ? f(:success) : f(:error)

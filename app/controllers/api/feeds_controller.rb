@@ -3,7 +3,7 @@
 class Api::FeedsController < Api::ApplicationController
   allow_unauthenticated_access
 
-  sig { returns(T.untyped) }
+  sig { void }
   def yandex_courses
     I18n.with_locale :ru do
       landingPages = Language::LandingPage.web.where(listed: true).where(main: true)

@@ -9,7 +9,7 @@ class Web::PasskeySessionsController < Web::ApplicationController
 
   # Returns WebAuthn request options (JSON) and stashes the challenge in the session.
   # Discoverable credentials → no allow list, so the user picks an account.
-  sig { returns(T.untyped) }
+  sig { void }
   def new
     options = WebAuthn::Credential.options_for_get(user_verification: "preferred")
     session[:passkey_authentication_challenge] = options.challenge
@@ -17,7 +17,7 @@ class Web::PasskeySessionsController < Web::ApplicationController
     render json: options
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def create
     webauthn_credential = WebAuthn::Credential.from_get(JSON.parse(params.require(:credential)))
     stored = User::Credential.find_by!(external_id: webauthn_credential.id)
@@ -48,7 +48,7 @@ class Web::PasskeySessionsController < Web::ApplicationController
     js_event(event)
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def handle_failure
     f(:error, type: :alert)
     redirect_to new_session_path

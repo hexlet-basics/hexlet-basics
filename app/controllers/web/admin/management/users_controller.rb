@@ -4,7 +4,7 @@
 class Web::Admin::Management::UsersController < Web::Admin::Management::ApplicationController
   # include ActionController::Live
 
-  sig { returns(T.untyped) }
+  sig { void }
   def index
     q = ransack_params("sf" => "id", "so" => "desc")
     search = User.includes(:staff_member).ransack(q)
@@ -42,7 +42,7 @@ class Web::Admin::Management::UsersController < Web::Admin::Management::Applicat
     # end
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def edit
     user = User.find params[:id]
     progressByLanguage = user.lesson_members.group(:language).count
@@ -56,7 +56,7 @@ class Web::Admin::Management::UsersController < Web::Admin::Management::Applicat
     }
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def update
     struct = ApplicationParamsStruct.from_params(UserStruct, params.require(:data))
     result = UserService.update(params[:id], struct)

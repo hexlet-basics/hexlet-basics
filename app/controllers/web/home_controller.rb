@@ -3,14 +3,14 @@
 class Web::HomeController < Web::ApplicationController
   allow_unauthenticated_access
 
-  sig { returns(T.untyped) }
+  sig { void }
   def index
     language_member_resources = (current_user&.language_members&.includes([ language: :current_version ]) || Language::Member.none)
       .map { Language::MemberResource.new(it) }
     language_member_resources_by_language = language_member_resources.index_by { it.object.language_id }
 
     blog_posts = BlogPost.published_state
-      .includes([ :creator, { cover_attachment: :blob } ])
+      .includes([ :creator, :likes, { cover_attachment: :blob } ])
       .with_locale
       .includes(:cover_attachment)
       .last(3)
@@ -67,7 +67,7 @@ class Web::HomeController < Web::ApplicationController
     }
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def sitemap
     if I18n.locale != :ru
       raise ActionController::RoutingError, "works only for ru"

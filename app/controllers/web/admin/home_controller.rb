@@ -5,7 +5,7 @@ class Web::Admin::HomeController < Web::Admin::ApplicationController
   # Дашборд доступен любому staff; список админов отдаём только суперпользователю.
   STAFF_RESOURCE = nil
 
-  sig { returns(T.untyped) }
+  sig { void }
   def index
     q = ransack_params("sf" => "id", "so" => "desc")
     search = User.admin.ransack(q)

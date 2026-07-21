@@ -12,7 +12,7 @@ class Web::ErrorsController < Web::ApplicationController
     request.format = :html
   end
 
-  sig { returns(T.untyped) }
+  sig { void }
   def show
     code = params[:code].to_i
     header = t(".codes.#{code}.header", default: t(".codes.other.header"))
@@ -33,7 +33,7 @@ class Web::ErrorsController < Web::ApplicationController
 
   private
 
-  sig { params(blk: T.untyped).returns(T.untyped) }
+  sig { params(blk: T.proc.void).void }
   def use_locale(&blk)
     path = T.must(URI.parse(request.original_url).path)
     locale = path.split("/").second || ""
