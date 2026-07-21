@@ -113,7 +113,7 @@ class Web::ApplicationController < ApplicationController
     end
   end
 
-  sig { params(opts: T.untyped).void }
+  sig { params(opts: T.untyped).returns(T.untyped) }
   def display_escaped_meta_tags(**opts)
     escape_meta_tags(meta_tags.instance_values["meta_tags"])
     helpers.display_meta_tags(**opts)
