@@ -129,6 +129,10 @@ Prefer these instructions over generic Rails or React defaults.
 - NEVER hand-edit, hand-reformat, or piecemeal-regenerate a generated file.
   Change the source, then run the sync target and commit whatever it produces.
   Do not reason about a generated file's internal formatting — regenerate it.
+- NEVER restore a generated file from git (no `git checkout`/`git restore` of it,
+  no reverting to an old copy). If a generated file is wrong or stale, run its
+  generator and regenerate it from the current source — never recover the old
+  bytes. Generated files are outputs, not history to preserve.
 - The generated (do-not-edit) files and their generators:
   - `app/javascript/routes.js`, `app/javascript/routes.d.ts` — JS route helpers,
     from `bin/rails js:routes` (via `make sync-types`).

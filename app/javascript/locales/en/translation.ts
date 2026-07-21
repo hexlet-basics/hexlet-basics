@@ -271,9 +271,9 @@ export default {
       testInstructions: "",
       time: {
         minutes_one: "",
-        minutes_other: "",
         minutes_few: "",
         minutes_many: "",
+        minutes_other: "",
       },
       unexpected_error: "",
       userCode: "",
