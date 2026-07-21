@@ -2,40 +2,50 @@ overrides:
   # patch transitive vulns: undici via release-it (dev), dompurify via monaco-editor
   undici: ^6.27.0
   dompurify: ^3.4.11
-allowBuilds:
-  '@sentry/cli': true
-  '@swc/core': true
-  sharp: true
-  simple-git-hooks: true
+# block installing package versions published less than a day ago (supply-chain hardening)
+minimumReleaseAge: 1440
 minimumReleaseAgeExclude:
   - npm-check-updates@22.2.8 || 22.2.9
-  - '@mantine/carousel@9.4.1'
-  - '@mantine/code-highlight@9.4.1'
-  - '@mantine/colors-generator@9.4.1'
-  - '@mantine/core@9.4.1'
-  - '@mantine/dates@9.4.1'
-  - '@mantine/hooks@9.4.1'
-  - '@mantine/modals@9.4.1'
-  - '@mantine/notifications@9.4.1'
-  - '@mantine/store@9.4.1'
+  - '@mantine/carousel@9.4.1 || 9.4.2'
+  - '@mantine/code-highlight@9.4.1 || 9.4.2'
+  - '@mantine/colors-generator@9.4.1 || 9.4.2'
+  - '@mantine/core@9.4.1 || 9.4.2'
+  - '@mantine/dates@9.4.1 || 9.4.2'
+  - '@mantine/hooks@9.4.1 || 9.4.2'
+  - '@mantine/modals@9.4.1 || 9.4.2'
+  - '@mantine/notifications@9.4.1 || 9.4.2'
+  - '@mantine/store@9.4.1 || 9.4.2'
   - postcss@8.5.16
-  - '@biomejs/biome@2.5.4'
-  - '@biomejs/cli-darwin-arm64@2.5.4'
-  - '@biomejs/cli-darwin-x64@2.5.4'
-  - '@biomejs/cli-linux-arm64-musl@2.5.4'
-  - '@biomejs/cli-linux-arm64@2.5.4'
-  - '@biomejs/cli-linux-x64-musl@2.5.4'
-  - '@biomejs/cli-linux-x64@2.5.4'
-  - '@biomejs/cli-win32-arm64@2.5.4'
-  - '@biomejs/cli-win32-x64@2.5.4'
+  - '@biomejs/biome@2.5.4 || 2.5.5'
+  - '@biomejs/cli-darwin-arm64@2.5.4 || 2.5.5'
+  - '@biomejs/cli-darwin-x64@2.5.4 || 2.5.5'
+  - '@biomejs/cli-linux-arm64-musl@2.5.4 || 2.5.5'
+  - '@biomejs/cli-linux-arm64@2.5.4 || 2.5.5'
+  - '@biomejs/cli-linux-x64-musl@2.5.4 || 2.5.5'
+  - '@biomejs/cli-linux-x64@2.5.4 || 2.5.5'
+  - '@biomejs/cli-win32-arm64@2.5.4 || 2.5.5'
+  - '@biomejs/cli-win32-x64@2.5.4 || 2.5.5'
   - beasties@0.4.3
   - vite-plugin-beasties@0.4.3
   - i18next-cli@1.66.0
   - mantine-datatable@9.4.0
-onlyBuiltDependencies:
-  - '@parcel/watcher'
-  - '@sentry/cli'
-  - '@swc/core'
-  - esbuild
-  - sharp
-  - simple-git-hooks
+  - '@mantine/tiptap@9.4.2'
+  - '@sentry/browser-utils@10.67.0'
+  - '@sentry/browser@10.67.0'
+  - '@sentry/core@10.67.0'
+  - '@sentry/feedback@10.67.0'
+  - '@sentry/node-core@10.67.0'
+  - '@sentry/node@10.67.0'
+  - '@sentry/opentelemetry@10.67.0'
+  - '@sentry/react@10.67.0'
+  - '@sentry/replay-canvas@10.67.0'
+  - '@sentry/replay@10.67.0'
+  - '@sentry/server-utils@10.67.0'
+  - monaco-editor@0.56.0
+allowBuilds:
+  '@parcel/watcher': true
+  '@sentry/cli': true
+  '@swc/core': true
+  esbuild: true
+  sharp: true
+  simple-git-hooks: true

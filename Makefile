@@ -12,7 +12,7 @@ setup:
 
 test-all: test test-frontend test-system
 
-deps-update: update-skills
+deps-update:
 	npx ncu -u
 	pnpm update
 	bundle update
