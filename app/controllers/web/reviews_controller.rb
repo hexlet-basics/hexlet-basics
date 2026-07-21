@@ -22,7 +22,7 @@ class Web::ReviewsController < Web::ApplicationController
       },
       twitter: {
         card: "summary",
-        site: "@hexlethq"
+        site: t("links.hexlet_twitter_handle")
       }
     }
     set_meta_tags seo_tags

@@ -9,6 +9,7 @@ ru:
     hexlet_youtube: 'https://www.youtube.com/user/HexletUniversity'
     hexlet_instagram: 'https://www.instagram.com/hexlethq'
     hexlet_twitter: 'https://twitter.com/HexletHQ'
+    hexlet_twitter_handle: '@hexlethq'
     hexlet_blog: 'https://ru.hexlet.io/blog?promo_name=blog&promo_position=body&promo_type=link&utm_source=code-basics&utm_medium=referral&utm_campaign=blog&utm_content=lesson'
     hexlet_success_stories: 'https://ru.hexlet.io/blog/categories/success?promo_name=blog-success&promo_position=body&promo_type=link&utm_source=code-basics&utm_medium=referral&utm_campaign=blog&utm_content=lesson'
     hexlet_recommended_books: 'https://ru.hexlet.io/pages/recommended-books?promo_name=books&promo_position=body&promo_type=link&utm_medium=referral&utm_campaign=resources&utm_content=books'

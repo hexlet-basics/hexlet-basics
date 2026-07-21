@@ -18,7 +18,7 @@ class Web::LanguageCategoriesController < Web::ApplicationController
       },
       twitter: {
         card: "summary",
-        site: "@hexlethq"
+        site: t("links.hexlet_twitter_handle")
       }
     }
     set_meta_tags seo_tags
@@ -45,7 +45,7 @@ class Web::LanguageCategoriesController < Web::ApplicationController
       },
       twitter: {
         card: "summary",
-        site: "@hexlethq"
+        site: t("links.hexlet_twitter_handle")
       }
     }
     set_meta_tags seo_tags

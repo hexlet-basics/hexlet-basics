@@ -30,7 +30,7 @@ class Web::CasesController < Web::ApplicationController
       },
       twitter: {
         card: "summary",
-        site: "@hexlethq"
+        site: t("links.hexlet_twitter_handle")
       }
     }
 

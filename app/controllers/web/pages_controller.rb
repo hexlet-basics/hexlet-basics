@@ -32,7 +32,7 @@ class Web::PagesController < Web::ApplicationController
       },
       twitter: {
         card: "summary",
-        site: "@hexlethq"
+        site: t("links.hexlet_twitter_handle")
       }
     }
     if DISALLOWED_PAGES.exclude? page

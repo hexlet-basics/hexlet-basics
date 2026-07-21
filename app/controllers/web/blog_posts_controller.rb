@@ -20,7 +20,7 @@ class Web::BlogPostsController < Web::ApplicationController
       },
       twitter: {
         card: "summary",
-        site: "@hexlethq"
+        site: t("links.hexlet_twitter_handle")
       }
     }
     set_meta_tags seo_tags
@@ -51,7 +51,7 @@ class Web::BlogPostsController < Web::ApplicationController
       canonical: blog_post_url(blog_post.slug),
       twitter: {
         card: "summary",
-        site: "@hexlethq"
+        site: t("links.hexlet_twitter_handle")
       },
       og: {
         title: blog_post.name,

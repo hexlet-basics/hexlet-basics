@@ -45,7 +45,7 @@ class Web::HomeController < Web::ApplicationController
       },
       twitter: {
         card: "summary",
-        site: "@hexlet_io"
+        site: t("links.hexlet_twitter_handle")
       },
       og: {
         title: t(".title"),
