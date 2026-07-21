@@ -119,9 +119,14 @@ export default function FooterBlock() {
               ))}
 
               <Stack gap="sm">
-                <Text fw="bold" fz="sm">
+                <Anchor
+                  component={Link}
+                  href={Routes.language_categories_path()}
+                  fw="bold"
+                  fz="sm"
+                >
                   {t(($) => $.layouts.shared.footer.categories)}
-                </Text>
+                </Anchor>
                 {courseCategories.map((category) => (
                   <FooterLink
                     key={category.id}
