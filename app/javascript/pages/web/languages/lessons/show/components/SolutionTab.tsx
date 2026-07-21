@@ -23,21 +23,26 @@ const waitingTime = 20 * 60 * 1000; // 20 min
 // const waitingTime = 3000;
 
 type CountdownProps = {
-  showButton: boolean;
-  remainingTime: string;
+  expiryTimestamp: Date;
+  canBeShown: boolean;
   renderShowButton: () => ReactNode;
 };
 
 function Countdown({
-  showButton,
-  remainingTime,
+  expiryTimestamp,
+  canBeShown,
   renderShowButton,
 }: CountdownProps) {
   const { t } = useTranslation();
+  const countdown = useCountdown(expiryTimestamp);
 
-  if (showButton) {
+  if (!countdown.isRunning || canBeShown) {
     return renderShowButton();
   }
+
+  const remainingTime = dayjs
+    .duration(countdown.remainingSeconds, "seconds")
+    .format("mm:ss");
 
   return (
     <Stack align="center">
@@ -68,7 +73,6 @@ export default function SolutionTab() {
   );
 
   const expiryTimestamp = new Date(startTime + waitingTime);
-  const countdown = useCountdown(expiryTimestamp);
 
   const renderUserCode = () => {
     if (content === "") {
@@ -128,10 +132,8 @@ export default function SolutionTab() {
         renderSolution()
       ) : (
         <Countdown
-          showButton={!countdown.isRunning || solutionState === "canBeShown"}
-          remainingTime={dayjs
-            .duration(countdown.remainingSeconds, "seconds")
-            .format("mm:ss")}
+          expiryTimestamp={expiryTimestamp}
+          canBeShown={solutionState === "canBeShown"}
           renderShowButton={renderShowButton}
         />
       )}
