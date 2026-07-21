@@ -179,7 +179,7 @@ export const localesByCode = {
     name: "Русский",
   },
   en: {
-    icon: "🇺🇲",
+    icon: "🇺🇸",
     name: "English",
   },
 };
