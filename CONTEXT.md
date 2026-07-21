@@ -49,8 +49,12 @@ _Avoid_: translation, content.
 
 **Category**:
 A catalog grouping of Courses, used to organize the public catalog and landing
-pages.
+pages. A Course joins a Category through its Landing Page, not directly.
 _Code name_: `Language::Category`.
+
+> The Category-to-Course membership is a plain join record
+> (`Language::Category::Item`, linking a Category to a Landing Page) — a
+> mechanism, not a domain term.
 
 **Landing Page**:
 A localized marketing page for a Course.
@@ -162,6 +166,15 @@ _Code name_: `Banner`.
 **Blog Post**:
 A localized blog article, authored by a User and optionally tied to a Course.
 _Code name_: `BlogPost`.
+
+**Like** (of a Blog Post):
+A User's like on a Blog Post. May be anonymous — recorded without a User.
+_Code name_: `BlogPost::Like`.
+
+**Related Course** (of a Blog Post):
+An ordered link from a Blog Post to a Course, shown as further reading.
+_Code name_: `BlogPost::RelatedLanguageItem`.
+_Avoid_: related language, related item.
 
 **Review**:
 A published learner testimonial about a Course. Public social proof.
