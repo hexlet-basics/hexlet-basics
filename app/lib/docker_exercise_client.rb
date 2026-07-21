@@ -6,17 +6,17 @@ require "open3"
 class DockerExerciseClient < DockerExerciseClientInterface
   extend T::Sig
 
-  sig { override.params(lang_name: T.untyped).returns(String) }
+  sig { override.params(lang_name: String).returns(String) }
   def self.repo_dest(lang_name)
     "/tmp/hexletbasics/exercises-#{lang_name}"
   end
 
-  sig { override.params(lang_name: T.untyped).returns(String) }
+  sig { override.params(lang_name: String).returns(String) }
   def self.image_name(lang_name)
     "ghcr.io/hexlet-basics/exercises-#{lang_name}"
   end
 
-  sig { override.params(lang_name: T.untyped).void }
+  sig { override.params(lang_name: String).void }
   def self.download(lang_name)
     cmd = "docker pull #{image_name(lang_name)}"
     Rails.logger.debug(cmd)
@@ -35,7 +35,7 @@ class DockerExerciseClient < DockerExerciseClientInterface
     system("docker rm exercises-#{lang_name}")
   end
 
-  sig { override.params(created_code_file_path: T.untyped, exercise_file_path: T.untyped, full_image_name: T.untyped, path_to_code: T.untyped).returns([ String, T.untyped ]) }
+  sig { override.params(created_code_file_path: String, exercise_file_path: String, full_image_name: String, path_to_code: String).returns([ String, T.untyped ]) }
   def self.run_exercise(created_code_file_path:, exercise_file_path:, full_image_name:, path_to_code:)
     volume = "-v #{created_code_file_path}:#{exercise_file_path}"
     command = "docker run --rm --memory=512m --memory-swap=-1 --network none #{volume} #{full_image_name} timeout 6 make --silent -C #{path_to_code} test"
@@ -47,7 +47,7 @@ class DockerExerciseClient < DockerExerciseClientInterface
     [ output.join, status ]
   end
 
-  sig { override.params(lang_name: T.untyped).void }
+  sig { override.params(lang_name: String).void }
   def self.tag_image_version(lang_name)
     return unless Rails.env.production?
 
@@ -58,7 +58,7 @@ class DockerExerciseClient < DockerExerciseClientInterface
     raise "Docker push error" unless system(push_command)
   end
 
-  sig { override.params(image_name: T.untyped, image_tag: T.untyped, lang_name: T.untyped, lang_version: T.untyped).returns(String) }
+  sig { override.params(image_name: String, image_tag: String, lang_name: String, lang_version: Integer).returns(String) }
   def self.ensure_image(image_name:, image_tag:, lang_name:, lang_version:)
     full_image_name = "#{image_name(lang_name)}:v#{lang_version}"
 
