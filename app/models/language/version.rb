@@ -90,7 +90,7 @@ class Language::Version < ApplicationRecord
       return docker_image&.start_with?("hexletbasics") ? "lv#{id}" : "release"
     end
 
-    :latest
+    "latest"
   end
 
   sig { returns(T.untyped) }
